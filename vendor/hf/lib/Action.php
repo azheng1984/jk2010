@@ -4,17 +4,15 @@ class Action
   public static function run($app)
   {
     if (!$app) {
-      #require_once HF_DIR.'Exception.php';
       throw new Exception;
     }
 
     if (($method = self::getMethod()) == null) {
-      #require_once 'Exception.php';
       throw new Exception;
     }
 
     $class = $app.'Action';
-    //security check
+    //todo:security check
     $action = new $class;
     $action->{$method}();
   }
