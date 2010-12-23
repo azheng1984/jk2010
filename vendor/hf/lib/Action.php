@@ -12,7 +12,7 @@ class Action
     }
 
     $class = $app.'Action';
-    //todo:security check
+    //todo:is action exsited
     $action = new $class;
     $action->{$method}();
   }
@@ -28,6 +28,6 @@ class Action
         return 'get';
       case 'POST':
         return 'post';
-    } 
+    }
   }
 }
