@@ -8,6 +8,7 @@ class View
       $type = 'Handheld';
     }
     $class = $app.$type;
+    //todo:is view exsited
     $view = new $class;
     $view->render();
   }
