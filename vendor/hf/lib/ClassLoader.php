@@ -1,16 +1,16 @@
 <?php
 class ClassLoader
 {
-  private static $path;
+  private static $path = array();
   private static $plugins = array();
   private static $callback = array(__CLASS__, 'load');
 
-  public static function load($class)
+  public static function load($name)
   {
-    if (!isset(self::$path[$class])) {
-      throw new Exception($class.' not found'); 
+    if (!isset(self::$path[$name])) {
+      throw new Exception($name.' not found'); 
     }
-    require SITE_DIR.self::$path[$class];
+    require SITE_DIR.self::$path[$name];
   }
 
   public static function import($plugin)
@@ -21,12 +21,13 @@ class ClassLoader
     }
   }
 
-  public static function run() {
-    self::$path = require SITE_DIR."cache/class_path/cache.php";
+  public static function run()
+  {
     spl_autoload_register(self::$callback);
   }
 
-  public static function stop() {
+  public static function stop()
+  {
     spl_autoload_unregister(self::$callback);
     self::$plugins = array();
     self::$path = null;
