@@ -1,6 +1,6 @@
 <?php
-define('SITE_ROOT_DIR', dirname(dirname(__FILE__)).'/');
-require SITE_ROOT_DIR.'vendor/hf/lib/ClassLoader.php';
+define('SITE_DIR', dirname(dirname(__FILE__)).'/');
+require SITE_DIR.'vendor/hf/lib/ClassLoader.php';
 ClassLoader::run();
 ClassLoader::import('hf');
 
