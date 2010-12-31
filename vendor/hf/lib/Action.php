@@ -12,7 +12,7 @@ class Action
     }
 
     $class = $app.'Action';
-    //todo:is action exsited
+    //todo:check action exsited
     $action = new $class;
     $action->{$method}();
   }

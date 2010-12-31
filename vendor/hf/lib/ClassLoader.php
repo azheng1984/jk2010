@@ -10,19 +10,19 @@ class ClassLoader
     if (!isset(self::$path[$class])) {
       throw new Exception($class.' not found'); 
     }
-    require SITE_ROOT_DIR.self::$path[$class];
+    require SITE_DIR.self::$path[$class];
   }
 
   public static function import($plugin)
   {
     if (!isset(self::$plugins[$plugin])) {
-      self::$path += require SITE_ROOT_DIR."cache/class_path/{$plugin}.cache.php";
+      self::$path += require SITE_DIR."cache/class_path/{$plugin}.cache.php";
       self::$plugins[$plugin] = true;
     }
   }
 
   public static function run() {
-    self::$path = require SITE_ROOT_DIR."cache/class_path/cache.php";
+    self::$path = require SITE_DIR."cache/class_path/cache.php";
     spl_autoload_register(self::$callback);
   }
 
