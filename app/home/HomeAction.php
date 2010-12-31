@@ -1,8 +1,18 @@
 <?php
 class HomeAction
 {
-  public function get()
+  public function GET()
   {
 
+  }
+
+  public function POST()
+  {
+
+  }
+  
+  public function HEAD()
+  {
+  	
   }
 }
