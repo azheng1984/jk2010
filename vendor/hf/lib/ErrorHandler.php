@@ -20,7 +20,6 @@ class ErrorHandler {
     if (!headers_sent()) {
       self::$exception = $exception;
       self::$previousOutputBuffer = ob_get_clean();
-      echo self::$previousOutputBuffer;
       $this->reload();
     }
     trigger_error($exception, E_USER_ERROR);
