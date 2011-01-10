@@ -4,7 +4,7 @@ class ClassLoader {
   private $callback;
 
   public function run() {
-    $this->mapping = require SITE_PATH.'cache/'.__CLASS__.'cache.php';
+    $this->mapping = require SITE_PATH.'cache/'.__CLASS__.'.cache.php';
     $this->callback = array($this, 'load');
     spl_autoload_register($this->callback);
   }
