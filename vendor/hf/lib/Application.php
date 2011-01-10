@@ -4,7 +4,7 @@ class Application {
   private static $cache = array();
   private static $count = 0;
 
-  public function __construct($processor/*, $processor, ...*/) {
+  public function __construct($processor/*, ...*/) {
     $this->processors = func_get_args();
   }
 
