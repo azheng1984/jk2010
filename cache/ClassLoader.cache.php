@@ -11,7 +11,7 @@ return array(
   'ErrorHandler' => 'vendor/hf/lib',
   'ApplicationException' => 'vendor/hf/lib/Exception',
   'InternalServerErrorException' => 'vendor/hf/lib/Exception',
-  'NotFoundException' => 'lib/Exception',
+  'NotFoundException' => 'vendor/hf/lib/Exception',
   'UnsupportedMediaTypeException' => 'vendor/hf/lib/Exception',
   'MethodNotAllowedException' => 'vendor/hf/lib/Exception',
 );
