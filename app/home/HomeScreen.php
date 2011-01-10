@@ -3,6 +3,6 @@ class HomeScreen
 {
   public function render()
   {
-    echo ' says hello';
+    echo '<br /> here is screen, says hello!';
   }
 }
