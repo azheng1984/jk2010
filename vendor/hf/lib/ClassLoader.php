@@ -4,7 +4,7 @@ class ClassLoader {
   private $callback;
 
   public function run() {
-    $this->mapping = require SITE_PATH.'cache/'.__CLASS__.'.cache.php';
+    $this->mapping = require HF_CACHE_PATH.__CLASS__.'.cache.php';
     $this->callback = array($this, 'load');
     spl_autoload_register($this->callback);
   }
@@ -17,6 +17,6 @@ class ClassLoader {
     if (!isset($this->mapping[$name])) {
       throw new InternalServerErrorException("Class '{$name}' not found");
     }
-    require SITE_PATH.$this->mapping[$name].'/'.$name.'.php';
+    require ROOT_PATH.$this->mapping[$name].'/'.$name.'.php';
   }
 }

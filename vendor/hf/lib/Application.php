@@ -20,7 +20,7 @@ class Application {
 
   private function getCache($type, $path) {
     if (!isset(self::$cache[$type])) {
-      self::$cache[$type] = require SITE_PATH."cache/app/{$type}.cache.php";
+      self::$cache[$type] = require HF_CACHE_PATH."Processor/{$type}.cache.php";
     }
     $cache = self::$cache[$type];
     if (!isset($cache[$path])) {
