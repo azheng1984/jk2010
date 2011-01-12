@@ -5,7 +5,7 @@ class ClassLoaderTest extends PHPUnit_Framework_TestCase {
   public function testLoadSuccess() {
     $classLoader = new ClassLoader;
     $classLoader->run();
-    $test = new Application;
+    $test = new ActionProcessor;
   }
 
   /**
