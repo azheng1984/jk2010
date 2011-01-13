@@ -37,9 +37,8 @@ class Application {
     throw new InternalServerErrorException;
   }
 
-  public static function reset()
-  {
+  public static function reset() {
     self::$count = 0;
-    self::$cache = null;
+    self::$cache = array();
   }
 }
