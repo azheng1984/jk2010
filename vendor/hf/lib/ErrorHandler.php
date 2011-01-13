@@ -30,7 +30,8 @@ class ErrorHandler {
     if (is_a(self::$exception, 'ApplicationException')) {
       $status = substr(self::$exception->getCode(), 0, 3);
     }
-    $cache = require HF_CACHE_PATH.__CLASS__.'.cache.php';
+    $cachePath = HF_CACHE_PATH.__CLASS__.'.cache.php';
+    $cache = require $cachePath;
     if (!empty($cache[$status])) {
       $this->app->run($cache[$status]);
     }
