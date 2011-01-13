@@ -14,6 +14,6 @@ class Router {
   }
 
   private static function endsWith($haystack, $needle) {
-    return strrpos($haystack, $needle) === strlen($haystack)-strlen($needle);
+    return strrpos($haystack, $needle) === strlen($haystack) - strlen($needle);
   }
 }
