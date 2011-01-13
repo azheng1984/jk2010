@@ -8,7 +8,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
   public function setUp() {
     $this->processorMock = $this->getMock('Processor', array('run'));
     $mockClassName = get_class($this->processorMock);
-    $this->processorMockCachePath = ROOT_PATH."/cache/Processor/$mockClassName.cache.php";
+    $this->processorMockCachePath = TEST_PATH."cache/Processor/$mockClassName.cache.php";
     file_put_contents($this->processorMockCachePath, "<?php return array('test' => array('hi'));");
   }
 

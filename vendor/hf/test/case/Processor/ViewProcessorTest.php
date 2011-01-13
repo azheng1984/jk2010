@@ -16,8 +16,7 @@ class TestView {
 class ViewProcessorTest extends PHPUnit_Framework_TestCase {
   public function testRun() {
     $processor = new ViewProcessor;
-    $processor->run(array('screen' => array(
-      'class' => 'TestView',)));
+    $processor->run(array('screen' => 'TestView'));
     $this->assertEquals('hi', TestView::getResult());
   }
 }
