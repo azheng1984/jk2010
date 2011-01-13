@@ -11,10 +11,10 @@ class ViewProcessor {
     if (!isset($cache[$type])) {
       throw new UnsupportedMediaTypeException;
     }
-    if (!isset($cache[$type]['class'])) {
+    if ($cache[$type] == null) {
       return;
     }
-    $view = new $cache[$type]['class'];
+    $view = new $cache[$type];
     $view->render();
   }
 }

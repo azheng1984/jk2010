@@ -3,15 +3,15 @@ class Router
 {
   public static function getPath() {
     $requestUri = $_SERVER['REQUEST_URI'];
-    $app = null;
+    $path = null;
     if ($requestUri == '/') {
-      $app = 'home';
+      $path = 'home';
     } elseif (self::endsWith($requestUri, '/')) {
-      $app = 'category';
+      $path = 'category';
     } else {
-      $app = 'document';
+      $path = 'document';
     }
-    return $app;
+    return $path;
   }
 
   private static function endsWith($haystack, $needle) {

@@ -1,10 +1,12 @@
 <?php
 class ClassLoader {
+  private $classes;
+  private $folders;
   private $callback;
-  private $mapping;
 
   public function run() {
-    $this->mapping = require HF_CACHE_PATH.__CLASS__.'.cache.php';
+    list($this->classes, $this->folders) = require HF_CACHE_PATH.__CLASS__.'.cache.php';
+    $this->callback = array($this, 'load');
     spl_autoload_register($this->callback);
   }
 
@@ -13,10 +15,9 @@ class ClassLoader {
   }
 
   public function load($name) {
-    if (!isset($this->mapping['class'][$name])) {
+    if (!isset($this->classes[$name])) {
       throw new InternalServerErrorException("Class '{$name}' not found");
     }
-    $folder = $this->mapping['folder'][$this->mapping['class'][$name]];
-    require $this->mapping['root'].$folder.DIRECTORY_SEPARATOR.$name.'.php';
+    require $this->folders[$this->classes[$name]].DIRECTORY_SEPARATOR.$name.'.php';
   }
 }
