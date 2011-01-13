@@ -1,6 +1,5 @@
 <?php
-class Router
-{
+class Router {
   public static function getPath() {
     $requestUri = $_SERVER['REQUEST_URI'];
     $path = null;
