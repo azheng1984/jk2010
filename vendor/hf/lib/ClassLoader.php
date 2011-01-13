@@ -5,7 +5,8 @@ class ClassLoader {
   private $callback;
 
   public function run() {
-    list($this->classes, $this->folders) = require HF_CACHE_PATH.__CLASS__.'.cache.php';
+    $cachePath = HF_CACHE_PATH.__CLASS__.'.cache.php';
+    list($this->classes, $this->folders) = require $cachePath;
     $this->callback = array($this, 'load');
     spl_autoload_register($this->callback);
   }
@@ -18,6 +19,7 @@ class ClassLoader {
     if (!isset($this->classes[$name])) {
       throw new InternalServerErrorException("Class '{$name}' not found");
     }
-    require $this->folders[$this->classes[$name]].DIRECTORY_SEPARATOR.$name.'.php';
+    $folder = $this->folders[$this->classes[$name]];
+    require $folder.DIRECTORY_SEPARATOR.$name.'.php';
   }
 }
