@@ -1,18 +1,14 @@
 <?php
-class HomeAction
-{
-  public function GET()
-  {
+class HomeAction {
+  public function GET() {
     echo 'in action get method';
   }
 
-  public function POST()
-  {
+  public function POST() {
 
   }
 
-  public function HEAD()
-  {
+  public function HEAD() {
      
   }
 }
