@@ -17,7 +17,7 @@ class ClassLoader {
 
   public function load($name) {
     if (!isset($this->classes[$name])) {
-      throw new InternalServerErrorException("Class '{$name}' not found");
+      throw new InternalServerErrorException("Class '$name' not found");
     }
     $folder = $this->folders[$this->classes[$name]];
     require $folder.DIRECTORY_SEPARATOR.$name.'.php';
