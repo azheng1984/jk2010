@@ -27,7 +27,7 @@ class ErrorHandler {
 
   private function reload() {
     $status = '500';
-    if (is_a(self::$exception, 'ApplicationException')) {
+    if (self::$exception instanceof ApplicationException) {
       $status = substr(self::$exception->getCode(), 0, 3);
     }
     $cachePath = HF_CACHE_PATH.__CLASS__.'.cache.php';
