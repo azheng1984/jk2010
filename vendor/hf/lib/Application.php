@@ -8,7 +8,7 @@ class Application {
     $this->processors = func_get_args();
   }
 
-  public function run($path) {
+  public function run($path = null) {
     if ($path == null) {
       $path = $_SERVER['REQUEST_URI'];
     }
