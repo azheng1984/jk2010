@@ -14,5 +14,6 @@ function __autoload($name) {
   require "$name.php";
 }
 
+//$router = new Router;
 $app = new Application(new CommandProcessor($argc, $argv));
 $app->run('new');
