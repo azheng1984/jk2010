@@ -9,7 +9,7 @@ class CommandProcessor {
   }
 
   public function run($name) {
-    require_once CLI_TOOL_PATH."app/new/$name.php";
+    require_once ROOT_PATH."app/new/$name.php";
     $command = new $name;
     $command->run($this->argc, $this->argv);
   }
