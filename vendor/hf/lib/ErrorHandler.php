@@ -30,10 +30,10 @@ class ErrorHandler {
     if (self::$exception instanceof ApplicationException) {
       $status = substr(self::$exception->getCode(), 0, 3);
     }
-    $cachePath = HF_CACHE_PATH.__CLASS__.'.cache.php';
-    $cache = require $cachePath;
-    if (!empty($cache[$status])) {
-      $this->app->run($cache[$status]);
+    $configPath = HF_CONFIG_PATH.__CLASS__.'.config.php';
+    $config = require $configPath;
+    if (isset($config[$status])) {
+      $this->app->run($config[$status]);
     }
   }
 
