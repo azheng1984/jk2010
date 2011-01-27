@@ -1,6 +1,5 @@
 <?php
 class MakeCli {
-	public function render() {
-		
-	}
+  public function render() {
+  }
 }
