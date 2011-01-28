@@ -20,12 +20,12 @@ class Application {
 
   private function getCache($type, $path) {
     if (!isset(self::$cache[$type])) {
-    	$folder = HF_CACHE_PATH.'Processor'.DIRECTORY_SEPARATOR;
+      $folder = HF_CACHE_PATH.'Processor'.DIRECTORY_SEPARATOR;
       self::$cache[$type] = require $folder.$type.'.cache.php';
     }
     $cache = self::$cache[$type];
     if (!isset($cache[$path])) {
-      $this->triggerCacheError("Path '".$path."' not found in '$type' cache");
+      $this->triggerCacheError("Path '$path' not found in '$type' cache");
     }
     return $cache[$path];
   }
