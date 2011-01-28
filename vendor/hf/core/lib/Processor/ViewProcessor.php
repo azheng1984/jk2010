@@ -11,7 +11,7 @@ class ViewProcessor {
     if (!isset($cache[$type])) {
       throw new UnsupportedMediaTypeException;
     }
-    if ($cache[$type] == null) {
+    if (empty($cache[$type])) {
       return;
     }
     $view = new $cache[$type];

@@ -1,7 +1,7 @@
 <?php
 class ActionProcessor {
   public function run($cache) {
-    if ($cache == null) {
+    if (empty($cache)) {
       return;
     }
     $method = $_SERVER['REQUEST_METHOD'];
