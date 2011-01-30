@@ -1,4 +1,6 @@
 <?php
 class NewCommand {
-  public function execute() {}
+  public function execute($context) {
+    $color = $context->getOption('color'); //if null throw exception
+  }
 }
