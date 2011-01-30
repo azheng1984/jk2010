@@ -1,6 +1,6 @@
 <?php
-//bin-name [method] -option args
-class CommandLineParser {
+//bin-name [method] -option args command_args
+class CommandParser {
   public function run() {
     $mapping = require CONFIG_PATH.__CLASS__.'.config.php';
     global $argv;
