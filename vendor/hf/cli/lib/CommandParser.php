@@ -67,7 +67,7 @@ class CommandParser {
   }
 
   private function buildCommand($item) {
-    $this->config = $this->config[$item];
+    $this->config = $this->config['command'][$item];
     $this->buildOptionMapping();
     $this->command = $item;
   }
