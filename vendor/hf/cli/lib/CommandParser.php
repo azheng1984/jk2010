@@ -49,12 +49,15 @@ class CommandParser {
       $value = $pieces[1];
     }
     $name = $this->getOptionName($orignalKey);
-    if (isset($this->config[$name]['expansion'])) {
+    if (!isset($this->config['option'][$name])) {
+      throw new Exception("Option '$orignalKey' not allowed");
+    }
+    if (isset($this->config['option'][$name]['expansion'])) {
       $this->expand($this->config[$name]['expansion']);
       return;
     }
-    if (isset($this->config[$name]['class'])) {
-      $value = new $this->config[$name]['class']($value);
+    if (isset($this->config['option'][$name]['class'])) {
+      $value = new $this->config['option'][$name]['class']($value);
     }
     $_ENV['context']->addOption($name, $value);
   }
@@ -67,9 +70,17 @@ class CommandParser {
   }
 
   private function buildCommand($item) {
+    if (!isset($this->config['command'][$item])) {
+      throw new Exception("Command '$item' not found");
+    }
     $this->config = $this->config['command'][$item];
+    if (!is_array($this->config)) {
+      $this->command = $this->config;
+      $this->config = array('option' => array());
+      return;
+    }
     $this->buildOptionMapping();
-    $this->command = $item;
+    $this->command = $this->config['class'];
   }
 
   private function buildOptionMapping() {
