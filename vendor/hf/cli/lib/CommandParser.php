@@ -1,60 +1,99 @@
 <?php
-//bin-name [method] -option args command_args
 class CommandParser {
+  private $config;
+  private $optionMapping;
+  private $values;
+  private $count;
+  private $currentIndex = 1;
+  private $command;
+  private $arguments = array();
+
   public function run() {
-    $mapping = require CONFIG_PATH.__CLASS__.'.config.php';
-    global $argv;
-
-    $method = null;
-    $path = null;
-    if (isset($argv[1])) {
-      $method = $argv[1];
-      if (isset($mapping[$method])) {
-        $methodMapping = $mapping[$method];
-        if (isset($methodMapping['method'])) {
-          $method = $methodMapping['method'];
-        }
-        if (isset($methodMapping['path'])) {
-          $path = $methodMapping['path'];
-        }
-      }
+    $this->count = $_SERVER['argc'];
+    $this->values = $_SERVER['argv'];
+    $this->config = require HF_CONFIG_PATH.__CLASS__.'.config.php';
+    $this->buildOptionMapping();
+    if (!isset($this->config['command'])) {
+      $this->command = $this->config['class'];
     }
-
-    if (count($argv) > 2 ) {
-      $args = array();
-      if ($path == null && !$this->startsWith($argv[2], '-')) {
-        $path = $argv[2];
-        $args = array_slice($argv, 3);
-      } else {
-        $args = array_slice($argv, 2);
-      }
-      $key = null;
-      foreach ($args as $arg) {
-        if ($this->startsWith($arg, '-')) {
-          if ($key != null) {
-            $_GET[$key] = true;
-          }
-          $key = preg_replace('/^--?/', '', $arg);
-        } elseif ($key != null) {
-          $_GET[$key] = $arg;
-          $key = null;
-        } else {
-          throw new Exception('Argument parser error'.print_r($argv, true));
-        }
-      }
-      if ($key != null) {
-        $_GET[$key] = true;
-      }
+    while ($this->currentIndex < $this->count) {
+      $this->parse();
+      ++$this->currentIndex;
     }
-    $_SERVER['REQUEST_METHOD'] = $method;
-    echo $method."\r\n";
-    echo $path."\r\n";
-    print_r($_GET);
-    $path = 'project';
-    return $path;
+    if ($this->command == null) {
+      throw new Exception;
+    }
+    $function = array(new $this->command, 'execute');
+    call_user_func_array($function, $this->arguments);
   }
-  
-  public function startsWith($haystack, $needle){
+
+  private function parse() {
+    $item = $this->values[$this->index];
+    if ($this->startWith('-', $item)) {
+      $this->buildOption($item);
+      continue;
+    }
+    if ($this->command == null) {
+      $this->buildCommand($item);
+      continue;
+    }
+    $this->arguments[] = $item;
+  }
+
+  private function buildOption($item) {
+    $orignalKey = $item;
+    $value = true;
+    $pieces = explode('=', $item, 2);
+    if (count($pieces) == 2) {
+      $orignalKey = $pieces[0];
+      $value = $pieces[1];
+    }
+    $name = $this->getOptionName($orignalKey);
+    if (isset($this->config[$name]['expansion'])) {
+      $this->expand($this->config[$name]['expansion']);
+      return;
+    }
+    if (isset($this->config[$name]['class'])) {
+      $value = new $this->config[$name]['class']($value);
+    }
+    $_ENV['context']->addOption($name, $value);
+  }
+
+  private function getOptionName($orignalKey) {
+    if (strlen($orignalKey) == 2) {
+      return $this->optionMapping[substr($orignalKey, 1)];
+    }
+    return substr($orignalKey, 2);
+  }
+
+  private function buildCommand($item) {
+    $this->config = $this->config[$item];
+    $this->buildOptionMapping();
+    $this->command = $item;
+  }
+
+  private function buildOptionMapping() {
+    foreach ($this->config['option'] as $key => $value) {
+      if (!isset($value['shortcut'])) {
+        continue;
+      }
+      $shortcuts = $value['shortcut'];
+      if (!is_array($shortcuts)) {
+        $shortcuts = array($shortcuts);
+      }
+      foreach ($shortcuts as $item) {
+        $this->optionMapping[$item] = $key;
+      }
+    }
+  }
+
+  private function expand($values) {
+    array_splice($this->values, $this->currentIndex, 1, $values);
+    $this->count = count($this->values);
+    --$this->currentIndex;
+  }
+
+  private function startsWith($haystack, $needle){
     return strpos($haystack, $needle) === 0;
-}
+  }
 }
