@@ -11,8 +11,7 @@ class CommandParser {
   public function run() {
     $this->argumentCount = $_SERVER['argc'];
     $this->arguments = $_SERVER['argv'];
-    $this->config = require HF_CONFIG_PATH.__CLASS__.'.config.php';
-    $this->buildShortOptions();
+    $this->setConfig(require HF_CONFIG_PATH.__CLASS__.'.config.php');
     if (!isset($this->config['command'])) {
       $this->commandClass = new $this->config['class'];
     }
@@ -73,17 +72,18 @@ class CommandParser {
     if (!isset($this->config['command'][$item])) {
       throw new Exception("Command '$item' not found");
     }
-    $this->config = $this->config['command'][$item];
+    $config = $this->config['command'][$item];
     if (!is_array($this->config)) {
       $this->commandClass = $this->config;
-      $this->config = array('option' => array());
+      $config = array('option' => array());
       return;
     }
-    $this->buildShortOptions();
+    $this->setConfig($config);
     $this->commandName = $this->config['class'];
   }
 
-  private function buildShortOptions() {
+  private function setConfig($value) {
+    $this->config = $value;
     foreach ($this->config['option'] as $key => $value) {
       if (!isset($value['short'])) {
         continue;
