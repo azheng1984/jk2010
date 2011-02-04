@@ -1,7 +1,7 @@
 <?php
 class CommandParser {
   private $config;
-  private $optionShortcuts;
+  private $shortOptions;
   private $arguments;
   private $argumentCount;
   private $currentIndex = 1;
@@ -12,7 +12,7 @@ class CommandParser {
     $this->argumentCount = $_SERVER['argc'];
     $this->arguments = $_SERVER['argv'];
     $this->config = require HF_CONFIG_PATH.__CLASS__.'.config.php';
-    $this->buildOptionShortcuts();
+    $this->buildShortOptions();
     if (!isset($this->config['command'])) {
       $this->commandClass = new $this->config['class'];
     }
@@ -64,7 +64,7 @@ class CommandParser {
 
   private function getOptionName($orignalKey) {
     if (strlen($orignalKey) == 2) {
-      return $this->optionShortcuts[substr($orignalKey, 1)];
+      return $this->shortOptions[substr($orignalKey, 1)];
     }
     return substr($orignalKey, 2);
   }
@@ -79,21 +79,21 @@ class CommandParser {
       $this->config = array('option' => array());
       return;
     }
-    $this->buildOptionShortcuts();
+    $this->buildShortOptions();
     $this->commandName = $this->config['class'];
   }
 
-  private function buildOptionShortcuts() {
+  private function buildShortOptions() {
     foreach ($this->config['option'] as $key => $value) {
-      if (!isset($value['shortcut'])) {
+      if (!isset($value['short'])) {
         continue;
       }
-      $shortcuts = $value['shortcut'];
-      if (!is_array($shortcuts)) {
-        $this->optionShortcuts[$shortcuts] = $key;
+      $shortOptions = $value['short'];
+      if (!is_array($shortOptions)) {
+        $this->optionShortcuts[$shortOptions] = $key;
         continue;
       }
-      foreach ($shortcuts as $item) {
+      foreach ($shortOptions as $item) {
         $this->optionShortcuts[$item] = $key;
       }
     }
