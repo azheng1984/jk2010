@@ -3,15 +3,15 @@ class CommandParser {
   private $config;
   private $shortOptions;
   private $cliArguments;
-  private $cliArgumentCount;
+  private $cliArgumentLength;
   private $currentIndex = 1;
   private $arguments = array();
 
   public function run() {
-    $this->cliArgumentCount = $_SERVER['argc'];
+    $this->cliArgumentLength = $_SERVER['argc'];
     $this->cliArguments = $_SERVER['argv'];
     $this->readConfig(require HF_CONFIG_PATH.__CLASS__.'.config.php');
-    while ($this->currentIndex < $this->cliArgumentCount) {
+    while ($this->currentIndex < $this->cliArgumentLength) {
       $this->parse($this->cliArguments[$this->currentIndex]);
       ++$this->currentIndex;
     }
@@ -69,6 +69,12 @@ class CommandParser {
     return substr($orignalKey, 2);
   }
 
+  private function expand($arguments) {
+    array_splice($this->cliArguments, $this->currentIndex, 1, $arguments);
+    $this->cliArgumentLength = count($this->cliArguments);
+    --$this->currentIndex;
+  }
+
   private function buildOptionObject($class, $argument) {
     $reflector = new ReflectionClass($class);
     $constructor = $reflector->getConstructor();
@@ -106,12 +112,6 @@ class CommandParser {
         $this->shortOptions[$item] = $key;
       }
     }
-  }
-
-  private function expand($arguments) {
-    array_splice($this->cliArguments, $this->currentIndex, 1, $arguments);
-    $this->cliArgumentCount = count($this->cliArguments);
-    --$this->currentIndex;
   }
 
   private function verifyArguments($reflector, $length, $isVariableLength) {
