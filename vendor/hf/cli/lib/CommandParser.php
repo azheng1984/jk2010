@@ -2,17 +2,17 @@
 class CommandParser {
   private $config;
   private $shortOptions;
-  private $arguments;
-  private $argumentCount;
+  private $cliArguments;
+  private $cliArgumentCount;
   private $currentIndex = 1;
-  private $commandArguments = array();
+  private $arguments = array();
 
   public function run() {
-    $this->argumentCount = $_SERVER['argc'];
-    $this->arguments = $_SERVER['argv'];
+    $this->cliArgumentCount = $_SERVER['argc'];
+    $this->cliArguments = $_SERVER['argv'];
     $this->readConfig(require HF_CONFIG_PATH.__CLASS__.'.config.php');
-    while ($this->currentIndex < $this->argumentCount) {
-      $this->parse();
+    while ($this->currentIndex < $this->cliArgumentCount) {
+      $this->parse($this->cliArguments[$this->currentIndex]);
       ++$this->currentIndex;
     }
     $class = $this->config['class'];
@@ -21,13 +21,12 @@ class CommandParser {
       $isVariableLength = true;
     }
     $reflector = new ReflectionMethod($class, 'execute');
-    $length = count($this->commandArguments);
+    $length = count($this->arguments);
     $this->verifyArguments($reflector, $length, $isVariableLength);
-    $reflector->invokeArgs(new $class, $this->commandArguments);
+    $reflector->invokeArgs(new $class, $this->arguments);
   }
 
-  private function parse() {
-    $item = $this->arguments[$this->currentIndex];
+  private function parse($item) {
     if ($this->startsWith($item, '-')) {
       $this->buildOption($item);
       return;
@@ -36,7 +35,7 @@ class CommandParser {
       $this->buildCommand($item);
       return;
     }
-    $this->commandArguments[] = $item;
+    $this->arguments[] = $item;
   }
 
   private function buildOption($item) {
@@ -110,8 +109,8 @@ class CommandParser {
   }
 
   private function expand($arguments) {
-    array_splice($this->arguments, $this->currentIndex, 1, $arguments);
-    $this->argumentCount = count($this->arguments);
+    array_splice($this->cliArguments, $this->currentIndex, 1, $arguments);
+    $this->cliArgumentCount = count($this->cliArguments);
     --$this->currentIndex;
   }
 
