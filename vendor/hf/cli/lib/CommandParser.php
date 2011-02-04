@@ -90,11 +90,11 @@ class CommandParser {
       }
       $shortOptions = $value['short'];
       if (!is_array($shortOptions)) {
-        $this->optionShortcuts[$shortOptions] = $key;
+        $this->shortOptions[$shortOptions] = $key;
         continue;
       }
       foreach ($shortOptions as $item) {
-        $this->optionShortcuts[$item] = $key;
+        $this->shortOptions[$item] = $key;
       }
     }
   }
