@@ -15,9 +15,6 @@ class CommandParser {
       $this->parse();
       ++$this->currentIndex;
     }
-    if ($this->config['class'] == null) {
-      throw new Exception('Command not found');
-    }
     $class = $this->config['class'];
     $isVariableLength = false;
     if (in_array('variable_length', $this->config)) {
@@ -89,14 +86,13 @@ class CommandParser {
     if (!isset($this->config['command'][$item])) {
       throw new Exception("Command '$item' not found");
     }
-    $config = $this->config['command'][$item];
-    if (!is_array($config)) {
-      $config = (array('class' => $config, 'option' => array()));
-    }
-    $this->readConfig($config);
+    $this->readConfig($this->config['command'][$item]);
   }
 
   private function readConfig($value) {
+    if (!is_array($value)) {
+      $value = (array('class' => $value, 'option' => array()));
+    }
     $this->config = $value;
     foreach ($this->config['option'] as $key => $value) {
       if (!isset($value['short'])) {
