@@ -1,43 +1,43 @@
 <?php
 class CommandParser {
   private $config;
-  private $optionMapping;
-  private $values;
-  private $count;
+  private $optionShortcuts;
+  private $arguments;
+  private $argumentCount;
   private $currentIndex = 1;
-  private $command;
-  private $arguments = array();
+  private $commandClass;
+  private $commandArguments = array();
 
   public function run() {
-    $this->count = $_SERVER['argc'];
-    $this->values = $_SERVER['argv'];
+    $this->argumentCount = $_SERVER['argc'];
+    $this->arguments = $_SERVER['argv'];
     $this->config = require HF_CONFIG_PATH.__CLASS__.'.config.php';
-    $this->buildOptionMapping();
+    $this->buildOptionShortcuts();
     if (!isset($this->config['command'])) {
-      $this->command = $this->config['class'];
+      $this->commandClass = new $this->config['class'];
     }
-    while ($this->currentIndex < $this->count) {
-      $this->parse();
+    while ($this->currentIndex < $this->argumentCount) {
+      $this->parseNext();
       ++$this->currentIndex;
     }
-    if ($this->command == null) {
+    if ($this->commandClass == null) {
       throw new Exception;
     }
-    $function = array(new $this->command, 'execute');
-    call_user_func_array($function, $this->arguments);
+    $function = array(new $this->commandClass, 'execute');
+    call_user_func_array($function, $this->commandArguments);
   }
 
-  private function parse() {
-    $item = $this->values[$this->index];
+  private function parseNext() {
+    $item = $this->arguments[$this->currentIndex];
     if ($this->startWith('-', $item)) {
       $this->buildOption($item);
       continue;
     }
-    if ($this->command == null) {
+    if ($this->commandClass == null) {
       $this->buildCommand($item);
       continue;
     }
-    $this->arguments[] = $item;
+    $this->commandArguments[] = $item;
   }
 
   private function buildOption($item) {
@@ -64,7 +64,7 @@ class CommandParser {
 
   private function getOptionName($orignalKey) {
     if (strlen($orignalKey) == 2) {
-      return $this->optionMapping[substr($orignalKey, 1)];
+      return $this->optionShortcuts[substr($orignalKey, 1)];
     }
     return substr($orignalKey, 2);
   }
@@ -75,32 +75,33 @@ class CommandParser {
     }
     $this->config = $this->config['command'][$item];
     if (!is_array($this->config)) {
-      $this->command = $this->config;
+      $this->commandClass = $this->config;
       $this->config = array('option' => array());
       return;
     }
-    $this->buildOptionMapping();
-    $this->command = $this->config['class'];
+    $this->buildOptionShortcuts();
+    $this->commandName = $this->config['class'];
   }
 
-  private function buildOptionMapping() {
+  private function buildOptionShortcuts() {
     foreach ($this->config['option'] as $key => $value) {
       if (!isset($value['shortcut'])) {
         continue;
       }
       $shortcuts = $value['shortcut'];
       if (!is_array($shortcuts)) {
-        $shortcuts = array($shortcuts);
+        $this->optionShortcuts[$shortcuts] = $key;
+        continue;
       }
       foreach ($shortcuts as $item) {
-        $this->optionMapping[$item] = $key;
+        $this->optionShortcuts[$item] = $key;
       }
     }
   }
 
-  private function expand($values) {
-    array_splice($this->values, $this->currentIndex, 1, $values);
-    $this->count = count($this->values);
+  private function expand($arguments) {
+    array_splice($this->arguments, $this->currentIndex, 1, $arguments);
+    $this->argumentCount = count($this->arguments);
     --$this->currentIndex;
   }
 
