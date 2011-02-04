@@ -1,5 +1,6 @@
 <?php
 class HelpCommand {
-  public function execute($name) {
+  public function execute() {
+    echo 'help!';
   }
 }
