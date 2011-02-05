@@ -2,17 +2,17 @@
 class CommandParser {
   private $config;
   private $shortOptions;
-  private $cliArguments;
-  private $cliArgumentLength;
+  private $inputArguments;
+  private $inputArgumentLength;
   private $currentIndex = 1;
   private $arguments = array();
 
   public function run() {
-    $this->cliArgumentLength = $_SERVER['argc'];
-    $this->cliArguments = $_SERVER['argv'];
+    $this->inputArgumentLength = $_SERVER['argc'];
+    $this->inputArguments = $_SERVER['argv'];
     $this->readConfig(require HF_CONFIG_PATH.__CLASS__.'.config.php');
-    while ($this->currentIndex < $this->cliArgumentLength) {
-      $this->parse($this->cliArguments[$this->currentIndex]);
+    while ($this->currentIndex < $this->inputArgumentLength) {
+      $this->parse($this->inputArguments[$this->currentIndex]);
       ++$this->currentIndex;
     }
     $class = $this->config['class'];
@@ -27,7 +27,7 @@ class CommandParser {
   }
 
   private function parse($item) {
-    if ($this->startsWith($item, '-')) {
+    if (strpos($item, '-') === 0) {
       $this->buildOption($item);
       return;
     }
@@ -70,8 +70,8 @@ class CommandParser {
   }
 
   private function expand($arguments) {
-    array_splice($this->cliArguments, $this->currentIndex, 1, $arguments);
-    $this->cliArgumentLength = count($this->cliArguments);
+    array_splice($this->inputArguments, $this->currentIndex, 1, $arguments);
+    $this->inputArgumentLength = count($this->inputArguments);
     --$this->currentIndex;
   }
 
@@ -127,9 +127,5 @@ class CommandParser {
     if ($length > 0 && $isVariableLength == false) {
       throw new Exception;
     }
-  }
-
-  private function startsWith($haystack, $needle){
-    return strpos($haystack, $needle) === 0;
   }
 }
