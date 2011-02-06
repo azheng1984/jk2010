@@ -19,6 +19,7 @@ function __autoload($name) {
 }
 
 print_r($argv);
+exit;
 
 $_ENV['context'] = new CommandContext;
 $parser = new CommandParser;
