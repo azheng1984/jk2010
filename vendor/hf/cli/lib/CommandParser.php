@@ -5,6 +5,7 @@ class CommandParser {
   private $inputArguments;
   private $inputArgumentLength;
   private $currentIndex = 1;
+  private $isArgumentOnly = false;
   private $arguments = array();
 
   public function run() {
@@ -16,18 +17,18 @@ class CommandParser {
       ++$this->currentIndex;
     }
     $class = $this->config['class'];
-    $isVariableLength = false;
-    if (in_array('variable_length', $this->config)) {
-      $isVariableLength = true;
+    $isInfiniteLength = false;
+    if (in_array('infinite_length', $this->config)) {
+      $isInfiniteLength = true;
     }
     $reflector = new ReflectionMethod($class, 'execute');
     $length = count($this->arguments);
-    $this->verifyArguments($reflector, $length, $isVariableLength);
+    $this->verifyArguments($reflector, $length, $isInfiniteLength);
     $reflector->invokeArgs(new $class, $this->arguments);
   }
 
   private function parse($item) {
-    if (strpos($item, '-') === 0) {
+    if (strpos($item, '-') === 0 && !$this->isArgumentOnly) {
       $this->buildOption($item);
       return;
     }
@@ -40,33 +41,55 @@ class CommandParser {
 
   private function buildOption($item) {
     $orignalKey = $item;
-    $value = null;
-    $pieces = explode('=', $item, 2);
-    if (count($pieces) == 2) {
-      $orignalKey = $pieces[0];
-      $value = $pieces[1];
+    if ($item == '--') {
+      $this->isArgumentOnly = true;
+      return;
     }
     $name = $this->getOptionName($orignalKey);
+    if (is_array($name)) {
+      $this->expand($name);
+      return;
+    }
     if (!isset($this->config['option'][$name])
-     && !in_array($name, $this->config['option'], true)) {
+     && !in_array($name, $this->config['option'], true)) {//?
       throw new Exception("Option '$orignalKey' not allowed");
     }
     if (isset($this->config['option'][$name]['expansion'])) {
       $this->expand($this->config['option'][$name]['expansion']);
       return;
     }
+    $value = null;
     if (isset($this->config['option'][$name]['class'])) {
       $class = $this->config['option'][$name]['class'];
-      $value = $this->buildOptionObject($class, $value);
+      $isVariableLength = false;
+      if (in_array('infinite_length', $this->config['option'][$name])) {
+        $isVariableLength = true;
+      }
+      $value = $this->buildOptionObject($class, $isVariableLength);
     }
     $_ENV['context']->addOption($name, $value);
   }
 
   private function getOptionName($orignalKey) {
-    if (strlen($orignalKey) == 2) {
-      return $this->shortOptions[substr($orignalKey, 1)];
+    if (strpos($orignalKey, '--') === 0) {
+      return substr($orignalKey, 2);
     }
-    return substr($orignalKey, 2);
+    $shortOptions = substr($orignalKey, 1);
+    if (strlen($shortOptions) == 1) {
+      return $this->getOptionFullName($shortOptions);
+    }
+    $options = array();
+    foreach (str_split($shortOptions) as $item) {
+      $options[] = '-'.$item;
+    }
+    return $options;
+  }
+
+  private function getOptionFullName($shortName) {
+    if (!isset($this->shortOptions[$shortName])) {
+      throw new Exception("Option '$shortName' not allowed");
+    }
+    return $this->shortOptions[$shortName];
   }
 
   private function expand($arguments) {
@@ -75,16 +98,49 @@ class CommandParser {
     --$this->currentIndex;
   }
 
-  private function buildOptionObject($class, $argument) {
+  private function buildOptionObject($class, $isInfiniteLength) {
     $reflector = new ReflectionClass($class);
     $constructor = $reflector->getConstructor();
-    if ($constructor == null && $argument !== null) {
+    $maximumArgumentLength = 0;
+    if ($constructor != null) {
+      $maximumArgumentLength = $constructor->getNumberOfParameters();
+    }
+    if ($isInfiniteLength) {
+      $maximumArgumentLength = null;
+    }
+    $arguments = $this->readOptionArguments($maximumArgumentLength);
+    if ($constructor == null && count($arguments) !== 0) {
       throw new Exception;
     }
     if ($constructor != null) {
-      $this->verifyArguments($constructor, $argument === null ? 0 : 1, false);
+      $this->verifyArguments($constructor, count($arguments), false);
     }
-    return $argument === null ? new $class : new $class($argument);
+    return $reflector->newInstanceArgs($arguments);
+  }
+
+  private function readOptionArguments($maximumLength) {
+    $arguments = array();
+    while ($this->currentIndex < $this->inputArgumentLength) {
+      $item = $this->inputArgumentLength[++$this->currentIndex];
+      if (strpos($item, '-') === 0) {
+        break;
+      }
+      $arguments[] = $item;
+    }
+    $count = count($arguments);
+    if ($maximumLength !== null
+     && $count > $maximumLength
+     && $this->currentIndex == $this->inputArgumentLength) {
+      $this->arguments = array_slice($arguments, $maximumLength);
+      return array_slice($arguments, 0, $maximumLength);
+    }
+    if ($maximumLength !== null
+     && $count == $maximumLength + 1
+     && !isset($this->config['class'])) {
+      --$this->currentIndex;
+      array_pop($arguments);
+    }
+    return $arguments;
   }
 
   private function buildCommand($item) {
@@ -92,6 +148,7 @@ class CommandParser {
       throw new Exception("Command '$item' not found");
     }
     $this->readConfig($this->config['command'][$item]);
+    $this->isArgumentOnly = false;
   }
 
   private function readConfig($value) {
@@ -114,7 +171,7 @@ class CommandParser {
     }
   }
 
-  private function verifyArguments($reflector, $length, $isVariableLength) {
+  private function verifyArguments($reflector, $length, $isInfiniteLength) {
     foreach ($reflector->getParameters() as $parameter) {
       if ($parameter->isOptional() && $length == 0) {
         break;
@@ -124,7 +181,7 @@ class CommandParser {
     if ($length < 0) {
       throw new Exception;
     }
-    if ($length > 0 && $isVariableLength == false) {
+    if ($length > 0 && $isInfiniteLength == false) {
       throw new Exception;
     }
   }
