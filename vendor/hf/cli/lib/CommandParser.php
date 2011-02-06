@@ -134,7 +134,7 @@ class CommandParser {
      && $count > $maximumLength
      && $this->currentIndex == $this->inputArgumentLength) {
       $this->arguments = array_slice($arguments, $maximumLength);
-      return array_slice($arguments, 0, $maximumLength);
+      $arguments = array_slice($arguments, 0, $maximumLength);
     }
     if ($maximumLength !== null
      && $count == $maximumLength + 1
