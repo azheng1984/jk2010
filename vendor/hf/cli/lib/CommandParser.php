@@ -16,15 +16,17 @@ class CommandParser {
       $this->parse($this->inputArguments[$this->currentIndex]);
       ++$this->currentIndex;
     }
-    $class = $this->config['class'];
+    if (!isset($this->config['class'])) {
+      throw new Exception;
+    }
     $isInfiniteLength = false;
     if (in_array('infinite_length', $this->config)) {
       $isInfiniteLength = true;
     }
-    $reflector = new ReflectionMethod($class, 'execute');
+    $reflector = new ReflectionMethod($this->config['class'], 'execute');
     $length = count($this->arguments);
     $this->verifyArguments($reflector, $length, $isInfiniteLength);
-    $reflector->invokeArgs(new $class, $this->arguments);
+    $reflector->invokeArgs(new $this->config['class'], $this->arguments);
   }
 
   private function parse($item) {
