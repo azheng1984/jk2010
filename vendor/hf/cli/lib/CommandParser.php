@@ -42,19 +42,18 @@ class CommandParser {
   }
 
   private function buildOption($item) {
-    $orignalKey = $item;
     if ($item == '--') {
       $this->isAllowOption = false;
       return;
     }
-    $name = $this->getOptionName($orignalKey);
+    $name = $this->getOptionName($item);
     if (is_array($name)) {
       $this->expand($name);
       return;
     }
     if (!isset($this->config['option'][$name])
-     && !in_array($name, $this->config['option'], true)) {//?
-      throw new Exception("Option '$orignalKey' not allowed");
+     && !in_array($name, $this->config['option'], true)) {
+      throw new Exception("Option '$item' not allowed");
     }
     if (isset($this->config['option'][$name]['expansion'])) {
       $this->expand($this->config['option'][$name]['expansion']);
@@ -63,20 +62,20 @@ class CommandParser {
     $value = null;
     if (isset($this->config['option'][$name]['class'])) {
       $class = $this->config['option'][$name]['class'];
-      $isVariableLength = false;
+      $isInfiniteLength = false;
       if (in_array('infinite_length', $this->config['option'][$name])) {
-        $isVariableLength = true;
+        $isInfiniteLength = true;
       }
-      $value = $this->buildOptionObject($class, $isVariableLength);
+      $value = $this->buildOptionObject($class, $isInfiniteLength);
     }
     $_ENV['context']->addOption($name, $value);
   }
 
-  private function getOptionName($orignalKey) {
-    if (strpos($orignalKey, '--') === 0) {
-      return substr($orignalKey, 2);
+  private function getOptionName($item) {
+    if (strpos($item, '--') === 0) {
+      return substr($item, 2);
     }
-    $shortOptions = substr($orignalKey, 1);
+    $shortOptions = substr($item, 1);
     if (strlen($shortOptions) == 1) {
       return $this->getOptionFullName($shortOptions);
     }
@@ -112,10 +111,11 @@ class CommandParser {
     }
     $arguments = $this->readOptionArguments($maximumArgumentLength);
     if ($constructor == null && count($arguments) !== 0) {
-      throw new Exception;
+      throw new Exception("Option argument length not matched");
     }
     if ($constructor != null) {
-      $this->verifyArguments($constructor, count($arguments), false);
+      $length = count($arguments);
+      $this->verifyArguments($constructor, $length, $isInfiniteLength);
     }
     return $reflector->newInstanceArgs($arguments);
   }
