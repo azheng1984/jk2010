@@ -5,7 +5,7 @@ class CommandParser {
   private $inputArguments;
   private $inputArgumentLength;
   private $currentIndex = 1;
-  private $isArgumentOnly = false;
+  private $isAllowOption = true;
   private $arguments = array();
 
   public function run() {
@@ -30,7 +30,7 @@ class CommandParser {
   }
 
   private function parse($item) {
-    if (strpos($item, '-') === 0 && !$this->isArgumentOnly) {
+    if ($item != '-' && strpos($item, '-') === 0 && $this->isAllowOption) {
       $this->buildOption($item);
       return;
     }
@@ -44,7 +44,7 @@ class CommandParser {
   private function buildOption($item) {
     $orignalKey = $item;
     if ($item == '--') {
-      $this->isArgumentOnly = true;
+      $this->isAllowOption = false;
       return;
     }
     $name = $this->getOptionName($orignalKey);
@@ -124,7 +124,7 @@ class CommandParser {
     $arguments = array();
     while ($this->currentIndex < $this->inputArgumentLength) {
       $item = $this->inputArgumentLength[++$this->currentIndex];
-      if (strpos($item, '-') === 0) {
+      if (strpos($item, '-') === 0 && $item != '-') {
         break;
       }
       $arguments[] = $item;
@@ -150,7 +150,7 @@ class CommandParser {
       throw new Exception("Command '$item' not found");
     }
     $this->readConfig($this->config['command'][$item]);
-    $this->isArgumentOnly = false;
+    $this->isAllowOption = true;
   }
 
   private function readConfig($value) {
