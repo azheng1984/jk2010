@@ -2,10 +2,8 @@
 class OptionParser {
   private $config;
   private $shorts;
-  private $commandParser;
 
   public function __construct($config) {
-    $this->commandParser = $_ENV['command_parser'];
     foreach ($config as $key => $value) {
       if (!isset($value['short'])) {
         continue;
@@ -19,21 +17,23 @@ class OptionParser {
         $this->shorts[$item] = $key;
       }
     }
+    $this->config = $config;
   }
 
-  private function run($item) {
+  private function run($reader) {
+    $item = $reader ->getItem();
     $name = $this->getOptionName($item);
     if (is_array($name)) {
-      $this->commandParser->expand($name);
-      return;
+      $$reader->expand($name);
+      return false;
     }
     if (!isset($this->config[$name])
      && !in_array($name, $this->config, true)) {
       throw new Exception("Option '$item' not allowed");
     }
     if (isset($this->config[$name]['expansion'])) {
-      $this->commandParser->expand($this->config[$name]['expansion']);
-      return;
+      $this->reader->expand($this->config[$name]['expansion']);
+      return false;
     }
     $value = null;
     if (isset($this->config[$name]['class'])) {
@@ -69,14 +69,14 @@ class OptionParser {
     return $this->shorts[$shortName];
   }
 
-  private function buildOptionObject($class, $isInfiniteLength) {
+  private function buildOptionObject($class, $isInfinite) {
     $reflector = new ReflectionClass($class);
     $constructor = $reflector->getConstructor();
     $maximumArgumentLength = 0;
     if ($constructor != null) {
       $maximumArgumentLength = $constructor->getNumberOfParameters();
     }
-    if ($isInfiniteLength) {
+    if ($isInfinite) {
       $maximumArgumentLength = null;
     }
     $arguments = $this->readOptionArguments($maximumArgumentLength);
@@ -85,7 +85,8 @@ class OptionParser {
     }
     if ($constructor != null) {
       $length = count($arguments);
-      $this->verifyArguments($constructor, $length, $isInfiniteLength);
+      $verifier = new ArgumentVerifier;
+      $$verifier->run($constructor, $length, $isInfinite);
     }
     return $reflector->newInstanceArgs($arguments);
   }

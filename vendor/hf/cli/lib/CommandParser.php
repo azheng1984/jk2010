@@ -2,17 +2,16 @@
 class CommandParser {
   private $config;
   private $optionParser;
-  private $inputArguments;
-  private $inputArgumentLength;
-  private $currentIndex = 1;
+  private $reader;
   private $isAllowOption = true;
   private $arguments = array();
 
   public function run() {
     $this->readConfig(require HF_CONFIG_PATH.__CLASS__.'.config.php');
-    while ($this->currentIndex < $this->inputArgumentLength) {
-      $this->parse($this->inputArguments[$this->currentIndex]);
-      ++$this->currentIndex;
+    $this->reader = new CommandReader;
+    while (($item = $this->reader->getItem())!== null) {
+      $this->parse($item);
+      $this->next();
     }
     $this->executeCommand();
   }
@@ -23,8 +22,7 @@ class CommandParser {
       return;
     }
     if ($item != '-' && strpos($item, '-') === 0 && $this->isAllowOption) {
-      $this->optionParser->run($item);
-      return;
+      return $this->optionParser->run($this->reader);
     }
     if (!isset($this->config['class'])) {
       $this->buildCommand($item);
@@ -45,13 +43,11 @@ class CommandParser {
     if (!isset($this->config['class'])) {
       throw new Exception;
     }
-    $isInfiniteLength = false;
-    if (in_array('infinite_length', $this->config)) {
-      $isInfiniteLength = true;
-    }
     $reflector = new ReflectionMethod($this->config['class'], 'execute');
+    $verifier = new ArgumentVerifier;
+    $isInfinite = in_array('infinite_argument', $this->config);
     $length = count($this->arguments);
-    $this->verifyArguments($reflector, $length, $isInfiniteLength);
+    $verifier->run($reflector, $length, $isInfinite);
     $reflector->invokeArgs(new $this->config['class'], $this->arguments);
   }
 

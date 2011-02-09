@@ -9,17 +9,13 @@ class CommandReader {
     $this->inputArguments = $_SERVER['argv'];
   }
 
-  public function bindListener($name, $value) {
-    
-  }
-
-  private function notify() {
-    
-  }
-
   public function expand($arguments) {
     array_splice($this->inputArguments, $this->currentIndex, 1, $arguments);
     $this->inputArgumentLength = count($this->inputArguments);
     --$this->currentIndex;
+  }
+
+  public function next() {
+    ++$this->currentIndex;
   }
 }
