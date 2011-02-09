@@ -3,7 +3,7 @@ class CommandReader {
   private $inputArguments;
   private $inputArgumentLength;
   private $currentIndex = 1;
-  
+
   public function __construct() {
     $this->inputArgumentLength = $_SERVER['argc'];
     $this->inputArguments = $_SERVER['argv'];
@@ -15,7 +15,7 @@ class CommandReader {
     --$this->currentIndex;
   }
 
-  public function next() {
-    ++$this->currentIndex;
+  public function move($step = 1) {
+    $this->currentIndex += $step;
   }
 }

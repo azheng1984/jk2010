@@ -106,15 +106,19 @@ class OptionParser {
       $this->reader->move();
     }
     $amount = count($arguments);
-    if ($maximumLength !== null
-     && $amount == $maximumLength + 1
-     && !$this->isCommandFound) {
+    if ($maximumLength !== null && $amount > $maximumLength) {
+      return $this->cutArguments($arguments, $amount, $maximumLength);
+    }
+    return $arguments;
+  }
+
+  private function cutArguments($arguments, $amount, $maximumLength) {
+    if ($amount == $maximumLength + 1 && !$this->isCommandFound) {
       array_pop($arguments);
       $this->reader->move(-1);
+      return $arguments;
     }
-    if ($maximumLength !== null
-     && $amount > $maximumLength
-     && $this->reader->getItem() === null) {
+    if ($this->reader->getItem() === null) {
       $arguments = array_slice($arguments, 0, $maximumLength);
       $this->reader->move($maximumLength - $amount);
     }
