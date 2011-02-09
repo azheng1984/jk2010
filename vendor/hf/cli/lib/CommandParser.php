@@ -45,8 +45,8 @@ class CommandParser {
     }
     $reflector = new ReflectionMethod($this->config['class'], 'execute');
     $verifier = new ArgumentVerifier;
-    $isInfinite = in_array('infinite_argument', $this->config);
     $length = count($this->arguments);
+    $isInfinite = in_array('infinite_argument', $this->config);
     $verifier->run($reflector, $length, $isInfinite);
     $reflector->invokeArgs(new $this->config['class'], $this->arguments);
   }
