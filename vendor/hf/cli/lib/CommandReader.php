@@ -18,4 +18,11 @@ class CommandReader {
   public function move($step = 1) {
     $this->currentIndex += $step;
   }
+
+  public function getItem() {
+    if ($this->currentIndex >= $this->inputArgumentLength) {
+      return null;
+    }
+    return $this->inputArguments[$this->currentIndex];
+  }
 }
