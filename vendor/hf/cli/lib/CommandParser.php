@@ -3,15 +3,19 @@ class CommandParser {
   private $config;
   private $optionParser;
   private $reader;
+  private $isCommandFound = false;
   private $isAllowOption = true;
   private $arguments = array();
 
-  public function run() {
-    $this->readConfig(require HF_CONFIG_PATH.__CLASS__.'.config.php');
+  public function __construct() {
     $this->reader = new CommandReader;
+    $this->readConfig(require HF_CONFIG_PATH.__CLASS__.'.config.php');
+  }
+
+  public function run() {
     while (($item = $this->reader->getItem())!== null) {
       $this->parse($item);
-      $this->next();
+      $this->move();
     }
     $this->executeCommand();
   }
@@ -22,9 +26,10 @@ class CommandParser {
       return;
     }
     if ($item != '-' && strpos($item, '-') === 0 && $this->isAllowOption) {
-      return $this->optionParser->run($this->reader);
+      $this->optionParser->run();
+      return;
     }
-    if (!isset($this->config['class'])) {
+    if (!$this->isCommandFound) {
       $this->buildCommand($item);
       return;
     }
@@ -55,7 +60,10 @@ class CommandParser {
     if (!is_array($value)) {
       $value = (array('class' => $value, 'option' => array()));
     }
-    $this->optionParser = new OptionParser($value['option']);
+    $this->isCommandFound = isset($value['class']);
+    $this->optionParser = new OptionParser($this->reader,
+                                           $value['option'],
+                                           $this->isCommandFound);
     $this->config = $value;
   }
 }
