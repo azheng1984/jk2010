@@ -26,7 +26,7 @@ class OptionParser {
 
   public function run() {
     $item = $this->reader->getItem();
-    $name = $this->getName($this->reader->getItem());
+    $name = $this->getName($item);
     if (is_array($name)) {
       $this->reader->expand($name);
       return;
