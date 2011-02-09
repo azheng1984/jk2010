@@ -46,7 +46,7 @@ class OptionParser {
         $isInfinite = true;
       }
       $class = $this->config[$name]['class'];
-      $value = $this->buildObject($class, $isInfinite);
+      $value = $this->buildOptionInstance($class, $isInfinite);
     }
     $_ENV['context']->addOption($name, $value);
   }
@@ -73,7 +73,7 @@ class OptionParser {
     return $this->shorts[$shortName];
   }
 
-  private function buildObject($class, $isInfinite) {
+  private function buildOptionInstance($class, $isInfinite) {
     $reflector = new ReflectionClass($class);
     $constructor = $reflector->getConstructor();
     $maximumArgumentLength = 0;
@@ -106,7 +106,7 @@ class OptionParser {
       $this->reader->move();
     }
     $amount = count($arguments);
-    if ($maximumLength !== null && $amount > $maximumLength) {
+    if ($amount > $maximumLength && $maximumLength !== null) {
       return $this->cutArguments($arguments, $amount, $maximumLength);
     }
     return $arguments;
