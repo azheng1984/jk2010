@@ -3,10 +3,10 @@ class CommandContext {
   private $options = array();
 
   public function getOption($name, $isNullable = false) {
-    if (!isset($this->options[$name]) && !$isNullable) {
-      throw new Exception;
-    }
     if (!isset($this->options[$name])) {
+      if ($isNullable) {
+        throw new Exception;
+      }
       return null;
     }
     return $this->options[$name];
