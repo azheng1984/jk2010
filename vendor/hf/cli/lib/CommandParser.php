@@ -58,7 +58,7 @@ class CommandParser {
 
   private function readConfig($value) {
     if (!is_array($value)) {
-      $value = (array('class' => $value, 'option' => array()));
+      $value = array('class' => $value, 'option' => array());
     }
     $this->isCommandFound = isset($value['class']);
     $this->optionParser = new OptionParser($this->reader,
