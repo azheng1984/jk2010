@@ -2,13 +2,13 @@
 class OptionParser {
   private $reader;
   private $config;
-  private $isCommandFound;
+  private $isCommandContext;
   private $shorts = array();
 
-  public function __construct($reader, $config, $isCommandFound) {
+  public function __construct($reader, $config, $isCommandContext) {
     $this->reader = $reader;
     $this->config = $config;
-    $this->isCommandFound = $isCommandFound;
+    $this->isCommandContext = $isCommandContext;
     foreach ($config as $key => $value) {
       if (!isset($value['short'])) {
         continue;
@@ -76,14 +76,14 @@ class OptionParser {
   private function buildOptionInstance($class, $isInfinite) {
     $reflector = new ReflectionClass($class);
     $constructor = $reflector->getConstructor();
-    $maximumArgumentLength = 0;
+    $maximumLength = 0;
     if ($constructor != null) {
-      $maximumArgumentLength = $constructor->getNumberOfParameters();
+      $maximumLength = $constructor->getNumberOfParameters();
     }
     if ($isInfinite) {
-      $maximumArgumentLength = null;
+      $maximumLength = null;
     }
-    $arguments = $this->getArguments($maximumArgumentLength);
+    $arguments = $this->getArguments($maximumLength);
     if ($constructor == null && count($arguments) !== 0) {
       throw new Exception("Option argument length not matched");
     }
@@ -113,7 +113,7 @@ class OptionParser {
   }
 
   private function cutArguments($arguments, $amount, $maximumLength) {
-    if ($amount == $maximumLength + 1 && !$this->isCommandFound) {
+    if ($amount == $maximumLength + 1 && !$this->isCommandContext) {
       array_pop($arguments);
       $this->reader->move(-1);
       return $arguments;
