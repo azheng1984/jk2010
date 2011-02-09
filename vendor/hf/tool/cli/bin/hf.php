@@ -22,5 +22,5 @@ print_r($argv);
 exit;
 
 $_ENV['context'] = new CommandContext;
-$parser = new CommandParser;
-$parser->run();
+$_ENV['command_parser'] = new CommandContext;
+$_ENV['command_parser']->run();
