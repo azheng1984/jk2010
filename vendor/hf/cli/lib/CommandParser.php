@@ -3,7 +3,7 @@ class CommandParser {
   private $config;
   private $optionParser;
   private $reader;
-  private $isCommandLevel = false;
+  private $isAfterCommand;
   private $isAllowOption = true;
   private $arguments = array();
 
@@ -13,7 +13,7 @@ class CommandParser {
   }
 
   public function run() {
-    while (($item = $this->reader->getItem())!== null) {
+    while (($item = $this->reader->get()) !== null) {
       $this->parse($item);
       $this->move();
     }
@@ -29,14 +29,14 @@ class CommandParser {
       $this->optionParser->run();
       return;
     }
-    if (!$this->isCommandLevel) {
-      $this->buildCommand($item);
+    if (!$this->isAfterCommand) {
+      $this->setCommand($item);
       return;
     }
     $this->arguments[] = $item;
   }
 
-  private function buildCommand($item) {
+  private function setCommand($item) {
     if (!isset($this->config['command'][$item])) {
       throw new Exception("Command '$item' not found");
     }
@@ -60,10 +60,10 @@ class CommandParser {
     if (!is_array($value)) {
       $value = array('class' => $value, 'option' => array());
     }
-    $this->isCommandLevel = isset($value['class']);
+    $this->isAfterCommand = isset($value['class']);
     $this->optionParser = new OptionParser($this->reader,
                                            $value['option'],
-                                           $this->isCommandLevel);
+                                           $this->isAfterCommand);
     $this->config = $value;
   }
 }

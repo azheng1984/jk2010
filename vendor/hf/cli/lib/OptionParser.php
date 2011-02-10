@@ -2,30 +2,29 @@
 class OptionParser {
   private $reader;
   private $config;
-  private $isCommandLevel;
+  private $isAfterCommand;
   private $shorts = array();
 
-  public function __construct($reader, $config, $isCommandLevel) {
+  public function __construct($reader, $config, $isAfterCommand) {
     $this->reader = $reader;
     $this->config = $config;
-    $this->isCommandLevel = $isCommandLevel;
+    $this->isAfterCommand = $isAfterCommand;
     foreach ($config as $key => $value) {
       if (!isset($value['short'])) {
         continue;
       }
-      $shorts = $value['short'];
-      if (!is_array($shorts)) {
-        $this->shorts[$shorts] = $key;
+      if (!is_array($value['short'])) {
+        $this->shorts[$value['short']] = $key;
         continue;
       }
-      foreach ($shorts as $item) {
+      foreach ($value['short'] as $item) {
         $this->shorts[$item] = $key;
       }
     }
   }
 
   public function run() {
-    $item = $this->reader->getItem();
+    $item = $this->reader->get();
     $name = $this->getName($item);
     if (is_array($name)) {
       $this->reader->expand($name);
@@ -40,12 +39,7 @@ class OptionParser {
     }
     $value = null;
     if (isset($this->config[$name]['class'])) {
-      $isInfinite = false;
-      if (in_array('infinite_argument', $this->config[$name])) {
-        $isInfinite = true;
-      }
-      $class = $this->config[$name]['class'];
-      $value = $this->buildOptionInstance($class, $isInfinite);
+      $value = $this->buildOptionInstance($this->config[$name], $isInfinite);
     }
     $_ENV['context']->addOption($name, $value);
   }
@@ -72,17 +66,18 @@ class OptionParser {
     return $this->shorts[$shortName];
   }
 
-  private function buildOptionInstance($class, $isInfinite) {
-    $reflector = new ReflectionClass($class);
+  private function buildOptionInstance($config) {
+    $reflector = new ReflectionClass($config['class']);
     $constructor = $reflector->getConstructor();
     $maximumLength = 0;
     if ($constructor != null) {
       $maximumLength = $constructor->getNumberOfParameters();
     }
-    if ($isInfinite) {
-      $maximumLength = null;
+    $isInfinite = false;
+    if (in_array('infinite_argument', $config)) {
+        $isInfinite = true;
     }
-    $arguments = $this->getArguments($maximumLength);
+    $arguments = $this->getArguments($maximumLength, $isInfinite);
     if ($constructor == null && count($arguments) !== 0) {
       throw new Exception("Option argument length not matched");
     }
@@ -94,9 +89,9 @@ class OptionParser {
     return $reflector->newInstanceArgs($arguments);
   }
 
-  private function getArguments($maximumLength) {
+  private function getArguments($maximumLength, $isInfinite) {
     $arguments = array();
-    while (($item = $this->reader->getItem()) !== null) {
+    while (($item = $this->reader->get()) !== null) {
       if (strpos($item, '-') === 0 && $item != '-') {
         $this->reader->move(-1);
         break;
@@ -105,19 +100,19 @@ class OptionParser {
       $this->reader->move();
     }
     $amount = count($arguments);
-    if ($amount > $maximumLength && $maximumLength !== null) {
+    if ($amount > $maximumLength && !$isInfinite) {
       return $this->cutArguments($arguments, $amount, $maximumLength);
     }
     return $arguments;
   }
 
   private function cutArguments($arguments, $amount, $maximumLength) {
-    if ($amount == $maximumLength + 1 && !$this->isCommandLevel) {
+    if ($amount == $maximumLength + 1 && !$this->isAfterCommand) {
       array_pop($arguments);
       $this->reader->move(-1);
       return $arguments;
     }
-    if ($this->reader->getItem() === null) {
+    if ($this->reader->get() === null) {
       $arguments = array_slice($arguments, 0, $maximumLength);
       $this->reader->move($maximumLength - $amount);
     }
