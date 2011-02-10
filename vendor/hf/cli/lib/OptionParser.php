@@ -31,8 +31,7 @@ class OptionParser {
       $this->reader->expand($name);
       return;
     }
-    if (!isset($this->config[$name])
-     && !in_array($name, $this->config, true)) {
+    if (!isset($this->config[$name]) && !in_array($name, $this->config, true)) {
       throw new Exception("Option '$item' not allowed");
     }
     if (isset($this->config[$name]['expansion'])) {
