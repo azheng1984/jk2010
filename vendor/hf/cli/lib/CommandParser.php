@@ -3,7 +3,7 @@ class CommandParser {
   private $config;
   private $optionParser;
   private $reader;
-  private $isCommandContext = false;
+  private $isCommandLevel = false;
   private $isAllowOption = true;
   private $arguments = array();
 
@@ -29,7 +29,7 @@ class CommandParser {
       $this->optionParser->run();
       return;
     }
-    if (!$this->isCommandContext) {
+    if (!$this->isCommandLevel) {
       $this->buildCommand($item);
       return;
     }
@@ -60,10 +60,10 @@ class CommandParser {
     if (!is_array($value)) {
       $value = array('class' => $value, 'option' => array());
     }
-    $this->isCommandContext = isset($value['class']);
+    $this->isCommandLevel = isset($value['class']);
     $this->optionParser = new OptionParser($this->reader,
                                            $value['option'],
-                                           $this->isCommandContext);
+                                           $this->isCommandLevel);
     $this->config = $value;
   }
 }

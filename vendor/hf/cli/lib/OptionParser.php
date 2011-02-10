@@ -2,13 +2,13 @@
 class OptionParser {
   private $reader;
   private $config;
-  private $isCommandContext;
+  private $isCommandLevel;
   private $shorts = array();
 
-  public function __construct($reader, $config, $isCommandContext) {
+  public function __construct($reader, $config, $isCommandLevel) {
     $this->reader = $reader;
     $this->config = $config;
-    $this->isCommandContext = $isCommandContext;
+    $this->isCommandLevel = $isCommandLevel;
     foreach ($config as $key => $value) {
       if (!isset($value['short'])) {
         continue;
@@ -112,7 +112,7 @@ class OptionParser {
   }
 
   private function cutArguments($arguments, $amount, $maximumLength) {
-    if ($amount == $maximumLength + 1 && !$this->isCommandContext) {
+    if ($amount == $maximumLength + 1 && !$this->isCommandLevel) {
       array_pop($arguments);
       $this->reader->move(-1);
       return $arguments;
