@@ -1,6 +1,6 @@
 <?php
 class CommandContext {
-  private $options = array();
+  private $options = array ();
 
   public function getOption($name, $isNullable = false) {
     if (!isset($this->options[$name])) {
