@@ -1,11 +1,11 @@
 <?php
 class CommandParser {
+  private $reader;
+  private $optionParser;
   private $config;
   private $isAfterCommand;
   private $isAllowOption = true;
   private $arguments = array();
-  private $reader;
-  private $optionParser;
 
   public function __construct() {
     $this->reader = new CommandReader;
