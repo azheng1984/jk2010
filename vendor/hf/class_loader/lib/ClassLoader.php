@@ -20,7 +20,8 @@ class ClassLoader {
     if (!isset($this->classes[$name])) {
       throw new InternalServerErrorException("Class '$name' not found");
     }
-    $folder = $this->folders[$this->classes[$name]].DIRECTORY_SEPARATOR;
-    require $folder.$name.'.php';
+    $path = $this->folders[$this->classes[$name]]
+           .DIRECTORY_SEPARATOR.$name.'.php';
+    require $path;
   }
 }
