@@ -5,7 +5,8 @@ class ClassLoader {
   private $callback;
 
   public function run() {
-    $cachePath = HF_CACHE_PATH.__CLASS__.'.cache.php';
+    $cachePath = HF_CACHE_PATH.'class_loader'
+                 .DIRECTORY_SEPARATOR.__CLASS__.'.cache.php';
     list($this->classes, $this->folders) = require $cachePath;
     $this->callback = array($this, 'load');
     spl_autoload_register($this->callback);
