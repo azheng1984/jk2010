@@ -59,11 +59,11 @@ class OptionParser {
     return $options;
   }
 
-  private function getFullName($shortName) {
-    if (!isset($this->shorts[$shortName])) {
-      throw new Exception("Option '$shortName' not allowed");
+  private function getFullName($short) {
+    if (!isset($this->shorts[$short])) {
+      throw new Exception("Option '$short' not allowed");
     }
-    return $this->shorts[$shortName];
+    return $this->shorts[$short];
   }
 
   private function buildOptionInstance($config) {
