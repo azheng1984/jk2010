@@ -37,9 +37,9 @@ class OptionParser {
       $this->reader->expand($this->config[$name]['expansion']);
       return;
     }
-    $value = null;
+    $value = true;
     if (isset($this->config[$name]['class'])) {
-      $value = $this->buildOptionInstance($this->config[$name], $isInfinite);
+      $value = $this->buildOptionInstance($this->config[$name]);
     }
     $_ENV['context']->addOption($name, $value);
   }
@@ -73,23 +73,22 @@ class OptionParser {
     if ($constructor != null) {
       $maximumLength = $constructor->getNumberOfParameters();
     }
-    $isInfinite = false;
     if (in_array('infinite_argument', $config)) {
-        $isInfinite = true;
+      $maximumLength = null;
     }
-    $arguments = $this->getArguments($maximumLength, $isInfinite);
+    $arguments = $this->getArguments($maximumLength);
     if ($constructor == null && count($arguments) !== 0) {
       throw new Exception("Option argument length not matched");
     }
     if ($constructor != null) {
       $length = count($arguments);
       $verifier = new ArgumentVerifier;
-      $verifier->run($constructor, $length, $isInfinite);
+      $verifier->run($constructor, $length, $maximumLength === null);
     }
     return $reflector->newInstanceArgs($arguments);
   }
 
-  private function getArguments($maximumLength, $isInfinite) {
+  private function getArguments($maximumLength) {
     $arguments = array();
     while (($item = $this->reader->get()) !== null) {
       if (strpos($item, '-') === 0 && $item != '-') {
@@ -100,7 +99,7 @@ class OptionParser {
       $this->reader->move();
     }
     $amount = count($arguments);
-    if ($amount > $maximumLength && !$isInfinite) {
+    if ($amount > $maximumLength && $maximumLength !== null) {
       return $this->cutArguments($arguments, $amount, $maximumLength);
     }
     return $arguments;
