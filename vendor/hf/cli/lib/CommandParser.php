@@ -62,8 +62,8 @@ class CommandParser {
     }
     $this->isCommandContext = isset($value['class']);
     $this->optionParser = new OptionParser($this->reader,
-                                           $value['option'],
-                                           $this->isCommandContext);
+    $value['option'],
+    $this->isCommandContext);
     $this->config = $value;
   }
 }
