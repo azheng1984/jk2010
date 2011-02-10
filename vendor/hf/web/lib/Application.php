@@ -20,8 +20,8 @@ class Application {
 
   private function getCache($type, $path) {
     if (!isset(self::$cache[$type])) {
-      $cachePath = HF_CACHE_PATH.'Processor'.DIRECTORY_SEPARATOR
-                   .'web'.DIRECTORY_SEPARATOR.$type.'.cache.php';
+      $cachePath = HF_CACHE_PATH.'web'.DIRECTORY_SEPARATOR.'Processor'
+                  .DIRECTORY_SEPARATOR.$type.'.cache.php';
       self::$cache[$type] = require $cachePath;
     }
     $cache = self::$cache[$type];

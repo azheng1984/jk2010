@@ -31,7 +31,7 @@ class ErrorHandler {
       $status = substr(self::$exception->getCode(), 0, 3);
     }
     $configPath = HF_CONFIG_PATH.'web'
-                  .DIRECTORY_SEPARATOR.__CLASS__.'.config.php';
+                 .DIRECTORY_SEPARATOR.__CLASS__.'.config.php';
     $config = require $configPath;
     if (isset($config[$status])) {
       $this->app->run($config[$status]);
