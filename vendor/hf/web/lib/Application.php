@@ -1,6 +1,7 @@
 <?php
 class Application {
   private $processors;
+  private static $isFirstProcessor = true;
   private static $cache = array();
 
   public function __construct($processor/*, ...*/) {
@@ -13,6 +14,7 @@ class Application {
     }
     foreach ($this->processors as $processor) {
       $processor->run($this->getCache(get_class($processor), $path));
+      self::$isFirstProcessor = false;
     }
   }
 
@@ -22,22 +24,17 @@ class Application {
                   .DIRECTORY_SEPARATOR.$type.'.cache.php';
       self::$cache[$type] = require $cachePath;
     }
-    $cache = self::$cache[$type];
-    if (!isset($cache[$path])) {
+    if (!isset(self::$cache[$type][$path])) {
       $this->triggerCacheError("Path '$path' not found in '$type' cache");
     }
-    return $cache[$path];
+    return self::$cache[$type][$path];
   }
 
   private function triggerCacheError($message) {
-    if ($this->isFirstProcessor()) {
+    if (self::$isFirstProcessor) {
       throw new NotFoundException($message);
     }
     throw new InternalServerErrorException($message);
-  }
-
-  private function isFirstProcessor() {
-    return count(self::$cache) > 1;
   }
 
   public static function reset() {
