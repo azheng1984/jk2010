@@ -1,8 +1,6 @@
 <?php
 class ErrorHandler {
   private $app;
-  private static $exception;
-  private static $previousOutputBuffer;
 
   public function __construct($app) {
     $this->app = $app;
@@ -18,8 +16,8 @@ class ErrorHandler {
 
   public function handle($exception) {
     if (!headers_sent()) {
-      self::$exception = $exception;
-      self::$previousOutputBuffer = ob_get_clean();
+      $_ENV['exception'] = $exception;
+      $_ENV['output_buffer'] = ob_get_clean();
       $this->reload();
     }
     trigger_error($exception, E_USER_ERROR);
@@ -36,18 +34,5 @@ class ErrorHandler {
     if (isset($config[$status])) {
       $this->app->run($config[$status]);
     }
-  }
-
-  public static function getException() {
-    return self::$exception;
-  }
-
-  public static function getPreviousOutputBuffer() {
-    return self::$previousOutputBuffer;
-  }
-
-  public static function reset() {
-    self::$exception = null;
-    self::$previousOutputBuffer = null;
   }
 }
