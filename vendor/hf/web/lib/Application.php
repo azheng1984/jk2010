@@ -16,10 +16,6 @@ class Application {
     }
   }
 
-  public static function reset() {
-    self::$cache = array();
-  }
-
   private function getCache($type, $path) {
     if (!isset(self::$cache[$type])) {
       $cachePath = HF_CACHE_PATH.'web'.DIRECTORY_SEPARATOR.'Processor'
@@ -42,5 +38,9 @@ class Application {
 
   private function isFirstProcessor() {
     return count(self::$cache) > 1;
+  }
+
+  public static function reset() {
+    self::$cache = array();
   }
 }
