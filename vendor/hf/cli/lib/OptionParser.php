@@ -2,8 +2,8 @@
 class OptionParser {
   private $reader;
   private $config;
-  private $isAfterCommand;
   private $shorts = array();
+  private $isAfterCommand;
 
   public function __construct($reader, $config, $isAfterCommand) {
     $this->reader = $reader;
