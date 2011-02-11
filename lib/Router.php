@@ -1,11 +1,11 @@
 <?php
 class Router {
-  public static function getPath() {
+  public function getPath() {
     $requestUri = $_SERVER['REQUEST_URI'];
     $path = null;
     if ($requestUri == '/') {
       $path = 'home';
-    } elseif (self::endsWith($requestUri, '/')) {
+    } elseif ($this->endsWith($requestUri, '/')) {
       $path = 'category';
     } else {
       $path = 'document';
@@ -13,7 +13,7 @@ class Router {
     return $path;
   }
 
-  private static function endsWith($haystack, $needle) {
+  private function endsWith($haystack, $needle) {
     return strrpos($haystack, $needle) === strlen($haystack) - strlen($needle);
   }
 }

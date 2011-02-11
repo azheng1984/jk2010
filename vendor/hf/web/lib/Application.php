@@ -2,7 +2,6 @@
 class Application {
   private $processors;
   private static $cache = array();
-  private static $count = 0;
 
   public function __construct($processor/*, ...*/) {
     $this->processors = func_get_args();
@@ -14,7 +13,6 @@ class Application {
     }
     foreach ($this->processors as $processor) {
       $processor->run($this->getCache(get_class($processor), $path));
-      ++self::$count;
     }
   }
 
@@ -32,14 +30,17 @@ class Application {
   }
 
   private function triggerCacheError($message) {
-    if (self::$count == 0) {
+    if ($this->isFirst()) {
       throw new NotFoundException($message);
     }
     throw new InternalServerErrorException($message);
   }
 
+  private function isFirst() {
+    return count(self::$cache) > 1;
+  }
+
   public static function reset() {
-    self::$count = 0;
     self::$cache = array();
   }
 }

@@ -1,6 +1,12 @@
 <?php
-class HomeScreen {
+class HomeScreen implements IContent {
   public function render() {
-    echo '<br /> here is screen, says hello!';
+    $wrapper = new ScreenWrapper($this);
+    $wrapper->setTitle('hello');
+    $wrapper->render();
+  }
+
+  public function renderContent() {
+    
   }
 }
