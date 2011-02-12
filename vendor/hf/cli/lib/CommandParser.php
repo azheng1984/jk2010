@@ -23,11 +23,11 @@ class CommandParser {
   }
 
   private function parse($item) {
-    if ($item == '--') {
+    if ($item === '--') {
       $this->isAllowOption = false;
       return;
     }
-    if ($item != '-' && strpos($item, '-') === 0 && $this->isAllowOption) {
+    if ($item !== '-' && strpos($item, '-') === 0 && $this->isAllowOption) {
       $this->optionParser->run();
       return;
     }
