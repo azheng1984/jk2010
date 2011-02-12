@@ -25,17 +25,13 @@ class Application {
                   .DIRECTORY_SEPARATOR.$class.'.cache.php';
       self::$cache[$class] = require $cachePath;
     }
-    if (in_array($path, self::$cache[$class])) {
+    if (in_array($path, self::$cache[$class], true)) {
       return;
     }
     if (!isset(self::$cache[$class][$path])) {
       $this->triggerCacheError("Path '$path' not found in '$class' cache");
     }
     $processor->run(self::$cache[$class][$path]);
-  }
-
-  private function getCache($class, $path) {
-
   }
 
   private function triggerCacheError($message) {
