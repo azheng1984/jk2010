@@ -1,9 +1,6 @@
 <?php
 class ActionProcessor {
   public function run($cache) {
-    if (empty($cache)) {
-      return;
-    }
     $method = $_SERVER['REQUEST_METHOD'];
     if (!in_array($method, $cache['method'], true)) {
       throw new MethodNotAllowedException($cache['method']);

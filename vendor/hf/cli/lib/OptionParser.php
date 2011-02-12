@@ -73,7 +73,7 @@ class OptionParser {
     if ($constructor != null) {
       $maximumLength = $constructor->getNumberOfParameters();
     }
-    if (in_array('infinite_argument', $config)) {
+    if (in_array('infinite_argument', $config, true)) {
       $maximumLength = null;
     }
     $arguments = $this->getArguments($maximumLength);
