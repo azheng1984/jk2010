@@ -7,14 +7,13 @@ class ViewProcessor {
   }
 
   public function run($cache) {
-    $type = $this->type;
-    if (!isset($cache[$type])) {
-      throw new UnsupportedMediaTypeException;
-    }
-    if (empty($cache[$type])) {
+    if (in_array($this->type, $cache, true)) {
       return;
     }
-    $view = new $cache[$type];
+    if (!isset($cache[$this->type])) {
+      throw new UnsupportedMediaTypeException;
+    }
+    $view = new $cache[$this->type];
     $view->render();
   }
 }
