@@ -18,16 +18,16 @@ class Application {
     }
   }
 
-  private function getCache($type, $path) {
-    if (!isset(self::$cache[$type])) {
+  private function getCache($class, $path) {
+    if (!isset(self::$cache[$class])) {
       $cachePath = HF_CACHE_PATH.'web'.DIRECTORY_SEPARATOR.'Processor'
-                  .DIRECTORY_SEPARATOR.$type.'.cache.php';
-      self::$cache[$type] = require $cachePath;
+                  .DIRECTORY_SEPARATOR.$class.'.cache.php';
+      self::$cache[$class] = require $cachePath;
     }
-    if (!isset(self::$cache[$type][$path])) {
-      $this->triggerCacheError("Path '$path' not found in '$type' cache");
+    if (!isset(self::$cache[$class][$path])) {
+      $this->triggerCacheError("Path '$path' not found in '$class' cache");
     }
-    return self::$cache[$type][$path];
+    return self::$cache[$class][$path];
   }
 
   private function triggerCacheError($message) {
