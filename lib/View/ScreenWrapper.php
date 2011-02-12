@@ -14,9 +14,10 @@ class ScreenWrapper {
          '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN">', "\n",
          "  <head>\n";
     $this->meta->render();
-    echo '  <body>', "\n";
-    $this->content->render();
-    echo '  </body>', "\n";
+    echo '  </head>', "\n",
+         '  <body>', "\n";
+    $this->content->renderContent();
+    echo "\n", '  </body>', "\n";
     echo '</html>';
   }
 }
