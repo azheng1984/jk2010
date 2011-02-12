@@ -13,9 +13,16 @@ class Application {
       $path = $_SERVER['REQUEST_URI'];
     }
     foreach ($this->processors as $processor) {
-      $processor->run($this->getCache(get_class($processor), $path));
+      $this->process($processor, $this->getCache(get_class($processor), $path));
       self::$isFirstProcessor = false;
     }
+  }
+
+  private function process($processor, $cache) {
+    if ($cache == null) {
+      return;
+    }
+    $processor->run($cache);
   }
 
   private function getCache($class, $path) {
@@ -24,7 +31,8 @@ class Application {
                   .DIRECTORY_SEPARATOR.$class.'.cache.php';
       self::$cache[$class] = require $cachePath;
     }
-    if (!isset(self::$cache[$class][$path])) {
+    if (!isset(self::$cache[$class][$path])
+     && !in_array($path, self::$cache[$class])) {
       $this->triggerCacheError("Path '$path' not found in '$class' cache");
     }
     return self::$cache[$class][$path];
