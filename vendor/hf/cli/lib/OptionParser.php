@@ -91,7 +91,7 @@ class OptionParser {
   private function getArguments($maximumLength) {
     $arguments = array();
     while (($item = $this->reader->get()) !== null) {
-      if (strpos($item, '-') === 0 && $item != '-') {
+      if (strpos($item, '-') === 0 && $item !== '-') {
         $this->reader->move(-1);
         break;
       }
