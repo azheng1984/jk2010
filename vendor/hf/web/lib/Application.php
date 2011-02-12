@@ -9,7 +9,7 @@ class Application {
   }
 
   public function run($path = null) {
-    if ($path == null) {
+    if ($path === null) {
       $path = $_SERVER['REQUEST_URI'];
     }
     foreach ($this->processors as $processor) {

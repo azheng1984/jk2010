@@ -49,7 +49,7 @@ class OptionParser {
       return substr($item, 2);
     }
     $shorts = substr($item, 1);
-    if (strlen($shorts) == 1) {
+    if (strlen($shorts) === 1) {
       return $this->getFullName($shorts);
     }
     $options = array();
@@ -70,17 +70,17 @@ class OptionParser {
     $reflector = new ReflectionClass($config['class']);
     $constructor = $reflector->getConstructor();
     $maximumLength = 0;
-    if ($constructor != null) {
+    if ($constructor !== null) {
       $maximumLength = $constructor->getNumberOfParameters();
     }
     if (in_array('infinite_argument', $config, true)) {
       $maximumLength = null;
     }
     $arguments = $this->getArguments($maximumLength);
-    if ($constructor == null && count($arguments) !== 0) {
+    if ($constructor === null && count($arguments) !== 0) {
       throw new Exception("Option argument length not matched");
     }
-    if ($constructor != null) {
+    if ($constructor !== null) {
       $length = count($arguments);
       $verifier = new ArgumentVerifier;
       $verifier->run($constructor, $length, $maximumLength === null);
@@ -106,7 +106,7 @@ class OptionParser {
   }
 
   private function cutArguments($arguments, $amount, $maximumLength) {
-    if ($amount == $maximumLength + 1 && !$this->isAfterCommand) {
+    if ($amount === $maximumLength + 1 && !$this->isAfterCommand) {
       array_pop($arguments);
       $this->reader->move(-1);
       return $arguments;
