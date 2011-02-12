@@ -13,31 +13,29 @@ class Application {
       $path = $_SERVER['REQUEST_URI'];
     }
     foreach ($this->processors as $processor) {
-      $this->process($processor, $this->getCache(get_class($processor), $path));
+      $this->process($processor, $path);
       self::$isFirstProcessor = false;
     }
   }
 
-  private function process($processor, $cache) {
-    if ($cache == null) {
-      return;
-    }
-    $processor->run($cache);
-  }
-
-  private function getCache($class, $path) {
+  private function process($processor, $path) {
+    $class = get_class($processor);
     if (!isset(self::$cache[$class])) {
       $cachePath = HF_CACHE_PATH.'web'.DIRECTORY_SEPARATOR.'Processor'
                   .DIRECTORY_SEPARATOR.$class.'.cache.php';
       self::$cache[$class] = require $cachePath;
     }
     if (in_array($path, self::$cache[$class])) {
-      return null;
+      return;
     }
     if (!isset(self::$cache[$class][$path])) {
       $this->triggerCacheError("Path '$path' not found in '$class' cache");
     }
-    return self::$cache[$class][$path];
+    $processor->run(self::$cache[$class][$path]);
+  }
+
+  private function getCache($class, $path) {
+
   }
 
   private function triggerCacheError($message) {
