@@ -58,14 +58,14 @@ class CommandParser {
     $reflector->invokeArgs(new $this->config['class'], $this->arguments);
   }
 
-  private function readConfig($value) {
-    if (!is_array($value)) {
-      $value = array('class' => $value, 'option' => array());
+  private function readConfig($source) {
+    if (!is_array($source)) {
+      $source = array('class' => $source, 'option' => array());
     }
-    $this->isAfterCommand = isset($value['class']);
+    $this->isAfterCommand = isset($source['class']);
     $this->optionParser = new OptionParser($this->reader,
-                                           $value['option'],
+                                           $source['option'],
                                            $this->isAfterCommand);
-    $this->config = $value;
+    $this->config = $source;
   }
 }
