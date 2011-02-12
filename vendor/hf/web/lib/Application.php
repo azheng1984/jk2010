@@ -31,8 +31,10 @@ class Application {
                   .DIRECTORY_SEPARATOR.$class.'.cache.php';
       self::$cache[$class] = require $cachePath;
     }
-    if (!isset(self::$cache[$class][$path])
-     && !in_array($path, self::$cache[$class])) {
+    if (in_array($path, self::$cache[$class])) {
+      return null;
+    }
+    if (!isset(self::$cache[$class][$path])) {
       $this->triggerCacheError("Path '$path' not found in '$class' cache");
     }
     return self::$cache[$class][$path];
