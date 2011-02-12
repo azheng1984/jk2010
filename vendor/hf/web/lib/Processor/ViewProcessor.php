@@ -1,19 +1,19 @@
 <?php
 class ViewProcessor {
-  private $type;
+  private $media;
 
-  public function __construct($type = 'screen') {
-    $this->type= $type;
+  public function __construct($media = 'screen') {
+    $this->media= $media;
   }
 
   public function run($cache) {
-    if (in_array($this->type, $cache, true)) {
+    if (in_array($this->media, $cache, true)) {
       return;
     }
-    if (!isset($cache[$this->type])) {
+    if (!isset($cache[$this->media])) {
       throw new UnsupportedMediaTypeException;
     }
-    $view = new $cache[$this->type];
+    $view = new $cache[$this->media];
     $view->render();
   }
 }
