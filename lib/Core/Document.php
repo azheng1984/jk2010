@@ -2,13 +2,19 @@
 class Document {
   private $id;
   private $title;
+  private $default_image_id;
+  private $default_sentence_id;
+  private $unique_name;
   private $time;
   private $place;
   private $people;
   private $up;
   private $down;
-  private $source;
-  private $url;
+  private $source_name;
+  private $source_url;
+  private $related_elements; //可以分布在不同的数据库，通过缓存解决性能问题
+  //可以通过本地生成缓存，然后上传到服务器上
+  private $category_page_number;
 
   public function __construct($id, $title, $time, $place,
                               $people, $up, $down, $source, $url) {
