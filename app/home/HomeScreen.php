@@ -1,8 +1,8 @@
 <?php
 class HomeScreen implements IContent {
   public function render() {
-    $htmlMeta = new HtmlMeta('home title', 'homt description', 'home keywords');
-    $wrapper = new ScreenWrapper($this, $htmlMeta);
+    $htmlMeta = new HtmlMeta('homt description', 'home keywords');
+    $wrapper = new ScreenWrapper($this, 'home title', $htmlMeta);
     $wrapper->render();
   }
 
