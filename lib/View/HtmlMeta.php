@@ -3,8 +3,8 @@ class HtmlMeta {
   private $metas;
 
   public function __construct($description, $keywords) {
-  	$this->addMeta('description', $description);
-  	$this->addMeta('keywords', $keywords);
+    $this->addMeta('description', $description);
+    $this->addMeta('keywords', $keywords);
   }
 
   public function render() {
