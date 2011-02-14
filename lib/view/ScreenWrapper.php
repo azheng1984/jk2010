@@ -3,7 +3,7 @@ class ScreenWrapper {
   private $content;
   private $meta;
 
-  public function __construct($content, $title, $meta) {
+  public function __construct($content, $title, $meta = null) {
     $this->content = $content;
     $this->meta = $meta;
     $this->title = $title;
@@ -16,7 +16,9 @@ class ScreenWrapper {
          ' "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">', "\n",
          '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN">', "\n",
          "  <head>\n";
-    $this->meta->render();
+    if ($this->meta !== null) {
+      $this->meta->render();
+    }
     echo "    <title>$this->title</title>\n";
     echo '  </head>', "\n",
          '  <body>', "\n";
