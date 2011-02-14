@@ -6,7 +6,7 @@ class CategoryScreen implements IContent {
     }
     //header('Last-Modified: '.gmdate('D, d M Y 01:01:01',$time).' GMT');
     if ($_GET['category'] == 'home') {
-      $title = "甲壳网 - 发现热点，驱动潮流";
+      $title = "甲壳 - 发现热点，驱动潮流！";
     } else {
       $title = "{$_ENV['category'][$_GET['category']]} - 甲壳网";
     }
@@ -19,16 +19,20 @@ class CategoryScreen implements IContent {
     echo '<div>热点话题</div>';
     foreach ($cache['hot'] as $item) {
       echo '<div><a href="', $item['url'], '">', $item['title'], "</a>";
+      if (isset($item['image_url'])) {
+        echo ' <span class="image">'.$item['image_url'].'</span>';
+      }
       echo $item['description'];
       if (isset($item['time'])) {
-        echo '<span class="time">'.$item['time'].'</span>';
+        echo ' <span class="time">'.$item['time'].'</span>';
       }
       if (isset($item['place'])) {
-        echo '<span class="place">'.$item['place'].'</span>';
+        echo ' <span class="place">'.$item['place'].'</span>';
       }
       if (isset($item['people'])) {
-        echo '<span class="people">'.$item['people'].'</span>';
+        echo ' <span class="people">'.$item['people'].'</span>';
       }
+      echo '<span class="source">', $_ENV[$item['source_id']], '</span>';
       echo '</div>';
     }
     echo '<div>最新发布</div><ul>';
