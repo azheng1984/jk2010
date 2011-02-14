@@ -25,7 +25,7 @@ class Router {
       return $path;
     }
     if ($this->length > 2) {
-      $_GET['current_category'] = $this->sections[1];
+      $_GET['category'] = $this->sections[1];
     }
     if ($this->length === 4) {
       $_GET['page'] = $this->sections[2];
@@ -35,11 +35,11 @@ class Router {
   }
 
   private function getItemPath() {
-    if ($this->length != 4) {
+    if ($this->length !== 4) {
       throw new NotFoundException;
     }
     $items = explode('.', $this->section[3]);
-    if (count($items) != 2) {
+    if (count($items) !== 2) {
       throw new NotFoundException;
     }
     $_GET['url_name'] = $items[0];
