@@ -1,6 +1,6 @@
 <?php
 class Sentence {
   private $id;
-  private $value;
+  private $content;
   private $document_id;
 }

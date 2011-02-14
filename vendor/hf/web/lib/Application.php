@@ -21,7 +21,7 @@ class Application {
   private function process($processor, $path) {
     $class = get_class($processor);
     if (!isset(self::$cache[$class])) {
-      $cachePath = HF_CACHE_PATH.'web'.DIRECTORY_SEPARATOR.'Processor'
+      $cachePath = HF_CACHE_PATH.'web'.DIRECTORY_SEPARATOR.'processor'
                   .DIRECTORY_SEPARATOR.$class.'.cache.php';
       self::$cache[$class] = require $cachePath;
     }
