@@ -34,6 +34,7 @@ class DocumentScreen {
       echo ' <span class="people">'.$this->cache['people'].'</span>';
     }
     echo ' - <span class="source">', $_ENV['source'][$this->cache['source_id']], '</span>';
+    echo '<div style="color: #0E774A;">'.$this->cache['source_url'].' <a target="_blank" href="http://'.$this->cache['source_url'].'">浏览</a></div>';
     echo '</div>';
     $tmp = substr($this->cache['related_cache'], 1, strlen($this->cache['related_cache']) - 2);
     $items = explode('";"', $tmp);
