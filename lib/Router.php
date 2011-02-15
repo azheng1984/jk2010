@@ -9,6 +9,11 @@ class Router {
   }
 
   public function getPath() {
+    if ($this->length === 2) {
+      $_GET['category'] = 'home';
+      return 'category';
+    }
+    $_GET['category'] = $this->sections[1];
     if ($this->sections[$this->length - 1] === '') {
       return $this->getListPath();
     }
@@ -20,15 +25,8 @@ class Router {
       throw new NotFoundException;
     }
     $path = 'category';
-    if ($this->length === 2) {
-      $_GET['category'] = 'home';
-      return $path;
-    }
-    if ($this->length > 2) {
-      $_GET['category'] = $this->sections[1];
-    }
     if ($this->length === 4) {
-      $_GET['page'] = $this->sections[2];
+      $this->parseCategoryList();
       $path = 'document_list';
     }
     return $path;
@@ -38,15 +36,32 @@ class Router {
     if ($this->length !== 4) {
       throw new NotFoundException;
     }
-    $items = explode('.', $this->section[3]);
+    $this->parseCategoryList();
+    $items = explode('.', $this->sections[3]);
     if (count($items) !== 2) {
       throw new NotFoundException;
     }
-    $_GET['url_name'] = $items[0];
     if ($items[1] === 'html') {
+       $this->map($items[0], array('id', 'url_name'));
       return 'document';
     }
-    $_GET['image_type'] = $items[1];
+    $this->map($items[0], array('image_database_index', 'id', 'url_name'));
+    $_GET['type'] = $items[1];
     return 'image';
+  }
+
+  private function parseCategoryList() {
+    $this->map($this->sections[2], array('database_index', 'page'));
+  }
+
+  private function map($string, $keys) {
+    $items = explode('-', $string);
+    if (count($items) !== count($keys)) {
+      throw new NotFoundException;
+    }
+    $index = 0;
+    foreach ($keys as $key) {
+      $_GET[$key] = $items[$index++];
+    }
   }
 }
