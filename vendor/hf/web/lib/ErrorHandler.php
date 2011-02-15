@@ -18,15 +18,15 @@ class ErrorHandler {
     if (!headers_sent()) {
       $_ENV['exception'] = $exception;
       $_ENV['output_buffer'] = ob_get_clean();
-      $this->reload();
+      $this->reload($exception);
     }
     trigger_error($exception, E_USER_ERROR);
   }
 
-  private function reload() {
+  private function reload($exception) {
     $status = '500';
-    if (self::$exception instanceof ApplicationException) {
-      $status = substr(self::$exception->getCode(), 0, 3);
+    if ($exception instanceof ApplicationException) {
+      $status = substr($exception->getCode(), 0, 3);
     }
     $configPath = HF_CONFIG_PATH.'web'
                  .DIRECTORY_SEPARATOR.__CLASS__.'.config.php';

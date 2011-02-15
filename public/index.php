@@ -8,7 +8,7 @@ require ROOT_PATH.'vendor/hf/class_loader/lib/ClassLoader.php';
 $classLoader = new ClassLoader;
 $classLoader->run();
 $errorHandler = new ErrorHandler(new Application(new ViewProcessor));
-//$errorHandler->run();
+$errorHandler->run();
 $app = new Application(new ActionProcessor, new ViewProcessor);
 $router = new Router;
 $app->run($router->getPath());
