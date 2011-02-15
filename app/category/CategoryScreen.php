@@ -6,9 +6,9 @@ class CategoryScreen implements IContent {
     }
     //header('Last-Modified: '.gmdate('D, d M Y 01:01:01',$time).' GMT');
     if ($_GET['category'] == 'home') {
-      $title = "甲壳 - 发现热点，驱动潮流！";
+      $title = "甲壳";
     } else {
-      $title = "{$_ENV['category'][$_GET['category']]} - 甲壳网";
+      $title = "{$_ENV['category'][$_GET['category']]}频道-甲壳网";
     }
     $wrapper = new ScreenWrapper($this, $title, new HtmlMeta);
     $wrapper->render();
@@ -32,7 +32,7 @@ class CategoryScreen implements IContent {
       if (isset($item['people'])) {
         echo ' <span class="people">'.$item['people'].'</span>';
       }
-      echo '<span class="source">', $_ENV['source'][$item['source_id']], '</span>';
+      echo ' - <span class="source">', $_ENV['source'][$item['source_id']], '</span>';
       echo '</div>';
     }
     echo '<div>最新发布</div><ul>';
