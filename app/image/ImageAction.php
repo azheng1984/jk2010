@@ -12,9 +12,13 @@ class ImageAction {
         throw new NotFoundException;
       }
     }
-    $statement = $connection->prepare("select * from image where id=?");
+    $statement = $connection->prepare("select $size from image where id=?");
     $statement->execute(array($_GET['id']));
-    $cache = $statement->fetch(PDO::FETCH_ASSOC);
-    echo $cache['small'];
+    $cache = $statement->fetchColumn();
+    if (!$cache) {
+      throw new NotFoundException; //todo:none display
+    }
+    header('Content-type: image/jpeg');
+    echo $cache;
   }
 }

@@ -23,7 +23,7 @@ class DocumentScreen {
     echo '<div>';
     echo '<div>'.$this->cache['description'].'</div>';
     if (isset($this->cache['image_url_prefix'])) {
-      echo ' <div class="image"><img src="'.$this->cache['image_url_prefix'].'" /></div>';
+      echo ' <div class="image"><img src="'.$this->cache['image_url_prefix'].'-'.$this->cache['url_name'].'.jpg" /></div>';
     }
     if (isset($this->cache['time'])) {
       echo ' <span class="time">'.$this->cache['time'].'</span>';
@@ -41,10 +41,10 @@ class DocumentScreen {
     foreach ($items as $row) {
       echo '<span class="related" style="display:block">';
       $columns = explode('","', $row);
-      echo '<a href="'.$columns[0].'">'.$columns[1].'</a>';
+      echo '<a href="'.$columns[0].'-'.$columns[3].'.html">'.$columns[1].'</a>';
       echo '</span>';
       if (!empty($columns[5])) {
-        echo '<img src="'.$columns[5].'" title="图片：'.$columns[4].'" alt="图片：'.$columns[4].'" />';
+        echo '<img src="'.$columns[5].'-'.$columns[3].'.jpg" title="图片：'.$columns[4].'" alt="图片：'.$columns[4].'" />';
       } else {
         echo $columns[4];
       }
