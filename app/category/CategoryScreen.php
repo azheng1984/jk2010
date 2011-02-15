@@ -1,11 +1,11 @@
 <?php
 class CategoryScreen implements IContent {
   public function render() {
-    if (!isset($_ENV['category'][$_GET['category']])) {
+    if ($_GET['category'] !== 'home' && !isset($_ENV['category'][$_GET['category']])) {
       throw new NotFoundException;
     }
     //header('Last-Modified: '.gmdate('D, d M Y 01:01:01',$time).' GMT');
-    if ($_GET['category'] == 'home') {
+    if ($_GET['category'] === 'home') {
       $title = "甲壳";
     } else {
       $title = "{$_ENV['category'][$_GET['category']]}频道-甲壳网";

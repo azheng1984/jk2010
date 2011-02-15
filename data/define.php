@@ -1,9 +1,10 @@
 <?php
 $_ENV['category'] = array (
-  'home' => '首页',
-  'tech' => '科技',
+  'tech' => array ('科技', 3),
 );
 $_ENV['source'] = array (
   0 => '新浪网',
-  1 => array('网易', 'netease')
+  1 => array('网易', 'netease', true)
+);
+$_ENV['database'] = array (
 );
