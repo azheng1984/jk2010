@@ -28,7 +28,7 @@ class DocumentListScreen implements IContent {
       $url = '/tech/1-1/'.$columns[0]."-{$columns[1]}.html";
       echo '<div><a href="', $url, '">', $columns[2], "</a>";
       if (!empty($columns[5])) {
-        $imageUrl = '/tech/1-1/'.$columns[5]."-s-{$columns[1]}.jpg";
+        $imageUrl = '/tech/1-1/'.$columns[5]."_s-{$columns[1]}.jpg";
         echo ' <span class="image"><img alt="'.$columns[2].'" title="'.$columns[2].'" src="'.$imageUrl.'" /></span>';
       }
       echo $columns[3];
