@@ -1,8 +1,8 @@
 <?php
 class HtmlMeta {
-  private $metas;
+  private $metas = array();
 
-  public function __construct($description, $keywords) {
+  public function __construct($description = null, $keywords = null) {
     $this->addMeta('description', $description);
     $this->addMeta('keywords', $keywords);
   }
@@ -17,6 +17,8 @@ class HtmlMeta {
   }
 
   private function addMeta($name, $content) {
-    $this->metas[] = array ('name' => $name, 'content' => $content);
+    if ($content != null) {
+      $this->metas[] = array ('name' => $name, 'content' => $content);
+    }
   }
 }
