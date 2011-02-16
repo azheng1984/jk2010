@@ -22,7 +22,7 @@ class DocumentScreen {
     echo '<div>';
     echo '<div>'.$this->cache['description'].'</div>';
     if (isset($this->cache['image_url_prefix'])) {
-      echo ' <div class="image"><img src="'.$this->cache['image_url_prefix'].'-'.$this->cache['url_name'].'.jpg" /></div>';
+      echo ' <div class="image"><img title="'.$this->cache['title'].'的图片" alt="'.$this->cache['title'].'的图片" src="'.$this->cache['image_url_prefix'].'-'.$this->cache['url_name'].'.jpg" /></div>';
     }
     if (isset($this->cache['time'])) {
       echo ' <span class="time">'.$this->cache['time'].'</span>';
@@ -33,11 +33,12 @@ class DocumentScreen {
     if (isset($this->cache['people'])) {
       echo ' <span class="people">'.$this->cache['people'].'</span>';
     }
-    echo ' <span class="source_sina">', $_ENV['source'][$this->cache['source_id']], '</span>';
-    echo '<div style="color: #0E774A;">'.$this->cache['source_url'].' <a target="_blank" href="http://'.$this->cache['source_url'].'">浏览</a></div>';
+    echo ' <span class="source">', $_ENV['source'][$this->cache['source_id']], '</span>';
+    echo '<div style="color: #0E774A;"><img src="/image/source/sina.jpg" /> '.$this->cache['source_url'].' <a target="_blank" href="http://'.$this->cache['source_url'].'">浏览</a></div>';
     echo '</div>';
     $tmp = substr($this->cache['related_cache'], 1, strlen($this->cache['related_cache']) - 2);
     $items = explode('";"', $tmp);
+    echo '<span class="red_title">相关热点</span>';
     foreach ($items as $row) {
       echo '<span class="related" style="display:block">';
       $columns = explode('","', $row);
@@ -49,6 +50,7 @@ class DocumentScreen {
         echo $columns[4];
       }
     }
-    echo "<div>返回《{$this->cache['title']}》所在的存档</div>";
+    $url = '/'.$_GET['category'].'/'.$_GET['database_index'].'-'.$_GET['page'].'/#'.$this->cache['url_name'];
+    echo "<div><a href=\"$url\">返回《{$this->cache['title']}》所在的列表</div></a>";
   }
 }

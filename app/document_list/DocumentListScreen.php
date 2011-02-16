@@ -14,7 +14,7 @@ class DocumentListScreen implements IContent {
     if ($this->cache === false) {
       throw new NotFoundException;
     }
-    $title = "科技存档第{$_GET['page']}页-甲壳";
+    $title = "第{$_GET['page']}页-甲壳科技";
     $wrapper = new ScreenWrapper($this, $title, new HtmlMeta);
     $wrapper->render();
   }
@@ -27,7 +27,7 @@ class DocumentListScreen implements IContent {
       $columns = explode('","', $row);
       echo '<div>';
       $url = '/tech/1-1/'.$columns[0]."-{$columns[1]}.html";
-      echo '<div><a href="', $url, '">', $columns[2], "</a>";
+      echo '<div><a  name="'.$columns[1].'" href="', $url, '">', $columns[2], "</a>";
       if (!empty($columns[5])) {
         $imageUrl = '/tech/1-1/'.$columns[5]."_s-{$columns[1]}.jpg";
         echo ' <span class="image"><img alt="'.$columns[2].'" title="'.$columns[2].'" src="'.$imageUrl.'" /></span>';
@@ -55,7 +55,7 @@ class DocumentListScreen implements IContent {
     } else {
       echo '<a href ="/tech/1-'.($this->cache['id'] + 1).'/">上一页</a>';
     }
-    echo ' | ';
+    echo " 第 {$_GET['page']} 页 ";
     if ($this->cache['id'] === '1') {
       echo '下一页';
     } else {
