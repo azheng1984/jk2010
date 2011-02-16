@@ -8,7 +8,7 @@ class CategoryScreen implements IContent {
     if ($_GET['category'] === 'home') {
       $title = "甲壳";
     } else {
-      $title = "{$_ENV['category'][$_GET['category']]}频道-甲壳网";
+      $title = "{$_ENV['category'][$_GET['category']][0]}频道-甲壳";
     }
     $wrapper = new ScreenWrapper($this, $title, new HtmlMeta);
     $wrapper->render();

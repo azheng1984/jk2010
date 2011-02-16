@@ -35,5 +35,6 @@ class Application {
 
   public static function reset() {
     self::$cache = array();
+    self::$isProcessed = false;
   }
 }
