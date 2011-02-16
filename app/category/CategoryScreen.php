@@ -34,7 +34,7 @@ class CategoryScreen implements IContent {
     $this->renderDocumentListLink();
     echo '</div>';
   }
-  
+
   private function renderRecentContent() {
     echo '<ul>';
     foreach ($this->cache['recent'] as $item) {
@@ -42,7 +42,7 @@ class CategoryScreen implements IContent {
     }
     echo '</ul>';
   }
-  
+
   private function renderRecentItem($item) {
     echo '<li><a href="', $item['url'], '">', $item['title'],
          "</a> - {$_ENV['source'][$item['source_id']]}</li>";
@@ -76,7 +76,7 @@ class CategoryScreen implements IContent {
     }
     $outputs[] = '<span class="source">'
                 .$_ENV['source'][$item['source_id']].'</span>';
-    echo implode(' - ', $outputs);
+    echo implode(' | ', $outputs);
     echo '</div>';
   }
 

@@ -37,7 +37,7 @@ h1 {
   padding:2px 10px;
 }
 #category .current {
-  background-color:#FFCCCC;
+  background-color:#ffcccc;
   border-top:3px solid #ff6600;
 }
 #footer {
@@ -80,6 +80,7 @@ h1 {
 }
 .item .meta {
   color:#999999;
+  font-size:90%;
 }
 .item .description {
   padding:5px 0;
