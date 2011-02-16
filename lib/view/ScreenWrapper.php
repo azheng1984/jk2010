@@ -29,7 +29,9 @@ class ScreenWrapper {
     echo '  </head>', "\n",
          '  <body>', "\n";
     $this->header->render();
+    echo '<div id="content">';
     $this->content->renderContent();
+    echo '</div>';
     $this->footer->render();
     echo "\n", '  </body>', "\n";
     echo '</html>';

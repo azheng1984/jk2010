@@ -10,6 +10,9 @@ class Router {
 
   public function getPath() {
     if ($this->length === 2) {
+      if ($this->sections[1] !== '') {
+        throw new NotFoundException;
+      }
       $_GET['category'] = 'home';
       return 'category';
     }
