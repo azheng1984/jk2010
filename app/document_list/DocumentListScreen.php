@@ -14,12 +14,13 @@ class DocumentListScreen implements IContent {
     if ($this->cache === false) {
       throw new NotFoundException;
     }
-    $title = "科技存档第{$_GET['page']}页-甲壳网";
+    $title = "科技存档第{$_GET['page']}页-甲壳";
     $wrapper = new ScreenWrapper($this, $title, new HtmlMeta);
     $wrapper->render();
   }
 
   public function renderContent() {
+    $this->renderPageNavigator();
     $tmp = substr($this->cache['content_cache'], 1, strlen($this->cache['content_cache']) - 2);
     $items = explode('";"', $tmp);
     foreach ($items as $row) {
@@ -44,5 +45,22 @@ class DocumentListScreen implements IContent {
       echo ' - <span class="source">', $_ENV['source'][(int)$columns[4]], '</span>';
       echo '</div>';
     }
+    $this->renderPageNavigator();
+  }
+
+  private function renderPageNavigator() {
+    echo '<div>';
+    if ((int)$this->cache['id'] === $_ENV['category'][$_GET['category']][1]) {
+      echo '上一页';
+    } else {
+      echo '<a href ="/tech/1-'.($this->cache['id'] + 1).'/">上一页</a>';
+    }
+    echo ' | ';
+    if ($this->cache['id'] === '1') {
+      echo '下一页';
+    } else {
+      echo '<a href ="/tech/1-'.($this->cache['id'] - 1).'/">下一页</a>';
+    }
+    echo '</div>';
   }
 }
