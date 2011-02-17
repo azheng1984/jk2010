@@ -11,8 +11,10 @@ class HtmlMeta {
     echo '    <meta http-equiv="Content-Type"', 
          ' content="text/html; charset=UTF-8"/>', "\n";
     foreach ($this->metas as $item) {
-      echo '    <meta name="', $item['name'],
-           '" content="', $item['content'], '" />', "\n";
+      if ($item['content'] !== null) {
+        echo '    <meta name="', $item['name'],
+             '" content="', $item['content'], '" />', "\n";
+      }
     }
   }
 
