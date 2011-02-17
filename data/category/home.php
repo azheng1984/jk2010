@@ -11,6 +11,7 @@ return array (
       'time' => '2011-02-14',
       'place' => '西班牙, 巴塞罗',
       'people' => '史蒂夫·鲍尔默(Steve Ballmer)',
+      'update_time' => '2010-1-12 12:12:22',
     ),
   ),
   'recent' => array (
