@@ -24,10 +24,10 @@ class ErrorHandler {
   }
 
   private function reload($exception) {
-    $status = '500';
-    if ($exception instanceof ApplicationException) {
-      $status = substr($exception->getCode(), 0, 3);
+    if (!$exception instanceof ApplicationException) {
+      $exception = new InternalServerErrorException;
     }
+    $status = substr($exception->getCode(), 0, 3);
     $configPath = HF_CONFIG_PATH.'web'
                  .DIRECTORY_SEPARATOR.__CLASS__.'.config.php';
     $config = require $configPath;

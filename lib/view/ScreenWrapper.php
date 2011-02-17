@@ -14,7 +14,7 @@ class ScreenWrapper {
 
   public function render() {
     if (!self::$isGzipEnabled) {
-      ob_start('ob_gzhandler');
+      ob_start('ob_gzhandler'); //todo: fail when showing error
       self::$isGzipEnabled = true;
     }
     echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"',

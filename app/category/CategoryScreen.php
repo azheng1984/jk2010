@@ -44,61 +44,17 @@ class CategoryScreen implements IContent {
   }
 
   private function renderRecentItem($item) {
-    echo '<li><a href="', $item['url'], '">', $item['title'],
-         "</a> - {$_ENV['source'][$item['source_id']]}</li>";
+    echo '<li><a target="_blank" href="', $item['url'], '">', $item['title'],
+         "</a> - {$_ENV['source'][$item['source_id']][0]}</li>";
   }
 
   private function renderHot() {
-    echo '<div id="hot">';
+    $summary = new DocumentSummaryScreen;
+    echo '<div id="list">';
     foreach ($this->cache['hot'] as $item) {
-      $this->renderHotItem($item);
+      $summary->render($item);
     }
     $this->renderDocumentListLink();
-    echo '</div>';
-  }
-
-  private function renderDocumentTitle($item) {
-    echo '<div class="title"><a href="', $item['url'], '">',
-         $item['title'], "</a></div>";
-  }
-  
-  private function renderDocumentDescription($item) {
-    echo '<div class="description">'.$item['description'].'</div>';
-  }
-
-  private function renderDocumentMeta($item) {
-    echo '<div class="meta">';
-    $outputs = array();
-    foreach (array('time', 'place', 'people') as $meta) {
-      if (isset($item[$meta])) {
-        $outputs[] = '<span class="'.$meta.'">'.$item[$meta].'</span>';
-      }
-    }
-    $outputs[] = '<span class="source">'
-                .$_ENV['source'][$item['source_id']].'</span>';
-    echo implode(' | ', $outputs);
-    echo '</div>';
-  }
-
-  private function renderHotItemText($item, $hasImage) {
-    echo '<div class="text';
-    if ($hasImage) {
-      echo ' short_text';
-    }
-    echo '">';
-    $this->renderDocumentTitle($item);
-    $this->renderDocumentDescription($item);
-    $this->renderDocumentMeta($item);
-    echo '</div>';
-  }
-
-  private function renderHotItem($item) {
-    $hasImage = isset($item['image_url']);
-    echo '<div class="item">';
-    $this->renderHotItemText($item, $hasImage);
-    if ($hasImage) {
-      echo '<div class="image"><img src="'.$item['image_url'].'" /></div>';
-    }
     echo '</div>';
   }
 }
