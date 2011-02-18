@@ -1,7 +1,7 @@
 <?php
 class NotFoundScreen {
   public function render() {
-    $wrapper = new ScreenWrapper($this, '出错了-甲壳', new HtmlMeta);
+    $wrapper = new ScreenWrapper($this, '出错了-甲壳');
     $wrapper->render();
   }
 

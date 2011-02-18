@@ -1,6 +1,7 @@
 <?php
 class DocumentListScreen implements IContent {
   private $cache;
+  private $databaseIndex;
   private $categoryUrlName;
   private $pageAmount;
   private $page;
@@ -9,6 +10,10 @@ class DocumentListScreen implements IContent {
     if (!isset($_ENV['category'][$_GET['category']])) {
       throw new NotFoundException;
     }
+    if (!isset($_ENV['document_database'][(int)$_GET['database_index']])) {
+      throw new NotFoundException;
+    }
+    $this->databaseIndex = $_GET['database_index'];
     $this->categoryUrlName = $_GET['category'];
     $this->categoryInfo = $_ENV['category'][$_GET['category']];
     $this->pageAmount = $this->categoryInfo[1];
@@ -18,19 +23,23 @@ class DocumentListScreen implements IContent {
      || $this->page > $this->pageAmount) {
       throw new NotFoundException;
     }
-    $db = new DocumentDb((int)$_GET['database_index']);
-    $connection = $db->getConnection();
-    $statement = $connection->prepare("select * from {$this->categoryUrlName}_document_list where id=?");
-    $statement->execute(array($this->pageAmount));
-    $this->cache = $statement->fetch(PDO::FETCH_ASSOC);
+    $this->setCache();
     if ($this->cache === false) {
       throw new NotFoundException;
     }
   }
 
+  private function setCache() {
+    $db = new DocumentDb($this->databaseIndex);
+    $connection = $db->getConnection();
+    $statement = $connection->prepare("select * from {$this->categoryUrlName}_document_list where id=?");
+    $statement->execute(array($this->pageAmount));
+    $this->cache = $statement->fetch(PDO::FETCH_ASSOC);
+  }
+
   public function render() {
     $title = "第{$this->page}页-甲壳科技";
-    $wrapper = new ScreenWrapper($this, $title, new HtmlMeta);
+    $wrapper = new ScreenWrapper($this, $title);
     $wrapper->render();
   }
 
