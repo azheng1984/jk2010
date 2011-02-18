@@ -7,7 +7,8 @@ class CommandParser {
   private $isAllowOption = true;
   private $arguments = array();
 
-  public function __construct() {
+  public function __construct($context) {
+    $_ENV['context'] = $context;
     $this->reader = new CommandReader;
     $configPath = HF_CONFIG_PATH.'cli'
                  .DIRECTORY_SEPARATOR.__CLASS__.'.config.php';
@@ -17,7 +18,7 @@ class CommandParser {
   public function run() {
     while (($item = $this->reader->get()) !== null) {
       $this->parse($item);
-      $this->move();
+      $this->reader->move();
     }
     $this->executeCommand();
   }
@@ -40,7 +41,7 @@ class CommandParser {
 
   private function setCommand($item) {
     if (!isset($this->config['command'][$item])) {
-      throw new Exception("Command '$item' not found");
+      throw new SyntaxException("Command '$item' not found");
     }
     $this->readConfig($this->config['command'][$item]);
     $this->isAllowOption = true;
@@ -48,7 +49,7 @@ class CommandParser {
 
   private function executeCommand() {
     if (!isset($this->config['class'])) {
-      throw new Exception;
+      throw new SyntaxException;
     }
     $reflector = new ReflectionMethod($this->config['class'], 'execute');
     $verifier = new ArgumentVerifier;
