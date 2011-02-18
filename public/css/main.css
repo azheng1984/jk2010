@@ -43,7 +43,7 @@ h1 {
   border-top:3px solid #ff6600;
 }
 #footer {
-	clear:both;
+  clear:both;
   text-align:center;
   color:#888888;
 }
@@ -97,33 +97,33 @@ h1 {
   color:#888888;
 }
 #related {
-	float:left;
+  float:left;
   padding-top:20px;
   margin-top:20px;
   border-top: solid 1px #cccccc;
   width:100%;
 }
 #related .item {
-	display:block;
-	margin-top:10px;
+  display:block;
+  margin-top:10px;
 }
 #document {
-	color:#666666;
+  color:#666666;
 }
 #document .meta {
   margin: 5px 0;
 }
 #document .source_link {
-	color: #0E774A;
-	padding: 5px;
-	margin:3px 0;
-	background-color:#E3F6CE;
+  color: #0E774A;
+  padding: 5px;
+  margin:3px 0;
+  background-color:#E3F6CE;
 }
 #document .back {
-	padding-top:20px;
-	margin-top:20px;
-	border-top: solid 1px #cccccc;
-	width:100%;
+  padding-top:20px;
+  margin-top:20px;
+  border-top: solid 1px #cccccc;
+  width:100%;
   float:left;
 }
 .error_content {

@@ -15,12 +15,4 @@ class CommandContext {
   public function addOption($name, $value) {
     $this->options[$name] = $value;
   }
-
-  public function read() {
-    return 'hi';
-  }
-
-  public function write($string) {
-    echo $string;
-  }
 }
