@@ -8,10 +8,11 @@ class ArgumentVerifier {
       --$length;
     }
     if ($length < 0) {
-      throw new Exception;
+      return false;
     }
     if ($length > 0 && $isInfinite === false) {
-      throw new Exception;
+      return false;
     }
+    return true;
   }
 }
