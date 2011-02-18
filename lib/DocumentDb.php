@@ -3,9 +3,6 @@ class DocumentDb {
   private $index;
 
   public function __construct($index) {
-    if (!isset($_ENV['document_database'][$index])) {
-      throw new NotFoundException;
-    }
     $this->index = $index;
   }
 
