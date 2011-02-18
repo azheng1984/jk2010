@@ -9,7 +9,7 @@ return array (
     'help' => array (
       'short' => array ('h', '?'),
       'expansion' => 'help',
-      'description' => '',
+      'description' => '你好',
     ),
   ),
   'command' => array (

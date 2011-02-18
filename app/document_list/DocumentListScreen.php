@@ -10,7 +10,8 @@ class DocumentListScreen implements IContent {
     if (!isset($_ENV['category'][$_GET['category']])) {
       throw new NotFoundException;
     }
-    if (!isset($_ENV['document_database'][(int)$_GET['database_index']])) {
+    if (!is_numeric($_GET['database_index'])
+     || !isset($_ENV['document_database'][(int)$_GET['database_index']])) {
       throw new NotFoundException;
     }
     $this->databaseIndex = $_GET['database_index'];
