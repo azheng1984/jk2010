@@ -13,7 +13,7 @@ class CategoryScreen implements IContent {
       $title = "{$_ENV['category'][$_GET['category']][0]}频道-甲壳";
     }
     $this->cache = require DATA_PATH."category/{$_GET['category']}.php";
-    $wrapper = new ScreenWrapper($this, $title, new HtmlMeta);
+    $wrapper = new ScreenWrapper($this, $title);
     $wrapper->render();
   }
 

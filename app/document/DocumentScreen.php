@@ -1,25 +1,33 @@
 <?php
 class DocumentScreen {
+  private $cache;
   private $databaseIndex;
   private $categoryUrlName;
 
   public function __construct() {
-    if (!is_numeric($_GET['id'])) {
-      throw new NotFoundException;
-    }
     if (!isset($_ENV['category'][$_GET['category']])) {
       throw new NotFoundException;
     }
-    $this->categoryUrlName = $_GET['category'];
-    $db = new DocumentDb((int)$_GET['database_index']);
-    $connection = $db->getConnection();
-    $statement = $connection->prepare("select * from tech_document where id=?");
-    $statement->execute(array($_GET['id']));
-    $this->cache = $statement->fetch(PDO::FETCH_ASSOC);
-    if ($this->cache === false) {
+    if (!isset($_ENV['document_database'][(int)$_GET['database_index']])) {
+      throw new NotFoundException;
+    }
+    if (!is_numeric($_GET['id'])) {
       throw new NotFoundException;
     }
     $this->databaseIndex = $_GET['database_index'];
+    $this->categoryUrlName = $_GET['category'];
+    $this->setCache();
+    if ($this->cache === false) {
+      throw new NotFoundException;
+    }
+  }
+
+  private function setCache() {
+    $db = new DocumentDb($this->databaseIndex);
+    $connection = $db->getConnection();
+    $statement = $connection->prepare("select * from {$this->categoryUrlName}_document where id=?");
+    $statement->execute(array($_GET['id']));
+    $this->cache = $statement->fetch(PDO::FETCH_ASSOC);
   }
 
   public function render() {
