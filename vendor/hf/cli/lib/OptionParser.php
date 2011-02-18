@@ -83,13 +83,11 @@ class OptionParser {
     if ($constructor !== null) {
       $length = count($arguments);
       $verifier = new ArgumentVerifier;
-      $verifier->run($constructor, $length, $maximumLength === null);
+      if ($verifier->run($constructor, $length, $maximumLength === null)) {
+        return $reflector->newInstanceArgs($arguments);
+      }
     }
-    $option = null;
-    try {
-      $option = $reflector->newInstanceArgs($arguments);
-    } catch (ReflectionException $ex) {}
-    return $option;
+    return null;
   }
 
   private function getArguments($maximumLength) {
