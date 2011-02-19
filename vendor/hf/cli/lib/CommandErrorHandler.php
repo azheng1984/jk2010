@@ -10,7 +10,7 @@ class CommandErrorHandler {
 
   public function handle($exception) {
     $message = $exception;
-    if ($exception instanceof ICommandMessage) {
+    if ($exception instanceof IErrorMessage) {
       $message = $exception->getMessage();
     }
     fwrite(STDERR, $message);
