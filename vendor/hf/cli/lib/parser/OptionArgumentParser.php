@@ -1,5 +1,4 @@
 <?php
-
 class OptionArgumentParser {
   private function getArguments($maximumLength) {
     $arguments = array();
@@ -31,5 +30,3 @@ class OptionArgumentParser {
     return $arguments;
   }
 }
-
-?>

@@ -19,7 +19,7 @@ class CommandReader {
     $this->currentIndex += $step;
   }
 
-  public function get() {
+  public function read() {
     if ($this->currentIndex >= $this->inputArgumentLength) {
       return null;
     }
