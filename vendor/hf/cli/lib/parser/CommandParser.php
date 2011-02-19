@@ -20,7 +20,8 @@ class CommandParser {
       $this->parse($item);
       $this->reader->move();
     }
-    $this->executeCommand();
+    $processor = new CommandProcessor;
+    $processor->run();
   }
 
   private function parse($item) {
