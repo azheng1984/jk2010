@@ -1,6 +1,6 @@
 <?php
 class ArgumentVerifier {
-  public function isMatch($reflector, $length, $isInfinite) {
+  public function run($reflector, $length, $isInfinite) {
     foreach ($reflector->getParameters() as $parameter) {
       if ($parameter->isOptional() && $length === 0) {
         break;
