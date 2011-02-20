@@ -2,12 +2,9 @@
 class CommandContext {
   private $options = array ();
 
-  public function getOption($name, $isNullable = false) {
+  public function getOption($name, $default = null) {
     if (!isset($this->options[$name])) {
-      if ($isNullable) {
-        throw new SyntaxException;
-      }
-      return null;
+      return $default;
     }
     return $this->options[$name];
   }
