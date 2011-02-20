@@ -5,7 +5,7 @@ class CommandContext {
   public function getOption($name, $isNullable = false) {
     if (!isset($this->options[$name])) {
       if ($isNullable) {
-        throw new Exception;
+        throw new SyntaxException;
       }
       return null;
     }
