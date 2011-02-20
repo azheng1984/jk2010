@@ -14,9 +14,9 @@ class CommandParser {
                             .DIRECTORY_SEPARATOR.__CLASS__.'.config.php');
   }
 
-  public function run() {
+  public function parse() {
     while (($item = $this->reader->read()) !== null) {
-      $this->parse($item);
+      $this->analyze($item);
       $this->reader->move();
     }
     if (!isset($this->config['class'])
@@ -27,13 +27,13 @@ class CommandParser {
     $runner->run($this->config, $this->arguments);
   }
 
-  private function parse($item) {
+  private function analyze($item) {
     if ($item === '--') {
       $this->isAllowOption = false;
       return;
     }
     if ($item !== '-' && strpos($item, '-') === 0 && $this->isAllowOption) {
-      $this->optionParser->run();
+      $this->optionParser->parse();
       return;
     }
     if (!$this->isAfterCommand) {
