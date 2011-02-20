@@ -30,4 +30,5 @@ return array (
     'new' => 'NewCommand',
     'help' => 'HelpCommand',
   ),
+  'default_command' => 'help',
 );

@@ -1,8 +1,14 @@
 <?php
 class OptionArgumentParser {
-  private function getArguments($maximumLength) {
+  private $isAfterCommand;
+
+  public function __construct($isAfterCommand) {
+    $this->isAfterCommand = $isAfterCommand;
+  }
+
+  private function parse($maximumLength) {
     $arguments = array();
-    while (($item = $this->reader->get()) !== null) {
+    while (($item = $this->reader->read()) !== null) {
       if (strpos($item, '-') === 0 && $item !== '-') {
         $this->reader->move(-1);
         break;
@@ -23,7 +29,7 @@ class OptionArgumentParser {
       $this->reader->move(-1);
       return $arguments;
     }
-    if ($this->reader->get() === null) {
+    if ($this->reader->read() === null) {
       $arguments = array_slice($arguments, 0, $maximumLength);
       $this->reader->move($maximumLength - $amount);
     }
