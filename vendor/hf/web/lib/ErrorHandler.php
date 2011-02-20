@@ -16,8 +16,10 @@ class ErrorHandler {
 
   public function handle($exception) {
     if (!headers_sent()) {
-      $_ENV['exception'] = $exception;
-      $_ENV['output_buffer'] = ob_get_clean();
+      $_ENV['error_handler'] = array (
+        'exception' => $exception,
+        'output_buffer' => ob_get_clean(),
+      );
       $this->reload($exception);
     }
     trigger_error($exception, E_USER_ERROR);
@@ -28,9 +30,8 @@ class ErrorHandler {
       $exception = new InternalServerErrorException;
     }
     $status = substr($exception->getCode(), 0, 3);
-    $configPath = HF_CONFIG_PATH.'web'
-                 .DIRECTORY_SEPARATOR.__CLASS__.'.config.php';
-    $config = require $configPath;
+    $config = require HF_CONFIG_PATH.'web'
+                     .DIRECTORY_SEPARATOR.__CLASS__.'.config.php';
     if (isset($config[$status])) {
       $this->app->run($config[$status]);
     }

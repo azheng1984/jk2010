@@ -7,7 +7,9 @@ require DATA_PATH.'define.php';
 require ROOT_PATH.'vendor/hf/class_loader/lib/ClassLoader.php';
 $classLoader = new ClassLoader;
 $classLoader->run();
-$app = new Application(new ActionProcessor, new ViewProcessor);
+$app = new Application(array (
+  'action' => new ActionProcessor,
+  'view' => new ViewProcessor));
 $errorHandler = new ErrorHandler($app);
 $errorHandler->run();
 $router = new Router;
