@@ -10,18 +10,21 @@ class CommandParser {
   public function __construct($context) {
     $_ENV['context'] = $context;
     $this->reader = new CommandReader;
-    $configPath = HF_CONFIG_PATH.'cli'
-                 .DIRECTORY_SEPARATOR.__CLASS__.'.config.php';
-    $this->readConfig(require $configPath);
+    $this->setConfig(require HF_CONFIG_PATH.'cli'
+                            .DIRECTORY_SEPARATOR.__CLASS__.'.config.php');
   }
 
   public function run() {
-    while (($item = $this->reader->get()) !== null) {
+    while (($item = $this->reader->read()) !== null) {
       $this->parse($item);
       $this->reader->move();
     }
-    $processor = new CommandProcessor;
-    $processor->run();
+    if (!isset($this->config['class'])
+     && isset($this->config['default_command'])) {
+      $this->setCommand($this->config['default_command']);
+    }
+    $runner = new CommandRunner;
+    $runner->run($this->config, $this->arguments);
   }
 
   private function parse($item) {
@@ -44,18 +47,18 @@ class CommandParser {
     if (!isset($this->config['command'][$item])) {
       throw new SyntaxException("Command '$item' not found");
     }
-    $this->readConfig($this->config['command'][$item]);
+    $this->setConfig($this->config['command'][$item]);
     $this->isAllowOption = true;
   }
 
-  private function readConfig($source) {
-    if (!is_array($source)) {
-      $source = array('class' => $source, 'option' => array());
+  private function setConfig($value) {
+    if (!is_array($value)) {
+      $value = array('class' => $value, 'option' => array());
     }
-    $this->isAfterCommand = isset($source['class']);
+    $this->isAfterCommand = isset($value['class']);
     $this->optionParser = new OptionParser($this->reader,
-                                           $source['option'],
+                                           $value['option'],
                                            $this->isAfterCommand);
-    $this->config = $source;
+    $this->config = $value;
   }
 }
