@@ -9,12 +9,12 @@ class OptionParser {
     $this->reader = $reader;
     $this->config = $config;
     $this->nameParser = new OptionNameParser($config);
-    $argumentParser = new OptionArgumentParser($isAfterCommand);
+    $argumentParser = new OptionArgumentParser($reader, $isAfterCommand);
     $this->builder = new OptionBuilder($argumentParser);
   }
 
   public function parse() {
-    $item = $this->reader->reader();
+    $item = $this->reader->read();
     $name = $this->nameParser->parse($item);
     if (is_array($name)) {
       $this->reader->expand($name);
@@ -29,7 +29,7 @@ class OptionParser {
     }
     $value = true;
     if (isset($this->config[$name]['class'])) {
-      $value = $this->builder->builder($this->config[$name]);
+      $value = $this->builder->build($this->config[$name]);
     }
     $_ENV['context']->addOption($name, $value);
   }

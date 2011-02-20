@@ -1,8 +1,10 @@
 <?php
 class OptionArgumentParser {
+  private $reader;
   private $isAfterCommand;
 
-  public function __construct($isAfterCommand) {
+  public function __construct($reader, $isAfterCommand) {
+    $this->reader = $reader;
     $this->isAfterCommand = $isAfterCommand;
   }
 
