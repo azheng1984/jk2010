@@ -9,7 +9,8 @@ $classLoader = new ClassLoader;
 $classLoader->run();
 $app = new Application(array (
   'action' => new ActionProcessor,
-  'view' => new ViewProcessor));
+  'view' => new ViewProcessor
+));
 $errorHandler = new ErrorHandler($app);
 $errorHandler->run();
 $router = new Router;
