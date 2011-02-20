@@ -1,6 +1,6 @@
 <?php
 class CommandRunner {
-  private function run($config, $arguments) {
+  public function run($config, $arguments) {
     if (!isset($config['class'])) {
       throw new SyntaxException;
     }
