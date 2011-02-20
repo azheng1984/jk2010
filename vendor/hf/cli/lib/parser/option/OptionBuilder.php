@@ -1,12 +1,12 @@
 <?php
 class OptionBuilder {
   private $argumentParser;
-  
+
   public function __construct($argumentParser) {
     $this->argumentParser = $argumentParser;
   }
 
-  private function build($config) {
+  public function build($config) {
     $reflector = new ReflectionClass($config['class']);
     $constructor = $reflector->getConstructor();
     $maximumLength = 0;
@@ -18,7 +18,7 @@ class OptionBuilder {
     }
     $arguments = $this->argumentParser->parse($maximumLength);
     if ($constructor === null && count($arguments) !== 0) {
-      throw new Exception("Option argument length not matched");
+      throw new SyntaxException("Option argument length not matched");
     }
     if ($constructor !== null) {
       $length = count($arguments);
