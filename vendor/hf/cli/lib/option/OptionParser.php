@@ -3,14 +3,13 @@ class OptionParser {
   private $reader;
   private $config;
   private $nameParser;
-  private $builder;
+  private $argumentParser;
 
   public function __construct($reader, $config, $isAfterCommand) {
     $this->reader = $reader;
     $this->config = $config;
     $this->nameParser = new OptionNameParser($config);
-    $argumentParser = new OptionArgumentParser($reader, $isAfterCommand);
-    $this->builder = new OptionBuilder($argumentParser);
+    $this->argumentParser = new OptionArgumentParser($reader, $isAfterCommand);
   }
 
   public function parse() {
@@ -29,7 +28,8 @@ class OptionParser {
     }
     $value = true;
     if (isset($this->config[$name]['class'])) {
-      $value = $this->builder->build($this->config[$name]);
+      $objectBuilder = new OptionObjectBuilder($this->argumentParser);
+      $value = $objectBuilder->build($this->config[$name]);
     }
     $_ENV['context']->addOption($name, $value);
   }
