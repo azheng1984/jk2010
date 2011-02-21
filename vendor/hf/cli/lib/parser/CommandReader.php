@@ -9,20 +9,20 @@ class CommandReader {
     $this->inputArguments = $_SERVER['argv'];
   }
 
-  public function expand($arguments) {
-    array_splice($this->inputArguments, $this->currentIndex, 1, $arguments);
-    $this->inputArgumentLength = count($this->inputArguments);
-    --$this->currentIndex;
+  public function read() {
+    if ($this->currentIndex >= $this->inputArgumentLength) {
+      return null;
+    }
+    return $this->inputArguments[$this->currentIndex];
   }
 
   public function move($step = 1) {
     $this->currentIndex += $step;
   }
 
-  public function read() {
-    if ($this->currentIndex >= $this->inputArgumentLength) {
-      return null;
-    }
-    return $this->inputArguments[$this->currentIndex];
+  public function expand($arguments) {
+    array_splice($this->inputArguments, $this->currentIndex, 1, $arguments);
+    $this->inputArgumentLength = count($this->inputArguments);
+    --$this->currentIndex;
   }
 }

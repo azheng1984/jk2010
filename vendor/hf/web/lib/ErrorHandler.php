@@ -26,14 +26,14 @@ class ErrorHandler {
   }
 
   private function reload($exception) {
-    if (!$exception instanceof ApplicationException) {
-      $exception = new InternalServerErrorException;
+    if ($exception instanceof ApplicationException) {
+      $exception = new InternalServerErrorException();
     }
-    $status = substr($exception->getCode(), 0, 3);
+    $statusCode = $exception->getCode();
     $config = require HF_CONFIG_PATH.'web'
                      .DIRECTORY_SEPARATOR.__CLASS__.'.config.php';
-    if (isset($config[$status])) {
-      $this->app->run($config[$status]);
+    if (isset($config[$statusCode])) {
+      $this->app->run($config[$exception->getCode()]);
     }
   }
 }
