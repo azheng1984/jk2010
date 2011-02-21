@@ -26,7 +26,7 @@ class ErrorHandler {
   }
 
   private function reload($exception) {
-    if ($exception instanceof ApplicationException) {
+    if (!$exception instanceof ApplicationException) {
       $exception = new InternalServerErrorException();
     }
     $statusCode = $exception->getCode();
