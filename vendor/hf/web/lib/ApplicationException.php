@@ -1,8 +1,8 @@
 <?php
 abstract class ApplicationException extends Exception {
-  public function __construct($message, $code) {
+  public function __construct($message, $statusCode) {
     parent::__construct($message);
-    $this->code = $code;
-    header("HTTP/1.1 $code");
+    $this->code = $statusCode;
+    header("HTTP/1.1 $statusCode");
   }
 }

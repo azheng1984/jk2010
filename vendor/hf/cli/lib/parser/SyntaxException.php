@@ -1,3 +1,6 @@
 <?php
-class SyntaxException extends Exception implements IErrorMessage {
+class SyntaxException extends Exception {
+  public function __toString() {
+    
+  }
 }
