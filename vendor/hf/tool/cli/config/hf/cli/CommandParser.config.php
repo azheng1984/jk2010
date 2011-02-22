@@ -28,9 +28,9 @@ return array (
     ),
     'new' => array (
       'sub' => array (
-        'web' => 'WebScaffoldCommand',
+        'web' => 'NewWebCommand',
         'cli' => array (
-          'class' => 'CliScaffoldCommand'
+          'class' => 'NewCliCommand'
         ),
       ),
     ),
