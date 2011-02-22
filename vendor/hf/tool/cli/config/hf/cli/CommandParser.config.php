@@ -8,33 +8,47 @@ return array (
     ),
     'help' => array (
       'short' => array ('h', '?'),
+      'expansion' => array ('help'),
       'description' => '你好',
     ),
   ),
   'sub' => array (
     'make' => array (
-      'class' => 'MakeCommand',
       'option' => array (
-        'message' => array (
-          'short' => 'm',
-          'class' => 'MessageOption',
-          'infinite_argument',
+        'preview' => array (
+          'short' => 'p',
+          'class' => 'Preview',
           'description' => '',
         ),
-        'pagination',
       ),
       'infinite_argument',
       'description' => '',
     ),
     'new' => array (
       'sub' => array (
-        'web' => 'NewWebCommand',
+        'web' => array (
+          'class' => 'NewWebCommand',
+          'option' => array (
+            'output_only' => array (
+              'short' => 'o',
+              'class' => 'OutputNewWebResult',
+              'description' => '',
+            ),
+          ),
+        ),
         'cli' => array (
-          'class' => 'NewCliCommand'
+          'class' => 'NewCliCommand',
+          'option' => array (
+            'output_only' => array (
+              'short' => 'o',
+              'class' => 'OutputNewCliResultOption',
+              'description' => '',
+            ),
+          ),
         ),
       ),
     ),
     'help' => 'HelpCommand',
   ),
-  'default' => array('help'),
+  'expansion' => array('help'),
 );

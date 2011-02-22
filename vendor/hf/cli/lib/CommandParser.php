@@ -19,12 +19,6 @@ class CommandParser {
       $this->analyze($item);
       $this->reader->move();
     }
-    if (!isset($this->config['class'])
-     && isset($this->config['default'])) {
-      $this->reader->expand($this->config['default']);
-      $this->reader->move();
-      return $this->parse();
-    }
     $runner = new CommandRunner;
     $runner->run($this->config, $this->arguments);
   }
@@ -61,6 +55,9 @@ class CommandParser {
     $this->optionParser = new OptionParser($this->reader,
                                            $value['option'],
                                            $this->isAfterLeaf);
+    if (isset($value['expansion'])) {
+      $this->reader->expand($value['expansion']);
+    }
     $this->config = $value;
   }
 }

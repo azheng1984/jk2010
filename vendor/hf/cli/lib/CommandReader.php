@@ -23,6 +23,8 @@ class CommandReader {
   public function expand($arguments) {
     array_splice($this->inputArguments, $this->currentIndex, 1, $arguments);
     $this->inputArgumentLength = count($this->inputArguments);
-    --$this->currentIndex;
+    if ($this->currentIndex > 1) {
+      --$this->currentIndex;
+    }
   }
 }
