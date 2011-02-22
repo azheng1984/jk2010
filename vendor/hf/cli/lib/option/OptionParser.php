@@ -26,8 +26,11 @@ class OptionParser {
       $this->reader->expand($this->config[$name]['expansion']);
       return;
     }
-    $objectBuilder = new OptionObjectBuilder($this->argumentParser);
-    $value = $objectBuilder->build($this->config[$name]);
+    $value = true;
+    if (isset($this->config[$name]['class'])) {
+      $objectBuilder = new OptionObjectBuilder($this->argumentParser);
+      $value = $objectBuilder->build($this->config[$name]);
+    }
     $_ENV['context']->addOption($name, $value);
   }
 }

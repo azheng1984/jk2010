@@ -2,9 +2,9 @@
 class CommandContext {
   private $options = array ();
 
-  public function getOption($name, $default = null, $isClassName = false) {
+  public function getOption($name, $default = null, $isClass = false) {
     if (!isset($this->options[$name])) {
-      return $this->getDefaultOption($default, $isClassName);
+      return $this->getDefaultOption($default, $isClass);
     }
     return $this->options[$name];
   }
@@ -13,8 +13,8 @@ class CommandContext {
     $this->options[$name] = $value;
   }
 
-  private function getDefaultOption($default, $isClassName) {
-    if ($isClassName) {
+  private function getDefaultOption($default, $isClass) {
+    if ($isClass) {
       return new $default;;
     }
     return $default;
