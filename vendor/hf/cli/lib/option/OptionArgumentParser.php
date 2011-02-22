@@ -1,11 +1,11 @@
 <?php
 class OptionArgumentParser {
   private $reader;
-  private $isAfterCommand;
+  private $isAfterLeafCommand;
 
-  public function __construct($reader, $isAfterCommand) {
+  public function __construct($reader, $isAfterLeafCommand) {
     $this->reader = $reader;
-    $this->isAfterCommand = $isAfterCommand;
+    $this->isAfterLeafCommand = $isAfterLeafCommand;
   }
 
   private function parse($maximumLength) {
@@ -26,7 +26,7 @@ class OptionArgumentParser {
   }
 
   private function cutArguments($arguments, $amount, $maximumLength) {
-    if ($amount === $maximumLength + 1 && !$this->isAfterCommand) {
+    if ($amount === $maximumLength + 1 && !$this->isAfterLeafCommand) {
       array_pop($arguments);
       $this->reader->move(-1);
       return $arguments;
