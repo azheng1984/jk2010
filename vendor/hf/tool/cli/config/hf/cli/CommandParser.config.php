@@ -8,11 +8,10 @@ return array (
     ),
     'help' => array (
       'short' => array ('h', '?'),
-      'expansion' => 'help',
       'description' => '你好',
     ),
   ),
-  'command' => array (
+  'sub' => array (
     'make' => array (
       'class' => 'MakeCommand',
       'option' => array (
@@ -27,8 +26,15 @@ return array (
       'infinite_argument',
       'description' => '',
     ),
-    'new' => 'NewCommand',
+    'new' => array (
+      'sub' => array (
+        'web' => 'WebScaffoldCommand',
+        'cli' => array (
+          'class' => 'CliScaffoldCommand'
+        ),
+      ),
+    ),
     'help' => 'HelpCommand',
   ),
-  'default_command' => 'help',
+  'default' => array('help'),
 );

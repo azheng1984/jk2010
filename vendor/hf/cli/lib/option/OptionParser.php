@@ -5,11 +5,11 @@ class OptionParser {
   private $nameParser;
   private $argumentParser;
 
-  public function __construct($reader, $config, $isAfterCommand) {
+  public function __construct($reader, $config, $isAfterLeafCommand) {
     $this->reader = $reader;
     $this->config = $config;
     $this->nameParser = new OptionNameParser($config);
-    $this->argumentParser = new OptionArgumentParser($reader, $isAfterCommand);
+    $this->argumentParser = new OptionArgumentParser($reader, $isAfterLeafCommand);
   }
 
   public function parse() {

@@ -3,7 +3,7 @@ class CommandParser {
   private $reader;
   private $optionParser;
   private $config;
-  private $isAfterCommand;
+  private $isAfterLeaf;
   private $isAllowOption = true;
   private $arguments = array();
 
@@ -20,8 +20,9 @@ class CommandParser {
       $this->reader->move();
     }
     if (!isset($this->config['class'])
-     && isset($this->config['default_command'])) {
-      $this->setCommand($this->config['default_command']);
+     && isset($this->config['default'])) {
+      $this->reader->expand($this->config['default']);
+      $this->parse();
     }
     $runner = new CommandRunner;
     $runner->run($this->config, $this->arguments);
@@ -36,7 +37,7 @@ class CommandParser {
       $this->optionParser->parse();
       return;
     }
-    if (!$this->isAfterCommand) {
+    if (!$this->isAfterLeaf) {
       $this->setCommand($item);
       return;
     }
@@ -44,7 +45,7 @@ class CommandParser {
   }
 
   private function setCommand($item) {
-    if (!isset($this->config['command'][$item])) {
+    if (!isset($this->config['sub'][$item])) {
       throw new SyntaxException("Command '$item' not found");
     }
     $this->setConfig($this->config['command'][$item]);
@@ -55,10 +56,10 @@ class CommandParser {
     if (!is_array($value)) {
       $value = array('class' => $value, 'option' => array());
     }
-    $this->isAfterCommand = isset($value['class']);
+    $this->isAfterLeaf = isset($value['class']);
     $this->optionParser = new OptionParser($this->reader,
                                            $value['option'],
-                                           $this->isAfterCommand);
+                                           $this->isAfterLeaf);
     $this->config = $value;
   }
 }
