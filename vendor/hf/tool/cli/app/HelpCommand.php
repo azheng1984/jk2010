@@ -1,6 +1,6 @@
 <?php
 class HelpCommand {
   public function execute($target = 'main') {
-    echo 'help!';
+    echo 'helpx!';
   }
 }

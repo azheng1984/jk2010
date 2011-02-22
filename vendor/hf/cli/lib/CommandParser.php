@@ -1,8 +1,8 @@
 <?php
 class CommandParser {
+  private $config;
   private $reader;
   private $optionParser;
-  private $config;
   private $isAfterLeaf;
   private $isAllowOption = true;
   private $arguments = array();
@@ -22,7 +22,8 @@ class CommandParser {
     if (!isset($this->config['class'])
      && isset($this->config['default'])) {
       $this->reader->expand($this->config['default']);
-      $this->parse();
+      $this->reader->move();
+      return $this->parse();
     }
     $runner = new CommandRunner;
     $runner->run($this->config, $this->arguments);
@@ -48,7 +49,7 @@ class CommandParser {
     if (!isset($this->config['sub'][$item])) {
       throw new SyntaxException("Command '$item' not found");
     }
-    $this->setConfig($this->config['command'][$item]);
+    $this->setConfig($this->config['sub'][$item]);
     $this->isAllowOption = true;
   }
 
