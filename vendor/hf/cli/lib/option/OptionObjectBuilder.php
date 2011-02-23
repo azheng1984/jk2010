@@ -9,14 +9,14 @@ class OptionObjectBuilder {
   public function build($config) {
     $reflector = new ReflectionClass($config['class']);
     $constructor = $reflector->getConstructor();
-    $maximumLength = 0;
+    $standardLength = 0;
     if ($constructor !== null) {
-      $maximumLength = $constructor->getNumberOfParameters();
+      $standardLength = $constructor->getNumberOfParameters();
     }
     if (in_array('infinite_argument', $config, true)) {
-      $maximumLength = null;
+      $standardLength = null;
     }
-    $arguments = $this->argumentParser->parse($maximumLength);
+    $arguments = $this->argumentParser->parse($standardLength);
     if ($constructor === null && count($arguments) !== 0) {
       throw new SyntaxException("Option argument length not matched");
     }
@@ -25,7 +25,7 @@ class OptionObjectBuilder {
     }
     $length = count($arguments);
     $verifier = new ArgumentVerifier;
-    if ($verifier->verify($constructor, $length, $maximumLength === null)) {
+    if ($verifier->verify($constructor, $length, $standardLength === null)) {
       return $reflector->newInstanceArgs($arguments);
     }
     return null;

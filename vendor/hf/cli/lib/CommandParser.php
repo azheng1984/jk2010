@@ -7,8 +7,7 @@ class CommandParser {
   private $isAllowOption = true;
   private $arguments = array();
 
-  public function __construct($context) {
-    $_ENV['context'] = $context;
+  public function __construct() {
     $this->reader = new CommandReader;
     $this->setConfig(require HF_CONFIG_PATH.'cli'
                             .DIRECTORY_SEPARATOR.__CLASS__.'.config.php');

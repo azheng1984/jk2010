@@ -31,6 +31,13 @@ class OptionParser {
       $objectBuilder = new OptionObjectBuilder($this->argumentParser);
       $value = $objectBuilder->build($this->config[$name]);
     }
-    $_ENV['context']->addOption($name, $value);
+    $this->setOption($name, $value);
+  }
+
+  private function setOption($name, $value) {
+    if (!isset($_ENV['option'])) {
+      $_ENV['option'] = array();
+    }
+    $_ENV['option'][$name] = $value;
   }
 }
