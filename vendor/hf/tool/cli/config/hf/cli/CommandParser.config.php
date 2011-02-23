@@ -17,11 +17,13 @@ return array (
       'option' => array (
         'preview' => array (
           'short' => 'p',
-          'class' => 'Preview',
+          'description' => '',
+        ),
+        'quite' => array (
+          'short' => 'q',
           'description' => '',
         ),
       ),
-      'infinite_argument',
       'description' => '',
     ),
     'new' => array (
@@ -29,19 +31,15 @@ return array (
         'web' => array (
           'class' => 'NewWebCommand',
           'option' => array (
-            'output_only' => array (
-              'short' => 'o',
-              'class' => 'OutputNewWebResult',
-              'description' => '',
+            'preview' => array (
             ),
           ),
         ),
         'cli' => array (
           'class' => 'NewCliCommand',
           'option' => array (
-            'output_only' => array (
-              'short' => 'o',
-              'class' => 'OutputNewCliResultOption',
+            'preview' => array (
+              'short' => 'p',
               'description' => '',
             ),
           ),

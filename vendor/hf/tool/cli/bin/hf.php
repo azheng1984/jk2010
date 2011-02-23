@@ -8,5 +8,5 @@ define('HF_CONFIG_PATH', ROOT_PATH.'config/hf/');
 require HF_PATH.'class_loader/lib/ClassLoader.php';
 $classLoader = new ClassLoader;
 $classLoader->run();
-$parser = new CommandParser(new CommandContext);
+$parser = new CommandParser;
 $parser->parse();

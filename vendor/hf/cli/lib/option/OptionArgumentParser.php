@@ -8,7 +8,7 @@ class OptionArgumentParser {
     $this->isAfterLeafCommand = $isAfterLeafCommand;
   }
 
-  private function parse($maximumLength) {
+  private function parse($standardLength) {
     $arguments = array();
     while (($item = $this->reader->read()) !== null) {
       if (strpos($item, '-') === 0 && $item !== '-') {
@@ -19,21 +19,21 @@ class OptionArgumentParser {
       $this->reader->move();
     }
     $amount = count($arguments);
-    if ($amount > $maximumLength && $maximumLength !== null) {
-      return $this->cutArguments($arguments, $amount, $maximumLength);
+    if ($amount > $standardLength && $standardLength !== null) {
+      return $this->cutArguments($arguments, $amount, $standardLength);
     }
     return $arguments;
   }
 
-  private function cutArguments($arguments, $amount, $maximumLength) {
-    if ($amount === $maximumLength + 1 && !$this->isAfterLeafCommand) {
+  private function cutArguments($arguments, $amount, $standardLength) {
+    if ($amount === $standardLength + 1 && !$this->isAfterLeafCommand) {
       array_pop($arguments);
       $this->reader->move(-1);
       return $arguments;
     }
     if ($this->reader->read() === null) {
-      $arguments = array_slice($arguments, 0, $maximumLength);
-      $this->reader->move($maximumLength - $amount);
+      $arguments = array_slice($arguments, 0, $standardLength);
+      $this->reader->move($standardLength - $amount);
     }
     return $arguments;
   }
