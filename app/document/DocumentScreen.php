@@ -48,6 +48,10 @@ class DocumentScreen {
     $this->renderRelated();
     $this->renderDocumentListLink();
     echo '</div>';
+    $adsense = new AdSenseScreen;
+    echo '<div id="recent">';
+    $adsense->render('test');
+    echo '</div>';
   }
 
   private function renderDescription() {

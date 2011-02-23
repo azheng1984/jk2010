@@ -19,8 +19,12 @@ class CommandParser {
       $this->analyze($item);
       $this->reader->move();
     }
+    if (!isset($this->config['class']) && isset($this->config['default_sub'])) {
+      $this->reader->expand($this->config['default_sub'])->move();
+      return $this->parse();
+    }
     $runner = new CommandRunner;
-    $runner->run($this->config, $this->arguments);
+    return $runner->run($this->config, $this->arguments);
   }
 
   private function analyze($item) {

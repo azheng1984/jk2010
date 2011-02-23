@@ -29,9 +29,11 @@ class CategoryScreen implements IContent {
   }
 
   private function renderRencent() {
+    $adsense = new AdSenseScreen;
     echo '<div id="recent"><span class="red_title">最新热点</span>';
     $this->renderRecentContent();
     $this->renderDocumentListLink();
+    $adsense->render('test');
     echo '</div>';
   }
 

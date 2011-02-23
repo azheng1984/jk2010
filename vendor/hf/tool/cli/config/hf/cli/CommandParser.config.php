@@ -50,5 +50,5 @@ return array (
     ),
     'help' => 'HelpCommand',
   ),
-  'expansion' => array('help'),
+  'default_sub' => array('help'),
 );
