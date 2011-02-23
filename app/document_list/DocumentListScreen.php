@@ -74,6 +74,10 @@ class DocumentListScreen implements IContent {
     }
     $this->renderNavigator();
     echo '</div>';
+    $adsense = new AdSenseScreen;
+    echo '<div id="recent">';
+    $adsense->render('test');
+    echo '</div>';
   }
 
   private function renderNavigator() {
