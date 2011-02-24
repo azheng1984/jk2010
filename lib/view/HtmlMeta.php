@@ -8,12 +8,10 @@ class HtmlMeta {
   }
 
   public function render() {
-    echo '    <meta http-equiv="Content-Type"', 
-         ' content="text/html; charset=UTF-8"/>', "\n";
+    echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>';
     foreach ($this->metas as $item) {
       if ($item['content'] !== null) {
-        echo '    <meta name="', $item['name'],
-             '" content="', $item['content'], '" />', "\n";
+        echo '<meta name="', $item['name'], '"content="', $item['content'], '" />';
       }
     }
   }
