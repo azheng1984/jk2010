@@ -55,8 +55,9 @@ class CommandParser {
       $value = array('class' => $value, 'option' => array ());
     }
     $this->isAfterLeaf = isset($value['class']);
+    $optionConfig = isset($value['option']) ? $value['option'] : array ();
     $this->optionParser = new OptionParser($this->reader,
-                                           $value['option'],
+                                           $optionConfig,
                                            $this->isAfterLeaf);
     if (isset($value['expansion'])) {
       $this->reader->expand($value['expansion']);
