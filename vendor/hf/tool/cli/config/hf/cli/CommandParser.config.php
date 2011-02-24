@@ -15,13 +15,9 @@ return array (
   'sub' => array (
     'make' => array (
       'option' => array (
-        'preview' => array (
-          'short' => 'p',
-          'description' => 'output execute info only, do not do real action',
-        ),
-        'quite' => array (
-          'short' => 'q',
-          'description' => 'do not output execute info',
+        'dry_run' => array (
+          'short' => 'd',
+          'description' => 'Don’t actually build cache(s), just output',
         ),
       ),
       'description' => '',
@@ -30,9 +26,21 @@ return array (
       'sub' => array (
         'web' => array (
           'class' => 'NewWebCommand',
+          'option' => array (
+            'dry_run' => array (
+              'short' => 'd',
+              'description' => 'Don’t actually build web application scaffold, just output',
+            ),
+          ),
         ),
         'cli' => array (
           'class' => 'NewCliCommand',
+          'option' => array (
+            'dry_run' => array (
+              'short' => 'd',
+              'description' => 'Don’t actually build cli application scaffold, just output',
+            ),
+          ),
         ),
       ),
     ),
