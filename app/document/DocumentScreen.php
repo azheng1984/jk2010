@@ -32,14 +32,15 @@ class DocumentScreen {
   }
 
   public function render() {
-    $title = "{$this->cache['title']}-甲壳";
-    $wrapper = new ScreenWrapper($this, $title, new HtmlMeta($this->cache['description'], $this->cache['keywords']));
+    $title = "{$this->cache['title']}_甲壳";
+    $meta = new HtmlMeta($this->cache['description'], $this->cache['keywords']);
+    $wrapper = new ScreenWrapper($this, $title, $meta);
     $wrapper->render();
   }
 
   public function renderContent() {
     echo '<div id="document">';
-    echo '<h1>'.$this->cache['title'].'</h1>';
+    echo '<h1>',  $this->cache['title'], '</h1>';
     $this->renderDescription();
     $this->renderImage();
     $meta = new DocumentMetaScreen;
@@ -55,33 +56,37 @@ class DocumentScreen {
   }
 
   private function renderDescription() {
-    echo '<div class="description">'.$this->cache['description'].'</div>';
+    echo '<div class="description">', $this->cache['description'], '</div>';
   }
 
   private function renderImage() {
     if (isset($this->cache['image_url_prefix'])) {
       $title = "《{$this->cache['title']}》的图片";
-      echo ' <div class="image"><img title="'.$title.'" alt="'.$title.'" src="'.$this->cache['image_url_prefix'].'-'.$this->cache['url_name'].'.jpg" /></div>';
+      echo ' <div class="image"><img title="', $title, '" alt="', $title,
+           '" src="', $this->cache['image_url_prefix'], '-', $this->cache['url_name'], '.jpg" /></div>';
     }
   }
 
   private function renderSourceLink() {
     echo '<div class="source_link">';
     if (isset($_ENV['source'][$this->cache['source_id']][1])) {
-      echo '<img src="/image/source/'.$_ENV['source'][$this->cache['source_id']][1].'" /> ';
+      echo '<img src="/image/source/', $_ENV['source'][$this->cache['source_id']][1], '" /> ';
     }
-    echo $this->cache['source_url'].' <a target="_blank" href="http://'.$this->cache['source_url'].'">浏览</a></div>';
+    echo $this->cache['source_url'], ' <a target="_blank" href="http://',
+         $this->cache['source_url'], '">浏览</a></div>';
   }
 
   private function renderDocumentListLink() {
-    $url = '/'.$this->categoryUrlName.'/'.$this->databaseIndex.'-'.$this->cache['list_page_id'].'/#'.$this->cache['url_name'];
+    $url = '/'.$this->categoryUrlName.'/'.$this->databaseIndex.'-'
+          .$this->cache['list_page_id'].'/#'.$this->cache['url_name'];
     echo "<div class=\"back\"><a href=\"$url\">返回《{$this->cache['title']}》所在的列表</a></div>";
   }
 
   private function renderRelated() {
     echo '<div id="related">';
     echo '<span class="red_title">相关热点</span>';
-    $tmp = substr($this->cache['related_cache'], 1, strlen($this->cache['related_cache']) - 2);
+    $tmp = substr($this->cache['related_cache'], 1,
+           strlen($this->cache['related_cache']) - 2);
     $items = explode('";"', $tmp);
     foreach ($items as $row) {
       $this->renderRelatedItem($row);
@@ -90,12 +95,12 @@ class DocumentScreen {
   }
 
   private function renderRelatedItem($row) {
-    echo '<span class="item">';
     $columns = explode('","', $row);
-    echo '<a href="'.$columns[0].'-'.$columns[3].'.html">'.$columns[1].'</a>';
-    echo '</span>';
+    echo '<span class="link"><a href="',
+         $columns[0], '-', $columns[3], '.html">', $columns[1], '</a></span>';
     if (!empty($columns[5])) {
-      echo '<img src="'.$columns[5].'-'.$columns[3].'.jpg" title='.$columns[4].'" alt="'.$columns[4].'" />';
+      echo '<img src="', $columns[5], '-'.$columns[3], '.jpg" title=',
+           $columns[4], '" alt="', $columns[4], '" />';
     } else {
       echo $columns[4];
     }
