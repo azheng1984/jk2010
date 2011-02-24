@@ -10,6 +10,12 @@ ul {
   padding: 0;
   color:#999999;
 }
+h1 {
+  font-weight: normal;
+  font-family: "黑体";
+  font-size: 20px;
+  margin: 0.67em 0;
+}
 #logo {
   width:950px;
   margin: 0 auto;
@@ -19,12 +25,6 @@ ul {
 #logo a {
   color:#000000;
   text-decoration:none;
-}
-h1 {
-  font-weight: normal;
-  font-family: "黑体";
-  font-size: 20px;
-  margin: 0.67em 0;
 }
 #category {
   line-height:25px;
@@ -102,7 +102,7 @@ h1 {
   border-top: solid 1px #cccccc;
   width:100%;
 }
-#related .item {
+#related .link {
   display:block;
   margin-top:10px;
 }

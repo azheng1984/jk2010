@@ -39,7 +39,7 @@ class DocumentListScreen implements IContent {
   }
 
   public function render() {
-    $title = "第{$this->page}页-甲壳科技";
+    $title = "第{$this->page}页_甲壳科技";
     $wrapper = new ScreenWrapper($this, $title);
     $wrapper->render();
   }

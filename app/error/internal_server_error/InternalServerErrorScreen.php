@@ -1,7 +1,7 @@
 <?php
 class InternalServerErrorScreen {
   public function render() {
-    $wrapper = new ScreenWrapper($this, '出错了-甲壳');
+    $wrapper = new ScreenWrapper($this, '出错了_甲壳');
     $wrapper->render();
   }
 
