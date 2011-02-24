@@ -19,20 +19,18 @@ class ScreenWrapper {
     }
     ob_start('ob_gzhandler');
     echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"',
-         ' "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">', "\n",
-         '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN">', "\n",
-         "  <head>\n";
+         ' "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
+         '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN">',
+         "<head>";
     $this->meta->render();
-    echo "    <title>$this->title</title>\n";
-    echo '    <link type="text/css" href="/css/main.css" charset="utf-8" media="screen" rel="stylesheet" />';
-    echo '  </head>', "\n",
-         '  <body>', "\n";
+    echo "<title>$this->title</title>";
+    echo '<link type="text/css" href="/css/main.css" charset="utf-8" media="screen" rel="stylesheet" />';
+    echo '</head><body>';
     $this->header->render();
     echo '<div id="content">';
     $this->content->renderContent();
     echo '</div>';
     $this->footer->render();
-    echo "\n", '  </body>', "\n";
-    echo '</html>';
+    echo '</body></html>';
   }
 }
