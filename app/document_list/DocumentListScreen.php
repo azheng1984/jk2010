@@ -1,5 +1,5 @@
 <?php
-class DocumentListScreen implements IContent {
+class DocumentListScreen {
   private $cache;
   private $databaseIndex;
   private $categoryUrlName;
