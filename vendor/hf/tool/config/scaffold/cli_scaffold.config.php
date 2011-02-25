@@ -56,5 +56,6 @@ return array (
     ');',
   ),
   'lib',
+  'test',
   'vendor',
 );
