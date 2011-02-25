@@ -1,7 +1,7 @@
 <?php
 class ImageAction {
   public function GET() {
-    $_ENV['media'] = 'image';
+    $_ENV['media_type'] = 'image';
     if (!in_array($_GET['image_database_index'], $_ENV['image_database'])) {
       throw new NotFoundException;
     }
