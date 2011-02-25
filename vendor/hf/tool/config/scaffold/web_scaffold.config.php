@@ -44,5 +44,6 @@ return array (
     '$errorHandler->run();',
     '$app->run();',
   ),
+  'test',
   'vendor',
 );
