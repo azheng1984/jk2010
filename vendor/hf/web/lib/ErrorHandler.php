@@ -16,7 +16,7 @@ class ErrorHandler {
 
   public function handle($exception) {
     if (!headers_sent()) {
-      $__ENV['error_handler'] = array ('exception' => $exception);
+      $_ENV['error_handler'] = array ('exception' => $exception);
       $this->reload($exception);
     }
     trigger_error($exception, E_USER_ERROR);
