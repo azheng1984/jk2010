@@ -2,7 +2,6 @@
 class ScreenWrapper {
   private $content;
   private $meta;
-  private static $isInit = false;
 
   public function __construct($content, $title, $meta = null) {
     $this->content = $content;
@@ -13,10 +12,10 @@ class ScreenWrapper {
   }
 
   public function render() {
-    if (!self::$isInit) {
-      $this->init();
-      self::$isInit = true;
+    if (extension_loaded('zlib')) {
+      ini_set('zlib.output_compression', 'On');
     }
+    header('Content-Type:text/html; charset=utf-8');
     echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"',
          ' "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
          '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN">',
@@ -31,12 +30,5 @@ class ScreenWrapper {
     echo '</div>';
     $this->footer->render();
     echo '</body></html>';
-  }
-
-  private function init() {
-    if (extension_loaded('zlib')) {
-      ini_set('zlib.output_compression', 'On');
-    }
-    header('Content-Type:text/html; charset=utf-8');
   }
 }
