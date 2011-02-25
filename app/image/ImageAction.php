@@ -1,11 +1,10 @@
 <?php
 class ImageAction {
   public function GET() {
+    $_ENV['media'] = 'image';
     if (!in_array($_GET['image_database_index'], $_ENV['image_database'])) {
-      $this->setNotFoundHeader();
-      return;
+      throw new NotFoundException;
     }
-    $connection = new PDO('sqlite:'.DATA_PATH."image/{$_GET['image_database_index']}.sqlite");
     $size = 'normal';
     if (!is_numeric($_GET['id'])) {
       $length = strlen($_GET['id']);
@@ -13,22 +12,17 @@ class ImageAction {
         $_GET['id'] = substr($_GET['id'], 0, $length - 2);
         $size = 'small';
       } else {
-        $this->setNotFoundHeader();
-        return;
+        throw new NotFoundException;
       }
     }
+    $connection = new PDO('sqlite:'.DATA_PATH."image/{$_GET['image_database_index']}.sqlite");
     $statement = $connection->prepare("select $size from image where id=?");
     $statement->execute(array($_GET['id']));
     $cache = $statement->fetchColumn();
     if (!$cache) {
-      $this->setNotFoundHeader();
-      return;
+      throw new NotFoundException;
     }
     header('Content-type: image/jpeg');
     echo $cache;
-  }
-
-  private function setNotFoundHeader() {
-    header('HTTP/1.1 404 Not Found');
   }
 }
