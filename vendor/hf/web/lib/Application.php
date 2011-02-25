@@ -15,7 +15,7 @@ class Application {
       $this->cache = require HF_CACHE_PATH.'web'
                             .DIRECTORY_SEPARATOR.__CLASS__.'.cache.php';
     }
-    if (!isset($this->cache[$path]) && !in_array($path, $this->cache)) {
+    if (!isset($this->cache[$path]) && !in_array($path, $this->cache, true)) {
       throw new NotFoundException("Path '$path' not found");
     }
     foreach ($this->processors as $name => $processor) {
@@ -28,7 +28,7 @@ class Application {
     if (isset($this->cache[$path][$name])) {
       $cache = $this->cache[$path][$name];
     }
-    if ($cache !== null || in_array($name, $this->cache[$path])) {
+    if ($cache !== null || in_array($name, $this->cache[$path], true)) {
       $processor->run($cache);
     }
   }
