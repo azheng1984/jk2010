@@ -6,6 +6,6 @@ class InternalServerErrorScreen {
   }
 
   public function renderContent() {
-    echo '<div class="red_title error_content">服务器出现异常，请稍候访问</div>';
+    echo $_ENV['error_handler']['output_buffer'].'<div class="red_title error_content">服务器出现异常，请稍候访问</div>';
   }
 }
