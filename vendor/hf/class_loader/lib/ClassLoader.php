@@ -21,11 +21,11 @@ class ClassLoader {
     if (!isset($this->classes[$name])) {
       throw new Exception("Class '$name' not found");
     }
-    require $this->buildFolderPath($this->classes[$name])
+    require $this->getFolder($this->classes[$name])
            .DIRECTORY_SEPARATOR.$name.'.php';
   }
 
-  private function buildFolderPath($index) {
+  private function getFolder($index) {
     if (is_array($this->folders[$index])) {
       return $this->roots[$this->folders[$index][0]]
             .DIRECTORY_SEPARATOR.$this->folders[$index][1];
