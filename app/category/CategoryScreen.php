@@ -1,5 +1,5 @@
 <?php
-class CategoryScreen implements IContent {
+class CategoryScreen {
   private $cache;
 
   public function render() {
