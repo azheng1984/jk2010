@@ -6,6 +6,6 @@ class ActionProcessor {
       throw new MethodNotAllowedException($cache['method']);
     }
     $action = new $cache['class'];
-    $action->{$method}();
+    $action->$method();
   }
 }
