@@ -19,7 +19,7 @@ class ActionProcessorTest extends PHPUnit_Framework_TestCase {
     $processor = new ActionProcessor;
     $processor->run(array(
       'class' => 'TestAction',
-      'method' => array ('GET')));
+      'method' => array('GET')));
     $this->assertEquals('hi', TestAction::getResult());
   }
 }

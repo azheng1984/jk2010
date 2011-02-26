@@ -17,7 +17,7 @@ h1 {
   margin: 0.67em 0;
 }
 #logo {
-  width:950px;
+  width:998px;
   margin: 0 auto;
   line-height:50px;
   font-size:18px;
@@ -31,7 +31,7 @@ h1 {
   background-color:#ffdddd;
 }
 #category .content {
-  width:950px;
+  width:998px;
   margin: 0 auto;
 }
 #category a {
@@ -47,7 +47,7 @@ h1 {
   color:#888888;
 }
 #content {
-  width:950px;
+  width:998px;
   margin: 0 auto;
 }
 #list, #document{
@@ -56,7 +56,7 @@ h1 {
 }
 #recent {
   float:right;
-  width:280px;
+  width:335px;
   margin-top:20px;
 }
 .text {

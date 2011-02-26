@@ -1,7 +1,7 @@
 <?php
-return array (
+return array(
   'app/home/HomeScreen.php',
-  'app/error/internal_server_error/InternalServerErrorScreen.php' => array (
+  'app/error/internal_server_error/InternalServerErrorScreen.php' => array(
     '<?php',
     'class InternalServerErrorScreen {',
     '  public function render() {',
@@ -18,16 +18,16 @@ return array (
     '}',
   ),
   'cache',
-  'config/hf/web/ErrorHandler.config.php' => array (
+  'config/hf/web/ErrorHandler.config.php' => array(
     '<?php',
-    'return array (',
+    'return array(',
     "  '404 Not Found' => 'error/not_found',",
     "  '500 Internal Server Error' => 'error/internal_server_error',",
     ');',
   ),
   'config/hf/make.config.php',
   'lib',
-  'public/index.php' => array (
+  'public/index.php' => array(
     '<?php',
     "define('ROOT_PATH', dirname(dirname(__FILE__)).'/');",
     "define('HF_CACHE_PATH', ROOT_PATH.'cache/vendor/hf/');",
@@ -36,7 +36,7 @@ return array (
     "require 'ClassLoader.php';",
     '$classLoader = new ClassLoader;',
     '$classLoader->run();',
-    '$app = new Application(array (',
+    '$app = new Application(array(',
     "  'action' => new ActionProcessor,",
     "  'view' => new ViewProcessor",
     '));',

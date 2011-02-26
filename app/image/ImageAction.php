@@ -18,11 +18,11 @@ class ImageAction {
     $connection = new PDO('sqlite:'.DATA_PATH."image/{$_GET['image_database_index']}.sqlite");
     $statement = $connection->prepare("select $size from image where id=?");
     $statement->execute(array($_GET['id']));
-    $cache = $statement->fetchColumn();
-    if (!$cache) {
+    $image = $statement->fetchColumn();
+    if ($image === false) {
       throw new NotFoundException;
     }
     header('Content-type: image/jpeg');
-    echo $cache;
+    echo $image;
   }
 }
