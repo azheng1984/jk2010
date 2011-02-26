@@ -27,8 +27,8 @@ class ErrorHandler {
       $exception = new InternalServerErrorException();
     }
     $statusCode = $exception->getCode();
-    $config = require HF_CONFIG_PATH.'web'
-                     .DIRECTORY_SEPARATOR.__CLASS__.'.config.php';
+    $config = require
+      HF_CONFIG_PATH.'web'.DIRECTORY_SEPARATOR.__CLASS__.'.config.php';
     if (isset($config[$statusCode])) {
       $this->app->run($config[$exception->getCode()]);
     }
