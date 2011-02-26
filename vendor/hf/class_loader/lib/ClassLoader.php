@@ -27,10 +27,11 @@ class ClassLoader {
   }
 
   private function getFolder($index) {
+    $rootIndex = 0;
     if (is_array($this->folders[$index])) {
-      $root = $this->roots[$this->folders[$index][0]];
-      return $root.DIRECTORY_SEPARATOR.$this->folders[$index][1];
+      $rootIndex = $this->folders[$index][0];
     }
-    return $this->roots['default'].DIRECTORY_SEPARATOR.$this->folders[$index];
+    $root = $this->roots[$rootIndex];
+    return $root.DIRECTORY_SEPARATOR.$this->folders[$index][1];
   }
 }
