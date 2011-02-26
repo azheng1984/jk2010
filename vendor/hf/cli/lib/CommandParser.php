@@ -8,8 +8,9 @@ class CommandParser {
   private $arguments = array();
 
   public function __construct() {
-    $this->setConfig(require HF_CONFIG_PATH.'cli'
-                            .DIRECTORY_SEPARATOR.__CLASS__.'.config.php');
+    $this->setConfig(
+      require HF_CONFIG_PATH.'cli'.DIRECTORY_SEPARATOR.__CLASS__.'.config.php'
+    );
     $this->reader = new CommandReader;
   }
 
@@ -56,9 +57,11 @@ class CommandParser {
     }
     $this->isAfterLeaf = isset($value['class']);
     $optionConfig = isset($value['option']) ? $value['option'] : array();
-    $this->optionParser = new OptionParser($this->reader,
-                                           $optionConfig,
-                                           $this->isAfterLeaf);
+    $this->optionParser = new OptionParser(
+      $this->reader,
+      $optionConfig,
+      $this->isAfterLeaf
+    );
     if (isset($value['expansion'])) {
       $this->reader->expand($value['expansion']);
     }
