@@ -18,7 +18,7 @@ class HtmlMeta {
 
   private function addMeta($name, $content) {
     if ($content != null) {
-      $this->metas[] = array ('name' => $name, 'content' => $content);
+      $this->metas[] = array('name' => $name, 'content' => $content);
     }
   }
 }

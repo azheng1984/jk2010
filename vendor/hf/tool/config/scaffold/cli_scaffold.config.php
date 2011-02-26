@@ -1,6 +1,6 @@
 <?php
-return array (
-  'app/HelpCommand.php' => array (
+return array(
+  'app/HelpCommand.php' => array(
     '<?php',
     'class HelpCommand {',
     '  public function execute($target = \'main\') {',
@@ -8,11 +8,11 @@ return array (
     '  }',
     '}',
   ),
-  'bin/bin.bat' => array (
+  'bin/bin.bat' => array(
     '@echo off',
     'php "hf.php" %*',
   ),
-  'bin/bin.php' => array (
+  'bin/bin.php' => array(
     '#!/usr/bin/php',
     '<?php',
     "ini_set('display_errors', 0);",
@@ -28,28 +28,28 @@ return array (
     '$parser = new CommandParser;',
     '$parser->parse();',
    ),
-  'bin/bin.sh' => array (
+  'bin/bin.sh' => array(
     '@echo off',
     'php "hf.php" %*',
   ),
   'cache',
   'config/hf/make.config.php',
-  'config/hf/cli/CommandParser.config.php' => array (
+  'config/hf/cli/CommandParser.config.php' => array(
     '<?php',
-    'return array (',
-    "  'option' => array (",
-    "    'version' => array (",
+    'return array(',
+    "  'option' => array(",
+    "    'version' => array(",
     "      'short' => 'v',",
-    "      'expansion' => array ('help', 'version'),",
+    "      'expansion' => array('help', 'version'),",
     "      'description' => 'print version infomation',",
     '    ),',
-    "    'help' => array (",
-    "      'short' => array ('h', '?'),",
-    "      'expansion' => array ('help'),",
+    "    'help' => array(",
+    "      'short' => array('h', '?'),",
+    "      'expansion' => array('help'),",
     "      'description' => 'show help',",
     "    ),",
     "  ),",
-    "  'sub' => array (",
+    "  'sub' => array(",
     "    'help' => 'HelpCommand',",
     "  ),",
     "  'default_sub' => array('help'),",

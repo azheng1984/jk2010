@@ -52,10 +52,10 @@ class CommandParser {
 
   private function setConfig($value) {
     if (!is_array($value)) {
-      $value = array('class' => $value, 'option' => array ());
+      $value = array('class' => $value, 'option' => array());
     }
     $this->isAfterLeaf = isset($value['class']);
-    $optionConfig = isset($value['option']) ? $value['option'] : array ();
+    $optionConfig = isset($value['option']) ? $value['option'] : array();
     $this->optionParser = new OptionParser($this->reader,
                                            $optionConfig,
                                            $this->isAfterLeaf);
