@@ -9,7 +9,7 @@ class CommandParser {
 
   public function __construct() {
     $this->setConfig(
-      require(HF_CONFIG_PATH.'cli'.DIRECTORY_SEPARATOR.__CLASS__.'.config.php')
+      require HF_CONFIG_PATH.'cli'.DIRECTORY_SEPARATOR.__CLASS__.'.config.php'
     );
     $this->reader = new CommandReader;
   }
