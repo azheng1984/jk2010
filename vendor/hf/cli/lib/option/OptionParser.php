@@ -19,13 +19,7 @@ class OptionParser {
       $this->reader->expand($name);
       return;
     }
-    $config = null;
-    if (in_array($name, $this->config, true)) {
-      $config = array();
-    }
-    if (isset($this->config[$name])) {
-      $config = $this->config[$name];
-    }
+    $config = $this->getConfig($name);
     if ($config === null) {
       throw new SyntaxException("Option '$item' not allowed");
     }
@@ -39,6 +33,15 @@ class OptionParser {
       $value = $objectBuilder->build($config);
     }
     $this->setOption($name, $value);
+  }
+
+  private function getConfig($name) {
+    if (in_array($name, $this->config, true)) {
+      return array();
+    }
+    if (isset($this->config[$name])) {
+      return $this->config[$name];
+    }
   }
 
   private function setOption($name, $value) {
