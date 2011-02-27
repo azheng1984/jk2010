@@ -24,7 +24,8 @@ class CategoryScreen {
 
   private function renderDocumentListLink() {
     if (isset($this->cache['document_list_url'])) {
-      echo '<a href="'.$this->cache['document_list_url'].'">更多</a>';
+      echo '<a class="more" href="',
+           $this->cache['document_list_url'].'">更多</a>';
     }
   }
 
