@@ -11,10 +11,11 @@ ul {
   color:#999999;
 }
 h1 {
-  font-weight: normal;
-  font-family: "黑体";
   font-size: 20px;
-  margin: 0.67em 0;
+  margin: 15px 0 5px 0;
+}
+a:link {
+  color:#2200C1;
 }
 #logo {
   width:998px;
@@ -97,8 +98,8 @@ h1 {
 }
 #related {
   float:left;
-  padding-top:20px;
-  margin-top:20px;
+  padding-top:10px;
+  margin-top:5px;
   border-top: solid 1px #cccccc;
   width:100%;
 }
@@ -114,8 +115,8 @@ h1 {
 }
 #document .source_link {
   color: #0E774A;
-  padding: 5px;
-  margin:3px 0;
+  padding: 10px 5px 5px;
+  margin:5px 0;
   background-color:#E3F6CE;
 }
 #document .back {
@@ -124,6 +125,9 @@ h1 {
   border-top: solid 1px #cccccc;
   width:100%;
   float:left;
+}
+#document .back a, .more {
+  color:#2200C1;
 }
 .error_content {
   padding:100px;

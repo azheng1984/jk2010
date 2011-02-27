@@ -44,8 +44,8 @@ class DocumentScreen {
     $this->renderDescription();
     $this->renderImage();
     $meta = new DocumentMetaScreen;
-    $meta->render($this->cache);
     $this->renderSourceLink();
+    $meta->render($this->cache);
     $this->renderRelated();
     $this->renderDocumentListLink();
     echo '</div>';
