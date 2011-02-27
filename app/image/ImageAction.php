@@ -6,18 +6,23 @@ class ImageAction {
       throw new NotFoundException;
     }
     $size = 'normal';
-    if (!is_numeric($_GET['id'])) {
-      $length = strlen($_GET['id']);
-      if ($length > 2 && substr($_GET['id'], -2) === '_s' && is_numeric(substr($_GET['id'], 0, $length-2))) {
-        $_GET['id'] = substr($_GET['id'], 0, $length - 2);
+    $id = $_GET['id'];
+    if (!is_numeric($id)) {
+      $length = strlen($id);
+      if ($length > 2
+       && substr($id, -2) === '_s'
+       && is_numeric($prefix = substr($id, 0, $length - 2))) {
+        $id = $prefix;
         $size = 'small';
       } else {
         throw new NotFoundException;
       }
     }
-    $connection = new PDO('sqlite:'.DATA_PATH."image/{$_GET['image_database_index']}.sqlite");
+    $connection = new PDO(
+      'sqlite:'.DATA_PATH."image/{$_GET['image_database_index']}.sqlite"
+    );
     $statement = $connection->prepare("select $size from image where id=?");
-    $statement->execute(array($_GET['id']));
+    $statement->execute(array($id));
     $image = $statement->fetchColumn();
     if ($image === false) {
       throw new NotFoundException;
