@@ -25,9 +25,9 @@ class OptionObjectBuilder {
     }
     $length = count($arguments);
     $verifier = new ArgumentVerifier;
-    if ($verifier->verify($constructor, $length, $standardLength === null)) {
-      return $reflector->newInstanceArgs($arguments);
+    if (!$verifier->verify($constructor, $length, $standardLength === null)) {
+      throw new SyntaxException;
     }
-    return null;
+    return $reflector->newInstanceArgs($arguments);
   }
 }
