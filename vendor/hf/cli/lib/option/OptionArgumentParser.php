@@ -24,12 +24,12 @@ class OptionArgumentParser {
       $this->reader->move();
     }
     if ($standardLength !== null && $count > $standardLength) {
-      return $this->cutArguments($arguments, $count, $standardLength);
+      return $this->cut($arguments, $count, $standardLength);
     }
     return $arguments;
   }
 
-  private function cutArguments($arguments, $amount, $standardLength) {
+  private function cut($arguments, $amount, $standardLength) {
     if ($amount === $standardLength + 1 && !$this->isLastCommand) {
       array_pop($arguments);
       $this->reader->move(-1);
