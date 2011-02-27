@@ -33,18 +33,13 @@ class OptionParser {
       $this->reader->expand($config['expansion']);
       return;
     }
-    $class = null;
     if (in_array('string', $config)) {
-      $class = 'StringOption';
-    }
-    if (isset($config['class'])) {
-      $class = $config['class'];
+      $config['class'] = 'StringOption';
     }
     $value = true;
-    if ($class !== null) {
+    if (isset($config['class'])) {
       $objectBuilder = new OptionObjectBuilder($this->argumentParser);
-      $isInfiniteArgument = in_array('infinite_argument', $config, true);
-      $value = $objectBuilder->build($class, $isInfiniteArgument);
+      $value = $objectBuilder->build($config);
     }
     $this->setOption($name, $value);
   }
