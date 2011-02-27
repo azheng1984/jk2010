@@ -43,6 +43,14 @@ class CommandParser {
     $this->arguments[] = $item;
   }
 
+  private function setCommand($item) {
+    if (!isset($this->config['sub'][$item])) {
+      throw new SyntaxException("Command '$item' not found");
+    }
+    $this->setConfig($this->config['sub'][$item]);
+    $this->isAllowOption = true;
+  }
+
   private function setConfig($value) {
     if (!is_array($value)) {
       $value = array('class' => $value, 'option' => array());
@@ -56,13 +64,5 @@ class CommandParser {
       $this->reader->expand($value['expansion']);
     }
     $this->config = $value;
-  }
-
-  private function setCommand($item) {
-    if (!isset($this->config['sub'][$item])) {
-      throw new SyntaxException("Command '$item' not found");
-    }
-    $this->setConfig($this->config['sub'][$item]);
-    $this->isAllowOption = true;
   }
 }
