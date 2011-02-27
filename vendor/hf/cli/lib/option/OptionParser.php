@@ -33,9 +33,6 @@ class OptionParser {
       $this->reader->expand($config['expansion']);
       return;
     }
-    if (in_array('string', $config)) {
-      $config['class'] = 'StringOption';
-    }
     $value = true;
     if (isset($config['class'])) {
       $objectBuilder = new OptionObjectBuilder($this->argumentParser);
