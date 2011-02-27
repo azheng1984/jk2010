@@ -19,17 +19,32 @@ class OptionParser {
       $this->reader->expand($name);
       return;
     }
-    if (!isset($this->config[$name]) && !in_array($name, $this->config, true)) {
+    $config = null;
+    if (in_array($name, $this->config, true)) {
+      $config = array();
+    }
+    if (isset($this->config[$name])) {
+      $config = $this->config[$name];
+    }
+    if ($config === null) {
       throw new SyntaxException("Option '$item' not allowed");
     }
-    if (isset($this->config[$name]['expansion'])) {
-      $this->reader->expand($this->config[$name]['expansion']);
+    if (isset($config['expansion'])) {
+      $this->reader->expand($config['expansion']);
       return;
     }
+    $class = null;
+    if (in_array('string', $config)) {
+      $class = 'StringOption';
+    }
+    if (isset($config['class'])) {
+      $class = $config['class'];
+    }
     $value = true;
-    if (isset($this->config[$name]['class'])) {
+    if ($class !== null) {
       $objectBuilder = new OptionObjectBuilder($this->argumentParser);
-      $value = $objectBuilder->build($this->config[$name]);
+      $isInfiniteArgument = in_array('infinite_argument', $config, true);
+      $value = $objectBuilder->build($class, $isInfiniteArgument);
     }
     $this->setOption($name, $value);
   }

@@ -6,14 +6,14 @@ class OptionObjectBuilder {
     $this->argumentParser = $argumentParser;
   }
 
-  public function build($config) {
-    $reflector = new ReflectionClass($config['class']);
+  public function build($class, $isInfiniteArgument) {
+    $reflector = new ReflectionClass($class);
     $constructor = $reflector->getConstructor();
     $standardLength = 0;
     if ($constructor !== null) {
       $standardLength = $constructor->getNumberOfParameters();
     }
-    if (in_array('infinite_argument', $config, true)) {
+    if ($isInfiniteArgument) {
       $standardLength = null;
     }
     $arguments = $this->argumentParser->parse($standardLength);
