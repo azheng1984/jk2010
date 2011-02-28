@@ -4,7 +4,7 @@ class AdSenseScreen {
 
   public function render($slot) {
     if (self::$config === null) {
-      self::$config = require ROOT_PATH.'config/view/'.__CLASS__.'.config.php';
+      self::$config = require CONFIG_PATH.'adsense_screen.config.php';
     }
     if (self::$config['display'] !== false) {
       $slot = self::$config['slot'][$slot];
