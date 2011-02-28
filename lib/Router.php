@@ -36,6 +36,13 @@ class Router {
   }
 
   private function getItemPath() {
+    if ($this->length === 5 && $this->sections[1] === 'source') {
+      array_shift($this->sections);
+      $_GET['category'] = $this->sections[1];
+      --$this->length;
+      $this->getItemPath();
+      return 'source';
+    }
     if ($this->length !== 4) {
       throw new NotFoundException;
     }
