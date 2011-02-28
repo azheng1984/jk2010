@@ -12,9 +12,7 @@ class Application {
       $path = $_SERVER['REQUEST_URI'];
     }
     if ($this->cache === null) {
-      $this->cache = require(
-        HF_CACHE_PATH.'web'.DIRECTORY_SEPARATOR.__CLASS__.'.cache.php'
-      );
+      $this->cache = require CACHE_PATH.'application.cache.php';
     }
     if (!isset($this->cache[$path]) && !in_array($path, $this->cache, true)) {
       throw new NotFoundException("Path '$path' not found");

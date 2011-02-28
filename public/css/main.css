@@ -114,11 +114,17 @@ a:link {
   margin: 5px 0;
 }
 #document .source_link {
+  float: left;
   color: #0E774A;
-  padding: 5px;
+  width:100%;
+  padding:5px;
   margin:5px 0;
   line-height:20px;
   background-color:#E3F6CE;
+}
+#document .source_link .text {
+  width:520px;
+  margin-right: 0;
 }
 #document .source_link img {
   vertical-align:middle
@@ -126,7 +132,7 @@ a:link {
 #document .source_link a {
   background-color: green;
   color: white;
-  padding: 5px;
+  padding: 5px 15px;
   text-decoration: none;
 }
 #document .back {

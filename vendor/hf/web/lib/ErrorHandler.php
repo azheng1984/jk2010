@@ -26,9 +26,7 @@ class ErrorHandler {
     if (!$exception instanceof ApplicationException) {
       $exception = new InternalServerErrorException();
     }
-    $config = require(
-      HF_CONFIG_PATH.'web'.DIRECTORY_SEPARATOR.__CLASS__.'.config.php'
-    );
+    $config = require CONFIG_PATH.'error_handler.config.php';
     $statusCode = $exception->getCode();
     if (isset($config[$statusCode])) {
       $this->app->run($config[$statusCode]);

@@ -46,5 +46,5 @@ return array(
     ),
     'help' => 'HelpCommand',
   ),
-  'default_sub' => array('help'),
+  'description' => 'hyperframework cli tool',
 );

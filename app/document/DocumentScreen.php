@@ -72,9 +72,9 @@ class DocumentScreen {
   private function renderDynamicSourceLink() {
     echo '<div class="source_link">';
     if (isset($_ENV['source'][$this->cache['source_id']][1])) {
-      echo '<img src="/image/source/', $_ENV['source'][$this->cache['source_id']][1], '" /> ';
+      echo '<div class="text"><img src="/image/source/', $_ENV['source'][$this->cache['source_id']][1], '" /> ';
     }
-    echo $this->cache['source_url'], ' <a target="_blank" href="/source'.$_SERVER['REQUEST_URI'].'" rel="nofollow">瞄一眼</a></div>';
+    echo $this->cache['source_url'], '</div><div><a target="_blank" href="/source'.$_SERVER['REQUEST_URI'].'" rel="nofollow">瞄一眼</a></div></div>';
   }
 
   private function renderBackLink() {
