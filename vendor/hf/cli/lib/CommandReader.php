@@ -18,7 +18,6 @@ class CommandReader {
 
   public function move($step = 1) {
     $this->currentIndex += $step;
-    return $this;
   }
 
   public function expand($arguments) {
@@ -27,6 +26,5 @@ class CommandReader {
     if ($this->currentIndex > 1) {
       --$this->currentIndex;
     }
-    return $this;
   }
 }
