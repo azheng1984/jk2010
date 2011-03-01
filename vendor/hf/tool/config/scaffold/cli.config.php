@@ -32,7 +32,7 @@ return array(
     '@echo off',
     'php "hf.php" %*',
   ),
-  'cache',
+  'cache/',
   'config/make.config.php',
   'config/command_parser.config.php' => array(
     '<?php',
@@ -54,7 +54,7 @@ return array(
     "  ),",
     ');',
   ),
-  'lib',
-  'test',
-  'vendor',
+  'lib/',
+  'test/',
+  'vendor/',
 );

@@ -20,6 +20,7 @@ return array(
           'description' => 'Don’t actually build cache(s), just output',
         ),
       ),
+      'class' => 'MakeCommand',
       'description' => '',
     ),
     'new' => array(

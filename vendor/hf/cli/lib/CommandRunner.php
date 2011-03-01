@@ -14,8 +14,10 @@ class CommandRunner {
   }
 
   private function printList($config) {
-    foreach ($config['sub'] as $name => $item) {
-      echo $name."\n";
+    if (isset($config['sub'])) {
+      foreach ($config['sub'] as $name => $item) {
+        echo $name."\n";
+      }
     }
   }
 }
