@@ -17,7 +17,7 @@ return array(
     '  }',
     '}',
   ),
-  'cache',
+  'cache/',
   'config/error_handler.config.php' => array(
     '<?php',
     'return array(',
@@ -26,7 +26,7 @@ return array(
     ');',
   ),
   'config/make.config.php',
-  'lib',
+  'lib/',
   'public/index.php' => array(
     '<?php',
     "define('ROOT_PATH', dirname(dirname(__FILE__)).'/');",
@@ -43,6 +43,6 @@ return array(
     '$errorHandler->run();',
     '$app->run();',
   ),
-  'test',
-  'vendor',
+  'test/',
+  'vendor/',
 );
