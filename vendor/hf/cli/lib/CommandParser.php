@@ -3,7 +3,6 @@ class CommandParser {
   private $config;
   private $reader;
   private $optionParser;
-  private $isLast;
   private $isAllowOption = true;
   private $arguments = array();
 
@@ -26,11 +25,11 @@ class CommandParser {
       $this->isAllowOption = false;
       return;
     }
-    if ($item !== '-' && strpos($item, '-') === 0 && $this->isAllowOption) {
+    if ($this->isAllowOption && $item !== '-' && strpos($item, '-') === 0) {
       $this->optionParser->parse();
       return;
     }
-    if (!$this->isLast) {
+    if (!isset($this->config['class'])) {
       $this->setCommand($item);
       return;
     }
@@ -49,11 +48,8 @@ class CommandParser {
     if (!is_array($value)) {
       $value = array('class' => $value, 'option' => array());
     }
-    $this->isLast = isset($value['class']);
     $optionConfig = isset($value['option']) ? $value['option'] : array();
-    $this->optionParser = new OptionParser(
-      $this->reader, $optionConfig, $this->isLast
-    );
+    $this->optionParser = new OptionParser($this->reader, $optionConfig);
     if (isset($value['expansion'])) {
       $this->reader->expand($value['expansion']);
     }
