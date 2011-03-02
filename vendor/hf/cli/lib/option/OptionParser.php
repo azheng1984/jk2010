@@ -29,8 +29,8 @@ class OptionParser {
     }
     $value = true;
     if (isset($config['class'])) {
-      $objectBuilder = new OptionObjectBuilder($this->argumentParser);
-      $value = $objectBuilder->build($config);
+      $objectBuilder = new OptionObjectBuilder($config, $this->argumentParser);
+      $value = $objectBuilder->build();
     }
     $this->setOption($name, $value);
   }
