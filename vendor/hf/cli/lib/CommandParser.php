@@ -12,7 +12,7 @@ class CommandParser {
   }
 
   public function parse() {
-    while (($item = $this->reader->read()) !== null) {
+    while (($item = $this->reader->get()) !== null) {
       $this->analyze($item);
       $this->reader->move();
     }
