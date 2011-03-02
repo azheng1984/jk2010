@@ -19,7 +19,7 @@ class ClassLoader {
 
   public function load($name) {
     if (!isset($this->classes[$name])) {
-      throw new Exception("Class '$name' not found");
+      return;
     }
     require(
       $this->getFolder($this->classes[$name]).DIRECTORY_SEPARATOR.$name.'.php'
