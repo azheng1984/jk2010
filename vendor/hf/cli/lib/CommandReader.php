@@ -25,7 +25,7 @@ class CommandReader {
     array_splice($this->inputArguments, $this->currentIndex, 1, $arguments);
     $this->inputArgumentLength = count($this->inputArguments);
     if ($this->currentIndex > 1) {
-      --$this->currentIndex;
+      $this->move(-1);
     }
   }
 }
