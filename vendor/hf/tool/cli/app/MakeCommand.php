@@ -1,8 +1,9 @@
 <?php
 class MakeCommand {
-  private $content;
+  private $config;
+
   public function execute() {
-    $this->content = file_get_contents('config/make.config.php');
+    $this->config = file_get_contents('config/make.config.php');
     $this->buildClassLoaderCache();
     $this->buildApplicationCache();
   }
@@ -28,8 +29,9 @@ class MakeCommand {
         $tmp = explode('.', $item, 2);
         $reflector = new ReflectionClass($tmp[0]);
         //reflect method
+        $methods = array();
         foreach ($reflector->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-          
+          $method[] = $method['name'];
         }
       }
     }
