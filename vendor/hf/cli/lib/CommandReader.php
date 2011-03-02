@@ -18,6 +18,7 @@ class CommandReader {
 
   public function move($step = 1) {
     $this->currentIndex += $step;
+    return $this;
   }
 
   public function expand($arguments) {
