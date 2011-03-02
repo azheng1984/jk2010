@@ -11,7 +11,7 @@ class OptionArgumentParser {
     $count = 0;
     while ($count !== $standardLength) {
       $item = $this->reader->move()->read();
-      if ($item === null || (strpos($item, '-') === 0 && $item !== '-')) {
+      if ($item === null || ($item !== '-' && strpos($item, '-') === 0)) {
         $this->reader->move(-1);
         break;
       }
