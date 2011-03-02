@@ -18,12 +18,11 @@ class ClassLoader {
   }
 
   public function load($name) {
-    if (!isset($this->classes[$name])) {
-      return;
+    if (isset($this->classes[$name])) {
+      require(
+        $this->getFolder($this->classes[$name]).DIRECTORY_SEPARATOR.$name.'.php'
+      );
     }
-    require(
-      $this->getFolder($this->classes[$name]).DIRECTORY_SEPARATOR.$name.'.php'
-    );
   }
 
   private function getFolder($index) {

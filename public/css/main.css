@@ -140,6 +140,7 @@ a:link {
   width:100%;
   float:left;
   background-color: #e1e1e1;
+  color:#999999;
 }
 #document .back .to_list, .more {
   color:#2200C1;
