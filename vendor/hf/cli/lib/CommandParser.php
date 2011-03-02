@@ -7,8 +7,8 @@ class CommandParser {
   private $arguments = array();
 
   public function __construct() {
-    $this->setConfig(require CONFIG_PATH.'command_parser.config.php');
     $this->reader = new CommandReader;
+    $this->setConfig(require CONFIG_PATH.'command_parser.config.php');
   }
 
   public function parse() {
