@@ -28,6 +28,9 @@ class MakeCommand {
         $tmp = explode('.', $item, 2);
         $reflector = new ReflectionClass($tmp[0]);
         //reflect method
+        foreach ($reflector->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+          
+        }
       }
     }
     file_put_contents('cache/application.cache.php', "<?php\nreturn ".var_export(array(0=>array(), 1=>array()), true));
