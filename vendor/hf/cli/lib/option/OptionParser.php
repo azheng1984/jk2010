@@ -13,7 +13,7 @@ class OptionParser {
   }
 
   public function parse() {
-    $item = $this->reader->read();
+    $item = $this->reader->get();
     $name = $this->nameParser->parse($item);
     if (is_array($name)) {
       $this->reader->expand($name);

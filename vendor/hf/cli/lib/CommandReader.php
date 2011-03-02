@@ -9,7 +9,7 @@ class CommandReader {
     $this->inputArguments = $_SERVER['argv'];
   }
 
-  public function read() {
+  public function get() {
     if ($this->currentIndex >= $this->inputArgumentLength) {
       return null;
     }

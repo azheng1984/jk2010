@@ -28,8 +28,8 @@ class ClassLoader {
   private function getFolder($index) {
     $folder = $this->folders[$index];
     if (is_array($folder)) {
-      return $this->roots[$folder[0]].DIRECTORY_SEPARATOR.$folder[1];
+      return $this->roots[$folder[1]].DIRECTORY_SEPARATOR.$folder[0];
     }
-    return $this->roots[0].DIRECTORY_SEPARATOR.$folder;
+    return ROOT_PATH.$folder;
   }
 }

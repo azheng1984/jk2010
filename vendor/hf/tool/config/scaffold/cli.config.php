@@ -10,17 +10,15 @@ return array(
   ),
   'bin/bin.bat' => array(
     '@echo off',
-    'php "hf.php" %*',
+    'php "'.APP_NAME.'.php" %*',
   ),
   'bin/bin.php' => array(
     '#!/usr/bin/php',
     '<?php',
-    "ini_set('display_errors', 0);",
     "define('ROOT_PATH', dirname(dirname(__FILE__)).'/');",
-    "define('HF_PATH', dirname(dirname(ROOT_PATH)).'/');",
     "define('CACHE_PATH', ROOT_PATH.'cache/');",
     "define('CONFIG_PATH', ROOT_PATH.'config/');",
-    "require HF_PATH.'class_loader/lib/ClassLoader.php';",
+    "require ".CLASS_LOADER_PATH.";",
     '$classLoader = new ClassLoader;',
     '$classLoader->run();',
     '$errorHandler = new CommandErrorHandler;',
@@ -30,7 +28,7 @@ return array(
    ),
   'bin/bin.sh' => array(
     '@echo off',
-    'php "hf.php" %*',
+    'php "'.APP_NAME.'.php" %*',
   ),
   'cache/',
   'config/make.config.php',

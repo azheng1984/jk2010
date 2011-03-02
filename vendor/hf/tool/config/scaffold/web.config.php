@@ -33,7 +33,7 @@ return array(
     "define('CACHE_PATH', ROOT_PATH.'cache/');",
     "define('CONFIG_PATH', ROOT_PATH.'config/');",
     "define('DATA_PATH', ROOT_PATH.'data/');",
-    "require 'ClassLoader.php';",
+    "require ".CLASS_LOADER_PATH.";",
     '$classLoader = new ClassLoader;',
     '$classLoader->run();',
     '$app = new Application(',
