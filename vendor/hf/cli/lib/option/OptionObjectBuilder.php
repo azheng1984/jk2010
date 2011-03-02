@@ -1,19 +1,21 @@
 <?php
 class OptionObjectBuilder {
+  private $config;
   private $argumentParser;
 
-  public function __construct($argumentParser) {
+  public function __construct($config, $argumentParser) {
+    $this->config = $config;
     $this->argumentParser = $argumentParser;
   }
 
-  public function build($config) {
-    $reflector = new ReflectionClass($config['class']);
+  public function build() {
+    $reflector = new ReflectionClass($this->config['class']);
     $constructor = $reflector->getConstructor();
     $standardLength = 0;
     if ($constructor !== null) {
       $standardLength = $constructor->getNumberOfParameters();
     }
-    if (in_array('infinite_argument', $config, true)) {
+    if (in_array('infinite_argument', $this->config, true)) {
       $standardLength = null;
     }
     $arguments = $this->argumentParser->parse($standardLength);
