@@ -4,15 +4,17 @@ class MakeCommand {
 
   public function execute() {
     $this->config = require 'config/make.config.php';
-    $this->buildClassLoaderCache();
-    if ($this->config['type'] === 'web') {
+    if (isset($this->config['class_loader'])) {
+      $this->buildClassLoaderCache();
+    }
+    if (isset($this->config['application'])) {
       $this->buildApplicationCache();
     }
   }
 
   public function buildClassLoaderCache() {
     $cache = array(array(), array(), array());
-    foreach ($this->config['class_path'] as $key => $item) {
+    foreach ($this->config['class_loader'] as $key => $item) {
       if (!is_array($item)) {
         if (is_int($key)) {
           $key = null;
