@@ -13,6 +13,13 @@ class MakeCommand {
   public function buildClassLoaderCache() {
     $cache = array(array(), array(), array());
     foreach ($this->config['class_path'] as $key => $item) {
+      if (!is_array($item)) {
+        if (is_int($key)) {
+          $key = null;
+        }
+        $key = $key.$item;
+        $item = array('');
+      }
       $root = realpath($key);
       foreach ($item as $path) {
         $this->buildDir($root, $path, $cache);
@@ -36,13 +43,22 @@ class MakeCommand {
       if (is_dir($dirPath.'/'.$entry)) {
         $dirs[]= $entry;
       } else {
-        //check is class
         $classes[] = preg_replace('/.php$/', '', $entry);
       }
     }
     if (count($classes) !== 0) {
+      $rootIndex = null;
+      if (($rootIndex = array_search($root, $cache[2], true)) !== false) {
+      } else if ($root !== realpath('.')) {
+        $rootIndex = count($cache[2]);
+        $cache[2][] = $root;
+      }
       $index = count($cache[1]);
-      $cache[1][$index] = $path;
+      if ($rootIndex === false) {
+        $cache[1][$index] = $path;
+      } else {
+        $cache[1][$index] = array($path => $rootIndex);
+      }
       foreach ($classes as $class) {
         $cache[0][$class] = $index;
       }
@@ -81,7 +97,6 @@ class MakeCommand {
           $pathCache['view'] = array();
         }
         $pathCache['view']['screen'] = preg_replace('/.php$/', '', $entry);
-        //add to view
       }
       if (substr($entry, -9) === 'Image.php') {
         echo $entry;
@@ -93,10 +108,8 @@ class MakeCommand {
       if ($suffix === 'Action.php') {
         require $dirPath.'/'.$entry;
         $class = preg_replace('/.php$/', '', $entry);
-        echo $class;
-        $actionCache = array('class' => $class, 'method'=>array());
+        $actionCache = array('class' => $class, 'method' => array());
         $reflector = new ReflectionClass($class);
-        //reflect method
         $methods = array();
         foreach ($reflector->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
           $actionCache['method'][] = $method->name;
