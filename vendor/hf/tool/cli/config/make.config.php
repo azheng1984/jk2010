@@ -1,4 +1,6 @@
 <?php
 return array(
-  'type' => 'cli',
+  'class_loader' => array(
+    '.' => 'app',
+  ),
 );
