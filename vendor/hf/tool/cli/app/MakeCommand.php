@@ -6,7 +6,7 @@ class MakeCommand {
     $this->config = require 'config/make.config.php';
     $this->buildClassLoaderCache();
     if ($this->config['type'] === 'web') {
-      //$this->buildApplicationCache();
+      $this->buildApplicationCache();
     }
   }
 
@@ -15,66 +15,100 @@ class MakeCommand {
     foreach ($this->config['class_path'] as $key => $item) {
       $root = realpath($key);
       foreach ($item as $path) {
-        $dirPath = $root.'/'.$path;
-        $this->buildDir($dirPath, $cache);
+        $this->buildDir($root, $path, $cache);
       }
     }
-    file_put_contents('cache/class_loader.cache.php', "<?php\nreturn ".$this->renderArray($cache).";");
+    if (count($cache[2]) === 0) {
+      $cache[2] = null;
+    }
+    file_put_contents('cache/class_loader.cache.php', "<?php\nreturn ".var_export($cache, true).";");
   }
-  
-  private function buildDir($dirPath, &$cache) {
+
+  private function buildDir($root, $path, &$cache) {
+    $dirPath = $root.'/'.$path;
     $dir = dir($dirPath);
     $classes = array();
-    while (false !== ($entry = $dir->read())) {
+    $dirs = array();
+    foreach (scandir($dirPath) as $entry) {
       if ($entry === '..' || $entry === '.') {
         continue;
       }
       if (is_dir($dirPath.'/'.$entry)) {
-        $this->buildDir($dirPath.'/'.$entry, $cache);
+        $dirs[]= $entry;
+      } else {
+        //check is class
+        $classes[] = preg_replace('/.php$/', '', $entry);
       }
-      //check is class
-      $classes[] = $entry;
     }
     if (count($classes) !== 0) {
       $index = count($cache[1]);
-      $cache[1][$index] = $dirPath;
+      $cache[1][$index] = $path;
       foreach ($classes as $class) {
         $cache[0][$class] = $index;
       }
     }
-  }
-
-  private function getClass() {
-    
+    foreach ($dirs as $entry) {
+      $this->buildDir($root, $path.'/'.$entry, $cache);
+    }
   }
 
   public function buildApplicationCache() {
-    //scan app file and reflect class
-    $dir = dir('app');
-    while (false !== ($item = $dir->read())) {
+    $cache = array();
+    $this->buildApp('', $cache);
+    file_put_contents('cache/application.cache.php', "<?php\nreturn ".var_export($cache, true).';');
+  }
+
+  private function buildApp($path, &$cache) {
+    $pathCache = array();
+    $dirs = array();
+    $dirPath = getcwd().'/app/'.$path;
+    foreach (scandir($dirPath) as $entry) {
+      if ($entry === '..' || $entry === '.') {
+        continue;
+      }
+      if (is_dir($dirPath.'/'.$entry)) {
+        $dirs[]= $entry;
+        continue;
+      }
       //dispath item to processor like application
       //processor find "target" via suffix.
       //processors add thire own cache (extensible)
       //register processors in make.config.php
-      $suffix = substr($item, -10);
+      $suffix = substr($entry, -10);
+      $entryCache = array();
       if ($suffix === 'Screen.php') {
+        if (!isset($pathCache['view'])) {
+          $pathCache['view'] = array();
+        }
+        $pathCache['view']['screen'] = preg_replace('/.php$/', '', $entry);
         //add to view
       }
+      if (substr($entry, -9) === 'Image.php') {
+        echo $entry;
+        if (!isset($pathCache['view'])) {
+          $pathCache['view'] = array();
+        }
+        $pathCache['view']['image'] = preg_replace('/.php$/', '', $entry);
+      }
       if ($suffix === 'Action.php') {
-        require $item;
-        $tmp = explode('.', $item, 2);
-        $reflector = new ReflectionClass($tmp[0]);
+        require $dirPath.'/'.$entry;
+        $class = preg_replace('/.php$/', '', $entry);
+        echo $class;
+        $actionCache = array('class' => $class, 'method'=>array());
+        $reflector = new ReflectionClass($class);
         //reflect method
         $methods = array();
         foreach ($reflector->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-          $method[] = $method['name'];
+          $actionCache['method'][] = $method->name;
         }
+        $pathCache['action'] = $actionCache;
       }
     }
-    file_put_contents('cache/application.cache.php', "<?php\nreturn ".var_export(array(0=>array(), 1=>array()), true));
-  }
-
-  private function renderArray($value) {//configurable formatter
-    return var_export($value, true);
+    if (count($pathCache) !== 0) {
+      $cache[$path] = $pathCache;
+    }
+    foreach ($dirs as $entry) {
+      $this->buildApp($path.'/'.$entry, $cache);
+    }
   }
 }
