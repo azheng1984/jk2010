@@ -14,7 +14,7 @@ class Application {
     if ($this->cache === null) {
       $this->cache = require CACHE_PATH.'application.cache.php';
     }
-    if (!isset($this->cache[$path]) && !in_array($path, $this->cache, true)) {
+    if (!isset($this->cache[$path])) {
       throw new NotFoundException("Path '$path' not found");
     }
     foreach ($this->processors as $name => $processor) {
