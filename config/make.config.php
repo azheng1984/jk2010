@@ -1,7 +1,7 @@
 <?php
 return array(
-  'application' => array('action', 'view'),
-  'class_loader' => array(
+  'Application' => array('Action', 'View'),
+  'ClassLoader' => array(
     '.' => array('app', 'lib', 'vendor/hf/web/lib')
   ),
 );
