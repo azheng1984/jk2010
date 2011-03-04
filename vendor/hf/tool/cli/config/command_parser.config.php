@@ -18,6 +18,7 @@ return array(
         'dry_run' => array(
           'short' => 'd',
           'description' => 'Don’t actually build cache(s), just output',
+          'class' => 'DryRun',
         ),
       ),
       'class' => 'MakeCommand',
