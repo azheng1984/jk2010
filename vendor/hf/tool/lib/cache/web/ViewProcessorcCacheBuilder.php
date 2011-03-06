@@ -1,6 +1,6 @@
 <?php
-class ViewProcessorTool {
-  public function execute($dirPath, $entry, $pathCache) {
+class ViewProcessorCacheBuilder {
+  public function build($dirPath, $entry, $pathCache) {
     $suffix = substr($entry, -10);
     $entryCache = array();
     if ($suffix === 'Screen.php') {
