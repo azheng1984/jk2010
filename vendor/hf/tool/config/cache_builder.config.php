@@ -7,5 +7,5 @@ return array(
       'view' => 'ViewProcessorCacheBuilder',
     ),
   ),
-  'class_loader' => 'ClassLoader',
+  'class_loader' => 'ClassLoaderCacheBuilder',
 );
