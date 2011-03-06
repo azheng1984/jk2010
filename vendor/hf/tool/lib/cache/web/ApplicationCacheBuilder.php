@@ -1,6 +1,6 @@
 <?php
 class ApplicationCacheBuilder {
-  public function buildApplicationCache() {
+  public function build() {
     $cache = array();
     $this->buildApp('', $cache);
     file_put_contents('cache/application.cache.php', "<?php\nreturn ".var_export($cache, true).';');

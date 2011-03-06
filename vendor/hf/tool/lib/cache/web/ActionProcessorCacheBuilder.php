@@ -1,6 +1,6 @@
 <?php
-class ActionProcessorTool {
-  public function execute($dirPath, $entry) {
+class ActionProcessorCacheBuilder {
+  public function build($dirPath, $entry) {
     $suffix = substr($entry, -10);
     if ($suffix === 'Action.php') {
       require $dirPath . '/' . $entry;

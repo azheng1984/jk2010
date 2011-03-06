@@ -1,6 +1,6 @@
 <?php
 class ClassLoaderCacheBuilder {
-  public function buildClassLoaderCache() {
+  public function build() {
     $cache = array(array(), array(), array());
     foreach ($this->config['class_loader'] as $key => $item) {
       if (!is_array($item)) {

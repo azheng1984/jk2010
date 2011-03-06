@@ -1,6 +1,6 @@
 <?php
 class ScaffoldGenerator {
-  public function execute($type) {
+  public function generate($type) {
     $config = require HF_PATH.'tool/config/scaffold/'.$type.'.config.php';
     if (count(scandir(getcwd())) !== 2) {
       throw new Exception('directory is not empty'."\n");
