@@ -27,14 +27,14 @@ class ClassLoader {
   private function getFolder($index) {
     $folder = $this->folders[$index];
     if (is_array($folder)) {
-      return $this->getRoot($folder[1]).DIRECTORY_SEPARATOR.$folder[0];
+      return $this->getRoot($folder[1]).$folder[0];
     }
     return ROOT_PATH.$folder;
   }
 
   private function getRoot($index) {
-    if ($index !== -1) {
-      return $this->folders[$index][0];
+    if ($index !== null) {
+      return $this->folders[$index][0].DIRECTORY_SEPARATOR;
     }
   }
 }
