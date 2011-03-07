@@ -1,6 +1,6 @@
 <?php
 return array(
-  'application' => array('action_processor', 'view_processor'),
+  'application' => array('action', 'view'),
   'class_loader' => array(
     '.' => array('app', 'lib', 'vendor/hf/web/lib')
   ),

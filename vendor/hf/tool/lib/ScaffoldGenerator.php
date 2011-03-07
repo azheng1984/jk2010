@@ -3,7 +3,7 @@ class ScaffoldGenerator {
   public function generate($type) {
     $config = require HF_PATH.'tool/config/scaffold/'.$type.'.config.php';
     if (count(scandir(getcwd())) !== 2) {
-      throw new Exception('directory is not empty'."\n");
+      throw new Exception('directory must empty'."\n");
     }
     foreach ($config as $file => $content) {
       if (is_int($file)) {

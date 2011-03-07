@@ -1,12 +1,11 @@
 <?php
 class ClassLoader {
   private $callback;
-  private $roots;
   private $folders;
   private $classes;
 
   public function run() {
-    list($this->classes, $this->folders, $this->roots) = require(
+    list($this->classes, $this->folders) = require(
       CACHE_PATH.'class_loader.cache.php'
     );
     $this->callback = array($this, 'load');
@@ -28,8 +27,14 @@ class ClassLoader {
   private function getFolder($index) {
     $folder = $this->folders[$index];
     if (is_array($folder)) {
-      return $this->roots[$folder[1]].DIRECTORY_SEPARATOR.$folder[0];
+      return $this->getRoot($folder[1]).DIRECTORY_SEPARATOR.$folder[0];
     }
     return ROOT_PATH.$folder;
+  }
+
+  private function getRoot($index) {
+    if ($index !== -1) {
+      return $this->folders[$index][0];
+    }
   }
 }
