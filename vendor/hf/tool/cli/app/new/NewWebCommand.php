@@ -1,5 +1,5 @@
 <?php
-class NewCliCommand {
+class NewWebCommand {
   public function execute() {
     $generator = new ScaffoldGenerator;
     $generator->execute('web');
