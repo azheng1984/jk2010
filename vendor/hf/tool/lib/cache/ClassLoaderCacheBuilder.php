@@ -1,8 +1,14 @@
 <?php
 class ClassLoaderCacheBuilder {
+  private $config;
+
+  public function __construct($config) {
+    $this->config = $config;
+  }
+
   public function build() {
-    $cache = array(array(), array(), array());
-    foreach ($this->config['class_loader'] as $key => $item) {
+    $cache = array(array(), array());
+    foreach ($this->config as $key => $item) {
       if (!is_array($item)) {
         if (is_int($key)) {
           $key = null;
@@ -14,9 +20,6 @@ class ClassLoaderCacheBuilder {
       foreach ($item as $path) {
         $this->buildDir($root, $path, $cache);
       }
-    }
-    if (count($cache[2]) === 0) {
-      $cache[2] = null;
     }
     file_put_contents('cache/class_loader.cache.php', "<?php\nreturn ".var_export($cache, true).";");
   }
@@ -41,7 +44,7 @@ class ClassLoaderCacheBuilder {
       if (($rootIndex = array_search($root, $cache[2], true)) !== false) {
       } else if ($root !== realpath('.')) {
         $rootIndex = count($cache[2]);
-        $cache[2][] = $root;
+        $cache[1][] = $root;
       }
       $index = count($cache[1]);
       if ($rootIndex === false) {
