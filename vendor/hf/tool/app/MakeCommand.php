@@ -5,12 +5,12 @@ class MakeCommand {
   public function execute() {
     $this->config = require 'config/make.config.php';
     if (isset($this->config['class_loader'])) {
-      $builder = ClassLoaderCacheBuilder;
-      $builder->execute();
+      $builder = new ClassLoaderCacheBuilder($this->config['class_loader']);
+      $builder->build();
     }
     if (isset($this->config['application'])) {
-      $builder = ApplicationCacheBuilder;
-      $builder->execute();
+      $builder = new ApplicationCacheBuilder($this->config['application']);
+      $builder->build();
     }
   }
 }

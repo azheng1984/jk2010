@@ -8,17 +8,17 @@ return array(
     '  }',
     '}',
   ),
-  'bin/bin.bat' => array(
+  'bin/'.APP_NAME.'.bat' => array(
     '@echo off',
     'php "'.APP_NAME.'.php" %*',
   ),
-  'bin/bin.php' => array(
+  'bin/'.APP_NAME.'.php' => array(
     '#!/usr/bin/php',
     '<?php',
     "define('ROOT_PATH', dirname(dirname(__FILE__)).'/');",
     "define('CACHE_PATH', ROOT_PATH.'cache/');",
     "define('CONFIG_PATH', ROOT_PATH.'config/');",
-    "require ".CLASS_LOADER_PATH.";",
+    "require '".CLASS_LOADER_PATH."';",
     '$classLoader = new ClassLoader;',
     '$classLoader->run();',
     '$errorHandler = new CommandErrorHandler;',
@@ -26,7 +26,7 @@ return array(
     '$parser = new CommandParser;',
     '$parser->parse();',
    ),
-  'bin/bin.sh' => array(
+  'bin/'.APP_NAME.'.sh' => array(
     '@echo off',
     'php "'.APP_NAME.'.php" %*',
   ),
