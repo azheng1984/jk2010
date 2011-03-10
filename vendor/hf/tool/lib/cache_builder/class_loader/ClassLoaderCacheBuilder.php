@@ -9,73 +9,81 @@ class ClassLoaderCacheBuilder {
   public function build() {
     $cache = array(array(), array());
     foreach ($this->config as $key => $item) {
-      if (is_int($item)) {
-        if ($item[0] === '/') {
-          $this->buildDir($item, null, $cache);
+      $index = count($cache[1]);
+      if (is_int($key)) {
+        if ($item[0] !== '/') {
+          $this->buildDir(null, $item, $cache);
+        } else {
+          $cache[1][$index] = array($item);
+          $this->buildDir($index, null, $cache);
         }
       } else {
-        if ($key[0] === '/') {
-          $this->buildDir($key, $item, $cache);
+        if ($key[0] !== '/') {
+          $this->buildDir(null, array($key => $item), $cache);
         } else {
-          $this->buildDir($key, $item, $cache, true);
+          $cache[1][$index] = array($key, -1);
+          $this->buildDir($index, $item, $cache);
         }
       }
     }
     file_put_contents('cache/class_loader.cache.php', "<?php\nreturn ".var_export($cache, true).";");
   }
 
-
-  private function buildDir($root, $path, &$cache, $isRelative = false) {
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    $dirPath = $root.'/'.$path;
-    $dir = dir($dirPath);
-    $classes = array();
-    $dirs = array();
-    foreach (scandir($dirPath) as $entry) {
-      if ($entry === '..' || $entry === '.') {
-        continue;
+  private function buildDir($rootIndex, $folder, &$cache) {
+    if (is_array($folder)) {
+      foreach ($folder as $key => $item) {
+        if (!is_int($key)) {
+          foreach ($item as &$entry) {
+            $entry = $key.'/'.$entry;
+          }
+        }
+        $this->buildDir($rootIndex, $item, $cache);
       }
-      if (is_dir($dirPath.'/'.$entry)) {
-        $dirs[]= $entry;
+    } else {
+      $absPath = null;
+      if ($rootIndex === null) {
+        $absPath = getcwd();
       } else {
-        $classes[] = preg_replace('/.php$/', '', $entry);
+        $absPath = $cache[1][$rootIndex][0];
       }
-    }
-    if (count($classes) !== 0) {
-      $rootIndex = null;
-      if (($rootIndex = array_search($root, $cache[2], true)) !== false) {
-      } else if ($root !== realpath('.')) {
-        $rootIndex = count($cache[2]);
-        $cache[1][] = $root;
+      if ($absPath !== '/') {
+        $absPath .= '/';
       }
-      $index = count($cache[1]);
-      if ($rootIndex === false) {
-        $cache[1][$index] = $path;
-      } else {
-        $cache[1][$index] = array($path => $rootIndex);
+      $classes = array();
+      $dirs = array();
+      foreach (scandir($absPath.$folder) as $entry) {
+        if ($entry === '..' || $entry === '.') {
+          continue;
+        }
+        if (is_dir($absPath.$folder.'/'.$entry)) {
+          if ($folder === null){
+            $dirs[]= $entry;
+          } else {
+            $dirs[]= $folder.'/'.$entry;
+          }
+        } else {
+          $classes[] = preg_replace('/.php$/', '', $entry);
+        }
       }
-      foreach ($classes as $class) {
-        $cache[0][$class] = $index;
+      if (count($classes) !== 0) {
+        $index = null;
+        if ($folder === null) {
+          $index = $rootIndex;
+        } else {
+          $index = count($cache[1]);
+          if ($rootIndex === null) {
+            $cache[1][$index] = $folder;
+          } else {
+            $cache[1][$index] = array($folder, $rootIndex);
+          }
+        }
+        foreach ($classes as $class) {
+          $cache[0][$class] = $index;
+        }
       }
-    }
-    foreach ($dirs as $entry) {
-      $this->buildDir($root, $path.'/'.$entry, $cache);
+      if (count($dirs) !== 0) {
+        $this->buildDir($rootIndex, $dirs, $cache);
+      }
     }
   }
 }
