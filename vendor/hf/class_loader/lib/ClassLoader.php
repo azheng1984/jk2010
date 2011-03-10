@@ -30,14 +30,15 @@ class ClassLoader {
     }
     $folder = $this->folders[$index];
     if (is_array($folder)) {
-      return $this->getRoot($folder).$folder[0].DIRECTORY_SEPARATOR;
+      return $this->getFullPath($folder).DIRECTORY_SEPARATOR;
     }
     return ROOT_PATH.$folder.DIRECTORY_SEPARATOR;
   }
 
-  private function getRoot($folder) {
+  private function getFullPath($folder) {
     if (isset($folder[1])) {
-      return $this->folders[$folder[1]][0].DIRECTORY_SEPARATOR;
+      return $this->folders[$folder[1]][0].DIRECTORY_SEPARATOR.$folder[0];
     }
+    return $folder[0];
   }
 }
