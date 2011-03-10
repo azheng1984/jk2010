@@ -3,7 +3,7 @@ return array(
   'application' => array('action', 'view'),
   'class_loader' => array(
     'app',
-    '~/www/jk2010/vendor/hf/web' => array('lib'),
+    'vendor/hf/web' => array('lib'),
     '/home/wz/www/jk2010/lib',
   ),
 );

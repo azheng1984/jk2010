@@ -17,24 +17,27 @@ class ClassLoader {
   }
 
   public function load($name) {
-    if (isset($this->classes[$name])) {
+    if (isset($name, $this->classes)) {
       require(
-        $this->getFolder($this->classes[$name]).DIRECTORY_SEPARATOR.$name.'.php'
+        $this->getFolder($this->classes[$name]).$name.'.php'
       );
     }
   }
 
   private function getFolder($index) {
+    if ($index === true) {
+      return ROOT_PATH;
+    }
     $folder = $this->folders[$index];
     if (is_array($folder)) {
-      return $this->getRoot($folder[1]).$folder[0];
+      return $this->getRoot($folder).$folder[0].DIRECTORY_SEPARATOR;
     }
-    return ROOT_PATH.$folder;
+    return ROOT_PATH.$folder.DIRECTORY_SEPARATOR;
   }
 
-  private function getRoot($index) {
-    if ($index !== null) {
-      return $this->folders[$index][0].DIRECTORY_SEPARATOR;
+  private function getRoot($folder) {
+    if (isset($folder[1])) {
+      return $this->folders[$folder[1]][0].DIRECTORY_SEPARATOR;
     }
   }
 }
