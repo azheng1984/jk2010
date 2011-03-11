@@ -38,7 +38,8 @@ class ClassLoaderCacheBuilder {
     if (count($this->cache[1]) === 0) {
       unset($this->cache[1]);
     }
-    file_put_contents('cache/class_loader.cache.php', "<?php\nreturn ".var_export($this->cache, true).";");
+    $writer = new CacheWriter;
+    $writer->write('class_loader', $this->cache);
   }
 
   private function fetch($rootIndex, $folder) {
