@@ -17,7 +17,7 @@ class ClassLoader {
   }
 
   public function load($name) {
-    if (isset($name, $this->classes)) {
+    if (isset($this->classes[$name])) {
       require(
         $this->getFolder($this->classes[$name]).$name.'.php'
       );

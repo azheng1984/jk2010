@@ -21,7 +21,7 @@ class ClassLoaderCacheBuilder {
         if ($key[0] !== '/') {
           $this->buildDir(null, array($key => $item), $cache);
         } else {
-          $cache[1][$index] = array($key, -1);
+          $cache[1][$index] = array($key);
           $this->buildDir($index, $item, $cache);
         }
       }
@@ -34,6 +34,9 @@ class ClassLoaderCacheBuilder {
       foreach ($folder as $key => $item) {
         if (!is_int($key)) {
           foreach ($item as &$entry) {
+            if ($entry === '.') {
+              $entry = '';
+            }
             $entry = $key.'/'.$entry;
           }
         }
@@ -41,6 +44,9 @@ class ClassLoaderCacheBuilder {
       }
     } else {
       $absPath = null;
+      if ($folder === '.') {
+        $folder = '';
+      }
       if ($rootIndex === null) {
         $absPath = getcwd();
       } else {
@@ -51,6 +57,7 @@ class ClassLoaderCacheBuilder {
       }
       $classes = array();
       $dirs = array();
+      //is_dir or only current directory
       foreach (scandir($absPath.$folder) as $entry) {
         if ($entry === '..' || $entry === '.') {
           continue;
