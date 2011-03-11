@@ -9,25 +9,30 @@ class ApplicationCacheBuilder {
   public function build() {
     $cache = array();
     $this->buildApp('', $cache);
-    file_put_contents('cache/application.cache.php', "<?php\nreturn ".var_export($cache, true).';');
+    $writer = new CacheWriter;
+    $writer->write('application', $cache);
   }
 
   private function buildApp($path, &$cache) {
     $pathCache = array();
     $dirs = array();
     $dirPath = getcwd().'/app/'.$path;
-    $actionProcessorCacheBuilder = new ActionProcessorCacheBuilder;
-    $viewProcessorCacheBuilder = new ViewProcessorCacheBuilder;
+    $processors = array();
+    foreach ($this->config as $processor) {
+      $class = "{$processor}CacheBuilder";
+      $processors[] = new $class;
+    }
     foreach (scandir($dirPath) as $entry) {
       if ($entry === '..' || $entry === '.') {
         continue;
       }
       if (is_dir($dirPath.'/'.$entry)) {
-        $dirs[]= $entry;
+        $dirs[] = $entry;
         continue;
       }
-      $actionProcessorCacheBuilder->build($dirPath, $entry, $pathCache);
-      $viewProcessorCacheBuilder->build($entry, $pathCache);
+      foreach ($processors as $processor) {
+        $processor->build($dirPath, $entry, $pathCache);
+      }
     }
     if (count($pathCache) !== 0) {
       $cache[$path] = $pathCache;
