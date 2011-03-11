@@ -119,7 +119,7 @@ class ClassLoaderCacheBuilder {
         }
         foreach ($classes as $class) {
           if (isset($this->cache[0][$class])) {
-            throw new Exception("Conflict class name '$class'.");
+            throw new CommandException("Conflict class name '$class'.");
           }
           $this->cache[0][$class] = $index;
         }
