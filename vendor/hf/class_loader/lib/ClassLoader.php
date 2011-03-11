@@ -37,7 +37,7 @@ class ClassLoader {
 
   private function getFullPath($folder) {
     if (isset($folder[1])) {
-      return $this->folders[$folder[1]][0];
+      return $this->folders[$folder[1]][0].DIRECTORY_SEPARATOR;
     }
   }
 }
