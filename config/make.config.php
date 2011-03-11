@@ -4,6 +4,6 @@ return array(
   'class_loader' => array(
     'app',
     'lib',
-    'vendor/hf' => array('class_loader/lib', 'web/lib'),
+    'vendor/hf/web/lib'
   ),
 );
