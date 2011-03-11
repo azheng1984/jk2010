@@ -10,7 +10,6 @@ class ViewProcessorCacheBuilder {
       $pathCache['view']['screen'] = preg_replace('/.php$/', '', $entry);
     }
     if (substr($entry, -9) === 'Image.php') {
-      echo $entry;
       if (!isset($pathCache['view'])) {
         $pathCache['view'] = array();
       }
