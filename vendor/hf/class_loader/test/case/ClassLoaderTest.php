@@ -9,11 +9,12 @@ class ClassLoaderTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @expectedException InternalServerErrorException
+   * @expectedException Exception
    */
   public function testLoadFail() {
     $classLoader = new ClassLoader;
     $classLoader->run();
-    $test = new Unknown;
+    $unknown = 'Unknown';
+    $test = new $unknown;
   }
 }
