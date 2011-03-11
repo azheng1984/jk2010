@@ -1,8 +1,8 @@
 <?php
 class ClassLoader {
   private $callback;
-  private $folders;
   private $classes;
+  private $folders;
 
   public function run() {
     list($this->classes, $this->folders) = require(
@@ -30,15 +30,14 @@ class ClassLoader {
     }
     $folder = $this->folders[$index];
     if (is_array($folder)) {
-      return $this->getFullPath($folder).DIRECTORY_SEPARATOR;
+      return $this->getFullPath($folder).$folder[0].DIRECTORY_SEPARATOR;
     }
     return ROOT_PATH.$folder.DIRECTORY_SEPARATOR;
   }
 
   private function getFullPath($folder) {
     if (isset($folder[1])) {
-      return $this->folders[$folder[1]][0].DIRECTORY_SEPARATOR.$folder[0];
+      return $this->folders[$folder[1]][0];
     }
-    return $folder[0];
   }
 }
