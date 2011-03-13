@@ -1,5 +1,5 @@
 <?php
 return array(
-  'application' => array('ActionProcessor', 'ViewProcessor'),
+  'application' => array('Action', 'View'),
   'class_loader' => array('app', 'lib', 'vendor/hf/web/lib'),
 );
