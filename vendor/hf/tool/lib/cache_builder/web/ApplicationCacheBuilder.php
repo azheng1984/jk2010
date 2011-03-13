@@ -19,7 +19,7 @@ class ApplicationCacheBuilder {
     $dirPath = getcwd().'/app/'.$path;
     $processors = array();
     foreach ($this->config as $processor) {
-      $class = "{$processor}CacheBuilder";
+      $class = $processor.'CacheBuilder';
       $processors[] = new $class;
     }
     foreach (scandir($dirPath) as $entry) {

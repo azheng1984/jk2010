@@ -1,5 +1,5 @@
 <?php
-class ActionProcessorCacheBuilder {
+class ActionCacheBuilder {
   public function build($dirPath, $entry, &$pathCache) {
     $suffix = substr($entry, -10);
     if ($suffix === 'Action.php') {
@@ -11,7 +11,7 @@ class ActionProcessorCacheBuilder {
       foreach ($reflector->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
         $actionCache['method'][] = $method->name;
       }
-      $pathCache['action'] = $actionCache;
+      $pathCache['Action'] = $actionCache;
     }
   }
 }

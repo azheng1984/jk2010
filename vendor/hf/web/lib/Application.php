@@ -1,11 +1,6 @@
 <?php
 class Application {
-  private $processors;
   private $cache;
-
-  public function __construct($processors) {
-    $this->processors = $processors;
-  }
 
   public function run($path = null) {
     if ($path === null) {
@@ -17,8 +12,9 @@ class Application {
     if (!isset($this->cache[$path])) {
       throw new NotFoundException("Path '$path' not found");
     }
-    foreach ($this->processors as $name => $processor) {
-      $this->process($path, $name, $processor);
+    foreach ($this->cache[0] as $name) {
+      $class = $name.'Processor';
+      $this->process($path, $name, new $class);
     }
   }
 
