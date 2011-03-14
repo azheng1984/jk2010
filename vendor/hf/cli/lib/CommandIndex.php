@@ -31,7 +31,7 @@ class CommandIndex {
         }
       }
       if (count($indexes) !== 0) {
-        echo PHP_EOL.'[index]'.PHP_EOL;
+        echo PHP_EOL.'[collection]'.PHP_EOL;
         foreach ($indexes as $name => $item) {
           echo "  ".$name;
           if (isset($item['description'])) {
