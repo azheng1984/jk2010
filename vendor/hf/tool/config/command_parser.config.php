@@ -25,6 +25,7 @@ return array(
       'description' => '',
     ),
     'new' => array(
+      'description' => 'create scaffold',
       'sub' => array(
         'web' => array(
           'class' => 'NewWebCommand',
@@ -48,5 +49,5 @@ return array(
     ),
     'help' => 'HelpCommand',
   ),
-  'description' => 'hyperframework cli tool',
+  'description' => 'Hyperframework cli tool version 0.1',
 );

@@ -2,7 +2,8 @@
 class CommandRunner {
   public function run($config, $arguments) {
     if (!isset($config['class'])) {
-      $this->printList($config);
+      $index = new CommandIndex;
+      $index->render($config);
       return;
     }
     $reflector = new ReflectionMethod($config['class'], 'execute');
@@ -11,13 +12,5 @@ class CommandRunner {
     $isInfiniteArgument = in_array('infinite_argument', $config, true);
     $verifier->verify($reflector, $length, $isInfiniteArgument);
     return $reflector->invokeArgs(new $config['class'], $arguments);
-  }
-
-  private function printList($config) {
-    if (isset($config['sub'])) {
-      foreach ($config['sub'] as $name => $item) {
-        echo $name."\n";
-      }
-    }
   }
 }
