@@ -24,7 +24,7 @@ class ErrorHandler {
 
   private function reload($exception) {
     if (!$exception instanceof ApplicationException) {
-      $exception = new InternalServerErrorException();
+      $exception = new InternalServerErrorException;
     }
     $config = require CONFIG_PATH.'error_handler.config.php';
     $statusCode = $exception->getCode();
