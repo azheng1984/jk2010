@@ -2,8 +2,8 @@
 class CommandRunner {
   public function run($config, $arguments) {
     if (!isset($config['class'])) {
-      $index = new CommandIndex;
-      $index->render($config);
+      $collection = new CommandCollection;
+      $collection->render($config);
       return;
     }
     $reflector = new ReflectionMethod($config['class'], 'execute');
