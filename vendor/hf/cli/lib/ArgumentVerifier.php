@@ -7,12 +7,8 @@ class ArgumentVerifier {
       }
       --$length;
     }
-    if ($length < 0) {
-      return false;
+    if ($length < 0 || ($length > 0 && $isInfinite === false)) {
+      throw new CommandException('argument not matched');
     }
-    if ($length > 0 && $isInfinite === false) {
-      return false;
-    }
-    return true;
   }
 }

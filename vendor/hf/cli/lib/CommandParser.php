@@ -38,7 +38,7 @@ class CommandParser {
 
   private function setCommand($item) {
     if (!isset($this->config['sub'][$item])) {
-      throw new SyntaxException("Command '$item' not found");
+      throw new CommandException("Command '$item' not found");
     }
     $this->setConfig($this->config['sub'][$item]);
     $this->isAllowOption = true;
