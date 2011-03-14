@@ -21,7 +21,7 @@ class OptionParser {
     }
     $config = $this->getConfig($name);
     if ($config === null) {
-      throw new SyntaxException("Option '$item' not allowed");
+      throw new CommandException("Option '$item' not allowed");
     }
     if (isset($config['expansion'])) {
       $this->reader->expand($config['expansion']);
