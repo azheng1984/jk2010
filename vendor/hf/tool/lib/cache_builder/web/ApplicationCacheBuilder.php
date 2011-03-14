@@ -7,7 +7,11 @@ class ApplicationCacheBuilder {
   }
 
   public function build() {
-    $cache = array($this->config);
+    $index = array();
+    foreach ($this->config as $item) {
+      $index[$item] = $item.'Processor';
+    }
+    $cache = array($index);
     $this->buildApp('', $cache);
     $writer = new CacheWriter;
     $writer->write('application', $cache);

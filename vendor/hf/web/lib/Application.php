@@ -12,18 +12,17 @@ class Application {
     if (!isset($this->cache[$path])) {
       throw new NotFoundException("Path '$path' not found");
     }
-    foreach ($this->cache[0] as $name) {
-      $this->process($path, $name);
+    foreach ($this->cache[0] as $name => $class) {
+      $this->process($path, $name, $class);
     }
   }
 
-  private function process($path, $name) {
+  private function process($path, $name, $class) {
     $cache = null;
     if (isset($this->cache[$path][$name])) {
       $cache = $this->cache[$path][$name];
     }
     if ($cache !== null || in_array($name, $this->cache[$path], true)) {
-      $class = $name.'Processor';
       $processor = new $class;
       $processor->run($cache);
     }
