@@ -1,7 +1,7 @@
 <?php
 class ScaffoldGenerator {
   public function generate($type) {
-    $config = require HF_PATH.'tool/config/scaffold/'.$type.'.config.php';
+    $config = require(CONFIG_PATH.'scaffold_generator/'.$type.'.config.php');
     if (count(scandir(getcwd())) !== 2) {
       throw new CommandException('directory must empty'."\n");
     }
