@@ -13,17 +13,18 @@ class Application {
       throw new NotFoundException("Path '$path' not found");
     }
     foreach ($this->cache[0] as $name) {
-      $class = $name.'Processor';
-      $this->process($path, $name, new $class);
+      $this->process($path, $name);
     }
   }
 
-  private function process($path, $name, $processor) {
+  private function process($path, $name) {
     $cache = null;
     if (isset($this->cache[$path][$name])) {
       $cache = $this->cache[$path][$name];
     }
     if ($cache !== null || in_array($name, $this->cache[$path], true)) {
+      $class = $name.'Processor';
+      $processor = new $class;
       $processor->run($cache);
     }
   }

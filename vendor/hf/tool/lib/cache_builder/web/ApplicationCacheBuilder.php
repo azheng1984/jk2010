@@ -7,7 +7,7 @@ class ApplicationCacheBuilder {
   }
 
   public function build() {
-    $cache = array();
+    $cache = array($this->config);
     $this->buildApp('', $cache);
     $writer = new CacheWriter;
     $writer->write('application', $cache);
