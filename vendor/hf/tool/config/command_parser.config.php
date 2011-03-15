@@ -22,7 +22,7 @@ return array(
         ),
       ),
       'class' => 'MakeCommand',
-      'description' => '',
+      'description' => 'compile application',
     ),
     'new' => array(
       'description' => 'create scaffold',
@@ -37,6 +37,7 @@ return array(
           ),
         ),
         'cli' => array(
+          'description' => 'Create new cli application scaffold',
           'class' => 'NewCliCommand',
           'option' => array(
             'dry_run' => array(
