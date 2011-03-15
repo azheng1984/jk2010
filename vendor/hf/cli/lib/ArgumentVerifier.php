@@ -17,6 +17,6 @@ class ArgumentVerifier {
   private function getErrorMessage($reflector, $length, $isInfinite) {
     $expectLength = count($reflector->getParameters());
     $moreThan = $isInfinite ? 'more than ' : '';
-    return "argument length not correct(argument count:$length except:$moreThan$expectLength)";
+    return "argument length not matched(current:$length except:$moreThan$expectLength)";
   }
 }
