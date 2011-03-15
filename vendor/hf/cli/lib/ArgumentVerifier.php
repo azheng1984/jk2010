@@ -1,14 +1,22 @@
 <?php
 class ArgumentVerifier {
   public function verify($reflector, $length, $isInfinite) {
+    $count = $length;
     foreach ($reflector->getParameters() as $parameter) {
-      if ($parameter->isOptional() && $length === 0) {
+      if ($parameter->isOptional() && $count === 0) {
         break;
       }
-      --$length;
+      --$count;
     }
-    if ($length < 0 || ($length > 0 && $isInfinite === false)) {
-      throw new CommandException('argument not matched');
+    if ($count < 0 || ($count > 0 && $isInfinite === false)) {
+      $message = $this->getErrorMessage($reflector, $length, $isInfinite);
+      throw new CommandException($message);
     }
+  }
+
+  private function getErrorMessage($reflector, $length, $isInfinite) {
+    $expectLength = count($reflector->getParameters());
+    $moreThan = $isInfinite ? 'more than ' : '';
+    return "argument length not correct(argument count:$length except:$moreThan$expectLength)";
   }
 }
