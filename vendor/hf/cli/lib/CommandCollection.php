@@ -5,7 +5,7 @@ class CommandCollection {
       echo $config['description'].PHP_EOL.PHP_EOL;
     }
     if (isset($config['option'])) {
-      $this->renderOption($config['option']);
+      $this->renderOption($config['option'], false);
     }
     if (isset($config['sub'])) {
       $commands = array();
@@ -20,16 +20,16 @@ class CommandCollection {
       if (count($indexes) !== 0) {
         echo '[collection]'.PHP_EOL;
         foreach ($indexes as $name => $item) {
-          echo $name.PHP_EOL;
+          echo '  '.$name.PHP_EOL;
           if (isset($item['description'])) {
-            echo '  '.$item['description'].PHP_EOL.PHP_EOL;
+            echo '    '.$item['description'].PHP_EOL.PHP_EOL;
           }
         }
       }
       if (count($commands) !== 0) {
         echo '[command]'.PHP_EOL;
         foreach ($commands as $name => $item) {
-          echo $name;
+          echo '  '.$name;
           if (is_array($item) && isset($item['class'])) {
             $this->renderArgument($item['class']);
           } else {
@@ -38,10 +38,10 @@ class CommandCollection {
           echo PHP_EOL;
           if (is_array($item)) {
             if (isset($item['description'])) {
-              echo '  '.$item['description'].PHP_EOL;
+              echo '    '.$item['description'].PHP_EOL.PHP_EOL;
             }
             if (isset($item['option'])) {
-              $this->renderOption($item['option']);
+              $this->renderOption($item['option'], true);
             }
           }
         }
@@ -55,17 +55,18 @@ class CommandCollection {
     }
   }
 
-  private function renderOption($config) {
-    echo '  [option]'.PHP_EOL;
+  private function renderOption($config, $isSubCommand) {
+    $prefix = $isSubCommand ? '    ' : '';
+    echo $prefix.'[option]'.PHP_EOL;
     foreach ($config as $name => $item) {
-      echo "  --".$name;
+      echo "$prefix  --".$name;
       if (isset($item['short'])) {
         if (is_array($item['short'])) {
           $item['short'] = implode(', -', $item['short']);
         }
         echo ', -'.$item['short'].PHP_EOL;
         if (isset($item['description'])) {
-          echo '    '.$item['description'].PHP_EOL;
+          echo $prefix.'    '.$item['description'].PHP_EOL;
         }
         echo PHP_EOL;
       }
