@@ -1,10 +1,12 @@
 <?php
 class CommandRunner {
   public function run($config, $arguments) {
+    if (isset($config['sub'])) {
+      $collection = new CommandCollection;
+      return $collection->execute($config);
+    }
     if (!isset($config['class'])) {
-      $bundle = new CommandBundle;
-      $bundle->render($config);
-      return;
+      throw new CommandException('command class not found');
     }
     $reflector = new ReflectionMethod($config['class'], 'execute');
     $verifier = new ArgumentVerifier;

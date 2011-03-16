@@ -4,12 +4,12 @@ return array(
     'version' => array(
       'short' => 'v',
       'expansion' => array('help', 'version'),
-      'description' => 'print version infomation',
+      'description' => 'Print version infomation',
     ),
     'help' => array(
       'short' => array('h', '?'),
       'expansion' => array('help'),
-      'description' => 'show help',
+      'description' => 'Show help',
     ),
   ),
   'sub' => array(
@@ -18,14 +18,13 @@ return array(
         'dry_run' => array(
           'short' => 'd',
           'description' => 'Don’t actually build cache(s), just output',
-          'class' => 'DryRun',
         ),
       ),
       'class' => 'MakeCommand',
-      'description' => 'compile application',
+      'description' => 'Compile application',
     ),
     'new' => array(
-      'description' => 'create scaffold',
+      'description' => 'Create scaffold',
       'sub' => array(
         'web' => array(
           'class' => 'NewWebCommand',
