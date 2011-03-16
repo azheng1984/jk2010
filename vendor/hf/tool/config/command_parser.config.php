@@ -32,7 +32,7 @@ return array(
           'option' => array(
             'dry_run' => array(
               'short' => 'd',
-              'description' => 'Don’t actually build web application scaffold, just output',
+              'description' => 'Don\'t actually build web application scaffold, just output',
             ),
           ),
         ),
@@ -42,7 +42,7 @@ return array(
           'option' => array(
             'dry_run' => array(
               'short' => 'd',
-              'description' => 'Don’t actually build cli application scaffold, just output',
+              'description' => 'Don\'t actually build cli application scaffold, just output',
             ),
           ),
         ),
