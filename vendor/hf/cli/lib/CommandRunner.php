@@ -2,8 +2,8 @@
 class CommandRunner {
   public function run($config, $arguments) {
     if (isset($config['sub'])) {
-      $collection = new CommandCollection;
-      return $collection->execute($config);
+      $package = new CommandPackage;
+      return $package->execute($config);
     }
     if (!isset($config['class'])) {
       throw new CommandException('command class not found');

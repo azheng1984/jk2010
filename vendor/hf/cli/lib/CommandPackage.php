@@ -1,17 +1,17 @@
 <?php
-class CommandCollection {
+class CommandPackage {
   private $indentation = 0;
-  private $collections = array();
+  private $packages = array();
   private $commands = array();
 
   public function execute($config) {
     if (!isset($config['sub']) || !is_array($config['sub'])) {
-      throw new CommandException('No subcommand in collection configuration');
+      throw new CommandException('No subcommand in package configuration');
     }
     $this->initialize($config);
     $this->renderCommand(null, $config);
-    if (count($this->collections) !== 0) {
-      $this->renderCollection();
+    if (count($this->packages) !== 0) {
+      $this->renderPackage();
     }
     if (count($this->commands) !== 0) {
       $this->renderCommandList();
@@ -24,7 +24,7 @@ class CommandCollection {
         $item = array('class' => $item);
       }
       if (isset($item['sub'])) {
-        $this->collections[$name] = $item;
+        $this->packages[$name] = $item;
         continue;
       }
       $this->commands[$name] = $item;
@@ -35,10 +35,10 @@ class CommandCollection {
     echo str_repeat('  ', $this->indentation), $value, PHP_EOL;
   }
 
-  private function renderCollection() {
-    $this->writeLine('[collection]');
+  private function renderPackage() {
+    $this->writeLine('[package]');
     ++$this->indentation;
-    foreach ($this->collections as $name => $config) {
+    foreach ($this->packages as $name => $config) {
       $this->renderCommand($name, $config);
     }
     --$this->indentation;
@@ -87,7 +87,6 @@ class CommandCollection {
   }
 
   private function renderOption($name, $config) {
-    $name = "--".$name;
     $short = null;
     if (isset($config['short'])) {
       $short = $config['short'];
@@ -98,7 +97,7 @@ class CommandCollection {
     if ($short !== null) {
       $short = ', -'.$short;
     }
-    $this->renderHeader($name.$short, $config);
+    $this->renderHeader('--'.$name.$short, $config);
     if (isset($config['description'])) {
       ++$this->indentation;
       $this->writeLine($config['description']);
