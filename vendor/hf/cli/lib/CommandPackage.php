@@ -32,6 +32,10 @@ class CommandPackage {
   }
 
   private function writeLine($value = null) {
+    if ($value === null) {
+      echo PHP_EOL;
+      return;
+    }
     echo str_repeat('  ', $this->indentation), $value, PHP_EOL;
   }
 
