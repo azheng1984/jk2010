@@ -1,5 +1,5 @@
 <?php
-class CommandCollection {
+class CommandBundle {
   public function render($config) {
     if (isset($config['description'])) {
       echo $config['description'].PHP_EOL.PHP_EOL;
@@ -18,7 +18,7 @@ class CommandCollection {
         }
       }
       if (count($indexes) !== 0) {
-        echo '[collection]'.PHP_EOL;
+        echo '[bundle]'.PHP_EOL;
         foreach ($indexes as $name => $item) {
           echo '  '.$name.PHP_EOL;
           if (isset($item['description'])) {

@@ -2,8 +2,8 @@
 class CommandRunner {
   public function run($config, $arguments) {
     if (!isset($config['class'])) {
-      $collection = new CommandCollection;
-      $collection->render($config);
+      $bundle = new CommandBundle;
+      $bundle->render($config);
       return;
     }
     $reflector = new ReflectionMethod($config['class'], 'execute');
