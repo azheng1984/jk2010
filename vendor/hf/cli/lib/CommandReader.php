@@ -1,32 +1,32 @@
 <?php
 class CommandReader {
-  private $inputArguments;
-  private $inputArgumentLength;
-  private $currentIndex;
+  private $arguments;
+  private $length;
+  private $index;
 
   public function __construct() {
-    $this->inputArgumentLength = $_SERVER['argc'];
-    $this->inputArguments = $_SERVER['argv'];
+    $this->length = $_SERVER['argc'];
+    $this->arguments = $_SERVER['argv'];
   }
 
   public function get() {
-    if ($this->currentIndex < 1) {
-      $this->currentIndex = 1;
+    if ($this->index < 1) {
+      $this->index = 1;
     }
-    if ($this->currentIndex >= $this->inputArgumentLength) {
+    if ($this->index >= $this->length) {
       return null;
     }
-    return $this->inputArguments[$this->currentIndex];
+    return $this->arguments[$this->index];
   }
 
-  public function move($step = 1) {
-    $this->currentIndex += $step;
+  public function move($isForward = true) {
+    $this->index += $isForward ? 1 : -1;
     return $this;
   }
 
   public function expand($arguments) {
-    array_splice($this->inputArguments, $this->currentIndex, 1, $arguments);
-    $this->inputArgumentLength = count($this->inputArguments);
-    $this->move(-1);
+    array_splice($this->arguments, $this->index, 1, $arguments);
+    $this->length = count($this->arguments);
+    $this->move(false);
   }
 }

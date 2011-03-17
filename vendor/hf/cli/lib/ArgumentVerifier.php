@@ -9,15 +9,13 @@ class ArgumentVerifier {
       --$count;
     }
     if ($count < 0 || ($count > 0 && $isInfinite === false)) {
-      $message = $this->getErrorMessage($reflector, $length, $isInfinite);
-      throw new CommandException($message);
+      $expectationLength = count($reflector->getParameters());
+      throw new CommandException(
+        'Argument length not matched'.
+        "(input:$length expectation:$expectationLength".
+        ($isInfinite ? ' or more' : '').
+        ')'
+      );
     }
-  }
-
-  private function getErrorMessage($reflector, $length, $isInfinite) {
-    $expectLength = count($reflector->getParameters());
-    $moreThan = $isInfinite ? 'more than ' : '';
-    return "argument length not matched(current:$length except:$moreThan$expectLength)";
-    //todo: use argument list instand of length
   }
 }
