@@ -4,6 +4,5 @@ class NewWebCommand {
     $generator = new ScaffoldGenerator;
     define('CLASS_LOADER_PATH', '/home/');
     $generator->generate('web');
-    echo "done\n";
   }
 }

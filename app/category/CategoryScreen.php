@@ -4,7 +4,7 @@ class CategoryScreen {
 
   public function render() {
     if ($_GET['category'] !== 'home'
-     && !isset($_ENV['category'][$_GET['category']])) {
+      && !isset($_ENV['category'][$_GET['category']])) {
       throw new NotFoundException;
     }
     if ($_GET['category'] === 'home') {

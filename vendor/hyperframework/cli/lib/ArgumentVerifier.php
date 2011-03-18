@@ -11,10 +11,10 @@ class ArgumentVerifier {
     if ($count < 0 || ($count > 0 && $isInfinite === false)) {
       $expectationLength = count($reflector->getParameters());
       throw new CommandException(
-        'Argument length not matched'.
-        "(input:$length expectation:$expectationLength".
-        ($isInfinite ? ' or more' : '').
-        ')'
+        'Argument length not matched'
+        ."(input:$length expectation:$expectationLength"
+        .($isInfinite ? ' or more' : '')
+        .')'
       );
     }
   }
