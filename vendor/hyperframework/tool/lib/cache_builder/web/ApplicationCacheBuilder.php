@@ -1,48 +1,66 @@
 <?php
 class ApplicationCacheBuilder {
   private $config;
+  private $cache;
 
   public function __construct($config) {
     $this->config = $config;
+    $processors = array();
+    foreach ($this->config as $item) {
+      $processors[$item] = $item.'Processor';
+    }
+    $this->cache = array($processors);
   }
 
   public function build() {
-    $index = array();
-    foreach ($this->config as $item) {
-      $index[$item] = $item.'Processor';
-    }
-    $cache = array($index);
-    $this->buildApp('', $cache);
+    $this->scan(null);
     $writer = new CacheWriter;
-    $writer->write('application', $cache);
+    $writer->write('application', $this->cache);
   }
 
-  private function buildApp($path, &$cache) {
-    $pathCache = array();
-    $dirs = array();
-    $dirPath = getcwd().'/app/'.$path;
-    $processors = array();
-    foreach ($this->config as $processor) {
-      $class = $processor.'CacheBuilder';
-      $processors[] = new $class;
+  private function scan($path) {
+    $fullPath = $path;
+    if (DIRECTORY_SEPARATOR !== '/') {
+      $fullPath = str_replace('/', DIRECTORY_SEPARATOR, $path);
     }
-    foreach (scandir($dirPath) as $entry) {
+    $fullPath = (
+      getcwd().DIRECTORY_SEPARATOR.'app'.$fullPath.DIRECTORY_SEPARATOR
+    );
+    $dirs = array();
+    foreach (scandir($fullPath) as $entry) {
       if ($entry === '..' || $entry === '.') {
         continue;
       }
-      if (is_dir($dirPath.'/'.$entry)) {
+      if (is_dir($fullPath.$entry)) {
         $dirs[] = $entry;
         continue;
       }
-      foreach ($processors as $processor) {
-        $processor->build($dirPath, $entry, $pathCache);
-      }
-    }
-    if (count($pathCache) !== 0) {
-      $cache[$path] = $pathCache;
+      $this->dispatch(
+        $fullPath.DIRECTORY_SEPARATOR.$entry, $path, $entry
+      );
     }
     foreach ($dirs as $entry) {
-      $this->buildApp($path.'/'.$entry, $cache);
+      $this->scan($path.'/'.$entry);
+    }
+  }
+
+  private function dispatch($fullPath, $path, $fileName) {
+    foreach ($this->config as $item) {
+      $class = $item.'CacheBuilder';
+      $builder = new $class;
+      $cache = $builder->build($fileName, $fullPath);
+      if ($cache === null) {
+        continue;
+      }
+      if (!isset($this->cache[$path])) {
+        $this->cache[$path] = array();
+      }
+      if (isset($this->cache[$path][$item])) {
+        $this->cache[$path][$item] += $cache;
+        return;
+      }
+      $this->cache[$path][$item] = $cache;
+      return;
     }
   }
 }

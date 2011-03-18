@@ -8,11 +8,11 @@ return array(
     '  }',
     '}',
   ),
-  'bin/'.APP_NAME.'.bat' => array(
+  'public/'.APP_NAME.'.bat' => array(
     '@echo off',
     'php "'.APP_NAME.'.php" %*',
   ),
-  'bin/'.APP_NAME.'.php' => array(
+  'public/'.APP_NAME.'.php' => array(
     '#!/usr/bin/php',
     '<?php',
     "define('ROOT_PATH', dirname(dirname(__FILE__)).'/');",
@@ -26,7 +26,7 @@ return array(
     '$parser = new CommandParser;',
     '$parser->parse();',
    ),
-  'bin/'.APP_NAME.'.sh' => array(
+  'public/'.APP_NAME.'.sh' => array(
     '@echo off',
     'php "'.APP_NAME.'.php" %*',
   ),

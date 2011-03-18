@@ -1,17 +1,20 @@
 <?php
 class ActionCacheBuilder {
-  public function build($dirPath, $entry, &$pathCache) {
-    $suffix = substr($entry, -10);
-    if ($suffix === 'Action.php') {
-      require $dirPath . '/' . $entry;
-      $class = preg_replace('/.php$/', '', $entry);
-      $actionCache = array ('class' => $class, 'method' => array ());
-      $reflector = new ReflectionClass($class);
-      $methods = array();
-      foreach ($reflector->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-        $actionCache['method'][] = $method->name;
-      }
-      $pathCache['Action'] = $actionCache;
+  public function build($fileName, $path) {
+    $suffix = substr($fileName, -10);
+    if ($suffix !== 'Action.php') {
+      return;
     }
+    require $path;
+    $class = preg_replace('/.php$/', '', $fileName);
+    $cache = array ('class' => $class, 'method' => array ());
+    $reflector = new ReflectionClass($class);
+    $methods = array();
+    foreach ($reflector->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+      if (preg_match('/^[A-Z]+$/', $method)) {
+        $cache['method'][] = $method->getName();
+      }
+    }
+    return $cache;
   }
 }

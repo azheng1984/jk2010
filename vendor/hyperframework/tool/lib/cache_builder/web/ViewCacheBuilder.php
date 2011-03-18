@@ -1,19 +1,17 @@
 <?php
 class ViewCacheBuilder {
-  public function build($dirPath, $entry, &$pathCache) {
-    $suffix = substr($entry, -10);
-    $entryCache = array();
+  public function build($fileName) {
+    $suffix = substr($fileName, -10);
+    $cache = array();
     if ($suffix === 'Screen.php') {
-      if (!isset($pathCache['View'])) {
-        $pathCache['View'] = array();
-      }
-      $pathCache['View']['screen'] = preg_replace('/.php$/', '', $entry);
+      $cache['screen'] = preg_replace('/.php$/', '', $fileName);
     }
-    if (substr($entry, -9) === 'Image.php') {
-      if (!isset($pathCache['View'])) {
-        $pathCache['View'] = array();
-      }
-      $pathCache['View']['image'] = preg_replace('/.php$/', '', $entry);
+    if (substr($fileName, -9) === 'Image.php') {
+      $cache['image'] = preg_replace('/.php$/', '', $fileName);
     }
+    if (count($cache) === 0) {
+      return;
+    }
+    return $cache;
   }
 }
