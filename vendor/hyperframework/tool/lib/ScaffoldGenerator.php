@@ -1,33 +1,35 @@
 <?php
 class ScaffoldGenerator {
   public function generate($type) {
-    $config = require(CONFIG_PATH.'scaffold_generator/'.$type.'.config.php');
     if (count(scandir(getcwd())) !== 2) {
-      throw new CommandException('directory must empty'."\n");
+      throw new CommandException('directory must empty');
     }
-    foreach ($config as $file => $content) {
-      if (is_int($file)) {
-        $file = $content;
+    $config = require CONFIG_PATH.'scaffold_generator/'.$type.'.config.php';
+    foreach ($config as $path => $content) {
+      if (is_int($path)) {
+        $path = $content;
         $content = null;
       }
-      $this->create($file, $content);
+      if (substr($path, -1) === '/') {
+        $this->createDirectory($path);
+        continue;
+      }
+      $this->createFile($path, $content);
     }
   }
 
-  private function create($file, $content) {
-    if (substr($file, -1) === '/') {
-      if (!is_dir($file)) {
-        mkdir($file, 0777, true);
-      }
-    } else {
-      if (!is_dir(dirname($file))) {
-        mkdir(dirname($file), 0777, true);
-      }
-      $data = '';
-      if (is_array($content)) {
-        $data = implode("\n", $content);
-      }
-      file_put_contents($file, $data);
+  private function createFile($path, $content) {
+    $this->createDirectory(dirname($path));
+    $data = null;
+    if (is_array($content)) {
+      $data = implode(PHP_EOL, $content);
+    }
+    file_put_contents($path, $data);
+  }
+
+  private function createDirectory($path) {
+    if (!is_dir($path)) {
+      mkdir($path, 0777, true); //todo:not all dirs are writeable
     }
   }
 }

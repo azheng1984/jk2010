@@ -18,13 +18,9 @@ class Application {
   }
 
   private function process($path, $name, $class) {
-    $cache = null;
-    if (isset($this->cache[$path][$name])) {
-      $cache = $this->cache[$path][$name];
-    }
-    if ($cache !== null || in_array($name, $this->cache[$path], true)) {
+    if (isset($name, $this->cache[$path])) {
       $processor = new $class;
-      $processor->run($cache);
+      $processor->run($this->cache[$path][$name]);
     }
   }
 }
