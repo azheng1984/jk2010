@@ -10,8 +10,8 @@ class ImageAction {
     if (!is_numeric($id)) {
       $length = strlen($id);
       if ($length > 2
-       && substr($id, -2) === '_s'
-       && is_numeric($prefix = substr($id, 0, $length - 2))) {
+        && substr($id, -2) === '_s'
+        && is_numeric($prefix = substr($id, 0, $length - 2))) {
         $id = $prefix;
         $size = 'small';
       } else {

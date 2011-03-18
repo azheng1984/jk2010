@@ -5,6 +5,5 @@ class NewCliCommand {
     define('APP_NAME', $name);
     define('CLASS_LOADER_PATH', '/home/');
     $generator->generate('cli');
-    echo "done\n";
   }
 }

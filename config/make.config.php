@@ -1,5 +1,8 @@
 <?php
 return array(
-  'application' => array('Action', 'View'),
-  'class_loader' => array('app', 'lib', 'vendor/hf/web/lib'),
+  'Application' => array('Action', 'View'),
+  'ClassLoader' => array(
+    'app', 'lib', 'vendor'.DIRECTORY_SEPARATOR.'hf'.DIRECTORY_SEPARATOR
+    .'web'.DIRECTORY_SEPARATOR.'lib',
+  ),
 );

@@ -1,17 +1,5 @@
 <?php
 return array(
-  'option' => array(
-    'version' => array(
-      'short' => 'v',
-      'expansion' => array('help', 'version'),
-      'description' => 'Print version infomation',
-    ),
-    'help' => array(
-      'short' => array('h', '?'),
-      'expansion' => array('help'),
-      'description' => 'Show help',
-    ),
-  ),
   'sub' => array(
     'make' => array(
       'option' => array(
@@ -47,7 +35,6 @@ return array(
         ),
       ),
     ),
-    'help' => 'HelpCommand',
   ),
   'description' => 'Hyperframework cli tool version 0.1',
 );

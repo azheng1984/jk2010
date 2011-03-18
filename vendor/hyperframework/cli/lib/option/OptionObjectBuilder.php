@@ -19,17 +19,15 @@ class OptionObjectBuilder {
       $standardLength = null;
     }
     $arguments = $this->argumentParser->parse($standardLength);
-    if ($constructor === null && count($arguments) !== 0) {
-      throw new SyntaxException("Option argument length not matched");
+    $length = count($arguments);
+    if ($constructor === null && $length !== 0) {
+      throw new CommandException("Option argument not allowed(input:$length)");
     }
     if ($constructor === null) {
       return $reflector->newInstance(); 
     }
-    $length = count($arguments);
     $verifier = new ArgumentVerifier;
-    if (!$verifier->verify($constructor, $length, $standardLength === null)) {
-      throw new SyntaxException;
-    }
+    $verifier->verify($constructor, $length, $standardLength === null);
     return $reflector->newInstanceArgs($arguments);
   }
 }
