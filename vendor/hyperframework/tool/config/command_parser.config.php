@@ -5,7 +5,7 @@ return array(
       'option' => array(
         'dry_run' => array(
           'short' => 'd',
-          'description' => 'Don’t actually build cache(s), just output',
+          'description' => 'Don\'t actually build cache(s), just output',
         ),
       ),
       'class' => 'MakeCommand',
