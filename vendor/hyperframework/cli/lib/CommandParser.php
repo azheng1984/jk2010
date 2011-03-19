@@ -14,7 +14,7 @@ class CommandParser {
   public function parse() {
     while (($item = $this->reader->get()) !== null) {
       $this->analyze($item);
-      $this->reader->move();
+      $this->reader->moveToNext();
     }
     $runner = new CommandRunner;
     return $runner->run($this->config, $this->arguments);

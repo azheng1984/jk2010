@@ -19,14 +19,17 @@ class CommandReader {
     return $this->arguments[$this->index];
   }
 
-  public function move($isForward = true) {
-    $this->index += $isForward ? 1 : -1;
-    return $this;
+  public function moveToNext() {
+    ++$this->index;
+  }
+
+  public function moveToPrevious() {
+    --$this->index;
   }
 
   public function expand($arguments) {
     array_splice($this->arguments, $this->index, 1, $arguments);
     $this->length = count($this->arguments);
-    $this->move(false);
+    $this->moveToPrevious();
   }
 }

@@ -10,7 +10,7 @@ class CommandExplorer {
     if ($name !== null) {
       $methodExplorer = new MethodExplorer;
       $methodExplorer->render($name, $config);
-      $this->writer->indent();
+      $this->writer->increaseIndentation();
     }
     if (isset($config['description'])) {
       $this->writer->writeLine($config['description']);
@@ -20,13 +20,13 @@ class CommandExplorer {
       $this->renderOptionList($config['option']);
     }
     if ($name !== null) {
-      $this->writer->indent(false);
+      $this->writer->decreaseIndentation();
     }
   }
 
   private function renderOptionList($config) {
     $this->writer->writeLine('[option]');
-    $this->writer->indent();
+    $this->writer->increaseIndentation();
     $optionExplorer = new OptionExplorer;
     foreach ($config as $name => $item) {
       if (is_int($name)) {
@@ -38,6 +38,6 @@ class CommandExplorer {
       }
       $optionExplorer->render($name, $item);
     }
-    $this->writer->indent(false);
+    $this->writer->decreaseIndentation();
   }
 }

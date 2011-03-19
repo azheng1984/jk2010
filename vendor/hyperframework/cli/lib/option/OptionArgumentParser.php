@@ -10,9 +10,10 @@ class OptionArgumentParser {
     $arguments = array();
     $count = 0;
     while ($count !== $standardLength) {
-      $item = $this->reader->move()->get();
+      $this->reader->moveToNext();
+      $item = $this->reader->get();
       if ($item === null || ($item !== '-' && strpos($item, '-') === 0)) {
-        $this->reader->move(false);
+        $this->reader->moveToPrevious();
         break;
       }
       $arguments[] = $item;

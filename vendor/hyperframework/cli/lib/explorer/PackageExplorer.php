@@ -35,10 +35,10 @@ class PackageExplorer {
 
   private function renderCommandList($name, $values) {
     $this->writter->writeLine("[$name]");
-    $this->writter->indent();
+    $this->writter->increaseIndentation();
     foreach ($values as $name => $config) {
       $this->commandExplorer->render($name, $config);
     }
-    $this->writter->indent(false);
+    $this->writter->decreaseIndentation();
   }
 }
