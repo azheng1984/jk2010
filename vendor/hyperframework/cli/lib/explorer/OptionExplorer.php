@@ -15,10 +15,10 @@ class OptionExplorer {
     $methodExplorer = new MethodExplorer;
     $methodExplorer->render('--'.$name.$short, $config);
     if (isset($config['description'])) {
-      $writter->indent();
+      $writter->increaseIndentation();
       $writter->writeLine($config['description']);
       $writter->writeLine();
-      $writter->indent(false);
+      $writter->decreaseIndentation();
     }
   }
 }

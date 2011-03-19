@@ -13,7 +13,11 @@ class CommandWriter {
     echo str_repeat('  ', $this->indentation), $value, PHP_EOL;
   }
 
-  public function indent($isForward = true) {
-    $this->indentation += $isForward ? 1 : -1;
+  public function increaseIndentation() {
+    ++$this->indentation;
+  }
+
+  public function decreaseIndentation() {
+    --$this->indentation;
   }
 }
