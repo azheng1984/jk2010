@@ -1,8 +1,8 @@
 <?php
-class ActionCacheBuilder {
+class ActionBuilder {
   public function build($fileName, $path) {
-    $suffix = substr($fileName, -10);
-    if ($suffix !== 'Action.php') {
+    $postfix = 'Action.php';
+    if (substr($fileName, -(strlen($postfix))) !== $postfix) {
       return;
     }
     require $path;

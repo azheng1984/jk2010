@@ -29,7 +29,7 @@ class ScaffoldGenerator {
 
   private function createDirectory($path) {
     if (!is_dir($path)) {
-      mkdir($path, 0777, true); //todo:not all dirs are writeable
+      mkdir($path, 0777, true); //todo:code dirs are readable only
     }
   }
 }

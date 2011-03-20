@@ -1,5 +1,5 @@
 <?php
-class ApplicationCacheBuilder {
+class ApplicationBuilder {
   private $config;
   private $cache;
 
@@ -49,7 +49,7 @@ class ApplicationCacheBuilder {
       $class = $item.'CacheBuilder';
       $builder = new $class;
       $cache = $builder->build($fileName, $fullPath);
-      if ($cache === null) {
+      if (count($cache) === 0) {
         continue;
       }
       if (!isset($this->cache[$path])) {
