@@ -1,49 +1,13 @@
 <?php
-class ClassLoaderCacheBuilder {
-  private $config;
-  private $cache = array(array(), array());
-
-  public function __construct($config) {
-    $this->config = $config;
+class DirectoryScanner {
+  private $classRecognizer;
+  
+  public function __construct($classRecognizer) {
+    $this->classRecognizer = $classRecognizer;
   }
 
-  public function build() {
-    if (is_array($this->config)) {
-      foreach ($this->config as $key => $item) {
-        $index = count($this->cache[1]);
-        if (is_int($key)) {
-          if ($item[0] !== '/') {
-            $this->fetch(null, $item);
-          } else {
-            $this->cache[1][$index] = array($item);
-            $this->fetch($index, null);
-          }
-        } else {
-          if ($key[0] !== '/') {
-            $this->fetch(null, array($key => $item));
-          } else {
-            $this->cache[1][$index] = array($key);
-            $this->fetch($index, $item);
-          }
-        }
-      }
-    } else {
-      foreach (scandir(getcwd()) as $entry) {
-        if ($entry === '..' || $entry === '.') {
-          continue;
-        }
-        $this->fetch(null, $entry);
-      }
-    }
-    if (count($this->cache[1]) === 0) {
-      unset($this->cache[1]);
-    }
-    $writer = new CacheWriter;
-    $writer->write('class_loader', $this->cache);
-  }
-
-  private function fetch($rootIndex, $folder) {
-    if (is_array($folder)) {
+  private function getFiles($index, $path) {
+      if (is_array($folder)) {
       foreach ($folder as $key => $item) {
         if (!is_int($key)) {
           foreach ($item as &$entry) {
@@ -94,8 +58,7 @@ class ClassLoaderCacheBuilder {
       } else {
         $files[] = basename($folder);
       }
-      $classRecognizer = new ClassRecognizer;
-      $classes = $classRecognizer->getClasses($files);
+      $classes = $this->classRecognizer->getClasses($files);
       if (count($classes) !== 0) {
         $index = null;
         if ($folder === null) {

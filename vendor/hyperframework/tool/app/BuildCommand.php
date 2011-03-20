@@ -1,5 +1,5 @@
 <?php
-class MakeCommand {
+class BuildCommand {
   private $config;
 
   public function execute() {
