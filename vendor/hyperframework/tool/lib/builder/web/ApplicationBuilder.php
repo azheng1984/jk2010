@@ -46,7 +46,7 @@ class ApplicationBuilder {
 
   private function dispatch($fullPath, $path, $fileName) {
     foreach ($this->config as $item) {
-      $class = $item.'CacheBuilder';
+      $class = $item.'Builder';
       $builder = new $class;
       $cache = $builder->build($fileName, $fullPath);
       if (count($cache) === 0) {
