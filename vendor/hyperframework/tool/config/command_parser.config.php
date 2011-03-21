@@ -1,15 +1,15 @@
 <?php
 return array(
   'sub' => array(
-    'make' => array(
+    'build' => array(
       'option' => array(
         'dry_run' => array(
           'short' => 'd',
           'description' => 'Don\'t actually build cache(s), just output',
         ),
       ),
-      'class' => 'MakeCommand',
-      'description' => 'Compile application',
+      'class' => 'BuildCommand',
+      'description' => 'Build application',
     ),
     'new' => array(
       'description' => 'Create scaffold',

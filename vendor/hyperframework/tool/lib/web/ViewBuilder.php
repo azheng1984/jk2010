@@ -1,12 +1,16 @@
 <?php
 class ViewBuilder {
+  private $types;
+
+  public function __construct($types) {
+    $this->types = $types;
+  }
+  
   public function build($fileName) {
     $cache = array();
-    $types = require(
-      CACHE_PATH.'cache_builder'.DIRECTORY_SEPARATOR.'view.config.php'
-    );
-    foreach ($types as $type) {
-      if (substr($fileName, -strlen($type)) === "$type.php") {
+    foreach ($this->types as $type) {
+      $postfix = "$type.php";
+      if (substr($fileName, -strlen($postfix)) === $postfix) {
         $cache[$type] = preg_replace('/.php$/', '', $fileName);
       }
     }

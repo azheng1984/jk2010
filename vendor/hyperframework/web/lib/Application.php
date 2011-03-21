@@ -18,7 +18,7 @@ class Application {
   }
 
   private function process($path, $name, $class) {
-    if (isset($name, $this->cache[$path])) {
+    if (isset($this->cache[$path][$name])) {
       $processor = new $class;
       $processor->run($this->cache[$path][$name]);
     }
