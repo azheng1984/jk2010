@@ -14,8 +14,7 @@ class ApplicationBuilder {
 
   public function build() {
     $this->scan(null);
-    $writer = new CacheWriter;
-    $writer->write('application', $this->cache);
+    return array('application', $this->cache);
   }
 
   private function scan($path) {
