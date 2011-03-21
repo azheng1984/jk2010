@@ -21,7 +21,10 @@ class ClassLoaderConfiguration {
   private function combine($path, $children) {
     $result = array();
     foreach ($children as $key => $value) {
-      $item = $key;
+      $item = null;
+      if (!is_int($key)) {
+        $item = $key;
+      }
       if ($path !== null) {
         $item = $path.DIRECTORY_SEPARATOR.$item;
       }
