@@ -5,11 +5,12 @@ class BuildCommand {
   public function execute() {
     $configPath = (
       getcwd().DIRECTORY_SEPARATOR.
-      'config'.DIRECTORY_SEPARATOR.
-      'make.config.php'
+      'config'.DIRECTORY_SEPARATOR.'build.config.php'
     );
     if (!file_exists($configPath)) {
-      throw new CommandException("can't find the make file");
+      throw new CommandException(
+        "can't find the 'config".DIRECTORY_SEPARATOR."build.config.php'"
+      );
     }
     foreach (require $configPath as $name => $config) {
       $this->dispatch($name, $config);
@@ -21,7 +22,7 @@ class BuildCommand {
       $name = $config;
       $config = null;
     }
-    $class = $name.'CacheBuilder';
+    $class = $name.'Builder';
     $builder = new $class($config);
     $builder->build();
   }
