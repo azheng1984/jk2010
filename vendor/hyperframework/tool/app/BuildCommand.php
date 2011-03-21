@@ -12,8 +12,12 @@ class BuildCommand {
         "can't find the 'config".DIRECTORY_SEPARATOR."build.config.php'"
       );
     }
+    $generator = new CacheGenerator;
     foreach (require $configPath as $name => $config) {
-      $this->dispatch($name, $config);
+      $result = $this->dispatch($name, $config);
+      if ($result !== null) {
+        $generator->generate($result);
+      }
     }
   }
 
@@ -24,6 +28,6 @@ class BuildCommand {
     }
     $class = $name.'Builder';
     $builder = new $class($config);
-    $builder->build();
+    return $builder->build();
   }
 }
