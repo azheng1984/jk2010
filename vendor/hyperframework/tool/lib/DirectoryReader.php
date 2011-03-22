@@ -21,6 +21,9 @@ class DirectoryReader {
     }
     if (substr($fullPath, -2) === DIRECTORY_SEPARATOR.'.') {
       $relativePath = $this->getDirectoryPath($relativePath);
+      list($rootPath, $relativePath) = $this->removeCurrentDirectory(
+        $rootPath, $relativePath
+      );
       $isRecursive = false;
     }
     foreach (scandir($fullPath) as $entry) {
@@ -50,5 +53,12 @@ class DirectoryReader {
       return;
     }
     return dirname($value);
+  }
+
+  private function removeCurrentDirectory($rootPath, $relativePath) {
+    if ($relativePath === null) {
+      return array(dirname($rootPath), null);
+    }
+    return array($rootPath, dirname($relativePath));
   }
 }
