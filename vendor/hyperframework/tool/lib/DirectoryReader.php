@@ -59,6 +59,9 @@ class DirectoryReader {
     if ($relativePath === null) {
       return array(dirname($rootPath), null);
     }
+    if ($relativePath === '.') {
+      return array($rootPath, null);
+    }
     return array($rootPath, dirname($relativePath));
   }
 }
