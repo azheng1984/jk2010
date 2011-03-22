@@ -1,13 +1,13 @@
 <?php
-class ActionBuilder {
-  public function build($fileName, $path) {
+class ActionAnalyzer {
+  public function execute($fileName, $fullPath) {
     $postfix = 'Action.php';
     if (substr($fileName, -(strlen($postfix))) !== $postfix) {
       return;
     }
-    require $path;
+    require $fullPath;
     $class = preg_replace('/.php$/', '', $fileName);
-    $cache = array ('class' => $class, 'method' => array ());
+    $cache = array('class' => $class, 'method' => array ());
     $reflector = new ReflectionClass($class);
     foreach ($reflector->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
       $methodName = $method->getName();

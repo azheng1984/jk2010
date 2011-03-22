@@ -10,10 +10,10 @@ class ClassLoaderConfiguration {
         list($key, $value) = array($value, array());
       }
       if ($this->isFullPath($key)) {
-        $result[$key] = $this->combine(null, $value);
+        $result += array($key, $this->combine(null, $value));
         continue;
       }
-      $result += $this->combine($key, $value);
+      $result += array(null, $this->combine($key, $value));
     }
     return $result;
   }
