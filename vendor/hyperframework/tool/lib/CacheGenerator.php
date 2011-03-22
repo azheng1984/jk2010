@@ -4,6 +4,6 @@ class CacheGenerator {
     file_put_contents(
       "cache".DIRECTORY_SEPARATOR."$name.cache.php",
       "<?php".PHP_EOL."return ".var_export($cache, true).';'
-    );
+    ); //todo:readonly
   }
 }
