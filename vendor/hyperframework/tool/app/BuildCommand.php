@@ -4,30 +4,37 @@ class BuildCommand {
 
   public function execute() {
     $configPath = (
-      getcwd().DIRECTORY_SEPARATOR.
-      'config'.DIRECTORY_SEPARATOR.'build.config.php'
+      getcwd().DIRECTORY_SEPARATOR
+      .'config'.DIRECTORY_SEPARATOR.'build.config.php'
     );
     if (!file_exists($configPath)) {
       throw new CommandException(
         "can't find the 'config".DIRECTORY_SEPARATOR."build.config.php'"
       );
     }
-    $generator = new CacheGenerator;
     foreach (require $configPath as $name => $config) {
       $result = $this->dispatch($name, $config);
       if ($result !== null) {
-        $generator->generate($result);
+        $this->export($result);
       }
     }
   }
 
   private function dispatch($name, $config) {
     if (is_int($name)) {
-      $name = $config;
-      $config = null;
+      list($name, $config) = array($config, null);
     }
     $class = $name.'Builder';
-    $builder = new $class($config);
-    return $builder->build();
+    $builder = new $class;
+    return $builder->build($config);
+  }
+
+  private function export($result) {
+    list($name, $cache) = $result->export();
+    $path = 'cache'.DIRECTORY_SEPARATOR.$name.'.cache.php';
+    file_put_contents(
+      $path, '<?php'.PHP_EOL.'return '.var_export($cache, true).';'
+    );
+    chmod($path, 0644);
   }
 }

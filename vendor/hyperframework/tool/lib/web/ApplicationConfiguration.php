@@ -2,9 +2,11 @@
 class ApplicationConfiguration {
   public function extract($config) {
     $analyzers = array();
-    foreach ($this->config as $key => $value) {
+    foreach ($config as $key => $value) {
       if (is_int($key)) {
-        $analyzers[$value] = new $value.'Analyzer';
+        $class = $value.'Analyzer';
+        $analyzers[$value] = new $class;
+        continue;
       }
       $class = $key.'Analyzer';
       $analyzers[$key] = new $class($value);

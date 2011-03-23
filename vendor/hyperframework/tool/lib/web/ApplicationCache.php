@@ -5,7 +5,7 @@ class ApplicationCache {
   public function __construct($analyzers) {
     $processors = array();
     foreach ($analyzers as $key => $value) {
-      $processors[] = $key.'Processor';
+      $processors[$key] = $key.'Processor';
     }
     $this->cache = array($processors);
   }

@@ -1,47 +1,42 @@
 <?php
 class ClassLoaderConfiguration {
+  private $values = array();
+  
   public function extract($config) {
     if (!is_array($config)) {
       $config = array($config);
     }
-    $result = array();
     foreach ($config as $key => $value) {
       if (is_int($key)) {
-        list($key, $value) = array($value, array());
+        list($key, $value) = array($value, null);
       }
       if ($this->isFullPath($key)) {
-        $result += array($key, $this->combine(null, $value));
+        $this->combine($key, null, $value);
         continue;
       }
-      $result += array(null, $this->combine($key, $value));
+      $this->combine(null, $key, $value);
     }
-    return $result;
+    return $this->values;
   }
 
-  private function combine($path, $children) {
-    $result = array();
-    foreach ($children as $key => $value) {
-      $item = null;
-      if (!is_int($key)) {
-        $item = $key;
-      }
-      if ($path !== null) {
-        $item = $path.DIRECTORY_SEPARATOR.$item;
-      }
-      if (is_array($value)) {
-        $result += $this->combine($item, value);
-        continue;
-      }
-      if (value !== null) {
-        $item .= DIRECTORY_SEPARATOR.value;
-      }
-      $result[] = $item;
+  private function combine($rootPath, $relativePath, $children) {
+    if ($children === null) {
+      $this->values[] = array($rootPath, $relativePath);
+      return;
     }
-    return $result;
+    foreach ($children as $key => $value) {
+      if (is_int($key)) {
+        list($key, $value) = array($value, null);
+      }
+      if ($relativePath !== null) {
+        $key = $relativePath.DIRECTORY_SEPARATOR.$key;
+      }
+      $this->combine($rootPath, $key, value);
+    }
   }
 
   private function isFullPath($path) {
     return $path['0'] === DIRECTORY_SEPARATOR 
-      || preg_match('/^[:alpha:]:\\\\/', $path);
+      || preg_match('/^[A-Za-z]:\\\\/', $path);
   }
 }
