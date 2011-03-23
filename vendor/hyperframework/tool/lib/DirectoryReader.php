@@ -51,7 +51,11 @@ class DirectoryReader {
     if ($path === null) {
       return;
     }
-    return dirname($path);
+    $result = dirname($path);
+    if ($result === '.') {
+      return;
+    }
+    return $result;
   }
 
   private function removeCurrentPath($rootPath, $relativePath) {

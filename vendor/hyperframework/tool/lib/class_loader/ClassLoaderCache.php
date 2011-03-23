@@ -14,14 +14,17 @@ class ClassLoaderCache {
     if (isset($this->cache[0][$class])) {
       throw new Exception("Conflict Class '$class'");
     }
-    $cache[0][$class] = $this->getIndex($rootPath, $relativePath);
+    $this->cache[0][$class] = $this->getIndex($rootPath, $relativePath);
   }
 
   private function getIndex($rootPath, $relativePath) {
     if ($rootPath === null && $relativePath === null) {
       return true;
     }
-    $rootPathIndex = $this->getFolderIndex(rootPath, array($rootPath));
+    if ($rootPath === null) {
+      return $this->getFolderIndex($relativePath, $relativePath);
+    }
+    $rootPathIndex = $this->getFolderIndex($rootPath, array($rootPath));
     if ($relativePath === null) {
       return $rootPathIndex;
     }
@@ -32,8 +35,8 @@ class ClassLoaderCache {
   }
 
   private function getFolderIndex($path, $cache) {
-    if (isset($this->$folders[$path])) {
-      return $this->$folders[$path];
+    if (isset($this->folders[$path])) {
+      return $this->folders[$path];
     }
     $index = count($this->cache[1]);
     $this->cache[1][$index] = $cache;
