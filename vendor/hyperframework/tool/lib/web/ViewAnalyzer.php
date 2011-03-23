@@ -9,7 +9,7 @@ class ViewAnalyzer {
   public function execute($fileName) {
     $cache = null;
     foreach ($this->types as $type) {
-      $postfix = "$type.php";
+      $postfix = $type.'.php';
       if (substr($fileName, -strlen($postfix)) === $postfix) {
         $cache = array($type => preg_replace('/.php$/', '', $fileName));
       }

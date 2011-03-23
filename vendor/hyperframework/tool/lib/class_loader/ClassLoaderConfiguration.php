@@ -1,7 +1,7 @@
 <?php
 class ClassLoaderConfiguration {
   private $values = array();
-  
+
   public function extract($config) {
     if (!is_array($config)) {
       $config = array($config);

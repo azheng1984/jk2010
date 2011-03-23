@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 ini_set('display_errors', 0);
 define('ROOT_PATH', dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR);
