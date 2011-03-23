@@ -11,14 +11,14 @@ class ScaffoldGenerator {
         $content = null;
       }
       if (substr($path, -1) === '/') {
-        $this->createDirectory($path);
+        $this->generateDirectory($path);
         continue;
       }
-      $this->createFile($path, $content);
+      $this->generateFile($path, $content);
     }
   }
 
-  private function createFile($path, $content) {
+  private function generateFile($path, $content) {
     $this->createDirectory(dirname($path));
     $data = null;
     if (is_array($content)) {
@@ -27,9 +27,9 @@ class ScaffoldGenerator {
     file_put_contents($path, $data);
   }
 
-  private function createDirectory($path) {
+  private function generateDirectory($path) {
     if (!is_dir($path)) {
-      mkdir($path, 0777, true); //todo:code dirs are readable only
+      mkdir($path, 0777, true); //todo:code dirs are readable only for php
     }
   }
 }

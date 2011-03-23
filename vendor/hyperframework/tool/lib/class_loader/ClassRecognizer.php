@@ -8,10 +8,9 @@ class ClassRecognizer {
 
   public function execute($fileName, $relativePath, $rootPath) {
     $class = $this->getClass($fileName);
-    if ($class === null) {
-      return;
+    if ($class !== null) {
+      $this->cache->append($class, $relativePath, $rootPath);
     }
-    $this->cache->append($class, $relativePath, $rootPath);
   }
 
   private function getClass($fileName) {
