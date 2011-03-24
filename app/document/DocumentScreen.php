@@ -65,7 +65,7 @@ class DocumentScreen {
     if (isset($this->cache['image_url_prefix'])) {
       $title = "《{$this->cache['title']}》的图片";
       echo ' <div class="image"><img title="', $title, '" alt="', $title,
-           '" src="', $this->cache['image_url_prefix'], '-', $this->cache['url_name'], '.jpg" /></div>';
+        '" src="', $this->cache['image_url_prefix'], '-', $this->cache['url_name'], '.jpg" /></div>';
     }
   }
 
@@ -79,9 +79,9 @@ class DocumentScreen {
 
   private function renderBackLink() {
     $url = '/'.$this->categoryUrlName.'/'.$this->databaseIndex.'-'
-          .$this->cache['list_page_id'].'/#'.$this->cache['url_name'];
+      .$this->cache['list_page_id'].'/#'.$this->cache['url_name'];
     echo "<div class=\"back\"><a target=\"_blank\" href=\"http://{$this->cache['source_url']}\">去".$_ENV['source'][$this->cache['source_id']][0]."“瞄一眼”这个热点</a>",
-         " | <a class=\"to_list\" href=\"$url\">返回《{$this->cache['title']}》所在的列表</a></div>";
+      " | <a class=\"to_list\" href=\"$url\">返回《{$this->cache['title']}》所在的列表</a></div>";
   }
 
   private function renderRelated() {

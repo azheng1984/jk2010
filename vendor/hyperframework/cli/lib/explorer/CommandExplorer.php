@@ -30,8 +30,7 @@ class CommandExplorer {
     $optionExplorer = new OptionExplorer;
     foreach ($config as $name => $item) {
       if (is_int($name)) {
-        $name = $item;
-        $item = array();
+        list($name, $item) = array($item, array());
       }
       if (!is_array($item)) {
         $item = array('class' => $item);

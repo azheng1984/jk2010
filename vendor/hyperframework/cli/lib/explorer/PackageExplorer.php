@@ -1,10 +1,10 @@
 <?php
 class PackageExplorer {
-  private $writter;
+  private $writer;
   private $commandExplorer;
 
   public function __construct() {
-    $this->writter = $_ENV['command_writer'];
+    $this->writer = $_ENV['command_writer'];
     $this->commandExplorer = new CommandExplorer;
   }
 
@@ -20,25 +20,26 @@ class PackageExplorer {
         $item = array('class' => $item);
       }
       if (isset($item['sub'])) {
+        unset($item['option']);
         $packages[$name] = $item;
         continue;
       }
       $commands[$name] = $item;
     }
     if (count($packages) !== 0) {
-      $this->renderCommandList('package', $packages);
+      $this->renderPackageList('package', $packages);
     }
     if (count($commands) !== 0) {
       $this->renderCommandList('command', $commands);
     }
   }
 
-  private function renderCommandList($name, $values) {
-    $this->writter->writeLine("[$name]");
-    $this->writter->increaseIndentation();
+  private function renderCommandList($type, $values) {
+    $this->writer->writeLine("[$type]");
+    $this->writer->increaseIndentation();
     foreach ($values as $name => $config) {
       $this->commandExplorer->render($name, $config);
     }
-    $this->writter->decreaseIndentation();
+    $this->writer->decreaseIndentation();
   }
 }

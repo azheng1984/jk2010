@@ -1,8 +1,8 @@
 <?php
-class NewWebCommand {
-  public function execute() {
+class NewCommand {
+  public function execute($type) {
     $generator = new ScaffoldGenerator;
     define('CLASS_LOADER_PATH', '/home/');
-    $generator->generate('web');
+    $generator->generate($type);
   }
 }

@@ -17,8 +17,8 @@ class OptionExplorer {
     if (isset($config['description'])) {
       $writter->increaseIndentation();
       $writter->writeLine($config['description']);
-      $writter->writeLine();
       $writter->decreaseIndentation();
+      $writter->writeLine();
     }
   }
 }
