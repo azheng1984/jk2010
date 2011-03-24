@@ -12,13 +12,14 @@ return array(
     '@echo off',
     'php "'.APP_NAME.'.php" %*',
   ),
-  'public/'.APP_NAME.'.php' => array(
+  'public/index.php' => array(
     '#!/usr/bin/php',
     '<?php',
     "define('ROOT_PATH', dirname(dirname(__FILE__)).'/');",
     "define('CACHE_PATH', ROOT_PATH.'cache/');",
     "define('CONFIG_PATH', ROOT_PATH.'config/');",
-    "require '".CLASS_LOADER_PATH."';",
+    "define('HYPERFRAMEWORK_PATH', ".$_ENV['hyperframework_path'].");",
+    "require HYPERFRAMEWORK_PATH.'class_loader/lib/ClassLoader.php;",
     '$classLoader = new ClassLoader;',
     '$classLoader->run();',
     '$errorHandler = new CommandErrorHandler;',
@@ -26,12 +27,8 @@ return array(
     '$parser = new CommandParser;',
     '$parser->parse();',
    ),
-  'public/'.APP_NAME.'.sh' => array(
-    '@echo off',
-    'php "'.APP_NAME.'.php" %*',
-  ),
   'cache/',
-  'config/make.config.php',
+  'config/build.config.php',
   'config/command_parser.config.php' => array(
     '<?php',
     'return array(',
