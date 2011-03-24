@@ -1,13 +1,16 @@
 <?php
 class MethodExplorer {
-  public function render($name, $config) {
+  public function render($name, $method, $config) {
     $writter = $_ENV['command_writer'];
     if (!isset($config['class'])) {
       $writter->writeLine($name);
       return;
     }
-    $reflector = new ReflectionMethod($config['class'], 'execute');
-    $arguments = $reflector->getParameters();
+    $reflector = new ReflectionClass($config['class']);
+    if (!$reflector->hasMethod($method)) {
+      return;
+    }
+    $arguments = $reflector->getMethod($method)->getParameters();
     $output = $name;
     if (count($arguments) !== 0) {
       $output .= '('.$this->getArgumentList($arguments).')';

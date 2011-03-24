@@ -13,6 +13,7 @@ return array(
         'class_loader_path' => array(
           'description' => 'Set class_loader_path instead of default',
           'short' => 'p',
+          'class' => 'ClassLoaderPath',
         ),
       ),
     ),

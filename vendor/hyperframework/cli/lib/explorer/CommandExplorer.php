@@ -9,7 +9,7 @@ class CommandExplorer {
   public function render($name, $config) {
     if ($name !== null) {
       $methodExplorer = new MethodExplorer;
-      $methodExplorer->render($name, $config);
+      $methodExplorer->render($name, 'execute', $config);
       $this->writer->increaseIndentation();
     }
     if (isset($config['description'])) {

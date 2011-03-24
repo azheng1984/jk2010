@@ -13,7 +13,7 @@ class OptionExplorer {
       $short = ', -'.$short;
     }
     $methodExplorer = new MethodExplorer;
-    $methodExplorer->render('--'.$name.$short, $config);
+    $methodExplorer->render('--'.$name.$short, '__construct', $config);
     if (isset($config['description'])) {
       $writter->increaseIndentation();
       $writter->writeLine($config['description']);
