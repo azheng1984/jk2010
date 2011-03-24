@@ -8,6 +8,7 @@ class MethodExplorer {
     }
     $reflector = new ReflectionClass($config['class']);
     if (!$reflector->hasMethod($method)) {
+      $writter->writeLine($name);
       return;
     }
     $arguments = $reflector->getMethod($method)->getParameters();
