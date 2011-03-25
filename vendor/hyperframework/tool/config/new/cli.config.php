@@ -1,7 +1,6 @@
 <?php
 return array(
   'app/WelcomeCommand.php' => array(
-    0644,
     '<?php',
     'class WelcomeCommand {',
     '  public function execute() {',
@@ -11,14 +10,12 @@ return array(
   ),
   'cache/' => 0777,
   'config/build.config.php' => array(
-    0644,
     '<?php',
     'return array(',
     "  'ClassLoader' => array('app', 'lib', HYPERFRAMEWORK_PATH.'cli/lib'),",
     ');',
    ),
   'config/command_parser.config.php' => array(
-    0644,
     '<?php',
     'return array(',
     "  'description' => 'Welcome!',",

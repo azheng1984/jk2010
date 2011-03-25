@@ -29,18 +29,22 @@ class NewCommand {
   }
 
   private function generateFile($path, $content) {
-    $this->generateDirectory(dirname($path), null);
-    $mode = 0644;
+    $this->generateDirectory(dirname($path));
+    $mode = null;
+    if (isset($content[0]) && is_int($content[0])) {
+      $mode = array_shift($content);
+    }
     $output = null;
     if ($content !== null) {
-      $mode = array_shift($content);
       $output = implode(PHP_EOL, $content);
     }
     file_put_contents($path, $output);
-    chmod($path, $mode);
+    if ($mode !== null) {
+      chmod($path, $mode);
+    }
   }
 
-  private function generateDirectory($path, $mode) {
+  private function generateDirectory($path, $mode = null) {
     if ($mode === null) {
       $mode = 0755;
     }
