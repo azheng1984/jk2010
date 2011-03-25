@@ -12,14 +12,15 @@ class MethodExplorer {
       return;
     }
     $arguments = $reflector->getMethod($method)->getParameters();
+    $isInfinite = isset($config['infinite']);
     $output = $name;
-    if (count($arguments) !== 0) {
-      $output .= '('.$this->getArgumentList($arguments).')';
+    if (count($arguments) !== 0 || $isInfinite) {
+      $output .= '('.$this->getArgumentList($arguments, $isInfinite).')';
     }
     $writter->writeLine($output);
   }
 
-  private function getArgumentList($arguments) {
+  private function getArgumentList($arguments, $isInfinite) {
     $outputs = array();
     foreach ($arguments as $argument) {
       $item = $argument->getName();
@@ -27,6 +28,9 @@ class MethodExplorer {
         $item .= ' = '.var_export($argument->getDefaultValue(), true);
       }
       $outputs[] = $item;
+    }
+    if ($isInfinite) {
+      $outputs[] = '...';
     }
     return implode(', ', $outputs);
   }
