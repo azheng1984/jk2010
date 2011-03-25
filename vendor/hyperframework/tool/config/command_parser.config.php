@@ -1,6 +1,6 @@
 <?php
 return array(
-  'description' => 'Hyperframework CLI Tool - version 0.1',
+  'description' => 'Hyperframework CLI Tool - Version 0.1',
   'sub' => array(
     'build' => array(
       'description' => 'Build application',

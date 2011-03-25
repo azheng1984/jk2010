@@ -18,7 +18,7 @@ return array(
   'config/command_parser.config.php' => array(
     '<?php',
     'return array(',
-    "  'description' => 'Welcome!',",
+    "  'description' => 'Please add your own description here',",
     "  'sub' => array(",
     "    'welcome' => 'WelcomeCommand',",
     '  ),',
@@ -32,7 +32,7 @@ return array(
     "define('ROOT_PATH', dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR);",
     "define('CACHE_PATH', ROOT_PATH.'cache'.DIRECTORY_SEPARATOR);",
     "define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);",
-    "define('HYPERFRAMEWORK_PATH', '".$_ENV['new']['hyperframework_path']."');",
+    "define('HYPERFRAMEWORK_PATH', ".$_ENV['new']['hyperframework_path'].");",
     "require(",
     "  ".$_ENV['new']['class_loader_prefix']
     .".'class_loader'.DIRECTORY_SEPARATOR",
