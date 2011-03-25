@@ -53,7 +53,7 @@ return array(
     ");",
     '$classLoader = new ClassLoader;',
     '$classLoader->run();',
-    '$app = new Application',
+    '$app = new Application;',
     '$errorHandler = new ErrorHandler($app);',
     '$errorHandler->run();',
     '$app->run();',
