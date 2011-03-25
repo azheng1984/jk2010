@@ -9,6 +9,7 @@ class ApplicationConfiguration {
         continue;
       }
       $class = $key.'Analyzer';
+      //TODO: check config argument is matched
       $analyzers[$key] = new $class($value);
     }
     return $analyzers;

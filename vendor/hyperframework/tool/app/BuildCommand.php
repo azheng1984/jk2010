@@ -35,6 +35,5 @@ class BuildCommand {
     file_put_contents(
       $path, '<?php'.PHP_EOL.'return '.var_export($cache, true).';'
     );
-    chmod($path, 0644);
   }
 }
