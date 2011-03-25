@@ -4,7 +4,8 @@ class Application {
 
   public function run($path = null) {
     if ($path === null) {
-      $path = $_SERVER['REQUEST_URI'];
+      $sections = explode('?', $_SERVER['REQUEST_URI'], 2);
+      $path = $sections[0];
     }
     if ($this->cache === null) {
       $this->cache = require CACHE_PATH.'application.cache.php';
