@@ -1,11 +1,15 @@
 <?php
 class NewCommand {
   public function execute($type, $hyperframeworkPath = HYPERFRAMEWORK_PATH) {
-    $this->setPath($hyperframeworkPath);
+    $configPath = CONFIG_PATH.'new/'.$type.'.config.php';
+    if (!file_exists($configPath)) {
+      throw new CommandException("Application type '$type' is invalide");
+    }
     if (count(scandir(getcwd())) !== 2) {
       throw new CommandException('directory must empty');
     }
-    $config = require CONFIG_PATH.'new/'.$type.'.config.php';
+    $this->setPath($hyperframeworkPath);
+    $config = require $configPath;
     foreach ($config as $path => $content) {
       if (is_int($path)) {
         list($path, $content) = array($content, null);
