@@ -29,9 +29,7 @@ return array(
     '<?php',
     'return array(',
     "  'Application' => array('Action', 'View' => array('Screen')),",
-    "  'ClassLoader' => array(",
-    "    'app', 'lib', HYPERFRAMEWORK_PATH.'web'.DIRECTORY_SEPARATOR.'lib',",
-    "  ),",
+    "  'ClassLoader' => array('app', 'lib', HYPERFRAMEWORK_PATH.'web/lib'),",
     ');',
   ),
   'config/error_handler.config.php' => array(
