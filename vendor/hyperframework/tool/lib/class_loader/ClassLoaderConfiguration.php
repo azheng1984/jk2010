@@ -11,7 +11,7 @@ class ClassLoaderConfiguration {
         list($key, $value) = array($value, null);
       }
       if ($this->isFullPath($key)) {
-        $this->combine($key, null, $value);
+        $this->combine($this->format($key), null, $value);
         continue;
       }
       $this->combine(null, $key, $value);
@@ -21,7 +21,7 @@ class ClassLoaderConfiguration {
 
   private function combine($rootPath, $relativePath, $children) {
     if ($children === null) {
-      $this->values[] = array($rootPath, $relativePath);
+      $this->values[] = array($rootPath, $this->format($relativePath));
       return;
     }
     foreach ($children as $key => $value) {
@@ -38,5 +38,13 @@ class ClassLoaderConfiguration {
   private function isFullPath($path) {
     return $path['0'] === DIRECTORY_SEPARATOR 
       || preg_match('/^[A-Za-z]:\\\\/', $path);
+  }
+
+  private function format($path) {
+    if ($path === null) {
+      return;
+    }
+    $search = DIRECTORY_SEPARATOR === '/' ? '\\' : '/';
+    return str_replace($search, DIRECTORY_SEPARATOR, $path);
   }
 }
