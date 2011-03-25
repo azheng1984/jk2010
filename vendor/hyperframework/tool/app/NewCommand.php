@@ -28,7 +28,9 @@ class NewCommand {
       $classLoaderPathPrefix = 'ROOT_PATH.'.$classLoaderPathPrefix;
       $hyperframeworkPath = str_replace(getcwd(), '', $hyperframeworkPath);
     }
-    $_ENV['new'] = array('hyperframework_path' => $hyperframeworkPath);
+    $_ENV['new'] = array(
+      'hyperframework_path' => var_export($hyperframeworkPath, true)
+    );
     $_ENV['new']['class_loader_prefix'] = $classLoaderPathPrefix;
   }
 
