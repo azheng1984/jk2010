@@ -1,9 +1,9 @@
 <?php
 class DirectoryReader {
-  private $callback;
+  private $handler;
 
-  public function __construct($callback) {
-    $this->callback = $callback;
+  public function __construct($handler) {
+    $this->handler = $handler;
   }
 
   public function read(
@@ -11,7 +11,7 @@ class DirectoryReader {
   ) {
     $fullPath = $this->getFullPath($rootPath, $relativePath);
     if (is_file($fullPath)) {
-      $this->callback->execute(
+      $this->handler->execute(
         basename($fullPath), $this->getDirectoryPath($relativePath), $rootPath
       );
       return;

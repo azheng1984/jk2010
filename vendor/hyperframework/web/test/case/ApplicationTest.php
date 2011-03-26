@@ -25,7 +25,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
     $app = new Application;
     $app->run();
     $this->assertEquals('TestProcessor.run', $_ENV['callback']);
-    $this->assertEquals('test_processor_cache', $_ENV['cache_data']);
+    $this->assertEquals('test_processor_cache', $_ENV['callback_argument']);
   }
 
   public function tearDown() {

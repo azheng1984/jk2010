@@ -1,7 +1,7 @@
 <?php
 class TestProcessor {
   public function run($cache) {
-    $_ENV['cache_data'] = $cache;
-    $_ENV['callback'] = 'TestProcessor.run';
+    $_ENV['callback_argument'] = $cache;
+    $_ENV['callback'] = __CLASS__.'.'.__FUNCTION__;
   }
 }
