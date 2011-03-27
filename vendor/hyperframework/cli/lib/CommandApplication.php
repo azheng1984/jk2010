@@ -1,5 +1,5 @@
 <?php
-class CommandParser {
+class CommandApplication {
   private $config;
   private $reader;
   private $optionParser;
@@ -11,16 +11,16 @@ class CommandParser {
     $this->setConfig(require CONFIG_PATH.'command_parser.config.php');
   }
 
-  public function parse() {
+  public function run() {
     while (($item = $this->reader->get()) !== null) {
-      $this->analyze($item);
+      $this->parse($item);
       $this->reader->moveToNext();
     }
     $runner = new CommandRunner;
     return $runner->run($this->config, $this->arguments);
   }
 
-  private function analyze($item) {
+  private function parse($item) {
     if ($item === '--') {
       $this->isAllowOption = false;
       return;
