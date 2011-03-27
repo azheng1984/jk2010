@@ -13,5 +13,5 @@ $classLoader = new ClassLoader;
 $classLoader->run();
 $errorHandler = new CommandErrorHandler;
 $errorHandler->run();
-$parser = new CommandParser;
-$parser->parse();
+$app = new CommandApplication;
+$app->run();
