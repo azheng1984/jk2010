@@ -8,7 +8,7 @@ class CommandApplication {
 
   public function __construct() {
     $this->reader = new CommandReader;
-    $this->setConfig(require CONFIG_PATH.'command_parser.config.php');
+    $this->setConfig(require CONFIG_PATH.'command_application.config.php');
   }
 
   public function run() {
