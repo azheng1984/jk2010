@@ -28,10 +28,8 @@ class NewCommand {
       $classLoaderPathPrefix = 'ROOT_PATH.'.$classLoaderPathPrefix;
       $hyperframeworkPath = str_replace(getcwd(), '', $hyperframeworkPath);
     }
-    $_ENV['new'] = array(
-      'hyperframework_path' => var_export($hyperframeworkPath, true)
-    );
-    $_ENV['new']['class_loader_prefix'] = $classLoaderPathPrefix;
+    $_ENV['hyperframework_path'] = var_export($hyperframeworkPath, true);
+    $_ENV['class_loader_prefix'] = $classLoaderPathPrefix;
   }
 
   private function generateFile($path, $content) {
