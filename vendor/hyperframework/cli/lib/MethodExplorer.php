@@ -1,14 +1,13 @@
 <?php
 class MethodExplorer {
-  public function render($name, $method, $config) {
-    $writter = $_ENV['command_writer'];
+  public function render($name, $method, $config, $writer) {
     if (!isset($config['class'])) {
-      $writter->writeLine($name);
+      $writer->writeLine($name);
       return;
     }
     $reflector = new ReflectionClass($config['class']);
     if (!$reflector->hasMethod($method)) {
-      $writter->writeLine($name);
+      $writer->writeLine($name);
       return;
     }
     $arguments = $reflector->getMethod($method)->getParameters();
@@ -17,7 +16,7 @@ class MethodExplorer {
     if (count($arguments) !== 0 || $isInfinite) {
       $output .= '('.$this->getArgumentList($arguments, $isInfinite).')';
     }
-    $writter->writeLine($output);
+    $writer->writeLine($output);
   }
 
   private function getArgumentList($arguments, $isInfinite) {
