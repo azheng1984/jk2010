@@ -1,6 +1,6 @@
 <?php
 class OptionExplorer {
-  public function render($name, $config) {
+  public function render($name, $config, $writer) {
     $writter = $_ENV['command_writer'];
     $short = null;
     if (isset($config['short'])) {
@@ -13,7 +13,7 @@ class OptionExplorer {
       $short = ', -'.$short;
     }
     $methodExplorer = new MethodExplorer;
-    $methodExplorer->render('--'.$name.$short, '__construct', $config);
+    $methodExplorer->render('--'.$name.$short, '__construct', $config, $writer);
     if (isset($config['description'])) {
       $writter->increaseIndentation();
       $writter->writeLine($config['description']);

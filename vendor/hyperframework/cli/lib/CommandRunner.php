@@ -2,9 +2,8 @@
 class CommandRunner {
   public function run($config, $arguments) {
     if (isset($config['sub'])) {
-      $_ENV['command_writer'] = new CommandWriter;
       $explorer = new PackageExplorer;
-      return $explorer->render($config);
+      return $explorer->render($config, new CommandWriter);
     }
     if (!isset($config['class'])) {
       throw new CommandException('command class not found');

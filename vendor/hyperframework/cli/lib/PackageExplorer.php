@@ -1,18 +1,18 @@
 <?php
 class PackageExplorer {
-  private $writer;
   private $commandExplorer;
+  private $writer;
 
   public function __construct() {
-    $this->writer = $_ENV['command_writer'];
     $this->commandExplorer = new CommandExplorer;
   }
 
-  public function render($config) {
+  public function render($config, $writer) {
+    $this->writer = $writer;
     if (!isset($config['sub']) || !is_array($config['sub'])) {
       throw new CommandException('No subcommand in the package');
     }
-    $this->commandExplorer->render(null, $config);
+    $this->commandExplorer->render(null, $config, $writer);
     $packages = array();
     $commands = array();
     foreach ($config['sub'] as $name => $item) {
@@ -27,7 +27,7 @@ class PackageExplorer {
       $commands[$name] = $item;
     }
     if (count($packages) !== 0) {
-      $this->renderPackageList('package', $packages);
+      $this->renderCommandList('package', $packages);
     }
     if (count($commands) !== 0) {
       $this->renderCommandList('command', $commands);
@@ -38,7 +38,7 @@ class PackageExplorer {
     $this->writer->writeLine("[$type]");
     $this->writer->increaseIndentation();
     foreach ($values as $name => $config) {
-      $this->commandExplorer->render($name, $config);
+      $this->commandExplorer->render($name, $config, $this->writer);
     }
     $this->writer->decreaseIndentation();
   }
