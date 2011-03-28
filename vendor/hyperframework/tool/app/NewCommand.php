@@ -23,13 +23,12 @@ class NewCommand {
   }
 
   private function setPath($hyperframeworkPath) {
-    $classLoaderPathPrefix = 'HYPERFRAMEWORK_PATH';
+    $_ENV['class_loader_prefix'] = 'HYPERFRAMEWORK_PATH';
     if (strpos(HYPERFRAMEWORK_PATH, getcwd()) === 0) {
-      $classLoaderPathPrefix = 'ROOT_PATH.'.$classLoaderPathPrefix;
+      $_ENV['class_loader_prefix'] = 'ROOT_PATH.'.$_ENV['class_loader_prefix'];
       $hyperframeworkPath = str_replace(getcwd(), '', $hyperframeworkPath);
     }
     $_ENV['hyperframework_path'] = var_export($hyperframeworkPath, true);
-    $_ENV['class_loader_prefix'] = $classLoaderPathPrefix;
   }
 
   private function generateFile($path, $content) {
