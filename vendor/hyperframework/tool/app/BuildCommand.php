@@ -1,8 +1,15 @@
 <?php
 class BuildCommand {
-  private $config;
-
   public function execute() {
+    foreach ($this->getConfig() as $name => $config) {
+      $result = $this->dispatch($name, $config);
+      if ($result !== null) {
+        $this->export($result);
+      }
+    }
+  }
+
+  private function getConfig() {
     $configPath = (
       $_SERVER['PWD'].DIRECTORY_SEPARATOR
       .'config'.DIRECTORY_SEPARATOR.'build.config.php'
@@ -12,12 +19,7 @@ class BuildCommand {
         "can't find the 'config".DIRECTORY_SEPARATOR."build.config.php'"
       );
     }
-    foreach (require $configPath as $name => $config) {
-      $result = $this->dispatch($name, $config);
-      if ($result !== null) {
-        $this->export($result);
-      }
-    }
+    return require $configPath;
   }
 
   private function dispatch($name, $config) {
