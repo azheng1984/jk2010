@@ -15,10 +15,10 @@ return array(
     "  'ClassLoader' => array('app', 'lib', HYPERFRAMEWORK_PATH.'cli/lib'),",
     ');',
    ),
-  'config/command_parser.config.php' => array(
+  'config/command_application.config.php' => array(
     '<?php',
     'return array(',
-    "  'description' => 'Please add your own description here',",
+    "  'description' => 'Add your own description here',",
     "  'sub' => array(",
     "    'welcome' => 'WelcomeCommand',",
     '  ),',
