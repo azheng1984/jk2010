@@ -13,7 +13,11 @@ class BuildCommand {
       );
     }
     foreach (require $configPath as $name => $config) {
-      $result = $this->dispatch($name, $config);
+      try {
+       $result = $this->dispatch($name, $config);
+      } catch (Exception $exception) {
+        throw new CommandException($exception->getMessage());
+      }
       if ($result !== null) {
         $this->export($result);
       }
