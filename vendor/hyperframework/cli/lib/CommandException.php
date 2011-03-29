@@ -5,6 +5,6 @@ class CommandException extends Exception {
   }
 
   public function __toString() {
-    return $this->message.PHP_EOL;
+    return $this->getMessage().PHP_EOL;
   }
 }
