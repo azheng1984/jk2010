@@ -6,6 +6,6 @@ class CommandErrorHandler {
 
   public function handle($exception) {
     fwrite(STDERR, $exception);
-    exit;
+    exit($exception->getCode());
   }
 }

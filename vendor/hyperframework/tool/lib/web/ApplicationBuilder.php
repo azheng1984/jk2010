@@ -7,7 +7,7 @@ class ApplicationBuilder {
     $directoryReader = new DirectoryReader(
       new ApplicationAnalyzer($analyzers, $cache)
     );
-    $directoryReader->read(getcwd().DIRECTORY_SEPARATOR.'app');
+    $directoryReader->read($_SERVER['PWD'].DIRECTORY_SEPARATOR.'app');
     return $cache;
   }
 }
