@@ -15,7 +15,7 @@ class OptionObjectBuilder {
     if ($constructor !== null) {
       $standardLength = $constructor->getNumberOfParameters();
     }
-    if (in_array('infinite_argument', $this->config, true)) {
+    if (in_array('infinite', $this->config, true)) {
       $standardLength = null;
     }
     $arguments = $this->argumentParser->parse($standardLength);
