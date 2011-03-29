@@ -8,7 +8,7 @@ class NewCommand {
     if (count(scandir($_SERVER['PWD'])) !== 2) {
       throw new CommandException('directory must empty');
     }
-    $this->setPath($hyperframeworkPath);
+    $this->setEnvironment($hyperframeworkPath);
     $config = require $configPath;
     foreach ($config as $path => $content) {
       if (is_int($path)) {
@@ -22,7 +22,7 @@ class NewCommand {
     }
   }
 
-  private function setPath($hyperframeworkPath) {
+  private function setEnvironment($hyperframeworkPath) {
     $_ENV['class_loader_prefix'] = 'HYPERFRAMEWORK_PATH';
     if (strpos(HYPERFRAMEWORK_PATH, $_SERVER['PWD']) === 0) {
       $_ENV['class_loader_prefix'] = 'ROOT_PATH.'.$_ENV['class_loader_prefix'];
