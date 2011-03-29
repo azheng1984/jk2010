@@ -11,8 +11,8 @@ class CommandRunner {
     $reflector = new ReflectionMethod($config['class'], 'execute');
     $verifier = new ArgumentVerifier;
     $length = count($arguments);
-    $isInfiniteArgument = in_array('infinite_argument', $config, true);
-    $verifier->verify($reflector, $length, $isInfiniteArgument);
+    $isInfinite = in_array('infinite', $config, true);
+    $verifier->verify($reflector, $length, $isInfinite);
     return $reflector->invokeArgs(new $config['class'], $arguments);
   }
 }
