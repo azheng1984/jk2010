@@ -1,5 +1,5 @@
 <?php
-class FileGenerator {
+class FileSystemGenerator {
   public function generateFile($path, $content) {
     $this->generateDirectory(dirname($path));
     $mode = null;

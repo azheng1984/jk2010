@@ -9,8 +9,11 @@ class NewCommand {
       throw new CommandException('directory must empty');
     }
     $this->setEnvironment($hyperframeworkPath);
-    $generator = new FileGenerator();
-    $config = require $configPath;
+    $this->generate(require $configPath);
+  }
+
+  private function generate($config) {
+    $generator = new FileSystemGenerator();
     foreach ($config as $path => $content) {
       if (is_int($path)) {
         list($path, $content) = array($content, null);
