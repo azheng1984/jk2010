@@ -27,11 +27,10 @@ class BuildCommand {
     $class = $name.'Builder';
     $builder = new $class;
     try {
-      $result = $builder->build($config);
+      return $builder->build($config);
     } catch (Exception $exception) {
       throw new CommandException($exception->getMessage());
     }
-    return $result;
   }
 
   private function export($result) {
