@@ -39,7 +39,7 @@ class DirectoryReader {
   private function getFullPath($rootPath, $relativePath) {
     $fullPath = $rootPath;
     if ($rootPath === null) {
-      $fullPath = getcwd();
+      $fullPath = $_SERVER['PWD'];
     }
     if ($relativePath !== null) {
       $fullPath .= DIRECTORY_SEPARATOR.$relativePath;

@@ -4,7 +4,7 @@ class BuildCommand {
 
   public function execute() {
     $configPath = (
-      getcwd().DIRECTORY_SEPARATOR
+      $_SERVER['PWD'].DIRECTORY_SEPARATOR
       .'config'.DIRECTORY_SEPARATOR.'build.config.php'
     );
     if (!file_exists($configPath)) {

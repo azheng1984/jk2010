@@ -5,7 +5,7 @@ class NewCommand {
     if (!file_exists($configPath)) {
       throw new CommandException("Application type '$type' is invalide");
     }
-    if (count(scandir(getcwd())) !== 2) {
+    if (count(scandir($_SERVER['PWD'])) !== 2) {
       throw new CommandException('directory must empty');
     }
     $this->setPath($hyperframeworkPath);
@@ -24,9 +24,9 @@ class NewCommand {
 
   private function setPath($hyperframeworkPath) {
     $_ENV['class_loader_prefix'] = 'HYPERFRAMEWORK_PATH';
-    if (strpos(HYPERFRAMEWORK_PATH, getcwd()) === 0) {
+    if (strpos(HYPERFRAMEWORK_PATH, $_SERVER['PWD']) === 0) {
       $_ENV['class_loader_prefix'] = 'ROOT_PATH.'.$_ENV['class_loader_prefix'];
-      $hyperframeworkPath = str_replace(getcwd(), '', $hyperframeworkPath);
+      $hyperframeworkPath = str_replace($_SERVER['PWD'], '', $hyperframeworkPath);
     }
     $_ENV['hyperframework_path'] = var_export($hyperframeworkPath, true);
   }

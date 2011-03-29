@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php
-ini_set('display_errors', 0);
 define('ROOT_PATH', dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR);
 define('CACHE_PATH', ROOT_PATH.'cache'.DIRECTORY_SEPARATOR);
 define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);
@@ -13,5 +12,8 @@ $classLoader = new ClassLoader;
 $classLoader->run();
 $errorHandler = new CommandErrorHandler;
 $errorHandler->run();
+if (!isset($_SERVER['PWD'])) {
+  $_SERVER['PWD'] = getcwd();
+}
 $app = new CommandApplication;
 $app->run();
