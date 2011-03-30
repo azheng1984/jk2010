@@ -16,7 +16,7 @@ class BuildCommand {
     );
     if (!file_exists($configPath)) {
       throw new CommandException(
-        "can't find the 'config".DIRECTORY_SEPARATOR."build.config.php'"
+        "Can't find the 'config".DIRECTORY_SEPARATOR."build.config.php'"
       );
     }
     return require $configPath;
@@ -36,11 +36,13 @@ class BuildCommand {
   }
 
   private function export($result) {
-    if (!is_dir('cache')) {
-      mkdir('cache');
+    $cacheFolder = 'cache';
+    if (!is_dir($cacheFolder)) {
+      mkdir($cacheFolder);
+      chmod($cacheFolder, 0777);
     }
     list($name, $cache) = $result->export();
-    $path = 'cache'.DIRECTORY_SEPARATOR.$name.'.cache.php';
+    $path = $cacheFolder.DIRECTORY_SEPARATOR.$name.'.cache.php';
     file_put_contents(
       $path, '<?php'.PHP_EOL.'return '.var_export($cache, true).';'
     );
