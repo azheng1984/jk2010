@@ -66,7 +66,7 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase  {
 
   /**
    * @expectedException CommandException
-  */
+   */
   public function testOptionNotConfig() {
     $_SERVER['argc'] = '2';
     $_SERVER['argv'] = array('index.php', '--test');
