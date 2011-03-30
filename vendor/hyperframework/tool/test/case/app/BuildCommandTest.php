@@ -1,14 +1,14 @@
 <?php
-define('TOOL_PATH', dirname(dirname(dirname(dirname(__FILE__)))).DIRECTORY_SEPARATOR);
-define('CLI_LIB', dirname(TOOL_PATH).'/cli/lib/');
-define('LIB_PATH', TOOL_PATH.'lib'.DIRECTORY_SEPARATOR);
-define('APP_PATH', TOOL_PATH.'app'.DIRECTORY_SEPARATOR);
+!defined('TOOL_PATH')?define('TOOL_PATH', dirname(dirname(dirname(dirname(__FILE__)))).DIRECTORY_SEPARATOR) : null;
+!defined('CLI_LIB')?define('CLI_LIB', dirname(TOOL_PATH).'/cli/lib/') : null;
+!defined('LIB_PATH')?define('LIB_PATH', TOOL_PATH.'lib'.DIRECTORY_SEPARATOR) : null;
+!defined('APP_PATH')?define('APP_PATH', TOOL_PATH.'app'.DIRECTORY_SEPARATOR) : null;
 require APP_PATH.'BuildCommand.php';
 require TOOL_PATH.'test/fixture/lib/TestBuilder.php';
 require TOOL_PATH.'test/fixture/lib/TestCache.php';
 require TOOL_PATH.'test/fixture/lib/TestExportBuilder.php';
 require TOOL_PATH.'test/fixture/lib/TestErrorTriggerBuilder.php';
-require CLI_LIB.'CommandException.php';
+require_once CLI_LIB.'CommandException.php';
 
 class BuildCommandTest extends PHPUnit_Framework_TestCase {
   public function setUp() {
