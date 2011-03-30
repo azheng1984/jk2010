@@ -1,1 +1,1 @@
-<?php return array('sub' => array('alias' => array('expansion' => 'test'), 'test' => 'TestCommand'));
+<?php return array();
