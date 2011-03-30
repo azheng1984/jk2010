@@ -61,7 +61,7 @@ class CommandApplication {
 
   private function setCommand($name) {
     if (!isset($this->config['sub'][$name])) {
-      throw new CommandNotFoundException($name);
+      throw new CommandException("Command '$name' not found");
     }
     $this->initialize($this->config['sub'][$name]);
     $this->isAllowOption = true;
