@@ -66,6 +66,7 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase  {
 
   /**
    * @expectedException CommandException
+   * @expectedExceptionMessage Can't find the 'config/build.config.php'
    */
   public function testOptionNotConfig() {
     $_SERVER['argc'] = '2';
