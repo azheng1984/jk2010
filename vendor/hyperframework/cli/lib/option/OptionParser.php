@@ -36,6 +36,9 @@ class OptionParser {
   }
 
   private function getConfig($name) {
+    if (is_array($this->config)) {
+      return;
+    }
     if (in_array($name, $this->config, true)) {
       return array();
     }

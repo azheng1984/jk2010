@@ -22,12 +22,12 @@ class CommandApplication {
   }
 
   private function initialize($config) {
-    if (!is_array($config)) {
-      $config = array('class' => $config);
-    }
     if (isset($config['expansion'])) {
       $this->reader->expand($config['expansion']);
       return;
+    }
+    if (!is_array($config)) {
+      $config = array('class' => $config);
     }
     $this->config = $config;
   }
@@ -52,7 +52,7 @@ class CommandApplication {
     if ($this->optionParser === null) {
       $this->optionParser = new OptionParser(
         $this->reader,
-        isset($this->config['option']) ? $this->config['option'] : array()
+        isset($this->config['option']) ? $this->config['option'] : null
       );
     }
     $this->optionParser->parse();
