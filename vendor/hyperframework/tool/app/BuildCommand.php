@@ -36,6 +36,9 @@ class BuildCommand {
   }
 
   private function export($result) {
+    if (!is_dir('cache')) {
+      mkdir('cache');
+    }
     list($name, $cache) = $result->export();
     $path = 'cache'.DIRECTORY_SEPARATOR.$name.'.cache.php';
     file_put_contents(
