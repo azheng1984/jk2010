@@ -36,13 +36,13 @@ class BuildCommand {
   }
 
   private function export($result) {
-    $cacheFolder = 'cache';
-    if (!is_dir($cacheFolder)) {
-      mkdir($cacheFolder);
-      chmod($cacheFolder, 0777);
+    $folder = 'cache';
+    if (!is_dir($folder)) {
+      mkdir($folder);
+      chmod($folder, 0777);
     }
     list($name, $cache) = $result->export();
-    $path = $cacheFolder.DIRECTORY_SEPARATOR.$name.'.cache.php';
+    $path = $folder.DIRECTORY_SEPARATOR.$name.'.cache.php';
     file_put_contents(
       $path, '<?php'.PHP_EOL.'return '.var_export($cache, true).';'
     );
