@@ -8,29 +8,18 @@ class NewCommand {
     if (count(scandir($_SERVER['PWD'])) !== 2) {
       throw new CommandException('directory must empty');
     }
-    $this->setEnvironment($hyperframeworkPath);
-    $this->generate(require $configPath);
+    $this->initialize($hyperframeworkPath);
+    $generator = new ScaffoldGenerator;
+    $generator->generate(require $configPath);
   }
 
-  private function generate($config) {
-    $generator = new FileSystemGenerator();
-    foreach ($config as $path => $content) {
-      if (is_int($path)) {
-        list($path, $content) = array($content, null);
-      }
-      if (substr($path, -1) === '/') {
-        $generator->generateDirectory($path, $content);
-        continue;
-      }
-      $generator->generateFile($path, $content);
-    }
-  }
-
-  private function setEnvironment($hyperframeworkPath) {
+  private function initialize($hyperframeworkPath) {
     $_ENV['class_loader_prefix'] = 'HYPERFRAMEWORK_PATH';
     if (strpos(HYPERFRAMEWORK_PATH, $_SERVER['PWD']) === 0) {
       $_ENV['class_loader_prefix'] = 'ROOT_PATH.'.$_ENV['class_loader_prefix'];
-      $hyperframeworkPath = str_replace($_SERVER['PWD'], '', $hyperframeworkPath);
+      $hyperframeworkPath = str_replace(
+        $_SERVER['PWD'], '', $hyperframeworkPath
+      );
     }
     $_ENV['hyperframework_path'] = var_export($hyperframeworkPath, true);
   }
