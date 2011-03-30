@@ -10,6 +10,9 @@ class DirectoryReader {
     $rootPath = null, $relativePath = null, $isRecursive = true
   ) {
     $fullPath = $this->getFullPath($rootPath, $relativePath);
+    if (!file_exists($fullPath)) {
+      return;
+    }
     if (is_file($fullPath)) {
       $this->handler->execute(
         basename($fullPath), $this->getDirectoryPath($relativePath), $rootPath
