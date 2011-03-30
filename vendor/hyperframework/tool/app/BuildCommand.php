@@ -10,16 +10,14 @@ class BuildCommand {
   }
 
   private function getConfig() {
-    $configPath = (
-      $_SERVER['PWD'].DIRECTORY_SEPARATOR
-      .'config'.DIRECTORY_SEPARATOR.'build.config.php'
-    );
-    if (!file_exists($configPath)) {
+    $path = $_SERVER['PWD'].DIRECTORY_SEPARATOR
+      .'config'.DIRECTORY_SEPARATOR.'build.config.php';
+    if (!file_exists($path)) {
       throw new CommandException(
         "Can't find the 'config".DIRECTORY_SEPARATOR."build.config.php'"
       );
     }
-    return require $configPath;
+    return require $path;
   }
 
   private function dispatch($name, $config) {
