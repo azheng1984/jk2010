@@ -7,8 +7,8 @@ class OptionParser {
 
   public function __construct($reader, $config) {
     $this->reader = $reader;
-    $this->config = $config;
-    $this->nameParser = new OptionNameParser($config);
+    $this->config = is_array($config) ? $config : array($config);
+    $this->nameParser = new OptionNameParser($this->config);
     $this->argumentParser = new OptionArgumentParser($reader);
   }
 
@@ -36,9 +36,6 @@ class OptionParser {
   }
 
   private function getConfig($name) {
-    if (is_array($this->config)) {
-      return;
-    }
     if (in_array($name, $this->config, true)) {
       return array();
     }

@@ -59,11 +59,11 @@ class CommandApplication {
     $this->optionParser->parse();
   }
 
-  private function setCommand($item) {
-    if (!isset($this->config['sub'][$item])) {
-      throw new CommandException("Command '$item' not found");
+  private function setCommand($name) {
+    if (!isset($this->config['sub'][$name])) {
+      throw new CommandNotFoundException($name);
     }
-    $this->initialize($this->config['sub'][$item]);
+    $this->initialize($this->config['sub'][$name]);
     $this->isAllowOption = true;
     $this->optionParser = null;
   }
