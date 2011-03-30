@@ -2,13 +2,14 @@
 class CommandApplication {
   private $config;
   private $reader;
-  private $optionParser;
-  private $isAllowOption = true;
   private $arguments = array();
+  private $isAllowOption = true;
+  private $optionParser;
 
   public function __construct() {
     $this->reader = new CommandReader;
-    $this->setConfig(require CONFIG_PATH.'command_application.config.php');
+    $this->config = require CONFIG_PATH.'command_application.config.php';
+    $this->initialize($this->config);
   }
 
   public function run() {
@@ -20,13 +21,24 @@ class CommandApplication {
     return $runner->run($this->config, $this->arguments);
   }
 
+  private function initialize($config) {
+    if (!is_array($config)) {
+      $config = array('class' => $config);
+    }
+    if (isset($config['expansion'])) {
+      $this->reader->expand($config['expansion']);
+      return;
+    }
+    $this->config = $config;
+  }
+
   private function parse($item) {
     if ($item === '--') {
       $this->isAllowOption = false;
       return;
     }
     if ($this->isAllowOption && $item !== '-' && strpos($item, '-') === 0) {
-      $this->optionParser->parse();
+      $this->parseOption();
       return;
     }
     if (!isset($this->config['class'])) {
@@ -36,23 +48,22 @@ class CommandApplication {
     $this->arguments[] = $item;
   }
 
+  private function parseOption() {
+    if ($this->optionParser === null) {
+      $this->optionParser = new OptionParser(
+        $this->reader,
+        isset($this->config['option']) ? $this->config['option'] : array()
+      );
+    }
+    $this->optionParser->parse();
+  }
+
   private function setCommand($item) {
     if (!isset($this->config['sub'][$item])) {
       throw new CommandException("Command '$item' not found");
     }
-    $this->setConfig($this->config['sub'][$item]);
+    $this->initialize($this->config['sub'][$item]);
     $this->isAllowOption = true;
-  }
-
-  private function setConfig($value) {
-    if (!is_array($value)) {
-      $value = array('class' => $value, 'option' => array());
-    }
-    $optionConfig = isset($value['option']) ? $value['option'] : array();
-    $this->optionParser = new OptionParser($this->reader, $optionConfig);
-    if (isset($value['expansion'])) {
-      $this->reader->expand($value['expansion']);
-    }
-    $this->config = $value;
+    $this->optionParser = null;
   }
 }

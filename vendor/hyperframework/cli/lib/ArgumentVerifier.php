@@ -12,7 +12,7 @@ class ArgumentVerifier {
     if ($count < 0 || ($count > 0 && $isInfinite === false)) {
       $expectation = $this->getExpectation($parameters, $isInfinite);
       throw new CommandException(
-        "Argument length is not correct(Actual:$length Expected:$expectation)"
+        "Argument length error(Expected:$expectation Actual:$length)"
       );
     }
   }

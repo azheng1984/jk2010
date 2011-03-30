@@ -27,8 +27,8 @@ class CommandReader {
     --$this->index;
   }
 
-  public function expand($arguments) {
-    array_splice($this->arguments, $this->index, 1, $arguments);
+  public function expand($expansion) {
+    array_splice($this->arguments, $this->index, 1, $expansion);
     $this->length = count($this->arguments);
     $this->moveToPrevious();
   }
