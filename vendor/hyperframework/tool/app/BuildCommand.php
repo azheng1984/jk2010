@@ -35,7 +35,7 @@ class BuildCommand {
 
   private function export($result) {
     $folder = 'cache';
-    if (!is_dir($folder)) {
+    if (!file_exists($folder)) {
       mkdir($folder);
       chmod($folder, 0777);
     }
