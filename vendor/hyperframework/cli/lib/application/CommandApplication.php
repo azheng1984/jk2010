@@ -22,12 +22,13 @@ class CommandApplication {
   }
 
   private function initialize($config) {
+    if (!is_array($config)) {
+      $this->config = array('class' => $config);
+      return;
+    }
     if (isset($config['expansion'])) {
       $this->reader->expand($config['expansion']);
       return;
-    }
-    if (!is_array($config)) {
-      $config = array('class' => $config);
     }
     $this->config = $config;
   }
