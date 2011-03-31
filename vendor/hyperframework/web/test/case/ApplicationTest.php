@@ -2,7 +2,7 @@
 class ApplicationTest extends PHPUnit_Framework_TestCase {
   private $cachePath;
 
-  public function setUp() {
+  protected function setUp() {
     $this->cachePath = CACHE_PATH."application.cache.php";
     $cache = array(
       array('Test' => 'TestProcessor'),
@@ -21,7 +21,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('test', $_ENV['callback_argument']);
   }
 
-  public function tearDown() {
+  protected function tearDown() {
     unlink($this->cachePath);
   }
 }
