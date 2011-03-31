@@ -1,11 +1,4 @@
 <?php
-require dirname(dirname(dirname(__FILE__))).'/lib/action/ActionProcessor.php';
-if (!class_exists('ApplicationException')) {
-  require dirname(dirname(dirname(__FILE__))).'/lib/ApplicationException.php';
-}
-require dirname(dirname(dirname(__FILE__))).'/lib/action/MethodNotAllowedException.php';
-require dirname(dirname(__FILE__)).'/fixture/app/TestAction.php';
-
 class ActionProcessorTest extends PHPUnit_Framework_TestCase {
   public function testRun() {
     $_SERVER['REQUEST_METHOD'] = 'GET';
@@ -13,7 +6,7 @@ class ActionProcessorTest extends PHPUnit_Framework_TestCase {
     $processor->run(array(
       'class' => 'TestAction', 'method' => array('GET')
     ));
-    $this->assertEquals('TestAction.GET', $_ENV['callback']);
+    $this->assertEquals('TestAction->GET', $_ENV['callback']);
   }
 
   /**

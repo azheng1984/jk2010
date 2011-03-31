@@ -8,10 +8,8 @@ define(
   'vendor'.DIRECTORY_SEPARATOR.'hyperframework'.DIRECTORY_SEPARATOR
 );
 require DATA_PATH.'define.php';
-require(
-  ROOT_PATH.HYPERFRAMEWORK_PATH.'class_loader'.DIRECTORY_SEPARATOR
-  .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php'
-);
+require ROOT_PATH.HYPERFRAMEWORK_PATH.'class_loader'.DIRECTORY_SEPARATOR
+  .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';
 $classLoader = new ClassLoader;
 $classLoader->run();
 $app = new Application;
