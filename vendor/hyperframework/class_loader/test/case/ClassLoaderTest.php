@@ -1,6 +1,15 @@
 <?php
 class ClassLoaderTest extends PHPUnit_Framework_TestCase {
-  private $classLoader;
+  private static $classLoader;
+
+  public static function setUpBeforeClass() {
+    self::$classLoader = new ClassLoader;
+    self::$classLoader->run();
+  }
+
+  public static function tearDownAfterClass() {
+    self::$classLoader->stop();
+  }
 
   public function testLoadFromRootPath() {
     new LoadFromRootPath;
@@ -16,14 +25,5 @@ class ClassLoaderTest extends PHPUnit_Framework_TestCase {
 
   public function testLoadFromAbsoluteSecondLevelPath() {
     new LoadFromSecondLevelAbsolutePath;
-  }
-
-  protected function setUp() {
-    $this->classLoader = new ClassLoader;
-    $this->classLoader->run();
-  }
-
-  protected function tearDown() {
-    $this->classLoader->stop();
   }
 }
