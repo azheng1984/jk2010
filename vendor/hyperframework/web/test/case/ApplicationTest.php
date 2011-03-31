@@ -1,27 +1,32 @@
 <?php
 class ApplicationTest extends PHPUnit_Framework_TestCase {
-  private $cachePath;
+  private static $app;
 
-  protected function setUp() {
-    $this->cachePath = CACHE_PATH."application.cache.php";
-    $cache = array(
-      array('Test' => 'TestProcessor'),
-      '/' => array('Test' => 'test')
-    );
-    file_put_contents(
-      $this->cachePath, "<?php return ".var_export($cache, true).";"
-    );
+  public static function setUpBeforeClass() {
+    $_SERVER['REQUEST_METHOD'] = 'GET';
+    self::$app = new Application;
   }
 
-  public function testRun() {
-    $_SERVER['REQUEST_URI'] = '/';
-    $app = new Application;
-    $app->run();
-    $this->assertEquals('TestProcessor->run', $_ENV['callback']);
-    $this->assertEquals('test', $_ENV['callback_argument']);
+  public function testProcess() {
+    $_SERVER['REQUEST_URI'] = '/?key=value';
+    $_ENV['callback'] = array();
+    self::$app->run();
+    $this->assertEquals(2, count($_ENV['callback']));
+    $this->assertEquals('TestAction->GET', $_ENV['callback'][0]);
+    $this->assertEquals('TestScreen->render', $_ENV['callback'][1]);
   }
 
-  protected function tearDown() {
-    unlink($this->cachePath);
+  /**
+   * @expectedException NotFoundException
+   * @expectedExceptionMessage Path '/inexistent_path' not found
+   */
+  public function testNotFound() {
+    $_SERVER['REQUEST_URI'] = '/inexistent_path';
+    self::$app->run();
+  }
+
+  public function testPathRewrite() {
+    $_SERVER['REQUEST_URI'] = '/inexistent_path';
+    self::$app->run('/');
   }
 }
