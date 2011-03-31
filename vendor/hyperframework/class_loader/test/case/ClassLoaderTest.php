@@ -8,19 +8,19 @@ class ClassLoaderTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testLoadFromRootPath() {
-    new TestRootPath;
+    new LoadFromRootPath;
   }
 
   public function testLoadFromRelativePath() {
-    new TestRelativePath;
+    new LoadFromRelativePath;
   }
 
   public function testLoadFromAbsolutePath() {
-    new TestAbsolutePath;
+    new LoadFromAbsolutePath;
   }
 
   public function testLoadFromAbsoluteSecondLevelPath() {
-    new TestAbsoluteSecondLevelPath;
+    new LoadFromAbsoluteSecondLevelPath;
   }
 
   protected function tearDown() {
