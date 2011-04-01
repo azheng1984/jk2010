@@ -36,7 +36,7 @@ class ClassLoaderConfiguration {
   }
 
   private function isFullPath($path) {
-    return $path['0'] === DIRECTORY_SEPARATOR 
+    return $path['0'] === DIRECTORY_SEPARATOR
       || preg_match('/^[A-Za-z]:\\\\/', $path);
   }
 
