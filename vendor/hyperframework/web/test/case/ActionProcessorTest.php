@@ -4,7 +4,7 @@ class ActionProcessorTest extends PHPUnit_Framework_TestCase {
     $_ENV['callback'] = array();
   }
 
-  public function testExecuteActionMethod() {
+  public function testExecuteMethod() {
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $this->process();
     $this->assertEquals(1, count($_ENV['callback']));
