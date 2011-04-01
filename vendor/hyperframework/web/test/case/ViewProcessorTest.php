@@ -1,13 +1,13 @@
 <?php
 class ViewProcessorTest extends PHPUnit_Framework_TestCase {
   protected function setUp() {
-    $_ENV['callback'] = array();
+    $_ENV['callback_trace'] = array();
   }
 
   public function testRenderView() {
     $this->process();
-    $this->assertEquals(1, count($_ENV['callback']));
-    $this->assertEquals('TestScreen->render', $_ENV['callback'][0]);
+    $this->assertEquals(1, count($_ENV['callback_trace']));
+    $this->assertEquals('TestScreen->render', $_ENV['callback_trace'][0]);
   }
 
   /**
@@ -18,7 +18,7 @@ class ViewProcessorTest extends PHPUnit_Framework_TestCase {
     try {
       $this->process();
     } catch (UnsupportedMediaTypeException $exception) {
-      $this->assertEquals(0, count($_ENV['callback']));
+      $this->assertEquals(0, count($_ENV['callback_trace']));
       throw $exception;
     }
   }

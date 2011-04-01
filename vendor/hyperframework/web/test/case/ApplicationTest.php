@@ -8,7 +8,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
   }
 
   protected function setUp() {
-    $_ENV['callback'] = array();
+    $_ENV['callback_trace'] = array();
   }
 
   public function testPathWithParameter() {
@@ -32,14 +32,14 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
     try {
       self::$app->run();
     } catch (NotFoundException $exception) {
-      $this->assertEquals(0, count($_ENV['callback']));
+      $this->assertEquals(0, count($_ENV['callback_trace']));
       throw $exception;
     }
   }
 
   private function verifyCallback() {
-    $this->assertEquals(2, count($_ENV['callback']));
-    $this->assertEquals('TestAction->GET', $_ENV['callback'][0]);
-    $this->assertEquals('TestScreen->render', $_ENV['callback'][1]);
+    $this->assertEquals(2, count($_ENV['callback_trace']));
+    $this->assertEquals('TestAction->GET', $_ENV['callback_trace'][0]);
+    $this->assertEquals('TestScreen->render', $_ENV['callback_trace'][1]);
   }
 }
