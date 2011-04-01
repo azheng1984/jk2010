@@ -23,7 +23,7 @@ class ClassLoaderTest extends PHPUnit_Framework_TestCase {
     new LoadFromTopLevelAbsolutePath;
   }
 
-  public function testLoadFromAbsoluteSecondLevelPath() {
+  public function testLoadFromSecondLevelAbsolutePath() {
     new LoadFromSecondLevelAbsolutePath;
   }
 }

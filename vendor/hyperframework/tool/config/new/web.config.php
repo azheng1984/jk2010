@@ -46,11 +46,9 @@ return array(
     "define('CACHE_PATH', ROOT_PATH.'cache'.DIRECTORY_SEPARATOR);",
     "define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);",
     "define('HYPERFRAMEWORK_PATH', ".$_ENV['hyperframework_path'].");",
-    "require(",
-    "  ".$_ENV['class_loader_prefix']
-    .".'class_loader'.DIRECTORY_SEPARATOR",
-    "  .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php'",
-    ");",
+    "require ".$_ENV['class_loader_prefix']
+      .".'class_loader'.DIRECTORY_SEPARATOR",
+    "  .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';",
     '$classLoader = new ClassLoader;',
     '$classLoader->run();',
     '$app = new Application;',
