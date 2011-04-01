@@ -33,7 +33,6 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 
   public function testRewritePath() {
     $_SERVER['REQUEST_URI'] = '/inexistent_path';
-    $_ENV['callback'] = array();
     self::$app->run('/');
     $this->verifyCallback();
   }
