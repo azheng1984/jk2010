@@ -20,12 +20,12 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
    * @expectedException NotFoundException
    * @expectedExceptionMessage Path '/inexistent_path' not found
    */
-  public function testNotFound() {
+  public function testPathNotFound() {
     $_SERVER['REQUEST_URI'] = '/inexistent_path';
     self::$app->run();
   }
 
-  public function testPathRewrite() {
+  public function testRewritePath() {
     $_SERVER['REQUEST_URI'] = '/inexistent_path';
     self::$app->run('/');
   }
