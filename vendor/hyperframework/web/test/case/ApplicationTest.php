@@ -17,6 +17,12 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
     $this->verifyCallback();
   }
 
+  public function testRewritePath() {
+    $_SERVER['REQUEST_URI'] = '/inexistent_path';
+    self::$app->run('/');
+    $this->verifyCallback();
+  }
+
   /**
    * @expectedException NotFoundException
    * @expectedExceptionMessage Path '/inexistent_path' not found
@@ -29,12 +35,6 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(0, count($_ENV['callback']));
       throw $exception;
     }
-  }
-
-  public function testRewritePath() {
-    $_SERVER['REQUEST_URI'] = '/inexistent_path';
-    self::$app->run('/');
-    $this->verifyCallback();
   }
 
   private function verifyCallback() {
