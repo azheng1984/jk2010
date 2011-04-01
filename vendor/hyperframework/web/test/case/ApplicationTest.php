@@ -7,7 +7,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
     self::$app = new Application;
   }
 
-  public function testProcess() {
+  public function testPathWithParameter() {
     $_SERVER['REQUEST_URI'] = '/?key=value';
     $_ENV['callback'] = array();
     self::$app->run();
