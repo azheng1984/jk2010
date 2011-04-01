@@ -64,7 +64,7 @@ class CommandApplication {
       throw new CommandException("Command '$name' not found");
     }
     $this->initialize($this->config['sub'][$name]);
-    $this->isAllowOption = true;
     $this->optionParser = null;
+    $this->isAllowOption = true;
   }
 }
