@@ -51,14 +51,14 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('TestCommand.execute', $_ENV['callback_trace'][0]['name']);
   }
 
-  public function testTopLevelCommandOption() {
+  public function testTopLevelOption() {
     $this->runApplication(
       array('option' => 'test', 'class' => 'TestCommand'), array('--test')
     );
     $this->assertEquals(true, $_ENV['option']['test']);
   }
 
-  public function testSecondLevelCommandOption() {
+  public function testSecondLevelOption() {
     $this->runApplication(
       array('sub' => array(
         'test' => array('class' => 'TestCommand', 'option' => 'test')
