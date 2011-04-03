@@ -1,22 +1,28 @@
 <?php
 class MethodExplorer {
-  public function render($prefix, $method, $config, $writer) {
+  private $writer;
+
+  public function __construct($writer) {
+    $this->writer = $writer;
+  }
+
+  public function render($name, $method, $config) {
     if (!isset($config['class'])) {
-      $writer->writeLine($prefix);
+      $this->writer->writeLine($name);
       return;
     }
     $reflector = new ReflectionClass($config['class']);
     if (!$reflector->hasMethod($method)) {
-      $writer->writeLine($prefix);
+      $this->writer->writeLine($name);
       return;
     }
     $arguments = $reflector->getMethod($method)->getParameters();
     $isInfinite = isset($config['infinite']);
-    $output = $prefix;
+    $output = $name;
     if (count($arguments) !== 0 || $isInfinite) {
       $output .= '('.$this->getArgumentList($arguments, $isInfinite).')';
     }
-    $writer->writeLine($output);
+    $this->writer->writeLine($output);
   }
 
   private function getArgumentList($arguments, $isInfinite) {
