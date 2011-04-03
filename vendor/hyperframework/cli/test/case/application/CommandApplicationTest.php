@@ -76,8 +76,11 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
   }
 
   private function runApplication($config = array(), $arguments = array()) {
-    $this->setConfig($config);
-    $this->setArguments($arguments);
+    file_put_contents(
+      self::$configPath, '<?php return '.var_export($config, true).';'
+    );
+    $_SERVER['argc'] = array_unshift($values, 'index.php');
+    $_SERVER['argv'] = $values;
     $app = new CommandApplication;
     $app->run();
   }
@@ -87,16 +90,5 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
     $trace = $_ENV['callback_trace'][0];
     $this->assertEquals('TestCommand.execute', $trace['name']);
     $this->assertEquals($argument, $trace['argument']);
-  }
-
-  private function setConfig($value) {
-    file_put_contents(
-      self::$configPath, '<?php return '.var_export($value, true).';'
-    );
-  }
-
-  private function setArguments($values) {
-    $_SERVER['argc'] = array_unshift($values, 'index.php');
-    $_SERVER['argv'] = $values;
   }
 }
