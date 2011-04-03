@@ -3,10 +3,11 @@ class CommandRunner {
   public function run($config, $arguments) {
     if (isset($config['sub'])) {
       $explorer = new PackageExplorer;
-      return $explorer->render($config);
+      $explorer->render($config);
+      return;
     }
     if (!isset($config['class'])) {
-      throw new CommandException('command class not found');
+      throw new CommandException('Class not defined');
     }
     $reflector = new ReflectionMethod($config['class'], 'execute');
     $length = count($arguments);
