@@ -14,7 +14,7 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
     $_ENV['callback_trace'] = array();
   }
 
-  public function testParseOption() {
+  public function testStartWithDashArgument() {
     $this->runApplication(
       array('sub' => array('test' => 'TestCommand')),
       array('test', '--', '-test')
@@ -23,7 +23,7 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
     $this->verifyCallback('-test');
   }
 
-  public function testParseArgument() {
+  public function testDashArgument() {
     $this->runApplication(array('class' => 'TestCommand'), array('-'));
     $this->verifyCallback('-');
   }
