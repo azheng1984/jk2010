@@ -1,5 +1,5 @@
 <?php
-class CommandRunnerTest extends PHPUnit_Extensions_OutputTestCase {
+class CommandRunnerTest extends OutputTestCase {
   private static $runner;
 
   public static function setUpBeforeClass() {
@@ -8,8 +8,9 @@ class CommandRunnerTest extends PHPUnit_Extensions_OutputTestCase {
 
   public function testPackage() {
     self::$runner->run(array('sub' => array('test' => 'TestCommand')), null);
-    $this->expectOutputString(
-      '[command]'.PHP_EOL.'  test(argument = NULL)'.PHP_EOL
+    $this->expectOutput(
+      '[command]',
+      '  test(argument = NULL)'
     );
   }
 
