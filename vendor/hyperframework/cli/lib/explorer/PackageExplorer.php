@@ -10,7 +10,7 @@ class PackageExplorer {
 
   public function render($config) {
     if (!isset($config['sub']) || !is_array($config['sub'])) {
-      throw new CommandException('No subcommand in the package');
+      throw new CommandException('No command in package');
     }
     $this->commandExplorer->render(null, $config);
     foreach ($this->getList($config) as $type => $values) {
