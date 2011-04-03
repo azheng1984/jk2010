@@ -63,7 +63,7 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
   /**
    * @expectedException CommandException
    */
-  public function testOptionUndefined() {
+  public function testUndefinedOption() {
     $this->runApplication(array(), array('--test'));
   }
 
@@ -71,7 +71,7 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
    * @expectedException CommandException
    * @expectedExceptionMessage Command 'test' not found
    */
-  public function testCommandUndefined() {
+  public function testUndefinedCommand() {
     $this->runApplication(array(), array('test'));
   }
 
