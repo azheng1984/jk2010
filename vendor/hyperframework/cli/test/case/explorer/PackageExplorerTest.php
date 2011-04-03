@@ -9,7 +9,7 @@ class PackageExplorerTest extends OutputTestCase {
     $explorer->render(array('sub' => null));
   }
 
-  public function testX() {
+  public function test() {
     $explorer = new PackageExplorer;
     $explorer->render(array('sub' => array('test' => 'TestCommand')));
     $this->expectOutput(
