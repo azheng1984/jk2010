@@ -7,9 +7,7 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
   }
 
   public static function tearDownAfterClass() {
-    if (file_exists(self::$configPath)) {
-      unlink(self::$configPath);
-    }
+    unlink(self::$configPath);
   }
 
   protected function setUp() {
