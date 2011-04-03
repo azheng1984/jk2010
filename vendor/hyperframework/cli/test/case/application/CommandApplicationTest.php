@@ -20,23 +20,17 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
       array('test', '--', '-test')
     );
     $this->assertEquals(1, count($_ENV['callback_trace']));
-    $trace = $_ENV['callback_trace'][0];
-    $this->assertEquals('TestCommand.execute', $trace['name']);
-    $this->assertEquals('-test', $trace['argument']);
+    $this->verifyCallback('-test');
   }
 
   public function testParseArgument() {
     $this->runApplication(array('class' => 'TestCommand'), array('-'));
-    $this->assertEquals(1, count($_ENV['callback_trace']));
-    $this->assertEquals('-', $_ENV['callback_trace'][0]['argument']);
+    $this->verifyCallback('-');
   }
 
   public function testStringConfig() {
     $this->runApplication('TestCommand');
-    $this->assertEquals(1, count($_ENV['callback_trace']));
-    $this->assertEquals(
-      'TestCommand.execute', $_ENV['callback_trace'][0]['name']
-    );
+    $this->verifyCallback();
   }
 
   public function testExpansion() {
@@ -46,7 +40,7 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
       )),
       array('alias')
     );
-    $this->assertEquals('TestCommand.execute', $_ENV['callback_trace'][0]['name']);
+    $this->verifyCallback();
   }
 
   public function testTopLevelOption() {
@@ -86,6 +80,13 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
     $this->setArguments($arguments);
     $app = new CommandApplication;
     $app->run();
+  }
+
+  private function verifyCallback($argument = null) {
+    $this->assertEquals(1, count($_ENV['callback_trace']));
+    $trace = $_ENV['callback_trace'][0];
+    $this->assertEquals('TestCommand.execute', $trace['name']);
+    $this->assertEquals($argument, $trace['argument']);
   }
 
   private function setConfig($value) {
