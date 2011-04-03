@@ -79,8 +79,8 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
     file_put_contents(
       self::$configPath, '<?php return '.var_export($config, true).';'
     );
-    $_SERVER['argc'] = array_unshift($values, 'index.php');
-    $_SERVER['argv'] = $values;
+    $_SERVER['argc'] = array_unshift($arguments, 'index.php');
+    $_SERVER['argv'] = $arguments;
     $app = new CommandApplication;
     $app->run();
   }
