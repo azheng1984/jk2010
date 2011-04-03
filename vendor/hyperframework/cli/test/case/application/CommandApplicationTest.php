@@ -83,9 +83,9 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
     $this->runApplication(array(), array('test'));
   }
 
-  private function runApplication($config = array(), $input = array()) {
+  private function runApplication($config = array(), $arguments = array()) {
     $this->setConfig($config);
-    $this->setInput($input);
+    $this->setArguments($arguments);
     $app = new CommandApplication;
     $app->run();
   }
@@ -96,8 +96,8 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
     );
   }
 
-  private function setInput($value) {
-    $_SERVER['argc'] = array_unshift($value, 'index.php');
-    $_SERVER['argv'] = $value;
+  private function setArguments($values) {
+    $_SERVER['argc'] = array_unshift($values, 'index.php');
+    $_SERVER['argv'] = $values;
   }
 }
