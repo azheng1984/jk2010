@@ -1,7 +1,13 @@
 <?php
 class CommandRunnerTest extends PHPUnit_Extensions_OutputTestCase {
+  private static $runner;
+
+  public static function setUpBeforeClass() {
+    self::$runner = new CommandRunner;
+  }
+
   public function testPackage() {
-    $this->runCommand(array('sub' => array('test' => 'TestCommand')), null);
+    self::$runner->run(array('sub' => array('test' => 'TestCommand')), null);
     $this->expectOutputString(
       '[command]'.PHP_EOL.'  test(argument = NULL)'.PHP_EOL
     );
@@ -11,29 +17,24 @@ class CommandRunnerTest extends PHPUnit_Extensions_OutputTestCase {
    * @expectedException CommandException
    * @expectedExceptionMessage Class not defined
    */
-  public function testClassNotFound() {
-    $this->runCommand(array(), null);
+  public function testClassNotDefined() {
+    self::$runner->run(array(), null);
   }
 
   /**
    * @expectedException CommandException
    */
   public function testArgumentNotMatched() {
-    $this->runCommand(
+    self::$runner->run(
       array('class' => 'TestCommand'),
       array('argument', 'additional_argument')
     );
   }
 
   public function testInfiniteCommand() {
-    $this->runCommand(
+    self::$runner->run(
       array('class' => 'TestCommand', 'infinite'),
       array('argument', 'additional_argument')
     );
-  }
-
-  private function runCommand($config, $arguments) {
-    $runner = new CommandRunner;
-    $runner->run($config, $arguments);
   }
 }
