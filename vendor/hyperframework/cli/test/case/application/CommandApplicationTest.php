@@ -1,90 +1,103 @@
 <?php
-define('LIB_PATH', dirname(dirname(dirname(dirname(__FILE__)))).DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR);
-require LIB_PATH.'application/CommandRunner.php';
-require LIB_PATH.'CommandReader.php';
-require LIB_PATH.'ArgumentVerifier.php';
-require LIB_PATH.'CommandException.php';
-require LIB_PATH.'application/CommandApplication.php';
-require LIB_PATH.'option/OptionParser.php';
-require LIB_PATH.'option/OptionNameParser.php';
-require LIB_PATH.'option/OptionArgumentParser.php';
+class CommandApplicationTest extends PHPUnit_Framework_TestCase {
+  private static $configPath;
 
-if (!defined('ROOT_PATH')) {
-  define('ROOT_PATH', dirname(dirname(dirname(__FILE__))).'/fixture/');
-}
-define('CONFIG_PATH', ROOT_PATH.'config/');
-require ROOT_PATH.'app/TestCommand.php';
+  public static function setUpBeforeClass() {
+    self::$configPath = CONFIG_PATH.'command_application.config.php';
+  }
 
-class CommandApplicationTest extends PHPUnit_Framework_TestCase  {
-  public function testRun() {
-    file_put_contents(CONFIG_PATH.'command_application.config.php', "<?php return array('sub' => array('test' => 'TestCommand'));");
-    $_SERVER['argc'] = '4';
-    $_SERVER['argv'] = array('index.php', 'test', '--', '-test_argument');
-    $app = new CommandApplication;
-    $app->run();
-    $this->assertEquals('TestCommand.execute', $_ENV['callback']);
-    $this->assertEquals('-test_argument', $_ENV['argument']);
-    $_SERVER['argc'] = '3';
-    $_SERVER['argv'] = array('index.php', 'test', '-');
-    $app = new CommandApplication;
-    $app->run();
-    $this->assertEquals('-', $_ENV['argument']);
+  public static function tearDownAfterClass() {
+    if (file_exists(self::$configPath)) {
+      unlink(self::$configPath);
+    }
+  }
+
+  protected function setUp() {
+    $_ENV['callback_trace'] = array();
+  }
+
+  public function testParseOption() {
+    $this->runApplication(
+      array('sub' => array('test' => 'TestCommand')),
+      array('test', '--', '-test')
+    );
+    $this->assertEquals(1, count($_ENV['callback_trace']));
+    $trace = $_ENV['callback_trace'][0];
+    $this->assertEquals('TestCommand.execute', $trace['name']);
+    $this->assertEquals('-test', $trace['argument']);
+  }
+
+  public function testParseArgument() {
+    $this->runApplication(array('class' => 'TestCommand'), array('-'));
+    $this->assertEquals(1, count($_ENV['callback_trace']));
+    $this->assertEquals('-', $_ENV['callback_trace'][0]['argument']);
   }
 
   public function testStringConfig() {
-    $_SERVER['argc'] = '1';
-    $_SERVER['argv'] = array('index.php');
-    file_put_contents(CONFIG_PATH.'command_application.config.php', "<?php return 'TestCommand';");
-    $app = new CommandApplication;
-    $app->run();
-    $this->assertEquals('TestCommand.execute', $_ENV['callback']);
+    $this->runApplication('TestCommand');
+    $this->assertEquals(1, count($_ENV['callback_trace']));
+    $this->assertEquals(
+      'TestCommand.execute', $_ENV['callback_trace'][0]['name']
+    );
   }
 
   public function testExpansion() {
-    $_SERVER['argc'] = '2';
-    $_SERVER['argv'] = array('index.php', 'alias');
-    file_put_contents(CONFIG_PATH.'command_application.config.php', "<?php return array('sub' => array('alias' => array('expansion' => 'test'), 'test' => 'TestCommand'));");
-    $app = new CommandApplication;
-    $app->run();
-    $this->assertEquals('TestCommand.execute', $_ENV['callback']);
+    $this->runApplication(
+      array('sub' => array(
+        'alias' => array('expansion' => 'test'), 'test' => 'TestCommand'
+      )),
+      array('alias')
+    );
+    $this->assertEquals('TestCommand.execute', $_ENV['callback_trace'][0]['name']);
   }
 
-  public function testOption() {
-    $_SERVER['argc'] = '2';
-    $_SERVER['argv'] = array('index.php', '--test');
-    file_put_contents(CONFIG_PATH.'command_application.config.php', "<?php return array('option' => 'test', 'class' => 'TestCommand');");
-    $app = new CommandApplication;
-    $app->run();
+  public function testTopLevelCommandOption() {
+    $this->runApplication(
+      array('option' => 'test', 'class' => 'TestCommand'), array('--test')
+    );
     $this->assertEquals(true, $_ENV['option']['test']);
-    $_SERVER['argc'] = '3';
-    $_SERVER['argv'] = array('index.php', 'test', '--test');
-    file_put_contents(CONFIG_PATH.'command_application.config.php', "<?php return array('sub' => array('test' => array('class' => 'TestCommand', 'option' => 'test')));");
-    $app = new CommandApplication;
-    $app->run();
+  }
+
+  public function testSecondLevelCommandOption() {
+    $this->runApplication(
+      array('sub' => array(
+        'test' => array('class' => 'TestCommand', 'option' => 'test')
+      )),
+      array('test', '--test')
+    );
     $this->assertEquals(true, $_ENV['option']['test']);
   }
 
   /**
    * @expectedException CommandException
-   * @expectedExceptionMessage Can't find the 'config/build.config.php'
    */
-  public function testOptionNotConfig() {
-    $_SERVER['argc'] = '2';
-    $_SERVER['argv'] = array('index.php', '--test');
-    file_put_contents(CONFIG_PATH.'command_application.config.php', "<?php return array();");
-    $app = new CommandApplication;
-    $app->run();
+  public function testOptionUndefined() {
+    $this->runApplication(array(), array('--test'));
   }
 
   /**
    * @expectedException CommandException
    * @expectedExceptionMessage Command 'test' not found
    */
-  public function testCommandNotFound() {
-    $_SERVER['argc'] = '2';
-    $_SERVER['argv'] = array('index.php', 'test');
-    file_put_contents(CONFIG_PATH.'command_application.config.php', "<?php return array();");
+  public function testCommandUndefined() {
+    $this->runApplication(array(), array('test'));
+  }
+
+  private function runApplication($config = array(), $input = array()) {
+    $this->setConfig($config);
+    $this->setInput($input);
     $app = new CommandApplication;
     $app->run();
+  }
+
+  private function setConfig($value) {
+    file_put_contents(
+      self::$configPath, '<?php return '.var_export($value, true).';'
+    );
+  }
+
+  private function setInput($value) {
+    $_SERVER['argc'] = array_unshift($value, 'index.php');
+    $_SERVER['argv'] = $value;
   }
 }
