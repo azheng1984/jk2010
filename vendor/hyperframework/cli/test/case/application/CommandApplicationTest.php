@@ -14,20 +14,6 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
     $_ENV['callback_trace'] = array();
   }
 
-  public function testStartWithDashArgument() {
-    $this->runApplication(
-      array('sub' => array('test' => 'TestCommand')),
-      array('test', '--', '-test')
-    );
-    $this->assertEquals(1, count($_ENV['callback_trace']));
-    $this->verifyCallback('-test');
-  }
-
-  public function testDashArgument() {
-    $this->runApplication(array('class' => 'TestCommand'), array('-'));
-    $this->verifyCallback('-');
-  }
-
   public function testStringConfig() {
     $this->runApplication('TestCommand');
     $this->verifyCallback();
@@ -41,6 +27,20 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
       array('alias')
     );
     $this->verifyCallback();
+  }
+
+  public function testStartWithDashArgument() {
+    $this->runApplication(
+      array('sub' => array('test' => 'TestCommand')),
+      array('test', '--', '-test')
+    );
+    $this->assertEquals(1, count($_ENV['callback_trace']));
+    $this->verifyCallback('-test');
+  }
+
+  public function testDashArgument() {
+    $this->runApplication(array('class' => 'TestCommand'), array('-'));
+    $this->verifyCallback('-');
   }
 
   public function testTopLevelOption() {
@@ -62,17 +62,17 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
 
   /**
    * @expectedException CommandException
-   */
-  public function testUndefinedOption() {
-    $this->runApplication(array(), array('--test'));
-  }
-
-  /**
-   * @expectedException CommandException
    * @expectedExceptionMessage Command 'test' not found
    */
   public function testUndefinedCommand() {
     $this->runApplication(array(), array('test'));
+  }
+
+  /**
+   * @expectedException CommandException
+   */
+  public function testUndefinedOption() {
+    $this->runApplication(array(), array('--test'));
   }
 
   private function runApplication($config = array(), $arguments = array()) {
