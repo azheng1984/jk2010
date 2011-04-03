@@ -1,40 +1,39 @@
 <?php
 class PackageExplorer {
-  private $commandExplorer;
   private $writer;
-
-  public function __construct() {
-    $this->commandExplorer = new CommandExplorer;
-  }
+  private $commandExplorer;
 
   public function render($config, $writer) {
     $this->writer = $writer;
+    $this->commandExplorer = new CommandExplorer;
     if (!isset($config['sub']) || !is_array($config['sub'])) {
       throw new CommandException('No subcommand in the package');
     }
     $this->commandExplorer->render(null, $config, $writer);
-    $packages = array();
-    $commands = array();
+    foreach ($this->getList($config) as $type => $values) {
+      if (count($values) !== 0) {
+        $this->renderList($type, $values);
+      }
+    }
+  }
+
+  private function getList($config) {
+    $result = array('package' => array(), 'command' => array());
     foreach ($config['sub'] as $name => $item) {
       if (!is_array($item)) {
         $item = array('class' => $item);
       }
       if (isset($item['sub'])) {
         unset($item['option']);
-        $packages[$name] = $item;
+        $result['package'][$name] = $item;
         continue;
       }
-      $commands[$name] = $item;
+      $result['command'][$name] = $item;
     }
-    if (count($packages) !== 0) {
-      $this->renderCommandList('package', $packages);
-    }
-    if (count($commands) !== 0) {
-      $this->renderCommandList('command', $commands);
-    }
+    return $result;
   }
 
-  private function renderCommandList($type, $values) {
+  private function renderList($type, $values) {
     $this->writer->writeLine("[$type]");
     $this->writer->increaseIndentation();
     foreach ($values as $name => $config) {
