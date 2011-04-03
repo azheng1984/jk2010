@@ -1,27 +1,37 @@
 <?php
 class CommandExplorer {
-  public function render($name, $config, $writer) {
+  private $writer;
+
+  public function __construct($writer) {
+    $this->writer = $writer;
+  }
+
+  public function render($name, $config) {
     if ($name !== null) {
-      $methodExplorer = new MethodExplorer;
-      $methodExplorer->render($name, 'execute', $config, $writer);
-      $writer->increaseIndentation();
+      $this->renderMethod($name, $config);
+      $this->writer->increaseIndentation();
     }
     if (isset($config['description'])) {
-      $writer->writeLine($config['description']);
-      $writer->writeLine();
+      $this->writer->writeLine($config['description']);
+      $this->writer->writeLine();
     }
     if (isset($config['option'])) {
-      $this->renderOptionList($config['option'], $writer);
+      $this->renderOptionList($config['option']);
     }
     if ($name !== null) {
-      $writer->decreaseIndentation();
+      $this->writer->decreaseIndentation();
     }
   }
 
-  private function renderOptionList($config, $writer) {
-    $writer->writeLine('[option]');
-    $writer->increaseIndentation();
-    $optionExplorer = new OptionExplorer;
+  private function renderMethod($name, $config) {
+    $methodExplorer = new MethodExplorer($this->writer);
+    $methodExplorer->render($name, 'execute', $config);
+  }
+
+  private function renderOptionList($config) {
+    $this->writer->writeLine('[option]');
+    $this->writer->increaseIndentation();
+    $optionExplorer = new OptionExplorer($this->writer);
     foreach ($config as $name => $item) {
       if (is_int($name)) {
         list($name, $item) = array($item, array());
@@ -31,6 +41,6 @@ class CommandExplorer {
       }
       $optionExplorer->render($name, $item);
     }
-    $writer->decreaseIndentation();
+    $this->writer->decreaseIndentation();
   }
 }
