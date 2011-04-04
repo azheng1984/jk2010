@@ -12,7 +12,7 @@ class ViewProcessorTest extends PHPUnit_Framework_TestCase {
 
   public function testMethodNotAllowed() {
     $this->setExpectedException('UnsupportedMediaTypeException');
-    $_ENV['media_type'] = 'Handheld';
+    $_SERVER['REQUEST_MEDIA_TYPE'] = 'Handheld';
     try {
       $this->process();
     } catch (UnsupportedMediaTypeException $exception) {
