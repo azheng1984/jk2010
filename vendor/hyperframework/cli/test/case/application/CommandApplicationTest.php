@@ -1,5 +1,5 @@
 <?php
-class CommandApplicationTest extends PHPUnit_Framework_TestCase {
+class CommandApplicationTest extends CliTestCase {
   private static $configPath;
 
   public static function setUpBeforeClass() {
@@ -60,18 +60,13 @@ class CommandApplicationTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(true, $_ENV['option']['test']);
   }
 
-  /**
-   * @expectedException CommandException
-   * @expectedExceptionMessage Command 'test' not found
-   */
   public function testUndefinedCommand() {
+    $this->setExpectedCommandException("Command 'test' not found");
     $this->runApplication(array(), array('test'));
   }
 
-  /**
-   * @expectedException CommandException
-   */
   public function testUndefinedOption() {
+    $this->setExpectedCommandException();
     $this->runApplication(array(), array('--test'));
   }
 

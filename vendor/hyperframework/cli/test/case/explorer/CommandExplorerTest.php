@@ -1,5 +1,5 @@
 <?php
-class CommandExplorerTest extends OutputTestCase {
+class CommandExplorerTest extends CliTestCase {
   public function test() {
     
   }

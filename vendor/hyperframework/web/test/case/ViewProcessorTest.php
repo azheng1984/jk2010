@@ -10,10 +10,8 @@ class ViewProcessorTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('TestScreen->render', $_ENV['callback_trace'][0]);
   }
 
-  /**
-   * @expectedException UnsupportedMediaTypeException
-   */
   public function testMethodNotAllowed() {
+    $this->setExpectedException('UnsupportedMediaTypeException');
     $_ENV['media_type'] = 'Handheld';
     try {
       $this->process();

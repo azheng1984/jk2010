@@ -1,9 +1,7 @@
 <?php
 class ErrorHandlerTest extends PHPUnit_Framework_TestCase {
-  /**
-   * @expectedException PHPUnit_Framework_Error
-   */
   public function testReloadApplication() {
+    $this->setExpectedException('PHPUnit_Framework_Error');
     $app = $this->getMock('Application', array('run'));
     $app->expects($this->once())->method('run')->with(
       $this->equalTo('/error/internal_server_error')

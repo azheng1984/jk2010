@@ -1,5 +1,5 @@
 <?php
-class CommandRunnerTest extends CliTestCase {
+class CommandRunnerRenderPackageExplorerTexst extends CliTestCase {
   private static $runner;
 
   public static function setUpBeforeClass() {
@@ -15,24 +15,27 @@ class CommandRunnerTest extends CliTestCase {
   }
 
   public function testClassNotDefined() {
-    $this->setExpectedCommandException('Class not defined');
+    $this->setExpectedException('CommandException', 'Class not defined');
     self::$runner->run(array(), null);
   }
 
   public function testClassDoesNotExist() {
-    $this->setExpectedCommandException('Class Unkonwn does not exist');
+    $this->setExpectedException(
+      'CommandException', 'Class Unkonwn does not exist'
+    );
     self::$runner->run(array('class' => 'Unkonwn'), null);
   }
 
   public function testMethodDoesNotExistCommand() {
-    $this->setExpectedCommandException(
+    $this->setExpectedException(
+      'CommandException',
       'Method MethodDoesNotExistCommand::execute() does not exist'
     );
     self::$runner->run(array('class' => 'MethodDoesNotExistCommand'), null);
   }
 
   public function testArgumentNotMatched() {
-    $this->setExpectedCommandException();
+    $this->setExpectedException('CommandException');
     self::$runner->run(
       array('class' => 'TestCommand'),
       array('argument', 'additional_argument')

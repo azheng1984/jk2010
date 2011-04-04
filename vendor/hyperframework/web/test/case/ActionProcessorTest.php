@@ -11,10 +11,8 @@ class ActionProcessorTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('TestAction->GET', $_ENV['callback_trace'][0]);
   }
 
-  /**
-   * @expectedException MethodNotAllowedException
-   */
   public function testMethodNotAllowed() {
+    $this->setExpectedException('MethodNotAllowedException');
     $_SERVER['REQUEST_METHOD'] = 'POST';
     try {
       $this->process();
