@@ -1,7 +1,8 @@
 <?php
 class ViewProcessor {
   public function run($cache) {
-    $type = $_SERVER['REQUEST_MEDIA_TYPE'];
+    $type = isset($_SERVER['REQUEST_MEDIA_TYPE']) ?
+      $_SERVER['REQUEST_MEDIA_TYPE'] : $cache[0];
     if (!isset($cache[$type])) {
       throw new UnsupportedMediaTypeException;
     }
