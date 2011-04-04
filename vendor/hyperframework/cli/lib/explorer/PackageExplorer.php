@@ -43,5 +43,6 @@ class PackageExplorer {
       $this->commandExplorer->render($name, $config);
     }
     $this->writer->decreaseIndentation();
+    $this->writer->writeLine();
   }
 }
