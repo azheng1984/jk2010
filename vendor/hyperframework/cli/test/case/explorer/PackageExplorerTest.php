@@ -3,18 +3,12 @@ class PackageExplorerTest extends CliTestCase {
   private static $explorer;
 
   public static function setUpBeforeClass() {
-    self::$explorer = new PackageExplorer;;
+    self::$explorer = new PackageExplorer;
   }
 
-  public function testErrorConfig() {
-    $this->setExpectedCommandException('No command in package');
+  public function testErrorSubConfig() {
     $this->expectOutputString('');
-    self::$explorer->render(array('sub' => 'test'));
-  }
-
-  public function testEmptyList() {
-    $this->expectOutputString('');
-    self::$explorer->render(array('sub' => array()));
+    self::$explorer->render(array('sub' => null));
   }
 
   public function testRenderList() {
@@ -23,6 +17,7 @@ class PackageExplorerTest extends CliTestCase {
       '',
       '[package]',
       '  test-package',
+      '    test-package-description',
       '',
       '[command]',
       '  test-command(argument = NULL)'
@@ -30,7 +25,11 @@ class PackageExplorerTest extends CliTestCase {
     self::$explorer->render(array(
       'description' => 'test-description',
       'sub' => array(
-        'test-package' => array('sub' => array('option' => 'test-option')),
+        'test-package' => array(
+          'description' => 'test-package-description',
+          'option' => array('test-option'),
+          'sub' => array(),
+        ),
         'test-command' => 'TestCommand',
       )
     ));
