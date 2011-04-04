@@ -1,7 +1,6 @@
 <?php
 class PackageExplorer {
   public function render($config) {
-    ExplorerContext::reset();
     if (!is_array($config['sub'])) {
       $config['sub'] = array();
     }

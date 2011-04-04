@@ -6,6 +6,10 @@ class PackageExplorerTest extends CliTestCase {
     self::$explorer = new PackageExplorer;
   }
 
+  public static function tearDownAfterClass() {
+    ExplorerContext::reset();
+  }
+
   public function testErrorSubConfig() {
     $this->expectOutputString('');
     self::$explorer->render(array('sub' => null));
