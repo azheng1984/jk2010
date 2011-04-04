@@ -1,23 +1,26 @@
 <?php
 class PackageExplorerTest extends OutputTestCase {
+  private static $explorer;
+
+  public static function setUpBeforeClass() {
+    self::$explorer = new PackageExplorer;;
+  }
+
   /**
    * @expectedException CommandException
    * @expectedExceptionMessage No command in package
    */
   public function testEmptyPackage() {
-    $explorer = new PackageExplorer;
-    $explorer->render(array('sub' => null));
+    self::$explorer->render(array('sub' => null));
   }
 
   public function testEmptyList() {
-    $explorer = new PackageExplorer;
-    $explorer->render(array('sub' => array()));
+    self::$explorer->render(array('sub' => array()));
     $this->expectOutputString('');
   }
 
   public function testRenderList() {
-    $explorer = new PackageExplorer;
-    $explorer->render(array(
+    self::$explorer->render(array(
       'description' => 'test-description',
       'sub' => array(
         'test-package' => array('sub' => array('option' => 'test-option')),
