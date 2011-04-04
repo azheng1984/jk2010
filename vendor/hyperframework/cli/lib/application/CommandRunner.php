@@ -2,8 +2,7 @@
 class CommandRunner {
   public function run($config, $arguments) {
     if (isset($config['sub'])) {
-      $explorer = new PackageExplorer;
-      $explorer->render($config);
+      ExplorerContext::getExplorer('Package')->render($config);
       return;
     }
     $this->execute($config, $arguments);

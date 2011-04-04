@@ -6,6 +6,10 @@ class CommandRunnerTest extends CliTestCase {
     self::$runner = new CommandRunner;
   }
 
+  public static function tearDownAfterClass() {
+    ExplorerContext::reset();
+  }
+
   public function testRenderPackageExplorer() {
     $this->expectOutput(
       '[command]',
