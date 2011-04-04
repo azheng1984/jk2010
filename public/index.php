@@ -13,7 +13,7 @@ require ROOT_PATH.HYPERFRAMEWORK_PATH.'class_loader'.DIRECTORY_SEPARATOR
 $classLoader = new ClassLoader;
 $classLoader->run();
 $app = new Application;
-$errorHandler = new ErrorHandler($app);
-$errorHandler->run();
+$exceptionHandler = new ExceptionHandler($app);
+$exceptionHandler->run();
 $router = new Router;
 $app->run($router->getPath());
