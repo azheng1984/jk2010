@@ -8,6 +8,7 @@ define(
   'vendor'.DIRECTORY_SEPARATOR.'hyperframework'.DIRECTORY_SEPARATOR
 );
 require DATA_PATH.'define.php';
+$_SERVER['REQUEST_MEDIA_TYPE'] = 'Screen';
 require ROOT_PATH.HYPERFRAMEWORK_PATH.'class_loader'.DIRECTORY_SEPARATOR
   .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';
 $classLoader = new ClassLoader;
