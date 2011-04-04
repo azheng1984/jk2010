@@ -1,7 +1,11 @@
 <?php
 class ErrorHandler {
-  private $app;
   private static $exception;
+  private $app;
+
+  public static function getException() {
+    return self::$exception;
+  }
 
   public function __construct($app) {
     $this->app = $app;
@@ -21,10 +25,6 @@ class ErrorHandler {
       $this->reload($exception);
     }
     trigger_error($exception, E_USER_ERROR);
-  }
-
-  public static function getException() {
-    return self::$exception;
   }
 
   private function reload($exception) {
