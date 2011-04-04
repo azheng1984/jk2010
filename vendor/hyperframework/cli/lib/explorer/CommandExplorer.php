@@ -22,7 +22,6 @@ class CommandExplorer {
     $writer = ExplorerContext::getWriter();
     $writer->writeLine('[option]');
     $writer->increaseIndentation();
-    $optionExplorer = new OptionExplorer($_ENV['writer']);
     foreach ($config as $name => $item) {
       if (is_int($name)) {
         list($name, $item) = array($item, array());
