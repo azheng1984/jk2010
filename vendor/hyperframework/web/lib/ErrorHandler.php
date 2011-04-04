@@ -1,6 +1,7 @@
 <?php
 class ErrorHandler {
   private $app;
+  private static $exception;
 
   public function __construct($app) {
     $this->app = $app;
@@ -16,10 +17,14 @@ class ErrorHandler {
 
   public function handle($exception) {
     if (!headers_sent()) {
-      $_ENV['exception'] = $exception;
+      self::$exception = $exception;
       $this->reload($exception);
     }
     trigger_error($exception, E_USER_ERROR);
+  }
+
+  public static function getException() {
+    return self::$exception;
   }
 
   private function reload($exception) {

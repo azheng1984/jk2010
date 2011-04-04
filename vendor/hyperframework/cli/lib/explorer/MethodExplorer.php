@@ -1,7 +1,7 @@
 <?php
 class MethodExplorer {
   public function render($name, $method, $config) {
-    $writer = $_ENV['writer'];
+    $writer = ExplorerContext::getWriter();
     if (!isset($config['class'])) {
       $writer->writeLine($name);
       return;

@@ -3,6 +3,7 @@ class PackageExplorerTest extends CliTestCase {
   private static $explorer;
 
   public static function setUpBeforeClass() {
+    ExplorerContext::reset();
     self::$explorer = new PackageExplorer;
   }
 
