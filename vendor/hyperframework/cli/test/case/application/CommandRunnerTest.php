@@ -24,7 +24,7 @@ class CommandRunnerTest extends CliTestCase {
     self::$runner->run(array('class' => 'Unkonwn'), null);
   }
 
-  public function testMethodDoesNotExistCommand() {
+  public function testMethodDoesNotExist() {
     $this->setExpectedCommandException(
       'Method MethodDoesNotExistCommand::execute() does not exist'
     );
