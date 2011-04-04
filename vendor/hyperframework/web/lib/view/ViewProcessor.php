@@ -1,13 +1,18 @@
 <?php
 class ViewProcessor {
   public function run($cache) {
-    if (!isset($_SERVER['REQUEST_MEDIA_TYPE'])) {
-      $_SERVER['REQUEST_MEDIA_TYPE'] = 'Screen';
-    }
-    if (!isset($cache[$_SERVER['REQUEST_MEDIA_TYPE']])) {
+    $type = $this->getType();
+    if (!isset($cache[$type])) {
       throw new UnsupportedMediaTypeException;
     }
-    $view = new $cache[$_SERVER['REQUEST_MEDIA_TYPE']];
+    $view = new $cache[$type];
     $view->render();
+  }
+
+  private function getType() {
+    if (isset($_SERVER['REQUEST_MEDIA_TYPE'])) {
+      return $_SERVER['REQUEST_MEDIA_TYPE'];
+    }
+    return 'Screen';
   }
 }
