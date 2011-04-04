@@ -1,28 +1,25 @@
 <?php
 class PackageExplorer {
-  private $writer;
-  private $commandExplorer;
-
   public function __construct() {
-    $this->writer = new CommandWriter;
-    $this->commandExplorer = new CommandExplorer($this->writer);
+    $_ENV['writer'] = new CommandWriter;
+    $_ENV['rendering_proxy'] = new ExplorerRenderingProxy;
   }
 
   public function render($config) {
-    if (!isset($config['sub']) || !is_array($config['sub'])) {
-      throw new CommandException('No command in package');
+    if (!is_array($config['sub'])) {
+      $config['sub'] = array();
     }
-    $this->commandExplorer->render(null, $config);
-    foreach ($this->getList($config) as $type => $values) {
+    $_ENV['rendering_proxy']->render('Command', array(null, $config));
+    foreach ($this->getList($config['sub']) as $type => $values) {
       if (count($values) !== 0) {
         $this->renderList($type, $values);
       }
     }
   }
 
-  private function getList($config) {
+  private function getList($subConfig) {
     $result = array('package' => array(), 'command' => array());
-    foreach ($config['sub'] as $name => $item) {
+    foreach ($subConfig as $name => $item) {
       if (!is_array($item)) {
         $item = array('class' => $item);
       }
@@ -37,12 +34,13 @@ class PackageExplorer {
   }
 
   private function renderList($type, $values) {
-    $this->writer->writeLine("[$type]");
-    $this->writer->increaseIndentation();
+    $writer = $_ENV['writer'];
+    $writer->writeLine("[$type]");
+    $writer->increaseIndentation();
     foreach ($values as $name => $config) {
-      $this->commandExplorer->render($name, $config);
+      $_ENV['rendering_proxy']->render('Command', array($name, $config));
     }
-    $this->writer->decreaseIndentation();
-    $this->writer->writeLine();
+    $writer->decreaseIndentation();
+    $writer->writeLine();
   }
 }

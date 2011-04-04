@@ -1,26 +1,25 @@
 <?php
 class OptionExplorer {
-  private $writer;
-
-  public function __construct($writer) {
-    $this->writer = $writer;
-  }
-
   public function render($name, $config) {
     $this->renderMethod($name, $config);
     if (isset($config['description'])) {
-      $this->writer->increaseIndentation();
-      $this->writer->writeLine($config['description']);
-      $this->writer->decreaseIndentation();
-      $this->writer->writeLine();
+      $this->renderDescription($config['description']);
     }
   }
 
   private function renderMethod($name, $config) {
-    $methodExplorer = new MethodExplorer($this->writer);
-    $methodExplorer->render(
-      $this->getNameList($name, $config), '__construct', $config
+    $_ENV['rendering_proxy']->render(
+      'Method',
+      array($this->getNameList($name, $config), '__construct', $config)
     );
+  }
+
+  private function renderDescription($value) {
+    $writer = $_ENV['writer'];
+    $writer->increaseIndentation();
+    $writer->writeLine($value);
+    $writer->decreaseIndentation();
+    $writer->writeLine();
   }
 
   private function getNameList($name, $config) {

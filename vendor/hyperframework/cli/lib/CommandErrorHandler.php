@@ -9,7 +9,7 @@ class CommandErrorHandler {
   }
 
   public function handle($exception) {
-    fwrite(STDERR, $exception);
+    fwrite(STDERR, $exception.PHP_EOL);
     exit($exception->getCode());
   }
 }

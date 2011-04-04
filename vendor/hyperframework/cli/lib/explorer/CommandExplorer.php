@@ -1,37 +1,28 @@
 <?php
 class CommandExplorer {
-  private $writer;
-
-  public function __construct($writer) {
-    $this->writer = $writer;
-  }
-
   public function render($name, $config) {
+    $writer = $_ENV['writer'];
     if ($name !== null) {
       $this->renderMethod($name, $config);
-      $this->writer->increaseIndentation();
+      $writer->increaseIndentation();
     }
     if (isset($config['description'])) {
-      $this->writer->writeLine($config['description']);
-      $this->writer->writeLine();
+      $writer->writeLine($config['description']);
+      $writer->writeLine();
     }
     if (isset($config['option'])) {
       $this->renderOptionList($config['option']);
     }
     if ($name !== null) {
-      $this->writer->decreaseIndentation();
+      $writer->decreaseIndentation();
     }
   }
 
-  private function renderMethod($name, $config) {
-    $methodExplorer = new MethodExplorer($this->writer);
-    $methodExplorer->render($name, 'execute', $config);
-  }
-
   private function renderOptionList($config) {
-    $this->writer->writeLine('[option]');
-    $this->writer->increaseIndentation();
-    $optionExplorer = new OptionExplorer($this->writer);
+    $writer = $_ENV['writer'];
+    $writer->writeLine('[option]');
+    $writer->increaseIndentation();
+    $optionExplorer = new OptionExplorer($_ENV['writer']);
     foreach ($config as $name => $item) {
       if (is_int($name)) {
         list($name, $item) = array($item, array());
@@ -39,8 +30,18 @@ class CommandExplorer {
       if (!is_array($item)) {
         $item = array('class' => $item);
       }
-      $optionExplorer->render($name, $item);
+      $this->renderOption($name, $item);
     }
-    $this->writer->decreaseIndentation();
+    $writer->decreaseIndentation();
+  }
+
+  private function renderMethod($name, $config) {
+    $_ENV['rendering_proxy']->render(
+      'Method', array($name, 'execute', $config)
+    );
+  }
+
+  private function renderOption($name, $config) {
+    $_ENV['rendering_proxy']->render('Option', array($name, $config));
   }
 }
