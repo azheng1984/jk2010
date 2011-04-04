@@ -8,8 +8,8 @@ require HYPERFRAMEWORK_PATH.'class_loader'.DIRECTORY_SEPARATOR
   .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';
 $classLoader = new ClassLoader;
 $classLoader->run();
-$errorHandler = new CommandErrorHandler;
-$errorHandler->run();
+$exceptionHandler = new CommandExceptionHandler;
+$exceptionHandler->run();
 if (!isset($_SERVER['PWD'])) {
   $_SERVER['PWD'] = getcwd();
 }
