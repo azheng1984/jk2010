@@ -3,6 +3,7 @@ class CommandRunnerTest extends CliTestCase {
   private static $runner;
 
   public static function setUpBeforeClass() {
+    ExplorerContext::reset();
     self::$runner = new CommandRunner;
   }
 

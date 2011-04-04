@@ -8,14 +8,13 @@ class OptionExplorer {
   }
 
   private function renderMethod($name, $config) {
-    $_ENV['rendering_proxy']->render(
-      'Method',
-      array($this->getNameList($name, $config), '__construct', $config)
+    ExplorerContext::getExplorer('Method')->render(
+      $this->getNameList($name, $config), '__construct', $config
     );
   }
 
   private function renderDescription($value) {
-    $writer = $_ENV['writer'];
+    $writer = ExplorerContext::getWriter();
     $writer->increaseIndentation();
     $writer->writeLine($value);
     $writer->decreaseIndentation();

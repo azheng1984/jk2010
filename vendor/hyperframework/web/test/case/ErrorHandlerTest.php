@@ -11,7 +11,7 @@ class ErrorHandlerTest extends PHPUnit_Framework_TestCase {
     try {
       $handler->handle($exception);
     } catch (PHPUnit_Framework_Error $error) {
-      $this->assertEquals($exception, $_ENV['exception']);
+      $this->assertEquals($exception, ErrorHandler::getException());
       throw $error;
     }
   }

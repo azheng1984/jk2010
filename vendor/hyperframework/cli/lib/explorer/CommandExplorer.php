@@ -1,7 +1,7 @@
 <?php
 class CommandExplorer {
   public function render($name, $config) {
-    $writer = $_ENV['writer'];
+    $writer = ExplorerContext::getWriter();
     if ($name !== null) {
       $this->renderMethod($name, $config);
       $writer->increaseIndentation();
@@ -19,7 +19,7 @@ class CommandExplorer {
   }
 
   private function renderOptionList($config) {
-    $writer = $_ENV['writer'];
+    $writer = ExplorerContext::getWriter();
     $writer->writeLine('[option]');
     $writer->increaseIndentation();
     $optionExplorer = new OptionExplorer($_ENV['writer']);
@@ -36,12 +36,12 @@ class CommandExplorer {
   }
 
   private function renderMethod($name, $config) {
-    $_ENV['rendering_proxy']->render(
-      'Method', array($name, 'execute', $config)
+    ExplorerContext::getExplorer('Method')->render(
+      $name, 'execute', $config
     );
   }
 
   private function renderOption($name, $config) {
-    $_ENV['rendering_proxy']->render('Option', array($name, $config));
+    ExplorerContext::getExplorer('Option')->render($name, $config);
   }
 }
