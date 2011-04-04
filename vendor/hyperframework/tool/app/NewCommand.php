@@ -1,6 +1,6 @@
 <?php
 class NewCommand {
-  public function execute($type, $hyperframeworkPath = HYPERFRAMEWORK_PATH) {
+  public function executex($type, $hyperframeworkPath = HYPERFRAMEWORK_PATH) {
     $configPath = CONFIG_PATH.'new/'.$type.'.config.php';
     if (!file_exists($configPath)) {
       throw new CommandException("Application type '$type' is invalid");

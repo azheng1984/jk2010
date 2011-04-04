@@ -1,6 +1,7 @@
 <?php
 class ApplicationTest extends PHPUnit_Framework_TestCase {
   private static $app;
+  private $inexistentPath = '/inexistent_path';
 
   public static function setUpBeforeClass() {
     $_SERVER['REQUEST_METHOD'] = 'GET';
@@ -9,6 +10,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
 
   protected function setUp() {
     $_ENV['callback_trace'] = array();
+    $_SERVER['REQUEST_URI'] = $this->inexistentPath;
   }
 
   public function testPathWithParameter() {
@@ -18,17 +20,14 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testRewritePath() {
-    $_SERVER['REQUEST_URI'] = '/inexistent_path';
     self::$app->run('/');
     $this->verifyCallback();
   }
 
-  /**
-   * @expectedException NotFoundException
-   * @expectedExceptionMessage Path '/inexistent_path' not found
-   */
   public function testPathNotFound() {
-    $_SERVER['REQUEST_URI'] = '/inexistent_path';
+    $this->setExpectedException(
+      'NotFoundException', "Path '$this->inexistentPath' not found"
+    );
     try {
       self::$app->run();
     } catch (NotFoundException $exception) {
