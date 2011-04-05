@@ -18,8 +18,8 @@ class CommandRunnerTest extends CliTestCase {
     self::$runner->run(array('sub' => array('test' => 'TestCommand')), null);
   }
 
-  public function testClassNotDefined() {
-    $this->setExpectedCommandException('Class not defined');
+  public function testClassIsNotDefined() {
+    $this->setExpectedCommandException('Class is not defined');
     self::$runner->run(array(), null);
   }
 
@@ -35,7 +35,7 @@ class CommandRunnerTest extends CliTestCase {
     self::$runner->run(array('class' => 'MethodDoesNotExistCommand'), null);
   }
 
-  public function testArgumentNotMatched() {
+  public function testArgumentLengthIsNotMatched() {
     $this->setExpectedCommandException();
     self::$runner->run(
       array('class' => 'TestCommand'),
