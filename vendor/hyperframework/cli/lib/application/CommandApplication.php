@@ -2,10 +2,10 @@
 class CommandApplication {
   private $config;
   private $reader;
-  private $arguments = array();
   private $isAllowOption = true;
   private $optionParser;
   private $options = array();
+  private $arguments = array();
 
   public function __construct() {
     $this->reader = new CommandReader;
