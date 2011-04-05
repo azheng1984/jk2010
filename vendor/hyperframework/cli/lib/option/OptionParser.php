@@ -32,7 +32,7 @@ class OptionParser {
       $objectBuilder = new OptionObjectBuilder($config, $this->argumentParser);
       $value = $objectBuilder->build();
     }
-    CommandContext::addOption($name, $value);
+    return array($name, $value);
   }
 
   private function getConfig($name) {

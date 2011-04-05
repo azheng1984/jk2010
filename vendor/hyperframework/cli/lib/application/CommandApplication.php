@@ -5,6 +5,7 @@ class CommandApplication {
   private $arguments = array();
   private $isAllowOption = true;
   private $optionParser;
+  private $options = array();
 
   public function __construct() {
     $this->reader = new CommandReader;
@@ -17,6 +18,7 @@ class CommandApplication {
       $this->parse($item);
       $this->reader->moveToNext();
     }
+    CommandContext::initialize($this->options);
     $runner = new CommandRunner;
     return $runner->run($this->config, $this->arguments);
   }
@@ -56,7 +58,8 @@ class CommandApplication {
         isset($this->config['option']) ? $this->config['option'] : null
       );
     }
-    $this->optionParser->parse();
+     list($name, $value) = $this->optionParser->parse();
+     $this->options[$name] = $value;
   }
 
   private function setCommand($name) {
