@@ -10,7 +10,7 @@ class CommandRunner {
 
   private function execute($config, $arguments) {
     if (!isset($config['class'])) {
-      throw new CommandException('Class not defined');
+      throw new CommandException('Class is not defined');
     }
     $reflector = null;
     try {
