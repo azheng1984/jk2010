@@ -48,7 +48,9 @@ class CommandApplicationTest extends CliTestCase {
       array('option' => 'top_level_option', 'class' => 'TestCommand'),
       array('--top_level_option')
     );
-    $this->assertEquals(true, CommandContext::getOption('top_level_option'));
+    $this->assertEquals(
+      true, $GLOBALS['TEST_CALLBACK_TRACE'][0]['option']['top_level_option']
+    );
   }
 
   public function testSecondLevelOption() {
@@ -60,7 +62,9 @@ class CommandApplicationTest extends CliTestCase {
       )),
       array('test', '--second_level_optoin')
     );
-    $this->assertEquals(true, CommandContext::getOption('second_level_optoin'));
+    $this->assertEquals(true, 
+      true, $GLOBALS['TEST_CALLBACK_TRACE'][0]['option']['second_level_optoin']
+    );
   }
 
   public function testUndefinedCommand() {
