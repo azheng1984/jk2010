@@ -1,6 +1,6 @@
 <?php
 class CommandContext {
-  private static $options = array();
+  private static $options;
 
   public static function initialize($options) {
     self::$options = $options;
@@ -14,9 +14,5 @@ class CommandContext {
 
   public static function hasOption($name) {
     return isset(self::$options[$name]);
-  }
-
-  public static function reset() {
-    self::$options = array();
   }
 }
