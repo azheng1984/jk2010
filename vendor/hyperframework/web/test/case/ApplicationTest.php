@@ -9,7 +9,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
   }
 
   protected function setUp() {
-    $_ENV['callback_trace'] = array();
+    $GLOBALS['TEST_CALLBACK_TRACE'] = array();
     $_SERVER['REQUEST_URI'] = $this->inexistentPath;
   }
 
@@ -31,14 +31,16 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
     try {
       self::$app->run();
     } catch (NotFoundException $exception) {
-      $this->assertEquals(0, count($_ENV['callback_trace']));
+      $this->assertEquals(0, count($GLOBALS['TEST_CALLBACK_TRACE']));
       throw $exception;
     }
   }
 
   private function verifyCallback() {
-    $this->assertEquals(2, count($_ENV['callback_trace']));
-    $this->assertEquals('TestAction->GET', $_ENV['callback_trace'][0]);
-    $this->assertEquals('TestScreen->render', $_ENV['callback_trace'][1]);
+    $this->assertEquals(2, count($GLOBALS['TEST_CALLBACK_TRACE']));
+    $this->assertEquals('TestAction->GET', $GLOBALS['TEST_CALLBACK_TRACE'][0]);
+    $this->assertEquals(
+      'TestScreen->render', $GLOBALS['TEST_CALLBACK_TRACE'][1]
+    );
   }
 }

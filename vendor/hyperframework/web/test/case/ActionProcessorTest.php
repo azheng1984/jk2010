@@ -1,14 +1,14 @@
 <?php
 class ActionProcessorTest extends PHPUnit_Framework_TestCase {
   protected function setUp() {
-    $_ENV['callback_trace'] = array();
+    $GLOBALS['TEST_CALLBACK_TRACE'] = array();
   }
 
   public function testExecuteMethod() {
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $this->process();
-    $this->assertEquals(1, count($_ENV['callback_trace']));
-    $this->assertEquals('TestAction->GET', $_ENV['callback_trace'][0]);
+    $this->assertEquals(1, count($GLOBALS['TEST_CALLBACK_TRACE']));
+    $this->assertEquals('TestAction->GET', $GLOBALS['TEST_CALLBACK_TRACE'][0]);
   }
 
   public function testMethodNotAllowed() {
@@ -17,7 +17,7 @@ class ActionProcessorTest extends PHPUnit_Framework_TestCase {
     try {
       $this->process();
     } catch (MethodNotAllowedException $exception) {
-      $this->assertEquals(0, count($_ENV['callback_trace']));
+      $this->assertEquals(0, count($GLOBALS['TEST_CALLBACK_TRACE']));
       throw $exception;
     }
   }

@@ -1,6 +1,6 @@
 <?php
 class TestScreen {
   public function render() {
-    $_ENV['callback_trace'][] = __CLASS__.'->'.__FUNCTION__;
+    $GLOBALS['TEST_CALLBACK_TRACE'][] = __CLASS__.'->'.__FUNCTION__;
   }
 }

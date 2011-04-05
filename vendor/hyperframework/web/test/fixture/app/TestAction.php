@@ -1,6 +1,6 @@
 <?php
 class TestAction {
   public function GET() {
-    $_ENV['callback_trace'][] = __CLASS__.'->'.__FUNCTION__;
+    $GLOBALS['TEST_CALLBACK_TRACE'][] = __CLASS__.'->'.__FUNCTION__;
   }
 }
