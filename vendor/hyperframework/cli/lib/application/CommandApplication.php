@@ -57,8 +57,8 @@ class CommandApplication {
         isset($this->config['option']) ? $this->config['option'] : null
       );
     }
-     list($name, $value) = $this->optionParser->parse();
-     $this->options[$name] = $value;
+    list($name, $value) = $this->optionParser->parse();
+    $this->options[$name] = $value;
   }
 
   private function setCommand($name) {
