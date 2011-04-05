@@ -18,9 +18,8 @@ class CommandApplication {
       $this->parse($item);
       $this->reader->moveToNext();
     }
-    CommandContext::initialize($this->options);
     $runner = new CommandRunner;
-    return $runner->run($this->config, $this->arguments);
+    return $runner->run($this->config, $this->options, $this->arguments);
   }
 
   private function initialize($config) {

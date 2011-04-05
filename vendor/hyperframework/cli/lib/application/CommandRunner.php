@@ -1,14 +1,14 @@
 <?php
 class CommandRunner {
-  public function run($config, $arguments) {
+  public function run($config, $options, $arguments) {
     if (isset($config['sub'])) {
       ExplorerContext::getExplorer('Package')->render($config);
       return;
     }
-    $this->execute($config, $arguments);
+    $this->execute($config, $options, $arguments);
   }
 
-  private function execute($config, $arguments) {
+  private function execute($config, $options, $arguments) {
     if (!isset($config['class'])) {
       throw new CommandException('Class is not defined');
     }
@@ -22,6 +22,6 @@ class CommandRunner {
     $verifier->verify(
       $reflector, count($arguments), in_array('infinite', $config, true)
     );
-    $reflector->invokeArgs(new $config['class'], $arguments);
+    $reflector->invokeArgs(new $config['class']($options), $arguments);
   }
 }
