@@ -32,7 +32,7 @@ class OptionParser {
       $objectBuilder = new OptionObjectBuilder($config, $this->argumentParser);
       $value = $objectBuilder->build();
     }
-    $this->setOption($name, $value);
+    CommandContext::addOption($name, $value);
   }
 
   private function getConfig($name) {
@@ -42,12 +42,5 @@ class OptionParser {
     if (isset($this->config[$name])) {
       return $this->config[$name];
     }
-  }
-
-  private function setOption($name, $value) {
-    if (!isset($_ENV['option'])) {
-      $_ENV['option'] = array();
-    }
-    $_ENV['option'][$name] = $value;
   }
 }
