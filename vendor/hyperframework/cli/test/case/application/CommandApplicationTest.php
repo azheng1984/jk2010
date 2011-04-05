@@ -11,7 +11,7 @@ class CommandApplicationTest extends CliTestCase {
   }
 
   protected function setUp() {
-    $_ENV['callback_trace'] = array();
+    $GLOBALS['TEST_CALLBACK_TRACE'] = array();
   }
 
   public function testStringConfig() {
@@ -34,7 +34,7 @@ class CommandApplicationTest extends CliTestCase {
       array('sub' => array('test' => 'TestCommand')),
       array('test', '--', '-test')
     );
-    $this->assertEquals(1, count($_ENV['callback_trace']));
+    $this->assertEquals(1, count($GLOBALS['TEST_CALLBACK_TRACE']));
     $this->verifyCallback('-test');
   }
 
@@ -45,19 +45,22 @@ class CommandApplicationTest extends CliTestCase {
 
   public function testTopLevelOption() {
     $this->runApplication(
-      array('option' => 'test', 'class' => 'TestCommand'), array('--test')
+      array('option' => 'top_level_option', 'class' => 'TestCommand'),
+      array('--top_level_option')
     );
-    $this->assertEquals(true, $_ENV['option']['test']);
+    $this->assertEquals(true, CommandContext::getOption('top_level_option'));
   }
 
   public function testSecondLevelOption() {
     $this->runApplication(
       array('sub' => array(
-        'test' => array('class' => 'TestCommand', 'option' => 'test')
+        'test' => array(
+          'class' => 'TestCommand', 'option' => 'second_level_optoin'
+        )
       )),
-      array('test', '--test')
+      array('test', '--second_level_optoin')
     );
-    $this->assertEquals(true, $_ENV['option']['test']);
+    $this->assertEquals(true, CommandContext::getOption('second_level_optoin'));
   }
 
   public function testUndefinedCommand() {
@@ -81,9 +84,9 @@ class CommandApplicationTest extends CliTestCase {
   }
 
   private function verifyCallback($argument = null) {
-    $this->assertEquals(1, count($_ENV['callback_trace']));
-    $trace = $_ENV['callback_trace'][0];
-    $this->assertEquals('TestCommand.execute', $trace['name']);
+    $this->assertEquals(1, count($GLOBALS['TEST_CALLBACK_TRACE']));
+    $trace = $GLOBALS['TEST_CALLBACK_TRACE'][0];
+    $this->assertEquals('TestCommand->execute', $trace['name']);
     $this->assertEquals($argument, $trace['argument']);
   }
 }
