@@ -1,7 +1,6 @@
 <?php
-class ImageAction {
-  public function GET() {
-    $_SERVER['REQUEST_MEDIA_TYPE'] = 'Image';
+class Image {
+  public function render() {
     if (!in_array($_GET['image_database_index'], $_ENV['image_database'])) {
       throw new NotFoundException;
     }

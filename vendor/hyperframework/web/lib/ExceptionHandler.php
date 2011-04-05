@@ -22,7 +22,7 @@ class ExceptionHandler {
   }
 
   private function reload($exception) {
-    if (!$exception instanceof ApplicationException) {
+    if ($exception instanceof ApplicationException === false) {
       $exception = new InternalServerErrorException;
     }
     $config = require CONFIG_PATH.'error_handler.config.php';
