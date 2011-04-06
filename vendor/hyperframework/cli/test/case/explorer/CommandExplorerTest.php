@@ -12,8 +12,7 @@ class CommandExplorerTest extends ExplorerTestCase {
 
   public function testRenderOptionList() {
     ExplorerContext::getExplorer('Command')->render(
-      null,
-      array(
+      null, array(
         'option' => array(
           'test-object-option' => 'TestOption',
           'test-flag-option',

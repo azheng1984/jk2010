@@ -6,7 +6,7 @@ class OptionArgumentParser {
     $this->reader = $reader;
   }
 
-  private function parse($standardLength) {
+  public function parse($standardLength) {
     $arguments = array();
     $count = 0;
     while ($count !== $standardLength) {

@@ -39,8 +39,12 @@ class OptionParser {
     if (in_array($name, $this->config, true)) {
       return array();
     }
-    if (isset($this->config[$name])) {
-      return $this->config[$name];
+    if (!isset($this->config[$name])) {
+      return;
     }
+    if (!is_array($this->config[$name])) {
+      return array('class' => $this->config[$name]);
+    }
+    return $this->config[$name];
   }
 }
