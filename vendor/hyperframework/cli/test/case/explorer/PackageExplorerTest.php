@@ -1,24 +1,11 @@
 <?php
-class PackageExplorerTest extends CliTestCase {
-  protected function tearDown() {
-    ExplorerContext::reset();
-  }
-
+class PackageExplorerTest extends ExplorerTestCase {
   public function testErrorSubConfig() {
-    $this->expectOutputString('');
     ExplorerContext::getExplorer('Package')->render(array('sub' => null));
+    $this->assertEquals(null, ob_get_contents());
   }
 
   public function testRenderList() {
-    $this->expectOutput(
-      'test-description',
-      '',
-      '[package]',
-      '  test-package',
-      '',
-      '[command]',
-      '  test-command'
-    );
     ExplorerContext::getExplorer('Package')->render(array(
       'description' => 'test-description',
       'sub' => array(
@@ -29,5 +16,14 @@ class PackageExplorerTest extends CliTestCase {
         'test-command' => null,
       )
     ));
+    $this->assertOutput(
+      'test-description',
+      '',
+      '[package]',
+      '  test-package',
+      '',
+      '[command]',
+      '  test-command'
+    );
   }
 }

@@ -1,9 +1,5 @@
 <?php
-class MethodExplorerTest extends CliTestCase {
-  protected function tearDown() {
-    ExplorerContext::reset();
-  }
-
+class MethodExplorerTest extends ExplorerTestCase {
   public function testNoClass() {
     $this->renderWithoutArgumentList(
       null, array()
@@ -21,20 +17,20 @@ class MethodExplorerTest extends CliTestCase {
   }
 
   public function testRenderArgumentList() {
-    $this->expectOutput(
-      'method-name(argument = NULL, ...)'
-    );
     ExplorerContext::getExplorer('Method')->render(
       'method-name', 'execute',  array('class' => 'TestCommand', 'infinite')
+    );
+    $this->assertOutput(
+      'method-name(argument = NULL, ...)'
     );
   }
 
   private function renderWithoutArgumentList($method, $config) {
-    $this->expectOutput(
-      'method-name'
-    );
     ExplorerContext::getExplorer('Method')->render(
       'method-name', $method, $config
+    );
+    $this->assertOutput(
+      'method-name'
     );
   }
 }

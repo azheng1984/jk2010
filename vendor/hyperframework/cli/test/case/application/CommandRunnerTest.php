@@ -11,13 +11,15 @@ class CommandRunnerTest extends CliTestCase {
   }
 
   public function testRenderPackageExplorer() {
-    $this->expectOutput(
-      '[command]',
-      '  test(argument = NULL)'
-    );
+    ob_start();
     self::$runner->run(
       array('sub' => array('test' => 'TestCommand')), null, null
     );
+    $this->assertOutput(
+      '[command]',
+      '  test(argument = NULL)'
+    );
+    ob_end_clean();
   }
 
   public function testClassIsNotDefined() {
