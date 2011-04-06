@@ -2,22 +2,33 @@
 class MethodExplorer {
   public function render($name, $method, $config) {
     $writer = ExplorerContext::getWriter();
-    if (!isset($config['class'])) {
+    $method = $this->getReflectionMethod($method, $config);
+    if ($method === null) {
       $writer->writeLine($name);
       return;
     }
-    $reflector = new ReflectionClass($config['class']);
-    if (!$reflector->hasMethod($method)) {
-      $writer->writeLine($name);
-      return;
-    }
-    $arguments = $reflector->getMethod($method)->getParameters();
-    $isInfinite = isset($config['infinite']);
+    $arguments = $method->getParameters();
+    $isInfinite = in_array('infinite', $config);
     $output = $name;
     if (count($arguments) !== 0 || $isInfinite) {
       $output .= '('.$this->getArgumentList($arguments, $isInfinite).')';
     }
     $writer->writeLine($output);
+  }
+
+  private function getReflectionMethod($method, $config) {
+    if (!isset($config['class'])) {
+      return;
+    }
+    try {
+      $reflector = new ReflectionClass($config['class']);
+    } catch (ReflectionException $exception) {
+      return;
+    }
+    if (!$reflector->hasMethod($method)) {
+      return;
+    }
+    return $reflector->getMethod($method);
   }
 
   private function getArgumentList($arguments, $isInfinite) {
