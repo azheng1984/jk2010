@@ -1,22 +1,14 @@
 <?php
 class OptionParserTest extends CliTestCase {
-  public function testNotAllowedOption() {
+  public function testParseNotAllowedOption() {
     $item = '--test';
     $this->setExpectedCommandException("Option '$item' not allowed");
-    $config = array();
-    $_SERVER['argv'] = array('index.php', $item);
-    $_SERVER['argc'] = 2;
-    $parser = new OptionParser(new CommandReader, $config);
-    $parser->parse();
+    $this->parse(null, array($item));
   }
 
-  public function testCombinedOption() {
+  public function testParseCombinedShorts() {
     $item = '-ab';
-    $config = array();
-    $_SERVER['argv'] = array('index.php', $item);
-    $_SERVER['argc'] = 2;
-    $reader = new CommandReader;
-    $parser = new OptionParser($reader, $config);
+    list($parser, $reader) = $this->getParser(null, array($item));
     $this->assertNull($parser->parse());
     foreach (array('a', 'b') as $short) {
       $reader->moveToNext();
@@ -24,33 +16,38 @@ class OptionParserTest extends CliTestCase {
     }
   }
 
-  public function testExpansion() {
-    $config = array('alias' => array('expansion' => 'target'));
-    $_SERVER['argv'] = array('index.php', '--alias');
-    $_SERVER['argc'] = 2;
-    $reader = new CommandReader;
-    $parser = new OptionParser($reader, $config);
+  public function testExpand() {
+    list($parser, $reader) = $this->getParser(
+      array('alias' => array('expansion' => 'target')), array('--alias')
+    );
     $this->assertNull($parser->parse());
     $reader->moveToNext();
     $this->assertEquals('target', $reader->get());
   }
 
-  public function testCreateFlagOption() {
-    $config = array('test');
-    $_SERVER['argv'] = array('index.php', '--test');
-    $_SERVER['argc'] = 2;
-    $reader = new CommandReader;
-    $parser = new OptionParser($reader, $config);
-    $this->assertEquals(array('test', true), $parser->parse());
+  public function testParseFlag() {
+    list($name, $value) = $this->parse(
+      array('test'), array('--test')
+    );
+    $this->assertTrue($value);
   }
 
-  public function testCreateObjectOption() {
-    $config = array('test' => 'TestOption');
-    $_SERVER['argv'] = array('index.php', '--test', 'argument');
-    $_SERVER['argc'] = 3;
-    $reader = new CommandReader;
-    $parser = new OptionParser($reader, $config);
-    list($name, $value) = $parser->parse();
+  public function testParseObject() {
+    list($name, $value) = $this->parse(
+      array('test' => 'TestOption'), array('--test', 'argument')
+    );
     $this->assertEquals('TestOption', get_class($value));
+  }
+
+  private function getParser($config, $arguments) {
+    $_SERVER['argc'] = array_unshift($arguments, 'index.php');
+    $_SERVER['argv'] = $arguments;
+    $reader = new CommandReader;
+    return array(new OptionParser($reader, $config), $reader);
+  }
+
+  private function parse($config, $arguments) {
+    list($parser, $reader) = $this->getParser($config, $arguments);
+    return $parser->parse();
   }
 }
