@@ -1,8 +1,8 @@
 <?php
 class OptionExplorerTest extends ExplorerTestCase {
   public function testRenderHead() {
-    ExplorerContext::getExplorer('Option')->render('test-option',
-      array('description' => 'test-option-description')
+    ExplorerContext::getExplorer('Option')->render(
+      'test-option', array('description' => 'test-option-description')
     );
     $this->assertOutput(
       '--test-option',
@@ -11,7 +11,8 @@ class OptionExplorerTest extends ExplorerTestCase {
   }
 
   public function testRenderShortList() {
-    ExplorerContext::getExplorer('Option')->render('test-option',
+    ExplorerContext::getExplorer('Option')->render(
+      'test-option',
       array('short' => array('first-short-option', 'second-short-option'))
     );
     $this->assertOutput(
@@ -20,8 +21,8 @@ class OptionExplorerTest extends ExplorerTestCase {
   }
 
   public function testRenderShort() {
-    ExplorerContext::getExplorer('Option')->render('test-option',
-      array('short' => 'short-option')
+    ExplorerContext::getExplorer('Option')->render(
+      'test-option', array('short' => 'short-option')
     );
     $this->assertOutput(
       '--test-option, -short-option'
