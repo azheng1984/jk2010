@@ -6,16 +6,18 @@ class PackageExplorerTest extends ExplorerTestCase {
   }
 
   public function testRenderList() {
-    ExplorerContext::getExplorer('Package')->render(array(
-      'description' => 'test-description',
-      'sub' => array(
-        'test-package' => array(
-          'option' => array('test-option'),
-          'sub' => array(),
-        ),
-        'test-command' => null,
+    ExplorerContext::getExplorer('Package')->render(
+      array(
+        'description' => 'test-description',
+        'sub' => array(
+          'test-package' => array(
+            'option' => array('test-option'),
+            'sub' => array(),
+          ),
+          'test-command' => null,
+        )
       )
-    ));
+    );
     $this->assertOutput(
       'test-description',
       '',
