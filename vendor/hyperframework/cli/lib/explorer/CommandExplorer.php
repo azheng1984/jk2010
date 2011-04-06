@@ -3,7 +3,9 @@ class CommandExplorer {
   public function render($name, $config) {
     $writer = ExplorerContext::getWriter();
     if ($name !== null) {
-      $this->renderMethod($name, $config);
+      ExplorerContext::getExplorer('Method')->render(
+        $name, 'execute', $config
+      );
       $writer->increaseIndentation();
     }
     if (isset($config['description'])) {
@@ -29,18 +31,8 @@ class CommandExplorer {
       if (!is_array($item)) {
         $item = array('class' => $item);
       }
-      $this->renderOption($name, $item);
+      ExplorerContext::getExplorer('Option')->render($name, $item);
     }
     $writer->decreaseIndentation();
-  }
-
-  private function renderMethod($name, $config) {
-    ExplorerContext::getExplorer('Method')->render(
-      $name, 'execute', $config
-    );
-  }
-
-  private function renderOption($name, $config) {
-    ExplorerContext::getExplorer('Option')->render($name, $config);
   }
 }

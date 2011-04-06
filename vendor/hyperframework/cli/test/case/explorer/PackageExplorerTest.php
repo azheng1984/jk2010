@@ -1,18 +1,12 @@
 <?php
 class PackageExplorerTest extends CliTestCase {
-  private static $explorer;
-
-  public static function setUpBeforeClass() {
-    self::$explorer = new PackageExplorer;
-  }
-
-  public static function tearDownAfterClass() {
+  protected function tearDown() {
     ExplorerContext::reset();
   }
 
   public function testErrorSubConfig() {
     $this->expectOutputString('');
-    self::$explorer->render(array('sub' => null));
+    ExplorerContext::getExplorer('Package')->render(array('sub' => null));
   }
 
   public function testRenderList() {
@@ -21,20 +15,18 @@ class PackageExplorerTest extends CliTestCase {
       '',
       '[package]',
       '  test-package',
-      '    test-package-description',
       '',
       '[command]',
-      '  test-command(argument = NULL)'
+      '  test-command'
     );
-    self::$explorer->render(array(
+    ExplorerContext::getExplorer('Package')->render(array(
       'description' => 'test-description',
       'sub' => array(
         'test-package' => array(
-          'description' => 'test-package-description',
           'option' => array('test-option'),
           'sub' => array(),
         ),
-        'test-command' => 'TestCommand',
+        'test-command' => null,
       )
     ));
   }

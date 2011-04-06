@@ -12,9 +12,9 @@ class PackageExplorer {
     }
   }
 
-  private function getList($subConfig) {
+  private function getList($config) {
     $result = array('package' => array(), 'command' => array());
-    foreach ($subConfig as $name => $item) {
+    foreach ($config as $name => $item) {
       if (!is_array($item)) {
         $item = array('class' => $item);
       }

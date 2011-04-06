@@ -1,16 +1,12 @@
 <?php
 class OptionExplorer {
   public function render($name, $config) {
-    $this->renderMethod($name, $config);
-    if (isset($config['description'])) {
-      $this->renderDescription($config['description']);
-    }
-  }
-
-  private function renderMethod($name, $config) {
     ExplorerContext::getExplorer('Method')->render(
       $this->getNameList($name, $config), '__construct', $config
     );
+    if (isset($config['description'])) {
+      $this->renderDescription($config['description']);
+    }
   }
 
   private function renderDescription($value) {
