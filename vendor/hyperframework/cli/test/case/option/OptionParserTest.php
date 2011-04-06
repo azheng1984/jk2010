@@ -1,6 +1,6 @@
 <?php
 class OptionParserTest extends CliTestCase {
-  public function testParseCombinedShorts() {
+  public function testParseGroupedShorts() {
     $item = '-ab';
     list($parser, $reader) = $this->getOptionParser(null, array($item));
     $this->assertNull($parser->parse());
