@@ -88,9 +88,9 @@ class CommandApplicationTest extends CliTestCase {
   }
 
   private function verifyCallback($argument = null) {
-    $this->assertEquals(1, count($GLOBALS['TEST_CALLBACK_TRACE']));
-    $trace = $GLOBALS['TEST_CALLBACK_TRACE'][0];
-    $this->assertEquals('TestCommand->execute', $trace['name']);
-    $this->assertEquals($argument, $trace['argument']);
+    $trace = $GLOBALS['TEST_CALLBACK_TRACE'];
+    $this->assertEquals(1, count($trace));
+    $this->assertEquals('TestCommand->execute', $trace[0]['name']);
+    $this->assertEquals($argument, $trace[0]['argument']);
   }
 }
