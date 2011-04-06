@@ -1,14 +1,8 @@
 <?php
 class OptionParserTest extends CliTestCase {
-  public function testParseNotAllowedOption() {
-    $item = '--test';
-    $this->setExpectedCommandException("Option '$item' not allowed");
-    $this->parse(null, array($item));
-  }
-
   public function testParseCombinedShorts() {
     $item = '-ab';
-    list($parser, $reader) = $this->getParser(null, array($item));
+    list($parser, $reader) = $this->getOptionParser(null, array($item));
     $this->assertNull($parser->parse());
     foreach (array('a', 'b') as $short) {
       $reader->moveToNext();
@@ -17,12 +11,18 @@ class OptionParserTest extends CliTestCase {
   }
 
   public function testExpand() {
-    list($parser, $reader) = $this->getParser(
+    list($parser, $reader) = $this->getOptionParser(
       array('alias' => array('expansion' => 'target')), array('--alias')
     );
     $this->assertNull($parser->parse());
     $reader->moveToNext();
     $this->assertEquals('target', $reader->get());
+  }
+
+  public function testParseNotAllowedOption() {
+    $item = '--test';
+    $this->setExpectedCommandException("Option '$item' not allowed");
+    $this->parse(null, array($item));
   }
 
   public function testParseFlag() {
@@ -39,7 +39,7 @@ class OptionParserTest extends CliTestCase {
     $this->assertEquals('TestOption', get_class($value));
   }
 
-  private function getParser($config, $arguments) {
+  private function getOptionParser($config, $arguments) {
     $_SERVER['argc'] = array_unshift($arguments, 'index.php');
     $_SERVER['argv'] = $arguments;
     $reader = new CommandReader;
@@ -47,7 +47,7 @@ class OptionParserTest extends CliTestCase {
   }
 
   private function parse($config, $arguments) {
-    list($parser, $reader) = $this->getParser($config, $arguments);
+    list($parser, $reader) = $this->getOptionParser($config, $arguments);
     return $parser->parse();
   }
 }
