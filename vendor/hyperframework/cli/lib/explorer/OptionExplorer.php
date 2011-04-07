@@ -18,10 +18,7 @@ class OptionExplorer {
   }
 
   private function getNameList($name, $config) {
-    $short = null;
-    if (isset($config['short'])) {
-      $short = $config['short'];
-    }
+    $short = $this->getShorts($config);
     if (is_array($short)) {
       $short = implode(', -', $short);
     }
@@ -29,5 +26,11 @@ class OptionExplorer {
       $short = ', -'.$short;
     }
     return '--'.$name.$short;
+  }
+
+  private function getShorts($config) {
+    if (isset($config['short'])) {
+      return $config['short'];
+    }
   }
 }

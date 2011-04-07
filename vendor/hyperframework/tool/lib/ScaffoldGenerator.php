@@ -15,15 +15,8 @@ class ScaffoldGenerator {
 
   private function generateFile($path, $content) {
     $this->generateDirectory(dirname($path));
-    $mode = null;
-    if (isset($content[0]) && is_int($content[0])) {
-      $mode = array_shift($content);
-    }
-    $output = null;
-    if ($content !== null) {
-      $output = implode(PHP_EOL, $content);
-    }
-    file_put_contents($path, $output);
+    $mode = $this->getMode($content);
+    file_put_contents($path, $this->getOutput($content));
     if ($mode !== null) {
       chmod($path, $mode);
     }
@@ -37,6 +30,18 @@ class ScaffoldGenerator {
       $mask = umask(0);
       mkdir($path, $mode, true);
       umask($mask);
+    }
+  }
+
+  private function getMode($content) {
+    if (isset($content[0]) && is_int($content[0])) {
+      return array_shift($content);
+    }
+  }
+
+  private function getOutput($content) {
+    if ($content !== null) {
+      return implode(PHP_EOL, $content);
     }
   }
 }
