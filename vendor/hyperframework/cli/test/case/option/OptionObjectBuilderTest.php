@@ -21,7 +21,7 @@ class OptionObjectBuilderTest extends CliTestCase {
     $this->verifyBuild('NoConstructorOption');
   }
 
-  public function testArgumentLengthNotMatched() {
+  public function testArgumentLengthError() {
     $this->setExpectedCommandException();
     $this->setInputArguments();
     $this->verifyBuild();

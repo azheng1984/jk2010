@@ -42,7 +42,7 @@ class CommandRunnerTest extends CliTestCase {
     );
   }
 
-  public function testArgumentLengthNotMatched() {
+  public function testArgumentLengthError() {
     $this->setExpectedCommandException();
     self::$runner->run(
       array('class' => 'TestCommand'),
