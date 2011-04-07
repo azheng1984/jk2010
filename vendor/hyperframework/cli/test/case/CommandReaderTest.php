@@ -17,9 +17,11 @@ class CommandReaderTest extends CliTestCase {
   public function testExpand() {
     $this->setInputArguments('alias', 'argument');
     $reader = new CommandReader;
-    $reader->expand('target');
+    $reader->expand(array('target', 'target_argument'));
     $reader->moveToNext();
     $this->assertEquals('target', $reader->get());
+    $reader->moveToNext();
+    $this->assertEquals('target_argument', $reader->get());
     $reader->moveToNext();
     $this->assertEquals('argument', $reader->get());
   }
