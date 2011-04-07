@@ -15,7 +15,7 @@ class OptionArgumentParserTest extends CliTestCase {
     $this->assertEquals(array('argument'), $this->parse(1));
   }
 
-  public function testParseUntilEndOfInputArguments() {
+  public function testParseUntilEndOfInput() {
     $this->setInputArguments('argument');
     $this->assertEquals(array('argument'), $this->parse(2));
   }

@@ -49,7 +49,7 @@ class OptionParserTest extends CliTestCase {
   public function testRethrowObjectBuildException() {
     $item = '--test';
     $this->setExpectedCommandException(
-      "Option '$item':Argument length error(Expected:1 Actual:0)"
+      "Option '$item':Argument length error(expected:1 actual:0)"
     );
     $this->setInputArguments($item);
     $this->parse(array('test' => 'TestOption'));

@@ -1,40 +1,42 @@
 <?php
 class ArgumentVerifier {
   public function verify($reflector, $length, $isInfinite) {
-    $count = $length;
-    $parameters = array();
-    if ($reflector !== null) {
-      $parameters = $reflector->getParameters();
-    }
-    foreach ($parameters as $parameter) {
-      if ($parameter->isOptional() && $count === 0) {
-        break;
-      }
-      --$count;
-    }
-    if ($count < 0 || ($count > 0 && $isInfinite === false)) {
-      $expectation = $this->getExpectation($parameters, $isInfinite);
+    $parameters = $this->getParameters($reflector);
+    $minimum = $this->getMinimum($parameters);
+    $maximum = count($parameters);
+    if ($length < $minimum || ($length > $maximum && $isInfinite === false)) {
+      $expectation = $this->getExpectation($minimum, $maximum, $isInfinite);
       throw new CommandException(
-        "Argument length error(Expected:$expectation Actual:$length)"
+        "Argument length error(expected:$expectation actual:$length)"
       );
     }
   }
 
-  private function getExpectation($parameters, $isInfinite) {
-    $optionalParameterLength = 0;
+  private function getParameters($reflector) {
+    if ($reflector !== null) {
+      return $reflector->getParameters();
+    }
+    return array();
+  }
+
+  private function getMinimum($parameters) {
+    $minimum = 0;
     foreach ($parameters as $parameter) {
       if ($parameter->isOptional()) {
-        ++$optionalParameterLength;
+        break;
       }
+      ++$minimum;
     }
-    $parameterLength = count($parameters);
-    $result = $parameterLength - $optionalParameterLength;
-    if ($optionalParameterLength !== 0) {
-      $result .= '-'.$parameterLength;
-    }
+    return $minimum;
+  }
+
+  private function getExpectation($minimum, $maximum, $isInfinite) {
     if ($isInfinite) {
-      $result .= ' or more';
+      $maximum = '...';
     }
-    return $result;
+    if ($minimum === $maximum) {
+      return $minimum;
+    }
+    return $minimum.'-'.$maximum;
   }
 }
