@@ -31,7 +31,7 @@ class CommandWriterTest extends CliTestCase {
   }
 
   public function testNegativeIndentation() {
-    $this->setExpectedCommandException("Indentation '-1' is invalide");
+    $this->setExpectedCommandException("Indentation '-1' is invalid");
     $this->writer->decreaseIndentation();
     $this->writer->writeLine('');
   }
