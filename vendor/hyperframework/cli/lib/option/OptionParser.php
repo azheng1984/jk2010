@@ -3,13 +3,11 @@ class OptionParser {
   private $reader;
   private $config;
   private $nameParser;
-  private $argumentParser;
 
   public function __construct($reader, $config) {
     $this->reader = $reader;
     $this->config = is_array($config) ? $config : array($config);
     $this->nameParser = new OptionNameParser($this->config);
-    $this->argumentParser = new OptionArgumentParser($reader);
   }
 
   public function parse() {
@@ -34,7 +32,7 @@ class OptionParser {
   }
 
   private function buildObject($item, $config) {
-    $objectBuilder = new OptionObjectBuilder($config, $this->argumentParser);
+    $objectBuilder = new OptionObjectBuilder($config, $this->reader);
     try {
       return $objectBuilder->build();
     } catch (CommandException $exception) {

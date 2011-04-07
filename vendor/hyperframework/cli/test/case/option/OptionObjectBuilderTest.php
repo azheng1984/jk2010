@@ -28,15 +28,13 @@ class OptionObjectBuilderTest extends CliTestCase {
   }
 
   public function testBuildOptionWithArgument() {
-    $this->setInputArguments('option_argument');
+    $this->setInputArguments('--option', 'option_argument');
     $this->verifyBuild();
   }
 
   private function verifyBuild($class = 'TestOption', $config = array()) {
     $config['class'] = $class;
-    $builder = new OptionObjectBuilder(
-      $config, new OptionArgumentParser(new CommandReader)
-    );
+    $builder = new OptionObjectBuilder($config, new CommandReader);
     $this->assertEquals($class, get_class($builder->build()));
   }
 }
