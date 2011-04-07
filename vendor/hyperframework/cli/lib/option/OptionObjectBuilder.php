@@ -1,11 +1,11 @@
 <?php
 class OptionObjectBuilder {
   private $config;
-  private $argumentParser;
+  private $argumentReader;
 
-  public function __construct($config, $argumentParser) {
+  public function __construct($config, $reader) {
     $this->config = $config;
-    $this->argumentParser = $argumentParser;
+    $this->argumentReader = new OptionArgumentReader($reader);
   }
 
   public function build() {
@@ -30,7 +30,7 @@ class OptionObjectBuilder {
     if ($constructor !== null) {
       $maximumLength = $this->getMaximumLength($constructor);
     }
-    $arguments = $this->argumentParser->parse($maximumLength);
+    $arguments = $this->argumentReader->read($maximumLength);
     $length = count($arguments);
     $verifier = new ArgumentVerifier;
     $verifier->verify($constructor, $length, $maximumLength === null);

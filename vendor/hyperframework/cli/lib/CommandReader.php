@@ -2,7 +2,7 @@
 class CommandReader {
   private $arguments;
   private $length;
-  private $index;
+  private $index = 1;
 
   public function __construct() {
     $this->length = $_SERVER['argc'];
