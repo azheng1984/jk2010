@@ -40,8 +40,7 @@ class OptionParserTest extends CliTestCase {
   }
 
   private function getOptionParser($config, $arguments) {
-    $_SERVER['argc'] = array_unshift($arguments, 'index.php');
-    $_SERVER['argv'] = $arguments;
+    $this->setArguments($arguments);
     $reader = new CommandReader;
     return array(new OptionParser($reader, $config), $reader);
   }
