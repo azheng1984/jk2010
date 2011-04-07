@@ -81,7 +81,7 @@ class CommandApplicationTest extends CliTestCase {
     file_put_contents(
       self::$configPath, '<?php return '.var_export($config, true).';'
     );
-    $this->setArguments($arguments);
+    call_user_func_array(array($this, 'setInputArguments'), $arguments);
     $app = new CommandApplication;
     $app->run();
   }

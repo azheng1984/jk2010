@@ -9,25 +9,38 @@ class OptionObjectBuilder {
   }
 
   public function build() {
-    $reflector = new ReflectionClass($this->config['class']);
-    $constructor = $reflector->getConstructor();
+    $reflector = $this->getConstructorReflection();
+    $arguments = $this->getArguments($reflector->getConstructor());
+    if (count($arguments) === 0) {
+      return new $this->config['class'];
+    }
+    return $reflector->newInstanceArgs($arguments);
+  }
+
+  private function getConstructorReflection() {
+    try {
+      return new ReflectionClass($this->config['class']);
+    } catch (ReflectionException $excpetion) {
+      throw new CommandException($excpetion->getMessage());
+    }
+  }
+
+  private function getArguments($constructor) {
     $standardLength = 0;
     if ($constructor !== null) {
-      $standardLength = $constructor->getNumberOfParameters();
-    }
-    if (in_array('infinite', $this->config, true)) {
-      $standardLength = null;
+      $standardLength = $this->getStandardLength($constructor);
     }
     $arguments = $this->argumentParser->parse($standardLength);
     $length = count($arguments);
-    if ($constructor === null && $length !== 0) {
-      throw new CommandException("Option argument not allowed(input:$length)");
-    }
-    if ($constructor === null) {
-      return $reflector->newInstance(); 
-    }
     $verifier = new ArgumentVerifier;
     $verifier->verify($constructor, $length, $standardLength === null);
-    return $reflector->newInstanceArgs($arguments);
+    return $arguments;
+  }
+
+  private function getStandardLength($constructor) {
+    if (in_array('infinite', $this->config, true)) {
+       return;
+    }
+    return $constructor->getNumberOfParameters();
   }
 }

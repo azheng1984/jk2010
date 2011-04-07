@@ -1,8 +1,8 @@
 <?php
 class OptionParserTest extends CliTestCase {
-  public function testParseGroupedShorts() {
-    $item = '-ab';
-    list($parser, $reader) = $this->getOptionParser(null, array($item));
+  public function testGroupedShorts() {
+    $this->setInputArguments('-ab');
+    list($parser, $reader) = $this->getOptionParser();
     $this->assertNull($parser->parse());
     foreach (array('a', 'b') as $short) {
       $reader->moveToNext();
@@ -10,43 +10,51 @@ class OptionParserTest extends CliTestCase {
     }
   }
 
-  public function testExpand() {
+  public function testExpansion() {
+    $this->setInputArguments('--alias');
     list($parser, $reader) = $this->getOptionParser(
-      array('alias' => array('expansion' => 'target')), array('--alias')
+      array('alias' => array('expansion' => 'target'))
     );
     $this->assertNull($parser->parse());
     $reader->moveToNext();
     $this->assertEquals('target', $reader->get());
   }
 
-  public function testParseNotAllowedOption() {
+  public function testNotAllowedOption() {
     $item = '--test';
     $this->setExpectedCommandException("Option '$item' not allowed");
-    $this->parse(null, array($item));
+    $this->setInputArguments('--test');
+    $this->parse();
   }
 
-  public function testParseFlag() {
-    list($name, $value) = $this->parse(
-      array('test'), array('--test')
-    );
+  public function testFlagOption() {
+    $this->setInputArguments('--test');
+    list($name, $value) = $this->parse(array('test'));
     $this->assertTrue($value);
   }
 
-  public function testParseObject() {
-    list($name, $value) = $this->parse(
-      array('test' => 'TestOption'), array('--test', 'argument')
-    );
+  public function testObjectOption() {
+    $this->setInputArguments('--test', 'argument');
+    list($name, $value) = $this->parse(array('test' => 'TestOption'));
     $this->assertEquals('TestOption', get_class($value));
   }
 
-  private function getOptionParser($config, $arguments) {
-    $this->setArguments($arguments);
+  public function testRethrowObjectBuildException() {
+    $item = '--test';
+    $this->setExpectedCommandException(
+      "Option '$item':Argument length error(Expected:1 Actual:0)"
+    );
+    $this->setInputArguments($item);
+    $this->parse(array('test' => 'TestOption'));
+  }
+
+  private function getOptionParser($config = null) {
     $reader = new CommandReader;
     return array(new OptionParser($reader, $config), $reader);
   }
 
-  private function parse($config, $arguments) {
-    list($parser, $reader) = $this->getOptionParser($config, $arguments);
+  private function parse($config = null) {
+    list($parser, $reader) = $this->getOptionParser($config);
     return $parser->parse();
   }
 }
