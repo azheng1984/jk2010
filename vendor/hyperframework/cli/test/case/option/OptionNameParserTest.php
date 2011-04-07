@@ -1,19 +1,19 @@
 <?php
 class OptionNameParserTest extends PHPUnit_Framework_TestCase {
   public function testParseFullName() {
-    $this->assertEquals(
+    $this->assertSame(
       'full_name_option', $this->parse('--full_name_option')
     );
   }
 
   public function testParseShort() {
-    $this->assertEquals(
+    $this->assertSame(
       'test', $this->parse('-t', array('test' => array('short' => 't')))
     );
   }
 
   public function testParseShortWithAlias() {
-    $this->assertEquals(
+    $this->assertSame(
       'test',
       $this->parse('-a', array('test' => array('short' => array('t', 'a'))))
     );
@@ -24,7 +24,7 @@ class OptionNameParserTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testGroupedShorts() {
-    $this->assertEquals(array('-a', '-b'), $this->parse('-ab'));
+    $this->assertSame(array('-a', '-b'), $this->parse('-ab'));
   }
 
   private function parse($item, $config = array()) {

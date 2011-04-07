@@ -6,7 +6,7 @@ class OptionParserTest extends CliTestCase {
     $this->assertNull($parser->parse());
     foreach (array('a', 'b') as $short) {
       $reader->moveToNext();
-      $this->assertEquals('-'.$short, $reader->get());
+      $this->assertSame('-'.$short, $reader->get());
     }
   }
 
@@ -17,7 +17,7 @@ class OptionParserTest extends CliTestCase {
     );
     $this->assertNull($parser->parse());
     $reader->moveToNext();
-    $this->assertEquals('target', $reader->get());
+    $this->assertSame('target', $reader->get());
   }
 
   public function testNotAllowedFullNameOption() {
@@ -43,7 +43,7 @@ class OptionParserTest extends CliTestCase {
   public function testObjectOption() {
     $this->setInputArguments('--test', 'argument');
     list($name, $value) = $this->parse(array('test' => 'TestOption'));
-    $this->assertEquals('TestOption', get_class($value));
+    $this->assertSame('TestOption', get_class($value));
   }
 
   public function testRethrowObjectBuildException() {

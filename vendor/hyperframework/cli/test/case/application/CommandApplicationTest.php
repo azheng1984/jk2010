@@ -34,7 +34,7 @@ class CommandApplicationTest extends CliTestCase {
       array('sub' => array('test' => 'TestCommand')),
       array('test', '--', '-test')
     );
-    $this->assertEquals(1, count($GLOBALS['TEST_CALLBACK_TRACE']));
+    $this->assertSame(1, count($GLOBALS['TEST_CALLBACK_TRACE']));
     $this->verifyCallback('-test');
   }
 
@@ -48,7 +48,7 @@ class CommandApplicationTest extends CliTestCase {
       array('option' => 'top_level_option', 'class' => 'TestCommand'),
       array('--top_level_option')
     );
-    $this->assertEquals(
+    $this->assertSame(
       true, $GLOBALS['TEST_CALLBACK_TRACE'][0]['option']['top_level_option']
     );
   }
@@ -62,7 +62,7 @@ class CommandApplicationTest extends CliTestCase {
       )),
       array('test', '--second_level_optoin')
     );
-    $this->assertEquals(true, 
+    $this->assertSame(true, 
       true, $GLOBALS['TEST_CALLBACK_TRACE'][0]['option']['second_level_optoin']
     );
   }
@@ -88,8 +88,8 @@ class CommandApplicationTest extends CliTestCase {
 
   private function verifyCallback($argument = null) {
     $trace = $GLOBALS['TEST_CALLBACK_TRACE'];
-    $this->assertEquals(1, count($trace));
-    $this->assertEquals('TestCommand->execute', $trace[0]['name']);
-    $this->assertEquals($argument, $trace[0]['argument']);
+    $this->assertSame(1, count($trace));
+    $this->assertSame('TestCommand->execute', $trace[0]['name']);
+    $this->assertSame($argument, $trace[0]['argument']);
   }
 }

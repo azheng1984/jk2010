@@ -35,6 +35,6 @@ class OptionObjectBuilderTest extends CliTestCase {
   private function verifyBuild($class = 'TestOption', $config = array()) {
     $config['class'] = $class;
     $builder = new OptionObjectBuilder($config, new CommandReader);
-    $this->assertEquals($class, get_class($builder->build()));
+    $this->assertSame($class, get_class($builder->build()));
   }
 }

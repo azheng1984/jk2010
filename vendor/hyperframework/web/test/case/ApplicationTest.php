@@ -31,15 +31,15 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
     try {
       self::$app->run();
     } catch (NotFoundException $exception) {
-      $this->assertEquals(0, count($GLOBALS['TEST_CALLBACK_TRACE']));
+      $this->assertSame(0, count($GLOBALS['TEST_CALLBACK_TRACE']));
       throw $exception;
     }
   }
 
   private function verifyCallback() {
-    $this->assertEquals(2, count($GLOBALS['TEST_CALLBACK_TRACE']));
-    $this->assertEquals('TestAction->GET', $GLOBALS['TEST_CALLBACK_TRACE'][0]);
-    $this->assertEquals(
+    $this->assertSame(2, count($GLOBALS['TEST_CALLBACK_TRACE']));
+    $this->assertSame('TestAction->GET', $GLOBALS['TEST_CALLBACK_TRACE'][0]);
+    $this->assertSame(
       'TestScreen->render', $GLOBALS['TEST_CALLBACK_TRACE'][1]
     );
   }

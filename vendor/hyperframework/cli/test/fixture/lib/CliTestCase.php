@@ -8,7 +8,7 @@ abstract class CliTestCase extends PHPUnit_Framework_TestCase {
 
   protected function assertOutput(/*...*/) {
     $output = $this->getOutput(func_get_args());
-    $this->assertEquals($output, ob_get_contents());
+    $this->assertSame($output, ob_get_contents());
   }
 
   protected function setExpectedCommandException($message = null) {
@@ -19,5 +19,6 @@ abstract class CliTestCase extends PHPUnit_Framework_TestCase {
     if (count($lines) !== 0) {
       return implode(PHP_EOL, $lines).PHP_EOL;
     }
+    return '';
   }
 }
