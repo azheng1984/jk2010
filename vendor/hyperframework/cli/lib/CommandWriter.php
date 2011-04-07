@@ -9,7 +9,7 @@ class CommandWriter {
       return;
     }
     if ($this->indentation < 0) {
-      throw new CommandException("Indentation '$this->indentation' is invalide");
+      throw new CommandException("Indentation '$this->indentation' is invalid");
     }
     if ($this->isInsertEmptyLine) {
       $this->insertEmptyLine();
