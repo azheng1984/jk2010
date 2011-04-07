@@ -19,7 +19,7 @@ class OptionParser {
       $this->reader->expand($name);
       return;
     }
-    $config = $this->getConfig($name);
+    $config = $this->getItemConfig($name);
     if ($config === null) {
       throw new CommandException("Option '$item' not allowed");
     }
@@ -27,11 +27,10 @@ class OptionParser {
       $this->reader->expand($config['expansion']);
       return;
     }
-    $value = true;
     if (isset($config['class'])) {
-      $value = $this->buildObject($item, $config);
+      return array($name, $this->buildObject($item, $config));
     }
-    return array($name, $value);
+    return array($name, true);
   }
 
   private function buildObject($item, $config) {
@@ -43,7 +42,10 @@ class OptionParser {
     }
   }
 
-  private function getConfig($name) {
+  private function getItemConfig($name) {
+    if ($name === null) {
+      return;
+    }
     if (in_array($name, $this->config, true)) {
       return array();
     }
