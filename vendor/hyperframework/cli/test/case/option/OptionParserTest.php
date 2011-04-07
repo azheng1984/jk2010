@@ -20,10 +20,17 @@ class OptionParserTest extends CliTestCase {
     $this->assertEquals('target', $reader->get());
   }
 
-  public function testNotAllowedOption() {
+  public function testNotAllowedFullNameOption() {
     $item = '--test';
     $this->setExpectedCommandException("Option '$item' not allowed");
     $this->setInputArguments('--test');
+    $this->parse();
+  }
+
+  public function testNotAllowedShortOption() {
+    $item = '-t';
+    $this->setExpectedCommandException("Option '$item' not allowed");
+    $this->setInputArguments('-t');
     $this->parse();
   }
 

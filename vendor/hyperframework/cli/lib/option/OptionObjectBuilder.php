@@ -26,18 +26,18 @@ class OptionObjectBuilder {
   }
 
   private function getArguments($constructor) {
-    $standardLength = 0;
+    $maximumLength = 0;
     if ($constructor !== null) {
-      $standardLength = $this->getStandardLength($constructor);
+      $maximumLength = $this->getMaximumLength($constructor);
     }
-    $arguments = $this->argumentParser->parse($standardLength);
+    $arguments = $this->argumentParser->parse($maximumLength);
     $length = count($arguments);
     $verifier = new ArgumentVerifier;
-    $verifier->verify($constructor, $length, $standardLength === null);
+    $verifier->verify($constructor, $length, $maximumLength === null);
     return $arguments;
   }
 
-  private function getStandardLength($constructor) {
+  private function getMaximumLength($constructor) {
     if (in_array('infinite', $this->config, true)) {
        return;
     }

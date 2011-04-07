@@ -34,7 +34,7 @@ class OptionNameParser {
 
   private function getFullName($short) {
     if (!isset($this->shorts[$short])) {
-      throw new CommandException("Option '$short' not allowed");
+      return;
     }
     return $this->shorts[$short];
   }

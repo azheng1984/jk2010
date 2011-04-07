@@ -6,18 +6,19 @@ class OptionArgumentParser {
     $this->reader = $reader;
   }
 
-  public function parse($standardLength) {
+  public function parse($maximumLength) {
     $arguments = array();
-    $count = 0;
-    while ($count !== $standardLength) {
+    for ($count = 0; $count !== $maximumLength; ++$count) {
       $this->reader->moveToNext();
       $item = $this->reader->get();
-      if ($item === null || ($item !== '-' && strpos($item, '-') === 0)) {
+      if ($item === null) {
+        break;
+      }
+      if (strpos($item, '-') === 0 && $item !== '-') {
         $this->reader->moveToPrevious();
         break;
       }
       $arguments[] = $item;
-      ++$count;
     }
     return $arguments;
   }
