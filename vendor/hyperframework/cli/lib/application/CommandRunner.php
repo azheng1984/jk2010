@@ -9,10 +9,7 @@ class CommandRunner {
   }
 
   private function execute($config, $options, $arguments) {
-    if (!isset($config['class'])) {
-      throw new CommandException('Class is not defined');
-    }
-    $reflector = $this->getReflector($config);
+    $reflector = $this->getReflectionMethod($config);
     $verifier = new ArgumentVerifier;
     $verifier->verify(
       $reflector, count($arguments), in_array('infinite', $config, true)
@@ -20,7 +17,10 @@ class CommandRunner {
     $reflector->invokeArgs(new $config['class']($options), $arguments);
   }
 
-  private function getReflector($config) {
+  private function getReflectionMethod($config) {
+    if (!isset($config['class'])) {
+      throw new CommandException('Class is not defined');
+    }
     try {
       return new ReflectionMethod($config['class'], 'execute');
     } catch (ReflectionException $exception) {
