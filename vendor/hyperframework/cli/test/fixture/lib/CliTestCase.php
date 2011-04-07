@@ -7,15 +7,17 @@ abstract class CliTestCase extends PHPUnit_Framework_TestCase {
   }
 
   protected function assertOutput(/*...*/) {
-    $output = null;
-    $lines = func_get_args();
-    if (count($lines) !== 0) {
-      $output = implode(PHP_EOL, func_get_args()).PHP_EOL;
-    }
+    $output = $this->getOutput(func_get_args());
     $this->assertEquals($output, ob_get_contents());
   }
 
   protected function setExpectedCommandException($message = null) {
     $this->setExpectedException('CommandException', $message, 1);
+  }
+
+  private function getOutput($lines) {
+    if (count($lines) !== 0) {
+      return implode(PHP_EOL, $lines).PHP_EOL;
+    }
   }
 }
