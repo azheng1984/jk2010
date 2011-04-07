@@ -26,7 +26,9 @@ class CommandWriterTest extends CliTestCase {
 
   public function testInsertEmptyLine() {
     $this->writer->writeLine();
+    $this->writer->writeLine();
     $this->writer->writeLine('');
+    $this->writer->writeLine();
     $this->assertOutput('', '');
   }
 
