@@ -44,7 +44,7 @@ class ArgumentVerifierTest extends CliTestCase {
     $this->verify(0, 'optionalArgument', true);
   }
 
-  public function testOptionalArgumentWithtestMoreThanExpectation() {
+  public function testOptionalArgumentWithMoreThanExpectation() {
     $this->setExpectedCommandException(
       'Argument length error(expected:1-2 actual:3)'
     );
