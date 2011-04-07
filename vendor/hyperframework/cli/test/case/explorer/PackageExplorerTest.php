@@ -2,7 +2,7 @@
 class PackageExplorerTest extends ExplorerTestCase {
   public function testErrorSubConfig() {
     ExplorerContext::getExplorer('Package')->render(array('sub' => null));
-    $this->assertEquals(null, ob_get_contents());
+    $this->assertOutput();
   }
 
   public function testRenderList() {
