@@ -5,10 +5,6 @@ class CommandRunner {
       ExplorerContext::getExplorer('Package')->render($config);
       return;
     }
-    $this->execute($config, $options, $arguments);
-  }
-
-  private function execute($config, $options, $arguments) {
     $reflector = $this->getReflectionMethod($config);
     $verifier = new ArgumentVerifier;
     $verifier->verify(
