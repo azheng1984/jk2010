@@ -32,8 +32,8 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
     file_put_contents($configPath, "<?php return array('Test' => 'test');");
     $command = new BuildCommand;
     $command->execute();
-    $this->assertEquals('TestBuilder.build', $_ENV['callback']);
-    $this->assertEquals('test', $_ENV['callback_argument']);
+    $this->assertSame('TestBuilder.build', $_ENV['callback']);
+    $this->assertSame('test', $_ENV['callback_argument']);
   }
 
   public function testRunWithoutConfig() {
@@ -41,8 +41,8 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
     file_put_contents($configPath, "<?php return array('Test');");
     $command = new BuildCommand;
     $command->execute();
-    $this->assertEquals('TestBuilder.build', $_ENV['callback']);
-    $this->assertEquals(null, $_ENV['callback_argument']);
+    $this->assertSame('TestBuilder.build', $_ENV['callback']);
+    $this->assertSame(null, $_ENV['callback_argument']);
   }
   
   /**
@@ -64,7 +64,7 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
     $command->execute();
     $path = TOOL_PATH.'test/fixture/cache/test.cache.php';
     $content = '<?php'.PHP_EOL."return 'test_data';";
-    $this->assertEquals($content, file_get_contents($path));
+    $this->assertSame($content, file_get_contents($path));
   }
 
   public function tearDown() {

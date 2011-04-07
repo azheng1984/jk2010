@@ -6,11 +6,11 @@ class ExplorerContextTest extends PHPUnit_Framework_TestCase {
 
   public function testCacheExplorer() {
     $explorer = ExplorerContext::getExplorer('Package');
-    $this->assertEquals($explorer, ExplorerContext::getExplorer('Package'));
+    $this->assertSame($explorer, ExplorerContext::getExplorer('Package'));
   }
 
   public function testCacheWriter() {
     $writer = ExplorerContext::getWriter();
-    $this->assertEquals($writer, ExplorerContext::getWriter());
+    $this->assertSame($writer, ExplorerContext::getWriter());
   }
 }

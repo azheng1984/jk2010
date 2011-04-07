@@ -6,8 +6,8 @@ class ViewProcessorTest extends PHPUnit_Framework_TestCase {
 
   public function testRenderView() {
     $this->process();
-    $this->assertEquals(1, count($GLOBALS['TEST_CALLBACK_TRACE']));
-    $this->assertEquals(
+    $this->assertSame(1, count($GLOBALS['TEST_CALLBACK_TRACE']));
+    $this->assertSame(
       'TestScreen->render', $GLOBALS['TEST_CALLBACK_TRACE'][0]
     );
   }
@@ -18,7 +18,7 @@ class ViewProcessorTest extends PHPUnit_Framework_TestCase {
     try {
       $this->process();
     } catch (UnsupportedMediaTypeException $exception) {
-      $this->assertEquals(0, count($GLOBALS['TEST_CALLBACK_TRACE']));
+      $this->assertSame(0, count($GLOBALS['TEST_CALLBACK_TRACE']));
       throw $exception;
     }
   }
