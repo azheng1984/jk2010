@@ -28,20 +28,21 @@ class CommandRunnerTest extends CliTestCase {
   }
 
   public function testClassDoesNotExist() {
-    $this->setExpectedCommandException('Class Unkonwn does not exist');
-    self::$runner->run(array('class' => 'Unkonwn'), null, null);
+    $class = 'Unknown';
+    $this->setExpectedCommandException("Class $class does not exist");
+    self::$runner->run(array('class' => $class), null, null);
   }
 
   public function testMethodDoesNotExist() {
     $this->setExpectedCommandException(
-      'Method MethodDoesNotExistCommand::execute() does not exist'
+      'Method NoMethodCommand::execute() does not exist'
     );
     self::$runner->run(
-      array('class' => 'MethodDoesNotExistCommand'), null, null
+      array('class' => 'NoMethodCommand'), null, null
     );
   }
 
-  public function testArgumentLengthIsNotMatched() {
+  public function testArgumentLengthNotMatched() {
     $this->setExpectedCommandException();
     self::$runner->run(
       array('class' => 'TestCommand'),

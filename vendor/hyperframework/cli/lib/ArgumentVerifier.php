@@ -2,7 +2,10 @@
 class ArgumentVerifier {
   public function verify($reflector, $length, $isInfinite) {
     $count = $length;
-    $parameters = $reflector->getParameters();
+    $parameters = array();
+    if ($reflector !== null) {
+      $parameters = $reflector->getParameters();
+    }
     foreach ($parameters as $parameter) {
       if ($parameter->isOptional() && $count === 0) {
         break;

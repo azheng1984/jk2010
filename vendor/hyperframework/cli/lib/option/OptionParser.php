@@ -29,10 +29,18 @@ class OptionParser {
     }
     $value = true;
     if (isset($config['class'])) {
-      $objectBuilder = new OptionObjectBuilder($config, $this->argumentParser);
-      $value = $objectBuilder->build();
+      $value = $this->buildObject($item, $config);
     }
     return array($name, $value);
+  }
+
+  private function buildObject($item, $config) {
+    $objectBuilder = new OptionObjectBuilder($config, $this->argumentParser);
+    try {
+      return $objectBuilder->build();
+    } catch (CommandException $exception) {
+      throw new CommandException("Option '$item':".$exception->getMessage());
+    }
   }
 
   private function getConfig($name) {
