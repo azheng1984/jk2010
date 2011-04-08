@@ -1,7 +1,11 @@
 <?php
 class BuildCommand {
   public function execute() {
-    foreach ($this->getConfig() as $name => $config) {
+    $config = $this->getConfig();
+    if (!is_array($config)) {
+      $config = array($config);
+    }
+    foreach ($config as $name => $config) {
       $result = $this->dispatch($name, $config);
       if ($result !== null) {
         $this->export($result);
@@ -24,9 +28,9 @@ class BuildCommand {
     if (is_int($name)) {
       list($name, $config) = array($config, null);
     }
-    $class = $name.'Builder';
-    $builder = new $class;
     try {
+      $reflector = new ReflectionClass($name.'Builder');
+      $builder = $reflector->newInstance();
       return $builder->build($config);
     } catch (Exception $exception) {
       throw new CommandException($exception->getMessage());

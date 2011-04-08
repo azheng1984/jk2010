@@ -1,7 +1,9 @@
 <?php
 class TestBuilder {
-  public function build($config = null) {
-    $_ENV['callback'] = __CLASS__.'.'.__FUNCTION__;
-    $_ENV['callback_argument'] = $config;
+  public function build($argument = null) {
+    $GLOBALS['TEST_CALLBACK_TRACE'][] = array(
+      'method' => __CLASS__.'->'.__FUNCTION__, 'argument' => $argument
+    );
+    return new TestCache;
   }
 }
