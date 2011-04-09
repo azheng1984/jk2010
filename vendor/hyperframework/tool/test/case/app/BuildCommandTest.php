@@ -1,21 +1,17 @@
 <?php
 class BuildCommandTest extends PHPUnit_Framework_TestCase {
   private static $backupFiles = array();
+  private static $testCachePath;
 
   public static function setUpBeforeClass() {
-    $targets = array('config/build.config.php', 'cache/class_loader.cache.php');
-    foreach ($targets as $target) {
-      $path = ROOT_PATH.$target;
-      self::$backupFiles[$path] = file_get_contents($path);
-      unlink($path);
-    }
+    self::backup();
+    self::$testCachePath = ROOT_PATH
+      .'cache'.DIRECTORY_SEPARATOR.'test.cache.php';
     $_SERVER['PWD'] = ROOT_PATH;
   }
 
   public static function tearDownAfterClass() {
-    foreach (self::$backupFiles as $path => $data) {
-      file_put_contents($path, $data);
-    }
+    self::restore();
   }
 
   protected function setUp() {
@@ -23,9 +19,8 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
   }
 
   protected function tearDown() {
-    $path = ROOT_PATH.'cache/test.cache.php';
-    if (is_file($path)) {
-      unlink($path);
+    if (is_file(self::$testCachePath)) {
+      unlink(self::$testCachePath);
     }
   }
 
@@ -66,10 +61,28 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
     $this->execute(array('ThrowException'));
   }
 
+  private static function backup() {
+    $targets = array(
+      'config'.DIRECTORY_SEPARATOR.'build.config.php',
+      'cache'.DIRECTORY_SEPARATOR.'class_loader.cache.php'
+    );
+    foreach ($targets as $target) {
+      $path = ROOT_PATH.$target;
+      self::$backupFiles[$path] = file_get_contents($path);
+      unlink($path);
+    }
+  }
+
+  private static function restore() {
+      foreach (self::$backupFiles as $path => $data) {
+      file_put_contents($path, $data);
+    }
+  }
+
   private function execute($config = array('Test')) {
     if ($config !== null) {
       file_put_contents(
-        $_SERVER['PWD'].'config/build.config.php',
+        $_SERVER['PWD'].'config'.DIRECTORY_SEPARATOR.'build.config.php',
         '<?php return '.var_export($config, true).';');
     }
     $command = new BuildCommand;
@@ -84,9 +97,6 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
     $this->assertSame(
       $argument, $GLOBALS['TEST_CALLBACK_TRACE'][0]['argument']
     );
-    $this->assertSame(
-      '<?php'.PHP_EOL."return 'data';",
-      file_get_contents(ROOT_PATH.'cache/test.cache.php')
-    );
+    $this->assertTrue(file_exists(self::$testCachePath));
   }
 }
