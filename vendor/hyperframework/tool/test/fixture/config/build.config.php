@@ -1,5 +1,4 @@
-<?php
-return array(
+<?php return array(
   'ClassLoader' => array(
     'app',
     'lib',
