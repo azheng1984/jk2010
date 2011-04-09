@@ -33,11 +33,7 @@ class CacheExplorerTest extends PHPUnit_Framework_TestCase {
   public function testNotNullResult () {
     $exporter = new CacheExporter;
     $exporter->export(new TestCache);
-    $this->assertSame(
-      '0777', substr(sprintf('%o', fileperms(self::$cacheFolder)), -4)
-    );
-    $this->assertSame(
-      '<?php'.PHP_EOL."return 'data';", file_get_contents(self::$testCachePath)
-    );
+    $cacheVerifier = new TestCacheVerifier;
+    $cacheVerifier->verify($this, self::$testCachePath);
   }
 }
