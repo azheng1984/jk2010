@@ -22,7 +22,7 @@ class CacheExporter {
   }
 
   private function createFolder() {
-    if (!file_exists($this->folder)) {
+    if (!is_dir($this->folder)) {
       mkdir($this->folder);
       chmod($this->folder, 0777);
     }
