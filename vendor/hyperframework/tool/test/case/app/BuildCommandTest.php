@@ -10,7 +10,6 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
     mkdir($_SERVER['PWD']);
     self::$cacheFolder = $_SERVER['PWD']
       .DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR;
-    mkdir(self::$cacheFolder);
     self::$configFolder = $_SERVER['PWD']
       .DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR;
     mkdir(self::$configFolder);
@@ -92,6 +91,7 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
     $this->assertSame(
       $argument, $GLOBALS['TEST_CALLBACK_TRACE'][0]['argument']
     );
-    $this->assertTrue(file_exists(self::$testCachePath));
+    $cacheVerifier = new TestCacheVerifier;
+    $cacheVerifier->verify($this, self::$testCachePath);
   }
 }
