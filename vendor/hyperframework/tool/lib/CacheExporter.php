@@ -1,6 +1,6 @@
 <?php
 class CacheExporter {
-  private $cacheFolder;
+  private $folder;
 
   public function export($result) {
     if ($result === null) {
@@ -8,23 +8,23 @@ class CacheExporter {
     }
     list($name, $cache) = $result->export();
     file_put_contents(
-      $this->getCachePath($name),
+      $this->getPath($name),
       '<?php'.PHP_EOL.'return '.var_export($cache, true).';'
     );
   }
 
-  private function getCachePath($name) {
-    if ($this->cacheFolder === null) {
-        $this->cacheFolder = 'cache';
-        $this->createCacheFolder();
+  private function getPath($name) {
+    if ($this->folder === null) {
+        $this->folder = 'cache';
+        $this->createFolder();
     }
-    return $this->cacheFolder.DIRECTORY_SEPARATOR.$name.'.cache.php';
+    return $this->folder.DIRECTORY_SEPARATOR.$name.'.cache.php';
   }
 
-  private function createCacheFolder() {
-    if (!file_exists($this->cacheFolder)) {
-      mkdir($this->cacheFolder);
-      chmod($this->cacheFolder, 0777);
+  private function createFolder() {
+    if (!file_exists($this->folder)) {
+      mkdir($this->folder);
+      chmod($this->folder, 0777);
     }
   }
 }
