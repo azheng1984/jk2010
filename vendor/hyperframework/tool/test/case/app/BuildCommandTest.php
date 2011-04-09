@@ -1,17 +1,28 @@
 <?php
 class BuildCommandTest extends PHPUnit_Framework_TestCase {
   private static $backupFiles = array();
+  private static $cacheFolder;
+  private static $configFolder;
   private static $testCachePath;
+  private static $testConfigPath;
 
   public static function setUpBeforeClass() {
-    self::backup();
-    self::$testCachePath = ROOT_PATH
-      .'cache'.DIRECTORY_SEPARATOR.'test.cache.php';
-    $_SERVER['PWD'] = ROOT_PATH;
+    $_SERVER['PWD'] = ROOT_PATH.'tmp';
+    mkdir($_SERVER['PWD']);
+    self::$cacheFolder = $_SERVER['PWD']
+      .DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR;
+    mkdir(self::$cacheFolder);
+    self::$configFolder = $_SERVER['PWD']
+      .DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR;
+    mkdir(self::$configFolder);
+    self::$testCachePath = self::$cacheFolder.'test.cache.php';
+    self::$testConfigPath = self::$configFolder.'build.config.php';
   }
 
   public static function tearDownAfterClass() {
-    self::restore();
+    rmdir(self::$cacheFolder);
+    rmdir(self::$configFolder);
+    rmdir($_SERVER['PWD']);
   }
 
   protected function setUp() {
@@ -19,6 +30,9 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
   }
 
   protected function tearDown() {
+    if (is_file(self::$testConfigPath)) {
+      unlink(self::$testConfigPath);
+    }
     if (is_file(self::$testCachePath)) {
       unlink(self::$testCachePath);
     }
@@ -61,29 +75,11 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
     $this->execute(array('ThrowException'));
   }
 
-  private static function backup() {
-    $targets = array(
-      'config'.DIRECTORY_SEPARATOR.'build.config.php',
-      'cache'.DIRECTORY_SEPARATOR.'class_loader.cache.php'
-    );
-    foreach ($targets as $target) {
-      $path = ROOT_PATH.$target;
-      self::$backupFiles[$path] = file_get_contents($path);
-      unlink($path);
-    }
-  }
-
-  private static function restore() {
-      foreach (self::$backupFiles as $path => $data) {
-      file_put_contents($path, $data);
-    }
-  }
-
   private function execute($config = array('Test')) {
     if ($config !== null) {
       file_put_contents(
-        $_SERVER['PWD'].'config'.DIRECTORY_SEPARATOR.'build.config.php',
-        '<?php return '.var_export($config, true).';');
+        self::$testConfigPath, '<?php return '.var_export($config, true).';'
+      );
     }
     $command = new BuildCommand;
     $command->execute();
