@@ -15,7 +15,7 @@ class CacheExporter {
 
   private function getPath($name) {
     if ($this->folder === null) {
-        $this->folder = 'cache';
+        $this->folder = $_SERVER['PWD'].DIRECTORY_SEPARATOR.'cache';
         $this->createFolder();
     }
     return $this->folder.DIRECTORY_SEPARATOR.$name.'.cache.php';
