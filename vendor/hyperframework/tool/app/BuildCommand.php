@@ -10,7 +10,7 @@ class BuildCommand {
     foreach ($config as $name => $config) {
       $result = $this->dispatch($name, $config);
       if ($result !== null) {
-        $this->export($result);
+        $this->exportCache($result);
       }
     }
   }
@@ -39,7 +39,7 @@ class BuildCommand {
     }
   }
 
-  private function export($result) {
+  private function exportCache($result) {
     list($name, $cache) = $result->export();
     file_put_contents(
       $this->getCachePath($name),
