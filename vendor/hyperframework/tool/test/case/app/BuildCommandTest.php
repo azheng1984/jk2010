@@ -1,6 +1,5 @@
 <?php
 class BuildCommandTest extends PHPUnit_Framework_TestCase {
-  private static $backupFiles = array();
   private static $cacheFolder;
   private static $configFolder;
   private static $testCachePath;
