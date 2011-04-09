@@ -90,7 +90,7 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testExportCache() {
-    rmdir( ROOT_PATH.'cache');
+    rmdir(ROOT_PATH.'cache');
     $configPath = $_SERVER['PWD'].'config/build.config.php';
     file_put_contents($configPath, "<?php return array('Test');");
     chdir(ROOT_PATH);

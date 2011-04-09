@@ -1,5 +1,7 @@
 <?php
 class BuildCommand {
+  private $cacheFolder;
+
   public function execute() {
     $config = $this->getConfig();
     if (!is_array($config)) {
@@ -38,15 +40,25 @@ class BuildCommand {
   }
 
   private function export($result) {
-    $folder = 'cache';
-    if (!file_exists($folder)) {
-      mkdir($folder);
-      chmod($folder, 0777);
-    }
     list($name, $cache) = $result->export();
-    $path = $folder.DIRECTORY_SEPARATOR.$name.'.cache.php';
     file_put_contents(
-      $path, '<?php'.PHP_EOL.'return '.var_export($cache, true).';'
+      $this->getCachePath($name),
+      '<?php'.PHP_EOL.'return '.var_export($cache, true).';'
     );
+  }
+
+  private function getCachePath($name) {
+    if ($this->cacheFolder === null) {
+        $this->cacheFolder = 'cache';
+        $this->createCacheFolder();
+    }
+    return $this->cacheFolder.DIRECTORY_SEPARATOR.$name.'.cache.php';
+  }
+
+  private function createCacheFolder() {
+    if (!file_exists($this->cacheFolder)) {
+      mkdir($this->cacheFolder);
+      chmod($this->cacheFolder, 0777);
+    }
   }
 }
