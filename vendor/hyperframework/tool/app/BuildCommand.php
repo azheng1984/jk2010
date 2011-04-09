@@ -1,17 +1,13 @@
 <?php
 class BuildCommand {
-  private $cacheFolder;
-
   public function execute() {
     $config = $this->getConfig();
     if (!is_array($config)) {
       $config = array($config);
     }
+    $exporter = new CacheExporter;
     foreach ($config as $name => $config) {
-      $result = $this->dispatch($name, $config);
-      if ($result !== null) {
-        $this->exportCache($result);
-      }
+      $exporter->export($this->dispatch($name, $config));
     }
   }
 
@@ -36,29 +32,6 @@ class BuildCommand {
       return $builder->build($config);
     } catch (Exception $exception) {
       throw new CommandException($exception->getMessage());
-    }
-  }
-
-  private function exportCache($result) {
-    list($name, $cache) = $result->export();
-    file_put_contents(
-      $this->getCachePath($name),
-      '<?php'.PHP_EOL.'return '.var_export($cache, true).';'
-    );
-  }
-
-  private function getCachePath($name) {
-    if ($this->cacheFolder === null) {
-        $this->cacheFolder = 'cache';
-        $this->createCacheFolder();
-    }
-    return $this->cacheFolder.DIRECTORY_SEPARATOR.$name.'.cache.php';
-  }
-
-  private function createCacheFolder() {
-    if (!file_exists($this->cacheFolder)) {
-      mkdir($this->cacheFolder);
-      chmod($this->cacheFolder, 0777);
     }
   }
 }
