@@ -16,12 +16,12 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
   public function testPathWithParameter() {
     $_SERVER['REQUEST_URI'] = '/?key=value';
     self::$app->run();
-    $this->verifyCallback();
+    $this->verify();
   }
 
   public function testRewritePath() {
     self::$app->run('/');
-    $this->verifyCallback();
+    $this->verify();
   }
 
   public function testPathNotFound() {
@@ -36,7 +36,7 @@ class ApplicationTest extends PHPUnit_Framework_TestCase {
     }
   }
 
-  private function verifyCallback() {
+  private function verify() {
     $this->assertSame(2, count($GLOBALS['TEST_CALLBACK_TRACE']));
     $this->assertSame('TestAction->GET', $GLOBALS['TEST_CALLBACK_TRACE'][0]);
     $this->assertSame(
