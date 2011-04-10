@@ -1,5 +1,5 @@
 <?php
-class CacheExplorerTest extends PHPUnit_Framework_TestCase {
+class CacheExporterTest extends PHPUnit_Framework_TestCase {
   private static $cacheFolder;
   private static $testCachePath;
 
