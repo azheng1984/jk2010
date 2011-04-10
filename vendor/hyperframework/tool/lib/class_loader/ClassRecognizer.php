@@ -6,10 +6,10 @@ class ClassRecognizer {
     $this->cache = $cache;
   }
 
-  public function execute($fileName, $relativePath, $rootPath) {
+  public function execute($fileName, $relativeFolder, $rootFolder) {
     $class = $this->getClass($fileName);
     if ($class !== null) {
-      $this->cache->append($class, $relativePath, $rootPath);
+      $this->cache->append($class, $relativeFolder, $rootFolder);
     }
   }
 

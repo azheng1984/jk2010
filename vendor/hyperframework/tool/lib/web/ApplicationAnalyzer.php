@@ -8,16 +8,16 @@ class ApplicationAnalyzer {
     $this->cache = $cache;
   }
 
-  public function execute($fileName, $relativePath, $rootPath) {
+  public function execute($fileName, $relativeFolder, $rootFolder) {
     foreach ($this->analyzers as $name => $analyzer) {
-      $fullPath = $rootPath;
-      if ($relativePath !== null) {
-        $fullPath .= DIRECTORY_SEPARATOR.$relativePath;
+      $fullPath = $rootFolder;
+      if ($relativeFolder !== null) {
+        $fullPath .= DIRECTORY_SEPARATOR.$relativeFolder;
       }
       $fullPath .= DIRECTORY_SEPARATOR.$fileName;
       $cache = $analyzer->execute($fileName, $fullPath);
       if ($cache !== null) {
-        $this->cache->append(DIRECTORY_SEPARATOR.$relativePath, $name, $cache);
+        $this->cache->append(DIRECTORY_SEPARATOR.$relativeFolder, $name, $cache);
         return;
       }
     }

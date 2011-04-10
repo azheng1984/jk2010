@@ -10,27 +10,28 @@ class ClassLoaderCache {
     return array('class_loader', $this->cache);
   }
 
-  public function append($class, $relativePath, $rootPath) {
+  public function append($class, $relativeFolder, $rootFolder) {
     if (isset($this->cache[0][$class])) {
-      throw new Exception("Conflict Class '$class'");
+      print_r($this->cache);
+      throw new Exception("Conflict Class '$class'(file:$rootFolder $relativeFolder)");
     }
-    $this->cache[0][$class] = $this->getIndex($rootPath, $relativePath);
+    $this->cache[0][$class] = $this->getIndex($rootFolder, $relativeFolder);
   }
 
-  private function getIndex($rootPath, $relativePath) {
-    if ($rootPath === null && $relativePath === null) {
+  private function getIndex($rootFolder, $relativeFolder) {
+    if ($rootFolder === null && $relativeFolder === null) {
       return true;
     }
-    if ($rootPath === null) {
-      return $this->getFolderIndex($relativePath, $relativePath);
+    if ($rootFolder === null) {
+      return $this->getFolderIndex($relativeFolder, $relativeFolder);
     }
-    $rootPathIndex = $this->getFolderIndex($rootPath, array($rootPath));
-    if ($relativePath === null) {
-      return $rootPathIndex;
+    $rootFolderIndex = $this->getFolderIndex($rootFolder, array($rootFolder));
+    if ($relativeFolder === null) {
+      return $rootFolderIndex;
     }
-    $fullPath = $rootPath.DIRECTORY_SEPARATOR.$relativePath;
+    $fullPath = $rootFolder.DIRECTORY_SEPARATOR.$relativeFolder;
     return $this->getFolderIndex(
-      $fullPath, array($relativePath, $rootPathIndex)
+      $fullPath, array($relativeFolder, $rootFolderIndex)
     );
   }
 
