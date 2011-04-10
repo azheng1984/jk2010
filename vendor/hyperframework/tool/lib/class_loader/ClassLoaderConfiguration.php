@@ -11,7 +11,7 @@ class ClassLoaderConfiguration {
         list($key, $value) = array($value, null);
       }
       if ($this->isFullPath($key)) {
-        $this->combine($this->format($key), null, $value);
+        $this->combine($key, null, $value);
         continue;
       }
       $this->combine(null, $key, $value);
@@ -24,6 +24,9 @@ class ClassLoaderConfiguration {
       $this->values[] = array($rootPath, $this->format($relativePath));
       return;
     }
+    if (!is_array($children)) {
+      $children = array($children);
+    }
     foreach ($children as $key => $value) {
       if (is_int($key)) {
         list($key, $value) = array($value, null);
@@ -31,7 +34,7 @@ class ClassLoaderConfiguration {
       if ($relativePath !== null) {
         $key = $relativePath.DIRECTORY_SEPARATOR.$key;
       }
-      $this->combine($rootPath, $key, value);
+      $this->combine($rootPath, $key, $value);
     }
   }
 
