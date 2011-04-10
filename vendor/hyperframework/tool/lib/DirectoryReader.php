@@ -9,12 +9,10 @@ class DirectoryReader {
   public function read($rootPath, $relativePath = null, $isRecursive = true) {
     $fullPath = $this->getFullPath($rootPath, $relativePath);
     if (!file_exists($fullPath)) {
-      return;
+      throw new Exception("Path '$fullPath.' does not exist");
     }
     if (is_file($fullPath)) {
-      $this->handler->execute(
-        basename($fullPath), $this->getDirectoryPath($relativePath), $rootPath
-      );
+      $this->dispatch($fullPath, $relativePath, $rootPath);
       return;
     }
     if (!$isRecursive) {
@@ -37,6 +35,15 @@ class DirectoryReader {
     }
   }
 
+  private function dispatch($fullPath, $relativePath, $rootPath) {
+    if ($rootPath === $fullPath) {
+      $rootPath = dirname($rootPath);
+    }
+    $this->handler->execute(
+      basename($fullPath), $this->getDirectory($relativePath), $rootPath
+    );
+  }
+
   private function getFullPath($rootPath, $relativePath) {
     $fullPath = $rootPath;
     if ($rootPath === null) {
@@ -48,7 +55,7 @@ class DirectoryReader {
     return $fullPath;
   }
 
-  private function getDirectoryPath($path) {
+  private function getDirectory($path) {
     if ($path === null) {
       return;
     }
