@@ -4,11 +4,15 @@ class ClassLoaderConfigurationTest extends PHPUnit_Framework_TestCase {
     $this->extract('first_level', array(array(null, 'first_level')));
   }
 
-  public function testFullPath() {
+  public function testUnixFullPath() {
     $this->extract(
       DIRECTORY_SEPARATOR.'first_level',
       array(array(DIRECTORY_SEPARATOR.'first_level', null))
     );
+  }
+
+  public function testWindowsFullPath() {
+    $this->extract('c:\\',array(array('c:\\', null)));
   }
 
   public function testSecondLevelPath() {
@@ -35,10 +39,6 @@ class ClassLoaderConfigurationTest extends PHPUnit_Framework_TestCase {
         array(null, 'first_level'.DIRECTORY_SEPARATOR.'second_level_second')
       )
     );
-  }
-
-  public function testWindowsFullPath() {
-    $this->extract('c:\\',array(array('c:\\', null)));
   }
 
   public function testFormatRelativePath() {
