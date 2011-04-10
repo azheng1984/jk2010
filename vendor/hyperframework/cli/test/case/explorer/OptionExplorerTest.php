@@ -2,30 +2,30 @@
 class OptionExplorerTest extends ExplorerTestCase {
   public function testRenderHead() {
     ExplorerContext::getExplorer('Option')->render(
-      'test-option', array('description' => 'test-option-description')
+      'option', array('description' => 'option_description')
     );
     $this->assertOutput(
-      '--test-option',
-      '  test-option-description'
+      '--option',
+      '  option_description'
     );
   }
 
   public function testRenderShortList() {
     ExplorerContext::getExplorer('Option')->render(
-      'test-option',
-      array('short' => array('first-short-option', 'second-short-option'))
+      'option',
+      array('short' => array('first_short_option', 'second_short_option'))
     );
     $this->assertOutput(
-      '--test-option, -first-short-option, -second-short-option'
+      '--option, -first_short_option, -second_short_option'
     );
   }
 
   public function testRenderShort() {
     ExplorerContext::getExplorer('Option')->render(
-      'test-option', array('short' => 'short-option')
+      'option', array('short' => 'short_option')
     );
     $this->assertOutput(
-      '--test-option, -short-option'
+      '--option, -short_option'
     );
   }
 }

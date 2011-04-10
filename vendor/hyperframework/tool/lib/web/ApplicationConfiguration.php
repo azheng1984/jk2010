@@ -1,6 +1,9 @@
 <?php
 class ApplicationConfiguration {
   public function extract($config) {
+    if (!is_array($config)) {
+      $config = array($config);
+    }
     $analyzers = array();
     foreach ($config as $key => $value) {
       if (is_int($key)) {

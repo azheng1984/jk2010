@@ -2,11 +2,11 @@
 class CommandExplorerTest extends ExplorerTestCase {
   public function testRenderHead() {
     ExplorerContext::getExplorer('Command')->render(
-      'test-command', array('description' => 'test-description')
+      'command', array('description' => 'description')
     );
     $this->assertOutput(
-      'test-command',
-      '  test-description'
+      'command',
+      '  description'
     );
   }
 
@@ -14,15 +14,15 @@ class CommandExplorerTest extends ExplorerTestCase {
     ExplorerContext::getExplorer('Command')->render(
       null, array(
         'option' => array(
-          'test-object-option' => 'TestOption',
-          'test-flag-option',
+          'object_option' => 'TestOption',
+          'flag_option',
         ),
       )
     );
     $this->assertOutput(
       '[option]',
-      '  --test-object-option(argument)',
-      '  --test-flag-option'
+      '  --object_option(argument)',
+      '  --flag_option'
     );
   }
 }
