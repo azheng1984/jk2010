@@ -51,6 +51,10 @@ class ArgumentVerifierTest extends CliTestCase {
     $this->verify(3);
   }
 
+  private function setExpectedArgumentException($message) {
+    
+  }
+
   private function verify(
     $length = 0, $method = 'optionalArgument', $isInfinite = false
   ) {
