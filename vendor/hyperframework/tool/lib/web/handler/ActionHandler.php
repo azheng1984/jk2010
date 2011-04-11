@@ -1,11 +1,11 @@
 <?php
 class ActionHandler {
-  public function handle($fileName, $fullPath) {
-    $postfix = 'Action.php';
-    if (substr($fileName, -(strlen($postfix))) !== $postfix) {
+  public function handle($class, $fullPath) {
+    $postfix = 'Action';
+    if (substr($class, -(strlen($postfix))) !== $postfix) {
       return;
     }
-    return $this->getCache(preg_replace('/.php$/', '', $fileName), $fullPath);
+    return $this->getCache($class, $fullPath);
   }
 
   private function getCache($class, $fullPath) {
@@ -14,7 +14,7 @@ class ActionHandler {
     foreach ($reflectors as $reflector) {
       $method = $reflector->getName();
       if (!preg_match('/^[A-Z]+$/', $method)) {
-        throw new Exception("Invalid action method '$method' in $fullPath");
+        throw new Exception("Invalid action method '$method' in '$fullPath'");
       }
       $cache['method'][] = $method;
     }

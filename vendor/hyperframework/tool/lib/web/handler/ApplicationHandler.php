@@ -1,20 +1,23 @@
 <?php
 class ApplicationHandler {
-  private $handler;
+  private $handlers;
   private $cache;
 
   public function __construct($handlers, $cache) {
-    $this->handler = $handlers;
+    $this->handlers = $handlers;
     $this->cache = $cache;
   }
 
   public function handle($fullPath, $relativeFolder) {
-    foreach ($this->handler as $name => $handler) {
-      $cache = $handler->handle(basename($fullPath), $fullPath);
+    $classRecognizer = new ClassRecognizer;
+    $class = $classRecognizer->getClass(basename($fullPath));
+    if ($class === null) {
+      return;
+    }
+    foreach ($this->handlers as $name => $handler) {
+      $cache = $handler->handle($class, $fullPath);
       if ($cache !== null) {
-        $this->cache->append(
-          DIRECTORY_SEPARATOR.$relativeFolder, $name, $cache
-        );
+        $this->cache->append($relativeFolder, $name, $cache);
         return;
       }
     }
