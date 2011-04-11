@@ -10,10 +10,6 @@ class ApplicationCache {
     $this->cache = array($processors);
   }
 
-  public function export() {
-    return array('application', $this->cache);
-  }
-
   public function append($path, $name, $cache) {
     if (DIRECTORY_SEPARATOR !== '/') {
       $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
@@ -22,5 +18,9 @@ class ApplicationCache {
       $this->cache[$path] = array();
     }
     $this->cache[$path][$name] = $cache;
+  }
+
+  public function export() {
+    return array('application', $this->cache);
   }
 }
