@@ -19,20 +19,20 @@ class DirectoryReaderTest extends PHPUnit_Framework_TestCase {
   public function testReadRootPath() {
     $this->reader->read(ROOT_PATH.'lib/test_directory_reader/.');
     $this->reader->read(ROOT_PATH.'lib/test_directory_reader', '.');
-    $this->verifyHandlerCount(2);
+    $this->verifyCallbackCount(2);
     $this->verifyFullPathFirstLevelFileArgument();
     $this->verifyFullPathFirstLevelFileArgument(1);
   }
 
   public function testReadRelativePath() {
     $this->reader->read(null, 'lib/test_directory_reader/.');
-    $this->verifyHandlerCount(1);
+    $this->verifyCallbackCount(1);
     $this->verifyArgument();
   }
 
   public function testReadRecursively() {
     $this->reader->read(null, 'lib/test_directory_reader');
-    $this->verifyHandlerCount(2);
+    $this->verifyCallbackCount(2);
     $this->verifyArgument();
     $this->verifyArgument(
       1, 'SecondLevelFile.php', 'lib/test_directory_reader/second_level'
@@ -43,11 +43,11 @@ class DirectoryReaderTest extends PHPUnit_Framework_TestCase {
     $this->reader->read(
       ROOT_PATH.'lib/test_directory_reader/FirstLevelFile.php'
     );
-    $this->verifyHandlerCount(1);
+    $this->verifyCallbackCount(1);
     $this->verifyFullPathFirstLevelFileArgument();
   }
 
-  private function verifyHandlerCount($expected) {
+  private function verifyCallbackCount($expected) {
     $this->assertSame($expected, count($GLOBALS['TEST_CALLBACK_TRACE']));
   }
 
@@ -55,7 +55,8 @@ class DirectoryReaderTest extends PHPUnit_Framework_TestCase {
     $index = 0,
     $fileName = 'FirstLevelFile.php',
     $relativeFolder = 'lib/test_directory_reader',
-    $rootFolder = null) {
+    $rootFolder = null
+  ) {
     $this->assertSame(
       array(
         'file_name' => $fileName,
