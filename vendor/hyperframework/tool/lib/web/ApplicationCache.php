@@ -16,9 +16,18 @@ class ApplicationCache {
       $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
     }
     if (!isset($this->cache[$path])) {
-      $this->cache[$path][$name] = array();
+      $this->cache[$path] = array($name => $cache);
+      return;
     }
-    $this->cache[$path][$name] += $cache;
+    if (!is_array($this->cache[$path][$name])) {
+      $this->cache[$path][$name] = array($this->cache[$path][$name]);
+    }
+    if (!is_array($cache)) {
+      $cache = array($cache);
+    }
+    $this->cache[$path][$name] = array_merge(
+      $this->cache[$path][$name], $cache
+    );
   }
 
   public function export() {

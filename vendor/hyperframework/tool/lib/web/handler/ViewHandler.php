@@ -2,7 +2,7 @@
 class ViewHandler {
   private $types;
 
-  public function __construct($types = array()) {
+  public function __construct($types) {
     if (!is_array($types)) {
       $types = array($types);
     }
