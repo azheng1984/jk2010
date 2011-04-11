@@ -19,20 +19,20 @@ class DirectoryReaderTest extends PHPUnit_Framework_TestCase {
   public function testReadRootPath() {
     $this->reader->read(ROOT_PATH.'lib/test_directory_reader/.');
     $this->reader->read(ROOT_PATH.'lib/test_directory_reader', '.');
-    $this->assertSame(2, count($GLOBALS['TEST_CALLBACK_TRACE']));
+    $this->verifyHandlerCount(2);
     $this->verifyFullPathFirstLevelFileArgument();
     $this->verifyFullPathFirstLevelFileArgument(1);
   }
 
   public function testReadRelativePath() {
     $this->reader->read(null, 'lib/test_directory_reader/.');
-    $this->assertSame(1, count($GLOBALS['TEST_CALLBACK_TRACE']));
+    $this->verifyHandlerCount(1);
     $this->verifyArgument();
   }
 
   public function testReadRecursively() {
     $this->reader->read(null, 'lib/test_directory_reader');
-    $this->assertSame(2, count($GLOBALS['TEST_CALLBACK_TRACE']));
+    $this->verifyHandlerCount(2);
     $this->verifyArgument();
     $this->verifyArgument(
       1, 'SecondLevelFile.php', 'lib/test_directory_reader/second_level'
@@ -43,14 +43,12 @@ class DirectoryReaderTest extends PHPUnit_Framework_TestCase {
     $this->reader->read(
       ROOT_PATH.'lib/test_directory_reader/FirstLevelFile.php'
     );
-    $this->assertSame(1, count($GLOBALS['TEST_CALLBACK_TRACE']));
+    $this->verifyHandlerCount(1);
     $this->verifyFullPathFirstLevelFileArgument();
   }
 
-  private function verifyFullPathFirstLevelFileArgument($index = 0) {
-    $this->verifyArgument(
-      $index, 'FirstLevelFile.php', null, ROOT_PATH.'lib/test_directory_reader'
-    );
+  private function verifyHandlerCount($expected) {
+    $this->assertSame($expected, count($GLOBALS['TEST_CALLBACK_TRACE']));
   }
 
   private function verifyArgument(
@@ -65,6 +63,12 @@ class DirectoryReaderTest extends PHPUnit_Framework_TestCase {
         'root_folder' => $rootFolder,
       ),
       $GLOBALS['TEST_CALLBACK_TRACE'][$index]['argument']
+    );
+  }
+
+  private function verifyFullPathFirstLevelFileArgument($index = 0) {
+    $this->verifyArgument(
+      $index, 'FirstLevelFile.php', null, ROOT_PATH.'lib/test_directory_reader'
     );
   }
 }
