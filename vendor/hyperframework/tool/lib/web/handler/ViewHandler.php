@@ -1,6 +1,6 @@
 <?php
 class ViewHandler {
-  private $types = array();
+  private $types;
 
   public function __construct($types = array()) {
     if (!is_array($types)) {
