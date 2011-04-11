@@ -7,8 +7,8 @@ class ClassRecognizationHandler {
   }
 
   public function handle($fullPath, $relativeFolder, $rootFolder) {
-    $classRecognizer = new ClassRecognizer;
-    $class = $classRecognizer->getClass(basename($fullPath));
+    $recognizer = new ClassRecognizer;
+    $class = $recognizer->getClass(basename($fullPath));
     if ($class !== null) {
       $this->cache->append($class, $fullPath, $relativeFolder, $rootFolder);
     }

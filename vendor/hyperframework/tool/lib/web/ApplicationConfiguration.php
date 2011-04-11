@@ -7,14 +7,38 @@ class ApplicationConfiguration {
     $handlers = array();
     foreach ($config as $key => $value) {
       if (is_int($key)) {
-        $class = $value.'Handler';
-        $handlers[$value] = new $class;
-        continue;
+        list($key, $value) = array($value, null);
       }
-      $class = $key.'Handler';
-      //TODO: check config argument is matched
-      $handlers[$key] = new $class($value);
+      $handlers[$key] = $this->getHandler($key, $value);
     }
     return $handlers;
+  }
+
+  private function getHandler($name, $config) {
+    $class = $name.'Handler';
+    $hasParameter = $this->isAcceptConfig($class);
+    if ($hasParameter === true && $config !== null) {
+      throw new Exception("Application handler '$name' do not accept config");
+    }
+    if ($config === null) {
+      return new $class;
+    }
+    return new $class($config);
+  }
+
+  private function isAcceptConfig($class) {
+    $reflector = new ReflectionClass($class);
+    $constructor = $reflector->getConstructor();
+    if ($constructor === null) {
+      return false;
+    }
+    $parameters = $constructor->getParameters();
+    if (count($parameters) === 0) {
+      return false;
+    }
+    if ($parameters[0]->isOptional()) {
+      return 'optional';
+    }
+    return true;
   }
 }
