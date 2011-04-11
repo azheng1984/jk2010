@@ -8,3 +8,4 @@ require HYPERFRAMEWORK_PATH.'class_loader'.DIRECTORY_SEPARATOR
   .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';
 $classLoader = new ClassLoader();
 $classLoader->run();
+$_SERVER['PWD'] = TEST_PATH.'fixture';

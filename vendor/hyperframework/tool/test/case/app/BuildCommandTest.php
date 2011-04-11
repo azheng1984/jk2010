@@ -6,6 +6,7 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
   private static $testConfigPath;
 
   public static function setUpBeforeClass() {
+    $_SERVER['OLD_PWD'] = $_SERVER['PWD'];
     $_SERVER['PWD'] = ROOT_PATH.'tmp';
     mkdir($_SERVER['PWD']);
     self::$cacheFolder = $_SERVER['PWD']
@@ -21,6 +22,7 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
     rmdir(self::$cacheFolder);
     rmdir(self::$configFolder);
     rmdir($_SERVER['PWD']);
+    $_SERVER['PWD'] = $_SERVER['OLD_PWD'];
   }
 
   protected function setUp() {
