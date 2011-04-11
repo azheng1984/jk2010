@@ -27,15 +27,17 @@ class DirectoryReaderTest extends PHPUnit_Framework_TestCase {
   public function testReadRelativePath() {
     $this->reader->read(null, 'lib/test_directory_reader/.');
     $this->verifyCallbackCount(1);
-    $this->verifyArgument();
+    $this->verifyRelativePathFirstLevelFileArgument();
   }
 
   public function testReadRecursively() {
     $this->reader->read(null, 'lib/test_directory_reader');
     $this->verifyCallbackCount(2);
-    $this->verifyArgument();
+    $this->verifyRelativePathFirstLevelFileArgument();
     $this->verifyArgument(
-      1, 'SecondLevelFile.php', 'lib/test_directory_reader/second_level'
+      1,
+      ROOT_PATH.'lib/test_directory_reader/second_level/SecondLevelFile.php',
+      'lib/test_directory_reader/second_level'
     );
   }
 
@@ -51,25 +53,33 @@ class DirectoryReaderTest extends PHPUnit_Framework_TestCase {
     $this->assertSame($expected, count($GLOBALS['TEST_CALLBACK_TRACE']));
   }
 
-  private function verifyArgument(
-    $index = 0,
-    $fileName = 'FirstLevelFile.php',
-    $relativeFolder = 'lib/test_directory_reader',
-    $rootFolder = null
-  ) {
-    $this->assertSame(
-      array(
-        'file_name' => $fileName,
-        'relative_folder' => $relativeFolder,
-        'root_folder' => $rootFolder,
-      ),
-      $GLOBALS['TEST_CALLBACK_TRACE'][$index]['argument']
+  private function verifyRelativePathFirstLevelFileArgument($index = 0) {
+    $this->verifyArgument(
+      $index,
+      ROOT_PATH.'lib/test_directory_reader/FirstLevelFile.php',
+      'lib/test_directory_reader'
     );
   }
 
   private function verifyFullPathFirstLevelFileArgument($index = 0) {
     $this->verifyArgument(
-      $index, 'FirstLevelFile.php', null, ROOT_PATH.'lib/test_directory_reader'
+      $index,
+      ROOT_PATH.'lib/test_directory_reader/FirstLevelFile.php',
+      null,
+      ROOT_PATH.'lib/test_directory_reader'
+    );
+  }
+
+  private function verifyArgument(
+    $index = 0, $fullPath ,$relativeFolder, $rootFolder = null
+  ) {
+    $this->assertSame(
+      array(
+        'full_path' => $fullPath,
+        'relative_folder' => $relativeFolder,
+        'root_folder' => $rootFolder,
+      ),
+      $GLOBALS['TEST_CALLBACK_TRACE'][$index]['argument']
     );
   }
 }

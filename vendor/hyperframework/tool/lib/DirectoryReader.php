@@ -40,7 +40,9 @@ class DirectoryReader {
       $rootPath = dirname($rootPath);
     }
     $this->handler->handle(
-      basename($fullPath), $this->getDirectory($relativePath), $rootPath
+      $fullPath,
+      $this->getDirectory($relativePath),
+      $rootPath
     );
   }
 
