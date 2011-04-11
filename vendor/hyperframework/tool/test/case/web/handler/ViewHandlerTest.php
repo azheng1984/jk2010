@@ -4,6 +4,10 @@ class ViewHandlerTest extends PHPUnit_Framework_TestCase {
     $handler = new ViewHandler(array('Screen'));
   }
 
+  public function testInvalidType() {
+    
+  }
+
   public function testNoRenderingMethod() {
     
   }
