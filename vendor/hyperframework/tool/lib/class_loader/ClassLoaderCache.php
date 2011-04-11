@@ -8,8 +8,7 @@ class ClassLoaderCache {
     if (isset($this->cache[0][$class])) {
       throw new Exception(
         "Conflict class '$class':".PHP_EOL
-          .$fullPath.PHP_EOL
-          .$this->fullPathCache[$class]
+          .$this->fullPathCache[$class].PHP_EOL.$fullPath
       );
     }
     $this->cache[0][$class] = $this->getIndex($rootFolder, $relativeFolder);
@@ -34,9 +33,9 @@ class ClassLoaderCache {
     if ($relativeFolder === null) {
       return $rootFolderIndex;
     }
-    $fullPath = $rootFolder.DIRECTORY_SEPARATOR.$relativeFolder;
     return $this->getFolderIndex(
-      $fullPath, array($relativeFolder, $rootFolderIndex)
+      $rootFolder.DIRECTORY_SEPARATOR.$relativeFolder,
+      array($relativeFolder, $rootFolderIndex)
     );
   }
 

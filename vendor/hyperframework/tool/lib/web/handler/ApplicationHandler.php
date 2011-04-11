@@ -8,7 +8,7 @@ class ApplicationHandler {
     $this->cache = $cache;
   }
 
-  public function handle($fullPath, $relativeFolder, $rootFolder) {
+  public function handle($fullPath, $relativeFolder) {
     foreach ($this->handler as $name => $handler) {
       $cache = $handler->execute(basename($fullPath), $fullPath);
       if ($cache !== null) {
