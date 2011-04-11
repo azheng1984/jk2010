@@ -6,7 +6,7 @@ class ViewHandler {
     $this->types = $types;
   }
 
-  public function execute($fileName) {
+  public function handle($fileName) {
     $cache = null;
     foreach ($this->types as $type) {
       $postfix = $type.'.php';

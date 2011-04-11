@@ -10,7 +10,7 @@ class ApplicationHandler {
 
   public function handle($fullPath, $relativeFolder) {
     foreach ($this->handler as $name => $handler) {
-      $cache = $handler->execute(basename($fullPath), $fullPath);
+      $cache = $handler->handle(basename($fullPath), $fullPath);
       if ($cache !== null) {
         $this->cache->append(
           DIRECTORY_SEPARATOR.$relativeFolder, $name, $cache

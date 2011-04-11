@@ -5,9 +5,9 @@ class ApplicationHandlerTest extends PHPUnit_Framework_TestCase {
     $cache = new ApplicationCache($handlers);
     $handler = new ApplicationHandler($handlers, $cache);
     $handler->handle(
-      ROOT_PATH.'app'.DIRECTORY_SEPARATOR.'TestAction.php', 'app'
+      ROOT_PATH.'app'.DIRECTORY_SEPARATOR.'TestAction.php', null
     );
     $result = $cache->export();
-    $this->assertTrue(count($result[1]) > 0);
+    $this->assertTrue(isset($result[1]['/']));
   }
 }
