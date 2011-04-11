@@ -2,9 +2,9 @@
 class ApplicationCache {
   private $cache;
 
-  public function __construct($analyzers) {
+  public function __construct($handlers) {
     $processors = array();
-    foreach ($analyzers as $key => $value) {
+    foreach ($handlers as $key => $value) {
       $processors[$key] = $key.'Processor';
     }
     $this->cache = array($processors);
