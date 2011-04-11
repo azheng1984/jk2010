@@ -16,8 +16,7 @@ class ApplicationConfiguration {
 
   private function getHandler($name, $config) {
     $class = $name.'Handler';
-    $hasParameter = $this->isAcceptConfig($class);
-    if ($hasParameter === true && $config !== null) {
+    if ($this->isConfigAcceptable($class) === false && $config !== null) {
       throw new Exception("Application handler '$name' do not accept config");
     }
     if ($config === null) {
@@ -26,7 +25,7 @@ class ApplicationConfiguration {
     return new $class($config);
   }
 
-  private function isAcceptConfig($class) {
+  private function isConfigAcceptable($class) {
     $reflector = new ReflectionClass($class);
     $constructor = $reflector->getConstructor();
     if ($constructor === null) {
