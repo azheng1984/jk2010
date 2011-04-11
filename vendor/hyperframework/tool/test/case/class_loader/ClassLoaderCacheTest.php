@@ -12,7 +12,7 @@ class ClassLoaderCacheTest extends PHPUnit_Framework_TestCase {
     $cache->append('Test', DIRECTORY_SEPARATOR.'Duplication.php', null, null);
   }
 
-  public function testCurrentPath() {
+  public function testCurrentWorkingFolder() {
     $this->append(
       DIRECTORY_SEPARATOR.'Test.php',null, null, array(array('Test' => true))
     );
