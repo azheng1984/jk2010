@@ -12,7 +12,6 @@ class ClassLoaderCache {
 
   public function append($class, $relativeFolder, $rootFolder) {
     if (isset($this->cache[0][$class])) {
-      print_r($this->cache);
       throw new Exception("Conflict Class '$class'(file:$rootFolder $relativeFolder)");
     }
     $this->cache[0][$class] = $this->getIndex($rootFolder, $relativeFolder);

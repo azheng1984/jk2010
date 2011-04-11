@@ -4,17 +4,17 @@ class ApplicationConfiguration {
     if (!is_array($config)) {
       $config = array($config);
     }
-    $analyzers = array();
+    $handlers = array();
     foreach ($config as $key => $value) {
       if (is_int($key)) {
-        $class = $value.'Analyzer';
-        $analyzers[$value] = new $class;
+        $class = $value.'Handler';
+        $handlers[$value] = new $class;
         continue;
       }
-      $class = $key.'Analyzer';
+      $class = $key.'Handler';
       //TODO: check config argument is matched
-      $analyzers[$key] = new $class($value);
+      $handlers[$key] = new $class($value);
     }
-    return $analyzers;
+    return $handlers;
   }
 }

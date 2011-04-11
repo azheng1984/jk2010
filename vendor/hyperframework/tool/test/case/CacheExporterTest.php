@@ -4,6 +4,7 @@ class CacheExporterTest extends PHPUnit_Framework_TestCase {
   private static $testCachePath;
 
   public static function setUpBeforeClass() {
+    $_SERVER['OLD_PWD'] = $_SERVER['PWD'];
     $_SERVER['PWD'] = ROOT_PATH.'tmp';
     mkdir($_SERVER['PWD']);
     self::$cacheFolder = $_SERVER['PWD'].DIRECTORY_SEPARATOR.'cache';
@@ -13,6 +14,7 @@ class CacheExporterTest extends PHPUnit_Framework_TestCase {
 
   public static function tearDownAfterClass() {
     rmdir($_SERVER['PWD']);
+    $_SERVER['PWD'] = $_SERVER['OLD_PWD'];
   }
 
   protected function tearDown() {
