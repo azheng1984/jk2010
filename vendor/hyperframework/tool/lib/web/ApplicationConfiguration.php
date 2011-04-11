@@ -16,8 +16,12 @@ class ApplicationConfiguration {
 
   private function getHandler($name, $config) {
     $class = $name.'Handler';
-    if ($this->isConfigAcceptable($class) === false && $config !== null) {
+    $isConfigAcceptable = $this->isConfigAcceptable($class);
+    if ($isConfigAcceptable === false && $config !== null) {
       throw new Exception("Application handler '$name' do not accept config");
+    }
+    if ($isConfigAcceptable === true && $config === null) {
+      throw new Exception("Application handler '$name' must contain config");
     }
     if ($config === null) {
       return new $class;
