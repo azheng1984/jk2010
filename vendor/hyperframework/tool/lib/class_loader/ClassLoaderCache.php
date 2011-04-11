@@ -2,19 +2,25 @@
 class ClassLoaderCache {
   private $cache = array(array(), array());
   private $folders = array();
+  private $fullPathCache = array();
+
+  public function append($class, $fullPath, $relativeFolder, $rootFolder) {
+    if (isset($this->cache[0][$class])) {
+      throw new Exception(
+        "Conflict class '$class':".PHP_EOL
+          .$fullPath.PHP_EOL
+          .$this->fullPathCache[$class]
+      );
+    }
+    $this->cache[0][$class] = $this->getIndex($rootFolder, $relativeFolder);
+    $this->fullPathCache[$class] = $fullPath;
+  }
 
   public function export() {
     if (count($this->cache[1]) === 0) {
       unset($this->cache[1]);
     }
     return array('class_loader', $this->cache);
-  }
-
-  public function append($class, $relativeFolder, $rootFolder) {
-    if (isset($this->cache[0][$class])) {
-      throw new Exception("Conflict Class '$class'(file:$rootFolder $relativeFolder)");
-    }
-    $this->cache[0][$class] = $this->getIndex($rootFolder, $relativeFolder);
   }
 
   private function getIndex($rootFolder, $relativeFolder) {

@@ -4,7 +4,7 @@ class TestDirectoryReaderHandler {
     $GLOBALS['TEST_CALLBACK_TRACE'][] = array(
       'name' => __CLASS__.'->'.__FUNCTION__,
       'argument' => array (
-        'file_name' => $fileName,
+        'full_path' => $fileName,
         'relative_folder' => $relativeFolder,
         'root_folder' => $rootFolder
       ),
