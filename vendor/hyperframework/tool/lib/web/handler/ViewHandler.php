@@ -12,10 +12,6 @@ class ViewHandler {
 
   public function handle($class, $fullPath) {
     foreach ($this->types as $type) {
-      $length = strlen($type);
-      if ($length === 0) {
-        continue;
-      }
       if (substr($class, -strlen($type)) === $type) {
         $this->verifyRenderingMethod($class, $fullPath);
         return array($type => $class);
