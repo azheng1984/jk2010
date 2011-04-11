@@ -1,6 +1,6 @@
 <?php
 class ClassLoaderCacheTest extends PHPUnit_Framework_TestCase {
-  public function testConflictClass() {
+  public function testConflict() {
     $this->setExpectedException(
       'Exception',
       "Conflict class 'Test':".PHP_EOL
