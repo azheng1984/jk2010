@@ -4,11 +4,11 @@ class ClassLoaderCacheTest extends PHPUnit_Framework_TestCase {
     $this->setExpectedException(
       'Exception',
       "Conflict class 'Test':".PHP_EOL
-        .DIRECTORY_SEPARATOR.'Original.php'.PHP_EOL
+        .DIRECTORY_SEPARATOR.'Test.php'.PHP_EOL
         .DIRECTORY_SEPARATOR.'Duplication.php'
     );
     $cache = new ClassLoaderCache;
-    $cache->append('Test', DIRECTORY_SEPARATOR.'Original.php', null, null);
+    $cache->append('Test', DIRECTORY_SEPARATOR.'Test.php', null, null);
     $cache->append('Test', DIRECTORY_SEPARATOR.'Duplication.php', null, null);
   }
 
