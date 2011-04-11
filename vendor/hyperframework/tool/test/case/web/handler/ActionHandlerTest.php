@@ -1,26 +1,26 @@
 <?php
 class ActionHandlerTest extends PHPUnit_Framework_TestCase {
   public function testNotAction() {
-    $this->assertNull($this->handle('Test.php'));
+    $this->assertNull($this->handle('Test', 'Test.php'));
   }
 
   public function testPublicLowerCaseMethod() {
     $fullPath = ROOT_PATH.'app/TestPublicLowerCaseMethodAction.php';
     $this->setExpectedException(
-      'Exception', "Invalid action method 'get' in $fullPath"
+      'Exception', "Invalid action method 'get' in '$fullPath'"
     );
-    $this->handle($fullPath);
+    $this->handle('TestPublicLowerCaseMethodAction', $fullPath);
   }
 
   public function testUpperCaseMethod() {
     $this->assertSame(
       array('class' => 'TestAction', 'method' => array('GET')),
-      $this->handle(ROOT_PATH.'app/TestAction.php')
+      $this->handle('TestAction', ROOT_PATH.'app/TestAction.php')
     );
   }
 
-  private function handle($fullPath) {
+  private function handle($class, $fullPath) {
     $handler = new ActionHandler;
-    return $handler->handle(basename($fullPath), $fullPath);
+    return $handler->handle($class, $fullPath);
   }
 }
