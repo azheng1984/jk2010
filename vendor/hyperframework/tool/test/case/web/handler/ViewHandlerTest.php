@@ -26,6 +26,10 @@ class ViewHandlerTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testCache() {
+    $this->assertSame(
+      array('Screen' => 'TestScreen'),
+      $this->handle('TestScreen', ROOT_PATH.'app/TestScreen.php')
+    );
   }
 
   private function handle($class, $fullPath, $type = 'Screen') {
