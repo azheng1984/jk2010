@@ -12,7 +12,7 @@ class ActionHandlerTest extends PHPUnit_Framework_TestCase {
     $this->handle('TestPublicLowerCaseMethodAction', $fullPath);
   }
 
-  public function testUpperCaseMethod() {
+  public function testPublicUpperCaseMethod() {
     $this->assertSame(
       array('class' => 'TestAction', 'method' => array('GET')),
       $this->handle('TestAction', ROOT_PATH.'app/TestAction.php')
