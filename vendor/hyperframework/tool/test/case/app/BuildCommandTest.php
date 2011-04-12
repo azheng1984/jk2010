@@ -1,19 +1,14 @@
 <?php
-class BuildCommandTest extends PHPUnit_Framework_TestCase {
+class BuildCommandTest extends FileGenerationTestCase {
   private static $cacheFolder;
   private static $configFolder;
   private static $testCachePath;
   private static $testConfigPath;
 
   public static function setUpBeforeClass() {
-    $_SERVER['OLD_PWD'] = $_SERVER['PWD'];
-    $_SERVER['PWD'] = ROOT_PATH.'tmp';
-    mkdir($_SERVER['PWD']);
-    chdir($_SERVER['PWD']);
-    self::$cacheFolder = $_SERVER['PWD']
-      .DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR;
-    self::$configFolder = $_SERVER['PWD']
-      .DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR;
+    parent::setUpBeforeClass();
+    self::$cacheFolder = 'cache'.DIRECTORY_SEPARATOR;
+    self::$configFolder = 'config'.DIRECTORY_SEPARATOR;
     mkdir(self::$configFolder);
     self::$testCachePath = self::$cacheFolder.'test.cache.php';
     self::$testConfigPath = self::$configFolder.'build.config.php';
@@ -22,9 +17,7 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
   public static function tearDownAfterClass() {
     rmdir(self::$cacheFolder);
     rmdir(self::$configFolder);
-    chdir($_SERVER['OLD_PWD']);
-    rmdir($_SERVER['PWD']);
-    $_SERVER['PWD'] = $_SERVER['OLD_PWD'];
+    parent::tearDownAfterClass();
   }
 
   protected function setUp() {
@@ -43,7 +36,7 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
   public function testConfigNotFound() {
     $this->setExpectedException(
       'CommandException',
-      "Can't find the 'config".DIRECTORY_SEPARATOR."build.config.php'"
+      "Can't find the '".self::$testConfigPath."'"
     );
     $this->execute(null);
   }
