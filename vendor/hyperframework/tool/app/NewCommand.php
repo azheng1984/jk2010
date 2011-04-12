@@ -1,7 +1,7 @@
 <?php
 class NewCommand {
   public function execute($type, $hyperframeworkPath = HYPERFRAMEWORK_PATH) {
-    $configPath = CONFIG_PATH.'new/'.$type.'.config.php';
+    $configPath = CONFIG_PATH.'new'.DIRECTORY_SEPARATOR.$type.'.config.php';
     if (!file_exists($configPath)) {
       throw new CommandException("Application type '$type' is invalid");
     }
@@ -11,13 +11,17 @@ class NewCommand {
   }
 
   private function initialize($hyperframeworkPath) {
-    $_ENV['class_loader_prefix'] = 'HYPERFRAMEWORK_PATH';
-    if (strpos(HYPERFRAMEWORK_PATH, $_SERVER['PWD']) === 0) {
-      $_ENV['class_loader_prefix'] = 'ROOT_PATH.'.$_ENV['class_loader_prefix'];
-      $hyperframeworkPath = str_replace(
-        $_SERVER['PWD'], '', $hyperframeworkPath
+    if (strpos($hyperframeworkPath, $_SERVER['PWD']) === 0) {
+      $GLOBALS['HYPERFRAMEWORK_PATH'] = 'ROOT_PATH.'.var_export(
+        str_replace(
+          $_SERVER['PWD'].DIRECTORY_SEPARATOR, '', $hyperframeworkPath
+        ),
+        true
       );
+      $GLOBALS['CLASS_LOADER_PREFIX'] = 'ROOT_PATH.HYPERFRAMEWORK_PATH';
+      return;
     }
-    $_ENV['hyperframework_path'] = var_export($hyperframeworkPath, true);
+    $GLOBALS['HYPERFRAMEWORK_PATH'] = var_export($hyperframeworkPath, true);
+    $GLOBALS['CLASS_LOADER_PREFIX'] = 'HYPERFRAMEWORK_PATH';
   }
 }
