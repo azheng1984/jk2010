@@ -1,18 +1,5 @@
 <?php
-class NewCommandTest extends PHPUnit_Framework_TestCase {
-  public static function setUpBeforeClass() {
-    $_SERVER['OLD_PWD'] = $_SERVER['PWD'];
-    $_SERVER['PWD'] = ROOT_PATH.'tmp';
-    mkdir($_SERVER['PWD']);
-    chdir($_SERVER['PWD']);
-  }
-
-  public static function tearDownAfterClass() {
-    chdir($_SERVER['OLD_PWD']);
-    rmdir($_SERVER['PWD']);
-    $_SERVER['PWD'] = $_SERVER['OLD_PWD'];
-  }
-
+class NewCommandTest extends FileGenerationTestCase {
   protected function tearDown() {
     if (file_exists('test')) {
       unlink('test');
@@ -27,7 +14,7 @@ class NewCommandTest extends PHPUnit_Framework_TestCase {
     $command->execute('unknown', null);
   }
 
-  public function testHyperfrmaworkIncluded() {
+  public function testLocalHyperfrmawork() {
     $command = new NewCommand;
     $relativePath = 'vendor'.DIRECTORY_SEPARATOR.'hyperframework';
     $command->execute(
@@ -40,7 +27,7 @@ class NewCommandTest extends PHPUnit_Framework_TestCase {
     );
   }
 
-  public function testHyperfrmaworkIsGlobal() {
+  public function testSystemLevelHyperfrmawork() {
     $command = new NewCommand;
     $command->execute('test', 'folder');
     $this->assertSame(

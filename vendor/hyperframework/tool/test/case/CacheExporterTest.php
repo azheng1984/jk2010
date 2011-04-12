@@ -1,20 +1,12 @@
 <?php
-class CacheExporterTest extends PHPUnit_Framework_TestCase {
+class CacheExporterTest extends FileGenerationTestCase {
   private static $cacheFolder;
   private static $testCachePath;
 
   public static function setUpBeforeClass() {
-    $_SERVER['OLD_PWD'] = $_SERVER['PWD'];
-    $_SERVER['PWD'] = ROOT_PATH.'tmp';
-    mkdir($_SERVER['PWD']);
-    self::$cacheFolder = $_SERVER['PWD'].DIRECTORY_SEPARATOR.'cache';
-    self::$testCachePath = self::$cacheFolder
-      .DIRECTORY_SEPARATOR.'test.cache.php';
-  }
-
-  public static function tearDownAfterClass() {
-    rmdir($_SERVER['PWD']);
-    $_SERVER['PWD'] = $_SERVER['OLD_PWD'];
+    parent::setUpBeforeClass();
+    self::$cacheFolder = 'cache'.DIRECTORY_SEPARATOR;
+    self::$testCachePath = self::$cacheFolder.'test.cache.php';
   }
 
   protected function tearDown() {
