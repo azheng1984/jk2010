@@ -44,6 +44,7 @@ class ScaffoldGenerator {
   }
 
   private function changeMode($path, $mode, $defaultMode) {
+    echo umask();
     if ($mode !== null && $mode !== $defaultMode) {
       chmod($path, $mode);
     }
