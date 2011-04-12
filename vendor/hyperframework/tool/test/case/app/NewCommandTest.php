@@ -15,7 +15,6 @@ class NewCommandTest extends PHPUnit_Framework_TestCase {
 
   protected function tearDown() {
     if (file_exists('test')) {
-      echo file_get_contents('test');
       unlink('test');
     }
   }
@@ -35,7 +34,7 @@ class NewCommandTest extends PHPUnit_Framework_TestCase {
       'test', $_SERVER['PWD'].DIRECTORY_SEPARATOR.$relativePath
     );
     $this->assertSame(
-      "ROOT_PATH.'$relativePath'".PHP_EOL
+      'ROOT_PATH.'.var_export($relativePath, true).PHP_EOL
         .'ROOT_PATH.HYPERFRAMEWORK_PATH',
       file_get_contents('test')
     );
