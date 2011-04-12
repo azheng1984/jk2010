@@ -44,7 +44,6 @@ class ScaffoldGenerator {
   }
 
   private function changeMode($path, $mode, $defaultMode) {
-    echo umask();
     if ($mode !== null && $mode !== $defaultMode) {
       chmod($path, $mode);
     }
@@ -54,7 +53,7 @@ class ScaffoldGenerator {
     if (is_array($content) && isset($content[0]) && is_int($content[0])) {
       return array($content[0], array_shift($content));
     }
-    return array(null, $content);
+    return array(0554, $content);
   }
 
   private function getOutput($content) {
