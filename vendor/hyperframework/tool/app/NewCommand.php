@@ -7,7 +7,11 @@ class NewCommand {
     }
     $this->initialize($hyperframeworkPath);
     $generator = new ScaffoldGenerator;
-    $generator->generate(require $configPath);
+    try {
+      $generator->generate(require $configPath);
+    } catch (Exception $exception) {
+      throw new CommandException($exception->getMessage());
+    }
   }
 
   private function initialize($hyperframeworkPath) {

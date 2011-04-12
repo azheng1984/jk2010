@@ -39,6 +39,9 @@ class ScaffoldGeneratorTest extends FileGenerationTestCase {
     self::$generator->generate(
       array('folder/file' => array(0666, 'first_line', 'second_line'))
     );
+    $this->assertSame(
+      'first_line'.PHP_EOL.'second_line', file_get_contents('folder/file')
+    );
     $this->verifyMode('folder/file', '0666');
   }
 

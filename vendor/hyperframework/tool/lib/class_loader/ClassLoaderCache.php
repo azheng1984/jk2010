@@ -16,9 +16,6 @@ class ClassLoaderCache {
   }
 
   public function export() {
-    if (count($this->cache[1]) === 0) {
-      unset($this->cache[1]);
-    }
     return array('class_loader', $this->cache);
   }
 
