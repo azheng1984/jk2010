@@ -2,16 +2,16 @@
 class BuildCommandTest extends FileGenerationTestCase {
   private static $cacheFolder;
   private static $configFolder;
-  private static $testCachePath;
-  private static $testConfigPath;
+  private static $cacheFile;
+  private static $configFile;
 
   public static function setUpBeforeClass() {
     parent::setUpBeforeClass();
     self::$cacheFolder = 'cache'.DIRECTORY_SEPARATOR;
     self::$configFolder = 'config'.DIRECTORY_SEPARATOR;
     mkdir(self::$configFolder);
-    self::$testCachePath = self::$cacheFolder.'test.cache.php';
-    self::$testConfigPath = self::$configFolder.'build.config.php';
+    self::$cacheFile = self::$cacheFolder.'test.cache.php';
+    self::$configFile = self::$configFolder.'build.config.php';
   }
 
   public static function tearDownAfterClass() {
@@ -25,18 +25,18 @@ class BuildCommandTest extends FileGenerationTestCase {
   }
 
   protected function tearDown() {
-    if (is_file(self::$testConfigPath)) {
-      unlink(self::$testConfigPath);
+    if (is_file(self::$configFile)) {
+      unlink(self::$configFile);
     }
-    if (is_file(self::$testCachePath)) {
-      unlink(self::$testCachePath);
+    if (is_file(self::$cacheFile)) {
+      unlink(self::$cacheFile);
     }
   }
 
   public function testConfigNotFound() {
     $this->setExpectedException(
       'CommandException',
-      "Can't find the '".self::$testConfigPath."'"
+      "Can't find the '".self::$configFile."'"
     );
     $this->execute(null);
   }
@@ -73,7 +73,7 @@ class BuildCommandTest extends FileGenerationTestCase {
   private function execute($config = array('Test')) {
     if ($config !== null) {
       file_put_contents(
-        self::$testConfigPath, '<?php return '.var_export($config, true).';'
+        self::$configFile, '<?php return '.var_export($config, true).';'
       );
     }
     $command = new BuildCommand;
@@ -89,6 +89,6 @@ class BuildCommandTest extends FileGenerationTestCase {
       $argument, $GLOBALS['TEST_CALLBACK_TRACE'][0]['argument']
     );
     $cacheVerifier = new TestCacheVerifier;
-    $cacheVerifier->verify($this, self::$testCachePath);
+    $cacheVerifier->verify($this, self::$cacheFile);
   }
 }

@@ -1,19 +1,10 @@
 <?php
-class ScaffoldGeneratorTest extends PHPUnit_Framework_TestCase {
+class ScaffoldGeneratorTest extends FileGenerationTestCase {
   private static $generator;
 
   public static function setUpBeforeClass() {
-    $_SERVER['OLD_PWD'] = $_SERVER['PWD'];
-    $_SERVER['PWD'] = ROOT_PATH.'tmp';
-    mkdir($_SERVER['PWD']);
-    chdir($_SERVER['PWD']);
+    parent::setUpBeforeClass();
     self::$generator = new ScaffoldGenerator;
-  }
-
-  public static function tearDownAfterClass() {
-    chdir($_SERVER['OLD_PWD']);
-    rmdir($_SERVER['PWD']);
-    $_SERVER['PWD'] = $_SERVER['OLD_PWD'];
   }
 
   protected  function tearDown() {
