@@ -51,7 +51,7 @@ class ScaffoldGenerator {
 
   private function getFileData($content) {
     if (is_array($content) && isset($content[0]) && is_int($content[0])) {
-      return array($content[0], array_shift($content));
+      return array(array_shift($content), $content);
     }
     return array(0644, $content);
   }
