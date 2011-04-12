@@ -5,9 +5,6 @@ class NewCommand {
     if (!file_exists($configPath)) {
       throw new CommandException("Application type '$type' is invalid");
     }
-    if (count(scandir($_SERVER['PWD'])) !== 2) {
-      throw new CommandException('directory must empty');
-    }
     $this->initialize($hyperframeworkPath);
     $generator = new ScaffoldGenerator;
     $generator->generate(require $configPath);
