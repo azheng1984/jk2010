@@ -52,7 +52,7 @@ return array(
     '$classLoader = new ClassLoader;',
     '$classLoader->run();',
     '$app = new Application;',
-    '$exceptionHandler = new ExceptionHandler;',
+    '$exceptionHandler = new ExceptionHandler($app);',
     '$exceptionHandler->run();',
     '$app->run();',
   ),
@@ -76,8 +76,8 @@ return array(
     "  }",
     "}"
   ),
-  'test/case/app/error/internal_server_error/InternalServerErrorScreen.php' =>
-    array(
+  'test/case/app/error/internal_server_error/InternalServerErrorScreenTest.php'
+    => array(
       "<?php",
       "class InternalServerErrorScreen extends PHPUnit_Framework_TestCase {",
       "  public function test() {",
