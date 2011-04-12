@@ -9,6 +9,7 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
     $_SERVER['OLD_PWD'] = $_SERVER['PWD'];
     $_SERVER['PWD'] = ROOT_PATH.'tmp';
     mkdir($_SERVER['PWD']);
+    chdir($_SERVER['PWD']);
     self::$cacheFolder = $_SERVER['PWD']
       .DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR;
     self::$configFolder = $_SERVER['PWD']
@@ -21,6 +22,7 @@ class BuildCommandTest extends PHPUnit_Framework_TestCase {
   public static function tearDownAfterClass() {
     rmdir(self::$cacheFolder);
     rmdir(self::$configFolder);
+    chdir($_SERVER['OLD_PWD']);
     rmdir($_SERVER['PWD']);
     $_SERVER['PWD'] = $_SERVER['OLD_PWD'];
   }

@@ -35,12 +35,12 @@ class ScaffoldGenerator {
     }
     list($mode, $content) = $this->getFileData($content);
     file_put_contents($path, $this->getOutput($content));
-    $this->changeMode($path, $mode, 0544);
+    $this->changeMode($path, $mode, 0644);
   }
 
-  private function generateDirectory($path, $mode = 0775) {
-    mkdir($path, $mode, true);
-    $this->changeMode($path, $mode, 0775);
+  private function generateDirectory($path, $mode = 0755) {
+    mkdir($path, 0755, true);
+    $this->changeMode($path, $mode, 0755);
   }
 
   private function changeMode($path, $mode, $defaultMode) {
@@ -53,7 +53,7 @@ class ScaffoldGenerator {
     if (is_array($content) && isset($content[0]) && is_int($content[0])) {
       return array($content[0], array_shift($content));
     }
-    return array(0554, $content);
+    return array(0644, $content);
   }
 
   private function getOutput($content) {

@@ -1,13 +1,17 @@
 <?php
 class ScaffoldGeneratorTest extends PHPUnit_Framework_TestCase {
+  private static $generator;
+
   public static function setUpBeforeClass() {
     $_SERVER['OLD_PWD'] = $_SERVER['PWD'];
     $_SERVER['PWD'] = ROOT_PATH.'tmp';
     mkdir($_SERVER['PWD']);
-    
+    chdir($_SERVER['PWD']);
+    self::$generator = new ScaffoldGenerator;
   }
 
   public static function tearDownAfterClass() {
+    chdir($_SERVER['OLD_PWD']);
     rmdir($_SERVER['PWD']);
     $_SERVER['PWD'] = $_SERVER['OLD_PWD'];
   }
@@ -26,27 +30,25 @@ class ScaffoldGeneratorTest extends PHPUnit_Framework_TestCase {
 
   public function testFileExisted() {
     $this->setExpectedException('Exception', "File 'test' existed");
-    $generator = new ScaffoldGenerator;
-    $generator->generate('test');
-    $generator->generate('test');
+    self::$generator->generate('test');
+    self::$generator->generate('test');
   }
 
   public function testGenerateDirectory() {
-    $generator = new ScaffoldGenerator;
-    $generator->generate('folder/');
-    $this->assertTrue(file_exists('folder/'));
+    self::$generator->generate('folder/');
+    $this->assertTrue(is_dir('folder'));
   }
 
   public function testGenerateWriteableDirectory() {
-    $generator = new ScaffoldGenerator;
-    $generator->generate(array('folder/' => 0777));
-    $this->verifyMode('folder/', '0777');
+    self::$generator->generate(array('folder/' => 0777));
+    $this->verifyMode('folder', '0777');
   }
 
   public function testGenerateFile() {
-    $generator = new ScaffoldGenerator;
-    $generator->generate(array('folder/file' => array(0775, 'first_line', 'second_line')));
-    $this->verifyMode('folder/file', '0775');
+    self::$generator->generate(
+      array('folder/file' => array(0666, 'first_line', 'second_line'))
+    );
+    $this->verifyMode('folder/file', '0666');
   }
 
   private function verifyMode($path, $mode) {
