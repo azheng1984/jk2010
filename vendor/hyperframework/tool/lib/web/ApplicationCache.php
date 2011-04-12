@@ -19,6 +19,10 @@ class ApplicationCache {
       $this->cache[$path] = array($name => $cache);
       return;
     }
+    if (!isset($this->cache[$path][$name])) {
+      $this->cache[$path][$name] = $cache;
+      return;
+    }
     if (!is_array($this->cache[$path][$name])) {
       $this->cache[$path][$name] = array($this->cache[$path][$name]);
     }

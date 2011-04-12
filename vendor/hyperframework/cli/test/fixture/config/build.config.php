@@ -1,4 +1,4 @@
 <?php
 return array(
-  'ClassLoader' => array('app', 'lib', HYPERFRAMEWORK_PATH.'cli/lib'),
+  'ClassLoader' => array('lib', HYPERFRAMEWORK_PATH.'cli/lib'),
 );

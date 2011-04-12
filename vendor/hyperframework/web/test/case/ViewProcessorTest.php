@@ -1,5 +1,9 @@
 <?php
 class ViewProcessorTest extends PHPUnit_Framework_TestCase {
+  public static function tearDownAfterClass() {
+    unset($_SERVER['REQUEST_MEDIA_TYPE']);
+  }
+
   protected function setUp() {
     $GLOBALS['TEST_CALLBACK_TRACE'] = array();
   }

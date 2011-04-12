@@ -2,7 +2,7 @@
 class DirectoryReaderTest extends PHPUnit_Framework_TestCase {
   private $reader;
 
-  public function setUp() {
+  protected function setUp() {
     $GLOBALS['TEST_CALLBACK_TRACE'] = array();
     $this->reader = new DirectoryReader(new TestDirectoryReaderHandler); 
   }
@@ -36,8 +36,13 @@ class DirectoryReaderTest extends PHPUnit_Framework_TestCase {
     $this->verifyRelativePathFirstLevelFileArgument();
     $this->verifyArgument(
       1,
-      ROOT_PATH.'lib/test_directory_reader/second_level/SecondLevelFile.php',
-      'lib/test_directory_reader/second_level'
+      $this->getPath(
+        ROOT_PATH.'lib',
+        'test_directory_reader',
+        'second_level',
+        'SecondLevelFile.php'
+      ),
+      $this->getPath('lib', 'test_directory_reader', 'second_level')
     );
   }
 
@@ -49,6 +54,11 @@ class DirectoryReaderTest extends PHPUnit_Framework_TestCase {
     $this->verifyFullPathFirstLevelFileArgument();
   }
 
+  private function getPath() {
+    $sections = func_get_args();
+    return implode(DIRECTORY_SEPARATOR, $sections);
+  }
+
   private function verifyCallbackCount($expected) {
     $this->assertSame($expected, count($GLOBALS['TEST_CALLBACK_TRACE']));
   }
@@ -56,17 +66,21 @@ class DirectoryReaderTest extends PHPUnit_Framework_TestCase {
   private function verifyRelativePathFirstLevelFileArgument($index = 0) {
     $this->verifyArgument(
       $index,
-      ROOT_PATH.'lib/test_directory_reader/FirstLevelFile.php',
-      'lib/test_directory_reader'
+      ROOT_PATH.$this->getPath(
+        'lib', 'test_directory_reader', 'FirstLevelFile.php'
+      ),
+      $this->getPath('lib', 'test_directory_reader')
     );
   }
 
   private function verifyFullPathFirstLevelFileArgument($index = 0) {
     $this->verifyArgument(
       $index,
-      ROOT_PATH.'lib/test_directory_reader/FirstLevelFile.php',
+      ROOT_PATH.$this->getPath(
+        'lib', 'test_directory_reader', 'FirstLevelFile.php'
+      ),
       null,
-      ROOT_PATH.'lib/test_directory_reader'
+      ROOT_PATH.$this->getPath('lib', 'test_directory_reader')
     );
   }
 
