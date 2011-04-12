@@ -32,8 +32,8 @@ return array(
     "define('ROOT_PATH', dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR);",
     "define('CACHE_PATH', ROOT_PATH.'cache'.DIRECTORY_SEPARATOR);",
     "define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);",
-    "define('HYPERFRAMEWORK_PATH', ".$GLOBALS['HYPERFRAMEWORK_PATH'].");",
-    "require ".$GLOBALS['CLASS_LOADER_PREFIX']
+    "define('HYPERFRAMEWORK_PATH', ".$GLOBALS['HYPERFRAMEWORK_PATH'].');',
+    'require '.$GLOBALS['CLASS_LOADER_PREFIX']
       .".'class_loader'.DIRECTORY_SEPARATOR",
     "  .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';",
     '$classLoader = new ClassLoader;',
