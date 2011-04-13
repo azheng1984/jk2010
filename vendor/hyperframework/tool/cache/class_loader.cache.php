@@ -44,7 +44,7 @@ return array (
     4 => 'lib/web/handler',
     5 => 
     array (
-      0 => '/home/wz/www/jk2010/vendor/hyperframework/cli/lib',
+      0 => HYPERFRAMEWORK_PATH.'cli/lib',
     ),
     6 => 
     array (
