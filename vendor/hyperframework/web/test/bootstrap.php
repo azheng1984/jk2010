@@ -6,6 +6,6 @@ define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);
 define('HYPERFRAMEWORK_PATH', dirname(dirname(TEST_PATH)).DIRECTORY_SEPARATOR);
 require HYPERFRAMEWORK_PATH.'class_loader'.DIRECTORY_SEPARATOR
   .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';
-$classLoader = new ClassLoader();
+$classLoader = new ClassLoader;
 $classLoader->run();
 ob_start();
