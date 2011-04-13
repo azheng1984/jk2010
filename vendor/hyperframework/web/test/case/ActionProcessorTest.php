@@ -4,14 +4,14 @@ class ActionProcessorTest extends PHPUnit_Framework_TestCase {
     $GLOBALS['TEST_CALLBACK_TRACE'] = array();
   }
 
-  public function testExecuteMethod() {
+  public function testExecuteRequestMethod() {
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $this->process();
     $this->assertSame(1, count($GLOBALS['TEST_CALLBACK_TRACE']));
     $this->assertSame('TestAction->GET', $GLOBALS['TEST_CALLBACK_TRACE'][0]);
   }
 
-  public function testMethodNotAllowed() {
+  public function testRequestMethodNotAllowed() {
     $this->setExpectedException('MethodNotAllowedException');
     $_SERVER['REQUEST_METHOD'] = 'POST';
     try {
