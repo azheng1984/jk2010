@@ -8,7 +8,7 @@ class FileGenerationTestCase extends PHPUnit_Framework_TestCase {
   }
 
   public static function tearDownAfterClass() {
-    chdir($_SERVER['OLD_PWD']);
+    chdir(TEST_PATH);
     rmdir($_SERVER['PWD']);
     $_SERVER['PWD'] = $_SERVER['OLD_PWD'];
   }
