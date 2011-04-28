@@ -1,9 +1,9 @@
 <?php
 class ClassLoader {
+  private $rootPath;
   private $callback;
   private $classes;
   private $folders;
-  private $rootPath;
 
   public function run($rootPath = ROOT_PATH, $cachePath = CACHE_PATH) {
     list($this->classes, $this->folders) = require(
