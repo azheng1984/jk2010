@@ -20,7 +20,7 @@ class ApplicationBuilder {
     $cachePath = $rootPath.'cache'.DIRECTORY_SEPARATOR;
     $cacheFile = $cachePath.'class_loader.cache.php';
     if (!file_exists($cacheFile)) {
-      throw new Exception("File '$cacheFile' does not exsit.");
+      throw new Exception("File '$cacheFile' does not exsit");
     }
     $this->classLoader = new ClassLoader;
     $this->classLoader->run($rootPath, $cachePath);
