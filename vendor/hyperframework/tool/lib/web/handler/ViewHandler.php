@@ -29,9 +29,6 @@ class ViewHandler {
   }
 
   private function verifyRenderingMethod($class, $fullPath) {
-    if (!class_exists($class)) {
-      require $fullPath;
-    }
     $reflector = new ReflectionClass($class);
     if (!$reflector->hasMethod('render')) {
       throw new Exception("Rendering method of view not found in '$fullPath'");

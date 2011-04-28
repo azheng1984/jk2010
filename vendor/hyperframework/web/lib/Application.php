@@ -2,13 +2,13 @@
 class Application {
   private $cache;
 
-  public function run($path = null) {
+  public function run($path = null, $cachePath = CACHE_PATH) {
     if ($path === null) {
       $sections = explode('?', $_SERVER['REQUEST_URI'], 2);
       $path = $sections[0];
     }
     if ($this->cache === null) {
-      $this->cache = require CACHE_PATH.'application.cache.php';
+      $this->cache = require $cachePath.'application.cache.php';
     }
     if (!isset($this->cache[$path])) {
       throw new NotFoundException("Path '$path' not found");

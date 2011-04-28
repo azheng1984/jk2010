@@ -28,8 +28,8 @@ return array(
   'config/build.config.php' => array(
     '<?php',
     'return array(',
-    "  'Application' => array('Action', 'View' => array('Screen')),",
     "  'ClassLoader' => array('app', 'lib', HYPERFRAMEWORK_PATH.'web/lib'),",
+    "  'Application' => array('Action', 'View' => 'Screen'),",
     ');',
   ),
   'config/error_handler.config.php' => array(

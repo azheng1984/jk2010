@@ -10,4 +10,5 @@ $classLoader->run();
 $app = new Application;
 $exceptionHandler = new ExceptionHandler($app);
 $exceptionHandler->run();
-$app->run();
+$router = new Router;
+$app->run($router->execute());
