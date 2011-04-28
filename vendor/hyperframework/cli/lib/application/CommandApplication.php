@@ -8,8 +8,8 @@ class CommandApplication {
   private $arguments = array();
 
   public function __construct($configPath = CONFIG_PATH) {
-    $this->reader = new CommandReader;
     $this->config = require $configPath.'command_application.config.php';
+    $this->reader = new CommandReader;
     $this->initialize($this->config);
   }
 
