@@ -1,9 +1,11 @@
 <?php
 class ExceptionHandler {
   private $app;
+  private $configPath;
 
-  public function __construct($app) {
+  public function __construct($app, $configPath = CONFIG_PATH) {
     $this->app = $app;
+    $this->configPath = $configPath;
   }
 
   public function run() {
@@ -25,7 +27,7 @@ class ExceptionHandler {
     if (!$exception instanceof ApplicationException) {
       $exception = new InternalServerErrorException;
     }
-    $config = require CONFIG_PATH.'error_handler.config.php';
+    $config = require $this->configPath.'error_handler.config.php';
     $statusCode = $exception->getCode();
     if (isset($config[$statusCode])) {
       $this->app->run($config[$statusCode]);

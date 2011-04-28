@@ -1,12 +1,8 @@
 <?php
 class BuildCommand {
   public function execute() {
-    $config = $this->getConfig();
-    if (!is_array($config)) {
-      $config = array($config);
-    }
     $exporter = new CacheExporter;
-    foreach ($config as $name => $config) {
+    foreach ($this->getConfig() as $name => $config) {
       $exporter->export($this->dispatch($name, $config));
     }
   }
@@ -16,7 +12,11 @@ class BuildCommand {
     if (!file_exists($path)) {
       throw new CommandException("Can't find the '$path'");
     }
-    return require $path;
+    $config = require $path;
+    if (!is_array($config)) {
+      $config = array($config);
+    }
+    return $config;
   }
 
   private function dispatch($name, $config) {

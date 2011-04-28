@@ -3,11 +3,13 @@ class ClassLoader {
   private $callback;
   private $classes;
   private $folders;
+  private $rootPath;
 
-  public function run() {
+  public function run($rootPath = ROOT_PATH, $cachePath = CACHE_PATH) {
     list($this->classes, $this->folders) = require(
-      CACHE_PATH.'class_loader.cache.php'
+      $cachePath.'class_loader.cache.php'
     );
+    $this->rootPath = $rootPath;
     $this->callback = array($this, 'load');
     spl_autoload_register($this->callback);
   }
@@ -26,13 +28,13 @@ class ClassLoader {
 
   private function getFolder($index) {
     if ($index === true) {
-      return ROOT_PATH;
+      return $this->rootPath;
     }
     $folder = $this->folders[$index];
     if (is_array($folder)) {
       return $this->getFullPath($folder).$folder[0].DIRECTORY_SEPARATOR;
     }
-    return ROOT_PATH.$folder.DIRECTORY_SEPARATOR;
+    return $this->rootPath.$folder.DIRECTORY_SEPARATOR;
   }
 
   private function getFullPath($folder) {

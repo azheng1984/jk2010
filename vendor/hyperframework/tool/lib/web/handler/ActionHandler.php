@@ -22,9 +22,6 @@ class ActionHandler {
   }
 
   private function getMethodReflectors($class, $fullPath) {
-    if (!class_exists($class)) {
-      require $fullPath;
-    }
     $reflector = new ReflectionClass($class);
     return $reflector->getMethods(ReflectionMethod::IS_PUBLIC);
   }
