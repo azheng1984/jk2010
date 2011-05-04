@@ -38,10 +38,10 @@ class ScreenWrapper {
   }
 
   private function renderFooterLeft() {
-    echo '<div><a href="http://blog.wj.com/">团队博客</a> | <a href="http://support.wj.com/">联系我们</a> | <a href="http://project.wj.com/">开源项目</a></div>';
+    echo '<div><a href="http://project.wj.com/">开源项目</a> | <a href="http://blog.wj.com/">团队博客</a> | <a href="/">使用条款</a> | <a href="http://support.wj.com/">联系我们</a></div>';
   }
 
   private function renderFooterRight() {
-    echo '<div><a href="http://advertiser.wj.com/">商家联盟</a> | <a href="http://publisher.wj.com">广告网络</a> | <a href="http://developer.wj.com/">开放平台</a></div>';
+    echo '<div>[ <a href="http://publisher.wj.com">广告网络</a> | <a href="http://advertiser.wj.com/">商家联盟</a> | <a href="http://developer.wj.com/">开放平台</a> ]</div>';
   }
 }
