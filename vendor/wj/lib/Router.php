@@ -7,11 +7,10 @@ class Router {
       $_GET['category'] = array();
       foreach ($sections as $section) {
         if ($section !== '') {
-          $db = new PDO("mysql:host=localhost;dbname=wj", 'root', 'a841107!', array (PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-          $name = urldecode($section);
-          $sql = "select * from global_category where name='$name'";
-          $result = $db->query($sql);
-          $row = $result->fetch();
+          if ($section === 'edit') {
+            break;
+          }
+          $row = Category::get(urldecode($section));
           if ($row !== false) {
             $_GET['category'][] = $row;
             if ($row['table_prefix'] !== null) {
