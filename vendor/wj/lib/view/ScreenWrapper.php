@@ -26,7 +26,7 @@ class ScreenWrapper {
   }
 
   private function renderLogo() {
-    echo '<div><a href="/">货比万家</a></div>';
+    echo '<div><a href="/">货比万家</a> lab</div>';
   }
 
   private function renderSearch() {
@@ -38,7 +38,7 @@ class ScreenWrapper {
   }
 
   private function renderFooterLeft() {
-    echo '<div><a href="http://project.wj.com/">开源项目</a> | <a href="http://blog.wj.com/">团队博客</a> | <a href="/">使用条款</a> | <a href="http://support.wj.com/">联系我们</a></div>';
+    echo '<style>#foot-link a {color:#999999; font-size:12px;}</style><div id="foot-link"><a href="http://project.wj.com/">开源项目</a> | <a href="http://blog.wj.com/">团队博客</a> | <a href="/">使用条款</a> | <a href="/">隐私权政策</a> | <a href="http://support.wj.com/">联系我们</a></div>';
   }
 
   private function renderFooterRight() {
