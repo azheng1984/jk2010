@@ -1,6 +1,6 @@
 <?php
-class ProductEditScreen {
-  public function render() {
-    
+class ProductEditScreen extends Screen {
+  public function renderContent() {
+    echo 'edit product';
   }
 }

@@ -1,11 +1,16 @@
 <?php
 class Router {
   public function execute() {
+    $tmps = explode('?', $_SERVER['REQUEST_URI']);
+    if ($tmps[0]  === '/search') {
+      return '/search';
+    }
     if ($_SERVER['REQUEST_URI'] !== '/') {
-      $isLeafCategory = false;
       $sections = explode('/', $_SERVER['REQUEST_URI']);
+      $isLeafCategory = false;
       $_GET['category'] = array();
       $type = null;
+      $isProduct = false;
       foreach ($sections as $section) {
         if ($section !== '') {
           if ($section === 'edit' || $section === 'new') {
@@ -19,7 +24,7 @@ class Router {
               $isLeafCategory = true;
             }
           } elseif ($isLeafCategory) {
-            return '/product'.$type;
+            $isProduct = true;
           } else {
             throw new NotFoundException;
           }
@@ -27,6 +32,9 @@ class Router {
       }
       if (!isset($_GET['category'])) {
         throw new NotFoundException;
+      }
+      if ($isProduct) {
+        return '/product'.$type;
       }
       if ($isLeafCategory) {
         if ($type === null) {
