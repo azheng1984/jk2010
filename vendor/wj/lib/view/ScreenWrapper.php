@@ -10,6 +10,7 @@ class ScreenWrapper {
   private function renderHead() {
     echo '<head>';
     echo '<title>货比万家</title>';
+    echo '<script src="/js/std.js"></script>';
     echo '</head>';
   }
 

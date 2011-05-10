@@ -17,4 +17,14 @@ class Category {
       return $data->fetch();
     }
   }
+
+  public static function save($name, $parentId) {
+    $parent = 'null';
+    if ($parentId !== null) {
+      $parent = "'$parentId'";
+    }
+    $sql = "insert into global_category(name, parent_id) values('$name', $parent)";
+    Db::execute($sql);
+    $_GET['category'][] = self::get($name);
+  }
 }

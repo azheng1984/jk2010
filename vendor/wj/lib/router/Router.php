@@ -26,6 +26,15 @@ class Router {
           } elseif ($isLeafCategory) {
             $isProduct = true;
           } else {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                                                echo 'xxx';
+              if (isset($_POST['type']) && $_POST['type'] === 'category' || $_POST['type'] === 'product') {
+                if (isset($_POST['_method'])) {
+                  $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
+                }
+                return '/'.$_POST['type'];
+              }
+            }
             throw new NotFoundException;
           }
         }
