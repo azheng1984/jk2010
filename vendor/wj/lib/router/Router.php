@@ -5,9 +5,11 @@ class Router {
       $isLeafCategory = false;
       $sections = explode('/', $_SERVER['REQUEST_URI']);
       $_GET['category'] = array();
+      $type = null;
       foreach ($sections as $section) {
         if ($section !== '') {
-          if ($section === 'edit') {
+          if ($section === 'edit' || $section === 'new') {
+            $type = '/'.$section;
             break;
           }
           $row = Category::get(urldecode($section));
@@ -17,7 +19,7 @@ class Router {
               $isLeafCategory = true;
             }
           } elseif ($isLeafCategory) {
-            return '/product';
+            return '/product'.$type;
           } else {
             throw new NotFoundException;
           }
@@ -27,9 +29,17 @@ class Router {
         throw new NotFoundException;
       }
       if ($isLeafCategory) {
-        return '/product_list';
+        if ($type === null) {
+          return '/product_list';
+        } elseif ($type === '/new') {
+          return '/product/new';
+        } elseif ($type === '/edit') {
+          return '/category/edit';
+        } else {
+          throw new NotFoundException;
+        }
       }
-      return '/category';
+      return '/category'.$type;
     }
     return $_SERVER['REQUEST_URI'];
   }
