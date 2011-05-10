@@ -10,7 +10,7 @@ class Category {
     return Db::execute($sql);
   }
 
-  public static function get($uniqueName) {
+  public static function get($uniqueName, $parentId = null) {
     $sql = "select * from global_category where name='$uniqueName'";
     $data = Db::execute($sql);
     if ($data !== false) {
