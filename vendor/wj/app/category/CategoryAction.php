@@ -5,7 +5,7 @@ class CategoryAction {
   }
 
   public function POST() {
-    if ($_POST['original_name']) {
+    if (isset($_POST['id'])) {
       //move name to alias
       //execute update
     } else {
