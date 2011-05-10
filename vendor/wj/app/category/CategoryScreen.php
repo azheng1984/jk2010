@@ -9,7 +9,7 @@ class CategoryScreen extends Screen {
     $last = end($_GET['category']);
     foreach (Category::getList($last['id']) as $row) {
       $isLeaf = false;
-      echo '<a href="'.urlencode($row['name']).'/">'.$row['name'].'</a> ';
+      echo '<a href="'.urlencode($row['name']).'/">'.$row['name'].'</a><input type="button" value="删除" />';
     }
   }
 }
