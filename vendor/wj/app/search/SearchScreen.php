@@ -1,6 +1,6 @@
 <?php
-class SearchScreen {
-  public function render() {
-    
+class SearchScreen extends Screen {
+  public function renderContent() {
+    echo 'search result';
   }
 }

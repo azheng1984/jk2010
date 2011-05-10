@@ -30,7 +30,8 @@ class ScreenWrapper {
   }
 
   private function renderSearch() {
-    echo '<div><input name="search" value="search" /> <input type="button" value="搜索"/></div>';
+    $query = isset($_GET['q']) ? $_GET['q'] : '';
+    echo '<div><form action="/search"><input name="q" value="'.$query.'" /> <input type="submit" value="搜索"/></form></div>';
   }
 
   private function renderToolbar() {
