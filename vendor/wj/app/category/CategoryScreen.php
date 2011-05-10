@@ -1,11 +1,9 @@
 <?php
 class CategoryScreen extends Screen {
   public function renderContent() {
-    echo '<a href="/">首页</a> ';
-    foreach ($_GET['category'] as $cateory) {
-      echo ' &gt; <b>'.$cateory['name'].'</b> ';
-    }
-    echo '[<a href="edit">编辑</a>]';
+    $breadcrumb = new Breadcrumb;
+    $breadcrumb->render();
+    echo '[<a href="edit">编辑</a> | <a href="new">新建分类</a>]';
     echo '<br />';
     $isLeaf = true;
     $last = end($_GET['category']);
