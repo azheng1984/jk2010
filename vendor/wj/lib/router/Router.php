@@ -1,9 +1,47 @@
 <?php
+/*
+/数码/ - category
+/数码/手机/ - leaf category
+/数码/手机/?page=2 - leaf category page 2
+/数码/手机/?品牌=惠普 - leaf category + filter
+/数码/手机/?view=edit - edit category
+/数码/手机/?view=new_category - new category
+/数码/手机/?view=new_product - new product
+/数码/手机/?view=edit_property - edit property
+/数码/手机/CPU频率?view=edit - edit property
+/数码/手机/Nokia-2200C-手机/ - product
+/数码/手机/Nokia-2200C-手机/图片/正面.jpg - image
+
+ */
 class Router {
+  private $category;
+
+  private function analyze($section) {
+    $parentId = null;
+    if ($this->category !== null) {
+      $parentId = $this->category['id'];
+    }
+    $this->category = Category::get(urldecode($section), $parentId);
+    if ($this->category !== null) {
+      $_GLOBAL['category'][] = $this->category;
+      return true;
+    }
+    return false;
+  }
+
   public function execute() {
-    $tmps = explode('?', $_SERVER['REQUEST_URI']);
-    if ($tmps[0]  === '/search') {
-      return '/search';
+    $tmps = explode('?', $_SERVER['REQUEST_URI'], 2);
+    $path = $tmps[0];
+    if ($path  === '/search' || $path === '/') {
+      return $path;
+    }
+    $sections = explode('/', $_SERVER['REQUEST_URI']);
+    $_GLOBAL['category'] = array();
+    foreach ($sections as $section) {
+      $result = false;
+      if ($section !== '' && $this->analyze($section) === false) {
+        break;
+      }
     }
     if ($_SERVER['REQUEST_URI'] !== '/') {
       $sections = explode('/', $_SERVER['REQUEST_URI']);
