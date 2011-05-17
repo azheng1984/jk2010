@@ -11,13 +11,19 @@ class Router {
       $_GET['category'] = array();
       $type = null;
       $isProduct = false;
+      $previousCategory = null;
       foreach ($sections as $section) {
         if ($section !== '') {
           if ($section === 'edit' || $section === 'new') {
             $type = '/'.$section;
             break;
           }
-          $row = Category::get(urldecode($section));
+          $parentId = null;
+          if ($previousCategory !== null) {
+            $parentId = $previousCategory['id'];
+          }
+          $row = Category::get(urldecode($section), $parentId);
+          $previousCategory = $row;
           if ($row !== false) {
             $_GET['category'][] = $row;
             if ($row['table_prefix'] !== null) {
@@ -27,7 +33,6 @@ class Router {
             $isProduct = true;
           } else {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                                                echo 'xxx';
               if (isset($_POST['type']) && $_POST['type'] === 'category' || $_POST['type'] === 'product') {
                 if (isset($_POST['_method'])) {
                   $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
@@ -48,7 +53,7 @@ class Router {
       if ($isLeafCategory) {
         if ($type === null) {
           return '/product_list';
-        } elseif ($type === '/new') {
+        } elseif ($type === '/product/new') {
           return '/product/new';
         } elseif ($type === '/edit') {
           return '/category/edit';

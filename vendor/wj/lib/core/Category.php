@@ -12,6 +12,11 @@ class Category {
 
   public static function get($uniqueName, $parentId = null) {
     $sql = "select * from global_category where name='$uniqueName'";
+    if ($parentId !== null) {
+      $sql .= " and parent_id=".$parentId;
+    } else {
+      $sql .= ' and parent_id is null';
+    }
     $data = Db::execute($sql);
     if ($data !== false) {
       return $data->fetch();

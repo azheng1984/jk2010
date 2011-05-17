@@ -18,10 +18,10 @@ class ScreenWrapper {
     echo '<body>';
     $this->renderLogo();
     $this->renderSearch();
-    $this->renderToolbar();
+    //$this->renderToolbar();
     $content->renderContent();
-    $this->renderFooterLeft();
-    $this->renderFooterRight();
+    //$this->renderFooterLeft();
+    //$this->renderFooterRight();
     echo '<div>&copy; 2011 货比万家</div>';
     echo '</body>';
   }
