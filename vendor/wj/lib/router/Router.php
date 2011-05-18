@@ -12,11 +12,4 @@ class Router {
     }
     return $path;
   }
-
-  private function getPath($path) {
-    if (substr($_GET['_path'], 0, 1) === '/') {
-      return $_GET['_path'];
-    }
-    return $path.'/'.$_GET['_path'];
-  }
 }
