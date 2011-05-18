@@ -1,9 +1,22 @@
 <?php
 class PathBuilder {
+  private $sections;
+  private $path;
+
   public function __construct() {
     $_GLOBAL['target'] = array(
       'category' => array(), 'product' => null, 'property' => array()
     );
+  }
+
+  public function execute($sections) {
+    $path = '/category';
+    foreach ($sections as $section) {
+      switch ($target) {
+        case 'category':
+          $this->getCategory($section);
+      }
+    }
   }
 
   private function getCategory($sections) {
