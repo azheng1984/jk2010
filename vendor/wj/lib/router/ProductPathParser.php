@@ -1,6 +1,6 @@
 <?php
 
-class Router2 {
+class ProductPathParser {
   public function execute() {
     
   }
