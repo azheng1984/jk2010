@@ -12,10 +12,6 @@ class PathBuilder {
   public function execute($sections) {
     $path = '/category';
     foreach ($sections as $section) {
-      switch ($target) {
-        case 'category':
-          $this->getCategory($section);
-      }
     }
   }
 

@@ -1,7 +1,7 @@
 <?php
 
 class CategoryPathParser {
-  public function execute() {
+  public function execute($sections) {
    foreach ($sections as $section) {
       $result = false;
       if ($section !== '' && $this->analyze($section) === false) {
