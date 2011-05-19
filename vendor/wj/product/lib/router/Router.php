@@ -7,7 +7,7 @@ class Router {
     if ($sections[0] === '/') {
       return '/home';
     }
-    $GLOBALS['target_data'] = array();
+    $GLOBALS['context'] = array();
     foreach (explode('/', $sections[0]) as $section) {
       if ($this->path === '/category') {
         $this->parseCategoryPath($section);
@@ -23,33 +23,33 @@ class Router {
   }
 
   private function parseCategoryPath($section) {
-    $parent = null;
-    if (isset($GLOBALS['target_data']['category'])) {
-      $parent = $GLOBALS['target_data']['category'];
-    }
-    $category = Category::getData($section, $parent);
-    $this->setTarget('category', $category);
-    if ($category['table_prefix'] !== null) {
+    $category = Category::get($section, $this->getContext('category'));
+    $this->setContext('category', $category);
+    if ($category->isLeaf()) {
       $this->path = '/product_list';
     }
   }
 
   private function parseProductPath($section) {
-    $product = Product::getData($section, $GLOBALS['target']['category']);
+    $product = Product::get($section, $this->getContext('category'));
     $this->setTarget('product', $product);
     $this->path = '/product';
   }
 
   private function parsePropertyPath($section) {
-    $property = Property::getData($section, $GLOBALS['target']['product']);
+    $property = Property::get($section, $this->getContext('product'));
     $this->setTarget('property', $property);
     $this->path = 'property';
   }
 
-  private function setTarget($key, $value) {
+  private function setContext($key, $value) {
     if ($value === null) {
       throw new NotFoundException;
     }
-    $GLOBALS['target_data'][$key] = $value;
+    $GLOBALS['context'][$key] = $value;
+  }
+
+  private function getContext($key) {
+    return isset($GLOBALS['context'][$key]) ? $GLOBALS['context'][$key] : null;
   }
 }
