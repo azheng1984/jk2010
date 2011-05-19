@@ -1,5 +1,11 @@
 <?php
 class Category {
+  private $data;
+
+  public function __construct($data) {
+    $this->data = $data;
+  }
+
   public static function getList($parentId = null) {
     $sql = 'select * from global_category where parent_id';
     if ($parentId === null) {
@@ -10,16 +16,16 @@ class Category {
     return Db::execute($sql);
   }
 
-  public static function get($uniqueName, $parentId = null) {
-    $sql = "select * from global_category where name='$uniqueName'";
-    if ($parentId !== null) {
-      $sql .= " and parent_id=".$parentId;
+  public static function get($name, $parent) {
+    $sql = "select * from global_category where name='$name'";
+    if ($parent !== null) {
+      $sql .= " and parent_id=".$parent->data['id'];
     } else {
       $sql .= ' and parent_id is null';
     }
     $data = Db::execute($sql);
     if ($data !== false) {
-      return $data->fetch();
+      return new Category($data->fetch());
     }
   }
 
