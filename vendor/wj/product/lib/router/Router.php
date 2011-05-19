@@ -1,6 +1,6 @@
 <?php
 class Router {
-  private $path = 'category';
+  private $path = '/category';
 
   public function execute() {
     $sections = explode('?', $_SERVER['REQUEST_URI'], 2);
@@ -46,10 +46,10 @@ class Router {
     if ($value === null) {
       throw new NotFoundException;
     }
-    $GLOBALS['context'][$key] = $value;
+    $GLOBALS[$key] = $value;
   }
 
   private function getContext($key) {
-    return isset($GLOBALS['context'][$key]) ? $GLOBALS['context'][$key] : null;
+    return isset($GLOBALS[$key]) ? $GLOBALS[$key] : null;
   }
 }
