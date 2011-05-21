@@ -8,6 +8,10 @@ class Category {
     $this->parent = $parent;
   }
 
+  public function getDeleteLink() {
+    return 'http://contributor.wj.com/category?id='.$this->data['id'];
+  }
+
   public function getEditLink() {
     return 'http://contributor.wj.com/category/edit?id='.$this->data['id'];
   }
