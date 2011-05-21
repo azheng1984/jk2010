@@ -3,7 +3,7 @@ class Category {
   private $data;
   private $parent;
 
-  public function __construct($data, $parent) {
+  private function __construct($data, $parent) {
     $this->data = $data;
     $this->parent = $parent;
   }
