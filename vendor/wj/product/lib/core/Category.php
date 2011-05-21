@@ -1,31 +1,42 @@
 <?php
 class Category {
   private $data;
+  private $parent;
 
-  public function __construct($data) {
+  public function __construct($data, $parent) {
     $this->data = $data;
+    $this->parent = $parent;
   }
 
-  public static function getList($parentId = null) {
-    $sql = 'select * from global_category where parent_id';
-    if ($parentId === null) {
-      $sql .= ' is null';
+  public static function getList($parent = null) {
+    $sql = "select * from global_category where parent_id";
+    if ($parent !== null) {
+      $sql .= "=".$parent->data['id'];
     } else {
-      $sql .= '=' . $parentId;
+      $sql .= " is null";
     }
-    return Db::execute($sql);
+    $statement = Db::get($sql);
+    $statement->execute();
+    return $statement->fetchAll();
+  }
+
+  public function isLeaf() {
+    return $this->data['table_prefix'] !== null;
   }
 
   public static function get($name, $parent) {
-    $sql = "select * from global_category where name='$name'";
-    if ($parent !== null) {
-      $sql .= " and parent_id=".$parent->data['id'];
+    echo $name;
+    $sql = "select * from global_category where name=? and parent_id";
+      if ($parent !== null) {
+      $sql .= "=".$parent->data['id'];
     } else {
-      $sql .= ' and parent_id is null';
+      $sql .= " is null";
     }
-    $data = Db::execute($sql);
-    if ($data !== false) {
-      return new Category($data->fetch());
+    $statement = Db::get($sql);
+    $statement->execute(array($name));
+    $data = $statement->fetch();
+    if ($data !== null) {
+      return new Category($data, $parent);
     }
   }
 

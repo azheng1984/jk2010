@@ -9,6 +9,9 @@ class Router {
     }
     $GLOBALS['context'] = array();
     foreach (explode('/', $sections[0]) as $section) {
+      if ($section === '') {
+        continue;
+      }
       if ($this->path === '/category') {
         $this->parseCategoryPath($section);
         continue;
@@ -23,7 +26,7 @@ class Router {
   }
 
   private function parseCategoryPath($section) {
-    $category = Category::get($section, $this->getContext('category'));
+    $category = Category::get(urldecode($section), $this->getContext('category'));
     $this->setContext('category', $category);
     if ($category->isLeaf()) {
       $this->path = '/product_list';
