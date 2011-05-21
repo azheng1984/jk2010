@@ -8,6 +8,14 @@ class Category {
     $this->parent = $parent;
   }
 
+  public function getEditLink() {
+    return 'http://contributor.wj.com/category/edit?id='.$this->data['id'];
+  }
+
+  public function getNewLink() {
+    return 'http://contributor.wj.com/category/new?parent_id='.$this->data['id'];
+  }
+
   public static function getList($parent = null) {
     $sql = "select * from global_category where parent_id";
     if ($parent !== null) {
