@@ -20,6 +20,10 @@ class Category {
     return 'http://contributor.wj.com/category/new?parent_id='.$this->data['id'];
   }
 
+  public function getNewProductLink() {
+    return 'http://contributor.wj.com/product/new?category_id='.$this->data['id'];
+  }
+
   public static function getList($parent = null) {
     $sql = "select * from global_category where parent_id";
     if ($parent !== null) {
@@ -47,7 +51,7 @@ class Category {
     $statement = Db::get($sql);
     $statement->execute(array($name));
     $data = $statement->fetch();
-    if ($data !== null) {
+    if ($data !== false) {
       return new Category($data, $parent);
     }
   }
