@@ -41,7 +41,6 @@ class Category {
   }
 
   public static function get($name, $parent) {
-    echo $name;
     $sql = "select * from global_category where name=? and parent_id";
       if ($parent !== null) {
       $sql .= "=".$parent->data['id'];
