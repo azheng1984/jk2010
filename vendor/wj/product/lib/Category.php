@@ -8,6 +8,30 @@ class Category {
     $this->parent = $parent;
   }
 
+  public function getTablePrefix() {
+    return $this->data['table_prefix'];
+  }
+
+  public function getParentLinkList() {
+    $current = $this;
+    $names = array($current->data['name']);
+    while ($current->parent !== null) {
+      array_unshift($names, $current->parent->data['name']);
+      $current = $current->parent;
+    }
+    $links = array();
+    $parentLink = '/';
+    foreach ($names as $name) {
+      $parentLink = $parentLink.rawurlencode($name).'/';
+      $links[$name] = $parentLink;
+    }
+    return $links;
+  }
+
+  public function getName() {
+    return $this->data['name'];
+  }
+
   public function getDeleteLink() {
     return 'http://contributor.wj.com/category?id='.$this->data['id'];
   }
