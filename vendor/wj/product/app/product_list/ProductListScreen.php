@@ -4,7 +4,7 @@ class ProductListScreen extends Screen {
     $breadcrumb = new Breadcrumb;
     $breadcrumb->render();
     foreach (Product::getList() as $product) {
-      echo '<div><a href="'.$product['path'].'/">'.$product['name'].'</a></div>';
+      echo '<div><a href="'.$product['path'].'">'.$product['name'].'</a></div>';
     }
   }
 }
