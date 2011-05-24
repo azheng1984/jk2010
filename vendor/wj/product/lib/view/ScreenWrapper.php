@@ -11,6 +11,7 @@ class ScreenWrapper {
     echo '<head>';
     echo '<title>货比万家</title>';
     echo '<script src="/js/std.js"></script>';
+    echo '<style>a {color:#36C}</style>';
     echo '</head>';
   }
 
@@ -24,7 +25,7 @@ class ScreenWrapper {
   }
 
   private function renderLogo() {
-    echo '<div class="logo"><a href="/">货比万家</a> LAB</div>';
+    echo '<div class="logo"><a href="/">货比万家</a> <span style="color:#ff6600">Lab</span></div>';
   }
 
   private function renderSearch() {
