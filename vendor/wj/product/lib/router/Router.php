@@ -15,11 +15,7 @@ class Router {
         $this->parseCategoryPath($section);
         continue;
       }
-      if ($this->path === '/product_list') {
-        $this->parseProductPath($section);
-        continue;
-      }
-      $this->parsePropertyPath($section);
+      $this->parseProductPath($section);
     }
     return $this->path;
   }
@@ -38,12 +34,6 @@ class Router {
     $product = Product::get($section, $this->getContext('category'));
     $this->setContext('product', $product);
     $this->path = '/product';
-  }
-
-  private function parsePropertyPath($section) {
-    $property = Property::get($section, $this->getContext('product'));
-    $this->setContext('property', $property);
-    $this->path = '/property';
   }
 
   private function setContext($key, $value) {
