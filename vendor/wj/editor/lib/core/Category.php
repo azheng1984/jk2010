@@ -15,7 +15,8 @@ class Category {
   public function getParentLinkList() {
     $current = $this;
     $names = array($current->data['name']);
-    while ($current->parent !== null) {
+    while ($current->data['parent_id'] !== null) {
+      $current->parent = self::getById($this->data['parent_id']);
       array_unshift($names, $current->parent->data['name']);
       $current = $current->parent;
     }
@@ -26,6 +27,10 @@ class Category {
       $links[$name] = $parentLink;
     }
     return $links;
+  }
+
+  public function getId() {
+    return $this->data['id'];
   }
 
   public function getName() {
@@ -76,6 +81,16 @@ class Category {
     $data = $statement->fetch();
     if ($data !== false) {
       return new Category($data, $parent);
+    }
+  }
+
+  public static function getById($id) {
+    $sql = "select * from global_category where id=?";
+    $statement = Db::get($sql);
+    $statement->execute(array($id));
+    $data = $statement->fetch();
+    if ($data !== false) {
+      return new Category($data, null);
     }
   }
 
