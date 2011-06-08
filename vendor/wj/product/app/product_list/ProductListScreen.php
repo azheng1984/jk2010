@@ -38,6 +38,7 @@ class ProductListScreen extends Screen {
   }
 
   private function search($filters) {
+    require_once 'sphinxapi.php';;
     $s = new SphinxClient;
     $s->setServer("localhost", 9312);
     $s->setMaxQueryTime(3);

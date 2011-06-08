@@ -1,6 +1,7 @@
 <?php
 class ScreenWrapper {
   public function render($content) {
+    header('Content-Type:text/html; charset=utf-8');
     echo '<html>';
     $this->renderHead();
     $this->renderBody($content);

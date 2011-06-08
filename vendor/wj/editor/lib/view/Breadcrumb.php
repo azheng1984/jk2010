@@ -2,34 +2,18 @@
 class Breadcrumb {
   public function render() {
     echo '<a href="/">首页</a> ';
-    $category = Category::getById($_GET['id']);
+    $categoryId = isset($_GET['category_id']) ? $_GET['category_id'] : $_GET['id'];
+    $category = Category::getById($categoryId);
     $categories = $category->getParentLinkList();
-    print_r($categories);
     $distance = count($categories) - 1;
-    foreach ($categories as $name => $item) {
+    foreach ($categories as $item) {
+      $name = $item[0];
       if ($name == $category->getName()) {
         echo ' &gt; <b>'.$name.'</b> ';
       } else {
-        echo ' &gt; <a href="'.$this->getPath($distance).'">'.$name.'</a> ';
+        echo ' &gt; <a href="category?id='.$item[1].'">'.$name.'</a> ';
       }
       --$distance;
     }
-    /*
-    foreach ($_GET['category'] as $cateory) {
-      echo ' &gt; <b>'.$cateory['name'].'</b> ';
-    }
-    */
-  }
-
-  private function getPath($distance) {
-    $path = '';
-    while ($distance > 0) {
-      if ($path !== '') {
-        $path .= '/';
-      }
-      $path .= '..';
-      --$distance;
-    }
-    return $path;
   }
 }
