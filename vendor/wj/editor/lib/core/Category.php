@@ -14,19 +14,13 @@ class Category {
 
   public function getParentLinkList() {
     $current = $this;
-    $names = array($current->data['name']);
+    $names = array(array($current->data['name'], $current->data['id']));
     while ($current->data['parent_id'] !== null) {
-      $current->parent = self::getById($this->data['parent_id']);
-      array_unshift($names, $current->parent->data['name']);
+      $current->parent = self::getById($current->data['parent_id']);
       $current = $current->parent;
+      array_unshift($names, array($current->data['name'], $current->data['id']));
     }
-    $links = array();
-    $parentLink = '/';
-    foreach ($names as $name) {
-      $parentLink = $parentLink.rawurlencode($name).'/';
-      $links[$name] = $parentLink;
-    }
-    return $links;
+    return $names;
   }
 
   public function getId() {
@@ -88,7 +82,7 @@ class Category {
     $sql = "select * from global_category where id=?";
     $statement = Db::get($sql);
     $statement->execute(array($id));
-    $data = $statement->fetch();
+    $data = $statement->fetch(PDO::FETCH_ASSOC);
     if ($data !== false) {
       return new Category($data, null);
     }

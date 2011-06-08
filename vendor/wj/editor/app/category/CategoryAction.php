@@ -11,9 +11,8 @@ class CategoryAction {
     } else {
       $parentId = null;
       if (isset($_GET['category'])) {
-        $currentCategory = end($_GET['category']);
-        Category::save($_POST['name'], $currentCategory['id']);
-        $parentId = $currentCategory['id'];
+        Category::save($_POST['name'], $_POST['parent_id']);
+        $parentId = $_POST['parent_id'];
       } else {
         $_GET['category'] = array();
         Category::save($_POST['name']);

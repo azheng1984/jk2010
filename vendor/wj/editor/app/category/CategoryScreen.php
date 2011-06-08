@@ -3,7 +3,7 @@ class CategoryScreen extends Screen {
   public function renderContent() {
     $breadcrumb = new Breadcrumb;
     $breadcrumb->render();
-    echo '[<a href="/category/edit?id=">编辑</a> | <a href="category/new?parent_id=">新建分类</a>]';
+    echo '[<a href="/category/edit?id='.$_GET['id'].'">编辑</a> | <a href="category/new?parent_id='.$_GET['id'].'">新建分类</a>]';
     echo '<br />';
     $isLeaf = true;
     //Category::getById();
