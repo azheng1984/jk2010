@@ -20,6 +20,8 @@ class ScreenWrapper {
     $this->renderLogo();
     $this->renderSearch();
     //$this->renderToolbar();
+    $breadcrumb = new Breadcrumb;
+    $breadcrumb->render();
     $content->renderContent();
     //$this->renderFooterLeft();
     //$this->renderFooterRight();

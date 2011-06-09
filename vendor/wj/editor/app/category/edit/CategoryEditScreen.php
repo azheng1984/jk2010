@@ -4,8 +4,7 @@ class CategoryEditScreen extends Screen {
     //$breadcrumb = new Breadcrumb;
     //$breadcrumb->render();
     $currentCategory = Category::getById($_GET['id']);
-    echo '<form method="POST" action=".">';
-    echo '<input type="hidden" name="_method" value="PUT">';
+    echo '<form method="POST" action="/category?id='.$_GET['id'].'">';
     echo '<input type="hidden" name="type" value="category">';
     echo '<input name="id" type="hidden" value="'.$currentCategory->getId().'" />';
     echo '<input name="name" type="text" value="'.$currentCategory->getName().'" />';
