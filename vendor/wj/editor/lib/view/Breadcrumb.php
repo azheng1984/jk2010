@@ -1,6 +1,9 @@
 <?php
 class Breadcrumb {
   public function render() {
+    if (!isset($_GET['category_id']) && !isset($_GET['id'])) {
+      return;
+    }
     echo '<a href="/">首页</a> ';
     $categoryId = isset($_GET['category_id']) ? $_GET['category_id'] : $_GET['id'];
     $category = Category::getById($categoryId);

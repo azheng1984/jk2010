@@ -88,13 +88,25 @@ class Category {
     }
   }
 
-  public static function save($name, $parentId) {
+  public static function update($id , $name) {
+    $sql = "update global_category set name=? where id=?";
+    $command = Db::get($sql);
+    $command->execute(array($name, $id));
+  }
+
+  public static function save($name, $parentId = 'null') {
     $parent = 'null';
     if ($parentId !== null) {
       $parent = "'$parentId'";
     }
     $sql = "insert into global_category(name, parent_id) values('$name', $parent)";
-    Db::execute($sql);
-    $_GET['category'][] = self::get($name);
+    $command = Db::get($sql);
+    $command->execute();
+  }
+
+  public static function delete($id) {
+    $sql = "delete from global_category where id=?";
+    $command = Db::get($sql);
+    $command->execute(array($id));
   }
 }
