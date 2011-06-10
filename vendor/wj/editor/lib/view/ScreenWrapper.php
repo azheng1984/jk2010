@@ -25,12 +25,12 @@ class ScreenWrapper {
     $content->renderContent();
     //$this->renderFooterLeft();
     //$this->renderFooterRight();
-    echo '<div>&copy; 2011 货比万家</div>';
+    echo '<div>&copy; 2011 货比万家 </div>';
     echo '</body>';
   }
 
   private function renderLogo() {
-    echo '<div><a href="/">货比万家</a> lab</div>';
+    echo '<div><a href="/">货比万家</a>  <span style="color:#ff6600">Editor</span></div>';
   }
 
   private function renderSearch() {
