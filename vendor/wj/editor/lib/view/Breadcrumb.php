@@ -11,10 +11,10 @@ class Breadcrumb {
     $distance = count($categories) - 1;
     foreach ($categories as $item) {
       $name = $item[0];
-      if ($name == $category->getName()) {
+      if ($name == $category->getName() && !isset($_GET['category_id'])) {
         echo ' &gt; <b>'.$name.'</b> ';
       } else {
-        echo ' &gt; <a href="category?id='.$item[1].'">'.$name.'</a> ';
+        echo ' &gt; <a href="/category?id='.$item[1].'">'.$name.'</a> ';
       }
       --$distance;
     }

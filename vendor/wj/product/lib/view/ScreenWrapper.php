@@ -26,7 +26,7 @@ class ScreenWrapper {
   }
 
   private function renderLogo() {
-    echo '<div class="logo"><a href="/">货比万家</a> <span style="color:#ff6600">Lab</span></div>';
+    echo '<div class="logo"><a href="/">货比万家</a> <span style="color:#ff6600">Product</span></div>';
   }
 
   private function renderSearch() {
