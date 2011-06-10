@@ -1,8 +1,6 @@
 <?php
 class CategoryAction {
-  public function DELETE() {
-    Category::delete($_POST['id']);
-  }
+  public function GET() {}
 
   public function POST() {
     if (isset($_POST['id'])) { //put/delete
@@ -31,5 +29,7 @@ class CategoryAction {
     }
   }
 
-  public function GET() {}
+  public function DELETE() {
+    Category::delete($_POST['id']);
+  }
 }
