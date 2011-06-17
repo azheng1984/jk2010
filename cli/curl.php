@@ -5,7 +5,7 @@ curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
 $header = array();
 $header []= 'Accept: */*';
 $header []= 'Accept-Language: zh-cn';
-$header []= 'User-Agent: (compatible; bingbot/2.0 +http://www.bing.com/bingbot.htm)';
+$header []= 'User-Agent: Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)';
 curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 for ($count = 0; $count < 5; ++$count) {
   ob_start();
