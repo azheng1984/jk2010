@@ -2,7 +2,7 @@
 class WebClient {
   private $handlers = array();
 
-  public function execute($domain, $path = '/') {
+  public function execute($domain, $path = '/', $method = 'GET') {
     $handler = $this->getHandler($domain);
     curl_setopt($handler, CURLOPT_URL, 'http://'.$domain.$path);
     $content = curl_exec($handler);
