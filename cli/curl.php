@@ -27,19 +27,11 @@ $connection = new PDO(
   array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")
 );
 require 'WebClient.php';
+require 'Cateogry.php';
 $client = new WebClient;
+$category = new Category;
 foreach ($startPoint['www.360buy.com'] as $key => $url) {
-  $stat = $connection->prepare("select * from category where `name` = '$key' and parent_id is null");
-  $stat->execute();
-  $result = $stat->fetch(PDO::FETCH_ASSOC);
-  $rootCategroyId = null;
-  if ($result === false) {
-    $stat = $connection->prepare("insert into category(`name`) values('$key')");
-    $stat->execute();
-    $rootCategroyId = $connection->lastInsertId();
-  } else {
-    $rootCategroyId = $result['id'];
-  }
+  $rootCategroyId = $category->getOrNewId($key);
   $result = $client->execute('www.360buy.com', $url);
   $html = $result['content'];
   $matches = array();
@@ -51,7 +43,7 @@ foreach ($startPoint['www.360buy.com'] as $key => $url) {
   $count = count($matches[1]);
   $list = array();
   for ($index = 1; $index < $count; ++$index) {
-    $list[iconv('gb2312', 'utf-8', $matches[2][$index])] = $matches[1][$index];
+    $list[iconv('gbk', 'utf-8', $matches[2][$index])] = $matches[1][$index];
   }
   $productIds = array();
   foreach ($list as $id) {
@@ -62,7 +54,7 @@ foreach ($startPoint['www.360buy.com'] as $key => $url) {
     $categoryId = $rootCategroyId;
     $amount = count($matches[1]);
     for ($index = 1; $index < $amount; ++$index) {
-      $categoryName = iconv('gb2312', 'utf-8', $matches[1][$index]);
+      $categoryName = iconv('gbk', 'utf-8', $matches[1][$index]);
       $stat = $connection->prepare("select * from category where `name` = '$categoryName' and parent_id=$categoryId");
       $stat->execute();
       $result = $stat->fetch(PDO::FETCH_ASSOC);
@@ -74,6 +66,15 @@ foreach ($startPoint['www.360buy.com'] as $key => $url) {
         $categoryId = $result['id'];
       }
     }
+    $sql = "select * from `list` where category_id=$categoryId and property is null and page=1";
+    $stat = $connection->prepare($sql);
+    $stat->execute();
+    $result = $stat->fetch(PDO::FETCH_ASSOC);
+    if ($result === false) {
+      $sql = "insert into `list`(page, category_id, raw_content) values(1, $categoryId, ?)";
+      $stat = $connection->prepare($sql);
+      $stat->execute(array(gzcompress($html)));
+    }
     preg_match_all(
       "{<div class='p-img'><a target='_blank' href='http://www.360buy.com/product/([0-9]+).html'>}",
       $html,
@@ -82,15 +83,22 @@ foreach ($startPoint['www.360buy.com'] as $key => $url) {
     foreach ($matches[1] as $id) {
       $result = $client->execute('www.360buy.com', '/product/'.$id.'.html');
       $html = $result['content'];
+      
       preg_match_all(
         "{<h1>(.*?)(<font.*?)?</h1>}",
         $html,
         $matches
       );
-      $sql = "insert into product(id, `title`, category_id, raw_content) values($id, ?, $categoryId, ?)";
+
+      $sql = "select * from product where id=$id";
       $stat = $connection->prepare($sql);
-      var_dump($stat->execute(array(iconv('gb2312', 'utf-8',$matches[1][0]), gzcompress($html))));
-      var_dump($stat->errorInfo());
+      $stat->execute();
+      $result = $stat->fetch(PDO::FETCH_ASSOC);
+      if ($result === false) {
+        $sql = "insert into product(id, `title`, category_id, raw_content) values($id, ?, $categoryId, ?)";
+        $stat = $connection->prepare($sql);
+        $stat->execute(array(iconv('gbk', 'utf-8', $matches[1][0]), gzcompress($html)));
+      }
       echo $matches[1][0]."\n";
       break;
     }
