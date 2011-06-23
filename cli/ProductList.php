@@ -1,14 +1,14 @@
 <?php
-class ProductList extends Database {
-  public function insert($categoryId, $property, $page, $html) {
-    $connection = new DatabaseConnection;
+class ProductList extends Db {
+  public function insert($categoryId, $propertyValueId, $page, $html) {
+    $connection = new DbConnection;
     $sql = "select * from `list` where category_id=$categoryId and "
-      .$this->getFilter('property', $property)." and page=$page";
+      .$this->getFilter('property_value_id', $propertyValueId, true)." and page=$page";
     $row = $connection->getRow($sql);
     if ($row === false) {
-      $sql = "insert into `list`(page, property, category_id, html)"
-        ." values($page, ?, $categoryId, ?)";
-      $connection->executeNonQuery($sql, array($property, gzcompress($html)));
+      $sql = "insert into `list`(page, property_value_id, category_id, html)"
+        ." values($page, $propertyValueId, $categoryId, ?)";
+      $connection->executeNonQuery($sql, array(gzcompress($html)));
     }
   }
 }

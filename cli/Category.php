@@ -1,7 +1,7 @@
 <?php
-class Category extends Database {
+class Category extends Db {
   public function getOrNewId($name, $parentId = null) {
-    $connection = new DatabaseConnection;
+    $connection = new DbConnection;
     $sql = "select * from category where `name` = '$name' and "
       .$this->getFilter('parent_id', $parentId);
     $row = $connection->getRow($sql);
