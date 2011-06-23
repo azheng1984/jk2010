@@ -52,10 +52,23 @@ foreach ($startPoint['www.360buy.com'] as $key => $url) {
       '{<div id="select" [\s|\S]*<!--select end -->}', $html, $matches
     );
     if (count($matches) > 0) {
-      $section = $matches[0];
+      $section = iconv('gbk', 'utf-8', $matches[0]);
       preg_match_all(
         '{<dl.*?</dl>}', $section, $matches
       );
+      foreach ($matches[0] as $item) {
+        preg_match_all(
+          "{<dt>(.*?)</dt>}", $item, $matches
+        );
+        print_r($matches);
+        preg_match_all(
+          "{<a.*?href='(.*?)'.*?>(.*?)</a>}", $item, $matches
+        );
+        print_r($matches);
+      }
+    }
+    preg_match('{<a href="http://www\.360buy\.com(/plistSearch\.aspx.*?)">}', $html, $matches);
+    if (count($matches) > 0) {
       print_r($matches);
     }
     exit;
