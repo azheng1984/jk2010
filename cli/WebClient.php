@@ -2,15 +2,19 @@
 class WebClient {
   private $handlers = array();
 
-  public function execute(
-    $domain, $path = '/', $method = 'GET', $uploadData = null
-  ) {
+  public function get($domain, $path = '/') {
     $handler = $this->getHandler($domain);
     curl_setopt($handler, CURLOPT_URL, 'http://'.$domain.$path);
     $content = curl_exec($handler);
     $result = curl_getinfo($handler);
     $result['content'] = $content;
     return $result;
+  }
+
+  public function post($domain, $path = '/', $uploadData = array()) {
+    $handler = $this->getHandler($domain);
+    curl_setopt($handler, CURLOPT_POST, count($uploadData));
+    curl_setopt($handler, CURLOPT_POSTFIELDS, implode('&', $uploadData));
   }
 
   public function close() {
