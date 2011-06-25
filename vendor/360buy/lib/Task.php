@@ -1,13 +1,13 @@
 <?php
 class Task extends Db {
-  private $current = null;
+  private $current;
 
   public function get() {
     return $this->current;
   }
 
   public function moveToNext() {
-    $sql = "select * from task limit 1";
+    $sql = "select * from task order by id desc limit 1";
     $connection = new DbConnection;
     $result = $connection->getRow($sql);
     if ($result === false) {
@@ -18,9 +18,15 @@ class Task extends Db {
     return true;
   }
 
-  public function add($type, $domain, $path) {
-    $sql = "insert into task(type, domain, path)"
-      ." values('$type', '$domain', '$path')";
+  public function add($type, $domain, $path, $content = null) {
+    $sql = "insert into task(type, domain, path, content)"
+      ." values('$type', '$domain', '$path', ?)";
+    $connection = new DbConnection;
+    $connection->executeNonQuery($sql, array($content));
+  }
+
+  public function remove($id) {
+    $sql = "delete from task where id=$id";
     $connection = new DbConnection;
     $connection->executeNonQuery($sql);
   }

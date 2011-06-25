@@ -32,7 +32,9 @@ class MainCommand {
       $this->initialize($task);
     }
     while ($task->moveToNext() !== false) {
-      $this->dispatch($task->get());
+      $item = $task->get();
+      $this->dispatch($item);
+      $task->remove($item['id']);
     }
   }
 
@@ -40,7 +42,7 @@ class MainCommand {
     foreach ($this->categoryListLinks as $type => $item) {
       foreach ($item as $domain => $pathes) {
         foreach ($pathes as $name => $path) {
-          $task->add($domain, $path, $type);
+          $task->add($type, $domain, $path, $name);
         }
       }
     }
@@ -49,6 +51,6 @@ class MainCommand {
   private function dispatch($task) {
     $class = $task['type'].'Parser';
     $parser = new $class;
-    $parser->execute($task['id'], $task['domain'], $task['url']);
+    $parser->execute($task['domain'], $task['path'], $task['arguments']);
   }
 }
