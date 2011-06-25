@@ -1,5 +1,5 @@
 <?php
-class DefaultCommand {
+class MainCommand {
   private $categoryListLinks = array(
     'PublicationCategoryList' => array(
       'book.360buy.com' => array(
@@ -37,7 +37,13 @@ class DefaultCommand {
   }
 
   private function initialize($task) {
-    $task->add('');
+    foreach ($this->categoryListLinks as $type => $item) {
+      foreach ($item as $domain => $pathes) {
+        foreach ($pathes as $name => $path) {
+          $task->add($domain, $path, $type);
+        }
+      }
+    }
   }
 
   private function dispatch($task) {

@@ -1,2 +1,2 @@
 <?php
-return 'DefaultCommand';
+return 'MainCommand';
