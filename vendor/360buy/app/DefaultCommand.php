@@ -1,5 +1,5 @@
 <?php
-class Spider {
+class DefaultCommand {
   private $categoryListLinks = array(
     'PublicationCategoryList' => array(
       'book.360buy.com' => array(
