@@ -1,7 +1,9 @@
 <?php
-class ProductListParser {
-  public function execute($client, $category, $id) {
-    $result = $client->get('www.360buy.com', '/products/'.$id.'.html');
+class ProductListProcessor {
+  public function execute($arguments) {
+    $client = new WebClient;
+    $category = new Category;
+    $result = $client->get('www.360buy.com', '/products/'.$arguments['id'].'.html');
     $html = $result['content'];
     $matches = array();
     preg_match(
@@ -33,6 +35,7 @@ class ProductListParser {
       '{&gt;&nbsp;<a .*?www.360buy.com.*?">(.*?)</a>}', $html, $matches
     );
     $amount = count($matches[1]);
+    $categoryId = $arguments['category_id'];
     for ($index = 1; $index < $amount; ++$index) {
       $categoryName = iconv('gbk', 'utf-8', $matches[1][$index]);
       $categoryId = $category->getOrNewId($categoryName, $categoryId);
@@ -51,6 +54,12 @@ class ProductListParser {
       $html,
       $matches
     );
-    return $productIds;
+    foreach ($productIds as $id) {
+      $this->getProductPage($id);
+    }
+  }
+
+  private function getProductPage($id) {
+    
   }
 }
