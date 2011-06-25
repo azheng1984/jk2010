@@ -1,7 +1,4 @@
 <?php
-$spider = new Spider;
-$spider->execute();
-
 $categoryListUrl = array(
   'book.360buy.com' => array(
     '图书' => '/book/booksort.aspx',
@@ -23,9 +20,7 @@ $categoryListUrl = array(
     '食品饮料、保健品' => '/food.html',
   ),
 );
-require '../../vendor/cli/WebClient.phpent.php';
-re../../vendor/cli/DbConnection.phpConnection.ph../../vendor/cli/Db.php '../../cli/db/Db.php';
-require ../../vendor/cli/Produc../../vendor/cli/Product.phpgory.php';../../cli/db/ProductList.phpuctList.php';../../cli/db/Product.phpProduct.php';
+
 $client = new WebClient;
 $category = new Category;
 foreach ($categoryListUrl['www.360buy.com'] as $key => $url) {
