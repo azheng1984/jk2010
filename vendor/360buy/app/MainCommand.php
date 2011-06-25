@@ -42,15 +42,17 @@ class MainCommand {
     foreach ($this->categoryListLinks as $type => $item) {
       foreach ($item as $domain => $pathes) {
         foreach ($pathes as $name => $path) {
-          $task->add($type, $domain, $path, $name);
+          $task->add(
+            $type, array('name' => $name, 'path' => $path, 'domain' => $domain)
+          );
         }
       }
     }
   }
 
   private function dispatch($task) {
-    $class = $task['type'].'Parser';
+    $class = $task['type'].'Processor';
     $parser = new $class;
-    $parser->execute($task['domain'], $task['path'], $task['arguments']);
+    $parser->execute($task['arguments']);
   }
 }

@@ -1,5 +1,5 @@
 <?php
-class Task extends Db {
+class Task {
   private $current;
 
   public function get() {
@@ -14,15 +14,16 @@ class Task extends Db {
       $this->current = null;
       return false;
     }
+    $result['arguments'] = eval('return '.$result['arguments'].';');
     $this->current = $result;
     return true;
   }
 
-  public function add($type, $domain, $path, $content = null) {
-    $sql = "insert into task(type, domain, path, content)"
-      ." values('$type', '$domain', '$path', ?)";
+  public function add($type, $arguments = array()) {
+    $sql = "insert into task(type, arguments)"
+      ." values('$type', ?)";
     $connection = new DbConnection;
-    $connection->executeNonQuery($sql, array($content));
+    $connection->executeNonQuery($sql, array(var_export($arguments, true)));
   }
 
   public function remove($id) {
@@ -35,9 +36,6 @@ class Task extends Db {
     $sql = "select count(*) from task";
     $connection = new DbConnection;
     $result = $connection->getRow($sql);
-    if ($result[0] === 0) {
-      return true;
-    }
-    return false;
+    return $result['count(*)'] === '0';
   }
 }
