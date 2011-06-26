@@ -16,9 +16,10 @@ class CategoryListProcessor {
     $task = new Task;
     for ($index = 1; $index < $count; ++$index) {
       $task->add('ProductList', array(
-        'id' => $matches[1][$index],
-        'category_id' => $categoryId,
-        'name' => iconv('gbk', 'utf-8', $matches[2][$index])
+        'path' => $matches[1][$index],
+        'root_category_id' => $categoryId,
+        'name' => iconv('gbk', 'utf-8', $matches[2][$index]),
+        'page' => 1
       ));
     }
   }
