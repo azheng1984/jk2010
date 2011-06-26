@@ -1,13 +1,12 @@
 <?php
-class Product {
+class Product extends Db {
   public function insert($id, $categoryId, $title, $html) {
-    $conncetion = new DbConnection;
-    $sql = "select * from `product` where id=$id";
-    $row = $conncetion->getRow($sql);
+    $sql = "select * from product where id=$id";
+    $row = $this->getRow($sql);
     if ($row === false) {
-      $sql = "insert into `product`(id, category_id, `title`, html)"
+      $sql = "insert into product(id, category_id, title, html)"
         ." values($id, $categoryId, '$title', ?)";
-      $conncetion->executeNonQuery($sql, array(gzcompress($html)));
+      $this->executeNonQuery($sql, array(gzcompress($html)));
     }
   }
 }
