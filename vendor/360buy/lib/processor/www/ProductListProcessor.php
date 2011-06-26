@@ -46,6 +46,9 @@ class ProductListProcessor {
           "{<dt>(.*?)：</dt>}", $item, $matches
         );
         $key = $matches[1][0];
+        if ($key === '价格') {
+          continue;
+        }
         preg_match_all(
           "{<a.*?href='(.*?)'.*?>(.*?)</a>}", $item, $matches
         );
