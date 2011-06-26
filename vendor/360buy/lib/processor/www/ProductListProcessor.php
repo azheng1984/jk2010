@@ -50,7 +50,7 @@ class ProductListProcessor {
           continue;
         }
         preg_match_all(
-          "{<a.*?href='(.*?)'.*?>(.*?)</a>}", $item, $matches
+          "{<a.*?href='(.*?).html'.*?>(.*?)</a>}", $item, $matches
         );
         $valueLinkList = $matches[1];
         $valueList = $matches[2];
@@ -59,7 +59,7 @@ class ProductListProcessor {
         $keyId = $property->getOrNewKeyId($this->categoryId, $key);
         for ($index = 0; $index < $valueAmount; ++$index) {
           $value = $valueList[$index];
-          if ($value === '全部') {
+          if ($value === '全部' || $value === '其它') {
             continue;
           }
           $valueId = $property->getOrNewValueId($keyId, $valueList[$index]);
@@ -76,13 +76,13 @@ class ProductListProcessor {
 
   private function parseAdvencedProperty() {
     preg_match(
-      '{<a href="http://www\.360buy\.com(/plistSearch\.aspx.*?)">}',
+      '{<a href="http://www\.360buy\.com/plistSearch\.aspx(.*?)">}',
       $this->html,
       $matches
     );
     if (count($matches) > 0) {
       $this->task->add('AdvencedPropertyList', array(
-        'path' => $matches[0],
+        'path' => $matches[1],
         'category_id' => $this->categoryId,
       ));
     }
@@ -134,7 +134,7 @@ class ProductListProcessor {
     if (count($matches) > 0) {
       $page = $this->page + 1;
       $this->task->add('ProductList', array(
-        'path' => $matches[0],
+        'path' => $matches[1],
         'category_id' => $this->categoryId,
         'name' => $this->name,
         'page' => $page
