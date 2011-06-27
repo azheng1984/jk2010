@@ -19,7 +19,6 @@ class ProductListProcessor {
     $this->saveContent();
     if ($this->page === 1) {
       $this->parsePropertyList();
-      $this->parseAdvencedProperty();
     }
     $this->parseProductList();
     $this->parseNextPage();
@@ -28,7 +27,7 @@ class ProductListProcessor {
 
   private function saveContent() {
     $productList = new ProductList;
-    $productList->insert($this->categoryId, null, 1, $this->html);
+    $productList->insert($this->categoryId, null, $this->page, $this->html);
   }
 
   private function parsePropertyList() {

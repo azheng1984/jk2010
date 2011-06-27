@@ -22,7 +22,7 @@ class PropertyProductListProcessor {
 
   private function saveContent() {
     $productList = new ProductList;
-    $productList->insert($this->categoryId, $this->valueId, $this->html);
+    $productList->insert($this->categoryId, $this->valueId, $this->page, $this->html);
   }
 
   private function parseNextPage() {
