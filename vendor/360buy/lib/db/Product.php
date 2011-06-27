@@ -9,4 +9,11 @@ class Product extends Db {
       $this->executeNonQuery($sql, array(gzcompress($html)));
     }
   }
+
+  public function updatePrice($id, $listPrice, $price, $promotionPrice) {
+    $sql = 'update product set list_price='
+      ."$listPrice, price=$price, promotion_price=$promotionPrice"
+      ." where id=$id";
+    $this->executeNonQuery($sql);
+  }
 }
