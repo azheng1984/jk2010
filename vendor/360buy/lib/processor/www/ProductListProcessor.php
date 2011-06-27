@@ -74,20 +74,6 @@ class ProductListProcessor {
     }
   }
 
-  private function parseAdvencedProperty() {
-    preg_match(
-      '{<a href="http://www\.360buy\.com/plistSearch\.aspx(.*?)">}',
-      $this->html,
-      $matches
-    );
-    if (count($matches) > 0) {
-      $this->task->add('AdvencedPropertyList', array(
-        'path' => $matches[1],
-        'category_id' => $this->categoryId,
-      ));
-    }
-  }
-
   private function parseBreadcrumb($arguments) {
     if (isset($arguments['category_id'])) {
       $this->categoryId = $arguments['category_id'];

@@ -3,18 +3,16 @@ class WebClient {
   private $handlers = array();
 
   public function get($domain, $path = '/') {
-    $handler = $this->getHandler($domain);
-    curl_setopt($handler, CURLOPT_URL, 'http://'.$domain.$path);
-    $content = curl_exec($handler);
-    $result = curl_getinfo($handler);
-    $result['content'] = $content;
-    return $result;
+    $handler = $this->getHandler($domain, $path);
+    curl_setopt($handler, CURLOPT_HTTPGET, true);
+    return $this->execute($handler);
   }
 
-  public function post($domain, $path = '/', $uploadData = array()) {
-    $handler = $this->getHandler($domain);
-    curl_setopt($handler, CURLOPT_POST, count($uploadData));
-    curl_setopt($handler, CURLOPT_POSTFIELDS, implode('&', $uploadData));
+  public function post($domain, $path = '/', $uploadData = null) {
+    $handler = $this->getHandler($domain, $path);
+    curl_setopt($handler, CURLOPT_POST, true);
+    curl_setopt($handler, CURLOPT_POSTFIELDS, $uploadData);
+    return $this->execute($handler);
   }
 
   public function close() {
@@ -24,7 +22,7 @@ class WebClient {
     $this->handlers = array();
   }
 
-  private function getHandler($domain) {
+  private function getHandler($domain, $path) {
     if (!isset($this->handlers[$domain])) {
       $handler = curl_init();
       curl_setopt($handler, CURLOPT_ENCODING, 'gzip');
@@ -39,6 +37,15 @@ class WebClient {
       curl_setopt($handler, CURLOPT_HTTPHEADER, $header);
       $this->handlers[$domain] = $handler;
     }
-    return $this->handlers[$domain];
+    $handler = $this->handlers[$domain];
+    curl_setopt($handler, CURLOPT_URL, 'http://'.$domain.$path);
+    return $handler;
+  }
+
+  private function execute($handler) {
+    $content = curl_exec($handler);
+    $result = curl_getinfo($handler);
+    $result['content'] = $content;
+    return $result;
   }
 }
