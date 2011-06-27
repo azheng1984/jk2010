@@ -9,11 +9,19 @@ class PublicationProductProcessor {
     $product->insert(
       $arguments['id'], $arguments['category_id'], $result['content']
     );
-    $this->getImage();
+    $matches = array();
+    preg_match(
+      'src="http://(.*?)/(.*?)" width="280" height="280"',
+       $result['content'],
+       $matches
+    );
+    $this->task = new Task();
+    $this->task->add('Image', array(
+      'id' => $arguments['id'],
+      'category_id' => $arguments['category_id'],
+      'domain' => $matches[0][1],
+      'path' => $matches[0][2],
+    ));
     exit;
-  }
-
-  private function getImage() {
-    
   }
 }
