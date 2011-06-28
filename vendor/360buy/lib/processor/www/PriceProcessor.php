@@ -1,20 +1,18 @@
 <?php
 class PriceProcessor {
   public function execute($arguments) {
-    $client = new WebClient;
-    $result = $client->get(
+    $result = WebClient::get(
       'jd2008.360buy.com',
       '/purchase/minicartservice.aspx?method=GetCart',
       'yCartOrderLogic={&TheSkus&:[{&Id&:'.$arguments['id'].'$&Num&:1}]};'
     );
-    $product = new Product;
     $matches = array();
     preg_match(
       '"ListPrice":(.*?),"Price":(.*?),.*?"PromotionPrice":(.*?),',
       $result['content'],
       $matches
     );
-    $product->updatePrice(
+    DbProduct::updatePrice(
       $arguments['id'], $matches[0][1], $matches[0][1], $matches[0][1]
     );
   }

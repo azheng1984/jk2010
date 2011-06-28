@@ -4,17 +4,14 @@ class ProductListProcessor {
   private $name;
   private $page;
   private $categoryId;
-  private $task;
 
   public function execute($arguments) {
-    $client = new WebClient;
-    $result = $client->get(
+    $result = WebClient::get(
       'www.360buy.com', '/products/'.$arguments['path'].'.html'
     );
     $this->page = $arguments['page'];
     $this->html = $result['content'];
     $this->name = $arguments['name'];
-    $this->task = new Task;
     $this->parseBreadcrumb($arguments);
     $this->saveContent();
     if ($this->page === 1) {
@@ -22,12 +19,10 @@ class ProductListProcessor {
     }
     $this->parseProductList();
     $this->parseNextPage();
-    exit;
   }
 
   private function saveContent() {
-    $productList = new ProductList;
-    $productList->insert($this->categoryId, null, $this->page, $this->html);
+    DbProductList::insert($this->categoryId, null, $this->page, $this->html);
   }
 
   private function parsePropertyList() {
@@ -54,15 +49,14 @@ class ProductListProcessor {
         $valueLinkList = $matches[1];
         $valueList = $matches[2];
         $valueAmount = count($valueList);
-        $property = new Property;
-        $keyId = $property->getOrNewKeyId($this->categoryId, $key);
+        $keyId = DbProperty::getOrNewKeyId($this->categoryId, $key);
         for ($index = 0; $index < $valueAmount; ++$index) {
           $value = $valueList[$index];
           if ($value === '全部' || $value === '其它') {
             continue;
           }
-          $valueId = $property->getOrNewValueId($keyId, $valueList[$index]);
-          $this->task->add('PropertyProductList', array(
+          $valueId = DbProperty::getOrNewValueId($keyId, $valueList[$index]);
+          DbTask::add('PropertyProductList', array(
             'path' => $valueLinkList[$index],
             'category_id' => $this->categoryId,
             'value_id' => $valueId,
@@ -82,12 +76,11 @@ class ProductListProcessor {
     preg_match_all(
       '{&gt;&nbsp;<a .*?www.360buy.com.*?">(.*?)</a>}', $this->html, $matches
     );
-    $category = new Category;
     $this->categoryId = $arguments['root_category_id'];
     $amount = count($matches[1]);
     for ($index = 1; $index < $amount; ++$index) {
       $categoryName = iconv('gbk', 'utf-8', $matches[1][$index]);
-      $this->categoryId = $category->getOrNewId(
+      $this->categoryId = DbCategory::getOrNewId(
         $categoryName, $this->categoryId
       );
     }
@@ -103,7 +96,7 @@ class ProductListProcessor {
     );
     $productIds = $matches[1];
     foreach ($productIds as $id) {
-      $this->task->add('Product', array(
+      DbTask::add('Product', array(
         'category_id' => $this->categoryId, 'id' => $id
       ));
     }
@@ -118,7 +111,7 @@ class ProductListProcessor {
     );
     if (count($matches) > 0) {
       $page = $this->page + 1;
-      $this->task->add('ProductList', array(
+      DbTask::add('ProductList', array(
         'path' => $matches[1],
         'category_id' => $this->categoryId,
         'name' => $this->name,

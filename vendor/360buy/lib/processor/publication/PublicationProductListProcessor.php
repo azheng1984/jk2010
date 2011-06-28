@@ -3,33 +3,28 @@ class PublicationProductListProcessor {
   private $html;
   private $page;
   private $categoryId;
-  private $task;
 
   public function execute($arguments) {
-    $client = new WebClient;
-    $result = $client->get(
+    $result = WebClient::get(
       'www.360buy.com', '/products/'.$arguments['path'].'.html'
     );
     $this->page = $arguments['page'];
     $this->html = $result['content'];
     $this->categoryId = $this->getCategoryId($arguments);
-    $this->task = new Task;
     $this->saveContent();
     $this->parseProductList();
     $this->parseNextPage();
   }
 
   private function saveContent() {
-    $productList = new ProductList;
-    $productList->insert($this->categoryId, null, $this->page, $this->html);
+    DbProductList::insert($this->categoryId, null, $this->page, $this->html);
   }
 
   private function getCategoryId($arguments) {
     if (isset($arguments['category_id'])) {
       return $arguments['category_id'];
     }
-    $category = new Category;
-    return $category->getOrNewId(
+    return DbCategory::getOrNewId(
       $arguments['name'], $arguments['parent_category_id']
     );
   }
@@ -44,7 +39,7 @@ class PublicationProductListProcessor {
     );
     $productIds = $matches[2];
     foreach ($productIds as $id) {
-      $this->task->add('PublicationProduct', array(
+      DbTask::add('PublicationProduct', array(
         'domain' => $matches[1][0],
         'category_id' => $this->categoryId,
         'id' => $id
@@ -61,7 +56,7 @@ class PublicationProductListProcessor {
     );
     if (count($matches) > 0) {
       $page = $this->page + 1;
-      $this->task->add('PublicationProductList', array(
+      DbTask::add('PublicationProductList', array(
         'path' => $matches[1],
         'category_id' => $this->categoryId,
         'page' => $page

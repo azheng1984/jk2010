@@ -1,12 +1,10 @@
 <?php
 class PublicationProductProcessor {
   public function execute($arguments) {
-    $client = new WebClient;
-    $result = $client->get(
+    $result = WebClient::get(
       $arguments['domain'].'.360buy.com', $arguments['id'].'.html'
     );
-    $product = new Product;
-    $product->insert(
+    DbProduct::insert(
       $arguments['id'], $arguments['category_id'], $result['content']
     );
     $matches = array();
@@ -15,8 +13,7 @@ class PublicationProductProcessor {
        $result['content'],
        $matches
     );
-    $this->task = new Task();
-    $this->task->add('Image', array(
+    DbTask::add('Image', array(
       'id' => $arguments['id'],
       'category_id' => $arguments['category_id'],
       'domain' => $matches[0][1],
