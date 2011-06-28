@@ -31,17 +31,17 @@ class MainCommand {
       $this->initialize();
     }
     while (DbTask::moveToNext() !== false) {
-      $item = DbTask::get();
-      $this->dispatch($item);
-      DbTask::remove($item['id']);
+      $task = DbTask::get();
+      $this->dispatch($task);
+      DbTask::remove($task['id']);
     }
   }
 
-  private function initialize($task) {
+  private function initialize() {
     foreach ($this->categoryListLinks as $type => $item) {
       foreach ($item as $domain => $pathes) {
         foreach ($pathes as $name => $path) {
-          $task->add(
+          DbTask::add(
             $type, array('name' => $name, 'path' => $path, 'domain' => $domain)
           );
         }
