@@ -1,31 +1,31 @@
 <?php
 class WebClient {
-  private $handlers = array();
+  private static $handlers = array();
 
-  public function get($domain, $path = '/', $cookie = null) {
-    $handler = $this->getHandler($domain, $path);
+  public static function get($domain, $path = '/', $cookie = null) {
+    $handler = self::getHandler($domain, $path);
     curl_setopt($handler, CURLOPT_HTTPGET, true);
-    return $this->execute($handler, $cookie);
+    return self::execute($handler, $cookie);
   }
 
-  public function post(
+  public static function post(
     $domain, $path = '/', $uploadData = null, $cookie = null
   ) {
-    $handler = $this->getHandler($domain, $path);
+    $handler = self::getHandler($domain, $path);
     curl_setopt($handler, CURLOPT_POST, true);
     curl_setopt($handler, CURLOPT_POSTFIELDS, $uploadData);
-    return $this->execute($handler, $cookie);
+    return self::execute($handler, $cookie);
   }
 
-  public function close() {
-    foreach ($this->handlers as $handler) {
+  public static function close() {
+    foreach (self::$handlers as $handler) {
       curl_close($handler);
     }
-    $this->handlers = array();
+    self::$handlers = array();
   }
 
-  private function getHandler($domain, $path) {
-    if (!isset($this->handlers[$domain])) {
+  private static function getHandler($domain, $path) {
+    if (!isset(self::$handlers[$domain])) {
       $handler = curl_init();
       curl_setopt($handler, CURLOPT_ENCODING, 'gzip');
       curl_setopt($handler, CURLOPT_TIMEOUT, 30);
@@ -37,14 +37,14 @@ class WebClient {
       $header []= 'User-Agent: Mozilla/5.0 '
         .'(compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)';
       curl_setopt($handler, CURLOPT_HTTPHEADER, $header);
-      $this->handlers[$domain] = $handler;
+      self::$handlers[$domain] = $handler;
     }
-    $handler = $this->handlers[$domain];
+    $handler = self::$handlers[$domain];
     curl_setopt($handler, CURLOPT_URL, 'http://'.$domain.$path);
     return $handler;
   }
 
-  private function execute($handler, $cookie) {
+  private static function execute($handler, $cookie) {
     curl_setopt($handler, CURLOPT_COOKIE, $cookie);
     $content = curl_exec($handler);
     $result = curl_getinfo($handler);

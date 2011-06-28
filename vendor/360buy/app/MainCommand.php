@@ -27,14 +27,13 @@ class MainCommand {
   );
 
   public function execute() {
-    $task = new Task;
-    if ($task->isEmpty() === true) {
-      $this->initialize($task);
+    if (DbTask::isEmpty() === true) {
+      $this->initialize();
     }
-    while ($task->moveToNext() !== false) {
-      $item = $task->get();
+    while (DbTask::moveToNext() !== false) {
+      $item = DbTask::get();
       $this->dispatch($item);
-      $task->remove($item['id']);
+      DbTask::remove($item['id']);
     }
   }
 

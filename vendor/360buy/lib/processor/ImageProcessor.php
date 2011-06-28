@@ -1,8 +1,7 @@
 <?php
 class ImageProcessor {
   public function execute($arguments) {
-    $client = new WebClient;
-    $result = $client->get($arguments['domain'], $arguments['path']);
+    $result = WebClient::get($arguments['domain'], $arguments['path']);
     $path = $arguments['path'];
     $folder = ROOT_PATH.'image/'.$arguments['category_id'];
     if (!is_dir($path)) {

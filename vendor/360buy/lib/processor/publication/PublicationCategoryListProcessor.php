@@ -1,12 +1,9 @@
 <?php
 class PublicationCategoryListProcessor {
   public function execute($arguments) {
-    $client = new WebClient;
-    $result = $client->get($arguments['domain'], $arguments['path']);
+    $result = WebClient::get($arguments['domain'], $arguments['path']);
     $html = $result['content'];
-    $category = new Category;
-    $categoryId = $category->getOrNewId($arguments['name']);
-    $task = new Task;
+    $categoryId = DbCategory::getOrNewId($arguments['name']);
     $matches = array();
     preg_match('{</h2>[\s\S]+<!--main end-->}', $html, $matches);
     $main = $matches[0];
@@ -14,7 +11,7 @@ class PublicationCategoryListProcessor {
     array_pop($sections);
     foreach ($sections as $section) {
       preg_match('{<dt>.*?>\s*(.*?)<}', $section, $matches);
-      $sectionCategoryId = $category->getOrNewId($matches[1], $categoryId);
+      $sectionCategoryId = DbCategory::getOrNewId($matches[1], $categoryId);
       preg_match_all(
         '{<em>.*?href=".*?products/(.*?).html">\s*(.*?)</a></em>}',
         $section,
@@ -22,7 +19,7 @@ class PublicationCategoryListProcessor {
       );
       $amount = count($matches[0]);
       for ($index = 0; $index < $amount; ++$index){
-        $task->add('PublicationProductList', array(
+        DbTask::add('PublicationProductList', array(
           'path' => $matches[1][$index],
           'name' => $matches[2][$index],
           'parent_category_id' => $sectionCategoryId,
