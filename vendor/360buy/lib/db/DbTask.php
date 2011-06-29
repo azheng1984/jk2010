@@ -3,7 +3,7 @@ class DbTask {
   private static $current;
 
   public static function get() {
-    return self::current;
+    return self::$current;
   }
 
   public static function moveToNext() {

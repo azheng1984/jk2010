@@ -10,20 +10,20 @@ class MainCommand {
         '影视' => '/mvdsort/4052.html',
       ),
     ),
-//    'CategoryList' => array(
-//      'www.360buy.com' => array(
-//        '家用电器、汽车用品' => '/electronic.html',
-//        '手机数码' => '/digital.html',
-////        '电脑、软件、办公' => '/computer.html',
-////        '家居、厨具、家装' => '/home.html',
-////        '服饰鞋帽' => '/products/1315-1347-2558-0-0-0-0-0-0-0-1-5-1.html',
-////        '个护化妆' => '/beauty.html',
-////        '钟表首饰、礼品箱包' => '/watch.html',
-////        '运动健康' => '/sports.html',
-////        '母婴、玩具、乐器' => '/baby.html',
-////        '食品饮料、保健品' => '/food.html',
-//      ),
-//    )
+    'CategoryList' => array(
+      'www.360buy.com' => array(
+        '家用电器、汽车用品' => '/electronic.html',
+        '手机数码' => '/digital.html',
+//        '电脑、软件、办公' => '/computer.html',
+//        '家居、厨具、家装' => '/home.html',
+//        '服饰鞋帽' => '/products/1315-1347-2558-0-0-0-0-0-0-0-1-5-1.html',
+//        '个护化妆' => '/beauty.html',
+//        '钟表首饰、礼品箱包' => '/watch.html',
+//        '运动健康' => '/sports.html',
+//        '母婴、玩具、乐器' => '/baby.html',
+//        '食品饮料、保健品' => '/food.html',
+      ),
+    )
   );
 
   public function execute() {
@@ -53,5 +53,6 @@ class MainCommand {
     $class = $task['type'].'Processor';
     $parser = new $class;
     $parser->execute($task['arguments']);
+    echo '.';
   }
 }
