@@ -9,13 +9,13 @@ class ProductProcessor {
     );
     $matches = array();
     preg_match(
-      'jdzoom.*? src="http://(.*?)/(.*?)"', $result['content'], $matches
+      '{jqzoom.*? src="http://(.*?)/(\S+)"}', $result['content'], $matches
     );
     DbTask::add('Image', array(
       'id' => $arguments['id'],
       'category_id' => $arguments['category_id'],
-      'domain' => $matches[0][1],
-      'path' => $matches[0][2],
+      'domain' => $matches[1],
+      'path' => $matches[2],
     ));
     DbTask::add('Price', array('id' => $arguments['id']));
   }

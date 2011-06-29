@@ -8,12 +8,12 @@ class PriceProcessor {
     );
     $matches = array();
     preg_match(
-      '"ListPrice":(.*?),"Price":(.*?),.*?"PromotionPrice":(.*?),',
+      '{"ListPrice":(.*?),"Price":(.*?),.*?"PromotionPrice":(.*?),}',
       $result['content'],
       $matches
     );
     DbProduct::updatePrice(
-      $arguments['id'], $matches[0][1], $matches[0][1], $matches[0][1]
+      $arguments['id'], $matches[1], $matches[2], $matches[3]
     );
   }
 }
