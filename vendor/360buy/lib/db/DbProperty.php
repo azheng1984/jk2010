@@ -1,5 +1,5 @@
 <?php
-class DbProperty extends Db {
+class DbProperty {
   public static function getOrNewKeyId($categoryId, $name) {
     $sql = "select * from property_key"
       ." where category_id=$categoryId and `key` = '$name'";
