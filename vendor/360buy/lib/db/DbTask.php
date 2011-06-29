@@ -13,7 +13,6 @@ class DbTask {
       self::$current = null;
       return false;
     }
-    $result['arguments'] = eval('return '.$result['arguments'].';');
     self::$current = $result;
     return true;
   }
@@ -24,9 +23,17 @@ class DbTask {
     Db::executeNonQuery($sql, array(var_export($arguments, true)));
   }
 
-  public static function remove($id) {
-    $sql = "delete from task where id=$id";
+  public static function remove() {
+    $id = self::$current['id'];
+    $sql = "delete from task where id={$id}";
     Db::executeNonQuery($sql);
+  }
+
+  public static function fail($result) {
+    $sql = 'insert into task_fail(type, arguments, result) values(?, ?, ?)';
+    Db::executeNonQuery($sql, array(
+     self::$current['type'], self::$current['arguments'], $result
+    ));
   }
 
   public static function isEmpty() {

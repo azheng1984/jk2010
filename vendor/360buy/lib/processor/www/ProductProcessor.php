@@ -4,6 +4,9 @@ class ProductProcessor {
     $result = WebClient::get(
       'www.360buy.com', '/product/'.$arguments['id'].'.html'
     );
+    if ($result['content'] === false) {
+      return $result;
+    }
     DbProduct::insert(
       $arguments['id'], $arguments['category_id'], $result['content']
     );
@@ -11,6 +14,9 @@ class ProductProcessor {
     preg_match(
       '{jqzoom.*? src="http://(.*?)/(\S+)"}', $result['content'], $matches
     );
+    if (count($matches) !== 3) {
+      return $result;
+    }
     DbTask::add('Image', array(
       'id' => $arguments['id'],
       'category_id' => $arguments['category_id'],

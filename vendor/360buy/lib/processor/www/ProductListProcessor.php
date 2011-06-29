@@ -11,6 +11,9 @@ class ProductListProcessor {
     );
     $this->page = $arguments['page'];
     $this->html = $result['content'];
+    if ($this->html === false) {
+      return $result;
+    }
     $this->name = $arguments['name'];
     $this->parseBreadcrumb($arguments);
     $this->saveContent();

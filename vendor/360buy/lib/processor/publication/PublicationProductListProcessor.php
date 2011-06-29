@@ -10,6 +10,9 @@ class PublicationProductListProcessor {
     );
     $this->page = $arguments['page'];
     $this->html = $result['content'];
+    if ($this->html === false) {
+      return $result;
+    }
     $this->categoryId = $this->getCategoryId($arguments);
     $this->saveContent();
     $this->parseProductList();
