@@ -9,6 +9,9 @@ class PropertyProductListProcessor {
     $result = WebClient::get(
       'www.360buy.com', '/products/'.$arguments['path'].'.html'
     );
+    if ($result['content'] === false) {
+      return $result;
+    }
     $this->html = $result['content'];
     $this->valueId = $arguments['value_id'];
     $this->categoryId = $arguments['category_id'];

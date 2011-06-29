@@ -4,6 +4,9 @@ class CategoryListProcessor {
     $categoryId = DbCategory::getOrNewId($arguments['name']);
     $result = WebClient::get($arguments['domain'], $arguments['path']);
     $html = $result['content'];
+    if ($html === false) {
+      return $result;
+    }
     $matches = array();
     preg_match_all(
       '{<li><a href=http://www.360buy.com/products/(.*?).html>(.*?)</a></li>}',

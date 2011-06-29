@@ -6,6 +6,9 @@ class ImageProcessor {
     if (!is_dir($folder)) {
       mkdir($folder, 0777, true);
     }
+    if ($result['content'] === false) {
+      return $result;
+    }
     file_put_contents(
       $folder.'/'.$arguments['id'].'.jpg', $result['content']
     );
