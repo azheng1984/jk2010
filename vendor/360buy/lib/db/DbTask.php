@@ -30,7 +30,8 @@ class DbTask {
   }
 
   public static function fail($result) {
-    $sql = 'insert into task_fail(type, arguments, result) values(?, ?, ?)';
+    $sql = 'insert into task_fail(type, arguments, result, `time`)'
+      .' values(?, ?, ?, now())';
     Db::executeNonQuery($sql, array(
      self::$current['type'], self::$current['arguments'], $result
     ));

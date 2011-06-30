@@ -16,7 +16,7 @@ class ProductListProcessor {
     }
     $this->name = $arguments['name'];
     $this->parseBreadcrumb($arguments);
-    $this->saveContent();
+    $this->saveContent($arguments);
     if ($this->page === 1) {
       $this->parsePropertyList();
     }
@@ -24,8 +24,10 @@ class ProductListProcessor {
     $this->parseNextPage();
   }
 
-  private function saveContent() {
-    DbProductList::insert($this->categoryId, null, $this->page, $this->html);
+  private function saveContent($arguments) {
+    DbProductList::insert(
+      $this->categoryId, null, $arguments['path'], $this->page, $this->html
+    );
   }
 
   private function parsePropertyList() {

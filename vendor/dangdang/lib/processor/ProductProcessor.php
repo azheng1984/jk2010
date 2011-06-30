@@ -23,6 +23,5 @@ class ProductProcessor {
       'domain' => $matches[1],
       'path' => $matches[2],
     ));
-    DbTask::add('Price', array('id' => $arguments['id']));
   }
 }
