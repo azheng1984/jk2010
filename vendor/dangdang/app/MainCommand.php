@@ -5,9 +5,9 @@ class MainCommand {
       'list.dangdang.com' => array(
         '图书' => '/book/01.htm?ref=book-02-B'
       ),
-      'category.dangdang.com' => array(
-        '时尚美妆' => '/list?cat=4002074'
-      ),
+//      'category.dangdang.com' => array(
+//        '时尚美妆' => '/list?cat=4002074'
+//      ),
     )
   );
 
@@ -31,7 +31,12 @@ class MainCommand {
       foreach ($item as $domain => $pathes) {
         foreach ($pathes as $name => $path) {
           DbTask::add(
-            $type, array('name' => $name, 'path' => $path, 'domain' => $domain)
+            $type, array(
+              'name' => $name,
+              'path' => $path,
+              'domain' => $domain,
+              'parent_category_id' => null
+            )
           );
         }
       }
