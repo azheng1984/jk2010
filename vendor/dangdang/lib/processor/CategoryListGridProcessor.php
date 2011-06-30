@@ -13,6 +13,9 @@ class CategoryListProcessor {
       $html,
       $matches
     );
+    echo $arguments['path'];
+    print_r($matches);
+    exit;
     if (count($matches) !== 2) {
       return $result;
     }

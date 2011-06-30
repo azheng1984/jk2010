@@ -16,12 +16,18 @@ class PropertyProductListProcessor {
     $this->valueId = $arguments['value_id'];
     $this->categoryId = $arguments['category_id'];
     $this->page = $arguments['page'];
-    $this->saveContent();
+    $this->saveContent($arguments);
     $this->parseNextPage();
   }
 
-  private function saveContent() {
-    DbProductList::insert($this->categoryId, $this->valueId, $this->page, $this->html);
+  private function saveContent($arguments) {
+    DbProductList::insert(
+      $this->categoryId,
+      $this->valueId,
+      $arguments['path'],
+      $this->page,
+      $this->html
+    );
   }
 
   private function parseNextPage() {
