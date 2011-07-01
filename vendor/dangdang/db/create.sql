@@ -42,7 +42,6 @@ CREATE TABLE `property_value` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `key_id` int(11) DEFAULT NULL,
   `value` varchar(255) DEFAULT NULL,
-  `alias` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `value` (`key_id`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
