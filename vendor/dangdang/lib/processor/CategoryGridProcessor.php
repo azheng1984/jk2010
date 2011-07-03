@@ -3,7 +3,7 @@ class CategoryListProcessor {
   public function execute($arguments) {
     $categoryId = DbCategory::getOrNewId($arguments['name']);
     $result = WebClient::get($arguments['domain'], $arguments['path']);
-    if (($html = $result['content']) === fasle) {
+    if (($html = $result['content']) === false) {
       return $result;
     }
     if(preg_match('{search_category_panel(.*?)</div>}', $html, $match) !== 1) {
