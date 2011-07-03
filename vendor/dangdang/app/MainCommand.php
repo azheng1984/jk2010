@@ -1,9 +1,9 @@
 <?php
 class MainCommand {
   private $categoryListLinks = array(
-    'CategoryList' => array(
-      'list.dangdang.com' => array(
-        '图书' => '/book/01.htm?ref=book-02-B'
+    'MobileCategoryList' => array(
+      'm.dangdang.com' => array(
+        '图书' => '/category_list.php?cid=01'
       ),
 //      'category.dangdang.com' => array(
 //        '时尚美妆' => '/list?cat=4002074'
