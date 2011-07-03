@@ -1,27 +1,37 @@
 <?php
-class CategoryListProcessor {
+class CategoryGridProcessor {
   public function execute($arguments) {
-    $categoryId = DbCategory::getOrNewId($arguments['name']);
+    $categoryId = DbCategory::getOrNewId(
+      $arguments['name'], $arguments['parent_category_id']
+    );
     $result = WebClient::get($arguments['domain'], $arguments['path']);
     if (($html = $result['content']) === false) {
       return $result;
     }
-    if(preg_match('{search_category_panel(.*?)</div>}', $html, $match) !== 1) {
+    $pattern = '{<div class="search_category_panel">([\s\S]+)'
+      .'<div class="search_category_bottom">}U';
+    if (preg_match($pattern, $html, $match) !== 1) {
       return $result;
     }
     preg_match_all(
-      '{<a .*? href="(http://.*?/)?(.*?)" title="(.*?)">}',
+      '{<li><a href="http://category.dangdang.com/'
+        .'list?cat=(.*?)" title="(.*?)">}',
       $match[1],
       $matches,
       PREG_SET_ORDER
     );
-    foreach ($matches as $match) {
-      DbTask::add('ProductList', array(
-        'domain' => $arguments['domain'],
-        'path' => '/'.$match[2],
-        'parent_category_id' => $categoryId,
-        'name' => iconv('gbk', 'utf-8', $match[3]),
+    if (count($matches) === 0) {
+      DbTask::add('ProductGrid', array(
+        'category_id' => $categoryId,
         'page' => 1
+      ));
+      return;
+    }
+    foreach ($matches as $match) {
+      DbTask::add('CategoryGrid', array(
+        'category_id' => $match[1],
+        'name' => $match[2],
+        'parent_category_id' => $categoryId,
       ));
     }
   }

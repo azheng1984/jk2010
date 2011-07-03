@@ -2,7 +2,7 @@
 class ProductProcessor {
   public function execute($arguments) {
     $result = WebClient::get(
-      'www.360buy.com', '/product/'.$arguments['id'].'.html'
+      'product.dangdang.com', '/product.aspx?product_id='.$arguments['id']
     );
     if ($result['content'] === false) {
       return $result;
@@ -10,11 +10,11 @@ class ProductProcessor {
     DbProduct::insert(
       $arguments['id'], $arguments['category_id'], $result['content']
     );
-    $matches = array();
-    preg_match(
-      '{jqzoom.*? src="http://(.*?)/(\S+)"}', $result['content'], $matches
-    );
-    if (count($matches) !== 3) {
+    if (preg_match(
+      '{__bigpic_pub"><img src="http://(.*?)/(.*?)"}',
+      $result['content'],
+      $matches
+    ) === false) {
       return $result;
     }
     DbTask::add('Image', array(
