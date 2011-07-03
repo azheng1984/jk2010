@@ -23,7 +23,7 @@ CREATE TABLE `product_list` (
   `category_id` int(11) NOT NULL,
   `property_value_id` int(11) DEFAULT NULL,
   `page` int(11) NOT NULL,
-  `path` varchar(128) DEFAULT NULL,
+  `url` varchar(511) DEFAULT NULL,
   `html` blob NOT NULL,
   `version` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`),
