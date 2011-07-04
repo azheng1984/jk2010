@@ -17,6 +17,7 @@ class MainCommand {
     if (DbTask::isEmpty() === true) {
       $this->initialize();
     }
+    DbTask::initialize();
     while (DbTask::moveToNext() !== false) {
       $task = DbTask::get();
       $result = $this->dispatch($task);
