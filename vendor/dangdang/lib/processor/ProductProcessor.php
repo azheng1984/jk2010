@@ -11,17 +11,17 @@ class ProductProcessor {
       $arguments['id'], $arguments['category_id'], $result['content']
     );
     if (preg_match(
-      '{__bigpic_pub"><img src="http://(.*?)/(.*?)"}',
+      '{__bigpic_.*?"><img src="http://(.*?)/(.*?)"}',
       $result['content'],
-      $matches
-    ) === false) {
+      $match
+    ) !== 1) {
       return $result;
     }
     DbTask::add('Image', array(
       'id' => $arguments['id'],
       'category_id' => $arguments['category_id'],
-      'domain' => $matches[1],
-      'path' => $matches[2],
+      'domain' => $match[1],
+      'path' => $match[2],
     ));
   }
 }
