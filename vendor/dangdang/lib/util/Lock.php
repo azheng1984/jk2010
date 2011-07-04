@@ -1,6 +1,6 @@
 <?php
 class Lock {
-  public static function execute() {
+  public static function lock() {
     $processId = posix_getpid();
     DbLock::insert($processId);
     foreach (DbLock::getOthers($processId) as $otherProcessId) {

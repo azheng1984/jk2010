@@ -59,3 +59,9 @@ CREATE TABLE `task_fail` (
   `retry_count` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `lock` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `process_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
