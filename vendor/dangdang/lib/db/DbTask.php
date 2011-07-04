@@ -6,11 +6,6 @@ class DbTask {
     return self::$current;
   }
 
-  public static function run($id) {
-    $sql = "update task set is_running=1 where id=$id";
-    Db::executeNonQuery($sql);
-  }
-
   public static function initialize() {
     $sql = "select id from task where is_running=1";
     $result = Db::getRow($sql);
@@ -27,6 +22,8 @@ class DbTask {
       self::$current = null;
       return false;
     }
+    $sql = "update task set is_running=1 where id={$result['id']}";
+    Db::executeNonQuery($sql);
     self::$current = $result;
     return true;
   }
