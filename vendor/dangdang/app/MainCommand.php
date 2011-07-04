@@ -31,7 +31,7 @@ class MainCommand {
   );
 
   public function execute() {
-    if (Lock::lock() === false) {
+    if (Lock::execute() === false) {
       echo 'locked'.PHP_EOL;
       return;
     }
