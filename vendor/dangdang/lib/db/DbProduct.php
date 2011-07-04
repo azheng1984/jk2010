@@ -16,4 +16,15 @@ class DbProduct {
       ." where id=$id";
     Db::executeNonQuery($sql);
   }
+
+  public static function addProperty($id, $propertyValueId) {
+    $sql = "select * from product-property_value where product_id=$id".
+      " and property_value_id=$propertyValueId";
+    $row = Db::getRow($sql);
+    if ($row === false) {
+      $sql = "insert into product(product_id, , property_value_id)"
+        ." values($id, $propertyValueId)";
+      Db::executeNonQuery($sql);
+    }
+  }
 }

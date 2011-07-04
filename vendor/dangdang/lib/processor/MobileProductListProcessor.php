@@ -13,15 +13,8 @@ class MobileProductListProcessor {
     }
     $this->categoryId = $arguments['category_id'];
     $this->page = $arguments['page'];
-    $this->saveContent($arguments, $result['url']);
     $this->parseProductList();
     $this->parseNextPage();
-  }
-
-  private function saveContent($arguments, $url) {
-    DbProductList::insert(
-      $this->categoryId, null, $url, $this->page, $this->html
-    );
   }
 
   private function parseProductList() {
