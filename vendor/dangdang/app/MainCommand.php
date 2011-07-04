@@ -9,7 +9,8 @@ class MainCommand {
     'CategoryList' => array(
       'category.dangdang.com' => array(
         //'时尚美妆' => '/list?cat=4002074',
-        '手机数码' => '/list?cat=4003613',
+        //'手机数码' => '/list?cat=4003613',
+        '家居日用' => '/list?cat=4003900',
       ),
     )
   );
