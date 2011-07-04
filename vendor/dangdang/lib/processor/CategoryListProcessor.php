@@ -34,5 +34,6 @@ class CategoryListProcessor {
         'parent_category_id' => $categoryId,
       ));
     }
+    exit;
   }
 }

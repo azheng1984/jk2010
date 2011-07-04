@@ -1,12 +1,12 @@
 <?php
 class MainCommand {
   private $categoryListLinks = array(
-    'MobileCategoryList' => array(
-      'm.dangdang.com' => array(
-        '图书' => '/category_list.php?cid=01'
-      ),
-    ),
-    'CategoryGridList' => array(
+//    'MobileCategoryList' => array(
+//      'm.dangdang.com' => array(
+//        '图书' => '/category_list.php?cid=01'
+//      ),
+//    ),
+    'CategoryList' => array(
       'category.dangdang.com' => array(
         '时尚美妆' => '/list?cat=4002074'
       ),

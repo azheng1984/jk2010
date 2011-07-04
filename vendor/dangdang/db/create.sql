@@ -18,16 +18,12 @@ CREATE TABLE `product` (
   KEY `category_id` (`category_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `product_list` (
+CREATE TABLE `product_property_value` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `category_id` int(11) NOT NULL,
-  `property_value_id` int(11) DEFAULT NULL,
-  `page` int(11) NOT NULL,
-  `url` varchar(511) DEFAULT NULL,
-  `html` blob NOT NULL,
-  `version` varchar(128) DEFAULT NULL,
+  `property_value_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `path` (`category_id`,`property_value_id`,`page`)
+  UNIQUE KEY `product_id|property_value_id` (`product_id`,`property_value_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `property_key` (
@@ -50,6 +46,7 @@ CREATE TABLE `task` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(45) DEFAULT NULL,
   `arguments` text,
+  `is_running` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
