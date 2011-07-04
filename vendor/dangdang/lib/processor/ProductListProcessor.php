@@ -1,14 +1,12 @@
 <?php
 class ProductListProcessor {
   private $html;
-  private $name;
-  private $page;
   private $categoryId;
 
   public function execute($arguments) {
+    $this->categoryId = $arguments['category_id'];
     $this->page = $arguments['page'];
-    $path = 'list?cat='.$arguments['category_id'].'&p='.$this->page;
-    $result = WebClient::get('category.dangdang.com', $path);
+    $result = WebClient::get('category.dangdang.com', $arguments['path']);
     if (($this->html = $result['content']) === false) {
       return $result;
     }
@@ -21,7 +19,7 @@ class ProductListProcessor {
 
   private function parsePropertyList() {
     $pattern = '{<div class="condition_panel" id="condition_panel">'
-      .'[\s|\S]*<div class="bottom_panel">}';
+      .'[\s|\S]*<div class="search_goods_list">}';
     if (preg_match($pattern, $this->html, $match) === 1) {
       $section = iconv('gbk', 'utf-8', $match[0]);
       foreach (explode('<div class="tip">', $section) as $item) {
@@ -36,18 +34,17 @@ class ProductListProcessor {
               continue;
             }
             $keyId = DbProperty::getOrNewKeyId($this->categoryId, $key);
-            $pattern = '{<a href="http://category.dangdang.com'
-              .'/list?att=(.*?)&cat='.$this->categoryId.'" title="(.*?)">}';
+            $pattern = '{<a +href="http://category.dangdang.com'
+              .'(/list\?att=.*?&cat=.*?)" title="(.*?)">}';
             preg_match_all($pattern, $item, $matches, PREG_SET_ORDER);
-            foreach ($matches as $attribute) {
-              $value = $attribute[2];
+            foreach ($matches as $match) {
+              $value = $match[2];
               if ($value === '其它') {
                 continue;
               }
               $valueId = DbProperty::getOrNewValueId($keyId, $value);
               DbTask::add('PropertyProductList', array(
-                'attribute_id' => $attribute[1],
-                'category_id' => $this->categoryId,
+                'path' => $match[1],
                 'value_id' => $valueId,
                 'page' => 1
               ));
@@ -60,8 +57,8 @@ class ProductListProcessor {
 
   private function parseProductList() {
     $pattern = '{<div class="name" name="__name">.*?'
-      .'<a href="http://product.dangdang.com/Product.aspx?product_id=(.*?)"}';
-    preg_match_all($pattern,$this->html, $matches);
+      .'<a href="http://product.dangdang.com/Product.aspx\?product_id=(.*?)"}';
+    preg_match_all($pattern, $this->html, $matches);
     $productIds = $matches[1];
     foreach ($productIds as $id) {
       DbTask::add('Product', array(
@@ -71,11 +68,12 @@ class ProductListProcessor {
   }
 
   private function parseNextPage() {
-    $pattern = '{<a href="http://category.dangdang.com/'
-      .'list\?cat=.*?&p=.*?class="nextpage"}';
+    $pattern = '{<a href="http://category.dangdang.com'
+      .'(/list\?cat=.*?)&p=.*?class="nextpage"}';
     if (preg_match($pattern, $this->html, $match) === 1) {
       $nextPage = $this->page + 1;
       DbTask::add('ProductList', array(
+        'path' => $match[1].'&p='.$nextPage,
         'category_id' => $this->categoryId,
         'page' => $nextPage
       ));

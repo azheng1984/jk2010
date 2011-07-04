@@ -10,7 +10,7 @@ class DbTask {
     $sql = "select id from task where is_running=1";
     $result = Db::getRow($sql);
     if ($result !== false) {
-      $sql = "delete task where id>{$result['id']}";
+      $sql = "delete from task where id>{$result['id']}";
       Db::executeNonQuery($sql);
     }
   }
