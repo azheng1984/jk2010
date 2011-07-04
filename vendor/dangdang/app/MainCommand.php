@@ -16,6 +16,10 @@ class MainCommand {
   );
 
   public function execute() {
+    if (Lock::execute() === false) {
+      echo 'locked'.PHP_EOL;
+      return;
+    }
     DbTask::initialize();
     if (DbTask::isEmpty() === true) {
       $this->initialize();

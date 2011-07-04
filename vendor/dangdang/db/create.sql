@@ -56,6 +56,6 @@ CREATE TABLE `task_fail` (
   `arguments` text,
   `result` blob,
   `time` datetime DEFAULT NULL,
-  `retry_count` int(11) DEFAULT '1',
+  `retry_count` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
