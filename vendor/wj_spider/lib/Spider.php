@@ -1,16 +1,14 @@
 <?php
 class Spider {
-  private $task;
-
   public function execute($tasks) {
     DbTask::initialize($tasks);
-    while (($this->task = DbTask::getLastRow()) !== false) {
-      $result = $this->dispatch();
-      if ($result !== null) {
-        DbTask::fail($result);
+    while (($task = DbTask::getLastRow()) !== false) {
+      DbTask::setRunning($task['id']);
+      if (($result = $this->dispatch($task)) !== null) {
+        DbTaskRetry::insert($task, $result);
       }
-      $this->show($result);
-      DbTask::remove();
+      DbTask::remove($task);
+      echo $result === null ? '.' : 'x';
     }
   }
 
@@ -18,13 +16,5 @@ class Spider {
     $class = $task['type'].'Processor';
     $processor = new $class;
     return $processor->execute(eval('return '.$task['arguments'].';'));
-  }
-
-  private function show($result) {
-    if ($result === null) {
-      echo '.';
-      return;
-    }
-    echo 'x';
   }
 }

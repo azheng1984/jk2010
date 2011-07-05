@@ -4,7 +4,9 @@ class DbTaskRetry {
     if ($task['is_retry']) {
       $sql = 'insert into retry_task(task_id, type, arguments, result, `time`)'
         .' values(?, ?, ?, now())';
-      Db::executeNonQuery($sql, array($type, $arguments, $result));
+      Db::executeNonQuery($sql, array(
+        $task['id'], $task['type'], $task['arguments'], $task['result']
+      ));
     }
   }
 
