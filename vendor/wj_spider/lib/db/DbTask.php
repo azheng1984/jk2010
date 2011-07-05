@@ -21,17 +21,14 @@ class DbTask {
     return self::$current;
   }
 
-  public static function moveToNext() {
+  public static function getLastRow() {
     $sql = "select * from task order by id desc limit 1";
-    $result = Db::getRow($sql);
-    if ($result === false) {
-      self::$current = null;
-      return false;
-    }
-    $sql = "update task set is_running=1 where id={$result['id']}";
+    return Db::getRow($sql);
+  }
+
+  public static function setRunning($id) {
+    $sql = "update task set is_running=1 where id={$id}";
     Db::executeNonQuery($sql);
-    self::$current = $result;
-    return true;
   }
 
   public static function add($type, $arguments) {
@@ -47,9 +44,8 @@ class DbTask {
     DbTaskRetryHistory::insert(self::$current['id'], $result);
   }
 
-  public static function remove() {
-    $id = self::$current['id'];
-    $sql = "delete from task where id={$id}";
+  public static function remove($task) {
+    $sql = "delete from task where id={$task['id']}";
     Db::executeNonQuery($sql);
   }
 
