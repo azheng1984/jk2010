@@ -12,8 +12,8 @@ class DbTask {
     $sql = "select id from task where is_running=1";
     $result = Db::getRow($sql);
     if ($result !== false) {
-      $sql = "delete from task where id>{$result['id']}";
-      Db::executeNonQuery($sql);
+      $sql = "delete from task where id>?";
+      Db::executeNonQuery($sql, array($result['id']));
     }
   }
 
@@ -23,14 +23,13 @@ class DbTask {
   }
 
   public static function setRunning($id) {
-    $sql = "update task set is_running=1 where id={$id}";
-    Db::executeNonQuery($sql);
+    $sql = "update task set is_running=1 where id=?";
+    Db::executeNonQuery($sql, array($id));
   }
 
   public static function add($type, $arguments) {
-    $sql = "insert into task(type, arguments)"
-      ." values('$type', ?)";
-    Db::executeNonQuery($sql, array(var_export($arguments, true)));
+    $sql = "insert into task(type, arguments) values(?, ?)";
+    Db::executeNonQuery($sql, array($type, var_export($arguments, true)));
   }
 
   private static function fail($result) {
@@ -41,8 +40,8 @@ class DbTask {
   }
 
   public static function remove($task) {
-    $sql = "delete from task where id={$task['id']}";
-    Db::executeNonQuery($sql);
+    $sql = "delete from task where id=?";
+    Db::executeNonQuery($sql, array($task['id']));
   }
 
   private static function isEmpty() {
