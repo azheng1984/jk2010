@@ -9,10 +9,10 @@ class DbTask {
       }
       return;
     }
-    $sql = "select id from task where is_running=1";
+    $sql = "select id from task where is_running = 1";
     $result = Db::getRow($sql);
     if ($result !== false) {
-      $sql = "delete from task where id>?";
+      $sql = "delete from task where id > ?";
       Db::executeNonQuery($sql, array($result['id']));
     }
   }
@@ -23,7 +23,7 @@ class DbTask {
   }
 
   public static function setRunning($id) {
-    $sql = "update task set is_running=1 where id=?";
+    $sql = "update task set is_running = 1 where id=?";
     Db::executeNonQuery($sql, array($id));
   }
 
@@ -40,7 +40,7 @@ class DbTask {
   }
 
   public static function remove($task) {
-    $sql = "delete from task where id=?";
+    $sql = "delete from task where id = ?";
     Db::executeNonQuery($sql, array($task['id']));
   }
 

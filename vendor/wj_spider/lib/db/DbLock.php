@@ -6,12 +6,12 @@ class DbLock {
   }
 
   public static function getOthers($processId) {
-    $sql = "select * from `lock` where process_id!=?";
+    $sql = "select * from `lock` where process_id != ?";
     return Db::getAll($sql, array($processId));
   }
 
   public static function deleteOthers($processId) {
-    $sql = "delete from `lock` where process_id!=?";
+    $sql = "delete from `lock` where process_id != ?";
     Db::executeNonQuery($sql, array($processId));
   }
 }
