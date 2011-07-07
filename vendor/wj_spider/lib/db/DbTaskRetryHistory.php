@@ -7,4 +7,8 @@ class DbTaskRetryHistory {
   public static function removeByTaskId($taskId) {
     
   }
+
+  public static function insert($result) {
+    
+  }
 }

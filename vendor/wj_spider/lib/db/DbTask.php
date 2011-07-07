@@ -17,10 +17,6 @@ class DbTask {
     }
   }
 
-  public static function get() {
-    return self::$current;
-  }
-
   public static function getLastRow() {
     $sql = "select * from task order by id desc limit 1";
     return Db::getRow($sql);
