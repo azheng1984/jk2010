@@ -2,7 +2,7 @@
 class DbCategory {
   public static function getOrNewId($name, $parentId = null) {
     $sql = "select * from category where "
-      .Db::getFilter('parent_id', $parentId)." and `name`=?";
+      .Db::getFilter('parent_id', $parentId)." and `name` = ?";
     $row = Db::getRow($sql, array($parentId, $name));
     if ($row === false) {
       Db::executeNonQuery(
