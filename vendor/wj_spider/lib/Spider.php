@@ -5,7 +5,8 @@ class Spider {
     while (($task = DbTask::getLastRow()) !== false) {
       DbTask::setRunning($task['id']);
       if (($result = $this->dispatch($task)) !== null) {
-        DbTaskRetry::insert($task, $result);
+        DbTaskRetry::insert($task);
+        DbTaskRetryHistory::insert($result);
       }
       DbTask::remove($task);
       echo $result === null ? '.' : 'x';
