@@ -1,14 +1,14 @@
 <?php
 class SpiderCommand {
   private $isRetry = false;
-  private $retryTaskId;
+  private $taskId;
 
   public function __construct($options) {
     if (isset($options['retry'])) {
       $this->isRetry = true;
     }
-    if (isset($options['retry_task_id'])) {
-      $this->retryTaskId = $options['retry_task_id'];
+    if (isset($options['task_id'])) {
+      $this->taskId = $options['task_id'];
     }
   }
 
@@ -18,9 +18,8 @@ class SpiderCommand {
       return;
     }
     $isRetry = false;
-    $retryTaskId = null;
-    global $tasks;
+    $taskId = null;
     $spider = new Spider;
-    $spider->execute($tasks);
+    $spider->execute($GLOBALS['tasks']);
   }
 }
