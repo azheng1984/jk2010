@@ -13,7 +13,7 @@ class DbProperty {
 
   public static function getOrNewValueId($keyId, $name) {
     $sql = "select * from property_value"
-      ." where key_id=? and `value` = ?";
+      ." where key_id = ? and `value` = ?";
     $row = Db::getRow($sql, array($keyId, $name));
     if ($row === false) {
       $sql = "insert into property_value(key_id, `value`) values(?, ?)";
