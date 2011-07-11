@@ -13,20 +13,20 @@ class Spider {
     }
   }
 
-  public function execute() {
+  public function run() {
     while (($task = DbTask::getLastRow()) !== false) {
       DbTask::setRunning($task['id']);
       $result = $this->dispatch($task);
-      $status = true;
+      $status = '.';
       if ($result !== null) {
         $this->fail($task, $result);
-        $status = false;
+        $status = '*';
       }
       if ($result === null && $task['is_retry']) {
         DbTaskRetryHistory::removeByTaskId($task['id']);
       }
       DbTask::remove($task['id']);
-      echo result;
+      echo $status;
     }
   }
 
