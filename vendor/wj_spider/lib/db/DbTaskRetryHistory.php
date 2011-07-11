@@ -8,7 +8,9 @@ class DbTaskRetryHistory {
     
   }
 
-  public static function insert($result) {
-    
+  public static function insert($taskId, $result) {
+    $sql = 'insert into retry_task_history(task_id, result, `time`)'
+      .' values(?, ?, now())';
+    Db::executeNonQuery($sql, array($taskId, $result));
   }
 }
