@@ -7,11 +7,11 @@ class RetryTaskCommand {
       return;
     }
     foreach (DbTaskRetry::getAll() as $task) {
-      $this->moveTask($task);
+      $this->restoreTask($task);
     }
   }
 
-  private function moveTask($task) {
+  private function restoreTask($task) {
     DbTask::reinsert(
       $task['id'], $task['type'], $task['arguments']
     );
