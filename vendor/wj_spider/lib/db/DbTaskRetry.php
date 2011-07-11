@@ -1,13 +1,10 @@
 <?php
 class DbTaskRetry {
   public static function insert($task, $result) {
-    if ($task['is_retry']) {
-      $sql = 'insert into retry_task(task_id, type, arguments, result, `time`)'
-        .' values(?, ?, ?, now())';
-      Db::executeNonQuery($sql, array(
-        $task['id'], $task['type'], $task['arguments'], $task['result']
-      ));
-    }
+    $sql = 'replace into retry_task(task_id, type, arguments) values(?, ?, ?)';
+    Db::executeNonQuery($sql, array(
+      $task['id'], $task['type'], $task['arguments']
+    ));
   }
 
   public static function get($id) {
