@@ -23,7 +23,7 @@ class CommandRunnerTest extends CliTestCase {
   }
 
   public function testClassIsNotDefined() {
-    $this->setExpectedCommandException('Class is not defined');
+    $this->setExpectedCommandException('Command class not defined');
     self::$runner->run(array(), null, null);
   }
 

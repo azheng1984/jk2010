@@ -16,16 +16,11 @@ class ProductListProcessor {
     }
     $this->name = $arguments['name'];
     $this->parseBreadcrumb($arguments);
-    $this->saveContent();
     if ($this->page === 1) {
       $this->parsePropertyList();
     }
     $this->parseProductList();
     $this->parseNextPage();
-  }
-
-  private function saveContent() {
-    DbProductList::insert($this->categoryId, null, $this->page, $this->html);
   }
 
   private function parsePropertyList() {
@@ -59,7 +54,7 @@ class ProductListProcessor {
             continue;
           }
           $valueId = DbProperty::getOrNewValueId($keyId, $valueList[$index]);
-          DbTask::add('PropertyProductList', array(
+          DbTask::insert('PropertyProductList', array(
             'path' => $valueLinkList[$index],
             'category_id' => $this->categoryId,
             'value_id' => $valueId,
@@ -99,7 +94,7 @@ class ProductListProcessor {
     );
     $productIds = $matches[1];
     foreach ($productIds as $id) {
-      DbTask::add('Product', array(
+      DbTask::insert('Product', array(
         'category_id' => $this->categoryId, 'id' => $id
       ));
     }
@@ -114,7 +109,7 @@ class ProductListProcessor {
     );
     if (count($matches) > 0) {
       $page = $this->page + 1;
-      DbTask::add('ProductList', array(
+      DbTask::insert('ProductList', array(
         'path' => $matches[1],
         'category_id' => $this->categoryId,
         'name' => $this->name,

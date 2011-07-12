@@ -1,12 +1,5 @@
 <?php
 class Spider {
-  public function __construct() {
-    $runningTask = DbTask::getRunning();
-    if ($runningTask !== false) {
-      DbTask::deleteByLargerThanId($runningTask['id']);
-    }
-  }
-
   public function run() {
     while (($task = DbTask::getLastRow()) !== false) {
       DbTask::setRunning($task['id']);

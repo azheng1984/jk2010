@@ -15,7 +15,7 @@ class CategoryListProcessor {
     );
     $count = count($matches[1]);
     for ($index = 1; $index < $count; ++$index) {
-      DbTask::add('ProductList', array(
+      DbTask::insert('ProductList', array(
         'path' => $matches[1][$index],
         'root_category_id' => $categoryId,
         'name' => iconv('gbk', 'utf-8', $matches[2][$index]),

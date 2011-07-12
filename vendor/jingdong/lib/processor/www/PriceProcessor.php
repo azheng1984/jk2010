@@ -16,9 +16,9 @@ class PriceProcessor {
       $matches
     );
     if (count($matches) !== 4) {
-      return $result;
+      return;
     }
-    DbProduct::updatePrice(
+    DbPrice::insert(
       $arguments['id'], $matches[1], $matches[2], $matches[3]
     );
   }
