@@ -18,7 +18,7 @@ class ShowCommand {
       $this->isRetry = true;
     }
     if ($this->task === false) {
-      echo 'no record';
+      fwrite(STDERR, 'fail:no task'.PHP_EOL);
       return;
     }
     if ($this->isExportToFile) {
