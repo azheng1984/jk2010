@@ -1,10 +1,7 @@
 <?php
 class RunCommand {
   public function execute() {
-    if (Lock::execute() === false) {
-      echo '[locked]'.PHP_EOL;
-      return;
-    }
+    Lock::execute();
     $spider = new Spider;
     $spider->run();
   }
