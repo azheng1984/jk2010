@@ -5,7 +5,7 @@ define('CACHE_PATH', ROOT_PATH.'cache'.DIRECTORY_SEPARATOR);
 define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);
 
 define('NO_IMAGE_MD5', 'aff02bb2aaa921e4671522b94f0061a5');
-
+//074f08d6ad97e753c7d99553c7fa530a
 require ROOT_PATH.'public'.DIRECTORY_SEPARATOR.'env.php';require HYPERFRAMEWORK_PATH.'class_loader'.DIRECTORY_SEPARATOR
   .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';
 $classLoader = new ClassLoader;
