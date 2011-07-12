@@ -2,7 +2,7 @@
 class DbCategory {
   public static function getOrNewId($name, $parentId = null) {
     $parameters = array();
-    $sql = 'select * from category where '
+    $sql = 'select id from category where '
       .Db::getFilter('parent_id', $parentId, $parameters).' and `name` = ?';
     $parameters[] = $name;
     $row = Db::getRow($sql, $parameters);
