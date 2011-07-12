@@ -1,5 +1,5 @@
 <?php
-class JingdongInitCommand extends InitCommand {
+class JingDongInitCommand extends InitCommand {
   protected function getCategoryListLinks() {
     return array(
       'PublicationCategoryList' => array(
