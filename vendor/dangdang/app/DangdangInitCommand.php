@@ -1,5 +1,5 @@
 <?php
-class DangdangInitCommand extends InitCommand {
+class DangDangInitCommand extends InitCommand {
   protected function getCategoryListLinks() {
     return array(
       'MobileCategoryList' => array(
