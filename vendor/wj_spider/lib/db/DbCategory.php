@@ -7,10 +7,8 @@ class DbCategory {
     $parameters[] = $name;
     $row = Db::getRow($sql, $parameters);
     if ($row === false) {
-      Db::executeNonQuery(
-        'insert into category(parent_id, `name`) values(?, ?)',
-        array($parentId, $name)
-      );
+      $sql = 'insert into category(parent_id, `name`) values(?, ?)';
+      Db::executeNonQuery($sql, array($parentId, $name));
       return Db::getLastInsertId();
     }
     return $row['id'];
