@@ -1,7 +1,7 @@
 <?php
 return array(
   'sub' => array(
-    'init' => 'JingdongInitCommand',
+    'init' => 'JingDongInitCommand',
     'run' => 'RunCommand',
     'retry' => 'RetryCommand',
     'show' => array(
