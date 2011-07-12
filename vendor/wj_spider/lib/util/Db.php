@@ -18,11 +18,12 @@ class Db {
     return self::$connection->lastInsertId();
   }
 
-  public static function getFilter($key, $value) {
+  public static function getFilter($key, $value, &$parameters) {
     if ($value === null) {
       return "`$key` is null";
     }
-    return "`$key`=?";
+    $parameters[] = $value;
+    return "`$key` = ?";
   }
 
   private static function execute($sql, $parameters) {
@@ -35,7 +36,7 @@ class Db {
   private static function getConnection() {
     if (self::$connection === null) {
       self::$connection = new PDO(
-        "mysql:host=localhost;dbname=source_dangdang",
+        "mysql:host=localhost;dbname=".DB_NAME,
         "root",
         "a841107!",
         array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")

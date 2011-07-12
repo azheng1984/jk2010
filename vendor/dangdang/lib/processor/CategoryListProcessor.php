@@ -21,14 +21,14 @@ class CategoryListProcessor {
       PREG_SET_ORDER
     );
     if (count($matches) === 0) {
-      DbTask::add('ProductList', array(
+      DbTask::insert('ProductList', array(
         'path' => $arguments['path'],
         'category_id' => $categoryId,
         'page' => 1
       ));
     }
     foreach ($matches as $match) {
-      DbTask::add('CategoryList', array(
+      DbTask::insert('CategoryList', array(
         'path' => $match[1],
         'category_id' => $categoryId,
         'name' => iconv('gbk', 'utf-8', $match[2]),

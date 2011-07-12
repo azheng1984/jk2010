@@ -31,7 +31,7 @@ class PropertyProductListProcessor {
       .'(/list\?.*?cat=.*?)&p=.*?class="nextpage"}';
     if (preg_match($pattern, $this->html, $match) === 1) {
       $nextPage = $this->page + 1;
-      DbTask::add('PropertyProductList', array(
+      DbTask::insert('PropertyProductList', array(
         'path' => $match[1].'&p='.$nextPage,
         'value_id' => $this->valueId,
         'page' => $nextPage

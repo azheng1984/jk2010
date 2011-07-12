@@ -17,7 +17,7 @@ class ProductProcessor {
     ) !== 1) {
       return $result;
     }
-    DbTask::add('Image', array(
+    DbTask::insert('Image', array(
       'id' => $arguments['id'],
       'category_id' => $arguments['category_id'],
       'domain' => $match[1],

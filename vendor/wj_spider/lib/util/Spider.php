@@ -1,12 +1,6 @@
 <?php
 class Spider {
   public function __construct() {
-    if (DbTask::isEmpty() && DbTaskRetry::isEmpty()) {
-      foreach ($GLOBALS['task'] as $task) {
-        DbTask::insert($task['type'], $task['arguments']);
-      }
-      return;
-    }
     $runningTask = DbTask::getRunning();
     if ($runningTask !== false) {
       DbTask::deleteByLargerThanId($runningTask['id']);
@@ -20,10 +14,10 @@ class Spider {
       $status = '.';
       if ($result !== null) {
         $this->fail($task, $result);
-        $status = '*';
+        $status = 'x';
       }
       if ($result === null && $task['is_retry']) {
-        DbTaskRetryRecord::removeByTaskId($task['id']);
+        DbTaskRecord::removeByTaskId($task['id']);
       }
       DbTask::remove($task['id']);
       echo $status;
@@ -38,6 +32,6 @@ class Spider {
 
   private function fail($task, $result) {
     DbTaskRetry::insert($task);
-    DbTaskRetryRecord::insert($task['id'], $result);
+    DbTaskRecord::insert($task['id'], $result);
   }
 }
