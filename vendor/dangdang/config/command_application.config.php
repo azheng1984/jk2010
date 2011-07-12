@@ -1,7 +1,7 @@
 <?php
 return array(
   'sub' => array(
-    'init' => 'InitCommand',
+    'init' => 'DangdangInitCommand',
     'run' => 'RunCommand',
     'retry' => 'RetryCommand',
     'show' => array(
