@@ -25,8 +25,8 @@ class RetryCommand {
 
   private function restoreTask($task) {
     DbTask::reinsert(
-      $task['id'], $task['type'], $task['arguments']
+      $task['task_id'], $task['type'], $task['arguments']
     );
-    DbTaskRetry::delete($task['id']);
+    DbTaskRetry::deleteByTaskId($task['task_id']);
   }
 }

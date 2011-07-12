@@ -1,6 +1,8 @@
 <?php
 class ShowCommand {
   private $isExportToFile;
+  private $isRetry;
+  private $id;
   private $task;
 
   public function __construct($options) {
@@ -8,10 +10,12 @@ class ShowCommand {
   }
 
   public function execute($id) {
+    $this->id = $id;
     $this->task = DbTask::get($id);
+    $this->isRetry = $this->task['is_retry'] === '1';
     if ($this->task === false) {
       $this->task = DbTaskRetry::getByTaskId($id);
-      $this->task['is_retry'] = true;
+      $this->isRetry = true;
     }
     if ($this->task === false) {
       echo 'no record';
@@ -24,8 +28,8 @@ class ShowCommand {
     $this->show();
   }
 
-  private function exprot() {
-    file_put_contents('task_'.$this->task['id'].'.txt', $this->getContent());
+  private function export() {
+    file_put_contents('task_'.$this->id.'.txt', $this->getContent());
   }
 
   private function show() {
@@ -33,22 +37,23 @@ class ShowCommand {
   }
 
   private function getContent() {
-    $result = 'id:'.$this->task['id'].PHP_EOL;
+    $result = 'id:'.$this->id.PHP_EOL;
     $result .= 'type:'.$this->task['type'].PHP_EOL;
-    $result .= 'arguments:'.var_export($this->task['arguments'], true).PHP_EOL;
-    if ($this->task['is_retry'] === true) {
+    $result .= 'arguments:'.$this->task['arguments'].PHP_EOL;
+    if ($this->isRetry === true) {
       $result .= $this->getRecords();
     }
     return $result;
   }
 
   private function getRecords() {
-    $result = 'records:'.PHP_EOL;
-    foreach (DbTaskRetryRecord::getByTaskId($this->task['id']) as $record) {
+    $result = '[records]'.PHP_EOL;
+    foreach (DbTaskRecord::getByTaskId($this->id) as $record) {
       $result .= 'time:'.$record['time'].PHP_EOL;
       $result .= 'result:'.PHP_EOL;
-      $result .= var_export($record['result'], true);
+      $result .= $record['result'];
       $result .= PHP_EOL.'---------------------------------'.PHP_EOL;
     }
+    return $result;
   }
 }

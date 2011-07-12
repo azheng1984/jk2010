@@ -33,7 +33,7 @@ class DbTask {
   public static function reinsert($id, $type, $arguments) {
     $sql = 'insert into task(id, type, arguments, is_retry)'
       .' values(?, ?, ?, true)';
-    Db::executeNonQuery($sql, array($id, $type, var_export($arguments, true)));
+    Db::executeNonQuery($sql, array($id, $type, $arguments));
   }
 
   public static function remove($id) {

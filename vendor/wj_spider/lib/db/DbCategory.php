@@ -1,9 +1,11 @@
 <?php
 class DbCategory {
   public static function getOrNewId($name, $parentId = null) {
+    $parameters = array();
     $sql = 'select * from category where '
-      .Db::getFilter('parent_id', $parentId).' and `name` = ?';
-    $row = Db::getRow($sql, array($parentId, $name));
+      .Db::getFilter('parent_id', $parentId, $parameters).' and `name` = ?';
+    $parameters[] = $name;
+    $row = Db::getRow($sql, $parameters);
     if ($row === false) {
       Db::executeNonQuery(
         'insert into category(parent_id, `name`) values(?, ?)',

@@ -25,7 +25,7 @@ class MobileProductListProcessor {
     );
     $productIds = $matches[1];
     foreach ($productIds as $id) {
-      DbTask::add('Product', array(
+      DbTask::insert('Product', array(
         'category_id' => $this->categoryId, 'id' => $id
       ));
     }
@@ -39,7 +39,7 @@ class MobileProductListProcessor {
       $this->html,
       $match
     ) === 1) {
-      DbTask::add('MobileProductList', array(
+      DbTask::insert('MobileProductList', array(
         'cid' => $match[1],
         'category_id' => $this->categoryId,
         'page' => $nextPage

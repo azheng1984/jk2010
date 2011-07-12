@@ -51,10 +51,10 @@ CREATE TABLE `task_retry` (
   `task_id` int(11) unsigned NOT NULL,
   `type` varchar(45) DEFAULT NULL,
   `arguments` text,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`task_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `task_retry_record` (
+CREATE TABLE `task_record` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `task_id` int(11) unsigned NOT NULL,
   `time` datetime,

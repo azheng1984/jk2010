@@ -14,7 +14,7 @@ class MobileCategoryListProcessor {
       return $result;
     }
     if ($this->isLeafCategory($arguments['name'], $match[1])) {
-      DbTask::add('MobileProductList', array(
+      DbTask::insert('MobileProductList', array(
         'cid' => str_replace(
           '/category_list.php?cid=', '', $arguments['path']
         ),
@@ -30,7 +30,7 @@ class MobileCategoryListProcessor {
       PREG_SET_ORDER
     );
     foreach ($matches as $match) {
-      DbTask::add('MobileCategoryList', array(
+      DbTask::insert('MobileCategoryList', array(
         'domain' => $arguments['domain'],
         'path' => '/category_list.php?cid='.$match[1],
         'parent_category_id' => $categoryId,

@@ -43,7 +43,7 @@ class ProductListProcessor {
                 continue;
               }
               $valueId = DbProperty::getOrNewValueId($keyId, $value);
-              DbTask::add('PropertyProductList', array(
+              DbTask::insert('PropertyProductList', array(
                 'path' => $match[1],
                 'value_id' => $valueId,
                 'page' => 1
@@ -61,7 +61,7 @@ class ProductListProcessor {
     preg_match_all($pattern, $this->html, $matches);
     $productIds = $matches[1];
     foreach ($productIds as $id) {
-      DbTask::add('Product', array(
+      DbTask::insert('Product', array(
         'category_id' => $this->categoryId, 'id' => $id
       ));
     }
@@ -72,7 +72,7 @@ class ProductListProcessor {
       .'(/list\?cat=.*?)&p=.*?class="nextpage"}';
     if (preg_match($pattern, $this->html, $match) === 1) {
       $nextPage = $this->page + 1;
-      DbTask::add('ProductList', array(
+      DbTask::insert('ProductList', array(
         'path' => $match[1].'&p='.$nextPage,
         'category_id' => $this->categoryId,
         'page' => $nextPage
