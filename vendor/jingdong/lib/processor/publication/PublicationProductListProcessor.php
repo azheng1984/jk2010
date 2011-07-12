@@ -14,13 +14,8 @@ class PublicationProductListProcessor {
       return $result;
     }
     $this->categoryId = $this->getCategoryId($arguments);
-    $this->saveContent();
     $this->parseProductList();
     $this->parseNextPage();
-  }
-
-  private function saveContent() {
-    DbProductList::insert($this->categoryId, null, $this->page, $this->html);
   }
 
   private function getCategoryId($arguments) {
@@ -42,7 +37,7 @@ class PublicationProductListProcessor {
     );
     $productIds = $matches[2];
     foreach ($productIds as $id) {
-      DbTask::add('PublicationProduct', array(
+      DbTask::insert('PublicationProduct', array(
         'domain' => $matches[1][0],
         'category_id' => $this->categoryId,
         'id' => $id
@@ -59,7 +54,7 @@ class PublicationProductListProcessor {
     );
     if (count($matches) > 0) {
       $page = $this->page + 1;
-      DbTask::add('PublicationProductList', array(
+      DbTask::insert('PublicationProductList', array(
         'path' => $matches[1],
         'category_id' => $this->categoryId,
         'page' => $page

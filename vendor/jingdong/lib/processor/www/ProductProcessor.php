@@ -1,8 +1,8 @@
 <?php
-class PublicationProductProcessor {
+class ProductProcessor {
   public function execute($arguments) {
     $result = WebClient::get(
-      $arguments['domain'].'.360buy.com', '/'.$arguments['id'].'.html'
+      'www.360buy.com', '/product/'.$arguments['id'].'.html'
     );
     if ($result['content'] === false) {
       return $result;
@@ -12,19 +12,17 @@ class PublicationProductProcessor {
     );
     $matches = array();
     preg_match(
-      '{src="http://(.*?)/(\S+)" width="280" height="280"}',
-      $result['content'],
-      $matches
+      '{jqzoom.*? src="http://(.*?)/(\S+)"}', $result['content'], $matches
     );
     if (count($matches) !== 3) {
       return $result;
     }
-    DbTask::add('Image', array(
+    DbTask::insert('Image', array(
       'id' => $arguments['id'],
       'category_id' => $arguments['category_id'],
       'domain' => $matches[1],
       'path' => $matches[2],
     ));
-    DbTask::add('Price', array('id' => $arguments['id']));
+    DbTask::insert('Price', array('id' => $arguments['id']));
   }
 }

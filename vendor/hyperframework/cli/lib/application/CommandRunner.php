@@ -15,7 +15,7 @@ class CommandRunner {
 
   private function getReflectionMethod($config) {
     if (!isset($config['class'])) {
-      throw new CommandException('Target command class is not defined');
+      throw new CommandException('Command class not defined');
     }
     try {
       return new ReflectionMethod($config['class'], 'execute');

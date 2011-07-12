@@ -22,7 +22,7 @@ class PublicationCategoryListProcessor {
       );
       $amount = count($matches[0]);
       for ($index = 0; $index < $amount; ++$index){
-        DbTask::add('PublicationProductList', array(
+        DbTask::insert('PublicationProductList', array(
           'path' => $matches[1][$index],
           'name' => $matches[2][$index],
           'parent_category_id' => $sectionCategoryId,

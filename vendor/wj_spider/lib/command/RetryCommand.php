@@ -2,6 +2,7 @@
 class RetryCommand {
   public function execute($id = null) {
     Lock::execute();
+    TaskCleaner::clean();
     if ($id === null) {
       $this->restoreAllTasks();
       return;
