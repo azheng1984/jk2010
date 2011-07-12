@@ -18,7 +18,7 @@ class DbTaskRetry {
   public static function retry($id = null) {
     $sql = 'select * from retry_task';
     foreach (Db::getAll($sql) as $task) {
-      $sql = "insert into task(type, arguments) values(?, ?)";
+      $sql = 'insert into task(type, arguments) values(?, ?)';
       Db::executeNonQuery($sql, array($task['type'], $task['arguments']));
     }
   }
@@ -26,7 +26,7 @@ class DbTaskRetry {
   private static function retryAll() {
     $sql = 'select * from retry_task';
     foreach (Db::getAll($sql) as $task) {
-      $sql = "insert into task(type, arguments) values(?, ?)";
+      $sql = 'insert into task(type, arguments) values(?, ?)';
       Db::executeNonQuery($sql, array($task['type'], $task['arguments']));
     }
   }
