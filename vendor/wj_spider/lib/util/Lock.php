@@ -9,7 +9,7 @@ class Lock {
     foreach (DbLock::getOthers($processId) as $other) {
       $output = shell_exec("ps -p {$other['process_id']}");
       if (strstr($output, $other['process_id']) !== false) {
-        return false;
+        throw new Exception('lock fail');
       }
     }
     DbLock::deleteOthers($processId);

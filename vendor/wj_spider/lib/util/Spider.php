@@ -23,7 +23,7 @@ class Spider {
         $status = '*';
       }
       if ($result === null && $task['is_retry']) {
-        DbTaskRetryHistory::removeByTaskId($task['id']);
+        DbTaskRetryRecord::removeByTaskId($task['id']);
       }
       DbTask::remove($task['id']);
       echo $status;
@@ -38,6 +38,6 @@ class Spider {
 
   private function fail($task, $result) {
     DbTaskRetry::insert($task);
-    DbTaskRetryHistory::insert($task['id'], $result);
+    DbTaskRetryRecord::insert($task['id'], $result);
   }
 }

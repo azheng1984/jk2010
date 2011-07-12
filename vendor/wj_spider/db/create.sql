@@ -54,7 +54,7 @@ CREATE TABLE `task_retry` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `task_retry_history` (
+CREATE TABLE `task_retry_record` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `task_id` int(11) unsigned NOT NULL,
   `time` datetime,

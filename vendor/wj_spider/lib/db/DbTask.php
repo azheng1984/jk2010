@@ -1,5 +1,10 @@
 <?php
 class DbTask {
+  public static function get($id) {
+    $sql = 'select * from task where id = ?';
+    return Db::getRow($sql, array($id));
+  }
+  
   public static function getRunning() {
     $sql = 'select id from task where is_running = 1';
     return Db::getRow($sql);
