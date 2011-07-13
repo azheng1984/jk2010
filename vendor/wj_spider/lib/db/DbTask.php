@@ -1,27 +1,27 @@
 <?php
 class DbTask {
   public static function get($id) {
-    $sql = 'select * from task where id = ?';
+    $sql = 'SELECT * FROM task WHERE id = ?';
     return Db::getRow($sql, array($id));
   }
 
   public static function getRunning() {
-    $sql = 'select id from task where is_running = 1';
+    $sql = 'SELECT id FROM task WHERE is_running = 1';
     return Db::getRow($sql);
   }
 
   public static function deleteByLargerThanId($id) {
-    $sql = 'delete from task where id > ?';
+    $sql = 'DELETE FROM task WHERE id > ?';
     Db::executeNonQuery($sql, array($id));
   }
 
   public static function getLastRow() {
-    $sql = 'select * from task order by id desc limit 1';
+    $sql = 'SELECT * FROM task ORDER BY id DESC LIMIT 1';
     return Db::getRow($sql);
   }
 
   public static function setRunning($id, $value = true) {
-    $sql = 'update task set is_running = ? where id = ?';
+    $sql = 'UPDATE task SET is_running = ? WHERE id = ?';
     Db::executeNonQuery($sql, array($value, $id));
   }
 
@@ -37,12 +37,12 @@ class DbTask {
   }
 
   public static function remove($id) {
-    $sql = 'delete from task where id = ?';
+    $sql = 'DELETE FROM task WHERE id = ?';
     Db::executeNonQuery($sql, array($id));
   }
 
   public static function isEmpty() {
-    $sql = 'select * from task limit 1';
+    $sql = 'SELECT * FROM task LIMIT 1';
     return Db::getRow($sql) === false;
   }
 }
