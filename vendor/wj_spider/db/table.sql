@@ -59,7 +59,8 @@ CREATE TABLE `task_record` (
   `task_id` int(11) unsigned NOT NULL,
   `time` datetime,
   `result` blob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `task_id` (`task_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `lock` (
