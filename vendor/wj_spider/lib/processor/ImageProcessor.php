@@ -5,7 +5,8 @@ class ImageProcessor {
     if ($result['content'] === false) {
       return $result;
     }
-    if (defined('NO_IMAGE_MD5') && md5($result['content']) === NO_IMAGE_MD5) {
+    if (isset($GLOBALS['no_image_md5'])
+      && isset($GLOBALS['no_image_md5'][md5($result['content'])])) {
       return;
     }
     $folder = IMAGE_PATH.$arguments['category_id'];
