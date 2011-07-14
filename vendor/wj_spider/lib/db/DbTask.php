@@ -32,7 +32,7 @@ class DbTask {
 
   public static function reinsert($id, $type, $arguments) {
     $sql = 'INSERT INTO task(id, type, arguments, is_retry)'
-      .' VALUES(?, ?, ?, true)';
+      .' VALUES(?, ?, ?, 1)';
     Db::executeNonQuery($sql, array($id, $type, $arguments));
   }
 
