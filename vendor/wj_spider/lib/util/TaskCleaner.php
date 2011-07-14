@@ -5,6 +5,6 @@ class TaskCleaner {
     if ($runningTask !== false) {
       DbTask::deleteByLargerThanId($runningTask['id']);
     }
-    DbTask::setRunning($runningTask['id'], false);
+    DbTask::setRunning($runningTask['id'], 0);
   }
 }
