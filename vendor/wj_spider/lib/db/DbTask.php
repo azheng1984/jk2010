@@ -20,9 +20,9 @@ class DbTask {
     return Db::getRow($sql);
   }
 
-  public static function setRunning($id, $value = 1) {
+  public static function setRunning($id, $isRunning = 1) {
     $sql = 'UPDATE task SET is_running = ? WHERE id = ?';
-    Db::executeNonQuery($sql, array($value, $id));
+    Db::executeNonQuery($sql, array($isRunning, $id));
   }
 
   public static function insert($type, $arguments) {
