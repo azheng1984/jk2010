@@ -42,7 +42,7 @@ class DbTask {
   }
 
   public static function isEmpty() {
-    $sql = 'SELECT * FROM task LIMIT 1';
+    $sql = 'SELECT id FROM task LIMIT 1';
     return Db::getRow($sql) === false;
   }
 }
