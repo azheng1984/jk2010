@@ -2,12 +2,12 @@
 class DbCategory {
   public static function getOrNewId($name, $parentId = null) {
     $parameters = array();
-    $sql = 'select id from category where '
-      .Db::getFilter('parent_id', $parentId, $parameters).' and `name` = ?';
+    $sql = 'SELECT id FROM category WHERE '
+      .Db::getFilter('parent_id', $parentId, $parameters).' AND `name` = ?';
     $parameters[] = $name;
     $row = Db::getRow($sql, $parameters);
     if ($row === false) {
-      $sql = 'insert into category(parent_id, `name`) values(?, ?)';
+      $sql = 'INSERT INTO category(parent_id, `name`) VALUES(?, ?)';
       Db::executeNonQuery($sql, array($parentId, $name));
       return Db::getLastInsertId();
     }
