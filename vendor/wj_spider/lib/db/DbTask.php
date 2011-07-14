@@ -26,13 +26,13 @@ class DbTask {
   }
 
   public static function insert($type, $arguments) {
-    $sql = 'insert into task(type, arguments) values(?, ?)';
+    $sql = 'INSERT INTO task(type, arguments) VALUES(?, ?)';
     Db::executeNonQuery($sql, array($type, var_export($arguments, true)));
   }
 
   public static function reinsert($id, $type, $arguments) {
-    $sql = 'insert into task(id, type, arguments, is_retry)'
-      .' values(?, ?, ?, true)';
+    $sql = 'INSERT INTO task(id, type, arguments, is_retry)'
+      .' VALUES(?, ?, ?, true)';
     Db::executeNonQuery($sql, array($id, $type, $arguments));
   }
 

@@ -20,7 +20,7 @@ class Db {
 
   public static function getFilter($key, $value, &$parameters) {
     if ($value === null) {
-      return "`$key` is null";
+      return "`$key` IS NULL";
     }
     $parameters[] = $value;
     return "`$key` = ?";
