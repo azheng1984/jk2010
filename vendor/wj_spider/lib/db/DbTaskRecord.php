@@ -5,7 +5,7 @@ class DbTaskRecord {
     return Db::getAll($sql, array($taskId));
   }
 
-  public static function removeByTaskId($taskId) {
+  public static function deleteByTaskId($taskId) {
     $sql = 'DELETE FROM task_record WHERE task_id = ?';
     Db::executeNonQuery($sql, array($taskId));
   }

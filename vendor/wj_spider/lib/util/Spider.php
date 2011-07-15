@@ -10,7 +10,7 @@ class Spider {
         $status = 'x';
       }
       if ($result === null && $task['is_retry']) {
-        DbTaskRecord::removeByTaskId($task['id']);
+        DbTaskRecord::deleteByTaskId($task['id']);
       }
       DbTask::remove($task['id']);
       echo $status;
