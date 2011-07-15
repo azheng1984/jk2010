@@ -7,11 +7,11 @@ class Db {
   }
 
   public static function getRow($sql, $parameters = array()) {
-    return self::execute($sql, $parameters)->fetch();
+    return self::execute($sql, $parameters)->fetch(PDO::FETCH_ASSOC);
   }
 
   public static function getAll($sql, $parameters = array()) {
-    return self::execute($sql, $parameters)->fetchAll();
+    return self::execute($sql, $parameters)->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public static function getLastInsertId() {
@@ -43,9 +43,6 @@ class Db {
       );
       self::$connection->setAttribute(
         PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION
-      );
-      self::$connection->setAttribute(
-        PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC
       );
     }
     return self::$connection;
