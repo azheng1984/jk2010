@@ -7,11 +7,11 @@ class Db {
   }
 
   public static function getRow($sql, $parameters = array()) {
-    return self::execute($sql, $parameters)->fetch(PDO::FETCH_ASSOC);
+    return self::execute($sql, $parameters)->fetch();
   }
 
   public static function getAll($sql, $parameters = array()) {
-    return self::execute($sql, $parameters)->fetchAll(PDO::FETCH_ASSOC);
+    return self::execute($sql, $parameters)->fetchAll();
   }
 
   public static function getLastInsertId() {
@@ -36,13 +36,16 @@ class Db {
   private static function getConnection() {
     if (self::$connection === null) {
       self::$connection = new PDO(
-        "mysql:host=localhost;dbname=".DB_NAME,
-        "root",
-        "a841107!",
-        array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")
+        'mysql:host=localhost;dbname='.DB_NAME,
+        'root',
+        'a841107!',
+        array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8')
       );
       self::$connection->setAttribute(
         PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION
+      );
+      self::$connection->setAttribute(
+        PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC
       );
     }
     return self::$connection;
