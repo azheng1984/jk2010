@@ -58,4 +58,4 @@ class Product {
       return new Product($row);
     }
   }
-}//http://www.wj.com/%E6%95%B0%E7%A0%81/%E7%94%B5%E5%AD%90/?search=%E6%88%91%E4%BB%AC&%E5%93%81%E7%89%8C=%E8%A5%BF%E9%97%A8%E5%AD%90+%E5%85%8B%E9%87%8C%E6%96%AF%E5%AE%9A
+}
