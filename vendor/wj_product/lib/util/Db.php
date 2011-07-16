@@ -35,14 +35,6 @@ class Db {
     $this->name = $name;
   }
 
-  private static function getParameters($arguments) {
-    if (count($arguments) === 1) {
-      return array();
-    }
-    array_shift($arguments);
-    return $arguments;
-  }
-
   private static function executeByArray($parameters) {
     $sql = array_shift($parameters);
     $connection = self::getConnection();
