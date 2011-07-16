@@ -6,6 +6,10 @@ class Db {
     self::execute($sql, $parameters);
   }
 
+  public static function getColumn($sql, $parameters = array()) {
+    return self::execute($sql, $parameters)->fetchColumn();
+  }
+
   public static function getRow($sql, $parameters = array()) {
     return self::execute($sql, $parameters)->fetch(PDO::FETCH_ASSOC);
   }

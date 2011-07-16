@@ -5,12 +5,12 @@ class DbCategory {
     $sql = 'SELECT id FROM category WHERE '
       .Db::getFilter('parent_id', $parentId, $parameters).' AND `name` = ?';
     $parameters[] = $name;
-    $row = Db::getRow($sql, $parameters);
-    if ($row === false) {
+    $id = Db::getColumn($sql, $parameters);
+    if ($id === false) {
       $sql = 'INSERT INTO category(parent_id, `name`) VALUES(?, ?)';
       Db::executeNonQuery($sql, array($parentId, $name));
       return Db::getLastInsertId();
     }
-    return $row['id'];
+    return $id;
   }
 }
