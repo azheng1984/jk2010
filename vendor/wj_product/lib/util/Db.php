@@ -4,23 +4,19 @@ class Db {
   private static $connectionName;
 
   public static function execute($sql/*, $parameter, ...*/) {
-    $parameters = $this->getParameters(func_get_args());
-    return self::executeByArray($sql, $parameters);
+    return self::executeByArray(func_get_args());
   }
 
   public static function getColumn($sql/*, $parameter, ...*/) {
-    $parameters = $this->getParameters(func_get_args());
-    return self::executeByArray($sql, $parameters)->fetchColumn();
+    return self::executeByArray(func_get_args())->fetchColumn();
   }
 
   public static function getRow($sql/*, $parameter, ...*/) {
-    $parameters = $this->getParameters(func_get_args());
-    return self::executeByArray($sql, $parameters)->fetch(PDO::FETCH_ASSOC);
+    return self::executeByArray(func_get_args())->fetch(PDO::FETCH_ASSOC);
   }
 
   public static function getAll($sql/*, $parameter, ...*/) {
-    $parameters = $this->getParameters(func_get_args());
-    return self::executeByArray($sql, $parameters)->fetchAll(PDO::FETCH_ASSOC);
+    return self::executeByArray(func_get_args())->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public static function getLastInsertId() {
@@ -47,7 +43,8 @@ class Db {
     return $arguments;
   }
 
-  private static function executeByArray($sql, $parameters) {
+  private static function executeByArray($parameters) {
+    $sql = array_shift($parameters);
     $connection = self::getConnection();
     $statement = $connection->prepare($sql);
     $statement->execute($parameters);
