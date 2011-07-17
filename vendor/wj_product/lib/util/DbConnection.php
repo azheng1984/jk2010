@@ -7,7 +7,7 @@ class DbConnection {
       'a841107!',
       array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8')
     );
-    $this->connection->setAttribute(
+    $connection->setAttribute(
       PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION
     );
     return $connection;

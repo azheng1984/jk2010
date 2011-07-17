@@ -1,34 +1,43 @@
 <?php
 class ScreenWrapper {
-  private $content;
-  private $meta;
-
-  public function __construct($content, $title, $meta = null) {
-    $this->content = $content;
-    $this->title = $title;
-    $this->meta = $meta === null ? new HtmlMeta : $meta;
-    $this->header = new ScreenHeader;
-    $this->footer = new ScreenFooter;
+  public function render($content) {
+    header('Content-Type:text/html; charset=utf-8');
+    echo '<html>';
+    $this->renderHead();
+    $this->renderBody($content);
+    echo '</html>';
   }
 
-  public function render() {
-    if (extension_loaded('zlib')) {
-      ini_set('zlib.output_compression', 'On');
-    }
-    header('Content-Type:text/html; charset=utf-8');
-    echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"',
-         ' "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
-         '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN">',
-         "<head>";
-    $this->meta->render();
-    echo "<title>$this->title</title>";
+  private function renderHead() {
+    echo '<head>';
+    echo '<title>货比万家</title>';
     echo '<link type="text/css" href="/css/main.css" charset="utf-8" media="screen" rel="stylesheet" />';
-    echo '</head><body>';
-    $this->header->render();
+    echo '<script src="/js/std.js"></script>';
+    echo '</head>';
+  }
+
+  private function renderBody($content) {
+    echo '<body>';
+    $this->renderLogo();
     echo '<div id="content">';
-    $this->content->renderContent();
+    $content->renderContent();
     echo '</div>';
-    $this->footer->render();
-    echo '</body></html>';
+    echo '<div id="footer">';
+    echo '<div class="right">关于我们 广告联盟  开源项目 团队博客 联系我们</div>';
+    echo '<div class="left">&copy; 2011 货比万家 <a href="support.wj.com">使用条款</a> <a href="support.wj.com">隐私权政策</a> 沪ICP备00000000</div>';
+    echo '</div>';
+    echo '</body>';
+  }
+
+  private function renderLogo() {
+    echo '<div id="header">';
+    echo '<div id="logo"><a href="/">货比万家</a></div>';
+    $this->renderSearch();
+    echo '</div>';
+  }
+
+  private function renderSearch() {
+    $query = isset($_GET['q']) ? $_GET['q'] : '';
+    echo '<div id="search"><form action=""><input id="search_input" name="search" value="'.$query.'" /> <input id="search_button" type="submit" value="搜 索"/></form></div>';
   }
 }
