@@ -76,7 +76,8 @@ body {
 #product_list li {
 	list-style:none;
   float: left;
-  width:190px;
+  width:180px;
+  padding:5px;
   height:300px;
   background-color:#fff;
   vertical-align:top;
@@ -87,7 +88,7 @@ body {
   margin:0;
 }
 a {
-  color: #66b;
+  color: #36c;
 	text-decoration:none;
 }
 a:hover {

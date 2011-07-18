@@ -31,11 +31,11 @@ class SearchScreen extends Screen {
   private function renderProductList($category) {
     echo '<ul id="product_list">';
     foreach (DbProduct::getList($category['table_prefix']) as $item) {
-      echo '<li class="item"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /><div class="price_block">￥<span class="price">122</span> | 7个商城</div><h2><a href="/'.$item['id'].'">'
+      echo '<li class="item"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /><div class="price_block">￥<span class="price">122</span> 7个商城</div><h2><a href="/'.$item['id'].'">'
         .$item['name'].'</a></h2></li>';
     }
     foreach (DbProduct::getList($category['table_prefix']) as $item) {
-      echo '<li class="item"><img src="/x.jpg" /><div class="price_block">￥<span class="price">122</span> | 7个商城</div><h2><a href="/'.$item['id'].'">'
+      echo '<li class="item"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /><div class="price_block">￥<span class="price">122</span> 7个商城</div><h2><a href="/'.$item['id'].'">'
         .$item['name'].'</a></h2></li>';
     }
     echo '</ul>';
