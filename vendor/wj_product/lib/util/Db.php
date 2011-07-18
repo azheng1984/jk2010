@@ -58,7 +58,8 @@ class Db {
   private static function getConnection() {
     if (!isset(self::$connections[self::$name])) {
       $class = 'Db'.self::$name.'Connection';
-      self::$connections[self::$name] = $class::getConnection();
+      $connection = new $class;
+      self::$connections[self::$name] = $connection->get();
     }
     return self::$connections[self::$name];
   }

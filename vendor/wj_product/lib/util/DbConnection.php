@@ -1,6 +1,6 @@
 <?php
 class DbConnection {
-  public static function getConnection() {
+  public function get() {
     $connection = new PDO(
       'mysql:host=localhost;dbname=wj',
       'root',
