@@ -35,14 +35,6 @@ class Db {
     self::getConnection()->rollBack();
   }
 
-  public static function getFilter($key, $value, &$parameters) {
-    if ($value === null) {
-      return "`$key` IS NULL";
-    }
-    $parameters[] = $value;
-    return "`$key` = ?";
-  }
-
   public static function connect($name) {
     $this->name = $name;
   }
