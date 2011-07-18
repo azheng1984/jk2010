@@ -23,6 +23,17 @@ class SearchScreen extends Screen {
       foreach (DbCategory::getList($parentId) as $item) {
         echo '<a href="'.urlencode($item['name']).'/">'.$item['name'].'</a> ';
       }
+      return;
     }
+    $this->renderProductList($category);
+  }
+
+  private function renderProductList($category) {
+    echo '<ul>';
+    foreach (DbProduct::getList($category['table_prefix']) as $item) {
+      echo '<li class="item"><a href="/'.$item['id'].'">'
+        .$item['name'].'</a></li>';
+    }
+    echo '</ul>';
   }
 }

@@ -14,6 +14,6 @@ class ProductScreen extends Screen {
   }
 
   public function renderContent() {
-    
+    print_r($this->product);
   }
 }

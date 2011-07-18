@@ -1,7 +1,7 @@
 <?php
 class Breadcrumb {
   public function render($categories) {
-    array_pop($categories);
+    $current = array_pop($categories);
     echo '<div id="breadcrumb">';
     echo '<a href="/">首页</a> ';
     $distance = count($categories);
@@ -10,6 +10,7 @@ class Breadcrumb {
         .$category['name'].'</a> ';
       --$distance;
     }
+    echo '&gt; '.$current['name'];
     echo '</div>';
   }
 
