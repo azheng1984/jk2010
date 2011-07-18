@@ -10,7 +10,7 @@ class Breadcrumb {
         .$category['name'].'</a> ';
       --$distance;
     }
-    echo '&gt; '.$current['name'];
+    echo '&gt; <h1>'.$current['name'].'</h1>';
     echo '</div>';
   }
 
