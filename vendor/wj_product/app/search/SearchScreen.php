@@ -18,7 +18,7 @@ class SearchScreen extends Screen {
       }
     }
     $breadcrumb = new Breadcrumb();
-    $breadcrumb->render();
+    $breadcrumb->render($categories);
     if ($category['table_prefix'] === null) {
       foreach (DbCategory::getList($parentId) as $item) {
         echo '<a href="'.urlencode($item['name']).'/">'.$item['name'].'</a> ';
