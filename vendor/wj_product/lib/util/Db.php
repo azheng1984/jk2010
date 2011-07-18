@@ -23,6 +23,18 @@ class Db {
     return self::getConnection()->lastInsertId();
   }
 
+  public static function beginTransaction() {
+    self::getConnection()->beginTransaction();
+  }
+
+  public static function commit() {
+    self::getConnection()->commit();
+  }
+
+  public static function rollBack() {
+    self::getConnection()->rollBack();
+  }
+
   public static function getFilter($key, $value, &$parameters) {
     if ($value === null) {
       return "`$key` IS NULL";
