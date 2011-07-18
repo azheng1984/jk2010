@@ -9,7 +9,7 @@ class Router {
       return '/';
     }
     $tmps = explode('?', $_SERVER['REQUEST_URI'], 2);
-    $sections = explode('/', $tmps[0], 3);
+    $sections = explode('/', $tmps[0]);
     if (count($sections) === 2 && $sections[1] !== '') {
       $_GET['product_id'] = $sections[1];
       return '/product';
