@@ -113,14 +113,17 @@ a:hover {
 }
 #merchant_list {
 	float:left;
-  border:1px solid #e5e5e5;
 	margin-left:20px;
 }
 #merchant_list table {
+	  border:1px solid #e5e5e5;
   font-size:14px;
 	text-align:left;
 	border-collapse: collapse;
 	width:700px;
+}
+#merchant_list tr {
+	border:1px solid #e5e5e5;
 }
 #merchant_list table th{
   font-weight:normal;
