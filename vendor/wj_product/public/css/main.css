@@ -44,13 +44,17 @@ body {
   font-weight:bold;
 }
 #footer {
-	color:#999999;
+  color:#999999;
+  clear:both;
 }
 #footer .left {
   float:left;
 }
 #footer .right {
   float:right;
+}
+#footer a {
+	margin:0 2px;
 }
 #search {
   margin-left:105px;
@@ -75,7 +79,7 @@ body {
   background-color:#fff;
 }
 #product_list li {
-	list-style:none;
+  list-style:none;
   float: left;
   width:175px;
   padding:6px;
@@ -91,9 +95,52 @@ body {
 }
 a {
   color: #36c;
-	text-decoration:none;
+  text-decoration:none;
 }
 a:hover {
-	text-decoration:underline;
-	color:#FF7D16;
+  text-decoration:underline;
+  color:#FF7D16;
+}
+#product {
+  color:#000;
+}
+#property_list {
+  float:left;
+  width:180px;
+}
+.brand {
+  line-height:20px;
+}
+#merchant_list {
+	float:left;
+  border:1px solid #e5e5e5;
+	margin-left:20px;
+}
+#merchant_list table {
+  font-size:14px;
+	text-align:left;
+	border-collapse: collapse;
+	width:700px;
+}
+#merchant_list table th{
+  font-weight:normal;
+  padding:5px;
+}
+#merchant_list table td {
+	padding:5px;
+}
+#merchant_list thead{
+	background-color:#f1f1f1;
+}
+#product h1 {
+  margin:10px 0;
+  font-size: 25px;
+  font-family: "SimHei";
+}
+#product h2 {
+  clear:left;
+  font-size:16px;
+  font-weight:normal;
+  color:#FF7D16;
+  margin:0;
 }
