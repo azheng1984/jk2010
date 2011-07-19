@@ -25,15 +25,15 @@ body {
   font-weight: normal;
 }
 #content {
-  line-height: 25px;
+  line-height: 20px;
 }
 .price_block {
 	color:#999;
-	font-size:12px;
+	font-size:11px;
 }
 .price {
 	color: #FF7D16;
-	font-size:16px;
+	font-size:13px;
 	font-weight:bold;
 }
 #logo a {
@@ -83,15 +83,16 @@ body {
   float: left;
   width:175px;
   padding:6px;
-  height:250px;
+  height:260px;
   background-color:#fff;
   vertical-align:top;
-  overflow:hidden;
 }
 #product_list h2 {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: normal;
   margin:0;
+  height:40px;
+  overflow:hidden;
 }
 a {
   color: #36c;
@@ -112,8 +113,8 @@ a:hover {
   line-height:20px;
 }
 #merchant_list {
-	float:left;
-	margin-left:20px;
+  float:left;
+  margin-left:20px;
 }
 #merchant_list table {
 	  border:1px solid #e5e5e5;
@@ -146,4 +147,5 @@ a:hover {
   font-weight:normal;
   color:#FF7D16;
   margin:0;
+
 }

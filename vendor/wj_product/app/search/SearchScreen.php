@@ -34,8 +34,8 @@ class SearchScreen extends Screen {
     echo '<ul id="product_list">';
     for ($index = 0; $index < 5; $index++) {
       foreach (DbProduct::getList($category['table_prefix']) as $item) {
-        echo '<li class="item"><div class="product_image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div class="price_block">￥<span class="price">122.00</span> 7个商城</div><h2><a href="/'.$item['id'].'">'
-          .$item['name'].'</a></h2></li>';
+        echo '<li class="item"><div class="product_image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><h2><a href="/'.$item['id'].'">'
+          .$item['name'].'</a></h2><div class="price_block">￥<span class="price">10000.00</span>~<span class="price">12299.00</span> 7个商城</div></li>';
       }
     }
     echo '</ul>';
