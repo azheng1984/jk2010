@@ -29,9 +29,9 @@ class ProductScreen extends Screen {
     echo '<div class="brand">品牌: <a href="/">DELL</a></div>';
     echo '</div>';
     echo '<div id="merchant_list">';
-    echo '<table><thead><tr><th>商城</th><th>配送范围 上海 <a href="/">选择</a></th><th><a href="/">价格</a></th></tr></thead>';
-    echo '<tbody><tr><td><a href="/">京东商城</a></td><td>全国</td><td>￥10.00</td></tr>';
-    echo '<tr><td><a href="/">卓越亚马逊</a></td><td>全国</td><td>￥9.00</td></tr>';
+    echo '<table><thead><tr><th>商城</th><th>所在区域 不限 <a href="/">选择</a></th><th>配送范围 上海 <a href="/">选择</a></th><th><a href="/">价格</a></th><th><a href="/">运费</a></th><th><a href="/">总价</a></th></tr></thead>';
+    echo '<tbody><tr><td><a href="/">京东商城</a></td><td>全国</td><td>全国</td><td>￥10.00</td><td>免运费</td><td>￥10.00</td></tr>';
+    echo '<tr><td><a href="/">卓越亚马逊</a></td><td>北京 广州 上海</td><td>全国</td><td>￥9.00</td><td>￥5.00</td><td>￥14.00</td></tr>';
     echo '</tbody></table>';
     echo '</div>';
     echo '</div>';
