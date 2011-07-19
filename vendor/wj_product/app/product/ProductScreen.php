@@ -14,6 +14,12 @@ class ProductScreen extends Screen {
   }
 
   public function renderContent() {
+    $breadcrumb = new Breadcrumb;
+    $categories = array($this->category);
+    array_unshift($array, $var);
+    $breadcrumb->render($categories, $this->product);
+    echo '<div id="product">';
     print_r($this->product);
+    echo '</div>';
   }
 }
