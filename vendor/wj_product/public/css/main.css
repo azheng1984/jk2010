@@ -98,7 +98,7 @@ img {
   background-color:#fff;
   vertical-align:top;
 }
-#product_list h2 {
+#product_list h2, #product h2 {
   font-size: 14px;
   font-weight: normal;
   margin:0;
@@ -116,27 +116,30 @@ a:hover {
 }
 #product {
   color:#000;
+  padding: 5px 0 10px 0;
 }
 #property_list {
+	margin-right:10px;
   float:left;
   width:280px;
   padding:10px;
-  background-color:#f1f1f1;
+  background-color:#e1e1e1;
   color:#999;
+  height:100%;
 }
 .brand {
   line-height:20px;
 }
 #merchant_list {
   float:left;
-  margin-left:20px;
 }
 #merchant_list table {
   border:1px solid #e5e5e5;
   font-size:14px;
   text-align:left;
   border-collapse: collapse;
-  width:600px;
+  width:625px;
+  margin-bottom:20px;
 }
 #merchant_list tr {
 	border:1px solid #e5e5e5;
@@ -152,19 +155,25 @@ a:hover {
   background-color:#f1f1f1;
 }
 #product h1 {
-  margin:10px 0;
+  margin:20px 10px;
   font-size: 25px;
   font-family: "SimHei";
 }
-#product h2 {
+/*#product h2 {
   clear:left;
   font-size:16px;
   font-weight:normal;
   color:#FF7D16;
   margin:0;
 }
+*/
 .product_image {
-  width:280px;
+  width:250px;
+}
+.product_image_box {
+  width: 280px;
+  text-align: center;
+  margin-bottom:10px;
 }
 .featured_product_list {
   width:580px;
@@ -174,19 +183,24 @@ a:hover {
 .featured_product_list li {
   list-style:none;
   float: left;
-  width:270px;
+  width:180px;
   padding:6px;
-  height:150px;
+  height:260px;
   background-color:#fff;
   vertical-align:top;
 }
-.featured_product_list img {
+.featured_name {
+	color:#FF7D16;
+	font-size:16px;
+}
+/*.featured_product_list img {
   width:100px;
 }
 .featured_product_list h2 {
   float:left;
   font-size:12px;
 }
+*/
 .featured_name {
 	clear:both;
 }

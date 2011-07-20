@@ -24,9 +24,9 @@ class ProductScreen extends Screen {
     $breadcrumb->render($categories, $this->product);
     echo '<div id="product">';
     echo '<h1>'.$this->product['name'].'</h1>';
-    echo '<div id="action"><a href="/">比较</a> <a href="/">关注 </a> <a href="/">分享</a></div>';
+    echo '<div id="action"><a href="/">比较</a> <a href="/">关注</a> 12134 <a href="/">分享</a></div>';
     echo '<div id="property_list">';
-    echo '<img title="'.$this->product['name'].'" class="product_image" src="/x_large.jpg" />';
+    echo '<div class="product_image_box"><img title="'.$this->product['name'].'" class="product_image" src="/x_large.jpg" /></div>';
     echo '<div class="brand">品牌: <a href="/">DELL</a></div>';
     echo '</div>';
     echo '<div id="merchant_list">';
@@ -34,9 +34,7 @@ class ProductScreen extends Screen {
     echo '<tbody><tr><td><a href="/">京东商城</a></td><td>全国</td><td>全国</td><td>￥10.00</td><td>免运费</td><td>￥10.00</td></tr>';
     echo '<tr><td><a href="/">卓越亚马逊</a></td><td>北京 广州 上海</td><td>全国</td><td>￥9.00</td><td>￥5.00</td><td>￥14.00</td></tr>';
     echo '</tbody></table>';
-    $this->renderProductList('同品牌');
-    $this->renderProductList('同类热销');
-    $this->renderProductList('最终购买');
+    $this->renderProductList('笔记本电脑推荐');
     echo '</div>';
     echo '</div>';
   }
