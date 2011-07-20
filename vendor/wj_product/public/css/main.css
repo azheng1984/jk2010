@@ -31,13 +31,13 @@ body {
   line-height: 20px;
 }
 .price_block {
-	color:#999;
-	font-size:11px;
+  color:#999;
+  font-size:11px;
 }
 .price {
-	color: #FF7D16;
-	font-size:13px;
-	font-weight:bold;
+  color: #FF7D16;
+  font-size:13px;
+  font-weight:bold;
 }
 #logo a {
   float: left;
@@ -121,11 +121,11 @@ a:hover {
   margin-left:20px;
 }
 #merchant_list table {
-	  border:1px solid #e5e5e5;
+  border:1px solid #e5e5e5;
   font-size:14px;
-	text-align:left;
-	border-collapse: collapse;
-	width:700px;
+  text-align:left;
+  border-collapse: collapse;
+  width:700px;
 }
 #merchant_list tr {
 	border:1px solid #e5e5e5;
@@ -135,10 +135,10 @@ a:hover {
   padding:5px;
 }
 #merchant_list table td {
-	padding:5px;
+  padding:5px;
 }
 #merchant_list thead{
-	background-color:#f1f1f1;
+  background-color:#f1f1f1;
 }
 #product h1 {
   margin:10px 0;
@@ -151,5 +151,4 @@ a:hover {
   font-weight:normal;
   color:#FF7D16;
   margin:0;
-
 }
