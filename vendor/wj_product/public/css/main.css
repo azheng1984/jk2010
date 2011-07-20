@@ -11,6 +11,9 @@ body {
   margin: 0 auto;
   line-height: 50px;
 }
+#breadcrumb {
+  margin-bottom:10px;
+}
 #breadcrumb, #category_list, #product{
   padding:5px 10px;
   width: 940px;
@@ -77,6 +80,7 @@ body {
   padding:5px 10px;
   float:left;
   background-color:#fff;
+  margin-top:0;
 }
 #product_list li {
   list-style:none;
