@@ -4,17 +4,24 @@ body {
   font-size:14px;
   line-height:20px;
   margin:0;
-	background-color:#f1f1f1;
+  background-color:#f1f1f1;
+}
+img {
+  border:0;
 }
 #header, #footer, #content, #category_list {
   width: 960px;
   margin: 0 auto;
   line-height: 50px;
 }
+#action {
+  float:right;
+  margin:-30px 20px 10px 0;
+}
 #breadcrumb {
   margin-bottom:10px;
 }
-#breadcrumb, #category_list, #product{
+#breadcrumb, #category_list, #product {
   padding:5px 10px;
   width: 940px;
   background-color: #fff;
@@ -32,11 +39,11 @@ body {
 }
 .price_block {
   color:#999;
-  font-size:11px;
+  font-size:12px;
 }
 .price {
   color: #FF7D16;
-  font-size:13px;
+  font-size:12px;
   font-weight:bold;
 }
 #logo a {
@@ -92,9 +99,10 @@ body {
   vertical-align:top;
 }
 #product_list h2 {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: normal;
   margin:0;
+  margin-top:5px;
   height:40px;
   overflow:hidden;
 }
@@ -111,7 +119,10 @@ a:hover {
 }
 #property_list {
   float:left;
-  width:180px;
+  width:280px;
+  padding:10px;
+  background-color:#f1f1f1;
+  color:#999;
 }
 .brand {
   line-height:20px;
@@ -125,7 +136,7 @@ a:hover {
   font-size:14px;
   text-align:left;
   border-collapse: collapse;
-  width:700px;
+  width:600px;
 }
 #merchant_list tr {
 	border:1px solid #e5e5e5;
@@ -151,4 +162,31 @@ a:hover {
   font-weight:normal;
   color:#FF7D16;
   margin:0;
+}
+.product_image {
+  width:280px;
+}
+.featured_product_list {
+  width:580px;
+  margin:0;
+  padding:0;
+}
+.featured_product_list li {
+  list-style:none;
+  float: left;
+  width:270px;
+  padding:6px;
+  height:150px;
+  background-color:#fff;
+  vertical-align:top;
+}
+.featured_product_list img {
+  width:100px;
+}
+.featured_product_list h2 {
+  float:left;
+  font-size:12px;
+}
+.featured_name {
+	clear:both;
 }
