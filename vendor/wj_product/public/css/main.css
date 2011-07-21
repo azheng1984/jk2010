@@ -116,7 +116,8 @@ a:hover {
 }
 #product {
   color:#000;
-  padding: 5px 0 10px 0;
+  width:960px;
+  padding: 5px 0 0 0;
 }
 #property_list {
 	margin-right:10px;
@@ -138,7 +139,7 @@ a:hover {
   font-size:14px;
   text-align:left;
   border-collapse: collapse;
-  width:625px;
+  width:635px;
   margin-bottom:20px;
 }
 #merchant_list tr {
@@ -159,14 +160,6 @@ a:hover {
   font-size: 25px;
   font-family: "SimHei";
 }
-/*#product h2 {
-  clear:left;
-  font-size:16px;
-  font-weight:normal;
-  color:#FF7D16;
-  margin:0;
-}
-*/
 .product_image {
   width:250px;
 }
