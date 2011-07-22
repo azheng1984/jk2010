@@ -1,6 +1,5 @@
 <?php
-class HomeScreen {
+class CategoryScreen {
   public function render() {
-    
   }
 }
