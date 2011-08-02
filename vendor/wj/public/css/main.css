@@ -161,7 +161,7 @@ a:hover {
   font-size: 25px;
   font-family: "SimHei";
 }
-.product_image {
+#property_list .product_image {
   width:270px;
 }
 .product_image_box {
