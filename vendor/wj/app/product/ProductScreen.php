@@ -26,7 +26,7 @@ class ProductScreen extends Screen {
     echo '<h1>'.$this->product['name'].'</h1>';
     echo '<div id="action"><a href="/">比较</a> <a href="/">关注</a> 12134 <a href="/">分享</a></div>';
     echo '<div id="property_list">';
-    echo '<div class="product_image_box"><img title="'.$this->product['name'].'" class="product_image" src="/x_large.jpg" /></div>';
+    echo '<div class="product_image_box"><img title="'.$this->product['name'].'" class="product_image" src="/x.jpg" /></div>';
     echo '<div class="brand">品牌: <a href="/">DELL</a></div>';
     echo '</div>';
     echo '<div id="merchant_list">';
