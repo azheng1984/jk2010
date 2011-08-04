@@ -44,7 +44,6 @@ img {
 .price {
   color: #FF7D16;
   font-size:12px;
-  font-weight:bold;
 }
 #logo a {
   float: left;
@@ -122,7 +121,7 @@ a:hover {
 #property_list {
 	margin-right:10px;
   float:left;
-  width:250px;
+  width:180px;
   padding:10px;
   background-color:#e1e1e1;
   color:#999;
@@ -139,7 +138,7 @@ a:hover {
   font-size:14px;
   text-align:left;
   border-collapse: collapse;
-  width:670px;
+  width:740px;
   margin-bottom:20px;
 }
 #merchant_list tr {
@@ -162,28 +161,31 @@ a:hover {
   font-family: "SimHei";
 }
 #property_list .product_image {
-  width:175px;
+  width:170px;
 }
 .product_image img,.image img {
-	width:175px;
+	width:170px;
 }
 .product_image_box {
-  width: 240px;
+  width: 170px;
   text-align: center;
   margin-bottom:10px;
   padding:5px;
 }
 .featured_product_list {
-  width:600px;
+  width:750px;
   margin:0;
-  margin-left:35px;
   padding:0;
+}
+.featured_product_list ul {
+	margin:0;
+	padding:0;
 }
 .featured_product_list li {
 	text-align:left;
   list-style:none;
   float: left;
-  width:180px;
+  width:175px;
   padding:6px;
   height:260px;
   background-color:#fff;
