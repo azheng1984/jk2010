@@ -123,7 +123,7 @@ a:hover {
   padding: 5px 0 0 0;
 }
 #property_list {
-	margin-right:10px;
+  margin-right:10px;
   float:left;
   width:180px;
   padding:10px;
@@ -168,7 +168,7 @@ a:hover {
   width:170px;
 }
 .product_image img,.image img {
-	width:170px;
+  width:170px;
 }
 .product_image_box {
   width: 170px;
@@ -182,11 +182,11 @@ a:hover {
   padding:0;
 }
 .featured_product_list ul {
-	margin:0;
-	padding:0;
+  margin:0;
+  padding:0;
 }
 .featured_product_list li {
-	text-align:left;
+  text-align:left;
   list-style:none;
   float: left;
   width:175px;
@@ -212,5 +212,5 @@ a:hover {
 }
 */
 .featured_name {
-	clear:both;
+  clear:both;
 }
