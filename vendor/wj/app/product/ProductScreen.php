@@ -44,7 +44,7 @@ class ProductScreen extends Screen {
     echo '<ul class="featured_product_list">';
     foreach (DbProduct::getList($this->category['table_prefix']) as $item) {
       echo '<li class="item"><div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><h2><a href="/'.$item['id'].'">'
-        .$item['name'].'</a></h2><div class="price_block">￥<span class="price">10000.00</span>~<span class="price">12299.00</span> 7个商城</div></li>';
+        .$item['name'].'</a></h2><div class="price_block">￥<span class="price">10000.00</span>~<span class="price">12299.00</span> <div>7个商城</div></div></li>';
     }
     echo '</ul>';
   }

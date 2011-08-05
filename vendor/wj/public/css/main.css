@@ -46,8 +46,9 @@ img {
   font-size:12px;
 }
 .price {
-  color: red;
+  color: #000;
   font-size:12px;
+  font-weight: bold;
 }
 #logo a {
   float: left;
