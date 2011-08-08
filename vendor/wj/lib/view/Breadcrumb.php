@@ -9,11 +9,10 @@ class Breadcrumb {
     echo '<a href="/">首页</a> ';
     if ($product === null) {
       $this->renderRelativeLink($categories);
-      echo '&gt; <h1>'.$current['name'].'</h1>';
     } else {
       $this->renderFullLink($categories);
-      echo '&gt; '.$current['name'];
     }
+    echo '&gt; '.$current['name'];
     echo '</div>';
   }
 
