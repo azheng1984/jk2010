@@ -19,6 +19,7 @@ class SearchScreen extends Screen {
     }
     $breadcrumb = new Breadcrumb();
     $breadcrumb->render($categories);
+    echo '<div id="category_title"><h1>'.$category['name'].'</h1></div>';
     if ($category['table_prefix'] === null) {
       echo '<div id="category_list">';
       foreach (DbCategory::getList($parentId) as $item) {
