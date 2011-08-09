@@ -1,13 +1,11 @@
 <?php
-class DbConnection {
+class DbConnectionFactory {
   public function get() {
-    $connection = new PDO(
+    return new PDO(
       'mysql:host=localhost;dbname=wj',
       'root',
       'a841107!',
       array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8')
     );
-    $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    return $connection;
   }
 }
