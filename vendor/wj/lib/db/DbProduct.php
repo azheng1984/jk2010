@@ -15,4 +15,6 @@ class DbProduct {
   public static function getList($tablePrefix) {
     return Db::getAll('SELECT * FROM '.$tablePrefix.'_product LIMIT 10');
   }
+
+  
 }
