@@ -1,7 +1,7 @@
 <?php
 class Db {
   private static $connections = array();
-  private static $name;
+  private static $name = '';
 
   public static function execute($sql/*, $parameter, ...*/) {
     return self::executeByArray(func_get_args());
@@ -49,9 +49,11 @@ class Db {
 
   private static function getConnection() {
     if (!isset(self::$connections[self::$name])) {
-      $class = 'Db'.self::$name.'Connection';
-      $connection = new $class;
-      self::$connections[self::$name] = $connection->get();
+      $class = 'Db'.self::$name.'ConnectionFactory';
+      $factory = new $class;
+      $connection = $factory->get();
+      $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      self::$connections[self::$name] = $connection;
     }
     return self::$connections[self::$name];
   }
