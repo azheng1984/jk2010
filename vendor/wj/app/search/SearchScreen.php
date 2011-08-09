@@ -17,15 +17,16 @@ class SearchScreen extends Screen {
         }
       }
     }
-    $breadcrumb = new Breadcrumb();
-    $breadcrumb->render($categories);
+    $breadcrumb = new Breadcrumb($categories);
+    $breadcrumb->render();
     echo '<div id="category_title"><h1>'.$category['name'].'</h1></div>';
     if ($category['table_prefix'] === null) {
-      echo '<div id="category_list">';
-      foreach (DbCategory::getList($parentId) as $item) {
-        echo '<a href="'.urlencode($item['name']).'/">'.$item['name'].'</a> ';
+      echo '<ul id="category_list">';
+      foreach (DbCategory::getList($parentId) as $category) {
+        echo '<li><a href="'.urlencode($category['name']).'/">'
+          .$category['name'].'</a></li>';
       }
-      echo '</div>';
+      echo '</ul>';
       return;
     }
     $this->renderProductList($category);

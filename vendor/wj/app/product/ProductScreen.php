@@ -14,14 +14,14 @@ class ProductScreen extends Screen {
   }
 
   public function renderContent() {
-    $breadcrumb = new Breadcrumb;
     $categories = array($this->category);
     $category = $this->category;
     while ($category['parent_id'] !== '0') {
       $category = DbCategory::get($category['parent_id']);
       array_unshift($categories, $category);
     }
-    $breadcrumb->render($categories, $this->product);
+    $breadcrumb = new Breadcrumb($categories, $this->product);
+    $breadcrumb->render();
     echo '<div id="product">';
     echo '<h1>'.$this->product['name'].'</h1>';
     echo '<div id="action"><a href="/">对比</a> <a href="/">关注</a> 12134 <a href="/">分享</a></div>';

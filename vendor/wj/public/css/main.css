@@ -35,6 +35,9 @@ h1 {
   padding:5px 0;
   margin:5px 0;
 }
+#category_list {
+  list-style:none;
+}
 #category_list, #product {
   padding:5px 10px;
   width: 940px;

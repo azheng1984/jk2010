@@ -1,38 +1,46 @@
 <?php
 class Breadcrumb {
-  public function render($categories, $product = null) {
-    $current = $product;
-    $parents = $categories;
-    if ($current === null) {
-      $current = array_pop($parents);
+  private $current;
+  private $parents;
+  private $isRelative;
+
+  public function __construct($categories, $product = null) {
+    $this->parents = $categories;
+    $this->current = $product;
+    if ($this->current === null) {
+      $this->current = array_pop($this->parents);
     }
+    $this->isRelative = $product === null;
+  }
+
+  public function render() {
     echo '<div id="breadcrumb">';
     echo '<a href="/">首页</a>';
-    $this->renderParents($parents, $product === null);
-    echo ' &gt; '.$current['name'];
+    $this->renderParents();
+    echo ' &gt; '.$this->current['name'];
     echo '</div>';
   }
 
-  private function renderParents($parents, $isRelative) {
-    if ($isRelative) {
-      $this->renderRelativeLink($parents);
+  private function renderParents() {
+    if ($this->isRelative) {
+      $this->renderRelativeLink();
       return;
     }
-    $this->renderFullLink($parents);
+    $this->renderFullLink();
   }
 
-  private function renderRelativeLink($parents) {
-    $distance = count($parents);
-    foreach ($parents as $category) {
+  private function renderRelativeLink() {
+    $distance = count($this->parents);
+    foreach ($this->parents as $category) {
       echo ' &gt; <a href="'.$this->getPath($distance).'">'
         .$category['name'].'</a>';
       --$distance;
     }
   }
 
-  private function renderFullLink($parents) {
+  private function renderFullLink() {
     $path = '/';
-    foreach ($parents as $category) {
+    foreach ($this->parents as $category) {
       $path .= urlencode($category['name']).'/';
       echo ' &gt; <a href="'.$path.'">'.$category['name'].'</a>';
     }
