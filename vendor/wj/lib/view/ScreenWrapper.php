@@ -35,7 +35,7 @@ class ScreenWrapper {
 
   private function renderLogo() {
     echo '<div id="header">';
-    echo '<div id="logo"><a href="/">货比万家</a></div>';
+    echo '<div id="logo"><a href="/"><img src="/logo.png" /></a></div>';
     $this->renderSearch();
     echo '</div>';
   }
