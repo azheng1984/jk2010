@@ -28,6 +28,10 @@ class ProductScreen extends Screen {
     echo '<div id="property_list">';
     echo '<div class="product_image_box"><img title="'.$this->product['name'].'" class="product_image" src="/x.jpg" /></div>';
     echo '<div class="brand">品牌: <a href="/">DELL</a></div>';
+    foreach (explode(',', $this->product['property_value_list']) as $id) {
+      $result = DbProperty::getByValueId($this->category['table_prefix'], $id);
+      echo '<div>'.$result['key'].': '.$result['value'].'</div>';
+    }
     echo '</div>';
     echo '<div id="merchant_list">';
     echo '<table><thead><tr><th>商城</th><th>所在区域 不限 <a href="/">选择</a></th><th>配送范围 上海 <a href="/">选择</a></th><th><a href="/">价格</a></th><th><a href="/">运费</a></th><th><a href="/">总价</a></th></tr></thead>';

@@ -16,5 +16,8 @@ class DbProduct {
     return Db::getAll('SELECT * FROM '.$tablePrefix.'_product LIMIT 10');
   }
 
-  
+  public static function getPropertyListById($tablePrefix, $id) {
+    $table = $tablePrefix.'_property_key';
+    $sql = 'SELECT * FROM '.$table.' WHERE id = ';
+  }
 }
