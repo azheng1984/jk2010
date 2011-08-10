@@ -30,7 +30,7 @@ class ProductScreen extends Screen {
     echo '<div class="brand">品牌: <a href="/">DELL</a></div>';
     foreach (explode(',', $this->product['property_value_list']) as $id) {
       $result = DbProperty::getByValueId($this->category['table_prefix'], $id);
-      echo '<div>'.$result['key'].': '.$result['value'].'</div>';
+      echo '<div>'.$result['key'].': <a href="..">'.$result['value'].'</a></div>';
     }
     echo '</div>';
     echo '<div id="merchant_list">';
