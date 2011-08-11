@@ -27,10 +27,10 @@ class ProductScreen extends Screen {
     echo '<div id="action"><a href="/">对比</a> <a href="/">关注</a> 12134 <a href="/">分享</a></div>';
     echo '<div id="property_list">';
     echo '<div class="product_image_box"><img title="'.$this->product['name'].'" class="product_image" src="/x.jpg" /></div>';
-    echo '<div class="brand">品牌: <a href="/">DELL</a></div>';
+    $categoryPath = $this->getCategoryPath($categories);
     foreach (explode(',', $this->product['property_value_list']) as $id) {
       $result = DbProperty::getByValueId($this->category['table_prefix'], $id);
-      echo '<div>'.$result['key'].': <a href="..">'.$result['value'].'</a></div>';
+      echo '<div>'.$result['key'].': <a href="'.$categoryPath.'?'.urlencode($result['key']).'='.urlencode($result['value']).'">'.$result['value'].'</a></div>';
     }
     echo '</div>';
     echo '<div id="merchant_list">';
@@ -41,6 +41,14 @@ class ProductScreen extends Screen {
     $this->renderProductList('笔记本电脑推荐');
     echo '</div>';
     echo '</div>';
+  }
+
+  private function getCategoryPath($categories) {
+    $path = '/';
+    foreach ($categories as $category) {
+      $path .= urlencode($category['name']).'/';
+    }
+    return $path;
   }
 
   private function renderProductList($name) {
