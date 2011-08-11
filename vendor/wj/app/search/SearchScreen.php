@@ -33,6 +33,13 @@ class SearchScreen extends Screen {
   }
 
   private function renderProductList($category) {
+    foreach (DbProperty::getList($category['id']) as $item) {
+      echo '<div>'.$item['key'].':';
+      foreach ($item['values'] as $value) {
+        echo ' <a href="?'.urlencode($item['key']).'='.urlencode($value['value']).'">'.$value['value'].'</a>';
+      }
+      echo '</div>';
+    }
     echo '<ul id="product_list">';
     for ($index = 0; $index < 5; $index++) {
       foreach (DbProduct::getList($category['table_prefix']) as $item) {

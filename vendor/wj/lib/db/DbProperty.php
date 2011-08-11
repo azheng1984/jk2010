@@ -8,4 +8,14 @@ class DbProperty {
       .' WHERE table_value.id = ?';
     return Db::getRow($sql, $valueId);
   }
+
+  public static function getList($categoryId) {
+    $sql = 'SELECT * FROM laptop_property_key';
+    $results = Db::getAll($sql);
+    foreach ($results as &$key) {
+      $sql = 'SELECT * FROM laptop_property_value WHERE key_id = ?';
+      $key['values'] = Db::getAll($sql, $key['id']);
+    }
+    return $results;
+  }
 }
