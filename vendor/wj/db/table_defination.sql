@@ -6,13 +6,7 @@ CREATE TABLE `global_category` (
   `parent_id` bigint(20) DEFAULT NULL,
   `name` varchar(127) DEFAULT NULL,
   `table_prefix` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `global_category_alias` (
-  `id` int(11) NOT NULL,
-  `category_id` int(11) DEFAULT NULL,
-  `alias` varchar(45) DEFAULT NULL,
+  `redirect_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
