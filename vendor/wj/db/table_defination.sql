@@ -1,12 +1,11 @@
 CREATE DATABASE `wj`;
-
 USE wj;
 
 CREATE TABLE `digital_property_key` (
   `id` int(11) NOT NULL,
   `parent_id` varchar(45) DEFAULT NULL,
   `key` varchar(45) DEFAULT NULL,
-  `index` int(11) DEFAULT NULL,
+  `rank` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -14,6 +13,7 @@ CREATE TABLE `digital_property_value` (
   `id` bigint(20) NOT NULL,
   `key_id` bigint(20) DEFAULT NULL,
   `value` varchar(45) DEFAULT NULL,
+  `rank` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -23,7 +23,7 @@ CREATE TABLE `global_category` (
   `name` varchar(127) DEFAULT NULL,
   `table_prefix` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `global_category_alias` (
   `id` int(11) NOT NULL,
@@ -55,13 +55,13 @@ CREATE TABLE `global_product_index` (
   `product_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `category_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`product_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `global_property_key` (
   `id` bigint(20) NOT NULL,
   `parent_id` int(11) DEFAULT NULL,
   `key` varchar(45) DEFAULT NULL,
-  `index` int(11) DEFAULT NULL,
+  `rank` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -69,6 +69,7 @@ CREATE TABLE `global_property_value` (
   `id` bigint(20) NOT NULL,
   `key_id` bigint(20) DEFAULT NULL,
   `value` varchar(45) DEFAULT NULL,
+  `rank` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -109,7 +110,7 @@ CREATE TABLE `laptop_price` (
 
 CREATE TABLE `laptop_price_history` (
   `id` int(11) NOT NULL,
-  `product_id` int(11) DEFAULT NULL COMMENT '   ',
+  `product_id` int(11) DEFAULT NULL,
   `price` decimal(9,2) DEFAULT NULL,
   `merchant_id` int(11) DEFAULT NULL,
   `start_time` datetime DEFAULT NULL,
@@ -137,16 +138,6 @@ CREATE TABLE `laptop_property_key` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE `laptop_property_key_active` (
-  `id` int(11) NOT NULL,
-  `category_id` int(11) DEFAULT NULL,
-  `key_id` int(11) DEFAULT NULL,
-  `rank` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
 CREATE TABLE `laptop_property_value` (
   `id` bigint(20) NOT NULL,
   `key_id` bigint(20) DEFAULT NULL,
@@ -155,20 +146,10 @@ CREATE TABLE `laptop_property_value` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE `laptop_property_value_active` (
-  `id` int(11) NOT NULL,
-  `category_id` int(11) DEFAULT NULL,
-  `value_id` int(11) DEFAULT NULL,
-  `rank` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
 CREATE TABLE `laptop_property_value_range` (
   `id` int(11) NOT NULL,
   `key_id` varchar(45) DEFAULT NULL,
   `range` varchar(45) DEFAULT NULL,
-  `index` int(11) DEFAULT NULL,
+  `rank` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
