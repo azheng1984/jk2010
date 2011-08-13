@@ -19,7 +19,7 @@ img {
 }
 #action {
   float:right;
-  margin:-30px 20px 10px 0;
+  margin:-40px 20px 10px 0;
 }
 #breadcrumb {
   margin-bottom:10px;
@@ -173,6 +173,11 @@ a:hover {
 }
 #merchant_list thead{
   background-color:#f1f1f1;
+}
+#merchant_list table .price {
+	color: #36c;
+	font-size:16px;
+	font-weight:bold;
 }
 #product h1 {
   margin:20px 10px;
