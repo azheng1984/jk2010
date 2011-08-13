@@ -24,7 +24,7 @@ class ProductScreen extends Screen {
     $breadcrumb->render();
     echo '<div id="product">';
     echo '<h1>'.$this->product['name'].'</h1>';
-    echo '<div id="action"><a href="/">对比</a> <a href="/">关注</a> 12134 <a href="/">分享</a></div>';
+    echo '<div id="action"><img src="/icon_ranking.gif" /> <a href="/">122</a> <a href="/">对比</a> <a href="/">关注</a> 12134 <a href="/">分享</a></div>';
     echo '<div id="property_list">';
     echo '<div class="product_image_box"><img title="'.$this->product['name'].'" class="product_image" src="/x.jpg" /></div>';
     $categoryPath = $this->getCategoryPath($categories);
@@ -34,9 +34,9 @@ class ProductScreen extends Screen {
     }
     echo '</div>';
     echo '<div id="merchant_list">';
-    echo '<table><thead><tr><th>商城</th><th><a href="/">价格</a></th></tr></thead>';
-    echo '<tbody><tr><td><a href="/">京东商城</a></td><td>￥10.00</td></tr>';
-    echo '<tr><td><a href="/">卓越亚马逊</a></td><td>￥14.00</td></tr>';
+    echo '<table><thead><tr><th>商城</th><th>价格</th></tr></thead>';
+    echo '<tbody><tr><td><a href="/"><img src="/360buy.com.2.gif" /></a></td><td>￥<a href="/" class="price">10.00</a></td></tr>';
+    echo '<tr><td><a href="/"><img src="/newegg.com.cn.2.gif" /></a></td><td>￥<a href="/" class="price">14.00</a></td></tr>';
     echo '</tbody></table>';
     $this->renderProductList('笔记本电脑推荐');
     echo '</div>';
