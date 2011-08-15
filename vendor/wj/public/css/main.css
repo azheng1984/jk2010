@@ -163,6 +163,10 @@ a:hover {
 #merchant_list tr {
   border:1px solid #e5e5e5;
 }
+#merchant_list .merchant_logo {
+  vertical-align: middle;
+  height: 30px;
+}
 #merchant_list table th{
   font-weight:normal;
   padding:5px;
