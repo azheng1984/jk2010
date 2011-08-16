@@ -1,6 +1,17 @@
 <?php
 class SearchScreen extends Screen {
   public function renderContent() {
+    require 'sphinxapi.php';
+    $s = new SphinxClient;
+    $s->setServer("localhost", 9312);
+    $s->setMatchMode(SPH_MATCH_ANY);
+    $s->setMaxQueryTime(3);
+    $result = $s->query("1");
+    if (isset($result['matches'])) {
+      foreach ($result['matches'] as $id => $value) {
+        print_r(DbProduct::get('laptop', $id));
+      }
+    }
     $categories = array();
     $category = null;
     $parentId = 0;
