@@ -84,7 +84,7 @@ CREATE TABLE `laptop_product` (
   `has_image` tinyint(1) DEFAULT NULL,
   `rank` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `laptop_property_key` (
   `id` int(11) NOT NULL,
