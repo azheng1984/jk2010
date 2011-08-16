@@ -61,6 +61,7 @@ CREATE TABLE `laptop_price` (
   `merchant_id` bigint(20) DEFAULT NULL,
   `price` decimal(9,2) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
+  `url` varchar(1023) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
