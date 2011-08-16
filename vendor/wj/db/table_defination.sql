@@ -70,8 +70,7 @@ CREATE TABLE `laptop_price_history` (
   `product_id` int(11) DEFAULT NULL,
   `price` decimal(9,2) DEFAULT NULL,
   `merchant_id` int(11) DEFAULT NULL,
-  `start_time` datetime DEFAULT NULL,
-  `end_time` datetime DEFAULT NULL,
+  `time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -99,14 +98,6 @@ CREATE TABLE `laptop_property_value` (
   `id` bigint(20) NOT NULL,
   `key_id` bigint(20) DEFAULT NULL,
   `value` varchar(45) DEFAULT NULL,
-  `rank` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-CREATE TABLE `laptop_property_value_range` (
-  `id` int(11) NOT NULL,
-  `key_id` varchar(45) DEFAULT NULL,
-  `range` varchar(45) DEFAULT NULL,
   `rank` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
