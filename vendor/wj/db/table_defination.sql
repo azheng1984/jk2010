@@ -55,13 +55,14 @@ CREATE TABLE `laptop_outgoing` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE `laptop_price` (
+CREATE TABLE `laptop_merchant` (
   `id` bigint(20) NOT NULL,
   `product_id` bigint(20) DEFAULT NULL,
   `merchant_id` bigint(20) DEFAULT NULL,
   `price` decimal(9,2) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
   `url` varchar(1023) DEFAULT NULL,
+  `rank` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -89,7 +90,7 @@ CREATE TABLE `laptop_property_key` (
   `id` int(11) NOT NULL,
   `parent_id` varchar(45) DEFAULT NULL,
   `key` varchar(45) DEFAULT NULL,
-  `type` enum('TEXT','IMAGE') DEFAULT 'TEXT',
+  `type` enum('SINGLE','MULTIPLE','RANGE') DEFAULT 'SINGLE',
   `rank` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
