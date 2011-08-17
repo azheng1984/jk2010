@@ -28,6 +28,8 @@ class ProductScreen extends Screen {
     echo '<div id="property_list">';
     echo '<div class="product_image_box"><img title="'.$this->product['name'].'" class="product_image" src="/x.jpg" /></div>';
     $categoryPath = $this->getCategoryPath($categories);
+    echo '<div>品牌: <a href="..">ThinkPad</a></strong></div>';
+    echo '<div>型号: <strong>xxx</strong></div>';
     foreach (explode(',', $this->product['property_value_list']) as $id) {
       $result = DbProperty::getByValueId($this->category['table_prefix'], $id);
       echo '<div>'.$result['key'].': <a href="'.$categoryPath.'?'.urlencode($result['key']).'='.urlencode($result['value']).'">'.$result['value'].'</a></div>';
