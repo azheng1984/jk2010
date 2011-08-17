@@ -32,7 +32,7 @@ class ProductScreen extends Screen {
     echo '<div>型号: <strong>xxx</strong></div>';
     foreach (explode(',', $this->product['property_value_list']) as $id) {
       $result = DbProperty::getByValueId($this->category['table_prefix'], $id);
-      echo '<div>'.$result['key'].': <a href="'.$categoryPath.'?'.urlencode($result['key']).'='.urlencode($result['value']).'">'.$result['value'].'</a></div>';
+      echo '<div>'.$result['key'].': <a rel="nofollow" href="'.$categoryPath.'?'.urlencode($result['key']).'='.urlencode($result['value']).'">'.$result['value'].'</a></div>';
     }
     echo '</div>';
     echo '<div id="merchant_list">';
