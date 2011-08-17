@@ -29,6 +29,7 @@ img {
 h1 {
   margin: 10px 10px;
   font-size: 25px;
+	line-height: 30px;
   font-family: "SimHei";
 }
 #category_title {
