@@ -34,7 +34,7 @@ h1 {
 #category_title {
   background:#fff;
   padding:5px 0;
-  margin:5px 0;
+  margin:5px 0 0;
 }
 #category_list {
   list-style:none;
@@ -241,4 +241,22 @@ a:hover {
 */
 .featured_name {
   clear:both;
+}
+.merchant_name {
+  width:75px;
+  text-align:center;
+  margin:5px;
+}
+.selected_property {
+  color:#fff;
+  background-color:red;
+  padding:2px;
+}
+#filter {
+  background-color:#fff;
+  padding:5px;
+  color:#999;
+}
+#filter .property {
+	margin:10px 0;
 }

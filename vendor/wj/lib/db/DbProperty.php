@@ -18,4 +18,14 @@ class DbProperty {
     }
     return $results;
   }
+
+  public static function getKeyByName($name) {
+    $sql = 'SELECT * FROM laptop_property_key WHERE `key` = ?';
+    return Db::getRow($sql, $name);
+  }
+
+  public static function getValueByKeyIdAndName($keyId, $name) {
+    $sql = 'SELECT * FROM laptop_property_value WHERE `key_id` = ? AND `value` = ?';
+    return Db::getRow($sql, $keyId, $name);
+  }
 }
