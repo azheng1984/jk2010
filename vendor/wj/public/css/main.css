@@ -15,7 +15,7 @@ img {
   line-height: 50px;
 }
 #search form {
-	margin:0;
+  margin:0;
 }
 #action {
   float:right;
@@ -29,7 +29,7 @@ img {
 h1 {
   margin: 10px 10px;
   font-size: 25px;
-	line-height: 30px;
+  line-height: 30px;
   font-family: "SimHei";
 }
 #category_title {
@@ -276,9 +276,8 @@ a:hover {
   padding:20px 0;
 }
 .pagination a {
-  background-color:#f1f1f1;
   border:1px solid #ccc;
-  padding:3px 8px;
+  padding:3px 7px;
   margin-left:2px;
 }
 .pagination a:hover {
@@ -289,6 +288,12 @@ a:hover {
   background-color:red;
   color:#fff;
   border:1px solid red;
-  padding:3px 8px;
+  padding:3px 7px;
   margin-left:2px;
+}
+.total_record {
+	background-color:#fff;
+	text-align:right;
+	color:#999;
+	padding:5px;
 }
