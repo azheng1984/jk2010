@@ -1,17 +1,6 @@
 <?php
 class SearchScreen extends Screen {
   public function renderContent() {
-//    require 'sphinxapi.php';
-//    $s = new SphinxClient;
-//    $s->setServer("localhost", 9312);
-//    $s->setMatchMode(SPH_MATCH_ANY);
-//    $s->setMaxQueryTime(3);
-//    $result = $s->query("1");
-//    if (isset($result['matches'])) {
-//      foreach ($result['matches'] as $id => $value) {
-//        print_r(DbProduct::get('laptop', $id));
-//      }
-//    }
     $categories = array();
     $category = null;
     $parentId = 0;
@@ -46,9 +35,27 @@ class SearchScreen extends Screen {
   private function renderProductList($category) {
     $filter = new FilterScreen;
     $filter->render($category);
+    $valueIds = array();
+    foreach (FilterParameter::getSelectedList() as $item) {
+      foreach ($item[1] as $value) {
+        $valueIds[] = $value['id'];
+      }
+    }
+    require 'sphinxapi.php';
+    $s = new SphinxClient;
+    $s->setServer("localhost", 9312);
+    $s->setMatchMode(SPH_MATCH_ALL);
+    $s->setMaxQueryTime(3);
+    $result = $s->query(implode(',', $valueIds));
+    $items = array();
+    if (isset($result['matches'])) {
+      foreach ($result['matches'] as $id => $value) {
+        $items[] = DbProduct::get('laptop', $id);
+      }
+    }
     echo '<ul id="product_list">';
     for ($index = 0; $index < 5; $index++) {
-      foreach (DbProduct::getList($category['table_prefix']) as $item) {
+      foreach ($items as $item) {
         echo '<li class="item"><div class="product_image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><h2><a href="/'.$item['id'].'">'
           .$item['name'].'</a></h2><div class="price_block">￥<span class="price">10000.00</span>~<span class="price">12299.00</span> <div>7个商城</div></div></li>';
       }
