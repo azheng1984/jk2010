@@ -270,3 +270,25 @@ a:hover {
 .cancel:hover {
   color:#fff;
 }
+.pagination {
+  background-color:#fff;
+  text-align:center;
+  padding:20px 0;
+}
+.pagination a {
+  background-color:#f1f1f1;
+  border:1px solid #ccc;
+  padding:3px 8px;
+  margin-left:2px;
+}
+.pagination a:hover {
+  border:1px solid red;
+  text-decoration:none;
+}
+.current_page {
+  background-color:red;
+  color:#fff;
+  border:1px solid red;
+  padding:3px 8px;
+  margin-left:2px;
+}

@@ -61,5 +61,6 @@ class SearchScreen extends Screen {
       }
     }
     echo '</ul>';
+    echo '<div class="pagination"><a href="/">上一页</a> <span href="/" class="current_page">1</span> <a href="/">2</a> <a href="/">下一页</a></div>';
   }
 }
