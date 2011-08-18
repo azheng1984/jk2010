@@ -41,7 +41,7 @@ class SearchScreen extends Screen {
         $valueIds[] = $value['id'];
       }
     }
-    echo '<div class="reset"><a href=".">重置筛选条件</a></div>';
+    echo '<div class="reset"><a href=".">重置筛选条件</a></div>';wj
     require 'sphinxapi.php';
     $s = new SphinxClient;
     $s->setServer("localhost", 9312);
