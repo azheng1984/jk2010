@@ -87,6 +87,7 @@ class FilterScreen {
     if (count($list) !== 0) {
       return '?'.implode('&', $list);
     }
+    return '.';
   }
 
   private function getValues($parameter, $removeValue = null) {
