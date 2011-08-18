@@ -41,6 +41,7 @@ class SearchScreen extends Screen {
         $valueIds[] = $value['id'];
       }
     }
+    echo '<div class="reset"><a href=".">清空</a></div>';
     require 'sphinxapi.php';
     $s = new SphinxClient;
     $s->setServer("localhost", 9312);
