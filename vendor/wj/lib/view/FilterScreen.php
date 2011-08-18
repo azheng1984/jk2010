@@ -29,8 +29,24 @@ class FilterScreen {
 
   private function isSelected($keyId, $valueId) {
     foreach ($this->parameters as $parameter) {
-      if ($keyId === $parameter[0]['id'] && $valueId === $parameter[1]['id']) {
-        return true;
+      if ($keyId === $parameter[0]['id']) {
+        foreach ($parameter[1] as $value) {
+          if ($valueId === $value['id']) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+
+  private function isSelectedByName($key, $value) {
+    foreach ($this->parameters as $parameter) {
+      if ($key === $parameter[0]['key']) {
+        foreach ($parameter[1] as $value) {
+          if ($value === $value['value']) {
+            return true;
+          }
+        }
       }
     }
   }
@@ -39,12 +55,14 @@ class FilterScreen {
     $list = array();
     $isInserted = false;
     foreach ($this->parameters as $parameter) {
-      if ($key === $parameter[0]['key'] && $value !== $parameter[1]['value']) {
-        $list[] = urlencode($parameter[0]['key']).'='.urlencode($parameter[1]['value']).':'.urlencode($value);
+      if ($key === $parameter[0]['key']) {
+        $values = $this->getValues($parameter);
+        $values[] = urlencode($value);
+        $list[] = urlencode($parameter[0]['key']).'='.implode(':', $values);
         $isInserted = true;
         continue;
       }
-      $list[] = urlencode($parameter[0]['key']).'='.urlencode($parameter[1]['value']);
+      $list[] = urlencode($parameter[0]['key']).'='.implode(':', $this->getValues($parameter));
     }
     if (!$isInserted) {
       $list[] = urlencode($key).'='.urlencode($value);
@@ -52,5 +70,13 @@ class FilterScreen {
     if (count($list) !== 0) {
       return '?'.implode('&', $list);
     }
+  }
+
+  private function getValues($parameter) {
+    $result = array();
+    foreach ($parameter[1] as $value) {
+      $result[] = urlencode($value['value']);
+    }
+    return $result;
   }
 }
