@@ -7,11 +7,18 @@ class FilterParameter {
       if ($key === false) {
         continue;
       }
-      $value = DbProperty::getValueByKeyIdAndName($key['id'], $valueName);
-      if ($value === null) {
-        continue;
+      $valueNames = preg_split('/(?<! ):(?<! )/', $valueName);
+      $values = array();
+      foreach ($valueNames as $item) {
+        $value = DbProperty::getValueByKeyIdAndName($key['id'], $item);
+        if ($value === false) {
+          continue;
+        }
+        $values[] = $value;
       }
-      $result []= array($key, $value);
+      if (count($values) > 0) {
+        $result[] = array($key, $values);
+      }
     }
     return $result;
   }
