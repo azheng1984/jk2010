@@ -48,12 +48,14 @@ class SearchScreen extends Screen {
     $s->setMaxQueryTime(3);
     $result = $s->query(implode(',', $valueIds));
     $items = array();
+    $amount = 0;
     if (isset($result['matches'])) {
       foreach ($result['matches'] as $id => $value) {
         $items[] = DbProduct::get('laptop', $id);
       }
+      $amount = count($result['matches']);
     }
-    echo '<div class="total_record">找到 <strong>'.count($result['matches']).'</strong> 件产品</div>';
+    echo '<div class="total_record">找到 <strong>'.$amount.'</strong> 件产品</div>';
     echo '<ul id="product_list">';
     for ($index = 0; $index < 5; $index++) {
       foreach ($items as $item) {
