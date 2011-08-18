@@ -13,7 +13,7 @@ class FilterScreen {
         if ($this->isSelected($item['id'], $value['id'])) {
           $selected = true;
           $propertySelected = true;
-          echo ' <span class="selected_property">'.$value['value'].' | x</span> ';
+          echo ' <span class="selected_property">'.$value['value'].' |<a class="cancel" href="'.$this->removeFilterUrl($item['key'], $value['value']).'">x</a></span> ';
         } else {
           if ($_SERVER['QUERY_STRING'] === '') {
             echo ' <a href="?'.urlencode($item['key']).'='.urlencode($value['value']).'">'.$value['value'].'</a>';
@@ -72,10 +72,29 @@ class FilterScreen {
     }
   }
 
-  private function getValues($parameter) {
+  private function removeFilterUrl($key, $value) {
+    $list = array();
+    foreach ($this->parameters as $parameter) {
+      if ($key === $parameter[0]['key']) {
+        $values = $this->getValues($parameter, $value);
+        if (count($values) !== 0) {
+          $list[] = urlencode($parameter[0]['key']).'='.implode(':', $values);
+        }
+        continue;
+      }
+      $list[] = urlencode($parameter[0]['key']).'='.implode(':', $this->getValues($parameter, $value));
+    }
+    if (count($list) !== 0) {
+      return '?'.implode('&', $list);
+    }
+  }
+
+  private function getValues($parameter, $removeValue = null) {
     $result = array();
     foreach ($parameter[1] as $value) {
-      $result[] = urlencode($value['value']);
+      if ($removeValue !== $value['value']) {
+        $result[] = urlencode($value['value']);
+      }
     }
     return $result;
   }

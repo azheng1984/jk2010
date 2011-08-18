@@ -263,3 +263,10 @@ a:hover {
 #filter .property {
 	margin:10px 0;
 }
+.cancel {
+  color:#fff;
+  padding:5px;
+}
+.cancel:hover {
+  color:#fff;
+}
