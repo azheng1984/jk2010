@@ -53,6 +53,7 @@ class SearchScreen extends Screen {
         $items[] = DbProduct::get('laptop', $id);
       }
     }
+    echo '<div class="total_record">找到 '.count($result['matches']).' 件产品</div>';
     echo '<ul id="product_list">';
     for ($index = 0; $index < 5; $index++) {
       foreach ($items as $item) {
