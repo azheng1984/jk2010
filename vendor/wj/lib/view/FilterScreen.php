@@ -56,11 +56,13 @@ class FilterScreen {
     $isInserted = false;
     foreach ($this->parameters as $parameter) {
       if ($key === $parameter[0]['key']) {
-        $values = $this->getValues($parameter);
-        $values[] = urlencode($value);
-        $list[] = urlencode($parameter[0]['key']).'='.implode(':', $values);
-        $isInserted = true;
-        continue;
+        if ($parameter[0]['type'] === 'MULTIPLE') {
+          $values = $this->getValues($parameter);
+          $values[] = urlencode($value);
+          $list[] = urlencode($parameter[0]['key']).'='.implode(':', $values);
+          $isInserted = true;
+          continue;
+        }
       }
       $list[] = urlencode($parameter[0]['key']).'='.implode(':', $this->getValues($parameter));
     }
