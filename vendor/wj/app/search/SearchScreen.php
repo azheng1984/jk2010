@@ -42,7 +42,6 @@ class SearchScreen extends Screen {
       }
     }
     echo '<div class="reset"><a href=".">重置筛选条件</a></div>';
-    require 'sphinxapi.php';
     $s = new SphinxClient;
     $s->setServer("localhost", 9312);
     $s->setMatchMode(SPH_MATCH_ALL);
