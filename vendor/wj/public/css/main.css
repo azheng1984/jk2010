@@ -311,4 +311,7 @@ a:hover {
 .arrow {
   color:#ccc;
 }
+.parent {
+	background:url(/dropdown.png) no-repeat right;
+	padding-right:12px;
 }
