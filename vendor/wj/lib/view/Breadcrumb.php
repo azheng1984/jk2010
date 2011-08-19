@@ -17,7 +17,7 @@ class Breadcrumb {
     echo '<div id="breadcrumb">';
     echo '<a href="/">首页</a>';
     $this->renderParents();
-    echo ' &gt; '.$this->current['name'];
+    echo ' <span class="arrow">&gt;</span> '.$this->current['name'];
     echo '</div>';
   }
 
@@ -32,7 +32,7 @@ class Breadcrumb {
   private function renderRelativeLink() {
     $distance = count($this->parents);
     foreach ($this->parents as $category) {
-      echo ' &gt; <a href="'.$this->getPath($distance).'">'
+      echo ' <span class="arrow">&gt;</span> <a href="'.$this->getPath($distance).'">'
         .$category['name'].'</a>';
       --$distance;
     }
@@ -42,7 +42,7 @@ class Breadcrumb {
     $path = '/';
     foreach ($this->parents as $category) {
       $path .= urlencode($category['name']).'/';
-      echo ' &gt; <a href="'.$path.'">'.$category['name'].'</a>';
+      echo ' <span class="arrow">&gt;</span> <a href="'.$path.'">'.$category['name'].'</a>';
     }
   }
 
