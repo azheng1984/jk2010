@@ -255,6 +255,7 @@ a:hover {
   color:#fff;
   background-color:red;
   padding:2px;
+  margin-left:10px;
 }
 .selected_property a {
 	margin-left:0;
@@ -306,4 +307,8 @@ a:hover {
 }
 .reset {
 	  background-color:#fff;
+}
+.arrow {
+  color:#ccc;
+}
 }
