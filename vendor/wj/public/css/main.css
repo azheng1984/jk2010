@@ -62,7 +62,7 @@ h1 {
 }
 .price {
   color: #000;
-  font-size:13px;
+  font-size:14px;
   font-weight: bold;
 }
 #logo a {
@@ -76,6 +76,7 @@ h1 {
 #footer {
   color:#999999;
   clear:both;
+  margin-bottom:50px;
 }
 #footer .left {
   float:left;
@@ -104,7 +105,7 @@ h1 {
 }
 #product_list {
   width: 940px;
-  padding:5px 10px;
+  padding:20px 10px;
   float:left;
   background-color:#fff;
   margin-top:0;
@@ -275,17 +276,17 @@ a:hover {
 .pagination {
   background-color:#fff;
   text-align:center;
-  padding:20px 0;
+  padding:60px 0;
 }
 .pagination a {
-  border:1px solid #ccc;
+  border:1px solid #ddd;
   padding:3px 7px;
   margin-left:2px;
 }
 .pagination a:hover {
-  border:1px solid #36C;
+  border:1px solid #B6C9ED;
   text-decoration:none;
-  background:#eef;
+  background:#EFF3FC;
 }
 .current_page {
   background-color:red;
@@ -296,7 +297,7 @@ a:hover {
 }
 .total_record {
   background-color:#fff;
-  text-align:right;
+  float:right;
   color:#999;
   padding:5px;
 }
