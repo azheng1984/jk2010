@@ -314,3 +314,6 @@ a:hover {
 .price_column {
   width: 100px;
 }
+.merchant_logo {
+	margin:5px 0;
+}
