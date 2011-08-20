@@ -55,12 +55,12 @@ class SearchScreen extends Screen {
       }
       $amount = count($result['matches']);
     }
-    echo '<div class="total_record">找到 <strong>'.$amount.'</strong> 件产品</div>';
+    echo '<div class="total_record">找到 '.$amount.' 件产品</div>';
     echo '<ul id="product_list">';
     for ($index = 0; $index < 5; $index++) {
       foreach ($items as $item) {
         echo '<li class="item"><div class="product_image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><h2><a href="/'.$item['id'].'">'
-          .$item['name'].'</a></h2><div class="price_block">￥<span class="price">10000.00</span>~<span class="price">12299.00</span> <div>7个商城</div></div></li>';
+          .$item['name'].'</a></h2><div class="price_block"><span class="rmb">￥</span><span class="price">10000.00</span> ~ <span class="price">12299.00</span> <div>7 个商城</div></div></li>';
       }
     }
     echo '</ul>';

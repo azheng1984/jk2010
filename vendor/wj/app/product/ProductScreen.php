@@ -29,7 +29,7 @@ class ProductScreen extends Screen {
     echo '<div class="product_image_box"><img title="'.$this->product['name'].'" class="product_image" src="/x.jpg" /></div>';
     $categoryPath = $this->getCategoryPath($categories);
     echo '<div>品牌: <a href="..">ThinkPad</a></strong></div>';
-    echo '<div>型号: <strong>G470AH-ITH</strong></div>';
+    echo '<div>型号: G470AH-ITH</div>';
     foreach (explode(',', $this->product['property_value_list']) as $id) {
       $result = DbProperty::getByValueId($this->category['table_prefix'], $id);
       echo '<div>'.$result['key'].': <a rel="nofollow" href="'.$categoryPath.'?'.urlencode($result['key']).'='.urlencode($result['value']).'">'.$result['value'].'</a></div>';
@@ -37,8 +37,8 @@ class ProductScreen extends Screen {
     echo '</div>';
     echo '<div id="merchant_list">';
     echo '<table><thead><tr><th>商城</th><th width="50px">价格</th></tr></thead>';
-    echo '<tbody><tr><td><a href="/"><img class="merchant_logo" src="/360buy.com.2.gif" /></a><div class="merchant_name"><a href="/">京东商城</a></div></td><td><span class="price_block">￥</span><a href="/" class="price">10.00</a></td></tr>';
-    echo '<tr><td><a href="/"><img class="merchant_logo" src="/newegg.com.cn.2.gif" /></a><div class="merchant_name"><a href="/">新蛋</a></div></td><td><span class="price_block">￥</span><a href="/" class="price">14.00</a></td></tr>';
+    echo '<tbody><tr><td><a href="/"><img class="merchant_logo" src="/360buy.com.2.gif" /></a><div class="merchant_name"><a href="/">京东商城</a></div></td><td class="price_column"><span class="price_block">￥</span><a href="/" class="price">10.00</a></td></tr>';
+    echo '<tr><td><a href="/"><img class="merchant_logo" src="/newegg.com.cn.2.gif" /></a><div class="merchant_name"><a href="/">新蛋</a></div></td><td class="price_column"><span class="price_block">￥</span><a href="/" class="price">14.00</a></td></tr>';
     echo '</tbody></table>';
     $this->renderProductList('笔记本电脑推荐');
     echo '</div>';
@@ -58,7 +58,7 @@ class ProductScreen extends Screen {
     echo '<ul class="featured_product_list">';
     foreach (DbProduct::getList($this->category['table_prefix']) as $item) {
       echo '<li class="item"><div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><h2><a href="/'.$item['id'].'">'
-        .$item['name'].'</a></h2><div class="price_block">￥<span class="price">10000.00</span>~<span class="price">12299.00</span> <div>7个商城</div></div></li>';
+        .$item['name'].'</a></h2><div class="price_block"><span class="rmb">￥</span><span class="price">10000.00</span> ~ <span class="price">12299.00</span> <div>7 个商城</div></div></li>';
     }
     echo '</ul>';
   }
