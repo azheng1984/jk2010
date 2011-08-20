@@ -241,7 +241,8 @@ a:hover {
   clear:both;
 }
 .merchant_name {
-  margin:5px;
+  font-size:14px;
+  font-weight:normal;
 }
 .property a {
   margin-left: 10px;
