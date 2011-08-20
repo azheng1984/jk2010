@@ -164,10 +164,6 @@ a:hover {
 #merchant_list tr {
   border:1px solid #e5e5e5;
 }
-#merchant_list .merchant_logo {
-  vertical-align: middle;
-  height: 30px;
-}
 #merchant_list table th{
   font-weight:normal;
   padding:5px;
@@ -244,8 +240,6 @@ a:hover {
   clear:both;
 }
 .merchant_name {
-  width:75px;
-  text-align:center;
   margin:5px;
 }
 .property a {
@@ -291,6 +285,7 @@ a:hover {
 .pagination a:hover {
   border:1px solid #36C;
   text-decoration:none;
+  background:#eef;
 }
 .current_page {
   background-color:red;
@@ -310,4 +305,10 @@ a:hover {
 }
 .arrow {
   color:#ccc;
+}
+#merchant_list thead {
+	color:#999;
+}
+.price_column {
+  width: 100px;
 }
