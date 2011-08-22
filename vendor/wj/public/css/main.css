@@ -318,6 +318,9 @@ a:hover {
 	margin:5px 0;
 }
 .merchant_name {
-	font-size:12px;
-	line-height:20px;
+	font-size:13px;
+	line-height:25px;
+}
+#property_list div {
+  margin-bottom:5px;
 }
