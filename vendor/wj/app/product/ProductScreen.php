@@ -37,8 +37,8 @@ class ProductScreen extends Screen {
     echo '</div>';
     echo '<div id="merchant_list">';
     echo '<table><thead><tr><th>商城</th><th width="50px">价格</th></tr></thead>';
-    echo '<tbody><tr><td><a href="/"><img class="merchant_logo" src="/360buy.com.2.gif" /></a><div class="merchant_name"></div></td><td class="price_column"><span class="price_block">￥</span><a href="/" class="price">10.23<br /><span class="merchant_name">京东商城</span></a></td></tr>';
-    echo '<tr><td><a href="/"><img class="merchant_logo" src="/newegg.com.cn.2.gif" /></a><div class="merchant_name"></div></td><td class="price_column"><span class="price_block">￥</span><a href="/" class="price">14<br /><span class="merchant_name">新蛋网</span></a></td></tr>';
+    echo '<tbody><tr><td><a href="/"><img alt="京东商城" title="京东商城" class="merchant_logo" src="/360buy.com.2.gif" /></a><div class="merchant_name"></div></td><td class="price_column"><span class="price_block">￥</span><a href="/" class="price">10.23<br /><span class="merchant_name">京东商城</span></a></td></tr>';
+    echo '<tr><td><a href="/"><img alt="新蛋" title="新蛋" class="merchant_logo" src="/newegg.com.cn.2.gif" /></a><div class="merchant_name"></div></td><td class="price_column"><span class="price_block">￥</span><a href="/" class="price">14<br /><span class="merchant_name">新蛋网</span></a></td></tr>';
     echo '</tbody></table>';
     $this->renderProductList('笔记本电脑推荐');
     echo '</div>';
