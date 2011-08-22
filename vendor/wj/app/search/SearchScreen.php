@@ -41,7 +41,7 @@ class SearchScreen extends Screen {
         $valueIds[] = $value['id'];
       }
     }
-    echo '<div class="reset"><a href=".">重置筛选条件</a></div>';
+    echo '<div class="reset"></div>';
     $s = new SphinxClient;
     $s->setServer("localhost", 9312);
     $s->setMatchMode(SPH_MATCH_ALL);
@@ -55,7 +55,7 @@ class SearchScreen extends Screen {
       }
       $amount = count($result['matches']);
     }
-    echo '<div class="total_record">找到 '.$amount.' 件产品</div>';
+    echo '<div class="total_record">找到 '.$amount.' 件产品 [ <a href=".">重置筛选条件</a> ]</div>';
     echo '<ul id="product_list">';
     for ($index = 0; $index < 5; $index++) {
       foreach ($items as $item) {
