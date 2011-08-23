@@ -44,9 +44,13 @@ class SearchScreen extends Screen {
     echo '<div class="reset"></div>';
     $s = new SphinxClient;
     $s->setServer("localhost", 9312);
-    $s->setMatchMode(SPH_MATCH_ALL);
+    $s->setMatchMode(SPH_MATCH_EXTENDED);
     $s->setMaxQueryTime(3);
-    $result = $s->query(implode(',', $valueIds));
+    if (count($valueIds) !== 0) {
+      $result = $s->query('@property_value_list '.implode(',', $valueIds));
+    } else {
+      $result = $s->query('');
+    }
     $items = array();
     $amount = 0;
     if (isset($result['matches'])) {
