@@ -100,8 +100,10 @@ h1 {
 }
 #search_input {
   width:350px;
-  height:25px;
-  line-height:22px;
+  height:32px;
+  font-size:16px;
+
+  padding:4px 7px;
 }
 #product_list {
   width: 940px;
