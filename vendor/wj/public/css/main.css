@@ -12,7 +12,7 @@ img {
 #header, #footer, #content, #category_list {
   width: 960px;
   margin: 0 auto;
-  line-height: 50px;
+  line-height: 55px;
 }
 #search form {
   margin:0;
