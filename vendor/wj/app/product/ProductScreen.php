@@ -37,8 +37,8 @@ class ProductScreen extends Screen {
     echo '</div>';
     echo '<div id="merchant_list">';
     echo '<table>';
-    echo '<tbody><tr><td><a href="/"><img alt="京东商城" title="京东商城" class="merchant_logo" src="/360buy.com.2.gif" /></a><div class="merchant_name"></div></td><td class="price_column"><span class="price_block">￥</span><a href="/" class="price">10.23<br /><span class="merchant_name">京东商城</span></a></td></tr>';
-    echo '<tr><td><a href="/"><img alt="新蛋" title="新蛋" class="merchant_logo" src="/newegg.com.cn.2.gif" /></a><div class="merchant_name"></div></td><td class="price_column"><span class="price_block">￥</span><a href="/" class="price">14<br /><span class="merchant_name">新蛋网</span></a></td></tr>';
+    echo '<tbody><tr><td><a href="/"><img alt="京东商城" title="京东商城" class="merchant_logo" src="/360buy.com.2.gif" /></a><div class="merchant_name"></div></td><td class="price_column"><span class="price_block">&yen;</span><a href="/" class="price">10.23<br /><span class="merchant_name">京东商城</span></a></td></tr>';
+    echo '<tr><td><a href="/"><img alt="新蛋" title="新蛋" class="merchant_logo" src="/newegg.com.cn.2.gif" /></a><div class="merchant_name"></div></td><td class="price_column"><span class="price_block">&yen;</span><a href="/" class="price">14<br /><span class="merchant_name">新蛋网</span></a></td></tr>';
     echo '</tbody></table>';
     $this->renderProductList('笔记本电脑推荐');
     echo '</div>';
@@ -58,7 +58,7 @@ class ProductScreen extends Screen {
     echo '<ul class="featured_product_list">';
     foreach (DbProduct::getList($this->category['table_prefix']) as $item) {
       echo '<li class="item"><div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><h2><a href="/'.$item['id'].'">'
-        .$item['name'].'</a></h2><div class="price_block"><span class="rmb">￥</span><span class="price">10000</span> ~ <span class="price">12299.84</span> <div>7 个商城</div></div></li>';
+        .$item['name'].'</a></h2><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000</span> ~ <span class="price">12299.84</span> <div>7 个商城</div></div></li>';
     }
     echo '</ul>';
   }

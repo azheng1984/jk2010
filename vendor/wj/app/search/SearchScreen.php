@@ -60,7 +60,7 @@ class SearchScreen extends Screen {
     for ($index = 0; $index < 5; $index++) {
       foreach ($items as $item) {
         echo '<li class="item"><div class="product_image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><h2><a href="/'.$item['id'].'">'
-          .$item['name'].'</a></h2><div class="price_block"><span class="rmb">￥</span><span class="price">10000<span class="point">.68</span></span> ~ <span class="price">12299<span class="point"></span></span> <div>7 个商城</div></div></li>';
+          .$item['name'].'</a></h2><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000<span class="point">.68</span></span> ~ <span class="price">12299<span class="point"></span></span> <div>7 个商城</div></div></li>';
       }
     }
     echo '</ul>';
