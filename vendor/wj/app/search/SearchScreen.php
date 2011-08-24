@@ -44,12 +44,22 @@ class SearchScreen extends Screen {
     echo '<div class="reset"></div>';
     $s = new SphinxClient;
     $s->setServer("localhost", 9312);
-    $s->setMatchMode(SPH_MATCH_EXTENDED);
-    $s->setMaxQueryTime(3);
-    if (count($valueIds) !== 0) {
-      $result = $s->query('@property_value_list '.implode(',', $valueIds));
+    $s->setMaxQueryTime(30);
+    if (empty($_GET['q'])) {
+      $s->setMatchMode(SPH_MATCH_EXTENDED);
+      if (count($valueIds) !== 0) {
+        //print_r($valueIds);
+        $result = $s->query(implode(',', $valueIds));
+      } else {
+        $result = $s->query('');
+      }
     } else {
-      $result = $s->query('');
+      $s->setMatchMode(SPH_MATCH_EXTENDED);
+      $query = '@content "'.$_GET['q'].'"';
+      if (count($valueIds) !== 0) {
+        $query .= ' @property_value_list '.implode(',', $valueIds);
+      }
+      $result = $s->query($query, 'test1');
     }
     $items = array();
     $amount = 0;
@@ -71,3 +81,4 @@ class SearchScreen extends Screen {
     echo '<div class="pagination"><a href="/">上一页</a> <span href="/" class="current_page">1</span> <a href="/">2</a> <a href="/">下一页</a></div>';
   }
 }
+//anchnet-jh#12.200
