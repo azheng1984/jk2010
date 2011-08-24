@@ -93,7 +93,8 @@ h1 {
 #search_button {
   background-color:red;
   color:#fff;
-  padding:5px 15px;
+  background: url(/search.png) red no-repeat 7px;
+  padding:6px 15px;
   margin:0;
   border:0;
   cursor: pointer;
@@ -102,7 +103,6 @@ h1 {
   width:350px;
   height:32px;
   font-size:16px;
-
   padding:4px 7px;
 }
 #product_list {

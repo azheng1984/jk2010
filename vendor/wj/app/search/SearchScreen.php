@@ -48,14 +48,13 @@ class SearchScreen extends Screen {
     if (empty($_GET['q'])) {
       $s->setMatchMode(SPH_MATCH_EXTENDED);
       if (count($valueIds) !== 0) {
-        //print_r($valueIds);
         $result = $s->query(implode(',', $valueIds));
       } else {
         $result = $s->query('');
       }
     } else {
       $s->setMatchMode(SPH_MATCH_EXTENDED);
-      $query = '@content "'.$_GET['q'].'"';
+      $query = '@keyword_list "'.$_GET['q'].'"';
       if (count($valueIds) !== 0) {
         $query .= ' @property_value_list '.implode(',', $valueIds);
       }
