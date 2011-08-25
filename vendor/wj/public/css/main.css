@@ -18,8 +18,11 @@ img {
   margin:0;
 }
 #action {
-  float:right;
-  margin:0 10px 10px 0;
+  width: 940px;
+  text-align: right;
+  background-color: #F1F1F1;
+  margin: 5px;
+  padding: 5px;
   color: #999;
 }
 #breadcrumb {
@@ -188,7 +191,7 @@ a:hover {
   color: red;
 }*/
 #product h1 {
-  margin:20px 10px;
+  margin:10px;
   font-size: 25px;
   font-family: "SimHei";
 }
