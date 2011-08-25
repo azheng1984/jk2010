@@ -23,7 +23,7 @@ width: 960px;
 border-bottom: 1px solid #E5E5E5;
 }
 #action {
-  clear:right;
+	clear:right;
   padding: 5px;
   color: #999;
   width: 950px;
@@ -37,7 +37,6 @@ h1 {
   margin: 10px 10px;
   font-size: 25px;
   line-height: 30px;
-  font-family: "SimHei";
 }
 #category_title {
   background:#fff;
@@ -195,7 +194,6 @@ a:hover {
 	width: 950px;
   margin:10px;
   font-size: 25px;
-  font-family: "SimHei";
 }
 #property_list .product_image {
   width:170px;
