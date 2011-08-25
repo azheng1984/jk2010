@@ -42,6 +42,6 @@ class ScreenWrapper {
 
   private function renderSearch() {
     $query = isset($_GET['q']) ? $_GET['q'] : '';
-    echo '<div id="search"><form action="/"><input id="search_input" name="q" value="'.$query.'" /> <input id="search_button" type="submit" value=""/></form></div>';
+    echo '<div id="search"><form action="/"><input x-webkit-speech id="search_input" name="q" value="'.$query.'" /> <input id="search_button" type="submit" value=""/></form></div>';
   }
 }
