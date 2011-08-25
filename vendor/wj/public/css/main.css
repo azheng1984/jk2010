@@ -17,13 +17,17 @@ img {
 #search form {
   margin:0;
 }
+.title {
+	float: left;
+width: 960px;
+border-bottom: 1px solid #E5E5E5;
+}
 #action {
-  width: 940px;
-  text-align: right;
-  background-color: #F1F1F1;
-  margin: 5px 5px 10px 5px;
+  clear:right;
   padding: 5px;
   color: #999;
+  width: 950px;
+  text-align: right;
 }
 #breadcrumb {
   margin-bottom:10px;
@@ -49,12 +53,6 @@ h1 {
   background-color: #fff;
   float: left;
   color:#999;
-}
-#breadcrumb h1 {
-  margin:0;
-  font-size:14px;
-  display:inline;
-  font-weight: normal;
 }
 #content {
   line-height: 20px;
@@ -145,6 +143,7 @@ a:hover {
   padding: 5px 0 0 0;
 }
 #property_list {
+	clear:left;
   margin-right:10px;
   float:left;
   width:180px;
@@ -158,9 +157,10 @@ a:hover {
 }
 #merchant_list {
   float:left;
+  margin-top:10px;
 }
 #merchant_list table {
-  border:1px solid #e5e5e5;
+  border:1px solid #fff;
   font-size:14px;
   text-align:left;
   border-collapse: collapse;
@@ -168,9 +168,9 @@ a:hover {
   margin-bottom:20px;
 }
 #merchant_list tr {
-  border:1px solid #e5e5e5;
+  border-bottom:1px solid #e5e5e5;
 }
-#merchant_list table th{
+#merchant_list table th {
   font-weight:normal;
   padding:5px;
 }
@@ -191,6 +191,8 @@ a:hover {
   color: red;
 }*/
 #product h1 {
+	float:left;
+	width: 950px;
   margin:10px;
   font-size: 25px;
   font-family: "SimHei";
