@@ -68,7 +68,7 @@ class SearchScreen extends Screen {
       }
       $amount = count($result['matches']);
     }
-    echo '<div class="sort">排序: <span class="selected">销量</span> <a href="/">最新上架</a> <a href="/">价格</a></div>';
+    echo '<div class="sort">排序: <span class="selected">销量</span> <a href="/">最新上架</a> <a href="/">降价</a> <a href="/">价格</a></div>';
     echo '<div class="total_record">找到 '.$amount.' 件产品 [ <a href=".">重新筛选</a> ]</div>';
     echo '<ul id="product_list">';
     for ($index = 0; $index < 5; $index++) {
