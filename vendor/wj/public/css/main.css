@@ -24,10 +24,10 @@ border-bottom: 1px solid #E5E5E5;
 }
 #action {
 	clear:right;
-	float:left;
+	float:right;
   padding: 5px;
+  margin-top:10px;
   color: #999;
-  width: 950px;
 }
 #action .left {
 	float:left;
@@ -196,8 +196,6 @@ a:hover {
   color: red;
 }*/
 #product h1 {
-	float:left;
-	width: 950px;
   margin:10px;
   font-size: 25px;
 }
