@@ -24,7 +24,7 @@ class ProductScreen extends Screen {
     $breadcrumb->render();
     echo '<div id="product"><div class="title">';
     echo '<h1>'.$this->product['name'].'</h1>';
-    echo '<div id="action">[ <a href="/">笔记本电脑排名</a> #22 ] [ <a href="/">对比</a> ] [ <a href="/">关注</a> 12134 ] [ <a href="/">分享</a> ]</div>';
+    echo '<div id="action"><div class="left">[ <a href="/">笔记本电脑销量排名</a> #22 ]</div><div class="right">[ <a href="/">对比</a> ] [ <a href="/">关注</a> 12134 ] [ <a href="/">分享</a> ]</div></div>';
     echo '</div>';
     echo '<div id="property_list">';
     echo '<div class="product_image_box"><img title="'.$this->product['name'].'" class="product_image" src="/x.jpg" /></div>';
