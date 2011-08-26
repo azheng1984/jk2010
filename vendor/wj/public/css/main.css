@@ -24,10 +24,16 @@ border-bottom: 1px solid #E5E5E5;
 }
 #action {
 	clear:right;
+	float:left;
   padding: 5px;
   color: #999;
   width: 950px;
-  text-align: right;
+}
+#action .left {
+	float:left;
+}
+#action .right {
+	float:right;
 }
 #breadcrumb {
   margin-bottom:10px;
