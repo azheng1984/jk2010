@@ -113,7 +113,7 @@ h1 {
 }
 #product_list {
   width: 940px;
-  padding:20px 10px;
+  padding:10px;
   float:left;
   background-color:#fff;
   margin-top:0;
@@ -309,9 +309,25 @@ a:hover {
 }
 .total_record {
   background-color:#fff;
-  float:right;
+  text-align:right;
   color:#999;
   padding:5px;
+  padding-top:10px;
+}
+.sort {
+	float:left;
+	padding:10px 5px;
+	background:#fff;
+	color:#999;
+}
+.sort .selected {
+	margin-left:10px;
+	color:#fff;
+	background-color:red;
+	padding:2px 5px;
+}
+.sort a {
+	margin-left:10px;
 }
 .reset {
 	  background-color:#fff;
