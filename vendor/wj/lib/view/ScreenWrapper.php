@@ -28,7 +28,7 @@ class ScreenWrapper {
       echo '<a rel="nofollow" href="http://www.wj.com">'.$item.'</a> ';
     }
     echo '</div>';
-    echo '<div class="left">&copy; 货比万家 <a rel="nofollow" href="http://support.wj.com/">使用条款</a> <a rel="nofollow" href="http://support.wj.com/">隐私权政策</a> 沪ICP证00000000</div>';
+    echo '<div class="left">&copy; 货比万家 <a rel="nofollow" href="http://support.wj.com/">使用条款</a> <a rel="nofollow" href="http://support.wj.com/">隐私权政策</a> 沪ICP备你妹备</div>';
     echo '</div>';
     echo '</body>';
   }
