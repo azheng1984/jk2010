@@ -44,19 +44,23 @@ h1 {
   font-size: 25px;
 	line-height:30px;
 }
-#category_list {
-  list-style:none;
-}
 #category_list, #product {
   width: 940px;
   background-color: #fff;
   float: left;
   color:#999;
 }
+#category_list {
+  border-top: 1px solid #E5E5E5;
+  float:left;
+  width:900px;
+  list-style:none;
+}
 #content {
   line-height: 20px;
 }
 #product_search, #product {
+	float:left;
 	  border:#E5E5E5 1px solid;
 	  background:#fff;
 }
@@ -341,4 +345,7 @@ a:hover {
 }
 #property_list div {
   margin-bottom:5px;
+}
+#product_search .home_category_list {
+	border-top:0;
 }
