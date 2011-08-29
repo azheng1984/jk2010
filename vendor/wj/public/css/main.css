@@ -53,7 +53,7 @@ h1 {
 #category_list {
   border-top: 1px solid #E5E5E5;
   float:left;
-  width:900px;
+  width:930px;
   list-style:none;
 }
 #content {
@@ -348,4 +348,23 @@ a:hover {
 }
 #product_search .home_category_list {
 	border-top:0;
+}
+#category_list a {
+	font-size:16px;
+}
+#category_list li {
+	line-height:30px;
+	margin:10px;
+	float:left;
+	 width:200px;
+}
+#category_list .children a {
+  line-height:20px;
+  font-size:14px;
+  color: #999;
+  text-decoration: underline;
+  
+}
+#category_list .children {
+  line-height:20px;
 }
