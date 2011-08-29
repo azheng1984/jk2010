@@ -363,8 +363,12 @@ a:hover {
   font-size:14px;
   color: #999;
   text-decoration: underline;
+  margin-left: 3px;
   
 }
 #category_list .children {
   line-height:20px;
+}
+#category_list {
+	padding-left:20px;
 }
