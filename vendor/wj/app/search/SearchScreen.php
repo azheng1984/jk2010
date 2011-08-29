@@ -25,7 +25,7 @@ class SearchScreen extends Screen {
       echo '<ul id="category_list">';
       foreach (DbCategory::getList($parentId) as $category) {
         echo '<li><a href="'.urlencode($category['name']).'/">'
-          .$category['name'].'</a></li>';
+          .$category['name'].'</a><div class="children"><a href="/">电脑</a><br /><a href="/">手机</a><br />...</div></li>';
       }
       echo '</ul>';
       return;
