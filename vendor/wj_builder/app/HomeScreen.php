@@ -1,6 +1,6 @@
 <?php
 class HomeScreen {
   public function render() {
-    echo 'huobiwanjia.com - builder';
+    echo '货比万家 builder';
   }
 }
