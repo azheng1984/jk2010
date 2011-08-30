@@ -27,6 +27,7 @@ border-bottom: 1px solid #E5E5E5;
 	float:right;
   padding: 5px;
   margin-top:15px;
+ margin-right:5px;
   color: #999;
 }
 #action .left {
@@ -285,12 +286,16 @@ a:hover {
   text-align:center;
   padding:60px 0;
 }
-.pagination a {
+.note {
+	color:#999;
+}
+.total_record a,#action a,.pagination a {
   border:1px solid #ddd;
   padding:3px 7px;
   margin-left:2px;
+  background-color:#f2f2f2;
 }
-.pagination a:hover {
+.total_record a:hover,#action a:hover,.pagination a:hover {
   border:1px solid #B6C9ED;
   text-decoration:none;
   background:#EFF3FC;
@@ -308,6 +313,7 @@ a:hover {
   color:#999;
   padding:5px;
   padding-top:10px;
+  margin-right:5px;
 }
 .sort {
 	float:left;
