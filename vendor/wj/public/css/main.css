@@ -120,6 +120,7 @@ h1 {
   float:left;
   background-color:#fff;
   margin-top:0;
+  margin-bottom:20px;
 }
 #product_list li {
   list-style:none;
@@ -257,7 +258,7 @@ a:hover {
 .selected_property {
   color:#fff;
   background-color:red;
-  padding:2px;
+  padding: 2px 2px 2px 5px;
   margin-left:10px;
 }
 .selected_property a {
@@ -284,7 +285,7 @@ a:hover {
 .pagination {
   background-color:#fff;
   text-align:center;
-  padding:60px 0;
+  padding:50px 0;
 }
 .note {
 	color:#999;
