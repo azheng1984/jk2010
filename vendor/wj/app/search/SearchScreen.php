@@ -37,7 +37,7 @@ class SearchScreen extends Screen {
     $filter = new FilterScreen;
     $filter->render($category);
     $valueIds = array();
-    foreach (FilterParameter::getSelectedList() as $item) {
+    foreach (FilterParameter::getSelectedList($category) as $item) {
       foreach ($item[1] as $value) {
         $valueIds[] = $value['id'];
       }

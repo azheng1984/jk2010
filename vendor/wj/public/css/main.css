@@ -252,8 +252,12 @@ a:hover {
   font-size:14px;
   font-weight:normal;
 }
+.property {
+	border-bottom:1px dotted #e5e5e5;
+	padding-bottom:10px;
+}
 .property a {
-  margin-left: 10px;
+  margin-left: 15px;
 }
 .selected_property {
   color:#fff;
@@ -267,7 +271,6 @@ a:hover {
 
 #filter {
   border-top: 1px solid #f0f0f0;
-  border-bottom: 1px solid #f0f0f0;
   background-color:#fff;
   padding:10px;
   color:#999;
@@ -379,4 +382,9 @@ a:hover {
 }
 #category_list {
 	padding-left:20px;
+}
+.property .key {
+	display: inline-block;
+	width:80px;
+	text-align:right;
 }

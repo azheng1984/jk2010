@@ -9,23 +9,23 @@ class DbProperty {
     return Db::getRow($sql, $valueId);
   }
 
-  public static function getList($categoryId) {
-    $sql = 'SELECT * FROM laptop_property_key';
+  public static function getList($tablePrefix) {
+    $sql = 'SELECT * FROM '.$tablePrefix.'_property_key';
     $results = Db::getAll($sql);
     foreach ($results as &$key) {
-      $sql = 'SELECT * FROM laptop_property_value WHERE key_id = ?';
+      $sql = 'SELECT * FROM '.$tablePrefix.'_property_value WHERE key_id = ? order by rank';
       $key['values'] = Db::getAll($sql, $key['id']);
     }
     return $results;
   }
 
-  public static function getKeyByName($name) {
-    $sql = 'SELECT * FROM laptop_property_key WHERE `key` = ?';
+  public static function getKeyByName($tablePrefix, $name) {
+    $sql = 'SELECT * FROM '.$tablePrefix.'_property_key WHERE `key` = ?';
     return Db::getRow($sql, $name);
   }
 
-  public static function getValueByKeyIdAndName($keyId, $name) {
-    $sql = 'SELECT * FROM laptop_property_value WHERE `key_id` = ? AND `value` = ?';
+  public static function getValueByKeyIdAndName($tablePrefix, $keyId, $name) {
+    $sql = 'SELECT * FROM '.$tablePrefix.'_property_value WHERE `key_id` = ? AND `value` = ?';
     return Db::getRow($sql, $keyId, $name);
   }
 }
