@@ -3,23 +3,38 @@ class FilterScreen {
   private $parameters;
 
   public function render($category) {
-    $this->parameters = FilterParameter::getSelectedList();
+    $this->parameters = FilterParameter::getSelectedList($category);
     echo '<div id="filter">';
-    foreach (DbProperty::getList($category['id']) as $item) {
-      echo '<div class="property">'.$item['key'].':';
+    foreach (DbProperty::getList($category['table_prefix'], $category['id']) as $item) {
+      echo '<div class="property"><span class="key">'.$item['key'].':</span>';
       $propertySelected = false;
       foreach ($item['values'] as $value) {
         $selected = false;
         if ($this->isSelected($item['id'], $value['id'])) {
           $selected = true;
           $propertySelected = true;
-          echo ' <span class="selected_property">'.$value['value'].' |<a class="cancel" href="'.$this->removeFilterUrl($item['key'], $value['value']).'">x</a></span> ';
+          echo ' <span class="selected_property">';
+          echo $value['value'];
+            if ($value['alias'] != null) {
+              echo '<span class="alias">/'.$value['alias'].'</span>';
+            }
+            echo ' |<a class="cancel" href="'.$this->removeFilterUrl($item['key'], $value['value']).'">x</a></span> ';
         } else {
+          echo '<span>';
           if ($_SERVER['QUERY_STRING'] === '') {
-            echo ' <a href="?'.urlencode($item['key']).'='.urlencode($value['value']).'">'.$value['value'].'</a>';
+            echo ' <a href="?'.urlencode($item['key']).'='.urlencode($value['value']).'">'.$value['value'];
+                      if ($value['alias'] != null) {
+              echo '<span class="alias">/'.$value['alias'].'</span>';
+            }
+            echo '</a>';
           } else {
-            echo ' <a href="'.$this->appendFilterUrl($item['key'], $value['value']).'">'.$value['value'].'</a>';
+            echo ' <a href="'.$this->appendFilterUrl($item['key'], $value['value']).'">'.$value['value'];
+            if ($value['alias'] != null) {
+              echo '<span class="alias">/'.$value['alias'].'</span>';
+            }
+            echo '</a>';
           }
+          echo '</span>';
         }
       }
       echo '</div>';
