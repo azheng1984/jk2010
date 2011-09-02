@@ -270,7 +270,7 @@ a:hover {
 }
 
 #filter {
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid #E5E5E5;
   background-color:#fff;
   padding:10px;
   color:#999;
@@ -306,7 +306,9 @@ a:hover {
   background:#EFF3FC;
 }
 #sort_box {
+	border-top: 1px solid #E5E5E5;
 	padding:2px;
+	margin:5px 0;
 	background-color:#f2f2f2;
 }
 .current_page {
@@ -388,4 +390,8 @@ a:hover {
 	display: inline-block;
 	width:80px;
 	text-align:right;
+}
+.last_property {
+	border:0;
+	padding-bottom:0;
 }
