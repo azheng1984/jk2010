@@ -6,7 +6,11 @@ class FilterScreen {
     $this->parameters = FilterParameter::getSelectedList($category);
     echo '<div id="filter">';
     foreach (DbProperty::getList($category['table_prefix'], $category['id']) as $item) {
-      echo '<div class="property"><span class="key">'.$item['key'].':</span>';
+      echo '<div class="property';
+      if ($item['key'] == '商城') {
+        echo ' last_property';
+      }
+      echo '"><span class="key">'.$item['key'].':</span>';
       $propertySelected = false;
       foreach ($item['values'] as $value) {
         $selected = false;
