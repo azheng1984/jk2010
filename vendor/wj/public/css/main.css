@@ -176,7 +176,7 @@ a:hover {
   margin-bottom:20px;
 }
 #merchant_list tr {
-  border-bottom:1px solid #e5e5e5;
+  border-bottom:1px dotted #e5e5e5;
 }
 #merchant_list table th {
   font-weight:normal;
