@@ -65,12 +65,14 @@ class SearchScreen extends Screen {
     $amount = 0;
     if (isset($result['matches'])) {
       foreach ($result['matches'] as $id => $value) {
-        $items[] = DbProduct::get('laptop', $id);
+        $items[] = DbProduct::get($category['table_prefix'], $id);
       }
       $amount = count($result['matches']);
     }
+    echo '<div id="sort_box">';
     echo '<div class="sort">排序: <span class="selected">销量</span> <a href="/">新品</a> <a href="/">降价</a> <a href="/">价格</a></div>';
     echo '<div class="total_record">找到 '.$amount.' 件产品 <a href=".">重新筛选</a></div>';
+    echo '</div>';
     echo '<ul id="product_list">';
     for ($index = 0; $index < 5; $index++) {
       foreach ($items as $item) {

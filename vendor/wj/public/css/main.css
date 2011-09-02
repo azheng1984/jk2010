@@ -294,16 +294,20 @@ a:hover {
 	color:#999;
 	font-size: 12px;
 }
-.total_record a,#action a,.pagination a {
+#xsort_box a,#action a,.pagination a {
   border:1px solid #E5E5E5;
   padding:3px 7px;
   margin-left:2px;
   background-color:#f2f2f2;
 }
-.total_record a:hover,#action a:hover,.pagination a:hover {
+#xsort_box a:hover,#action a:hover,.pagination a:hover {
   border:1px solid #B6C9ED;
   text-decoration:none;
   background:#EFF3FC;
+}
+#sort_box {
+	padding:2px;
+	background-color:#f2f2f2;
 }
 .current_page {
   background-color:red;
@@ -313,17 +317,14 @@ a:hover {
   margin-left:2px;
 }
 .total_record {
-  background-color:#fff;
   text-align:right;
   color:#999;
   padding:5px;
-  padding-top:10px;
   margin-right:5px;
 }
 .sort {
 	float:left;
-	padding:10px;
-	background:#fff;
+	padding:5px 10px;;
 	color:#999;
 }
 .sort .selected {
