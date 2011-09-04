@@ -70,8 +70,8 @@ class SearchScreen extends Screen {
       $amount = count($result['matches']);
     }
     echo '<div id="sort_box">';
-    echo '<div class="sort">排序: <span class="selected">销量</span> <a href="/">新品</a> <a href="/">降价</a> <a href="/">价格</a></div>';
-    echo '<div class="total_record">找到 '.$amount.' 件产品 <a href=".">重新筛选</a></div>';
+    echo '<div class="sort">排序: <span class="selected">销量</span> <a rel="nofollow" href="/">新品</a> <a href="/" rel="nofollow">降价</a> <a rel="nofollow" href="/">价格</a></div>';
+    echo '<div class="total_record">找到 '.$amount.' 件产品 <a rel="nofollow" href=".">重新筛选</a></div>';
     echo '</div>';
     echo '<ul id="product_list">';
     for ($index = 0; $index < 5; $index++) {
@@ -81,7 +81,7 @@ class SearchScreen extends Screen {
       }
     }
     echo '</ul>';
-    echo '<div class="pagination"><a href="/">上一页</a> <span href="/" class="current_page">1</span> <a href="/">2</a> <a href="/">下一页</a></div>';
+    echo '<div class="pagination"> <span href="/" class="current_page">1</span> <a href="/">2</a> <a href="/">下一页 &raquo;</a></div>';
     echo '</div>'; //end of search
   }
 }
