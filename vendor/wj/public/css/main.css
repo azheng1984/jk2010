@@ -339,7 +339,9 @@ a:hover {
 	margin-left:10px;
 }
 .reset {
-	  background-color:#fff;
+	  padding-left:10px;
+	  border-left:1px solid #ccc;
+	  margin-left:5px;
 }
 .arrow {
   color:#ccc;
