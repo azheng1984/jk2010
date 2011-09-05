@@ -375,15 +375,15 @@ a:hover {
 	 width:200px;
 }
 #category_list .children a {
-  line-height:20px;
+  line-height:25px;
   font-size:14px;
   color: #999;
   text-decoration: underline;
-  margin-left: 3px;
   
 }
 #category_list .children {
-  line-height:20px;
+  line-height:25px;
+  margin-left: 3px;
 }
 #category_list {
 	padding-left:20px;
