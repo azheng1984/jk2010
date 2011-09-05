@@ -4,6 +4,7 @@ return array(
     'init' => 'JingDongInitCommand',
     'run' => 'RunCommand',
     'retry' => 'RetryCommand',
+    'import' => 'JingDongImporterCommand',
     'show' => array(
       'class' => 'ShowCommand',
       'option' => array(
