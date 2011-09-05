@@ -2,7 +2,7 @@
 class Db {
   private static $connections = array();
   private static $connectionFactory;
-  private static $name = '';
+  private static $name;
 
   public static function execute($sql/*, $parameter, ...*/) {
     return self::executeByArray(func_get_args());
