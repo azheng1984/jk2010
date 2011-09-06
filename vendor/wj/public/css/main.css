@@ -18,9 +18,9 @@ img {
   margin:0;
 }
 .title {
-	float: left;
-width: 960px;
-border-bottom: 1px solid #E5E5E5;
+  float: left;
+  width: 960px;
+  border-bottom: 1px solid #E5E5E5;
 }
 #action {
 	clear:right;
@@ -194,6 +194,22 @@ a:hover {
   font-size:16px;
   font-weight:bold;
 }
+#merchant_list .logo {
+  width:150px;
+}
+#merchant_list .rate {
+  color:#999;
+  font-size:12px;
+}
+#merchant_list .number {
+  color:#666;
+  font-size:18px;
+}
+#merchant_list .key {
+	padding-left:10px;
+	margin-left:10px;
+	border-left:1px solid #ddd;
+}
 /*
 #merchant_list table .price:hover {
   color: red;
@@ -340,7 +356,7 @@ a:hover {
 }
 .reset {
 	  padding-left:10px;
-	  border-left:1px solid #ccc;
+	  border-left:1px solid #ddd;
 	  margin-left:5px;
 }
 .arrow {
@@ -348,6 +364,11 @@ a:hover {
 }
 #merchant_list thead {
 	color:#999;
+}
+#product .sort {
+	background-color: #F2F2F2;
+width: 720px;
+margin-top: 10px;
 }
 .price_column {
   width: 100px;
