@@ -196,6 +196,7 @@ a:hover {
 }
 #merchant_list .logo {
   width:150px;
+  text-align: center;
 }
 #merchant_list .rate {
   color:#999;
