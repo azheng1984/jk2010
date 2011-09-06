@@ -195,7 +195,7 @@ a:hover {
   font-weight:bold;
 }
 #merchant_list .logo {
-  width:150px;
+  width:160px;
   text-align: center;
 }
 #merchant_list .rate {
@@ -372,7 +372,7 @@ width: 720px;
 margin-top: 10px;
 }
 .price_column {
-  width: 100px;
+  width: 160px;
 }
 .merchant_logo {
 	margin:5px 0;
