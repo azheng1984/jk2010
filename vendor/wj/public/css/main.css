@@ -190,12 +190,14 @@ a:hover {
   background-color:#f2f2f2;
 }
 #merchant_list table .price {
-  color: #36c;
+  color: #000;
   font-size:16px;
-  font-weight:bold;
+}
+#merchant_list .merchant_name {
+	font-size:14px;
 }
 #merchant_list .logo {
-  width:160px;
+  width:150px;
   text-align: center;
 }
 #merchant_list .rate {
@@ -203,7 +205,7 @@ a:hover {
   font-size:12px;
 }
 #merchant_list .number {
-  color:#666;
+  color:#999;
   font-size:18px;
 }
 #merchant_list .key {
@@ -372,7 +374,7 @@ width: 720px;
 margin-top: 10px;
 }
 .price_column {
-  width: 160px;
+  width: 130px;
 }
 .merchant_logo {
 	margin:5px 0;
