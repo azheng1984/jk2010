@@ -139,6 +139,9 @@ h1 {
   height:40px;
   overflow:hidden;
 }
+#product_list .visited a:visited {
+	color:#551A8B;
+}
 a {
   color: #36c;
   text-decoration:none;
