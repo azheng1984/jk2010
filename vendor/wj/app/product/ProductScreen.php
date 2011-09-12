@@ -51,6 +51,7 @@ class ProductScreen extends Screen {
     echo '</tr>';
     echo '</tbody></table>';
     $this->renderProductList('笔记本电脑推荐');
+    $this->renderAds();
     echo '</div>';
     echo '</div>';
   }
@@ -71,5 +72,9 @@ class ProductScreen extends Screen {
         .$item['name'].'</a></h2><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000</span> ~ <span class="price">12299.84</span> <div>7 个商城</div></div></li>';
     }
     echo '</ul>';
+  }
+
+  private function renderAds() {
+    echo '<div class="featured_name">Google 提供的广告</div>';
   }
 }

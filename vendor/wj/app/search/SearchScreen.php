@@ -28,6 +28,7 @@ class SearchScreen extends Screen {
           .$category['name'].'</a><div class="children"><a href="/">电脑</a><br /><a href="/">手机</a><br />...</div></li>';
       }
       echo '</ul>';
+      echo '<div class="ads">Google 提供的广告</div>';
       return;
     }
     $this->renderProductList($category);
@@ -86,6 +87,7 @@ class SearchScreen extends Screen {
     }
     echo '</ul>';
     echo '<div class="pagination"> <span href="/" class="current_page">1</span> <a href="/">2</a> <a href="/">下一页 &raquo;</a></div>';
+    echo '<div class="ads">Google 提供的广告</div>';
     echo '</div>'; //end of search
   }
 }

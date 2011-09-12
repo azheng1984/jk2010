@@ -310,7 +310,7 @@ a:hover {
 .pagination {
   background-color:#fff;
   text-align:center;
-  padding:50px 0;
+  padding:35px 0;
 }
 .note {
 	color:#999;
@@ -423,4 +423,11 @@ margin-top: 10px;
 .last_property {
 	border:0;
 	padding-bottom:0;
+}
+#product_search .ads {
+  color:#999;
+  border-top:1px solid #e5e5e5;
+  float:left;
+  width:938px;
+  padding:10px;
 }
