@@ -40,7 +40,9 @@ img {
   color:#999;
 }
 h1 {
-  margin:15px;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f2f2f2), to(#fff));
+  margin: 0;
+  padding: 10px;
   font-size: 25px;
 	line-height:30px;
 }
