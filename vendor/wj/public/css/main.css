@@ -38,6 +38,7 @@ img {
 #breadcrumb {
   margin-bottom:6px;
   color:#999;
+  clear:both;
 }
 h1 {
   margin: 0;
@@ -97,7 +98,12 @@ h1 {
 	margin:0 2px;
 }
 #search {
-  margin-left:105px;
+	float:left;
+  margin-left:10px;
+}
+#toolbar {
+	float:right;
+	color:#ccc;
 }
 #search_button {
   background-color:red;
@@ -390,8 +396,12 @@ margin-top: 10px;
 #property_list div {
   margin-bottom:5px;
 }
-#product_search .home_category_list {
+.home_category_list {
 	border-top:0;
+}
+#home #category_list {
+	border-top:0;
+	padding-left:0;
 }
 #category_list h2 {
 	margin:0;
@@ -413,10 +423,10 @@ margin-top: 10px;
   text-decoration: underline;
   font-weight:normal;
   margin-left: 5px;
+  white-space:nowrap;
 }
 #category_list .children {
   line-height:25px;
-  
 }
 .list_wrapper {
 	text-align:center;
