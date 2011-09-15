@@ -3,7 +3,7 @@ class HomeScreen extends Screen {
   public function renderContent() {
     $categories = DbCategory::getList();
     echo '<div id="home"><ul id="category_list" class="home_category_list">';
-    for($i = 1; $i < 30; ++$i) {
+    for($i = 1; $i < 10; ++$i) {
       foreach ($categories as $category) {
         echo '<li><h2><a href="'.urlencode($category['name']).'/">'
           .$category['name'].'</a></h2>';
@@ -21,7 +21,7 @@ class HomeScreen extends Screen {
   private function getChildLinks($category, $children) {
     $result = array();
     $parentLink = urlencode($category['name']).'/';
-    for($i = 1; $i < 30; ++$i) {
+    for($i = 1; $i < 20; ++$i) {
       foreach ($children as $child) {
         $result[] = '<a href="'.$parentLink.urlencode($child['name']).'/">'.$child['name'].'</a>';
       }
