@@ -42,7 +42,7 @@ img {
 h1 {
   margin: 0;
   padding: 10px;
-  font-size: 18px;
+  font-size: 20px;
   line-height:25px;
 }
 #category_list, #product {
@@ -395,23 +395,25 @@ margin-top: 10px;
 }
 #category_list a {
 	font-size:16px;
+	font-weight:bold;
 }
 #category_list li {
 	line-height:30px;
 	margin:10px;
 	float:left;
-	 width:200px;
+	 width:400px;
 }
 #category_list .children a {
   line-height:25px;
   font-size:14px;
   color: #999;
   text-decoration: underline;
-  
+  font-weight:normal;
+  margin-left: 5px;
 }
 #category_list .children {
   line-height:25px;
-  margin-left: 3px;
+  
 }
 #category_list {
 	padding-left:20px;
