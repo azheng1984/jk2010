@@ -37,6 +37,7 @@ class ScreenWrapper {
     echo '<div id="header">';
     echo '<div id="logo"><a href="/"><img src="/logo.png" /></a></div>';
     $this->renderSearch();
+    echo '<div id="toolbar"><a href="/" rel="nofollow">注册</a> | <a href="/" rel="nofollow">登录</a></div>';
     echo '</div>';
   }
 
