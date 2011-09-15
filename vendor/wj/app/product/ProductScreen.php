@@ -39,13 +39,13 @@ class ProductScreen extends Screen {
     echo '<div class="sort">排序: <span class="selected">购买率</span> <a href="/">价格</a></div>';
     echo '<div id="merchant_list">';
     echo '<table>';
-    echo '<tbody><tr><td class="logo"><a href="/"><img alt="京东商城" title="京东商城" class="merchant_logo" src="/360buy.com.2.gif" /> </a></td>';
-    echo '<td><a href="/"><span class="merchant_name">京东商城</span></a></td>';
+    echo '<tbody><tr><td class="logo"><a href="/"  target="_blank"><img alt="京东商城" title="京东商城" class="merchant_logo" src="/360buy.com.2.gif" /> </a></td>';
+    echo '<td><a href="/" target="_blank"><span class="merchant_name">京东商城</span></a></td>';
     echo '<td class="price_column"><span class="price_block">&yen;</span><span class="price">10.23</span></td>';
     echo '<td class="rate"> 购买率: <span class="number">97</span>% <span class="key"></span></td>';
     echo '</tr>';
-    echo '<tr><td class="logo"><a href="/"><img alt="新蛋" title="新蛋" class="merchant_logo" src="/newegg.com.cn.2.gif" /></a></td>';
-    echo '<td><a href="/"><span class="merchant_name">新蛋网</span></a></td>';
+    echo '<tr><td class="logo"><a href="/" target="_blank"><img alt="新蛋" title="新蛋" class="merchant_logo" src="/newegg.com.cn.2.gif" /></a></td>';
+    echo '<td><a href="/" target="_blank"><span class="merchant_name">新蛋网</span></a></td>';
     echo '<td class="price_column"><span class="price_block">&yen;</span><span class="price">14</span></a></td>';
     echo '<td class="rate"> <span class="block">购买率: <span class="number">3</span>%</span> <span class="key"></span></td>';
     echo '</tr>';
