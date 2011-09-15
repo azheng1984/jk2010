@@ -22,14 +22,14 @@ class SearchScreen extends Screen {
     echo '<div id="product_search">';
     echo '<div id="category_title"><h1>'.$category['name'].'</h1></div>';
     if ($category['table_prefix'] === null) {
-      echo '<ul id="category_list">';
+      echo '<div class="list_wrapper"><ul id="category_list">';
       for ($i = 0; $i < 5; ++$i) {
         foreach (DbCategory::getList($parentId) as $category) {
           echo '<li><a href="'.urlencode($category['name']).'/">'
             .$category['name'].'</a><div class="children"><a href="/">电脑</a> <a href="/">手机</a> ...</div></li>';
         }
       }
-      echo '</ul>';
+      echo '</ul></div>';
       echo '<div class="ads">Google 提供的广告</div>';
       return;
     }

@@ -399,10 +399,9 @@ margin-top: 10px;
 }
 #category_list li {
 	line-height:30px;
-	margin:10px;
 	float:left;
 	 width:400px;
-	 margin-left:30px;
+	 margin:20px;
 }
 #category_list .children a {
   line-height:25px;
@@ -416,8 +415,11 @@ margin-top: 10px;
   line-height:25px;
   
 }
+.list_wrapper {
+	text-align:center;
+}
 #category_list {
-	padding-left:20px;
+	text-align:left;
 }
 .property .key {
 	display: inline-block;
