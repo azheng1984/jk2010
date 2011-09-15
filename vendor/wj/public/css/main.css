@@ -393,6 +393,9 @@ margin-top: 10px;
 #product_search .home_category_list {
 	border-top:0;
 }
+#category_list h2 {
+	margin:0;
+}
 #category_list a {
 	font-size:16px;
 	font-weight:bold;
