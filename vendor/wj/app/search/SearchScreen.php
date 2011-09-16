@@ -26,7 +26,7 @@ class SearchScreen extends Screen {
       for ($i = 0; $i < 5; ++$i) {
         foreach (DbCategory::getList($parentId) as $category) {
           echo '<li><h2><a href="'.urlencode($category['name']).'/">'
-            .$category['name'].'</a></h2><div class="children"><a href="/">电脑</a> <a href="/">手机</a> ...</div></li>';
+            .$category['name'].'</a></h2><div class="children"><a href="/">电脑</a> <a href="/">手机</a> &hellip;</div></li>';
         }
       }
       echo '</ul></div>';
@@ -84,7 +84,7 @@ class SearchScreen extends Screen {
           echo 'visited ';
         }
         echo 'item"><div class="product_image"><a target="_blank" href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><h2><a  target="_blank" href="/'.$item['id'].'">'
-          .$item['name'].'</a></h2><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000<span class="point">.68</span></span> ~ <span class="price">1234567890<span class="point"></span></span> <div>7 个商城</div></div></li>';
+          .$item['name'].'</a></h2><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000<span class="point">.68</span></span> &#8764; <span class="price">1234567890<span class="point"></span></span> <div>7 个商城</div></div></li>';
       }
     }
     echo '</ul>';

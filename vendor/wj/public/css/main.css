@@ -417,7 +417,7 @@ margin-top: 10px;
 	line-height:30px;
 	float:left;
 	 width:420px;
-	 margin:0 20px 15px 20px;
+	 margin:0 20px 20px 20px;
 }
 #category_list .children a {
   line-height:20px;
@@ -454,4 +454,11 @@ margin-top: 10px;
   float:left;
   width:938px;
   padding:10px;
+}
+.sign_up {
+	padding-right:5px;
+}
+.sign_in {
+  border-left:1px solid #ccc;
+  padding-left:10px;
 }
