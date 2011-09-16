@@ -149,7 +149,7 @@ h1 {
 	color:#551A8B;
 }
 a {
-  color: #36c;
+  color: #06c;
   text-decoration:none;
 }
 a:hover {
@@ -409,7 +409,7 @@ margin-top: 10px;
 	line-height:20px;
 }
 #category_list a {
-	font-size:14px;
+	font-size:16px;
 	font-weight:normal;
 }
 #category_list li {
@@ -420,7 +420,7 @@ margin-top: 10px;
 }
 #category_list .children a {
   line-height:20px;
-  font-size:12px;
+  font-size:13px;
   color: #999;
   text-decoration: underline;
   font-weight:normal;
