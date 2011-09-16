@@ -409,8 +409,8 @@ margin-top: 10px;
 	line-height:20px;
 }
 #category_list a {
-	font-size:16px;
-	font-weight:bold;
+	font-size:14px;
+	font-weight:normal;
 }
 #category_list li {
 	line-height:30px;
@@ -420,7 +420,7 @@ margin-top: 10px;
 }
 #category_list .children a {
   line-height:25px;
-  font-size:14px;
+  font-size:12px;
   color: #999;
   text-decoration: underline;
   font-weight:normal;
