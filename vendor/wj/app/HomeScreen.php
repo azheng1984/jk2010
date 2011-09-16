@@ -21,7 +21,7 @@ class HomeScreen extends Screen {
   private function getChildLinks($category, $children) {
     $result = array();
     $parentLink = urlencode($category['name']).'/';
-    for($i = 1; $i < 20; ++$i) {
+    for($i = 1; $i < 12; ++$i) {
       foreach ($children as $child) {
         $result[] = '<a href="'.$parentLink.urlencode($child['name']).'/">'.$child['name'].'</a>';
       }

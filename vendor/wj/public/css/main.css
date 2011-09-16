@@ -419,7 +419,7 @@ margin-top: 10px;
 	 margin:0 20px 15px 20px;
 }
 #category_list .children a {
-  line-height:25px;
+  line-height:20px;
   font-size:12px;
   color: #999;
   text-decoration: underline;
@@ -428,7 +428,7 @@ margin-top: 10px;
   white-space:nowrap;
 }
 #category_list .children {
-  line-height:25px;
+  line-height:20px;
   clear:both;
 }
 .list_wrapper {
