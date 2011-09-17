@@ -5,8 +5,8 @@ class HomeScreen extends Screen {
     echo '<div id="home"><ul id="category_list" class="home_category_list">';
     for($i = 1; $i < 10; ++$i) {
       foreach ($categories as $category) {
-        echo '<li><h2><a href="'.urlencode($category['name']).'/">'
-          .$category['name'].'</a></h2>';
+        echo '<li><div class="bull">&bull;</div><h2><a href="'.urlencode($category['name']).'/">'
+          .$category['name'].'</a></h2><div class="number"></div>';
         $children = DbCategory::getList($category['id']);
         if (count($children) !== 0) {
           echo '<div class="children">';
