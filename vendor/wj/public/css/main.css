@@ -462,3 +462,18 @@ margin-top: 10px;
   border-left:1px solid #ccc;
   padding-left:10px;
 }
+.bull {
+	float:left;
+	line-height:20px;
+	margin-right:5px;
+	margin-left:-10px;
+	color:#ccc;
+}
+#category_list .number  {
+	line-height:15px;
+	margin-left:10px;
+	padding:1px 5px;
+	background-color:#f2f2f2;
+	font-size:12px;
+	float:left;
+}
