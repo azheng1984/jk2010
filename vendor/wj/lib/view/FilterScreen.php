@@ -22,7 +22,7 @@ class FilterScreen {
             if ($value['alias'] != null) {
               echo '<span class="alias">('.$value['alias'].')</span>';
             }
-            echo ' |<a class="cancel" href="'.$this->removeFilterUrl($item['key'], $value['value']).'">x</a></strong> ';
+            echo ' <a class="cancel" href="'.$this->removeFilterUrl($item['key'], $value['value']).'">x</a></strong> ';
         } else {
           echo '<span>';
           if ($_SERVER['QUERY_STRING'] === '') {
