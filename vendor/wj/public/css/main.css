@@ -294,6 +294,7 @@ a:hover {
   background-color:red;
   padding: 2px 2px 2px 5px;
   margin-left:10px;
+  font-weight:normal;
 }
 .selected_property a {
 	margin-left:0;
