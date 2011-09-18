@@ -312,6 +312,8 @@ a:hover {
 .cancel {
   color:#fff;
   padding:5px;
+  border-left: 1px solid white;
+  padding-left: 6px;
 }
 .cancel:hover {
   color:#fff;
