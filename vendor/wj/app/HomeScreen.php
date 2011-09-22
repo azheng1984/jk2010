@@ -15,7 +15,7 @@ class HomeScreen extends Screen {
         echo '</li>';
       }
     }
-    echo '</ul></div>';
+    echo '</ul></div><script>document.getElementById("search_input").focus()</script>';
   }
 
   private function getChildLinks($category, $children) {
