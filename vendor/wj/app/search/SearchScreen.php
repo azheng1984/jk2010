@@ -26,7 +26,11 @@ class SearchScreen extends Screen {
       for ($i = 0; $i < 5; ++$i) {
         foreach (DbCategory::getList($parentId) as $category) {
           echo '<li><div class="bull">&bull;</div><h2><a href="'.urlencode($category['name']).'/">'
-            .$category['name'].'</a></h2><div class="children"><a href="/">电脑</a> <a href="/">手机</a> &hellip;</div></li>';
+            .$category['name'].'</a></h2><div class="children';
+             if ($i === 4) {
+              echo ' last';
+            }
+            echo '"><a href="/">电脑</a> <a href="/">手机</a> &hellip;</div></li>';
         }
       }
       echo '</ul></div>';

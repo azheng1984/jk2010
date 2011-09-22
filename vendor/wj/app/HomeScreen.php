@@ -9,7 +9,11 @@ class HomeScreen extends Screen {
           .$category['name'].'</a></h2>';
         $children = DbCategory::getList($category['id']);
         if (count($children) !== 0) {
-          echo '<div class="children">';
+          echo '<div class="children';
+          if ($i === 9) {
+            echo ' last';
+          }
+          echo '">';
           echo implode(' ', $this->getChildLinks($category, $children)).' &hellip;</div>';
         }
         echo '</li>';
