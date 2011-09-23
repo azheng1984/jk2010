@@ -68,11 +68,11 @@ abstract class Screen {
 
   private function renderBodyFooterLinks() {
     echo '<div class="links">',
-    '<a rel="nofollow" href="http://www.wj.com">关于我们</a> ',
-    '<a rel="nofollow" href="http://www.wj.com">广告联盟</a> ',
+    '<a rel="nofollow" href=""http://support.huobiwanjia.com/about_us">关于我们</a> ',
+    '<a rel="nofollow" href=""http://union.huobiwanjia.com/">广告联盟</a> ',
     '<a rel="nofollow" href="http://huobiwanjia.org/">开源项目</a> ',
-    '<a rel="nofollow" href="http://www.wj.com">团队博客</a> ',
-    '<a rel="nofollow" href="http://www.wj.com">联系我们</a> ',
+    '<a rel="nofollow" href="http://blog.huobiwanjia.com/">团队博客</a> ',
+    '<a rel="nofollow" href="http://support.huobiwanjia.com/contact_us">联系我们</a> ',
     '</div>';
   }
 
