@@ -120,6 +120,7 @@ h1 {
   height:32px;
   font-size:16px;
   padding:4px 7px;
+  margin-right:2px;
 }
 #product_list {
   width: 938px;
@@ -408,8 +409,9 @@ margin-top: 10px;
 	padding-top:50px;
 }
 #home #category_list {
-	padding-top:30px;
+	margin-top:20px;
 	margin-left:20px;
+	margin-bottom:20px;
 }
 #home #category_list {
 	border-top:0;
