@@ -15,7 +15,7 @@ class Breadcrumb {
 
   public function render() {
     echo '<div id="breadcrumb">';
-    echo '<a class="parent" href="/">首页</a>';
+    echo '<a class="parent" href="/" rel="nofollow">首页</a>';
     $this->renderParents();
     echo ' <span class="arrow">&rsaquo;</span> '.$this->current['name'];
     echo '</div>';

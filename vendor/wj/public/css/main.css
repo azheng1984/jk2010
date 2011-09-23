@@ -77,12 +77,20 @@ h1 {
   font-weight: bold;
 }
 #logo a {
-	margin-top: 15px;
+  margin-top: 15px;
   float: left;
-  font-size: 22px;
-  color:red;
-  text-decoration:none;
-  font-weight:bold;
+  line-height:20px;
+  position: relative;
+  width:90px;
+}
+#logo .img {
+	background-image: url(/logo.png);
+	width: 90px;
+	height: 25px;
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 0;
 }
 #footer {
   color:#999999;
