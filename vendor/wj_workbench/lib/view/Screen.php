@@ -70,7 +70,7 @@ abstract class Screen {
     echo '<div class="links">',
     '<a rel="nofollow" href="http://www.wj.com">关于我们</a> ',
     '<a rel="nofollow" href="http://www.wj.com">广告联盟</a> ',
-    '<a rel="nofollow" href="http://www.wj.com">开源项目</a> ',
+    '<a rel="nofollow" href="http://huobiwanjia.org/">开源项目</a> ',
     '<a rel="nofollow" href="http://www.wj.com">团队博客</a> ',
     '<a rel="nofollow" href="http://www.wj.com">联系我们</a> ',
     '</div>';
