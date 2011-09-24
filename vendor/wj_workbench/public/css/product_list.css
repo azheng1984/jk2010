@@ -7,8 +7,8 @@
 }
 #filter .property {
   clear:left;
-  border-bottom: 1px dotted #E5E5E5;
-  padding: 5px;
+  border-bottom:1px dotted #E5E5E5;
+  padding:5px;
   margin-left:10px;
 }
 #filter .last_property {
@@ -28,7 +28,7 @@
 #filter .selected_property {
   color:#fff;
   background-color:red;
-  padding: 2px 2px 2px 5px;
+  padding:2px 2px 2px 5px;
   margin-left:10px;
   font-weight:normal;
   white-space:nowrap;
@@ -36,7 +36,7 @@
 #filter .values .cancel {
   color:#fff;
   padding:5px;
-  border-left: 1px solid white;
-  padding-left: 6px;
+  border-left:1px solid white;
+  padding-left:6px;
   margin:0;
 }
