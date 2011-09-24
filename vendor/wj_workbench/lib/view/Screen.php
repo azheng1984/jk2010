@@ -15,6 +15,8 @@ abstract class Screen {
   private function renderHead() {
     echo '<head>';
     $this->renderHeadContent();
+    echo '<link type="text/css" href="/css/screen.css" charset="utf-8"',
+      ' media="screen" rel="stylesheet" />';
     echo '</head>';
   }
 
@@ -54,8 +56,8 @@ abstract class Screen {
 
   private function renderToolbar() {
     echo '<div id="toolbar">',
-      '<a href="/" rel="nofollow">注册</a>',
-      ' <a href="/" rel="nofollow">登录</a>',
+      '<a href="http://passport.huobiwanjia.com/sign_up" rel="nofollow">注册</a>',
+      ' <a href="http://passport.huobiwanjia.com/sign_in" rel="nofollow">登录</a>',
       '</div>';
   }
 
@@ -68,18 +70,18 @@ abstract class Screen {
 
   private function renderBodyFooterLinks() {
     echo '<div class="links">',
-    '<a rel="nofollow" href=""http://support.huobiwanjia.com/about_us">关于我们</a> ',
-    '<a rel="nofollow" href=""http://union.huobiwanjia.com/">广告联盟</a> ',
-    '<a rel="nofollow" href="http://huobiwanjia.org/">开源项目</a> ',
-    '<a rel="nofollow" href="http://blog.huobiwanjia.com/">团队博客</a> ',
-    '<a rel="nofollow" href="http://support.huobiwanjia.com/contact_us">联系我们</a> ',
-    '</div>';
+      '<a href="http://support.huobiwanjia.com/about_us" rel="nofollow">关于我们</a> ',
+      '<a href="http://union.huobiwanjia.com/" rel="nofollow">广告联盟</a> ',
+      '<a href="http://code.huobiwanjia.com/" rel="nofollow">开源项目</a> ',
+      '<a href="http://blog.huobiwanjia.com/" rel="nofollow">团队博客</a> ',
+      '<a href="http://support.huobiwanjia.com/contact_us" rel="nofollow">联系我们</a> ',
+      '</div>';
   }
 
   private function renderDeclaration() {
-    echo '<div class="declaration">&copy; 货比万家',
-      ' <a rel="nofollow" href="http://support.wj.com/">使用条款</a>',
-      ' <a rel="nofollow" href="http://support.wj.com/">隐私权政策</a>',
+    echo '<div>&copy; 货比万家',
+      ' <a href="http://support.huobiwanjia.com/terms_of_use" rel="nofollow">使用条款</a>',
+      ' <a href="http://support.huobiwanjia.com/privacy" rel="nofollow">隐私权政策</a>',
       ' 沪 ICP 备你妹</div>';
   }
 }
