@@ -1,0 +1,49 @@
+@CHARSET "UTF-8";
+#filter {
+  width:100%;
+  border:1px solid #e5e5e5;
+  border-bottom:0;
+  line-height:30px;
+}
+#filter .property {
+  clear:left;
+  border-bottom: 1px dotted #E5E5E5;
+  padding: 5px;
+  margin-left:10px;
+}
+#filter .last_property {
+  border:0;
+}
+#filter .key {
+  width:100px;
+  text-align:right;
+}
+#filter .values {
+  width:820px;
+}
+#filter .values a {
+  margin-left:10px;
+  white-space:nowrap;
+}
+#filter .selected_property {
+  color:#fff;
+  background-color:red;
+  padding: 2px 2px 2px 5px;
+  margin-left:10px;
+  font-weight:normal;
+  white-space:nowrap;
+}
+#filter .selected_property {
+  color:#fff;
+  background-color:red;
+  padding: 2px 2px 2px 5px;
+  margin-left:10px;
+  font-weight:normal;
+}
+#filter .values .cancel {
+  color:#fff;
+  padding:5px;
+  border-left: 1px solid white;
+  padding-left: 6px;
+  margin:0;
+}
