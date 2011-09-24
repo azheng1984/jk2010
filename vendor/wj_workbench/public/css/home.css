@@ -6,9 +6,9 @@
 #category_list li {
   width:420px;
   list-style-type:none;
+  background:url(/bull.png) no-repeat;/* ie 7 */
   padding-left:20px;
   margin:8px;
-  background:url(/bull.png) no-repeat;/* ie 7 */
 }
 #category_list .children a {
   font-size:13px;
@@ -17,7 +17,7 @@
   margin-right:5px;
 }
 #category_list h2 {
-  margin:0;
-  font-size:15px;
+  font-size:16px;
   font-weight:normal;
+  margin:0;
 }
