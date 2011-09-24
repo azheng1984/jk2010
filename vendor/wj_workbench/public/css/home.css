@@ -1,0 +1,23 @@
+@CHARSET "UTF-8";
+#category_list {
+  padding:0;
+  margin:20px 0 0 20px;
+}
+#category_list li {
+  width:420px;
+  list-style-type:none;
+  padding-left:20px;
+  margin:8px;
+  background:url(/bull.png) no-repeat;/* ie 7 */
+}
+#category_list .children a {
+  font-size:13px;
+  color:#999;
+  text-decoration:underline;
+  margin-right:5px;
+}
+#category_list h2 {
+  margin:0;
+  font-size:15px;
+  font-weight:normal;
+}
