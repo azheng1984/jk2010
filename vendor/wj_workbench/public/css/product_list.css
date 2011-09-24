@@ -10,6 +10,7 @@
   border-bottom:1px dotted #E5E5E5;
   padding:5px;
   margin-left:10px;
+  width:900px;
 }
 #filter .last_property {
   border:0;
@@ -19,7 +20,7 @@
   text-align:right;
 }
 #filter .values {
-  width:820px;
+  width:800px;
 }
 #filter .values a {
   margin-left:10px;
@@ -28,14 +29,15 @@
 #filter .selected_property {
   color:#fff;
   background-color:red;
-  padding:2px 2px 2px 5px;
+  padding:2px 0 2px 5px;
   margin-left:10px;
   font-weight:normal;
   white-space:nowrap;
 }
 #filter .values .cancel {
   color:#fff;
-  padding:5px;
+  font-size:13px;
+  padding-right:5px;
   border-left:1px solid white;
   padding-left:6px;
   margin:0;
