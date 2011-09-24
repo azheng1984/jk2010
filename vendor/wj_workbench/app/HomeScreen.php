@@ -7,27 +7,19 @@ class HomeScreen extends Screen {
   }
 
   protected function renderBodyContent() {
-    echo '<div id="home">';
-    $this->renderCategoryList();
-    echo '</div>';
-  }
-
-  private function renderCategoryList() {
     $categories = DbCategory::getList();
     echo '<ul id="category_list">';
     foreach ($categories as $category) {
-      for($i = 1; $i < 20; ++$i) {
       echo '<li>';
       $this->renderCategory($category);
-      echo '</li>';}
+      echo '</li>';
     }
     echo '</ul>';
   }
 
   private function renderCategory($category) {
     echo '<h2><a href="'.urlencode($category['name']).'/">',
-      $category['name'],
-      '</a></h2>';
+      $category['name'], '</a></h2>';
     $children = DbCategory::getList($category['id']);
     if (count($children) !== 0) {
       echo '<div class="children">',
@@ -39,10 +31,9 @@ class HomeScreen extends Screen {
   private function getChildLinks($category, $children) {
     $result = array();
     $parentLink = urlencode($category['name']).'/';
-    for($i = 1; $i < 11; ++$i) {
-      foreach ($children as $child) {
-        $result[] = '<a href="'.$parentLink.urlencode($child['name']).'/">'.$child['name'].'</a>';
-      }
+    foreach ($children as $child) {
+      $result[] = '<a href="'.$parentLink.urlencode($child['name']).'/">'
+        .$child['name'].'</a>';
     }
     return $result;
   }
