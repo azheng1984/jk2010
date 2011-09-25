@@ -55,23 +55,23 @@ class ProductListScreen extends Screen {
       }
       $amount = count($result['matches']);
     }
-    echo '<div id="sort_box">';
+    echo '<div id="sort_wrapper">';
     echo '<div class="sort">排序: <span class="selected">销量</span> <a rel="nofollow" href="/">新品</a> <a href="/" rel="nofollow">降价</a> <a rel="nofollow" href="/">价格</a></div>';
-    echo '<div class="total_record">找到 '.$amount.' 件产品 <span class="reset"><a rel="nofollow" href=".">重新筛选</a></span></div>';
+    echo '<div class="right">找到 '.$amount.' 件产品 <span class="reset"><a rel="nofollow" href=".">重新筛选</a></span></div>';
     echo '</div>';
-    echo '<ul id="product_list">';
+    echo '<div id="product_list_wrapper"><ul id="product_list">';
     for ($index = 0; $index < 5; $index++) {
       foreach ($items as $item) {
         echo '<li class="';
         if ($index === 1) {
           echo 'visited ';
         }
-        echo 'item"><div class="product_image"><a target="_blank" href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><h2><a  target="_blank" href="/'.$item['id'].'">'
-          .$item['name'].'</a></h2><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000<span class="point">.68</span></span> &#8764; <span class="price">1234567890<span class="point"></span></span> <div>7 个商城</div></div></li>';
+        echo '"><div class="item"><div class="product_image"><a target="_blank" href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><h2><a  target="_blank" href="/'.$item['id'].'">'
+          .$item['name'].'</a></h2><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000<span class="point">.68</span></span> ~ <span class="price">1234567890<span class="point"></span></span> <div>7 个商城</div></div></div></li>';
       }
     }
-    echo '</ul>';
-    echo '<div class="pagination"> <span href="/" class="current_page">1</span> <a href="/">2</a> <a href="/">下一页 &raquo;</a></div>';
-    echo '<div class="ads">Google 提供的广告</div>';
+    echo '</ul></div>';
+    echo '<div id="pagination"> <span href="/" class="current_page">1</span> <a href="/">2</a> <a href="/">下一页 &raquo;</a></div>';
+    echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">Google 提供的广告</div></div>';
   }
 }
