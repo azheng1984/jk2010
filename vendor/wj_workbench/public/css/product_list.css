@@ -3,6 +3,7 @@
   width:100%;
   border:1px solid #e5e5e5;
   border-bottom:0;
+  padding: 10px 0;
 }
 #filter .property {
   border-bottom:1px dotted #E5E5E5;
@@ -39,6 +40,7 @@
   border-left:1px solid white;
   padding:0 6px;
   margin-left:5px;
+  font-size:12px;
 }
 #pagination {
   width:100%;
@@ -102,8 +104,7 @@
   margin:0;
   padding:8px 0 0 8px;  
 }
-
-
+/* draft */
 img {
   border:0;
 }
@@ -124,9 +125,6 @@ img {
   overflow:hidden;
   clear:left;
   width: 178px;
-}
-#product_list .item {
-	
 }
 .price_block {
   color:#999;
