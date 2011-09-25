@@ -3,14 +3,11 @@
   width:100%;
   border:1px solid #e5e5e5;
   border-bottom:0;
-  line-height:30px;
 }
 #filter .property {
-  clear:left;
   border-bottom:1px dotted #E5E5E5;
-  padding:5px;
-  margin-left:10px;
-  width:900px;
+  margin:0 10px;
+  display:inline;/* ie 6 双边距 */
 }
 #filter .last_property {
   border:0;
@@ -18,11 +15,14 @@
 #filter .key {
   width:100px;
   text-align:right;
+  padding:10px 0;
 }
 #filter .values {
-  width:800px;
+  padding:5px 0;
+  line-height:30px;
+  width: 840px;
 }
-#filter .values a {
+#filter .values span {
   margin-left:10px;
   white-space:nowrap;
 }
@@ -36,9 +36,24 @@
 }
 #filter .values .cancel {
   color:#fff;
-  font-size:13px;
-  padding-right:5px;
   border-left:1px solid white;
-  padding-left:6px;
-  margin:0;
+  padding:0 6px;
+  margin-left:5px;
+}
+.pagination a {
+  border:1px solid #E5E5E5;
+  padding:4px 8px;
+  margin-left:2px;
+  background-color:#f2f2f2;
+}
+.pagination a:hover {
+  border:1px solid #B6C9ED;
+  text-decoration:none;
+  background:#EFF3FC;
+}
+.current_page {
+  background-color:red;
+  color:#fff;
+  padding:5px 9px;
+  margin-left:2px;
 }
