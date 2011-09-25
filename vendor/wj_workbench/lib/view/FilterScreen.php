@@ -21,21 +21,21 @@ class FilterScreen {
           echo ' <strong class="selected_property">';
           echo $value['value'];
             if ($value['alias'] != null) {
-              echo '<span class="alias">('.$value['alias'].')</span>';
+              echo '('.$value['alias'].')';
             }
-            echo ' <a class="cancel" href="'.$this->removeFilterUrl($item['key'], $value['value']).'">x</a></strong> ';
+            echo '<a class="cancel" href="'.$this->removeFilterUrl($item['key'], $value['value']).'">&#x00D7;</a></strong> ';
         } else {
-          echo '<span>';
+          echo ' <span>';
           if ($_SERVER['QUERY_STRING'] === '') {
-            echo ' <a href="?'.urlencode($item['key']).'='.urlencode($value['value']).'">'.$value['value'];
-                      if ($value['alias'] != null) {
-              echo '<span class="alias"><span class="">(</span>'.$value['alias'].')</span>';
+            echo '<a href="?'.urlencode($item['key']).'='.urlencode($value['value']).'">'.$value['value'];
+            if ($value['alias'] != null) {
+              echo '('.$value['alias'].')';
             }
             echo '</a>';
           } else {
-            echo ' <a href="'.$this->appendFilterUrl($item['key'], $value['value']).'">'.$value['value'];
+            echo '<a href="'.$this->appendFilterUrl($item['key'], $value['value']).'">'.$value['value'];
             if ($value['alias'] != null) {
-              echo '<span class="alias"><span class="">(</span>'.$value['alias'].')</span>';
+              echo '('.$value['alias'].')';
             }
             echo '</a>';
           }
