@@ -5,6 +5,9 @@
 #breadcrumb .arrow {
   color: #ccc;
 }
+#breadcrumb strong {
+  font-weight:normal;
+}
 #h1_wrapper {
   margin-top:6px;
   width:100%;
@@ -35,4 +38,7 @@ h1 {
 }
 #bottom_ads {
   padding:0 10px;
+}
+#merchant_list table .price {
+  font-size:16px;
 }
