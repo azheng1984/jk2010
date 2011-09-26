@@ -70,9 +70,11 @@
 }
 #sort_wrapper span {
   margin-left:10px;
+  display:inline;
 }
 #sort_wrapper .sort {
   margin-left:10px;
+  display: inline; /* ie 6 */
 }
 #sort_wrapper .sort .selected {
   color:#fff;

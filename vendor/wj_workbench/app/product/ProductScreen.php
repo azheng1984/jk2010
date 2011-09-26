@@ -55,16 +55,31 @@ class ProductScreen extends Screen {
 
   private function renderMerchantList() {
     echo '<div id="merchant_list">';
+    
     echo '<div class="merchant">';
+    
+    echo '<div class="merchant_info">';
     echo '<div class="logo"><a href="/"  target="_blank"><img alt="京东商城" title="京东商城" class="merchant_logo" src="/360buy.com.2.gif" /> </a></div>';
     echo '<div><a href="/" target="_blank"><span class="merchant_name">京东商城</span></a></div>';
+    echo '</div>';
+    
+    echo '<div class="promotions">';
     echo '<div class="price_column"><span class="price_sign">&yen;</span><span class="price">10.23</span></div>';
     echo '</div>';
 
+    echo '</div>';
+
     echo '<div class="merchant last">';
+
+    echo '<div class="merchant_info">';
     echo '<div class="logo"><a href="/" target="_blank"><img alt="新蛋" title="新蛋" class="merchant_logo" src="/newegg.com.cn.2.gif" /></a></div>';
     echo '<div><a href="/" target="_blank"><span class="merchant_name">新蛋网</span></a></div>';
+    echo '</div>';
+
+    echo '<div class="promotions">';
     echo '<div class="price_column"><span class="price_sign">&yen;</span><span class="price">14</span></a></div>';
+    echo '</div>';
+
     echo '</div>';
     
     echo '</div>';
