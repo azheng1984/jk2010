@@ -29,18 +29,23 @@
 }
 #filter .selected_property {
   color:#fff;
-  background-color:red;
-  padding:2px 0 2px 5px;
+  padding:2px 11px 2px 5px;
   margin-left:10px;
   font-weight:normal;
   white-space:nowrap;
+  background:url(/x.png) red no-repeat top right;
 }
 #filter .values .cancel {
   color:#fff;
   border-left:1px solid white;
-  padding:0 6px;
+  padding:0 5px;
+  width:20px;
+  display:inline;
   margin-left:5px;
-  font-size:12px;
+
+}
+#filter .values .selected_property:hover {
+  cursor:pointer;
 }
 #pagination {
   width:100%;

@@ -18,12 +18,12 @@ class FilterScreen {
         if ($this->isSelected($item['id'], $value['id'])) {
           $selected = true;
           $propertySelected = true;
-          echo ' <strong class="selected_property">';
+          echo ' <strong class="selected_property" onclick="window.location=\''.$this->removeFilterUrl($item['key'], $value['value']).'\'">';
           echo $value['value'];
             if ($value['alias'] != null) {
               echo '('.$value['alias'].')';
             }
-            echo '<a class="cancel" href="'.$this->removeFilterUrl($item['key'], $value['value']).'">&#x00D7;</a></strong> ';
+            echo '</strong> ';
         } else {
           echo ' <span>';
           if ($_SERVER['QUERY_STRING'] === '') {
