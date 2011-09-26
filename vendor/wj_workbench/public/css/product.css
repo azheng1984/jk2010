@@ -13,6 +13,7 @@ h1 {
 #action {
   float:right;
   margin-right:10px;
+  display:inline; /* ie 6*/
 }
 #action a {
   border:1px solid #e5e5e5;
@@ -40,27 +41,26 @@ h1 {
 }
 #property_list div {
   clear:left;
+  width:180px;
+  padding:2px 0;
 }
 .product_image {
   width:170px;
   margin:10px 0 0 10px;
 }
 #right_wrapper {
-  width:770px;
+  padding:10px;
 }
 .featured_product_list {
+  margin:0;
+  padding:0;
+  padding-bottom:10px;
+  clear:both;
   width:750px;
-  margin:0;
-  padding:0;
-}
-.featured_product_list ul {
-  margin:0;
-  padding:0;
 }
 .featured_product_list li {
   text-align:left;
   list-style:none;
-  float: left;
   width:175px;
   padding:6px;
   height:260px;
@@ -68,18 +68,44 @@ h1 {
   vertical-align:top;
 }
 .featured_name {
+  clear:both;
   color:#999;
-  font-size:14px;
   margin-bottom:10px;
-  background-color: #f2f2f2;
-  padding: 5px;
-  margin-right: 10px;
+  background-color:#f2f2f2;
+  width: 750px;
+}
+.featured_name div {
+  padding:5px;
 }
 .sort {
-  margin:5px;
-  background:#f2f2f2;
+  padding:5px 0;
 }
 #sort_wrapper {
-  background:#fff;
+  background:#f2f2f2;
   border:0;
+  padding:0;
+  width:750px;
+}
+#merchant_list {
+  clear:both;
+}
+.merchant {
+  clear:both;
+  padding:15px 0;
+  border-bottom:1px #ccc dotted;
+  line-height:40px;
+  width: 750px;
+}
+.logo {
+  padding:0 20px;
+}
+.last {
+  border:0;
+}
+.merchant .price {
+  font-size:16px;
+}
+#merchant_list .price_column {
+  float:right;
+  padding-right:50px;
 }

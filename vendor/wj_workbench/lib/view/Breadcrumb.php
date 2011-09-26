@@ -17,8 +17,8 @@ class Breadcrumb {
     echo '<div id="breadcrumb">';
     echo '<a class="parent" href="/" rel="nofollow">首页</a>';
     $this->renderParents();
-    echo ' <span class="arrow">&rsaquo;</span> '.$this->current['name'];
-    echo '</div>';
+    echo ' <span class="arrow">&rsaquo;</span> <strong>'.$this->current['name'];
+    echo '</strong></div>';
   }
 
   private function renderParents() {
