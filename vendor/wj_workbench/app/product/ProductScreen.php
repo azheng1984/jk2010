@@ -57,7 +57,7 @@ class ProductScreen extends Screen {
   private function renderMerchantList() {
     echo '<div id="merchant_list">';
     
-    echo '<div class="merchant">';
+    echo '<div class="merchant top">';
     
     echo '<div class="merchant_info">';
     echo '<div class="logo"><a href="/"  target="_blank"><img alt="京东商城" class="merchant_logo" src="/360buy.com.2.gif" /> </a></div>';
