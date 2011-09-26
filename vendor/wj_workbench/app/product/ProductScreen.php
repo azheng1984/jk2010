@@ -46,8 +46,9 @@ class ProductScreen extends Screen {
 
    private function renderRight() {
     echo '<div id="right_wrapper">';
-    echo '<div id="sort_wrapper"><div class="sort">排序: <span class="selected">销量</span> <a href="/">价格</a></div></div>';
+    echo '<div id="sort_wrapper_wrapper"><div id="sort_wrapper"><div class="sort">排序: <span class="selected">销量</span> <a href="/">价格</a></div></div></div>';
     $this->renderMerchantList();
+    $this->renderAds();
     $this->renderProductList('笔记本电脑推荐');
     $this->renderAds();
     echo '</div>';
@@ -59,7 +60,7 @@ class ProductScreen extends Screen {
     echo '<div class="merchant">';
     
     echo '<div class="merchant_info">';
-    echo '<div class="logo"><a href="/"  target="_blank"><img alt="京东商城" title="京东商城" class="merchant_logo" src="/360buy.com.2.gif" /> </a></div>';
+    echo '<div class="logo"><a href="/"  target="_blank"><img alt="京东商城" class="merchant_logo" src="/360buy.com.2.gif" /> </a></div>';
     echo '<div><a href="/" target="_blank"><span class="merchant_name">京东商城</span></a></div>';
     echo '</div>';
     
@@ -72,7 +73,7 @@ class ProductScreen extends Screen {
     echo '<div class="merchant last">';
 
     echo '<div class="merchant_info">';
-    echo '<div class="logo"><a href="/" target="_blank"><img alt="新蛋" title="新蛋" class="merchant_logo" src="/newegg.com.cn.2.gif" /></a></div>';
+    echo '<div class="logo"><a href="/" target="_blank"><img alt="新蛋" class="merchant_logo" src="/newegg.com.cn.2.gif" /></a></div>';
     echo '<div><a href="/" target="_blank"><span class="merchant_name">新蛋网</span></a></div>';
     echo '</div>';
 
@@ -110,12 +111,14 @@ class ProductScreen extends Screen {
 
   private function renderProductList($name) {
     echo '<div class="featured_name"><div>'.$name.'</div></div>';
+    echo '<div id="featured_product_list_wrapper">';
     echo '<ul class="featured_product_list">';
     foreach (DbProduct::getList($this->category['table_prefix']) as $item) {
       echo '<li class="item"><div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><h2><a href="/'.$item['id'].'">'
         .$item['name'].'</a></h2><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000</span> &#8764; <span class="price">12299.84</span> <div>7 个商城</div></div></li>';
     }
     echo '</ul>';
+    echo '</div>';
   }
 
   private function renderAds() {
