@@ -78,16 +78,13 @@ h1 {
   padding:10px;
 }
 .sort {
-  padding:5px 0;
+  padding:7px 0;
 }
 #sort_wrapper {
   background:#f2f2f2;
   border:0;
   padding:0;
-  width:768px;
-}
-#sort_wrapper_wrapper {
-  padding:1px;
+  width:770px;
 }
 #merchant_list {
   clear:both;
