@@ -49,12 +49,11 @@ h1 {
   margin:10px 0 0 10px;
 }
 #right_wrapper {
-  padding:10px;
+  padding:0;
 }
 .featured_product_list {
   margin:0;
   padding:0;
-  padding-bottom:20px;
   clear:both;
   width:750px;
 }
@@ -70,12 +69,13 @@ h1 {
 .featured_name {
   clear:both;
   color:#999;
-  margin-bottom:10px;
-  background-color:#f2f2f2;
-  width: 750px;
+  font-size:14px;
+  background-color:#fff;
+  border-top:1px solid #e5e5e5;
+  width: 770px;
 }
 .featured_name div {
-  padding:5px 10px;
+  padding:10px;
 }
 .sort {
   padding:5px 0;
@@ -84,18 +84,21 @@ h1 {
   background:#f2f2f2;
   border:0;
   padding:0;
-  width:750px;
+  width:768px;
+}
+#sort_wrapper_wrapper {
+  padding:1px;
 }
 #merchant_list {
   clear:both;
-  padding:5px 5px 20px 5px;
+  padding:5px 10px 20px 10px;
 }
 .merchant {
   clear:both;
   padding:15px 0;
   border-bottom:1px #ccc dotted;
   line-height:40px;
-  width: 740px;
+  width: 750px;
 }
 .merchant_name {
   font-size:16px;
@@ -117,9 +120,13 @@ h1 {
   width:340px;
 }
 .promotions {
-  width:400px;
+  width:410px;
 }
 .note {
   color:#999;
   font-size: 12px;
+}
+#featured_product_list_wrapper {
+  padding:0 10px;
+  clear:both;
 }
