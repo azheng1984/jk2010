@@ -49,7 +49,7 @@ class ProductScreen extends Screen {
     echo '<div id="sort_wrapper_wrapper"><div id="sort_wrapper"><div class="sort">排序: <span class="selected">销量</span> <a href="/">价格</a></div></div></div>';
     $this->renderMerchantList();
     $this->renderAds();
-    $this->renderProductList('笔记本电脑推荐');
+    $this->renderProductList('笔记本电脑');
     $this->renderAds();
     echo '</div>';
    }
@@ -110,7 +110,11 @@ class ProductScreen extends Screen {
   }
 
   private function renderProductList($name) {
-    echo '<div class="featured_name"><div>'.$name.'</div></div>';
+    echo '<div class="featured_name">';
+    echo '<div class="promotion_type">浏览 "联想 G470AH-ITH 笔记本电脑" 的顾客: <span class="selected">最终购买</span>';
+    echo ' <a href="/">还关注了</a>';
+    echo ' <a href="/">还浏览了</a></div>';
+    echo '</div>';
     echo '<div id="featured_product_list_wrapper">';
     echo '<ul class="featured_product_list">';
       foreach (DbProduct::getList($this->category['table_prefix']) as $item) {

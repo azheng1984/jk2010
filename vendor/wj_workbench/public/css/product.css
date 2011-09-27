@@ -128,3 +128,15 @@ h1 {
   padding:0 10px;
   clear:both;
 }
+.promotion_type .selected {
+  color:#fff;
+  background-color:red;
+  padding:3px 6px;
+  margin-left:10px;
+}
+.promotion_type a {
+  padding-left:10px;
+}
+#product .promotion_type {
+  padding:15px 10px;
+}
