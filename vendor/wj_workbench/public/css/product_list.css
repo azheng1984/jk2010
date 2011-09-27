@@ -113,7 +113,7 @@ img {
   vertical-align:top;
   padding:6px;
 }
-#product_list h2 {
+#product_list .title {
   font-size: 14px;
   font-weight: normal;
   margin:0;
@@ -123,8 +123,8 @@ img {
   clear:left;
   width: 178px;
 }
-.price_block div {
-  float:none;
+.price_block, .price_block div {
+  clear: both;
 }
 .price_block {
   color:#999;

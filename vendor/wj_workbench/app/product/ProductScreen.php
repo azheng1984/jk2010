@@ -115,13 +115,13 @@ class ProductScreen extends Screen {
     echo '</div>';
     echo '<div id="featured_product_list_wrapper">';
     echo '<ul class="featured_product_list">';
-      foreach (DbProduct::getList($this->category['table_prefix']) as $item) {
-      echo '<li class="item"><div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div><a href="/'.$item['id'].'">'
-        .$item['name'].'</a></div><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000</span> ~ <span class="price">12299.84</span> <div>7 个商城</div></div></li>';
+    foreach (DbProduct::getList($this->category['table_prefix']) as $item) {
+      echo '<li class="item"><div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div class="title"><a href="/'.$item['id'].'">'
+        .$item['name'].'</a></div><div class="price_block"><div><span class="rmb">&yen;</span><span class="price">10000</span> ~ <span class="price">12299.84</span></div> <div>7 个商城</div></div></li>';
     }
     foreach (DbProduct::getList($this->category['table_prefix']) as $item) {
-      echo '<li class="item"><div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div><a href="/'.$item['id'].'">'
-        .$item['name'].'</a></div><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000</span> ~ <span class="price">12299.84</span> <div>7 个商城</div></div></li>';
+      echo '<li class="item"><div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div class="title"><a href="/'.$item['id'].'">'
+        .$item['name'].'</a></div><div class="price_block"><div><span class="rmb">&yen;</span><span class="price">10000</span> ~ <span class="price">12299.84</span></div> <div>7 个商城</div></div></li>';
     }
     echo '</ul>';
     echo '</div>';
