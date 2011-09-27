@@ -66,8 +66,8 @@ class ProductListScreen extends Screen {
         if ($index === 1) {
           echo 'visited ';
         }
-        echo '"><div class="item"><div class="product_image"><a target="_blank" href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><h2><a  target="_blank" href="/'.$item['id'].'">'
-          .$item['name'].'</a></h2><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000<span class="point">.68</span></span> ~ <span class="price">1234567890<span class="point"></span></span> <div>7 个商城</div></div></div></li>';
+        echo '"><div class="item"><div class="product_image"><a target="_blank" href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div class="title"><a  target="_blank" href="/'.$item['id'].'">'
+          .$item['name'].'</a></div><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000<span class="point">.68</span></span> ~ <span class="price">1234567890<span class="point"></span></span> <div>7 个商城</div></div></div></li>';
       }
     }
     echo '</ul></div>';
