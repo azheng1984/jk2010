@@ -49,7 +49,7 @@ class ProductScreen extends Screen {
     echo '<div id="sort_wrapper_wrapper"><div id="sort_wrapper"><div class="sort">排序: <span class="selected">销量</span> <a href="/">价格</a></div></div></div>';
     $this->renderMerchantList();
     $this->renderAds();
-    $this->renderProductList('笔记本电脑');
+    $this->renderProductList();
     $this->renderAds();
     echo '</div>';
    }
@@ -109,21 +109,19 @@ class ProductScreen extends Screen {
     return $path;
   }
 
-  private function renderProductList($name) {
+  private function renderProductList() {
     echo '<div class="featured_name">';
-    echo '<div class="promotion_type">浏览 "联想 G470AH-ITH 笔记本电脑" 的顾客: <span class="selected">最终购买</span>';
-    echo ' <a href="/">还关注了</a>';
-    echo ' <a href="/">还浏览了</a></div>';
+    echo '<h2 class="promotion_type">浏览 "'.$this->product['name'].'" 的顾客最终购买</h2>';
     echo '</div>';
     echo '<div id="featured_product_list_wrapper">';
     echo '<ul class="featured_product_list">';
       foreach (DbProduct::getList($this->category['table_prefix']) as $item) {
-      echo '<li class="item"><div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><h2><a href="/'.$item['id'].'">'
-        .$item['name'].'</a></h2><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000</span> ~ <span class="price">12299.84</span> <div>7 个商城</div></div></li>';
+      echo '<li class="item"><div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div><a href="/'.$item['id'].'">'
+        .$item['name'].'</a></div><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000</span> ~ <span class="price">12299.84</span> <div>7 个商城</div></div></li>';
     }
     foreach (DbProduct::getList($this->category['table_prefix']) as $item) {
-      echo '<li class="item"><div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><h2><a href="/'.$item['id'].'">'
-        .$item['name'].'</a></h2><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000</span> ~ <span class="price">12299.84</span> <div>7 个商城</div></div></li>';
+      echo '<li class="item"><div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div><a href="/'.$item['id'].'">'
+        .$item['name'].'</a></div><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000</span> ~ <span class="price">12299.84</span> <div>7 个商城</div></div></li>';
     }
     echo '</ul>';
     echo '</div>';
