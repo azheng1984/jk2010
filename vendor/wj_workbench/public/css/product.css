@@ -19,7 +19,7 @@ h1 {
   border:1px solid #e5e5e5;
   padding:3px 6px;
   margin-left:2px;
-  background-color:#f2f2f2;
+  background:url(/button_bk.png) 0 -5px repeat-x;
 }
 #action a:hover {
   border:1px solid #b6c9ed;

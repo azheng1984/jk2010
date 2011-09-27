@@ -48,7 +48,7 @@
   border:1px solid #e5e5e5;
   padding:4px 8px;
   margin-left:2px;
-  background-color:#f2f2f2;
+  background:url(/button_bk.png) repeat-x;
 }
 #pagination a:hover {
   border:1px solid #b6c9ed;
@@ -65,7 +65,7 @@
   border: 1px solid #E5E5E5;
   border-bottom:0;
   width:100%;
-  background-color:#f2f2f2;
+  background:url(/button_bk-toobar.png);
   padding:7px 0;
 }
 #sort_wrapper span {
