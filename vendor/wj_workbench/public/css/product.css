@@ -78,9 +78,8 @@ h1 {
   padding:10px;
 }
 .sort {
-  padding:10px 0;
+  padding:10px 0 5px 0;
 }
-
 #sort_wrapper {
   background:#fff;
   border:0;
@@ -94,7 +93,7 @@ h1 {
 .merchant {
   clear:both;
   padding:15px 0;
-  border-bottom:1px #ccc dotted;
+  border-top:1px #e5e5e5 dotted;
   line-height:40px;
   width: 750px;
 }
@@ -104,9 +103,6 @@ h1 {
 .logo {
   padding:0 10px 0 20px;
   height:40px;
-}
-.last {
-  border:0;
 }
 .merchant .price {
   font-size:16px;
