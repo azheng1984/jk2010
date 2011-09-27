@@ -54,6 +54,7 @@ h1 {
 .featured_product_list {
   margin:0;
   padding:0;
+  padding-bottom:10px;
   clear:both;
   width:750px;
 }
