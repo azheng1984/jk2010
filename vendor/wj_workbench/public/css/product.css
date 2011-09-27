@@ -108,6 +108,9 @@ h1 {
 .merchant .price {
   font-size:16px;
 }
+.merchant .price_sign {
+  font-size:12px;
+}
 #merchant_list .price_column {
   padding-right:50px;
 }
