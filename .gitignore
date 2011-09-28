@@ -6,3 +6,4 @@ jquery*
 *.jpg
 env.php
 *.sqlite
+Thumbs.db
