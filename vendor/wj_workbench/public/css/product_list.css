@@ -65,7 +65,7 @@
   border: 1px solid #E5E5E5;
   border-bottom:0;
   width:100%;
-  background:url(/button_bk-toobar.png);
+  background:url(/button_bk-toobar.png) repeat-x;  /*-webkit-gradient(linear, 0 0, left bottom , from(#fff), to(#f2f2f2));*/
   padding:7px 0;
 }
 #sort_wrapper span {
