@@ -37,8 +37,8 @@ class CategoryListScreen extends Screen {
   }
 
   private function renderCategory($category) {
-    echo '<h2><a href="'.urlencode($category['name']).'/">',
-      $category['name'], '</a></h2>';
+    echo '<div class="item"><a href="'.urlencode($category['name']).'/">',
+      $category['name'], '</a></div>';
     $children = DbCategory::getList($category['id']);
     //$children = array(array('name' => '笔记本电脑'), array('name' => '数码相机'));
     if (count($children) !== 0) {
