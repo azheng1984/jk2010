@@ -18,8 +18,8 @@ class HomeScreen extends Screen {
   }
 
   private function renderCategory($category) {
-    echo '<h2><a href="'.urlencode($category['name']).'/">',
-      $category['name'], '</a></h2>';
+    echo '<div class="item"><a href="'.urlencode($category['name']).'/">',
+      $category['name'], '</a></div>';
     $children = DbCategory::getList($category['id']);
     if (count($children) !== 0) {
       echo '<div class="children">',
