@@ -98,6 +98,10 @@ h1 {
   line-height:40px;
   width: 750px;
 }
+.merchant { /* ie 6 */
+  _border:0;
+  _background:url(/ie6_dotted.png) repeat-x;
+}
 .merchant_name {
   font-size:16px;
 }

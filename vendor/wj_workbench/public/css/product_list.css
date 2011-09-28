@@ -10,8 +10,13 @@
   margin:0 10px;
   display:inline;/* ie 6 双边距 */
 }
+#filter .property { /* ie 6 */
+  _border:0;
+  _background:url(/ie6_dotted.png) left bottom repeat-x;
+}
 #filter .last_property {
   border:0;
+  _background:#fff;
 }
 #filter .key {
   width:100px;
@@ -89,7 +94,7 @@
   float:right;
 }
 #sort_wrapper .right .reset {
-  border-left:1px solid #ccc;
+  border-left:1px solid #e5e5e5;
   margin-left:5px;
 }
 #product_list_wrapper {
