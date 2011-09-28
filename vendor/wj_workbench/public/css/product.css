@@ -3,7 +3,7 @@ h1 {
   float:left;
 }
 #title_wrapper {
-  line-height:27px;
+  line-height:25px;
   margin-top:5px;
   width:100%;
   border:1px solid #e5e5e5;
@@ -17,7 +17,7 @@ h1 {
 }
 #action a {
   border:1px solid #e5e5e5;
-  padding:4px 8px;
+  padding:3px 8px;
   margin-left:2px;
   background:url(/button_bk.png) 0 -5px repeat-x;
 }

@@ -16,7 +16,7 @@
 }
 #filter .last_property {
   border:0;
-  _background:#fff;
+  _background:#fff;/* ie 6 */
 }
 #filter .key {
   width:100px;
