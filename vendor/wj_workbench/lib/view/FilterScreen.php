@@ -5,9 +5,11 @@ class FilterScreen {
   public function render($category) {
     $this->parameters = FilterParameter::getSelectedList($category);
     echo '<div id="filter">';
-    foreach (DbProperty::getList($category['table_prefix'], $category['id']) as $item) {
+    $properties = DbProperty::getList($category['table_prefix'], $category['id']);
+    $count = count($properties);
+    foreach ($properties as $item) {
       echo '<div class="property';
-      if ($item['key'] == '商城') {
+      if (--$count === 0) {
         echo ' last_property';
       }
       echo '"><div class="key">'.$item['key'].':</div>';
