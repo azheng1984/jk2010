@@ -17,6 +17,7 @@ abstract class Screen {
     $this->renderHeadContent();
     echo '<link type="text/css" href="/css/screen.css" charset="utf-8"',
       ' media="screen" rel="stylesheet" />';
+    echo '<link rel="search" type="application/opensearchdescription+xml" title="货比万家" href="/opensearch.xml" />';
     echo '</head>';
   }
 
