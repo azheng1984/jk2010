@@ -18,7 +18,7 @@ class HomeScreen extends Screen {
   }
 
   private function renderCategory($category) {
-    echo '<div class="item"><a href="'.urlencode($category['name']).'/">',
+    echo '<div class="item"><a rel="nofollow" href="'.urlencode($category['name']).'/">',
       $category['name'], '</a></div>';
     $children = DbCategory::getList($category['id']);
     if (count($children) !== 0) {
@@ -32,7 +32,7 @@ class HomeScreen extends Screen {
     $result = array();
     $parentLink = urlencode($category['name']).'/';
     foreach ($children as $child) {
-      $result[] = '<a href="'.$parentLink.urlencode($child['name']).'/">'
+      $result[] = '<a rel="nofollow" href="'.$parentLink.urlencode($child['name']).'/">'
         .$child['name'].'</a>';
     }
     return $result;
