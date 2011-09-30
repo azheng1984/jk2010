@@ -1,6 +1,8 @@
 <?php
 class Router {
   public function execute() {
+    echo $_SERVER['SERVER_NAME'];
+    exit;
     if ($_SERVER['SERVER_NAME'] === 'www.huobiwanjia.com') {
       header('Location: http://huobiwanjia.com'.$_SERVER['REQUEST_URI']);
       return '/redirect';
