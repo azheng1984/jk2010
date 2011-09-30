@@ -71,7 +71,7 @@ class ProductListScreen extends Screen {
       }
     }
     echo '</ul></div>';
-    echo '<div id="pagination"> <span href="/" class="current_page">1</span> <a href="/">2</a> <a href="/">下一页 &raquo;</a></div>';
+    echo '<div id="pagination"> <span href="/" class="current_page">1</span> <a rel="nofollow" href="/">2</a> <a rel="nofollow" href="/">下一页 &raquo;</a></div>';
     echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">Google 提供的广告</div></div>';
   }
 }
