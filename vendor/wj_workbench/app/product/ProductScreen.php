@@ -14,7 +14,7 @@ class ProductScreen extends Screen {
   }
 
   protected function renderHeadContent() {
-    echo '<title>货比万家</title>';
+    echo '<title>'.$this->product['name'].' - 货比万家</title>';
     echo '<link type="text/css" href="/css/home.css" charset="utf-8"',
       ' media="screen" rel="stylesheet" />';
     echo '<link type="text/css" href="/css/category_list.css" charset="utf-8"',
