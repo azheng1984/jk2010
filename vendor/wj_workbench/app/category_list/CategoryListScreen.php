@@ -28,10 +28,9 @@ class CategoryListScreen extends Screen {
     $categories = DbCategory::getList($this->category['id']);
     echo '<ul id="category_list">';
     foreach ($categories as $category) {
-      for ($i = 0; $i < 15; ++$i) {
       echo '<li>';
       $this->renderCategory($category);
-      echo '</li>';}
+      echo '</li>';
     }
     echo '</ul>';
   }
