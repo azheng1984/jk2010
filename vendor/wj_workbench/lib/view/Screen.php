@@ -83,6 +83,6 @@ abstract class Screen {
     echo '<div>&copy; 货比万家',
       ' <a href="http://support.huobiwanjia.com/terms_of_use" rel="nofollow">使用条款</a>',
       ' <a href="http://support.huobiwanjia.com/privacy" rel="nofollow">隐私权政策</a>',
-      ' 沪 ICP 备你妹</div>';
+      '</div>';
   }
 }
