@@ -12,7 +12,7 @@ class FilterScreen {
       if (--$count === 0) {
         echo ' last_property';
       }
-      echo '"><div class="key"><span class="name">'.$item['key'].':</span></div>';
+      echo '"><div class="key"><div class="name">'.$item['key'].':</div></div>';
       $propertySelected = false;
       echo '<div class="values">';
       foreach ($item['values'] as $value) {
