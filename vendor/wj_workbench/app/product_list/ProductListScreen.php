@@ -20,7 +20,11 @@ class ProductListScreen extends Screen {
     $breadcrumb = new Breadcrumb($_GET['categories']);
     $breadcrumb->render();
     $category = $this->category;
-    echo '<div id="h1_wrapper"><h1>'.$category['name'].'</h1></div>';
+    echo '<div id="h1_wrapper"><h1>'.$category['name'].'</h1>';
+    if (count($_GET) > 1) {
+      echo '<div id="action" class="right"><a href=".">重新筛选</a></div>';
+    }
+    echo '</div>';
     $filter = new FilterScreen;
     $filter->render($category);
     $valueIds = array();
