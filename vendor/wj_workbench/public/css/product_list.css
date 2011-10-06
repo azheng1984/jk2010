@@ -34,7 +34,7 @@
 }
 #filter .selected_property {
   color:#fff;
-  padding:2px 11px 2px 5px;
+  padding:2px 11px 2px 3px;
   margin-left:10px;
   font-weight:normal;
   white-space:nowrap;
@@ -83,7 +83,7 @@
 #sort_wrapper .sort .selected {
   color:#fff;
   background-color:red;
-  padding:3px 6px;
+  padding:2px 6px;
 }
 #sort_wrapper a {
 	margin-left:10px;
