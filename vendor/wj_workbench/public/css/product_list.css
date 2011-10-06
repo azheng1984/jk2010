@@ -20,11 +20,11 @@
 }
 #filter .key {
   width:100px;
-  text-align:right;
   padding:10px 0;
 }
 #filter .key .name {
-  margin-right:5px;
+  float:right;
+  margin-right:8px;
 }
 #filter .values {
   padding:5px 0;
