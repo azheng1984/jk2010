@@ -12,7 +12,7 @@ class FilterScreen {
       if (--$count === 0) {
         echo ' last_property';
       }
-      echo '"><div class="key">'.$item['key'].':</div>';
+      echo '"><div class="key"><span class="name">'.$item['key'].':</span></div>';
       $propertySelected = false;
       echo '<div class="values">';
       foreach ($item['values'] as $value) {
@@ -20,12 +20,12 @@ class FilterScreen {
         if ($this->isSelected($item['id'], $value['id'])) {
           $selected = true;
           $propertySelected = true;
-          echo '<strong><a rel="nofollow" class="selected_property" href="'.$this->removeFilterUrl($item['key'], $value['value']).'">';
+          echo ' <strong><a rel="nofollow" href="'.$this->removeFilterUrl($item['key'], $value['value']).'">';
           echo $value['value'];
           if ($value['alias'] != null) {
             echo '('.$value['alias'].')';
           }
-          echo '</a></strong> ';
+          echo '</a></strong>';
         } else {
           echo ' <span>';
           if ($_SERVER['QUERY_STRING'] === '') {
