@@ -57,7 +57,7 @@ class ProductListScreen extends Screen {
     }
     echo '<div id="sort_wrapper">';
     echo '<div class="sort">排序: <span class="selected">销量</span> <a rel="nofollow" href="/">新品</a> <a href="/" rel="nofollow">降价</a> <a rel="nofollow" href="/">价格</a></div>';
-    echo '<div class="right">找到 '.$amount.' 件产品 <span class="reset"><a href="." rel="nofollow">重新筛选</a></span></div>';
+    echo '<div class="right">找到 '.$amount.' 个产品</div>';
     echo '</div>';
     echo '<div id="product_list_wrapper"><ul id="product_list">';
     for ($index = 0; $index < 5; $index++) {
