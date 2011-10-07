@@ -13,7 +13,8 @@ class DbProperty {
     $sql = 'SELECT * FROM '.$tablePrefix.'_property_key';
     $results = Db::getAll($sql);
     foreach ($results as &$key) {
-      $sql = 'SELECT * FROM '.$tablePrefix.'_property_value WHERE key_id = ? order by rank';
+      $sql = 'SELECT * FROM '.$tablePrefix.'_property_value'
+        .' WHERE key_id = ? order by rank';
       $key['values'] = Db::getAll($sql, $key['id']);
     }
     return $results;
@@ -25,7 +26,8 @@ class DbProperty {
   }
 
   public static function getValueByKeyIdAndName($tablePrefix, $keyId, $name) {
-    $sql = 'SELECT * FROM '.$tablePrefix.'_property_value WHERE `key_id` = ? AND `value` = ?';
+    $sql = 'SELECT * FROM '.$tablePrefix.'_property_value'
+      .' WHERE `key_id` = ? AND `value` = ?';
     return Db::getRow($sql, $keyId, $name);
   }
 }
