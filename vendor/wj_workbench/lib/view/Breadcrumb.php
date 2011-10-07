@@ -14,11 +14,11 @@ class Breadcrumb {
   }
 
   public function render() {
-    echo '<div id="breadcrumb">';
-    echo '<a class="parent" href="/" rel="nofollow">首页</a>';
+    echo '<div id="breadcrumb">',
+      '<a href="/" rel="nofollow">首页</a> ';
     $this->renderParents();
-    echo ' <span class="arrow">&rsaquo;</span> <strong>'.$this->current['name'];
-    echo '</strong></div>';
+    echo $this->renderArrow(),
+      '<strong>'.$this->current['name'],'</strong></div>';
   }
 
   private function renderParents() {
@@ -32,8 +32,7 @@ class Breadcrumb {
   private function renderRelativeLink() {
     $distance = count($this->parents);
     foreach ($this->parents as $category) {
-      echo ' <span class="arrow">&rsaquo;</span> <a class="parent" href="'.$this->getPath($distance).'">'
-        .$category['name'].'</a>';
+      $this->renderParentLink($this->getRelativePath($distance), $category['name']);
       --$distance;
     }
   }
@@ -43,15 +42,19 @@ class Breadcrumb {
     $leaf = end($this->parents);
     foreach ($this->parents as $category) {
       $path .= urlencode($category['name']).'/';
-      echo ' <span class="arrow">&rsaquo;</span> <a ';
-      if ($leaf['id'] !== $category['id']) {
-        echo 'class="parent" ';
-      }
-      echo 'href="'.$path.'"> '.$category['name'].'</a> ';
+      $this->renderParentLink($path, $category['name']);
     }
   }
 
-  private function getPath($distance) {
+  private function renderParentLink($path, $name) {
+    echo $this->renderArrow().'<a href="'.$path.'"> '.$name.'</a> ';
+  }
+
+  private function renderArrow() {
+    echo '<span class="arrow">&rsaquo;</span> ';
+  }
+
+  private function getRelativePath($distance) {
     for ($path = ''; $distance > 0; --$distance) {
       if ($path !== '') {
         $path .= '/';

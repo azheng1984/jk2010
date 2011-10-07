@@ -17,8 +17,8 @@ class Db {
   }
 
   private static function executeByArray($parameters) {
-    $sql = array_shift($parameters);
     $connection = DbConnection::get();
+    $sql = array_shift($parameters);
     $statement = $connection->prepare($sql);
     $statement->execute($parameters);
     return $statement;
