@@ -14,11 +14,9 @@ class Breadcrumb {
   }
 
   public function render() {
-    echo '<div id="breadcrumb">',
-      '<a href="/" rel="nofollow">首页</a> ';
+    echo '<div id="breadcrumb"><a href="/" rel="nofollow">首页</a> ';
     $this->renderParents();
-    echo $this->renderArrow(),
-      '<strong>'.$this->current['name'],'</strong></div>';
+    echo '&rsaquo; <strong>'.$this->current['name'],'</strong></div>';
   }
 
   private function renderParents() {
@@ -48,11 +46,7 @@ class Breadcrumb {
   }
 
   private function renderParentLink($path, $name) {
-    echo $this->renderArrow().'<a href="'.$path.'"> '.$name.'</a> ';
-  }
-
-  private function renderArrow() {
-    echo '<span>&rsaquo;</span> ';
+    echo '&rsaquo; <a href="'.$path.'"> '.$name.'</a> ';
   }
 
   private function getRelativePath($distance) {

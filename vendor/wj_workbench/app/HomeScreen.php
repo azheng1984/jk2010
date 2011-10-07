@@ -7,34 +7,6 @@ class HomeScreen extends Screen {
   }
 
   protected function renderBodyContent() {
-    $categories = DbCategory::getList();
-    echo '<ul id="category_list">';
-    foreach ($categories as $category) {
-      echo '<li>';
-      $this->renderCategory($category);
-      echo '</li>';
-    }
-    echo '</ul>';
-  }
-
-  private function renderCategory($category) {
-    echo '<div class="item"><a rel="nofollow" href="'.urlencode($category['name']).'/">',
-      $category['name'], '</a></div>';
-    $children = DbCategory::getList($category['id']);
-    if (count($children) !== 0) {
-      echo '<div class="children">',
-        implode(' ', $this->getChildLinks($category, $children)),
-        ' &hellip;</div>';
-    }
-  }
-
-  private function getChildLinks($category, $children) {
-    $result = array();
-    $parentLink = urlencode($category['name']).'/';
-    foreach ($children as $child) {
-      $result[] = '<a rel="nofollow" href="'.$parentLink.urlencode($child['name']).'/">'
-        .$child['name'].'</a>';
-    }
-    return $result;
+    CategoryListScreen2::render();
   }
 }
