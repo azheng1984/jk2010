@@ -34,7 +34,7 @@ class ProductScreen extends Screen {
     }
     $breadcrumb = new Breadcrumb($categories, $this->product);
     $breadcrumb->render();
-    echo '<div id="title_wrapper">';
+    echo '<div id="h1_wrapper">';
     echo '<h1>'.$this->product['name'].'</h1>';
     echo '<div id="action"><div class="right"><a href="/" class="box">对比</a> <a href="/">关注 <span class="note">12134</span></a> <a href="/">分享</a></div></div>';
     echo '</div>';
