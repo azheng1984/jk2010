@@ -7,6 +7,6 @@ class HomeScreen extends Screen {
   }
 
   protected function renderBodyContent() {
-    CategoryListScreen2::render();
+    CategoryListContentScreen::render();
   }
 }

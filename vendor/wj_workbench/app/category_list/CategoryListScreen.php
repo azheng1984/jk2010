@@ -19,7 +19,7 @@ class CategoryListScreen extends Screen {
     $breadcrumb->render();
     echo '<div id="h1_wrapper"><h1>', $this->category['name'], '</h1></div>';
     echo '<div id="category_list_warpper">';
-    CategoryListScreen2::render($this->category['id']);
+    CategoryListContentScreen::render($this->category['id']);
     echo '</div>';
     $this->renderAds();
   }
