@@ -1,12 +1,11 @@
 @CHARSET "UTF-8";
 #breadcrumb {
   margin-top:6px;
-}
-#breadcrumb span {
-  color: #ccc;
+  color:#ccc;
 }
 #breadcrumb strong {
   font-weight:normal;
+  color:#999;
 }
 #h1_wrapper {
   margin-top:6px;
@@ -16,6 +15,7 @@
   padding:12px 0;
 }
 h1 {
+  float:left;
   color:#000;
   font-weight:normal;
   font-size:20px;
