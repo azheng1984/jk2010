@@ -32,7 +32,8 @@ class Breadcrumb {
   private function renderRelativeLink() {
     $distance = count($this->parents);
     foreach ($this->parents as $category) {
-      $this->renderParentLink($this->getRelativePath($distance), $category['name']);
+      $path = $this->getRelativePath($distance);
+      $this->renderParentLink($path, $category['name']);
       --$distance;
     }
   }
@@ -51,7 +52,7 @@ class Breadcrumb {
   }
 
   private function renderArrow() {
-    echo '<span class="arrow">&rsaquo;</span> ';
+    echo '<span>&rsaquo;</span> ';
   }
 
   private function getRelativePath($distance) {
