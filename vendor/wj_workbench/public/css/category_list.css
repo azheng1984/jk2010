@@ -2,7 +2,7 @@
 #breadcrumb {
   margin-top:6px;
 }
-#breadcrumb .arrow {
+#breadcrumb span {
   color: #ccc;
 }
 #breadcrumb strong {
