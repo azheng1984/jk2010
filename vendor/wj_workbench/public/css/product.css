@@ -1,12 +1,4 @@
 @CHARSET "UTF-8";
-#title_wrapper {
-  line-height:25px;
-  margin-top:5px;
-  width:100%;
-  border:1px solid #e5e5e5;
-  border-bottom:0;
-  padding:10px 0;
-}
 #product {
   width:100%;
   border:1px solid #e5e5e5;
