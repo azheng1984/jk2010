@@ -1,40 +1,21 @@
 <?php
 class DbConnection {
   private static $pool = array();
-  private static $currentName;
+  private static $currentName = 'default';
   private static $factoryClass = 'DbConnectionFactory';
   private static $factory;
 
   public static function initialize($factoryClass) {
-    self::$factoryClass= $factoryClass;
+    self::$factoryClass = $factoryClass;
   }
 
   public static function connect($name) {
     self::$currentName = $name;
   }
 
-  public static function reset($name = null) {
-    if ($name === null) {
-      unset(self::$pool[self::$currentName]);
-      return;
-    }
-    unset(self::$pool[self::$name]);
-  }
-
-  public static function getLastInsertId() {
-    return self::get()->lastInsertId();
-  }
-
-  public static function beginTransaction() {
-    self::get()->beginTransaction();
-  }
-
-  public static function commit() {
-    self::get()->commit();
-  }
-
-  public static function rollBack() {
-    self::get()->rollBack();
+  public static function reset() {
+    unset(self::$pool);
+    unset(self::$factory);
   }
 
   public static function get() {
