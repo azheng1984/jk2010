@@ -1,5 +1,5 @@
 <?php
-class CategoryListScreen2 {
+class CategoryListContentScreen {
   public static function render($categoryId = 0) {
     $categories = DbCategory::getList($categoryId);
     echo '<ul id="category_list">';
