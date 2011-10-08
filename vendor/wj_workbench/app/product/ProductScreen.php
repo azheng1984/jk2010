@@ -46,7 +46,7 @@ class ProductScreen extends Screen {
 
    private function renderRight() {
     echo '<div id="right_wrapper">';
-    echo '<div id="sort_wrapper_wrapper"><div id="sort_wrapper"><div class="sort">排序: <span class="selected">销量</span> <a href="/">价格</a></div></div></div>';
+    echo '<div id="sort_wrapper_wrapper"><div id="sort_wrapper"><div id="sort">排序: <span>销量</span> <a href="/">价格</a></div></div></div>';
     $this->renderMerchantList();
     $this->renderAds();
     $this->renderProductList();
@@ -56,31 +56,25 @@ class ProductScreen extends Screen {
 
   private function renderMerchantList() {
     echo '<div id="merchant_list">';
-    
-    echo '<div class="merchant top">';
-    
-    echo '<div class="merchant_info">';
-    echo '<div class="logo"><a href="/"  target="_blank"><img alt="京东商城" class="merchant_logo" src="/360buy.com.2.gif" /> </a></div>';
-    echo '<div><a href="/" target="_blank"><span class="merchant_name">京东商城</span></a></div>';
-    echo '</div>';
-    
-    echo '<div class="promotions">';
-    echo '<div class="price_column"><span class="price_sign">&yen;</span><span class="price">10.23</span></div>';
-    echo '</div>';
 
+    echo '<div class="item">';
+    echo '<div class="description">';
+    echo '<div class="logo"><a rel="nofollow" href="/" target="_blank"><img alt="京东商城" src="/360buy.com.2.gif" /></a></div>';
+    echo '<div><a href="/" target="_blank"><span class="name">京东商城</span></a></div>';
+    echo '</div>';
+    echo '<div class="promotion">';
+    echo '<div><span class="rmb">&yen;</span><span class="price">10.23</span></div>';
+    echo '</div>';
     echo '</div>';
 
-    echo '<div class="merchant last">';
-
-    echo '<div class="merchant_info">';
-    echo '<div class="logo"><a href="/" target="_blank"><img alt="新蛋" class="merchant_logo" src="/newegg.com.cn.2.gif" /></a></div>';
-    echo '<div><a href="/" target="_blank"><span class="merchant_name">新蛋网</span></a></div>';
+    echo '<div class="item">';
+    echo '<div class="description">';
+    echo '<div class="logo"><a rel="nofollow" href="/" target="_blank"><img alt="新蛋网" src="/newegg.com.cn.2.gif" /></a></div>';
+    echo '<div><a href="/" target="_blank"><span class="name">新蛋网</span></a></div>';
     echo '</div>';
-
-    echo '<div class="promotions">';
-    echo '<div class="price_column"><span class="price_sign">&yen;</span><span class="price">14</span></a></div>';
+    echo '<div class="promotion">';
+    echo '<div><span class="rmb">&yen;</span><span class="price">14</span></div>';
     echo '</div>';
-
     echo '</div>';
     
     echo '</div>';
@@ -88,7 +82,7 @@ class ProductScreen extends Screen {
 
   private function renderPropertyList($categories) {
     echo '<div id="property_list_wrapper">';
-    echo '<div class="product_image_box"><img title="'.$this->product['name'].'" class="product_image" src="/x.jpg" /></div>';
+    echo '<img title="'.$this->product['name'].'" alt="'.$this->product['name'].'" src="/x.jpg" />';
     $categoryPath = $this->getCategoryPath($categories);
     echo '<div id="property_list">';
     echo '<div>品牌: <a href="..">诺基亚(Nokia)</a></strong></div>';
@@ -110,12 +104,12 @@ class ProductScreen extends Screen {
   }
 
   private function renderProductList() {
-    echo '<div class="featured_name">';
-    echo '<h2 style="float:left" class="promotion_type">浏览 "'.$this->product['name'].'" 的顾客最终购买</h2>';
-    echo '<div style="float:right"><span class="rate_wrapper"><span class="rate">76</span>%</span> 购买本产品</div>';
+    echo '<div id="product_list_title">';
+    echo '<h2>浏览 "'.$this->product['name'].'" 的顾客最终购买</h2>';
+    echo '<div id="buy_rate"><div class="rate_wrapper"><span class="rate">76</span>%</div> <div class="self">购买本产品</div></div>';
     echo '</div>';
-    echo '<div id="featured_product_list_wrapper">';
-    echo '<ul class="featured_product_list">';
+    echo '<div id="product_list_wrapper">';
+    echo '<ul id="product_list">';
     $products = DbProduct::getList($this->category['table_prefix']);
     $count = 0;
     foreach (DbProduct::getList($this->category['table_prefix']) as $item) {
@@ -124,20 +118,19 @@ class ProductScreen extends Screen {
       }
       ++$count;
       echo '<li class="item">';
-              echo '<div><span class="rate_wrapper"><span class="rate">12</span>%</span></div>';
-      echo '<div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div class="title"><a href="/'.$item['id'].'">'
-        .$item['name'].'</a></div><div class="price_block">';
-        echo '<div><span class="rmb">&yen;</span><span class="price">10000</span> ~ <span class="price">12299.84</span></div>';
-        echo ' <div>7 个商城</div>';
-
-        echo '</div></li>';
-        
+      echo '<div class="rate_wrapper"><span class="rate">12</span>%</div>';
+      echo '<div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div>';
+      echo '<div class="title">';
+      echo '<a href="/'.$item['id'].'">'.$item['name'].'</a></div><div class="data">';
+      echo '<div>&yen;<span class="price">10000</span> ~ <span class="price">12299.84</span></div>';
+      echo '<div>7 个商城</div>';
+      echo '</div></li>';
     }
     echo '</ul>';
     echo '</div>';
   }
 
   private function renderAds() {
-    echo '<div class="featured_name"><div>Google 提供的广告</div></div>';
+    echo '<div class="ads"><div>Google 提供的广告</div></div>';
   }
 }
