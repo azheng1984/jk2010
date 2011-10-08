@@ -59,7 +59,7 @@
   border:1px solid #b6c9ed;
   text-decoration:none;
 }
-#pagination .current_page {
+#pagination span {
   background-color:red;
   color:#fff;
   padding:5px 9px;
@@ -88,7 +88,7 @@
 #sort_wrapper a {
 	margin-left:10px;
 }
-#sort_wrapper .right {
+#sort_wrapper .total {
   margin-right:10px;
   float:right;
 }

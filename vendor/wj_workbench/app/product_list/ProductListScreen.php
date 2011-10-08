@@ -22,7 +22,7 @@ class ProductListScreen extends Screen {
     $category = $this->category;
     echo '<div id="h1_wrapper"><h1>'.$category['name'].'</h1>';
     if (count($_GET) > 1) {
-      echo '<div id="action" class="right"><a href=".">重新筛选</a></div>';
+      echo '<div id="action"><a href=".">重新筛选</a></div>';
     }
     echo '</div>';
     $filter = new FilterScreen;
@@ -61,7 +61,7 @@ class ProductListScreen extends Screen {
     }
     echo '<div id="sort_wrapper">';
     echo '<div class="sort">排序: <span class="selected">销量</span> <a rel="nofollow" href="/">新品</a> <a href="/" rel="nofollow">降价</a> <a rel="nofollow" href="/">价格</a></div>';
-    echo '<div class="right">找到 '.$amount.' 个产品</div>';
+    echo '<div class="total">找到 '.$amount.' 个产品</div>';
     echo '</div>';
     echo '<div id="product_list_wrapper"><ul id="product_list">';
     for ($index = 0; $index < 5; $index++) {
@@ -75,7 +75,7 @@ class ProductListScreen extends Screen {
       }
     }
     echo '</ul></div>';
-    echo '<div id="pagination"> <span href="/" class="current_page">1</span> <a rel="nofollow" href="/">2</a> <a rel="nofollow" href="/">下一页 &raquo;</a></div>';
+    echo '<div id="pagination"> <span href="/">1</span> <a rel="nofollow" href="/">2</a> <a rel="nofollow" href="/">下一页 &raquo;</a></div>';
     echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">Google 提供的广告</div></div>';
   }
 }
