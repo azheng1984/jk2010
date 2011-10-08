@@ -119,7 +119,7 @@ class ProductScreen extends Screen {
       ++$count;
       echo '<li class="item">';
       echo '<div class="rate_wrapper"><span class="rate">12</span>%</div>';
-      echo '<div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div>';
+      echo '<div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x_large.jpg" /></a></div>';
       echo '<div class="title">';
       echo '<a href="/'.$item['id'].'">'.$item['name'].'</a></div><div class="data">';
       echo '<div>&yen;<span class="price">10000</span> ~ <span class="price">12299.84</span></div>';
