@@ -17,44 +17,45 @@
   width:180px;
   padding:2px 0;
 }
-.product_image {
+#property_list_wrapper img {
   width:170px;
   margin:10px 0 0 10px;
 }
 #right_wrapper {
   padding:0;
 }
-.featured_product_list {
-  margin:0;
+#product_list_wrapper {
+  border:0;
   padding:0;
-  padding-bottom:10px;
   clear:both;
   width:750px;
-border-top: 1px dotted #E5E5E5;
-padding-top: 10px;
+  border-top: 1px dotted #E5E5E5;
+  margin:0 10px;
 }
-.featured_product_list { /* ie 6 */
+#product_list_wrapper { /* ie 6 */
   _border:0;
   _background:url(/ie6_dotted.png) repeat-x;
 }
-.featured_product_list li {
-  text-align:left;
-  list-style:none;
-  width:175px;
+#product_list {
+  padding-left:0;
+}
+#buy_rate {
+  float:right;
   padding:6px;
-  background-color:#fff;
-  vertical-align:top;
 }
 .rate {
   font-size:16px;
 }
 .rate_wrapper {
   background-color:#f2f2f2;
-  padding:4px 6px 2px 6px;
+  padding:2px 6px;
   font-size:12px;
 
 }
-.featured_name {
+#buy_rate .self {
+  margin:2px;
+}
+.ads, #product_list_title {
   clear:both;
   color:#999;
   font-size:14px;
@@ -62,10 +63,10 @@ padding-top: 10px;
   border-top:1px solid #e5e5e5;
   width: 770px;
 }
-.featured_name div {
+.ads div {
   padding:10px 15px;
 }
-.sort {
+#sort {
   padding:10px 0 5px 0;
 }
 #sort_wrapper {
@@ -78,14 +79,14 @@ padding-top: 10px;
   clear:both;
   padding:5px 10px 20px 10px;
 }
-.merchant {
+#merchant_list .item {
   clear:both;
   padding:15px 0;
   border-top:1px #e5e5e5 dotted;
   line-height:40px;
   width: 750px;
 }
-.merchant { /* ie 6 */
+#merchant_list .item { /* ie 6 */
   _border:0;
   _background:url(/ie6_dotted.png) repeat-x;
 }
@@ -96,50 +97,26 @@ padding-top: 10px;
   padding:0 10px 0 20px;
   height:40px;
 }
-.merchant .price {
+#merchant_list .price {
   font-size:16px;
 }
-.merchant .price_sign {
+#merchant_list .rmb {
   font-size:12px;
 }
-#merchant_list .price_column {
-  padding-right:50px;
-}
-.merchant_info {
+.description {
   width:340px;
 }
-.promotions {
+.promotion {
   width:410px;
 }
 .note {
   color:#999;
   font-size: 12px;
 }
-#featured_product_list_wrapper {
-  padding:0 10px;
-  clear:both;
-}
-.promotion_type .selected {
-  color:#fff;
-  background-color:red;
-  padding:3px 6px;
-  margin-left:10px;
-}
-.promotion_type a {
-  padding-left:10px;
-}
-#product .promotion_type {
+h2 {
   padding:10px 10px 10px 15px;
   font-weight:normal;
   font-size:16px;
   margin:0;
-}
-.featured_product_list .title {
-  font-weight: normal;
-  margin:0;
-  margin-top:5px;
-  height:40px;
-  overflow:hidden;
-  clear:left;
-  width: 178px;
+  float:left;
 }

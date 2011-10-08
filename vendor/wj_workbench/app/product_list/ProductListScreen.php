@@ -60,18 +60,14 @@ class ProductListScreen extends Screen {
       $amount = count($result['matches']);
     }
     echo '<div id="sort_wrapper">';
-    echo '<div class="sort">排序: <span class="selected">销量</span> <a rel="nofollow" href="/">新品</a> <a href="/" rel="nofollow">降价</a> <a rel="nofollow" href="/">价格</a></div>';
-    echo '<div class="total">找到 '.$amount.' 个产品</div>';
+    echo '<div id="sort">排序: <span>销量</span> <a rel="nofollow" href="/">新品</a> <a href="/" rel="nofollow">降价</a> <a rel="nofollow" href="/">价格</a></div>';
+    echo '<div id="total">找到 '.$amount.' 个产品</div>';
     echo '</div>';
     echo '<div id="product_list_wrapper"><ul id="product_list">';
     for ($index = 0; $index < 5; $index++) {
       foreach ($items as $item) {
-        echo '<li class="';
-        if ($index === 1) {
-          echo 'visited ';
-        }
-        echo '"><div class="item"><div class="product_image"><a target="_blank" href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div class="title"><a  target="_blank" href="/'.$item['id'].'">'
-          .$item['name'].'</a></div><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000<span class="point">.68</span></span> ~ <span class="price">1234567890<span class="point"></span></span> <div>7 个商城</div></div></div></li>';
+        echo '<li><div><a target="_blank" href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div class="title"><a  target="_blank" href="/'.$item['id'].'">'
+          .$item['name'].'</a></div><div class="data"><div>&yen;<span class="price">10000.68</span> ~ <span class="price">1234567890</span></div> <div>7 个商城</div></div></li>';
       }
     }
     echo '</ul></div>';

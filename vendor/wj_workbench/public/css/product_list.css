@@ -75,22 +75,21 @@
 #sort_wrapper span {
   margin-left:10px;
   display:inline;
-}
-#sort_wrapper .sort {
-  margin-left:10px;
-  display: inline; /* ie 6 */
-}
-#sort_wrapper .sort .selected {
   color:#fff;
   background-color:red;
   padding:2px 6px;
 }
-#sort_wrapper a {
-	margin-left:10px;
+#sort {
+  margin-left:10px;
+  display: inline; /* ie 6 */
 }
-#sort_wrapper .total {
+#sort a {
+  margin-left:10px;
+}
+#total {
   margin-right:10px;
   float:right;
+  display: inline; /* ie 6 */
 }
 #product_list_wrapper {
   width:100%;
@@ -108,10 +107,12 @@ img {
 #product_list li {
   list-style:none;
   float: left;
-  height:260px;
   background-color:#fff;
   vertical-align:top;
   padding:6px;
+}
+#product_list .image {
+  clear:left;
 }
 #product_list .title {
   font-size: 14px;
@@ -123,20 +124,22 @@ img {
   clear:left;
   width: 178px;
 }
-.price_block, .price_block div {
-  clear: both;
+#product_list .data, .data {
+  clear:left;
 }
-.price_block {
-  color:#999;
+#product_list .data, .data {
   font-size:12px;
   width: 178px;
 }
-.price {
+#product_list .data div, .data div {
+  clear:left;
+}
+#product_list .price, .price {
   color: #000;
   font-size:12px;
   font-weight: bold;
 }
-.product_image img,.image img {
+#product_list img {
   width:170px;
 }
 #action {
