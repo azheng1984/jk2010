@@ -112,7 +112,7 @@ class ProductScreen extends Screen {
   private function renderProductList() {
     echo '<div class="featured_name">';
     echo '<h2 style="float:left" class="promotion_type">浏览 "'.$this->product['name'].'" 的顾客最终购买</h2>';
-    echo '<div style="float:right"><span class="rate_wrapper"><span class="rate">98</span>%</span> 购买本产品</div>';
+    echo '<div style="float:right"><span class="rate_wrapper"><span class="rate">76</span>%</span> 购买本产品</div>';
     echo '</div>';
     echo '<div id="featured_product_list_wrapper">';
     echo '<ul class="featured_product_list">';
