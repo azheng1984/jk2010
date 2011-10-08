@@ -38,6 +38,10 @@
 }
 #product_list {
   padding-left:0;
+  padding-top:0;
+}
+#product_list .rate_wrapper {
+  margin-bottom:5px;
 }
 #buy_rate {
   float:right;
