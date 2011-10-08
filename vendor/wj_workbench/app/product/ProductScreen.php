@@ -111,7 +111,8 @@ class ProductScreen extends Screen {
 
   private function renderProductList() {
     echo '<div class="featured_name">';
-    echo '<h2 class="promotion_type">浏览 "'.$this->product['name'].'" 的顾客最终购买</h2>';
+    echo '<h2 style="float:left" class="promotion_type">浏览 "'.$this->product['name'].'" 的顾客最终购买</h2>';
+    echo '<div style="float:right"><span class="rate_wrapper"><span class="rate">98</span>%</span> 购买本产品</div>';
     echo '</div>';
     echo '<div id="featured_product_list_wrapper">';
     echo '<ul class="featured_product_list">';
@@ -122,8 +123,15 @@ class ProductScreen extends Screen {
         break;
       }
       ++$count;
-      echo '<li class="item"><div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div class="title"><a href="/'.$item['id'].'">'
-        .$item['name'].'</a></div><div class="price_block"><div><span class="rmb">&yen;</span><span class="price">10000</span> ~ <span class="price">12299.84</span></div> <div>7 个商城</div></div></li>';
+      echo '<li class="item">';
+              echo '<div><span class="rate_wrapper"><span class="rate">12</span>%</span></div>';
+      echo '<div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div class="title"><a href="/'.$item['id'].'">'
+        .$item['name'].'</a></div><div class="price_block">';
+        echo '<div><span class="rmb">&yen;</span><span class="price">10000</span> ~ <span class="price">12299.84</span></div>';
+        echo ' <div>7 个商城</div>';
+
+        echo '</div></li>';
+        
     }
     echo '</ul>';
     echo '</div>';
