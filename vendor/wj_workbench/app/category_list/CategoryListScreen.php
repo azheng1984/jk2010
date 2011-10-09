@@ -25,6 +25,8 @@ class CategoryListScreen extends Screen {
   }
 
   private function renderAds() {
-    echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">Google 提供的广告</div></div>';
+    echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">';
+    AdSenseScreen::render();
+    echo '</div></div>';
   }
 }

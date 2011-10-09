@@ -152,6 +152,8 @@ class ProductScreen extends Screen {
   }
 
   private function renderAds() {
-    echo '<div class="ads"><div>Google 提供的广告</div></div>';
+    echo '<div class="ads"><div>';
+    AdSenseScreen::render();
+    echo '</div></div>';
   }
 }
