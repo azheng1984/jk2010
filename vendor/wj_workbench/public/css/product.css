@@ -106,6 +106,8 @@
 }
 #merchant_list .price {
   font-size:16px;
+  color:#000;
+  font-weight:bold;
 }
 #merchant_list .rmb {
   font-size:12px;
