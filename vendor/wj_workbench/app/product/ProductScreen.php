@@ -104,10 +104,10 @@ class ProductScreen extends Screen {
   }
 
   private function renderProductList() {
-    echo '<div id="product_list_title">';
+    echo '<div id="product_list_title_wrapper"><div id="product_list_title">';
     echo '<h2>浏览 "'.$this->product['name'].'" 的顾客最终购买</h2>';
     echo '<div id="buy_rate"><div class="rate_wrapper"><span class="rate">76</span>%</div> <div class="self">购买本产品</div></div>';
-    echo '</div>';
+    echo '</div></div>';
     echo '<div id="product_list_wrapper">';
     echo '<ul id="product_list">';
     $products = DbProduct::getList($this->category['table_prefix']);
@@ -118,6 +118,21 @@ class ProductScreen extends Screen {
       }
       ++$count;
       echo '<li class="item">';
+      echo '<div class="rate_wrapper"><span class="rate">12</span>%</div>';
+      echo '<div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="';
+      if ($count % 2 === 0) {
+        echo 'x_large.jpg';
+      } else {
+        echo 'x.jpg';
+      }
+      echo '" /></a></div>';
+      echo '<div class="title">';
+      echo '<a href="/'.$item['id'].'">'.$item['name'].'</a></div><div class="data">';
+      echo '<div>&yen;<span class="price">10000</span> ~ <span class="price">12299.84</span></div>';
+      echo '<div>7 个商城</div>';
+      echo '</div></li>';
+
+            echo '<li class="item">';
       echo '<div class="rate_wrapper"><span class="rate">12</span>%</div>';
       echo '<div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="';
       if ($count % 2 === 0) {
