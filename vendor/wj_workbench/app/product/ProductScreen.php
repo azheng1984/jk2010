@@ -154,7 +154,6 @@ class ProductScreen extends Screen {
   private function renderAds() {
     echo '<div class="ads"><div>';
     AdSenseScreen::render();
-    AdSenseScreen::render(true);
     echo '</div></div>';
   }
 }
