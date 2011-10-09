@@ -71,7 +71,7 @@ input {
 }
 #footer {
   line-height:40px;
-  margin-top:20px;
+  margin:20px 0 5px 0;
   width:100%;/* ie 7 */
 }
 #footer .links {
