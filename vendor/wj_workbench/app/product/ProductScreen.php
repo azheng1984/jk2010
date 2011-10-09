@@ -50,7 +50,7 @@ class ProductScreen extends Screen {
     $this->renderMerchantList();
     $this->renderAds();
     $this->renderProductList();
-    $this->renderAds();
+    $this->renderAds(true);
     echo '</div>';
    }
 
@@ -151,9 +151,9 @@ class ProductScreen extends Screen {
     echo '</div>';
   }
 
-  private function renderAds() {
+  private function renderAds($isImage = false) {
     echo '<div class="ads"><div>';
-    AdSenseScreen::render();
+    AdSenseScreen::render($isImage);
     echo '</div></div>';
   }
 }
