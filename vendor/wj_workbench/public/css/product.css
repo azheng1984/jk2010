@@ -29,6 +29,9 @@
   padding:0;
   clear:both;
 }
+#product_list {
+  padding-bottom:8px;
+}
 #product_list .rate_wrapper {
   margin-bottom:5px;
 }
@@ -58,7 +61,7 @@
   width: 100%;
 }
 #product_list_title_wrapper {
-  padding:10px 15px 0 15px;
+  padding:15px 15px 0 15px;
 }
 #product_list_title {
   padding-bottom:10px;
