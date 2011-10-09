@@ -27,6 +27,7 @@ class CategoryListScreen extends Screen {
   private function renderAds() {
     echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">';
     AdSenseScreen::render();
+    AdSenseScreen::render(true);
     echo '</div></div>';
   }
 }

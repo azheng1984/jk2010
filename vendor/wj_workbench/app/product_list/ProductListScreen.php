@@ -74,6 +74,7 @@ class ProductListScreen extends Screen {
     echo '<div id="pagination"> <span href="/">1</span> <a rel="nofollow" href="/">2</a> <a rel="nofollow" href="/">下一页 &raquo;</a></div>';
     echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">';
     AdSenseScreen::render();
+    AdSenseScreen::render(true);
     echo '</div></div>';
   }
 }
