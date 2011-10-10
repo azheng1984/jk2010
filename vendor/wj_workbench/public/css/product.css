@@ -76,7 +76,7 @@
 .ads div {
   padding:10px 20px;
 }
-#sort {
+#sort, #total {
   padding:10px 0 5px 0;
 }
 #sort_wrapper {
