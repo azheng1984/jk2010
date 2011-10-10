@@ -8,5 +8,6 @@ class HomeScreen extends Screen {
 
   protected function renderBodyContent() {
     CategoryListContentScreen::render();
+    echo '<script>document.getElementById("search").firstChild.focus()</script>';
   }
 }
