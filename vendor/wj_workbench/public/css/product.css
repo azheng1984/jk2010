@@ -77,6 +77,9 @@
   padding:0 10px 10px;
   margin:10px;
 }
+.ads .image {
+  padding-bottom:0;
+}
 #sort {
   padding:10px 0 5px 0;
 }
