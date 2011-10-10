@@ -100,6 +100,9 @@
   margin:0;
   padding:8px 0 0 8px;
 }
+#product_list a:visited {
+  color:#551A8B;
+}
 /* draft */
 img {
   border:0;
