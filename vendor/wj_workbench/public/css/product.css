@@ -74,7 +74,9 @@
   _background:url(/ie6_dotted.png) bottom left repeat-x;
 }
 .ads div {
-  padding:10px 20px;
+  padding:0 10px;
+  margin:10px;
+  background-color:ivory;
 }
 #sort {
   padding:10px 0 5px 0;
