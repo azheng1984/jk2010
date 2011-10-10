@@ -66,7 +66,7 @@ class ProductListScreen extends Screen {
     echo '<div id="product_list_wrapper"><ul id="product_list">';
     for ($index = 0; $index < 5; $index++) {
       foreach ($items as $item) {
-        echo '<li><div><a target="_blank" href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div class="title"><a  target="_blank" href="/'.$item['id'].'">'
+        echo '<li><div class="image"><a target="_blank" href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div class="title"><a  target="_blank" href="/'.$item['id'].'">'
           .$item['name'].'</a></div><div class="data"><div>&yen;<span class="price">10000.68</span> ~ <span class="price">1234567890</span></div> <div>7 个商城</div></div></li>';
       }
     }
