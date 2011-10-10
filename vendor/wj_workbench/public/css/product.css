@@ -59,7 +59,6 @@
 }
 .ads {
   width:100%;
-  overflow:hidden;
 }
 #product_list_title_wrapper {
   padding:10px 15px 0 15px;
@@ -77,6 +76,7 @@
 .ads div {
   padding:0 10px;
   margin:10px;
+  display:inline;
 }
 #sort {
   padding:10px 0 5px 0;
