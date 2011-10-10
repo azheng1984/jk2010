@@ -152,7 +152,11 @@ class ProductScreen extends Screen {
   }
 
   private function renderAds($isImage = false) {
-    echo '<div class="ads"><div>';
+    echo '<div class="ads"><div';
+    if (!$isImage) {
+      echo ' class="text"';
+    }
+    echo '>';
     AdSenseScreen::render($isImage);
     echo '</div></div>';
   }
