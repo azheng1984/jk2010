@@ -58,7 +58,8 @@
   border-top:1px solid #e5e5e5;
 }
 .ads {
-  width: 100%;
+  width:100%;
+  overflow:hidden;
 }
 #product_list_title_wrapper {
   padding:10px 15px 0 15px;
