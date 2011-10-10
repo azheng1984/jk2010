@@ -44,7 +44,7 @@ abstract class Screen {
   }
 
   private function renderLogo() {
-    echo '<div id="logo"><a href="/">货比万家<span class="image"></span></a></div>';
+    echo '<div id="logo"><a title="huobiwanjia.com" href="/">货比万家<span class="image"></span></a></div>';
   }
 
   private function renderSearch() {
