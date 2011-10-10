@@ -60,7 +60,7 @@ class ProductScreen extends Screen {
     echo '<div class="item">';
     echo '<div class="description">';
     echo '<div class="logo"><a rel="nofollow" href="/" target="_blank"><img alt="京东商城" src="/360buy.com.2.gif" /></a></div>';
-    echo '<div><a href="/" target="_blank"><span class="name">京东商城</span></a></div>';
+    echo '<div><a href="/" target="_blank" rel="nofollow"><span class="name">京东商城</span></a></div>';
     echo '</div>';
     echo '<div class="promotion">';
     echo '<div><span class="rmb">&yen;</span><span class="price">10.23</span></div>';
@@ -70,7 +70,7 @@ class ProductScreen extends Screen {
     echo '<div class="item">';
     echo '<div class="description">';
     echo '<div class="logo"><a rel="nofollow" href="/" target="_blank"><img alt="新蛋网" src="/newegg.com.cn.2.gif" /></a></div>';
-    echo '<div><a href="/" target="_blank"><span class="name">新蛋网</span></a></div>';
+    echo '<div><a href="/" target="_blank" rel="nofollow"><span class="name">新蛋网</span></a></div>';
     echo '</div>';
     echo '<div class="promotion">';
     echo '<div><span class="rmb">&yen;</span><span class="price">14</span></div>';
@@ -118,21 +118,6 @@ class ProductScreen extends Screen {
       }
       ++$count;
       echo '<li class="item">';
-      echo '<div class="rate_wrapper"><span class="rate">12</span>%</div>';
-      echo '<div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="';
-      if ($count % 2 === 0) {
-        echo 'x_large.jpg';
-      } else {
-        echo 'x.jpg';
-      }
-      echo '" /></a></div>';
-      echo '<div class="title">';
-      echo '<a href="/'.$item['id'].'">'.$item['name'].'</a></div><div class="data">';
-      echo '<div>&yen;<span class="price">10000</span> ~ <span class="price">12299.84</span></div>';
-      echo '<div>7 个商城</div>';
-      echo '</div></li>';
-
-            echo '<li class="item">';
       echo '<div class="rate_wrapper"><span class="rate">12</span>%</div>';
       echo '<div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="';
       if ($count % 2 === 0) {
