@@ -76,6 +76,8 @@
 .ads div {
   padding:0 10px;
   margin:10px;
+}
+.ads .text {
   background-color:ivory;
 }
 #sort {
