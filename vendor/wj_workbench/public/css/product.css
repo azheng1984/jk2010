@@ -29,6 +29,7 @@
   border:0;
   padding:0;
   clear:both;
+  border-bottom:1px solid #e5e5e5;
 }
 #product_list {
   padding-bottom:8px;
@@ -50,15 +51,14 @@
 #buy_rate .self {
   padding-left:5px;
 }
-.ads, #product_list_title_wrapper {
+#product_list_title_wrapper {
   clear:both;
-  color:#999;
-  font-size:14px;
-  background-color:#fff;
   border-top:1px solid #e5e5e5;
 }
 .ads {
+  clear:both;
   width:100%;
+  padding:10px 0;
 }
 #product_list_title_wrapper {
   padding:10px 10px 0 10px;
@@ -74,7 +74,8 @@
   _background:url(/ie6_dotted.png) bottom left repeat-x;
 }
 .ads div {
-  padding:10px 20px;
+  padding:0 20px;
+  height:90px;/* chrome */
 }
 #sort, #total {
   padding:10px 0 5px 0;
@@ -88,6 +89,7 @@
 #merchant_list {
   clear:both;
   padding:5px 10px 10px;
+  border-bottom:1px solid #e5e5e5;
 }
 #merchant_list .item {
   clear:both;
@@ -131,4 +133,8 @@ h2 {
   margin:0;
   float:left;
   padding-top:3px;
+}
+#product_list .image {
+  clear:left;
+  
 }

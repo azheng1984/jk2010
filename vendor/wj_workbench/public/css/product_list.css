@@ -114,8 +114,8 @@ img {
   vertical-align:top;
   padding:6px;
 }
-#product_list .image {
-  clear:left;
+#product_list .image { /* chrome */
+  height:170px;
 }
 #product_list .title {
   margin:0;

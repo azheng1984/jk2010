@@ -16,8 +16,7 @@ google_ad_height = 90;
 </script>
 <script type="text/javascript"
 src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
-    <?php
+</script><?php
       return;
     }
 ?>
@@ -31,8 +30,7 @@ google_ad_height = 90;
 </script>
 <script type="text/javascript"
 src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
-<?php
+</script><?php
   }
 
   public static function renderBigBlock() {
