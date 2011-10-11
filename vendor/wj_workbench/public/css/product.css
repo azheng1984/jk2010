@@ -7,7 +7,6 @@
 #property_list_wrapper {
   float:left;
   width:190px;
-  color:#999;
 }
 #property_list {
   padding:10px 0 0 10px;
@@ -112,6 +111,15 @@
   padding:0 10px 0 20px;
   height:40px;
 }
+.logo a {
+  display:block;
+  width:100px;
+  height:40px;
+}
+.logo img {
+  width:100px;
+  height:40px;
+}
 #merchant_list .price {
   font-size:16px;
   color:#000;
@@ -128,7 +136,7 @@
 }
 .note {
   color:#999;
-  font-size: 12px;
+  font-size:12px;
 }
 h2 {
   font-weight:normal;
@@ -139,5 +147,4 @@ h2 {
 }
 #product_list .image {
   clear:left;
-  
 }
