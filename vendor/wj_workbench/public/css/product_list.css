@@ -114,8 +114,10 @@ img {
   vertical-align:top;
   padding:6px;
 }
-#product_list .image { /* chrome */
+#product_list .image a {/* chrome */
+  display:block;
   height:170px;
+  width:170px;
 }
 #product_list .title {
   margin:0;
