@@ -37,6 +37,9 @@ input {
 }
 #logo a {
   position:relative;
+  display: block;
+  width:90px;
+  height:25px;
 }
 #logo .image {
   position:absolute;
