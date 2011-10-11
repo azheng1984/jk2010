@@ -1,11 +1,11 @@
 <?php
 class DbConnection {
+  private static $name = 'default';
   private static $pool = array();
-  private static $currentName = 'default';
   private static $factory;
 
   public static function connect($name) {
-    self::$currentName = $name;
+    self::$name = $name;
   }
 
   public static function reset() {
@@ -14,12 +14,12 @@ class DbConnection {
   }
 
   public static function get() {
-    if (!isset(self::$pool[self::$currentName])) {
-      $connection = self::getFactory()->get(self::$currentName);
+    if (!isset(self::$pool[self::$name])) {
+      $connection = self::getFactory()->get(self::$name);
       $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      self::$pool[self::$currentName] = $connection;
+      self::$pool[self::$name] = $connection;
     }
-    return self::$pool[self::$currentName];
+    return self::$pool[self::$name];
   }
 
   private static function getFactory() {

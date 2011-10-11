@@ -61,8 +61,8 @@ class ProductScreen extends Screen {
 
     echo '<div class="item">';
     echo '<div class="description">';
-    echo '<div class="logo"><a rel="nofollow" href="/" target="_blank"><img alt="京东商城" src="/360buy.com.2.gif" /></a></div>';
-    echo '<div><a href="/" target="_blank" rel="nofollow"><span class="name">京东商城</span></a></div>';
+    echo '<div class="logo"><a rel="nofollow" href="http://www.360buy.com" target="_blank"><img alt="京东商城" src="/360buy.com.2.gif" /></a></div>';
+    echo '<div><a href="http://www.360buy.com" target="_blank" rel="nofollow"><span class="name">京东商城</span></a></div>';
     echo '</div>';
     echo '<div class="promotion">';
     echo '<div><span class="rmb">&yen;</span><span class="price">10.23</span></div>';
@@ -71,14 +71,13 @@ class ProductScreen extends Screen {
 
     echo '<div class="item">';
     echo '<div class="description">';
-    echo '<div class="logo"><a rel="nofollow" href="/" target="_blank"><img alt="新蛋网" src="/newegg.com.cn.2.gif" /></a></div>';
-    echo '<div><a href="/" target="_blank" rel="nofollow"><span class="name">新蛋网</span></a></div>';
+    echo '<div class="logo"><a rel="nofollow" href="http://www.newegg.com.cn" target="_blank"><img alt="新蛋网" src="/newegg.com.cn.2.gif" /></a></div>';
+    echo '<div><a href="http://www.newegg.com.com" target="_blank" rel="nofollow"><span class="name">新蛋网</span></a></div>';
     echo '</div>';
     echo '<div class="promotion">';
     echo '<div><span class="rmb">&yen;</span><span class="price">14</span></div>';
     echo '</div>';
     echo '</div>';
-    
     echo '</div>';
   }
 
