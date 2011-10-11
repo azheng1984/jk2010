@@ -8,12 +8,16 @@ class HomeScreen {
     echo '<h1>我的应用</h1>';
     echo '<div id="application">';
     echo '<ul>';
-    echo '<li><a href="http://data.wj.com">商家数据</a></li>';
+    echo '<li><a href="http://tracking.wj.com">关注</a></li>';
+    echo '<li><a href="http://share.wj.com">分享</a></li>';
+    echo '<li><a href="http://history.wj.com">历史记录</a></li>';
+    echo '<li><a href="http://suggestion.wj.com">留言</a></li>';
+    echo '<li><a href="http://editor.wj.com">数据</a></li>';
     echo '<li><a href="http://publisher.wj.com">广告</a></li>';
     echo '</ul>';
     echo '</div>';
     echo '<div id="activity">';
-    echo '<h2>最新动态</h2>';
+    echo '<h2>最近动态</h2>';
     echo '</div>';
     echo '</div>';
   }
