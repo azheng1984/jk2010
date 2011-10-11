@@ -2,12 +2,7 @@
 class DbConnection {
   private static $pool = array();
   private static $currentName = 'default';
-  private static $factoryClass = 'DbConnectionFactory';
   private static $factory;
-
-  public static function initialize($factoryClass) {
-    self::$factoryClass = $factoryClass;
-  }
 
   public static function connect($name) {
     self::$currentName = $name;
@@ -29,7 +24,9 @@ class DbConnection {
 
   private static function getFactory() {
     if (self::$factory === null) {
-      self::$factory = new self::$factoryClass;
+      $class = defined('DB_CONNECTION_FACTORY_CLASS') ?
+        DB_CONNECTION_FACTORY_CLASS : 'DbConnectionFactory';
+      self::$factory = new $class;
     }
     return self::$factory;
   }
