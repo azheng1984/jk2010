@@ -91,12 +91,15 @@
   padding:5px 10px 10px;
   border-bottom:1px solid #e5e5e5;
 }
+#merchant_list a:visited {
+  color:#551A8B;
+}
 #merchant_list .item {
   clear:both;
   padding:15px 0;
   border-top:1px #e5e5e5 dotted;
   line-height:40px;
-  width: 750px;
+  width:750px;
 }
 #merchant_list .item { /* ie 6 */
   _border:0;
