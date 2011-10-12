@@ -73,7 +73,7 @@
   _background:url(/ie6_dotted.png) bottom left repeat-x;
 }
 .ads div {
-  padding:0 20px;
+  padding:0 21px;
   height:90px;/* chrome */
 }
 #sort, #total {
