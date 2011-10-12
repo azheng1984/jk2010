@@ -48,11 +48,11 @@
   padding:20px 0;
   border:1px solid #e5e5e5;
   border-top:0;
+  border-bottom:0;
 }
 #pagination a {
   border:1px solid #e5e5e5;
   padding:4px 8px;
-  margin-left:2px;
   background:url(/button_bk.png) repeat-x;
 }
 #pagination a:hover {
@@ -63,7 +63,6 @@
   background-color:red;
   color:#fff;
   padding:5px 9px;
-  margin-left:2px;
 }
 #sort_wrapper {
   border:1px solid #E5E5E5;

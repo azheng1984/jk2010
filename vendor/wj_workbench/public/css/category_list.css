@@ -26,6 +26,7 @@ h1 {
 #category_list_warpper {
   width:100%;
   border:1px solid #e5e5e5;
+  border-bottom:0;
   padding-bottom:20px;
 }
 #category_list {
@@ -34,7 +35,6 @@ h1 {
 #bottom_ads_wrapper {
   width:100%;
   border: 1px solid #e5e5e5;
-  border-top:0;
   padding:15px 0;
 }
 #bottom_ads {

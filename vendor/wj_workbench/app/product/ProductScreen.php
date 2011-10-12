@@ -11,6 +11,7 @@ class ProductScreen extends Screen {
     $this->product = DbProduct::get(
       $this->category['table_prefix'], $index['product_id']
     );
+    $this->product['name'] = $this->product['brand'].' '.$this->product['model'].' '.$this->category['name'];
   }
 
   protected function renderHeadContent() {
@@ -83,14 +84,14 @@ class ProductScreen extends Screen {
 
   private function renderPropertyList($categories) {
     echo '<div id="property_list_wrapper">';
-    echo '<img title="'.$this->product['name'].'" alt="'.$this->product['name'].'" src="/x.jpg" />';
+    echo '<div id="image_wrapper"><img title="'.$this->product['name'].'" alt="'.$this->product['name'].'" src="http://img.workbench.wj.com/'.$this->product['id'].'.jpg" /></div>';
     $categoryPath = $this->getCategoryPath($categories);
     echo '<div id="property_list">';
     foreach (explode(',', $this->product['property_value_list']) as $id) {
       $result = DbProperty::getByValueId($this->category['table_prefix'], $id);
       echo '<div>'.$result['key'].': <a rel="nofollow" href="'.$categoryPath.'?'.urlencode($result['key']).'='.urlencode($result['value']).'">'.$result['value'].'</a></div>';
     }
-    echo '<div>型号: G470AH-ITH</div>';
+    echo '<div>型号: '.$this->product['model'].'</div>';
     echo '</div>';
     echo '</div>';
   }
@@ -117,18 +118,14 @@ class ProductScreen extends Screen {
         break;
       }
       ++$count;
+      $name = $item['brand'].' '.$item['model'].' '.$this->category['name'];
       echo '<li class="item">';
       echo '<div class="rate_wrapper"><span class="rate">12</span>%</div>';
-      echo '<div class="image"><a href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="';
-      if ($count % 2 === 0) {
-        echo 'x_large.jpg';
-      } else {
-        echo 'x.jpg';
-      }
-      echo '" /></a></div>';
+      echo '<div class="image"><a href="/'.$item['id'].'"><img title="'.$name.'" alt="'.$name.'" src="'
+        .'http://img.workbench.wj.com/'.$item['id'].'.jpg" /></a></div>';
       echo '<div class="title">';
-      echo '<a href="/'.$item['id'].'">'.$item['name'].'</a></div><div class="data">';
-      echo '<div>&yen;<span class="price">10000</span> ~ <span class="price">12299.84</span></div>';
+      echo '<a href="/'.$item['id'].'">'.$name.'</a></div><div class="data">';
+      echo '<div>&yen;<span class="price">'.$item['lowest_price'].'</span> ~ <span class="price">12299.84</span></div>';
       echo '<div>7 个商城</div>';
       echo '</div></li>';
     }
