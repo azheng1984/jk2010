@@ -52,28 +52,36 @@ class ProductListScreen extends Screen {
       $result = $s->query($query, 'test1');
     }
     $items = array();
-    $amount = 0;
     if (isset($result['matches'])) {
       foreach ($result['matches'] as $id => $value) {
         $items[] = DbProduct::get($category['table_prefix'], $id);
       }
-      $amount = count($result['matches']);
     }
     echo '<div id="sort_wrapper">';
     echo '<div id="sort">排序: <span>销量</span> <a rel="nofollow" href="/">新品</a> <a href="/" rel="nofollow">降价</a> <a rel="nofollow" href="/">价格</a></div>';
-    echo '<div id="total">找到 '.$amount.' 个产品</div>';
+    echo '<div id="total">找到 '.$result['total'].' 个产品</div>';
     echo '</div>';
     echo '<div id="product_list_wrapper"><ul id="product_list">';
-    for ($index = 0; $index < 5; $index++) {
       foreach ($items as $item) {
-        echo '<li><div class="image"><a target="_blank" href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><div class="title"><a  target="_blank" href="/'.$item['id'].'">'
-          .$item['name'].'</a></div><div class="data"><div>&yen;<span class="price">10000.68</span> ~ <span class="price">1234567890</span></div> <div>7 个商城</div></div></li>';
+        $name = $item['brand'].' '.$item['model'].' '.$this->category['name'];
+        echo '<li><div class="image"><a target="_blank" href="/'.$item['id'].'"><img title="'.$name.'" alt="'.$name.'" src="http://img.workbench.wj.com/'.$item['id'].'.jpg" /></a></div><div class="title"><a target="_blank" href="/'.$item['id'].'">'
+          .$name.'</a></div><div class="data"><div>&yen;<span class="price">'.$item['lowest_price'].'</span> ~ <span class="price">1234567890</span></div> <div>7 个商城</div></div></li>';
       }
-    }
     echo '</ul></div>';
-    echo '<div id="pagination"> <span href="/">1</span> <a rel="nofollow" href="/">2</a> <a rel="nofollow" href="/">下一页 &raquo;</a></div>';
+    $this->renderPagination($result['total']);
+
     echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">';
     AdSenseScreen::render(true);
     echo '</div></div>';
+  }
+
+  private function renderPagination($total) {
+    if ($total <= 20) {
+      return;
+    }
+    echo '<div id="pagination"> ';
+    $pagination = new Pagination;
+    $pagination->render('.', $total, 1);
+    echo '</div>';
   }
 }
