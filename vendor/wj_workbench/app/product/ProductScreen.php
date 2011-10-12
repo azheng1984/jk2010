@@ -46,7 +46,7 @@ class ProductScreen extends Screen {
 
    private function renderRight() {
     echo '<div id="right_wrapper">';
-    echo '<div id="sort_wrapper"><div id="sort">排序: <span>销量</span> <a href="/">价格</a></div>';
+    echo '<div id="sort_wrapper"><div id="sort">排序: <span>销量</span> <a rel="nofollow" href="/">价格</a></div>';
     echo '<div id="total">找到 2 个商家</div>';
     echo '</div>';
     $this->renderMerchantList();
@@ -65,7 +65,7 @@ class ProductScreen extends Screen {
     echo '<div class="name"><a href="http://www.360buy.com" target="_blank" rel="nofollow">京东商城</a></div>';
     echo '</div>';
     echo '<div class="promotion">';
-    echo '<div><span class="rmb">&yen;</span><span class="price">10.23</span></div>';
+    echo '<span class="rmb">&yen;</span><span class="price">10.23</span>';
     echo '</div>';
     echo '</div>';
 
@@ -75,7 +75,7 @@ class ProductScreen extends Screen {
     echo '<div class="name"><a href="http://www.newegg.com.com" target="_blank" rel="nofollow">新蛋网</a></div>';
     echo '</div>';
     echo '<div class="promotion">';
-    echo '<div><span class="rmb">&yen;</span><span class="price">14</span></div>';
+    echo '<span class="rmb">&yen;</span><span class="price">14</span>';
     echo '</div>';
     echo '</div>';
     echo '</div>';
@@ -86,12 +86,11 @@ class ProductScreen extends Screen {
     echo '<img title="'.$this->product['name'].'" alt="'.$this->product['name'].'" src="/x.jpg" />';
     $categoryPath = $this->getCategoryPath($categories);
     echo '<div id="property_list">';
-    echo '<div>品牌: <a href="..">诺基亚(Nokia)</a></strong></div>';
-    echo '<div>型号: G470AH-ITH</div>';
     foreach (explode(',', $this->product['property_value_list']) as $id) {
       $result = DbProperty::getByValueId($this->category['table_prefix'], $id);
       echo '<div>'.$result['key'].': <a rel="nofollow" href="'.$categoryPath.'?'.urlencode($result['key']).'='.urlencode($result['value']).'">'.$result['value'].'</a></div>';
     }
+    echo '<div>型号: G470AH-ITH</div>';
     echo '</div>';
     echo '</div>';
   }
