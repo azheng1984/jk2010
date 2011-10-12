@@ -36,7 +36,7 @@ class ProductScreen extends Screen {
     $breadcrumb->render();
     echo '<div id="h1_wrapper">';
     echo '<h1>'.$this->product['name'].'</h1>';
-    echo '<div id="action"><a href="/">对比</a> <a href="/">关注 <span class="note">12134</span></a> <a href="/">分享</a></div>';
+    echo '<div id="action"><a rel="nofollow" href="/">对比</a> <a rel="nofollow" href="/">关注 <span class="note">12134</span></a> <a rel="nofollow" href="/">分享</a></div>';
     echo '</div>';
     echo '<div id="product">';
     $this->renderPropertyList($categories);
@@ -62,7 +62,7 @@ class ProductScreen extends Screen {
     echo '<div class="item">';
     echo '<div class="description">';
     echo '<div class="logo"><a rel="nofollow" href="http://www.360buy.com" target="_blank"><img alt="京东商城" src="/360buy.com.2.gif" /></a></div>';
-    echo '<div><a href="http://www.360buy.com" target="_blank" rel="nofollow"><span class="name">京东商城</span></a></div>';
+    echo '<div class="name"><a href="http://www.360buy.com" target="_blank" rel="nofollow">京东商城</a></div>';
     echo '</div>';
     echo '<div class="promotion">';
     echo '<div><span class="rmb">&yen;</span><span class="price">10.23</span></div>';
@@ -72,7 +72,7 @@ class ProductScreen extends Screen {
     echo '<div class="item">';
     echo '<div class="description">';
     echo '<div class="logo"><a rel="nofollow" href="http://www.newegg.com.cn" target="_blank"><img alt="新蛋网" src="/newegg.com.cn.2.gif" /></a></div>';
-    echo '<div><a href="http://www.newegg.com.com" target="_blank" rel="nofollow"><span class="name">新蛋网</span></a></div>';
+    echo '<div class="name"><a href="http://www.newegg.com.com" target="_blank" rel="nofollow">新蛋网</a></div>';
     echo '</div>';
     echo '<div class="promotion">';
     echo '<div><span class="rmb">&yen;</span><span class="price">14</span></div>';
