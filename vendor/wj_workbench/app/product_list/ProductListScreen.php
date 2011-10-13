@@ -38,6 +38,8 @@ class ProductListScreen extends Screen {
       }
     }
     $s = new SphinxClient;
+    $offset = ($this->page - 1) * 20;
+    $s->SetLimits($offset, 20);
     $s->setServer("localhost", 9312);
     $s->setMaxQueryTime(30);
     if (empty($_GET['q'])) {
@@ -84,7 +86,12 @@ class ProductListScreen extends Screen {
     }
     echo '<div id="pagination"> ';
     $pagination = new Pagination;
-    $pagination->render('.', $total, $this->page);
+    $prefix = '?'.preg_replace('{&page=[1-9]+}', '', $_SERVER['QUERY_STRING']);
+    $pageOne = $prefix;
+    if ($_SERVER['QUERY_STRING'] !== '') {
+      $prefix .= '&';
+    }
+    $pagination->render($prefix, $total, $this->page, $pageOne);
     echo '</div>';
   }
 }
