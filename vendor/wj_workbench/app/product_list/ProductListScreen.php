@@ -1,9 +1,13 @@
 <?php
 class ProductListScreen extends Screen {
   private $category;
+  private $page = 1;
 
   public function __construct() {
     $this->category = end($_GET['categories']);
+    if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+      $this->page = $_GET['page'];
+    }
   }
 
   protected function renderHeadContent() {
@@ -62,14 +66,13 @@ class ProductListScreen extends Screen {
     echo '<div id="total">找到 '.$result['total'].' 个产品</div>';
     echo '</div>';
     echo '<div id="product_list_wrapper"><ul id="product_list">';
-      foreach ($items as $item) {
-        $name = $item['brand'].' '.$item['model'].' '.$this->category['name'];
-        echo '<li><div class="image"><a target="_blank" href="/'.$item['id'].'"><img title="'.$name.'" alt="'.$name.'" src="http://img.workbench.wj.com/'.$item['id'].'.jpg" /></a></div><div class="title"><a target="_blank" href="/'.$item['id'].'">'
-          .$name.'</a></div><div class="data"><div>&yen;<span class="price">'.$item['lowest_price'].'</span> ~ <span class="price">1234567890</span></div> <div>7 个商城</div></div></li>';
-      }
+    foreach ($items as $item) {
+      $name = $item['brand'].' '.$item['model'].' '.$this->category['name'];
+      echo '<li><div class="image"><a target="_blank" href="/'.$item['id'].'"><img title="'.$name.'" alt="'.$name.'" src="http://img.workbench.wj.com/'.$item['id'].'.jpg" /></a></div><div class="title"><a target="_blank" href="/'.$item['id'].'">'
+        .$name.'</a></div><div class="data"><div>&yen;<span class="price">'.$item['lowest_price'].'</span> ~ <span class="price">1234567890</span></div> <div>7 个商城</div></div></li>';
+    }
     echo '</ul></div>';
     $this->renderPagination($result['total']);
-
     echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">';
     AdSenseScreen::render(true);
     echo '</div></div>';
@@ -81,7 +84,7 @@ class ProductListScreen extends Screen {
     }
     echo '<div id="pagination"> ';
     $pagination = new Pagination;
-    $pagination->render('.', $total, 1);
+    $pagination->render('.', $total, $this->page);
     echo '</div>';
   }
 }

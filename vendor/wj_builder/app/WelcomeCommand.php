@@ -67,6 +67,7 @@ class WelcomeCommand {
     $wjId = $connection->lastInsertId();
     $sql = 'INSERT INTO global_product_index(category_id, product_id) VALUES(2, ?)';
     Db::execute($sql, $wjId);
+    $this->addMerchant($wjId, $id, $price);
     $this->copyImage($id, $wjId);
   }
 
@@ -82,5 +83,12 @@ class WelcomeCommand {
   private function copyImage($sourceProductId, $productId) {
      copy('/home/wz/spider/image/jingdong/32/'.$sourceProductId.'.jpg',
      '/home/wz/wj_img/2/'.$productId.'.jpg');
+  }
+
+  private function addMerchant($productId, $merchantProductId, $price) {
+    $url = 'http://www.360buy.com/product/'.$merchantProductId.'.html';
+    $sql = 'INSERT INTO mobile_phone_merchant(product_id, merchant_id, url, price)'
+      .' VALUES(?, ?, ?, ?)';
+    Db::execute($sql, $productId, 1, $url, $price);
   }
 }

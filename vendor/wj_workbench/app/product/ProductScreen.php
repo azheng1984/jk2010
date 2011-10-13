@@ -46,39 +46,33 @@ class ProductScreen extends Screen {
   }
 
    private function renderRight() {
+    $merchants = DbMerchant::getList($this->product['id']);
     echo '<div id="right_wrapper">';
     echo '<div id="sort_wrapper"><div id="sort">排序: <span>销量</span> <a rel="nofollow" href="/">价格</a></div>';
-    echo '<div id="total">找到 2 个商家</div>';
+    echo '<div id="total">找到 '.count($merchants).' 个商家</div>';
     echo '</div>';
-    $this->renderMerchantList();
+    $this->renderMerchantList($merchants);
     $this->renderAds();
     $this->renderProductList();
     $this->renderAds(true);
     echo '</div>';
    }
 
-  private function renderMerchantList() {
+  private function renderMerchantList($merchants) {
     echo '<div id="merchant_list">';
-
-    echo '<div class="item">';
-    echo '<div class="description">';
-    echo '<div class="logo"><a rel="nofollow" href="http://www.360buy.com" target="_blank"><img alt="京东商城" src="/360buy.com.2.gif" /></a></div>';
-    echo '<div class="name"><a href="http://www.360buy.com" target="_blank" rel="nofollow">京东商城</a></div>';
-    echo '</div>';
-    echo '<div class="promotion">';
-    echo '<span class="rmb">&yen;</span><span class="price">10.23</span>';
-    echo '</div>';
-    echo '</div>';
-
-    echo '<div class="item">';
-    echo '<div class="description">';
-    echo '<div class="logo"><a rel="nofollow" href="http://www.newegg.com.cn" target="_blank"><img alt="新蛋网" src="/newegg.com.cn.2.gif" /></a></div>';
-    echo '<div class="name"><a href="http://www.newegg.com.com" target="_blank" rel="nofollow">新蛋网</a></div>';
-    echo '</div>';
-    echo '<div class="promotion">';
-    echo '<span class="rmb">&yen;</span><span class="price">14</span>';
-    echo '</div>';
-    echo '</div>';
+    foreach ($merchants as $merchant) {
+      echo '<div class="item">';
+      echo '<div class="description">';
+      echo '<div class="logo"><a rel="nofollow" href="'.$merchant['url'].'" target="_blank">';
+      echo '<img alt="'.$merchant['name'].'" src="/img/merchant/'.$merchant['domain'].'.gif" /></a></div>';
+      echo '<div class="name"><a href="'.$merchant['url'].'" target="_blank" rel="nofollow">';
+      echo $merchant['name'].'</a></div>';
+      echo '</div>';
+      echo '<div class="promotion">';
+      echo '<span class="rmb">&yen;</span><span class="price">'.$merchant['price'].'</span>';
+      echo '</div>';
+      echo '</div>';
+    }
     echo '</div>';
   }
 
