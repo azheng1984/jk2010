@@ -81,9 +81,21 @@ class ProductScreen extends Screen {
     echo '<div id="image_wrapper"><img title="'.$this->product['name'].'" alt="'.$this->product['name'].'" src="http://img.workbench.wj.com/'.$this->product['id'].'.jpg" /></div>';
     $categoryPath = $this->getCategoryPath($categories);
     echo '<div id="property_list">';
+    $properties = array();
     foreach (explode(',', $this->product['property_value_list']) as $id) {
       $result = DbProperty::getByValueId($this->category['table_prefix'], $id);
-      echo '<div>'.$result['key'].': <a rel="nofollow" href="'.$categoryPath.'?'.urlencode($result['key']).'='.urlencode($result['value']).'">'.$result['value'].'</a></div>';
+      if (!isset($properties[$result['key']])) {
+        $properties[$result['key']] = array();
+      }
+      $properties[$result['key']][] = $result['value'];
+    }
+    foreach ($properties as $key => $values) {
+      echo '<div>'.$key.': ';
+      $tmps = array();
+      foreach ($values as $value) {
+        $tmps[] = '<a rel="nofollow" href="'.$categoryPath.'?'.urlencode($key).'='.urlencode($value).'">'.$value.'</a>';
+      }
+      echo implode(', ', $tmps), '</div>';
     }
     echo '<div>型号: '.$this->product['model'].'</div>';
     echo '</div>';
