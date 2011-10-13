@@ -33,6 +33,7 @@ class WelcomeCommand {
   private function push($id, $brand, $model) {
     $brand = str_replace('（', '(', $brand);
     $brand = str_replace('）', ')', $brand);
+    $keywords = array($brand, $model);
     Db::execute('USE jingdong');
     $sql = 'SELECT v.key_id, v.value FROM product_property_value p LEFT JOIN property_value v ON p.property_value_id = v.id WHERE product_id = ?';
     $items = Db::getAll($sql, $id);
@@ -41,6 +42,7 @@ class WelcomeCommand {
       if ($item['value'] === '不限') {
         continue;
       }
+      $keywords[] = $item['value'];
       if (isset($this->propertyValueMapping[$item['value']])) {
         $item['value'] = $this->propertyValueMapping[$item['value']];
       }
@@ -61,8 +63,8 @@ class WelcomeCommand {
     $sql = 'SELECT promotion_price FROM price WHERE product_id = ?';
     $price = Db::getColumn($sql, $id);
     Db::execute('USE wj');
-    $sql = 'INSERT INTO `mobile_phone_product`(`brand`, model, property_value_list, lowest_price) VALUES(?, ?, ?, ?)';
-    Db::execute($sql, $brand, $model, implode(',', $propertyValueList), $price);
+    $sql = 'INSERT INTO `mobile_phone_product`(`brand`, model, property_value_list, lowest_price, keyword_list) VALUES(?, ?, ?, ?, ?)';
+    Db::execute($sql, $brand, $model, implode(',', $propertyValueList), $price, implode(',', $keywords));
     $connection = DbConnection::get();
     $wjId = $connection->lastInsertId();
     $sql = 'INSERT INTO global_product_index(category_id, product_id) VALUES(2, ?)';
@@ -90,5 +92,9 @@ class WelcomeCommand {
     $sql = 'INSERT INTO mobile_phone_merchant(product_id, merchant_id, url, price)'
       .' VALUES(?, ?, ?, ?)';
     Db::execute($sql, $productId, 1, $url, $price);
+  }
+
+  private function addKeywords() {
+    
   }
 }
