@@ -39,13 +39,13 @@
 #buy_rate {
   float:right;
 }
-.rate {
-  font-size:16px;
-}
 .rate_wrapper {
   background-color:#eee;
   padding:2px 6px;
   font-size:12px;
+}
+.rate {
+  font-size:16px;
 }
 #buy_rate .self {
   padding-left:5px;
