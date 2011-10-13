@@ -33,7 +33,7 @@ class WelcomeCommand {
   private function push($id, $brand, $model) {
     $brand = str_replace('（', '(', $brand);
     $brand = str_replace('）', ')', $brand);
-    $keywords = array($brand, $model);
+    $keywords = array('手机', $brand, $model);
     Db::execute('USE jingdong');
     $sql = 'SELECT v.key_id, v.value FROM product_property_value p LEFT JOIN property_value v ON p.property_value_id = v.id WHERE product_id = ?';
     $items = Db::getAll($sql, $id);
