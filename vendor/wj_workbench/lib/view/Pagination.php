@@ -27,7 +27,7 @@ class Pagination {
     $result = '';
     //Previous
     if ($currentPage != 1) {
-      if ($specialForPageOne != null && $currentPage == 2) {
+      if ($specialForPageOne !== null && $currentPage == 2) {
         $result .= '<a href="' . $specialForPageOne . '">&laquo; 上一页</a>';
       } else {
         $prevPage = $currentPage - 1;
@@ -35,7 +35,7 @@ class Pagination {
         if ($prevPage != 1) {
           $result .= 'page=' . $prevPage;
         }
-        $result .= '#sort_wrapper">&laquo; 上一页</a>';
+        $result .= '#list">&laquo; 上一页</a>';
       }
     }
 
@@ -48,14 +48,14 @@ class Pagination {
       if ($count == $currentPage) {
         $result .= ' <span>' . $count . '</span>';
       } else {
-        if ($specialForPageOne != null && $count == 1) {
+        if ($specialForPageOne !== null && $count == 1) {
           $result .= ' <a href="' . $specialForPageOne . '">1</a>';
         } else {
           $result .= ' <a href="' . $prefix;
           if ($count != 1) {
             $result .= 'page=' . $count;
           }
-          $result .= '#sort_wrapper">' . $count . '</a>';
+          $result .= '#list">' . $count . '</a>';
         }
       }
       --$totalPageItem;
@@ -65,7 +65,7 @@ class Pagination {
     }
     //Next
     if ($currentPage != $totalPage && $totalPage != 0) {
-      $result .= ' <a href="' . $prefix . 'page=' . ($currentPage + 1) . '#sort_wrapper">下一页 &raquo;</a>';
+      $result .= ' <a href="' . $prefix . 'page=' . ($currentPage + 1) . '#list">下一页 &raquo;</a>';
     }
     echo $result;
   }
