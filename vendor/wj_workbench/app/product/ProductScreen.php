@@ -48,7 +48,7 @@ class ProductScreen extends Screen {
    private function renderRight() {
     $merchants = DbMerchant::getList($this->product['id']);
     echo '<div id="right_wrapper">';
-    echo '<div id="sort_wrapper"><div id="sort">排序: <span>销量</span> <a rel="nofollow" href="/">价格</a></div>';
+    echo '<div id="list"><div id="sort">排序: <span>销量</span> <a rel="nofollow" href="/">价格</a></div>';
     echo '<div id="total">找到 '.count($merchants).' 个商家</div>';
     echo '</div>';
     $this->renderMerchantList($merchants);
