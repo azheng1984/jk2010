@@ -1,10 +1,10 @@
 <?php
 class AdSenseScreen {
   public static function render($isImage = false) {
-//    if ($_SERVER['HTTP_HOST'] !== 'huobiwanjia.com') {
-//      echo 'Google 提供的广告';
-//      return;
-//    }
+    if ($_SERVER['HTTP_HOST'] !== 'huobiwanjia.com') {
+      echo 'Google 提供的广告';
+      return;
+    }
     if ($isImage) {?>
 <script type="text/javascript"><!--
 google_ad_client = "pub-6400920337804269";
