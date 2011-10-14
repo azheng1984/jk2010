@@ -52,7 +52,7 @@ class ProductScreen extends Screen {
     echo '<div id="total">找到 '.count($merchants).' 个商家</div>';
     echo '</div>';
     $this->renderMerchantList($merchants);
-    $this->renderAds();
+    $this->renderAds(true);
     $this->renderProductList();
     $this->renderAds(true);
     echo '</div>';
@@ -136,7 +136,12 @@ class ProductScreen extends Screen {
       echo '</div></li>';
     }
     echo '</ul>';
+    $this->renderProductListPagination();
     echo '</div>';
+  }
+
+  private function renderProductListPagination() {
+    echo '<div id="small_pagination"><span class="selected"></span><span></span><span></span><span></span><span></span><a href="javascript:void(0)">&raquo;</a></div>';
   }
 
   private function renderAds($isImage = false) {
