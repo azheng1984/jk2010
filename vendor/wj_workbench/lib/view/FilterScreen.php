@@ -4,15 +4,19 @@ class FilterScreen {
 
   public function render($category) {
     $this->parameters = FilterParameter::getSelectedList($category);
-    echo '<div id="filter">';
+    echo '<ul id="filter">';
     $properties = DbProperty::getList($category['table_prefix'], $category['id']);
     $count = count($properties);
     foreach ($properties as $item) {
-      echo '<div class="property';
-      if (--$count === 0) {
-        echo ' last_property';
+      if ($item['key'] === '型号') {
+        --$count;
+        continue;
       }
-      echo '"><div class="key"><div class="name">'.$item['key'].':</div></div>';
+      echo '<li';
+      if (--$count === 0) {
+        echo ' class="last_property"';
+      }
+      echo '><div class="key"><div class="name">'.$item['key'].':</div></div>';
       $propertySelected = false;
       echo '<div class="values">';
       foreach ($item['values'] as $value) {
@@ -45,9 +49,9 @@ class FilterScreen {
         }
       }
       echo '</div>';//values
-      echo '</div>';
+      echo '</li>';
     }
-    echo '</div>';
+    echo '</ul>';
   }
 
   private function isSelected($keyId, $valueId) {

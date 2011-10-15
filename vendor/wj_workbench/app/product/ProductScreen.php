@@ -59,9 +59,9 @@ class ProductScreen extends Screen {
    }
 
   private function renderMerchantList($merchants) {
-    echo '<div id="merchant_list">';
+    echo '<ol id="merchant_list">';
     foreach ($merchants as $merchant) {
-      echo '<div class="item">';
+      echo '<li class="item">';
       echo '<div class="description">';
       echo '<div class="logo"><a rel="nofollow" href="'.$merchant['url'].'" target="_blank">';
       echo '<img alt="'.$merchant['name'].'" src="/img/merchant/'.$merchant['domain'].'.gif" /></a></div>';
@@ -71,34 +71,43 @@ class ProductScreen extends Screen {
       echo '<div class="promotion">';
       echo '<span class="rmb">&yen;</span><span class="price">'.$merchant['price'].'</span>';
       echo '</div>';
-      echo '</div>';
+      echo '</li>';
     }
-    echo '</div>';
+    echo '</ol>';
   }
 
   private function renderPropertyList($categories) {
     echo '<div id="property_list_wrapper">';
     echo '<div id="image_wrapper"><img title="'.$this->product['name'].'" alt="'.$this->product['name'].'" src="http://img.workbench.wj.com/'.$this->product['id'].'.jpg" /></div>';
     $categoryPath = $this->getCategoryPath($categories);
-    echo '<div id="property_list">';
+    echo '<ul id="property_list">';
     $properties = array();
+    $sortIndex = array();
     foreach (explode(',', $this->product['property_value_list']) as $id) {
       $result = DbProperty::getByValueId($this->category['table_prefix'], $id);
       if (!isset($properties[$result['key']])) {
         $properties[$result['key']] = array();
+        $sortIndex[$result['key']] = $result['rank'];
       }
       $properties[$result['key']][] = $result['value'];
     }
-    foreach ($properties as $key => $values) {
-      echo '<div>'.$key.': ';
+    $properties['型号'] = array($this->product['model']);
+    $sortIndex['型号'] = '91';
+    arsort($sortIndex);
+    foreach ($sortIndex as $key => $values) {
+      echo '<li>'.$key.': ';
+      $values = $properties[$key];
+      if ($key === '型号') {
+        echo $values[0].'</li>';
+        continue;
+      }
       $tmps = array();
       foreach ($values as $value) {
         $tmps[] = '<a rel="nofollow" href="'.$categoryPath.'?'.urlencode($key).'='.urlencode($value).'">'.$value.'</a>';
       }
-      echo implode(', ', $tmps), '</div>';
+      echo implode(', ', $tmps), '</li>';
     }
-    echo '<div>型号: '.$this->product['model'].'</div>';
-    echo '</div>';
+    echo '</ul>';
     echo '</div>';
   }
 
@@ -116,7 +125,7 @@ class ProductScreen extends Screen {
     echo '<div id="buy_rate"><div class="rate_wrapper"><span class="rate">76</span>%</div> <div class="self">购买本产品</div></div>';
     echo '</div></div>';
     echo '<div id="product_list_wrapper">';
-    echo '<ul id="product_list">';
+    echo '<ol id="product_list">';
     $products = DbProduct::getList($this->category['table_prefix']);
     $count = 0;
     foreach (DbProduct::getList($this->category['table_prefix']) as $item) {
@@ -135,7 +144,7 @@ class ProductScreen extends Screen {
       echo '<div>7 个商城</div>';
       echo '</div></li>';
     }
-    echo '</ul>';
+    echo '</ol>';
     $this->renderProductListPagination();
     echo '</div>';
   }

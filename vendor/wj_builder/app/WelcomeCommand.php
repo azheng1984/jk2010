@@ -5,9 +5,9 @@ class WelcomeCommand {
   private $propertyKeyMapping = array('系统' => '操作系统', '网络' => '制式');
   private $propertyValueMapping = array('电容屏触屏' => '电容触屏', '电阻屏触屏' => '电阻触屏', 'WindowsMobile' => 'Windows Mobile',
    '联通3G' => 'WCDMA', '电信3G' => 'CDMA2000', '移动3G'=> 'TD-SCDMA');
-  private $manualProperty = array(
-    1000530369 => array('型号' => 'U73'),
-    1000468567 => array('型号' => 'M228'),
+  private $manualBrands = array(
+    '1000530369' => 'U73',
+    '1000468567' => 'M228',
     //array('优惠' => '入网返话费');
   );
 
@@ -36,6 +36,12 @@ class WelcomeCommand {
   }
 
   private function push($id, $brand, $model) {
+    var_dump($model);
+    if ($model === null) {
+      if (isset($this->manualBrands[$id])) {
+        $model = $this->manualBrands[$id];
+      }
+    }
     $brand = str_replace('（', '(', $brand);
     $brand = str_replace('）', ')', $brand);
     $keywords = array('手机', $brand, $model);
@@ -97,9 +103,5 @@ class WelcomeCommand {
     $sql = 'INSERT INTO mobile_phone_merchant(product_id, merchant_id, url, price)'
       .' VALUES(?, ?, ?, ?)';
     Db::execute($sql, $productId, 1, $url, $price);
-  }
-
-  private function addKeywords() {
-    
   }
 }
