@@ -91,7 +91,7 @@ class ProductListScreen extends Screen {
     if ($prefix !== '') {
       $prefix = '?'.$prefix.'&';
     } else {
-      
+      $prefix = '?';
       $pageOne = '.#list';
     }
     $pagination->render($prefix, $total, $this->page, $pageOne);
