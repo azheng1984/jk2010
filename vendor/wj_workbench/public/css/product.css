@@ -34,18 +34,18 @@
 #product_list {
   padding-bottom:8px;
 }
-#product_list .rate_wrapper {
+#product_list .rate {
   margin-bottom:5px;
 }
 #buy_rate {
   float:right;
 }
-.rate_wrapper {
+.rate {
   background-color:#eee;
   padding:2px 6px;
   font-size:12px;
 }
-.rate {
+.rate span {
   font-size:16px;
 }
 #buy_rate .self {
@@ -94,14 +94,14 @@
 #merchant_list a:visited {
   color:#551A8B;
 }
-#merchant_list .item {
+#merchant_list li {
   clear:both;
   padding:15px 0;
   border-top:1px #e5e5e5 dotted;
   line-height:40px;
   width:750px;
 }
-#merchant_list .item { /* ie 6 */
+#merchant_list li { /* ie 6 */
   _border:0;
   _background:url(/ie6_dotted.png) repeat-x;
 }

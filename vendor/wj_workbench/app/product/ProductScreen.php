@@ -61,7 +61,7 @@ class ProductScreen extends Screen {
   private function renderMerchantList($merchants) {
     echo '<ol id="merchant_list">';
     foreach ($merchants as $merchant) {
-      echo '<li class="item">';
+      echo '<li>';
       echo '<div class="description">';
       echo '<div class="logo"><a rel="nofollow" href="'.$merchant['url'].'" target="_blank">';
       echo '<img alt="'.$merchant['name'].'" src="/img/merchant/'.$merchant['domain'].'.gif" /></a></div>';
@@ -122,7 +122,7 @@ class ProductScreen extends Screen {
   private function renderProductList() {
     echo '<div id="product_list_title_wrapper"><div id="product_list_title">';
     echo '<h2>浏览 "'.$this->product['name'].'" 的顾客最终购买</h2>';
-    echo '<div id="buy_rate"><div class="rate_wrapper"><span class="rate">76</span>%</div> <div class="self">购买本产品</div></div>';
+    echo '<div id="buy_rate"><div class="rate"><span>76</span>%</div> <div class="self">购买本产品</div></div>';
     echo '</div></div>';
     echo '<div id="product_list_wrapper">';
     echo '<ol id="product_list">';
@@ -134,8 +134,8 @@ class ProductScreen extends Screen {
       }
       ++$count;
       $name = $item['brand'].' '.$item['model'].' '.$this->category['name'];
-      echo '<li class="item">';
-      echo '<div class="rate_wrapper"><span class="rate">12</span>%</div>';
+      echo '<li>';
+      echo '<div class="rate"><span>12</span>%</div>';
       echo '<div class="image"><a href="/'.$item['id'].'"><img title="'.$name.'" alt="'.$name.'" src="'
         .'http://img.workbench.wj.com/'.$item['id'].'.jpg" /></a></div>';
       echo '<div class="title">';
