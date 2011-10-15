@@ -90,6 +90,7 @@ class ProductListScreen extends Screen {
     $pageOne = $prefix;
     if ($prefix !== '') {
       $prefix = '?'.$prefix.'&';
+      $pageOne .= '#list';
     } else {
       $prefix = '?';
       $pageOne = '.#list';
