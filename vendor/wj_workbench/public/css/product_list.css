@@ -5,12 +5,12 @@
   border-bottom:0;
   padding:5px 0;
 }
-#filter .property {
+#filter li {
   border-bottom:1px dotted #E5E5E5;
   margin:0 10px;
   display:inline;/* ie 6 双边距 */
 }
-#filter .property { /* ie 6 */
+#filter li { /* ie 6 */
   _border:0;
   _background:url(/ie6_dotted.png) left bottom repeat-x;
 }

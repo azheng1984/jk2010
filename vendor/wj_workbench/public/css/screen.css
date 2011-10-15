@@ -12,8 +12,11 @@ a {
 a:hover {
   text-decoration:underline;
 }
-div, input, ul, li {
+div, input, ul, ol, li {
   float:left;
+}
+ul, ol {
+  margin:0;
 }
 input {
   border-width:1px;

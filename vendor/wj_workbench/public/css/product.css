@@ -11,7 +11,7 @@
 #property_list {
   padding:10px 0 0 10px;
 }
-#property_list div {
+#property_list li {
   overflow-x:auto;
   clear:left;
   width:180px;
