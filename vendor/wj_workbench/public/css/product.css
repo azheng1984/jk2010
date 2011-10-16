@@ -22,9 +22,6 @@
   height:170px;
   margin:9px 0 0 9px;
 }
-#right_wrapper {
-  padding:0;
-}
 #product_list_wrapper {
   border:0;
   padding:0;
@@ -152,7 +149,7 @@ h2 {
 #small_pagination {
   clear:left;
   text-align:center;
-  width:770px;
+  width:100%;
   padding:5px 0 20px 0;
 }
 #small_pagination span {
