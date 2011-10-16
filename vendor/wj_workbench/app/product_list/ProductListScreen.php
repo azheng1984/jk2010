@@ -71,7 +71,7 @@ class ProductListScreen extends Screen {
     foreach ($items as $item) {
       $name = $item['brand'].' '.$item['model'].' '.$this->category['name'];
       echo '<li><div class="image"><a target="_blank" href="/'.$item['id'].'"><img title="'.$name.'" alt="'.$name.'" src="http://img.workbench.wj.com/'.$item['id'].'.jpg" /></a></div><div class="title"><a target="_blank" href="/'.$item['id'].'">'
-        .$name.'</a></div><div class="data"><div>&yen;<span class="price">'.$item['lowest_price'].'</span> ~ <span class="price">1234567890</span></div> <div>7 个商城</div></div></li>';
+        .$name.'</a></div><div class="data"><div>&yen;<span class="price">'.$item['lowest_price'].'</span> ~ <span class="price">12345</span></div> <div>7 个商城</div></div></li>';
     }
     echo '</ol></div>';
     $this->renderPagination($result['total']);
