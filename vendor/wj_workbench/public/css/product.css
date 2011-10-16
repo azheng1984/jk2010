@@ -73,7 +73,7 @@
   _background:url(/ie6_dotted.png) bottom left repeat-x;
 }
 .ads div {
-  padding:0 21px;
+  padding-left:21px;
   height:90px;/* chrome */
 }
 #sort, #total {
@@ -94,6 +94,7 @@
 #merchant_list li {
   padding:15px 0;
   margin:0 10px;
+  display:inline; /* ie 6 */
   border-top:1px #e5e5e5 dotted;
   line-height:40px;
 }
@@ -157,10 +158,12 @@ h2 {
   background:#ccc;
   margin:6px 8px;
   float:left;
+  overflow:hidden; /* ie 6 */
 }
 #small_pagination .selected {
   background:red;
   margin-left:350px;
+    display:inline; /* ie 6 */
 }
 #small_pagination a {
   float: left;
