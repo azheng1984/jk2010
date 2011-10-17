@@ -8,7 +8,21 @@ class WelcomeCommand {
   private $manualBrands = array(
     '1000530369' => 'U73',
     '1000468567' => 'M228',
-    //array('优惠' => '入网返话费');
+  );
+  private $iphone = array(
+    '颜色' => array('黑色', '白色'),
+    '内存' => array('16GB', '32GB'),
+    '联通套餐' => array()
+  );
+  private $iphoneMapping = array(
+    '317360' => array('黑色', '16G', true),
+    '317363' => array('黑色', '32G', true),
+    '391254' => array('白色', '16G', true),
+    '293275' => array('白色', '32G', true),
+    '292790' => array('黑色', '32G', false),
+    '292497' => array('黑色', '16G', false),
+    '293276' => array('白色', '16G', false),
+    '391732' => array('白色', '32G', false)
   );
 
   private function initialize() {
