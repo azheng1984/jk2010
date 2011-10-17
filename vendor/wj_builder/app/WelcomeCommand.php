@@ -9,11 +9,12 @@ class WelcomeCommand {
     '1000530369' => 'U73',
     '1000468567' => 'M228',
   );
-  private $iphone = array(
+  private $iphoneCollection = array(
     '颜色' => array('黑色', '白色'),
     '内存' => array('16GB', '32GB'),
-    '联通套餐' => array()
+    '联通套餐'
   );
+  private $iphone4Id;
   private $iphoneMapping = array(
     '317360' => array('黑色', '16G', true),
     '317363' => array('黑色', '32G', true),
@@ -50,7 +51,6 @@ class WelcomeCommand {
   }
 
   private function push($id, $brand, $model) {
-    var_dump($model);
     if ($model === null) {
       if (isset($this->manualBrands[$id])) {
         $model = $this->manualBrands[$id];
@@ -58,6 +58,9 @@ class WelcomeCommand {
     }
     $brand = str_replace('（', '(', $brand);
     $brand = str_replace('）', ')', $brand);
+    if ($brand === '苹果(Apple)' && $model = 'iPhone 4') {
+      $collectionValue = $this->iphoneCollection[$id];
+    }
     $keywords = array('手机', $brand, $model);
     Db::execute('USE jingdong');
     $sql = 'SELECT v.key_id, v.value FROM product_property_value p LEFT JOIN property_value v ON p.property_value_id = v.id WHERE product_id = ?';
@@ -92,6 +95,9 @@ class WelcomeCommand {
     Db::execute($sql, $brand, $model, implode(',', $propertyValueList), $price, implode(',', $keywords));
     $connection = DbConnection::get();
     $wjId = $connection->lastInsertId();
+    if ($brand === '苹果(Apple)' && $model = 'iPhone 4') {
+      $this->iphone4Id = $wjId;
+    }
     $sql = 'INSERT INTO global_product_index(category_id, product_id) VALUES(2, ?)';
     Db::execute($sql, $wjId);
     $this->addMerchant($wjId, $id, $price);

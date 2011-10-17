@@ -21,6 +21,26 @@
   width:770px;
   float:right;
 }
+#merchant_filter {
+  padding:20px 0;
+  border-bottom:1px solid #e5e5e5;
+}
+#merchant_filter li {
+  clear:left;
+  padding:10px;
+}
+#property_list .image {
+  margin:2px;
+}
+#property_list .selected {
+  padding:2px;
+  width:80px;
+  background:red;
+  color:#fff; 
+}
+#property_list .selected a {
+  color:#fff; 
+}
 #product_list_wrapper {
   float:right;
   width:770px;
