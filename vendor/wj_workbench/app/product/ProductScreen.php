@@ -37,7 +37,7 @@ class ProductScreen extends Screen {
     $breadcrumb->render();
     echo '<div id="h1_wrapper">';
     echo '<h1>'.$this->product['name'].'</h1>';
-    echo '<div id="action"><a rel="nofollow" href="/">对比</a> <a rel="nofollow" href="/">关注 <span class="note">12134</span></a> <a rel="nofollow" href="/">分享</a></div>';
+    echo '<div id="action"><a rel="nofollow" href="javascript:void(0)">对比</a> <a rel="nofollow" href="javascript:void(0)">关注 <span class="note">12134</span></a> <a rel="nofollow" href="javascript:void(0)">分享</a></div>';
     echo '</div>';
     echo '<div id="product">';
     $this->renderPropertyList($categories);
@@ -47,16 +47,47 @@ class ProductScreen extends Screen {
 
    private function renderRight() {
     $merchants = DbMerchant::getList($this->product['id']);
-    //echo '<div>';
-    echo '<div id="list"><div id="sort">排序: <span>销量</span> <a rel="nofollow" href="/">价格</a></div>';
+    echo '<div id="list"><div id="sort">排序: <span>销量</span> <a rel="nofollow" href="javascript:void(0)">价格</a></div>';
     echo '<div id="total">找到 '.count($merchants).' 个商家</div>';
     echo '</div>';
     $this->renderMerchantList($merchants);
     $this->renderAds(true);
     $this->renderProductList();
     $this->renderAds(true);
-    //echo '</div>';
    }
+
+  private function renderCollectionProperty() {
+      $iphoneCollection = array(
+      '颜色' => array('黑色' => '9114', '白色' => '9163'),
+      '内存' => array('16GB', '32GB'),
+      '套餐' => array('联通'),
+    );
+      foreach ($iphoneCollection as $key => $value) {
+      if (!is_string($key)) {
+        echo '<li>'.'<a href="javascript:void(0)">'.$value.'</a>'.'</li>';
+        continue;
+      }
+      if ($key === '颜色') {
+        echo '<li><div>'.$key.':</div><br />';
+        foreach ($value as $color => $imgId) {
+          echo '<div class="image';
+          if ($color === '白色') {
+            echo ' selected';
+          }
+          echo '">';
+          echo '<a href="javascript:void(0)"><img style="width:80px;height:80px;vertical-align:top" src="http://img.workbench.wj.com/'.$imgId.'.jpg" />';
+          echo '<br />'.$color.'</a></div>';
+        }
+        echo '</li>';
+        continue;
+      }
+      $tmps = array();
+      foreach ($value as $item) {
+        $tmps[] = '<a href="javascript:void(0)">'.$item.'</a>';
+      }
+      echo '<li>'.$key.': '.implode(', ', $tmps).'</li>';
+    }
+  }
 
   private function renderMerchantList($merchants) {
     echo '<ol id="merchant_list">';
@@ -98,13 +129,10 @@ class ProductScreen extends Screen {
       $values = $properties[$key];
       if ($key === '型号') {
         echo $values[0].'</li>';
+        $this->renderCollectionProperty();
         continue;
       }
-      $tmps = array();
-      foreach ($values as $value) {
-        $tmps[] = '<a rel="nofollow" href="'.$categoryPath.'?'.urlencode($key).'='.urlencode($value).'">'.$value.'</a>';
-      }
-      echo implode(', ', $tmps), '</li>';
+      echo implode(', ', $values), '</li>';
     }
     echo '</ul>';
   }
