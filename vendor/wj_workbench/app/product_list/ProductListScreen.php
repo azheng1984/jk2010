@@ -64,7 +64,7 @@ class ProductListScreen extends Screen {
       }
     }
     echo '<div id="list">';
-    echo '<div id="sort">排序: <span>销量</span> <a rel="nofollow" href="/">新品</a> <a href="/" rel="nofollow">降价</a> <a rel="nofollow" href="/">价格</a></div>';
+    echo '<div id="sort">排序: <span>销量</span> <a rel="nofollow" href=".">新品</a> <a href="." rel="nofollow">降价</a> <a rel="nofollow" href=".">价格</a></div>';
     echo '<div id="total">找到 '.$result['total'].' 个产品</div>';
     echo '</div>';
     echo '<div id="product_list_wrapper"><ol id="product_list">';
