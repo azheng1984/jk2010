@@ -76,7 +76,11 @@ class ProductScreen extends Screen {
           }
           echo '">';
           echo '<a href="javascript:void(0)"><img style="width:80px;height:80px;vertical-align:top" src="http://img.workbench.wj.com/'.$imgId.'.jpg" />';
-          echo '<br />'.$color.'</a></div>';
+          echo '<br />'.$color;
+          if ($color === '白色') {
+            echo '<span class="x"></span>';
+          }
+          echo '</a></div>';
         }
         echo '</li>';
         continue;
@@ -162,7 +166,7 @@ class ProductScreen extends Screen {
       $name = $item['brand'].' '.$item['model'].' '.$this->category['name'];
       echo '<li>';
       echo '<div class="rate"><span>12</span>%</div>';
-      echo '<div class="image"><a href="/'.$item['id'].'"><img title="'.$name.'" alt="'.$name.'" src="'
+      echo '<div class="image"><a href="/'.$item['id'].'"><img alt="'.$name.'" src="'
         .'http://img.workbench.wj.com/'.$item['id'].'.jpg" /></a></div>';
       echo '<div class="title">';
       echo '<a href="/'.$item['id'].'">'.$name.'</a></div><div class="data">';
