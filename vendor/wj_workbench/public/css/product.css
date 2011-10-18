@@ -30,17 +30,21 @@
   padding:10px;
 }
 #property_list .image {
-  margin:2px;
+  margin:8px;
+    padding:2px;
 }
 #property_list .selected {
   background: red;
-  padding:2px;
-  width:80px;
+  width:65px;
   color:#fff;
   position:relative;
 }
 #property_list .selected a {
   color:#fff;
+  display:block;
+}
+#property_list .selected a:hover {
+  text-decoration:none;
 }
 #property_list .selected a .x {
   display:block;
@@ -49,7 +53,7 @@
   height:10px;
   position:absolute;
   top:0;
-  left:74px;
+  left:58px;
 }
 #product_list_wrapper {
   float:right;
