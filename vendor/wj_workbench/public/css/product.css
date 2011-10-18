@@ -31,7 +31,7 @@
 }
 #property_list .image {
   margin:8px;
-    padding:2px;
+  padding:2px 2px 0 2px;
 }
 #property_list .selected {
   background: red;
