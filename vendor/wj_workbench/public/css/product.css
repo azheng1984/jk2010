@@ -197,8 +197,10 @@ h2 {
 }
 #small_pagination .selected {
   background:red;
-  margin-left:350px;
-    display:inline; /* ie 6 */
+  display:inline; /* ie 6 */
+}
+#small_pagination .left {
+  margin-left:280px;
 }
 #small_pagination a {
   float: left;
