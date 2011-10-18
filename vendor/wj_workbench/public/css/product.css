@@ -33,13 +33,23 @@
   margin:2px;
 }
 #property_list .selected {
+  background: red;
   padding:2px;
   width:80px;
-  background:red;
-  color:#fff; 
+  color:#fff;
+  position:relative;
 }
 #property_list .selected a {
-  color:#fff; 
+  color:#fff;
+}
+#property_list .selected a .x {
+  display:block;
+  background: url(/x.png) red no-repeat top right;
+  width:10px;
+  height:10px;
+  position:absolute;
+  top:0;
+  left:74px;
 }
 #product_list_wrapper {
   float:right;
