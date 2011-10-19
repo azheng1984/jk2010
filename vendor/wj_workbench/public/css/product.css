@@ -186,12 +186,15 @@ h2 {
 #product_list .image {
   clear:left;
 }
-#small_pagination {
-  text-align:center;
+#scroll_wrapper {
   width:100%;
   padding:5px 0 20px 0;
 }
-#small_pagination span {
+#scroll {
+  position:relative;
+  left:50%;
+}
+#scroll span {
   display:block;
   width:8px;
   height:8px;
@@ -199,15 +202,16 @@ h2 {
   margin:6px 8px;
   float:left;
   overflow:hidden; /* ie 6 */
+  position:relative;
+  right:50%;
 }
-#small_pagination .selected {
+#scroll .selected {
   background:red;
   display:inline; /* ie 6 */
 }
-#small_pagination .left {
-  margin-left:280px;
-}
-#small_pagination a {
+#scroll a {
+  position:relative;
+  right:50%;
   float: left;
   display: block;
   border: #E5E5E5 1px solid;
@@ -216,7 +220,7 @@ h2 {
   background: url(/button_bk.png) 0 -5px repeat-x;
   margin: 0 10px;
 }
-#small_pagination a:hover {
+#scroll a:hover {
   border:1px solid #b6c9ed;
   text-decoration:none;
 }
