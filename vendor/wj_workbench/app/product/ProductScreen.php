@@ -57,12 +57,11 @@ class ProductScreen extends Screen {
    }
 
   private function renderCollectionProperty() {
-    $iphoneCollection = array(
-      '颜色' => array('黑色' => '9114', '白色' => '9163'),
-      '内存' => array('16GB', '32GB'),
-      '套餐' => array('联通'),
-    );
-    foreach ($iphoneCollection as $key => $value) {
+    if ($this->product['product_property_value_list'] === null) {
+      return;
+    }
+    $values = eval('return '.$this->product['product_property_value_list'].';');
+    foreach ($values as $key => $value) {
       if (!is_string($key)) {
         echo '<li>'.'<a href="javascript:void(0)">'.$value.'</a>'.'</li>';
         continue;
@@ -75,7 +74,12 @@ class ProductScreen extends Screen {
             echo ' selected';
           }
           echo '">';
-          echo '<a href="?'.$key.'='.$color.'"><img src="http://img.workbench.wj.com/'.$imgId.'.jpg" />';
+          if (isset($_GET['颜色']) && $_GET['颜色'] === $color) {
+            echo '<a href="/'.$this->product['id'].'">';
+          } else {
+            echo '<a href="?'.$key.'='.$color.'">';
+          }
+          echo '<img src="http://img.workbench.wj.com/'.$imgId.'.jpg" />';
           echo '<br />'.$color;
           if (isset($_GET['颜色']) && $_GET['颜色'] === $color) {
             echo '<span class="x"></span>';
@@ -87,7 +91,11 @@ class ProductScreen extends Screen {
       }
       $tmps = array();
       foreach ($value as $item) {
-        $tmp = '<a href="?'.$key.'='.$item.'"';
+        if (isset($_GET[$key]) && $_GET[$key] === $item) {
+          $tmp = '<a href="/'.$this->product['id'].'"';
+        } else {
+          $tmp = '<a href="?'.$key.'='.$item.'"';
+        }
         $tmp .= '>'.$item.'</a>';
         if (isset($_GET[$key]) && $_GET[$key] === $item) {
           $tmp = '<strong>'.$tmp.'</strong>';
