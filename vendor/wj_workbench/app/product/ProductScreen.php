@@ -57,12 +57,12 @@ class ProductScreen extends Screen {
    }
 
   private function renderCollectionProperty() {
-      $iphoneCollection = array(
+    $iphoneCollection = array(
       '颜色' => array('黑色' => '9114', '白色' => '9163'),
       '内存' => array('16GB', '32GB'),
       '套餐' => array('联通'),
     );
-      foreach ($iphoneCollection as $key => $value) {
+    foreach ($iphoneCollection as $key => $value) {
       if (!is_string($key)) {
         echo '<li>'.'<a href="javascript:void(0)">'.$value.'</a>'.'</li>';
         continue;
@@ -71,13 +71,13 @@ class ProductScreen extends Screen {
         echo '<li><div>'.$key.':</div><br />';
         foreach ($value as $color => $imgId) {
           echo '<div class="image';
-          if ($color === '白色') {
+          if (isset($_GET['颜色']) && $_GET['颜色'] === $color) {
             echo ' selected';
           }
           echo '">';
-          echo '<a href="javascript:void(0)"><img src="http://img.workbench.wj.com/'.$imgId.'.jpg" />';
+          echo '<a href="?'.$key.'='.$color.'"><img src="http://img.workbench.wj.com/'.$imgId.'.jpg" />';
           echo '<br />'.$color;
-          if ($color === '白色') {
+          if (isset($_GET['颜色']) && $_GET['颜色'] === $color) {
             echo '<span class="x"></span>';
           }
           echo '</a></div>';
@@ -87,7 +87,12 @@ class ProductScreen extends Screen {
       }
       $tmps = array();
       foreach ($value as $item) {
-        $tmps[] = '<a href="javascript:void(0)">'.$item.'</a>';
+        $tmp = '<a href="?'.$key.'='.$item.'"';
+        $tmp .= '>'.$item.'</a>';
+        if (isset($_GET[$key]) && $_GET[$key] === $item) {
+          $tmp = '<strong>'.$tmp.'</strong>';
+        }
+        $tmps[] = $tmp;
       }
       echo '<li>'.$key.': '.implode(', ', $tmps).'</li>';
     }
@@ -171,7 +176,7 @@ class ProductScreen extends Screen {
       echo '<div class="title">';
       echo '<a href="/'.$item['id'].'">'.$name.'</a></div><div class="data">';
       echo '<div>&yen;<span class="price">'.$item['lowest_price'].'</span> ~ <span class="price">12299.84</span></div>';
-      echo '<div>7 个商城</div>';
+      echo '<div>1 个商城</div>';
       echo '</div></li>';
     }
     echo '</ol>';
