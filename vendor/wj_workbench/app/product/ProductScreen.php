@@ -75,7 +75,7 @@ class ProductScreen extends Screen {
             echo ' selected';
           }
           echo '">';
-          echo '<a href="javascript:void(0)"><img style="width:65px;height:65px;vertical-align:top" src="http://img.workbench.wj.com/'.$imgId.'.jpg" />';
+          echo '<a href="javascript:void(0)"><img src="http://img.workbench.wj.com/'.$imgId.'.jpg" />';
           echo '<br />'.$color;
           if ($color === '白色') {
             echo '<span class="x"></span>';

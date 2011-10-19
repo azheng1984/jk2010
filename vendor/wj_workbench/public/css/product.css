@@ -33,6 +33,11 @@
   margin:8px;
   padding:2px 2px 0 2px;
 }
+#property_list a img {
+  width:65px;
+  height:65px;
+  vertical-align:top;
+}
 #property_list .selected {
   background: red;
   width:65px;
@@ -206,7 +211,7 @@ h2 {
   float: left;
   display: block;
   border: #E5E5E5 1px solid;
-  padding:0 15px;
+  padding:0 12px;
   height: 20px;
   background: url(/button_bk.png) 0 -5px repeat-x;
   margin: 0 10px;
