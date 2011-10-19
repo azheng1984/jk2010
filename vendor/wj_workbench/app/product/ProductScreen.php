@@ -180,7 +180,7 @@ class ProductScreen extends Screen {
   }
 
   private function renderProductListPagination() {
-    echo '<div id="small_pagination"><a class="left" href="javascript:void(0)">&laquo;</a><span class="selected"></span><span></span><span></span><span></span><span></span><a href="javascript:void(0)">&raquo;</a></div>';
+    echo '<div id="scroll_wrapper"><div id="scroll"><a class="left" href="javascript:void(0)">&laquo;</a><span class="selected"></span><span></span><span></span><span></span><span></span><a href="javascript:void(0)">&raquo;</a></div></div>';
   }
 
   private function renderAds($isImage = false) {
