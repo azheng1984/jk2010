@@ -48,6 +48,14 @@
   color:#fff;
   position:relative;
 }
+#property_list strong a {
+  color:#fff;
+  font-weight:normal;
+  background:url(/x.png) red no-repeat top right;
+  cursor:pointer;
+  padding:1px 10px 1px 1px;
+  text-decoration:none;
+}
 #property_list .selected a {
   color:#fff;
   display:block;
