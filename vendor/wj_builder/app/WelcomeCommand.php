@@ -10,9 +10,9 @@ class WelcomeCommand {
     '1000468567' => 'M228',
   );
   private $iphoneCollection = array(
-    '颜色' => array('黑色', '白色'),
+    '颜色' => array('黑色' => '9114', '白色' => '9163'),
     '内存' => array('16GB', '32GB'),
-    '联通套餐'
+    '套餐' => array('联通'),
   );
   private $iphone4Id;
   private $iphoneMapping = array(
@@ -59,7 +59,7 @@ class WelcomeCommand {
     $brand = str_replace('（', '(', $brand);
     $brand = str_replace('）', ')', $brand);
     if ($brand === '苹果(Apple)' && $model = 'iPhone 4') {
-      $collectionValue = $this->iphoneCollection[$id];
+      //$collectionValue = $this->iphoneCollection[$id];
     }
     $keywords = array('手机', $brand, $model);
     Db::execute('USE jingdong');
@@ -91,8 +91,13 @@ class WelcomeCommand {
     $sql = 'SELECT promotion_price FROM price WHERE product_id = ?';
     $price = Db::getColumn($sql, $id);
     Db::execute('USE wj');
-    $sql = 'INSERT INTO `mobile_phone_product`(`brand`, model, property_value_list, lowest_price, keyword_list) VALUES(?, ?, ?, ?, ?)';
-    Db::execute($sql, $brand, $model, implode(',', $propertyValueList), $price, implode(',', $keywords));
+    if ($brand === '苹果(Apple)' && $model = 'iPhone 4') {
+      $sql = 'INSERT INTO `mobile_phone_product`(`brand`, model, property_value_list, lowest_price, keyword_list, product_property_value_list) VALUES(?, ?, ?, ?, ?, ?)';
+      Db::execute($sql, $brand, $model, implode(',', $propertyValueList), $price, implode(',', $keywords), var_export($this->iphoneCollection, true));
+    } else {
+      $sql = 'INSERT INTO `mobile_phone_product`(`brand`, model, property_value_list, lowest_price, keyword_list) VALUES(?, ?, ?, ?, ?)';
+      Db::execute($sql, $brand, $model, implode(',', $propertyValueList), $price, implode(',', $keywords));
+    }
     $connection = DbConnection::get();
     $wjId = $connection->lastInsertId();
     if ($brand === '苹果(Apple)' && $model = 'iPhone 4') {
