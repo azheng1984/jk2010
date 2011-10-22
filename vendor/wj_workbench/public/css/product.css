@@ -19,6 +19,13 @@
 }
 #property_list .image a {
   display:block;
+  padding:1px 1px 0 1px;
+  background: #eee;
+  border:1px solid #eee;
+}
+#property_list .image a:hover {
+  border:1px solid #b6c9ed;
+  text-decoration:none;
 }
 .ads, #list, #merchant_list {
   width:770px;
@@ -34,19 +41,21 @@
 }
 #property_list .image {
   margin:8px;
-  padding:2px 2px 0 2px;
-  background: #e5e5e5;
 }
 #property_list a img {
   width:65px;
   height:65px;
   vertical-align:top;
 }
-#property_list .selected {
-  background: red;
+#property_list .selected a {
+  background:red;
+  border:1px solid red;
   width:65px;
   color:#fff;
   position:relative;
+}
+#property_list .selected a:hover {
+  border:1px solid red;
 }
 #property_list strong a {
   color:#fff;
