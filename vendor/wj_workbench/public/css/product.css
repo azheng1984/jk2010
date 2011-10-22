@@ -25,6 +25,7 @@
 }
 #property_list .image a:hover {
   border:1px solid #b6c9ed;
+
   text-decoration:none;
 }
 .ads, #list, #merchant_list {
