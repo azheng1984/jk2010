@@ -79,7 +79,7 @@ class ProductScreen extends Screen {
           } else {
             echo '<a href="?'.$key.'='.$color.'">';
           }
-          echo '<img src="http://img.workbench.wj.com/'.$imgId.'.jpg" />';
+          echo '<img  onerror="this.src=\'/x.jpg\'" src="http://img.workbench.wj.com/'.$imgId.'.jpg" />';
           echo '<br />'.$color;
           if (isset($_GET['颜色']) && $_GET['颜色'] === $color) {
             echo '<span class="x"></span>';
