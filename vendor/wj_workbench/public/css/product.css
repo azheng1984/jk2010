@@ -211,7 +211,7 @@ h2 {
   width:8px;
   height:8px;
   background:#ccc;
-  margin:6px 8px;
+  margin:6px;
   float:left;
   overflow:hidden; /* ie 6 */
   position:relative;
@@ -224,13 +224,14 @@ h2 {
 #scroll a {
   position:relative;
   right:50%;
-  float: left;
-  display: block;
-  border: #E5E5E5 1px solid;
+  float:left;
+  display:block;
+  border:#E5E5E5 1px solid;
   padding:0 12px;
-  height: 20px;
-  background: url(/button_bk.png) 0 -5px repeat-x;
-  margin: 0 10px;
+  height:16px;
+  background:url(/button_bk.png) 0 -5px repeat-x;
+  margin:0 10px;
+  line-height:14px;
 }
 #scroll a:hover {
   border:1px solid #b6c9ed;
