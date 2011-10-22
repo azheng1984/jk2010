@@ -220,7 +220,7 @@ h2 {
   width:8px;
   height:8px;
   background:#ccc;
-  margin:6px;
+  margin:5px 8px;
   float:left;
   overflow:hidden; /* ie 6 */
   position:relative;
