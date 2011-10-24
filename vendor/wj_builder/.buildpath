@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<buildpath>
+	<buildpathentry kind="src" path="public"/>
+	<buildpathentry kind="con" path="com.zend.php.phpunit.CONTAINER"/>
+	<buildpathentry kind="src" path="app"/>
+	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
+	<buildpathentry kind="src" path="cache"/>
+	<buildpathentry kind="src" path="config"/>
+	<buildpathentry kind="con" path="org.eclipse.dltk.USER_LIBRARY/hf"/>
+	<buildpathentry kind="src" path="lib/util/db"/>
+	<buildpathentry kind="src" path="test"/>
+</buildpath>

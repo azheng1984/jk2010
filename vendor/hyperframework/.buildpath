@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<buildpath>
+	<buildpathentry kind="src" path="class_loader/test"/>
+	<buildpathentry kind="src" path="tool/cache"/>
+	<buildpathentry kind="src" path="tool/public"/>
+	<buildpathentry kind="src" path="tool/lib"/>
+	<buildpathentry kind="src" path="class_loader/lib"/>
+	<buildpathentry kind="src" path="tool/config"/>
+	<buildpathentry kind="src" path="tool/test"/>
+	<buildpathentry kind="con" path="com.zend.php.phpunit.CONTAINER"/>
+	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
+	<buildpathentry kind="src" path="cli/lib"/>
+	<buildpathentry kind="src" path="web/lib"/>
+	<buildpathentry kind="src" path="cli/test"/>
+	<buildpathentry kind="src" path="web/test"/>
+	<buildpathentry kind="src" path="tool/app"/>
+</buildpath>
