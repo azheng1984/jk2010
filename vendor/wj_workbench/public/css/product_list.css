@@ -52,10 +52,10 @@
 }
 #pagination a {
   border:1px solid #e5e5e5;
-  padding:6px 10px;
+  padding:4px 8px;
   background:url(/button_bk.png) repeat-x;
   margin:0 1px;
-  font-size:16px;
+  font-size:14px;
   position:relative;
 }
 #pagination a:hover {
@@ -65,9 +65,8 @@
 #pagination span {
   background-color:red;
   color:#fff;
-  padding:7px 10px;
-  margin:0 1px;
-  font-size:16px;
+  padding:5px 9px;
+  font-size:14px;
 }
 #pagination a span {
   background:none;
