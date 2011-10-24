@@ -49,12 +49,14 @@
   border:1px solid #e5e5e5;
   border-top:0;
   border-bottom:0;
-  color:#ccc;
 }
 #pagination a {
   border:1px solid #e5e5e5;
-  padding:4px 8px;
+  padding:6px 10px;
   background:url(/button_bk.png) repeat-x;
+  margin:0 1px;
+  font-size:16px;
+  position:relative;
 }
 #pagination a:hover {
   border:1px solid #b6c9ed;
@@ -63,7 +65,16 @@
 #pagination span {
   background-color:red;
   color:#fff;
-  padding:5px 9px;
+  padding:7px 10px;
+  margin:0 1px;
+  font-size:16px;
+}
+#pagination a span {
+  background:none;
+  font-size:14px;
+  color:#999;
+  margin:0;
+  padding:0;
 }
 #list {
   border:1px solid #E5E5E5;
