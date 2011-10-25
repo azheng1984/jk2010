@@ -1,5 +1,5 @@
 <?php
-class JingDongImporterCommand {
+class JingDongProductParser {
   public function execute() {
     $sql = 'SELECT * FROM product';
     foreach (Db::getAll($sql) as $product) {
@@ -59,33 +59,33 @@ class JingDongImporterCommand {
 
   private function getSectionKeyId($sectionName) {
     $sql = "SELECT id FROM property_key WHERE `key` = ?";
-    $parentId = Db2::getColumn($sql, $sectionName);
+    $parentId = Db::getColumn($sql, $sectionName);
     if ($parentId === false) {
       $sql = "INSERT INTO property_key(`key`) VALUES(?)";
-      Db2::execute($sql, $sectionName);
-      $parentId = Db2::getLastInsertId();
+      Db::execute($sql, $sectionName);
+      $parentId = Db::getLastInsertId();
     }
     return $parentId;
   }
 
   private function getKeyId($key, $parentId) {
     $sql = "SELECT id FROM property_key WHERE `key` = ? and parent_id = ?";
-    $id = Db2::getColumn($sql, $key, $parentId);
+    $id = Db::getColumn($sql, $key, $parentId);
     if ($parentId === false) {
       $sql = "INSERT INTO property_key(`key`, parent_id) VALUES(?, ?)";
-      Db2::execute($sql, $key, $parentId);
-      $id = Db2::getLastInsertId();
+      Db::execute($sql, $key, $parentId);
+      $id = Db::getLastInsertId();
     }
     return $id;
   }
 
   private function getValueId($value, $keyId) {
     $sql = "SELECT id FROM property_value WHERE `value` = ? AND key_id = ?";
-    $id = Db2::getColumn($sql, $value, $keyId);
+    $id = Db::getColumn($sql, $value, $keyId);
     if ($id === false) {
       $sql = "INSERT INTO property_value(`value`, key_id) VALUES(?, ?)";
-      Db2::execute($sql, $value, $keyId);
-      $id = Db2::getLastInsertId();
+      Db::execute($sql, $value, $keyId);
+      $id = Db::getLastInsertId();
     }
     return $id;
   }
@@ -94,15 +94,15 @@ class JingDongImporterCommand {
     $keyId = $this->getKeyId($key, $parentKeyId);
     $valueId = $this->getValueId($value, $keyId);
     $sql = "SELECT id FROM product_property_value WHERE product_id = ? AND property_value_id = ?";
-    $id = Db2::getColumn($sql, $productId, $valueId);
+    $id = Db::getColumn($sql, $productId, $valueId);
     if ($id === false) {
       $sql = "INSERT INTO product_property_value(`product_id`, property_value_id) VALUES(?, ?)";
-      Db2::execute($sql, $productId, $valueId);
+      Db::execute($sql, $productId, $valueId);
     }
   }
 
   private function storeProductRecognitionInfo($productId, $brand, $model, $color) {
     $sql = "INSERT INTO product_recognition_info(product_id, brand, model, color) VALUES(?, ?, ?, ?)";
-    Db2::execute($sql, $productId, $brand, $model, $color);
+    Db::execute($sql, $productId, $brand, $model, $color);
   }
 }

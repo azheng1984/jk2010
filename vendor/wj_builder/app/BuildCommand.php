@@ -1,5 +1,5 @@
 <?php
-class WelcomeCommand {
+class BuildCommand {
   private $properties = array();
   private $propertyKeyIndex = array();
   private $propertyKeyMapping = array('系统' => '操作系统', '网络' => '制式');
