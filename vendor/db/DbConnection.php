@@ -24,9 +24,7 @@ class DbConnection {
 
   private static function getFactory() {
     if (self::$factory === null) {
-      $class = defined('DB_CONNECTION_FACTORY_CLASS') ?
-        DB_CONNECTION_FACTORY_CLASS : 'DbConnectionFactory';
-      self::$factory = new $class;
+      self::$factory = new DbConnectionFactory;
     }
     return self::$factory;
   }
