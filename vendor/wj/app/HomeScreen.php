@@ -1,7 +1,6 @@
 <?php
 class HomeScreen extends Screen {
   public function renderContent() {
-  	echo '<div style="padding:40px;color:white;background:red;font-size:20px;">★</div>';
     $categories = DbCategory::getList();
     echo '<div id="home"><ul id="category_list" class="home_category_list">';
     for($i = 1; $i < 10; ++$i) {
