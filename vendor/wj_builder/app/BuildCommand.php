@@ -27,7 +27,10 @@ class BuildCommand {
   );
 
   private function initialize() {
+    `cd ~/wj_img/2;rm *`;
     Db::execute('USE wj');
+    Db::execute('delete from mobile_phone_product');
+    Db::execute('delete from mobile_phone_merchant');
     $items = Db::getAll('SELECT * FROM mobile_phone_property_key');
     foreach ($items as $item) {
       $this->properties[$item['key']] = array('_id' => $item['id']);
@@ -48,6 +51,14 @@ class BuildCommand {
     foreach ($items as $item) {
       $this->push($item['product_id'], $item['brand'], $item['model']);
     }
+  }
+
+  public function execute2() {
+    //foreach 获取爬虫更新的产品
+    //parse 后对比更新，如果和原记录一样，又没有要求强制更新，continue; 如果是新记录,insert
+    //识别产品，属性映射（包括图片和分类），如果不需要更新，continue
+    //end foreach
+    //生成更新包(增量/全量，更新脚本)
   }
 
   private function push($id, $brand, $model) {
@@ -92,11 +103,12 @@ class BuildCommand {
     $price = Db::getColumn($sql, $id);
     Db::execute('USE wj');
     if ($brand === '苹果(Apple)' && $model = 'iPhone 4') {
-      $sql = 'INSERT INTO `mobile_phone_product`(`brand`, model, property_value_list, lowest_price, keyword_list, product_property_value_list) VALUES(?, ?, ?, ?, ?, ?)';
-      Db::execute($sql, $brand, $model, implode(',', $propertyValueList), $price, implode(',', $keywords), var_export($this->iphoneCollection, true));
-    } else {
-      $sql = 'INSERT INTO `mobile_phone_product`(`brand`, model, property_value_list, lowest_price, keyword_list) VALUES(?, ?, ?, ?, ?)';
+      $sql = 'INSERT INTO `mobile_phone_product`(`brand`, model, property_list, lowest_price, keywords) VALUES(?, ?, ?, ?, ?)';
       Db::execute($sql, $brand, $model, implode(',', $propertyValueList), $price, implode(',', $keywords));
+      $collectionValue = var_export($this->iphoneCollection, true);
+    } else {
+      $sql = 'INSERT INTO `mobile_phone_product`(`brand`, model, property_list, lowest_price, keywords) VALUES(?, ?, ?, ?, ?)';
+      Db::execute($sql, $brand,$model, implode(',', $propertyValueList), $price, implode(',', $keywords));
     }
     $connection = DbConnection::get();
     $wjId = $connection->lastInsertId();

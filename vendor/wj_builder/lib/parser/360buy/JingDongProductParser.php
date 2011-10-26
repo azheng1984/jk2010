@@ -1,6 +1,6 @@
 <?php
 class JingDongProductParser {
-  public function execute() {
+  public function parse() {
     $sql = 'SELECT * FROM product';
     foreach (Db::getAll($sql) as $product) {
       $html = gzuncompress($product['html']);
@@ -32,7 +32,6 @@ class JingDongProductParser {
             $matches,
             PREG_SET_ORDER
           );
-
           foreach ($matches as $match) {
             $key = $match[1];
             $value = $match[2];
@@ -50,7 +49,6 @@ class JingDongProductParser {
             }
             $this->addProductKeyValue($product['id'], $parentId, $key, $value);
           }
-          
         }
         $this->storeProductRecognitionInfo($product['id'], $brand, $model, $color);
       }
