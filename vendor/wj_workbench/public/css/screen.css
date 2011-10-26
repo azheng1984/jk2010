@@ -40,9 +40,15 @@ input {
 }
 #logo a {
   position:relative;
-  display: block;
+  display:block;
   width:90px;
   height:25px;
+  font-size:22px;
+  color:red;
+  padding-top:3px;
+  padding-left:1px;
+  text-decoration:none;
+  overflow:hidden;
 }
 #logo .image {
   position:absolute;
