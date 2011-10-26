@@ -57,6 +57,7 @@ class ProductScreen extends Screen {
    }
 
   private function renderCollectionProperty() {
+    return;
     if ($this->product['product_property_value_list'] === null) {
       return;
     }
@@ -112,7 +113,7 @@ class ProductScreen extends Screen {
       echo '<li>';
       echo '<div class="description">';
       echo '<div class="logo"><a rel="nofollow" href="'.$merchant['url'].'" target="_blank">';
-      echo '<img alt="'.$merchant['name'].'" src="/img/merchant/'.$merchant['domain'].'.gif" /></a></div>';
+      echo '<img alt="'.$merchant['name'].'" src="/img/merchant/360buy.com.gif" /></a></div>';
       echo '<div class="name"><a href="'.$merchant['url'].'" target="_blank" rel="nofollow">';
       echo $merchant['name'].'</a></div>';
       echo '</div>';
@@ -130,7 +131,7 @@ class ProductScreen extends Screen {
     $categoryPath = $this->getCategoryPath($categories);
     $properties = array();
     $sortIndex = array();
-    foreach (explode(',', $this->product['property_value_list']) as $id) {
+    foreach (explode(',', $this->product['property_list']) as $id) {
       $result = DbProperty::getByValueId($this->category['table_prefix'], $id);
       if (!isset($properties[$result['key']])) {
         $properties[$result['key']] = array();
