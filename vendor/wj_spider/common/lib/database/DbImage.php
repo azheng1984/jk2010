@@ -2,6 +2,27 @@
 class DbImage {
   private static $connectionList = array();
 
+  public static function insertImage($tablePrefix, $productId, $image) {
+    self::connect($tablePrefix);
+    $sql = 'INSERT INTO image(product_id, image) VALUES(?, ?)';
+    Db::execute($sql, $productId, $image);
+    DbConnection::connect('default');
+  }
+
+  public static function updateImage($tablePrefix, $productId, $image) {
+    self::connect($tablePrefix);
+    $sql = 'UPDATE image SET image = ? WHERE product_id = ?';
+    Db::execute($sql, $image, $productId);
+    DbConnection::connect('default');
+  }
+
+  public static function deleteImage($tablePrefix, $productId) {
+    self::connect($tablePrefix);
+    $sql = 'DELETE FROM image WHERE product_id = ?';
+    Db::execute($sql, $productId);
+    DbConnection::connect('default');
+  }
+
   public static function createTable($tablePrefix) {
     if (!file_exists($tablePrefix.'_image.sqlite')) {
       DbConnection::connect(
@@ -12,20 +33,6 @@ class DbImage {
       Db::execute($sql);
       DbConnection::connect('defalut');
     }
-  }
-
-  public static function deleteImage($tablePrefix, $productId) {
-    self::connect($tablePrefix);
-    $sql = 'DELETE FROM image WHERE product_id = ?';
-    Db::execute($sql, $productId);
-    DbConnection::connect('default');
-  }
-
-  public static function replaceImage($tablePrefix, $productId, $image) {
-    self::connect($tablePrefix);
-    $sql = 'REPLACE INTO image SET product_id = ?, image = ?';
-    Db::execute($sql, $productId, $image);
-    DbConnection::connect('default');
   }
 
   private static function connect($tablePrefix) {
