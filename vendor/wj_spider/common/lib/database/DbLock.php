@@ -1,17 +1,14 @@
 <?php
 class DbLock {
   public static function insert($processId) {
-    $sql = 'INSERT INTO `lock`(process_id) VALUES(?)';
-    Db::executeNonQuery($sql, array($processId));
+    Db::execute('INSERT INTO `lock`(process_id) VALUES(?)', $processId);
   }
 
   public static function getOthers($processId) {
-    $sql = 'SELECT * FROM `lock` WHERE process_id != ?';
-    return Db::getAll($sql, array($processId));
+    return Db::getAll('SELECT * FROM `lock` WHERE process_id != ?', $processId);
   }
 
   public static function deleteOthers($processId) {
-    $sql = 'DELETE FROM `lock` WHERE process_id != ?';
-    Db::executeNonQuery($sql, array($processId));
+    Db::execute('DELETE FROM `lock` WHERE process_id != ?', $processId);
   }
 }
