@@ -25,7 +25,7 @@ class DbProperty {
   }
 
   public static function createTable($tablePrefix) {
-      if (
+    if (
       Db::getColumn('show tables like ?', $tablePrefix.'_property_key') === false
     ) {
       $sql = "CREATE TABLE `".$tablePrefix."_property_key` (
