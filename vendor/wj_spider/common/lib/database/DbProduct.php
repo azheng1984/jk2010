@@ -2,8 +2,8 @@
 class DbProduct {
   public static function getPrice($tablePrefix, $id) {
     return Db::getRow(
-      'SELECT lowest_price, highest_price FROM '.$tablePrefix
-      .'_product WHERE id = ?', $id
+      'SELECT lowest_price, highest_price FROM '
+      .$tablePrefix.'_product WHERE id = ?', $id
     );
   }
 
