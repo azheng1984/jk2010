@@ -28,8 +28,8 @@ class DbImage {
       DbConnection::connect(
         $tablePrefix.'_image', new PDO('sqlite:'.$tablePrefix.'_image.sqlite')
       );
-      $sql = 'CREATE  TABLE "main"."image" '
-        .'("product_id" INTEGER PRIMARY KEY  NOT NULL , "image" BLOB NOT NULL)';
+      $sql = 'CREATE TABLE "main"."image"'
+        .' ("product_id" INTEGER PRIMARY KEY NOT NULL, "image" BLOB NOT NULL)';
       Db::execute($sql);
       DbConnection::connect('defalut');
     }
