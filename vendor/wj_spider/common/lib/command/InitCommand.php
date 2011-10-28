@@ -28,5 +28,6 @@ abstract class InitCommand {
     DbProduct::createTable($tablePrefix);
     DbProductUpdate::createTable($tablePrefix);
     DbProperty::createTable($tablePrefix);
+    DbImage::createTable($tablePrefix);
   }
 }
