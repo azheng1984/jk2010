@@ -4,8 +4,11 @@ class DbConnection {
   private static $pool = array();
   private static $factory;
 
-  public static function connect($name) {
+  public static function connect($name, $pdo = null) {
     self::$name = $name;
+    if ($pdo !== null) {
+      self::$pool[$name] = $pdo;
+    }
   }
 
   public static function reset() {
