@@ -23,4 +23,30 @@ class DbProperty {
     }
     return $id;
   }
+
+  public static function createTable($tablePrefix) {
+      if (
+      Db::getColumn('show tables like ?', $tablePrefix.'_property_key') === false
+    ) {
+      $sql = "CREATE TABLE `".$tablePrefix."_property_key` (
+        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `key` varchar(45) DEFAULT NULL,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `category_id|key` (`key`)
+      ) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8";
+      Db::execute($sql);
+    }
+    if (
+      Db::getColumn('show tables like ?', $tablePrefix.'_property_value') === false
+    ) {
+      $sql = "CREATE TABLE `".$tablePrefix."_property_value` (
+        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `key_id` int(11) unsigned DEFAULT NULL,
+        `value` varchar(255) DEFAULT NULL,
+        PRIMARY KEY (`id`),
+        KEY `key_id|value` (`key_id`,`value`)
+      ) ENGINE=InnoDB AUTO_INCREMENT=931 DEFAULT CHARSET=utf8";
+      Db::execute($sql);
+    }
+  }
 }

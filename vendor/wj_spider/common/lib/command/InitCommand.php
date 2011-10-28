@@ -9,6 +9,7 @@ abstract class InitCommand {
     foreach ($this->getCategoryListLinks() as $type => $item) {
       foreach ($item as $domain => $pathes) {
         foreach ($pathes as $name => $values) {
+          $this->createTables($values['table_prefix']);
           DbTask::insert($type, array(
             'name' => $name,
             'path' => $values['path'],
@@ -22,4 +23,10 @@ abstract class InitCommand {
   }
 
   protected abstract function getCategoryListLinks();
+
+  private function createTables($tablePrefix) {
+    DbProduct::createTable($tablePrefix);
+    DbProductUpdate::createTable($tablePrefix);
+    DbProperty::createTable($tablePrefix);
+  }
 }
