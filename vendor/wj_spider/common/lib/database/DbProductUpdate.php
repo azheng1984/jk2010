@@ -7,4 +7,18 @@ class DbProductUpdate {
       $productId, $type
     );
   }
+
+  public static function createTable($tablePrefix) {
+    if (
+      Db::getColumn('show tables like ?', $tablePrefix.'_product_update') === false
+    ) {
+      $sql = "CREATE TABLE `".$tablePrefix."_product_update` (
+        `id` int(11) NOT NULL,
+        `product_id` int(11) DEFAULT NULL,
+        `type` enum('PRICE','CONTENT','IMAGE','OFFLINE') DEFAULT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=latin1";
+      Db::execute($sql);
+    }
+  }
 }
