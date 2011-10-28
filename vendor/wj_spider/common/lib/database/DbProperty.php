@@ -1,24 +1,26 @@
 <?php
 class DbProperty {
-  public static function getOrNewKeyId($categoryId, $name) {
-    $sql = 'SELECT id FROM property_key WHERE category_id = ? AND `key` = ?';
-    $row = Db::getRow($sql, array($categoryId, $name));
-    if ($row === false) {
-      $sql = 'INSERT INTO property_key(`key`, category_id) VALUES(?, ?)';
-      Db::executeNonQuery($sql, array($name, $categoryId));
-      return Db::getLastInsertId();
+  public static function getOrNewKeyId($tablePrefix, $key) {
+    $sql = 'SELECT id FROM '.$tablePrefix.'_property_key WHERE `key` = ?';
+    $id = Db::getColumn($sql, $key);
+    if ($id === false) {
+      $sql = 'INSERT INTO '.$tablePrefix.'(`key`) VALUES(?)';
+      Db::execute($sql, $key);
+      return DbConnection::get()->getLastInsertId();
     }
-    return $row['id'];
+    return $id;
   }
 
-  public static function getOrNewValueId($keyId, $name) {
-    $sql = 'SELECT id FROM property_value WHERE key_id = ? AND `value` = ?';
-    $row = Db::getRow($sql, array($keyId, $name));
-    if ($row === false) {
-      $sql = 'INSERT INTO property_value(key_id, `value`) VALUES(?, ?)';
-      Db::executeNonQuery($sql, array($keyId, $name));
-      return Db::getLastInsertId();
+  public static function getOrNewValueId($tablePrefix, $keyId, $value) {
+    $sql = 'SELECT id FROM '.$tablePrefix.'_property_value'
+      .' WHERE `value` = ? AND key_id = ?';
+    $id = Db::getRow($sql, $value, $keyId);
+    if ($id === false) {
+      $sql = 'INSERT INTO '.$tablePrefix.'_property_value(key_id, `value`)'
+        .' VALUES(?, ?)';
+      Db::execute($sql, $keyId, $value);
+      return DbConnection::get()->getLastInsertId();
     }
-    return $row['id'];
+    return $id;
   }
 }
