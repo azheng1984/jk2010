@@ -8,12 +8,13 @@ abstract class InitCommand {
     }
     foreach ($this->getCategoryListLinks() as $type => $item) {
       foreach ($item as $domain => $pathes) {
-        foreach ($pathes as $name => $path) {
+        foreach ($pathes as $name => $values) {
           DbTask::insert($type, array(
             'name' => $name,
-            'path' => $path,
+            'path' => $values['path'],
+            'table_prefix' => $values['table_prefix'],
             'domain' => $domain,
-            'parent_category_id' => null
+            'parent_category_id' => 0
           ));
         }
       }

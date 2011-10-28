@@ -64,12 +64,12 @@ class ProductListScreen extends Screen {
       }
     }
     echo '<div id="list">';
-    echo '<div id="sort">排序: <span>销量</span> <a rel="nofollow" href=".">新品</a> <a href="." rel="nofollow">降价</a> <a rel="nofollow" href=".">价格</a></div>';
+    echo '<div id="sort">排序: <span>销量</span> <a rel="nofollow" href=".">价格</a> <a href="." rel="nofollow">降价</a></div>';
     echo '<div id="total">找到 '.$result['total'].' 个产品</div>';
     echo '</div>';
     echo '<div id="product_list_wrapper"><ol id="product_list">';
     foreach ($items as $item) {
-      $name = $item['brand'].' '.$item['model'].' '.$this->category['name'];
+      $name = $item['title'].' '.$this->category['name'];
       echo '<li><div class="image"><a target="_blank" href="/'.$item['id'].'"><img alt="'.$name.'" src="http://img.workbench.wj.com/'.$item['id'].'.jpg" /></a></div><div class="title"><a target="_blank" href="/'.$item['id'].'">'
         .$name.'</a></div><div class="data"><div>&yen;<span class="price">'.$item['lowest_price'].'</span> ~ <span class="price">12345</span></div> <div>京东商城</div></div></li>';
     }
