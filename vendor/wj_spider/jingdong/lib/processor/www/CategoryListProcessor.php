@@ -18,6 +18,7 @@ class CategoryListProcessor {
       DbTask::insert('ProductList', array(
         'path' => $matches[1][$index],
         'root_category_id' => $categoryId,
+        'table_prefix' => $arguments['table_prefix'],
         'name' => iconv('gbk', 'utf-8', $matches[2][$index]),
         'page' => 1
       ));
