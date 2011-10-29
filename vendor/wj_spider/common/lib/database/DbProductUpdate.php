@@ -15,7 +15,7 @@ class DbProductUpdate {
       $sql = "CREATE TABLE `".$tablePrefix."_product_update` (
         `id` int(11) NOT NULL,
         `product_id` int(11) DEFAULT NULL,
-        `type` enum('PRICE','CONTENT','IMAGE','OFFLINE') DEFAULT NULL,
+        `type` enum('PRICE','CONTENT','IMAGE') DEFAULT NULL,
         PRIMARY KEY (`id`)
       ) ENGINE=MyISAM DEFAULT CHARSET=latin1";
       Db::execute($sql);

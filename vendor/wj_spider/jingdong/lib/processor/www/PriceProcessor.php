@@ -9,6 +9,8 @@ class PriceProcessor {
     if ($result['content'] === false) {
       return $result;
     }
+    $tablePrefix = $arguments['table_prefix'];
+    $merchantProductId = $arguments['id'];
     $matches = array();
     preg_match(
       '{"ListPrice":(.*?),"Price":(.*?),.*?"PromotionPrice":(.*?),}',
@@ -18,8 +20,11 @@ class PriceProcessor {
     if (count($matches) !== 4) {
       return;
     }
-    DbPrice::insert(
-      $arguments['id'], $matches[1], $matches[2], $matches[3]
-    );
+    $price = $matches[3];
+    $row = DbProduct::getPrice($tablePrefix, $merchantProductId);
+    if ($row['lowest_price'] !== $price) {
+      DbProduct::updatePrice($tablePrefix, $row['id'], $price);
+      DbProductUpdate::insert($tablePrefix, $row['id'], 'PRICE');
+    }
   }
 }

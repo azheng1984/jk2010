@@ -2,24 +2,24 @@
 class JingDongInitCommand extends InitCommand {
   protected function getCategoryListLinks() {
     return array(
-      'PublicationCategoryList' => array(
-        'book.360buy.com' => array(
-          '图书' => array(
-            'table_prefix' => 'book',
-            'path' => '/book/booksort.aspx'
-          ),
-        ),
-        'mvd.360buy.com' => array(
-          '音乐' => array(
-            'table_prefix' => 'music',
-            'path' => '/mvdsort/4051.html'
-          ),
-          '影视' => array(
-            'table_prefix' => 'movie',
-            'path' => '/mvdsort/4052.html'
-          ),
-        ),
-      ),
+//      'PublicationCategoryList' => array(
+//        'book.360buy.com' => array(
+//          '图书' => array(
+//            'table_prefix' => 'book',
+//            'path' => '/book/booksort.aspx'
+//          ),
+//        ),
+//        'mvd.360buy.com' => array(
+//          '音乐' => array(
+//            'table_prefix' => 'music',
+//            'path' => '/mvdsort/4051.html'
+//          ),
+//          '影视' => array(
+//            'table_prefix' => 'movie',
+//            'path' => '/mvdsort/4052.html'
+//          ),
+//        ),
+//      ),
       'CategoryList' => array(
         'www.360buy.com' => array(
           '家用电器、汽车用品' => array(

@@ -26,31 +26,30 @@ class DbProduct {
     $merchantProductId,
     $categoryId,
     $title,
-    $propertyList,
     $description,
     $contentMd5,
     $lowestPrice,
     $highestPrice
   ) {
-    $sql = 'INSERT INTO '.$tablePrefix.'_product(merchant_product_id,'
-      .' category_id, title, property_list, description, content_md5,'
+    $sql = 'INSERT INTO '.$tablePrefix.'_product('
+      .'merchant_product_id, category_id, title, description, content_md5,'
       .' lowest_price, highest_price, index_time)'
-      .' VALUES(?, ?, ?, ?, ?, ?, ?, ?, NOW())';
+      .' VALUES(?, ?, ?, ?, ?, ?, ?, NOW())';
     Db::execute(
       $sql,
       $merchantProductId,
       $categoryId,
       $title,
-      $propertyList,
       $description,
       $contentMd5,
       $lowestPrice,
       $highestPrice
     );
+    return DbConnection::get()->getLastInsertId();
   }
 
   public static function updatePrice(
-    $tablePrefix, $id, $lowestPrice, $highestPrice
+    $tablePrefix, $id, $lowestPrice, $highestPrice = null
   ) {
     Db::execute(
       'UPDATE '.$tablePrefix.'_product SET lowest_price = ?, highest_price = ?'
@@ -65,9 +64,9 @@ class DbProduct {
   ) {
     Db::execute(
       'UPDATE '.$tablePrefix.'_product SET'
-      .' category_id = ?,  title = ?, description = ?,'
-      .' property_list = ?, content_md5 = ? WHERE id = ?)',
-      $categoryId, $title, $description, $propertyList, $contentMd5, $id
+      .' category_id = ?,  title = ?, description = ?, content_md5 = ?'
+      .' WHERE id = ?)',
+      $categoryId, $title, $description, $contentMd5, $id
     );
   }
 
@@ -86,10 +85,10 @@ class DbProduct {
       Db::getColumn('SHOW TABLES LIKE ?', $tablePrefix.'_product') === false
     ) {
       $sql = "CREATE TABLE `".$tablePrefix."_product` (
-        `id` int(11) unsigned NOT NULL,
+        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `merchant_product_id` int(11) unsigned NOT NULL,
         `category_id` int(11) unsigned NOT NULL,
         `title` varchar(511) DEFAULT NULL,
-        `property_list` text,
         `description` text NOT NULL,
         `content_md5` varchar(45) DEFAULT NULL,
         `image_md5` varchar(45) DEFAULT NULL,
@@ -99,7 +98,7 @@ class DbProduct {
         `index_time` datetime DEFAULT NULL,
         PRIMARY KEY (`id`),
         KEY `category_id` (`category_id`) USING BTREE
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+      ) ENGINE=InnoDB AUTO_INCREMENT=1000734745 DEFAULT CHARSET=utf8";
       Db::execute($sql);
     }
   }

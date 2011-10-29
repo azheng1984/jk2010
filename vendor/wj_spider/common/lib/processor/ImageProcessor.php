@@ -23,5 +23,8 @@ class ImageProcessor {
     DbProduct::updateImageInfo(
       $arguments['table_prefix'], $imageInfo['id'], $md5, null
     );
+    DbProductUpdate::insert(
+      $arguments['table_prefix'], $imageInfo['id'], 'IMAGE'
+    );
   }
 }
