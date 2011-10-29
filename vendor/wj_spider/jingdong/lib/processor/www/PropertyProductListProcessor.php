@@ -2,7 +2,7 @@
 class PropertyProductListProcessor {
   private $html;
   private $page;
-  private $categoryId;
+  private $tablePrefix;
   private $valueId;
 
   public function execute($arguments) {
@@ -14,7 +14,7 @@ class PropertyProductListProcessor {
     }
     $this->html = $result['content'];
     $this->valueId = $arguments['value_id'];
-    $this->categoryId = $arguments['category_id'];
+    $this->tablePrefix = $arguments['tablePrefix'];
     $this->page = $arguments['page'];
     $this->parseProductList();
     $this->parseNextPage();
@@ -30,7 +30,7 @@ class PropertyProductListProcessor {
     );
     $productIds = $matches[1];
     foreach ($productIds as $id) {
-      DbProduct::addProperty($id, $this->valueId);
+      DbProductProperty::replace($this->tablePrefix, $id, $this->valueId);
     }
   }
 
@@ -46,7 +46,7 @@ class PropertyProductListProcessor {
       DbTask::insert('PropertyProductList', array(
         'path' => $matches[1],
         'value_id' => $this->valueId,
-        'category_id' => $this->categoryId,
+        'table_prefix' => $this->tablePrefix,
         'page' => $page
       ));
     }

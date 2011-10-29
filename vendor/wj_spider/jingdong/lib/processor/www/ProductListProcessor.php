@@ -3,6 +3,7 @@ class ProductListProcessor {
   private $html;
   private $name;
   private $page;
+  private $tablePrefix;
   private $categoryId;
 
   public function execute($arguments) {
@@ -10,58 +11,17 @@ class ProductListProcessor {
       'www.360buy.com', '/products/'.$arguments['path'].'.html'
     );
     $this->page = $arguments['page'];
+    $this->tablePrefix = $arguments['table_prefix'];
     $this->html = $result['content'];
     if ($this->html === false) {
       return $result;
     }
     $this->name = $arguments['name'];
     $this->parseBreadcrumb($arguments);
-    if ($this->page === 1) {
-      $this->parsePropertyList();
-    }
     $this->parseProductList();
     $this->parseNextPage();
-  }
-
-  private function parsePropertyList() {
-    $matches = array();
-    preg_match(
-      '{<div id="select" [\s|\S]*<!--select end -->}', $this->html, $matches
-    );
-    if (count($matches) > 0) {
-      $section = iconv('gbk', 'utf-8', $matches[0]);
-      preg_match_all(
-        '{<dl.*?</dl>}', $section, $matches
-      );
-      foreach ($matches[0] as $item) {
-        preg_match_all(
-          "{<dt>(.*?)：</dt>}", $item, $matches
-        );
-        $key = $matches[1][0];
-        if ($key === '价格') {
-          continue;
-        }
-        preg_match_all(
-          "{<a.*?href='(.*?).html'.*?>(.*?)</a>}", $item, $matches
-        );
-        $valueLinkList = $matches[1];
-        $valueList = $matches[2];
-        $valueAmount = count($valueList);
-        $keyId = DbProperty::getOrNewKeyId($this->categoryId, $key);
-        for ($index = 0; $index < $valueAmount; ++$index) {
-          $value = $valueList[$index];
-          if ($value === '全部' || $value === '其它') {
-            continue;
-          }
-          $valueId = DbProperty::getOrNewValueId($keyId, $valueList[$index]);
-          DbTask::insert('PropertyProductList', array(
-            'path' => $valueLinkList[$index],
-            'category_id' => $this->categoryId,
-            'value_id' => $valueId,
-            'page' => 1
-          ));
-        }
-      }
+    if ($this->page === 1) {
+      $this->parsePropertyList();
     }
   }
 
@@ -95,7 +55,9 @@ class ProductListProcessor {
     $productIds = $matches[1];
     foreach ($productIds as $id) {
       DbTask::insert('Product', array(
-        'category_id' => $this->categoryId, 'id' => $id
+        'table_prefix' => $this->tablePrefix,
+        'category_id' => $this->categoryId,
+        'id' => $id
       ));
     }
   }
@@ -115,6 +77,50 @@ class ProductListProcessor {
         'name' => $this->name,
         'page' => $page
       ));
+    }
+  }
+
+  private function parsePropertyList() {
+    $matches = array();
+    preg_match(
+      '{<div id="select" [\s|\S]*<!--select end -->}', $this->html, $matches
+    );
+    if (count($matches) > 0) {
+      $section = iconv('gbk', 'utf-8', $matches[0]);
+      preg_match_all(
+        '{<dl.*?</dl>}', $section, $matches
+      );
+      foreach ($matches[0] as $item) {
+        preg_match_all(
+          "{<dt>(.*?)：</dt>}", $item, $matches
+        );
+        $key = $matches[1][0];
+        if ($key === '价格') {
+          continue;
+        }
+        preg_match_all(
+          "{<a.*?href='(.*?).html'.*?>(.*?)</a>}", $item, $matches
+        );
+        $valueLinkList = $matches[1];
+        $valueList = $matches[2];
+        $valueAmount = count($valueList);
+        $keyId = DbProperty::getOrNewKeyId($this->tablePrefix, $key);
+        for ($index = 0; $index < $valueAmount; ++$index) {
+          $value = $valueList[$index];
+          if ($value === '全部' || $value === '其它') {
+            continue;
+          }
+          $valueId = DbProperty::getOrNewValueId(
+            $this->tablePrefix, $keyId, $valueList[$index]
+          );
+          DbTask::insert('PropertyProductList', array(
+            'path' => $valueLinkList[$index],
+            'table_prefix' => $this->tablePrefix,
+            'value_id' => $valueId,
+            'page' => 1
+          ));
+        }
+      }
     }
   }
 }

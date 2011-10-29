@@ -1,46 +1,49 @@
 <?php
 class DbProduct {
-  public static function getPrice($tablePrefix, $id) {
+  public static function getPrice($tablePrefix, $merchantProductId) {
     return Db::getRow(
-      'SELECT lowest_price, highest_price FROM '
-      .$tablePrefix.'_product WHERE id = ?', $id
+      'SELECT id, lowest_price, highest_price FROM '.$tablePrefix.'_product'
+      .' WHERE merchant_product_id = ?', $merchantProductId
     );
   }
 
-  public static function getUpdateInfo($tablePrefix, $id) {
-    return Db::getColumn(
-      'SELECT content_md5, image_md5, image_last_modified FROM '
-      .$tablePrefix.'_product WHERE id = ?', $id
+  public static function getImageInfo($tablePrefix, $merchantProductId) {
+    return Db::getRow(
+      'SELECT id, image_md5, image_last_modified FROM '.$tablePrefix.'_product'
+      .' WHERE merchant_product_id = ?', $merchantProductId
+    );
+  }
+
+  public static function getContentInfo($tablePrefix, $merchantProductId) {
+    return Db::getRow(
+      'SELECT id, content_md5 FROM '.$tablePrefix.'_product'
+      .' WHERE merchant_product_id = ?', $merchantProductId
     );
   }
 
   public static function insert(
     $tablePrefix,
-    $id,
+    $merchantProductId,
     $categoryId,
-    $lowestPrice,
-    $highestPrice,
     $title,
     $propertyList,
     $description,
     $contentMd5,
-    $imageMd5,
-    $imageLastModified
+    $lowestPrice,
+    $highestPrice
   ) {
-    $sql = 'INSERT INTO '.$tablePrefix.'_product(id, category_id, title,'
-      .' property_list, description, content_md5, image_md5,'
-      .' image_last_modified, lowest_price, highest_price, index_time)'
-      .' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())';
+    $sql = 'INSERT INTO '.$tablePrefix.'_product(merchant_product_id,'
+      .' category_id, title, property_list, description, content_md5,'
+      .' lowest_price, highest_price, index_time)'
+      .' VALUES(?, ?, ?, ?, ?, ?, ?, ?, NOW())';
     Db::execute(
       $sql,
-      $id,
+      $merchantProductId,
       $categoryId,
       $title,
       $propertyList,
       $description,
       $contentMd5,
-      $imageMd5,
-      $imageLastModified,
       $lowestPrice,
       $highestPrice
     );
@@ -57,19 +60,30 @@ class DbProduct {
   }
 
   public static function updateContent(
-    $tablePrefix, $id, $categoryId, $title, $description, $propertyList, $etag
+    $tablePrefix, $id, $categoryId, $title,
+    $description, $propertyList, $contentMd5
   ) {
     Db::execute(
       'UPDATE '.$tablePrefix.'_product SET'
       .' category_id = ?,  title = ?, description = ?,'
-      .' property_list = ?, etag = ? WHERE id = ?)',
-      $categoryId, $title, $description, $propertyList, $etag, $id
+      .' property_list = ?, content_md5 = ? WHERE id = ?)',
+      $categoryId, $title, $description, $propertyList, $contentMd5, $id
+    );
+  }
+
+  public static function updateImageInfo(
+    $tablePrefix, $id, $imageMd5, $imageLastModified
+  ) {
+    Db::execute(
+      'UPDATE '.$tablePrefix.'_product SET'
+      .' image_md5 = ?,  image_last_modified = ? WHERE id = ?)',
+      $imageMd5, $imageLastModified, $id
     );
   }
 
   public static function createTable($tablePrefix) {
     if (
-      Db::getColumn('show tables like ?', $tablePrefix.'_product') === false
+      Db::getColumn('SHOW TABLES LIKE ?', $tablePrefix.'_product') === false
     ) {
       $sql = "CREATE TABLE `".$tablePrefix."_product` (
         `id` int(11) unsigned NOT NULL,

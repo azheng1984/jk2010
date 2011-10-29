@@ -26,7 +26,8 @@ class DbImage {
   public static function createTable($tablePrefix) {
     if (!file_exists($tablePrefix.'_image.sqlite')) {
       DbConnection::connect(
-        $tablePrefix.'_image', new PDO('sqlite:'.$tablePrefix.'_image.sqlite')
+        $tablePrefix.'_image',
+        new PDO('sqlite:'.IMAGE_PATH.$tablePrefix.'_image.sqlite')
       );
       $sql = 'CREATE TABLE "main"."image"'
         .' ("product_id" INTEGER PRIMARY KEY NOT NULL, "image" BLOB NOT NULL)';
@@ -38,7 +39,8 @@ class DbImage {
   private static function connect($tablePrefix) {
     if (!isset(self::$connectionList[$tablePrefix])) {
       DbConnection::connect(
-          $tablePrefix.'_image', new PDO('sqlite:'.$tablePrefix.'_image.sqlite')
+        $tablePrefix.'_image',
+        new PDO('sqlite:'.IMAGE_PATH.$tablePrefix.'_image.sqlite')
       );
       self::$connectionList[$tablePrefix] = true;
       return;

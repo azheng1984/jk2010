@@ -5,16 +5,23 @@ class ImageProcessor {
     if ($result['content'] === false) {
       return $result;
     }
-    if (isset($GLOBALS['no_image_md5'])
-      && isset($GLOBALS['no_image_md5'][md5($result['content'])])) {
+    //todo:check last modified
+    $imageInfo = DbProduct::getImageInfo(
+      $arguments['table_prefix'], $arguments['id']
+    );
+    $md5 = md5($result['content']);
+    if ($md5 === $imageInfo['image_md5']) {
       return;
     }
-    $folder = IMAGE_PATH.$arguments['category_id'];
-    if (!is_dir($folder)) {
-      mkdir($folder, 0755, true);
+    if (isset($GLOBALS['no_image_md5'])
+      && isset($GLOBALS['no_image_md5'][$md5])) {
+      return;
     }
-    file_put_contents(
-      $folder.'/'.$arguments['id'].'.jpg', $result['content']
+    DbImage::insertImage(
+      $arguments['table_prefix'], $imageInfo['id'], $result['content']
+    );
+    DbProduct::updateImageInfo(
+      $arguments['table_prefix'], $imageInfo['id'], $md5, null
     );
   }
 }
