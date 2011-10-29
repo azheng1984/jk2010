@@ -24,15 +24,15 @@ class DbImage {
   }
 
   public static function createTable($tablePrefix) {
-    if (!file_exists($tablePrefix.'_image.sqlite')) {
+    if (!file_exists(IMAGE_PATH.$tablePrefix.'_image.sqlite')) { 
       DbConnection::connect(
         $tablePrefix.'_image',
         new PDO('sqlite:'.IMAGE_PATH.$tablePrefix.'_image.sqlite')
       );
-      $sql = 'CREATE TABLE "main"."image"'
+      $sql = 'CREATE TABLE "image"'
         .' ("product_id" INTEGER PRIMARY KEY NOT NULL, "image" BLOB NOT NULL)';
       Db::execute($sql);
-      DbConnection::connect('defalut');
+      DbConnection::connect('default');
     }
   }
 

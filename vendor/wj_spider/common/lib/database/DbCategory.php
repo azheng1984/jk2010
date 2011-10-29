@@ -9,7 +9,7 @@ class DbCategory {
       Db::execute(
         'INSERT INTO category(parent_id, `name`) VALUES(?, ?)', $parentId, $name
       );
-      return DbConnection::get()->getLastInsertId();
+      return DbConnection::get()->lastInsertId();
     }
     return $id;
   }

@@ -13,7 +13,7 @@ class DbProductUpdate {
       Db::getColumn('show tables like ?', $tablePrefix.'_product_update') === false
     ) {
       $sql = "CREATE TABLE `".$tablePrefix."_product_update` (
-        `id` int(11) NOT NULL,
+        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `product_id` int(11) DEFAULT NULL,
         `type` enum('PRICE','CONTENT','IMAGE') DEFAULT NULL,
         PRIMARY KEY (`id`)

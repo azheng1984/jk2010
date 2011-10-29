@@ -20,6 +20,9 @@ class Db {
     $connection = DbConnection::get();
     $sql = array_shift($parameters);
     $statement = $connection->prepare($sql);
+    if ($statement === false) {
+      throw new Exception;
+    }
     $statement->execute($parameters);
     return $statement;
   }
