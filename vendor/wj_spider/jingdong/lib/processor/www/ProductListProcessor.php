@@ -74,6 +74,7 @@ class ProductListProcessor {
       DbTask::insert('ProductList', array(
         'path' => $matches[1],
         'category_id' => $this->categoryId,
+        'table_prefix' => $this->tablePrefix,
         'name' => $this->name,
         'page' => $page
       ));

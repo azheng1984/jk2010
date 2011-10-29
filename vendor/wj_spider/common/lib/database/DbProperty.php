@@ -4,9 +4,9 @@ class DbProperty {
     $sql = 'SELECT id FROM '.$tablePrefix.'_property_key WHERE `key` = ?';
     $id = Db::getColumn($sql, $key);
     if ($id === false) {
-      $sql = 'INSERT INTO '.$tablePrefix.'(`key`) VALUES(?)';
+      $sql = 'INSERT INTO '.$tablePrefix.'_property_key(`key`) VALUES(?)';
       Db::execute($sql, $key);
-      return DbConnection::get()->getLastInsertId();
+      return DbConnection::get()->lastInsertId();
     }
     return $id;
   }
@@ -14,12 +14,12 @@ class DbProperty {
   public static function getOrNewValueId($tablePrefix, $keyId, $value) {
     $sql = 'SELECT id FROM '.$tablePrefix.'_property_value'
       .' WHERE `value` = ? AND key_id = ?';
-    $id = Db::getRow($sql, $value, $keyId);
+    $id = Db::getColumn($sql, $value, $keyId);
     if ($id === false) {
       $sql = 'INSERT INTO '.$tablePrefix.'_property_value(key_id, `value`)'
         .' VALUES(?, ?)';
       Db::execute($sql, $keyId, $value);
-      return DbConnection::get()->getLastInsertId();
+      return DbConnection::get()->lastInsertId();
     }
     return $id;
   }

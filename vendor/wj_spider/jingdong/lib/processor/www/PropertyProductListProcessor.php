@@ -14,7 +14,7 @@ class PropertyProductListProcessor {
     }
     $this->html = $result['content'];
     $this->valueId = $arguments['value_id'];
-    $this->tablePrefix = $arguments['tablePrefix'];
+    $this->tablePrefix = $arguments['table_prefix'];
     $this->page = $arguments['page'];
     $this->parseProductList();
     $this->parseNextPage();

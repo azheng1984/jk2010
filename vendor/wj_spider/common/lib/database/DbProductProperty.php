@@ -20,7 +20,7 @@ class DbProductProperty {
     );
     if ($table === false) {
       $sql = "CREATE TABLE `".$tablePrefix."_product_property` (
-        `id` int(11) NOT NULL,
+        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `merchant_product_id` int(11) DEFAULT NULL,
         `property_value_id` int(11) DEFAULT NULL,
         PRIMARY KEY (`id`),

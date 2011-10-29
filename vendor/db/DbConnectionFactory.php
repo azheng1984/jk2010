@@ -27,6 +27,6 @@ class DbConnectionFactory {
     if (isset(self::$config[$name])) {
       return self::$config[$name];
     }
-    throw new Exception;
+    throw new Exception("database config '$name' not found");
   }
 }
