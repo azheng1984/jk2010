@@ -24,7 +24,7 @@ class DbProductProperty {
         `merchant_product_id` int(11) DEFAULT NULL,
         `property_value_id` int(11) DEFAULT NULL,
         PRIMARY KEY (`id`),
-        UNIQUE KEY `product_id-property_value_id` (`merchant_product_id`,`property_value_id`)
+        UNIQUE KEY `merchant_product_id-property_value_id` (`merchant_product_id`,`property_value_id`)
       ) ENGINE=MyISAM DEFAULT CHARSET=latin1";
       Db::execute($sql);
     }

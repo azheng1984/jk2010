@@ -28,8 +28,8 @@ class DbProduct {
     $title,
     $description,
     $contentMd5,
-    $lowestPrice,
-    $highestPrice
+    $lowestPrice = null,
+    $highestPrice = null
   ) {
     $sql = 'INSERT INTO '.$tablePrefix.'_product('
       .'merchant_product_id, category_id, title, description, content_md5,'
@@ -45,7 +45,7 @@ class DbProduct {
       $lowestPrice,
       $highestPrice
     );
-    return DbConnection::get()->getLastInsertId();
+    return DbConnection::get()->lastInsertId();
   }
 
   public static function updatePrice(
@@ -60,12 +60,12 @@ class DbProduct {
 
   public static function updateContent(
     $tablePrefix, $id, $categoryId, $title,
-    $description, $propertyList, $contentMd5
+    $description, $contentMd5
   ) {
     Db::execute(
       'UPDATE '.$tablePrefix.'_product SET'
       .' category_id = ?,  title = ?, description = ?, content_md5 = ?'
-      .' WHERE id = ?)',
+      .' WHERE id = ?',
       $categoryId, $title, $description, $contentMd5, $id
     );
   }
@@ -75,7 +75,7 @@ class DbProduct {
   ) {
     Db::execute(
       'UPDATE '.$tablePrefix.'_product SET'
-      .' image_md5 = ?,  image_last_modified = ? WHERE id = ?)',
+      .' image_md5 = ?,  image_last_modified = ? WHERE id = ?',
       $imageMd5, $imageLastModified, $id
     );
   }
@@ -92,13 +92,13 @@ class DbProduct {
         `description` text NOT NULL,
         `content_md5` varchar(45) DEFAULT NULL,
         `image_md5` varchar(45) DEFAULT NULL,
-        `image_last_modified` datetime DEFAULT NULL,
+        `image_last_modified` varchar(45) DEFAULT NULL,
         `lowest_price` decimal(9,2) DEFAULT NULL,
         `highest_price` decimal(9,2) DEFAULT NULL,
         `index_time` datetime DEFAULT NULL,
         PRIMARY KEY (`id`),
-        KEY `category_id` (`category_id`) USING BTREE
-      ) ENGINE=InnoDB AUTO_INCREMENT=1000734745 DEFAULT CHARSET=utf8";
+        UNIQUE KEY `merchant_product_id` (`merchant_product_id`) USING BTREE
+      ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8";
       Db::execute($sql);
     }
   }

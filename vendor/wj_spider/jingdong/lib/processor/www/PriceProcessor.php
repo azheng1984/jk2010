@@ -4,6 +4,7 @@ class PriceProcessor {
     $result = WebClient::get(
       'jd2008.360buy.com',
       '/purchase/minicartservice.aspx?method=GetCart',
+      array(),
       'yCartOrderLogic={&TheSkus&:[{&Id&:'.$arguments['id'].'$&Num&:1}]};'
     );
     if ($result['content'] === false) {

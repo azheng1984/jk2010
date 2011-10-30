@@ -2,19 +2,17 @@
 class DbTaskRetry {
   public static function insert($task) {
     $sql = 'REPLACE INTO task_retry(task_id, type, arguments) VALUES(?, ?, ?)';
-    Db::executeNonQuery($sql, array(
-      $task['id'], $task['type'], $task['arguments']
-    ));
+    Db::execute($sql, $task['id'], $task['type'], $task['arguments']);
   }
 
   public static function getByTaskId($taskId) {
     $sql = 'SELECT * FROM task_retry WHERE task_id = ?';
-    return Db::getRow($sql, array($taskId));
+    return Db::getRow($sql, $taskId);
   }
 
   public static function deleteByTaskId($id) {
     $sql = 'DELETE FROM task_retry WHERE task_id = ?';
-    Db::executeNonQuery($sql, array($id));
+    Db::execute($sql, $id);
   }
 
   public static function getAll() {
