@@ -5,7 +5,7 @@ class DbProductProperty {
   ) {
     Db::execute(
       'REPLACE INTO '.$tablePrefix.'_product_property SET'
-      .' merchant_product_id = ?, property_value_id = ?',
+      .' merchant_product_id = ?, property_value_id = ?, is_update = TRUE',
       $merchantProductId, $propertyId
     );
   }
@@ -14,11 +14,19 @@ class DbProductProperty {
     $tablePrefix, $merchantProductId
   ) {
     Db::getAll('SELECT property_value_id FROM '.$tablePrefix.'_product_property'
-      .' WHERE merchant_product_id = ?', $merchantProductId);
+      .' WHERE merchant_product_id = ? AND is_update = TRUE', $merchantProductId);
   }
 
-  public static function deleteAll($tablePrefix) {
-    Db::execute('DELETE FROM '.$tablePrefix.'_product_property');
+  public static function expireAll($tablePrefix) {
+    Db::execute(
+      'UPDATE '.$tablePrefix.'_product_property SET is_update = FALSE'
+    );
+  }
+
+  public static function deleteOldItems($tablePrefix) {
+    Db::execute(
+      'DELETE '.$tablePrefix.'_product_property WHERE is_update = FALSE'
+    );
   }
 
   public static function createTable($tablePrefix) {

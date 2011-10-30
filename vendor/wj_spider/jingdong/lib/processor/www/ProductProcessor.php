@@ -100,7 +100,7 @@ class ProductProcessor {
       $description = preg_replace('{<[\s\S]*?>}', ' ', $matches[1]);
       $description = str_replace('&nbsp;', ' ', $description);
       $description = trim(preg_replace('{\s+}', ' ', $description));
-      $description = iconv('GBK//IGNORE', 'utf-8//IGNORE', $description);
+      $description = iconv('GBK', 'utf-8//IGNORE', $description);
       if ($description !== '') {
         $this->description = $description;
       }
