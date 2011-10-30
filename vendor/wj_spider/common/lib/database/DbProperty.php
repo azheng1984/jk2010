@@ -14,7 +14,7 @@ class DbProperty {
   public static function getOrNewValueId($tablePrefix, $keyId, $value) {
     $sql = 'SELECT id FROM '.$tablePrefix.'_property_value'
       .' WHERE key_id = ? AND `value` = ?';
-    $id = Db::getColumn($sql, $value, $keyId);
+    $id = Db::getColumn($sql, $keyId, $value);
     if ($id === false) {
       $sql = 'INSERT INTO '.$tablePrefix.'_property_value(key_id, `value`)'
         .' VALUES(?, ?)';

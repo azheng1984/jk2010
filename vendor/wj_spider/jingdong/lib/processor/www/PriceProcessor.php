@@ -19,7 +19,7 @@ class PriceProcessor {
       $matches
     );
     if (count($matches) !== 4) {
-      return;
+      return;//TODO:offline
     }
     $price = $matches[3];
     $row = DbProduct::getPrice($tablePrefix, $merchantProductId);
