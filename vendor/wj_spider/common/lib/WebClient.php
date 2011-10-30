@@ -57,7 +57,7 @@ class WebClient {
     $content = curl_exec($handler);
     curl_setopt($handler, CURLOPT_HEADER, 0);
     if ($content === false && $retryTimes > 0) {
-      return $this->execute(
+      return self::execute(
         $handler, $cookie, $getResponseHeader, --$retryTimes
       );
     }

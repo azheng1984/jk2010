@@ -98,7 +98,7 @@ class DbProduct {
         `index_time` datetime NOT NULL,
         PRIMARY KEY (`id`),
         UNIQUE KEY `merchant_product_id` (`merchant_product_id`) USING BTREE
-      ) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
       Db::execute($sql);
     }
   }

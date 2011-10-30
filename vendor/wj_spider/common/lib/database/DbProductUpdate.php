@@ -10,14 +10,14 @@ class DbProductUpdate {
 
   public static function createTable($tablePrefix) {
     if (
-      Db::getColumn('show tables like ?', $tablePrefix.'_product_update') === false
+      Db::getColumn('SHOW TABLES LIKE ?', $tablePrefix.'_product_update') === false
     ) {
       $sql = "CREATE TABLE `".$tablePrefix."_product_update` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-        `product_id` int(11) DEFAULT NULL,
-        `type` enum('PRICE','CONTENT','IMAGE') DEFAULT NULL,
+        `product_id` int(11) unsigned NOT NULL,
+        `type` enum('PRICE','CONTENT','IMAGE') NOT NULL,
         PRIMARY KEY (`id`)
-      ) ENGINE=MyISAM DEFAULT CHARSET=latin1";
+      ) ENGINE=InnoDB DEFAULT CHARSET=latin1";
       Db::execute($sql);
     }
   }
