@@ -88,17 +88,17 @@ class DbProduct {
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `merchant_product_id` int(11) unsigned NOT NULL,
         `category_id` int(11) unsigned NOT NULL,
-        `title` varchar(511) DEFAULT NULL,
-        `description` text NOT NULL,
-        `content_md5` varchar(45) DEFAULT NULL,
-        `image_md5` varchar(45) DEFAULT NULL,
-        `image_last_modified` varchar(45) DEFAULT NULL,
+        `title` varchar(511) NOT NULL,
+        `description` text,
+        `content_md5` varchar(32) DEFAULT NULL,
+        `image_md5` varchar(32) DEFAULT NULL,
+        `image_last_modified` varchar(29) DEFAULT NULL,
         `lowest_price` decimal(9,2) DEFAULT NULL,
         `highest_price` decimal(9,2) DEFAULT NULL,
-        `index_time` datetime DEFAULT NULL,
+        `index_time` datetime NOT NULL,
         PRIMARY KEY (`id`),
         UNIQUE KEY `merchant_product_id` (`merchant_product_id`) USING BTREE
-      ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8";
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8";
       Db::execute($sql);
     }
   }
