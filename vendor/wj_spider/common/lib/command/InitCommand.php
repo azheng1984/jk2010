@@ -10,7 +10,7 @@ abstract class InitCommand {
       foreach ($item as $domain => $pathes) {
         foreach ($pathes as $name => $values) {
           $this->createTables($values['table_prefix']);
-          $this->resetTables($values['table_prefix']);
+          //$this->resetTables($values['table_prefix']);
           DbTask::insert($type, array(
             'name' => $name,
             'path' => $values['path'],
