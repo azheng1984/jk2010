@@ -13,7 +13,7 @@ class DbProperty {
 
   public static function getOrNewValueId($tablePrefix, $keyId, $value) {
     $sql = 'SELECT id FROM '.$tablePrefix.'_property_value'
-      .' WHERE `value` = ? AND key_id = ?';
+      .' WHERE key_id = ? AND `value` = ?';
     $id = Db::getColumn($sql, $value, $keyId);
     if ($id === false) {
       $sql = 'INSERT INTO '.$tablePrefix.'_property_value(key_id, `value`)'
@@ -32,7 +32,7 @@ class DbProperty {
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `key` varchar(45) DEFAULT NULL,
         PRIMARY KEY (`id`),
-        UNIQUE KEY `category_id|key` (`key`)
+        UNIQUE KEY `key` (`key`)
       ) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8";
       Db::execute($sql);
     }
@@ -44,8 +44,8 @@ class DbProperty {
         `key_id` int(11) unsigned DEFAULT NULL,
         `value` varchar(255) DEFAULT NULL,
         PRIMARY KEY (`id`),
-        KEY `key_id|value` (`key_id`,`value`)
-      ) ENGINE=InnoDB AUTO_INCREMENT=931 DEFAULT CHARSET=utf8";
+        KEY `key_id-value` (`key_id`,`value`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
       Db::execute($sql);
     }
   }

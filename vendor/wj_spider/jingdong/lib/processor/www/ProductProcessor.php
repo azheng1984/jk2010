@@ -11,9 +11,10 @@ class ProductProcessor {
     if ($result['content'] === false) {
       return $result;
     }
-    $this->html = $result;
+    $this->html = $result['content'];
     $this->tablePrefix = $arguments['table_prefix'];
     $this->merchantProductId = $arguments['id'];
+    $this->categoryId = $arguments['category_id'];
     $this->parseTitle();
     $this->parseDescription();
     $this->parseProperties();
@@ -30,8 +31,11 @@ class ProductProcessor {
       'category_id' => $arguments['category_id'],
       'domain' => $matches[1],
       'path' => $matches[2],
+      'table_prefix' => $arguments['table_prefix']
     ));
-    DbTask::insert('Price', array('id' => $arguments['id']));
+    DbTask::insert('Price', array(
+      'id' => $arguments['id'], 'table_prefix' => $arguments['table_prefix'])
+    );
   }
 
   private function save() {
@@ -86,13 +90,23 @@ class ProductProcessor {
   }
 
   private function parseDescription() {
-    echo 'parseDescription';
-    exit;
+    preg_match(
+      '{<div class="content">([\s\S]*?)<!--tabcon end-->}',
+      $this->html, $matches
+    );
+    if (count($matches) === 2) {
+      $htmlTagRemoved = preg_replace('{<[\s\S]*?>}', ' ', $matches[1]);
+      $htmlTagRemoved = str_replace('&nbsp;', ' ', $htmlTagRemoved);
+      $spaceRemoved = trim(preg_replace('{\s+}', ' ', $htmlTagRemoved));
+      $this->description = iconv('GBK', 'utf-8//IGNORE', $spaceRemoved);
+    }
   }
 
   private function parseTitle() {
-    echo 'parseTitle';
-    exit;
+    preg_match(
+      '{<h1>(.*?)<font}', $this->html, $matches
+    );
+    $this->title = trim(iconv('GBK', 'utf-8', $matches[1]));
   }
 
   private function insertContent($md5) {
@@ -113,6 +127,6 @@ class ProductProcessor {
   private function getContentMd5() {
     $propertyList = var_export(DbProductProperty::getListByMerchantProductId(
       $this->tablePrefix, $this->merchantProductId), true);
-    $md5 = md5($propertyList.$this->categoryId.$this->title.$this->description);
+    return md5($propertyList.$this->categoryId.$this->title.$this->description);
   }
 }
