@@ -50,6 +50,7 @@ class DbProperty {
       $sql = "CREATE TABLE `".$tablePrefix."_property_key` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `key` varchar(63) NOT NULL,
+        `is_update` tinyint(1) NOT NULL DEFAULT '1',
         PRIMARY KEY (`id`),
         UNIQUE KEY `key` (`key`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
@@ -62,6 +63,7 @@ class DbProperty {
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `key_id` int(11) unsigned NOT NULL,
         `value` varchar(255) NOT NULL,
+        `is_update` tinyint(1) NOT NULL DEFAULT '1',
         PRIMARY KEY (`id`),
         UNIQUE KEY `key_id-value` (`key_id`,`value`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8";

@@ -38,9 +38,11 @@ class DbProductProperty {
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `merchant_product_id` int(11) unsigned NOT NULL,
         `property_value_id` int(11) unsigned NOT NULL,
+        `is_update` tinyint(1) NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
         UNIQUE KEY `merchant_product_id-property_value_id`
-          (`merchant_product_id`,`property_value_id`)
+          (`merchant_product_id`,`property_value_id`),
+        KEY `merchant_product_id-is_update` (`merchant_product_id`,`is_update`)
       ) ENGINE=InnoDB DEFAULT CHARSET=latin1";
       Db::execute($sql);
     }
