@@ -3,6 +3,8 @@ class ProductProcessor {
   private $tablePrefix;
   private $html;
   private $merchantProductId;
+  private $title = null;
+  private $description = null;
 
   public function execute($arguments) {
     $result = WebClient::get(
@@ -95,10 +97,13 @@ class ProductProcessor {
       $this->html, $matches
     );
     if (count($matches) === 2) {
-      $htmlTagRemoved = preg_replace('{<[\s\S]*?>}', ' ', $matches[1]);
-      $htmlTagRemoved = str_replace('&nbsp;', ' ', $htmlTagRemoved);
-      $spaceRemoved = trim(preg_replace('{\s+}', ' ', $htmlTagRemoved));
-      $this->description = iconv('GBK', 'utf-8//IGNORE', $spaceRemoved);
+      $description = preg_replace('{<[\s\S]*?>}', ' ', $matches[1]);
+      $description = str_replace('&nbsp;', ' ', $description);
+      $description = trim(preg_replace('{\s+}', ' ', $description));
+      $description = iconv('GBK//IGNORE', 'utf-8//IGNORE', $description);
+      if ($description !== '') {
+        $this->description = $description;
+      }
     }
   }
 
