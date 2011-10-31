@@ -1,6 +1,7 @@
 <?php
 class PriceProcessor {
   public function execute($arguments) {
+    $arguments['id'] = '123';
     $result = WebClient::get(
       'jd2008.360buy.com',
       '/purchase/minicartservice.aspx?method=GetCart',
@@ -18,6 +19,8 @@ class PriceProcessor {
       $result['content'],
       $matches
     );
+    print_r($matches);
+    exit;
     if (count($matches) !== 4) {
       return;//TODO:offline
     }

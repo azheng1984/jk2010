@@ -110,7 +110,7 @@ class ProductListProcessor {
         $keyId = DbProperty::getOrNewKeyId($this->tablePrefix, $key);
         for ($index = 0; $index < $valueAmount; ++$index) {
           $value = $valueList[$index];
-          if ($value === '全部' || $value === '其它') {
+          if ($value === '全部' || $value === '其它' || $value === '不限') {
             continue;
           }
           $valueId = DbProperty::getOrNewValueId(
