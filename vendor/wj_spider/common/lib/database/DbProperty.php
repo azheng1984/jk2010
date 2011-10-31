@@ -5,7 +5,7 @@ class DbProperty {
     $id = Db::getColumn($sql, $key);
     if ($id === false) {
       $sql = 'REPLACE INTO '.$tablePrefix.'_property_key(`key`, is_update)'
-        .' VALUES(?, TRUE)';
+        .' VALUES(?, 1)';
       Db::execute($sql, $key);
       return DbConnection::get()->lastInsertId();
     }
@@ -18,7 +18,7 @@ class DbProperty {
     $id = Db::getColumn($sql, $keyId, $value);
     if ($id === false) {
       $sql = 'REPLACE INTO '.$tablePrefix.'_property_value'
-        .'(key_id, `value`, is_update) VALUES(?, ?, TRUE)';
+        .'(key_id, `value`, is_update) VALUES(?, ?, 1)';
       Db::execute($sql, $keyId, $value);
       return DbConnection::get()->lastInsertId();
     }
@@ -27,19 +27,19 @@ class DbProperty {
 
   public static function expireAll($tablePrefix) {
     Db::execute(
-      'UPDATE '.$tablePrefix.'_property_key SET is_update = FALSE'
+      'UPDATE '.$tablePrefix.'_property_key SET is_update = 0'
     );
     Db::execute(
-      'UPDATE '.$tablePrefix.'_property_value SET is_update = FALSE'
+      'UPDATE '.$tablePrefix.'_property_value SET is_update = 0'
     );
   }
 
   public static function deleteOldItems($tablePrefix) {
     Db::execute(
-      'DELETE '.$tablePrefix.'_property_key WHERE is_update = FALSE'
+      'DELETE '.$tablePrefix.'_property_key WHERE is_update = 0'
     );
     Db::execute(
-      'DELETE '.$tablePrefix.'_property_value WHERE is_update = FALSE'
+      'DELETE '.$tablePrefix.'_property_value WHERE is_update = 0'
     );
   }
 

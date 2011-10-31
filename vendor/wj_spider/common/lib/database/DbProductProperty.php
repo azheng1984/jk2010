@@ -5,7 +5,7 @@ class DbProductProperty {
   ) {
     Db::execute(
       'REPLACE INTO '.$tablePrefix.'_product_property SET'
-      .' merchant_product_id = ?, property_value_id = ?, is_update = TRUE',
+      .' merchant_product_id = ?, property_value_id = ?, is_update = 1',
       $merchantProductId, $propertyId
     );
   }
@@ -19,13 +19,13 @@ class DbProductProperty {
 
   public static function expireAll($tablePrefix) {
     Db::execute(
-      'UPDATE '.$tablePrefix.'_product_property SET is_update = FALSE'
+      'UPDATE '.$tablePrefix.'_product_property SET is_update = 0'
     );
   }
 
   public static function deleteOldItems($tablePrefix) {
     Db::execute(
-      'DELETE '.$tablePrefix.'_product_property WHERE is_update = FALSE'
+      'DELETE '.$tablePrefix.'_product_property WHERE is_update = 0'
     );
   }
 
