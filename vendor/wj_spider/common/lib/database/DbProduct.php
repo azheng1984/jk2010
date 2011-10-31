@@ -95,7 +95,7 @@ class DbProduct {
       Db::getColumn('SHOW TABLES LIKE ?', $tablePrefix.'_product') === false
     ) {
       $sql = "CREATE TABLE `".$tablePrefix."_product` (
-        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         `merchant_product_id` int(11) unsigned NOT NULL,
         `category_id` int(11) unsigned NOT NULL,
         `title` varchar(511) NOT NULL,

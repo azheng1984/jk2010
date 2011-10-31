@@ -25,8 +25,7 @@ class ProductProcessor {
     $info = DbProduct::getContentMd5AndSaleIndex(
       $this->tablePrefix, $this->merchantProductId
     );
-    $id = $this->save($info);
-    $this->updateSaleIndex($id, $info);
+    $this->save($info);
     $matches = array();
     preg_match(
       '{jqzoom.*? src="http://(.*?)/(\S+)"}', $result['content'], $matches
@@ -46,13 +45,14 @@ class ProductProcessor {
     );
   }
 
-  private function save($contentInfo) {
+  private function save($info) {
     $md5 = $this->getContentMd5();
-    if ($contentInfo === false) {
+    if ($info === false) {
       return $this->insertContent($md5);
     }
-    $this->updateContent($contentInfo['id'], $md5);
-    return $contentInfo['id'];
+    $this->updateSaleIndex($info['id'], $info);
+    $this->updateContent($info['id'], $md5);
+    return $info['id'];
   }
 
   private function parseProperties() {
