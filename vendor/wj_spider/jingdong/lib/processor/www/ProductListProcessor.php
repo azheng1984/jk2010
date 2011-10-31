@@ -53,10 +53,12 @@ class ProductListProcessor {
       $matches
     );
     $productIds = $matches[1];
+    $saleIndex = ($this->page - 1) * 36;
     foreach ($productIds as $id) {
       DbTask::insert('Product', array(
         'table_prefix' => $this->tablePrefix,
         'category_id' => $this->categoryId,
+        'sale_index' => ++$saleIndex,
         'id' => $id
       ));
     }

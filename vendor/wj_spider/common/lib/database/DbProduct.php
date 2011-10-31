@@ -14,9 +14,9 @@ class DbProduct {
     );
   }
 
-  public static function getContentInfo($tablePrefix, $merchantProductId) {
+  public static function getContentMd5AndSaleIndex($tablePrefix, $merchantProductId) {
     return Db::getRow(
-      'SELECT id, content_md5 FROM '.$tablePrefix.'_product'
+      'SELECT id, content_md5, sale_index FROM '.$tablePrefix.'_product'
       .' WHERE merchant_product_id = ?', $merchantProductId
     );
   }
@@ -28,13 +28,14 @@ class DbProduct {
     $title,
     $description,
     $contentMd5,
+    $saleIndex,
     $lowestPrice = null,
     $highestPrice = null
   ) {
     $sql = 'INSERT INTO '.$tablePrefix.'_product('
       .'merchant_product_id, category_id, title, description, content_md5,'
-      .' lowest_price, highest_price, index_time)'
-      .' VALUES(?, ?, ?, ?, ?, ?, ?, NOW())';
+      .' sale_index, lowest_price, highest_price, index_time)'
+      .' VALUES(?, ?, ?, ?, ?, ?, ?, ?, NOW())';
     Db::execute(
       $sql,
       $merchantProductId,
@@ -42,6 +43,7 @@ class DbProduct {
       $title,
       $description,
       $contentMd5,
+      $saleIndex,
       $lowestPrice,
       $highestPrice
     );
@@ -58,6 +60,13 @@ class DbProduct {
     );
   }
 
+  public static function updateSaleIndex($tablePrefix, $id, $saleIndex) {
+    Db::execute(
+      'UPDATE '.$tablePrefix.'_product SET sale_index = ? WHERE id = ?',
+      $saleIndex, $id
+    );
+  }
+
   public static function updateContent(
     $tablePrefix, $id, $categoryId, $title,
     $description, $contentMd5
@@ -69,6 +78,7 @@ class DbProduct {
       $categoryId, $title, $description, $contentMd5, $id
     );
   }
+
 
   public static function updateImageInfo(
     $tablePrefix, $id, $imageMd5, $imageLastModified
@@ -93,6 +103,7 @@ class DbProduct {
         `content_md5` varchar(32) DEFAULT NULL,
         `image_md5` varchar(32) DEFAULT NULL,
         `image_last_modified` varchar(29) DEFAULT NULL,
+        `sale_index` int(11) unsigned NOT NULL,
         `lowest_price` decimal(9,2) DEFAULT NULL,
         `highest_price` decimal(9,2) DEFAULT NULL,
         `index_time` datetime NOT NULL,
