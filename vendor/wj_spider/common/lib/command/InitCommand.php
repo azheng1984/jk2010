@@ -34,6 +34,7 @@ abstract class InitCommand {
   }
 
   private function resetTables($tablePrefix) {
+    DbProduct::expireAll($tablePrefix);
     DbProductProperty::expireAll($tablePrefix);
     DbProperty::expireAll($tablePrefix);
   }

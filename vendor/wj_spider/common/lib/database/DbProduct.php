@@ -67,18 +67,23 @@ class DbProduct {
     );
   }
 
+  public static function updateFlag($tablePrefix, $id) {
+    Db::execute(
+      'UPDATE '.$tablePrefix.'_product SET is_update = 1 WHERE id = ?', $id
+    );
+  }
+
   public static function updateContent(
     $tablePrefix, $id, $categoryId, $title,
     $description, $contentMd5
   ) {
     Db::execute(
       'UPDATE '.$tablePrefix.'_product SET'
-      .' category_id = ?,  title = ?, description = ?, content_md5 = ?'
-      .' WHERE id = ?',
+      .' category_id = ?,  title = ?, description = ?, content_md5 = ?,'
+      .' is_update = 1 WHERE id = ?',
       $categoryId, $title, $description, $contentMd5, $id
     );
   }
-
 
   public static function updateImageInfo(
     $tablePrefix, $id, $imageMd5, $imageLastModified
@@ -87,6 +92,12 @@ class DbProduct {
       'UPDATE '.$tablePrefix.'_product SET'
       .' image_md5 = ?,  image_last_modified = ? WHERE id = ?',
       $imageMd5, $imageLastModified, $id
+    );
+  }
+
+  public static function expireAll($tablePrefix) {
+    Db::execute(
+      'UPDATE '.$tablePrefix.'_product SET is_update = 0'
     );
   }
 
@@ -106,6 +117,7 @@ class DbProduct {
         `sale_index` int(11) unsigned NOT NULL,
         `lowest_price` decimal(9,2) DEFAULT NULL,
         `highest_price` decimal(9,2) DEFAULT NULL,
+        `is_update` tinyint(1) NOT NULL DEFAULT '1',
         `index_time` datetime NOT NULL,
         PRIMARY KEY (`id`),
         UNIQUE KEY `merchant_product_id` (`merchant_product_id`) USING BTREE

@@ -50,8 +50,8 @@ class ProductProcessor {
     if ($info === false) {
       return $this->insertContent($md5);
     }
-    $this->updateSaleIndex($info['id'], $info);
-    $this->updateContent($info['id'], $md5);
+    $this->updateContent($info, $md5);
+    $this->updateSaleIndex($info);
     return $info['id'];
   }
 
@@ -126,19 +126,23 @@ class ProductProcessor {
     return $id;
   }
 
-  private function updateContent($id, $md5) {
-    DbProduct::updateContent(
-      $this->tablePrefix, $id, $this->categoryId, $this->title,
-      $this->description, $md5
-    );
-    DbProductUpdate::insert($this->tablePrefix, $id, 'CONTENT');
+  private function updateContent($md5, $info) {
+    if ($info['content_md5'] === $md5) {
+      DbProduct::updateContent(
+        $this->tablePrefix,  $info['id'], $this->categoryId, $this->title,
+        $this->description, $md5
+      );
+      DbProductUpdate::insert($this->tablePrefix,  $info['id'], 'CONTENT');
+      return;
+    }
+    DbProduct::updateFlag($this->tablePrefix,  $info['id']);
   }
 
-  private function updateSaleIndex($id, $info) {
+  private function updateSaleIndex($info) {
     $previousIndex = $info  === false ? false : $info['sale_index'];
     if ($previousIndex !== $this->saleIndex) {
-      DbProduct::updateSaleIndex($this->tablePrefix, $id, $this->saleIndex);
-      DbProductUpdate::insert($this->tablePrefix, $id, 'SALE_INDEX');
+      DbProduct::updateSaleIndex($this->tablePrefix, $info['id'], $this->saleIndex);
+      DbProductUpdate::insert($this->tablePrefix, $info['id'], 'SALE_INDEX');
     }
   }
 
