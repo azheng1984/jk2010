@@ -44,9 +44,8 @@ class DbProperty {
   }
 
   public static function createTable($tablePrefix) {
-    if (
-      Db::getColumn('SHOW TABLES LIKE ?', $tablePrefix.'_property_key') === false
-    ) {
+    $table = Db::getColumn('SHOW TABLES LIKE ?', $tablePrefix.'_property_key');
+    if ($table === false) {
       $sql = "CREATE TABLE `".$tablePrefix."_property_key` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `key` varchar(63) NOT NULL,
@@ -56,9 +55,10 @@ class DbProperty {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
       Db::execute($sql);
     }
-    if (
-      Db::getColumn('SHOW TABLES LIKE ?', $tablePrefix.'_property_value') === false
-    ) {
+    $table = Db::getColumn(
+      'SHOW TABLES LIKE ?', $tablePrefix.'_property_value'
+    );
+    if ($table === false) {
       $sql = "CREATE TABLE `".$tablePrefix."_property_value` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `key_id` int(11) unsigned NOT NULL,

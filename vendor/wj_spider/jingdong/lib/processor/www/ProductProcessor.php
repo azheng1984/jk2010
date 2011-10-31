@@ -5,6 +5,7 @@ class ProductProcessor {
   private $merchantProductId;
   private $title = null;
   private $description = null;
+  private $saleIndex;
 
   public function execute($arguments) {
     $result = WebClient::get(
@@ -14,13 +15,18 @@ class ProductProcessor {
       return $result;
     }
     $this->html = $result['content'];
+    $this->saleIndex = $arguments['sale_index'];
     $this->tablePrefix = $arguments['table_prefix'];
     $this->merchantProductId = $arguments['id'];
     $this->categoryId = $arguments['category_id'];
     $this->parseTitle();
     $this->parseDescription();
     $this->parseProperties();
-    $this->save();
+    $info = DbProduct::getContentMd5AndSaleIndex(
+      $this->tablePrefix, $this->merchantProductId
+    );
+    $id = $this->save($info);
+    $this->updateSaleIndex($id, $info);
     $matches = array();
     preg_match(
       '{jqzoom.*? src="http://(.*?)/(\S+)"}', $result['content'], $matches
@@ -40,16 +46,13 @@ class ProductProcessor {
     );
   }
 
-  private function save() {
-    $contentInfo = DbProduct::getContentInfo(
-      $this->tablePrefix, $this->merchantProductId
-    );
+  private function save($contentInfo) {
     $md5 = $this->getContentMd5();
     if ($contentInfo === false) {
-      $this->insertContent($md5);
-      return;
+      return $this->insertContent($md5);
     }
     $this->updateContent($contentInfo['id'], $md5);
+    return $contentInfo['id'];
   }
 
   private function parseProperties() {
@@ -115,10 +118,12 @@ class ProductProcessor {
   }
 
   private function insertContent($md5) {
-    $id = DbProduct::insert($this->tablePrefix, $this->merchantProductId,
-      $this->categoryId, $this->title, $this->description, $md5
+    $id = DbProduct::insert(
+      $this->tablePrefix, $this->merchantProductId,$this->categoryId,
+      $this->title, $this->description, $md5, $this->saleIndex
     );
-    DbProductUpdate::insert($this->tablePrefix, $id, 'CONTENT');
+    DbProductUpdate::insert($this->tablePrefix, $id, 'NEW');
+    return $id;
   }
 
   private function updateContent($id, $md5) {
@@ -127,6 +132,14 @@ class ProductProcessor {
       $this->description, $md5
     );
     DbProductUpdate::insert($this->tablePrefix, $id, 'CONTENT');
+  }
+
+  private function updateSaleIndex($id, $info) {
+    $previousIndex = $info  === false ? false : $info['sale_index'];
+    if ($previousIndex !== $this->saleIndex) {
+      DbProduct::updateSaleIndex($this->tablePrefix, $id, $this->saleIndex);
+      DbProductUpdate::insert($this->tablePrefix, $id, 'SALE_INDEX');
+    }
   }
 
   private function getContentMd5() {
