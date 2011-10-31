@@ -3,7 +3,7 @@ class DbCategory {
   public static function getOrNewId($name, $parentId = 0) {
     $id = Db::getColumn(
       'SELECT id FROM category WHERE parent_id = ? AND `name` = ?',
-      $name, $parentId
+      $parentId, $name
     );
     if ($id === false) {
       Db::execute(
