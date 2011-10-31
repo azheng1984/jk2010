@@ -17,8 +17,7 @@ class ImageProcessor {
     if ($result['http_code'] === 304) {
       return;
     }
-    preg_match('/Last-Modified: (.*?)\r\n/', $result['header'], $matches);
-    $lastModified = $matches[1];
+    $lastModified = $this->getLastModified($result['header']);
     $md5 = md5($result['content']);
     if ($md5 === $imageInfo['image_md5']) {
       return;
@@ -37,5 +36,12 @@ class ImageProcessor {
     DbProductUpdate::insert(
       $arguments['table_prefix'], $imageInfo['id'], 'IMAGE'
     );
+  }
+
+  private function getLastModified($header) {
+    preg_match('/Last-Modified: (.*?)\r\n/', $header, $matches);
+    if (count($matches) === 2) {
+      return $matches[1];
+    }
   }
 }
