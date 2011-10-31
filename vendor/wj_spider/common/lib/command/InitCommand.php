@@ -9,6 +9,14 @@ abstract class InitCommand {
     foreach ($this->getCategoryListLinks() as $type => $item) {
       foreach ($item as $domain => $pathes) {
         foreach ($pathes as $name => $values) {
+//          if ($values['table_prefix'] !== 'food') {
+//            Db::execute('drop table '.$values['table_prefix'].'_product');
+//            Db::execute('drop table '.$values['table_prefix'].'_product_property');
+//            Db::execute('drop table '.$values['table_prefix'].'_property_key');
+//            Db::execute('drop table '.$values['table_prefix'].'_property_value');
+//            Db::execute('drop table '.$values['table_prefix'].'_product_update');
+//          }
+//          continue;
           $this->createTables($values['table_prefix']);
           //$this->resetTables($values['table_prefix']);
           DbTask::insert($type, array(
