@@ -135,7 +135,7 @@ class ProductProcessor {
       DbProductUpdate::insert($this->tablePrefix,  $info['id'], 'CONTENT');
       return;
     }
-    DbProduct::updateFlag($this->tablePrefix,  $info['id']);
+    DbProduct::updateFlag($this->tablePrefix, $info['id']);
   }
 
   private function updateSaleIndex($info) {
