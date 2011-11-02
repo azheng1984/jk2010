@@ -1,31 +1,5 @@
 <?php
 class BuildCommand {
-  private $properties = array();
-  private $propertyKeyIndex = array();
-  private $propertyKeyMapping = array('系统' => '操作系统', '网络' => '制式');
-  private $propertyValueMapping = array('电容屏触屏' => '电容触屏', '电阻屏触屏' => '电阻触屏', 'WindowsMobile' => 'Windows Mobile',
-   '联通3G' => 'WCDMA', '电信3G' => 'CDMA2000', '移动3G'=> 'TD-SCDMA');
-  private $manualBrands = array(
-    '1000530369' => 'U73',
-    '1000468567' => 'M228',
-  );
-  private $iphoneCollection = array(
-    '颜色' => array('黑色' => '9114', '白色' => '9163'),
-    '内存' => array('16GB', '32GB'),
-    '套餐' => array('联通'),
-  );
-  private $iphone4Id;
-  private $iphoneMapping = array(
-    '317360' => array('黑色', '16G', true),
-    '317363' => array('黑色', '32G', true),
-    '391254' => array('白色', '16G', true),
-    '293275' => array('白色', '32G', true),
-    '292790' => array('黑色', '32G', false),
-    '292497' => array('黑色', '16G', false),
-    '293276' => array('白色', '16G', false),
-    '391732' => array('白色', '32G', false)
-  );
-
   private function initialize() {
     `cd ~/wj_img/2;rm *`;
     Db::execute('USE wj');
@@ -44,21 +18,15 @@ class BuildCommand {
   }
 
   public function execute() {
-    $this->initialize();
-    Db::execute('USE jingdong_staging');
-    $sql = 'SELECT * FROM product_recognition_info';
-    $items = Db::getAll($sql);
-    foreach ($items as $item) {
-      $this->push($item['product_id'], $item['brand'], $item['model']);
+    $tablePrefix = 'food';
+    while (($item = DbProductUpdate::get($tablePrefix)) !== false) {
+      $class = 'Product'.ucfirst($item['type']);
+      echo $class;
+      exit;
+      $updater = new $class;
+      $updater->execute($item);
+      DbProductUpdate::delete($tablePrefix, $item['id']);
     }
-  }
-
-  public function execute2() {
-    //foreach 获取爬虫更新的产品
-    //parse 后对比更新，如果和原记录一样，又没有要求强制更新，continue; 如果是新记录,insert
-    //识别产品，属性映射（包括图片和分类），如果不需要更新，continue
-    //end foreach
-    //生成更新包(增量/全量，更新脚本)
   }
 
   private function push($id, $brand, $model) {
@@ -140,19 +108,5 @@ class BuildCommand {
     $sql = 'INSERT INTO mobile_phone_merchant(product_id, merchant_id, url, price)'
       .' VALUES(?, ?, ?, ?)';
     Db::execute($sql, $productId, 1, $url, $price);
-  }
-
-  private function segment($text) {
-    mmseg_load_chars('/home/wz/anjuke-php-mmseg-cdbfeb3/data/chars.dic');
-    mmseg_load_words('/home/wz/anjuke-php-mmseg-cdbfeb3/data/words-sogou.dic');
-    mmseg_load_words('/home/wz/anjuke-php-mmseg-cdbfeb3/data/words-custom.dic');
-    mmseg_load_words('/home/wz/anjuke-php-mmseg-cdbfeb3/data/words.dic');
-    $mmseg = mmseg_algor_create($text);
-    $result = array();
-    while (($token = mmseg_next_token($mmseg)) !== false) {
-      $result[] = $token['text'];
-    }
-    mmseg_algor_destroy($mmseg);
-    return $result;
   }
 }
