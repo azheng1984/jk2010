@@ -1,14 +1,14 @@
 <?php
 class ProductNewUpdater {
   public function execute($item) {
-    $product = DbProduct::get($item['id']);
+    $product = DbProduct::get($item['product_id']);
     $this->updateCategory($product['category_id']);
     $product['properties'] = $this->updateProperties(
       $product['merchant_product_id'], $product['category_id']
     );
     $webProductId = $this->updateWebDb($product);
+    DbProduct::updateWebProductId($item['id'], $webProductId);
     $this->updateSearchDb($product, $webProductId);
-    exit;
   }
 
   private function updateCategory($id) {
@@ -45,7 +45,7 @@ class ProductNewUpdater {
     }
     $cutPriceX100 = 0;
     $merchantId = 1;
-    $url = 'product/'.$product['merchant_product_id'].'.html';
+    $url = $product['merchant_product_id'].'.html';
     $imageDbIndex = 0;
     $categoryId = $product['category_id'];
     $title = $product['title'];

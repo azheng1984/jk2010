@@ -102,12 +102,13 @@ class DbProduct {
   }
 
   public static function createTable($tablePrefix) {
-    if (
+      if (
       Db::getColumn('SHOW TABLES LIKE ?', $tablePrefix.'_product') === false
     ) {
       $sql = "CREATE TABLE `".$tablePrefix."_product` (
-        `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-        `merchant_product_id` int(11) unsigned NOT NULL,
+        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `web_product_id` int(11) unsigned NOT NULL DEFAULT '0',
+        `merchant_product_id` bigint(20) unsigned NOT NULL,
         `category_id` int(11) unsigned NOT NULL,
         `title` varchar(511) NOT NULL,
         `description` text,
@@ -117,8 +118,8 @@ class DbProduct {
         `sale_index` int(11) unsigned NOT NULL,
         `lowest_price` decimal(9,2) DEFAULT NULL,
         `highest_price` decimal(9,2) DEFAULT NULL,
-        `is_update` tinyint(1) NOT NULL DEFAULT '1',
         `index_time` datetime NOT NULL,
+        `is_update` tinyint(1) NOT NULL DEFAULT '1',
         PRIMARY KEY (`id`),
         UNIQUE KEY `merchant_product_id` (`merchant_product_id`) USING BTREE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8";

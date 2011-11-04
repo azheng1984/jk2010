@@ -6,7 +6,6 @@ class BuildCommand {
       $class = 'Product'.ucfirst(strtolower($item['type'])).'Updater';
       $updater = new $class;
       $updater->execute($item);
-      exit;
       DbProductUpdate::delete($tablePrefix, $item['id']);
     }
   }
