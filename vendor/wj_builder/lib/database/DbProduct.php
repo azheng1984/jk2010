@@ -1,6 +1,12 @@
 <?php
 class DbProduct {
-  public static function insertIntoLive(
+  public static function get($id) {
+    return Db::getRow(
+      'SELECT * FROM `jingdong`.`food_product` WHERE id = ?', $id
+    );
+  }
+  
+  public static function insertIntoWeb(
     $lowestPriceX100,
     $highestPriceX100,
     $cutPriceX100,
@@ -12,7 +18,7 @@ class DbProduct {
     $properties,
     $description
   ) {
-    $sql = 'INSERT INTO `wj_live`.`product` (
+    $sql = 'INSERT INTO `wj_web`.`product` (
       `lowest_price_x_100`,
       `highest_price_x_100`,
       `cut_price_x_100`,
@@ -36,6 +42,7 @@ class DbProduct {
       $properties,
       $description
     );
+    return DbConnection::get()->lastInsertId();
   }
 
   public static function insertIntoSearch(
