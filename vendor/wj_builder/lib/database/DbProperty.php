@@ -22,7 +22,8 @@ class DbProperty {
 
   public static function getWebKey($categoryId, $key) {
     return Db::getRow(
-      'SELECT * FROM `wj_web`.`property_key` WHERE category_id = ? AND `key` = ?',
+      'SELECT * FROM `wj_web`.`property_key`'
+      .' WHERE category_id = ? AND `key` = ?',
       $categoryId, $key
     );
   }
@@ -42,7 +43,8 @@ class DbProperty {
 
   public static function getWebValue($keyId, $value) {
     return Db::getRow(
-      'SELECT * FROM `wj_web`.`property_value` WHERE key_id = ? AND `value` = ?',
+      'SELECT * FROM `wj_web`.`property_value`'
+      .' WHERE key_id = ? AND `value` = ?',
       $keyId, $value
     );
   }
