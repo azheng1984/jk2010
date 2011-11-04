@@ -6,8 +6,8 @@ class ProductNewUpdater {
     $product['properties'] = $this->updateProperties(
       $product['merchant_product_id'], $product['category_id']
     );
-    $this->updateWebDb($product);
-    //$this->updateSearchDb($product);
+    $webProductId = $this->updateWebDb($product);
+    $this->updateSearchDb($product, $webProductId);
     exit;
   }
 
@@ -21,26 +21,27 @@ class ProductNewUpdater {
 
   private function updateProperties($merchantProductId, $categoryId) {
     $properties = array();
-    foreach (DbProperty::getList($merchantProductId) as $product) {
-      $value = DbProperty::getValue($product['property_value_id']);
+    foreach (DbProperty::getList($merchantProductId) as $item) {
+      $value = DbProperty::getValue($item['property_value_id']);
       $key = DbProperty::getKey($value['key_id']);
-        $webKey = DbProperty::getWebKey($categoryId, $key['key']);
+      $webKey = DbProperty::getWebKey($categoryId, $key['key']);
       if ($webKey === false) {
         $webKey = DbProperty::insertIntoWebKey($categoryId, $key['key']);
       }
       $webValue = DbProperty::getWebValue($categoryId, $value['value']);
       if ($webValue === false) {
-        $webValue = DbProperty::insertIntoWebKey($categoryId, $value['value']);
+        $webValue = DbProperty::insertIntoWebValue($categoryId, $value['value']);
       }
       $properties[] = array('key' => $webKey, 'value' => $webValue);
     }
+    return $properties;
   }
 
   private function updateWebDb($product) {
-    $lowestPriceX100 = $product['lowest_product'] * 100;
+    $lowestPriceX100 = $product['lowest_price'] * 100;
     $highestPriceX100 = null;
-    if ($product['highest_product'] !== null) {
-      $highestPriceX100 = $product['highest_product'] * 100;
+    if ($product['highest_price'] !== null) {
+      $highestPriceX100 = $product['highest_price'] * 100;
     }
     $cutPriceX100 = 0;
     $merchantId = 1;
@@ -48,7 +49,7 @@ class ProductNewUpdater {
     $imageDbIndex = 0;
     $categoryId = $product['category_id'];
     $title = $product['title'];
-    $propertyList = '';
+    $propertyList = array();
     foreach ($product['properties'] as $item) {
       $key = $item['key'];
       $value = $item['value'];
@@ -56,20 +57,34 @@ class ProductNewUpdater {
     }
     $properties = implode(', ', $propertyList);
     $description = $product['description'];
-    DbProduct::insertIntoWeb(
+    return DbProduct::insertIntoWeb(
       $lowestPriceX100, $highestPriceX100, $cutPriceX100, $merchantId, $url,
       $imageDbIndex, $categoryId, $title, $properties, $description
     );
   }
 
-  private function updateSearchDb($product) {
+  private function updateSearchDb($product, $webProductId) {
+    $lowestPriceX100 = $product['lowest_price'] * 100;
+    $cutPriceX100 = 0;
+    $categoryId = $product['category_id'];
+    $saleRank = 1000000 - $product['sale_index'];
+    $title = Segmentation::execute($product['title']);
+    $propertyList = array();
+    $propertyIdList = array();
+    foreach ($product['properties'] as $item) {
+      $key = $item['key'];
+      $value = $item['value'];
+      $propertyList[] = $key['key'].':'.$value['value'];
+      $propertyIdList[] = $value['id'];
+    }
+    $properties = Segmentation::execute(implode(', ', $propertyList));
+    $propertyIdList = implode(',', $propertyIdList);
+    $description = Segmentation::execute($product['description']);
+    $product['categories'] = null;
+    Segmentation::execute($product['categories']);
     DbProduct::insertIntoSearch(
-      $id, $lowestPriceX100, $cutPriceX100, $saleRank, $categoryId,
+      $webProductId, $lowestPriceX100, $cutPriceX100, $saleRank, $categoryId,
       $propertyIdList, $title, $properties, $description
     );
-    Segmentation::execute($product['title']);
-    Segmentation::execute($product['description']);
-    Segmentation::execute($product['properties']);
-    Segmentation::execute($product['categories']);
   }
 }
