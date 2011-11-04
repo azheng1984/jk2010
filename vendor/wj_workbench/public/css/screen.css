@@ -43,7 +43,9 @@ input {
   display:block;
   width:90px;
   height:25px;
-  font-size:22px;
+  font-size:20px;
+  white-space:nowrap;
+  text-align:center;
   color:red;
   padding-top:3px;
   padding-left:1px;
