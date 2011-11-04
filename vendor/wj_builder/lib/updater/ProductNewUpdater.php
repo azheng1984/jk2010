@@ -28,9 +28,9 @@ class ProductNewUpdater {
       if ($webKey === false) {
         $webKey = DbProperty::insertIntoWebKey($categoryId, $key['key']);
       }
-      $webValue = DbProperty::getWebValue($categoryId, $value['value']);
+      $webValue = DbProperty::getWebValue($key['id'], $value['value']);
       if ($webValue === false) {
-        $webValue = DbProperty::insertIntoWebValue($categoryId, $value['value']);
+        $webValue = DbProperty::insertIntoWebValue($key['id'], $value['value']);
       }
       $properties[] = array('key' => $webKey, 'value' => $webValue);
     }
