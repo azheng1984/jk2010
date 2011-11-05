@@ -10,7 +10,7 @@ class DbProduct {
     return Db::getColumn(
       'SELECT image_db_index FROM `wj_web`.`product` WHERE id = ?',
       $webProductid
-    ) !== 0;
+    ) !== '0';
   }
 
   public static function updateHasWebImage($webProductId, $hasWebImage) {
@@ -112,5 +112,41 @@ class DbProduct {
     $sql = 'UPDATE `wj_search`.`product`'
       .' SET `lowest_price_x_100` = ?, `cut_price_x_100` = ? WHERE id = ?';
     Db::execute($sql, $lowestPriceX100, $cutPriceX100, $webProductId);
+  }
+
+  public static function updateSearchSaleRank($webProductId, $saleRank) {
+    $sql = 'UPDATE `wj_search`.`product` SET `sale_rank` = ? WHERE id = ?';
+    Db::execute($sql, $saleRank, $webProductId);
+  }
+
+  public static function updateWebContent(
+    $webProductId,
+    $categoryId,
+    $title,
+    $properties,
+    $description
+  ) {
+    $sql = 'UPDATE `wj_web`.`product`'
+      .' SET `category_id` = ?, `title` = ?,'
+      .' `properties` = ?, `description` = ? WHERE id = ?';
+    Db::execute(
+      $sql, $categoryId, $title, $properties, $description, $webProductId
+    );
+  }
+
+  public static function updateSearchContent(
+    $webProductId,
+    $categoryId,
+    $propertyIdList,
+    $title,
+    $properties,
+    $description
+  ) {
+    $sql = 'UPDATE `wj_search`.`product`'
+      .' SET `category_id` = ?, `property_id_list` = ?, `title` = ?,'
+      .' `properties` = ?, `description` = ? WHERE id = ?';
+    Db::execute(
+      $sql, $categoryId, $propertyIdList,
+      $title, $properties, $description, $webProductId);
   }
 }

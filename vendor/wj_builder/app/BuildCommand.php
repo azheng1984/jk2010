@@ -7,6 +7,7 @@ class BuildCommand {
       $updater = new $class;
       $updater->execute($item);
       DbProductUpdate::delete($tablePrefix, $item['id']);
+      echo '.';
     }
   }
 }

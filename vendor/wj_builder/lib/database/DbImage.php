@@ -6,8 +6,9 @@ class DbImage {
   public static function get($id) {
     self::connect();
     $sql = 'SELECT image FROM image WHERE product_id = ?';
-    Db::execute($sql, $id);
+    $image = Db::getColumn($sql, $id);
     DbConnection::connect('default');
+    return $image;
   }
 
   public static function updateWebImage($webProductId, $image) {
@@ -34,7 +35,7 @@ class DbImage {
   private static function connectWebDb() {
     if (!self::$isWebConnected) {
       DbConnection::connect(
-        'web_image', new PDO('sqlite:'.IMAGE_PATH.'image.sqlite')
+        'web_image', new PDO('sqlite:'.WEB_IMAGE_PATH.'image.sqlite')
       );
       self::$isWebConnected = true;
       return;
