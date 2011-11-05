@@ -10,7 +10,6 @@ class ProductImageUpdater {
         $product['web_product_id'], $image !== false
       );
     }
-    exit;
   }
 
   private function updateImage($webProductId, $hasWebImage, $image) {
