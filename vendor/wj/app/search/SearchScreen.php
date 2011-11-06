@@ -14,6 +14,7 @@ class SearchScreen extends Screen {
 
   private function renderProductList() {
     echo '<div id="h1_wrapper"><h1>'.$_GET['q'].'</h1>';
+    echo '<div id="action"><a href=".">分享</a></div>';
     echo '</div>';
 //    $s = new SphinxClient;
 //    $offset = ($this->page - 1) * 20;
@@ -43,7 +44,7 @@ class SearchScreen extends Screen {
     echo '<div id="sort">排序: <span>销量</span> <a rel="nofollow" href=".">价格</a> <a href="." rel="nofollow">降价</a></div>';
     echo '<div id="total">找到 '.$result['total'].' 个产品</div>';
     echo '</div>';
-    echo '<div id="property_filter">分类</div>';
+    echo '<div id="property_filter"><div style="padding:6px;"">分类</div></div>';
     echo '<div id="product_list_wrapper"><ol id="product_list">';
 //    foreach ($items as $item) {
 //      $name = $item['title'].' '.$this->category['name'];
