@@ -5,7 +5,6 @@ define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);
 require ROOT_PATH.'public'.DIRECTORY_SEPARATOR.'env.php';
 require HYPERFRAMEWORK_PATH.'class_loader'.DIRECTORY_SEPARATOR
   .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';
-define('DB_NAME', 'wj');
 $classLoader = new ClassLoader;
 $classLoader->run();
 $app = new Application;
