@@ -1,99 +1,78 @@
 <?php
 class SearchScreen extends Screen {
-  public function renderContent() {
-    $categories = array();
-    $category = null;
-    $parentId = 0;
-    foreach ($_GET['categories'] as $categoryName) {
-      if ($categoryName !== '') {
-        $category = DbCategory::getByName(urldecode($categoryName), $parentId);
-        if ($category === false) {
-          throw new NotFoundException;
-        }
-        $categories[] = $category;
-        $parentId = $category['id'];
-        if ($category['table_prefix'] !== null) {
-          break;
-        }
-      }
-    }
-    $breadcrumb = new Breadcrumb($categories);
-    $breadcrumb->render();
-    echo '<div id="product_search">';
-    echo '<div id="category_title"><h1>'.$category['name'].'</h1></div>';
-    if ($category['table_prefix'] === null) {
-      echo '<div class="list_wrapper"><ul id="category_list">';
-      for ($i = 0; $i < 5; ++$i) {
-        foreach (DbCategory::getList($parentId) as $category) {
-          echo '<li><div class="bull">&bull;</div><h2><a href="'.urlencode($category['name']).'/">'
-            .$category['name'].'</a></h2><div class="children';
-             if ($i === 4) {
-              echo ' last';
-            }
-            echo '"><a href="/">电脑</a> <a href="/">手机</a> &hellip;</div></li>';
-        }
-      }
-      echo '</ul></div>';
-      echo '<div class="ads">Google 提供的广告</div>';
-      return;
-    }
-    $this->renderProductList($category);
+  public function renderBodyContent() {
+    $this->renderProductList();
   }
 
-  private function renderProductList($category) {
-    $filter = new FilterScreen;
-    $filter->render($category);
-    $valueIds = array();
-    foreach (FilterParameter::getSelectedList($category) as $item) {
-      foreach ($item[1] as $value) {
-        $valueIds[] = $value['id'];
-      }
-    }
-    echo '<div class="reset"></div>';
-    $s = new SphinxClient;
-    $s->setServer("localhost", 9312);
-    $s->setMaxQueryTime(30);
-    if (empty($_GET['q'])) {
-      $s->setMatchMode(SPH_MATCH_EXTENDED);
-      if (count($valueIds) !== 0) {
-        $result = $s->query(implode(',', $valueIds));
-      } else {
-        $result = $s->query('');
-      }
-    } else {
-      $s->setMatchMode(SPH_MATCH_EXTENDED);
-      $query = '@keyword_list "'.$_GET['q'].'"';
-      if (count($valueIds) !== 0) {
-        $query .= ' @property_value_list '.implode(',', $valueIds);
-      }
-      $result = $s->query($query, 'test1');
-    }
-    $items = array();
-    $amount = 0;
-    if (isset($result['matches'])) {
-      foreach ($result['matches'] as $id => $value) {
-        $items[] = DbProduct::get($category['table_prefix'], $id);
-      }
-      $amount = count($result['matches']);
-    }
-    echo '<div id="sort_box">';
-    echo '<div class="sort">排序: <span class="selected">销量</span> <a rel="nofollow" href="/">新品</a> <a href="/" rel="nofollow">降价</a> <a rel="nofollow" href="/">价格</a></div>';
-    echo '<div class="total_record">找到 '.$amount.' 件产品 <span class="reset"><a rel="nofollow" href=".">重新筛选</a></span></div>';
+  public function renderHeadContent() {
+    echo '<title>货比万家</title>';
+    echo '<link type="text/css" href="/css/product_list.css" charset="utf-8"',
+      ' media="screen" rel="stylesheet" />';
+    echo '<link type="text/css" href="/css/category_list.css" charset="utf-8"',
+      ' media="screen" rel="stylesheet" />';
+  }
+
+  private function renderProductList() {
+    echo '<div id="h1_wrapper"><h1>'.$_GET['q'].'</h1>';
     echo '</div>';
-    echo '<ul id="product_list">';
-    for ($index = 0; $index < 5; $index++) {
-      foreach ($items as $item) {
-        echo '<li class="';
-        if ($index === 1) {
-          echo 'visited ';
-        }
-        echo 'item"><div class="product_image"><a target="_blank" href="/'.$item['id'].'"><img title="'.$item['name'].'" alt="'.$item['name'].'" src="/x.jpg" /></a></div><h2><a  target="_blank" href="/'.$item['id'].'">'
-          .$item['name'].'</a></h2><div class="price_block"><span class="rmb">&yen;</span><span class="price">10000<span class="point">.68</span></span> &#8764; <span class="price">1234567890<span class="point"></span></span> <div>7 个商城</div></div></li>';
-      }
+//    $s = new SphinxClient;
+//    $offset = ($this->page - 1) * 20;
+//    $s->SetLimits($offset, 20);
+//    $s->setServer("localhost", 9312);
+//    $s->setMaxQueryTime(30);
+//    if (empty($_GET['q'])) {
+//      $s->setMatchMode(SPH_MATCH_EXTENDED);
+//      if (count($valueIds) !== 0) {
+//        $result = $s->query(implode(',', $valueIds));
+//      } else {
+//        $result = $s->query('');
+//      }
+//    } else {
+//      $s->setMatchMode(SPH_MATCH_EXTENDED);
+//      $query = '@keywords "'.$_GET['q'].'"';
+//      $result = $s->query($query, 'test1');
+//    }
+//    $items = array();
+//    if (isset($result['matches'])) {
+//      foreach ($result['matches'] as $id => $value) {
+//        $items[] = DbProduct::get($id);
+//      }
+//    }
+    $result = array('total' => '12345');
+    echo '<div id="list">';
+    echo '<div id="sort">排序: <span>销量</span> <a rel="nofollow" href=".">价格</a> <a href="." rel="nofollow">降价</a></div>';
+    echo '<div id="total">找到 '.$result['total'].' 个产品</div>';
+    echo '</div>';
+    echo '<div id="property_filter">分类</div>';
+    echo '<div id="product_list_wrapper"><ol id="product_list">';
+//    foreach ($items as $item) {
+//      $name = $item['title'].' '.$this->category['name'];
+//      echo '<li><div class="image"><a target="_blank" href="/'.$item['id'].'"><img alt="'.$name.'" src="http://img.workbench.wj.com/'.$item['id'].'.jpg" /></a></div><div class="title"><a target="_blank" href="/'.$item['id'].'">'
+//        .$name.'</a></div><div class="data"><div>&yen;<span class="price">'.$item['lowest_price'].'</span> ~ <span class="price">12345</span></div> <div>京东商城</div></div></li>';
+//    }
+    echo '</ol></div>';
+    $this->renderPagination($result['total']);
+    echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">';
+    AdSenseScreen::render(true);
+    echo '</div></div>';
+  }
+
+  private function renderPagination($total) {
+    if ($total <= 20) {
+      return;
     }
-    echo '</ul>';
-    echo '<div class="pagination"> <span href="/" class="current_page">1</span> <a href="/">2</a> <a href="/">下一页 &raquo;</a></div>';
-    echo '<div class="ads">Google 提供的广告</div>';
-    echo '</div>'; //end of search
+    echo '<div id="pagination"> ';
+    $pagination = new Pagination;
+    $prefix = preg_replace('{[&?]*page=[0-9]+}', '', $_SERVER['QUERY_STRING']);
+    $pageOne = $prefix;
+    if ($prefix !== '') {
+      $prefix = '?'.$prefix.'&';
+      $pageOne .= '#list';
+    } else {
+      $prefix = '?';
+      $pageOne = '.#list';
+    }
+    $pagination->render($prefix, $total, 1, $pageOne);
+    echo '</div>';
   }
 }
