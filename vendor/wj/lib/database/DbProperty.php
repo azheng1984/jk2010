@@ -1,11 +1,7 @@
 <?php
 class DbProperty {
-  public static function getByValueId($tablePrefix, $valueId) {
-    $keyTable = $tablePrefix.'_property_key';
-    $valueTable = $tablePrefix.'_property_value';
-    $sql = 'SELECT * FROM '.$valueTable.' table_value LEFT JOIN '
-      .$keyTable.' table_key ON table_key.id = table_value.key_id'
-      .' WHERE table_value.id = ?';
+  public static function getByValueId($valueId) {
+    $sql = 'SELECT * FROM wj_web.property_value  WHERE id = ?';
     return Db::getRow($sql, $valueId);
   }
 

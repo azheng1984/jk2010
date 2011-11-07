@@ -6,9 +6,9 @@ class DbProduct {
     );
   }
 
-  public static function get($tablePrefix, $id) {
+  public static function get($id) {
     return Db::getRow(
-      'SELECT * FROM '.$tablePrefix.'_product WHERE id = ?', $id
+      'SELECT * FROM wj_search.product WHERE id = ?', $id
     );
   }
 

@@ -12,7 +12,7 @@ a {
 a:hover {
   text-decoration:underline;
 }
-div, input, ul, ol, li {
+div, input, ul, ol {
   float:left;
 }
 ul, ol {

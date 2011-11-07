@@ -1,7 +1,7 @@
 <?php
 class DbCategory {
   public static function get($id) {
-    return Db::getRow('SELECT * FROM global_category WHERE id = ?', $id);
+    return Db::getRow('SELECT * FROM wj_web.category WHERE id = ?', $id);
   }
 
   public static function getList($parentId = 0) {
@@ -10,10 +10,9 @@ class DbCategory {
     );
   }
 
-  public static function getByName($name, $parentId = 0) {
+  public static function getByName($name) {
     return Db::getRow(
-      'SELECT * FROM global_category WHERE parent_id = ? AND `name` = ?',
-      $parentId, $name
+      'SELECT * FROM wj_web.category WHERE `name` = ?', $name
     );
   }
 }
