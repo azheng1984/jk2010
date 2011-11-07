@@ -154,7 +154,7 @@ class SearchScreen extends Screen {
 
   private function renderAdvertisement() {
     echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">';
-    AdSenseScreen::render(true);
+    //AdSenseScreen::render(true);
     echo '</div></div>';
   }
 }
