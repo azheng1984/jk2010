@@ -72,6 +72,25 @@ h1 {
   background-color:red;
   padding:2px 6px;
 }
+#filter ol {
+  padding:10px 20px;
+  list-style:none;
+}
+#filter li {
+  padding:2px 0;
+}
+#filter li span {
+  background:#eee;
+  padding:2px 5px;
+  font-size:12px;
+}
+#filter .head {
+  background:#eee;
+  border-bottom: 1px dotted #E5E5E5;
+}
+#filter .head a {
+  margin-left:10px;
+}
 #sort {
   margin-left:10px;
   display:inline; /* ie 6 */
@@ -100,19 +119,22 @@ h1 {
 img {
   border:0;
 }
-#product_list li {
+#result ol {
+  padding: 5px;
+}
+#result li {
   list-style:none;
   float: left;
   background-color:#fff;
   vertical-align:top;
   padding:6px;
 }
-#product_list .image a {/* chrome */
+#result .image a {/* chrome */
   display:block;
   height:170px;
   width:170px;
 }
-#product_list .title {
+#result .title {
   margin:0;
   margin-top:5px;
   height:40px;
@@ -120,30 +142,20 @@ img {
   width:178px;
   clear:left;
 }
-#product_list .data {
+#result .data {
   font-size:12px;
   width:178px;
   clear:left;
 }
-#product_list .data div {
+#result .data div {
   clear:left;
 }
-#product_list .price {
-  color:#000;
-  font-size:12px;
+#result .price {
+  color:#333;
+  font-size:14px;
   font-weight:bold;
 }
-#product_list img {
+#result img {
   width:170px;
   height:170px;
-}
-#property_filter {
-  border:1px solid #E5E5E5;
-  border-left:0 ;
-  border-bottom:0 ;
-  background:url(/button_bk-toobar.png) repeat-x;  /*-webkit-gradient(linear, 0 0, left bottom , from(#fff), to(#f2f2f2));*/
-  padding:0;
-  float:right;
-  height:35px;
-  width:188px;
 }
