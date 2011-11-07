@@ -8,6 +8,9 @@ class Router {
     if ($_SERVER['REQUEST_URI'] === '/') {
       return '/';
     }
+    if ($_SERVER['HTTP_HOST'] === 'img.wj.com') {
+      return '/image';
+    }
     list($path, $parameters) = explode('?', $_SERVER['REQUEST_URI'], 2);
     if ($path !== '/') {
       throw new NotFoundException;

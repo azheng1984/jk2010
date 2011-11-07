@@ -5,7 +5,7 @@ class Router {
       header('Location: http://huobiwanjia.com'.$_SERVER['REQUEST_URI']);
       return '/redirect';
     }
-    if ($_SERVER['HTTP_HOST'] === 'img.workbench.wj.com') {
+    if ($_SERVER['HTTP_HOST'] === IMAGE_DOMAIN_NAME) {
       return '/image';
     }
     if ($_SERVER['HTTP_HOST'] !== 'huobiwanjia.com'
