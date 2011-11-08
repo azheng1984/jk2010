@@ -88,7 +88,7 @@ h1 {
 }
 #filter li span {
   background:#eee;
-  padding:2px 5px;
+  padding:1px 5px;
   font-size:12px;
 }
 #key_list li span {
@@ -176,4 +176,7 @@ img {
 em {
   font-style:normal;
   color:#d00;
+}
+a:hover em {
+  text-decoration:underline;
 }
