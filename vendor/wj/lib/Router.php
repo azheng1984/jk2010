@@ -15,6 +15,10 @@ class Router {
     if ($path !== '/') {
       throw new NotFoundException;
     }
+    if ($_GET['q'] === '') {
+      header('Location: /');
+      return '/redirect';
+    }
     return '/search';
   }
 }

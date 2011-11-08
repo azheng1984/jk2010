@@ -97,7 +97,7 @@ class SearchScreen extends Screen {
     echo '<ol>';
     foreach ($categories['matches'] as $item) {
       $category = DbCategory::get($item['attrs']['@groupby']);
-      echo '<li><a href="?分类:'.$category['name'].'">'.$category['name'].'</a> <span>'.$item['attrs']['@count'].'</span></li>';
+      echo '<li><a href="?c='.$category['name'].'">'.$category['name'].'</a> <span>'.$item['attrs']['@count'].'</span></li>';
     }
     echo '</ol>';
   }
@@ -107,7 +107,7 @@ class SearchScreen extends Screen {
     echo '<ol id="key_list">';
     foreach ($properies['matches'] as $item) {
       $property = DbProperty::getByKeyId($item['attrs']['@groupby']);
-      echo '<li><span>+</span><a href="?分类='.$property['key'].'">'.$property['key'].'</a></li>';
+      echo '<li><span>+</span><a href="?c='.$property['key'].'">'.$property['key'].'</a></li>';
     }
     echo '</ol>';
   }
