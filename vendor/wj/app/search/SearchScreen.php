@@ -75,11 +75,11 @@ class SearchScreen extends Screen {
   private function renderFilter() {
     echo '<div id="filter"><div class="head">';
     if ($this->category === false) {
-      echo '<span class="first">分类</span>';
+      echo '<div id="breadcrumb"><span class="first">分类</span></div>';
     } elseif ($this->key === false) {
-      echo '<a class="first" href="javascript:void(0)">分类</a> &rsaquo; <span>'.$this->category['name'].'</span>';
+      echo '<div id="breadcrumb"><a class="first" href="javascript:void(0)">分类</a> &rsaquo; <span>'.$this->category['name'].'</span></div>';
     } else {
-      echo '<a class="first" href="javascript:void(0)">分类</a> &rsaquo; <a href="javascript:void(0)">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span>';
+      echo '<div id="breadcrumb"><a class="first" href="javascript:void(0)">分类</a> &rsaquo; <a href="javascript:void(0)">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span></div>';
     }
     echo '</div>';
     if ($this->category === false) {
@@ -162,7 +162,7 @@ class SearchScreen extends Screen {
   private function search() {
     $s = new SphinxClient;
 //    $offset = ($this->page - 1) * 20;
-//    $s->SetLimits($offset, 20);
+    $s->SetLimits(0, 16);
     $s->setServer("localhost", 9312);
     $s->setMaxQueryTime(30);
     $s->SetSortMode (SPH_SORT_ATTR_DESC, $this->sort);
@@ -189,7 +189,7 @@ class SearchScreen extends Screen {
 
   private function renderAdvertisement() {
     echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">';
-    //AdSenseScreen::render(true);
+    ///AdSenseScreen::render(true);
     echo '</div></div>';
   }
 }
