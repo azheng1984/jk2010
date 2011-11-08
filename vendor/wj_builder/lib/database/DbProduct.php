@@ -63,7 +63,8 @@ class DbProduct {
     $cutPriceX100,
     $saleRank,
     $categoryId,
-    $propertyIdList,
+    $keyIdList,
+    $valueIdList,
     $title,
     $properties,
     $description
@@ -74,18 +75,20 @@ class DbProduct {
       `cut_price_x_100`,
       `sale_rank`,
       `category_id`,
-      `property_id_list`,
+      `key_id_list`,
+      `value_id_list`,
       `title`,
       `description`,
       `properties`
-    ) VALUES(?,?,?,?,?,?,?,?,?)';
+    ) VALUES(?,?,?,?,?,?,?,?,?,?)';
     Db::execute($sql,
       $id,
       $lowestPriceX100,
       $cutPriceX100,
       $saleRank,
       $categoryId,
-      $propertyIdList,
+      $keyIdList,
+      $valueIdList,
       $title,
       $properties,
       $description
@@ -137,16 +140,17 @@ class DbProduct {
   public static function updateSearchContent(
     $webProductId,
     $categoryId,
-    $propertyIdList,
+    $keyIdList,
+    $valueIdList,
     $title,
     $properties,
     $description
   ) {
     $sql = 'UPDATE `wj_search`.`product`'
-      .' SET `category_id` = ?, `property_id_list` = ?, `title` = ?,'
-      .' `properties` = ?, `description` = ? WHERE id = ?';
+      .' SET `category_id` = ?, `key_id_list` = ?, `value_id_list` = ?,'
+      .' `title` = ?, `properties` = ?, `description` = ? WHERE id = ?';
     Db::execute(
-      $sql, $categoryId, $propertyIdList,
+      $sql, $categoryId, $keyIdList, $valueIdList,
       $title, $properties, $description, $webProductId);
   }
 }

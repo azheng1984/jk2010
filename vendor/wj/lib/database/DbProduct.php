@@ -8,7 +8,7 @@ class DbProduct {
 
   public static function get($id) {
     return Db::getRow(
-      'SELECT * FROM wj_search.product WHERE id = ?', $id
+      'SELECT * FROM wj_web.product WHERE id = ?', $id
     );
   }
 

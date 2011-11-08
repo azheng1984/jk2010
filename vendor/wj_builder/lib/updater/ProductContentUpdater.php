@@ -8,7 +8,6 @@ class ProductContentUpdater {
     );
     $this->updateWebDb($product);
     $this->updateSearchDb($product);
-    exit;
   }
 
   private function updateCategory($id) {
@@ -28,9 +27,9 @@ class ProductContentUpdater {
       if ($webKey === false) {
         $webKey = DbProperty::insertIntoWebKey($categoryId, $key['key']);
       }
-      $webValue = DbProperty::getWebValue($key['id'], $value['value']);
+      $webValue = DbProperty::getWebValue($webKey['id'], $value['value']);
       if ($webValue === false) {
-        $webValue = DbProperty::insertIntoWebValue($key['id'], $value['value']);
+        $webValue = DbProperty::insertIntoWebValue($webKey['id'], $value['value']);
       }
       $properties[] = array('key' => $webKey, 'value' => $webValue);
     }
@@ -59,20 +58,24 @@ class ProductContentUpdater {
     $categoryId = $product['category_id'];
     $title = Segmentation::execute($product['title']);
     $propertyList = array();
-    $propertyIdList = array();
+    $keyIdList = array();
+    $valueIdList = array();
     foreach ($product['properties'] as $item) {
       $key = $item['key'];
       $value = $item['value'];
       $propertyList[] = $key['key'].':'.$value['value'];
-      $propertyIdList[] = $value['id'];
+      $valueIdList[] = $value['id'];
+      $keyIdList[$key['id']] = true;
     }
+    $keyIdList = array_keys($keyIdList);
     $properties = Segmentation::execute(implode(', ', $propertyList));
-    $propertyIdList = implode(',', $propertyIdList);
+    $keyIdList2 = implode(',', $keyIdList);
+    $valueIdList2 = implode(',', $valueIdList);
     $description = Segmentation::execute($product['description']);
     $product['categories'] = null;
     Segmentation::execute($product['categories']);
     DbProduct::updateSearchContent(
-      $webProductId, $categoryId, $propertyIdList,
+      $webProductId, $categoryId, $keyIdList2, $valueIdList2,
       $title, $properties, $description
     );
   }

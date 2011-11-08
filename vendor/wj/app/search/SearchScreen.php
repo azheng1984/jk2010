@@ -2,6 +2,7 @@
 class SearchScreen extends Screen {
   private $page = 1;
   private $category = false;
+  private $key = false;
   private $properties = array();
   private $sort = 'sale_rank';
 
@@ -9,9 +10,13 @@ class SearchScreen extends Screen {
     if (isset($_GET['分类'])) {
       $this->category = DbCategory::getByName($_GET['分类']);
     }
+    if ($this->category && isset($_GET['属性'])) {
+      $this->key = DbProperty::getKeyByName($this->category['id'], $_GET['属性']);
+    }
   }
 
   public function renderBodyContent() {
+    //$this->renderAdvertisement();
     $this->renderTitle();
     $this->renderSearch();
     $this->renderAdvertisement();
@@ -68,15 +73,19 @@ class SearchScreen extends Screen {
   private function renderFilter() {
     echo '<div id="filter"><div class="head">';
     if ($this->category === false) {
-      echo '<span>分类</span>';
+      echo '<span class="first">分类</span>';
+    } elseif ($this->key === false) {
+      echo '<a class="first" href="javascript:void(0)">分类</a> &rsaquo; <span>'.$this->category['name'].'</span>';
     } else {
-      echo '<a href="javascript:void(0)">分类</a> &rsaquo; <span>'.$this->category['name'].'</span>';
+      echo '<a class="first" href="javascript:void(0)">分类</a> &rsaquo; <a href="javascript:void(0)">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span>';
     }
     echo '</div>';
     if ($this->category === false) {
       $this->renderCategories();
+    } elseif ($this->key === false) {
+      $this->renderKeys();
     } else {
-      $this->renderProperties();
+      $this->renderValues();
     }
     echo '</div>';
   }
@@ -91,12 +100,22 @@ class SearchScreen extends Screen {
     echo '</ol>';
   }
 
-  private function renderProperties() {
-    $properies = $this->getProperties();
+  private function renderKeys() {
+    $properies = $this->getKeys();
+    echo '<ol id="key_list">';
+    foreach ($properies['matches'] as $item) {
+      $property = DbProperty::getByKeyId($item['attrs']['@groupby']);
+      echo '<li><span>+</span><a href="?分类='.$property['key'].'">'.$property['key'].'</a></li>';
+    }
+    echo '</ol>';
+  }
+
+  private function renderValues() {
+    $properies = $this->getValues();
     echo '<ol>';
     foreach ($properies['matches'] as $item) {
       $property = DbProperty::getByValueId($item['attrs']['@groupby']);
-      echo '<li><a href="?分类:'.$property['value'].'">'.$property['value'].'</a> <span>'.$item['attrs']['@count'].'</span></li>';
+      echo '<li><a href="?分类='.$property['value'].'">'.$property['value'].'</a> <span>'.$item['attrs']['@count'].'</span></li>';
     }
     echo '</ol>';
   }
@@ -112,14 +131,28 @@ class SearchScreen extends Screen {
     return $sphinx->query($_GET['q'], 'wj_search');
   }
 
-  private function getProperties() {
+  private function getKeys() {
     $s = new SphinxClient;
     //$offset = ($this->page - 1) * 20;
     //$s->SetLimits($offset, 20);
     $s->setServer("localhost", 9312);
     $s->setMaxQueryTime(30);
     $s->SetFilter ('category_id', array($this->category['id']));
-    $s->SetGroupBy('property_id_list', SPH_GROUPBY_ATTR, '@count DESC');
+    $s->SetGroupBy('key_id_list', SPH_GROUPBY_ATTR, '@count DESC');
+    $s->SetArrayResult (true);
+    return $s->query($_GET['q'], 'wj_search');
+  }
+
+  private function getValues() {
+    $s = new SphinxClient;
+    //$offset = ($this->page - 1) * 20;
+    //$s->SetLimits($offset, 20);
+    $s->setServer("localhost", 9312);
+    $s->setMaxQueryTime(30);
+    $s->SetFilter('category_id', array($this->category['id']));
+    $s->SetFilter('key_id_list', array($this->key['id']));
+    $s->SetGroupBy('value_id_list', SPH_GROUPBY_ATTR, '@count DESC');
+    //$s->SetGroupBy('value_id_list'.$this->key['search_field_index'], SPH_GROUPBY_ATTR, '@count DESC');
     $s->SetArrayResult (true);
     return $s->query($_GET['q'], 'wj_search');
   }
@@ -154,7 +187,7 @@ class SearchScreen extends Screen {
 
   private function renderAdvertisement() {
     echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">';
-    //AdSenseScreen::render(true);
+    AdSenseScreen::render(true);
     echo '</div></div>';
   }
 }

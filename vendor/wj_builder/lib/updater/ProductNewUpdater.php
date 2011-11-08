@@ -7,12 +7,12 @@ class ProductNewUpdater {
       $product['merchant_product_id'], $product['category_id']
     );
     $webProductId = $this->updateWebDb($product);
-    DbProduct::updateWebProductId($item['id'], $webProductId);
+    DbProduct::updateWebProductId($item['product_id'], $webProductId);
     $this->updateSearchDb($product, $webProductId);
   }
 
   private function updateCategory($id) {
-    $target = DbCategory::getWeb($id);
+    $target = DbCategory::getWeb($id);//TODO:by name
     if ($target === false) {
       $product = DbCategory::get($id);
       DbCategory::insertIntoWeb($id, $product['name']);
@@ -28,9 +28,9 @@ class ProductNewUpdater {
       if ($webKey === false) {
         $webKey = DbProperty::insertIntoWebKey($categoryId, $key['key']);
       }
-      $webValue = DbProperty::getWebValue($key['id'], $value['value']);
+      $webValue = DbProperty::getWebValue($webKey['id'], $value['value']);
       if ($webValue === false) {
-        $webValue = DbProperty::insertIntoWebValue($key['id'], $value['value']);
+        $webValue = DbProperty::insertIntoWebValue($webKey['id'], $value['value']);
       }
       $properties[] = array('key' => $webKey, 'value' => $webValue);
     }
@@ -70,21 +70,25 @@ class ProductNewUpdater {
     $saleRank = 1000000 - $product['sale_index'];
     $title = Segmentation::execute($product['title']);
     $propertyList = array();
-    $propertyIdList = array();
+    $keyIdList = array();
+    $valueIdList = array();
     foreach ($product['properties'] as $item) {
       $key = $item['key'];
       $value = $item['value'];
       $propertyList[] = $key['key'].':'.$value['value'];
-      $propertyIdList[] = $value['id'];
+      $valueIdList[] = $value['id'];
+      $keyIdList[$key['id']] = true;
     }
+    $keyIdList = array_keys($keyIdList);
     $properties = Segmentation::execute(implode(', ', $propertyList));
-    $propertyIdList = implode(',', $propertyIdList);
+    $keyIdList2 = implode(',', $keyIdList);
+    $valueIdList2 = implode(',', $valueIdList);
     $description = Segmentation::execute($product['description']);
     $product['categories'] = null;
     Segmentation::execute($product['categories']);
     DbProduct::insertIntoSearch(
       $webProductId, $lowestPriceX100, $cutPriceX100, $saleRank, $categoryId,
-      $propertyIdList, $title, $properties, $description
+      $keyIdList2, $valueIdList2, $title, $properties, $description
     );
   }
 }
