@@ -63,7 +63,7 @@ class SearchScreen extends Screen {
     foreach ($items as $item) {
       $name = $item['title'];
       echo '<li><div class="image"><a target="_blank" href="/'.$item['id'].'"><img alt="'.$name.'" src="http://img.wj.com/'.$item['id'].'.jpg" /></a></div><div class="title"><a target="_blank" href="/'.$item['id'].'">'
-        .$name.'</a></div><div class="data"><div>&yen;<span class="price">'.($item['lowest_price_x_100']/100).'</span> ~ <span class="price">1234567890</span></div> <div>京东商城</div></div></li>';
+        .$name.'</a></div><div class="data"><div>&yen;<span class="price">'.($item['lowest_price_x_100']/100).'</span> ~ <span class="price">1234567890</span></div> <div class="merchant_name">京东商城</div></div></li>';
     }
     echo '</ol>';
     $this->renderPagination($result['total_found']);
