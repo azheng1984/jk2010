@@ -7,11 +7,11 @@ class SearchScreen extends Screen {
   private $sort = 'sale_rank';
 
   public function __construct() {
-    if (isset($_GET['分类'])) {
-      $this->category = DbCategory::getByName($_GET['分类']);
+    if (isset($_GET['c'])) {
+      $this->c = DbCategory::getByName($_GET['c']);
     }
-    if ($this->category && isset($_GET['属性'])) {
-      $this->key = DbProperty::getKeyByName($this->category['id'], $_GET['属性']);
+    if ($this->category && isset($_GET['p'])) {
+      $this->key = DbProperty::getKeyByName($this->category['id'], $_GET['p']);
     }
   }
 
