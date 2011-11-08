@@ -62,8 +62,10 @@ class SearchScreen extends Screen {
     }
     foreach ($items as $item) {
       $name = $item['title'];
+      $title = str_replace($_GET['q'], '<em>'.$_GET['q'].'</em>', $item['title']);
+      $description = str_replace($_GET['q'], '<em>'.$_GET['q'].'</em>', mb_strcut($item['description'], 0, 140, 'utf-8'));
       echo '<li><div class="image"><a target="_blank" href="/'.$item['id'].'"><img alt="'.$name.'" src="http://img.wj.com/'.$item['id'].'.jpg" /></a></div><div class="title"><a target="_blank" href="/'.$item['id'].'">'
-        .$name.'</a></div><div class="data"><div>&yen;<span class="price">'.($item['lowest_price_x_100']/100).'</span> ~ <span class="price">1234567890</span></div> <div class="merchant_name">京东商城</div></div></li>';
+        .$title.'</a></div><div class="data"><div>&yen;<span class="price">'.($item['lowest_price_x_100']/100).'</span> ~ <span class="price">1234567890</span></div><div class="description">'.$description.'&hellip;</div> <div class="merchant_name">京东商城</div></div></li>';
     }
     echo '</ol>';
     $this->renderPagination($result['total_found']);
@@ -187,7 +189,7 @@ class SearchScreen extends Screen {
 
   private function renderAdvertisement() {
     echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">';
-    AdSenseScreen::render(true);
+    //AdSenseScreen::render(true);
     echo '</div></div>';
   }
 }
