@@ -98,7 +98,6 @@ h1 {
 }
 #filter .head {
   background:#eee;
-  border-bottom:1px dotted #E5E5E5;
 }
 #filter .head a {
   margin:2px;
@@ -117,7 +116,7 @@ h1 {
 }
 #result ol {
   margin:0;
-  padding:8px 0 0 8px;
+  padding:0 0 0 8px;
 }
 #result ol a:visited {
   color:#551A8B;
@@ -131,7 +130,7 @@ img {
   float:left;
   background-color:#fff;
   vertical-align:top;
-  padding:6px;
+  padding:15px 6px;
 }
 #result .image a {/* chrome */
   display:block;
@@ -164,4 +163,12 @@ img {
 #result img {
   width:170px;
   height:170px;
+}
+#result .description {
+  height:80px;
+  overflow:hidden;
+}
+em {
+  font-style:normal;
+  color:#d00;
 }
