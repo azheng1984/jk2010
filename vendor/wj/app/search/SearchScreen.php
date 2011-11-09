@@ -63,7 +63,8 @@ class SearchScreen extends Screen {
     foreach ($items as $item) {
       $name = $item['title'];
       $title = str_replace($_GET['q'], '<em>'.$_GET['q'].'</em>', $item['title']);
-      $description = str_replace($_GET['q'], '<em>'.$_GET['q'].'</em>', mb_substr($item['description'], 0, 64, 'utf-8'));
+      //$description = str_replace($_GET['q'], '<em>'.$_GET['q'].'</em>', mb_substr($item['description'], 0, 64, 'utf-8'));
+      $description = str_replace($_GET['q'], '<em>'.$_GET['q'].'</em>', mb_substr(html_entity_decode($item['description'], ENT_QUOTES, 'UTF-8'), 0, 64, 'utf-8'));
       echo '<li><div class="image"><a target="_blank" href="/'.$item['id'].'"><img alt="'.$name.'" src="http://img.wj.com/'.$item['id'].'.jpg" /></a></div><div class="title"><a target="_blank" href="/'.$item['id'].'">'
         .$title.'</a></div><div class="data"><div>&yen;<span class="price">'.($item['lowest_price_x_100']/100).'</span></div><div class="description">'.$description.'&hellip;</div> <div class="merchant_name">京东商城</div></div></li>';
     }
