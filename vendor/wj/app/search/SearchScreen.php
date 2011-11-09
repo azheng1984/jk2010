@@ -68,7 +68,7 @@ class SearchScreen extends Screen {
       //$description = str_replace($_GET['q'], '<em>'.$_GET['q'].'</em>', mb_substr($item['description'], 0, 64, 'utf-8'));
       $description = str_replace($_GET['q'], '<em>'.$_GET['q'].'</em>', htmlspecialchars(mb_substr(html_entity_decode($item['description'], ENT_QUOTES, 'utf-8'), 0, 64, 'utf-8'), ENT_QUOTES, 'utf-8'));
       echo '<li><div class="image"><a target="_blank" href="/'.$item['id'].'"><img alt="'.$name.'" src="http://img.wj.com/'.$item['id'].'.jpg" /></a></div><div class="title"><a target="_blank" href="/'.$item['id'].'">'
-        .$title.'</a></div><div class="data"><div>&yen;<span class="price">'.($item['lowest_price_x_100']/100).'</span></div><div class="description">'.$description.'&hellip;</div> <div class="merchant_name">京东商城</div></div></li>';
+        .$title.'</a></div><div class="data"><div class="price">&yen;<span>'.($item['lowest_price_x_100']/100).'</span></div><div class="description">'.$description.'&hellip;</div> <div class="merchant_name">京东商城</div></div></li>';
     }
     echo '</ol>';
     $this->renderPagination($result['total_found']);
@@ -156,7 +156,7 @@ class SearchScreen extends Screen {
     $s->setMaxQueryTime(30);
     $s->SetFilter('category_id', array($this->category['id']));
     $s->SetFilter('key_id_list', array($this->key['id']));
-    $s->SetGroupBy('value_id_list', SPH_GROUPBY_ATTR, '@count DESC');
+    $s->SetGroupBy('value_id_list_'.$this->key['mva_index'], SPH_GROUPBY_ATTR, '@count DESC');
     //$s->SetGroupBy('value_id_list'.$this->key['search_field_index'], SPH_GROUPBY_ATTR, '@count DESC');
     $s->SetArrayResult (true);
     return $s->query($_GET['q'], 'wj_search');

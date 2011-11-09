@@ -28,15 +28,16 @@ class DbProperty {
     );
   }
 
-  public static function insertIntoWebKey($categoryId, $key) {
+  public static function insertIntoWebKey($categoryId, $key, $mvaIndex) {
     Db::execute(
-      'INSERT INTO `wj_web`.`property_key`(`category_id`, `key`)'
-      .' VALUES(?, ?)',
-      $categoryId, $key
+      'INSERT INTO `wj_web`.`property_key`(`category_id`, `key`, `mva_index`)'
+      .' VALUES(?, ?, ?)',
+      $categoryId, $key, $mvaIndex
     );
     return array(
       'id' => DbConnection::get()->lastInsertId(),
       'category_id' => $categoryId,
+      'mva_index' => $mvaIndex,
       'key' => $key
     );
   }

@@ -27,7 +27,6 @@ class DbProduct {
     $imageDbIndex,
     $categoryId,
     $title,
-    $properties,
     $description
   ) {
     $sql = 'INSERT INTO `wj_web`.`product` (
@@ -39,9 +38,8 @@ class DbProduct {
       `image_db_index`,
       `category_id`,
       `title`,
-      `properties`,
       `description`
-    ) VALUES(?,?,?,?,?,?,?,?,?,?)';
+    ) VALUES(?,?,?,?,?,?,?,?,?)';
     Db::execute($sql,
       $lowestPriceX100,
       $highestPriceX100,
@@ -51,7 +49,6 @@ class DbProduct {
       $imageDbIndex,
       $categoryId,
       $title,
-      $properties,
       $description
     );
     return DbConnection::get()->lastInsertId();
@@ -64,10 +61,7 @@ class DbProduct {
     $saleRank,
     $categoryId,
     $keyIdList,
-    $valueIdList,
-    $title,
-    $properties,
-    $description
+    $content
   ) {
     $sql = 'INSERT INTO `wj_search`.`product` (
       `id`,
@@ -76,11 +70,8 @@ class DbProduct {
       `sale_rank`,
       `category_id`,
       `key_id_list`,
-      `value_id_list`,
-      `title`,
-      `description`,
-      `properties`
-    ) VALUES(?,?,?,?,?,?,?,?,?,?)';
+      `content`
+    ) VALUES(?,?,?,?,?,?,?)';
     Db::execute($sql,
       $id,
       $lowestPriceX100,
@@ -88,11 +79,23 @@ class DbProduct {
       $saleRank,
       $categoryId,
       $keyIdList,
-      $valueIdList,
-      $title,
-      $properties,
-      $description
+      $content
     );
+  }
+
+  public static function resetSearchValueIdList($id) {
+    for ($index = 0; $index < 10; ++$index) {//TODO:preformance
+      ++$index;
+      $sql = 'UPDATE `wj_search`.`product`'
+        .' SET `value_id_list_'.$index.'` = NULL WHERE id = ?';
+      Db::execute($sql, $id);
+    }
+  }
+
+  public static function updateSearchValueIdList($id, $index, $valueIdList) {
+    $sql = 'UPDATE `wj_search`.`product`'
+      .' SET `value_id_list_'.$index.'` = ? WHERE id = ?';
+    Db::execute($sql, $valueIdList, $id);
   }
 
   public static function updateWebProductId($id, $webProductId) {
@@ -126,14 +129,13 @@ class DbProduct {
     $webProductId,
     $categoryId,
     $title,
-    $properties,
     $description
   ) {
     $sql = 'UPDATE `wj_web`.`product`'
       .' SET `category_id` = ?, `title` = ?,'
-      .' `properties` = ?, `description` = ? WHERE id = ?';
+      .' `description` = ? WHERE id = ?';
     Db::execute(
-      $sql, $categoryId, $title, $properties, $description, $webProductId
+      $sql, $categoryId, $title, $description, $webProductId
     );
   }
 
@@ -141,16 +143,13 @@ class DbProduct {
     $webProductId,
     $categoryId,
     $keyIdList,
-    $valueIdList,
-    $title,
-    $properties,
-    $description
+    $content
   ) {
     $sql = 'UPDATE `wj_search`.`product`'
-      .' SET `category_id` = ?, `key_id_list` = ?, `value_id_list` = ?,'
-      .' `title` = ?, `properties` = ?, `description` = ? WHERE id = ?';
+      .' SET `category_id` = ?, `key_id_list` = ?,'
+      .' `content` = ? WHERE id = ?';
     Db::execute(
-      $sql, $categoryId, $keyIdList, $valueIdList,
-      $title, $properties, $description, $webProductId);
+      $sql, $categoryId, $keyIdList,$content, $webProductId
+    );
   }
 }
