@@ -9,7 +9,6 @@
 }
 #filter {
   width:189px;
-  border-left:1px solid #e5e5e5;
 }
 #h1_wrapper {
   line-height:25px;
@@ -63,6 +62,7 @@ h1 {
 #search .head {
   padding:7px 0;
   width:100%;
+  border-left:1px solid #e5e5e5;
 }
 #search .head span {
   margin-left:10px;
