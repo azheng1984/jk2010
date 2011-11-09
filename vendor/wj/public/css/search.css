@@ -39,7 +39,7 @@ h1 {
 #pagination {
   width:100%;
   text-align:center;
-  padding:15px 0 18px 0;
+  padding:10px 0 15px 0;
   background:#f5f5f5;
 }
 #pagination a {
@@ -123,7 +123,7 @@ h1 {
 }
 #result ol {
   margin:0;
-  padding: 2px 0 0 3px;
+  padding: 2px 0 5px 3px;
   background: whiteSmoke;
 }
 #result ol a:visited {
