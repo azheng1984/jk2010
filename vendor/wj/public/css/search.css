@@ -8,7 +8,7 @@
   background: url(/search_bk.png) repeat-y right;
 }
 #filter {
-  width:189px;
+  width:190px;
 }
 #h1_wrapper {
   line-height:25px;
@@ -62,7 +62,6 @@ h1 {
 #search .head {
   padding:7px 0;
   width:100%;
-  border-left:1px solid #e5e5e5;
 }
 #search .head span {
   margin-left:10px;
@@ -99,6 +98,8 @@ h1 {
 }
 #filter .head {
   background:#eee;
+  border-left:1px solid #e5e5e5;
+  width:189px;
 }
 #breadcrumb {
   padding:0 5px;
