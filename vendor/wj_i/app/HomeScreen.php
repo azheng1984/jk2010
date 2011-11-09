@@ -11,7 +11,6 @@ class HomeScreen extends Screen {
     echo '<h1>我的应用</h1>';
     echo '<div id="application">';
     echo '<ul>';
-    echo '<li><a href="http://activity.wj.com">动态</a></li>';
     echo '<li><a href="http://tracking.wj.com">关注</a></li>';
     echo '<li><a href="http://share.wj.com">分享</a></li>';
     echo '<li><a href="http://message.wj.com">留言</a></li>';
