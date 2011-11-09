@@ -8,7 +8,7 @@ class SearchScreen extends Screen {
 
   public function __construct() {
     if (isset($_GET['c'])) {
-      $this->c = DbCategory::getByName($_GET['c']);
+      $this->category = DbCategory::getByName($_GET['c']);
     }
     if ($this->category && isset($_GET['p'])) {
       $this->key = DbProperty::getKeyByName($this->category['id'], $_GET['p']);
@@ -117,7 +117,7 @@ class SearchScreen extends Screen {
     echo '<ol>';
     foreach ($properies['matches'] as $item) {
       $property = DbProperty::getByValueId($item['attrs']['@groupby']);
-      echo '<li><a href="?分类='.$property['value'].'">'.$property['value'].'</a> <span>'.$item['attrs']['@count'].'</span></li>';
+      echo '<li><a href="?c='.$property['value'].'">'.$property['value'].'</a> <span>'.$item['attrs']['@count'].'</span></li>';
     }
     echo '</ol>';
   }
