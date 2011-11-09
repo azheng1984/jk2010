@@ -144,12 +144,15 @@ img {
   width:170px;
 }
 #result .title {
-  margin:5px 0;
+  margin-top:5px;
   height:40px;
   width:178px;
   clear:left;
   height:40px;
   overflow:hidden;
+}
+#result .price {
+  line-height:24px;
 }
 #result .title a:hover {
   background-color:#fff;
@@ -163,7 +166,7 @@ img {
 #result .data div {
   clear:left;
 }
-#result .price {
+#result .price span {
   color:#333;
   font-size:14px;
   font-weight:bold;

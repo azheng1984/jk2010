@@ -16,6 +16,7 @@ class ProductNewUpdater {
     if ($target === false) {
       $product = DbCategory::get($id);
       DbCategory::insertIntoWeb($id, $product['name']);
+      DbCategoryKeyCount::insert($id);
     }
   }
 
@@ -26,7 +27,13 @@ class ProductNewUpdater {
       $key = DbProperty::getKey($value['key_id']);
       $webKey = DbProperty::getWebKey($categoryId, $key['key']);
       if ($webKey === false) {
-        $webKey = DbProperty::insertIntoWebKey($categoryId, $key['key']);
+        $index = DbCategoryKeyCount::getCount($categoryId);
+        if ($index >= 10) { //TODO
+          continue;
+        }
+        ++$index;
+        DbCategoryKeyCount::moveNext($categoryId, $index);
+        $webKey = DbProperty::insertIntoWebKey($categoryId, $key['key'], $index);
       }
       $webValue = DbProperty::getWebValue($webKey['id'], $value['value']);
       if ($webValue === false) {
@@ -56,10 +63,10 @@ class ProductNewUpdater {
       $propertyList[] = $key['key'].':'.$value['value'];
     }
     $properties = implode(', ', $propertyList);
-    $description = $product['description'];
+    $description = $product['description'].' '.$properties;
     return DbProduct::insertIntoWeb(
       $lowestPriceX100, $highestPriceX100, $cutPriceX100, $merchantId, $url,
-      $imageDbIndex, $categoryId, $title, $properties, $description
+      $imageDbIndex, $categoryId, $title, $description
     );
   }
 
@@ -76,19 +83,26 @@ class ProductNewUpdater {
       $key = $item['key'];
       $value = $item['value'];
       $propertyList[] = $key['key'].':'.$value['value'];
-      $valueIdList[] = $value['id'];
+      if (isset($valueIdList[$key['mva_index']])) {
+        $valueIdList[$key['mva_index']] = array();
+      }
+      $valueIdList[$key['mva_index']][] = $value['id'];
       $keyIdList[$key['id']] = true;
     }
     $keyIdList = array_keys($keyIdList);
     $properties = Segmentation::execute(implode(', ', $propertyList));
     $keyIdList2 = implode(',', $keyIdList);
-    $valueIdList2 = implode(',', $valueIdList);
-    $description = Segmentation::execute($product['description']);
+    $content = $title.' '.Segmentation::execute($product['description'])
+      .' '.$properties;
     $product['categories'] = null;
     Segmentation::execute($product['categories']);
-    DbProduct::insertIntoSearch(
+    $id = DbProduct::insertIntoSearch(
       $webProductId, $lowestPriceX100, $cutPriceX100, $saleRank, $categoryId,
-      $keyIdList2, $valueIdList2, $title, $properties, $description
+      $keyIdList2, $content
     );
+    foreach ($valueIdList as $index => $item) {
+      $valueIdList2 = implode(',', $item);
+      DbProduct::updateSearchValueIdList($webProductId, $index, $valueIdList2);
+    }
   }
 }

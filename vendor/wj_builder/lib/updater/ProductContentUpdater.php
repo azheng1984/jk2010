@@ -25,7 +25,12 @@ class ProductContentUpdater {
       $key = DbProperty::getKey($value['key_id']);
       $webKey = DbProperty::getWebKey($categoryId, $key['key']);
       if ($webKey === false) {
-        $webKey = DbProperty::insertIntoWebKey($categoryId, $key['key']);
+        $index = DbCategoryKeyCount::getCount($categoryId);
+        if ($index >= 10) { //TODO
+          continue;
+        }
+        DbCategoryKeyCount::moveNext($categoryId, ++$index);
+        $webKey = DbProperty::insertIntoWebKey($categoryId, $key['key'], $index);
       }
       $webValue = DbProperty::getWebValue($webKey['id'], $value['value']);
       if ($webValue === false) {
@@ -47,9 +52,9 @@ class ProductContentUpdater {
       $propertyList[] = $key['key'].':'.$value['value'];
     }
     $properties = implode(', ', $propertyList);
-    $description = $product['description'];
+    $description = $product['description'].' '.$properties;
     return DbProduct::updateWebContent(
-      $webProductId, $categoryId, $title, $properties, $description
+      $webProductId, $categoryId, $title, $description
     );
   }
 
@@ -64,19 +69,25 @@ class ProductContentUpdater {
       $key = $item['key'];
       $value = $item['value'];
       $propertyList[] = $key['key'].':'.$value['value'];
-      $valueIdList[] = $value['id'];
+      if (isset($valueIdList[$key['mva_index']])) {
+        $valueIdList[$key['mva_index']] = array();
+      }
+      $valueIdList[$key['mva_index']][] = $value['id'];
       $keyIdList[$key['id']] = true;
     }
     $keyIdList = array_keys($keyIdList);
     $properties = Segmentation::execute(implode(', ', $propertyList));
     $keyIdList2 = implode(',', $keyIdList);
-    $valueIdList2 = implode(',', $valueIdList);
-    $description = Segmentation::execute($product['description']);
+    $content = $title.' '.Segmentation::execute($product['description']).' '.$properties;
     $product['categories'] = null;
     Segmentation::execute($product['categories']);
     DbProduct::updateSearchContent(
-      $webProductId, $categoryId, $keyIdList2, $valueIdList2,
-      $title, $properties, $description
+      $webProductId, $categoryId, $keyIdList2, $content
     );
+    DbProduct::resetSearchValueIdList($webProductId);
+    foreach ($valueIdList as $index => $item) {
+      $valueIdList2 = implode(',', $item);
+      DbProduct::updateSearchValueIdList($webProductId, $index, $valueIdList2);
+    }
   }
 }
