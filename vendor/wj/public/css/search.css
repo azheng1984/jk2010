@@ -123,7 +123,7 @@ h1 {
 }
 #result ol {
   margin:0;
-  padding: 2px 0 0 5px;
+  padding: 2px 0 0 3px;
   background: whiteSmoke;
 }
 #result ol a:visited {
@@ -140,7 +140,7 @@ img {
   vertical-align: top;
   margin: 3px 2px;
   background: white;
-  padding: 6px 1px 6px 5px;
+  padding: 6px 1px 6px 6px;
   border: 1px solid #F1F1F1;
 }
 #result .image a {/* chrome */
@@ -149,7 +149,7 @@ img {
   width:170px;
 }
 #result .image {
-  margin-left: 2px;
+  margin-left: 1px;
 }
 #result .title {
   margin-top:5px;
