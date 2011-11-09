@@ -39,7 +39,8 @@ h1 {
 #pagination {
   width:100%;
   text-align:center;
-  padding:20px 0;
+  padding:15px 0 18px 0;
+  background:#f5f5f5;
 }
 #pagination a {
   border:1px solid #e5e5e5;
@@ -122,7 +123,8 @@ h1 {
 }
 #result ol {
   margin:0;
-  padding:0 0 0 8px;
+  padding: 2px 0 0 5px;
+  background: whiteSmoke;
 }
 #result ol a:visited {
   color:#551A8B;
@@ -132,16 +134,22 @@ img {
   border:0;
 }
 #result li {
-  list-style:none;
-  float:left;
-  background-color:#fff;
-  vertical-align:top;
-  padding:15px 6px;
+  list-style: none;
+  float: left;
+  background: white;
+  vertical-align: top;
+  margin: 3px 2px;
+  background: white;
+  padding: 6px 1px 6px 5px;
+  border: 1px solid #F1F1F1;
 }
 #result .image a {/* chrome */
   display:block;
   height:170px;
   width:170px;
+}
+#result .image {
+  margin-left: 2px;
 }
 #result .title {
   margin-top:5px;
