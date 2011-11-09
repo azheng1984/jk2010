@@ -146,9 +146,14 @@ img {
 #result .title {
   margin:5px 0;
   height:40px;
-  overflow:hidden;
   width:178px;
   clear:left;
+  height:40px;
+  overflow:hidden;
+}
+#result .title a:hover {
+  background-color:#fff;
+  height:auto;
 }
 #result .data {
   font-size:12px;
@@ -165,6 +170,10 @@ img {
 }
 #result .merchant_name {
   color:#690;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 178px;
 }
 #result img {
   width:170px;
