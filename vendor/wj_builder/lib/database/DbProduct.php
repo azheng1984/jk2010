@@ -21,7 +21,7 @@ class DbProduct {
   public static function insertIntoWeb(
     $lowestPriceX100,
     $highestPriceX100,
-    $cutPriceX100,
+    $listPriceX100,
     $merchantId,
     $url,
     $imageDbIndex,
@@ -32,7 +32,7 @@ class DbProduct {
     $sql = 'INSERT INTO `wj_web`.`product` (
       `lowest_price_x_100`,
       `highest_price_x_100`,
-      `cut_price_x_100`,
+      `list_price_x_100`,
       `merchant_id`,
       `url`,
       `image_db_index`,
@@ -43,7 +43,7 @@ class DbProduct {
     Db::execute($sql,
       $lowestPriceX100,
       $highestPriceX100,
-      $cutPriceX100,
+      $listPriceX100,
       $merchantId,
       $url,
       $imageDbIndex,
@@ -57,7 +57,7 @@ class DbProduct {
   public static function insertIntoSearch(
     $id,
     $lowestPriceX100,
-    $cutPriceX100,
+    $discountX10,
     $saleRank,
     $categoryId,
     $keyIdList,
@@ -66,7 +66,7 @@ class DbProduct {
     $sql = 'INSERT INTO `wj_search`.`product` (
       `id`,
       `lowest_price_x_100`,
-      `cut_price_x_100`,
+      `discount_x_10`,
       `sale_rank`,
       `category_id`,
       `key_id_list`,
@@ -75,7 +75,7 @@ class DbProduct {
     Db::execute($sql,
       $id,
       $lowestPriceX100,
-      $cutPriceX100,
+      $discountX10,
       $saleRank,
       $categoryId,
       $keyIdList,
@@ -104,6 +104,7 @@ class DbProduct {
     Db::execute($sql, $webProductId, $id);
   }
 
+  //TODO:add list price
   public static function updateWebPrice(
     $webProductId, $lowestPriceX100, $highestPriceX100
   ) {
@@ -113,11 +114,11 @@ class DbProduct {
   }
 
   public static function updateSearchPrice(
-    $webProductId, $lowestPriceX100, $cutPriceX100
+    $webProductId, $lowestPriceX100, $discountX10
   ) {
     $sql = 'UPDATE `wj_search`.`product`'
-      .' SET `lowest_price_x_100` = ?, `cut_price_x_100` = ? WHERE id = ?';
-    Db::execute($sql, $lowestPriceX100, $cutPriceX100, $webProductId);
+      .' SET `lowest_price_x_100` = ?, `discount_x_10` = ? WHERE id = ?';
+    Db::execute($sql, $lowestPriceX100, $discountX10, $webProductId);
   }
 
   public static function updateSearchSaleRank($webProductId, $saleRank) {
