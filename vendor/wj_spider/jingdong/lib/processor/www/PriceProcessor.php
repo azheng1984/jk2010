@@ -21,6 +21,7 @@ class PriceProcessor {
     if (count($matches) !== 4) {
       return;
     }
+    $listPrice = $matches[1];//TODO:save
     $price = $matches[3];
     $row = DbProduct::getPrice($tablePrefix, $merchantProductId);
     if ($row['lowest_price'] !== $price) {

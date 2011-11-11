@@ -10,14 +10,14 @@ class ProductPriceUpdater {
     if ($product['highest_price'] !== null) {
       $highestPriceX100 = $product['highest_price'] * 100;
     }
-    $cutPriceX100 = 0;
+    $discountX10 = 100;
     $isUpdate = true;//TODO
     if ($isUpdate) {
       DbProduct::updateWebPrice(
         $product['web_product_id'], $lowestPriceX100, $highestPriceX100
       );
       DbProduct::updateSearchPrice(
-        $product['web_product_id'], $lowestPriceX100, $cutPriceX100
+        $product['web_product_id'], $lowestPriceX100, $discountX10
       );
     }
   }

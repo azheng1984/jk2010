@@ -72,7 +72,7 @@ class ProductNewUpdater {
 
   private function updateSearchDb($product, $webProductId) {
     $lowestPriceX100 = $product['lowest_price'] * 100;
-    $cutPriceX100 = 0;
+    $discountX10 = 100;
     $categoryId = $product['category_id'];
     $saleRank = 1000000 - $product['sale_index'];
     $title = Segmentation::execute($product['title']);
@@ -97,7 +97,7 @@ class ProductNewUpdater {
     $product['categories'] = null;
     Segmentation::execute($product['categories']);
     $id = DbProduct::insertIntoSearch(
-      $webProductId, $lowestPriceX100, $cutPriceX100, $saleRank, $categoryId,
+      $webProductId, $lowestPriceX100, $discountX10, $saleRank, $categoryId,
       $keyIdList2, $content
     );
     foreach ($valueIdList as $index => $item) {
