@@ -144,6 +144,9 @@ img {
   padding: 6px 1px 6px 6px;
   border: 1px solid #F1F1F1;
 }
+#result li:hover {
+  border: 1px solid #e5e5e5;
+}
 #result .image a {/* chrome */
   display:block;
   height:170px;

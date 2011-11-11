@@ -47,8 +47,9 @@ class SearchScreen extends Screen {
     echo '<div id="result">';
     echo '<div class="head">';
     echo '<div id="sort">排序: <span>销量</span>'
+      .' <a rel="nofollow" href="javascript:void(0)">新品</a>'
       .' <a rel="nofollow" href="javascript:void(0)">价格</a>'
-      .' <a href="." rel="nofollow">降价</a>'
+      .' <a rel="nofollow" href="javascript:void(0)">降价</a>'
       .'</div>';
     $result = $this->search();
     echo '<div id="total">找到 '.$result['total_found'].' 个产品</div>';
