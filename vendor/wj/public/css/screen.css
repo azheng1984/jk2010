@@ -67,6 +67,9 @@ input {
   margin:6px 5px;
   width:365px;
 }
+#header form .text:focus {
+  outline: 1px solid #b6c9ed;
+}
 #header form .submit {
   background:url(/search-red.png) red no-repeat 7px;
   margin-top:7px;
