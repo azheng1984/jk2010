@@ -94,4 +94,6 @@ input {
 }
 #footer a {
   margin:4px;
+  color:#999;
+  text-decoration:underline;
 }
