@@ -89,11 +89,13 @@ input {
     color:#999;
   border-bottom: 1px solid #999;
   text-decoration:none;
+  font-size:13px;
 }
 #footer {
   line-height:40px;
   margin:10px 0 0;
   width:100%;/* ie 7 */
+  font-size:13px;
 }
 #footer .links {
   float:right;
