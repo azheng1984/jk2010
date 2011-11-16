@@ -131,7 +131,6 @@ h1 {
   color:#551A8B;
 }
 /* draft */
-
 #result li {
   list-style:none;
   float:left;
@@ -200,7 +199,6 @@ em {
   font-style:normal;
   color:#d00;
 }
-
 a:hover em {
   text-decoration:underline;
 }
