@@ -5,8 +5,9 @@ class SearchScreen extends Screen {
   private $key = false;
   private $properties = array();
   private $sort = 'sale_rank';
-  private $baseUriForPagination;
-  private $baseUriForSort;
+  private $basePaginationUri;
+  private $baseSortUri;
+  private $baseQueryUri;
 
   public function __construct() {
     if (isset($_GET['c'])) {
@@ -15,6 +16,7 @@ class SearchScreen extends Screen {
     if ($this->category && isset($_GET['t'])) {
       $this->key = DbProperty::getKeyByName($this->category['id'], $_GET['t']);
     }
+    $this->buildProperties();
     $current = $this->buildRawUri($_GET['q']);
     if ($current !== $_SERVER['REQUEST_URI']) {
       echo $_SERVER['REQUEST_URI'].'<br />';
@@ -22,19 +24,31 @@ class SearchScreen extends Screen {
     }
   }
 
+  private function buildProperties() {
+    foreach ($_GET as $keyName => $valueName) {
+      if (strlen($keyName) === 1) {
+        continue;
+      }
+      $key = DbProperty::getKeyByName($this->category['id'], $keyName);
+      $value = DbProperty::getValueByName($key['id'], $valueName);
+      $this->properties[] = array('key' => $key, 'value' => $value);
+    }
+  }
+
   private function buildRawUri() {
     $result = '/?q='.urlencode($_GET['q']);
+    $this->baseQueryUri = $result;
     if (isset($_GET['c'])) {
       $result .= '&c='.urlencode($_GET['c']);
     }
-//    foreach ($properties as $key => $value) {
-//      $result .= '&'.urldecode($key).'='.urldecode($value);
-//    }
-    $this->baseUriForSort = $result;
+    foreach ($this->properties as $item) {
+      $result .= '&'.urlencode($item['key']['key']).'='.urlencode($item['value']['value']);
+    }
+    $this->baseSortUri = $result;
     if (isset($_GET['s'])) {
       $result .= '&s='.urlencode($_GET['s']);
     }
-    $this->baseUriForPagination = $result;
+    $this->basePaginationUri = $result;
     if (isset($_GET['p'])) {
       $result .= '&p='.$_GET['p'];
     }
@@ -73,9 +87,9 @@ class SearchScreen extends Screen {
     echo '<div id="result">';
     echo '<div class="head">';
     echo '<div id="sort">排序: <span>销量</span>'
-      .' <a rel="nofollow" href="'.$this->baseUriForSort.'&s=新品">新品</a>'
-      .' <a rel="nofollow" href="'.$this->baseUriForSort.'&s=价格">价格</a>'
-      .' <a rel="nofollow" href="'.$this->baseUriForSort.'&s=折扣">折扣</a>'
+      .' <a rel="nofollow" href="'.$this->baseSortUri.'&s=新品">新品</a>'
+      .' <a rel="nofollow" href="'.$this->baseSortUri.'&s=价格">价格</a>'
+      .' <a rel="nofollow" href="'.$this->baseSortUri.'&s=折扣">折扣</a>'
       .'</div>';
     $result = $this->search();
     echo '<div id="total">找到 '.$result['total_found'].' 个产品</div>';
@@ -93,7 +107,7 @@ class SearchScreen extends Screen {
       $title = str_replace($_GET['q'], '<em>'.$_GET['q'].'</em>', htmlspecialchars(mb_substr(html_entity_decode($item['title'], ENT_QUOTES, 'utf-8'), 0, 40, 'utf-8'), ENT_QUOTES, 'utf-8'));
       //$description = str_replace($_GET['q'], '<em>'.$_GET['q'].'</em>', mb_substr($item['description'], 0, 64, 'utf-8'));
       $description = str_replace($_GET['q'], '<em>'.$_GET['q'].'</em>', htmlspecialchars(mb_substr(html_entity_decode($item['description'], ENT_QUOTES, 'utf-8'), 0, 64, 'utf-8'), ENT_QUOTES, 'utf-8'));
-      echo '<li><div class="image"><a rel="nofollow" target="_blank" href="/'.$item['id'].'"><img alt="'.$name.'" src="http://img.wj.com/'.$item['id'].'.jpg" /></a></div><div class="title"><a rel="nofollow" target="_blank" href="/'.$item['id'].'">'
+      echo '<li><div class="image"><a rel="nofollow" target="_blank" href="r/'.$item['id'].'"><img alt="'.$name.'" src="http://img.wj.com/'.$item['id'].'.jpg" /></a></div><div class="title"><a rel="nofollow" target="_blank" href="r/'.$item['id'].'">'
         .$title.'</a></div><div class="data"><div class="price">&yen;<span>'.($item['lowest_price_x_100']/100).'</span></div><div class="description">'.$description.'&hellip;</div> <div class="merchant_name">京东商城</div></div></li>';
     }
     echo '</ol>';
@@ -106,9 +120,9 @@ class SearchScreen extends Screen {
     if ($this->category === false) {
       echo '<div id="breadcrumb"><span class="first">分类</span></div>';
     } elseif ($this->key === false) {
-      echo '<div id="breadcrumb"><a class="first" href="javascript:void(0)">分类</a> &rsaquo; <span>'.$this->category['name'].'</span></div>';
+      echo '<div id="breadcrumb"><a class="first" href="'.$this->baseQueryUri.'">分类</a> &rsaquo; <span>'.$this->category['name'].'</span></div>';
     } else {
-      echo '<div id="breadcrumb"><a class="first" href="javascript:void(0)">分类</a> &rsaquo; <a href="javascript:void(0)">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span></div>';
+      echo '<div id="breadcrumb"><a class="first" href="'.$this->baseQueryUri.'">分类</a> &rsaquo; <a href="'.$this->basePaginationUri.'">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span></div>';
     }
     echo '</div>';
     if ($this->category === false) {
@@ -126,7 +140,7 @@ class SearchScreen extends Screen {
     echo '<ol>';
     foreach ($categories['matches'] as $item) {
       $category = DbCategory::get($item['attrs']['@groupby']);
-      echo '<li><a href="?c='.$category['name'].'">'.$category['name'].'</a> <span>'.$item['attrs']['@count'].'</span></li>';
+      echo '<li><a href="'.$this->baseQueryUri.'&c='.$category['name'].'">'.$category['name'].'</a> <span>'.$item['attrs']['@count'].'</span></li>';
     }
     echo '</ol>';
   }
@@ -136,7 +150,7 @@ class SearchScreen extends Screen {
     echo '<ol id="key_list">';
     foreach ($properies['matches'] as $item) {
       $property = DbProperty::getByKeyId($item['attrs']['@groupby']);
-      echo '<li><span>+</span><a href="'.$this->baseUriForSort.'&t='.$property['key'].'">'.$property['key'].'</a></li>';
+      echo '<li><span>+</span><a href="'.$this->baseSortUri.'&t='.$property['key'].'">'.$property['key'].'</a></li>';
     }
     echo '</ol>';
   }
@@ -146,7 +160,7 @@ class SearchScreen extends Screen {
     echo '<ol>';
     foreach ($properies['matches'] as $item) {
       $property = DbProperty::getByValueId($item['attrs']['@groupby']);
-      echo '<li><a href="?c='.$property['value'].'">'.$property['value'].'</a> <span>'.$item['attrs']['@count'].'</span></li>';
+      echo '<li><a href="'.$this->baseSortUri.'&'.$this->key['key'].'='.$property['value'].'">'.$property['value'].'</a> <span>'.$item['attrs']['@count'].'</span></li>';
     }
     echo '</ol>';
   }
@@ -199,7 +213,9 @@ class SearchScreen extends Screen {
       $s->SetFilter ('category_id', array($this->category['id']));
     }
     if (count($this->properties) !== 0) {
-      $s->SetFilter('property_id_list', $this->properties);
+      foreach ($this->properties as $item) {
+        $s->SetFilter('value_id_list_'.$item['key']['mva_index'], array($item['value']['id']));
+      }
     }
     $query = $_GET['q'];
     return $s->query($query, 'wj_search');
@@ -212,7 +228,7 @@ class SearchScreen extends Screen {
     echo '<div id="pagination"> ';
     $pagination = new Pagination;
     $prefix = preg_replace('{[&?]*page=[0-9]+}', '', $_SERVER['QUERY_STRING']);
-    $pagination->render($this->baseUriForPagination.'&', $total, 1);
+    $pagination->render($this->basePaginationUri.'&', $total, 1);
     echo '</div>';
   }
 

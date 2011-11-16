@@ -11,14 +11,22 @@ class Router {
     if ($_SERVER['HTTP_HOST'] === 'img.wj.com') {
       return '/image';
     }
-    list($path, $parameters) = explode('?', $_SERVER['REQUEST_URI'], 2);
+    list($path) = explode('?', $_SERVER['REQUEST_URI'], 2);
     if ($path !== '/') {
-      throw new NotFoundException;
+      return $this->parsePath($path);
     }
     if ($_GET['q'] === '') {
       header('Location: /');
       return '/redirect';
     }
     return '/search';
+  }
+
+  private function parsePath($path) {
+    $sections = explode('/', $path);
+    if (count($sections) === 3 && $sections[1] === 'r') {
+      return '/product';
+    }
+    throw new NotFoundException;
   }
 }
