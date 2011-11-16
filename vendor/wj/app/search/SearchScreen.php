@@ -5,21 +5,47 @@ class SearchScreen extends Screen {
   private $key = false;
   private $properties = array();
   private $sort = 'sale_rank';
+  private $baseUriForPagination;
+  private $baseUriForSort;
 
   public function __construct() {
     if (isset($_GET['c'])) {
       $this->category = DbCategory::getByName($_GET['c']);
     }
-    if ($this->category && isset($_GET['p'])) {
-      $this->key = DbProperty::getKeyByName($this->category['id'], $_GET['p']);
+    if ($this->category && isset($_GET['t'])) {
+      $this->key = DbProperty::getKeyByName($this->category['id'], $_GET['t']);
     }
+    $current = $this->buildRawUri($_GET['q']);
+    if ($current !== $_SERVER['REQUEST_URI']) {
+      echo $_SERVER['REQUEST_URI'].'<br />';
+      echo $current;
+    }
+  }
+
+  private function buildRawUri() {
+    $result = '/?q='.urlencode($_GET['q']);
+    if (isset($_GET['c'])) {
+      $result .= '&c='.urlencode($_GET['c']);
+    }
+//    foreach ($properties as $key => $value) {
+//      $result .= '&'.urldecode($key).'='.urldecode($value);
+//    }
+    $this->baseUriForSort = $result;
+    if (isset($_GET['s'])) {
+      $result .= '&s='.urlencode($_GET['s']);
+    }
+    $this->baseUriForPagination = $result;
+    if (isset($_GET['p'])) {
+      $result .= '&p='.$_GET['p'];
+    }
+    return $result;
   }
 
   public function renderBodyContent() {
     //$this->renderAdvertisement();
     $this->renderTitle();
     $this->renderSearch();
-    $this->renderAdvertisement();
+    //$this->renderAdvertisement();
   }
 
   public function renderHeadContent() {
@@ -47,9 +73,9 @@ class SearchScreen extends Screen {
     echo '<div id="result">';
     echo '<div class="head">';
     echo '<div id="sort">排序: <span>销量</span>'
-      .' <a rel="nofollow" href="javascript:void(0)">新品</a>'
-      .' <a rel="nofollow" href="javascript:void(0)">价格</a>'
-      .' <a rel="nofollow" href="javascript:void(0)">折扣</a>'
+      .' <a rel="nofollow" href="'.$this->baseUriForSort.'&s=新品">新品</a>'
+      .' <a rel="nofollow" href="'.$this->baseUriForSort.'&s=价格">价格</a>'
+      .' <a rel="nofollow" href="'.$this->baseUriForSort.'&s=折扣">折扣</a>'
       .'</div>';
     $result = $this->search();
     echo '<div id="total">找到 '.$result['total_found'].' 个产品</div>';
@@ -63,7 +89,6 @@ class SearchScreen extends Screen {
     }
     foreach ($items as $item) {
       $name = $item['title'];
-
       //$title = str_replace($_GET['q'], '<em>'.$_GET['q'].'</em>', $item['title']);
       $title = str_replace($_GET['q'], '<em>'.$_GET['q'].'</em>', htmlspecialchars(mb_substr(html_entity_decode($item['title'], ENT_QUOTES, 'utf-8'), 0, 40, 'utf-8'), ENT_QUOTES, 'utf-8'));
       //$description = str_replace($_GET['q'], '<em>'.$_GET['q'].'</em>', mb_substr($item['description'], 0, 64, 'utf-8'));
@@ -111,7 +136,7 @@ class SearchScreen extends Screen {
     echo '<ol id="key_list">';
     foreach ($properies['matches'] as $item) {
       $property = DbProperty::getByKeyId($item['attrs']['@groupby']);
-      echo '<li><span>+</span><a href="?c='.$property['key'].'">'.$property['key'].'</a></li>';
+      echo '<li><span>+</span><a href="'.$this->baseUriForSort.'&t='.$property['key'].'">'.$property['key'].'</a></li>';
     }
     echo '</ol>';
   }
@@ -187,7 +212,7 @@ class SearchScreen extends Screen {
     echo '<div id="pagination"> ';
     $pagination = new Pagination;
     $prefix = preg_replace('{[&?]*page=[0-9]+}', '', $_SERVER['QUERY_STRING']);
-    $pagination->render($prefix, $total, 1);
+    $pagination->render($this->baseUriForPagination.'&', $total, 1);
     echo '</div>';
   }
 

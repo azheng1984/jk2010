@@ -35,7 +35,7 @@ class Pagination {
         if ($prevPage != 1) {
           $result .= 'p=' . $prevPage;
         }
-        $result .= '#list">&laquo; 上一页</a>';
+        $result .= '">&laquo; 上一页</a>';
       }
     }
 
@@ -55,7 +55,7 @@ class Pagination {
           if ($count != 1) {
             $result .= 'p=' . $count;
           }
-          $result .= '#list">' . $count . '</a>';
+          $result .= '">' . $count . '</a>';
         }
       }
       --$totalPageItem;
@@ -65,7 +65,7 @@ class Pagination {
     }
     //Next
     if ($currentPage != $totalPage && $totalPage != 0) {
-      $result .= ' <a href="' . $prefix . 'p=' . ($currentPage + 1) . '#list">下一页 &raquo;</a>';
+      $result .= ' <a href="' . $prefix . 'p=' . ($currentPage + 1) . '">下一页 &raquo;</a>';
     }
     echo $result;
   }
