@@ -16,6 +16,11 @@ class SearchScreen extends Screen {
     if ($this->category && isset($_GET['t'])) {
       $this->key = DbProperty::getKeyByName($this->category['id'], $_GET['t']);
     }
+    if (isset($_GET['s'])) {
+      if ($_GET['s'] === '价格') {
+        $this->sort = 'lowest_price_x_100';
+      }
+    }
     $this->buildProperties();
     $current = $this->buildRawUri($_GET['q']);
     if ($current !== $_SERVER['REQUEST_URI']) {
@@ -83,7 +88,6 @@ class SearchScreen extends Screen {
   }
 
   private function renderResult() {
-    $result = array('total' => 12345);
     echo '<div id="result">';
     echo '<div class="head">';
     echo '<div id="sort">排序: <span>销量</span>'
@@ -118,11 +122,11 @@ class SearchScreen extends Screen {
   private function renderFilter() {
     echo '<div id="filter"><div class="head">';
     if ($this->category === false) {
-      echo '<div id="breadcrumb"><span class="first">分类</span></div>';
+      echo '<div id="breadcrumb">标签: <span class="first">分类</span></div>';
     } elseif ($this->key === false) {
-      echo '<div id="breadcrumb"><a class="first" href="'.$this->baseQueryUri.'">分类</a> &rsaquo; <span>'.$this->category['name'].'</span></div>';
+      echo '<div id="breadcrumb">标签: <a class="first" href="'.$this->baseQueryUri.'">分类</a> &rsaquo; <span>'.$this->category['name'].'</span></div>';
     } else {
-      echo '<div id="breadcrumb"><a class="first" href="'.$this->baseQueryUri.'">分类</a> &rsaquo; <a href="'.$this->basePaginationUri.'">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span></div>';
+      echo '<div id="breadcrumb">标签: <a class="first" href="'.$this->baseQueryUri.'">分类</a> &rsaquo; <a href="'.$this->basePaginationUri.'">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span></div>';
     }
     echo '</div>';
     if ($this->category === false) {
@@ -208,7 +212,7 @@ class SearchScreen extends Screen {
     $s->SetLimits(0, 16);
     $s->setServer("localhost", 9312);
     $s->setMaxQueryTime(30);
-    $s->SetSortMode (SPH_SORT_ATTR_DESC, $this->sort);
+    $s->SetSortMode(SPH_SORT_ATTR_ASC, $this->sort);
     if ($this->category !== false) {
       $s->SetFilter ('category_id', array($this->category['id']));
     }

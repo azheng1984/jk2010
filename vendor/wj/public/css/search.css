@@ -101,8 +101,10 @@ h1 {
   background:#eee;
   border-left:1px solid #e5e5e5;
   width:189px;
+  padding:3px 0;
 }
 #breadcrumb {
+  line-height: 25px;
   padding:0 5px;
 }
 #result .head {
@@ -124,7 +126,6 @@ h1 {
 #result ol {
   margin:0;
   padding:2px 0 5px 3px;
-  background:#f5f5f5;
   width:767px;
 }
 #result ol a:visited {
