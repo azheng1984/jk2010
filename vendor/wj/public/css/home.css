@@ -17,7 +17,7 @@ li img {
   width:50px;
 }
 li {
-  float: left;
+  float:left;
   list-style:none;
 }
 ol li {
