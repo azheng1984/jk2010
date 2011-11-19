@@ -50,7 +50,7 @@ abstract class Screen {
   private function renderSearch() {
     $query = isset($_GET['q']) ? $_GET['q'] : '';
     echo '<form action="/">',
-      '<input id="search_input" class="text" type="text" lang="zh-CN" name="q" value="', $query, '" x-webkit-speech />',
+      '<input id="search_input" class="text" type="text" name="q" value="', $query, '" />',
       '<input class="submit" type="submit" value="" />',
       '</form>';
   }
