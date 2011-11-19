@@ -49,7 +49,7 @@ abstract class Screen {
 
   private function renderSearch() {
     $query = isset($_GET['q']) ? $_GET['q'] : '';
-    echo '<form action="/">',
+    echo '<form onsubmit="window.location=\'/胶囊/\'; return false;" action="/">',
       '<input id="search_input" class="text" type="text" name="q" value="', $query, '" />',
       '<input class="submit" type="submit" value="" />',
       '</form>';

@@ -15,11 +15,11 @@ class Router {
     if ($path !== '/') {
       return $this->parsePath($path);
     }
-    if ($_GET['q'] === '') {
+    if ($_GET['q'] !== '') {
       header('Location: /');
       return '/redirect';
     }
-    return '/search';
+    throw new NotFoundException;
   }
 
   private function parsePath($path) {
@@ -27,6 +27,6 @@ class Router {
     if (count($sections) === 3 && $sections[1] === 'r') {
       return '/product';
     }
-    throw new NotFoundException;
+    return '/search';
   }
 }
