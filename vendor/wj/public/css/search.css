@@ -141,6 +141,7 @@ h1 {
   background:white;
   padding:6px 1px 6px 6px;
   border:1px solid #F1F1F1;
+  font-size:12px;
 }
 #result li:hover {
   border: 1px solid #e5e5e5;
@@ -152,36 +153,34 @@ h1 {
 }
 #result .image {
   margin-left: 1px;
+  margin-bottom: 5px;
 }
-#result .title {
-  margin-top:5px;
+#result h3 {
+  margin:0;
   height:40px;
   width:178px;
   clear:left;
   height:40px;
   overflow:hidden;
+  font-size:14px;
+  font-weight:normal;
 }
 #result .price {
   line-height:24px;
 }
-#result .title a:hover {
-  background-color:#fff;
-  height:auto;
-}
-#result .data {
-  font-size:12px;
+#result p {
+  clear:left;
+  margin:0;
+  height:80px;
+  overflow:hidden;
   width:178px;
-  clear:left;
-}
-#result .data div {
-  clear:left;
 }
 #result .price span {
   color:#333;
   font-size:14px;
   font-weight:bold;
 }
-#result .merchant_name {
+#result .merchant {
   color:#690;
   overflow:hidden;
   white-space:nowrap;
@@ -191,10 +190,6 @@ h1 {
 #result img {
   width:170px;
   height:170px;
-}
-#result .description {
-  height:80px;
-  overflow:hidden;
 }
 em {
   font-style:normal;
