@@ -117,7 +117,7 @@ class SearchScreen extends Screen {
       $title = str_replace($this->query, '<em>'.$this->query.'</em>', htmlspecialchars(mb_substr(html_entity_decode($item['title'], ENT_QUOTES, 'utf-8'), 0, 40, 'utf-8'), ENT_QUOTES, 'utf-8'));
       //$description = str_replace($this->query, '<em>'.$this->query.'</em>', mb_substr($item['description'], 0, 64, 'utf-8'));
       $description = str_replace($this->query, '<em>'.$this->query.'</em>', htmlspecialchars(mb_substr(html_entity_decode($item['description'], ENT_QUOTES, 'utf-8'), 0, 64, 'utf-8'), ENT_QUOTES, 'utf-8'));
-      echo '<li><div class="image"><a rel="nofollow" target="_blank" href="/'.$item['id'].'"><img alt="'.$name.'" src="http://img.wj.com/'.$item['id'].'.jpg" /></a></div><h3><a rel="nofollow" target="_blank" href="/'.$item['id'].'">'
+      echo '<li><div class="image"><a rel="nofollow" target="_blank" href="/r/'.$item['id'].'"><img alt="'.$name.'" src="http://img.wj.com/'.$item['id'].'.jpg" /></a></div><h3><a rel="nofollow" target="_blank" href="/r/'.$item['id'].'">'
         .$title.'</a></h3><div class="price">&yen;<span>'.($item['lowest_price_x_100']/100).'</span></div><p>'.$description.'&hellip;</p> <div class="merchant">京东商城</div></li>';
     }
     echo '</ol>';
