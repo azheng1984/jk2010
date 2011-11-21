@@ -48,8 +48,8 @@ abstract class Screen {
   }
 
   private function renderSearch() {
-    $query = isset($_GET['q']) ? $_GET['q'] : '';
-    echo '<form onsubmit="window.location=\'/胶囊/\'; return false;" action="/">',
+    $query = isset($GLOBALS['query']) ? urldecode($GLOBALS['query']) : '';
+    echo '<form onsubmit="window.location=\'/\' + search_input.value + \'/\'; return false;" action="/">',
       '<input id="search_input" class="text" type="text" name="q" value="', $query, '" />',
       '<input class="submit" type="submit" value="" />',
       '</form>';

@@ -10,6 +10,7 @@ class SearchUri {
       throw new NotFoundException();
     }
     $result = array('query' => $sections[0]);
+    $GLOBALS['query'] = $sections[0];
     if ($amount > 1) {
       $result['category'] = $sections[1];
     }
