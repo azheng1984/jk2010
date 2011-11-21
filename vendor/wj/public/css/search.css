@@ -144,7 +144,7 @@ h1 {
   font-size:12px;
 }
 #result li:hover {
-  border: 1px solid #e5e5e5;
+  border:1px solid #e5e5e5;
 }
 #result .image a {/* chrome */
   display:block;
