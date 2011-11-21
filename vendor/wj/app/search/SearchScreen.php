@@ -19,6 +19,9 @@ class SearchScreen extends Screen {
     if ($this->category && isset($_GET['t'])) {
       $this->key = DbProperty::getKeyByName($this->category['id'], $_GET['t']);
     }
+    if (isset($_GET['page'])) {
+      $this->page = $_GET['page'];
+    }
     if (isset($_GET['sort'])) {
       if ($_GET['sort'] === '价格') {
         $this->sort = 'lowest_price_x_100';
@@ -34,7 +37,7 @@ class SearchScreen extends Screen {
 
   private function buildProperties() {
     foreach ($_GET as $keyName => $valueName) {
-      if (strlen($keyName) === 1) {
+      if ($keyName === 'page' || $keyName === 'sort') {
         continue;
       }
       $key = DbProperty::getKeyByName($this->category['id'], $keyName);
@@ -214,8 +217,8 @@ class SearchScreen extends Screen {
 
   private function search() {
     $s = new SphinxClient;
-//    $offset = ($this->page - 1) * 20;
-    $s->SetLimits(0, 16);
+    $offset = ($this->page - 1) * 16;
+    $s->SetLimits($offset, 16);
     $s->setServer("localhost", 9312);
     $s->setMaxQueryTime(30);
     $s->SetSortMode(SPH_SORT_ATTR_ASC, $this->sort);
@@ -238,7 +241,7 @@ class SearchScreen extends Screen {
     echo '<div id="pagination"> ';
     $pagination = new Pagination;
     $prefix = preg_replace('{[&?]*page=[0-9]+}', '', $_SERVER['QUERY_STRING']);
-    $pagination->render($this->basePaginationUri.'?', $total, 1);
+    $pagination->render($this->basePaginationUri.'?', $total, $this->page);
     echo '</div>';
   }
 
