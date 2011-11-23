@@ -47,7 +47,7 @@ ol .categoty {
   left:60px;
   position:absolute;
 }
-#h2_wrapper {
+#h1_wrapper {
   background:#f5f5f5;
   width:100%;
   padding-top:12px;
@@ -55,7 +55,7 @@ ol .categoty {
   border:1px solid #e5e5e5;
   border-bottom:0;
 }
-#h2_wrapper div {
+#h1_wrapper div {
   top:-10px;
   left:26px;
   width:19px;
@@ -65,7 +65,7 @@ ol .categoty {
   position:absolute;
   background:url(/arrow_to_top.png);
 }
-#h2_wrapper h2 {
+#h1_wrapper h1 {
   padding-left:12px;
   font-size:16px;
   font-weight:normal;

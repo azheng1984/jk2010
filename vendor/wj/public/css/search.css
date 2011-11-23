@@ -11,26 +11,42 @@
   width:190px;
 }
 #h1_wrapper {
-  line-height:25px;
-  margin-top:5px;
   width:100%;
   border:1px solid #e5e5e5;
   border-bottom:0;
-  padding:10px 0;
+  padding:6px 0;
 }
 h1 {
   float:left;
-  color:#000;
   font-weight:normal;
-  font-size:20px;
+  font-size:16px;
   margin:0;
   padding:0 10px;
+}
+h1 span {
+padding: 0 5px;
+color: #DDD;
+font-size: 20px;
+}
+h1 .delete {
+  color: white;
+padding: 2px 5px;
+background: red;
+font-size: 12px;
+margin: 2px;
+font-weight: bold;
 }
 #bottom_ads_wrapper {
   width:100%;
   border:1px solid #e5e5e5;
   padding:10px 0;
   border-top:0;
+}
+#top_ads_wrapper {
+  width:100%;
+  padding:10px 0;
+  border:1px solid #e5e5e5;
+  border-bottom:0;
 }
 #bottom_ads {
   padding:0 110px;
@@ -60,22 +76,26 @@ h1 {
   padding:4px 8px;
   font-size:14px;
 }
-#search .head {
+#search h2 {
   padding:5px 0;
   width:100%;
+  float:left;
+  margin:0;
+  font-size:14px;
+  font-weight:normal;
 }
-#search .head span {
+#search h2 span {
   margin-left:10px;
   display:inline;
   color:#fff;
   background-color:red;
   padding:2px 6px;
 }
-#filter .head a {
+#filter h2 a {
   margin:0;
   white-space: nowrap;
 }
-#filter .head span {
+#filter h2 span {
   margin:0;
   white-space:nowrap;
 }
@@ -97,7 +117,7 @@ h1 {
 #filter #key_list {
   padding-left:10px;
 }
-#filter .head {
+#filter h2 {
   background:#eee;
   border-left:1px solid #e5e5e5;
   width:189px;
@@ -107,15 +127,15 @@ h1 {
   line-height: 25px;
   padding:0 5px;
 }
-#result .head {
+#result h2 {
   background:url(/button_bk-toobar.png) repeat-x;
   width:100%;
 }
 #sort {
-  margin-left:10px;
+  margin:0 0 0 10px;
   display:inline; /* ie 6 */
 }
-#sort a {
+#result h2 a {
   margin-left:10px;
 }
 #total {
