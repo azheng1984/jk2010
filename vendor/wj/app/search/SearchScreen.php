@@ -253,9 +253,9 @@ class SearchScreen extends Screen {
 
   private function renderAdvertisement($isTop = false) {
     if ($isTop) {
-      echo '<div id="top_ads_wrapper"><div id="bottom_ads">';
+      echo '<div id="top_ads_wrapper"><div class="ads">广告</div><div id="bottom_ads">';
     } else {
-      echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">';
+      echo '<div id="bottom_ads_wrapper"><div class="ads">广告</div><div id="bottom_ads">';
     }
     AdSenseScreen::render(true);
     echo '</div></div>';
