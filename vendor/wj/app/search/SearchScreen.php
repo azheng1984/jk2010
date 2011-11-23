@@ -70,10 +70,10 @@ class SearchScreen extends Screen {
   }
 
   public function renderBodyContent() {
-    //$this->renderAdvertisement();
+    $this->renderAdvertisement(true);
     $this->renderTitle();
     $this->renderSearch();
-    //$this->renderAdvertisement();
+    $this->renderAdvertisement();
   }
 
   public function renderHeadContent() {
@@ -84,7 +84,13 @@ class SearchScreen extends Screen {
 
   private function renderTitle() {
     if ($this->query !== '') {
-      echo '<div id="h1_wrapper"><h1>'.$this->query.'</h1></div>';
+      if ($this->category !== false) {
+        echo '<div id="h1_wrapper"><h1><a href="..">'.$this->query;
+        echo '</a><span>&rsaquo;</span>'.$this->category['name'];
+      } else {
+        echo '<div id="h1_wrapper"><h1>'.$this->query;
+      }
+      echo '</h1></div>';
     }
   }
 
@@ -98,7 +104,7 @@ class SearchScreen extends Screen {
 
   private function renderResult() {
     echo '<div id="result">';
-    echo '<div class="head">';
+    echo '<h2>';
     echo '<div id="sort">排序: <span>销量</span>'
       .' <a rel="nofollow" href="'.$this->baseSortUri.'?sort=新品">新品</a>'
       .' <a rel="nofollow" href="'.$this->baseSortUri.'?sort=价格">价格</a>'
@@ -106,7 +112,7 @@ class SearchScreen extends Screen {
       .'</div>';
     $result = $this->search();
     echo '<div id="total">找到 '.$result['total_found'].' 个产品</div>';
-    echo '</div>';
+    echo '</h2>';
     echo '<ol>';
 //    print_r($result['matches']);
 //    $result = $result['matches'];
@@ -129,7 +135,7 @@ class SearchScreen extends Screen {
   }
 
   private function renderFilter() {
-    echo '<div id="filter"><div class="head">';
+    echo '<div id="filter"><h2>';
     if ($this->category === false) {
       echo '<div id="breadcrumb">标签: <span class="first">分类</span></div>';
     } elseif ($this->key === false) {
@@ -137,7 +143,7 @@ class SearchScreen extends Screen {
     } else {
       echo '<div id="breadcrumb">标签: <a class="first" href="'.$this->baseQueryUri.'">分类</a> &rsaquo; <a href="'.$this->basePaginationUri.'">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span></div>';
     }
-    echo '</div>';
+    echo '</h2>';
     if ($this->category === false) {
       $this->renderCategories();
     } elseif ($this->key === false) {
@@ -245,8 +251,12 @@ class SearchScreen extends Screen {
     echo '</div>';
   }
 
-  private function renderAdvertisement() {
-    echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">';
+  private function renderAdvertisement($isTop = false) {
+    if ($isTop) {
+      echo '<div id="top_ads_wrapper"><div id="bottom_ads">';
+    } else {
+      echo '<div id="bottom_ads_wrapper"><div id="bottom_ads">';
+    }
     AdSenseScreen::render(true);
     echo '</div></div>';
   }
