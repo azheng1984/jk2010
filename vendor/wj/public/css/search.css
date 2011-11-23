@@ -55,6 +55,9 @@ font-weight: bold;
   background:#f5f5f5;
   font-size:12px;
 }
+#bottom_ads_wrapper .ads {
+  margin-top: 74px;
+}
 #pagination {
   width:100%;
   text-align:center;
