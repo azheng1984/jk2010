@@ -1,6 +1,7 @@
 Options +FollowSymLinks +ExecCGI
 
 ErrorDocument 500 http://www.google.com/
+AllowEncodedSlashes On
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
