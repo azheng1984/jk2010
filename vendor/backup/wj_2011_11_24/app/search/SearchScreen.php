@@ -70,10 +70,10 @@ class SearchScreen extends Screen {
   }
 
   public function renderBodyContent() {
-    $this->renderAdvertisement(true);
+    //$this->renderAdvertisement(true);
     $this->renderTitle();
     $this->renderSearch();
-    $this->renderAdvertisement();
+    //$this->renderAdvertisement();
   }
 
   public function renderHeadContent() {
@@ -86,7 +86,7 @@ class SearchScreen extends Screen {
     if ($this->query !== '') {
       if ($this->category !== false) {
         echo '<div id="h1_wrapper"><h1><a href="..">'.$this->query;
-        echo '</a><span>&rsaquo;</span>'.$this->category['name'];
+        echo '</a> &rsaquo; '.$this->category['name'];
       } else {
         echo '<div id="h1_wrapper"><h1>'.$this->query;
       }
