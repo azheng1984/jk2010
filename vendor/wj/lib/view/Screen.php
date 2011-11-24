@@ -55,7 +55,7 @@ abstract class Screen {
   }
 
   private function renderSearch() {
-    $query = isset($GLOBALS['URI']['QUERY']) ? urldecode($GLOBALS['URI']['QUERY']) : '';
+    $query = isset($GLOBALS['URI']['QUERY']) ? $GLOBALS['URI']['QUERY'] : '';
     echo '<form onsubmit="',
       'window.location=',
       "'/' + encodeURIComponent(search_input.value).replace(/%20/g, '+') + '/'; return false;",
