@@ -36,12 +36,12 @@ return array(
     'require '.$GLOBALS['CLASS_LOADER_PREFIX']
       .".'class_loader'.DIRECTORY_SEPARATOR",
     "  .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';",
-    '$classLoader = new ClassLoader;',
-    '$classLoader->run();',
-    '$exceptionHandler = new CommandExceptionHandler;',
-    '$exceptionHandler->run();',
-    '$app = new CommandApplication;',
-    '$app->run();',
+    '$CLASS_LOADER = new ClassLoader;',
+    '$CLASS_LOADER->run();',
+    '$EXCEPTION_HANDLER = new CommandExceptionHandler;',
+    '$EXCEPTION_HANDLER->run();',
+    '$APP = new CommandApplication;',
+    '$APP->run();',
    ),
   'test/bootstrap.php' => array(
     '<?php',
@@ -53,8 +53,8 @@ return array(
     'require '.$GLOBALS['CLASS_LOADER_PREFIX']
       .".'class_loader'.DIRECTORY_SEPARATOR",
     "  .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';",
-    '$classLoader = new ClassLoader;',
-    '$classLoader->run();',
+    '$CLASS_LOADER = new ClassLoader;',
+    '$CLASS_LOADER->run();',
   ),
   'test/case/app/WelcomeCommandTest.php' => array(
     "<?php",
