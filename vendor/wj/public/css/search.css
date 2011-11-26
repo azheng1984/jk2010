@@ -21,12 +21,11 @@ div, input, ul, ol {
 ul, ol {
   margin:0;
 }
-input {
+#header input {
   border-width:1px;
   border-style:solid;
   border-color:#999 #ccc #ccc #999;
   background:url(/header.png) 0 -33px;/* firefox */
-  outline:none;/* webkit */
 }
 #wrapper {
   float:none;
@@ -206,6 +205,20 @@ h1 .delete {
   background-color:red;
   padding:2px 6px;
 }
+#filter .text {
+  width: 142px;
+  padding:3px 4px 3px 22px;
+  background: url(/search_input.png) no-repeat white;
+  border-width:1px;
+  border-style:solid;
+  border-color:#999 #ccc #ccc #999;
+}
+#filter .search {
+width: 30px;
+height: 30px;
+border: 0;
+background: url(/filter_search.png) center no-repeat;
+}
 #filter h2 a {
   margin:0;
   white-space: nowrap;
@@ -215,15 +228,30 @@ h1 .delete {
   white-space:nowrap;
 }
 #filter ol {
-  padding:10px 15px;
+  clear:left;
+  padding:6px 8px;
   list-style:none;
 }
+#filter .toolbar {
+padding: 5px 10px 2px 10px;
+}
+#filter .toolbar a {
+  padding: 3px 6px;
+  margin: 0 1px;
+  font-size: 12px;
+  position: relative;
+  background:#eee;
+}
 #filter li {
-  padding:2px 0;
+padding: 1px 6px;
+margin: 3px;
+background-color: #fff;
+border:1px solid;
+border-color:#eee #ccc #ccc #eee;
+float: left;
+clear: left;
 }
 #filter li span {
-  background:#eee;
-  padding:1px 5px;
   font-size:12px;
 }
 #key_list li span {
