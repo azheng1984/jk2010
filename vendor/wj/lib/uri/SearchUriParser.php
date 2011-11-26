@@ -31,7 +31,7 @@ class SearchUriParser {
       $arguments[] = 'page='.$_GET['page'];
     }
     if (isset($_GET['media']) && $_GET['media'] === 'json') {
-      $_SERVER['REQUEST_MEDIA_TYPE'] = 'json';
+      $_SERVER['REQUEST_MEDIA_TYPE'] = 'Json';
       $arguments[] = 'media=json';
     }
     if (count($arguments) > 0) {

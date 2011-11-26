@@ -5,12 +5,12 @@ abstract class Screen {
   abstract protected function renderBodyContent();
 
   protected function renderCssLink($id) {
-    echo '<link type="text/css" href="/css/'.$id.'.css" charset="utf-8"',
+    echo '<link type="text/css" href="/css/', $id, '.css" charset="utf-8"',
       ' media="screen" rel="stylesheet" />';
   }
 
   protected function renderJsLink($id) {
-    
+    echo '<script src="/js/', $id, '.js" ></script>';
   }
 
   public function render() {
@@ -61,7 +61,7 @@ abstract class Screen {
       "'/' + encodeURIComponent(search_input.value).replace(/%20/g, '+') + '/'; return false;",
       '" action="/">',
       '<input id="search_input" class="text" type="text" name="q" value="',
-      htmlentities($query, ENT_QUOTES, 'utf-8'), '" />',
+      htmlentities($query, ENT_QUOTES, 'utf-8'), '"  autocomplete="off" />',
       '<input class="submit" type="submit" value="" />',
       '</form>';
   }
