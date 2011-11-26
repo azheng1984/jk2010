@@ -9,6 +9,8 @@ class SearchScreen extends Screen {
   protected function renderHeadContent() {
     echo '<title>', $GLOBALS['URI']['QUERY'], ' - 货比万家</title>';
     $this->renderCssLink('search');
+    $this->renderJsLink('jquery-1.7.1');
+    $this->renderJsLink('search');
     if ($this->result['total_found'] === 0) {
       echo '<meta name="robots" content="noindex, follow">';
     }

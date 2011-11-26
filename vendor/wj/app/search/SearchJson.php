@@ -1,8 +1,8 @@
 <?php
 class SearchJson {
   public function render() {
-    echo '<div id="filter"><h2>';
-    if ($this->category === false) {
+    echo '<h2>';
+    if (!isset($GLOBALS['URI']['CATEGORY'])) {
       echo '<div id="breadcrumb">标签: <span class="first">分类</span></div>';
     } else {
       if ($this->key === false) {
@@ -14,18 +14,17 @@ class SearchJson {
       }
     }
     echo '</h2>';
-    if ($this->category === false) {
+    if (!isset($GLOBALS['URI']['CATEGORY'])) {
       $this->renderCategories();
     } elseif ($this->key === false) {
       $this->renderKeys();
     } else {
       $this->renderValues();
     }
-    echo '</div>';
   }
 
   private function renderCategories() {
-    $categories = CategorySearch::search($this->query);
+    $categories = CategorySearch::search($GLOBALS['URI']['QUERY']);
     echo '<ol>';
     foreach ($categories['matches'] as $item) {
       $category = DbCategory::get($item['attrs']['@groupby']);
@@ -35,7 +34,7 @@ class SearchJson {
   }
 
   private function renderKeys() {
-    $properies = KeySearch::search($this->query, $this->category);
+    $properies = KeySearch::search($GLOBALS['URI']['QUERY'], $this->category);
     echo '<ol id="key_list">';
     foreach ($properies['matches'] as $item) {
       $property = DbProperty::getByKeyId($item['attrs']['@groupby']);
@@ -45,7 +44,7 @@ class SearchJson {
   }
 
   private function renderValues() {
-    $properies = ValueSearch::search($this->query, $this->category, $this->key);
+    $properies = ValueSearch::search($GLOBALS['URI']['QUERY'], $this->category, $this->key);
     echo '<ol>';
     foreach ($properies['matches'] as $item) {
       $property = DbProperty::getByValueId($item['attrs']['@groupby']);
