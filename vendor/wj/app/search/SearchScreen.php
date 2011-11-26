@@ -1,54 +1,42 @@
 <?php
 class SearchScreen extends Screen {
-  private $category = false;
-  private $properties = null;
+  private $result;
 
   public function __construct() {
-    if (isset($GLOBALS['URI']['CATEGORY_NAME'])) {
-      $this->category = DbCategory::getByName($GLOBALS['URI']['CATEGORY_NAME']);
-    }
-    if (isset($GLOBALS['URI']['PROPERTIES'])) {
-      $this->parseProperties();
-    }
-  }
-
-  private function parseProperties() {
-    $this->properties = array();
-    $key = null;
-    $values = null;
-    $items = explode('&', $GLOBALS['URI']['PROPERTIES']);
-    foreach ($items as $item) {
-      $tmps = explode('=', $item, 2);
-      if (count($tmps) === 2) {
-        if ($key !== null) {
-          $this->properties[] = array('key' => $key, 'values' => $values);
-        }
-        $key = DbProperty::getKeyByName(
-          $this->category['id'], array_shift($tmps)
-        );
-        $values= array();
-      }
-      $values[] = DbProperty::getValueByName($key, $tmps[0]);
-    }
+    $this->result = ProductSearch::search();
   }
 
   protected function renderHeadContent() {
-    echo '<title>货比万家</title>';
+    echo '<title>', $GLOBALS['URI']['QUERY'], ' - 货比万家</title>';
     $this->renderCssLink('search');
+    if ($this->result['total_found'] === 0) {
+      echo '<meta name="robots" content="noindex, follow">';
+    }
   }
 
   protected function renderBodyContent() {
-    $this->renderBreadcrumb();
+    //$this->renderTopAdvertisement();
+    $this->renderSearch();
+    //$this->renderBottomAdvertisement();
   }
 
-  private function renderBreadcrumb() {
-    $query = htmlentities($GLOBALS['URI']['QUERY'], ENT_QUOTES, 'utf-8');
-    echo '<div id="h1_wrapper"><h1>';
-    if ($this->category !== false) {
-      echo '<a href="..">', $query, '</a> &rsaquo; '.$this->category['name'];
-    } else {
-      echo $query;
-    }
-    echo '</h1></div>';
+  private function renderSearch() {
+    BreadcrumbScreen::render();
+    echo '<div id="search">';
+    ResultScreen::render($this->result);
+    FilterScreen::render();
+    echo '</div>';
+  }
+
+  private function renderTopAdvertisement() {
+    echo '<div id="top_ads_wrapper">';
+    AdSenseScreen::render();
+    echo '</div>';
+  }
+
+  private function renderBottomAdvertisement() {
+    echo '<div id="bottom_ads_wrapper">';
+    AdSenseScreen::render();
+    echo '</div>';
   }
 }

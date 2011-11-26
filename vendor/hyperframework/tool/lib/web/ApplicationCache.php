@@ -30,7 +30,7 @@ class ApplicationCache {
       $cache = array($cache);
     }
     $this->cache[$path][$name] = array_merge(
-      $this->cache[$path][$name], $cache
+      $cache, $this->cache[$path][$name]
     );
   }
 
