@@ -233,15 +233,17 @@ background: url(/filter_search.png) center no-repeat;
   list-style:none;
 }
 #filter .toolbar {
-padding: 5px 10px 2px 10px;
+padding: 0 5px;
+float:right;
 }
 #filter .toolbar a {
-  padding: 3px 6px;
-  margin: 0 1px;
-  font-size: 12px;
-  position: relative;
-  background:#eee;
+  font-size: 14px;
+  color:#999;
+  border-bottom:1px solid #999;
+  text-decoration:none;
+  font-size:12px;
 }
+
 #filter li {
 padding: 1px 6px;
 margin: 3px;
