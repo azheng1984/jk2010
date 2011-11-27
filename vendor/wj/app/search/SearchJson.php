@@ -11,9 +11,10 @@ class SearchJson {
       } else {
         echo '<div id="breadcrumb">标签: <a class="first" href="">分类</a> &rsaquo;'
           ,' <a href="'.'">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span></div>';
+        echo '<div class="toolbar"><a href="javascript:void(0)">多选</a> <a href="javascript:void(0)">排除</a></div>';
       }
     }
-    echo '<div class="toolbar"><a href="javascript:void(0)">多选</a> <a href="javascript:void(0)">删除</a></div></h2>';
+    echo '</h2>';
     if (!isset($GLOBALS['URI']['CATEGORY'])) {
       $this->renderCategories();
     } elseif ($this->key === false) {
