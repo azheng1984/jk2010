@@ -13,7 +13,7 @@ class SearchJson {
           ,' <a href="'.'">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span></div>';
       }
     }
-    echo '</h2>';
+    echo '<div class="toolbar"><a href="javascript:void(0)">多选</a> <a href="javascript:void(0)">删除</a></div></h2>';
     if (!isset($GLOBALS['URI']['CATEGORY'])) {
       $this->renderCategories();
     } elseif ($this->key === false) {
