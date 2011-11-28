@@ -7,7 +7,7 @@ class SortScreen {
     ' <a rel="nofollow" href="?sort=价格">价格</a>',
     ' <a rel="nofollow" href="?sort=折扣">折扣</a>',
     '</div>',
-    '<div id="total">约 ', $total, ' 个产品</div>',
+    '<div id="total">搜索到 ', $total, ' 个产品</div>',
     '</h2>';
   }
 }

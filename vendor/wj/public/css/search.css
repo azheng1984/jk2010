@@ -245,19 +245,25 @@ float:right;
 }
 
 #filter li {
-padding: 1px 6px;
+float: left;
+clear: left;
+}
+#filter li a {
+  padding: 1px 6px;
 margin: 3px;
 background-color: #fff;
 border:1px solid;
 border-color:#eee #ccc #ccc #eee;
-float: left;
-clear: left;
+display:block;
+text-decoration:none;
 }
-#filter li span {
+#filter li a:hover {
+    border: 1px solid;
+  border-color: #B6C9ED #8699bD #8699bD #B6C9ED;
+}
+#filter li a .total {
+  color:#999;
   font-size:12px;
-}
-#key_list li span {
-  margin-right:5px;
 }
 #filter #key_list {
   padding-left:10px;
@@ -288,6 +294,9 @@ clear: left;
   float:right;
   display:inline; /* ie 6 */
 }
+#total span {
+  background-color:#eee;
+}
 #result ol {
   margin:0;
   padding:2px 0 5px 3px;
@@ -307,6 +316,7 @@ clear: left;
   padding:6px 1px 6px 6px;
   border:1px solid #F1F1F1;
   font-size:12px;
+  position: relative;
 }
 #result li:hover {
   border:1px solid #e5e5e5;
@@ -345,7 +355,50 @@ clear: left;
   font-size:14px;
   font-weight:bold;
 }
+#hover {
+  position:absolute;
+  top:0;
+  display:none;
+}
+
+#result .toolbar {
+  top:5px;
+  position: absolute;
+  left:95px;
+  white-space:nowrap;
+}
+#result .toolbar a {
+  background: url(/button_bk.png) repeat-x;
+  padding: 3px 6px;
+  border: 1px solid;
+  color:#999;
+  border-color: #EEE #CCC #CCC #EEE;
+}
+#result .toolbar a:hover {
+  border: 1px solid;
+  border-color: #B6C9ED #8699bD #8699bD #B6C9ED;
+text-decoration: none;
+}
+#result .tag {
+  position: absolute;
+  top:155px;
+  left:0;
+}
+#result .tag a {
+  white-space:nowrap;
+  background: url(/button_bk.png) repeat-x;
+  padding: 3px 6px;
+  border: 1px solid;
+  border-color: #EEE #CCC #CCC #EEE;
+  color:#999;
+  text-decoration:none;
+}
+#result .tag a:hover {
+  border: 1px solid;
+  border-color: #B6C9ED #8699bD #8699bD #B6C9ED;
+}
 #result .merchant {
+  clear:left;
   color:#690;
   overflow:hidden;
   white-space:nowrap;

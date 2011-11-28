@@ -11,7 +11,6 @@ class SearchJson {
       } else {
         echo '<div id="breadcrumb">标签: <a class="first" href="">分类</a> &rsaquo;'
           ,' <a href="'.'">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span></div>';
-        echo '<div class="toolbar"><a href="javascript:void(0)">多选</a> <a href="javascript:void(0)">排除</a></div>';
       }
     }
     echo '</h2>';
@@ -27,9 +26,11 @@ class SearchJson {
   private function renderCategories() {
     $categories = CategorySearch::search($GLOBALS['URI']['QUERY']);
     echo '<ol>';
-    foreach ($categories['matches'] as $item) {
-      $category = DbCategory::get($item['attrs']['@groupby']);
-      echo '<li><a href="'.$category['name'].'/">'.$category['name'].'</a> <span>'.$item['attrs']['@count'].'</span></li>';
+    if ($categories['total_found'] !== 0) {
+      foreach ($categories['matches'] as $item) {
+        $category = DbCategory::get($item['attrs']['@groupby']);
+        echo '<li><a href="'.$category['name'].'/"><span>'.$category['name'].'</span> <span class="total">'.$item['attrs']['@count'].'</span></a></li>';
+      }
     }
     echo '</ol>';
   }
