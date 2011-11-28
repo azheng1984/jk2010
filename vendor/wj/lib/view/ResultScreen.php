@@ -2,9 +2,11 @@
 class ResultScreen {
   public static function render($results) {
     echo '<div id="result">';
-    SortScreen::render($results['total_found']);
-    self::renderList($results);
-    PaginationScreen::render('?', $results['total_found']);
+    if ($results['total_found'] !== 0) {
+      SortScreen::render($results['total_found']);
+      self::renderList($results);
+      PaginationScreen::render('?', $results['total_found']);
+    }
     echo '</div>';
   }
 
@@ -21,7 +23,7 @@ class ResultScreen {
         $title, '</a></h3><div class="price">&yen;<span>',
         $product['lowest_price_x_100']/100,
         '</span></div><p>',
-        $description.'&hellip;</p> <div class="merchant">京东商城</div></li>';
+        $description.'&hellip;</p><div class="merchant">京东商城</div></li>';
     }
     echo '</ol>';
   }
