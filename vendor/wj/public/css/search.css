@@ -21,6 +21,9 @@ div, input, ul, ol {
 ul, ol {
   margin:0;
 }
+#header {
+  position:relative;
+}
 #header input {
   border-width:1px;
   border-style:solid;
@@ -417,4 +420,68 @@ em {
 }
 a:hover em {
   text-decoration:underline;
+}
+#related {
+  border:1px solid #e5e5e5;
+  border-top:none;
+  width: 960px;
+}
+#related h2 {
+  font-size:14px;
+  font-weight:normal;
+  margin:0;
+  padding:5px;
+  float:left;
+}
+#related ul {
+  margin:0;
+  float:right;
+  width:880px;
+  list-style:none;
+  padding:5px;
+}
+#related li {
+  float:left;
+  padding-right:15px;
+  font-size:12px;
+  white-space:nowrap;
+}
+#related a {
+  font-size:14px;
+}
+#suggestion {
+  position: absolute;
+left: 100px;
+ border:1px solid;
+ border-color:#e5e5e5 #ddd #ddd #e5e5e5;
+background: white;
+width: 375px;
+top: 42px;
+}
+
+#suggestion ul {
+  margin:0;
+  float:right;
+  width:375px;
+  list-style:none;
+}
+#suggestion li {
+  color:#000;
+  float:left;
+  white-space:nowrap;
+  width:368px;
+  padding: 2px 2px 2px 5px;
+  cursor:pointer;
+}
+#suggestion li:hover {
+  background:#6096cc;
+  color:#fff;
+
+}
+#suggestion li div {
+  color:#999;
+  float: right;
+background: #f1f1f1;
+padding: 0 5px;
+font-size:12px;
 }
