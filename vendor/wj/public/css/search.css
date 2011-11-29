@@ -194,7 +194,7 @@ h1 .delete {
   font-size:14px;
 }
 #search h2 {
-  padding:5px 0;
+  padding: 5px 0 2px 0;
   width:100%;
   float:left;
   margin:0;
@@ -284,6 +284,8 @@ clear: left;
 #result h2 {
   background:url(/button_bk-toobar.png) repeat-x;
   width:100%;
+position: relative;
+z-index: 2;
 }
 #sort {
   margin:0 0 0 8px;
@@ -457,6 +459,7 @@ left: 100px;
 background: white;
 width: 375px;
 top: 42px;
+z-index:100;
 }
 
 #suggestion ul {
@@ -484,4 +487,54 @@ top: 42px;
 background: #f1f1f1;
 padding: 0 5px;
 font-size:12px;
+}
+#slider {
+  margin:10px;
+  width:200px;
+  height:2px;
+  background:-webkit-gradient(linear, left top, right top, color-stop(0,#fff), color-stop(0.3,#999), color-stop(0.6,white), color-stop(0.8,#ccc), color-stop(1,#999));
+}
+#sort .into {
+  border: 1px solid #E5E5E5;
+background: white;
+color: #999;
+border-bottom: 0;
+z-index: 100;
+padding: 3px 10px;
+padding-bottom: 5px;
+}
+#option {
+padding: 0 8px;
+font-size: 14px;
+border: 1px solid;
+border-color: #E5E5E5 #CCC #CCC #E5E5E5;
+background: white;
+padding: 5px 0;
+margin: 0px 5px 0 5px;
+z-index: 1;
+position: relative;
+width: 758px;
+}
+#option span {
+margin:0 10px 0 5px;
+display: inline;
+color: white;
+background-color: red;
+padding: 2px 6px;
+}
+#option input {
+  width:30px;
+  height:18px;
+  padding:0 2px;
+  border-width:1px;
+  border-style:solid;
+  border-color:#e5e5e5;
+  color:#999;
+    font-size:12px;
+}
+#option input:focus {
+  outline:1px solid #b6c9ed;
+}
+#option .title {
+  margin-left:20px;
 }
