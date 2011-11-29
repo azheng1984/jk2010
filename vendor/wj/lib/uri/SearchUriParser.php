@@ -25,7 +25,7 @@ class SearchUriParser {
       $arguments[] = 'id='.$_GET['id'];
     }
     if (isset($_GET['sort'])) {
-      $arguments[] = 'sort='.$_GET['sort'];
+      $arguments[] = 'sort='.urlencode($_GET['sort']);
     }
     if (isset($_GET['page']) && is_numeric($_GET['page'])) {
       $arguments[] = 'page='.$_GET['page'];
