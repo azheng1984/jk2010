@@ -20,6 +20,7 @@ class SearchScreen extends Screen {
     //$this->renderTopAdvertisement();
     $this->renderSearch();
     //$this->renderBottomAdvertisement();
+    $this->renderRelatedQuery();
   }
 
   private function renderSearch() {
@@ -39,6 +40,12 @@ class SearchScreen extends Screen {
   private function renderBottomAdvertisement() {
     echo '<div id="bottom_ads_wrapper">';
     AdSenseScreen::render();
+    echo '</div>';
+  }
+
+  private function renderRelatedQuery() {
+    echo '<div id="related">';
+    RelatedQueryScreen::render();
     echo '</div>';
   }
 }
