@@ -249,19 +249,19 @@ float: left;
 clear: left;
 }
 #filter li a {
-  padding: 1px 6px;
-margin: 3px;
-background-color: #fff;
-border:1px solid;
-border-color:#eee #ccc #ccc #eee;
-display:block;
-text-decoration:none;
+  padding:1px 6px 0 6px;
+  margin:3px;
+  background-color:#fff;
+  border:1px solid;
+  border-color:#eee #ccc #ccc #eee;
+  display:block;
+  text-decoration:none;
 }
 #filter li a:hover {
     border: 1px solid;
   border-color: #B6C9ED #8699bD #8699bD #B6C9ED;
 }
-#filter li a .total {
+#filter li a span {
   color:#999;
   font-size:12px;
 }
@@ -314,12 +314,15 @@ text-decoration:none;
   margin:3px 2px 5px 2px;
   background:white;
   padding:6px 1px 6px 6px;
-  border:1px solid #F1F1F1;
+  border:1px solid;
+  border-color:#f1f1f1 #e5e5e5 #e5e5e5 #f1f1f1;
   font-size:12px;
   position: relative;
+  overflow: hidden;
 }
 #result li:hover {
-  border:1px solid #e5e5e5;
+  border:1px solid;
+  border-color:#e5e5e5 #ccc #ccc #e5e5e5;
 }
 #result .image a {/* chrome */
   display:block;
@@ -358,9 +361,7 @@ text-decoration:none;
 #hover {
   position:absolute;
   top:0;
-  display:none;
 }
-
 #result .toolbar {
   top:5px;
   position: absolute;
@@ -376,7 +377,8 @@ text-decoration:none;
 }
 #result .toolbar a:hover {
   border: 1px solid;
-  border-color: #B6C9ED #8699bD #8699bD #B6C9ED;
+  /*border-color: #B6C9ED #8699bD #8699bD #B6C9ED;*/
+  border-color: #ddd #aaa #aaa #ddd;
 text-decoration: none;
 }
 #result .tag {
@@ -395,7 +397,7 @@ text-decoration: none;
 }
 #result .tag a:hover {
   border: 1px solid;
-  border-color: #B6C9ED #8699bD #8699bD #B6C9ED;
+  border-color: #ddd #aaa #aaa #ddd;
 }
 #result .merchant {
   clear:left;

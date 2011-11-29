@@ -5,9 +5,9 @@ class SearchJson {
     if (!isset($GLOBALS['URI']['CATEGORY'])) {
       echo '<div id="breadcrumb">标签: <span class="first">分类</span></div>';
     } else {
-      if ($this->key === false) {
-        echo '<div id="breadcrumb">标签: <a class="first" href="">分类</a> &rsaquo; <span>',
-          $this->category['name'].'</span></div>';
+      if (!isset($_GET['anchor'])) {
+        echo '<div id="breadcrumb">标签: <a class="first" href="..">分类</a> &rsaquo; <span>',
+          $GLOBALS['URI']['CATEGORY']['name'].'</span></div>';
       } else {
         echo '<div id="breadcrumb">标签: <a class="first" href="">分类</a> &rsaquo;'
           ,' <a href="'.'">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span></div>';
@@ -16,7 +16,7 @@ class SearchJson {
     echo '</h2>';
     if (!isset($GLOBALS['URI']['CATEGORY'])) {
       $this->renderCategories();
-    } elseif ($this->key === false) {
+    } elseif (!isset($_GET['anchor'])) {
       $this->renderKeys();
     } else {
       $this->renderValues();
@@ -26,21 +26,21 @@ class SearchJson {
   private function renderCategories() {
     $categories = CategorySearch::search($GLOBALS['URI']['QUERY']);
     echo '<ol>';
-    if ($categories['total_found'] !== 0) {
+    if ($categories !== false && $categories['total_found'] !== 0) {
       foreach ($categories['matches'] as $item) {
         $category = DbCategory::get($item['attrs']['@groupby']);
-        echo '<li><a href="'.$category['name'].'/"><span>'.$category['name'].'</span> <span class="total">'.$item['attrs']['@count'].'</span></a></li>';
+        echo '<li><a href="'.$category['name'].'/">'.$category['name'].' <span>'.$item['attrs']['@count'].'</span></a></li>';
       }
     }
     echo '</ol>';
   }
 
   private function renderKeys() {
-    $properies = KeySearch::search($GLOBALS['URI']['QUERY'], $this->category);
+    $properies = KeySearch::search($GLOBALS['URI']['QUERY'], $GLOBALS['URI']['CATEGORY']);
     echo '<ol id="key_list">';
     foreach ($properies['matches'] as $item) {
       $property = DbProperty::getByKeyId($item['attrs']['@groupby']);
-      echo '<li><span>+</span><a href="?t='.$property['key'].'">'.$property['key'].'</a></li>';
+      echo '<li><a href="#'.$property['key'].'"><span>+</span> '.$property['key'].'</a></li>';
     }
     echo '</ol>';
   }
