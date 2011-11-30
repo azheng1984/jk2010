@@ -555,7 +555,9 @@ left: 233px;
   border: 1px solid #ccc;
   border-top: 0;
   border-bottom: 0;
-  background:-webkit-gradient(linear, left top, right top, color-stop(0,#fff), color-stop(0.3,red), color-stop(0.6,white), color-stop(0.8,red), color-stop(1,white));
+  background-color:red;
+  background:-webkit-gradient(linear, left top, right top, color-stop(0,white), color-stop(0.3,red), color-stop(0.6,white), color-stop(0.8,red), color-stop(1,white));
+  background:-moz-linear-gradient(left center , #fff, red 10px, white 20px, red);
 }
 #option .cursor img {
   width:13px;
@@ -564,7 +566,7 @@ left: 233px;
 #option .cursor {
 font-size: 8px;
 position: absolute;
-top: 1px;
+top: 0px;
 left: 149px;
 display:none;
 }
