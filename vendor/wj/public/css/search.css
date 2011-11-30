@@ -184,7 +184,8 @@ h1 .delete {
   position:relative;
 }
 #pagination a:hover {
-  border:1px solid #b6c9ed;
+  /*border:1px solid #b6c9ed;*/
+  border:1px solid #ccc;
   text-decoration:none;
 }
 #pagination span {
@@ -265,12 +266,14 @@ clear: left;
   display:block;
   text-decoration:none;
   font-size:13px;
+  color:#999;
+  float:left;
 }
 #filter li a:hover {
     border: 1px solid;
-  border-color: #B6C9ED #8699bD #8699bD #B6C9ED;
+  border-color: #ddd #aaa #aaa #ddd;
 }
-#filter li a span {
+#filter li span {
   color:#999;
   font-size:11px;
 }
