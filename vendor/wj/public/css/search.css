@@ -230,6 +230,11 @@ background: url(/filter_search.png) center no-repeat;
   margin:0;
   white-space:nowrap;
 }
+#filter h2 img {
+  width: 16px;
+  vertical-align: middle;
+  margin-bottom: 3px;
+}
 #filter ol {
   clear:left;
   padding:6px 8px;
@@ -488,12 +493,7 @@ background: #f1f1f1;
 padding: 0 5px;
 font-size:12px;
 }
-#slider {
-  margin:10px;
-  width:200px;
-  height:2px;
-  background:-webkit-gradient(linear, left top, right top, color-stop(0,#fff), color-stop(0.3,#999), color-stop(0.6,white), color-stop(0.8,#ccc), color-stop(1,#999));
-}
+
 #sort .into {
   border: 1px solid #E5E5E5;
 background: white;
@@ -504,10 +504,8 @@ padding: 3px 10px;
 padding-bottom: 5px;
 }
 #option {
-padding: 0 8px;
 font-size: 14px;
-border: 1px solid;
-border-color: #E5E5E5 #CCC #CCC #E5E5E5;
+border: 1px solid #E5E5E5;
 background: white;
 padding: 5px 0;
 margin: 0px 5px 0 5px;
@@ -516,7 +514,7 @@ position: relative;
 width: 758px;
 }
 #option span {
-margin:0 10px 0 5px;
+margin:0 15px 0 5px;
 display: inline;
 color: white;
 background-color: red;
@@ -536,5 +534,43 @@ padding: 2px 6px;
   outline:1px solid #b6c9ed;
 }
 #option .title {
-  margin-left:20px;
+  margin-left:15px;
+}
+#option .start {
+font-size:9px;
+position: absolute;
+top: 11px;
+left: 154px;
+}
+#option .end {
+font-size:9px;
+position: absolute;
+top: 11px;
+left: 233px;
+}
+#slider {
+  margin:8px 10px;
+  width:100px;
+  height:2px;
+  border: 1px solid #ccc;
+  border-top: 0;
+  border-bottom: 0;
+  background:-webkit-gradient(linear, left top, right top, color-stop(0,#fff), color-stop(0.3,red), color-stop(0.6,white), color-stop(0.8,red), color-stop(1,white));
+}
+#option .cursor img {
+  width:13px;
+  height:8px;
+}
+#option .cursor {
+font-size: 8px;
+position: absolute;
+top: 1px;
+left: 149px;
+display:none;
+}
+#option .cursor_end {
+left: 250px;
+}
+h1 img {
+  padding-top:2px;
 }
