@@ -3,13 +3,13 @@ class SearchJson {
   public function render() {
     echo '<h2>';
     if (!isset($GLOBALS['URI']['CATEGORY'])) {
-      echo '<div id="breadcrumb">标签: <span class="first">分类</span></div>';
+      echo '<div id="breadcrumb"><img src="/tag.png" /> <span class="first">分类</span></div>';
     } else {
       if (!isset($_GET['anchor'])) {
-        echo '<div id="breadcrumb">标签: <a class="first" href="..">分类</a> &rsaquo; <span>',
+        echo '<div id="breadcrumb"><img src="/tag.png" /> <a class="first" href="..">分类</a> &rsaquo; <span>',
           $GLOBALS['URI']['CATEGORY']['name'].'</span></div>';
       } else {
-        echo '<div id="breadcrumb">标签: <a class="first" href="">分类</a> &rsaquo;'
+        echo '<div id="breadcrumb"><img src="/tag.png" /> <a class="first" href="">分类</a> &rsaquo;'
           ,' <a href="'.'">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span></div>';
       }
     }

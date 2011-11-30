@@ -31,4 +31,17 @@ $(function() {
       suggestion = false;
     }
   });
+  $('#input_start').click(function() {
+    $('#start_img').attr('src', "/slider_active.png");
+    $('#end_img').attr('src', "/slider.png");
+    $('#option .cursor').show();
+  });
+  $('#input_end').click(function() {
+    $('#start_img').attr('src', "/slider.png");
+    $('#end_img').attr('src', "/slider_active.png");
+    $('#option .cursor').show();
+  });
+  $('#option input').focusout(function() {
+    $('#option .cursor').hide();
+  });
 });

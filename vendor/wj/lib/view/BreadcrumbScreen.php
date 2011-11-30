@@ -4,7 +4,7 @@ class BreadcrumbScreen {
     $query = htmlentities($GLOBALS['URI']['QUERY'], ENT_QUOTES, 'utf-8');
     echo '<div id="h1_wrapper"><h1>';
     if (isset($GLOBALS['URI']['CATEGORY'])) {
-      echo '<a href="..">', $query, '</a> &rsaquo; '.$GLOBALS['URI']['CATEGORY']['name'];
+      echo '<a href="..">', $query, '</a> <img src="/bread_arrow.png" /> '.$GLOBALS['URI']['CATEGORY']['name'];
     } else {
       echo $query;
     }
