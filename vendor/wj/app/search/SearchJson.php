@@ -40,7 +40,7 @@ class SearchJson {
     echo '<ol id="key_list">';
     foreach ($properies['matches'] as $item) {
       $property = DbProperty::getByKeyId($item['attrs']['@groupby']);
-      echo '<li><a href="#'.$property['key'].'"><span>+</span> '.$property['key'].'</a></li>';
+      echo '<li><a class="key" href="#'.$property['key'].'">'.$property['key'].'</a></li>';
     }
     echo '</ol>';
   }

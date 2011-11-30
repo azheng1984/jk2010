@@ -264,6 +264,7 @@ clear: left;
   border-color:#eee #ccc #ccc #eee;
   display:block;
   text-decoration:none;
+  font-size:13px;
 }
 #filter li a:hover {
     border: 1px solid;
@@ -271,7 +272,12 @@ clear: left;
 }
 #filter li a span {
   color:#999;
-  font-size:12px;
+  font-size:11px;
+}
+#filter li .key {
+  padding-left:14px;
+  background:white url('/plus.png') no-repeat;
+  background-position:3px 5px;
 }
 #filter #key_list {
   padding-left:10px;
@@ -450,7 +456,7 @@ a:hover em {
 #related li {
   float:left;
   padding-right:15px;
-  font-size:12px;
+  font-size:11px;
   white-space:nowrap;
 }
 #related a {
@@ -555,7 +561,7 @@ left: 233px;
   border: 1px solid #ccc;
   border-top: 0;
   border-bottom: 0;
-  background-color:red;
+  background-color:#e5e5e5;
   background:-webkit-gradient(linear, left top, right top, color-stop(0,white), color-stop(0.3,red), color-stop(0.6,white), color-stop(0.8,red), color-stop(1,white));
   background:-moz-linear-gradient(left center , #fff, red 10px, white 20px, red);
 }
