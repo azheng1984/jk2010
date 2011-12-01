@@ -24,10 +24,13 @@ class SearchUriParser {
     if (isset($_GET['id']) && is_numeric($_GET['id'])) {
       $arguments[] = 'id='.$_GET['id'];
     }
+    if (isset($_GET['anchor'])) {
+      $arguments[] = 'anchor='.urlencode($_GET['anchor']);
+    }
     if (isset($_GET['sort'])) {
       $arguments[] = 'sort='.urlencode($_GET['sort']);
     }
-    if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+      if (isset($_GET['page']) && is_numeric($_GET['page'])) {
       $arguments[] = 'page='.$_GET['page'];
     }
     if (isset($_GET['media']) && $_GET['media'] === 'json') {

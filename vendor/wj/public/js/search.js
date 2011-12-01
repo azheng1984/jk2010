@@ -4,6 +4,13 @@ $(function() {
     $('#filter').html(data);
     //$('.result').html(data);
     //alert('Load was performed.');
+    $('#key_list .key').mouseup(function() {
+      $uri2 = window.location.pathname + '?anchor=' + window.location.hash.replace('#', '') + '&media=json';
+      $.get($uri2, function(data) {
+        $('#filter').html(data);
+      });
+      alert($uri2);
+    });
   });
   var isHover = false;
   $('#result ol li').hover(function() {
