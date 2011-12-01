@@ -29,7 +29,7 @@ class SearchJson {
     if ($categories !== false && $categories['total_found'] !== 0) {
       foreach ($categories['matches'] as $item) {
         $category = DbCategory::get($item['attrs']['@groupby']);
-        echo '<li><a href="'.$category['name'].'/">'.$category['name'].'</a> <span> x '.$item['attrs']['@count'].'</span></li>';
+        echo '<li><a href="'.$category['name'].'/">'.$category['name'].' <span>'.$item['attrs']['@count'].'</span></a> </li>';
       }
     }
     echo '</ol>';
