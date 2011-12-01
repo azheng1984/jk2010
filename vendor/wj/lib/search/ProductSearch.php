@@ -21,6 +21,10 @@ class ProductSearch {
       $sphinx->SetFilter (
         'category_id', array($GLOBALS['URI']['CATEGORY']['id'])
       );
+      //echo $GLOBALS['URI']['CATEGORY']['id'];
+      $sphinx->SetFilter (
+        'category_id', array(23), true
+      );
     }
     /*
     if ($properties !== null && count($properties) !== 0) {

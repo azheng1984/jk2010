@@ -9,6 +9,8 @@ class SearchJson {
         echo '<div id="breadcrumb"><img src="/tag.png" /> <a class="first" href="..">分类</a> &rsaquo; <span>',
           $GLOBALS['URI']['CATEGORY']['name'].'</span></div>';
       } else {
+        $this->category = $GLOBALS['URI']['CATEGORY'];
+        $this->key = DbProperty::getKeyByName($GLOBALS['URI']['CATEGORY']['id'], $_GET['anchor']);
         echo '<div id="breadcrumb"><img src="/tag.png" /> <a class="first" href="">分类</a> &rsaquo;'
           ,' <a href="'.'">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span></div>';
       }
@@ -47,10 +49,10 @@ class SearchJson {
 
   private function renderValues() {
     $properies = ValueSearch::search($GLOBALS['URI']['QUERY'], $this->category, $this->key);
-    echo '<ol>';
+    echo '<ol id="value_list">';
     foreach ($properies['matches'] as $item) {
       $property = DbProperty::getByValueId($item['attrs']['@groupby']);
-      echo '<li><a href="'.$this->key['key'].'='.$property['value'].'/">'.$property['value'].'</a> <span>'.$item['attrs']['@count'].'</span></li>';
+      echo '<li><a href="'.$this->key['key'].'='.$property['value'].'/">'.$property['value'].' <span>'.$item['attrs']['@count'].'</span></a><a href="javascript:void(0)" class="delete"></a></li>';
     }
     echo '</ol>';
   }

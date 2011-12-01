@@ -1,16 +1,28 @@
 $(function() {
-  $uri = window.location.pathname + '?anchor=' + window.location.hash.replace('#', '') + '&media=json';
+  $uri = window.location.pathname + '?';
+  if (window.location.hash != '') {
+    $uri += 'anchor=' + window.location.hash.replace('#', '') + '&';
+  }
+  $uri += 'media=json';
   $.get($uri, function(data) {
     $('#filter').html(data);
     //$('.result').html(data);
     //alert('Load was performed.');
     $('#key_list .key').mouseup(function() {
-      $uri2 = window.location.pathname + '?anchor=' + window.location.hash.replace('#', '') + '&media=json';
+      $uri2 = window.location.pathname + '?anchor=' + $(this).attr('href').replace('#', '') + '&media=json';
       $.get($uri2, function(data) {
         $('#filter').html(data);
       });
-      alert($uri2);
     });
+    $('#value_list li').hover(
+      function() {
+        $(this).attr('class', 'current');
+        $('#value_list .current .delete').show();
+      },function() {
+        $('#value_list .current .delete').hide();
+        $(this).attr('class', '');
+      }
+    );
   });
   var isHover = false;
   $('#result ol li').hover(function() {
@@ -38,12 +50,12 @@ $(function() {
       suggestion = false;
     }
   });
-  $('#input_start').click(function() {
+  $('#input_start').focusin(function() {
     $('#start_img').attr('src', "/slider_active.png");
     $('#end_img').attr('src', "/slider.png");
     $('#option .cursor').show();
   });
-  $('#input_end').click(function() {
+  $('#input_end').focusin(function() {
     $('#start_img').attr('src', "/slider.png");
     $('#end_img').attr('src', "/slider_active.png");
     $('#option .cursor').show();
