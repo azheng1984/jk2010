@@ -508,14 +508,13 @@ z-index:100;
 #suggestion li:hover {
   background:#6096cc;
   color:#fff;
-
 }
 #suggestion li div {
   color:#999;
   float: right;
-background: #f1f1f1;
-padding: 0 5px;
-font-size:12px;
+  background: #f1f1f1;
+  padding: 0 5px;
+  font-size:12px;
 }
 
 #sort .into {
