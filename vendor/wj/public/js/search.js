@@ -1,3 +1,15 @@
+function bindDeleteValue() {
+  $('#value_list li').hover(
+      function() {
+        $(this).attr('class', 'current');
+        $('#value_list .current .delete').show();
+      },function() {
+        $('#value_list .current .delete').hide();
+        $(this).attr('class', '');
+      }
+    );
+}
+
 $(function() {
   $uri = window.location.pathname + '?';
   if (window.location.hash != '') {
@@ -12,17 +24,10 @@ $(function() {
       $uri2 = window.location.pathname + '?anchor=' + $(this).attr('href').replace('#', '') + '&media=json';
       $.get($uri2, function(data) {
         $('#filter').html(data);
+        bindDeleteValue();
       });
     });
-    $('#value_list li').hover(
-      function() {
-        $(this).attr('class', 'current');
-        $('#value_list .current .delete').show();
-      },function() {
-        $('#value_list .current .delete').hide();
-        $(this).attr('class', '');
-      }
-    );
+    bindDeleteValue();
   });
   var isHover = false;
   $('#result ol li').hover(function() {
