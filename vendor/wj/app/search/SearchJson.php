@@ -2,21 +2,21 @@
 class SearchJson {
   public function render() {
     echo '<h2>';
-    if (!isset($GLOBALS['URI']['CATEGORY'])) {
-      echo '<div id="breadcrumb"><img src="/tag.png" /> <span class="first">分类</span></div>';
+    if (!isset($GLOBALS['URI']['CATEGORY']) || isset($_GET['anchor']) && $_GET['anchor'] === '分类') {
+      echo '<div id="breadcrumb"><img src="/tag.png" /> <span>分类</span></div>';
     } else {
       if (!isset($_GET['anchor'])) {
-        echo '<div id="breadcrumb"><img src="/tag.png" /> <a class="first" href="..">分类</a> &rsaquo; <span>',
+        echo '<div id="breadcrumb"><img src="/tag.png" /> <a id="category" href="#分类">分类</a> &rsaquo; <span>',
           $GLOBALS['URI']['CATEGORY']['name'].'</span></div>';
       } else {
         $this->category = $GLOBALS['URI']['CATEGORY'];
         $this->key = DbProperty::getKeyByName($GLOBALS['URI']['CATEGORY']['id'], $_GET['anchor']);
-        echo '<div id="breadcrumb"><img src="/tag.png" /> <a class="first" href="">分类</a> &rsaquo;'
-          ,' <a href="'.'">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span></div>';
+        echo '<div id="breadcrumb"><img src="/tag.png" /> <a id="category" href="#分类">分类</a> &rsaquo;'
+          ,' <a id="key" href="#">'.$this->category['name'].'</a> &rsaquo; <span>'.$this->key['key'].'</span></div>';
       }
     }
     echo '</h2>';
-    if (!isset($GLOBALS['URI']['CATEGORY'])) {
+    if (!isset($GLOBALS['URI']['CATEGORY']) || isset($_GET['anchor']) && $_GET['anchor'] === '分类') {
       $this->renderCategories();
     } elseif (!isset($_GET['anchor'])) {
       $this->renderKeys();
@@ -26,12 +26,17 @@ class SearchJson {
   }
 
   private function renderCategories() {
+    $uri = '/'.urlencode($GLOBALS['URI']['QUERY']).'/';
     $categories = CategorySearch::search($GLOBALS['URI']['QUERY']);
-    echo '<ol>';
+    echo '<ol id="category_list">';
     if ($categories !== false && $categories['total_found'] !== 0) {
       foreach ($categories['matches'] as $item) {
         $category = DbCategory::get($item['attrs']['@groupby']);
-        echo '<li><a href="'.$category['name'].'/">'.$category['name'].' <span>'.$item['attrs']['@count'].'</span></a> </li>';
+        $categoryUri = $uri.$category['name'].'/';
+        if (isset($GLOBALS['URI']['CATEGORY']) && $GLOBALS['URI']['CATEGORY']['name'] == $category['name']) {
+          $categoryUri = '#';
+        }
+        echo '<li><a href="'.$categoryUri.'">'.$category['name'].' <span>'.$item['attrs']['@count'].'</span></a> </li>';
       }
     }
     echo '</ol>';

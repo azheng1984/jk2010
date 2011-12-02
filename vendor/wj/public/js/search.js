@@ -1,4 +1,4 @@
-function bindDeleteValue() {
+function bindEvent() {
   $('#value_list li').hover(
       function() {
         $(this).attr('class', 'current');
@@ -7,7 +7,37 @@ function bindDeleteValue() {
         $('#value_list .current .delete').hide();
         $(this).attr('class', '');
       }
-    );
+  );
+  $('#category').mouseup(function() {
+    $uri3 = window.location.pathname + '?anchor=' + $(this).attr('href').replace('#', '') + '&media=json';
+    $.get($uri3, function(data) {
+      $('#filter').html(data);
+      bindEvent();
+    });
+  });
+  $('#key').mouseup(function() {
+    $uri4 = window.location.pathname + '?media=json';
+    $.get($uri4, function(data) {
+      $('#filter').html(data);
+      bindEvent();
+    });
+  });
+  $('#key_list .key').mouseup(function() {
+    $uri2 = window.location.pathname + '?anchor=' + $(this).attr('href').replace('#', '') + '&media=json';
+    $.get($uri2, function(data) {
+      $('#filter').html(data);
+      bindEvent();
+    });
+  });
+  $('#category_list a').mouseup(function() {
+    if ($(this).attr('href') == '#') {
+      $uri5 = window.location.pathname + '?media=json';
+      $.get($uri5, function(data) {
+        $('#filter').html(data);
+        bindEvent();
+      });
+    }
+  });
 }
 
 $(function() {
@@ -18,16 +48,7 @@ $(function() {
   $uri += 'media=json';
   $.get($uri, function(data) {
     $('#filter').html(data);
-    //$('.result').html(data);
-    //alert('Load was performed.');
-    $('#key_list .key').mouseup(function() {
-      $uri2 = window.location.pathname + '?anchor=' + $(this).attr('href').replace('#', '') + '&media=json';
-      $.get($uri2, function(data) {
-        $('#filter').html(data);
-        bindDeleteValue();
-      });
-    });
-    bindDeleteValue();
+    bindEvent();
   });
   var isHover = false;
   $('#result ol li').hover(function() {
