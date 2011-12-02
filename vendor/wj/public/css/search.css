@@ -202,7 +202,7 @@ h1 .delete {
   font-size:14px;
   font-weight:normal;
 }
-#search h2 span {
+#result h2 span {
   margin-left:10px;
   display:inline;
   color:#fff;
@@ -258,6 +258,17 @@ float: left;
 clear: left;
 width: 175px;
 }
+#filter li .selected {
+  border: 0;
+  background: red;
+  color: white;
+}
+#filter li .selected span {
+  display:none;
+}
+#filter li .selected:hover {
+  border:0;
+}
 #filter li a {
   padding: 1px 6px 0 6px;
   margin:3px;
@@ -271,14 +282,15 @@ width: 175px;
 }
 #filter li .delete {
   display:none;
-  background: url(/delete.png);
+  background: url(/exclude.png);
   height:14px;
   width:14px;
   border:0;
   padding:0;
+  margin: 8px 5px;
 }
 #filter li .delete:hover {
-  background: url(/delete_active.png);
+  background: url(/exclude_active.png);
   height:14px;
   width:14px;
   border:0;
@@ -294,8 +306,14 @@ font-size: 11px;
 }
 #filter li .key {
   padding-left:15px;
-  background:white url('/plus.png') no-repeat;
+  background:url('/plus.png') no-repeat;
   background-position:3px 5px;
+  border:0;
+  cursor:pointer;
+}
+#filter li .key:hover {
+  border:0;
+  text-decoration:underline;
 }
 #filter #key_list {
   padding-left:10px;
@@ -599,7 +617,4 @@ left: 230px;
 }
 #option .cursor_end {
   left:255px;
-}
-h1 img {
-  padding-top:2px;
 }

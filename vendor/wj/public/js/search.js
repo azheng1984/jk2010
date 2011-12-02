@@ -6,8 +6,9 @@ function bindEvent() {
       },function() {
         $('#value_list .current .delete').hide();
         $(this).attr('class', '');
-      }
+    }
   );
+  /*
   $('#category').mouseup(function() {
     $uri3 = window.location.pathname + '?anchor=' + $(this).attr('href').replace('#', '') + '&media=json';
     $.get($uri3, function(data) {
@@ -22,13 +23,6 @@ function bindEvent() {
       bindEvent();
     });
   });
-  $('#key_list .key').mouseup(function() {
-    $uri2 = window.location.pathname + '?anchor=' + $(this).attr('href').replace('#', '') + '&media=json';
-    $.get($uri2, function(data) {
-      $('#filter').html(data);
-      bindEvent();
-    });
-  });
   $('#category_list a').mouseup(function() {
     if ($(this).attr('href') == '#') {
       $uri5 = window.location.pathname + '?media=json';
@@ -38,6 +32,7 @@ function bindEvent() {
       });
     }
   });
+  */
 }
 
 $(function() {
@@ -48,6 +43,16 @@ $(function() {
   $uri += 'media=json';
   $.get($uri, function(data) {
     $('#filter').html(data);
+    $('#key_list .key').mouseup(function() {
+      $uri2 = window.location.pathname + '?anchor=' + $(this).text() + '&media=json';
+      $(this).attr('id', 'target');
+      $.get($uri2, function(data) {
+        $('#target').after(data).attr('id', '');
+        //alert(data);
+        //alert($(this).text());
+        bindEvent();
+      });
+    });
     bindEvent();
   });
   var isHover = false;
@@ -89,4 +94,5 @@ $(function() {
   $('#option input').focusout(function() {
     $('#option .cursor').hide();
   });
+
 });
