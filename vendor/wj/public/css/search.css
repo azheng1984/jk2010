@@ -484,8 +484,7 @@ a:hover em {
 }
 #related ul {
   margin:0;
-  float:right;
-  width:880px;
+  float:left;
   list-style:none;
   padding:5px;
 }
@@ -617,4 +616,10 @@ left: 230px;
 }
 #option .cursor_end {
   left:255px;
+}
+#category_keyword_link {
+color: #999;
+text-decoration: underline;
+float: right;
+margin: 5px;
 }
