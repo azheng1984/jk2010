@@ -16,6 +16,9 @@ class Router {
       return $this->redirect('/');
     }
     $sections = explode('/', $path);
+    if (substr($sections[1], 0, 1) === '+') {
+      return IndexUriParser::parse($sections);
+    }
     if (count($sections) === 3 && $sections[1] === 'r'
       && is_numeric($sections[2])) {
       $GLOBALS['PRODUCT_ID'] = $sections[2];
