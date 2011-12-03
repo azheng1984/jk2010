@@ -12,7 +12,7 @@ class HomeScreen extends Screen {
       echo '<li><a href="javascript:void(0)"><img alt="鞋子" src="/product.jpg" /></a><a class="categoty" href="javascript:void(0)">鞋子</a><div><a href="javascript:void(0)">耐克</a> <a href="javascript:void(0)">回力</a> <a href="javascript:void(0)">...</a></div></li>';
     }
     echo '</ol>';
-    echo '<div id="more"><a href="javascript:void(0)">更多 &raquo;</a></div>';
+    echo '<div id="more"><a href="/+i/">更多 &raquo;</a></div>';
     echo '<script>document.getElementById("search_input").focus()</script>';
   }
 }
