@@ -9,7 +9,7 @@ class CategoryListScreen extends Screen {
     echo '<div id="h1_wrapper"><h1>搜索分类</h1></div>';
         echo '<div id="list_wrapper">';
     $char = 65;
-    echo '<div id="alphabet">';
+    echo '<div id="alphabet">索引:';
     for ($i = 0; $i < 24; ++$i) {
       echo '<a href="javascript:void(0)">'.chr($char + $i).'</a>';
     }
