@@ -6,7 +6,7 @@ class CategoryListScreen extends Screen {
   }
 
   protected function renderBodyContent() {
-    echo '<div id="h1_wrapper"><h1>搜索分类</h1></div>';
+    echo '<div id="h1_wrapper"><h1><img src="/home.png"> <img src="/bread_arrow.png"> 分类</h1></div>';
         echo '<div id="list_wrapper">';
     $char = 65;
     echo '<div id="alphabet">索引:';
@@ -19,7 +19,7 @@ class CategoryListScreen extends Screen {
     for ($i = 0; $i < 15; ++$i) {
       echo '<tr>';
       for ($j = 0; $j < 5; ++$j) {
-        echo '<td><a class="categoty" href="javascript:void(0)">鞋子</a></td>';
+        echo '<td><a class="categoty" href="鞋子/">鞋子</a></td>';
       }
       echo '</tr>';
     }

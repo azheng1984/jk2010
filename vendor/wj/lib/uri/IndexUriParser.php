@@ -4,6 +4,9 @@ class IndexUriParser {
     if ($sections[1] !== '+i') {
       throw new NotFoundException;
     }
-    return '/category_list';
+    if ($sections[2] === '') {
+      return '/category_list';
+    }
+    return '/category';
   }
 }
