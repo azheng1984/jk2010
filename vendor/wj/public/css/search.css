@@ -3,7 +3,7 @@ body {
   font:14px Arial, Helvetica, sans-serif;
   line-height:20px;
   margin:0;
-  color:#999;
+  color:#888;
 }
 a {
   color:#06c;
@@ -27,7 +27,7 @@ ul, ol {
 #header input {
   border-width:1px;
   border-style:solid;
-  border-color:#999 #ccc #ccc #999;
+  border-color:#888 #ccc #ccc #888;
   background:url(/header.png) 0 -33px;/* firefox */
 }
 #wrapper {
@@ -88,8 +88,8 @@ ul, ol {
 }
 #toolbar a {
   margin-left:5px;
-  color:#999;
-  border-bottom: 1px solid #999;
+  color:#888;
+  border-bottom: 1px solid #888;
   text-decoration:none;
   font-size:13px;
 }
@@ -104,8 +104,8 @@ ul, ol {
 }
 #footer a {
   margin:4px;
-  color:#999;
-  border-bottom: 1px solid #999;
+  color:#888;
+  border-bottom: 1px solid #888;
   text-decoration:none;
 }
 /*search*/
@@ -215,7 +215,7 @@ h1 .delete {
   background: url(/search_input.png) no-repeat white;
   border-width:1px;
   border-style:solid;
-  border-color:#999 #ccc #ccc #999;
+  border-color:#888 #ccc #ccc #888;
 }
 #filter .search {
 width: 30px;
@@ -247,8 +247,8 @@ float:right;
 }
 #filter .toolbar a {
   font-size: 14px;
-  color:#999;
-  border-bottom:1px solid #999;
+  color:#888;
+  border-bottom:1px solid #888;
   text-decoration:none;
   font-size:12px;
 }
@@ -301,7 +301,7 @@ width: 175px;
   border-color: #ddd #aaa #aaa #ddd;
 }
 #filter li a span {
-color: #999;
+color: #888;
 font-size: 11px;
 }
 #filter li .key {
@@ -424,7 +424,7 @@ z-index: 2;
   background: url(/button_bk.png) repeat-x;
   padding: 3px 6px;
   border: 1px solid;
-  color:#999;
+  color:#888;
   border-color: #EEE #CCC #CCC #EEE;
 }
 #result .toolbar a:hover {
@@ -444,7 +444,7 @@ text-decoration: none;
   padding: 3px 6px;
   border: 1px solid;
   border-color: #EEE #CCC #CCC #EEE;
-  color:#999;
+  color:#888;
   text-decoration:none;
 }
 #result .tag a:hover {
@@ -527,7 +527,7 @@ z-index:100;
   color:#fff;
 }
 #suggestion li div {
-  color:#999;
+  color:#888;
   float: right;
   background: #f1f1f1;
   padding: 0 5px;
@@ -537,7 +537,7 @@ z-index:100;
 #sort .into {
   border: 1px solid #E5E5E5;
 background: white;
-color: #999;
+color: #888;
 border-bottom: 0;
 z-index: 100;
 padding: 3px 10px;
@@ -567,7 +567,7 @@ padding: 2px 6px;
   border-width:1px;
   border-style:solid;
   border-color:#e5e5e5;
-  color:#999;
+  color:#888;
   font-size:12px;
 }
 #option input:focus {
@@ -618,7 +618,7 @@ left: 230px;
   left:255px;
 }
 #category_keyword_link {
-color: #999;
+color: #888;
 text-decoration: underline;
 float: right;
 margin: 5px;
