@@ -130,7 +130,7 @@ li {
 }
 ol li {
   width:108px;
-  background:#fff;
+background: url(/red.png) no-repeat white;
   padding:2px;
   margin: 3px 3px 3px 2px;
   position:relative;
