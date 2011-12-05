@@ -208,8 +208,8 @@ background: url(/slogon_arrow.png);
   padding-left:30px;
   font-size:20px;
   font-weight:normal;
-  margin:20px 0;
-  color:#666;
+  margin:20px 0 15px 0;
+  color:#555;
 }
 #more {
   border:1px solid #e5e5e5;
