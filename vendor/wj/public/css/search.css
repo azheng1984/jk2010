@@ -257,6 +257,7 @@ float:right;
 float: left;
 clear: left;
 width: 175px;
+margin:2px 0;
 }
 #filter li .selected {
   border: 0;
@@ -296,6 +297,9 @@ width: 175px;
   border:0;
   padding:0;
 }
+#filter .value_list li {
+  margin:0;
+}
 #filter li a:hover {
     border: 1px solid;
   border-color: #ddd #aaa #aaa #ddd;
@@ -305,8 +309,8 @@ color: #888;
 font-size: 11px;
 }
 #filter li .key {
-  padding-left:15px;
-  background:url('/plus.png') no-repeat;
+padding-left:15px;
+background: url('/plus.png') 0 1px no-repeat;
   border:0;
   cursor:pointer;
 }

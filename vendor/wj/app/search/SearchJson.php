@@ -51,7 +51,7 @@ class SearchJson {
 
   private function renderValues() {
     $properies = ValueSearch::search($GLOBALS['URI']['QUERY'], $this->category, $this->key);
-    echo '<ol id="value_list">';
+    echo '<ol class="value_list">';
     foreach ($properies['matches'] as $item) {
       $property = DbProperty::getByValueId($item['attrs']['@groupby']);
       echo '<li><a href="'.$this->key['key'].'='.$property['value'].'/">'.$property['value'].' <span>'.$item['attrs']['@count'].'</span></a><a href="javascript:void(0)" class="delete"></a></li>';
