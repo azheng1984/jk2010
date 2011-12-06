@@ -317,6 +317,7 @@ font-size: 11px;
 }
 #filter #key_list {
   padding-left:10px;
+  font-size: 13px;
 }
 #filter h2 {
   background:#eee;
@@ -417,7 +418,7 @@ z-index: 2;
 #result .toolbar {
   top:5px;
   position: absolute;
-  left:95px;
+  left:93px;
   white-space:nowrap;
 }
 #result .toolbar a {
@@ -426,6 +427,7 @@ z-index: 2;
   border: 1px solid;
   color:#888;
   border-color: #EEE #CCC #CCC #EEE;
+  font-size: 13px;
 }
 #result .toolbar a:hover {
   border: 1px solid;
@@ -446,6 +448,7 @@ text-decoration: none;
   border-color: #EEE #CCC #CCC #EEE;
   color:#888;
   text-decoration:none;
+    font-size: 13px;
 }
 #result .tag a:hover {
   border: 1px solid;
