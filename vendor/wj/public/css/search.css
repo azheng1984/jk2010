@@ -307,7 +307,6 @@ font-size: 11px;
 #filter li .key {
   padding-left:15px;
   background:url('/plus.png') no-repeat;
-  background-position:3px 5px;
   border:0;
   cursor:pointer;
 }
@@ -418,7 +417,7 @@ z-index: 2;
 #result .toolbar {
   top:5px;
   position: absolute;
-  left:93px;
+  left:95px;
   white-space:nowrap;
 }
 #result .toolbar a {
@@ -427,7 +426,6 @@ z-index: 2;
   border: 1px solid;
   color:#888;
   border-color: #EEE #CCC #CCC #EEE;
-  font-size: 13px;
 }
 #result .toolbar a:hover {
   border: 1px solid;
@@ -448,7 +446,6 @@ text-decoration: none;
   border-color: #EEE #CCC #CCC #EEE;
   color:#888;
   text-decoration:none;
-    font-size: 13px;
 }
 #result .tag a:hover {
   border: 1px solid;

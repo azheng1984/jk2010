@@ -47,7 +47,7 @@ $(function() {
       $uri2 = window.location.pathname + '?anchor=' + $(this).text() + '&media=json';
       $(this).attr('id', 'target');
       $.get($uri2, function(data) {
-        $('#target').after(data).attr('id', '');
+        $('#target').after(data).attr('id', '').css('background', "url('/minus.png') no-repeat");
         //alert(data);
         //alert($(this).text());
         bindEvent();
