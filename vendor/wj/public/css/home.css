@@ -107,10 +107,10 @@ input {
   text-decoration:none;
 }
 /*home*/
-ol div {
+ul div {
   padding:0;
 }
-ol {
+ul {
   background:#f5f5f5;
   padding:5px 60px;
   border:1px solid #e5e5e5;
@@ -128,35 +128,35 @@ li {
 .keywords {
   width:100px;
 }
-ol li {
+ul li {
   width:108px;
 background: url(/red.png) no-repeat white;
   padding:2px;
   margin: 3px 3px 3px 2px;
   position:relative;
 }
-ol .l0 {
+ul .l0 {
   border-bottom:2px solid red;
 }
-ol .l1 {
+ul .l1 {
   border-bottom:2px solid orange;
 }
-ol .l2 {
+ul .l2 {
   border-bottom:2px solid yellow;
 }
-ol .l3 {
+ul .l3 {
   border-bottom:2px solid green;
 }
-ol .l4 {
+ul .l4 {
   border-bottom:2px solid cyan;
 }
-ol .l5 {
+ul .l5 {
   border-bottom:2px solid blue;
 }
-ol .l6 {
+ul .l6 {
   border-bottom:2px solid  purple;
 }
-ol .l7 {
+ul .l7 {
   border-bottom:2px solid  gray;
 }
 li div {
@@ -170,20 +170,20 @@ li div a {
 li div a:hover {
   text-decoration:underline;
 }
-ol .a_img {
+ul .a_img {
   display: block;
   margin-left: 4px;
   margin-top: 3px;
 }
-ol .category {
+ul .category {
   margin:5px 0;
 }
-ol .category a {
+ul .category a {
   font-size:15px;
   color:#888;
   border-bottom:1px solid #888;
 }
-ol .category a:hover {
+ul .category a:hover {
   text-decoration:none;
 }
 #h1_wrapper {
