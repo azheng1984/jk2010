@@ -172,8 +172,8 @@ ol .categoty {
 #alphabet {
   width: 100%;
   text-align: center;
-  padding-bottom:6px;
-  padding-top:2px;
+padding-bottom: 10px;
+padding-top: 7px;
   background: whiteSmoke;
 }
 #alphabet a {
