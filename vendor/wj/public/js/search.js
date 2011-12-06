@@ -1,10 +1,10 @@
 function bindEvent() {
-  $('#value_list li').hover(
+  $('.value_list li').hover(
       function() {
         $(this).attr('class', 'current');
-        $('#value_list .current .delete').show();
+        $('.value_list .current .delete').show();
       },function() {
-        $('#value_list .current .delete').hide();
+        $('.value_list .current .delete').hide();
         $(this).attr('class', '');
     }
   );
@@ -82,17 +82,16 @@ $(function() {
     }
   });
   $('#input_start').focusin(function() {
-    $('#start_img').attr('src', "/slider_active.png");
-    $('#end_img').attr('src', "/slider.png");
+    $('#start_img').attr('src', "/slider_active2.png");
+    $('#end_img').attr('src', "/slider2.png");
     $('#option .cursor').show();
   });
   $('#input_end').focusin(function() {
-    $('#start_img').attr('src', "/slider.png");
-    $('#end_img').attr('src', "/slider_active.png");
+    $('#start_img').attr('src', "/slider2.png");
+    $('#end_img').attr('src', "/slider_active2.png");
     $('#option .cursor').show();
   });
   $('#option input').focusout(function() {
     $('#option .cursor').hide();
   });
-
 });
