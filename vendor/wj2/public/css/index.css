@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 #index {
   background:#f5f5f5;
-  padding:10px 0;
+  padding-top:10px;
   width: 960px;
   border: 1px solid #E5E5E5;
   border-top: 0;
@@ -29,9 +29,9 @@ table {
 }
 td {
   width:180px;
-  padding:6px 0;
+  padding:8px 0;
   vertical-align: top;
-  background: url(/img/bull.png) 5px 8px no-repeat;
+  background: url(/img/bull.png) 5px 10px no-repeat;
 }
 td a {
   margin-left: 25px;
