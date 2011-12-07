@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+#result h2 {
+  background:url(/img/toobar.png) repeat-x;
+  width:100%;
+  position: relative;
+  z-index: 2;
+}
+#result h2 span {
+  margin-left:10px;
+  display:inline;
+  color:#fff;
+  background-color:red;
+  padding:2px 6px;
+}
+#sort {
+  margin:0 0 0 8px;
+  display:inline; /* ie 6 */
+}
