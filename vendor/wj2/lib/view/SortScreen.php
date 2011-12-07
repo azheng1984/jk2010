@@ -8,7 +8,7 @@ class SortScreen {
       ' <a rel="nofollow" href="?sort=上架时间">上架时间</a>',
       ' <a rel="nofollow" href="?sort=折扣">折扣</a>',
       '</div>',
-      '<div id="total">搜索到 ', $total, ' 个产品</div>',
+      '<div id="amount">搜索到 ', $total, ' 个产品</div>',
       '</h2>';
       echo '<div id="option"><div><span>低-高</span>';
       echo '<a href="javascript:void(0)">高-低</a></div>';
