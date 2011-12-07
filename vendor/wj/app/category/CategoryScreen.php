@@ -6,7 +6,7 @@ class CategoryScreen extends Screen {
   }
 
   protected function renderBodyContent() {
-    echo '<div id="h1_wrapper"><h1><a href="/"><img src="/home.png"></a> <img src="/bread_arrow.png"> <a href="..">分类</a> <img src="/bread_arrow.png"> 鞋子</h1></div>';
+    echo '<div id="h1_wrapper"><h1><a href="/"><img src="/home.png"></a> <a href="..">分类</a> 鞋子</h1></div>';
     echo '<div id="list_wrapper" class="tag">';
     $char = 65;
     echo '<h2 class="tag_icon">属性</h2>';
