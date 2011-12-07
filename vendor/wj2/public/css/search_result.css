@@ -54,6 +54,9 @@ a:hover em {
   font-size:14px;
   font-weight:normal;
 }
+#result h3 a:visited {
+  color:#551A8B;
+}
 #result .price {
   line-height:24px;
   color:#aaa;
@@ -70,13 +73,9 @@ a:hover em {
   font-size:14px;
   font-weight:bold;
 }
-#hover {
-  position:absolute;
-  top:0;
-}
 #result .toolbar {
   top:5px;
-  position: absolute;
+  position:absolute;
   left:95px;
   white-space:nowrap;
 }
