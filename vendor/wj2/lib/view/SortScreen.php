@@ -18,13 +18,13 @@ class SortScreen {
   }
 
   private static function renderTabList($amount) {
-     echo '<h2><div id="sort">排序:';
+     echo '<h2><div id="sort">排序: ';
      foreach (array('销量', '价格', '上架时间', '折扣') as $tab) {
        if (self::$orderBy === $tab) {
-         echo ' <span>', $tab, '</span>';
+         echo '<span>', $tab, '</span>';
          continue;
        }
-       echo ' <a rel="nofollow" href="?sort=', $tab, '">', $tab, '</a>';
+       echo '<a rel="nofollow" href="?sort=', $tab, '">', $tab, '</a>';
      }
      echo '</div><div id="amount">搜索到 ', $amount, ' 个产品</div></h2>';
   }
