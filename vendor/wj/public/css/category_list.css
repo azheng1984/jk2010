@@ -87,7 +87,7 @@ input {
 #toolbar a {
   margin-left:5px;
   color:#888;
-  border-bottom: 1px solid #888;
+  border-bottom:1px solid #888;
   text-decoration:none;
   font-size:13px;
 }
@@ -103,7 +103,7 @@ input {
 #footer a {
   margin:4px;
   color:#888;
-  border-bottom: 1px solid #888;
+  border-bottom:1px solid #888;
   text-decoration:none;
 }
 /*home*/
@@ -123,16 +123,16 @@ ol div {
 }
 table {
   background:#fff;
-border: 1px solid #F1F1F1;
+border:1px solid #F1F1F1;
 border-collapse:collapse
 }
 td {
   width:225px;
   padding:6px;
   position:relative;
-  vertical-align: top;
-  background: url(/bull.png) 5px 8px no-repeat;
-  padding-left: 25px;
+  vertical-align:top;
+  background:url(/bull.png) 5px 8px no-repeat;
+  padding-left:25px;
 }
 li div a {
   margin-right:5px;
@@ -170,39 +170,39 @@ ol .categoty {
   padding-bottom:5px;
 }
 #alphabet {
-  width: 100%;
-  text-align: center;
-padding-bottom: 10px;
-padding-top: 7px;
-  background: whiteSmoke;
+  width:100%;
+  text-align:center;
+padding-bottom:10px;
+padding-top:7px;
+  background:whiteSmoke;
 }
 #alphabet a {
-padding: 4px 8px;
-font-size: 14px;
-position: relative;
+padding:4px 8px;
+font-size:14px;
+position:relative;
   border:1px solid #f5f5f5;
 }
 #alphabet a:hover {
-  background: #fff;
+  background:#fff;
   border:1px solid #e5e5e5;
 }
 #pagination {
-  width: 100%;
-  text-align: center;
-  padding: 5px 0 15px 0;
-  background: whiteSmoke;
+  width:100%;
+  text-align:center;
+  padding:5px 0 15px 0;
+  background:whiteSmoke;
   border:1px solid #e5e5e5;
   border-top:0;
 }
 #pagination a {
-border: 1px solid #E5E5E5;
-padding: 4px 8px;
-background: url(/button_bk.png) repeat-x;
-margin: 0 1px;
-font-size: 14px;
-position: relative;
+border:1px solid #E5E5E5;
+padding:4px 8px;
+background:url(/button_bk.png) repeat-x;
+margin:0 1px;
+font-size:14px;
+position:relative;
 }
 #pagination a:hover {
-border: 1px solid #CCC;
-text-decoration: none;
+border:1px solid #CCC;
+text-decoration:none;
 }
