@@ -12,7 +12,7 @@ class HomeScreen extends Screen {
       echo '<li class="l', $i, '">',
       '<a href="javascript:void(0)"><img alt="迷宗蟹" src="/img/product.jpg" /></a>',
       '<strong><a href="javascript:void(0)">迷宗蟹</a></strong>';
-      for ($j = 0; $j < 8; ++$j) {
+      for ($j = 0; $j < 7; ++$j) {
         echo ' <a href="javascript:void(0)">阿迪达斯</a>';
       }
       echo ' <a href="javascript:void(0)">...</a>',
