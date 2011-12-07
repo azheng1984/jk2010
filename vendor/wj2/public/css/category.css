@@ -1,0 +1,52 @@
+#index {
+  background:#f5f5f5;
+  padding-top:10px;
+  width:960px;
+  border:1px solid #E5E5E5;
+  border-top:0;
+}
+h2 {
+  font-size: 15px;
+  font-weight: normal;
+  padding: 4px 0 4px 25px;
+  margin: 0;
+  margin-left:25px;
+width: 876px;
+  background: #EEE url(/img/search.png) 5px 5px no-repeat;
+}
+.tag {
+  background: #EEE url(/img/tag.png) 5px 5px no-repeat;
+}
+table {
+  background:#fff;
+  border: 1px solid #F1F1F1;
+  border-collapse:collapse;
+  margin-left: 25px;
+}
+td {
+  width:180px;
+  padding:8px 0;
+  vertical-align: top;
+  background: url(/img/bull.png) 5px 10px no-repeat;
+  font-size:11px;
+}
+td a {
+  margin-left: 25px;
+  font-size:14px;
+}
+strong {
+  display:block;
+  width:100%;
+  text-align:right;
+  margin:2px 0 10px 0;
+}
+strong a {
+  margin-right:35px;
+  font-weight:normal;
+border-bottom: 1px solid #888;
+font-size: 15px;
+color: #888;
+}
+strong a:hover {
+  text-decoration:none;
+}

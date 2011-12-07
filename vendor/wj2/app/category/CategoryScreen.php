@@ -12,7 +12,7 @@ class CategoryScreen extends Screen {
     $char = 65;
     echo '<h2 class="tag">属性</h2>';
     echo '<table>';
-    for ($i = 0; $i < 6; ++$i) {
+    for ($i = 0; $i < 5; ++$i) {
       echo '<tr>';
       for ($j = 0; $j < 5; ++$j) {
         echo '<td><a href="品牌/">品牌</a></td>';
@@ -24,7 +24,7 @@ class CategoryScreen extends Screen {
     $char = 65;
     echo '<h2>搜索</h2>';
     echo '<table>';
-    for ($i = 0; $i < 6; ++$i) {
+    for ($i = 0; $i < 5; ++$i) {
       echo '<tr>';
       for ($j = 0; $j < 5; ++$j) {
         echo '<td><a class="categoty" href="/儿童+胶囊/">儿童 胶囊</a> <span>123</span></td>';
