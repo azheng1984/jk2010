@@ -8,12 +8,12 @@
   border-bottom:0;
 }
 #slogon_arrow {
-  position: absolute;
+  position:absolute;
   top: -13px;
-  left: 35px;
-  width: 24px;
-  height: 13px;
-  background: url(/img/slogon.png);
+  left:35px;
+  width:24px;
+  height:13px;
+  background:url(/img/slogon.png);
 }
 #h1_wrapper h1 {
   padding-left:30px;
@@ -32,9 +32,9 @@ ul {
 }
 ul li {
   width:110px;
-  background: url(/img/home_product.png) no-repeat white;
+  background:url(/img/home_product.png) no-repeat white;
   padding:2px;
-  margin: 3px 3px 3px 2px;
+  margin:3px 3px 3px 2px;
   float:left;
   list-style:none;
   border-bottom:2px solid;
@@ -69,7 +69,7 @@ li a {
   display:block;
   float:left;
   clear:left;
-  margin: 0 2px 6px 2px;
+  margin:0 2px 6px 2px;
 }
 li img {
   width:100px;
@@ -80,10 +80,10 @@ strong {
   margin-bottom:8px;
 }
 strong a {
-  font-size: 15px;
-  color: #888;
+  font-size:15px;
+  color:#888;
   border-bottom:1px solid #888;
-  display: inline;
+  display:inline;
   float:none;
   font-weight:normal;
 }
@@ -91,14 +91,14 @@ strong a:hover {
   text-decoration:none;
 }
 h2 {
-  width: 100%;
-  background: whiteSmoke;
-  float: left;
-  text-align: right;
-  border: 1px solid #E5E5E5;
-  border-top: 0;
-  padding: 10px 0 20px 0;
-  margin: 0;
+  width:100%;
+  background:whiteSmoke;
+  float:left;
+  text-align:right;
+  border:1px solid #E5E5E5;
+  border-top:0;
+  padding:10px 0 20px 0;
+  margin:0;
 }
 h2 a {
   font-size:16px;

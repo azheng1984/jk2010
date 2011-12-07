@@ -1,0 +1,37 @@
+@CHARSET "UTF-8";
+#breadcrumb {
+  width:100%;
+  padding:8px 0 5px 0;
+  position:relative;
+  border:1px solid #e5e5e5;
+}
+#breadcrumb h1 {
+  font-size:16px;
+  font-weight:normal;
+  float:left;
+  margin:0;
+}
+#breadcrumb span {
+  font-size:16px;
+  display:block;
+  float:left;
+  padding-right:15px;
+  margin-right:5px;
+  background:url('/img/breadcrumb_arrow.png') right 1px no-repeat;
+}
+#breadcrumb a img {
+  padding-bottom:1px;
+  border:1px solid #fff;
+}
+#breadcrumb a img:hover{
+  border-bottom:1px solid #06c;
+}
+#breadcrumb .home {
+  margin-left:10px;
+}
+#breadcrumb .home a {
+  width:15px;
+  height:18px;
+  display:block;
+  overflow:hidden;
+}

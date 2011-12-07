@@ -1,0 +1,53 @@
+@CHARSET "UTF-8";
+#index {
+  background:#f5f5f5;
+  padding:10px 0;
+  width: 960px;
+  border: 1px solid #E5E5E5;
+  border-top: 0;
+}
+#alphabet {
+  width:100%;
+  text-align:center;
+  padding-bottom:10px;
+}
+#alphabet a {
+  padding: 4px 8px;
+  font-size: 14px;
+  position: relative;
+  border: 1px solid whiteSmoke;
+}
+#alphabet a:hover {
+  background: #fff;
+  border:1px solid #e5e5e5;
+}
+table {
+  background:#fff;
+  border: 1px solid #F1F1F1;
+  border-collapse:collapse;
+  margin-left: 25px;
+}
+td {
+  width:180px;
+  padding:6px 0;
+  vertical-align: top;
+  background: url(/img/bull.png) 5px 8px no-repeat;
+}
+td a {
+  margin-left: 25px;
+}
+#pagination {
+  width:100%;
+  text-align:center;
+  padding: 10px 0;
+}
+#pagination a {
+  border: 1px solid #E5E5E5;
+  padding: 4px 8px;
+  background: url(/img/button.png) repeat-x;
+  margin: 0 1px;
+}
+#pagination a:hover {
+  border: 1px solid #CCC;
+  text-decoration: none;
+}
