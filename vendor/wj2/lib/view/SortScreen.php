@@ -18,7 +18,11 @@ class SortScreen {
   }
 
   private static function renderTabList($amount) {
-     echo '<h2><div id="sort">排序: ';
+     echo '<h2><div id="sort"';
+     if (self::$orderBy === '价格') {
+       echo ' class="order_by_price" ';
+     }
+     echo '>排序: ';
      foreach (array('销量', '价格', '上架时间', '折扣') as $tab) {
        if (self::$orderBy === $tab) {
          echo '<span>', $tab, '</span>';
@@ -45,8 +49,8 @@ class SortScreen {
   }
 
   private static function renderPriceLimit() {
-    echo '<div class="limit">范围:',
-      '<input id="price_begin" type="text" value="" /> - ',
+    echo '<div class="limit">范围: ',
+      '<input id="price_begin" type="text" value="" />-',
       '<input id="input_end" type="text" value="" />',
       '</div>';
   }
