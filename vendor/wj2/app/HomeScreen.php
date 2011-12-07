@@ -24,8 +24,8 @@ class HomeScreen extends Screen {
   }
 
   private function renderSlogon() {
-    echo '<div id="h1_wrapper">',
-      '<div id="slogon_arrow"></div>',
+    echo '<div id="slogon">',
+      '<div class="arrow"></div>',
       '<h1>在 11421 家网上商城，1508 万个产品中搜索：</h1>',
       '</div>';
   }

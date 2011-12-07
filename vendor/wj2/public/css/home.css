@@ -1,5 +1,5 @@
 @CHARSET "UTF-8";
-#h1_wrapper {
+#slogon {
   position:relative;
   background:#f5f5f5;
   width:100%;
@@ -7,7 +7,7 @@
   border:1px solid #e5e5e5;
   border-bottom:0;
 }
-#slogon_arrow {
+#slogon .arrow {
   position:absolute;
   top: -13px;
   left:35px;
@@ -15,7 +15,7 @@
   height:13px;
   background:url(/img/slogon.png);
 }
-#h1_wrapper h1 {
+#slogon h1 {
   padding-left:30px;
   font-size:20px;
   font-weight:normal;
@@ -47,7 +47,7 @@ ul .l1 {
   border-color:orange;
 }
 ul .l2 {
-  border-colorm:yellow;
+  border-color:yellow;
 }
 ul .l3 {
   border-color:green;
@@ -64,12 +64,17 @@ ul .l6 {
 ul .l7 {
   border-color:gray;
 }
+li a:first-child {
+  height:100px;
+  margin-bottom:8px;
+}
 li a {
   font-size:13px;
+  line-height: 16px;
   display:block;
   float:left;
   clear:left;
-  margin:0 2px 8px 2px;
+  margin:0 2px 10px 2px;
 }
 li img {
   width:100px;
@@ -77,7 +82,7 @@ li img {
 }
 strong {
   float:left;
-  margin-bottom:8px;
+  margin-bottom:12px;
 }
 strong a {
   font-size:15px;
