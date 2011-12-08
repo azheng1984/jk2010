@@ -42,6 +42,9 @@
   border:0;
   cursor:pointer;
 }
+#filter li .open {
+  background:url(/img/minus.png) 0 1px no-repeat;
+}
 #filter li .delete {
   display:none;
   background: url(/img/exclude.png);

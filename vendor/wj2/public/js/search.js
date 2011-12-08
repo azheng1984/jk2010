@@ -10,18 +10,19 @@ function bindEvent() {
   );
 }
 $(function() {
-  $uri = window.location.pathname + '?';
-  if (window.location.hash != '') {
-    $uri += 'anchor=' + window.location.hash.replace('#', '') + '&';
-  }
-  $uri += 'media=json';
+  $uri = window.location.pathname + '?media=json';
   $.get($uri, function(data) {
     $('#filter').html(data);
     $('#key_list .key').mouseup(function() {
-      $uri2 = window.location.pathname + '?anchor=' + $(this).text() + '&media=json';
+      if ($(this).attr('class') === 'key open') {
+        $(this).attr('class', 'key');
+        $(this).parent().children('ol').remove();
+        return;
+      }
+      $uri2 = window.location.pathname + '?key=' + $(this).text() + '&media=json';
       $(this).attr('id', 'target');
       $.get($uri2, function(data) {
-        $('#target').after(data).attr('id', '').css('background', "url('/img/minus.png') 0 1px no-repeat");
+        $('#target').after(data).attr('id', '').attr('class', 'key open');
         bindEvent();
       });
     });
