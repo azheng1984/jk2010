@@ -1,1 +1,60 @@
 @CHARSET "UTF-8";
+#filter h2 {
+  background:#eee url(/img/tag.png) 5px 3px no-repeat;
+  border-left:1px solid #e5e5e5;
+  width:189px;
+  padding:3px 0;
+}
+#filter h2 span {
+  padding-left:25px;
+}
+#filter ol {
+  clear:left;
+  padding:6px 8px;
+  list-style:none;
+}
+#filter li {
+  float: left;
+  clear: left;
+  width: 175px;
+  margin:3px 0;
+}
+#filter li a {
+  padding: 1px 6px 0 6px;
+  background-color:#fff;
+  border:1px solid;
+  border-color:#eee #ccc #ccc #eee;
+  display:block;
+  text-decoration:none;
+  font-size:13px;
+  float:left;
+}
+#filter li a:hover {
+  border-color: #ddd #aaa #aaa #ddd;
+}
+#filter li a span {
+  color: #888;
+  font-size: 11px;
+}
+#filter li .key {
+  padding-left:15px;
+  background: url('/img/plus.png') 0 1px no-repeat;
+  border:0;
+  cursor:pointer;
+}
+#filter li .delete {
+  display:none;
+  background: url(/img/exclude.png);
+  height:14px;
+  width:14px;
+  border:0;
+  padding:0;
+  margin:5px 0 0 5px;
+}
+#filter li .delete:hover {
+  background: url(/img/exclude_hover.png);
+  height:14px;
+  width:14px;
+  border:0;
+  padding:0;
+}

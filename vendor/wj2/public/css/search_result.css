@@ -16,7 +16,6 @@ a:hover em {
 #result li {
   list-style:none;
   float:left;
-  background:white;
   vertical-align:top;
   margin:3px 2px 5px 2px;
   background:white;
@@ -76,11 +75,11 @@ a:hover em {
 #result .toolbar {
   top:5px;
   position:absolute;
-  left:95px;
+  left:102px;
   white-space:nowrap;
 }
 #result .toolbar a {
-  background: url(/button_bk.png) repeat-x;
+  background: url(/img/button.png) repeat-x;
   padding: 3px 6px;
   border: 1px solid;
   color:#888;
@@ -88,18 +87,17 @@ a:hover em {
 }
 #result .toolbar a:hover {
   border: 1px solid;
-  /*border-color: #B6C9ED #8699bD #8699bD #B6C9ED;*/
   border-color: #ddd #aaa #aaa #ddd;
 text-decoration: none;
 }
 #result .tag {
   position: absolute;
   top:155px;
-  left:0;
+  left:5px;
 }
 #result .tag a {
   white-space:nowrap;
-  background: url(/button_bk.png) repeat-x;
+  background: url(/img/button.png) repeat-x;
   padding: 3px 6px;
   border: 1px solid;
   border-color: #EEE #CCC #CCC #EEE;
