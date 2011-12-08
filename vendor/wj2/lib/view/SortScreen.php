@@ -53,9 +53,9 @@ class SortScreen {
   }
 
   private static function renderPriceLimit() {
-    echo '<div class="limit">范围: ',
-      '<input id="price_begin" type="text" value="" />-',
-      '<input id="input_end" type="text" value="" />',
+    echo '<div class="limit"><label for="lowest_price">范围:</label> ',
+      '<input id="lowest_price" type="text" value="" />-',
+      '<input id="highest_price" type="text" value="" />',
       '</div>';
   }
 }
