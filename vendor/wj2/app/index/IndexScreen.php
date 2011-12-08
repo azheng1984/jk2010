@@ -48,6 +48,6 @@ class IndexScreen extends Screen {
   }
 
   private function renderPagination() {
-    echo '<div id="pagination"><a href="javascript:void(0)">1</a></div>';
+    echo '<div id="pagination"><span>1</span> <a href="javascript:void(0)">2</a> <a href="javascript:void(0)">3</a></div>';
   }
 }

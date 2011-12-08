@@ -28,6 +28,10 @@ class SortScreen {
          echo '<span>', $tab, '</span>';
          continue;
        }
+       if ($tab === '销量') {
+         echo '<a rel="nofollow" href=".">销量</a>';
+         continue;
+       }
        echo '<a rel="nofollow" href="?sort=', $tab, '">', $tab, '</a>';
      }
      echo '</div><div id="amount">搜索到 ', $amount, ' 个产品</div></h2>';
@@ -42,10 +46,10 @@ class SortScreen {
 
   private static function renderPriceOrder() {
     if (!self::$isReverse) {
-      echo '<strong>低-高</strong> <a rel="nofollow" href="?sort=-价格">高-低</a>';
+      echo '<strong>低-高</strong><a rel="nofollow" href="?sort=-价格">高-低</a>';
       return;
     }
-    echo '<a rel="nofollow" href="?sort=价格">低-高</a> <strong>高-低</strong>';
+    echo '<a rel="nofollow" href="?sort=价格">低-高</a><strong>高-低</strong>';
   }
 
   private static function renderPriceLimit() {
