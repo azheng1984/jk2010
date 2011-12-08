@@ -57,7 +57,12 @@ class SearchJson {
     echo '<ol class="value_list">';
     foreach ($properies['matches'] as $item) {
       $property = DbProperty::getByValueId($item['attrs']['@groupby']);
-      echo '<li><a href="'.$this->key['key'].'='.$property['value'].'/">'.$property['value'].' <span>'.$item['attrs']['@count'].'</span></a><a href="javascript:void(0)" class="delete"></a></li>';
+      if (isset($GLOBALS['URI']['PROPERTIES'])
+        && $GLOBALS['URI']['PROPERTIES'][0]['VALUES'][0]['id'] == $item['attrs']['@groupby']) {
+        echo '<li><a href="javascript:void(0)" class="selected">'.$property['value'].'</a><a href="javascript:void(0)" class="delete"></a></li>';
+      } else {
+        echo '<li><a href="'.$this->key['key'].'='.$property['value'].'/">'.$property['value'].' <span>'.$item['attrs']['@count'].'</span></a><a href="javascript:void(0)" class="delete"></a></li>';
+      }
     }
     echo '</ol>';
   }

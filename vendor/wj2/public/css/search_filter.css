@@ -32,24 +32,32 @@
 #filter li a:hover {
   border-color: #ddd #aaa #aaa #ddd;
 }
+#filter li .selected {
+  border: 0;
+  background: red;
+  color: white;
+  padding-right:10px;
+  margin-top:1px;
+  background: url(/img/remove.png) red no-repeat top right;
+}
 #filter li a span {
   color: #888;
   font-size: 11px;
 }
 #filter li .key {
-  padding-left:15px;
-  background: url('/img/plus.png') 0 1px no-repeat;
+  padding-left:18px;
+  background: url('/img/plus.png') 1px 1px no-repeat;
   border:0;
   cursor:pointer;
 }
 #filter li .key:hover {
-  background: url('/img/plus_hover.png') 0 1px no-repeat;
+  background: url('/img/plus_hover.png') 1px 1px no-repeat;
 }
 #filter li .open {
-  background:url(/img/minus.png) 0 1px no-repeat;
+  background:url(/img/minus.png) 1px 1px no-repeat;
 }
 #filter li .open:hover {
-  background:url(/img/minus_hover.png) 0 1px no-repeat;
+  background:url(/img/minus_hover.png) 1px 1px no-repeat;
 }
 #filter li .delete {
   display:none;

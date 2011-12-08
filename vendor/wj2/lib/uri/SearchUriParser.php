@@ -16,7 +16,7 @@ class SearchUriParser {
       $path .= $sections[1].'/';
     }
     if ($amount > 2) {
-      $GLOBALS['URI']['PROPERTIES'] = $this->parseProperties($sections[2]);
+      $GLOBALS['URI']['PROPERTIES'] = self::parseProperties($sections[2]);
       $path .= $sections[2].'/';
     }
     $GLOBALS['URI']['PATH'] = $path;
@@ -57,14 +57,17 @@ class SearchUriParser {
       $tmps = explode('=', $item, 2);
       if (count($tmps) === 2) {
         if ($key !== false) {
-          $properties[] = array('key' => $key, 'values' => $values);
+          $properties[] = array('KEY' => $key, 'VALUES' => $values);
         }
         $key = DbProperty::getKeyByName(
           $GLOBALS['URI']['CATEGORY']['id'], array_shift($tmps)
         );
         $values= array();
       }
-      $values[] = DbProperty::getValueByName($key, $tmps[0]);
+      $values[] = DbProperty::getValueByName($key['id'], $tmps[0]);
+    }
+    if ($key !== false) {
+      $properties[] = array('KEY' => $key, 'VALUES' => $values);
     }
     return $properties;
   }
