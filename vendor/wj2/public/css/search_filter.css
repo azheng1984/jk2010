@@ -42,8 +42,14 @@
   border:0;
   cursor:pointer;
 }
+#filter li .key:hover {
+  background: url('/img/plus_hover.png') 0 1px no-repeat;
+}
 #filter li .open {
   background:url(/img/minus.png) 0 1px no-repeat;
+}
+#filter li .open:hover {
+  background:url(/img/minus_hover.png) 0 1px no-repeat;
 }
 #filter li .delete {
   display:none;
