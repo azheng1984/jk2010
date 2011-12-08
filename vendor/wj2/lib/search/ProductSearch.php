@@ -33,7 +33,7 @@ class ProductSearch {
       foreach ($GLOBALS['URI']['PROPERTIES'] as $item) {
         self::$sphinx->SetFilter(
           'value_id_list_'.$item['KEY']['mva_index'],
-          array($item['VALUE']['id'])
+          array($item['VALUES'][0]['id'])
         );
       }
     }
