@@ -23,8 +23,8 @@ abstract class Screen {
 
   private function renderHead() {
     echo '<head>';
-    $this->renderHeadContent();
     $this->renderCssLink('screen');
+    $this->renderHeadContent();
     echo '</head>';
   }
 
