@@ -12,10 +12,10 @@ class SortScreen {
       '</h2>';
       echo '<div id="option"><div><span>低-高</span>';
       echo '<a href="javascript:void(0)">高-低</a></div>';
-      echo '<div class="title">范围:</div>';
+      echo '<div class="title">范围: </div>';
+      echo '<div><div><input id="input_start" type="text" value="" /></div> <div>-</div> <div><input id="input_end" type="text" value="" /></div>';
       echo '<div class="start">0</div><div id="slider_wrapper"><div id="slider"></div></div><div class="end">100000</div><div class="cursor"><img id="start_img" src="/slider_active.png" /></div><div class="cursor cursor_end"><img id="end_img" src="/slider.png" /></div>';
-      echo '<div><div><input id="input_start" type="text" value="" /></div> <div>-</div> <div><input id="input_end" type="text" value="" /></div></div>';
-      echo '</div>';
+      echo '</div></div>';
     } else {
       echo '<h2>',
       '<div id="sort">排序: <span>销量</span>',

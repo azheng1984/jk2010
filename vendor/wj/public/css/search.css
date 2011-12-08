@@ -580,18 +580,19 @@ padding: 2px 6px;
 }
 #option .title {
   margin-left:15px;
+  margin-right:5px;
 }
 #option .start {
 font-size:9px;
 position:absolute;
 top:12px;
-left:154px;
+left:236px;
 }
 #option .end {
 font-size:9px;
 position: absolute;
 top: 12px;
-left: 230px;
+left: 312px;
 }
 #slider_wrapper {
   margin:6px 10px 5px 10px;
@@ -616,11 +617,11 @@ left: 230px;
   font-size:8px;
   position:absolute;
   top:-1px;
-  left:152px;
+  left:234px;
   display:none;
 }
 #option .cursor_end {
-  left:255px;
+  left:337px;
 }
 #category_keyword_link {
 color: #888;
