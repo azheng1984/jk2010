@@ -2,6 +2,7 @@ function bindEvent() {
   $('.value_list li').hover(
       function() {
         $(this).attr('class', 'current');
+        $(this).children('a').css('text-decoration', 'line-through').css('color', '#888');
         $('.value_list .current .delete').show();
       },function() {
         $('.value_list .current .delete').hide();
