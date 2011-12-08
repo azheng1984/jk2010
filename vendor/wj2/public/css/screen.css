@@ -34,7 +34,7 @@ input {
   width:960px;
 }
 #header {
-  padding:5px 0 10px 0;
+  padding:5px 0;
   width:100%;/* ie 7 */
 }
 #logo {

@@ -51,3 +51,10 @@ td a {
   border:1px solid #CCC;
   text-decoration:none;
 }
+#pagination span {
+  border:1px solid #f5f5f5;
+  background-color:red;
+  color:#fff;
+  padding:4px 8px;
+  font-size:14px;
+}
