@@ -24,9 +24,9 @@ class Router {
       $GLOBALS['PRODUCT_ID'] = $sections[2];
       return '/product';
     }
-    $uri = SearchUriParser::parse($sections);
-    if ($uri !== $_SERVER['REQUEST_URI']) {
-      return $this->redirect($uri);
+    SearchUriParser::parse($sections);
+    if ($GLOBALS['URI']['STANDARD'] !== $_SERVER['REQUEST_URI']) {
+      return $this->redirect($GLOBALS['URI']['STANDARD']);
     }
     return '/search';
   }

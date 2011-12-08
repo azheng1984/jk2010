@@ -1,19 +1,22 @@
 <?php
 class SearchJson {
+  private $category;
+  private $key;
+
   public function render() {
-      if (!isset($GLOBALS['URI']['CATEGORY']) || isset($_GET['anchor']) && $_GET['anchor'] === '分类') {
+    if (!isset($GLOBALS['URI']['CATEGORY'])) {
       echo '<h2><span>分类</span></h2>';
     } else {
-      if (!isset($_GET['anchor'])) {
+      if (!isset($GLOBALS['URI']['KEY'])) {
         echo '<h2><span>属性</span></h2>';
       } else {
         $this->category = $GLOBALS['URI']['CATEGORY'];
-        $this->key = DbProperty::getKeyByName($GLOBALS['URI']['CATEGORY']['id'], $_GET['anchor']);
+        $this->key = DbProperty::getKeyByName($GLOBALS['URI']['CATEGORY']['id'], $GLOBALS['URI']['KEY']);
       }
     }
-    if (!isset($GLOBALS['URI']['CATEGORY']) || isset($_GET['anchor']) && $_GET['anchor'] === '分类') {
+    if (!isset($GLOBALS['URI']['CATEGORY'])) {
       $this->renderCategories();
-    } elseif (!isset($_GET['anchor'])) {
+    } elseif (!isset($GLOBALS['URI']['KEY'])) {
       $this->renderKeys();
     } else {
       $this->renderValues();
