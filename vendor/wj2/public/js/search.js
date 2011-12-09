@@ -1,13 +1,30 @@
 function bindEvent() {
-  $('.value_list li').hover(
+  $('#target:parent li').hover(
       function() {
         $(this).attr('class', 'current');
-        $(this).children('a').css('text-decoration', 'line-through').css('color', '#888');
         $('.value_list .current .delete').show();
+        $('.value_list .current .delete').mouseover(function() {
+          $property = $(this).parent().children('a').first();
+          if ($property.attr('class') == 'selected') {
+            $property.attr('class', 'line-through selected');
+            return;
+          }
+         $property.attr('class', 'line-through gray-color');
+        });
+        $('.value_list .current .delete').mouseout(function() {
+          $property = $(this).parent().children('a').first();
+          if ($property.attr('class') == 'line-through gray-color') {
+            $property.attr('class', '');
+            return;
+          }
+          $property.attr('class', 'selected');
+        });
       },function() {
+        $('.value_list .current .delete').off('mouseover');
+        $('.value_list .current .delete').off('mouseout');
         $('.value_list .current .delete').hide();
-        $(this).attr('class', '');
-    }
+        $('.value_list .current').attr('class', '');
+      }
   );
 }
 $(function() {
@@ -23,8 +40,8 @@ $(function() {
       $uri2 = window.location.pathname + '?key=' + $(this).text() + '&media=json';
       $(this).attr('id', 'target');
       $.get($uri2, function(data) {
-        $('#target').after(data).attr('id', '').attr('class', 'key open');
         bindEvent();
+        $('#target').after(data).attr('id', '').attr('class', 'key open');
       });
     });
     bindEvent();
