@@ -7,26 +7,26 @@ class HomeScreen extends Screen {
 
   protected function renderBodyContent() {
     $this->renderSlogon();
-    echo '<ul>';
-    for ($i = 0; $i < 7; ++$i) {
-      echo '<li class="l', $i, '">',
-      '<a href="javascript:void(0)"><img alt="迷宗蟹" src="/img/product.jpg" /></a>',
-      '<strong><a href="javascript:void(0)">迷宗蟹</a></strong>';
-      for ($j = 0; $j < 7; ++$j) {
-        echo ' <a href="javascript:void(0)">阿迪达斯</a>';
+    echo '<div id="index">';
+    //echo '<h2>搜索</h2>';
+    echo '<table>';
+    for ($i = 0; $i < 10; ++$i) {
+      echo '<tr>';
+      for ($j = 0; $j < 5; ++$j) {
+        echo '<td><a class="categoty" href="/儿童+胶囊/">儿童 胶囊</a> <span>123</span></td>';
       }
-      echo ' <a href="javascript:void(0)">...</a>',
-      '</li>';
+      echo '</tr>';
     }
-    echo '</ul>';
-    echo '<h2><a href="/+i/">更多 &raquo;</a></h2>';
+    echo '</table>';
+    echo '</div>';
+    echo '<div id="more"><a href="/+i/">更多 &raquo;</a></div>';
     echo '<script>document.getElementById("search_input").focus()</script>';
   }
 
   private function renderSlogon() {
     echo '<div id="slogon">',
       '<div class="arrow"></div>',
-      '<h1>在 11421 家网上商城，1508 万个产品中搜索：</h1>',
+      '<h1><span>11421</span> 网上商城，<span>1508 万</span> 产品，搜索：</h1>',
       '</div>';
   }
 }

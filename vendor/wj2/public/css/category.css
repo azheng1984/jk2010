@@ -20,7 +20,7 @@ h2 {
 table {
   background:#fff;
   border:1px solid #F1F1F1;
-  padding:5px 0;
+  padding:8px 0;
   margin-left:25px;
   border-spacing: 1px;
 }
@@ -39,15 +39,16 @@ strong {
   display:block;
   width:100%;
   text-align:right;
-  margin:2px 0 10px 0;
+  margin:8px 0 10px 0;
 }
 strong a {
-  margin-right:35px;
+  border:1px solid #E5E5E5;
+  padding:4px 8px;
+  background:url(/img/button.png) repeat-x;
+  margin-right:28px;
   font-weight:normal;
-  border-bottom:1px solid #888;
-  font-size:15px;
-  color:#888;
 }
 strong a:hover {
+  border:1px solid #CCC;
   text-decoration:none;
 }
