@@ -21,7 +21,6 @@
   font-size:20px;
   font-weight:normal;
   margin:0;
-  color:#555;
 }
 #slogon {
   font-size:16px;
@@ -164,12 +163,12 @@ strong a:hover {
 }
 
 #more a {
-border: 1px solid #E5E5E5;
-padding: 4px 8px;
-background: url(/img/button.png) repeat-x;
-margin: 0 68px;
-font-size: 14px;
-position: relative;
+  border: 1px solid #E5E5E5;
+  padding: 4px 8px;
+  background: url(/img/button.png) repeat-x;
+  margin: 0 68px;
+  font-size: 14px;
+  position: relative;
 }
 #more a:hover {
   border:1px solid #CCC;
