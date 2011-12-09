@@ -34,10 +34,9 @@
 }
 #filter li .selected {
   border: 0;
-  background: red;
-  color: white;
+  color:#fff;
   padding-right:10px;
-  margin-top:1px;
+  margin:1px;
   background: url(/img/remove.png) red no-repeat top right;
 }
 #filter li a span {
@@ -50,14 +49,8 @@
   border:0;
   cursor:pointer;
 }
-#filter li .key:hover {
-  background: url('/img/plus_hover.png') 1px 1px no-repeat;
-}
 #filter li .open {
   background:url(/img/minus.png) 1px 1px no-repeat;
-}
-#filter li .open:hover {
-  background:url(/img/minus_hover.png) 1px 1px no-repeat;
 }
 #filter li .delete {
   display:none;
@@ -68,10 +61,10 @@
   padding:0;
   margin:5px 0 0 5px;
 }
-#filter li .delete:hover {
-  background: url(/img/exclude_hover.png);
-  height:14px;
-  width:14px;
-  border:0;
-  padding:0;
+
+#filter li .line-through {
+  text-decoration: line-through;
+}
+#filter li .gray-color {
+  color:#888;
 }
