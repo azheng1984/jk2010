@@ -1,7 +1,8 @@
 @CHARSET "UTF-8";
 #breadcrumb {
   width:100%;
-  padding:8px 0 5px 0;
+  height:30px;
+  line-height:30px;
   position:relative;
   border:1px solid #e5e5e5;
 }
@@ -17,21 +18,26 @@
   float:left;
   padding-right:15px;
   margin-right:5px;
-  background:url('/img/breadcrumb_arrow.png') right 1px no-repeat;
+  background:url('/img/breadcrumb_arrow.png') right 7px no-repeat;
 }
-#breadcrumb a img {
+#breadcrumb a {
   padding-bottom:1px;
-  border:1px solid #fff;
 }
-#breadcrumb a img:hover{
+#breadcrumb .home a:hover{
   border-bottom:1px solid #06c;
+}
+#breadcrumb .home img {
+  display: block;
+  padding-top: 4px;
 }
 #breadcrumb .home {
   margin-left:10px;
+  height: 30px;
 }
 #breadcrumb .home a {
-  width:15px;
+  width:13px;
   height:18px;
   display:block;
   overflow:hidden;
+  margin-top: 3px;
 }
