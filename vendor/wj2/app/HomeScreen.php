@@ -10,7 +10,7 @@ class HomeScreen extends Screen {
     echo '<div id="index">';
     //echo '<h2>搜索</h2>';
     echo '<table>';
-    for ($i = 0; $i < 10; ++$i) {
+    for ($i = 0; $i < 12; ++$i) {
       echo '<tr>';
       for ($j = 0; $j < 5; ++$j) {
         echo '<td><a class="categoty" href="/儿童+胶囊/">儿童 胶囊</a> <span>123</span></td>';
@@ -31,7 +31,7 @@ class HomeScreen extends Screen {
   }
 
   private function renderBlock() {
-    echo '<div id="block"><div class="ensure">提供发票</div><div class="merchant ensure">100% 正品</div>';
+    echo '<div id="block"><div class="ensure">品质保证</div><div class="merchant ensure">品牌商城</div>';
         echo '<div id="more"><a href="/+i/">更多 &raquo;</a></div>';
     echo '</div>';
   }
