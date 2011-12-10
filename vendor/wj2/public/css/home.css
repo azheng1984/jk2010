@@ -1,12 +1,16 @@
 @CHARSET "UTF-8";
 #slogon {
   position:relative;
-  background:#f5f5f5;
   width:100%;
   padding-top:5px;
   margin-top:5px;
   border:1px solid #e5e5e5;
   border-bottom:0;
+  background: #fefad7;
+  background: -webkit-linear-gradient( #fefad7, #fffdef);
+  background: -moz-linear-gradient( #fefad7, #fffdef);
+  border-bottom:1px solid #e5e5e5;
+
 }
 #slogon .arrow {
   position:absolute;
@@ -17,58 +21,55 @@
   background:url(/img/slogon.png);
 }
 #slogon h1 {
-  padding-left:30px;
-  font-size:20px;
+  padding-left:20px;
+  font-size:18px;
   font-weight:normal;
   margin:0;
+    color:#555;
 }
 #slogon {
   font-size:16px;
-  line-height:60px;
+  line-height:50px;
 }
 #slogon span {
-  font-size:25px;
+  font-size:24px;
 }
-#slogon .merchant {
-  background:deepskyblue;
-  width:170px;
-  height:60px;
-  text-align:center;
-  margin:10px 10px 5px 15px;
-  color:#fff;
+#block {
+  width:100%;
+  background:#f5f5f5;
+  float:left;
+  text-align:right;
+  border:1px solid #E5E5E5;
+  border-top:0;
+  margin:0;
+
 }
-#slogon .product {
-  background:limegreen;
-  width:150px;
-  height:60px;
-  text-align:center;
-  margin:10px 0 5px 0;
+#block .ensure {
+  padding: 2px 8px;
   color:#fff;
+  margin-left:10px;
+  margin-bottom:15px;
+  text-align:center;
+  background: red;
 }
-#slogon .search {
-  background: Orange;
-  width:60px;
-  height:60px;
-  text-align:center;
-  margin:10px 0 5px 10px;
-  color:#fff;
+#block .merchant {
+  margin-left:15px;
 }
 #index {
   background:#f5f5f5;
   width:960px;
   border:1px solid #E5E5E5;
   border-top:0;
-    border-bottom:0;
+  border-bottom:0;
 }
 table {
   background:#fff;
-  border:1px solid #F1F1F1;
   padding:8px 0;
-  margin-left: 60px;
+  margin: 15px;
   border-spacing: 1px;
 }
 td {
-  width:165px;
+  width:185px;
   padding:5px 0;
   vertical-align:top;
   background:url(/img/bull.png) 5px 7px no-repeat;
@@ -152,13 +153,7 @@ strong a:hover {
   text-decoration:none;
 }
 #more {
-  width:100%;
-  background:whiteSmoke;
-  float:left;
-  text-align:right;
-  border:1px solid #E5E5E5;
-  border-top:0;
-  padding:15px 0 20px 0;
+  float: right;
   margin:0;
 }
 
@@ -166,7 +161,7 @@ strong a:hover {
   border: 1px solid #E5E5E5;
   padding: 4px 8px;
   background: url(/img/button.png) repeat-x;
-  margin: 0 68px;
+  margin: 0 15px;
   font-size: 14px;
   position: relative;
 }

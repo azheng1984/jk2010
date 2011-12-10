@@ -37,7 +37,7 @@ class IndexScreen extends Screen {
 
   private function renderTable() {
     echo '<table>';
-    for ($i = 0; $i < 10; ++$i) {
+    for ($i = 0; $i < 12; ++$i) {
       echo '<tr>';
       for ($j = 0; $j < 5; ++$j) {
         echo '<td><a href="鞋子/">鞋子</a></td>';

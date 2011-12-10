@@ -19,7 +19,7 @@ class HomeScreen extends Screen {
     }
     echo '</table>';
     echo '</div>';
-    echo '<div id="more"><a href="/+i/">更多 &raquo;</a></div>';
+    $this->renderBlock();
     echo '<script>document.getElementById("search_input").focus()</script>';
   }
 
@@ -28,5 +28,11 @@ class HomeScreen extends Screen {
       '<div class="arrow"></div>',
       '<h1><span>11421</span> 网上商城，<span>1508 万</span> 产品，搜索：</h1>',
       '</div>';
+  }
+
+  private function renderBlock() {
+    echo '<div id="block"><div class="ensure merchant">100% 正品</div><div class="ensure">提供发票</div>';
+        echo '<div id="more"><a href="/+i/">更多 &raquo;</a></div>';
+    echo '</div>';
   }
 }
