@@ -25,8 +25,8 @@ class HomeScreen extends Screen {
 
   private function renderSlogon() {
     echo '<div id="slogon">',
-      '<div class="arrow"></div>',
-      '<h1><span>11421</span> 网上商城，<span>1508 万</span> 产品，搜索：</h1>',
+      '<div class="arrow"></div>', 
+      '<h1><span>11421</span> 家网上商城，<span>1508 万</span>个产品，搜索：</h1>',
       '</div>';
   }
 
