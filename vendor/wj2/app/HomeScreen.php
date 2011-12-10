@@ -31,7 +31,7 @@ class HomeScreen extends Screen {
   }
 
   private function renderBlock() {
-    echo '<div id="block"><div class="ensure merchant">100% 正品</div><div class="ensure">提供发票</div>';
+    echo '<div id="block"><div class="ensure">提供发票</div><div class="merchant ensure">100% 正品</div>';
         echo '<div id="more"><a href="/+i/">更多 &raquo;</a></div>';
     echo '</div>';
   }
