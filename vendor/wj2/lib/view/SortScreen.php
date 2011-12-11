@@ -34,7 +34,7 @@ class SortScreen {
        }
        echo '<a rel="nofollow" href="?sort=', $tab, '">', $tab, '</a>';
      }
-     echo '</div><div id="amount">搜索到', $amount, '个</div></h2>';
+     echo '</div><div id="amount">找到 ', $amount, ' 个产品</div></h2>';
   }
 
   private static function renderPriceOption() {
