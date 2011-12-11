@@ -33,6 +33,7 @@
   margin-right:8px;
   float:right;
   display:inline; /* ie 6 */
+  font-size:12px;
 }
 #option {
   font-size: 14px;
