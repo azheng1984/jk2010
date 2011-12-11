@@ -1,9 +1,9 @@
 @CHARSET "UTF-8";
 #filter h2 {
-  background:#eee url(/img/tag.png) 5px 3px no-repeat;
-  border-left:1px solid #e5e5e5;
+  background:#EEE url(/img/tag.png) 5px 5px no-repeat;
+  border-left:1px solid #E5E5E5;
   width:189px;
-  padding:3px 0;
+  padding:4px 0;
 }
 #filter h2 span {
   padding-left:25px;
