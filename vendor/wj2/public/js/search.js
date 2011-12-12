@@ -71,4 +71,10 @@ $(function() {
       suggestion = false;
     }
   });
+  $('#option input').focusin(function() {
+    $('#option .limit a').show();
+  });
+  $('#option input').focusout(function() {
+    $('#option .limit a').hide();
+  });
 });
