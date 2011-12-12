@@ -51,6 +51,10 @@
   background: red;
   float:right;
   margin-right:15px;
+-moz-border-radius-topleft: 6px;
+-moz-border-radius-topright: 6px;
+-webkit-border-radius: 3px;
+}
 }
 #block .merchant {
   margin-right:10px;
@@ -167,4 +171,16 @@ strong a:hover {
 #more a:hover {
   border:1px solid #CCC;
   text-decoration:none;
+}
+#phone {
+  text-align:right;
+  width:85px;
+  border:1px solid #E5E5E5;
+  background:#fff;
+  line-height:34px;
+  margin-top:-7px;
+  margin-left:300px;
+  padding-right:10px;
+  background: url(/img/phone.png) 5px 2px no-repeat #fff;
+  border-color: #EEE #CCC #CCC #EEE;
 }
