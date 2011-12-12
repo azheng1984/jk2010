@@ -75,7 +75,7 @@ a:hover em {
 #result .toolbar {
   top:5px;
   position:absolute;
-  left:102px;
+  left:78px;
   white-space:nowrap;
 }
 #result .toolbar a {
@@ -89,6 +89,16 @@ a:hover em {
   border: 1px solid;
   border-color: #ddd #aaa #aaa #ddd;
 text-decoration: none;
+}
+#result .toolbar a span {
+  background: url(/img/same.png);
+  width:10px;
+  height:9px;
+  margin-right:2px;
+  display:inline-block;
+}
+#result .toolbar a .heart {
+    background: url(/img/heart.png) 1px 1px no-repeat;
 }
 #result .tag {
   position: absolute;

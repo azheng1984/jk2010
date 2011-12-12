@@ -56,6 +56,6 @@ class SortScreen {
     echo '<div class="limit"><label for="lowest_price">范围:</label> ',
       '<input id="lowest_price" type="text" value="" />-',
       '<input id="highest_price" type="text" value="" />',
-      '</div>';
+      ' <a href="javascript:void(0)">确定</a></div>';
   }
 }
