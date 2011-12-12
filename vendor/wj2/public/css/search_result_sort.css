@@ -87,6 +87,7 @@
   color: #888;
   text-decoration: none;
   border-color: #EEE #CCC #CCC #EEE;
+  display:none;
 }
 #option .limit a:hover {
   border-color: #ddd #aaa #aaa #ddd;

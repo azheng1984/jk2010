@@ -10,6 +10,7 @@ class SearchScreen extends Screen {
     echo '<title>', $GLOBALS['URI']['QUERY'], ' - 货比万家</title>';
     $this->renderCssLink('search');
     $this->renderCssLink('search_result');
+    $this->renderCssLink('search_ads');
     $this->renderCssLink('search_result_sort');
     $this->renderCssLink('search_related');
     $this->renderCssLink('search_filter');
