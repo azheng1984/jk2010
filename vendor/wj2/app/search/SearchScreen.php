@@ -22,9 +22,9 @@ class SearchScreen extends Screen {
   }
 
   protected function renderBodyContent() {
-    //$this->renderTopAdvertisement();
+    $this->renderTopAdvertisement();
     $this->renderSearch();
-    //$this->renderBottomAdvertisement();
+    $this->renderBottomAdvertisement();
     $this->renderRelatedQuery();
   }
 
