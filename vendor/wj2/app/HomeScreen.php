@@ -35,4 +35,5 @@ class HomeScreen extends Screen {
         echo '<div id="more"><a href="/+i/">更多 &raquo;</a></div>';
     echo '</div>';
   }
+
 }

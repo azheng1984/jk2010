@@ -75,12 +75,12 @@ a:hover em {
 #result .toolbar {
   top:5px;
   position:absolute;
-  left:78px;
+  left:82px;
   white-space:nowrap;
 }
 #result .toolbar a {
   background: url(/img/button.png) repeat-x;
-  padding: 3px 6px;
+  padding: 3px 5px;
   border: 1px solid;
   color:#888;
   border-color: #EEE #CCC #CCC #EEE;
@@ -108,7 +108,7 @@ text-decoration: none;
 #result .tag a {
   white-space:nowrap;
   background: url(/img/button.png) repeat-x;
-  padding: 3px 6px;
+  padding: 3px 5px;
   border: 1px solid;
   border-color: #EEE #CCC #CCC #EEE;
   color:#888;
