@@ -40,7 +40,7 @@ class IndexScreen extends Screen {
     for ($i = 0; $i < 12; ++$i) {
       echo '<tr>';
       for ($j = 0; $j < 5; ++$j) {
-        echo '<td><a href="鞋子/">鞋子</a></td>';
+        echo '<td><a href="基础营养/">基础营养</a></td>';
       }
       echo '</tr>';
     }
