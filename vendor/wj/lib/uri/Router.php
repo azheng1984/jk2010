@@ -25,7 +25,7 @@ class Router {
       return '/product';
     }
     SearchUriParser::parse($sections);
-    $this->checkStandardUri('/search');
+    return $this->checkStandardUri('/search');
   }
 
   private function redirect($uri) {
