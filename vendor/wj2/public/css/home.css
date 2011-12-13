@@ -20,11 +20,12 @@
   background:url(/img/slogon.png);
 }
 #slogon h1 {
-  padding-left:15px;
+  padding-left:50px;
   font-size:16px;
   font-weight:normal;
   margin:0;
   color:#666;
+    background:url(/img/favicon.png) 10px 5px no-repeat;
 }
 #slogon {
   font-size:16px;
@@ -51,9 +52,9 @@
   background: red;
   float:right;
   margin-right:15px;
--moz-border-radius-topleft: 6px;
--moz-border-radius-topright: 6px;
--webkit-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius:3px;
+  border-radius: 3px;
 }
 #block .merchant {
   margin-right:10px;
@@ -170,16 +171,4 @@ strong a:hover {
 #more a:hover {
   border:1px solid #CCC;
   text-decoration:none;
-}
-#phone {
-  text-align:right;
-  width:85px;
-  border:1px solid #E5E5E5;
-  background:#fff;
-  line-height:34px;
-  margin-top:-7px;
-  margin-left:300px;
-  padding-right:10px;
-  background: url(/img/phone.png) 5px 2px no-repeat #fff;
-  border-color: #EEE #CCC #CCC #EEE;
 }
