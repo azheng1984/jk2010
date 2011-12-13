@@ -91,14 +91,14 @@ a:hover em {
 text-decoration: none;
 }
 #result .toolbar a span {
-  background: url(/img/same.png);
+  background: url(/img/same_model.png);
   width:10px;
   height:9px;
   margin-right:2px;
   display:inline-block;
 }
 #result .toolbar a .heart {
-    background: url(/img/heart.png) 1px 1px no-repeat;
+    background: url(/img/follow.png) 1px 1px no-repeat;
 }
 #result .tag {
   position: absolute;
