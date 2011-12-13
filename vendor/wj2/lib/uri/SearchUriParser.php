@@ -35,7 +35,7 @@ class SearchUriParser {
       $arguments[] = 'id='.$_GET['id'];
     }
     if (isset($_GET['price'])) {
-      $GLOBALS['URI']['PRICE'] = $this->parsePrice();
+      $GLOBALS['URI']['PRICE'] = $this->parsePriceRange();
     }
     if (isset($_GET['sort'])) {
       $arguments[] = 'sort='.urlencode($_GET['sort']);
@@ -72,7 +72,7 @@ class SearchUriParser {
     return $properties;
   }
 
-  private static function parsePrice() {
+  private static function parsePriceRange() {
     
   }
 

@@ -10,8 +10,8 @@ class HomeScreen extends Screen {
     echo '<ul>';
     for ($i = 0; $i < 7; ++$i) {
       echo '<li class="l',$i,'">',
-      '<a href="javascript:void(0)" class="a_img"><img alt="鞋子" src="/product.jpg" /></a>',
-      '<div class="keywords"><div class="category"><a href="javascript:void(0)">鞋子</a></div>',
+      '<a href="javascript:void(0)" class="a_img"><img alt="迷宗蟹" src="/product.jpg" /></a>',
+      '<div class="keywords"><div class="category"><a href="javascript:void(0)">迷宗蟹</a></div>',
       '<div><a href="javascript:void(0)">耐克</a></div> <div><a href="javascript:void(0)">回力</a></div>',
       '<div><a href="javascript:void(0)">耐克</a></div> <div><a href="javascript:void(0)">回力</a></div>',
       '<div><a href="javascript:void(0)">耐克</a></div> <div><a href="javascript:void(0)">回力</a></div>',
