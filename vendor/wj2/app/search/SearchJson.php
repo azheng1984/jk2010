@@ -40,6 +40,7 @@ class SearchJson {
       }
     }
     echo '</ol>';
+    //echo '<div class="more">更多分类</span>';
   }
 
   private function renderKeys() {
