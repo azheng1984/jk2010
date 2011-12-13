@@ -39,8 +39,7 @@ class HomeScreen extends Screen {
   private function renderFooter() {
     echo '<div class="footer">',
      '<a href="/+i/">更多 &raquo;</a>',
-     '<div>品质保证</div>',
-     '<div class="merchant">品牌商城</div>',
+     '<span>品质保证</span><span class="left">品牌商城</span>',
      '</div>';
   }
 

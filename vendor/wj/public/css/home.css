@@ -63,7 +63,7 @@ td a {
   border:1px solid #CCC;
   text-decoration:none;
 }
-#home .footer div {
+#home .footer span {
   padding: 2px 8px;
   color:#fff;
   margin-bottom:15px;
@@ -75,6 +75,6 @@ td a {
   -moz-border-radius:3px;
   border-radius: 3px;
 }
-#home .footer .merchant {
+#home .footer .left {
   margin-right:10px;
 }
