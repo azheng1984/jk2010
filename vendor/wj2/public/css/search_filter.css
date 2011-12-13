@@ -68,3 +68,8 @@
 #filter li .gray-color {
   color:#888;
 }
+#filter .more {
+  background:url(/img/more.png) 10px 3px no-repeat;
+  font-size:13px;
+  padding-left:26px;
+}
