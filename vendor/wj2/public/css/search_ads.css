@@ -16,12 +16,9 @@
 }
 #bottom_ads_wrapper .tag, #top_ads_wrapper .tag {
   float:right;
-background: url(/img/ads.png) #eee no-repeat;
-font-size: 12px;
-padding:0 8px 0 20px;
-height: 18px;
-line-height: 18px;
-}
-#bottom_ads_wrapper .tag {
-
+  background: url(/img/ads.png) #eee no-repeat;
+  font-size: 12px;
+  padding:0 8px 0 20px;
+  height: 18px;
+  line-height: 18px;
 }
