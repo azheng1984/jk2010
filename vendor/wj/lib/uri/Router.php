@@ -17,7 +17,7 @@ class Router {
     }
     $sections = explode('/', $path);
     if (substr($sections[1], 0, 1) === '+') {
-      return IndexUriParser::parse($sections);
+      return $this->checkStandardUri(IndexUriParser::parse($sections));
     }
     if (count($sections) === 3 && $sections[1] === 'r'
       && is_numeric($sections[2])) {
@@ -25,14 +25,18 @@ class Router {
       return '/product';
     }
     SearchUriParser::parse($sections);
-    if ($GLOBALS['URI']['STANDARD'] !== $_SERVER['REQUEST_URI']) {
-      return $this->redirect($GLOBALS['URI']['STANDARD']);
-    }
-    return '/search';
+    $this->checkStandardUri('/search');
   }
 
   private function redirect($uri) {
     header('Location: '.$uri);
     return '/redirect';
+  }
+
+  private function checkStandardUri($app) {
+    if ($GLOBALS['URI']['STANDARD'] !== $_SERVER['REQUEST_URI']) {
+      return $this->redirect($GLOBALS['URI']['STANDARD']);
+    }
+    return $app;
   }
 }
