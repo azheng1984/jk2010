@@ -84,6 +84,7 @@ a:hover em {
   border: 1px solid;
   color:#888;
   border-color: #EEE #CCC #CCC #EEE;
+    border-radius: 3px;
 }
 #result .toolbar a:hover {
   border: 1px solid;
@@ -113,6 +114,7 @@ text-decoration: none;
   border-color: #EEE #CCC #CCC #EEE;
   color:#888;
   text-decoration:none;
+  border-radius: 3px;
 }
 #result .tag a:hover {
   border: 1px solid;

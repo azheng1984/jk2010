@@ -94,6 +94,7 @@
   text-decoration: none;
   border-color: #EEE #CCC #CCC #EEE;
   display:none;
+    border-radius: 3px;
 }
 #option .limit a:hover {
   border-color: #ddd #aaa #aaa #ddd;
