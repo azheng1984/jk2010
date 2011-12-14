@@ -63,11 +63,10 @@
   padding:0;
   margin:5px 0 0 5px;
 }
-
 #filter li .line-through {
   text-decoration: line-through;
 }
-#filter li .gray-color {
+#filter li .text-color {
   color:#888;
 }
 #filter .more {
