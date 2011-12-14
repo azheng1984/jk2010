@@ -1,19 +1,19 @@
 <?php
 class ResultScreen {
-  public static function render($results) {
+  public static function render() {
     echo '<div id="result">';
-    if ($results['total_found'] !== 0) {
-      SortScreen::render($results['total_found']);
-      self::renderList($results);
-      PaginationScreen::render('?', $results['total_found']);
+    if ($GLOBALS['URI']['RESULTS']['total_found'] !== 0) {
+      SortScreen::render($GLOBALS['URI']['RESULTS']['total_found']);
+      self::renderList();
+      PaginationScreen::render('?', $GLOBALS['URI']['RESULTS']['total_found']);
     }
     echo '</div>';
   }
 
-  private static function renderList($results) {
+  private static function renderList() {
     echo '<ol>';
     $query = $GLOBALS['URI']['QUERY'];
-    foreach ($results['matches'] as $id => $content) {
+    foreach ($GLOBALS['URI']['RESULTS']['matches'] as $id => $content) {
       $product = DbProduct::get($id);
       $name = $product['title'];
       $title = str_replace($query, '<em>'.$query.'</em>', htmlspecialchars(mb_substr(html_entity_decode($product['title'], ENT_QUOTES, 'utf-8'), 0, 40, 'utf-8'), ENT_QUOTES, 'utf-8'));

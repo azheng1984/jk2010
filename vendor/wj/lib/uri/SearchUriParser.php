@@ -45,6 +45,7 @@ class SearchUriParser {
       $arguments[] = 'page='.$_GET['page'];
       $GLOBALS['URI']['PAGE'] = $_GET['sort'];
     }
+    $GLOBALS['URI']['RESULTS'] = ProductSearch::search();
     self::buildUri($arguments);
   }
 

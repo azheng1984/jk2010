@@ -1,11 +1,5 @@
 <?php
 class SearchScreen extends Screen {
-  private $result;
-
-  public function __construct() {
-    $this->result = ProductSearch::search();
-  }
-
   protected function renderHeadContent() {
     echo '<title>', $GLOBALS['URI']['QUERY'], ' - 货比万家</title>';
     $this->renderCssLink('search');
@@ -17,7 +11,7 @@ class SearchScreen extends Screen {
     $this->renderCssLink('search_suggestion');
     $this->renderJsLink('jquery-1.7.1');
     $this->renderJsLink('search');
-    if ($this->result['total_found'] === 0) {
+    if ($GLOBALS['URI']['RESULTS']['total_found'] === 0) {
       echo '<meta name="robots" content="noindex, follow">';
     }
   }
@@ -32,7 +26,7 @@ class SearchScreen extends Screen {
   private function renderSearch() {
     BreadcrumbScreen::render();
     echo '<div id="search">';
-    ResultScreen::render($this->result);
+    ResultScreen::render();
     FilterScreen::render();
     echo '</div>';
   }

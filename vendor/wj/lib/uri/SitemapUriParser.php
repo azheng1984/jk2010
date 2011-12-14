@@ -28,6 +28,7 @@ class SitemapUriParser {
 
   private static function parseIndex() {
     $GLOBALS['URI'] = array();
+    $arguments = self::parseIndexArguments();
     $sectionAmount = count(self::$sections);
     if ($sectionAmount === 3) {
       if (self::$sections[2] === '') {
@@ -48,31 +49,51 @@ class SitemapUriParser {
     } else {
       throw new NotFoundException;
     }
-    self::parseIndexArguments();
+    if (count($arguments) !== 0) {
+      $GLOBALS['URI']['STANDARD'] .= '?'.implode('&', $arguments);
+    }
     return '/index';
   }
 
   private static function parseCategoryIndex() {
     $GLOBALS['URI']['INDEX_TYPE'] = 'category';
     $GLOBALS['URI']['CATEGORY'] = DbCategory::getByName(urldecode(self::$sections['2'])); //caution security!
-    $GLOBALS['URI']['STANDARD'] = '/+i/'.urlencode($GLOBALS['URI']['CATEGORY']['name']);
+    $GLOBALS['URI']['RESULTS'] = CategoryIndexSearch::search();
+    $GLOBALS['URI']['STANDARD'] = '/+i/';
   }
 
   private static function parseQueryIndexByCategory() {
     $GLOBALS['URI']['INDEX_TYPE'] = 'query_by_category';
-    $GLOBALS['URI']['STANDARD'] = '/+i/';
+    $GLOBALS['URI']['CATEGORY'] = DbCategory::getByName(urldecode(self::$sections['2'])); //caution security!
+    $GLOBALS['URI']['RESULTS'] = QueryIndexSearch::searchByCategoryId();
+    $GLOBALS['URI']['STANDARD'] = '/+i/'.urlencode($GLOBALS['URI']['CATEGORY']['name']);
   }
 
   private static function parseKeyIndex() {
     $GLOBALS['URI']['INDEX_TYPE'] = 'key';
+    $GLOBALS['URI']['CATEGORY'] = DbCategory::getByName(urldecode(self::$sections['2'])); //caution security!
+    $GLOBALS['URI']['KEY'] = DbProperty::getKeyByName($GLOBALS['URI']['CATEGORY']['id'], self::$sections['3']); //caution security!
+    $GLOBALS['URI']['RESULTS'] = KeyIndexSearch::search();
+    $GLOBALS['URI']['STANDARD'] = '/+i/'.urlencode($GLOBALS['URI']['CATEGORY']['name']).'/';
   }
 
   private static function parseValueIndex() {
     $GLOBALS['URI']['INDEX_TYPE'] = 'value';
+    $GLOBALS['URI']['CATEGORY'] = DbCategory::getByName(urldecode(self::$sections['2'])); //caution security!
+    $GLOBALS['URI']['KEY'] = DbProperty::getKeyByName($GLOBALS['URI']['CATEGORY']['id'], self::$sections['3']); //caution security!
+    $GLOBALS['URI']['RESULTS'] = ValueIndexSearch::search();
+    $GLOBALS['URI']['STANDARD'] = '/+i/'.urlencode($GLOBALS['URI']['CATEGORY']['name'])
+      .'/'.urlencode($GLOBALS['URI']['KEY']['name']).'/';
   }
 
   private static function parseQueryIndexByValue() {
-    $GLOBALS['URI']['INDEX_TYPE'] = 'query_by_value';
+    $GLOBALS['URI']['CATEGORY'] = DbCategory::getByName(urldecode(self::$sections['2'])); //caution security!
+    $GLOBALS['URI']['KEY'] = DbProperty::getKeyByName($GLOBALS['URI']['CATEGORY']['id'], self::$sections['3']); //caution security!
+    $GLOBALS['URI']['VALUE'] = DbProperty::getValueByName($GLOBALS['URI']['KEY']['id'], self::$sections['4']); //caution security!
+    $GLOBALS['URI']['RESULTS'] = QueryIndexSearch::searchByValueId();
+    $GLOBALS['URI']['STANDARD'] = '/+i/'.urlencode($GLOBALS['URI']['CATEGORY']['name'])
+      .'/'.urlencode($GLOBALS['URI']['KEY']['name'])
+      .'/'.urlencode($GLOBALS['URI']['VALUE']['name']);
   }
 
   private static function parseIndexArguments() {
@@ -85,8 +106,6 @@ class SitemapUriParser {
       $GLOBALS['URI']['PAGE'] = $_GET['page'];
       $arguments[] = 'page='.$_GET['page'];
     }
-    if (count($arguments) !== 0) {
-      $GLOBALS['URI']['STANDARD'] .= '?'.implode('&', $arguments);
-    }
+    return $arguments;
   }
 }
