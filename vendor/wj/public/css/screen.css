@@ -81,6 +81,7 @@ input {
   height:30px;
   border:0;
   cursor:pointer;
+  border-radius: 3px;
 }
 #toolbar {
   float:right;
