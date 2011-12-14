@@ -8,10 +8,8 @@ class SitemapUriParser {
       throw new NotFoundException;
     }
     $GLOBALS['URI'] = array();
-    if (count($sections) === 4
-      && $sections[3] === ''
-      && !isset($_GET['page'])
-      && !isset($_GET['index'])) {
+    if (count($sections) === 4 && $sections[3] === ''
+      && !isset($_GET['page']) && !isset($_GET['index'])) {
         return self::parseCategory();
     }
     return self::parseLinkList();
