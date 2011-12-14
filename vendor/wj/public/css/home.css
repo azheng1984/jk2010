@@ -58,6 +58,7 @@ td a {
   padding:4px 8px;
   background: url(/img/button.png) repeat-x;
   margin-left:15px;
+    border-radius: 3px;
 }
 #home .footer a:hover {
   border:1px solid #CCC;

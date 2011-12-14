@@ -20,14 +20,16 @@
   margin:3px 0;
 }
 #filter li a {
-  padding: 1px 6px 0 6px;
-  background-color:#fff;
-  border:1px solid;
-  border-color:#eee #ccc #ccc #eee;
-  display:block;
-  text-decoration:none;
-  font-size:13px;
-  float:left;
+  padding: 5px 6px 3px 6px;
+  background-color: white;
+  border: 1px solid;
+  display: block;
+  text-decoration: none;
+  font-size: 13px;
+  line-height:13px;
+  float: left;
+  border-color: #EEE #CCC #CCC #EEE;
+  border-radius: 3px;
 }
 #filter li a:hover {
   border-color: #ddd #aaa #aaa #ddd;

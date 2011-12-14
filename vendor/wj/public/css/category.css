@@ -47,6 +47,7 @@ strong a {
   background:url(/img/button.png) repeat-x;
   margin-right:14px;
   font-weight:normal;
+    border-radius: 3px;
 }
 strong a:hover {
   border:1px solid #CCC;
