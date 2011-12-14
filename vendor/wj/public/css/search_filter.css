@@ -21,7 +21,7 @@
 }
 #filter li a {
   padding: 5px 6px 3px 6px;
-  background-color:#fbfbfb;
+  background-color:#fff;
   border: 1px solid;
   display: block;
   text-decoration: none;
@@ -29,7 +29,7 @@
   line-height:13px;
   float: left;
   border-color: #EEE #CCC #CCC #EEE;
-  border-radius: 3px;
+  border-radius:3px;
 }
 #filter li a:hover {
   border-color: #ddd #aaa #aaa #ddd;
