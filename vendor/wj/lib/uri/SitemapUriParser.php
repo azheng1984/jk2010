@@ -1,5 +1,5 @@
 <?php
-class IndexUriParser {
+class SitemapUriParser {
   public static function parse($sections) {
     if ($sections[1] !== '+i') {
       throw new NotFoundException;
@@ -26,6 +26,16 @@ class IndexUriParser {
   private static function parseIndex($sections) {
     $GLOBALS['URI'] = array();
     $GLOBALS['URI']['STANDARD'] = $_SERVER['REQUEST_URI'];
+    self::parseIndexArguments();
     return '/index';
+  }
+
+  private static function parseIndexArguments() {
+    if (isset($_GET['index'])) {
+      
+    }
+    if (isset($_GET['page'])) {
+      
+    }
   }
 }
