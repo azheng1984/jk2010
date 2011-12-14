@@ -109,12 +109,12 @@ text-decoration: none;
 #result .tag a {
   white-space:nowrap;
   background: url(/img/button.png) repeat-x;
-  padding: 3px 5px;
+  padding: 3px 6px;
   border: 1px solid;
   border-color: #EEE #CCC #CCC #EEE;
   color:#888;
   text-decoration:none;
-  border-radius: 3px;
+  border-radius:3px;
 }
 #result .tag a:hover {
   border: 1px solid;
