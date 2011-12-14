@@ -1,5 +1,5 @@
 <?php
-class IndexScreen extends Screen {
+class LinkListScreen extends Screen {
   protected function renderHeadContent() {
     echo '<title>货比万家</title>';
     $this->renderCssLink('index_breadcrumb');

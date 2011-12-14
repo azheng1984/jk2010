@@ -1,5 +1,5 @@
 <?php
-class CategoryIndexSearch {
+class ValueLinkSearch {
   public static function search() {
     
   }

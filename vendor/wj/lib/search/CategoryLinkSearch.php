@@ -1,5 +1,5 @@
 <?php
-class KeyIndexSearch {
+class CategoryLinkSearch {
   public static function search() {
     
   }
