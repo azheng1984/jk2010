@@ -63,7 +63,7 @@ abstract class Screen {
       '" action="/">',
       '<input id="search_input" class="text" type="text" name="q" value="',
       htmlentities($query, ENT_QUOTES, 'utf-8'), '"  autocomplete="off" />',
-      '<input class="submit" type="submit" value="" />',
+      '<button type="submit"></button>',
       '</form>';
   }
 

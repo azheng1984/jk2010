@@ -72,9 +72,9 @@ $(function() {
     }
   });
   $('#option input').focusin(function() {
-    $('#option form .submit').css('display', 'inline');
+    $('#option button').css('display', 'inline-block');
   });
   $('#option input').focusout(function() {
-    $('#option form .submit').hide();
+    //$('#option form .submit').hide();
   });
 });
