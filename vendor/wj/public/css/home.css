@@ -65,7 +65,9 @@ td a {
   text-decoration:none;
 }
 #home .footer span {
-  padding: 2px 5px;
+  line-height: 14px;
+  font-size:11px;
+  padding: 5px 5px 2px 5px;
   color:#fff;
   margin-bottom:15px;
   text-align:center;
@@ -75,10 +77,11 @@ td a {
   -webkit-border-radius:3px;
   -moz-border-radius:3px;
   border-radius: 3px;
-  padding-left: 23px;
-  background: red url(/img/quality.png) 6px 5px no-repeat;
+}
+#home .footer em {
+  font-size:14px;
+  font-style:normal;
 }
 #home .footer .left {
   margin-right:10px;
-  background: red url(/img/star.png) 6px 5px no-repeat;
 }
