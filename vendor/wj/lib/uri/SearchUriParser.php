@@ -1,88 +1,138 @@
 <?php
 class SearchUriParser {
+  private static $sections;
+
   public static function parse($sections) {
     array_shift($sections);
     array_pop($sections);
+    self::$sections = $sections;
     $amount = count($sections);
     if ($amount === 0 || $sections[0] === '') {
       throw new NotFoundException;
     }
-    $GLOBALS['URI']= array('QUERY' => urldecode($sections[0]));
-    $path = '/'.$sections[0].'/';
+    self::parseQuery();
     if ($amount > 1) {
-      $GLOBALS['URI']['CATEGORY'] = DbCategory::getByName(
-        urldecode($sections[1])
-      );
-      $path .= $sections[1].'/';
+      self::parseCategory();
     }
     if ($amount > 2) {
-      $GLOBALS['URI']['PROPERTIES'] = self::parseProperties($sections[2]);
-      $path .= $sections[2].'/';
+      self::parseProperties();
     }
-    $GLOBALS['URI']['PATH'] = $path;
-    $arguments = array();
-    if (isset($_GET['key'])) {
-      $arguments[] = 'key='.urlencode($_GET['key']);
-      $GLOBALS['URI']['KEY'] = $_GET['key'];
-    }
-    if (isset($_GET['media']) && $_GET['media'] === 'json') {
-      $arguments[] = 'media=json';
-      $_SERVER['REQUEST_MEDIA_TYPE'] = 'Json';
-      self::buildUri($arguments);
-      return;
-    }
-    if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-      $arguments[] = 'id='.$_GET['id'];
-    }
-    if (isset($_GET['price'])) {
-      $GLOBALS['URI']['PRICE'] = $this->parsePriceRange();
-    }
-    if (isset($_GET['sort'])) {
-      $arguments[] = 'sort='.urlencode($_GET['sort']);
-      $GLOBALS['URI']['SORT'] = $_GET['sort'];
-    }
-    if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-      $arguments[] = 'page='.$_GET['page'];
-      $GLOBALS['URI']['PAGE'] = $_GET['sort'];
-    }
+    self::parseArguments();
     $GLOBALS['URI']['RESULTS'] = ProductSearch::search();
-    self::buildUri($arguments);
   }
 
-  private static function parseProperties($section) {
+  private static function parseQuery() {
+    $GLOBALS['URI']= array('QUERY' => urldecode(self::$sections[0]));
+    $GLOBALS['URI']['STANDARD'] = '/'.self::$sections[0].'/';
+  }
+
+  private static function parseCategory() {
+    $GLOBALS['URI']['CATEGORY'] = DbCategory::getByName(
+      urldecode(self::$sections[1])
+    );
+    if ($GLOBALS['URI']['CATEGORY'] === false) {
+      throw new NotFoundException;
+    }
+    $GLOBALS['URI']['STANDARD'] .= self::$sections[1].'/';
+  }
+
+  //key=value&key=value&!value&key=!value
+  private static function parseProperties() {
     $properties = array();
     $key = false;
     $values = null;
-    $items = explode('&', urldecode($section));
+    $items = explode('&', self::$section[2]);
     foreach ($items as $item) {
       $tmps = explode('=', $item, 2);
       if (count($tmps) === 2) {
-        if ($key !== false) {
+        if ($key !== false && count($values) !== 0) {
           $properties[] = array('KEY' => $key, 'VALUES' => $values);
         }
         $key = DbProperty::getKeyByName(
-          $GLOBALS['URI']['CATEGORY']['id'], array_shift($tmps)
+          $GLOBALS['URI']['CATEGORY']['id'], urldecode(array_shift($tmps))
         );
         $values= array();
+        $valueArguments = array();
       }
-      $values[] = DbProperty::getValueByName($key['id'], $tmps[0]);
+      $valueName = $tmps[0];
+      $isInclude = true;
+      if (substr($valueName, 0, 1) === '!') {
+        $isInclude = false;
+        $valueName = substr($valueName, 1);
+      }
+      $value = DbProperty::getValueByName($key['id'], urldecode($valueName));
+      $value['is_include'] = $isInclude;
+      if ($value != false) {
+        $values[] = $value;
+      }
     }
-    if ($key !== false) {
+    if ($key !== false && count($values) !== 0) {
       $properties[] = array('KEY' => $key, 'VALUES' => $values);
     }
-    return $properties;
-  }
-
-  private static function parsePriceRange() {
-    
-  }
-
-  private static function buildUri($arguments) {
-    $GLOBALS['URI']['ARGUMENTS'] = $arguments;
-    $uri = $GLOBALS['URI']['PATH'];
-    if (count($arguments) > 0) {
-      $uri .= '?'.implode('&', $arguments);
+    if (count($properties) !== 0) {
+      $GLOBALS['URI']['PROPERTIES'] = $properties;
+      self::restoreProperties();
     }
-    $GLOBALS['URI']['STANDARD'] = $uri;
+  }
+
+  private static function restoreProperties() {
+    $items = array();
+    foreach ($GLOBALS['URI']['PROPERTIES'] as $property) {
+      $item = urlencode($property['KEY']['name'])
+        .'='.self::restorePropertyValues($property['VALUES']);
+      $items[$property['KEY']['uri_index']] = $item;
+    }
+    ksort($items);
+    $GLOBALS['URI']['STANDARD'] .= implode('&', $items);
+  }
+
+  private static function restorePropertyValues($values) {
+    $items = array();
+    foreach ($values as $value) {
+      $item = urlencode($value['name']);
+      if (!$value['is_include']) {
+        $item = '!'.$item;
+      }
+      $items[$value['uri_index']] = $item;
+    }
+    ksort($items);
+    return implode('&', $items);
+  }
+
+  private static function parseArguments() {
+    $arguments = array();
+    if (isset($_GET['key']) && isset($GLOBALS['URI']['CATEGORY'])) {
+      $GLOBALS['URI']['KEY'] = DbProperty::getKeyByName(
+        $GLOBALS['URI']['CATEGORY']['id'], $_GET['key']
+      );
+      $arguments[] = 'key='.urlencode($_GET['key']);
+    }
+    if (isset($_GET['media']) && $_GET['media'] === 'json') {
+      $_SERVER['REQUEST_MEDIA_TYPE'] = 'Json';
+      $arguments[] = 'media=json';
+    }
+    if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+      $GLOBALS['URI']['MODEL_ID'] = $_GET['id'];
+      $arguments[] = 'id='.$_GET['id'];
+    }
+    if (isset($_GET['price_from']) && is_numeric($_GET['price_from'])) {
+      $GLOBALS['URI']['PRICE_FROM'] = $_GET['price_from'];
+      $arguments[] = 'price_from='.$_GET['price_from'];
+    }
+    if (isset($_GET['price_to']) && is_numeric($_GET['price_to'])) {
+      $GLOBALS['URI']['PRICE_TO'] = $_GET['price_to'];
+      $arguments[] = 'price_to='.$_GET['price_to'];
+    }
+    if (isset($_GET['sort'])) {
+      $GLOBALS['URI']['SORT'] = $_GET['sort'];
+      $arguments[] = 'sort='.urlencode($_GET['sort']);
+    }
+    if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+      $GLOBALS['URI']['PAGE'] = $_GET['sort'];
+      $arguments[] = 'page='.$_GET['page'];
+    }
+    if (count($arguments) > 0) {
+      $GLOBALS['URI']['STANDARD'] .= '?'.implode('&', $arguments);
+    }
   }
 }

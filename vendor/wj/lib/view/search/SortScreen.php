@@ -54,8 +54,8 @@ class SortScreen {
 
   private static function renderPriceLimit() {
     echo '<div class="limit"><label for="lowest_price">范围:</label> ',
-      '<input id="lowest_price" type="text" value="" />-',
-      '<input id="highest_price" type="text" value="" />',
+      '<input id="price_from" type="text" value="" />-',
+      '<input id="price_to" type="text" value="" />',
       ' <a href="javascript:void(0)">确定</a></div>';
   }
 }
