@@ -72,9 +72,9 @@ $(function() {
     }
   });
   $('#option input').focusin(function() {
-    $('#option button').css('display', 'inline-block');
+    $('#option form a').show();
   });
   $('#option input').focusout(function() {
-    $('#option button').hide();
+    //$('#option form a').hide();
   });
 });

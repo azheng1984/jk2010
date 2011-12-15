@@ -22,7 +22,7 @@ ul, ol {
   margin:0;
 }
 form {
-  display:inline-block;
+  display:inline;
   margin:0;
 }
 input {

@@ -56,6 +56,6 @@ class SortScreen {
     echo '<form action=""><label for="price_from">范围:</label> ',
       '<input id="price_from" name="price_from" type="text" value="" />-',
       '<input name="price_to" type="text" value="" />',
-      ' <button type="submit">确定</button></form>';
+      ' <button type="submit"></button><a href=".">确定</span></form>';
   }
 }
