@@ -11,9 +11,9 @@
   color:#fff;
   background-color:red;
   padding:3px 8px;
-  -webkit-border-radius: 3px;
+  -webkit-border-radius:3px;
   -moz-border-radius:3px;
-  border-radius: 3px;
+  border-radius:3px;
 }
 #result h2 a {
   margin:4px 10px;
@@ -52,6 +52,8 @@
   width: 758px;
 }
 #option form {
+  display:inline;
+  margin:0;
   margin-left:6px;
 }
 #option strong {
@@ -60,9 +62,9 @@
   background-color:red;
   padding:2px 5px;
   font-weight:normal;
-  -webkit-border-radius: 3px;
-  -moz-border-radius:3px;
-  border-radius: 3px;
+  -webkit-border-radius:2px;
+  -moz-border-radius:2px;
+  border-radius: 2px;
 }
 #option a {
   margin:2px 11px;
@@ -83,17 +85,20 @@
   outline:1px solid #b6c9ed;
 }
 #option button {
-  padding: 1px 5px;
-  margin:1px;
-  background:url(/img/button.png) repeat-x;
-  border:1px solid;
-  color:#888;
-  border-color:#EEE #CCC #CCC #EEE;
   display:none;
-  cursor:pointer;
-  border-radius:3px;
-  font-size:13px;
 }
-#option input.submit:hover {
+#option form a {
+  margin: 0;
+  white-space:nowrap;
+  background:url(/img/button.png) repeat-x;
+  padding:2px 5px;
+  border: 1px solid;
+  color: #888;
+  text-decoration: none;
+  display: none;
+  border-color: #EEE #CCC #CCC #EEE;
+  border-radius:2px;
+}
+#option form a:hover {
   border-color: #ddd #aaa #aaa #ddd;
 }
