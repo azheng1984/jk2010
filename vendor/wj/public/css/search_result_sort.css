@@ -45,14 +45,13 @@
   font-size: 13px;
   border: 1px solid #E5E5E5;
   background: white;
-  padding: 5px 0;
+  line-height:30px;
   margin: 0px 5px 0 5px;
   z-index: 1;
   position: relative;
   width: 758px;
 }
 #option form {
-  display:inline;
   margin-left:6px;
 }
 #option strong {
@@ -83,20 +82,17 @@
 #option input:focus {
   outline:1px solid #b6c9ed;
 }
-#option input.submit {
-  margin:0;
-  width:auto;
-  height:auto;
-  white-space: nowrap;
-  background: url(/img/button.png) repeat-x;
-  padding: 2px 5px;
-  border: 1px solid;
-  color: #888;
-  text-decoration: none;
-  border-color: #EEE #CCC #CCC #EEE;
+#option button {
+  padding: 1px 5px;
+  margin:1px;
+  background:url(/img/button.png) repeat-x;
+  border:1px solid;
+  color:#888;
+  border-color:#EEE #CCC #CCC #EEE;
   display:none;
-  cursor: pointer;
-  border-radius: 3px;
+  cursor:pointer;
+  border-radius:3px;
+  font-size:13px;
 }
 #option input.submit:hover {
   border-color: #ddd #aaa #aaa #ddd;
