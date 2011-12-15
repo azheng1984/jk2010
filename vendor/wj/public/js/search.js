@@ -75,6 +75,6 @@ $(function() {
     $('#option button').css('display', 'inline-block');
   });
   $('#option input').focusout(function() {
-    //$('#option form .submit').hide();
+    $('#option button').hide();
   });
 });
