@@ -51,9 +51,8 @@
   position: relative;
   width: 758px;
 }
-#option div {
+#option form {
   display:inline;
-  float:none;
   margin-left:6px;
 }
 #option strong {
@@ -84,8 +83,10 @@
 #option input:focus {
   outline:1px solid #b6c9ed;
 }
-#option .limit a {
+#option input.submit {
   margin:0;
+  width:auto;
+  height:auto;
   white-space: nowrap;
   background: url(/img/button.png) repeat-x;
   padding: 2px 5px;
@@ -94,8 +95,9 @@
   text-decoration: none;
   border-color: #EEE #CCC #CCC #EEE;
   display:none;
-    border-radius: 3px;
+  cursor: pointer;
+  border-radius: 3px;
 }
-#option .limit a:hover {
+#option input.submit:hover {
   border-color: #ddd #aaa #aaa #ddd;
 }
