@@ -8,14 +8,14 @@
 #slogon {
   position:relative;
   width:100%;
-  padding-top:5px;
+  padding-top:10px;
   background:#fefad7;
   background:-webkit-linear-gradient(#fefad7, #fffdf2);
   background:-moz-linear-gradient(#fefad7, #fffdf2);
   filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fefad7', endColorstr='#fffdf2');
   border-bottom:1px solid #e5e5e5;
 }
-#slogon span {
+#slogon .arrow {
   position:absolute;
   top:-13px;
   left:95px;
@@ -26,11 +26,34 @@
 #slogon h1 {
   padding-left:52px;
   font-size:16px;
-  line-height:45px;
   font-weight:normal;
   margin:0;
-  color:#666;
-  background:url(/img/favicon.png) 10px 5px no-repeat;
+  color:#444;
+  background:url(/img/favicon.png) 10px 0 no-repeat;
+  padding-bottom: 15px;
+}
+#slogon ul {
+  margin:-10px 0 10px 52px;
+  float:left;
+  list-style:none;
+  padding:0;
+}
+#slogon li {
+  float:left;
+  padding-right:15px;
+  font-size:11px;
+  white-space:nowrap;
+}
+#slogon a {
+  font-size:13px;
+  color:#999;
+  border-bottom:1px solid #888;
+  text-decoration:none;
+}
+#slogon strong {
+  margin-top:-10px;
+  font-weight:normal;
+  float:left;
 }
 table {
   background:#fff;
@@ -59,9 +82,9 @@ td a {
   padding:4px 8px;
   background: url(/img/button.png) repeat-x;
   margin-left:15px;
-    border-radius: 3px;
+  border-radius: 3px;
 }
-#home .footer a:hover {
+#home .footer a:hover{
   border:1px solid #CCC;
   text-decoration:none;
 }
