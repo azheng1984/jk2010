@@ -23,7 +23,7 @@ class HomeScreen extends Screen {
 
   private function renderQueryList() {
     echo '<table>';
-    for ($i = 0; $i < 12; ++$i) {
+    for ($i = 0; $i < 20; ++$i) {
       echo '<tr>';
       for ($j = 0; $j < 5; ++$j) {
         for ($j = 0; $j < 5; ++$j) {
