@@ -12,6 +12,7 @@
   background:#fefad7;
   background:-webkit-linear-gradient(#fefad7, #fffdf2);
   background:-moz-linear-gradient(#fefad7, #fffdf2);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fefad7', endColorstr='#fffdf2');
   border-bottom:1px solid #e5e5e5;
 }
 #slogon span {
