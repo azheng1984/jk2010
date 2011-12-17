@@ -123,6 +123,7 @@ td a {
 #home .footer a:hover{
   border:1px solid #CCC;
   text-decoration:none;
+  box-shadow:0 0 3px #ccc;
 }
 #home .footer span {
   line-height: 14px;

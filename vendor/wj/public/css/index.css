@@ -51,6 +51,7 @@ td a {
 #pagination a:hover {
   border:1px solid #CCC;
   text-decoration:none;
+  box-shadow:0 0 3px #ccc;
 }
 #pagination span {
   border:1px solid red;
