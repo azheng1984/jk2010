@@ -52,7 +52,7 @@ class HomeScreen extends Screen {
   private function renderCategoryList() {
     $uri = urlencode('儿童');
     echo ' <ul id="category">';
-    echo '<li><span>所有商店</span></li>';
+    echo '<li><span>全部</span></li>';
     echo '<li><a href="?type=综合">百货</a></li>';
     echo '<li><a href="?type=综合">数码家电</a></li>';
     echo '<li><a href="?type=综合">服装鞋帽</a></li>';
@@ -63,7 +63,7 @@ class HomeScreen extends Screen {
   private function renderFooter() {
     echo '<div class="footer">',
      '<a href="javascript:void(0)">更多 &raquo;</a>',
-     '<span><em>品质保证</em> 100%</span><span class="left"><em>公司经营</em> 100%</span>',
+     '<span><em>公司经营</em> 100%</span><span class="left"><em>品牌商店</em> 100%</span>',
      '</div>';
   }
 

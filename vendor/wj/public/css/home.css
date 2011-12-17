@@ -28,7 +28,7 @@
   font-size:16px;
   font-weight:normal;
   margin:0;
-  color:#333;
+  color:#444;
   background:url(/img/favicon.png) 10px 0 no-repeat;
   padding-bottom: 15px;
 }
@@ -88,6 +88,7 @@ h2 {
   border-left:0;
   padding-left:15px;
   border-radius:0 3px 3px 0;
+  box-shadow: 1px 1px 1px #eee;
 }
 table {
   background:#fff;
