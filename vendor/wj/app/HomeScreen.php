@@ -53,10 +53,10 @@ class HomeScreen extends Screen {
     $uri = urlencode('儿童');
     echo ' <ul id="category">';
     echo '<li><span>全部</span></li>';
-    echo '<li><a href="?type=综合">百货</a></li>';
-    echo '<li><a href="?type=综合">数码家电</a></li>';
-    echo '<li><a href="?type=综合">服装鞋帽</a></li>';
-    echo '<li><a href="?type=综合">奢侈品</a></li>';
+    echo '<li><a href="?type=综合" rel="nofollow">百货</a></li>';
+    echo '<li><a href="?type=综合" rel="nofollow">数码家电</a></li>';
+    echo '<li><a href="?type=综合" rel="nofollow">服装鞋帽</a></li>';
+    echo '<li><a href="?type=综合" rel="nofollow">奢侈品</a></li>';
     echo '</ul>';
   }
 
