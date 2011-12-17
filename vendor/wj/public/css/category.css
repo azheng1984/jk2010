@@ -42,15 +42,15 @@ strong {
   margin:8px 0 16px 0;
 }
 strong a {
-  border:1px solid #E5E5E5;
+  border:1px solid #e5e5e5;
   padding:4px 8px;
   background:url(/img/button.png) repeat-x;
   margin-right:14px;
   font-weight:normal;
-  border-radius: 3px;
+  border-radius:3px;
 }
 strong a:hover {
-  border:1px solid #CCC;
+  border:1px solid #ccc;
   box-shadow:0 0 3px #ccc;
   text-decoration:none;
 }
