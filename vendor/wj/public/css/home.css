@@ -65,8 +65,8 @@ h2 {
 }
 #category {
   list-style:none;
-  padding:5px;
-  padding-top:20px;
+  padding:10px;
+  padding-top:15px;
   font-size:15px;
 }
 #category li {
@@ -78,17 +78,16 @@ h2 {
   margin:10px;
 }
 #category li span {
-  color:#666;
-  background:#eee;
-  width:165px;
-  padding:5px 0;
-  margin-left:-5px;
+  color:#fff;
+  background:red;
+  width:155px;
+  padding:3px 0;
   display:block;
   border:1px solid #e5e5e5;
   border-left:0;
-  padding-left:15px;
-  border-radius:0 3px 3px 0;
-  box-shadow: 1px 1px 1px #eee;
+  padding-left:10px;
+  border-radius:5px;
+
 }
 table {
   background:#fff;
@@ -100,7 +99,7 @@ table {
   border:1px solid #e5e5e5;
 }
 td {
-  width:185px;
+  width:187px;
   padding:5px 0;
   vertical-align:top;
   background:url(/img/bull.png) 5px 7px no-repeat;
