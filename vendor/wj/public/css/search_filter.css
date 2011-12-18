@@ -29,7 +29,7 @@
   line-height:13px;
   float: left;
   border-color: #EEE #CCC #CCC #EEE;
-  border-radius:3px;
+  border-radius:3px 11px 11px 3px;
 }
 #filter li a:hover {
   border-color: #ddd #aaa #aaa #ddd;
