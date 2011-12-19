@@ -19,11 +19,6 @@ class Router {
     if (substr($sections[1], 0, 1) === '+') {
       return $this->checkStandardUri(SitemapUriParser::parse($sections));
     }
-    if (count($sections) === 3 && $sections[1] === 'r'
-      && is_numeric($sections[2])) {
-      $GLOBALS['PRODUCT_ID'] = $sections[2];
-      return '/product';
-    }
     SearchUriParser::parse($sections);
     return $this->checkStandardUri('/search');
   }
