@@ -35,10 +35,10 @@ class PaginationScreen {
     //Previous
     if ($currentPage != 1) {
       if ($specialForPageOne !== null && $currentPage == 2) {
-        $result .= '<a href="' . $specialForPageOne . '">&laquo; 上一页</a>';
+        $result .= '<a rel="nofollow" href="' . $specialForPageOne . '">&laquo; 上一页</a>';
       } else {
         $prevPage = $currentPage - 1;
-        $result .= '<a href="' . $prefix;
+        $result .= '<a rel="nofollow" href="' . $prefix;
         if ($prevPage != 1) {
           $result .= 'page=' . $prevPage;
         }
@@ -56,9 +56,9 @@ class PaginationScreen {
         $result .= ' <span>' . $count . '</span>';
       } else {
         if ($specialForPageOne !== null && $count == 1) {
-          $result .= ' <a href="' . $specialForPageOne . '">1</a>';
+          $result .= ' <a rel="nofollow" href="' . $specialForPageOne . '">1</a>';
         } else {
-          $result .= ' <a href="' . $prefix;
+          $result .= ' <a rel="nofollow" href="' . $prefix;
           if ($count != 1) {
             $result .= 'page=' . $count;
           }
@@ -72,7 +72,7 @@ class PaginationScreen {
     }
     //Next
     if ($currentPage != $totalPage && $totalPage != 0) {
-      $result .= ' <a href="' . $prefix . 'page=' . ($currentPage + 1) . '">下一页 &raquo;</a>';
+      $result .= ' <a rel="nofollow" href="' . $prefix . 'page=' . ($currentPage + 1) . '">下一页 &raquo;</a>';
     }
     echo $result, '</div>';
   }
