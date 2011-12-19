@@ -91,27 +91,28 @@ h2 {
 }
 table {
   background:#f5f5f5;
-  margin: 13px 0 15px 13px;
-  border-spacing: 0;
-  display: block;
-  float: left;
+  margin:13px 0 15px 13px;
+  border-spacing:1px;
+  display:block;
+  float:left;
 }
 td {
-  width: 187px;
+  width: 148px;
   padding:0;
   vertical-align: top;
   font-size: 11px;
-  border: 1px solid #f1f1f1;
+  border: 1px solid;
   background: white;
   text-align: center;
-  border-radius: 5px;
+  border-radius:8px;
+  border-color: #F1F1F1 #eee #eee #F1F1F1;
 }
 td a {
   display:block;
   font-size:13px;
   color:#888;
   height:100%;
-  padding:4px 0;
+  padding:10px 0 4px 0;
 }
 td a:hover {
   text-decoration:none;

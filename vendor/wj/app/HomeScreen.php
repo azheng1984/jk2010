@@ -41,9 +41,9 @@ class HomeScreen extends Screen {
     echo '<table>';
     for ($i = 0; $i < 5; ++$i) {
       echo '<tr>';
-      for ($j = 0; $j < 4; ++$j) {
+      for ($j = 0; $j < 5; ++$j) {
           $uri = urlencode('儿童');
-          echo '<td><a target="_blank" href="http://www.360buy.com/?source=huobiwanjia" rel="nofollow"><img src="/img/360buy.gif" /><span>京东商城</span></a></td>';
+          echo '<td><a target="_blank" href="http://www.360buy.com/?source=huobiwanjia" rel="nofollow"><img src="/img/360buy.png" /><span>京东商城</span></a></td>';
       }
       echo '</tr>';
     }
