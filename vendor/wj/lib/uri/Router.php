@@ -39,6 +39,8 @@ class Router {
     if ($_SERVER['QUERY_STRING'] !== '') {
       $location .= '?'.$_SERVER['QUERY_STRING'];
     }
+    echo $location;
+    exit;
     header('Location: '.$location);
   }
 }
