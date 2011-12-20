@@ -31,7 +31,6 @@ class SearchScreen extends Screen {
     BreadcrumbScreen::render();
     echo '<div id="search">';
     ResultScreen::render();
-    FilterScreen::render();
     echo '</div>';
   }
 
