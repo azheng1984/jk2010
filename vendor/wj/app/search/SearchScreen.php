@@ -1,5 +1,9 @@
 <?php
 class SearchScreen extends Screen {
+  public function __construct() {
+    $GLOBALS['URI']['RESULTS'] = ProductSearch::search();
+  }
+
   protected function renderHeadContent() {
     echo '<title>', $GLOBALS['URI']['QUERY'], ' - 货比万家</title>';
     $this->renderCssLink('search');

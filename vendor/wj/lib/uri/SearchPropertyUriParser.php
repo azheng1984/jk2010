@@ -6,7 +6,7 @@ class SearchPropertyUriParser {
   private static $activeList = array();
   private static $activeValueList;
 
-  //key=value&key=value&!value&key=!value
+  /* key=value&key=value&!value&key=!value */
   public static function parse() {
     $GLOBALS['URI']['PROPERTY_LIST'] = array();
     $blockList = explode('&', $GLOBALS['URI']['PATH_SECTION_LIST'][3]);
