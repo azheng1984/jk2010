@@ -55,7 +55,7 @@ class SitemapUriParser {
     return '/link_list';
   }
 
-  private static function parseArguments() {
+  private static function parsePage() {
     $arguments = array();
     if (isset($_GET['index'])) {
       $GLOBALS['URI']['INDEX'] = $_GET['index'];
