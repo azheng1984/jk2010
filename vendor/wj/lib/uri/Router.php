@@ -16,10 +16,10 @@ class Router {
 
   private function dispatch() {
     $GLOBALS['URI']['REQUEST_PATH'] = $_SERVER['REQUEST_URI'];
-    $queryPosition = strpos($_SERVER['REQUEST_URI'], '?');
-    if ($queryPosition !== false) {
+    $questionMarkposition = strpos($_SERVER['REQUEST_URI'], '?');
+    if ($questionMarkposition !== false) {
       $GLOBALS['URI']['REQUEST_PATH'] = substr(
-        $_SERVER['REQUEST_URI'], 0, $queryPosition
+        $_SERVER['REQUEST_URI'], 0, $questionMarkposition
       );
     }
     if ($GLOBALS['URI']['REQUEST_PATH'] === '/') {
