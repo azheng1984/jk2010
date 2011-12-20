@@ -1,6 +1,6 @@
 <?php
 class PaginationScreen {
-  public static function render($prefix, $total) {
+  public static function render($total, $prefix = '') {
     if ($total <= 16) {
       return;
     }
@@ -13,10 +13,6 @@ class PaginationScreen {
     $postfix = '';
     if ($_SERVER['QUERY_STRING'] !== '') {
       $postfix = '?'.$_SERVER['QUERY_STRING'];
-    }
-    $prefix = '';
-    if (isset($GLOBALS['URI']['INDEX'])) {
-      $prefix = $GLOBALS['URI']['INDEX'].'-';
     }
     $result = '<div id="pagination"> ';
     if ($currentPage != 1) {
