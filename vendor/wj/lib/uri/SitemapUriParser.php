@@ -1,111 +1,93 @@
 <?php
 class SitemapUriParser {
-  private static $sections;
-
-  public static function parse($sections) {
-    self::$sections = $sections;
-    if ($sections[1] !== '+i') {
-      throw new NotFoundException;
-    }
-    $GLOBALS['URI'] = array();
-    if (count($sections) === 4 && $sections[3] === ''
-      && !isset($_GET['page']) && !isset($_GET['index'])) {
-        return self::parseCategory();
-    }
-    return self::parseLinkList();
+  public static function parse() {
+    $pageSection = self::parsePage();
+    $app = self::parseTag();
+    $GLOBALS['URI']['STANDARD_PATH'] .= $pageSection;
+    return $app;
   }
 
-  private static function parseCategory() {
-    self::parsePropertyKeyLinkList();
-    $GLOBALS['URI']['KEY_LIST'] = KeyLinkSearch::search(25);
-    $GLOBALS['URI']['QUERY_LIST'] = QueryLinkSearch::searchByCategory(25);
-    return '/category';
-  }
-
-  private static function parseLinkList() {
-    $arguments = self::parseArguments();
-    $sectionAmount = count(self::$sections);
-    if ($sectionAmount === 3) {
-      if (self::$sections[2] === '') {
-        self::parseCategoryLinkList();
-        $GLOBALS['URI']['LINK_LIST'] = CategoryLinkSearch::search();
-      } else {
-        self::parseQueryLinkListByCategory();
-        $GLOBALS['URI']['LINK_LIST'] = QueryLinkSearch::searchByCategory();
-      }
-    } elseif ($sectionAmount === 4
-      && self::$sections[3] === ''
-      && (isset($_GET['page']) || isset($_GET['index']))) {
-      self::parsePropertyKeyLinkList();
-      $GLOBALS['URI']['LINK_LIST'] = KeyLinkSearch::search();
-    } elseif ($sectionAmount === 5) {
-      if (self::$sections[4] === '') {
-        self::parsePropertyValueLinkList();
-        $GLOBALS['URI']['LINK_LIST'] = ValueLinkSearch::search();
-      } else {
-        self::parseQueryLinkListByValue();
-        $GLOBALS['URI']['LINK_LIST'] = QueryLinkSearch::searchByPropertyValue();
-      }
-    } else {
-      throw new NotFoundException;
+  private static function parseTag() {
+    $sections = $GLOBALS['URI']['PATH_SECTION_LIST'];
+    $amount = count($sections);
+    $GLOBALS['URI']['STANDARD_PATH'] = '/+i';
+    if ($amount === 3) {
+      $GLOBALS['URI']['LINK_LIST'] = CategoryLinkSearch::search();
+      return '/link_list';
     }
-    if (count($arguments) !== 0) {
-      $GLOBALS['URI']['STANDARD'] .= '?'.implode('&', $arguments);
-    }
-    return '/link_list';
-  }
-
-  private static function parsePage() {
-    $arguments = array();
-    if (isset($_GET['index'])) {
-      $GLOBALS['URI']['INDEX'] = $_GET['index'];
-      $arguments[] = 'index='.$_GET['index'];
-    }
-    if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-      $GLOBALS['URI']['PAGE'] = $_GET['page'];
-      $arguments[] = 'page='.$_GET['page'];
-    }
-    return $arguments;
-  }
-
-  private static function parseCategoryLinkList() {
-    $GLOBALS['URI']['STANDARD'] = '/+i/';
-  }
-
-  private static function parseQueryLinkListByCategory() {
+    /* /+i/category/ */
     $GLOBALS['URI']['CATEGORY'] = DbCategory::getByName(
-      urldecode(self::$sections['2'])
-    ); //caution security!
+      urldecode($sections['2'])
+    );
     if ($GLOBALS['URI']['CATEGORY'] === false) {
       throw new NotFoundException;
     }
-    $GLOBALS['URI']['STANDARD'] = '/+i/'.urlencode($GLOBALS['URI']['CATEGORY']['name']);
-  }
-
-  private static function parsePropertyKeyLinkList() {
-    self::parseQueryLinkListByCategory();
-    $GLOBALS['URI']['STANDARD'] .= '/';
-  }
-
-  private static function parsePropertyValueLinkList() {
-    self::parsePropertyKeyLinkList();
+    $GLOBALS['URI']['STANDARD_PATH'] .=
+      '/'.urlencode($GLOBALS['URI']['CATEGORY']['name']);
+    if ($amount === 4) {
+      $GLOBALS['URI']['KEY_LINK_LIST'] = KeyLinkSearch::search(25);
+      $GLOBALS['URI']['QUERY_LINK_LIST'] =
+        QueryLinkSearch::searchByCategory(25);
+      return '/category';
+    }
+    /* /+i/category/+k/ */
+    if ($amount === 5
+      && $GLOBALS['URI']['PATH_SECTION_LIST'][3] === '+k') {
+      $GLOBALS['URI']['LINK_LIST'] = KeyLinkSearch::search();
+      return '/link_list';
+    }
+    /* /+i/category/+q/ */
+    if ($amount === 5
+      && $GLOBALS['URI']['PATH_SECTION_LIST'][3] === '+q') {
+      $GLOBALS['URI']['STANDARD_PATH'] .= '/+q';
+      $GLOBALS['URI']['LINK_LIST'] = QueryLinkSearch::searchByCategory();
+      return '/link_list';
+    }
+    /* /+i/category/key/ */
     $GLOBALS['URI']['KEY'] = DbProperty::getKeyByName(
-      $GLOBALS['URI']['CATEGORY']['id'], self::$sections['3']
-    ); //caution security!
+      $GLOBALS['URI']['CATEGORY']['id'], $sections['3']
+    );
     if ($GLOBALS['URI']['KEY'] === false) {
       throw new NotFoundException;
     }
-    $GLOBALS['URI']['STANDARD'] .= urlencode($GLOBALS['URI']['KEY']['name']).'/';
-  }
-
-  private static function parseQueryLinkListByValue() {
-    self::parsePropertyValueLinkList();
+    $GLOBALS['URI']['STANDARD_PATH'] .=
+      '/'.urlencode($GLOBALS['URI']['KEY']['name']);
+    if ($amount === 5) {
+      $GLOBALS['URI']['LINK_LIST'] = KeyLinkSearch::search();
+      return '/link_list';
+    }
+    /* /+i/category/key/value/ */
     $GLOBALS['URI']['VALUE'] = DbProperty::getValueByName(
-      $GLOBALS['URI']['KEY']['id'], self::$sections['4']
-    ); //caution security!
+      $GLOBALS['URI']['KEY']['id'], $sections['4']
+    );
     if ($GLOBALS['URI']['VALUE'] === false) {
       throw new NotFoundException;
     }
-    $GLOBALS['URI']['STANDARD'] .= '/'.urlencode($GLOBALS['URI']['VALUE']['name']);
+    $GLOBALS['URI']['STANDARD_PATH'] .=
+      '/'.urlencode($GLOBALS['URI']['VALUE']['name']);
+    if ($amount === 6) {
+      $GLOBALS['URI']['LINK_LIST'] = QueryLinkSearch::searchByPropertyValue();
+      return '/link_list';
+    }
+    throw new NotFoundException;
+  }
+
+  private static function parsePage() {
+    $section = end($GLOBALS['URI']['PATH_SECTION_LIST']);
+    if ($section === '') {
+      return '/';
+    }
+    $items = explode('-', $section, 2);
+    $pageSection = '/'.$items[0];
+    if (is_numeric($items[0])) {
+      $GLOBALS['URI']['PAGE'] = $items[0];
+      return $pageSection;
+    }
+    $GLOBALS['URI']['INDEX'] = $items[0];
+    if (isset($items[1]) && is_numeric($items[1])) {
+      $pageSection .= '-'.$items[1];
+      $GLOBALS['URI']['PAGE'] = $items[1];
+    }
+    return $pageSection;
   }
 }
