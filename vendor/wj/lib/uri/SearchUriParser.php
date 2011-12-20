@@ -3,6 +3,10 @@ class SearchUriParser {
   private static $sections;
 
   public static function parse($sections) {
+  if (isset($_GET['q'])) {
+      $location = $_GET['q'] === '' ? '' : $_GET['q'].'/';
+      return $this->redirect('/'.$location);
+    }
     self::$sections = $sections;
     $amount = count($sections);
     if ($amount === 0 || $sections[0] === '') {

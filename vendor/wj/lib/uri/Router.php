@@ -1,37 +1,44 @@
 <?php
 class Router {
   public function execute() {
-    if ($_SERVER['SERVER_NAME'] === 'www.'.DOMAIN_NAME) {
-      return $this->redirect('http://'.DOMAIN_NAME.$_SERVER['REQUEST_URI']);
+    $GLOBALS['URI'] = array();
+    $app = $this->dispatch();
+    if ($_SERVER['SERVER_NAME'] !== $_SERVER['HTTP_HOST']) {
+      $GLOBALS['URI']['STANDARD_PATH'] = 'http://'.$_SERVER['SERVER_NAME']
+        .$GLOBALS['URI']['STANDARD_PATH'];
     }
-    if ($_SERVER['REQUEST_URI'] === '/') {
-      return '/';
-    }
-    if (isset($_GET['q'])) {
-      $location = $_GET['q'] === '' ? '' : $_GET['q'].'/';
-      return $this->redirect('/'.$location);
-    }
-    list($path) = explode('?', $_SERVER['REQUEST_URI'], 2);
-    if ($path === '/') {
-      return $this->redirect('/');
-    }
-    $sections = explode('/', $path);
-    if (substr($sections[1], 0, 1) === '+') {
-      return $this->checkStandardUri(SitemapUriParser::parse($sections));
-    }
-    SearchUriParser::parse($sections);
-    return $this->checkStandardUri('/search');
-  }
-
-  private function redirect($uri) {
-    header('Location: '.$uri);
-    return '/redirect';
-  }
-
-  private function checkStandardUri($app) {
-    if ($GLOBALS['URI']['STANDARD'] !== $_SERVER['REQUEST_URI']) {
-      return $this->redirect($GLOBALS['URI']['STANDARD']);
+    if ($GLOBALS['URI']['REQUEST_PATH'] !== $GLOBALS['URI']['STANDARD_PATH']) {
+      $this->setLocationHeader();
+      $app = '/redirect';
     }
     return $app;
+  }
+
+  private function dispatch() {
+    $GLOBALS['URI']['REQUEST_PATH'] = $_SERVER['REQUEST_URI'];
+    $queryPosition = strpos($_SERVER['REQUEST_URI'], '?');
+    if ($queryPosition !== false) {
+      $GLOBALS['URI']['REQUEST_PATH'] = substr(
+        $_SERVER['REQUEST_URI'], 0, $queryPosition
+      );
+    }
+    if ($GLOBALS['URI']['REQUEST_PATH'] === '/') {
+      return MerchantListUriParser::parse();
+    }
+    $GLOBALS['URI']['PATH_SECTION_LIST'] = explode(
+      '/', $GLOBALS['URI']['REQUEST_PATH']
+    );
+    if ($GLOBALS['URI']['PATH_SECTION_LIST'][1] === '+i') {
+      return SitemapUriParser::parse();
+    }
+    return SearchUriParser::parse();
+  }
+
+  private function setLocationHeader() {
+    $location = $GLOBALS['URI']['STANDARD_PATH'];
+    if ($_SERVER['QUERY_STRING'] !== '') {
+      $location .= '?'.$_SERVER['QUERY_STRING'];
+    }
+    header('Location: '.$location);
   }
 }
