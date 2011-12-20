@@ -30,7 +30,7 @@ function bindEvent() {
 $(function() {
   $uri = window.location.pathname + '?media=json';
   $.get($uri, function(data) {
-    $('#filter').html(data);
+    $('#result').after('<div id="filter">' + data + '</div>');
     $('#key_list .key').mouseup(function() {
       if ($(this).attr('class') === 'key open') {
         $(this).attr('class', 'key');
@@ -75,6 +75,6 @@ $(function() {
     $('#option form a').show();
   });
   $('#option input').focusout(function() {
-    //$('#option form a').hide();
+    $('#option form a').hide();
   });
 });
