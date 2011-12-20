@@ -3,8 +3,6 @@ class SearchUriParser {
   private static $sections;
 
   public static function parse($sections) {
-    array_shift($sections);
-    array_pop($sections);
     self::$sections = $sections;
     $amount = count($sections);
     if ($amount === 0 || $sections[0] === '') {
@@ -126,10 +124,6 @@ class SearchUriParser {
     if (isset($_GET['sort'])) {
       $GLOBALS['URI']['SORT'] = $_GET['sort'];
       $arguments[] = 'sort='.urlencode($_GET['sort']);
-    }
-    if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-      $GLOBALS['URI']['PAGE'] = $_GET['sort'];
-      $arguments[] = 'page='.$_GET['page'];
     }
     if (count($arguments) > 0) {
       $GLOBALS['URI']['STANDARD'] .= '?'.implode('&', $arguments);
