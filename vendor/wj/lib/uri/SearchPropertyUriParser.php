@@ -1,10 +1,10 @@
 <?php
 class SearchPropertyUriParser {
   private static $key = false;
-  private static $keyUriName = null;
-  private static $valueList = null;
+  private static $keyUriName;
+  private static $valueList;
   private static $activeList = array();
-  private static $activeValueList = null;
+  private static $activeValueList;
 
   //key=value&key=value&!value&key=!value
   public static function parse() {
@@ -45,10 +45,8 @@ class SearchPropertyUriParser {
       $GLOBALS['URI']['PROPERTY_LIST'][] =
         array('KEY' => self::$key, 'VALUES' => self::$valueList);
       ksort(self::$activeValueList);
-      self::$activeList[self::$key['uri_index']] = array(
-        'uriName' => self::$keyUriName,
-        'value' => implode('&', self::$activeValueList)
-      );
+      self::$activeList[self::$key['uri_index']] =
+        self::$keyUriName.'='.implode('&', self::$activeValueList);
     }
     if ($uriKeyName !== null) {
       self::$key = DbProperty::getKeyByName(
