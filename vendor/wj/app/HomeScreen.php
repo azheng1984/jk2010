@@ -47,6 +47,7 @@ class HomeScreen extends Screen {
     }
     echo '</table>';
   }
+
   private function renderCategoryList() {
     $uri = urlencode('儿童');
     echo ' <ul id="category">';
