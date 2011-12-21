@@ -15,9 +15,6 @@ class SearchScreen extends Screen {
     $this->renderCssLink('search_suggestion');
     $this->renderJsLink('jquery-1.7.1');
     $this->renderJsLink('search');
-    if ($GLOBALS['URI']['RESULTS']['total_found'] === 0) {
-      echo '<meta name="robots" content="noindex, follow">';
-    }
   }
 
   protected function renderBodyContent() {
