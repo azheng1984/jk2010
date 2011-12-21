@@ -24,16 +24,15 @@
   background:url(/img/slogon_arrow.png);
 }
 #slogon h1 {
-  padding-left:52px;
+  padding-left:10px;
   font-size:16px;
   font-weight:normal;
   margin:0;
   color:#444;
-  background:url(/img/favicon.png) 10px 0 no-repeat;
   padding-bottom: 15px;
 }
 #slogon ul {
-  margin:-10px 0 10px 52px;
+  margin:-10px 0 10px 10px;
   float:left;
   list-style:none;
   padding:0;
