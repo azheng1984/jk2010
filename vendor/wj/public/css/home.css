@@ -24,7 +24,7 @@
   background:url(/img/slogon_arrow.png);
 }
 #slogon h1 {
-  padding-left:10px;
+  padding-left:15px;
   font-size:16px;
   font-weight:normal;
   margin:0;
@@ -32,7 +32,7 @@
   padding-bottom: 15px;
 }
 #slogon ul {
-  margin:-10px 0 10px 10px;
+  margin:-10px 0 10px 15px;
   float:left;
   list-style:none;
   padding:0;
