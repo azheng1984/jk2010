@@ -1,24 +1,26 @@
 <?php
 class PaginationScreen {
-  public static function render($total, $prefix = '') {
-    if ($total <= 16) {
+  public static function render(
+    $total, $itemsPerPage = 16, $prefix = '', $rel = ' rel="nofollow"'
+  ) {
+    if ($total <= $itemsPerPage) {
       return;
     }
     $currentPage = 1;
     if (isset($GLOBALS['URI']['PAGE'])) {
       $currentPage = $GLOBALS['URI']['PAGE'];
     }
-    $totalPage = self::getTotalPage($total);
+    $totalPage = self::getTotalPage($total, $itemsPerPage);
     $firstPage = self::getFirstPage($currentPage, $totalPage);
     $postfix = '';
     if ($_SERVER['QUERY_STRING'] !== '') {
       $postfix = '?'.$_SERVER['QUERY_STRING'];
     }
-    $result = '<div id="pagination"> ';
+    $result = '<div id="pagination">';
     if ($currentPage != 1) {
       $previousPage = $currentPage - 1;
       $path = $previousPage === 1 ? '.' : $previousPage;
-      $result .= '<a rel="nofollow" href="'
+      $result .= '<a'.$rel.' href="'
         .$prefix.$path.$postfix. '">&laquo; 上一页</a>';
     }
     $lastPage = $firstPage + 9;
@@ -31,21 +33,21 @@ class PaginationScreen {
         continue;
       }
       $path = $index === 1 ? '.' : $index;
-      $result .= ' <a rel="nofollow" href="'
-        .$prefix.$path.$postfix.'">'.$index.'</a>';
+      $result .= ' <a'.$rel.' href="'.$prefix.$path.$postfix.'">'.$index.'</a>';
     }
     if ($currentPage != $totalPage) {
-      $result .= ' <a rel="nofollow" href="'
+      $result .= ' <a'.$rel.' href="'
         .$prefix.($currentPage + 1).$postfix.'">下一页 &raquo;</a>';
     }
     echo $result, '</div>';
   }
 
-  private static function getTotalPage($total) {
-    if ($total % 16 === 0) {
-      return $total / 16;
+  private static function getTotalPage($total, $itemsPerPage) {
+    $remainder = $total % $itemsPerPage;
+    if ($remainder === 0) {
+      return $total / $itemsPerPage;
     }
-    return ($total + 16 - $total % 16) / 16;
+    return ($total + $itemsPerPage - $remainder) / $itemsPerPage;
   }
 
   private static function getFirstPage($currentPage, $totalPage) {
