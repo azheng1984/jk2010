@@ -30,7 +30,7 @@ class SearchPropertyUriParser {
       if ($value !== false) {
         $value['is_include'] = $isInclude;
         self::$values[] = $value;
-        self::$activeValueList[$value['uri_index']] = $list[0];
+        self::$activeValueList[$value['id']] = $list[0];
       }
     }
     self::moveNext();
@@ -45,7 +45,7 @@ class SearchPropertyUriParser {
       $GLOBALS['URI']['PROPERTY_LIST'][] =
         array('KEY' => self::$key, 'VALUES' => self::$valueList);
       ksort(self::$activeValueList);
-      self::$activeList[self::$key['uri_index']] =
+      self::$activeList[self::$key['id']] =
         self::$keyUriName.'='.implode('&', self::$activeValueList);
     }
     if ($uriKeyName !== null) {

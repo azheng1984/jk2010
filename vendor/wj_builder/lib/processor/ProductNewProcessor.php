@@ -22,19 +22,21 @@ class ProductNewProcessor {
     foreach (DbSpiderKey::getList($spiderProductId) as $spiderKey) {
       $webKey = DbWebKey::get($webCategoryId, $spiderKey['name']);
       if ($webKey === false) {
+        //get new uri_index & mva_index
         DbWebKey::insert();
       }
-      $webValues = $this->updateWebValue($webKey['id'], $spiderKey['id'], $spiderProductId);
+      $webValues = $this->updateWebValues($webKey['id'], $spiderKey['id'], $spiderProductId);
       $this->webPropertyList[] = array('key' => $webKey, 'value_list' => $webValues);
     }
   }
 
-  private function updateWebValue($webKeyId, $spiderKeyId, $spiderProductId) {
+  private function updateWebValues($webKeyId, $spiderKeyId, $spiderProductId) {
     $webValues = array();
     $spiderValues = DbSpiderValue::getList($spiderProductId, $spiderKeyId);
     foreach ($spiderValues as $spiderValue) {
       $webValue = DbWebValue::get($webKeyId, $spiderValue['name']);
       if ($webValue === false) {
+        //get new uri_index
         DbWebValue::insert();
       }
       $webValues[] = $webValue;
@@ -50,7 +52,11 @@ class ProductNewProcessor {
     
   }
 
-  private function updateSearchProperty() {
+  private function updateSearchKey() {
+    
+  }
+
+  private function updateSearchValues() {
     
   }
 
