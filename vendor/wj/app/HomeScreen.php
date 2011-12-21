@@ -32,7 +32,7 @@ class HomeScreen extends Screen {
       '<li><a href="/', $uri, '/">儿童 胶囊</a> <span>123</span>',
       '<li><a href="/', $uri, '/">儿童 胶囊</a> <span>123</span>',
       '</ul>';
-    echo '<strong><a class="more" href="/+i/">更多 &raquo;</a></strong>';
+    echo '<strong><a class="more" href="/+i/">&hellip;</a></strong>';
   }
 
   private function renderMerchantList() {
