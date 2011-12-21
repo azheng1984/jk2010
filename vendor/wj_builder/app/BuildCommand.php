@@ -2,12 +2,13 @@
 class BuildCommand {
   public function execute() {
     $tablePrefix = 'food';
-    while (($item = DbProductUpdate::get($tablePrefix)) !== false) {
-      $class = 'Product'.ucfirst(strtolower($item['type'])).'Updater';
-      $updater = new $class;
-      $updater->execute($item);
-      DbProductUpdate::delete($tablePrefix, $item['id']);
+    while (($item = DbSpiderProductLog::get($tablePrefix)) !== false) {
+      $class = 'Product'.ucfirst(strtolower($item['type'])).'Processor';
+      $processor = new $class;
+      $processor->execute($item);
+      DbSpiderProductLog::delete($tablePrefix, $item['id']);
       echo '.';
+      exit;
     }
   }
 }
