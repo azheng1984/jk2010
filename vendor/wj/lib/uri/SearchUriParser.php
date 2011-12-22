@@ -1,19 +1,18 @@
 <?php
 class SearchUriParser {
   public static function parse() {
-    $amount = count($GLOBALS['URI']['PATH_SECTION_LIST']);
-    /* /section */
-    if ($amount < 3) {
+    $depth = count($GLOBALS['URI']['PATH_SECTION_LIST']);
+    if ($depth < 3 || $depth > 5) {
       throw new NotFoundException;
     }
     /* /query/ */
     self::parseQuery();
     /* /query/category/ */
-    if ($amount > 3) {
+    if ($depth > 3) {
       self::parseCategory();
     }
     /* /query/category/properties/ */
-    if ($amount === 5) {
+    if ($depth === 5) {
       SearchPropertyUriParser::parse();
     }
     self::parsePage();
@@ -24,31 +23,24 @@ class SearchUriParser {
   private static function parseQuery() {
     $GLOBALS['URI']['QUERY'] =
       urldecode($GLOBALS['URI']['PATH_SECTION_LIST'][1]);
-    $GLOBALS['URI']['STANDARD_PATH'] =
-      '/'.$GLOBALS['URI']['PATH_SECTION_LIST'][1];
   }
 
   private static function parseCategory() {
-    $GLOBALS['URI']['CATEGORY'] = DbCategory::getByName(
-      urldecode($GLOBALS['URI']['PATH_SECTION_LIST'][2])
-    );
+    $name = urldecode($GLOBALS['URI']['PATH_SECTION_LIST'][2]);
+    $GLOBALS['URI']['CATEGORY'] = DbCategory::getByName($name);
     if ($GLOBALS['URI']['CATEGORY'] === false) {
-      throw new NotFoundException;
+      $GLOBALS['URI']['CATEGORY'] = array('name' => $name);
     }
-    $GLOBALS['URI']['STANDARD_PATH'] .=
-      '/'.$GLOBALS['URI']['PATH_SECTION_LIST'][2];
   }
 
   private static function parsePage() {
     $section = end($GLOBALS['URI']['PATH_SECTION_LIST']);
     if ($section === '') {
-      $GLOBALS['URI']['STANDARD_PATH'] .= '/';
       return;
     }
     if (!is_numeric($section)) {
       throw new NotFoundException;
     }
-    $GLOBALS['URI']['STANDARD_PATH'] .= '/'.$section;
     $GLOBALS['URI']['PAGE'] = $section;
   }
 
