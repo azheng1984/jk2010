@@ -20,7 +20,7 @@ class CategoryScreen extends Screen {
       echo '</tr>';
     }
     echo '</table>';
-    echo '<strong><a href="?page=1">更多 &raquo;</a></strong>';
+    echo '<strong><a href="+k/">更多 &raquo;</a></strong>';
     $char = 65;
     echo '<h2>搜索</h2>';
     echo '<table>';
@@ -32,7 +32,7 @@ class CategoryScreen extends Screen {
       echo '</tr>';
     }
     echo '</table>';
-    echo '<strong><a href="../鞋子">更多 &raquo;</a></strong>';
+    echo '<strong><a href="+q/">更多 &raquo;</a></strong>';
     echo '</div>';
   }
 }

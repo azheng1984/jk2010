@@ -22,7 +22,7 @@ class ProductNewProcessor {
     foreach (DbSpiderKey::getList($spiderProductId) as $spiderKey) {
       $webKey = DbWebKey::get($webCategoryId, $spiderKey['name']);
       if ($webKey === false) {
-        //get new uri_index & mva_index
+        //get new mva_index
         DbWebKey::insert();
       }
       $webValues = $this->updateWebValues($webKey['id'], $spiderKey['id'], $spiderProductId);
