@@ -2,21 +2,24 @@
 class DbProduct {
   public static function getPrice($tablePrefix, $merchantProductId) {
     return Db::getRow(
-      'SELECT id, lowest_price, highest_price FROM '.$tablePrefix.'_product'
-      .' WHERE merchant_product_id = ?', $merchantProductId
+      'SELECT id, lowest_price_x_100, highest_price_x_100,'
+        .'list_lowest_price_x_100  FROM '.$tablePrefix.'_product'
+        .' WHERE merchant_product_id = ?', $merchantProductId
     );
   }
 
-  public static function getImageInfo($tablePrefix, $merchantProductId) {
+  public static function getImageMeta($tablePrefix, $merchantProductId) {
     return Db::getRow(
       'SELECT id, image_md5, image_last_modified FROM '.$tablePrefix.'_product'
       .' WHERE merchant_product_id = ?', $merchantProductId
     );
   }
 
-  public static function getContentMd5AndSaleIndex($tablePrefix, $merchantProductId) {
+  public static function getContentMd5AndSaleRankByMerchantProductId(
+    $tablePrefix, $merchantProductId
+  ) {
     return Db::getRow(
-      'SELECT id, content_md5, sale_index FROM '.$tablePrefix.'_product'
+      'SELECT id, content_md5, sale_rank FROM '.$tablePrefix.'_product'
       .' WHERE merchant_product_id = ?', $merchantProductId
     );
   }
@@ -24,68 +27,84 @@ class DbProduct {
   public static function insert(
     $tablePrefix,
     $merchantProductId,
+    $uri,
     $categoryId,
     $title,
     $description,
     $contentMd5,
-    $saleIndex,
-    $lowestPrice = null,
-    $highestPrice = null
+    $saleRank,
+    $lowestPriceX100 = null,
+    $highestPriceX100 = null,
+    $lowestListPriceX100 = null
   ) {
     $sql = 'INSERT INTO '.$tablePrefix.'_product('
-      .'merchant_product_id, category_id, title, description, content_md5,'
-      .' sale_index, lowest_price, highest_price, index_time)'
-      .' VALUES(?, ?, ?, ?, ?, ?, ?, ?, NOW())';
+      .'merchant_product_id, $uri, category_id, title, description, content_md5,'
+      .' sale_rank, lowest_price_x_100, highest_price_x_100,'
+      .'list_lowest_price_x_100, index_time)'
+      .' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())';
     Db::execute(
       $sql,
       $merchantProductId,
+      $uri,
       $categoryId,
       $title,
       $description,
       $contentMd5,
-      $saleIndex,
-      $lowestPrice,
-      $highestPrice
+      $saleRank,
+      $lowestPriceX100,
+      $highestPriceX100,
+      $lowestListPriceX100
     );
     return DbConnection::get()->lastInsertId();
   }
 
   public static function updatePrice(
-    $tablePrefix, $id, $lowestPrice, $highestPrice = null
+    $tablePrefix,
+    $id,
+    $lowestPriceX100,
+    $highestPriceX100 = null,
+    $lowestListPriceX100 = null
   ) {
     Db::execute(
-      'UPDATE '.$tablePrefix.'_product SET lowest_price = ?, highest_price = ?'
+      'UPDATE '.$tablePrefix.'_product SET '
+      .'lowest_price_x_100 = ?,'
+      .'highest_price_x_100 = ?,'
+      .'lowest_list_price_x_100 = ?'
       .' WHERE id = ?',
-      $lowestPrice, $highestPrice, $id
+      $lowestPriceX100, $highestPriceX100, $lowestListPriceX100, $id
     );
   }
 
-  public static function updateSaleIndex($tablePrefix, $id, $saleIndex) {
+  public static function updateSaleRank($tablePrefix, $id, $saleRank) {
     Db::execute(
-      'UPDATE '.$tablePrefix.'_product SET sale_index = ? WHERE id = ?',
-      $saleIndex, $id
+      'UPDATE '.$tablePrefix.'_product SET sale_rank = ? WHERE id = ?',
+      $saleRank, $id
     );
   }
 
   public static function updateFlag($tablePrefix, $id) {
     Db::execute(
-      'UPDATE '.$tablePrefix.'_product SET is_update = 1 WHERE id = ?', $id
+      'UPDATE '.$tablePrefix.'_product SET is_updated = 1 WHERE id = ?', $id
     );
   }
 
   public static function updateContent(
-    $tablePrefix, $id, $categoryId, $title,
-    $description, $contentMd5
+    $tablePrefix,
+    $id,
+    $categoryId,
+    $title,
+    $description,
+    $contentMd5
   ) {
     Db::execute(
       'UPDATE '.$tablePrefix.'_product SET'
       .' category_id = ?,  title = ?, description = ?, content_md5 = ?,'
-      .' is_update = 1 WHERE id = ?',
+      .' is_updated = 1 WHERE id = ?',
       $categoryId, $title, $description, $contentMd5, $id
     );
   }
 
-  public static function updateImageInfo(
+  public static function updateImageMeta(
     $tablePrefix, $id, $imageMd5, $imageLastModified
   ) {
     Db::execute(
@@ -97,7 +116,7 @@ class DbProduct {
 
   public static function expireAll($tablePrefix) {
     Db::execute(
-      'UPDATE '.$tablePrefix.'_product SET is_update = 0'
+      'UPDATE '.$tablePrefix.'_product SET is_updated = 0'
     );
   }
 
