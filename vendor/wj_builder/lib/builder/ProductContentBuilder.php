@@ -1,5 +1,5 @@
 <?php
-class ProductContentProcessor {
+class ProductContentBuilder {
   private $spiderProduct;
   private $webCategoryId;
   private $searchValueIdLists = array();
@@ -7,12 +7,12 @@ class ProductContentProcessor {
 
   public function execute($item) {
     $this->spiderProduct = DbSpiderProduct::get($item['id']);
-    $this->syncWebCategory();
-    $this->syncPropertyList();
-    $this->syncProduct();
+    $this->buildWebCategory();
+    $this->buildPropertyList();
+    $this->buildProduct();
   }
 
-  private function syncCategory() {
+  private function buildCategory() {
     $spiderCategory = DbSpiderCategory::get(
       $this->spiderProduct['category_id']
     );
@@ -25,7 +25,7 @@ class ProductContentProcessor {
     $this->webCategoryId = $webCategory['id'];
   }
 
-  private function syncPropertyList() {
+  private function buildPropertyList() {
     $spiderProductPropertyList = DbSpiderProduct::getPropertyValueList(
       $this->spiderProduct['id']
     );
@@ -42,8 +42,8 @@ class ProductContentProcessor {
       $spiderPropertyList[$spiderKey['id']]['value_list'][] = $spiderValue;
     }
     foreach ($spiderPropertyList as $spiderKey) {
-      $webKey = $this->syncWebKey($spiderKey['name']);
-      $searchValueIdList = $this->syncValueList(
+      $webKey = $this->buildWebKey($spiderKey['name']);
+      $searchValueIdList = $this->buildValueList(
         $spiderKey['value_list'], $webKey['id']
       );
       $this->webValueIdLists[intval($spiderKey['mva_index'])]
@@ -52,7 +52,7 @@ class ProductContentProcessor {
     }
   }
 
-  private function syncKey($spiderKeyName) {
+  private function buildKey($spiderKeyName) {
     $webKey = DbWebKey::get($this->webCategoryId, $spiderKeyName);
     if ($webKey === false) {
       $mvaIndex = DbBuilderKeyMvaIndex::getNext($this->webCategoryId);
@@ -68,7 +68,7 @@ class ProductContentProcessor {
     return $webKey;
   }
 
-  private function syncValueList($spiderValueList, $webKeyId) {
+  private function buildValueList($spiderValueList, $webKeyId) {
     $searchValueIdList = array();
     foreach ($spiderValueList as $spiderValue) {
       $webValue = DbWebValue::get($webKeyId, $spiderValue['name']);
@@ -82,7 +82,7 @@ class ProductContentProcessor {
     return $searchValueIdList;
   }
 
-  private function syncProduct() {
+  private function buildProduct() {
     $spiderProduct = $this->spiderProduct;
     $lowestPriceX100 = $spiderProduct['lowest_price_x_100'];
     $highestPriceX100 = $spiderProduct['highest_price_x_100'];
@@ -94,7 +94,7 @@ class ProductContentProcessor {
     $title = $spiderProduct['title'];
     $description = $spiderProduct['description'];
     $keywordList = Segmentation::execute($spiderProduct['title'])
-          .' '.Segmentation::execute($spiderProduct['description']);
+      .' '.Segmentation::execute($spiderProduct['description']);
     $keyIdList = implode(',', $this->webKeyIdList);
     $discountX10 = 100;
     $saleRank = 1000000 - $spiderProduct['sale_index'];
