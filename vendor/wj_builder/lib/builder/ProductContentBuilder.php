@@ -46,7 +46,7 @@ class ProductContentBuilder {
       $searchValueIdList = $this->buildValueList(
         $spiderKey['value_list'], $webKey['id']
       );
-      $this->webValueIdLists[intval($spiderKey['mva_index'])]
+      $this->searchValueIdLists[intval($spiderKey['mva_index'])]
          = $searchValueIdList;
       $this->webKeyIdList[] = $webKey['id'];
     }
@@ -101,10 +101,10 @@ class ProductContentBuilder {
     $publishTimestamp = date("ymdHi");
     $valueIdLists = $this->getSearchValueIdLists();
     $spiderProductWebProduct = DbBuilderSpiderProductWebProduct::get(
-      $this->spiderProduct['merchant_product_id']
+      $spiderProduct['merchant_product_id']
     );
     if ($spiderProductWebProduct === false) {
-      $this->webProductId = DbWebProduct::insert(
+      $webProductId = DbWebProduct::insert(
         $lowestPriceX100,
         $highestPriceX100,
         $listLowestPriceX100,
@@ -116,7 +116,7 @@ class ProductContentBuilder {
         $description
       );
       DbSearchProduct::insert(
-        $this->webProductId,
+        $webProductId,
         $lowestPriceX100,
         $discountX10,
         $saleRank,
@@ -127,15 +127,16 @@ class ProductContentBuilder {
         $valueIdLists
       );
       DbBuilderSpiderProductWebProduct::insert(
+        $spiderProduct['id'],
         $merchantId,
         $this->spiderProduct['merchant_product_id'],
-        $this->webProductId
+        $webProductId
       );
       return;
     }
-    $this->webProductId = $spiderProductWebProduct['web_product_id'];
+    $webProductId = $spiderProductWebProduct['web_product_id'];
     DbWebProduct::update(
-      $this->webProductId,
+      $webProductId,
       $lowestPriceX100,
       $highestPriceX100,
       $listLowestPriceX100,
@@ -147,7 +148,7 @@ class ProductContentBuilder {
       $description
     );
     DbSearchProduct::updateContent(
-      $this->webProductId,
+      $webProductId,
       $lowestPriceX100,
       $discountX10,
       $saleRank,
