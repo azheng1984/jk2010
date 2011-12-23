@@ -1,25 +1,25 @@
 <?php
 class DbProperty {
-  public static function getOrNewKeyId($tablePrefix, $key) {
-    $sql = 'SELECT id FROM '.$tablePrefix.'_property_key WHERE `key` = ?';
-    $id = Db::getColumn($sql, $key);
+  public static function getOrNewKeyId($tablePrefix, $keyName) {
+    $sql = 'SELECT id FROM '.$tablePrefix.'_property_key WHERE `name` = ?';
+    $id = Db::getColumn($sql, $keyName);
     if ($id === false) {
-      $sql = 'REPLACE INTO '.$tablePrefix.'_property_key(`key`, is_update)'
+      $sql = 'REPLACE INTO '.$tablePrefix.'_property_key(`name`, is_updated)'
         .' VALUES(?, 1)';
-      Db::execute($sql, $key);
+      Db::execute($sql, $keyName);
       return DbConnection::get()->lastInsertId();
     }
     return $id;
   }
 
-  public static function getOrNewValueId($tablePrefix, $keyId, $value) {
+  public static function getOrNewValueId($tablePrefix, $keyId, $valueName) {
     $sql = 'SELECT id FROM '.$tablePrefix.'_property_value'
-      .' WHERE key_id = ? AND `value` = ?';
-    $id = Db::getColumn($sql, $keyId, $value);
+      .' WHERE key_id = ? AND `name` = ?';
+    $id = Db::getColumn($sql, $keyId, $valueName);
     if ($id === false) {
       $sql = 'REPLACE INTO '.$tablePrefix.'_property_value'
-        .'(key_id, `value`, is_update) VALUES(?, ?, 1)';
-      Db::execute($sql, $keyId, $value);
+        .'(key_id, `name`, is_updated) VALUES(?, ?, 1)';
+      Db::execute($sql, $keyId, $valueName);
       return DbConnection::get()->lastInsertId();
     }
     return $id;
@@ -27,19 +27,19 @@ class DbProperty {
 
   public static function expireAll($tablePrefix) {
     Db::execute(
-      'UPDATE '.$tablePrefix.'_property_key SET is_update = 0'
+      'UPDATE '.$tablePrefix.'_property_key SET is_updated = 0'
     );
     Db::execute(
-      'UPDATE '.$tablePrefix.'_property_value SET is_update = 0'
+      'UPDATE '.$tablePrefix.'_property_value SET is_updated = 0'
     );
   }
 
-  public static function deleteOldItems($tablePrefix) {
+  public static function deleteExpiredItems($tablePrefix) {
     Db::execute(
-      'DELETE '.$tablePrefix.'_property_key WHERE is_update = 0'
+      'DELETE '.$tablePrefix.'_property_key WHERE is_updated = 0'
     );
     Db::execute(
-      'DELETE '.$tablePrefix.'_property_value WHERE is_update = 0'
+      'DELETE '.$tablePrefix.'_property_value WHERE is_updated = 0'
     );
   }
 

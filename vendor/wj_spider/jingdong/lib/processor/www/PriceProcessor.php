@@ -26,7 +26,7 @@ class PriceProcessor {
     $row = DbProduct::getPrice($tablePrefix, $merchantProductId);
     if ($row['lowest_price'] !== $price) {
       DbProduct::updatePrice($tablePrefix, $row['id'], $price);
-      DbProductUpdate::insert($tablePrefix, $row['id'], 'PRICE');
+      DbProductLog::insert($tablePrefix, $row['id'], 'PRICE');
     }
   }
 }
