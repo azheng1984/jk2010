@@ -1,5 +1,5 @@
 <?php
-class ProductPriceBuilder {
+class ProductPriceProcessor {
   public function execute($item) {
     $spiderProductWebProduct =
       DbBuilderSpiderProductWebProduct::getBySpiderProductId(

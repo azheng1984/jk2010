@@ -1,5 +1,5 @@
 <?php
-class ProductContentBuilder {
+class ProductContentProcessor {
   private $spiderProduct;
   private $webCategoryId;
   private $searchValueIdLists = array();
