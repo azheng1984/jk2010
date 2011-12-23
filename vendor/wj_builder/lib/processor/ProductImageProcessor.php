@@ -1,5 +1,5 @@
 <?php
-class ProductImageBuilder {
+class ProductImageProcessor {
   public function execute($item) {
     $spiderProductWebProduct =
       DbBuilderSpiderProductWebProduct::getBySpiderProductId(

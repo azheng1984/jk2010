@@ -1,5 +1,5 @@
 <?php
-class ProductSaleRankBuilder {
+class ProductSaleRankProcessor {
   public function execute($item) {
     $spiderProductWebProduct =
       DbBuilderSpiderProductWebProduct::getBySpiderProductId(
