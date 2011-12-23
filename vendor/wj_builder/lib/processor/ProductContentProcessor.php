@@ -135,16 +135,16 @@ class ProductContentProcessor {
     }
     $this->webProductId = $spiderProductWebProduct['web_product_id'];
     DbWebProduct::update(
-        $this->webProductId,
-        $lowestPriceX100,
-        $highestPriceX100,
-        $listLowestPriceX100,
-        $imageDbIndex,
-        $merchantId,
-        $categoryId,
-        $uri,
-        $title,
-        $description
+      $this->webProductId,
+      $lowestPriceX100,
+      $highestPriceX100,
+      $listLowestPriceX100,
+      $imageDbIndex,
+      $merchantId,
+      $categoryId,
+      $uri,
+      $title,
+      $description
     );
     DbSearchProduct::updateContent(
       $this->webProductId,
