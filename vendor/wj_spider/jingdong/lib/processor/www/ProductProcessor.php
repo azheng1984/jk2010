@@ -2,12 +2,27 @@
 class ProductProcessor {
   private $tablePrefix;
   private $html;
+  private $productId;
   private $merchantProductId;
+  private $categoryId;
+  private $saleRank;
   private $title = null;
   private $description = null;
-  private $saleRank;
+  private $contentMd5;
 
   public function execute($arguments) {
+    $this->initialize($arguments);
+    $this->parseTitle();
+    $this->parseDescription();
+    $this->parseProperties();
+    $this->buildContentMd5();
+    $this->save();
+    DbProduct::updateFlag($this->tablePrefix, $this->productId);
+    $this->insertImageTask();
+    $this->insertPriceTask();
+  }
+
+  private function initialize($arguments) {
     $result = WebClient::get(
       'www.360buy.com', '/product/'.$arguments['id'].'.html'
     );
@@ -15,47 +30,10 @@ class ProductProcessor {
       return $result;
     }
     $this->html = $result['content'];
-    $this->saleRank = 100000 - $arguments['sale_index'];
     $this->tablePrefix = $arguments['table_prefix'];
     $this->merchantProductId = $arguments['id'];
+    $this->saleRank = 100000 - $arguments['sale_index'];
     $this->categoryId = $arguments['category_id'];
-    $this->parseTitle();
-    $this->parseDescription();
-    $this->parseProperties();
-    $productId = $this->save();
-    $matches = array();
-    preg_match(
-      '{jqzoom.*? src="http://(.*?)/(\S+)"}', $result['content'], $matches
-    );
-    if (count($matches) !== 3) {
-      return $result;
-    }
-    DbTask::insert('Image', array(
-      'id' => $productId,
-      'category_id' => $arguments['category_id'],
-      'domain' => $matches[1],
-      'path' => $matches[2],
-      'table_prefix' => $arguments['table_prefix']
-    ));
-    DbTask::insert('Price', array(
-      'id' => $productId, 'table_prefix' => $arguments['table_prefix']
-    ));
-  }
-
-  private function save() {
-    $productMeta = DbProduct::getContentMd5AndSaleRankByMerchantProductId(
-      $this->tablePrefix, $this->merchantProductId
-    );
-    if ($productMeta == false) {
-      $this->saveProduct();
-    }
-    $md5 = $this->getContentMd5();
-    if ($info === false) {
-      return $this->insertContent($md5);
-    }
-    $this->updateContent($info, $md5);
-    $this->updateSaleIndex($info);
-    return $info['id'];
   }
 
   private function parseProperties() {
@@ -120,38 +98,85 @@ class ProductProcessor {
     $this->title = trim(iconv('GBK', 'utf-8', $matches[1]));
   }
 
-  private function insertContent($md5) {
-    $id = DbProduct::insert(
-      $this->tablePrefix, $this->merchantProductId,$this->categoryId,
-      $this->title, $this->description, $md5, $this->saleIndex
+  private function buildContentMd5() {
+    $propertyList = var_export(DbProductProperty::getListByMerchantProductId(
+      $this->tablePrefix, $this->merchantProductId), true);
+    $this->contentMd5 = md5(
+      $propertyList.$this->categoryId.$this->title.$this->description
     );
-    DbProductLog::insert($this->tablePrefix, $id, 'NEW');
+  }
+
+  private function save() {
+    $productMeta = DbProduct::getContentMd5AndSaleRankByMerchantProductId(
+      $this->tablePrefix, $this->merchantProductId
+    );
+    if ($productMeta == false) {
+      $this->productId = $this->insert();
+      return;
+    }
+    $this->productId = $productMeta['id'];
+    if ($productMeta['content_md5'] === $this->contentMd5
+      && $this->saleRank === $productMeta['sale_rank']) {
+      return;
+    }
+    if ($productMeta['content_md5'] === $this->contentMd5) {
+      $this->updateSaleRank();
+      return;
+    }
+    $this->update();
+  }
+
+  private function insert() {
+    $id = DbProduct::insert(
+      $this->tablePrefix,
+      $this->merchantProductId,
+      $this->categoryId,
+      $this->title,
+      $this->description,
+      $this->contentMd5,
+      $this->saleRank
+    );
+    DbProductLog::insert($this->tablePrefix, $id, 'CONTENT');
     return $id;
   }
 
-  private function updateContent($md5, $info) {
-    if ($info['content_md5'] === $md5) {
-      DbProduct::updateContent(
-        $this->tablePrefix,  $info['id'], $this->categoryId, $this->title,
-        $this->description, $md5
-      );
-      DbProductLog::insert($this->tablePrefix,  $info['id'], 'CONTENT');
-      return;
-    }
-    DbProduct::updateFlag($this->tablePrefix, $info['id']);
+  private function update() {
+    DbProduct::updateContent(
+      $this->tablePrefix,
+      $this->productId,
+      $this->categoryId,
+      $this->title,
+      $this->description,
+      $this->contentMd5
+    );
+    DbProductLog::insert($this->tablePrefix, $this->productId, 'CONTENT');
   }
 
-  private function updateSaleIndex($info) {
-    $previousIndex = $info  === false ? false : $info['sale_index'];
-    if ($previousIndex !== $this->saleIndex) {
-      DbProduct::updateSaleIndex($this->tablePrefix, $info['id'], $this->saleIndex);
-      DbProductLog::insert($this->tablePrefix, $info['id'], 'SALE_INDEX');
-    }
+  private function updateSaleRank($id) {
+    DbProduct::updateSaleRank($this->tablePrefix, $id, $this->saleRank);
+    DbProductLog::insert($this->tablePrefix, $id, 'SALE_RANK');
   }
 
-  private function getContentMd5() {
-    $propertyList = var_export(DbProductProperty::getListByMerchantProductId(
-      $this->tablePrefix, $this->merchantProductId), true);
-    return md5($propertyList.$this->categoryId.$this->title.$this->description);
+  private function insertImageTask() {
+    $matches = array();
+    preg_match(
+      '{jqzoom.*? src="http://(.*?)/(\S+)"}', $this->html, $matches
+    );
+    if (count($matches) !== 3) {
+      throw Exception;
+    }
+    DbTask::insert('Image', array(
+      'id' => $this->productId,
+      'category_id' => $this->categoryId,
+      'domain' => $matches[1],
+      'path' => $matches[2],
+      'table_prefix' => $this->tablePrefix
+    ));
+  }
+
+  private function insertPriceTask() {
+    DbTask::insert('Price', array(
+      'id' => $this->productId, 'table_prefix' => $this->tablePrefix
+    ));
   }
 }
