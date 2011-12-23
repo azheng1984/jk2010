@@ -99,7 +99,7 @@ class ProductContentProcessor {
     $discountX10 = 100;
     $saleRank = 1000000 - $spiderProduct['sale_index'];
     $publishTimestamp = date("ymdHi");
-    $valueIdLists = $this->getSearchProductValueList();
+    $valueIdLists = $this->getSearchValueIdLists();
     $spiderProductWebProduct = DbBuilderSpiderProductWebProduct::get(
       $this->spiderProduct['merchant_product_id']
     );
@@ -159,7 +159,7 @@ class ProductContentProcessor {
     );
   }
 
-  private function getSearchProductValueList() {
+  private function getSearchValueIdLists() {
     $result = array();
     for ($index = 1; $index <= 10; ++$index) {
       if (isset($this->result[$index])) {
