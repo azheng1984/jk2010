@@ -35,4 +35,41 @@ class DbWebProduct {
     );
     return DbConnection::get()->lastInsertId();
   }
+
+  public static function update(
+    $webProductId,
+    $lowestPriceX100,
+    $highestPriceX100,
+    $listLowestPriceX100,
+    $imageDbIndex,
+    $merchantId,
+    $categoryId,
+    $uri,
+    $title,
+    $description
+  ) {
+    $sql = 'UPDATE `wj_web`.`product` SET '
+      .'`lowest_price_x_100 = ?,'
+      .'`highest_price_x_100 = ?,'
+      .'`list_lowest_price_x_100 = ?,'
+      .'`image_db_index = ?,'
+      .'`merchant_id = ?,'
+      .'`category_id` = ?,'
+      .'`uri = ?,'
+      .'`title` = ?,'
+      .'`description` = ?'
+      .' WHERE id = ?';
+    Db::execute($sql,
+      $lowestPriceX100,
+      $highestPriceX100,
+      $listLowestPriceX100,
+      $imageDbIndex,
+      $merchantId,
+      $categoryId,
+      $uri,
+      $title,
+      $description,
+      $webProductId
+    );
+  }
 }
