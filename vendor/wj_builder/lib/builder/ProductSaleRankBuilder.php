@@ -1,5 +1,5 @@
 <?php
-class ProductImageBuilder {
+class ProductSaleRankBuilder {
   public function execute($item) {
     $spiderProductWebProduct =
       DbBuilderSpiderProductWebProduct::getBySpiderProductId(
@@ -8,14 +8,9 @@ class ProductImageBuilder {
     if ($spiderProductWebProduct === false) {
       return;
     }
+    $spiderProductId = $spiderProductWebProduct['spider_product_id'];
+    $saleRank = DbSpiderProduct::getSaleRank($spiderProductId);
     $webProductId = $spiderProductWebProduct['web_product_id'];
-    $image = DbSpiderImage::get($item['product_id']);
-    if ($image === false) {
-      DbWebProduct::updateImageDbIndex(null);
-      DbWebImage::delete($webProductId);
-      return;
-    }
-    DbWebProduct::updateImageDbIndex(1);
-    DbWebImage::replace($webProductId, $image);
+    DbSearchProduct::updateSaleRank($webProductId, 10000 - $saleRank);
   }
 }
