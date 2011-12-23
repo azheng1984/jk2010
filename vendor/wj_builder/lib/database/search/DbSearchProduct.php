@@ -106,4 +106,15 @@ class DbSearchProduct {
       $id
     );
   }
+
+  public static function updateSaleRank($id, $saleRank) {
+    $sql = 'UPDATE `wj_search`.`product` SET `sale_rank` = ? WHERE id = ?';
+    Db::execute($sql, $saleRank, $id);
+  }
+
+  public static function updatePrice($id, $lowestPriceX100, $discountX10) {
+    $sql = 'UPDATE `wj_search`.`product`'
+      .' SET `lowest_price_x_100` = ?, `discount_x_10` = ? WHERE id = ?';
+    Db::execute($sql, $lowestPriceX100, $discountX10, $id);
+  }
 }

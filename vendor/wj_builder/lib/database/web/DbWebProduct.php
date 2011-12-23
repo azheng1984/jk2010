@@ -37,7 +37,7 @@ class DbWebProduct {
   }
 
   public static function update(
-    $webProductId,
+    $id,
     $lowestPriceX100,
     $highestPriceX100,
     $listLowestPriceX100,
@@ -69,7 +69,33 @@ class DbWebProduct {
       $uri,
       $title,
       $description,
-      $webProductId
+      $id
+    );
+  }
+
+  public static function updateImageDbIndex($id, $imageDbIndex) {
+    $sql = 'UPDATE `wj_web`.`product` SET '
+      .'`image_db_index = ?,'
+      .' WHERE id = ?';
+    Db::execute($sql, $imageDbIndex, $id);
+  }
+
+  public static function updatePrice(
+    $id,
+    $lowestPriceX100,
+    $highestPriceX100,
+    $listLowestPriceX100
+  ) {
+    $sql = 'UPDATE `wj_web`.`product` SET '
+      .'`lowest_price_x_100 = ?,'
+      .'`highest_price_x_100 = ?,'
+      .'`list_lowest_price_x_100 = ?,'
+      .' WHERE id = ?';
+    Db::execute($sql,
+      $lowestPriceX100,
+      $highestPriceX100,
+      $listLowestPriceX100,
+      $id
     );
   }
 }
