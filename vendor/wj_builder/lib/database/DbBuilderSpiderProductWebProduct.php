@@ -1,5 +1,5 @@
 <?php
-class DbBuilderSpiderProduct {
+class DbBuilderSpiderProductWebProduct {
   public function get($merchantProductId) {
     return Db::getRow('SELECT * FROM spider_product-web_product');
   }
