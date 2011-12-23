@@ -5,7 +5,7 @@ class ProductProcessor {
   private $merchantProductId;
   private $title = null;
   private $description = null;
-  private $saleIndex;
+  private $saleRank;
 
   public function execute($arguments) {
     $result = WebClient::get(
@@ -15,17 +15,14 @@ class ProductProcessor {
       return $result;
     }
     $this->html = $result['content'];
-    $this->saleIndex = $arguments['sale_index'];
+    $this->saleRank = 100000 - $arguments['sale_index'];
     $this->tablePrefix = $arguments['table_prefix'];
     $this->merchantProductId = $arguments['id'];
     $this->categoryId = $arguments['category_id'];
     $this->parseTitle();
     $this->parseDescription();
     $this->parseProperties();
-    $info = DbProduct::getContentMd5AndSaleIndex(
-      $this->tablePrefix, $this->merchantProductId
-    );
-    $this->save($info);
+    $productId = $this->save();
     $matches = array();
     preg_match(
       '{jqzoom.*? src="http://(.*?)/(\S+)"}', $result['content'], $matches
@@ -34,18 +31,24 @@ class ProductProcessor {
       return $result;
     }
     DbTask::insert('Image', array(
-      'id' => $arguments['id'],
+      'id' => $productId,
       'category_id' => $arguments['category_id'],
       'domain' => $matches[1],
       'path' => $matches[2],
       'table_prefix' => $arguments['table_prefix']
     ));
     DbTask::insert('Price', array(
-      'id' => $arguments['id'], 'table_prefix' => $arguments['table_prefix'])
-    );
+      'id' => $productId, 'table_prefix' => $arguments['table_prefix']
+    ));
   }
 
-  private function save($info) {
+  private function save() {
+    $productMeta = DbProduct::getContentMd5AndSaleRankByMerchantProductId(
+      $this->tablePrefix, $this->merchantProductId
+    );
+    if ($productMeta == false) {
+      $this->saveProduct();
+    }
     $md5 = $this->getContentMd5();
     if ($info === false) {
       return $this->insertContent($md5);
@@ -122,7 +125,7 @@ class ProductProcessor {
       $this->tablePrefix, $this->merchantProductId,$this->categoryId,
       $this->title, $this->description, $md5, $this->saleIndex
     );
-    DbProductUpdate::insert($this->tablePrefix, $id, 'NEW');
+    DbProductLog::insert($this->tablePrefix, $id, 'NEW');
     return $id;
   }
 
@@ -132,7 +135,7 @@ class ProductProcessor {
         $this->tablePrefix,  $info['id'], $this->categoryId, $this->title,
         $this->description, $md5
       );
-      DbProductUpdate::insert($this->tablePrefix,  $info['id'], 'CONTENT');
+      DbProductLog::insert($this->tablePrefix,  $info['id'], 'CONTENT');
       return;
     }
     DbProduct::updateFlag($this->tablePrefix, $info['id']);
@@ -142,7 +145,7 @@ class ProductProcessor {
     $previousIndex = $info  === false ? false : $info['sale_index'];
     if ($previousIndex !== $this->saleIndex) {
       DbProduct::updateSaleIndex($this->tablePrefix, $info['id'], $this->saleIndex);
-      DbProductUpdate::insert($this->tablePrefix, $info['id'], 'SALE_INDEX');
+      DbProductLog::insert($this->tablePrefix, $info['id'], 'SALE_INDEX');
     }
   }
 
