@@ -1,6 +1,5 @@
 <?php
-class ProductPriceProcessor {
+class ProductImageBuilder {
   public function execute($item) {
-    
   }
 }

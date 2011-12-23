@@ -141,7 +141,7 @@ td a span {
 }
 #home .footer span {
   font-size:11px;
-  margin:0 15px;
+  margin:0 15px 0 10px;
   text-align:center;
   float:right;
 }
