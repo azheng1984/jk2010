@@ -88,19 +88,20 @@ class DbProduct {
     );
   }
 
-  public static function updateContent(
+  public static function update(
     $tablePrefix,
     $id,
     $categoryId,
     $title,
     $description,
-    $contentMd5
+    $contentMd5,
+    $saleRank
   ) {
     Db::execute(
       'UPDATE '.$tablePrefix.'_product SET'
       .' category_id = ?,  title = ?, description = ?, content_md5 = ?,'
-      .' is_updated = 1 WHERE id = ?',
-      $categoryId, $title, $description, $contentMd5, $id
+      .'sale_rank, is_updated = 1 WHERE id = ?',
+      $categoryId, $title, $description, $contentMd5, $saleRank, $id
     );
   }
 
