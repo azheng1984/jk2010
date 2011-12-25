@@ -4,6 +4,7 @@ class ProductProcessor {
   private $html;
   private $productId;
   private $merchantProductId;
+  private $uri;
   private $categoryId;
   private $saleRank;
   private $title = null;
@@ -33,6 +34,7 @@ class ProductProcessor {
     $this->html = $result['content'];
     $this->tablePrefix = $arguments['table_prefix'];
     $this->merchantProductId = $arguments['id'];
+    $this->uri = $arguments['id'];
     $this->saleRank = 100000 - $arguments['sale_index'];
     $this->categoryId = $arguments['category_id'];
   }
@@ -131,6 +133,7 @@ class ProductProcessor {
     $this->productId = DbProduct::insert(
       $this->tablePrefix,
       $this->merchantProductId,
+      $this->uri,
       $this->categoryId,
       $this->title,
       $this->description,
@@ -159,6 +162,7 @@ class ProductProcessor {
 
   private function addContentUpdateLog() {
     DbProductLog::insert($this->tablePrefix, $this->productId, 'CONTENT');
+    $this->isContentUpdated = true;
   }
 
   private function insertImageTask() {

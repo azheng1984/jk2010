@@ -10,7 +10,7 @@ class DbProductLog {
 
   public static function createTable($tablePrefix) {
     if (
-      Db::getColumn('SHOW TABLES LIKE ?', $tablePrefix.'_product_update') === false
+      Db::getColumn('SHOW TABLES LIKE ?', $tablePrefix.'_product_log') === false
     ) {
       $sql = "CREATE TABLE `".$tablePrefix."_product_log` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

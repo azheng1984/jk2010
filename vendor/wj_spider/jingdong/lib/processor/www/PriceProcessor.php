@@ -21,26 +21,26 @@ class PriceProcessor {
       return;
     }
     $tablePrefix = $arguments['table_prefix'];
-    $listPrice = $matches[1];
-    $price = $matches[3];
+    $listPriceX100 = $matches[1] * 100;
+    $priceX100 = $matches[3] * 100;
     $row = DbProduct::getPrice($tablePrefix, $arguments['id']);
-    if ($row['lowest_price'] !== $price
-      || $row['lowest_list_price'] !== $listPrice) {
+    if ($row['lowest_price_x_100'] != $listPriceX100
+      || $row['lowest_list_price_x_100'] != $priceX100) {
       $this->updatePrice(
         $tablePrefix,
         $row['id'],
-        $price,
-        $listPrice,
+        $priceX100,
+        $listPriceX100,
         $arguments['is_content_updated']
       );
     }
   }
 
   private function updatePrice(
-    $tablePrefix, $productId, $price, $listPrice, $isContentUpdated
+    $tablePrefix, $productId, $priceX100, $listPriceX100, $isContentUpdated
   ) {
     DbProduct::updatePrice(
-      $tablePrefix, $productId, $price, null, $listPrice
+      $tablePrefix, $productId, $priceX100, null, $listPriceX100
     );
     if (!$isContentUpdated) {
       DbProductLog::insert($tablePrefix, $productId, 'PRICE');

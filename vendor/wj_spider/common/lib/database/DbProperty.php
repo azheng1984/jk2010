@@ -21,7 +21,7 @@ class DbProperty {
   public static function getOrNewValueId($tablePrefix, $keyId, $valueName) {
     $sql = 'SELECT id, is_updated FROM '.$tablePrefix.'_property_value'
       .' WHERE key_id = ? AND `name` = ?';
-    $row = Db::get($sql, $keyId, $valueName);
+    $row = Db::getRow($sql, $keyId, $valueName);
     if ($row !== false && $row['is_updated'] === '1') {
       return $row['id'];
     }

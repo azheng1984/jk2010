@@ -4,21 +4,31 @@ class DbProductProperty {
     $tablePrefix, $merchantProductId, $propertyValueId
   ) {
     Db::execute(
-      'REPLACE INTO '.$tablePrefix.'_product-property SET'
+      'REPLACE INTO `'.$tablePrefix.'_product-property` SET'
       .' merchant_product_id = ?, property_value_id = ?, is_updated = 1',
       $merchantProductId, $propertyValueId
     );
   }
 
+  public static function getListByMerchantProductId(
+    $tablePrefix, $merchantProductId
+  ) {
+    return Db::getAll(
+      'SELECT id FROM `'
+        .$tablePrefix.'_product-property` WHERE merchant_product_id = ?',
+      $merchantProductId
+    );
+  }
+
   public static function expireAll($tablePrefix) {
     Db::execute(
-      'UPDATE '.$tablePrefix.'_product-property SET is_updated = 0'
+      'UPDATE `'.$tablePrefix.'_product-property` SET is_updated = 0'
     );
   }
 
   public static function deleteExpiredItems($tablePrefix) {
     Db::execute(
-      'DELETE '.$tablePrefix.'_product-property WHERE is_updated = 0'
+      'DELETE `'.$tablePrefix.'_product-property` WHERE is_updated = 0'
     );
   }
 
@@ -27,7 +37,7 @@ class DbProductProperty {
       'SHOW TABLES LIKE ?', $tablePrefix.'_product-property'
     );
     if ($table === false) {
-      $sql = "CREATE TABLE `".$tablePrefix."_product-property` (
+      $sql = "CREATE TABLE ".$tablePrefix."_product-property (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `merchant_product_id` bigint(20) unsigned NOT NULL,
         `property_value_id` int(11) unsigned NOT NULL,
