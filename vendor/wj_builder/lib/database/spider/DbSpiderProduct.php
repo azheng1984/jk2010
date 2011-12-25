@@ -16,7 +16,7 @@ class DbSpiderProduct {
 
   public static function getPriceList($id) {
     return Db::getRow(
-      'SELECT `lowest_price_x_100`,`highest_price_x_100`,`list_price_x_100`'
+      'SELECT `lowest_price_x_100`,`highest_price_x_100`,`lowest_list_price_x_100`'
         .' FROM `jingdong`.`food_product` WHERE id = ?',
       $id
     );

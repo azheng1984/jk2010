@@ -7,7 +7,7 @@ class ProductContentProcessor {
 
   public function execute($item) {
     $this->spiderProduct = DbSpiderProduct::get($item['id']);
-    $this->buildWebCategory();
+    $this->buildCategory();
     $this->buildPropertyList();
     $this->buildProduct();
   }
@@ -42,11 +42,11 @@ class ProductContentProcessor {
       $spiderPropertyList[$spiderKey['id']]['value_list'][] = $spiderValue;
     }
     foreach ($spiderPropertyList as $spiderKey) {
-      $webKey = $this->buildWebKey($spiderKey['name']);
+      $webKey = $this->buildKey($spiderKey['name']);
       $searchValueIdList = $this->buildValueList(
         $spiderKey['value_list'], $webKey['id']
       );
-      $this->searchValueIdLists[intval($spiderKey['mva_index'])]
+      $this->searchValueIdLists[intval($webKey['mva_index'])]
          = $searchValueIdList;
       $this->webKeyIdList[] = $webKey['id'];
     }
@@ -58,13 +58,14 @@ class ProductContentProcessor {
       $mvaIndex = DbBuilderKeyMvaIndex::getNext($this->webCategoryId);
       $id = DbWebKey::insert($this->webCategoryId, $spiderKeyName, $mvaIndex);
       DbSearchKey::insert($id, $this->webCategoryId);
-      $webKey = array(
+      return array(
         'id' => $id,
         'name' => $spiderKeyName,
         'category_id' => $this->webCategoryId,
         'mva_index' => $mvaIndex
       );
     }
+    $webKey['mva_index'] = DbBuilderKeyMvaIndex::get($this->webCategoryId);
     return $webKey;
   }
 
@@ -97,7 +98,7 @@ class ProductContentProcessor {
       .' '.Segmentation::execute($spiderProduct['description']);
     $keyIdList = implode(',', $this->webKeyIdList);
     $discountX10 = 100;
-    $saleRank = 1000000 - $spiderProduct['sale_index'];
+    $saleRank = $spiderProduct['sale_rank'];
     $publishTimestamp = date("ymdHi");
     $valueIdLists = $this->getSearchValueIdLists();
     $spiderProductWebProduct = DbBuilderSpiderProductWebProduct::get(
@@ -163,11 +164,11 @@ class ProductContentProcessor {
   private function getSearchValueIdLists() {
     $result = array();
     for ($index = 1; $index <= 10; ++$index) {
-      if (isset($this->result[$index])) {
-        $this->result[$index] = implode(',', $this->webValuesList[$index]);
+      if (isset($result[$index])) {
+        $result[$index] = implode(',', $this->webValuesList[$index]);
         continue;
       }
-      $this->result[$index] = null;
+      $result[$index] = null;
     }
     return $result;
   }

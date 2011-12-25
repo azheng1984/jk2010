@@ -19,7 +19,7 @@ class DbWebImage {
 
   private static function hasImage($id) {
     self::connect();
-    $sql = 'SELECT id FROM image WHERE product_id = ?';
+    $sql = 'SELECT product_id FROM image WHERE product_id = ?';
     $id = Db::getColumn($sql, $id);
     DbConnection::connect('default');
     return $id !== false;
@@ -42,7 +42,7 @@ class DbWebImage {
   private static function connect() {
     if (!self::$isConnected) {
       DbConnection::connect(
-        'web_image', new PDO('sqlite:'.WEB_IMAGE_PATH.'_image.sqlite')
+        'web_image', new PDO('sqlite:'.WEB_IMAGE_PATH.'image.sqlite')
       );
       self::$isConnected = true;
       return;

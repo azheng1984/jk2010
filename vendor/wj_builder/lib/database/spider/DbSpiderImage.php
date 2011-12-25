@@ -13,7 +13,7 @@ class DbSpiderImage {
   private static function connect() {
     if (!self::$isConnected) {
       DbConnection::connect(
-        'spider_image', new PDO('sqlite:'.SPIDER_IMAGE_PATH.'_image.sqlite')
+        'spider_image', new PDO('sqlite:'.SPIDER_IMAGE_PATH.'food_image.sqlite')
       );
       self::$isConnected = true;
       return;

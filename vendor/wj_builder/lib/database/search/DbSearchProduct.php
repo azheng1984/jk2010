@@ -19,7 +19,7 @@ class DbSearchProduct {
       `publish_timestamp`,
       `category_id`,
       `key_id_list`,
-      `keywords`,
+      `keyword_list`,
       `value_id_list_1`,
       `value_id_list_2`,
       `value_id_list_3`,
@@ -30,7 +30,7 @@ class DbSearchProduct {
       `value_id_list_8`,
       `value_id_list_9`,
       `value_id_list_10`
-    ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+    ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
     Db::execute($sql,
       $id,
       $lowestPriceX100,

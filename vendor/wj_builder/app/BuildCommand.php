@@ -8,7 +8,6 @@ class BuildCommand {
       $processor->execute($item);
       DbSpiderProductLog::delete($tablePrefix, $item['id']);
       echo '.';
-      exit;
     }
   }
 }

@@ -3,7 +3,7 @@ class DbWebValue {
   public static function get($keyId, $name) {
     return Db::getRow(
       'SELECT * FROM `wj_web`.`property_value`'
-      .' WHERE key_id = ? AND `value` = ?',
+      .' WHERE key_id = ? AND `name` = ?',
       $keyId, $name
     );
   }
