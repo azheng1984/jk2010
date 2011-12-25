@@ -127,19 +127,19 @@ class DbProduct {
     ) {
       $sql = "CREATE TABLE `".$tablePrefix."_product` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-        `web_product_id` int(11) unsigned NOT NULL DEFAULT '0',
-        `merchant_product_id` bigint(20) unsigned NOT NULL,
+        `merchant_product_id` bigint(20) NOT NULL,
         `category_id` int(11) unsigned NOT NULL,
         `title` varchar(511) NOT NULL,
         `description` text,
         `content_md5` varchar(32) DEFAULT NULL,
         `image_md5` varchar(32) DEFAULT NULL,
         `image_last_modified` varchar(29) DEFAULT NULL,
-        `sale_index` int(11) unsigned NOT NULL,
-        `lowest_price` decimal(9,2) DEFAULT NULL,
-        `highest_price` decimal(9,2) DEFAULT NULL,
+        `sale_rank` int(11) unsigned NOT NULL,
+        `lowest_price_x_100` int(11) unsigned DEFAULT NULL,
+        `highest_price_x_100` int(11) unsigned DEFAULT NULL,
+        `list_lowest_price_x_100` int(11) unsigned DEFAULT NULL,
         `index_time` datetime NOT NULL,
-        `is_update` tinyint(1) NOT NULL DEFAULT '1',
+        `is_updated` tinyint(1) NOT NULL DEFAULT '1',
         PRIMARY KEY (`id`),
         UNIQUE KEY `merchant_product_id` (`merchant_product_id`) USING BTREE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8";

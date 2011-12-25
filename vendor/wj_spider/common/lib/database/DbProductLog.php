@@ -12,10 +12,10 @@ class DbProductLog {
     if (
       Db::getColumn('SHOW TABLES LIKE ?', $tablePrefix.'_product_update') === false
     ) {
-      $sql = "CREATE TABLE `".$tablePrefix."_product_update` (
+      $sql = "CREATE TABLE `".$tablePrefix."_product_log` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-        `product_id` bigint(20) unsigned NOT NULL,
-        `type` enum('NEW', 'PRICE','CONTENT','IMAGE', 'SALE_INDEX') NOT NULL,
+        `product_id` int(11) unsigned NOT NULL,
+        `type` enum('PRICE','CONTENT','IMAGE','SALE_RANK') NOT NULL,
         PRIMARY KEY (`id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=latin1";
       Db::execute($sql);
