@@ -1,12 +1,13 @@
 <?php
 class ImageProcessor {
   public function execute($arguments) {
-    $imageInfo = DbProduct::getImageInfo(
-      $arguments['table_prefix'], $arguments['id']
+    $productId = $arguments['id'];
+    $meta = DbProduct::getImageMeta(
+      $arguments['table_prefix'], $productId
     );
     $headers = array();
-    if ($imageInfo['image_last_modified'] !== null) {
-      $headers = array('If-Modified-Since: '.$imageInfo['image_last_modified']);
+    if ($meta['image_last_modified'] !== null) {
+      $headers = array('If-Modified-Since: '.$meta['image_last_modified']);
     }
     $result = WebClient::get(
       $arguments['domain'], '/'.$arguments['path'], $headers, null, true
@@ -19,23 +20,13 @@ class ImageProcessor {
     }
     $lastModified = $this->getLastModified($result['header']);
     $md5 = md5($result['content']);
-    if ($md5 === $imageInfo['image_md5']) {
+    if ($md5 === $meta['image_md5']) {
       return;
     }
-    if (isset($GLOBALS['no_image_md5'])
-      && isset($GLOBALS['no_image_md5'][$md5])) {
-      DbImage::deleteImage($arguments['table_prefix'], $imageInfo['id']);
-    } else {
-      DbImage::insertImage(
-        $arguments['table_prefix'], $imageInfo['id'], $result['content']
-      );
-    }
-    DbProduct::updateImageInfo(
-      $arguments['table_prefix'], $imageInfo['id'], $md5, $lastModified
-    );
-    DbProductUpdate::insert(
-      $arguments['table_prefix'], $imageInfo['id'], 'IMAGE'
-    );
+    $tablePrefix = $arguments['table_prefix'];
+    $this->save($tablePrefix, $productId, $result['content'], $md5);
+    DbProduct::updateImageMeta($tablePrefix, $productId, $md5, $lastModified);
+    DbProductLog::insert($tablePrefix, $productId, 'IMAGE');
   }
 
   private function getLastModified($header) {
@@ -43,5 +34,16 @@ class ImageProcessor {
     if (count($matches) === 2) {
       return $matches[1];
     }
+  }
+
+  private function  save($tablePrefix, $productId, $content, $md5) {
+      if (isset($GLOBALS['no_image_md5'])
+      && isset($GLOBALS['no_image_md5'][$md5])) {
+      DbImage::deleteImage($tablePrefix, $productId);
+      return;
+    }
+    DbImage::insertImage(
+      $tablePrefix, $productId, $content
+    );
   }
 }

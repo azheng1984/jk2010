@@ -6,11 +6,11 @@ class DbSpiderProduct {
     );
   }
 
-  public static function getPropertyValueList($id) {
+  public static function getPropertyValueList($merchantProductId) {
     return Db::getAll(
-      'SELECT * FROM `jingdong`.`food_product_property`'
-      .' WHERE product_id = ?',
-      $id
+      'SELECT * FROM `jingdong`.`food_product-property`'
+      .' WHERE merchant_product_id = ?',
+      $merchantProductId
     );
   }
 

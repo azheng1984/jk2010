@@ -35,7 +35,7 @@ abstract class InitCommand {
 
   private function createTables($tablePrefix) {
     DbProduct::createTable($tablePrefix);
-    DbProductUpdate::createTable($tablePrefix);
+    DbProductLog::createTable($tablePrefix);
     DbProperty::createTable($tablePrefix);
     DbImage::createTable($tablePrefix);
     DbProductProperty::createTable($tablePrefix);

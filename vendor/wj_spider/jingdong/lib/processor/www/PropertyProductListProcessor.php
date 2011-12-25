@@ -28,9 +28,11 @@ class PropertyProductListProcessor {
       $this->html,
       $matches
     );
-    $productIds = $matches[1];
-    foreach ($productIds as $id) {
-      DbProductProperty::replace($this->tablePrefix, $id, $this->valueId);
+    $merchantProductIds = $matches[1];
+    foreach ($merchantProductIds as $merchantProductId) {
+      DbProductProperty::replace(
+        $this->tablePrefix, $merchantProductId, $this->valueId
+      );
     }
   }
 

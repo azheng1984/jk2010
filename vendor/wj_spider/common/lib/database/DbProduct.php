@@ -1,17 +1,17 @@
 <?php
 class DbProduct {
-  public static function getPrice($tablePrefix, $merchantProductId) {
+  public static function getPrice($tablePrefix, $id) {
     return Db::getRow(
       'SELECT id, lowest_price_x_100, highest_price_x_100,'
         .'list_lowest_price_x_100  FROM '.$tablePrefix.'_product'
-        .' WHERE merchant_product_id = ?', $merchantProductId
+        .' WHERE id = ?', $id
     );
   }
 
-  public static function getImageMeta($tablePrefix, $merchantProductId) {
+  public static function getImageMeta($tablePrefix, $id) {
     return Db::getRow(
       'SELECT id, image_md5, image_last_modified FROM '.$tablePrefix.'_product'
-      .' WHERE merchant_product_id = ?', $merchantProductId
+      .' WHERE id = ?', $id
     );
   }
 
@@ -122,7 +122,7 @@ class DbProduct {
   }
 
   public static function createTable($tablePrefix) {
-      if (
+    if (
       Db::getColumn('SHOW TABLES LIKE ?', $tablePrefix.'_product') === false
     ) {
       $sql = "CREATE TABLE `".$tablePrefix."_product` (

@@ -23,7 +23,7 @@ class DbBuilderKeyMvaIndex {
 
   private static function insert($categoryId) {
     Db::execute(
-      'INSERT INTO `wj_builder`.`key_mva_index`(`category_id`) VALUES(?);',
+      'INSERT INTO `wj_builder`.`key_mva_index`(`category_id`) VALUES(?)',
       $categoryId
     );
   }
