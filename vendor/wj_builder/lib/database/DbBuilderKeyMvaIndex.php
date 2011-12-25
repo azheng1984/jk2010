@@ -1,22 +1,23 @@
 <?php
 class DbBuilderKeyMvaIndex {
   public static function getNext($categoryId) {
-    $row = self::get($categoryId);
-    if ($row === false) {
+    $index = self::get($categoryId);
+    if ($index === false) {
       self::insert($categoryId);
       return 1;
     }
     Db::execute(
       'UPDATE `wj_builder`.`key_mva_index` SET `index` = ?'
       .' WHERE `category_id` = ?',
-      ++$row['index'],
+      ++$index,
       $categoryId
     );
+    return $index;
   }
 
-  private static function get($categoryId) {
-    return Db::getRow(
-      'SELECT * FROM `wj_builder`.`key_mva_index`'
+  public static function get($categoryId) {
+    return Db::getColumn(
+      'SELECT `index` FROM `wj_builder`.`key_mva_index`'
       .' WHERE category_id = ?', $categoryId
     );
   }

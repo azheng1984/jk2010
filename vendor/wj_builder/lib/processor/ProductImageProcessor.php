@@ -11,11 +11,11 @@ class ProductImageProcessor {
     $webProductId = $spiderProductWebProduct['web_product_id'];
     $image = DbSpiderImage::get($item['product_id']);
     if ($image === false) {
-      DbWebProduct::updateImageDbIndex(null);
+      DbWebProduct::updateImageDbIndex($webProductId, null);
       DbWebImage::delete($webProductId);
       return;
     }
-    DbWebProduct::updateImageDbIndex(1);
+    DbWebProduct::updateImageDbIndex($webProductId, 1);
     DbWebImage::replace($webProductId, $image);
   }
 }

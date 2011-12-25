@@ -3,7 +3,7 @@ class DbWebProduct {
   public static function insert(
     $lowestPriceX100,
     $highestPriceX100,
-    $listLowestPriceX100,
+    $lowestListPriceX100,
     $merchantId,
     $imageDbIndex,
     $categoryId,
@@ -14,7 +14,7 @@ class DbWebProduct {
     $sql = 'INSERT INTO `wj_web`.`product` (
       `lowest_price_x_100`,
       `highest_price_x_100`,
-      `list_lowest_price_x_100`,
+      `lowest_list_price_x_100`,
       `merchant_id`,
       `uri`,
       `image_db_index`,
@@ -25,7 +25,7 @@ class DbWebProduct {
     Db::execute($sql,
       $lowestPriceX100,
       $highestPriceX100,
-      $listLowestPriceX100,
+      $lowestListPriceX100,
       $merchantId,
       $uri,
       $imageDbIndex,
@@ -75,7 +75,7 @@ class DbWebProduct {
 
   public static function updateImageDbIndex($id, $imageDbIndex) {
     $sql = 'UPDATE `wj_web`.`product` SET '
-      .'`image_db_index = ?,'
+      .'`image_db_index` = ?'
       .' WHERE id = ?';
     Db::execute($sql, $imageDbIndex, $id);
   }
@@ -87,9 +87,9 @@ class DbWebProduct {
     $listLowestPriceX100
   ) {
     $sql = 'UPDATE `wj_web`.`product` SET '
-      .'`lowest_price_x_100 = ?,'
-      .'`highest_price_x_100 = ?,'
-      .'`list_lowest_price_x_100 = ?,'
+      .'`lowest_price_x_100` = ?,'
+      .'`highest_price_x_100` = ?,'
+      .'`lowest_list_price_x_100` = ?'
       .' WHERE id = ?';
     Db::execute($sql,
       $lowestPriceX100,

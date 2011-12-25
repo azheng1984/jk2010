@@ -19,7 +19,7 @@ class ProductPriceProcessor {
       $webProductId,
       $priceList['lowest_price_x_100'],
       $priceList['highest_price_x_100'],
-      $priceList['list_lowest_price_x_100']
+      $priceList['lowest_list_price_x_100']
     );
   }
 }
