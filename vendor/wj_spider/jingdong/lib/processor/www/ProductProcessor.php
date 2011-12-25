@@ -9,6 +9,7 @@ class ProductProcessor {
   private $title = null;
   private $description = null;
   private $contentMd5;
+  private $isContentUpdated = false;
 
   public function execute($arguments) {
     $this->initialize($arguments);
@@ -110,8 +111,8 @@ class ProductProcessor {
     $productMeta = DbProduct::getContentMd5AndSaleRankByMerchantProductId(
       $this->tablePrefix, $this->merchantProductId
     );
-    if ($productMeta == false) {
-      $this->productId = $this->insert();
+    if ($productMeta === false) {
+      $this->insert();
       return;
     }
     $this->productId = $productMeta['id'];
@@ -127,7 +128,7 @@ class ProductProcessor {
   }
 
   private function insert() {
-    $id = DbProduct::insert(
+    $this->productId = DbProduct::insert(
       $this->tablePrefix,
       $this->merchantProductId,
       $this->categoryId,
@@ -136,8 +137,7 @@ class ProductProcessor {
       $this->contentMd5,
       $this->saleRank
     );
-    DbProductLog::insert($this->tablePrefix, $id, 'CONTENT');
-    return $id;
+    $this->addContentUpdateLog();
   }
 
   private function update() {
@@ -149,12 +149,16 @@ class ProductProcessor {
       $this->description,
       $this->contentMd5
     );
-    DbProductLog::insert($this->tablePrefix, $this->productId, 'CONTENT');
+    $this->addContentUpdateLog();
   }
 
   private function updateSaleRank($id) {
     DbProduct::updateSaleRank($this->tablePrefix, $id, $this->saleRank);
     DbProductLog::insert($this->tablePrefix, $id, 'SALE_RANK');
+  }
+
+  private function addContentUpdateLog() {
+    DbProductLog::insert($this->tablePrefix, $this->productId, 'CONTENT');
   }
 
   private function insertImageTask() {
@@ -167,6 +171,7 @@ class ProductProcessor {
     }
     DbTask::insert('Image', array(
       'id' => $this->productId,
+      'merchant_product_id' => $this->merchantProductId,
       'category_id' => $this->categoryId,
       'domain' => $matches[1],
       'path' => $matches[2],
@@ -176,7 +181,10 @@ class ProductProcessor {
 
   private function insertPriceTask() {
     DbTask::insert('Price', array(
-      'id' => $this->productId, 'table_prefix' => $this->tablePrefix
+      'id' => $this->productId,
+      'merchant_product_id' => $this->merchantProductId,
+      'is_content_updated' => $this->isContentUpdated,
+      'table_prefix' => $this->tablePrefix
     ));
   }
 }

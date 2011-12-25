@@ -1,20 +1,13 @@
 <?php
 class DbProductProperty {
   public static function replace(
-    $tablePrefix, $productId, $propertyValueId
+    $tablePrefix, $merchantProductId, $propertyValueId
   ) {
     Db::execute(
       'REPLACE INTO '.$tablePrefix.'_product-property SET'
-      .' product_id = ?, property_value_id = ?, is_updated = 1',
-      $productId, $propertyValueId
+      .' merchant_product_id = ?, property_value_id = ?, is_updated = 1',
+      $merchantProductId, $propertyValueId
     );
-  }
-
-  public static function getListByProductId(
-    $tablePrefix, $productId
-  ) {
-    Db::getAll('SELECT property_value_id FROM '.$tablePrefix.'_product-property'
-      .' WHERE product_id = ? AND is_updated = TRUE', $productId);
   }
 
   public static function expireAll($tablePrefix) {

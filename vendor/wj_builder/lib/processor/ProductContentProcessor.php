@@ -27,7 +27,7 @@ class ProductContentProcessor {
 
   private function buildPropertyList() {
     $spiderProductPropertyList = DbSpiderProduct::getPropertyValueList(
-      $this->spiderProduct['id']
+      $this->spiderProduct['merchant_product_id']
     );
     $spiderPropertyList = array();
     foreach ($spiderProductPropertyList as $spiderProductProperty) {
