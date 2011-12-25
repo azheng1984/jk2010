@@ -18,7 +18,7 @@ class HomeScreen extends Screen {
   private function renderSlogon() {
     echo '<div id="slogon">',
       '<span class="arrow"></span>',
-      '<h1>11421个网上商店，1508万产品，搜索：</h1>';
+      '<h1>11421个网上商店，1508万商品，搜索：</h1>';
     $this->renderQueryList();
     echo '</div>';
   }
