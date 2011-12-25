@@ -27,15 +27,13 @@ class SearchPropertyUriParser {
   }
 
   private static function moveNextKey($keyUriName = null) {
-    if (self::$key !== false && count(self::$valueList) !== 0) {
-      $GLOBALS['URI']['PROPERTY_LIST'][] =
-        array('KEY' => self::$key, 'VALUES' => self::$valueList);
-    }
-    if ($keyUriName === null) {
-      return;
-    }
     if ($keyUriName === '') {
       throw new NotFoundException;
+    }
+    $GLOBALS['URI']['PROPERTY_LIST'][] =
+      array('KEY' => self::$key, 'VALUES' => self::$valueList);
+    if ($keyUriName === null) {
+      return;
     }
     self::$key = false;
     self::$values = array();
