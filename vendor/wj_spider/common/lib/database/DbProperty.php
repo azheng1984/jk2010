@@ -1,28 +1,40 @@
 <?php
 class DbProperty {
   public static function getOrNewKeyId($tablePrefix, $keyName) {
-    $sql = 'SELECT id FROM '.$tablePrefix.'_property_key WHERE `name` = ?';
-    $id = Db::getColumn($sql, $keyName);
-    if ($id === false) {
-      $sql = 'REPLACE INTO '.$tablePrefix.'_property_key(`name`, is_updated)'
+    $sql = 'SELECT id, is_updated FROM '.$tablePrefix.'_property_key WHERE `name` = ?';
+    $row = Db::getRow($sql, $keyName);
+    if ($row !== false && $row['is_updated'] === '1') {
+      return $row['id'];
+    }
+    if ($row === false) {
+      $sql = 'INSERT INTO '.$tablePrefix.'_property_key(`name`, is_updated)'
         .' VALUES(?, 1)';
       Db::execute($sql, $keyName);
       return DbConnection::get()->lastInsertId();
     }
-    return $id;
+    $sql = 'UDPATE '.$tablePrefix
+      .'_property_key SET is_updated = 1 WHERE id = ?';
+    Db::execute($sql, $row['id']);
+    return $row['id'];
   }
 
   public static function getOrNewValueId($tablePrefix, $keyId, $valueName) {
-    $sql = 'SELECT id FROM '.$tablePrefix.'_property_value'
+    $sql = 'SELECT id, is_updated FROM '.$tablePrefix.'_property_value'
       .' WHERE key_id = ? AND `name` = ?';
-    $id = Db::getColumn($sql, $keyId, $valueName);
-    if ($id === false) {
-      $sql = 'REPLACE INTO '.$tablePrefix.'_property_value'
+    $row = Db::get($sql, $keyId, $valueName);
+    if ($row !== false && $row['is_updated'] === '1') {
+      return $row['id'];
+    }
+    if ($row ===  false) {
+      $sql = 'INSERT INTO '.$tablePrefix.'_property_value'
         .'(key_id, `name`, is_updated) VALUES(?, ?, 1)';
       Db::execute($sql, $keyId, $valueName);
       return DbConnection::get()->lastInsertId();
     }
-    return $id;
+    $sql = 'UDPATE '.$tablePrefix
+      .'_property_value SET is_updated = 1 WHERE id = ?';
+    Db::execute($sql, $row['id']);
+    return $row['id'];
   }
 
   public static function expireAll($tablePrefix) {
@@ -48,10 +60,10 @@ class DbProperty {
     if ($table === false) {
       $sql = "CREATE TABLE `".$tablePrefix."_property_key` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-        `key` varchar(63) NOT NULL,
-        `is_update` tinyint(1) NOT NULL DEFAULT '1',
+        `name` varchar(63) NOT NULL,
+        `is_updated` tinyint(1) NOT NULL DEFAULT '1',
         PRIMARY KEY (`id`),
-        UNIQUE KEY `key` (`key`)
+        UNIQUE KEY `key` (`name`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
       Db::execute($sql);
     }
@@ -62,10 +74,10 @@ class DbProperty {
       $sql = "CREATE TABLE `".$tablePrefix."_property_value` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `key_id` int(11) unsigned NOT NULL,
-        `value` varchar(255) NOT NULL,
-        `is_update` tinyint(1) NOT NULL DEFAULT '1',
+        `name` varchar(255) NOT NULL,
+        `is_updated` tinyint(1) NOT NULL DEFAULT '1',
         PRIMARY KEY (`id`),
-        UNIQUE KEY `key_id-value` (`key_id`,`value`)
+        UNIQUE KEY `key_id-name` (`key_id`,`name`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
       Db::execute($sql);
     }
