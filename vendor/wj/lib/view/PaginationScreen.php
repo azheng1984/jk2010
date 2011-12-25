@@ -16,12 +16,12 @@ class PaginationScreen {
     if ($_SERVER['QUERY_STRING'] !== '') {
       $postfix = '?'.$_SERVER['QUERY_STRING'];
     }
-    $result = '<div id="pagination">';
-    if ($currentPage != 1) {
+    echo '<div id="pagination">';
+    if ($currentPage !== 1) {
       $previousPage = $currentPage - 1;
       $path = $previousPage === 1 ? '.' : $previousPage;
-      $result .= '<a'.$rel.' href="'
-        .$prefix.$path.$postfix. '">&laquo; 上一页</a>';
+      echo '<a', $rel, ' href="',
+        $prefix, $path, $postfix, '">&laquo; 上一页</a>';
     }
     $lastPage = $firstPage + 9;
     if ($lastPage > $totalPage) {
@@ -29,17 +29,18 @@ class PaginationScreen {
     }
     for ($index = $firstPage; $index <= $lastPage; ++$index) {
       if ($index === $currentPage) {
-        $result .= ' <span>' . $index . '</span>';
+        echo ' <span>', $index, '</span>';
         continue;
       }
       $path = $previousPage === 1 ? '.' : $previousPage;
-      $result .= ' <a'.$rel.' href="'.$prefix.$path.$postfix.'">'.$index.'</a>';
+      echo ' <a', $rel, ' href="', $prefix, $path, $postfix, '">',
+        $index, '</a>';
     }
     if ($currentPage !== $totalPage) {
-      $result .= ' <a'.$rel.' href="'
-        .$prefix.($currentPage + 1).$postfix.'">下一页 &raquo;</a>';
+      echo ' <a', $rel, ' href="', $prefix, ($currentPage + 1),
+        $postfix, '">下一页 &raquo;</a>';
     }
-    echo $result, '</div>';
+    echo '</div>';
   }
 
   private static function getTotalPage($total, $itemsPerPage) {
