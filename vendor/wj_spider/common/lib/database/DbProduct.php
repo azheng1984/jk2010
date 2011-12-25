@@ -3,7 +3,7 @@ class DbProduct {
   public static function getPrice($tablePrefix, $id) {
     return Db::getRow(
       'SELECT id, lowest_price_x_100, highest_price_x_100,'
-        .'list_lowest_price_x_100  FROM '.$tablePrefix.'_product'
+        .'lowest_list_price_x_100  FROM '.$tablePrefix.'_product'
         .' WHERE id = ?', $id
     );
   }
@@ -38,9 +38,9 @@ class DbProduct {
     $lowestListPriceX100 = null
   ) {
     $sql = 'INSERT INTO '.$tablePrefix.'_product('
-      .'merchant_product_id, $uri, category_id, title, description, content_md5,'
+      .'merchant_product_id, uri, category_id, title, description, content_md5,'
       .' sale_rank, lowest_price_x_100, highest_price_x_100,'
-      .'list_lowest_price_x_100, index_time)'
+      .'lowest_list_price_x_100, index_time)'
       .' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())';
     Db::execute(
       $sql,
@@ -88,10 +88,11 @@ class DbProduct {
     );
   }
 
-  public static function update(
+  public static function updateContent(
     $tablePrefix,
     $id,
     $categoryId,
+    $uri,
     $title,
     $description,
     $contentMd5,
@@ -99,9 +100,9 @@ class DbProduct {
   ) {
     Db::execute(
       'UPDATE '.$tablePrefix.'_product SET'
-      .' category_id = ?,  title = ?, description = ?, content_md5 = ?,'
-      .'sale_rank, is_updated = 1 WHERE id = ?',
-      $categoryId, $title, $description, $contentMd5, $saleRank, $id
+      .' category_id = ?, title = ?, description = ?, content_md5 = ?, uri = ?,'
+      .'sale_rank = ?, is_updated = 1 WHERE id = ?',
+      $categoryId, $title, $description, $contentMd5, $uri, $saleRank, $id
     );
   }
 
@@ -129,6 +130,7 @@ class DbProduct {
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `merchant_product_id` bigint(20) NOT NULL,
         `category_id` int(11) unsigned NOT NULL,
+        `uri` varchar(127) NOT NULL,
         `title` varchar(511) NOT NULL,
         `description` text,
         `content_md5` varchar(32) DEFAULT NULL,
@@ -137,7 +139,7 @@ class DbProduct {
         `sale_rank` int(11) unsigned NOT NULL,
         `lowest_price_x_100` int(11) unsigned DEFAULT NULL,
         `highest_price_x_100` int(11) unsigned DEFAULT NULL,
-        `list_lowest_price_x_100` int(11) unsigned DEFAULT NULL,
+        `lowest_list_price_x_100` int(11) unsigned DEFAULT NULL,
         `index_time` datetime NOT NULL,
         `is_updated` tinyint(1) NOT NULL DEFAULT '1',
         PRIMARY KEY (`id`),
