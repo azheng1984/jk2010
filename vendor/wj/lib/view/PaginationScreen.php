@@ -8,7 +8,7 @@ class PaginationScreen {
     }
     $currentPage = 1;
     if (isset($GLOBALS['URI']['PAGE'])) {
-      $currentPage = $GLOBALS['URI']['PAGE'];
+      $currentPage = intval($GLOBALS['URI']['PAGE']);
     }
     $totalPage = self::getTotalPage($total, $itemsPerPage);
     $firstPage = self::getFirstPage($currentPage, $totalPage);
@@ -28,14 +28,14 @@ class PaginationScreen {
       $lastPage = $totalPage;
     }
     for ($index = $firstPage; $index <= $lastPage; ++$index) {
-      if ($index == $currentPage) {
+      if ($index === $currentPage) {
         $result .= ' <span>' . $index . '</span>';
         continue;
       }
-      $path = $index === 1 ? '.' : $index;
+      $path = $previousPage === 1 ? '.' : $previousPage;
       $result .= ' <a'.$rel.' href="'.$prefix.$path.$postfix.'">'.$index.'</a>';
     }
-    if ($currentPage != $totalPage) {
+    if ($currentPage !== $totalPage) {
       $result .= ' <a'.$rel.' href="'
         .$prefix.($currentPage + 1).$postfix.'">下一页 &raquo;</a>';
     }
