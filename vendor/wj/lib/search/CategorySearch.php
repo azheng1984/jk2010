@@ -7,6 +7,6 @@ class CategorySearch {
     $sphinx->setServer("localhost", 9312);
     $sphinx->setMaxQueryTime(30);
     $sphinx->SetGroupBy('category_id', SPH_GROUPBY_ATTR, '@count DESC');
-    return $sphinx->query($query, 'wj_search');
+    return $sphinx->query($query, 'wj_product_index');
   }
 }
