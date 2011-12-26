@@ -89,7 +89,7 @@ class ProductSearch {
     if (!isset($GLOBALS['URI']['QUERY'])) {
       throw new NotFoundException;
     }
-    $result = self::$sphinx->query($GLOBALS['URI']['QUERY'], 'wj_search');
+    $result = self::$sphinx->query($GLOBALS['URI']['QUERY'], 'wj_product_index');
     if ($result === false) {
       $result = array('total_found' => 0, 'matches' => array());
     }
