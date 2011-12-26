@@ -32,7 +32,7 @@ class PaginationScreen {
         echo ' <span>', $index, '</span>';
         continue;
       }
-      $path = $previousPage === 1 ? '.' : $previousPage;
+      $path = $index === 1 ? '.' : $index;
       echo ' <a', $rel, ' href="', $prefix, $path, $postfix, '">',
         $index, '</a>';
     }
