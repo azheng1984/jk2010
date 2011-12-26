@@ -161,7 +161,7 @@ class ProductContentProcessor {
   private function getSearchValueIdLists() {
     $result = array();
     for ($index = 1; $index <= 10; ++$index) {
-      if (isset($result[$index])) {
+      if (isset($this->webValuesList[$index])) {
         $result[$index] = implode(',', $this->webValuesList[$index]);
         continue;
       }
