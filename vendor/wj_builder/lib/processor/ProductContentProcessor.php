@@ -19,7 +19,6 @@ class ProductContentProcessor {
     $webCategory = DbWebCategory::get($spiderCategory['name']);
     if ($webCategory === false) {
       $this->webCategoryId = DbWebCategory::insert($spiderCategory['name']);
-      DbSearchCategory::insert($this->webCategoryId);
       return;
     }
     $this->webCategoryId = $webCategory['id'];
@@ -57,7 +56,6 @@ class ProductContentProcessor {
     if ($webKey === false) {
       $mvaIndex = DbBuilderKeyMvaIndex::getNext($this->webCategoryId);
       $id = DbWebKey::insert($this->webCategoryId, $spiderKeyName, $mvaIndex);
-      DbSearchKey::insert($id, $this->webCategoryId);
       return array(
         'id' => $id,
         'name' => $spiderKeyName,
@@ -75,7 +73,6 @@ class ProductContentProcessor {
       $webValue = DbWebValue::get($webKeyId, $spiderValue['name']);
       if ($webValue === false) {
         $id = DbWebValue::insert($webKeyId, $spiderValue['name']);
-        DbSearchValue::insert($id, $this->webCategoryId);
         $webValue = array('id' => $id);
       }
       $searchValueIdList[] = $webValue['id'];
