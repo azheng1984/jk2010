@@ -4,10 +4,8 @@ class DbCategory {
     return Db::getRow('SELECT * FROM wj_web.category WHERE id = ?', $id);
   }
 
-  public static function getList($parentId = 0) {
-    return Db::getAll(
-      'SELECT * FROM global_category WHERE parent_id = ?', $parentId
-    );
+  public static function getList() {
+    return Db::getAll('SELECT * FROM wj_web.category');
   }
 
   public static function getByName($name) {
