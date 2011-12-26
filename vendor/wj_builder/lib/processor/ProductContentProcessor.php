@@ -6,7 +6,7 @@ class ProductContentProcessor {
   private $webKeyIdList = array();
 
   public function execute($item) {
-    $this->spiderProduct = DbSpiderProduct::get($item['id']);
+    $this->spiderProduct = DbSpiderProduct::get($item['product_id']);
     $this->buildCategory();
     $this->buildPropertyList();
     $this->buildProduct();

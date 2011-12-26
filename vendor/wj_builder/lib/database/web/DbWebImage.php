@@ -3,7 +3,7 @@ class DbWebImage {
   private static $isConnected;
 
   public static function replace($productId, $image) {
-    if (self::hasImage($productId)) {
+    if (self::hasImage($productId) === false) {
       self::insert($productId, $image);
       return;
     }
