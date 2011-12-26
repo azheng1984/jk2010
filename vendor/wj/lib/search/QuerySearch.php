@@ -1,5 +1,5 @@
 <?php
-class QueryLinkSearch {
+class QuerySearch {
   public static function searchByCategory($amount = 60) {
     
   }
