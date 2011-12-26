@@ -9,7 +9,7 @@ class SitemapUriParser {
     $sectionList = $GLOBALS['URI']['PATH_SECTION_LIST'];
     $depth = count($sectionList);
     if ($depth === 3) {
-      $GLOBALS['URI']['LINK_LIST'] = DbCategory::getList();
+      $GLOBALS['URI']['LIST_TYPE'] = 'category';
       return '/link_list';
     }
     /* /+i/category/ */
@@ -20,19 +20,16 @@ class SitemapUriParser {
       throw new NotFoundException;
     }
     if ($depth === 4) {
-      $GLOBALS['URI']['KEY_LINK_LIST'] = DbPropertyKey::getList(25);
-      $GLOBALS['URI']['QUERY_LINK_LIST'] =
-        QuerySearch::searchByCategory(25);
       return '/category';
     }
     /* /+i/category/+k/ */
     if ($depth === 5 && $sectionList[3] === '+k') {
-      $GLOBALS['URI']['LINK_LIST'] = DbPropertyKey::getList();
+      $GLOBALS['URI']['LIST_TYPE'] = 'key';
       return '/link_list';
     }
     /* /+i/category/+q/ */
     if ($depth === 5 && $sectionList[3] === '+q') {
-      $GLOBALS['URI']['LINK_LIST'] = QuerySearch::searchByCategory();
+      $GLOBALS['URI']['LIST_TYPE'] = 'query';
       return '/link_list';
     }
     /* /+i/category/key/ */
@@ -43,7 +40,7 @@ class SitemapUriParser {
       throw new NotFoundException;
     }
     if ($depth === 5) {
-      $GLOBALS['URI']['LINK_LIST'] = DbPropertyValue::getList();
+      $GLOBALS['URI']['LIST_TYPE'] = 'value';
       return '/link_list';
     }
     /* /+i/category/key/value/ */
@@ -54,7 +51,7 @@ class SitemapUriParser {
       throw new NotFoundException;
     }
     if ($depth === 6) {
-      $GLOBALS['URI']['LINK_LIST'] = QuerySearch::searchByPropertyValue();
+      $GLOBALS['URI']['LIST_TYPE'] = 'query';
       return '/link_list';
     }
     throw new NotFoundException;
@@ -70,7 +67,7 @@ class SitemapUriParser {
       $GLOBALS['URI']['PAGE'] = $list[0];
       return;
     }
-    $GLOBALS['URI']['INDEX'] = $list[0];
+    $GLOBALS['URI']['ALPHABET_INDEX'] = $list[0];
     if (!isset($list[1])) {
       return;
     }
