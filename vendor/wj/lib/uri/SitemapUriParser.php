@@ -33,8 +33,8 @@ class SitemapUriParser {
       return '/link_list';
     }
     /* /+i/category/key/ */
-    $GLOBALS['URI']['KEY'] = DbProperty::getKeyByName(
-      $GLOBALS['URI']['CATEGORY']['id'], $sectionList['3']
+    $GLOBALS['URI']['KEY'] = DbPropertyKey::getByName(
+      $GLOBALS['URI']['CATEGORY']['id'], urldecode($sectionList['3'])
     );
     if ($GLOBALS['URI']['KEY'] === false) {
       throw new NotFoundException;
@@ -44,8 +44,8 @@ class SitemapUriParser {
       return '/link_list';
     }
     /* /+i/category/key/value/ */
-    $GLOBALS['URI']['VALUE'] = DbProperty::getValueByName(
-      $GLOBALS['URI']['KEY']['id'], $sectionList['4']
+    $GLOBALS['URI']['VALUE'] = DbPropertyValue::getByName(
+      $GLOBALS['URI']['KEY']['id'], urldecode($sectionList['4'])
     );
     if ($GLOBALS['URI']['VALUE'] === false) {
       throw new NotFoundException;

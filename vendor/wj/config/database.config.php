@@ -1,6 +1,6 @@
 <?php
 return array(
-  'dsn' => 'mysql:host=localhost',
+  'dsn' => 'mysql:host=localhost;dbname=wj_web',
   'username' => 'root',
   'password' => 'a841107!',
 );

@@ -17,12 +17,10 @@
   border-radius: 3px;
 }
 #alphabet span {
-    font-weight:bold;
   background:red;
   color:#fff;
 }
 #alphabet a:hover {
-    font-weight:bold;
   background:#06c;
   color:#fff;
   text-decoration:none;
