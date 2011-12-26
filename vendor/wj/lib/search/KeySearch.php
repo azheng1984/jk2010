@@ -9,6 +9,6 @@ class KeySearch {
     $sphinx->SetFilter ('category_id', array($category['id']));
     $sphinx->SetGroupBy('key_id_list', SPH_GROUPBY_ATTR, '@count DESC');
     $sphinx->SetArrayResult (true);
-    return $sphinx->query($query, 'wj_search');
+    return $sphinx->query($query, 'wj_product_index');
   }
 }

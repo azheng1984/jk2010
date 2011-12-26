@@ -145,7 +145,7 @@ class ProductContentProcessor {
       $title,
       $description
     );
-    DbSearchProduct::updateContent(
+    DbSearchProduct::update(
       $webProductId,
       $lowestPriceX100,
       $discountX10,

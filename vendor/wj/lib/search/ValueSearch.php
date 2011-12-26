@@ -15,7 +15,7 @@ class ValueSearch {
     $sphinx->SetGroupBy('value_id_list_'.$key['mva_index'], SPH_GROUPBY_ATTR, '@count DESC');
     //$sphinx->SetGroupBy('value_id_list'.$this->key['search_field_index'], SPH_GROUPBY_ATTR, '@count DESC');
     $sphinx->SetArrayResult (true);
-    return $sphinx->query($query, 'wj_search');
+    return $sphinx->query($query, 'wj_product_index');
   }
 
   private static function setProperties() {

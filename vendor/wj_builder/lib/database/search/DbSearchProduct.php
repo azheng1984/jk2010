@@ -5,8 +5,8 @@ class DbSearchProduct {
     $lowestPriceX100,
     $discountX10,
     $saleRank,
-    $categoryId,
     $publishTimestamp,
+    $categoryId,
     $keyIdList,
     $keywordList,
     $valueIdLists
