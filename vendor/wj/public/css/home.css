@@ -4,6 +4,7 @@
   width:960px;
   border:1px solid #E5E5E5;
   margin-top:5px;
+  box-shadow:2px 2px #f1f1f1;
 }
 #slogon {
   position:relative;
@@ -129,7 +130,7 @@ td a span {
 }
 #home .footer a {
   border:1px solid #E5E5E5;
-  padding:4px 8px;
+  padding:5px 10px;
   background: url(/img/button.png) repeat-x;
   margin-left:15px;
   border-radius: 3px;
@@ -148,7 +149,7 @@ td a span {
 #home .footer em {
   font-size:15px;
   font-style:normal;
-  color:#444;
+  color:#555;
 }
 #home .footer .left {
   margin-right:0;
