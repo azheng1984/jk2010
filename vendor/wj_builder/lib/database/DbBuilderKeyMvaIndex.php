@@ -15,7 +15,7 @@ class DbBuilderKeyMvaIndex {
     return $index;
   }
 
-  public static function get($categoryId) {
+  private static function get($categoryId) {
     return Db::getColumn(
       'SELECT `index` FROM `wj_builder`.`key_mva_index`'
       .' WHERE category_id = ?', $categoryId

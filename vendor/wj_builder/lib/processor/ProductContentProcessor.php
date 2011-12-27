@@ -63,7 +63,6 @@ class ProductContentProcessor {
         'mva_index' => $mvaIndex
       );
     }
-    $webKey['mva_index'] = DbBuilderKeyMvaIndex::get($this->webCategoryId);
     return $webKey;
   }
 
@@ -161,8 +160,8 @@ class ProductContentProcessor {
   private function getSearchValueIdLists() {
     $result = array();
     for ($index = 1; $index <= 10; ++$index) {
-      if (isset($this->webValuesList[$index])) {
-        $result[$index] = implode(',', $this->webValuesList[$index]);
+      if (isset($this->searchValueIdLists[$index])) {
+        $result[$index] = implode(',', $this->searchValueIdLists[$index]);
         continue;
       }
       $result[$index] = null;
