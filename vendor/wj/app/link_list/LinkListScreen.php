@@ -99,9 +99,9 @@ class LinkListScreen extends Screen {
       echo ' <a href="', $index, '">', $index, '</a>';
     }
     if ($this->alphabetIndex === 48) {
-      echo ' <span>0_9</span>';
+      echo ' <span>0-9</span>';
     } else {
-      echo ' <a href="0_9">0_9</a>';
+      echo ' <a href="0_9">0-9</a>';
     }
     echo '</div>';
   }
