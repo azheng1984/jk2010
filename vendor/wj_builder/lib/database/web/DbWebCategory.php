@@ -10,8 +10,9 @@ class DbWebCategory {
     return Db::getAll('SELECT * FROM `wj_web`.`category`');
   }
 
-  public static function insert($name) {
-    Db::execute('INSERT INTO `wj_web`.`category`(`name`) VALUES(?)', $name);
+  public static function insert($name, $alphabetIndex) {
+    Db::execute('INSERT INTO `wj_web`.`category`'
+      .'(`name`, alphabet_index) VALUES(?, ?)', $name, $alphabetIndex);
     return DbConnection::get()->lastInsertId();
   }
 }

@@ -14,11 +14,16 @@ class BuildQueryCommand {
   }
 
   private function insert($categoryId, $name) {
-    $result = ProductSearch::search(Segmentation::execute($name));
+    $segmentList = Segmentation::execute($name);
+    $result = ProductSearch::search($segmentList);
     $amount = $result['total_found'];
     if ($amount !== 0) {
-      $id = DbWebQuery::insert($categoryId, $name, $amount);
-      DbSearchQuery::insert($id, $name, $amount);
+      $pinyin = Pinyin::encode($name, false);
+      $alphabetIndex = AlphabetIndex::get($segmentList[0], $pinyin);
+      $id = DbWebQuery::insert(
+        $categoryId, $alphabetIndex, $name, $pinyin, $amount
+      );
+      DbSearchQuery::insert($id, $alphabetIndex, $name, $pinyin, $amount);
     }
   }
 }

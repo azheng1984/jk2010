@@ -15,11 +15,11 @@ class DbWebKey {
     );
   }
 
-  public static function insert($categoryId, $name, $mvaIndex) {
+  public static function insert($categoryId, $alphabetIndex, $name, $mvaIndex) {
     Db::execute(
-      'INSERT INTO `wj_web`.`property_key`(`category_id`, `name`, `mva_index`)'
-      .' VALUES(?, ?, ?)',
-      $categoryId, $name, $mvaIndex
+      'INSERT INTO `wj_web`.`property_key`'
+      .'(`category_id`, alphabet_index, `name`, `mva_index`) VALUES(?, ?, ?, ?)',
+      $categoryId, $alphabetIndex, $name, $mvaIndex
     );
     return DbConnection::get()->lastInsertId();
   }
