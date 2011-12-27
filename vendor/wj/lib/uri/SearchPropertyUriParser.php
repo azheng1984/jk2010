@@ -21,7 +21,7 @@ class SearchPropertyUriParser {
         $isInclude = false;
         $valueUriName = substr($valueUriName, 1);
       }
-      $this->addValue($valueUriName, $isInclude);
+      self::addValue($valueUriName, $isInclude);
     }
     self::moveNextKey();
   }
@@ -36,7 +36,7 @@ class SearchPropertyUriParser {
       return;
     }
     self::$key = false;
-    self::$values = array();
+    self::$valueList = array();
     $keyName = urldecode($keyUriName);
     if (isset($GLOBALS['URI']['CATEGORY']['id'])) {
       self::$key = DbPropertyKey::getByName(

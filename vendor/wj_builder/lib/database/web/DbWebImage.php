@@ -33,7 +33,7 @@ class DbWebImage {
   }
 
   private static function insert($productId, $image) {
-    self::connectDb();
+    self::connect();
     $sql = 'INSERT INTO image(product_id, image) VALUES(?, ?)';
     Db::execute($sql, $productId, $image);
     DbConnection::connect('default');
