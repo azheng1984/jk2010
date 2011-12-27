@@ -18,7 +18,10 @@ class ProductContentProcessor {
     );
     $webCategory = DbWebCategory::get($spiderCategory['name']);
     if ($webCategory === false) {
-      $this->webCategoryId = DbWebCategory::insert($spiderCategory['name']);
+      $this->webCategoryId = DbWebCategory::insert(
+        $spiderCategory['name'],
+        $this->getAlphabetIndex($spiderCategory['name'])
+      );
       return;
     }
     $this->webCategoryId = $webCategory['id'];
@@ -55,7 +58,10 @@ class ProductContentProcessor {
     $webKey = DbWebKey::get($this->webCategoryId, $spiderKeyName);
     if ($webKey === false) {
       $mvaIndex = DbBuilderKeyMvaIndex::getNext($this->webCategoryId);
-      $id = DbWebKey::insert($this->webCategoryId, $spiderKeyName, $mvaIndex);
+      $alphabetIndex = $this->getAlphabetIndex($spiderKeyName);
+      $id = DbWebKey::insert(
+        $this->webCategoryId, $alphabetIndex,  $spiderKeyName, $mvaIndex
+      );
       return array(
         'id' => $id,
         'name' => $spiderKeyName,
@@ -71,7 +77,10 @@ class ProductContentProcessor {
     foreach ($spiderValueList as $spiderValue) {
       $webValue = DbWebValue::get($webKeyId, $spiderValue['name']);
       if ($webValue === false) {
-        $id = DbWebValue::insert($webKeyId, $spiderValue['name']);
+        $alphabetIndex = $this->getAlphabetIndex($spiderValue['name']);
+        $id = DbWebValue::insert(
+          $webKeyId, $alphabetIndex, $spiderValue['name']
+        );
         $webValue = array('id' => $id);
       }
       $searchValueIdList[] = $webValue['id'];
@@ -95,7 +104,7 @@ class ProductContentProcessor {
     $keyIdList = implode(',', $this->webKeyIdList);
     $discountX10 = 100;
     $saleRank = $spiderProduct['sale_rank'];
-    $publishTimestamp = date("ymdHi");
+    $publishTimestamp = time();
     $valueIdLists = $this->getSearchValueIdLists();
     $spiderProductWebProduct = DbBuilderSpiderProductWebProduct::get(
       $spiderProduct['merchant_product_id']
@@ -167,5 +176,15 @@ class ProductContentProcessor {
       $result[$index] = null;
     }
     return $result;
+  }
+
+  private function getAlphabetIndex($name) {
+    $segment = mb_substr($name, 0, 1, 'utf-8');
+    $pinyin = Pinyin::encode($segment, false);
+    if (strpos($pinyin, ',') !== false) {
+      $segmentList = Segmentation::execute($name);
+      $segment = $segmentList[0];
+    }
+    return AlphabetIndex::get($segmentList[0], $pinyin);
   }
 }

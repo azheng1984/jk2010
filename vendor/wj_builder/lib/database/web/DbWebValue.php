@@ -14,11 +14,11 @@ class DbWebValue {
     );
   }
 
-  public static function insert($keyId, $name) {
+  public static function insert($keyId, $alphabetIndex, $name) {
     Db::execute(
-      'INSERT INTO `wj_web`.`property_value`(`key_id`, `name`)'
-      .' VALUES(?, ?)',
-      $keyId, $name
+      'INSERT INTO `wj_web`.`property_value`(`key_id`, alphabet_index, `name`)'
+      .' VALUES(?, ?, ?)',
+      $keyId, $alphabetIndex, $name
     );
     return DbConnection::get()->lastInsertId();
   }
