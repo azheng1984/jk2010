@@ -39,7 +39,7 @@ class SearchPropertyUriParser {
     self::$values = array();
     $keyName = urldecode($keyUriName);
     if (isset($GLOBALS['URI']['CATEGORY']['id'])) {
-      self::$key = DbProperty::getKeyByName(
+      self::$key = DbPropertyKey::getByName(
         $GLOBALS['URI']['CATEGORY']['id'], $keyName
       );
     }
@@ -55,7 +55,7 @@ class SearchPropertyUriParser {
     $value = false;
     $valueName = urldecode($valueUriName);
     if (isset(self::$key['id'])) {
-      $value = DbProperty::getValueByName(
+      $value = DbPropertyValue::getByName(
         self::$key['id'], urldecode($valueUriName)
       );
     }

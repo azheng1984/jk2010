@@ -1,11 +1,11 @@
 <?php
 class DbCategory {
   public static function get($id) {
-    return Db::getRow('SELECT * FROM wj_web.category WHERE id = ?', $id);
+    return Db::getRow('SELECT * FROM category WHERE id = ?', $id);
   }
 
   public static function getList($alphabetIndex, $page) {
-    $sql = 'SELECT * FROM wj_web.category';
+    $sql = 'SELECT * FROM category';
     if ($alphabetIndex !== null) {
       $sql .= " WHERE alphabet_index = $alphabetIndex";
     }

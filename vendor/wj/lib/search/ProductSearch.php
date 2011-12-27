@@ -40,26 +40,30 @@ class ProductSearch {
   }
 
   private static function setModel() {
-    if (isset($GLOBALS['URI']['MODEL'])) {
+    if (isset($_GET['id']) && is_numeric($_GET['id'])) {
       self::$sphinx->SetFilter(
-        'model_id', array($GLOBALS['URI']['MODEL']['id'])
+        'model_id', array($_GET['id'])
       );
     }
   }
 
   private static function setPriceRange() {
-    if (isset($GLOBALS['URI']['PRICE'])) {
-      self::$sphinx->SetFilterRange(
-        'lowest_price_x_100',
-        $GLOBALS['URI']['PRICE']['LOWEST'] * 100,
-        $GLOBALS['URI']['PRICE']['HIGHEST'] * 100
-      );
+    $priceFrom = null;
+    $priceTo = null;
+    if (isset($_GET['price_from']) && is_numeric($_GET['price_from'])) {
+      $priceFrom = $_GET['price_from'];
+    }
+    if (isset($_GET['price_to']) && is_numeric($_GET['price_to'])) {
+      $priceTo = $_GET['price_to'];
+    }
+    if ($priceFrom !== null || $priceTo !== null) {
+      self::$sphinx->SetFilterRange('lowest_price_x_100',$priceFrom, $priceTo);
     }
   }
 
   private static function setSortMode() {
     $sort = 'sale_rank';
-    if (isset($GLOBALS['URI']['SORT'])) {
+    if (isset($_GET['sort'])) {
       $mapping = array(
         '价格' => 'lowest_price_x_100',
         '-价格' => 'lowest_price_x_100',
@@ -67,10 +71,10 @@ class ProductSearch {
         '上架时间' => 'publish_timestamp',
         '折扣' => 'discount_x_10'
       );
-      $sort = $mapping[$GLOBALS['URI']['SORT']];
+      $sort = $mapping[$_GET['sort']];
     }
     $mode = SPH_SORT_ATTR_ASC;
-    if ($sort === 'lowest_price_x_100' && $GLOBALS['URI']['SORT'] === '-价格') {
+    if ($sort === 'lowest_price_x_100' && $_GET['sort'] === '-价格') {
       $mode = SPH_SORT_ATTR_DESC;
     }
     self::$sphinx->SetSortMode($mode, $sort);
@@ -95,29 +99,4 @@ class ProductSearch {
     }
     return $result;
   }
-
-    /*
-  private static function parseParameters() {
-    if (isset($_GET['key']) && isset($GLOBALS['URI']['CATEGORY'])) {
-      $GLOBALS['URI']['KEY'] = DbProperty::getKeyByName(
-        $GLOBALS['URI']['CATEGORY']['id'], $_GET['key']
-      );
-    }
-    if (isset($_GET['media']) && $_GET['media'] === 'json') {
-      $_SERVER['REQUEST_MEDIA_TYPE'] = 'Json';
-    }
-    if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-      $GLOBALS['URI']['MODEL_ID'] = $_GET['id'];
-    }
-    if (isset($_GET['price_from']) && is_numeric($_GET['price_from'])) {
-      $GLOBALS['URI']['PRICE_FROM'] = $_GET['price_from'];
-    }
-    if (isset($_GET['price_to']) && is_numeric($_GET['price_to'])) {
-      $GLOBALS['URI']['PRICE_TO'] = $_GET['price_to'];
-    }
-    if (isset($_GET['sort'])) {
-      $GLOBALS['URI']['SORT'] = $_GET['sort'];
-    }
-  }
-  */
 }

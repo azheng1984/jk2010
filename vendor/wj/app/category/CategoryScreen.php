@@ -10,6 +10,9 @@ class CategoryScreen extends Screen {
     echo '<div id="breadcrumb"><span class="home"><a href="/"><img alt="首页" src="/img/home.png" /></a></span><span><a href="..">分类</a></span><h1>鞋子</h1></div>';
     echo '<div id="index">';
     $char = 65;
+    $keyList = DbPropertyKey::getList(
+        $GLOBALS['URI']['CATEGORY']['id'], null, 1
+    );
     echo '<h2 class="tag">属性</h2>';
     echo '<table>';
     for ($i = 0; $i < 5; ++$i) {
@@ -22,6 +25,7 @@ class CategoryScreen extends Screen {
     echo '</table>';
     echo '<strong><a href="+k/">更多 &raquo;</a></strong>';
     $char = 65;
+    $queryList = DbQuery::getList();
     echo '<h2>搜索</h2>';
     echo '<table>';
     for ($i = 0; $i < 5; ++$i) {
