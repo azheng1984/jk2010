@@ -6,6 +6,8 @@ delete from wj_web.product where id != 0;
 delete from wj_web.property_key where id != 0;
 delete from wj_web.property_value where id != 0;
 
+delete from wj_web.query where id != 0;
+delete from wj_search.query where id != 0;
 
 delete from `jingdong`.`category` where id != 0;
 delete from `jingdong`.`food_product` where id != 0;
