@@ -17,9 +17,6 @@ class RelatedQueryScreen {
     if ($buffer === '') {
       return;
     }
-    echo '<h2>相关搜索:</h2>';
-    echo '<ul>';
-    echo $buffer;
-    echo '</ul>';
+    echo '<h2>相关搜索:</h2><ul>', $buffer, '</ul>';
   }
 }

@@ -38,6 +38,9 @@ td {
   vertical-align:top;
   background:url(/img/bull.png) 5px 7px no-repeat;
 }
+td.empty {
+  background:none;
+}
 td a {
   margin-left:25px;
 }

@@ -113,7 +113,11 @@ class LinkListScreen extends Screen {
     for ($i = 0; $i < 12; ++$i) {
       echo '<tr>';
       for ($j = 0; $j < 5; ++$j) {
-        echo '<td>';
+        echo '<td';
+        if ($index >= $amount) {
+          echo ' class="empty"';
+        }
+        echo '>';
         if ($index < $amount) {
           echo '<a href="', $this->linkList[$index]['href'], '">',
             $this->linkList[$index]['text'], '</a>';
