@@ -23,7 +23,7 @@ class BuildQueryCommand {
       $id = DbWebQuery::insert(
         $categoryId, $alphabetIndex, $name, $pinyin, $amount
       );
-      DbSearchQuery::insert($id, $alphabetIndex, $name, $pinyin, $amount);
+      DbSearchQuery::insert($id, $alphabetIndex, $segmentList, $pinyin, $amount);
     }
   }
 }

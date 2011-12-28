@@ -1,11 +1,25 @@
 <?php
 class RelatedQueryScreen {
   public static function render() {
+    $result = QuerySearch::searchByQuery($GLOBALS['URI']['QUERY']);
+    if ($result['total_found'] === 0) {
+      return;
+    }
+    $buffer = '';
+    foreach ($result['matches'] as $id => $item) {
+      $query = DbQuery::get($id);
+      if ($GLOBALS['URI']['QUERY'] === $query['name']) {
+       continue;
+      }
+      $buffer .= '<li><a href="/'.$query['name'].'/">'
+        .$query['name'].'</a> '.$item['attrs']['amount'].'</li>';
+    }
+    if ($buffer === '') {
+      return;
+    }
     echo '<h2>相关搜索:</h2>';
     echo '<ul>';
-    echo '<li><a href="/缓释胶囊/">缓释胶囊</a> 234</li>';
-    echo '<li><a href="javascript:void(0)">胶囊补品</a> 12</li>';
-    echo '<li><a href="javascript:void(0)">胶囊 药品</a> 1</li>';
+    echo $buffer;
     echo '</ul>';
   }
 }
