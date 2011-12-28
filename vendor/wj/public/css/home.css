@@ -135,6 +135,10 @@ td a span {
   margin-left:15px;
   border-radius: 3px;
 }
+#home .footer a em {
+  font-weight:bold;
+  font-style: normal;
+}
 #home .footer a:hover {
   border:1px solid #CCC;
   text-decoration:none;
@@ -146,7 +150,7 @@ td a span {
   text-align:center;
   float:right;
 }
-#home .footer em {
+#home .footer span em {
   font-size:15px;
   font-style:normal;
   color:#555;
