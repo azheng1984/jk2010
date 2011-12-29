@@ -136,6 +136,7 @@ td a span {
   background: url(/img/button.png) repeat-x;
   margin-left:15px;
   border-radius: 3px;
+  margin-right:4px;
 }
 #home .footer a em {
   font-weight:bold;
