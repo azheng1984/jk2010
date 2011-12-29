@@ -50,7 +50,7 @@ class HomeScreen extends Screen {
 
   private function renderCategoryList() {
     $uri = urlencode('儿童');
-    echo ' <ul id="category">';
+    echo '<ul id="category">';
     echo '<li><span>全部</span></li>';
     echo '<li><a href="百货" rel="nofollow">百货</a></li>';
     echo '<li><a href="数码家电" rel="nofollow">数码家电</a></li>';
