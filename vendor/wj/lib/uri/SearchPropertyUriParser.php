@@ -31,7 +31,7 @@ class SearchPropertyUriParser {
       throw new NotFoundException;
     }
     $GLOBALS['URI']['PROPERTY_LIST'][] =
-      array('KEY' => self::$key, 'VALUES' => self::$valueList);
+      array('KEY' => self::$key, 'VALUE_LIST' => self::$valueList);
     if ($keyUriName === null) {
       return;
     }
