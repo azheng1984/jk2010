@@ -63,21 +63,21 @@ h2 {
   font-size:16px;
   font-weight:normal;
 }
-#category {
+#merchant ul {
   list-style:none;
   padding:12px;
   padding-top:15px;
   font-size:15px;
 }
-#category li {
+#merchant li {
   clear:left;
 }
-#category li a {
+#merchant li a {
   line-height: 13px;
   float: left;
   margin:10px;
 }
-#category li span {
+#merchant li span {
   color:#fff;
   background:red;
   width:155px;

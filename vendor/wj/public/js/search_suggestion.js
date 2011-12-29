@@ -1,4 +1,7 @@
 $(function() {
+  if(window.location.pathname === '/') {
+    $('#search_input').focus();
+  }
   var suggestion = false;
   $('#search_input').click(function() {
     if (suggestion == false) {
