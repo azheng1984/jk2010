@@ -1,7 +1,6 @@
 <?php
 abstract class Screen {
   abstract protected function renderHeadContent();
-
   abstract protected function renderBodyContent();
 
   protected function renderCssLink($id) {

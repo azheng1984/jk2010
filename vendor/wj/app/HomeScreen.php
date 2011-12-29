@@ -8,10 +8,8 @@ class HomeScreen extends Screen {
   protected function renderBodyContent() {
     echo '<div id="home">';
     $this->renderSlogon();
-    $this->renderMerchantList();
-    $this->renderCategoryList();
+    $this->renderMerchant();
     $this->renderFooter();
-    $this->renderFocusJs();
     echo '</div>';
   }
 
@@ -35,6 +33,13 @@ class HomeScreen extends Screen {
     echo '<strong><a class="more" href="/+i/">&hellip;</a></strong>';
   }
 
+  private function renderMerchant() {
+    echo '<div id="merchant">';
+    $this->renderMerchantList();
+    $this->renderMerchantTypeList();
+    echo '</div>';
+  }
+
   private function renderMerchantList() {
     echo '<table>';
     for ($i = 0; $i < 6; ++$i) {
@@ -48,9 +53,9 @@ class HomeScreen extends Screen {
     echo '</table>';
   }
 
-  private function renderCategoryList() {
+  private function renderMerchantTypeList() {
     $uri = urlencode('儿童');
-    echo '<ul id="category">';
+    echo '<ul>';
     echo '<li><span>全部</span></li>';
     echo '<li><a href="百货" rel="nofollow">百货</a></li>';
     echo '<li><a href="数码家电" rel="nofollow">数码家电</a></li>';
@@ -64,9 +69,5 @@ class HomeScreen extends Screen {
      '<a href="javascript:void(0)"><em>+</em>&nbsp; 更多商店</a> 1/12',
      '<span><em>公司经营</em> 100%</span><span class="left"><em>正规商店</em> 100%</span>',
      '</div>';
-  }
-
-  private function renderFocusJs() {
-    echo '<script>document.getElementById("search_input").focus()</script>';
   }
 }
