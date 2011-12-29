@@ -24,6 +24,9 @@ abstract class Screen {
   private function renderHead() {
     echo '<head>';
     $this->renderCssLink('screen');
+    $this->renderCssLink('search_suggestion');
+    $this->renderJsLink('jquery-1.7.1');
+    $this->renderJsLink('search_suggestion');
     $this->renderHeadContent();
     echo '</head>';
   }

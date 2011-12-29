@@ -12,9 +12,8 @@ class SearchScreen extends Screen {
     $this->renderCssLink('search_result_sort');
     $this->renderCssLink('search_related');
     $this->renderCssLink('search_filter');
-    $this->renderCssLink('search_suggestion');
-    $this->renderJsLink('jquery-1.7.1');
-    $this->renderJsLink('search');
+    $this->renderJsLink('search_result');
+    $this->renderJsLink('search_tag');
   }
 
   protected function renderBodyContent() {
