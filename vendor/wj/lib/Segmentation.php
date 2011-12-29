@@ -21,6 +21,6 @@ class Segmentation {
       $result[] = $token['text'];
     }
     mmseg_algor_destroy($mmseg);
-    return implode(' ', $result);
+    return $result;
   }
 }

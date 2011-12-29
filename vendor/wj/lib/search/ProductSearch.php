@@ -5,12 +5,12 @@ class ProductSearch {
   public static function search() {
     self::initialize();
     self::setCategory();
-    self::setProperties();
+    self::setPropertyList();
     self::setModel();
     self::setPriceRange();
     self::setSortMode();
     self::setPage();
-    return self::getResult();
+    return self::query();
   }
 
   private static function initialize() {
@@ -28,15 +28,23 @@ class ProductSearch {
     }
   }
 
-  private static function setProperties() {
-    if (isset($GLOBALS['URI']['PROPERTIES'])) {
-      foreach ($GLOBALS['URI']['PROPERTIES'] as $item) {
+  private static function setPropertyList() {
+    if (isset($GLOBALS['URI']['PROPERTY_LIST'])) {
+      foreach ($GLOBALS['URI']['PROPERTY_LIST'] as $property) {
         self::$sphinx->SetFilter(
-          'value_id_list_'.$item['KEY']['mva_index'],
-          array($item['VALUES'][0]['id'])
+          'value_id_list_'.$property['KEY']['mva_index'],
+          $this->getValueIdList($property['VALUE_LIST'])
         );
       }
     }
+  }
+
+  private static function getValueIdList($valueList) {
+    $result = array();
+    foreach ($valueList as $value) {
+      $result[] = $value['id'];
+    }
+    return $result;
   }
 
   private static function setModel() {
@@ -48,29 +56,42 @@ class ProductSearch {
   }
 
   private static function setPriceRange() {
-    $priceFrom = null;
-    $priceTo = null;
+    $range = self::getPriceRange();
+    if ($range !== null) {
+      self::$sphinx->SetFilterRange(
+        'lowest_price_x_100', $range['min'], $range['max']
+      );
+    }
+  }
+
+  private static function getPriceRange() {
+    $priceFrom = 0;
+    $priceTo = 0;
     if (isset($_GET['price_from']) && is_numeric($_GET['price_from'])) {
-      $priceFrom = $_GET['price_from'];
+      $priceFrom = $_GET['price_from'] * 100;
     }
     if (isset($_GET['price_to']) && is_numeric($_GET['price_to'])) {
-      $priceTo = $_GET['price_to'];
+      $priceTo = $_GET['price_to'] * 100;
     }
-    if ($priceFrom !== null || $priceTo !== null) {
-      self::$sphinx->SetFilterRange('lowest_price_x_100',$priceFrom, $priceTo);
+    if ($priceFrom === 0 && $priceTo === 0) {
+      return;
     }
+    if ($priceFrom > $priceTo) {
+      return array('min' => $priceTo, 'max' => $priceFrom);
+    }
+    return array('min' => $priceFrom, 'max' => $priceTo);
   }
 
   private static function setSortMode() {
     $sort = 'sale_rank';
-    if (isset($_GET['sort'])) {
-      $mapping = array(
-        '价格' => 'lowest_price_x_100',
-        '-价格' => 'lowest_price_x_100',
-        '销量' => 'sale_rank',
-        '上架时间' => 'publish_timestamp',
-        '折扣' => 'discount_x_10'
-      );
+    $mapping = array(
+      '价格' => 'lowest_price_x_100',
+      '-价格' => 'lowest_price_x_100',
+      '销量' => 'sale_rank',
+      '上架时间' => 'publish_timestamp',
+      '折扣' => 'discount_x_10'
+    );
+    if (isset($_GET['sort']) && isset($mapping[$_GET['sort']])) {
       $sort = $mapping[$_GET['sort']];
     }
     $mode = SPH_SORT_ATTR_ASC;
@@ -89,12 +110,14 @@ class ProductSearch {
     self::$sphinx->SetLimits($offset, 16);
   }
 
-  private static function getResult() {
+  private static function query() {
     if (!isset($GLOBALS['URI']['QUERY'])) {
       throw new NotFoundException;
     }
     $segmentList = Segmentation::execute($GLOBALS['URI']['QUERY']);
-    $result = self::$sphinx->query($segmentList, 'wj_product_index');
+    $result = self::$sphinx->query(
+      implode(' ', $segmentList), 'wj_product_index'
+    );
     if ($result === false) {
       $result = array('total_found' => 0, 'matches' => array());
     }
