@@ -1,7 +1,6 @@
 <?php
 class DbImage {
   private static $isConnected;
-  private static $isWebConnected;
 
   public static function get($id) {
     self::connect();

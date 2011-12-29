@@ -10,13 +10,15 @@ class DbPropertyKey {
     return Db::getRow($sql, $categoryId, $name);
   }
 
-  public static function getList($categoryId, $alphabetIndex, $page, $amount = 60) {
-    $sql = 'SELECT * FROM property_key';
+  public static function getList(
+    $categoryId, $alphabetIndex, $page, $amount = 60
+  ) {
+    $sql = 'SELECT * FROM property_key WHERE category_id = ?';
     if ($alphabetIndex !== null) {
-      $sql .= " WHERE alphabet_index = $alphabetIndex";
+      $sql .= " AND alphabet_index = $alphabetIndex";
     }
     $start = ($page - 1) * 60;
-    $sql .= ' LIMIT '.$start.','.$amount;
-    return Db::getAll($sql);
+    $sql .= ' ORDER BY `rank` LIMIT '.$start.','.$amount;
+    return Db::getAll($sql, $categoryId);
   }
 }
