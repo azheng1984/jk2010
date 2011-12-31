@@ -90,6 +90,7 @@ a:hover em {
   border: 1px solid;
   border-color: #ddd #aaa #aaa #ddd;
 text-decoration: none;
+    box-shadow:0 0 3px #ddd;
 }
 #result .toolbar a span {
   background: url(/img/same_model.png);
@@ -119,6 +120,7 @@ text-decoration: none;
 #result .tag a:hover {
   border: 1px solid;
   border-color: #ddd #aaa #aaa #ddd;
+      box-shadow:0 0 3px #ddd;
 }
 #result .merchant {
   clear:left;
