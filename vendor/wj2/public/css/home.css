@@ -10,10 +10,10 @@
   position:relative;
   width:100%;
   padding-top:10px;
-  background:#fefad7;
-  background:-webkit-linear-gradient(#fefad7, #fffdf2);
-  background:-moz-linear-gradient(#fefad7, #fffdf2);
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fefad7', endColorstr='#fffdf2');
+  background:#ffc;
+  background:-webkit-linear-gradient(#ffc, #ffe);
+  background:-moz-linear-gradient(#ffc, #ffe);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffc', endColorstr='#ffe');
   border-bottom:1px solid #e5e5e5;
 }
 #slogon .arrow {
@@ -120,7 +120,7 @@ td a:hover {
 td:hover {
   border:1px solid ;
   border-color:#e5e5e5 #ccc #ccc #e5e5e5;
-        box-shadow:0 0 3px #ddd;
+  box-shadow:0 0 3px #ddd;
 }
 td a span {
   display:block;
