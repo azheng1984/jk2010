@@ -51,7 +51,7 @@ h1 {
 #pagination a:hover {
   border:1px solid #ccc;
   text-decoration:none;
-  box-shadow:0 0 3px #ccc;
+  box-shadow:0 0 3px #ddd;
 }
 #pagination span {
   border:1px solid red;

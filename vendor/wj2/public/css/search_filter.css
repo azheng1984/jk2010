@@ -30,9 +30,11 @@
   float: left;
   border-color: #EEE #CCC #CCC #EEE;
   border-radius:3px 11px 11px 3px;
+
 }
 #filter li a:hover {
   border-color: #ddd #aaa #aaa #ddd;
+        box-shadow:0 0 3px #ddd;
 }
 #filter li .selected {
   border: 0;
