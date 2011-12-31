@@ -51,6 +51,6 @@ strong a {
 }
 strong a:hover {
   border:1px solid #ccc;
-  box-shadow:0 0 3px #ccc;
+  box-shadow:0 0 3px #ddd;
   text-decoration:none;
 }
