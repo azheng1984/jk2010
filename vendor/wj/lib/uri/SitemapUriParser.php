@@ -2,59 +2,8 @@
 class SitemapUriParser {
   public static function parse() {
     self::parsePage();
-    return self::parseTag();
-  }
-
-  private static function parseTag() {
-    $sectionList = $GLOBALS['URI']['PATH_SECTION_LIST'];
-    $depth = count($sectionList);
-    if ($depth === 3) {
-      $GLOBALS['URI']['LIST_TYPE'] = 'category';
-      return '/link_list';
-    }
-    /* /+i/category/ */
-    $GLOBALS['URI']['CATEGORY'] = DbCategory::getByName(
-      urldecode($sectionList['2'])
-    );
-    if ($GLOBALS['URI']['CATEGORY'] === false) {
-      throw new NotFoundException;
-    }
-    if ($depth === 4) {
-      return '/category';
-    }
-    /* /+i/category/+k/ */
-    if ($depth === 5 && $sectionList[3] === '+k') {
-      $GLOBALS['URI']['LIST_TYPE'] = 'key';
-      return '/link_list';
-    }
-    /* /+i/category/+q/ */
-    if ($depth === 5 && $sectionList[3] === '+q') {
-      $GLOBALS['URI']['LIST_TYPE'] = 'query';
-      return '/link_list';
-    }
-    /* /+i/category/key/ */
-    $GLOBALS['URI']['PROPERTY_KEY'] = DbPropertyKey::getByName(
-      $GLOBALS['URI']['CATEGORY']['id'], urldecode($sectionList['3'])
-    );
-    if ($GLOBALS['URI']['PROPERTY_KEY'] === false) {
-      throw new NotFoundException;
-    }
-    if ($depth === 5) {
-      $GLOBALS['URI']['LIST_TYPE'] = 'value';
-      return '/link_list';
-    }
-    /* /+i/category/key/value/ */
-    $GLOBALS['URI']['PROPERTY_VALUE'] = DbPropertyValue::getByName(
-      $GLOBALS['URI']['KEY']['id'], urldecode($sectionList['4'])
-    );
-    if ($GLOBALS['URI']['PROPERTY_VALUE'] === false) {
-      throw new NotFoundException;
-    }
-    if ($depth === 6) {
-      $GLOBALS['URI']['LIST_TYPE'] = 'query';
-      return '/link_list';
-    }
-    throw new NotFoundException;
+    self::parseTag();
+    return '/sitemap';
   }
 
   private static function parsePage() {
@@ -73,6 +22,54 @@ class SitemapUriParser {
     }
     if (is_numeric($list[1])) {
       $GLOBALS['URI']['PAGE'] = $list[1];
+      return;
+    }
+    throw new NotFoundException;
+  }
+
+  private static function parseTag() {
+    $sectionList = $GLOBALS['URI']['PATH_SECTION_LIST'];
+    $depth = count($sectionList);
+    if ($depth === 3) {
+      $GLOBALS['URI']['LIST_TYPE'] = 'category';
+      return '/link_list';
+    }
+    /* /+i/category/ */
+    $GLOBALS['URI']['CATEGORY'] = DbCategory::getByName(
+      urldecode($sectionList['2'])
+    );
+    if ($GLOBALS['URI']['CATEGORY'] === false) {
+      throw new NotFoundException;
+    }
+    if ($depth === 4) {
+      $GLOBALS['URI']['LIST_TYPE'] = 'query';
+      return;
+    }
+    /* /+i/category/+k/ */
+    if ($depth === 5 && $sectionList[3] === '+k') {
+      $GLOBALS['URI']['LIST_TYPE'] = 'key';
+      return;
+    }
+    /* /+i/category/key/ */
+    $GLOBALS['URI']['PROPERTY_KEY'] = DbPropertyKey::getByName(
+      $GLOBALS['URI']['CATEGORY']['id'], urldecode($sectionList['3'])
+    );
+    if ($GLOBALS['URI']['PROPERTY_KEY'] === false) {
+      throw new NotFoundException;
+    }
+    if ($depth === 5) {
+      $GLOBALS['URI']['LIST_TYPE'] = 'value';
+      return;
+    }
+    /* /+i/category/key/value/ */
+    $GLOBALS['URI']['PROPERTY_VALUE'] = DbPropertyValue::getByName(
+      $GLOBALS['URI']['KEY']['id'], urldecode($sectionList['4'])
+    );
+    if ($GLOBALS['URI']['PROPERTY_VALUE'] === false) {
+      throw new NotFoundException;
+    }
+    if ($depth === 6) {
+      $GLOBALS['URI']['LIST_TYPE'] = 'query';
       return;
     }
     throw new NotFoundException;
