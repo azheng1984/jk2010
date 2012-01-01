@@ -46,7 +46,7 @@
 }
 #slogon a {
   font-size:13px;
-  color:#999;
+  color:#888;
   border-bottom:1px solid #888;
   text-decoration:none;
 }
@@ -127,38 +127,35 @@ td a span {
 }
 #home .footer {
   width:100%;
-  padding-bottom:15px;
+  padding-bottom:13px;
+  font-size:15px;
+}
+#home .footer .more {
   font-size:11px;
+  padding-left:20px;
+  margin-left:15px;
+  background: url(/img/play.png) 0 6px no-repeat;
+  float:left;
 }
 #home .footer a {
-  font-size:14px;
-  border:1px solid #E5E5E5;
-  padding:5px 10px;
-  background: url(/img/button.png) repeat-x;
-  margin-left:15px;
-  border-radius: 3px;
+  font-size:15px;
+  margin-left:0;
   margin-right:4px;
-}
-#home .footer a em {
-  font-weight:bold;
-  font-style: normal;
-}
-#home .footer a:hover {
-  border:1px solid #ccc;
+  border-bottom:1px solid #888;
+  color:#888;
   text-decoration:none;
-  box-shadow:0 0 3px #ddd;
 }
 #home .footer span {
-
   margin:0 15px 0 10px;
   text-align:center;
   float:right;
-}
-#home .footer span em {
-  font-size:15px;
-  font-style:normal;
-  color:#555;
+  padding-left:22px;
+  background:url(/img/shield.png) no-repeat;
 }
 #home .footer .left {
-  margin-right:0;
+  margin-right:5px;
+  padding-left:25px;
+  background: url(/img/bag.png) no-repeat;
+  font-size:15px;
+
 }
