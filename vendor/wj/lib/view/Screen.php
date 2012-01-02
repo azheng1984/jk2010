@@ -3,13 +3,15 @@ abstract class Screen {
   abstract protected function renderHeadContent();
   abstract protected function renderBodyContent();
 
-  protected function renderCssLink($id) {
-    echo '<link type="text/css" href="/css/', $id, '.css" charset="utf-8"',
+  protected function renderCssLink($name) {
+    echo '<link type="text/css" href="/+/css/', $name, '.',
+      Asset::getMd5('css/'.$name.'.css'), '.css" charset="utf-8"',
       ' media="screen" rel="stylesheet" />';
   }
 
-  protected function renderJsLink($id) {
-    echo '<script src="/js/', $id, '.js" ></script>';
+  protected function renderJsLink($name) {
+    echo '<script src="/+/js/', $name, '.',
+      Asset::getMd5('js/'.$name.'.js'), '.js" ></script>';
   }
 
   public function render() {
