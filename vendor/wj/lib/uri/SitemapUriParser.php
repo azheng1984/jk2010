@@ -24,7 +24,7 @@ class SitemapUriParser {
     $depth = count($sectionList);
     /* /+i/ */
     if ($depth === 3) {
-      $GLOBALS['URI']['LIST_TYPE'] = 'category_list';
+      $GLOBALS['URI']['LIST_TYPE'] = 'category';
       return;
     }
     /* /+i/category/ */
@@ -35,7 +35,7 @@ class SitemapUriParser {
       throw new NotFoundException;
     }
     if ($depth === 4) {
-      $GLOBALS['URI']['LIST_TYPE'] = 'query_list';
+      $GLOBALS['URI']['LIST_TYPE'] = 'query';
       return;
     }
     throw new NotFoundException;

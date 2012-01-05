@@ -4,15 +4,10 @@ class DbQuery {
     return Db::getRow('SELECT * FROM query WHERE id = ?', $id);
   }
 
-  public static function getList(
-    $categoryId, $alphabetIndex, $page, $amount = 60
-  ) {
+  public static function getList($categoryId, $page) {
     $sql = 'SELECT * FROM query WHERE category_id = ?';
-    if ($alphabetIndex !== null) {
-      $sql .= " AND alphabet_index = $alphabetIndex";
-    }
     $start = ($page - 1) * 60;
-    $sql .= ' ORDER BY `amount` LIMIT '.$start.','.$amount;
+    $sql .= ' ORDER BY `product_amount` LIMIT '.$start.',100';
     return Db::getAll($sql, $categoryId);
   }
 }
