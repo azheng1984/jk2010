@@ -10,21 +10,10 @@ class DbCategory {
     );
   }
 
-  public static function getList($alphabetIndex, $page, $amount = 60) {
+  public static function getList($page) {
     $sql = 'SELECT * FROM category';
-    if ($alphabetIndex !== null) {
-      $sql .= " WHERE alphabet_index = $alphabetIndex";
-    }
     $start = ($page - 1) * 60;
-    $sql .= ' ORDER BY `rank` LIMIT '.$start.','.$amount;
+    $sql .= ' ORDER BY `product_amount` LIMIT '.$start.',100';
     return Db::getAll($sql);
-  }
-
-  public static function count($alphabetIndex) {
-    $sql = 'SELECT count(*) FROM category';
-    if ($alphabetIndex !== null) {
-      $sql .= " WHERE alphabet_index = $alphabetIndex";
-    }
-    return Db::getColumn($sql);
   }
 }
