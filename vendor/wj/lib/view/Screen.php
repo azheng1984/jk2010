@@ -16,10 +16,20 @@ abstract class Screen {
 
   public function render() {
     header('Content-Type:text/html; charset=utf-8');
+    ob_start();
     echo '<!DOCTYPE html><html>';
     $this->renderHead();
     $this->renderBody();
     echo '</html>';
+    $etag = md5(ob_get_contents());
+    if (isset($_SERVER['HTTP_IF_NONE_MATCH'])
+      && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag) {
+        header('HTTP/1.1 304 Not Modified');
+        ob_end_clean();
+        return;
+    }
+    header('Etag: '.$etag);
+    ob_end_flush();
   }
 
   private function renderHead() {
@@ -55,19 +65,15 @@ abstract class Screen {
 
   private function renderLogo() {
     echo '<div id="logo">',
-      '<a href="/">货比万家<span class="image"></span></a></div>';
+      '<a href="/">货比万家<span></span></a></div>';
   }
 
   private function renderSearch() {
     $query = isset($GLOBALS['URI']['QUERY']) ? $GLOBALS['URI']['QUERY'] : '';
-    echo '<form onsubmit="',
-      'window.location=',
-      "'/' + encodeURIComponent(search_input.value).replace(/%20/g, '+') + '/'; return false;",
-      '" action="/">',
-      '<input id="search_input" class="text" type="text" name="q" value="',
-      htmlentities($query, ENT_QUOTES, 'utf-8'), '"  autocomplete="off" />',
-      '<button type="submit"></button>',
-      '</form>';
+    echo '<form action="/">',
+      '<input type="text" name="q" value="',
+      htmlentities($query, ENT_QUOTES, 'utf-8'), '" autocomplete="off" />',
+      '<button type="submit"></button></form>';
   }
 
   private function renderToolbar() {
@@ -80,13 +86,13 @@ abstract class Screen {
 
   private function renderBodyFooter() {
     echo '<div id="footer">';
-    $this->renderBodyFooterLinks();
+    $this->renderBodyFooterLinkList();
     $this->renderDeclaration();
     echo '</div>';
   }
 
-  private function renderBodyFooterLinks() {
-    echo '<div class="links">',
+  private function renderBodyFooterLinkList() {
+    echo '<div class="link">',
       '<a href="http://help.huobiwanjia.com/about_us" rel="nofollow">关于我们</a> ',
       '<a href="http://ad.huobiwanjia.com/" rel="nofollow">广告工具</a> ',
       '<a href="http://code.huobiwanjia.com/" rel="nofollow">开源项目</a> ',
