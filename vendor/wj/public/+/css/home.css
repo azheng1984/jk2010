@@ -144,6 +144,6 @@ td a span {
 #more .left {
   margin-right:15px;
   padding-left:25px;
-  background: url(/+/img/bag.png) no-repeat;
+  background:url(/+/img/bag.png) no-repeat;
   font-size:15px;
 }

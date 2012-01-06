@@ -1,6 +1,6 @@
 <?php
 class SitemapScreen extends Screen {
-  private $page = 1;
+  private $page = '1';
   private $amount;
   private $linkList = array();
 
@@ -15,10 +15,12 @@ class SitemapScreen extends Screen {
           'text' => $category['name'], 'href' => $category['name'].'/'
         );
       }
-      $this->amount = 10000;
+      $this->amount = 500;
       return;
     }
-    $queryList = DbQuery::getList($GLOBALS['URI']['CATEGORY']['id'], $this->page);
+    $queryList = DbQuery::getList(
+      $GLOBALS['URI']['CATEGORY']['id'], $this->page
+    );
     foreach ($queryList as $query) {
       $this->linkList[] = array(
         'text' => $query['name'], 'href' => '/'.$query['name'].'/'
@@ -27,13 +29,20 @@ class SitemapScreen extends Screen {
   }
 
   protected function renderHeadContent() {
-    echo '<title>货比万家</title>';
-    $this->renderCssLink('index_breadcrumb');
-    $this->renderCssLink('index');
+    $pageSection = '';
+    if ($this->page != 1) {
+      $pageSection = ' ('.$this->page.')';
+    }
+    $title = '分类'.$pageSection;
+    if (isset($GLOBALS['URI']['CATEGORY'])) {
+      $title = $GLOBALS['URI']['CATEGORY']['name'].$pageSection.' - 分类';
+    }
+    echo '<title>', $title, ' - 货比万家</title>';
+    $this->renderCssLink('sitemap');
   }
 
   protected function renderBodyContent() {
-    echo '<div id="index">';
+    echo '<div id="sitemap">';
     $this->renderBreadcrumb();
     $this->renderTable();
     $this->renderPagination();
@@ -42,8 +51,14 @@ class SitemapScreen extends Screen {
 
   private function renderBreadcrumb() {
     echo '<div id="breadcrumb">',
-      '<span class="home"><a href="/"><img alt="首页" src="/+/img/home.png" /></a></span><h1>分类</h1>',
-      '</div>';
+      '<span class="home"><a href="/"><img alt="首页" src="/+/img/home.',
+      Asset::getMd5('img/home.png'),'.png" /></a></span> ';
+    if (isset($GLOBALS['URI']['CATEGORY'])) {
+      echo '<span><a href="/+i/">分类</a></span> <h1>',
+        $GLOBALS['URI']['CATEGORY']['name'], '</h1></div>';
+      return;
+    }
+    echo '<h1>分类</h1></div>';
   }
 
   private function renderTable() {
