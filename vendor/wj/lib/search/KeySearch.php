@@ -11,7 +11,7 @@ class KeySearch {
     self::setPage();
     $segmentList = Segmentation::execute($GLOBALS['URI']['QUERY']);
     $result = self::$sphinx->query(
-      implode(' ', $segmentList), 'wj_product_index'
+      implode(' ', $segmentList), 'wj_product'
     );
     if ($result === false) {
       $result = array('total_found' => 0, 'matches' => array());
