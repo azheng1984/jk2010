@@ -11,7 +11,7 @@ class QuerySearch {
       $sphinx->SetMatchMode(SPH_MATCH_EXTENDED);
       $query = '"'.$query.'"/'.$amount;
     }
-    $result = $sphinx->query($query, 'wj_query_index');
+    $result = $sphinx->query($query, 'wj_query');
     if ($result === false) {
       $result = array('total_found' => 0, 'matches' => array());
     }
