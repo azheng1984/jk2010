@@ -1,7 +1,7 @@
 <?php
 class RelatedQueryScreen {
   public static function render() {
-    $result = QuerySearch::searchByQuery($GLOBALS['URI']['QUERY']);
+    $result = QuerySearch::search();
     if ($result['total_found'] === 0) {
       return;
     }
@@ -12,7 +12,7 @@ class RelatedQueryScreen {
        continue;
       }
       $buffer .= '<li><a href="/'.$query['name'].'/">'
-        .$query['name'].'</a> '.$item['attrs']['amount'].'</li>';
+        .$query['name'].'</a> '.$item['attrs']['product_amount'].'</li>';
     }
     if ($buffer === '') {
       return;
