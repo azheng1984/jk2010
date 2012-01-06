@@ -52,7 +52,7 @@ class SitemapScreen extends Screen {
   private function renderBreadcrumb() {
     echo '<div id="breadcrumb">',
       '<span class="home"><a href="/"><img alt="首页" src="/+/img/home.',
-      Asset::getMd5('img/home.png'),'.png" /></a></span> ';
+      Asset::getMd5('/home.png'),'.png" /></a></span> ';
     if (isset($GLOBALS['URI']['CATEGORY'])) {
       echo '<span><a href="/+i/">分类</a></span> <h1>',
         $GLOBALS['URI']['CATEGORY']['name'], '</h1></div>';
