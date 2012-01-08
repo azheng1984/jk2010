@@ -64,9 +64,9 @@ class HomeScreen extends Screen {
     $typeList = require CONFIG_PATH
       .'home'.DIRECTORY_SEPARATOR.'merchant_type_list.config.php';
     echo '<ul><li><span>全部</span></li>';
-    foreach ($typeList as $type) {
-      echo '<li><a href="/', urlencode($type[0]), '" rel="nofollow">',
-        $type[0], '</a></li>';
+    foreach ($typeList as $key => $value) {
+      echo '<li><a href="/', $key, '" rel="nofollow">',
+        $value[0], '</a></li>';
     }
     echo '</ul>';
   }

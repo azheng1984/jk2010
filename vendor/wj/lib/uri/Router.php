@@ -19,12 +19,12 @@ class Router {
       header('Location: /'.urlencode($_GET['q']).'/');
       return '/redirect';
     }
-    if ($GLOBALS['URI']['REQUEST_PATH'] === '/') {
-      return MerchantListUriParser::parse();
-    }
     $GLOBALS['URI']['PATH_SECTION_LIST'] = explode(
       '/', $GLOBALS['URI']['REQUEST_PATH']
     );
+    if (!isset($GLOBALS['URI']['PATH_SECTION_LIST'][2])) {
+      return MerchantListUriParser::parse();
+    }
     if ($GLOBALS['URI']['PATH_SECTION_LIST'][1] === '+i') {
       return SitemapUriParser::parse();
     }
