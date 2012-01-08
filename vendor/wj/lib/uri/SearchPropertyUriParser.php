@@ -30,19 +30,15 @@ class SearchPropertyUriParser {
     if ($keyUriName === '') {
       throw new NotFoundException;
     }
-    $GLOBALS['URI']['PROPERTY_LIST'][] =
-      array('KEY' => self::$key, 'VALUE_LIST' => self::$valueList);
-    if ($keyUriName === null) {
-      return;
+    if (self::$key !== false) {
+      $GLOBALS['URI']['PROPERTY_LIST'][] =
+        array('KEY' => self::$key, 'VALUE_LIST' => self::$valueList);
     }
-    self::$key = false;
     self::$valueList = array();
     $keyName = urldecode($keyUriName);
-    if (isset($GLOBALS['URI']['CATEGORY']['id'])) {
-      self::$key = DbPropertyKey::getByName(
-        $GLOBALS['URI']['CATEGORY']['id'], $keyName
-      );
-    }
+    self::$key = DbPropertyKey::getByName(
+      $GLOBALS['URI']['CATEGORY']['id'], $keyName
+    );
     if (self::$key === false) {
       self::$key = array('name' => $keyName);
     }

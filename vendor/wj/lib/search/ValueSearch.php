@@ -28,7 +28,7 @@ class ValueSearch {
     foreach ($GLOBALS['URI']['PROPERTY_LIST'] as $property) {
       self::$sphinx->SetFilter(
         'value_id_list_'.$property['KEY']['mva_index'],
-        $this->getValueIdList($property['VALUE_LIST'])
+        self::getValueIdList($property['VALUE_LIST'])
       );
     }
   }
