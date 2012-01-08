@@ -45,7 +45,7 @@ class SearchJson {
       }
     }
     echo '</ol>';
-    //echo '<div class="more">更多分类</span>';
+    echo '<div class="more"><a href="javascript:void(0)">更多分类</a></div>';
   }
 
   private function renderKeys() {
@@ -64,7 +64,7 @@ class SearchJson {
     foreach ($properies['matches'] as $item) {
       $property = DbPropertyValue::get($item['attrs']['@groupby']);
       if (isset($GLOBALS['URI']['PROPERTY_LIST'])
-        && $GLOBALS['URI']['PROPERTY_LIST'][0]['VALUES'][0]['id'] == $item['attrs']['@groupby']) {
+        && $GLOBALS['URI']['PROPERTY_LIST'][0]['VALUE_LIST'][0]['id'] == $item['attrs']['@groupby']) {
         echo '<li><a href="javascript:void(0)" class="selected">'.$property['name'].'</a><a href="javascript:void(0)" class="delete"></a></li>';
       } else {
         echo '<li><a href="'.$this->key['name'].'='.$property['name'].'/">'.$property['name'].' <span>'.$item['attrs']['@count'].'</span></a><a href="javascript:void(0)" class="delete"></a></li>';
