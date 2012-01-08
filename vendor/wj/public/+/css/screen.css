@@ -123,6 +123,7 @@ input {
   width:375px;
   top:42px;
   z-index:100;
+  box-shadow:0 0 3px #ccc;
 }
 #suggestion ul {
   margin:0;
