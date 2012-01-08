@@ -114,9 +114,9 @@ class ProductSearch {
     if (!isset($GLOBALS['URI']['QUERY'])) {
       throw new NotFoundException;
     }
-    $segmentList = Segmentation::execute($GLOBALS['URI']['QUERY']);
+    $query = SegmentationService::execute($GLOBALS['URI']['QUERY']);
     $result = self::$sphinx->query(
-      implode(' ', $segmentList), 'wj_product'
+      $query, 'wj_product'
     );
     if ($result === false) {
       $result = array('total_found' => 0, 'matches' => array());

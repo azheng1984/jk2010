@@ -1,6 +1,7 @@
 <?php
 class BuildCommand {
   public function execute() {
+    while(true) {}
     $tablePrefix = 'food';
     while (($item = DbSpiderProductLog::get($tablePrefix)) !== false) {
       $class = 'Product'.ucfirst(strtolower($item['type'])).'Processor';

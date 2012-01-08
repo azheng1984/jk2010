@@ -8,15 +8,14 @@ class ValueSearch {
     self::setPropertyList();
     $sphinx->setServer("localhost", 9312);
     $sphinx->setMaxQueryTime(30);
+    print_r($GLOBALS['URI']);
     $key = $GLOBALS['URI']['PROPERTY_LIST'][0];
     $sphinx->SetGroupBy(
       'value_id_list_'.$key['mva_index'], SPH_GROUPBY_ATTR, '@count DESC'
     );
     self::setPage();
-    $segmentList = Segmentation::execute($GLOBALS['URI']['QUERY']);
-    $result = self::$sphinx->query(
-      implode(' ', $segmentList), 'wj_product'
-    );
+    $query = SegmentationService::execute($GLOBALS['URI']['QUERY']);
+    $result = self::$sphinx->query($query, 'wj_product');
     if ($result === false) {
       $result = array('total_found' => 0, 'matches' => array());
     }
@@ -24,6 +23,9 @@ class ValueSearch {
   }
 
   private static function setPropertyList() {
+    if (!isset($GLOBALS['URI']['PROPERTY_LIST'])) {
+      return;
+    }
     foreach ($GLOBALS['URI']['PROPERTY_LIST'] as $property) {
       self::$sphinx->SetFilter(
         'value_id_list_'.$property['KEY']['mva_index'],
