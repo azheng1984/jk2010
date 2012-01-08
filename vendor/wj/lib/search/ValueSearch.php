@@ -8,8 +8,7 @@ class ValueSearch {
     self::setPropertyList();
     $sphinx->setServer("localhost", 9312);
     $sphinx->setMaxQueryTime(30);
-    print_r($GLOBALS['URI']);
-    $key = $GLOBALS['URI']['PROPERTY_LIST'][0];
+    $key = $GLOBALS['URI']['KEY'];
     $sphinx->SetGroupBy(
       'value_id_list_'.$key['mva_index'], SPH_GROUPBY_ATTR, '@count DESC'
     );
