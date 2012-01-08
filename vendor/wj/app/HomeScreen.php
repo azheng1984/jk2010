@@ -65,7 +65,7 @@ class HomeScreen extends Screen {
       .'home'.DIRECTORY_SEPARATOR.'merchant_type_list.config.php';
     echo '<ul><li><span>全部</span></li>';
     foreach ($typeList as $type) {
-      echo '<li><a href="/', $type[1], '" rel="nofollow">',
+      echo '<li><a href="/', urlencode($type[0]), '" rel="nofollow">',
         $type[0], '</a></li>';
     }
     echo '</ul>';

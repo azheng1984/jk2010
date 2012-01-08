@@ -118,7 +118,7 @@ input {
   position:absolute;
   left:100px;
   border:1px solid;
-  border-color:#e5e5e5 #ddd #ddd #e5e5e5;
+  border-color:#eee #ccc #ccc #eee;
   background:white;
   width:375px;
   top:42px;
@@ -142,10 +142,10 @@ input {
   background:#6096cc;
   color:#fff;
 }
-#suggestion li .query {
+#suggestion .query {
   float:left;
 }
-#suggestion li .product_amount{
+#suggestion .product_amount {
   color:#888;
   float:right;
   background:#f1f1f1;
