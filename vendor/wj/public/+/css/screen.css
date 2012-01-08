@@ -142,15 +142,17 @@ input {
   background:#6096cc;
   color:#fff;
 }
-#suggestion li div {
+#suggestion li .query {
+  float:left;
+}
+#suggestion li .product_amount{
   color:#888;
   float:right;
   background:#f1f1f1;
-  padding:0 5px;
+  padding:0 4px;
   line-height:16px;
-  margin:1px;
+  margin:2px;
   font-size:12px;
-  border:1px solid #fff;
   -webkit-border-radius:2px;
   -moz-border-radius:2px;
   border-radius:2px;
