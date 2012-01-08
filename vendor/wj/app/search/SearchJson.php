@@ -64,6 +64,7 @@ class SearchJson {
     foreach ($properies['matches'] as $item) {
       $property = DbPropertyValue::get($item['attrs']['@groupby']);
       if (isset($GLOBALS['URI']['PROPERTY_LIST'])
+        && isset($GLOBALS['URI']['PROPERTY_LIST'][0]['VALUE_LIST'][0]['id'])
         && $GLOBALS['URI']['PROPERTY_LIST'][0]['VALUE_LIST'][0]['id'] == $item['attrs']['@groupby']) {
         echo '<li><a href="javascript:void(0)" class="selected">'.$property['name'].'</a><a href="javascript:void(0)" class="delete"></a></li>';
       } else {
