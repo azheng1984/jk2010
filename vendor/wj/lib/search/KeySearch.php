@@ -8,10 +8,9 @@ class KeySearch {
       'category_id', array($GLOBALS['URI']['CATEGORY']['id'])
     );
     $sphinx->SetGroupBy('key_id_list', SPH_GROUPBY_ATTR, '@count DESC');
-    self::setPage();
-    $segmentList = Segmentation::execute($GLOBALS['URI']['QUERY']);
-    $result = self::$sphinx->query(
-      implode(' ', $segmentList), 'wj_product'
+    self::setPage($sphinx);
+    $query = SegmentationService::execute($GLOBALS['URI']['QUERY']);
+    $result = $sphinx->query($query, 'wj_product'
     );
     if ($result === false) {
       $result = array('total_found' => 0, 'matches' => array());
@@ -19,12 +18,12 @@ class KeySearch {
     return $result;
   }
 
-  private static function setPage() {
+  private static function setPage($sphinx) {
     $page = 1;
     if (isset($GLOBALS['URI']['PAGE'])) {
       $page = $GLOBALS['URI']['PAGE'];
     }
     $offset = ($page - 1) * 16;
-    self::$sphinx->SetLimits($offset, 16);
+    $sphinx->SetLimits($offset, 16);
   }
 }

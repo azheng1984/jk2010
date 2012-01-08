@@ -13,7 +13,7 @@
   font-weight:normal;
 }
 /* breadcrumb
- *****************/
+ *******************************/
 #breadcrumb {
   width:100%;
   border:1px solid #e5e5e5;
@@ -33,7 +33,7 @@ h1 {
   padding:0 8px;
 }
 /* sort
- *****************/
+ ****************************/
 #result h2 {
   background:url(/+/img/toobar.png) repeat-x;
   width:100%;
@@ -138,7 +138,7 @@ h1 {
   border-color: #ddd #aaa #aaa #ddd;
 }
 /* result
- *****************/
+ *******************************/
 #result {
   width:770px;
 }
@@ -271,7 +271,7 @@ text-decoration: none;
   width:178px;
 }
 /* filter
- *******************/
+ **************************************/
 #filter {
   width:190px;
 }
@@ -353,7 +353,7 @@ text-decoration: none;
   padding-left:26px;
 }
 /* ads
- ***********************/
+ *************************************/
 #bottom_ads_wrapper {
   width:100%;
   border:1px solid #e5e5e5;
@@ -378,7 +378,7 @@ text-decoration: none;
   line-height: 18px;
 }
 /* pagination
- ***********************/
+ **************************************/
 #pagination {
   width:100%;
   text-align:center;
@@ -409,7 +409,7 @@ text-decoration: none;
   border-radius: 3px;
 }
 /* related
- *************************/
+ ***************************************/
 #related {
   border:1px solid #e5e5e5;
   border-top:none;

@@ -7,6 +7,7 @@ class HomeScreen extends Screen {
   protected function renderHeadContent() {
     echo '<title>货比万家</title>';
     $this->renderCssLink('home');
+    $this->renderJsLink('home');
   }
 
   protected function renderBodyContent() {
