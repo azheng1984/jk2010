@@ -11,7 +11,12 @@ class WelcomeCommand {
     stream_set_blocking($this->socket, 0);
     $this->baseEvent = event_base_new();
     $this->event = event_new();
-    event_set($this->event, $this->socket, EV_READ | EV_PERSIST, array($this, 'onAccept'));
+    event_set(
+      $this->event,
+      $this->socket,
+      EV_READ | EV_PERSIST,
+      array($this, 'onAccept')
+    );
     event_base_set($this->event, $this->baseEvent);
     event_add($this->event);
     event_base_loop($this->baseEvent);
@@ -20,7 +25,13 @@ class WelcomeCommand {
   public function onAccept($socket, $flag) {
     $connection = stream_socket_accept($socket);
     stream_set_blocking($connection, 0);
-    $buffer = event_buffer_new($connection, array($this, 'onRecive'), null, array($this, 'onError'),  $connection);
+    $buffer = event_buffer_new(
+      $connection,
+      array($this, 'onRecive'),
+      null,
+      array($this, 'onError'),
+      $connection
+    );
     event_buffer_base_set($buffer, $this->baseEvent);
     event_buffer_timeout_set($buffer, 60, 60);
     event_buffer_watermark_set($buffer, EV_READ, 0, 0xffffff);
