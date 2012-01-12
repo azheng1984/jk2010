@@ -21,9 +21,9 @@
   padding:6px 0;
 }
 #breadcrumb span {
-padding-right: 15px;
-margin-right: 5px;
-background: url(/+/img/breadcrumb_arrow.png) right 1px no-repeat;
+padding-right:15px;
+margin-right:5px;
+background:url(/+/img/breadcrumb_arrow.png) right 1px no-repeat;
 }
 h1 {
   float:left;
@@ -37,8 +37,8 @@ h1 {
 #result h2 {
   background:url(/+/img/toobar.png) repeat-x;
   width:100%;
-  position: relative;
-  z-index: 2;
+  position:relative;
+  z-index:2;
 }
 #result h2 span {
   margin:1px 2px;
@@ -59,16 +59,16 @@ h1 {
 }
 #sort.order_by_price span {
   margin:0 1px;
-  border: 1px solid #E5E5E5;
-  background: white;
-  color: #888;
-  border-bottom: 0;
-  z-index: 100;
-  padding: 3px 8px;
-  padding-bottom: 5px;
-  -webkit-border-radius: 0;
+  border:1px solid #E5E5E5;
+  background:white;
+  color:#888;
+  border-bottom:0;
+  z-index:100;
+  padding:3px 8px;
+  padding-bottom:5px;
+  -webkit-border-radius:0;
   -moz-border-radius:0;
-  border-radius: 0;
+  border-radius:0;
 }
 #amount {
   margin-right:8px;
@@ -77,14 +77,14 @@ h1 {
   font-size:12px;
 }
 #option {
-  font-size: 13px;
-  border: 1px solid #E5E5E5;
-  background: white;
+  font-size:13px;
+  border:1px solid #E5E5E5;
+  background:white;
   line-height:30px;
-  margin: 0px 5px 0 5px;
-  z-index: 1;
-  position: relative;
-  width: 758px;
+  margin:0px 5px 0 5px;
+  z-index:1;
+  position:relative;
+  width:758px;
 }
 #option form {
   display:inline;
@@ -123,15 +123,15 @@ h1 {
   display:none;
 }
 #option form a {
-  margin: 0;
+  margin:0;
   white-space:nowrap;
   background:url(/+/img/button.png) repeat-x;
   padding:2px 5px;
-  border: 1px solid;
-  color: #888;
-  text-decoration: none;
-  display: none;
-  border-color: #EEE #CCC #CCC #EEE;
+  border:1px solid;
+  color:#888;
+  text-decoration:none;
+  display:none;
+  border-color:#EEE #CCC #CCC #EEE;
   border-radius:2px;
 }
 #option form a:hover {
@@ -163,8 +163,8 @@ a:hover em {
   border:1px solid;
   border-color:#f1f1f1 #e5e5e5 #e5e5e5 #f1f1f1;
   font-size:12px;
-  position: relative;
-  overflow: hidden;
+  position:relative;
+  overflow:hidden;
 }
 #result li:hover {
   border:1px solid;
@@ -219,48 +219,48 @@ a:hover em {
   white-space:nowrap;
 }
 #result .toolbar a {
-  background: url(/+/img/button.png) repeat-x;
-  padding: 3px 5px;
-  border: 1px solid;
+  background:url(/+/img/button.png) repeat-x;
+  padding:3px 5px;
+  border:1px solid;
   color:#888;
-  border-color: #EEE #CCC #CCC #EEE;
-    border-radius: 2px;
+  border-color:#EEE #CCC #CCC #EEE;
+  border-radius:2px;
 }
 #result .toolbar a:hover {
-  border: 1px solid;
-  border-color: #ddd #aaa #aaa #ddd;
-text-decoration: none;
+  border:1px solid;
+  border-color:#ddd #aaa #aaa #ddd;
+text-decoration:none;
     box-shadow:0 0 3px #ddd;
 }
 #result .toolbar a span {
-  background: url(/+/img/same_model.png);
+  background:url(/+/img/same_model.png);
   width:10px;
   height:9px;
   margin-right:2px;
   display:inline-block;
 }
 #result .toolbar a .heart {
-    background: url(/+/img/follow.png) 1px 1px no-repeat;
+  background:url(/+/img/follow.png) 1px 1px no-repeat;
 }
 #result .tag {
-  position: absolute;
+  position:absolute;
   top:155px;
   left:5px;
 }
 #result .tag a {
   white-space:nowrap;
-  background: url(/+/img/button.png) repeat-x;
-  padding: 3px 6px;
-  border: 1px solid;
-  border-color: #EEE #CCC #CCC #EEE;
+  background:url(/+/img/button.png) repeat-x;
+  padding:3px 6px;
+  border:1px solid;
+  border-color:#EEE #CCC #CCC #EEE;
   color:#888;
   text-decoration:none;
   border-radius:2px 10px 10px 2px;
 }
 #result .tag a:hover {
-  border: 1px solid;
-  border-color: #ddd #aaa #aaa #ddd;
-      box-shadow:0 0 3px #ddd;
+  border:1px solid;
+  border-color:#ddd #aaa #aaa #ddd;
+  box-shadow:0 0 3px #ddd;
 }
 #result .merchant {
   clear:left;
@@ -290,51 +290,55 @@ text-decoration: none;
   list-style:none;
 }
 #filter li {
-  float: left;
-  clear: left;
-  width: 175px;
+  float:left;
+  clear:left;
+  width:175px;
   margin:3px 0;
 }
 #filter li a {
-  padding: 5px 6px 3px 6px;
+  padding:5px 6px 3px 6px;
   background-color:#fff;
-  border: 1px solid;
-  display: block;
-  text-decoration: none;
-  font-size: 13px;
+  border:1px solid;
+  display:block;
+  text-decoration:none;
+  font-size:13px;
   line-height:13px;
-  float: left;
-  border-color: #EEE #CCC #CCC #EEE;
+  float:left;
+  border-color:#EEE #CCC #CCC #EEE;
   border-radius:3px 11px 11px 3px;
 
 }
 #filter li a:hover {
   border-color: #ddd #aaa #aaa #ddd;
-        box-shadow:0 0 3px #ddd;
+  box-shadow:0 0 3px #ddd;
 }
 #filter li .selected {
   border: 0;
   color:#fff;
-  padding-right:10px;
+  padding-right:18px;
   margin:1px;
-  background: url(/+/img/remove.png) red no-repeat top right;
+  background:url(/+/img/remove.png) red no-repeat top right;
 }
 #filter li a span {
   color: #888;
-  font-size: 11px;
+  font-size:11px;
 }
 #filter li .key {
   padding-left:18px;
-  background:url(/+/img/plus.png) 1px 1px no-repeat;
+  background:url(/+/img/plus.png) 1px 4px no-repeat;
   border:0;
   cursor:pointer;
 }
 #filter li .open {
-  background:url(/+/img/minus.png) 1px 1px no-repeat;
+  background:url(/+/img/minus.png) 1px 4px no-repeat;
+}
+#filter li .key span {
+  font-size:13px;
+  border-bottom:1px solid #888;
 }
 #filter li .delete {
   display:none;
-  background: url(/+/img/exclude.png);
+  background:url(/+/img/exclude.png);
   height:14px;
   width:14px;
   border:0;
@@ -342,15 +346,15 @@ text-decoration: none;
   margin:5px 0 0 5px;
 }
 #filter li .line-through {
-  text-decoration: line-through;
+  text-decoration:line-through;
 }
 #filter li .text-color {
   color:#888;
 }
 #filter .more {
-  background:url(/+/img/more.png) 10px 4px no-repeat;
+  background:url(/+/img/more.png) 10px 6px no-repeat;
   font-size:13px;
-  padding-left:26px;
+  padding-left:25px;
 }
 #filter .more a {
   border-bottom:1px solid #888;
@@ -411,7 +415,7 @@ text-decoration: none;
   padding:3px 7px;
   margin:1px;
   font-size:14px;
-  border-radius: 3px;
+  border-radius:3px;
 }
 /* related
  ***************************************/
