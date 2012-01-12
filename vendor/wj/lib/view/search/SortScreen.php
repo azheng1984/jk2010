@@ -23,7 +23,7 @@ class SortScreen {
        echo ' class="order_by_price" ';
      }
      echo '>排序: ';
-     foreach (array('销量', '价格', '上架时间', '折扣') as $tab) {
+     foreach (array('销量', '上架时间', '折扣', '价格') as $tab) {
        if (self::$orderBy === $tab) {
          echo '<span>', $tab, '</span>';
          continue;
