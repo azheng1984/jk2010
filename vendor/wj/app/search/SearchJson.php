@@ -1,9 +1,13 @@
 <?php
-class SearchJson {
+class SearchJson extends EtagView {
   private $category;
   private $key;
 
-  public function render() {
+  public function __construct() {
+    header('Cache-Control: max-age=3600');
+  }
+
+  public function renderBody() {
     if (isset($_GET['key']) && isset($GLOBALS['URI']['CATEGORY'])) {
       $GLOBALS['URI']['KEY'] = DbPropertyKey::getByName(
         $GLOBALS['URI']['CATEGORY']['id'], $_GET['key']

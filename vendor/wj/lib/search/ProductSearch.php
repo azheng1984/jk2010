@@ -16,7 +16,7 @@ class ProductSearch {
   private static function initialize() {
     $sphinx = new SphinxClient;
     $sphinx->setServer("localhost", 9312);
-    $sphinx->setMaxQueryTime(30);
+    $sphinx->setMaxQueryTime(1000);
     self::$sphinx = $sphinx;
   }
 

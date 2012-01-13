@@ -3,7 +3,7 @@ class KeySearch {
   public static function search() {
     $sphinx = new SphinxClient;
     $sphinx->setServer("localhost", 9312);
-    $sphinx->setMaxQueryTime(30);
+    $sphinx->setMaxQueryTime(1000);
     $sphinx->SetFilter (
       'category_id', array($GLOBALS['URI']['CATEGORY']['id'])
     );

@@ -4,7 +4,7 @@ class QuerySearch {
     $query = SegmentationService::execute($GLOBALS['URI']['QUERY']);
     $sphinx = new SphinxClient;
     $sphinx->setServer("localhost", 9312);
-    $sphinx->setMaxQueryTime(1000);
+    $sphinx->setMaxQueryTime(30);
     $segmentList = explode(' ', $query);
     $amount = count($segmentList);
     if ($precision !== 1 && $amount !== 1) {

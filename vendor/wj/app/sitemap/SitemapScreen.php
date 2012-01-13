@@ -5,6 +5,7 @@ class SitemapScreen extends Screen {
   private $linkList = array();
 
   public function __construct() {
+    header('Cache-Control: private, max-age=0');
     if (isset($GLOBALS['URI']['PAGE'])) {
       $this->page = $GLOBALS['URI']['PAGE'];
     }
@@ -28,7 +29,7 @@ class SitemapScreen extends Screen {
     }
   }
 
-  protected function renderHeadContent() {
+  protected function renderHtmlHeadContent() {
     $pageSection = '';
     if ($this->page != 1) {
       $pageSection = ' ('.$this->page.')';
@@ -41,7 +42,7 @@ class SitemapScreen extends Screen {
     $this->renderCssLink('sitemap');
   }
 
-  protected function renderBodyContent() {
+  protected function renderHtmlBodyContent() {
     echo '<div id="sitemap">';
     $this->renderBreadcrumb();
     $this->renderTable();

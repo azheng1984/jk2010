@@ -7,7 +7,7 @@ class ValueSearch {
     self::$sphinx = $sphinx;
     self::setPropertyList();
     $sphinx->setServer("localhost", 9312);
-    $sphinx->setMaxQueryTime(30);
+    $sphinx->setMaxQueryTime(1000);
     $key = $GLOBALS['URI']['KEY'];
     $sphinx->SetGroupBy(
       'value_id_list_'.$key['mva_index'], SPH_GROUPBY_ATTR, '@count DESC'

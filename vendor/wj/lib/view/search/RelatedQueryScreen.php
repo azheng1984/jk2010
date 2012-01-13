@@ -1,7 +1,7 @@
 <?php
 class RelatedQueryScreen {
   public static function render() {
-    $result = QuerySearch::search();
+    $result = QuerySearch::search(0.6);
     if ($result['total_found'] === 0) {
       return;
     }

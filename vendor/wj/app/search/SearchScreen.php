@@ -1,16 +1,17 @@
 <?php
 class SearchScreen extends Screen {
   public function __construct() {
+    header('Cache-Control: private, max-age=0');
     $GLOBALS['URI']['RESULTS'] = ProductSearch::search();
   }
 
-  protected function renderHeadContent() {
+  protected function renderHtmlHeadContent() {
     echo '<title>', $GLOBALS['URI']['QUERY'], ' - 货比万家</title>';
     $this->renderCssLink('search');
     $this->renderJsLink('search');
   }
 
-  protected function renderBodyContent() {
+  protected function renderHtmlBodyContent() {
     $this->renderTopAdvertisement();
     $this->renderSearch();
     $this->renderBottomAdvertisement();
