@@ -1,7 +1,11 @@
 <?php
-abstract class Screen {
-  abstract protected function renderHeadContent();
-  abstract protected function renderBodyContent();
+abstract class Screen extends EtagView {
+  abstract protected function renderHtmlHeadContent();
+  abstract protected function renderHtmlBodyContent();
+
+  public function __construct() {
+    header('Content-Type: text/html; charset=utf-8');
+  }
 
   protected function renderCssLink($name) {
     echo '<link type="text/css" href="/+/css/', $name, '.',
@@ -14,34 +18,23 @@ abstract class Screen {
       Asset::getMd5('js/'.$name.'.js'), '.js" ></script>';
   }
 
-  public function render() {
-    header('Content-Type:text/html; charset=utf-8');
-    ob_start();
+  public function renderBody() {
     echo '<!DOCTYPE html><html>';
-    $this->renderHead();
-    $this->renderBody();
+    $this->renderHtmlHead();
+    $this->renderHtmlBody();
     echo '</html>';
-    $etag = md5(ob_get_contents());
-    if (isset($_SERVER['HTTP_IF_NONE_MATCH'])
-      && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag) {
-        header('HTTP/1.1 304 Not Modified');
-        ob_end_clean();
-        return;
-    }
-    header('Etag: '.$etag);
-    ob_end_flush();
   }
 
-  private function renderHead() {
+  private function renderHtmlHead() {
     echo '<head>';
     $this->renderCssLink('screen');
     $this->renderJsLink('jquery-1.7.1');
     $this->renderJsLink('screen');
-    $this->renderHeadContent();
+    $this->renderHtmlHeadContent();
     echo '</head>';
   }
 
-  private function renderBody() {
+  private function renderHtmlBody() {
     echo '<body>';
     $this->renderBodyWrapper();
     echo '</body>';
@@ -50,7 +43,7 @@ abstract class Screen {
   private function renderBodyWrapper() {
     echo '<div id="wrapper">';
     $this->renderBodyHeader();
-    $this->renderBodyContent();
+    $this->renderHtmlBodyContent();
     $this->renderBodyFooter();
     echo '</div>';
   }

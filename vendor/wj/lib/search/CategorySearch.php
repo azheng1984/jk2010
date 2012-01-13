@@ -3,7 +3,7 @@ class CategorySearch {
   public static function search() {
     $sphinx = new SphinxClient;
     $sphinx->setServer("localhost", 9312);
-    $sphinx->setMaxQueryTime(30);
+    $sphinx->setMaxQueryTime(1000);
     $sphinx->SetGroupBy('category_id', SPH_GROUPBY_ATTR, '@count DESC');
     self::setPage($sphinx);
     $query = SegmentationService::execute($GLOBALS['URI']['QUERY']);

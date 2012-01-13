@@ -4,13 +4,13 @@ class HomeScreen extends Screen {
     header('Cache-Control: max-age=3600');
   }
 
-  protected function renderHeadContent() {
+  protected function renderHtmlHeadContent() {
     echo '<title>货比万家</title>';
     $this->renderCssLink('home');
     $this->renderJsLink('home');
   }
 
-  protected function renderBodyContent() {
+  protected function renderHtmlBodyContent() {
     echo '<div id="home">';
     $this->renderSlogon();
     $this->renderMerchant();
@@ -34,7 +34,7 @@ class HomeScreen extends Screen {
       echo '<li><a href="/', $query[0], '/">',
         $query[1],'</a> <span>', $query[2], '</span></li>';
     }
-    echo '<li><a href="/+i/">&hellip;</a></li></ul>';
+    echo '<li><a href="/+i/">更多 &raquo;</a></li></ul>';
   }
 
   private function renderMerchant() {
