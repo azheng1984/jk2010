@@ -1,5 +1,5 @@
 <?php
-class SitemapScreen extends Screen {
+class IndexScreen extends Screen {
   private $page = '1';
   private $amount;
   private $linkList = array();

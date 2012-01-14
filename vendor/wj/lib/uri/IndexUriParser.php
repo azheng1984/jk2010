@@ -1,9 +1,9 @@
 <?php
-class SitemapUriParser {
+class IndexUriParser {
   public static function parse() {
     self::parseCategory();
     self::parsePage();
-    return '/sitemap';
+    return '/index';
   }
 
   private static function parsePage() {
