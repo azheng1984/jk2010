@@ -34,7 +34,7 @@ class HomeScreen extends Screen {
       echo '<li><a href="/', $query[0], '/">',
         $query[1],'</a> <span>', $query[2], '</span></li>';
     }
-    echo '<li><a href="/+i/">更多 &raquo;</a></li></ul>';
+    echo '<li><a href="/+i/">更多</a> &raquo;</li></ul>';
   }
 
   private function renderMerchant() {

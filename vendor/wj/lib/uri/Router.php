@@ -26,7 +26,7 @@ class Router {
       return MerchantListUriParser::parse();
     }
     if ($GLOBALS['URI']['PATH_SECTION_LIST'][1] === '+i') {
-      return SitemapUriParser::parse();
+      return IndexUriParser::parse();
     }
     return SearchUriParser::parse();
   }
