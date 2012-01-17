@@ -4,7 +4,7 @@ abstract class Screen extends EtagView {
   abstract protected function renderHtmlBodyContent();
 
   public function __construct() {
-    header('Content-Type: text/html; charset=utf-8');
+    header('Content-Type: text/html; charset=utf-8'); //config by nginx
   }
 
   protected function renderCssLink($name) {
