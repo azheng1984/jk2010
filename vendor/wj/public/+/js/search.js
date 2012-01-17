@@ -31,11 +31,11 @@ $(function() {
       suggestion = false;
     }
   });
-  $('#option input').focusin(function() {
-    $('#option form a').show();
+  $('#price_limit input').focusin(function() {
+    $('#price_limit a').show();
   });
-  $('#option input').focusout(function() {
-    $('#option form a').hide();
+  $('#price_limit input').focusout(function() {
+    $('#price_limit a').hide();
   });
 });
 

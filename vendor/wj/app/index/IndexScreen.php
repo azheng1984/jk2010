@@ -90,6 +90,6 @@ class IndexScreen extends Screen {
   }
 
   private function renderPagination() {
-    PaginationScreen::render($this->amount, 100, '');
+    PaginationScreen::render('', $this->amount, 100, '');
   }
 }

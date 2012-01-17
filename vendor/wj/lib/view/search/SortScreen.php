@@ -12,50 +12,47 @@ class SortScreen {
       self::$isReverse = true;
     }
     self::renderTabList($amount);
-    if (self::$orderBy === '价格') {
-      self::renderPriceOption();
-    }
   }
 
   private static function renderTabList($amount) {
-     echo '<h2><div id="sort"';
-     if (self::$orderBy === '价格') {
-       echo ' class="order_by_price" ';
-     }
-     echo '>排序: ';
+     echo '<h2><div id="sort">排序: ';
      foreach (array('销量', '上架时间', '折扣', '价格') as $tab) {
        if (self::$orderBy === $tab) {
+         if ($tab === '价格') {
+           echo '<span class="order_by_price"><span>价格</span>';
+           self::renderPriceOrder();
+           echo '</span>';
+           continue;
+         }
          echo '<span>', $tab, '</span>';
          continue;
        }
-       if ($tab === '销量') {
-         echo '<a rel="nofollow" href=".">销量</a>';
-         continue;
-       }
-       echo '<a rel="nofollow" href="?sort=', $tab, '">', $tab, '</a>';
+       echo '<a rel="nofollow" href=".', SearchUriArgument::get($tab), '">', $tab, '</a>';
      }
-     echo '</div><div id="amount">找到 ', $amount, ' 个商品</div></h2>';
-  }
+     echo '</div>';
+     self::renderPriceLimit();
+     echo '<div id="amount">找到 ', $amount, ' 个商品</div>';
 
-  private static function renderPriceOption() {
-    echo '<div id="option">';
-    self::renderPriceOrder();
-    self::renderPriceLimit();
-    echo '</div>';
+     echo '</h2>';
   }
 
   private static function renderPriceOrder() {
     if (!self::$isReverse) {
-      echo '<strong>低-高</strong><a rel="nofollow" href="?sort=-价格">高-低</a>';
+      echo '<strong>低-高</strong><a rel="nofollow" href=".', SearchUriArgument::get('-价格'), '">高-低</a>';
       return;
     }
-    echo '<a rel="nofollow" href="?sort=价格">低-高</a><strong>高-低</strong>';
+    echo '<a rel="nofollow" href=".', SearchUriArgument::get('价格'), '">低-高</a><strong>高-低</strong>';
   }
 
   private static function renderPriceLimit() {
-    echo '<form action="/"><label for="price_from">范围:</label> ',
-      '<input id="price_from" name="price_from" type="text" value="" />-',
-      '<input name="price_to" type="text" value="" /> ',
-      '<a href=".">确定</a></form>';
+    $priceFrom = isset($_GET['price_from']) ? $_GET['price_from'] : '';
+    $priceTo = isset($_GET['price_to']) ? $_GET['price_to'] : '';
+    $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
+    echo '<form id="price_limit" action="."><label for="price_from">&yen;</label> ',
+      '<input name="sort" type="hidden" value="'.$sort.'" /> ',
+      '<input id="price_from" name="price_from" type="text" value="', $priceFrom, '" />-',
+      '<input name="price_to" type="text" value="', $priceTo, '" /> ',
+      '<button type="submit"></button>',
+      '<a href="javascript:void(0)">确定</a></form>';
   }
 }
