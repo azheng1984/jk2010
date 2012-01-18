@@ -70,7 +70,7 @@ h1 {
   */
 }
 #sort .order_by_price span {
-
+  margin-right: 4px;
 }
 #sort .order_by_price strong {
   font-size:12px;

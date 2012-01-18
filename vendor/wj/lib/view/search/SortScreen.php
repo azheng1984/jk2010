@@ -53,6 +53,6 @@ class SortScreen {
       '<input id="price_from" name="price_from" type="text" value="', $priceFrom, '" />-',
       '<input name="price_to" type="text" value="', $priceTo, '" /> ',
       '<button type="submit"></button>',
-      '<a href="javascript:void(0)">确定</a></form>';
+      '</form>';
   }
 }
