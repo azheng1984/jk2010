@@ -37,6 +37,7 @@ $(function() {
   $('#price_limit input').focusout(function() {
     $('#price_limit a').hide();
   });
+  '<a href="javascript:void(0)">确定</a>';
 });
 
 function bindEvent() {
