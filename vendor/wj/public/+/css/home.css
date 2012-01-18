@@ -130,7 +130,7 @@ td a span {
   background: url(/+/img/more_large.png) 0 6px no-repeat;
   float:left;
 }
-#more a {
+#more div a {
   font-size:15px;
   border-bottom:1px solid #888;
   color:#888;
@@ -147,5 +147,4 @@ td a span {
   margin-right:15px;
   padding-left:25px;
   background:url(/+/img/bag.png) no-repeat;
-  font-size:15px;
 }
