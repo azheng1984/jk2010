@@ -1,5 +1,5 @@
 $(function() {
-  $('#option input').attr("autocomplete", "off");
+  $('#price_limit input').attr("autocomplete", "off");
   var isHover = false;
   $('#result ol li').hover(function() {
     if (isHover == true) {

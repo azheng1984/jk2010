@@ -3,13 +3,9 @@ abstract class Screen extends EtagView {
   abstract protected function renderHtmlHeadContent();
   abstract protected function renderHtmlBodyContent();
 
-  public function __construct() {
-    header('Content-Type: text/html; charset=utf-8'); //config by nginx
-  }
-
   protected function renderCssLink($name) {
     echo '<link type="text/css" href="/+/css/', $name, '.',
-      Asset::getMd5('css/'.$name.'.css'), '.css" charset="utf-8"',
+      Asset::getMd5('css/'.$name.'.css'), '.css"',
       ' media="screen" rel="stylesheet" />';
   }
 
@@ -87,7 +83,7 @@ abstract class Screen extends EtagView {
   private function renderBodyFooterLinkList() {
     echo '<div class="link">',
       '<a href="http://help.huobiwanjia.com/about_us" rel="nofollow">关于我们</a> ',
-      '<a href="http://ad.huobiwanjia.com/" rel="nofollow">广告工具</a> ',
+      '<a href="http://ad.huobiwanjia.com/" rel="nofollow">广告系统</a> ',
       '<a href="http://code.huobiwanjia.com/" rel="nofollow">开源项目</a> ',
       '<a href="http://blog.huobiwanjia.com/" rel="nofollow">团队博客</a> ',
       '<a href="http://help.huobiwanjia.com/contact_us" rel="nofollow">联系我们</a> ',
