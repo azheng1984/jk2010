@@ -4,7 +4,7 @@ class BreadcrumbScreen {
     $query = htmlentities($GLOBALS['URI']['QUERY'], ENT_QUOTES, 'utf-8');
     $buffer = '';
     if (isset($GLOBALS['URI']['PROPERTY_LIST'])) {
-      $buffer = ' <span><a href="..">'.$query.'</a></span><span><a href="../'
+      $buffer = ' <span><a href="../..">'.$query.'</a></span><span><a href="..'
         .SearchUriArgument::getCurrent().'">分类: '
         .$GLOBALS['URI']['CATEGORY']['name'].'</a></span>';
     } else if (isset($GLOBALS['URI']['CATEGORY'])) {
