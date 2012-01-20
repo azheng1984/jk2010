@@ -16,7 +16,7 @@ class PaginationScreen {
     if ($currentPage !== 1) {
       $previousPage = $currentPage - 1;
       $path = $previousPage === 1 ? '.' : $previousPage;
-      echo '<a', $rel, ' href="', $path, $postfix, '">&laquo; 上一页</a>';
+      echo '<a href="', $path, $postfix, '"', $rel, '>&laquo; 上一页</a>';
     }
     $lastPage = $firstPage + 9;
     if ($lastPage > $totalPage) {
@@ -28,12 +28,12 @@ class PaginationScreen {
         continue;
       }
       $path = $index === 1 ? '.' : $index;
-      echo ' <a', $rel, ' href="', $path, $postfix, '">',
+      echo ' <a href="', $path, $postfix, '"', $rel, '>',
         $index, '</a>';
     }
     if ($currentPage !== $totalPage) {
-      echo ' <a', $rel, ' href="', ($currentPage + 1),
-        $postfix, '">下一页 &raquo;</a>';
+      echo ' <a href="', ($currentPage + 1),
+        $postfix, '"', $rel, '>下一页 &raquo;</a>';
     }
     echo '</div>';
   }

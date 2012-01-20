@@ -103,7 +103,7 @@ td a {
   font-size:13px;
   color:#888;
   height:100%;
-  padding:10px 0 2px 0;
+  padding:6px 0;
 }
 td a:hover {
   text-decoration:none;
@@ -123,7 +123,7 @@ td a img {
 #more {
   width:100%;
   border-top: 1px solid #E5E5E5;
-  background: #EEE;
+  background: #eee;
   padding:10px 0;
   font-size:15px;
 }
