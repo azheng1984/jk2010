@@ -11,11 +11,13 @@ class SortScreen {
       self::$orderBy = '价格';
       self::$isReverse = true;
     }
+    echo '<div id="result_header">';
     self::renderTabList($amount);
+     echo '</div>';
   }
 
   private static function renderTabList($amount) {
-     echo '<h2><div id="sort">排序: ';
+     echo '<div id="sort">排序: ';
      foreach (array('销量', '上架时间', '折扣', '价格') as $tab) {
        if (self::$orderBy === $tab) {
          if ($tab === '价格') {
@@ -32,8 +34,6 @@ class SortScreen {
      echo '</div>';
      self::renderPriceLimit();
      echo '<div id="amount">找到 ', $amount, ' 个商品</div>';
-
-     echo '</h2>';
   }
 
   private static function renderPriceOrder() {
