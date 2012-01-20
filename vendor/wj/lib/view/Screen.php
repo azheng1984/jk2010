@@ -10,7 +10,7 @@ abstract class Screen extends EtagView {
   }
 
   protected function renderJsLink($name) {
-    echo '<script src="/+/js/', $name, '.',
+    echo '<script type="text/javascript" src="/+/js/', $name, '.',
       Asset::getMd5('js/'.$name.'.js'), '.js"></script>';
   }
 
