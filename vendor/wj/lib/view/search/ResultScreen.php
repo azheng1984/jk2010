@@ -3,7 +3,7 @@ class ResultScreen {
   public static function render() {
     echo '<div id="result">';
     if ($GLOBALS['URI']['RESULTS']['total_found'] !== 0) {
-      SortScreen::render($GLOBALS['URI']['RESULTS']['total_found']);
+      ResultHeaderScreen::render($GLOBALS['URI']['RESULTS']['total_found']);
       self::renderList();
       PaginationScreen::render(
         SearchUriArgument::getCurrent(), $GLOBALS['URI']['RESULTS']['total_found']

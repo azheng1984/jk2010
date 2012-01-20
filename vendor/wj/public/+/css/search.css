@@ -77,7 +77,7 @@ h1 {
   font-size:12px;
   margin: 4px;
 }
-#amount {
+#total_found {
   margin-right:8px;
   float:right;
   display:inline; /* ie 6 */
