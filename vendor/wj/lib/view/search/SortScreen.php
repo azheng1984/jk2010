@@ -11,9 +11,7 @@ class SortScreen {
       self::$orderBy = '价格';
       self::$isReverse = true;
     }
-    echo '<div id="result_header">';
     self::renderTabList($amount);
-     echo '</div>';
   }
 
   private static function renderTabList($amount) {
