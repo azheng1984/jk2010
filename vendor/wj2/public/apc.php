@@ -715,8 +715,9 @@ input {
 <body>
 <div class="head">
 	<h1 class="apc">
-		<div class="logo"><span class="logo"><a href="http://pecl.php.net/package/APC">APC</a></span></div>
-		<div class="nameinfo">Opcode Cache</div>
+		<span class="logo"><a href="http://pecl.php.net/package/APC">APC</a></span>
+		
+		<form><div class="nameinfo">Opcode Cache</div></form>
 	</h1>
 	<div class="login">
 	<?php put_login_link(); ?>

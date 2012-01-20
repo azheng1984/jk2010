@@ -34,14 +34,14 @@ h1 {
 }
 /* sort
  ****************************/
-#result h2 {
+#result_header {
   background:url(/+/img/toobar.png) repeat-x;
   width:100%;
   position:relative;
-  z-index:2;
   overflow:hidden;
+  padding:5px 0 2px 0;
 }
-#result h2 span {
+#result_header span {
   margin:1px 2px;
   display:inline;
   color:#fff;
