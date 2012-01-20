@@ -50,8 +50,8 @@ class HomeScreen extends Screen {
       echo '<tr>';
       for ($j = 0; $j < 5; ++$j) {
         $uri = urlencode('儿童');
-        echo '<td><a target="_blank"',
-          ' href="http://www.360buy.com/?source=huobiwanjia" rel="nofollow">',
+        echo '<td><a href="http://www.360buy.com/?source=huobiwanjia"',
+          ' target="_blank" rel="nofollow">',
           '<img src="/+/img/logo/360buy.png" /><span>京东商城</span></a>',
           '</td>';
       }
