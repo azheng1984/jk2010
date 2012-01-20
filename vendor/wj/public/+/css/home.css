@@ -110,7 +110,7 @@ td a:hover {
 }
 td:hover {
   border:1px solid ;
-  border-color:#e5e5e5 #ccc #ccc #e5e5e5;
+  border-color:#ddd #aaa #aaa #ddd;
   box-shadow:0 0 3px #ddd;
 }
 td a span {
