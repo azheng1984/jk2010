@@ -103,7 +103,7 @@ td a {
   font-size:13px;
   color:#888;
   height:100%;
-  padding:10px 0 4px 0;
+  padding:10px 0 2px 0;
 }
 td a:hover {
   text-decoration:none;
@@ -115,6 +115,10 @@ td:hover {
 }
 td a span {
   display:block;
+}
+td a img {
+  width:100px;
+  margin:5px 0;
 }
 #more {
   width:100%;
