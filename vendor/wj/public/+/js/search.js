@@ -1,15 +1,16 @@
 $(function() {
   $('#price_limit input').attr("autocomplete", "off");
   var isHover = false;
-  $('#result ol li').hover(function() {
+  $('#product_list div').hover(function() {
     if (isHover == true) {
       return;
     }
     isHover = true;
-    $(this).append('<div id="hover"><div class="toolbar"><a href="javascript:void(0)"><span> </span>同款</a> <a href="javascript:void(0)"><span class="heart"> </span>关注</a></div><div class="tag"><a href="javascript:void(0)">分类: 手机</a></div>'
+    $(this).append('<p id="product_toolbar"><a href="javascript:void(0)"><span> </span>同款</a> <a href="javascript:void(0)"><span class="heart"> </span>关注</a></p><p id="product_tag"><a href="javascript:void(0)">分类: 手机</a></p>'
     + '</div>');
   }, function() {
-    $('#hover').remove();
+    $('#product_toolbar').remove();
+    $('#product_tag').remove();
     isHover = false;
   });
 });

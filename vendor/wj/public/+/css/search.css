@@ -35,7 +35,7 @@ h1 {
  ****************************/
 #result {
   background:url(/+/img/toobar.png) repeat-x;
-  padding:5px 0 2px 0;
+  padding:6px 0 2px 0;
 }
 #sort span {
   margin:1px 2px;
@@ -53,7 +53,7 @@ h1 {
 #sort {
   margin:0 0 0 8px;
 }
-#price_section {
+#price {
   background: none;
   color:#888;
   padding: 0;
@@ -65,15 +65,15 @@ h1 {
   border-radius:0;
   */
 }
-#price_section span {
+#price span {
   margin-right: 4px;
 }
-#price_section strong {
+#price strong {
   font-size:12px;
   font-weight:normal;
   margin: 4px;
 }
-#price_section a {
+#price a {
   font-size:12px;
   margin: 4px;
 }
@@ -142,11 +142,11 @@ em {
 a:hover em {
   text-decoration:underline;
 }
-#result ol {
-  padding:2px 0 5px 3px;
+#product_list {
+  padding:8px 0 5px 3px;
   width:767px;
 }
-#result li {
+#product_list div {
   list-style:none;
   float:left;
   vertical-align:top;
@@ -159,9 +159,12 @@ a:hover em {
   position:relative;
   overflow:hidden;
 }
-#result li:hover {
+#product_list div:hover {
   border:1px solid;
   border-color:#e5e5e5 #ccc #ccc #e5e5e5;
+}
+#product_list p {
+  margin: 0;
 }
 #result img {
   width:170px;
@@ -193,7 +196,7 @@ a:hover em {
   line-height:24px;
   color:#aaa;
 }
-#result p {
+#result .description {
   clear:left;
   margin:0;
   height:80px;
@@ -205,13 +208,21 @@ a:hover em {
   font-size:14px;
   font-weight:bold;
 }
-#result .toolbar {
+#result .merchant {
+  clear:left;
+  color:#690;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  width:178px;
+}
+#product_toolbar {
   top:5px;
   position:absolute;
   left:82px;
   white-space:nowrap;
 }
-#result .toolbar a {
+#product_toolbar a {
   background:url(/+/img/button.png) repeat-x;
   padding:3px 5px;
   border:1px solid;
@@ -219,28 +230,28 @@ a:hover em {
   border-color:#EEE #CCC #CCC #EEE;
   border-radius:2px;
 }
-#result .toolbar a:hover {
+#product_toolbar a:hover {
   border:1px solid;
   border-color:#ddd #aaa #aaa #ddd;
 text-decoration:none;
     box-shadow:0 0 3px #ddd;
 }
-#result .toolbar a span {
+#product_toolbar a span {
   background:url(/+/img/same_model.png);
   width:10px;
   height:9px;
   margin-right:2px;
   display:inline-block;
 }
-#result .toolbar a .heart {
+#product_toolbar a .heart {
   background:url(/+/img/follow.png) 1px 1px no-repeat;
 }
-#result .tag {
+#product_tag {
   position:absolute;
   top:155px;
   left:5px;
 }
-#result .tag a {
+#product_tag a {
   white-space:nowrap;
   background:url(/+/img/button.png) repeat-x;
   padding:3px 6px;
@@ -250,18 +261,10 @@ text-decoration:none;
   text-decoration:none;
   border-radius:2px 10px 10px 2px;
 }
-#result .tag a:hover {
+#product_tag a:hover {
   border:1px solid;
   border-color:#ddd #aaa #aaa #ddd;
   box-shadow:0 0 3px #ddd;
-}
-#result .merchant {
-  clear:left;
-  color:#690;
-  overflow:hidden;
-  white-space:nowrap;
-  text-overflow:ellipsis;
-  width:178px;
 }
 /* filter
  **************************************/

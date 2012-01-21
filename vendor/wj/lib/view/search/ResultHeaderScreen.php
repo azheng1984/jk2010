@@ -19,7 +19,7 @@ class ResultHeaderScreen {
      foreach (array('销量', '上架时间', '折扣', '价格') as $tab) {
        if (self::$orderBy === $tab) {
          if ($tab === '价格') {
-           echo '<div id="price_section"><span>价格</span>';
+           echo '<div id="price"><span>价格</span>';
            self::renderPriceOrder();
            echo '</div>';
            continue;
