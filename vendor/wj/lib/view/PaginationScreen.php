@@ -12,7 +12,7 @@ class PaginationScreen {
     }
     $totalPage = self::getTotalPage($total, $itemsPerPage);
     $firstPage = self::getFirstPage($currentPage, $totalPage);
-    echo '<div id="page">';
+    echo '<div id="pagination">';
     if ($currentPage !== 1) {
       $previousPage = $currentPage - 1;
       $path = $previousPage === 1 ? '.' : $previousPage;
