@@ -72,7 +72,7 @@ function bindEvent() {
 $(function() {
   $uri = window.location.pathname + '?media=json';
   $.get($uri, function(data) {
-    $('#result').after('<div id="filter">' + data + '</div>');
+    $('#result').after('<div id="tag">' + data + '</div>');
     $('#key_list .key').mouseup(function() {
       if ($(this).attr('class') === 'key open') {
         $(this).attr('class', 'key');

@@ -52,28 +52,28 @@ h1 {
 }
 #sort {
   margin:0 0 0 8px;
-  display:inline; /* ie 6 */
 }
-#sort .order_by_price {
+#price_section {
   background: none;
   color:#888;
   padding: 0;
   margin: 0;
+  float:right;
 /*
   -webkit-border-radius:0;
   -moz-border-radius:0;
   border-radius:0;
   */
 }
-#sort .order_by_price span {
+#price_section span {
   margin-right: 4px;
 }
-#sort .order_by_price strong {
+#price_section strong {
   font-size:12px;
   font-weight:normal;
   margin: 4px;
 }
-#sort .order_by_price a {
+#price_section a {
   font-size:12px;
   margin: 4px;
 }
@@ -265,30 +265,30 @@ text-decoration:none;
 }
 /* filter
  **************************************/
-#filter {
+#tag {
   width:190px;
 }
-#filter h2 {
+#tag h2 {
   background:#EEE url(/+/img/tag.png) 5px 5px no-repeat;
   border-left:1px solid #E5E5E5;
   width:189px;
   padding:4px 0;
 }
-#filter h2 span {
+#tag h2 span {
   padding-left:25px;
 }
-#filter ol {
+#tag ol {
   clear:left;
   padding:6px 8px;
   list-style:none;
 }
-#filter li {
+#tag li {
   float:left;
   clear:left;
   width:175px;
   margin:3px 0;
 }
-#filter li a {
+#tag li a {
   padding:5px 6px 3px 6px;
   background-color:#fff;
   border:1px solid;
@@ -301,35 +301,35 @@ text-decoration:none;
   border-radius:3px 11px 11px 3px;
 
 }
-#filter li a:hover {
+#tag li a:hover {
   border-color: #ddd #aaa #aaa #ddd;
   box-shadow:0 0 3px #ddd;
 }
-#filter li .selected {
+#tag li .selected {
   border: 0;
   color:#fff;
   padding-right:18px;
   margin:1px;
   background:url(/+/img/remove.png) red no-repeat top right;
 }
-#filter li a span {
+#tag li a span {
   color: #888;
   font-size:11px;
 }
-#filter li .key {
+#tag li .key {
   padding-left:18px;
   background:url(/+/img/plus.png) 1px 4px no-repeat;
   border:0;
   cursor:pointer;
 }
-#filter li .open {
+#tag li .open {
   background:url(/+/img/minus.png) 1px 4px no-repeat;
 }
-#filter li .key span {
+#tag li .key span {
   font-size:13px;
   border-bottom:1px solid #888;
 }
-#filter li .delete {
+#tag li .delete {
   display:none;
   background:url(/+/img/exclude.png);
   height:14px;
@@ -338,40 +338,39 @@ text-decoration:none;
   padding:0;
   margin:5px 0 0 5px;
 }
-#filter li .line-through {
+#tag li .line-through {
   text-decoration:line-through;
 }
-#filter li .text-color {
+#tag li .text-color {
   color:#888;
 }
-#filter .more {
+#tag .more {
   background:url(/+/img/more.png) 10px 6px no-repeat;
   font-size:13px;
   padding-left:25px;
 }
-#filter .more a {
+#tag .more a {
   border-bottom:1px solid #888;
   color:#888;
   text-decoration:none;
 }
-/* ads
+/* ad
  *************************************/
-#bottom_ads_wrapper {
-  width:100%;
-  border:1px solid #e5e5e5;
-  border-top:0;
-}
-#top_ads_wrapper {
+.ad {
   width:100%;
   border:1px solid #e5e5e5;
   border-bottom:0;
 }
-.ads {
+.bottom {
+  border-bottom:1px solid #e5e5e5;
+  border-top:0;
+}
+.ad div {
   padding:2px 0;
   padding-left:110px;
   height:90px;/*chrome*/
 }
-#bottom_ads_wrapper .tag, #top_ads_wrapper .tag {
+.ad span {
   float:right;
   background: url(/+/img/ads.png) #eee no-repeat;
   font-size: 12px;
@@ -381,13 +380,13 @@ text-decoration:none;
 }
 /* pagination
  **************************************/
-#pagination {
+#page {
   width:100%;
   text-align:center;
   padding:5px 0 15px 0;
   background:#f5f5f5;
 }
-#pagination a {
+#page a {
   border:1px solid #e5e5e5;
   padding:4px 8px;
   background:url(/+/img/button.png) repeat-x;
@@ -396,12 +395,12 @@ text-decoration:none;
   position:relative;
   border-radius: 3px;
 }
-#pagination a:hover {
+#page a:hover {
   border:1px solid #ccc;
   text-decoration:none;
   box-shadow:0 0 3px #ddd;
 }
-#pagination span {
+#page span {
   border:1px solid red;
   background-color:red;
   color:#fff;

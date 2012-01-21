@@ -19,15 +19,15 @@ class ResultHeaderScreen {
      foreach (array('销量', '上架时间', '折扣', '价格') as $tab) {
        if (self::$orderBy === $tab) {
          if ($tab === '价格') {
-           echo '<span class="order_by_price"><span>价格</span>';
+           echo '<div id="price_section"><span>价格</span>';
            self::renderPriceOrder();
-           echo '</span>';
+           echo '</div>';
            continue;
          }
          echo '<span>', $tab, '</span>';
          continue;
        }
-       echo '<a rel="nofollow" href=".', SearchUriArgument::get($tab), '">', $tab, '</a>';
+       echo '<a href=".', SearchUriArgument::get($tab), '" rel="nofollow">', $tab, '</a>';
      }
      echo '</div>';
      self::renderPriceLimit();
@@ -36,10 +36,10 @@ class ResultHeaderScreen {
 
   private static function renderPriceOrder() {
     if (!self::$isReverse) {
-      echo '<strong>低-高</strong><a rel="nofollow" href=".', SearchUriArgument::get('-价格'), '">高-低</a>';
+      echo '<strong>低-高</strong><a href=".', SearchUriArgument::get('-价格'), '" rel="nofollow">高-低</a>';
       return;
     }
-    echo '<a rel="nofollow" href=".', SearchUriArgument::get('价格'), '">低-高</a><strong>高-低</strong>';
+    echo '<a href=".', SearchUriArgument::get('价格'), '" rel="nofollow">低-高</a><strong>高-低</strong>';
   }
 
   private static function renderPriceLimit() {
