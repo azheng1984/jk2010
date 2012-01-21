@@ -81,7 +81,7 @@ abstract class Screen extends EtagView {
   }
 
   private function renderBodyFooterLinkList() {
-    echo '<div class="link">',
+    echo '<div>',
       '<a href="http://help.huobiwanjia.com/about_us" rel="nofollow">关于我们</a> ',
       '<a href="http://ad.huobiwanjia.com/" rel="nofollow">广告工具</a> ',
       '<a href="http://code.huobiwanjia.com/" rel="nofollow">开源项目</a> ',
@@ -92,9 +92,8 @@ abstract class Screen extends EtagView {
   }
 
   private function renderDeclaration() {
-    echo '<div>&copy; 货比万家',
+    echo '&copy; 货比万家',
       ' <a href="http://help.huobiwanjia.com/terms_of_use" rel="nofollow">使用条款</a>',
-      ' <a href="http://help.huobiwanjia.com/privacy" rel="nofollow">隐私权政策</a>',
-      '</div>';
+      ' <a href="http://help.huobiwanjia.com/privacy" rel="nofollow">隐私权政策</a>';
   }
 }

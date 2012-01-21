@@ -102,7 +102,7 @@ input {
   width:100%;/* ie 7 */
   font-size:13px;
 }
-#footer .link {
+#footer div {
   float:right;
 }
 #footer a {

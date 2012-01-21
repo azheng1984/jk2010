@@ -26,13 +26,13 @@ class SearchScreen extends Screen {
   }
 
   private function renderTopAdvertisement() {
-    echo '<div id="top_ads_wrapper">';
+    echo '<div class="ad">';
     AdSenseScreen::render();
     echo '</div>';
   }
 
   private function renderBottomAdvertisement() {
-    echo '<div id="bottom_ads_wrapper">';
+    echo '<div class="ad bottom">';
     AdSenseScreen::render();
     echo '</div>';
   }
