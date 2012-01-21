@@ -14,7 +14,7 @@ class ResultScreen {
 
   private static function renderList() {
     $query = $GLOBALS['URI']['QUERY'];
-    echo '<div id="product_list">';
+    echo '<div id="product">';
     foreach ($GLOBALS['URI']['RESULTS']['matches'] as $id => $content) {
       $product = DbProduct::get($id);
       $name = $product['title'];
