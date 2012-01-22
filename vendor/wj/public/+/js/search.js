@@ -1,7 +1,7 @@
 $(function() {
-  $('#price_limit input').attr("autocomplete", "off");
+  $('#price_range input').attr("autocomplete", "off");
   var isHover = false;
-  $('#product_list div').hover(function() {
+  $('#result li').hover(function() {
     if (isHover == true) {
       return;
     }
@@ -32,11 +32,11 @@ $(function() {
       suggestion = false;
     }
   });
-  $('#price_limit input').focusin(function() {
-    $('#price_limit a').show();
+  $('#price_range input').focusin(function() {
+    $('#price_range').append('<a href="javascript:void(0)">确定</a>');
   });
-  $('#price_limit input').focusout(function() {
-    $('#price_limit a').hide();
+  $('#price_range input').focusout(function() {
+    $('#price_range a').remove();
   });
   '<a href="javascript:void(0)">确定</a>';
 });

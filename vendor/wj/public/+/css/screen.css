@@ -19,6 +19,7 @@ div, input, ul, ol {
 }
 ul, ol {
   margin:0;
+  padding: 0;
 }
 form {
   display:inline;

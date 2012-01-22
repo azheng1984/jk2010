@@ -20,7 +20,7 @@ class ResultHeaderScreen {
        if (self::$orderBy === $tab) {
          if ($tab === '价格') {
            echo '<div id="price"><span>价格</span>';
-           self::renderPriceOrder();
+           self::renderPriceSequence();
            echo '</div>';
            continue;
          }
@@ -30,11 +30,11 @@ class ResultHeaderScreen {
        echo '<a href=".', SearchUriArgument::get($tab), '" rel="nofollow">', $tab, '</a>';
      }
      echo '</div>';
-     self::renderPriceLimit();
+     self::renderPriceRange();
      echo '<div id="total_found">找到 ', $amount, ' 个商品</div>';
   }
 
-  private static function renderPriceOrder() {
+  private static function renderPriceSequence() {
     if (!self::$isReverse) {
       echo '<strong>低-高</strong><a href=".', SearchUriArgument::get('-价格'), '" rel="nofollow">高-低</a>';
       return;
@@ -42,11 +42,11 @@ class ResultHeaderScreen {
     echo '<a href=".', SearchUriArgument::get('价格'), '" rel="nofollow">低-高</a><strong>高-低</strong>';
   }
 
-  private static function renderPriceLimit() {
+  private static function renderPriceRange() {
     $priceFrom = isset($_GET['price_from']) ? $_GET['price_from'] : '';
     $priceTo = isset($_GET['price_to']) ? $_GET['price_to'] : '';
     $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
-    echo '<form id="price_limit" action="."><label for="price_from">&yen;</label> ',
+    echo '<form id="price_range" action="."><label for="price_from">&yen;</label> ',
       '<input name="sort" type="hidden" value="'.$sort.'" /> ',
       '<input id="price_from" name="price_from" type="text" value="', $priceFrom, '" />-',
       '<input name="price_to" type="text" value="', $priceTo, '" /> ',
