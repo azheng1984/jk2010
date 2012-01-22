@@ -83,16 +83,15 @@ h1 {
   display:inline; /* ie 6 */
   font-size:12px;
 }
-#price_limit {
+#price_range {
   display:inline;
   margin-left:10px;
 }
-#price_limit a {
+#price_range a {
   font-size:12px;
   margin:2px 11px;
-  display:none;
 }
-#price_limit input {
+#price_range input {
   width:30px;
   height:18px;
   padding:0 2px;
@@ -104,10 +103,10 @@ h1 {
   float:none;
   background:#fff;
 }
-#price_limit input:focus {
+#price_range input:focus {
   outline:1px solid #b6c9ed;
 }
-#price_limit button {
+#price_range button {
   display:block;
   position:absolute;
   top:-20px;
@@ -115,7 +114,7 @@ h1 {
   height:0;
   float:left;
 }
-#price_limit a {
+#price_range a {
   margin:0;
   white-space:nowrap;
   background:white;
@@ -126,7 +125,7 @@ h1 {
   border-color:#EEE #CCC #CCC #EEE;
   border-radius:2px;
 }
-#price_limit a:hover {
+#price_range a:hover {
   border-color: #ddd #aaa #aaa #ddd;
     box-shadow:0 0 3px #ddd;
 }
@@ -142,11 +141,11 @@ em {
 a:hover em {
   text-decoration:underline;
 }
-#product {
+#result ol {
   padding:8px 0 5px 3px;
   width:767px;
 }
-#product div {
+#result li {
   list-style:none;
   float:left;
   vertical-align:top;
@@ -159,11 +158,11 @@ a:hover em {
   position:relative;
   overflow:hidden;
 }
-#product div:hover {
+#result li:hover {
   border:1px solid;
   border-color:#e5e5e5 #ccc #ccc #e5e5e5;
 }
-#product p {
+#result p {
   margin: 0;
 }
 #result img {
