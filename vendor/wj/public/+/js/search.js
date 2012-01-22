@@ -6,7 +6,7 @@ $(function() {
       return;
     }
     isHover = true;
-    $(this).append('<p id="product_toolbar"><a href="javascript:void(0)"><span> </span>同款</a> <a href="javascript:void(0)"><span class="heart"> </span>关注</a></p><p id="product_tag"><a href="javascript:void(0)">分类: 手机</a></p>'
+    $(this).append('<div id="product_toolbar"><a href="javascript:void(0)"><span> </span>同款</a> <a href="javascript:void(0)"><span class="heart"> </span>关注</a></div><div id="product_tag"><a href="javascript:void(0)">分类: 手机</a></div>'
     + '</div>');
   }, function() {
     $('#product_toolbar').remove();

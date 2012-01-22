@@ -162,9 +162,6 @@ a:hover em {
   border:1px solid;
   border-color:#e5e5e5 #ccc #ccc #e5e5e5;
 }
-#result p {
-  margin: 0;
-}
 #result img {
   width:170px;
   height:170px;
@@ -195,7 +192,7 @@ a:hover em {
   line-height:24px;
   color:#aaa;
 }
-#result .description {
+#result p {
   clear:left;
   margin:0;
   height:80px;
