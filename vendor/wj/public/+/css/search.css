@@ -215,12 +215,12 @@ a:hover em {
 #product_toolbar {
   top:5px;
   position:absolute;
-  left:132px;
+  left:134px;
   white-space:nowrap;
 }
 #product_toolbar a {
   background:url(/+/img/button.png) repeat-x;
-  padding:3px 5px;
+  padding:3px 4px;
   border:1px solid;
   color:#888;
   border-color:#EEE #CCC #CCC #EEE;
@@ -250,7 +250,7 @@ a:hover em {
 #product_tag a {
   white-space:nowrap;
   background:url(/+/img/button.png) repeat-x;
-  padding:3px 5px;
+  padding:3px 4px;
   border:1px solid;
   border-color:#EEE #CCC #CCC #EEE;
   color:#888;
