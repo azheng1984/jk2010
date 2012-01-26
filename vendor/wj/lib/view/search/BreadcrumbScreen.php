@@ -7,6 +7,8 @@ class BreadcrumbScreen {
       $buffer = ' <span><a href="../..">'.$query.'</a></span><span><a href="..'
         .SearchUriArgument::getCurrent().'" rel="nofollow">分类: '
         .$GLOBALS['URI']['CATEGORY']['name'].'</a></span>';
+      $property = $GLOBALS['URI']['PROPERTY_LIST'][0];
+      $buffer .= $property['KEY']['name'].': '.$property['VALUE_LIST'][0]['name'];
     } else if (isset($GLOBALS['URI']['CATEGORY'])) {
       $buffer = ' <span><a href="..">'.$query.'</a></span>分类: '
         .$GLOBALS['URI']['CATEGORY']['name'];

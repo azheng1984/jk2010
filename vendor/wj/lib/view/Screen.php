@@ -48,7 +48,6 @@ abstract class Screen extends EtagView {
     echo '<div id="header">';
     $this->renderLogo();
     $this->renderSearch();
-    $this->renderToolbar();
     echo '</div>';
   }
 
@@ -63,14 +62,6 @@ abstract class Screen extends EtagView {
       '<input type="text" name="q" value="',
       htmlentities($query, ENT_QUOTES, 'utf-8'), '" autocomplete="off" />',
       '<button type="submit"></button></form>';
-  }
-
-  private function renderToolbar() {
-    echo '<div id="toolbar">',
-      '<a href="http://passport.huobiwanjia.com/sign_up" rel="nofollow">',
-      '注册</a>',
-      ' <a href="http://passport.huobiwanjia.com/sign_in" rel="nofollow">',
-      '登录</a></div>';
   }
 
   private function renderBodyFooter() {

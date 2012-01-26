@@ -38,7 +38,7 @@ class HomeScreen extends Screen {
   }
 
   private function renderMerchant() {
-    echo '<div id="merchant_list">';
+    echo '<div id="merchant">';
     $this->renderMerchantList();
     $this->renderMerchantTypeList();
     echo '</div>';
@@ -73,7 +73,6 @@ class HomeScreen extends Screen {
 
   private function renderMore() {
     echo '<div id="more">',
-     '<div><a href="javascript:void(0)">更多商店</a> 1/12</div>',
      '<span>100%公司经营</span><span class="left">100%正规商店</span>',
      '</div>';
   }
