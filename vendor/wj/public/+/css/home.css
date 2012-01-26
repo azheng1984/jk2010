@@ -54,21 +54,21 @@
   font-weight:normal;
   float:left;
 }
-#merchant_list ul {
+#merchant ul {
   list-style:none;
   padding:12px;
   padding-top:15px;
   font-size:15px;
 }
-#merchant_list li {
+#merchant li {
   clear:left;
 }
-#merchant_list li a {
+#merchant li a {
   line-height: 13px;
   float: left;
   margin:10px;
 }
-#merchant_list li span {
+#merchant li span {
   color:#fff;
   background:red;
   width:155px;
