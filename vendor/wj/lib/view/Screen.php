@@ -48,7 +48,12 @@ abstract class Screen extends EtagView {
     echo '<div id="header">';
     $this->renderLogo();
     $this->renderSearch();
+    $this->renderBanner();
     echo '</div>';
+  }
+
+  private function renderBanner() {
+    echo '<div id="banner"><span>100%公司经营</span><span class="left">100%正规商店</span></div>';
   }
 
   private function renderLogo() {
@@ -68,6 +73,7 @@ abstract class Screen extends EtagView {
     echo '<div id="footer">';
     $this->renderBodyFooterLinkList();
     $this->renderDeclaration();
+    $this->renderPublisher();
     echo '</div>';
   }
 
@@ -86,5 +92,9 @@ abstract class Screen extends EtagView {
     echo '&copy; 货比万家',
       ' <a href="http://help.huobiwanjia.com/terms_of_use" rel="nofollow">使用条款</a>',
       ' <a href="http://help.huobiwanjia.com/privacy" rel="nofollow">隐私权政策</a>';
+  }
+
+  private function renderPublisher() {
+    echo '<div id="publisher">太平洋数码 合作伙伴</div>';
   }
 }

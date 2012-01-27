@@ -87,15 +87,21 @@ input {
   cursor:pointer;
   border-radius:3px;
 }
-#toolbar {
+#banner {
   float:right;
+  margin-top:12px;
+  font-size:14px;
 }
-#toolbar a {
-  margin-left:5px;
-  color:#888;
-  border-bottom:1px solid #888;
-  text-decoration:none;
-  font-size:13px;
+#banner span {
+  text-align:center;
+  float:right;
+  padding-left:22px;
+  background:url(/+/img/shield.png) no-repeat;
+}
+#banner .left {
+  margin-right:15px;
+  padding-left:25px;
+  background:url(/+/img/bag.png) no-repeat;
 }
 #footer {
   line-height:40px;
@@ -111,6 +117,10 @@ input {
   color:#888;
   border-bottom:1px solid #888;
   text-decoration:none;
+}
+#publisher {
+  clear:both;
+  float:left;
 }
 /* suggestion
  **************************/
