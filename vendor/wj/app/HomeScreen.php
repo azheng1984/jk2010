@@ -73,7 +73,7 @@ class HomeScreen extends Screen {
 
   private function renderMore() {
     echo '<div id="more">',
-     '<span>100%公司经营</span><span class="left">100%正规商店</span>',
+     '',
      '</div>';
   }
 }

@@ -121,9 +121,7 @@ td a img {
 }
 #more {
   width:100%;
-  border-top:1px solid #E5E5E5;
-  background:#eee;
-  padding:10px 0;
+  padding:0 0 15px 0;
   font-size:15px;
 }
 #more div {
@@ -138,16 +136,4 @@ td a img {
   border-bottom:1px solid #888;
   color:#888;
   text-decoration:none;
-}
-#more span {
-  margin-right:15px;
-  text-align:center;
-  float:right;
-  padding-left:22px;
-  background:url(/+/img/shield.png) no-repeat;
-}
-#more .left {
-  margin-right:15px;
-  padding-left:25px;
-  background:url(/+/img/bag.png) no-repeat;
 }
