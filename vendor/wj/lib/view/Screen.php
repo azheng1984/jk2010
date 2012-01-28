@@ -95,6 +95,6 @@ abstract class Screen extends EtagView {
   }
 
   private function renderPublisher() {
-    echo '<div id="publisher">太平洋数码 合作伙伴</div>';
+    echo '<div id="publisher">合作伙伴:<a href="#">太平洋数码</a></div>';
   }
 }

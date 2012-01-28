@@ -120,7 +120,8 @@ input {
 }
 #publisher {
   clear:both;
-  float:left;
+  line-height:20px;
+  padding-bottom:10px;
 }
 /* suggestion
  **************************/
