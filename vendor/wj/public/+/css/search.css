@@ -328,18 +328,6 @@ a:hover em {
   font-size:13px;
   border-bottom:1px solid #888;
 }
-#tag li .delete {
-  display:none;
-  background:url(/+/img/exclude.png);
-  height:14px;
-  width:14px;
-  border:0;
-  padding:0;
-  margin:5px 0 0 5px;
-}
-#tag li .line-through {
-  text-decoration:line-through;
-}
 #tag li .text-color {
   color:#888;
 }
