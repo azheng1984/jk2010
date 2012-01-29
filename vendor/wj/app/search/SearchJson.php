@@ -45,7 +45,7 @@ class SearchJson extends EtagView {
           $categoryUri = '#';
           $class = 'class="selected" ';
         }
-        echo '<li><a '.$class.'href="'.$categoryUri.'">'.$category['name'].' <span>'.$item['attrs']['@count'].'</span></a> </li>';
+        echo '<li><a '.$class.'href="'.$categoryUri.'">'.$category['name'].' <span>'.$item['attrs']['@count'].'</span></a></li>';
       }
     }
     echo '</ol>';
@@ -70,9 +70,9 @@ class SearchJson extends EtagView {
       if (isset($GLOBALS['URI']['PROPERTY_LIST'])
         && isset($GLOBALS['URI']['PROPERTY_LIST'][0]['VALUE_LIST'][0]['id'])
         && $GLOBALS['URI']['PROPERTY_LIST'][0]['VALUE_LIST'][0]['id'] == $item['attrs']['@groupby']) {
-        echo '<li><a href="javascript:void(0)" class="selected">'.$property['name'].'</a><a href="javascript:void(0)" class="delete"></a></li>';
+        echo '<li><a href="javascript:void(0)" class="selected">'.$property['name'].'</a></li>';
       } else {
-        echo '<li><a href="'.$this->key['name'].'='.$property['name'].'/">'.$property['name'].' <span>'.$item['attrs']['@count'].'</span></a><a href="javascript:void(0)" class="delete"></a></li>';
+        echo '<li><a href="'.$this->key['name'].'='.$property['name'].'/">'.$property['name'].' <span>'.$item['attrs']['@count'].'</span></a></li>';
       }
     }
     echo '</ol>';
