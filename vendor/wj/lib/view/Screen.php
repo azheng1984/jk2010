@@ -79,20 +79,20 @@ abstract class Screen extends EtagView {
 
   private function renderBodyFooterLinkList() {
     echo '<div>',
-      '<a href="http://company.huobiwanjia.com/" rel="nofollow">关于货比万家</a> ',
+      '<a href="http://i.huobiwanjia.com/" rel="nofollow">关于货比万家</a> ',
       '<a href="http://ad.huobiwanjia.com/" rel="nofollow">广告</a> ',
 //      '<a href="http://help.huobiwanjia.com/contact_us" rel="nofollow">联系我们</a> ',
 //      '<a href="http://code.huobiwanjia.com/" rel="nofollow">开源项目</a> ',
 //      '<a href="http://blog.huobiwanjia.com/" rel="nofollow">官方博客</a> ',
       '<a href="/+i/">分类索引</a> ',
-      //'合作伙伴:<a href="#">太平洋数码</a>',
+      '合作伙伴:<a href="#">PUBLISHER</a>',
       '</div>';
   }
 
   private function renderDeclaration() {
     echo '&copy; 货比万家',
-      ' <a href="http://help.huobiwanjia.com/terms_of_use" rel="nofollow">使用条款</a>',
-      ' <a href="http://help.huobiwanjia.com/privacy" rel="nofollow">隐私权政策</a>';
+      ' <a href="http://i.huobiwanjia.com/terms_of_use" rel="nofollow">使用条款</a>',
+      ' <a href="http://i.huobiwanjia.com/privacy" rel="nofollow">隐私权政策</a>';
   }
 
   private function renderPublisher() {
