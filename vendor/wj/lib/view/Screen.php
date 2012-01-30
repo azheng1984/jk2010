@@ -79,12 +79,13 @@ abstract class Screen extends EtagView {
 
   private function renderBodyFooterLinkList() {
     echo '<div>',
-      '<a href="http://help.huobiwanjia.com/about_us" rel="nofollow">关于我们</a> ',
-      '<a href="http://ad.huobiwanjia.com/" rel="nofollow">广告工具</a> ',
-      '<a href="http://code.huobiwanjia.com/" rel="nofollow">开源项目</a> ',
-      '<a href="http://blog.huobiwanjia.com/" rel="nofollow">团队博客</a> ',
-      '<a href="http://help.huobiwanjia.com/contact_us" rel="nofollow">联系我们</a> ',
+      '<a href="http://company.huobiwanjia.com/" rel="nofollow">关于货比万家</a> ',
+      '<a href="http://ad.huobiwanjia.com/" rel="nofollow">广告</a> ',
+//      '<a href="http://help.huobiwanjia.com/contact_us" rel="nofollow">联系我们</a> ',
+//      '<a href="http://code.huobiwanjia.com/" rel="nofollow">开源项目</a> ',
+//      '<a href="http://blog.huobiwanjia.com/" rel="nofollow">官方博客</a> ',
       '<a href="/+i/">分类索引</a> ',
+      //'合作伙伴:<a href="#">太平洋数码</a>',
       '</div>';
   }
 
@@ -95,6 +96,6 @@ abstract class Screen extends EtagView {
   }
 
   private function renderPublisher() {
-    echo '<div id="publisher">合作伙伴:<a href="#">太平洋数码</a></div>';
+    //echo '<div id="publisher">合作伙伴:<a href="#">太平洋数码</a></div>';
   }
 }
