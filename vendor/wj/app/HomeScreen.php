@@ -1,7 +1,7 @@
 <?php
 class HomeScreen extends Screen {
   public function __construct() {
-    header('Cache-Control: max-age=3600');
+    header('Cache-Control: private, max-age=0');
   }
 
   protected function renderHtmlHeadContent() {
@@ -14,7 +14,6 @@ class HomeScreen extends Screen {
     echo '<div id="home">';
     $this->renderSlogon();
     $this->renderMerchant();
-    $this->renderMore();
     echo '</div>';
   }
 
@@ -69,11 +68,5 @@ class HomeScreen extends Screen {
         $value[0], '</a></li>';
     }
     echo '</ul>';
-  }
-
-  private function renderMore() {
-    echo '<div id="more">',
-     '',
-     '</div>';
   }
 }

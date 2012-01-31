@@ -120,18 +120,14 @@ td a img {
   margin:5px 0;
 }
 #more {
-  width:100%;
   padding:0 0 15px 0;
-  font-size:15px;
-}
-#more div {
   font-size:13px;
   padding-left:20px;
   margin-left:340px;
   background: url(/+/img/more_large.png) 0 6px no-repeat;
   float:left;
 }
-#more div a {
+#more a {
   font-size:15px;
   border-bottom:1px solid #888;
   color:#888;
