@@ -73,7 +73,6 @@ abstract class Screen extends EtagView {
     echo '<div id="footer">';
     $this->renderBodyFooterLinkList();
     $this->renderDeclaration();
-    $this->renderPublisher();
     echo '</div>';
   }
 
@@ -85,7 +84,7 @@ abstract class Screen extends EtagView {
 //      '<a href="http://code.huobiwanjia.com/" rel="nofollow">开源项目</a> ',
 //      '<a href="http://blog.huobiwanjia.com/" rel="nofollow">官方博客</a> ',
       '<a href="/+i/">分类索引</a> ',
-      '合作伙伴:<a href="#">PUBLISHER</a>',
+      '合作伙伴:<a href="http://www.google.com">PUBLISHER</a>',
       '</div>';
   }
 
@@ -93,9 +92,5 @@ abstract class Screen extends EtagView {
     echo '&copy; 货比万家',
       ' <a href="http://i.huobiwanjia.com/terms_of_use" rel="nofollow">使用条款</a>',
       ' <a href="http://i.huobiwanjia.com/privacy" rel="nofollow">隐私权政策</a>';
-  }
-
-  private function renderPublisher() {
-    //echo '<div id="publisher">合作伙伴:<a href="#">太平洋数码</a></div>';
   }
 }
