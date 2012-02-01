@@ -42,6 +42,7 @@ class ResultHeaderScreen {
     echo '<a href=".', SearchUriArgument::get('价格'), '" rel="nofollow">低-高</a><strong>高-低</strong>';
   }
 
+  //TODO: move to js
   private static function renderPriceRange() {
     $priceFrom = isset($_GET['price_from']) ? $_GET['price_from'] : '';
     $priceTo = isset($_GET['price_to']) ? $_GET['price_to'] : '';
