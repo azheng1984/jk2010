@@ -39,7 +39,7 @@ class IndexScreen extends Screen {
       $title = $GLOBALS['URI']['CATEGORY']['name'].$pageSection.' - 分类';
     }
     echo '<title>', $title, ' - 货比万家</title>';
-    $this->renderCssLink('index');
+    $this->addCssLink('index');
   }
 
   protected function renderHtmlBodyContent() {

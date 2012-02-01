@@ -4,7 +4,7 @@ class SearchJson extends EtagView {
   private $key;
 
   public function __construct() {
-    header('Cache-Control: max-age=3600');
+    header('Cache-Control: public, max-age=3600');
   }
 
   public function renderBody() {

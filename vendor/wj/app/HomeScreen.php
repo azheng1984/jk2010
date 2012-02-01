@@ -1,13 +1,16 @@
 <?php
 class HomeScreen extends Screen {
+  private $config;
+
   public function __construct() {
     header('Cache-Control: private, max-age=0');
+    $this->config = require CONFIG_PATH.'home.config.php';
   }
 
   protected function renderHtmlHeadContent() {
     echo '<title>货比万家</title>';
-    $this->renderCssLink('home');
-    $this->renderJsLink('home');
+    $this->addCssLink('home');
+    $this->addJsLink('home');
   }
 
   protected function renderHtmlBodyContent() {
@@ -18,18 +21,16 @@ class HomeScreen extends Screen {
   }
 
   private function renderSlogon() {
-    $slogonConfig = require CONFIG_PATH
-      .'home'.DIRECTORY_SEPARATOR.'slogon.config.php';
     echo '<div id="slogon"><span class="arrow"></span><h1>',
-      $slogonConfig['merchant_amount'], '个网上商店，',
-      $slogonConfig['product_amount'], '万商品，搜索：</h1>';
-    $this->renderQueryList($slogonConfig['query_list']);
+      $this->config['merchant_amount'], '个网上商店，',
+      $this->config['product_amount'], '万商品，搜索：</h1>';
+    $this->renderQueryList();
     echo '</div>';
   }
 
-  private function renderQueryList($queryList) {
+  private function renderQueryList() {
     echo ' <ul>';
-    foreach ($queryList as $query) {
+    foreach ($this->config['query_list'] as $query) {
       echo '<li><a href="/', $query[0], '/">',
         $query[1],'</a> <span>', $query[2], '</span></li>';
     }
@@ -60,10 +61,8 @@ class HomeScreen extends Screen {
   }
 
   private function renderMerchantTypeList() {
-    $typeList = require CONFIG_PATH
-      .'home'.DIRECTORY_SEPARATOR.'merchant_type_list.config.php';
     echo '<ul><li><span>全部</span></li>';
-    foreach ($typeList as $key => $value) {
+    foreach ($this->config['merchant_type_list'] as $key => $value) {
       echo '<li><a href="/', $key, '" rel="nofollow">',
         $value[0], '</a></li>';
     }
