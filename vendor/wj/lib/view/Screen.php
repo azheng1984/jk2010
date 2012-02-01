@@ -3,7 +3,23 @@ abstract class Screen extends EtagView {
   abstract protected function renderHtmlHeadContent();
   abstract protected function renderHtmlBodyContent();
 
-  protected function renderCssLink($name) {
+  protected function addCssLink($name) {
+    
+  }
+
+  protected function addJsLink($name) {
+    
+  }
+
+  protected function renderCssLinkList() {
+    
+  }
+
+  protected function renderJsLinkList() {
+    
+  }
+
+    protected function renderCssLink($name) {
     echo '<link type="text/css" href="/+/css/', $name, '.',
       Asset::getMd5('css/'.$name.'.css'), '.css"',
       ' media="screen" rel="stylesheet" />';
@@ -63,20 +79,19 @@ abstract class Screen extends EtagView {
 
   private function renderSearch() {
     $query = isset($GLOBALS['URI']['QUERY']) ? $GLOBALS['URI']['QUERY'] : '';
-    echo '<form action="/">',
-      '<input type="text" name="q" value="',
+    echo '<form action="/"><input type="text" name="q" value="',
       htmlentities($query, ENT_QUOTES, 'utf-8'), '" autocomplete="off" />',
       '<button type="submit"></button></form>';
   }
 
   private function renderBodyFooter() {
     echo '<div id="footer">';
-    $this->renderBodyFooterLinkList();
+    $this->renderBodyFooterDiv();
     $this->renderDeclaration();
     echo '</div>';
   }
 
-  private function renderBodyFooterLinkList() {
+  private function renderBodyFooterDiv() {
     echo '<div>',
       '<a href="http://i.huobiwanjia.com/" rel="nofollow">关于货比万家</a> ',
       '<a href="http://ad.huobiwanjia.com/" rel="nofollow">广告</a> ',
@@ -84,7 +99,7 @@ abstract class Screen extends EtagView {
 //      '<a href="http://code.huobiwanjia.com/" rel="nofollow">开源项目</a> ',
 //      '<a href="http://blog.huobiwanjia.com/" rel="nofollow">官方博客</a> ',
       '<a href="/+i/">分类索引</a> ',
-      '合作伙伴:<a href="http://www.google.com">PUBLISHER</a>',
+      '合作伙伴:<a href="http://www.google.com/">PUBLISHER</a>',
       '</div>';
   }
 

@@ -45,6 +45,7 @@ class SearchJson extends EtagView {
           $categoryUri = '#';
           $class = 'class="selected" ';
         }
+        //TODO： add sort args
         echo '<li><a '.$class.'href="'.$categoryUri.'">'.$category['name'].' <span>'.$item['attrs']['@count'].'</span></a></li>';
       }
     }

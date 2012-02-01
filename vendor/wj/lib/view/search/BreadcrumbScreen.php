@@ -4,6 +4,7 @@ class BreadcrumbScreen {
     $query = htmlentities($GLOBALS['URI']['QUERY'], ENT_QUOTES, 'utf-8');
     $buffer = '';
     if (isset($GLOBALS['URI']['PROPERTY_LIST'])) {
+      //TODO:添加排序参数
       $buffer = ' <span><a href="../..">'.$query.'</a></span><span><a href="..'
         .SearchUriArgument::getCurrent().'" rel="nofollow">分类: '
         .$GLOBALS['URI']['CATEGORY']['name'].'</a></span>';
