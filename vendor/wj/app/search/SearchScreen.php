@@ -38,8 +38,6 @@ class SearchScreen extends Screen {
   }
 
   private function renderRelatedQuery() {
-    echo '<div id="related">';
     RelatedQueryScreen::render();
-    echo '</div>';
   }
 }
