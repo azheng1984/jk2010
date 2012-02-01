@@ -1,33 +1,32 @@
 <?php
 abstract class Screen extends EtagView {
+  private $jsList = array();
+  private $cssList = array();
+
   abstract protected function renderHtmlHeadContent();
   abstract protected function renderHtmlBodyContent();
 
   protected function addCssLink($name) {
-    
+    $this->cssList[] = $name;
   }
 
   protected function addJsLink($name) {
-    
+    $this->jsList[] = $name;
   }
 
-  protected function renderCssLinkList() {
-    
+  private function renderCssLinkList() {
+    foreach ($this->cssList as $name) {
+      echo '<link type="text/css" href="/+/css/', $name, '.',
+        Asset::getMd5('css/'.$name.'.css'), '.css"',
+        ' media="screen" rel="stylesheet" />';
+    }
   }
 
-  protected function renderJsLinkList() {
-    
-  }
-
-    protected function renderCssLink($name) {
-    echo '<link type="text/css" href="/+/css/', $name, '.',
-      Asset::getMd5('css/'.$name.'.css'), '.css"',
-      ' media="screen" rel="stylesheet" />';
-  }
-
-  protected function renderJsLink($name) {
-    echo '<script type="text/javascript" src="/+/js/', $name, '.',
-      Asset::getMd5('js/'.$name.'.js'), '.js"></script>';
+  private function renderJsLinkList() {
+    foreach ($this->jsList as $name) {
+      echo '<script type="text/javascript" src="/+/js/', $name, '.',
+        Asset::getMd5('js/'.$name.'.js'), '.js"></script>';
+    }
   }
 
   public function renderBody() {
@@ -39,10 +38,12 @@ abstract class Screen extends EtagView {
 
   private function renderHtmlHead() {
     echo '<head>';
-    $this->renderCssLink('screen');
-    $this->renderJsLink('jquery-1.7.1');
-    $this->renderJsLink('screen');
+    $this->addCssLink('screen');
+    $this->addJsLink('jquery-1.7.1');
+    $this->addJsLink('screen');
     $this->renderHtmlHeadContent();
+    $this->renderCssLinkList();
+    $this->renderJsLinkList();
     echo '</head>';
   }
 
