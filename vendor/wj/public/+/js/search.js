@@ -1,5 +1,26 @@
 $(function() {
-  $('#price_range input').attr("autocomplete", "off");
+  var query = {};
+  if (location.search != '') {
+    var qs = location.search;
+    if (qs.charAt(0) == '?') qs= qs.substring(1);
+    var re = /([^=&]+)(=([^&]*))?/g;
+    while (match= re.exec(qs)) {
+      var key = decodeURIComponent(match[1].replace(/\+/g,' '));
+      var value = decodeURIComponent(match[3].replace(/\+/g,' '));
+      query[key] = value;
+    }
+  }
+  var priceFrom = typeof(query['price_from']) !== 'undefined' ? query['price_from'] : '';
+  var priceTo = typeof(query['price_to']) !== 'undefined' ? query['price_to'] : '';
+  var form = '<form id="price_range" action="."><label for="price_from">&yen;</label> ';
+  if (typeof(query['sort']) !== 'undefined') {
+    form += '<input name="sort" type="hidden" value="' + query['sort'] + '" /> ';
+  }
+  form += '<input id="price_from" name="price_from" type="text" value="' + priceFrom + '" autocomplete="off" />-' +
+    '<input name="price_to" type="text" value="' + priceTo + '" autocomplete="off" /> ' +
+    '<button type="submit"></button>' +
+    '</form>';
+  $('#sort').after(form);
   var isHover = false;
   $('#result li').hover(function() {
     if (isHover == true) {

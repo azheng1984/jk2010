@@ -29,9 +29,7 @@ class ResultHeaderScreen {
        }
        echo '<a href=".', SearchUriArgument::get($tab), '" rel="nofollow">', $tab, '</a>';
      }
-     echo '</div>';
-     self::renderPriceRange();
-     echo '<div id="total_found">找到 ', $amount, ' 个商品</div>';
+     echo '</div><div id="total_found">找到 ', $amount, ' 个商品</div>';
   }
 
   private static function renderPriceSequence() {
@@ -40,19 +38,5 @@ class ResultHeaderScreen {
       return;
     }
     echo '<a href=".', SearchUriArgument::get('价格'), '" rel="nofollow">低-高</a><strong>高-低</strong>';
-  }
-
-  //TODO: move to js
-  private static function renderPriceRange() {
-    $priceFrom = isset($_GET['price_from']) ? $_GET['price_from'] : '';
-    $priceTo = isset($_GET['price_to']) ? $_GET['price_to'] : '';
-    echo '<form id="price_range" action="."><label for="price_from">&yen;</label> ';
-    if (isset($_GET['sort'])) {
-      '<input name="sort" type="hidden" value="'.$_GET['sort'].'" /> ';
-    }
-    echo '<input id="price_from" name="price_from" type="text" value="', $priceFrom, '" />-',
-      '<input name="price_to" type="text" value="', $priceTo, '" /> ',
-      '<button type="submit"></button>',
-      '</form>';
   }
 }
