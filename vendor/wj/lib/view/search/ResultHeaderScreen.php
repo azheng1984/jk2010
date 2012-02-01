@@ -45,10 +45,11 @@ class ResultHeaderScreen {
   private static function renderPriceRange() {
     $priceFrom = isset($_GET['price_from']) ? $_GET['price_from'] : '';
     $priceTo = isset($_GET['price_to']) ? $_GET['price_to'] : '';
-    $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
-    echo '<form id="price_range" action="."><label for="price_from">&yen;</label> ',
-      '<input name="sort" type="hidden" value="'.$sort.'" /> ',
-      '<input id="price_from" name="price_from" type="text" value="', $priceFrom, '" />-',
+    echo '<form id="price_range" action="."><label for="price_from">&yen;</label> ';
+    if (isset($_GET['sort'])) {
+      '<input name="sort" type="hidden" value="'.$_GET['sort'].'" /> ';
+    }
+    echo '<input id="price_from" name="price_from" type="text" value="', $priceFrom, '" />-',
       '<input name="price_to" type="text" value="', $priceTo, '" /> ',
       '<button type="submit"></button>',
       '</form>';
