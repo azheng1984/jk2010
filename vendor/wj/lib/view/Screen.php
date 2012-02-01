@@ -18,7 +18,7 @@ abstract class Screen extends EtagView {
     foreach ($this->cssList as $name) {
       echo '<link type="text/css" href="/+/css/', $name, '.',
         Asset::getMd5('css/'.$name.'.css'), '.css"',
-        ' media="screen" rel="stylesheet" />';
+        ' media="screen" rel="stylesheet"/>';
     }
   }
 

@@ -32,11 +32,11 @@ class IndexScreen extends Screen {
   protected function renderHtmlHeadContent() {
     $pageSection = '';
     if ($this->page != 1) {
-      $pageSection = ' ('.$this->page.')';
+      $pageSection = '('.$this->page.')';
     }
     $title = '分类'.$pageSection;
     if (isset($GLOBALS['URI']['CATEGORY'])) {
-      $title = $GLOBALS['URI']['CATEGORY']['name'].$pageSection.' - 分类';
+      $title = $GLOBALS['URI']['CATEGORY']['name'].$pageSection;
     }
     echo '<title>', $title, ' - 货比万家</title>';
     $this->addCssLink('index');
