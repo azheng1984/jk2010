@@ -12,32 +12,16 @@ class SearchScreen extends Screen {
   }
 
   protected function renderHtmlBodyContent() {
-    $this->renderTopAdvertisement();
-    $this->renderSearch();
-    $this->renderBottomAdvertisement();
-    $this->renderRelatedQuery();
-  }
-
-  private function renderSearch() {
+    echo '<div class="ad">';
+    AdSenseScreen::render();
+    echo '</div>';
     BreadcrumbScreen::render();
     echo '<div id="search">';
     ResultScreen::render();
     echo '</div>';
-  }
-
-  private function renderTopAdvertisement() {
-    echo '<div class="ad">';
-    AdSenseScreen::render();
-    echo '</div>';
-  }
-
-  private function renderBottomAdvertisement() {
     echo '<div class="ad bottom">';
     AdSenseScreen::render();
     echo '</div>';
-  }
-
-  private function renderRelatedQuery() {
     RelatedQueryScreen::render();
   }
 }
