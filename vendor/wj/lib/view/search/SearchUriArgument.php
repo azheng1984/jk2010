@@ -4,8 +4,9 @@ class SearchUriArgument {
 
   public static function get($sort = null) {
     $parameterList = array();
+    $mapping = array('上架时间' => 'time', '折扣' => 'discount', '价格' => 'price');
     if ($sort !== '销量') {
-      $parameterList[] = 'sort='.$sort;
+      $parameterList[] = 'sort='.$mapping[$sort];
     }
       if (isset($_GET['price_from'])) {
       $parameterList[] = 'price_from='.$_GET['price_from'];
@@ -21,7 +22,8 @@ class SearchUriArgument {
 
   public static function getCurrent() {
     if (self::$current === null) {
-      $sort = isset($_GET['sort']) ? $_GET['sort'] : '销量';
+      $mapping = array('time' => '上架时间', 'discount' => '折扣', 'price' => '价格');
+      $sort = isset($_GET['sort']) ? $mapping[$_GET['sort']] : '销量';
       self::$current = self::get($sort);
     }
     return self::$current;

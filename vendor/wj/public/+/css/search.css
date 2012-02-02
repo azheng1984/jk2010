@@ -4,9 +4,6 @@
   background:url(/+/img/search_split.png) repeat-y right;
 }
 #search h2 {
-  padding:5px 0 2px 0;
-  width:100%;
-  float:left;
   margin:0;
   font-size:14px;
   font-weight:normal;
@@ -37,7 +34,7 @@ h1 {
   background:url(/+/img/toobar.png) repeat-x;
   padding:6px 0 2px 0;
 }
-#sort em {
+#result h2 em {
   margin:1px 2px;
   display:inline;
   color:#fff;
@@ -47,10 +44,11 @@ h1 {
   -moz-border-radius:3px;
   border-radius:3px;
 }
-#sort a {
+h2 a {
   margin:4px 10px;
 }
-#sort {
+#result h2 {
+  float:left;
   margin:0 0 0 8px;
 }
 #price {

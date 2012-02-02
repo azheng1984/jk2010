@@ -6,10 +6,8 @@ class SearchScreen extends Screen {
   }
 
   protected function renderHtmlHeadContent() {
-    //TODO: add category & property
-    echo '<title>', $GLOBALS['URI']['QUERY'], '价格、折扣、新款和销量排行 - 货比万家</title>';
-      /*'<meta name="description"',
-      ' content="', $GLOBALS['URI']['QUERY'], '价格、折扣、新款和销量排行，', $GLOBALS['URI']['QUERY'], '图片 - 网上购物，货比万家。"/>';*/
+    //TODO: append category & property section
+    echo '<title>', $GLOBALS['URI']['QUERY'], '价格、折扣、销量排行-货比万家</title>';
     $this->addCssLink('search');
     $this->addJsLink('search');
   }
