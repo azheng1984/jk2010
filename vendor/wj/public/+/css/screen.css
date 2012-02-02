@@ -77,7 +77,7 @@ input {
   width:365px;
 }
 #header input:focus {
-  outline:1px solid #b6c9ed;
+  outline:1px solid #bce;
 }
 #header button {
   background:url(/+/img/header.png) -97px 0;

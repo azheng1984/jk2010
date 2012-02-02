@@ -101,7 +101,7 @@ h2 a {
   background:#fff;
 }
 #price_range input:focus {
-  outline:1px solid #b6c9ed;
+  outline:1px solid #bce;
 }
 #price_range button {
   display:block;
