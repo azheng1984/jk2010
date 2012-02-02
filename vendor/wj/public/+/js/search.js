@@ -20,7 +20,7 @@ $(function() {
     '<input name="price_to" type="text" value="' + priceTo + '" autocomplete="off" /> ' +
     '<button type="submit"></button>' +
     '</form>';
-  $('#sort').after(form);
+  $('#result h2').after(form);
   var isHover = false;
   $('#result li').hover(function() {
     if (isHover == true) {

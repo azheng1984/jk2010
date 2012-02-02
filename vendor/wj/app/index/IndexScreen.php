@@ -38,7 +38,7 @@ class IndexScreen extends Screen {
     if (isset($GLOBALS['URI']['CATEGORY'])) {
       $title = $GLOBALS['URI']['CATEGORY']['name'].$pageSection;
     }
-    echo '<title>', $title, ' - 货比万家</title>';
+    echo '<title>', $title, '-货比万家</title>';
     $this->addCssLink('index');
   }
 
