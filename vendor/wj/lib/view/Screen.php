@@ -75,13 +75,13 @@ abstract class Screen extends EtagView {
 
   private function renderLogo() {
     echo '<div id="logo">',
-      '<a href="/">货比万家<span></span></a></div>';
+      '<a href="/">货比万家<span /></a></div>';
   }
 
   private function renderSearch() {
     $query = isset($GLOBALS['URI']['QUERY']) ? $GLOBALS['URI']['QUERY'] : '';
     echo '<form action="/"><input type="text" name="q" value="',
-      htmlentities($query, ENT_QUOTES, 'utf-8'), '" autocomplete="off" />',
+      htmlentities($query, ENT_QUOTES, 'utf-8'), '" autocomplete="off"/>',
       '<button type="submit"></button></form>';
   }
 
