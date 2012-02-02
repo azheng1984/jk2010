@@ -49,6 +49,10 @@
   border-bottom:1px solid #888;
   text-decoration:none;
 }
+#slogon a:hover {
+  color:#555;
+  border-color:#555;
+}
 #slogon strong {
   margin-top:-10px;
   font-weight:normal;
@@ -106,6 +110,7 @@ td a {
 }
 td a:hover {
   text-decoration:none;
+  color:#555;
 }
 td:hover {
   border:1px solid ;
@@ -131,4 +136,8 @@ td a img {
   border-bottom:1px solid #888;
   color:#888;
   text-decoration:none;
+}
+#more a:hover {
+  color:#555;
+  border-color:#555;
 }

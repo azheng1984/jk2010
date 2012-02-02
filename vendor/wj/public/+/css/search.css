@@ -126,6 +126,7 @@ h2 a {
 #price_range a:hover {
   border-color: #ddd #aaa #aaa #ddd;
   box-shadow:0 0 3px #ddd;
+  color:#555;
 }
 /* result
  *******************************/
@@ -229,6 +230,7 @@ a:hover em {
   border-color:#ddd #aaa #aaa #ddd;
   text-decoration:none;
   box-shadow:0 0 3px #ddd;
+  color:#555;
 }
 #product_toolbar a span {
   background:url(/+/img/same_model.png);
@@ -259,6 +261,7 @@ a:hover em {
   border:1px solid;
   border-color:#ddd #aaa #aaa #ddd;
   box-shadow:0 0 3px #ddd;
+  color:#555;
 }
 /* filter
  **************************************/
@@ -326,6 +329,10 @@ a:hover em {
   font-size:13px;
   border-bottom:1px solid #888;
 }
+#tag li .key:hover {
+  color:#555;
+  border-color:#555;
+}
 #tag li .text-color {
   color:#888;
 }
@@ -338,6 +345,10 @@ a:hover em {
   border-bottom:1px solid #888;
   color:#888;
   text-decoration:none;
+}
+#tag .more a:hover {
+  color:#555;
+  border-color:#555;
 }
 /* ad
  *************************************/

@@ -87,11 +87,10 @@ class ProductSearch {
   private static function setSortMode() {
     $sort = 'sale_rank';
     $mapping = array(
-      '价格' => 'lowest_price_x_100',
-      '-价格' => 'lowest_price_x_100',
-      '销量' => 'sale_rank',
-      '上架时间' => 'publish_timestamp',
-      '折扣' => 'discount_x_10'
+      'price' => 'lowest_price_x_100',
+      '-price' => 'lowest_price_x_100',
+      'time' => 'publish_timestamp',
+      'discount' => 'discount_x_10'
     );
     if (isset($_GET['sort']) && isset($mapping[$_GET['sort']])) {
       $sort = $mapping[$_GET['sort']];
