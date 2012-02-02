@@ -1,18 +1,14 @@
 <?php
 class RelatedQueryScreen {
   public static function render() {
-    $result = QuerySearch::search(0.6);
-    if ($result['total_found'] === 0) {
+    $query = DbQuery::getByName($GLOBALS['URI']['QUERY']);
+    if ($query === false || $query['related_list'] === null) {
       return;
     }
     $buffer = '';
-    foreach ($result['matches'] as $id => $item) {
-      $query = DbQuery::get($id);
-      if ($GLOBALS['URI']['QUERY'] === $query['name']) {
-       continue;
-      }
-      $buffer .= '<li><a href="/'.$query['name'].'/">'
-        .$query['name'].'</a> '.$item['attrs']['product_amount'].'</li>';
+    foreach (explode(',', $query['related_list']) as $item) {
+      $buffer .= '<li><a href="/'.urlencode($item).'/">'
+        .$item.'</a></li>';
     }
     if ($buffer === '') {
       return;

@@ -117,6 +117,10 @@ input {
   border-bottom:1px solid #888;
   text-decoration:none;
 }
+#footer a:hover {
+  color:#555;
+  border-color:#555;
+}
 #publisher {
   clear:both;
   line-height:20px;
@@ -125,6 +129,7 @@ input {
 /* suggestion
  **************************/
 #suggestion {
+  color:#444;
   position:absolute;
   left:100px;
   border:1px solid;

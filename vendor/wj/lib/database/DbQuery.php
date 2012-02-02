@@ -4,6 +4,10 @@ class DbQuery {
     return Db::getRow('SELECT * FROM query WHERE id = ?', $id);
   }
 
+  public function getByName($name) {
+    return Db::getRow('SELECT * FROM query WHERE name = ?', $name);
+  }
+
   public static function getList($categoryId, $page) {
     $sql = 'SELECT * FROM query WHERE category_id = ?';
     $start = ($page - 1) * 60;
