@@ -8,10 +8,9 @@ class HomeScreen extends Screen {
   }
 
   protected function renderHtmlHeadContent() {
-    echo '<title>货比万家</title>',
-      '<meta name="description"',
-      ' content="货比万家购物搜索引擎，商品信息100%来自公司经营（B2C）的正规商店',
-      '-网上购物，货比万家！"/>';
+    echo '<title>货比万家</title><meta name="description" content="',
+      '货比万家购物搜索引擎，商品信息100%来自公司经营（B2C）的正规商店-网上购物，货比万家！',
+      '"/>';
     $this->addCssLink('home');
     $this->addJsLink('home');
   }
@@ -49,14 +48,17 @@ class HomeScreen extends Screen {
 
   private function renderMerchantList() {
     echo '<table>';
-    for ($i = 0; $i < 5; ++$i) {
+    $index = 0;
+    $merchantList = $this->config['merchant_list'];
+    for ($row = 0; $row < 5; ++$row) {
       echo '<tr>';
-      for ($j = 0; $j < 5; ++$j) {
-        $uri = urlencode('儿童');
-        echo '<td><a href="http://www.360buy.com/?source=huobiwanjia"',
-          ' target="_blank" rel="nofollow">',
-          '<img src="/+/img/logo/360buy.png" /><span>京东商城</span></a>',
-          '</td>';
+      for ($column = 0; $column < 5; ++$column) {
+        $item = $merchantList[$index];
+        echo '<td><a href="http://', $item[1], '"',
+          ' target="_blank" rel="nofollow">', '<img alt="', $item[0],
+          '" src="/+/img/logo/', $item[2], '.png"/><span>',
+          $item[0], '</span></a></td>';
+        ++$index;
       }
       echo '</tr>';
     }
