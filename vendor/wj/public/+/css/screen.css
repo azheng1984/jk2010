@@ -31,6 +31,7 @@ input {
   border-color:#888 #ccc #ccc #888;
   background:url(/+/img/header.png) 0 -33px;/* firefox */
   outline:none;/* webkit */
+  color:#333;
 }
 #wrapper {
   float:none;
@@ -118,8 +119,8 @@ input {
   text-decoration:none;
 }
 #footer a:hover {
-  color:#555;
-  border-color:#555;
+  color:#333;
+  border-color:#333;
 }
 #publisher {
   clear:both;
@@ -129,7 +130,7 @@ input {
 /* suggestion
  **************************/
 #suggestion {
-  color:#444;
+  color:#333;
   position:absolute;
   left:100px;
   border:1px solid;
@@ -147,7 +148,7 @@ input {
   list-style:none;
 }
 #suggestion li {
-  color:#000;
+  color:#333;
   float:left;
   white-space:nowrap;
   width:368px;
@@ -155,7 +156,7 @@ input {
   cursor:pointer;
 }
 #suggestion li:hover {
-  background:#6096cc;
+  background:#69c;
   color:#fff;
 }
 #suggestion .query {

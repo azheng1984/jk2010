@@ -46,7 +46,7 @@ class SearchJson extends EtagView {
           $class = 'class="selected" ';
         }
         //TODO： add sort args
-        echo '<li><a '.$class.'href="'.$categoryUri.'">'.$category['name'].' <span>'.$item['attrs']['@count'].'</span></a></li>';
+        echo '<li><a '.$class.'href="'.$categoryUri.'"><span>'.$category['name'].'</span> '.$item['attrs']['@count'].'</a></li>';
       }
     }
     echo '</ol>';
@@ -73,7 +73,7 @@ class SearchJson extends EtagView {
         && $GLOBALS['URI']['PROPERTY_LIST'][0]['VALUE_LIST'][0]['id'] == $item['attrs']['@groupby']) {
         echo '<li><a href="javascript:void(0)" class="selected">'.$property['name'].'</a></li>';
       } else {
-        echo '<li><a href="'.$this->key['name'].'='.$property['name'].'/">'.$property['name'].' <span>'.$item['attrs']['@count'].'</span></a></li>';
+        echo '<li><a href="'.$this->key['name'].'='.$property['name'].'/"><span>'.$property['name'].'</span> '.$item['attrs']['@count'].'</a></li>';
       }
     }
     echo '</ol>';
