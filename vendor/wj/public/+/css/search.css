@@ -135,11 +135,10 @@ h2 a {
 #result {
   width:770px;
 }
-em {
-  font-style:normal;
+#result h3 span, #result p span {
   color:#d00;
 }
-a:hover em {
+a:hover span {
   text-decoration:underline;
 }
 #result ol {
