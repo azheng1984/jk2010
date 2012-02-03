@@ -5,6 +5,6 @@ class QueryJson extends EtagView {
   }
 
   public function renderBody() {
-
+    QuerySearch::search();
   }
 }
