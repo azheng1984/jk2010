@@ -138,7 +138,7 @@ h2 a {
 #result h3 span, #result p span {
   color:#d00;
 }
-a:hover span {
+#result h3 a:hover span {
   text-decoration:underline;
 }
 #result ol {
