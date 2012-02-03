@@ -33,7 +33,7 @@ class HomeScreen extends Screen {
   private function renderQueryList() {
     echo ' <ul>';
     foreach ($this->config['query_list'] as $query) {
-      echo '<li><a href="/', $query[0], '/">',
+      echo '<li><a href="/', urlencode($query[0]), '/">',
         $query[1],'</a> ', $query[2], '</li>';
     }
     echo '<li><a href="/+i/">&hellip;</a></li></ul>';
