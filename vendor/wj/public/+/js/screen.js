@@ -3,9 +3,12 @@ $(function() {
     $('#header input').focus();
   }
   $('#header form').bind('submit', function() {
-    $query = encodeURIComponent($('#header input').attr('value'))
-      .replace(/%20/g, '+');
-    window.location = '/' + $query + '/';
+    query = encodeURIComponent($.trim($('#header input').attr('value')))
+      .replace(/%20/g, '+') + '/';
+    if (query == '%2B/') {
+      query = '';
+    }
+    window.location = '/' + query;
     return false;
   });
   var suggestion = false;

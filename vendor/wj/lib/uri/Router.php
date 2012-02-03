@@ -14,9 +14,17 @@ class Router {
         $_SERVER['REQUEST_URI'], 0, $queryStringPosition
       );
     }
+    //TODO: 关闭 php 自动  decode uri 参数
     if (isset($_GET['q']) && $_GET['q'] !== ''
       && $GLOBALS['URI']['REQUEST_PATH'] === '/') {
-      header('Location: /'.urlencode($_GET['q']).'/');
+      $query = urlencode(trim($_GET['q']));
+      if ($query === '%2B') { //for nginx
+        $query  = '';
+      }
+      if ($query !== '') {
+        $query .= '/';
+      }
+      header('Location: /'.$query);
       return '/redirect';
     }
     $GLOBALS['URI']['PATH_SECTION_LIST'] = explode(

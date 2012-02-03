@@ -3,6 +3,7 @@ class BreadcrumbScreen {
   public static function render() {
     $query = htmlentities($GLOBALS['URI']['QUERY'], ENT_QUOTES, 'utf-8');
     $buffer = '';
+    //如果有排序/价格区间参数，全部 nofollow
     if (isset($GLOBALS['URI']['PROPERTY_LIST'])) {
       //TODO:添加排序参数
       $buffer = ' <span><a href="../..">'.$query.'</a></span><span><a href="..'

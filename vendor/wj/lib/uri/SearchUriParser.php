@@ -22,7 +22,7 @@ class SearchUriParser {
 
   private static function parseQuery() {
     $GLOBALS['URI']['QUERY'] =
-      urldecode($GLOBALS['URI']['PATH_SECTION_LIST'][1]);
+      trim(urldecode($GLOBALS['URI']['PATH_SECTION_LIST'][1]));
   }
 
   private static function parseCategory() {
