@@ -91,6 +91,7 @@ input {
 #banner {
   float:right;
   margin-top:12px;
+  color:#888;
 }
 #banner span {
   text-align:center;
@@ -108,10 +109,10 @@ input {
   margin:8px 0 0;
   width:100%;/* ie 7 */
   font-size:13px;
+  color:#888;
 }
 #footer div {
   float:right;
-  color:#888;
 }
 #footer a {
   margin:5px;
@@ -164,7 +165,7 @@ input {
   float:left;
 }
 #suggestion .product_amount {
-  color:#666;
+  color:#888;
   float:right;
   background:#f1f1f1;
   padding:0 4px;
