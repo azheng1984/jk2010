@@ -6,7 +6,7 @@ class SearchScreen extends Screen {
   }
 
   protected function renderHtmlHeadContent() {
-    //TODO: append category & property section
+    //TODO: append category & property section & page
     echo '<title>', $GLOBALS['URI']['QUERY'], '价格、折扣、销量排行-货比万家</title>';
     $this->addCssLink('search');
     $this->addJsLink('search');

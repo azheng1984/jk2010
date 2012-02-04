@@ -30,13 +30,12 @@ class IndexScreen extends Screen {
   }
 
   protected function renderHtmlHeadContent() {
-    $pageSection = '';
-    if ($this->page != 1) {
-      $pageSection = '('.$this->page.')';
-    }
-    $title = '分类'.$pageSection;
+    $title = '分类';
     if (isset($GLOBALS['URI']['CATEGORY'])) {
-      $title = $GLOBALS['URI']['CATEGORY']['name'].$pageSection;
+      $title = $GLOBALS['URI']['CATEGORY']['name'];
+    }
+    if ($this->page != 1) {
+      $title .= '('.$this->page.')';
     }
     echo '<title>', $title, '-货比万家</title>';
     $this->addCssLink('index');
