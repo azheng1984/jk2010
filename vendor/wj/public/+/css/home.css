@@ -45,8 +45,8 @@
 }
 #slogon a {
   font-size:13px;
-  color:#888;
-  border-bottom:1px solid #888;
+  color:#666;
+  border-bottom:1px solid #666;
   text-decoration:none;
 }
 #slogon a:hover {
@@ -104,7 +104,7 @@ td {
 td a {
   display:block;
   font-size:13px;
-  color:#888;
+  color:#666;
   height:100%;
   padding:6px 0;
 }
@@ -133,8 +133,8 @@ td a img {
 }
 #more a {
   font-size:15px;
-  border-bottom:1px solid #888;
-  color:#888;
+  border-bottom:1px solid #666;
+  color:#666;
   text-decoration:none;
 }
 #more a:hover {
