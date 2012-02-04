@@ -42,6 +42,7 @@
   padding-right:15px;
   font-size:11px;
   white-space:nowrap;
+  color:#888;
 }
 #slogon a {
   font-size:13px;
@@ -130,6 +131,7 @@ td a img {
   margin-left:340px;
   background: url(/+/img/more.png) 0 6px no-repeat;
   float:left;
+  color:#888;
 }
 #more a {
   font-size:15px;
