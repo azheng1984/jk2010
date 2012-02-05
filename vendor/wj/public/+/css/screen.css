@@ -34,7 +34,7 @@ form {
   color:#333;
 }
 #header input:hover {
-  border-color: #333 #aaa #aaa #333;
+  border-color:#555 #bbb #bbb #555;
 }
 #wrapper {
   float:none;
