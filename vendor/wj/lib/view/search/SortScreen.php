@@ -1,23 +1,25 @@
 <?php
 class SortScreen {
-  private static $orderBy = '销量';
+  private static $orderBy = 'sale_rank';
   private static $isReverse = false;
 
   public static function render() {
     if (isset($_GET['sort'])) {
       self::$orderBy = $_GET['sort'];
     }
-    if (self::$orderBy === '-价格') {
-      self::$orderBy = '价格';
+    if (self::$orderBy === '-price') {
+      self::$orderBy = 'price';
       self::$isReverse = true;
     }
     self::renderTabList();
   }
 
   private static function renderTabList() {
+    $mapping = array('销量' => 'sale_rank', '上架时间' => 'time', '折扣' => 'discount', '价格' => 'price');
      echo '<h2>排序: ';
      foreach (array('销量', '上架时间', '折扣', '价格') as $tab) {
-       if (self::$orderBy === $tab) {
+       $value = $mapping[$tab];
+       if (self::$orderBy === $value) {
          if ($tab === '价格') {
            echo '<span id="price"><em>价格</em>';
            self::renderPriceSequence();
