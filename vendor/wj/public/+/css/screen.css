@@ -25,13 +25,16 @@ form {
   display:inline;
   margin:0;
 }
-input {
+#header input {
   border-width:1px;
   border-style:solid;
   border-color:#666 #ccc #ccc #666;
   background:url(/+/img/header.png) 0 -33px;/* firefox */
   outline:none;/* webkit */
   color:#333;
+}
+#header input:hover {
+  border-color: #333 #aaa #aaa #333;
 }
 #wrapper {
   float:none;
