@@ -1,7 +1,4 @@
 $(function() {
-  if(window.location.pathname === '/') {
-    $('#header input').focus();
-  }
   $('#header form').bind('submit', function() {
     query = encodeURIComponent($.trim($('#header input').attr('value')))
       .replace(/%20/g, '+') + '/';
