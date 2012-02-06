@@ -27,5 +27,6 @@ class ResultScreen {
         $description.'&hellip;</p><div class="merchant">京东商城</div></li>';
     }
     echo '</ol>';
+    echo '<script type="text/javascript">meta_list=[];</script>'; //TODO:move to <body> ending
   }
 }
