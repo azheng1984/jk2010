@@ -21,10 +21,10 @@ $(function() {
     if (suggestion == true) {
       var uri = 'http://q.dev.huobiwanjia.com/' + encodeURIComponent($('#header input').attr('value'));
       $.ajax({
-        url: uri,
-        cache: true,
-        dataType: 'jsonp',
-        jsonp: false
+        url:uri,
+        cache:true,
+        dataType:'jsonp',
+        jsonp:false
       });
     }
     suggestion = true;
