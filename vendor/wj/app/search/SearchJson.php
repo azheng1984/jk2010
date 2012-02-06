@@ -5,6 +5,8 @@ class SearchJson extends EtagView {
 
   public function __construct() {
     header('Cache-Control: public, max-age=3600');
+    header('Expires: '
+        .gmdate('D, d M Y H:i:s', $_SERVER['REQUEST_TIME'] + 3600).' GMT');
   }
 
   public function renderBody() {
