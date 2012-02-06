@@ -51,6 +51,7 @@ h2 a {
 #result h2 {
   float:left;
   margin:0 0 0 8px;
+  line-height:25px; /* ie */
 }
 #price {
   background: none;
@@ -85,10 +86,7 @@ h2 a {
 #price_range {
   display:inline;
   margin-left:10px;
-}
-#price_range a {
-  font-size:12px;
-  margin:2px 11px;
+line-height:23px;
 }
 #price_range input {
   width:30px;
@@ -116,6 +114,7 @@ h2 a {
   float:left;
 }
 #price_range a {
+  font-size:12px;
   margin:0;
   white-space:nowrap;
   background: url(/+/img/button.png) repeat-x;
