@@ -1,3 +1,11 @@
+function suggest(data) {
+  var text = '<div id="suggestion"><ul>';
+  $.each(data, function(index, value){
+    text += '<li><span class="query">' + index + '</span><span class="product_amount">' + value + '</span></li>';
+  });
+  text += '</ul></div>';
+  $('#header').append(text);
+}
 $(function() {
   $('#header form').bind('submit', function() {
     query = encodeURIComponent($.trim($('#header input').attr('value')))
@@ -10,8 +18,14 @@ $(function() {
   });
   var suggestion = false;
   $('#header input').click(function() {
-    if (suggestion == false) {
-      $('#header').append('<div id="suggestion"><ul><li><span class="query">缓释胶囊</span><span class="product_amount">234</span></li><li><span class="query">缓释胶囊</span><span class="product_amount">234</span></li></ul></div>');
+    if (suggestion == true) {
+      var uri = 'http://q.dev.huobiwanjia.com/' + encodeURIComponent($('#header input').attr('value'));
+      $.ajax({
+        url: uri,
+        cache: true,
+        dataType: 'jsonp',
+        jsonp: false
+      });
     }
     suggestion = true;
   });
