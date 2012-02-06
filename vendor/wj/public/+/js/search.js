@@ -28,7 +28,7 @@ $(function() {
     }
     isHover = true;
     $(this).append('<div id="product_toolbar"><a href="/+p/12345/"><span></span>同款</a></div>' 
-        + '<div id="product_tag"><a href="javascript:void(0)">分类: 手机</a></div>');
+        + '<div id="product_tag"><a href="手机/' + location.search + '">分类: 手机</a></div>');
   }, function() {
     $('#product_toolbar').remove();
     $('#product_tag').remove();
