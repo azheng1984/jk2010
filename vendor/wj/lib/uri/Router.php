@@ -19,7 +19,7 @@ class Router {
       && $GLOBALS['URI']['REQUEST_PATH'] === '/') {
       $query = urlencode(trim($_GET['q']));
       if ($query === '%2B') { //for nginx
-        $query  = '';
+        $query = '';
       }
       if ($query !== '') {
         $query .= '/';
