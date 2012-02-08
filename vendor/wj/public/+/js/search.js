@@ -54,16 +54,17 @@ $(function() {
     }
   });
   $('#price_range input').focusin(function() {
+    //TODO: 根据当前 url 加链接
     $('#price_range').append('<a href="javascript:void(0)">确定</a>');
   });
   $('#price_range input').focusout(function() {
     $('#price_range a').remove();
   });
-  '<a href="javascript:void(0)">确定</a>';//TODO: 根据当前 url 加链接
 });
 $(function() {
   $uri = '/' + encodeURIComponent($('#header input').attr('value')) + '/?media=json';
   $.get($uri, function(data) {
+    //使用 js 渲染，剔除缓存重复（缓存造成）
     $('#result').after('<div id="tag">' + data + '</div>');
     $('#key_list .key').mouseup(function() {
       if ($(this).attr('class') === 'key open') {
