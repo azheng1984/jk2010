@@ -19,6 +19,7 @@ class SearchScreen extends Screen {
     BreadcrumbScreen::render();
     echo '<div id="search">';
     ResultScreen::render();
+    //如果是最后一页，显示查询链接
     echo '</div>';
     echo '<div class="ad bottom">';
     AdSenseScreen::render();
