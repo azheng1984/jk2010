@@ -24,5 +24,6 @@ class SearchScreen extends Screen {
     AdSenseScreen::render();
     echo '</div>';
     RelatedQueryScreen::render();
+    MetaListScreen::render();
   }
 }

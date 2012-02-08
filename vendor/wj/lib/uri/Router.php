@@ -33,8 +33,12 @@ class Router {
     if (!isset($GLOBALS['URI']['PATH_SECTION_LIST'][2])) {
       return MerchantListUriParser::parse();
     }
-    if ($GLOBALS['URI']['PATH_SECTION_LIST'][1] === '+i') {
+    $firstSection = $GLOBALS['URI']['PATH_SECTION_LIST'][1];
+    if ($firstSection === '+i') {
       return IndexUriParser::parse();
+    }
+    if ($firstSection === '+p') {
+      return ProductRecognitionUriParser::parse();
     }
     return SearchUriParser::parse();
   }
