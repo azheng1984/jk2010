@@ -59,7 +59,7 @@ $(function() {
   $('#price_range input').focusout(function() {
     $('#price_range a').remove();
   });
-  '<a href="javascript:void(0)">确定</a>';
+  '<a href="javascript:void(0)">确定</a>';//TODO: 根据当前 url 加链接
 });
 $(function() {
   $uri = '/' + encodeURIComponent($('#header input').attr('value')) + '/?media=json';
