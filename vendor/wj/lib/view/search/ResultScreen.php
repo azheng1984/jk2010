@@ -8,6 +8,8 @@ class ResultScreen {
       PaginationScreen::render(
         SearchUriArgument::getCurrent(), $GLOBALS['URI']['RESULTS']['total_found']
       );
+    } else {
+      //render empty message
     }
     echo '</div>';
   }

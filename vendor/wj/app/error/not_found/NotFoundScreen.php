@@ -1,6 +1,6 @@
 <?php
-class NotFoundScreen {
-  public function render() {
+class NotFoundScreen extends ErrorScreen {
+  protected function renderMessage() {
     echo '404 Not Found';
   }
 }

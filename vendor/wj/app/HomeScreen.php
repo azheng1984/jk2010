@@ -50,6 +50,7 @@ class HomeScreen extends Screen {
   private function renderMerchantList() {
     echo '<table>';
     $index = 0;
+    //TODO: 非 home 情况
     $merchantList = $this->config['merchant_list'];
     for ($row = 0; $row < 5; ++$row) {
       echo '<tr>';
@@ -76,6 +77,7 @@ class HomeScreen extends Screen {
   }
 
   private function renderAmount() {
-    echo '<script type="text/javascript">merchant_amount=124;</script>';//TODO:reader from config
+    echo '<script type="text/javascript">merchant_amount=124;</script>';
+    //TODO:reader by config
   }
 }
