@@ -1,4 +1,5 @@
 <?php
+//使用 json 传递数据，将少数量
 class SearchJson extends EtagView {
   private $category;
   private $key;

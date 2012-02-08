@@ -27,6 +27,7 @@ $(function() {
       return;
     }
     isHover = true;
+    //TODO: read from meta list
     $(this).append('<div id="product_toolbar"><a href="/+p/12345/"><span></span>同款</a></div>' 
         + '<div id="product_tag"><a href="手机/' + location.search + '">分类: 手机</a></div>');
   }, function() {
@@ -75,6 +76,13 @@ $(function() {
       $.get($uri2, function(data) {
         $('#target').after(data).attr('id', '').attr('class', 'key open');
       });
+    });
+  });
+});
+$(function() {
+  $('#result h3 a').each(function() {
+    $(this).bind('onmousedown', function() {
+      //从 image 获取产品 id 信息 + session 信息，通过 jsonp 的方式发送到 tracking 服务器
     });
   });
 });
