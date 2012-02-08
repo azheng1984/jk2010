@@ -15,23 +15,24 @@ class SortScreen {
   }
 
   private static function renderTabList() {
+    //TODO: 使用原始  mapping
     $mapping = array('销量' => 'sale_rank', '上架时间' => 'time', '折扣' => 'discount', '价格' => 'price');
-     echo '<h2>排序: ';
-     foreach (array('销量', '上架时间', '折扣', '价格') as $tab) {
-       $value = $mapping[$tab];
-       if (self::$orderBy === $value) {
-         if ($tab === '价格') {
-           echo '<span id="price"><em>价格</em>';
-           self::renderPriceSequence();
-           echo '</span>';
-           continue;
-         }
-         echo '<em>', $tab, '</em>';
-         continue;
-       }
-       echo '<a href=".', SearchUriArgument::get($tab), '" rel="nofollow">', $tab, '</a>';
-     }
-     echo '</h2><div id="total_found">找到 ', $GLOBALS['URI']['RESULTS']['total_found'], ' 个商品</div>';
+    echo '<h2>排序: ';
+    foreach (array('销量', '上架时间', '折扣', '价格') as $tab) {
+      $value = $mapping[$tab];
+      if (self::$orderBy === $value) {
+        if ($tab === '价格') {
+          echo '<span id="price"><em>价格</em>';
+          self::renderPriceSequence();
+          echo '</span>';
+          continue;
+        }
+        echo '<em>', $tab, '</em>';
+        continue;
+      }
+      echo '<a href=".', SearchUriArgument::get($tab), '" rel="nofollow">', $tab, '</a>';
+    }
+    echo '</h2><div id="total_found">找到 ', $GLOBALS['URI']['RESULTS']['total_found'], ' 个商品</div>';
   }
 
   private static function renderPriceSequence() {
