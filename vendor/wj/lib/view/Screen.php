@@ -2,6 +2,7 @@
 abstract class Screen extends EtagView {
   private $jsList = array();
   private $cssList = array();
+  private $js = '';
 
   abstract protected function renderHtmlHeadContent();
   abstract protected function renderHtmlBodyContent();
@@ -12,6 +13,10 @@ abstract class Screen extends EtagView {
 
   protected function addJsLink($name) {
     $this->jsList[] = $name;
+  }
+  
+  protected function addJs($js) {
+    $this->js .= $js;
   }
 
   private function renderCssLinkList() {
@@ -50,6 +55,7 @@ abstract class Screen extends EtagView {
   private function renderHtmlBody() {
     echo '<body>';
     $this->renderBodyWrapper();
+    $this->renderJs();
     echo '</body>';
   }
 
@@ -108,5 +114,11 @@ abstract class Screen extends EtagView {
     echo '&copy; 货比万家',
       ' <a href="http://i.huobiwanjia.com/terms_of_use" rel="nofollow">使用条款</a>',
       ' <a href="http://i.huobiwanjia.com/privacy" rel="nofollow">隐私权政策</a>';
+  }
+ 
+  private function renderJs() {
+    if ($this->js !== '') {
+      echo '<script type="text/javascript">', $this->js, '</script>';
+    }
   }
 }
