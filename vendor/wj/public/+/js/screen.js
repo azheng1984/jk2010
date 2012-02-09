@@ -1,4 +1,4 @@
-//TODO:加入 session 跟踪和页面转跳记录
+//TODO: 加入内部页面 click session 跟踪和页面转跳记录（外=>内，内=>内，内=>外）
 function suggest(data) {
   var text = '<div id="suggestion"><ul>';
   if (typeof(data) == 'undefined') {
