@@ -21,7 +21,7 @@ class SourceAction {
     $this->categoryUrlName = $_GET['category'];
     $db = new DocumentDb($this->databaseIndex);
     $connection = $db->getConnection();
-    $statement = $connection->prepare("select source_url from {$this->categoryUrlName}_document where id=?");
+    $statement = $connection->prepare("SELECT source_url FROM {$this->categoryUrlName}_document WHERE id=?");
     $statement->execute(array($this->id));
     $this->source = $statement->fetchColumn();
     if ($this->source === false) {
