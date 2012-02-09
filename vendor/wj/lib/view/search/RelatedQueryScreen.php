@@ -5,14 +5,16 @@ class RelatedQueryScreen {
     if ($query === false || $query['related_list'] === null) {
       return;
     }
-    $buffer = '';
+    $buffer = array();
     foreach (explode(',', $query['related_list']) as $item) {
-      $buffer .= '<li><a href="/'.urlencode($item).'/">'
-        .$item.'</a></li>';
+      $buffer[] = '<td><a href="/'.urlencode($item).'/">'
+        .$item.'</a></td>';
     }
-    if ($buffer === '') {
+    if (count($buffer) === 0) {
       return;
     }
-    echo '<div id="related"><h2>相关搜索:</h2><ul>', $buffer, '</ul></div>';
+    //$buffer[] = '<td><a href="/">超长文本超长文本超长文本超长文本超长文本超长文本超长文本超长文本</a></td>';
+    //TODO: 用 table 代替
+    echo '<div id="related"><h2>相关搜索:</h2><table><tr>', implode('', $buffer), '</tr><tr>', implode('', array_reverse($buffer)), '</tr></table></div>';
   }
 }

@@ -426,17 +426,16 @@ line-height:23px;
   padding:5px;
   float:left;
 }
-#related ul {
+#related table {
   margin:0;
   float:left;
-  list-style:none;
-  padding:5px;
+  padding:3px;
 }
-#related li {
-  float:left;
-  padding-right:15px;
+#related td {
+  padding:0 10px 0 20px;
   font-size:11px;
-  white-space:nowrap;
+  background:url(/+/img/bull.png) 0 2px no-repeat;
+  vertical-align:top;
 }
 #related a {
   font-size:14px;

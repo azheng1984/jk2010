@@ -36,4 +36,7 @@ class ResultScreen {
 
   private static function highlight($text, $keywordList) {
   }
+
+  private static function buildMetaList() {
+  }
 }

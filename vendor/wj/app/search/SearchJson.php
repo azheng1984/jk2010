@@ -1,5 +1,5 @@
 <?php
-//TODO: 使用 json 传递数据，将少数量
+//TODO: 使用 json，将少数量
 class SearchJson extends EtagView {
   private $category;
   private $key;
@@ -53,6 +53,7 @@ class SearchJson extends EtagView {
       }
     }
     echo '</ol>';
+    //TODO: move to js
     //echo '<div class="more"><a href="javascript:void(0)">更多分类</a></div>';
   }
 
