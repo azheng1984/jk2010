@@ -1,6 +1,6 @@
 <?php
-class HomeScreen {
+class HomeJson {
   public function render() {
-    echo 'Welcome!';
+    
   }
 }
