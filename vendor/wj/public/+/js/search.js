@@ -81,9 +81,12 @@ $(function() {
   });
 });
 $(function() {
-  $('#result h3 a').each(function() {
-    $(this).bind('onmousedown', function() {
-      //从 image 获取产品 id 信息 + session 信息，通过 jsonp 的方式发送到 tracking 服务器
+  $('#result li a').each(function() {
+    $(this).bind('mousedown', function(button) {
+      if (button.which == 1) {
+        alert($(this).parent().parent().find('img').attr('src'));
+        //从 img src 获取产品 id 信息 + session 信息，通过 jsonp 的方式发送到 tracking 服务器
+      }
     });
   });
 });
