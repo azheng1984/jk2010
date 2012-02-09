@@ -426,14 +426,12 @@ line-height:23px;
   padding:5px;
   float:left;
 }
-#related ul {
+#related table {
   margin:0;
   float:left;
-  list-style:none;
-  padding:5px;
+  padding:3px;
 }
-#related li {
-  float:left;
+#related td {
   padding-right:15px;
   font-size:11px;
   white-space:nowrap;
