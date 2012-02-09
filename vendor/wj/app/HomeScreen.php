@@ -13,6 +13,7 @@ class HomeScreen extends Screen {
       '商品信息100%来自公司经营（B2C）的正规商店-网上购物，货比万家！"/>';
     $this->addCssLink('home');
     $this->addJsLink('home');
+    $this->addJs('merchant_amount=124;');//TODO:reader by config
   }
 
   protected function renderHtmlBodyContent() {
@@ -44,7 +45,6 @@ class HomeScreen extends Screen {
     $this->renderMerchantList();
     $this->renderMerchantTypeList();
     echo '</div>';
-    $this->renderAmount();
   }
 
   private function renderMerchantList() {
@@ -74,10 +74,5 @@ class HomeScreen extends Screen {
         $value[0], '</a></li>';
     }
     echo '</ul>';
-  }
-
-  private function renderAmount() {
-    echo '<script type="text/javascript">merchant_amount=124;</script>';
-    //TODO:reader by config
   }
 }

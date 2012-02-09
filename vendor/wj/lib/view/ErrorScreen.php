@@ -1,10 +1,10 @@
 <?php
-class ErrorScreen extends Screen {
-  protected abstract function renderMessage();
+abstract class ErrorScreen extends Screen {
+  abstract protected function renderMessage();
 
-  public function renderHeadContent() {
+  protected function renderHtmlHeadContent() {
   }
 
-  public function renderHtmlBodyContent() {
+  protected function renderHtmlBodyContent() {
   }
 }
