@@ -1,6 +1,10 @@
 <?php
 class InternalServerErrorScreen extends ErrorScreen {
-  protected function renderMessage() {
-    echo '500 Internal Server Error';
+  protected function getMessage() {
+    return '出错了(500 Internal Server Error)';
+  }
+
+  protected function getCode() {
+    return 500;
   }
 }

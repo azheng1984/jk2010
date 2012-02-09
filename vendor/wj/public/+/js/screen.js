@@ -1,5 +1,8 @@
 function suggest(data) {
   var text = '<div id="suggestion"><ul>';
+  if (typeof(data) == 'undefined') {
+    return;
+  }
   $.each(data, function(index, value){
     text += '<li><span class="query">' + index + '</span><span class="product_amount">' + value + '</span></li>';
   });
@@ -19,7 +22,11 @@ $(function() {
   var suggestion = false;
   $('#header input').click(function() {
     if (suggestion == true) {
-      var uri = 'http://q.dev.huobiwanjia.com/' + encodeURIComponent($('#header input').attr('value'));
+      var query = $('#header input').attr('value');
+      if (query == '') {
+        return;
+      }
+      var uri = 'http://q.dev.huobiwanjia.com/' + encodeURIComponent(query);
       $.ajax({
         url:uri,
         cache:true,
