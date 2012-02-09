@@ -13,6 +13,7 @@ class RelatedQueryScreen {
     if ($buffer === '') {
       return;
     }
+    //TODO: 用 table 代替
     echo '<div id="related"><h2>相关搜索:</h2><ul>', $buffer, '</ul></div>';
   }
 }
