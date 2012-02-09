@@ -20,9 +20,9 @@ $(function() {
     window.location = '/' + query;
     return false;
   });
-  var suggestion = false;
+  var suggestion = null;
   $('#header input').click(function() {
-    if (suggestion == true) {
+    if (suggestion == false) {
       var query = $('#header input').attr('value');
       if (query == '') {
         return;
@@ -34,13 +34,17 @@ $(function() {
         dataType:'jsonp',
         jsonp:false
       });
+      suggestion = true;
+      return;
     }
-    suggestion = true;
+    if (suggestion == null) {
+      suggestion = false;
+    }
   });
   $('#header input').focusout(function() {
     if (suggestion) {
       $('#suggestion').remove();
-      suggestion = false;
+      suggestion = null;
     }
   });
 });
