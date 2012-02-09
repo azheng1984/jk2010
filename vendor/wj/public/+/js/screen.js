@@ -1,3 +1,4 @@
+//TODO:加入 session 跟踪和页面转跳记录
 function suggest(data) {
   var text = '<div id="suggestion"><ul>';
   if (typeof(data) == 'undefined') {
