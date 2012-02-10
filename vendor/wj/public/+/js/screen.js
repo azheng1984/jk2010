@@ -1,4 +1,5 @@
 //TODO:页面加载完成后，异步发送 tracking
+//TODO:publisher sign
 function suggest(data) {
   var text = '<div id="suggestion"><ul>';
   if (typeof(data) == 'undefined') {
@@ -21,6 +22,7 @@ $(function() {
     return false;
   });
   var suggestion = null;
+  //TODO:键盘事件
   $('#header input').click(function() {
     if (suggestion == false) {
       var query = $('#header input').attr('value');
