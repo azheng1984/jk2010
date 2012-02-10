@@ -7,18 +7,18 @@ class HomeScreen {
   }
 
   public function render() {
-    $buffer = '';
+    $buffer = array();
     $result = QuerySearch::search();
     if (isset($result['matches'])) {
       foreach ($result['matches'] as $id => $item) {
         $query = DbQuery::get($id);
-        $buffer .= '"'.$query['name'].'":'.$item['attrs']['product_amount'].',';
+        $buffer[] = '"'.$query['name'].'":'.$item['attrs']['product_amount'];
       }
     }
-    if ($buffer === '') {
+    if (count($buffer) === 0) {
       echo 'suggest();';
       return;
     }
-    echo 'suggest({'.$buffer.'});';
+    echo 'suggest({'.implode(',', $buffer).'});';
   }
 }
