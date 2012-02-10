@@ -14,7 +14,7 @@ class Router {
         $_SERVER['REQUEST_URI'], 0, $queryStringPosition
       );
     }
-    //TODO: 关闭 php 自动  decode uri 参数
+    //TODO: 关闭 nginx 自动 decode uri path（cancel）
     if (isset($_GET['q']) && $_GET['q'] !== ''
       && $GLOBALS['URI']['REQUEST_PATH'] === '/') {
       $query = urlencode(trim($_GET['q']));
