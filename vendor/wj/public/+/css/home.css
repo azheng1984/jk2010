@@ -93,6 +93,8 @@ table {
 }
 td {
   width:148px;
+}
+td a {
   padding:0;
   vertical-align:top;
   font-size:11px;
@@ -101,8 +103,6 @@ td {
   text-align:center;
   border-radius:8px;
   border-color:#F1F1F1 #eee #eee #F1F1F1;
-}
-td a {
   display:block;
   font-size:13px;
   color:#666;
@@ -112,11 +112,12 @@ td a {
 td a:hover {
   text-decoration:none;
   color:#333;
-}
-td:hover {
   border:1px solid ;
   border-color:#e5e5e5 #ccc #ccc #e5e5e5;
   box-shadow:0 0 3px #ddd;
+}
+td:hover {
+
 }
 td a span {
   display:block;
