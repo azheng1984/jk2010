@@ -15,11 +15,11 @@ class HomeScreen extends Screen {
       return;
     }
     $name = $GLOBALS['URI']['MERCHANT_LIST_NAME'];
-    if (!isset($this->config['merchant_type_list'][$name])) {
+    if (!isset($this->config['merchant_index_list'][$name])) {
       throw new NotFoundException;
     }
     $merchantList = DbMerchantHome::getList(
-      $this->config['merchant_type_list'][$name][1]
+      $this->config['merchant_index_list'][$name][0]
     );
     $this->merchantList = array(array($merchantList[0]['name'], $merchantList[0]['uri'], $merchantList[0]['uri_section']));
   }
@@ -30,8 +30,8 @@ class HomeScreen extends Screen {
       '商品信息100%来自公司经营（B2C）的正规商店-网上购物，货比万家！"/>';
     $this->addCssLink('home');
     $this->addJsLink('home');
-    if (isset($GLOBALS['URI']['MERCHANT_LIST_META'])) {
-      $this->addJs('merchant_amount='.$this->config['merchant_amount'].';');
+    if (isset($GLOBALS['URI']['MERCHANT_LIST_NAME'])) {
+      $this->addJs('merchant_amount='.$this->config['merchant_index_list'][$GLOBALS['URI']['MERCHANT_LIST_NAME']][2].';');
     }
   }
 
@@ -69,28 +69,34 @@ class HomeScreen extends Screen {
   private function renderMerchantList() {
     echo '<table>';
     $index = 0;
-    //TODO: 非 home（商家分类索引）
+    $amount = count($this->merchantList);
     for ($row = 0; $row < 5; ++$row) {
       echo '<tr>';
       for ($column = 0; $column < 5; ++$column) {
-        $item = $this->merchantList[$index];
-        echo '<td><a href="http://', $item[1], '"',
+        if ($amount > $index) {
+          $item = $this->merchantList[$index];
+          echo '<td><a href="http://', $item[1], '"',
           ' target="_blank" rel="nofollow">', '<img alt="', $item[0],
           '" src="/+/img/logo/', $item[2], '.png"/><span>',
           $item[0], '</span></a></td>';
+        } else {
+          echo '<td></td>';
+        }
         ++$index;
-        break 2;
       }
       echo '</tr>';
+      if ($amount < $index) {
+        break;
+      }
     }
     echo '</table>';
   }
 
   private function renderMerchantTypeList() {
     echo '<ul><li><span>全部</span></li>'; //TODO: 非 home
-    foreach ($this->config['merchant_type_list'] as $key => $value) {
+    foreach ($this->config['merchant_index_list'] as $key => $value) {
       echo '<li><a href="/', $key, '" rel="nofollow">',
-        $value[0], '</a></li>';
+        $value[1], '</a></li>';
     }
     echo '</ul>';
   }

@@ -1,4 +1,4 @@
-//TODO: 加入内部页面 click session 跟踪和页面转跳记录（外=>内，内=>内，内=>外）
+//TODO:页面加载完成后，异步发送 tracking
 function suggest(data) {
   var text = '<div id="suggestion"><ul>';
   if (typeof(data) == 'undefined') {
