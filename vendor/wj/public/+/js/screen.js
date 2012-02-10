@@ -22,7 +22,7 @@ $(function() {
     return false;
   });
   var suggestion = null;
-  //TODO:键盘事件
+  //TODO:键盘事件（输入，选择）
   $('#header input').click(function() {
     if (suggestion == false) {
       var query = $('#header input').attr('value');

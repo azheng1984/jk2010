@@ -62,7 +62,7 @@ $(function() {
   });
 });
 $(function() {
-  $uri = '/' + encodeURIComponent($('#header input').attr('value')) + '/?media=json';
+  $uri = window.location.pathname + '?media=json';
   $.get($uri, function(data) {
     //使用 js 渲染，剔除缓存重复（缓存造成）
     $('#result').after('<div id="tag">' + data + '</div>');
