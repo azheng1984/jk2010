@@ -14,7 +14,7 @@ class RelatedQueryScreen {
       return;
     }
     //$buffer[] = '<td><a href="/">超长文本超长文本超长文本超长文本超长文本超长文本超长文本超长文本</a></td>';
-    //TODO: 用 table 代替
+    //TODO: 用 table 代替，如果查询很长，每行显示两个
     echo '<div id="related"><h2>相关搜索:</h2><table><tr>', implode('', $buffer), '</tr><tr>', implode('', array_reverse($buffer)), '</tr></table></div>';
   }
 }
