@@ -10,18 +10,22 @@ class HomeScreen extends Screen {
 
   private function initailize() {
     $this->config = require CONFIG_PATH.'home.config.php';
-    if (!isset($GLOBALS['URI']['MERCHANT_LIST_NAME'])) {
+    if (!isset($GLOBALS['URI']['MERCHANT_INDEX_NAME'])) {
       $this->merchantList = $this->config['merchant_list'];
       return;
     }
-    $name = $GLOBALS['URI']['MERCHANT_LIST_NAME'];
+    $name = $GLOBALS['URI']['MERCHANT_INDEX_NAME'];
     if (!isset($this->config['merchant_index_list'][$name])) {
       throw new NotFoundException;
     }
     $merchantList = DbMerchantHome::getList(
       $this->config['merchant_index_list'][$name][0]
     );
-    $this->merchantList = array(array($merchantList[0]['name'], $merchantList[0]['uri'], $merchantList[0]['uri_section']));
+    $this->merchantList = array(array(
+      $merchantList[0]['name'],
+      $merchantList[0]['uri'],
+      $merchantList[0]['uri_section']
+    ));
   }
 
   protected function renderHtmlHeadContent() {
@@ -30,8 +34,8 @@ class HomeScreen extends Screen {
       '商品信息100%来自公司经营（B2C）的正规商店-网上购物，货比万家！"/>';
     $this->addCssLink('home');
     $this->addJsLink('home');
-    if (isset($GLOBALS['URI']['MERCHANT_LIST_NAME'])) {
-      $this->addJs('merchant_amount='.$this->config['merchant_index_list'][$GLOBALS['URI']['MERCHANT_LIST_NAME']][2].';');
+    if (isset($GLOBALS['URI']['MERCHANT_INDEX_NAME'])) {
+      $this->addJs('merchant_amount='.$this->config['merchant_index_list'][$GLOBALS['URI']['MERCHANT_INDEX_NAME']][2].';');
     }
   }
 
@@ -93,8 +97,22 @@ class HomeScreen extends Screen {
   }
 
   private function renderMerchantTypeList() {
-    echo '<ul><li><span>全部</span></li>'; //TODO: 非 home
+    echo '<ul><li>';
+    if (!isset($GLOBALS['URI']['MERCHANT_INDEX_NAME'])) {
+      echo '<span>全部</span>';
+    } else {
+      echo '<a href="/">全部</a>';
+    }
+    echo '</li>';
+    $merchantIndexName = null;
+    if (isset($GLOBALS['URI']['MERCHANT_INDEX_NAME'])) {
+      $merchantIndexName = $GLOBALS['URI']['MERCHANT_INDEX_NAME'];
+    }
     foreach ($this->config['merchant_index_list'] as $key => $value) {
+      if ($key === $merchantIndexName) {
+        echo '<li><span>', $value[1], '</span></li>';
+        continue;
+      }
       echo '<li><a href="/', $key, '" rel="nofollow">',
         $value[1], '</a></li>';
     }
