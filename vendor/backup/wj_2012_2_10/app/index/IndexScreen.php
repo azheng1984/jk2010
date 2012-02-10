@@ -89,6 +89,7 @@ class IndexScreen extends Screen {
   }
 
   private function renderPagination() {
+    //TODO
     PaginationScreen::render('', $this->amount, 100, '');
   }
 }
