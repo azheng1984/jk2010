@@ -60,8 +60,8 @@ class HomeScreen extends Screen {
 
   private function renderMerchant() {
     echo '<div id="merchant">';
-    $this->renderMerchantList();
     $this->renderMerchantTypeList();
+    $this->renderMerchantList();
     echo '</div>';
   }
   
@@ -76,7 +76,7 @@ class HomeScreen extends Screen {
           $item = $this->merchantList[$index];
           echo '<td><a href="http://', $item['uri'], '"',
           ' target="_blank" rel="nofollow">', '<img alt="', $item['name'],
-          '" src="/+/img/logo/', $item['path_section'], '.png"/><span>',
+          '" src="/+/img/logo/', $item['path'], '.png"/><span>',
           $item['name'], '</span></a></td>';
         } else {
           echo '<td></td>';
