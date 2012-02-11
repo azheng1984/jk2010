@@ -12,7 +12,12 @@ class Router {
       $this->redirectQuery();
       return '/redirect';
     }
-    $GLOBALS['PATH_SECTION_LIST'] = explode('/', $_SERVER['SCRIPT_NAME']);
+    $path = $_SERVER['REQUEST_URI'];
+    $queryStringPosition = strpos($_SERVER['REQUEST_URI'], '?');
+    if ($queryStringPosition !== false) {
+      $path = substr($_SERVER['REQUEST_URI'], 0, $queryStringPosition);
+    }
+    $GLOBALS['PATH_SECTION_LIST'] = explode('/', $path);
     if (!isset($GLOBALS['PATH_SECTION_LIST'][2])) {
       return '/';
     }
