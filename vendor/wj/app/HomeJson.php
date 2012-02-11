@@ -6,7 +6,7 @@ class HomeJson extends Json {
   public function __construct() {
     $config = require CONFIG_PATH.'home.config.php';
     if (!isset($_GET['page']) || !is_numeric($_GET['page'])
-        || $_GET['page'] < 2) {
+      || $_GET['page'] < 2) {
       throw new NotFoundException;
     }
     $this->page = $_GET['page'];
@@ -22,12 +22,17 @@ class HomeJson extends Json {
   }
 
   protected function renderJson() {
-    $start = ($this->page - 1) * 25;
     $merchantTypeId = null;
     if ($this->merchantIndex !== null) {
       $merchantTypeId = $this->merchantIndex[0];
     }
+    $start = ($this->page - 1) * 25;
     $list = DbHomeMerchant::getList($merchantTypeId, $start);
-    echo '[]';
+    $buffer = array();
+    foreach ($list as $item) {
+      $buffer[] = '{"name":"'.$item['name'].'","uri":"'.$item['uri']
+        .'","path":"'.$item['path'].'"}';
+    }
+    echo '[', implode(',', $buffer), ']';
   }
 }
