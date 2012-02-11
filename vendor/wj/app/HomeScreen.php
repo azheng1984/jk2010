@@ -2,15 +2,15 @@
 class HomeScreen extends Screen {
   private $config;
   private $path;
-  private $merchantList;
   private $merchantIndex;
+  private $merchantList;
 
   public function __construct() {
     $this->config = require CONFIG_PATH.'home.config.php';
     if ($GLOBALS['PATH_SECTION_LIST'][1] === '') {
-      $this->merchantList = $this->config['merchant_list'];
       $this->path = null;
       $this->merchantIndex = null;
+      $this->merchantList = $this->config['merchant_list'];
       return;
     }
     $this->path = $GLOBALS['PATH_SECTION_LIST'][1];
@@ -34,7 +34,7 @@ class HomeScreen extends Screen {
   protected function renderHtmlBodyContent() {
     echo '<div id="home">';
     $this->renderSlogon();
-    $this->renderMerchant();
+    $this->renderMerchantBlock();
     echo '</div>';
     if ($this->path !== null) {
       $this->addJs('merchant_amount='.$this->merchantIndex[2].';');
@@ -43,8 +43,8 @@ class HomeScreen extends Screen {
 
   private function renderSlogon() {
     echo '<div id="slogon"><span class="arrow"></span><h1>',
-    $this->config['merchant_amount'], '个网上商店，',
-    $this->config['product_amount'], '万商品，搜索：</h1>';
+      $this->config['merchant_amount'], '个网上商店，',
+      $this->config['product_amount'], '万商品，搜索：</h1>';
     $this->renderQueryList();
     echo '</div>';
   }
@@ -53,60 +53,61 @@ class HomeScreen extends Screen {
     echo ' <ul>';
     foreach ($this->config['query_list'] as $query) {
       echo '<li><a href="/', urlencode($query[0]), '/">',
-      $query[1],'</a> ', $query[2], '</li>';
+      $query[1], '</a> ', $query[2], '</li>';
     }
     echo '<li><a href="/+i/">&hellip;</a></li></ul>';
   }
 
-  private function renderMerchant() {
+  private function renderMerchantBlock() {
     echo '<div id="merchant">';
     $this->renderMerchantTypeList();
     $this->renderMerchantList();
     echo '</div>';
   }
-  
+
   private function renderMerchantList() {
     echo '<table>';
     $index = 0;
     $amount = count($this->merchantList);
     for ($row = 0; $row < 5; ++$row) {
       echo '<tr>';
-      for ($column = 0; $column < 5; ++$column) {
+      for ($column = 0; $column < 5; ++$column, ++$index) {
         if ($amount > $index) {
           $item = $this->merchantList[$index];
-          echo '<td><a href="http://', $item['uri'], '"',
-          ' target="_blank" rel="nofollow">', '<img alt="', $item['name'],
-          '" src="/+/img/logo/', $item['path'], '.png"/><span>',
-          $item['name'], '</span></a></td>';
-        } else {
-          echo '<td></td>';
+          echo '<td><a href="http://', $item['uri'],
+            '" target="_blank" rel="nofollow"><img alt="', $item['name'],
+            '" src="/+/img/logo/', $item['path'], '.png"/><span>',
+            $item['name'], '</span></a></td>';
+          continue;
         }
-        ++$index;
+        echo '<td></td>';
       }
       echo '</tr>';
-      if ($amount < $index) {
+      if ($index >= $amount) {
         break;
       }
     }
     echo '</table>';
   }
-  
+
   private function renderMerchantTypeList() {
-    echo '<ul><li>';
-    if ($this->path === null) {
-      echo '<span>全部</span>';
-    } else {
-      echo '<a href="/">全部</a>';
-    }
-    echo '</li>';
+    echo '<ul>';
+    $this->renderAllMerchantIndex();
     foreach ($this->config['merchant_index_list'] as $key => $value) {
       if ($key === $this->path) {
         echo '<li><span>', $value[1], '</span></li>';
         continue;
       }
-      echo '<li><a href="/', $key, '" rel="nofollow">',
-      $value[1], '</a></li>';
+      echo '<li><a href="/', $key, '" rel="nofollow">', $value[1], '</a></li>';
     }
     echo '</ul>';
+  }
+
+  private function renderAllMerchantIndex() {
+    if ($this->path === null) {
+      echo '<li><span>全部</span></li>';
+      return;
+    }
+    echo '<li><a href="/">全部</a></li>';
   }
 }

@@ -18,6 +18,9 @@ class Router {
       $path = substr($_SERVER['REQUEST_URI'], 0, $queryStringPosition);
     }
     $GLOBALS['PATH_SECTION_LIST'] = explode('/', $path);
+    if (isset($_GET['media']) && $_GET['media'] === 'json') {
+      $_SERVER['REQUEST_MEDIA_TYPE'] = 'Json';
+    }
     if (!isset($GLOBALS['PATH_SECTION_LIST'][2])) {
       return '/';
     }
