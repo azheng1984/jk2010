@@ -43,7 +43,7 @@ class IndexScreen extends Screen {
       throw new NotFoundException;
     }
   }
-  
+
   private function parsePage($depth) {
     $path = $GLOBALS['PATH_SECTION_LIST'][$depth - 1];
     if ($path === '') {
