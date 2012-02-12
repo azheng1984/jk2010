@@ -72,6 +72,7 @@ $(function() {
         $(this).parent().children('ol').remove();
         return;
       }
+      //TODO: 如果有属性选定，先判断 is_multiple 值，再决定是否发起请求
       $uri2 = window.location.pathname + '?key=' + $(this).text() + '&media=json';
       $(this).attr('id', 'target');
       $.get($uri2, function(data) {

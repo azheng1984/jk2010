@@ -1,5 +1,5 @@
 <?php
-//TODO: 使用 json，将少数量
+//TODO: 使用 json，减少体积
 class SearchJson extends EtagView {
   private $category;
   private $key;
