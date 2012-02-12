@@ -1,6 +1,5 @@
 <?php
 class IndexScreen extends Screen {
-  const CATEGORY_AMOUNT = 1000;
   private $category;
   private $page;
 
@@ -28,6 +27,33 @@ class IndexScreen extends Screen {
     $this->renderLinkTable();
     $this->renderPagination();
     echo '</div>';
+  }
+
+  private function parseCategory($depth) {
+    /* /+i/ */
+    if ($depth === 3) {
+      $this->category = null;
+      return;
+    }
+    /* /+i/category/ */
+    $this->category = DbCategory::getByName(
+        urldecode($GLOBALS['PATH_SECTION_LIST']['2'])
+    );
+    if ($this->category === false || $depth > 4) {
+      throw new NotFoundException;
+    }
+  }
+  
+  private function parsePage($depth) {
+    $path = $GLOBALS['PATH_SECTION_LIST'][$depth - 1];
+    if ($path === '') {
+      $this->page = 1;
+      return;
+    }
+    if (!is_numeric($path) || $path < 2) {
+      throw new NotFoundException;
+    }
+    $this->page = intval($path);
   }
 
   private function renderBreadcrumb() {
@@ -93,33 +119,6 @@ class IndexScreen extends Screen {
     if ($this->category !== null) {
       return $this->category['query_amount'];
     }
-    return self::CATEGORY_AMOUNT;
-  }
-
-  private function parsePage($depth) {
-    $path = $GLOBALS['PATH_SECTION_LIST'][$depth - 1];
-    if ($path === '') {
-      $this->page = 1;
-      return;
-    }
-    if (!is_numeric($path) || $path < 2) {
-      throw new NotFoundException;
-    }
-    $this->page = intval($path);
-  }
-
-  private function parseCategory($depth) {
-    /* /+i/ */
-    if ($depth === 3) {
-      $this->category = null;
-      return;
-    }
-    /* /+i/category/ */
-    $this->category = DbCategory::getByName(
-      urldecode($GLOBALS['PATH_SECTION_LIST']['2'])
-    );
-    if ($this->category === false || $depth > 4) {
-      throw new NotFoundException;
-    }
+    return 1000;
   }
 }
