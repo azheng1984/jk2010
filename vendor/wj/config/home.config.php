@@ -12,7 +12,7 @@ return array(
     array('蔬菜', '蔬菜', 567),
     array('进口', '进口', 890),
   ),
-  'merchant_index_list' => array(
+  'merchant_type_list' => array(
     '%E7%99%BE%E8%B4%A7' => array(1, '百货', 100),
   ),
   'merchant_list' => array(
