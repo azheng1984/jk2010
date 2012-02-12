@@ -86,11 +86,14 @@ class IndexScreen extends Screen {
   }
 
   private function renderPagination() {
-    $amount = self::CATEGORY_AMOUNT;
+    PaginationScreen::render($this->page, $this->getAmount(), 100);
+  }
+
+  private function getAmount() {
     if ($this->category !== null) {
-      $amount = $this->category['query_amount'];
+      return $this->category['query_amount'];
     }
-    PaginationScreen::render($this->page, $amount, 100, '');
+    return self::CATEGORY_AMOUNT;
   }
 
   private function parsePage($depth) {
