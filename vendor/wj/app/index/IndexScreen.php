@@ -18,15 +18,15 @@ class IndexScreen extends Screen {
   }
 
   private function parsePage($depth) {
-    $pageSection = $GLOBALS['PATH_SECTION_LIST'][$depth - 1];
-    if ($pageSection === '') {
+    $path = $GLOBALS['PATH_SECTION_LIST'][$depth - 1];
+    if ($path === '') {
       $this->page = 1;
       return;
     }
-    if (!is_numeric($pageSection) || $pageSection < 2) {
+    if (!is_numeric($path) || $path < 2) {
       throw new NotFoundException;
     }
-    $this->page = $pageSection;
+    $this->page = $path;
   }
 
   private function parseCategory($depth) {
