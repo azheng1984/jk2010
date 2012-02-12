@@ -1,28 +1,5 @@
 <?php
 class HomeScreen extends Screen {
-  private $config;
-  private $path;
-  private $merchantIndex;
-  private $merchantList;
-
-  public function __construct() {
-    $this->config = require CONFIG_PATH.'home.config.php';
-    if ($GLOBALS['PATH_SECTION_LIST'][1] === '') {
-      $this->path = null;
-      $this->merchantIndex = null;
-      $this->merchantList = $this->config['merchant_list'];
-      return;
-    }
-    $this->path = $GLOBALS['PATH_SECTION_LIST'][1];
-    if (!isset(
-      $this->config['merchant_index_list'][$this->path]
-    )) {
-      throw new NotFoundException;
-    }
-    $this->merchantIndex = $this->config['merchant_index_list'][$this->path];
-    $this->merchantList = DbHomeMerchant::getList($this->merchantIndex[0]);
-  }
-
   protected function renderHtmlHeadContent() {
     echo '<title>货比万家</title>',
       '<meta name="description" content="货比万家购物搜索引擎，',
@@ -36,22 +13,22 @@ class HomeScreen extends Screen {
     $this->renderSlogon();
     $this->renderMerchantBlock();
     echo '</div>';
-    if ($this->path !== null) {
-      $this->addJs('merchant_amount='.$this->merchantIndex[2].';');
+    if (isset($GLOBALS['MERCHANT_TYPE'])) {
+      $this->addJs('merchant_amount='.$GLOBALS['MERCHANT_TYPE'][2].';');
     }
   }
 
   private function renderSlogon() {
     echo '<div id="slogon"><span class="arrow"></span><h1>',
-      $this->config['merchant_amount'], '个网上商店，',
-      $this->config['product_amount'], '万商品，搜索：</h1>';
+      $GLOBALS['HOME_CONFIG']['merchant_amount'], '个网上商店，',
+      $GLOBALS['HOME_CONFIG']['product_amount'], '万商品，搜索：</h1>';
     $this->renderQueryList();
     echo '</div>';
   }
 
   private function renderQueryList() {
-    echo ' <ul>';
-    foreach ($this->config['query_list'] as $query) {
+    echo '<ul>';
+    foreach ($GLOBALS['HOME_CONFIG']['query_list'] as $query) {
       echo '<li><a href="/', urlencode($query[0]), '/">',
       $query[1], '</a> ', $query[2], '</li>';
     }
@@ -65,15 +42,40 @@ class HomeScreen extends Screen {
     echo '</div>';
   }
 
+  private function renderMerchantTypeList() {
+    $path = null;
+    if (isset($GLOBALS['MERCHANT_TYPE'])) {
+      $path = $GLOBALS['MERCHANT_TYPE']['path'];
+    }
+    echo '<ul>';
+    $this->renderAllMerchantIndex();
+    foreach ($GLOBALS['HOME_CONFIG']['merchant_type_list'] as $key => $value) {
+      if ($key === $path) {
+        echo '<li><span>', $value[1], '</span></li>';
+        continue;
+      }
+      echo '<li><a href="/', $key, '" rel="nofollow">', $value[1], '</a></li>';
+    }
+    echo '</ul>';
+  }
+
+  private function renderAllMerchantIndex() {
+    if (isset($GLOBALS['MERCHANT_TYPE']) === false) {
+      echo '<li><span>全部</span></li>';
+      return;
+    }
+    echo '<li><a href="/">全部</a></li>';
+  }
+
   private function renderMerchantList() {
     echo '<table>';
     $index = 0;
-    $amount = count($this->merchantList);
+    $amount = count($GLOBALS['MERCHANT_LIST']);
     for ($row = 0; $row < 5; ++$row) {
       echo '<tr>';
       for ($column = 0; $column < 5; ++$column, ++$index) {
         if ($amount > $index) {
-          $item = $this->merchantList[$index];
+          $item = $GLOBALS['MERCHANT_LIST'][$index];
           echo '<td><a href="http://', $item['uri'],
             '" target="_blank" rel="nofollow"><img alt="', $item['name'],
             '" src="/+/img/logo/', $item['path'], '.png"/><span>',
@@ -88,26 +90,5 @@ class HomeScreen extends Screen {
       }
     }
     echo '</table>';
-  }
-
-  private function renderMerchantTypeList() {
-    echo '<ul>';
-    $this->renderAllMerchantIndex();
-    foreach ($this->config['merchant_index_list'] as $key => $value) {
-      if ($key === $this->path) {
-        echo '<li><span>', $value[1], '</span></li>';
-        continue;
-      }
-      echo '<li><a href="/', $key, '" rel="nofollow">', $value[1], '</a></li>';
-    }
-    echo '</ul>';
-  }
-
-  private function renderAllMerchantIndex() {
-    if ($this->path === null) {
-      echo '<li><span>全部</span></li>';
-      return;
-    }
-    echo '<li><a href="/">全部</a></li>';
   }
 }
