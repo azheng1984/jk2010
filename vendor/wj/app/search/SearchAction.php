@@ -22,7 +22,7 @@ class SearchAction {
     $GLOBALS['QUERY'] = trim(urldecode($GLOBALS['PATH_SECTION_LIST'][1]));
   }
 
-  private function parseCatregory() {
+  private function parseCategory() {
     $name = urldecode($GLOBALS['PATH_SECTION_LIST'][2]);
     $GLOBALS['CATEGORY'] = DbCategory::getByName($name);
     if ($GLOBALS['CATEGORY'] === false) {

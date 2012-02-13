@@ -88,7 +88,7 @@ abstract class Screen extends EtagView {
   private function renderSearch() {
     $query = isset($GLOBALS['QUERY']) ? $GLOBALS['QUERY'] : '';
     echo '<form action="/"><input type="text" name="q" value="',
-      htmlentities($query, ENT_QUOTES, 'utf-8'), '" autocomplete="off"/>',
+      htmlentities($query, ENT_QUOTES, 'UTF-8'), '" autocomplete="off"/>',
       '<button type="submit"></button></form>';
   }
 
