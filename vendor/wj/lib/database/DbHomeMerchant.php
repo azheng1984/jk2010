@@ -1,6 +1,7 @@
 <?php
 class DbHomeMerchant {
-  public static function getList($typeId, $start = 0) {
+  public static function getList($typeId, $page) {
+    $start = ($page - 1) * 25;
     $sqlPrefix = 'SELECT merchant.name,merchant_home.path,merchant_home.uri '
       .'FROM merchant_home INNER JOIN merchant ON '
       .'merchant.id = merchant_home.merchant_id';
