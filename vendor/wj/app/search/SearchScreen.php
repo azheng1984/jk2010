@@ -17,7 +17,7 @@ class SearchScreen extends Screen {
     if ($GLOBALS['PAGE'] > 1) {
       $title .= '('.$GLOBALS['PAGE'].')';
     }
-    echo '<title>', htmlentities($title, ENT_IGNORE, 'UTF-8'),
+    echo '<title>', htmlentities($title, ENT_NOQUOTES, 'UTF-8'),
       '价格、折扣、销量排行-货比万家</title>';
     $this->addCssLink('search');
     $this->addJsLink('search');
