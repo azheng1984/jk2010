@@ -1,5 +1,5 @@
 <?php
-class PropertyListPathParser {
+class SearchPropertyListPathParser {
   private $key = null;
   private $valueList;
 

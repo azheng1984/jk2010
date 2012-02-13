@@ -1,14 +1,15 @@
 <?php
-class BreadcrumbScreen {
+class SearchBreadcrumbScreen {
   public static function render() {
     $list = array(htmlentities($GLOBALS['QUERY'], ENT_NOQUOTES, 'UTF-8'));
-    $pathList = array();
-    if (isset($GLOBALS['CATEGORY'])) {
-      $list[] = '分类:'.htmlentities(
-        $GLOBALS['CATEGORY']['name'], ENT_NOQUOTES, 'UTF-8'
-      );
-      $pathList[] = '..';
+    if (isset($GLOBALS['CATEGORY']) === false) {
+      echo '<h1>', $list[0], '</h1>';
+      return;
     }
+    $list[] = '分类:'.htmlentities(
+        $GLOBALS['CATEGORY']['name'], ENT_NOQUOTES, 'UTF-8'
+    );
+    $pathList = array('..');
     if (isset($GLOBALS['PROPERTY_LIST'])) {
       $propertySectionList = array();
       foreach ($GLOBALS['PROPERTY_LIST'] as $property) {
@@ -28,8 +29,11 @@ class BreadcrumbScreen {
     echo '<h1>';
     $lastIndex = count($list) - 1;
     for ($index = 0; $index < $lastIndex; ++$index) {
-      echo '<span><a href="', implode('/', $pathList), '">',
-        $list[$index], '</a></span> ';
+      echo '<span><a href="', implode('/', $pathList), '"';
+      if ($index !== 0 || $GLOBALS['QUERY_STRING'] !== '') {
+        echo ' rel="nofollow"';
+      }
+      echo '>', $list[$index], '</a></span> ';
       array_pop($pathList);
     }
     echo $list[$lastIndex], '</h1>';
