@@ -2,11 +2,16 @@
 class IndexScreen extends Screen {
   private $category;
   private $page;
+  private $linkList;
 
   public function __construct() {
     $depth = count($GLOBALS['PATH_SECTION_LIST']);
     $this->parseCategory($depth);
     $this->parsePage($depth);
+    $this->buildLinkList();
+    if (count($this->linkList) === 0) {
+      throw new NotFoundException;
+    }
   }
 
   protected function renderHtmlHeadContent() {
@@ -59,9 +64,9 @@ class IndexScreen extends Screen {
   private function renderBreadcrumb() {
     echo '<div id="breadcrumb">',
       '<span class="home"><a href="/"><img alt="首页" src="/+/img/home.',
-      Asset::getMd5('/home.png'),'.png" /></a></span> ';
+      Asset::getMd5('/home.png'),'.png" /></a></span>';
     if ($this->category !== null) {
-      echo '<span><a href="/+i/">分类</a></span> <h1>',
+      echo ' <span><a href="/+i/">分类</a></span><h1>',
         $this->category['name'], '</h1></div>';
       return;
     }
@@ -69,16 +74,15 @@ class IndexScreen extends Screen {
   }
 
   private function renderLinkTable() {
-    $linkList = $this->getLinkList();
-    $amount = count($linkList);
+    $amount = count($this->linkList);
     $index = 0;
     echo '<table>';
     for ($row = 0; $row < 20; ++$row) {
       echo '<tr>';
       for ($column = 0; $column < 5; ++$column, ++$index) {
         if ($index < $amount) {
-          echo '<td><a href="', $linkList[$index]['href'], '">',
-            $linkList[$index]['text'], '</a></td>';
+          $item = $this->linkList[$index];
+          echo '<td><a href="', $item['href'], '">', $item['text'], '</a></td>';
           continue;
         }
         echo '<td class="empty"></td>';
@@ -91,24 +95,24 @@ class IndexScreen extends Screen {
     echo '</table>';
   }
 
-  private function getLinkList() {
+  private function buildLinkList() {
     $result = array();
     if ($this->category === null) {
       $categoryList = DbCategory::getList($this->page);
       foreach ($categoryList as $category) {
         $result[] = array(
-            'text' => $category['name'], 'href' => $category['name'].'/'
+          'text' => $category['name'], 'href' => $category['name'].'/'
         );
       }
-      return $result;
+      $this->linkList = $result;
     }
     $queryList = DbQuery::getList($this->category['id'], $this->page);
     foreach ($queryList as $query) {
       $result[] = array(
-          'text' => $query['name'], 'href' => '/'.$query['name'].'/'
+        'text' => $query['name'], 'href' => '/'.$query['name'].'/'
       );
     }
-    return $result;
+    $this->linkList = $result;
   }
 
   private function renderPagination() {
