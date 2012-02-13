@@ -25,7 +25,8 @@ class BreadcrumbScreen {
     echo '<h1>';
     $lastIndex = count($list) - 1;
     for ($index = 0; $index < $lastIndex; ++$index) {
-      echo '<a href="'.implode('/', $pathList).'">', $list[$index], '</a> ';
+      echo '<span><a href="', implode('/', $pathList), '">',
+        $list[$index], '</a></span> ';
       array_pop($pathList);
     }
     echo $list[$lastIndex], '</h1>';
