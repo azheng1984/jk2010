@@ -10,6 +10,10 @@ class IndexScreen extends Screen {
     $this->parsePage($depth);
     $this->buildLinkList();
     //TODO:如果分页不存在，但 link 总数不等于 0，转跳到第一页
+    if (count($this->linkList) === 0 && $this->getAmount() !== 0) {
+      $this->stop();
+      header('301');
+    }
     if (count($this->linkList) === 0) {
       throw new NotFoundException;
     }
@@ -122,7 +126,7 @@ class IndexScreen extends Screen {
 
   private function getAmount() {
     if ($this->category !== null) {
-      return $this->category['query_amount'];
+      return intval($this->category['query_amount']);
     }
     return 1000;
   }
