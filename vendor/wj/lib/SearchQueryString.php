@@ -29,7 +29,7 @@ class SearchQueryString {
       $GLOBALS['SORT'] = $_GET['sort'];
       return;
     }
-    $GLOBALS['SORT'] = '';
+    $GLOBALS['SORT'] = 'sale_rank';
   }
 
   private static function parsePriceRange() {
