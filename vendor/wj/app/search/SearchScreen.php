@@ -2,6 +2,7 @@
 class SearchScreen extends Screen {
   public function __construct() {
     SearchQueryString::parse();
+    $GLOBALS['SEARCH_RESULT'] = ProductSearch::search();
   }
 
   protected function renderHtmlHeadContent() {
@@ -24,11 +25,16 @@ class SearchScreen extends Screen {
   protected function renderHtmlBodyContent() {
     SearchAdSenseScreen::render('1');
     SearchBreadcrumbScreen::render();
-    SearchResultScreen::render($this);
+    $this->renderResult();
     SearchAdSenseScreen::render('2', 'ad bottom');
+    SearchRelatedQueryScreen::render();
   }
 
-  private function getPropertyListTitle() {
-    $title .= '/'.urldecode($GLOBALS['PATH_SECTION_LIST'][3]);
+  private function renderResult() {
+    if ($GLOBALS['SEARCH_RESULT']['total_found'] === 0) {
+      echo '<div id="empty_result">没有找到任何商品。</div>';
+      return;
+    }
+    SearchResultScreen::render($this);
   }
 }
