@@ -31,7 +31,7 @@ class SearchAction {
   }
 
   private function parsePropertyList() {
-    $parser = new PropertyListPathParser;
+    $parser = new SearchPropertyListPathParser;
     $parser->parse();
   }
 

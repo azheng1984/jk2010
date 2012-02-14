@@ -29,7 +29,8 @@ class SearchBreadcrumbScreen {
     echo '<h1>';
     $lastIndex = count($list) - 1;
     for ($index = 0; $index < $lastIndex; ++$index) {
-      echo '<span><a href="', implode('/', $pathList), '"';
+      echo '<span><a href="', implode('/', $pathList),
+        $GLOBALS['QUERY_STRING'], '"';
       if ($index !== 0 || $GLOBALS['QUERY_STRING'] !== '') {
         echo ' rel="nofollow"';
       }

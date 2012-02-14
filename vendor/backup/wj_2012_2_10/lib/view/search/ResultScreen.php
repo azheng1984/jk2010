@@ -9,7 +9,7 @@ class ResultScreen {
         SearchUriArgument::getCurrent(), $GLOBALS['URI']['RESULTS']['total_found']
       );
     } else {
-      //render empty message
+      //TODO:render empty message
     }
     echo '</div>';
   }
@@ -31,12 +31,12 @@ class ResultScreen {
     echo '</ol>';
   }
 
-  private static function excerpt($text, $keywordList) {
+  private static function excerpt($text, $keywordList) { //TODO
   }
 
-  private static function highlight($text, $keywordList) {
+  private static function highlight($text, $keywordList) { //TODO
   }
 
-  private static function buildMetaList() {
+  private static function buildMetaList() { //TODO
   }
 }
