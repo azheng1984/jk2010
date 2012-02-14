@@ -1,10 +1,7 @@
 <?php
 class SearchScreen extends Screen {
-  private $productList;
-
   public function __construct() {
-    $this->productList = ProductSearch::search();
-    SearchQueryString::initialize();
+    SearchQueryString::parse();
   }
 
   protected function renderHtmlHeadContent() {
@@ -25,7 +22,10 @@ class SearchScreen extends Screen {
   }
 
   protected function renderHtmlBodyContent() {
+    SearchAdSenseScreen::render('1');
     SearchBreadcrumbScreen::render();
+    SearchResultScreen::render();
+    SearchAdSenseScreen::render('2', 'ad bottom');
   }
 
   private function getPropertyListTitle() {
