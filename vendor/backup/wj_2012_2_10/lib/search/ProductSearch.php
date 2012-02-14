@@ -1,4 +1,6 @@
 <?php
+//TODO:提取模板
+//对无效标签的效率优化
 class ProductSearch {
   private static $sphinx;
 

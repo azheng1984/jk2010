@@ -89,7 +89,7 @@ abstract class Screen extends EtagView {
     $query = isset($GLOBALS['QUERY']) ? $GLOBALS['QUERY'] : '';
     echo '<form action="/"><input type="text" name="q" value="',
       htmlentities($query, ENT_QUOTES, 'UTF-8'), '"/>',
-      '<button type="submit">搜索</button></form>';
+      '<button type="submit"></button></form>';
   }
 
   private function renderBodyFooter() {
