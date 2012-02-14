@@ -106,7 +106,7 @@ abstract class Screen extends EtagView {
 //      '<a href="http://code.huobiwanjia.com/" rel="nofollow">开源项目</a> ',
 //      '<a href="http://blog.huobiwanjia.com/" rel="nofollow">官方博客</a> ',
       '<a href="/+i/">分类索引</a> ',
-      '合作伙伴:<a href="http://www.google.com/">PUBLISHER</a>',//TODO: render by session
+      '合作伙伴:<a href="http://www.google.com/">PUBLISHER</a>',//TODO: render by cookie
       '</div>';
   }
 
