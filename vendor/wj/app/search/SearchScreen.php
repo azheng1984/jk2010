@@ -26,6 +26,7 @@ class SearchScreen extends Screen {
     SearchBreadcrumbScreen::render();
     SearchResultScreen::render();
     SearchAdSenseScreen::render('2', 'ad bottom');
+    $this->addJs($GLOBALS['SEARCH_PRODUCT_LIST_METADATA']);
   }
 
   private function getPropertyListTitle() {
