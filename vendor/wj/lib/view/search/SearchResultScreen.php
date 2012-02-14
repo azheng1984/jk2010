@@ -12,6 +12,7 @@ class SearchResultScreen {
   }
 
   private static function renderTotalFound() {
-    
+    echo '<div id="total_found">找到 ',
+      $GLOBALS['SEARCH_RESULT']['total_found'], ' 个商品</div>';
   }
 }
