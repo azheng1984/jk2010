@@ -4,7 +4,7 @@ class SearchScreen extends Screen {
 
   public function __construct() {
     $this->productList = ProductSearch::search();
-    $GLOBALS['QUERY_STRING'] = SearchQueryString::get();
+    SearchQueryString::initialize();
   }
 
   protected function renderHtmlHeadContent() {

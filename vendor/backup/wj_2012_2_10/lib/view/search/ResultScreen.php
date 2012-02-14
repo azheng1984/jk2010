@@ -9,12 +9,12 @@ class ResultScreen {
         SearchUriArgument::getCurrent(), $GLOBALS['URI']['RESULTS']['total_found']
       );
     } else {
-      //TODO:render empty message
+      //TODO:render message of empty
     }
     echo '</div>';
   }
 
-  private static function renderList() {
+  private static function renderList() {//TODO
     $query = $GLOBALS['URI']['QUERY'];
     echo '<ol>';
     foreach ($GLOBALS['URI']['RESULTS']['matches'] as $id => $content) {
