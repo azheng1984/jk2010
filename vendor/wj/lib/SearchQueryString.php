@@ -1,6 +1,6 @@
 <?php
 class SearchQueryString {
-  public static function initialize() {
+  public static function parse() {
     self::parseSort();
     self::parsePriceRange();
     $GLOBALS['QUERY_STRING'] = self::get();

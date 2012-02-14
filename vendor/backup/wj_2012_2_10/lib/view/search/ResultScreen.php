@@ -29,6 +29,7 @@ class ResultScreen {
         $description.'&hellip;</p><div class="merchant">京东商城</div></li>';
     }
     echo '</ol>';
+    //TODO：如果是 +p 的最后一页，显示 "查询链接"
   }
 
   private static function excerpt($text, $keywordList) { //TODO
