@@ -32,7 +32,9 @@ class SearchScreen extends Screen {
 
   private function renderResult() {
     if ($GLOBALS['SEARCH_RESULT']['total_found'] === 0) {
-      echo '<div id="empty_result">没有找到任何商品。</div>';
+      echo '<div id="no_result"><h2>没有找到相关商品，建议:</h2>',
+        '<ul><li>检查搜索条件是否有误</li>',
+        '<li>扩大搜索范围</li><li><a href="/">去商店列表逛逛</a></li></ul></div>';
       return;
     }
     SearchResultScreen::render($this);
