@@ -9,7 +9,7 @@ class IndexScreen extends Screen {
     $this->parseCategory($depth);
     $this->parsePage($depth);
     $this->buildLinkList();
-    //TODO:如果分页不存在，转跳到第一页
+    //TODO:如果分页不存在，但 link 总数不等于 0，转跳到第一页
     if (count($this->linkList) === 0) {
       throw new NotFoundException;
     }
