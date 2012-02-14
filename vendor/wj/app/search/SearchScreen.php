@@ -7,12 +7,15 @@ class SearchScreen extends Screen {
   }
 
   protected function renderHtmlHeadContent() {
-    $title = $GLOBALS['QUERY'];
+    $title = $GLOBALS['QUERY']['name'];
     if (isset($GLOBALS['CATEGORY'])) {
       $title .= '/'.$GLOBALS['CATEGORY']['name'].'/';
     }
     if (isset($GLOBALS['PROPERTY_LIST'])) {
       $title .= urldecode($GLOBALS['PATH_SECTION_LIST'][3]).'/';
+    }
+    if (isset($GLOBALS['IS_RECOGNITION'])) {
+      $title = $title.'(同款)';
     }
     $title = htmlentities($title, ENT_NOQUOTES, 'UTF-8').'价格、折扣、销量排行';
     if ($GLOBALS['PAGE'] > 1) {
@@ -35,7 +38,7 @@ class SearchScreen extends Screen {
     if ($GLOBALS['SEARCH_RESULT']['total_found'] === 0) {
       echo '<div id="no_result"><h2>没有找到相关商品，建议:</h2>',
         '<ul><li>检查搜索条件是否有误</li>',
-        '<li>扩大搜索范围</li><li><a href="/">去商店列表逛逛</a></li></ul></div>';
+        '<li>扩大搜索范围</li><li>去 <a href="/">商店列表</a> 逛逛</li></ul></div>';
       return;
     }
     SearchResultScreen::render($this);

@@ -1,12 +1,11 @@
 <?php
 class SearchRelatedQueryScreen {
   public static function render() {
-    $query = DbQuery::getByName($GLOBALS['QUERY']);
-    if ($query === false || $query['related_list'] === null) {
+    if (!isset($GLOBALS['QUERY']['related_list'])) {
       return;
     }
     $hasLongText = false;
-    $relatedList = explode(',', $query['related_list']);
+    $relatedList = explode(',', $GLOBALS['QUERY']['related_list']);
     foreach ($relatedList as $query) {
       if (mb_strlen($query, 'UTF-8') > 30) {
         $hasLongText = true;
@@ -21,7 +20,7 @@ class SearchRelatedQueryScreen {
     }
     $amount = count($relatedList);
     $index = 0;
-    echo '<table>';
+    echo '<div id="related"><h2>相关搜索:</h2><table>';
     for ($row = 0; $row < $maxRow; ++$row) {
       echo '<tr>';
       for ($column = 0; $column < $maxRow; ++$column, ++$index) {
@@ -37,6 +36,6 @@ class SearchRelatedQueryScreen {
         break;
       }
     }
-    echo '</table>';
+    echo '</table></div>';
   }
 }
