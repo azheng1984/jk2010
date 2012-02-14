@@ -6,4 +6,8 @@ class DbQuery {
       .' `popularity_rank` LIMIT '.$start.',100';
     return Db::getAll($sql, $categoryId);
   }
+
+  public function getByName($name) {
+    return Db::getRow('SELECT * FROM query WHERE name = ?', $name);
+  }
 }
