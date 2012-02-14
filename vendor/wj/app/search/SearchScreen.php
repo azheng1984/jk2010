@@ -24,9 +24,8 @@ class SearchScreen extends Screen {
   protected function renderHtmlBodyContent() {
     SearchAdSenseScreen::render('1');
     SearchBreadcrumbScreen::render();
-    SearchResultScreen::render();
+    SearchResultScreen::render($this);
     SearchAdSenseScreen::render('2', 'ad bottom');
-    $this->addJs($GLOBALS['SEARCH_PRODUCT_LIST_METADATA']);
   }
 
   private function getPropertyListTitle() {
