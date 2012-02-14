@@ -1,7 +1,13 @@
 <?php
 class SearchQueryString {
   public static function initialize() {
-    
+    if (isset($_GET['sort'])
+      && in_array($_GET['sort'], array('time', 'discount', 'price', '-price'))
+    ) {
+      $sort = $_GET['sort'];
+    }
+    $list = array('time', 'discount', 'price', '-price');
+    $GLOBALS['QUERY_STRING'] = self::get();
   }
 
   public static function get($sort = null) {
@@ -24,5 +30,13 @@ class SearchQueryString {
       return '?'.implode('&', $parameterList);
     }
     return '';
+  }
+
+  private static function parseSort() {
+    
+  }
+
+  private static function parsePriceRange() {
+    
   }
 }

@@ -32,7 +32,7 @@ class SortScreen {
       }
       echo '<a href=".', SearchUriArgument::get($tab), '" rel="nofollow">', $tab, '</a>';
     }
-    echo '</h2><div id="total_found">找到 ', $GLOBALS['URI']['RESULTS']['total_found'], ' 个商品</div>';
+    echo '</h2><div id="total_found">找到 ', $GLOBALS['URI']['RESULTS']['total_found'], ' 个商品</div>';//TODO:move out 
   }
 
   private static function renderPriceSequence() {
