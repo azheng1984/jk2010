@@ -1,6 +1,6 @@
 <?php
 class SearchProductListScreen {
-  public static function render($page) {
-    
+  public static function render($screen) {
+    //$html->addJs(SearchMetadatabuilder::build());
   }
 }

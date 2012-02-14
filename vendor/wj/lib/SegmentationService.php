@@ -10,7 +10,7 @@ class SegmentationService {
     }
     fwrite($handler, $input);
     $output = '';
-    while (!feof($handler)) {
+    while (feof($handler) === false) {
       $output .= fgets($handler, 256);
     }
     fclose($handler);
