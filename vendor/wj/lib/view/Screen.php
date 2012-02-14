@@ -7,12 +7,8 @@ abstract class Screen extends EtagView {
   abstract protected function renderHtmlHeadContent();
   abstract protected function renderHtmlBodyContent();
 
-  protected function renderContent() {
-    header('Cache-Control: private, max-age=0');
-    echo '<!DOCTYPE html><html>';
-    $this->renderHtmlHead();
-    $this->renderHtmlBody();
-    echo '</html>';
+  public function addJs($js) {
+    $this->js .= $js;
   }
 
   protected function addCssLink($name) {
@@ -23,8 +19,12 @@ abstract class Screen extends EtagView {
     $this->jsList[] = $name;
   }
 
-  protected function addJs($js) {
-    $this->js .= $js;
+  protected function renderContent() {
+    header('Cache-Control: private, max-age=0');
+    echo '<!DOCTYPE html><html>';
+    $this->renderHtmlHead();
+    $this->renderHtmlBody();
+    echo '</html>';
   }
 
   private function renderCssLinkList() {
