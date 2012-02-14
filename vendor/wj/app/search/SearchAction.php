@@ -19,7 +19,16 @@ class SearchAction {
   }
 
   private function parseQuery() {
-    $GLOBALS['QUERY'] = trim(urldecode($GLOBALS['PATH_SECTION_LIST'][1]));
+    $query = $GLOBALS['PATH_SECTION_LIST'][1];
+    if (strpos($GLOBALS['PATH_SECTION_LIST'][1], '+-') === 0) {
+      $GLOBALS['IS_RECOGNITION'] = true;
+      $query = substr($GLOBALS['PATH_SECTION_LIST'][1], 2);
+    }
+    $query = trim(urldecode($query));
+    $GLOBALS['QUERY'] = DbQuery::getByName($query);
+    if ($GLOBALS['QUERY'] === false) {
+      $GLOBALS['QUERY'] = array('name' => $query);
+    }
   }
 
   private function parseCategory() {

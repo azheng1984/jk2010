@@ -1,14 +1,15 @@
 <?php
 class SearchBreadcrumbScreen {
   public static function render() {
-    $list = array(htmlentities($GLOBALS['QUERY'], ENT_NOQUOTES, 'UTF-8'));
-    if (isset($GLOBALS['CATEGORY']) === false) {
-      echo '<h1>', $list[0], '</h1>';
-      return;
+    $recognition = '';
+    if (isset($GLOBALS['IS_RECOGNITION'])) {
+      $recognition = ' <span class="recognition">同款</span>';
     }
-    //  /+p/category/key=value/?id=389987097
-    if (isset($GLOBALS['PRODUCT_RECOGNITION']) === false) {
-      echo '<h1><span><a href="">', $list[0], '</a></span> 同款</h1>';
+    $list = array(
+      htmlentities($GLOBALS['QUERY']['name'], ENT_NOQUOTES, 'UTF-8')
+    );
+    if (isset($GLOBALS['CATEGORY']) === false) {
+      echo '<h1>', $list[0], $recognition, '</h1>';
       return;
     }
     $list[] = '分类:'.htmlentities(
@@ -42,6 +43,6 @@ class SearchBreadcrumbScreen {
       echo '>', $list[$index], '</a></span> ';
       array_pop($pathList);
     }
-    echo $list[$lastIndex], '</h1>';
+    echo $list[$lastIndex], $recognition, '</h1>';
   }
 }
