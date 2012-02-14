@@ -3,6 +3,7 @@ class SearchScreen extends Screen {
   public function __construct() {
     SearchQueryString::parse();
     $GLOBALS['SEARCH_RESULT'] = ProductSearch::search();
+    //TODO:如果分页不存在，转跳到第一页
   }
 
   protected function renderHtmlHeadContent() {
