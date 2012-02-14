@@ -8,7 +8,10 @@ class SearchQueryString {
 
   public static function get($sort = null) {
     $parameterList = array();
-    if ($GLOBALS['SORT'] !== 'sale_rank') {
+    if ($sort === null) {
+      $sort = $GLOBALS['SORT'];
+    }
+    if ($sort !== 'sale_rank') {
       $parameterList[] = 'sort='.$sort;
     }
     if (isset($GLOBALS['PRICE_FROM'])) {
