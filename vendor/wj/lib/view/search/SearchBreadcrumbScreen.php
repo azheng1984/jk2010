@@ -40,9 +40,13 @@ class SearchBreadcrumbScreen {
       if ($index !== 0 || $GLOBALS['QUERY_STRING'] !== '') {
         echo ' rel="nofollow"';
       }
-      echo '>', $list[$index], '</a></span> ';
+      echo '>', $list[$index], '</a>';
+      if ($index === 0) {
+        echo $recognition;
+      }
+      echo '</span> ';
       array_pop($pathList);
     }
-    echo $list[$lastIndex], $recognition, '</h1>';
+    echo $list[$lastIndex], '</h1>';
   }
 }

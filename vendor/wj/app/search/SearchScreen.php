@@ -8,15 +8,16 @@ class SearchScreen extends Screen {
 
   protected function renderHtmlHeadContent() {
     $title = $GLOBALS['QUERY']['name'];
+    if (isset($GLOBALS['IS_RECOGNITION'])) {
+      $title = $title.'(同款)';
+    }
     if (isset($GLOBALS['CATEGORY'])) {
       $title .= '/'.$GLOBALS['CATEGORY']['name'].'/';
     }
     if (isset($GLOBALS['PROPERTY_LIST'])) {
       $title .= urldecode($GLOBALS['PATH_SECTION_LIST'][3]).'/';
     }
-    if (isset($GLOBALS['IS_RECOGNITION'])) {
-      $title = $title.'(同款)';
-    }
+
     $title = htmlentities($title, ENT_NOQUOTES, 'UTF-8').'价格、折扣、销量排行';
     if ($GLOBALS['PAGE'] > 1) {
       $title .= '('.$GLOBALS['PAGE'].')';
