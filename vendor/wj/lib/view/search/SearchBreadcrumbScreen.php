@@ -6,6 +6,11 @@ class SearchBreadcrumbScreen {
       echo '<h1>', $list[0], '</h1>';
       return;
     }
+    //  /+p/category/key=value/?id=389987097
+    if (isset($GLOBALS['PRODUCT_RECOGNITION']) === false) {
+      echo '<h1><span><a href="">', $list[0], '</a></span> 同款</h1>';
+      return;
+    }
     $list[] = '分类:'.htmlentities(
         $GLOBALS['CATEGORY']['name'], ENT_NOQUOTES, 'UTF-8'
     );
