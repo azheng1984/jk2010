@@ -1,12 +1,12 @@
 <?php
 class ProductSearch {
   public static function search() {
-    $handler = ProductSearchService::getHandler();
+    $handler = SearchService::getHandler();
     if ($handler === false) {
       return false;
     }
     self::setSort();
-    return ProductSearchService::search($handler);
+    return SearchService::search($handler);
   }
 
   private static function setSort($handler) {

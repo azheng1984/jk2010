@@ -1,7 +1,7 @@
 <?php
 class ValueSearch {
   public static function search() {
-    $handler = ProductSearchService::getHandler();
+    $handler = SearchService::getHandler();
     if ($handler === false) {
       return false;
     }
@@ -10,6 +10,6 @@ class ValueSearch {
     }
     $handler->SetGroupBy('value_id_list_'.$GLOBALS['KEY']['mva_index'],
       SPH_GROUPBY_ATTR, '@count DESC');
-    return ProductSearchService::search($handler);
+    return SearchService::search($handler);
   }
 }
