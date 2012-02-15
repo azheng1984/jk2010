@@ -1,6 +1,9 @@
 <?php
 class SearchScreen extends Screen {
   public function __construct() {
+    if ($GLOBALS['PAGE'] > 50) {
+      throw new NotFoundException;
+    }
     SearchQueryString::parse();
     $GLOBALS['SEARCH_RESULT'] = ProductSearchService::search();
     $this->verifyPagination();
@@ -36,17 +39,14 @@ class SearchScreen extends Screen {
   }
 
   private function verifyPagination() {
-    if ($GLOBALS['SEARCH_RESULT'] === false
-      || $GLOBALS['SEARCH_RESULT']['total_found'] === 0) {
+    if ($GLOBALS['PAGE'] === 1
+      || isset($GLOBALS['SEARCH_RESULT']['matches']) !== false) {
       return;
     }
-    if (isset($GLOBALS['SEARCH_RESULT']['matches']) === false
-      && $GLOBALS['PAGE'] !== 1) {
-      $this->stop();
-      header('HTTP/1.1 301 Moved Permanently');
-      Header('Location: .'.$GLOBALS['QUERY_STRING']);
-      return;
-    }
+    $this->stop();
+    header('HTTP/1.1 301 Moved Permanently');
+    Header('Location: .'.$GLOBALS['QUERY_STRING']);
+    return;
   }
 
   private function renderResult() {

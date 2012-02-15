@@ -53,7 +53,7 @@ class SearchAction {
       $GLOBALS['PAGE'] = 1;
       return;
     }
-    if (!is_numeric($path) || $path < 2 || $path > 50) {
+    if (!is_numeric($path) || $path < 2) {
       throw new NotFoundException;
     }
     $GLOBALS['PAGE'] = intval($path);
