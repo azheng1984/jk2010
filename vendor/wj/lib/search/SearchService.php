@@ -1,6 +1,6 @@
 <?php
 class SearchService {
-  public static function getHandler() {
+  public static function getHandler($itemsPerPage = 16) {
     $handler = new SphinxClient;
     $handler->setServer("localhost", 9312);
     $handler->setMaxQueryTime(1000);
@@ -14,7 +14,7 @@ class SearchService {
       return false;
     }
     self::setPriceRange($handler);
-    self::setPage($handler);
+    self::setPage($handler, $itemsPerPage);
     return $handler;
   }
 
@@ -90,8 +90,8 @@ class SearchService {
     $handler->SetFilterRange('lowest_price_x_100', $min, $max);
   }
 
-  private static function setPage($handler) {
-    $offset = ($GLOBALS['PAGE'] - 1) * 16;
-    $handler->SetLimits($offset, 16);
+  private static function setPage($handler, $itemsPerPage) {
+    $offset = ($GLOBALS['PAGE'] - 1) * $itemsPerPage;
+    $handler->SetLimits($offset, $itemsPerPage);
   }
 }
