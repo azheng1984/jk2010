@@ -7,7 +7,7 @@ class SearchRelatedQueryScreen {
     $hasLongText = false;
     $relatedList = explode(',', $GLOBALS['QUERY']['related_list']);
     foreach ($relatedList as $query) {
-      if (mb_strlen($query, 'UTF-8') > 30) {
+      if (mb_strlen($query, 'UTF-8') > 30) {//TODO:效验伐值
         $hasLongText = true;
         break;
       }

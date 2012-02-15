@@ -1,15 +1,15 @@
 <?php
 class SearchBreadcrumbScreen {
   public static function render() {
-    $recognition = '';
+    $recognitionSection = '';
     if (isset($GLOBALS['IS_RECOGNITION'])) {
-      $recognition = ' <span class="recognition">同款</span>';
+      $recognitionSection = ' <span class="recognition">同款</span>';
     }
     $list = array(
       htmlentities($GLOBALS['QUERY']['name'], ENT_NOQUOTES, 'UTF-8')
     );
     if (isset($GLOBALS['CATEGORY']) === false) {
-      echo '<h1>', $list[0], $recognition, '</h1>';
+      echo '<h1>', $list[0], $recognitionSection, '</h1>';
       return;
     }
     $list[] = '分类:'.htmlentities(
@@ -37,12 +37,13 @@ class SearchBreadcrumbScreen {
     for ($index = 0; $index < $lastIndex; ++$index) {
       echo '<span><a href="', implode('/', $pathList),
         $GLOBALS['QUERY_STRING'], '"';
-      if ($index !== 0 || $GLOBALS['QUERY_STRING'] !== '') {
+      if ($index !== 0 || $GLOBALS['QUERY_STRING'] !== ''
+        || $recognitionSection !== '') {
         echo ' rel="nofollow"';
       }
       echo '>', $list[$index], '</a>';
       if ($index === 0) {
-        echo $recognition;
+        echo $recognitionSection;
       }
       echo '</span> ';
       array_pop($pathList);
