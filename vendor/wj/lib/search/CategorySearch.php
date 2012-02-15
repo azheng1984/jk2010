@@ -1,7 +1,7 @@
 <?php
 class CategorySearch {
   public static function search() {
-    $handler = ProductSearchService::getHandler();
+    $handler = SearchService::getHandler();
     if ($handler === false) {
       return false;
     }
