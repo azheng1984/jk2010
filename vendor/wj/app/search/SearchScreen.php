@@ -1,10 +1,10 @@
 <?php
 class SearchScreen extends Screen {
   public function __construct() {
+    SearchQueryString::parse();
     if ($GLOBALS['PAGE'] > 50) {
       throw new NotFoundException;
     }
-    SearchQueryString::parse();
     $GLOBALS['SEARCH_RESULT'] = ProductSearchService::search();
     $this->verifyPagination();
   }
