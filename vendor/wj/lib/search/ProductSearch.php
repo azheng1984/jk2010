@@ -1,14 +1,18 @@
 <?php
 class ProductSearch {
   private static $handler;
-  private static $isEmpty;
 
   public static function search() {
     self::$handler = SearchService::getHandler();
-    self::$isEmpty = false;
-    self::setRecognition();
-    self::setCategory();
-    self::setPropertyList();
+      if (SearchService::setRecognition(self::$handler) === false) {
+      return false;
+    }
+    if (SearchService::setCategory(self::$handler) === false) {
+      return false;
+    }
+      if (SearchService::setPropertyList(self::$handler) === false) {
+      return false;
+    }
     self::setSort();
     self::setPriceRange();
     self::setPage();
@@ -16,56 +20,6 @@ class ProductSearch {
       return false;
     }
     return SearchService::search(self::$handler, $GLOBALS['QUERY']['name']);
-  }
-
-  private static function setRecognition() {
-    if (isset($GLOBALS['IS_RECOGNITION']) === false) {
-      return;
-    }
-    if (isset($GLOBALS['QUERY']['id']) === false) {
-      self::$isEmpty = true;
-      return;
-    }
-    self::$handler->SetFilter('query_id', array($GLOBALS['QUERY']['id']));
-  }
-
-  private static function setCategory() {
-    if (isset($GLOBALS['CATEGORY']) === false) {
-      return;
-    }
-    if (isset($GLOBALS['CATEGORY']['id']) === false) {
-      self::$isEmpty = true;
-      return;
-    }
-    self::$handler->SetFilter('category_id', array($GLOBALS['CATEGORY']['id']));
-  }
-
-  private static function setPropertyList() {
-    if (isset($GLOBALS['PROPERTY_LIST']) === false) {
-      return;
-    }
-    foreach ($GLOBALS['PROPERTY_LIST'] as $property) {
-      if (isset($property['KEY']['mva_index']) === false) {
-        self::$isEmpty = true;
-        return;
-      }
-      self::$handler->SetFilter(
-          'value_id_list_'.$property['KEY']['mva_index'],
-          self::getValueIdList($property['VALUE_LIST'])
-      );
-    }
-  }
-
-  private static function getValueIdList($valueList) {
-    $result = array();
-    foreach ($valueList as $value) {
-      if (isset($value['id']) === false) {
-        self::$isEmpty = true;
-        return;
-      }
-      $result[] = $value['id'];
-    }
-    return $result;
   }
 
   private static function setSort() {
