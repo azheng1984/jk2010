@@ -2,8 +2,9 @@
 class SearchService {
   public static function getHandler($itemsPerPage = 16) {
     $handler = new SphinxClient;
-    $handler->setServer("localhost", 9312);
-    $handler->setMaxQueryTime(1000);
+    $handler->SetServer("localhost", 9312);
+    $handler->SetMaxQueryTime(1000);
+    $handler->SetMatchMode(SPH_MATCH_BOOLEAN);
     if (self::setRecognition($handler) === false) {
       return false;
     }
@@ -20,7 +21,7 @@ class SearchService {
 
   public function search($handler) {
     $query = SegmentationService::execute($GLOBALS['QUERY']['name']);
-    return $handler->query($query, 'wj_product');
+    return $handler->Query($query, 'wj_product');
   }
 
   private static function setRecognition($handler) {

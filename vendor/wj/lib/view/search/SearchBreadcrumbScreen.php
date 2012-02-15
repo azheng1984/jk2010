@@ -13,7 +13,7 @@ class SearchBreadcrumbScreen {
       return;
     }
     $list[] = '分类:'.htmlentities(
-        $GLOBALS['CATEGORY']['name'], ENT_NOQUOTES, 'UTF-8'
+      $GLOBALS['CATEGORY']['name'], ENT_NOQUOTES, 'UTF-8'
     );
     $pathList = array('..');
     if (isset($GLOBALS['PROPERTY_LIST'])) {
