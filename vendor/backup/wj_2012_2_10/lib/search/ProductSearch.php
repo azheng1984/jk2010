@@ -44,7 +44,7 @@ class ProductSearch {
   private static function getValueIdList($valueList) {
     $result = array();
     foreach ($valueList as $value) {
-      if (isset($value['id'])) { //no product
+      if (isset($value['id'])) { //TODO:no product
         $result[] = $value['id'];
       }
     }
