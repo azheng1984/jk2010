@@ -2,8 +2,8 @@
 class SearchScreen extends Screen {
   public function __construct() {
     SearchQueryString::parse();
-    $GLOBALS['SEARCH_RESULT'] = ProductSearch::search();
-    //TODO:如果分页不存在，转跳到第一页
+    $GLOBALS['SEARCH_RESULT'] = ProductSearchService::search();
+    $this->verifyPagination();
   }
 
   protected function renderHtmlHeadContent() {
@@ -35,8 +35,23 @@ class SearchScreen extends Screen {
     SearchRelatedQueryScreen::render();
   }
 
+  private function verifyPagination() {
+    if ($GLOBALS['SEARCH_RESULT'] === false
+      || $GLOBALS['SEARCH_RESULT']['total_found'] === 0) {
+      return;
+    }
+    if (isset($GLOBALS['SEARCH_RESULT']['matches']) === false
+      && $GLOBALS['PAGE'] !== 1) {
+      $this->stop();
+      header('HTTP/1.1 301 Moved Permanently');
+      Header('Location: .'.$GLOBALS['QUERY_STRING']);
+      return;
+    }
+  }
+
   private function renderResult() {
-    if ($GLOBALS['SEARCH_RESULT']['total_found'] === 0) {
+    if ($GLOBALS['SEARCH_RESULT'] === false
+      || $GLOBALS['SEARCH_RESULT']['total_found'] === 0) {
       echo '<div id="no_result"><h2>没有找到相关商品，建议:</h2>',
         '<ul><li>检查搜索条件是否有误</li>',
         '<li>扩大搜索范围</li><li>去 <a href="/">商店列表</a> 逛逛</li></ul></div>';

@@ -9,7 +9,7 @@ class IndexScreen extends Screen {
     $this->parseCategory($depth);
     $this->parsePage($depth);
     $this->buildLinkList();
-    $this->verify();
+    $this->verifyPagination();
   }
 
   protected function renderHtmlHeadContent() {
@@ -113,11 +113,11 @@ class IndexScreen extends Screen {
     $this->linkList = $result;
   }
 
-  private function verify() {
+  private function verifyPagination() {
     if (count($this->linkList) !== 0) {
       return;
     }
-    if ($this->getAmount() !== 0) {
+    if ($this->getAmount() !== 0 && $GLOBALS['PAGE'] !== 1) {
       $this->stop();
       header('HTTP/1.1 301 Moved Permanently');
       Header('Location: .');
