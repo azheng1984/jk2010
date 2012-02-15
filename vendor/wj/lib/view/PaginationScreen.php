@@ -6,6 +6,9 @@ class PaginationScreen {
       return;
     }
     $totalPage = self::getTotalPage($total, $itemsPerPage);
+    if ($totalPage > $maximumPage) {
+      $totalPage = $maximumPage;
+    }
     $firstPage = self::getFirstPage($page, $totalPage);
     echo '<div id="pagination">';
     if ($page !== 1) {
