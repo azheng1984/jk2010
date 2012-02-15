@@ -21,12 +21,10 @@ class HomeAction {
   }
 
   private function parsePage() {
-    if (isset($_GET['page']) === false) {
+    if (isset($_GET['page']) === false || !is_numeric($_GET['page'])
+      || $_GET['page'] < 1) {
       $GLOBALS['PAGE'] = 1;
       return;
-    }
-    if (!is_numeric($_GET['page']) || $_GET['page'] < 1) {
-      throw new NotFoundException;
     }
     $GLOBALS['PAGE'] = intval($_GET['page']);
   }

@@ -26,8 +26,11 @@ class SearchAction {
     }
     $query = trim(urldecode($query));
     $GLOBALS['QUERY'] = DbQuery::getByName($query);
-    if ($GLOBALS['QUERY'] === false) {
-      $GLOBALS['QUERY'] = array('name' => $query);
+    if ($GLOBALS['QUERY'] !== false) {
+      return;
+    }
+    $GLOBALS['QUERY'] = array('name' => $query);
+    if (isset($GLOBALS['IS_RECOGNITION'])) {
     }
   }
 
