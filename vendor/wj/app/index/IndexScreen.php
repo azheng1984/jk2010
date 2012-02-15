@@ -9,14 +9,7 @@ class IndexScreen extends Screen {
     $this->parseCategory($depth);
     $this->parsePage($depth);
     $this->buildLinkList();
-    //TODO:如果分页不存在，但 link 总数不等于 0，转跳到第一页
-    if (count($this->linkList) === 0 && $this->getAmount() !== 0) {
-      $this->stop();
-      header('301');
-    }
-    if (count($this->linkList) === 0) {
-      throw new NotFoundException;
-    }
+    $this->verify();
   }
 
   protected function renderHtmlHeadContent() {
@@ -118,6 +111,19 @@ class IndexScreen extends Screen {
       );
     }
     $this->linkList = $result;
+  }
+
+  private function verify() {
+    if (count($this->linkList) !== 0) {
+      return;
+    }
+    if ($this->getAmount() !== 0) {
+      $this->stop();
+      header('HTTP/1.1 301 Moved Permanently');
+      Header( "Location: ." );
+      return;
+    }
+    throw new NotFoundException;
   }
 
   private function renderPagination() {
