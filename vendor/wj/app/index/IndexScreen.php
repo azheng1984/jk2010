@@ -120,7 +120,7 @@ class IndexScreen extends Screen {
     if ($this->getAmount() !== 0) {
       $this->stop();
       header('HTTP/1.1 301 Moved Permanently');
-      Header( "Location: ." );
+      Header('Location: .');
       return;
     }
     throw new NotFoundException;
