@@ -15,7 +15,7 @@ class SearchJson extends Json {
       return;
     }
     if (isset($GLOBALS['CATEGORY']['id']) === false) {
-      throw new NotFoundException;
+      return;
     }
     $GLOBALS['KEY'] =
       DbPropertyKey::getByName($GLOBALS['CATEGORY']['id'], $_GET['key']);
@@ -30,12 +30,21 @@ class SearchJson extends Json {
     if ($result === false || isset($result['matches']) === false) {
       return;
     }
+    foreach ($result['matches'] as $match) {
+      $category = DbCategory::get($match['attrs']['@groupby']);
+      $this->list[] =
+        '["'.$category['name'].'","'.$match['attrs']['@count'].'"]';
+    }
   }
 
   private function buildKeyList() {
     $result = KeySearchService::search();
     if ($result === false || isset($result['matches']) === false) {
       return;
+    }
+    foreach ($result['matches'] as $match) {
+      $key = DbPropertyKey::get($match['attrs']['@groupby']);
+      $this->list[] = '"'.$key['name'].'"';
     }
   }
 
@@ -44,9 +53,14 @@ class SearchJson extends Json {
     if ($result === false || isset($result['matches']) === false) {
       return;
     }
+    foreach ($result['matches'] as $match) {
+      $value = DbPropertyValue::get($match['attrs']['@groupby']);
+      $this->list[] =
+        '["'.$value['name'].'","'.$match['attrs']['@count'].'"]';
+    }
   }
 
   protected function renderJson() {
-    echo '[]';
+    echo '[', implode(',', $this->list), ']';
   }
 }
