@@ -18,9 +18,9 @@ class SearchService {
     return $handler;
   }
 
-  private static function search($handler) {
+  public function search($handler) {
     $query = SegmentationService::execute($GLOBALS['QUERY']['name']);
-    return $handler->query($GLOBALS['QUERY']['name'], 'wj_product');
+    return $handler->query($query, 'wj_product');
   }
 
   private static function setRecognition($handler) {
