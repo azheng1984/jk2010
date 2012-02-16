@@ -1,7 +1,5 @@
 <?php
 class SearchProductListScreen {
-  private static $keywordList;
-
   public static function render($searchScreen) {
     $keywordList =
       SegmentationService::execute($GLOBALS['QUERY']['name']);
@@ -18,12 +16,12 @@ class SearchProductListScreen {
       );
       echo '<li>',
         '<div class="image"><a href="" target="_blank" rel="nofollow">',
-        '<img alt="'.$title.'" src="http://img.dev.huobiwanjia.com/',
-        $product['id'].'.jpg"/></a></div>',//image
+        '<img alt="', $title, '" src="http://img.dev.huobiwanjia.com/',
+        $product['id'], '.jpg"/></a></div>',//image
         '<h3><a href="" target="_blank" rel="nofollow">',
         $title, '</a></h3>',//title
         '<div class="price">&yen;<span>',
-        $product['lowest_price_x_100']/100,'</span></div>',//price
+        $product['lowest_price_x_100']/100, '</span></div>',//price
         '<p>', $description, '&hellip;</p>',//description
         '<div class="merchant">', $merchant['name'], '</div>',//merchant
         '</li>';
