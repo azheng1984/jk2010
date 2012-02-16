@@ -1,7 +1,7 @@
 <?php
 class ProductSearchService {
   public static function search() {
-    $handler = SearchService::getHandler(100);
+    $handler = SearchService::getHandler();
     if ($handler === false) {
       return false;
     }

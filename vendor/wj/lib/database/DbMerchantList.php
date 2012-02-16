@@ -1,0 +1,14 @@
+<?php
+class DbMerchantList {
+  public static function getList($typeId, $page) {
+    $start = ($page - 1) * 25;
+    $sqlPrefix = 'SELECT merchant.name,merchant_list.path,merchant_list.uri '
+      .'FROM merchant_list INNER JOIN merchant ON '
+      .'merchant.id = merchant_list.merchant_id';
+    $sqlSuffix = ' ORDER BY merchant_list.id LIMIT '.$start.', 25';
+    if ($typeId !== null) {
+      return Db::getAll($sqlPrefix.' WHERE type_id = ?'.$sqlSuffix, $typeId);
+    }
+    return Db::getAll($sqlPrefix.$sqlSuffix);
+  }
+}
