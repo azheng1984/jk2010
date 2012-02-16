@@ -25,6 +25,10 @@ class SearchJson extends Json {
     $this->buildValueList();
   }
 
+  protected function renderJson() {
+    echo '[', implode(',', $this->list), ']';
+  }
+
   private function buildCategoryList() {
     $result = CategorySearchService::search();
     if ($result === false || isset($result['matches']) === false) {
@@ -58,9 +62,5 @@ class SearchJson extends Json {
       $this->list[] =
         '["'.$value['name'].'","'.$match['attrs']['@count'].'"]';
     }
-  }
-
-  protected function renderJson() {
-    echo '[', implode(',', $this->list), ']';
   }
 }
