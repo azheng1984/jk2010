@@ -1,7 +1,10 @@
 <?php
 class SearchProductListScreen {
+  private static $keywordList;
+
   public static function render($searchScreen) {
-    return;
+    $keywordList =
+      SegmentationService::execute($GLOBALS['QUERY']['name']);
     $metaList = array();
     $index = 0;
     $hasCategory = isset($GLOBALS['CATEGORY']);
@@ -9,17 +12,21 @@ class SearchProductListScreen {
     foreach ($GLOBALS['SEARCH_RESULT']['matches'] as $id => $result) {
       $product = DbProduct::get($id);
       $merchant = DbMerchant::get($product['merchant_id']);
-      echo '<li>';
-      echo '<div class="image"><a href="" target="_blank" rel="nofollow">',
-        '<img alt="'.$product['title'].'" src="http://img.dev.huobiwanjia.com/',
-        $product['id'].'.jpg"/></a></div>';
-      echo '<h3><a href="" target="_blank" rel="nofollow">',
-        $product['title'], '</a></h3>';
-      echo '<div class="price">&yen;<span>',
-        $product['lowest_price_x_100']/100,'</span></div>';
-      echo '<p>', $product['description'], '&hellip;</p>';
-      echo '<div class="merchant">', $merchant['name'], '</div>';
-      echo '</li>';
+      $title = self::highlight($product['title'], $keywordList);
+      $description = self::highlight(
+        self::excerpt($product['description']), $keywordList
+      );
+      echo '<li>',
+        '<div class="image"><a href="" target="_blank" rel="nofollow">',
+        '<img alt="'.$title.'" src="http://img.dev.huobiwanjia.com/',
+        $product['id'].'.jpg"/></a></div>',
+        '<h3><a href="" target="_blank" rel="nofollow">',
+        $title, '</a></h3>',
+        '<div class="price">&yen;<span>',
+        $product['lowest_price_x_100']/100,'</span></div>',
+        '<p>', $description, '&hellip;</p>',
+        '<div class="merchant">', $merchant['name'], '</div>',
+        '</li>';
       $metaList[] = self::getMeta($product, $hasCategory);
     }
     echo '<ol>';
@@ -41,10 +48,12 @@ class SearchProductListScreen {
     return $meta;
   }
 
-  private static function excerpt($text, $keywordList) { //TODO
+  private static function excerpt($text) { //TODO
+    return $text;
   }
 
   private static function highlight($text, $keywordList) { //TODO
+    return htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
   }
 
   private static function renderMetaList() { //TODO
