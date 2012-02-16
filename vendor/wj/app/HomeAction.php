@@ -38,7 +38,7 @@ class HomeAction {
     if (isset($GLOBALS['MERCHANT_TYPE'])) {
       $typeId = $GLOBALS['MERCHANT_TYPE'][0];
     }
-    $GLOBALS['MERCHANT_LIST'] = DbHomeMerchant::getList(
+    $GLOBALS['MERCHANT_LIST'] = DbMerchantList::getList(
       $typeId, $GLOBALS['PAGE']
     );
     if (count($GLOBALS['MERCHANT_LIST']) === 0) {
