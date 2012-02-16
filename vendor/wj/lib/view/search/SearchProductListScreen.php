@@ -7,9 +7,15 @@ class SearchProductListScreen {
     echo '<ol>';
     foreach ($GLOBALS['SEARCH_RESULT']['matches'] as $id => $result) {
       $product = DbProduct::get($id);
-      $metaList[] = self::getMeta($product, $hasCategory);
-      echo '<li><h3>', $product['title'], '</h3>';
+      $merchant = DbMerchant::get($product['merchant_id']);
+      echo '<li>';
+      echo '<div class="image"><a href="" target="_blank" rel="nofollow">',
+        '<img alt="'.$product['title'].'" src="http://img.dev.huobiwanjia.com/',
+        $product['id'].'.jpg"/></a></div>';
+      echo '<h3>', $product['title'], '</h3>';
+      echo '<div class="merchant">', $merchant['name'], '</div>';
       echo '</li>';
+      $metaList[] = self::getMeta($product, $hasCategory);
     }
     echo '<ol>';
   }
