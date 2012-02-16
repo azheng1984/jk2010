@@ -5,18 +5,23 @@ class ProductSearchService {
     if ($handler === false) {
       return false;
     }
-    $mapping = array(
-      'sale_rank' => 'sale_rank',
-      'price' => 'lowest_price_x_100',
-      '-price' => 'lowest_price_x_100',
-      'time' => 'publish_timestamp',
-      'discount' => 'discount_x_10'
-    );
-    $mode = SPH_SORT_ATTR_ASC;
-    if ($GLOBALS['SORT'] === '-price') {
-      $mode = SPH_SORT_ATTR_DESC;
-    }
-    $handler->SetSortMode($mode, $mapping[$GLOBALS['SORT']]);
+    self::setSort($handler);
     return SearchService::search($handler);
+  }
+
+  private static function setSort($handler) {
+    if ($GLOBALS['SORT'] === 'sale_rank') {
+      $handler->SetSortMode(SPH_SORT_ATTR_DESC, 'sale_rank');
+      return;
+    }
+    $mapping = array(
+      'price' => 'lowest_price_x_100 ASC',
+      '-price' => 'lowest_price_x_100 DESC',
+      'time' => 'publish_timestamp DESC',
+      'discount' => 'discount_x_10 ASC'
+    );
+    $handler->SetSortMode(
+      SPH_SORT_EXTENDED, $mapping[$GLOBALS['SORT']].', sale_rank DESC'
+    );
   }
 }
