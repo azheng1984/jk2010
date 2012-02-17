@@ -11,8 +11,8 @@ class SearchProductListScreen {
       $product = DbProduct::get($id);
       $merchant = DbMerchant::get($product['merchant_id']);
       $title = self::highlight($product['title'], $keywordList);
-      $description = self::highlight(
-        self::excerpt($product['attribute_list']), $keywordList
+      $specification = self::highlight(
+        self::excerpt($product['property_list']), $keywordList
       );
       echo '<li>',
         '<div class="image"><a href="" target="_blank" rel="nofollow">',
@@ -22,7 +22,7 @@ class SearchProductListScreen {
         $title, '</a></h3>',//title
         '<div class="price">&yen;<span>',
         $product['lowest_price_x_100']/100, '</span></div>',//price
-        '<p>', $description, '&hellip;</p>',//description
+        '<p>', $specification, '&hellip;</p>',//specification
         '<div class="merchant">', $merchant['name'], '</div>',//merchant
         '</li>';
       $metaList[] = self::getMeta($product, $hasCategory);
@@ -46,27 +46,16 @@ class SearchProductListScreen {
     return $meta;
   }
 
-  private static function excerpt($text) { //TODO
-    /*
-     * 0 => a,b,c,d,！
-     * 1 => a1,b1,；,c1,d1,。
-     * 2 => a,b1,c2,d1,。
-     **/
-    //从上到下抽取 text
-    //边抽取，边挑选，满足条件后停止
-    //和标题一样，允许描述重复
-    //同款搜索一律不显示摘要
-    //单词由,分割，所有 真实 “,” 使用 \, 转意，\ 用 \\ 转义
-    //description => tag_list by factory & merchant
-    //
-    return $text;
+  private static function excerpt($propertyList) { //TODO
+    $propertyList = explode(';', $propertyList);
+    print_r($propertyList);
+    return $propertyList;
   }
 
   private static function highlight($text, $keywordList) { //TODO
-    return htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
+    //return htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
   }
 
   private static function renderMetaList() { //TODO
-     
   }
 }
