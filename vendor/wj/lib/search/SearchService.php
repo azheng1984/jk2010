@@ -21,6 +21,7 @@ class SearchService {
 
   public function search($handler) {
     $query = SegmentationService::execute($GLOBALS['QUERY']['name']);
+    //TODO:删除 SPH_MATCH_BOOLEAN "关键字"，比如 ( | )
     return $handler->Query($query, 'wj_product');
   }
 
