@@ -12,7 +12,7 @@ class SearchProductListScreen {
       $merchant = DbMerchant::get($product['merchant_id']);
       $title = self::highlight($product['title'], $keywordList);
       $description = self::highlight(
-        self::excerpt($product['description']), $keywordList
+        self::excerpt($product['attribute_list']), $keywordList
       );
       echo '<li>',
         '<div class="image"><a href="" target="_blank" rel="nofollow">',
@@ -54,8 +54,10 @@ class SearchProductListScreen {
      **/
     //从上到下抽取 text
     //边抽取，边挑选，满足条件后停止
-    //在描述里，每个关键字最多重复两次
-    //保证没有重复的描述，如果抽取的描述重复，用后面的描述代替前面的描述，显示默认摘要
+    //和标题一样，允许描述重复
+    //同款搜索一律不显示摘要
+    //单词由,分割，所有 真实 “,” 使用 \, 转意，\ 用 \\ 转义
+    //description => tag_list by factory & merchant
     //
     return $text;
   }
