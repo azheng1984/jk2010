@@ -2,7 +2,7 @@
 class SearchProductListScreen {
   public static function render($searchScreen) {
     $keywordList =
-      SegmentationService::execute($GLOBALS['QUERY']['name']);
+      explode(' ', SegmentationService::execute($GLOBALS['QUERY']['name']));
     $metaList = array();
     $index = 0;
     $hasCategory = isset($GLOBALS['CATEGORY']);
@@ -12,7 +12,7 @@ class SearchProductListScreen {
       $merchant = DbMerchant::get($product['merchant_id']);
       $title = self::highlight($product['title'], $keywordList);
       $specification = self::highlight(
-        self::excerpt($product['property_list']), $keywordList
+        self::excerpt($product['property_list'], $keywordList), $keywordList
       );
       echo '<li>',
         '<div class="image"><a href="" target="_blank" rel="nofollow">',
@@ -46,9 +46,19 @@ class SearchProductListScreen {
     return $meta;
   }
 
-  private static function excerpt($propertyList) { //TODO
-    $propertyList = explode(';', $propertyList);
-    print_r($propertyList);
+  private static function excerpt($propertyList, $keywordList) { //TODO
+    print_r($keywordList);
+    foreach ($keywordList as $keyword) {
+      $matches = array();
+      $propertyList = "\n,适用,人群,:,1-6,岁;,儿x童x fasdf,\n,材料,:,PE,\n,型号,:,233xx,\n,尺寸,:,长,:,27.6cm, ,宽,:,21.3cm, ,高:6.5cm,\n,适用人群,:,儿童,\n".$propertyList;
+      for ($i = 0; $i < 1000; ++$i) {
+        preg_match('{\S.*,'.$keyword.',.*\S}', ','.$propertyList.',', $matches);
+      }
+      print_r($matches);
+      exit;
+      
+    }
+    //$propertyList = explode(';', $propertyList);
     return $propertyList;
   }
 
