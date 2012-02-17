@@ -47,6 +47,16 @@ class SearchProductListScreen {
   }
 
   private static function excerpt($text) { //TODO
+    /*
+     * 0 => a,b,c,d,！
+     * 1 => a1,b1,；,c1,d1,。
+     * 2 => a,b1,c2,d1,。
+     **/
+    //从上到下抽取 text
+    //边抽取，边挑选，满足条件后停止
+    //在描述里，每个关键字最多重复两次
+    //保证没有重复的描述，如果抽取的描述重复，用后面的描述代替前面的描述，显示默认摘要
+    //
     return $text;
   }
 
