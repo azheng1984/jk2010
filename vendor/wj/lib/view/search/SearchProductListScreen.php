@@ -47,9 +47,9 @@ class SearchProductListScreen {
   private static function excerpt($propertyList, $keywordList) { //TODO
     $list = array();
     foreach ($keywordList as $keyword) {
-      for ($i = 0; $i < 10000; $i++) {
+      //for ($i = 0; $i < 10000; $i++) {
         preg_match('{\n.*'.$keyword.'.*}', ','.$propertyList.',', $matches);
-      }
+      //}
       //var_dump($matches);
     }
     //$propertyList = explode(';', $propertyList);
