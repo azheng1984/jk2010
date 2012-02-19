@@ -2,7 +2,7 @@
 class SearchService {
   public static function getHandler($itemsPerPage = 16) {
     $handler = new SphinxClient;
-    $handler->SetServer("localhost", 9312);
+    $handler->SetServer('localhost', 9312);
     $handler->SetMaxQueryTime(1000);
     $handler->SetMatchMode(SPH_MATCH_BOOLEAN);
     if (self::setRecognition($handler) === false) {

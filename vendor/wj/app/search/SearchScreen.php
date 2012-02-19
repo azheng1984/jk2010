@@ -57,6 +57,6 @@ class SearchScreen extends Screen {
         '<li>扩大搜索范围</li><li>去 <a href="/">商店列表</a> 逛逛</li></ul></div>';
       return;
     }
-    SearchResultScreen::render($this);
+    SearchResultScreen::render();
   }
 }
