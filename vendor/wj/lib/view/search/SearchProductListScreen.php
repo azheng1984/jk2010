@@ -26,10 +26,13 @@ class SearchProductListScreen {
     self::$hasCategory = isset($GLOBALS['CATEGORY']);
     self::$keywordList = explode(' ',
       SegmentationService::execute($GLOBALS['QUERY']['name']));
+    if (count(self::$keywordList) < 2) {
+      return;
+    }
     usort(self::$keywordList, function($x, $y) {
       return strlen($y) - strlen($x);
     });
-    print_r(self::$keywordList);
+    self::$keywordList = array_unique(self::$keywordList);
   }
 
   private static function renderProduct($id) {
@@ -39,11 +42,15 @@ class SearchProductListScreen {
     $href = self::getProductUri(
       $merchant['product_uri_format'], $product['uri_argument_list']
     );
+    $imageUri = 'http://img.dev.huobiwanjia.com/'.$product['id'];
+    if ($product['image_md5']) {
+      $imageUri .= '.'.$product['image_md5'];
+    }
+    $imageUri .= '.jpg';
     $tagList = self::getTagList($product);
     echo '<td><div class="image"><a href="',
       $href, '" target="_blank" rel="nofollow">',
-      '<img alt="', $product['title'], '" src="http://img.dev.huobiwanjia.com/',
-      $product['id'], '.jpg"/></a></div>',//image
+      '<img alt="', $product['title'], '" src="', $imageUri, '"/></a></div>',//image
       '<h3><a href="', $href, '" target="_blank" rel="nofollow">',
       self::highlight($product['title']), '</a></h3>',//title
       '<div class="price">&yen;<span>',
@@ -71,7 +78,7 @@ class SearchProductListScreen {
       return $result;
     }
     if (self::$hasCategory === true && $product['brand_name'] !== null) {
-      $result[] = '<a href="'.urlencode('品牌='.$product['brand_name'])
+      $result[] = '<a href="'.urlencode('品牌='.$product['brand_name']) //TODO: path
         .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">品牌：'
         .$product['brand_name'].'</a>';
     }
@@ -79,43 +86,41 @@ class SearchProductListScreen {
   }
 
   private static function getProductUri($format, $argumentList) {
-    return $format.$argumentList;
+    return vsprintf($format, $argumentList);
   }
 
   private static function excerpt($text) {
     if (mb_strlen($text) < 60) {
       return $text;
     }
-    $type = 'link';
-    $propertyList = array();
-    foreach (explode('\n', text) as $property) {
-      if ($property === '') {
-        $type = 'text';
-        continue;
-      }
-      $propertyList[] = array($property, $type);
-    }
+    $propertyList = explode('\n', $text);
     $matchList = array();
     $length = 0;
     foreach (self::$keywordList as $keyword) {
-      foreach ($propertyList as $property) {
-        $propertyText = $property[0];
-        if (strpos($propertyText, $keyword) !== false) {
-          if (isset($matchList[$propertyText]) === false) {
-            $propertyLength = mb_strlen($propertyText) + 1;
-            $matchList[$propertyText] = array($propertyLength, $property[1]);
-            $length += $propertyLength;
-          }
+      $type = 'link';
+      foreach ($propertyList as $propertyText) {
+        if ($propertyText === '') {
+          $type = 'text';
           continue;
+        }
+        if (strpos($propertyText, $keyword) === false) {
+          continue;
+        }
+        if (isset($matchList[$propertyText]) === false) {
+          $propertyLength = mb_strlen($propertyText);
+          $matchList[$propertyText] = array($propertyLength, $type);
+          $length += $propertyLength;
         }
       }
     }
     if ($length === 0) {
       return '';
     }
+    
     if ($length > 60) {
-      $matchList = self::reduceExcerption($matchList);
+      $matchList = self::reduceExcerption($matchList, $length);
     }
+    $matchList = self::increaseExcerption($propertyList, $matchList, $length);
     $textList = array();
     $linkList = array();
     foreach ($matchList as $text => $metaList) {
@@ -135,16 +140,16 @@ class SearchProductListScreen {
       $result = '<span class="link">'.implode('。', array_keys($linkList));
     }
     if (count($textList) === 0) {
-      return $result.$end.'<span>';
+      return $result.$end.'</span>';
     }
-    return $result.'。'.implode('。', array_keys($linkList)).$end;
+    return $result.'。</span>'.implode('。', array_keys($linkList)).$end;
   }
 
-  private static function reduceExcerption($length, $matchList) {
+  private static function reduceExcerption($matchList, $length) {
     foreach ($matchList as $text => $metaList) {
       if ($metaList[0] > 15 && $metaList[1] === 'text') {
-        $text = substr($text, 0, 15);
-        $length -= 3;
+        $text = mb_substr($text, 0, 15).'&hellip;';
+        $length -= 15 - $metaList[0];
         if ($length < 60) {
           break;
         }
@@ -154,6 +159,28 @@ class SearchProductListScreen {
     while ($length > 60 && $amount > 1) {
       $length -= array_pop($matchList);
       --$amount;
+    }
+    return $matchList;
+  }
+
+  private static function increaseExcerption(
+    $propertyList, $matchList, $length
+  ) {
+    $type = 'link';
+    foreach ($propertyList as $propertyText) {
+      if ($propertyText === '') {
+        $type = 'text';
+        continue;
+      }
+      if (isset($matchList[$propertyText])) {
+        continue;
+      }
+      $propertyLength = mb_strlen($propertyText);
+      $length += $propertyLength;
+      if ($length < 60) {
+        break;
+      }
+      $matchList[$propertyText] = array($propertyLength, $type);
     }
     return $matchList;
   }
