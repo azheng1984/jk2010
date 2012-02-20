@@ -101,10 +101,10 @@ class SearchProductListScreen {
   }
 
   private static function excerpt($text) {
-    if (mb_strlen($text) <= 60) {
+    if (mb_strlen($text, 'UTF-8') <= 60) {
       return $text;//TODO:link span
     }
-    $propertyList = explode('\n', $text);
+    $propertyList = explode("\n", $text);
     $matchList = array();
     $length = 0;
     foreach (self::$keywordList as $keyword) {
@@ -118,7 +118,7 @@ class SearchProductListScreen {
           continue;
         }
         if (isset($matchList[$propertyText]) === false) {
-          $propertyLength = mb_strlen($propertyText);
+          $propertyLength = mb_strlen($propertyText, 'UTF-8');
           $matchList[$propertyText] = array($propertyLength, $type);
           $length += $propertyLength;
         }
@@ -148,30 +148,31 @@ class SearchProductListScreen {
     $result = '';
     $hasTextList = count($textList) === 0;
     if (count($linkList) !== 0) {
-      $result = '<span class="link">'.implode('。', array_keys($linkList));
+      $result = '<span class="link">'.implode('。', $linkList);
     }
     if (count($textList) === 0) {
       return $result.$end.'</span>';
     }
-    return $result.'。</span>'.implode('。', array_keys($linkList)).$end;
+    return $result.'。</span>'.implode('。', $textList).$end;
   }
 
   private static function reduceExcerption($matchList, $length) {
+    $result = array();
+    $length = 0;
     foreach ($matchList as $text => $metaList) {
-      if ($metaList[0] > 15 && $metaList[1] === 'text') {
-        $text = mb_substr($text, 0, 15).'&hellip;';
-        $length -= 15 - $metaList[0];
-        if ($length < 60) {
-          break;
-        }
+      $propertyLength = $metaList[0];
+      if ($propertyLength > 15 && $metaList[1] === 'text') {
+        $text = mb_substr($text, 0, 15, 'UTF-8');
+        $metaList[2] = true;
+        $propertyLength = 15;
       }
+      if ($length + $propertyLength > 60 && count($result) !== 0) {
+        break;
+      }
+      $length += $propertyLength;
+      $result[$text] = $metaList;
     }
-    $amount = count($matchList);
-    while ($length > 60 && $amount > 1) {
-      $length -= array_pop($matchList);
-      --$amount;
-    }
-    return $matchList;
+    return $result;
   }
 
   private static function increaseExcerption(
@@ -186,7 +187,7 @@ class SearchProductListScreen {
       if (isset($matchList[$propertyText])) {
         continue;
       }
-      $propertyLength = mb_strlen($propertyText);
+      $propertyLength = mb_strlen($propertyText, 'UTF-8');
       $length += $propertyLength;
       if ($length < 60) {
         break;
