@@ -4,10 +4,8 @@ class SearchProductListScreen {
   private static $hasCategory;
 
   public static function render() {
-    self::$keywordList =
-      explode(' ', SegmentationService::execute($GLOBALS['QUERY']['name']));
+    self::initialize();
     $index = 0;
-    self::$hasCategory = isset($GLOBALS['CATEGORY']);
     echo '<table><tr>';
     foreach ($GLOBALS['SEARCH_RESULT']['matches'] as $id => $result) {
       if ($index % 4 === 0 && $index !== 0) {
@@ -22,6 +20,16 @@ class SearchProductListScreen {
       echo '<td', $colspanAttribute, ' class="empty"></td>';
     }
     echo '</tr></table>';
+  }
+
+  private static function initialize() {
+    self::$hasCategory = isset($GLOBALS['CATEGORY']);
+    self::$keywordList = explode(' ',
+      SegmentationService::execute($GLOBALS['QUERY']['name']));
+    usort(self::$keywordList, function($x, $y) {
+      return strlen($y) - strlen($x);
+    });
+    print_r(self::$keywordList);
   }
 
   private static function renderProduct($id) {
@@ -41,7 +49,7 @@ class SearchProductListScreen {
       '<div class="price">&yen;<span>',
       $product['lowest_price_x_100']/100, '</span></div>';//price
     if ($excerption !== '') {
-      echo '<p>', $excerption, '&hellip;</p>';//excerption
+      echo '<p>', $excerption, '</p>';//excerption
     }
     if (count($tagList) !== 0) {
       echo '<div class="tag_list">', implode(' ', $tagList), '</div>';
@@ -74,30 +82,114 @@ class SearchProductListScreen {
     return $format.$argumentList;
   }
 
-  private static function excerpt($propertyList) { //TODO
-    $list = array();
+  private static function excerpt($text) {
+    if (mb_strlen($text) < 60) {
+      return $text;
+    }
+    $type = 'link';
+    $propertyList = array();
+    foreach (explode('\n', text) as $property) {
+      if ($property === '') {
+        $type = 'text';
+        continue;
+      }
+      $propertyList[] = array($property, $type);
+    }
+    $matchList = array();
+    $length = 0;
     foreach (self::$keywordList as $keyword) {
-      preg_match('{\n.*'.$keyword.'.*}', "\n".$propertyList, $matches);
-      $property = substr($matches[0], 1);
-      if (isset($matches[0])) {
-        $list[$matches[0]] = true;
+      foreach ($propertyList as $property) {
+        $propertyText = $property[0];
+        if (strpos($propertyText, $keyword) !== false) {
+          if (isset($matchList[$propertyText]) === false) {
+            $propertyLength = mb_strlen($propertyText) + 1;
+            $matchList[$propertyText] = array($propertyLength, $property[1]);
+            $length += $propertyLength;
+          }
+          continue;
+        }
       }
     }
-    $list = array_keys($list);
-    return implode('。', $list);
+    if ($length === 0) {
+      return '';
+    }
+    if ($length > 60) {
+      $matchList = self::reduceExcerption($matchList);
+    }
+    $textList = array();
+    $linkList = array();
+    foreach ($matchList as $text => $metaList) {
+      if ($metaList[1] === 'text') {
+        $textList[] = $text;
+        continue;
+      }
+      $linkList[] = $text;
+    }
+    $end = '。';
+    if (count($matchList) < count($propertyList)) {
+      $end = '&hellip;';
+    }
+    $result = '';
+    $hasTextList = count($textList) === 0;
+    if (count($linkList) !== 0) {
+      $result = '<span class="link">'.implode('。', array_keys($linkList));
+    }
+    if (count($textList) === 0) {
+      return $result.$end.'<span>';
+    }
+    return $result.'。'.implode('。', array_keys($linkList)).$end;
   }
 
-  private static function reduceExcerption($string) {
-    
+  private static function reduceExcerption($length, $matchList) {
+    foreach ($matchList as $text => $metaList) {
+      if ($metaList[0] > 15 && $metaList[1] === 'text') {
+        $text = substr($text, 0, 15);
+        $length -= 3;
+        if ($length < 60) {
+          break;
+        }
+      }
+    }
+    $amount = count($matchList);
+    while ($length > 60 && $amount > 1) {
+      $length -= array_pop($matchList);
+      --$amount;
+    }
+    return $matchList;
   }
 
   private static function highlight($text) {
-    $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
+    $positionList = array();
     foreach (self::$keywordList as $keyword) {
-      if (strpos($text, $keyword) !== false) {
-        $text = str_replace($keyword, '<span>'.$keyword.'</span>', $text);
+      $length = strlen($keyword);
+      $offset = 0;
+      while (false !== ($offset = strpos($text, $keyword, $offset))) {
+        if (isset($positionList[$offset]) === false) {
+          $positionList[$offset] = $length;
+        }
+        $offset = $offset + $length;
       }
     }
-    return $text;
+    $amount = count($positionList);
+    if ($amount === 0) {
+      return $text;
+    }
+    if ($amount > 1) {
+      ksort($positionList);
+    }
+    $result = '';
+    $offset = 0;
+    foreach ($positionList as $start => $length) {
+      if ($start < $offset) {
+        continue;
+      }
+      $result .= substr($text, $offset, $start - $offset).'<span>'
+        .substr($text, $start, $length).'</span>';
+      $offset = $start + $length;
+    }
+    if ($offset !== strlen($text)) {
+      $result .= substr($text, $offset);
+    }
+    return $result;
   }
 }
