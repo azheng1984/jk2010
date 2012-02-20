@@ -27,7 +27,7 @@ class SearchProductListScreen {
   private static function renderProduct($id) {
     $product = DbProduct::get($id);
     $merchant = DbMerchant::get($product['merchant_id']);
-    $specification = self::highlight(
+    $excerption = self::highlight(
         self::excerpt($product['property_list'])
     );
     $href = self::getProductUri(
@@ -43,8 +43,8 @@ class SearchProductListScreen {
       self::highlight($product['title']), '</a></h3>',//title
       '<div class="price">&yen;<span>',
       $product['lowest_price_x_100']/100, '</span></div>';//price
-    if ($specification !== '') {
-      echo '<p>', $specification, '&hellip;</p>';//specification
+    if ($excerption !== '') {
+      echo '<p>', $excerption, '&hellip;</p>';//excerption
     }
     if (count($tagList) !== 0) {
       echo '<div class="tag_list">', implode(' ', $tagList), '</div>';
@@ -80,23 +80,27 @@ class SearchProductListScreen {
   private static function excerpt($propertyList) { //TODO
     $list = array();
     foreach (self::$keywordList as $keyword) {
-      //for ($i = 0; $i < 10000; $i++) {
-        preg_match('{\n.*'.$keyword.'.*}', ','.$propertyList.',', $matches);
-      //}
-      //var_dump($matches);
+      preg_match('{\n.*'.$keyword.'.*}', "\n".$propertyList, $matches);
+      $property = substr($matches[0], 1);
+      if (isset($matches[0])) {
+        $list[$matches[0]] = true;
+      }
     }
-    //$propertyList = explode(';', $propertyList);
-    return $propertyList;
+    $list = array_keys($list);
+    return implode('。', $list);
+  }
+
+  private static function reduceExcerption($string) {
+    
   }
 
   private static function highlight($text) { //TODO
     $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
     foreach (self::$keywordList as $keyword) {
-      if (strpos($text, ",$keyword,") !== false) {
-        str_replace(",$keyword,", "<span>$keyword</span>", $text);
+      if (strpos($text, $keyword) !== false) {
+        $text = str_replace($keyword, "<span>$keyword</span>", $text);
       }
     }
-    $text = str_replace('+', '', $text);
-    return str_replace('&amp;#43;', '+', $text);
+    return $text;
   }
 }
