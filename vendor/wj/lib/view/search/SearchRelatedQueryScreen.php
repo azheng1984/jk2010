@@ -29,7 +29,10 @@ class SearchRelatedQueryScreen {
           echo '<td><a href="/', urlencode($query), '/">', $query, '</a></td>';
           continue;
         }
-        echo '<td class="empty"></td>';
+        $colspan = 5 - $column;
+        $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
+        echo '<td', $colspanAttribute, ' class="empty"></td>';
+        break;
       }
       echo '</tr>';
       if ($index >= $amount) {
