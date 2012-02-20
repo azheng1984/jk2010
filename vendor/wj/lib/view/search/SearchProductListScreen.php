@@ -27,17 +27,14 @@ class SearchProductListScreen {
   private static function renderProduct($id) {
     $product = DbProduct::get($id);
     $merchant = DbMerchant::get($product['merchant_id']);
-    $excerption = self::highlight(
-        self::excerpt($product['property_list'])
-    );
+    $excerption = self::highlight(self::excerpt($product['property_list']));
     $href = self::getProductUri(
       $merchant['product_uri_format'], $product['uri_argument_list']
     );
     $tagList = self::getTagList($product);
     echo '<td><div class="image"><a href="',
       $href, '" target="_blank" rel="nofollow">',
-      '<img alt="', $product['title'],
-      '" src="http://img.dev.huobiwanjia.com/',
+      '<img alt="', $product['title'], '" src="http://img.dev.huobiwanjia.com/',
       $product['id'], '.jpg"/></a></div>',//image
       '<h3><a href="', $href, '" target="_blank" rel="nofollow">',
       self::highlight($product['title']), '</a></h3>',//title
