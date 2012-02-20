@@ -91,11 +91,11 @@ class SearchProductListScreen {
     
   }
 
-  private static function highlight($text) { //TODO
+  private static function highlight($text) {
     $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
     foreach (self::$keywordList as $keyword) {
       if (strpos($text, $keyword) !== false) {
-        $text = str_replace($keyword, "<span>$keyword</span>", $text);
+        $text = str_replace($keyword, '<span>'.$keyword.'</span>', $text);
       }
     }
     return $text;
