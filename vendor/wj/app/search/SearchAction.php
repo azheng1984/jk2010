@@ -25,6 +25,9 @@ class SearchAction {
       $query = substr($GLOBALS['PATH_SECTION_LIST'][1], 2);
     }
     $query = trim(urldecode($query));
+    if ($query === '') {
+      throw NotFoundException;
+    }
     $GLOBALS['QUERY'] = DbQuery::getByName($query);
     if ($GLOBALS['QUERY'] !== false) {
       return;
@@ -35,7 +38,10 @@ class SearchAction {
   }
 
   private function parseCategory() {
-    $name = urldecode($GLOBALS['PATH_SECTION_LIST'][2]);
+    $name = trim(urldecode($GLOBALS['PATH_SECTION_LIST'][2]));
+    if ($name === '') {
+      throw NotFoundException;
+    }
     $GLOBALS['CATEGORY'] = DbCategory::getByName($name);
     if ($GLOBALS['CATEGORY'] === false) {
       $GLOBALS['CATEGORY'] = array('name' => $name);
