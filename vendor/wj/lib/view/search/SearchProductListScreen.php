@@ -88,12 +88,20 @@ class SearchProductListScreen {
         .$product['category_name'].'</a>';
       return $result;
     }
-    if (self::$hasCategory === true && $product['brand_name'] !== null) {
-      $result[] = '<a href="'.urlencode('品牌='.$product['brand_name']) //TODO:append
-        .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">品牌：'
-        .$product['brand_name'].'</a>';
+    if (self::$hasCategory === true && $product['brand_name'] !== null
+      && isset($GLOBALS['PROPERTY_LIST']['品牌']) === false) {
+      $result[] = '<a href="'.self::getBrandPath($product['brand_name'])
+        .'" rel="nofollow">品牌：'.$product['brand_name'].'</a>';
     }
     return $result;
+  }
+
+  private static function getBrandPath($brandName) {
+    $path = urlencode('品牌='.$brandName).'/'.$GLOBALS['QUERY_STRING'];
+    if (count($GLOBALS['PROPERTY_LIST']) > 0) {
+      $path = $GLOBALS['PATH_SECTION_LIST'][3].'&'.$path;
+    }
+    return $path;
   }
 
   private static function getProductUri($format, $argumentList) {
