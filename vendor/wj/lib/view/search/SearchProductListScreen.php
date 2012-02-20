@@ -1,7 +1,8 @@
 <?php
 class SearchProductListScreen {
-  private static $keywordList;
+  private static $cutList;
   private static $hasCategory;
+  private static $keywordList;
 
   public static function render() {
     self::initialize();
@@ -23,6 +24,7 @@ class SearchProductListScreen {
   }
 
   private static function initialize() {
+    self::$cutList = array();
     self::$hasCategory = isset($GLOBALS['CATEGORY']);
     self::$keywordList = explode(' ',
       SegmentationService::execute($GLOBALS['QUERY']['name']));
@@ -40,12 +42,12 @@ class SearchProductListScreen {
     $merchant = DbMerchant::get($product['merchant_id']);
     $excerption = '';
     if ($product['property_list'] !== null) {
-      $excerption = self::highlight(self::excerpt($product['property_list']));
+      $excerption = self::excerpt($product['property_list']);
+      $excerption = self::highlight($excerption);
     }
     $href = self::getProductUri(
       $merchant['product_uri_format'], $product['uri_argument_list']
     );
-    $tagList = self::getTagList($product);
     echo '<td><div class="image"><a href="',
       $href, '" target="_blank" rel="nofollow">',
       '<img alt="', $product['title'], '" src="',
@@ -57,6 +59,7 @@ class SearchProductListScreen {
     if ($excerption !== '') {
       echo '<p>', $excerption, '</p>';//excerption
     }
+    $tagList = self::getTagList($product);
     if (count($tagList) !== 0) {
       echo '<div class="tag_list">', implode(' ', $tagList), '</div>';
     }
@@ -84,21 +87,22 @@ class SearchProductListScreen {
     }
     if (self::$hasCategory === false && $product['category_name'] !== null) {
       $result[] = '<a href="'.urlencode($product['category_name'])
-        .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">分类：'
+        .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">分类: '
         .$product['category_name'].'</a>';
       return $result;
     }
     if (self::$hasCategory === true && $product['brand_name'] !== null
       && isset($GLOBALS['PROPERTY_LIST']['品牌']) === false) {
       $result[] = '<a href="'.self::getBrandPath($product['brand_name'])
-        .'" rel="nofollow">品牌：'.$product['brand_name'].'</a>';
+        .'" rel="nofollow">品牌: '.$product['brand_name'].'</a>';
     }
     return $result;
   }
 
   private static function getBrandPath($brandName) {
     $path = urlencode('品牌='.$brandName).'/'.$GLOBALS['QUERY_STRING'];
-    if (count($GLOBALS['PROPERTY_LIST']) > 0) {
+    if (count($GLOBALS['PROPERTY_LIST']) > 0
+      && strpos($GLOBALS['PATH_SECTION_LIST'][3], '"') === false) {
       $path = $GLOBALS['PATH_SECTION_LIST'][3].'&'.$path;
     }
     return $path;
@@ -109,100 +113,112 @@ class SearchProductListScreen {
   }
 
   private static function excerpt($text) {
-    if (mb_strlen($text, 'UTF-8') <= 60) {
-      return $text;//TODO:link span
-    }
     $propertyList = explode("\n", $text);
-    $matchList = array();
+    $isLink = true;
+    $list = array();
+    foreach ($propertyList as $propertyText) {
+      if ($propertyText === '') {
+        $isLink = false;
+        continue;
+      }
+      $list[$propertyText] = $isLink;
+    }
+    if (mb_strlen($text, 'UTF-8') > 60) {
+      $list = self::reducePropertyList($list);
+    }
+    $textSection = '';
+    $linkSection = '';
+    if (count($list) < count($propertyList)) {
+//      $end = '&hellip;';
+    }
+    $last = array_pop($list);
+    foreach ($last as $propertyText => $isLink) {
+      $end = "。";
+      if (isset(self::$cutList[$propertyText])) {
+        $end = '&hellip;';
+      }
+      if ($isLink) {
+        $linkSection .= $propertyText.$end;
+        continue;
+      }
+      $textSection .= $propertyText.$end;
+    }
+//     $end = '。';
+//     if (count($list) < count($propertyList)) {
+//       $end = '&hellip;';
+//     }
+//     $result = '';
+//     if (count($linkList) !== 0) {
+//       $result = '<span class="link">'.implode('。', $linkList).'</span>';
+//     }
+//     if (count($textList) === 0) {
+//       return $result.$end;
+//     }
+//     if ($result !== '') {
+//       $result .= '。';
+//     }
+//     return $result.implode('。', $textList).$end;
+  }
+
+  private static function reducePropertyList($list) {
+    $result = array();
     $length = 0;
+    $matchList = array();
     foreach (self::$keywordList as $keyword) {
-      $type = 'link';
-      foreach ($propertyList as $propertyText) {
-        if ($propertyText === '') {
-          $type = 'text';
-          continue;
-        }
+      foreach ($list as $propertyText => $isLink) {
         if (strpos($propertyText, $keyword) === false) {
           continue;
         }
-        if (isset($matchList[$propertyText]) === false) {
+        if (isset($result[$propertyText]) === false) {
           $propertyLength = mb_strlen($propertyText, 'UTF-8');
-          $matchList[$propertyText] = array($propertyLength, $type);
+          $result[$propertyText] = $isLink;
+          $matchList[] = array($propertyText, $isLink, $propertyLength);
           $length += $propertyLength;
         }
+        break;
       }
     }
-    if ($length === 0) {
-      return '';
+    if ($length < 60) {
+      return self::increaseExcerption($list, $result, $length);
     }
-    if ($length > 60) {
-      $matchList = self::reduceExcerption($matchList, $length);
-    } else {
-      $matchList = self::increaseExcerption($propertyList, $matchList, $length);
-    }
-    $textList = array();
-    $linkList = array();
-    foreach ($matchList as $text => $metaList) {
-      if ($metaList[1] === 'text') {
-        $textList[] = $text;
-        continue;
-      }
-      $linkList[] = $text;
-    }
-    $end = '。';
-    if (count($matchList) < count($propertyList)) {
-      $end = '&hellip;';
-    }
-    $result = '';
-    $hasTextList = count($textList) === 0;
-    if (count($linkList) !== 0) {
-      $result = '<span class="link">'.implode('。', $linkList);
-    }
-    if (count($textList) === 0) {
-      return $result.$end.'</span>';
-    }
-    return $result.'。</span>'.implode('。', $textList).$end;
-  }
-
-  private static function reduceExcerption($matchList, $length) {
     $result = array();
-    $length = 0;
-    foreach ($matchList as $text => $metaList) {
-      $propertyLength = $metaList[0];
-      if ($propertyLength > 15 && $metaList[1] === 'text') {
-        $text = mb_substr($text, 0, 15, 'UTF-8');
-        $metaList[2] = true;
+    foreach ($matchList as $item) {
+      $propertyText = $item[0];
+      $propertyLength = $item[2];
+      $isCut = false;
+      if ($propertyLength > 15 && $propertyLength[1] === false) {
+        $propertyText = mb_substr($propertyText, 0, 15, 'UTF-8');
+        $isCut = true;
         $propertyLength = 15;
       }
       if ($length + $propertyLength > 60 && count($result) !== 0) {
         break;
       }
-      $length += $propertyLength;
-      $result[$text] = $metaList;
+      if ($isCut) {
+        self::$cutList[$propertyText] = true;
+      }
+      $result[$propertyText] = $item[1];
     }
     return $result;
   }
 
   private static function increaseExcerption(
-    $propertyList, $matchList, $length
+    $list, $result, $length
   ) {
-    $type = 'link';
-    foreach ($propertyList as $propertyText) {
-      if ($propertyText === '') {
-        $type = 'text';
-        continue;
-      }
-      if (isset($matchList[$propertyText])) {
-        continue;
-      }
-      $propertyLength = mb_strlen($propertyText, 'UTF-8');
-      $length += $propertyLength;
-      if ($length < 60) {
-        break;
-      }
-      $matchList[$propertyText] = array($propertyLength, $type);
+    if (count($list) === count($result)) {
+      return $result;
     }
-    return $matchList;
+    foreach ($list as $propertyText => $isLink) {
+      if (isset($result[$propertyText]) === false) {
+        $propertyLength = mb_strlen($propertyText, 'UTF-8');
+        $length += $propertyLength;
+        if ($length > 60) {
+          break;
+        }
+        $result[$propertyText] = $isLink;
+      }
+    }
+    return $result;
   }
 
   private static function highlight($text) {

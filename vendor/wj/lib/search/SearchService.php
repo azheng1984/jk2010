@@ -21,6 +21,9 @@ class SearchService {
 
   public function search($handler) {
     $query = SegmentationService::execute($GLOBALS['QUERY']['name']);
+    if ($query === '') {
+      return false;
+    }
     return $handler->Query($query, 'wj_product');
   }
 
