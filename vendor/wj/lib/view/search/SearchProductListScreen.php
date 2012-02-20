@@ -89,7 +89,7 @@ class SearchProductListScreen {
       return $result;
     }
     if (self::$hasCategory === true && $product['brand_name'] !== null) {
-      $result[] = '<a href="'.urlencode('品牌='.$product['brand_name'])
+      $result[] = '<a href="'.urlencode('品牌='.$product['brand_name']) //TODO:append
         .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">品牌：'
         .$product['brand_name'].'</a>';
     }
