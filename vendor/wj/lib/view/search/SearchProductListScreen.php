@@ -38,19 +38,18 @@ class SearchProductListScreen {
   private static function renderProduct($id) {
     $product = DbProduct::get($id);
     $merchant = DbMerchant::get($product['merchant_id']);
-    $excerption = self::highlight(self::excerpt($product['property_list']));
+    $excerption = '';
+    if ($product['property_list'] !== null) {
+      $excerption = self::highlight(self::excerpt($product['property_list']));
+    }
     $href = self::getProductUri(
       $merchant['product_uri_format'], $product['uri_argument_list']
     );
-    $imageUri = 'http://img.dev.huobiwanjia.com/'.$product['id'];
-    if ($product['image_md5']) {
-      $imageUri .= '.'.$product['image_md5'];
-    }
-    $imageUri .= '.jpg';
     $tagList = self::getTagList($product);
     echo '<td><div class="image"><a href="',
       $href, '" target="_blank" rel="nofollow">',
-      '<img alt="', $product['title'], '" src="', $imageUri, '"/></a></div>',//image
+      '<img alt="', $product['title'], '" src="',
+      self::getImageUri($product), '"/></a></div>',//image
       '<h3><a href="', $href, '" target="_blank" rel="nofollow">',
       self::highlight($product['title']), '</a></h3>',//title
       '<div class="price">&yen;<span>',
@@ -63,6 +62,18 @@ class SearchProductListScreen {
     }
     echo '<div class="merchant">', $merchant['name'], '</div>',//merchant
       '</td>';
+  }
+
+  private static function getImageUri($product) {
+    if ($product['image_db_index'] === null) {
+      return 'http://dev.huobiwanjia.com/+/no_image.'
+        .Asset::getMd5('no_image').'.jpg';
+    }
+    $imageUri = 'http://img.dev.huobiwanjia.com/'.$product['id'];
+    if ($product['image_md5'] !== null) {
+      $imageUri .= '.'.$product['image_md5'];
+    }
+    return $imageUri.'.jpg';
   }
 
   private static function getTagList($product) {
@@ -78,7 +89,7 @@ class SearchProductListScreen {
       return $result;
     }
     if (self::$hasCategory === true && $product['brand_name'] !== null) {
-      $result[] = '<a href="'.urlencode('品牌='.$product['brand_name']) //TODO: path
+      $result[] = '<a href="'.urlencode('品牌='.$product['brand_name'])
         .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">品牌：'
         .$product['brand_name'].'</a>';
     }
@@ -90,8 +101,8 @@ class SearchProductListScreen {
   }
 
   private static function excerpt($text) {
-    if (mb_strlen($text) < 60) {
-      return $text;
+    if (mb_strlen($text) <= 60) {
+      return $text;//TODO:link span
     }
     $propertyList = explode('\n', $text);
     $matchList = array();
@@ -116,11 +127,11 @@ class SearchProductListScreen {
     if ($length === 0) {
       return '';
     }
-    
     if ($length > 60) {
       $matchList = self::reduceExcerption($matchList, $length);
+    } else {
+      $matchList = self::increaseExcerption($propertyList, $matchList, $length);
     }
-    $matchList = self::increaseExcerption($propertyList, $matchList, $length);
     $textList = array();
     $linkList = array();
     foreach ($matchList as $text => $metaList) {
@@ -214,7 +225,7 @@ class SearchProductListScreen {
         .substr($text, $start, $length).'</span>';
       $offset = $start + $length;
     }
-    if ($offset !== strlen($text)) {
+    if ($offset < strlen($text)) {
       $result .= substr($text, $offset);
     }
     return $result;
