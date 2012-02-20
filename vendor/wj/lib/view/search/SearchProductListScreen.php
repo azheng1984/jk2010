@@ -16,7 +16,7 @@ class SearchProductListScreen {
       ++$index;
       self::renderProduct($id);
     }
-    if ($index % 4 !== 1) {
+    if ($index % 4 !== 0) {
       $colspan = 4 - $index % 4;
       $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
       echo '<td', $colspanAttribute, ' class="empty"></td>';
