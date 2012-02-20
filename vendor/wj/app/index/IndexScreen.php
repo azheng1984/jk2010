@@ -62,7 +62,7 @@ class IndexScreen extends Screen {
   private function renderBreadcrumb() {
     echo '<div id="breadcrumb">',
       '<span class="home"><a href="/"><img alt="首页" src="/+/img/home.',
-      Asset::getMd5('/home.png'),'.png" /></a></span>';
+      Asset::getMd5('/home.png'), '.png" /></a></span>';
     if ($this->category !== null) {
       echo ' <span><a href="/+i/">分类</a></span><h1>',
         $this->category['name'], '</h1></div>';
@@ -75,7 +75,7 @@ class IndexScreen extends Screen {
     $amount = count($this->linkList);
     $index = 0;
     echo '<table>';
-    for ($row = 0; $row < 20; ++$row) {
+    for ($row = 0; $row < 20; ++$row) { //TODO:use foreach
       echo '<tr>';
       for ($column = 0; $column < 5; ++$column, ++$index) {
         if ($index < $amount) {
@@ -123,7 +123,7 @@ class IndexScreen extends Screen {
     if ($this->getAmount() !== 0 && $GLOBALS['PAGE'] !== 1) {
       $this->stop();
       header('HTTP/1.1 301 Moved Permanently');
-      Header('Location: .');
+      header('Location: .');
       return;
     }
     throw new NotFoundException;
