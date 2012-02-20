@@ -46,8 +46,9 @@ class SearchPropertyListPathParser {
     if (count($this->valueList) === 0) {
       throw new NotFoundException;
     }
-    $GLOBALS['PROPERTY_LIST'][] =
-      array('KEY' => $this->key, 'VALUE_LIST' => $this->valueList);
+    $GLOBALS['PROPERTY_LIST'][$this->key['name']] = array(
+      'KEY' => $this->key, 'VALUE_LIST' => $this->valueList
+    );
   }
 
   private function addValue($path) {
