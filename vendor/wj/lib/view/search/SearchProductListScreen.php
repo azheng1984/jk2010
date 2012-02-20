@@ -13,35 +13,46 @@ class SearchProductListScreen {
       $specification = self::highlight(
         self::excerpt($product['property_list'], $keywordList), $keywordList
       );
+      $href = 'http://www.360buy.com/product/'.$product['uri_argument_list'];
+      $tagList = self::getTagList($product, $hasCategory);
       echo '<li>',
-        '<div class="image"><a href="" target="_blank" rel="nofollow">',
+        '<div class="image"><a href="', $href, '" target="_blank" rel="nofollow">',
         '<img alt="', $title, '" src="http://img.dev.huobiwanjia.com/',
         $product['id'], '.jpg"/></a></div>',//image
-        '<h3><a href="" target="_blank" rel="nofollow">',
+        '<h3><a href="', $href, '" target="_blank" rel="nofollow">',
         $title, '</a></h3>',//title
         '<div class="price">&yen;<span>',
-        $product['lowest_price_x_100']/100, '</span></div>',//price
-        '<p>', $specification, '&hellip;</p>',//specification
-        '<div class="merchant">', $merchant['name'], '</div>';//merchant
-      self::renderFooter($product, $hasCategory);
-      echo '</li>';
+        $product['lowest_price_x_100']/100, '</span></div>';//price
+      if ($specification !== '') {
+        echo '<p>', $specification, '&hellip;</p>';//specification
+      }
+      if (count($tagList) !== 0) {
+        echo '<div class="tag_list">', implode(' ', $tagList), '</div>';
+      }
+      echo '<div class="merchant">', $merchant['name'], '</div>',//merchant
+        '</li>';
     }
     echo '<ol>';
   }
 
-  private static function renderFooter($product, $hasCategory) {
-    $meta = array();
+  private static function getTagList($product, $hasCategory) {
+    $result = array();
     if ($product['query_name'] !== null) {
-      $meta[0] = $product['query_name'];
+      $result[] = '<a href="/+-'.urlencode($product['query_name'])
+        .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">同款</a>';
     }
     if ($hasCategory === false && $product['category_name'] !== null) {
-      $meta[1] = $product['category_name'];
-      return $meta;
+      $result[] = '<a href="'.urlencode($product['category_name'])
+        .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">分类：'
+        .$product['category_name'].'</a>';
+      return $result;
     }
     if ($hasCategory === true && $product['brand_name'] !== null) {
-      $meta[2] = $product['brand_name'];
+      $result[] = '<a href="'.urlencode('品牌='.$product['brand_name'])
+        .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">品牌：'
+        .$product['brand_name'].'</a>';
     }
-    return $meta;
+    return $result;
   }
 
   private static function excerpt($propertyList, $keywordList) { //TODO
