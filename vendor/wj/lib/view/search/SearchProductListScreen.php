@@ -225,7 +225,7 @@ class SearchProductListScreen {
     if ($isLink === false) {
       return array(mb_substr($text, 0, 10, 'UTF-8'), 10);
     }
-    $endPosition = mb_strpos($text, '；');
+    $endPosition = mb_strpos($text, '；', 0, 'UTF-8');
     if ($endPosition === false) {
       return;
     }
