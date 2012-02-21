@@ -10,7 +10,9 @@
   background:#ffc;
   background:-webkit-linear-gradient(#ffc, #ffe);
   background:-moz-linear-gradient(#ffc, #ffe);
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffcc', endColorstr='#ffffee');
+  filter:progid:DXImageTransform.Microsoft.gradient(
+    startColorstr='#ffffcc', endColorstr='#ffffee'
+  );
   border-bottom:1px solid #e5e5e5;
 }
 #slogon h1 {
