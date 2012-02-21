@@ -42,8 +42,7 @@ class SearchProductListScreen {
     $merchant = DbMerchant::get($product['merchant_id']);
     $excerption = '';
     if ($product['property_list'] !== null) {
-      $excerption = self::excerpt($product['property_list']);
-      $excerption = self::highlight($excerption);
+      $excerption = self::highlight(self::excerpt($product['property_list']));
     }
     $href = self::getProductUri(
       $merchant['product_uri_format'], $product['uri_argument_list']
