@@ -25,7 +25,7 @@ class HomeScreen extends Screen {
   }
 
   private function renderSlogon() {
-    echo '<div id="slogon"><span class="arrow"></span><h1>',
+    echo '<div id="slogon"><h1>',
       $GLOBALS['HOME_CONFIG']['merchant_amount'], '个网上商店，',
       $GLOBALS['HOME_CONFIG']['product_amount'], '万商品，搜索：</h1>';
     $this->renderQueryList();
@@ -79,7 +79,7 @@ class HomeScreen extends Screen {
     $amount = count($GLOBALS['MERCHANT_LIST']);
     for ($row = 0; $row < 5; ++$row) {
       echo '<tr>';
-      for ($column = 0; $column < 5; ++$column, ++$index) {
+      for ($column = 0; $column < 5; ++$column, ++$index) { //TODO:use foreach
         if ($amount > $index) {
           $item = $GLOBALS['MERCHANT_LIST'][$index];
           echo '<td><a href="http://', $item['uri'],
@@ -88,7 +88,10 @@ class HomeScreen extends Screen {
             $item['name'], '</span></a></td>';
           continue;
         }
-        echo '<td></td>';
+        $colspan = 5 - $column;
+        $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
+        echo '<td', $colspanAttribute, '></td>';
+        break;
       }
       echo '</tr>';
       if ($index >= $amount) {
