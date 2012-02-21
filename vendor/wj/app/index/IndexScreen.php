@@ -61,8 +61,7 @@ class IndexScreen extends Screen {
 
   private function renderBreadcrumb() {
     echo '<div id="breadcrumb">',
-      '<span class="home"><a href="/"><img alt="首页" src="/+/img/home.',
-      Asset::getMd5('/home.png'), '.png" /></a></span>';
+      '<span class="home"><a href="/">首页</a></span>';
     if ($this->category !== null) {
       echo ' <span><a href="/+i/">分类</a></span><h1>',
         $this->category['name'], '</h1></div>';
