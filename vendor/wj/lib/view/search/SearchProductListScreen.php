@@ -113,11 +113,10 @@ class SearchProductListScreen {
   }
 
   private static function excerpt($text) {
-    $propertyList = explode("\n", $text);
-    $isLink = true;
     $list = array();
+    $isLink = true;
     $orignalAmount = 0;
-    foreach ($propertyList as $propertyText) {
+    foreach (explode("\n", $text) as $propertyText) {
       if ($propertyText === '') {
         $isLink = false;
         continue;
@@ -229,12 +228,14 @@ class SearchProductListScreen {
     if ($endPosition === false) {
       return;
     }
-    while ($endPosition < 10) {
-      $endPosition = mb_strpos($text, '；', $endPosition, 'UTF-8');
+    for (;;) {
+      $position = mb_strpos($text, '；', $endPosition, 'UTF-8');
+      if ($position === false || $position > 10) {
+        break;
+      }
+      $endPosition = $position;
     }
-    if ($endPosition !== $length) {
-      return array(mb_substr($text, 0, $endPosition, 'UTF-8'), $endPosition);
-    }
+    return array(mb_substr($text, 0, $endPosition, 'UTF-8'), $endPosition);
   }
 
   private static function increaseExcerption($list, $result, $length) {
