@@ -1,5 +1,6 @@
 <?php
 class SearchProductListScreen {
+  private static $merchantList;
   private static $cutList;
   private static $hasCategory;
   private static $keywordList;
@@ -24,6 +25,7 @@ class SearchProductListScreen {
   }
 
   private static function initialize() {
+    self::$merchantList = array();
     self::$cutList = array();
     self::$hasCategory = isset($GLOBALS['CATEGORY']);
     self::$keywordList = explode(' ',
@@ -39,11 +41,7 @@ class SearchProductListScreen {
 
   private static function renderProduct($id) {
     $product = DbProduct::get($id);
-    $merchant = DbMerchant::get($product['merchant_id']);
-    $excerption = '';
-    if ($product['property_list'] !== null) {
-      $excerption = self::highlight(self::excerpt($product['property_list']));
-    }
+    $merchant = self::getMerchant($product['merchant_id']);
     $href = self::getProductUri(
       $merchant['product_uri_format'], $product['uri_argument_list']
     );
@@ -55,7 +53,8 @@ class SearchProductListScreen {
       self::highlight($product['title']), '</a></h3>',//title
       '<div class="price">&yen;<span>',
       $product['lowest_price_x_100']/100, '</span></div>';//price
-    if ($excerption !== '') {
+    if ($product['property_list'] !== null) {
+      $excerption = self::highlight(self::excerpt($product['property_list']));
       echo '<p>', $excerption, '</p>';//excerption
     }
     $tagList = self::getTagList($product);
@@ -64,6 +63,13 @@ class SearchProductListScreen {
     }
     echo '<div class="merchant">', $merchant['name'], '</div>',//merchant
       '</td>';
+  }
+
+  private static function getMerchant($id) {
+    if (isset(self::$merchantList[$id]) === false) {
+      self::$merchantList[$id] = DbMerchant::get($id);
+    }
+    return self::$merchantList[$id];
   }
 
   private static function getImageUri($product) {
@@ -120,8 +126,8 @@ class SearchProductListScreen {
         $isLink = false;
         continue;
       }
-      ++$orignalAmount;
       $list[$propertyText] = $isLink;
+      ++$orignalAmount;
     }
     if (mb_strlen($text, 'UTF-8') > 60) {
       $list = self::reducePropertyList($list);
@@ -136,8 +142,8 @@ class SearchProductListScreen {
         ++$linkAmount;
         continue;
       }
-      ++$textAmount;
       $textList[] = $propertyText;
+      ++$textAmount;
     }
     $amount = $linkAmount + $textAmount;
     $isFull = $amount === $orignalAmount;
@@ -178,8 +184,8 @@ class SearchProductListScreen {
           continue;
         }
         if (isset($result[$propertyText]) === false) {
-          $propertyLength = mb_strlen($propertyText, 'UTF-8');
           $result[$propertyText] = $isLink;
+          $propertyLength = mb_strlen($propertyText, 'UTF-8');
           $matchList[] = array($propertyText, $isLink, $propertyLength);
           $length += $propertyLength;
         }
@@ -189,18 +195,17 @@ class SearchProductListScreen {
     if ($length < 60) {
       return self::increaseExcerption($list, $result, $length);
     }
-    $amount = count($matchList);
-    for ($index = $amount - 1; $index >= 0; --$index) {
+    for ($index = count($matchList) - 1; $index > -1; --$index) {
       $item = $matchList[$index];
       $propertyText = $item[0];
       $isLink = $item[1];
       $propertyLength = $item[2];
-      if ($propertyLength > 15) {
+      if ($propertyLength > 10) {
         $cut = self::cutProperty($propertyText, $isLink, $propertyLength);
       }
       if ($cut !== null) {
-        $length -= $propertyLength - $cut[1];
         $matchList[$index] = array($cut[0], $isLink, $cut[1]);
+        $length -= $propertyLength - $cut[1];
         self::$cutList[$cut[0]] = true;
       }
       if ($length < 60) {
@@ -234,7 +239,8 @@ class SearchProductListScreen {
       }
       $endPosition = $position;
     }
-    return array(mb_substr($text, 0, $endPosition, 'UTF-8'), $endPosition);
+    $cutLength = $endPosition + 1;
+    return array(mb_substr($text, 0, $cutLength, 'UTF-8'), $cutLength);
   }
 
   private static function increaseExcerption($list, $result, $length) {
@@ -242,14 +248,15 @@ class SearchProductListScreen {
       return $result;
     }
     foreach ($list as $propertyText => $isLink) {
-      if (isset($result[$propertyText]) === false) {
-        $propertyLength = mb_strlen($propertyText, 'UTF-8');
-        $length += $propertyLength;
-        if ($length > 60) {
-          break;
-        }
-        $result[$propertyText] = $isLink;
+      if (isset($result[$propertyText])) {
+        continue;
       }
+      $propertyLength = mb_strlen($propertyText, 'UTF-8');
+      $length += $propertyLength;
+      if ($length > 60) {
+        break;
+      }
+      $result[$propertyText] = $isLink;
     }
     return $result;
   }
