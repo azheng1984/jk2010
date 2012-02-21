@@ -116,11 +116,13 @@ class SearchProductListScreen {
     $propertyList = explode("\n", $text);
     $isLink = true;
     $list = array();
+    $orignalAmount = 0;
     foreach ($propertyList as $propertyText) {
       if ($propertyText === '') {
         $isLink = false;
         continue;
       }
+      ++$orignalAmount;
       $list[$propertyText] = $isLink;
     }
     if (mb_strlen($text, 'UTF-8') > 60) {
@@ -128,20 +130,19 @@ class SearchProductListScreen {
     }
     $linkList = array();
     $textList = array();
+    $linkAmount = 0;
+    $textAmount = 0;
     foreach ($list as $propertyText => $isLink) {
       if ($isLink) {
         $linkList[] = $propertyText;
+        ++$linkAmount;
         continue;
       }
+      ++$textAmount;
       $textList[] = $propertyText;
     }
-    $linkAmount = count($linkList);
-    $textAmount = count($textList);
     $amount = $linkAmount + $textAmount;
-    if ($amount === 0) {
-      return '';
-    }
-    $isFull = $amount !== count($propertyList);
+    $isFull = $amount === $orignalAmount;
     $count = 0;
     $result = '';
     if ($linkAmount !== 0) {
@@ -149,7 +150,8 @@ class SearchProductListScreen {
       foreach ($linkList as $item) {
         ++$count;
         $end = '。';
-        if (isset(self::$cutList[$item]) || ($count === $amount && $isFull)) {
+        if (isset(self::$cutList[$item])
+          || ($count === $amount && $isFull === false)) {
           $end = '&hellip;';
         }
         $result .= $item.$end;
@@ -159,7 +161,8 @@ class SearchProductListScreen {
     foreach ($textList as $item) {
       ++$count;
       $end = '。';
-      if (isset(self::$cutList[$item]) || ($count === $amount && $isFull)) {
+      if (isset(self::$cutList[$item])
+        || ($count === $amount && $isFull === false)) {
         $end = '&hellip;';
       }
       $result .= $item.$end;
