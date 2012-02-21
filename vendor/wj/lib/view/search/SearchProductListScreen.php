@@ -126,43 +126,50 @@ class SearchProductListScreen {
     if (mb_strlen($text, 'UTF-8') > 60) {
       $list = self::reducePropertyList($list);
     }
-    $textSection = '';
-    $linkSection = '';
-    if (count($list) < count($propertyList)) {
-//      $end = '&hellip;';
-    }
-    $last = array_pop($list);
-    foreach ($last as $propertyText => $isLink) {
-      $end = "。";
-      if (isset(self::$cutList[$propertyText])) {
-        $end = '&hellip;';
-      }
+    $linkList = array();
+    $textList = array();
+    foreach ($list as $propertyText => $isLink) {
       if ($isLink) {
-        $linkSection .= $propertyText.$end;
+        $linkList[] = $propertyText;
         continue;
       }
-      $textSection .= $propertyText.$end;
+      $textList[] = $propertyText;
     }
-//     $end = '。';
-//     if (count($list) < count($propertyList)) {
-//       $end = '&hellip;';
-//     }
-//     $result = '';
-//     if (count($linkList) !== 0) {
-//       $result = '<span class="link">'.implode('。', $linkList).'</span>';
-//     }
-//     if (count($textList) === 0) {
-//       return $result.$end;
-//     }
-//     if ($result !== '') {
-//       $result .= '。';
-//     }
-//     return $result.implode('。', $textList).$end;
+    $linkAmount = count($linkList);
+    $textAmount = count($textList);
+    $amount = $linkAmount + $textAmount;
+    if ($amount === 0) {
+      return '';
+    }
+    $isFull = $amount !== count($propertyList);
+    $count = 0;
+    $result = '';
+    if ($linkAmount !== 0) {
+      $result .= '<span class="link_list">';
+      foreach ($linkList as $item) {
+        ++$count;
+        $end = '。';
+        if (isset(self::$cutList[$item]) || ($count === $amount && $isFull)) {
+          $end = '&hellip;';
+        }
+        $result .= $item.$end;
+      }
+      $result .= '</span>';
+    }
+    foreach ($textList as $item) {
+      ++$count;
+      $end = '。';
+      if (isset(self::$cutList[$item]) || ($count === $amount && $isFull)) {
+        $end = '&hellip;';
+      }
+      $result .= $item.$end;
+    }
+    return $result;
   }
 
   private static function reducePropertyList($list) {
-    $result = array();
     $length = 0;
+    $result = array();
     $matchList = array();
     foreach (self::$keywordList as $keyword) {
       foreach ($list as $propertyText => $isLink) {
@@ -181,30 +188,53 @@ class SearchProductListScreen {
     if ($length < 60) {
       return self::increaseExcerption($list, $result, $length);
     }
-    $result = array();
-    foreach ($matchList as $item) {
+    $amount = count($matchList);
+    for ($index = $amount - 1; $index >= 0; --$index) {
+      $item = $matchList[$index];
       $propertyText = $item[0];
+      $isLink = $item[1];
       $propertyLength = $item[2];
-      $isCut = false;
-      if ($propertyLength > 15 && $propertyLength[1] === false) {
-        $propertyText = mb_substr($propertyText, 0, 15, 'UTF-8');
-        $isCut = true;
-        $propertyLength = 15;
+      if ($propertyLength > 15) {
+        $cut = self::cutProperty($propertyText, $isLink, $propertyLength);
       }
-      if ($length + $propertyLength > 60 && count($result) !== 0) {
+      if ($cut !== null) {
+        $length -= $propertyLength - $cut[1];
+        $matchList[$index] = array($cut[0], $isLink, $cut[1]);
+        self::$cutList[$cut[0]] = true;
+      }
+      if ($length < 60) {
         break;
       }
-      if ($isCut) {
-        self::$cutList[$propertyText] = true;
+    }
+    $length = 0;
+    $result = array();
+    foreach ($matchList as $item) {
+      if ($length + $item[2] > 60 && $length > 0) {
+        break;
       }
-      $result[$propertyText] = $item[1];
+      $result[$item[0]] = $item[1];
+      $length += $item[2];
     }
     return $result;
   }
 
-  private static function increaseExcerption(
-    $list, $result, $length
-  ) {
+  private static function cutProperty($text, $isLink, $length) {
+    if ($isLink === false) {
+      return array(mb_substr($text, 0, 10, 'UTF-8'), 10);
+    }
+    $endPosition = mb_strpos($text, '；');
+    if ($endPosition === false) {
+      return;
+    }
+    while ($endPosition < 10) {
+      $endPosition = mb_strpos($text, '；', $endPosition, 'UTF-8');
+    }
+    if ($endPosition !== $length) {
+      return array(mb_substr($text, 0, $endPosition, 'UTF-8'), $endPosition);
+    }
+  }
+
+  private static function increaseExcerption($list, $result, $length) {
     if (count($list) === count($result)) {
       return $result;
     }
