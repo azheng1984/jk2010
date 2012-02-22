@@ -47,7 +47,7 @@ class SearchPropertyListPathParser {
       throw new NotFoundException;
     }
     $GLOBALS['PROPERTY_LIST'][$this->key['name']] = array(
-      'KEY' => $this->key, 'VALUE_LIST' => $this->valueList
+      'key' => $this->key, 'value_list' => $this->valueList
     );
   }
 

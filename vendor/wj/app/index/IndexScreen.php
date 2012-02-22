@@ -17,7 +17,7 @@ class IndexScreen extends Screen {
     if ($this->category !== null) {
       $title = $this->category['name'];
     }
-    if ($this->page != 1) {
+    if ($this->page !== 1) {
       $title .= '('.$this->page.')';
     }
     echo '<title>', $title, '-货比万家</title>';
@@ -53,7 +53,7 @@ class IndexScreen extends Screen {
       $this->page = 1;
       return;
     }
-    if (!is_numeric($path) || $path < 2) {
+    if (is_numeric($path) === false || $path < 2) {
       throw new NotFoundException;
     }
     $this->page = intval($path);

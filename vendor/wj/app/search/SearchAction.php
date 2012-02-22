@@ -33,8 +33,6 @@ class SearchAction {
       return;
     }
     $GLOBALS['QUERY'] = array('name' => $query);
-    if (isset($GLOBALS['IS_RECOGNITION'])) {
-    }
   }
 
   private function parseCategory() {
@@ -59,7 +57,7 @@ class SearchAction {
       $GLOBALS['PAGE'] = 1;
       return;
     }
-    if (!is_numeric($path) || $path < 2) {
+    if (is_numeric($path) === false || $path < 2) {
       throw new NotFoundException;
     }
     $GLOBALS['PAGE'] = intval($path);

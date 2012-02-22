@@ -21,7 +21,7 @@ class HomeAction {
   }
 
   private function parsePage() {
-    if (isset($_GET['page']) === false || !is_numeric($_GET['page'])
+    if (isset($_GET['page']) === false || is_numeric($_GET['page']) === false
       || $_GET['page'] < 1) {
       $GLOBALS['PAGE'] = 1;
       return;
