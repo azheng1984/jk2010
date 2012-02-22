@@ -9,7 +9,8 @@ class SearchBreadcrumbScreen {
       htmlentities($GLOBALS['QUERY']['name'], ENT_NOQUOTES, 'UTF-8')
     );
     if (isset($GLOBALS['CATEGORY']) === false) {
-      echo '<h1>', $list[0], $recognitionSection, '</h1>';
+      echo '<div id="breadcrumb"><h1>', $list[0], $recognitionSection,
+        '</h1></div>';
       return;
     }
     $list[] = '分类:'.htmlentities(
@@ -32,7 +33,7 @@ class SearchBreadcrumbScreen {
       $list[] = implode(' ', $propertySectionList);
       $pathList[] = '..';
     }
-    echo '<h1>';
+    echo '<div id="breadcrumb"><h1>';
     $lastIndex = count($list) - 1;
     for ($index = 0; $index < $lastIndex; ++$index) {
       echo '<span><a href="', implode('/', $pathList),
@@ -48,6 +49,6 @@ class SearchBreadcrumbScreen {
       echo '</span> ';
       array_pop($pathList);
     }
-    echo $list[$lastIndex], '</h1>';
+    echo $list[$lastIndex], '</h1></div>';
   }
 }
