@@ -11,9 +11,6 @@ a {
   color:#06c;
   text-decoration:none;
 }
-a:hover {
-  text-decoration:underline;
-}
 table, div, form, input, button, ul, li, h1 {
   float:left;
 }
@@ -61,7 +58,7 @@ input:focus {
   display:block;
   width:89px;
   height:25px;
-  background-image:url(/+/img/header.png);
+  background-image:url(/+/img/screen.png);
   cursor:pointer;/* ie7 */
 }
 #header input {
@@ -71,7 +68,7 @@ input:focus {
   width:365px;
   border:1px solid;
   border-color:#666 #ccc #ccc #666;
-  background:url(/+/img/header.png) 0 -33px;/* firefox */
+  background:url(/+/img/screen.png) 0 -33px;/* firefox */
 }
 #header input:hover {
   border-color:#555 #bbb #bbb #555;
@@ -82,7 +79,7 @@ input:focus {
   width:30px;
   height:30px;
   border:0;
-  background:url(/+/img/header.png) -97px 0;
+  background:url(/+/img/screen.png) -97px 0;
   cursor:pointer;
 }
 #banner {
@@ -94,12 +91,12 @@ input:focus {
   text-align:center;
   float:right;
   padding-left:22px;
-  background:url(/+/img/header.png) -142px -5px no-repeat;
+  background:url(/+/img/screen.png) -142px -5px no-repeat;
 }
 #banner .left {
   margin-right:15px;
   padding-left:25px;
-  background:url(/+/img/header.png) -494px -4px no-repeat;
+  background:url(/+/img/screen.png) -494px -4px no-repeat;
 }
 #footer {
   line-height:40px;
@@ -119,5 +116,4 @@ input:focus {
 #footer a:hover {
   color:#333;
   border-color:#333;
-  text-decoration:none;
 }
