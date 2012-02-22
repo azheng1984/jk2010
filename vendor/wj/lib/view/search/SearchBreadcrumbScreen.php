@@ -20,9 +20,9 @@ class SearchBreadcrumbScreen {
       $propertySectionList = array();
       foreach ($GLOBALS['PROPERTY_LIST'] as $property) {
         $propertySection =
-          htmlentities($property['KEY']['name'], ENT_NOQUOTES, 'UTF-8').':';
+          htmlentities($property['key']['name'], ENT_NOQUOTES, 'UTF-8').':';
         $valueSectionList = array();
-        foreach ($property['VALUE_LIST'] as $value) {
+        foreach ($property['value_list'] as $value) {
           $valueSectionList[] = '<span class="value">'
             .htmlentities($value['name'], ENT_NOQUOTES, 'UTF-8').'</span>';
         }

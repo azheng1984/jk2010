@@ -52,15 +52,15 @@ class SearchService {
       return;
     }
     foreach ($GLOBALS['PROPERTY_LIST'] as $property) {
-      if (isset($property['KEY']['mva_index']) === false) {
+      if (isset($property['key']['mva_index']) === false) {
         return false;
       }
-      $valueIdList = self::getValueIdList($property['VALUE_LIST']);
+      $valueIdList = self::getValueIdList($property['value_list']);
       if ($valueIdList === false) {
         return false;
       }
       $handler->SetFilter(
-        'value_id_list_'.$property['KEY']['mva_index'], $valueIdList
+        'value_id_list_'.$property['key']['mva_index'], $valueIdList
       );
     }
   }
