@@ -14,7 +14,7 @@ a {
 a:hover {
   text-decoration:underline;
 }
-div, form, input, button, ul, li {
+table, div, form, input, button, ul, li, h1 {
   float:left;
 }
 ul {
@@ -84,7 +84,6 @@ input:focus {
   border:0;
   background:url(/+/img/header.png) -97px 0;
   cursor:pointer;
-  border-radius:3px;
 }
 #banner {
   float:right;
