@@ -4,6 +4,9 @@
   border:1px solid #E5E5E5;
   padding-bottom:15px;
 }
+#index a:hover {
+  text-decoration:underline;
+}
 #breadcrumb {
   width:100%;
   line-height:30px;
@@ -15,7 +18,7 @@
   display:block;
   float:left;
   padding:0 13px 0 8px;
-  background:url(/+/img/header.png) right -132px no-repeat;
+  background:url(/+/img/screen.png) right -132px no-repeat;
 }
 #breadcrumb h1 {
   font-size:16px;
@@ -34,7 +37,7 @@ table {
 td {
   width:185px;
   padding:5px 0;
-  background:url(/+/img/header.png) -500px -480px no-repeat;
+  background:url(/+/img/screen.png) -500px -480px no-repeat;
 }
 td.empty {
   background:none;
@@ -50,21 +53,20 @@ td a {
 #pagination a {
   border:1px solid #E5E5E5;
   padding:4px 8px;
-  background:url(/+/img/header.png) 0 -66px repeat-x;
+  background:url(/+/img/screen.png) 0 -66px repeat-x;
   margin:0 1px;
-  border-radius: 3px;
+  border-radius:3px;
 }
 #pagination a:hover {
-  border:1px solid #CCC;
-  text-decoration:none;
+  border:1px solid #ccc;
   box-shadow:0 0 3px #ddd;
+  text-decoration:none;
 }
 #pagination span {
   border:1px solid red;
-    border-radius: 3px;
+  border-radius: 3px;
   background-color:red;
   color:#fff;
   padding:3px 7px;
-  font-size:14px;
   margin:1px 2px;
 }
