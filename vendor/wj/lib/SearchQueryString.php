@@ -37,11 +37,11 @@ class SearchQueryString {
 
   private static function parsePriceRange() {
     if (isset($_GET['price_from']) && is_numeric($_GET['price_from'])
-        && $_GET['price_from'] >= 0) {
+      && $_GET['price_from'] >= 0) {
       $GLOBALS['PRICE_FROM'] = $_GET['price_from'];
     }
     if (isset($_GET['price_to']) && is_numeric($_GET['price_to'])
-        && $_GET['price_to'] >= 0) {
+      && $_GET['price_to'] >= 0) {
       $GLOBALS['PRICE_TO'] = $_GET['price_to'];
     }
   }
