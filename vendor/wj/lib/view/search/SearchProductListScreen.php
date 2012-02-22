@@ -86,20 +86,19 @@ class SearchProductListScreen {
 
   private static function getTagList($product) {
     $result = array();
-    if ($product['query_name'] !== null) {
-      $result[] = '<a href="/+-'.urlencode($product['query_name'])
-        .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">同款</a>';
-    }
     if (self::$hasCategory === false && $product['category_name'] !== null) {
       $result[] = '<a href="'.urlencode($product['category_name'])
         .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">分类: '
         .$product['category_name'].'</a>';
-      return $result;
     }
     if (self::$hasCategory === true && $product['brand_name'] !== null
       && isset($GLOBALS['PROPERTY_LIST']['品牌']) === false) {
       $result[] = '<a href="'.self::getBrandPath($product['brand_name'])
         .'" rel="nofollow">品牌: '.$product['brand_name'].'</a>';
+    }
+    if ($product['query_name'] !== null) {
+      $result[] = '<a href="/+-'.urlencode($product['query_name'])
+      .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">同款</a>';
     }
     return $result;
   }
