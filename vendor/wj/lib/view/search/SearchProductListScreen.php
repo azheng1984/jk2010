@@ -260,7 +260,7 @@ class SearchProductListScreen {
     return $result;
   }
 
-  private static function highlight($text) {
+  private static function highlight($text) {//TODO:合并连续的 span
     $positionList = array();
     foreach (self::$keywordList as $keyword) {
       $length = strlen($keyword);

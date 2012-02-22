@@ -1,9 +1,10 @@
 <?php
 class SearchResultScreen {
   public static function render() {
-    echo '<div id="search"><div id="result">';
+    echo '<div id="search"><div id="result"><div id="result_header">';
     SearchSortScreen::render();
     self::renderTotalFound();
+    echo '</div>';
     SearchProductListScreen::render();
     PaginationScreen::render($GLOBALS['PAGE'],
       $GLOBALS['SEARCH_RESULT']['total_found'], $GLOBALS['QUERY_STRING']);

@@ -25,6 +25,7 @@
 }
 #slogon ul {
   padding:0 0 10px 15px;
+  clear:left;
 }
 #slogon li {
   padding-right:15px;
