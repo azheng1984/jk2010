@@ -102,7 +102,7 @@ class SearchProductListScreen {
     }
     if ($product['query_name'] !== null) {
       $result[] = '<a href="/+-'.urlencode($product['query_name'])
-      .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">同款</a>';
+      .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">分类: xxxxxxxxxxxxxxxxssssssssssssssss同款</a>';
     }
     return $result;
   }
