@@ -417,23 +417,16 @@ line-height:23px;
 #related {
   border:1px solid #e5e5e5;
   border-top:none;
-  width: 960px;
+  width:100%;
 }
 #related h2 {
-  font-size:14px;
-  font-weight:normal;
-  margin:0;
   padding:5px;
-  float:left;
 }
 #related table {
-  margin:0;
-  float:left;
   padding:3px;
 }
 #related td {
   padding:0 8px 0 18px;
-  font-size:11px;
   background:url(/+/img/bull.png) 0 2px no-repeat;
   vertical-align:top;
 }

@@ -3,7 +3,7 @@
   width:960px;
   background:#f5f5f5;
 }
-#search h2 {
+h2 {
   margin:0;
   font-size:14px;
   font-weight:normal;
@@ -273,4 +273,28 @@ h1 {
   color:#fff;
   padding:3px 7px;
   margin:1px 2px;
+}
+/* related
+ ***************************************/
+#related {
+  border:1px solid #e5e5e5;
+  border-top:none;
+  width:100%;
+}
+#related h2 {
+  padding:5px;
+}
+#related table {
+  padding:3px;
+}
+#related td {
+  padding:0 8px 0 18px;
+  background:url(/+/img/screen.png) -508px -485px no-repeat;
+  vertical-align:top;
+}
+#related a {
+  font-size:14px;
+}
+#related a:hover {
+  text-decoration:underline;
 }
