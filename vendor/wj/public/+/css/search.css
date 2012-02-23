@@ -1,6 +1,6 @@
 #search {
   border:1px solid #e5e5e5;
-  width:960px;
+  width:100%;
   background:#f5f5f5;
 }
 h2 {
@@ -75,7 +75,7 @@ h1 {
 }
 #total_found {
   float:right;
-  font-size:13px;
+  font-size:12px;
   line-height:25px;
   padding:5px 10px;
 }
@@ -281,13 +281,13 @@ h1 {
   overflow:hidden;
 }
 #tag h2 {
-background: url(/+/img/tag.png) 5px 10px no-repeat;
-padding: 6px 0 0 25px;
-line-height: 25px;
+  background:url(/+/img/tag.png) 2px 10px no-repeat;
+  padding:6px 0 0 22px;
+  line-height:25px;
 }
 #tag ol {
   clear:left;
-  padding:2px 8px;
+  padding:2px 5px;
   list-style:none;
 }
 #tag li {
@@ -326,7 +326,7 @@ line-height: 25px;
   width:100%;
 }
 #related h2 {
-  padding:5px;
+  padding:5px 0 5px 5px;
 }
 #related table {
   padding:3px;
