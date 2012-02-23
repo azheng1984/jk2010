@@ -11,10 +11,10 @@ a {
   color:#06c;
   text-decoration:none;
 }
-table, div, form, input, button, ul, li, h1, h2, h3 {
+table, div, form, input, button, ol, ul, li, h1, h2, h3 {
   float:left;
 }
-ul {
+ol, ul {
   list-style:none;
   padding:0;
   margin:0;
