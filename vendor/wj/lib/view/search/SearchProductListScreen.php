@@ -285,18 +285,22 @@ class SearchProductListScreen {
     }
     $result = '';
     $offset = 0;
-    foreach ($positionList as $next => $length) {
-      if ($next < $offset) {
+    foreach ($positionList as $start => $length) {
+      $next = $start + $length;
+      if ($next <= $offset) {
         continue;
       }
-      $end = $next + $length;
-      while (isset($positionList[$end])) {
-        $length += $positionList[$end];
-        $end += $positionList[$end];
+      if ($start < $offset) {
+        $length = $length + $start - $offset;
+        $start = $offset;
       }
-      $result .= substr($text, $offset, $next - $offset).'<span>'
-        .substr($text, $next, $length).'</span>';
-      $offset = $end;
+      while (isset($positionList[$next])) {
+        $length += $positionList[$next];
+        $next += $positionList[$next];
+      }
+      $result .= substr($text, $offset, $start - $offset).'<span>'
+        .substr($text, $start, $length).'</span>';
+      $offset = $next;
     }
     if ($offset < strlen($text)) {
       $result .= substr($text, $offset);
