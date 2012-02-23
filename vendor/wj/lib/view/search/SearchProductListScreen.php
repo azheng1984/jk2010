@@ -19,7 +19,7 @@ class SearchProductListScreen {
     if ($index % 4 !== 0 && $index > 4) {
       $colspan = 4 - $index % 4;
       $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
-      echo '<td', $colspanAttribute, ' class="empty"></td>';
+      echo '<td', $colspanAttribute, '></td>';
     }
     echo '</tr></table>';
   }

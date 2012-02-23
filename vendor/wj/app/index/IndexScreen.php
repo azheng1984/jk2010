@@ -71,30 +71,21 @@ class IndexScreen extends Screen {
   }
 
   private function renderLinkTable() {
-    $amount = count($this->linkList);
     $index = 0;
-    echo '<table>';
-    for ($row = 0; $row < 20; ++$row) { //TODO:use foreach
-      echo '<tr>';
-      for ($column = 0; $column < 5; ++$column, ++$index) {
-        if ($index < $amount) {
-          $item = $this->linkList[$index];
-          echo '<td><a href="', $item['href'], '">', $item['text'], '</a></td>';
-          continue;
-        }
-        if ($row !== 0) {
-          $colspan = 5 - $column;
-          $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
-          echo '<td', $colspanAttribute, '></td>';
-        }
-        break;
+    echo '<table><tr>';
+    foreach ($this->linkList as $link) {
+      if ($index % 5 === 0 && $index !== 0) {
+        echo '</tr><tr>';
       }
-      echo '</tr>';
-      if ($index >= $amount) {
-        break;
-      }
+      echo '<td><a href="', $link['href'], '">', $link['text'], '</a></td>';
+      ++$index;
     }
-    echo '</table>';
+    if ($index % 5 !== 0 && $index > 5) {
+      $colspan = 5 - $index % 5;
+      $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
+      echo '<td', $colspanAttribute, '></td>';
+    }
+    echo '</tr></table>';
   }
 
   private function buildLinkList() {

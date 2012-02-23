@@ -74,32 +74,23 @@ class HomeScreen extends Screen {
   }
 
   private function renderMerchantList() {
-    echo '<table>';
     $index = 0;
-    $amount = count($GLOBALS['MERCHANT_LIST']);
-    for ($row = 0; $row < 5; ++$row) {
-      echo '<tr>';
-      for ($column = 0; $column < 5; ++$column, ++$index) { //TODO:use foreach
-        if ($amount > $index) {
-          $item = $GLOBALS['MERCHANT_LIST'][$index];
-          echo '<td><a href="http://', $item['uri'],
-            '" target="_blank" rel="nofollow"><img alt="', $item['name'],
-            '" src="/+/img/logo/', $item['path'], '.png"/><span>',
-            $item['name'], '</span></a></td>';
-          continue;
-        }
-        if ($row !== 0) {
-          $colspan = 5 - $column;
-          $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
-          echo '<td', $colspanAttribute, '></td>';
-        }
-        break;
+    echo '<table><tr>';
+    foreach ($GLOBALS['MERCHANT_LIST'] as $merchant) {
+      if ($index % 5 === 0 && $index !== 0) {
+        echo '</tr><tr>';
       }
-      echo '</tr>';
-      if ($index >= $amount) {
-        break;
-      }
+      echo '<td><a href="http://', $merchant['uri'],
+        '" target="_blank" rel="nofollow"><img alt="', $merchant['name'],
+        '" src="/+/img/logo/', $merchant['path'], '.png"/><span>',
+        $merchant['name'], '</span></a></td>';
+      ++$index;
     }
-    echo '</table>';
+    if ($index % 5 !== 0 && $index > 5) {
+      $colspan = 5 - $index % 5;
+      $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
+      echo '<td', $colspanAttribute, '></td>';
+    }
+    echo '</tr></table>';
   }
 }
