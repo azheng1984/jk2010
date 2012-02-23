@@ -171,8 +171,11 @@ h2 a {
 #result {
   width:770px;
 }
-#result h3 span /*,#result p span*/ {
+#result h3 span, #result p span {
   color:#d00;
+}
+#result p .link_list {
+    color:#666;
 }
 #result h3 a:hover span {
   text-decoration:underline;

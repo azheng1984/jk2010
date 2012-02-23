@@ -16,7 +16,7 @@ class SearchProductListScreen {
       ++$index;
       self::renderProduct($id);
     }
-    if ($index % 4 !== 0) {
+    if ($index % 4 !== 0 && $index > 4) {
       $colspan = 4 - $index % 4;
       $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
       echo '<td', $colspanAttribute, ' class="empty"></td>';
@@ -49,8 +49,12 @@ class SearchProductListScreen {
       $href, '" target="_blank" rel="nofollow">',
       '<img alt="', $product['title'], '" src="',
       self::getImageUri($product), '"/></a></div>',//image
-      '<h3><a href="', $href, '" target="_blank" rel="nofollow">',
-      self::highlight($product['title']), '</a></h3>',//title
+      '<h3><a href="', $href, '" target="_blank" rel="nofollow">';
+    $title = $product['title'];
+    if (mb_strlen($title, 'UTF-8') > 60) {
+      $title = mb_substr($title, 0, 60, 'UTF-8');
+    }
+    echo self::highlight($title), '</a></h3>',//title
       '<div class="price">&yen;<span>',
       $product['lowest_price_x_100']/100, '</span></div>';//price
     if ($product['property_list'] !== null) {
@@ -199,7 +203,7 @@ class SearchProductListScreen {
       $propertyText = $item[0];
       $isLink = $item[1];
       $propertyLength = $item[2];
-      if ($propertyLength > 10) {
+      if ($propertyLength > 12) {
         $cut = self::cutProperty($propertyText, $isLink, $propertyLength);
       }
       if ($cut !== null) {
@@ -225,7 +229,7 @@ class SearchProductListScreen {
 
   private static function cutProperty($text, $isLink, $length) {
     if ($isLink === false) {
-      return array(mb_substr($text, 0, 10, 'UTF-8'), 10);
+      return array(mb_substr($text, 0, 12, 'UTF-8'), 12);
     }
     $endPosition = mb_strpos($text, '；', 0, 'UTF-8');
     if ($endPosition === false) {
@@ -233,7 +237,7 @@ class SearchProductListScreen {
     }
     for (;;) {
       $position = mb_strpos($text, '；', $endPosition, 'UTF-8');
-      if ($position === false || $position > 10) {
+      if ($position === false || $position > 12) {
         break;
       }
       $endPosition = $position;
@@ -260,7 +264,7 @@ class SearchProductListScreen {
     return $result;
   }
 
-  private static function highlight($text) {//TODO:合并连续的 span
+  private static function highlight($text) {
     $positionList = array();
     foreach (self::$keywordList as $keyword) {
       $length = strlen($keyword);
@@ -281,13 +285,18 @@ class SearchProductListScreen {
     }
     $result = '';
     $offset = 0;
-    foreach ($positionList as $start => $length) {
-      if ($start < $offset) {
+    foreach ($positionList as $next => $length) {
+      if ($next < $offset) {
         continue;
       }
-      $result .= substr($text, $offset, $start - $offset).'<span>'
-        .substr($text, $start, $length).'</span>';
-      $offset = $start + $length;
+      $end = $next + $length;
+      while (isset($positionList[$end])) {
+        $length += $positionList[$end];
+        $end += $positionList[$end];
+      }
+      $result .= substr($text, $offset, $next - $offset).'<span>'
+        .substr($text, $next, $length).'</span>';
+      $offset = $end;
     }
     if ($offset < strlen($text)) {
       $result .= substr($text, $offset);
