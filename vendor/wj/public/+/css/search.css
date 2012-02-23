@@ -47,11 +47,13 @@
   display:block;
   float:left;
   padding:0 13px 0 8px;
+  margin-right:5px;
   background:url(/+/img/screen.png) right -132px no-repeat;
 }
 h1 {
   font-weight:normal;
   font-size:16px;
+  margin:0;
   padding:0 8px;
 }
 /* sort
@@ -222,7 +224,7 @@ h1 {
 #result .merchant {
   clear:left;
   color:#690;
-  margin-left:5px;
+  margin:0 0 5px 5px;
 }
 #result p .link_list {
   color:#666;
@@ -249,7 +251,8 @@ h1 {
 #pagination {
   width:100%;
   text-align:center;
-  padding:4px 0 0;
+  line-height:30px;
+  margin-bottom:10px;
 }
 #pagination a {
   border:1px solid #E5E5E5;
