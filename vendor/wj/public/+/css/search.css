@@ -1,12 +1,14 @@
 #search {
-  border:1px solid #e5e5e5;
   width:100%;
+  border:1px solid #e5e5e5;
   background:#f5f5f5;
 }
-h2 {
+h1, h2, h3 {
   margin:0;
-  font-size:14px;
   font-weight:normal;
+}
+h2 {
+  font-size:14px;
 }
 /* ad
  *************************************/
@@ -29,8 +31,8 @@ h2 {
   background:url(/+/img/ads.png) #eee no-repeat;
   font-size:12px;
   padding:0 8px 0 20px;
-  height: 18px;
-  line-height: 18px;
+  height:18px;
+  line-height:18px;
   color:#888;
 }
 /* breadcrumb
@@ -51,31 +53,31 @@ h2 {
   background:url(/+/img/screen.png) right -132px no-repeat;
 }
 h1 {
-  font-weight:normal;
   font-size:16px;
-  margin:0;
   padding:0 8px;
 }
-/* sort
- ****************************/
+/* result
+ *****************************/
 #result_wrapper {
   padding:0 8px;
 }
 #result {
   width:770px;
+  font-size:12px;
 }
+/* toolbar
+ ****************************/
 #toolbar {
   width:100%;
   height:35px;
   overflow:hidden;
+  background:url(/+/img/toobar.png) repeat-x;
   border:1px solid #e5e5e5;
   border-top:0;
-  background:url(/+/img/toobar.png) repeat-x;
   border-radius:0 0 5px 5px;
 }
 #total_found {
   float:right;
-  font-size:12px;
   line-height:25px;
   padding:5px 10px;
 }
@@ -85,12 +87,11 @@ h1 {
 }
 #toolbar h2 em {
   margin:1px 2px;
-  display:inline;
-  color:#fff;
-  background-color:red;
   padding:3px 8px;
+  color:#fff;
+  font-style:normal;
+  background-color:red;
   border-radius:3px;
-  font-style: normal;
 }
 #toolbar a {
   margin:4px 10px;
@@ -98,73 +99,15 @@ h1 {
 #toolbar a:hover {
   text-decoration:underline;
 }
-#price {
-  background: none;
-  color:#666;
-  padding:0;
-  margin:0;
-}
 #price em {
-  margin-right: 4px;
+  margin-right:4px;
 }
-#price span {
-  font-size:12px;
-  font-weight:normal;
-  margin:2px;
-}
-#price a {
+#price span, #price a {
   font-size:12px;
   margin:2px;
-}
-#price_range {
-  display:inline;
-  margin-left:10px;
-  line-height:23px;
-}
-#price_range input {
-  width:30px;
-  height:18px;
-  padding:0 2px;
-  border-width:1px;
-  border-style:solid;
-  border-color:#e5e5e5;
-  font-size:12px;
-  float:none;
-  background:#fff;
-}
-#price_range input:hover {
-  border-color:#ccc;
-}
-#price_range input:focus {
-  outline:1px solid #bce;
-}
-#price_range button {
-  display:block;
-  position:absolute;
-  top:-20px;
-  width:0;
-  height:0;
-  float:left;
-}
-#price_range a {
-  font-size:12px;
-  margin:0;
-  white-space:nowrap;
-  background: url(/+/img/button.png) repeat-x;
-  padding:2px 5px;
-  border:1px solid;
-  color:#666;
-  text-decoration:none;
-  border-color:#EEE #CCC #CCC #EEE;
-  border-radius:2px;
-}
-#price_range a:hover {
-  border-color: #ddd #aaa #aaa #ddd;
-  box-shadow:0 0 3px #ddd;
-  color:#333;
 }
 /* product list
- *******************************/
+ ****************************/
 #result h3 span, #result p span {
   color:#d00;
 }
@@ -172,15 +115,19 @@ h1 {
   text-decoration:underline;
 }
 #result table {
-  border-collapse:collapse;
   margin:8px 0;
-  background:white;
+  border-collapse:collapse;
+  background:#fff;
+  table-layout:fixed;
+  width:100%;
 }
 #result td {
-  width:190px;
-  font-size:12px;
   overflow:hidden;
   border:1px solid #e5e5e5;
+padding-left:5px;
+}
+#result td div {
+width:100%;
 }
 #result img {
   width:170px;
@@ -192,31 +139,29 @@ h1 {
   width:170px;
 }
 #result .image {
-  margin:10px;
+  padding:10px;
 }
 #result h3 {
-  margin:0 0 0 5px;
-  clear:left;
+  padding-left:5px;
   font-size:14px;
-  font-weight:normal;
 }
 #result h3 a:hover {
   text-decoration:underline;
 }
 #result h3 a:visited {
-  color:#551A8B;
+  color:#551a8b;
 }
 #result .price {
   line-height:30px;
   color:#999;
-  clear:left;
-  margin-left:5px;
+  padding-left:5px;
 }
 #result p {
   clear:left;
-  margin:0 0 0 5px;
+  margin:0 0 5px 5px;
 }
 #result .price span {
+  margin-left:1px;
   color:#333;
   font-size:14px;
   font-weight:bold;
@@ -224,22 +169,22 @@ h1 {
 #result .merchant {
   clear:left;
   color:#690;
-  margin:0 0 5px 5px;
+  padding:0 0 5px 5px;
 }
 #result p .link_list {
   color:#666;
 }
 #result .tag_list {
-  margin:5px;
+  padding:0 5px 5px 5px;
 }
 #result .tag_list a {
-  white-space:nowrap;
-  background:url(/+/img/screen.png) 0 -66px repeat-x;
   padding:3px 4px;
+  line-height:26px;
   border:1px solid;
   border-color:#eee #ccc #ccc #eee;
   color:#666;
   border-radius:2px;
+  display:block;
 }
 #result .tag_list a:hover {
   border-color:#ddd #aaa #aaa #ddd;
