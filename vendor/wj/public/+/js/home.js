@@ -1,0 +1,3 @@
+$(function() {
+  $('#header input').focus();
+});
