@@ -39,9 +39,6 @@ td {
   padding:5px 0;
   background:url(/+/img/screen.png) -500px -480px no-repeat;
 }
-td.empty {
-  background:none;
-}
 td a {
   margin-left:25px;
 }

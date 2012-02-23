@@ -29,9 +29,11 @@ class SearchRelatedQueryScreen {
           echo '<td><a href="/', urlencode($query), '/">', $query, '</a></td>';
           continue;
         }
-        $colspan = 5 - $column;
-        $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
-        echo '<td', $colspanAttribute, ' class="empty"></td>';
+        if ($row !== 0) {
+          $colspan = 5 - $column;
+          $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
+          echo '<td', $colspanAttribute, '></td>';
+        }
         break;
       }
       echo '</tr>';

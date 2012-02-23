@@ -19,6 +19,9 @@ ul {
   padding:0;
   margin:0;
 }
+table {
+  empty-cells:hide;
+}
 td {
   vertical-align:top;
 }

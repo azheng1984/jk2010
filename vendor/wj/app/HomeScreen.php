@@ -88,9 +88,11 @@ class HomeScreen extends Screen {
             $item['name'], '</span></a></td>';
           continue;
         }
-        $colspan = 5 - $column;
-        $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
-        echo '<td', $colspanAttribute, '></td>';
+        if ($row !== 0) {
+          $colspan = 5 - $column;
+          $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
+          echo '<td', $colspanAttribute, '></td>';
+        }
         break;
       }
       echo '</tr>';
