@@ -26,8 +26,8 @@
 }
 .ad span {
   float:right;
-  background: url(/+/img/ads.png) #eee no-repeat;
-  font-size: 12px;
+  background:url(/+/img/ads.png) #eee no-repeat;
+  font-size:12px;
   padding:0 8px 0 20px;
   height: 18px;
   line-height: 18px;
@@ -56,48 +56,51 @@ h1 {
 }
 /* sort
  ****************************/
+#result_wrapper {
+  padding:0 8px;
+}
 #result {
-  padding:0 0 2px 0;
+  width:770px;
 }
-#result_header {
-  margin: 0 5px;
-  border: 1px solid #E5E5E5;
-  border-top: 0;
-  padding: 5px 10px;
-  background:#fff;
+#toolbar {
+  width:100%;
+  height:35px;
+  overflow:hidden;
+  border:1px solid #e5e5e5;
+  border-top:0;
   background:url(/+/img/toobar.png) repeat-x;
-  border-radius: 0 0 5px 5px;
+  border-radius:0 0 5px 5px;
 }
-#result h2 em {
+#total_found {
+  float:right;
+  font-size:13px;
+  line-height:25px;
+  padding:5px 10px;
+}
+#toolbar h2 {
+  line-height:25px;
+  padding:5px 10px;
+}
+#toolbar h2 em {
   margin:1px 2px;
   display:inline;
   color:#fff;
   background-color:red;
   padding:3px 8px;
-  -webkit-border-radius:3px;
-  -moz-border-radius:3px;
   border-radius:3px;
   font-style: normal;
 }
-h2 a {
+#toolbar a {
   margin:4px 10px;
 }
-#result h2 {
-  float:left;
-  line-height:25px; /* ie */
-  width:578px;
+#toolbar a:hover {
+  text-decoration:underline;
 }
 #price {
   background: none;
   color:#666;
-  padding: 0;
-  margin: 0;
-  float:right;
-/*
-  -webkit-border-radius:0;
-  -moz-border-radius:0;
-  border-radius:0;
-  */
+  padding:0;
+  margin:0;
 }
 #price em {
   margin-right: 4px;
@@ -105,19 +108,11 @@ h2 a {
 #price span {
   font-size:12px;
   font-weight:normal;
-  margin: 4px;
+  margin:2px;
 }
 #price a {
   font-size:12px;
-  margin: 4px;
-}
-#total_found {
-  width:160px;
-  float:right;
-  display:inline; /* ie 6 */
-  font-size:13px;
-  text-align: right;
-  line-height:25px;
+  margin:2px;
 }
 #price_range {
   display:inline;
@@ -166,35 +161,24 @@ h2 a {
   box-shadow:0 0 3px #ddd;
   color:#333;
 }
-/* result
+/* product list
  *******************************/
-#result {
-  width:770px;
-}
 #result h3 span, #result p span {
   color:#d00;
-}
-#result p .link_list {
-    color:#666;
 }
 #result h3 a:hover span {
   text-decoration:underline;
 }
 #result table {
   border-collapse:collapse;
-  margin:5px;
+  margin:8px 0;
+  background:white;
 }
 #result td {
-  background:white;
-  padding:8px 1px 8px 8px;
+  width:190px;
   font-size:12px;
-  position:relative;
   overflow:hidden;
   border:1px solid #e5e5e5;
-}
-#result li:hover {
-  border:1px solid;
-  border-color:#e5e5e5 #ccc #ccc #e5e5e5;
 }
 #result img {
   width:170px;
@@ -206,14 +190,11 @@ h2 a {
   width:170px;
 }
 #result .image {
-  margin-left: 1px;
-  margin-bottom: 5px;
+  margin:10px;
 }
 #result h3 {
-  margin:5px 0;
-  width:178px;
+  margin:0 0 0 5px;
   clear:left;
-  float: left;
   font-size:14px;
   font-weight:normal;
 }
@@ -224,14 +205,14 @@ h2 a {
   color:#551A8B;
 }
 #result .price {
-  line-height:24px;
+  line-height:30px;
   color:#999;
   clear:left;
+  margin-left:5px;
 }
 #result p {
   clear:left;
-  margin:0;
-  width:178px;
+  margin:0 0 0 5px;
 }
 #result .price span {
   color:#333;
@@ -241,26 +222,24 @@ h2 a {
 #result .merchant {
   clear:left;
   color:#690;
-  overflow:hidden;
-  white-space:nowrap;
-  text-overflow:ellipsis;
-  width:178px;
+  margin-left:5px;
 }
-.tag_list {
-  padding: 5px 0;
+#result p .link_list {
+  color:#666;
 }
-.tag_list a {
+#result .tag_list {
+  margin:5px;
+}
+#result .tag_list a {
   white-space:nowrap;
   background:url(/+/img/screen.png) 0 -66px repeat-x;
   padding:3px 4px;
   border:1px solid;
-  border-color:#EEE #CCC #CCC #EEE;
+  border-color:#eee #ccc #ccc #eee;
   color:#666;
-  text-decoration:none;
   border-radius:2px;
 }
-.tag_list a:hover {
-  border:1px solid;
+#result .tag_list a:hover {
   border-color:#ddd #aaa #aaa #ddd;
   box-shadow:0 0 3px #ddd;
   color:#333;

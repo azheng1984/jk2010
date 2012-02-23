@@ -11,7 +11,7 @@ a {
   color:#06c;
   text-decoration:none;
 }
-table, div, form, input, button, ul, li, h1 {
+table, div, form, input, button, ul, li, h1, h2, h3 {
   float:left;
 }
 ul {
