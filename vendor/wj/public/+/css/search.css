@@ -95,12 +95,11 @@ h1 {
   font-style:normal;
   background-color:red;
   border-radius:3px;
-
 }
-#toolbar a {
-  margin:4px 10px;
+h2 a {
+  margin:2px 10px;
 }
-#toolbar a:hover {
+h2 a:hover {
   text-decoration:underline;
 }
 #price em {
@@ -109,6 +108,50 @@ h1 {
 #price span, #price a {
   font-size:12px;
   margin:2px;
+}
+/*
+ * price range
+ *****************************/
+#price_range {
+  margin:7px 0 0 5px;
+}
+#price_range input {
+  width:30px;
+  height:18px;
+  padding:0 2px;
+  border-width:1px;
+  border-style:solid;
+  border-color:#e5e5e5;
+  font-size:12px;
+  background:#fff;
+ *vertical-align:middle;/* ie6/7 input 文字对齐错误 */
+}
+#price_range input:hover {
+  border-color:#ccc;
+}
+#price_range input:focus {
+  outline:1px solid #bce;
+}
+#price_range button {
+  position:absolute;
+  top:-20px;
+  width:0;
+  height:0;
+}
+#price_range a {
+  font-size:12px;
+  margin-left:3px;
+  background:url(/+/img/button.png) repeat-x;
+  padding:2px 5px;
+  border:1px solid;
+  color:#666;
+  border-color:#EEE #CCC #CCC #EEE;
+  border-radius:2px;
+}
+#price_range a:hover {
+  border-color: #ddd #aaa #aaa #ddd;
+  box-shadow:0 0 3px #ddd;
+  color:#333;
 }
 /* product list
  ****************************/
@@ -171,14 +214,12 @@ width:100%;
   background:#fff;/*ie6 串行执行 hover */
 }
 #result p a:hover .gray {
-  background:#999;
-  border-bottom:0;
-  color:#fff;
+  border-bottom:1px solid #333;
+  color:#333;
 }
 #result p a:hover .red {
-  background:red;
-  border-bottom:0;
-  color:#fff;
+  border-bottom:1px solid red;
+  color:red;
 }
 #result .price span {
   margin-left:1px;
