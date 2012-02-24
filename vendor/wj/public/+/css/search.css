@@ -116,11 +116,11 @@ h1 {
   text-decoration:underline;
 }
 #result table {
+  table-layout:fixed;
+  width:100%;
   margin:8px 0;
   border-collapse:collapse;
   background:#fff;
-  table-layout:fixed;
-  width:100%;
 }
 #result td {
   overflow:hidden;
