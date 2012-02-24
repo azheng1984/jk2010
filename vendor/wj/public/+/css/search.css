@@ -159,12 +159,26 @@ width:100%;
   clear:left;
   margin:0 0 5px 0;
 }
+#result p a .gray {
+  color:#666;
+  border-bottom:1px solid #666;
+}
+#result p a .red {
+  color:#d00;
+  border-bottom:1px solid #d00;
+}
 #result p a:hover {
-  background:#666;
+  background:#fff;/*ie6 串行执行 hover */
+}
+#result p a:hover .gray {
+  background:#999;
+  border-bottom:0;
   color:#fff;
 }
-#result p a:hover span {
-  background:#d00;
+#result p a:hover .red {
+  background:red;
+  border-bottom:0;
+  color:#fff;
 }
 #result .price span {
   margin-left:1px;
