@@ -51,10 +51,11 @@
   margin:3px;
 }
 #merchant li a, #merchant li span {
-  background:#e5e5e5;
+  display:block;
   width:155px;
   padding:3px 0 3px 10px;
-  display:block;
+  background:#e5e5e5;
+  color:#666;
   border-radius:5px;
 }
 #merchant li a:hover {
