@@ -10,6 +10,9 @@ h1, h2, h3 {
 h2 {
   font-size:14px;
 }
+table {
+  border-collapse:collapse;
+}
 /* ad
  *************************************/
 .ad {
@@ -119,7 +122,6 @@ h1 {
   table-layout:fixed;
   width:100%;
   margin:8px 0;
-  border-collapse:collapse;
   background:#fff;
 }
 #result td {
@@ -273,12 +275,9 @@ width:100%;
 #related h2 {
   padding:5px 0 5px 5px;
 }
-#related table {
-  padding:3px;
-}
 #related td {
-  padding:0 8px 0 18px;
-  background:url(/+/img/screen.png) -508px -485px no-repeat;
+  padding:5px 8px 5px 18px;
+  background:url(/+/img/screen.png) -508px -482px no-repeat;
   vertical-align:top;
 }
 #related a {
