@@ -78,20 +78,21 @@ h1 {
 }
 #total_found {
   float:right;
-  line-height:25px;
-  padding:5px 10px;
+  line-height:35px;
+  padding:0 10px;
 }
 #toolbar h2 {
-  line-height:25px;
-  padding:5px 10px;
+  line-height:35px;
+  padding:0 10px;
 }
 #toolbar h2 em {
-  margin:1px 2px;
   padding:3px 8px;
+  margin:0 2px;
   color:#fff;
   font-style:normal;
   background-color:red;
   border-radius:3px;
+
 }
 #toolbar a {
   margin:4px 10px;
@@ -124,7 +125,7 @@ h1 {
 #result td {
   overflow:hidden;
   border:1px solid #e5e5e5;
-padding-left:5px;
+  padding:10px;
 }
 #result td div {
 width:100%;
@@ -138,11 +139,8 @@ width:100%;
   height:170px;
   width:170px;
 }
-#result .image {
-  padding:10px;
-}
 #result h3 {
-  padding-left:5px;
+  padding-top:10px;
   font-size:14px;
 }
 #result h3 a:hover {
@@ -154,11 +152,17 @@ width:100%;
 #result .price {
   line-height:30px;
   color:#999;
-  padding-left:5px;
 }
 #result p {
   clear:left;
-  margin:0 0 5px 5px;
+  margin:0 0 5px 0;
+}
+#result p a:hover {
+  background:#666;
+  color:#fff;
+}
+#result p a:hover span {
+  background:#d00;
 }
 #result .price span {
   margin-left:1px;
@@ -166,38 +170,37 @@ width:100%;
   font-size:14px;
   font-weight:bold;
 }
-#result .merchant {
-  clear:left;
-  color:#690;
-  padding:0 0 5px 5px;
-}
 #result p .link_list {
   color:#666;
 }
 #result .tag_list {
-  padding:0 5px 5px 5px;
+  padding-bottom:5px;
 }
 #result .tag_list a {
-  padding:3px 4px;
-  line-height:26px;
+  float:left;
+  margin:0 2px 2px 0;
+  padding:0 4px;
   border:1px solid;
   border-color:#eee #ccc #ccc #eee;
   color:#666;
-  border-radius:2px;
-  display:block;
+  border-radius:3px;
 }
 #result .tag_list a:hover {
   border-color:#ddd #aaa #aaa #ddd;
   box-shadow:0 0 3px #ddd;
   color:#333;
 }
+#result .merchant {
+  color:#690;
+}
 /* pagination
  **************************************/
 #pagination {
   width:100%;
+  font-size:14px;
   text-align:center;
   line-height:30px;
-  margin-bottom:10px;
+  padding-bottom:10px;
 }
 #pagination a {
   border:1px solid #E5E5E5;
@@ -241,17 +244,14 @@ width:100%;
   margin:3px 0;
 }
 #tag li a {
-  padding:5px 6px 3px 6px;
-  background-color:#fff;
-  border:1px solid;
-  display:block;
-  text-decoration:none;
-  font-size:13px;
-  line-height:13px;
   float:left;
-  border-color:#EEE #CCC #CCC #EEE;
-  border-radius:3px 11px 11px 3px;
+  padding:2px 6px 0 6px;
+  background-color:#fff;
+  display:block;
   font-size:11px;
+  border:1px solid;
+  border-color:#eee #ccc #ccc #eee;
+  border-radius:3px 11px 11px 3px;
   color:#888;
 }
 #tag li a:hover {
@@ -260,7 +260,7 @@ width:100%;
   color:#333;
 }
 #tag li a span {
-  color: #06C;
+  color:#06C;
   font-size:13px;
 }
 /* related

@@ -62,8 +62,8 @@ class SearchProductListScreen {
       echo '<p>', $excerption, '</p>';//excerption
     }
     $tagList = self::getTagList($product);
-    if (count($tagList) !== 0) {
-      echo '<div class="tag_list">', implode(' ', $tagList), '</div>';
+    if ($tagList !== '') {
+      echo '<div class="tag_list">', $tagList, '</div>';
     }
     echo '<div class="merchant">', $merchant['name'], '</div>',//merchant
       '</td>';
@@ -89,20 +89,20 @@ class SearchProductListScreen {
   }
 
   private static function getTagList($product) {
-    $result = array();
+    $result = '';
     if (self::$hasCategory === false && $product['category_name'] !== null) {
-      $result[] = '<a href="'.urlencode($product['category_name'])
+      $result .= '<a href="'.urlencode($product['category_name'])
         .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">分类: '
         .$product['category_name'].'</a>';
     }
     if (self::$hasCategory === true && $product['brand_name'] !== null
       && isset($GLOBALS['PROPERTY_LIST']['品牌']) === false) {
-      $result[] = '<a href="'.self::getBrandPath($product['brand_name'])
+      $result .= '<a href="'.self::getBrandPath($product['brand_name'])
         .'" rel="nofollow">品牌: '.$product['brand_name'].'</a>';
     }
     if ($product['query_name'] !== null) {
-      $result[] = '<a href="/+-'.urlencode($product['query_name'])
-      .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">分类: xxxxxxxxxxxxxxxxssssssssssssssss同款</a>';
+      $result .= '<a href="/+-'.urlencode($product['query_name'])
+      .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">同款</a>';
     }
     return $result;
   }

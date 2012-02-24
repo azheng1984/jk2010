@@ -53,6 +53,7 @@ input:focus {
   display:block;
   width:90px;
   height:25px;
+  color:red;
 }
 #logo span {
   position:absolute;
