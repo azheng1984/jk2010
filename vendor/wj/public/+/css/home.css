@@ -60,6 +60,7 @@
 }
 #merchant li a:hover {
   background:#ddd;
+  color:#333;
   box-shadow:0 0 3px #ddd;
 }
 #merchant li span {
