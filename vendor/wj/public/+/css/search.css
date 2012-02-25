@@ -211,7 +211,7 @@ width:100%;
   border-bottom:1px solid #d00;
 }
 #result p a:hover {
-  background:#fff;/*ie6 串行执行 hover */
+  background:#fff;/* ie6 串行解析 hover */
 }
 #result p a:hover .gray {
   border-bottom:1px solid #333;

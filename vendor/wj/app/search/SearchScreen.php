@@ -12,7 +12,7 @@ class SearchScreen extends Screen {
   protected function renderHtmlHeadContent() {
     $title = $GLOBALS['QUERY']['name'];
     if (isset($GLOBALS['IS_RECOGNITION'])) {
-      $title .= '(同款)';
+      $title .= '（同款）';
     }
     if (isset($GLOBALS['CATEGORY'])) {
       $title .= '/'.$GLOBALS['CATEGORY']['name'].'/';
