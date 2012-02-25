@@ -84,6 +84,9 @@ a .category {
   padding:0;
   border:0;
 }
+a:hover .category {
+  text-decoration:underline;
+}
 /* result
  *****************************/
 #result_wrapper {
