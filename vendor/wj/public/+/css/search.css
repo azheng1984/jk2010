@@ -62,7 +62,7 @@ h1 a:hover {
   text-decoration:underline;
 }
 .recognition:hover, .value:hover {
-  background:url(/+/img/delete_hover.png) right 7px no-repeat;
+  background:url(/+/img/delete_hover.png) right 6px no-repeat;
 }
 .value, .property {
   margin-right:4px;
@@ -74,9 +74,9 @@ h1 a:hover {
   border-radius:3px 11px 11px 3px;
   border:1px solid;
   border-color: #EEE #CCC #CCC #EEE;
-  background:url(/+/img/delete.png) right 7px no-repeat;
-display: inline-block;
-line-height: 14px;
+  background:url(/+/img/delete.png) right 6px no-repeat;
+  display:inline-block;
+  line-height:14px;
 }
 a .category {
   font-size:16px;
