@@ -1,6 +1,5 @@
 <?php
 class SearchToolbarScreen {
-
   public static function render() {
     echo '<div id="toolbar">';
     self::renderSort();
