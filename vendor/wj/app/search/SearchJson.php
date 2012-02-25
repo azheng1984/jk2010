@@ -31,7 +31,7 @@ class SearchJson extends Json {
 
   private function buildCategoryList() {
     $result = CategorySearchService::search();
-    if ($result === false || isset($result['matches']) === false) {
+    if ($result === false) {
       return;
     }
     foreach ($result['matches'] as $match) {
@@ -43,7 +43,7 @@ class SearchJson extends Json {
 
   private function buildKeyList() {
     $result = KeySearchService::search();
-    if ($result === false || isset($result['matches']) === false) {
+    if ($result === false) {
       return;
     }
     foreach ($result['matches'] as $match) {
@@ -54,7 +54,7 @@ class SearchJson extends Json {
 
   private function buildValueList() {
     $result = ValueSearchService::search();
-    if ($result === false || isset($result['matches']) === false) {
+    if ($result === false) {
       return;
     }
     foreach ($result['matches'] as $match) {
