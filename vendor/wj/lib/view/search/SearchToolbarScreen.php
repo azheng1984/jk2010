@@ -1,9 +1,17 @@
 <?php
-class SearchSortScreen {
+class SearchToolbarScreen {
+
   public static function render() {
+    echo '<div id="toolbar">';
+    self::renderSort();
+    self::renderTotalFound();
+    echo '</div>';
+  }
+
+  private static function renderSort() {
     echo '<h2>排序:';
     $list = array('销量' => 'sale_rank', '上架时间' => 'time',
-      '折扣' => 'discount', '价格' => 'price');
+        '折扣' => 'discount', '价格' => 'price');
     foreach ($list as $name => $sort) {
       if ($name === '价格') {
         self::renderPriceSection();
@@ -14,7 +22,7 @@ class SearchSortScreen {
         continue;
       }
       echo ' <a href=".', SearchQueryString::get($sort),
-        '" rel="nofollow">', $name, '</a>';
+      '" rel="nofollow">', $name, '</a>';
     }
     echo '</h2>';
   }
@@ -38,5 +46,12 @@ class SearchSortScreen {
     }
     echo ' <a href=".', SearchQueryString::get('price'),
       '" rel="nofollow">低-高</a> <span>高-低</span>';
+  }
+
+  private static function renderTotalFound() {
+    if ($GLOBALS['SEARCH_RESULT'] !== false) {
+      echo '<div id="total_found">找到 ',
+        $GLOBALS['SEARCH_RESULT']['total_found'], ' 个商品</div>';
+    }
   }
 }

@@ -33,7 +33,9 @@ class SearchScreen extends Screen {
   protected function renderHtmlBodyContent() {
     SearchAdSenseScreen::render('1');
     SearchBreadcrumbScreen::render();
+    echo '<div id="search"><div id="result_wrapper">';
     $this->renderResult();
+    echo '</div></div>';
     SearchAdSenseScreen::render('2', 'ad bottom');
     SearchRelatedQueryScreen::render();
   }
@@ -52,6 +54,7 @@ class SearchScreen extends Screen {
   private function renderResult() {
     if ($GLOBALS['SEARCH_RESULT'] === false
       || $GLOBALS['SEARCH_RESULT']['total_found'] === 0) {
+      SearchToolbarScreen::render();
       echo '<div id="no_result"><h2>没有找到相关商品，建议：</h2>',
         '<ul><li>检查搜索条件是否有误</li>',
         '<li>扩大搜索范围</li><li>去 <a href="/">商店列表</a> 逛逛</li></ul></div>';

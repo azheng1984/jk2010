@@ -24,7 +24,11 @@ class SearchService {
     if ($query === '') {
       return false;
     }
-    return $handler->Query($query, 'wj_product');
+    $result = $handler->Query($query, 'wj_product');
+    if (isset($result['matches']) === false) {
+      return false;
+    }
+    return $result;
   }
 
   private static function setRecognition($handler) {

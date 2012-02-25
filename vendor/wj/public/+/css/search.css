@@ -328,7 +328,7 @@ width:100%;
   width:100%;
 }
 #related h2 {
-  padding:5px 0 5px 5px;
+  padding:5px;
 }
 #related td {
   padding:5px 8px 5px 18px;
@@ -340,4 +340,25 @@ width:100%;
 }
 #related a:hover {
   text-decoration:underline;
+}
+/* no result
+ *************************************/
+#no_result a:hover {
+  text-decoration:underline;
+}
+#no_result {
+  width:940px;
+  padding:10px 0;
+}
+#no_result h2 {
+  padding:0 0 5px 10px;
+}
+#no_result ul {
+  clear:left;
+  padding:0 10px;
+}
+#no_result li {
+  clear:left;
+  padding:4px;
+  list-style:disc inside;
 }
