@@ -3,7 +3,7 @@ class SearchBreadcrumbScreen {
   public static function render() {
     $recognitionSection = '';
     if (isset($GLOBALS['IS_RECOGNITION'])) {
-      $recognitionSection = ' <span class="recognition">同款</span>';
+      $recognitionSection = ' <span class="recognition">（同款）</span>';
     }
     $list = array(
       htmlentities($GLOBALS['QUERY']['name'], ENT_NOQUOTES, 'UTF-8')

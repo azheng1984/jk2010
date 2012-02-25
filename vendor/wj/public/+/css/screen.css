@@ -29,7 +29,11 @@ input {
   color:#666;
   font-family:inherit;/* firefox */
 }
-* html #header input {/* ie6 不支持 input:hover */
+* html #header input {/* ie6 不支持 input 事件 */
+  color:#333;
+}
+input:hover {
+  border-color:#555 #bbb #bbb #555;
   color:#333;
 }
 input:focus {
@@ -74,10 +78,6 @@ input:focus {
   border:1px solid;
   border-color:#666 #ccc #ccc #666;
   background:url(/+/img/screen.png) 0 -33px;/* firefox */
-}
-#header input:hover {
-  border-color:#555 #bbb #bbb #555;
-  color:#333;
 }
 #header button {
   margin-top:7px;
