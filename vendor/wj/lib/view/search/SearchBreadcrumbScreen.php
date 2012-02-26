@@ -6,7 +6,7 @@ class SearchBreadcrumbScreen {
     );
     $recognitionSection = '';
     if (isset($GLOBALS['IS_RECOGNITION'])) {
-      $recognitionSection = ' <span class="recognition">同款</span>';
+      $recognitionSection = ' <a href="#" class="recognition">同款</a>';
       if (isset($GLOBALS['CATEGORY']) === false) {
         $list[0] = '<span class="query">'.$list[0].'</span>';
       }
@@ -30,8 +30,8 @@ class SearchBreadcrumbScreen {
           .htmlentities($property['key']['name'], ENT_NOQUOTES, 'UTF-8').':</span>';
         $valueSectionList = array();
         foreach ($property['value_list'] as $value) {
-          $valueSectionList[] = '<span class="value">'
-            .htmlentities($value['name'], ENT_NOQUOTES, 'UTF-8').'</span>';
+          $valueSectionList[] = '<a href="#" class="value">'
+            .htmlentities($value['name'], ENT_NOQUOTES, 'UTF-8').'</a>';
         }
         $propertySection .= implode(' ', $valueSectionList).'</span>';
         $propertySectionList[] = $propertySection;
@@ -56,5 +56,13 @@ class SearchBreadcrumbScreen {
       array_pop($pathList);
     }
     echo $list[$lastIndex], '</h1></div>';
+  }
+
+  private static function getPropertyPath() {
+    
+  }
+
+  private static function getPath($isRecognition = null) {
+    echo $_SERVER['REQUEST_URI'];
   }
 }
