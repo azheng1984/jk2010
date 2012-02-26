@@ -2,7 +2,7 @@
 class SearchBreadcrumbScreen {
   public static function render() {
     $list = array(
-        htmlentities($GLOBALS['QUERY']['name'], ENT_NOQUOTES, 'UTF-8')
+      htmlentities($GLOBALS['QUERY']['name'], ENT_NOQUOTES, 'UTF-8')
     );
     $recognitionSection = '';
     if (isset($GLOBALS['IS_RECOGNITION'])) {
@@ -58,11 +58,10 @@ class SearchBreadcrumbScreen {
     echo $list[$lastIndex], '</h1></div>';
   }
 
-  private static function getPropertyPath() {
-    
+  private static function cutPropertyPath($propertyName, $propertyValue) {
   }
 
-  private static function getPath($isRecognition = null) {
+  private static function cutRecognitionPath() {
     echo $_SERVER['REQUEST_URI'];
   }
 }
