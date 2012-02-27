@@ -76,13 +76,12 @@ h1 {
 }
 #breadcrumb .tag {
   font-size:13px;
-  background:#f5f5f5;
   padding:0 15px 0 4px;
   border-radius:3px 11px 11px 3px;
   border:1px solid;
-  border-color: #EEE #CCC #CCC #EEE;
+  border-color: #eee #ccc #ccc #eee;
   background:url(/+/img/delete.png) right 6px no-repeat;
-  margin:2px;
+  margin:1px 2px;
   color:#666;
 }
 /* result
@@ -237,7 +236,7 @@ width:100%;
   border-bottom:1px solid #d00;
 }
 #result p a:hover {
-  background:#fff;/* ie6 串行解析 hover */
+  background:#ffd;/* ie6 串行解析 hover */
 }
 #result p a:hover .gray {
   border-bottom:1px solid #333;
