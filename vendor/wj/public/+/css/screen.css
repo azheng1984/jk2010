@@ -46,7 +46,7 @@ input:focus {
 }
 #header {
   padding:5px 0 10px 0;
-  width:100%;/* ie 7 */
+  width:100%;
 }
 #logo {
   padding:8px 5px 0 0;
