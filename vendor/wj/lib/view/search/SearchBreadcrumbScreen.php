@@ -19,7 +19,7 @@ class SearchBreadcrumbScreen {
         }
         $class = isset($item['class']) ? ' class="'.$item['class'].'"' : '';
         if (isset($item['path']) === false) {
-          echo '<span', $class, '>'.$item['text'].'</span>';
+          echo '<span', $class, '>', $item['text'], '</span>';
           continue;
         }
         echo '<a', $class, ' href="', $item['path'], '" rel="nofollow">',
