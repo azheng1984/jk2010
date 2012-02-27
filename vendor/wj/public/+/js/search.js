@@ -46,8 +46,11 @@ $(function() {
   $('#toolbar h2').after(form);
   var isPriceRangeButtonHover = false;
   $('#price_range input').focusin(function() {
+    if ($('#price_range_button').length != 0) {
+      return;
+    }
     $('#price_range').append('<a id="price_range_button" href="javascript:$(\'#price_range\').submit()">确定</a>');
-    $('#price_range_button').hover(function(){ isPriceRangeButtonHover=true;}, function(){isPriceRangeButtonHover=false;});
+    $('#price_range_button').hover(function(){isPriceRangeButtonHover = true;}, function(){isPriceRangeButtonHover = false;});
   });
   $('#price_range input').focusout(function() {
     if (!isPriceRangeButtonHover) {

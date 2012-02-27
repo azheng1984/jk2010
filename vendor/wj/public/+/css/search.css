@@ -54,15 +54,15 @@ table {
   font-size:16px;
   float:left;
   padding-right:15px;
-  margin:0 8px 0 0;
-  background:url(/+/img/screen.png) right -134px no-repeat;
+  margin:0 5px 0 0;
+  background:url(/+/img/screen.png) right -135px no-repeat;
 }
 h1 {
   font-size:16px;
   padding:0 8px;
 }
-#breadcrumb a, #breadcrumb span {
-  margin:2px;
+#breadcrumb span, #breadcrumb a {
+  margin:2px 2px 2px 5px;
 }
 #breadcrumb a:hover {
   text-decoration:underline;
