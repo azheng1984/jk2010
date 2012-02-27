@@ -67,22 +67,23 @@ h1 {
 #breadcrumb a:hover {
   text-decoration:underline;
 }
-#breadcrumb .tag:hover {
-  background:url(/+/img/delete_hover.png) right 6px no-repeat;
-  border-color: #ddd #aaa #aaa #ddd;
-  box-shadow:0 0 3px #ddd;
-  color:#333;
-  text-decoration:none;
-}
 #breadcrumb .tag {
+  padding:0 16px 0 4px;
+  margin:1px 0 0 4px;
+  line-height:19px;
   font-size:13px;
-  padding:0 15px 0 4px;
-  border-radius:3px 11px 11px 3px;
-  border:1px solid;
-  border-color: #eee #ccc #ccc #eee;
-  background:url(/+/img/delete.png) right 6px no-repeat;
-  margin:1px 2px;
   color:#666;
+  border:1px solid;
+  border-color:#eee #ccc #ccc #eee;
+  background:url(/+/img/delete.png) right 6px no-repeat;
+  border-radius:3px 11px 11px 3px;
+}
+#breadcrumb .tag:hover {
+  color:#333;
+  border-color:#ddd #aaa #aaa #ddd;
+  background:url(/+/img/delete_hover.png) right 6px no-repeat;
+  box-shadow:0 0 3px #ddd;
+  text-decoration:none;
 }
 /* result
  *****************************/
@@ -138,7 +139,7 @@ h2 a:hover {
  * price range
  *****************************/
 #price_range {
-  margin:7px 0 0 5px;
+  padding:6px 0 0 5px;
 }
 #price_range input {
   width:30px;
@@ -149,7 +150,7 @@ h2 a:hover {
   border-color:#e5e5e5;
   font-size:12px;
   background:#fff;
- *vertical-align:middle;/* ie6/7 input 文字对齐错误 */
+  *vertical-align:middle;/* ie6/7 input 文字对齐错误 */
 }
 #price_range input:hover {
   border-color:#ccc;
@@ -164,17 +165,18 @@ h2 a:hover {
   height:0;
 }
 #price_range a {
-  font-size:12px;
-  margin-left:3px;
-  background:url(/+/img/button.png) repeat-x;
   padding:2px 5px;
-  border:1px solid;
+  *padding-bottom:0px;/* 修正 ie6/7 inline padding 渲染 */
+  margin-left:3px;
+  font-size:12px;
   color:#666;
-  border-color:#EEE #CCC #CCC #EEE;
+  background:url(/+/img/screen.png) 0 -66px;
+  border:1px solid;
+  border-color:#eee #ccc #ccc #eee;
   border-radius:2px;
 }
 #price_range a:hover {
-  border-color: #ddd #aaa #aaa #ddd;
+  border-color:#ddd #aaa #aaa #ddd;
   box-shadow:0 0 3px #ddd;
   color:#333;
 }
@@ -256,7 +258,7 @@ width:100%;
   color:#666;
 }
 #result .tag_list {
-  padding-bottom:5px;
+  padding-bottom:4px;
 }
 #result .tag_list a {
   float:left;
