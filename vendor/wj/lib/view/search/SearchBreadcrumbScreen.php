@@ -12,8 +12,8 @@ class SearchBreadcrumbScreen {
       }
       $section = $list[$index];
       foreach ($section as $item) {
-        if (isset($item['path']) === false
-          && isset($item['class']) && $item['class'] === false) {
+        if (isset($item['path']) === false && isset($item['class'])
+          && $item['class'] === false) {
           echo $item['text'];
           continue;
         }
