@@ -17,8 +17,7 @@ class SearchBreadcrumbScreen {
           echo $item['text'];
           continue;
         }
-        $class = isset($item['class']) === false || $item['class'] === false ?
-          '' : ' class="'.$item['class'].'"';
+        $class = isset($item['class']) ? ' class="'.$item['class'].'"' : '';
         if (isset($item['path']) === false) {
           echo '<span', $class, '>'.$item['text'].'</span>';
           continue;
