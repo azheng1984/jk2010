@@ -40,6 +40,7 @@ class SearchPropertyListPathParser {
     if ($this->key === false) {
       $this->key = array('name' => $keyName);
     }
+    $this->key['path'] = $path;
   }
 
   private function saveProperty() {
@@ -63,6 +64,7 @@ class SearchPropertyListPathParser {
     if ($value === false) {
       $value = array('name' => $valueName);
     }
+    $value['path'] = $path;
     $this->valueList[] = $value;
   }
 }
