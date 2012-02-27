@@ -166,7 +166,7 @@ h2 a:hover {
 }
 #price_range a {
   padding:2px 5px;
-  *padding-bottom:0px;/* 修正 ie6/7 inline padding 渲染 */
+  *padding-bottom:0px;/* ie6/7 inline 元素 padding 和其它浏览器不同 */
   margin-left:3px;
   font-size:12px;
   color:#666;
