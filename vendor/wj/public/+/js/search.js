@@ -44,11 +44,14 @@ $(function() {
     '<button tabIndex="-1" type="submit"></button>' +
     '</form>';
   $('#toolbar h2').after(form);
+  var isPriceRangeButtonHover = false;
   $('#price_range input').focusin(function() {
-    //TODO: 根据当前 url 加链接
-    $('#price_range').append('<a href="javascript:void(0)">确定</a>');
+    $('#price_range').append('<a id="price_range_button" href="javascript:$(\'#price_range\').submit()">确定</a>');
+    $('#price_range_button').hover(function(){ isPriceRangeButtonHover=true;}, function(){isPriceRangeButtonHover=false;});
   });
   $('#price_range input').focusout(function() {
-    $('#price_range a').remove();
+    if (!isPriceRangeButtonHover) {
+      $('#price_range a').remove();
+    }
   });
 });
