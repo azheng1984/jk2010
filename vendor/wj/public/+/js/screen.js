@@ -42,11 +42,18 @@ $(function() {
     return false;
   });
   var previousValue = $('#header input').val();
+  var timeoutId = null;
   $('#header input').keyup(function() {
     if (previousValue != $(this).val()) {
       getSuggestion();
       previousValue = $(this).val();
-      $('#header').append('<p>' + $(this).val() + '</p>');
+      if (timeoutId != null) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(function() {
+        timeoutId = null;
+        $('#header').append('<p>' + previousValue + '</p>');
+      }, 600);
     }
   });
   $('#header input').click(function() {
