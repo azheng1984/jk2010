@@ -7,18 +7,24 @@ class HomeScreen {
   }
 
   public function render() {
-    $buffer = array();
-    $result = QuerySearch::search();
-    if (isset($result['matches'])) {
+    //sleep(3);
+    $queryName = urldecode(substr($_SERVER['REQUEST_URI'], '1'));
+    $result = false;
+    if ($queryName !== '') {
+      $queryName = SegmentationService::execute($queryName);
+      $result = QuerySearch::search($queryName);
+    }
+    $list = array();
+    if ($result !== false && isset($result['matches'])) {
       foreach ($result['matches'] as $id => $item) {
         $query = DbQuery::get($id);
-        $buffer[] = '"'.$query['name'].'":'.$item['attrs']['product_amount'];
+        $list[] = '"'.$query['name'].'":'.$item['attrs']['product_amount'];
       }
     }
-    if (count($buffer) === 0) {
-      echo 'suggest();';
+    if (count($list) === 0) {
+      echo 'suggest("', $queryName, '");';
       return;
     }
-    echo 'suggest({'.implode(',', $buffer).'});';
+    echo 'suggest("', $queryName, '",{' ,implode(',', $list), '});';
   }
 }
