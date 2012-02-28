@@ -139,28 +139,29 @@ input:focus {
   z-index:100;
   box-shadow:0 0 3px #ccc;
 }
+#suggestion div {
+  padding:2px;
+}
 #suggestion ul {
   margin:0;
   float:right;
-  width:375px;
   list-style:none;
 }
 #suggestion li {
-  color:#666;
   float:left;
   white-space:nowrap;
-  width:368px;
   padding:2px 2px 2px 5px;
   cursor:pointer;
 }
-#suggestion li:hover {
-  background:#eee;
+#suggestion li a {
+  float:left;
+  width:368px;
   color:#333;
 }
-#suggestion li:hover em {
-  color:red;
+#suggestion li.hover {
+  background:#eee;
 }
-#suggestion li:hover .product_amount {
+#suggestion li.hover .product_amount {
   background:#ddd;
   color:#333;
 }
@@ -168,7 +169,7 @@ input:focus {
   float:left;
 }
 #suggestion em {
-  color:#d00;
+  color:#666;
 }
 #suggestion .product_amount {
   color:#666;
