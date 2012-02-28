@@ -47,6 +47,7 @@ input:focus {
 #header {
   padding:5px 0 10px 0;
   width:100%;
+  position:relative;
 }
 #logo {
   padding:8px 5px 0 0;
@@ -123,4 +124,59 @@ input:focus {
 #footer a:hover {
   color:#333;
   border-color:#333;
+}
+/* suggestion
+ **************************/
+#suggestion {
+  color:#333;
+  position:absolute;
+  left:100px;
+  border:1px solid;
+  border-color:#eee #ccc #ccc #eee;
+  background:white;
+  width:375px;
+  top:42px;
+  z-index:100;
+  box-shadow:0 0 3px #ccc;
+}
+#suggestion ul {
+  margin:0;
+  float:right;
+  width:375px;
+  list-style:none;
+}
+#suggestion li {
+  color:#666;
+  float:left;
+  white-space:nowrap;
+  width:368px;
+  padding:2px 2px 2px 5px;
+  cursor:pointer;
+}
+#suggestion li:hover {
+  background:#eee;
+  color:#333;
+}
+#suggestion li:hover em {
+  color:red;
+}
+#suggestion li:hover .product_amount {
+  background:#ddd;
+  color:#333;
+}
+#suggestion .query {
+  float:left;
+}
+#suggestion em {
+  color:#d00;
+}
+#suggestion .product_amount {
+  color:#666;
+  float:right;
+  background:#f1f1f1;
+  padding:0 4px;
+  line-height:16px;
+  margin:2px;
+  font-size:12px;
+  border-radius:2px;
 }
