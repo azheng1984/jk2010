@@ -1,6 +1,28 @@
 $(function() {
   $('#result p .link_list').each(function() {
     var self = $(this);
+    var propertyList = [];
+    var list = self.html().split('。');
+    for (var index  = 0; index < list.length; ++index) {
+      var list2 = list[index].split('…');
+      for (var index2  = 0; index2 < list2.length; ++index2) {
+        if (index2 !== list2.length - 1) {
+          propertyList.push(['…', list2[index2]]);
+          continue;
+        }
+        propertyList.push(['。', list2[index2]]);
+       }
+    }
+    for (var index  = 0; index < propertyList.length; ++index) {
+      var property = propertyList[index];
+      var list = property[1].split('：');
+      if (list.length !== 2) {
+        //format error
+      }
+      var name = list[0];
+      var value = list[1].split('；');
+      
+    }
     var html = '';
     $(self.html().split('。')).each(function(propertyIndex, property) {
       if (property == '') {
