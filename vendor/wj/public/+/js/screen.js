@@ -27,12 +27,12 @@ function getSuggestion() {
   );
 }
 
-function suggest(query, data) {
+function suggest(segmentList, data) {
   if (typeof(suggestionCache[currentAjaxQuery]) == 'undefined') {
-    suggestionCache[currentAjaxQuery] = [query, data];
+    suggestionCache[currentAjaxQuery] = [segmentList, data];
   }
   if (currentQuery == currentAjaxQuery) {
-    renderSuggestion(query, data);
+    renderSuggestion(segmentList, data);
   }
   if (currentQuery != currentAjaxQuery && currentQuery != null) {
     getSuggestion();
@@ -41,20 +41,25 @@ function suggest(query, data) {
   currentAjaxQuery = null;
 }
 
-function renderSuggestion(query, data) {
+function renderSuggestion(segmentList, data) {
   if (typeof(data) == 'undefined') {
     $('#suggestion').remove();
     return;
   }
-  var html = '<div id="suggestion"><ul>';
+  var html = '';
   $.each(data, function(index, value) {
+    if (index.replace(' ', '') === segmentList.replace(' ', '')) {
+      return;
+    }
     html += '<li><a href="/' + encodeURIComponent(index)
-      + '/"><span class="query">' + highlight(index, query)
+      + '/"><span class="query">' + highlight(index, segmentList.split(' '))
       + '</span><span class="product_amount">' + value
       + '</span></a></li>';
   });
-  html += '</ul></div>';
-  $('#header').append(html);
+  if (html === '') {
+    return;
+  }
+  $('#header').append('<div id="suggestion"><ul>' + html + '</ul></div>');
   $('#suggestion li a').hover(
     function(){
       $('#suggestion li.hover').removeClass('hover');
@@ -70,7 +75,47 @@ function renderSuggestion(query, data) {
 }
 
 function highlight(query, keywordList) {
-  return query.replace(keywordList, '<em>' + keywordList + '</em>');
+  var positionList = {};
+  $(keywordList).each(function(index, keyword) {
+    length = keyword.length;
+    offset = 0;
+    while (-1 !== (offset =  query.indexOf(keyword, offset))) {
+      if (typeof(positionList[offset]) === 'undefined') {
+        positionList[offset] = length;
+      }
+      offset = offset + length;
+    }
+  });
+  var keyList = [];
+  for(var key in positionList) {
+    keyList.push(key);
+  }
+  amount = keyList.length;
+  if (amount === 0) {
+    return query;
+  }
+  keyList.sort();
+  result = '';
+  offset = 0;
+  for (var i = 0; i < keyList.length; ++i) {
+    start = parseInt(keyList[i]);
+    length = positionList[start];
+    next = start + length;
+    if (next <= offset) {
+      continue;
+    }
+    if (start < offset) {
+      length = length + start - offset;
+      start = offset;
+    }
+    result += query.substr(offset, start - offset) + '<em>'
+      + query.substr(start, length) + '</em>';
+    offset = next;
+  }
+  if (offset < query.length) {
+    result += query.substr(offset);
+  }
+  return result;
 }
 
 function up() {
@@ -183,14 +228,15 @@ function initializeQuerySuggestion() {
   $('#header input').focusout(function() {
     currentQuery = null;
     clearInterval(suggestionIntervalId);
+    suggestionIntervalId = null;
     if (stopHiddenSuggestion != false) {
       return;
     }
     $('#suggestion').remove();
   });
-  /* ie6 刷新后默认和当前页面 focus 状态一致 */
-  if(typeof document.body.style.maxHeight === "undefined") {
-    $('#header input').blur();/* 如果遇到 bug，blur 失效 */
+  /* ie 刷新后默认和当前页面 focus 状态一致 */
+  if($.browser.msie) {
+    $('#header input').blur();/* 如果遇到 ie6 的 bug，blur 失效 */
   }
 }
 

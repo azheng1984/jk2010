@@ -28,6 +28,7 @@ td {
 input {
   color:#666;
   font-family:inherit;/* firefox */
+  margin:0;/* chrome */
 }
 * html #header input {/* ie6 不支持 input 事件 */
   color:#333;
