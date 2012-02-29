@@ -43,11 +43,11 @@ input:focus {
   float:none;
   margin:0 auto;
   width:960px;
-  padding-top:5px;
+  padding-top:2px;
 }
 #header {
   position:relative;
-  height:47px;/* 如果没有高度，ie6 显示 seggestion 时高度会变 */
+  height:45px;/* 如果没有高度，ie6 显示 seggestion 时高度会变 */
   width:100%;
 }
 #logo {
