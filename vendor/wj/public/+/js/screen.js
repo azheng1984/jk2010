@@ -51,8 +51,12 @@ function renderSuggestion(segmentList, data) {
     if (index.replace(' ', '') === segmentList.replace(' ', '')) {
       return;
     }
+    var text = index;
+    if (segmentList !== '') {
+      text = highlight(index, segmentList.split(' '));
+    }
     html += '<li><a href="/' + encodeURIComponent(index)
-      + '/"><span class="query">' + highlight(index, segmentList.split(' '))
+      + '/"><span class="query">' + text
       + '</span><span class="product_amount">' + value
       + '</span></a></li>';
   });
@@ -79,7 +83,7 @@ function highlight(query, keywordList) {
   var positionList = {};
   for (var index = 0; index < keywordList.length; ++index) {
     var offset = 0;
-    while (-1 !== (offset =  query.indexOf(keywordList[index], offset))) {
+    while (-1 !== (offset = query.indexOf(keywordList[index], offset))) {
       if (typeof(positionList[offset]) === 'undefined') {
         positionList[offset] = keywordList[index].length;
       }

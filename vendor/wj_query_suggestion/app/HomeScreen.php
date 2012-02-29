@@ -12,7 +12,9 @@ class HomeScreen {
     $result = false;
     if ($queryName !== '') {
       $queryName = SegmentationService::execute($queryName);
-      $result = QuerySearch::search($queryName);
+      if ($queryName !== '') {
+        $result = QuerySearch::search($queryName);
+      }
     }
     $list = array();
     if ($result !== false && isset($result['matches'])) {
