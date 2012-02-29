@@ -20,7 +20,7 @@ $(function() {
         //format error
       }
       var name = list[0];
-      var value = list[1].split('；');
+      var valueList = list[1].split('；');
       
     }
     var html = '';

@@ -242,8 +242,7 @@ class SearchProductListScreen {
       }
       $endPosition = $position;
     }
-    $cutLength = $endPosition + 1;
-    return array(mb_substr($text, 0, $cutLength, 'UTF-8'), $cutLength);
+    return array(mb_substr($text, 0, $endPosition, 'UTF-8'), $endPosition);
   }
 
   private static function increaseExcerption($list, $result, $length) {
