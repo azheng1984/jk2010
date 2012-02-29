@@ -13,16 +13,33 @@ $(function() {
         propertyList.push(['。', list2[index2]]);
        }
     }
+    var html = '';
     for (var index  = 0; index < propertyList.length; ++index) {
       var property = propertyList[index];
       var list = property[1].split('：');
       if (list.length !== 2) {
-        //format error
+        if (property[1] !== '') {
+          html += property[1] + property[0];
+        }
+        continue;
       }
       var name = list[0];
       var valueList = list[1].split('；');
-      
+      html += name + '：';
+      for (var index2  = 0; index2 < valueList.length; ++index2) {
+        var value = valueList[index2];
+        value = value.replace(/<\/span>/gi, '</span><span class="gray">')
+          .replace(/<span>/gi, '</span><span class="red">');
+        //TODO:build path
+        html += '<a href="#"><span class="gray">' + value + '</span></a>';
+        if (index2 !== valueList.length - 1) {
+          html += '；';
+        }
+      }
+      html += property[0];
     }
+    self.html(html);
+    /*
     var html = '';
     $(self.html().split('。')).each(function(propertyIndex, property) {
       if (property == '') {
@@ -40,6 +57,7 @@ $(function() {
       html += '：<a href="#"><span class="gray">' + valueList + '</span></a>。';
     });
     self.html(html);
+    */
   });
   if ($('#result').length) {
     $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><ol><li><a href=""><span>礼品</span> 23</a></li></ol></div>');
