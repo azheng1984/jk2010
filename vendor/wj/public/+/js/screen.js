@@ -70,7 +70,7 @@ function renderSuggestion(query, data) {
 }
 
 function highlight(query, keywordList) {
-  return query;
+  return query.replace(keywordList, '<em>' + keywordList + '</em>');
 }
 
 function up() {
