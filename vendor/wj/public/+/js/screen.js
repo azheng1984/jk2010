@@ -59,6 +59,7 @@ function renderSuggestion(segmentList, data) {
   if (html === '') {
     return;
   }
+  $('#suggestion').remove();
   $('#header').append('<div id="suggestion"><ul>' + html + '</ul></div>');
   $('#suggestion li a').hover(
     function(){
