@@ -55,7 +55,7 @@ class SearchProductListScreen {
       $title = mb_substr($title, 0, 60, 'UTF-8');
     }
     echo self::highlight($title), '</a></h3>',//title
-      '<div class="price">&yen;<span>',
+      '<div class="price">¥<span>',
       $product['lowest_price_x_100']/100, '</span></div>';//price
     if ($product['property_list'] !== null) {
       $excerption = self::highlight(self::excerpt($product['property_list']));
@@ -159,7 +159,7 @@ class SearchProductListScreen {
         $end = '。';
         if (isset(self::$cutList[$item])
           || ($count === $amount && $isFull === false)) {
-          $end = '&hellip;';
+          $end = '…';
         }
         $result .= $item.$end;
       }
@@ -170,7 +170,7 @@ class SearchProductListScreen {
       $end = '。';
       if (isset(self::$cutList[$item])
         || ($count === $amount && $isFull === false)) {
-        $end = '&hellip;';
+        $end = '…';
       }
       $result .= $item.$end;
     }
