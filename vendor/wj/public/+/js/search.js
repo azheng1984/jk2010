@@ -35,26 +35,27 @@ $(function() {
   }
   var priceFrom = typeof(query['price_from']) !== 'undefined' ? query['price_from'] : '';
   var priceTo = typeof(query['price_to']) !== 'undefined' ? query['price_to'] : '';
-  var form = '<form id="price_range" action="."><label for="price_from">&yen;</label> ';
+  var form = '<form id="price_range" action="."><label for="price_from">&yen;</label>';
   if (typeof(query['sort']) !== 'undefined') {
     form += '<input name="sort" type="hidden" value="' + query['sort'] + '"/>';
   }
-  form += '<input id="price_from" name="price_from" type="text" value="' + priceFrom + '" autocomplete="off"/>-' +
-    '<input name="price_to" type="text" value="' + priceTo + '" autocomplete="off"/> ' +
-    '<button tabIndex="-1" type="submit"></button>' +
-    '</form>';
+  form += '<input id="price_from" name="price_from" type="text" value="' + priceFrom + '" autocomplete="off"/><span>-</span>' +
+    '<input name="price_to" type="text" value="' + priceTo + '" autocomplete="off"/>' +
+    '<button tabIndex="-1" type="submit"></button></form>';
   $('#toolbar h2').after(form);
-  var isPriceRangeButtonHover = false;
+  function adjustInput() {
+    if ($(this).val().length > 4) {
+      $(this).css('width', '60px');
+      return;
+    }
+    $(this).css('width', '30px');
+  }
+  $('#price_range input').each(adjustInput);
+  $('#price_range input').keyup(adjustInput);
   $('#price_range input').focusin(function() {
     if ($('#price_range_button').length != 0) {
       return;
     }
     $('#price_range').append('<a id="price_range_button" href="javascript:$(\'#price_range\').submit()">确定</a>');
-    $('#price_range_button').hover(function(){isPriceRangeButtonHover = true;}, function(){isPriceRangeButtonHover = false;});
-  });
-  $('#price_range input').focusout(function() {
-    if (!isPriceRangeButtonHover) {
-      $('#price_range a').remove();
-    }
   });
 });

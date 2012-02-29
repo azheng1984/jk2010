@@ -139,18 +139,24 @@ h2 a:hover {
  * price range
  *****************************/
 #price_range {
-  padding:6px 0 0 5px;
+  padding:7px 0 0 5px;
+}
+#price_range span {
+  float:left;
+}
+#price_range label {
+  float:left;
+  margin-right:4px;
 }
 #price_range input {
+  float:left;
   width:30px;
-  height:18px;
-  padding:0 2px;
+  padding:2px;
   border-width:1px;
   border-style:solid;
   border-color:#e5e5e5;
   font-size:12px;
   background:#fff;
-  *vertical-align:middle;/* ie6/7 input 文字对齐错误 */
 }
 #price_range input:hover {
   border-color:#ccc;
@@ -165,9 +171,10 @@ h2 a:hover {
   height:0;
 }
 #price_range a {
-  padding:2px 5px;
-  *padding-bottom:0px;/* ie6/7 inline 元素 padding 和其它浏览器不同 */
-  margin-left:3px;
+  float:left;
+  line-height:18px;
+  padding:0 5px;
+  margin-left:4px;
   font-size:12px;
   color:#666;
   background:url(/+/img/screen.png) 0 -66px;

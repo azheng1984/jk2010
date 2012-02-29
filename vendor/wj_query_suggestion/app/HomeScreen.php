@@ -1,13 +1,13 @@
 <?php
 class HomeScreen {
   public function __construct() {
-    header('Cache-Control: public, max-age=3600');
+    header('Cache-Control: public,max-age=3600');
     header('Expires: '
         .gmdate('D, d M Y H:i:s', $_SERVER['REQUEST_TIME'] + 3600).' GMT');
+    header('Content-Type: application/json;charset=utf-8');
   }
 
   public function render() {
-    //sleep(3);
     $queryName = urldecode(substr($_SERVER['REQUEST_URI'], '1'));
     $result = false;
     if ($queryName !== '') {
