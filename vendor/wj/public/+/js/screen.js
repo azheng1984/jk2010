@@ -6,8 +6,6 @@ var hoverQuery = null;
 var stopHiddenSuggestion = false;
 
 function getSuggestion() {
-  //$('#header').append('getSuggestion');
-  //suggestionTimeoutId = false;
   currentAjaxQuery = currentQuery;
   if (currentAjaxQuery == '') {
     suggest(currentAjaxQuery);
@@ -56,7 +54,6 @@ function renderSuggestion(query, data) {
       + '</span></a></li>';
   });
   html += '</ul></div>';
-  //$('#suggestion').remove();
   $('#header').append(html);
   $('#suggestion li a').hover(
     function(){
@@ -134,9 +131,7 @@ function down() {
   $('#header input').val(currentQuery);
 }
 function checkQueryInput() {
-  //$('#header').append('check');
   query = $.trim($('#header input').val());
-  //$('#header').append($('#header input').val() + 'dfasdf <br/>');
   if (query == currentQuery || query == hoverQuery) {
     return;
   }
@@ -175,10 +170,6 @@ function initializeQuerySuggestion() {
       down();
       return false;
     }
-    if (suggestionIntervalId == null) { //for ie6
-      currentQuery = $.trim($('#header input').val());
-      suggestionIntervalId = setInterval(checkQueryInput, 1000);
-    }
   });
   $('#header input').focusin(function() {
     currentQuery = $.trim($('#header input').val());
@@ -194,7 +185,7 @@ function initializeQuerySuggestion() {
   });
   /* ie6 刷新后默认和当前页面 focus 状态一致 */
   if(typeof document.body.style.maxHeight === "undefined") {
-    $('#header input').blur();
+    $('#header input').blur();/* 如果遇到 bug，blur 失效 */
   }
 }
 $(function() {
