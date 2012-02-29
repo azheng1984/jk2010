@@ -146,7 +146,10 @@ function initializeQueryForm() {
   $('#header form').bind('submit', function() {
     query = encodeURIComponent($.trim($('#header input').attr('value')))
       .replace(/%20/g, '+') + '/';
-    if (query == '%2B/') {
+    if (query === '%2B/') {
+      query = '';
+    }
+    if (query === '/') {
       query = '';
     }
     window.location = '/' + query;
