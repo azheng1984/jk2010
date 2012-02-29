@@ -66,7 +66,7 @@ function renderSuggestion(query, data) {
       stopHiddenSuggestion = false;
     }
   );
-  $('#suggestion').css('display', 'block');
+  $('#suggestion').css('display', 'block');/* 触发 ie6 渲染 */
 }
 
 function highlight(query, keywordList) {
