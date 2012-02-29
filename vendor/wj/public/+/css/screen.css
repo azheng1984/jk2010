@@ -43,11 +43,11 @@ input:focus {
   float:none;
   margin:0 auto;
   width:960px;
-  padding-top:2px;
+  padding-top:3px;
 }
 #header {
   position:relative;
-  height:45px;/* 如果没有高度，ie6 显示 seggestion 时高度会变 */
+  height:46px;/* 如果没有高度，ie6 显示 seggestion 时高度会变 */
   width:100%;
 }
 #logo {
@@ -163,19 +163,24 @@ input:focus {
   background:#eee;
 }
 #suggestion li.hover .product_amount {
-  background:#ddd;
   color:#333;
+  background:#ddd;
 }
 #suggestion .query {
   float:left;
 }
+#suggestion li.hover em {
+  color:#888;
+}
 #suggestion em {
-  color:#666;
+  color:#aaa;
+  font-style:normal;
+  font-size:14px;
 }
 #suggestion .product_amount {
   color:#666;
   float:right;
-  background:#f1f1f1;
+  background:#eee;
   padding:0 4px;
   line-height:16px;
   margin:2px;
