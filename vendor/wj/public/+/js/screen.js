@@ -76,16 +76,15 @@ function renderSuggestion(segmentList, data) {
 
 function highlight(query, keywordList) {
   var positionList = {};
-  $(keywordList).each(function(index, keyword) {
-    length = keyword.length;
-    offset = 0;
-    while (-1 !== (offset =  query.indexOf(keyword, offset))) {
+  for (var index = 0; index < keywordList.length; ++index) {
+    var offset = 0;
+    while (-1 !== (offset =  query.indexOf(keywordList[index], offset))) {
       if (typeof(positionList[offset]) === 'undefined') {
-        positionList[offset] = length;
+        positionList[offset] = keywordList[index].length;
       }
-      offset = offset + length;
+      offset = offset + keywordList[index].length;
     }
-  });
+  }
   var keyList = [];
   for(var key in positionList) {
     keyList.push(key);
@@ -95,21 +94,20 @@ function highlight(query, keywordList) {
     return query;
   }
   keyList.sort();
-  result = '';
+  var result = '';
   offset = 0;
-  for (var i = 0; i < keyList.length; ++i) {
-    start = parseInt(keyList[i]);
-    length = positionList[start];
-    next = start + length;
+  for (var index = 0; index < keyList.length; ++index) {
+    var start = parseInt(keyList[index]);
+    var next = start + positionList[start];
     if (next <= offset) {
       continue;
     }
     if (start < offset) {
-      length = length + start - offset;
+      positionList[start] = positionList[start] + start - offset;
       start = offset;
     }
     result += query.substr(offset, start - offset) + '<em>'
-      + query.substr(start, length) + '</em>';
+      + query.substr(start, positionList[start]) + '</em>';
     offset = next;
   }
   if (offset < query.length) {
