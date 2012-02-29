@@ -1,9 +1,33 @@
 var suggestionCache = {};
 var currentAjaxQuery = null;
 var currentQuery = null;
-var suggestionTimeoutId = null;
+var suggestionIntervalId = null;
 var hoverQuery = null;
 var stopHiddenSuggestion = false;
+
+function getSuggestion() {
+  //$('#header').append('getSuggestion');
+  //suggestionTimeoutId = false;
+  currentAjaxQuery = currentQuery;
+  if (currentAjaxQuery == '') {
+    suggest(currentAjaxQuery);
+    return;
+  }
+  if (typeof(suggestionCache[currentAjaxQuery]) == 'undefined') {
+    var uri = 'http://q.dev.huobiwanjia.com/'
+      + encodeURIComponent(currentAjaxQuery);
+    $.ajax({
+      url:uri,
+      cache:true,
+      dataType:'jsonp',
+      jsonp:false
+    });
+    return;
+  }
+  suggest(
+    suggestionCache[currentAjaxQuery][0], suggestionCache[currentAjaxQuery][1]
+  );
+}
 
 function suggest(query, data) {
   if (typeof(suggestionCache[currentAjaxQuery]) == 'undefined') {
@@ -17,7 +41,6 @@ function suggest(query, data) {
     return;
   }
   currentAjaxQuery = null;
-  suggestionTimeoutId = null;
 }
 
 function renderSuggestion(query, data) {
@@ -33,39 +56,24 @@ function renderSuggestion(query, data) {
       + '</span></a></li>';
   });
   html += '</ul></div>';
-  $('#suggestion').remove();
+  //$('#suggestion').remove();
   $('#header').append(html);
   $('#suggestion li a').hover(
     function(){
-      hoverQuery = $(this).find('.query').val();
       $('#suggestion li.hover').removeClass('hover');
       $(this).parent().addClass('hover');
       stopHiddenSuggestion = true;
     },
     function(){
       $('#suggestion li.hover').removeClass('hover');
-      hoverQuery = null;
       stopHiddenSuggestion = false;
     }
   );
+  $('#suggestion').css('display', 'block');
 }
 
 function highlight(query, keywordList) {
   return query;
-}
-
-function initializeQueryForm() {
-  $('#header input').attr('autocomplete', 'off');
-  $('#header form').bind('submit', function() {
-    query = encodeURIComponent($.trim($('#header input').attr('value')))
-      .replace(/%20/g, '+') + '/';
-    if (query == '%2B/') {
-      query = '';
-    }
-    window.location = '/' + query;
-    return false;
-  });
-  initializeQuerySuggestion();
 }
 
 function up() {
@@ -98,7 +106,6 @@ function up() {
   hoverQuery = null;
   $('#header input').val(currentQuery);
 }
-
 function down() {
   var current = null;
   $('#suggestion li').each(function() {
@@ -126,9 +133,33 @@ function down() {
   hoverQuery = null;
   $('#header input').val(currentQuery);
 }
+function checkQueryInput() {
+  //$('#header').append('check');
+  query = $.trim($('#header input').val());
+  //$('#header').append($('#header input').val() + 'dfasdf <br/>');
+  if (query == currentQuery || query == hoverQuery) {
+    return;
+  }
+  currentQuery = query;
+  getSuggestion();
+}
+
+function initializeQueryForm() {
+  $('#header input').attr('autocomplete', 'off');
+  $('#header form').bind('submit', function() {
+    query = encodeURIComponent($.trim($('#header input').attr('value')))
+      .replace(/%20/g, '+') + '/';
+    if (query == '%2B/') {
+      query = '';
+    }
+    window.location = '/' + query;
+    return false;
+  });
+  initializeQuerySuggestion();
+}
 
 function initializeQuerySuggestion() {
-  $('#header input').keydown(function(event){
+  $('#header input').keydown(function(event) {//ubuntu firefox 输入中文不会触发
     if ($('#suggestion').length == 0) {
       return;
     }
@@ -144,64 +175,31 @@ function initializeQuerySuggestion() {
       down();
       return false;
     }
-  });
-  $('#header input').keyup(function(evnet) {
-    //query = $('#header input').val().trim();
-    $('#header').append('dfasdf <br/>');
-    return;
-    if (query == currentQuery || query == hoverQuery) {
-      return;
+    if (suggestionIntervalId == null) { //for ie6
+      currentQuery = $.trim($('#header input').val());
+      suggestionIntervalId = setInterval(checkQueryInput, 1000);
     }
-    currentQuery = query;
-    if (suggestionTimeoutId == false) {
-      return;
-    }
-    if (suggestionTimeoutId != null) {
-      clearTimeout(suggestionTimeoutId);
-      suggestionTimeoutId = null;
-    }
-    suggestionTimeoutId = setTimeout(getSuggestion, 600);
   });
   $('#header input').focusin(function() {
-    currentQuery = $('#header input').val().trim();
+    currentQuery = $.trim($('#header input').val());
+    suggestionIntervalId = setInterval(checkQueryInput, 1000);
   });
   $('#header input').focusout(function() {
     currentQuery = null;
+    clearInterval(suggestionIntervalId);
     if (stopHiddenSuggestion != false) {
       return;
     }
     $('#suggestion').remove();
   });
-}
-
-function getSuggestion() {
-  $('#header').append('getSuggestion');
-  suggestionTimeoutId = false;
-  currentAjaxQuery = currentQuery;
-  if (currentAjaxQuery == '') {
-    suggest(currentAjaxQuery);
-    return;
+  /* ie6 刷新后默认和当前页面 focus 状态一致 */
+  if(typeof document.body.style.maxHeight === "undefined") {
+    $('#header input').blur();
   }
-  if (typeof(suggestionCache[currentAjaxQuery]) == 'undefined') {
-    var uri = 'http://q.dev.huobiwanjia.com/'
-      + encodeURIComponent(currentAjaxQuery);
-    $.ajax({
-      url:uri,
-      cache:true,
-      dataType:'jsonp',
-      jsonp:false
-    });
-    return;
-  }
-  suggest(
-    suggestionCache[currentAjaxQuery][0], suggestionCache[currentAjaxQuery][1]
-  );
 }
-
 $(function() {
   initializeQueryForm();
 });
-
 
 
 
