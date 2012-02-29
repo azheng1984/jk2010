@@ -103,6 +103,7 @@ function up() {
   hoverQuery = null;
   $('#header input').val(currentQuery);
 }
+
 function down() {
   var current = null;
   $('#suggestion li').each(function() {
@@ -130,6 +131,7 @@ function down() {
   hoverQuery = null;
   $('#header input').val(currentQuery);
 }
+
 function checkQueryInput() {
   query = $.trim($('#header input').val());
   if (query == currentQuery || query == hoverQuery) {
@@ -188,84 +190,7 @@ function initializeQuerySuggestion() {
     $('#header input').blur();/* 如果遇到 bug，blur 失效 */
   }
 }
+
 $(function() {
   initializeQueryForm();
 });
-
-
-
-
-/*
-
-
-
-
-function suggest(query, data) {
-  var text = '<div id="suggestion"><ul>';
-  if (typeof(data) == 'undefined') {
-    return;
-  }
-  $.each(data, function(index, value){
-    text += '<li><a href="/' + encodeURIComponent(index) + '/"><span class="query">' + index + '</span><span class="product_amount">' + value + '</span></a></li>';
-  });
-  text += '</ul></div>';
-  $('#header').append(text);
-}
-var suggestion = null;
-function getSuggestion() {
-  if (suggestion == false) {
-    var query = $('#header input').attr('value');
-    if (query == '') {
-      return;
-    }
-    var uri = 'http://q.dev.huobiwanjia.com/' + encodeURIComponent(query);
-    $.ajax({
-      url:uri,
-      cache:true,
-      dataType:'jsonp',
-      jsonp:false
-    });
-    suggestion = true;
-    return;
-  }
-  if (suggestion == null) {
-    suggestion = false;
-  }
-}
-$(function() {
-  $('#header input').attr('autocomplete', 'off');
-  $('#header form').bind('submit', function() {
-    query = encodeURIComponent($.trim($('#header input').attr('value')))
-      .replace(/%20/g, '+') + '/';
-    if (query == '%2B/') {
-      query = '';
-    }
-    window.location = '/' + query;
-    return false;
-  });
-  var previousValue = $('#header input').val();
-  var timeoutId = null;
-  $('#header input').keyup(function() {
-    if (previousValue != $(this).val()) {
-      getSuggestion();
-      previousValue = $(this).val();
-      if (timeoutId != null) {
-        clearTimeout(timeoutId);
-      }
-      timeoutId = setTimeout(function() {
-        timeoutId = null;
-        $('#header').append('<p>' + previousValue + '</p>');
-      }, 600);
-    }
-  });
-  $('#header input').click(function() {
-    getSuggestion();
-  });
-  $('#header input').focusout(function() {
-    if (suggestion) {
-      $('#suggestion').remove();
-      suggestion = null;
-    }
-  });
-});
-*/
