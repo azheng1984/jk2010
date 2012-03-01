@@ -1,4 +1,6 @@
 $(function() {
+  //TODO check category via breadcrumb，if empty, return;
+  //TODO build selected list via breadcrumb
   $('#result p .link_list').each(function() {
     var self = $(this);
     var propertyList = [];
@@ -30,7 +32,7 @@ $(function() {
         var value = valueList[index2];
         value = value.replace(/<\/span>/gi, '</span><span class="gray">')
           .replace(/<span>/gi, '</span><span class="red">');
-        //TODO:build path
+        //TODO:append path if not selected
         html += '<a href="#"><span class="gray">' + value + '</span></a>';
         if (index2 !== valueList.length - 1) {
           html += '；';
@@ -39,27 +41,11 @@ $(function() {
       html += property[0];
     }
     self.html(html);
-    /*
-    var html = '';
-    $(self.html().split('。')).each(function(propertyIndex, property) {
-      if (property == '') {
-        return;
-      }
-      var list = property.split('：');
-      if (list.length != 2) {
-        html += property + '。';
-        return;
-      }
-      html += list[0];
-      var valueList = list[1];
-      valueList = valueList.replace(/<\/span>/gi, '</span><span class="gray">');
-      valueList = valueList.replace(/<span>/gi, '</span><span class="red">');
-      html += '：<a href="#"><span class="gray">' + valueList + '</span></a>。';
-    });
-    self.html(html);
-    */
   });
-  if ($('#result').length) {
+});
+$(function() {
+  if ($('#result').length !== 0) {
+    //TODO
     $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><ol><li><a href=""><span>礼品</span> 23</a></li></ol></div>');
   }
   var query = {};
