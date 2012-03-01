@@ -1,5 +1,4 @@
 $(function() {
-  //TODO build selected list via breadcrumb
   //TODO separate path & query string
   $('#result p .link_list').each(function() {
     var self = $(this);
