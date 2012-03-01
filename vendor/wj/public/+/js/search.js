@@ -1,6 +1,9 @@
 $(function() {
-  //TODO check category via breadcrumb，if empty, return;
+  if ($('#breadcrumb .section').length === 0) {
+    return;
+  }
   //TODO build selected list via breadcrumb
+  //TODO separate path & query string
   $('#result p .link_list').each(function() {
     var self = $(this);
     var propertyList = [];
