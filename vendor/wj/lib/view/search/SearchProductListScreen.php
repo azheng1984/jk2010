@@ -6,7 +6,6 @@ class SearchProductListScreen {
   private static $keywordList;
 
   public static function render() {
-    print_r($_SERVER);
     self::initialize();
     $index = 0;
     echo '<table><tr>';

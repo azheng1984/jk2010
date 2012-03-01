@@ -1,5 +1,6 @@
 $(function() {
   //TODO separate path & query string
+  //TODO SERVER 分离时，需要判断是否直接 ie 输入（用原始 name 对比）
   $('#result p .link_list').each(function() {
     var self = $(this);
     var propertyList = [];
