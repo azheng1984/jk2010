@@ -1,6 +1,5 @@
 $(function() {
-  //TODO separate path & query string
-  //TODO SERVER 分离时，需要判断是否直接 ie 输入（用原始 name 对比）
+  //TODO separate path & query string （使用 breadcrumb 获取当前选定值，防止 ie pathname bug）
   $('#result p .link_list').each(function() {
     var self = $(this);
     var propertyList = [];
@@ -32,7 +31,7 @@ $(function() {
         var value = valueList[index2];
         value = value.replace(/<\/span>/gi, '</span><span class="gray">')
           .replace(/<span>/gi, '</span><span class="red">');
-        //TODO:append path if not selected
+        //TODO:build path(考虑多选)
         html += '<a href="#"><span class="gray">' + value + '</span></a>';
         if (index2 !== valueList.length - 1) {
           html += '；';
@@ -45,7 +44,7 @@ $(function() {
 });
 $(function() {
   if ($('#result').length !== 0) {
-    //TODO
+    //TODO ajax load tag list
     $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><ol><li><a href=""><span>礼品</span> 23</a></li></ol></div>');
   }
   var query = {};
