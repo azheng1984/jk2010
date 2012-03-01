@@ -6,6 +6,7 @@ class SearchProductListScreen {
   private static $keywordList;
 
   public static function render() {
+    print_r($_SERVER);
     self::initialize();
     $index = 0;
     echo '<table><tr>';
@@ -139,8 +140,33 @@ class SearchProductListScreen {
     $textList = array();
     $linkAmount = 0;
     $textAmount = 0;
+    $hasCategory = isset($GLOBALS['CATEGORY']);
+    $currentPropertyList = array();//TODO:build current property list
     foreach ($list as $propertyText => $isLink) {
-      if ($isLink) {//TODO:只有在 category 选定时才放入 link list
+      if ($isLink) {
+        list($keyName, $valueName) = explode('：', $propertyText, 2);
+        if (isset($currentPropertyList[$keyName])) {
+          if (strpos($valueName, '；') !== false) {
+            $list = explode('；', $valueName);
+            $list2 = array();
+            foreach ($list as $item) {
+              if (isset($currentPropertyList[$keyName][$item])) {
+                continue;
+              }
+              $list2[] = $item;
+            }
+            if (count($list2) === 0) {
+              continue;
+            }
+            $propertyText = $keyName.'：'.implode('；', $list2);
+          } else {
+            if (isset($currentPropertyList[$keyName][$valueName])) {
+              continue;
+            }
+          }
+        }
+      }
+      if ($hasCategory && $isLink) {
         $linkList[] = $propertyText;
         ++$linkAmount;
         continue;
