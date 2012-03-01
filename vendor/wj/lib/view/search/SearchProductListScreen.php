@@ -140,7 +140,7 @@ class SearchProductListScreen {
     $linkAmount = 0;
     $textAmount = 0;
     foreach ($list as $propertyText => $isLink) {
-      if ($isLink) {
+      if ($isLink) {//TODO:只有在 category 选定时才放入 link list
         $linkList[] = $propertyText;
         ++$linkAmount;
         continue;
