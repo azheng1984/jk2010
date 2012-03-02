@@ -1,4 +1,3 @@
-
 <?php
 class HomeScreen extends Screen {
   protected function renderHtmlHeadContent() {
