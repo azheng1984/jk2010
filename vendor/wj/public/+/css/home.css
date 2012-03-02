@@ -43,7 +43,7 @@
   border-color:#333;
 }
 #merchant ul {
-  padding:15px 12px 12px;
+  padding:15px 22px 12px 12px;
   font-size:15px;
 }
 #merchant li {
@@ -73,8 +73,9 @@
 }
 table {
   background:#f5f5f5;
-  margin:13px 0 0 13px;
+  margin-top:13px;
   border-spacing:1px;
+  width:750px;
 }
 td a {
   display:block;
@@ -99,4 +100,26 @@ td a img {
 }
 td a span {
   display:block;
+}
+/*
+ * pagination
+ */
+#pagination_wrapper {
+  float:right;
+  width:750px;
+  text-align:center;
+  font-size:12px;
+}
+#more {
+  padding:0 5px 0 15px;
+  background:url(/+/img/screen.png) 0 -109px;
+}
+#more a {
+  font-size:15px;
+  color:#666;
+  border-bottom:1px solid #666;
+}
+#more a:hover {
+  color:#333;
+  border-color:#333;
 }

@@ -141,26 +141,30 @@ class SearchProductListScreen {
     $textAmount = 0;
     $hasCategory = isset($GLOBALS['CATEGORY']);
     $currentPropertyList = array();//TODO:build current property list
+    //TODO:refactor
     foreach ($list as $propertyText => $isLink) {
       if ($isLink) {
-        list($keyName, $valueName) = explode('：', $propertyText, 2);
-        if (isset($currentPropertyList[$keyName])) {
-          if (strpos($valueName, '；') !== false) {
-            $list = explode('；', $valueName);
-            $list2 = array();
-            foreach ($list as $item) {
-              if (isset($currentPropertyList[$keyName][$item])) {
+        $tmp = explode('：', $propertyText, 2);
+        if (count($tmp) === 2) {
+          list($keyName, $valueName) = $tmp;
+          if (isset($currentPropertyList[$keyName])) {
+            if (strpos($valueName, '；') !== false) {
+              $list = explode('；', $valueName);
+              $list2 = array();
+              foreach ($list as $item) {
+                if (isset($currentPropertyList[$keyName][$item])) {
+                  continue;
+                }
+                $list2[] = $item;
+              }
+              if (count($list2) === 0) {
                 continue;
               }
-              $list2[] = $item;
-            }
-            if (count($list2) === 0) {
-              continue;
-            }
-            $propertyText = $keyName.'：'.implode('；', $list2);
-          } else {
-            if (isset($currentPropertyList[$keyName][$valueName])) {
-              continue;
+              $propertyText = $keyName.'：'.implode('；', $list2);
+            } else {
+              if (isset($currentPropertyList[$keyName][$valueName])) {
+                continue;
+              }
             }
           }
         }

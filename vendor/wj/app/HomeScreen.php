@@ -1,3 +1,4 @@
+
 <?php
 class HomeScreen extends Screen {
   protected function renderHtmlHeadContent() {
@@ -45,6 +46,7 @@ class HomeScreen extends Screen {
     echo '<div id="merchant">';
     $this->renderMerchantTypeList();
     $this->renderMerchantList();
+    $this->renderPagination();
     echo '</div>';
   }
 
@@ -92,5 +94,10 @@ class HomeScreen extends Screen {
       echo '<td', $colspanAttribute, '></td>';
     }
     echo '</tr></table>';
+  }
+
+  //TODO:第一页链接和 js 处理后外观保持一致，第二页开始使用标准分页（no script），全部 nofollow
+  private function renderPagination() {
+    echo '<div id="pagination_wrapper"><span id="more"><a href="?page=2" rel="nofollow">更多</a></span> 1/10</div>';
   }
 }
