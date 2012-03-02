@@ -65,6 +65,6 @@ class SearchPropertyListPathParser {
       $value = array('name' => $valueName);
     }
     $value['path'] = $path;
-    $this->valueList[] = $value;
+    $this->valueList[$valueName] = $value;
   }
 }
