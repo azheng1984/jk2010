@@ -2,20 +2,34 @@ $(function() {
   if ($('#result').length !== 0) {
     //TODO:ajax load tag list
     $uri = window.location.pathname + '?media=json';
-    $.get($uri, function(data) {
+    $.getJSON($uri, function(data) {
       //使用 js 渲染，剔除缓存重复（缓存造成）
-      $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><ol><li>' + data + '</li></ol></div>');
-      $('#key_list .key').mouseup(function() {
+      $html  = '<ol>';
+      var deep = window.location.pathname.split('/').length;
+      if (deep === 3) {
+        for (var index = 0; index < data.length; ++index) {
+          $html += '<li class="value"><a href=""><span>' + data[index][0] + '</span> ' + data[index][1] + '</a></li>';
+        }
+      }
+      if (deep > 3) {
+        for (var index = 0; index < data.length; ++index) {
+          $html += '<li class="key"><a href="javascript:void(0)">' + data[index] + '</a></li>';
+        }
+      }
+      $html += '</ol>';
+      $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><ol><li>' + $html + '</li></ol></div>');
+      $('#tag .key').mouseup(function() {
         if ($(this).attr('class') === 'key open') {
           $(this).attr('class', 'key');
           $(this).parent().children('ol').remove();
           return;
         }
+        //var target = $(this);
         //TODO: 如果有属性选定，先判断 is_multiple 值，再决定是否发起请求
         $uri2 = window.location.pathname + '?key=' + $(this).text() + '&media=json';
         $(this).attr('id', 'target');
-        $.get($uri2, function(data) {
-          $('#target').after(data).attr('id', '').attr('class', 'key open');
+        $.getJSON($uri2, function(data) {
+          $('#target').append('<ol><li>'+ data[0][0] + '</li></ol>').attr('class', 'key open');
         });
       });
     });
@@ -171,6 +185,7 @@ $(function() {
     if ($('#price_range_button').length != 0) {
       return;
     }
+    //TODO:显示目标链接（源代码对用来来说是干扰，至少要隐藏）
     $('#price_range').append('<a id="price_range_button" href="javascript:$(\'#price_range\').submit()">确定</a>');
   });
 });

@@ -109,8 +109,9 @@ class SearchProductListScreen {
   }
 
   private static function getBrandPath($brandName) {
-    $path = urlencode('品牌='.$brandName).'/'.$GLOBALS['QUERY_STRING'];
-    if (count($GLOBALS['PROPERTY_LIST']) > 0
+    $path = '%E5%93%81%E7%89%8C='.urlencode($brandName)
+      .'/'.$GLOBALS['QUERY_STRING'];
+    if (isset($GLOBALS['PROPERTY_LIST'])
       && strpos($GLOBALS['PATH_SECTION_LIST'][3], '"') === false) {
       $path = $GLOBALS['PATH_SECTION_LIST'][3].'&'.$path;
     }

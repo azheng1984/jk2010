@@ -334,7 +334,7 @@ width:100%;
   clear:left;
   margin:3px 0;
 }
-#tag li a {
+#tag .value a {
   float:left;
   padding:2px 6px 0 6px;
   background-color:#fff;
@@ -345,14 +345,31 @@ width:100%;
   border-radius:3px 11px 11px 3px;
   color:#888;
 }
-#tag li a:hover {
+#tag .value a:hover {
   border-color: #ddd #aaa #aaa #ddd;
   box-shadow:0 0 3px #ddd;
   color:#333;
 }
-#tag li a span {
+#tag .value a span {
   color:#06C;
   font-size:13px;
+}
+#tag .key {
+  padding-left:18px;
+  background:url(/+/img/plus.png) 1px 4px no-repeat;
+  border:0;
+}
+#tag .open {
+  background:url(/+/img/minus.png) 1px 4px no-repeat;
+}
+#tag .key a {
+  color:#666;
+  font-size:13px;
+  border-bottom:1px solid #666;
+}
+#tag .key a:hover {
+  color:#333;
+  border-color:#333;
 }
 /* related
  ***************************************/

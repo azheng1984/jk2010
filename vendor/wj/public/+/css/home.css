@@ -111,15 +111,15 @@ td a span {
   font-size:12px;
 }
 #more {
+  color:#666;
   padding:0 5px 0 16px;
   background:url(/+/img/screen.png) 0 -109px;
 }
-#more a {
+#more span {
   font-size:15px;
-  color:#666;
   border-bottom:1px solid #666;
 }
-#more a:hover {
+#pagination_wrapper a:hover span {
   color:#333;
   border-color:#333;
 }
