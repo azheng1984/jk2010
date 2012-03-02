@@ -1,7 +1,7 @@
 $(function() {
   $('#header input').focus();
 });
-//TODO:merchant list enhancement
+//TODO:merchant list pagination enhancement
 
 $(function() {
   $('#merchant td a').each(function() {
