@@ -1,3 +1,4 @@
+//TODO:页面加载完成后，异步发送 tracking
 var suggestionCache = {};
 var currentAjaxQuery = null;
 var currentQuery = null;
