@@ -1,4 +1,28 @@
 $(function() {
+  if ($('#result').length !== 0) {
+    //TODO:ajax load tag list
+    $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><div class="loading">正在加载标签…</div></div>');
+    $uri = window.location.pathname + '?media=json';
+    $.get($uri, function(data) {
+      //使用 js 渲染，剔除缓存重复（缓存造成）
+      $('#tag').html('<h2>分类:</h2><ol><li>' + data + '</li></ol>');
+      $('#key_list .key').mouseup(function() {
+        if ($(this).attr('class') === 'key open') {
+          $(this).attr('class', 'key');
+          $(this).parent().children('ol').remove();
+          return;
+        }
+        //TODO: 如果有属性选定，先判断 is_multiple 值，再决定是否发起请求
+        $uri2 = window.location.pathname + '?key=' + $(this).text() + '&media=json';
+        $(this).attr('id', 'target');
+        $.get($uri2, function(data) {
+          $('#target').after(data).attr('id', '').attr('class', 'key open');
+        });
+      });
+    });
+  }
+});
+$(function() {
   //TODO separate path & query string （使用 breadcrumb 获取当前选定值，防止 ie pathname bug）
   $('#result p .link_list').each(function() {
     var self = $(this);
@@ -31,7 +55,7 @@ $(function() {
         var value = valueList[index2];
         value = value.replace(/<\/span>/gi, '</span><span class="gray">')
           .replace(/<span>/gi, '</span><span class="red">');
-        //TODO:build path(考虑多值属性)
+        //TODO:build path(for 多值属性)
         html += '<a href="#"><span class="gray">' + value + '</span></a>';
         if (index2 !== valueList.length - 1) {
           html += '；';
@@ -43,10 +67,6 @@ $(function() {
   });
 });
 $(function() {
-  if ($('#result').length !== 0) {
-    //TODO:ajax load tag list
-    $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><ol><li><a href=""><span>礼品</span> 23</a></li></ol></div>');
-  }
   var query = {};
   if (location.search != '') {
     var qs = location.search;
@@ -82,5 +102,23 @@ $(function() {
       return;
     }
     $('#price_range').append('<a id="price_range_button" href="javascript:$(\'#price_range\').submit()">确定</a>');
+  });
+});
+$(function() {
+  $('#result h3 a').each(function() {
+    $(this).bind('mousedown', function(button) {
+      if (button.which == 1) {
+        alert($(this).parent().parent().find('img').attr('src'));
+        //从 img src 获取产品 id 信息 + session 信息，通过 jsonp 的方式发送到 tracking 服务器
+      }
+    });
+  });
+  $('#result .image a').each(function() {
+    $(this).bind('mousedown', function(button) {
+      if (button.which == 1) {
+        alert($(this).parent().parent().find('img').attr('src'));
+        //从 img src 获取产品 id 信息 + session 信息，通过 jsonp 的方式发送到 tracking 服务器
+      }
+    });
   });
 });
