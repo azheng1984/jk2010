@@ -1,12 +1,12 @@
 <?php
 class SearchProductListScreen {
   private static $merchantList;
-  private static $cutList;
   private static $hasCategory;
   private static $keywordList;
 
   public static function render() {
     self::initialize();
+    SearchExcerptionScreen::initialize(self::$keywordList);
     $index = 0;
     echo '<table><tr>';
     foreach ($GLOBALS['SEARCH_RESULT']['matches'] as $id => $result) {
@@ -26,7 +26,6 @@ class SearchProductListScreen {
 
   private static function initialize() {
     self::$merchantList = array();
-    self::$cutList = array();
     self::$hasCategory = isset($GLOBALS['CATEGORY']);
     self::$keywordList = explode(' ',
       SegmentationService::execute($GLOBALS['QUERY']['name']));
@@ -58,7 +57,9 @@ class SearchProductListScreen {
       '<div class="price">¥<span>',
       $product['lowest_price_x_100']/100, '</span></div>';//price
     if ($product['property_list'] !== null) {
-      $excerption = self::highlight(self::excerpt($product['property_list']));
+      $excerption = self::highlight(
+        SearchExcerptionScreen::excerpt($product['property_list'])
+      );
       echo '<p>', $excerption, '</p>';//excerption
     }
     $tagList = self::getTagList($product);
@@ -118,178 +119,6 @@ class SearchProductListScreen {
 
   private static function getProductUri($format, $argumentList) {
     return vsprintf($format, $argumentList);
-  }
-
-  private static function excerpt($text) {
-    $list = array();
-    $isLink = true;
-    $orignalAmount = 0;
-    foreach (explode("\n", $text) as $propertyText) {
-      if ($propertyText === '') {
-        $isLink = false;
-        continue;
-      }
-      $list[$propertyText] = $isLink;
-      ++$orignalAmount;
-    }
-    if (mb_strlen($text, 'UTF-8') > 60) {
-      $list = self::reducePropertyList($list);
-    }
-    $linkList = array();
-    $textList = array();
-    $linkAmount = 0;
-    $textAmount = 0;
-    $hasCategory = isset($GLOBALS['CATEGORY']);
-    $currentPropertyList = array();//TODO:build current property list
-    //TODO:refactor
-    foreach ($list as $propertyText => $isLink) {
-      if ($isLink) {
-        $tmp = explode('：', $propertyText, 2);
-        if (count($tmp) === 2) {
-          list($keyName, $valueName) = $tmp;
-          if (isset($currentPropertyList[$keyName])) {
-            if (strpos($valueName, '；') !== false) {
-              $list = explode('；', $valueName);
-              $list2 = array();
-              foreach ($list as $item) {
-                if (isset($currentPropertyList[$keyName][$item])) {
-                  continue;
-                }
-                $list2[] = $item;
-              }
-              if (count($list2) === 0) {
-                continue;
-              }
-              $propertyText = $keyName.'：'.implode('；', $list2);
-            } else {
-              if (isset($currentPropertyList[$keyName][$valueName])) {
-                continue;
-              }
-            }
-          }
-        }
-      }
-      if ($hasCategory && $isLink) {
-        $linkList[] = $propertyText;
-        ++$linkAmount;
-        continue;
-      }
-      $textList[] = $propertyText;
-      ++$textAmount;
-    }
-    $amount = $linkAmount + $textAmount;
-    $isFull = $amount === $orignalAmount;
-    $count = 0;
-    $result = '';
-    if ($linkAmount !== 0) {
-      $result .= '<span class="link_list">';
-      foreach ($linkList as $item) {
-        ++$count;
-        $end = '。';
-        if (isset(self::$cutList[$item])
-          || ($count === $amount && $isFull === false)) {
-          $end = '…';
-        }
-        $result .= $item.$end;
-      }
-      $result .= '</span>';
-    }
-    foreach ($textList as $item) {
-      ++$count;
-      $end = '。';
-      if (isset(self::$cutList[$item])
-        || ($count === $amount && $isFull === false)) {
-        $end = '…';
-      }
-      $result .= $item.$end;
-    }
-    return $result;
-  }
-
-  private static function reducePropertyList($list) {
-    $length = 0;
-    $result = array();
-    $matchList = array();
-    foreach (self::$keywordList as $keyword) {
-      foreach ($list as $propertyText => $isLink) {
-        if (strpos($propertyText, $keyword) === false) {
-          continue;
-        }
-        if (isset($result[$propertyText]) === false) {
-          $result[$propertyText] = $isLink;
-          $propertyLength = mb_strlen($propertyText, 'UTF-8');
-          $matchList[] = array($propertyText, $isLink, $propertyLength);
-          $length += $propertyLength;
-        }
-        break;
-      }
-    }
-    if ($length < 60) {
-      return self::increaseExcerption($list, $result, $length);
-    }
-    for ($index = count($matchList) - 1; $index > -1; --$index) {
-      $item = $matchList[$index];
-      $propertyText = $item[0];
-      $isLink = $item[1];
-      $propertyLength = $item[2];
-      if ($propertyLength > 12) {
-        $cut = self::cutProperty($propertyText, $isLink, $propertyLength);
-      }
-      if ($cut !== null) {
-        $matchList[$index] = array($cut[0], $isLink, $cut[1]);
-        $length -= $propertyLength - $cut[1];
-        self::$cutList[$cut[0]] = true;
-      }
-      if ($length < 60) {
-        break;
-      }
-    }
-    $length = 0;
-    $result = array();
-    foreach ($matchList as $item) {
-      if ($length + $item[2] > 60 && $length > 0) {
-        break;
-      }
-      $result[$item[0]] = $item[1];
-      $length += $item[2];
-    }
-    return $result;
-  }
-
-  private static function cutProperty($text, $isLink, $length) {
-    if ($isLink === false) {
-      return array(mb_substr($text, 0, 12, 'UTF-8'), 12);
-    }
-    $endPosition = mb_strpos($text, '；', 0, 'UTF-8');
-    if ($endPosition === false) {
-      return;
-    }
-    for (;;) {
-      $position = mb_strpos($text, '；', $endPosition, 'UTF-8');
-      if ($position === false || $position > 12) {
-        break;
-      }
-      $endPosition = $position;
-    }
-    return array(mb_substr($text, 0, $endPosition, 'UTF-8'), $endPosition);
-  }
-
-  private static function increaseExcerption($list, $result, $length) {
-    if (count($list) === count($result)) {
-      return $result;
-    }
-    foreach ($list as $propertyText => $isLink) {
-      if (isset($result[$propertyText])) {
-        continue;
-      }
-      $propertyLength = mb_strlen($propertyText, 'UTF-8');
-      $length += $propertyLength;
-      if ($length > 60) {
-        break;
-      }
-      $result[$propertyText] = $isLink;
-    }
-    return $result;
   }
 
   private static function highlight($text) {

@@ -12,17 +12,17 @@ class SearchBreadcrumbScreen {
       }
       $section = $list[$index];
       foreach ($section as $item) {
-        if (isset($item['path']) === false && isset($item['class'])
+        if (isset($item['href']) === false && isset($item['class'])
           && $item['class'] === false) {
           echo $item['text'];
           continue;
         }
         $class = isset($item['class']) ? ' class="'.$item['class'].'"' : '';
-        if (isset($item['path']) === false) {
+        if (isset($item['href']) === false) {
           echo '<span', $class, '>', $item['text'], '</span>';
           continue;
         }
-        echo '<a', $class, ' href="', $item['path'], '" rel="nofollow">',
+        echo '<a', $class, ' href="', $item['href'], '" rel="nofollow">',
           $item['text'], '</a>';
       }
       if ($index !== $last) {
@@ -40,7 +40,7 @@ class SearchBreadcrumbScreen {
     if (isset($GLOBALS['IS_RECOGNITION'])) {
       $list[0][] = array(
         'text' => '同款',
-        'path' => '/'.str_replace('"', '%22', substr($GLOBALS['PATH'], 3))
+        'href' => '/'.str_replace('"', '%22', substr($GLOBALS['PATH'], 3))
           .$GLOBALS['QUERY_STRING'],
         'class' => 'tag'
       );
@@ -49,7 +49,7 @@ class SearchBreadcrumbScreen {
     if (isset($GLOBALS['CATEGORY']) === false) {
       return $list;
     }
-    $list[0][0]['path'] = '..'.$GLOBALS['QUERY_STRING'];
+    $list[0][0]['href'] = '..'.$GLOBALS['QUERY_STRING'];
     $list[] = array(array(
       'text' => '分类: '
         .htmlentities($GLOBALS['CATEGORY']['name'], ENT_NOQUOTES, 'UTF-8')
@@ -57,8 +57,8 @@ class SearchBreadcrumbScreen {
     if (isset($GLOBALS['PROPERTY_LIST']) === false) {
       return $list;
     }
-    $list[1][0]['path'] = $list[0][0]['path'];
-    $list[0][0]['path'] = '../'.$list[0][0]['path'];
+    $list[1][0]['href'] = $list[0][0]['href'];
+    $list[0][0]['href'] = '../'.$list[0][0]['href'];
     $list[2] = array();
     foreach ($GLOBALS['PROPERTY_LIST'] as $property) {
       $list[2][] = array(
@@ -68,7 +68,7 @@ class SearchBreadcrumbScreen {
       foreach ($property['value_list'] as $value) {
         $list[2][] = array(
           'text' => htmlentities($value['name'], ENT_NOQUOTES, 'UTF-8'),
-          'path' => self::cutPath($property['key']['path'], $value['path'])
+          'href' => self::buildHref($property['key']['path'], $value['path'])
             .$GLOBALS['QUERY_STRING'],
           'class' => 'tag'
         );
@@ -77,7 +77,7 @@ class SearchBreadcrumbScreen {
     return $list;
   }
 
-  private static function cutPath($propertyKeyPath, $propertyValuePath) {
+  private static function buildHref($propertyKeyPath, $propertyValuePath) {
     if (self::$propertyPathList === null) {
       self::$propertyPathList = array();
       foreach ($GLOBALS['PROPERTY_LIST'] as $property) {
