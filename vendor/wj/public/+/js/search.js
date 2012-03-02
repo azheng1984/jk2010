@@ -12,7 +12,7 @@ $(function() {
           continue;
         }
         propertyList.push(['。', list2[index2]]);
-       }
+      }
     }
     var html = '';
     for (var index  = 0; index < propertyList.length; ++index) {
@@ -31,7 +31,7 @@ $(function() {
         var value = valueList[index2];
         value = value.replace(/<\/span>/gi, '</span><span class="gray">')
           .replace(/<span>/gi, '</span><span class="red">');
-        //TODO:build path(考虑多选)
+        //TODO:build path(考虑多值属性)
         html += '<a href="#"><span class="gray">' + value + '</span></a>';
         if (index2 !== valueList.length - 1) {
           html += '；';
@@ -44,7 +44,7 @@ $(function() {
 });
 $(function() {
   if ($('#result').length !== 0) {
-    //TODO ajax load tag list
+    //TODO:ajax load tag list
     $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><ol><li><a href=""><span>礼品</span> 23</a></li></ol></div>');
   }
   var query = {};
