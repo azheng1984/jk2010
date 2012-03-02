@@ -48,9 +48,8 @@ class SearchExcerptionScreen {
       $result .= '<span class="link_list">';
       foreach ($linkList as $item) {
         ++$count;
-        $end = isset(
-          self::$cuttingList[$item]) || ($count === $amount && $isFull === false
-        ) ? '…' : '。';
+        $end = isset(self::$cuttingList[$item])
+          || ($count === $amount && $isFull === false) ? '…' : '。';
         $result .= $item.$end;
       }
       $result .= '</span>';
