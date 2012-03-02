@@ -83,6 +83,7 @@ class SearchService {
   private static function setPriceRange($handler) {
     $max = 0;
     $min = 0;
+    //TODO: price_from/to 为 ''
     if (isset($GLOBALS['PRICE_FROM'])) {
       $max = $GLOBALS['PRICE_FROM'] * 100;
     }

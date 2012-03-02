@@ -35,6 +35,7 @@ class SearchQueryString {
     $GLOBALS['SORT'] = 'sale_rank';
   }
 
+  //TODO: price_from/to 为 ''
   private static function parsePriceRange() {
     if (isset($_GET['price_from']) && is_numeric($_GET['price_from'])
       && $_GET['price_from'] >= 0) {
