@@ -1,11 +1,10 @@
 $(function() {
   if ($('#result').length !== 0) {
     //TODO:ajax load tag list
-    $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><div class="loading">正在加载标签…</div></div>');
     $uri = window.location.pathname + '?media=json';
     $.get($uri, function(data) {
       //使用 js 渲染，剔除缓存重复（缓存造成）
-      $('#tag').html('<h2>分类:</h2><ol><li>' + data + '</li></ol>');
+      $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><ol><li>' + data + '</li></ol></div>');
       $('#key_list .key').mouseup(function() {
         if ($(this).attr('class') === 'key open') {
           $(this).attr('class', 'key');
@@ -22,8 +21,76 @@ $(function() {
     });
   }
 });
+var query = {};
+var tmp = window.location.pathname.split('/');
+var propertyListPath = tmp[3];
+if (location.search != '') {
+  var qs = location.search;
+  if (qs.charAt(0) == '?') qs= qs.substring(1);
+  var re = /([^=&]+)(=([^&]*))?/g;
+  while (match= re.exec(qs)) {
+    var key = decodeURIComponent(match[1].replace(/\+/g,' '));
+    var value = decodeURIComponent(match[3].replace(/\+/g,' '));
+    query[key] = value;
+  }
+}
+var args = [];
+if (typeof(query['price_from']) !== 'undefined') {
+  args.push('price_form=' + query['price_from']);
+}
+if (typeof(query['price_to']) !== 'undefined') {
+  args.push('price_to=' + query['price_to']);
+}
+if (typeof(query['sort']) !== 'undefined') {
+  args.push('sort=' + query['sort']);
+}
+var queryString = '';
+if (args.length > 0) {
+  queryString = '?' + args.join('&');
+}
+var propertyList = {};
+var level = null;
+function getPropertyHref(keyName, valueName) {
+  if (level === null) {
+    level = 0;
+    var name = null;
+    var valueList = null;
+    $('h1').children().each(function() {
+      if ($(this).hasClass('section')) {
+        ++level;
+        return;
+      }
+      if ($(this).is('span')) {
+        if (name !== null) {
+          propertyList[name] = valueList;
+        }
+        name = $(this).text();
+        valueList = [];
+        return;
+      }
+      valueList.push(encodeURIComponent($(this).text()));
+    });
+    if (name !== null) {
+      propertyList[name] = valueList;
+    }
+  }
+  if (typeof propertyList[keyName] === 'undefined') {
+    var href = propertyListPath;
+    if (level === 2) {
+      href += '&';
+    }
+    return href + encodeURIComponent(keyName) + '=' + encodeURIComponent(valueName) + '/' + queryString;
+  }
+  $sectionList = [];
+  for (var propertyName in propertyList) {
+    $sectionList.push(encodeURIComponent(propertyName) + '=' + propertyList[propertyName].join('&'));
+    if (propertyName === keyName) {
+      pathPrefix += '&' + encodeURIComponent(valueName);
+    }
+  }
+  return $sectionList.join('&') + '/' + queryString;
+}
 $(function() {
-  //TODO separate path & query string （使用 breadcrumb 获取当前选定值，防止 ie pathname bug）
   $('#result p .link_list').each(function() {
     var self = $(this);
     var propertyList = [];
@@ -53,10 +120,13 @@ $(function() {
       html += name + '：';
       for (var index2  = 0; index2 < valueList.length; ++index2) {
         var value = valueList[index2];
+        var href = getPropertyHref(name.replace(/<\/span>/gi, '')
+            .replace(/<span>/gi, ''), value.replace(/<\/span>/gi, '')
+            .replace(/<span>/gi, ''));
         value = value.replace(/<\/span>/gi, '</span><span class="gray">')
           .replace(/<span>/gi, '</span><span class="red">');
-        //TODO:build path(for 多值属性)
-        html += '<a href="#"><span class="gray">' + value + '</span></a>';
+        html += '<a href="' + href + '"><span class="gray">'
+          + value + '</span></a>';
         if (index2 !== valueList.length - 1) {
           html += '；';
         }
