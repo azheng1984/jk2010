@@ -122,6 +122,9 @@ class SearchProductListScreen {
   }
 
   private static function highlight($text) {
+    if ($text === null || $text === '') {
+      return '';
+    }
     $positionList = array();
     foreach (self::$keywordList as $keyword) {
       $length = strlen($keyword);
