@@ -46,26 +46,31 @@ class SearchExcerptionScreen {
     }
     $isFull = $amount === $orignalAmount;
     $count = 0;
-    $result = '<p>';
+    $result = '';
     if ($linkAmount !== 0) {
-      $result .= '<span class="link_list">';
+      $result .= '<ul class="link_list">';
       foreach ($linkList as $item) {
         ++$count;
         $end = isset(self::$cuttingList[$item])
-          || ($count === $amount && $isFull === false) ? '…' : '。';
-        $result .= $item.$end;
+          || ($count === $amount && $isFull === false) ? '…' : '';
+        $result .= '<li>'.$item.$end.'</li>';
       }
-      $result .= '</span>';
+      $result .= '</ul>';
     }
     if ($textAmount !== 0) {
+      $result .= '<ul>';
       foreach ($textList as $item) {
         ++$count;
         $end = isset(self::$cuttingList[$item])
-          || ($count === $amount && $isFull === false) ? '…' : '。';
-        $result .= $item.$end;
+          || ($count === $amount && $isFull === false) ? '…' : '';
+        $result .= '<li>'.$item.$end.'</li>';
       }
+      $result .= '</ul>';
     }
-    return $result.'</p>';
+    if ($isFull === false) {
+      echo $result .= '<p>…</p>';
+    }
+    return $result;
   }
 
   private static function removeCurrentProperty($text) {

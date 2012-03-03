@@ -105,33 +105,23 @@ function getPropertyHref(keyName, valueName) {
   return $sectionList.join('&') + '/' + queryString;
 }
 $(function() {
-  $('#result p .link_list').each(function() {
+  $('#result .link_list').each(function() {
     var self = $(this);
-    var propertyList = [];
-    var list = self.html().split('。');
-    for (var index  = 0; index < list.length; ++index) {
-      var list2 = list[index].split('…');
-      for (var index2  = 0; index2 < list2.length; ++index2) {
-        if (index2 !== list2.length - 1) {
-          propertyList.push(['…', list2[index2]]);
-          continue;
-        }
-        propertyList.push(['。', list2[index2]]);
-      }
-    }
+    var propertyList = self.children();
     var html = '';
     for (var index  = 0; index < propertyList.length; ++index) {
-      var property = propertyList[index];
-      var list = property[1].split('：');
+      //TODO：删除结尾的 “...”
+      var property = $(propertyList[index]);
+      var list = property.html().split('：');
       if (list.length !== 2) {
-        if (property[1] !== '') {
-          html += property[1] + property[0];
+        if (property !== '') {
+          html += '<li>' + property.html() + '</li>';
         }
         continue;
       }
       var name = list[0];
       var valueList = list[1].split('；');
-      html += name + '：';
+      html += '<li>' + name + '：';
       for (var index2  = 0; index2 < valueList.length; ++index2) {
         var value = valueList[index2];
         var href = getPropertyHref(name.replace(/<\/span>/gi, '')
@@ -145,7 +135,7 @@ $(function() {
           html += '；';
         }
       }
-      html += property[0];
+      html += '</li>';
     }
     self.html(html);
   });

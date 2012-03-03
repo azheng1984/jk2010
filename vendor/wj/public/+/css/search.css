@@ -189,7 +189,7 @@ h2 a:hover {
 }
 /* product list
  ****************************/
-#result h3 span, #result p span {
+#result h3 span, #result li span {
   color:#d00;
 }
 #result h3 a:hover span {
@@ -232,26 +232,31 @@ h2 a:hover {
   line-height:28px;
   color:#999;
 }
-#result p {
+#result ul {
   clear:left;
   margin:0 0 5px 0;
 }
-#result p a .gray {
+#result li {
+  float:none;
+  padding-left:10px;
+  background:url(/+/img/square.png) 0 6px no-repeat;
+}
+#result li a .gray {
   color:#666;
   border-bottom:1px solid #666;
 }
-#result p a .red {
+#result li a .red {
   color:#d00;
   border-bottom:1px solid #d00;
 }
-#result p a:hover {
+#result li a:hover {
   background:#fff;/* ie6 串行解析 hover */
 }
-#result p a:hover .gray {
+#result li a:hover .gray {
   border-bottom:1px solid #333;
   color:#333;
 }
-#result p a:hover .red {
+#result li a:hover .red {
   border-bottom:1px solid red;
   color:red;
 }
@@ -318,7 +323,6 @@ h2 a:hover {
  **************************************/
 #tag {
   width:170px;
-  overflow:hidden;
 }
 #tag h2 {
   background:url(/+/img/tag.png) 2px 10px no-repeat;
@@ -327,7 +331,7 @@ h2 a:hover {
 }
 #tag ol {
   clear:left;
-  padding:0 5px 10px 5px;
+  padding:0 4px 10px 4px;
   list-style:none;
 }
 #tag li {
