@@ -330,8 +330,7 @@ width:100%;
   list-style:none;
 }
 #tag li {
-  float:left;
-  clear:left;
+  width:100%;
   margin:3px 0;
 }
 #tag .value a {
@@ -409,7 +408,7 @@ width:100%;
   padding:0 20px;
 }
 #no_result li {
-  clear:left;
+  float:none;
   padding:4px;
-  list-style:disc inside;
+  list-style:square inside;
 }
