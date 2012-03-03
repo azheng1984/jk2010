@@ -75,7 +75,7 @@ table {
   background:#f5f5f5;
   margin-top:13px;
   border-spacing:1px;
-  width:750px;
+  width:740px;
 }
 td a {
   display:block;
@@ -112,7 +112,7 @@ td a span {
 }
 #more {
   color:#666;
-  padding:0 5px 0 16px;
+  padding-left:16px;
   background:url(/+/img/screen.png) 0 -109px;
 }
 #more span {
