@@ -207,7 +207,7 @@ h2 a:hover {
   padding:10px;
 }
 #result td div {
-width:100%;
+  width:100%;
 }
 #result img {
   width:170px;
@@ -229,7 +229,7 @@ width:100%;
   color:#551a8b;
 }
 #result .price {
-  line-height:30px;
+  line-height:28px;
   color:#999;
 }
 #result p {
@@ -263,6 +263,7 @@ width:100%;
 }
 #result p .link_list {
   color:#666;
+  line-height:20px;
 }
 #result .tag_list {
   padding-bottom:4px;
@@ -335,7 +336,7 @@ width:100%;
 }
 #tag .value a {
   float:left;
-  padding:2px 6px 0 6px;
+  padding:2px 5px 0 5px;
   background-color:#fff;
   display:block;
   font-size:11px;

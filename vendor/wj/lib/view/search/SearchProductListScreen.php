@@ -57,10 +57,9 @@ class SearchProductListScreen {
       '<div class="price">¥<span>',
       $product['lowest_price_x_100']/100, '</span></div>';//price
     if ($product['property_list'] !== null) {
-      $excerption = self::highlight(
+      echo self::highlight(
         SearchExcerptionScreen::excerpt($product['property_list'])
       );
-      echo '<p>', $excerption, '</p>';//excerption
     }
     $tagList = self::getTagList($product);
     if ($tagList !== '') {
