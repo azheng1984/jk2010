@@ -106,6 +106,7 @@ td a span {
  */
 #pagination_wrapper {
   float:right;
+  line-height:20px;
   width:750px;
   text-align:center;
   font-size:12px;
@@ -120,7 +121,9 @@ td a span {
   font-size:15px;
   border-bottom:1px solid #666;
 }
-#pagination_wrapper a:hover span {
+#pagination_wrapper a:hover {
   color:#333;
+}
+#pagination_wrapper a:hover span {
   border-color:#333;
 }
