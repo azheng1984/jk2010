@@ -7,6 +7,7 @@ class SearchExcerptionScreen {
     self::$keywordList = $keywordList;
   }
 
+  //refactor for p to ul
   public static function excerpt($text) {
     $list = array();
     $isLink = true;
