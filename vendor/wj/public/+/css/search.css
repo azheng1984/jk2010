@@ -274,12 +274,11 @@ h2 a:hover {
 }
 #result .tag_list a {
   float:left;
-  margin:0 2px 2px 0;
-  padding:0 5px;
+  margin:0 3px 3px 0;
+  padding:0 4px;
   border:1px solid;
   border-color:#eee #ccc #ccc #eee;
   color:#666;
-  line-height:20px;
   border-radius:3px;
 }
 #result .tag_list a:hover {
