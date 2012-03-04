@@ -325,13 +325,12 @@ h2 a:hover {
   width:170px;
 }
 #tag h2 {
-  background:url(/+/img/tag.png) 2px 10px no-repeat;
-  padding:7px 0 0 22px;
-  line-height:25px;
+  background: url(/+/img/tag.png) 2px 7px no-repeat;
+  padding: 7px 0 0 22px;
 }
 #tag ol {
   clear:left;
-  padding:0 4px 10px 4px;
+  padding:4px 4px 10px 4px;
   list-style:none;
 }
 #tag li {
@@ -359,19 +358,27 @@ h2 a:hover {
   font-size:13px;
 }
 #tag .key {
-  padding-left:18px;
-  background:url(/+/img/plus.png) 1px 4px no-repeat;
+
   border:0;
 }
-#tag .open {
-  background:url(/+/img/minus.png) 1px 4px no-repeat;
-}
-#tag .key a {
+#tag .key {
+  float:left;
+  padding-left:18px;
+  background:url(/+/img/plus.png) 1px 3px no-repeat;
   color:#666;
   font-size:13px;
+  cursor:pointer;
+}
+#tag .key span {
   border-bottom:1px solid #666;
 }
-#tag .key a:hover {
+#tag ol ol {
+  padding:4px;
+}
+#tag .open {
+  background:url(/+/img/minus.png) 1px 3px no-repeat;
+}
+#tag .key:hover {
   color:#333;
   border-color:#333;
 }
