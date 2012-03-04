@@ -71,16 +71,14 @@ h1 {
   padding:2px 16px 0 4px;
   margin:0 0 0 4px;
   font-size:13px;
-  color:#666;
+  color:#fff;
   border:1px solid;
   border-color:#eee #ccc #ccc #eee;
-  background:url(/+/img/delete.png) right 6px no-repeat;
+  background:#999 url(/+/img/delete_fff.png) right 6px no-repeat;
   border-radius:3px 11px 11px 3px;
 }
 #breadcrumb .tag:hover {
-  color:#333;
   border-color:#ddd #aaa #aaa #ddd;
-  background:url(/+/img/delete_hover.png) right 6px no-repeat;
   box-shadow:0 0 3px #ddd;
   text-decoration:none;
 }
@@ -371,10 +369,18 @@ h2 a:hover {
 #tag .selected a {
   padding: 2px 16px 0 5px;
   margin: 1px 0 0 4px;
-  background:#fff url(/+/img/delete.png) right 6px no-repeat;
+
+  background:#aaa url(/+/img/delete_fff.png) right 6px no-repeat;
+}
+#tag .selected a span {
+  color:#fff;
 }
 #tag .selected a:hover {
-  background:#fff url(/+/img/delete_hover.png) right 6px no-repeat;
+  color:#fff;
+  background:#aaa url(/+/img/delete_fff.png) right 6px no-repeat;
+}
+#tag .selected a:hover span {
+  color:#fff;
 }
 #tag  a:hover span {
   color:#333;
