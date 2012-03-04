@@ -275,10 +275,11 @@ h2 a:hover {
 #result .tag_list a {
   float:left;
   margin:0 2px 2px 0;
-  padding:0 4px;
+  padding:0 5px;
   border:1px solid;
   border-color:#eee #ccc #ccc #eee;
   color:#666;
+  line-height:20px;
   border-radius:3px;
 }
 #result .tag_list a:hover {
@@ -345,19 +346,19 @@ h2 a:hover {
   border:1px solid;
   border-color:#eee #ccc #ccc #eee;
   border-radius:3px 11px 11px 3px;
-  color:#888;
+  color:#999;
 }
 #tag .value a:hover {
   border-color: #ddd #aaa #aaa #ddd;
   box-shadow:0 0 3px #ddd;
+}
+#tag .value a:hover span {
   color:#333;
 }
 #tag .value a span {
-  color:#06C;
   font-size:13px;
 }
 #tag .key {
-
   border:0;
 }
 #tag .key {
@@ -376,10 +377,10 @@ h2 a:hover {
 #tag .selected a:hover {
   background:#fff url(/+/img/delete_hover.png) right 6px no-repeat;
 }
-#tag .selected a:hover span {
+#tag  a:hover span {
   color:#333;
 }
-#tag .selected a span {
+#tag  a span {
   color: #666;
 }
 #tag .key span {
