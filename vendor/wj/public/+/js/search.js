@@ -34,8 +34,8 @@ $(function() {
         $.getJSON($uri2, function(data) {
           var html = '';
           $(data).each(function() {
-            var href = getPropertyHref(keyName, data[0][0]);
-            html += '<li><span class="value"><a href="' + href + '">'+ '<span>' + data[0][0] + '</span> ' + data[0][1] + '</a></li>';
+            var href = getPropertyHref(keyName, this[0]);
+            html += '<li><span class="value"><a href="../' + href + '">'+ '<span>' + this[0] + '</span> ' + this[1] + '</a></li>';
           });
           $('#target').after('<ol>' + html + '</ol>').attr('class', 'key open');
         });
@@ -87,7 +87,7 @@ function getPropertyHref(keyName, valueName) {
         if (name !== null) {
           propertyList[name] = valueList;
         }
-        name = $(this).text();
+        name = $(this).text().substr(0, $(this).text().length - 1);
         valueList = [];
         return;
       }
@@ -104,14 +104,18 @@ function getPropertyHref(keyName, valueName) {
     }
     return href + encodeURIComponent(keyName) + '=' + encodeURIComponent(valueName) + '/' + queryString;
   }
-  $sectionList = [];
+  sectionList = [];
   for (var propertyName in propertyList) {
-    $sectionList.push(encodeURIComponent(propertyName) + '=' + propertyList[propertyName].join('&'));
-    if (propertyName === keyName) {
-      pathPrefix += '&' + encodeURIComponent(valueName);
+    var tmp = encodeURIComponent(propertyName) + '=' + propertyList[propertyName].join('&');
+    if (jQuery.inArray(valueName, propertyList[propertyName])) {
+      return;
     }
+    if (propertyName === keyName) {
+      tmp += '&' + encodeURIComponent(valueName);
+    }
+    sectionList.push(tmp);
   }
-  return $sectionList.join('&') + '/' + queryString;
+  return sectionList.join('&') + '/' + queryString;
 }
 $(function() {
   $('#result .link_list').each(function() {
