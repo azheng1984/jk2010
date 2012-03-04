@@ -15,8 +15,10 @@ $(function() {
         return;
       }
       if (deep > 3) {
+        for (var x = 0; x < 20; ++x) {
         for (var index = 0; index < data.length; ++index) {
           html += '<li><span class="key"><span>' + data[index] + '</span></span></li>';
+        }
         }
       }
       $('#result_wrapper').after('<div id="tag"><h2>属性:</h2><ol>' + html + '</ol></div>');
@@ -34,8 +36,16 @@ $(function() {
         $.getJSON($uri2, function(data) {
           var html = '';
           $(data).each(function() {
-            var href = getPropertyHref(keyName, this[0]);
-            html += '<li><span class="value"><a href="../' + href + '">'+ '<span>' + this[0] + '</span> ' + this[1] + '</a></li>';
+            var tmp = getPropertyHref(keyName, this[0], true);
+            var href = tmp[0];
+            if (deep > 4) {
+              href = '../' + href;
+            }
+            if (tmp[1] === false) {
+              html += '<li><span class="value"><a href="' + href + '">'+ '<span>' + this[0] + '</span> ' + this[1] + '</a></li>';
+            } else {
+              html += '<li><span class="value selected"><a href="' + href + '">'+ '<span>' + this[0] + '</span> ' + '</a></li>';
+            }
           });
           $('#target').after('<ol>' + html + '</ol>').attr('class', 'key open');
         });
@@ -73,7 +83,7 @@ if (args.length > 0) {
 }
 var propertyList = {};
 var level = null;
-function getPropertyHref(keyName, valueName) {
+function getPropertyHref(keyName, valueName, removeFlag) {
   if (level === null) {
     level = 0;
     var name = null;
@@ -102,20 +112,41 @@ function getPropertyHref(keyName, valueName) {
     if (level === 2) {
       href += '&';
     }
-    return href + encodeURIComponent(keyName) + '=' + encodeURIComponent(valueName) + '/' + queryString;
+    result = href + encodeURIComponent(keyName) + '=' + encodeURIComponent(valueName) + '/' + queryString;
+    if ((typeof removeFlag) !== 'undefined') {
+      result = [result, false];
+    }
+    return result;
   }
+  var isRemove = false;
   sectionList = [];
   for (var propertyName in propertyList) {
-    var tmp = encodeURIComponent(propertyName) + '=' + propertyList[propertyName].join('&');
-    if (jQuery.inArray(valueName, propertyList[propertyName])) {
-      return;
+    var valueList = propertyList[propertyName];
+    var valuePath = encodeURIComponent(valueName);
+    if (keyName === propertyName && $.inArray(valuePath, valueList) !== -1) {
+      isRemove = true;
+      valueList = $.grep(valueList, function(value) {
+        return value != valuePath;
+      });
+    } else {
+      valueList = valueList.slice(0);
+      valueList.push(valuePath);
     }
-    if (propertyName === keyName) {
-      tmp += '&' + encodeURIComponent(valueName);
+    if (valueList.length !== 0) {
+      sectionList.push(
+        encodeURIComponent(propertyName) + '=' + valueList.join('&')
+      );
     }
-    sectionList.push(tmp);
   }
-  return sectionList.join('&') + '/' + queryString;
+  result = '';
+  if (sectionList.length !== 0) {
+    result = sectionList.join('&') + '/';
+  }
+  result = result + queryString;
+  if ((typeof removeFlag) !== 'undefined') {
+    result = [result, isRemove];
+  }
+  return result;
 }
 $(function() {
   $('#result .link_list').each(function() {
@@ -138,8 +169,8 @@ $(function() {
       for (var index2  = 0; index2 < valueList.length; ++index2) {
         var value = valueList[index2];
         var href = getPropertyHref(name.replace(/<\/span>/gi, '')
-            .replace(/<span>/gi, ''), value.replace(/<\/span>/gi, '')
-            .replace(/<span>/gi, ''));
+          .replace(/<span>/gi, ''), value.replace(/<\/span>/gi, '')
+          .replace(/<span>/gi, ''));
         value = value.replace(/<\/span>/gi, '</span><span class="gray">')
           .replace(/<span>/gi, '</span><span class="red">');
         html += '<a href="' + href + '"><span class="gray">'
