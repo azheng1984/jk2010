@@ -4,33 +4,42 @@ $(function() {
     $uri = window.location.pathname + '?media=json';
     $.getJSON($uri, function(data) {
       //使用 js 渲染，剔除缓存重复（缓存造成）
-      $html  = '<ol>';
       var deep = window.location.pathname.split('/').length;
+      var html  = '';
       if (deep === 3) {
         for (var index = 0; index < data.length; ++index) {
-          $html += '<li class="value"><a href=""><span>' + data[index][0] + '</span> ' + data[index][1] + '</a></li>';
+          html += '<li class="value"><a href="'
+            + encodeURIComponent(data[index][0]) + '/"><span>' + data[index][0] + '</span> ' + data[index][1] + '</a></li>';
         }
+        $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><ol>' + html + '</ol></div>');
+        return;
       }
       if (deep > 3) {
         for (var index = 0; index < data.length; ++index) {
-          $html += '<li class="key"><a href="javascript:void(0)">' + data[index] + '</a></li>';
+          html += '<li><span class="key"><span>' + data[index] + '</span></span></li>';
         }
       }
-      $html += '</ol>';
-      $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><ol><li>' + $html + '</li></ol></div>');
-      $('#tag .key').mouseup(function() {
+      $('#result_wrapper').after('<div id="tag"><h2>属性:</h2><ol>' + html + '</ol></div>');
+      $('#tag .key').click(function() {
         if ($(this).attr('class') === 'key open') {
           $(this).attr('class', 'key');
           $(this).parent().children('ol').remove();
-          return;
+          return false;
         }
         //var target = $(this);
         //TODO: 如果有属性选定，先判断 is_multiple 值，再决定是否发起请求
-        $uri2 = window.location.pathname + '?key=' + $(this).text() + '&media=json';
+        var keyName = $(this).text();
+        $uri2 = window.location.pathname + '?key=' + keyName + '&media=json';
         $(this).attr('id', 'target');
         $.getJSON($uri2, function(data) {
-          $('#target').append('<ol><li>'+ data[0][0] + '</li></ol>').attr('class', 'key open');
+          var html = '';
+          $(data).each(function() {
+            var href = getPropertyHref(keyName, data[0][0]);
+            html += '<li><span class="value"><a href="' + href + '">'+ '<span>' + data[0][0] + '</span> ' + data[0][1] + '</a></li>';
+          });
+          $('#target').after('<ol>' + html + '</ol>').attr('class', 'key open');
         });
+        return false;
       });
     });
   }
@@ -110,7 +119,7 @@ $(function() {
     var propertyList = self.children();
     var html = '';
     for (var index  = 0; index < propertyList.length; ++index) {
-      //TODO：删除结尾的 “...”
+      //TODO：处理结尾 “...”
       var property = $(propertyList[index]);
       var list = property.html().split('：');
       if (list.length !== 2) {
