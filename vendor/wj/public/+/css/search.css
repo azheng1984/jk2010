@@ -68,9 +68,8 @@ h1 {
   text-decoration:underline;
 }
 #breadcrumb .tag {
-  padding:0 16px 0 4px;
-  margin:1px 0 0 4px;
-  line-height:19px;
+  padding:2px 16px 0 4px;
+  margin:0 0 0 4px;
   font-size:13px;
   color:#666;
   border:1px solid;
@@ -368,6 +367,20 @@ h2 a:hover {
   color:#666;
   font-size:13px;
   cursor:pointer;
+}
+#tag .selected a {
+  padding: 2px 16px 0 5px;
+  margin: 1px 0 0 4px;
+  background:#fff url(/+/img/delete.png) right 6px no-repeat;
+}
+#tag .selected a:hover {
+  background:#fff url(/+/img/delete_hover.png) right 6px no-repeat;
+}
+#tag .selected a:hover span {
+  color:#333;
+}
+#tag .selected a span {
+  color: #666;
 }
 #tag .key span {
   border-bottom:1px solid #666;
