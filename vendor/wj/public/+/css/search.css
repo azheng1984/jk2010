@@ -234,7 +234,7 @@ h2 a:hover {
   color:#999;
 }
 #result ul {
-  clear:left;
+  width:100%;
 }
 #result li {
   float:none;
@@ -313,8 +313,10 @@ h2 a:hover {
   border-radius:3px;
 }
 #pagination a:hover {
-  border:1px solid #ccc;
-  box-shadow:0 0 3px #ddd;
+  border:1px solid #f5f5f5;
+  border-radius:0;
+  color:#fff;
+  background:#06c;
   text-decoration:none;
 }
 #pagination span {
@@ -351,13 +353,9 @@ h2 a:hover {
   font-size:11px;
   border:1px solid;
   border-color:#ddd #bbb #bbb #ddd;
-  border-radius:3px 11px 11px 3px;
   color:#999;
   background:#fff;
-  background-image: -webkit-linear-gradient(top,#fff,#efefef);
-  background-image: -moz-linear-gradient(top,#fff,#efefef);
-  background-image: -o-linear-gradient(top,#fff,#efefef);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffffff',EndColorStr='#efefef');
+  border-radius:3px 11px 11px 3px;
 }
 #tag .value a:hover {
   border-color: #ccc #aaa #aaa #ccc;
@@ -406,7 +404,7 @@ h2 a:hover {
   border-bottom:1px solid #666;
 }
 #tag ol ol {
-  padding:4px;
+  padding:4px 0 4px 6px;
 }
 #tag .open {
   background:url(/+/img/minus.png) 1px 5px no-repeat;
