@@ -64,21 +64,26 @@ h1 {
 #breadcrumb span, #breadcrumb a {
   margin:2px 2px 2px 5px;
 }
+#breadcrumb a {
+  border-bottom:1px solid #666;
+  color:#666;
+}
 #breadcrumb a:hover {
-  text-decoration:underline;
+  color:#333;
 }
 #breadcrumb .tag {
   padding:2px 16px 0 4px;
   margin:0 0 0 4px;
   font-size:13px;
   color:#fff;
+  border:0;
   background:#b8b8b8 url(/+/img/delete_fff.png) right 6px no-repeat;
   border-radius:3px 11px 11px 3px;
 }
 #breadcrumb .tag:hover {
   background:#999 url(/+/img/delete_fff.png) right 6px no-repeat;
   box-shadow:0 0 3px #ddd;
-  text-decoration:none;
+  color:#fff;
 }
 /* result
  *****************************/
@@ -349,10 +354,10 @@ h2 a:hover {
   border-radius:3px 11px 11px 3px;
   color:#999;
   background:#fff;
-  background-image: -webkit-linear-gradient(top,#fcfcfc,#eee);
-  background-image: -moz-linear-gradient(top,#fcfcfc,#eee);
-  background-image: -o-linear-gradient(top,#fcfcfc,#eee);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#fcfcfc',EndColorStr='#eeeeee');
+  background-image: -webkit-linear-gradient(top,#fff,#efefef);
+  background-image: -moz-linear-gradient(top,#fff,#efefef);
+  background-image: -o-linear-gradient(top,#fff,#efefef);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffffff',EndColorStr='#efefef');
 }
 #tag .value a:hover {
   border-color: #ccc #aaa #aaa #ccc;
