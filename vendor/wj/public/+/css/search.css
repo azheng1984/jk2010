@@ -306,25 +306,24 @@ h2 a:hover {
   padding-bottom:10px;
 }
 #pagination a {
-  border:1px solid #e5e5e5;
-  padding:4px 8px;
+  border:1px solid #E5E5E5;
+  padding:3px 7px;
   background:url(/+/img/screen.png) 0 -66px repeat-x;
   margin:0 1px;
   border-radius:3px;
 }
 #pagination a:hover {
-  border:1px solid #f5f5f5;
-  border-radius:0;
-  color:#fff;
+  border:0;
+  margin:1px 2px;
   background:#06c;
-  text-decoration:none;
+  color:#fff;
 }
 #pagination span {
   border:1px solid red;
   border-radius: 3px;
   background-color:red;
   color:#fff;
-  padding:3px 7px;
+  padding:2px 6px;
   margin:1px 2px;
 }
 /* tag
@@ -339,7 +338,7 @@ h2 a:hover {
 }
 #tag ol {
   clear:left;
-  padding:4px 4px 10px 4px;
+  padding:6px 0 10px 6px;
   list-style:none;
 }
 #tag li {
@@ -352,17 +351,20 @@ h2 a:hover {
   display:block;
   font-size:11px;
   border:1px solid;
-  border-color:#ddd #bbb #bbb #ddd;
+  border-color:#eee #ccc #ccc #eee;
   color:#999;
   background:#fff;
+  margin:0px;
   border-radius:3px 11px 11px 3px;
 }
 #tag .value a:hover {
-  border-color: #ccc #aaa #aaa #ccc;
-  box-shadow:0 0 3px #ddd;
+  border:0;
+  padding:3px 7px 1px 5px;
+  background:#06c;
+  color:#fff;
 }
 #tag .value a:hover span {
-  color:#333;
+  color:#fff;
 }
 #tag .value a span {
   font-size:13px;
@@ -395,10 +397,10 @@ h2 a:hover {
   color:#fff;
 }
 #tag  a:hover span {
-  color:#333;
+  color:#06c;
 }
 #tag  a span {
-  color: #666;
+  color: #06c;
 }
 #tag .key span {
   border-bottom:1px solid #666;

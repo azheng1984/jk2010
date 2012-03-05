@@ -346,7 +346,7 @@ a:hover {
   padding:4px 8px;
 }
 #xsort_box a:hover,#action a:hover,.pagination a:hover {
-  border:1px solid #B6C9ED;
+  border:1px solid #ccc;
   text-decoration:none;
   background:#EFF3FC;
 }

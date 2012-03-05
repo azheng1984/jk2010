@@ -50,17 +50,17 @@ td a {
   padding-top:10px;
 }
 #pagination a {
-  border:1px solid #e5e5e5;
-  padding:4px 8px;
+  border:1px solid #E5E5E5;
+  padding:3px 7px;
   background:url(/+/img/screen.png) 0 -66px repeat-x;
   margin:0 1px;
   border-radius:3px;
 }
 #pagination a:hover {
-  border:1px solid #f5f5f5;
-  border-radius:0;
-  color:#fff;
+  border:0;
+  margin:1px 2px;
   background:#06c;
+  color:#fff;
   text-decoration:none;
 }
 #pagination span {
@@ -68,6 +68,6 @@ td a {
   border-radius: 3px;
   background-color:red;
   color:#fff;
-  padding:3px 7px;
+  padding:2px 6px;
   margin:1px 2px;
 }
