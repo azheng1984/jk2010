@@ -3,6 +3,7 @@ class SearchProductListScreen {
   private static $merchantList;
   private static $hasCategory;
   private static $keywordList;
+  private static $tagLinkList;
 
   public static function render() {
     self::initialize();
@@ -41,6 +42,7 @@ class SearchProductListScreen {
   private static function renderProduct($id) {
     $product = DbProduct::get($id);
     $merchant = self::getMerchant($product['merchant_id']);
+    $tagList = self::getTagList($product);
     $href = self::getProductUri(
       $merchant['product_uri_format'], $product['uri_argument_list']
     );
@@ -58,10 +60,9 @@ class SearchProductListScreen {
       $product['lowest_price_x_100']/100, '</span></div>';//price
     if ($product['property_list'] !== null) {
       echo self::highlight(
-        SearchExcerptionScreen::excerpt($product['property_list'])
+        SearchExcerptionScreen::excerpt(self::$tagLinkList, $product['property_list'])
       );
     }
-    $tagList = self::getTagList($product);
     if ($tagList !== '') {
       echo '<div class="tag_list">', $tagList, '</div>';
     }
@@ -89,20 +90,18 @@ class SearchProductListScreen {
   }
 
   private static function getTagList($product) {
+    self::$tagLinkList = array();
     $result = '';
     if (self::$hasCategory === false && $product['category_name'] !== null) {
-      $result .= '<a href="'.urlencode($product['category_name'])
-        .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">分类: '
-        .$product['category_name'].'</a>';
+      self::$tagLinkList[] = '分类：'.$product['category_name'].'';
     }
     if (self::$hasCategory === true && $product['brand_name'] !== null
       && isset($GLOBALS['PROPERTY_LIST']['品牌']) === false) {
-      $result .= '<a href="'.self::getBrandPath($product['brand_name'])
-        .'" rel="nofollow">品牌: '.$product['brand_name'].'</a>';
+      self::$tagLinkList[] = '品牌：'.$product['brand_name'];
     }
     if ($product['query_name'] !== null) {
-      $result .= '<a href="/+-'.urlencode($product['query_name'])
-      .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">同款</a>';
+      $result .= '<a class="same" href="/+-'.urlencode($product['query_name'])
+      .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">23 个同款商品</a>';
     }
     return $result;
   }

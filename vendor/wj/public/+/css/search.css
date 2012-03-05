@@ -72,7 +72,7 @@ h1 {
   margin:0 0 0 4px;
   font-size:13px;
   color:#fff;
-  background:#b1b1b1 url(/+/img/delete_fff.png) right 6px no-repeat;
+  background:#b8b8b8 url(/+/img/delete_fff.png) right 6px no-repeat;
   border-radius:3px 11px 11px 3px;
 }
 #breadcrumb .tag:hover {
@@ -174,11 +174,11 @@ h2 a:hover {
   color:#666;
   background:url(/+/img/screen.png) 0 -66px;
   border:1px solid;
-  border-color:#eee #ccc #ccc #eee;
+  border-color:#ddd #bbb #bbb #ddd;
   border-radius:2px;
 }
 #price_range a:hover {
-  border-color:#ddd #aaa #aaa #ddd;
+  border-color:#ccc #aaa #aaa #ccc;
   box-shadow:0 0 3px #ddd;
   color:#333;
 }
@@ -212,6 +212,7 @@ h2 a:hover {
   display:block;
   height:170px;
   width:170px;
+  margin:0 auto;
 }
 #result h3 {
   padding-top:10px;
@@ -260,24 +261,29 @@ h2 a:hover {
   font-weight:bold;
   color:#333;
 }
-#result .link_list {
+#result .link_list li {
   color:#666;
   line-height:20px;
+  background:url(/+/img/square.png) 0 7px no-repeat;
 }
 #result .tag_list {
-  padding-top:4px;
+  padding-top:5px;
 }
 #result .tag_list a {
   float:left;
   margin:0 4px 4px 0;
   padding:0 4px;
   border:1px solid;
-  border-color:#eee #ccc #ccc #eee;
+  border-color:#ddd #bbb #bbb #ddd;
   color:#666;
-  border-radius:3px;
+  border-radius:2px;
+}
+#result .tag_list a.same {
+  padding-left:17px;
+  background:url(/+/img/same.png) 4px 4px no-repeat;
 }
 #result .tag_list a:hover {
-  border-color:#ddd #aaa #aaa #ddd;
+  border-color:#ccc #aaa #aaa #ccc;
   box-shadow:0 0 3px #ddd;
   color:#333;
 }
@@ -336,16 +342,20 @@ h2 a:hover {
 #tag .value a {
   float:left;
   padding:2px 6px 0 5px;
-  background-color:#fff;
   display:block;
   font-size:11px;
   border:1px solid;
-  border-color:#eee #ccc #ccc #eee;
+  border-color:#ddd #bbb #bbb #ddd;
   border-radius:3px 11px 11px 3px;
   color:#999;
+  background:#fff;
+  background-image: -webkit-linear-gradient(top,#fcfcfc,#eee);
+  background-image: -moz-linear-gradient(top,#fcfcfc,#eee);
+  background-image: -o-linear-gradient(top,#fcfcfc,#eee);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#fcfcfc',EndColorStr='#eeeeee');
 }
 #tag .value a:hover {
-  border-color: #ddd #aaa #aaa #ddd;
+  border-color: #ccc #aaa #aaa #ccc;
   box-shadow:0 0 3px #ddd;
 }
 #tag .value a:hover span {
@@ -369,7 +379,7 @@ h2 a:hover {
   padding: 2px 16px 0 5px;
   margin: 1px 0 0 4px;
   border:0;
-  background:#b1b1b1 url(/+/img/delete_fff.png) right 6px no-repeat;
+  background:#b8b8b8 url(/+/img/delete_fff.png) right 6px no-repeat;
 }
 #tag .selected a span {
   color:#fff;
