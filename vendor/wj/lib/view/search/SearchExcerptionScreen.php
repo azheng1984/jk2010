@@ -8,7 +8,7 @@ class SearchExcerptionScreen {
   }
 
   //refactor for p to ul
-  public static function excerpt($text) {
+  public static function excerpt($tagLinkList, $text) {
     $list = array();
     $isLink = true;
     $orignalAmount = 0;
@@ -41,6 +41,7 @@ class SearchExcerptionScreen {
         ++$linkAmount;
       }
     }
+    $tagLinkAmount = count($tagLinkList);
     $amount = $linkAmount + $textAmount;
     if ($amount === 0) {
       return;
@@ -48,8 +49,11 @@ class SearchExcerptionScreen {
     $isFull = $amount === $orignalAmount;
     $count = 0;
     $result = '';
-    if ($linkAmount !== 0) {
+    if ($linkAmount !== 0 || $tagLinkAmount !== 0) {
       $result .= '<ul class="link_list">';
+      foreach ($tagLinkList as $item) {
+        $result .= '<li>'.$item.'</li>';
+      }
       foreach ($linkList as $item) {
         ++$count;
         $end = isset(self::$cuttingList[$item])
