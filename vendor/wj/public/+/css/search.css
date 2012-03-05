@@ -55,7 +55,7 @@ table {
   float:left;
   padding-right:15px;
   margin:0 5px 0 0;
-  background:url(/+/img/screen.png) right -135px no-repeat;
+  background:url(/+/img/screen.png) right -136px no-repeat;
 }
 h1 {
   font-size:16px;
@@ -72,13 +72,11 @@ h1 {
   margin:0 0 0 4px;
   font-size:13px;
   color:#fff;
-  border:1px solid;
-  border-color:#eee #ccc #ccc #eee;
-  background:#999 url(/+/img/delete_fff.png) right 6px no-repeat;
+  background:#b1b1b1 url(/+/img/delete_fff.png) right 6px no-repeat;
   border-radius:3px 11px 11px 3px;
 }
 #breadcrumb .tag:hover {
-  border-color:#ddd #aaa #aaa #ddd;
+  background:#999 url(/+/img/delete_fff.png) right 6px no-repeat;
   box-shadow:0 0 3px #ddd;
   text-decoration:none;
 }
@@ -231,7 +229,6 @@ h2 a:hover {
 }
 #result ul {
   clear:left;
-  margin:0 0 5px 0;
 }
 #result li {
   float:none;
@@ -263,16 +260,16 @@ h2 a:hover {
   font-weight:bold;
   color:#333;
 }
-#result p .link_list {
+#result .link_list {
   color:#666;
   line-height:20px;
 }
 #result .tag_list {
-  padding-bottom:4px;
+  padding-top:4px;
 }
 #result .tag_list a {
   float:left;
-  margin:0 3px 3px 0;
+  margin:0 4px 4px 0;
   padding:0 4px;
   border:1px solid;
   border-color:#eee #ccc #ccc #eee;
@@ -285,6 +282,7 @@ h2 a:hover {
   color:#333;
 }
 #result .merchant {
+  padding-top:2px;
   color:#690;
 }
 /* pagination
@@ -323,7 +321,8 @@ h2 a:hover {
 }
 #tag h2 {
   background: url(/+/img/tag.png) 2px 7px no-repeat;
-  padding: 7px 0 0 22px;
+  padding: 8px 0 0 22px;
+  font-size:15px;
 }
 #tag ol {
   clear:left;
@@ -360,8 +359,8 @@ h2 a:hover {
 }
 #tag .key {
   float:left;
-  padding-left:18px;
-  background:url(/+/img/plus.png) 1px 3px no-repeat;
+  padding-left:14px;
+  background:url(/+/img/plus.png) 1px 5px no-repeat;
   color:#666;
   font-size:13px;
   cursor:pointer;
@@ -369,15 +368,15 @@ h2 a:hover {
 #tag .selected a {
   padding: 2px 16px 0 5px;
   margin: 1px 0 0 4px;
-
-  background:#aaa url(/+/img/delete_fff.png) right 6px no-repeat;
+  border:0;
+  background:#b1b1b1 url(/+/img/delete_fff.png) right 6px no-repeat;
 }
 #tag .selected a span {
   color:#fff;
 }
 #tag .selected a:hover {
   color:#fff;
-  background:#aaa url(/+/img/delete_fff.png) right 6px no-repeat;
+  background:#999 url(/+/img/delete_fff.png) right 6px no-repeat;
 }
 #tag .selected a:hover span {
   color:#fff;
@@ -395,7 +394,7 @@ h2 a:hover {
   padding:4px;
 }
 #tag .open {
-  background:url(/+/img/minus.png) 1px 3px no-repeat;
+  background:url(/+/img/minus.png) 1px 5px no-repeat;
 }
 #tag .key:hover {
   color:#333;
