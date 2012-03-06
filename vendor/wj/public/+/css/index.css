@@ -30,15 +30,15 @@
 table {
   border-collapse:collapse;
   background:#fff;
-  border:1px solid #F1F1F1;
+  border:1px solid #e5e5e5;
   padding:10px 0;
   margin:10px 10px 0 10px;
   border-spacing:1px;
 }
 td {
-  width:185px;
+  width:187px;
   padding:5px 0;
-  background:url(/+/img/screen.png) -500px -480px no-repeat;
+  background:url(/+/img/screen.png) -500px -482px no-repeat;
 }
 td a {
   margin-left:25px;

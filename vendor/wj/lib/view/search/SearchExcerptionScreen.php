@@ -7,7 +7,7 @@ class SearchExcerptionScreen {
     self::$keywordList = $keywordList;
   }
 
-  //refactor for p to ul
+  //TODO：refactor for p to ul
   public static function excerpt($tagLinkList, $text) {
     $list = array();
     $isLink = true;
