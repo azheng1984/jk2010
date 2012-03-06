@@ -51,7 +51,6 @@ table {
   padding:5px 0;
 }
 #breadcrumb .section {
-  font-size:16px;
   float:left;
   padding-right:15px;
   margin:0 5px 0 0;
@@ -60,6 +59,9 @@ table {
 h1 {
   font-size:16px;
   padding:0 8px;
+}
+h1 span {
+  font-size:15px;
 }
 #breadcrumb span, #breadcrumb a {
   margin:2px 2px 2px 5px;
@@ -424,6 +426,7 @@ h2 a:hover {
   background:url(/+/img/more.png) 30px 7px no-repeat;
   cursor:pointer;
   font-size:13px;
+  margin-left:2px;
 }
 #tag  .property {
   background:url(/+/img/more.png) 55px 7px no-repeat;
