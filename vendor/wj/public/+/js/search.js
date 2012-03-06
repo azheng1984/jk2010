@@ -15,10 +15,8 @@ $(function() {
         return;
       }
       if (deep > 3) {
-        for (var x = 0; x < 20; ++x) {
-          for (var index = 0; index < data.length; ++index) {
-            html += '<li><span class="key"><span>' + data[index] + '</span></span></li>';
-          }
+        for (var index = 0; index < data.length; ++index) {
+          html += '<li><span class="key"><span>' + data[index] + '</span></span></li>';
         }
       }
       $('#result_wrapper').after('<div id="tag"><h2>属性:</h2><ol>' + html + '<li><span class="more"><span>更多属性</span></span></li></ol></div>');
