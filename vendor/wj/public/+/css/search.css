@@ -338,7 +338,7 @@ h2 a:hover {
 }
 #tag ol {
   clear:left;
-  padding:6px 0 10px 6px;
+  padding:6px 0 6px 6px;
   list-style:none;
 }
 #tag li {
@@ -407,7 +407,7 @@ h2 a:hover {
   border-bottom:1px solid #666;
 }
 #tag ol ol {
-  padding:4px 0 0 6px;
+  padding:3px 0 0 6px;
 }
 #tag .open {
   background:url(/+/img/minus.png) 1px 5px no-repeat;
@@ -429,7 +429,7 @@ h2 a:hover {
 #tag .more:hover {
   color:#333;
 }
-#tag .more span:hover {
+#tag .more:hover span {
   border-bottom:1px solid #333;
 }
 /* related
