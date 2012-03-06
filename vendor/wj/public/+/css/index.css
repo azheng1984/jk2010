@@ -53,12 +53,11 @@ td a {
   border:1px solid #E5E5E5;
   padding:3px 7px;
   background:url(/+/img/screen.png) 0 -66px repeat-x;
-  margin:0 1px;
   border-radius:3px;
 }
 #pagination a:hover {
   border:0;
-  margin:1px 2px;
+  margin:1px;
   background:#06c;
   color:#fff;
   text-decoration:none;
@@ -69,5 +68,5 @@ td a {
   background-color:red;
   color:#fff;
   padding:2px 6px;
-  margin:1px 2px;
+  margin:1px;
 }
