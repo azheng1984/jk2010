@@ -94,19 +94,20 @@ input:focus {
 }
 #banner {
   float:right;
-  margin-top:12px;
+  margin-top:10px;
   color:#888;
 }
 #banner span {
   text-align:center;
   float:right;
   padding-left:22px;
-  background:url(/+/img/screen.png) -142px -5px no-repeat;
+  background:url(/+/img/screen.png) -142px -3px no-repeat;
+  line-height:25px;
 }
 #banner .left {
   margin-right:15px;
   padding-left:25px;
-  background:url(/+/img/screen.png) -494px -4px no-repeat;
+  background:url(/+/img/screen.png) -494px -2px no-repeat;
 }
 #footer {
   line-height:40px;
