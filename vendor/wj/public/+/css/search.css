@@ -381,7 +381,7 @@ h2 a:hover {
   cursor:pointer;
 }
 #tag .selected a {
-  padding: 2px 16px 0 5px;
+ padding: 2px 16px 0 4px;
   margin: 1px 0 0 4px;
   border:0;
   background:#b8b8b8 url(/+/img/delete_fff.png) right 6px no-repeat;
@@ -391,6 +391,7 @@ h2 a:hover {
 }
 #tag .selected a:hover {
   color:#fff;
+  padding: 2px 16px 0 4px;
   background:#999 url(/+/img/delete_fff.png) right 6px no-repeat;
 }
 #tag .selected a:hover span {
