@@ -407,7 +407,7 @@ h2 a:hover {
   border-bottom:1px solid #666;
 }
 #tag ol ol {
-  padding:4px 0 4px 6px;
+  padding:4px 0 0 6px;
 }
 #tag .open {
   background:url(/+/img/minus.png) 1px 5px no-repeat;
@@ -415,6 +415,22 @@ h2 a:hover {
 #tag .key:hover {
   color:#333;
   border-color:#333;
+}
+#tag .more {
+  color:#666;
+  padding-left:16px;
+  background:url(/+/img/screen.png) 0 -107px;
+  cursor:pointer;
+  font-size:13px;
+}
+#tag .more span {
+  border-bottom:1px solid #666;
+}
+#tag .more:hover {
+  color:#333;
+}
+#tag .more span:hover {
+  border-bottom:1px solid #333;
 }
 /* related
  ***************************************/

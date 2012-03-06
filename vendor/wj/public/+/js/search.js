@@ -11,28 +11,27 @@ $(function() {
           html += '<li class="value"><a href="'
             + encodeURIComponent(data[index][0]) + '/"><span>' + data[index][0] + '</span> ' + data[index][1] + '</a></li>';
         }
-        $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><ol>' + html + '</ol></div>');
+        $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><ol>' + html + '<li><span class="more"><span>更多</span></span></li></ol></div>');
         return;
       }
       if (deep > 3) {
         for (var x = 0; x < 20; ++x) {
-        for (var index = 0; index < data.length; ++index) {
-          html += '<li><span class="key"><span>' + data[index] + '</span></span></li>';
-        }
+          for (var index = 0; index < data.length; ++index) {
+            html += '<li><span class="key"><span>' + data[index] + '</span></span></li>';
+          }
         }
       }
-      $('#result_wrapper').after('<div id="tag"><h2>属性:</h2><ol>' + html + '</ol></div>');
+      $('#result_wrapper').after('<div id="tag"><h2>属性:</h2><ol>' + html + '<li><span class="more"><span>更多属性</span></span></li></ol></div>');
       $('#tag .key').click(function() {
         if ($(this).attr('class') === 'key open') {
           $(this).attr('class', 'key');
           $(this).parent().children('ol').remove();
           return false;
         }
-        //var target = $(this);
+        var target = $(this);
         //TODO: 如果有属性选定，先判断 is_multiple 值，再决定是否发起请求
         var keyName = $(this).text();
         $uri2 = window.location.pathname + '?key=' + keyName + '&media=json';
-        $(this).attr('id', 'target');
         $.getJSON($uri2, function(data) {
           var html = '';
           $(data).each(function() {
@@ -47,7 +46,8 @@ $(function() {
               html += '<li><span class="value selected"><a href="' + href + '">'+ '<span>' + this[0] + '</span> ' + '</a></li>';
             }
           });
-          $('#target').after('<ol>' + html + '</ol>').attr('class', 'key open');
+          target.after('<ol>' + html + '<li><span class="more"><span>更多</span></span></li></ol>').attr('class', 'key open');
+          target = null;
         });
         return false;
       });
