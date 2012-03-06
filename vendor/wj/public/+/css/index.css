@@ -51,7 +51,7 @@ td a {
 }
 #pagination a {
   border:1px solid #E5E5E5;
-  padding:3px 7px;
+  padding:4px 8px;
   background:url(/+/img/screen.png) 0 -66px repeat-x;
   border-radius:3px;
 }
@@ -67,6 +67,6 @@ td a {
   border-radius: 3px;
   background-color:red;
   color:#fff;
-  padding:2px 6px;
+  padding:3px 7px;
   margin:1px;
 }
