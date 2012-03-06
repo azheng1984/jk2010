@@ -89,6 +89,7 @@ class SearchProductListScreen {
     return $imageUri.'.jpg';
   }
 
+  //TODO：refactor for button to inline
   private static function getTagList($product) {
     self::$tagLinkList = array();
     $result = '';
