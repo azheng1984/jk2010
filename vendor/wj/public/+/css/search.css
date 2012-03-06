@@ -379,6 +379,8 @@ h2 a:hover {
   color:#666;
   font-size:13px;
   cursor:pointer;
+  -moz-user-select: none;
+  -khtml-user-select: none;
 }
 #tag .selected a {
  padding: 2px 16px 0 4px;
@@ -422,6 +424,8 @@ h2 a:hover {
   background:url(/+/img/screen.png) 0 -107px;
   cursor:pointer;
   font-size:13px;
+  -moz-user-select: none;
+  -khtml-user-select: none;
 }
 #tag .more span {
   border-bottom:1px solid #666;
