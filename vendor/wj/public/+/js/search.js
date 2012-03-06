@@ -19,7 +19,7 @@ $(function() {
           html += '<li><span class="key"><span>' + data[index] + '</span></span></li>';
         }
       }
-      $('#result_wrapper').after('<div id="tag"><h2>属性:</h2><ol>' + html + '<li><span class="more"><span>更多属性</span></span></li></ol></div>');
+      $('#result_wrapper').after('<div id="tag"><h2>属性:</h2><ol>' + html + '<li><span class="more property"><span>更多属性</span></span></li></ol></div>');
       $('#tag .key').click(function() {
         if ($(this).attr('class') === 'key open') {
           $(this).attr('class', 'key');

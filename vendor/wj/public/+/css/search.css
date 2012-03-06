@@ -420,10 +420,13 @@ h2 a:hover {
 }
 #tag .more {
   color:#666;
-  padding-left:16px;
-  background:url(/+/img/screen.png) 0 -107px;
+  padding-right:16px;
+  background:url(/+/img/more.png) 30px 7px no-repeat;
   cursor:pointer;
   font-size:13px;
+}
+#tag  .property {
+  background:url(/+/img/more.png) 55px 7px no-repeat;
 }
 #tag .more span {
   border-bottom:1px solid #666;
