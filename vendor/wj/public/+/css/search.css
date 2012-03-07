@@ -53,7 +53,7 @@ table {
 #breadcrumb .section {
   float:left;
   padding-right:15px;
-  margin:0 5px 0 0;
+  margin:0 10px 0 0;
   background:url(/+/img/screen.png) right -136px no-repeat;
 }
 h1 {
@@ -64,7 +64,7 @@ h1 span {
   font-size:15px;
 }
 #breadcrumb span, #breadcrumb a {
-  margin:2px 2px 2px 5px;
+  margin:2px 2px 2px 0;
 }
 #breadcrumb a {
   border-bottom:1px solid #666;
@@ -75,7 +75,7 @@ h1 span {
 }
 #breadcrumb .tag {
   padding:2px 16px 0 4px;
-  margin:2px 2px 2px 4px;
+  margin:1px 2px 1px 4px;
   font-size:13px;
   color:#fff;
   border:0;
