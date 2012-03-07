@@ -14,18 +14,27 @@
   background:#fff;
 }
 #breadcrumb span {
-  font-size:16px;
   display:block;
   float:left;
   padding:0 13px 0 8px;
   background:url(/+/img/screen.png) right -132px no-repeat;
 }
 #breadcrumb h1 {
-  font-size:16px;
+  font-size:15px;
   font-weight:normal;
   padding-left:8px;
   float:left;
   margin:0;
+}
+#breadcrumb a {
+  color:#666;
+  font-size:15px;
+  border-bottom:1px solid #666;
+}
+#breadcrumb a:hover {
+  text-decoration:none;
+  color:#333;
+  border-bottom:1px solid #333;
 }
 table {
   border-collapse:collapse;
