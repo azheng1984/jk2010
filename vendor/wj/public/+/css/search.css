@@ -241,7 +241,7 @@ h2 a:hover {
 #result li {
   float:none;
   padding-left:10px;
-  background:url(/+/img/square.png) 0 6px no-repeat;
+  background:url(/+/img/square.png) 0 7px no-repeat;
 }
 #result li a .gray {
   color:#666;
@@ -271,7 +271,7 @@ h2 a:hover {
 #result .link_list li {
   color:#666;
   line-height:20px;
-  background:url(/+/img/square.png) 0 7px no-repeat;
+  background:url(/+/img/square.png) 0 8px no-repeat;
 }
 #result .tag_list {
   padding-top:5px;
