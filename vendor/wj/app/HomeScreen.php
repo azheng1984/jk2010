@@ -93,8 +93,13 @@ class HomeScreen extends Screen {
       $path = $GLOBALS['MERCHANT_TYPE']['path'];
     }
     $merchantAmount = $GLOBALS['HOME_CONFIG']['merchant_type_list'][$path][2];
-    if ($merchantAmount > 20) {
-      echo '<div id="pagination_wrapper"><a id="more" href="?page=2" rel="nofollow"><span>更多</span></a>1/10</div>';
+    if ($merchantAmount < 20) {
+      return;
     }
+    if ($GLOBALS['PAGE'] === 1) {
+      echo '<div id="pagination_wrapper"><a id="more" href="?page=2" rel="nofollow"><span>更多</span></a></div>';
+      return;
+    }
+    PaginationScreen::render($GLOBALS['PAGE'], $merchantAmount, '', 10, 20);
   }
 }
