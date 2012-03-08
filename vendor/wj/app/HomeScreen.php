@@ -50,28 +50,19 @@ class HomeScreen extends Screen {
   }
 
   private function renderMerchantTypeList() {
-    $path = null;
+    $path = '/';
     if (isset($GLOBALS['MERCHANT_TYPE'])) {
       $path = $GLOBALS['MERCHANT_TYPE']['path'];
     }
     echo '<ul>';
-    $this->renderAllMerchantIndex();
     foreach ($GLOBALS['HOME_CONFIG']['merchant_type_list'] as $key => $value) {
       if ($key === $path) {
         echo '<li><span>', $value[1], '</span></li>';
         continue;
       }
-      echo '<li><a href="/', $key, '" rel="nofollow">', $value[1], '</a></li>';
+      echo '<li><a href="', $key, '" rel="nofollow">', $value[1], '</a></li>';
     }
     echo '</ul>';
-  }
-
-  private function renderAllMerchantIndex() {
-    if (isset($GLOBALS['MERCHANT_TYPE']) === false) {
-      echo '<li><span>全部</span></li>';
-      return;
-    }
-    echo '<li><a href="/">全部</a></li>';
   }
 
   private function renderMerchantList() {
@@ -97,6 +88,13 @@ class HomeScreen extends Screen {
 
   //TODO:第一页链接和 js 处理后外观保持一致，第二页开始使用标准分页（no script），全部 nofollow
   private function renderPagination() {
-    echo '<div id="pagination_wrapper"><a id="more" href="?page=2" rel="nofollow"><span>更多</span></a>1/10</div>';
+    $path = '/';
+    if (isset($GLOBALS['MERCHANT_TYPE'])) {
+      $path = $GLOBALS['MERCHANT_TYPE']['path'];
+    }
+    $merchantAmount = $GLOBALS['HOME_CONFIG']['merchant_type_list'][$path][2];
+    if ($merchantAmount > 20) {
+      echo '<div id="pagination_wrapper"><a id="more" href="?page=2" rel="nofollow"><span>更多</span></a>1/10</div>';
+    }
   }
 }

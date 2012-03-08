@@ -7,7 +7,7 @@ $(function() {
       var deep = window.location.pathname.split('/').length;
       var html  = '';
       if (deep === 3) {
-        for (var index = 0; index < data.length; ++index) {
+        for (var index = 1; index < data.length; ++index) {
           html += '<li class="value"><a href="'
             + encodeURIComponent(data[index][0]) + '/"><span>' + data[index][0] + '</span> ' + data[index][1] + '</a></li>';
         }
@@ -15,7 +15,7 @@ $(function() {
         return;
       }
       if (deep > 3) {
-        for (var index = 0; index < data.length; ++index) {
+        for (var index = 1; index < data.length; ++index) {
           html += '<li><span class="key"><span>' + data[index] + '</span></span></li>';
         }
       }
@@ -32,18 +32,19 @@ $(function() {
         $uri2 = window.location.pathname + '?key=' + keyName + '&media=json';
         $.getJSON($uri2, function(data) {
           var html = '';
-          $(data).each(function() {
-            var tmp = getPropertyHref(keyName, this[0], true);
+          for (var index = 1; index < data.length; ++index) {
+            item = data[index];
+            var tmp = getPropertyHref(keyName, item[0], true);
             var href = tmp[0];
             if (deep > 4) {
               href = '../' + href;
             }
             if (tmp[1] === false) {
-              html += '<li><span class="value"><a href="' + href + '">'+ '<span>' + this[0] + '</span> ' + this[1] + '</a></li>';
+              html += '<li><span class="value"><a href="' + href + '">'+ '<span>' + item[0] + '</span> ' + item[1] + '</a></li>';
             } else {
-              html += '<li><span class="value selected"><a href="' + href + '">'+ '<span>' + this[0] + '</span> ' + '</a></li>';
+              html += '<li><span class="value selected"><a href="' + href + '">'+ '<span>' + item[0] + '</span> ' + '</a></li>';
             }
-          });
+          }
           target.after('<ol>' + html + '<li><span class="more"><span>更多</span></span></li></ol>').attr('class', 'key open');
           target = null;
         });
