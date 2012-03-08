@@ -42,6 +42,7 @@ table {
   border:1px solid #eee;
   padding:10px 0;
   margin:10px 10px 0 10px;
+  _margin-left:5px;
   border-spacing:1px;
 }
 td {

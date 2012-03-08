@@ -2,6 +2,12 @@ $(function() {
   $('#header input').focus();
 });
 //TODO:merchant list pagination enhancement
+$(function() {
+  $('#more').click(function() {
+    return false;
+  });
+});
+
 
 $(function() {
   $('#merchant td a').each(function() {
