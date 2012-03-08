@@ -219,7 +219,6 @@ h2 a:hover {
   display:block;
   height:170px;
   width:170px;
-  margin:0 auto;
 }
 #result h3 {
   padding-top:10px;
@@ -240,7 +239,7 @@ h2 a:hover {
 }
 #result li {
   float:none;
-  padding-left:10px;
+  padding-left:8px;
   background:url(/+/img/square.png) 0 7px no-repeat;
 }
 #result li a .gray {
