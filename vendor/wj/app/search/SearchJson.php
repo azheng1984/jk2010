@@ -34,10 +34,13 @@ class SearchJson extends Json {
     if ($result === false) {
       return;
     }
+    $this->list[] = $result['total_found'];
     foreach ($result['matches'] as $match) {
       $category = DbCategory::get($match['attrs']['@groupby']);
-      $this->list[] =
-        '["'.$category['name'].'","'.$match['attrs']['@count'].'"]';
+      if ($category !== false) {
+        $this->list[] =
+          '["'.$category['name'].'",'.$match['attrs']['@count'].']';
+      }
     }
   }
 
@@ -46,9 +49,12 @@ class SearchJson extends Json {
     if ($result === false) {
       return;
     }
+    $this->list[] = $result['total_found'];
     foreach ($result['matches'] as $match) {
       $key = DbPropertyKey::get($match['attrs']['@groupby']);
-      $this->list[] = '"'.$key['name'].'"';
+      if ($key !== false) {
+        $this->list[] = '["'.$key['name'].'",'.$key['is_multiple'].']';
+      }
     }
   }
 
@@ -57,10 +63,12 @@ class SearchJson extends Json {
     if ($result === false) {
       return;
     }
+    $this->list[] = $result['total_found'];
     foreach ($result['matches'] as $match) {
       $value = DbPropertyValue::get($match['attrs']['@groupby']);
-      $this->list[] =
-        '["'.$value['name'].'","'.$match['attrs']['@count'].'"]';
+      if ($value !== false) {
+        $this->list[] = '["'.$value['name'].'",'.$match['attrs']['@count'].']';
+      }
     }
   }
 }

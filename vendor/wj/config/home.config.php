@@ -13,6 +13,7 @@ return array(
     array('进口', '进口', 890),
   ),
   'merchant_type_list' => array(
+    '/' => array(null, '全部', 201),
     '%E7%99%BE%E8%B4%A7' => array(1, '百货', 100),
   ),
   'merchant_list' => array(
