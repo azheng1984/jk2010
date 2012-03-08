@@ -292,6 +292,7 @@ h2 a:hover {
 #result .tag_list a:hover {
   border-color:#ccc #aaa #aaa #ccc;
   box-shadow:0 0 3px #ddd;
+  background:url(/+/img/same_hover.png) 4px 4px no-repeat;
   color:#333;
 }
 #result .merchant {
@@ -419,6 +420,10 @@ h2 a:hover {
 #tag .key:hover {
   color:#333;
   border-color:#333;
+  background:url(/+/img/plus_hover.png) 1px 5px no-repeat;
+}
+#tag .open:hover {
+  background:url(/+/img/minus_hover.png) 1px 5px no-repeat;
 }
 #tag .more {
   color:#666;
@@ -436,6 +441,11 @@ h2 a:hover {
 }
 #tag .more:hover {
   color:#333;
+  background:url(/+/img/more_hover.png) 30px 7px no-repeat;
+}
+#tag .property:hover  {
+  color:#333;
+  background:url(/+/img/more_hover.png) 55px 7px no-repeat;
 }
 #tag .more:hover span {
   border-bottom:1px solid #333;
