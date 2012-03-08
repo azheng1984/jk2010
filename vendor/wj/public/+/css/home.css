@@ -118,6 +118,9 @@ td a span {
   margin-right:5px;
   background:url(/+/img/more.png) 34px 5px no-repeat;
 }
+#more:hover {
+  background:url(/+/img/more_hover.png) 34px 5px no-repeat;
+}
 #more span {
   font-size:15px;
   border-bottom:1px solid #666;
