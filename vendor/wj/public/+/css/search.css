@@ -111,7 +111,7 @@ h2 a {
 }
 h2 a:hover {
   color:#06c;
-  text-decoration:underline;
+  border-bottom:1px solid #06c;
 }
 #price em {
   margin-right:4px;
@@ -135,7 +135,7 @@ h2 a:hover {
   font-size:13px;
 }
 #result td div {
-  padding-top:5px;
+  padding-top:2px;
   width:100%;
 }
 #result img {
@@ -160,7 +160,7 @@ h2 a:hover {
   font-size:14px;
   color:#06c;
 }
-#result h3 a:hover {
+#result h3 a:hover, #result h3 a:hover span {
   text-decoration:underline;
 }
 #result h3 a:visited {
@@ -171,7 +171,7 @@ h2 a:hover {
 }
 #result .price {
   font-size:12px;
-  color:#aaa;
+  color:#b1b1b1;
 }
 #result .price span {
   font-size:13px;
@@ -185,12 +185,12 @@ h2 a:hover {
 #result li {
   float:none;
   padding-left:8px;
-  background:url(/+/img/square.png) 0 7px no-repeat;
+  background:url(/+/img/square.png) 0 8px no-repeat;
 }
 .same {
   float:left;
   padding:0 4px;
-  margin-top:5px;
+  margin:2px 0;
   border:1px solid;
   border-color:#ddd #bbb #bbb #ddd;
   border-radius:2px;
