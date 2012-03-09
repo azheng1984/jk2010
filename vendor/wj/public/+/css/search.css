@@ -241,6 +241,9 @@ h2 a:hover {
 #result ul {
   width:100%;
 }
+#result li .value {
+  color:#666;
+}
 #result li {
   float:none;
   padding-left:8px;

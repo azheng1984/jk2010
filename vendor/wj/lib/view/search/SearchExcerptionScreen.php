@@ -14,24 +14,26 @@ class SearchExcerptionScreen {
     $list = self::getList($linkList, $textList, $text);
     $linkSection = '';
     if (count($list['link']) !== 0) {
-      $linkSection = '<ul class="link_list">';
       foreach ($list['link'] as $item) {
         $linkSection .= self::renderLink($item);
       }
-      $linkSection .= '</ul>';
+    }
+    if ($linkSection !== '') {
+      $linkSection = '<ul class="link_list">'.$linkSection.'</ul>';
     }
     if ($list['is_cut']) {
       array_push($list['text'], array('…', false));
     }
     $textSection = '';
     if (count($list['text']) !== 0) {
-      $textSection = '<ul>';
       foreach ($list['text'] as $item) {
         $textSection .= self::renderText($item);
       }
-      $textSection = str_replace(
-        '； ', '; ', str_replace('： ', ': ', $textSection)
-      ).'</ul>';
+    }
+    if ($textSection !== '') {
+      $textSection = '<ul>'
+        .str_replace('； ', '; ', str_replace('： ', ': ', $textSection))
+        .'</ul>';
     }
     $result = $linkSection.$textSection;
     if ($result === '') {
