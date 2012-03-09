@@ -90,6 +90,7 @@ h1 {
   float:right;
   line-height:35px;
   padding:0 10px;
+  font-size:12px;
 }
 #toolbar h2 {
   line-height:35px;
@@ -134,7 +135,7 @@ h2 a:hover {
   padding:10px;
   font-size:13px;
 }
-#result td div {
+#result td div, #result ul {
   padding-top:2px;
   width:100%;
 }
@@ -179,9 +180,6 @@ h2 a:hover {
   font-weight:bold;
   color:#333;
 }
-#result ul {
-  width:100%;
-}
 #result li {
   float:none;
   padding-left:8px;
@@ -196,7 +194,7 @@ h2 a:hover {
   border-radius:2px;
 }
 .same {
-  padding-left:17px;
+  padding-left:20px;
   background:url(/+/img/same.png) 5px no-repeat;
 }
 .same:hover {
@@ -206,4 +204,9 @@ h2 a:hover {
 }
 #result .merchant {
   color:#690;
+}
+/* pagination
+ **************************************/
+#pagination {
+  padding:0 0 10px 0;
 }

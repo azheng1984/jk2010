@@ -18,9 +18,6 @@ class SearchExcerptionScreen {
         $linkSection .= self::renderLink($item);
       }
     }
-    if ($linkSection !== '') {
-      $linkSection = '<ul class="link_list">'.$linkSection.'</ul>';
-    }
     if ($list['is_cut']) {
       array_push($list['text'], array('…', false));
     }
@@ -31,15 +28,14 @@ class SearchExcerptionScreen {
       }
     }
     if ($textSection !== '') {
-      $textSection = '<ul>'
-        .str_replace('； ', '; ', str_replace('： ', ': ', $textSection))
-        .'</ul>';
+      $textSection =
+        str_replace('； ', '; ', str_replace('： ', ': ', $textSection));
     }
     $result = $linkSection.$textSection;
     if ($result === '') {
       return;
     }
-    return '<div>'.$result.'</div>';
+    return '<ul>'.$result.'</ul>';
   }
 
   private static function getList($linkList, $textList, $text) {
