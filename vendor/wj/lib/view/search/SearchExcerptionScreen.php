@@ -125,7 +125,7 @@ class SearchExcerptionScreen {
     if ($keyword === false) {
       return '<li>'.$text.'</li>';
     }
-    $list = explode('：', $text, 2);
+    $list = explode('： ', $text, 2);
     if (count($list) !== 2) {
       return;
     }
@@ -136,13 +136,13 @@ class SearchExcerptionScreen {
       && $isCut === false) {
       return '<li>'.$text.'</li>';
     }
-    if (strpos($valueName, '；') === false) {
+    if (strpos($valueName, '； ') === false) {
       return isset(
           $GLOBALS['PROPERTY_LIST'][$keyName]['value_list'][$valueName]
       ) ? null : '<li>'.$text.'</li>';
     }
     $valueNameList = array();
-    foreach (explode('；', $valueName) as $item) {
+    foreach (explode('； ', $valueName) as $item) {
       if (isset($GLOBALS['PROPERTY_LIST'][$keyName]['value_list'][$item])) {
         continue;
       }
@@ -152,11 +152,11 @@ class SearchExcerptionScreen {
       return;
     }
     if ($isCut) {
-      $cutLength = 31 - mb_strlen($keyName, 'UTF-8');
+      $cutLength = 30 - mb_strlen($keyName, 'UTF-8');
       $valueNameList = self::cutLink($valueNameList, $keyword, $cutLength);
       $valueNameList[] = '…';
     }
-    return '<li>'.$keyName.'：'.implode('；', $valueNameList).'</li>';
+    return '<li>'.$keyName.'： '.implode('； ', $valueNameList).'</li>';
   }
 
   private static function cutLink($valueNameList, $keyword, $length) {
@@ -196,13 +196,13 @@ class SearchExcerptionScreen {
     if ($length < 32) {
       return '<li>'.$text.'</li>';
     }
-    $list = explode('：', $text, 2);
+    $list = explode('： ', $text, 2);
     if (count($list) !== 2) {
       return;
     }
     list($keyName, $valueName) = $list;
-    $cutLength = 31 - mb_strlen($keyName, 'UTF-8');
-    return '<li>'.$keyName.'：'
+    $cutLength = 30 - mb_strlen($keyName, 'UTF-8');
+    return '<li>'.$keyName.'： '
       .self::cutText($valueName, $keyword, $cutLength).'</li>';
   }
 
