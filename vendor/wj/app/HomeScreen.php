@@ -94,7 +94,7 @@ class HomeScreen extends Screen {
       return;
     }
     if ($GLOBALS['PAGE'] === 1) {
-      echo '<a id="more" href="?page=2" rel="nofollow">更多</a>';
+      echo '<a id="more" href="?page=2" rel="nofollow"><span>更多</span></a>';
       return;
     }
     PaginationScreen::render($GLOBALS['PAGE'], $amount, '?page=', '', 10, 20);
