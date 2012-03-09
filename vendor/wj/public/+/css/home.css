@@ -1,0 +1,122 @@
+#home {
+  width:100%;
+  background:#f5f5f5;
+  border:1px solid #e5e5e5;
+  box-shadow:2px 2px #f1f1f1;
+}
+#slogon {
+  width:100%;
+  padding-top:10px;
+  background:#ffd;
+  background:-webkit-linear-gradient(#ffffd1, #fffff1);
+  background:-moz-linear-gradient(#ffffd1, #fffff1);
+  filter:progid:DXImageTransform.Microsoft.gradient(
+    startColorstr='#ffffd1', endColorstr='#fffff1'
+  );
+  border-bottom:1px solid #e5e5e5;
+}
+#slogon h1 {
+  padding:0 0 5px 15px;
+  margin:0;
+  font-size:16px;
+  font-weight:normal;
+  color:#333;
+}
+#slogon ul {
+  padding:0 0 10px 15px;
+  clear:left;
+}
+#slogon li {
+  padding-right:15px;
+  font-size:11px;
+  white-space:nowrap;
+  color:#888;
+}
+#slogon a {
+  font-size:13px;
+  color:#666;
+}
+#slogon a:hover {
+  color:#333;
+}
+#merchant ul {
+  padding:15px 22px 12px 12px;
+  font-size:15px;
+}
+#merchant li {
+  clear:left;
+  margin:3px;
+}
+#merchant li a, #merchant li span {
+  border:0;
+  display:block;
+  width:155px;
+  padding:3px 0 3px 10px;
+  background:#e5e5e5;
+  color:#666;
+  border-radius:5px;
+}
+#merchant li a:hover {
+  background:#ddd;
+  color:#333;
+  box-shadow:0 0 3px #ddd;
+}
+#merchant li span {
+  color:#fff;
+  background:red;
+}
+#merchant {
+  width:100%;/* firefox table 下落 */
+  padding-bottom:13px;/* ie6 table margin-bottom 被忽略 */
+}
+table {
+  background:#f5f5f5;
+  margin-top:13px;
+  border-spacing:1px;
+  width:740px;
+}
+td a {
+  display:block;
+  padding:6px 0;
+  width:146px;
+  text-align:center;
+  font-size:13px;
+  background:#fff;
+  border:1px solid;
+  border-color:#f1f1f1 #eee #eee #f1f1f1;
+  border-radius:8px;
+}
+td a:hover {
+  border-color:#e5e5e5 #ccc #ccc #e5e5e5;
+  box-shadow:0 0 3px #ddd;
+}
+td a img {
+  width:100px;
+  margin:5px 0;
+}
+td a span {
+  display:block;
+}
+#more {
+  float:left;
+  height:21px;
+  margin-left:550px;
+  padding-right:16px;
+  margin-right:5px;
+  background:url(/+/img/screen.png) -102px -107px;
+  border:0;
+}
+#more:hover {
+  background:url(/+/img/screen.png) -272px -107px;
+}
+#more span {
+  font-size:15px;
+  border-bottom:1px solid #666;
+}
+#more a:hover span {
+  border-color:#333;
+}
+#pagination {
+  float:right;
+  width:740px;
+}
