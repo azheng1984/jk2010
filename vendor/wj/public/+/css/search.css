@@ -200,7 +200,7 @@ h2 a:hover {
 .same:hover {
   border-color:#ccc #aaa #aaa #ccc;
   box-shadow:0 0 3px #ddd;
-  background:url(/+/img/same_hover.png) 5px no-repeat;
+  background-image:url(/+/img/same_hover.png);
 }
 #result .merchant {
   color:#690;
