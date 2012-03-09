@@ -1,9 +1,11 @@
 <?php
 class SearchProductListScreen {
+  private static $keywordList;
+  private static $recognitionList;
   private static $merchantList;
   private static $hasCategory;
-  private static $keywordList;
   private static $tagLinkList;
+  private static $tagTextList;
 
   public static function render() {
     self::initialize();
@@ -42,7 +44,7 @@ class SearchProductListScreen {
   private static function renderProduct($id) {
     $product = DbProduct::get($id);
     $merchant = self::getMerchant($product['merchant_id']);
-    $tagList = self::getTagList($product);
+    $tagList = self::initializeTagList($product);
     $href = self::getProductUri(
       $merchant['product_uri_format'], $product['uri_argument_list']
     );
@@ -60,11 +62,16 @@ class SearchProductListScreen {
       $product['lowest_price_x_100']/100, '</span></div>';//price
     if ($product['property_list'] !== null) {
       echo self::highlight(
-        SearchExcerptionScreen::excerpt(self::$tagLinkList, $product['property_list'])
+        SearchExcerptionScreen::excerpt(
+          self::$tagLinkList, self::$tagTextList, $product['property_list']
+        )
       );
     }
-    if ($tagList !== '') {
-      echo '<div class="tag_list">', $tagList, '</div>';
+    if ($product['recognition_id'] !== null) {
+      $recognition = self::getRecognition($product['recognition_id']);
+      echo '<a class="same" href="/+-'.urlencode($recognition['name']), '/',
+        $GLOBALS['QUERY_STRING'], '" rel="nofollow">',
+        $recognition['product_amount'], ' 个同款商品</a>';
     }
     echo '<div class="merchant">', $merchant['name'], '</div>',//merchant
       '</td>';
@@ -75,6 +82,13 @@ class SearchProductListScreen {
       self::$merchantList[$id] = DbMerchant::get($id);
     }
     return self::$merchantList[$id];
+  }
+
+  private static function getRecognition($id) {
+    if (isset(self::$recognitionList[$id]) === false) {
+      self::$recognitionList[$id] = DbRecognition::get($id);
+    }
+    return self::$recognitionList[$id];
   }
 
   private static function getImageUri($product) {
@@ -89,22 +103,20 @@ class SearchProductListScreen {
     return $imageUri.'.jpg';
   }
 
-  //TODO：refactor for button to inline
-  private static function getTagList($product) {
+  private static function initializeTagList($product) {
     self::$tagLinkList = array();
-    $result = '';
+    self::$tagTextList = array();
     if (self::$hasCategory === false && $product['category_name'] !== null) {
-      self::$tagLinkList[] = '分类：'.$product['category_name'].'';
+      self::$tagLinkList[] = '分类：'.$product['category_name'];
+    } 
+    if (self::$hasCategory === false && $product['brand_name'] !== null) {
+      self::$tagTextList[] = '品牌：'.$product['brand_name'];
+      return;
     }
     if (self::$hasCategory === true && $product['brand_name'] !== null
-      && isset($GLOBALS['PROPERTY_LIST']['品牌']) === false) {
+        && isset($GLOBALS['PROPERTY_LIST']['品牌']) === false) {
       self::$tagLinkList[] = '品牌：'.$product['brand_name'];
     }
-    if ($product['query_name'] !== null) {
-      $result .= '<a class="same" href="/+-'.urlencode($product['query_name'])
-      .'/'.$GLOBALS['QUERY_STRING'].'" rel="nofollow">23 个同款商品</a>';
-    }
-    return $result;
   }
 
   private static function getBrandPath($brandName) {

@@ -10,14 +10,14 @@ class HomeAction {
   private function parseMerchantType() {
     $path = $GLOBALS['PATH_SECTION_LIST'][1];
     if ($path === '') {
-      return;
+      $path = '/';
     }
     if (isset($GLOBALS['HOME_CONFIG']['merchant_type_list'][$path]) === false) {
       throw new NotFoundException;
     }
-    $merchantTypeList = $GLOBALS['HOME_CONFIG']['merchant_type_list'];
-    $GLOBALS['MERCHANT_TYPE'] = $merchantTypeList[$path];
-    $GLOBALS['MERCHANT_TYPE']['path'] = $path;
+    $GLOBALS['MERCHANT_TYPE_CONFIG'] =
+      $GLOBALS['HOME_CONFIG']['merchant_type_list'][$path];
+    $GLOBALS['MERCHANT_TYPE_CONFIG']['path'] = $path;
   }
 
   private function parsePage() {
@@ -30,19 +30,13 @@ class HomeAction {
   }
 
   private function buildMerchantList() {
-    if ($GLOBALS['PAGE'] === 1 && isset($GLOBALS['MERCHANT_TYPE']) === false) {
+    if ($GLOBALS['PAGE'] === 1
+      && $GLOBALS['MERCHANT_TYPE_CONFIG']['path'] === '/') {
       $GLOBALS['MERCHANT_LIST'] = $GLOBALS['HOME_CONFIG']['merchant_list'];
       return;
     }
-    $typeId = null;
-    if (isset($GLOBALS['MERCHANT_TYPE'])) {
-      $typeId = $GLOBALS['MERCHANT_TYPE'][0];
-    }
     $GLOBALS['MERCHANT_LIST'] = DbMerchantList::getList(
-      $typeId, $GLOBALS['PAGE']
+      $GLOBALS['MERCHANT_TYPE_CONFIG'][0], $GLOBALS['PAGE']
     );
-    if (count($GLOBALS['MERCHANT_LIST']) === 0) {
-      throw new NotFoundException;
-    }
   }
 }

@@ -1,5 +1,13 @@
 <?php
 class HomeScreen extends Screen {
+  public function __construct() {
+    if (count($GLOBALS['MERCHANT_LIST']) === 0 && $GLOBALS['PAGE'] !== 1) {
+      $this->stop();
+      header('HTTP/1.1 301 Moved Permanently');
+      Header('Location: '.$GLOBALS['MERCHANT_TYPE_CONFIG']['path']);
+    }
+  }
+
   protected function renderHtmlHeadContent() {
     echo '<title>';
     if (isset($GLOBALS['MERCHANT_TYPE'])) {
@@ -19,9 +27,6 @@ class HomeScreen extends Screen {
     $this->renderSlogon();
     $this->renderMerchantBlock();
     echo '</div>';
-    if (isset($GLOBALS['MERCHANT_TYPE'])) {
-      $this->addJs('merchant_amount='.$GLOBALS['MERCHANT_TYPE'][2].';');
-    }
   }
 
   private function renderSlogon() {
@@ -50,10 +55,7 @@ class HomeScreen extends Screen {
   }
 
   private function renderMerchantTypeList() {
-    $path = '/';
-    if (isset($GLOBALS['MERCHANT_TYPE'])) {
-      $path = $GLOBALS['MERCHANT_TYPE']['path'];
-    }
+    $path = $GLOBALS['MERCHANT_TYPE_CONFIG']['path'];
     echo '<ul>';
     foreach ($GLOBALS['HOME_CONFIG']['merchant_type_list'] as $key => $value) {
       if ($key === $path) {
@@ -86,20 +88,15 @@ class HomeScreen extends Screen {
     echo '</tr></table>';
   }
 
-  //TODO:第一页链接和 js 处理后外观保持一致，第二页开始使用标准分页（no script），全部 nofollow
   private function renderPagination() {
-    $path = '/';
-    if (isset($GLOBALS['MERCHANT_TYPE'])) {
-      $path = $GLOBALS['MERCHANT_TYPE']['path'];
-    }
-    $merchantAmount = $GLOBALS['HOME_CONFIG']['merchant_type_list'][$path][2];
-    if ($merchantAmount < 20) {
+    $amount = $GLOBALS['MERCHANT_TYPE_CONFIG'][2];
+    if ($amount < 20) {
       return;
     }
     if ($GLOBALS['PAGE'] === 1) {
-      echo '<div id="pagination_wrapper"><a id="more" href="?page=2" rel="nofollow"><span>更多</span></a></div>';
+      echo '<a id="more" href="?page=2" rel="nofollow">更多</a>';
       return;
     }
-    PaginationScreen::render($GLOBALS['PAGE'], $merchantAmount, '', 10, 20);
+    PaginationScreen::render($GLOBALS['PAGE'], $amount, '?page=', '', 10, 20);
   }
 }

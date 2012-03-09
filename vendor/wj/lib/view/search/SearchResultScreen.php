@@ -5,7 +5,7 @@ class SearchResultScreen {
     SearchToolbarScreen::render();
     SearchProductListScreen::render();
     PaginationScreen::render($GLOBALS['PAGE'],
-      $GLOBALS['SEARCH_RESULT']['total_found'], $GLOBALS['QUERY_STRING']);
+      $GLOBALS['SEARCH_RESULT']['total_found'], '', $GLOBALS['QUERY_STRING']);
     echo '</div>';
   }
 
