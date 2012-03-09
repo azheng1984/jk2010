@@ -1,96 +1,145 @@
 <?php
 class SearchExcerptionScreen {
-  private static $cuttingList = array();
   private static $keywordList;
+  private static $matchList;
 
   public static function initialize($keywordList) {
-    self::$keywordList = $keywordList;
+    self::$keywordList = array();
+    foreach ($keywordList as $item) {
+      self::$keywordList[] = array($item, 0);
+    }
   }
 
-  //TODO：refactor for p to ul
-  public static function excerpt($tagLinkList, $text) {
-    $list = array();
-    $isLink = true;
-    $orignalAmount = 0;
-    foreach (explode("\n", $text) as $propertyText) {
-      if ($propertyText === '') {
-        $isLink = false;
-        continue;
-      }
-      $list[$propertyText] = $isLink;
-      ++$orignalAmount;
-    }
-    if (mb_strlen($text, 'UTF-8') > 60) {
-      $list = self::reducePropertyList($list);
-    }
-    $linkList = array();
-    $textList = array();
-    $linkAmount = 0;
-    $textAmount = 0;
-    foreach ($list as $propertyText => $isLink) {
-      if (isset($GLOBALS['CATEGORY']) === false || $isLink === false) {
-        $textList[] = $propertyText;
-        ++$textAmount;
-        continue;
-      }
-      if (isset($GLOBALS['PROPERTY_LIST'])) {
-        $propertyText = self::removeCurrentProperty($propertyText);
-      }
-      if ($propertyText !== null) {
-        $linkList[] = $propertyText;
-        ++$linkAmount;
-      }
-    }
-    $tagLinkAmount = count($tagLinkList);
-    $amount = $linkAmount + $textAmount;
-    if ($amount === 0) {
-      return;
-    }
-    $isFull = $amount === $orignalAmount;
-    $count = 0;
+  public static function excerpt($linkList, $textList, $text) {
+    $list = self::getList($linkList, $textList, $text);
     $result = '';
-    if ($linkAmount !== 0 || $tagLinkAmount !== 0) {
+    if (count($list['link']) !== 0) {
       $result .= '<ul class="link_list">';
-      foreach ($tagLinkList as $item) {
-        $result .= '<li>'.$item.'</li>';
-      }
-      foreach ($linkList as $item) {
-        ++$count;
-        $end = isset(self::$cuttingList[$item])
-          || ($count === $amount && $isFull === false) ? '…' : '';
-        $result .= '<li>'.$item.$end.'</li>';
+      foreach ($list['link'] as $item) {
+        $result .= self::renderLink($item);
       }
       $result .= '</ul>';
     }
-    if ($textAmount !== 0) {
+    if ($list['is_cut']) {
+      array_push($list['text'], array('…', false));
+    }
+    if (count($list['text']) !== 0) {
       $result .= '<ul>';
-      foreach ($textList as $item) {
-        ++$count;
-        $end = isset(self::$cuttingList[$item])
-          || ($count === $amount && $isFull === false) ? '…' : '';
-        $result .= '<li>'.$item.$end.'</li>';
+      foreach ($list['text'] as $item) {
+        $result .= self::renderText($item);
       }
       $result .= '</ul>';
-    }
-    if ($isFull === false) {
-      echo $result .= '<p>…</p>';
     }
     return $result;
   }
 
-  private static function removeCurrentProperty($text) {
+  private static function getList($linkList, $textList, $text) {
+    $listAmount = count($linkList) + count($textList);
+    $result = array('link' => array(), 'text' => array());
+    foreach ($linkList as $item) {
+      $result['link'][] = array($item, false);
+    }
+    foreach ($textList as $item) {
+      $result['text'][] = array($item, false);
+    }
+    self::$matchList = array();
+    $originalList = explode("\n", $text);
+    $originalAmount = count($originalList);
+    self::buildMatchList(
+      $originalList, $originalAmount, self::$keywordList, $listAmount
+    );
+    $noMatchList = array('link' => array(), 'text' => array());
+    $originalPropertyAmount = $listAmount;
+    $type = isset($GLOBALS['CATEGORY']) ? 'link' : 'text';
+    for ($index = 0; $index < $originalAmount; ++$index) {
+      $propertyText = $originalList[$index];
+      if ($propertyText === '') {
+        $type = 'text';
+        continue;
+      }
+      ++$originalPropertyAmount;
+      if ($listAmount === 8) {
+        continue;
+      }
+      if (isset(self::$matchList[$index])) {
+        $result[$type][] = array($propertyText, self::$matchList[$index]);
+        ++$listAmount;
+        continue;
+      }
+      $noMatchList[$type][] = array($propertyText, null);
+    }
+    $result['is_cut'] = $originalPropertyAmount > 8;
+    if ($listAmount === 8) {
+      return $result;
+    }
+    foreach ($noMatchList['link'] as $item) {
+      $result['link'][] = $item;
+      ++$listAmount;
+      if ($listAmount === 8) {
+        return $result;
+      }
+    }
+    foreach ($noMatchList['text'] as $item) {
+      $result['text'][] = $item;
+      ++$listAmount;
+      if ($listAmount === 8) {
+        return $result;
+      }
+    }
+    return $result;
+  }
+
+  private static function buildMatchList(
+    $list, $amount, $keywordList, $resultAmount
+  ) {
+    $matchKeywordList = array();
+    foreach ($keywordList as $item) {
+      $keyword = $item[0];
+      if ($resultAmount === 8) {
+        return;
+      }
+      for ($index = $item[1]; $index < $amount; ++$index) {
+        $propertyText = $list[$index];
+        if ($propertyText === '') {
+          continue;
+        }
+        if (strpos($propertyText, $keyword) === false) {
+          continue;
+        }
+        self::$matchList[$index] = $keyword;
+        ++$resultAmount;
+        $list[$index] = '';
+        if (++$index < $amount) {
+          $matchKeywordList[] = array($keyword, $index);
+        }
+        break;
+      }
+    }
+    if ($resultAmount < 8 && count($matchKeywordList) !== 0) {
+      self::buildMatchList($list, $amount, $matchKeywordList, $resultAmount);
+    }
+  }
+
+  private static function renderLink($item) {
+    list($text, $keyword) = $item;
+    if ($keyword === false) {
+      return '<li>'.$text.'</li>';
+    }
     $list = explode('：', $text, 2);
     if (count($list) !== 2) {
       return;
     }
+    $length = mb_strlen($text, 'UTF-8');
+    $isCut = $length > 32;
     list($keyName, $valueName) = $list;
-    if (isset($GLOBALS['PROPERTY_LIST'][$keyName]) === false) {
-      return $text;
+    if (isset($GLOBALS['PROPERTY_LIST'][$keyName]) === false
+      && $isCut === false) {
+      return '<li>'.$text.'</li>';
     }
     if (strpos($valueName, '；') === false) {
       return isset(
           $GLOBALS['PROPERTY_LIST'][$keyName]['value_list'][$valueName]
-      ) ? null : $text;
+      ) ? null : '<li>'.$text.'</li>';
     }
     $valueNameList = array();
     foreach (explode('；', $valueName) as $item) {
@@ -102,92 +151,100 @@ class SearchExcerptionScreen {
     if (count($valueNameList) === 0) {
       return;
     }
-    return $keyName.'：'.implode('；', $valueNameList);
+    if ($isCut) {
+      $cutLength = 31 - mb_strlen($keyName, 'UTF-8');
+      $valueNameList = self::cutLink($valueNameList, $keyword, $cutLength);
+    }
+    return '<li>'.$keyName.'：'.implode('；', $valueNameList).'</li>';
   }
 
-  private static function reducePropertyList($list) {
-    $length = 0;
-    $result = array();
+  private static function cutLink($valueNameList, $keyword, $length) {
     $matchList = array();
-    foreach (self::$keywordList as $keyword) {
-      foreach ($list as $propertyText => $isLink) {
-        if (strpos($propertyText, $keyword) === false) {
-          continue;
-        }
-        if (isset($result[$propertyText]) === false) {
-          $result[$propertyText] = $isLink;
-          $propertyLength = mb_strlen($propertyText, 'UTF-8');
-          $matchList[] = array($propertyText, $isLink, $propertyLength);
-          $length += $propertyLength;
-        }
-        break;
-      }
-    }
-    if ($length < 60) {
-      return self::increaseExcerption($list, $result, $length);
-    }
-    for ($index = count($matchList) - 1; $index > -1; --$index) {
-      $item = $matchList[$index];
-      $propertyText = $item[0];
-      $isLink = $item[1];
-      $propertyLength = $item[2];
-      if ($propertyLength > 12) {
-        $cut = self::cutProperty($propertyText, $isLink, $propertyLength);
-      }
-      if ($cut !== null) {
-        $matchList[$index] = array($cut[0], $isLink, $cut[1]);
-        $length -= $propertyLength - $cut[1];
-        self::$cuttingList[$cut[0]] = true;
-      }
-      if ($length < 60) {
-        break;
-      }
-    }
-    $length = 0;
-    $result = array();
-    foreach ($matchList as $item) {
-      if ($length + $item[2] > 60 && $length > 0) {
-        break;
-      }
-      $result[$item[0]] = $item[1];
-      $length += $item[2];
-    }
-    return $result;
-  }
-
-  private static function cutProperty($text, $isLink, $length) {
-    if ($isLink === false) {
-      return array(mb_substr($text, 0, 12, 'UTF-8'), 12);
-    }
-    $endPosition = mb_strpos($text, '；', 0, 'UTF-8');
-    if ($endPosition === false) {
-      return;
-    }
-    for (;;) {
-      $position = mb_strpos($text, '；', $endPosition, 'UTF-8');
-      if ($position === false || $position > 12) {
-        break;
-      }
-      $endPosition = $position;
-    }
-    return array(mb_substr($text, 0, $endPosition, 'UTF-8'), $endPosition);
-  }
-
-  private static function increaseExcerption($list, $result, $length) {
-    if (count($list) === count($result)) {
-      return $result;
-    }
-    foreach ($list as $propertyText => $isLink) {
-      if (isset($result[$propertyText])) {
+    $noMatchList = array();
+    foreach ($valueNameList as $valueName) {
+      if (strpos($valueName, $keyword) !== false) {
+        $matchList[] = $valueName;
         continue;
       }
-      $propertyLength = mb_strlen($propertyText, 'UTF-8');
-      $length += $propertyLength;
-      if ($length > 60) {
-        break;
+      $noMatchList[] = $valueName;
+    }
+    $result = array();
+    foreach ($matchList as $item) {
+      $length -= mb_strlen($item, 'UTF-8');
+      if ($length < 0 && count($result) !== 0) {
+        return $result;
       }
-      $result[$propertyText] = $isLink;
+      $result[] = $item;
+    }
+    foreach ($noMatchList as $item) {
+      $length -= mb_strlen($item, 'UTF-8');
+      if ($length < 0 && count($result) !== 0) {
+        return $result;
+      }
+      $result[] = $item;
     }
     return $result;
+  }
+
+  private static function renderText($item) {
+    list($text, $keyword) = $item;
+    if ($keyword === false) {
+      return '<li>'.$text.'</li>';
+    }
+    $length = mb_strlen($text, 'UTF-8');
+    if ($length < 32) {
+      return '<li>'.$text.'</li>';
+    }
+    $list = explode('：', $text, 2);
+    if (count($list) !== 2) {
+      return;
+    }
+    list($keyName, $valueName) = $list;
+    $cutLength = 31 - mb_strlen($keyName, 'UTF-8');
+    return '<li>'.$keyName.'：'
+      .self::cutText($valueName, $keyword, $cutLength).'</li>';
+  }
+
+  private static function cutText($valueName, $keyword, $length) {
+    if ($length < 16) {
+      $length = 16;
+    }
+    $keywordLength = mb_strlen($keyword, 'UTF-8');
+    if ($keywordLength > $length - 8) {
+      $length = $keywordLength + 8;
+    }
+    $orignalLength = mb_strlen($valueName, 'UTF-8');
+    if ($length > $orignalLength) {
+      return $valueName;
+    }
+    if ($keyword === null) {
+      return mb_substr($valueName, 0, $length, 'UTF-8').'…';
+    }
+    $start = mb_strpos($valueName, $keyword, 0, 'UTF-8');
+    if ($start === false) {
+      return mb_substr($valueName, 0, $length, 'UTF-8').'…';
+    }
+    $start = self::getCutStart($start, $length, $keywordLength, $orignalLength);
+    $result = mb_substr($valueName, $start, $length, 'UTF-8');
+    if ($start !== 0) {
+      $result = '…'.$result;
+    }
+    if ($start + $length < $orignalLength) {
+      $result .= '…';
+    }
+    return $result;
+  }
+
+  private static function getCutStart(
+    $start, $length, $keywordLength, $orignalLength
+  ) {
+    $start = $start - intval(($length - $keywordLength) / 2);
+    if ($start < 0) {
+      return 0;
+    }
+    if ($start + $length > $orignalLength) {
+      return $orignalLength - $length;
+    }
+    return $start;
   }
 }
