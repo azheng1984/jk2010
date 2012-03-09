@@ -154,6 +154,7 @@ class SearchExcerptionScreen {
     if ($isCut) {
       $cutLength = 31 - mb_strlen($keyName, 'UTF-8');
       $valueNameList = self::cutLink($valueNameList, $keyword, $cutLength);
+      $valueNameList[] = '…';
     }
     return '<li>'.$keyName.'：'.implode('；', $valueNameList).'</li>';
   }
