@@ -107,15 +107,15 @@ class SearchProductListScreen {
     self::$tagLinkList = array();
     self::$tagTextList = array();
     if (self::$hasCategory === false && $product['category_name'] !== null) {
-      self::$tagLinkList[] = '分类： '.$product['category_name'];
+      self::$tagLinkList[] = '分类: <span class="value">'.$product['category_name'].'</span>';
     } 
     if (self::$hasCategory === false && $product['brand_name'] !== null) {
-      self::$tagTextList[] = '品牌： '.$product['brand_name'];
+      self::$tagTextList[] = '品牌: '.$product['brand_name'];
       return;
     }
     if (self::$hasCategory === true && $product['brand_name'] !== null
         && isset($GLOBALS['PROPERTY_LIST']['品牌']) === false) {
-      self::$tagLinkList[] = '品牌： '.$product['brand_name'];
+      self::$tagLinkList[] = '品牌: <span class="value">'.$product['brand_name'].'</span>';
     }
   }
 

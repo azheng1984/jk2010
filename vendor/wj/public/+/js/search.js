@@ -155,7 +155,7 @@ $(function() {
     for (var index  = 0; index < propertyList.length; ++index) {
       //TODO：处理结尾 “...”
       var property = $(propertyList[index]);
-      var list = property.html().split('：');
+      var list = property.html().split('： ');
       if (list.length !== 2) {
         if (property !== '') {
           html += '<li>' + property.html() + '</li>';
@@ -163,8 +163,8 @@ $(function() {
         continue;
       }
       var name = list[0];
-      var valueList = list[1].split('；');
-      html += '<li>' + name + '：';
+      var valueList = list[1].split('； ');
+      html += '<li>' + name + '： ';
       for (var index2  = 0; index2 < valueList.length; ++index2) {
         var value = valueList[index2];
         var href = getPropertyHref(name.replace(/<\/span>/gi, '')
@@ -175,7 +175,7 @@ $(function() {
         html += '<a href="' + href + '"><span class="gray">'
           + value + '</span></a>';
         if (index2 !== valueList.length - 1) {
-          html += '；';
+          html += '； ';
         }
       }
       html += '</li>';

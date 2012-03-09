@@ -30,7 +30,7 @@ class SearchExcerptionScreen {
       }
       $result .= '</ul>';
     }
-    return $result;
+    return str_replace('； ', '; ', str_replace('： ', ': ', $result));
   }
 
   private static function getList($linkList, $textList, $text) {
@@ -134,7 +134,7 @@ class SearchExcerptionScreen {
     list($keyName, $valueName) = $list;
     if (isset($GLOBALS['PROPERTY_LIST'][$keyName]) === false
       && $isCut === false) {
-      return '<li>'.$text.'</li>';
+      return '<li>'.$keyName.'</li>';
     }
     if (strpos($valueName, '； ') === false) {
       return isset(
@@ -156,7 +156,7 @@ class SearchExcerptionScreen {
       $valueNameList = self::cutLink($valueNameList, $keyword, $cutLength);
       $valueNameList[] = '…';
     }
-    return '<li>'.$keyName.'： '.implode('； ', $valueNameList).'</li>';
+    return '<li>'.$keyName.': <span>'.implode('</span>; <span>', $valueNameList).'</li>';
   }
 
   private static function cutLink($valueNameList, $keyword, $length) {
@@ -202,7 +202,7 @@ class SearchExcerptionScreen {
     }
     list($keyName, $valueName) = $list;
     $cutLength = 30 - mb_strlen($keyName, 'UTF-8');
-    return '<li>'.$keyName.'： '
+    return '<li>'.$keyName.': '
       .self::cutText($valueName, $keyword, $cutLength).'</li>';
   }
 
