@@ -20,7 +20,7 @@
   margin:0;
   font-size:16px;
   font-weight:normal;
-  color:#333;
+  color:#111;
 }
 #slogon ul {
   padding:0 0 10px 15px;
@@ -34,10 +34,10 @@
 }
 #slogon a {
   font-size:13px;
-  color:#666;
+  color:#555;
 }
 #slogon a:hover {
-  color:#333;
+  color:#111;
 }
 #merchant ul {
   padding:15px 22px 12px 12px;
@@ -53,12 +53,12 @@
   width:155px;
   padding:3px 0 3px 10px;
   background:#e5e5e5;
-  color:#666;
+  color:#555;
   border-radius:5px;
 }
 #merchant li a:hover {
   background:#ddd;
-  color:#333;
+  color:#111;
   box-shadow:0 0 3px #ddd;
 }
 #merchant li span {
@@ -114,7 +114,7 @@ td a span {
   border-bottom:1px solid #666;
 }
 #more a:hover span {
-  border-color:#333;
+  border-color:#111;
 }
 #pagination {
   float:right;
