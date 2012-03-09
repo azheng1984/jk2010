@@ -1,8 +1,9 @@
 body {
   font:14px Arial,Helvetica,sans-serif;
-  line-height:18px;
+  line-height:20px;
   margin:0;
   color:#666;
+  font-size:14px;
 }
 img {
   border:0;
@@ -23,7 +24,7 @@ h1, h2, h3 {
   font-weight:normal;
   margin:0;
 }
-ol, ul {
+ul {
   list-style:none;
   padding:0;
   margin:0;
