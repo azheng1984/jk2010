@@ -12,25 +12,32 @@ class SearchExcerptionScreen {
 
   public static function excerpt($linkList, $textList, $text) {
     $list = self::getList($linkList, $textList, $text);
-    $result = '';
+    $linkSection = '';
     if (count($list['link']) !== 0) {
-      $result .= '<ul class="link_list">';
+      $linkSection = '<ul class="link_list">';
       foreach ($list['link'] as $item) {
-        $result .= self::renderLink($item);
+        $linkSection .= self::renderLink($item);
       }
-      $result .= '</ul>';
+      $linkSection .= '</ul>';
     }
     if ($list['is_cut']) {
       array_push($list['text'], array('…', false));
     }
+    $textSection = '';
     if (count($list['text']) !== 0) {
-      $result .= '<ul>';
+      $textSection = '<ul>';
       foreach ($list['text'] as $item) {
-        $result .= self::renderText($item);
+        $textSection .= self::renderText($item);
       }
-      $result .= '</ul>';
+      $textSection = str_replace(
+        '； ', '; ', str_replace('： ', ': ', $textSection)
+      ).'</ul>';
     }
-    return str_replace('； ', '; ', str_replace('： ', ': ', $result));
+    $result = $linkSection.$textSection;
+    if ($result === '') {
+      return;
+    }
+    return '<div>'.$result.'</div>';
   }
 
   private static function getList($linkList, $textList, $text) {
@@ -134,12 +141,12 @@ class SearchExcerptionScreen {
     list($keyName, $valueName) = $list;
     if (isset($GLOBALS['PROPERTY_LIST'][$keyName]) === false
       && $isCut === false) {
-      return '<li>'.$keyName.'</li>';
+      return self::mergeLink($keyName, explode('； ', $valueName));
     }
     if (strpos($valueName, '； ') === false) {
       return isset(
           $GLOBALS['PROPERTY_LIST'][$keyName]['value_list'][$valueName]
-      ) ? null : '<li>'.$text.'</li>';
+      ) ? null : self::mergeLink($keyName, array($valueName));
     }
     $valueNameList = array();
     foreach (explode('； ', $valueName) as $item) {
@@ -156,7 +163,12 @@ class SearchExcerptionScreen {
       $valueNameList = self::cutLink($valueNameList, $keyword, $cutLength);
       $valueNameList[] = '…';
     }
-    return '<li>'.$keyName.': <span>'.implode('</span>; <span>', $valueNameList).'</li>';
+    return self::mergeLink($keyName, $valueNameList);
+  }
+
+  private static function mergeLink($keyName, $valueNameList) {
+    return '<li>'.$keyName.': <span class="value">'
+      .implode('</span>; <span class="value">', $valueNameList).'</span></li>';
   }
 
   private static function cutLink($valueNameList, $keyword, $length) {

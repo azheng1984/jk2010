@@ -231,10 +231,11 @@ h2 a:hover {
   color:#551a8b;
 }
 #result .price {
-  line-height:28px;
   color:#999;
+  padding-top:5px;
 }
 #result ul {
+  padding-top:5px;
   width:100%;
 }
 #result li {
