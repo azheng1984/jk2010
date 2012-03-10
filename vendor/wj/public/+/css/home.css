@@ -79,7 +79,7 @@ table {
 td a {
   font-size:12px;
   display:block;
-  padding:6px 0;
+  padding:15px 0;
   width:146px;
   text-align:center;
   background:#fff;
@@ -98,11 +98,10 @@ td a img {
   width:100px;
   margin:5px 0;
 }
-td a span {
-  display:block;
-}
 #more {
   float:left;
+  clear:left;
+  white-space:nowrap;/* ie6 可能会换行*/
   height:21px;
   margin:10px 0 0 550px;
   padding-right:16px;
