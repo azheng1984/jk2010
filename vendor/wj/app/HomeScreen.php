@@ -74,10 +74,10 @@ class HomeScreen extends Screen {
       if ($index % 5 === 0 && $index !== 0) {
         echo '</tr><tr>';
       }
-      echo '<td><a href="http://', $merchant['uri'],
-        '" target="_blank" rel="nofollow"><img alt="', $merchant['name'],
-        '" src="/+/img/logo/', $merchant['path'], '.png"/><span>',
-        $merchant['name'], '</span></a></td>';
+      echo '<td><a href="http://', $merchant['uri'], '" title="',
+        $merchant['name'], '" target="_blank" rel="nofollow"><img alt="',
+        $merchant['name'], '" src="/+/img/logo/', $merchant['path'], '.png"/>',
+        '</a></td>';
       ++$index;
     }
     if ($index % 5 !== 0 && $index > 5) {
