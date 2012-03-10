@@ -3,7 +3,7 @@ body {
   line-height:20px;
   margin:0;
   color:#555;
-  font-size:14px;
+  font-size:13px;
 }
 img {
   border:0;
@@ -113,6 +113,7 @@ input:focus {
   padding-left:22px;
   background:url(/+/img/screen.png) -142px -3px no-repeat;
   line-height:25px;
+  font-size:14px;
 }
 #banner .left {
   margin-right:15px;
@@ -123,7 +124,6 @@ input:focus {
   line-height:40px;
   margin:8px 0 0;
   width:100%;/* ie7 */
-  font-size:13px;
   color:#888;
 }
 #footer div {
@@ -149,7 +149,7 @@ input:focus {
   color:#06c;
   border:1px solid #e5e5e5;
   padding:4px 8px;
-  background:url(/+/img/screen.png) 0 -66px repeat-x;
+  background:url(/+/img/screen.png) 0 -75px repeat-x;
   border-radius:3px;
 }
 #pagination a:hover {
