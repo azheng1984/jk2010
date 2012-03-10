@@ -6,7 +6,7 @@
 }
 #slogon {
   width:100%;
-  padding-top:10px;
+  padding-top:8px;
   background:#ffd;
   background:-webkit-linear-gradient(#ffffd1, #fffff1);
   background:-moz-linear-gradient(#ffffd1, #fffff1);
@@ -23,7 +23,7 @@
   color:#111;
 }
 #slogon ul {
-  padding:0 0 10px 15px;
+  padding:0 0 6px 15px;
   clear:left;
 }
 #slogon li {
