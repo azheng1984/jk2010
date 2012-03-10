@@ -59,7 +59,7 @@ class HomeScreen extends Screen {
     echo '<ul>';
     foreach ($GLOBALS['HOME_CONFIG']['merchant_type_list'] as $key => $value) {
       if ($key === $path) {
-        echo '<li><span>', $value[1], '</span></li>';
+        echo '<li class="current">', $value[1], '</li>';
         continue;
       }
       echo '<li><a href="', $key, '" rel="nofollow">', $value[1], '</a></li>';
@@ -69,15 +69,15 @@ class HomeScreen extends Screen {
 
   private function renderMerchantList() {
     $index = 0;
-    echo '<table><tr>';
+    echo '<div id="merchant_list"><table><tr>';
     foreach ($GLOBALS['MERCHANT_LIST'] as $merchant) {
       if ($index % 5 === 0 && $index !== 0) {
         echo '</tr><tr>';
       }
-      echo '<td><a href="http://', $merchant['uri'], '" title="',
-        $merchant['name'], '" target="_blank" rel="nofollow"><img alt="',
+      echo '<td><a href="http://', $merchant['uri'], '"',
+        ' target="_blank" rel="nofollow"><img alt="',
         $merchant['name'], '" src="/+/img/logo/', $merchant['path'], '.png"/>',
-        '</a></td>';
+        '<span>', $merchant['name'], '</span></a></td>';
       ++$index;
     }
     if ($index % 5 !== 0 && $index > 5) {
@@ -85,7 +85,7 @@ class HomeScreen extends Screen {
       $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
       echo '<td', $colspanAttribute, '></td>';
     }
-    echo '</tr></table>';
+    echo '</tr></table></div>';
   }
 
   private function renderPagination() {
