@@ -8,10 +8,10 @@
   width:100%;
   padding-top:8px;
   background:#ffd;
-  background:-webkit-linear-gradient(#ffffd1, #fffff1);
-  background:-moz-linear-gradient(#ffffd1, #fffff1);
+  background:-webkit-linear-gradient(#ffffda, #fffff1);
+  background:-moz-linear-gradient(#ffffda, #fffff1);
   filter:progid:DXImageTransform.Microsoft.gradient(
-    startColorstr='#ffffd1', endColorstr='#fffff1'
+    startColorstr='#ffffda', endColorstr='#fffff1'
   );
   border-bottom:1px solid #e5e5e5;
 }
