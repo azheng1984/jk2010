@@ -56,7 +56,6 @@ h1 {
 #breadcrumb .tag {
   padding:2px 16px 0 4px;
   margin:1px 2px 1px 4px;
-  font-size:13px;
   color:#fff;
   border:0;
   background:#b8b8b8 url(/+/img/delete_fff.png) right 6px no-repeat;
@@ -81,7 +80,7 @@ h1 {
   width:100%;
   height:35px;
   overflow:hidden;
-  background:url(/+/img/toolbar.png) repeat-x;
+  background:url(/+/img/screen.png) 0 -66px repeat-x;
   border:1px solid #e5e5e5;
   border-top:0;
   border-radius:0 0 5px 5px;
@@ -133,7 +132,6 @@ h2 a:hover {
   overflow:hidden;
   border:1px solid #e5e5e5;
   padding:10px;
-  font-size:13px;
 }
 #result td div, #result ul {
   padding-top:2px;
@@ -175,9 +173,9 @@ h2 a:hover {
   color:#b1b1b1;
 }
 #result .price span {
-  font-size:13px;
   margin-left:1px;
   font-weight:bold;
+  font-size:13px;
   color:#333;
 }
 #result li {
@@ -187,15 +185,13 @@ h2 a:hover {
 }
 .same {
   float:left;
-  padding:0 4px;
+  padding:0 4px 0 18px;
   margin:2px 0;
+  background:url(/+/img/same.png) 4px no-repeat;
+  font-size:12px;
   border:1px solid;
   border-color:#ddd #bbb #bbb #ddd;
   border-radius:2px;
-}
-.same {
-  padding-left:20px;
-  background:url(/+/img/same.png) 5px no-repeat;
 }
 .same:hover {
   border-color:#ccc #aaa #aaa #ccc;
