@@ -55,7 +55,7 @@ class SearchScreen extends Screen {
     if ($GLOBALS['SEARCH_RESULT'] === false
       || $GLOBALS['SEARCH_RESULT']['total_found'] === 0) {
       SearchToolbarScreen::render();
-      echo '<div id="no_result"><h2>没有找到相关商品，建议：</h2>',
+      echo '<div id="no_result"><div>没有找到相关商品，建议：</div>',
         '<ul><li>检查搜索条件是否有误</li>',
         '<li>扩大搜索范围</li><li>去 <a href="/">商店列表</a> 逛逛</li></ul></div>';
       return;

@@ -37,34 +37,34 @@ table {
   float:left;
   margin:2px 2px 2px 0;
   font-size:15px;
+  line-height:17px;
 }
 #breadcrumb {
   width:100%;
   border:1px solid #e5e5e5;
   border-bottom:0;
-  padding:5px 0;
 }
 #breadcrumb .section {
   padding-right:15px;
   margin:0 10px 0 0;
-  background:url(/+/img/screen.png) right -136px no-repeat;
+  background:url(/+/img/screen.png) right -155px no-repeat;
 }
 h1 {
   font-size:16px;
-  padding:0 8px;
+  padding:4px 8px;
 }
 #breadcrumb .tag {
   padding:2px 16px 0 4px;
-  margin:1px 2px 1px 4px;
+  margin:1px 5px 1px 2px;
+  font-size:13px;
   color:#fff;
   border:0;
-  background:#b8b8b8 url(/+/img/delete_fff.png) right 6px no-repeat;
+  background:#b8b8b8 url(/+/img/delete.png) right 6px no-repeat;
   border-radius:3px 11px 11px 3px;
 }
 #breadcrumb .tag:hover {
-  background:#999 url(/+/img/delete_fff.png) right 6px no-repeat;
+  background-color:#999;
   box-shadow:0 0 3px #ddd;
-  color:#fff;
 }
 /* result
  *****************************/
@@ -206,4 +206,47 @@ h2 a:hover {
  **************************************/
 #pagination {
   padding:0 0 10px 0;
+}
+/* related
+ ***************************************/
+#related {
+  width:100%;
+  border:1px solid #e5e5e5;
+  border-top:none;
+}
+#related h2 {
+  padding:4px 8px;
+  font-size:14px;
+}
+#related td {
+  padding:5px 8px 5px 18px;
+  background:url(/+/img/screen.png) -508px -482px no-repeat;
+  vertical-align:top;
+}
+#related a {
+  color:#06c;
+  border:0;
+}
+#related a:hover {
+  text-decoration:underline;
+}
+/* no result
+ *************************************/
+#no_result {
+  width:940px;
+  padding:20px 0;
+}
+#no_result div {
+  padding:0 0 5px 8px;
+  font-size:15px;
+}
+#no_result ul {
+  clear:left;
+  padding:0 20px;
+}
+#no_result li {
+  float:none;
+  padding:4px;
+  font-size:14px;
+  list-style:square inside;
 }
