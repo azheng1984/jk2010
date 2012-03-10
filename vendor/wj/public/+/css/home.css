@@ -68,7 +68,7 @@
 }
 #merchant {
   width:100%;/* firefox table 下落 */
-  padding-bottom:13px;/* ie6 table margin-bottom 被忽略 */
+  padding-bottom:10px;/* ie6 table margin-bottom 被忽略 */
 }
 table {
   margin-top:10px;
