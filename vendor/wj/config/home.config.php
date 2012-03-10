@@ -18,5 +18,30 @@ return array(
   ),
   'merchant_list' => array(
     array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
-  )
+    array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+    array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+    array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
+      
+      )
 );
