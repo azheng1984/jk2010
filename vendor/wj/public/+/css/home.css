@@ -40,63 +40,67 @@
   color:#111;
 }
 #merchant ul {
-  padding:10px;
+  padding:8px;
   _padding:8px 5px;
-  font-size:15px;
+  font-size:14px;
 }
 #merchant li {
   clear:left;
   margin:3px;
-}
-#merchant li a, #merchant li span {
-  border:0;
-  display:block;
   width:155px;
   padding:3px 0 3px 10px;
-  background:#e5e5e5;
-  color:#555;
-  border-radius:5px;
 }
-#merchant li a:hover {
-  background:#ddd;
-  color:#111;
-  box-shadow:0 0 3px #ddd;
-}
-#merchant li span {
+#merchant .current {
   color:#fff;
   background:red;
+  border-radius:5px;
 }
 #merchant {
   width:100%;/* firefox table 下落 */
   padding-bottom:10px;/* ie6 table margin-bottom 被忽略 */
 }
-table {
+#merchant_list {
   margin-top:10px;
-  _margin-top:8px;
-  border-spacing:1px;
+  padding:10px;
+  border:1px solid #e5e5e5;
+  background:#fff;
+}
+table {
   width:740px;
+  border-collapse:collapse;
+}
+td {
+  padding:0;
 }
 td a {
   font-size:12px;
   display:block;
-  padding:15px 0;
-  width:146px;
+  padding:8px 0;
+  width:145px;
   text-align:center;
   background:#fff;
-  color:#999;
+  color:#888;
   border:0;
   border:1px solid;
   border-color:#fff;
-  border-radius:8px;
   overflow: hidden;
+  border-radius:3px;
 }
 td a:hover {
   border-color:#e5e5e5 #bbb #bbb #e5e5e5;
-  box-shadow:0 0 3px #ddd;
+  box-shadow:0 0 3px #ccc;
 }
 td a img {
   width:100px;
-  margin:5px 0;
+  margin:5px 0 2px 0;
+  _margin-bottom:10px;
+}
+td span {
+  display:block;
+  line-height:14px;
+}
+td a:hover span {
+  color:#111;
 }
 #more {
   float:left;
@@ -105,14 +109,14 @@ td a img {
   height:21px;
   margin:10px 0 0 550px;
   padding-right:16px;
-  background:url(/+/img/screen.png) -102px -107px;
+  background:url(/+/img/screen.png) -102px -106px;
   border:0;
 }
 #more:hover {
-  background:url(/+/img/screen.png) -272px -107px;
+  background:url(/+/img/screen.png) -272px -106px;
 }
 #more span {
-  font-size:15px;
+  font-size:14px;
   border-bottom:1px solid #666;
 }
 #more a:hover span {

@@ -15,6 +15,15 @@ return array(
   'merchant_type_list' => array(
     '/' => array(null, '全部', 201),
     '%E7%99%BE%E8%B4%A7' => array(1, '百货', 100),
+      '1%E7%99%BE%E8%B4%A7' => array(1, '百货', 100),
+      '2%E7%99%BE%E8%B4%A7' => array(1, '百货', 100),
+      '3%E7%99%BE%E8%B4%A7' => array(1, '百货', 100),
+      '4%E7%99%BE%E8%B4%A7' => array(1, '百货', 100),
+      '6%E7%99%BE%E8%B4%A7' => array(1, '百货', 100),
+      '5%E7%99%BE%E8%B4%A7' => array(1, '百货', 100),
+      '7%E7%99%BE%E8%B4%A7' => array(1, '百货', 100),
+      '8%E7%99%BE%E8%B4%A7' => array(1, '百货', 100),
+      '9%E7%99%BE%E8%B4%A7' => array(1, '百货', 100),
   ),
   'merchant_list' => array(
     array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy'),
