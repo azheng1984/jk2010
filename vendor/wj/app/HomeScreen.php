@@ -90,13 +90,13 @@ class HomeScreen extends Screen {
 
   private function renderPagination() {
     $amount = $GLOBALS['MERCHANT_TYPE_CONFIG'][2];
-    if ($amount < 20) {
+    if ($amount < 25) {
       return;
     }
     if ($GLOBALS['PAGE'] === 1) {
       echo '<a id="more" href="?page=2" rel="nofollow"><span>更多</span></a>';
       return;
     }
-    PaginationScreen::render($GLOBALS['PAGE'], $amount, '?page=', '', 10, 20);
+    PaginationScreen::render($GLOBALS['PAGE'], $amount, '?page=', '', 10, 25);
   }
 }

@@ -115,7 +115,7 @@ td a:hover span {
   font-size:14px;
   border-bottom:1px solid #666;
 }
-#more a:hover span {
+#more:hover span {
   border-color:#111;
 }
 #pagination {
