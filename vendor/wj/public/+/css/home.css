@@ -81,7 +81,7 @@ td a {
   color:#888;
   border:0;
   border:1px solid #fff;
-  overflow: hidden;
+  overflow:hidden;
 }
 td a:hover {
   border-color:#e5e5e5 #bbb #bbb #e5e5e5;
