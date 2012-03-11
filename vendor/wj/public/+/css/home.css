@@ -52,7 +52,7 @@
 #merchant .current {
   color:#fff;
   background:red;
-  border-radius:5px;
+  border-radius:3px;
 }
 #merchant {
   width:100%;/* firefox table 下落 */
