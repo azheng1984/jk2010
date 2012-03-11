@@ -69,7 +69,7 @@ class HomeScreen extends Screen {
 
   private function renderMerchantList() {
     $index = 0;
-    echo '<div id="merchant_list"><table><tr>';
+    echo '<div id="list_wrapper"><table><tr>';
     foreach ($GLOBALS['MERCHANT_LIST'] as $merchant) {
       if ($index % 5 === 0 && $index !== 0) {
         echo '</tr><tr>';
