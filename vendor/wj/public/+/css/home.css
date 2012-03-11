@@ -48,7 +48,7 @@
   clear:left;
   margin:3px;
   width:155px;
-  padding:3px 0 3px 10px;
+  padding:2px 0 2px 10px;
 }
 #merchant .current {
   color:#fff;
@@ -88,7 +88,7 @@ td a {
 }
 td a:hover {
   border-color:#e5e5e5 #bbb #bbb #e5e5e5;
-  box-shadow:0 0 3px #ccc;
+  box-shadow:0 0 3px #ddd;
 }
 td a img {
   width:100px;
