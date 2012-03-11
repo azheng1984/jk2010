@@ -7,19 +7,18 @@
 #slogon {
   width:100%;
   padding-top:8px;
-  background:#ffd;
+  border-bottom:1px solid #e5e5e5;
+  background:#ffffe5;
   background:-webkit-linear-gradient(#ffffda, #fffff5);
   background:-moz-linear-gradient(#ffffda, #fffff5);
   filter:progid:DXImageTransform.Microsoft.gradient(
     startColorstr='#ffffda', endColorstr='#fffff5'
   );
-  border-bottom:1px solid #e5e5e5;
 }
 #slogon h1 {
   padding:0 0 5px 15px;
   margin:0;
   font-size:16px;
-  font-weight:normal;
   color:#111;
 }
 #slogon ul {
@@ -59,9 +58,9 @@
   width:100%;/* firefox table 下落 */
   padding-bottom:10px;/* ie6 table margin-bottom 被忽略 */
 }
-#merchant_list {
-  margin-top:10px;
+#list_wrapper {
   padding:10px;
+  margin-top:10px;
   border:1px solid #e5e5e5;
   background:#fff;
 }
@@ -70,7 +69,7 @@ table {
   border-collapse:collapse;
 }
 td {
-  padding:0;
+  padding:0;/* chrome 默认 1px */
 }
 td a {
   font-size:12px;
@@ -81,14 +80,13 @@ td a {
   background:#fff;
   color:#888;
   border:0;
-  border:1px solid;
-  border-color:#fff;
+  border:1px solid #fff;
   overflow: hidden;
-  border-radius:3px;
 }
 td a:hover {
   border-color:#e5e5e5 #bbb #bbb #e5e5e5;
   box-shadow:0 0 3px #ddd;
+  border-radius:3px;
 }
 td a img {
   width:100px;
@@ -103,17 +101,16 @@ td a:hover span {
   color:#111;
 }
 #more {
-  float:left;
-  clear:left;
-  white-space:nowrap;/* ie6 可能会换行*/
+  float:right;
+  white-space:nowrap;/* ie6 会换行 */
   height:21px;
-  margin:10px 0 0 550px;
+  margin:10px 365px 0 0;
   padding-right:16px;
   background:url(/+/img/screen.png) -102px -106px;
   border:0;
 }
 #more:hover {
-  background:url(/+/img/screen.png) -272px -106px;
+  background-position:-272px -106px;
 }
 #more span {
   font-size:14px;

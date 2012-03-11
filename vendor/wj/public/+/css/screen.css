@@ -118,7 +118,7 @@ input:focus {
 #banner .left {
   margin-right:15px;
   padding-left:25px;
-  background:url(/+/img/screen.png) -494px -2px no-repeat;
+  background-position:-494px -2px;
 }
 #footer {
   line-height:40px;
