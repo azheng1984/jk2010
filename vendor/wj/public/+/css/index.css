@@ -14,7 +14,7 @@
 #breadcrumb span {
   float:left;
   padding:0 15px 0 8px;
-  background:url(/+/img/screen.png) right -152px no-repeat;
+  background:url(/+/img/screen.png) right -137px no-repeat;
 }
 #breadcrumb h1 {
   font-size:15px;
@@ -32,7 +32,7 @@ table {
 td {
   width:187px;
   padding:5px 0;
-  background:url(/+/img/screen.png) -500px -482px no-repeat;
+  background:url(/+/img/screen.png) -500px -170px no-repeat;
 }
 td a {
   color:#06c;
