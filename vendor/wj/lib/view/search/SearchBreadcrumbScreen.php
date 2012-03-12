@@ -7,18 +7,12 @@ class SearchBreadcrumbScreen {
     echo '<div id="breadcrumb"><h1>';
     $last = count($list) - 1;
     for ($index = 0; $index <= $last; ++$index) {
-      if ($index !== $last) {
-        echo '<span class="section">';
-      }
       $section = $list[$index];
       foreach ($section as $item) {
         if (isset($item['href']) === false && isset($item['class'])
           && $item['class'] === false) {
           echo $item['text'];
           continue;
-        }
-        if (mb_strlen($item['text'], 'UTF-8') > 60) {
-          $item['text'] = mb_substr($item['text'], 0, 60, 'UTF-8').'…';
         }
         $class = isset($item['class']) ? ' class="'.$item['class'].'"' : '';
         if (isset($item['href']) === false) {
@@ -29,7 +23,7 @@ class SearchBreadcrumbScreen {
           $item['text'], '</a>';
       }
       if ($index !== $last) {
-        echo '</span>';
+        echo '<span class="delimiter"></span>';
       }
     }
     echo '</h1></div>';
@@ -69,8 +63,12 @@ class SearchBreadcrumbScreen {
           htmlentities($property['key']['name'], ENT_NOQUOTES, 'UTF-8').':'
       );
       foreach ($property['value_list'] as $value) {
+        $text = $value['name'];
+        if (mb_strlen($text, 'UTF-8') > 60) {
+          $text = mb_substr($text, 0, 60, 'UTF-8').'…';
+        }
         $list[2][] = array(
-          'text' => htmlentities($value['name'], ENT_NOQUOTES, 'UTF-8'),
+          'text' => htmlentities($text, ENT_NOQUOTES, 'UTF-8'),
           'href' => self::buildHref($property['key']['path'], $value['path'])
             .$GLOBALS['QUERY_STRING'],
           'class' => 'tag'
