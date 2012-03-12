@@ -184,20 +184,21 @@ h2 a:hover {
   padding-left:8px;
   background:url(/+/img/square.png) 0 8px no-repeat;
 }
-.same {
+.recognition {
   float:left;
   padding:0 4px 0 18px;
   margin:2px 0;
-  background:url(/+/img/same.png) 4px no-repeat;
   font-size:12px;
+  line-height:18px;
+  background:url(/+/img/recognition.png) 4px no-repeat;
   border:1px solid;
   border-color:#ddd #bbb #bbb #ddd;
   border-radius:2px;
 }
-.same:hover {
+.recognition:hover {
   border-color:#ccc #aaa #aaa #ccc;
   box-shadow:0 0 3px #ddd;
-  background-image:url(/+/img/same_hover.png);
+  background-image:url(/+/img/recognition_hover.png);
 }
 #result .merchant {
   color:#690;
