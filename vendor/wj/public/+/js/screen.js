@@ -1,5 +1,8 @@
 /* search suggestion
  *****************************/
 
-/* tracking
+/* click tracking function
+ *****************************/
+
+/* page tracking
  *****************************/
