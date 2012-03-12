@@ -39,35 +39,34 @@ table {
   border-bottom:0;
   overflow:hidden;
 }
-#breadcrumb span, #breadcrumb a {
-  float:left;
-  margin:2px 2px 2px 0;
-  font-size:15px;
-  white-space:nowrap;
-}
-#breadcrumb .section {
-  padding-right:15px;
-  margin:0 10px 0 0;
-  background:url(/+/img/screen.png) right -140px no-repeat;
-}
-#breadcrumb a {
-  line-height:17px;
-}
 h1 {
   font-size:16px;
   padding:4px 8px;
 }
+#breadcrumb span, #breadcrumb a {
+  font-size:15px;
+}
+#breadcrumb .delimiter {
+  display:inline-block;
+  width:16px;
+  margin-right:8px;
+  height:20px;
+  vertical-align:middle;
+  background:url(/+/img/screen.png) right -142px no-repeat;
+}
 #breadcrumb .tag {
+  display:inline-block;
   padding:2px 16px 0 4px;
-  margin:2px 5px 1px 2px;
+  margin:2px 5px 0 2px;
   font-size:13px;
+  white-space:nowrap;
   color:#fff;
   border:0;
-  background:#b8b8b8 url(/+/img/delete.png) right 6px no-repeat;
+  background:#aaa url(/+/img/delete.png) right 7px no-repeat;
   border-radius:3px 11px 11px 3px;
 }
 #breadcrumb .tag:hover {
-  background-color:#999;
+  background-color:#888;
   box-shadow:0 0 3px #ddd;
 }
 /* result
