@@ -54,10 +54,8 @@ table {
   line-height:17px;
 }
 h1 {
-  float: none;
   font-size:16px;
   padding:4px 8px;
-  overflow: hidden;
 }
 #breadcrumb .tag {
   padding:2px 16px 0 4px;
