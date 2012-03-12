@@ -17,6 +17,9 @@ class SearchBreadcrumbScreen {
           echo $item['text'];
           continue;
         }
+        if (mb_strlen($item['text'], 'UTF-8') > 60) {
+          $item['text'] = mb_substr($item['text'], 0, 60, 'UTF-8').'…';
+        }
         $class = isset($item['class']) ? ' class="'.$item['class'].'"' : '';
         if (isset($item['href']) === false) {
           echo '<span', $class, '>', $item['text'], '</span>';

@@ -43,6 +43,7 @@ table {
   float:left;
   margin:2px 2px 2px 0;
   font-size:15px;
+  white-space:nowrap;
 }
 #breadcrumb .section {
   padding-right:15px;
@@ -50,7 +51,6 @@ table {
   background:url(/+/img/screen.png) right -140px no-repeat;
 }
 #breadcrumb a {
-  white-space:nowrap;
   line-height:17px;
 }
 h1 {
