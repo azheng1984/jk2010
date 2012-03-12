@@ -33,25 +33,31 @@ table {
 }
 /* breadcrumb
  *******************************/
-#breadcrumb span, #breadcrumb a {
-  float:left;
-  margin:2px 2px 2px 0;
-  font-size:15px;
-  line-height:17px;
-}
 #breadcrumb {
   width:100%;
   border:1px solid #e5e5e5;
   border-bottom:0;
+  overflow:hidden;
+}
+#breadcrumb span, #breadcrumb a {
+  float:left;
+  margin:2px 2px 2px 0;
+  font-size:15px;
 }
 #breadcrumb .section {
   padding-right:15px;
   margin:0 10px 0 0;
-  background:url(/+/img/screen.png) right -155px no-repeat;
+  background:url(/+/img/screen.png) right -140px no-repeat;
+}
+#breadcrumb a {
+  white-space:nowrap;
+  line-height:17px;
 }
 h1 {
+  float: none;
   font-size:16px;
   padding:4px 8px;
+  overflow: hidden;
 }
 #breadcrumb .tag {
   padding:2px 16px 0 4px;
@@ -182,7 +188,7 @@ h2 a:hover {
 #result li {
   float:none;
   padding-left:8px;
-  background:url(/+/img/square.png) 0 8px no-repeat;
+  background:url(/+/img/screen.png) -516px -174px no-repeat;
 }
 .recognition {
   float:left;
@@ -221,7 +227,7 @@ h2 a:hover {
 }
 #related td {
   padding:5px 8px 5px 18px;
-  background:url(/+/img/screen.png) -508px -482px no-repeat;
+  background:url(/+/img/screen.png) -508px -170px no-repeat;
   vertical-align:top;
 }
 #related a {
