@@ -7,7 +7,11 @@ $(function() {
 /* merchant list
  *****************************/
 $(function() {
-  $('#more').remove();
+  var more = $('#more');
+  if (more.length === 0) {
+    return;
+  }
+  more.remove();
   $('#list_wrapper').after('<span id="more"><span>更多</span></span>');
   $('#more').hover(function() {
     $(this).css('background-position', '-275px -106px')
