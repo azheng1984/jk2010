@@ -3,6 +3,9 @@
 $(function() {
   $('#header input').focus();
 });
+/*
+ * activity slideshow
+ *****************************/
 
 /* merchant list
  *****************************/
