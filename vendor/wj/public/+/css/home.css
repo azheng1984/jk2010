@@ -9,14 +9,9 @@
   padding-top:8px;
   border-bottom:1px solid #e5e5e5;
   background:#ffffe5;
-  background:-webkit-linear-gradient(#ffffda, #fffff5);
-  background:-moz-linear-gradient(#ffffda, #fffff5);
-  filter:progid:DXImageTransform.Microsoft.gradient(
-    startColorstr='#ffffda', endColorstr='#fffff5'
-  );
 }
 #slogon h1 {
-  padding:0 0 5px 15px;
+  padding:0 0 3px 15px;
   margin:0;
   font-size:16px;
   color:#111;

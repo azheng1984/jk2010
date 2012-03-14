@@ -1,16 +1,19 @@
 /* search suggestion
  *****************************/
 
-/* click tracking function
+/* tracking function
  *****************************/
-
-/* page tracking
- *****************************/
-$(function() {
+function trackPageview() {
   $.ajax({
     url:'http://tracking.' + document.domain + '/',
     cache:true,
     dataType:'jsonp',
     jsonp:false
   });
+}
+
+/* page tracking
+ *****************************/
+$(function() {
+  trackPageview();
 });
