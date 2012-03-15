@@ -37,6 +37,7 @@
   padding:8px;
   _padding:8px 5px;
   font-size:14px;
+  height: 400px;
 }
 #merchant li {
   clear:left;
@@ -53,39 +54,114 @@
   width:100%;/* firefox table 下落 */
   padding-bottom:10px;/* ie6 table margin-bottom 被忽略 */
 }
-#list_wrapper {
-  padding:10px;
+#slideshow {
+  width:760px;
+  background:#fff;
   margin-top:10px;
   border:1px solid #e5e5e5;
-  background:#fff;
+}
+#activity {
+  width:760px;
+  height:323px;
+  text-align:center;
+  color:#888;
+}
+.image_link {
+  border:0;
+}
+#activity img {
+  width:740px;
+  height:280px;
+  margin-top:10px;
+}
+#toolbar {
+  width:100%;
+  padding:5px 0 2px 0;
+  text-align:center;
+  color:#999;
+  background:#eee;
+}
+#toolbar span {
+  border-bottom:1px solid #555;
+  line-height:15px;
+  color:#555;
+  margin:0 10px;
+}
+#toolbar .page {
+color:#555;
+ border:0;
+font-size:12px;
+ padding:0 0 0 50px;
+margin:0;
+}
+#toolbar .left {
+  float:left;
+}
+#toolbar .right {
+  float:right;
+}
+#toolbar .page span {
+  *display:inline;
+  zoom:1;
+  font-size:8px;/* 以上解决 ie6 显示问题 */
+  display:inline-block;
+  width:50px;
+  height:10px;
+  border:0;
+  margin:0 2px;
+  background: #d5d5d5;
+  border-radius:0;
+}
+#toolbar .page .current {
+  background:red;
+}
+h2 {
+  font-size:14px;
+  padding:0;
+  width:100%;
+}
+#list_wrapper {
+  margin-top:10px;
+  background: white;
+  border: 1px solid #E5E5E5;
+  padding-left:17px;
+}
+#list_wrapper .move {
+  background: #EEE;
+  padding:5px;
+  margin:0;
+  line-height: 87px;
 }
 table {
-  width:740px;
   border-collapse:collapse;
+  margin:10px;
+
 }
 td {
   padding:0;/* chrome 默认 1px */
 }
 td a {
-  font-size:12px;
+
   display:block;
   padding:8px 0;
-  width:145px;
+  margin:2px;
+  width:135px;
   text-align:center;
   background:#fff;
   color:#888;
   border:0;
-  border:1px solid #fff;
+  border:1px solid;
+  border-color:#fff;
   overflow:hidden;
+  border-radius:3px;
 }
 td a:hover {
   border-color:#e5e5e5 #bbb #bbb #e5e5e5;
   box-shadow:0 0 3px #ddd;
-  border-radius:3px;
 }
 td a img {
-  width:100px;
-  margin:5px 0 2px 0;
+  width:110px;
+  margin:2px 0 2px 0;
   _margin-bottom:10px;
 }
 td span {
@@ -98,13 +174,13 @@ td a:hover span {
 #more {
   float:right;
   height:21px;
-  margin:10px 365px 0 0;
+  margin:10px 350px 0 0;
   padding-right:12px;
-  background:url(/+/img/screen.png) -105px -106px;
+  background:url(/+/img/screen.png) -77px -106px;
   border:0;
 }
 #more:hover {
-  background-position:-275px -106px;
+  background-position:-247px -106px;
 }
 #more span {
   font-size:14px;
