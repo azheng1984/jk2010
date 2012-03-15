@@ -7,7 +7,7 @@
   width:100%;
   padding-top:8px;
   border-bottom:1px solid #e5e5e5;
-  background:#ffffea;
+  background:#ffffe8;
   box-shadow:0 1px 2px #e8e8e8;
 }
 #slogon h1 {
@@ -102,6 +102,11 @@
 }
 #toolbar .right {
   float:right;
+}
+#toolbar .right:hover {
+  cursor:pointer;
+  color:#111;
+  border-color:#111;
 }
 #toolbar .page span {
   *display:inline;
