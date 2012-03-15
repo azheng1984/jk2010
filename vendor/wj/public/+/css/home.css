@@ -59,6 +59,7 @@
   background:#fff;
   margin-top:10px;
   border:1px solid #e5e5e5;
+  box-shadow:0 0 3px #ddd;
 }
 #activity {
   width:760px;
@@ -112,8 +113,16 @@ margin:0;
   background: #d5d5d5;
   border-radius:0;
 }
+#toolbar .page span:hover {
+  background:#06c;
+  cursor:pointer;
+}
 #toolbar .page .current {
   background:red;
+}
+#toolbar .page span.curent:hover {
+  background:red;
+  cursor:normal;
 }
 h2 {
   font-size:14px;
@@ -121,6 +130,7 @@ h2 {
   width:100%;
 }
 #list_wrapper {
+  box-shadow: 0 0 3px #ddd;
   margin-top:10px;
   background: white;
   border: 1px solid #E5E5E5;
@@ -131,6 +141,11 @@ h2 {
   padding:5px;
   margin:0;
   line-height: 87px;
+}
+#list_wrapper .move:hover {
+    background: #06c;
+color:#fff;
+ cursor:pointer;
 }
 table {
   border-collapse:collapse;
