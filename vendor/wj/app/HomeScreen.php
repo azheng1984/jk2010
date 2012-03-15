@@ -49,9 +49,16 @@ class HomeScreen extends Screen {
   private function renderMerchantBlock() {
     echo '<div id="merchant">';
     $this->renderMerchantTypeList();
+    $this->renderActivitySlideshow();
     $this->renderMerchantList();
     $this->renderPagination();
     echo '</div>';
+  }
+
+  private function renderActivitySlideshow() {
+    echo '<div id="slideshow"><div id="activity"><a class="image_link" href="http://www.360buy.com/"><img src="/+/img/activity.jpg" /></a><br /><a id="title" href="http://www.360buy.com/">我跟春天有个“优惠” - 京东商城</a></div>',
+      '<div id="toolbar"><span class="left"></span> <span class="page"><span class="current"></span> <span></span> <span></span> <span></span> <span></span></span><span class="right">更多活动</span></div>',
+      '</div>';
   }
 
   private function renderMerchantTypeList() {
@@ -69,6 +76,7 @@ class HomeScreen extends Screen {
 
   private function renderMerchantList() {
     $index = 0;
+    echo '';
     echo '<div id="list_wrapper"><table><tr>';
     foreach ($GLOBALS['MERCHANT_LIST'] as $merchant) {
       if ($index % 5 === 0 && $index !== 0) {
@@ -85,7 +93,7 @@ class HomeScreen extends Screen {
       $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
       echo '<td', $colspanAttribute, '></td>';
     }
-    echo '</tr></table></div>';
+    echo '</tr></table><div class="move">»</div></div>';
   }
 
   private function renderPagination() {
@@ -94,7 +102,7 @@ class HomeScreen extends Screen {
       return;
     }
     if ($GLOBALS['PAGE'] === 1) {
-      echo '<a id="more" href="?page=2" rel="nofollow"><span>更多</span></a>';
+      echo '<noscript><a id="more" href="?page=2" rel="nofollow"><span>更多商店</span></a></noscript>';
       return;
     }
     PaginationScreen::render($GLOBALS['PAGE'], $amount, '?page=', '', 10, 25);
