@@ -28,7 +28,7 @@
   white-space:nowrap;
   color:#999;
 }
-#slogon a {
+#slogon a, #slogon .ellipsis {
   font-size:13px;
   color:#777;
 }
@@ -61,7 +61,7 @@
   background:#fff;
   margin-top:10px;
   border:1px solid #e5e5e5;
-  box-shadow:0 0 3px #ddd;
+  box-shadow:0 0 3px #e1e1e1;
 }
 #activity {
   width:760px;
@@ -137,7 +137,7 @@ h2 {
   width:100%;
 }
 #list_wrapper {
-  box-shadow: 0 0 3px #ddd;
+  box-shadow: 0 0 3px #e1e1e1;
   margin-top:10px;
   background: white;
   border: 1px solid #E5E5E5;

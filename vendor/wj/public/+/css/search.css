@@ -132,7 +132,7 @@ h2 a:hover {
   width:100%;
   margin:8px 0;
   background:#fff;
-  box-shadow:0 0 3px #ddd;
+  box-shadow:0 0 3px #e1e1e1;
 }
 #result td {
   overflow:hidden;
