@@ -11,14 +11,11 @@
   box-shadow:0 1px 2px #e8e8e8;
 }
 #slogon h1 {
-  padding:0 0 3px 0;
-  width:100%;
-  text-align:center;
+  padding:0 0 3px 15px;
   font-size:16px;
   color:#000;
 }
 #slogon ul {
-  margin-left:210px;
   padding:0 0 6px 15px;
   clear:left;
 }
@@ -39,7 +36,6 @@
   padding:8px;
   _padding:8px 5px;
   font-size:14px;
-  height: 400px;
 }
 #merchant li {
   clear:left;
@@ -58,31 +54,37 @@
 }
 #slideshow {
   width:760px;
-  background:#fff;
   margin-top:10px;
-  border:1px solid #e5e5e5;
-  box-shadow:0 0 3px #e1e1e1;
+
+}
+#title {
+  margin-top:6px;
+  width: 100%;
+background: #EEE;
+padding: 4px 0;
 }
 #activity {
+  background:#fff;
   width:760px;
-  height:323px;
+  height:350px;
   text-align:center;
   color:#888;
+  border:1px solid #e5e5e5;
+  box-shadow:0 0 3px #e1e1e1;
 }
 .image_link {
   border:0;
 }
 #activity img {
   width:740px;
-  height:280px;
+  height:300px;
   margin-top:10px;
 }
 #toolbar {
   width:100%;
-  padding:5px 0 2px 0;
+  padding-top:10px;
   text-align:center;
   color:#999;
-  background:#eee;
 }
 #toolbar span {
   border-bottom:1px solid #555;
@@ -91,22 +93,29 @@
   margin:0 10px;
 }
 #toolbar .page {
+  display:inline-block;
   color:#555;
   border:0;
   font-size:12px;
   padding:0 0 0 50px;
-  margin:0;
+  margin-top:6px;
 }
 #toolbar .left {
   float:left;
 }
 #toolbar .right {
+  margin-right:0;
   float:right;
+  border:1px solid #e5e5e5;
+  padding:4px 8px;
+  background:url(/+/img/screen.png) 0 -70px repeat-x;
+  border-radius:3px;
 }
 #toolbar .right:hover {
   cursor:pointer;
-  color:#111;
-  border-color:#111;
+  color:#fff;
+  border-color:#06c;
+  background:#06c;
 }
 #toolbar .page span {
   *display:inline;

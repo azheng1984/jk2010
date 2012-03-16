@@ -50,14 +50,14 @@ class HomeScreen extends Screen {
     echo '<div id="merchant">';
     $this->renderMerchantTypeList();
     $this->renderActivitySlideshow();
-    $this->renderMerchantList();
+    //$this->renderMerchantList();
     $this->renderPagination();
     echo '</div>';
   }
 
   private function renderActivitySlideshow() {
-    echo '<div id="slideshow"><div id="activity"><a class="image_link" href="http://www.360buy.com/"><img src="/+/img/activity.jpg" /></a><br /><a id="title" href="http://www.360buy.com/">我跟春天有个“优惠” - 京东商城</a></div>',
-      '<div id="toolbar"><span class="left"></span> <span class="page"><span class="current"></span> <span></span> <span></span> <span></span> <span></span></span><span class="right">更多活动</span></div>',
+    echo '<div id="slideshow"><div id="activity"><a class="image_link" href="http://www.360buy.com/"><img src="/+/img/activity.jpg" /></a><div id="title"><a href="http://www.360buy.com/">我跟春天有个“优惠” - 京东商城</a></div></div>',
+      '<div id="toolbar"><span class="left"></span> <span class="page"><span class="current"></span> <span></span> <span></span> <span></span> <span></span></span><span class="right">更多 »</span></div>',
       '</div>';
   }
 
