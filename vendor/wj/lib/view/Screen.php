@@ -111,7 +111,7 @@ abstract class Screen extends EtagView {
     echo '<div>',
       '<a href="http://i.huobiwanjia.com/" rel="nofollow">关于货比万家</a> ',
       '<a href="http://ad.huobiwanjia.com/" rel="nofollow">广告</a> ',
-      '<a href="/+i/">分类索引</a> ';
+      '<a href="/+i/">索引</a> ';
     $this->renderPublisher();
     echo '</div>';
   }
