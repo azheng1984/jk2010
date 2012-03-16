@@ -43,7 +43,7 @@ class HomeScreen extends Screen {
       echo '<li><a href="/', urlencode($query[0]), '/">',
       $query[1], '</a> ', $query[2], '</li>';
     }
-    echo '<li><a href="/+i/">…</a></li></ul>';
+    echo '<li class="ellipsis">…</li></ul>';
   }
 
   private function renderMerchantBlock() {
