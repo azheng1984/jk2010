@@ -50,14 +50,13 @@ class HomeScreen extends Screen {
     echo '<div id="merchant">';
     $this->renderMerchantTypeList();
     $this->renderActivitySlideshow();
-    //$this->renderMerchantList();
+    $this->renderMerchantList();
     $this->renderPagination();
     echo '</div>';
   }
 
   private function renderActivitySlideshow() {
-    echo '<div id="slideshow"><div id="activity"><a class="image_link" href="http://www.360buy.com/"><img src="/+/img/activity.jpg" /></a><div id="title"><a href="http://www.360buy.com/">我跟春天有个“优惠” - 京东商城</a></div></div>',
-      '<div id="toolbar"><span class="left"></span> <span class="page"><span class="current"></span> <span></span> <span></span> <span></span> <span></span></span><span class="right">更多 »</span></div>',
+    echo '<div id="slideshow"><div id="activity"><a class="image_link" href="http://www.360buy.com/"><img src="/+/img/activity.jpg" /></a><div id="title"><a href="/">@京东商城</a><span class="page"><span class="current"></span> <span></span> <span></span> <span></span> <span></span></span></div></div>',
       '</div>';
   }
 
@@ -84,8 +83,7 @@ class HomeScreen extends Screen {
       }
       echo '<td><a href="http://', $merchant['uri'], '"',
         ' target="_blank" rel="nofollow"><img alt="',
-        $merchant['name'], '" src="/+/img/logo/', $merchant['path'], '.png"/>',
-        '<span>', $merchant['name'], '</span></a></td>';
+        $merchant['name'], '" src="/+/img/logo/', $merchant['path'], '.png"/></a></td>';
       ++$index;
     }
     if ($index % 5 !== 0 && $index > 5) {
