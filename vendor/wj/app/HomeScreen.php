@@ -56,7 +56,7 @@ class HomeScreen extends Screen {
   }
 
   private function renderActivitySlideshow() {
-    echo '<div id="slideshow"><div id="activity"><a class="image_link" href="http://www.360buy.com/"><img src="/+/img/activity.jpg" /></a><div id="title"><a href="/">@京东商城</a><span class="page"><span class="current"></span> <span></span> <span></span> <span></span> <span></span></span></div></div>',
+    echo '<div id="slideshow"><div id="activity"><a class="image_link" href="http://www.360buy.com/"><img src="/+/img/activity.jpg" /></a><div id="title"><a href="/">@<span>京东商城</span></a><span class="page"><span class="current"></span> <span></span> <span></span> <span></span> <span></span></span></div></div>',
       '</div>';
   }
 
@@ -94,7 +94,7 @@ class HomeScreen extends Screen {
       $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
       echo '<td', $colspanAttribute, '></td>';
     }
-    echo '</tr></table><div class="move">»</div></div>';
+    echo '</tr></table><div class="move"></div></div>';
   }
 
   private function renderPagination() {

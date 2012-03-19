@@ -58,10 +58,9 @@
 
 }
 #title {
-  margin-top:6px;
   width: 100%;
-background: #eee;
-padding: 4px 0;
+background: #fff;
+  padding-bottom: 4px;
 }
 #activity {
   width:760px;
@@ -111,17 +110,25 @@ padding: 4px 0;
 }
 #title a {
   float:right;
+  margin-right:10px;
+}
+#title a {
+  border:0;
+}
+#title a span {
+  border-bottom:1px solid #555;
 }
 #title .page {
   display:inline-block;
   color:#555;
   border:0;
   font-size:12px;
-  margin-top:6px;
+  margin-top:2px;
 }
 #title .page {
-  display:block;
-  width:100%;
+display: block;
+width: 80%;
+margin-left: 85px;
 }
 #title .page span {
   *display:inline;
@@ -142,7 +149,7 @@ padding: 4px 0;
 #title .page .current {
   background:red;
 }
-#title .page span.curent:hover {
+#title .page span.curent2:hover {
   background:red;
   cursor:normal;
 }
@@ -152,18 +159,21 @@ h2 {
   width:100%;
 }
 #list_wrapper {
-  margin-top:10px;
   padding-left:17px;
   float:right;
   margin-right:10px;
 }
 #list_wrapper .move {
-  background: #EEE;
+  display:inline-block;
+  background:#eee url(/+/img/more.png) 4px 26px no-repeat;
   padding:5px;
-  margin:0;
+  margin-left:2px;
+  height:46px;
+  width:5px;
+  margin-top:4px;
 }
 #list_wrapper .move:hover {
-    background: #06c;
+  background:#e5e5e5 url(/+/img/more_hover.png) 4px 26px no-repeat;
 color:#fff;
  cursor:pointer;
 }
@@ -175,26 +185,26 @@ td {
 }
 td a {
   display:block;
-  padding:8px 0;
+  padding:15px 0 8px 0;
   margin:2px;
-  width:135px;
+  width:142px;
   text-align:center;
   background:#fff;
   color:#888;
   border:0;
-  border-top:3px solid;
-  border-color:#d5d5d5;
+  border-bottom:3px solid;
+  border-color:#ddd;
   overflow:hidden;
 }
-td a.current2 {
+td a.current2, td a.current2:hover {
   border-color:red;
+  cursor:default;
 }
 td a:hover {
-  border-color:#999;
+  border-color:#aaa;
 }
 td a img {
   width:110px;
-  margin:2px 0 2px 0;
   _margin-bottom:10px;
 }
 td span {
