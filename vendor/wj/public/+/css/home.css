@@ -128,7 +128,7 @@ padding: 4px 0;
   zoom:1;
   font-size:8px;/* 以上解决 ie6 显示问题 */
   display:inline-block;
-  width:45px;
+  width:10px;
   height:10px;
   border:0;
   margin:0 2px;
@@ -136,7 +136,7 @@ padding: 4px 0;
   border-radius:0;
 }
 #title .page span:hover {
-  background:#06c;
+  background:#999;
   cursor:pointer;
 }
 #title .page .current {
@@ -155,6 +155,7 @@ h2 {
   margin-top:10px;
   padding-left:17px;
   float:right;
+  margin-right:10px;
 }
 #list_wrapper .move {
   background: #EEE;
@@ -181,12 +182,15 @@ td a {
   background:#fff;
   color:#888;
   border:0;
-  border-top:2px solid;
+  border-top:3px solid;
   border-color:#d5d5d5;
   overflow:hidden;
 }
+td a.current2 {
+  border-color:red;
+}
 td a:hover {
-  border-color:#06c;
+  border-color:#999;
 }
 td a img {
   width:110px;
