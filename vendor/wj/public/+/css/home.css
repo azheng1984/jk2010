@@ -90,7 +90,6 @@ background: #fff;
   color:#555;
   margin:0 10px;
 }
-
 #toolbar .left {
   float:left;
 }
@@ -123,12 +122,11 @@ background: #fff;
   color:#555;
   border:0;
   font-size:12px;
-  margin-top:2px;
 }
 #title .page {
-display: block;
-width: 80%;
-margin-left: 85px;
+  display: block;
+  width: 80%;
+  margin-left: 85px;
 }
 #title .page span {
   *display:inline;
