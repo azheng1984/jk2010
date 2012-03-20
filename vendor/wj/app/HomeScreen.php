@@ -1,7 +1,8 @@
 <?php
 class HomeScreen extends Screen {
   public function __construct() {
-    if (count($GLOBALS['MERCHANT_SLIDE']) === 0 && $GLOBALS['PAGE'] !== 1) {
+    if (count($GLOBALS['MERCHANT_SLIDE_LIST']) === 0
+      && $GLOBALS['PAGE'] !== 1) {
       $this->stop();
       header('HTTP/1.1 301 Moved Permanently');
       Header('Location: '.$GLOBALS['MERCHANT_TYPE_CONFIG']['path']);
@@ -26,7 +27,7 @@ class HomeScreen extends Screen {
   protected function renderHtmlBodyContent() {
     echo '<div id="home">';
     $this->renderSlogon();
-    $this->renderMerchant();
+    $this->renderMerchantSlideList();
     echo '</div>';
   }
 
@@ -47,17 +48,15 @@ class HomeScreen extends Screen {
     echo '<li class="ellipsis">…</li></ul>';
   }
 
-  private function renderMerchant() {
-    echo '<div id="merchant">';
+  private function renderMerchantSlideList() {
     $this->renderMerchantTypeList();
     $this->renderSlideshow();
     $this->renderMerchantList();
-    echo '</div>';
   }
 
   private function renderMerchantTypeList() {
     $path = $GLOBALS['MERCHANT_TYPE_CONFIG']['path'];
-    echo '<ul>';
+    echo '<ul id="type_list">';
     foreach ($GLOBALS['HOME_CONFIG']['merchant_type_list'] as $key => $value) {
       if ($key === $path) {
         echo '<li class="current">', $value[1], '</li>';
@@ -74,9 +73,8 @@ class HomeScreen extends Screen {
   }
 
   private function renderMerchantList() {
-    echo '<div id="merchant_list">';
-    
-    '</div>';
+    echo '<ol id="merchant_list">',
+    '</ol>';
   }
 
   private function addJsConfig() {

@@ -42,12 +42,15 @@ class HomeAction {
   private function buildMerchantSlide() {
     if ($GLOBALS['PAGE'] === 1
       && $GLOBALS['MERCHANT_TYPE_CONFIG']['path'] === '/') {
-      $GLOBALS['MERCHANT_SLIDE'] = $GLOBALS['HOME_CONFIG']['merchant_list'];
+      $GLOBALS['MERCHANT_SLIDE_LIST'] =
+        $GLOBALS['HOME_CONFIG']['merchant_slide_list'];
       return;
     }
-    $GLOBALS['MERCHANT_SLIDE'] = DbMerchantSlide::getList(
+    $GLOBALS['MERCHANT_SLIDE_LIST'] = DbMerchantSlide::getList(
       $GLOBALS['MERCHANT_TYPE_CONFIG'][0], $GLOBALS['PAGE']
     );
-    //TODO:fetch slide into array
+    foreach ($GLOBALS['MERCHANT_SLIDE_LIST'] as &$merchant) {
+      $merchant['slide_list'] = explode(' ', $merchant['list']);
+    }
   }
 }
