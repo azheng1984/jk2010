@@ -57,13 +57,13 @@ abstract class Screen extends EtagView {
     $this->addJsLink('screen');
     $this->renderHtmlHeadContent();
     $this->renderCssLinkList();
-    $this->renderJsLinkList();
     echo '</head>';
   }
 
   private function renderHtmlBody() {
     echo '<body>';
     $this->renderBodyWrapper();
+    $this->renderJsLinkList();
     $this->renderJs();
     echo '</body>';
   }

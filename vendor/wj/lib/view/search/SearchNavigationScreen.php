@@ -1,10 +1,10 @@
 <?php
-class SearchBreadcrumbScreen {
+class SearchNavigationScreen {
   private static $propertyPathList;
 
   public static function render() {
     $list = self::buildList();
-    echo '<div id="breadcrumb"><h1>';
+    echo '<div id="nav"><h1>';
     $last = count($list) - 1;
     for ($index = 0; $index <= $last; ++$index) {
       $section = $list[$index];
