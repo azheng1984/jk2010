@@ -60,7 +60,7 @@ class IndexScreen extends Screen {
   }
 
   private function renderBreadcrumb() {
-    echo '<div id="breadcrumb">',
+    echo '<div id="nav">',
       '<span><a href="/">首页</a></span>';
     if ($this->category !== null) {
       echo ' <span><a href="/+i/">分类</a></span><h1>',

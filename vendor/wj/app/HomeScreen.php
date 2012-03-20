@@ -21,7 +21,6 @@ class HomeScreen extends Screen {
     }
     $this->addCssLink('home');
     $this->addJsLink('home');
-    $this->addJsConfig();
   }
 
   protected function renderHtmlBodyContent() {
@@ -29,6 +28,7 @@ class HomeScreen extends Screen {
     $this->renderSlogon();
     $this->renderMerchantSlideList();
     echo '</div>';
+    $this->addJsConfig();
   }
 
   private function renderSlogon() {

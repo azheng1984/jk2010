@@ -4,19 +4,19 @@
   border:1px solid #e5e5e5;
   padding-bottom:10px;
 }
-#breadcrumb {
+#nav {
   width:100%;
   line-height:30px;
   font-size:15px;
   border-bottom:1px solid #e5e5e5;
   background:#fff;
 }
-#breadcrumb span {
+#nav span {
   float:left;
   padding:0 15px 0 8px;
   background:url(/+/img/screen.png) right -137px no-repeat;
 }
-#breadcrumb h1 {
+#nav h1 {
   font-size:15px;
   padding-left:8px;
 }

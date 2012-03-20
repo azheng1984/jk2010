@@ -31,9 +31,9 @@ table {
   padding:0 8px 0 20px;
   color:#888;
 }
-/* breadcrumb
+/* navigation
  *******************************/
-#breadcrumb {
+#nav {
   width:100%;
   border:1px solid #e5e5e5;
   border-bottom:0;
@@ -43,10 +43,10 @@ h1 {
   font-size:16px;
   padding:4px 8px;
 }
-#breadcrumb span, #breadcrumb a {
+#nav span, #nav a {
   font-size:15px;
 }
-#breadcrumb .delimiter {
+#nav .delimiter {
   display:inline-block;
   width:16px;
   margin-right:7px;
@@ -54,7 +54,7 @@ h1 {
   vertical-align:middle;
   background:url(/+/img/screen.png) right -142px no-repeat;
 }
-#breadcrumb .tag {
+#nav .tag {
   display:inline-block;
   padding:0 16px 0 4px;
   margin:2px 5px 2px 2px;
@@ -65,7 +65,7 @@ h1 {
   background:#aaa url(/+/img/delete.png) right 6px no-repeat;
   border-radius:3px 11px 11px 3px;
 }
-#breadcrumb .tag:hover {
+#nav .tag:hover {
   background-color:#888;
   background-image:url(/+/img/delete_hover.png);
   box-shadow:0 0 3px #ddd;
