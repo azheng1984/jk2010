@@ -13,8 +13,8 @@ class HomeScreen extends Screen {
 
   private function parseSlideIndex() {
     if (isset($_GET['index']) === false
-        || is_numeric($_GET['index']) === false
-        || $_GET['index'] < 1) {
+      || is_numeric($_GET['index']) === false
+      || $_GET['index'] < 1) {
       $GLOBALS['SLIDE_INDEX'] = 1;
       return;
     }
@@ -23,8 +23,8 @@ class HomeScreen extends Screen {
 
   private function parseMerchantId() {
     if (isset($_GET['merchant_id']) === false
-        || is_numeric($_GET['merchant_id']) === false
-        || $_GET['merchant_id'] < 1) {
+      || is_numeric($_GET['merchant_id']) === false
+      || $_GET['merchant_id'] < 1) {
       return;
     }
     $GLOBALS['MERCHANT_ID'] = intval($_GET['merchant_id']);
@@ -97,15 +97,15 @@ class HomeScreen extends Screen {
 
   private function renderSlide() {
     echo '<div id="slide">',
-    '<a href="http://www.360buy.com/"><img src="/+/img/slide.jpg"/></a>',
-    '</div>';
+      '<a href="http://www.360buy.com/"><img src="/+/img/slide.jpg"/></a>',
+      '</div>';
   }
-  
+
   private function renderToolbar() {
     echo '<div id="toolbar">',
-    '<a href="?index=1"></a><a href="?index=2"></a>',
-    '<a id="merchant" href="">@<span>京东商城</span></a>',
-    '</div>';
+      '<a href="?index=1"></a><a href="?index=2"></a>',
+      '<a id="merchant" href="">@<span>京东商城</span></a>',
+      '</div>';
   }
 
   private function renderMerchantList() {
@@ -117,12 +117,12 @@ class HomeScreen extends Screen {
 
   private function renderMerchant() {
     echo '<a href="?merchant_id=1">',
-    '<img src="/+/img/logo/360buy.png"/><span>京东商城</span>',
-    '</a>';
+      '<img src="/+/img/logo/360buy.png"/><span>京东商城</span>',
+      '</a>';
   }
 
   private function renderScroll() {
-    echo '<div id="scroll_down" class="full"></div>';
+    echo '<div id="scroll_up"></div><div id="scroll_down"></div>';
   }
 
   private function addJsConfig() {
