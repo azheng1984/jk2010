@@ -90,21 +90,42 @@ class HomeScreen extends Screen {
 
   private function renderSlideshow() {
     echo '<div id="slideshow">',
-    '<div id="slide">',
+    $this->renderSlide();
+    $this->renderToolbar();
+    echo '</div>';
+  }
+
+  private function renderSlide() {
+    echo '<div id="slide">',
     '<a href="http://www.360buy.com/"><img src="/+/img/slide.jpg"/></a>',
-    '</div>',
-    '<div id="toolbar"><a href="?index=1"></a><a href="?index=2"></a>',
-    '<a id="merchant" href="">@<span>京东商城</span></a></div>',
+    '</div>';
+  }
+  
+  private function renderToolbar() {
+    echo '<div id="toolbar">',
+    '<a href="?index=1"></a><a href="?index=2"></a>',
+    '<a id="merchant" href="">@<span>京东商城</span></a>',
     '</div>';
   }
 
   private function renderMerchantList() {
     echo '<div id="merchant_list">',
-    '<a href="?merchant_id=1"><img src="/+/img/logo/360buy.png"/><span>京东商城</span></a>',
-    '<div id="scroll_down" class="full"></div></div>';
+    $this->renderMerchant();
+    $this->renderScroll();
+    echo '</div>';
+  }
+
+  private function renderMerchant() {
+    echo '<a href="?merchant_id=1">',
+    '<img src="/+/img/logo/360buy.png"/><span>京东商城</span>',
+    '</a>';
+  }
+
+  private function renderScroll() {
+    echo '<div id="scroll_down" class="full"></div>';
   }
 
   private function addJsConfig() {
-    
+    $this->addJs('var list = [];');
   }
 }
