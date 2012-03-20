@@ -25,7 +25,7 @@ return array(
       '8%E7%99%BE%E8%B4%A7' => array(1, '百货', 100),
       '9%E7%99%BE%E8%B4%A7' => array(1, '百货', 100),
   ),
-  'merchant_list' => array(
+  'merchant_slide_list' => array(
     array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy',
       'slide_list' => array('www.360buy.com', 'www.360buy.com', 'www.360buy.com', 'www.360buy.com', 'www.360buy.com')),
     array('name' => '京东商城', 'uri' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy',
