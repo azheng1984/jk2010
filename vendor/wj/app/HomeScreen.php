@@ -56,7 +56,7 @@ class HomeScreen extends Screen {
 
   private function renderMerchantTypeList() {
     $path = $GLOBALS['MERCHANT_TYPE_CONFIG']['path'];
-    echo '<ul id="type_list">';
+    echo '<ol>';
     foreach ($GLOBALS['HOME_CONFIG']['merchant_type_list'] as $key => $value) {
       if ($key === $path) {
         echo '<li class="current">', $value[1], '</li>';
@@ -64,7 +64,7 @@ class HomeScreen extends Screen {
       }
       echo '<li><a href="', $key, '" rel="nofollow">', $value[1], '</a></li>';
     }
-    echo '</ul>';
+    echo '</ol>';
   }
 
   private function renderSlideshow() {
@@ -73,8 +73,8 @@ class HomeScreen extends Screen {
   }
 
   private function renderMerchantList() {
-    echo '<ol id="merchant_list">',
-    '</ol>';
+    echo '<ul id="merchant_list">',
+    '</ul>';
   }
 
   private function addJsConfig() {

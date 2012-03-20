@@ -5,7 +5,7 @@ class HomeAction {
     $this->parseMerchantType();
     $this->parsePage();
     $this->parseSlideIndex();
-    $this->buildMerchantSlide();
+    $this->buildMerchantSlideList();
   }
 
   private function parseMerchantType() {
@@ -39,7 +39,7 @@ class HomeAction {
     $GLOBALS['SLIDE_INDEX'] = intval($_GET['slide']);
   }
 
-  private function buildMerchantSlide() {
+  private function buildMerchantSlideList() {
     if ($GLOBALS['PAGE'] === 1
       && $GLOBALS['MERCHANT_TYPE_CONFIG']['path'] === '/') {
       $GLOBALS['MERCHANT_SLIDE_LIST'] =
