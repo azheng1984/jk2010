@@ -126,6 +126,6 @@ class HomeScreen extends Screen {
   }
 
   private function addJsConfig() {
-    $this->addJs('var list = [];');
+    $this->addJs('var home = {merchant_list:"adf"};');
   }
 }
