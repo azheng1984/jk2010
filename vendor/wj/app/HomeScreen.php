@@ -1,7 +1,7 @@
 <?php
 class HomeScreen extends Screen {
   public function __construct() {
-    if (count($GLOBALS['MERCHANT_LIST']) === 0 && $GLOBALS['PAGE'] !== 1) {
+    if (count($GLOBALS['MERCHANT_SLIDE']) === 0 && $GLOBALS['PAGE'] !== 1) {
       $this->stop();
       header('HTTP/1.1 301 Moved Permanently');
       Header('Location: '.$GLOBALS['MERCHANT_TYPE_CONFIG']['path']);
@@ -20,12 +20,13 @@ class HomeScreen extends Screen {
     }
     $this->addCssLink('home');
     $this->addJsLink('home');
+    $this->addJsConfig();
   }
 
   protected function renderHtmlBodyContent() {
     echo '<div id="home">';
     $this->renderSlogon();
-    $this->renderMerchantBlock();
+    $this->renderMerchant();
     echo '</div>';
   }
 
@@ -46,18 +47,12 @@ class HomeScreen extends Screen {
     echo '<li class="ellipsis">…</li></ul>';
   }
 
-  private function renderMerchantBlock() {
+  private function renderMerchant() {
     echo '<div id="merchant">';
     $this->renderMerchantTypeList();
-    $this->renderActivitySlideshow();
+    $this->renderSlideshow();
     $this->renderMerchantList();
-    $this->renderPagination();
     echo '</div>';
-  }
-
-  private function renderActivitySlideshow() {
-    echo '<div id="slideshow"><div id="activity"><a class="image_link" href="http://www.360buy.com/"><img src="/+/img/activity.jpg" /></a><div id="title"><a href="/">@<span>京东商城</span></a><span class="page"><span class="current"></span> <span></span> <span></span> <span></span> <span></span> </span></div></div>',
-      '</div>';
   }
 
   private function renderMerchantTypeList() {
@@ -73,39 +68,18 @@ class HomeScreen extends Screen {
     echo '</ul>';
   }
 
-  private function renderMerchantList() {
-    $index = 0;
-    echo '';
-    echo '<div id="list_wrapper"><table><tr>';
-    foreach ($GLOBALS['MERCHANT_LIST'] as $merchant) {
-      if ($index % 5 === 0 && $index !== 0) {
-        echo '</tr><tr>';
-      }
-      echo '<td><a href="http://', $merchant['uri'], '"';
-      if ($index === 0) {
-        echo ' class="current2"';
-      }
-      echo ' target="_blank" rel="nofollow"><img alt="',
-        $merchant['name'], '" src="/+/img/logo/', $merchant['path'], '.png"/></a></td>';
-      ++$index;
-    }
-    if ($index % 5 !== 0 && $index > 5) {
-      $colspan = 5 - $index % 5;
-      $colspanAttribute = $colspan === 1 ? '' : ' colspan="'.$colspan.'"';
-      echo '<td', $colspanAttribute, '></td>';
-    }
-    echo '</tr></table><div class="move"></div></div>';
+  private function renderSlideshow() {
+    echo '<div id="slideshow">',
+    '</div>';
   }
 
-  private function renderPagination() {
-    $amount = $GLOBALS['MERCHANT_TYPE_CONFIG'][2];
-    if ($amount < 25) {
-      return;
-    }
-    if ($GLOBALS['PAGE'] === 1) {
-      echo '<noscript><a id="more" href="?page=2" rel="nofollow"><span>更多商店</span></a></noscript>';
-      return;
-    }
-    PaginationScreen::render($GLOBALS['PAGE'], $amount, '?page=', '', 10, 25);
+  private function renderMerchantList() {
+    echo '<div id="merchant_list">';
+    
+    '</div>';
+  }
+
+  private function addJsConfig() {
+    
   }
 }
