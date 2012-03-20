@@ -4,7 +4,6 @@ class HomeAction {
     $GLOBALS['HOME_CONFIG'] = require CONFIG_PATH.'home.config.php';
     $this->parseMerchantType();
     $this->parsePage();
-    $this->parseSlideIndex();
     $this->buildMerchantSlideList();
   }
 
@@ -28,15 +27,6 @@ class HomeAction {
       return;
     }
     $GLOBALS['PAGE'] = intval($_GET['page']);
-  }
-
-  private function parseSlideIndex() {
-    if (isset($_GET['slide']) === false || is_numeric($_GET['slide']) === false
-        || $_GET['slide'] < 1) {
-      $GLOBALS['SLIDE_INDEX'] = 1;
-      return;
-    }
-    $GLOBALS['SLIDE_INDEX'] = intval($_GET['slide']);
   }
 
   private function buildMerchantSlideList() {
