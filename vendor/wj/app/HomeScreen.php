@@ -72,7 +72,6 @@ class HomeScreen extends Screen {
   private function renderMerchantSlideList() {
     $this->renderMerchantTypeList();
     $this->renderSlideshow();
-    $this->renderMerchantList();
   }
 
   private function renderMerchantTypeList() {
@@ -89,7 +88,15 @@ class HomeScreen extends Screen {
   }
 
   private function renderSlideshow() {
-    echo '<div id="slideshow">',
+    echo '<div id="slideshow">';
+    $this->renderSlideWrapper();
+    $this->renderMerchantList();
+    $this->renderScroll();
+    echo '</div>';
+  }
+
+  private function renderSlideWrapper() {
+    echo '<div id="slide_wrapper">',
     $this->renderSlide();
     $this->renderToolbar();
     echo '</div>';
@@ -101,34 +108,37 @@ class HomeScreen extends Screen {
   }
 
   private function renderToolbar() {
-    echo '<div id="toolbar">',
-      '<span><span></span>',
+    echo '<span id="section_list"><span></span>',
       '<a href="?index=2"></a></span>',
-      '<a id="merchant" href="">@<span>京东商城</span></a>',
-      '</div>';
+      '<a id="merchant" href="">@<span>京东商城</span></a>';
   }
 
   private function renderMerchantList() {
-    echo '<div id="merchant_list">',
-    $this->renderMerchant();
-    $this->renderScroll();
-    echo '</div>';
-  }
-
-  private function renderMerchant() {
+    echo '<div id="merchant_list">';
     echo '<span class="current">',
     '<img src="/+/img/logo/360buy.png"/>',
     '</span>';
     echo '<a href="?merchant_id=1">',
       '<img src="/+/img/logo/360buy.png"/>',
       '</a>';
+    echo '<a href="?merchant_id=1">',
+    '<img src="/+/img/logo/360buy.png"/>',
+    '</a>';
+    echo '<a href="?merchant_id=1">',
+    '<img src="/+/img/logo/360buy.png"/>',
+    '</a>';
+    echo '<a href="?merchant_id=1">',
+    '<img src="/+/img/logo/360buy.png"/>',
+    '</a>';
+    echo '</div>';
   }
 
   private function renderScroll() {
-    echo '<div id="up"></div><div id="down"></div>';
+    echo '<div id="scroll"><a id="up" href="?page=1"></a>',
+      '<a id="down" href="?page=2"></a></div>';
   }
 
   private function addJsConfig() {
-    $this->addJs('huobiwanjia.home.merchant_list = "adf";');
+    $this->addJs('huobiwanjia.home.slideshow = "";');
   }
 }
