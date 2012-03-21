@@ -48,14 +48,17 @@ ol .current {
   border-radius:3px;
 }
 #slideshow {
+  width:763px;
+}
+#slide_wrapper {
   margin-top:10px;
-  padding:10px 10px 5px 10px;
+  padding:10px 10px 3px 10px;
   border:1px solid #e5e5e5;
   box-shadow:0 0 3px #e1e1e1;
   background:#fff;
 }
 #slide {
-  display:block;
+  float:left;
   width:740px;
   height:300px;
   border:0;
@@ -64,42 +67,41 @@ ol .current {
   width:740px;
   height:300px;
 }
-#merchant_list {
+#section_list {
+  padding-top:6px;
   float:right;
-  width:765px;
-  padding-bottom:10px;
 }
-#toolbar {
-  width:100%;
-  padding-top:5px;
-  text-align:right;
-}
-#toolbar span a, #toolbar span span {
+#section_list a, #section_list span {
   *display:inline;
   zoom:1;
-  font-size:8px;/* 以上解决 ie6 显示问题 */
+  font-size:6px;/* 以上解决 ie6 显示问题 */
   display:inline-block;
   width:45px;
   height:8px;
   border:0;
   margin:0 2px;
+  _margin-top:5px;
   background: #d5d5d5;
 }
-#toolbar span a:hover {
-  background:#999;
+#section_list a:hover {
+  background:#aaa;
 }
-#toolbar span span {
+#section_list span {
   background:red;
 }
 #merchant {
   float:left;
   border:0;
+  line-height:28px;
 }
 #merchant span {
   border-bottom:1px solid #666;
 }
 #merchant:hover span {
   border-color:#111;
+}
+#merchant_list {
+  padding:0 0 10px 5px;
 }
 #merchant_list a, #merchant_list .current {
   float:left;
@@ -113,195 +115,39 @@ ol .current {
   overflow:hidden;
 }
 #merchant_list a:hover {
-  border-color:#999;
+  border-color:#aaa;
 }
 #merchant_list .current {
   border-color:red;
 }
 #merchant_list a img, #merchant_list .current img {
   width:110px;
-  _margin-bottom:10px;
+  _margin-bottom:5px;
 }
-
-/*////////////////////////////////////////////////*/
-
-
-#title {
-  width: 100%;
-background: #fff;
-  padding-bottom: 4px;
+#scroll {
+  width:20px;
 }
-#activity {
-  width:760px;
-  text-align:center;
-  color:#888;
-  background:#fff;
-  border:1px solid #e5e5e5;
-  box-shadow:0 0 3px #e1e1e1;
-}
-.image_link {
-  border:0;
-}
-#activity img {
-  width:740px;
-  height:300px;
-  margin-top:10px;
-}
-#toolbar .left {
+#scroll a {
   float:left;
-}
-#toolbar .right {
-  margin-right:0;
-  float:right;
-  border:1px solid #e5e5e5;
-  padding:4px 8px;
-  background:url(/+/img/screen.png) 0 -70px repeat-x;
-  border-radius:3px;
-}
-#toolbar .right:hover {
-  cursor:pointer;
-  color:#fff;
-  border-color:#06c;
-  background:#06c;
-}
-#title a {
-  float:right;
-  margin-right:10px;
-}
-#title a {
+  width:15px;
+  height:28px;
+  padding:0;
   border:0;
-}
-#title a span {
-  border-bottom:1px solid #555;
-}
-#title .page {
-  display:inline-block;
-  color:#555;
-  border:0;
-  font-size:12px;
-}
-#title .page {
-  display: block;
-  width: 80%;
-  margin-left: 85px;
-}
-#title .page span {
-  *display:inline;
-  zoom:1;
-  font-size:8px;/* 以上解决 ie6 显示问题 */
-  display:inline-block;
-  width:45px;
-  height:8px;
-  border:0;
-  margin:0 2px;
-  background: #d5d5d5;
-  border-radius:0;
-}
-#title .page span:hover {
-  background:#999;
-  cursor:pointer;
-}
-#title .page .current {
-  background:red;
-}
-#title .page span.curent2:hover {
-  background:red;
-  cursor:normal;
-}
-#title .page span.next {
-  height:16px;
-  line-height:16px;
-  width:45px;
-  font-size:14px;
-  background:#fff;
-  border:1px solid #d5d5d5;
-  background:url(/+/img/screen.png) 0 -70px repeat-x;
+  margin:3px 0 0 4px;
+  background:#e5e5e5 url(/+/img/up.png) 4px 12px no-repeat;
   border-radius:2px;
 }
-#title .page span.next:hover {
-  border-color:#aaa;
-  color:#111;
+#scroll a:hover {
+  background-color:#ddd;
+  background-image:url(/+/img/up_hover.png);
 }
-h2 {
-  font-size:14px;
-  padding:0;
-  width:100%;
+#scroll #down {
+  background-image:url(/+/img/down.png);
 }
-#list_wrapper {
-  padding-left:17px;
-  float:right;
-  margin-right:10px;
+#scroll #down:hover {
+  background-image:url(/+/img/down_hover.png);
 }
-#list_wrapper .move {
-  display:inline-block;
-  background:#eee url(/+/img/more.png) 4px 27px no-repeat;
-  padding:5px;
-  margin-left:2px;
-  height:48px;
-  width:5px;
-  margin-top:4px;
-}
-#list_wrapper .move:hover {
-  background:#e5e5e5 url(/+/img/more_hover.png) 4px 27px no-repeat;
-  color:#fff;
-  cursor:pointer;
-}
-table {
-  border-collapse:collapse;
-}
-td {
-  padding:0;/* chrome 默认 1px */
-}
-td a {
-  display:block;
-  padding:15px 0 8px 0;
-  margin:2px;
-  width:142px;
-  text-align:center;
-  background:#fff;
-  color:#888;
-  border:0;
-  border-bottom:3px solid;
-  border-color:#ddd;
-  overflow:hidden;
-}
-td a.current2, td a.current2:hover {
-  border-color:red;
-  cursor:default;
-}
-td a:hover {
-  border-color:#aaa;
-}
-td a img {
-  width:110px;
-  _margin-bottom:10px;
-}
-td span {
-  display:block;
-  line-height:14px;
-}
-td a:hover span {
-  color:#111;
-}
-#more {
-  float:right;
-  height:21px;
-  margin:10px 350px 0 0;
-  padding-right:12px;
-  background:url(/+/img/screen.png) -77px -106px;
-  border:0;
-}
-#more:hover {
-  background-position:-247px -106px;
-}
-#more span {
-  font-size:14px;
-  border-bottom:1px solid #666;
-}
-#more:hover span {
-  border-color:#111;
-}
-#pagination {
-  float:right;
-  width:740px;
+#scroll .full {
+  height:60px;
+  background-position:4px 28px;
 }
