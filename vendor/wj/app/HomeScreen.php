@@ -122,10 +122,10 @@ class HomeScreen extends Screen {
   }
 
   private function renderScroll() {
-    echo '<div id="scroll_up"></div><div id="scroll_down"></div>';
+    echo '<div id="up"></div><div id="down"></div>';
   }
 
   private function addJsConfig() {
-    $this->addJs('var home = {merchant_list:"adf"};');
+    $this->addJs('var home = { merchant_list:"adf" };');
   }
 }
