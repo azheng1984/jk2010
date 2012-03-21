@@ -48,9 +48,84 @@ ol .current {
   border-radius:3px;
 }
 #slideshow {
-  width:760px;
   margin-top:10px;
+  padding:10px 10px 5px 10px;
+  border:1px solid #e5e5e5;
+  box-shadow:0 0 3px #e1e1e1;
+  background:#fff;
 }
+#slide {
+  display:block;
+  width:740px;
+  height:300px;
+  border:0;
+}
+#slide img {
+  width:740px;
+  height:300px;
+}
+#merchant_list {
+  float:right;
+  width:765px;
+  padding-bottom:10px;
+}
+#toolbar {
+  width:100%;
+  padding-top:5px;
+  text-align:right;
+}
+#toolbar span a, #toolbar span span {
+  *display:inline;
+  zoom:1;
+  font-size:8px;/* 以上解决 ie6 显示问题 */
+  display:inline-block;
+  width:45px;
+  height:8px;
+  border:0;
+  margin:0 2px;
+  background: #d5d5d5;
+}
+#toolbar span a:hover {
+  background:#999;
+}
+#toolbar span span {
+  background:red;
+}
+#merchant {
+  float:left;
+  border:0;
+}
+#merchant span {
+  border-bottom:1px solid #666;
+}
+#merchant:hover span {
+  border-color:#111;
+}
+#merchant_list a, #merchant_list .current {
+  float:left;
+  padding:15px 0 8px 0;
+  margin:2px;
+  width:142px;
+  text-align:center;
+  background:#fff;
+  color:#888;
+  border-bottom:3px solid #ddd;
+  overflow:hidden;
+}
+#merchant_list a:hover {
+  border-color:#999;
+}
+#merchant_list .current {
+  border-color:red;
+}
+#merchant_list a img, #merchant_list .current img {
+  width:110px;
+  _margin-bottom:10px;
+}
+
+/*////////////////////////////////////////////////*/
+
+
 #title {
   width: 100%;
 background: #fff;
@@ -71,18 +146,6 @@ background: #fff;
   width:740px;
   height:300px;
   margin-top:10px;
-}
-#toolbar {
-  width:100%;
-  padding-top:10px;
-  text-align:center;
-  color:#999;
-}
-#toolbar span {
-  border-bottom:1px solid #555;
-  line-height:15px;
-  color:#555;
-  margin:0 10px;
 }
 #toolbar .left {
   float:left;
