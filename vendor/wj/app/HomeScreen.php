@@ -96,14 +96,14 @@ class HomeScreen extends Screen {
   }
 
   private function renderSlide() {
-    echo '<div id="slide">',
-      '<a href="http://www.360buy.com/"><img src="/+/img/slide.jpg"/></a>',
-      '</div>';
+    echo '<a id="slide" href="http://www.360buy.com/">',
+      '<img src="/+/img/slide.jpg"/></a>';
   }
 
   private function renderToolbar() {
     echo '<div id="toolbar">',
-      '<a href="?index=1"></a><a href="?index=2"></a>',
+      '<span><span></span>',
+      '<a href="?index=2"></a></span>',
       '<a id="merchant" href="">@<span>京东商城</span></a>',
       '</div>';
   }
@@ -116,8 +116,11 @@ class HomeScreen extends Screen {
   }
 
   private function renderMerchant() {
+    echo '<span class="current">',
+    '<img src="/+/img/logo/360buy.png"/>',
+    '</span>';
     echo '<a href="?merchant_id=1">',
-      '<img src="/+/img/logo/360buy.png"/><span>京东商城</span>',
+      '<img src="/+/img/logo/360buy.png"/>',
       '</a>';
   }
 
@@ -126,6 +129,6 @@ class HomeScreen extends Screen {
   }
 
   private function addJsConfig() {
-    $this->addJs('merchant_list: "adf"');
+    $this->addJs('huobiwanjia.home.merchant_list = "adf";');
   }
 }

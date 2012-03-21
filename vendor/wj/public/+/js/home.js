@@ -1,3 +1,4 @@
+huobiwanjia.home = {};
 /* focus input
  *****************************/
 $(function() {

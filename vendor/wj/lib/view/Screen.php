@@ -2,14 +2,14 @@
 abstract class Screen extends EtagView {
   private $jsList = array();
   private $cssList = array();
-  private $js = array();
+  private $js = '';
   private $stop = false;
 
   abstract protected function renderHtmlHeadContent();
   abstract protected function renderHtmlBodyContent();
 
   public function addJs($js) {
-    $this->js[] = $js;
+    $this->js .= $js;
   }
 
   protected function addCssLink($name) {
@@ -129,9 +129,8 @@ abstract class Screen extends EtagView {
   }
 
   private function renderJs() {
-    if (count($this->js) !== 0) {
-      echo '<script type="text/javascript">var huobiwanjia = { ',
-        implode(',', $this->js), ' };</script>';
+    if ($this->js !== '') {
+      echo '<script type="text/javascript">', $this->js, '</script>';
     }
   }
 }
