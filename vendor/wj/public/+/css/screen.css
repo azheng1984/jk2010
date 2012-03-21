@@ -157,6 +157,7 @@ input:focus {
   margin:1px;
   background:#06c;
   color:#fff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 #pagination span {
   padding:3px 7px;
@@ -165,4 +166,5 @@ input:focus {
   border-radius:3px;
   background-color:red;
   color:#fff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
