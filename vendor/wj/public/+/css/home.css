@@ -67,11 +67,11 @@ ol .current {
   width:740px;
   height:300px;
 }
-#section_list {
+#slide_list {
   padding-top:6px;
   float:right;
 }
-#section_list a, #section_list span {
+#slide_list a, #slide_list span {
   *display:inline;
   zoom:1;
   font-size:6px;/* 以上解决 ie6 显示问题 */
@@ -83,10 +83,10 @@ ol .current {
   _margin-top:5px;
   background: #d1d1d1;
 }
-#section_list a:hover {
+#slide_list a:hover {
   background:#aaa;
 }
-#section_list span {
+#slide_list span {
   background:red;
 }
 #merchant {
