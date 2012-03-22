@@ -4,9 +4,15 @@ huobiwanjia.home = {};
 $(function() {
   $('#header input').focus();
 });
+
 /*
- * slideshow
+ * slide list
  *****************************/
+$(function() {
+  $('#slide_list a').each(function() {
+    alert($(this).attr('href'));
+  });
+});
 
 /* merchant list
  *****************************/
