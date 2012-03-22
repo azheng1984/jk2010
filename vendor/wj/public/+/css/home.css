@@ -92,6 +92,10 @@ ol .current {
 #merchant {
   border:0;
   line-height:30px;
+  color:#888;
+}
+#merchant:hover {
+  color:#111;
 }
 #merchant span {
   border-bottom:1px solid #888;
@@ -113,7 +117,7 @@ ol .current {
   border:1px solid #eee;
   border-top:0;
   box-shadow:0 1px 3px #ddd;
-  border-radius:0 0 3px 3px;
+  border-radius:0 0 5px 5px;
 }
 #merchant_list a:hover {
   border-color:#d5d5d5;

@@ -231,6 +231,7 @@ h2 a:hover {
 }
 #related a {
   color:#06c;
+  font-size:14px;
   border:0;
 }
 #related a:hover {
