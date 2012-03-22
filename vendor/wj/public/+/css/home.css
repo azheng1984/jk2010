@@ -104,7 +104,7 @@ ol .current {
 }
 #merchant_list a, #merchant_list .current {
   float:left;
-  padding:15px 0 8px 0;
+  padding:13px 0 8px 0;
   margin:0 2px;
   width:138px;
   text-align:center;
@@ -113,12 +113,13 @@ ol .current {
   border:1px solid #eee;
   border-top:0;
   box-shadow:0 1px 3px #ddd;
+  border-radius:0 0 3px 3px;
 }
 #merchant_list a:hover {
   border-color:#d5d5d5;
 }
 #merchant_list .current {
-  padding-top:16px;
+  padding-top:14px;
   border-color:#d5d5d5;
   margin-top:-1px;
   position:relative;/* ie6 默认 z-index 和顺序相反 */
@@ -133,7 +134,7 @@ ol .current {
 #scroll a {
   float:left;
   width:15px;
-  height:26px;
+  height:25px;
   padding:0;
   border:0;
   margin:3px 0 0 4px;
@@ -151,6 +152,6 @@ ol .current {
   background-image:url(/+/img/down_hover.png);
 }
 #scroll .full {
-  height:56px;
+  height:55px;
   background-position:4px 26px;
 }
