@@ -106,22 +106,25 @@ ol .current {
   float:left;
   padding:15px 0 8px 0;
   margin:0 2px;
-  width:142px;
+  width:140px;
   text-align:center;
   background-color:#fff;
   color:#888;
-  border-bottom:3px solid #ddd;
+  border-bottom:1px solid #eee;
+  border-left:1px solid #eee;
+  border-right:1px solid #eee;
   box-shadow:0 1px 3px #ddd;
 }
 #merchant_list a:hover {
-  border-color:#aaa;
+  border-color:#ddd;
 }
 #merchant_list .current {
   padding-top:16px;
   border-left:1px solid #ddd;
   border-right:1px solid #ddd;
+  border-bottom:1px solid #ddd;
   margin-top:-1px;
-  position:relative;
+  position:relative;/* ie6 默认 z-index 和顺序相反 */
 }
 #merchant_list a img, #merchant_list .current img {
   width:110px;
