@@ -109,10 +109,10 @@ class HomeScreen extends Screen {
 
   private function renderToolbar() {
     echo '<span id="section_list"><span></span>',
-    '<a href="?index=2"></a>',
-    '<a href="?index=2"></a>',
-    '<a href="?index=2"></a>',
-    '<a href="?index=2"></a>',
+      '<a href="?index=2"></a>',
+      '<a href="?index=2"></a>',
+      '<a href="?index=2"></a>',
+      '<a href="?index=2"></a>',
       '</span><a id="merchant" href="">@<span>京东商城</span></a>';
   }
 
