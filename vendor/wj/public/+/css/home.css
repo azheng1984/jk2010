@@ -111,7 +111,7 @@ ol .current {
   background:#fff;
   color:#888;
   border-bottom:3px solid #ddd;
-  overflow:hidden;
+  box-shadow:0 0 3px #ddd;
 }
 #merchant_list a:hover {
   border-color:#aaa;
