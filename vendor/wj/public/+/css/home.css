@@ -53,8 +53,8 @@ ol .current {
 #slide_wrapper {
   margin-top:10px;
   padding:10px 10px 2px 10px;
-  border:1px solid #ddd;
-  box-shadow:0 0 3px #e1e1e1;
+  border:1px solid #d5d5d5;
+  box-shadow:0 0 3px #ddd;
   background:#fff;
 }
 #slide {
@@ -100,29 +100,26 @@ ol .current {
   border-color:#111;
 }
 #merchant_list {
-  padding:0 0 10px 5px;
+  padding:0 0 10px 10px;
 }
 #merchant_list a, #merchant_list .current {
   float:left;
   padding:15px 0 8px 0;
   margin:0 2px;
-  width:140px;
+  width:138px;
   text-align:center;
   background-color:#fff;
   color:#888;
-  border-bottom:1px solid #eee;
-  border-left:1px solid #eee;
-  border-right:1px solid #eee;
+  border:1px solid #eee;
+  border-top:0;
   box-shadow:0 1px 3px #ddd;
 }
 #merchant_list a:hover {
-  border-color:#ddd;
+  border-color:#d5d5d5;
 }
 #merchant_list .current {
   padding-top:16px;
-  border-left:1px solid #ddd;
-  border-right:1px solid #ddd;
-  border-bottom:1px solid #ddd;
+  border-color:#d5d5d5;
   margin-top:-1px;
   position:relative;/* ie6 默认 z-index 和顺序相反 */
 }

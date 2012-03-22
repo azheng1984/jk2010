@@ -16,5 +16,5 @@ function trackPageview() {
 /* page tracking
  *****************************/
 $(function() {
-  trackPageview();
+  //trackPageview();
 });
