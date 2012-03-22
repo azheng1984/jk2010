@@ -108,7 +108,7 @@ class HomeScreen extends Screen {
   }
 
   private function renderToolbar() {
-    echo '<span id="section_list"><span></span>',
+    echo '<span id="slide_list"><span></span>',
       '<a href="?index=2"></a>',
       '<a href="?index=2"></a>',
       '<a href="?index=2"></a>',
