@@ -137,8 +137,8 @@ class HomeScreen extends Screen {
   }
 
   private function renderScroll() {
-    echo '<div id="scroll"><a id="up" href="?page=1"></a>',
-      '<a id="down" href="?page=2"></a></div>';
+    echo '<div id="scroll">',
+      '<a id="down" class="full" href="?page=2"></a></div>';
   }
 
   private function addJsConfig() {

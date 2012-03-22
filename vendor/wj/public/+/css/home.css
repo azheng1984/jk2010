@@ -133,11 +133,11 @@ ol .current {
 #scroll a {
   float:left;
   width:15px;
-  height:28px;
+  height:26px;
   padding:0;
   border:0;
   margin:3px 0 0 4px;
-  background:#e5e5e5 url(/+/img/up.png) 4px 12px no-repeat;
+  background:#e5e5e5 url(/+/img/up.png) 4px 11px no-repeat;
   border-radius:2px;
 }
 #scroll a:hover {
@@ -151,6 +151,6 @@ ol .current {
   background-image:url(/+/img/down_hover.png);
 }
 #scroll .full {
-  height:60px;
-  background-position:4px 28px;
+  height:56px;
+  background-position:4px 26px;
 }
