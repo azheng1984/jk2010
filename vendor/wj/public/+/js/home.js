@@ -10,7 +10,6 @@ $(function() {
  *****************************/
 $(function() {
   $('#slide_list a').each(function() {
-    alert($(this).attr('href'));
   });
 });
 
