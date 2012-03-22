@@ -53,7 +53,7 @@ ol .current {
 #slide_wrapper {
   margin-top:10px;
   padding:10px 10px 2px 10px;
-  border:1px solid #e5e5e5;
+  border:1px solid #ddd;
   box-shadow:0 0 3px #e1e1e1;
   background:#fff;
 }
@@ -105,19 +105,23 @@ ol .current {
 #merchant_list a, #merchant_list .current {
   float:left;
   padding:15px 0 8px 0;
-  margin:2px;
+  margin:0 2px;
   width:142px;
   text-align:center;
-  background:#fff;
+  background-color:#fff;
   color:#888;
   border-bottom:3px solid #ddd;
-  box-shadow:0 0 3px #ddd;
+  box-shadow:0 1px 3px #ddd;
 }
 #merchant_list a:hover {
   border-color:#aaa;
 }
 #merchant_list .current {
-  border-color:red;
+  padding-top:16px;
+  border-left:1px solid #ddd;
+  border-right:1px solid #ddd;
+  margin-top:-1px;
+  position:relative;
 }
 #merchant_list a img, #merchant_list .current img {
   width:110px;
