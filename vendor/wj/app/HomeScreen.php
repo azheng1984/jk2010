@@ -76,7 +76,7 @@ class HomeScreen extends Screen {
 
   private function renderMerchantTypeList() {
     $path = $GLOBALS['MERCHANT_TYPE_CONFIG']['path'];
-    echo '<ol>';
+    echo '<ol id="category">';
     foreach ($GLOBALS['HOME_CONFIG']['merchant_type_list'] as $key => $value) {
       if ($key === $path) {
         echo '<li class="current">', $value[1], '</li>';
@@ -103,7 +103,7 @@ class HomeScreen extends Screen {
   }
 
   private function renderSlide() {
-    echo '<a id="slide" href="http://www.360buy.com/">',
+    echo '<a id="slide" href="http://www.360buy.com/" target="_blank">',
       '<img src="/+/img/slide.jpg"/></a>';
   }
 
@@ -113,7 +113,8 @@ class HomeScreen extends Screen {
       '<a href="?index=2"></a>',
       '<a href="?index=2"></a>',
       '<a href="?index=2"></a>',
-      '</span><a id="merchant" href="">@<span>京东商城</span></a>';
+      '</span><a id="merchant" href="http://www.360buy.com/" target="_blank">',
+      '@<span>京东商城</span></a>';
   }
 
   private function renderMerchantList() {
@@ -142,6 +143,6 @@ class HomeScreen extends Screen {
   }
 
   private function addJsConfig() {
-    $this->addJs('huobiwanjia.home.slideshow = "";');
+    $this->addJs('huobiwanjia.home.slideshow = {};');
   }
 }
