@@ -53,7 +53,6 @@ $(function() {
       $('#slide img').fadeOut("slow", function() {
         $(this).remove();
       });
-//      $('#slide img').remove();
       $('#slide').append('<img class="new" style="display:none"'
         + ' src="http://img13.360buyimg.com/da/20120322/670_240_IGhuNK.jpg"/>');
       $('#slide .new').fadeIn('slow');
@@ -113,7 +112,7 @@ $(function() {
     $('#merchant_list').css('overflow', 'hidden');
     $('#merchant_list').html('<div id="current">' + $('#merchant_list').html() +
       '</div><div id="next">'
-        + '<a href="?merchant_id=1"><img src="/+/img/logo/360buy.png"/></a>'
+        + '<span class="item"><img src="/+/img/logo/360buy.png"/></span>'
         + '<a href="?merchant_id=1"><img src="/+/img/logo/360buy.png"/></a>'
         + '<a href="?merchant_id=1"><img src="/+/img/logo/360buy.png"/></a>'
         + '<a href="?merchant_id=1"><img src="/+/img/logo/360buy.png"/></a>'
@@ -122,6 +121,8 @@ $(function() {
     $('#current').animate({"top":'-=69px'}, 'slow');
     $('#next').animate({'top':'-=69px'}, 'slow', function() {
       $('#merchant_list').html($('#next').html());
+      $('#merchant_list span').attr('class', 'current');
+      $('#merchant_list').css('overflow', 'visible');
     });
     
   });
