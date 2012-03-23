@@ -5,7 +5,7 @@ class HomeScreen extends Screen {
       && $GLOBALS['PAGE'] !== 1) {
       $this->stop();
       header('HTTP/1.1 301 Moved Permanently');
-      Header('Location: '.$GLOBALS['MERCHANT_TYPE_CONFIG']['path']);
+      Header('Location: '.$GLOBALS['MERCHANT_TYPE']['path']);
     }
     $this->parseMerchantId();
     $this->parseSlideIndex();
