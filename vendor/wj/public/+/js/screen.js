@@ -1,6 +1,10 @@
 var huobiwanjia = {};
+
 /* search suggestion
  *****************************/
+$(function() {
+  $('#header input').attr('autocomplete', 'off');
+});
 
 /* tracking function
  *****************************/

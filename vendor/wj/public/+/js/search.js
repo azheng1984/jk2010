@@ -1,4 +1,5 @@
 huobiwanjia.search = {};
+
 /* price range
  *****************************/
 

@@ -1,7 +1,7 @@
 <?php
 class HomeScreen extends Screen {
   public function __construct() {
-    if (count($GLOBALS['MERCHANT_SLIDE_LIST']) === 0
+    if (count($GLOBALS['SLIDESHOW']) === 0
       && $GLOBALS['PAGE'] !== 1) {
       $this->stop();
       header('HTTP/1.1 301 Moved Permanently');
@@ -32,11 +32,11 @@ class HomeScreen extends Screen {
 
   protected function renderHtmlHeadContent() {
     echo '<title>';
-    if (isset($GLOBALS['MERCHANT_TYPE'])) {
+    if ($GLOBALS['MERCHANT_TYPE']['path'] !== '/') {
       echo $GLOBALS['MERCHANT_TYPE'][1], '-';
     }
     echo '货比万家</title>';
-    if (isset($GLOBALS['MERCHANT_TYPE']) === false) {
+    if ($GLOBALS['MERCHANT_TYPE']['path'] === '/') {
       echo '<meta name="description" content="货比万家购物搜索引擎，',
         '商品信息100%来自公司经营（B2C）的正规商店-网上购物，货比万家！"/>';
     }
@@ -64,7 +64,7 @@ class HomeScreen extends Screen {
     echo '<ul>';
     foreach ($GLOBALS['HOME_CONFIG']['query_list'] as $query) {
       echo '<li><a href="/', urlencode($query[0]), '/">',
-      $query[1], '</a> ', $query[2], '</li>';
+        $query[1], '</a> ', $query[2], '</li>';
     }
     echo '<li class="ellipsis">…</li></ul>';
   }
@@ -75,7 +75,7 @@ class HomeScreen extends Screen {
   }
 
   private function renderMerchantTypeList() {
-    $path = $GLOBALS['MERCHANT_TYPE_CONFIG']['path'];
+    $path = $GLOBALS['MERCHANT_TYPE']['path'];
     echo '<ol id="category">';
     foreach ($GLOBALS['HOME_CONFIG']['merchant_type_list'] as $key => $value) {
       if ($key === $path) {
@@ -108,33 +108,14 @@ class HomeScreen extends Screen {
   }
 
   private function renderToolbar() {
-    echo '<span id="slide_list"><span></span>',
-      '<a href="?index=2"></a>',
-      '<a href="?index=2"></a>',
-      '<a href="?index=2"></a>',
-      '<a href="?index=2"></a>',
-      '</span><a id="merchant" href="http://www.360buy.com/" target="_blank">',
+    echo '<span id="slide_list"></span>',
+      '<a id="merchant" href="http://www.360buy.com/" target="_blank">',
       '@<span>京东商城</span></a>';
   }
 
   private function renderMerchantList() {
-    echo '<div id="merchant_list">';
-    echo '<span class="current">',
-    '<img src="/+/img/logo/360buy.png"/>',
-    '</span>';
-    echo '<a href="?merchant_id=1">',
-      '<img src="/+/img/logo/360buy.png"/>',
-      '</a>';
-    echo '<a href="?merchant_id=1">',
-    '<img src="/+/img/logo/360buy.png"/>',
-    '</a>';
-    echo '<a href="?merchant_id=1">',
-    '<img src="/+/img/logo/360buy.png"/>',
-    '</a>';
-    echo '<a href="?merchant_id=1">',
-    '<img src="/+/img/logo/360buy.png"/>',
-    '</a>';
-    echo '</div>';
+    echo '<div id="merchant_list">',
+      '</div>';
   }
 
   private function renderScroll() {
