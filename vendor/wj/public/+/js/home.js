@@ -106,6 +106,7 @@ $(function() {
     $(this).removeClass('hover');
   });
   $('#down').click(function() {
+    $('#merchant_list .current').attr('class', 'item');
     $('#merchant_list').css('position', 'relative');//修正 ie6 hidden 无效的 bug
     $('#merchant_list').css('overflow', 'hidden');
     $('#merchant_list').html('<div id="current">' + $('#merchant_list').html() +
