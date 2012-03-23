@@ -58,19 +58,18 @@ ol .current {
   background:#fff;
 }
 #slide {
+  position:relative;
   float:left;
   width:740px;
   height:300px;
   border:0;
-  position:relative;
-  overflow:hidden;/* for debug only */
 }
 #slide img {
-  width:740px;
-  height:300px;
   position:absolute;
   top:0;
   left:0;
+  width:740px;
+  height:300px;
 }
 #slide_list {
   padding-top:6px;
@@ -119,7 +118,6 @@ ol .current {
   padding-left:10px;
   height: 70px;
   width: 720px;
-  /* overflow: hidden;*/
 }
 #merchant_list a, #merchant_list .current, #merchant_list .item {
   float:left;
@@ -180,6 +178,6 @@ ol .current {
   background-image:url(/+/img/down_hover.png);
 }
 #scroll .full {
-  height:53px;
+  height:52px;
   background-position:4px 25px;
 }

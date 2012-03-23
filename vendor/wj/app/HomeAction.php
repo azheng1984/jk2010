@@ -4,7 +4,7 @@ class HomeAction {
     $GLOBALS['HOME_CONFIG'] = require CONFIG_PATH.'home.config.php';
     $this->parseMerchantType();
     $this->parsePage();
-    $this->buildMerchantSlideList();
+    $this->buildSlideshow();
   }
 
   private function parseMerchantType() {
@@ -15,9 +15,9 @@ class HomeAction {
     if (isset($GLOBALS['HOME_CONFIG']['merchant_type_list'][$path]) === false) {
       throw new NotFoundException;
     }
-    $GLOBALS['MERCHANT_TYPE_CONFIG'] =
+    $GLOBALS['MERCHANT_TYPE'] =
       $GLOBALS['HOME_CONFIG']['merchant_type_list'][$path];
-    $GLOBALS['MERCHANT_TYPE_CONFIG']['path'] = $path;
+    $GLOBALS['MERCHANT_TYPE']['path'] = $path;
   }
 
   private function parsePage() {
@@ -29,17 +29,17 @@ class HomeAction {
     $GLOBALS['PAGE'] = intval($_GET['page']);
   }
 
-  private function buildMerchantSlideList() {
+  private function buildSlideshow() {
     if ($GLOBALS['PAGE'] === 1
-      && $GLOBALS['MERCHANT_TYPE_CONFIG']['path'] === '/') {
-      $GLOBALS['MERCHANT_SLIDE_LIST'] =
-        $GLOBALS['HOME_CONFIG']['merchant_slide_list'];
+      && $GLOBALS['MERCHANT_TYPE']['path'] === '/') {
+      $GLOBALS['SLIDESHOW'] =
+        $GLOBALS['HOME_CONFIG']['slideshow'];
       return;
     }
-    $GLOBALS['MERCHANT_SLIDE_LIST'] = DbMerchantSlide::getList(
-      $GLOBALS['MERCHANT_TYPE_CONFIG'][0], $GLOBALS['PAGE']
+    $GLOBALS['SLIDESHOW'] = DbMerchantSlide::getList(
+      $GLOBALS['MERCHANT_TYPE'][0], $GLOBALS['PAGE']
     );
-    foreach ($GLOBALS['MERCHANT_SLIDE_LIST'] as &$merchant) {
+    foreach ($GLOBALS['SLIDESHOW'] as &$merchant) {
       $merchant['slide_list'] = explode(' ', $merchant['list']);
     }
   }
