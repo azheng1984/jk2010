@@ -4,17 +4,17 @@ var huobiwanjia = {};
 
 /* tracking function
  *****************************/
-function trackPageview() {
+huobiwanjia.trackPageview = function() {
   $.ajax({
     url:'http://tracking.' + document.domain + '/',
     cache:true,
     dataType:'jsonp',
     jsonp:false
   });
-}
+};
 
 /* page tracking
  *****************************/
 $(function() {
-  //trackPageview();
+  //huobiwanjia.trackPageview();
 });
