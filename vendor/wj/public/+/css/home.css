@@ -5,7 +5,7 @@
 }
 #slogon {
   width:100%;
-  padding-top:8px;
+  padding-top:10px;
   border-bottom:1px solid #e5e5e5;
   background:#ffffe8;
   box-shadow:0 1px 2px #e8e8e8;
@@ -16,7 +16,7 @@
   color:#000;
 }
 #slogon ul {
-  padding:0 0 6px 15px;
+  padding:0 0 10px 15px;
   clear:left;
 }
 #slogon li {
@@ -62,10 +62,15 @@ ol .current {
   width:740px;
   height:300px;
   border:0;
+  position:relative;
+  overflow:hidden;/* for debug only */
 }
 #slide img {
   width:740px;
   height:300px;
+  position:absolute;
+  top:0;
+  left:0;
 }
 #slide_list {
   padding-top:6px;
@@ -111,7 +116,10 @@ ol .current {
   border-color:#111;
 }
 #merchant_list {
-  padding:0 0 10px 10px;
+  padding-left:10px;
+  height: 70px;
+  width: 720px;
+  /* overflow: hidden;*/
 }
 #merchant_list a, #merchant_list .current, #merchant_list .item {
   float:left;
@@ -129,6 +137,7 @@ ol .current {
 #merchant_list a:hover, #merchant_list .hover {
   border-color:#d1d1d1;
   cursor:pointer;
+  box-shadow:0 1px 3px #ddd;
 }
 #merchant_list .current {
   padding-top:14px;
@@ -140,6 +149,12 @@ ol .current {
 #merchant_list a img, #merchant_list .current img, #merchant_list .item img {
   width:110px;
   _margin-bottom:5px;
+}
+#merchant_list div {
+  position:relative;
+}
+#next {
+  padding-top:10px;
 }
 #scroll {
   width:20px;
