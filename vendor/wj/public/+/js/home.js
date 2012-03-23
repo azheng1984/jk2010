@@ -53,7 +53,9 @@ $(function() {
       $('#slide img').fadeOut("slow", function() {
         $(this).remove();
       });
-      $('#slide').append('<img class="new" style="display:none" src="http://img13.360buyimg.com/da/20120322/670_240_IGhuNK.jpg"/>');
+//      $('#slide img').remove();
+      $('#slide').append('<img class="new" style="display:none"'
+        + ' src="http://img13.360buyimg.com/da/20120322/670_240_IGhuNK.jpg"/>');
       $('#slide .new').fadeIn('slow');
       $('#slide').attr('href', 'http://wop.360buy.com/p3243.html');
       $('#slide_list .current').attr('class', 'item');
