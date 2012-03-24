@@ -72,20 +72,18 @@ ol .current {
   height:300px;
 }
 #slide_list {
-  padding-top:6px;
+  padding-top:6px;/* ie6 line-height 无法垂直居中 */
   float:right;
 }
 #slide_list a, #slide_list span {
-  *display:inline;
-  zoom:1;
-  font-size:6px;/* 以上解决 ie6 inline-block 高度问题 */
   display:inline-block;
+  font-size:6px;/* 以上解决 ie6 inline-block 高度问题 */
   width:45px;
   height:8px;
   border:0;
   margin:0 2px;
   _margin-top:5px;
-  background: #d1d1d1;
+  background:#d1d1d1;
 }
 #slide_list a:hover {
   background:#aaa;
@@ -101,6 +99,7 @@ ol .current {
   background:red;
 }
 #merchant {
+  float:left;
   border:0;
   line-height:30px;
   color:#888;

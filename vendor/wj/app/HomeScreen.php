@@ -177,9 +177,9 @@ class HomeScreen extends Screen {
       $previousClass = '';
     }
     echo '<div id="scroll">';
-      if ($previous !== null) {
-      echo '<a id="previous"', $previousClass,
-        ' href="?page=', $previous, '"></a>';
+    if ($previous !== null) {
+      $href = $previous === 1 ? '/' : '?page='.$previous;
+      echo '<a id="previous"', $previousClass, ' href="', $href, '"></a>';
     }
     if ($next !== null) {
       echo '<a', $nextClass, ' href="?page=', $next, '"></a>';
