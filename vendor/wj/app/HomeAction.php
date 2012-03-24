@@ -36,11 +36,14 @@ class HomeAction {
         $GLOBALS['HOME_CONFIG']['slideshow'];
       return;
     }
-    $GLOBALS['SLIDESHOW'] = DbMerchantSlide::getList(
+    $slideshow = DbMerchantSlide::getList(
       $GLOBALS['MERCHANT_TYPE'][0], $GLOBALS['PAGE']
     );
-    foreach ($GLOBALS['SLIDESHOW'] as &$merchant) {
-      $merchant['slide_list'] = explode(' ', $merchant['list']);
+    $GLOBALS['SLIDESHOW'] = array();
+    foreach ($slideshow as $item) {
+      $GLOBALS['SLIDESHOW'][$item['id']] = $item;
+      $GLOBALS['SLIDESHOW'][$item['id']]['slide_list'] =
+        explode(' ', $item['list']);
     }
   }
 }
