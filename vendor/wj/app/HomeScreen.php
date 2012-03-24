@@ -1,5 +1,8 @@
 <?php
 class HomeScreen extends Screen {
+  private $slideIndex;
+  private $merchantId;
+
   public function __construct() {
     if (count($GLOBALS['SLIDESHOW']) === 0
       && $GLOBALS['PAGE'] !== 1) {
@@ -7,27 +10,6 @@ class HomeScreen extends Screen {
       header('HTTP/1.1 301 Moved Permanently');
       Header('Location: '.$GLOBALS['MERCHANT_TYPE']['path']);
     }
-    $this->parseMerchantId();
-    $this->parseSlideIndex();
-  }
-
-  private function parseSlideIndex() {
-    if (isset($_GET['index']) === false
-      || is_numeric($_GET['index']) === false
-      || $_GET['index'] < 1) {
-      $GLOBALS['SLIDE_INDEX'] = 1;
-      return;
-    }
-    $GLOBALS['SLIDE_INDEX'] = intval($_GET['index']);
-  }
-
-  private function parseMerchantId() {
-    if (isset($_GET['merchant_id']) === false
-      || is_numeric($_GET['merchant_id']) === false
-      || $_GET['merchant_id'] < 1) {
-      return;
-    }
-    $GLOBALS['MERCHANT_ID'] = intval($_GET['merchant_id']);
   }
 
   protected function renderHtmlHeadContent() {
@@ -88,6 +70,8 @@ class HomeScreen extends Screen {
   }
 
   private function renderSlideshow() {
+    $this->parseMerchantId();
+    $this->parseSlideIndex();
     echo '<div id="slideshow">';
     $this->renderSlideWrapper();
     $this->renderMerchantList();
@@ -95,32 +79,104 @@ class HomeScreen extends Screen {
     echo '</div>';
   }
 
+  private function parseMerchantId() {
+    if (isset($_GET['merchant_id']) === false
+        || is_numeric($_GET['merchant_id']) === false
+        || $_GET['merchant_id'] < 1
+        || isset($GLOBALS['SLIDESHOW'][intval($_GET['merchant_id'])]) === false) {
+      $this->merchantId = key($GLOBALS['SLIDESHOW']);
+      return;
+    }
+    $this->merchantId = intval($_GET['merchant_id']);
+  }
+  
+  private function parseSlideIndex() {
+    if (isset($_GET['index']) === false
+      || is_numeric($_GET['index']) === false
+      || $_GET['index'] < 0
+      || isset($GLOBALS['SLIDESHOW'][$this->merchantId]
+        ['slide_list'][intval($_GET['index'])]) === false) {
+      $this->slideIndex = 0;
+      return;
+    }
+    $this->slideIndex = intval($_GET['index']);
+  }
+
   private function renderSlideWrapper() {
-    echo '<div id="slide_wrapper">',
+    echo '<div id="slide_wrapper">';
     $this->renderSlide();
-    $this->renderToolbar();
+    $this->renderMerchant();
+    $this->renderSlideList();
     echo '</div>';
   }
 
   private function renderSlide() {
-    echo '<a id="slide" href="http://www.360buy.com/" target="_blank">',
-      '<img src="/+/img/slide.jpg"/></a>';
+    $merchant = $GLOBALS['SLIDESHOW'][$this->merchantId];
+    $slide = $merchant['slide_list'][$this->slideIndex];
+    echo '<a id="slide" href="http://', $slide,
+      '/" target="_blank">', '<img src="/+/img/slide/',
+      $merchant['path'], '/', $this->slideIndex, '.jpg"/></a>';
   }
 
-  private function renderToolbar() {
-    echo '<span id="slide_list"></span>',
-      '<a id="merchant" href="http://www.360buy.com/" target="_blank">',
-      '@<span>京东商城</span></a>';
+  private function renderMerchant() {
+    $merchant = $GLOBALS['SLIDESHOW'][$this->merchantId];
+    echo '<a id="merchant" href="http://',
+      $merchant['uri_format'], '" target="_blank">',
+      '@<span>', $merchant['name'], '</span></a>';
+  }
+
+  private function renderSlideList() {
+    $merchant = $GLOBALS['SLIDESHOW'][$this->merchantId];
+    if (count($merchant['slide_list']) === 1) {
+      return;
+    }
+    echo '<span id="slide_list">';
+    foreach ($merchant['slide_list'] as $index => $slide) {
+      if ($index === $this->slideIndex) {
+        echo '<span></span>';
+        continue;
+      }
+      echo '<a href="?merchant_id=', $this->merchantId,
+        '&index=', $index, '"></a>';
+    }
+    echo '</span>';
   }
 
   private function renderMerchantList() {
-    echo '<div id="merchant_list">',
-      '</div>';
+    echo '<div id="merchant_list">';
+    foreach ($GLOBALS['SLIDESHOW'] as $id => $merchant) {
+      $img = '<img src="/+/img/logo/'.$merchant['path'].'.png"/>';
+      if ($id === $this->merchantId) {
+        echo '<span>', $img, '</span>';
+        continue;
+      }
+      echo '<a href="?merchant_id=', $id, '">', $img, '</a>';
+    }
+    echo '</div>';
   }
 
   private function renderScroll() {
-    echo '<div id="scroll">',
-      '<a id="down" class="full" href="?page=2"></a></div>';
+    $previous = null;
+    $next = null;
+    $previousClass = ' class="full"';
+    $nextClass = ' class="full"';
+    if ($GLOBALS['PAGE'] > 1) {
+      $previous = $GLOBALS['PAGE'] - 1;
+      $nextClass = '';
+    }
+    if ($GLOBALS['PAGE'] < $GLOBALS['MERCHANT_TYPE'][2]) {
+      $next = $GLOBALS['PAGE'] + 1;
+      $previousClass = '';
+    }
+    echo '<div id="scroll">';
+      if ($previous !== null) {
+      echo '<a id="previous"', $previousClass,
+        ' href="?page=', $previous, '"></a>';
+    }
+    if ($next !== null) {
+      echo '<a', $nextClass, ' href="?page=', $next, '"></a>';
+    }
+    echo '</div>';
   }
 
   private function addJsConfig() {
