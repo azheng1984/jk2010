@@ -131,18 +131,26 @@ class HomeScreen extends Screen {
       return;
     }
     echo '<span id="slide_list">';
+    $hrefPrefix = '?';
+    if ($GLOBALS['PAGE'] !== 1) {
+      $hrefPrefix = '?page='.$GLOBALS['PAGE'].'&';
+    }
     foreach ($merchant['slide_list'] as $index => $slide) {
       if ($index === $this->slideIndex) {
         echo '<span></span>';
         continue;
       }
-      echo '<a href="?merchant_id=', $this->merchantId,
+      echo '<a href="', $hrefPrefix , 'merchant_id=', $this->merchantId,
         '&index=', $index, '"></a>';
     }
     echo '</span>';
   }
 
   private function renderMerchantList() {
+    $hrefPrefix = '?';
+    if ($GLOBALS['PAGE'] !== 1) {
+      $hrefPrefix = '?page='.$GLOBALS['PAGE'].'&';
+    }
     echo '<div id="merchant_list">';
     foreach ($GLOBALS['SLIDESHOW'] as $id => $merchant) {
       $img = '<img src="/+/img/logo/'.$merchant['path'].'.png"/>';
@@ -150,7 +158,7 @@ class HomeScreen extends Screen {
         echo '<span>', $img, '</span>';
         continue;
       }
-      echo '<a href="?merchant_id=', $id, '">', $img, '</a>';
+      echo '<a href="', $hrefPrefix , 'merchant_id=', $id, '">', $img, '</a>';
     }
     echo '</div>';
   }
