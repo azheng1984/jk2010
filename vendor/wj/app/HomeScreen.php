@@ -161,7 +161,7 @@ class HomeScreen extends Screen {
         echo '<span>', $img, '</span>';
         continue;
       }
-      echo '<a href="', $hrefPrefix , 'merchant_id=', $id, '">', $img, '</a>';
+      echo '<a href="', $hrefPrefix, 'merchant_id=', $id, '">', $img, '</a>';
     }
     echo '</div>';
   }
@@ -191,6 +191,12 @@ class HomeScreen extends Screen {
   }
 
   private function addJsConfig() {
-    $this->addJs('huobiwanjia.home.slideshow = {};');
+    $this->addJs('huobiwanjia.home.slideshow = ['
+      .'["京东商城0","www.360buy.com/?source=huobiwanjia","360buy",["www.360buy0.com","www.360buy1.com", "www.360buy2.com", "www.360buy3.com", "www.360buy4.com"]],'
+      .'["京东商城1","www.360buy.com/?source=huobiwanjia","360buy",["www.360buy0.com","www.360buy1.com", "www.360buy2.com", "www.360buy3.com", "www.360buy4.com"]],'
+      .'["京东商城2","www.360buy.com/?source=huobiwanjia","360buy",["www.360buy0.com","www.360buy1.com", "www.360buy2.com", "www.360buy3.com", "www.360buy4.com"]],'
+      .'["京东商城3","www.360buy.com/?source=huobiwanjia","360buy",["www.360buy0.com","www.360buy1.com", "www.360buy2.com", "www.360buy3.com", "www.360buy4.com"]],'
+      .'["京东商城4","www.360buy.com/?source=huobiwanjia","360buy",["www.360buy0.com","www.360buy1.com", "www.360buy2.com", "www.360buy3.com", "www.360buy4.com"]]'
+    .'];');
   }
 }
