@@ -169,7 +169,7 @@ ol .current {
 #merchant_list div span {
   border-top:1px solid #e5e5e5;
 }
-#next {
+#next_list {
   padding-top:10px;
 }
 #scroll {
@@ -194,7 +194,7 @@ ol .current {
 #scroll #previous {
   background-image:url(/+/img/previous.png);
 }
-#scroll #previous:hover {
+#scroll #previous:hover, #scroll #previous .hover {
   background-image:url(/+/img/previous_hover.png);
 }
 #scroll .full {
