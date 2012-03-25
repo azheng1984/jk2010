@@ -41,7 +41,7 @@ $(function() {
   var index = 0;
   $('#merchant_list').children().each(function() {
     var current = $(this);
-    var currentIndex = index;
+    //var currentIndex = index;
     ++index;
     var classAttribute = ' class="item"';
     if (current.attr('href') === undefined) {
@@ -72,8 +72,7 @@ $(function() {
     $('#merchant_list').addClass('move');
     $('#merchant_list .current').attr('class', 'item');
     $('#merchant_list').html(
-      '<div id="current">' + $('#merchant_list').html()
-      + '</div><div id="next">'
+      '<div id="current">' + $('#merchant_list').html() + '</div><div id="next">'
       + '<span class="item"><img src="/+/img/logo/360buy.png"/></span>'
       + '<a href="?merchant_id=1"><img src="/+/img/logo/360buy.png"/></a>'
       + '<a href="?merchant_id=1"><img src="/+/img/logo/360buy.png"/></a>'
