@@ -91,7 +91,7 @@ huobiwanjia.home.selectMerchant = function(index) {
 /* scroll enhancement
  *****************************/
 $(function() {
-  $('#scroll a').replaceWith('<span class="full"></span>');
+  $('#scroll a').replaceWith('<span id="next" class="full"></span>');//TODO:考虑有 previous 情况
   huobiwanjia.home.isMoving = false;
   $('.full').hover(
     function() { $(this).addClass('hover'); },
@@ -102,7 +102,7 @@ $(function() {
       return;
     }
     huobiwanjia.home.isMoving = true;
-    //TODO:ajax
+    //TODO:ajax & cache & prev
     $('#merchant_list').addClass('move');
     $('#merchant_list .current').attr('class', 'item');
     var next = '';
@@ -111,17 +111,18 @@ $(function() {
         + huobiwanjia.home.slideshow[index][2] + '.png"/></span>' + next;
     }
     $('#merchant_list').html('<div id="current">' + $('#merchant_list').html()
-      + '</div><div id="next">' + next + '</div>'
+      + '</div><div id="next_list">' + next + '</div>'
     );
     $('#current').animate({"top":'-=70px'}, 'slow');
-    $('#next').animate({'top':'-=70px'}, 'slow', function() {
-      $('#merchant_list').html($('#next').html());
+    $('#next_list').animate({'top':'-=70px'}, 'slow', function() {
+      $('#merchant_list').html($('#next_list').html());
       $('#merchant_list span').first().attr('class', 'current');
       $('#merchant_list').removeClass('move');
       huobiwanjia.home.selectMerchant(0);
       huobiwanjia.home.enhanceMerchantList();
       huobiwanjia.home.isMoving = false;
-      //TODO:add previous button
+      //TODO:enhance scroll
+      $('#scroll').html('<span id="previous"></span><span id="next"></span>');
     });
   });
 });
