@@ -10,80 +10,118 @@ $(function() {
  * slide list enhancement
  *****************************/
 $(function() {
+  $('#slide_list').children().each(function() {
+    var current = $(this);
+    var classAttribute = 'class="item"';
+    if (current.attr('href') === undefined) {
+      classAttribute = 'class="current"';
+    }
+    current.replaceWith('<span ' + classAttribute + '></span>');
+  });
+  huobiwanjia.home.enhanceSlideList();
+});
+huobiwanjia.home.enhanceSlideList = function() {
   var index = 0;
   $('#slide_list').children().each(function() {
     var current = $(this);
     var currentIndex = index;
     ++index;
-    var classAttribute = ' class="item"';
-    if (current.attr('href') === undefined) {
-      classAttribute = ' class="current"';
-    }
-    var id = 'slide_' + index;
-    current.replaceWith('<span id="' + id + '"' + classAttribute + '></span>');
-    $('#' + id).hover(
+    current.hover(
       function() { if ($(this).hasClass('item')) $(this).addClass('hover'); },
       function() { $(this).removeClass('hover'); }
     );
-    $('#' + id).click(function() {
+    current.click(function() {
       $('#slide_list .current').attr('class', 'item');
-      var src = $('#slide img').attr('src')
-        .replace(/^(.*)\/(.*?)\.(png|jpg)$/, '$1/' + currentIndex + '.$3');
-      $('#slide img').attr('src', src);
+      var merchant = huobiwanjia.home.slideshow[currentIndex];
+      $('#slide img').attr('src',
+        '/+/img/slide/' + merchant[2] + '/' + currentIndex + '.jpg');
+      $('#slide').attr('href', 'http://'
+        + huobiwanjia.home.slideshow[0][3][currentIndex]);
       $(this).attr('class', 'current');
     });
   });
-});
+};
 
 /* merchant list enhancement
  *****************************/
 $(function() {
-  var index = 0;
   $('#merchant_list').children().each(function() {
     var current = $(this);
-    //var currentIndex = index;
-    ++index;
     var classAttribute = ' class="item"';
     if (current.attr('href') === undefined) {
       classAttribute = ' class="current"';
     }
-    var id = 'merchant_' + index;
-    current.replaceWith('<span id="' + id + '"' + classAttribute + '><img src="/+/img/logo/360buy.png"/></span>');
-    $('#' + id).hover(
+    current.replaceWith('<span ' + classAttribute
+      + '><img src="/+/img/logo/360buy.png"/></span>');
+  });
+  huobiwanjia.home.enhanceMerchantList();
+});
+huobiwanjia.home.enhanceMerchantList = function() {
+  var index = 0;
+  $('#merchant_list').children().each(function() {
+    var current = $(this);
+    var currentIndex = index;
+    ++index;
+    current.hover(
       function() { if ($(this).hasClass('item')) $(this).addClass('hover'); },
       function() { $(this).removeClass('hover'); }
     );
-    $('#' + id).click(function() {
+    current.click(function() {
       $('#merchant_list .current').attr('class', 'item');
       $(this).attr('class', 'current');
+      huobiwanjia.home.selectMerchant(currentIndex);
     });
   });
-});
+};
+huobiwanjia.home.selectMerchant = function(index) {
+  var merchant = huobiwanjia.home.slideshow[index];
+  $(this).attr('class', 'current');
+  $('#merchant span').html(merchant[0]);
+  $('#merchant').attr('href', merchant[1]);
+  $('#slide img').attr('src', '/+/img/slide/' + merchant[2] + '/0.jpg');
+  $('#slide').attr('href', merchant[3][0]);
+  var html = '<span class="current"></span>';
+  for (var count = merchant[3].length - 1; count > 0; --count) {
+    html += '<span class="item"></span>';
+  }
+  $('#slide_list').html(html);
+  huobiwanjia.home.enhanceSlideList();
+};
 
 /* scroll enhancement
  *****************************/
 $(function() {
   $('#scroll a').replaceWith('<span class="full"></span>');
+  huobiwanjia.home.isMoving = false;
   $('.full').hover(
     function() { $(this).addClass('hover'); },
     function() { $(this).removeClass('hover'); }
   );
   $('.full').click(function() {
+    if (huobiwanjia.home.isMoving) {
+      return;
+    }
+    huobiwanjia.home.isMoving = true;
+    //TODO:ajax
     $('#merchant_list').addClass('move');
     $('#merchant_list .current').attr('class', 'item');
-    $('#merchant_list').html(
-      '<div id="current">' + $('#merchant_list').html() + '</div><div id="next">'
-      + '<span class="item"><img src="/+/img/logo/360buy.png"/></span>'
-      + '<a href="?merchant_id=1"><img src="/+/img/logo/360buy.png"/></a>'
-      + '<a href="?merchant_id=1"><img src="/+/img/logo/360buy.png"/></a>'
-      + '<a href="?merchant_id=1"><img src="/+/img/logo/360buy.png"/></a>'
-      + '<a href="?merchant_id=1"><img src="/+/img/logo/360buy.png"/></a></div>'
+    var next = '';
+    for (var index = 0; index < huobiwanjia.home.slideshow.length; ++index) {
+      next = '<span class="item"><img src="/+/img/logo/'
+        + huobiwanjia.home.slideshow[index][2] + '.png"/></span>' + next;
+    }
+    $('#merchant_list').html('<div id="current">' + $('#merchant_list').html()
+      + '</div><div id="next">' + next + '</div>'
     );
     $('#current').animate({"top":'-=70px'}, 'slow');
     $('#next').animate({'top':'-=70px'}, 'slow', function() {
       $('#merchant_list').html($('#next').html());
-      $('#merchant_list span').attr('class', 'current');
+      $('#merchant_list span').first().attr('class', 'current');
       $('#merchant_list').removeClass('move');
+      huobiwanjia.home.selectMerchant(0);
+      huobiwanjia.home.enhanceMerchantList();
+      huobiwanjia.home.isMoving = false;
+      //TODO:add previous button
     });
   });
 });
