@@ -126,8 +126,13 @@ ol .current {
 }
 #merchant_list.move {
   padding:0;
-  height:70px;
-  width:720px;
+  position:relative;/* 修正 ie6 hidden 无效的 bug */
+  overflow:hidden;
+  height:69px;
+  width:740px;
+}
+#merchant_list.move div {
+  margin-left:10px;
 }
 #merchant_list a, #merchant_list span, #merchant_list .item {
   float:left;
