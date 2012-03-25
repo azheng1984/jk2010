@@ -1,7 +1,8 @@
 <?php
 class HomeScreen extends Screen {
-  private $slideIndex;
   private $merchantId;
+  private $merchant;
+  private $slideIndex;
 
   public function __construct() {
     if (count($GLOBALS['SLIDESHOW']) === 0
@@ -58,7 +59,7 @@ class HomeScreen extends Screen {
 
   private function renderMerchantTypeList() {
     $path = $GLOBALS['MERCHANT_TYPE']['path'];
-    echo '<ol id="category">';
+    echo '<ol>';
     foreach ($GLOBALS['HOME_CONFIG']['merchant_type_list'] as $key => $value) {
       if ($key === $path) {
         echo '<li class="current">', $value[1], '</li>';
@@ -70,13 +71,18 @@ class HomeScreen extends Screen {
   }
 
   private function renderSlideshow() {
-    $this->parseMerchantId();
-    $this->parseSlideIndex();
+    $this->initializeSlideshow();
     echo '<div id="slideshow">';
     $this->renderSlideWrapper();
     $this->renderMerchantList();
     $this->renderScroll();
     echo '</div>';
+  }
+
+  private function initializeSlideshow() {
+    $this->parseMerchantId();
+    $this->merchant = $GLOBALS['SLIDESHOW'][$this->merchantId];
+    $this->parseSlideIndex();
   }
 
   private function parseMerchantId() {
@@ -92,10 +98,10 @@ class HomeScreen extends Screen {
   
   private function parseSlideIndex() {
     if (isset($_GET['index']) === false
-      || is_numeric($_GET['index']) === false
-      || $_GET['index'] < 0
-      || isset($GLOBALS['SLIDESHOW'][$this->merchantId]
-        ['slide_list'][intval($_GET['index'])]) === false) {
+        || is_numeric($_GET['index']) === false
+        || $_GET['index'] < 0
+        || isset($GLOBALS['SLIDESHOW'][$this->merchantId]
+            ['slide_list'][intval($_GET['index'])]) === false) {
       $this->slideIndex = 0;
       return;
     }
@@ -111,23 +117,20 @@ class HomeScreen extends Screen {
   }
 
   private function renderSlide() {
-    $merchant = $GLOBALS['SLIDESHOW'][$this->merchantId];
-    $slide = $merchant['slide_list'][$this->slideIndex];
+    $slide = $this->merchant['slide_list'][$this->slideIndex];
     echo '<a id="slide" href="http://', $slide,
       '/" target="_blank">', '<img src="/+/img/slide/',
-      $merchant['path'], '/', $this->slideIndex, '.jpg"/></a>';
+      $this->merchant['path'], '/', $this->slideIndex, '.jpg"/></a>';
   }
 
   private function renderMerchant() {
-    $merchant = $GLOBALS['SLIDESHOW'][$this->merchantId];
     echo '<a id="merchant" href="http://',
-      $merchant['uri_format'], '" target="_blank">',
-      '@<span>', $merchant['name'], '</span></a>';
+      $this->merchant['uri_format'], '" target="_blank">',
+      '@<span>', $this->merchant['name'], '</span></a>';
   }
 
   private function renderSlideList() {
-    $merchant = $GLOBALS['SLIDESHOW'][$this->merchantId];
-    if (count($merchant['slide_list']) === 1) {
+    if (count($this->merchant['slide_list']) === 1) {
       return;
     }
     echo '<span id="slide_list">';
@@ -135,7 +138,7 @@ class HomeScreen extends Screen {
     if ($GLOBALS['PAGE'] !== 1) {
       $hrefPrefix = '?page='.$GLOBALS['PAGE'].'&';
     }
-    foreach ($merchant['slide_list'] as $index => $slide) {
+    foreach ($this->merchant['slide_list'] as $index => $slide) {
       if ($index === $this->slideIndex) {
         echo '<span></span>';
         continue;
@@ -167,7 +170,7 @@ class HomeScreen extends Screen {
     $previous = null;
     $next = null;
     $previousClass = ' class="full"';
-    $nextClass = ' class="full"';
+    $nextClass = $previousClass;
     if ($GLOBALS['PAGE'] > 1) {
       $previous = $GLOBALS['PAGE'] - 1;
       $nextClass = '';
