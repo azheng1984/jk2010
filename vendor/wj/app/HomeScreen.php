@@ -9,7 +9,7 @@ class HomeScreen extends Screen {
       && $GLOBALS['PAGE'] !== 1) {
       $this->stop();
       header('HTTP/1.1 301 Moved Permanently');
-      Header('Location: '.$GLOBALS['MERCHANT_TYPE']['path']);
+      header('Location: '.$GLOBALS['MERCHANT_TYPE']['path']);
     }
   }
 
@@ -95,7 +95,7 @@ class HomeScreen extends Screen {
     }
     $this->merchantId = intval($_GET['merchant_id']);
   }
-  
+
   private function parseSlideIndex() {
     if (isset($_GET['index']) === false
         || is_numeric($_GET['index']) === false
@@ -182,7 +182,7 @@ class HomeScreen extends Screen {
     echo '<div id="scroll">';
     if ($previous !== null) {
       $href = $previous === 1 ? '/' : '?page='.$previous;
-      echo '<a id="previous"', $previousClass, ' href="', $href, '"></a>';
+      echo '<a class="previous"', $previousClass, ' href="', $href, '"></a>';
     }
     if ($next !== null) {
       echo '<a', $nextClass, ' href="?page=', $next, '"></a>';

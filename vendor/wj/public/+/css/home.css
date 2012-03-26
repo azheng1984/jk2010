@@ -191,10 +191,10 @@ ol .current {
   background-image:url(/+/img/next_hover.png);
   cursor:pointer;
 }
-#scroll #previous {
+#scroll .previous {
   background-image:url(/+/img/previous.png);
 }
-#scroll #previous:hover, #scroll #previous .hover {
+#scroll .previous:hover, #scroll .previous .hover {
   background-image:url(/+/img/previous_hover.png);
 }
 #scroll .full {
