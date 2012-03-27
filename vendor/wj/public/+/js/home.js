@@ -10,6 +10,8 @@ $(function() {
  * slide list enhancement
  *****************************/
 $(function() {
+  huobiwanjia.home.slideshow.currentMerchantIndex = 0;
+  huobiwanjia.home.slideshow.currentSlideIndex = 0;
   $('#slide_list').children().each(function() {
     var current = $(this);
     var classAttribute = 'class="item"';
@@ -20,6 +22,7 @@ $(function() {
   });
   huobiwanjia.home.enhanceSlideList();
 });
+
 huobiwanjia.home.enhanceSlideList = function() {
   var index = 0;
   $('#slide_list').children().each(function() {
@@ -32,12 +35,12 @@ huobiwanjia.home.enhanceSlideList = function() {
     );
     current.click(function() {
       $('#slide_list .current').attr('class', 'item');
-      var merchant = huobiwanjia.home.slideshow[currentIndex];
-      $('#slide img').attr('src',
-        '/+/img/slide/' + merchant[2] + '/' + currentIndex + '.jpg');
-      $('#slide').attr('href', 'http://'
-        + huobiwanjia.home.slideshow[0][3][currentIndex]);
       $(this).attr('class', 'current');
+      var merchant = huobiwanjia.home.slideshow.merchantList
+        [huobiwanjia.home.slideshow.currentMerchantIndex];
+      $('#slide img').attr('src', '/+/img/slide/' + merchant[2]
+        + '/' + currentIndex + '.jpg');
+      $('#slide').attr('href', 'http://' + merchant[3][currentIndex]);
     });
   });
 };
@@ -56,6 +59,7 @@ $(function() {
   });
   huobiwanjia.home.enhanceMerchantList();
 });
+
 huobiwanjia.home.enhanceMerchantList = function() {
   var index = 0;
   $('#merchant_list').children().each(function() {
@@ -63,19 +67,27 @@ huobiwanjia.home.enhanceMerchantList = function() {
     var currentIndex = index;
     ++index;
     current.hover(
-      function() { if ($(this).hasClass('item')) $(this).addClass('hover'); },
-      function() { $(this).removeClass('hover'); }
+      function() {
+        if ($(this).hasClass('item')) { 
+          $(this).addClass('hover');
+        }
+        huobiwanjia.home.stop();
+      },
+      function() {
+        $(this).removeClass('hover');
+        huobiwanjia.home.play();
+      }
     );
     current.click(function() {
-      $('#merchant_list .current').attr('class', 'item');
-      $(this).attr('class', 'current');
-      huobiwanjia.home.selectMerchant(currentIndex);
+      huobiwanjia.home.selectMerchant($(this), currentIndex);
     });
   });
 };
-huobiwanjia.home.selectMerchant = function(index) {
-  var merchant = huobiwanjia.home.slideshow[index];
-  $(this).attr('class', 'current');
+
+huobiwanjia.home.selectMerchant = function(span, index) {
+  var merchant = huobiwanjia.home.slideshow.merchantList[index];
+  $('#merchant_list .current').attr('class', 'item');
+  span.attr('class', 'current');
   $('#merchant span').html(merchant[0]);
   $('#merchant').attr('href', merchant[1]);
   $('#slide img').attr('src', '/+/img/slide/' + merchant[2] + '/0.jpg');
@@ -91,46 +103,99 @@ huobiwanjia.home.selectMerchant = function(index) {
 /* scroll enhancement
  *****************************/
 $(function() {
-  $('#scroll a').replaceWith('<span class="next" class="full"></span>');//TODO:考虑有 previous 情况
-  huobiwanjia.home.isMoving = false;
-  $('.full').hover(
+  $('#scroll a').each(function() {
+    var classValue = $(this).attr('class');
+    var classAttribute = '';
+    if (typeof classAttribute !== 'undefined' && classAttribute !== false) {
+      classAttribute = ' class="' + classValue + '"';
+    }
+    $(this).replaceWith('<span' + classAttribute + '></span>');
+  });
+  huobiwanjia.home.isScrollEnabled = true;
+  huobiwanjia.home.enhanceScroll();
+});
+
+huobiwanjia.home.enhanceScroll = function() {
+  $('#scroll span').hover(
     function() { $(this).addClass('hover'); },
     function() { $(this).removeClass('hover'); }
   );
-  $('.full').click(function() {
-    if (huobiwanjia.home.isMoving) {
+  $('#scroll span').click(function() {
+    if (huobiwanjia.home.isScrollEnabled === false) {
       return;
     }
-    huobiwanjia.home.isMoving = true;
-    //TODO:ajax & cache & prev
+    huobiwanjia.home.isScrollEnabled = false;
+    huobiwanjia.home.stop();
     $('#merchant_list').addClass('move');
     $('#merchant_list .current').attr('class', 'item');
+    var isPrevious = $(this).hasClass('previous');
     var next = '';
-    for (var index = 0; index < huobiwanjia.home.slideshow.length; ++index) {
+    for (var index = 0; index < huobiwanjia.home.slideshow.merchantList.length; ++index) {
       next = '<span class="item"><img src="/+/img/logo/'
-        + huobiwanjia.home.slideshow[index][2] + '.png"/></span>' + next;
+        + huobiwanjia.home.slideshow.merchantList[index][2] + '.png"/></span>' + next;
     }
-    $('#merchant_list').html('<div id="current">' + $('#merchant_list').html()
-      + '</div><div id="next_list">' + next + '</div>'
-    );
-    $('#current').animate({"top":'-=70px'}, 'slow');
-    $('#next').animate({'top':'-=70px'}, 'slow', function() {
-      $('#merchant_list').html($('#next').html());
-      $('#merchant_list span').first().attr('class', 'current');
+    var targetPosition = '-=70px';
+    var target = 'next';
+    if (isPrevious) {
+      target = 'previous';
+      $('#merchant_list').html('<div id="previous">' + next + '</div><div id="current">' + $('#merchant_list').html()
+          + '</div>'
+        );
+      targetPosition = '+=70px';
+    } else {
+      $('#merchant_list').html('<div id="current">' + $('#merchant_list').html()
+          + '</div><div id="next">' + next + '</div>'
+        );
+    }
+    var page = typeof huobiwanjia.queryString.page === 'undefined' ?
+      2 : huobiwanjia.queryString.page + 1;
+    if (isPrevious) {
+      page -= 2;
+    }
+    //TODO:js based list cache
+    $.getJSON('?page=' + page + '&media=json', function(data) {
+      //TODO:整体替换 target merchant list
+    });
+    $('#current').animate({"top":targetPosition}, 'slow');
+    $('#' + target).animate({'top':targetPosition}, 'slow', function() {
+      $('#merchant_list').html($('#' + target).html());
       $('#merchant_list').removeClass('move');
-      huobiwanjia.home.selectMerchant(0);
+      huobiwanjia.home.selectMerchant($('#merchant_list span').first(), 0);
+      huobiwanjia.home.play();
       huobiwanjia.home.enhanceMerchantList();
-      huobiwanjia.home.isMoving = false;
-      //TODO:enhance scroll
+      huobiwanjia.home.isScrollEnabled = true;
+      //TODO:根据总页和当前页拼接
       $('#scroll').html(
-        '<span class="previous"></span><span class="next"></span>'
+        '<span class="previous"></span><span></span>'
       );
+      huobiwanjia.home.enhanceScroll();
     });
   });
-});
+};
 
 /* auto play
  *****************************/
+$(function() {
+  $('#slide_wrapper').hover(
+    function() { huobiwanjia.home.stop(); },
+    function() { huobiwanjia.home.play(); }
+  );
+  huobiwanjia.home.play();
+});
+
+huobiwanjia.home.play = function() {
+  huobiwanjia.home.timer = setInterval(function() {
+    var next = $('#merchant_list .current').next();
+    if (next.length === 0) {
+      next = $('#merchant_list span').first();
+    }
+    huobiwanjia.home.selectMerchant(next, $('#merchant_list span').index(next));
+  }, 5000);
+};
+
+huobiwanjia.home.stop = function() {
+  clearInterval(huobiwanjia.home.timer);
+};
 
 /* merchant click tracking
  *****************************/

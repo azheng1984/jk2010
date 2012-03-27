@@ -5,7 +5,7 @@ class PaginationScreen {
     if ($total <= $itemsPerPage) {
       return;
     }
-    $totalPage = self::getTotalPage($total, $itemsPerPage);
+    $totalPage = ceil($total / $itemsPerPage);
     if ($totalPage > $maximumPage) {
       $totalPage = $maximumPage;
     }
@@ -34,14 +34,6 @@ class PaginationScreen {
         $postfix, '"', $rel, '>下一页 »</a>';
     }
     echo '</div>';
-  }
-
-  private static function getTotalPage($total, $itemsPerPage) {
-    $remainder = $total % $itemsPerPage;
-    if ($remainder === 0) {
-      return $total / $itemsPerPage;
-    }
-    return ($total + $itemsPerPage - $remainder) / $itemsPerPage;
   }
 
   private static function getFirstPage($page, $totalPage) {
