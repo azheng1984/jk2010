@@ -11,7 +11,6 @@ $(function() {
  *****************************/
 $(function() {
   huobiwanjia.home.slideshow.currentMerchantIndex = 0;
-  huobiwanjia.home.slideshow.currentSlideIndex = 0;
   $('#slide_list').children().each(function() {
     var current = $(this);
     var classAttribute = 'class="item"';
@@ -85,6 +84,7 @@ huobiwanjia.home.enhanceMerchantList = function() {
 };
 
 huobiwanjia.home.selectMerchant = function(span, index) {
+  huobiwanjia.home.slideshow.currentMerchantIndex = index;
   var merchant = huobiwanjia.home.slideshow.merchantList[index];
   $('#merchant_list .current').attr('class', 'item');
   span.attr('class', 'current');
@@ -112,6 +112,8 @@ $(function() {
     $(this).replaceWith('<span' + classAttribute + '></span>');
   });
   huobiwanjia.home.isScrollEnabled = true;
+  huobiwanjia.home.page = typeof huobiwanjia.queryString.page === 'undefined' ?
+    1 : huobiwanjia.queryString.page;
   huobiwanjia.home.enhanceScroll();
 });
 
@@ -147,13 +149,12 @@ huobiwanjia.home.enhanceScroll = function() {
           + '</div><div id="next">' + next + '</div>'
         );
     }
-    var page = typeof huobiwanjia.queryString.page === 'undefined' ?
-      2 : huobiwanjia.queryString.page + 1;
+    ++huobiwanjia.home.page;
     if (isPrevious) {
-      page -= 2;
+      huobiwanjia.home.page -= 2;
     }
     //TODO:js based list cache
-    $.getJSON('?page=' + page + '&media=json', function(data) {
+    $.getJSON('?page=' + huobiwanjia.home.page + '&media=json', function(data) {
       //TODO:整体替换 target merchant list
     });
     $('#current').animate({"top":targetPosition}, 'slow');
@@ -189,6 +190,7 @@ huobiwanjia.home.play = function() {
     if (next.length === 0) {
       next = $('#merchant_list span').first();
     }
+    //TODO:pre load first slide of next merchant
     huobiwanjia.home.selectMerchant(next, $('#merchant_list span').index(next));
   }, 5000);
 };
