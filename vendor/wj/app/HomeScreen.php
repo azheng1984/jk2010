@@ -119,13 +119,13 @@ class HomeScreen extends Screen {
   private function renderSlide() {
     $slide = $this->merchant['slide_list'][$this->slideIndex];
     echo '<a id="slide" href="http://', $slide,
-      '/" target="_blank">', '<img src="/+/img/slide/',
+      '/" target="_blank" rel="nofollow">', '<img src="/+/img/slide/',
       $this->merchant['path'], '/', $this->slideIndex, '.jpg"/></a>';
   }
 
   private function renderMerchant() {
     echo '<a id="merchant" href="http://',
-      $this->merchant['uri_format'], '" target="_blank">',
+      $this->merchant['uri_format'], '" target="_blank" rel="nofollow">',
       '@<span>', $this->merchant['name'], '</span></a>';
   }
 
@@ -144,7 +144,7 @@ class HomeScreen extends Screen {
         continue;
       }
       echo '<a href="', $hrefPrefix , 'merchant_id=', $this->merchantId,
-        '&index=', $index, '"></a>';
+        '&index=', $index, '" rel="nofollow"></a>';
     }
     echo '</span>';
   }
@@ -161,7 +161,8 @@ class HomeScreen extends Screen {
         echo '<span>', $img, '</span>';
         continue;
       }
-      echo '<a href="', $hrefPrefix, 'merchant_id=', $id, '">', $img, '</a>';
+      echo '<a href="', $hrefPrefix, 'merchant_id=', $id, '" rel="nofollow">',
+        $img, '</a>';
     }
     echo '</div>';
   }
@@ -169,34 +170,34 @@ class HomeScreen extends Screen {
   private function renderScroll() {
     $previous = null;
     $next = null;
-    $previousClass = ' class="full"';
-    $nextClass = $previousClass;
+    $previousClass = ' class="previous full"';
+    $nextClass = ' class="full"';
     if ($GLOBALS['PAGE'] > 1) {
       $previous = $GLOBALS['PAGE'] - 1;
       $nextClass = '';
     }
-    if ($GLOBALS['PAGE'] < $GLOBALS['MERCHANT_TYPE'][2]) {
+    if ($GLOBALS['PAGE'] < ceil($GLOBALS['MERCHANT_TYPE'][2] / 5)) {
       $next = $GLOBALS['PAGE'] + 1;
-      $previousClass = '';
+      $previousClass = ' class="previous"';
     }
     echo '<div id="scroll">';
     if ($previous !== null) {
       $href = $previous === 1 ? '/' : '?page='.$previous;
-      echo '<a class="previous"', $previousClass, ' href="', $href, '"></a>';
+      echo '<a', $previousClass, ' href="', $href, '" rel="nofollow"></a>';
     }
     if ($next !== null) {
-      echo '<a', $nextClass, ' href="?page=', $next, '"></a>';
+      echo '<a', $nextClass, ' href="?page=', $next, '" rel="nofollow"></a>';
     }
     echo '</div>';
   }
 
   private function addJsConfig() {
-    $this->addJs('huobiwanjia.home.slideshow = ['
-      .'["京东商城0","www.360buy.com/?source=huobiwanjia","360buy",["www.360buy0.com","www.360buy1.com", "www.360buy2.com", "www.360buy3.com", "www.360buy4.com"]],'
+    $this->addJs('huobiwanjia.home.slideshow={merchantAmount:12,merchantList:'
+      .'[["京东商城0","www.360buy.com/?source=huobiwanjia","360buy",["www.360buy0.com","www.360buy1.com", "www.360buy2.com", "www.360buy3.com", "www.360buy4.com"]],'
       .'["京东商城1","www.360buy.com/?source=huobiwanjia","360buy",["www.360buy0.com","www.360buy1.com", "www.360buy2.com", "www.360buy3.com", "www.360buy4.com"]],'
       .'["京东商城2","www.360buy.com/?source=huobiwanjia","360buy",["www.360buy0.com","www.360buy1.com", "www.360buy2.com", "www.360buy3.com", "www.360buy4.com"]],'
       .'["京东商城3","www.360buy.com/?source=huobiwanjia","360buy",["www.360buy0.com","www.360buy1.com", "www.360buy2.com", "www.360buy3.com", "www.360buy4.com"]],'
       .'["京东商城4","www.360buy.com/?source=huobiwanjia","360buy",["www.360buy0.com","www.360buy1.com", "www.360buy2.com", "www.360buy3.com", "www.360buy4.com"]]'
-    .'];');
+    .']};');
   }
 }
