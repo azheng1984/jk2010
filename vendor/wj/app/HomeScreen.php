@@ -98,10 +98,10 @@ class HomeScreen extends Screen {
 
   private function parseSlideIndex() {
     if (isset($_GET['index']) === false
-        || is_numeric($_GET['index']) === false
-        || $_GET['index'] < 0
-        || isset($GLOBALS['SLIDESHOW'][$this->merchantId]
-            ['slide_list'][intval($_GET['index'])]) === false) {
+      || is_numeric($_GET['index']) === false
+      || $_GET['index'] < 0
+      || isset($GLOBALS['SLIDESHOW'][$this->merchantId]
+        ['slide_list'][intval($_GET['index'])]) === false) {
       $this->slideIndex = 0;
       return;
     }
@@ -192,7 +192,7 @@ class HomeScreen extends Screen {
   }
 
   private function addJsConfig() {
-    $this->addJs('huobiwanjia.home.slideshow={merchantAmount:12,merchantList:'
+    $this->addJs('huobiwanjia.home.slideshow={merchantAmount:10,merchantList:'
       .'[["京东商城0","www.360buy.com/?source=huobiwanjia","360buy",["www.360buy0.com","www.360buy1.com", "www.360buy2.com", "www.360buy3.com", "www.360buy4.com"]],'
       .'["京东商城1","www.360buy.com/?source=huobiwanjia","360buy",["www.360buy0.com","www.360buy1.com", "www.360buy2.com", "www.360buy3.com", "www.360buy4.com"]],'
       .'["京东商城2","www.360buy.com/?source=huobiwanjia","360buy",["www.360buy0.com","www.360buy1.com", "www.360buy2.com", "www.360buy3.com", "www.360buy4.com"]],'

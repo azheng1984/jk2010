@@ -124,7 +124,7 @@ ol .current {
   padding:0;
   position:relative;/* 修正 ie6 hidden 无效的 bug */
   overflow:hidden;
-  height:69px;
+  height:71px;
   width:740px;
 }
 #merchant_list.move div {
@@ -132,8 +132,8 @@ ol .current {
 }
 #merchant_list a, #merchant_list span, #merchant_list .item {
   float:left;
-  padding:13px 0 8px 0;
   margin:0 2px;
+  height:60px;
   width:140px;
   text-align:center;
   background-color:#fff;
@@ -149,7 +149,6 @@ ol .current {
   box-shadow:0 1px 3px #ddd;
 }
 #merchant_list span {
-  padding-top:14px;
   border-color:#d1d1d1;
   margin-top:-1px;
   position:relative;/* ie6 默认 z-index 和顺序相反 */
@@ -157,6 +156,7 @@ ol .current {
 }
 #merchant_list a img, #merchant_list span img, #merchant_list .item img {
   width:110px;
+  margin-top:15px;
   _margin-bottom:5px;
 }
 #merchant_list div {
