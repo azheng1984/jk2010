@@ -118,17 +118,14 @@ ol .current {
   border-color:#111;
 }
 #merchant_list {
-  padding:0 0 10px 10px;
+  margin-left:10px;
+  _margin-left:5px;
+  height:71px;
+  width:730px;
 }
 #merchant_list.move {
-  padding:0;
-  position:relative;/* 修正 ie6 hidden 无效的 bug */
   overflow:hidden;
-  height:71px;
-  width:740px;
-}
-#merchant_list.move div {
-  margin-left:10px;
+  position:relative;/* 修正 ie6 hidden 无效的 bug */
 }
 #merchant_list a, #merchant_list span, #merchant_list .item {
   float:left;
@@ -175,7 +172,6 @@ ol .current {
 #scroll {
   float:right;
   width:30px;
-  padding-bottom:10px;
 }
 #scroll a, #scroll span {
   float:left;

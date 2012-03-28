@@ -40,8 +40,7 @@ huobiwanjia.home.enhanceSlideList = function() {
     current.hover(
       function() { if ($(this).hasClass('item')) $(this).addClass('hover'); },
       function() { $(this).removeClass('hover'); }
-    );
-    current.click(function() {
+    ).click(function() {
       $('#slide_list .current').attr('class', 'item');
       $(this).attr('class', 'current');
       var merchant = huobiwanjia.home.slideshow.merchantList[
@@ -83,8 +82,7 @@ huobiwanjia.home.enhanceMerchantList = function() {
         $(this).removeClass('hover');
         huobiwanjia.home.play();
       }
-    );
-    current.click(function() {
+    ).click(function() {
       huobiwanjia.home.selectMerchant($(this), currentIndex);
     });
   });
@@ -100,12 +98,12 @@ huobiwanjia.home.selectMerchant = function(span, index) {
   $('#merchant_list .current').attr('class', 'item');
   span.attr('class', 'current');
   $('#merchant span').text(merchant[0]);
-  $('#merchant').attr('href', merchant[1]);
+  $('#merchant').attr('href', 'http://' + merchant[1]);
   $('#slide img').attr('src', src);
   if ($.inArray(src, huobiwanjia.home.slideCache) === -1) {
     huobiwanjia.home.slideCache.push(src);
   };
-  $('#slide').attr('href', merchant[3][0]);
+  $('#slide').attr('href', 'http://' + merchant[3][0]);
   if (merchant[3].length === 1) {
     $('#slide_list').empty();
     return;
@@ -136,25 +134,24 @@ huobiwanjia.home.enhanceScroll = function() {
   $('#scroll span').hover(
     function() { $(this).addClass('hover'); },
     function() { $(this).removeClass('hover'); }
-  );
-  $('#scroll span').click(function() {
+  ).click(function() {
     if (huobiwanjia.home.isScrollEnabled === false) {
       return;
     }
     huobiwanjia.home.isScrollEnabled = false;
     huobiwanjia.home.stop();
     huobiwanjia.home.executeScroll($(this).hasClass('previous'));
-    if (typeof (huobiwanjia.home.merchantListCache[huobiwanjia.home.page])
+    if (typeof huobiwanjia.home.merchantListCache[huobiwanjia.home.page]
       === 'undefined') {
       $.ajax({
         type: "GET",
         url: '?page=' + huobiwanjia.home.page + '&media=json',
-        success: function(data){
+        success: function(data) {
           huobiwanjia.home.merchantListCache[huobiwanjia.home.page] = data;
           huobiwanjia.home.slideshow.merchantList = data;
           huobiwanjia.home.fillMerchantList();
         },
-        error: function(){
+        error: function() {
           window.location = '?page=' + huobiwanjia.home.page;
         }
       });
@@ -171,7 +168,6 @@ huobiwanjia.home.executeScroll = function(isPrevious) {
   if (isPrevious) {
     huobiwanjia.home.page -= 2;
   }
-  $('#merchant_list').addClass('move');
   $('#merchant_list .current').attr('class', 'item');
   var length = 5;
   if (huobiwanjia.home.page === huobiwanjia.home.pageAmount) {
@@ -191,11 +187,10 @@ huobiwanjia.home.executeScroll = function(isPrevious) {
     targetPosition = '+=70px';
     html = '<div id="previous">' + targetHtml + '</div>' + currentHtml;
   }
-  $('#merchant_list').html(html);
+  $('#merchant_list').html(html).addClass('move');
   $('#current').animate({ 'top': targetPosition }, 'slow');
   $('#' + target).animate({ 'top': targetPosition }, 'slow', function() {
-    $('#merchant_list').html($('#' + target).html());
-    $('#merchant_list').removeClass('move');
+    $('#merchant_list').html($('#' + target).html()).removeClass('move');
     var html = '<span class="previous"></span><span></span>';
     if (huobiwanjia.home.page === 1) {
       html = '<span class="full"></span>';
@@ -271,8 +266,8 @@ huobiwanjia.home.preloadSlide = function() {
   if (next === huobiwanjia.home.slideshow.currentMerchantIndex) {
     return;
   }
-  var merchant = huobiwanjia.home.slideshow.merchantList[next];
-  var src = '/+/img/slide/' + merchant[2] + '/0.jpg';
+  var merchant = huobiwanjia.home.slideshow.merchantList[next],
+    src = '/+/img/slide/' + merchant[2] + '/0.jpg';
   if ($.inArray(src, huobiwanjia.home.slideCache) === -1) {
     huobiwanjia.home.slideCache.push(src);
     new Image().src = src;
