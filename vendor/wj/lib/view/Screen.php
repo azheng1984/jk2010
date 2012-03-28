@@ -52,7 +52,7 @@ abstract class Screen extends EtagView {
   private function renderHtmlHead() {
     echo '<head><meta charset="UTF-8"/>';
     $this->addCssLink('screen');
-    $this->addJsLink('jquery-1.7.1');
+    $this->addJsLink('jquery-1.7.2');
     $this->addJsLink('screen');
     $this->renderHtmlHeadContent();
     $this->renderCssLinkList();
