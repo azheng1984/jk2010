@@ -141,13 +141,13 @@ huobiwanjia.home.enhanceScroll = function() {
     if (isPrevious) {
       target = 'previous';
       $('#merchant_list').html('<div id="previous">' + next + '</div><div id="current">' + $('#merchant_list').html()
-          + '</div>'
-        );
+        + '</div>'
+      );
       targetPosition = '+=70px';
     } else {
       $('#merchant_list').html('<div id="current">' + $('#merchant_list').html()
-          + '</div><div id="next">' + next + '</div>'
-        );
+        + '</div><div id="next">' + next + '</div>'
+      );
     }
     ++huobiwanjia.home.page;
     if (isPrevious) {
@@ -165,7 +165,7 @@ huobiwanjia.home.enhanceScroll = function() {
       huobiwanjia.home.play();
       huobiwanjia.home.enhanceMerchantList();
       huobiwanjia.home.isScrollEnabled = true;
-      //TODO:根据总页和当前页拼接
+      //TODO:根据总页和当前页重新生成
       $('#scroll').html(
         '<span class="previous"></span><span></span>'
       );
