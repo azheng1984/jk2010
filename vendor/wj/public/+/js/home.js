@@ -39,7 +39,11 @@ huobiwanjia.home.enhanceSlideList = function() {
   $('#slide_list').children().each(function() {
     var current = $(this), currentIndex = index++;
     current.hover(
-      function() { if ($(this).hasClass('item')) $(this).addClass('hover'); },
+      function() {
+        if ($(this).hasClass('item')) {
+          $(this).addClass('hover');
+        }
+      },
       function() { $(this).removeClass('hover'); }
     ).click(function() {
       $('#slide_list .current').attr('class', 'item');
@@ -74,7 +78,7 @@ huobiwanjia.home.enhanceMerchantList = function() {
     var current = $(this), currentIndex = index++;
     current.hover(
       function() {
-        if ($(this).hasClass('item')) { 
+        if ($(this).hasClass('item')) {
           $(this).addClass('hover');
         }
         huobiwanjia.home.isHold = true;
@@ -145,7 +149,7 @@ huobiwanjia.home.enhanceScroll = function() {
     if (typeof huobiwanjia.home.merchantListCache[huobiwanjia.home.page]
       === 'undefined') {
       $.ajax({
-        type: "GET",
+        type: 'GET',
         url: '?page=' + huobiwanjia.home.page + '&media=json',
         success: function(data) {
           huobiwanjia.home.merchantListCache[huobiwanjia.home.page] = data;
