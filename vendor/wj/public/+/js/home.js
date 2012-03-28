@@ -1,6 +1,6 @@
 huobiwanjia.home = function() {
   var home = {
-    isScrollEnabled: true,
+    isScrolling: false,
     isHold: false,
     currentMerchantIndex: 0,
     merchantListCache: [],
@@ -90,7 +90,7 @@ huobiwanjia.home.enhanceMerchantList = function() {
 };
 
 huobiwanjia.home.selectMerchant = function(span, index) {
-  if (huobiwanjia.home.isScrollEnabled === false) {
+  if (huobiwanjia.home.isScrolling) {
     return;
   }
   huobiwanjia.home.currentMerchantIndex = index;
@@ -136,10 +136,10 @@ huobiwanjia.home.enhanceScroll = function() {
     function() { $(this).addClass('hover'); },
     function() { $(this).removeClass('hover'); }
   ).click(function() {
-    if (huobiwanjia.home.isScrollEnabled === false) {
+    if (huobiwanjia.home.isScrolling) {
       return;
     }
-    huobiwanjia.home.isScrollEnabled = false;
+    huobiwanjia.home.isScrolling = true;
     huobiwanjia.home.stop();
     huobiwanjia.home.executeScroll($(this).hasClass('previous'));
     if (typeof huobiwanjia.home.merchantListCache[huobiwanjia.home.page]
@@ -225,7 +225,7 @@ huobiwanjia.home.afterScroll = function() {
     setTimeout(huobiwanjia.home.afterScroll, 100);
     return;
   }
-  huobiwanjia.home.isScrollEnabled = true;
+  huobiwanjia.home.isScrolling = false;
   huobiwanjia.home.selectMerchant($('#merchant_list span').first(), 0);
   huobiwanjia.home.enhanceMerchantList();
   huobiwanjia.home.play();
