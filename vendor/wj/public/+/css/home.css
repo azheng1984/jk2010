@@ -117,9 +117,10 @@ ol .current {
 #merchant:hover span {
   border-color:#111;
 }
+#merchant_list_wrapper {
+  padding-left:10px;
+}
 #merchant_list {
-  margin-left:10px;
-  _margin-left:5px;
   height:71px;
   width:730px;
 }
