@@ -99,6 +99,10 @@ huobiwanjia.home.selectMerchant = function(span, index) {
     huobiwanjia.home.slideCache.push(src);
   };
   $('#slide').attr('href', merchant[3][0]);
+  if (merchant[3].length === 1) {
+    $('#slide_list').html('');
+    return;
+  }
   var html = '<span class="current"></span>';
   for (var count = merchant[3].length - 1; count > 0; --count) {
     html += '<span class="item"></span>';
