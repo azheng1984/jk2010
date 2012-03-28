@@ -1,6 +1,7 @@
 huobiwanjia.home = function() {
   var home = {
     isScrolling: false,
+    timer: -1,
     isHold: false,
     currentMerchantIndex: 0,
     merchantListCache: [],
@@ -86,6 +87,7 @@ huobiwanjia.home.enhanceMerchantList = function() {
       function() {
         $(this).removeClass('hover');
         huobiwanjia.home.isHold = false;
+        huobiwanjia.home.play();
       }
     ).click(function() {
       huobiwanjia.home.selectMerchant($(this), currentIndex);
@@ -240,12 +242,21 @@ huobiwanjia.home.afterFillMerchantList = function() {
 $(function() {
   $('#slide_wrapper').hover(
     function() { huobiwanjia.home.isHold = true; },
-    function() { huobiwanjia.home.isHold = false; }
+    function() {
+      huobiwanjia.home.isHold = false;
+      huobiwanjia.home.play();
+    }
   );
   huobiwanjia.home.play();
 });
 
 huobiwanjia.home.play = function() {
+  if (huobiwanjia.home.isScrolling) {
+    return;
+  }
+  if (huobiwanjia.home.timer !== -1) {
+    huobiwanjia.home.stop();
+  }
   huobiwanjia.home.timer = setInterval(function() {
     if (huobiwanjia.home.isHold) {
       return;
@@ -278,6 +289,7 @@ huobiwanjia.home.preloadSlide = function() {
 
 huobiwanjia.home.stop = function() {
   clearInterval(huobiwanjia.home.timer);
+  huobiwanjia.home.timer = -1;
 };
 
 /* merchant click tracking
