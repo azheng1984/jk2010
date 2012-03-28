@@ -222,7 +222,7 @@ huobiwanjia.home.fillMerchantList = function() {
 
 huobiwanjia.home.afterFillMerchantList = function() {
   if ($('#merchant_list div').length !== 0) {
-    setTimeout(huobiwanjia.home.afterScroll, 100);
+    setTimeout(huobiwanjia.home.afterFillMerchantList, 100);
     return;
   }
   huobiwanjia.home.isScrolling = false;
