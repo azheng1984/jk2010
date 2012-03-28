@@ -143,7 +143,7 @@ input:focus {
   color:#06c;
   border:1px solid #e5e5e5;
   padding:4px 8px;
-  background:url(/+/img/screen.png) 0 -70px repeat-x;
+  background:url(/+/img/screen.png) 0 -68px repeat-x;
   border-radius:3px;
 }
 #pagination a:hover {
