@@ -1,4 +1,19 @@
-huobiwanjia.home = {};
+huobiwanjia.home = function() {
+  var home = {
+    isScrollEnabled: true,
+    currentMerchantIndex: 0,
+    merchantListCache: [],
+    slideCache: []
+  };
+  $(function() {
+    home.pageAmount = Math.ceil(huobiwanjia.home.slideshow.merchantAmount / 5);
+    home.page = typeof huobiwanjia.queryString.page === 'undefined' ?
+      1 : huobiwanjia.queryString.page;
+    home.merchantListCache[home.page] =
+      huobiwanjia.home.slideshow.merchantList;
+  });
+  return home;
+}();
 
 /* focus input
  *****************************/
@@ -10,10 +25,6 @@ $(function() {
  * slide list enhancement
  *****************************/
 $(function() {
-  huobiwanjia.home.slideCache = [];
-  huobiwanjia.home.pageAmount =
-    Math.ceil(huobiwanjia.home.slideshow.merchantAmount / 5);
-  huobiwanjia.home.slideshow.currentMerchantIndex = 0;
   $('#slide_list').children().each(function() {
     var current = $(this);
     var classAttribute = 'class="item"';
@@ -39,7 +50,7 @@ huobiwanjia.home.enhanceSlideList = function() {
       $('#slide_list .current').attr('class', 'item');
       $(this).attr('class', 'current');
       var merchant = huobiwanjia.home.slideshow.merchantList
-        [huobiwanjia.home.slideshow.currentMerchantIndex];
+        [huobiwanjia.home.currentMerchantIndex];
       $('#slide img').attr('src', '/+/img/slide/' + merchant[2]
         + '/' + currentIndex + '.jpg');
       $('#slide').attr('href', 'http://' + merchant[3][currentIndex]);
@@ -87,11 +98,14 @@ huobiwanjia.home.enhanceMerchantList = function() {
 };
 
 huobiwanjia.home.selectMerchant = function(span, index) {
-  huobiwanjia.home.slideshow.currentMerchantIndex = index;
+  if (huobiwanjia.home.isScrollEnabled === false) {
+    return;
+  }
+  huobiwanjia.home.currentMerchantIndex = index;
   var merchant = huobiwanjia.home.slideshow.merchantList[index];
   $('#merchant_list .current').attr('class', 'item');
   span.attr('class', 'current');
-  $('#merchant span').html(merchant[0]);
+  $('#merchant span').text(merchant[0]);
   $('#merchant').attr('href', merchant[1]);
   var src = '/+/img/slide/' + merchant[2] + '/0.jpg';
   $('#slide img').attr('src', src);
@@ -100,7 +114,7 @@ huobiwanjia.home.selectMerchant = function(span, index) {
   };
   $('#slide').attr('href', merchant[3][0]);
   if (merchant[3].length === 1) {
-    $('#slide_list').html('');
+    $('#slide_list').empty();
     return;
   }
   var html = '<span class="current"></span>';
@@ -122,10 +136,6 @@ $(function() {
     }
     $(this).replaceWith('<span' + classAttribute + '></span>');
   });
-  huobiwanjia.home.isScrollEnabled = true;
-  huobiwanjia.home.merchantListCache = [];
-  huobiwanjia.home.page = typeof huobiwanjia.queryString.page === 'undefined' ?
-    1 : huobiwanjia.queryString.page;
   huobiwanjia.home.enhanceScroll();
 });
 
@@ -143,10 +153,17 @@ huobiwanjia.home.enhanceScroll = function() {
     huobiwanjia.home.executeScroll($(this).hasClass('previous'));
     if (typeof (huobiwanjia.home.merchantListCache[huobiwanjia.home.page])
       === 'undefined') {
-      $.getJSON('?page=' + huobiwanjia.home.page + '&media=json',
-        function(data) {
-        huobiwanjia.home.slideshow.merchantList = data;
-        huobiwanjia.home.fillMerchantList();
+      $.ajax({
+        type: "GET",
+        url: '?page=' + huobiwanjia.home.page + '&media=json',
+        success: function(data){
+          huobiwanjia.home.merchantListCache[huobiwanjia.home.page] = data;
+          huobiwanjia.home.slideshow.merchantList = data;
+          huobiwanjia.home.fillMerchantList();
+        },
+        error: function(){
+          window.location = '?page=' + huobiwanjia.home.page;
+        }
       });
       return;
     }
@@ -157,8 +174,6 @@ huobiwanjia.home.enhanceScroll = function() {
 };
 
 huobiwanjia.home.executeScroll = function(isPrevious) {
-  huobiwanjia.home.merchantListCache[huobiwanjia.home.page] =
-    huobiwanjia.home.slideshow.merchantList;
   ++huobiwanjia.home.page;
   if (isPrevious) {
     huobiwanjia.home.page -= 2;
@@ -170,25 +185,23 @@ huobiwanjia.home.executeScroll = function(isPrevious) {
     length = huobiwanjia.home.slideshow.merchantAmount
       - (huobiwanjia.home.page - 1) * 5;
   }
-  var next = '';
+  var targetHtml = '';
   for (var index = 0; index < length; ++index) {
-    next = '<span class="item"></span>' + next;
+    targetHtml += '<span class="item"></span>';
   }
-  var targetPosition = '-=70px';
   var target = 'next';
+  var targetPosition = '-=70px';
+  var currentHtml = '<div id="current">'
+    + $('#merchant_list').html() + '</div>';
+  var html = currentHtml + '<div id="next">' + targetHtml + '</div>';
   if (isPrevious) {
     target = 'previous';
-    $('#merchant_list').html('<div id="previous">' + next + '</div><div id="current">' + $('#merchant_list').html()
-      + '</div>'
-    );
+    html = '<div id="previous">' + targetHtml + '</div>' + currentHtml;
     targetPosition = '+=70px';
-  } else {
-    $('#merchant_list').html('<div id="current">' + $('#merchant_list').html()
-      + '</div><div id="next">' + next + '</div>'
-    );
   }
-  $('#current').animate({'top':targetPosition}, 'slow');
-  $('#' + target).animate({'top':targetPosition}, 'slow', function() {
+  $('#merchant_list').html(html);
+  $('#current').animate({ 'top': targetPosition }, 'slow');
+  $('#' + target).animate({ 'top': targetPosition }, 'slow', function() {
     $('#merchant_list').html($('#' + target).html());
     $('#merchant_list').removeClass('move');
     var html = '<span class="previous"></span><span></span>';
@@ -205,7 +218,8 @@ huobiwanjia.home.executeScroll = function(isPrevious) {
 
 huobiwanjia.home.fillMerchantList = function() {
   var html = '';
-  for (var index = 0; index < huobiwanjia.home.slideshow.merchantList.length; ++index) {
+  var length = huobiwanjia.home.slideshow.merchantList.length;
+  for (var index = 0; index < length; ++index) {
     var merchant = huobiwanjia.home.slideshow.merchantList[index];
     html += '<span class="item"><img src="/+/img/logo/'
       + merchant[2] + '.png"/></span>';
@@ -215,18 +229,18 @@ huobiwanjia.home.fillMerchantList = function() {
     target = $('#merchant_list div');
   }
   target.html(html);
-  huobiwanjia.home.afterFillMerchantList();
+  huobiwanjia.home.afterScroll();
 };
 
-huobiwanjia.home.afterFillMerchantList = function() {
+huobiwanjia.home.afterScroll = function() {
   if ($('#merchant_list div').length !== 0) {
-    setTimeout(huobiwanjia.home.afterFillMerchantList, 100);
+    setTimeout(huobiwanjia.home.afterScroll, 100);
     return;
   }
+  huobiwanjia.home.isScrollEnabled = true;
   huobiwanjia.home.selectMerchant($('#merchant_list span').first(), 0);
   huobiwanjia.home.enhanceMerchantList();
   huobiwanjia.home.play();
-  huobiwanjia.home.isScrollEnabled = true;
 };
 
 /* auto play
@@ -258,7 +272,7 @@ huobiwanjia.home.play = function() {
 };
 
 huobiwanjia.home.preloadSlide = function() {
-  var next = huobiwanjia.home.slideshow.currentMerchantIndex + 1;
+  var next = huobiwanjia.home.currentMerchantIndex + 1;
   if (typeof huobiwanjia.home.slideshow.merchantList[next] === 'undefined') {
     next = 1;
   }
@@ -269,7 +283,7 @@ huobiwanjia.home.preloadSlide = function() {
   var src = '/+/img/slide/' + merchant[2] + '/0.jpg';
   if ($.inArray(src, huobiwanjia.home.slideCache) === -1) {
     huobiwanjia.home.slideCache.push(src);
-    new Image().src = '/+/img/slide/' + merchant[2] + '/0.jpg';
+    new Image().src = src;
   }
 };
 
