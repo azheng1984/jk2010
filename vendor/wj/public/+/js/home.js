@@ -217,10 +217,10 @@ huobiwanjia.home.fillMerchantList = function() {
     target = $('#merchant_list div');
   }
   target.html(html);
-  huobiwanjia.home.afterScroll();
+  huobiwanjia.home.afterFillMerchantList();
 };
 
-huobiwanjia.home.afterScroll = function() {
+huobiwanjia.home.afterFillMerchantList = function() {
   if ($('#merchant_list div').length !== 0) {
     setTimeout(huobiwanjia.home.afterScroll, 100);
     return;
@@ -242,9 +242,6 @@ $(function() {
 });
 
 huobiwanjia.home.play = function() {
-  if (huobiwanjia.home.timer !== -1) {
-    huobiwanjia.home.stop();
-  }
   huobiwanjia.home.timer = setInterval(function() {
     if (huobiwanjia.home.isHold) {
       return;
@@ -277,7 +274,6 @@ huobiwanjia.home.preloadSlide = function() {
 
 huobiwanjia.home.stop = function() {
   clearInterval(huobiwanjia.home.timer);
-  huobiwanjia.home.timer = -1;
 };
 
 /* merchant click tracking
