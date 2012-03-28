@@ -154,7 +154,7 @@ class HomeScreen extends Screen {
     if ($GLOBALS['PAGE'] !== 1) {
       $hrefPrefix = '?page='.$GLOBALS['PAGE'].'&';
     }
-    echo '<div id="merchant_list">';
+    echo '<div id="merchant_list_wrapper"><div id="merchant_list">';
     foreach ($GLOBALS['SLIDESHOW'] as $id => $merchant) {
       $img = '<img src="/+/img/logo/'.$merchant['path'].'.png"/>';
       if ($id === $this->merchantId) {
@@ -164,7 +164,7 @@ class HomeScreen extends Screen {
       echo '<a href="', $hrefPrefix, 'merchant_id=', $id, '" rel="nofollow">',
         $img, '</a>';
     }
-    echo '</div>';
+    echo '</div></div>';
   }
 
   private function renderScroll() {
@@ -198,6 +198,7 @@ class HomeScreen extends Screen {
         .$item['path'].'",["'.implode('","', $item['slide_list']).'"]]';
     }
     $this->addJs('huobiwanjia.home.slideshow={merchantAmount:'
-      .$GLOBALS['MERCHANT_TYPE'][2].',merchantList:['.implode(',', $list).']}');
+      .$GLOBALS['MERCHANT_TYPE'][2].',merchantList:['.implode(',', $list).']};'
+    );
   }
 }
