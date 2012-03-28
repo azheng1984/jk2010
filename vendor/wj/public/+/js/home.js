@@ -26,11 +26,8 @@ $(function() {
  *****************************/
 $(function() {
   $('#slide_list').children().each(function() {
-    var current = $(this);
-    var classAttribute = 'class="item"';
-    if (current.attr('href') === undefined) {
-      classAttribute = 'class="current"';
-    }
+    var current = $(this), classAttribute =
+      current.attr('href') === undefined ? 'class="current"' : 'class="item"';
     current.replaceWith('<span ' + classAttribute + '></span>');
   });
   huobiwanjia.home.enhanceSlideList();
@@ -39,9 +36,7 @@ $(function() {
 huobiwanjia.home.enhanceSlideList = function() {
   var index = 0;
   $('#slide_list').children().each(function() {
-    var current = $(this);
-    var currentIndex = index;
-    ++index;
+    var current = $(this), currentIndex = index++;
     current.hover(
       function() { if ($(this).hasClass('item')) $(this).addClass('hover'); },
       function() { $(this).removeClass('hover'); }
@@ -49,8 +44,9 @@ huobiwanjia.home.enhanceSlideList = function() {
     current.click(function() {
       $('#slide_list .current').attr('class', 'item');
       $(this).attr('class', 'current');
-      var merchant = huobiwanjia.home.slideshow.merchantList
-        [huobiwanjia.home.currentMerchantIndex];
+      var merchant = huobiwanjia.home.slideshow.merchantList[
+        huobiwanjia.home.currentMerchantIndex
+      ];
       $('#slide img').attr('src', '/+/img/slide/' + merchant[2]
         + '/' + currentIndex + '.jpg');
       $('#slide').attr('href', 'http://' + merchant[3][currentIndex]);
@@ -62,8 +58,7 @@ huobiwanjia.home.enhanceSlideList = function() {
  *****************************/
 $(function() {
   $('#merchant_list').children().each(function() {
-    var current = $(this);
-    var classAttribute = ' class="item"';
+    var current = $(this), classAttribute = ' class="item"';
     if (current.attr('href') === undefined) {
       classAttribute = ' class="current"';
     }
@@ -76,9 +71,7 @@ $(function() {
 huobiwanjia.home.enhanceMerchantList = function() {
   var index = 0;
   $('#merchant_list').children().each(function() {
-    var current = $(this);
-    var currentIndex = index;
-    ++index;
+    var current = $(this), currentIndex = index++;
     current.hover(
       function() {
         if ($(this).hasClass('item')) { 
@@ -102,12 +95,12 @@ huobiwanjia.home.selectMerchant = function(span, index) {
     return;
   }
   huobiwanjia.home.currentMerchantIndex = index;
-  var merchant = huobiwanjia.home.slideshow.merchantList[index];
+  var merchant = huobiwanjia.home.slideshow.merchantList[index],
+    src = '/+/img/slide/' + merchant[2] + '/0.jpg';
   $('#merchant_list .current').attr('class', 'item');
   span.attr('class', 'current');
   $('#merchant span').text(merchant[0]);
   $('#merchant').attr('href', merchant[1]);
-  var src = '/+/img/slide/' + merchant[2] + '/0.jpg';
   $('#slide img').attr('src', src);
   if ($.inArray(src, huobiwanjia.home.slideCache) === -1) {
     huobiwanjia.home.slideCache.push(src);
@@ -129,8 +122,8 @@ huobiwanjia.home.selectMerchant = function(span, index) {
  *****************************/
 $(function() {
   $('#scroll a').each(function() {
-    var classValue = $(this).attr('class');
-    var classAttribute = '';
+    var classValue = $(this).attr('class'),
+      classAttribute = '';
     if (typeof classAttribute !== 'undefined' && classAttribute !== false) {
       classAttribute = ' class="' + classValue + '"';
     }
@@ -189,15 +182,14 @@ huobiwanjia.home.executeScroll = function(isPrevious) {
   for (var index = 0; index < length; ++index) {
     targetHtml += '<span class="item"></span>';
   }
-  var target = 'next';
-  var targetPosition = '-=70px';
-  var currentHtml = '<div id="current">'
-    + $('#merchant_list').html() + '</div>';
-  var html = currentHtml + '<div id="next">' + targetHtml + '</div>';
+  var target = 'next',
+    targetPosition = '-=70px',
+    currentHtml = '<div id="current">' + $('#merchant_list').html() + '</div>',
+    html = currentHtml + '<div id="next">' + targetHtml + '</div>';
   if (isPrevious) {
     target = 'previous';
-    html = '<div id="previous">' + targetHtml + '</div>' + currentHtml;
     targetPosition = '+=70px';
+    html = '<div id="previous">' + targetHtml + '</div>' + currentHtml;
   }
   $('#merchant_list').html(html);
   $('#current').animate({ 'top': targetPosition }, 'slow');
@@ -217,8 +209,8 @@ huobiwanjia.home.executeScroll = function(isPrevious) {
 };
 
 huobiwanjia.home.fillMerchantList = function() {
-  var html = '';
-  var length = huobiwanjia.home.slideshow.merchantList.length;
+  var html = '',
+    length = huobiwanjia.home.slideshow.merchantList.length;
   for (var index = 0; index < length; ++index) {
     var merchant = huobiwanjia.home.slideshow.merchantList[index];
     html += '<span class="item"><img src="/+/img/logo/'
