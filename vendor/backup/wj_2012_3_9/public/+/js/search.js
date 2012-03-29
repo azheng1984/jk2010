@@ -1,9 +1,9 @@
 $(function() {
   if ($('#result').length !== 0) {
-    //TODO:ajax load tag list
+    //TODO:ajax load more tag list
     $uri = window.location.pathname + '?media=json';
     $.getJSON($uri, function(data) {
-      //使用 js 渲染，剔除缓存重复（缓存造成）
+      //使用 js 渲染，剔除重复（缓存造成）
       var deep = window.location.pathname.split('/').length;
       var html  = '';
       if (deep === 3) {

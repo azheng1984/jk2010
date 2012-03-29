@@ -171,8 +171,11 @@ h2 a:hover {
 #result h3 a:visited {
   color:#551a8b;
 }
-#result h3 span, #result li span {
+#result h3 span, #result li span, #result li .value span {
   color:#d00;
+}
+#result li .value {
+  color:#555;
 }
 #result .price {
   font-size:12px;
@@ -207,6 +210,96 @@ h2 a:hover {
 }
 #result .merchant {
   color:#690;
+}
+/* tag
+ **************************************/
+#tag {
+  width:170px;
+}
+#tag h2 {
+  background: url(/+/img/tag.png) 2px 7px no-repeat;
+  padding: 8px 0 0 22px;
+  font-size:15px;
+}
+#tag ol {
+  clear:left;
+  padding:6px 0 0 6px;
+}
+#tag li {
+  width:100%;
+  margin:3px 0;
+}
+#tag .value a {
+  float:left;
+  padding:2px 6px 0 5px;
+  font-size:11px;
+  border:1px solid;
+  border-color:#eee #ccc #ccc #eee;
+  color:#999;
+  background:#fff;
+  border-radius:3px 11px 11px 3px;
+}
+#tag .value a:hover {
+  border:0;
+  padding:3px 7px 1px 6px;
+  background:#06c;
+  color:#fff;
+}
+#tag .value a span {
+  font-size:13px;
+  color:#06c;
+}
+#tag .value a:hover span {
+  color:#fff;
+}
+#tag .key {
+  float:left;
+  padding-left:14px;
+  background:url(/+/img/plus.png) 1px 5px no-repeat;
+  cursor:pointer;
+}
+#tag .key:hover {
+  color:#111;
+  background-image:url(/+/img/plus_hover.png);
+}
+#tag .key:hover span {
+  border-color:#111;
+}
+#tag .key span {
+  border-bottom:1px solid #555;
+}
+#tag .open {
+  background-image:url(/+/img/minus.png);
+}
+#tag .open:hover {
+  background-image:url(/+/img/minus_hover.png);
+}
+#load {
+  clear:left;
+  margin:3px 0 0 8px;
+}
+#tag .more {
+  clear:left;
+  padding-right:16px;
+  background:url(/+/img/more.png) 30px 8px no-repeat;
+  cursor:pointer;
+  margin:3px 0 0 8px;
+}
+#tag .more span {
+  border-bottom:1px solid #555;
+}
+#tag .more:hover {
+  color:#111;
+  background-image:url(/+/img/more_hover.png);
+}
+#tag .more:hover span {
+  border-color:#111;
+}
+#tag .property {
+  background-position:55px 8px;
+}
+#tag ol ol {
+  padding:3px 0 0 6px;
 }
 /* pagination
  **************************************/
