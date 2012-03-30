@@ -1,5 +1,46 @@
 huobiwanjia.search = function() {
-  
+  var args = [];
+  var query = huobiwanjia.queryString;
+  if (typeof(query['price_from']) !== 'undefined') {
+    args.push('price_form=' + query['price_from']);
+  }
+  if (typeof(query['price_to']) !== 'undefined') {
+    args.push('price_to=' + query['price_to']);
+  }
+  if (typeof(query['sort']) !== 'undefined') {
+    args.push('sort=' + query['sort']);
+  }
+  var queryString = '';
+  if (args.length > 0) {
+    queryString = '?' + args.join('&');
+  }
+  var propertyList = {};
+  var level = 0;
+  var name = null;
+  var valueList = [];
+  $('h1').children().each(function() {
+    if ($(this).hasClass('section')) {
+      ++level;
+      return;
+    }
+    if ($(this).is('span')) {
+      if (name !== null) {
+        propertyList[name] = valueList;
+      }
+      name = $(this).text().substr(0, $(this).text().length - 1);
+      valueList = [];
+      return;
+    }
+    valueList.push(encodeURIComponent($(this).text()));
+  });
+  if (name !== null) {
+    propertyList[name] = valueList;
+  }
+  return {
+    queryString: queryString,
+    level: level,
+    propertyList: propertyList
+  };
 }();
 
 /* price range
@@ -7,6 +48,240 @@ huobiwanjia.search = function() {
 
 /* tag list
  *****************************/
+$(function() {
+  $.getJSON(window.location.pathname + '?media=json', function(data) {
+    var hasMore = data.shift() > 20;
+    var type = window.location.pathname.split('/').length === 3
+      ? 'category' : 'property';
+    if (type === 'category') {
+      huobiwanjia.search.buildCategoryList(data, hasMore);
+      return;
+    }
+    huobiwanjia.search.buildPropertyList(data, hasMore);
+  });
+});
+
+huobiwanjia.search.buildCategoryList = function(data, hasMore) {
+  hasMore= true;
+  var html = '<div id="tag"><h2>分类:</h2><ol>';
+  for (var index = 0; index < data.length; ++index) {
+    var item = data[index];
+    html += '<li class="value"><a href="'
+      + encodeURIComponent(item[0]) + '/'
+      + huobiwanjia.search.queryString + '"><span>'
+      + item[0] + '</span> ' + item[1] + '</a></li>';
+  }
+  html += '</ol>';
+  if (hasMore) {
+    html += '<span class="more"><span>更多</span></span>';
+  }
+  $('#result_wrapper').after(html + '</div>');
+  huobiwanjia.search.enhanceMoreCategory(2);
+};
+
+huobiwanjia.search.enhanceMoreCategory = function(page) {
+  $('#tag .more').click(function() {
+    $(this).replaceWith('<span class="load">正在加载…</span>');
+    var uri = window.location.pathname + '?media=json&page=' + page;
+    $.getJSON(uri, function(data) {
+      var html = '';
+      var hasMore = data.shift() > page * 20;
+      for (var index = 0; index < data.length; ++index) {
+        var item = data[index];
+        html += '<li class="value"><a href="'
+          + encodeURIComponent(item[0]) + '/'
+          + huobiwanjia.search.queryString
+          + '"><span>' + item[0] + '</span> ' + item[1] + '</a></li>';
+      }
+      
+      $('#tag .load').remove();
+      $('#tag ol').append(html);
+      hasMore = true;
+      if (hasMore === false) {
+        return;
+      }
+      if (huobiwanjia.search.categoryPage === 5) {
+        $('#tag ol').append('<li>…</li>');
+        return;
+      }
+      $('#tag ol').after('<span class="more"><span>更多</span></span>');
+      huobiwanjia.search.enhanceMoreCategory(++page);
+    });
+    $('#tag .load').fadeIn('fast');
+  });
+};
+
+huobiwanjia.search.buildPropertyList = function(data, hasMore) {
+  var html = '<div id="tag"><h2>属性:</h2><ol>';
+  for (var index = 0; index < data.length; ++index) {
+    html += '<li><span class="key"><span>'
+      + data[index][0] + '</span></span></li>';
+  }
+  html += '</ol>';
+  hasMore = true;
+  if (hasMore) {
+    html += '<span class="more property"><span>更多属性</span></span>';
+  }
+  $('#result_wrapper').after(html + '</div>');
+  $('#tag .key').each(function() {
+    huobiwanjia.search.enhanceKey($(this));
+  });
+  huobiwanjia.search.enhanceMoreKey(2);
+};
+
+huobiwanjia.search.enhanceKey = function(key) {
+  key.click(function() {
+    var current = $(this);
+    if (current.hasClass('key open')) {
+      current.removeClass('open');
+      current.nextAll().hide();
+      return;
+    }
+    current.addClass('open');
+    if (current.next('ol').length > 0) {
+      current.nextAll().show();
+      return;
+    }
+    current.after('<span class="load">正在加载…</span>');
+    var keyName = current.text();
+    var uri = window.location.pathname + '?key='
+      + encodeURIComponent(keyName) + '&media=json';
+    $.getJSON(uri, function(data) {
+      //alert('x');
+      current.parent().children('.load').remove();
+      var html = '<ol>';
+      var hasMore = true;data.shift() > 20;
+      for (var index = 0; index < data.length; ++index) {
+        var item = data[index];
+        html += '<li class="value"><a href="'
+          + huobiwanjia.search.getTagHref(keyName, item[0]) +'">'
+          + '<span> ' + item[0] + '</span>' + '</a></li>';
+      }
+      html += '</ol>';
+      current.after(html);
+      if (hasMore === false) {
+        return;
+      }
+      current.next().after('<span class="more"><span>更多</span></span>');
+      huobiwanjia.search.enhanceMoreValue(current, keyName, 2);
+    });
+    current.parent().children('.load').fadeIn('fast');
+  });
+};
+
+huobiwanjia.search.enhanceMoreValue = function(key, keyName, page) {
+  var more = key.parent().children('.more');
+  more.click(function() {
+    more.replaceWith('<span class="load">正在加载…</span>');
+    var uri = window.location.pathname + '?key='
+      + encodeURIComponent(keyName) + '&page=' + 1 + '&media=json&t=' + Date.now();
+    $.getJSON(uri, function(data) {
+        key.parent().children('.load').remove();
+        var html = '';
+        if (data.length === 0) {//TODO:move to error
+          return;
+        }
+        var hasMore = data.shift() > 20 * page;
+        for (var index = 0; index < data.length; ++index) {
+          var item = data[index];
+          html += '<li class="value"><a href="'
+            + huobiwanjia.search.getTagHref(keyName, item[0]) +'">'
+            + '<span> ' + item[0] + '</span>' + '</a></li>';
+        }
+        key.next().append(html);
+        //key.next().children('.hidden').fadeIn('fast');
+        hasMore = true;
+        if (hasMore === false) {
+          return;
+        }
+        if (page === 5) {
+          key.next('ol').append('<li>…</li>');
+          return;
+        }
+        key.next('ol').after('<span class="more"><span>更多</span></span>');
+        huobiwanjia.search.enhanceMoreValue(key, keyName, ++page);
+    });
+    key.parent().children('.load').fadeIn('fast');
+  });
+};
+
+huobiwanjia.search.enhanceMoreKey = function(page) {
+  $('.more.property').click(function() {
+    $(this).replaceWith('<span class="load property">正在加载…</span>');
+    var uri = window.location.pathname + '?page=' + 1 + '&media=json';
+    $.getJSON(uri, function(data) {
+      $('.load.property').fadeOut('fast', function() {
+        $(this).remove();
+        var hasMore = data.shift() > 20 * page;
+        var html = '';
+        for (var index = 0; index < data.length; ++index) {
+          html += '<li class="hidden"><span class="key"><span>'
+            + data[index][0] + '</span></span></li>';
+        }
+        $('#tag').children('ol').append(html);
+        $('#tag').children('ol').children('.hidden').each(function() {
+          huobiwanjia.search.enhanceKey($(this).children('span'));
+        });
+        $('#tag').children('ol').children('.hidden').fadeIn('fast');
+        if (hasMore === false) {
+          return;
+        }
+        if (page === 5) {
+          $('#tag').children('ol').append('<li>…</li>');
+          return;
+        }
+        $('#tag').children('ol').after(
+          '<span class="more property"><span>更多属性</span></span>'
+        );
+        huobiwanjia.search.enhanceMoreKey(++page);
+      });
+    });
+  });
+};
+
+huobiwanjia.search.getTagHref = function(keyName, valueName) {
+  var propertyList = huobiwanjia.search.propertyList;
+  var level = huobiwanjia.search.level;
+  var queryString = huobiwanjia.search.queryString;
+  if (typeof propertyList[keyName] === 'undefined') {
+    var href = window.location.pathname.split('/')[3];
+    if (level === 2) {
+      href += '&';
+    }
+    return href + encodeURIComponent(keyName) + '=' + encodeURIComponent(valueName) + '/' + queryString;
+  }
+  var isRemove = false;
+  sectionList = [];
+  for (var propertyName in propertyList) {
+    var valueList = propertyList[propertyName];
+    var valuePath = encodeURIComponent(valueName);
+    if (keyName === propertyName && $.inArray(valuePath, valueList) !== -1) {
+      isRemove = true;
+      valueList = $.grep(valueList, function(value) {
+        return value != valuePath;
+      });
+    } else {
+      valueList = valueList.slice(0);
+      valueList.push(valuePath);
+    }
+    if (valueList.length !== 0) {
+      sectionList.push(
+        encodeURIComponent(propertyName) + '=' + valueList.join('&')
+      );
+    }
+  }
+  result = '';
+  if (sectionList.length !== 0) {
+    result = sectionList.join('&') + '/';
+  }
+  result = result + queryString;
+  if (isRemove) {
+    result = '..'.result;
+  }
+  return result;
+};
+
+/*
 $(function() {
   $.getJSON(window.location.pathname + '?media=json', function(data) {
     var totalFound = data.shift();
@@ -30,36 +305,45 @@ $(function() {
     $('#tag .key').click(function() {
       if ($(this).attr('class') === 'key open') {
         $(this).attr('class', 'key');
-        $(this).parent().children('ol').remove();
-        $(this).parent().children('div').remove();
+        $(this).parent().children('ol').hide();
+        $(this).parent().children('div').hide();
         return;
       }
-      var target = $(this);
+      var target = $(this).attr('class', 'key open');
+      if ($(this).next('ol').length > 0) {
+        $(this).nextUntil('li').show();
+        return;
+      }
       //TODO: 如果有属性选定，先判断 is_multiple 值，再决定是否发起请求
       var keyName = $(this).text();
       $uri2 = window.location.pathname + '?key=' + keyName + '&media=json';
+      target.after('<div id="load">正在加载...</div>');
       $.getJSON($uri2, function(data) {
-        var html = '';
-        for (var index = 1; index < data.length; ++index) {
-          var item = data[index];
-          //var tmp = getPropertyHref(keyName, item[0], true);
-          var href = '/';//tmp[0];
-          if (window.location.pathname.split('/').length > 4) {
-            href = '../' + href;
+        $('#load').fadeOut('fast', function() {
+          $(this).remove();
+          var html = '';
+          for (var index = 1; index < data.length; ++index) {
+            var item = data[index];
+            //var tmp = getPropertyHref(keyName, item[0], true);
+            var href = '/';//tmp[0];
+            if (window.location.pathname.split('/').length > 4) {
+              href = '../' + href;
+            }
+            if (true) {
+              html += '<li style="display:none"><span class="value"><a href="' + href + '">' + '<span>' + item[0] + '</span> ' + item[1] + '</a></li>';
+            } else {
+              html += '<li><span class="value selected"><a href="' + href + '">' + '<span>' + item[0] + '</span> ' + '</a></li>';
+            }
           }
-          if (true) {
-            html += '<li><span class="value"><a href="' + href + '">'+ '<span>' + item[0] + '</span> ' + item[1] + '</a></li>';
-          } else {
-            html += '<li><span class="value selected"><a href="' + href + '">'+ '<span>' + item[0] + '</span> ' + '</a></li>';
-          }
-        }
-        target.after('<ol>' + html + '</ol><div class="more"><span>更多</span></div>').attr('class', 'key open');
-        target = null;
+          target.after('<ol>' + html + '</ol><div class="more"><span>更多</span></div>');
+          target.next().children(':hidden').fadeIn('slow');
+          target = null;
+        });
       });
     });
   });
 });
-var categoryLoadCount = 0;
+var categoryLoadCount = 1;
 function enhanceCategoryList() {
   $('#tag .more').click(function() {
     $(this).replaceWith('<div id="load">正在加载…</div>');
@@ -86,30 +370,7 @@ function enhanceCategoryList() {
 }
 var propertyList = {};
 var level = null;
-function getPropertyHref(keyName, valueName, removeFlag) {
-  if (level === null) {
-    level = 0;
-    var name = null;
-    var valueList = null;
-    $('h1').children().each(function() {
-      if ($(this).hasClass('section')) {
-        ++level;
-        return;
-      }
-      if ($(this).is('span')) {
-        if (name !== null) {
-          propertyList[name] = valueList;
-        }
-        name = $(this).text().substr(0, $(this).text().length - 1);
-        valueList = [];
-        return;
-      }
-      valueList.push(encodeURIComponent($(this).text()));
-    });
-    if (name !== null) {
-      propertyList[name] = valueList;
-    }
-  }
+function getTagHref(keyName, valueName, removeFlag) {
   if (typeof propertyList[keyName] === 'undefined') {
     var href = propertyListPath;
     if (level === 2) {
@@ -151,11 +412,8 @@ function getPropertyHref(keyName, valueName, removeFlag) {
   }
   return result;
 }
-
+*/
 /* product link list
- *****************************/
-
-/* product property highlight
  *****************************/
 
 /* product click tracking

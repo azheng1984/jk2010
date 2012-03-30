@@ -3,6 +3,7 @@ class SearchJson extends Json {
   private $list = array();
 
   public function __construct() {
+    usleep(400000);
     if ($GLOBALS['PAGE'] > 5) {
       throw new NotFoundException;
     }
