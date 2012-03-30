@@ -49,6 +49,7 @@ input:hover {
 input:focus {
   color:#111;
   outline:1px solid #bce;
+  outline-offset:0;/* chrome 默认为负 */
 }
 #wrapper {
   float:none;
@@ -92,9 +93,6 @@ input:focus {
   border-color:#555 #ccc #ccc #555;
   background:url(/+/img/screen.png) 0 -33px;/* firefox */
 }
-#header input:hover {
-  border-color:#555 #bbb #bbb #555;
-}
 #header button {
   margin-top:7px;
   width:30px;
@@ -132,18 +130,80 @@ input:focus {
 #footer a {
   margin:5px;
 }
+/* suggestion
+ **************************/
+#suggestion {
+  position:absolute;
+  top:36px;
+  left:100px;
+  width:375px;
+  color:#333;
+  border:1px solid;
+  border-color:#eee #ccc #ccc #eee;
+  background:white;
+  z-index:100;
+  box-shadow:0 0 3px #ccc;
+}
+#suggestion div {
+  padding:2px;
+}
+#suggestion ul {
+  margin:0;
+  float:right;
+  list-style:none;
+}
+#suggestion li {
+  float:left;
+  white-space:nowrap;
+  padding:2px 2px 2px 5px;
+  cursor:pointer;
+}
+#suggestion li a {
+  float:left;
+  width:368px;
+  color:#333;
+  border:0;
+}
+#suggestion li.hover {
+  background:#eee;
+}
+#suggestion li.hover .product_amount {
+  color:#333;
+  background:#ddd;
+}
+#suggestion .query {
+  float:left;
+}
+#suggestion li.hover em {
+  color:#888;
+}
+#suggestion em {
+  color:#aaa;
+  font-style:normal;
+  font-size:14px;
+}
+#suggestion .product_amount {
+  color:#666;
+  float:right;
+  background:#eee;
+  padding:0 4px;
+  line-height:16px;
+  margin:2px;
+  font-size:12px;
+  border-radius:2px;
+}
 /* pagination */
 #pagination {
   width:100%;
   line-height:30px;
-  padding-top:10px;
+  padding-top:8px;
   text-align:center;
 }
 #pagination a {
   color:#06c;
   border:1px solid #e5e5e5;
   padding:4px 8px;
-  background:url(/+/img/screen.png) 0 -68px repeat-x;
+  background:url(/+/img/screen.png) 0 -66px repeat-x;
   border-radius:3px;
 }
 #pagination a:hover {

@@ -165,8 +165,9 @@ class SearchExcerptionScreen {
   }
 
   private static function mergeLink($keyName, $valueNameList) {
-    return '<li>'.$keyName.': <span class="value">'
+    $result = '<li>'.$keyName.': <span class="value">'
       .implode('</span>; <span class="value">', $valueNameList).'</span></li>';
+    return str_replace('<span class="value">…</span>', '…', $result);
   }
 
   private static function cutLink($valueNameList, $keyword, $length) {
