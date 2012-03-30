@@ -149,7 +149,15 @@ huobiwanjia.search.enhanceKey = function(key) {
     $.getJSON(uri, function(data) {
       //alert('x');
       current.parent().children('.load').remove();
-      var html = '<ol>';
+      var isHidden = false;
+      if (key.hasClass('open') === false) {
+        isHidden = true;
+      }
+      var html = '<ol';
+      if (isHidden) {
+        html += ' class="hidden"';
+      }
+      html += '>';
       var hasMore = true;data.shift() > 20;
       for (var index = 0; index < data.length; ++index) {
         var item = data[index];
@@ -162,7 +170,12 @@ huobiwanjia.search.enhanceKey = function(key) {
       if (hasMore === false) {
         return;
       }
-      current.next().after('<span class="more"><span>更多</span></span>');
+      var hidden = '';
+      if (isHidden) {
+        hidden = ' hidden';
+      }
+      current.next().after('<span class="more'
+        + hidden + '"><span>更多</span></span>');
       huobiwanjia.search.enhanceMoreValue(current, keyName, 2);
     });
     current.parent().children('.load').fadeIn('fast');
@@ -198,7 +211,12 @@ huobiwanjia.search.enhanceMoreValue = function(key, keyName, page) {
           key.next('ol').append('<li>…</li>');
           return;
         }
-        key.next('ol').after('<span class="more"><span>更多</span></span>');
+        var hidden = '';
+        if (key.hasClass('open') === false) {
+          hidden = ' hidden';
+        }
+        key.next('ol').after('<span class="more'
+          + hidden +'"><span>更多</span></span>');
         huobiwanjia.search.enhanceMoreValue(key, keyName, ++page);
     });
     key.parent().children('.load').fadeIn('fast');
