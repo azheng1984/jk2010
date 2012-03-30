@@ -1,4 +1,17 @@
-var huobiwanjia = {};
+var huobiwanjia = function() {
+  var args = {};
+  if (location.search !== '') {
+    var queryString = location.search.charAt(0) === '?' ?
+       location.search.substring(1) : location.search;
+    var regex = /([^=&]+)(=([^&]*))?/g;
+    while (match = regex.exec(queryString)) {
+      var key = decodeURIComponent(match[1].replace(/\+/g,' '));
+      var value = decodeURIComponent(match[3].replace(/\+/g,' '));
+      args[key] = value;
+    }
+  }
+  return { queryString: args };
+}();
 
 /* search suggestion
  *****************************/
@@ -26,15 +39,5 @@ $(function() {
 /* parse query string
  *****************************/
 $(function() {
-  huobiwanjia.queryString = {};
-  if (location.search != '') {
-    var queryString = location.search.charAt(0) === '?' ?
-      location.search : location.search.substring(1);
-    var regex = /([^=&]+)(=([^&]*))?/g;
-    while (match = regex.exec(queryString)) {
-      var key = decodeURIComponent(match[1].replace(/\+/g,' '));
-      var value = decodeURIComponent(match[3].replace(/\+/g,' '));
-      huobiwanjia.queryString[key] = value;
-    }
-  }
+  
 });

@@ -217,7 +217,7 @@ h2 a:hover {
   width:170px;
 }
 #tag h2 {
-  background: url(/+/img/tag.png) 2px 7px no-repeat;
+  background: url(/+/img/tag.png) 2px 8px no-repeat;
   padding: 8px 0 0 22px;
   font-size:15px;
 }
@@ -274,11 +274,14 @@ h2 a:hover {
 #tag .open:hover {
   background-image:url(/+/img/minus_hover.png);
 }
-#load {
+#tag .load {
+  float:left;
   clear:left;
+  display:none;
   margin:3px 0 0 8px;
 }
 #tag .more {
+  float:left;
   clear:left;
   padding-right:16px;
   background:url(/+/img/more.png) 30px 8px no-repeat;
