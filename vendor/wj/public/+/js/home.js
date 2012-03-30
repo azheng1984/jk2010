@@ -39,6 +39,9 @@ huobiwanjia.home.enhanceSlideList = function() {
   var index = 0;
   $('#slide_list').children().each(function() {
     var current = $(this), currentIndex = index++;
+    if (current.hasClass('current') === false) {
+      current.attr('tabindex', '0');
+    }
     current.hover(
       function() {
         if ($(this).hasClass('item')) {
@@ -77,6 +80,9 @@ huobiwanjia.home.enhanceMerchantList = function() {
   var index = 0;
   $('#merchant_list').children().each(function() {
     var current = $(this), currentIndex = index++;
+    if (current.hasClass('current') === false) {
+      current.attr('tabindex', '0');
+    }
     current.hover(
       function() {
         if ($(this).hasClass('item')) {
@@ -95,6 +101,7 @@ huobiwanjia.home.enhanceMerchantList = function() {
   });
 };
 
+//TODO:tabindex
 huobiwanjia.home.selectMerchant = function(span, index) {
   if (huobiwanjia.home.isScrolling) {
     return;
@@ -167,7 +174,7 @@ huobiwanjia.home.enhanceScroll = function() {
     huobiwanjia.home.slideshow.merchantList =
       huobiwanjia.home.merchantListCache[huobiwanjia.home.page];
     huobiwanjia.home.fillMerchantList();
-  });
+  }).attr('tabindex', '0');
 };
 
 huobiwanjia.home.executeScroll = function(isPrevious) {

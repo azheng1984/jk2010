@@ -2,7 +2,7 @@ huobiwanjia.search = function() {
   var args = [];
   var query = huobiwanjia.queryString;
   if (typeof(query['price_from']) !== 'undefined') {
-    args.push('price_form=' + query['price_from']);
+    args.push('price_from=' + query['price_from']);
   }
   if (typeof(query['price_to']) !== 'undefined') {
     args.push('price_to=' + query['price_to']);
@@ -44,11 +44,56 @@ huobiwanjia.search = function() {
 }();
 
 /* price range
+ * ie 6 visibility hidden also caused tabindex reset
  *****************************/
+$(function() {
+  query = huobiwanjia.queryString;
+  var priceFrom = typeof(query['price_from']) !== 'undefined' ? query['price_from'] : '';
+  var priceTo = typeof(query['price_to']) !== 'undefined' ? query['price_to'] : '';
+  var form = '<form id="price_range" action="."><label for="price_from">&yen;</label>';
+  if (typeof(query['sort']) !== 'undefined') {
+    form += '<input name="sort" type="hidden" value="' + query['sort'] + '"/>';
+  }
+  form += '<input id="price_from" name="price_from" type="text" value="' + priceFrom + '" autocomplete="off"/><span>-</span>' +
+    '<input id="price_to" name="price_to" type="text" value="' + priceTo + '" autocomplete="off"/>' +
+    '<button tabIndex="-1" type="submit"></button></form>';
+  $('#toolbar h2').after(form);
+  function adjustInput() {
+    if ($(this).val().length > 4) {
+      $(this).css('width', '60px');
+      return;
+    }
+    $(this).css('width', '30px');
+  }
+  $('#price_range input').each(adjustInput);
+  $('#price_range input').keyup(adjustInput);
+  $('#price_range input').focusin(function() {
+    if ($('#price_range_button').length !== 0) {
+      $('#price_range_button').css({visibility: "visible"});
+      return;
+    }
+    $('#price_range').append('<span id="price_range_button" tabindex="0">确定</span>');
+    $('#price_range_button').hover(
+      function() {$(this).addClass('hover');},
+      function() {$(this).removeClass('hover');}
+    );
+    $('#price_range_button').click(function() {
+      $('#price_range').submit();
+    });
+    $('#price_range_button').keypress(function(e){
+      if(e.which == 13){
+        $('#price_range').submit();
+      }
+    });
+  });
+});
 
 /* tag list
  *****************************/
 $(function() {
+  if ($('#no_result').length !== 0) {
+    return;
+  }
   $.getJSON(window.location.pathname + '?media=json', function(data) {
     var hasMore = data.shift() > 20;
     var type = window.location.pathname.split('/').length === 3
@@ -69,7 +114,7 @@ huobiwanjia.search.buildCategoryList = function(data, hasMore) {
     html += '<li class="value"><a href="'
       + encodeURIComponent(item[0]) + '/'
       + huobiwanjia.search.queryString + '"><span>'
-      + item[0] + '</span> ' + item[1] + '</a></li>';
+      + item[0] + '</span>' + item[1] + '</a></li>';
   }
   html += '</ol>';
   if (hasMore) {
@@ -91,7 +136,7 @@ huobiwanjia.search.enhanceMoreCategory = function(page) {
         html += '<li class="value"><a href="'
           + encodeURIComponent(item[0]) + '/'
           + huobiwanjia.search.queryString
-          + '"><span>' + item[0] + '</span> ' + item[1] + '</a></li>';
+          + '"><span>' + item[0] + '</span>' + item[1] + '</a></li>';
       }
       
       $('#tag .load').remove();
@@ -199,7 +244,7 @@ huobiwanjia.search.enhanceMoreValue = function(key, keyName, page) {
           var item = data[index];
           html += '<li class="value"><a href="'
             + huobiwanjia.search.getTagHref(keyName, item[0]) +'">'
-            + '<span> ' + item[0] + '</span> ' + item[1] + '</a></li>';
+            + '<span> ' + item[0] + '</span>' + item[1] + '</a></li>';
         }
         key.next().append(html);
         //key.next().children('.hidden').fadeIn('fast');
@@ -261,12 +306,16 @@ huobiwanjia.search.getTagHref = function(keyName, valueName) {
   var propertyList = huobiwanjia.search.propertyList;
   var level = huobiwanjia.search.level;
   var queryString = huobiwanjia.search.queryString;
+  if (keyName === '分类') {
+    return encodeURIComponent(valueName) + '/' + queryString;
+  }
   if (typeof propertyList[keyName] === 'undefined') {
     var href = window.location.pathname.split('/')[3];
     if (level === 2) {
       href += '&';
     }
-    return href + encodeURIComponent(keyName) + '=' + encodeURIComponent(valueName) + '/' + queryString;
+    return href + encodeURIComponent(keyName) + '='
+      + encodeURIComponent(valueName) + '/' + queryString;
   }
   var isRemove = false;
   sectionList = [];
@@ -294,13 +343,36 @@ huobiwanjia.search.getTagHref = function(keyName, valueName) {
   }
   result = result + queryString;
   if (isRemove) {
-    result = '..'.result;
+    result = '..' + result;
   }
   return result;
 };
 
 /* product link list
  *****************************/
+$(function() {
+  $('#result li').each(function() {
+    var self = $(this);
+    var valueList = self.children('.value');
+    if (valueList.length === 0) {
+      return;
+    }
+    var list = self.html().split(': ');
+    if (list.length !== 2) {
+      return;
+    }
+    var keyName = list[0];
+    valueList.each(function() {
+      var html = $(this).html();
+      var valueName = html.replace(/<\/span>/gi, '').replace(/<span>/gi, '');
+      html = html.replace(/<\/span>/gi, '</span><span class="gray">')
+      .replace(/<span>/gi, '</span><span class="red">');
+      $(this).replaceWith('<a href="'
+        + huobiwanjia.search.getTagHref(keyName, valueName)
+        + '"><span class="gray">' + html + '</span></a>');
+    });
+  });
+});
 
 /* product click tracking
  *****************************/
