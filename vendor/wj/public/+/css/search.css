@@ -280,6 +280,9 @@ h2 a:hover {
   display:none;
   margin:3px 0 0 8px;
 }
+#tag .hidden {
+  display:none;
+}
 #tag .more {
   float:left;
   clear:left;
