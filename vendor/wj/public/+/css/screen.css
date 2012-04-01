@@ -5,6 +5,9 @@ body {
   color:#555;
   font-size:13px;
 }
+*:active {
+  outline:none;
+}
 img {
   border:0;
 }
@@ -207,9 +210,8 @@ input:focus {
   border-radius:3px;
 }
 #pagination a:hover {
-  border:0;
-  margin:1px;
   background:#06c;
+  border-color:#05a;
   color:#fff;
 }
 #pagination span {

@@ -163,6 +163,9 @@ ol .current {
 #merchant_list div span {
   border-top:1px solid #e5e5e5;
 }
+#merchant_list span:active {
+  outline:0;
+}
 #next {
   padding-top:10px;
 }

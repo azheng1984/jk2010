@@ -157,12 +157,10 @@ h2 a:hover {
   height:0;
 }
 #price_range_button {
-  float:left;
   line-height:18px;
   padding:0 5px;
   margin-left:4px;
   font-size:12px;
-  background:url(/+/img/screen.png) 0 -68px;
   border:1px solid;
   border-color:#ddd #bbb #bbb #ddd;
   border-radius:2px;
