@@ -9,7 +9,7 @@
   width:100%;
   padding-top:10px;
   border-bottom:1px solid #e5e5e5;
-  background:#ffffe8;
+  background:#ffe;
   box-shadow:0 1px 2px #e8e8e8;
 }
 #slogon h1 {
@@ -24,21 +24,23 @@
 #slogon li {
   padding-right:15px;
   font-size:11px;
-  color:#999;
+  color:#888;
 }
 #slogon a, #slogon .ellipsis {
   font-size:13px;
-  color:#777;
+  color:#888;
+  border-color:#888;
 }
 #slogon a:hover {
   color:#111;
+  border-color:#111;
 }
 /* merchant category list
  *************************************/
 ol {
   padding:8px;
   _padding:8px 5px;
-  font-size:14px;
+  font-size:15px;
 }
 ol li {
   clear:left;
@@ -90,13 +92,13 @@ ol .current {
   background:#d1d1d1;
 }
 #slide_list a:hover {
-  background:#aaa;
+  background:#bbb;
 }
 #slide_list .item {
   background:#d1d1d1;
 }
 #slide_list .hover {
-  background:#aaa;
+  background:#bbb;
   cursor:pointer;
 }
 #slide_list span {
