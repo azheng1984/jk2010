@@ -139,6 +139,7 @@ input:focus {
   position:absolute;
   top:36px;
   left:100px;
+  font-size:14px;
   width:375px;
   color:#333;
   border:1px solid;
@@ -183,7 +184,6 @@ input:focus {
 #suggestion em {
   color:#aaa;
   font-style:normal;
-  font-size:14px;
 }
 #suggestion .product_amount {
   color:#666;
