@@ -83,6 +83,13 @@ huobiwanjia.home.enhanceMerchantList = function() {
     if (current.hasClass('current') === false) {
       current.attr('tabindex', '0');
     }
+    current.click(function() {
+      current.css("outline", 0); current.css("outline", 0);//去除边框 TODO:ie9 点击时先 focus 再 mousedown
+      
+    });
+    //hover+mousedown 时禁用 outline，mouseout/点击时 时启用
+    current.focus(function() {
+    });
     current.hover(
       function() {
         if ($(this).hasClass('item')) {
@@ -109,8 +116,8 @@ huobiwanjia.home.selectMerchant = function(span, index) {
   huobiwanjia.home.currentMerchantIndex = index;
   var merchant = huobiwanjia.home.slideshow.merchantList[index],
     src = '/+/img/slide/' + merchant[2] + '/0.jpg';
-  $('#merchant_list .current').attr('class', 'item');
-  span.attr('class', 'current');
+  $('#merchant_list .current').attr('class', 'item');//add tabindex
+  span.attr('class', 'current');//remove tabindex
   $('#merchant span').text(merchant[0]);
   $('#merchant').attr('href', 'http://' + merchant[1]);
   $('#slide img').attr('src', src);
