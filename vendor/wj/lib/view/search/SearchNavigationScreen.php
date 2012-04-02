@@ -1,32 +1,50 @@
 <?php
 class SearchNavigationScreen {
   private static $propertyPathList;
+  private static $isFollow;
 
   public static function render() {
     $list = self::buildList();
-    echo '<div id="nav"><h1>';
+    echo '<div id="nav">';
     $last = count($list) - 1;
+    $isH1 = true;
+    self::$isFollow = isset($list[0][0]['class']);
     for ($index = 0; $index <= $last; ++$index) {
       $section = $list[$index];
       foreach ($section as $item) {
-        if (isset($item['href']) === false && isset($item['class'])
-          && $item['class'] === false) {
-          echo $item['text'];
-          continue;
+        if ($isH1) {
+          echo '<h1>';
         }
-        $class = isset($item['class']) ? ' class="'.$item['class'].'"' : '';
-        if (isset($item['href']) === false) {
-          echo '<span', $class, '>', $item['text'], '</span>';
-          continue;
+        self::renderItem($item);
+        if ($isH1) {
+          echo '</h1>';
+          $isH1 = false;
+          self::$isFollow = false;
         }
-        echo '<a', $class, ' href="', $item['href'], '" rel="nofollow">',
-          $item['text'], '</a>';
       }
       if ($index !== $last) {
         echo '<span class="delimiter"></span>';
       }
     }
-    echo '</h1></div>';
+    echo '</div>';
+  }
+
+  private static function renderItem($item) {
+    if (isset($item['href']) === false && isset($item['class'])
+        && $item['class'] === false) {
+      echo $item['text'];
+      return;
+    }
+    $class = isset($item['class']) ? ' class="'.$item['class'].'"' : '';
+    if (isset($item['href']) === false) {
+      echo '<span', $class, '>', $item['text'], '</span>';
+      return;
+    }
+    echo '<a', $class, ' href="', $item['href'], '"';
+    if (self::$isFollow === false) {
+      echo ' rel="nofollow"';
+    }
+    echo '>', $item['text'], '</a>';
   }
 
   private static function buildList() {
