@@ -62,7 +62,7 @@ ol .current {
   margin-top:10px;
   padding:10px 0 0 10px;
   border:1px solid #d1d1d1;
-  box-shadow:0 0 3px #ddd;
+  box-shadow:0 0 3px #d1d1d1;
   background:#fff;
 }
 #slide {
@@ -77,17 +77,17 @@ ol .current {
   height:300px;
 }
 #slide_list {
-  padding-top:5px;/* ie6 line-height 无法垂直居中 */
+  padding-top:4px;/* ie6 line-height 无法垂直居中 */
   margin-right:10px;/* ie6 会出现 slide_wrapper padding-right 塌陷 */
   float:right;
 }
 #slide_list a, #slide_list span {
   display:inline-block;
-  font-size:6px;/* ie6 inline-block 最小高度等于文字高度 */
-  width:45px;
-  height:8px;
+  /*font-size:5px; ie6 inline-block 最小高度等于文字高度 */
+  width:40px;
+  height:10px;
   border:0;
-  margin:0 2px;
+  margin:0 1px;
   _margin-top:5px;
   background:#d1d1d1;
 }
@@ -95,7 +95,7 @@ ol .current {
   background:#bbb;
 }
 #slide_list .item {
-  background:#d1d1d1;
+  background: #d1d1d1;
 }
 #slide_list .hover {
   background:#bbb;
@@ -107,7 +107,7 @@ ol .current {
 #merchant {
   float:left;
   border:0;
-  line-height:30px;
+  line-height:26px;
   color:#888;
 }
 #merchant:hover {
@@ -152,7 +152,7 @@ ol .current {
   border-color:#d1d1d1;
   margin-top:-1px;
   position:relative;/* ie6 默认 z-index 和顺序相反 */
-  box-shadow:0 1px 3px #ddd;
+  box-shadow:0 1px 3px #d1d1d1;
 }
 #merchant_list a img, #merchant_list span img, #merchant_list .item img {
   width:110px;

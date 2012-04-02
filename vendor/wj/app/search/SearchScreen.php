@@ -31,12 +31,12 @@ class SearchScreen extends Screen {
   }
 
   protected function renderHtmlBodyContent() {
-    SearchAdSenseScreen::render('1');
+    AdSenseScreen::render('1');
     SearchNavigationScreen::render();
     echo '<div id="search"><div id="result_wrapper">';
     $this->renderResult();
     echo '</div></div>';
-    SearchAdSenseScreen::render('2', 'ad bottom');
+    AdSenseScreen::render('2', 'ad bottom');
     SearchRelatedQueryScreen::render();
   }
 
