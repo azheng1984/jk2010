@@ -83,7 +83,7 @@ ol .current {
 }
 #slide_list a, #slide_list span {
   display:inline-block;
-  /*font-size:5px; ie6 inline-block 最小高度等于文字高度 */
+  font-size:8px; /* ie6 inline-block 最小高度等于文字高度 */
   width:40px;
   height:10px;
   border:0;
