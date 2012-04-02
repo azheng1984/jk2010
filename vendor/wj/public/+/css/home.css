@@ -149,10 +149,10 @@ ol .current {
   box-shadow:0 1px 3px #ddd;
 }
 #merchant_list span {
-  border-color:#d1d1d1;
+  border-color: #d1d1d1;
   margin-top:-1px;
   position:relative;/* ie6 默认 z-index 和顺序相反 */
-  box-shadow:0 1px 3px #d1d1d1;
+  box-shadow:0 2px 2px #ddd;
 }
 #merchant_list a img, #merchant_list span img, #merchant_list .item img {
   width:110px;
