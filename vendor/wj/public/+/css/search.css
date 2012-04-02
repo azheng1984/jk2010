@@ -7,31 +7,6 @@
 table {
   border-collapse:collapse;
 }
-/* ad
- *************************************/
-.ad {
-  width:100%;
-  border:1px solid #e5e5e5;
-  border-bottom:0;
-}
-.bottom {
-  border-bottom:1px solid #e5e5e5;
-  border-top:0;
-}
-.ad div {
-  padding:2px 0;
-  padding-left:110px;
-  height:90px;/*chrome*/
-}
-.ad span {
-  float:right;
-  background:#eee url(/+/img/ads.png) no-repeat;
-  font-size:12px;
-  line-height:18px;
-  height:18px;
-  padding:0 8px 0 20px;
-  color:#888;
-}
 /* navigation
  *******************************/
 #nav {

@@ -122,7 +122,7 @@ abstract class Screen extends EtagView {
   }
 
   private function renderDeclaration() {
-    echo '© 货比万家 <a href="http://about.huobiwanjia.com/terms_of_use"',
+    echo '© 2012 货比万家 <a href="http://about.huobiwanjia.com/terms_of_use"',
       ' rel="nofollow">使用条款</a>',
       ' <a href="http://about.huobiwanjia.com/privacy"',
       ' rel="nofollow">隐私权政策</a>';

@@ -32,6 +32,7 @@ class HomeScreen extends Screen {
     $this->renderSlogon();
     $this->renderMerchantSlideList();
     echo '</div>';
+    AdSenseScreen::render('1', 'ad bottom');
     $this->addJsConfig();
   }
 
