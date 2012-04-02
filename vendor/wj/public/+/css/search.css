@@ -34,7 +34,7 @@ h1 {
   display:inline-block;
   vertical-align:middle;
   margin: 5px 0 8px 8px;
-  line-height:18px;
+  line-height:20px;
 }
 #nav a {
   height: 18px;
@@ -48,7 +48,7 @@ h1 {
 }
 #nav .tag {
   display:inline-block;
-  line-height:18px;
+  line-height:17px;
   padding:2px 16px 1px 4px;
   margin:0 0 3px 8px;
   font-size:13px;
