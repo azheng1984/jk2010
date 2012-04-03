@@ -299,6 +299,7 @@ h2 a:hover {
   color:#999;
   background:#fff;
   border-radius:3px 12px 12px 3px;
+  line-height:18px;
 }
 #tag .value a:hover {
   border-color:#06c #05a #048 #06c;
@@ -309,8 +310,9 @@ h2 a:hover {
 #tag .value a span {
   display:inline-block;
   font-size:13px;
+  line-height:15px;
   color:#06c;
-  padding:2px 3px 0 0;
+  padding:4px 2px 0 0;
   _padding-top:0;
   cursor:pointer;
 }
