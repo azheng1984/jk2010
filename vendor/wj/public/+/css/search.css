@@ -212,10 +212,10 @@ h2 a:hover {
   color:#551a8b;
 }
 #result h3 span {
-  color:#d00;
+  color:#d44;
 }
 #result li span, #result li .value span {
-  color:#d33;
+  color:#d44;
 }
 #result li .value {
   color:#555;
@@ -224,7 +224,7 @@ h2 a:hover {
   border:0;
 }
 #result li a .red {
-  border-bottom:1px solid #d00;
+  border-bottom:1px solid #d44;
 }
 #result li a .gray {
   color:#555;
@@ -235,8 +235,8 @@ h2 a:hover {
   border-color:#111;
 }
 #result li a:hover .red {
-  color:#d00;
-  border-color:#d00;
+  color:red;
+  border-color:red;
 }
 #result .price {
   font-size:12px;
