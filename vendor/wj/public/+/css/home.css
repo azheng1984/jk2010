@@ -77,8 +77,10 @@ ol .current {
   height:300px;
 }
 #slide_list {
-  padding-top:4px;/* ie6 line-height 无法垂直居中 */
+  margin-top:8px;/* ie6 line-height 无法垂直居中 */
+  _margin-top:3px;
   margin-right:10px;/* ie6 会出现 slide_wrapper padding-right 塌陷 */
+  line-height:10px;
   float:right;
 }
 #slide_list a, #slide_list span {
@@ -152,7 +154,7 @@ ol .current {
   border-color: #d1d1d1;
   margin-top:-1px;
   position:relative;/* ie6 默认 z-index 和顺序相反 */
-  box-shadow:0 2px 2px #ddd;
+  box-shadow:0 2px 4px #ddd;
 }
 #merchant_list a img, #merchant_list span img, #merchant_list .item img {
   width:110px;

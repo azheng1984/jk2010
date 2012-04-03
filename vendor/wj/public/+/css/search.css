@@ -33,8 +33,8 @@ h1 {
   font-size:15px;
   display:inline-block;
   vertical-align:middle;
-  margin: 5px 0 8px 8px;
-  line-height:20px;
+  margin: 5px 0 5px 8px;
+  line-height:18px;
 }
 #nav a {
   height: 18px;
@@ -42,15 +42,14 @@ h1 {
 #nav .delimiter {
   display:inline-block;
   width: 8px;
-  height:18px;
+  height:15px;
   margin-left:8px;
   background:url(/+/img/screen.png) right -144px no-repeat;
 }
 #nav .tag {
   display:inline-block;
-  line-height:17px;
   padding:2px 16px 1px 4px;
-  margin:0 0 3px 8px;
+  margin:3px 0 4px 8px;
   font-size:13px;
   white-space:nowrap;
   color:#fff;
@@ -292,14 +291,14 @@ h2 a:hover {
 }
 #tag .value a {
   float:left;
-  padding:0 6px 0 5px;
+  padding:0 6px 0 4px;
+
   font-size:11px;
   border:1px solid;
   border-color:#eee #ddd #ccc #eee;
   color:#999;
   background:#fff;
   border-radius:3px 12px 12px 3px;
-  line-height:18px;
 }
 #tag .value a:hover {
   border-color:#06c #05a #048 #06c;
@@ -310,10 +309,9 @@ h2 a:hover {
 #tag .value a span {
   display:inline-block;
   font-size:13px;
-  line-height:15px;
+  line-height:18px;
   color:#06c;
-  padding:4px 2px 0 0;
-  _padding-top:0;
+  padding:2px 3px 1px 0;
   cursor:pointer;
 }
 #tag .value a:hover span {
