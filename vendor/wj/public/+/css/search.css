@@ -54,8 +54,9 @@ h1 {
   white-space:nowrap;
   border:1px solid;
   border-color:#e5e5e5 #bbb #bbb #e5e5e5;
-  background:#fff url(/+/img/delete.png) right 6px no-repeat;
+  background:#fff url(/+/img/delete.png) right 7px no-repeat;
   border-radius:3px 11px 11px 3px;
+  vertical-align:baseline; /* 修正 ie6 中文上浮 */
 }
 #nav .tag:hover {
   color:#fff;
