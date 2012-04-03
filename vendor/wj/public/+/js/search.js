@@ -85,6 +85,22 @@ $(function() {
         $('#price_range').submit();
       }
     });
+    var current = $('#price_range_button');
+    //ie9 点击时先 focus 再 mousedown
+    var isUp = null;
+    current.mousedown(function() {
+      isUp = false;
+      $(this).addClass('active');
+    });
+    current.mouseout(function() {
+      if (isUp === false) {
+        $(this).removeClass('active');
+        isUp = null;
+      }
+    });
+    current.mouseup(function() {
+      isUp = null;
+    });
   });
 });
 
