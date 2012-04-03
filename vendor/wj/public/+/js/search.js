@@ -208,7 +208,7 @@ huobiwanjia.search.enhanceKey = function(key) {
         var item = data[index];
         html += '<li class="value"><a href="'
           + huobiwanjia.search.getTagHref(keyName, item[0]) +'">'
-          + '<span> ' + item[0] + '</span> ' + item[1] + '</a></li>';
+          + '<span>' + item[0] + '</span>' + item[1] + '</a></li>';
       }
       html += '</ol>';
       current.after(html);
