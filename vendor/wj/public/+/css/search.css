@@ -164,6 +164,9 @@ h2 a:hover {
   box-shadow:0 0 3px #ddd;
   color:#111;
 }
+#price_range_button.active { /* 必须放在 .hover 后面，否则 ie6 不会接受 .hover */
+  outline:0;
+}
 /* product list
  ****************************/
 #result table {

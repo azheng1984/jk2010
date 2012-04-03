@@ -2,7 +2,7 @@ huobiwanjia.home = function() {
   var home = {
     isScrolling: false,
     timer: -1,
-    isHold: false,
+    holdCount: 0,
     currentMerchantIndex: 0,
     merchantListCache: [],
     slideCache: []
@@ -24,6 +24,22 @@ $(function() {
 });
 
 /*
+ * slide enhancement
+ *****************************/
+$(function() {
+  $('#slide_wrapper').hover(
+    function() { huobiwanjia.home.hold(); },
+    function() {
+      huobiwanjia.home.play();
+    }
+  );
+  $('#slide').focusin(function() { huobiwanjia.home.hold(); });
+  $('#slide').focusout(function() { huobiwanjia.home.play(); });
+  $('#merchant').focusin(function() { huobiwanjia.home.hold(); });
+  $('#merchant').focusout(function() { huobiwanjia.home.play(); });
+});
+
+/*
  * slide list enhancement
  *****************************/
 $(function() {
@@ -42,6 +58,28 @@ huobiwanjia.home.enhanceSlideList = function() {
     if (current.hasClass('current') === false) {
       current.attr('tabindex', '0');
     }
+    //ie9 点击时先 focus 再 mousedown
+    var isUp = null;
+    current.mousedown(function() {
+      isUp = false;
+      $(this).addClass('active');
+    });
+    current.mouseout(function() {
+      if (isUp === false) {
+        $(this).removeClass('active');
+        isUp = null;
+      }
+    });
+    current.mouseup(function() {
+      isUp = null;
+    });
+    current.focusin(function() { huobiwanjia.home.hold(); });
+    current.focusout(function() { huobiwanjia.home.play(); });
+    current.keypress(function(e){
+      if(e.which == 13){
+        huobiwanjia.home.selectSlide($(this), currentIndex);
+      }
+    });
     current.hover(
       function() {
         if ($(this).hasClass('item')) {
@@ -49,17 +87,22 @@ huobiwanjia.home.enhanceSlideList = function() {
         }
       },
       function() { $(this).removeClass('hover'); }
-    ).click(function() {
-      $('#slide_list .current').attr('class', 'item');
-      $(this).attr('class', 'current');
-      var merchant = huobiwanjia.home.slideshow.merchantList[
-        huobiwanjia.home.currentMerchantIndex
-      ];
-      $('#slide img').attr('src', '/+/img/slide/' + merchant[2]
-        + '/' + currentIndex + '.jpg');
-      $('#slide').attr('href', 'http://' + merchant[3][currentIndex]);
-    });
+    ).click(function() { huobiwanjia.home.selectSlide($(this), currentIndex); });
   });
+};
+
+/* select slide
+ *****************************/
+huobiwanjia.home.selectSlide = function(span, index) {
+  $('#slide_list .current').attr('class', 'item')
+    .attr('tabindex', 0);
+  span.attr('class', 'current').removeAttr('tabindex');
+  var merchant = huobiwanjia.home.slideshow.merchantList[
+    huobiwanjia.home.currentMerchantIndex
+  ];
+  $('#slide img').attr('src', '/+/img/slide/' + merchant[2]
+    + '/' + index + '.jpg');
+  $('#slide').attr('href', 'http://' + merchant[3][index]);
 };
 
 /* merchant list enhancement
@@ -83,23 +126,38 @@ huobiwanjia.home.enhanceMerchantList = function() {
     if (current.hasClass('current') === false) {
       current.attr('tabindex', '0');
     }
-    current.click(function() {
-      current.css("outline", 0); current.css("outline", 0);//去除边框 TODO:ie9 点击时先 focus 再 mousedown
-      
+    //ie9 点击时先 focus 再 mousedown
+    var isUp = null;
+    current.mousedown(function() {
+      isUp = false;
+      $(this).addClass('active');
     });
-    //hover+mousedown 时禁用 outline，mouseout/点击时 时启用
-    current.focus(function() {
+    current.mouseout(function() {
+      if (isUp === false) {
+        $(this).removeClass('active');
+        isUp = null;
+      }
+    });
+    current.mouseup(function() {
+      isUp = null;
+    });
+    current.focusin(function() { huobiwanjia.home.hold(); });
+    current.focusout(function() { huobiwanjia.home.play(); });
+    //note: 不会触发 focusout
+    current.keypress(function(e){
+      if(e.which == 13){
+        huobiwanjia.home.selectMerchant($(this), currentIndex);
+      }
     });
     current.hover(
       function() {
         if ($(this).hasClass('item')) {
           $(this).addClass('hover');
         }
-        huobiwanjia.home.isHold = true;
+        huobiwanjia.home.hold();
       },
       function() {
         $(this).removeClass('hover');
-        huobiwanjia.home.isHold = false;
         huobiwanjia.home.play();
       }
     ).click(function() {
@@ -108,7 +166,6 @@ huobiwanjia.home.enhanceMerchantList = function() {
   });
 };
 
-//TODO:tabindex
 huobiwanjia.home.selectMerchant = function(span, index) {
   if (huobiwanjia.home.isScrolling) {
     return;
@@ -116,8 +173,9 @@ huobiwanjia.home.selectMerchant = function(span, index) {
   huobiwanjia.home.currentMerchantIndex = index;
   var merchant = huobiwanjia.home.slideshow.merchantList[index],
     src = '/+/img/slide/' + merchant[2] + '/0.jpg';
-  $('#merchant_list .current').attr('class', 'item');//add tabindex
-  span.attr('class', 'current');//remove tabindex
+  $('#merchant_list .current').attr('class', 'item')
+    .attr('tabindex', 0);
+  span.attr('class', 'current').removeAttr('tabindex');
   $('#merchant span').text(merchant[0]);
   $('#merchant').attr('href', 'http://' + merchant[1]);
   $('#slide img').attr('src', src);
@@ -152,39 +210,44 @@ $(function() {
 });
 
 huobiwanjia.home.enhanceScroll = function() {
+  $('#scroll span').each(function() {
+    var current = $(this);
+    //ie9 点击时先 focus 再 mousedown
+    var isUp = null;
+    current.mousedown(function() {
+      isUp = false;
+      $(this).addClass('active');
+    });
+    current.mouseout(function() {
+      if (isUp === false) {
+        $(this).removeClass('active');
+        isUp = null;
+      }
+    });
+    current.mouseup(function() {
+      isUp = null;
+    });
+    //note: 不会触发 focusout
+    current.keypress(function(e){
+      if(e.which == 13){
+        huobiwanjia.home.executeScroll($(this).hasClass('previous'));
+      }
+    });
+  });
   $('#scroll span').hover(
     function() { $(this).addClass('hover'); },
     function() { $(this).removeClass('hover'); }
   ).click(function() {
-    if (huobiwanjia.home.isScrolling) {
-      return;
-    }
-    huobiwanjia.home.isScrolling = true;
-    huobiwanjia.home.stop();
     huobiwanjia.home.executeScroll($(this).hasClass('previous'));
-    if (typeof huobiwanjia.home.merchantListCache[huobiwanjia.home.page]
-      === 'undefined') {
-      $.ajax({
-        type: 'GET',
-        url: '?page=' + huobiwanjia.home.page + '&media=json',
-        success: function(data) {
-          huobiwanjia.home.merchantListCache[huobiwanjia.home.page] = data;
-          huobiwanjia.home.slideshow.merchantList = data;
-          huobiwanjia.home.fillMerchantList();
-        },
-        error: function() {
-          window.location = '?page=' + huobiwanjia.home.page;
-        }
-      });
-      return;
-    }
-    huobiwanjia.home.slideshow.merchantList =
-      huobiwanjia.home.merchantListCache[huobiwanjia.home.page];
-    huobiwanjia.home.fillMerchantList();
   }).attr('tabindex', '0');
 };
 
 huobiwanjia.home.executeScroll = function(isPrevious) {
+  if (huobiwanjia.home.isScrolling) {
+    return;
+  }
+  huobiwanjia.home.isScrolling = true;
+  huobiwanjia.home.stop();
   ++huobiwanjia.home.page;
   if (isPrevious) {
     huobiwanjia.home.page -= 2;
@@ -222,6 +285,25 @@ huobiwanjia.home.executeScroll = function(isPrevious) {
     $('#scroll').html(html);
     huobiwanjia.home.enhanceScroll();
   });
+  if (typeof huobiwanjia.home.merchantListCache[huobiwanjia.home.page]
+    === 'undefined') {
+    $.ajax({
+      type: 'GET',
+      url: '?page=' + huobiwanjia.home.page + '&media=json',
+      success: function(data) {
+        huobiwanjia.home.merchantListCache[huobiwanjia.home.page] = data;
+        huobiwanjia.home.slideshow.merchantList = data;
+        huobiwanjia.home.fillMerchantList();
+      },
+      error: function() {
+        window.location = '?page=' + huobiwanjia.home.page;
+      }
+    });
+    return;
+  }
+  huobiwanjia.home.slideshow.merchantList =
+    huobiwanjia.home.merchantListCache[huobiwanjia.home.page];
+  huobiwanjia.home.fillMerchantList();
 };
 
 huobiwanjia.home.fillMerchantList = function() {
@@ -254,17 +336,18 @@ huobiwanjia.home.afterFillMerchantList = function() {
 /* auto play
  *****************************/
 $(function() {
-  $('#slide_wrapper').hover(
-    function() { huobiwanjia.home.isHold = true; },
-    function() {
-      huobiwanjia.home.isHold = false;
-      huobiwanjia.home.play();
-    }
-  );
   huobiwanjia.home.play();
 });
 
+huobiwanjia.home.hold = function() {
+  ++huobiwanjia.home.holdCount;
+};
+
 huobiwanjia.home.play = function() {
+  if (huobiwanjia.home.holdCount > 0) {
+    --huobiwanjia.home.holdCount;
+    return;
+  }
   if (huobiwanjia.home.isScrolling) {
     return;
   }
@@ -272,7 +355,7 @@ huobiwanjia.home.play = function() {
     huobiwanjia.home.stop();
   }
   huobiwanjia.home.timer = setInterval(function() {
-    if (huobiwanjia.home.isHold) {
+    if (huobiwanjia.home.holdCount > 0) {
       return;
     }
     var next = $('#merchant_list .current').next();
