@@ -80,7 +80,7 @@ $(function() {
     $('#price_range_button').click(function() {
       $('#price_range').submit();
     });
-    $('#price_range_button').keypress(function(e){
+    $('#price_range_button').keypress(function(e) {
       if(e.which == 13){
         $('#price_range').submit();
       }
