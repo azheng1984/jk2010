@@ -285,7 +285,7 @@ huobiwanjia.home.play = function() {
     }
     huobiwanjia.home.selectMerchant(next, $('#merchant_list span').index(next));
     huobiwanjia.home.preloadSlide();
-  }, 500);
+  }, 5000);
   huobiwanjia.home.preloadSlide();
 };
 
