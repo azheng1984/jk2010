@@ -36,15 +36,21 @@ $(function() {
  * slide list enhancement
  *****************************/
 $(function() {
-  $('#slide_list').children().each(function() {
-    var current = $(this), classAttribute =
-      current.attr('href') === undefined ? 'class="current"' : 'class="item"';
-    current.replaceWith('<span ' + classAttribute + '></span>');
-  });
+  huobiwanjia.home.initializeList($('#slide_list').children());
   huobiwanjia.home.enhanceSlideList();
 });
 
-huobiwanjia.home.enhanceList = function(list, clickEvent) {
+huobiwanjia.home.initializeList = function(list) {
+  list.each(function() {
+    var current = $(this), classAttribute =
+      current.attr('href') === undefined ? 'class="current"' : 'class="item"';
+    current.replaceWith(
+      '<span ' + classAttribute + '>' + current.html() + '</span>'
+    );
+  });
+};
+
+huobiwanjia.home.enhanceList = function(list, clickEvent, isHold) {
   var index = 0;
   list.each(function() {
     var current = $(this), currentIndex = index++;
@@ -56,23 +62,18 @@ huobiwanjia.home.enhanceList = function(list, clickEvent) {
     current.mousedown(function() {
       isUp = false;
       current.addClass('active');
-    });
-    current.mouseout(function() {
+    }).mouseout(function() {
       if (isUp === false) {
         current.removeClass('active');
         isUp = null;
       }
-    });
-    current.mouseup(function() {
+    }).mouseup(function() {
       isUp = null;
-    });
-    current.focusin(huobiwanjia.home.hold).focusout(huobiwanjia.home.play);
-    current.keypress(function(e) {
+    }).keypress(function(e) {
       if(e.which == 13){
         clickEvent(current, currentIndex);
       }
-    });
-    current.hover(
+    }).hover(
       function() {
         if (current.hasClass('current') === false) {
           current.addClass('hover');
@@ -80,6 +81,9 @@ huobiwanjia.home.enhanceList = function(list, clickEvent) {
       },
       function() { current.removeClass('hover'); }
     ).click(function() { clickEvent(current, currentIndex); });
+    if (typeof isHold === 'undefined') {
+      current.focusin(huobiwanjia.home.hold).focusout(huobiwanjia.home.play);
+    }
   });
 };
 
@@ -92,35 +96,34 @@ huobiwanjia.home.enhanceSlideList = function() {
 /* select slide
  *****************************/
 huobiwanjia.home.selectSlide = function(span, index) {
-  $('#slide_list .current').attr('class', 'item')
-    .attr('tabindex', 0);
-  span.attr('class', 'current').removeAttr('tabindex');
+  if (span !== null) {
+    $('#slide_list .current').attr('class', 'item').attr('tabindex', 0);
+    span.attr('class', 'current').removeAttr('tabindex');
+  }
   var merchant = huobiwanjia.home.slideshow.merchantList[
     huobiwanjia.home.currentMerchantIndex
   ];
-  $('#slide img').attr('src', '/+/img/slide/' + merchant[2]
-    + '/' + index + '.jpg');
+  var src = '/+/img/slide/' + merchant[2] + '/' + index + '.jpg';
+  $('#slide img').attr('src', src);
   $('#slide').attr('href', 'http://' + merchant[3][index]);
+  if (index === 0 && $.inArray(src, huobiwanjia.home.slideCache) === -1) {
+    huobiwanjia.home.slideCache.push(src);
+  }
 };
 
 /* merchant list enhancement
  *****************************/
 $(function() {
-  $('#merchant_list').children().each(function() {
-    var current = $(this), classAttribute = ' class="item"';
-    if (current.attr('href') === undefined) {
-      classAttribute = ' class="current"';
-    }
-    current.replaceWith('<span ' + classAttribute
-      + '><img src="/+/img/logo/360buy.png"/></span>');
-  });
+  huobiwanjia.home.initializeList($('#merchant_list').children());
   huobiwanjia.home.enhanceMerchantList();
 });
 
 huobiwanjia.home.enhanceMerchantList = function() {
-  huobiwanjia.home.enhanceList(
-    $('#merchant_list').children(), huobiwanjia.home.selectMerchant
-  );
+  var list = $('#merchant_list').children();
+  huobiwanjia.home.enhanceList(list, huobiwanjia.home.selectMerchant);
+  list.children().each(function() {
+    $(this).hover(huobiwanjia.home.hold, huobiwanjia.home.play);
+  });
 };
 
 huobiwanjia.home.selectMerchant = function(span, index) {
@@ -128,46 +131,33 @@ huobiwanjia.home.selectMerchant = function(span, index) {
     return;
   }
   huobiwanjia.home.currentMerchantIndex = index;
-  var merchant = huobiwanjia.home.slideshow.merchantList[index],
-    src = '/+/img/slide/' + merchant[2] + '/0.jpg';
-  $('#merchant_list .current').attr('class', 'item')
-    .attr('tabindex', 0);
+  var merchant = huobiwanjia.home.slideshow.merchantList[index];
+  $('#merchant_list .current').attr('class', 'item').attr('tabindex', 0);
   span.attr('class', 'current').removeAttr('tabindex');
   $('#merchant span').text(merchant[0]);
   $('#merchant').attr('href', 'http://' + merchant[1]);
-  $('#slide img').attr('src', src);
-  if ($.inArray(src, huobiwanjia.home.slideCache) === -1) {
-    huobiwanjia.home.slideCache.push(src);
-  };
-  $('#slide').attr('href', 'http://' + merchant[3][0]);
-  if (merchant[3].length === 1) {
-    $('#slide_list').empty();
-    return;
-  }
-  var html = '<span class="current"></span>';
-  for (var count = merchant[3].length - 1; count > 0; --count) {
-    html += '<span class="item"></span>';
+  var html = '';
+  if (merchant[3].length > 1) {
+    html = '<span class="current"></span>';
+    for (var count = merchant[3].length - 1; count > 0; --count) {
+      html += '<span class="item"></span>';
+    }
   }
   $('#slide_list').html(html);
+  huobiwanjia.home.selectSlide(null, 0);
   huobiwanjia.home.enhanceSlideList();
 };
 
 /* scroll enhancement
  *****************************/
 $(function() {
-  $('#scroll a').each(function() {
-    var classValue = $(this).attr('class'), classAttribute = '';
-    if (typeof classAttribute !== 'undefined' && classAttribute !== false) {
-      classAttribute = ' class="' + classValue + '"';
-    }
-    $(this).replaceWith('<span' + classAttribute + '></span>');
-  });
+  huobiwanjia.home.initializeList($('#scroll a'));
   huobiwanjia.home.enhanceScroll();
 });
 
 huobiwanjia.home.enhanceScroll = function() {
   huobiwanjia.home.enhanceList(
-    $('#scroll span'), huobiwanjia.home.executeScroll
+    $('#scroll span'), huobiwanjia.home.executeScroll, false
   );
 };
 
@@ -205,12 +195,13 @@ huobiwanjia.home.executeScroll = function(span) {
   $('#current').animate({ 'top': targetPosition }, 'slow');
   $('#' + target).animate({ 'top': targetPosition }, 'slow', function() {
     $('#merchant_list').html($('#' + target).html()).removeClass('move');
-    var html = '<span class="previous"></span><span></span>';
+    var html = '<span class="previous small"></span>'
+      + '<span class="small"></span>';
     if (huobiwanjia.home.page === 1) {
-      html = '<span class="full"></span>';
+      html = '<span></span>';
     }
     if (huobiwanjia.home.page === huobiwanjia.home.pageAmount) {
-      html = '<span class="previous full"></span>';
+      html = '<span class="previous"></span>';
     }
     $('#scroll').html(html);
     huobiwanjia.home.enhanceScroll();
@@ -222,8 +213,7 @@ huobiwanjia.home.executeScroll = function(span) {
       url: '?page=' + huobiwanjia.home.page + '&media=json',
       success: function(data) {
         huobiwanjia.home.merchantListCache[huobiwanjia.home.page] = data;
-        huobiwanjia.home.slideshow.merchantList = data;
-        huobiwanjia.home.fillMerchantList();
+        huobiwanjia.home.fillMerchantList(data);
       },
       error: function() {
         window.location = '?page=' + huobiwanjia.home.page;
@@ -231,12 +221,13 @@ huobiwanjia.home.executeScroll = function(span) {
     });
     return;
   }
-  huobiwanjia.home.slideshow.merchantList =
-    huobiwanjia.home.merchantListCache[huobiwanjia.home.page];
-  huobiwanjia.home.fillMerchantList();
+  huobiwanjia.home.fillMerchantList(
+    huobiwanjia.home.merchantListCache[huobiwanjia.home.page]
+  );
 };
 
-huobiwanjia.home.fillMerchantList = function() {
+huobiwanjia.home.fillMerchantList = function(data) {
+  huobiwanjia.home.slideshow.merchantList = data;
   var html = '',
     length = huobiwanjia.home.slideshow.merchantList.length;
   for (var index = 0; index < length; ++index) {
