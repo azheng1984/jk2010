@@ -24,9 +24,9 @@ class HomeScreen {
       }
     }
     if (count($list) === 0) {
-      echo 'suggest("', $queryName, '");';
+      echo 'huobiwanjia.suggest("', $queryName, '");';
       return;
     }
-    echo 'suggest("', $queryName, '",{' ,implode(',', $list), '});';
+    echo 'huobiwanjia.suggest("', $queryName, '",{' ,implode(',', $list), '});';
   }
 }

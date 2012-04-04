@@ -63,7 +63,7 @@ huobiwanjia.initializeSuggestion = function() {
   }).focusin(function() {
     huobiwanjia.currentQuery = $.trim($('#header input').val());
     huobiwanjia.suggestionTimer = setInterval(
-      huobiwanjia.checkQueryInput, 1000
+      huobiwanjia.checkQuery, 1000
     );
   }).focusout(function() {
     huobiwanjia.currentQuery = null;
@@ -76,64 +76,64 @@ huobiwanjia.initializeSuggestion = function() {
   }
 };
 
-huobiwanjia.checkQueryInput = function() {
-  query = $.trim($('#header input').val());
-  if (query === huobiwanjia.currentQuery || isHoverSuggestion) {
+huobiwanjia.checkQuery = function() {
+  var query = $.trim($('#header input').val());
+  if (query === huobiwanjia.currentQuery || huobiwanjia.isHoverSuggestion) {
     return;
   }
-  currentQuery = query;
-  getSuggestion();
+  huobiwanjia.currentQuery = query;
+  huobiwanjia.getSuggestion();
 };
 
 huobiwanjia.getSuggestion = function() {
-  huobiwanjia.currentAjaxQuery = huobiwanjia.currentQuery;
-  if (currentAjaxQuery == '') {
-    suggest(currentAjaxQuery);
+  var query = huobiwanjia.currentQuery;
+  if (query === '') {
+    huobiwanjia.suggest(query);
     return;
   }
-  if (typeof(suggestionCache[currentAjaxQuery]) == 'undefined') {
-    var uri = 'http://q.dev.huobiwanjia.com/'
-      + encodeURIComponent(currentAjaxQuery);
+  if (typeof(huobiwanjia.suggestionCache[query]) === 'undefined') {
+    var uri = 'http://q.dev.huobiwanjia.com/' + encodeURIComponent(query);
     $.ajax({
-      url:uri,
-      cache:true,
-      dataType:'jsonp',
-      jsonp:false
+      url: uri,
+      cache: true,
+      dataType: 'jsonp',
+      jsonp: false
     });
     return;
   }
-  suggest(
-    suggestionCache[currentAjaxQuery][0], suggestionCache[currentAjaxQuery][1]
+  huobiwanjia.suggest(
+    huobiwanjia.suggestionCache[query][0],
+    huobiwanjia.suggestionCache[query][1]
   );
 };
 
-function suggest(segmentList, data) {
-  if (typeof(suggestionCache[currentAjaxQuery]) == 'undefined') {
-    suggestionCache[currentAjaxQuery] = [segmentList, data];
+huobiwanjia.suggest = function(keywordList, data) {
+  if (typeof(huobiwanjia.suggestionCache[currentAjaxQuery]) === 'undefined') {
+    suggestionCache[currentAjaxQuery] = [keywordList, data];
   }
   if (currentQuery == currentAjaxQuery) {
-    renderSuggestion(segmentList, data);
+    renderSuggestion(keywordList, data);
   }
-  if (currentQuery != currentAjaxQuery && currentQuery != null) {
-    getSuggestion();
+  if (currentQuery != currentAjaxQuery && currentQuery !== null) {
+    huobiwanjia.getSuggestion();
     return;
   }
   currentAjaxQuery = null;
-}
+};
 
-function renderSuggestion(segmentList, data) {
+huobiwanjia.renderSuggestion = function(keywordList, data) {
   if (typeof(data) == 'undefined') {
     $('#suggestion').remove();
     return;
   }
   var html = '';
   $.each(data, function(index, value) {
-    if (index.replace(' ', '') === segmentList.replace(' ', '')) {
+    if (index.replace(' ', '') === keywordList.replace(' ', '')) {
       return;
     }
     var text = index;
-    if (segmentList !== '') {
-      text = highlight(index, segmentList.split(' '));
+    if (keywordList !== '') {
+      text = highlight(index, keywordList.split(' '));
     }
     html += '<li><a href="/' + encodeURIComponent(index)
       + '/"><span class="query">' + text
@@ -157,9 +157,9 @@ function renderSuggestion(segmentList, data) {
     }
   );
   $('#suggestion').css('display', 'block');/* 触发 ie6 渲染 */
-}
+};
 
-function highlight(query, keywordList) {
+huobiwanjia.highlight = function(query, keywordList) {
   var positionList = {};
   for (var index = 0; index < keywordList.length; ++index) {
     var offset = 0;
@@ -201,7 +201,7 @@ function highlight(query, keywordList) {
   return result;
 }
 
-function up() {
+huobiwanjia.up = function() {
   var target = null;
   var previous = null;
   $('#suggestion li').each(function() {
@@ -230,9 +230,9 @@ function up() {
   }
   hoverQuery = null;
   $('#header input').val(currentQuery);
-}
+};
 
-function down() {
+huobiwanjia.down = function() {
   var current = null;
   $('#suggestion li').each(function() {
     if (current != null) {
@@ -258,7 +258,7 @@ function down() {
   }
   hoverQuery = null;
   $('#header input').val(currentQuery);
-}
+};
 
 /* tracking function
  *****************************/
