@@ -1,7 +1,7 @@
 huobiwanjia.home = function() {
   var home = {
     isScrolling: false,
-    timer: -1,
+    timer: null,
     holdCount: 0,
     currentMerchantIndex: 0,
     merchantListCache: [],
@@ -9,8 +9,8 @@ huobiwanjia.home = function() {
   };
   $(function() {
     home.pageAmount = Math.ceil(huobiwanjia.home.slideshow.merchantAmount / 5);
-    home.page = typeof huobiwanjia.queryString.page === 'undefined' ?
-      1 : huobiwanjia.queryString.page;
+    home.page = typeof huobiwanjia.query.page === 'undefined' ?
+      1 : huobiwanjia.query.page;
     home.merchantListCache[home.page] =
       huobiwanjia.home.slideshow.merchantList;
   });
@@ -27,16 +27,9 @@ $(function() {
  * slide enhancement
  *****************************/
 $(function() {
-  $('#slide_wrapper').hover(
-    function() { huobiwanjia.home.hold(); },
-    function() {
-      huobiwanjia.home.play();
-    }
-  );
-  $('#slide').focusin(function() { huobiwanjia.home.hold(); });
-  $('#slide').focusout(function() { huobiwanjia.home.play(); });
-  $('#merchant').focusin(function() { huobiwanjia.home.hold(); });
-  $('#merchant').focusout(function() { huobiwanjia.home.play(); });
+  $('#slide_wrapper').hover(huobiwanjia.home.hold, huobiwanjia.home.play);
+  $('#slide').focusin(huobiwanjia.home.hold).focusout(huobiwanjia.home.play);
+  $('#merchant').focusin(huobiwanjia.home.hold).focusout(huobiwanjia.home.play);
 });
 
 /*
@@ -51,44 +44,49 @@ $(function() {
   huobiwanjia.home.enhanceSlideList();
 });
 
-huobiwanjia.home.enhanceSlideList = function() {
+huobiwanjia.home.enhanceList = function(list, clickEvent) {
   var index = 0;
-  $('#slide_list').children().each(function() {
+  list.each(function() {
     var current = $(this), currentIndex = index++;
     if (current.hasClass('current') === false) {
       current.attr('tabindex', '0');
     }
-    //ie9 点击时先 focus 再 mousedown
+    //ie 点击时先触发 focus 然后触发 mousedown
     var isUp = null;
     current.mousedown(function() {
       isUp = false;
-      $(this).addClass('active');
+      current.addClass('active');
     });
     current.mouseout(function() {
       if (isUp === false) {
-        $(this).removeClass('active');
+        current.removeClass('active');
         isUp = null;
       }
     });
     current.mouseup(function() {
       isUp = null;
     });
-    current.focusin(function() { huobiwanjia.home.hold(); });
-    current.focusout(function() { huobiwanjia.home.play(); });
-    current.keypress(function(e){
+    current.focusin(huobiwanjia.home.hold).focusout(huobiwanjia.home.play);
+    current.keypress(function(e) {
       if(e.which == 13){
-        huobiwanjia.home.selectSlide($(this), currentIndex);
+        clickEvent(current, currentIndex);
       }
     });
     current.hover(
       function() {
-        if ($(this).hasClass('item')) {
-          $(this).addClass('hover');
+        if (current.hasClass('current') === false) {
+          current.addClass('hover');
         }
       },
-      function() { $(this).removeClass('hover'); }
-    ).click(function() { huobiwanjia.home.selectSlide($(this), currentIndex); });
+      function() { current.removeClass('hover'); }
+    ).click(function() { clickEvent(current, currentIndex); });
   });
+};
+
+huobiwanjia.home.enhanceSlideList = function() {
+  huobiwanjia.home.enhanceList(
+    $('#slide_list').children(), huobiwanjia.home.selectSlide
+  );
 };
 
 /* select slide
@@ -120,50 +118,9 @@ $(function() {
 });
 
 huobiwanjia.home.enhanceMerchantList = function() {
-  var index = 0;
-  $('#merchant_list').children().each(function() {
-    var current = $(this), currentIndex = index++;
-    if (current.hasClass('current') === false) {
-      current.attr('tabindex', '0');
-    }
-    //ie9 点击时先 focus 再 mousedown
-    var isUp = null;
-    current.mousedown(function() {
-      isUp = false;
-      $(this).addClass('active');
-    });
-    current.mouseout(function() {
-      if (isUp === false) {
-        $(this).removeClass('active');
-        isUp = null;
-      }
-    });
-    current.mouseup(function() {
-      isUp = null;
-    });
-    current.focusin(function() { huobiwanjia.home.hold(); });
-    current.focusout(function() { huobiwanjia.home.play(); });
-    //note: 不会触发 focusout
-    current.keypress(function(e){
-      if(e.which == 13){
-        huobiwanjia.home.selectMerchant($(this), currentIndex);
-      }
-    });
-    current.hover(
-      function() {
-        if ($(this).hasClass('item')) {
-          $(this).addClass('hover');
-        }
-        huobiwanjia.home.hold();
-      },
-      function() {
-        $(this).removeClass('hover');
-        huobiwanjia.home.play();
-      }
-    ).click(function() {
-      huobiwanjia.home.selectMerchant($(this), currentIndex);
-    });
-  });
+  huobiwanjia.home.enhanceList(
+    $('#merchant_list').children(), huobiwanjia.home.selectMerchant
+  );
 };
 
 huobiwanjia.home.selectMerchant = function(span, index) {
@@ -199,8 +156,7 @@ huobiwanjia.home.selectMerchant = function(span, index) {
  *****************************/
 $(function() {
   $('#scroll a').each(function() {
-    var classValue = $(this).attr('class'),
-      classAttribute = '';
+    var classValue = $(this).attr('class'), classAttribute = '';
     if (typeof classAttribute !== 'undefined' && classAttribute !== false) {
       classAttribute = ' class="' + classValue + '"';
     }
@@ -210,44 +166,18 @@ $(function() {
 });
 
 huobiwanjia.home.enhanceScroll = function() {
-  $('#scroll span').each(function() {
-    var current = $(this);
-    //ie9 点击时先 focus 再 mousedown
-    var isUp = null;
-    current.mousedown(function() {
-      isUp = false;
-      $(this).addClass('active');
-    });
-    current.mouseout(function() {
-      if (isUp === false) {
-        $(this).removeClass('active');
-        isUp = null;
-      }
-    });
-    current.mouseup(function() {
-      isUp = null;
-    });
-    //note: 不会触发 focusout
-    current.keypress(function(e){
-      if(e.which == 13){
-        huobiwanjia.home.executeScroll($(this).hasClass('previous'));
-      }
-    });
-  });
-  $('#scroll span').hover(
-    function() { $(this).addClass('hover'); },
-    function() { $(this).removeClass('hover'); }
-  ).click(function() {
-    huobiwanjia.home.executeScroll($(this).hasClass('previous'));
-  }).attr('tabindex', '0');
+  huobiwanjia.home.enhanceList(
+    $('#scroll span'), huobiwanjia.home.executeScroll
+  );
 };
 
-huobiwanjia.home.executeScroll = function(isPrevious) {
+huobiwanjia.home.executeScroll = function(span) {
+  var isPrevious = span.hasClass('previous');
   if (huobiwanjia.home.isScrolling) {
     return;
   }
   huobiwanjia.home.isScrolling = true;
-  huobiwanjia.home.stop();
+  huobiwanjia.home.hold();
   ++huobiwanjia.home.page;
   if (isPrevious) {
     huobiwanjia.home.page -= 2;
@@ -351,8 +281,8 @@ huobiwanjia.home.play = function() {
   if (huobiwanjia.home.isScrolling) {
     return;
   }
-  if (huobiwanjia.home.timer !== -1) {
-    huobiwanjia.home.stop();
+  if (huobiwanjia.home.timer !== null) {
+    clearInterval(huobiwanjia.home.timer);
   }
   huobiwanjia.home.timer = setInterval(function() {
     if (huobiwanjia.home.holdCount > 0) {
@@ -364,7 +294,7 @@ huobiwanjia.home.play = function() {
     }
     huobiwanjia.home.selectMerchant(next, $('#merchant_list span').index(next));
     huobiwanjia.home.preloadSlide();
-  }, 5000);
+  }, 500);
   huobiwanjia.home.preloadSlide();
 };
 
@@ -382,11 +312,6 @@ huobiwanjia.home.preloadSlide = function() {
     huobiwanjia.home.slideCache.push(src);
     new Image().src = src;
   }
-};
-
-huobiwanjia.home.stop = function() {
-  clearInterval(huobiwanjia.home.timer);
-  huobiwanjia.home.timer = -1;
 };
 
 /* merchant click tracking
