@@ -10,7 +10,7 @@ var huobiwanjia = function() {
       args[key] = value;
     }
   }
-  return { queryString: args };
+  return { query: args };
 }();
 
 /* search suggestion
