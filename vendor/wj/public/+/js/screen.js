@@ -1,32 +1,92 @@
 var huobiwanjia = function() {
-  var args = {};
+  var argumentList = {};
   if (location.search !== '') {
     var queryString = location.search.charAt(0) === '?' ?
        location.search.substring(1) : location.search;
     var regex = /([^=&]+)(=([^&]*))?/g;
-    while (match = regex.exec(queryString)) {
-      var key = decodeURIComponent(match[1].replace(/\+/g,' '));
-      var value = decodeURIComponent(match[3].replace(/\+/g,' '));
-      args[key] = value;
+    for (;;) {
+      var match = regex.exec(queryString);
+      if (match === null) {
+        break;
+      }
+      argumentList[decodeURIComponent(match[1].replace(/\+/g,' '))] =
+        decodeURIComponent(match[3].replace(/\+/g,' '));
     }
   }
-  return { query: args };
+  return {
+    argumentList: argumentList,
+//    suggestionCache: {},
+//    currentAjaxQuery: null,
+    currentQuery: null,
+    suggestionTimer: null,
+    isHoverSuggestion: null,
+  };
 }();
 
 /* search suggestion
  *****************************/
 $(function() {
   $('#header input').attr('autocomplete', 'off');
+  $('#header form').bind('submit', function() {
+    var query = encodeURIComponent($.trim($('#header input').attr('value')))
+      .replace(/%20/g, '+') + '/';
+    if (query === '%2B/') {
+      query = '';
+    }
+    if (query === '/') {
+      query = '';
+    }
+    window.location = '/' + query;
+    return false;
+  });
+  huobiwanjia.initializeSuggestion();
 });
-var suggestionCache = {};
-var currentAjaxQuery = null;
-var currentQuery = null;
-var suggestionIntervalId = null;
-var hoverQuery = null;
-var stopHiddenSuggestion = false;
 
-function getSuggestion() {
-  currentAjaxQuery = currentQuery;
+huobiwanjia.initializeSuggestion = function() {
+  //ubuntu firefox 输入中文不会触发 keydown，不能用来检查数据
+  $('#header input').keydown(function(event) {
+    if ($('#suggestion').length == 0) {
+      return;
+    }
+    if (event.which == 27) {
+      $('#suggestion').remove();
+      return;
+    }
+    if (event.which == 38) {
+      up();
+      return false;
+    }
+    if (event.which == 40) {
+      down();
+      return false;
+    }
+  }).focusin(function() {
+    huobiwanjia.currentQuery = $.trim($('#header input').val());
+    huobiwanjia.suggestionTimer = setInterval(
+      huobiwanjia.checkQueryInput, 1000
+    );
+  }).focusout(function() {
+    huobiwanjia.currentQuery = null;
+    clearInterval(huobiwanjia.suggestionTimer);
+    $('#suggestion').remove();
+  });
+  /* ie 刷新后默认和当前页面 focus 状态一致 */
+  if($.browser.msie) {
+    $('#header input').blur();/* 如果遇到 ie6 的 bug，blur 失效 */
+  }
+};
+
+huobiwanjia.checkQueryInput = function() {
+  query = $.trim($('#header input').val());
+  if (query === huobiwanjia.currentQuery || isHoverSuggestion) {
+    return;
+  }
+  currentQuery = query;
+  getSuggestion();
+};
+
+huobiwanjia.getSuggestion = function() {
+  huobiwanjia.currentAjaxQuery = huobiwanjia.currentQuery;
   if (currentAjaxQuery == '') {
     suggest(currentAjaxQuery);
     return;
@@ -45,7 +105,7 @@ function getSuggestion() {
   suggest(
     suggestionCache[currentAjaxQuery][0], suggestionCache[currentAjaxQuery][1]
   );
-}
+};
 
 function suggest(segmentList, data) {
   if (typeof(suggestionCache[currentAjaxQuery]) == 'undefined') {
@@ -200,72 +260,6 @@ function down() {
   $('#header input').val(currentQuery);
 }
 
-function checkQueryInput() {
-  query = $.trim($('#header input').val());
-  if (query == currentQuery || query == hoverQuery) {
-    return;
-  }
-  currentQuery = query;
-  getSuggestion();
-}
-
-function initializeQueryForm() {
-  $('#header input').attr('autocomplete', 'off');
-  $('#header form').bind('submit', function() {
-    query = encodeURIComponent($.trim($('#header input').attr('value')))
-      .replace(/%20/g, '+') + '/';
-    if (query === '%2B/') {
-      query = '';
-    }
-    if (query === '/') {
-      query = '';
-    }
-    window.location = '/' + query;
-    return false;
-  });
-  initializeQuerySuggestion();
-}
-
-function initializeQuerySuggestion() {
-  $('#header input').keydown(function(event) {//ubuntu firefox 输入中文不会触发
-    if ($('#suggestion').length == 0) {
-      return;
-    }
-    if (event.which == 27) {
-      $('#suggestion').remove();
-      return;
-    }
-    if (event.which == 38) {
-      up();
-      return false;
-    }
-    if (event.which == 40) {
-      down();
-      return false;
-    }
-  });
-  $('#header input').focusin(function() {
-    currentQuery = $.trim($('#header input').val());
-    suggestionIntervalId = setInterval(checkQueryInput, 1000);
-  });
-  $('#header input').focusout(function() {
-    currentQuery = null;
-    clearInterval(suggestionIntervalId);
-    suggestionIntervalId = null;
-    if (stopHiddenSuggestion != false) {
-      return;
-    }
-    $('#suggestion').remove();
-  });
-  /* ie 刷新后默认和当前页面 focus 状态一致 */
-  if($.browser.msie) {
-    $('#header input').blur();/* 如果遇到 ie6 的 bug，blur 失效 */
-  }
-}
-
-$(function() {
-  initializeQueryForm();
-});
 /* tracking function
  *****************************/
 huobiwanjia.trackPageview = function() {
@@ -281,10 +275,4 @@ huobiwanjia.trackPageview = function() {
  *****************************/
 $(function() {
   //huobiwanjia.trackPageview();
-});
-
-/* parse query string
- *****************************/
-$(function() {
-  
 });
