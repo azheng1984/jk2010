@@ -60,10 +60,10 @@ $(function() {
   $('#toolbar h2').after(form);
   function adjustInput() {
     if ($(this).val().length > 4) {
-      $(this).css('width', '60px');
+      $(this).addClass('long');
       return;
     }
-    $(this).css('width', '30px');
+    $(this).removeClass('long');
   }
   $('#price_range input').each(adjustInput);
   $('#price_range input').keyup(adjustInput);

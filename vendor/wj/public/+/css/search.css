@@ -144,6 +144,9 @@ h2 a:hover {
   background:#fff;
   box-shadow:inset 1px 1px #f5f5f5;
 }
+#price_range .long {
+  width:60px;
+}
 #price_range button {
   position:absolute;
   top:-20px;
