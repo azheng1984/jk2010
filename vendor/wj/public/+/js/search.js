@@ -1,6 +1,6 @@
 huobiwanjia.search = function() {
   var args = [];
-  var query = huobiwanjia.query;
+  var query = huobiwanjia.argumentList;
   if (typeof(query['price_from']) !== 'undefined') {
     args.push('price_from=' + query['price_from']);
   }
@@ -47,7 +47,7 @@ huobiwanjia.search = function() {
  * ie 6 visibility hidden also caused tabindex reset
  *****************************/
 $(function() {
-  query = huobiwanjia.query;
+  query = huobiwanjia.argumentList;
   var priceFrom = typeof(query['price_from']) !== 'undefined' ? query['price_from'] : '';
   var priceTo = typeof(query['price_to']) !== 'undefined' ? query['price_to'] : '';
   var form = '<form id="price_range" action="."><label for="price_from">&yen;</label>';

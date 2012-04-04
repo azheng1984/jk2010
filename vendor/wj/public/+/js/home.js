@@ -9,8 +9,8 @@ huobiwanjia.home = function() {
   };
   $(function() {
     home.pageAmount = Math.ceil(huobiwanjia.home.slideshow.merchantAmount / 5);
-    home.page = typeof huobiwanjia.query.page === 'undefined' ?
-      1 : huobiwanjia.query.page;
+    home.page =  typeof huobiwanjia.argumentList.page ==='undefined' ?
+      1 : huobiwanjia.argumentList.page;
     home.merchantListCache[home.page] =
       huobiwanjia.home.slideshow.merchantList;
   });
