@@ -171,15 +171,15 @@ class HomeScreen extends Screen {
   private function renderScroll() {
     $previous = null;
     $next = null;
-    $previousClass = ' class="previous full"';
-    $nextClass = ' class="full"';
+    $previousClass = ' class="previous"';
+    $nextClass = '';
     if ($GLOBALS['PAGE'] > 1) {
       $previous = $GLOBALS['PAGE'] - 1;
-      $nextClass = '';
+      $nextClass = ' class="small"';
     }
     if ($GLOBALS['PAGE'] < ceil($GLOBALS['MERCHANT_TYPE'][2] / 5)) {
       $next = $GLOBALS['PAGE'] + 1;
-      $previousClass = ' class="previous"';
+      $previousClass = ' class="previous small"';
     }
     echo '<div id="scroll">';
     if ($previous !== null) {

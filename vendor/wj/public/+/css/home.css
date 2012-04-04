@@ -189,10 +189,10 @@ ol .current {
   float:left;
   clear:left;
   width:15px;
-  height:25px;
   border:0;
   margin-top:4px;
-  background:#e5e5e5 url(/+/img/next.png) 4px 11px no-repeat;
+  background:#e5e5e5 url(/+/img/next.png) 4px 24px no-repeat;
+  height:52px;
   border-radius:2px;
 }
 #scroll a:hover, #scroll .hover {
@@ -209,7 +209,7 @@ ol .current {
 #scroll .previous:hover, #scroll .previous .hover {
   background-image:url(/+/img/previous_hover.png);
 }
-#scroll .full {
-  height:52px;
-  background-position:4px 24px;
+#scroll .small {
+  height:25px;
+  background-position:4px 11px;
 }
