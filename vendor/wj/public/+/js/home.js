@@ -157,8 +157,7 @@ huobiwanjia.home = function() {
       $('#scroll').html(html);
       home.enhanceScroll();
     });
-    if (typeof home.merchantListCache[home.page]
-      === 'undefined') {
+    if (typeof home.merchantListCache[home.page] === 'undefined') {
       $.ajax({
         type: 'GET',
         url: '?page=' + home.page + '&media=json',
@@ -250,7 +249,6 @@ huobiwanjia.home = function() {
   };
 
   $(function() {
-    /* initialization */
     home.page =  typeof huobiwanjia.argumentList.page ==='undefined' ?
       1 : huobiwanjia.argumentList.page;
     home.pageAmount = Math.ceil(home.slideshow.merchantAmount / 5);

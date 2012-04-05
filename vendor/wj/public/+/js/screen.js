@@ -1,26 +1,35 @@
 var huobiwanjia = function() {
-  var argumentList = {};
-  if (location.search !== '') {
-    var queryString = location.search.charAt(0) === '?' ?
-       location.search.substring(1) : location.search;
-    var regex = /([^=&]+)(=([^&]*))?/g;
-    for (;;) {
-      var match = regex.exec(queryString);
-      if (match === null) {
-        break;
-      }
-      argumentList[decodeURIComponent(match[1].replace(/\+/g,' '))] =
-        decodeURIComponent(match[3].replace(/\+/g,' '));
-    }
-  }
-  return {
-    argumentList: argumentList,
+  var base = {
+    argumentList: null,
 //    suggestionCache: {},
 //    currentAjaxQuery: null,
     currentQuery: null,
     suggestionTimer: null,
     isHoverSuggestion: null,
   };
+
+  base.initializeArgumentList = function() {
+    base.argumentList = {};
+    if (location.search !== '') {
+      var queryString = location.search.charAt(0) === '?' ?
+         location.search.substring(1) : location.search;
+      var regex = /([^=&]+)(=([^&]*))?/g;
+      for (;;) {
+        var match = regex.exec(queryString);
+        if (match === null) {
+          break;
+        }
+        base.argumentList[decodeURIComponent(match[1].replace(/\+/g,' '))] =
+          decodeURIComponent(match[3].replace(/\+/g,' '));
+      }
+    }
+  };
+
+  $(function() {
+    base.initializeArgumentList();
+  });
+
+  return base;
 }();
 
 /* search suggestion
