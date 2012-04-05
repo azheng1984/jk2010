@@ -1,4 +1,5 @@
 var huobiwanjia = function() {
+  /* build argument list */
   var argumentList = {};
   var search = window.location.search;
   if (search !== '') {
@@ -14,6 +15,7 @@ var huobiwanjia = function() {
     }
   }
 
+  /* build screen */
   var screen = {
     argumentList: null,
 //    suggestionCache: {},
