@@ -1,5 +1,20 @@
 var huobiwanjia = function() {
-  var base = {
+  var argumentList = {};
+  var search = window.location.search;
+  if (search !== '') {
+    var queryString = search.charAt(0) === '?' ? search.substring(1) : search;
+    var regex = /([^=&]+)(=([^&]*))?/g;
+    for (;;) {
+      var match = regex.exec(queryString);
+      if (match === null) {
+        break;
+      }
+      base.argumentList[decodeURIComponent(match[1].replace(/\+/g,' '))] =
+        decodeURIComponent(match[3].replace(/\+/g,' '));
+    }
+  }
+
+  var screen = {
     argumentList: null,
 //    suggestionCache: {},
 //    currentAjaxQuery: null,
@@ -8,28 +23,10 @@ var huobiwanjia = function() {
     isHoverSuggestion: null,
   };
 
-  base.initializeArgumentList = function() {
-    base.argumentList = {};
-    if (location.search !== '') {
-      var queryString = location.search.charAt(0) === '?' ?
-         location.search.substring(1) : location.search;
-      var regex = /([^=&]+)(=([^&]*))?/g;
-      for (;;) {
-        var match = regex.exec(queryString);
-        if (match === null) {
-          break;
-        }
-        base.argumentList[decodeURIComponent(match[1].replace(/\+/g,' '))] =
-          decodeURIComponent(match[3].replace(/\+/g,' '));
-      }
-    }
-  };
-
   $(function() {
-    base.initializeArgumentList();
   });
 
-  return base;
+  return { screen: screen, argumentList: argumentList };
 }();
 
 /* search suggestion
@@ -208,7 +205,7 @@ huobiwanjia.highlight = function(query, keywordList) {
     result += query.substr(offset);
   }
   return result;
-}
+};
 
 huobiwanjia.up = function() {
   var target = null;
