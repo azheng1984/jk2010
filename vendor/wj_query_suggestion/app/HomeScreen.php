@@ -24,9 +24,10 @@ class HomeScreen {
       }
     }
     if (count($list) === 0) {
-      echo 'huobiwanjia.suggest("', $queryName, '");';
+      echo 'huobiwanjia.screen.suggest(null, null);';
       return;
     }
-    echo 'huobiwanjia.suggest("', $queryName, '",{' ,implode(',', $list), '});';
+    echo 'huobiwanjia.screen.suggest("', $queryName,
+      '",{' ,implode(',', $list), '});';
   }
 }

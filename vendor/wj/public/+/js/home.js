@@ -66,9 +66,7 @@ huobiwanjia.home = function() {
       $('#slide_list .current').attr('class', 'item').attr('tabindex', 0);
       span.attr('class', 'current').removeAttr('tabindex');
     }
-    var merchant = home.slideshow.merchantList[
-      home.currentMerchantIndex
-    ];
+    var merchant = home.slideshow.merchantList[home.currentMerchantIndex];
     var src = '/+/img/slide/' + merchant[2] + '/' + index + '.jpg';
     $('#slide img').attr('src', src);
     $('#slide').attr('href', 'http://' + merchant[3][index]);
@@ -235,8 +233,7 @@ huobiwanjia.home = function() {
     if (typeof home.slideshow.merchantList[next] === 'undefined') {
       next = 1;
     }
-    var merchant = home.slideshow.merchantList[next],
-      src = '/+/img/slide/' + merchant[2] + '/0.jpg';
+    var src = '/+/img/slide/' + home.slideshow.merchantList[next][2] + '/0.jpg';
     if ($.inArray(src, home.slideCache) === -1) {
       home.slideCache.push(src);
       new Image().src = src;
