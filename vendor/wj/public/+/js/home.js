@@ -228,7 +228,6 @@ huobiwanjia.home = function() {
       home.preloadSlide();
     }, 5000);
     home.preloadSlide();
-    return;
   };
 
   home.preloadSlide = function() {
