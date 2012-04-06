@@ -28,7 +28,7 @@ huobiwanjia.home = function() {
       if (current.hasClass('current') === false) {
         current.attr('tabindex', '0');
       }
-      //ie 点击时先触发 focus 然后触发 mousedown
+      //ie mousedown 前会先触发 focus
       var isUp = null;
       current.mousedown(function() {
         isUp = false;
@@ -257,8 +257,7 @@ huobiwanjia.home = function() {
     $('#header input').focus();
     /* slide enhancement */
     $('#slide_wrapper').hover(home.hold, home.play);
-    $('#slide').focusin(home.hold).focusout(home.play);
-    $('#merchant').focusin(home.hold).focusout(home.play);
+    $('#slide,#merchant').focusin(home.hold).focusout(home.play);
     /* slide list enhancement */
     home.initializeList('slide_list');
     home.enhanceSlideList();
