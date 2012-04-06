@@ -5,7 +5,7 @@ huobiwanjia.home = function() {
     currentMerchantIndex: 0,
     isScrolling: false,
     timer: null,
-    holdCount: 0,
+    holdCount: 1,
     merchantListCache: [],
     slideCache: []
   };
@@ -206,8 +206,8 @@ huobiwanjia.home = function() {
   };
 
   home.play = function() {
+    --home.holdCount;
     if (home.holdCount > 0) {
-      --home.holdCount;
       return;
     }
     if (home.isScrolling) {
@@ -228,6 +228,7 @@ huobiwanjia.home = function() {
       home.preloadSlide();
     }, 5000);
     home.preloadSlide();
+    return;
   };
 
   home.preloadSlide = function() {
