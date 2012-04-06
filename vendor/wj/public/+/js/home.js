@@ -2,7 +2,6 @@ huobiwanjia.home = function() {
   var home = {
     slideshow: null,
     page: null,
-    pageAmount: null,
     currentMerchantIndex: 0,
     isScrolling: false,
     timer: null,
@@ -79,9 +78,10 @@ huobiwanjia.home = function() {
   };
 
   home.enhanceMerchantList = function() {
-    var list = $('#merchant_list').children();
-    home.enhanceList(list, home.selectMerchant);
-    list.children().each(function() { $(this).hover(home.hold, home.play); });
+    home.enhanceList(
+      $('#merchant_list').children().hover(home.hold, home.play),
+      home.selectMerchant
+    );
   };
 
   home.selectMerchant = function(span, index) {
@@ -113,7 +113,8 @@ huobiwanjia.home = function() {
   };
 
   home.executeScroll = function(span) {
-    var isPrevious = span.hasClass('previous');
+    var pageAmount = Math.ceil(home.slideshow.merchantAmount / 5),
+      isPrevious = span.hasClass('previous');
     if (home.isScrolling) {
       return;
     }
@@ -125,7 +126,7 @@ huobiwanjia.home = function() {
     }
     $('#merchant_list .current').attr('class', 'item');
     var length = 5;
-    if (home.page === home.pageAmount) {
+    if (home.page === pageAmount) {
       length = home.slideshow.merchantAmount - (home.page - 1) * 5;
     }
     var targetHtml = '';
@@ -143,15 +144,15 @@ huobiwanjia.home = function() {
       html = '<div id="previous">' + targetHtml + '</div>' + currentHtml;
     }
     $('#merchant_list').html(html).addClass('move');
-    $('#current').animate({ 'top': targetPosition }, 'slow');
-    $('#' + target).animate({ 'top': targetPosition }, 'slow', function() {
+    $('#current').animate({ top: targetPosition }, 'slow');
+    $('#' + target).animate({ top: targetPosition }, 'slow', function() {
       $('#merchant_list').html($('#' + target).html()).removeClass('move');
       var html = '<span class="previous small"></span>'
         + '<span class="small"></span>';
       if (home.page === 1) {
         html = '<span></span>';
       }
-      if (home.page === home.pageAmount) {
+      if (home.page === pageAmount) {
         html = '<span class="previous"></span>';
       }
       $('#scroll').html(html);
@@ -159,7 +160,6 @@ huobiwanjia.home = function() {
     });
     if (typeof home.merchantListCache[home.page] === 'undefined') {
       $.ajax({
-        type: 'GET',
         url: '?page=' + home.page + '&media=json',
         success: function(data) {
           home.merchantListCache[home.page] = data;
@@ -171,9 +171,7 @@ huobiwanjia.home = function() {
       });
       return;
     }
-    home.fillMerchantList(
-      home.merchantListCache[home.page]
-    );
+    home.fillMerchantList(home.merchantListCache[home.page]);
   };
 
   home.fillMerchantList = function(data) {
@@ -251,7 +249,6 @@ huobiwanjia.home = function() {
   $(function() {
     home.page =  typeof huobiwanjia.argumentList.page ==='undefined' ?
       1 : huobiwanjia.argumentList.page;
-    home.pageAmount = Math.ceil(home.slideshow.merchantAmount / 5);
     home.merchantListCache[home.page] = home.slideshow.merchantList;
     /* focus input */
     $('#header input').focus();
