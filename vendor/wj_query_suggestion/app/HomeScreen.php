@@ -27,6 +27,7 @@ class HomeScreen {
       echo 'huobiwanjia.screen.suggest(null, null);';
       return;
     }
+    //TODO:如果只有一条，而且是 queryname 本身，那提示就没有意义
     echo 'huobiwanjia.screen.suggest("', $queryName,
       '",{' ,implode(',', $list), '});';
   }

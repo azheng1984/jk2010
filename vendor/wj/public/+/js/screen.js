@@ -2,6 +2,7 @@ var huobiwanjia = function() {
   var screen = {
     query: null,
     ajaxQuery: null,
+    suggestionQuery: null,
     timer: null,
     isHoverSuggestion: false,
     suggestionCache: {},
@@ -16,6 +17,8 @@ var huobiwanjia = function() {
       }
       if (event.which === 27) {
         suggestion.hide();
+        clearInterval(screen.timer);
+        screen.timer = null;
         return;
       }
       if (event.which === 38) {
@@ -26,11 +29,19 @@ var huobiwanjia = function() {
         screen.down();
         return false;
       }
+      if (suggestion.is(':visible')) {
+        screen.checkSelection();
+      }
+      if (screen.timer === null) {
+        screen.timer = setInterval(screen.startSuggestion, 1000);
+      }
     }).focusin(function() {
       screen.timer = setInterval(screen.startSuggestion, 1000);
     }).focusout(function() {
       clearInterval(screen.timer);
-      $('#suggestion').hide();
+      if (screen.isHoverSuggestion === false) {
+        $('#suggestion').hide();
+      }
     });
     /* ie 刷新后默认和当前页面 focus 状态一致 */
     if($.browser.msie) {
@@ -38,12 +49,24 @@ var huobiwanjia = function() {
     }
   };
 
+  screen.checkSelection = function() {
+    var hover = $('#suggestion li.hover');
+    if (hover.find('span:first').text() !== $.trim($('#header input').val())) {
+      hover.removeClass('hover');
+      screen.isHoverSuggestion = false;
+    }
+  };
+
   screen.startSuggestion = function() {
-    var query = $.trim($('#header input').val());
-    if (query === screen.query || screen.isHoverSuggestion) {
+    if (screen.isHoverSuggestion) {
       return;
     }
-    screen.query = query;
+    screen.query = $.trim($('#header input').val());
+    if (screen.query === screen.suggestionQuery) {
+      $('#suggestion').show();
+      return;
+    }
+    var query = screen.query;
     if (query === '') {
       $('#suggestion').hide();
       return;
@@ -83,23 +106,23 @@ var huobiwanjia = function() {
       suggestion = $('#suggestion');
     }
     var html = '';
-    console.log(data);
     $.each(data, function(text, amount) {
       if (text.replace(' ', '') === keywordList.replace(' ', '')) {
         return;
       }
-      var liHtml = text;
+      var innerHtml = text;
       if (keywordList !== '') {
-        liHtml = screen.highlight(text, keywordList.split(' '));
+        innerHtml = screen.highlight(text, keywordList.split(' '));
       }
       html += '<li><a href="/' + encodeURIComponent(text)
-        + '/"><span class="query">' + liHtml
+        + '/"><span class="query">' + innerHtml
         + '</span><span class="product_amount">' + amount + '</span></a></li>';
     });
     if (html === '') {
       suggestion.hide();
       return;
     }
+    screen.suggestionQuery = screen.query;
     suggestion.html(html).show();/* display block 触发 ie6 渲染 */
     $('#suggestion li a').hover(
       function() {
@@ -117,9 +140,14 @@ var huobiwanjia = function() {
 
   screen.highlight = function(query, keywordList) {
     var positionList = {};
-    for (var index = 0; index < keywordList.length; ++index) {
+    var length = keywordList.length;
+    for (var index = 0; index < length; ++index) {
       var offset = 0;
-      while (-1 !== (offset = query.indexOf(keywordList[index], offset))) {
+      for(;;) {
+        offset = query.indexOf(keywordList[index], offset);
+        if (offset === -1) {
+          break;
+        }
         if (typeof positionList[offset] === 'undefined') {
           positionList[offset] = keywordList[index].length;
         }
@@ -130,14 +158,14 @@ var huobiwanjia = function() {
     for(var key in positionList) {
       keyList.push(key);
     }
-    amount = keyList.length;
-    if (amount === 0) {
+    if (keyList.length === 0) {
       return query;
     }
     keyList.sort();
     var result = '';
     offset = 0;
-    for (var index = 0; index < keyList.length; ++index) {
+    length = keyList.length;
+    for (var index = 0; index < length; ++index) {
       var start = parseInt(keyList[index]);
       var next = start + positionList[start];
       if (next <= offset) {
@@ -151,73 +179,54 @@ var huobiwanjia = function() {
         + query.substr(start, positionList[start]) + '</em>';
       offset = next;
     }
-    if (offset < query.length) {
-      result += query.substr(offset);
+    return result + query.substr(offset);
+  };
+
+  screen.show = function() {
+    if (screen.query !== screen.suggestionQuery) {
+      return false;
     }
-    return result;
+    $('#suggestion').show();
+  };
+
+  screen.move = function(target) {
+    if (target.length === 0) {
+      screen.isHoverSuggestion = false;
+      $('#header input').val(screen.query);
+      return;
+    }
+    screen.isHoverSuggestion = true;
+    target.addClass('hover');
+    $('#header input').val(target.find('span:first').text());
   };
 
   screen.up = function() {
-    var target = null;
-    var previous = null;
-    $('#suggestion li').each(function() {
-      if (target !== null) {
-        return;
-      }
-      var current = $(this);
-      if (current.hasClass('hover')) {
-        current.removeClass('hover');
-        if (previous == null) {
-          target = false;
-          return;
-        }
-        target = previous;
-      }
-      previous = current;
-    });
-    if (target == null) {
-      target = previous;
-    }
-    if (target != false) {
-      target.addClass('hover');
-      hoverQuery = target.find('.query').text();
-      $('#header input').val(hoverQuery);
+    if (screen.show() === false) {
       return;
     }
-    hoverQuery = null;
-    $('#header input').val(screen.query);
+    var current = $('#suggestion li.hover').removeClass('hover');
+    var previous = current.prev();
+    if (current.length === 0) {
+      previous = $('#suggestion li').last();
+    }
+    screen.move(previous);
   };
 
   screen.down = function() {
-    var current = null;
-    $('#suggestion li').each(function() {
-      if (current != null) {
-        return;
-      }
-      if ($(this).hasClass('hover')) {
-        current = $(this);
-        current.removeClass('hover');
-      }
-    });
-    var target = null;
-    if (current == null) {
-      target = $('#suggestion li').first();
-    }
-    if (target == null && current != null) {
-      target = current.next();
-    }
-    if (target != null && target.length != 0) {
-      target.addClass('hover');
-      hoverQuery = target.find('.query').text();
-      $('#header input').val(hoverQuery);
+    if (screen.show() === false) {
       return;
     }
-    hoverQuery = null;
-    $('#header input').val(screen.query);
+    var current = $('#suggestion li.hover').removeClass('hover');
+    var next = current.next();
+    if (current.length === 0) {
+      next = $('#suggestion li').first();
+    }
+    screen.move(next);
+    return;
   };
 
   $(function() {
-    screen.query = $.trim($('#header input').val());
+//    screen.query = $.trim($('#header input').val());
     $('#header input').attr('autocomplete', 'off');
     $('#header form').bind('submit', function() {
       var query = encodeURIComponent($.trim($('#header input').attr('value')))
