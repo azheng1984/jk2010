@@ -2,10 +2,9 @@ var huobiwanjia = function() {
   var suggestion = {
     query: null,
     ajaxQuery: null,
-    timerQuery: null,
     timer: null,
     isPreventHidden: false,
-    isHidden: false,
+    isEscaped: false,
     isHover: false,
     cache: {},
   };
@@ -20,7 +19,7 @@ var huobiwanjia = function() {
       }
       if (event.which === 27) {
         suggestion.hide();
-        suggestion.isHidden = true;
+        suggestion.isEscaped = true;
         return;
       }
       if (event.which === 38) {
@@ -34,13 +33,13 @@ var huobiwanjia = function() {
       if (wrapper.is(':visible')) {
         suggestion.check();
       }
-      suggestion.isHidden = false;
+      suggestion.isEscaped = false;
     }).focusin(function() {
       //chrome 在 window 获得焦点时会触发两次 focusin
       if (suggestion.timer === null) {
         suggestion.timer = setInterval(suggestion.start, 1000);
       }
-      suggestion.isHidden = false;
+      suggestion.isEscaped = false;
     }).focusout(function() {
       clearInterval(suggestion.timer);
       suggestion.timer = null;
@@ -67,15 +66,14 @@ var huobiwanjia = function() {
   };
 
   suggestion.start = function() {
-    if (suggestion.isHover || suggestion.isHidden) {
+    if (suggestion.isHover || suggestion.isEscaped) {
       return;
     }
-    suggestion.timerQuery = $.trim($('#header input').val());
-    if (suggestion.timerQuery === suggestion.query) {
+    var query = $.trim($('#header input').val());
+    if (query === suggestion.query) {
       $('#suggestion').show();
       return;
     }
-    var query = suggestion.timerQuery;
     if (query === '') {
       suggestion.hide();
       return;
@@ -153,9 +151,10 @@ var huobiwanjia = function() {
 
   suggestion.highlight = function(query, keywordList) {
     var positionList = {};
+    var offset = 0;
     var length = keywordList.length;
     for (var index = 0; index < length; ++index) {
-      var offset = 0;
+      offset = 0;
       for(;;) {
         offset = query.indexOf(keywordList[index], offset);
         if (offset === -1) {
