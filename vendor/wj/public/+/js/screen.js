@@ -42,7 +42,6 @@ var huobiwanjia = function() {
       }
       suggestion.isHidden = false;
     }).focusout(function() {
-      console.log('out');
       clearInterval(suggestion.timer);
       suggestion.timer = null;
       if (suggestion.isPreventHidden === false) {

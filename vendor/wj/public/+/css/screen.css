@@ -177,10 +177,6 @@ input:focus {
 #suggestion li.hover {
   background:#eee;
 }
-#suggestion li.hover .product_amount {
-  color:#333;
-  background:#ddd;
-}
 #suggestion .query {
   float:left;
 }
@@ -192,9 +188,9 @@ input:focus {
   font-style:normal;
 }
 #suggestion .product_amount {
-  color:#666;
+  color:#fff;
   float:right;
-  background:#eee;
+  background:#bbb;
   padding:0 4px;
   line-height:16px;
   margin:2px;
