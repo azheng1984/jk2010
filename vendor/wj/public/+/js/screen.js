@@ -245,7 +245,7 @@ var huobiwanjia = function() {
     suggestion.initialize();
   });
 
-  return {argumentList: function() {
+  return {suggestion: suggestion, argumentList: function() {
     var argumentList = {};
     var search = window.location.search;
     if (search !== '') {
