@@ -24,11 +24,10 @@ class HomeScreen {
       }
     }
     if (count($list) === 0) {
-      echo 'huobiwanjia.screen.suggest(null, null);';
+      echo 'huobiwanjia.suggestion.execute(null, null);';
       return;
     }
-    //TODO:如果只有一条，而且是 queryname 本身，那提示就没有意义
-    echo 'huobiwanjia.screen.suggest("', $queryName,
+    echo 'huobiwanjia.suggestion.execute("', $queryName,
       '",{' ,implode(',', $list), '});';
   }
 }

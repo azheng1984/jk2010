@@ -1,45 +1,56 @@
 var huobiwanjia = function() {
-  var screen = {
+  var suggestion = {
     query: null,
     ajaxQuery: null,
-    suggestionQuery: null,
+    timerQuery: null,
     timer: null,
-    isHoverSuggestion: false,
-    suggestionCache: {},
+    isPreventHidden: false,
+    isHidden: false,
+    isHover: false,
+    cache: {},
   };
 
-  screen.initializeSuggestion = function() {
-    //ubuntu firefox 输入中文不会触发 keydown，不能用来检查数据
+  suggestion.initialize = function() {
+    $('#header input').attr('autocomplete', 'off');
+    //ubuntu firefox 输入中文不会触发 keydown
     $('#header input').keydown(function(event) {
-      var suggestion = $('#suggestion');
-      if (suggestion.length === 0) {
+      var wrapper = $('#suggestion');
+      if (wrapper.length === 0) {
         return;
       }
       if (event.which === 27) {
-        suggestion.hide();
-        clearInterval(screen.timer);
-        screen.timer = null;
+        //TODO:change hide to remove
+        wrapper.hide();
+        $('#suggestion li.hover').removeClass('hover');
+        suggestion.isHover = false;
+        suggestion.isHidden = true;
         return;
       }
       if (event.which === 38) {
-        screen.up();
+        suggestion.move(suggestion.up);
         return false;
       }
       if (event.which === 40) {
-        screen.down();
+        suggestion.move(suggestion.down);
         return false;
       }
-      if (suggestion.is(':visible')) {
-        screen.checkSelection();
+      if (wrapper.is(':visible')) {
+        suggestion.check();
       }
-      if (screen.timer === null) {
-        screen.timer = setInterval(screen.startSuggestion, 1000);
-      }
+      suggestion.isHidden = false;
     }).focusin(function() {
-      screen.timer = setInterval(screen.startSuggestion, 1000);
+      //chrome 在 window 获得焦点时回触发两次 focusin
+      if (suggestion.timer === null) {
+        suggestion.timer = setInterval(suggestion.start, 1000);
+      }
+      suggestion.isHidden = false;
     }).focusout(function() {
-      clearInterval(screen.timer);
-      if (screen.isHoverSuggestion === false) {
+      console.log('out');
+      clearInterval(suggestion.timer);
+      suggestion.timer = null;
+      if (suggestion.isPreventHidden === false) {
+        $('#suggestion li.hover').removeClass('hover');
+        suggestion.isHover = false;
         $('#suggestion').hide();
       }
     });
@@ -49,35 +60,35 @@ var huobiwanjia = function() {
     }
   };
 
-  screen.checkSelection = function() {
-    var hover = $('#suggestion li.hover');
-    if (hover.find('span:first').text() !== $.trim($('#header input').val())) {
-      hover.removeClass('hover');
-      screen.isHoverSuggestion = false;
+  suggestion.check = function() {
+    if ($.trim($('#header input').val()) !== suggestion.query) {
+      $('#suggestion li.hover').removeClass('hover');
+      suggestion.isHover = false;
+      $('#suggestion').hide();
     }
   };
 
-  screen.startSuggestion = function() {
-    if (screen.isHoverSuggestion) {
+  suggestion.start = function() {
+    if (suggestion.isHover || suggestion.isHidden) {
       return;
     }
-    screen.query = $.trim($('#header input').val());
-    if (screen.query === screen.suggestionQuery) {
+    suggestion.timerQuery = $.trim($('#header input').val());
+    if (suggestion.timerQuery === suggestion.query) {
       $('#suggestion').show();
       return;
     }
-    var query = screen.query;
+    var query = suggestion.timerQuery;
     if (query === '') {
       $('#suggestion').hide();
       return;
     }
-    if (typeof screen.suggestionCache[query] !== 'undefined') {
-      var cache = screen.suggestionCache[query];
-      screen.renderSuggestion(cache[0], cache[1]);
+    if (typeof suggestion.cache[query] !== 'undefined') {
+      var cache = suggestion.cache[query];
+      suggestion.render(query, cache[0], cache[1]);
       return;
     }
-    if (screen.ajaxQuery === null) {
-      screen.ajaxQuery = query;
+    if (suggestion.ajaxQuery === null) {
+      suggestion.ajaxQuery = query;
       var uri = 'http://q.dev.huobiwanjia.com/' + encodeURIComponent(query);
       $.ajax({
         url: uri,
@@ -88,57 +99,58 @@ var huobiwanjia = function() {
     }
   };
 
-  screen.suggest = function(keywordList, data) {
-    screen.suggestionCache[screen.ajaxQuery] = [keywordList, data];
-    if (screen.query === screen.ajaxQuery) {
-      screen.renderSuggestion(keywordList, data);
+  suggestion.execute = function(keywordList, data) {
+    suggestion.cache[suggestion.ajaxQuery] = [keywordList, data];
+    if ($.trim($('#header input').val()) === suggestion.ajaxQuery) {
+      suggestion.render(suggestion.ajaxQuery, keywordList, data);
     }
-    screen.ajaxQuery = null;
+    suggestion.ajaxQuery = null;
   };
 
-  screen.renderSuggestion = function(keywordList, data) {
+  suggestion.render = function(query, keywordList, data) {
     if (data === null) {
       data = {};
     }
-    var suggestion = $('#suggestion');
-    if (suggestion.length !== 1) {
+    var wrapper = $('#suggestion');
+    if (wrapper.length !== 1) {
       $('#header').append('<ul id="suggestion"></ul>');
-      suggestion = $('#suggestion');
+      wrapper = $('#suggestion');
     }
     var html = '';
     $.each(data, function(text, amount) {
-      if (text.replace(' ', '') === keywordList.replace(' ', '')) {
+      if (text.replace(/ /g, '') === keywordList.replace(/ /g, '')) {
         return;
       }
       var innerHtml = text;
       if (keywordList !== '') {
-        innerHtml = screen.highlight(text, keywordList.split(' '));
+        innerHtml = suggestion.highlight(text, keywordList.split(' '));
       }
       html += '<li><a href="/' + encodeURIComponent(text)
         + '/"><span class="query">' + innerHtml
         + '</span><span class="product_amount">' + amount + '</span></a></li>';
     });
     if (html === '') {
-      suggestion.hide();
+      wrapper.hide();
       return;
     }
-    screen.suggestionQuery = screen.query;
-    suggestion.html(html).show();/* display block 触发 ie6 渲染 */
+    suggestion.query = query;
+    wrapper.html(html).show();/* display block 触发 ie6 渲染 */
     $('#suggestion li a').hover(
       function() {
         $('#suggestion li.hover').removeClass('hover');
         $(this).parent().addClass('hover');
-        screen.isHoverSuggestion = true;
+        suggestion.isPreventHidden = true;
+        suggestion.isHover = true;
       },
       function() {
         $('#suggestion li.hover').removeClass('hover');
-        screen.isHoverSuggestion = false;
+        suggestion.isPreventHidden = false;
+        suggestion.isHover = false;
       }
     );
-    //$('#suggestion').css('display', 'block');/* 触发 ie6 渲染 */
   };
 
-  screen.highlight = function(query, keywordList) {
+  suggestion.highlight = function(query, keywordList) {
     var positionList = {};
     var length = keywordList.length;
     for (var index = 0; index < length; ++index) {
@@ -182,52 +194,41 @@ var huobiwanjia = function() {
     return result + query.substr(offset);
   };
 
-  screen.show = function() {
-    if (screen.query !== screen.suggestionQuery) {
-      return false;
-    }
-    $('#suggestion').show();
-  };
-
-  screen.move = function(target) {
-    if (target.length === 0) {
-      screen.isHoverSuggestion = false;
-      $('#header input').val(screen.query);
+  suggestion.move = function(getTarget) {
+    if ($('#suggestion').is(':visible') === false) {
       return;
     }
-    screen.isHoverSuggestion = true;
-    target.addClass('hover');
-    $('#header input').val(target.find('span:first').text());
-  };
-
-  screen.up = function() {
-    if (screen.show() === false) {
+    var target = getTarget();
+    target.from.removeClass('hover');
+    if (target.to.length === 0) {
+      suggestion.isHover = false;
+      $('#header input').val(suggestion.query);
       return;
     }
-    var current = $('#suggestion li.hover').removeClass('hover');
+    suggestion.isHover = true;
+    target.to.addClass('hover');
+    $('#header input').val(target.to.find('span:first').text());
+  };
+
+  suggestion.up = function() {
+    var current = $('#suggestion li.hover');
     var previous = current.prev();
     if (current.length === 0) {
       previous = $('#suggestion li').last();
     }
-    screen.move(previous);
+    return {from: current, to: previous};
   };
 
-  screen.down = function() {
-    if (screen.show() === false) {
-      return;
-    }
-    var current = $('#suggestion li.hover').removeClass('hover');
+  suggestion.down = function() {
+    var current = $('#suggestion li.hover');
     var next = current.next();
     if (current.length === 0) {
       next = $('#suggestion li').first();
     }
-    screen.move(next);
-    return;
+    return {from: current, to: next};
   };
 
   $(function() {
-//    screen.query = $.trim($('#header input').val());
-    $('#header input').attr('autocomplete', 'off');
     $('#header form').bind('submit', function() {
       var query = encodeURIComponent($.trim($('#header input').attr('value')))
         .replace(/%20/g, '+') + '/';
@@ -240,10 +241,10 @@ var huobiwanjia = function() {
       window.location = '/' + query;
       return false;
     });
-    screen.initializeSuggestion();
+    suggestion.initialize();
   });
 
-  return { screen: screen, argumentList: function() {
+  return { suggestion: suggestion, argumentList: function() {
     var argumentList = {};
     var search = window.location.search;
     if (search !== '') {
