@@ -1,4 +1,67 @@
 huobiwanjia.search = function() {
+  search.renderPriceRange = function() {
+    query = huobiwanjia.argumentList;
+    var priceFrom = typeof query.price_from !== 'undefined'
+      ? query.price_from : '';
+    var priceTo = typeof query.price_to !== 'undefined' ? query.price_to : '';
+    var form =
+      '<form id="price_range" action="."><label for="price_from">&yen;</label>';
+    if (typeof query.sort !== 'undefined') {
+      form += '<input name="sort" type="hidden" value="' + query.sort + '"/>';
+    }
+    form += '<input id="price_from" name="price_from" type="text" value="'
+      + priceFrom + '" autocomplete="off"/><span>-</span>'
+      + '<input id="price_to" name="price_to" type="text" value="'
+      + priceTo + '" autocomplete="off"/>'
+      + '<button tabIndex="-1" type="submit"></button></form>';
+    $('#toolbar h2').after(form);
+    $('#price_range input').each(adjustInput);
+    $('#price_range input').keyup(adjustInput);
+    $('#price_range input').focusin(function() {
+      if ($('#price_range_button').length !== 0) {
+        return;
+      }
+      $('#price_range')
+        .append('<span id="price_range_button" tabindex="0">确定</span>');
+      //用来记录是否 mouseup, ie9 点击时先 focus 再 mousedown
+      var isUp = null;
+      $('#price_range_button').hover(
+        function() {$(this).addClass('hover');},
+        function() {$(this).removeClass('hover');}
+      ).click(function() {
+        $('#price_range').submit();
+      }).keypress(function(e) {
+        if(e.which === 13){
+          $('#price_range').submit();
+        }
+      }).mousedown(function() {
+        isUp = false;
+        $(this).addClass('active');
+      }).mouseout(function() {
+        if (isUp === false) {
+          $(this).removeClass('active');
+        }
+      }).mouseup(function() {
+        isUp = true;
+      });
+    });
+  };
+
+  search.adjustInput = function() {
+    input = $(this);
+    if (input.val().length > 4) {
+      input.addClass('long');
+      return;
+    }
+    input.removeClass('long');
+  };
+
+  $(function() {
+    search.renderPriceRange();
+  });
+};
+
+huobiwanjia.search = function() {
   var args = [];
   var query = huobiwanjia.argumentList;
   if (typeof(query['price_from']) !== 'undefined') {

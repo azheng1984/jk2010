@@ -6,7 +6,7 @@ var huobiwanjia = function() {
     isPreventHidden: false,
     isEscaped: false,
     isHover: false,
-    cache: {},
+    cache: {}
   };
 
   suggestion.initialize = function() {
