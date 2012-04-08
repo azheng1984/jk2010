@@ -19,10 +19,7 @@ var huobiwanjia = function() {
         return;
       }
       if (event.which === 27) {
-        //TODO:change hide to remove
-        wrapper.hide();
-        $('#suggestion li.hover').removeClass('hover');
-        suggestion.isHover = false;
+        suggestion.hide();
         suggestion.isHidden = true;
         return;
       }
@@ -39,7 +36,7 @@ var huobiwanjia = function() {
       }
       suggestion.isHidden = false;
     }).focusin(function() {
-      //chrome 在 window 获得焦点时回触发两次 focusin
+      //chrome 在 window 获得焦点时会触发两次 focusin
       if (suggestion.timer === null) {
         suggestion.timer = setInterval(suggestion.start, 1000);
       }
@@ -49,9 +46,7 @@ var huobiwanjia = function() {
       clearInterval(suggestion.timer);
       suggestion.timer = null;
       if (suggestion.isPreventHidden === false) {
-        $('#suggestion li.hover').removeClass('hover');
-        suggestion.isHover = false;
-        $('#suggestion').hide();
+        suggestion.hide();
       }
     });
     /* ie 刷新后默认和当前页面 focus 状态一致 */
@@ -62,10 +57,14 @@ var huobiwanjia = function() {
 
   suggestion.check = function() {
     if ($.trim($('#header input').val()) !== suggestion.query) {
-      $('#suggestion li.hover').removeClass('hover');
-      suggestion.isHover = false;
-      $('#suggestion').hide();
+      suggestion.hide();
     }
+  };
+
+  suggestion.hide = function() {
+    $('#suggestion').hide();
+    $('#suggestion li.hover').removeClass('hover');
+    suggestion.isHover = false;
   };
 
   suggestion.start = function() {
@@ -79,7 +78,7 @@ var huobiwanjia = function() {
     }
     var query = suggestion.timerQuery;
     if (query === '') {
-      $('#suggestion').hide();
+      suggestion.hide();
       return;
     }
     if (typeof suggestion.cache[query] !== 'undefined') {
@@ -130,7 +129,7 @@ var huobiwanjia = function() {
         + '</span><span class="product_amount">' + amount + '</span></a></li>';
     });
     if (html === '') {
-      wrapper.hide();
+      suggestion.hide();
       return;
     }
     suggestion.query = query;
@@ -147,7 +146,10 @@ var huobiwanjia = function() {
         suggestion.isPreventHidden = false;
         suggestion.isHover = false;
       }
-    );
+    ).click(function() {
+      //firefox 后退时直接还原跳转前的页面
+      suggestion.hide();
+    });
   };
 
   suggestion.highlight = function(query, keywordList) {
@@ -244,7 +246,7 @@ var huobiwanjia = function() {
     suggestion.initialize();
   });
 
-  return { suggestion: suggestion, argumentList: function() {
+  return {suggestion: suggestion, argumentList: function() {
     var argumentList = {};
     var search = window.location.search;
     if (search !== '') {
@@ -260,7 +262,7 @@ var huobiwanjia = function() {
       }
     }
     return argumentList;
-  }() };
+  }()};
 }();
 
 /* tracking function
