@@ -49,8 +49,8 @@ huobiwanjia.home = function() {
             current.addClass('hover');
           }
         },
-        function() { current.removeClass('hover'); }
-      ).click(function() { clickEvent(current, currentIndex); });
+        function() {current.removeClass('hover');}
+      ).click(function() {clickEvent(current, currentIndex);});
       if (typeof isHold === 'undefined') {
         current.focusin(home.hold).focusout(home.play);
       }
@@ -142,8 +142,8 @@ huobiwanjia.home = function() {
       html = '<div id="previous">' + targetHtml + '</div>' + currentHtml;
     }
     $('#merchant_list').html(html).addClass('move');
-    $('#current').animate({ top: targetPosition }, 'slow');
-    $('#' + target).animate({ top: targetPosition }, 'slow', function() {
+    $('#current').animate({top: targetPosition}, 'slow');
+    $('#' + target).animate({top: targetPosition}, 'slow', function() {
       $('#merchant_list').html($('#' + target).html()).removeClass('move');
       var html = '<span class="previous small"></span>'
         + '<span class="small"></span>';
