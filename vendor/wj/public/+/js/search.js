@@ -142,7 +142,7 @@
         valuePathList =
           search.toggleValuePath(valuePathList, encodeURIComponent(valueName));
       }
-      if (valueList.length !== 0) {
+      if (valuePathList.length !== 0) {
         sectionList.push(
           encodeURIComponent(propertyName) + '=' + valuePathList.join('&')
         );
@@ -202,7 +202,6 @@
         $('#tag .load').remove();
         var wrapper = $('#tag ol');
         wrapper.append(html);
-        //hasMore = true;
         if (hasMore === false) {
           return;
         }
@@ -221,11 +220,11 @@
     var html = '<div id="tag"><h2>属性:</h2><ol>';
     var length = data.length;
     for (var index = 0; index < length; ++index) {
-      html += '<li><span class="key"><span>'
+      var multiple = data[index][1] === 0 ? '' : ' multiple';
+      html += '<li><span class="key' + multiple + '"><span>'
         + data[index][0] + '</span></span></li>';
     }
     html += '</ol>';
-    //hasMore = true;
     if (hasMore) {
       html += '<span class="more property"><span>更多属性</span></span>';
     }
@@ -236,26 +235,44 @@
     search.enhanceMoreKey(2);
   };
 
+  search.renderValue = function(keyName, valueName, productAmount) {
+    if (typeof search.propertyList[keyName] !== 'undefined'
+      && $.inArray(
+        encodeURIComponent(valueName), search.propertyList[keyName]
+      ) !== -1) {
+      return '<li class="value"><a class="selected" href="'
+        + search.getTagHref(keyName, valueName) +'">'+ valueName + '</a></li>';
+    }
+    return '<li class="value"><a href="'
+      + search.getTagHref(keyName, valueName) +'">'
+      + '<span>' + valueName + '</span>' + productAmount + '</a></li>';
+  };
+
   search.enhanceKey = function(key) {
     key.click(function() {
-      //TODO:单一值缓存
-      var current = $(this);
-      if (current.hasClass('key open')) {
-        current.removeClass('open');
-        current.nextAll().hide();
+      if (key.hasClass('open')) {
+        key.removeClass('open');
+        key.nextAll().hide();
         return;
       }
-      current.addClass('open');
-      if (current.next('ol').length > 0) {
-        current.nextAll().show();
+      key.addClass('open');
+      if (key.next('ol').length > 0) {
+        key.nextAll().show();
         return;
       }
-      current.after('<span class="load">正在加载…</span>');
-      var keyName = current.text();
+      var keyName = key.text();
+      if (search.propertyList[keyName] && key.hasClass('multiple') === false) {
+        key.after('<ol>' 
+          + search.renderValue(keyName, decodeURIComponent(search.propertyList[keyName][0]))
+          + '</ol>');
+        return;
+      }
+      key.after('<span class="load">正在加载…</span>');
+      var keyName = key.text();
       var uri = window.location.pathname + '?key='
         + encodeURIComponent(keyName) + '&media=json';
       $.getJSON(uri, function(data) {
-        current.parent().children('.load').remove();
+        key.parent().children('.load').remove();
         var isHidden = false;
         if (key.hasClass('open') === false) {
           isHidden = true;
@@ -268,13 +285,10 @@
         var hasMore = data.shift() > 20;
         for (var index = 0; index < data.length; ++index) {
           var item = data[index];
-          html += '<li class="value"><a href="'
-            + search.getTagHref(keyName, item[0]) +'">'
-            + '<span>' + item[0] + '</span>' + item[1] + '</a></li>';
-          //TODO: selected property
+          html += search.renderValue(keyName, item[0], item[1]);
         }
         html += '</ol>';
-        current.after(html);
+        key.after(html);
         if (hasMore === false) {
           return;
         }
@@ -282,11 +296,11 @@
         if (isHidden) {
           hidden = ' hidden';
         }
-        current.next().after('<span class="more'
+        key.next().after('<span class="more'
           + hidden + '"><span>更多</span></span>');
-        search.enhanceMoreValue(current, keyName, 2);
+        search.enhanceMoreValue(key, keyName, 2);
       });
-      current.parent().children('.load').fadeIn('fast');
+      key.parent().children('.load').fadeIn('fast');
     });
   };
 
@@ -305,13 +319,10 @@
           var hasMore = data.shift() > 20 * page;
           for (var index = 0; index < data.length; ++index) {
             var item = data[index];
-            html += '<li class="value"><a href="'
-              + search.getTagHref(keyName, item[0]) + '">'
-              + '<span> ' + item[0] + '</span>' + item[1] + '</a></li>';
-            //TODO: selected property
+            search.renderValue(keyName, item[0], item[1]);
+            html += search.renderValue(keyName, item[0], item[1]);
           }
           key.next().append(html);
-          //hasMore = true;
           if (hasMore === false) {
             return;
           }

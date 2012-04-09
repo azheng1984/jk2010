@@ -46,7 +46,8 @@ h1 {
   margin-left:8px;
   background:url(/+/img/screen.png) right -144px no-repeat;
 }
-#nav .tag {
+#nav .tag, #tag li a.selected {
+  color:#555;
   display:inline-block;
   padding:2px 16px 1px 4px;
   margin:3px 0 4px 8px;
@@ -58,11 +59,10 @@ h1 {
   border-radius:3px 11px 11px 3px;
   vertical-align:baseline; /* 修正 ie6 中文上浮 */
 }
-#nav .tag:hover {
+#nav .tag:hover,#tag li a.selected:hover {
   color:#fff;
-  background-color:#888;
   border-color:#888 #777 #777 #888;
-  background-image:url(/+/img/delete_hover.png);
+  background:#888 url(/+/img/delete_hover.png) right 7px no-repeat;
   box-shadow:0 0 3px #ddd;
 }
 /* result
@@ -352,7 +352,7 @@ h2 a:hover {
   float:left;
   clear:left;
   display:none;
-  width:100%;/* ie6/7 会换行*/
+  white-space:nowrap;/* ie6/7 会换行*/
   margin:3px 0 0 8px;
 }
 #tag .hidden {
