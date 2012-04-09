@@ -361,8 +361,8 @@ h2 a:hover {
 #tag .more {
   float:left;
   clear:left;
-  padding-right:16px;
-  background:url(/+/img/more.png) 30px 8px no-repeat;
+  padding-right:12px;
+  background:url(/+/img/more.png) right 8px no-repeat;
   cursor:pointer;
   margin:3px 0 0 8px;
 }
@@ -376,9 +376,11 @@ h2 a:hover {
 #tag .more:hover span {
   border-color:#111;
 }
+/*
 #tag .property {
   background-position:55px 8px;
 }
+*/
 #tag ol ol {
   padding:3px 0 0 6px;
 }

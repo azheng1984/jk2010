@@ -24,24 +24,24 @@
     /* property list */
     var keyName = null;
     $('#nav').children().each(function() {
-      var current = $(this);
-      if (current.is('span:not(.delimiter)')) {
-        var text = current.text();
+      var self = $(this);
+      var text = self.text();
+      if (self.is('span:not(.delimiter)')) {
         keyName = text.substr(0, text.length - 1);
         search.propertyList[keyName] = [];
         return;
       }
-      if (current.hasClass('tag')) {
-        search.propertyList[keyName].push(encodeURIComponent(current.text()));
+      if (self.hasClass('tag')) {
+        search.propertyList[keyName].push(encodeURIComponent(text));
       }
     });
   };
 
   search.renderPriceRange = function() {
-    query = huobiwanjia.argumentList;
-    var priceFrom = typeof query.price_from !== 'undefined'
-      ? query.price_from : '';
-    var priceTo = typeof query.price_to !== 'undefined' ? query.price_to : '';
+    var query = huobiwanjia.argumentList;
+    var priceFrom = typeof query.price_from === 'undefined'
+      ? '' : query.price_from;
+    var priceTo = typeof query.price_to === 'undefined' ? '' : query.price_to;
     var form =
       '<form id="price_range" action="."><label for="price_from">&yen;</label>';
     if (typeof query.sort !== 'undefined') {
@@ -53,22 +53,28 @@
       + priceTo + '" autocomplete="off"/>'
       + '<button tabIndex="-1" type="submit"></button></form>';
     $('#toolbar h2').after(form);
-    $('#price_range input').each(search.adjustInput);
-    $('#price_range input').keyup(search.adjustInput);
-    //ie visibility hidden 和 display none 都会导致 tabindex 重置
+    var adjustInput = function() {
+      var self = $(this);
+      if (self.val().length > 4) {
+        self.addClass('long');
+        return;
+      }
+      self.removeClass('long');
+    };
+    $('#price_range input').each(adjustInput).keyup(adjustInput);
+    //visibility hidden 和 display none 都会导致 ie 重置 tabindex
     $('#price_range input').focusin(function() {
       if ($('#price_range_button').length !== 0) {
         return;
       }
       $('#price_range')
         .append('<span id="price_range_button" tabindex="0">确定</span>');
-      $('#price_range_button').hover(
-        function() {$(this).addClass('hover');},
-        function() {$(this).removeClass('hover');}
-      ).click(function() {
+      $('#price_range_button').bind('mouseenter mouseleave', function() {
+        $(this).toggleClass('hover');
+      }).click(function() {
         $('#price_range').submit();
-      }).keypress(function(e) {
-        if(e.which === 13){
+      }).keypress(function(event) {
+        if(event.which === 13){
           $('#price_range').submit();
         }
       }).mousedown(function() {
@@ -77,15 +83,6 @@
         $(this).removeClass('active');
       });
     });
-  };
-
-  search.adjustInput = function() {
-    input = $(this);
-    if (input.val().length > 4) {
-      input.addClass('long');
-      return;
-    }
-    input.removeClass('long');
   };
 
   search.enhanceProductTagList = function() {
@@ -101,12 +98,12 @@
       }
       var keyName = list[0];
       valueList.each(function() {
-        var html = $(this).html();
+        var self = $(this);
+        var html = self.html();
         var valueName = html.replace(/<\/span>/gi, '').replace(/<span>/gi, '');
         html = html.replace(/<\/span>/gi, '</span><span class="gray">')
-        .replace(/<span>/gi, '</span><span class="red">');
-        $(this).replaceWith('<a href="'
-          + search.getTagHref(keyName, valueName)
+          .replace(/<span>/gi, '</span><span class="red">');
+        self.replaceWith('<a href="' + search.getTagHref(keyName, valueName)
           + '"><span class="gray">' + html + '</span></a>');
       });
     });
@@ -117,10 +114,9 @@
       valuePathList.push(valuePath);
       return valuePathList;
     }
-    valuePathList = $.grep(valuePathList, function(item) {
+    return $.grep(valuePathList, function(item) {
       return valuePath !== item;
     });
-    return valuePathList;
   };
 
   search.getTagHref = function(keyName, valueName) {
@@ -128,12 +124,7 @@
       return encodeURIComponent(valueName) + '/' + search.queryString;
     }
     if (typeof search.propertyList[keyName] === 'undefined') {
-      var href = window.location.pathname.split('/')[3];
-      if (href !== '') {
-        href = '../' + href + '&';
-      }
-      return href + encodeURIComponent(keyName) + '='
-        + encodeURIComponent(valueName) + '/' + search.queryString;
+      return search.appendTagHref(keyName, valueName);
     }
     var sectionList = [];
     for (var propertyName in search.propertyList) {
@@ -148,11 +139,24 @@
         );
       }
     }
-    var result = '..';
+    var href = '..';
     if (sectionList.length !== 0) {
-      result += '/' + sectionList.join('&') + '/';
+      href += '/' + sectionList.join('&') + '/';
     }
-    return result + search.queryString;
+    return href + search.queryString;
+  };
+
+  search.appendTagHref = function(keyName, valueName) {
+    var href = window.location.pathname.split('/')[3];
+    if (href !== '') {
+      href = '../' + href + '&';
+    }
+    return href + encodeURIComponent(keyName) + '='
+      + encodeURIComponent(valueName) + '/' + search.queryString;
+  };
+
+  search.loadTag = function(path, callback, more) {
+    
   };
 
   search.renderTagList = function() {
@@ -170,6 +174,7 @@
   };
 
   search.renderCategoryList = function(data, hasMore) {
+    hasMore = true;
     var html = '<div id="tag"><h2>分类:</h2><ol>';
     var length = data.length;
     for (var index = 0; index < length; ++index) {
@@ -262,9 +267,9 @@
       }
       var keyName = key.text();
       if (search.propertyList[keyName] && key.hasClass('multiple') === false) {
-        key.after('<ol>' 
-          + search.renderValue(keyName, decodeURIComponent(search.propertyList[keyName][0]))
-          + '</ol>');
+        key.after('<ol>' + search.renderValue(
+              keyName, decodeURIComponent(search.propertyList[keyName][0])
+          ) + '</ol>');
         return;
       }
       key.after('<span class="load">正在加载…</span>');
