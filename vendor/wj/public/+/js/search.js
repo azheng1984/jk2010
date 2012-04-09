@@ -238,6 +238,7 @@
 
   search.enhanceKey = function(key) {
     key.click(function() {
+      //TODO:单一值缓存
       var current = $(this);
       if (current.hasClass('key open')) {
         current.removeClass('open');
