@@ -27,18 +27,10 @@ huobiwanjia.home = function() {
       if (current.hasClass('current') === false) {
         current.attr('tabindex', '0');
       }
-      //ie mousedown 前会先触发 focus
-      var isUp = null;
       current.mousedown(function() {
-        isUp = false;
         current.addClass('active');
       }).mouseout(function() {
-        if (isUp === false) {
-          current.removeClass('active');
-          isUp = null;
-        }
-      }).mouseup(function() {
-        isUp = null;
+        current.removeClass('active');
       }).keypress(function(e) {
         if(e.which == 13){
           clickEvent(current, currentIndex);
