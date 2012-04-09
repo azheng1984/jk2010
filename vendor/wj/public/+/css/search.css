@@ -154,7 +154,7 @@ h2 a:hover {
   height:0;
 }
 #price_range_button {
-  line-height:18px;
+  line-height:19px;
   padding:0 5px;
   margin-left:4px;
   font-size:12px;
@@ -302,7 +302,6 @@ h2 a:hover {
 #tag .value a {
   float:left;
   padding:0 6px 0 4px;
-
   font-size:11px;
   border:1px solid;
   border-color:#eee #ddd #ccc #eee;
@@ -353,6 +352,7 @@ h2 a:hover {
   float:left;
   clear:left;
   display:none;
+  width:100%;/* ie6/7 会换行*/
   margin:3px 0 0 8px;
 }
 #tag .hidden {
