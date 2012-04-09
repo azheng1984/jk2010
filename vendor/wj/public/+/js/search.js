@@ -23,8 +23,6 @@ huobiwanjia.search = function() {
       }
       $('#price_range')
         .append('<span id="price_range_button" tabindex="0">确定</span>');
-      //用来记录是否 mouseup, ie9 点击时先 focus 再 mousedown
-      var isUp = null;
       $('#price_range_button').hover(
         function() {$(this).addClass('hover');},
         function() {$(this).removeClass('hover');}
@@ -35,14 +33,9 @@ huobiwanjia.search = function() {
           $('#price_range').submit();
         }
       }).mousedown(function() {
-        isUp = false;
         $(this).addClass('active');
       }).mouseout(function() {
-        if (isUp === false) {
-          $(this).removeClass('active');
-        }
-      }).mouseup(function() {
-        isUp = true;
+        $(this).removeClass('active');
       });
     });
   };
