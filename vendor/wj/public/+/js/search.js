@@ -117,7 +117,7 @@
       valuePathList.push(valuePath);
       return valuePathList;
     }
-    valueList = $.grep(valuePathList, function(item) {
+    valuePathList = $.grep(valuePathList, function(item) {
       return valuePath !== item;
     });
     return valuePathList;
