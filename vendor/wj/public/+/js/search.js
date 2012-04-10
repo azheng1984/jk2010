@@ -155,7 +155,14 @@
       + encodeURIComponent(valueName) + '/' + search.queryString;
   };
 
-  search.getTag = function(url, page, callback) {
+  search.getTag = function(keyName, page, callback) {
+    var url = window.location.pathname + '?media=json';
+    if (keyName !== null) {
+      url += '&key=' + encodeURIComponent(keyName);
+    }
+    if (page !== 1) {
+      url += '&page=' + page;
+    }
     $.getJSON(url, function(data) {
       var hasMore = data.shift() > page * 20;
       callback(data, hasMore);
@@ -166,73 +173,145 @@
     if ($('#no_result').length !== 0) {
       return;
     }
-    var url = window.location.pathname + '?media=json';
     if (window.location.pathname.split('/').length === 3) {
-      search.getTag(url, 1, search.renderCategoryList);
+      search.getTag(null, 1, search.renderCategoryList);
       return;
     }
-    search.getTag(url, 1, search.renderPropertyList);
+    search.getTag(null, 1, search.renderPropertyList);
   };
 
   search.renderCategoryList = function(data, hasMore) {
-    var html = '<div id="tag"><h2>分类:</h2><ol>';
-    for (var index = 0; index < data.length; ++index) {
-      var item = data[index];
-      html += search.renderValue('分类', item[0], item[1]);
+    $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><ol>'
+      + search.renderValueList('分类', data) + '</ol></div>');
+    search.enhanceCategoryList(hasMore, 1);
+  };
+
+  search.enhanceCategoryList = function(hasMore, page) {
+    if (hasMore === false) {
+      return;
     }
-    html += '</ol>';
-    if (hasMore) {
-      html += '<span class="more"><span>更多</span></span>';
+    var wrapper = $('#tag ol');
+    if (page === 5) {
+      wrapper.append('<li>…</li>');
+      return;
     }
-    $('#result_wrapper').after(html + '</div>');
-    search.enhanceMoreCategory(2);
+    wrapper.after('<span class="more"><span>更多</span></span>');
+    search.enhanceMoreCategory(page);
   };
 
   search.enhanceMoreCategory = function(page) {
     $('#tag .more').click(function() {
+      ++page;
       $(this).replaceWith('<span class="load">正在加载…</span>');
-      var uri = window.location.pathname + '?media=json&page=' + page;
-      $.getJSON(uri, function(data) {
-        var html = '';
-        var hasMore = data.shift() > page * 20;
-        for (var index = 0; index < data.length; ++index) {
-          var item = data[index];
-          html += search.renderValue('分类', item[0], item[1]);
-        }
-        $('#tag .load').remove();
-        var wrapper = $('#tag ol');
-        wrapper.append(html);
-        if (hasMore === false) {
-          return;
-        }
-        if (page === 5) {
-          wrapper.append('<li>…</li>');
-          return;
-        }
-        wrapper.after('<span class="more"><span>更多</span></span>');
-        search.enhanceMoreCategory(++page);
+      var load = $('#tag .load');
+      search.getTag(null, page, function(data, hasMore) {
+        load.remove();
+        wrapper.append(search.renderValueList('分类', data));
+        search.enhanceMoreCategory(hasMore, page);
       });
-      $('#tag .load').fadeIn('fast');
+      load.fadeIn('fast');
     });
   };
 
   search.renderPropertyList = function(data, hasMore) {
-    var html = '<div id="tag"><h2>属性:</h2><ol>';
-    var length = data.length;
-    for (var index = 0; index < length; ++index) {
+    $('#result_wrapper').after('<div id="tag"><h2>属性:</h2><ol>'
+      + search.renderKeyList(data) + '</ol></div>');
+    search.enhanceKeyList(hasMore, 1);
+  };
+
+  search.renderKeyList = function(data) {
+    var html = '';
+    for (var index = 0; index < data.length; ++index) {
       var multiple = data[index][1] === 0 ? '' : ' multiple';
-      html += '<li><span class="key' + multiple + '"><span>'
+      html += '<li class="new"><span class="key' + multiple + '"><span>'
         + data[index][0] + '</span></span></li>';
     }
-    html += '</ol>';
-    if (hasMore) {
-      html += '<span class="more property"><span>更多属性</span></span>';
-    }
-    $('#result_wrapper').after(html + '</div>');
-    $('#tag .key').each(function() {
-      search.enhanceKey($(this));
+    return html;
+  };
+
+  search.enhanceKeyList = function(hasMore, page) {
+    $('#tag > ol > .new').each(function() {
+      $(this).removeClass('new').children().click(function() {
+        var self = $(this);
+        if (self.hasClass('open')) {
+          self.removeClass('open');
+          self.nextAll().hide();
+          return;
+        }
+        self.addClass('open');
+        if (self.next('ol').length > 0) {
+          self.nextAll().show();
+          return;
+        }
+        var keyName = self.text();
+        if (search.propertyList[keyName]
+          && self.hasClass('multiple') === false) {
+          self.after('<ol>' + search.renderValue(
+            keyName, decodeURIComponent(search.propertyList[keyName][0])
+          ) + '</ol>');
+          return;
+        }
+        search.loadPropertyValueList(self, keyName, 1, null);
+      });
     });
-    search.enhanceMoreKey(2);
+    if (hasMore === false) {
+      return;
+    }
+    var ol = $('#tag').children('ol');
+    if (page === 5) {
+      ol.append('<li>…</li>');
+      return;
+    }
+    ol.after('<span class="more"><span>更多属性</span></span>');
+    search.enhanceMoreKey(page);
+  };
+
+  search.loadPropertyValueList = function(key, keyName, page, more) {
+    if (more === null) {
+      key.after('<span></span>');
+      more = key.next();
+    }
+    more.replaceWith('<span class="load">正在加载…</span>');
+    var load = key.next('.load');
+    search.getTag(keyName, 1, function(data, hasMore) {
+      load.remove();
+      var isHidden = false;
+      if (key.hasClass('open') === false) {
+        isHidden = true;
+      }
+      var html = '<ol';
+      if (isHidden) {
+        html += ' class="hidden"';
+      }
+      html += '>' + search.renderValueList(keyName, data)  +'</ol>';
+      key.after(html);
+      if (hasMore === false) {
+        return;
+      }
+      if (page === 5) {
+        key.next('ol').append('<li>…</li>');
+        return;
+      }
+      var hidden = isHidden ? ' hidden' : '';
+      key.next().after('<span class="more'
+        + hidden + '"><span>更多</span></span>');
+      search.enhanceMoreValue(key, keyName, page);
+    });
+    load.fadeIn('fast');
+  };
+
+  search.enhanceMoreKey = function(page) {
+    $('#tag > .more').click(function() {
+      ++page;
+      $(this).replaceWith('<span class="load">正在加载属性…</span>');
+      var load = $('#tag > .load');
+      search.getTag(null, page, function(data, hasMore) {
+        load.remove();
+        $('#tag').children('ol').append(search.renderKeyList(data));
+        search.enhanceKeyList(hasMore, page);
+      });
+      load.fadeIn('fast');
+    });
   };
 
   search.renderValue = function(keyName, valueName, productAmount) {
@@ -248,131 +327,18 @@
       + '<span>' + valueName + '</span>' + productAmount + '</a></li>';
   };
 
-  search.enhanceKey = function(key) {
-    key.click(function() {
-      if (key.hasClass('open')) {
-        key.removeClass('open');
-        key.nextAll().hide();
-        return;
-      }
-      key.addClass('open');
-      if (key.next('ol').length > 0) {
-        key.nextAll().show();
-        return;
-      }
-      var keyName = key.text();
-      if (search.propertyList[keyName] && key.hasClass('multiple') === false) {
-        key.after('<ol>' + search.renderValue(
-              keyName, decodeURIComponent(search.propertyList[keyName][0])
-          ) + '</ol>');
-        return;
-      }
-      key.after('<span class="load">正在加载…</span>');
-      var keyName = key.text();
-      var uri = window.location.pathname + '?key='
-        + encodeURIComponent(keyName) + '&media=json';
-      $.getJSON(uri, function(data) {
-        key.parent().children('.load').remove();
-        var isHidden = false;
-        if (key.hasClass('open') === false) {
-          isHidden = true;
-        }
-        var html = '<ol';
-        if (isHidden) {
-          html += ' class="hidden"';
-        }
-        html += '>';
-        var hasMore = data.shift() > 20;
-        for (var index = 0; index < data.length; ++index) {
-          var item = data[index];
-          html += search.renderValue(keyName, item[0], item[1]);
-        }
-        html += '</ol>';
-        key.after(html);
-        if (hasMore === false) {
-          return;
-        }
-        var hidden = '';
-        if (isHidden) {
-          hidden = ' hidden';
-        }
-        key.next().after('<span class="more'
-          + hidden + '"><span>更多</span></span>');
-        search.enhanceMoreValue(key, keyName, 2);
-      });
-      key.parent().children('.load').fadeIn('fast');
-    });
+  search.renderValueList = function(keyName, data) {
+    var html = '';
+    for (var index = 0; index < data.length; ++index) {
+      var item = data[index];
+      html += search.renderValue(keyName, item[0], item[1]);
+    }
+    return html;
   };
 
   search.enhanceMoreValue = function(key, keyName, page) {
-    key.parent().children('.more').click(function() {
-      var current = $(this);
-      current.replaceWith('<span class="load">正在加载…</span>');
-      var uri = window.location.pathname + '?key='
-        + encodeURIComponent(keyName) + '&media=json&page=' + 1;
-      $.getJSON(uri, function(data) {
-          current.remove();
-          var html = '';
-          if (data.length === 0) {
-            return;
-          }
-          var hasMore = data.shift() > 20 * page;
-          for (var index = 0; index < data.length; ++index) {
-            var item = data[index];
-            search.renderValue(keyName, item[0], item[1]);
-            html += search.renderValue(keyName, item[0], item[1]);
-          }
-          key.next().append(html);
-          if (hasMore === false) {
-            return;
-          }
-          if (page === 5) {
-            key.next('ol').append('<li>…</li>');
-            return;
-          }
-          var hidden = '';
-          if (key.hasClass('open') === false) {
-            hidden = ' hidden';
-          }
-          key.next('ol').after('<span class="more'
-            + hidden +'"><span>更多</span></span>');
-          search.enhanceMoreValue(key, keyName, ++page);
-      });
-      key.parent().children('.load').fadeIn('fast');
-    });
-  };
-
-  search.enhanceMoreKey = function(page) {
-    $('.more.property').click(function() {
-      var current = $(this);
-      current.replaceWith('<span class="load property">正在加载属性…</span>');
-      var uri = window.location.pathname + '?page=' + page + '&media=json';
-      $.getJSON(uri, function(data) {
-        current.remove();
-        var hasMore = data.shift() > 20 * page;
-        var html = '';
-        for (var index = 0; index < data.length; ++index) {
-          html += '<li class="new"><span class="key"><span>'
-            + data[index][0] + '</span></span></li>';
-        }
-        var ol = $('#tag').children('ol');
-        ol.append(html);
-        var list = ol.children('.new');
-        list.each(function() {
-          search.enhanceKey($(this).children('span'));
-        });
-        list.removeClass('new');
-        if (hasMore === false) {
-          return;
-        }
-        if (page === 5) {
-          ol.append('<li>…</li>');
-          return;
-        }
-        ol.after('<span class="more property"><span>更多属性</span></span>');
-        search.enhanceMoreKey(++page);
-      });
-      $('.load.property').fadeIn('fast');
+    key.next('.more').click(function() {
+      search.loadPropertyValueList(key, keyName, page + 1, $(this));
     });
   };
 

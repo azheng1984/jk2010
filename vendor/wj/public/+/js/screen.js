@@ -1,3 +1,4 @@
+var x = $('h1');
 var huobiwanjia = function() {
   var suggestion = {
     query: null,
