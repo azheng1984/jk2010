@@ -73,7 +73,7 @@
         $(this).toggleClass('hover');
       }).click(function() {
         $('#price_range').submit();
-      }).keypress(function(event) {
+      }).keydown(function(event) {
         if(event.which === 13){
           $('#price_range').submit();
         }
@@ -222,15 +222,27 @@
   };
 
   search.enhanceMoreCategory = function(page) {
-    $('#tag .more').click(function() {
-      $(this).replaceWith('<span class="load">正在加载…</span>');
+    search.enhanceMore($('#tag .more'), page, function (more, page) {
+      more.replaceWith('<span class="load">正在加载…</span>');
       var load = $('#tag .load');
       search.getTag(null, ++page, function(data, hasMore) {
         load.remove();
-        wrapper.append(search.renderValueList('分类', data));
+        $('#tag ol').append(search.renderValueList('分类', data));
         search.enhanceCategoryList(hasMore, page);
       });
       load.fadeIn('fast');
+    });
+  };
+
+  search.enhanceMore = function(more, page, callback) {
+    more.click(function() {
+      callback(more, page);
+    }).bind('mouseenter mouseleave', function() {
+      more.toggleClass('hover');
+    }).keypress(function(event) {
+      if(event.which === 13){
+        callback(more, page);
+      }
     });
   };
 
@@ -254,25 +266,24 @@
     $('#tag > ol > .new').each(function() {
       $(this).removeClass('new').children().click(function() {
         var self = $(this);
+        search.toggleKey(self);
+        search.toggleKeyHoverClass(self);
+      }).keypress(function(event) {
+        if(event.which === 13){
+          search.toggleKey($(this));
+        }
+      }).mousedown(function() {
+        $(this).addClass('no_outline').attr('hideFocus', true);
+      }).focusout(function() {
+        $(this).removeClass('no_outline').removeAttr('hideFocus');
+      }).bind('mouseenter mouseleave', function() {
+        //ie6 不支持 span:hover 和 .open.hover
+        var self = $(this);
+        var className = 'hover';
         if (self.hasClass('open')) {
-          self.removeClass('open');
-          self.nextAll().hide();
-          return;
+          className = 'open_hover';
         }
-        self.addClass('open');
-        if (self.next('ol').length > 0) {
-          self.nextAll().show();
-          return;
-        }
-        var keyName = self.text();
-        if (search.propertyList[keyName]
-          && self.hasClass('multiple') === false) {
-          self.after('<ol>' + search.renderValue(
-            keyName, decodeURIComponent(search.propertyList[keyName][0])
-          ) + '</ol>');
-          return;
-        }
-        search.loadPropertyValueList(self, keyName, 1, null);
+        self.toggleClass(className);
       });
     });
     if (hasMore === false) {
@@ -285,6 +296,36 @@
     }
     ol.after('<span class="more" tabindex="0"><span>更多属性</span></span>');
     search.enhanceMoreKey(page);
+  };
+
+  search.toggleKey = function(key) {
+    if (key.hasClass('open')) {
+      key.removeClass('open');
+      key.nextAll().hide();
+      return;
+    }
+    key.addClass('open');
+    if (key.next('ol').length > 0) {
+      key.nextAll().show();
+      return;
+    }
+    var keyName = key.text();
+    if (search.propertyList[keyName]
+      && key.hasClass('multiple') === false) {
+      key.after('<ol>' + search.renderValue(
+        keyName, decodeURIComponent(search.propertyList[keyName][0])
+      ) + '</ol>');
+      return;
+    }
+    search.loadPropertyValueList(key, keyName, 1, null);
+  };
+
+  search.toggleKeyHoverClass = function(key) {
+    if (key.hasClass('open')) {
+      key.removeClass('hover').addClass('open_hover');
+      return;
+    }
+    key.removeClass('open_hover').addClass('hover');
   };
 
   search.loadPropertyValueList = function(key, keyName, page, more) {
@@ -312,16 +353,16 @@
       var hidden = isHidden ? ' hidden' : '';
       key.next().after('<span class="more'
         + hidden + '" tabindex="0"><span>更多</span></span>');
-      key.next('.more').click(function() {
-        search.loadPropertyValueList(key, keyName, page + 1, $(this));
+      search.enhanceMore(key.next('.more'), null, function(more) {
+        search.loadPropertyValueList(key, keyName, page + 1, more);
       });
     });
     load.fadeIn('fast');
   };
 
   search.enhanceMoreKey = function(page) {
-    $('#tag > .more').click(function() {
-      $(this).replaceWith('<span class="load">正在加载属性…</span>');
+    search.enhanceMore($('#tag > .more'), page, function(more, page) {
+      more.replaceWith('<span class="load">正在加载属性…</span>');
       var load = $('#tag > .load');
       search.getTag(null, ++page, function(data, hasMore) {
         load.remove();
