@@ -12,39 +12,38 @@ huobiwanjia.home = function() {
 
   home.initializeList = function(id) {
     $('#' + id).children().each(function() {
-      var current = $(this), classAttribute =
-        current.attr('href') === undefined ? 'class="current"' : 'class="item"';
-      current.replaceWith(
-        '<span ' + classAttribute + '>' + current.html() + '</span>'
+      var self = $(this), classAttribute =
+        self.attr('href') === undefined ? 'class="current"' : 'class="item"';
+      self.replaceWith(
+        '<span ' + classAttribute + '>' + self.html() + '</span>'
       );
     });
   };
 
   home.enhanceList = function(list, clickEvent, isHold) {
-    var index = 0;
-    list.each(function() {
-      var current = $(this), currentIndex = index++;
-      if (current.hasClass('current') === false) {
-        current.attr('tabindex', '0');
+    list.each(function(index) {
+      var self = $(this);
+      if (self.hasClass('current') === false) {
+        self.attr('tabindex', '0');
       }
-      current.mousedown(function() {
-        current.addClass('active');
+      self.mousedown(function() {
+        self.addClass('active');
       }).mouseout(function() {
-        current.removeClass('active');
+        self.removeClass('active');
       }).keypress(function(e) {
-        if(e.which == 13){
-          clickEvent(current, currentIndex);
+        if(e.which == 13) {
+          clickEvent(self, index);
         }
       }).hover(
         function() {
-          if (current.hasClass('current') === false) {
-            current.addClass('hover');
+          if (self.hasClass('current') === false) {
+            self.addClass('hover');
           }
         },
-        function() {current.removeClass('hover');}
-      ).click(function() {clickEvent(current, currentIndex);});
+        function() {self.removeClass('hover');}
+      ).click(function() {clickEvent(self, index);});
       if (typeof isHold === 'undefined') {
-        current.focusin(home.hold).focusout(home.play);
+        self.focusin(home.hold).focusout(home.play);
       }
     });
   };
