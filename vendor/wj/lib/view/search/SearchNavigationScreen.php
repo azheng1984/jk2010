@@ -64,7 +64,7 @@ class SearchNavigationScreen {
     if (isset($GLOBALS['CATEGORY']) === false) {
       return $list;
     }
-    $list[0][0]['href'] = '..'.$GLOBALS['QUERY_STRING'];
+    $list[0][0]['href'] = '../'.$GLOBALS['QUERY_STRING'];
     $list[] = array(array(
       'text' => '分类: '
         .htmlentities($GLOBALS['CATEGORY']['name'], ENT_NOQUOTES, 'UTF-8')
@@ -128,7 +128,7 @@ class SearchNavigationScreen {
       $pathList[] = $keyPath.'='.implode('&', $valuePathList);
     }
     if (count($pathList) === 0) {
-      return '..';
+      return '../';
     }
     return str_replace('"', '%22', '../'.implode('&', $pathList).'/');
   }
