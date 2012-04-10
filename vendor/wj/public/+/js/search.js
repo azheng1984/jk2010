@@ -1,3 +1,4 @@
+//TODO: 分页产生的一系列问题
 (function() {
   var search = {
     queryString: '',
@@ -167,7 +168,8 @@
   };
 
   search.getTag = function(keyName, page, render) {
-    var url = window.location.pathname + '?media=json';
+    var path = window.location.pathname;
+    var url = path.substr(0, path.lastIndexOf("/") + 1) + '?media=json';
     if (keyName !== null) {
       url += '&key=' + encodeURIComponent(keyName);
     }
