@@ -166,7 +166,7 @@
     search.getTag(null, 1, search.renderPropertyList);
   };
 
-  search.getTag = function(keyName, page, callback) {
+  search.getTag = function(keyName, page, render) {
     var url = window.location.pathname + '?media=json';
     if (keyName !== null) {
       url += '&key=' + encodeURIComponent(keyName);
@@ -176,7 +176,7 @@
     }
     $.getJSON(url, function(data) {
       var hasMore = data.shift() > page * 20;
-      callback(data, hasMore);
+      render(data, hasMore);
     });
   };
 
@@ -234,14 +234,14 @@
     });
   };
 
-  search.enhanceMore = function(more, page, callback) {
+  search.enhanceMore = function(more, page, click) {
     more.click(function() {
-      callback(more, page);
+      click(more, page);
     }).bind('mouseenter mouseleave', function() {
       more.toggleClass('hover');
     }).keypress(function(event) {
       if(event.which === 13){
-        callback(more, page);
+        click(more, page);
       }
     });
   };
