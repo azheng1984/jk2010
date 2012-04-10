@@ -104,12 +104,12 @@ var huobiwanjia = function() {
       if (text.replace(/ /g, '') === keywordList.replace(/ /g, '')) {
         return;
       }
-      var innerHtml = text;
+      var inner = text;
       if (keywordList !== '') {
-        innerHtml = suggestion.highlight(text, keywordList.split(' '));
+        inner = suggestion.highlight(text, keywordList.split(' '));
       }
       html += '<li><a href="/' + encodeURIComponent(text)
-        + '/"><span class="query">' + innerHtml
+        + '/"><span class="query">' + inner
         + '</span><span class="product_amount">' + amount + '</span></a></li>';
     });
     if (html === '') {
