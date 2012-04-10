@@ -13,7 +13,13 @@ var huobiwanjia = function() {
   suggestion.initialize = function() {
     $('#header input').attr('autocomplete', 'off');
     //ubuntu firefox 输入中文不会触发 keydown
-    $('#header input').keydown(function(event) {
+    $('#header input').focusin(function() {
+      //chrome 在 window 获得焦点时会触发两次 focusin
+      if (suggestion.timer === null) {
+        suggestion.timer = setInterval(suggestion.start, 1000);
+      }
+      suggestion.isEscaped = false;
+    }).keydown(function(event) {
       var wrapper = $('#suggestion');
       if (wrapper.length === 0) {
         return;
@@ -35,12 +41,6 @@ var huobiwanjia = function() {
         suggestion.check();
       }
       suggestion.isEscaped = false;
-    }).focusin(function() {
-      //chrome 在 window 获得焦点时会触发两次 focusin
-      if (suggestion.timer === null) {
-        suggestion.timer = setInterval(suggestion.start, 1000);
-      }
-      suggestion.isEscaped = false;
     }).focusout(function() {
       clearInterval(suggestion.timer);
       suggestion.timer = null;
@@ -52,18 +52,6 @@ var huobiwanjia = function() {
     if($.browser.msie) {
       $('#header input').blur();/* 如果遇到 ie6 的 bug，blur 失效 */
     }
-  };
-
-  suggestion.check = function() {
-    if ($.trim($('#header input').val()) !== suggestion.query) {
-      suggestion.hide();
-    }
-  };
-
-  suggestion.hide = function() {
-    $('#suggestion').hide();
-    $('#suggestion li.hover').removeClass('hover');
-    suggestion.isHover = false;
   };
 
   suggestion.start = function() {
@@ -96,12 +84,10 @@ var huobiwanjia = function() {
     }
   };
 
-  suggestion.execute = function(keywordList, data) {
-    suggestion.cache[suggestion.ajaxQuery] = [keywordList, data];
-    if ($.trim($('#header input').val()) === suggestion.ajaxQuery) {
-      suggestion.render(suggestion.ajaxQuery, keywordList, data);
-    }
-    suggestion.ajaxQuery = null;
+  suggestion.hide = function() {
+    $('#suggestion').hide();
+    $('#suggestion li.hover').removeClass('hover');
+    suggestion.isHover = false;
   };
 
   suggestion.render = function(query, keywordList, data) {
@@ -227,6 +213,20 @@ var huobiwanjia = function() {
       next = $('#suggestion li').first();
     }
     return {from: current, to: next};
+  };
+
+  suggestion.check = function() {
+    if ($.trim($('#header input').val()) !== suggestion.query) {
+      suggestion.hide();
+    }
+  };
+
+  suggestion.execute = function(keywordList, data) {
+    suggestion.cache[suggestion.ajaxQuery] = [keywordList, data];
+    if ($.trim($('#header input').val()) === suggestion.ajaxQuery) {
+      suggestion.render(suggestion.ajaxQuery, keywordList, data);
+    }
+    suggestion.ajaxQuery = null;
   };
 
   $(function() {
