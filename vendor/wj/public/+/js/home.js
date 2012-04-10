@@ -31,7 +31,7 @@ huobiwanjia.home = function() {
         self.attr('tabindex', '0');
       }
       self.mousedown(function() {
-        self.addClass('active').attr('hideFocus', true);
+        self.addClass('active').attr('hideFocus', true);//ie 6 不支持 outline
       }).mouseout(function() {
         self.removeClass('active').removeAttr('hideFocus');
       }).keypress(function(e) {
