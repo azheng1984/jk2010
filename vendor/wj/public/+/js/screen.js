@@ -1,4 +1,3 @@
-var x = $('h1');
 var huobiwanjia = function() {
   var suggestion = {
     query: null,
@@ -37,8 +36,9 @@ var huobiwanjia = function() {
         suggestion.move(suggestion.down);
         return false;
       }
-      if (wrapper.is(':visible')) {
-        suggestion.check();
+      if (wrapper.is(':visible')
+        && $.trim($('#header input').val()) !== suggestion.query) {
+        suggestion.hide();
       }
       suggestion.isEscaped = false;
     }).focusout(function() {
@@ -213,12 +213,6 @@ var huobiwanjia = function() {
       next = $('#suggestion li').first();
     }
     return {from: current, to: next};
-  };
-
-  suggestion.check = function() {
-    if ($.trim($('#header input').val()) !== suggestion.query) {
-      suggestion.hide();
-    }
   };
 
   suggestion.execute = function(keywordList, data) {
