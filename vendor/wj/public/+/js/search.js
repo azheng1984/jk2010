@@ -109,16 +109,6 @@
     });
   };
 
-  search.toggleValuePath = function(valuePathList, valuePath) {
-    if ($.inArray(valuePath, valuePathList) === -1) {
-      valuePathList.push(valuePath);
-      return valuePathList;
-    }
-    return $.grep(valuePathList, function(item) {
-      return valuePath !== item;
-    });
-  };
-
   search.getTagHref = function(keyName, valueName) {
     if (keyName === '分类') {
       return encodeURIComponent(valueName) + '/' + search.queryString;
@@ -155,17 +145,13 @@
       + encodeURIComponent(valueName) + '/' + search.queryString;
   };
 
-  search.getTag = function(keyName, page, callback) {
-    var url = window.location.pathname + '?media=json';
-    if (keyName !== null) {
-      url += '&key=' + encodeURIComponent(keyName);
+  search.toggleValuePath = function(valuePathList, valuePath) {
+    if ($.inArray(valuePath, valuePathList) === -1) {
+      valuePathList.push(valuePath);
+      return valuePathList;
     }
-    if (page !== 1) {
-      url += '&page=' + page;
-    }
-    $.getJSON(url, function(data) {
-      var hasMore = data.shift() > page * 20;
-      callback(data, hasMore);
+    return $.grep(valuePathList, function(item) {
+      return valuePath !== item;
     });
   };
 
@@ -180,10 +166,46 @@
     search.getTag(null, 1, search.renderPropertyList);
   };
 
+  search.getTag = function(keyName, page, callback) {
+    var url = window.location.pathname + '?media=json';
+    if (keyName !== null) {
+      url += '&key=' + encodeURIComponent(keyName);
+    }
+    if (page !== 1) {
+      url += '&page=' + page;
+    }
+    $.getJSON(url, function(data) {
+      var hasMore = data.shift() > page * 20;
+      callback(data, hasMore);
+    });
+  };
+
   search.renderCategoryList = function(data, hasMore) {
     $('#result_wrapper').after('<div id="tag"><h2>分类:</h2><ol>'
       + search.renderValueList('分类', data) + '</ol></div>');
     search.enhanceCategoryList(hasMore, 1);
+  };
+
+  search.renderValueList = function(keyName, data) {
+    var html = '';
+    for (var index = 0; index < data.length; ++index) {
+      var item = data[index];
+      html += search.renderValue(keyName, item[0], item[1]);
+    }
+    return html;
+  };
+
+  search.renderValue = function(keyName, valueName, productAmount) {
+    if (typeof search.propertyList[keyName] !== 'undefined'
+      && $.inArray(
+        encodeURIComponent(valueName), search.propertyList[keyName]
+      ) !== -1) {
+      return '<li class="value"><a class="selected" href="'
+        + search.getTagHref(keyName, valueName) +'">'+ valueName + '</a></li>';
+    }
+    return '<li class="value"><a href="'
+      + search.getTagHref(keyName, valueName) +'">'
+      + '<span>' + valueName + '</span>' + productAmount + '</a></li>';
   };
 
   search.enhanceCategoryList = function(hasMore, page) {
@@ -201,13 +223,12 @@
 
   search.enhanceMoreCategory = function(page) {
     $('#tag .more').click(function() {
-      ++page;
       $(this).replaceWith('<span class="load">正在加载…</span>');
       var load = $('#tag .load');
-      search.getTag(null, page, function(data, hasMore) {
+      search.getTag(null, ++page, function(data, hasMore) {
         load.remove();
         wrapper.append(search.renderValueList('分类', data));
-        search.enhanceMoreCategory(hasMore, page);
+        search.enhanceCategoryList(hasMore, page);
       });
       load.fadeIn('fast');
     });
@@ -268,17 +289,13 @@
 
   search.loadPropertyValueList = function(key, keyName, page, more) {
     if (more === null) {
-      key.after('<span></span>');
-      more = key.next();
+      more = key.after('<span></span>').next();
     }
     more.replaceWith('<span class="load">正在加载…</span>');
     var load = key.next('.load');
     search.getTag(keyName, 1, function(data, hasMore) {
       load.remove();
-      var isHidden = false;
-      if (key.hasClass('open') === false) {
-        isHidden = true;
-      }
+      var isHidden = key.hasClass('open') === false;
       var html = '<ol';
       if (isHidden) {
         html += ' class="hidden"';
@@ -295,50 +312,23 @@
       var hidden = isHidden ? ' hidden' : '';
       key.next().after('<span class="more'
         + hidden + '"><span>更多</span></span>');
-      search.enhanceMoreValue(key, keyName, page);
+      key.next('.more').click(function() {
+        search.loadPropertyValueList(key, keyName, page + 1, $(this));
+      });
     });
     load.fadeIn('fast');
   };
 
   search.enhanceMoreKey = function(page) {
     $('#tag > .more').click(function() {
-      ++page;
       $(this).replaceWith('<span class="load">正在加载属性…</span>');
       var load = $('#tag > .load');
-      search.getTag(null, page, function(data, hasMore) {
+      search.getTag(null, ++page, function(data, hasMore) {
         load.remove();
         $('#tag').children('ol').append(search.renderKeyList(data));
         search.enhanceKeyList(hasMore, page);
       });
       load.fadeIn('fast');
-    });
-  };
-
-  search.renderValue = function(keyName, valueName, productAmount) {
-    if (typeof search.propertyList[keyName] !== 'undefined'
-      && $.inArray(
-        encodeURIComponent(valueName), search.propertyList[keyName]
-      ) !== -1) {
-      return '<li class="value"><a class="selected" href="'
-        + search.getTagHref(keyName, valueName) +'">'+ valueName + '</a></li>';
-    }
-    return '<li class="value"><a href="'
-      + search.getTagHref(keyName, valueName) +'">'
-      + '<span>' + valueName + '</span>' + productAmount + '</a></li>';
-  };
-
-  search.renderValueList = function(keyName, data) {
-    var html = '';
-    for (var index = 0; index < data.length; ++index) {
-      var item = data[index];
-      html += search.renderValue(keyName, item[0], item[1]);
-    }
-    return html;
-  };
-
-  search.enhanceMoreValue = function(key, keyName, page) {
-    key.next('.more').click(function() {
-      search.loadPropertyValueList(key, keyName, page + 1, $(this));
     });
   };
 
