@@ -332,11 +332,11 @@ h2 a:hover {
   background:url(/+/img/plus.png) 1px 5px no-repeat;
   cursor:pointer;
 }
-#tag .key:hover {
+#tag .key.hover {
   color:#111;
   background-image:url(/+/img/plus_hover.png);
 }
-#tag .key:hover span {
+#tag .key.hover span {
   border-color:#111;
 }
 #tag .key span {
@@ -345,7 +345,7 @@ h2 a:hover {
 #tag .open {
   background-image:url(/+/img/minus.png);
 }
-#tag .open:hover {
+#tag .open.hover {
   background-image:url(/+/img/minus_hover.png);
 }
 #tag .load {
@@ -369,11 +369,11 @@ h2 a:hover {
 #tag .more span {
   border-bottom:1px solid #555;
 }
-#tag .more:hover {
+#tag .more.hover {
   color:#111;
   background-image:url(/+/img/more_hover.png);
 }
-#tag .more:hover span {
+#tag .more.hover span {
   border-color:#111;
 }
 /*

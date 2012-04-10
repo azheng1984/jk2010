@@ -31,9 +31,9 @@ huobiwanjia.home = function() {
         self.attr('tabindex', '0');
       }
       self.mousedown(function() {
-        self.addClass('active');
+        self.addClass('active').attr('hideFocus', true);
       }).mouseout(function() {
-        self.removeClass('active');
+        self.removeClass('active').removeAttr('hideFocus');
       }).keypress(function(e) {
         if(e.which == 13) {
           clickEvent(self, index);
