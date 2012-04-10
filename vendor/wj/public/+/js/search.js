@@ -346,12 +346,13 @@
       if (hasMore === false) {
         return;
       }
+      var ol = key.next();
       if (page === 5) {
-        key.next('ol').append('<li>…</li>');
+        ol.append('<li>…</li>');
         return;
       }
       var hidden = isHidden ? ' hidden' : '';
-      key.next().after('<span class="more'
+      ol.after('<span class="more'
         + hidden + '" tabindex="0"><span>更多</span></span>');
       search.enhanceMore(key.next('.more'), null, function(more) {
         search.loadPropertyValueList(key, keyName, page + 1, more);
