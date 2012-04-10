@@ -155,33 +155,30 @@
       + encodeURIComponent(valueName) + '/' + search.queryString;
   };
 
-  search.loadTag = function(path, callback, more) {
-    
+  search.getTag = function(url, page, callback) {
+    $.getJSON(url, function(data) {
+      var hasMore = data.shift() > page * 20;
+      callback(data, hasMore);
+    });
   };
 
   search.renderTagList = function() {
     if ($('#no_result').length !== 0) {
       return;
     }
-    $.getJSON(window.location.pathname + '?media=json', function(data) {
-      var hasMore = data.shift() > 20;
-      if (window.location.pathname.split('/').length === 3) {
-        search.renderCategoryList(data, hasMore);
-        return;
-      }
-      search.renderPropertyList(data, hasMore);
-    });
+    var url = window.location.pathname + '?media=json';
+    if (window.location.pathname.split('/').length === 3) {
+      search.getTag(url, 1, search.renderCategoryList);
+      return;
+    }
+    search.getTag(url, 1, search.renderPropertyList);
   };
 
   search.renderCategoryList = function(data, hasMore) {
-    hasMore = true;
     var html = '<div id="tag"><h2>分类:</h2><ol>';
-    var length = data.length;
-    for (var index = 0; index < length; ++index) {
+    for (var index = 0; index < data.length; ++index) {
       var item = data[index];
-      html += '<li class="value"><a href="'
-        + search.getTagHref('分类', item[0]) + '"><span>'
-        + item[0] + '</span>' + item[1] + '</a></li>';
+      html += search.renderValue('分类', item[0], item[1]);
     }
     html += '</ol>';
     if (hasMore) {
@@ -200,9 +197,7 @@
         var hasMore = data.shift() > page * 20;
         for (var index = 0; index < data.length; ++index) {
           var item = data[index];
-          html += '<li class="value"><a href="'
-            + encodeURIComponent(item[0]) + '/' + search.queryString
-            + '"><span>' + item[0] + '</span>' + item[1] + '</a></li>';
+          html += search.renderValue('分类', item[0], item[1]);
         }
         $('#tag .load').remove();
         var wrapper = $('#tag ol');
@@ -350,7 +345,7 @@
   search.enhanceMoreKey = function(page) {
     $('.more.property').click(function() {
       var current = $(this);
-      current.replaceWith('<span class="load property">正在加载…</span>');
+      current.replaceWith('<span class="load property">正在加载属性…</span>');
       var uri = window.location.pathname + '?page=' + page + '&media=json';
       $.getJSON(uri, function(data) {
         current.remove();
