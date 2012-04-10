@@ -129,9 +129,9 @@
         );
       }
     }
-    var href = '..';
+    var href = '../';
     if (sectionList.length !== 0) {
-      href += '/' + sectionList.join('&') + '/';
+      href += sectionList.join('&') + '/';
     }
     return href + search.queryString;
   };
