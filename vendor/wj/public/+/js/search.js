@@ -217,7 +217,7 @@
       wrapper.append('<li>…</li>');
       return;
     }
-    wrapper.after('<span class="more"><span>更多</span></span>');
+    wrapper.after('<span class="more" tabindex="0"><span>更多</span></span>');
     search.enhanceMoreCategory(page);
   };
 
@@ -244,8 +244,8 @@
     var html = '';
     for (var index = 0; index < data.length; ++index) {
       var multiple = data[index][1] === 0 ? '' : ' multiple';
-      html += '<li class="new"><span class="key' + multiple + '"><span>'
-        + data[index][0] + '</span></span></li>';
+      html += '<li class="new"><span class="key' + multiple
+        + '" tabindex="0"><span>' + data[index][0] + '</span></span></li>';
     }
     return html;
   };
@@ -283,7 +283,7 @@
       ol.append('<li>…</li>');
       return;
     }
-    ol.after('<span class="more"><span>更多属性</span></span>');
+    ol.after('<span class="more" tabindex="0"><span>更多属性</span></span>');
     search.enhanceMoreKey(page);
   };
 
@@ -311,7 +311,7 @@
       }
       var hidden = isHidden ? ' hidden' : '';
       key.next().after('<span class="more'
-        + hidden + '"><span>更多</span></span>');
+        + hidden + '" tabindex="0"><span>更多</span></span>');
       key.next('.more').click(function() {
         search.loadPropertyValueList(key, keyName, page + 1, $(this));
       });
