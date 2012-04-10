@@ -283,6 +283,9 @@ h2 a:hover {
 }
 /* tag
  **************************************/
+.no_outline {
+  outline:0;
+}
 #tag {
   width:170px;
 }
@@ -326,27 +329,31 @@ h2 a:hover {
 #tag .value a:hover span {
   color:#fff;
 }
-#tag .key {
+#tag ol .key {
   float:left;
   padding-left:14px;
   background:url(/+/img/plus.png) 1px 5px no-repeat;
   cursor:pointer;
 }
-#tag .key.hover {
+#tag ol .hover {
   color:#111;
   background-image:url(/+/img/plus_hover.png);
 }
-#tag .key.hover span {
+#tag ol .hover span {
   border-color:#111;
 }
-#tag .key span {
+#tag ol .key span {
   border-bottom:1px solid #555;
 }
-#tag .open {
+#tag ol .open {
   background-image:url(/+/img/minus.png);
 }
-#tag .open.hover {
+#tag ol .open_hover {
+  color:#111;
   background-image:url(/+/img/minus_hover.png);
+}
+#tag ol .open_hover span {
+  border-color:#111;
 }
 #tag .load {
   float:left;
