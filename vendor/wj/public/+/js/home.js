@@ -20,6 +20,10 @@ huobiwanjia.home = function() {
     });
   };
 
+  home.enhanceSlideList = function() {
+    home.enhanceList($('#slide_list').children(), home.selectSlide);
+  };
+
   home.enhanceList = function(list, clickEvent, isHold) {
     list.each(function(index) {
       var self = $(this);
@@ -46,10 +50,6 @@ huobiwanjia.home = function() {
         self.focusin(home.hold).focusout(home.play);
       }
     });
-  };
-
-  home.enhanceSlideList = function() {
-    home.enhanceList($('#slide_list').children(), home.selectSlide);
   };
 
   home.selectSlide = function(span, index) {
