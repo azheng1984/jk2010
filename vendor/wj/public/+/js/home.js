@@ -24,7 +24,7 @@ huobiwanjia.home = function() {
     home.enhanceList($('#slide_list').children(), home.selectSlide);
   };
 
-  home.enhanceList = function(list, clickEvent, isHold) {
+  home.enhanceList = function(list, click, isHold) {
     list.each(function(index) {
       var self = $(this);
       if (self.hasClass('current') === false) {
@@ -36,7 +36,7 @@ huobiwanjia.home = function() {
         self.removeClass('active').removeAttr('hideFocus');
       }).keypress(function(e) {
         if(e.which == 13) {
-          clickEvent(self, index);
+          click(self, index);
         }
       }).hover(
         function() {
@@ -45,7 +45,7 @@ huobiwanjia.home = function() {
           }
         },
         function() {self.removeClass('hover');}
-      ).click(function() {clickEvent(self, index);});
+      ).click(function() {click(self, index);});
       if (typeof isHold === 'undefined') {
         self.focusin(home.hold).focusout(home.play);
       }
