@@ -1,4 +1,3 @@
-//TODO: 分页产生的一系列问题
 (function() {
   var search = {
     queryString: '',
@@ -138,9 +137,10 @@
   };
 
   search.appendTagHref = function(keyName, valueName) {
-    var href = window.location.pathname.split('/')[3];
-    if (href !== '') {
-      href = '../' + href + '&';
+    var sectionList = window.location.pathname.split('/');
+    var href = '';
+    if (sectionList.length === 5) {
+      href = '../' + sectionList[3] + '&';
     }
     return href + encodeURIComponent(keyName) + '='
       + encodeURIComponent(valueName) + '/' + search.queryString;
