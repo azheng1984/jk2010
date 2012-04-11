@@ -31,9 +31,9 @@ huobiwanjia.home = function() {
         self.attr('tabindex', '0');
       }
       self.mousedown(function() {
-        self.addClass('active').attr('hideFocus', true);//ie 6 不支持 outline
+        self.addClass('no_outline').attr('hideFocus', true);//ie 6 不支持 outline
       }).mouseout(function() {
-        self.removeClass('active').removeAttr('hideFocus');
+        self.removeClass('no_outline').removeAttr('hideFocus');
       }).keypress(function(e) {
         if(e.which == 13) {
           click(self, index);
@@ -55,7 +55,7 @@ huobiwanjia.home = function() {
   home.selectSlide = function(span, index) {
     if (span !== null) {
       $('#slide_list .current').attr('class', 'item').attr('tabindex', 0);
-      span.attr('class', 'current').removeAttr('tabindex');
+      span.attr('class', 'current no_outline').removeAttr('tabindex');
     }
     var merchant = home.slideshow.merchantList[home.currentMerchantIndex];
     var src = '/+/img/slide/' + merchant[2] + '/' + index + '.jpg';
