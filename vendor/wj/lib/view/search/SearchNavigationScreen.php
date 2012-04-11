@@ -1,4 +1,5 @@
 <?php
+//TODO:和 tag 一样，截取 query 和 category
 class SearchNavigationScreen {
   private static $propertyPathList;
   private static $isFollow;
