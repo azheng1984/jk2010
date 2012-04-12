@@ -96,7 +96,7 @@ ol .current {
   background:#d8d8d8;
 }
 #slide_list a:hover, #slide_list .hover {
-  background:#bbb;
+  background:#aaa;
   cursor:pointer;
 }
 #slide_list span {

@@ -57,8 +57,8 @@ huobiwanjia.home = function() {
       $('#slide_list .current').attr('class', 'item').attr('tabindex', 0);
       span.attr('class', 'current no_outline').removeAttr('tabindex');
     }
-    var merchant = home.slideshow.merchantList[home.currentMerchantIndex];
-    var src = '/+/img/slide/' + merchant[2] + '/' + index + '.jpg';
+    var merchant = home.slideshow.merchantList[home.currentMerchantIndex],
+      src = '/+/img/slide/' + merchant[2] + '/' + index + '.jpg';
     $('#slide img').attr('src', src);
     $('#slide').attr('href', 'http://' + merchant[3][index]);
     if (index === 0 && $.inArray(src, home.slideCache) === -1) {
