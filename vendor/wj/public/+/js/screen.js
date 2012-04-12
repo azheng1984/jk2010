@@ -159,11 +159,9 @@ var huobiwanjia = function() {
       return query;
     }
     keyList.sort();
-    var result = '';
-    var offset = 0;
+    var result = '', offset = 0;
     $.each(keyList, function(index, key) {
-      var start = parseInt(key);
-      var next = start + positionList[start];
+      var start = parseInt(key), next = start + positionList[start];
       if (next <= offset) {
         return;
       }
@@ -195,8 +193,7 @@ var huobiwanjia = function() {
   };
 
   suggestion.up = function() {
-    var current = $('#suggestion li.hover');
-    var previous = current.prev();
+    var current = $('#suggestion li.hover'), previous = current.prev();
     if (current.length === 0) {
       previous = $('#suggestion li').last();
     }
@@ -204,8 +201,7 @@ var huobiwanjia = function() {
   };
 
   suggestion.down = function() {
-    var current = $('#suggestion li.hover');
-    var next = current.next();
+    var current = $('#suggestion li.hover'), next = current.next();
     if (current.length === 0) {
       next = $('#suggestion li').first();
     }
@@ -237,8 +233,7 @@ var huobiwanjia = function() {
   });
 
   return {suggestion: suggestion, argumentList: function() {
-    var argumentList = {};
-    var search = window.location.search;
+    var argumentList = {}, search = window.location.search;
     if (search !== '') {
       var queryString = search.charAt(0) === '?' ? search.substring(1) : search,
         regex = /([^=&]+)(=([^&]*))?/g;
