@@ -143,10 +143,10 @@ input:focus {
   font-size:14px;
   width:375px;
   border:1px solid;
-  border-color:#eee #ccc #ccc #eee;
+  border-color:#eee #ddd #ddd #eee;
   background:white;
   z-index:100;
-  box-shadow:0 0 3px #ccc;
+  box-shadow:0 0 3px #ddd;
 }
 #suggestion div {
   padding:2px;
@@ -160,6 +160,7 @@ input:focus {
   width:368px;
   color:#111;
   border:0;
+  cursor:pointer;/* ie6 内部 span cursor default*/
 }
 #suggestion li .query {
   float:left;/* ie6 会换行 */
