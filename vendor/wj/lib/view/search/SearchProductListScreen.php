@@ -69,7 +69,7 @@ class SearchProductListScreen {
     }
     if ($product['recognition_id'] !== null) {
       $recognition = self::getRecognition($product['recognition_id']);
-      echo '<a class="recognition" href="/+-'.urlencode($recognition['name']), '/',
+      echo '<a class="unique" href="/+-'.urlencode($recognition['name']), '/',
         $GLOBALS['QUERY_STRING'], '" rel="nofollow">',
         $recognition['product_amount'], ' 个同款商品</a>';
     }

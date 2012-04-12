@@ -29,7 +29,7 @@
         search.propertyList[keyName] = [];
         return;
       }
-      if (self.is('.tag')) {
+      if (self.is('.tag') && text !== '同款') {
         search.propertyList[keyName].push(encodeURIComponent(text));
       }
     });
@@ -76,9 +76,9 @@
           $('#price_range').submit();
         }
       }).mousedown(function() {
-        $(this).addClass('active');
+        $(this).addClass('no_outline');
       }).mouseout(function() {
-        $(this).removeClass('active');
+        $(this).removeClass('no_outline');
       });
     });
   };
@@ -198,7 +198,8 @@
         encodeURIComponent(valueName), search.propertyList[keyName]
       ) !== -1) {
       return '<li class="value"><a class="selected" href="'
-        + search.getTagHref(keyName, valueName) +'">'+ valueName + '</a></li>';
+        + search.getTagHref(keyName, valueName) +'">'
+        + valueName + '<span></span></a></li>';
     }
     return '<li class="value"><a href="'
       + search.getTagHref(keyName, valueName) +'">'
@@ -235,7 +236,7 @@
     more.click(function() {
       click(more, page);
     }).bind('mouseenter mouseleave', function() {
-      more.toggleClass('hover');
+      more.toggleClass('more_hover');
     }).keypress(function(event) {
       if(event.which === 13){
         click(more, page);
