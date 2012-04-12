@@ -21,14 +21,14 @@
   box-shadow:0 0 3px #e1e1e1;
 }
 table {
+  width:942px;
   background:#fff;
   border:1px solid #e5e5e5;
   box-shadow:0 0 3px #e1e1e1;
-  width:942px;
 }
 td {
-  padding:5px 0 5px 20px;
-  background:url(/+/img/screen.png) -505px -170px no-repeat;
+  padding:5px 5px 5px 15px;
+  background:url(/+/img/screen.png) -510px -169px no-repeat;
 }
 td a {
   border:0;
