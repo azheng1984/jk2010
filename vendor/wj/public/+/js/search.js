@@ -190,10 +190,9 @@
 
   search.renderValueList = function(keyName, data) {
     var html = '';
-    for (var index = 0; index < data.length; ++index) {
-      var item = data[index];
+    $.each(data, function(index, item) {
       html += search.renderValue(keyName, item[0], item[1]);
-    }
+    });
     return html;
   };
 
@@ -256,11 +255,11 @@
 
   search.renderKeyList = function(data) {
     var html = '';
-    for (var index = 0; index < data.length; ++index) {
-      var multiple = data[index][1] === 0 ? '' : ' multiple';
+    $.each(data, function(index, item) {
+      var multiple = item[1] === 0 ? '' : ' multiple';
       html += '<li class="new"><span class="key' + multiple
-        + '" tabindex="0"><span>' + data[index][0] + '</span></span></li>';
-    }
+        + '" tabindex="0"><span>' + item[0] + '</span></span></li>';
+    });
     return html;
   };
 

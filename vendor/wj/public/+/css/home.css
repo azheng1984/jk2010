@@ -179,30 +179,30 @@ ol .current {
   width:15px;
   border:0;
   margin-top:4px;
-  background:url(/+/img/home.png) -11px -25px no-repeat;
+  background:url(/+/img/home.png) -11px -1px no-repeat;
   height:52px;
   border-radius:2px;
 }
 #scroll a:hover, #scroll .hover {
   cursor:pointer;
-  background-position:-47px -25px;
+  background-position:-46px -1px;
 }
 #scroll .small {
   height:25px;
-  background-position:-11px -38px;
+  background-position:-11px -15px;
 }
 #scroll .small:hover, #scroll .small_hover {
-  background-position:-47px -38px;
+  background-position:-46px -15px;
 }
 #scroll .previous {
-  background-position:-47px -25px;
+  background-position:-81px -2px;
 }
 #scroll .previous:hover, #scroll .previous_hover {
-  background-position:-47px -25px;
+  background-position:-116px -2px;
 }
 #scroll .previous_small {
-  background-position:-47px -25px;
+  background-position:-81px -15px;
 }
 #scroll .previous_small:hover, #scroll .previous_small_hover {
-  background-position:-47px -25px;
+  background-position:-116px -15px;
 }
