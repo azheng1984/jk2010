@@ -93,7 +93,7 @@ ol .current {
   _margin-top:4px;/* ie6 line-height 无法垂直居中 */
 }
 #slide_list a, #slide_list .item {
-  background:#d5d5d5;
+  background:#d8d8d8;
 }
 #slide_list a:hover, #slide_list .hover {
   background:#bbb;

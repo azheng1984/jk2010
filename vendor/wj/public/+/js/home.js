@@ -101,18 +101,18 @@ huobiwanjia.home = function() {
     var classList = ['previous', 'previous_small', 'small'];
     list.hover(function() {
       var self = $(this);
-      $.each(classList, function(index, value) {
-        if (self.hasClass(value)) {
-          self.addClass(value + '_hover');
+      $.each(classList, function(index, item) {
+        if (self.hasClass(item)) {
+          self.addClass(item + '_hover');
           return false;
         }
       });
     }, function() {
       var self = $(this);
-      $.each(classList, function(index, value) {
-        value = value + '_hover';
-        if (self.hasClass(value)) {
-          self.removeClass(value);
+      $.each(classList, function(index, item) {
+        item = item + '_hover';
+        if (self.hasClass(item)) {
+          self.removeClass(item);
           return false;
         }
       });
