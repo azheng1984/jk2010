@@ -43,6 +43,9 @@ input {
 .no_outline {
   outline:0;
 }
+.hidden {
+  display:none;
+}
 * html #header input {/* ie6 不支持 input 事件 */
   color:#111;
 }
