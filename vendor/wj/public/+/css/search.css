@@ -346,7 +346,7 @@ h2 a:hover {
   color:#111;
   background-position:-122px -199px;
 }
-#tag ol .hover span {
+#tag ol .hover span, #tag ol .open_hover span {
   border-color:#111;
 }
 #tag ol .open {
@@ -355,9 +355,6 @@ h2 a:hover {
 #tag ol .open_hover {
   color:#111;
   background-position:-75px -251px;
-}
-#tag ol .open_hover span {
-  border-color:#111;
 }
 #tag .load {
   float:left;
