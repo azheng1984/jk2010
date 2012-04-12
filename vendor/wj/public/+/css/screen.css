@@ -31,8 +31,6 @@ ol, ul {
 table {
   border-collapse:collapse;
   empty-cells:hide;
-  table-layout:fixed;
-  width:100%;
 }
 td {
   vertical-align:top;

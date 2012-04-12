@@ -21,6 +21,7 @@
   box-shadow:0 0 3px #e1e1e1;
 }
 table {
+  table-layout:fixed;
   width:942px;
   background:#fff;
   border:1px solid #e5e5e5;
