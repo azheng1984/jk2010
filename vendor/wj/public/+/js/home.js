@@ -27,7 +27,7 @@ huobiwanjia.home = function() {
   home.enhanceList = function(list, click, isHold) {
     list.each(function(index) {
       var self = $(this);
-      if (self.hasClass('current') === false) {
+      if (self.is('.current') === false) {
         self.attr('tabindex', '0');
       }
       self.mousedown(function() {
@@ -40,7 +40,7 @@ huobiwanjia.home = function() {
         }
       }).hover(
         function() {
-          if (self.hasClass('current') === false) {
+          if (self.is('.current') === false) {
             self.addClass('hover');
           }
         },
@@ -96,14 +96,32 @@ huobiwanjia.home = function() {
   };
 
   home.enhanceScroll = function() {
-    home.enhanceList(
-      $('#scroll span'), home.executeScroll, false
-    );
+    var list = $('#scroll span');
+    home.enhanceList(list, home.executeScroll, false);
+    var classList = ['previous', 'previous_small', 'small'];
+    list.hover(function() {
+      var self = $(this);
+      $.each(classList, function(index, value) {
+        if (self.hasClass(value)) {
+          self.addClass(value + '_hover');
+          return false;
+        }
+      });
+    }, function() {
+      var self = $(this);
+      $.each(classList, function(index, value) {
+        value = value + '_hover';
+        if (self.hasClass(value)) {
+          self.removeClass(value);
+          return false;
+        }
+      });
+    });
   };
 
   home.executeScroll = function(span) {
     var pageAmount = Math.ceil(home.slideshow.merchantAmount / 5),
-      isPrevious = span.hasClass('previous');
+      isPrevious = span.is('.previous, .previous_small');
     if (home.isScrolling) {
       return;
     }
@@ -136,7 +154,7 @@ huobiwanjia.home = function() {
     $('#current').animate({top: targetPosition}, 'slow');
     $('#' + target).animate({top: targetPosition}, 'slow', function() {
       $('#merchant_list').html($('#' + target).html()).removeClass('move');
-      var html = '<span class="previous small"></span>'
+      var html = '<span class="small previous_small"></span>'
         + '<span class="small"></span>';
       if (home.page === 1) {
         html = '<span></span>';
@@ -165,12 +183,11 @@ huobiwanjia.home = function() {
 
   home.fillMerchantList = function(data) {
     home.slideshow.merchantList = data;
-    var html = '', length = home.slideshow.merchantList.length;
-    for (var index = 0; index < length; ++index) {
-      var merchant = home.slideshow.merchantList[index];
+    var html = '';
+    $.each(home.slideshow.merchantList, function(index, merchant) {
       html += '<span class="item"><img src="/+/img/logo/'
         + merchant[2] + '.png"/></span>';
-    }
+    });
     var target = $('#merchant_list');
     if ($('#merchant_list div').length !== 0) {
       target = $('#merchant_list div');

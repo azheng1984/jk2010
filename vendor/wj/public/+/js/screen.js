@@ -139,22 +139,21 @@ var huobiwanjia = function() {
   suggestion.highlight = function(query, keywordList) {
     var positionList = {};
     var offset = 0;
-    var length = keywordList.length;
-    for (var index = 0; index < length; ++index) {
-      offset = 0;
-      for(;;) {
-        offset = query.indexOf(keywordList[index], offset);
+    $.each(keywordList, function(index, keyword) {
+      for (;;) {
+        offset = query.indexOf(keyword, offset);
         if (offset === -1) {
           break;
         }
         if (typeof positionList[offset] === 'undefined') {
-          positionList[offset] = keywordList[index].length;
+          positionList[offset] = keyword.length;
         }
-        offset = offset + keywordList[index].length;
+        offset += keyword.length;
       }
-    }
+      offset = 0;
+    });
     var keyList = [];
-    for(var key in positionList) {
+    for (var key in positionList) {
       keyList.push(key);
     }
     if (keyList.length === 0) {
@@ -163,12 +162,11 @@ var huobiwanjia = function() {
     keyList.sort();
     var result = '';
     offset = 0;
-    length = keyList.length;
-    for (var index = 0; index < length; ++index) {
-      var start = parseInt(keyList[index]);
+    $.each(keyList, function(index, key) {
+      var start = parseInt(key);
       var next = start + positionList[start];
       if (next <= offset) {
-        continue;
+        return;
       }
       if (start < offset) {
         positionList[start] = positionList[start] + start - offset;
@@ -177,7 +175,7 @@ var huobiwanjia = function() {
       result += query.substr(offset, start - offset) + '<em>'
         + query.substr(start, positionList[start]) + '</em>';
       offset = next;
-    }
+    });
     return result + query.substr(offset);
   };
 

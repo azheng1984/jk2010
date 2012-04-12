@@ -179,7 +179,7 @@ class HomeScreen extends Screen {
     }
     if ($GLOBALS['PAGE'] < ceil($GLOBALS['MERCHANT_TYPE'][2] / 5)) {
       $next = $GLOBALS['PAGE'] + 1;
-      $previousClass = ' class="previous small"';
+      $previousClass = ' class="small previous_small"';
     }
     echo '<div id="scroll">';
     if ($previous !== null) {
