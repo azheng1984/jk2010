@@ -138,8 +138,8 @@ var huobiwanjia = function() {
 
   suggestion.highlight = function(query, keywordList) {
     var positionList = {};
-    var offset = 0;
     $.each(keywordList, function(index, keyword) {
+      var offset = 0;
       for (;;) {
         offset = query.indexOf(keyword, offset);
         if (offset === -1) {
@@ -150,7 +150,6 @@ var huobiwanjia = function() {
         }
         offset += keyword.length;
       }
-      offset = 0;
     });
     var keyList = [];
     for (var key in positionList) {
@@ -161,7 +160,7 @@ var huobiwanjia = function() {
     }
     keyList.sort();
     var result = '';
-    offset = 0;
+    var offset = 0;
     $.each(keyList, function(index, key) {
       var start = parseInt(key);
       var next = start + positionList[start];
