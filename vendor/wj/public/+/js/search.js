@@ -31,7 +31,7 @@
         search.propertyList[keyName] = [];
         return;
       }
-      if (self.hasClass('tag')) {
+      if (self.is('.tag')) {
         search.propertyList[keyName].push(encodeURIComponent(text));
       }
     });
@@ -281,7 +281,7 @@
         //ie6 不支持 span:hover 和 .open.hover
         var self = $(this);
         var className = 'hover';
-        if (self.hasClass('open')) {
+        if (self.is('.open')) {
           className = 'open_hover';
         }
         self.toggleClass(className);
@@ -300,7 +300,7 @@
   };
 
   search.toggleKey = function(key) {
-    if (key.hasClass('open')) {
+    if (key.is('.open')) {
       key.removeClass('open');
       key.nextAll().hide();
       return;
@@ -311,8 +311,7 @@
       return;
     }
     var keyName = key.text();
-    if (search.propertyList[keyName]
-      && key.hasClass('multiple') === false) {
+    if (search.propertyList[keyName] && key.is('.multiple') === false) {
       key.after('<ol>' + search.renderValue(
         keyName, decodeURIComponent(search.propertyList[keyName][0])
       ) + '</ol>');
@@ -322,7 +321,7 @@
   };
 
   search.toggleKeyHoverClass = function(key) {
-    if (key.hasClass('open')) {
+    if (key.is('.open')) {
       key.removeClass('hover').addClass('open_hover');
       return;
     }
@@ -337,7 +336,7 @@
     var load = key.next('.load');
     search.getTag(keyName, 1, function(data, hasMore) {
       load.remove();
-      var isHidden = key.hasClass('open') === false;
+      var isHidden = key.is('.open') === false;
       var html = '<ol';
       if (isHidden) {
         html += ' class="hidden"';
