@@ -25,8 +25,8 @@ class IndexScreen extends Screen {
   }
 
   protected function renderHtmlBodyContent() {
+    $this->renderNavigation();
     echo '<div id="index">';
-    $this->renderBreadcrumb();
     $this->renderLinkTable();
     $this->renderPagination();
     echo '</div>';
@@ -59,7 +59,7 @@ class IndexScreen extends Screen {
     $this->page = intval($path);
   }
 
-  private function renderBreadcrumb() {
+  private function renderNavigation() {
     echo '<div id="nav">',
       '<span><a href="/">首页</a></span>';
     if ($this->category !== null) {
