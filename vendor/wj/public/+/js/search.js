@@ -6,8 +6,7 @@
 
   search.initialize = function() {
     /* query string */
-    var argumentList = [];
-    var query = huobiwanjia.argumentList;
+    var argumentList = [], query = huobiwanjia.argumentList;
     if (typeof query.price_from !== 'undefined') {
       argumentList.push('price_from=' + query.price_from);
     }
@@ -86,8 +85,7 @@
 
   search.enhanceProductTagList = function() {
     $('#result li').each(function() {
-      var self = $(this);
-      var valueList = self.children('.value');
+      var self = $(this), valueList = self.children('.value');
       if (valueList.length === 0) {
         return;
       }
