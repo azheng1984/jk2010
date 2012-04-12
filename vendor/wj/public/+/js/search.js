@@ -24,8 +24,7 @@
     /* property list */
     var keyName = null;
     $('#nav').children().each(function() {
-      var self = $(this);
-      var text = self.text();
+      var self = $(this), text = self.text();
       if (self.is('span:not(.delimiter)')) {
         keyName = text.substr(0, text.length - 1);
         search.propertyList[keyName] = [];
@@ -38,12 +37,12 @@
   };
 
   search.renderPriceRange = function() {
-    var query = huobiwanjia.argumentList;
-    var priceFrom = typeof query.price_from === 'undefined'
-      ? '' : query.price_from;
-    var priceTo = typeof query.price_to === 'undefined' ? '' : query.price_to;
     var form =
-      '<form id="price_range" action="."><label for="price_from">&yen;</label>';
+      '<form id="price_range" action="."><label for="price_from">&yen;</label>',
+      query = huobiwanjia.argumentList,
+      priceFrom = typeof query.price_from === 'undefined' ?
+        '' : query.price_from,
+      priceTo = typeof query.price_to === 'undefined' ? '' : query.price_to;
     if (typeof query.sort !== 'undefined') {
       form += '<input name="sort" type="hidden" value="' + query.sort + '"/>';
     }
@@ -98,9 +97,9 @@
       }
       var keyName = list[0];
       valueList.each(function() {
-        var self = $(this);
-        var html = self.html();
-        var valueName = html.replace(/<\/span>/gi, '').replace(/<span>/gi, '');
+        var self = $(this),
+          html = self.html(),
+          valueName = html.replace(/<\/span>/gi, '').replace(/<span>/gi, '');
         html = html.replace(/<\/span>/gi, '</span><span class="gray">')
           .replace(/<span>/gi, '</span><span class="red">');
         self.replaceWith('<a href="' + search.getTagHref(keyName, valueName)
@@ -137,8 +136,7 @@
   };
 
   search.appendTagHref = function(keyName, valueName) {
-    var sectionList = window.location.pathname.split('/');
-    var href = '';
+    var sectionList = window.location.pathname.split('/'), href = '';
     if (sectionList.length === 5) {
       href = '../' + sectionList[3] + '&';
     }
@@ -168,8 +166,8 @@
   };
 
   search.getTag = function(keyName, page, render) {
-    var path = window.location.pathname;
-    var url = path.substr(0, path.lastIndexOf("/") + 1) + '?media=json';
+    var path = window.location.pathname,
+      url = path.substr(0, path.lastIndexOf("/") + 1) + '?media=json';
     if (keyName !== null) {
       url += '&key=' + encodeURIComponent(keyName);
     }
@@ -279,8 +277,7 @@
         $(this).removeClass('no_outline').removeAttr('hideFocus');
       }).bind('mouseenter mouseleave', function() {
         //ie6 不支持 span:hover 和 .open.hover
-        var self = $(this);
-        var className = 'hover';
+        var self = $(this), className = 'hover';
         if (self.is('.open')) {
           className = 'open_hover';
         }
@@ -336,8 +333,7 @@
     var load = key.next('.load');
     search.getTag(keyName, 1, function(data, hasMore) {
       load.remove();
-      var isHidden = key.is('.open') === false;
-      var html = '<ol';
+      var isHidden = key.is('.open') === false, html = '<ol';
       if (isHidden) {
         html += ' class="hidden"';
       }
