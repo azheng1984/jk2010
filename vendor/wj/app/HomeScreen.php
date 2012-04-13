@@ -90,7 +90,8 @@ class HomeScreen extends Screen {
     if (isset($_GET['merchant_id']) === false
         || is_numeric($_GET['merchant_id']) === false
         || $_GET['merchant_id'] < 1
-        || isset($GLOBALS['SLIDESHOW'][intval($_GET['merchant_id'])]) === false) {
+        || isset($GLOBALS['SLIDESHOW'][intval($_GET['merchant_id'])])
+          === false) {
       $this->merchantId = key($GLOBALS['SLIDESHOW']);
       return;
     }
