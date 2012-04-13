@@ -12,10 +12,14 @@ huobiwanjia.home = function() {
 
   home.initializeList = function(id) {
     $('#' + id).children().each(function() {
-      var self = $(this), classAttribute =
-        self.attr('href') === undefined ? 'class="current"' : 'class="item"';
+      var self = $(this), classList = [], classAttr = self.attr('class');
+      if (classAttr !== undefined) {
+        classList = [classAttr];
+      }
+      self.attr('href') === undefined ?
+        classList.push('current') : classList.push('item');
       self.replaceWith(
-        '<span ' + classAttribute + '>' + self.html() + '</span>'
+        '<span class="' + classList.join(' ') + '">' + self.html() + '</span>'
       );
     });
   };
