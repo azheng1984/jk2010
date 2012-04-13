@@ -324,7 +324,7 @@ h2 a:hover {
   width:13px;
   padding:0;
   margin-left:3px;
-  *margin-bottom:3px;
+  *margin-bottom:3px;/* ie7 会出现 span 下沉 */
   _margin-bottom:0;
   background:url(/+/img/search.png) right 4px no-repeat;
 }
