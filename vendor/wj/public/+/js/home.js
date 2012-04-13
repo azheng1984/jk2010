@@ -50,7 +50,7 @@ huobiwanjia.home = function() {
         },
         function() {self.removeClass('hover');}
       ).click(function() {click(self, index);});
-      if (typeof isHold === 'undefined') {
+      if (isHold === undefined) {
         self.focusin(home.hold).focusout(home.play);
       }
     });
