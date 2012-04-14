@@ -24,7 +24,7 @@
     var keyName = null;
     $('#nav').children().each(function() {
       var self = $(this), text = self.text();
-      if (self.is('span:not(.delimiter)')) {
+      if (self.is('span:not(.next)')) {
         keyName = text.substr(0, text.length - 1);
         search.propertyList[keyName] = [];
         return;
