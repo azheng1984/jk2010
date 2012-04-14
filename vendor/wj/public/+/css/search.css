@@ -9,7 +9,9 @@
 }
 h1 {
   float:none;
-  display:inline-block;/* ie 6 不支持 h1 inline-block */
+  display:inline-block;
+  _display:inline;/* ie 6 不支持 h1 inline-block */
+  zoom:1;
   font-size:16px;
   margin-left:8px;
 }
