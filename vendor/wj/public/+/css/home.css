@@ -65,7 +65,7 @@ ol .current {
 #slide_wrapper {
   margin-top:10px;
   padding:10px 0 0 10px;
-  border:1px solid #d5d5d5;
+  border:1px solid #d1d1d1;
   background:#fff;
 }
 #slide {
@@ -92,7 +92,7 @@ ol .current {
   *margin-top:4px;/* ie6/7 line-height 无法垂直居中 */
 }
 #slide_list a, #slide_list .item {
-  background:#d5d5d5;
+  background:#d8d8d8;
 }
 #slide_list a:hover, #slide_list .hover {
   background:#aaa;
@@ -140,12 +140,12 @@ ol .current {
   border-radius:0 0 5px 5px;
 }
 #merchant_list a:hover, #merchant_list .hover {
-  border-color:#d5d5d5;
+  border-color:#d1d1d1;
   cursor:pointer;
   box-shadow:0 1px 3px #ddd;
 }
 #merchant_list span {
-  border-color:#d5d5d5;
+  border-color:#d1d1d1;
   margin-top:-1px;
   position:relative;/* ie6 默认 z-index 和显示顺序相反 */
   box-shadow:0 2px 4px #ddd;
