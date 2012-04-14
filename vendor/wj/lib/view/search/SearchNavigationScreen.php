@@ -1,5 +1,4 @@
 <?php
-//TODO:和 tag 一样，截取 query 和 category
 class SearchNavigationScreen {
   private static $propertyPathList;
   private static $isFollow;
@@ -46,7 +45,7 @@ class SearchNavigationScreen {
     if (self::$isFollow === false) {
       echo ' rel="nofollow"';
     }
-    echo '>', $item['text'], '</a>';
+    echo '>', self::cutName($item['text']), '</a>';
   }
 
   private static function buildList() {
@@ -78,17 +77,11 @@ class SearchNavigationScreen {
     $list[0][0]['href'] = '../'.$list[0][0]['href'];
     $list[2] = array();
     foreach ($GLOBALS['PROPERTY_LIST'] as $property) {
-      $list[2][] = array(
-        'text' =>
-          htmlentities($property['key']['name'], ENT_NOQUOTES, 'UTF-8').':'
-      );
+      $list[2][] = array('text' =>
+        htmlentities($property['key']['name'], ENT_NOQUOTES, 'UTF-8').':');
       foreach ($property['value_list'] as $value) {
-        $text = $value['name'];
-        if (mb_strlen($text, 'UTF-8') > 60) {
-          $text = mb_substr($text, 0, 60, 'UTF-8').'…';
-        }
         $list[2][] = array(
-          'text' => htmlentities($text, ENT_NOQUOTES, 'UTF-8'),
+          'text' => htmlentities($value['name'], ENT_NOQUOTES, 'UTF-8'),
           'href' => self::buildHref($property['key']['path'], $value['path'])
             .$GLOBALS['QUERY_STRING'],
           'class' => 'tag'
@@ -96,6 +89,13 @@ class SearchNavigationScreen {
       }
     }
     return $list;
+  }
+
+  private static function cutName($name) {
+    if (mb_strlen($name, 'UTF-8') > 60) {
+      return mb_substr($name, 0, 60, 'UTF-8').'…';
+    }
+    return $name;
   }
 
   private static function buildHref($propertyKeyPath, $propertyValuePath) {
