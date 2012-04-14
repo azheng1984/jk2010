@@ -73,8 +73,7 @@ class SearchProductListScreen {
         $GLOBALS['QUERY_STRING'], '" rel="nofollow">',
         $recognition['product_amount'], ' 个同款商品</a>';
     }
-    echo '<div class="merchant">', $merchant['name'], '</div>',//merchant
-      '</td>';
+    echo '<div class="merchant">', $merchant['name'], '</div></td>';//merchant
   }
 
   private static function getMerchant($id) {
@@ -109,7 +108,7 @@ class SearchProductListScreen {
     if (self::$hasCategory === false && $product['category_name'] !== null) {
       self::$tagLinkList[] = '分类: <span class="value">'
         .$product['category_name'].'</span>';
-    } 
+    }
     if (self::$hasCategory === false && $product['brand_name'] !== null) {
       self::$tagTextList[] = '品牌: '.$product['brand_name'];
       return;
