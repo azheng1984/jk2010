@@ -9,7 +9,8 @@ class SearchNavigationScreen {
     echo '<div id="nav">';
     $last = count($list) - 1;
     $isH1 = true;
-    self::$isFollow = isset($list[0][0]['class']);
+    self::$isFollow = isset($list[0][0]['class'])
+      && $GLOBALS['QUERY_STRING'] === '';
     for ($index = 0; $index <= $last; ++$index) {
       $section = $list[$index];
       foreach ($section as $item) {
@@ -24,7 +25,7 @@ class SearchNavigationScreen {
         }
       }
       if ($index !== $last) {
-        echo '<span class="delimiter"></span>';
+        echo '<span class="next"></span>';
       }
     }
     echo '</div>';
