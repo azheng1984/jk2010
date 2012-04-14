@@ -65,8 +65,7 @@ ol .current {
 #slide_wrapper {
   margin-top:10px;
   padding:10px 0 0 10px;
-  border:1px solid #d1d1d1;
-  box-shadow:0 0 1px 1px #ddd;
+  border:1px solid #d5d5d5;
   background:#fff;
 }
 #slide {

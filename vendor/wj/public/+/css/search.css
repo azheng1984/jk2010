@@ -420,7 +420,7 @@ h2 a:hover {
  *************************************/
 #no_result {
   padding:20px 0;
-  width:940px;/* chrome result wrapper 宽度不是 100% */
+  width:940px;/* chrome result wrapper 宽度不是 100%，导致 toolbar 没撑满 */
 }
 #no_result div {
   padding:0 0 5px 8px;
