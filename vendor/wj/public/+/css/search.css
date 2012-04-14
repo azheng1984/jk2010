@@ -11,7 +11,7 @@ h1 {
   float:none;
   display:inline-block;
   _display:inline;/* ie 6 不支持 h1 inline-block */
-  zoom:1;
+  zoom:1;/* 让 ie 6 通过 inline-block 显示 */
   font-size:16px;
   margin-left:8px;
 }
@@ -420,6 +420,7 @@ h2 a:hover {
  *************************************/
 #no_result {
   padding:20px 0;
+  width:940px;/* chrome result wrapper 宽度不是 100% */
 }
 #no_result div {
   padding:0 0 5px 8px;
