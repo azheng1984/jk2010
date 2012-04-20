@@ -21,7 +21,6 @@ class PropertyProductListProcessor {
   }
 
   private function parseProductList() {
-    $matches = array();
     preg_match_all(
       "{<div class='p-name'><a target='_blank'"
         ." href='http://www.360buy.com/product/([0-9]+).html'>}",
@@ -37,16 +36,13 @@ class PropertyProductListProcessor {
   }
 
   private function parseNextPage() {
-    $matches = array();
     preg_match(
-      '{class="current".*?href="([0-9-]+).html"}',
-      $this->html,
-      $matches
+      '{class="current".*?href="([0-9-]+).html"}', $this->html, $matches
     );
     if (count($matches) > 0) {
       $page = $this->page + 1;
       DbTask::insert('PropertyProductList', array(
-        'path' => $matches[1],
+        'path' => $matches[1], 
         'value_id' => $this->valueId,
         'table_prefix' => $this->tablePrefix,
         'page' => $page

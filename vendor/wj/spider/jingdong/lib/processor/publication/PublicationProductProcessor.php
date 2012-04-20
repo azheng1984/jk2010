@@ -10,7 +10,6 @@ class PublicationProductProcessor {
     DbProduct::insert(
       $arguments['id'], $arguments['category_id'], $result['content']
     );
-    $matches = array();
     preg_match(
       '{src="http://(.*?)/(\S+)" width="280" height="280"}',
       $result['content'],

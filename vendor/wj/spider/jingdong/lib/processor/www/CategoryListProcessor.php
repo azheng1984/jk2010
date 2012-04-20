@@ -7,7 +7,6 @@ class CategoryListProcessor {
     if ($html === false) {
       return $result;
     }
-    $matches = array();
     preg_match_all(
       '{<li><a href=http://www.360buy.com/products/(.*?).html>(.*?)</a></li>}',
       $html,

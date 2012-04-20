@@ -166,7 +166,6 @@ class ProductProcessor {
   }
 
   private function insertImageTask() {
-    $matches = array();
     preg_match(
       '{jqzoom.*? src="http://(.*?)/(\S+)"}', $this->html, $matches
     );

@@ -11,7 +11,6 @@ class PriceProcessor {
     if ($result['content'] === false) {
       return $result;
     }
-    $matches = array();
     preg_match(
       '{"ListPrice":(.*?),"Price":(.*?),.*?"PromotionPrice":(.*?),}',
       $result['content'],
