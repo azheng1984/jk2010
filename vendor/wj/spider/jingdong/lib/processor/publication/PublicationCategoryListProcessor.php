@@ -7,7 +7,6 @@ class PublicationCategoryListProcessor {
       return $result;
     }
     $categoryId = DbCategory::getOrNewId($arguments['name']);
-    $matches = array();
     preg_match('{</h2>[\s\S]+<!--main end-->}', $html, $matches);
     $main = $matches[0];
     $sections = explode('</dl>', iconv('gbk', 'utf-8', $main));

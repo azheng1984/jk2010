@@ -1,8 +1,8 @@
 <?php
 return array(
-  'app/WelcomeCommand.php' => array(
+  'app/Command.php' => array(
     '<?php',
-    'class WelcomeCommand {',
+    'class Command {',
     '  public function execute() {',
     "    echo 'Welcome!'.PHP_EOL;",
     '  }',
@@ -12,16 +12,14 @@ return array(
   'config/build.config.php' => array(
     '<?php',
     'return array(',
-    "  'ClassLoader' => array('app', 'lib', HYPERFRAMEWORK_PATH.'cli/lib'),",
+    "  'ClassLoader' => array('app', 'lib', HYPERFRAMEWORK_PATH.'cli/lib')",
     ');',
    ),
   'config/command_application.config.php' => array(
     '<?php',
     'return array(',
     "  'description' => 'Add your own description here',",
-    "  'sub' => array(",
-    "    'welcome' => 'WelcomeCommand',",
-    '  ),',
+    "  'class' => 'Command'",
     ');',
   ),
   'lib/',
@@ -58,7 +56,7 @@ return array(
   ),
   'test/case/app/WelcomeCommandTest.php' => array(
     "<?php",
-    "class WelcomeCommandTest extends PHPUnit_Framework_TestCase {",
+    "class CommandTest extends PHPUnit_Framework_TestCase {",
     "  public function test() {",
     "  }",
     "}"

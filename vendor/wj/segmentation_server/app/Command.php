@@ -1,5 +1,5 @@
 <?php
-class WelcomeCommand {
+class Command {
   public $baseEvent;
   public $event;
   public $socket;
@@ -46,10 +46,10 @@ class WelcomeCommand {
 
   public function onRecive($buffer, $connection) {
     $input = '';
-    while (($read = event_buffer_read($buffer, 256)) !== '') {
+    while ('' !== ($read = event_buffer_read($buffer, 256))) {
       $input .= $read;
     }
-    if ($input !== '') {
+    if ('' !== $input) {
       $result = Segmentation::execute($input);
       fwrite($connection, $result);
     }

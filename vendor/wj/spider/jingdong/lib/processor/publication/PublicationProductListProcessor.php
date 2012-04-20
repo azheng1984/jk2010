@@ -28,7 +28,6 @@ class PublicationProductListProcessor {
   }
 
   private function parseProductList() {
-    $matches = array();
     preg_match_all(
     "{<dt class=\"p-name\">\\s*<a target='_blank'"
       .' href="http://(.*?).360buy.com/(.*?).html">}',
@@ -46,7 +45,6 @@ class PublicationProductListProcessor {
   }
 
   private function parseNextPage() {
-    $matches = array();
     preg_match(
       '{class="current".*?href="([0-9-]+).html"}',
       $this->html,

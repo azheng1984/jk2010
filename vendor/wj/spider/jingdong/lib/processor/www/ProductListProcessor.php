@@ -30,7 +30,6 @@ class ProductListProcessor {
       $this->categoryId = $arguments['category_id'];
       return;
     }
-    $matches = array();
     preg_match_all(
       '{&gt;&nbsp;<a .*?www.360buy.com.*?">(.*?)</a>}', $this->html, $matches
     );
@@ -45,7 +44,6 @@ class ProductListProcessor {
   }
 
   private function parseProductList() {
-    $matches = array();
     preg_match_all(
       "{<div class='p-name'><a target='_blank'"
         ." href='http://www.360buy.com/product/([0-9]+).html'>}",
@@ -65,7 +63,6 @@ class ProductListProcessor {
   }
 
   private function parseNextPage() {
-    $matches = array();
     preg_match(
       '{class="current".*?href="([0-9-]+).html"}',
       $this->html,
@@ -84,7 +81,6 @@ class ProductListProcessor {
   }
 
   private function parsePropertyList() {
-    $matches = array();
     preg_match(
       '{<div id="select" [\s|\S]*<!--select end -->}', $this->html, $matches
     );
