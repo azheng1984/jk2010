@@ -3,17 +3,17 @@ class Spider {
   public function run() {
     while (($task = DbTask::getLastRow()) !== false) {
       DbTask::setRunning($task['id']);
-      $result = $this->dispatch($task);
-      $status = '.';
-      if ($result !== null) {
-        $this->fail($task, $result);
+      try {
+        $result = $this->dispatch($task);
+        echo '.';
+        if ($task['is_retry']) {
+          DbTaskRecord::deleteByTaskId($task['id']);
+        }
+        DbTask::remove($task['id']);
+      } catch (Exception $ex) {
+        $this->fail($task, $ex);
         $status = 'x';
       }
-      if ($result === null && $task['is_retry']) {
-        DbTaskRecord::deleteByTaskId($task['id']);
-      }
-      DbTask::remove($task['id']);
-      echo $status;
     }
   }
 

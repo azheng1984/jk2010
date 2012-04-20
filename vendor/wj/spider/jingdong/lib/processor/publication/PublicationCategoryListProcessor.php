@@ -3,9 +3,6 @@ class PublicationCategoryListProcessor {
   public function execute($arguments) {
     $result = WebClient::get($arguments['domain'], $arguments['path']);
     $html = $result['content'];
-    if ($html === false) {
-      return $result;
-    }
     $categoryId = DbCategory::getOrNewId($arguments['name']);
     preg_match('{</h2>[\s\S]+<!--main end-->}', $html, $matches);
     $main = $matches[0];
