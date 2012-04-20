@@ -4,21 +4,21 @@ class WebClient {
 
   public static function get(
     $domain, $path = '/', $headers = array(),
-    $cookie = null, $getResponseHeader = false, $retryTimes = 2
+    $cookie = null, $isGetResponseHeader = false, $retryTimes = 2
   ) {
     $handler = self::getHandler($domain, $path, $headers);
     curl_setopt($handler, CURLOPT_HTTPGET, true);
-    return self::execute($handler, $cookie, $getResponseHeader, $retryTimes);
+    return self::execute($handler, $cookie, $isGetResponseHeader, $retryTimes);
   }
 
   public static function post(
     $domain, $path = '/', $uploadData = null, $headers = array(),
-    $cookie = null, $getResponseHeader = false, $retryTimes = 0
+    $cookie = null, $isGetResponseHeader = false, $retryTimes = 0
   ) {
     $handler = self::getHandler($domain, $path, $headers);
     curl_setopt($handler, CURLOPT_POST, true);
     curl_setopt($handler, CURLOPT_POSTFIELDS, $uploadData);
-    return self::execute($handler, $cookie, $getResponseHeader, $retryTimes);
+    return self::execute($handler, $cookie, $isGetResponseHeader, $retryTimes);
   }
 
   public static function close() {
@@ -48,21 +48,24 @@ class WebClient {
   }
 
   private static function execute(
-    $handler, $cookie, $getResponseHeader, $retryTimes
+    $handler, $cookie, $isGetResponseHeader, $retryTimes
   ) {
     curl_setopt($handler, CURLOPT_COOKIE, $cookie);
-    if ($getResponseHeader) {
+    if ($isGetResponseHeader) {
       curl_setopt($handler, CURLOPT_HEADER, 1);
     }
     $content = curl_exec($handler);
     curl_setopt($handler, CURLOPT_HEADER, 0);
     if ($content === false && $retryTimes > 0) {
       return self::execute(
-        $handler, $cookie, $getResponseHeader, --$retryTimes
+        $handler, $cookie, $isGetResponseHeader, --$retryTimes
       );
     }
+    if ($content === false) {
+      throw new Exception;
+    }
     $result = curl_getinfo($handler);
-    if ($getResponseHeader && $content !== false) {
+    if ($isGetResponseHeader) {
       list($header, $data) = explode("\r\n\r\n", $content, 2);
       $content = $data;
       $result['header'] = $header;
