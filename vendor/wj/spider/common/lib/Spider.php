@@ -4,15 +4,15 @@ class Spider {
     while (($task = DbTask::getLastRow()) !== false) {
       DbTask::setRunning($task['id']);
       try {
-        $result = $this->dispatch($task);
-        echo '.';
+        $this->dispatch($task);
         if ($task['is_retry']) {
           DbTaskRecord::deleteByTaskId($task['id']);
         }
         DbTask::remove($task['id']);
+        echo '.';
       } catch (Exception $ex) {
         $this->fail($task, $ex);
-        $status = 'x';
+        echo 'x';
       }
     }
   }

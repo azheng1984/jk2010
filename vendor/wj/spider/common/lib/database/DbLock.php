@@ -4,8 +4,8 @@ class DbLock {
     Db::execute('INSERT INTO `lock`(process_id) VALUES(?)', $processId);
   }
 
-  public static function getOthers($processId) {
-    return Db::getAll('SELECT * FROM `lock` WHERE process_id != ?', $processId);
+  public static function getAll() {
+    return Db::getAll('SELECT * FROM `lock`');
   }
 
   public static function deleteOthers($processId) {
