@@ -1,5 +1,5 @@
 <?php
-class DbProductLog {
+class DbLog {
   public static function insert($tablePrefix, $productId, $type) {
     Db::execute(
       'INSERT INTO '.$tablePrefix

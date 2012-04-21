@@ -24,4 +24,13 @@ class DbTaskRetry {
     $sql = 'SELECT * FROM task_retry LIMIT 1';
     return Db::getRow($sql) === false;
   }
+
+  public static function createTable() {
+    $sql = "CREATE TABLE `task_retry` (
+      `task_id` bigint(20) unsigned NOT NULL,
+      `type` varchar(45) DEFAULT NULL,
+      `arguments` text,
+      PRIMARY KEY (`task_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+  }
 }
