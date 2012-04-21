@@ -7,7 +7,7 @@ class Lock {
       $processId = posix_getpid();
     }
     if (count($lockList) !== 0 && $processId === null) {
-      throw new Exception('lock fail');
+      self::fail();
     }
     DbLock::insert($processId);
     if ($processId === null) {
@@ -16,9 +16,13 @@ class Lock {
     foreach ($lockList as $item) {
       $output = shell_exec("ps -p {$item['process_id']}");
       if (strstr($output, $item['process_id']) !== false) {
-        throw new Exception('lock fail');
+        self::fail();
       }
     }
     DbLock::deleteOthers($processId);
+  }
+
+  private static function fail() {
+    throw new Exception('lock fail');
   }
 }
