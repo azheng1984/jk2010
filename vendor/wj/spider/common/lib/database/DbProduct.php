@@ -132,7 +132,7 @@ class DbProduct {
         `category_id` int(11) unsigned NOT NULL,
         `uri` varchar(127) NOT NULL,
         `title` varchar(511) NOT NULL,
-        `description` text,
+        `property_list` text,
         `content_md5` varchar(32) DEFAULT NULL,
         `image_md5` varchar(32) DEFAULT NULL,
         `image_last_modified` varchar(29) DEFAULT NULL,

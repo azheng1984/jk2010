@@ -13,4 +13,14 @@ class DbCategory {
     }
     return $id;
   }
+
+  public static function createTable() {
+    $sql = "CREATE TABLE `category` (
+      `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+      `parent_id` int(11) unsigned DEFAULT NULL,
+      `name` varchar(255) NOT NULL,
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `parent_id&name` (`parent_id`,`name`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+  }
 }

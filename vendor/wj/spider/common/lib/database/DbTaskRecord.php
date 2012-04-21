@@ -15,4 +15,14 @@ class DbTaskRecord {
       .' VALUES(?, ?, NOW())';
     Db::execute($sql, $taskId, var_export($result, true));
   }
+
+  public static function createTable() {
+    $sql = "CREATE TABLE `task_record` (
+      `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+      `task_id` bigint(20) unsigned NOT NULL,
+      `time` datetime DEFAULT NULL,
+      `result` blob,
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+  }
 }
