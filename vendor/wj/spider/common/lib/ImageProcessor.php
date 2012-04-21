@@ -6,7 +6,7 @@ class ImageProcessor {
       $arguments['table_prefix'], $productId
     );
     $headers = array();
-    if ($meta['image_last_modified'] !== null) {
+    if ($meta['last_modified'] !== null) {
       $headers = array('If-Modified-Since: '.$meta['image_last_modified']);
     }
     $result = WebClient::get(
@@ -37,8 +37,8 @@ class ImageProcessor {
   }
 
   private function  save($tablePrefix, $productId, $content, $md5) {
-      if (isset($GLOBALS['no_image_md5'])
-      && isset($GLOBALS['no_image_md5'][$md5])) {
+      if (isset($GLOBALS['NO_IMAGE_MD5'])
+        && isset($GLOBALS['NO_IMAGE_MD5'][$md5])) {
       DbImage::deleteImage($tablePrefix, $productId);
       return;
     }
