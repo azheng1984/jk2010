@@ -7,22 +7,14 @@ abstract class InitCommand {
       return;
     }
     foreach ($this->getCategoryListLinks() as $type => $item) {
-      foreach ($item as $domain => $pathes) {
-        foreach ($pathes as $name => $values) {
-//          if ($values['table_prefix'] !== 'food') {
-//            Db::execute('drop table '.$values['table_prefix'].'_product');
-//            Db::execute('drop table '.$values['table_prefix'].'_product_property');
-//            Db::execute('drop table '.$values['table_prefix'].'_property_key');
-//            Db::execute('drop table '.$values['table_prefix'].'_property_value');
-//            Db::execute('drop table '.$values['table_prefix'].'_product_update');
-//          }
-//          continue;
-          $this->createTables($values['table_prefix']);
+      foreach ($item as $domain => $pathList) {
+        foreach ($pathList as $name => $valueList) {
+          $this->createTables($valueList['table_prefix']);
           //$this->resetTables($values['table_prefix']);
           DbTask::insert($type, array(
             'name' => $name,
-            'path' => $values['path'],
-            'table_prefix' => $values['table_prefix'],
+            'path' => $valueList['path'],
+            'table_prefix' => $valueList['table_prefix'],
             'domain' => $domain,
             'parent_category_id' => 0
           ));
@@ -41,9 +33,17 @@ abstract class InitCommand {
     DbProductProperty::createTable($tablePrefix);
   }
 
-  private function resetTables($tablePrefix) {
+    private function resetTables($tablePrefix) {
     DbProduct::expireAll($tablePrefix);
     DbProductProperty::expireAll($tablePrefix);
     DbProperty::expireAll($tablePrefix);
+  }
+
+  private function dropTable($tablePrefix) {
+   Db::execute('drop table '.$tablePrefix.'_product');
+   Db::execute('drop table '.$tablePrefix.'_product_property');
+   Db::execute('drop table '.$tablePrefix.'_property_key');
+   Db::execute('drop table '.$tablePrefix.'_property_value');
+   Db::execute('drop table '.$tablePrefix.'_product_update');
   }
 }
