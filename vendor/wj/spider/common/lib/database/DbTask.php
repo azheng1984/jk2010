@@ -46,7 +46,7 @@ class DbTask {
     return Db::getRow($sql) === false;
   }
 
-  public static function createTable() {
+  public static function tryCreateTable() {
     if (Db::getColumn("SHOW TABLES LIKE 'task'") === false) {
       $sql = "CREATE TABLE `task` (
         `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

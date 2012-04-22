@@ -10,8 +10,8 @@ class Spider {
         }
         DbTask::remove($task['id']);
         echo '.';
-      } catch (Exception $ex) {
-        $this->fail($task, $ex);
+      } catch (Exception $exception) {
+        $this->fail($task, $exception);
         echo 'x';
       }
     }
@@ -23,8 +23,8 @@ class Spider {
     return $processor->execute(eval('return '.$task['arguments'].';'));
   }
 
-  private function fail($task, $result) {
+  private function fail($task, $exception) {
     DbTaskRetry::insert($task);
-    DbTaskRecord::insert($task['id'], $result);
+    DbTaskRecord::insert($task['id'], $exception);
   }
 }

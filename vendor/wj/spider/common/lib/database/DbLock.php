@@ -18,7 +18,7 @@ class DbLock {
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `process_id` int(11) unsigned DEFAULT NULL,
         PRIMARY KEY (`id`)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8';
+      ) ENGINE=InnoDB DEFAULT CHARSET=latin1';
       Db::execute($sql);
     }
   }

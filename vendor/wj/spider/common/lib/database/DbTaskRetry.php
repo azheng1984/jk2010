@@ -25,7 +25,7 @@ class DbTaskRetry {
     return Db::getRow($sql) === false;
   }
 
-  public static function createTable() {
+  public static function tryCreateTable() {
     if (Db::getColumn("SHOW TABLES LIKE 'task_retry'") === false) {
       $sql = 'CREATE TABLE `task_retry` (
         `task_id` bigint(20) unsigned NOT NULL,
