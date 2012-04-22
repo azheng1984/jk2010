@@ -11,7 +11,7 @@ class DbProduct {
   public static function getImageMeta($tablePrefix, $id) {
     return Db::getRow(
       'SELECT id, image_md5, image_last_modified FROM '.$tablePrefix.'_product'
-      .' WHERE id = ?', $id
+        .' WHERE id = ?', $id
     );
   }
 
@@ -30,7 +30,7 @@ class DbProduct {
     $uri,
     $categoryId,
     $title,
-    $description,
+    $propertyList,
     $contentMd5,
     $saleRank,
     $lowestPriceX100 = null,
@@ -38,7 +38,7 @@ class DbProduct {
     $lowestListPriceX100 = null
   ) {
     $sql = 'INSERT INTO '.$tablePrefix.'_product('
-      .'merchant_product_id, uri, category_id, title, description, content_md5,'
+      .'merchant_product_id, uri, category_id, title, property_list, content_md5,'
       .' sale_rank, lowest_price_x_100, highest_price_x_100,'
       .'lowest_list_price_x_100, index_time)'
       .' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())';
@@ -48,7 +48,7 @@ class DbProduct {
       $uri,
       $categoryId,
       $title,
-      $description,
+      $propertyList,
       $contentMd5,
       $saleRank,
       $lowestPriceX100,
@@ -94,15 +94,15 @@ class DbProduct {
     $categoryId,
     $uri,
     $title,
-    $description,
+    $propertyList,
     $contentMd5,
     $saleRank
   ) {
     Db::execute(
       'UPDATE '.$tablePrefix.'_product SET'
-      .' category_id = ?, title = ?, description = ?, content_md5 = ?, uri = ?,'
-      .'sale_rank = ?, is_updated = 1 WHERE id = ?',
-      $categoryId, $title, $description, $contentMd5, $uri, $saleRank, $id
+        .' category_id = ?, title = ?, property_list = ?, content_md5 = ?,'
+        .' uri = ?, sale_rank = ?, is_updated = 1 WHERE id = ?',
+      $categoryId, $title, $propertyList, $contentMd5, $uri, $saleRank, $id
     );
   }
 
@@ -111,18 +111,16 @@ class DbProduct {
   ) {
     Db::execute(
       'UPDATE '.$tablePrefix.'_product SET'
-      .' image_md5 = ?,  image_last_modified = ? WHERE id = ?',
+        .' image_md5 = ?,  image_last_modified = ? WHERE id = ?',
       $imageMd5, $imageLastModified, $id
     );
   }
 
   public static function expireAll($tablePrefix) {
-    Db::execute(
-      'UPDATE '.$tablePrefix.'_product SET is_updated = 0'
-    );
+    Db::execute('UPDATE '.$tablePrefix.'_product SET is_updated = 0');
   }
 
-  public static function createTable($tablePrefix) {
+  public static function tryCreateTable($tablePrefix) {
     if (
       Db::getColumn('SHOW TABLES LIKE ?', $tablePrefix.'_product') === false
     ) {
