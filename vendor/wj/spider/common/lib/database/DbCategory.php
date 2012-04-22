@@ -16,13 +16,13 @@ class DbCategory {
 
   public static function tryCreateTable() {
     if (Db::getColumn("SHOW TABLES LIKE 'category'") === false) {
-      $sql = "CREATE TABLE `category` (
+      $sql = 'CREATE TABLE `category` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `parent_id` int(11) unsigned DEFAULT NULL,
         `name` varchar(255) NOT NULL,
         PRIMARY KEY (`id`),
         UNIQUE KEY `parent_id&name` (`parent_id`,`name`)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8';
       Db::execute($sql);
     }
   }
