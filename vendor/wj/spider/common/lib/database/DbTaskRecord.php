@@ -16,7 +16,7 @@ class DbTaskRecord {
     Db::execute($sql, $taskId, var_export($result, true));
   }
 
-  public static function createTable() {
+  public static function tryCreateTable() {
     if (Db::getColumn("SHOW TABLES LIKE 'task_record'") === false) {
       $sql = 'CREATE TABLE `task_record` (
         `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -24,7 +24,7 @@ class DbTaskRecord {
         `time` datetime DEFAULT NULL,
         `result` blob,
         PRIMARY KEY (`id`)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8';
+      ) ENGINE=InnoDB DEFAULT CHARSET=latin1';
       Db::execute($sql);
     }
   }
