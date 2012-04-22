@@ -26,11 +26,14 @@ class DbTaskRetry {
   }
 
   public static function createTable() {
-    $sql = "CREATE TABLE `task_retry` (
-      `task_id` bigint(20) unsigned NOT NULL,
-      `type` varchar(45) DEFAULT NULL,
-      `arguments` text,
-      PRIMARY KEY (`task_id`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+    if (Db::getColumn("SHOW TABLES LIKE 'task_retry'") === false) {
+      $sql = "CREATE TABLE `task_retry` (
+        `task_id` bigint(20) unsigned NOT NULL,
+        `type` varchar(45) DEFAULT NULL,
+        `arguments` text,
+        PRIMARY KEY (`task_id`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+      Db::execute($sql);
+    }
   }
 }

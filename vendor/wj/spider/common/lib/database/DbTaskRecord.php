@@ -17,12 +17,15 @@ class DbTaskRecord {
   }
 
   public static function createTable() {
-    $sql = "CREATE TABLE `task_record` (
-      `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-      `task_id` bigint(20) unsigned NOT NULL,
-      `time` datetime DEFAULT NULL,
-      `result` blob,
-      PRIMARY KEY (`id`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+    if (Db::getColumn("SHOW TABLES LIKE 'task_record'") === false) {
+      $sql = "CREATE TABLE `task_record` (
+        `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        `task_id` bigint(20) unsigned NOT NULL,
+        `time` datetime DEFAULT NULL,
+        `result` blob,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+      Db::execute($sql);
+    }
   }
 }

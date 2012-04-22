@@ -47,13 +47,16 @@ class DbTask {
   }
 
   public static function createTable() {
-    $sql = "CREATE TABLE `task` (
-      `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-      `type` varchar(45) DEFAULT NULL,
-      `arguments` text,
-      `retry_count` tinyint(4) DEFAULT '0',
-      `is_running` tinyint(1) DEFAULT '0',
-      PRIMARY KEY (`id`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+    if (Db::getColumn("SHOW TABLES LIKE 'task'") === false) {
+      $sql = "CREATE TABLE `task` (
+        `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        `type` varchar(45) DEFAULT NULL,
+        `arguments` text,
+        `retry_count` tinyint(4) DEFAULT '0',
+        `is_running` tinyint(1) DEFAULT '0',
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+      Db::execute($sql);
+    }
   }
 }
