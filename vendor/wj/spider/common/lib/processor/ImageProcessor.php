@@ -26,7 +26,7 @@ class ImageProcessor {
     $tablePrefix = $arguments['table_prefix'];
     $this->save($tablePrefix, $productId, $result['content'], $md5);
     DbProduct::updateImageMeta($tablePrefix, $productId, $md5, $lastModified);
-    DbProductLog::insert($tablePrefix, $productId, 'IMAGE');
+    DbLog::insert($tablePrefix, $productId, 'IMAGE');
   }
 
   private function getLastModified($header) {

@@ -3,8 +3,8 @@ abstract class InitCommand {
   public function execute() {
     self::tryCreateGlobalTables();
     Lock::execute();
-    if (!DbTask::isEmpty() || !DbTaskRetry::isEmpty()) {
-      echo 'fail:task not empty';
+    if (DbTask::isEmpty() === false || DbTaskRetry::isEmpty() === false) {
+      echo 'fail: task/task_retry not empty';
       return;
     }
     foreach ($this->getCategoryListLinks() as $type => $item) {
@@ -41,9 +41,7 @@ abstract class InitCommand {
 
   private function dropTablesByCategory($tablePrefix) {
     Db::execute('drop table '.$tablePrefix.'_product');
-    Db::execute('drop table '.$tablePrefix.'_product_property');
-    Db::execute('drop table '.$tablePrefix.'_property_key');
-    Db::execute('drop table '.$tablePrefix.'_property_value');
-    Db::execute('drop table '.$tablePrefix.'_product_update');
+    Db::execute('drop table '.$tablePrefix.'_log');
+    /* delete image db manually */
   }
 }

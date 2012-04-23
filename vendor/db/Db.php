@@ -1,9 +1,5 @@
 <?php
 class Db {
-  public static function execute($sql/*, $parameter, ...*/) {
-    return self::executeByArray(func_get_args());
-  }
-
   public static function getColumn($sql/*, $parameter, ...*/) {
     return self::executeByArray(func_get_args())->fetchColumn();
   }
@@ -16,14 +12,40 @@ class Db {
     return self::executeByArray(func_get_args())->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  private static function executeByArray($parameters) {
+  public static function execute($sql/*, $parameter, ...*/) {
+    return self::executeByArray(func_get_args());
+  }
+
+  public static function update($table, $row, $where = ''
+    /*, $parameter, ...*/) {
+    $parameterList = array_values($row);
+    if ($where !== '') {
+      $where = ' WHERE '.$where;
+      $parameterList += array_slice(func_get_args(), 3);
+    }
+    self::execute('UPDATE '.$table.' SET '.implode(array_keys($row), ' = ?, ')
+      .' = ?'.$where, $parameterList);
+  }
+
+  public static function insert($table, $row) {
+    self::execute(
+      'INSERT INTO '.$table.'('.implode(array_keys($row), ', ')
+        .') VALUES('.str_repeat('?, ', count($row) - 1).'?)',
+      array_values($row)
+    );
+  }
+
+  private static function executeByArray($parameterList) {
     $connection = DbConnection::get();
-    $sql = array_shift($parameters);
+    $sql = array_shift($parameterList);
+    if (isset($parameterList[0]) && is_array($parameterList[0])) {
+      $parameterList = $parameterList[0];
+    }
     $statement = $connection->prepare($sql);
     if ($statement === false) {
       throw new Exception;
     }
-    $statement->execute($parameters);
+    $statement->execute($parameterList);
     return $statement;
   }
 }

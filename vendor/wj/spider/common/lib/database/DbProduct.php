@@ -20,41 +20,13 @@ class DbProduct {
   ) {
     return Db::getRow(
       'SELECT id, content_md5, sale_rank FROM '.$tablePrefix.'_product'
-      .' WHERE merchant_product_id = ?', $merchantProductId
+        .' WHERE merchant_product_id = ?', $merchantProductId
     );
   }
 
-  public static function insert(
-    $tablePrefix,
-    $merchantProductId,
-    $uri,
-    $categoryId,
-    $title,
-    $propertyList,
-    $contentMd5,
-    $saleRank,
-    $lowestPriceX100 = null,
-    $highestPriceX100 = null,
-    $lowestListPriceX100 = null
-  ) {
-    $sql = 'INSERT INTO '.$tablePrefix.'_product('
-      .'merchant_product_id, uri, category_id, title, property_list, content_md5,'
-      .' sale_rank, lowest_price_x_100, highest_price_x_100,'
-      .'lowest_list_price_x_100, index_time)'
-      .' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())';
-    Db::execute(
-      $sql,
-      $merchantProductId,
-      $uri,
-      $categoryId,
-      $title,
-      $propertyList,
-      $contentMd5,
-      $saleRank,
-      $lowestPriceX100,
-      $highestPriceX100,
-      $lowestListPriceX100
-    );
+  public static function insert($tablePrefix, $row) {
+    $row['index_time'] = 'NOW()';
+    Db::insert($tablePrefix.'_product', $row);
     return DbConnection::get()->lastInsertId();
   }
 
@@ -67,15 +39,20 @@ class DbProduct {
   ) {
     Db::execute(
       'UPDATE '.$tablePrefix.'_product SET '
-      .'lowest_price_x_100 = ?,'
-      .'highest_price_x_100 = ?,'
-      .'lowest_list_price_x_100 = ?'
-      .' WHERE id = ?',
+        .'lowest_price_x_100 = ?,'
+        .'highest_price_x_100 = ?,'
+        .'lowest_list_price_x_100 = ?'
+        .' WHERE id = ?',
       $lowestPriceX100, $highestPriceX100, $lowestListPriceX100, $id
     );
   }
 
+  public static function update($tablePrefix, $row, $id) {
+    Db::update($tablePrefix.'_product', $row, 'id = ?', $id);
+  }
+
   public static function updateSaleRank($tablePrefix, $id, $saleRank) {
+    Db::update($tablePrefix.'_product', array('sale_rank' => $saleRank), 'id = ?', $id);
     Db::execute(
       'UPDATE '.$tablePrefix.'_product SET sale_rank = ? WHERE id = ?',
       $saleRank, $id

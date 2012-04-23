@@ -1,12 +1,13 @@
 <?php
 class DbPropertyKey {
   public static function get($id) {
-    $sql = 'SELECT * FROM property_key WHERE id = ?';
-    return Db::getRow($sql, $id);
+    return Db::getRow('SELECT * FROM property_key WHERE id = ?', $id);
   }
 
   public static function getByName($categoryId, $name) {
-    $sql = 'SELECT * FROM property_key WHERE category_id = ? AND `name` = ?';
-    return Db::getRow($sql, $categoryId, $name);
+    return Db::getRow(
+      'SELECT * FROM property_key WHERE category_id = ? AND name = ?',
+      $categoryId, $name
+    );
   }
 }
