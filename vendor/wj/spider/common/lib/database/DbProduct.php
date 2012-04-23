@@ -94,7 +94,7 @@ class DbProduct {
   }
 
   public static function expireAll($tablePrefix) {
-    Db::execute('UPDATE '.$tablePrefix.'_product SET is_updated = 0');
+    Db::update($tablePrefix.'_product', array('is_update' => 0));
   }
 
   public static function tryCreateTable($tablePrefix) {
