@@ -59,7 +59,7 @@ class SearchPropertyListPathParser {
     $value = false;
     $valueName = urldecode($path);
     if (isset($this->key['id'])) {
-      $value = DbPropertyValue::getByName($this->key['id'], $valueName);
+      $value = DbPropertyValue::getByKeyIdAndName($this->key['id'], $valueName);
     }
     if ($value === false) {
       $value = array('name' => $valueName);

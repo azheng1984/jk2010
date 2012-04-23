@@ -12,8 +12,20 @@ class Db {
     return self::executeByArray(func_get_args())->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public static function getLastInsertId() {
+    return DbConnection::get()->lastInsertId();
+  }
+
   public static function execute($sql/*, $parameter, ...*/) {
     return self::executeByArray(func_get_args());
+  }
+
+  public static function insert($table, $row) {
+    self::execute(
+      'INSERT INTO '.$table.'('.implode(array_keys($row), ', ')
+        .') VALUES('.str_repeat('?, ', count($row) - 1).'?)',
+      array_values($row)
+    );
   }
 
   public static function update($table, $row, $where = ''
@@ -25,14 +37,6 @@ class Db {
     }
     self::execute('UPDATE '.$table.' SET '.implode(array_keys($row), ' = ?, ')
       .' = ?'.$where, $parameterList);
-  }
-
-  public static function insert($table, $row) {
-    self::execute(
-      'INSERT INTO '.$table.'('.implode(array_keys($row), ', ')
-        .') VALUES('.str_repeat('?, ', count($row) - 1).'?)',
-      array_values($row)
-    );
   }
 
   private static function executeByArray($parameterList) {
