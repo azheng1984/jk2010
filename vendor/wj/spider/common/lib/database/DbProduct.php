@@ -27,7 +27,7 @@ class DbProduct {
   public static function insert($tablePrefix, $row) {
     $row['index_time'] = 'NOW()';
     Db::insert($tablePrefix.'_product', $row);
-    return DbConnection::get()->lastInsertId();
+    return Db::getLastInsertId();
   }
 
   public static function updatePrice(

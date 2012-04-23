@@ -17,7 +17,7 @@ class DbConnection {
   }
 
   public static function get() {
-    if (!isset(self::$pool[self::$name])) {
+    if (isset(self::$pool[self::$name]) === false) {
       $connection = self::getFactory()->get(self::$name);
       $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       self::$pool[self::$name] = $connection;
