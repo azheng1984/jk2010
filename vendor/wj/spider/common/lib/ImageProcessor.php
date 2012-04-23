@@ -2,9 +2,7 @@
 class ImageProcessor {
   public function execute($arguments) {
     $productId = $arguments['id'];
-    $meta = DbProduct::getImageMeta(
-      $arguments['table_prefix'], $productId
-    );
+    $meta = DbProduct::getImageMeta($arguments['table_prefix'], $productId);
     $headers = array();
     if ($meta['last_modified'] !== null) {
       $headers = array('If-Modified-Since: '.$meta['image_last_modified']);
@@ -26,7 +24,7 @@ class ImageProcessor {
     $tablePrefix = $arguments['table_prefix'];
     $this->save($tablePrefix, $productId, $result['content'], $md5);
     DbProduct::updateImageMeta($tablePrefix, $productId, $md5, $lastModified);
-    DbProductLog::insert($tablePrefix, $productId, 'IMAGE');
+    DbLog::insert($tablePrefix, $productId, 'IMAGE');
   }
 
   private function getLastModified($header) {
@@ -36,14 +34,12 @@ class ImageProcessor {
     }
   }
 
-  private function  save($tablePrefix, $productId, $content, $md5) {
-      if (isset($GLOBALS['NO_IMAGE_MD5'])
-        && isset($GLOBALS['NO_IMAGE_MD5'][$md5])) {
+  private function save($tablePrefix, $productId, $content, $md5) {
+    if (isset($GLOBALS['NO_IMAGE_MD5']) 
+      && isset($GLOBALS['NO_IMAGE_MD5'][$md5])) {
       DbImage::deleteImage($tablePrefix, $productId);
       return;
     }
-    DbImage::insertImage(
-      $tablePrefix, $productId, $content
-    );
+    DbImage::insertImage($tablePrefix, $productId, $content);
   }
 }

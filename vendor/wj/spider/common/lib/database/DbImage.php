@@ -24,7 +24,7 @@ class DbImage {
   }
 
   public static function tryCreateTable($tablePrefix) {
-    if (!file_exists(IMAGE_PATH.$tablePrefix.'_image.sqlite')) { 
+    if (file_exists(IMAGE_PATH.$tablePrefix.'_image.sqlite') === false) {
       DbConnection::connect(
         $tablePrefix.'_image',
         new PDO('sqlite:'.IMAGE_PATH.$tablePrefix.'_image.sqlite')
@@ -37,7 +37,7 @@ class DbImage {
   }
 
   private static function connect($tablePrefix) {
-    if (!isset(self::$connectionList[$tablePrefix])) {
+    if (isset(self::$connectionList[$tablePrefix]) === false) {
       DbConnection::connect(
         $tablePrefix.'_image',
         new PDO('sqlite:'.IMAGE_PATH.$tablePrefix.'_image.sqlite')

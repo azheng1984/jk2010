@@ -38,9 +38,9 @@ class WebClient {
       self::$handlers[$domain] = $handler;
     }
     $handler = self::$handlers[$domain];
-    $headers []= 'Accept: */*';
-    $headers []= 'Accept-Language: zh-CN';
-    $headers []= 'User-Agent: Mozilla/5.0 '
+    $headers[] = 'Accept: */*';
+    $headers[] = 'Accept-Language: zh-CN';
+    $headers[] = 'User-Agent: Mozilla/5.0 '
       .'(compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)';
     curl_setopt($handler, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($handler, CURLOPT_URL, 'http://'.$domain.$path);

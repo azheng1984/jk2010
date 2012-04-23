@@ -130,16 +130,15 @@ class ProductProcessor {
   }
 
   private function insert() {
-    $this->productId = DbProduct::insert(
-      $this->tablePrefix,
-      $this->merchantProductId,
-      $this->uri,
-      $this->categoryId,
-      $this->title,
-      $this->description,
-      $this->contentMd5,
-      $this->saleRank
-    );
+    $this->productId = DbProduct::insert($this->tablePrefix, array(
+      'merchant_product_id' => $this->merchantProductId,
+      'uri' => $this->uri,
+      'category_id' => $this->categoryId,
+      'title' => $this->title,
+      'property_list' => $this->description,
+      'content_md5' => $this->contentMd5,
+      'sale_rank' => $this->saleRank
+    ));
     $this->addContentUpdateLog();
   }
 
@@ -157,11 +156,11 @@ class ProductProcessor {
 
   private function updateSaleRank($id) {
     DbProduct::updateSaleRank($this->tablePrefix, $id, $this->saleRank);
-    DbProductLog::insert($this->tablePrefix, $id, 'SALE_RANK');
+    DbLog::insert($this->tablePrefix, $id, 'SALE_RANK');
   }
 
   private function addContentUpdateLog() {
-    DbProductLog::insert($this->tablePrefix, $this->productId, 'CONTENT');
+    DbLog::insert($this->tablePrefix, $this->productId, 'CONTENT');
     $this->isContentUpdated = true;
   }
 
