@@ -77,7 +77,7 @@ class IndexScreen extends Screen {
   private function buildLinkList() {
     $result = array();
     if ($this->category === null) {
-      $offset = ($GLOBALS['page'] - 1) * 100;
+      $offset = ($GLOBALS['PAGE'] - 1) * 100;
       $categoryList = Db::getAll(
         'SELECT * FROM category ORDER BY product_amount LIMIT '.$offset.', 100'
       );
@@ -89,8 +89,10 @@ class IndexScreen extends Screen {
       $this->linkList = $result;
     }
     $offset = ($GLOBALS['PAGE'] - 1) * 100;
-    $queryList = Db::getAll('SELECT * FROM query WHERE category_id = ? ORDER BY'
-      .' popularity_rank LIMIT '.$offset.', 100', $this->category['id']);
+    $queryList = Db::getAll(
+      'SELECT * FROM query WHERE category_id = ? ORDER BY popularity_rank'
+        .' LIMIT '.$offset.', 100', $this->category['id']
+    );
     foreach ($queryList as $query) {
       $result[] = array(
         'text' => $query['name'], 'href' => '/'.$query['name'].'/'
