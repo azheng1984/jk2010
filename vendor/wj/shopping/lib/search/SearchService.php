@@ -100,7 +100,6 @@ class SearchService {
   }
 
   private static function setPage($handler, $itemsPerPage) {
-    $offset = ($GLOBALS['PAGE'] - 1) * $itemsPerPage;
-    $handler->SetLimits($offset, $itemsPerPage);
+    $handler->SetLimits(($GLOBALS['PAGE'] - 1) * $itemsPerPage, $itemsPerPage);
   }
 }

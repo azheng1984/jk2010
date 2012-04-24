@@ -8,7 +8,7 @@ class DbCategory {
     return Db::getRow('SELECT * FROM category WHERE name = ?', $name);
   }
 
-  public static function getList($page, $itemsPerPage = 100) {
+  public static function getList($page, $orderBy = 'product_amount', $itemsPerPage = 100) {
     $offset = ($page - 1) * $itemsPerPage;
     return Db::getAll('SELECT * FROM category ORDER BY product_amount LIMIT '
       .$offset.', '.$itemsPerPage);

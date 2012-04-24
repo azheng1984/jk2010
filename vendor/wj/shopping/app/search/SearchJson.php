@@ -18,8 +18,9 @@ class SearchJson extends Json {
     if (isset($GLOBALS['CATEGORY']['id']) === false) {
       return;
     }
-    $GLOBALS['KEY'] =
-      DbPropertyKey::getByName($GLOBALS['CATEGORY']['id'], $_GET['key']);
+    $GLOBALS['KEY'] = DbPropertyKey::getByCatgoryIdAndName(
+      $GLOBALS['CATEGORY']['id'], $_GET['key']
+    );
     if ($GLOBALS['KEY'] === false) {
       return;
     }

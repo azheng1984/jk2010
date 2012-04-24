@@ -33,7 +33,8 @@ class SearchPropertyListPathParser {
     $keyName = urldecode($path);
     $this->key = false;
     if (isset($GLOBALS['CATEGORY']['id'])) {
-      $this->key = DbPropertyKey::getByName(
+      $this->key = Db::getRow(
+        'SELECT * FROM property_key WHERE category_id = ? AND name = ?',
         $GLOBALS['CATEGORY']['id'], $keyName
       );
     }
@@ -59,7 +60,10 @@ class SearchPropertyListPathParser {
     $value = false;
     $valueName = urldecode($path);
     if (isset($this->key['id'])) {
-      $value = DbPropertyValue::getByKeyIdAndName($this->key['id'], $valueName);
+      $value = Db::getRow(
+        'SELECT * FROM property_value WHERE key_id = ? AND name = ?',
+        $this->key['id'], $valueName
+      );
     }
     if ($value === false) {
       $value = array('name' => $valueName);

@@ -4,22 +4,19 @@ class DbImage {
 
   public static function insertImage($tablePrefix, $productId, $image) {
     self::connect($tablePrefix);
-    $sql = 'INSERT INTO image(product_id, image) VALUES(?, ?)';
-    Db::execute($sql, $productId, $image);
+    Db::insert('image', array('product_id' => $productId, 'image' => $image));
     DbConnection::connect('default');
   }
 
   public static function updateImage($tablePrefix, $productId, $image) {
     self::connect($tablePrefix);
-    $sql = 'UPDATE image SET image = ? WHERE product_id = ?';
-    Db::execute($sql, $image, $productId);
+    Db::update('image', array('image' => $image), 'product_id = ?', $productId);
     DbConnection::connect('default');
   }
 
   public static function deleteImage($tablePrefix, $productId) {
     self::connect($tablePrefix);
-    $sql = 'DELETE FROM image WHERE product_id = ?';
-    Db::execute($sql, $productId);
+    Db::delete('image', 'product_id = ?', $productId);
     DbConnection::connect('default');
   }
 

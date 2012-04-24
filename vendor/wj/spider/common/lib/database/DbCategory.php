@@ -1,15 +1,13 @@
 <?php
 class DbCategory {
-  public static function getOrNewId($name, $parentId = 0) {
+  public static function getOrCreateId($name, $parentId = 0) {
     $id = Db::getColumn(
-      'SELECT id FROM category WHERE parent_id = ? AND `name` = ?',
+      'SELECT id FROM category WHERE parent_id = ? AND name = ?',
       $parentId, $name
     );
     if ($id === false) {
-      Db::execute(
-        'INSERT INTO category(parent_id, `name`) VALUES(?, ?)', $parentId, $name
-      );
-      return DbConnection::get()->lastInsertId();
+      Db::insert('category', array('parent_id' => $parentId, 'name' => $name));
+      return Db::getLastInsertId();
     }
     return $id;
   }
