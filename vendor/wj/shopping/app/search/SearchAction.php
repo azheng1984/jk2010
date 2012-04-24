@@ -28,7 +28,8 @@ class SearchAction {
     if ($query === '') {
       throw NotFoundException;
     }
-    $GLOBALS['QUERY'] = DbQuery::getByName($query);
+    $GLOBALS['QUERY'] =
+      Db::getRow('SELECT * FROM query WHERE name = ?', $query);
     if ($GLOBALS['QUERY'] !== false) {
       return;
     }
@@ -40,7 +41,8 @@ class SearchAction {
     if ($name === '') {
       throw NotFoundException;
     }
-    $GLOBALS['CATEGORY'] = DbCategory::getByName($name);
+    $GLOBALS['CATEGORY'] =
+      Db::getRow('SELECT * FROM category WHERE name = ?', $name);
     if ($GLOBALS['CATEGORY'] === false) {
       $GLOBALS['CATEGORY'] = array('name' => $name);
     }
