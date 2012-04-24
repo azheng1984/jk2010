@@ -14,7 +14,7 @@ class IndexScreen extends Screen {
   protected function renderHtmlHeadContent() {
     $title = '分类';
     if ($this->category !== null) {
-      $title = $this->category['name'];
+      $title .= ':'.$this->category['name'];
     }
     if ($GLOBALS['PAGE'] !== 1) {
       $title .= '('.$GLOBALS['PAGE'].')';
