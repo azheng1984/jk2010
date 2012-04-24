@@ -27,9 +27,8 @@ class HomeAction {
     }
     $GLOBALS['SLIDESHOW'] = array();
     foreach (self::getMerchantSlideList() as $item) {
+      $item['slide_list'] = explode(' ', $item['list']);
       $GLOBALS['SLIDESHOW'][$item['id']] = $item;
-      $GLOBALS['SLIDESHOW'][$item['id']]['slide_list'] =
-        explode(' ', $item['list']);
     }
   }
 
