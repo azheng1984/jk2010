@@ -18,7 +18,8 @@ class SearchJson extends Json {
     if (isset($GLOBALS['CATEGORY']['id']) === false) {
       return;
     }
-    $GLOBALS['KEY'] = DbPropertyKey::getByCatgoryIdAndName(
+    $GLOBALS['KEY'] = Db::getRow(
+      'SELECT * FROM property_key WHERE category_id = ? AND name = ?',
       $GLOBALS['CATEGORY']['id'], $_GET['key']
     );
     if ($GLOBALS['KEY'] === false) {
@@ -38,7 +39,9 @@ class SearchJson extends Json {
     }
     $this->list[] = $result['total_found'];
     foreach ($result['matches'] as $match) {
-      $category = DbCategory::get($match['attrs']['@groupby']);
+      $category = Db::getRow(
+        'SELECT * FROM category WHERE id = ?', $match['attrs']['@groupby']
+      );
       if ($category !== false) {
         $this->list[] =
           '["'.$category['name'].'",'.$match['attrs']['@count'].']';
@@ -53,7 +56,9 @@ class SearchJson extends Json {
     }
     $this->list[] = $result['total_found'];
     foreach ($result['matches'] as $match) {
-      $key = DbPropertyKey::get($match['attrs']['@groupby']);
+      $key = Db::getRow(
+        'SELECT * FROM property_key WHERE id = ?', $match['attrs']['@groupby']
+      );
       if ($key !== false) {
         $this->list[] = '["'.$key['name'].'",'.$key['is_multiple'].']';
       }
@@ -67,7 +72,9 @@ class SearchJson extends Json {
     }
     $this->list[] = $result['total_found'];
     foreach ($result['matches'] as $match) {
-      $value = DbPropertyValue::get($match['attrs']['@groupby']);
+      $value = Db::getRow(
+        'SELECT * FROM property_value WHERE id = ?', $match['attrs']['@groupby']
+      );
       if ($value !== false) {
         $this->list[] = '["'.$value['name'].'",'.$match['attrs']['@count'].']';
       }

@@ -42,7 +42,7 @@ class SearchProductListScreen {
   }
 
   private static function renderProduct($id) {
-    $product = DbProduct::get($id);
+    $product = Db::getRow('SELECT * FROM product WHERE id = ?', $id);
     $merchant = self::getMerchant($product['merchant_id']);
     $tagList = self::initializeTagList($product);
     $href = self::getProductUri(
@@ -78,14 +78,16 @@ class SearchProductListScreen {
 
   private static function getMerchant($id) {
     if (isset(self::$merchantList[$id]) === false) {
-      self::$merchantList[$id] = DbMerchant::get($id);
+      self::$merchantList[$id] =
+        Db::getRow('SELECT * FROM merchant WHERE id = ?', $id);
     }
     return self::$merchantList[$id];
   }
 
   private static function getRecognition($id) {
     if (isset(self::$recognitionList[$id]) === false) {
-      self::$recognitionList[$id] = DbRecognition::get($id);
+      self::$recognitionList[$id] =
+        Db::getRow('SELECT * FROM recognition WHERE id = ?', $id);
     }
     return self::$recognitionList[$id];
   }

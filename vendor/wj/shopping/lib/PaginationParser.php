@@ -2,8 +2,8 @@
 class PaginationParser {
   public static function parseGet() {
     if (isset($_GET['page']) === false
-        || is_numeric($_GET['page']) === false
-        || $_GET['page'] < 1) {
+      || is_numeric($_GET['page']) === false
+      || $_GET['page'] < 1) {
       $GLOBALS['PAGE'] = 1;
       return;
     }

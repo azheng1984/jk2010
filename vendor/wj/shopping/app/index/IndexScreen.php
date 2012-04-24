@@ -5,8 +5,8 @@ class IndexScreen extends Screen {
 
   public function __construct() {
     $depth = count($GLOBALS['PATH_SECTION_LIST']);
+    PaginationParser::parsePath($GLOBALS['PATH_SECTION_LIST'][$depth - 1]);
     $this->parseCategory($depth);
-    Page::parsePath($GLOBALS['PATH_SECTION_LIST'][$depth - 1]);
     $this->buildLinkList();
     $this->verifyPagination();
   }
@@ -38,9 +38,8 @@ class IndexScreen extends Screen {
       return;
     }
     /* /+i/category/ */
-    $this->category = DbCategory::getByName(
-        urldecode($GLOBALS['PATH_SECTION_LIST']['2'])
-    );
+    $this->category = Db::getRow('SELECT * FROM category WHERE name = ?',
+      urldecode($GLOBALS['PATH_SECTION_LIST']['2']));
     if ($this->category === false || $depth > 4) {
       throw new NotFoundException;
     }
@@ -78,7 +77,10 @@ class IndexScreen extends Screen {
   private function buildLinkList() {
     $result = array();
     if ($this->category === null) {
-      $categoryList = DbCategory::getList($GLOBALS['PAGE']);
+      $offset = ($GLOBALS['page'] - 1) * 100;
+      $categoryList = Db::getAll(
+        'SELECT * FROM category ORDER BY product_amount LIMIT '.$offset.', 100'
+      );
       foreach ($categoryList as $category) {
         $result[] = array(
           'text' => $category['name'], 'href' => $category['name'].'/'
@@ -86,7 +88,9 @@ class IndexScreen extends Screen {
       }
       $this->linkList = $result;
     }
-    $queryList = DbQuery::getList($this->category['id'], $GLOBALS['PAGE']);
+    $offset = ($GLOBALS['PAGE'] - 1) * 100;
+    $queryList = Db::getAll('SELECT * FROM query WHERE category_id = ? ORDER BY'
+      .' popularity_rank LIMIT '.$offset.', 100', $this->category['id']);
     foreach ($queryList as $query) {
       $result[] = array(
         'text' => $query['name'], 'href' => '/'.$query['name'].'/'
