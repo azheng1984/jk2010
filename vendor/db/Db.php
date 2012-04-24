@@ -1,15 +1,15 @@
 <?php
 class Db {
   public static function getColumn($sql/*, $parameter, ...*/) {
-    return self::executeByArray(func_get_args())->fetchColumn();
+    return self::executeWithArray(func_get_args())->fetchColumn();
   }
 
   public static function getRow($sql/*, $parameter, ...*/) {
-    return self::executeByArray(func_get_args())->fetch(PDO::FETCH_ASSOC);
+    return self::executeWithArray(func_get_args())->fetch(PDO::FETCH_ASSOC);
   }
 
   public static function getAll($sql/*, $parameter, ...*/) {
-    return self::executeByArray(func_get_args())->fetchAll(PDO::FETCH_ASSOC);
+    return self::executeWithArray(func_get_args())->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public static function getLastInsertId() {
@@ -17,7 +17,7 @@ class Db {
   }
 
   public static function execute($sql/*, $parameter, ...*/) {
-    return self::executeByArray(func_get_args());
+    return self::executeWithArray(func_get_args());
   }
 
   public static function insert($table, $columnList) {
@@ -50,7 +50,7 @@ class Db {
     self::execute('DELETE FROM '.$table.$where, $parameterList);
   }
 
-  private static function executeByArray($parameterList) {
+  private static function executeWithArray($parameterList) {
     $connection = DbConnection::get();
     $sql = array_shift($parameterList);
     if (isset($parameterList[0]) && is_array($parameterList[0])) {
