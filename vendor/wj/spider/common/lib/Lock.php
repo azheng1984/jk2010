@@ -1,7 +1,7 @@
 <?php
 class Lock {
   public static function execute() {
-    $lockList = DbLock::getAll();
+    $lockList = Db::getAll('SELECT * FROM process_lock');
     $processId = null;
     if (function_exists('posix_getpid') === true) {
       $processId = posix_getpid();
@@ -9,7 +9,7 @@ class Lock {
     if (count($lockList) !== 0 && $processId === null) {
       self::fail();
     }
-    DbLock::insert($processId);
+    Db::insert('process_lock', array('pid' => $processId));
     if ($processId === null) {
       return;
     }
@@ -19,7 +19,7 @@ class Lock {
         self::fail();
       }
     }
-    DbLock::deleteOthers($processId);
+    Db::delete('process_lock', 'pid != ?', $processId);
   }
 
   private static function fail() {

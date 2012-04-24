@@ -1,14 +1,18 @@
 <?php
 class Spider {
   public function run() {
-    while (($task = DbTask::getLastRow()) !== false) {
-      DbTask::setRunning($task['id']);
+    for (;;) {
+      $task = Db::getRow('SELECT * FROM task ORDER BY id DESC LIMIT 1');
+      if ($task === false) {
+        break;
+      }
+      Db::update('task', array('is_running' => '1'), 'id = ?', $task['id']);
       try {
         $this->dispatch($task);
         if ($task['is_retry']) {
-          DbTaskRecord::deleteByTaskId($task['id']);
+          Db::delete('task_record', 'task_id = ?', $task['id']);
         }
-        DbTask::remove($task['id']);
+        Db::delete('task', 'id = ?', $task['id']);
         echo '.';
       } catch (Exception $exception) {
         $this->fail($task, $exception);
@@ -24,7 +28,11 @@ class Spider {
   }
 
   private function fail($task, $exception) {
-    DbTaskRetry::insert($task);
-    DbTaskRecord::insert($task['id'], $exception);
+    Db::execute(
+      'REPLACE INTO task_retry(task_id, type, arguments) VALUES(?, ?, ?)',
+      $task['id'], $task['type'], $task['arguments']
+    );
+    Db::execute('INSERT INTO task_record(task_id, result, time)'
+      .' VALUES(?, ?, NOW())', $task['id'], var_export($exception, true));
   }
 }

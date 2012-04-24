@@ -15,11 +15,6 @@ class DbTask {
     Db::execute($sql, $id);
   }
 
-  public static function getLastRow() {
-    $sql = 'SELECT * FROM task ORDER BY id DESC LIMIT 1';
-    return Db::getRow($sql);
-  }
-
   public static function setRunning($id, $isRunning = 1) {
     $sql = 'UPDATE task SET is_running = ? WHERE id = ?';
     Db::execute($sql, $isRunning, $id);
