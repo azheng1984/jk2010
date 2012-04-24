@@ -4,7 +4,7 @@ class DbPropertyKey {
     return Db::getRow('SELECT * FROM property_key WHERE id = ?', $id);
   }
 
-  public static function getByName($categoryId, $name) {
+  public static function getByCatgoryIdAndName($categoryId, $name) {
     return Db::getRow(
       'SELECT * FROM property_key WHERE category_id = ? AND name = ?',
       $categoryId, $name

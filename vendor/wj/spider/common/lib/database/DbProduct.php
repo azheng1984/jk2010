@@ -1,26 +1,9 @@
 <?php
 class DbProduct {
-  public static function getPrice($tablePrefix, $id) {
+  public static function get($tablePrefix, $id, $select = '*') {
     return Db::getRow(
-      'SELECT id, lowest_price_x_100, highest_price_x_100,'
-        .'lowest_list_price_x_100  FROM '.$tablePrefix.'_product'
+      'SELECT '.$select.' FROM '.$tablePrefix.'_product'
         .' WHERE id = ?', $id
-    );
-  }
-
-  public static function getImageMeta($tablePrefix, $id) {
-    return Db::getRow(
-      'SELECT id, image_md5, image_last_modified FROM '.$tablePrefix.'_product'
-        .' WHERE id = ?', $id
-    );
-  }
-
-  public static function getContentMd5AndSaleRankByMerchantProductId(
-    $tablePrefix, $merchantProductId
-  ) {
-    return Db::getRow(
-      'SELECT id, content_md5, sale_rank FROM '.$tablePrefix.'_product'
-        .' WHERE merchant_product_id = ?', $merchantProductId
     );
   }
 
@@ -30,71 +13,8 @@ class DbProduct {
     return Db::getLastInsertId();
   }
 
-  public static function updatePrice(
-    $tablePrefix,
-    $id,
-    $lowestPriceX100,
-    $highestPriceX100 = null,
-    $lowestListPriceX100 = null
-  ) {
-    Db::execute(
-      'UPDATE '.$tablePrefix.'_product SET '
-        .'lowest_price_x_100 = ?,'
-        .'highest_price_x_100 = ?,'
-        .'lowest_list_price_x_100 = ?'
-        .' WHERE id = ?',
-      $lowestPriceX100, $highestPriceX100, $lowestListPriceX100, $id
-    );
-  }
-
-  public static function update($tablePrefix, $row, $id) {
-    Db::update($tablePrefix.'_product', $row, 'id = ?', $id);
-  }
-
-  public static function updateSaleRank($tablePrefix, $id, $saleRank) {
-    Db::update($tablePrefix.'_product', array('sale_rank' => $saleRank), 'id = ?', $id);
-    Db::execute(
-      'UPDATE '.$tablePrefix.'_product SET sale_rank = ? WHERE id = ?',
-      $saleRank, $id
-    );
-  }
-
-  public static function updateFlag($tablePrefix, $id) {
-    Db::execute(
-      'UPDATE '.$tablePrefix.'_product SET is_updated = 1 WHERE id = ?', $id
-    );
-  }
-
-  public static function updateContent(
-    $tablePrefix,
-    $id,
-    $categoryId,
-    $uri,
-    $title,
-    $propertyList,
-    $contentMd5,
-    $saleRank
-  ) {
-    Db::execute(
-      'UPDATE '.$tablePrefix.'_product SET'
-        .' category_id = ?, title = ?, property_list = ?, content_md5 = ?,'
-        .' uri = ?, sale_rank = ?, is_updated = 1 WHERE id = ?',
-      $categoryId, $title, $propertyList, $contentMd5, $uri, $saleRank, $id
-    );
-  }
-
-  public static function updateImageMeta(
-    $tablePrefix, $id, $imageMd5, $imageLastModified
-  ) {
-    Db::execute(
-      'UPDATE '.$tablePrefix.'_product SET'
-        .' image_md5 = ?,  image_last_modified = ? WHERE id = ?',
-      $imageMd5, $imageLastModified, $id
-    );
-  }
-
-  public static function expireAll($tablePrefix) {
-    Db::update($tablePrefix.'_product', array('is_update' => 0));
+  public static function updateRow($tablePrefix, $columnList, $id) {
+    Db::update($tablePrefix.'_product', $columnList, 'id = ?', $id);
   }
 
   public static function tryCreateTable($tablePrefix) {

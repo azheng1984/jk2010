@@ -42,7 +42,7 @@ class PriceProcessor {
       $tablePrefix, $productId, $priceX100, null, $listPriceX100
     );
     if (!$isContentUpdated) {
-      DbProductLog::insert($tablePrefix, $productId, 'PRICE');
+      DbLog::insert($tablePrefix, $productId, 'PRICE');
     }
   }
 }

@@ -15,7 +15,7 @@ class SearchAction {
     if ($depth === 5) {
       $this->parsePropertyList();
     }
-    $this->parsePage($depth);
+    PaginationParser::parsePath($GLOBALS['PATH_SECTION_LIST'][$depth - 1]);
   }
 
   private function parseQuery() {
@@ -49,17 +49,5 @@ class SearchAction {
   private function parsePropertyList() {
     $parser = new SearchPropertyListPathParser;
     $parser->parse();
-  }
-
-  private function parsePage($depth) {
-    $path = $GLOBALS['PATH_SECTION_LIST'][$depth - 1];
-    if ($path === '') {
-      $GLOBALS['PAGE'] = 1;
-      return;
-    }
-    if (is_numeric($path) === false || $path < 2) {
-      throw new NotFoundException;
-    }
-    $GLOBALS['PAGE'] = intval($path);
   }
 }

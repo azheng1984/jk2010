@@ -1,13 +1,12 @@
 <?php
 class IndexScreen extends Screen {
   private $category;
-  private $page;
   private $linkList;
 
   public function __construct() {
     $depth = count($GLOBALS['PATH_SECTION_LIST']);
     $this->parseCategory($depth);
-    $this->parsePage($depth);
+    Page::parsePath($GLOBALS['PATH_SECTION_LIST'][$depth - 1]);
     $this->buildLinkList();
     $this->verifyPagination();
   }
@@ -17,8 +16,8 @@ class IndexScreen extends Screen {
     if ($this->category !== null) {
       $title = $this->category['name'];
     }
-    if ($this->page !== 1) {
-      $title .= '('.$this->page.')';
+    if ($GLOBALS['PAGE'] !== 1) {
+      $title .= '('.$GLOBALS['PAGE'].')';
     }
     echo '<title>', $title, '-货比万家</title>';
     $this->addCssLink('index');
@@ -45,18 +44,6 @@ class IndexScreen extends Screen {
     if ($this->category === false || $depth > 4) {
       throw new NotFoundException;
     }
-  }
-
-  private function parsePage($depth) {
-    $path = $GLOBALS['PATH_SECTION_LIST'][$depth - 1];
-    if ($path === '') {
-      $this->page = 1;
-      return;
-    }
-    if (is_numeric($path) === false || $path < 2) {
-      throw new NotFoundException;
-    }
-    $this->page = intval($path);
   }
 
   private function renderNavigation() {
@@ -91,7 +78,7 @@ class IndexScreen extends Screen {
   private function buildLinkList() {
     $result = array();
     if ($this->category === null) {
-      $categoryList = DbCategory::getList($this->page);
+      $categoryList = DbCategory::getList($GLOBALS['PAGE']);
       foreach ($categoryList as $category) {
         $result[] = array(
           'text' => $category['name'], 'href' => $category['name'].'/'
@@ -99,7 +86,7 @@ class IndexScreen extends Screen {
       }
       $this->linkList = $result;
     }
-    $queryList = DbQuery::getList($this->category['id'], $this->page);
+    $queryList = DbQuery::getList($this->category['id'], $GLOBALS['PAGE']);
     foreach ($queryList as $query) {
       $result[] = array(
         'text' => $query['name'], 'href' => '/'.$query['name'].'/'
@@ -123,7 +110,7 @@ class IndexScreen extends Screen {
 
   private function renderPagination() {
     PaginationScreen::render(
-      $this->page, $this->getAmount(), '', '', 100, 100, ''
+      $GLOBALS['PAGE'], $this->getAmount(), '', '', 100, 100, ''
     );
   }
 

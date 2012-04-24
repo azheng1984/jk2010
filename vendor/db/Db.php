@@ -20,23 +20,34 @@ class Db {
     return self::executeByArray(func_get_args());
   }
 
-  public static function insert($table, $row) {
+  public static function insert($table, $columnList) {
     self::execute(
-      'INSERT INTO '.$table.'('.implode(array_keys($row), ', ')
-        .') VALUES('.str_repeat('?, ', count($row) - 1).'?)',
-      array_values($row)
+      'INSERT INTO '.$table.'('.implode(array_keys($columnList), ', ')
+        .') VALUES('.str_repeat('?, ', count($columnList) - 1).'?)',
+      array_values($columnList)
     );
   }
 
-  public static function update($table, $row, $where = ''
+  public static function update($table, $columnList, $where = ''
     /*, $parameter, ...*/) {
-    $parameterList = array_values($row);
+    $parameterList = array_values($columnList);
     if ($where !== '') {
       $where = ' WHERE '.$where;
       $parameterList += array_slice(func_get_args(), 3);
     }
-    self::execute('UPDATE '.$table.' SET '.implode(array_keys($row), ' = ?, ')
-      .' = ?'.$where, $parameterList);
+    self::execute(
+      'UPDATE '.$table.' SET '.implode(array_keys($columnList), ' = ?, ')
+        .' = ?'.$where, $parameterList
+    );
+  }
+
+  public static function delete($table, $where = ''/*, $parameter, ...*/) {
+    $parameterList = array();
+    if ($where !== '') {
+      $where = ' WHERE '.$where;
+      $parameterList = array_slice(func_get_args(), 2);
+    }
+    self::execute('DELETE FROM '.$table.$where, $parameterList);
   }
 
   private static function executeByArray($parameterList) {
