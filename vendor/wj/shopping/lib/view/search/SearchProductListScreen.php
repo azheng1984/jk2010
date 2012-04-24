@@ -116,7 +116,7 @@ class SearchProductListScreen {
       return;
     }
     if (self::$hasCategory === true && $product['brand_name'] !== null
-        && isset($GLOBALS['PROPERTY_LIST']['品牌']) === false) {
+      && isset($GLOBALS['PROPERTY_LIST']['品牌']) === false) {
       self::$tagLinkList[] = '品牌: <span class="value">'
         .$product['brand_name'].'</span>';
     }
