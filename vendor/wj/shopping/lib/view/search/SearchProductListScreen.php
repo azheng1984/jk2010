@@ -1,7 +1,7 @@
 <?php
 class SearchProductListScreen {
   private static $keywordList;
-  private static $recognitionList;
+  private static $queryTagList;
   private static $merchantList;
   private static $hasCategory;
   private static $tagLinkList;
@@ -67,11 +67,11 @@ class SearchProductListScreen {
         )
       );
     }
-    if ($product['recognition_id'] !== null) {
-      $recognition = self::getRecognition($product['recognition_id']);
-      echo '<a class="unique" href="/+-'.urlencode($recognition['name']), '/',
-        $GLOBALS['QUERY_STRING'], '" rel="nofollow">',
-        $recognition['product_amount'], ' 个同款商品</a>';
+    if ($product['query_tag_id'] !== null) {
+      $queryTag = self::getQueryTag($product['query_tag_id']);
+      echo '<a class="query_tag" href="/+-'.urlencode($queryTag['name']),
+        '/', $GLOBALS['QUERY_STRING'], '" rel="nofollow">',
+        $queryTag['product_amount'], ' 个同款商品</a>';
     }
     echo '<div class="merchant">', $merchant['name'], '</div></td>';//merchant
   }
@@ -84,12 +84,12 @@ class SearchProductListScreen {
     return self::$merchantList[$id];
   }
 
-  private static function getRecognition($id) {
-    if (isset(self::$recognitionList[$id]) === false) {
-      self::$recognitionList[$id] =
-        Db::getRow('SELECT * FROM recognition WHERE id = ?', $id);
+  private static function getQueryTag($id) {
+    if (isset(self::$queryTagList[$id]) === false) {
+      self::$queryTagList[$id] =
+        Db::getRow('SELECT * FROM query_tag WHERE id = ?', $id);
     }
-    return self::$recognitionList[$id];
+    return self::$queryTagList[$id];
   }
 
   private static function getImageUri($product) {
