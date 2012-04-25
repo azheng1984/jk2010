@@ -3,7 +3,8 @@ abstract class InitCommand {
   public function execute() {
     self::tryCreateGlobalTables();
     Lock::execute();
-    if (DbTask::isEmpty() === false || DbTaskRetry::isEmpty() === false) {
+    if (Db::getRow('SELECT id FROM task') === false
+      || Db::getRow('SELECT id FROM task_retry') === false) {
       echo 'fail: task/task_retry not empty';
       return;
     }
@@ -11,12 +12,16 @@ abstract class InitCommand {
       foreach ($item as $domain => $pathList) {
         foreach ($pathList as $name => $valueList) {
           $this->tryCreateTablesByCategory($valueList['table_prefix']);
-          DbTask::insert($type, array(
+          $argumentList = array(
             'name' => $name,
             'path' => $valueList['path'],
             'table_prefix' => $valueList['table_prefix'],
             'domain' => $domain,
             'parent_category_id' => 0
+          );
+          Db::insert('task', array(
+            'type' => $type,
+            'argument_list' => var_export($argumentList, true)
           ));
         }
       }
@@ -27,7 +32,7 @@ abstract class InitCommand {
 
   private function tryCreateGlobalTables() {
     DbCategory::tryCreateTable();
-    DbLock::tryCreateTable();
+    DbProcessLock::tryCreateTable();
     DbTask::tryCreateTable();
     DbTaskRecord::tryCreateTable();
     DbTaskRetry::tryCreateTable();

@@ -21,7 +21,7 @@ class SearchToolbarScreen {
         continue;
       }
       echo ' <a href=".', SearchQueryString::get($sort),
-      '" rel="nofollow">', $name, '</a>';
+        '" rel="nofollow">', $name, '</a>';
     }
     echo '</h2>';
   }

@@ -27,8 +27,9 @@ class SearchQueryString {
   }
 
   private static function parseSort() {
-    if (isset($_GET['sort']) && in_array(
-      $_GET['sort'], array('time', 'discount', 'price', '-price'))) {
+    if (isset($_GET['sort']) 
+      && in_array($_GET['sort'], array('time', 'discount', 'price', '-price'))
+    ) {
       $GLOBALS['SORT'] = $_GET['sort'];
       return;
     }
