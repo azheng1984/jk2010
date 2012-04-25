@@ -29,3 +29,9 @@ CREATE TABLE IF NOT EXISTS `task_retry` (
   `arguments` text,
   PRIMARY KEY (`task_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `process_lock` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `pid` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

@@ -249,7 +249,7 @@ h2 a:hover {
   padding-left:8px;
   background:url(/+/img/screen.png) -517px -174px no-repeat;
 }
-.unique {
+.query_tag {
   float:left;
   padding:1px 4px 1px 18px;
   margin:2px 0;
@@ -260,7 +260,7 @@ h2 a:hover {
   border-color:#ddd #bbb #bbb #ddd;
   border-radius:2px;
 }
-.unique:hover {
+.query_tag:hover {
   border-color:#ccc #aaa #aaa #ccc;
   box-shadow:0 0 3px #ddd;
   background-position:-135px -89px;

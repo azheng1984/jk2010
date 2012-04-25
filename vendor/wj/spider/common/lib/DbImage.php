@@ -20,7 +20,7 @@ class DbImage {
     DbConnection::connect('default');
   }
 
-  public static function tryCreateTable($tablePrefix) {
+  public static function tryCreateDb($tablePrefix) {
     if (file_exists(IMAGE_PATH.$tablePrefix.'_image.sqlite') === false) {
       DbConnection::connect(
         $tablePrefix.'_image',

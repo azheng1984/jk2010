@@ -5,12 +5,6 @@ CREATE TABLE IF NOT EXISTS `log` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE IF NOT EXISTS `process_lock` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `pid` int(11) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE IF NOT EXISTS `product` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `merchant_product_id` bigint(20) NOT NULL,

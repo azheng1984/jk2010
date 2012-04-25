@@ -31,22 +31,19 @@ abstract class InitCommand {
   protected abstract function getCategoryListLinks();
 
   private function tryCreateGlobalTables() {
-    DbCategory::tryCreateTable();
-    DbProcessLock::tryCreateTable();
-    DbTask::tryCreateTable();
-    DbTaskRecord::tryCreateTable();
-    DbTaskRetry::tryCreateTable();
+    Db::execute(file_get_contents(CONFIG_PATH.'global_table.sql'));
   }
 
   private function tryCreateTablesByCategory($tablePrefix) {
-    DbProduct::tryCreateTable($tablePrefix);
-    DbLog::tryCreateTable($tablePrefix);
-    DbImage::tryCreateTable($tablePrefix);
+    $sql = file_get_contents(CONFIG_PATH.'table_by_category.sql');
+    preg_replace('/CREATE TABLE IF NOT EXISTS `(.*?)`/',
+      'CREATE TABLE IF NOT EXISTS `'.$tablePrefix.'_$1`', $sql);
+    DbImage::tryCreateDb($tablePrefix);
   }
 
   private function dropTablesByCategory($tablePrefix) {
-    Db::execute('drop table '.$tablePrefix.'_product');
-    Db::execute('drop table '.$tablePrefix.'_log');
+    Db::execute('DROP TABLE '.$tablePrefix.'_product');
+    Db::execute('DROP TABLE '.$tablePrefix.'_log');
     /* delete image db manually */
   }
 }
