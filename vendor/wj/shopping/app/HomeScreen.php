@@ -142,11 +142,11 @@ class HomeScreen extends Screen {
     }
     foreach ($this->merchant['slide_list'] as $index => $slide) {
       if ($index === $this->slideIndex) {
-        echo '<span></span>';
+        echo '<span>1</span>';
         continue;
       }
       echo '<a href="', $hrefPrefix , 'merchant_id=', $this->merchantId,
-        '&index=', $index, '" rel="nofollow"></a>';
+        '&index=', $index, '" rel="nofollow">', $index + 1 , '</a>';
     }
     echo '</span>';
   }

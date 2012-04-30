@@ -89,9 +89,10 @@ huobiwanjia.home = function() {
     $('#merchant').attr('href', 'http://' + merchant[1]);
     var html = '';
     if (merchant[3].length > 1) {
-      html = '<span class="current"></span>';
-      for (var count = merchant[3].length - 1; count > 0; --count) {
-        html += '<span class="item"></span>';
+      html = '<span class="current">1</span>';
+      var length = merchant[3].length;
+      for (var index = 2; index <= length; ++index) {
+        html += '<span class="item">' + index + '</span>';
       }
     }
     $('#slide_list').html(html);
