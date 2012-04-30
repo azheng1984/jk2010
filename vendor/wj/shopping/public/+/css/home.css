@@ -79,14 +79,14 @@ ol .current {
   height:300px;
 }
 #slide_list {
-  margin:3px 10px 3px 0;
+  margin:2px 10px 2px 0;
   float:right;
 }
 #slide_list a, #slide_list span {
   display:inline-block;
   font-size:11px;/* ie6 inline-block 最小高度等于文字高度 */
-  padding:0 18px;
-  line-height:12px;
+  padding:1px 18px;
+  line-height:11px;
   border:0;
   margin:0 1px;
   *margin-top:5px;/* ie6/7 line-height 无法垂直居中 */
