@@ -85,8 +85,8 @@ ol .current {
 #slide_list a, #slide_list span {
   display:inline-block;
   font-size:11px;/* ie6 inline-block 最小高度等于文字高度 */
-  padding:1px 18px;
   line-height:11px;
+  padding:1px 16px;
   border:0;
   margin:0 1px;
   *margin-top:5px;/* ie6/7 line-height 无法垂直居中 */
