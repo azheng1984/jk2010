@@ -89,7 +89,7 @@ ol .current {
   padding:1px 16px;
   border:0;
   margin:0 1px;
-  *margin-top:5px;/* ie6/7 line-height 无法垂直居中 */
+  *margin-top:4px;/* ie6/7 line-height 无法垂直居中 */
 }
 #slide_list a, #slide_list .item {
   background:#e5e5e5;
