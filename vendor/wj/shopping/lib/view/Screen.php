@@ -109,7 +109,7 @@ abstract class Screen extends EtagView {
   private function renderBodyFooterDiv() {
     echo '<div>',
       '<a href="http://about.huobiwanjia.com/" rel="nofollow">关于货比万家</a> ',
-      '<a href="http://ad.huobiwanjia.com/" rel="nofollow">广告</a> ',
+      '<a href="http://about.huobiwanjia.com/ad" rel="nofollow">广告</a> ',
       '<a href="/+i/">分类索引</a> ';
     $this->renderPublisher();
     echo '</div>';

@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS `category` (
   `parent_id` int(11) unsigned DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `parent_id&name` (`parent_id`,`name`)
+  UNIQUE KEY `parent_id-name` (`parent_id`,`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `task` (
