@@ -5,7 +5,7 @@ class PaginationScreen {
     if ($total <= $itemsPerPage) {
       return;
     }
-    $totalPage = ceil($total / $itemsPerPage);
+    $totalPage = (int)ceil($total / $itemsPerPage);
     if ($totalPage > $maximumPage) {
       $totalPage = $maximumPage;
     }
