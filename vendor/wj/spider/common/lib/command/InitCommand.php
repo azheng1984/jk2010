@@ -42,7 +42,7 @@ abstract class InitCommand {
   }
 
   private function dropTablesByCategory($tablePrefix) {
-    Db::execute('DROP TABLE '.$tablePrefix.'_product');
+    Db::execute('DROP TABLE '.$tablePrefix.'_product'); 
     Db::execute('DROP TABLE '.$tablePrefix.'_log');
     /* delete image db manually */
   }
