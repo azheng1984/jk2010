@@ -26,9 +26,8 @@ class DbImage {
         $tablePrefix.'_image',
         new PDO('sqlite:'.IMAGE_PATH.$tablePrefix.'_image.sqlite')
       );
-      $sql = 'CREATE TABLE "image"'
-        .' ("product_id" INTEGER PRIMARY KEY NOT NULL, "image" BLOB NOT NULL)';
-      Db::execute($sql);
+      Db::execute('CREATE TABLE "image"'
+        .' ("product_id" INTEGER PRIMARY KEY NOT NULL, "image" BLOB NOT NULL)');
       DbConnection::connect('default');
     }
   }
