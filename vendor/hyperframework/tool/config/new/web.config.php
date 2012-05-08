@@ -46,7 +46,7 @@ return array(
     "define('CACHE_PATH', ROOT_PATH.'cache'.DIRECTORY_SEPARATOR);",
     "define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);",
     "define('HYPERFRAMEWORK_PATH', ".$GLOBALS['HYPERFRAMEWORK_PATH'].");",
-    "require ".$GLOBALS['CLASS_LOADER_PREFIX']
+    'require '.$GLOBALS['CLASS_LOADER_PREFIX']
       .".'class_loader'.DIRECTORY_SEPARATOR",
     "  .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';",
     '$CLASS_LOADER = new ClassLoader;',
@@ -69,27 +69,27 @@ return array(
     '$CLASS_LOADER = new ClassLoader;',
     '$CLASS_LOADER->run();',
   ),
-  'test/case/app/WelcomeCommandTest.php' => array(
-    "<?php",
-    "class HomeScreenTest extends PHPUnit_Framework_TestCase {",
-    "  public function test() {",
-    "  }",
-    "}"
+  'test/case/app/HomeScreenTest.php' => array(
+    '<?php',
+    'class HomeScreenTest extends PHPUnit_Framework_TestCase {',
+    '  public function test() {',
+    '  }',
+    '}'
   ),
   'test/case/app/error/internal_server_error/InternalServerErrorScreenTest.php'
     => array(
-      "<?php",
-      "class InternalServerErrorScreen extends PHPUnit_Framework_TestCase {",
-      "  public function test() {",
-      "  }",
-      "}"
+      '<?php',
+      'class InternalServerErrorScreen extends PHPUnit_Framework_TestCase {',
+      '  public function test() {',
+      '  }',
+      '}'
     ),
   'test/case/app/error/not_found/NotFoundScreenTest.php' => array(
-    "<?php",
-    "class NotFoundScreenTest extends PHPUnit_Framework_TestCase {",
-    "  public function test() {",
-    "  }",
-    "}"
+    '<?php',
+    'class NotFoundScreenTest extends PHPUnit_Framework_TestCase {',
+    '  public function test() {',
+    '  }',
+    '}'
   ),
   'test/fixture/cache/' => 0777,
   'test/fixture/config/build.config.php' => array(
