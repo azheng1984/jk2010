@@ -19,7 +19,7 @@ class SearchService {
     return $handler;
   }
 
-  public function search($handler) {
+  public static function search($handler) {
     $query = SegmentationService::execute($GLOBALS['QUERY']['name']);
     if ($query === '') {
       return false;
