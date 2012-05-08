@@ -55,11 +55,11 @@ return array(
     '$CLASS_LOADER->run();',
   ),
   'test/case/app/WelcomeCommandTest.php' => array(
-    "<?php",
-    "class CommandTest extends PHPUnit_Framework_TestCase {",
-    "  public function test() {",
-    "  }",
-    "}"
+    '<?php',
+    'class CommandTest extends PHPUnit_Framework_TestCase {',
+    '  public function test() {',
+    '  }',
+    '}'
   ),
   'test/fixture/cache/' => 0777,
   'test/fixture/config/build.config.php' => array(
