@@ -11,4 +11,4 @@ $APP = new Application;
 $EXCEPTION_HANDLER = new ExceptionHandler($APP);
 $EXCEPTION_HANDLER->run();
 $ROUTER = new Router;
-$APP->run($ROUTER->execute());
+$APP->run($ROUTER->execute()); 
