@@ -3,8 +3,8 @@ abstract class InitCommand {
   public function execute() {
     self::tryCreateGlobalTables();
     Lock::execute();
-    if (Db::getRow('SELECT id FROM task') === false
-      || Db::getRow('SELECT id FROM task_retry') === false) {
+    if (Db::getRow('SELECT id FROM task') !== false
+      || Db::getRow('SELECT id FROM task_retry') !== false) {
       echo 'fail: task/task_retry not empty';
       return;
     }
@@ -16,8 +16,7 @@ abstract class InitCommand {
             'name' => $name,
             'path' => $valueList['path'],
             'table_prefix' => $valueList['table_prefix'],
-            'domain' => $domain,
-            'parent_category_id' => 0
+            'domain' => $domain
           );
           Db::insert('task', array(
             'type' => $type,
@@ -36,14 +35,9 @@ abstract class InitCommand {
 
   private function tryCreateTablesByCategory($tablePrefix) {
     $sql = file_get_contents(CONFIG_PATH.'table_by_category.sql');
-    preg_replace('/CREATE TABLE IF NOT EXISTS `(.*?)`/',
+    $sql = preg_replace('/CREATE TABLE IF NOT EXISTS `(.*?)`/',
       'CREATE TABLE IF NOT EXISTS `'.$tablePrefix.'_$1`', $sql);
+    Db::execute($sql);
     DbImage::tryCreateDb($tablePrefix);
-  }
-
-  private function dropTablesByCategory($tablePrefix) {
-    Db::execute('DROP TABLE '.$tablePrefix.'_product'); 
-    Db::execute('DROP TABLE '.$tablePrefix.'_log');
-    /* delete image db manually */
   }
 }
