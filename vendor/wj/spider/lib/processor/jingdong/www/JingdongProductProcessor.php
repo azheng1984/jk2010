@@ -115,9 +115,10 @@ class JingdongProductProcessor {
   }
 
   private function save() {
-    $productMeta = DbProduct::getContentMd5AndSaleRankByMerchantProductId(
-      $this->tablePrefix, $this->merchantProductId
-    );
+//     $productMeta = DbProduct::getContentMd5AndSaleRankByMerchantProductId(
+//       $this->tablePrefix, $this->merchantProductId
+//     );
+    $productMeta = null;
     if ($productMeta === false) {
       $this->insert();
       return;
@@ -159,12 +160,12 @@ class JingdongProductProcessor {
   }
 
   private function updateSaleRank($id) {
-    DbProduct::updateSaleRank($this->tablePrefix, $id, $this->saleRank);
-    DbLog::insert($this->tablePrefix, $id, 'SALE_RANK');
+//     DbProduct::updateSaleRank($this->tablePrefix, $id, $this->saleRank);
+//     DbLog::insert($this->tablePrefix, $id, 'SALE_RANK');
   }
 
   private function addContentUpdateLog() {
-    DbLog::insert($this->tablePrefix, $this->productId, 'CONTENT');
+//     DbLog::insert($this->tablePrefix, $this->productId, 'CONTENT');
     $this->isContentUpdated = true;
   }
 
@@ -175,22 +176,30 @@ class JingdongProductProcessor {
     if (count($matches) !== 3) {
       throw Exception;
     }
-    DbTask::insert('Image', array(
-      'id' => $this->productId,
-      'merchant_product_id' => $this->merchantProductId,
-      'category_id' => $this->categoryId,
-      'domain' => $matches[1],
-      'path' => $matches[2],
-      'table_prefix' => $this->tablePrefix
-    ));
+//     DbTask::insert('Image', array(
+//       'id' => $this->productId,
+//       'merchant_product_id' => $this->merchantProductId,
+//       'category_id' => $this->categoryId,
+//       'domain' => $matches[1],
+//       'path' => $matches[2],
+//       'table_prefix' => $this->tablePrefix
+//     ));
   }
 
   private function insertPriceTask() {
-    DbTask::insert('Price', array(
-      'id' => $this->productId,
-      'merchant_product_id' => $this->merchantProductId,
-      'is_content_updated' => $this->isContentUpdated,
-      'table_prefix' => $this->tablePrefix
+    Db::insert('task', array('type' => 'Price',
+      'argument_list' => var_export(array(
+        'id' => $this->productId,
+        'merchant_product_id' => $this->merchantProductId,
+        'is_content_updated' => $this->isContentUpdated,
+        'table_prefix' => $this->tablePrefix
+      ), true)
     ));
+//     DbTask::insert('Price', array(
+//       'id' => $this->productId,
+//       'merchant_product_id' => $this->merchantProductId,
+//       'is_content_updated' => $this->isContentUpdated,
+//       'table_prefix' => $this->tablePrefix
+//     ));
   }
 }
