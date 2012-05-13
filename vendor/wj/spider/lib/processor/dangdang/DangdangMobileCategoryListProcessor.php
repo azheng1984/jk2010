@@ -1,5 +1,5 @@
 <?php
-class MobileCategoryListProcessor {
+class DangdangMobileCategoryListProcessor {
   public function execute($arguments) {
     $categoryId = DbCategory::getOrNewId(
       $arguments['name'], $arguments['parent_category_id']

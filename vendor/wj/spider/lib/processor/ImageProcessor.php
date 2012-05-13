@@ -46,7 +46,7 @@ class ImageProcessor {
     }
   }
 
-  private function  save($tablePrefix, $productId, $content, $md5) {
+  private function save($tablePrefix, $productId, $content, $md5) {
       if (isset($GLOBALS['no_image_md5'])
       && isset($GLOBALS['no_image_md5'][$md5])) {
       ImageDb::delete($tablePrefix, $productId);

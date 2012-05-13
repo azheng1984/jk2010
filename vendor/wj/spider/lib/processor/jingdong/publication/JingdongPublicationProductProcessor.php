@@ -1,5 +1,5 @@
 <?php
-class PublicationProductProcessor {
+class JingdongPublicationProductProcessor {
   public function execute($arguments) {
     $result = WebClient::get(
       $arguments['domain'].'.360buy.com', '/'.$arguments['id'].'.html'

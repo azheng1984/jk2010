@@ -1,5 +1,5 @@
 <?php
-class CategoryListProcessor {
+class DangdangCategoryListProcessor {
   public function execute($arguments) {
     $categoryId = DbCategory::getOrNewId(
       $arguments['name'], $arguments['parent_category_id']

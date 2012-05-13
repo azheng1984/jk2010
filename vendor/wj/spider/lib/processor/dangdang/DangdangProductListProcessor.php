@@ -1,5 +1,5 @@
 <?php
-class ProductListProcessor {
+class DangdangProductListProcessor {
   private $html;
   private $categoryId;
 

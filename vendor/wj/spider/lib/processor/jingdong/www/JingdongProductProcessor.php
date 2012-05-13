@@ -1,5 +1,5 @@
 <?php
-class ProductProcessor {
+class JingdongProductProcessor {
   private $tablePrefix;
   private $html;
   private $productId;

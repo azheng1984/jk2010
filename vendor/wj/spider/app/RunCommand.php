@@ -1,6 +1,6 @@
 <?php
 class RunCommand {
-  public function execute() {
+  public function execute($merchant) {
     Lock::execute();
     TaskCleaner::clean();
     $spider = new Spider;

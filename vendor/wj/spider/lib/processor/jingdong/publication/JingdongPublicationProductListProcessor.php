@@ -1,5 +1,5 @@
 <?php
-class PublicationProductListProcessor {
+class JingdongPublicationProductListProcessor {
   private $html;
   private $page;
   private $categoryId;

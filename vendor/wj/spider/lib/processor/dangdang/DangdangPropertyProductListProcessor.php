@@ -1,5 +1,5 @@
 <?php
-class PropertyProductListProcessor {
+class DangdangPropertyProductListProcessor {
   private $html;
   private $page;
   private $valueId;

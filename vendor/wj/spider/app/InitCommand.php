@@ -1,6 +1,6 @@
 <?php
 abstract class InitCommand {
-  public function execute() {
+  public function execute($merchant) {
     self::tryCreateGlobalTables();
     Lock::execute();
     if (Db::getRow('SELECT id FROM task') !== false

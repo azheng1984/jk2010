@@ -1,5 +1,5 @@
 <?php
-class PublicationCategoryListProcessor {
+class JingdongPublicationCategoryListProcessor {
   public function execute($arguments) {
     $result = WebClient::get($arguments['domain'], $arguments['path']);
     $html = $result['content'];

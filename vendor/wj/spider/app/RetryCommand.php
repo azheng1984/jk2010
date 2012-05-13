@@ -1,6 +1,6 @@
 <?php
 class RetryCommand {
-  public function execute($id = null) {
+  public function execute($merchant, $id = null) {
     Lock::execute();
     TaskCleaner::clean();
     if ($id === null) {

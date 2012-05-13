@@ -1,5 +1,5 @@
 <?php
-class PropertyProductListProcessor {
+class JingdongPropertyProductListProcessor {
   private $html;
   private $page;
   private $tablePrefix;
