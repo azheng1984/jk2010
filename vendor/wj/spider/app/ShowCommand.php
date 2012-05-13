@@ -9,7 +9,7 @@ class ShowCommand {
     $this->isExportToFile = isset($options['export_to_file']);
   }
 
-  public function execute($id) {
+  public function execute($merchant, $id) {
     $this->id = $id;
     $this->task = Db::getRow('SELECT * FROM task WHERE id = ?', $id);
     $this->isRetry = $this->task['is_retry'] === '1';

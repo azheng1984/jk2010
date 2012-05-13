@@ -1,5 +1,5 @@
 <?php
-class PriceProcessor {
+class JingdongPriceProcessor {
   public function execute($arguments) {
     $result = WebClient::get(
       'jd2008.360buy.com',

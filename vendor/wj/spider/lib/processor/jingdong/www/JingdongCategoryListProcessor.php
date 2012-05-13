@@ -1,5 +1,5 @@
 <?php
-class CategoryListProcessor {
+class JingdongCategoryListProcessor {
   public function execute($arguments) {
     $categoryId = DbId::get(
       'category', array('name' => $arguments['name'], 'parent_id' => 0)

@@ -1,5 +1,5 @@
 <?php
-class ProductProcessor {
+class DangdangProductProcessor {
   public function execute($arguments) {
     $result = WebClient::get(
       'product.dangdang.com', '/product.aspx?product_id='.$arguments['id']

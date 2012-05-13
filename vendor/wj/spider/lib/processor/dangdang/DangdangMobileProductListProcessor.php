@@ -1,5 +1,5 @@
 <?php
-class MobileProductListProcessor {
+class DangdangMobileProductListProcessor {
   private $html;
   private $page;
   private $categoryId;
