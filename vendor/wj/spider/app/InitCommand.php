@@ -1,4 +1,4 @@
-<?php
+x<?php
 class InitCommand {
   public function execute($merchant) {
     if (is_dir(CONFIG_PATH.'merchant/'.$merchant) === false) {
@@ -18,13 +18,12 @@ class InitCommand {
       foreach ($item as $domain => $pathList) {
         foreach ($pathList as $name => $valueList) {
           $this->tryCreateTablesByCategory($valueList['table_prefix']);
+          $tablePrefix = $valueList[0];
+          $path = $valueList[1];
           Db::insert('task', array(
             'processor' => $processor,
             'argument_list' => var_export(array(
-              'name' => $name,
-              'domain' => $domain,
-              'path' => $valueList['path'],
-              'table_prefix' => $valueList['table_prefix']
+              $tablePrefix, $name, $domain, $path
             ), true)
           ));
         }

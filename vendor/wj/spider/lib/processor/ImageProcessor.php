@@ -1,18 +1,14 @@
 <?php
 class ImageProcessor {
-  public function execute($arguments) {
-    $productId = $arguments['id'];
-    $meta = Db::getRow(
-      'SELECT image_last_modified, image_md5 FROM '
-        .$arguments['table_prefix'].'_product WHERE id = ?',
-      $productId
-    );
+  public function execute(
+    $tablePrefix, $productId, $imageLastModified, $imageMd5, $domain, $path
+  ) {
     $headers = array();
-    if ($meta[] !== null) {
-      $headers = array('If-Modified-Since: '.$meta['image_last_modified']);
+    if ($imageLastModified !== null) {
+      $headers = array('If-Modified-Since: '.$imageLastModified);
     }
     $result = WebClient::get(
-      $arguments['domain'], '/'.$arguments['path'], $headers, null, true
+      $domain, '/'.$path, $headers, null, true
     );
     if ($result['content'] === false) {
       return $result;
@@ -22,11 +18,12 @@ class ImageProcessor {
     }
     $lastModified = $this->getLastModified($result['header']);
     $md5 = md5($result['content']);
-    if ($md5 === $meta['image_md5']) {
+    if ($md5 === $imageMd5) {
       return;
     }
-    $tablePrefix = $arguments['table_prefix'];
-    $this->save($tablePrefix, $productId, $result['content'], $md5);
+    $this->save(
+      $tablePrefix, $productId, $result['content'], $md5, $imageMd5 !== null
+    );
     Db::update(
       $tablePrefix.'_product',
       array('image_md5' => $md5, 'image_last_modified' => $lastModified),
@@ -46,12 +43,18 @@ class ImageProcessor {
     }
   }
 
-  private function save($tablePrefix, $productId, $content, $md5) {
-      if (isset($GLOBALS['no_image_md5'])
-      && isset($GLOBALS['no_image_md5'][$md5])) {
+  private function save($tablePrefix, $productId, $content, $md5, $isNew) {
+    $isEmpty = isset($GLOBALS['no_image_md5'][$md5]);
+    if ($isEmpty && $isNew) {
       ImageDb::delete($tablePrefix, $productId);
+    }
+    if ($isEmpty) {
       return;
     }
-    ImageDb::insert($tablePrefix, $productId, $content);
+    if ($isNew) {
+      ImageDb::insert($tablePrefix, $productId, $content);
+      return;
+    }
+    ImageDb::update($tablePrefix, $productId, $content);
   }
 }

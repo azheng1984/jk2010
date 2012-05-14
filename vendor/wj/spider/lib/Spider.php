@@ -22,9 +22,10 @@ class Spider {
   }
 
   private function dispatch($task) {
-    $class = $task['type'].'Processor';
+    $class = $task['processor'].'Processor';
     $processor = new $class;
-    return $processor->execute(eval('return '.$task['arguments'].';'));
+    $argumentList = eval('return '.$task['argument_list'].';');
+    return call_user_func_array(array($processor, 'execute'), $argumentList);
   }
 
   private function fail($task, $exception) {
