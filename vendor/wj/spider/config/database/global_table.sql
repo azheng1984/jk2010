@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS `category` (
 
 CREATE TABLE IF NOT EXISTS `task` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `type` varchar(45) DEFAULT NULL,
-  `arguments` text,
+  `processor` varchar(45) NOT NULL,
+  `argument_list` text,
   `retry_count` tinyint(4) DEFAULT '0',
   `is_running` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS `task_record` (
 
 CREATE TABLE IF NOT EXISTS `task_retry` (
   `task_id` bigint(20) unsigned NOT NULL,
-  `type` varchar(45) DEFAULT NULL,
-  `arguments` text,
+  `processor` varchar(45) DEFAULT NULL,
+  `argument_list` text,
   PRIMARY KEY (`task_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

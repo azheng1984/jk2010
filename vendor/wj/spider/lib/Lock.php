@@ -14,8 +14,8 @@ class Lock {
       return;
     }
     foreach ($lockList as $item) {
-      $output = shell_exec("ps -p {$item['process_id']}");
-      if (strstr($output, $item['process_id']) !== false) {
+      $output = shell_exec("ps -p {$item['pid']}");
+      if (strstr($output, $item['pid']) !== false) {
         self::fail();
       }
     }
