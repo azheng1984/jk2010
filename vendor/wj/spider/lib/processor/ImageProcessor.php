@@ -25,13 +25,13 @@ class ImageProcessor {
       $tablePrefix, $productId, $result['content'], $md5, $imageMd5 !== null
     );
     Db::update(
-      $tablePrefix.'_product',
+      $tablePrefix.'-product',
       array('image_md5' => $md5, 'image_last_modified' => $lastModified),
       'id = ?',
       $productId
     );
     Db::insert(
-      $tablePrefix.'_log',
+      $tablePrefix.'-log',
       array('type' => 'IMAGE', 'product_id' => $productId)
     );
   }

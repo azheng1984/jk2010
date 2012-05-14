@@ -33,7 +33,7 @@ class Db {
     $parameterList = array_values($columnList);
     if ($where !== '') {
       $where = ' WHERE '.$where;
-      $parameterList += array_slice(func_get_args(), 3);
+      array_merge($parameterList, array_slice(func_get_args(), 3));
     }
     self::execute(
       'UPDATE '.$table.' SET '.implode(array_keys($columnList), ' = ?, ')
@@ -53,6 +53,7 @@ class Db {
   private static function call($parameterList) {
     $connection = DbConnection::get();
     $sql = array_shift($parameterList);
+    //echo $sql;
     if (isset($parameterList[0]) && is_array($parameterList[0])) {
       $parameterList = $parameterList[0];
     }
