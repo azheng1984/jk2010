@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `product_id` int(11) unsigned NOT NULL,
-  `action_type` enum('PRICE','CONTENT','IMAGE','SALE_RANK') NOT NULL,
+  `type` enum('PRICE','CONTENT','IMAGE','SALE_RANK') NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -22,5 +22,5 @@ CREATE TABLE IF NOT EXISTS `product` (
   `index_time` datetime NOT NULL,
   `is_updated` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `merchant_product_id` (`merchant_product_id`) USING BTREE
+  UNIQUE KEY `merchant_product_id` (`merchant_product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
