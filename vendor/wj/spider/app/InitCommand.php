@@ -17,9 +17,9 @@ class InitCommand {
     foreach ($this->getCategoryTaskList() as $processor => $item) {
       foreach ($item as $domain => $pathList) {
         foreach ($pathList as $name => $valueList) {
-          $this->tryCreateTablesByCategory($valueList['table_prefix']);
           $tablePrefix = $valueList[0];
           $path = $valueList[1];
+          $this->tryCreateTablesByCategory($tablePrefix);
           Db::insert('task', array(
             'processor' => $processor,
             'argument_list' => var_export(array(
@@ -43,7 +43,7 @@ class InitCommand {
   private function tryCreateTablesByCategory($tablePrefix) {
     $sql = file_get_contents(CONFIG_PATH.'database/table_by_category.sql');
     $sql = preg_replace('/CREATE TABLE IF NOT EXISTS `(.*?)`/',
-      'CREATE TABLE IF NOT EXISTS `'.$tablePrefix.'_$1`', $sql);
+      'CREATE TABLE IF NOT EXISTS `'.$tablePrefix.'-$1`', $sql);
     Db::execute($sql);
     ImageDb::tryCreateDb($tablePrefix);
   }

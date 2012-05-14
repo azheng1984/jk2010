@@ -5,6 +5,6 @@ class TaskCleaner {
     if ($runningTask !== false) {
       Db::delete('task', 'id > ?', $runningTask['id']);
     }
-    Db::update('task', array('is_running' => 0), $runningTask['id']);
+    Db::update('task', array('is_running' => 0), 'id = ?', $runningTask['id']);
   }
 }
