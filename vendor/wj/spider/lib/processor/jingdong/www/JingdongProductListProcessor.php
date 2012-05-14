@@ -1,45 +1,19 @@
 <?php
 class JingdongProductListProcessor {
   private $html;
-  private $name;
   private $page;
   private $tablePrefix;
   private $categoryId;
 
-  public function execute($arguments) {
-    $result = WebClient::get(
-      'www.360buy.com', '/products/'.$arguments['path'].'.html'
-    );
-    $this->page = $arguments['page'];
-    $this->tablePrefix = $arguments['table_prefix'];
+  public function execute($tablePrefix, $categoryId, $path, $page = 1) {
+    $result = WebClient::get('www.360buy.com', '/products/'.$path.'.html');
+    $this->page = $page;
+    $this->tablePrefix = $tablePrefix;
     $this->html = $result['content'];
-    if ($this->html === false) {
-      return $result;
-    }
-    $this->name = $arguments['name'];
-    $this->parseBreadcrumb($arguments);
     $this->parseProductList();
     $this->parseNextPage();
     if ($this->page === 1) {
       $this->parsePropertyList();
-    }
-  }
-
-  private function parseBreadcrumb($arguments) {
-    if (isset($arguments['category_id'])) {
-      $this->categoryId = $arguments['category_id'];
-      return;
-    }
-    preg_match_all(
-      '{&gt;&nbsp;<a .*?www.360buy.com.*?">(.*?)</a>}', $this->html, $matches
-    );
-    $this->categoryId = $arguments['root_category_id'];
-    $amount = count($matches[1]);
-    for ($index = 1; $index < $amount; ++$index) {
-      $categoryName = iconv('gbk', 'utf-8', $matches[1][$index]);
-      $this->categoryId = DbId::get('category', array(
-        'name' => $categoryName, 'parent_id' => $this->categoryId
-      ));
     }
   }
 
@@ -50,15 +24,15 @@ class JingdongProductListProcessor {
       $this->html,
       $matches
     );
-    $productIds = $matches[1];
+    $merchantProductIdList = $matches[1];
     $saleIndex = ($this->page - 1) * 36;
-    foreach ($productIds as $id) {
-      Db::insert('task', array('type' => 'Product',
+    foreach ($merchantProductIdList as $merchantProductId) {
+      Db::insert('task', array('type' => 'JingdongProduct',
         'argument_list' => var_export(array(
-          'table_prefix' => $this->tablePrefix,
-          'category_id' => $this->categoryId,
-          'sale_index' => ++$saleIndex,
-          'id' => $id
+          $this->tablePrefix,
+          $this->categoryId,
+          $merchantProductId,
+          ++$saleIndex
         ), true)
       ));
     }
@@ -72,13 +46,10 @@ class JingdongProductListProcessor {
     );
     if (count($matches) > 0) {
       $page = $this->page + 1;
-      Db::insert('task', array('type' => 'ProductList',
+      $path = $matches[1];
+      Db::insert('task', array('type' => 'JingdongProductList',
         'argument_list' => var_export(array(
-          'path' => $matches[1],
-          'category_id' => $this->categoryId,
-          'table_prefix' => $this->tablePrefix,
-          'name' => $this->name,
-          'page' => $page
+          $this->tablePrefix, $this->categoryId, $path, $page
         ), true)
       ));
     }
@@ -97,8 +68,8 @@ class JingdongProductListProcessor {
         preg_match_all(
           "{<dt>(.*?)：</dt>}", $item, $matches
         );
-        $key = $matches[1][0];
-        if ($key === '价格') {
+        $keyName = $matches[1][0];
+        if ($keyName === '价格') {
           continue;
         }
         preg_match_all(
@@ -107,21 +78,22 @@ class JingdongProductListProcessor {
         $valueLinkList = $matches[1];
         $valueList = $matches[2];
         $valueAmount = count($valueList);
-        //$keyId = DbProperty::getOrNewKeyId($this->tablePrefix, $key);
+        $keyId = DbId::get($this->tablePrefix.'_property_key', array(
+          'category_id' => $this->categoryId, 'name' => $keyName
+        ));
         for ($index = 0; $index < $valueAmount; ++$index) {
-          $value = $valueList[$index];
-          if ($value === '全部' || $value === '其它' || $value === '不限') {
+          $valueName = $valueList[$index];
+          if ($valueName === '全部' || $valueName === '其它'
+            || $valueName === '不限') {
             continue;
           }
-//           $valueId = DbProperty::getOrNewValueId(
-//             $this->tablePrefix, $keyId, $valueList[$index]
-//           );
-          Db::insert('task', array('task' => 'PropertyProductList',
+          $valueId = DbId::get($this->tablePrefix.'_property_value', array(
+            'key_id' => $keyId, 'name' => $valueList[$index]
+          ));
+          $path = $valueLinkList[$index];
+          Db::insert('task', array('task' => 'JingdongPropertyProductList',
             'argument_list' =>var_export(array(
-              'path' => $valueLinkList[$index],
-              'table_prefix' => $this->tablePrefix,
-             //'value_id' => $valueId,
-              'page' => 1
+              $this->tablePrefix, $valueId, $path
             ), true)
           ));
         }
