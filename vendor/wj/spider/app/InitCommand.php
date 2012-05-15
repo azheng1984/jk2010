@@ -1,4 +1,4 @@
-x<?php
+<?php
 class InitCommand {
   public function execute($merchant) {
     if (is_dir(CONFIG_PATH.'merchant/'.$merchant) === false) {

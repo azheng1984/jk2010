@@ -6,12 +6,9 @@ class Spider {
       if ($task === false) {
         break;
       }
-      Db::update('task', array('is_running' => '1'), 'id = ?', $task['id']);
+      Db::update('task', array('is_running' => 1), 'id = ?', $task['id']);
       try {
         $this->dispatch($task);
-        if ($task['is_retry']) {
-          Db::delete('task_record', 'task_id = ?', $task['id']);
-        }
         Db::delete('task', 'id = ?', $task['id']);
         echo '.';
       } catch (Exception $exception) {
@@ -30,10 +27,12 @@ class Spider {
 
   private function fail($task, $exception) {
     Db::execute(
-      'REPLACE INTO task_retry(task_id, type, arguments) VALUES(?, ?, ?)',
-      $task['id'], $task['type'], $task['arguments']
+      'REPLACE INTO task_retry(task_id, processor, argument_list)'
+        .' VALUES(?, ?, ?)',
+      $task['id'], $task['processor'], $task['argument_list']
     );
     Db::execute('INSERT INTO task_record(task_id, result, time)'
       .' VALUES(?, ?, NOW())', $task['id'], var_export($exception, true));
+    Db::delete('task', 'id = ?', $task['id']);
   }
 }

@@ -16,7 +16,6 @@ CREATE TABLE IF NOT EXISTS `task` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `processor` varchar(45) NOT NULL,
   `argument_list` text,
-  `retry_count` tinyint(4) DEFAULT '0',
   `is_running` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

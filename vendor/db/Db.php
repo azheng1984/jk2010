@@ -33,7 +33,9 @@ class Db {
     $parameterList = array_values($columnList);
     if ($where !== '') {
       $where = ' WHERE '.$where;
-      array_merge($parameterList, array_slice(func_get_args(), 3));
+      $parameterList = array_merge(
+        $parameterList, array_slice(func_get_args(), 3)
+      );
     }
     self::execute(
       'UPDATE '.$table.' SET '.implode(array_keys($columnList), ' = ?, ')
