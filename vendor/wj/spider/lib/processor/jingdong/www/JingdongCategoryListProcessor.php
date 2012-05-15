@@ -3,9 +3,6 @@ class JingdongCategoryListProcessor {
   public function execute($table_prefix, $name, $domain, $path) {
     $result = WebClient::get($domain, $path);
     $html = $result['content'];
-    if ($html === false) {
-      return $result;
-    }
     preg_match_all(
       '{<li><a href=http://www.360buy.com/products/(.*?).html>(.*?)</a></li>}',
       $html,

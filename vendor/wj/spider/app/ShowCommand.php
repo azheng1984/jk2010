@@ -10,9 +10,15 @@ class ShowCommand {
   }
 
   public function execute($merchant, $id) {
+    if (is_dir(CONFIG_PATH.'merchant/'.$merchant) === false) {
+      echo 'no merchant "'.$merchant.'"'.PHP_EOL;
+      exit;
+    }
+    DbConnection::connect($merchant);
     $this->id = $id;
     $this->task = Db::getRow('SELECT * FROM task WHERE id = ?', $id);
-    $this->isRetry = $this->task['is_retry'] === '1';
+    $this->isRetry = $this->task['retry_count'] !== '0';
+    var_dump($this->task['retry_count']);
     if ($this->task === false) {
       $this->task = Db::getRow(
         'SELECT * FROM task_retry WHERE task_id = ?', $id
@@ -40,8 +46,8 @@ class ShowCommand {
 
   private function getContent() {
     $result = 'id:'.$this->id.PHP_EOL;
-    $result .= 'type:'.$this->task['type'].PHP_EOL;
-    $result .= 'arguments:'.$this->task['arguments'].PHP_EOL;
+    $result .= 'processor:'.$this->task['processor'].PHP_EOL;
+    $result .= 'argument_list:'.$this->task['argument_list'].PHP_EOL;
     if ($this->isRetry === true) {
       $result .= $this->getRecords();
     }
@@ -52,6 +58,7 @@ class ShowCommand {
     $result = '[records]'.PHP_EOL;
     $recordList =
       Db::getAll('SELECT * FROM task_record WHERE task_id = ?', $this->id);
+    print_r($recordList);
     foreach ($recordList as $record) {
       $result .= 'time:'.$record['time'].PHP_EOL;
       $result .= 'result:'.PHP_EOL;

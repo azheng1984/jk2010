@@ -7,9 +7,7 @@ class ImageProcessor {
     if ($imageLastModified !== null) {
       $headers = array('If-Modified-Since: '.$imageLastModified);
     }
-    $result = WebClient::get(
-      $domain, '/'.$path, $headers, null, true
-    );
+    $result = WebClient::get($domain, '/'.$path, $headers, null, true);
     if ($result['content'] === false) {
       return $result;
     }
