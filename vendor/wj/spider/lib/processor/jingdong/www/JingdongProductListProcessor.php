@@ -27,7 +27,7 @@ class JingdongProductListProcessor {
     $merchantProductIdList = $matches[1];
     $saleIndex = ($this->page - 1) * 36;
     foreach ($merchantProductIdList as $merchantProductId) {
-      Db::insert('task', array('type' => 'JingdongProduct',
+      Db::insert('task', array('processor' => 'JingdongProduct',
         'argument_list' => var_export(array(
           $this->tablePrefix,
           $this->categoryId,
@@ -47,7 +47,7 @@ class JingdongProductListProcessor {
     if (count($matches) > 0) {
       $page = $this->page + 1;
       $path = $matches[1];
-      Db::insert('task', array('type' => 'JingdongProductList',
+      Db::insert('task', array('processor' => 'JingdongProductList',
         'argument_list' => var_export(array(
           $this->tablePrefix, $this->categoryId, $path, $page
         ), true)
@@ -78,7 +78,7 @@ class JingdongProductListProcessor {
         $valueLinkList = $matches[1];
         $valueList = $matches[2];
         $valueAmount = count($valueList);
-        $keyId = DbId::get($this->tablePrefix.'_property_key', array(
+        $keyId = DbId::get($this->tablePrefix.'-property_key', array(
           'category_id' => $this->categoryId, 'name' => $keyName
         ));
         for ($index = 0; $index < $valueAmount; ++$index) {
@@ -87,11 +87,11 @@ class JingdongProductListProcessor {
             || $valueName === '不限') {
             continue;
           }
-          $valueId = DbId::get($this->tablePrefix.'_property_value', array(
+          $valueId = DbId::get($this->tablePrefix.'-property_value', array(
             'key_id' => $keyId, 'name' => $valueList[$index]
           ));
           $path = $valueLinkList[$index];
-          Db::insert('task', array('task' => 'JingdongPropertyProductList',
+          Db::insert('task', array('processor' => 'JingdongPropertyProductList',
             'argument_list' =>var_export(array(
               $this->tablePrefix, $valueId, $path
             ), true)
