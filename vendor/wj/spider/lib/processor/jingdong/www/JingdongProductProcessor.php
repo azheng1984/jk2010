@@ -24,7 +24,8 @@ class JingdongProductProcessor {
 
   private function save() {
     $product = Db::getRow(
-      'SELECT * FROM '.$this->tablePrefix.' WHERE merchant_product_id = ?',
+      'SELECT * FROM '.$this->tablePrefix
+        .'-product WHERE merchant_product_id = ?',
       $this->merchantProductId
     );
     $uri = 'www.360buy.com/product/'.$this->merchantProductId.'.html';
@@ -40,22 +41,22 @@ class JingdongProductProcessor {
       return;
     }
     $columnList = array('is_updated' => 1);
+    if ($product['category_id'] !== $this->categoryId) {
+      $columnList['category_id'] = $this->categoryId;
+      Db::insert($this->tablePrefix.'-log', array(
+        'product_id' => $product['id'], 'type' => 'CATEGORY'
+      ));
+    }
     if ($product['title'] !== $title) {
       $columnList['title'] = $title;
       Db::insert($this->tablePrefix.'-log', array(
-        'product_id' => $product['id'], '`type`' => 'TITLE'
+        'product_id' => $product['id'], 'type' => 'TITLE'
       ));
     }
-    if ($product['category_id'] !== $this->categoryId) {
-      $columnList['category_id'] = $this->categoryId;
+    if ($product['sale_rank'] !== $this->saleRank) {
+      $columnList['sale_rank'] = $this->saleRank;
       Db::insert($this->tablePrefix.'-log', array(
-        'product_id' => $product['id'], '`type`' => 'CATEGORY'
-      ));
-    }
-    if ($product['category_id'] !== $this->categoryId) {
-      $columnList['category_id'] = $this->categoryId;
-      Db::insert($this->tablePrefix.'-log', array(
-        'product_id' => $product['id'], '`type`' => 'CATEGORY'
+        'product_id' => $product['id'], '`type`' => 'SALE_RANK'
       ));
     }
     Db::update(
