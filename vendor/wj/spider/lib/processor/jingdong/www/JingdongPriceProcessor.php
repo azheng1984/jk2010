@@ -22,14 +22,20 @@ class JingdongPriceProcessor {
     if ((int)$priceX100 !== $currentListPriceX100
       || (int)$listPriceX100 !== $currentPriceX100) {
       Db::update(
-        $tablePrefix.'-product',
+        '`'.$tablePrefix.'-product`',
         array(
           'price_x_100' => $currentPriceX100,
           'list_price_x_100' => $currentListPriceX100
         ),
         'id = ?', $productId);
+      $this->log($tablePrefix, $productId, $priceX100);
+    }
+  }
+
+  private function log($tablePrefix, $productId, $priceX100) {
+    if ($priceX100 !== null) {
       Db::insert(
-        $tablePrefix,'-log',
+        '`'.$tablePrefix.'-log`',
         array('type' => 'PRICE', 'product_id' => $productId)
       );
     }

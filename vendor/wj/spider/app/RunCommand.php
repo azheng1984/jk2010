@@ -6,6 +6,7 @@ class RunCommand {
       exit;
     }
     DbConnection::connect($merchant);
+    $GLOBALS['MERCHANT'] = $merchant;
     Lock::execute();
     TaskCleaner::clean();
     $spider = new Spider;

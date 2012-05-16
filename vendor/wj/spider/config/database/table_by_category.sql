@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `product_id` int(11) unsigned NOT NULL,
-  `type` enum('PRICE','CATEGORY', 'TITLE','IMAGE','SALE_RANK') NOT NULL,
+  `type` enum('NEW', 'PRICE','CATEGORY', 'TITLE','IMAGE','SALE_RANK') NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -39,10 +39,10 @@ CREATE TABLE IF NOT EXISTS `property_value` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `product-property_value` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `product_id` int(11) unsigned NOT NULL,
   `property_value_id` int(11) unsigned NOT NULL,
   `is_updated` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `product_id-property_value_id` (`product_id`, `property_value_id`),
+  UNIQUE KEY `product_id-property_value_id` (`product_id`, `property_value_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

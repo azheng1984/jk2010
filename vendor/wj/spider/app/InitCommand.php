@@ -10,8 +10,8 @@ class InitCommand {
     self::tryCreateGlobalTables();
     Lock::execute();
     if (Db::getRow('SELECT id FROM task') !== false
-      || Db::getRow('SELECT task_id FROM task_retry') !== false) {
-      echo 'fail: task/task_retry not empty';
+      || Db::getRow('SELECT task_id FROM task_fail') !== false) {
+      echo 'error: task/task_fail not empty';
       return;
     }
     foreach ($this->getCategoryTaskList() as $processor => $item) {

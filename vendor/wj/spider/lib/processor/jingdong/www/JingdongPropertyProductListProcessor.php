@@ -6,12 +6,7 @@ class JingdongPropertyProductListProcessor {
   private $valueId;
 
   public function execute($tablePrefix, $valueId, $path, $page = 1) {
-    $result = WebClient::get(
-      'www.360buy.com', '/products/'.$path.'.html'
-    );
-    if ($result['content'] === false) {
-      return $result;
-    }
+    $result = WebClient::get('www.360buy.com', '/products/'.$path.'.html');
     $this->html = $result['content'];
     $this->valueId = $valueId;
     $this->tablePrefix = $tablePrefix;
@@ -30,15 +25,15 @@ class JingdongPropertyProductListProcessor {
     $merchantProductIdList = $matches[1];
     foreach ($merchantProductIdList as $merchantProductId) {
       $productId = Db::getColumn(
-        'SELECT id FROM '
-          .$this->tablePrefix.'-product WHERE merchant_product_id = ?',
+        'SELECT id FROM `'
+          .$this->tablePrefix.'-product` WHERE merchant_product_id = ?',
         $merchantProductId
       );
       if ($productId === false) {
         return;
       }
       Db::execute(
-        'REPLACE INTO '.$this->tablePrefix.'-product-property_value'
+        'REPLACE INTO `'.$this->tablePrefix.'-product-property_value`'
           .'(product_id, property_value_id, is_updated) VALUES(?, ?, 1)',
         $productId, $this->valueId
       );

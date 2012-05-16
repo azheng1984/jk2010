@@ -1,39 +1,30 @@
 <?php
 class RetryCommand {
-  public function execute($merchant, $id = null) {
+  public function execute($merchant) {
+    if (is_dir(CONFIG_PATH.'merchant/'.$merchant) === false) {
+      echo 'no merchant "'.$merchant.'"'.PHP_EOL;
+      exit;
+    }
+    DbConnection::connect($merchant);
+    $GLOBALS['MERCHANT'] = $merchant;
     Lock::execute();
     TaskCleaner::clean();
-    if ($id === null) {
-      $this->restoreAllTasks();
-      return;
-    }
-    $this->restoreTaskByID($id);
-  }
-
-  private function restoreTaskById($id) {
-    $task = Db::getRow('SELECT * FROM task_retry WHERE task_id = ?', $id);
-    if ($task === false) {
-      return;
-    }
-    $this->restoreTask($task);
+    $this->restoreAllTasks();
   }
 
   private function restoreAllTasks() {
-    foreach (Db::getAll('SELECT * FROM task_retry') as $task) {
+    foreach (Db::getAll('SELECT * FROM task_fail') as $task) {
       $this->restoreTask($task);
     }
   }
 
   private function restoreTask($task) {
-    Db::insert(
-    'task',
-      array(
-	      'id' => $task['task_id'],
-	      'type' => $task['type'],
-	      'arguments' => $task['arguments'],
-	      'is_retry' => 1
-      )
-    );
-    Db::delete('task_retry', 'task_id = ?', $task['task_id']);
+    Db::insert('task', array(
+      'id' => $task['task_id'],
+      'processor' => $task['processor'],
+      'argument_list' => $task['argument_list'],
+    ));
+    Db::delete('task_fail', 'task_id = ?', $task['task_id']);
+    Db::delete('task_record', 'task_id = ?', $task['task_id']);
   }
 }
