@@ -53,23 +53,29 @@ class Db {
   }
 
   public static function bind(
-    $table, $columnList, $filterNameList = null, &$isNew = null
+    $table, $filterColumnList, $additionalColumnList = null, &$isNew = null
   ) {
-    if ($filterNameList === null) {
-      $filterNameList = array_keys($columnList);
+    $select = array('id');
+    if ($additionalColumnList !== null) {
+      $select = array_merge($select, array_keys($additionalColumnList));
     }
-    $sql = 'SELECT id FROM '.$table.' WHERE '
-      .implode(' = ? AND ', $filterNameList).' = ?';
-    $argumentList = array($sql);
-    foreach ($filterNameList as $item) {
-      $argumentList[] = $columnList[$item];
-    }
-    $result = self::call($argumentList)->fetchColumn();
+    $sql = 'SELECT '.implode(', ', $select).' FROM '.$table.' WHERE '
+      .implode(' = ? AND ', array_keys($filterColumnList)).' = ?';
+    $argumentList = array_values($filterColumnList);
+    array_unshift($argumentList, $sql);
+    $result = self::call($argumentList)->fetch(PDO::FETCH_ASSOC);
     if ($isNew !== null) {
       $isNew = $result === false;
     }
+    if ($result !== false && $additionalColumnList !== null) {
+      $this->updateDifference($table, $result, $additionalColumnList);
+    }
     if ($result !== false) {
-      return $result;
+      return $result['id'];
+    }
+    $columnList = $filterColumnList;
+    if ($additionalColumnList !== null) {
+      $columnList = array_merge($filterColumnList, $additionalColumnList);
     }
     self::insert($table, $columnList);
     return self::getLastInsertId();
@@ -88,5 +94,17 @@ class Db {
     }
     $statement->execute($parameterList);
     return $statement;
+  }
+
+  private static function updateDifference($table, $from, $to) {
+    $columnList = array();
+    foreach ($to as $key => $value) {
+      if ($from[$key] !== $value) {
+        $columnList[$key] = $value;
+      }
+    }
+    if (count($columnList) !== 0) {
+      self::update($table, $columnList, 'id = ?', $from['id']);
+    }
   }
 }

@@ -62,9 +62,7 @@ class JingdongProductListProcessor {
     );
     if (count($matches) > 0) {
       $section = iconv('gbk', 'utf-8', $matches[0]);
-      preg_match_all(
-        '{<dl.*?</dl>}', $section, $matches
-      );
+      preg_match_all('{<dl.*?</dl>}', $section, $matches);
       foreach ($matches[0] as $item) {
         preg_match_all(
           "{<dt>(.*?)：</dt>}", $item, $matches

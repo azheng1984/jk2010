@@ -33,7 +33,8 @@ class JingdongPriceProcessor {
           'price_from_x_100' => $currentPriceX100,
           'list_price_x_100' => $currentListPriceX100
         ),
-        'id = ?', $productId);
+        'id = ?', $productId
+      );
       $this->log($tablePrefix, $productId, $priceX100);
     }
   }
