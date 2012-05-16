@@ -1,6 +1,10 @@
 <?php
 return array(
   'ClassLoader' => array(
-    'app', 'lib', '/home/wz/www/jk2010/vendor/db', HYPERFRAMEWORK_PATH.'cli/lib'
+    'app',
+    'lib',
+    '/home/wz/www/jk2010/vendor/db',
+    HYPERFRAMEWORK_PATH.'cli/lib',
+    '/home/azheng/wj/vendor/segmentation/client',
   ),
 );

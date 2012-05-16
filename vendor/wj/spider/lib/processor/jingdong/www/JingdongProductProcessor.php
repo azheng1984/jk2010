@@ -33,13 +33,12 @@ class JingdongProductProcessor {
         .'-product` WHERE merchant_product_id = ?',
       $this->merchantProductId
     );
-    $uri = 'www.360buy.com/product/'.$this->merchantProductId.'.html';
     $title = $this->getTitle();
     if ($product === false) {
       $sql = 'INSERT INTO `'.$this->tablePrefix.'-product`'
-        .'(merchant_product_id, category_id, uri, title, sale_rank, index_time)'
-        .' VALUES(?, ?, ?, ?, ?, NOW())';
-      Db::execute($sql, $this->merchantProductId, $this->categoryId, $uri,
+        .'(merchant_product_id, category_id, title, sale_rank, index_time)'
+        .' VALUES(?, ?, ?, ?, NOW())';
+      Db::execute($sql, $this->merchantProductId, $this->categoryId,
         $title, $this->saleRank);
       $productId = Db::getLastInsertId();
       Db::insert('`'.$this->tablePrefix.'-log`', array(

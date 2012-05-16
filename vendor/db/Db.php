@@ -52,6 +52,29 @@ class Db {
     self::execute('DELETE FROM '.$table.$where, $parameterList);
   }
 
+  public static function bind(
+    $table, $columnList, $filterNameList = null, &$isNew = null
+  ) {
+    if ($filterNameList === null) {
+      $filterNameList = array_keys($columnList);
+    }
+    $sql = 'SELECT id FROM '.$table.' WHERE '
+      .implode(' = ? AND ', $filterNameList).' = ?';
+    $argumentList = array($sql);
+    foreach ($filterNameList as $item) {
+      $argumentList[] = $columnList[$item];
+    }
+    $result = self::call($argumentList)->fetchColumn();
+    if ($isNew !== null) {
+      $isNew = $result === false;
+    }
+    if ($result !== false) {
+      return $result;
+    }
+    self::insert($table, $columnList);
+    return self::getLastInsertId();
+  }
+
   private static function call($parameterList) {
     $connection = DbConnection::get();
     $sql = array_shift($parameterList);
