@@ -8,9 +8,6 @@ class ImageProcessor {
       $headers = array('If-Modified-Since: '.$imageLastModified);
     }
     $result = WebClient::get($domain, '/'.$path, $headers, null, true);
-    if ($result['content'] === false) {
-      return $result;
-    }
     if ($result['http_code'] === 304) {
       return;
     }
