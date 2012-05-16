@@ -24,11 +24,11 @@ CREATE TABLE IF NOT EXISTS `task_record` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `task_id` bigint(20) unsigned NOT NULL,
   `time` datetime DEFAULT NULL,
-  `result` blob,
+  `exception` longblob,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE IF NOT EXISTS `task_retry` (
+CREATE TABLE IF NOT EXISTS `task_fail` (
   `task_id` bigint(20) unsigned NOT NULL,
   `processor` varchar(45) DEFAULT NULL,
   `argument_list` text,

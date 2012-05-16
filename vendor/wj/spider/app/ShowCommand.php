@@ -1,7 +1,7 @@
 <?php
 class ShowCommand {
   private $isExportToFile;
-  private $isRetry;
+  private $isRetry = false;
   private $id;
   private $task;
 
@@ -17,11 +17,9 @@ class ShowCommand {
     DbConnection::connect($merchant);
     $this->id = $id;
     $this->task = Db::getRow('SELECT * FROM task WHERE id = ?', $id);
-    $this->isRetry = $this->task['retry_count'] !== '0';
-    var_dump($this->task['retry_count']);
     if ($this->task === false) {
       $this->task = Db::getRow(
-        'SELECT * FROM task_retry WHERE task_id = ?', $id
+        'SELECT * FROM task_fail WHERE task_id = ?', $id
       );
       $this->isRetry = true;
     }
@@ -58,11 +56,10 @@ class ShowCommand {
     $result = '[records]'.PHP_EOL;
     $recordList =
       Db::getAll('SELECT * FROM task_record WHERE task_id = ?', $this->id);
-    print_r($recordList);
     foreach ($recordList as $record) {
       $result .= 'time:'.$record['time'].PHP_EOL;
       $result .= 'result:'.PHP_EOL;
-      $result .= $record['result'];
+      $result .= $record['exception'];
       $result .= PHP_EOL.'---------------------------------'.PHP_EOL;
     }
     return $result;

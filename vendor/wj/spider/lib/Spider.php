@@ -27,12 +27,12 @@ class Spider {
 
   private function fail($task, $exception) {
     Db::execute(
-      'REPLACE INTO task_retry(task_id, processor, argument_list)'
+      'REPLACE INTO task_fail(task_id, processor, argument_list)'
         .' VALUES(?, ?, ?)',
       $task['id'], $task['processor'], $task['argument_list']
     );
-    Db::execute('INSERT INTO task_record(task_id, result, time)'
-      .' VALUES(?, ?, NOW())', $task['id'], var_export($exception, true));
+    Db::execute('INSERT INTO task_record(task_id, time, exception)'
+      .' VALUES(?, NOW(), ?)', $task['id'], var_export($exception, true));
     Db::delete('task', 'id = ?', $task['id']);
   }
 }

@@ -6,9 +6,10 @@ class JingdongProductListProcessor {
   private $categoryId;
 
   public function execute($tablePrefix, $categoryId, $path, $page = 1) {
-    $result = WebClient::get('www.360buy.com', '/products/'.$path.'.html');
+    $this->categoryId = $categoryId;
     $this->page = $page;
     $this->tablePrefix = $tablePrefix;
+    $result = WebClient::get('www.360buy.com', '/products/'.$path.'.html');
     $this->html = $result['content'];
     $this->parseProductList();
     $this->parseNextPage();
@@ -78,7 +79,7 @@ class JingdongProductListProcessor {
         $valueLinkList = $matches[1];
         $valueList = $matches[2];
         $valueAmount = count($valueList);
-        $keyId = DbId::get($this->tablePrefix.'-property_key', array(
+        $keyId = DbId::get('`'.$this->tablePrefix.'-property_key`', array(
           'category_id' => $this->categoryId, 'name' => $keyName
         ));
         for ($index = 0; $index < $valueAmount; ++$index) {
@@ -87,7 +88,7 @@ class JingdongProductListProcessor {
             || $valueName === '不限') {
             continue;
           }
-          $valueId = DbId::get($this->tablePrefix.'-property_value', array(
+          $valueId = DbId::get('`'.$this->tablePrefix.'-property_value`', array(
             'key_id' => $keyId, 'name' => $valueList[$index]
           ));
           $path = $valueLinkList[$index];

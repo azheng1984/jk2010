@@ -30,7 +30,7 @@ class ImageDb {
     }
   }
 
-  private static function connect($merchant, $tablePrefix) {
+  private static function connect($tablePrefix) {
     if (isset(self::$connectionList[$tablePrefix]) === false) {
       DbConnection::connect(
         $tablePrefix.'_image',
