@@ -6,6 +6,8 @@ class JingdongProductProcessor {
   private $productId;
   private $saleRank;
   private $html;
+  private $imageMd5 = null;
+  private $imageLastModified = null;
   private $priceX100 = null;
   private $listPriceX100 = null;
 
@@ -72,6 +74,8 @@ class JingdongProductProcessor {
     );
     $this->listPriceX100 = $product['list_price_x_100'];
     $this->priceX100 = $product['price_x_100'];
+    $this->imageLastModified = $product['image_last_modified'];
+    $this->imageMd5 = $product['image_md5'];
     return $product['id'];
   }
 
@@ -96,8 +100,8 @@ class JingdongProductProcessor {
       'argument_list' => var_export(array(
         $this->tablePrefix,
         $this->productId,
-        $this->merchantProductId,
-        $this->categoryId,
+        $this->imageLastModified,
+        $this->imageMd5,
         $domain,
         $path,
       ), true)
