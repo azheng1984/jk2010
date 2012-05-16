@@ -18,13 +18,19 @@ class JingdongPriceProcessor {
       return;
     }
     $currentListPriceX100 = $matches[1] * 100;
+    if ($currentListPriceX100 === 0) {
+      $currentListPriceX100 = null;
+    }
     $currentPriceX100 = $matches[3] * 100;
-    if ((int)$priceX100 !== $currentListPriceX100
-      || (int)$listPriceX100 !== $currentPriceX100) {
+    if ($currentPriceX100 === 0) {
+      $currentPriceX100 = null;
+    }
+    if ((int)$priceX100 !== (int)$currentListPriceX100
+      || (int)$listPriceX100 !== (int)$currentPriceX100) {
       Db::update(
         '`'.$tablePrefix.'-product`',
         array(
-          'price_x_100' => $currentPriceX100,
+          'price_from_x_100' => $currentPriceX100,
           'list_price_x_100' => $currentListPriceX100
         ),
         'id = ?', $productId);

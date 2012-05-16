@@ -9,7 +9,7 @@ class JingdongCategoryListProcessor {
     );
     $count = count($matches[1]);
     for ($index = 1; $index < $count; ++$index) {
-      $categoryId = DbId::get('category', array(
+      $categoryId = Db::bind('category', array(
         'name' => iconv('gbk', 'utf-8', $matches[2][$index])
       ));
       $path = $matches[1][$index];

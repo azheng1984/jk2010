@@ -46,7 +46,8 @@ class SearchProductListScreen {
     $merchant = self::getMerchant($product['merchant_id']);
     $tagList = self::initializeTagList($product);
     $href = self::getProductUri(
-      $merchant['product_uri_format'], $product['uri_argument_list']
+      $merchant['product_uri_format'],
+      explode("\n", $product['merchant_uri_argument_list'])
     );
     echo '<td><div class="image"><a href="',
       $href, '" target="_blank" rel="nofollow">',
@@ -59,7 +60,7 @@ class SearchProductListScreen {
     }
     echo self::highlight($title), '</a></h3>',//title
       '<div class="price">¥<span>',
-      $product['lowest_price_x_100']/100, '</span></div>';//price
+      $product['price_from_x_100']/100, '</span></div>';//price
     if ($product['property_list'] !== null) {
       echo self::highlight(
         SearchExcerptionScreen::excerpt(
