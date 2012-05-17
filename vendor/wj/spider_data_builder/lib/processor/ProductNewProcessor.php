@@ -50,7 +50,7 @@ class ProductNewProcessor {
       'SELECT name FROM category WHERE id = ?', $product['catgory_id']
     );
     DbConnection::connect('web');
-    $isNew = null;
+    $isNew = false;
     $categoryId = Db::bind(
       'category', array('name' => $categoryName), null, $isNew
     );
