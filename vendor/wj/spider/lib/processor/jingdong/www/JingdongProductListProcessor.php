@@ -60,42 +60,44 @@ class JingdongProductListProcessor {
     preg_match(
       '{<div id="select" [\s|\S]*<!--select end -->}', $this->html, $matches
     );
-    if (count($matches) > 0) {
-      $section = iconv('gbk', 'utf-8', $matches[0]);
-      preg_match_all('{<dl.*?</dl>}', $section, $matches);
-      foreach ($matches[0] as $item) {
-        preg_match_all(
-          "{<dt>(.*?)：</dt>}", $item, $matches
-        );
-        $keyName = $matches[1][0];
-        if ($keyName === '价格') {
+    if (count($matches) === 0) {
+      return;
+    }
+    $section = iconv('gbk', 'utf-8', $matches[0]);
+    preg_match_all('{<dl.*?</dl>}', $section, $matches);
+    $keyIndex = 0;
+    foreach ($matches[0] as $item) {
+      preg_match_all(
+        "{<dt>(.*?)：</dt>}", $item, $matches
+      );
+      $keyName = $matches[1][0];
+      if ($keyName === '价格') {
+        continue;
+      }
+      preg_match_all(
+        "{<a.*?href='(.*?).html'.*?>(.*?)</a>}", $item, $matches
+      );
+      $valueLinkList = $matches[1];
+      $valueList = $matches[2];
+      $valueAmount = count($valueList);
+      $keyId = Db::bind('`'.$this->tablePrefix.'-property_key`', array(
+        'category_id' => $this->categoryId, 'name' => $keyName
+      ), array('`index`' => $keyIndex));
+      for ($index = 0; $index < $valueAmount; ++$index) {
+        $valueName = $valueList[$index];
+        if ($valueName === '全部' || $valueName === '其它'
+          || $valueName === '不限') {
           continue;
         }
-        preg_match_all(
-          "{<a.*?href='(.*?).html'.*?>(.*?)</a>}", $item, $matches
-        );
-        $valueLinkList = $matches[1];
-        $valueList = $matches[2];
-        $valueAmount = count($valueList);
-        $keyId = Db::bind('`'.$this->tablePrefix.'-property_key`', array(
-          'category_id' => $this->categoryId, 'name' => $keyName
+        $valueId = Db::bind('`'.$this->tablePrefix.'-property_value`', array(
+          'key_id' => $keyId, 'name' => $valueList[$index]
+        ), array('`index`' => $index));
+        $path = $valueLinkList[$index];
+        Db::insert('task', array('processor' => 'JingdongPropertyProductList',
+          'argument_list' =>var_export(array(
+            $this->tablePrefix, $valueId, $path
+          ), true)
         ));
-        for ($index = 0; $index < $valueAmount; ++$index) {
-          $valueName = $valueList[$index];
-          if ($valueName === '全部' || $valueName === '其它'
-            || $valueName === '不限') {
-            continue;
-          }
-          $valueId = Db::bind('`'.$this->tablePrefix.'-property_value`', array(
-            'key_id' => $keyId, 'name' => $valueList[$index]
-          ));
-          $path = $valueLinkList[$index];
-          Db::insert('task', array('processor' => 'JingdongPropertyProductList',
-            'argument_list' =>var_export(array(
-              $this->tablePrefix, $valueId, $path
-            ), true)
-          ));
-        }
       }
     }
   }
