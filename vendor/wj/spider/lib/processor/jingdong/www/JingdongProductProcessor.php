@@ -11,6 +11,7 @@ class JingdongProductProcessor {
   private $priceX100 = null;
   private $listPriceX100 = null;
 
+  //TODO: 如果出现：“该商品已售完，不能购买，您可以看看其它商品！” 删除产品
   public function execute(
     $tablePrefix, $categoryId, $merchantProductId, $saleIndex
   ) {
