@@ -1,6 +1,8 @@
 <?php
 class BuildCommand {
   public function execute() {
+    
+    
     for (;;) {
       $log = Db::getRow('SELECT * FROM `electronic-log`');
       if ($log === false) {

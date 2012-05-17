@@ -37,11 +37,11 @@ class HomeScreen extends Screen {
   }
 
   private function renderSlogon() {
-    echo '<div id="slogon"><h1>',
+    echo '<div id="slogon"><div class="content"><h1>',
       $GLOBALS['HOME_CONFIG']['merchant_amount'], '个网上商店，',
       $GLOBALS['HOME_CONFIG']['product_amount'], '万商品，搜索：</h1>';
     $this->renderQueryList();
-    echo '</div>';
+    echo '</div></div>';
   }
 
   private function renderQueryList() {
@@ -54,8 +54,10 @@ class HomeScreen extends Screen {
   }
 
   private function renderMerchantSlideList() {
+    echo '<div class="content">';
     $this->renderMerchantTypeList();
     $this->renderSlideshow();
+    echo '</div>';
   }
 
   private function renderMerchantTypeList() {

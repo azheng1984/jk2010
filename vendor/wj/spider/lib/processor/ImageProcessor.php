@@ -1,7 +1,8 @@
 <?php
 class ImageProcessor {
   public function execute(
-    $tablePrefix, $productId, $imageLastModified, $imageMd5, $domain, $path
+    $tablePrefix, $categoryId, $productId,
+    $imageLastModified, $imageMd5, $domain, $path
   ) {
     $headers = array();
     if ($imageLastModified !== null) {
@@ -28,7 +29,11 @@ class ImageProcessor {
     if ($imageMd5 !== null) {
       Db::insert(
         '`'.$tablePrefix.'-log`',
-        array('type' => 'IMAGE', 'product_id' => $productId)
+        array(
+          'type' => 'IMAGE',
+          'product_id' => $productId,
+          'category_id' => $categoryId
+        )
       );
     }
   }
