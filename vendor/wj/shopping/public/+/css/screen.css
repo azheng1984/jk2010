@@ -98,7 +98,7 @@ input:focus {
   float:left;
   font-size:16px;
   padding:5px;
-  margin:6px 5px 0 5px;/* ie6 显示错误的边距 */
+  margin:6px 6px 0 5px;/* ie6 显示错误的边距 */
   width:500px;
   border:1px solid;
   border-color:#555 #ccc #ccc #555;
@@ -229,8 +229,10 @@ input:focus {
 }
 .ad div {
   padding:10px 0;
-  padding-left:140px;
   height:90px;/*chrome*/
+}
+.ad .content {
+  width:728px;
 }
 .ad span {
   float:right;
