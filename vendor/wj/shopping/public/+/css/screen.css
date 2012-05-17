@@ -63,13 +63,18 @@ input:focus {
   width:960px;
   padding-top:3px;
 }
+#header, #footer .content {
+  width:960px;
+  margin:0 auto;
+  float:none;
+}
 #header {
   position:relative;
+  padding-top:3px;
   height:46px;/* 如果没有高度，ie6 显示 suggestion 时高度会变 */
-  width:100%;
 }
 #logo {
-  padding:8px 5px 0 0;
+  padding:8px 5px 0 10px;
 }
 #logo a {
   position:relative;
@@ -224,7 +229,7 @@ input:focus {
 }
 .ad div {
   padding:10px 0;
-  padding-left:110px;
+  padding-left:140px;
   height:90px;/*chrome*/
 }
 .ad span {

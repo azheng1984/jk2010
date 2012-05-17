@@ -1,7 +1,8 @@
 <?php
 class JingdongPriceProcessor {
   public function execute(
-    $tablePrefix, $productId, $merchantProductId, $priceX100, $listPriceX100
+    $tablePrefix, $categoryId, $productId,
+    $merchantProductId, $priceX100, $listPriceX100
   ) {
     $result = WebClient::get(
       'jd2008.360buy.com',
@@ -35,15 +36,19 @@ class JingdongPriceProcessor {
         ),
         'id = ?', $productId
       );
-      $this->log($tablePrefix, $productId, $priceX100);
+      $this->log($tablePrefix, $categoryId, $productId, $priceX100);
     }
   }
 
-  private function log($tablePrefix, $productId, $priceX100) {
+  private function log($tablePrefix, $categoryId, $productId, $priceX100) {
     if ($priceX100 !== null) {
       Db::insert(
         '`'.$tablePrefix.'-log`',
-        array('type' => 'PRICE', 'product_id' => $productId)
+        array(
+          'type' => 'PRICE',
+          'product_id' => $productId,
+          'category_id' => $categoryId
+        )
       );
     }
   }

@@ -11,7 +11,6 @@ class JingdongProductProcessor {
   private $priceX100 = null;
   private $listPriceX100 = null;
 
-  //TODO: 如果出现：“该商品已售完，不能购买，您可以看看其它商品！” 删除产品
   public function execute(
     $tablePrefix, $categoryId, $merchantProductId, $saleIndex
   ) {
@@ -43,7 +42,9 @@ class JingdongProductProcessor {
         $title, $this->saleRank);
       $productId = Db::getLastInsertId();
       Db::insert('`'.$this->tablePrefix.'-log`', array(
-        'product_id' => $productId, 'type' => 'NEW'
+        'type' => 'NEW',
+        'product_id' => $productId,
+        'category_id' => $this->categoryId
       ));
       return $productId;
     }
@@ -51,19 +52,25 @@ class JingdongProductProcessor {
     if ($product['category_id'] !== $this->categoryId) {
       $columnList['category_id'] = $this->categoryId;
       Db::insert('`'.$this->tablePrefix.'-log`', array(
-        'product_id' => $product['id'], 'type' => 'CATEGORY'
+        'type' => 'CATEGORY',
+        'product_id' => $productId,
+        'category_id' => $this->categoryId
       ));
     }
     if ($product['title'] !== $title) {
       $columnList['title'] = $title;
       Db::insert('`'.$this->tablePrefix.'-log`', array(
-        'product_id' => $product['id'], 'type' => 'TITLE'
+        'type' => 'TITLE',
+        'product_id' => $productId,
+        'category_id' => $this->categoryId
       ));
     }
     if ((int)$product['sale_rank'] !== $this->saleRank) {
       $columnList['sale_rank'] = $this->saleRank;
       Db::insert('`'.$this->tablePrefix.'-log`', array(
-        'product_id' => $product['id'], 'type' => 'SALE_RANK'
+        'type' => 'SALE_RANK',
+        'product_id' => $productId,
+        'category_id' => $this->categoryId
       ));
     }
     Db::update(
@@ -99,6 +106,7 @@ class JingdongProductProcessor {
     Db::insert('task', array('processor' => 'Image',
       'argument_list' => var_export(array(
         $this->tablePrefix,
+        $this->categoryId,
         $this->productId,
         $this->imageLastModified,
         $this->imageMd5,
@@ -112,6 +120,7 @@ class JingdongProductProcessor {
     Db::insert('task', array('processor' => 'JingdongPrice',
       'argument_list' => var_export(array(
         $this->tablePrefix,
+        $this->categoryId,
         $this->productId,
         $this->merchantProductId,
         $this->priceX100,

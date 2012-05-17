@@ -68,11 +68,11 @@ abstract class Screen extends EtagView {
   }
 
   private function renderBodyWrapper() {
-    echo '<div id="wrapper">';
+    //echo '<div id="wrapper">';
     $this->renderBodyHeader();
     $this->renderHtmlBodyContent();
     $this->renderBodyFooter();
-    echo '</div>';
+    //echo '</div>';
   }
 
   private function renderBodyHeader() {
@@ -100,10 +100,10 @@ abstract class Screen extends EtagView {
   }
 
   private function renderBodyFooter() {
-    echo '<div id="footer">';
+    echo '<div id="footer"><div class="content">';
     $this->renderBodyFooterDiv();
     $this->renderDeclaration();
-    echo '</div>';
+    echo '</div></div>';
   }
 
   private function renderBodyFooterDiv() {
