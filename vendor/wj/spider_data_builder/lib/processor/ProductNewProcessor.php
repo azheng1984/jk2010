@@ -3,7 +3,7 @@ class ProductNewProcessor {
   private $wjProductId;
   private $categoryId;
 
-  public function execute($productId) {
+  public function execute($productId, $keyMapper, $valueMapper) {
     $propertyValueIdList = Db::getAll(
       'SELECT property_value_id FROM `electronic-product-property_value`'
         .' WHERE product_id = ?',
@@ -11,17 +11,20 @@ class ProductNewProcessor {
     );
     $propertyList = array();
     foreach ($propertyValueIdList as $item) {
-      $propertyValueId = $item['id'];
-      $row = Db::getRow(
-        'SELECT value.name as value_name, `key`.name as key_name'
-          .' FROM `electronic-property_value` value'
-          .' LEFT JOIN `electronic-property_key` as `key`'
-          .' ON value.key_id = `key`.id WHERE value.id = ?', $propertyValueId
-      );
-      if (isset($propertyList[$row['key_name']]) === false) {
-        $propertyList[$row['key_name']] = array();
+      if ($item['is_updated'] === '0') {
+        
+        continue;
       }
-      $propertyList[$row['key_name']][] = $row['value_name'];
+      if ($item['is_new'] === '1') {
+        //TODO: increase key product amount
+      }
+      $value = $valueMapper[$item['property_value_id']];
+      $key = $keyMapper[$value['key_id']];
+      $propertyValueId = $item['id'];
+      if (isset($propertyList[$key['name']]) === false) {
+        $propertyList[$key['name']] = array();
+      }
+      $propertyList[$key['name']][] = $value['name'];
     }
     $webPropertyList = array();
     foreach ($propertyList as $keyName => $valueNameList) {
