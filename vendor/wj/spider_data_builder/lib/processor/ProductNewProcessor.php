@@ -2,8 +2,10 @@
 class ProductNewProcessor {
   private $wjProductId;
   private $categoryId;
+  private $category;
 
-  public function execute($productId, $keyMapper, $valueMapper) {
+  public function execute($productId, $category, $keyMapper, $valueMapper) {
+    $this->category = $category;
     $propertyValueIdList = Db::getAll(
       'SELECT property_value_id FROM `electronic-product-property_value`'
         .' WHERE product_id = ?',
@@ -12,11 +14,11 @@ class ProductNewProcessor {
     $propertyList = array();
     foreach ($propertyValueIdList as $item) {
       if ($item['is_updated'] === '0') {
-        
+        //TODO decrease builder key product amount
         continue;
       }
       if ($item['is_new'] === '1') {
-        //TODO: increase key product amount
+        //TODO: increase builder key product amount
       }
       $value = $valueMapper[$item['property_value_id']];
       $key = $keyMapper[$value['key_id']];
@@ -33,12 +35,12 @@ class ProductNewProcessor {
     $webPropertyListValue = implode("\n", $webPropertyList);
     $product = Db::getRow(
       'SELECT category_id, merchant_product_id, title,'
-        .' image_md5 price_from_x_100, price_to_x_100, list_price_x_100,'
-        .' sale_rank, index_time FROM `electronic-product` WHERE id = ?',
+        .' image_md5, price_from_x_100, price_to_x_100, list_price_x_100,'
+        .' sale_rank, index_time FROM `product` WHERE id = ?',
       $productId
-    );
+    );//spider
     $this->syncWeb($product, $webPropertyListValue, $propertyList);
-    $this->syncSearch($product);
+    $this->syncSearch($product, $webPropertyList);
   }
 
   private function syncWeb($product, $webPropertyListValue, $propertyList) {
@@ -49,17 +51,6 @@ class ProductNewProcessor {
     ));
     $this->wjProductId = Db::getLastInsertId();
     DbConnection::connect('jingdong');
-    $categoryName = Db::getColumn(
-      'SELECT name FROM category WHERE id = ?', $product['catgory_id']
-    );
-    DbConnection::connect('web');
-    $isNew = false;
-    $categoryId = Db::bind(
-      'category', array('name' => $categoryName), null, $isNew
-    );
-    if ($isNew) {
-      Db::insert('category_mva', array('category_id' => $categoryId));
-    }
     $product['merchant_uri_argument_list'] = $product['merchant_product_id'];
     unset($product['merchant_product_id']);
     unset($product['sale_rank']);
@@ -67,13 +58,13 @@ class ProductNewProcessor {
     if ($webPropertyListValue !== '') {
       $product['property_list'] = $webPropertyListValue;
     }
-    $product['category_name'] = $categoryName;
+    $product['category_name'] = $this->category['name'];
     $product['image_path'] = '/';
     Db::insert('product', $product);
     DbConnection::connect('jingdong');
   }
 
-  private function syncSearch($product) {
+  private function syncSearch($product, $category, $keyMapper, $valueMapper) {
     $row = array();
     $row['id'] = $this->wjProductId;
     $row['category_id'] = $this->categoryId;
@@ -85,7 +76,16 @@ class ProductNewProcessor {
         $row['price_x_10'] / $row['list_price_x_10'] * 100
       );
     }
-    SegmentationService::execute();
-    array_unique();
+    $row['keyword_list'] = SegmentationService::execute();
+    $row['key_id_list'] = array();
+    //TODO set key_id_list
+    $propertyList = array();
+    foreach ($propertyList as $property) {
+      $key = $property['key'];
+      $value = $property['value'];
+      $row['value_id_list_'] = array();
+      //TODO set value_id_list
+    }
+    //TODO insert into search db
   }
 }

@@ -4,26 +4,20 @@ class BuildCommand {
   private $valueMapper;
 
   public function execute() {
-    $categoryList = Db::getAll('SELECT * FROM category');
+    //sync meta
+    $categoryList = Db::getAll('SELECT * FROM category');//spider
     foreach ($categoryList as $category) {
       $this->syncByCategory($category);
     }
-    for (;;) {
-      $log = Db::getRow('SELECT * FROM `electronic-log`');
-      if ($log === false) {
-        break;
-      }
-      $class = 'Product'.ucfirst(strtolower($log['type'])).'Processor';
-      $processor = new $class;
-      $processor->execute($log['product_id']);
-      Db::delete('`electronic-log`', 'id = ?', $log['id']);
-    }
+    //sync product
+    $this->syncProductByCategory($category);
   }
 
   private function syncByCategory($category) {
     $this->mvaIndexList = null;
+    $categoryId = null;//TODO bind builder category
     $keyList = Db::getAll(
-      'SELECT * FROM property_key WHERE category_id = ?', $category['id']
+      'SELECT * FROM property_key WHERE category_id = ?', $category['id']//spider
     );
     $keyMapper = array();
     $valueMapper = array();
@@ -32,15 +26,14 @@ class BuildCommand {
       if ($key['is_new'] === '1') {
         Db::insert('property_key', array(//TODO check builder property_key, maybe exsits
           'category_id' => $key['category_id'], 'name' => $key['name']
-        ));
+        ));//builder
         $wjKeyId = Db::getLastInsertId();
         $keyMapper[$key['id']]['wj_id'] = $wjKeyId;
-        $categoryId = null;//TODO get builder category
         $mvaIndex = null;
         if (count($keyMapper) < 101) {
           $mvaIndex = $this->getMvaIndex($categoryId);
         }
-        //TODO:insert into web
+        //TODO insert key into web
       }
       $valueList = Db::getAll(
         'SELECT * FROM property_value WHERE key_id = ?', $key['id']
@@ -48,12 +41,12 @@ class BuildCommand {
       foreach ($valueList as $value) {
         $valueMapper[$value['id']] = $value;
         if ($value['is_new']) {
-          //TODO:insert into web
+          //TODO insert into web
         }
       }
     }
-    //TODO: if mva index changed, save to builder category
-    $this->syncProductByCategory($category);
+    //TODO if mva index changed, save to builder category
+    //$this->syncProductByCategory($category);
   }
 
   private $mvaIndexList;
@@ -72,9 +65,10 @@ class BuildCommand {
       }
       $this->mvaIndexList = explode(',', $mvaIndexList);
     }
-    for ($index = $this->nextMvaIndex; $index < 100; ++$index) {
+    for ($index = $this->mvaIndexSearchStartPoint; $index < 100; ++$index) {
       if (in_array($index, $this->mvaIndexList) === false) {
         $mvaIndexList[] = $index;
+        $this->isMvaIndexListModified = true;
         $this->mvaIndexSearchStartPoint = $index + 1;
         return $index;
       }
