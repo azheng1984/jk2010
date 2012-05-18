@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php
-
 define('ROOT_PATH', dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR);
 define('CACHE_PATH', ROOT_PATH.'cache'.DIRECTORY_SEPARATOR);
 define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);
