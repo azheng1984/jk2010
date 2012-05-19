@@ -5,7 +5,7 @@ class SearchNavigationScreen {
 
   public static function render() {
     $list = self::buildList();
-    echo '<div id="nav">';
+    echo '<div id="nav"><div class="content">';
     $last = count($list) - 1;
     $isH1 = true;
     self::$isFollow = isset($list[0][0]['class'])
@@ -27,7 +27,7 @@ class SearchNavigationScreen {
         echo '<span class="next"></span>';
       }
     }
-    echo '</div>';
+    echo '</div></div>';
   }
 
   private static function renderItem($item) {

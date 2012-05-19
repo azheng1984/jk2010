@@ -1,3 +1,8 @@
+.content {
+  width:960px;
+  margin:0 auto;
+  float:none;
+}
 body {
   margin:0;
   font:13px Arial,Helvetica,sans-serif;
@@ -130,6 +135,7 @@ input:focus {
   background-position:-494px -2px;
 }
 #footer {
+  color:#888;
   line-height:40px;
   margin:8px 0 0;
   width:100%;/* ie7 */
@@ -138,7 +144,13 @@ input:focus {
   float:right;
 }
 #footer a {
+  color:#888;
+  border-color:#888;
   margin:4px;
+}
+#footer a:hover {
+  color:#111;
+  border-color:#111;
 }
 /* suggestion
  **************************/

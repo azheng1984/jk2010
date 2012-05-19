@@ -83,7 +83,7 @@ class BuildCommand {
       $class = 'Product'.ucfirst(strtolower($log['type'])).'Processor';
       $processor = new $class;
       $processor->execute(
-        $log['product_id'], $this->keyMapper, $this->valueMapper
+        $log['product_id'], $category, $this->keyMapper, $this->valueMapper
       );
       Db::delete('log', 'id = ?', $log['id']);
     }

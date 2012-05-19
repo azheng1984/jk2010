@@ -5,11 +5,6 @@
   border-left:0;
   border-right:0;
 }
-.content {
-  width:960px;
-  margin:0 auto;
-  float:none;
-}
 /* slogon
  *************************************/
 #slogon {
@@ -22,7 +17,7 @@
 #slogon h1 {
   padding:0 0 3px 15px;
   font-size:16px;
-  color:#111;
+  color:#333;
 }
 #slogon ul {
   padding:0 0 10px 15px;
@@ -144,7 +139,7 @@ ol .current {
   width:140px;
   text-align:center;
   background-color:#fff;
-  border:1px solid #e5e5e5;
+  border:1px solid #ddd;
   border-top:0;
   box-shadow:inset 0 1px 2px #e8e8e8;
   border-radius:0 0 5px 5px;
