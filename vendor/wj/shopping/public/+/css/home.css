@@ -26,12 +26,12 @@
 #slogon li {
   padding-right:15px;
   font-size:11px;
-  color:#888;
+  color:#777;
 }
 #slogon a, #slogon .ellipsis {
   font-size:13px;
-  color:#888;
-  border-color:#888;
+  color:#777;
+  border-color:#777;
 }
 #slogon a:hover {
   color:#111;
@@ -98,7 +98,7 @@ ol .current {
   color:#999;
 }
 #slide_list a:hover, #slide_list .hover {
-  background:#888;
+  background:#999;
   color:#fff;
   cursor:pointer;
 }
@@ -110,13 +110,13 @@ ol .current {
   float:left;
   border:0;
   line-height:26px;
-  color:#888;
+  color:#777;
 }
 #merchant:hover {
   color:#111;
 }
 #merchant span {
-  border-bottom:1px solid #888;
+  border-bottom:1px solid #777;
 }
 #merchant:hover span {
   border-color:#111;
