@@ -3,7 +3,6 @@
 // mav index 是一个无序集合，替换，但不重新排序
 class BuildMvaCommand {
   public function execute() {
-
   }
 
   private function updateByCategory($category) {
