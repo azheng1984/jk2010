@@ -7,20 +7,22 @@ class ProductNewProcessor {
   public function execute($productId, $category, $keyMapper, $valueMapper) {
     $this->category = $category;
     $propertyValueIdList = Db::getAll(
-      'SELECT property_value_id FROM `electronic-product-property_value`'
-        .' WHERE product_id = ?',
+      'SELECT property_value_id, is_updated FROM '
+        .'`electronic-product-property_value` WHERE product_id = ?',
       $productId
     );
     $propertyList = array();
     foreach ($propertyValueIdList as $item) {
+      
       if ($item['is_updated'] === '0') {
+        Db::execute('UPDATE property_key SET product_amount = product_amount - 1 WHERE id = ?', $item['']);
         //TODO decrease builder key product amount
         continue;
       }
       if ($item['is_new'] === '1') {
         //TODO: increase builder key product amount
       }
-      $value = $valueMapper[$item['property_value_id']];
+      $value = $valueMapper[$item['value_id']];
       $key = $keyMapper[$value['key_id']];
       $propertyValueId = $item['id'];
       if (isset($propertyList[$key['name']]) === false) {
