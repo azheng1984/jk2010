@@ -3,7 +3,7 @@ class JingdongPublicationCategoryListProcessor {
   public function execute($arguments) {
     $result = WebClient::get($arguments['domain'], $arguments['path']);
     $html = $result['content'];
-    $categoryId = DbId::get(
+    $categoryId = Db::bind(
       'category', array('name' => $arguments['name'], 'parent_id' => 0)
     );
     preg_match('{</h2>[\s\S]+<!--main end-->}', $html, $matches);
@@ -12,7 +12,7 @@ class JingdongPublicationCategoryListProcessor {
     array_pop($sections);
     foreach ($sections as $section) {
       preg_match('{<dt>.*?>\s*(.*?)<}', $section, $matches);
-      $sectionCategoryId = DbId::get(
+      $sectionCategoryId = Db::bind(
         'category', array('name' => $matches[1], 'parent_id' => $categoryId)
       );
       preg_match_all(
