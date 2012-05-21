@@ -22,7 +22,7 @@ class JingdongPublicationProductListProcessor {
     if (isset($arguments['category_id'])) {
       return $arguments['category_id'];
     }
-    return DbId::get('category', array(
+    return Db::bind('category', array(
       'name' => $arguments['name'],
       'parent_id' => $arguments['parent_category_id']
     ));
