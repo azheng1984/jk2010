@@ -15,22 +15,6 @@ class ProductNewProcessor {
     $propertyValueList = array();
     foreach ($propertyValueIdList as $item) {
       $value = $valueMapper[$item['value_id']];
-      if ($item['is_updated'] === '0') {
-        DbConnection::connect('builder');
-        Db::execute(
-          'UPDATE property_key'
-            .' SET product_amount = product_amount - 1 WHERE id = ?',
-          $value['wj_id']
-        );
-        continue;
-      }
-      if ($item['is_new'] === '1') {
-        Db::execute(
-          'UPDATE property_key'
-            .' SET product_amount = product_amount + 1 WHERE id = ?',
-          $value['wj_id']
-        );
-      }
       $key = $keyMapper[$value['key_id']];
       if (isset($propertyList[$key['name']]) === false) {
         $propertyValueList[$key['name']] = array();
@@ -117,6 +101,13 @@ class ProductNewProcessor {
       $valueIdList = array();
       foreach ($valueList[$key['name']] as $value) {
         $valueIdList = $value['wj_id'];
+      }
+      if (count($valueIdList) > 1 && $key['is_multiple'] === '0') {
+        DbConnection::connect('web');
+        Db::update(
+          'property_key', array('is_multiple' => '1'), 'id = ?', $key['wj_id']
+        );
+        //TODO update memory
       }
       $row['value_id_list_'.$key['mva_index']] = implode(',', $valueIdList);
     }

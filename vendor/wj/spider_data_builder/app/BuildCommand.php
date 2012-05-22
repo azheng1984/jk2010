@@ -42,31 +42,35 @@ class BuildCommand {
     foreach ($keyList as $key) {
       $keyMapper[$key['id']] = $key;
       $isNew = false;
-      DbConnection::connect('builder');
-      $wjKeyId = Db::bind('property_key', array(
+      DbConnection::connect('web');
+      $row = Db::getRow(
+        'SELECT id, is_multiple FROM property_key'
+          .'WHERE category_id = ? AND name = ?',
+        $key['category_id'],
+        $key['name']
+      );
+      $wjKeyId = null;
+      if ($row === false) {
+        Db::insert('property_key', array(
           'category_id' => $key['category_id'], 'name' => $key['name']
-      ), $isNew);
-      $keyMapper[$key['id']]['wj_id'] = $wjKeyId;
-      if ($key['is_new'] === '1') {
-        DbConnection::connect('builer');
-        if ($isNew) {
-          $mvaIndex = null;
-          if (count($keyMapper) < 100) {
-            $mvaIndex = $this->getMvaIndex($categoryId);
-          }
-          DbConnection::connect('spider');
-          if ($mvaIndex !== null) {
-            Db::update('property_key', array(
-              'mva_index' => $mvaIndex
-            ), 'id = ?', $wjKeyId);
-          }
-          DbConnection::connect('web');
-          Db::insert('property_key', array(
-            'id' => $wjKeyId, 'category_id' => $key['category_id'],
-            'name' => $key['name'], 'mva_index' => $mvaIndex
-          ));
+        ));
+        $wjKeyId = Db::getLastInsertId();
+        $mvaIndex = null;
+        if (count($keyMapper) < 100) {
+          $mvaIndex = $this->getMvaIndex($categoryId);
         }
+        if ($mvaIndex !== null) {
+          DbConnection::connect('web');
+          Db::update('property_key', array(
+            'mva_index' => $mvaIndex
+          ), 'id = ?', $wjKeyId);
+        }
+        $keyMapper[$key['id']]['is_multiple'] = '0';
+      } else {
+        $wjKeyId = $row['id'];
+        $keyMapper[$key['id']]['is_multiple'] = $row['is_multiple'];
       }
+      $keyMapper[$key['id']]['wj_id'] = $wjKeyId;
       DbConnection::connect('spider');
       $valueList = Db::getAll(
         'SELECT * FROM property_value WHERE key_id = ?', $key['id']
