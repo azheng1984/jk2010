@@ -10,4 +10,4 @@ $CLASS_LOADER->run();
 $APP = new Application;
 $EXCEPTION_HANDLER = new ExceptionHandler($APP);
 $EXCEPTION_HANDLER->run();
-$APP->run();
+$APP->run('/');
