@@ -66,13 +66,14 @@ ol .current {
   outline:0;
 }
 #slide_wrapper {
-  margin-bottom:12px;
+  margin-bottom:10px;
   padding:10px 0 8px 10px;
   border:1px solid;
   border-color:#d5d5d5 #e5e5e5 #e5e5e5 #e5e5e5;
   background:#fff;
   margin-top:-1px;
   text-align:center;
+  box-shadow:0 1px 2px #e8e8e8;
 }
 #slide {
   float:left;
