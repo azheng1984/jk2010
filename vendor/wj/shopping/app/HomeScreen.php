@@ -114,9 +114,9 @@ class HomeScreen extends Screen {
 
   private function renderSlideWrapper() {
     echo '<div id="slide_wrapper">';
+    $this->renderMerchant();
     $this->renderSlide();
     $this->renderSlideList();
-    $this->renderMerchant();
     echo '</div>';
   }
 
@@ -128,9 +128,9 @@ class HomeScreen extends Screen {
   }
 
   private function renderMerchant() {
-    echo '<br /><a id="merchant" href="http://',
+    echo '<span id="merchant">图片来自 <a href="http://',
       $this->merchant['uri_format'], '" target="_blank" rel="nofollow">',
-      '@<span>', $this->merchant['name'], '</span></a>';
+      $this->merchant['name'], '</a></span>';
   }
 
   private function renderSlideList() {
