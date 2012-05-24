@@ -78,7 +78,8 @@ ol .current {
 }
 #slide {
   float:left;
-  width:720px;
+  width: 710px;
+  margin-left: 20px;
   border:0;
   text-align:center;
 }
