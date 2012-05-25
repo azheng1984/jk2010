@@ -116,15 +116,18 @@ ol .current {
 #merchant {
   border:0;
   color:#777;
+  
   font-size:15px;
   display:inline-block;
   margin-bottom:8px;
 }
 #merchant a {
   color:#777;
+  border-color:#777;
 }
 #merchant a:hover {
   color:#111;
+  border-color:#111;
 }
 #merchant_list_wrapper {
   padding-left:10px;
