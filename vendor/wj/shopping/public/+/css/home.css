@@ -115,9 +115,8 @@ ol .current {
 }
 #merchant {
   border:0;
-  color:#777;
-  
-  font-size:15px;
+  color:#999;
+  font-size:14px;
   display:inline-block;
   margin-bottom:8px;
 }
