@@ -73,7 +73,7 @@ ol .current {
   background:#fff;
   margin-top:-1px;
   text-align:center;
-  box-shadow:0 1px 2px #e8e8e8;
+  box-shadow:0 0 2px 1px #e8e8e8;
   height:295px;
 }
 #slide {
@@ -116,7 +116,7 @@ ol .current {
 #merchant {
   border:0;
   color:#777;
-  line-height:20px;
+  font-size:15px;
   display:inline-block;
   margin-bottom:8px;
 }
