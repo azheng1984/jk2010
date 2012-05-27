@@ -239,7 +239,7 @@ input:focus {
 }
 .bottom {
   border:0;
-  box-shadow:0 2px 2px #eee;
+  box-shadow:none;
 }
 .ad div {
   padding:10px 0;
