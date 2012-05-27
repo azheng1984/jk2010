@@ -74,11 +74,11 @@ ol .current {
   margin-bottom:10px;
   padding:8px 0 2px 10px;
   border:1px solid;
-  border-color:#d5d5d5 #e5e5e5 #e5e5e5;
+  border-color:#d5d5d5;
   background:#fff;
   margin-top:-1px;
   text-align:center;
-  box-shadow:0 0 2px 1px #e8e8e8;
+  box-shadow:0 0 2px 1px #e5e5e5;
   height:295px;
 }
 #slide {
