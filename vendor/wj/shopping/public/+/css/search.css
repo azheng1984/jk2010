@@ -40,7 +40,7 @@ h1 {
   white-space:nowrap;
   border:1px solid;
   border-color:#e5e5e5 #bbb #bbb #e5e5e5;
-  color:#555;
+  color:#505050;
   background:url(/+/img/search.png) right 7px no-repeat;
   border-radius:3px 11px 11px 3px;
   vertical-align:baseline; /* 修正 ie6 中文上浮 */
@@ -157,7 +157,7 @@ h2 a:hover {
   cursor:pointer;
   border-color:#ccc #aaa #aaa #ccc;
   box-shadow:0 0 3px #ddd;
-  color:#111;
+  color:#101010;
 }
 #price_range_button:focus {
   outline:dotted 1px #000 \0/IE9;/* ie9 在 focus 时不会显示虚线框 */
@@ -215,7 +215,7 @@ h2 a:hover {
   color:#d44;
 }
 #result li .value {
-  color:#555;
+  color:#505050;
 }
 #result li a {
   border:0;
@@ -224,12 +224,12 @@ h2 a:hover {
   border-bottom:1px solid #d44;
 }
 #result li a .gray {
-  color:#555;
-  border-bottom:1px solid #555;
+  color:#505050;
+  border-bottom:1px solid #505050;
 }
 #result li a:hover .gray {
-  color:#111;
-  border-color:#111;
+  color:#101010;
+  border-color:#101010;
 }
 #result li a:hover .red {
   color:red;
@@ -293,7 +293,7 @@ h2 a:hover {
   font-size:11px;
   border:1px solid;
   border-color:#eee #ddd #ccc #eee;
-  color:#999;
+  color:#909090;
   background:#fff;
   border-radius:3px 12px 12px 3px;
   line-height:15px;
@@ -318,7 +318,7 @@ h2 a:hover {
   font-size:13px;
   padding:3px 0 3px 4px;
   overflow:hidden;
-  color:#555;
+  color:#505050;
   border-color:#e5e5e5 #bbb #bbb #e5e5e5;
 }
 #tag .value .selected span {
@@ -350,17 +350,17 @@ h2 a:hover {
   border-bottom:1px solid #555;
 }
 #tag ol .hover {
-  color:#111;
+  color:#101010;
   background-position:-122px -199px;
 }
 #tag ol .hover span, #tag ol .open_hover span {
-  border-color:#111;
+  border-color:#101010;
 }
 #tag ol .open {
   background-position:-99px -224px;
 }
 #tag ol .open_hover {
-  color:#111;
+  color:#101010;
   background-position:-75px -251px;
 }
 #tag .load {
@@ -382,11 +382,11 @@ h2 a:hover {
   border-bottom:1px solid #555;
 }
 #tag .more_hover {
-  color:#111;
+  color:#101010;
   background-position:right -148px;
 }
 #tag .more_hover span {
-  border-color:#111;
+  border-color:#101010;
 }
 #tag ol ol {
   padding:3px 0 0 6px;
