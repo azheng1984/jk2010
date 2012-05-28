@@ -32,7 +32,7 @@ class SearchNavigationScreen {
 
   private static function renderItem($item) {
     if (isset($item['href']) === false && isset($item['class'])
-        && $item['class'] === false) {
+      && $item['class'] === false) {
       echo $item['text'];
       return;
     }
