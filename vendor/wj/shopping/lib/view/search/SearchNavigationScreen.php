@@ -42,12 +42,12 @@ class SearchNavigationScreen {
       return;
     }
     echo '<a', $class, ' href="', $item['href'], '"';
-    if (self::$isFollow === false) {
-      echo ' rel="nofollow"';
-    }
     $text = self::cutName($item['text']);
     if ($text !== $item['text']) {
       echo ' title="'.$item['text'].'"';
+    }
+    if (self::$isFollow === false) {
+      echo ' rel="nofollow"';
     }
     echo '>', $text, '</a>';
   }
