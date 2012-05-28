@@ -45,7 +45,11 @@ class SearchNavigationScreen {
     if (self::$isFollow === false) {
       echo ' rel="nofollow"';
     }
-    echo '>', self::cutName($item['text']), '</a>';
+    $text = self::cutName($item['text']);
+    if ($text !== $item['text']) {
+      echo ' title="'.$item['text'].'"';
+    }
+    echo '>', $text, '</a>';
   }
 
   private static function buildList() {
