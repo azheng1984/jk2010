@@ -4,7 +4,7 @@ class JingdongProductProcessor {
   private $merchantProductId;
   private $categoryId;
   private $productId;
-  private $saleRank;
+  private $salesRank;
   private $html;
   private $imageMd5 = null;
   private $imageLastModified = null;
@@ -19,7 +19,7 @@ class JingdongProductProcessor {
     );
     $this->tablePrefix = $tablePrefix;
     $this->merchantProductId = $merchantProductId;
-    $this->saleRank = 1000000000 - $saleIndex;
+    $this->salesRank = 1000000000 - $saleIndex;
     $this->categoryId = $categoryId;
     $this->html = $result['content'];
     $this->productId = $this->save();
@@ -36,10 +36,10 @@ class JingdongProductProcessor {
     $title = $this->getTitle();
     if ($product === false) {
       $sql = 'INSERT INTO `'.$this->tablePrefix.'-product`'
-        .'(merchant_product_id, category_id, title, sale_rank, index_time)'
+        .'(merchant_product_id, category_id, title, sales_rank, index_time)'
         .' VALUES(?, ?, ?, ?, NOW())';
       Db::execute($sql, $this->merchantProductId, $this->categoryId,
-        $title, $this->saleRank);
+        $title, $this->salesRank);
       $productId = Db::getLastInsertId();
       Db::insert('`'.$this->tablePrefix.'-log`', array(
         'type' => 'NEW',
@@ -65,10 +65,10 @@ class JingdongProductProcessor {
         'category_id' => $this->categoryId
       ));
     }
-    if ((int)$product['sale_rank'] !== $this->saleRank) {
-      $columnList['sale_rank'] = $this->saleRank;
+    if ((int)$product['sales_rank'] !== $this->salesRank) {
+      $columnList['sales_rank'] = $this->salesRank;
       Db::insert('`'.$this->tablePrefix.'-log`', array(
-        'type' => 'SALE_RANK',
+        'type' => 'sales_rank',
         'product_id' => $productId,
         'category_id' => $this->categoryId
       ));

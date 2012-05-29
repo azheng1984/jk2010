@@ -11,7 +11,7 @@ class SearchQueryString {
     if ($sort === null) {
       $sort = $GLOBALS['SORT'];
     }
-    if ($sort !== 'sale_rank') {
+    if ($sort !== 'sales_rank') {
       $parameterList[] = 'sort='.$sort;
     }
     if (isset($GLOBALS['PRICE_FROM'])) {
@@ -33,7 +33,7 @@ class SearchQueryString {
       $GLOBALS['SORT'] = $_GET['sort'];
       return;
     }
-    $GLOBALS['SORT'] = 'sale_rank';
+    $GLOBALS['SORT'] = 'sales_rank';
   }
 
   //TODO: price_from/to 为 ''
