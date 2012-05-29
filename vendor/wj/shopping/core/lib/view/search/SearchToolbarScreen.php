@@ -9,7 +9,7 @@ class SearchToolbarScreen {
 
   private static function renderSort() {
     echo '<h2>排序:';
-    $list = array('销量' => 'sale_rank', '上架时间' => 'time',
+    $list = array('销量' => 'sales_rank', '上架时间' => 'time',
         '折扣' => 'discount', '价格' => 'price');
     foreach ($list as $name => $sort) {
       if ($name === '价格') {
