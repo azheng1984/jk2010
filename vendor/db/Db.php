@@ -53,11 +53,11 @@ class Db {
   }
 
   public static function bind(
-    $table, $filterColumnList, $additionalColumnList = null, &$isNew = null
+    $table, $filterColumnList, $replacementColumnList = null, &$isNew = null
   ) {
     $select = array('id');
-    if ($additionalColumnList !== null) {
-      $select = array_merge($select, array_keys($additionalColumnList));
+    if ($replacementColumnList !== null) {
+      $select = array_merge($select, array_keys($replacementColumnList));
     }
     $sql = 'SELECT '.implode(', ', $select).' FROM '.$table.' WHERE '
       .implode(' = ? AND ', array_keys($filterColumnList)).' = ?';
@@ -67,15 +67,15 @@ class Db {
     if ($isNew !== null) {
       $isNew = $result === false;
     }
-    if ($result !== false && $additionalColumnList !== null) {
-      $this->updateDifference($table, $result, $additionalColumnList);
+    if ($result !== false && $replacementColumnList !== null) {
+      $this->updateDifference($table, $result, $replacementColumnList);
     }
     if ($result !== false) {
       return $result['id'];
     }
     $columnList = $filterColumnList;
-    if ($additionalColumnList !== null) {
-      $columnList = array_merge($filterColumnList, $additionalColumnList);
+    if ($replacementColumnList !== null) {
+      $columnList = array_merge($filterColumnList, $replacementColumnList);
     }
     self::insert($table, $columnList);
     return self::getLastInsertId();
