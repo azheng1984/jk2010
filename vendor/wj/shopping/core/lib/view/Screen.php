@@ -112,7 +112,7 @@ abstract class Screen extends EtagView {
       'about.huobiwanjia.com/" rel="nofollow">关于货比万家</a> ',
       '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
       'about.huobiwanjia.com/ad" rel="nofollow">广告</a> ',
-      '<a href="/+i/">分类索引</a> ';
+      '<a href="/+i/">搜索排行榜</a> ';
     $this->renderPublisher();
     echo '</div>';
   }
