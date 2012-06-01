@@ -109,7 +109,7 @@ abstract class Screen extends EtagView {
   private function renderBodyLinkList() {
     echo '<div><a href="http://', $GLOBALS['DOMAIN_PREFIX'],
       'about.huobiwanjia.com/" rel="nofollow">关于货比万家</a> ',
-      '<a href="/+i/">搜索排行榜</a> ',
+      '<a href="/+i/">购物排行榜</a> ',
       '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
       'about.huobiwanjia.com/ad" rel="nofollow">广告</a></div>';
     $this->renderPublisher();
