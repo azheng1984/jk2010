@@ -101,20 +101,18 @@ abstract class Screen extends EtagView {
 
   private function renderBodyFooter() {
     echo '<div id="footer"><div class="content">';
-    $this->renderBodyFooterDiv();
     $this->renderDeclaration();
+    $this->renderBodyLinkList();
     echo '</div></div>';
   }
 
-  private function renderBodyFooterDiv() {
-    echo '<div>',
-      '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
+  private function renderBodyLinkList() {
+    echo '<div><a href="http://', $GLOBALS['DOMAIN_PREFIX'],
       'about.huobiwanjia.com/" rel="nofollow">关于货比万家</a> ',
+      '<a href="/+i/">搜索排行榜</a> ',
       '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-      'about.huobiwanjia.com/ad" rel="nofollow">广告</a> ',
-      '<a href="/+i/">搜索排行榜</a> ';
+      'about.huobiwanjia.com/ad" rel="nofollow">广告</a></div>';
     $this->renderPublisher();
-    echo '</div>';
   }
 
   private function renderPublisher() {
@@ -124,7 +122,8 @@ abstract class Screen extends EtagView {
   }
 
   private function renderDeclaration() {
-    echo '© 2012 货比万家 <a href="http://', $GLOBALS['DOMAIN_PREFIX'],
+    echo '© 2012 货比万家 ',
+      '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
       'about.huobiwanjia.com/terms_of_use" rel="nofollow">使用条款</a>',
       ' <a href="http://', $GLOBALS['DOMAIN_PREFIX'],
       'about.huobiwanjia.com/privacy"  rel="nofollow">隐私权政策</a>';

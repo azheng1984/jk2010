@@ -137,18 +137,18 @@ input:focus {
 }
 #footer {
   color:#707070;
-  line-height: 40px;
-  border-top: 1px solid #E5E5E5;
+  line-height:40px;
+  border-top:1px solid #E5E5E5;
   padding-top:0px;
   width:100%;/* ie7 */
 }
 #footer div {
-  float:right;
+ float:right;
 }
 #footer a {
   color:#707070;
   border-color:#707070;
-  margin:4px;
+  margin-left:10px;
 }
 #footer a:hover {
   color:#101010;
