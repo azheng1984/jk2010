@@ -84,7 +84,7 @@ ol .current {
 #slide {
   float:left;
   width: 710px;
-  margin-left: 20px;
+  margin:0 0 1px 20px;
   border:0;
   text-align:center;
 }
@@ -99,7 +99,7 @@ ol .current {
   display:inline-block;
   font-size:11px;/* ie6 inline-block 最小高度等于文字高度 */
   line-height:20px;
-  padding:1px 9px;
+  padding:0 8px;
   border-radius:3px;
   border:0;
   margin:2px;
