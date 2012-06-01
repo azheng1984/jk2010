@@ -12,7 +12,7 @@ class IndexScreen extends Screen {
   }
 
   protected function renderHtmlHeadContent() {
-    $title = '分类';
+    $title = '购物排行榜';
     if ($this->category !== null) {
       $title .= ':'.$this->category['name'];
     }
@@ -57,13 +57,14 @@ class IndexScreen extends Screen {
   }
 
   private function renderLinkTable() {
-    $index = 0;
+    $index = ($GLOBALS['PAGE'] - 1) * 100;
     echo '<table><tr>';
     foreach ($this->linkList as $link) {
       if ($index % 5 === 0 && $index !== 0) {
         echo '</tr><tr>';
       }
-      echo '<td><a href="', $link['href'], '">', $link['text'], '</a></td>';
+      echo '<td>', $index,
+        '. <a href="', $link['href'], '">', $link['text'], '</a></td>';
       ++$index;
     }
     if ($index % 5 !== 0 && $index > 5) {
