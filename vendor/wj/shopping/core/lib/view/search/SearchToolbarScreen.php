@@ -9,8 +9,8 @@ class SearchToolbarScreen {
 
   private static function renderSort() {
     echo '<h2>排序:';
-    $list = array('销量' => 'sales_rank', '上架时间' => 'time',
-        '折扣' => 'discount', '价格' => 'price');
+    $list = array('流行' => 'popularity_rank', '上架时间' => 'time',
+      '折扣' => 'discount', '价格' => 'price');
     foreach ($list as $name => $sort) {
       if ($name === '价格') {
         self::renderPriceSection();
@@ -25,7 +25,7 @@ class SearchToolbarScreen {
     }
     echo '</h2>';
   }
-
+ 
   private static function renderPriceSection() {
     if ($GLOBALS['SORT'] !== 'price' && $GLOBALS['SORT'] !== '-price') {
       echo ' <a href=".', SearchQueryString::get('price'),
