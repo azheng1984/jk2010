@@ -26,7 +26,7 @@ class ProductNewProcessor {
     $product = Db::getRow(
       'SELECT merchant_product_id, title,'
         .' image_md5, price_from_x_100, price_to_x_100, list_price_x_100,'
-        .' sales_rank, index_time FROM `product` WHERE id = ?',
+        .' popularity_rank, index_time FROM `product` WHERE id = ?',
       $productId
     );
     $this->syncWeb($product, $propertyKeyList, $propertyValueList);
@@ -68,7 +68,7 @@ class ProductNewProcessor {
     $product['category_id'] = $this->category['wj_id'];
     $product['merchant_uri_argument_list'] = $product['merchant_product_id'];
     unset($product['merchant_product_id']);
-    unset($product['sales_rank']);
+    unset($product['popularity_rank']);
     unset($product['index_time']);
     $product['category_name'] = $this->category['name'];
     $product['image_path'] = '/';
@@ -81,7 +81,7 @@ class ProductNewProcessor {
     $row['id'] = $this->wjProductId;
     $row['category_id'] = $this->category['wj_id'];
     $row['price_from_x_100'] = $product['price_from_x_100'];
-    $row['sales_rank'] = $product['sales_rank'];
+    $row['popularity_rank'] = $product['popularity_rank'];
     $row['index_timestamp'] = strtotime($product['index_time']);
     if ($row['list_price_x_10'] !== null && $row['price_to_x_10'] !== null) {
       $row['discount_x_10'] = ceil(

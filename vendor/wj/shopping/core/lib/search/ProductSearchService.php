@@ -10,8 +10,8 @@ class ProductSearchService {
   }
 
   private static function setSort($handler) {
-    if ($GLOBALS['SORT'] === 'sales_rank') {
-      $handler->SetSortMode(SPH_SORT_ATTR_DESC, 'sales_rank');
+    if ($GLOBALS['SORT'] === 'popularity_rank') {
+      $handler->SetSortMode(SPH_SORT_ATTR_DESC, 'popularity_rank');
       return;
     }
     $mapping = array(
@@ -21,7 +21,7 @@ class ProductSearchService {
       'discount' => 'discount_x_10 ASC'
     );
     $handler->SetSortMode(
-      SPH_SORT_EXTENDED, $mapping[$GLOBALS['SORT']].', sales_rank DESC'
+      SPH_SORT_EXTENDED, $mapping[$GLOBALS['SORT']].', popularity_rank DESC'
     );
   }
 }

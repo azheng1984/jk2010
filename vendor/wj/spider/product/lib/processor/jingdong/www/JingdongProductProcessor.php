@@ -36,7 +36,7 @@ class JingdongProductProcessor {
     $title = $this->getTitle();
     if ($product === false) {
       $sql = 'INSERT INTO `'.$this->tablePrefix.'-product`'
-        .'(merchant_product_id, category_id, title, sales_rank, index_time)'
+        .'(merchant_product_id, category_id, title, popularity_rank, index_time)'
         .' VALUES(?, ?, ?, ?, NOW())';
       Db::execute($sql, $this->merchantProductId, $this->categoryId,
         $title, $this->salesRank);
@@ -65,10 +65,10 @@ class JingdongProductProcessor {
         'category_id' => $this->categoryId
       ));
     }
-    if ((int)$product['sales_rank'] !== $this->salesRank) {
-      $columnList['sales_rank'] = $this->salesRank;
+    if ((int)$product['popularity_rank'] !== $this->salesRank) {
+      $columnList['popularity_rank'] = $this->salesRank;
       Db::insert('`'.$this->tablePrefix.'-log`', array(
-        'type' => 'sales_rank',
+        'type' => 'popularity_rank',
         'product_id' => $productId,
         'category_id' => $this->categoryId
       ));

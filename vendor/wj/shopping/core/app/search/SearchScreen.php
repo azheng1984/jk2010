@@ -21,7 +21,7 @@ class SearchScreen extends Screen {
       $title .= urldecode($GLOBALS['PATH_SECTION_LIST'][3]).'/';
     }
     echo '<title>', htmlentities($title, ENT_NOQUOTES, 'UTF-8'),
-      '价格、折扣、销量排行';
+      '价格、品牌';
     if ($GLOBALS['PAGE'] > 1) {
       echo '(', $GLOBALS['PAGE'], ')';
     }
