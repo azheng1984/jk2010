@@ -15,10 +15,10 @@ class SearchScreen extends Screen {
       $title .= '-同款';
     }
     if (isset($GLOBALS['CATEGORY'])) {
-      $title .= '/'.$GLOBALS['CATEGORY']['name'].'/';
+      $title .= '/'.$GLOBALS['CATEGORY']['name'];
     }
     if (isset($GLOBALS['PROPERTY_LIST'])) {
-      $title .= urldecode($GLOBALS['PATH_SECTION_LIST'][3]).'/';
+      $title .= '/'.urldecode($GLOBALS['PATH_SECTION_LIST'][3]);
     }
     echo '<title>', htmlentities($title, ENT_NOQUOTES, 'UTF-8'),
       '价格、品牌';
