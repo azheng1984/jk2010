@@ -79,7 +79,7 @@ ol .current {
   margin-top:-1px;
   text-align:center;
   height:295px;
-  box-shadow:0 -1px 2px #eee;
+  box-shadow:0 -1px 2px rgba(200,200,200,0.4);
 }
 #slide {
   float:left;
@@ -153,6 +153,7 @@ ol .current {
   border:1px solid #e8e8e8;
   border-bottom:0;
   box-shadow:none;
+  border-radius:3px 3px 0 0;
 }
 #merchant_list a:hover, #merchant_list .hover {
   border-color:#d5d5d5;
