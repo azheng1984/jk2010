@@ -106,8 +106,11 @@ input:focus {
   margin:6px 6px 0 5px;/* ie6 显示错误的边距 */
   width:500px;
   border:1px solid;
-  border-color:#999 #ccc #ccc #999;
+  border-color:#b0b0b0 #e0e0e0 #e0e0e0 #b0b0b0;
   background:url(/+/img/screen.png) 0 -33px;/* firefox */
+}
+#header input:focus {
+  border-color:#909090 #c0c0c0 #c0c0c0 #909090;
 }
 #header button {
   margin-top:7px;
