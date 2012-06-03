@@ -57,7 +57,7 @@ class Db {
   ) {
     $select = array('id');
     if ($replacementColumnList !== null) {
-      $select = $select + array_keys($replacementColumnList);
+      $select = array_merge($select, array_keys($replacementColumnList));
     }
     $sql = 'SELECT '.implode(', ', $select).' FROM '.$table.' WHERE '
       .implode(' = ? AND ', array_keys($filterColumnList)).' = ?';
