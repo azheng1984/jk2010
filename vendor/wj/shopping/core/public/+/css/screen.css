@@ -59,8 +59,7 @@ input:hover {
 }
 input:focus {
   color:#101010;
-  outline:1px solid #bce;
-  outline-offset:0;/* chrome 默认为负 */
+  outline:none;
 }
 #wrapper {
   float:none;
@@ -107,7 +106,7 @@ input:focus {
   margin:6px 6px 0 5px;/* ie6 显示错误的边距 */
   width:500px;
   border:1px solid;
-  border-color:#555 #ccc #ccc #555;
+  border-color:#999 #ccc #ccc #999;
   background:url(/+/img/screen.png) 0 -33px;/* firefox */
 }
 #header button {
