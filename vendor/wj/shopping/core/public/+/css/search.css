@@ -134,6 +134,9 @@ h2 a:hover {
   font-size:12px;
   box-shadow:inset 1px 1px #f5f5f5;
 }
+#price_range input:focus {
+  border-color:#bbb;
+}
 #price_range .long {
   width:60px;
 }
