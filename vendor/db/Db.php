@@ -57,7 +57,7 @@ class Db {
   ) {
     $select = array('id');
     if ($replacementColumnList !== null) {
-      $select = array_merge($select, array_keys($replacementColumnList));
+      $select = $select + array_keys($replacementColumnList);
     }
     $sql = 'SELECT '.implode(', ', $select).' FROM '.$table.' WHERE '
       .implode(' = ? AND ', array_keys($filterColumnList)).' = ?';
@@ -75,7 +75,7 @@ class Db {
     }
     $columnList = $filterColumnList;
     if ($replacementColumnList !== null) {
-      $columnList = array_merge($filterColumnList, $replacementColumnList);
+      $columnList = $replacementColumnList + $filterColumnList;
     }
     self::insert($table, $columnList);
     return self::getLastInsertId();
