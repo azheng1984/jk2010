@@ -84,8 +84,8 @@ abstract class Screen extends EtagView {
   }
 
   private function renderBanner() {
-    echo '<div id="banner"><span>100%公司经营</span>',
-      ' <span class="left">100%正规商店</span></div>';
+    echo '<div id="banner">',
+      '<span class="left">100% 公司经营 正规商店</span></div>';
   }
 
   private function renderLogo() {

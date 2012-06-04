@@ -76,7 +76,6 @@ input:focus {
   position:relative;
   padding-top:3px;
   height:46px;/* 如果没有高度，ie6 显示 suggestion 时高度会变 */
-
 }
 #logo {
   padding:8px 5px 0 10px;
@@ -128,14 +127,14 @@ input:focus {
 }
 #banner span {
   float:right;
-  padding-left:22px;
-  background:url(/+/img/screen.png) -142px -3px no-repeat;
+  background-position:-494px -2px;
   line-height:25px;
 }
 #banner .left {
-  margin-right:15px;
+  background:url(/+/img/screen.png) -142px -3px no-repeat;
+  margin-right:10px;
   padding-left:25px;
-  background-position:-494px -2px;
+
 }
 #footer {
   color:#707070;
