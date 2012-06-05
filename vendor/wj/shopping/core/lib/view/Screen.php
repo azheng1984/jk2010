@@ -79,13 +79,8 @@ abstract class Screen extends EtagView {
     echo '<div id="header">';
     $this->renderLogo();
     $this->renderSearch();
-    $this->renderBanner();
+    $this->renderPublisher();
     echo '</div>';
-  }
-
-  private function renderBanner() {
-    echo '<div id="banner">',
-      '<span class="left" style="font-size:14px"></span></div>';
   }
 
   private function renderLogo() {
@@ -112,7 +107,6 @@ abstract class Screen extends EtagView {
       '<a href="/+i/">购物排行榜</a> ',
       '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
       'about.huobiwanjia.com/ad" rel="nofollow">广告</a></div>';
-    $this->renderPublisher();
   }
 
   private function renderPublisher() {
