@@ -20,8 +20,8 @@ class HomeScreen extends Screen {
     }
     echo '货比万家</title>';
     if ($GLOBALS['MERCHANT_TYPE']['path'] === '/') {
-      echo '<meta name="description" content="货比万家购物搜索引擎，',
-        '商品信息100%来自公司经营（B2C）的正规商店-网上购物，货比万家！"/>';
+      echo '<meta name="description" content="',
+        '联合网上商店，为消费者提供商品搜索服务。"/>';
     }
     $this->addCssLink('home');
     $this->addJsLink('home');
