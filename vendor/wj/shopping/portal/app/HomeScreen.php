@@ -48,7 +48,7 @@ class HomeScreen extends Screen {
     echo '<ul>';
     foreach ($GLOBALS['HOME_CONFIG']['query_list'] as $query) {
       echo '<li><a href="/', urlencode($query[0]), '/">',
-        $query[1], '</a> ', $query[2], '</li>';
+        $query[1], '</a> <span>', $query[2], '</span></li>';
     }
     echo '<li class="ellipsis">…</li></ul>';
   }

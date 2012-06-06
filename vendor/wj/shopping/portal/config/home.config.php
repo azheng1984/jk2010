@@ -5,12 +5,12 @@ return array(
   'query_list' => array(
     array('儿童', '儿童', 11),
     array('胶囊', '胶囊', 1234),
-    array('蔬菜', '蔬菜', 567),
-    array('进口', '进口', 890),
-    array('儿童', '儿童', 11),
-    array('胶囊', '胶囊', 1234),
-    array('蔬菜', '蔬菜', 567),
-    array('进口', '进口', 890),
+    array('蔬菜', '有机农场蔬菜', 567),
+    array('进口', '进口猕猴桃 zespri', 890),
+    array('儿童', 'Apple iPhone 4s 手机', 11),
+    array('胶囊', '图书音像', 1234),
+    array('蔬菜', '数码电子', 567),
+    array('进口', '蔬菜', 890),
   ),
   'merchant_type_list' => array(
     '/' => array(null, '全部', 11),
