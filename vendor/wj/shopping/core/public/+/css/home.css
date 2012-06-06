@@ -16,13 +16,11 @@
   width:100%;
   padding-top:10px;
   border-bottom:1px solid #e5e5e5;
-  background:#fffff5;
-  box-shadow:0 1px 2px #e8e8e8;
+  background:#fff;
 }
 #slogon h1 {
   padding:0 0 3px 15px;
   font-size:16px;
-  color:#303030;
 }
 #slogon ul {
   padding:0 0 10px 15px;
