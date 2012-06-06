@@ -17,6 +17,7 @@
   padding-top:10px;
   border-bottom:1px solid #e5e5e5;
   background:#fff;
+  color:#707070;
 }
 #slogon h1 {
   padding:0 0 3px 15px;
@@ -119,13 +120,14 @@ ol .current {
 #merchant {
   border:0;
   color:#909090;
-  font-size:14px;
+  font-size:13px;
   display:inline-block;
   margin-bottom:8px;
 }
 #merchant a {
-  color:#909090;
-  border-color:#909090;
+  font-size:14px;
+  color:#707070;
+  border-color:#707070;
 }
 #merchant a:hover {
   color:#101010;
