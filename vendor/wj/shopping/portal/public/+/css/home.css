@@ -158,7 +158,6 @@ ol .current {
   border:1px solid #e8e8e8;
   border-bottom:0;
   box-shadow:none;
-  border-radius:3px 3px 0 0;
 }
 #merchant_list a:hover, #merchant_list .hover {
   border-color:#d5d5d5;
@@ -171,7 +170,8 @@ ol .current {
 }
 #merchant_list a img, #merchant_list span img {
   width:110px;
-  margin-top:14px;
+  padding:12px 15px;
+  border-top:2px solid #fff;
   _margin-bottom:5px;
 }
 #merchant_list div {
@@ -182,6 +182,9 @@ ol .current {
 }
 #merchant_list .current {
   position:relative;/* ie6 默认 z-index 和显示顺序相反 */
+}
+#merchant_list .current img {
+  border-color:red;
 }
 #next {
   padding-top:10px;
