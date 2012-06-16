@@ -173,7 +173,10 @@ ol .current {
   _margin-bottom:5px;
 }
 #merchant_list span img:hover {
-  border-color:#ccc;
+  border-color:#c0c0c0;
+}
+#merchant_list .current img:hover {
+  border-color:red;
 }
 #merchant_list div {
   position:relative;
