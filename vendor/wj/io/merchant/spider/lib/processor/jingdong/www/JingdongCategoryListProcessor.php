@@ -1,6 +1,6 @@
 <?php
 class JingdongCategoryListProcessor {
-  public function execute($table_prefix, $name, $domain, $path) {
+  public function execute($tablePrefix, $name, $domain, $path) {
     $result = WebClient::get($domain, $path);
     preg_match_all(
       '{<li><a href=http://www.360buy.com/products/(.*?).html>(.*?)</a></li>}',
@@ -16,7 +16,7 @@ class JingdongCategoryListProcessor {
       Db::insert('task', array(
         'processor' => 'JingdongProductList',
         'argument_list' => var_export(array(
-          $table_prefix, $categoryId, $path
+          $tablePrefix, $categoryId, $path
         ), true)
       ));
     }
