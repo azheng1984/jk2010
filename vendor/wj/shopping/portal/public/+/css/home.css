@@ -160,8 +160,7 @@ ol .current {
   box-shadow:none;
 }
 #merchant_list a:hover, #merchant_list .hover {
-  border-color:#d5d5d5;
-  box-shadow:0 -1px 1px #e8e8e8;
+  
   cursor:pointer;
 }
 #merchant_list span {
@@ -171,8 +170,11 @@ ol .current {
 #merchant_list a img, #merchant_list span img {
   width:110px;
   padding:12px 15px;
-  border-top:2px solid #fff;
+  border-top:2px solid #e5e5e5;
   _margin-bottom:5px;
+}
+#merchant_list span img:hover {
+  border-color:#ccc;
 }
 #merchant_list div {
   position:relative;
