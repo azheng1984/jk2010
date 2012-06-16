@@ -47,7 +47,8 @@ class JingdongPropertyProductListProcessor {
     if (count($matches) > 0) {
       $page = $this->page + 1;
       $path = $matches[1];
-      Db::insert('task',  array('processor' => 'JingdongPropertyProductList',
+      Db::insert('task',  array(
+        'processor' => 'JingdongPropertyProductList',
         'argument_list' => var_export(array(
           $this->tablePrefix, $this->valueId, $path, $page
         ), true)
