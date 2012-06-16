@@ -160,7 +160,6 @@ ol .current {
   box-shadow:none;
 }
 #merchant_list a:hover, #merchant_list .hover {
-  
   cursor:pointer;
 }
 #merchant_list span {
