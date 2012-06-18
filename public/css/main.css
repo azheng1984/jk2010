@@ -1,17 +1,17 @@
 @CHARSET "UTF-8";
 body {
-  font: 14px Arial, Helvetica, sans-serif;
+  font:14px Arial, Helvetica, sans-serif;
   line-height:20px;
   margin:0;
 }
 ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+  list-style-type:none;
+  margin:0;
+  padding:0;
   color:#999999;
 }
 h1 {
-  font-size: 20px;
+  font-size:20px;
   margin: 20px 0 10px 0;
 }
 a:link {
@@ -33,7 +33,7 @@ a:link {
 }
 #category .content {
   width:960px;
-  margin: 0 auto;
+  margin:0 auto;
 }
 #category a {
   color:#2200C1;
@@ -49,7 +49,7 @@ a:link {
 }
 #content {
   width:960px;
-  margin: 0 auto;
+  margin:0 auto;
 }
 #list, #document{
   float:left;
@@ -99,7 +99,7 @@ a:link {
 #related {
   float:left;
   padding-top:10px;
-  border-top: solid 1px #cccccc;
+  border-top:solid 1px #cccccc;
   width:100%;
 }
 #related .link {
@@ -110,11 +110,11 @@ a:link {
   padding-top:5px;
 }
 #document .meta {
-  margin: 5px 0;
+  margin:5px 0;
 }
 #document .source_link {
-  float: left;
-  color: #0E774A;
+  float:left;
+  color:#0E774A;
   width:100%;
   padding:5px;
   margin:5px 0;
@@ -123,23 +123,23 @@ a:link {
 }
 #document .source_link .text {
   width:520px;
-  margin-right: 0;
+  margin-right:0;
 }
 #document .source_link img {
   vertical-align:middle
 }
 #document .source_link a {
-  background-color: green;
-  color: white;
-  padding: 5px 15px;
-  text-decoration: none;
+  background-color:green;
+  color:white;
+  padding:5px 15px;
+  text-decoration:none;
 }
 #document .back {
   padding:5px;
   margin:20px 0;
   width:100%;
   float:left;
-  background-color: #e1e1e1;
+  background-color:#e1e1e1;
   color:#999999;
 }
 #document .back .to_list, .more {
