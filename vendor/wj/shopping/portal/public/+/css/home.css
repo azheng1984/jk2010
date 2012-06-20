@@ -164,7 +164,6 @@ ol .current {
 }
 #merchant_list span {
   border-color:#e5e5e5;
-  box-shadow:0 -1px 1px #e8e8e8;
 }
 #merchant_list a img, #merchant_list span img {
   width:110px;
