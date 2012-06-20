@@ -1,4 +1,4 @@
 <?php
-class ConsoleScreen {
+class ConsoleScreen extends Screen {
   
 }
