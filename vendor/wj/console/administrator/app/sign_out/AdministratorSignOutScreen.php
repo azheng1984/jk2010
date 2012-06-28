@@ -1,5 +1,5 @@
 <?php
-class AdministratorLogOutScreen extends Screen {
+class AdministratorSignOutScreen extends Screen {
   public function __construct() {
     setcookie('user_session_id', '');
     $this->stop();
