@@ -14,6 +14,6 @@ class ConsoleScreen extends Screen {
   }
 
   protected function renderHtmlBodyContent() {
-    // TODO Auto-generated method stub
+    echo '<a href="/log_out">log out</a>';
   }
 }

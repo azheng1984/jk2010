@@ -4,7 +4,7 @@ class AdministratorSignUpScreen extends Screen {
  * @see Screen::renderHtmlHeadContent()
  */protected function renderHtmlHeadContent() {
     // TODO Auto-generated method stub
-    }
+  }
 
 /* (non-PHPdoc)
  * @see Screen::renderHtmlBodyContent()
