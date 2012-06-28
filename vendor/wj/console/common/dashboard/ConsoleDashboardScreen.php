@@ -1,3 +1,3 @@
 <?php
-class ConsoleDashboardScreen extends ConsoleScreen {
+abstract class ConsoleDashboardScreen extends ConsoleScreen {
 }
