@@ -26,11 +26,6 @@ abstract class MerchantScreen extends ConsoleScreen {
     } else {
       echo '<li><a href="/payment">结算</a></li>';
     }
-      if ($_SERVER['REQUEST_URI'] === '/slide') {
-      echo '<li><span>促销</span></li>';
-    } else {
-      echo '<li><a href="/slide">促销</a></li>';
-    }
     if ($_SERVER['REQUEST_URI'] === '/account') {
       echo '<li><span>帐户设置</span></li>';
     } else {
