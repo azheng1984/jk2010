@@ -23,7 +23,6 @@ abstract class ConsoleScreen extends Screen {
       '<li><a href="/publisher">广告发布商</a></li>',
       '<li><a href="/merchant">商家<a></li>',
       '<li><a href="/administrator">管理员</a>（只有 root 用户才有）</li>',
-      '<li><a href="/notification">通知</a></li>',
       '<li><a href="/account">帐户设置</a></li>';
     echo '</ul>';
     $this->renderConsoleContent();
