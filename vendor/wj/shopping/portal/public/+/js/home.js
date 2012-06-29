@@ -26,6 +26,7 @@ huobiwanjia.home = function() {
 
   home.enhanceSlideList = function() {
     home.enhanceList($('#slide_list').children(), home.selectSlide);
+    $('#next img').hover(function() {$(this).attr('src', '/+/img/arrow_hover.png');}, function() {$(this).attr('src', '/+/img/arrow.png')});
   };
 
   home.enhanceList = function(list, click, isHold) {
