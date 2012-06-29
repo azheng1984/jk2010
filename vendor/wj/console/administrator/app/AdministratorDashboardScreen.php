@@ -1,5 +1,5 @@
 <?php
-class AdministratorDashboardScreen extends ConsoleDashboardScreen {
+class AdministratorDashboardScreen extends AdministratorScreen {
   protected function renderConsoleContent() {
     echo 'x';
   }

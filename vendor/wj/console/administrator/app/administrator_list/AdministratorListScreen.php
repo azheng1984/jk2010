@@ -1,5 +1,5 @@
 <?php
-class PublisherScreen extends Screen {
+class AdministratorListScreen extends Screen {
 	/* (non-PHPdoc)
  * @see Screen::renderHtmlHeadContent()
  */protected function renderHtmlHeadContent() {
