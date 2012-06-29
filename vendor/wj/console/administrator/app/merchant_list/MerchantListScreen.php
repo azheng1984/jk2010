@@ -1,5 +1,5 @@
 <?php
-class MerchantScreen extends ConsoleScreen {
+class MerchantListScreen extends ConsoleScreen {
   protected function renderConsoleContent() {
     echo '商家列表';
     echo '<div><input /><input type="submit" value="搜索" /></div>';
