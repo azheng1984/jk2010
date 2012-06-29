@@ -10,15 +10,10 @@ abstract class ConsoleScreen extends Screen {
   }
 
   protected function renderHtmlHeadContent() {
-    // TODO Auto-generated method stub
+    $this->addCssLink('common');
   }
 
   protected function renderHtmlBodyContent() {
-    echo '<a href="/"><h1>货比万家 - 管理员</h1></a><div id="toolbar">';
-    echo '<span>root | </span>';
-    echo '<a href="/sign_out">退出</a>';
-    echo '</div>';
-
     $this->renderConsoleContent();
   }
 
