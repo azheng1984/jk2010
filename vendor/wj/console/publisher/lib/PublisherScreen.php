@@ -26,10 +26,10 @@ abstract class PublisherScreen extends ConsoleScreen {
     } else {
       echo '<li><a href="/payment">结算</a></li>';
     }
-      if ($_SERVER['REQUEST_URI'] === '/promotion_widget') {
-      echo '<li><span>推广控件</span></li>';
+      if ($_SERVER['REQUEST_URI'] === '/ad_widget') {
+      echo '<li><span>广告控件</span></li>';
     } else {
-      echo '<li><a href="/promotion_widget">推广控件</a></li>';
+      echo '<li><a href="/ad_widget">广告控件</a></li>';
     }
     if ($_SERVER['REQUEST_URI'] === '/account') {
       echo '<li><span>帐户设置</span></li>';
