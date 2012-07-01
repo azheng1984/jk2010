@@ -11,6 +11,16 @@ abstract class AdministratorScreen extends ConsoleScreen {
     } else {
       echo '<li><a href="/">首页</a></li>';
     }
+    if ($_SERVER['REQUEST_URI'] === '/report') {
+      echo '<li><span>效果报表</span></li>';
+    } else {
+      echo '<li><a href="/report">效果报告</a></li>';
+    }
+    if ($_SERVER['REQUEST_URI'] === '/payment') {
+      echo '<li><span>结算</span></li>';
+    } else {
+      echo '<li><a href="/payment">结算</a></li>';
+    }
     if ($_SERVER['REQUEST_URI'] === '/publisher_list') {
       echo '<li><span>广告发布商</span></li>';
     } else {
@@ -25,11 +35,6 @@ abstract class AdministratorScreen extends ConsoleScreen {
       echo '<li><span>管理员</span></li>';
     } else {
       echo '<li><a href="/administrator_list">管理员</a></li>';
-    }
-    if ($_SERVER['REQUEST_URI'] === '/payment') {
-      echo '<li><span>结算</span></li>';
-    } else {
-      echo '<li><a href="/payment">结算</a></li>';
     }
     if ($_SERVER['REQUEST_URI'] === '/account') {
       echo '<li><span>帐户设置</span></li>';
