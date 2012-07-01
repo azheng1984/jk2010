@@ -11,7 +11,12 @@ abstract class AdministratorScreen extends ConsoleScreen {
     } else {
       echo '<li><a href="/">首页</a></li>';
     }
-      if ($_SERVER['REQUEST_URI'] === '/publisher_list') {
+    if ($_SERVER['REQUEST_URI'] === '/payment') {
+      echo '<li><span>结算</span></li>';
+    } else {
+      echo '<li><a href="/payment">结算</a></li>';
+    }
+    if ($_SERVER['REQUEST_URI'] === '/publisher_list') {
       echo '<li><span>广告发布商</span></li>';
     } else {
       echo '<li><a href="/publisher_list">广告发布商</a></li>';
