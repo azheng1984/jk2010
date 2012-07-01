@@ -26,7 +26,12 @@ abstract class PublisherScreen extends ConsoleScreen {
     } else {
       echo '<li><a href="/payment">结算</a></li>';
     }
-      if ($_SERVER['REQUEST_URI'] === '/ad_widget') {
+    if ($_SERVER['REQUEST_URI'] === '/io') {
+      echo '<li><span>数据接口</span></li>';
+    } else {
+      echo '<li><a href="/io">数据接口</a></li>';
+    }
+    if ($_SERVER['REQUEST_URI'] === '/ad_widget') {
       echo '<li><span>广告控件</span></li>';
     } else {
       echo '<li><a href="/ad_widget">广告控件</a></li>';
@@ -37,8 +42,8 @@ abstract class PublisherScreen extends ConsoleScreen {
       echo '<li><a href="/account">帐户设置</a></li>';
     }
     echo '</ul>';
-    $this->renderMerchantContent();
+    $this->renderPublisherContent();
   }
 
-  abstract protected function renderMerchantContent();
+  abstract protected function renderPublisherContent();
 }
