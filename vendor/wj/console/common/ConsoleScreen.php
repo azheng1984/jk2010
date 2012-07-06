@@ -14,6 +14,7 @@ abstract class ConsoleScreen extends Screen {
   }
 
   protected function renderHtmlBodyContent() {
+    echo '<div id="header"><a href="/" id="logo"></a></div>';
     $this->renderConsoleContent();
   }
 

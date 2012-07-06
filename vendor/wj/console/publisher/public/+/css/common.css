@@ -48,3 +48,10 @@ input {
   color:#fff;
   padding:2px 5px;
 }
+#logo {
+  border:none;
+  display:block;
+  background-image:url(/+/img/screen.png);
+  width:89px;
+  height:25px;
+}
