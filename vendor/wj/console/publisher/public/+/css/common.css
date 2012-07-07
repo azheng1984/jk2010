@@ -3,6 +3,7 @@ body {
   line-height:20px;
   color:#505050;
   text-align:center;
+  margin:0;
 }
 img {
   border:0;
@@ -19,6 +20,12 @@ a:hover {
 h1, h2, h3 {
   font-weight:normal;
   margin:0;
+}
+h1 {
+  float:left;
+  font-size:16px;
+  margin-left:5px;
+  color:#999;
 }
 ol, ul {
   list-style:none;
@@ -49,9 +56,40 @@ input {
   padding:2px 5px;
 }
 #logo {
+  float:left;
   border:none;
   display:block;
   background-image:url(/+/img/screen.png);
   width:89px;
   height:25px;
+}
+#toolbar {
+  float:right;
+}
+#navigator {
+  width:100%;
+  float:left;
+  background:#fff;
+  background:#f5f5f5;
+}
+#navigator li {
+  float:left;
+  padding: 5px 10px;
+  border-right:1px solid #fff;
+}
+#navigator .selected {
+  background:red;
+}
+#navigator li a {
+  color:#06c;
+  border:0;
+}
+#navigator li:hover a {
+  text-decoration:underline;
+}
+#navigator li:hover {
+  background:#e8e8e8;
+}
+#navigator .selected:hover {
+  background:red;
 }
