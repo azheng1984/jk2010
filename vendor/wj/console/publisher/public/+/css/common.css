@@ -25,7 +25,11 @@ h1 {
   float:left;
   font-size:16px;
   margin-left:5px;
-  color:#999;
+  color:#808080;
+  margin-top:15px;
+}
+h1:hover{
+  color:#505050;
 }
 ol, ul {
   list-style:none;
@@ -51,11 +55,11 @@ input {
   display:none;
 }
 #navigator li span {
-  background:red;
   color:#fff;
-  padding:2px 5px;
 }
 #logo {
+  margin-left:100px;
+  margin-top:10px;
   float:left;
   border:none;
   display:block;
@@ -66,30 +70,62 @@ input {
 #toolbar {
   float:right;
 }
+#content {
+  float: left;
+  clear: left;
+  width: 928px;
+  margin-left: 100px;
+  border-top: 1px solid #E5E5E5;
+  border-bottom: 1px solid #E5E5E5;
+  background: whiteSmoke;
+  margin-top: 10px;
+}
 #navigator {
-  width:100%;
+  margin-left:20px;
+  margin-top:10px;
   float:left;
-  background:#fff;
-  background:#f5f5f5;
+  font-size:15px;
 }
 #navigator li {
+  clear:left;
   float:left;
-  padding: 5px 10px;
-  border-right:1px solid #fff;
+  padding:3px 12px;
+  background:#f5f5f5;
+  margin-bottom:5px;
+  width:120px;
+  text-align:left;
+}
+.box {
+  border:1px solid;
+  border-color:#e0e0e0 #c0c0c0 #c0c0c0 #e0e0e0;
+  background:#fff;
+  margin:15px;
+  float:left;
+  width:700px;
+  height:100px;
+  font-size:13px;
+}
+.title {
+  background: #eee;
+  font-size:14px;
+  text-align: left;
+  padding: 2px 5px;
 }
 #navigator .selected {
   background:red;
+  border-radius:3px;
 }
 #navigator li a {
-  color:#06c;
-  border:0;
+  color:#808080;
 }
 #navigator li:hover a {
-  text-decoration:underline;
-}
-#navigator li:hover {
-  background:#e8e8e8;
+  color:#505050;
 }
 #navigator .selected:hover {
   background:red;
+}
+#footer {
+  float:left;
+  clear:left;
+  margin-left:400px;
 }
