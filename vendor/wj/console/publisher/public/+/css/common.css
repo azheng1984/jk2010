@@ -104,6 +104,15 @@ input {
   width:700px;
   height:100px;
   font-size:13px;
+  color:#909090;
+}
+.block {
+  text-align:center;
+  float:left;
+  padding:0 20px;
+}
+.box-content {
+  padding-left:20px;
 }
 .title {
   background:#fff;
@@ -111,6 +120,8 @@ input {
   text-align: left;
   padding:4px 8px;
   border-bottom:1px solid #e0e0e0;
+  margin-bottom:15px;
+  color:#505050;
 }
 #navigator .selected {
   background:red;
@@ -129,4 +140,9 @@ input {
   float:left;
   clear:left;
   margin-left:400px;
+}
+.big {
+  font-size:20px;
+  font-weight:bold;
+  color:#303030;
 }
