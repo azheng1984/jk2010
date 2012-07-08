@@ -16,6 +16,7 @@ abstract class ConsoleScreen extends Screen {
   protected function renderHtmlBodyContent() {
     echo '<div id="header"><a href="/" id="logo"></a></div>';
     $this->renderConsoleContent();
+    echo '<div id="footer">© 2012 货比万家</div>';
   }
 
   abstract protected function renderConsoleContent();

@@ -5,11 +5,11 @@ abstract class PublisherScreen extends ConsoleScreen {
     echo '<span>root | </span>';
     echo '<a href="/sign_out">退出</a>';
     echo '</div>';
-    echo '<ul id="navigator">';
+    echo '<div id="content"><ul id="navigator">';
     if ($_SERVER['REQUEST_URI'] === '/') {
-      echo '<li class="selected"><span>首页</span></li>';
+      echo '<li class="selected home"><span>首页</span></li>';
     } else {
-      echo '<li><a href="/">首页</a></li>';
+      echo '<li class="home"><a href="/">首页</a></li>';
     }
     if ($_SERVER['REQUEST_URI'] === '/report') {
       echo '<li class="selected"><span>效果报表</span></li>';
@@ -38,6 +38,7 @@ abstract class PublisherScreen extends ConsoleScreen {
     }
     echo '</ul>';
     $this->renderPublisherContent();
+    echo '</div>';
   }
 
   abstract protected function renderPublisherContent();
