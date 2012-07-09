@@ -5,4 +5,8 @@ class MerchantListScreen extends AdministratorScreen {
     echo '图标 名称 今日 总计（和 merchant dashboard 保持一致）';
     echo '（通过黄色背景表示已经帐号被暂停）';
   }
+
+  protected function getTitle() {
+    return '管理员/商家';
+  }
 }

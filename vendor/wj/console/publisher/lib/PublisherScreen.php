@@ -1,7 +1,7 @@
 <?php
 abstract class PublisherScreen extends ConsoleScreen {
   protected function renderConsoleContent() {
-    echo '<div id="console"><div class="content"><ul id="navigator">';
+    echo '<ul id="navigator">';
     if ($_SERVER['REQUEST_URI'] === '/') {
       echo '<li class="selected home"><span>首页</span></li>';
     } else {
@@ -34,7 +34,6 @@ abstract class PublisherScreen extends ConsoleScreen {
     }
     echo '</ul>';
     $this->renderPublisherContent();
-    echo '</div></div>';
   }
 
   protected function getRole() {

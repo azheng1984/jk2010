@@ -6,4 +6,8 @@ class MerchantDashboardScreen extends MerchantScreen {
     echo '<br />【总计】<br />';
     echo '活跃订单佣金 未支付佣金 正在支付佣金（只在存在的时候显示）<br />商品总数 促销活动总数';
   }
+
+  protected function getTitle() {
+    return '商家';
+  }
 }

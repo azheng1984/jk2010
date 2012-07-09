@@ -6,4 +6,8 @@ class AdministratorDashboardScreen extends AdministratorScreen {
     echo '<br />【总计】<br />活跃订单佣金 未付款 未收款<br />';
     echo '活跃广告发布商 活跃商家 商品 促销活动';
   }
+
+  protected function getTitle() {
+    return '商家';
+  }
 }

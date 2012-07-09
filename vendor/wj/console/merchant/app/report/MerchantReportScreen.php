@@ -8,4 +8,8 @@ class MerchantReportScreen extends MerchantScreen {
     echo '<li>level 3(order detail) 商品编号 | 商品名称 | 单价 | 数量 | 总价 | 佣金</li>';
     echo '</ul>';
   }
+
+  protected function getTitle() {
+    return '商家/效果报告';
+  }
 }

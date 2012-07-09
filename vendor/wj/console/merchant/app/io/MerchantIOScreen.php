@@ -9,4 +9,8 @@ class MerchantIOScreen extends MerchantScreen {
     echo '<li>促销活动 预览，更新（回调）</li>';
     echo '</ul>';
   }
+
+  protected function getTitle() {
+    return '商家/数据接口';
+  }
 }
