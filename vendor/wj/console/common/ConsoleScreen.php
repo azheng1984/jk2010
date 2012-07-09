@@ -10,14 +10,23 @@ abstract class ConsoleScreen extends Screen {
   }
 
   protected function renderHtmlHeadContent() {
+    echo '<title>', $this->getTitle(), '-货比万家</title>';
     $this->addCssLink('common');
   }
 
   protected function renderHtmlBodyContent() {
-    echo '<div id="header"><a href="/" id="logo"></a></div>';
+    echo '<div id="header"><a href="/" id="logo"> </a>';
+    echo '<a href="/"><h1>',$this->getRole(),'</h1></a><div id="toolbar">';
+    echo '<span>root </span>';
+    echo '<a id="sign_out" href="/sign_out">退出</a>';
+    echo '</div></div>';
     $this->renderConsoleContent();
     echo '<div id="footer">© 2012 货比万家</div>';
   }
+
+  abstract protected function getRole();
+
+  abstract protected function getTitle();
 
   abstract protected function renderConsoleContent();
 }

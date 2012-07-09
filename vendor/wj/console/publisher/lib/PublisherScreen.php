@@ -1,11 +1,7 @@
 <?php
 abstract class PublisherScreen extends ConsoleScreen {
   protected function renderConsoleContent() {
-    echo '<a href="/"><h1> 广告发布商</h1></a><div id="toolbar">';
-    echo '<span>root | </span>';
-    echo '<a href="/sign_out">退出</a>';
-    echo '</div>';
-    echo '<div id="content"><ul id="navigator">';
+    echo '<div id="console"><div class="content"><ul id="navigator">';
     if ($_SERVER['REQUEST_URI'] === '/') {
       echo '<li class="selected home"><span>首页</span></li>';
     } else {
@@ -38,7 +34,11 @@ abstract class PublisherScreen extends ConsoleScreen {
     }
     echo '</ul>';
     $this->renderPublisherContent();
-    echo '</div>';
+    echo '</div></div>';
+  }
+
+  protected function getRole() {
+    return '广告发布商';
   }
 
   abstract protected function renderPublisherContent();
