@@ -61,7 +61,7 @@ input {
 }
 #header, #footer, .content {
   margin:0 auto;
-  width: 960px;
+  width:960px;
   float:none;
   clear:left;
 }
@@ -95,14 +95,14 @@ input {
   float:right;
 }
 #content {
-  float: left;
-  clear: left;
-  width: 928px;
-  margin-left: 100px;
-  border-top: 1px solid #E5E5E5;
-  border-bottom: 1px solid #E5E5E5;
-  background: whiteSmoke;
-  margin: 10px 0;
+  float:left;
+  clear:left;
+  width:928px;
+  margin-left:100px;
+  border-top:1px solid #e5e5e5;
+  border-bottom:1px solid #e5e5e5;
+  background:whiteSmoke;
+  margin:10px 0;
 }
 #navigator {
   margin-top:10px;
@@ -145,7 +145,7 @@ input {
 .title {
   background:#fff;
   font-size:14px;
-  text-align: left;
+  text-align:left;
   padding:4px 8px;
   border-bottom:1px solid #e0e0e0;
   color:#505050;
