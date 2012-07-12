@@ -42,8 +42,10 @@ table {
 td,th {
   vertical-align:top;
   border:1px solid #e5e5e5;
+  color:#505050;
 }
 th {
+  font-size:14px;
   background:#f1f1f1;
   font-weight:normal;
   color:#505050;
