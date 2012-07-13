@@ -3,9 +3,9 @@ abstract class PublisherScreen extends ConsoleScreen {
   protected function renderConsoleContent() {
     echo '<ul id="navigator">';
     if ($_SERVER['REQUEST_URI'] === '/') {
-      echo '<li class="selected home"><span>首页</span></li>';
+      echo '<li class="home selected" style="border-radius: 3px 0 0 3px;"><span>首页</span></li>';
     } else {
-      echo '<li class="home"><a href="/">首页</a></li>';
+      echo '<li class="home" style="border-radius: 3px 0 0 3px;"><a href="/">首页</a></li>';
     }
     if ($_SERVER['REQUEST_URI'] === '/report') {
       echo '<li class="selected"><span>效果报表</span></li>';
