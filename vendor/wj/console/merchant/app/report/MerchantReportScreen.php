@@ -3,7 +3,7 @@ class MerchantReportScreen extends MerchantScreen {
   protected function renderMerchantContent() {
     echo '<ul>';
     echo '<li>时间区间（日/月/年 日历选择） <br />分组: [时间：日/月/年] <br /> </li>';
-    echo '<li>时间 | 流量 | 订单数量 | 订单支付金额 | 活跃订单佣金 | 平均每次点击费用 | 完成订单佣金</li>';
+    echo '<li>时间 | 流量 | 订单数量 | 订单支付金额 | 活跃订单佣金 | CPC | 完成订单佣金</li>';
     echo '</ul>';
   }
 
