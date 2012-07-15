@@ -83,7 +83,6 @@ ol .current {
   margin-top:-1px;
   text-align:center;
   height:295px;
-  box-shadow:0 0 0 2px rgba(200, 200, 200, 0.16);
 }
 #slide {
   float:left;

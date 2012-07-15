@@ -4,7 +4,7 @@ class PublisherAccountScreen extends PublisherScreen {
     echo '<div class="box"><div class="title">联系人</div>（姓名 邮箱 电话（可以是多个，包括手机））</div>';
     echo '<div class="box"><div class="title">密码</div><input /></div>';
     echo '<div class="box"><div class="title">收款帐户</div>（开户行，户名，帐号）</div>';
-    echo '<div class="box"><div class="title">网站</div>（名称，图标，域名）</div>';
+    echo '<div class="box"><div class="title">网站</div>（名称，图标，域名，域名 <=> 渠道 映射（类似 adsense 网址渠道））</div>';
   }
 
   protected function getTitle() {
