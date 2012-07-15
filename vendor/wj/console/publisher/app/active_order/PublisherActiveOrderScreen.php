@@ -1,7 +1,7 @@
 <?php
 class PublisherActiveOrderScreen extends PublisherScreen {
   protected function renderPublisherContent() {
-    echo '<div class="box">区间（时间） | 过滤（网站，自定义渠道，订单编号）<br /> level 1(order) 时间 | 网站 | 渠道 | 商家 | 订单编号 | 订单支付金额 | 佣金<br />
+    echo '<div class="box">区间（时间） | 过滤（渠道，订单编号）| 分组：渠道<br /> level 1(order) 时间 | 渠道 | 商家 | 订单编号 | 订单支付金额 | 佣金<br />
 level 2(order detail) 商品编号 | 商品名称 | 单价 | 数量 | 总价 | 佣金<br />';
     echo '总计：数量 支付金额 佣金</div>';
   }
