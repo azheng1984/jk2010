@@ -140,7 +140,7 @@ input {
 .block {
   text-align:center;
   float:left;
-  width:190px;
+  width:235px;
   border-left:1px solid #e0e0e0;
   padding:10px 0;
 }
@@ -167,7 +167,7 @@ input {
   border:0;
 }
 #navigator li:hover {
-  background:#999;
+  background:#a0a0a0;
 }
 #navigator li:hover a {
   color:#fff;
