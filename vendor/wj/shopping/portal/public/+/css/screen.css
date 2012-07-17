@@ -103,7 +103,7 @@ input:focus {
   font-size:16px;
   padding:5px;
   margin:6px 6px 0 5px;/* ie6 显示错误的边距 */
-  width:500px;
+  width:450px;
   border:1px solid;
   border-color:#b0b0b0 #e0e0e0 #e0e0e0 #b0b0b0;
   background:url(/+/img/screen.png) 0 -33px;/* firefox */
