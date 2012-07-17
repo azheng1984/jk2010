@@ -1,9 +1,9 @@
 <?php
 class PublisherPaymentScreen extends PublisherScreen {
   protected function renderPublisherContent() {
-    echo '<div class="box"><div class="title">未付款</div>账户余额: ￥xx <input type="submit" value="付款" /> 设置（自动付款）';
+    echo '<div class="box"><div class="title">未付款</div>账户余额: ￥xx <input type="submit" value="付款" /> 设置（自动付款，代扣税费（在付款时的选项会被自动保存，避免重复操作））';
     echo '<br />level 1 商家 佣金</div>';
-    echo '<div class="box"><div class="title">正在付款</div>付款总额: ￥xx <br />level 1 商家 佣金<br />区间（时间） | 过滤（渠道，订单编号）<br />
+    echo '<div class="box"><div class="title">正在付款</div>付款总额: ￥xx <br />level 1 商家 佣金<br />
 level 2.1(order) 时间 | 渠道 | 商家 | 订单编号 | 订单支付金额 | 佣金<br />
 level 2.2(order detail) 商品编号 | 商品名称 | 单价 | 数量 | 总价 | 佣金
 总计：数量 支付金额 佣金</div>';
