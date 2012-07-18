@@ -11,7 +11,7 @@ class MerchantPaymentScreen extends MerchantScreen {
     echo '<br />【已付款】';
     echo '<br />level 1 (summary) 付款日期 | 付款金额（正在确认 <input type="submit" value="重新付款" />）<br />';
     echo 'level 2(order) 订单编号 | 订单支付金额 | 佣金<br />';
-    echo 'level 3(order detail) 商品编号 | 商品名称 | 单价 | 数量 | 总价 | 佣金<br />';
+    echo 'level 3(order detail) 商品编号 | 商品名称 | 单价 | 数量 | 总价 | 佣金<br />历史记录';
     echo '</ul>';
   }
 
