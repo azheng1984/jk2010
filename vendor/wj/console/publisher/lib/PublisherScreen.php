@@ -1,6 +1,10 @@
 <?php
 abstract class PublisherScreen extends ConsoleScreen {
   protected function renderConsoleContent() {
+    $this->renderPublisherContent();
+  }
+
+  protected function renderNav() {
     echo '<ul id="navigator">';
     if ($_SERVER['REQUEST_URI'] === '/') {
       echo '<li class="home selected" style="border-radius: 3px 0 0 3px;"><span>首页</span></li>';
@@ -12,7 +16,7 @@ abstract class PublisherScreen extends ConsoleScreen {
     } else {
       echo '<li><a href="/report">效果报告</a></li>';
     }
-      if ($_SERVER['REQUEST_URI'] === '/payment') {
+    if ($_SERVER['REQUEST_URI'] === '/payment') {
       echo '<li class="selected"><span>结算</span></li>';
     } else {
       echo '<li><a href="/payment">结算</a></li>';
@@ -38,7 +42,6 @@ abstract class PublisherScreen extends ConsoleScreen {
       echo '<li><a href="/account">帐户设置</a></li>';
     }
     echo '</ul>';
-    $this->renderPublisherContent();
   }
 
   protected function getRole() {

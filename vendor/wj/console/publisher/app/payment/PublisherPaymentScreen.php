@@ -9,7 +9,7 @@ level 2.2(order detail) 商品编号 | 商品名称 | 单价 | 数量 | 总价 |
 总计：数量 支付金额 佣金</div>';
     echo '<div class="box"><div class="title">已付款</div>';
     echo '<br />level 1 付款日期 | 付款金额';
-    echo '<br />level 2 商家 | 佣金</div>';
+    echo '<br />level 2 商家 | 佣金<br />历史记录</div>';
   }
 
   protected function getTitle() {
