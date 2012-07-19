@@ -1,7 +1,7 @@
 <?php
 class MerchantPaymentScreen extends MerchantScreen {
   protected function renderMerchantContent() {
-    echo '<hr /><ul>';
+    echo '<ul>';
     echo '【未付款】<br />账户余额: ￥xx <input type="submit" value="开始付款" /><br />';
     echo 'level 1(order) 订单编号 | 订单支付金额 | 佣金<br />';
     echo 'level 2(order detail) 商品编号 | 商品名称 | 单价 | 数量 | 总价 | 佣金<br />';
