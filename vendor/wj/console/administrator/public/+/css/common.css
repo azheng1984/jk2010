@@ -92,6 +92,7 @@ input {
   background-image:url(/+/img/screen.png);
   width:89px;
   height:25px;
+  margin-left:-2px;
 }
 #toolbar {
   float:right;
@@ -127,8 +128,7 @@ input {
   border-radius:5px 0 0 5px;
 }
 .box {
-  border:1px solid;
-  border-color:#e0e0e0 #c0c0c0 #c0c0c0 #e0e0e0;
+  border:1px solid #e5e5e5;
   background:#fff;
   margin:10px 0 0 10px;
   float:left;
@@ -136,13 +136,15 @@ input {
   font-size:13px;
   color:#909090;
   float:right;
+  border-radius:5px;
 }
 .block {
-  text-align:center;
   float:left;
-  width:235px;
   border-left:1px solid #e0e0e0;
   padding:10px 0;
+  width: 215px;
+  text-align: left;
+  padding-left:12px;
 }
 .box-content {
 
@@ -151,7 +153,6 @@ input {
   border:0;
 }
 .title {
-  background:#fff;
   font-size:14px;
   text-align:left;
   padding:4px 8px;
@@ -179,4 +180,5 @@ input {
   font-size:20px;
   font-weight:bold;
   color:#303030;
+  line-height:30px;
 }
