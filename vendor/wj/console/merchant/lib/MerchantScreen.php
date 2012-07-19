@@ -1,11 +1,16 @@
 <?php
 abstract class MerchantScreen extends ConsoleScreen {
   protected function renderConsoleContent() {
+
+    $this->renderMerchantContent();
+  }
+
+  protected function renderNav() {
     echo '<ul id="navigator">';
     if ($_SERVER['REQUEST_URI'] === '/') {
       echo '<li class="selected home"><span>首页</span></li>';
     } else {
-      echo '<li><a href="/">首页</a></li>';
+      echo '<li class="home"><a href="/">首页</a></li>';
     }
     if ($_SERVER['REQUEST_URI'] === '/report') {
       echo '<li class="selected"><span>效果报表</span></li>';
@@ -28,12 +33,11 @@ abstract class MerchantScreen extends ConsoleScreen {
       echo '<li><a href="/io">数据接口</a></li>';
     }
     if ($_SERVER['REQUEST_URI'] === '/account') {
-      echo '<li class="selected"><span>帐户设置</span></li>';
+      echo '<li class="selected last"><span>帐户设置</span></li>';
     } else {
-      echo '<li><a href="/account">帐户设置</a></li>';
+      echo '<li class="last"><a href="/account">帐户设置</a></li>';
     }
     echo '</ul>';
-    $this->renderMerchantContent();
   }
 
   protected function getRole() {

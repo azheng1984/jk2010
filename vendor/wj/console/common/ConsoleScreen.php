@@ -18,11 +18,11 @@ abstract class ConsoleScreen extends Screen {
   protected function renderHtmlBodyContent() {
     echo '<div id="header"><a href="/" id="logo"> </a>';
     echo '<a href="/"><h1>',$this->getRole(),'</h1></a>';
-    $this->renderNav();
     echo '<div id="toolbar">';
     echo '<span>root </span>';
     echo '<a id="sign_out" href="/sign_out">退出</a>';
     echo '</div></div><div id="console"><div class="content">';
+    $this->renderNav();
     $this->renderConsoleContent();
     echo '</div></div><div id="footer">© 2012 货比万家</div>';
   }

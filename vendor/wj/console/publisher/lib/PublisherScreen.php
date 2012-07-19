@@ -7,9 +7,9 @@ abstract class PublisherScreen extends ConsoleScreen {
   protected function renderNav() {
     echo '<ul id="navigator">';
     if ($_SERVER['REQUEST_URI'] === '/') {
-      echo '<li class="home selected" style="border-radius: 3px 0 0 3px;"><span>首页</span></li>';
+      echo '<li class="home selected"><span>首页</span></li>';
     } else {
-      echo '<li class="home" style="border-radius: 3px 0 0 3px;"><a href="/">首页</a></li>';
+      echo '<li class="home"><a href="/">首页</a></li>';
     }
     if ($_SERVER['REQUEST_URI'] === '/report') {
       echo '<li class="selected"><span>效果报告</span></li>';
@@ -37,9 +37,9 @@ abstract class PublisherScreen extends ConsoleScreen {
       echo '<li><a href="/ad_widget">广告控件</a></li>';
     }
     if ($_SERVER['REQUEST_URI'] === '/account') {
-      echo '<li class="selected"><span>帐户设置</span></li>';
+      echo '<li class="last selected"><span>帐户设置</span></li>';
     } else {
-      echo '<li><a href="/account">帐户设置</a></li>';
+      echo '<li class="last"><a href="/account">帐户设置</a></li>';
     }
     echo '</ul>';
   }
