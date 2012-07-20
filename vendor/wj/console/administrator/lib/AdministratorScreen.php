@@ -12,7 +12,7 @@ abstract class AdministratorScreen extends ConsoleScreen {
       echo '<li class="home"><a href="/">首页</a></li>';
     }
     if ($_SERVER['REQUEST_URI'] === '/report') {
-      echo '<li class="selected"><span>效果报表</span></li>';
+      echo '<li class="selected"><span>效果报告</span></li>';
     } else {
       echo '<li><a href="/report">效果报告</a></li>';
     }
