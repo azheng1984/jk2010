@@ -7,7 +7,7 @@ class AdministratorPaymentScreen extends AdministratorScreen {
     echo 'level 2(order) 订单编号 | 订单支付金额 | 佣金<br />';
     echo 'level 3(order detail) 商品编号 | 商品名称 | 单价 | 数量 | 总价 | 佣金<br />';
     echo '历史记录 <input type="submit" value="撤销" />';
-    echo '<br />【付款】';
+    echo '<br /><br />【付款】';
     echo '<br />level 1(publisher) 广告发布商 佣金 <input type="submit" value="已付款" /><br />';
     echo 'level 2(order) 订单编号 | 订单支付金额 | 佣金<br />';
     echo 'level 3(order detail) 商品编号 | 商品名称 | 单价 | 数量 | 总价 | 佣金<br />';
