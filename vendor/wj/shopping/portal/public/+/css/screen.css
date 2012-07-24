@@ -4,17 +4,17 @@
   float:none;
 }
 body {
-  margin:0;
+  color:#505050;
   font:13px Arial,Helvetica,sans-serif;
   line-height:20px;
-  color:#505050;
+  margin:0;
 }
 img {
   border:0;
 }
 a {
-  color:#505050;
   border-bottom:1px solid #505050;
+  color:#505050;
   text-decoration:none;
 }
 a:hover {
