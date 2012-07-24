@@ -12,12 +12,22 @@ abstract class Screen extends EtagView {
     $this->js .= $js;
   }
 
-  protected function addCssLink($name) {
-    $this->cssList[] = $name;
+  protected function addCssLink($name, $folder = 'css', $domain = null) {
+    $uri = '';
+    if ($domain !== null) {
+      $uri = 'http://'.$domain;
+    }
+    $uri .= '/'.$folder.'/'.$name;
+    $this->cssList[$name] = $uri;
   }
 
-  protected function addJsLink($name) {
-    $this->jsList[] = $name;
+  protected function addJsLink($name, $folder = 'js', $domain = null) {
+    $uri = '';
+    if ($domain !== null) {
+      $uri = 'http://'.$domain;
+    }
+    $uri .= '/'.$folder.'/'.$name;
+    $this->jsList[$name] = $uri;
   }
 
   protected function stop() {
@@ -34,16 +44,16 @@ abstract class Screen extends EtagView {
   }
 
   private function renderCssLinkList() {
-    foreach ($this->cssList as $name) {
-      echo '<link type="text/css" href="/+/css/', $name, '.',
+    foreach ($this->cssList as $name => $uri) {
+      echo '<link type="text/css" href="', $uri, '.',
         Asset::getMd5('css/'.$name.'.css'), '.css"',
         ' media="screen" rel="stylesheet"/>';
     }
   }
 
   private function renderJsLinkList() {
-    foreach ($this->jsList as $name) {
-      echo '<script type="text/javascript" src="/+/js/', $name, '.',
+    foreach ($this->jsList as $name => $uri) {
+      echo '<script type="text/javascript" src="', $uri, '.',
         Asset::getMd5('js/'.$name.'.js'), '.js"></script>';
     }
   }

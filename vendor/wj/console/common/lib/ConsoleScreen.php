@@ -11,8 +11,8 @@ abstract class ConsoleScreen extends Screen {
 
   protected function renderHtmlHeadContent() {
     echo '<title>', $this->getTitle(), '-货比万家</title>';
-    $this->addCssLink('common');
-    $this->addJsLink('common');
+    $this->addCssLink('common', 'css', 'dev.console.huobiwanjia.com');
+    $this->addJsLink('common', 'js', 'dev.console.huobiwanjia.com');
   }
 
   protected function renderHtmlBodyContent() {
