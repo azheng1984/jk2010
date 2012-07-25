@@ -5,6 +5,7 @@ return array(
     'lib',
     HYPERFRAMEWORK_PATH.'web/lib', '../common/lib',
     '../../common/view',
+    '../../../db',
   ),
   'Application' => array('Action', 'View' => 'Screen'),
 );
