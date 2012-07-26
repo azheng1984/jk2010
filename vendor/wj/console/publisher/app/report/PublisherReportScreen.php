@@ -51,9 +51,13 @@ class PublisherReportScreen extends PublisherScreen {
       || ($_GET['group_by'] !== 'month' && $_GET['group_by'] !== 'year' && $_GET['group_by'] !== 'channel')) {
       echo '<b>日</b>';
     } else {
-      echo '<a href="', $prefix, 'group_by=day">日</a>';
+      $href = $prefix;
+      if ($href === '?') {
+        $href = 'report';
+      }
+      echo '<a href="', $href, '">日</a>';
     }
-      if (isset($_GET['group_by']) && $_GET['group_by'] === 'month') {
+    if (isset($_GET['group_by']) && $_GET['group_by'] === 'month') {
       echo '<b>月</b>';
     } else {
       echo '<a href="', $prefix, 'group_by=month">月</a>';
@@ -77,10 +81,85 @@ class PublisherReportScreen extends PublisherScreen {
       echo '<a href="', $prefix, 'group_by=channel">渠道</a>';
     }
     echo '</div>';
-    //SELECT FROM performance_report/performance_report_by_channel
-    //SELECT sum(),avg() FROM performance_report/performance_report_by_channel
-    echo '<br /><table><tr><th>时间/渠道</th><th>流量</th><th>订单数量</th><th>订单支付金额</th><th>活跃订单佣金</th><th>CPC</th><th>完成订单佣金</th></tr><tr><td colspan="7">空</td></tr></table>';
+    echo '<br /><table><tr><th>时间/渠道</th><th>流量</th><th>订单数量</th><th>订单支付金额</th><th>活跃订单佣金</th><th>CPC</th><th>完成订单佣金</th></tr>';
+    $list = $this->getReport();
+    foreach ($list as $row) {
+      echo '<tr><td>'.$row['date'].'</td><td>'.$row['traffic'].'</td></tr>';
+    }
+    $total = $this->getReportTotal();
+    echo '<tr><td>平均</td><td>'.$total['AVG(traffic)'].'</td></tr>'; //tfoot
+    echo '<tr><td>总计</td><td>'.$total['SUM(traffic)'].'</td></tr>'; //tfoot
+    echo '</table>';
     echo '</div>';
+  }
+
+  private function getReport() {
+    $select = 'traffic, order_amount, order_payment, active_order_commission, complete_order_commission';
+    $sql = 'SELECT '.$select.' FROM ';
+    if (isset($_GET['channel_id'])
+      || (isset($_GET['group_by']) && $_GET['group_by'] === 'channel')) {
+      $sql .= 'performance_report_by_channel';
+    } else {
+      $sql .= 'performance_report';
+    }
+    $sql .= ' WHERE user_id = 1 AND ';
+    $whereList = array();
+    if (isset($_GET['channel_id'])) {
+      $whereList[] = ' `channel_id` = '.$_GET['channel_id'];
+    }
+    if (isset($_GET['start_date']) === false) {
+      $_GET['start_date'] = date('Y-n-1');
+    }
+    $whereList[] = ' `date` >= '.$_GET['start_date'];
+    if (isset($_GET['end_date']) === false) {
+      $_GET['end_date'] = date('Y-n-j');
+    }
+    $whereList[] = ' `date` <= '.$_GET['end_date'];
+    $sql .= implode(' AND ', $whereList);
+    if (isset($_GET['group_by'])) {
+      $groupBy = $_GET['group_by'];
+      if ($groupBy === 'channel') {
+        $groupBy = 'channel_id';
+      }
+      $sql .= ' GROUP BY '.$groupBy;
+    }
+    if (isset($_GET['order_by'])) {
+      $sql .= ' ORDER BY '.$_GET['order_by'];
+    }
+    if (isset($_GET['page'])) {
+      $start = ($_GET['page'] - 1) * 50;
+      $sql .= ' LIMIT '.$start.', 50';
+    } else {
+      $sql .= ' LIMIT 0, 50';
+    }
+    return Db::getAll($sql);
+  }
+
+  private function getReportTotal() {
+    $select = 'SUM(traffic), AVG(traffic),SUM(order_amount), AVG(order_amount),'
+      .'SUM(order_payment), AVG(order_payment),SUM(active_order_commission), AVG(active_order_commission), '
+      .'SUM(complete_order_commission), AVG(complete_order_commission)';
+    $sql = 'SELECT '.$select.' FROM ';
+    if (isset($_GET['channel_id'])) {
+      $sql .= 'performance_report_by_channel';
+    } else {
+      $sql .= 'performance_report';
+    }
+    $sql .= ' WHERE user_id = 1 AND ';
+    $whereList = array();
+    if (isset($_GET['channel_id'])) {
+      $whereList[] = ' `channel_id` = '.$_GET['channel_id'];
+    }
+    if (isset($_GET['start_date']) === false) {
+      $_GET['start_date'] = date('Y-n-1');
+    }
+    $whereList[] = ' `date` >= '.$_GET['start_date'];
+    if (isset($_GET['end_date']) === false) {
+      $_GET['end_date'] = date('Y-n-j');
+    }
+    $whereList[] = ' `date` <= '.$_GET['end_date'];
+    $sql .= implode(' AND ', $whereList);
+    return Db::getRow($sql);
   }
 
   protected function getTitle() {
