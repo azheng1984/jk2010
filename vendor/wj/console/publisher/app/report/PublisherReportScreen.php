@@ -87,8 +87,9 @@ class PublisherReportScreen extends PublisherScreen {
       echo '<tr><td>'.$row['date'].'</td><td>'.$row['traffic'].'</td></tr>';
     }
     $total = $this->getReportTotal();
-    echo '<tr><td>平均</td><td>'.$total['AVG(traffic)'].'</td></tr>'; //tfoot
-    echo '<tr><td>总计</td><td>'.$total['SUM(traffic)'].'</td></tr>'; //tfoot
+    $total['COUNT(*)'] = 1;//TODO
+    echo '<tr><td>平均</td><td>'.$total['SUM(traffic)']/$total['COUNT(*)'].'</td></tr>';
+    echo '<tr><td>总计</td><td>'.$total['SUM(traffic)'].'</td></tr>';
     echo '</table>';
     echo '</div>';
   }
@@ -136,9 +137,8 @@ class PublisherReportScreen extends PublisherScreen {
   }
 
   private function getReportTotal() {
-    $select = 'SUM(traffic), AVG(traffic),SUM(order_amount), AVG(order_amount),'
-      .'SUM(order_payment), AVG(order_payment),SUM(active_order_commission), AVG(active_order_commission), '
-      .'SUM(complete_order_commission), AVG(complete_order_commission)';
+    $select = 'SUM(traffic), SUM(order_amount), SUM(order_payment), '
+      .'SUM(active_order_commission), SUM(complete_order_commission), COUNT(*)';
     $sql = 'SELECT '.$select.' FROM ';
     if (isset($_GET['channel_id'])) {
       $sql .= 'performance_report_by_channel';
