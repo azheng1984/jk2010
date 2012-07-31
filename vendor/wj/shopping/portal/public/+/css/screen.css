@@ -102,7 +102,7 @@ input:focus {
   float:left;
   font-size:16px;
   padding:5px;
-  margin:6px 6px 0 5px;/* ie6 显示错误的边距 */
+  margin:6px 0 0 5px;/* ie6 显示错误的边距 */
   width:450px;
   border:1px solid;
   border-color:#b0b0b0 #e0e0e0 #e0e0e0 #b0b0b0;
@@ -112,11 +112,14 @@ input:focus {
   border-color:#909090 #c0c0c0 #c0c0c0 #909090;
 }
 #header button {
-  margin-top:7px;
+  margin-top:6px;
   width:30px;
-  height:30px;
+  height:31px;
   border:0;
-  background:url(/+/img/screen.png) -97px 0;
+  background:url(/+/img/search_icon.png) no-repeat;
+  border:1px solid;
+  border-color:#b0b0b0 #e0e0e0 #e0e0e0 #fff;
+  border-left:0;
   cursor:pointer;
 }
 #banner {
