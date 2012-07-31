@@ -123,13 +123,13 @@ ol .current {
 }
 #merchant {
   border:0;
-  color:#909090;
+  color:#707070;
   font-size:13px;
   display:inline-block;
   margin-bottom:8px;
 }
 #merchant a {
-  font-size:14px;
+  font-size:13px;
   color:#707070;
   border-color:#707070;
 }
