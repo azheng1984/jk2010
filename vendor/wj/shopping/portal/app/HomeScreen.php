@@ -130,7 +130,7 @@ class HomeScreen extends Screen {
   private function renderMerchant() {
     echo '<span id="merchant"><a href="http://',
       $this->merchant['uri_format'], '" target="_blank" rel="nofollow">',
-      $this->merchant['name'], '</a> - 综合网购首选，正品行货，机打发票，售后上门取件，省钱又放心。</span>';
+      $this->merchant['name'], '</a></span>';
   }
 
   private function renderSlideList() {
