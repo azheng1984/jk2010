@@ -123,15 +123,15 @@ ol .current {
 }
 #merchant {
   border:0;
-  color:#909090;
+  color:#808080;
   font-size:14px;
   display:inline-block;
   margin-bottom:8px;
 }
 #merchant a {
   font-size:14px;
-  color:#707070;
-  border-color:#707070;
+  color:#808080;
+  border-color:#808080;
 }
 #merchant a:hover {
   color:#101010;
