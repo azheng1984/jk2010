@@ -123,19 +123,25 @@ ol .current {
 }
 #merchant {
   border:0;
-  color:#808080;
+  color:#707070;
   font-size:14px;
   display:inline-block;
-  margin-bottom:8px;
+  margin-bottom:6px;
 }
 #merchant a {
-  font-size:14px;
-  color:#808080;
-  border-color:#808080;
+  font-size:13px;
+  color:#707070;
+  border:1px solid;
+  border-color:#e5e5e5 #d0d0d0 #d0d0d0 #e5e5e5;
+  margin-left:2px;
+  padding:2px 6px;
+  background:url(/+/img/screen.png) 0 -68px repeat-x;
+  border-radius:2px;
 }
 #merchant a:hover {
-  color:#101010;
-  border-color:#101010;
+  color:#303030;
+  border-color:#ddd #bbb #bbb #ddd;
+  box-shadow:0 0 3px #ddd;
 }
 #merchant_list_wrapper {
   padding-left:10px;

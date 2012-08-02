@@ -128,9 +128,9 @@ class HomeScreen extends Screen {
   }
 
   private function renderMerchant() {
-    echo '<span id="merchant">去 <a href="http://',
-      $this->merchant['uri_format'], '" target="_blank" rel="nofollow">',
-      $this->merchant['name'], '</a> 逛逛</span>';
+    echo '<span id="merchant">',
+      $this->merchant['name'], ' <a href="http://',
+      $this->merchant['uri_format'], '" target="_blank" rel="nofollow">去逛逛</a></span>';
   }
 
   private function renderSlideList() {
