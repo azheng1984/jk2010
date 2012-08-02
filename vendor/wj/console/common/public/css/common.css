@@ -163,7 +163,7 @@ input {
 #navigator .selected {
   background:red;
   color:#505050;
-  box-shadow: inset 0 1px 1px rgba(100,100,100,0.1);
+  box-shadow: inset 0 1px 1px rgba(100,100,100,0.2);
 }
 #navigator li a {
   color:#707070;
@@ -178,7 +178,7 @@ input {
 }
 #navigator .selected:hover {
   background:red;
-  box-shadow: inset 0 1px 1px rgba(100,100,100,0.1);
+  box-shadow: inset 0 1px 1px rgba(100,100,100,0.2);
 }
 .big {
   font-size:20px;
