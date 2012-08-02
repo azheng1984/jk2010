@@ -114,7 +114,8 @@ input {
   font-size:15px;
   border-radius:0 0 5px 5px;
   width:100%;
-  background:#e9e9e9;
+  background:#eaeaea;
+  box-shadow: inset 0 1px 1px rgba(200,200,200,0.5);
 }
 #navigator li {
   float:left;
@@ -162,16 +163,18 @@ input {
 #navigator .selected {
   background:red;
   color:#505050;
+  box-shadow: inset 0 1px 1px rgba(200,200,200,0.5);
 }
 #navigator li a {
   color:#707070;
   border:0;
 }
 #navigator li:hover {
-  background:#a0a0a0;
+  background:#ddd;
+  box-shadow: inset 0 1px 1px rgba(200,200,200,0.5);
 }
 #navigator li:hover a {
-  color:#fff;
+  color:#303030;
 }
 #navigator .selected:hover {
   background:red;
