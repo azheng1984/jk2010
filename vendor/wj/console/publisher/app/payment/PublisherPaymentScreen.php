@@ -1,11 +1,6 @@
 <?php
 class PublisherPaymentScreen extends PublisherScreen {
   protected function renderPublisherContent() {
-//     echo '<div class="box"><div class="title">活跃订单</div> level 1(order) 时间 | 渠道 | 跟踪编号 | 商家 | 订单编号 | 交易金额 | 佣金<br />
-// level 2(order detail) 商品编号 | 商品名称 | 单价 | 数量 | 总价 | 佣金<br />';
-//     echo '总计：数量 交易金额 佣金</div>';
-    
-    
     $row = Db::getRow("SELECT * FROM payment WHERE user_id = ? AND status = 'unpaid'", 1);
     if ($row === false) {
       $row = array('commission' => '0');
