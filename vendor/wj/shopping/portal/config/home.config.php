@@ -29,7 +29,7 @@ return array(
   'slideshow' => array(
     1 => array('name' => '京东商城', 'uri_format' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy',
       'slide_list' => array('www.360buy.com', 'www.360buy.com', 'www.360buy.com', 'www.360buy.com', 'www.360buy.com')),
-    2 => array('name' => '京东商城', 'uri_format' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy',
+    2 => array('name' => '当当网', 'uri_format' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy',
       'slide_list' => array('www.360buy.com', 'www.360buy.com', 'www.360buy.com', 'www.360buy.com')),
     3 => array('name' => '京东商城', 'uri_format' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy',
       'slide_list' => array('www.360buy.com', 'www.360buy.com', 'www.360buy.com')),
