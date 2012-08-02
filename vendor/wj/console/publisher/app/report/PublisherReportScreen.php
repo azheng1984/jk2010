@@ -81,7 +81,7 @@ class PublisherReportScreen extends PublisherScreen {
       echo '<a href="', $prefix, 'group_by=channel">渠道</a>';
     }
     echo '</div>';
-    echo '<br /><table><tr><th>时间/渠道</th><th>流量</th><th>订单数量</th><th>订单支付金额</th><th>活跃订单佣金</th><th>CPC</th><th>完成订单佣金</th></tr>';
+    echo '<br /><table><tr><th>时间/渠道</th><th>流量</th><th>订单数量</th><th>订单交易金额</th><th>活跃订单佣金</th><th>CPC</th><th>完成订单佣金</th></tr>';
     $list = $this->getReport();
     foreach ($list as $row) {
       echo '<tr><td>'.$row['date'].'</td><td>'.$row['traffic'].'</td></tr>';
@@ -95,7 +95,7 @@ class PublisherReportScreen extends PublisherScreen {
   }
 
   private function getReport() {
-    $select = 'traffic, order_amount, order_payment, active_order_commission, complete_order_commission';
+    $select = 'traffic, order_amount, order_transaction_amount, active_order_commission, complete_order_commission';
     $sql = 'SELECT '.$select.' FROM ';
     if (isset($_GET['channel_id'])
       || (isset($_GET['group_by']) && $_GET['group_by'] === 'channel')) {
@@ -137,7 +137,7 @@ class PublisherReportScreen extends PublisherScreen {
   }
 
   private function getReportTotal() {
-    $select = 'SUM(traffic), SUM(order_amount), SUM(order_payment), '
+    $select = 'SUM(traffic), SUM(order_amount), SUM(order_transaction_amount), '
       .'SUM(active_order_commission), SUM(complete_order_commission), COUNT(*)';
     $sql = 'SELECT '.$select.' FROM ';
     if (isset($_GET['channel_id'])) {
