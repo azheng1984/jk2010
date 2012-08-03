@@ -111,18 +111,21 @@ input {
 }
 #navigator {
   float:left;
-  font-size:15px;
+  font-size:14px;
+height: 35px;
   border-radius:0 0 5px 5px;
   width:100%;
-  background:#eaeaea;
-  box-shadow:inset 0 1px 1px rgba(100,100,100,0.1);
+  background:url(http://dev.console.huobiwanjia.com/img/common.png) 0 -66px repeat-x;
+  border: 1px solid #E5E5E5;
+  border-top:0;
+  line-height: 35px;
 }
 #navigator li {
   float:left;
-  padding:4px 12px;
+  padding:0 12px;
   text-align:left;
   color:#fff;
-  border-right:1px solid #f5f5f5;
+  border-right:1px solid #eee;
 }
 #navigator li.home {
   border-radius:0 0 0 5px;
@@ -161,24 +164,21 @@ input {
   color:#505050;
 }
 #navigator .selected {
-  background:red;
+  border-top:2px solid red;
+}
+#navigator .selected span {
   color:#505050;
-  box-shadow: inset 0 1px 1px rgba(100,100,100,0.2);
 }
 #navigator li a {
-  color:#707070;
+  color:#909090;
   border:0;
 }
 #navigator li:hover {
-  background:#ddd;
-  box-shadow: inset 0 1px 1px rgba(100,100,100,0.1);
 }
 #navigator li:hover a {
-  color:#505050;
+  color:#303030;
 }
 #navigator .selected:hover {
-  background:red;
-  box-shadow: inset 0 1px 1px rgba(100,100,100,0.2);
 }
 .big {
   font-size:20px;
