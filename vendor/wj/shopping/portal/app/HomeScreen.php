@@ -122,7 +122,7 @@ class HomeScreen extends Screen {
 
   private function renderSlide() {
     $slide = $this->merchant['slide_list'][$this->slideIndex];
-    echo '<a id="slide" href="http://', $slide,
+    echo '<div id="left_img_shadow"></div><a id="slide" href="http://', $slide,
       '/" target="_blank" rel="nofollow">', '<img src="/+/img/slide/',
       $this->merchant['path'], '/', $this->slideIndex, '.jpg"/></a><a id="next" href="javascript:;"><img id="arrow" src="/+/img/arrow.png"/></a>';
   }
