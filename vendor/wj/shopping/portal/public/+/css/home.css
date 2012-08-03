@@ -1,7 +1,12 @@
 #arrow {
   float:right;
-  margin-top:102px;
-  margin-right:12px;
+  margin-top:98px;
+  margin-right:10px;
+}
+#arrow_left {
+  float:left;
+  margin-top:98px;
+  margin-left:10px;
 }
 #home {
   width:100%;
@@ -76,7 +81,7 @@ ol .current {
 }
 #slide_wrapper {
   margin-bottom:10px;
-  padding:6px 0 2px 8px;
+  padding:5px 0 2px 0;
   border:1px solid;
   border-color:#e5e5e5;
   background:#fff;
@@ -86,13 +91,14 @@ ol .current {
 }
 #slide {
   float:left;
-  width:710px;
-  margin:0 0 1px 20px;
+  margin:0 0 2px 20px;
   border:0;
   text-align:center;
 }
 #slide img {
-  height: 230px;
+  height: 220px;
+  padding:0 20px 0 0;
+  margin-left:58px;
 }
 #slide_list {
   float:left;
@@ -122,11 +128,14 @@ ol .current {
   color:#fff;
 }
 #merchant {
-  border:0;
-  color:#707070;
-  font-size:14px;
-  display:inline-block;
-  margin-bottom:6px;
+border: 0;
+color: #707070;
+font-size: 14px;
+display: inline-block;
+margin-bottom: 10px;
+padding: 5px 0 0 0;
+width: 98%;
+margin-right:10px;
 }
 #merchant a {
   font-size:13px;
