@@ -26,7 +26,7 @@ h1 {
   font-size:18px;
   margin-left:5px;
   color:#707070;
-  margin-top:3px;
+  margin-top:5px;
 }
 ol, ul {
   list-style:none;
@@ -90,8 +90,8 @@ input {
   float:left;
   border:none;
   display:block;
-  background-image:url(http://dev.console.huobiwanjia.com/img/common.png);
-  width:89px;
+  background-image:url(http://dev.console.huobiwanjia.com/img/logo_4.png);
+  width:105px;
   height:25px;
   margin-left:-2px;
 }
