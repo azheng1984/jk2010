@@ -165,6 +165,7 @@ height: 35px;
 }
 #navigator .selected {
   border-top:2px solid red;
+  line-height:31px;
 }
 #navigator .selected span {
   color:#505050;
