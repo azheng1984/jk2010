@@ -83,7 +83,7 @@ input:focus {
 #logo a {
   position:relative;
   display:block;
-  width:90px;
+  width:105px;
   height:25px;
   color:red;
   border:0;
@@ -93,9 +93,9 @@ input:focus {
   top:0;
   left:0;
   display:block;
-  width:89px;
+  width:105px;
   height:25px;
-  background-image:url(/+/img/screen.png);
+  background-image:url(/+/img/logo_4.png);
   cursor:pointer;/* ie7 */
 }
 #header input {
