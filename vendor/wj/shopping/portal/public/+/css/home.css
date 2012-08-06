@@ -7,6 +7,12 @@
   color: #909090;
   border-color: #909090;border: 0;
 }
+#more_category:hover {
+  background-position:-112px -195px;
+}
+#more_category:hover a {
+  color:#505050;
+}
 #arrow {
   float:right;
   margin-top:119px;
@@ -94,7 +100,7 @@ ol .current {
   background:#fff;
   margin-top:-1px;
   text-align:center;
-  height:304px;
+  height:303px;
 }
 #slide {
   float:left;
