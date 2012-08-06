@@ -5,6 +5,9 @@ body {
   text-align:center;
   margin:0;
 }
+#footer {
+  color:#707070;
+}
 img {
   border:0;
 }
