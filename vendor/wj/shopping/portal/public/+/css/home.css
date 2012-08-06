@@ -1,3 +1,12 @@
+#more_category {
+  background:url(/+/img/search.png) -130px -169px no-repeat;
+}
+#more_category a {
+  padding-left:13px;
+  font-size: 13px;
+  color: #909090;
+  border-color: #909090;border: 0;
+}
 #arrow {
   float:right;
   margin-top:119px;

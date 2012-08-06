@@ -68,7 +68,11 @@ class HomeScreen extends Screen {
         echo '<li class="current">', $value[1], '</li>';
         continue;
       }
-      echo '<li><a href="', $key, '" rel="nofollow">', $value[1], '</a></li>';
+      echo '<li';
+      if ($value[1] === '更多分类') {
+        echo ' id="more_category"';
+      }
+      echo '><a href="', $key, '" rel="nofollow">', $value[1], '</a></li>';
     }
     echo '</ol>';
   }
