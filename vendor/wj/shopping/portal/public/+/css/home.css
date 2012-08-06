@@ -1,18 +1,15 @@
-#more_category {
-  
-}
 #more_category a {
-	background:url(/+/img/search.png) -140px -175px no-repeat;
+	background:url(/+/img/search.png) -141px -175px no-repeat;
   padding-left:13px;
-  font-size: 13px;
+  font-size:13px;
   color: #909090;
   border-color: #909090;border: 0;
 }
 #more_category a:hover {
-  background-position:-122px -201px;
+  background-position:-123px -201px;
 }
 #more_category a:hover {
-  color:#505050;
+  color:#303030;
 }
 #arrow {
   float:right;
