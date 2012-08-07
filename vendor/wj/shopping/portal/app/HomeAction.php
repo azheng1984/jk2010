@@ -35,7 +35,7 @@ class HomeAction {
   private function getMerchantSlideList() {
     $offset = ($GLOBALS['PAGE'] - 1) * 5;
     $sql = 'SELECT * FROM merchant_slide';
-    $sqlSuffix = ' ORDER BY id LIMIT '.$offset.', 5';
+    $sqlSuffix = ' ORDER BY id LIMIT '.$offset.', 6';
     $typeId = $GLOBALS['MERCHANT_TYPE'][0];
     if ($typeId !== null) {
       return Db::getAll($sql.' WHERE type_id = ?'.$sqlSuffix, $typeId);

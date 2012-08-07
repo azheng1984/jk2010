@@ -55,7 +55,7 @@ class HomeScreen extends Screen {
 
   private function renderMerchantSlideList() {
     echo '<div class="content">';
-    $this->renderMerchantTypeList();
+    //$this->renderMerchantTypeList();
     $this->renderSlideshow();
     echo '</div>';
   }
