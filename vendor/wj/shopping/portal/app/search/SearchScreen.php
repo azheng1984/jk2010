@@ -57,7 +57,7 @@ class SearchScreen extends Screen {
       SearchToolbarScreen::render();
       echo '<div id="no_result"><div>没有找到相关商品，建议：</div>',
         '<ul><li>检查搜索条件是否有误</li>',
-        '<li>扩大搜索范围</li><li>去 <a href="/">商店列表</a> 逛逛</li></ul></div>';
+        '<li>扩大搜索范围</li><li>去 <a href="/">首页</a> 重新开始</li></ul></div>';
       return;
     }
     SearchResultScreen::render();

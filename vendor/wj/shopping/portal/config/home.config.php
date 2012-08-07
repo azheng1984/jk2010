@@ -37,5 +37,7 @@ return array(
       'slide_list' => array('www.360buy.com', 'www.360buy.com')),
     5 => array('name' => '京东商城', 'uri_format' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy',
       'slide_list' => array('www.360buy.com')),
+      6 => array('name' => '京东商城', 'uri_format' => 'www.360buy.com/?source=huobiwanjia', 'path' => '360buy',
+          'slide_list' => array('www.360buy.com')),
   )
 );
