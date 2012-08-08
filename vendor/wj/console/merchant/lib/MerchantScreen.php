@@ -21,11 +21,6 @@ abstract class MerchantScreen extends ConsoleScreen {
     } else {
       echo '<li><a href="/payment">结算</a></li>';
     }
-    if ($_SERVER['REQUEST_URI'] === '/active_order') {
-      echo '<li class="selected"><span>活跃订单</span></li>';
-    } else {
-      echo '<li><a href="/active_order">活跃订单</a></li>';
-    }
     if ($_SERVER['REQUEST_URI'] === '/io') {
       echo '<li class="selected"><span>数据接口</span></li>';
     } else {
