@@ -12,7 +12,7 @@ class SearchScreen extends Screen {
   protected function renderHtmlHeadContent() {
     $title = $GLOBALS['QUERY']['name'];
     if (isset($GLOBALS['IS_RECOGNITION'])) {
-      $title .= '-同款';
+      $title .= '_同款';
     }
     if (isset($GLOBALS['CATEGORY'])) {
       $title .= '/'.$GLOBALS['CATEGORY']['name'];
@@ -21,11 +21,11 @@ class SearchScreen extends Screen {
       $title .= '/'.urldecode($GLOBALS['PATH_SECTION_LIST'][3]);
     }
     echo '<title>', htmlentities($title, ENT_NOQUOTES, 'UTF-8'),
-      '价格、品牌';
+      ' 价格、品牌';
     if ($GLOBALS['PAGE'] > 1) {
       echo '(', $GLOBALS['PAGE'], ')';
     }
-    echo '-货比万家</title>';
+    echo ' - 货比万家</title>';
     $this->addCssLink('search');
     $this->addJsLink('search');
   }
