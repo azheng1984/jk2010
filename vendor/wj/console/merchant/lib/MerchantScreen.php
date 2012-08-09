@@ -21,10 +21,15 @@ abstract class MerchantScreen extends ConsoleScreen {
     } else {
       echo '<li><a href="/payment">结算</a></li>';
     }
-    if ($_SERVER['REQUEST_URI'] === '/io') {
+      if ($_SERVER['REQUEST_URI'] === '/io') {
       echo '<li class="selected"><span>数据接口</span></li>';
     } else {
       echo '<li><a href="/io">数据接口</a></li>';
+    }
+    if ($_SERVER['REQUEST_URI'] === '/data_optimization') {
+      echo '<li class="selected"><span>数据优化</span></li>';
+    } else {
+      echo '<li><a href="/data_optimization">数据优化</a></li>';
     }
     if ($_SERVER['REQUEST_URI'] === '/account') {
       echo '<li class="selected last"><span>帐户设置</span></li>';

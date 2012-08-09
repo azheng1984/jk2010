@@ -30,9 +30,9 @@ class PublisherPaymentScreen extends PublisherScreen {
 level 2.1(order) 时间 | 渠道 | 跟踪编号 | 订单编号 | 交易金额 | 佣金<br />
 level 2.2(order detail) 商品编号 | 名称 | 单价 | 数量 | 总价 | 佣金';
     echo '</div>';
-    echo '<div class="box"><div class="title">活跃订单</div> level 1(order) 时间 | 渠道 | 跟踪编号 | 商家 | 订单编号 | 交易金额 | 佣金<br />
-level 2(order detail) 商品编号 | 商品名称 | 单价 | 数量 | 总价 | 佣金<br />';
-    echo '总计：数量 交易金额 佣金</div>';
+//     echo '<div class="box"><div class="title">未完成</div> level 1(order) 时间 | 渠道 | 跟踪编号 | 商家 | 订单编号 | 交易金额 | 佣金<br />
+// level 2(order detail) 商品编号 | 商品名称 | 单价 | 数量 | 总价 | 佣金<br />';
+//     echo '总计：数量 交易金额 佣金</div>';
     echo '<div class="box"><div class="title">已付款</div>';
     echo '<br />level 1 付款日期 | 付款金额';
     echo '<br />level 2 商家 | 佣金<br />历史记录</div>';
