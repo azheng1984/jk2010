@@ -21,11 +21,6 @@ abstract class PublisherScreen extends ConsoleScreen {
     } else {
       echo '<li><a href="/payment">结算</a></li>';
     }
-    if (strpos($_SERVER['REQUEST_URI'], '/unfinished_order') === 0) {
-      echo '<li class="selected"><span>未完成订单</span></li>';
-    } else {
-      echo '<li><a href="/unfinished_order">未完成订单</a></li>';
-    }
     if ($_SERVER['REQUEST_URI'] === '/io') {
       echo '<li class="selected"><span>数据接口</span></li>';
     } else {
