@@ -31,10 +31,10 @@ abstract class MerchantScreen extends ConsoleScreen {
     } else {
       echo '<li><a href="/data_optimization">数据优化</a></li>';
     }
-    if ($_SERVER['REQUEST_URI'] === '/account') {
+    if ($_SERVER['REQUEST_URI'] === '/account_setting') {
       echo '<li class="selected last"><span>帐户设置</span></li>';
     } else {
-      echo '<li class="last"><a href="/account">帐户设置</a></li>';
+      echo '<li class="last"><a href="/account_setting">帐户设置</a></li>';
     }
     echo '</ul>';
   }
