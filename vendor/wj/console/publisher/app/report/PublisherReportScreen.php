@@ -1,7 +1,7 @@
 <?php
 class PublisherReportScreen extends PublisherScreen {
   protected function renderPublisherContent() {
-    $channelList = Db::getAll('SELECT id, name FROM channel WHERE user_id = ?', 1);
+    $channelList = array();//Db::getAll('SELECT id, name FROM channel WHERE user_id = ?', 1);
     echo '<div class="box">',
       '<div><br />过滤：',
       '<form method="GET">时间区间: ';
@@ -13,8 +13,8 @@ class PublisherReportScreen extends PublisherScreen {
     }
     echo '<input name="start_date" type="text" value="', date('Y-n-1'), '" />',
       '-<input name="end_date" type="text" value="', date('Y-n-j'), '" />',
-      '</div><input type="submit" value="确定" /></form><div>渠道</div>';
-    echo '<ul>';
+      '</div><input type="submit" value="确定" /></form><div></div>';
+    echo '渠道<ul>';
     $queryList = array();
     if(isset($_GET['start_date'])) {
       $queryList[] = 'start_date='.$_GET['start_date'];
@@ -67,7 +67,7 @@ class PublisherReportScreen extends PublisherScreen {
     } else {
       echo '<a href="', $prefix, 'group_by=year">年</a>';
     }
-    echo ' | ';
+    echo ' | 渠道]';
     if (isset($_GET['channel_id'])) {
       unset($queryList['channel_id']);
       $prefix = '?'.implode('&', $queryList);
@@ -78,10 +78,10 @@ class PublisherReportScreen extends PublisherScreen {
     if (isset($_GET['group_by']) && $_GET['group_by'] === 'channel') {
       echo '<b>渠道</b>';
     } else {
-      echo '<a href="', $prefix, 'group_by=channel">渠道</a>';
+      echo '<a href="', $prefix, 'group_by=channel">  </a>';
     }
-    echo '</div>';
-    echo '<br /><table><tr><th>时间/渠道</th><th>流量</th><th>订单数量</th><th>订单交易金额</th><th>未完成订单佣金</th><th>已完成订单佣金</th><th>CPC</th></tr>';
+    echo ' </div>';
+    echo '<br /><table><tr><th>时间</th><th>流量</th><th>订单数量</th><th>订单交易金额</th><th>未完成订单佣金</th><th>已完成订单佣金</th><th>CPC<span title="Cost Per Click = 已完成订单佣金 / 流量">[?]</span></th></tr>';
     $list = $this->getReport();
     foreach ($list as $row) {
       echo '<tr><td>'.$row['date'].'</td><td>'.$row['traffic'].'</td></tr>';
