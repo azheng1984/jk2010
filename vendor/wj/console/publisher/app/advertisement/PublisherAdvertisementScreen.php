@@ -1,5 +1,5 @@
 <?php
-class PublisherAdWidgetScreen extends PublisherScreen {
+class PublisherAdvertisementScreen extends PublisherScreen {
   protected function renderPublisherContent() {
     echo '<div class="box">首页，搜索结果页 - 交互式文档（url 约定结构），图标/图片 资源库</div>';
   }

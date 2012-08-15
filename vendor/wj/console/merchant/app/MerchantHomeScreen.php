@@ -1,5 +1,5 @@
 <?php
-class MerchantDashboardScreen extends MerchantScreen {
+class MerchantHomeScreen extends MerchantScreen {
   protected function renderMerchantContent() {
     echo '<br />【今日】<br />流量 订单数量 订单支付金额 活跃订单佣金<br />';
     echo '<br />【总计】<br />';

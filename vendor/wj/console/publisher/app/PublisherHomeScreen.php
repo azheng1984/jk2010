@@ -1,5 +1,5 @@
 <?php
-class PublisherDashboardScreen extends PublisherScreen {
+class PublisherHomeScreen extends PublisherScreen {
   protected function renderPublisherContent() {
     $today = Db::getRow(
       'SELECT traffic, order_amount, order_transaction_amount, active_order_commission'
