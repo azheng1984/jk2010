@@ -194,7 +194,8 @@ text-align:left;
   width:146px;
   text-align:center;
   background-color:#fff;
-  border:1px solid #e8e8e8;
+  border:1px solid;
+  border-color:#e5e5e5;
   border-bottom:0;
   box-shadow:none;
 }
@@ -207,14 +208,17 @@ text-align:left;
 #merchant_list a img, #merchant_list span img {
   width:110px;
   padding:12px 18px;
-  border-top:2px solid #f1f1f1;
+  border-top:2px solid #fafafa;
   _margin-bottom:5px;
 }
 #merchant_list span img:hover {
-  border-color: #dadada;
+  border-color:#f1f1f1;
 }
 #merchant_list span:hover {
-
+  border-color:#ddd;
+}
+#merchant_list .current:hover {
+  border-color:#e5e5e5;
 }
 #merchant_list .current img:hover {
   border-color:red;
