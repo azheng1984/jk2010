@@ -212,13 +212,15 @@ text-align:left;
   _margin-bottom:5px;
 }
 #merchant_list span img:hover {
-  border-color:#f1f1f1;
+  border-color:#fafafa;
 }
 #merchant_list span:hover {
   border-color:#ddd;
+  box-shadow:0 0 3px #ddd;
 }
 #merchant_list .current:hover {
   border-color:#e5e5e5;
+  box-shadow:none;
 }
 #merchant_list .current img:hover {
   border-color:red;
