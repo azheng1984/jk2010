@@ -276,7 +276,7 @@ huobiwanjia.home = function() {
     home.initializeList('scroll');
     home.enhanceScroll();
     /* auto play */
-    home.play();
+    //home.play();
   });
 
   return home;
