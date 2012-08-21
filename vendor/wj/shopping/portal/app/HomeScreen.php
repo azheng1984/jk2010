@@ -119,24 +119,26 @@ class HomeScreen extends Screen {
   private function renderSlideWrapper() {
     echo '<div id="slide_wrapper">';
     $this->renderSlide();
-    $this->renderSlideList();
+
     $this->renderMerchant();
     echo '</div>';
   }
 
   private function renderSlide() {
     $slide = $this->merchant['slide_list'][$this->slideIndex];
+    //echo '<a id="previous" href="javascript:;"><img id="arrow_left" src="/+/img/arrow_left.png"/></a>';
     echo '<div id="left_img_shadow"></div><a id="slide" href="http://', $slide,
       '/" target="_blank" rel="nofollow">', '<img src="/+/img/slide/',
       $this->merchant['path'], '/', $this->slideIndex, '.jpg"/></a>';
-    echo '<a id="next" href="javascript:;"><img id="arrow" src="/+/img/arrow.png"/></a>';
+    //echo '<a id="next" href="javascript:;"><img id="arrow" src="/+/img/arrow.png"/></a>';
   }
 
   private function renderMerchant() {
     echo '<span id="merchant"><span id="merchant_name">',
       $this->merchant['name'], '</span> <a href="http://',
       $this->merchant['uri_format'], '" target="_blank" rel="nofollow">去逛逛</a>';
-    echo '<span id="slide_list_2">1 / 5</span>';
+    //echo '<span id="slide_list_2">1 / 5</span>';
+    $this->renderSlideList();
     echo '</span>';
   }
 
@@ -144,7 +146,8 @@ class HomeScreen extends Screen {
     if (count($this->merchant['slide_list']) === 1) {
       return;
     }
-/*    $hrefPrefix = '?';
+    echo '<span id="slide_list">';
+    $hrefPrefix = '?';
     if ($GLOBALS['PAGE'] !== 1) {
       $hrefPrefix = '?page='.$GLOBALS['PAGE'].'&';
     }
@@ -156,7 +159,8 @@ class HomeScreen extends Screen {
       echo '<a href="', $hrefPrefix , 'merchant_id=', $this->merchantId,
         '&index=', $index, '" rel="nofollow">', $index + 1 , '</a>';
     }
-    echo '</span>';*/
+    echo '</span>';
+    echo '</span>';
   }
 
   private function renderMerchantList() {

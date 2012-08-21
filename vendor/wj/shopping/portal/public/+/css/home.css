@@ -112,7 +112,8 @@ ol .current {
 #slide img {
 }
 #slide_list {
-  float:left;
+  float:right;
+  padding-right:10px;
 }
 #slide_list_2 {
   float:right;
@@ -126,24 +127,35 @@ ol .current {
 #slide_list a, #slide_list span {
   display:inline-block;
   font-size:11px;/* ie6 inline-block 最小高度等于文字高度 */
-  line-height:20px;
   padding:0 8px;
-  border-radius:3px;
-  border:0;
-  margin:2px;
+  border-radius:2px;
+  margin:0 2px;
   *margin-top:4px;/* ie6/7 line-height 无法垂直居中 */
 }
 #slide_list a, #slide_list .item {
   background:#e5e5e5;
   color:#909090;
+
+font-weight:normal;
+}
+#slide_list .current {
+  /*padding:1px 9px;*/
 }
 #slide_list a:hover, #slide_list .hover {
-  background:#999;
   color:#fff;
+  background:#bbb;
   cursor:pointer;
 }
 #slide_list span {
+	/*
   background:red;
+  color:#fff;
+  border:1px solid;
+  border-color: #D00;
+  */
+
+  background:red;
+
   color:#fff;
 }
 #merchant {

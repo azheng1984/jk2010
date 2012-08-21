@@ -87,7 +87,7 @@ huobiwanjia.home = function() {
     var merchant = home.slideshow.merchantList[index];
     $('#merchant_list .current').attr('class', 'item').attr('tabindex', 0);
     span.attr('class', 'current').removeAttr('tabindex');
-    $('#merchant').html('<span id="merchant_name">' + merchant[0] + '</span> <a target="_blank" rel="nofollow">去逛逛</a><span id="slide_list_2">1 / 5</span></span>');
+    $('#merchant').html('<span id="merchant_name">' + merchant[0] + '</span> <a target="_blank" rel="nofollow">去逛逛</a><span id="slide_list"></span></span>');
     $('#merchant a').attr('href', 'http://' + merchant[1]);
     var html = '';
     if (merchant[3].length > 1) {
