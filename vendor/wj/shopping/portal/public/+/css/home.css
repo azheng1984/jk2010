@@ -16,7 +16,7 @@
 }
 #arrow {
   float:right;
-  margin-top:135px;
+  margin-top:125px;
   margin-right:10px;
 }
 #arrow_left {
@@ -105,7 +105,7 @@ ol .current {
 }
 #slide {
   float:left;
-  margin:21px 20px 14px 151px;
+  margin:11px 20px 4px 145px;
   border:0;
   text-align:center;
 }
