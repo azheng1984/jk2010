@@ -111,7 +111,7 @@ input:focus {
 #header input:focus {
   border-color:#909090 #d0d0d0 #d0d0d0 #909090;
 }
-#header button:focus {
+#header button:hover, #header button:focus {
   outline:none;
   border-color:#909090 #d0d0d0 #d0d0d0 #909090;
 }
