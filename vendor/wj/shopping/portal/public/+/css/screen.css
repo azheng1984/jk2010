@@ -109,7 +109,11 @@ input:focus {
   background:url(/+/img/screen.png) 0 -33px;/* firefox */
 }
 #header input:focus {
-  border-color:#909090 #c0c0c0 #c0c0c0 #909090;
+  border-color:#909090 #d0d0d0 #d0d0d0 #909090;
+}
+#header button:focus {
+  outline:none;
+  border-color:#909090 #d0d0d0 #d0d0d0 #909090;
 }
 #header button {
   margin-top:6px;
