@@ -24,7 +24,7 @@ abstract class ConsoleScreen extends Screen {
     echo '</div></div><div id="console"><div class="content">';
     $this->renderNav();
     $this->renderConsoleContent();
-    echo '</div></div><div id="footer">© 2012 <a href="http://dev.huobiwanjia.com/">货比万家</a></div>';
+    echo '</div></div><div id="footer">© 2012 <a href="http://dev.huobiwanjia.com/" target="_blank">货比万家</a></div>';
   }
 
   abstract protected function getRole();
