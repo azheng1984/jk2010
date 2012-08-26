@@ -81,7 +81,7 @@ class PublisherReportScreen extends PublisherScreen {
       echo '<a href="', $prefix, 'group_by=channel">  </a>';
     }
     echo ' </div>';
-    echo '<br /><table><tr><th>时间</th><th>流量</th><th>订单数量</th><th>订单交易金额</th><th>订单佣金</th><th>CPC<span title="Cost Per Click = 订单佣金 / 流量">[?]</span></th></tr>';
+    echo '<br /><table><tr><th>时间</th><th>流量</th><th>订单数量</th><th>订单交易金额</th><th>订单佣金</th><th>CPC <span title="Cost Per Click = 订单佣金 / 流量">[?]</span></th></tr>';
     $list = $this->getReport();
     foreach ($list as $row) {
       echo '<tr><td>'.$row['date'].'</td><td>'.$row['traffic'].'</td></tr>';
