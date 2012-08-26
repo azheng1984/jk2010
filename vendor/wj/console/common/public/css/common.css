@@ -154,6 +154,9 @@ height: 35px;
   text-align: left;
   padding-left:12px;
 }
+#five-column .block {
+  width:175px;
+}
 .box-content {
 
 }
