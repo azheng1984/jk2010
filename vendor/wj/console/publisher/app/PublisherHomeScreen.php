@@ -36,9 +36,9 @@ class PublisherHomeScreen extends PublisherScreen {
     }
     echo '<div class="box"><div class="title">今天</div><div class="box-content">',
       '<div class="block first_block">流量<br /><span class="big">', $today['traffic'], '</span></div>',
-      '<div class="block">订单数量<br /><span class="big">', $today['order_amount'], '</span></div>',
-      '<div class="block">订单交易金额<br />¥<span class="big">', number_format($today['order_payment'], 2), '</span></div>';
-    echo '<div class="block">预计佣金<br />¥<span class="big">', number_format($today['active_order_commission'], 2), '</span></div></div>';
+      '<div class="block">预计订单数量<br /><span class="big">', $today['order_amount'], '</span></div>',
+      '<div class="block">预计订单交易金额<br />¥<span class="big">', number_format($today['order_payment'], 2), '</span></div>';
+    echo '<div class="block">预计订单佣金<br />¥<span class="big">', number_format($today['active_order_commission'], 2), '</span></div></div>';
     echo '</div>';
     echo '<div class="box"><div class="title">总计</div><div class="box-content">',
       '<div class="block first_block">账户余额<br />¥<span class="big">', number_format($unpaidCommission, 2), '</span></div>',
