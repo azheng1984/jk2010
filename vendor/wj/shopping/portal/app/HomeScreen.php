@@ -38,15 +38,15 @@ class HomeScreen extends Screen {
 
   private function renderSlogon() {
     echo '<div id="slogon"><div class="content"><h1>',
-      $GLOBALS['HOME_CONFIG']['merchant_amount'], '个网上商店，',
-      $GLOBALS['HOME_CONFIG']['product_amount'], '万商品，搜索：</h1>';
+      $GLOBALS['HOME_CACHE']['merchant_amount'], '个网上商店，',
+      $GLOBALS['HOME_CACHE']['product_amount'], '万商品，搜索：</h1>';
     $this->renderQueryList();
     echo '</div></div>';
   }
 
   private function renderQueryList() {
     echo '<ul>';
-    foreach ($GLOBALS['HOME_CONFIG']['query_list'] as $query) {
+    foreach ($GLOBALS['HOME_CACHE']['query_list'] as $query) {
       echo '<li><a href="/', urlencode($query[0]), '/">',
         $query[1], '</a> <span>', $query[2], '</span></li>';
     }
@@ -63,7 +63,7 @@ class HomeScreen extends Screen {
   private function renderMerchantTypeList() {
     $path = $GLOBALS['MERCHANT_TYPE']['path'];
     echo '<ol>';
-    foreach ($GLOBALS['HOME_CONFIG']['merchant_type_list'] as $key => $value) {
+    foreach ($GLOBALS['HOME_CACHE']['merchant_type_list'] as $key => $value) {
       if ($key === $path) {
         echo '<li class="current">', $value[1], '</li>';
         continue;
@@ -190,10 +190,10 @@ class HomeScreen extends Screen {
       $previous = $GLOBALS['PAGE'] - 1;
       $nextClass = ' class="small"';
     }
-    if ($GLOBALS['PAGE'] < ceil($GLOBALS['MERCHANT_TYPE'][2] / 5)) {
+//     if ($GLOBALS['PAGE'] < ceil($GLOBALS['MERCHANT_TYPE'][2] / 5)) {
       $next = $GLOBALS['PAGE'] + 1;
       $previousClass = ' class="small previous_small"';
-    }
+//     }
     echo '<div id="scroll">';
     if ($previous !== null) {
       $href = $previous === 1 ? '/' : '?page='.$previous;
