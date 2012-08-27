@@ -2,7 +2,7 @@
 class PublisherHomeScreen extends PublisherScreen {
   protected function renderPublisherContent() {
     $today = Db::getRow(
-      'SELECT traffic, order_amount, order_transaction_amount, active_order_commission'
+      'SELECT traffic, finished_order_amount, finished_order_transaction_amount, finished_order_commission'
         .' FROM performance_report'
         .' WHERE user_id = ? AND `date` = ?', 1, date('Y-m-d')
     );
@@ -15,7 +15,7 @@ class PublisherHomeScreen extends PublisherScreen {
       );
     }
     $activeOrderCommission = Db::getColumn(
-      'SELECT commission FROM active_order_report WHERE user_id = ?', 1
+      'SELECT commission FROM unfinished_order_report WHERE user_id = ?', 1
     );
     if ($activeOrderCommission === false) {
       $activeOrderCommission = 0;
