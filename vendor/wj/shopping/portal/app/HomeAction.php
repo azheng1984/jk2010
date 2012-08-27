@@ -1,7 +1,7 @@
 <?php
 class HomeAction {
   public function GET() {
-    $GLOBALS['HOME_CONFIG'] = require CONFIG_PATH.'home.config.php';
+    $GLOBALS['HOME_CACHE'] = require CACHE_PATH.'home.cache.php';
     PaginationParser::parseGet();
     $this->parseMerchantType();
     $this->buildSlideshow();
@@ -12,17 +12,17 @@ class HomeAction {
     if ($path === '') {
       $path = '/';
     }
-    if (isset($GLOBALS['HOME_CONFIG']['merchant_type_list'][$path]) === false) {
-      throw new NotFoundException;
-    }
+//     if (isset($GLOBALS['HOME_CACHE']['merchant_type_list'][$path]) === false) {
+//       throw new NotFoundException;
+//     }
     $GLOBALS['MERCHANT_TYPE'] =
-      $GLOBALS['HOME_CONFIG']['merchant_type_list'][$path];
+      array('xx',5,5);//$GLOBALS['HOME_CACHE']['merchant_type_list'][$path];
     $GLOBALS['MERCHANT_TYPE']['path'] = $path;
   }
 
   private function buildSlideshow() {
     if ($GLOBALS['PAGE'] === 1 && $GLOBALS['MERCHANT_TYPE']['path'] === '/') {
-      $GLOBALS['SLIDESHOW'] = $GLOBALS['HOME_CONFIG']['slideshow'];
+      $GLOBALS['SLIDESHOW'] = $GLOBALS['HOME_CACHE']['slideshow'];
       return;
     }
     $GLOBALS['SLIDESHOW'] = array();
