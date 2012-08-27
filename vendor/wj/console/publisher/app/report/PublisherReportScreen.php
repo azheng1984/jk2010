@@ -95,7 +95,7 @@ class PublisherReportScreen extends PublisherScreen {
   }
 
   private function getReport() {
-    $select = 'traffic, order_amount, order_transaction_amount, active_order_commission, complete_order_commission';
+    $select = 'traffic, finished_order_amount, finished_order_transaction_amount, finished_order_commission, finished_order_commission';
     $sql = 'SELECT '.$select.' FROM ';
     if (isset($_GET['channel_id'])
       || (isset($_GET['group_by']) && $_GET['group_by'] === 'channel')) {
@@ -137,8 +137,8 @@ class PublisherReportScreen extends PublisherScreen {
   }
 
   private function getReportTotal() {
-    $select = 'SUM(traffic), SUM(order_amount), SUM(order_transaction_amount), '
-      .'SUM(active_order_commission), SUM(complete_order_commission), COUNT(*)';
+    $select = 'SUM(traffic), SUM(finished_order_amount), SUM(finished_order_transaction_amount), '
+      .'SUM(finished_order_commission), SUM(finished_order_commission), COUNT(*)';
     $sql = 'SELECT '.$select.' FROM ';
     if (isset($_GET['channel_id'])) {
       $sql .= 'performance_report_by_channel';
