@@ -182,7 +182,7 @@ height: 35px;
   border:0;
 }
 #navigator li:hover {
-  border-top:2px solid #bbb;
+  border-top:2px solid #d0d0d0;
   line-height:31px;
 }
 #navigator li:hover a {
