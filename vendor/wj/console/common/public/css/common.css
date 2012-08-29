@@ -186,7 +186,7 @@ height: 35px;
   line-height:31px;
 }
 #navigator li:hover a {
-  color:#303030;
+  color:#505050;
 }
 #navigator .selected:hover {
   border-top:2px solid red;
