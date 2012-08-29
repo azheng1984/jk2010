@@ -182,11 +182,14 @@ height: 35px;
   border:0;
 }
 #navigator li:hover {
+  border-top:2px solid #bbb;
+  line-height:31px;
 }
 #navigator li:hover a {
   color:#303030;
 }
 #navigator .selected:hover {
+  border-top:2px solid red;
 }
 .big {
   font-size:20px;
