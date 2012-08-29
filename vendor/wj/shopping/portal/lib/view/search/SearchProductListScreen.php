@@ -72,7 +72,7 @@ class SearchProductListScreen {
       $queryTag = self::getQueryTag($product['query_tag_id']);
       echo '<a class="query_tag" href="/+-'.urlencode($queryTag['name']),
         '/', $GLOBALS['QUERY_STRING'], '" rel="nofollow">',
-        $queryTag['product_amount'], ' 个同款商品</a>';
+        $queryTag['product_amount'], ' 个商家</a>';
     }
     echo '<div class="merchant">', $merchant['name'], '</div></td>';//merchant
   }
