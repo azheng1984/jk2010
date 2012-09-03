@@ -4,7 +4,7 @@ class PublisherHomeScreen extends PublisherScreen {
   }
 
   protected function renderHtmlHeadContent() {
-    echo '';
+    echo '<title>广告发布商 - 货比万家</title>';
   }
 
   protected function renderHtmlBodyContent() {
@@ -14,7 +14,8 @@ class PublisherHomeScreen extends PublisherScreen {
     }
     echo '<h1><a href="/">广告发布商</a></h1>';
     echo '<div id="toolbar">用户名 | <a href="sign_out">退出</a></div>';
-    echo '<div id="footer">© 2012 <a href="http://dev.huobiwanjia.com/">货比万家</a></div>';
+    PublisherNavigationScreen::render('home');
+    echo '<div id="footer">© 2012 <a href="http://dev.huobiwanjia.com/" target="_blank">货比万家</a></div>';
   }
 
   private function renderSignIn() {
