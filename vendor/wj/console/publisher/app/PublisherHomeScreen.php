@@ -1,11 +1,6 @@
 <?php
 class PublisherHomeScreen extends PublisherScreen {
   public function __construct() {
-//     if (isset($_COOKIE['session_id']) === false) {
-//       header('HTTP/1.1 302 Found');
-//       header('Location: /sign_in');
-//       $this->stop();
-//     }
   }
 
   protected function renderHtmlHeadContent() {
@@ -23,7 +18,7 @@ class PublisherHomeScreen extends PublisherScreen {
   }
 
   private function renderSignIn() {
-    echo '<form method="POST" action="/sign_in">';
+    echo '<form method="POST" action="/">';
     echo '<div><label for="username">用户名：</label><input id="username" name="username" type="text" /></div>';
     echo '<div><label for="password">密码：</label><input id="password" name="password" type="password" /></div>';
     echo '<div><input type="submit" value="登录" />';

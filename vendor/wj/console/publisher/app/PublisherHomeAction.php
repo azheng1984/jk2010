@@ -1,8 +1,13 @@
 <?php
-class PublisherSignInAction {
+class PublisherHomeAction {
   public function GET() {}
 
   public function POST() {
-    //sign in
+    $this->signIn();
+  }
+
+  private function signIn() {
+    setcookie('session_id', 1);
+    $_COOKIE['session_id'] = 1;
   }
 }

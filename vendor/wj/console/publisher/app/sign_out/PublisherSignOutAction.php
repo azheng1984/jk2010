@@ -1,9 +1,8 @@
 <?php
-class PublisherSignInAction {
+class PublisherSignOutAction {
   public function GET() {
-  }
-
-  public function POST() {
-    //sign in
+    setcookie('session_id', null);
+    header('HTTP/1.1 302 Found');
+    header('Location: /');
   }
 }
