@@ -16,7 +16,7 @@ class PublisherPaymentScreen extends PublisherScreen {
     echo '<h1><a href="/">广告发布商</a></h1>';
     echo '<div id="toolbar">用户名 | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('payment');
-    $this->renderMenu();
+    //$this->renderMenu();
     $this->renderDashboard();
     $this->renderFooter();
   }
@@ -34,7 +34,8 @@ class PublisherPaymentScreen extends PublisherScreen {
   }
 
   private function renderDashboard() {
-    echo '<h2>概览</h2>';
+    echo '<h2>结算</h2>';
+    echo '<div>概览</div>';
     echo '<h3>未付款</h3>';
     echo '<ul>';
     echo '<li>账户余额：</li>';
@@ -51,6 +52,8 @@ class PublisherPaymentScreen extends PublisherScreen {
     echo '<li>佣金总额：</li>';
     echo '<li><a href="/payment/unfinished_order">明细</a></li>';
     echo '</ul>';
+    echo '<h3><a href="/payment/history">付款历史</a></h3>';
+    echo '<h3><a href="/payment/setting">设置</a></h3>';
   }
 
   private function renderFooter() {

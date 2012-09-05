@@ -15,10 +15,11 @@ class PublisherAccountSettingScreen extends PublisherScreen {
     echo '<h1><a href="/">广告发布商</a></h1>';
     echo '<div id="toolbar">用户名 | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('home');
-    echo '<h2>联系人</h2>';
-    echo '<h2>密码</h2>';
-    echo '<h2>渠道</h2>';
-    echo '<h2>合作伙伴推广</h2>';
+    echo '<h2>账户设置</h2>';
+    echo '<h3>联系人</h3>';
+    echo '<h3>密码</h3>';
+    echo '<h3>渠道</h3>';
+    echo '<h3>合作伙伴推广</h3>';
     $this->renderFooter();
   }
 
