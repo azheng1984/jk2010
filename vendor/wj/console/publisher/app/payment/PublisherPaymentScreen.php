@@ -49,7 +49,7 @@ class PublisherPaymentScreen extends PublisherScreen {
     echo '<h3>未完成订单佣金</h3>';
     echo '<ul>';
     echo '<li>佣金总额：</li>';
-    echo '<li><a href="/payment/processing">明细</a></li>';
+    echo '<li><a href="/payment/unfinished_order">明细</a></li>';
     echo '</ul>';
   }
 
