@@ -17,7 +17,7 @@ class PublisherHomeScreen extends PublisherScreen {
     PublisherNavigationScreen::render('home');
     $this->renderToday();
     $this->renderTotal();
-    echo '<div id="footer">© 2012 <a href="http://dev.huobiwanjia.com/" target="_blank">货比万家</a></div>';
+    $this->renderFooter();
   }
 
   private function renderSignIn() {
@@ -47,5 +47,9 @@ class PublisherHomeScreen extends PublisherScreen {
     echo '<li>正在付款：</li>';//optional
     echo '<li>未完成订单佣金：</li>';
     echo '</ul>';
+  }
+
+  private function renderFooter() {
+    echo '<div id="footer">© 2012 <a href="http://dev.huobiwanjia.com/" target="_blank">货比万家</a></div>';
   }
 }
