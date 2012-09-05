@@ -17,8 +17,23 @@ class PublisherUnfinishedOrderScreen extends PublisherScreen {
     echo '<div id="toolbar">用户名 | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('payment');
     $this->renderMenu();
-    $this->renderDashboard();
+    $this->renderBreadcrumb();
+    if (isset($_GET['merchant_id'])) {
+      $this->renderOrder();
+    } elseif (isset($_GET['order_id'])) {
+      $this->renderOrderDetail();
+    } else {
+      $this->renderMerchant();
+    }
     $this->renderFooter();
+  }
+
+  private function renderBreadcrumb() {
+    if (isset($_GET['merchant_id'])) {
+      echo '<a href="unfinished_order">未完成订单佣金</a> / 商家';
+    } elseif (isset($_GET['order_id'])) {
+      echo '<a href="unfinished_order">未完成订单佣金</a> / <a href="?merchant_id=1">商家</a> / 订单';
+    }
   }
 
   private function renderMenu() {
@@ -33,24 +48,21 @@ class PublisherUnfinishedOrderScreen extends PublisherScreen {
     echo '</ul>';
   }
 
-  private function renderDashboard() {
-    echo '<h2>概览</h2>';
-    echo '<h3>未付款</h3>';
-    echo '<ul>';
-    echo '<li>账户余额：</li>';
-    echo '<li><a href="/payment/unpaid">明细</a></li>';
-    echo '<li><a href="/payment/pay_cash">付款</a></li>';
-    echo '</ul>';
-    echo '<h3>正在付款</h3>';
-    echo '<ul>';
-    echo '<li>付款总额：</li>';
-    echo '<li><a href="/payment/processing">明细</a></li>';
-    echo '</ul>';
-    echo '<h3>未完成订单佣金</h3>';
-    echo '<ul>';
-    echo '<li>佣金总额：</li>';
-    echo '<li><a href="/payment/unfinished_order">明细</a></li>';
-    echo '</ul>';
+  private function renderMerchant() {
+    echo '<div>商家 | 订单数量 | 交易金额 | 佣金</div>';
+    echo '<a href="?merchant_id=1">next level</a>';
+    echo '<div>总计：订单数量 交易金额 佣金</div>';
+  }
+
+  private function renderOrder() {
+    echo '<div>时间 | 渠道 | 跟踪编号 | 商家 | 订单编号 | 交易金额 | 佣金</div>';
+    echo '<a href="?order_id=1">next level</a>';
+    echo '<div>总计：订单数量 交易金额 佣金</div>';
+  }
+
+  private function renderOrderDetail() {
+    echo '<div>商品编号 | 商品名称 | 单价 | 数量 | 交易金额 | 佣金</div>';
+    echo '<div>总计：交易金额 佣金</div>';
   }
 
   private function renderFooter() {
