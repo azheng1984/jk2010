@@ -15,9 +15,10 @@ class PublisherAdScreen extends PublisherScreen {
     echo '<h1><a href="/">广告发布商</a></h1>';
     echo '<div id="toolbar">用户名 | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('home');
-    echo '<h2>网页插件</h2>';
-    echo '<h2>浏览器插件</h2>';
-    echo '<h2>自定义链接</h2>';
+    echo '<h2>广告</h2>';
+    echo '<h3>网页插件</h3>';
+    echo '<h3>浏览器插件</h3>';
+    echo '<h3>自定义链接</h3>';
     $this->renderFooter();
   }
 

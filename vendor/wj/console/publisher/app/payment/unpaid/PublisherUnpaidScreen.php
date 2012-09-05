@@ -16,7 +16,7 @@ class PublisherUnpaidScreen extends PublisherScreen {
     echo '<h1><a href="/">广告发布商</a></h1>';
     echo '<div id="toolbar">用户名 | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('payment');
-    $this->renderMenu();
+    //$this->renderMenu();
     $this->renderBreadcrumb();
     if (isset($_GET['merchant_id'])) {
       $this->renderOrder();
@@ -29,10 +29,14 @@ class PublisherUnpaidScreen extends PublisherScreen {
   }
 
   private function renderBreadcrumb() {
+    echo '<h2>结算</h2>';
+    echo '<a href="/payment">概览</a>';
     if (isset($_GET['merchant_id'])) {
-      echo '<a href="unpaid">未付款</a> / 商家';
+      echo ' / <a href="unpaid">未付款</a> / 商家';
     } elseif (isset($_GET['order_id'])) {
-      echo '<a href="unpaid">未付款</a> / <a href="?merchant_id=1">商家</a> / 订单';
+      echo ' / <a href="unpaid">未付款</a> / <a href="?merchant_id=1">商家</a> / 订单';
+    } else {
+      echo ' / 未付款';
     }
   }
 
