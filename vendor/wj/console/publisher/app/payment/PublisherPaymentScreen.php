@@ -38,8 +38,18 @@ class PublisherPaymentScreen extends PublisherScreen {
     echo '<h3>未付款</h3>';
     echo '<ul>';
     echo '<li>账户余额：</li>';
-    echo '<li> <a href="/payment/unpaid">明细</a></li>';
-    echo '<li><a href="#">付款</a></li>';
+    echo '<li><a href="/payment/unpaid">明细</a></li>';
+    echo '<li><a href="/payment/pay_cash">付款</a></li>';
+    echo '</ul>';
+    echo '<h3>正在付款</h3>';
+    echo '<ul>';
+    echo '<li>付款总额：</li>';
+    echo '<li><a href="/payment/processing">明细</a></li>';
+    echo '</ul>';
+    echo '<h3>未完成订单佣金</h3>';
+    echo '<ul>';
+    echo '<li>佣金总额：</li>';
+    echo '<li><a href="/payment/processing">明细</a></li>';
     echo '</ul>';
   }
 
