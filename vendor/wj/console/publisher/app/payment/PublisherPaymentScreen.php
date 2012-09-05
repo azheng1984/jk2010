@@ -35,7 +35,7 @@ class PublisherPaymentScreen extends PublisherScreen {
 
   private function renderDashboard() {
     echo '<h2>结算</h2>';
-    echo '<div>概览</div>';
+    //  echo '<div>概览</div>';
     echo '<h3>未付款</h3>';
     echo '<ul>';
     echo '<li>账户余额：</li>';
