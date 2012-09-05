@@ -17,20 +17,68 @@ class PublisherPerformanceReportScreen extends PublisherScreen {
     echo '<div id="toolbar">用户名 | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('performance_report');
     $this->renderFilter();
+    $this->renderGroupBy();
     $this->renderResult();
-    $this->renderTatal();
+    $this->renderAverage();
+    $this->renderTotal();
+    $this->renderFooter();
   }
 
   private function renderFilter() {
-    
+    echo '<h2>过滤</h2>';
+    echo '<ul>';
+    echo '<li>日期：[]-[]</li>';
+    echo '<li>渠道：</li>';
+    echo '</ul>';
+  }
+
+  private function renderGroupBy() {
+    echo '<h2>分组</h2>';
+    echo '<ul>';
+    echo '<li>日期：日 | 月 | 年</li>';
+    echo '<li>渠道</li>';
+    echo '</ul>';
   }
 
   private function renderResult() {
     echo '<table>';
+    echo '<thead>';
+    echo '<tr>';
+    echo '<td>流量</td>';
+    echo '<td>订单数量</td>';
+    echo '<td>订单交易金额</td>';
+    echo '<td>订单佣金</td>';
+    echo '<td>CPC</td>';
+    echo '</tr>';
+    echo '</thead>';
+    echo '<tbody>';
+    echo '</tbody>';
     echo '</table>';
   }
 
   private function renderTotal() {
-    
+    echo '<h2>总和</h2>';
+    echo '<ul>';
+    echo '<li>流量：</li>';
+    echo '<li>订单数量：</li>';
+    echo '<li>订单交易金额：</li>';
+    echo '<li>订单佣金：</li>';
+    echo '<li>CPC： -</li>';
+    echo '</ul>';
+  }
+
+  private function renderAverage() {
+    echo '<h2>平均</h2>';
+    echo '<ul>';
+    echo '<li>流量：</li>';
+    echo '<li>订单数量：</li>';
+    echo '<li>订单交易金额：</li>';
+    echo '<li>订单佣金：</li>';
+    echo '<li>CPC：</li>';
+    echo '</ul>';
+  }
+
+  private function renderFooter() {
+    echo '<div id="footer">© 2012 <a href="http://dev.huobiwanjia.com/" target="_blank">货比万家</a></div>';
   }
 }
