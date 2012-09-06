@@ -16,17 +16,12 @@ class PublisherIOScreen extends PublisherScreen {
     echo '<div id="toolbar">用户名 | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('home');
     echo '<h2>数据接口</h2>';
-    echo '<h3>API</h3>';
-    echo '<ul>';
-    echo '<li><a href="io/performance_report">效果报告</a></li>';
-    echo '<li><a href="io/payment">结算</a></li>';
-    echo '</ul>';
-    echo '<h3>回调</h3>';
-    echo '<ul>';
-    echo '<li><a href="io/order">订单</a></li>';
-    echo '<li><a href="io/status">状态：OK</a> (最后回调时间: 2012-11-1)</li>';
-    echo '<li><a href="io/setting">设置</a></li>';
-    echo '</ul>';
+    echo '<h3><a href="io/performance_report">效果报告</a></h3>';
+    echo '<h3><a href="io/payment">结算</a></h3>';
+    echo '<h3><a href="io/order">订单</a></h3>';
+    echo '<h3><a href="io/status">状态</a></h3>';
+    echo '状态：OK';
+    echo '<h3><a href="io/setting">设置</a></h3>';
     $this->renderFooter();
   }
 
