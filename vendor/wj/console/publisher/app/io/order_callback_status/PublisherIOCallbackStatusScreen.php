@@ -22,9 +22,9 @@ class PublisherIOCallbackStatusScreen extends PublisherScreen {
     echo '<h3>故障历史</h3>';
     echo '时间 | 原因';
     echo '<h3>可用率</h3>';
-    echo '今天 | 1个月 | 3个月 | 1年';
+    echo '今天 | 最近 1 个月 | 最近 3 个月 | 最近 1 年';
     echo '<h3>处理订单数量</h3>';
-    echo '今天 | 1个月 | 3个月 | 1年';
+    echo '今天 | 最近 1 个月 | 最近 3 个月 | 最近 1 年';
     $this->renderFooter();
   }
 
