@@ -21,10 +21,10 @@ class PublisherIOCallbackStatusScreen extends PublisherScreen {
     echo 'OK';
     echo '<h3>故障历史</h3>';
     echo '时间 | 原因';
-    echo '<h3>可用率</h3>';
-    echo '今天 | 最近 1 个月 | 最近 3 个月 | 最近 1 年';
-    echo '<h3>处理订单数量</h3>';
-    echo '今天 | 最近 1 个月 | 最近 3 个月 | 最近 1 年';
+    echo '<h3 title="故障数量/请求数量">可用率</h3>';
+    echo '今天 | 昨天 | 最近 7 天 | 最近 30 天 | 最近 90 天 | 最近 365 天';
+    echo '<h3>吞吐量</h3>';
+    echo '今天 | 昨天 | 最近 7 天 | 最近 30 天 | 最近 90 天 | 最近 365 天';
     $this->renderFooter();
   }
 
