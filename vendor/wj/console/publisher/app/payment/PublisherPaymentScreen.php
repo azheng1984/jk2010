@@ -53,7 +53,13 @@ class PublisherPaymentScreen extends PublisherScreen {
     echo '<li><a href="/payment/unfinished_order">明细</a></li>';
     echo '</ul>';
     echo '<h3><a href="/payment/history">付款历史</a></h3>';
-    echo '<h3><a href="/payment/setting">设置</a></h3>';
+    echo '<h3>设置</h3>';
+    echo '<ul>';
+    echo '<li>收款账户：</li>';
+    echo '<li>自动付款：</li>';
+    echo '<li>代扣税费：</li>';
+    echo '</ul>';
+    echo '<div><a href="/payment/setting">修改</a></div>';
   }
 
   private function renderFooter() {
