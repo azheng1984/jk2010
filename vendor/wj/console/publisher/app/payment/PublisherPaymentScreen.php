@@ -36,30 +36,26 @@ class PublisherPaymentScreen extends PublisherScreen {
   private function renderDashboard() {
     echo '<h2>结算</h2>';
     //  echo '<div>概览</div>';
-    echo '<h3>未付款</h3>';
+    echo '<h3><a href="/payment/unpaid">未付款</a></h3>';
     echo '<ul>';
     echo '<li>账户余额：</li>';
-    echo '<li><a href="/payment/unpaid">明细</a></li>';
     echo '<li><a href="/payment/pay_cash">付款</a></li>';
     echo '</ul>';
-    echo '<h3>正在付款</h3>';
+    echo '<h3><a href="/payment/processing">正在付款</a></h3>';
     echo '<ul>';
     echo '<li>付款总额：</li>';
-    echo '<li><a href="/payment/processing">明细</a></li>';
     echo '</ul>';
-    echo '<h3>未完成订单佣金</h3>';
+    echo '<h3><a href="/payment/unfinished_order">未完成订单佣金</a></h3>';
     echo '<ul>';
     echo '<li>佣金总额：</li>';
-    echo '<li><a href="/payment/unfinished_order">明细</a></li>';
     echo '</ul>';
     echo '<h3><a href="/payment/history">付款历史</a></h3>';
-    echo '<h3>设置</h3>';
+    echo '<h3><a href="/payment/setting">设置</a></h3>';
     echo '<ul>';
     echo '<li>收款账户：</li>';
     echo '<li>自动付款：</li>';
     echo '<li>代扣税费：</li>';
     echo '</ul>';
-    echo '<div><a href="/payment/setting">修改</a></div>';
   }
 
   private function renderFooter() {
