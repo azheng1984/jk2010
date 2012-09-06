@@ -19,7 +19,7 @@ class PublisherIOScreen extends PublisherScreen {
     echo '<h3><a href="io/performance_report">效果报告</a></h3>';
     echo '<h3><a href="io/payment">结算</a></h3>';
     echo '<h3><a href="io/order">订单</a></h3>';
-    echo '<h3><a href="io/status">状态</a></h3>';
+    echo '<h3><a href="io/order_callback_status">订单回调状态</a></h3>';
     echo '状态：OK';
     echo '<h3><a href="io/setting">设置</a></h3>';
     $this->renderFooter();
