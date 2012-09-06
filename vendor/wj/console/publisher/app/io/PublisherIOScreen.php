@@ -13,7 +13,7 @@ class PublisherIOScreen extends PublisherScreen {
       return;
     }
     echo '<h1><a href="/">广告发布商</a></h1>';
-    echo '<div id="toolbar">用户名 | <a href="sign_out">退出</a></div>';
+    echo '<div id="toolbar">用户名 | publisher_id：xxx | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('home');
     echo '<h2>数据接口</h2>';
     echo '<h3><a href="io/performance_report">效果报告</a></h3>';

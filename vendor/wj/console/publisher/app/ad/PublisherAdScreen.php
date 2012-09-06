@@ -13,10 +13,9 @@ class PublisherAdScreen extends PublisherScreen {
       return;
     }
     echo '<h1><a href="/">广告发布商</a></h1>';
-    echo '<div id="toolbar">用户名 | <a href="sign_out">退出</a></div>';
+    echo '<div id="toolbar">用户名 | publisher_id：xxx | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('home');
     echo '<h2>广告</h2>';
-    echo '<div>publisher_id: xxx</div>';
     echo '<h3><a href="/ad/web_page_plugin">网页插件</a></h3>';
     echo '描述';
     echo '<h3><a href="/ad/browser_plugin">浏览器插件</a></h3>';
