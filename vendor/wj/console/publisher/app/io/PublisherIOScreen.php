@@ -17,7 +17,16 @@ class PublisherIOScreen extends PublisherScreen {
     PublisherNavigationScreen::render('home');
     echo '<h2>数据接口</h2>';
     echo '<h3>API</h3>';
+    echo '<ul>';
+    echo '<li>效果报告</li>';
+    echo '<li>结算</li>';
+    echo '</ul>';
     echo '<h3>回调</h3>';
+    echo '<ul>';
+    echo '<li>订单</li>';
+    echo '<li>状态： (最后回调时间: 2012-11-1) | 详细</li>';
+    echo '<li>设置</li>';
+    echo '</ul>';
     $this->renderFooter();
   }
 
