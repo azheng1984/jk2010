@@ -19,15 +19,15 @@ class PublisherAdScreen extends PublisherScreen {
     echo '<h3>publisher_id</h3>';
     echo '123';
     echo '<h3>网页插件</h3>';
-    echo 'sdk';
     echo '文档';
     echo '<h3>浏览器插件</h3>';
-    echo '定制';
     echo '文档';
     echo '<h3>自定义链接</h3>';
-    echo 'widget 生成器';
-    echo '资源';
-    echo '文档';
+    echo '<ul>';
+    echo '<li>文档</li>';
+    echo '<li>代码生成器</li>';
+    echo '<li>资源</li>';
+    echo '</ul>';
     $this->renderFooter();
   }
 
