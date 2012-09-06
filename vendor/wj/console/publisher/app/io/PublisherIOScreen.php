@@ -18,14 +18,14 @@ class PublisherIOScreen extends PublisherScreen {
     echo '<h2>数据接口</h2>';
     echo '<h3>API</h3>';
     echo '<ul>';
-    echo '<li>效果报告</li>';
-    echo '<li>结算</li>';
+    echo '<li><a href="io/performance_report">效果报告</a></li>';
+    echo '<li><a href="io/payment">结算</a></li>';
     echo '</ul>';
     echo '<h3>回调</h3>';
     echo '<ul>';
-    echo '<li>订单</li>';
-    echo '<li>状态： (最后回调时间: 2012-11-1) | 详细</li>';
-    echo '<li>设置</li>';
+    echo '<li><a href="io/order">订单</a></li>';
+    echo '<li><a href="io/status">状态：OK</a> (最后回调时间: 2012-11-1)</li>';
+    echo '<li><a href="io/setting">设置</a></li>';
     echo '</ul>';
     $this->renderFooter();
   }
