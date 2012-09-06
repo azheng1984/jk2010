@@ -16,7 +16,6 @@ class PublisherPaymentHistoryScreen extends PublisherScreen {
     echo '<h1><a href="/">广告发布商</a></h1>';
     echo '<div id="toolbar">用户名 | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('payment');
-    $this->renderMenu();
     $this->renderBreadcrumb();
     if (isset($_GET['id'])) {
       $this->renderMerchant();
@@ -31,25 +30,17 @@ class PublisherPaymentHistoryScreen extends PublisherScreen {
   }
 
   private function renderBreadcrumb() {
+    echo '<h2>结算</h2>';
+    echo '<a href="/payment">概览</a>';
     if (isset($_GET['id'])) {
-      echo '<a href="history">付款历史</a> / 支付编号:1 (2012-1-1)';
+      echo ' / <a href="history">付款历史</a> / <strong>支付编号:1 (2012-1-1)</strong>';
     } elseif (isset($_GET['merchant_id'])) {
-      echo '<a href="history">付款历史</a> / <a href="?id=1">支付编号:1 (2012-1-1)</a> / 商家';
+      echo ' / <a href="history">付款历史</a> / <a href="?id=1">支付编号:1 (2012-1-1)</a> / <strong>商家</strong>';
     } elseif (isset($_GET['order_id'])) {
-      echo '<a href="history">付款历史</a> / <a href="?id=1">支付编号:1 (2012-1-1)</a> / <a href="?merchant_id=1">商家</a> / 订单';
+      echo ' / <a href="history">付款历史</a> / <a href="?id=1">支付编号:1 (2012-1-1)</a> / <a href="?merchant_id=1">商家</a> / <strong>订单</strong>';
+    } else {
+      echo ' / <strong>付款历史</strong>';
     }
-  }
-
-  private function renderMenu() {
-    echo '<h2>二级菜单</h2>';
-    echo '<ul>';
-    echo '<li><a href="/payment">概览</li>';
-    echo '<li><a href="/payment/unpaid">未付款</li>';
-    echo '<li><a href="/payment/processing">正在付款</li>';
-    echo '<li><a href="/payment/unfinished_order">未完成订单佣金</li>';
-    echo '<li><a href="/payment/history">付款历史</li>';
-    echo '<li><a href="/payment/setting">设置</a></li>';
-    echo '</ul>';
   }
 
   private function renderHistory() {

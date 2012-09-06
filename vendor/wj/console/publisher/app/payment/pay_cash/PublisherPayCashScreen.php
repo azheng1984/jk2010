@@ -1,5 +1,5 @@
 <?php
-class PublisherPaymentSettingScreen extends PublisherScreen {
+class PublisherPayCashScreen extends PublisherScreen {
   public function __construct() {
     if (isset($_COOKIE['session_id']) === false) {
       header('HTTP/1.1 302 Found');
@@ -17,18 +17,17 @@ class PublisherPaymentSettingScreen extends PublisherScreen {
     echo '<div id="toolbar">用户名 | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('payment');
     echo '<h2>结算</h2>';
-    echo '<a href="/payment">概览</a> / <strong>设置</strong>';
-    $this->renderSetting();
+    echo '<a href="/payment">概览</a> / <strong>付款</strong>';
+    $this->renderPayCash();
     $this->renderFooter();
   }
 
-  private function renderSetting() {
-    echo '<h2>收款账户</h2>';
-    echo '<div>开户行 | 户名 | 帐号</div>';
-    echo '<h2>自动付款</h2>';
-    echo '<div>开启 | 关闭</div>';
-    echo '<h2>代扣税费</h2>';
-    echo '<div>开启 | 关闭</div>';
+  private function renderPayCash() {
+    echo '<ul>';
+    echo '<li>账户：[修改]</li>';
+    echo '<li>付款总额：</li>';
+    echo '</ul>';
+    echo '<a href="pay_cash">确定</a>';
   }
 
   private function renderFooter() {
