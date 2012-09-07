@@ -45,6 +45,7 @@ class PublisherPerformanceReportScreen extends PublisherScreen {
     echo '<table>';
     echo '<thead>';
     echo '<tr>';
+    echo '<td>日期</td>';
     echo '<td>流量</td>';
     echo '<td>订单数量</td>';
     echo '<td>订单交易金额</td>';

@@ -1,5 +1,5 @@
 <?php
-class PublisherNewChannelScreen extends PublisherScreen {
+class PublisherEditChannelScreen extends PublisherScreen {
   public function __construct() {
   }
 
