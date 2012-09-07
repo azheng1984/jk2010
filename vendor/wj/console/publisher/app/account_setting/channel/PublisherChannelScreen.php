@@ -19,7 +19,7 @@ class PublisherChannelScreen extends PublisherScreen {
     echo '<a href="/account_setting">账户设置</a> / 渠道';
     echo '<h3>筛选</h3>';
     echo '[全部|活跃|闲置] [编号|名称]';
-    echo '<h3><a href="channel/new">添加</a></h3>';
+    echo '<h3><a href="channel/new">新建</a></h3>';
     echo '编号 | 名称';
     $this->renderFooter();
   }
