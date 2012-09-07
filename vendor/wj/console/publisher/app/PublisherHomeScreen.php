@@ -17,6 +17,7 @@ class PublisherHomeScreen extends PublisherScreen {
     PublisherNavigationScreen::render('home');
     $this->renderToday();
     $this->renderYesterday();
+    //$this->renderOrder();
     $this->renderTotal();
     $this->renderFooter();
   }
@@ -34,10 +35,10 @@ class PublisherHomeScreen extends PublisherScreen {
     echo '<h2>今天</h2>';
     echo '<ul>';
     echo '<li>流量：</li>';
-    echo '<li>预计订单数量：</li>';
-    echo '<li>预计订单交易金额：</li>';
-    echo '<li>预计订单佣金：</li>';
-    echo '<li>预计 CPC：</li>';
+    echo '<li>预计订单数量：当天流量 | 全部流量</li>';
+    echo '<li>预计订单交易金额：当天流量 | 全部流量</li>';
+    echo '<li>预计订单佣金：当天流量 | 全部流量</li>';
+    echo '<li title="当天流量的预计订单佣金 / 流量">预计 CPC：</li>';
     echo '</ul>';
   }
 
@@ -45,10 +46,18 @@ class PublisherHomeScreen extends PublisherScreen {
     echo '<h2>昨天</h2>';
     echo '<ul>';
     echo '<li>流量：</li>';
-    echo '<li>预计订单数量：</li>';
-    echo '<li>预计订单交易金额：</li>';
-    echo '<li>预计订单佣金：</li>';
-    echo '<li>预计 CPC：</li>';
+    echo '<li>预计订单数量：当天流量 | 全部流量</li>';
+    echo '<li>预计订单交易金额：当天流量 | 全部流量</li>';
+    echo '<li>预计订单佣金：当天流量 | 全部流量</li>';
+    echo '<li title="当天流量的预计订单佣金 / 流量">预计 CPC：</li>';
+    echo '</ul>';
+  }
+
+  private function renderOrder() {
+    echo '<h2>订单</h2>';
+    echo '<ul>';
+    echo '<li>今天：预计数量 | 预计交易金额 | 预计佣金</li>';
+    echo '<li>昨天：预计数量 | 预计交易金额 | 预计佣金</li>';
     echo '</ul>';
   }
 
