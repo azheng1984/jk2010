@@ -1,5 +1,5 @@
 <?php
-class PublisherChannelScreen extends PublisherScreen {
+class PublisherNewChannelScreen extends PublisherScreen {
   public function __construct() {
   }
 
@@ -16,11 +16,9 @@ class PublisherChannelScreen extends PublisherScreen {
     echo '<div id="toolbar">用户名 | publisher_id：xxx | <a href="/sign_out">退出</a></div>';
     PublisherNavigationScreen::render('home');
     echo '<h2>账户设置</h2>';
-    echo '<a href="/account_setting">账户设置</a> / 渠道';
-    echo '<h3>筛选</h3>';
-    echo '[全部|活跃|闲置] [编号|名称]';
-    echo '<h3><a href="channel/new">添加</a></h3>';
-    echo '编号 | 名称';
+    echo '<a href="/account_setting">账户设置</a> / <a href="/account_setting/channel">渠道</a> / <strong>新建</strong>';
+    echo '<div>名称：</div>';
+    echo '<div>提交</div>';
     $this->renderFooter();
   }
 
