@@ -16,6 +16,7 @@ class PublisherHomeScreen extends PublisherScreen {
     echo '<div id="toolbar">用户名 | publisher_id：xxx | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('home');
     $this->renderToday();
+    $this->renderYesterday();
     $this->renderTotal();
     $this->renderFooter();
   }
@@ -31,6 +32,17 @@ class PublisherHomeScreen extends PublisherScreen {
 
   private function renderToday() {
     echo '<h2>今天</h2>';
+    echo '<ul>';
+    echo '<li>流量：</li>';
+    echo '<li>预计订单数量：</li>';
+    echo '<li>预计订单交易金额：</li>';
+    echo '<li>预计订单佣金：</li>';
+    echo '<li>预计 CPC：</li>';
+    echo '</ul>';
+  }
+
+  private function renderYesterday() {
+    echo '<h2>昨天</h2>';
     echo '<ul>';
     echo '<li>流量：</li>';
     echo '<li>预计订单数量：</li>';
