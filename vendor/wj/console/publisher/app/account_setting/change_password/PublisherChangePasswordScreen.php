@@ -16,7 +16,7 @@ class PublisherChangePasswordScreen extends PublisherScreen {
     echo '<div id="toolbar">用户名 | publisher_id：xxx | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('home');
     echo '<h2>账户设置</h2>';
-    echo '<a href="/account_setting">账户设置</a> / 密码';
+    echo '<a href="/account_setting">账户设置</a> / 修改密码';
     echo '<div>旧密码：</div>';
     echo '<div>新密码：</div>';
     echo '<div>确认密码：</div>';
