@@ -1,10 +1,10 @@
 <?php
-class PublisherWebPagePluginScreen extends PublisherScreen {
+class MerchantProductFlagScreen extends MerchantScreen {
   public function __construct() {
   }
 
   protected function renderHtmlHeadContent() {
-    echo '<title>广告发布商 / 数据接口 - 货比万家</title>';
+    echo '<title>广告发布商 / 广告 - 货比万家</title>';
   }
 
   protected function renderHtmlBodyContent() {
@@ -14,10 +14,15 @@ class PublisherWebPagePluginScreen extends PublisherScreen {
     }
     echo '<h1><a href="/">广告发布商</a></h1>';
     echo '<div id="toolbar">用户名 | publisher_id：xxx | <a href="sign_out">退出</a></div>';
-    PublisherNavigationScreen::render('home');
+    MerchantNavigationScreen::render('home');
     echo '<h2>广告</h2>';
-    echo '<a href="/ad">广告</a> / 网页插件';
-    echo '<ul><li>链接增强</li><li>商品信息</li><li>商品推荐</li></ul>';
+    echo '<h3><a href="/ad/web_page_plugin">网页插件</a></h3>';
+    echo '描述';
+    echo '<h3><a href="/ad/browser_plugin">浏览器插件</a></h3>';
+    echo '描述';
+    echo '<h3><a href="/ad/custom_link">自定义链接</a></h3>';
+    echo '描述';
+    echo '</ul>';
     $this->renderFooter();
   }
 

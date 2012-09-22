@@ -1,5 +1,5 @@
 <?php
-class PublisherWebPagePluginScreen extends PublisherScreen {
+class MerchantIOCallbackStatusScreen extends MerchantScreen {
   public function __construct() {
   }
 
@@ -14,10 +14,17 @@ class PublisherWebPagePluginScreen extends PublisherScreen {
     }
     echo '<h1><a href="/">广告发布商</a></h1>';
     echo '<div id="toolbar">用户名 | publisher_id：xxx | <a href="sign_out">退出</a></div>';
-    PublisherNavigationScreen::render('home');
-    echo '<h2>广告</h2>';
-    echo '<a href="/ad">广告</a> / 网页插件';
-    echo '<ul><li>链接增强</li><li>商品信息</li><li>商品推荐</li></ul>';
+    MerchantNavigationScreen::render('home');
+    echo '<h2>数据接口</h2>';
+    echo '<a href="/io">数据接口</a> / 订单回调状态';
+    echo '<h3>状态</h3>';
+    echo 'OK';
+    echo '<h3>故障历史</h3>';
+    echo '时间 | 原因';
+    echo '<h3 title="故障数量/请求数量">可用率</h3>';
+    echo '今天 | 昨天 | 最近 7 天 | 最近 30 天 | 最近 90 天 | 最近 365 天';
+    echo '<h3 title="单位：天">吞吐率</h3>';
+    echo '今天 | 昨天 | 最近 7 天 | 最近 30 天 | 最近 90 天 | 最近 365 天';
     $this->renderFooter();
   }
 

@@ -1,5 +1,5 @@
 <?php
-class PublisherWebPagePluginScreen extends PublisherScreen {
+class MerchantIOScreen extends MerchantScreen {
   public function __construct() {
   }
 
@@ -14,10 +14,14 @@ class PublisherWebPagePluginScreen extends PublisherScreen {
     }
     echo '<h1><a href="/">广告发布商</a></h1>';
     echo '<div id="toolbar">用户名 | publisher_id：xxx | <a href="sign_out">退出</a></div>';
-    PublisherNavigationScreen::render('home');
-    echo '<h2>广告</h2>';
-    echo '<a href="/ad">广告</a> / 网页插件';
-    echo '<ul><li>链接增强</li><li>商品信息</li><li>商品推荐</li></ul>';
+    MerchantNavigationScreen::render('home');
+    echo '<h2>数据接口</h2>';
+    echo '<h3><a href="io/performance_report">效果报告</a></h3>';
+    echo '<h3><a href="io/payment">结算</a></h3>';
+    echo '<h3><a href="io/order">订单</a></h3>';
+    echo '<h3><a href="io/order_callback_status">订单回调状态</a></h3>';
+    echo '状态：OK';
+    echo '<h3><a href="io/setting">设置</a></h3>';
     $this->renderFooter();
   }
 

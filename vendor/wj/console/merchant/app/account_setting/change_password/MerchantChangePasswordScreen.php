@@ -1,5 +1,5 @@
 <?php
-class PublisherWebPagePluginScreen extends PublisherScreen {
+class MerchantChangePasswordScreen extends MerchantScreen {
   public function __construct() {
   }
 
@@ -14,10 +14,13 @@ class PublisherWebPagePluginScreen extends PublisherScreen {
     }
     echo '<h1><a href="/">广告发布商</a></h1>';
     echo '<div id="toolbar">用户名 | publisher_id：xxx | <a href="sign_out">退出</a></div>';
-    PublisherNavigationScreen::render('home');
-    echo '<h2>广告</h2>';
-    echo '<a href="/ad">广告</a> / 网页插件';
-    echo '<ul><li>链接增强</li><li>商品信息</li><li>商品推荐</li></ul>';
+    MerchantNavigationScreen::render('home');
+    echo '<h2>账户设置</h2>';
+    echo '<a href="/account_setting">账户设置</a> / 修改密码';
+    echo '<div>旧密码：</div>';
+    echo '<div>新密码：</div>';
+    echo '<div>确认密码：</div>';
+    echo '<div>提交</div>';
     $this->renderFooter();
   }
 
