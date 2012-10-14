@@ -17,7 +17,7 @@ class PublisherWebPagePluginScreen extends PublisherScreen {
     PublisherNavigationScreen::render('home');
     echo '<h2>广告</h2>';
     echo '<a href="/ad">广告</a> / 网页插件';
-    echo '<ul><li>链接增强</li><li>商品信息</li><li>商品推荐</li></ul>';
+    echo '<ul><li>商品信息</li><li>商品推荐</li></ul>';
     $this->renderFooter();
   }
 
