@@ -1,10 +1,10 @@
 <?php
-class PublisherAdScreen extends PublisherScreen {
+class PublisherBrandScreen extends PublisherScreen {
   public function __construct() {
   }
 
   protected function renderHtmlHeadContent() {
-    echo '<title>广告发布商 / 广告 - 货比万家</title>';
+    echo '<title>广告发布商 / 数据接口 - 货比万家</title>';
   }
 
   protected function renderHtmlBodyContent() {
@@ -15,16 +15,10 @@ class PublisherAdScreen extends PublisherScreen {
     echo '<h1><a href="/">广告发布商</a></h1>';
     echo '<div id="toolbar">用户名 | publisher_id：xxx | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('home');
-    echo '<h2>广告</h2>';
-    echo '<h3><a href="/ad/web_page_plugin">网页插件</a></h3>';
-    echo '描述';
-    echo '<h3><a href="/ad/browser_plugin">浏览器插件</a></h3>';
-    echo '描述';
-    echo '<h3><a href="/ad/app">应用</a></h3>';
-    echo '描述(ios/android/windows phone)';
-    echo '<h3><a href="/ad/custom_link">自定义链接</a></h3>';
-    echo '描述';
-    echo '</ul>';
+    echo '<h2>账户设置</h2>';
+    echo '<a href="/account_setting">账户设置</a> / 品牌';
+    echo '<div>商标 | 名称 | 域名 | 状态</div>';
+    echo '<div>添加网站</div>';
     $this->renderFooter();
   }
 
