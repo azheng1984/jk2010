@@ -20,6 +20,7 @@ class PublisherAccountSettingScreen extends PublisherScreen {
     echo '<h3><a href="/account_setting/change_password">修改密码</a></h3>';
     echo '<h3><a href="/account_setting/channel">渠道</a></h3>';
     echo '<h3><a href="/account_setting/brand">品牌</a></h3>';
+    echo '<p>品牌联合（co-branding）</p>';
     $this->renderFooter();
   }
 
