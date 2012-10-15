@@ -26,9 +26,9 @@ class PublisherContactPersonScreen extends PublisherScreen {
 
   private function renderSignIn() {
     echo '<form method="POST" action="/">';
-    echo '<div><label for="username">用户名：</label><input id="username" name="username" type="text" /></div>';
-    echo '<div><label for="password">密码：</label><input id="password" name="password" type="password" /></div>';
-    echo '<div><input type="submit" value="登录" />';
+    echo '<div><label for="username">用户名：</label><input id="username" name="username" type="text"/></div>';
+    echo '<div><label for="password">密码：</label><input id="password" name="password" type="password"/></div>';
+    echo '<div><input type="submit" value="登录"/>';
     echo '<a href="/sign_up">注册</a></div>';
     echo '</form>';
   }
