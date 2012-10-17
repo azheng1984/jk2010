@@ -16,8 +16,8 @@ class PublisherAppScreen extends PublisherScreen {
     echo '<div id="toolbar">用户名 | publisher_id：xxx | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('home');
     echo '<h2>广告</h2>';
-    echo '<a href="/ad">广告</a> / app';
-    echo '<div>文档</div>';
+    echo '<a href="/ad">广告</a> / 应用广告';
+    echo '<div>wj.com/app/搜索</div>';
     $this->renderFooter();
   }
 

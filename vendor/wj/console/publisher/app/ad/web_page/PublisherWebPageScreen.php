@@ -1,5 +1,5 @@
 <?php
-class PublisherBrowserPluginScreen extends PublisherScreen {
+class PublisherWebPageScreen extends PublisherScreen {
   public function __construct() {
   }
 
@@ -16,8 +16,8 @@ class PublisherBrowserPluginScreen extends PublisherScreen {
     echo '<div id="toolbar">用户名 | publisher_id：xxx | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('home');
     echo '<h2>广告</h2>';
-    echo '<a href="/ad">广告</a> / 浏览器插件';
-    echo '<div>文档</div>';
+    echo '<a href="/ad">广告</a> / 网页广告';
+    echo '<div>wj.com/app/搜索</div>';
     $this->renderFooter();
   }
 

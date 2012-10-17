@@ -1,7 +1,7 @@
 <?php
 return array(
-  'jingdong' => array(
-    'dsn' => 'mysql:host=localhost;dbname=wj_spider_jingdong',
+  'default' => array(
+    'dsn' => 'mysql:host=localhost;dbname=io_merchant_spider_jingdong',
     'username' => 'root',
     'password' => 'a841107!',
   ),

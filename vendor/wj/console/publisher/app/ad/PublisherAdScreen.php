@@ -16,12 +16,10 @@ class PublisherAdScreen extends PublisherScreen {
     echo '<div id="toolbar">用户名 | publisher_id：xxx | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('home');
     echo '<h2>广告</h2>';
-    echo '<h3><a href="/ad/web_page_plugin">网页插件</a></h3>';
+    echo '<h3><a href="/ad/web_page">网页广告</a></h3>';
     echo '描述';
-    echo '<h3><a href="/ad/browser_plugin">浏览器插件</a></h3>';
+    echo '<h3><a href="/ad/app">应用广告</a></h3>';
     echo '描述';
-    echo '<h3><a href="/ad/app">应用</a></h3>';
-    echo '描述(ios/android/windows phone)';
     echo '<h3><a href="/ad/custom_link">自定义链接</a></h3>';
     echo '描述';
     echo '</ul>';
