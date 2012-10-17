@@ -53,7 +53,8 @@ class Db {
   }
 
   public static function bind(
-    $table, $filterColumnList, $replacementColumnList = null, &$isNew = null
+    $table, $filterColumnList, $replacementColumnList = null,
+    &$id = null, &$isNew = null
   ) {
     $select = array('id');
     if ($replacementColumnList !== null) {
@@ -70,15 +71,20 @@ class Db {
     if ($result !== false && $replacementColumnList !== null) {
       $this->updateDifference($table, $result, $replacementColumnList);
     }
+    if ($result !== false && $id !== null) {
+      $id = $result['id'];
+    }
     if ($result !== false) {
-      return $result['id'];
+      return;
     }
     $columnList = $filterColumnList;
     if ($replacementColumnList !== null) {
       $columnList = $replacementColumnList + $filterColumnList;
     }
     self::insert($table, $columnList);
-    return self::getLastInsertId();
+    if ($id !== null) {
+      $id = self::getLastInsertId();
+    }
   }
 
   private static function call($parameterList) {

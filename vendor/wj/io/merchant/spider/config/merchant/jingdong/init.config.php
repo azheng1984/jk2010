@@ -1,4 +1,21 @@
 <?php
+//   private $config = array(
+//     'electronic',//家用电器
+//     'kitchenware',//厨具
+//     'digital',//手机数码
+//     'computer',//电脑、办公
+//     'home',//家居家装
+//     'clothing',//服饰鞋帽
+//     'beauty',//个护化妆
+//     'watch',//钟表
+//     'bag',//礼品箱包
+//     'sports',//运动健康
+//     'jewellery',//珠宝
+//     'auto',//汽车用品
+//     'baby',//母婴
+//     'toys',//玩具乐器
+//     'food',//食品饮料、保健食品
+//   );
 return array(
 //   'JingdongPublicationCategoryList' => array(
 //    'book.360buy.com' => array(
