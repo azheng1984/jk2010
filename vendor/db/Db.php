@@ -69,7 +69,7 @@ class Db {
       $isNew = $result === false;
     }
     if ($result !== false && $replacementColumnList !== null) {
-      $this->updateDifference($table, $result, $replacementColumnList);
+      self::updateDifference($table, $result, $replacementColumnList);
     }
     if ($result !== false && $id !== null) {
       $id = $result['id'];
