@@ -4,23 +4,20 @@ class JingdongProductListProcessor {
   private $page;
 
   public function execute($path) {
+    $status = 200;
     try {
       $result = WebClient::get('www.360buy.com', '/products/'.$path.'.html');
-    } catch (Exception $exception) {
-      $status = 'ERROR';
-      if ($exception->getMessage() === '404') {
-        $status = 'NOT_FOUND';
+      $this->html = $result['content'];
+      $this->page = $this->getPage($path);
+      $this->parseProductList();
+      $this->parseNextPage();
+      if ($this->page === 1) {
+        $this->parsePropertyList();
       }
-      $this->recodeHistory($path, $status);
+    } catch (Exception $exception) {
+      $status = $exception->getCode();
     }
-    $this->html = $result['content'];
-    $this->page = $this->getPage($path);
-    $status = $this->parseProductList() === 0 ? 'ERROR' : 'OK';
-    $this->parseNextPage();
-    if ($this->page === 1) {
-      $this->parsePropertyList();
-    }
-    $this->recodeHistory($path, $status);
+    $this->bindHistory($path, $status);
   }
 
   private function getPage($path) {
@@ -39,9 +36,15 @@ class JingdongProductListProcessor {
       $matches
     );
     $productIdList = $matches[1];
-    $saleIndex = ($this->page - 1) * 36;
+    if (count($productIdList) === 0) {
+      throw new Exception(null, 500);
+    }
+    $index = ($this->page - 1) * 36;
     foreach ($productIdList as $productId) {
-      //bind index & category relationship
+      Db::bind('product_index',
+        array('merchant_product_id' => $productId),
+        array('index' => $index, 'version' => SPIDER_VERSION)
+      );
       $productProcessor = new JingdongProductProcessor;
       $productProcessor->execute($productId);
     }
@@ -74,17 +77,14 @@ class JingdongProductListProcessor {
       "{<dt>(.*?)：</dt>}", $item, $matches
       );
       $keyName = $matches[1][0];
-      if ($keyName === '价格') {
-        continue;
-      }
       preg_match_all(
-      "{<a.*?href='(.*?).html'.*?>(.*?)</a>}", $item, $matches
+        "{<a.*?href='(.*?).html'.*?>(.*?)</a>}", $item, $matches
       );
       $valueLinkList = $matches[1];
       $valueList = $matches[2];
       $valueAmount = count($valueList);
       $keyId = Db::bind('`'.$this->tablePrefix.'-property_key`', array(
-          'category_id' => $this->categoryId, 'name' => $keyName
+        'category_id' => $this->categoryId, 'name' => $keyName
       ), array('`index`' => $keyIndex));
       for ($index = 0; $index < $valueAmount; ++$index) {
         $valueName = $valueList[$index];
@@ -96,21 +96,24 @@ class JingdongProductListProcessor {
             'key_id' => $keyId, 'name' => $valueList[$index]
         ), array('`index`' => $index));
         $path = $valueLinkList[$index];
+        //jingdong property product list
+        $processor = new JingdongPropertyProductListProcessor;
+        $processor->execute($path);
         Db::insert('task', array('processor' => 'JingdongPropertyProductList',
-        'argument_list' =>var_export(array(
-        $this->tablePrefix, $valueId, $path
+          'argument_list' =>var_export(array(
+          $this->tablePrefix, $valueId, $path
         ), true)
         ));
       }
     }
   }
 
-  private function recodeHistory($path, $status) {
+  private function bindHistory($path, $status) {
     $replacementColumnList = array(
       'status' => $status,
       'version' => SPIDER_VERSION,
     );
-    if ($status === 'OK') {
+    if ($status === 200) {
       $replacementColumnList['last_ok_date'] = date('Y-m-d');
     }
     Db::bind('history', array(
