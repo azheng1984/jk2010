@@ -26,6 +26,7 @@ class JingdongCategoryListProcessor {
         $levelOneCategoryId.'-'.$levelTwoCategoryId
           .'-'.$levelThreeCategoryId.'.html'
       );
+      //TODO:触发 category 异步同步
     }
   }
 }
