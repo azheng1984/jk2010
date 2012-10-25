@@ -83,27 +83,22 @@ class JingdongProductListProcessor {
       $valueLinkList = $matches[1];
       $valueList = $matches[2];
       $valueAmount = count($valueList);
-      $keyId = Db::bind('`'.$this->tablePrefix.'-property_key`', array(
+      $keyId = Db::bind('`property_key`', array(
         'category_id' => $this->categoryId, 'name' => $keyName
       ), array('`index`' => $keyIndex));
       for ($index = 0; $index < $valueAmount; ++$index) {
         $valueName = $valueList[$index];
         if ($valueName === '全部' || $valueName === '其它'
-            || $valueName === '不限') {
+          || $valueName === '其它'.$keyName || $valueName === '不限') {
           continue;
         }
-        $valueId = Db::bind('`'.$this->tablePrefix.'-property_value`', array(
+        $valueId = Db::bind('`property_value`', array(
             'key_id' => $keyId, 'name' => $valueList[$index]
         ), array('`index`' => $index));
         $path = $valueLinkList[$index];
         //jingdong property product list
         $processor = new JingdongPropertyProductListProcessor;
         $processor->execute($path);
-        Db::insert('task', array('processor' => 'JingdongPropertyProductList',
-          'argument_list' =>var_export(array(
-          $this->tablePrefix, $valueId, $path
-        ), true)
-        ));
       }
     }
   }

@@ -34,10 +34,10 @@ class PublisherHomeScreen extends PublisherScreen {
     echo '<h2>今天</h2>';
     echo '<ul>';
     echo '<li>流量：</li>';
-    echo '<li>预计订单数量：当天流量 | 全部流量</li>';
-    echo '<li>预计订单交易金额：当天流量 | 全部流量</li>';
-    echo '<li>预计订单佣金：当天流量 | 全部流量</li>';
-    echo '<li title="当天流量的预计订单佣金 / 流量">预计 CPC：</li>';
+    echo '<li>预计新增订单数量：当天流量 | 全部流量</li>';
+    echo '<li>预计新增订单交易金额：当天流量 | 全部流量</li>';
+    echo '<li>预计新增订单佣金：当天流量 | 全部流量</li>';
+    echo '<li title="当天流量的预计新增订单佣金 / 流量">预计 CPC：</li>';
     echo '</ul>';
   }
 
@@ -45,10 +45,10 @@ class PublisherHomeScreen extends PublisherScreen {
     echo '<h2>昨天</h2>';
     echo '<ul>';
     echo '<li>流量：</li>';
-    echo '<li>预计订单数量：当天流量 | 全部流量</li>';
-    echo '<li>预计订单交易金额：当天流量 | 全部流量</li>';
-    echo '<li>预计订单佣金：当天流量 | 全部流量</li>';
-    echo '<li title="当天流量的预计订单佣金 / 流量">预计 CPC：</li>';
+    echo '<li>预计新增订单数量：当天流量 | 全部流量</li>';
+    echo '<li>预计新增订单交易金额：当天流量 | 全部流量</li>';
+    echo '<li>预计新增订单佣金：当天流量 | 全部流量</li>';
+    echo '<li title="当天流量的预计新增订单佣金 / 流量">预计 CPC：</li>';
     echo '</ul>';
   }
 
