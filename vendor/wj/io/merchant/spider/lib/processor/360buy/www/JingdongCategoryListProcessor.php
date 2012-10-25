@@ -15,16 +15,14 @@ class JingdongCategoryListProcessor {
       if ($levelOneCategoryId === '1713') {//publication
         continue;
       }
-      $levelTwoCategoryId = $matches[2][$index];
-      $levelThreeCategoryId = $matches[3][$index];
       if ($levelOneCategoryId === '5025') {
         //WatchProductList（brand as category）
         continue;
       }
       $productListProcessor = new JingdongProductListProcessor;
       $productListProcessor->execute(
-        $levelOneCategoryId.'-'.$levelTwoCategoryId
-          .'-'.$levelThreeCategoryId.'.html'
+        $levelOneCategoryId.'-'.$matches[2][$index]
+          .'-'.$matches[3][$index].'.html'
       );
       //TODO:触发 category 异步同步
     }
