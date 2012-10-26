@@ -2,6 +2,7 @@
 class JingdongProductListProcessor {
   private $html;
   private $page;
+  private $categoryId;
 
   public function execute($path) {
     $status = 200;
@@ -9,6 +10,7 @@ class JingdongProductListProcessor {
       $result = WebClient::get('www.360buy.com', '/products/'.$path.'.html');
       $this->html = $result['content'];
       $this->page = $this->getPage($path);
+      $this->categoryId = $this->getCategoryId();
       $this->parseProductList();
       $this->parseNextPage();
       if ($this->page === 1) {
@@ -20,45 +22,78 @@ class JingdongProductListProcessor {
     $this->bindHistory($path, $status);
   }
 
+  private function getCategoryId() {
+    preg_match(
+      '{<div class="breadcrumb">([\s|\S]*)</a></span>}', $this->html, $matches
+    );
+    if (count($matches[1]) === 0) {
+      throw new Exception(null, 500);
+    }
+    $categoryName = iconv('gbk', 'utf-8', end(explode('>', $matches[1][0])));
+    $id = null;
+    Db::bind('category', array('name' => $categoryName), null, $id);
+    return $id;
+  }
+
   private function getPage($path) {
     $list = explode('-', $path);
-    if ($list === 3) {
+    if (count($list) === 3) {
       return 1;
     }
     return intval(end($list));
   }
 
   private function parseProductList() {
-    preg_match_all(
-      "{<div class='p-name'><a target='_blank'"
-        ." href='http://www.360buy.com/product/([0-9]+).html'>}",
-      $this->html,
-      $matches
-    );
-    $productIdList = $matches[1];
-    if (count($productIdList) === 0) {
+    preg_match('{id="plist"([\s|\S]*)<!--plist end-->}', $this->html, $matches);
+    if (count($matches[1]) === 0) {
+      throw new Exception(null, 500);
+    }
+    $list = array_shift(explode('<li', $matches[1]));
+    if (count($list) < 2) {
       throw new Exception(null, 500);
     }
     $index = ($this->page - 1) * 36;
-    foreach ($productIdList as $productId) {
-      Db::bind('product_index',
-        array('merchant_product_id' => $productId),
-        array('index' => $index, 'version' => SPIDER_VERSION)
+    foreach ($list as $item) {
+      preg_match(
+        "{img onerror=\"this.src='"
+          ."http://www.360buy.com/images/none/none_150.gif'\" src2='(.*?)'}",
+        item, $matches
       );
-      $productProcessor = new JingdongProductProcessor;
-      $productProcessor->execute($productId);
+      if (count($matches[1]) === 0) {
+        throw new Exception(null, 500);
+      }
+      $imageSrc = str_replace(
+        '360buyimg.com/n2/', '360buyimg.com/n1/', $matches[1][0]
+      );
+      preg_match(
+        "{<div class='p-name'><a target='_blank'"
+          ." href='http://www.360buy.com/product/([0-9]+).html'>(.*?)<}",
+        item, $matches
+      );
+      if (count($matches[1]) === 0 || count($matches[2]) === 0) {
+        throw new Exception(null, 500);
+      }
+      $merchantProductId = $matches[1];
+      $productTitle = iconv('gbk', 'utf-8', $matches[2]);
+      $this->bindProduct($merchantProductId, $productTitle, $imageSrc, $index);
+      ++$index;
     }
+  }
+
+  private function bindProduct(
+    $merchantProductId, $productTitle, $imageSrc, $index
+  ) {
+    //bind product
+    //add image checker
+    //add price checker
   }
 
   private function parseNextPage() {
     preg_match(
-      '{class="current".*?href="([0-9-]+).html"}',
-      $this->html,
-      $matches
+      '{href="([0-9-]+).html.*?class="next"}', $this->html, $matches
     );
     if (count($matches) > 0) {
-      $productListProcessor = new JingdongProductListProcessor;
-      $productListProcessor->execute($matches[1]);
+      self::execute($matches[1]);
     }
   }
 
@@ -74,9 +109,12 @@ class JingdongProductListProcessor {
     $keyIndex = 0;
     foreach ($matches[0] as $item) {
       preg_match_all(
-      "{<dt>(.*?)：</dt>}", $item, $matches
+        "{<dt>(.*?)：</dt>}", $item, $matches
       );
       $keyName = $matches[1][0];
+      if ($keyName === '价格' || $keyName === '类别') {
+        continue;
+      }
       preg_match_all(
         "{<a.*?href='(.*?).html'.*?>(.*?)</a>}", $item, $matches
       );
@@ -93,13 +131,13 @@ class JingdongProductListProcessor {
           continue;
         }
         $valueId = Db::bind('`property_value`', array(
-            'key_id' => $keyId, 'name' => $valueList[$index]
+          'key_id' => $keyId, 'name' => $valueList[$index]
         ), array('`index`' => $index));
         $path = $valueLinkList[$index];
-        //jingdong property product list
         $processor = new JingdongPropertyProductListProcessor;
         $processor->execute($path);
       }
+      ++$keyIndex;
     }
   }
 
