@@ -12,6 +12,9 @@ class JingdongCategoryListProcessor {
       $matches
     );
     foreach ($matches[1] as $index => $levelOneCategoryId) {
+      if ($matches[3][$index] === '000') {
+        continue;
+      }
       if ($levelOneCategoryId === '1713') {//publication
         continue;
       }
