@@ -55,8 +55,8 @@ class JingdongProductListProcessor {
     $index = ($this->page - 1) * 36;
     foreach ($list as $item) {
       preg_match(
-        "{img onerror=\"this.src='"
-          ."http://www.360buy.com/images/none/none_150.gif'\" src2='(.*?)'}",
+        "{img onerror=\"this.src='http://www.360buy.com/"
+          ."images/none/none_150.gif'\" src2='http://(.*?)'}",
         item, $matches
       );
       if (count($matches[1]) === 0) {
@@ -74,18 +74,13 @@ class JingdongProductListProcessor {
         throw new Exception(null, 500);
       }
       $merchantProductId = $matches[1];
-      $productTitle = iconv('gbk', 'utf-8', $matches[2]);
-      $this->bindProduct($merchantProductId, $productTitle, $imageSrc, $index);
+      $title = iconv('gbk', 'utf-8', $matches[2]);
+      $processor = new JingdongProductProcessor(
+        $this->categoryId, $title, $imageSrc, $index
+      );
+      $processor->execute($merchantProductId);
       ++$index;
     }
-  }
-
-  private function bindProduct(
-    $merchantProductId, $productTitle, $imageSrc, $index
-  ) {
-    //bind product
-    //add image checker
-    //add price checker
   }
 
   private function parseNextPage() {
