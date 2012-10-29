@@ -65,18 +65,15 @@ class Db {
     $argumentList = array_values($filterColumnList);
     array_unshift($argumentList, $sql);
     $result = self::call($argumentList)->fetch(PDO::FETCH_ASSOC);
-    if ($isNew !== null) {
-      $isNew = $result === false;
-    }
     if ($result !== false && $replacementColumnList !== null) {
       self::updateDifference($table, $result, $replacementColumnList);
     }
-    if ($result !== false && $id !== null) {
-      $id = $result['id'];
-    }
     if ($result !== false) {
+      $isNew = false;
+      $id = $result['id'];
       return;
     }
+    $isNew = true;
     $columnList = $filterColumnList;
     if ($replacementColumnList !== null) {
       $columnList = $replacementColumnList + $filterColumnList;
@@ -96,10 +93,19 @@ class Db {
     }
     $statement = $connection->prepare($sql);
     if ($statement === false) {
-      throw new Exception;
+      self::error($connection);
     }
-    $statement->execute($parameterList);
+    if ($statement->execute($parameterList) === false) {
+      self::error($statement);
+    }
     return $statement;
+  }
+
+  private static function error($handler) {
+    $errorInfo = $handler->errorInfo();
+    throw new Exception(
+      "SQLSTATE[{$errorInfo[0]}] [{$errorInfo[1]}] $errorInfo[2]", 500
+    );
   }
 
   private static function updateDifference($table, $from, $to) {

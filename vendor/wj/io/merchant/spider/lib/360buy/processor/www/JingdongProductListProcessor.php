@@ -1,18 +1,24 @@
 <?php
 class JingdongProductListProcessor {
   private $html;
-  private $page;
   private $categoryId;
+  private $page;
 
   public function execute($path) {
     $status = 200;
     try {
       $result = WebClient::get('www.360buy.com', '/products/'.$path.'.html');
       $this->html = $result['content'];
-      $this->page = $this->getPage($path);
-      $this->categoryId = $this->getCategoryId();
+      if ($this->categoryId === null) {
+        $this->categoryId = $this->getCategoryId();
+      }
+      if ($this->page === null) { 
+        $this->page = $this->getPage($path);
+      }
       $this->parseProductList();
-      $this->parseNextPage();
+      if ($this->page === null) {
+        $this->parseNextPage();
+      }
       if ($this->page === 1) {
         $this->parsePropertyList();
       }
@@ -24,12 +30,12 @@ class JingdongProductListProcessor {
 
   private function getCategoryId() {
     preg_match(
-      '{<div class="breadcrumb">([\s|\S]*)</a></span>}', $this->html, $matches
+      '{<div class="breadcrumb">([\s|\S]*?)</a></span>}', $this->html, $matches
     );
-    if (count($matches[1]) === 0) {
+    if (count($matches) === 0) {
       throw new Exception(null, 500);
     }
-    $categoryName = iconv('gbk', 'utf-8', end(explode('>', $matches[1][0])));
+    $categoryName = iconv('gbk', 'utf-8', end(explode('html">', $matches[1])));
     $id = null;
     Db::bind('category', array('name' => $categoryName), null, $id);
     return $id;
@@ -45,10 +51,11 @@ class JingdongProductListProcessor {
 
   private function parseProductList() {
     preg_match('{id="plist"([\s|\S]*)<!--plist end-->}', $this->html, $matches);
-    if (count($matches[1]) === 0) {
+    if (count($matches) === 0) {
       throw new Exception(null, 500);
     }
-    $list = array_shift(explode('<li', $matches[1]));
+    $list = explode('<li', $matches[1]);
+    array_shift($list);
     if (count($list) < 2) {
       throw new Exception(null, 500);
     }
@@ -56,27 +63,35 @@ class JingdongProductListProcessor {
     foreach ($list as $item) {
       preg_match(
         "{img onerror=\"this.src='http://www.360buy.com/"
-          ."images/none/none_150.gif'\" src2='http://(.*?)'}",
-        item, $matches
+          ."images/none/none_150.gif'\" src.?='http://(.*?)'}",
+        $item, $matches
       );
-      if (count($matches[1]) === 0) {
+      if (count($matches) === 0) {
         throw new Exception(null, 500);
       }
       $imageSrc = str_replace(
-        '360buyimg.com/n2/', '360buyimg.com/n1/', $matches[1][0]
+        '360buyimg.com/n2/', '360buyimg.com/n1/', $matches[1]
       );
       preg_match(
         "{<div class='p-name'><a target='_blank'"
           ." href='http://www.360buy.com/product/([0-9]+).html'>(.*?)<}",
-        item, $matches
+        $item, $matches
       );
-      if (count($matches[1]) === 0 || count($matches[2]) === 0) {
+      if (count($matches) === 0) {
         throw new Exception(null, 500);
       }
       $merchantProductId = $matches[1];
       $title = iconv('gbk', 'utf-8', $matches[2]);
+      preg_match(
+        "{http://gate.360buy.com/InitCart.aspx.*?ptype=(.*?)'}",
+        $item, $matches
+      );
+      if (count($matches) === 0) {
+        throw new Exception(null, 500);
+      }
+      $typeId = $matches[1];
       $processor = new JingdongProductProcessor(
-        $this->categoryId, $title, $imageSrc, $index
+        $this->categoryId, $title, $imageSrc, $typeId, $index
       );
       $processor->execute($merchantProductId);
       ++$index;
@@ -116,20 +131,26 @@ class JingdongProductListProcessor {
       $valueLinkList = $matches[1];
       $valueList = $matches[2];
       $valueAmount = count($valueList);
-      $keyId = Db::bind('`property_key`', array(
+      $keyId = null;
+      Db::bind('`property_key`', array(
         'category_id' => $this->categoryId, 'name' => $keyName
-      ), array('`index`' => $keyIndex));
-      for ($index = 0; $index < $valueAmount; ++$index) {
-        $valueName = $valueList[$index];
+      ), array('`index`' => $keyIndex, 'version' => SPIDER_VERSION), $keyId);
+      for ($valueIndex = 0; $valueIndex < $valueAmount; ++$valueIndex) {
+        $valueName = $valueList[$valueIndex];
         if ($valueName === '全部' || $valueName === '其它'
           || $valueName === '其它'.$keyName || $valueName === '不限') {
           continue;
         }
-        $valueId = Db::bind('`property_value`', array(
-          'key_id' => $keyId, 'name' => $valueList[$index]
-        ), array('`index`' => $index));
-        $path = $valueLinkList[$index];
-        $processor = new JingdongPropertyProductListProcessor;
+        $valueId = null;
+        Db::bind('`property_value`', array(
+          'key_id' => $keyId, 'name' => $valueList[$valueIndex]
+        ), array(
+         '`index`' => $valueIndex, 'version' => SPIDER_VERSION
+        ), $valueId);
+        $path = $valueLinkList[$valueIndex];
+        $processor = new JingdongPropertyProductListProcessor(
+          $this->categoryId, $valueId
+        );
         $processor->execute($path);
       }
       ++$keyIndex;
@@ -138,7 +159,7 @@ class JingdongProductListProcessor {
 
   private function bindHistory($path, $status) {
     $replacementColumnList = array(
-      'status' => $status,
+      '`status`' => $status,
       'version' => SPIDER_VERSION,
     );
     if ($status === 200) {

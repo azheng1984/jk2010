@@ -4,12 +4,13 @@ class DbConnectionFactory {
 
   public function get($name) {
     $config = $this->getConfig($name);
-    if (isset($config['dsn']) && isset($config['username'])
-      && isset($config['password'])) {
+    if (isset($config['dsn'])) {
+      $username = isset($config['username']) ? $config['username'] : null;
+      $password = isset($config['password']) ? $config['password'] : null;
       return new PDO(
         $config['dsn'],
-        $config['username'],
-        $config['password'],
+        $username,
+        $password,
         array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8')
       );
     }

@@ -1,31 +1,36 @@
 <?php
 class JingdongPropertyProductListProcessor {
-  private $valueId;
   private $html;
+  private $valueId;
+  private $categoryId;
+
+  public function __construct($categoryId = null, $valueId = null) {
+    $this->categoryId = $categoryId;
+    $this->valueId = $valueId;
+  }
 
   public function execute($path) {
     $status = 200;
     try {
       $result = WebClient::get('www.360buy.com', '/products/'.$path.'.html');
       $this->html = $result['content'];
-      $this->valueId = $this->getValueId();
+      if ($this->valueId !== null) {
+        $this->valueId = $this->getValueId();
+      }
+      $this->parseProductList();
     } catch(Exception $exception) {
       $status = $exception->getCode();
     }
-    $replacementColumnList = array(
-      'status' => $status,
-      'version' => SPIDER_VERSION,
-    );
     Db::bind('history', array(
       'processor' => 'ProductPropertyList', 'path' => $path,
-    ), $replacementColumnList);
+    ), array(
+      '`status`' => $status,
+      'version' => SPIDER_VERSION,
+    ));
   }
 
   private function getValueId() {
-    if ($this->valueId !== null) {
-      return $this->valueId;
-    }
-    $categoryId = $this->getCategoryId();
+    //TODO:缓存属性列表
     preg_match(
       "{<dt>(.*?)</dt><dd><div class='content'>.*?class=\"curr\">(.*?)</a>}",
       $this->html, $matches
@@ -34,11 +39,13 @@ class JingdongPropertyProductListProcessor {
       throw new Exception(null, 500);
     }
     $keyName = iconv('gbk', 'utf-8', $matches[1]);
+    if ($this->categoryId === null) {
+      $this->categoryId = $this->getCategoryId();
+    }
     $keyId = null;
-    Db::bind(
-      'property_key', array('category_id' => $categoryId, 'name' => $keyName),
-      array('version', SPIDER_VERSION), $keyId
-    );
+    Db::bind('property_key', array(
+      'category_id' => $this->categoryId, 'name' => $keyName
+    ), array('version', SPIDER_VERSION), $keyId);
     $valueName = iconv('gbk', 'utf-8', $matches[2]);
     $valueId = null;
     Db::bind(

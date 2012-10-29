@@ -1,18 +1,15 @@
 <?php
 class JingdongCategoryListProcessor {
   public function execute() {
-    try {
-      $result = WebClient::get('www.360buy.com', '/allSort.aspx');
-    } catch (Exception $exception) {
-      return;
-    }
+    $result = WebClient::get('www.360buy.com', '/allSort.aspx');
     preg_match_all(
-      '{products/([0-9]+)-([0-9]+)-([0-9]+).html}',
-      iconv('gbk', 'utf-8', $result['content']),
-      $matches
+      '{products/([0-9]+)-([0-9]+)-([0-9]+).html}', $result['content'], $matches
     );
+    if (count($matches[1]) === 0) {
+      throw new Exception(null, 500);
+    }
     foreach ($matches[1] as $index => $levelOneCategoryId) {
-      if ($matches[3][$index] === '000') {
+      if ($matches[3][$index] === '000') {//leaf category only
         continue;
       }
       if ($levelOneCategoryId === '1713') {//publication
@@ -24,8 +21,7 @@ class JingdongCategoryListProcessor {
       }
       $productListProcessor = new JingdongProductListProcessor;
       $productListProcessor->execute(
-        $levelOneCategoryId.'-'.$matches[2][$index]
-          .'-'.$matches[3][$index].'.html'
+        $levelOneCategoryId.'-'.$matches[2][$index].'-'.$matches[3][$index]
       );
       //TODO:触发 category 异步同步
     }
