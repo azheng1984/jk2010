@@ -4,21 +4,21 @@ class WebClient {
 
   public static function get(
     $domain, $path = '/', $headers = array(),
-    $cookie = null, $returnHeader = false, $retryTimes = 2
+    $cookie = null, $responseHeader = false, $retryTimes = 2
   ) {
     $handler = self::getHandler($domain, $path, $headers);
     curl_setopt($handler, CURLOPT_HTTPGET, true);
-    return self::execute($handler, $cookie, $returnHeader, $retryTimes);
+    return self::execute($handler, $cookie, $responseHeader, $retryTimes);
   }
 
   public static function post(
     $domain, $path = '/', $uploadData = null, $headers = array(),
-    $cookie = null, $returnHeader = false, $retryTimes = 0
+    $cookie = null, $responseHeader = false, $retryTimes = 0
   ) {
     $handler = self::getHandler($domain, $path, $headers);
     curl_setopt($handler, CURLOPT_POST, true);
     curl_setopt($handler, CURLOPT_POSTFIELDS, $uploadData);
-    return self::execute($handler, $cookie, $returnHeader, $retryTimes);
+    return self::execute($handler, $cookie, $responseHeader, $retryTimes);
   }
 
   public static function close() {
@@ -40,25 +40,25 @@ class WebClient {
     $handler = self::$handlers[$domain];
     $headers[] = 'Accept: */*';
     $headers[] = 'Accept-Language: zh-CN';
-    $headers[] = 'User-Agent: Mozilla/5.0 '
-      .'(compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)';
+    //$headers[] = 'User-Agent: Mozilla/5.0 '
+    //  .'(compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)';
     curl_setopt($handler, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($handler, CURLOPT_URL, 'http://'.$domain.$path);
     return $handler;
   }
 
   private static function execute(
-    $handler, $cookie, $returnHeader, $retryTimes
+    $handler, $cookie, $responseHeader, $retryTimes
   ) {
     curl_setopt($handler, CURLOPT_COOKIE, $cookie);
-    if ($returnHeader) {
+    if ($responseHeader) {
       curl_setopt($handler, CURLOPT_HEADER, 1);
     }
     $content = curl_exec($handler);
     curl_setopt($handler, CURLOPT_HEADER, 0);
     if ($content === false && $retryTimes > 0) {
       return self::execute(
-        $handler, $cookie, $returnHeader, --$retryTimes
+        $handler, $cookie, $responseHeader, --$retryTimes
       );
     }
     if ($content === false) {
@@ -66,7 +66,7 @@ class WebClient {
       throw new Exception(null, $code);
     }
     $result = curl_getinfo($handler);
-    if ($returnHeader) {
+    if ($responseHeader) {
       list($header, $data) = explode("\r\n\r\n", $content, 2);
       $content = $data;
       $result['header'] = $header;
