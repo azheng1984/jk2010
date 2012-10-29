@@ -101,10 +101,10 @@ class Db {
     return $statement;
   }
 
-  private static function error($handler) {
-    $errorInfo = $handler->errorInfo();
+  private static function error($source) {
+    $errorInfo = $source->errorInfo();
     throw new Exception(
-      "SQLSTATE[{$errorInfo[0]}] [{$errorInfo[1]}] $errorInfo[2]", 500
+      "SQLSTATE[{$errorInfo[0]}] [{$errorInfo[1]}] {$errorInfo[2]}", 500
     );
   }
 
