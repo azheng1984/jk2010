@@ -6,9 +6,12 @@ class WebClient {
     $domain, $path = '/', $headers = array(),
     $cookie = null, $responseHeader = false, $retryTimes = 2
   ) {
+    echo $domain.$path;
     $handler = self::getHandler($domain, $path, $headers);
     curl_setopt($handler, CURLOPT_HTTPGET, true);
-    return self::execute($handler, $cookie, $responseHeader, $retryTimes);
+    $result = self::execute($handler, $cookie, $responseHeader, $retryTimes);
+    echo '[OK]'.PHP_EOL;
+    return $result;
   }
 
   public static function post(

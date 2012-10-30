@@ -69,25 +69,25 @@ class Db {
       self::updateDifference($table, $result, $replacementColumnList);
     }
     if ($result !== false) {
-      $isNew = false;
       $id = $result['id'];
+      $isNew = false;
       return;
     }
-    $isNew = true;
     $columnList = $filterColumnList;
     if ($replacementColumnList !== null) {
       $columnList = $replacementColumnList + $filterColumnList;
     }
     self::insert($table, $columnList);
-    if ($id !== null) {
+    if (func_num_args() > 3) {
       $id = self::getLastInsertId();
+      $isNew = true;
     }
   }
 
   private static function call($parameterList) {
     $connection = DbConnection::get();
     $sql = array_shift($parameterList);
-    //echo $sql;
+    //echo $sql.PHP_EOL;
     if (isset($parameterList[0]) && is_array($parameterList[0])) {
       $parameterList = $parameterList[0];
     }

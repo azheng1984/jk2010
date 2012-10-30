@@ -14,7 +14,7 @@ class JingdongPropertyProductListProcessor {
     try {
       $result = WebClient::get('www.360buy.com', '/products/'.$path.'.html');
       $this->html = $result['content'];
-      if ($this->valueId !== null) {
+      if ($this->valueId === null) {
         $this->valueId = $this->getValueId();
       }
       $this->parseProductList();
@@ -24,8 +24,9 @@ class JingdongPropertyProductListProcessor {
     Db::bind('history', array(
       'processor' => 'ProductPropertyList', 'path' => $path,
     ), array(
-      '`status`' => $status,
+      '_status' => $status,
       'version' => SPIDER_VERSION,
+      'last_ok_date' => date('Y-m-d')
     ));
   }
 
@@ -43,14 +44,22 @@ class JingdongPropertyProductListProcessor {
       $this->categoryId = $this->getCategoryId();
     }
     $keyId = null;
-    Db::bind('property_key', array(
-      'category_id' => $this->categoryId, 'name' => $keyName
-    ), array('version', SPIDER_VERSION), $keyId);
+    Db::bind(
+      'property_key',
+      array(
+        'category_id' => $this->categoryId,
+        'name' => str_replace('：', '', $keyName)
+      ),
+      array('version' => SPIDER_VERSION),
+      $keyId
+    );
     $valueName = iconv('gbk', 'utf-8', $matches[2]);
     $valueId = null;
     Db::bind(
-      'property_value', array('key_id' => $keyId, 'name' => $valueName),
-      array('version', SPIDER_VERSION), $valueId
+      'property_value',
+      array('key_id' => $keyId, 'name' => $valueName),
+      array('version' => SPIDER_VERSION),
+      $valueId
     );
     return $valueId;
   }
@@ -63,6 +72,8 @@ class JingdongPropertyProductListProcessor {
       throw new Exception(null, 500);
     }
     $categoryName = iconv('gbk', 'utf-8', end(explode('>', $matches[1][0])));
+    echo $categoryName;
+    exit;
     $id = null;
     Db::bind('category', array('name' => $categoryName), null, $id);
     return $id;
@@ -75,10 +86,9 @@ class JingdongPropertyProductListProcessor {
       $this->html,
       $matches
     );
-    $merchantProductIdList = $matches[1];
-    foreach ($merchantProductIdList as $merchantProductId) {
+    foreach ($matches[1] as $merchantProductId) {
       Db::execute(
-        'REPLACE INTO `product_property_value`'
+        'REPLACE INTO product_property_value'
           .'(merchant_product_id, property_value_id, version) VALUES(?, ?, ?)',
         $merchantProductId, $this->valueId, SPIDER_VERSION
       );

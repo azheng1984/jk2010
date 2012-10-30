@@ -132,9 +132,9 @@ class JingdongProductListProcessor {
       $valueList = $matches[2];
       $valueAmount = count($valueList);
       $keyId = null;
-      Db::bind('`property_key`', array(
+      Db::bind('property_key', array(
         'category_id' => $this->categoryId, 'name' => $keyName
-      ), array('`index`' => $keyIndex, 'version' => SPIDER_VERSION), $keyId);
+      ), array('_index' => $keyIndex, 'version' => SPIDER_VERSION), $keyId);
       for ($valueIndex = 0; $valueIndex < $valueAmount; ++$valueIndex) {
         $valueName = $valueList[$valueIndex];
         if ($valueName === '全部' || $valueName === '其它'
@@ -142,10 +142,10 @@ class JingdongProductListProcessor {
           continue;
         }
         $valueId = null;
-        Db::bind('`property_value`', array(
+        Db::bind('property_value', array(
           'key_id' => $keyId, 'name' => $valueList[$valueIndex]
         ), array(
-         '`index`' => $valueIndex, 'version' => SPIDER_VERSION
+          '_index' => $valueIndex, 'version' => SPIDER_VERSION
         ), $valueId);
         $path = $valueLinkList[$valueIndex];
         $processor = new JingdongPropertyProductListProcessor(
@@ -159,7 +159,7 @@ class JingdongProductListProcessor {
 
   private function bindHistory($path, $status) {
     $replacementColumnList = array(
-      '`status`' => $status,
+      '_status' => $status,
       'version' => SPIDER_VERSION,
     );
     if ($status === 200) {
