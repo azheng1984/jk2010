@@ -25,6 +25,9 @@ class JingdongProductProcessor {
 
   public function execute($path) {
     $this->merchantProductId = $path;
+    if ($this->title === null) {
+      $this->initialize($path);
+    }
     $product = Db::getRow(
       'SELECT * FROM product WHERE merchant_product_id = ?', $path
     );
@@ -34,19 +37,58 @@ class JingdongProductProcessor {
         $this->insert($path);
         return;
       }
+      $this->update($path);
     } catch (Exception $exception) {
-      echo $exception->getMessage();
-      throw $exception;
       $status = $exception->getCode();
     }
     $this->bindHistory($path, $status);
-    exit;
+  }
+
+  private function initialize($path) {
+    $result = WebClient::get('www.360buy.com', '/product/'.$path.'.html');
+    $html = $result['content'];
+    preg_match(
+      '{jqzoom[\s\S]*? src="http://(.*?)\.jpg}', $this->html, $matches
+    );
+    if (count($matches) === 0) {
+      throw new Exception(null, 500);
+    }
+    $this->imageSrc = $matches[1];
+    preg_match(
+      '{http://gate.360buy.com/InitCart.aspx.*?ptype=(.*?)>}',
+      $this->html,
+      $matches
+    );
+    if (count($matches) === 0) {
+      throw new Exception(null, 500);
+    }
+    $this->typeId = intval($matches[1]);
+    preg_match(
+      '{<div class="breadcrumb">([\s|\S]*?)<!--breadcrumb end-->}', $html, $matches
+    );
+    if (count($matches) === 0) {
+      throw new Exception(null, 500);
+    }
+    $list = explode('&nbsp;&gt;&nbsp;', $matches[1]);
+    if (count($list) < 4) {
+      throw new Exception(null, 500);
+    }
+    preg_match('{>(.*?)<}', $list[2], $matches);
+    if (count($matches) === 0) {
+      throw new Exception(null, 500);
+    }
+    $categoryName = iconv('gbk', 'utf-8', $matches[1]);
+    Db::bind('category', array('name' => $categoryName), null, $this->categoryId);
+    preg_match('{<h1>(.*?)</h1>}', $html, $matches);
+    if (count($matches) === 0) {
+      throw new Exception(null, 500);
+    }
+    $this->title = iconv('gbk', 'utf-8', $matches[1]);
   }
 
   private function insert($path) {
     $price = $this->getPrice($path);
     $imageDigest = $this->bindImage();
-    var_dump($price);
     $priceX100 = $price * 100;
     Db::insert('product', array(
       'merchant_product_id' => $path,
@@ -55,7 +97,10 @@ class JingdongProductProcessor {
       'price_from_x_100' => $priceX100,
       'version' => SPIDER_VERSION
     ));
-    exit;
+  }
+
+  private function update() {
+    
   }
 
   private function getPrice($merchantProductId) {
@@ -116,7 +161,7 @@ class JingdongProductProcessor {
       self::$userKey = null;
     }
   }
-  
+
   private function bindImage($localDigest = null) {
     $remoteDigest = $this->getImageDigest();
     if ($localDigest !== $remoteDigest) {
@@ -137,15 +182,16 @@ class JingdongProductProcessor {
 
   private function getImageDigest() {
     $fileName = end(explode('/', $this->imageSrc));
-    if (substr($fileName, -4, 4) !== '.jpg') {
+    if (substr($fileName, -4, 4) !== '.jpg'
+      || substr($fileName, 0, 3) !== 'n1/') {
       throw new Exception(null, 500);
     }
-    return substr($fileName, 0, -4);
+    return substr(substr($fileName, 0, -4), 0, 3);
   }
 
   private function bindHistory($path, $status) {
     $replacementColumnList = array(
-      '`status`' => $status,
+      '_status' => $status,
       'version' => SPIDER_VERSION,
     );
     if ($status === 200) {
