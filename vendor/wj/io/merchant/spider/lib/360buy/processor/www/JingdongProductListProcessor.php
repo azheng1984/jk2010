@@ -165,7 +165,7 @@ class JingdongProductListProcessor {
     if ($status === 200) {
       $replacementColumnList['last_ok_date'] = date('Y-m-d');
     }
-    Db::bind('history', array(
+    Db::bind('History', array(
       'processor' => 'ProductList', 'path' => $path,
     ), $replacementColumnList);
   }
