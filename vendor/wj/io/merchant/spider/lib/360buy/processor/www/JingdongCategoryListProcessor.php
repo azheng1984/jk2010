@@ -26,7 +26,7 @@ class JingdongCategoryListProcessor {
         $levelOneCategoryId.'-'.$matches[2][$index].'-'.$matches[3][$index]
       );
       $this->executeHistory();
-      $this->output();
+      $this->checkProduct();
     }
   }
 
