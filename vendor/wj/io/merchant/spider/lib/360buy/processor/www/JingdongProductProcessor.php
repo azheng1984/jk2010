@@ -9,6 +9,7 @@ class JingdongProductProcessor {
   private static $userKey = null;
   private static $userKeyExpireTime = null;
 
+  //TODO:就算已经初始化，都会抓取后验证 merchant & category
   public function __construct(
     $categoryId = null,
     $title = null,
@@ -48,15 +49,15 @@ class JingdongProductProcessor {
     $result = WebClient::get('www.360buy.com', '/product/'.$path.'.html');
     $html = $result['content'];
     preg_match(
-      '{jqzoom[\s\S]*? src="http://(.*?)\.jpg}', $this->html, $matches
+      '{jqzoom[\s\S]*? src="http://(.*?)"}', $html, $matches
     );
     if (count($matches) === 0) {
       throw new Exception(null, 500);
     }
     $this->imageSrc = $matches[1];
     preg_match(
-      '{http://gate.360buy.com/InitCart.aspx.*?ptype=(.*?)>}',
-      $this->html,
+      '{http://gate\.360buy\.com/InitCart\.aspx.*?ptype=(.*?)[^0-9]}',
+      $html,
       $matches
     );
     if (count($matches) === 0) {
@@ -92,6 +93,7 @@ class JingdongProductProcessor {
     $priceX100 = $price * 100;
     Db::insert('product', array(
       'merchant_product_id' => $path,
+      'category_id' => $this->categoryId,
       'title' => $this->title,
       'image_digest' => $imageDigest,
       'price_from_x_100' => $priceX100,
