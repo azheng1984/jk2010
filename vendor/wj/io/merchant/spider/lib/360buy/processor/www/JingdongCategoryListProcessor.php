@@ -1,15 +1,17 @@
 <?php
 class JingdongCategoryListProcessor {
   private $categoryId;
+  private $categoryVersion;
 
   public function execute() {
     $result = WebClient::get('www.360buy.com', '/allSort.aspx');
     preg_match_all(
-      '{products/([0-9]+)-([0-9]+)-([0-9]+).html}', $result['content'], $matches
+      '{products/([0-9]+)-([0-9]+)-([0-9]+).html.>(.*?)<}', $result['content'], $matches
     );
     if (count($matches[0]) === 0) {
       throw new Exception(null, 500);
     }
+    $categoryBuilder = new JingDongCategoryBuilder;
     foreach ($matches[1] as $index => $levelOneCategoryId) {
       if ($matches[3][$index] === '000') {//leaf category only
         continue;
@@ -21,40 +23,28 @@ class JingdongCategoryListProcessor {
         //WatchProductList（brand as category）
         continue;
       }
-      $productListProcessor = new JingdongProductListProcessor;
-      $productListProcessor->execute(
-        $levelOneCategoryId.'-'.$matches[2][$index].'-'.$matches[3][$index]
-      );
-      $this->executeHistory();
-      $this->checkProduct();
+      $this->setCategory(iconv('gbk', 'utf-8', $matches[4][$index]));
+      $path = $levelOneCategoryId.'-'
+        .$matches[2][$index].'-'.$matches[3][$index];
+      if ($this->categoryVersion !== $GLOBALS['VERSION']) {
+        $productListProcessor = new JingdongProductListProcessor;
+        $productListProcessor->execute($path);
+        $categoryBuilder->execute($this->categoryId);
+      }
     }
   }
 
-  private function executeHistory() {
-    $historyList = Db::getAll(
-      'SELECT * FROM history WHERE category_id = ? AND version != ?',
-      $this->categoryId, $GLOBALS['SPIDER_VERSION']
+  private function setCategory($name) {
+    $category = Db::getRow(
+      'SELECT * FROM catagory WHERE name = ?', $name
     );
-    foreach ($historyList as $history) {
-      $class = 'Jingdong'.$history['processor'].'Processor';
-      $processor = new $class;
-      $processor->execute($history['path']);
+    if ($category === false) {
+      Db::insert('category', array('name' => $name));
+      $this->categoryId = Db::getLastInsertId();
+      $this->categoryVersion = 0;
+      return;
     }
-  }
-
-  private function checkProduct() {
-    //todo:build/check property list
-    $productList = Db::getAll(
-      "SELECT id FROM product WHERE category_id = ? AND _status != 'ok'",
-      $this->categoryId
-    );
-    //connect spider db
-    foreach ($productList as $product) {
-      Db::insert(
-        'product_task',
-        array('merchant_name' => 'jingdong','product_id' => $product['id'])
-      );
-    }
-    //resume jingdong db
+    $this->categoryId = $category['id'];
+    $this->categoryVersion = $category['version'];
   }
 }

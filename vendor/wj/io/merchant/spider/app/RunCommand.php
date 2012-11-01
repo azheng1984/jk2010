@@ -3,22 +3,44 @@ class RunCommand {
   public function execute() {
     Lock::execute();
     for (;;) {
-      $GLOBALS['SPIDER_VERSION'] = $this->getVersion();
+      $GLOBALS['VERSION'] = $this->getVersion();
       $processor = new JingdongCategoryListProcessor;
       $processor->execute();
+      $this->checkCategory();
       $this->cleanHistory();
       $this->cleanProductPropertyValue();
       $this->cleanPropertyKey();
       $this->cleanPropertyValue();
-      if ($GLOBALS['SPIDER_VERSION'] % 100 === 0) {
-        $this->cleanCategory();
+      if ($GLOBALS['VERSION'] % 100 === 0) {
         $this->cleanMerchant();
       }
+      $this->upgradeVersion();
     }
   }
 
   private function getVersion() {
-    return 0;
+    return file_get_contents(ROOT_PATH.'data/version');
+  }
+
+  private function checkCategory() {
+    $categoryList = Db::getAll(
+      'SELECT id FROM category WHERE version != ?', $GLOBALS['version']
+    );
+    foreach ($categoryList as $category) {
+      $productId = Db::getColumn(
+        'SELECT id FROM product WHERE category_id = ? LIMIT 1', $category['id']
+      );
+      if ($productId === false) {
+        Db::delete('DELETE FROM category WHERE id = ?', $category['id']);
+        continue;
+      }
+      $categoryBuilder = new JingdongCategoryBuilder;
+      $categoryBuilder->execute($category['id']);
+    }
+  }
+
+  private function upgradeVersion() {
+    file_put_contents(ROOT_PATH.'data/version', ++$GLOBALS['VERSION']);
   }
 
   private function cleanHistory() {
@@ -54,21 +76,21 @@ class RunCommand {
   private function cleanProductPropertyValue() {
     Db::execute(
       'DELETE FROM product_property_value WHERE version != ?',
-      $GLOBALS['SPIDER_VERSION']
+      $GLOBALS['VERSION']
     );
   }
 
   private function cleanPropertyKey() {
     Db::execute(
       'DELETE FROM property_key WHERE version != ?',
-      $GLOBALS['SPIDER_VERSION']
+      $GLOBALS['VERSION']
     );
   }
 
   private function cleanPropertyValue() {
     Db::execute(
       'DELETE FROM property_value WHERE version != ?',
-      $GLOBALS['SPIDER_VERSION']
+      $GLOBALS['VERSION']
     );
   }
 }
