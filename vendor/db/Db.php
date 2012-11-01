@@ -53,8 +53,7 @@ class Db {
   }
 
   public static function bind(
-    $table, $filterColumnList, $replacementColumnList = null,
-    &$id = null, &$isNew = null
+    $table, $filterColumnList, $replacementColumnList = null
   ) {
     $select = array('id');
     if ($replacementColumnList !== null) {
@@ -70,18 +69,14 @@ class Db {
     }
     if ($result !== false) {
       $id = $result['id'];
-      $isNew = false;
-      return;
+      return false;
     }
     $columnList = $filterColumnList;
     if ($replacementColumnList !== null) {
       $columnList = $replacementColumnList + $filterColumnList;
     }
     self::insert($table, $columnList);
-    if (func_num_args() > 3) {
-      $id = self::getLastInsertId();
-      $isNew = true;
-    }
+    return true;
   }
 
   private static function call($parameterList) {

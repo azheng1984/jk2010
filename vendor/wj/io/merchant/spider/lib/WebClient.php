@@ -4,24 +4,26 @@ class WebClient {
 
   public static function get(
     $domain, $path = '/', $headers = array(),
-    $cookie = null, $responseHeader = false, $retryTimes = 2
+    $cookie = null, $returnResponseHeader = false, $retryTimes = 2
   ) {
     echo $domain.$path;
     $handler = self::getHandler($domain, $path, $headers);
     curl_setopt($handler, CURLOPT_HTTPGET, true);
-    $result = self::execute($handler, $cookie, $responseHeader, $retryTimes);
+    $result = self::execute(
+      $handler, $cookie, $returnResponseHeader, $retryTimes
+    );
     echo '[OK]'.PHP_EOL;
     return $result;
   }
 
   public static function post(
     $domain, $path = '/', $uploadData = null, $headers = array(),
-    $cookie = null, $responseHeader = false, $retryTimes = 0
+    $cookie = null, $returnResponseHeader = false, $retryTimes = 0
   ) {
     $handler = self::getHandler($domain, $path, $headers);
     curl_setopt($handler, CURLOPT_POST, true);
     curl_setopt($handler, CURLOPT_POSTFIELDS, $uploadData);
-    return self::execute($handler, $cookie, $responseHeader, $retryTimes);
+    return self::execute($handler, $cookie, $returnResponseHeader, $retryTimes);
   }
 
   public static function close() {
@@ -51,17 +53,17 @@ class WebClient {
   }
 
   private static function execute(
-    $handler, $cookie, $responseHeader, $retryTimes
+    $handler, $cookie, $returnResponseHeader, $retryTimes
   ) {
     curl_setopt($handler, CURLOPT_COOKIE, $cookie);
-    if ($responseHeader) {
+    if ($returnResponseHeader) {
       curl_setopt($handler, CURLOPT_HEADER, 1);
     }
     $content = curl_exec($handler);
     curl_setopt($handler, CURLOPT_HEADER, 0);
     if ($content === false && $retryTimes > 0) {
       return self::execute(
-        $handler, $cookie, $responseHeader, --$retryTimes
+        $handler, $cookie, $returnResponseHeader, --$retryTimes
       );
     }
     if ($content === false) {
@@ -69,7 +71,7 @@ class WebClient {
       throw new Exception(null, $code);
     }
     $result = curl_getinfo($handler);
-    if ($responseHeader) {
+    if ($returnResponseHeader) {
       list($header, $data) = explode("\r\n\r\n", $content, 2);
       $content = $data;
       $result['header'] = $header;
