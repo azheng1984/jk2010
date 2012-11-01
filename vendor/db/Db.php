@@ -53,7 +53,7 @@ class Db {
   }
 
   public static function bind(
-    $table, $filterColumnList, $replacementColumnList = null
+    $table, $filterColumnList, $replacementColumnList = null, &$id
   ) {
     $select = array('id');
     if ($replacementColumnList !== null) {
@@ -76,6 +76,9 @@ class Db {
       $columnList = $replacementColumnList + $filterColumnList;
     }
     self::insert($table, $columnList);
+    if (func_num_args() > 3) {
+      $id = self::getLastInsertId();
+    }
     return true;
   }
 
@@ -99,7 +102,7 @@ class Db {
   private static function error($source) {
     $errorInfo = $source->errorInfo();
     throw new Exception(
-      "SQLSTATE[{$errorInfo[0]}] [{$errorInfo[1]}] {$errorInfo[2]}", 500
+      'SQLSTATE['.$errorInfo[0].'] ['.$errorInfo[1].'] '.$errorInfo[2], 500
     );
   }
 
