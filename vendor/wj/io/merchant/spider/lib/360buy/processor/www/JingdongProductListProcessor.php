@@ -62,37 +62,15 @@ class JingdongProductListProcessor {
     $index = ($this->page - 1) * 36;
     foreach ($list as $item) {
       preg_match(
-        "{img onerror=\"this.src='http://www.360buy.com/"
-          ."images/none/none_150.gif'\" src.?='http://(.*?)'}",
-        $item, $matches
-      );
-      if (count($matches) === 0) {
-        throw new Exception(null, 500);
-      }
-      $imageSrc = str_replace(
-        '360buyimg.com/n2/', '360buyimg.com/n1/', $matches[1]
-      );
-      preg_match(
         "{<div class='p-name'><a target='_blank'"
-          ." href='http://www.360buy.com/product/([0-9]+).html'>(.*?)<}",
+          ." href='http://www.360buy.com/product/([0-9]+).html'>}",
         $item, $matches
       );
       if (count($matches) === 0) {
         throw new Exception(null, 500);
       }
       $merchantProductId = $matches[1];
-      $title = iconv('gbk', 'utf-8', $matches[2]);
-      preg_match(
-        "{http://gate.360buy.com/InitCart.aspx.*?ptype=(.*?)'}",
-        $item, $matches
-      );
-      if (count($matches) === 0) {
-        throw new Exception(null, 500);
-      }
-      $typeId = $matches[1];
-      $processor = new JingdongProductProcessor(
-        $this->categoryId, $title, $imageSrc, $typeId, $index
-      );
+      $processor = new JingdongProductProcessor($index);
       $processor->execute($merchantProductId);
       ++$index;
     }
