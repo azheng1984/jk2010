@@ -10,6 +10,10 @@ class JingdongProductProcessor {
   private static $userKey = null;
   private static $userKeyExpireTime = null;
 
+  public function __construct($index) {
+    $this->index = $index;
+  }
+
   public function execute($path) {
     $this->merchantProductId = $path;
     $this->initialize($path);
@@ -69,29 +73,39 @@ class JingdongProductProcessor {
       throw new Exception(null, 500);
     }
     $this->title = iconv('gbk', 'utf-8', $matches[1]);
-    preg_match('{"http://mall.360buy.com/index-[0-9]*\.html" target="_blank">(.*?)<}', $html, $matches);
+    preg_match(
+      '{"http://mall.360buy.com/index-[0-9]*\.html" target="_blank">(.*?)<}',
+      $html,
+      $matches
+    );
     if (count($matches) !== 0) {
       $merchantName = iconv('gbk', 'utf-8', $matches[1]);
-      $this->setMerchant($merchantName);
+      Db::bind(
+        'merchant', array('name' => $merchantName), null, $this->merchantId
+      );
     }
-  }
-
-  private function setMerchant($name) {
-    
   }
 
   private function insert($path) {
     $price = $this->getPrice($path);
     $imageDigest = $this->bindImage();
     $priceX100 = $price * 100;
-    Db::insert('product', array(
+    $product = array(
       'merchant_product_id' => $path,
       'category_id' => $this->categoryId,
       'title' => $this->title,
       'image_digest' => $imageDigest,
       'price_from_x_100' => $priceX100,
-      'version' => SPIDER_VERSION
-    ));
+      'version' => $GLOBALS['VERSION']
+    );
+    if ($this->index !== null) {
+      $product['index'] = $this->index;
+      $product['index_version'] = $GLOBALS['VERSION'];
+    }
+    if ($this->merchantId !== null) {
+      $product['merchant_id'] = $this->merchantId;
+    }
+    Db::insert('product', $product);
   }
 
   private function update() {

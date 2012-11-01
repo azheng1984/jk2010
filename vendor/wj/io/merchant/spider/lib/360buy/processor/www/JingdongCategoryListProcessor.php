@@ -6,7 +6,9 @@ class JingdongCategoryListProcessor {
   public function execute() {
     $result = WebClient::get('www.360buy.com', '/allSort.aspx');
     preg_match_all(
-      '{products/([0-9]+)-([0-9]+)-([0-9]+).html.>(.*?)<}', $result['content'], $matches
+      '{products/([0-9]+)-([0-9]+)-([0-9]+).html.>(.*?)<}',
+      $result['content'],
+      $matches
     );
     if (count($matches[0]) === 0) {
       throw new Exception(null, 500);
