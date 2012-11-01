@@ -92,6 +92,8 @@ class JingdongCategoryBuilder {
       if ($product['shopping_product_id'] === null) {
         //TODO:同步本地 shopping portal
         //TODO:同步本地 shopping search
+        //TODO:通过 isset 和 unset + amount 来检测 keywords list 关键词
+        //TODO:value_id_list 是已经排序的，数字排序后直接比较
         //TODO:输出“指令日志” 到文件
       }
       DbConnection::connect('shopping_portal');
