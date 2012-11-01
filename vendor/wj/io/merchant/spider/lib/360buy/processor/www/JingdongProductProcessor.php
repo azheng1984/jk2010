@@ -1,12 +1,13 @@
 <?php
 class JingdongProductProcessor {
+  private $merchantProductId;
   private $categoryId;
   private $merchantId;
   private $title;
   private $imageSrc;
   private $index;
   private $typeId;
-  private $merchantProductId;
+  private $priceX100;
   private static $userKey = null;
   private static $userKeyExpireTime = null;
 
@@ -26,7 +27,7 @@ class JingdongProductProcessor {
         $this->insert($path);
         return;
       }
-      $this->update($path);
+      $this->update($product);
     } catch (Exception $exception) {
       $status = $exception->getCode();
     }
@@ -53,7 +54,9 @@ class JingdongProductProcessor {
     }
     $this->typeId = intval($matches[1]);
     preg_match(
-      '{<div class="breadcrumb">([\s|\S]*?)<!--breadcrumb end-->}', $html, $matches
+      '{<div class="breadcrumb">([\s|\S]*?)<!--breadcrumb end-->}',
+      $html,
+      $matches
     );
     if (count($matches) === 0) {
       throw new Exception(null, 500);
@@ -84,22 +87,21 @@ class JingdongProductProcessor {
         'merchant', array('name' => $merchantName), null, $this->merchantId
       );
     }
+    $this->priceX100 = $this->getPrice($path) * 100;
   }
 
   private function insert($path) {
-    $price = $this->getPrice($path);
     $imageDigest = $this->bindImage();
-    $priceX100 = $price * 100;
     $product = array(
       'merchant_product_id' => $path,
       'category_id' => $this->categoryId,
       'title' => $this->title,
       'image_digest' => $imageDigest,
-      'price_from_x_100' => $priceX100,
+      'price_from_x_100' => $this->priceX100,
       'version' => $GLOBALS['VERSION']
     );
     if ($this->index !== null) {
-      $product['index'] = $this->index;
+      $product['_index'] = $this->index;
       $product['index_version'] = $GLOBALS['VERSION'];
     }
     if ($this->merchantId !== null) {
@@ -108,8 +110,38 @@ class JingdongProductProcessor {
     Db::insert('product', $product);
   }
 
-  private function update() {
-    
+  private function update($product) {
+    $updateColumnList = array();
+    if ($product['category_id'] !== $this->categoryId) {
+      $updateColumnList['category_id'] = $this->categoryId;
+    }
+    if ($product['merchant_id'] !== $this->merchantId) {
+      $updateColumnList['merchant_id'] = $this->merchantId;
+    }
+    if ($product['title'] !== $this->title) {
+      $updateColumnList['title'] = $this->title;
+    }
+    if ($product['image_digest'] !== $this->imageDigest) {
+      $updateColumnList['image_digest'] = $this->imageDigest;
+      $this->bindImage($product['image_digest']);
+    }
+    if ($product['price_from_x_100'] !== $this->priceX100) {
+      $updateColumnList['price_from_x_100'] = $this->priceX100;
+    }
+    if ($product['_index'] !== $this->index) {
+      $updateColumnList['_index'] = $this->index;
+      $updateColumnList['index_version'] = $GLOBALS['VERSION'];
+    }
+    if (count($updateColumnList) !== 0) {
+      $updateColumnList['_status'] = 'changed';
+    }
+    $updateColumnList['version'] = $GLOBALS['VERSION'];
+    Db::update(
+      'product',
+      $updateColumnList,
+      'merchant_product_id = ?',
+      $product['merchant_product_id']
+    );
   }
 
   private function getPrice($merchantProductId) {
