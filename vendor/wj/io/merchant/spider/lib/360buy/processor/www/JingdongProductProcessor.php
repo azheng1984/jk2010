@@ -133,7 +133,9 @@ class JingdongProductProcessor {
       $updateColumnList['index_version'] = $GLOBALS['VERSION'];
     }
     if (count($updateColumnList) !== 0) {
-      $updateColumnList['_status'] = 'changed';
+      $updateColumnList['change_list'] = implode(
+        ' ', array_keys($updateColumnList)
+      );
     }
     $updateColumnList['version'] = $GLOBALS['VERSION'];
     Db::update(
