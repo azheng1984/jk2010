@@ -21,7 +21,7 @@ class JingdongCategoryBuilder {
   private function executeHistory() {
     $historyList = Db::getAll(
       'SELECT * FROM history WHERE category_id = ? AND version != ?',
-      $this->categoryId, $GLOBALS['SPIDER_VERSION']
+      $this->categoryId, $GLOBALS['VERSION']
     );
     foreach ($historyList as $history) {
       $class = 'Jingdong'.$history['processor'].'Processor';
@@ -31,18 +31,21 @@ class JingdongCategoryBuilder {
   }
 
   private function checkProduct() {
-    //todo:build/check property list
-    $productList = Db::getAll(
-      "SELECT id FROM product WHERE category_id = ? AND _status != 'ok'",
+    //delete product
+    //create/update product
+    //直接操作本地镜像 shopping 数据库，减少中间层
+    Db::update(
+      'product',
+      array('_status' => 'deleted'),
+      'version != ?',
+      $GLOBALS['version']
+    );
+    DbConnection::connect('spider');
+    Db::execute(
+      "REPLACE INTO product_builder_task(spider, category_id)"
+        ." VALUES('jingdong', ?)",
       $this->categoryId
     );
-    //connect spider db
-    foreach ($productList as $product) {
-      Db::insert(
-        'product_task',
-        array('merchant_name' => 'jingdong','product_id' => $product['id'])
-      );
-    }
-    //resume jingdong db
+    DbConnection::connect('jingdong');
   }
 }

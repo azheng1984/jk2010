@@ -26,7 +26,6 @@ class ImageDb {
       DbConnection::connect($channel.'_image', new PDO('sqlite:'.$path));
       Db::execute('CREATE TABLE "image"'
         .'("product_id" INTEGER PRIMARY KEY NOT NULL, "image" BLOB NOT NULL)');
-      echo 'xxxxxx';
       DbConnection::connect(DB_NAME);
     }
   }
