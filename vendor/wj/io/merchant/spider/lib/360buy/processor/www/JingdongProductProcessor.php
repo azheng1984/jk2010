@@ -1,6 +1,7 @@
 <?php
 class JingdongProductProcessor {
   private $categoryId;
+  private $merchantId;
   private $title;
   private $imageSrc;
   private $index;
@@ -9,26 +10,9 @@ class JingdongProductProcessor {
   private static $userKey = null;
   private static $userKeyExpireTime = null;
 
-  //TODO:就算已经初始化，都会抓取后验证 merchant & category
-  public function __construct(
-    $categoryId = null,
-    $title = null,
-    $imageSrc = null,
-    $typeId = null,
-    $index = null
-  ) {
-    $this->categoryId = $categoryId;
-    $this->title = $title;
-    $this->imageSrc = $imageSrc;
-    $this->typeId = $typeId;
-    $this->index = $index;
-  }
-
   public function execute($path) {
     $this->merchantProductId = $path;
-    if ($this->title === null) {
-      $this->initialize($path);
-    }
+    $this->initialize($path);
     $product = Db::getRow(
       'SELECT * FROM product WHERE merchant_product_id = ?', $path
     );
@@ -85,6 +69,15 @@ class JingdongProductProcessor {
       throw new Exception(null, 500);
     }
     $this->title = iconv('gbk', 'utf-8', $matches[1]);
+    preg_match('{"http://mall.360buy.com/index-[0-9]*\.html" target="_blank">(.*?)<}', $html, $matches);
+    if (count($matches) !== 0) {
+      $merchantName = iconv('gbk', 'utf-8', $matches[1]);
+      $this->setMerchant($merchantName);
+    }
+  }
+
+  private function setMerchant($name) {
+    
   }
 
   private function insert($path) {
