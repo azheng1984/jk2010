@@ -1,13 +1,41 @@
 <?php
 class JingdongCategoryBuilder {
   private $categoryId;
+  private $categoryName;
+  private $keyList;
+  private $valueList;
+  private $shoppingCategoryId;
+  private $output = array();
 
-  public function execute($id) {
-    $this->id = $id;
-    //初始化 shopping portal category
+  public function execute($categoryId, $categoryName) {
+    $this->categoryId = $categoryId;
+    $this->categoryName = $categoryName;
+    $this->setShoppingCategoryId();
     $this->executeHistory();
     $this->checkProduct();
     $this->upgradeCategoryVersion();
+    $this->output();
+  }
+
+  private function output() {
+    //TODO:压缩并移动指令文件到 ftp 服务器
+    //TODO:向 shopping portal & search 服务器发送 ready 信号
+  }
+
+  private function setShoppingCategoryId() {
+    DbConnection::connect('shopping');
+    $shoppingCategory = Db::getRow(
+      'SELECT * FROM category WHERE name = ?', $this->categoryName
+    );
+    Db::bind(//TODO:double select
+      'category', array('name' => $this->categoryName), $this->shoppingCategoryId
+    );
+    if ($shoppingCategory === false) {
+      $this->output []= "INSERT INTO category(id, name) VALUES("
+        .$this->shoppingCategoryId.", "
+        .DbConnection::get()->quote($this->categoryName).")";
+    }
+    DbConnection::connect('jingdong');
   }
 
   private function upgradeCategoryVersion() {
@@ -31,9 +59,6 @@ class JingdongCategoryBuilder {
     }
   }
 
-  private $keyList;
-  private $valueList;
-
   private function initializePropertyList() {
     $keyList = Db::getAll(
       'SELECT * FROM property_key WHERE category_id = ? AND version = ?',
@@ -43,6 +68,11 @@ class JingdongCategoryBuilder {
     $this->keyList = array();
     $this->valueList = array();
     foreach ($keyList as $key) {
+      DbConnection::connect('shopping');
+      Db::bind(
+        'property_key', array('name' => $categoryName), $this->shoppingCategoryId
+      );
+      DbConnection::connect('jingdong');
       $this->keyList[$key['id']] = $key;
       //初始化 shopping portal key
       $valueList = Db::getAll(
@@ -59,7 +89,6 @@ class JingdongCategoryBuilder {
 
   private function checkProduct() {
     $this->initializePropertyList();
-    //持续同步（同步和增量数据所要运算是持续存在的（低优先级）（多线程计算由操作系统负责平衡））
     $productList = Db::getAll(
       'SELECT * FROM product WHERE category_id = ?', $this->categoryId
     );
@@ -94,7 +123,7 @@ class JingdongCategoryBuilder {
         //TODO:同步本地 shopping search
         //TODO:通过 isset 和 unset + amount 来检测 keywords list 关键词
         //TODO:value_id_list 是已经排序的，数字排序后直接比较
-        //TODO:输出“指令日志” 到文件
+        //TODO:输出 “指令日志” 到文件
       }
       DbConnection::connect('shopping_portal');
       $shoppingProduct = Db::getRow(
@@ -105,7 +134,5 @@ class JingdongCategoryBuilder {
         
       }
     }
-    //TODO:压缩并移动指令文件到 ftp 服务器，删除未压缩的文件
-    //TODO:向 shopping portal & search 服务器发送 “拉” 信号
   }
 }
