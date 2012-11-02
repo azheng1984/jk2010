@@ -1,4 +1,5 @@
 <?php
+//TODO:用事务防止多线程 insert category/property 冲突
 class JingdongCategoryBuilder {
   private $categoryId;
   private $categoryName;
@@ -6,6 +7,7 @@ class JingdongCategoryBuilder {
   private $valueList;
   private $shoppingCategoryId;
   private $output = array();
+  private $imageList = array();
 
   public function execute($categoryId, $categoryName) {
     $this->categoryId = $categoryId;
@@ -27,14 +29,17 @@ class JingdongCategoryBuilder {
     $shoppingCategory = Db::getRow(
       'SELECT * FROM category WHERE name = ?', $this->categoryName
     );
-    Db::bind(//TODO:double select
-      'category', array('name' => $this->categoryName), $this->shoppingCategoryId
-    );
     if ($shoppingCategory === false) {
+      Db::insert(
+        'category', array('name' => $this->categoryName), $this->shoppingCategoryId
+      );
+      $this->shoppingCategoryId = Db::getLastInsertId();
       $this->output []= "INSERT INTO category(id, name) VALUES("
         .$this->shoppingCategoryId.", "
         .DbConnection::get()->quote($this->categoryName).")";
+      return;
     }
+    $this->shoppingCategoryId = $shoppingCategory['id'];
     DbConnection::connect('jingdong');
   }
 
@@ -69,19 +74,43 @@ class JingdongCategoryBuilder {
     $this->valueList = array();
     foreach ($keyList as $key) {
       DbConnection::connect('shopping');
-      Db::bind(
-        'property_key', array('name' => $categoryName), $this->shoppingCategoryId
+      $shoppingKey = Db::getRow(
+        'SELECT * FROM property_key WHERE name = ?', $key['name']
       );
+      if ($shoppingKey === false) {
+        Db::insert('property_key', array('name' => $key['name']));
+        $shoppingKeyId = Db::getLastInsertId();
+        $this->output []= "INSERT INTO property_key(id, name) VALUES("
+          .$shoppingKeyId.", "
+          .DbConnection::get()->quote($key['name']).")";
+      }
       DbConnection::connect('jingdong');
       $this->keyList[$key['id']] = $key;
-      //初始化 shopping portal key
       $valueList = Db::getAll(
         'SELECT * FROM property_value WHERE key_id = ? AND version = ?',
          $key['id'], 
          $GLOBALS['VERSION']
       );
       foreach ($valueList as $value) {
-        //初始化 shopping portal value
+        DbConnection::connect('shopping');
+        $shoppingValue = Db::getRow(
+          'SELECT * FROM property_value WHERE key_id = ? AND name = ?',
+          $shoppingKeyId,
+          $value['name']
+        );
+        if ($shoppingKey === false) {
+          Db::insert('property_value', array(
+            'key_id' => $shoppingKeyId,
+            'name' => $value['name']
+          ));
+          $shoppingValueId = Db::getLastInsertId();
+          $this->output []= "INSERT INTO property_value(id, key_id, name) VALUES("
+            .$shoppingValueId.", "
+            .$shoppingKeyId.", "
+            .DbConnection::get()->quote($value['name']).")";
+        }
+        DbConnection::connect('jingdong');
+        $value['shopping_id'] = $shoppingValueId;
         $this->valueList[$value['id']] = $value;
       }
     }
@@ -98,6 +127,7 @@ class JingdongCategoryBuilder {
         $product['merchant_product_id']
       );
       $propertyList = array();
+      $shoppingValueIdList = array();
       foreach ($valueList as $value) {
         $value = $this->valueList[$value['property_value_id']];
         $key = $this->keyList[$value['key_id']];
@@ -108,7 +138,9 @@ class JingdongCategoryBuilder {
         }
         $propertyList[$key['_index']]['value_list'][$value['_index']]
           = $value['name'];
+        $shoppingValueIdList[] = $value['shopping_id'];
       }
+      sort($shoppingValueIdList);
       ksort($propertyList);
       $shoppingPropertyList = array();
       foreach ($propertyList as $property) {
@@ -117,20 +149,47 @@ class JingdongCategoryBuilder {
         $item .= implode("\n", $propertyList);
         $shoppingPropertyList []= $item;
       }
-      $shoppingPropertyListByText = implode("\n", $shoppingPropertyList);
+      $shoppingPropertyTextList = implode("\n", $shoppingPropertyList);
+      //TODO:sync merchant
+      $shoppingMerchantId = null;
       if ($product['shopping_product_id'] === null) {
+        //TODO:同步图片
+        
         //TODO:同步本地 shopping portal
+        Db::insert('product', array(
+          'merchant_id' => $shoppingMerchantId,
+          'merchant_uri_argument_list' => $product['merchant_product_id'],
+          'price_from_x_100' => $product['price_from_x_100'],
+          'image_path' => 0,
+          'image_digest' => 0,
+        ));
+        $this->output .= 'INSERT INTO product';
+        
+        $shoppingValueIdTextList = implode(' ', $shoppingValueIdList);
+        //$categoryId;
+        $keywords = $product['title'];
+        $keywords .= ' '.$this->categoryName;
+        $keywords .= ' '.$shoppingPropertyTextList;
+        //TODO:关键字分词,去重
         //TODO:同步本地 shopping search
-        //TODO:通过 isset 和 unset + amount 来检测 keywords list 关键词
-        //TODO:value_id_list 是已经排序的，数字排序后直接比较
+        DbConnection::connect('product_search');
+        Db::insert('product', array(
+          'category_id' => $this->shoppingCategoryId,
+          'price_from_x_100' => $product['price_from_x_100'],
+          'value_id_list' => $shoppingValueIdTextList,
+          'keyword_list' => $keywords
+        ));
+        DbConnection::connect('jingdong');
         //TODO:输出 “指令日志” 到文件
       }
+      //TODO:通过 isset 和 unset + amount 来检测 keywords list 关键词
+      //TODO:value_id_list 是已经排序的，数字排序后直接比较
       DbConnection::connect('shopping_portal');
       $shoppingProduct = Db::getRow(
         'SELECT * FROM product WHERE id = ?',
         $product['shopping_product_id']
       );
-      if ($shoppingProduct['property_list'] === $shoppingPropertyListByText) {
+      if ($shoppingProduct['property_list']) {
         
       }
     }
