@@ -25,13 +25,14 @@ class JingdongCategoryListProcessor {
         //WatchProductList（brand as category）
         continue;
       }
-      $this->setCategory(iconv('gbk', 'utf-8', $matches[4][$index]));
+      $categoryName = $matches[4][$index];
+      $this->setCategory(iconv('gbk', 'utf-8', $categoryName));
       $path = $levelOneCategoryId.'-'
         .$matches[2][$index].'-'.$matches[3][$index];
       if ($this->categoryVersion !== $GLOBALS['VERSION']) {
         $productListProcessor = new JingdongProductListProcessor;
         $productListProcessor->execute($path);
-        $categoryBuilder->execute($this->categoryId);
+        $categoryBuilder->execute($this->categoryId, $categoryName);
       }
     }
   }
