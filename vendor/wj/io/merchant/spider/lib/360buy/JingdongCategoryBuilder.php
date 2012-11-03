@@ -153,8 +153,7 @@ class JingdongCategoryBuilder {
       //TODO:sync merchant
       $shoppingMerchantId = null;
       if ($product['shopping_product_id'] === null) {
-        //TODO:同步图片
-        
+        //TODO:同步图片（图片采用低 id 文件夹优先）
         //TODO:同步本地 shopping portal
         Db::insert('product', array(
           'merchant_id' => $shoppingMerchantId,
@@ -164,13 +163,12 @@ class JingdongCategoryBuilder {
           'image_digest' => 0,
         ));
         $this->output .= 'INSERT INTO product';
-        
         $shoppingValueIdTextList = implode(' ', $shoppingValueIdList);
         //$categoryId;
         $keywords = $product['title'];
         $keywords .= ' '.$this->categoryName;
         $keywords .= ' '.$shoppingPropertyTextList;
-        //TODO:关键字分词,去重
+        //TODO:关键字分词
         //TODO:同步本地 shopping search
         DbConnection::connect('product_search');
         Db::insert('product', array(
@@ -182,8 +180,6 @@ class JingdongCategoryBuilder {
         DbConnection::connect('jingdong');
         //TODO:输出 “指令日志” 到文件
       }
-      //TODO:通过 isset 和 unset + amount 来检测 keywords list 关键词
-      //TODO:value_id_list 是已经排序的，数字排序后直接比较
       DbConnection::connect('shopping_portal');
       $shoppingProduct = Db::getRow(
         'SELECT * FROM product WHERE id = ?',
@@ -191,6 +187,32 @@ class JingdongCategoryBuilder {
       );
       if ($shoppingProduct['property_list']) {
         
+      }
+      DbConnection::connect('shopping_product_search');
+      $shoppingProductSearchProduct = Db::getRow(
+        'SELECT * FROM product WHERE id = ?',
+        $product['shopping_product_id']
+      );
+      if ($shoppingProductSearchProduct['value_id_list'] !== $shoppingValueIdTextList) {
+        //TODO:update value id list
+      }
+      $keywordList = explode(' ', $shoppingProductSearchProduct['keyword_list']);
+      $keywordListByKey = array();
+      foreach ($keywordList as $keyword) {
+        $keywordListByKey[$keyword] = true;
+      }
+      $currentKeywordList = array_unique(explode(' ', $keywords));
+      $isUpdate = false;
+      foreach ($currentKeywordList as $item) {
+        if (isset($keywordListByKey[$item])) {
+          unset($keywordListByKey[$itme]);
+          continue;
+        }
+        $isUpdate = true;
+        break;
+      }
+      if (count($keywordListByKey) !== 0) {
+        $isUpdate = true;
       }
     }
   }
