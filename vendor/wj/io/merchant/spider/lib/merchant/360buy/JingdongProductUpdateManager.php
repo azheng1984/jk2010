@@ -1,6 +1,6 @@
 <?php
 //TODO:用事务防止多线程 local shopping portal 操作冲突
-class JingdongCategoryBuilder {
+class JingdongProductUpdateManager {
   private $categoryId;
   private $categoryName;
   private $keyList;
@@ -13,12 +13,28 @@ class JingdongCategoryBuilder {
   public function execute($categoryId, $categoryName) {
     $this->categoryId = $categoryId;
     $this->categoryName = $categoryName;
-    $this->shoppingCategoryId = SyncShoppingCategory::getCategoryId($categoryName);
-    $this->setShoppingCategoryId();
     $this->executeHistory();
+    $this->addTask();
+
     $this->checkProduct();
     $this->upgradeCategoryVersion();
     $this->output();
+  }
+
+  private function addTask() {
+    //TODO
+  }
+
+  private function executeHistory() {
+    $historyList = Db::getAll(
+        'SELECT * FROM history WHERE category_id = ? AND version != ?',
+        $this->categoryId, $GLOBALS['VERSION']
+    );
+    foreach ($historyList as $history) {
+      $class = 'Jingdong'.$history['processor'].'Processor';
+      $processor = new $class;
+      $processor->execute($history['path']);
+    }
   }
 
   private function upgradeCategoryVersion() {
@@ -28,18 +44,6 @@ class JingdongCategoryBuilder {
       'id = ?',
       $this->categoryId
     );
-  }
-
-  private function executeHistory() {
-    $historyList = Db::getAll(
-      'SELECT * FROM history WHERE category_id = ? AND version != ?',
-      $this->categoryId, $GLOBALS['VERSION']
-    );
-    foreach ($historyList as $history) {
-      $class = 'Jingdong'.$history['processor'].'Processor';
-      $processor = new $class;
-      $processor->execute($history['path']);
-    }
   }
 
   private function getMerchantPath($merchantId) {

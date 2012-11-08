@@ -4,9 +4,6 @@ class JingdongCategoryListProcessor {
   private $categoryVersion;
 
   public function execute() {
-    Db::getRow(
-      'SELECT * FROM catagory3 WHERE name = 2'
-    );
     $result = WebClient::get('www.360buy.com', '/allSort.aspx');
     preg_match_all(
       '{products/([0-9]+)-([0-9]+)-([0-9]+).html.>(.*?)<}',
@@ -16,7 +13,8 @@ class JingdongCategoryListProcessor {
     if (count($matches[0]) === 0) {
       throw new Exception(null, 500);
     }
-    $categoryBuilder = new JingDongCategoryBuilder;
+    //TODO:检查 update task 是否还没有被处理
+    $productUpdateManager = new JingdongProductUpdateManager;
     foreach ($matches[1] as $index => $levelOneCategoryId) {
       if ($matches[3][$index] === '000') {//leaf category only
         continue;
@@ -35,8 +33,9 @@ class JingdongCategoryListProcessor {
       if ($this->categoryVersion !== $GLOBALS['VERSION']) {
         $productListProcessor = new JingdongProductListProcessor;
         $productListProcessor->execute($path);
-        $categoryBuilder->execute($this->categoryId, $categoryName);
+        $productUpdateManager->execute($this->categoryId, $categoryName);
       }
+      //TODO:update category version
     }
   }
 
@@ -52,5 +51,30 @@ class JingdongCategoryListProcessor {
     }
     $this->categoryId = $category['id'];
     $this->categoryVersion = $category['version'];
+  }
+
+  private function upgradeCategoryVersion() {
+    Db::update(
+      'category',
+      array('version' => $GLOBALS['VERSION']),
+      'id = ?',
+      $this->categoryId
+    );
+  }
+
+  private function executeHistory() {
+    $historyList = Db::getAll(
+        'SELECT * FROM history WHERE category_id = ? AND version != ?',
+        $this->categoryId, $GLOBALS['VERSION']
+    );
+    foreach ($historyList as $history) {
+      $class = 'Jingdong'.$history['processor'].'Processor';
+      $processor = new $class;
+      $processor->execute($history['path']);
+    }
+  }
+
+  private function addTask() {
+    
   }
 }
