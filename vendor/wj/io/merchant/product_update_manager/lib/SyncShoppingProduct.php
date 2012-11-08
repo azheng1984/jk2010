@@ -1,51 +1,53 @@
 <?php
 class SyncShoppingProduct {
-  private function execute($categoryId) {
+  private function execute($categoryId, $propertyList, $version, $merchantName) {
     $productList = Db::getAll(
       'SELECT * FROM product WHERE category_id = ?', $this->categoryId
     );
     foreach ($productList as $product) {
-      if ($product['version'] < $GLOBALS['VERSION']) {
-        //delete product
+      if ($product['version'] < $version) {
+        ShoppingCommandFile::deleteProduct($product['shopping_id']);
       }
       $valueList = Db::getAll(
-          'SELECT * FROM product_property_value WHERE merchant_product_id = ?',
-          $product['merchant_product_id']
+        'SELECT * FROM product_property_value WHERE merchant_product_id = ?',
+        $product['merchant_product_id']
       );
-      $propertyList = array();
+      $productPropertyList = array();
       $shoppingValueIdList = array();
       foreach ($valueList as $value) {
-        $value = $this->valueList[$value['property_value_id']];
-        $key = $this->keyList[$value['key_id']];
-        if (!isset($propertyList[$key['_index']])) {
-          $propertyList[$key['_index']] = array(
-              'name' => $key['name'], 'value_list' => array()
+        $value = $propertyList['value_list'][$value['property_value_id']];
+        $key = $$propertyList['key_list'][$value['key_id']];
+        if (!isset($productPropertyList[$key['_index']])) {
+          $productPropertyList[$key['_index']] = array(
+            'name' => $key['name'], 'value_list' => array()
           );
         }
-        $propertyList[$key['_index']]['value_list'][$value['_index']]
-        = $value['name'];
+        $productPropertyList[$key['_index']]['value_list'][$value['_index']] =
+          $value['name'];
         $shoppingValueIdList[] = $value['shopping_id'];
       }
       sort($shoppingValueIdList);
-      ksort($propertyList);
+      ksort($productPropertyList);
       $shoppingPropertyList = array();
-      foreach ($propertyList as $property) {
+      foreach ($productPropertyList as $property) {
         $item = $property['name']."\n";
         ksort($property['value_list']);
         $item .= implode("\n", $property['value_list']);
-        $shoppingPropertyList []= $item;
+        $shoppingPropertyList[] = $item;
       }
       $shoppingPropertyTextList = implode("\n", $shoppingPropertyList);
-      $merchantPath = $this->getMerchantPath($product['merchant_id']);
+      $merchantPath = $merchantName
+        .$this->getMerchantPath($product['merchant_id']);
+
       $image = ImageDb::get($this->categoryId, $product['id']);
       $imagePath = $this->getImagePath();
       if ($product['shopping_product_id'] === null) {
         Db::insert('product', array(
-        'merchant_path' => $merchantPath,
-        'merchant_uri_argument_list' => $product['merchant_product_id'],
-        'price_from_x_100' => $product['price_from_x_100'],
-        'image_path' => $imagePath,
-        'image_digest' => md5($image),
+          'merchant_path' => $merchantPath,
+          'merchant_uri_argument_list' => $product['merchant_product_id'],
+          'price_from_x_100' => $product['price_from_x_100'],
+          'image_path' => $imagePath,
+          'image_digest' => md5($image),
         ));
         $shoppingProductId = Db::getLastInsertId();
         $imageStagingFolder = '/home/azheng/image_staging/jingdong/';
@@ -64,14 +66,13 @@ class SyncShoppingProduct {
         );
         continue;
       }
-      //TODO:update 本地 shopping portal
+      //TODO:update shopping portal
       DbConnection::connect('shopping_portal');
       $shoppingProduct = Db::getRow(
           'SELECT * FROM product WHERE id = ?',
           $product['shopping_product_id']
       );
       if ($shoppingProduct['property_list'] !== $shoppingPropertyTextList) {
-  
       }
       if ($shoppingProduct['category_name'] !== $this->categoryName) {
       }

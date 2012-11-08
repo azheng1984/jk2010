@@ -13,8 +13,8 @@ class JingdongCategoryListProcessor {
     if (count($matches[0]) === 0) {
       throw new Exception(null, 500);
     }
-    //TODO:检查 update task 是否还没有被处理
-    $productUpdateManager = new JingdongProductUpdateManager;
+    //TODO:检查 update task 是否还没有被处理，如果没有处理就等待
+    //TODO:删除上上版本的产品
     foreach ($matches[1] as $index => $levelOneCategoryId) {
       if ($matches[3][$index] === '000') {//leaf category only
         continue;
@@ -33,7 +33,8 @@ class JingdongCategoryListProcessor {
       if ($this->categoryVersion !== $GLOBALS['VERSION']) {
         $productListProcessor = new JingdongProductListProcessor;
         $productListProcessor->execute($path);
-        $productUpdateManager->execute($this->categoryId, $categoryName);
+        $this->executeHistory();
+        $this->addProductUpdateTask();
       }
       //TODO:update category version
     }
@@ -74,7 +75,7 @@ class JingdongCategoryListProcessor {
     }
   }
 
-  private function addTask() {
+  private function addProductUpdateTask() {
     
   }
 }
