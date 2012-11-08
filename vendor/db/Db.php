@@ -90,20 +90,8 @@ class Db {
       $parameterList = $parameterList[0];
     }
     $statement = $connection->prepare($sql);
-    if ($statement === false) {
-      self::error($connection);
-    }
-    if ($statement->execute($parameterList) === false) {
-      self::error($statement);
-    }
+    $statement->execute($parameterList);
     return $statement;
-  }
-
-  private static function error($source) {
-    $errorInfo = $source->errorInfo();
-    throw new Exception(
-      'SQLSTATE['.$errorInfo[0].'] ['.$errorInfo[1].'] '.$errorInfo[2], 500
-    );
   }
 
   private static function updateDifference($table, $from, $to) {

@@ -4,6 +4,9 @@ class JingdongCategoryListProcessor {
   private $categoryVersion;
 
   public function execute() {
+    Db::getRow(
+      'SELECT * FROM catagory3 WHERE name = 2'
+    );
     $result = WebClient::get('www.360buy.com', '/allSort.aspx');
     preg_match_all(
       '{products/([0-9]+)-([0-9]+)-([0-9]+).html.>(.*?)<}',

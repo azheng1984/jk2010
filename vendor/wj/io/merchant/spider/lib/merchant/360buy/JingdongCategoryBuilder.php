@@ -1,5 +1,5 @@
 <?php
-//TODO:用事务防止多线程 insert category/property 冲突
+//TODO:用事务防止多线程 local shopping portal 操作冲突
 class JingdongCategoryBuilder {
   private $categoryId;
   private $categoryName;
@@ -7,40 +7,18 @@ class JingdongCategoryBuilder {
   private $valueList;
   private $shoppingCategoryId;
   private $output = array();
+  private $productSearchOutput = array();
   private $imageList = array();
 
   public function execute($categoryId, $categoryName) {
     $this->categoryId = $categoryId;
     $this->categoryName = $categoryName;
+    $this->shoppingCategoryId = SyncShoppingCategory::getCategoryId($categoryName);
     $this->setShoppingCategoryId();
     $this->executeHistory();
     $this->checkProduct();
     $this->upgradeCategoryVersion();
     $this->output();
-  }
-
-  private function output() {
-    //TODO:压缩并移动指令文件到 ftp 服务器
-    //TODO:向 shopping portal & search 服务器发送 ready 信号
-  }
-
-  private function setShoppingCategoryId() {
-    DbConnection::connect('shopping');
-    $shoppingCategory = Db::getRow(
-      'SELECT * FROM category WHERE name = ?', $this->categoryName
-    );
-    if ($shoppingCategory === false) {
-      Db::insert(
-        'category', array('name' => $this->categoryName), $this->shoppingCategoryId
-      );
-      $this->shoppingCategoryId = Db::getLastInsertId();
-      $this->output []= "INSERT INTO category(id, name) VALUES("
-        .$this->shoppingCategoryId.", "
-        .DbConnection::get()->quote($this->categoryName).")";
-      return;
-    }
-    $this->shoppingCategoryId = $shoppingCategory['id'];
-    DbConnection::connect('jingdong');
   }
 
   private function upgradeCategoryVersion() {
@@ -62,6 +40,11 @@ class JingdongCategoryBuilder {
       $processor = new $class;
       $processor->execute($history['path']);
     }
+  }
+
+  private function getMerchantPath($merchantId) {
+    $name = Db::getColumn('SELECT name FROM merchant WHERE id = ?', $merchantId);
+    return "京东商城\n".$name;
   }
 
   private function initializePropertyList() {
@@ -116,12 +99,64 @@ class JingdongCategoryBuilder {
     }
   }
 
+  private function getImagePath($root) {
+    $folder = $this->getImageFolder();
+    $levelOne = floor($folder / 10000);
+    $folder = $root.$levelOne;
+    if (is_dir($folder)) {
+      mkdir($folder);
+    }
+    $levelTwo = $folder % 10000;
+    $folder = $folder.'/'.$levelTwo;
+    if (is_dir($folder)) {
+      mkdir($folder);
+    }
+    return $root;
+  }
+
+  private function getImageFolder() {
+    DbConnection::connect('io_merchant_spider');
+    $row = Db::getRow('SELECT * FROM image_folder ORDER BY amount LIMIT 1');
+    if ($row === false || $row['amount'] >= 10000) {
+      Db::insert('image_folder', array());
+      return Db::getLastInsertId();
+    }
+    Db::update(
+      'image_folder', array('amount' => ++$row['amount']), 'id = ?', $row['id']
+    );
+    return $row['id'];
+  }
+
+  private function getWordList($text) {
+    //TODO
+    $list = explode(' ', $text);
+    return array_unique($list);
+  }
+
+  private function syncProuctSearch($keywords, $shoppingValueIdTextList, $price) {
+    //TODO:update
+    DbConnection::connect('product_search');
+    $keywordList = $this->getWordList($keywords);
+    Db::insert('product', array(
+      'category_id' => $this->shoppingCategoryId,
+      'price_from_x_100' => $price,
+      'value_id_list' => $shoppingValueIdTextList,
+      'keyword_list' => implode(' ', $keywordList)
+    ));
+    $sql = 'INSERT INTO product_search(category_id, price_from_x_100, value_id_list, keyword_list) VALUES()';
+    $this->productSearchOutput []= $sql;
+    DbConnection::connect('jingdong');
+  }
+
   private function checkProduct() {
     $this->initializePropertyList();
     $productList = Db::getAll(
       'SELECT * FROM product WHERE category_id = ?', $this->categoryId
     );
     foreach ($productList as $product) {
+      if ($product['version'] < $GLOBALS['VERSION']) {
+        //delete product
+      }
       $valueList = Db::getAll(
         'SELECT * FROM product_property_value WHERE merchant_product_id = ?',
         $product['merchant_product_id']
@@ -146,47 +181,52 @@ class JingdongCategoryBuilder {
       foreach ($propertyList as $property) {
         $item = $property['name']."\n";
         ksort($property['value_list']);
-        $item .= implode("\n", $propertyList);
+        $item .= implode("\n", $property['value_list']);
         $shoppingPropertyList []= $item;
       }
       $shoppingPropertyTextList = implode("\n", $shoppingPropertyList);
-      //TODO:sync merchant
-      $shoppingMerchantId = null;
+      $merchantPath = $this->getMerchantPath($product['merchant_id']);
+      $image = ImageDb::get($this->categoryId, $product['id']);
+      $imagePath = $this->getImagePath();
       if ($product['shopping_product_id'] === null) {
-        //TODO:同步图片（图片采用低 id 文件夹优先）
-        //TODO:同步本地 shopping portal
         Db::insert('product', array(
-          'merchant_id' => $shoppingMerchantId,
+          'merchant_path' => $merchantPath,
           'merchant_uri_argument_list' => $product['merchant_product_id'],
           'price_from_x_100' => $product['price_from_x_100'],
-          'image_path' => 0,
-          'image_digest' => 0,
+          'image_path' => $imagePath,
+          'image_digest' => md5($image),
         ));
-        $this->output .= 'INSERT INTO product';
+        $shoppingProductId = Db::getLastInsertId();
+        $imageStagingFolder = '/home/azheng/image_staging/jingdong/';
+        file_put_contents(
+          $imageStagingFolder.$imagePath.$shoppingProductId.'.jpg', $image
+        );
+        $this->syncImage($image, $product['id'], $shoppingProductId);
+        $this->output .= 'INSERT INTO product';//TODO
         $shoppingValueIdTextList = implode(' ', $shoppingValueIdList);
-        //$categoryId;
         $keywords = $product['title'];
         $keywords .= ' '.$this->categoryName;
         $keywords .= ' '.$shoppingPropertyTextList;
-        //TODO:关键字分词
-        //TODO:同步本地 shopping search
-        DbConnection::connect('product_search');
-        Db::insert('product', array(
-          'category_id' => $this->shoppingCategoryId,
-          'price_from_x_100' => $product['price_from_x_100'],
-          'value_id_list' => $shoppingValueIdTextList,
-          'keyword_list' => $keywords
-        ));
-        DbConnection::connect('jingdong');
-        //TODO:输出 “指令日志” 到文件
+        $keywords .= ' '.$merchantPath;
+        $this->syncProuctSearch(
+          $keywords, $shoppingValueIdTextList, $product['price_from_x_100']
+        );
+        continue;
       }
+      //TODO:update 本地 shopping portal
       DbConnection::connect('shopping_portal');
       $shoppingProduct = Db::getRow(
         'SELECT * FROM product WHERE id = ?',
         $product['shopping_product_id']
       );
-      if ($shoppingProduct['property_list']) {
+      if ($shoppingProduct['property_list'] !== $shoppingPropertyTextList) {
         
+      }
+      if ($shoppingProduct['category_name'] !== $this->categoryName) {
+      }
+      if ($shoppingProduct['price_from_x_100'] !== $product['price_from_x_100']) {
+      }
+      if ($product['is_image_updated']) {
       }
       DbConnection::connect('shopping_product_search');
       $shoppingProductSearchProduct = Db::getRow(
@@ -202,18 +242,29 @@ class JingdongCategoryBuilder {
         $keywordListByKey[$keyword] = true;
       }
       $currentKeywordList = array_unique(explode(' ', $keywords));
-      $isUpdate = false;
+      $isUpdated = false;
       foreach ($currentKeywordList as $item) {
         if (isset($keywordListByKey[$item])) {
           unset($keywordListByKey[$itme]);
           continue;
         }
-        $isUpdate = true;
+        $isUpdated = true;
         break;
       }
       if (count($keywordListByKey) !== 0) {
-        $isUpdate = true;
+        $isUpdated = true;
       }
+      if ($isUpdated) {
+        //TODO:update keyword list
+      }
+      //TODO:update product search db & record sql
     }
+  }
+
+  private function output() {
+    //TODO:压缩并移动指令文件到 ftp 服务器
+    system('zip');
+    //TODO:向 shopping portal & search 服务器发送 ready 信号(via mysql（和其它数据库分离）)，等待传输
+    Db::update();
   }
 }
