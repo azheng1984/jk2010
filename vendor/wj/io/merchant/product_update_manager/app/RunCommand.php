@@ -4,13 +4,18 @@ class RunCommand {
     Lock::execute();
     for (;;) {
       $task = $this->getNextTask();
+      DbConnection::connect($task['merchant_name']);
       $categoryId = SyncShoppingCategory::getCategoryId($task['category_name']);
       $propertyList = SyncShoppingProperty::getPropertyList($categoryId);
-      SyncShoppingProduct::execute($categoryId);
+      SyncShoppingProduct::execute($categoryId, $propertyList);
+      DbConnection::close();
       ShoppingCommandFile::finalize($categoryId);
-      SyncShoppingImage::finalize($categoryId);
-      ShoppingRemoteTask::notify($task);
+      ShoppingImageFolder::finalize($categoryId);
+      ShoppingRemoteTask::add($task);
       $this->removeTask($task['id']);
+      if ($task['is_last'] === '1') {
+        //TODO:更新整体版本完成度
+      }
     }
   }
 

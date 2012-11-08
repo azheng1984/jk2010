@@ -1,58 +1,50 @@
 <?php
 class SyncShoppingProperty {
-  public static function getPropertyList($categoryId) {
-    
-  }
-
-  private function initialize() {
+  private function getPropertyList($categoryId, $version) {
     $keyList = Db::getAll(
-        'SELECT * FROM property_key WHERE category_id = ? AND version = ?',
-        $this->categoryId,
-        $GLOBALS['VERSION']
+      'SELECT * FROM property_key WHERE category_id = ? AND version = ?',
+      $categoryId,
+      $version
     );
-    $this->keyList = array();
-    $this->valueList = array();
+    $result = array('key_list' => array(), 'value_list' => array());
     foreach ($keyList as $key) {
       DbConnection::connect('shopping');
       $shoppingKey = Db::getRow(
-          'SELECT * FROM property_key WHERE name = ?', $key['name']
+        'SELECT * FROM property_key WHERE name = ?', $key['name']
       );
       if ($shoppingKey === false) {
         Db::insert('property_key', array('name' => $key['name']));
         $shoppingKeyId = Db::getLastInsertId();
-        $this->output []= "INSERT INTO property_key(id, name) VALUES("
-            .$shoppingKeyId.", "
-                .DbConnection::get()->quote($key['name']).")";
+        ShoppingCommandFile::insertPropertyKey($shoppingKeyId, $key['name']);
       }
-      DbConnection::connect('jingdong');
-      $this->keyList[$key['id']] = $key;
+      DbConnection::close();
+      $result['key_list'][$key['id']] = $key;
       $valueList = Db::getAll(
-          'SELECT * FROM property_value WHERE key_id = ? AND version = ?',
-          $key['id'],
-          $GLOBALS['VERSION']
+        'SELECT * FROM property_value WHERE key_id = ? AND version = ?',
+        $key['id'],
+        $version
       );
+      DbConnection::connect('shopping');
       foreach ($valueList as $value) {
-        DbConnection::connect('shopping');
         $shoppingValue = Db::getRow(
-            'SELECT * FROM property_value WHERE key_id = ? AND name = ?',
-            $shoppingKeyId,
-            $value['name']
+          'SELECT * FROM property_value WHERE key_id = ? AND name = ?',
+          $shoppingKeyId,
+          $value['name']
         );
-        if ($shoppingKey === false) {
+        if ($shoppingValue === false) {
           Db::insert('property_value', array(
-          'key_id' => $shoppingKeyId,
-          'name' => $value['name']
+            'key_id' => $shoppingKeyId,
+            'name' => $value['name']
           ));
           $shoppingValueId = Db::getLastInsertId();
-          $this->output []= "INSERT INTO property_value(id, key_id, name) VALUES("
-              .$shoppingValueId.", "
-                  .$shoppingKeyId.", "
-                      .DbConnection::get()->quote($value['name']).")";
+          ShoppingCommandFile::insertPropertyValue(
+            $shoppingValueId, $shoppingKeyId, $value['name']
+          );
         }
-        DbConnection::connect('jingdong');
         $value['shopping_id'] = $shoppingValueId;
-        $this->valueList[$value['id']] = $value;
+        $result['value_list'][$value['id']] = $value;
       }
+      DbConnection::close();
     }
   }
 }
