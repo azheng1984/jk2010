@@ -1,21 +1,42 @@
 <?php
 class ShoppingCommandFile {
-  private static $commandList = array();
+  private static $list = array();
 
   public static function insertCategory($id, $name) {
-    self::$commandList[] = "\nc\n".$id."\n".$name;
+    self::$list[] = "\nc\n".$id."\n".$name;
   }
 
   public static function insertPropertyKey($id, $name) {
-    self::$commandList[] = "\nk\n".$id."\n".$name;
+    self::$list[] = "\nk\n".$id."\n".$name;
   }
 
   public static function insertPropertyValue($id, $keyId, $name) {
-    self::$commandList[] = "\nv\n".$id."\n".$keyId."\n".$name;
+    self::$list[] = "\nv\n".$id."\n".$keyId."\n".$name;
   }
 
   public static function deleteProduct($id) {
-    self::$commandList[] = "\ndp\n".$id;
+    self::$list[] = "\ndp\n".$id;
+    //todo delete image
+  }
+
+  public static function insertProduct() {
+  
+  }
+
+  public static function updateProduct() {
+  
+  }
+
+  public static function insertProductSearch() {
+    
+  }
+
+  public static function updateProductSearch() {
+  
+  }
+
+  public static function deleteProductSearch() {
+    
   }
 
   public static function finalize() {
