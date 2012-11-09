@@ -1,12 +1,14 @@
 <?php
 class SyncShoppingProduct {
-  private function execute($categoryId, $propertyList, $version, $merchantName) {
+  private function execute($categoryName, $categoryId, $propertyList, $version, $merchantName) {
     $productList = Db::getAll(
       'SELECT * FROM product WHERE category_id = ?', $this->categoryId
     );
     foreach ($productList as $product) {
       if ($product['version'] < $version) {
         ShoppingCommandFile::deleteProduct($product['shopping_id']);
+        ShoppingCommandFile::deleteProductSearch($product['shopping_id']);
+        //TODO:删除 image,更新 path 数据库
       }
       $valueList = Db::getAll(
         'SELECT * FROM product_property_value WHERE merchant_product_id = ?',
@@ -36,85 +38,74 @@ class SyncShoppingProduct {
         $shoppingPropertyList[] = $item;
       }
       $shoppingPropertyTextList = implode("\n", $shoppingPropertyList);
-      $merchantPath = $merchantName
-        .$this->getMerchantPath($product['merchant_id']);
-
-      $image = ImageDb::get($this->categoryId, $product['id']);
-      $imagePath = $this->getImagePath();
-      if ($product['shopping_product_id'] === null) {
-        Db::insert('product', array(
-          'merchant_path' => $merchantPath,
-          'merchant_uri_argument_list' => $product['merchant_product_id'],
-          'price_from_x_100' => $product['price_from_x_100'],
+      $shoppingValueIdTextList = implode(' ', $shoppingValueIdList);
+      $shoppingProduct = null;
+      if ($product['shopping_product_id'] !== null) {
+        $shoppingProduct = Db::getRow(
+          'SELECT * FROM product WHERE id = ?', $product['shopping_product_id']
+        );
+      }
+      $imagePath = null;
+      if ($shoppingProduct === null
+        || $shoppingProduct['image_digest'] !== $product['image_digest']) {
+        $imagePath = SyncShoppingImage::getImagePath();
+      }
+      if ($shoppingProduct === null) {
+        $columnList = array(
+          'merchant_id' => 1,
+          'uri_argument_list' => $product['merchant_product_id'],
           'image_path' => $imagePath,
-          'image_digest' => md5($image),
-        ));
+          'image_digest' => $product['image_digest'],
+          'title' => $product['title'],
+          'price_from_x_100' => $product['price_from_x_100'],
+          'category_name' => $categoryName,
+          'property_list' => $shoppingPropertyTextList,
+          'agency_name' => $product['agency_name']
+        );
+        DbConnection::connect('shopping');
+        Db::insert('product', $columnList);
         $shoppingProductId = Db::getLastInsertId();
-        $imageStagingFolder = '/home/azheng/image_staging/jingdong/';
-        file_put_contents(
-        $imageStagingFolder.$imagePath.$shoppingProductId.'.jpg', $image
+        DbConnection::close();
+        Db::update(
+          'product',
+          array('shopping_product_id' => $shoppingProductId),
+          'id = ?',
+          $product['id']
         );
-        $this->syncImage($image, $product['id'], $shoppingProductId);
-        $this->output .= 'INSERT INTO product';//TODO
-        $shoppingValueIdTextList = implode(' ', $shoppingValueIdList);
-        $keywords = $product['title'];
-        $keywords .= ' '.$this->categoryName;
-        $keywords .= ' '.$shoppingPropertyTextList;
-        $keywords .= ' '.$merchantPath;
-        $this->syncProuctSearch(
-            $keywords, $shoppingValueIdTextList, $product['price_from_x_100']
-        );
-        continue;
+        SyncShoppingImage::execute($categoryId, $shoppingProductId);
+        ShoppingCommandFile::insertProduct($columnList);
+        SyncShoppingProductSearch::add($product, $shoppingValueIdTextList);
       }
-      //TODO:update shopping portal
-      DbConnection::connect('shopping_portal');
-      $shoppingProduct = Db::getRow(
-          'SELECT * FROM product WHERE id = ?',
-          $product['shopping_product_id']
-      );
-      if ($shoppingProduct['property_list'] !== $shoppingPropertyTextList) {
+      $replacementColumnList = array();
+      if ($shoppingProduct['uri_argument_list'] !== $product['merchant_product_id']) {
+        $replacementColumnList['uri_argument_list'] = $product['merchant_product_id'];
       }
-      if ($shoppingProduct['category_name'] !== $this->categoryName) {
+      if ($shoppingProduct['image_path'] !== $product['image_path']) {
+        $replacementColumnList['image_path'] = $product['image_path'];
+      }
+      if ($shoppingProduct['image_digest'] !== $product['image_digest']) {
+        $replacementColumnList['image_digest'] = $product['image_digest'];
+      }
+      if ($shoppingProduct['title'] !== $product['title']) {
+        $replacementColumnList['title'] = $product['title'];
       }
       if ($shoppingProduct['price_from_x_100'] !== $product['price_from_x_100']) {
+        $replacementColumnList['price_from_x_100'] = $product['price_from_x_100'];
       }
-      if ($product['is_image_updated']) {
+      if ($shoppingProduct['category_name'] !== $categoryName) {
+        $replacementColumnList['category_name'] = $categoryName;
       }
-      DbConnection::connect('shopping_product_search');
-      $shoppingProductSearchProduct = Db::getRow(
-          'SELECT * FROM product WHERE id = ?',
-          $product['shopping_product_id']
-      );
-      if ($shoppingProductSearchProduct['value_id_list'] !== $shoppingValueIdTextList) {
-        //TODO:update value id list
+      if ($shoppingProduct['property_list'] !== $shoppingPropertyTextList) {
+        $replacementColumnList['property_list'] = $shoppingPropertyTextList;
       }
-      $keywordList = explode(' ', $shoppingProductSearchProduct['keyword_list']);
-      $keywordListByKey = array();
-      foreach ($keywordList as $keyword) {
-        $keywordListByKey[$keyword] = true;
+      if ($shoppingProduct['agency_name'] !== $product['agency_name']) {
+        $replacementColumnList['agency_name'] = $product['agency_name'];
       }
-      $currentKeywordList = array_unique(explode(' ', $keywords));
-      $isUpdated = false;
-      foreach ($currentKeywordList as $item) {
-        if (isset($keywordListByKey[$item])) {
-          unset($keywordListByKey[$itme]);
-          continue;
-        }
-        $isUpdated = true;
-        break;
-      }
-      if (count($keywordListByKey) !== 0) {
-        $isUpdated = true;
-      }
-      if ($isUpdated) {
-        //TODO:update keyword list
-      }
-      //TODO:update product search db & record sql
+      DbConnection::connect('shopping');
+      Db::update('product', $replacementColumnList);
+      DbConnection::close();
+      ShoppingCommandFile::updateProduct($replacementColumnList);
+      SyncShoppingProductSearch::update($product, $shoppingValueIdTextList);
     }
-  }
-
-  private function getMerchantPath($merchantId) {
-    $name = Db::getColumn('SELECT name FROM merchant WHERE id = ?', $merchantId);
-    return "京东商城\n".$name;
   }
 }

@@ -1,23 +1,69 @@
 <?php
 class SyncShoppingProductSearch {
-  private function getWordList($text) {
+  public static function insert($product, $categoryId, $shoppingPropertyTextList, $shoppingValueIdTextList) {
+    $keywords = self::getWordList($product, $shoppingPropertyTextList);
+    $newProduct = array(
+      'category_id' => $categoryId,
+      'price_from_x_100' => $product['price_from_x_100'],
+      'keyword_list' => $keywords,
+      'value_id_list' => $shoppingValueIdTextList
+    );
+    DbConnection::connect('shopping_product_search');
+    Db::insert('product', $newProduct);
+    DbConnection::close();
+    ShoppingCommandFile::insertProductSearch($newProduct);
+  }
+
+  private function getWordList($product, $shoppingPropertyTextList) {
+    $keywords = $product['title'];
+    $keywords .= ' '.$product['category_name'];
+    $keywords .= ' '.$shoppingPropertyTextList;
     //TODO
     $list = explode(' ', $text);
     return array_unique($list);
   }
-  
-  private function syncProuctSearch($keywords, $shoppingValueIdTextList, $price) {
-    //TODO:update
-    DbConnection::connect('product_search');
-    $keywordList = $this->getWordList($keywords);
-    Db::insert('product', array(
-    'category_id' => $this->shoppingCategoryId,
-    'price_from_x_100' => $price,
-    'value_id_list' => $shoppingValueIdTextList,
-    'keyword_list' => implode(' ', $keywordList)
-    ));
-    $sql = 'INSERT INTO product_search(category_id, price_from_x_100, value_id_list, keyword_list) VALUES()';
-    $this->productSearchOutput []= $sql;
-    DbConnection::connect('jingdong');
+
+  public static function update($product, $categoryId, $shoppingPropertyTextList, $shoppingValueIdTextList) {
+    DbConnection::connect('shopping_product_search');
+    $shoppingProductSearchProduct = Db::getRow(
+      'SELECT * FROM product WHERE id = ?',
+      $product['shopping_product_id']
+    );
+    //TODO:如果 title/category_name/property value_id_list 都没有变化，直接跳过
+    $updateColumnList = array();
+    if ($shoppingProductSearchProduct['value_id_list'] !== $shoppingValueIdTextList) {
+      $updateColumnList['value_id_list'] = $shoppingValueIdTextList;
+    }
+    $keywordList = explode(' ', $shoppingProductSearchProduct['keyword_list']);
+    $keywordListByKey = array();
+    foreach ($keywordList as $keyword) {
+      $keywordListByKey[$keyword] = true;
+    }
+    $keywords = self::getWordList($product, $shoppingPropertyTextList);
+    $currentKeywordList = explode(' ', $keywords);
+    $isUpdated = false;
+    foreach ($currentKeywordList as $item) {
+      if (isset($keywordListByKey[$item])) {
+        unset($keywordListByKey[$itme]);
+        continue;
+      }
+      $isUpdated = true;
+      break;
+    }
+    if (count($keywordListByKey) !== 0) {
+      $isUpdated = true;
+    }
+    if ($isUpdated) {
+      $updateColumnList['keyword_list'] = $keywords;
+    }
+    if ($isCategoryUpdated) {
+      $updateColumnList['category_id'] = $categoryId;
+    }
+    if ($isPriceUpdated) {
+      $updateColumnList['price_from_x_100'] = $priceFromX100;
+    }
+    Db::update('product', $updateColumnList);
+    DbConnection::close();
+    ShoppingCommandFile::updateProductSearch($updateColumnList);
   }
 }
