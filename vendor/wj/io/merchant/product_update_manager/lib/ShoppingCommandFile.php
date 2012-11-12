@@ -14,29 +14,24 @@ class ShoppingCommandFile {
     self::$list[] = "\nv\n".$id."\n".$keyId."\n".$name;
   }
 
-  public static function deleteProduct($id) {
-    self::$list[] = "\ndp\n".$id;
-    //todo delete image
-  }
-
-  public static function insertProduct() {
-  
-  }
-
-  public static function updateProduct() {
-  
+  public static function insertProduct($product, $id) {
+    self::$list[] = "\nip\n".$id;
   }
 
   public static function insertProductSearch() {
-    
+  }
+
+  public static function updateProduct() {
+  }
+
+  public static function deleteProduct($id) {
+    self::$list[] = "\ndp\n".$id;
   }
 
   public static function updateProductSearch() {
-  
   }
 
   public static function deleteProductSearch() {
-    
   }
 
   public static function finalize() {

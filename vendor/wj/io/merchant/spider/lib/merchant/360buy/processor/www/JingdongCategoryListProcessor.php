@@ -34,6 +34,9 @@ class JingdongCategoryListProcessor {
         $productListProcessor = new JingdongProductListProcessor;
         $productListProcessor->execute($path);
         $this->executeHistory();
+        $this->cleanProductPropertyValue();
+        $this->cleanPropertyKey();
+        $this->cleanPropertyValue();
         $this->addProductUpdateTask();
       }
       //TODO:update category version
@@ -77,5 +80,27 @@ class JingdongCategoryListProcessor {
 
   private function addProductUpdateTask() {
     
+  }
+
+  private function cleanProductPropertyValue() {
+    Db::execute(
+      'DELETE FROM product_property_value'
+        .' WHERE category_id = ? AND  version != ?',
+      $this->categoryId, $GLOBALS['VERSION']
+    );
+  }
+
+  private function cleanPropertyKey() {
+    Db::execute(
+      'DELETE FROM property_key WHERE category_id = ? AND version != ?',
+      $this->categoryId, $GLOBALS['VERSION']
+    );
+  }
+
+  private function cleanPropertyValue() {
+    Db::execute(
+      'DELETE FROM property_value WHERE category_id = ? AND  version != ?',
+      $this->categoryId, $GLOBALS['VERSION']
+    );
   }
 }

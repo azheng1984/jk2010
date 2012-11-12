@@ -36,4 +36,13 @@ class SyncShoppingImage {
     );
     return $row['id'];
   }
+
+  public static function delete($shoppingProductId) {
+    //TODO:删除 image,更新 path 数据库
+  }
+
+  public static function finalize() {
+    //TODO:压缩 & 移动图片文件夹到 ftp 服务器
+    system('zip');
+  }
 }
