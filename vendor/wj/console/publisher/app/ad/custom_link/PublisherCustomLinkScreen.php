@@ -17,7 +17,7 @@ class PublisherCustomLinkScreen extends PublisherScreen {
     PublisherNavigationScreen::render('home');
     echo '<h2>广告</h2>';
     echo '<a href="/ad">广告</a> / 自定义链接';
-    echo '<div>文档 (<a href="http://about.huobiwanjia.com/">素材</a>)</div>';
+    echo '<div></div>';
     $this->renderFooter();
   }
 
