@@ -1,10 +1,8 @@
 <?php
 class SyncShoppingProperty {
-  private function getPropertyList($categoryId, $version) {
+  public static function getPropertyList($categoryId) {
     $keyList = Db::getAll(
-      'SELECT * FROM property_key WHERE category_id = ? AND version = ?',
-      $categoryId,
-      $version
+      'SELECT * FROM property_key WHERE category_id = ?', $categoryId
     );
     $result = array('key_list' => array(), 'value_list' => array());
     foreach ($keyList as $key) {
@@ -20,21 +18,17 @@ class SyncShoppingProperty {
       DbConnection::close();
       $result['key_list'][$key['id']] = $key;
       $valueList = Db::getAll(
-        'SELECT * FROM property_value WHERE key_id = ? AND version = ?',
-        $key['id'],
-        $version
+        'SELECT * FROM property_value WHERE key_id = ?', $key['id']
       );
       DbConnection::connect('shopping');
       foreach ($valueList as $value) {
         $shoppingValue = Db::getRow(
           'SELECT * FROM property_value WHERE key_id = ? AND name = ?',
-          $shoppingKeyId,
-          $value['name']
+          $shoppingKeyId, $value['name']
         );
         if ($shoppingValue === false) {
           Db::insert('property_value', array(
-            'key_id' => $shoppingKeyId,
-            'name' => $value['name']
+            'key_id' => $shoppingKeyId, 'name' => $value['name']
           ));
           $shoppingValueId = Db::getLastInsertId();
           ShoppingCommandFile::insertPropertyValue(

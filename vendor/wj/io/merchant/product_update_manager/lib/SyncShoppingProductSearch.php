@@ -23,7 +23,7 @@ class SyncShoppingProductSearch {
     return array_unique($list);
   }
 
-  public static function update($product, $categoryId, $shoppingPropertyTextList, $shoppingValueIdTextList) {
+  public static function update($product, $shoppingCategoryId, $shoppingPropertyTextList, $shoppingValueIdTextList) {
     DbConnection::connect('shopping_product_search');
     $shoppingProductSearchProduct = Db::getRow(
       'SELECT * FROM product WHERE id = ?',

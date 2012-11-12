@@ -8,9 +8,6 @@ class RunCommand {
       $processor->execute();
       $this->checkCategory();
       $this->cleanHistory();
-      $this->cleanProductPropertyValue();
-      $this->cleanPropertyKey();
-      $this->cleanPropertyValue();
       if ($GLOBALS['VERSION'] % 100 === 0) {
         $this->cleanMerchant();
       }
@@ -34,8 +31,6 @@ class RunCommand {
         Db::delete('DELETE FROM category WHERE id = ?', $category['id']);
         continue;
       }
-      $categoryBuilder = new JingdongCategoryBuilder;
-      $categoryBuilder->execute($category['id']);
     }
   }
 
@@ -71,26 +66,5 @@ class RunCommand {
         Db::delete('DELETE FROM merchant WHERE id = ?', $merchant['id']);
       }
     }
-  }
-
-  private function cleanProductPropertyValue() {
-    Db::execute(
-      'DELETE FROM product_property_value WHERE version != ?',
-      $GLOBALS['VERSION']
-    );
-  }
-
-  private function cleanPropertyKey() {
-    Db::execute(
-      'DELETE FROM property_key WHERE version != ?',
-      $GLOBALS['VERSION']
-    );
-  }
-
-  private function cleanPropertyValue() {
-    Db::execute(
-      'DELETE FROM property_value WHERE version != ?',
-      $GLOBALS['VERSION']
-    );
   }
 }

@@ -8,12 +8,23 @@ class RunCommand {
     for (;;) {
       $task = $this->getNextTask();
       DbConnection::connect($task['merchant_name']);
-      $categoryId = SyncShoppingCategory::getCategoryId($task['category_name']);
+      $shoppingCategoryId = SyncShoppingCategory::getCategoryId(
+        $task['category_name']
+      );
+      $categoryId = Db::getColumn(
+        'SELECT id FROM category WHERE name = ?', $task['category_name']
+      );
       $propertyList = SyncShoppingProperty::getPropertyList($categoryId);
-      SyncShoppingProduct::execute($categoryId, $propertyList);
+      SyncShoppingProduct::execute(
+        $task['category_name'],
+        $shoppingCategoryId,
+        $propertyList,
+        $task['version'],
+        $task['merchant_name']
+      );
       DbConnection::close();
-      ShoppingCommandFile::finalize($categoryId);
-      ShoppingImageFolder::finalize($categoryId);
+      ShoppingCommandFile::finalize($shoppingCategoryId);
+      SyncShoppingImage::finalize($shoppingCategoryId);
       ShoppingRemoteTask::add($task);
       DbConnection::connect('default');
       $this->removeTask($task['id']);
