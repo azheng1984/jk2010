@@ -18,14 +18,14 @@ class ShoppingCommandFile {
     self::$list[] = "\nip\n".$id;
   }
 
-  public static function insertProductSearch() {
-  }
-
   public static function updateProduct() {
   }
 
   public static function deleteProduct($id) {
     self::$list[] = "\ndp\n".$id;
+  }
+
+  public static function insertProductSearch() {
   }
 
   public static function updateProductSearch() {
