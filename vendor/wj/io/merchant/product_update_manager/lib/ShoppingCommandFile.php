@@ -1,6 +1,7 @@
 <?php
 class ShoppingCommandFile {
-  private static $list = array();
+  private static $productSearchSyncFile = null;
+  private static $portalSyncFile = null;
 
   public static function insertCategory($id, $name) {
     self::$list[] = "\nc\n".$id."\n".$name;
@@ -15,7 +16,11 @@ class ShoppingCommandFile {
   }
 
   public static function insertProduct($product, $id) {
-    self::$list[] = "\nip\n".$id;
+    $output = "\nip\n".$id."\n";
+    $output .= $product['merchant_id']."\n";
+    $output .= "\n";
+    $output .= "\n";
+    $output .= "\n";
   }
 
   public static function updateProduct() {
@@ -32,6 +37,18 @@ class ShoppingCommandFile {
   }
 
   public static function deleteProductSearch() {
+  }
+
+  private static function outputForPortal($line) {
+    if (self::$portalSyncFile === null) {
+      self::$portalSyncFile = fopen('', 'w+');
+    }
+  }
+
+  private static function outputForProductSearch($line) {
+    if (self::$productSearchSyncFile === null) {
+      self::$productSearchSyncFile = fopen('', 'w+');
+    }
   }
 
   public static function finalize() {
