@@ -1,4 +1,5 @@
 <?php
+//TODO:幂等
 class RunCommand {
   private $versionInfo;
 

@@ -18,49 +18,52 @@ class SyncShoppingProductSearch {
     $keywords = $product['title'];
     $keywords .= ' '.$product['category_name'];
     $keywords .= ' '.$shoppingPropertyTextList;
-    //TODO
-    $list = explode(' ', $text);
-    return array_unique($list);
+    $keywords = SegmentationService::execute($keywords);
+    $list = explode(' ', $keywords);
+    return implode(' ', array_unique($list));
   }
 
-  public static function update($product, $shoppingCategoryId, $shoppingPropertyTextList, $shoppingValueIdTextList) {
+  public static function update($product, $replacementColumnList, $shoppingCategoryId, $shoppingPropertyTextList, $shoppingValueIdTextList) {
     DbConnection::connect('shopping_product_search');
     $shoppingProductSearchProduct = Db::getRow(
       'SELECT * FROM product WHERE id = ?',
       $product['shopping_product_id']
     );
-    //TODO:如果 title/category_name/property value_id_list 都没有变化，直接跳过
     $updateColumnList = array();
     if ($shoppingProductSearchProduct['value_id_list'] !== $shoppingValueIdTextList) {
       $updateColumnList['value_id_list'] = $shoppingValueIdTextList;
     }
-    $keywordList = explode(' ', $shoppingProductSearchProduct['keyword_list']);
-    $keywordListByKey = array();
-    foreach ($keywordList as $keyword) {
-      $keywordListByKey[$keyword] = true;
-    }
-    $keywords = self::getWordList($product, $shoppingPropertyTextList);
-    $currentKeywordList = explode(' ', $keywords);
-    $isUpdated = false;
-    foreach ($currentKeywordList as $item) {
-      if (isset($keywordListByKey[$item])) {
-        unset($keywordListByKey[$itme]);
-        continue;
+    if (isset($replacementColumnList['title'])
+        || isset($replacementColumnList['category_name'])
+        || isset($replacementColumnList['property_list'])) {
+      $keywordList = explode(' ', $shoppingProductSearchProduct['keyword_list']);
+      $keywordListByKey = array();
+      foreach ($keywordList as $keyword) {
+        $keywordListByKey[$keyword] = true;
       }
-      $isUpdated = true;
-      break;
+      $keywords = self::getWordList($product, $shoppingPropertyTextList);
+      $currentKeywordList = explode(' ', $keywords);
+      $isUpdated = false;
+      foreach ($currentKeywordList as $item) {
+        if (isset($keywordListByKey[$item])) {
+          unset($keywordListByKey[$itme]);
+          continue;
+        }
+        $isUpdated = true;
+        break;
+      }
+      if (count($keywordListByKey) !== 0) {
+        $isUpdated = true;
+      }
+      if ($isUpdated) {
+        $updateColumnList['keyword_list'] = $keywords;
+      }
     }
-    if (count($keywordListByKey) !== 0) {
-      $isUpdated = true;
+    if ($shoppingProductSearchProduct['category_id'] !== $shoppingCategoryId) {
+      $updateColumnList['category_id'] = $shoppingCategoryId;
     }
-    if ($isUpdated) {
-      $updateColumnList['keyword_list'] = $keywords;
-    }
-    if ($isCategoryUpdated) {
-      $updateColumnList['category_id'] = $categoryId;
-    }
-    if ($isPriceUpdated) {
-      $updateColumnList['price_from_x_100'] = $priceFromX100;
+      if ($shoppingProductSearchProduct['price_from_x_100'] !== $product['price_from_x_100']) {
+      $updateColumnList['price_from_x_100'] = $product['price_from_x_100'];
     }
     Db::update('product', $updateColumnList);
     DbConnection::close();
