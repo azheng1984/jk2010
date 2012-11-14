@@ -1,9 +1,9 @@
 <?php
-//TODO:合并传输 portal & product search
+//TODO:合并传输 portal & product search 重用 price_from_x_100
 class SyncDb {
   private $file;
 
-  public static function update($fileName, $categoryId, $categoryName) {
+  public static function execute($fileName, $categoryId, $categoryName) {
     $this->file = file(DATA_PATH.'sync/'.$fileName, 'r');
     while(feof($this->file) !== true) {
       $command = fgets($this->file);

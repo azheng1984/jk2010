@@ -1,5 +1,6 @@
 <?php
 //TODO:幂等
+//重建索引时，暂停增量索引，在主索引更新后统一 merge
 class Command {
   public function execute() {
     for (;;) {
@@ -15,9 +16,9 @@ class Command {
 
   private function sync($task) {
     try {
-      $fileList = SyncFile::sync($task);
-      SyncDb::update($fileList['portal']);
-      SphinxIndex::update();
+      $fileList = SyncFile::execute($task);
+      SyncDb::execute($fileList['portal']);
+      SphinxIndex::indexDelta();
       $this->upgradeIndexVersion();
       SyncDb::merge();
       $this->upgradePortalVersion();

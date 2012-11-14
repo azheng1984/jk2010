@@ -3,7 +3,7 @@
 class SyncFile {
   private $fileList;
 
-  public static function sync($task) {
+  public static function execute($task) {
     $suffix = $task['merchant_id'].'_'.$task['category_id'].$task['version'];
     $this->fileList = array(
       'portal' => $suffix.'_portal',
