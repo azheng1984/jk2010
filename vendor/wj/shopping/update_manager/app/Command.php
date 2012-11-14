@@ -15,17 +15,23 @@ class Command {
 
   private function sync($task) {
     try {
-      $fileList = SyncRemoteFile::sync($task);
-      $delta = Portal::update($fileList['portal']);
-      PortalDelta::update($delta);
-      ProductSearch::update($fileList['product_search'], $delta);
+      $fileList = SyncFile::sync($task);
+      SyncDb::update($fileList['portal']);
       SphinxIndex::update();
-      Version::upgradeIndex();
-      Portal::merge($delta);
-      Version::upgradePortal();
-      SyncRemoteFile::finialize();
+      $this->upgradeIndexVersion();
+      SyncDb::merge();
+      $this->upgradePortalVersion();
+      SyncFile::finialize();
     } catch (Exception $exception) {
       $this->sync($task);
     }
+  }
+
+  private function upgradeIndexVersion() {
+    
+  }
+
+  private function upgradePortalVersion() {
+    
   }
 }

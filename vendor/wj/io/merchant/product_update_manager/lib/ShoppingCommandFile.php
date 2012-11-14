@@ -32,6 +32,7 @@ class ShoppingCommandFile {
     $output .= $product['title']."\n";
     $output .= $product['price_from_x_100']."\n";
     $output .= $product['price_to_x_100']."\n";
+    $output .= $product['category_name']."\n";
     $output .= $product['property_list']."\n\n";
     $output .= $product['agency_name'];
     self::outputForPortal($output."\n");
@@ -40,27 +41,30 @@ class ShoppingCommandFile {
   public static function updateProduct($product) {
     $output = "u\n".$product['id'];
     if (isset($product['uri_argument_list'])) {
-      $output .= "\n1".$product['uri_argument_list'];
+      $output .= "\n0".$product['uri_argument_list'];
     }
     if (isset($product['image_digest'])) {
-      $output .= "\n2".$product['image_digest'];
+      $output .= "\n1".$product['image_digest'];
     }
     if (isset($product['title'])) {
-      $output .= "\n3".$product['title']."\n";
+      $output .= "\n2".$product['title']."\n";
     }
     if (isset($product['price_from_x_100'])) {
-      $output .= "\n4".$product['price_from_x_100'];
+      $output .= "\n3".$product['price_from_x_100'];
     }
     if (isset($product['price_to_x_100'])) {
-      $output .= "\n5".$product['price_to_x_100'];
+      $output .= "\n4".$product['price_to_x_100'];
     }
-    if (isset($product['price_to_x_100'])) {
+    if (isset($product['category_name'])) {
+      $output .= "\n5".$product['category_name'];
+    }
+    if (isset($product['property_list'])) {
       $output .= "\n6".$product['property_list']."\n";
     }
     if (isset($product['agency_name'])) {
-      $output .= "\n7".$product['agency_name']."\n";
+      $output .= "\n7".$product['agency_name'];
     }
-    self::outputForPortal($output);
+    self::outputForPortal($output."\n");
   }
 
   public static function deleteProduct($id) {
