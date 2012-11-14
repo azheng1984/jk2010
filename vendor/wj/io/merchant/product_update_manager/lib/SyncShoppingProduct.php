@@ -114,7 +114,7 @@ class SyncShoppingProduct {
       Db::update('product', $replacementColumnList);
       DbConnection::close();
       ShoppingCommandFile::updateProduct($replacementColumnList);
-      SyncShoppingProductSearch::update($product, $shoppingValueIdTextList);
+      SyncShoppingProductSearch::update($product, $replacementColumnList, $shoppingValueIdTextList);
     }
   }
 }

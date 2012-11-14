@@ -1,58 +1,126 @@
 <?php
 class ShoppingCommandFile {
   private static $productSearchSyncFile = null;
+  private static $productSearchSyncFileName = null;
+  private static $portalSyncFileName = '';
   private static $portalSyncFile = null;
 
+  public static function initialize($merchantId, $categoryName, $categoryId, $version) {
+    self::$portalSyncFileName = DATA_PATH.'portal_sync/'.$merchantId.'_'.$categoryId.'_'.$version.'_portal';
+    self::$portalSyncFile = fopen(self::$portalSyncFileName, 'a');
+    self::$productSearchSyncFileName = DATA_PATH.'product_search_sync/'.$merchantId.'_'.$categoryId.'_'.$version.'_product_search';
+    self::$productSearchSyncFile = fopen(self::$productSearchSyncFileName, 'a');
+  }
+
   public static function insertCategory($id, $name) {
-    self::$list[] = "\nc\n".$id."\n".$name;
+    self::outputForPortal("c\n".$id."\n".$name."\n");
   }
 
   public static function insertPropertyKey($id, $name) {
-    self::$list[] = "\nk\n".$id."\n".$name;
+    self::outputForPortal("k\n".$id."\n".$name."\n");
   }
 
   public static function insertPropertyValue($id, $keyId, $name) {
-    self::$list[] = "\nv\n".$id."\n".$keyId."\n".$name;
+    self::outputForPortal("v\n".$id."\n".$keyId."\n".$name."\n");
   }
 
   public static function insertProduct($product, $id) {
-    $output = "\nip\n".$id."\n";
-    $output .= $product['merchant_id']."\n";
-    $output .= "\n";
-    $output .= "\n";
-    $output .= "\n";
+    $output = "p\n".$id."\n";
+    $output .= $product['uri_argument_list']."\n";
+    $output .= $product['image_path']."\n";
+    $output .= $product['image_digest']."\n";
+    $output .= $product['title']."\n";
+    $output .= $product['price_from_x_100']."\n";
+    $output .= $product['price_to_x_100']."\n";
+    $output .= $product['property_list']."\n\n";
+    $output .= $product['agency_name'];
+    self::outputForPortal($output."\n");
   }
 
-  public static function updateProduct() {
+  public static function updateProduct($product) {
+    $output = "u\n".$product['id'];
+    if (isset($product['uri_argument_list'])) {
+      $output .= "\n1".$product['uri_argument_list'];
+    }
+    if (isset($product['image_digest'])) {
+      $output .= "\n2".$product['image_digest'];
+    }
+    if (isset($product['title'])) {
+      $output .= "\n3".$product['title']."\n";
+    }
+    if (isset($product['price_from_x_100'])) {
+      $output .= "\n4".$product['price_from_x_100'];
+    }
+    if (isset($product['price_to_x_100'])) {
+      $output .= "\n5".$product['price_to_x_100'];
+    }
+    if (isset($product['price_to_x_100'])) {
+      $output .= "\n6".$product['property_list']."\n";
+    }
+    if (isset($product['agency_name'])) {
+      $output .= "\n7".$product['agency_name']."\n";
+    }
+    self::outputForPortal($output);
   }
 
   public static function deleteProduct($id) {
-    self::$list[] = "\ndp\n".$id;
+    self::outputForPortal("d\n".$id."\n");
   }
 
-  public static function insertProductSearch() {
+  public static function insertProductSearch($priceFromX100, $id, $categoryId, $valueIdTextList, $keywordTextList) {
+    $output = "p\n".$id."\n";
+    $output .= $categoryId."\n";
+    $output .= $priceFromX100."\n";
+    $output .= $valueIdTextList."\n";
+    $output .= $keywordTextList."\n";
+    self::outputForPortal($output);
   }
 
-  public static function updateProductSearch() {
-  }
-
-  public static function deleteProductSearch() {
-  }
-
-  private static function outputForPortal($line) {
-    if (self::$portalSyncFile === null) {
-      self::$portalSyncFile = fopen('', 'w+');
+  public static function updateProductSearch($product) {
+    $output = "u\n".$product['id'];
+    if (isset($product['category_id'])) {
+      $output .= "\n1".$product['category_id'];
     }
+    if (isset($product['price_from_x_100'])) {
+      $output .= "\n2".$product['price_from_x_100'];
+    }
+    if (isset($product['value_id_list'])) {
+      $output .= "\n3".$product['value_id_list'];
+    }
+    if (isset($product['keyword_list'])) {
+      $output .= "\n4".$product['keyword_list']."\n";
+    }
+    self::outputForPortal($output);
   }
 
-  private static function outputForProductSearch($line) {
-    if (self::$productSearchSyncFile === null) {
-      self::$productSearchSyncFile = fopen('', 'w+');
-    }
+  public static function deleteProductSearch($id) {
+    self::outputForPortal("d\n".$id."\n");
+  }
+
+  private static function outputForPortal($content) {
+    fwrite(self::$portalSyncFile, $content);
+  }
+
+  private static function outputForProductSearch($content) {
+    fwrite(self::$productSearchSyncFile, $content);
   }
 
   public static function finalize() {
-    //TODO:压缩并移动指令文件到 ftp 服务器
-    system('zip');
+    fclose(self::$portalSyncFile);
+    $fileList = array();
+    if (filesize(self::$portalSyncFileName) !== 0) {
+      $fileList['portal'] = true;
+      system('gzip '.self::$portalSyncFileName);
+    } else {
+      unlink(self::$portalSyncFileName);
+    }
+    fclose(self::$productSearchSyncFile);
+    if (filesize(self::$productSearchSyncFileName) !== 0) {
+      $fileList['product_search'] = true;
+      system('gzip '.self::$productSearchSyncFileName);
+    } else {
+      unlink(self::$productSearchSyncFileName);
+    }
+    return $fileList;
   }
 }

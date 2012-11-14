@@ -2,9 +2,8 @@
 class SyncShoppingImage {
   public static function execute($categoryId, $shoppingProductId, $imagePath) {
     $image = ImageDb::get($categoryId, $shoppingProductId);
-    $imageStagingFolder = '/home/azheng/image_staging/jingdong/';
     file_put_contents(
-      $imageStagingFolder.$imagePath.$shoppingProductId.'.jpg', $image
+      DATA_PATH.'product_image_sync/'.$imagePath.$shoppingProductId.'.jpg', $image
     );
     return $imagePath;
   }
@@ -38,11 +37,24 @@ class SyncShoppingImage {
   }
 
   public static function delete($shoppingProductId) {
-    //TODO:删除 image,更新 path 数据库
+    DbConnection::connect('shopping');
+    $path = Db::getColumn('SELECT image_path FROM product WHERE id = ?', $shoppingProductId);
+    unlink(DATA_PATH.'product_image_sync/'.$path.'/'.$shoppingProductId.'.jpg');
+    DbConnection::close();
+    DbConnection::connect('default');
+    Db::update('UPDATE image_folder SET amount = amount - 1 WHERE id = ?', self::getId($path));
+    DbConnection::close();
   }
 
-  public static function finalize() {
-    //TODO:压缩 & 移动图片文件夹到 ftp 服务器
-    system('zip');
+  private static function getId($path) {
+    list($levelOne, $levelTwo) = explode('/', $path);
+    return $levelOne * 10000 + $levelTwo;
+  }
+
+  public static function finalize($merchantId, $categoryName, $version) {
+    system('cd '.DATA_PATH.'product_image_staging');
+    system('tar -zcf '.DATA_PATH.'product_image_sync/'.$merchantId.' '.$version.' '.$categoryName.'.tar.gz *');
+    system('rm -rf '.DATA_PATH.'product_image_staging');
+    system('mkdir '.DATA_PATH.'product_image_staging');
   }
 }
