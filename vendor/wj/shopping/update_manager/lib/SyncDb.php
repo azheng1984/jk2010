@@ -1,5 +1,4 @@
 <?php
-//TODO:合并传输 portal & product search 重用 price_from_x_100
 class SyncDb {
   private $file;
 
@@ -37,15 +36,16 @@ class SyncDb {
   public static function merge() {
     for (;;) {
       DbConnection::connect('delta');
-      $productList = Db::getAll('SELECT * FROM product LIMIT 1000');
+      $productList = Db::getAll('SELECT * FROM product ORDER BY id LIMIT 1000');
       DbConnection::close();
       if (count($productList) === 0) {
         break;
       }
+      $id = null;
       foreach ($productList as $product) {
         $id = $product['id'];
         unset($product['id']);
-        if ($product['price_from_x_100'] === '0') {
+        if ($product['price_from_x_100'] === null) {
           Db::delete('product', $product, 'id = ?', $id);
           $imagePath = Db::getColumn('SELECT image_path FROM product WHERE id = ?', $id);
           unlink(IMAGE_PATH.$imagePath.'/'.$id.'.jpg');
@@ -107,10 +107,11 @@ class SyncDb {
     Db::insert('product', $product);
   }
 
-  private static function updateProcuct() {
+  private static function updateProcuct($categoryId, $categoryName) {
     $product = array();
     $productDelta = array();
-    $product['id'] = fgets($this->file);
+    $productSearch = array();
+    $id = fgets($this->file);
     for(;;) {
       $line = fgets($this->file);
       if ($line === '') {
@@ -128,6 +129,8 @@ class SyncDb {
           break;
         case '3':
           $productDelta['price_from_x_100'] = fgets($this->file);
+          $productSearch['price_from_x_100'] =
+            $productDelta['price_from_x_100'];
           break;
         case '4':
           $product['price_to_x_100'] = fgets($this->file);
@@ -136,7 +139,8 @@ class SyncDb {
           }
           break;
         case '5':
-          $productDelta['category_name'] = fgets($this->file);
+          $productDelta['category_name'] = $categoryName;
+          $productSearch['category_id'] = $categoryId;
           break;
         case '6':
           $propertyList = array();
@@ -155,18 +159,44 @@ class SyncDb {
             $product['agency_name'] = null;
           }
           break;
+        case '8':
+          $productSearch['keyword_list'] = fgets($this->file);
+          if ($productSearch['keyword_list'] === '') {
+            $productSearch['keyword_list'] = null;
+          }
+          break;
+        case '9':
+          $productSearch['value_id_list'] = fgets($this->file);
+          if ($productSearch['value_id_list'] === '') {
+            $productSearch['value_id_list'] = null;
+          }
+          break;
       }
     }
-    Db::update('product', $product);
-    DbConnection::connect('delta');
-    Db::insert('product', $productDelta);
-    DbConnection::close();
+    if (count($product) !== 0) {
+      Db::update('product', $product, 'id = ?', $product['id']);
+    }
+    if (count($productDelta) !== 0) {
+      $productDelta['id'] = $id;
+      DbConnection::connect('delta');
+      Db::insert('product', $productDelta);
+      DbConnection::close();
+    }
+    if (count($productSearch) !== 0) {
+      $productSearch['is_updated'] = true;
+      DbConnection::connect('product_search');
+      Db::update('product', $productSearch, 'id = ?', $id);
+      DbConnection::close();
+    }
   }
 
   private static function deleteProduct() {
     $id = fgets($this->file);
     DbConnection::connect('delta');
     Db::insert('product', 'id = ?', $id);
+    DbConnection::close();
+    DbConnection::connect('product_search');
+    Db::delete('product', 'id = ?', $id);
     DbConnection::close();
   }
 }
