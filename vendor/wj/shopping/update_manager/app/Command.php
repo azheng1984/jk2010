@@ -1,6 +1,5 @@
 <?php
 //TODO:幂等
-//重建索引时，暂停增量索引，在主索引更新后统一 merge
 class Command {
   public function execute() {
     for (;;) {
@@ -29,10 +28,16 @@ class Command {
   }
 
   private function upgradeIndexVersion() {
-    
+    file_put_contents(
+      PORTAL_DATA_PATH.'version.php',
+      "<?php return array('delta' => true);"
+    );
   }
 
   private function upgradePortalVersion() {
-    
+    file_put_contents(
+      PORTAL_DATA_PATH.'version.php',
+      "<?php return array('delta' => false);"
+    );
   }
 }
