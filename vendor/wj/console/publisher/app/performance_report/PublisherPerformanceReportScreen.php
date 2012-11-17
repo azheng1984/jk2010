@@ -16,7 +16,7 @@ class PublisherPerformanceReportScreen extends PublisherScreen {
     echo '<h1><a href="/">广告发布商</a></h1>';
     echo '<div id="toolbar">用户名 | publisher_id：xxx | <a href="sign_out">退出</a></div>';
     PublisherNavigationScreen::render('performance_report');
-    echo '<h2>效果报表</h2>';
+    echo '<h2>流量</h2>';
     $this->renderFilter();
     $this->renderGroupBy();
     $this->renderResult();
@@ -29,14 +29,15 @@ class PublisherPerformanceReportScreen extends PublisherScreen {
     echo '<h3>过滤</h3>';
     echo '<ul>';
     echo '<li>日期：[]-[]</li>';
+    echo '<li>类型：全部 | 货比万家 | 商家</li>';
     echo '</ul>';
   }
 
   private function renderGroupBy() {
     echo '<h3>分组</h3>';
+
     echo '<ul>';
     echo '<li>日期：日 | 月 | 年</li>';
-    echo '<li>流量类型：全部 | 货比万家 | 商家</li>';
     echo '</ul>';
   }
 
@@ -60,6 +61,7 @@ class PublisherPerformanceReportScreen extends PublisherScreen {
   private function renderTotal() {
     echo '<h3>总计</h3>';
     echo '<ul>';
+    echo '<li>日期：-</li>';
     echo '<li>流量：</li>';
     echo '<li>订单数量：</li>';
     echo '<li>订单交易金额：</li>';
@@ -69,8 +71,9 @@ class PublisherPerformanceReportScreen extends PublisherScreen {
   }
 
   private function renderAverage() {
-    echo '<h3>明细</h3>';
+    echo '<h3>平均</h3>';
     echo '<ul>';
+    echo '<li>日期：-</li>';
     echo '<li>流量：</li>';
     echo '<li>订单数量：</li>';
     echo '<li>订单交易金额：</li>';
