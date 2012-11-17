@@ -3,6 +3,7 @@ class PublisherNavigationScreen {
   private static $config = array(
     '/' => '首页',
     '/performance_report' => '效果报告',
+    '/order' => '订单',
     '/payment' => '结算',
     '/io' => '数据接口',
     '/ad' => '广告',

@@ -32,6 +32,7 @@ class PublisherHomeScreen extends PublisherScreen {
 
   private function renderToday() {
     echo '<h2>今天</h2>';
+    echo '<div>流量类型：全部 | 货比万家 | 商家</div>';
     echo '<ul>';
     echo '<li>流量：</li>';
     echo '<li>预计新增订单数量：当天流量 | 全部流量</li>';
@@ -43,6 +44,7 @@ class PublisherHomeScreen extends PublisherScreen {
 
   private function renderYesterday() {
     echo '<h2>昨天</h2>';
+    echo '<div>流量类型：全部 | 货比万家 | 商家</div>';
     echo '<ul>';
     echo '<li>流量：</li>';
     echo '<li>预计新增订单数量：当天流量 | 全部流量</li>';
