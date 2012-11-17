@@ -32,10 +32,6 @@ class PublisherPaymentScreen extends PublisherScreen {
     echo '<ul>';
     echo '<li>付款总额：</li>';
     echo '</ul>';
-    echo '<h3><a href="/payment/unfinished_order">未完成订单佣金</a></h3>';
-    echo '<ul>';
-    echo '<li>佣金总额：</li>';
-    echo '</ul>';
     echo '<h3><a href="/payment/history">付款历史</a></h3>';
     echo '<h3><a href="/payment/setting">设置</a></h3>';
     echo '<ul>';

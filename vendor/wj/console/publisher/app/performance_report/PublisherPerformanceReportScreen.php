@@ -29,7 +29,6 @@ class PublisherPerformanceReportScreen extends PublisherScreen {
     echo '<h3>过滤</h3>';
     echo '<ul>';
     echo '<li>日期：[]-[]</li>';
-    echo '<li>渠道：</li>';
     echo '</ul>';
   }
 
@@ -37,7 +36,7 @@ class PublisherPerformanceReportScreen extends PublisherScreen {
     echo '<h3>分组</h3>';
     echo '<ul>';
     echo '<li>日期：日 | 月 | 年</li>';
-    echo '<li>渠道</li>';
+    echo '<li>流量类型：全部 | 货比万家 | 商家</li>';
     echo '</ul>';
   }
 
@@ -70,7 +69,7 @@ class PublisherPerformanceReportScreen extends PublisherScreen {
   }
 
   private function renderAverage() {
-    echo '<h3>平均</h3>';
+    echo '<h3>明细</h3>';
     echo '<ul>';
     echo '<li>流量：</li>';
     echo '<li>订单数量：</li>';

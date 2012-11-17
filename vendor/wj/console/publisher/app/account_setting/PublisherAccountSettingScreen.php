@@ -18,9 +18,12 @@ class PublisherAccountSettingScreen extends PublisherScreen {
     echo '<h2>账户设置</h2>';
     echo '<h3><a href="/account_setting/contact_person">联系人</a></h3>';
     echo '<h3><a href="/account_setting/change_password">修改密码</a></h3>';
-    echo '<h3><a href="/account_setting/channel">渠道</a></h3>';
     echo '<h3><a href="/account_setting/brand">品牌</a></h3>';
     echo '<p>品牌联合（co-branding）</p>';
+    echo '<h3><a href="/account_setting/brand">商家流量跟踪</a></h3>';
+    echo '<p>开启 | 关闭</p>';
+    echo '<h3><a href="/account_setting/brand">默认流量类型</a></h3>';
+    echo '<p>全部 | 货比万家 | 商家</p>';
     $this->renderFooter();
   }
 
