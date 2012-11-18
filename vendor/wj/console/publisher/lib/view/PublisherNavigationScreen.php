@@ -4,6 +4,8 @@ class PublisherNavigationScreen {
     '/' => '首页',
     '/performance_report' => '流量',
     '/order' => '订单',
+    '/income' => '收入',
+
     '/payment' => '结算',
     '/io' => '数据接口',
     '/ad' => '广告',
