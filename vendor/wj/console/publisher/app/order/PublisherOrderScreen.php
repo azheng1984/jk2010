@@ -34,7 +34,8 @@ class PublisherOrderScreen extends PublisherScreen {
     echo '</ul>';
     echo '<hr />';
     echo '<ul>';
-    echo '<li>编号：[] （商家：[]）[确定]</li>';
+    echo '<li>订单编号：[] （商家：[]）[确定]</li>';
+    echo '<li>跟踪编号：[]</li>';
     echo '</ul>';
   }
 
