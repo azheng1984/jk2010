@@ -59,7 +59,7 @@ class PublisherHomeScreen extends PublisherScreen {
     echo '<ul>';
     echo '<li>账户余额：</li>';
     echo '<li>正在付款：</li>';//optional
-    echo '<li>未完成订单佣金：</li>';
+    echo '<li>未完成订单佣金：[<a href="/">明细</a>]</li>';
     echo '</ul>';
   }
 
