@@ -6,7 +6,7 @@ class RunCommand {
       $GLOBALS['VERSION'] = $this->getVersion();
       $processor = new JingdongCategoryListProcessor;
       $processor->execute();
-      $this->checkCategory();
+      $this->cleanCategory();
       $this->cleanHistory();
       if ($GLOBALS['VERSION'] % 1000 === 0) {
         $this->cleanMerchant();
@@ -19,7 +19,7 @@ class RunCommand {
     return file_get_contents(ROOT_PATH.'data/version');
   }
 
-  private function checkCategory() {
+  private function cleanCategory() {
     $categoryList = Db::getAll(
       'SELECT id FROM category WHERE version != ?', $GLOBALS['version']
     );
@@ -32,10 +32,6 @@ class RunCommand {
         continue;
       }
     }
-  }
-
-  private function upgradeVersion() {
-    file_put_contents(ROOT_PATH.'data/version', ++$GLOBALS['VERSION']);
   }
 
   private function cleanHistory() {
@@ -54,5 +50,9 @@ class RunCommand {
         Db::delete('DELETE FROM merchant WHERE id = ?', $merchant['id']);
       }
     }
+  }
+
+  private function upgradeVersion() {
+    file_put_contents(ROOT_PATH.'data/version', ++$GLOBALS['VERSION']);
   }
 }
