@@ -31,10 +31,10 @@ class JingdongCategoryListProcessor {
       $path = $levelOneCategoryId.'-'
         .$matches[2][$index].'-'.$matches[3][$index];
       if ($this->categoryVersion !== $GLOBALS['VERSION']) {
-        $this->cleanProduct();
         $productListProcessor = new JingdongProductListProcessor;
         $productListProcessor->execute($path);
         $this->executeHistory();
+        $this->cleanProduct();
         $this->cleanProductPropertyValue();
         $this->cleanPropertyKey();
         $this->cleanPropertyValue();
@@ -119,7 +119,7 @@ class JingdongCategoryListProcessor {
 
   private function cleanProduct() {
     Db::execute(
-      'DELETE FROM product WHERE category_id = ? AND  version < ?',
+      'DELETE FROM product WHERE category_id = ? AND version < ?',
       $this->categoryId, $GLOBALS['VERSION'] - 1
     );
   }
