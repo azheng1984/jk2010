@@ -8,7 +8,7 @@ class RunCommand {
       $processor->execute();
       $this->checkCategory();
       $this->cleanHistory();
-      if ($GLOBALS['VERSION'] % 100 === 0) {
+      if ($GLOBALS['VERSION'] % 1000 === 0) {
         $this->cleanMerchant();
       }
       $this->upgradeVersion();
@@ -40,20 +40,8 @@ class RunCommand {
 
   private function cleanHistory() {
     Db::execute("DELETE FROM history WHERE last_ok_date < '"
-      .date('Y-m-d', time() - (30 * 24 * 60 * 60)).'"');
+      .date('Y-m-d', time() - (100 * 24 * 60 * 60)).'"');
     Db::execute('DELETE FROM history WHERE _status = 404');
-  }
-
-  private function cleanCategory() {
-    $categoryList = Db::getAll("SELECT id FROM category");
-    foreach ($categoryList as $category) {
-      $productId = Db::getColumn(
-        'SELECT id FROM product WHERE category_id = ? LIMIT 1', $category['id']
-      );
-      if ($productId === false) {
-        Db::delete('DELETE FROM category WHERE id = ?', $category['id']);
-      }
-    }
   }
 
   private function cleanMerchant() {
