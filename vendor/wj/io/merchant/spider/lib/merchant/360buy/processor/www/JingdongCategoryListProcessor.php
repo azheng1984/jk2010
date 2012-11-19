@@ -13,8 +13,7 @@ class JingdongCategoryListProcessor {
     if (count($matches[0]) === 0) {
       throw new Exception(null, 500);
     }
-    //TODO:检查 update task 是否还没有被处理，如果没有处理就等待
-    //TODO:删除上上版本的产品
+    $lastIndex = count($matches[1]) - 1;
     foreach ($matches[1] as $index => $levelOneCategoryId) {
       if ($matches[3][$index] === '000') {//leaf category only
         continue;
@@ -27,19 +26,25 @@ class JingdongCategoryListProcessor {
         continue;
       }
       $categoryName = $matches[4][$index];
+      $this->checkProductUpdateManagerTask($categoryName);
       $this->setCategory(iconv('gbk', 'utf-8', $categoryName));
       $path = $levelOneCategoryId.'-'
         .$matches[2][$index].'-'.$matches[3][$index];
       if ($this->categoryVersion !== $GLOBALS['VERSION']) {
+        $this->cleanProduct();
         $productListProcessor = new JingdongProductListProcessor;
         $productListProcessor->execute($path);
         $this->executeHistory();
         $this->cleanProductPropertyValue();
         $this->cleanPropertyKey();
         $this->cleanPropertyValue();
-        $this->addProductUpdateTask();
+        $isLast = false;
+        if ($index === $lastIndex) {
+          $isLast = true;
+        }
+        $this->addProductUpdateManagerTask($categoryName, $isLast);
       }
-      //TODO:update category version
+      $this->upgradeCategoryVersion();
     }
   }
 
@@ -55,6 +60,21 @@ class JingdongCategoryListProcessor {
     }
     $this->categoryId = $category['id'];
     $this->categoryVersion = $category['version'];
+  }
+
+  private function checkProductUpdateManagerTask($categoryName) {
+    DbConnection::connect('update_manager');
+    for (;;) {
+      $id = Db::getColumn(
+       'SELECT id FROM task WHERE merchant_name = ?, category_name = ?',
+       'jingdong', $categoryName
+      );
+      if ($id === false) {
+        break;
+      }
+      sleep(10);
+    }
+    DbConnection::close();
   }
 
   private function upgradeCategoryVersion() {
@@ -78,8 +98,15 @@ class JingdongCategoryListProcessor {
     }
   }
 
-  private function addProductUpdateTask() {
-    
+  private function addProductUpdateManagerTask($categoryName, $isLast) {
+    DbConnection::connect('update_manager');
+    Db::insert('task', array(
+      'merchant_name' => 'jingdong',
+      'category_name' => $categoryName,
+      'version' => $GLOBALS['VERSION'],
+      'is_last' => $isLast
+    ));
+    DbConnection::close();
   }
 
   private function cleanProductPropertyValue() {
@@ -87,6 +114,13 @@ class JingdongCategoryListProcessor {
       'DELETE FROM product_property_value'
         .' WHERE category_id = ? AND  version != ?',
       $this->categoryId, $GLOBALS['VERSION']
+    );
+  }
+
+  private function cleanProduct() {
+    Db::execute(
+      'DELETE FROM product WHERE category_id = ? AND  version < ?',
+      $this->categoryId, $GLOBALS['VERSION'] - 1
     );
   }
 
