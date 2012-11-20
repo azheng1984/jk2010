@@ -12,16 +12,14 @@ class JingdongProductListProcessor {
       if ($this->categoryId === null) {
         $this->categoryId = $this->getCategoryId();
       }
-      if ($this->page === null) { 
+      if ($this->page === null) {
         $this->page = $this->getPage($path);
       }
       $this->parseProductList();
-      if ($this->page === null) {
-        $this->parseNextPage();
-      }
       if ($this->page === 1) {
         $this->parsePropertyList();
       }
+      $this->parseNextPage();
     } catch (Exception $exception) {
       $status = $exception->getCode();
     }
@@ -81,6 +79,7 @@ class JingdongProductListProcessor {
       '{href="([0-9-]+).html.*?class="next"}', $this->html, $matches
     );
     if (count($matches) > 0) {
+      ++$this->page;
       self::execute($matches[1]);
     }
   }
@@ -112,7 +111,9 @@ class JingdongProductListProcessor {
       $keyId = null;
       Db::bind('property_key', array(
         'category_id' => $this->categoryId, 'name' => $keyName
-      ), array('_index' => $keyIndex, 'version' => $GLOBALS['VERSION']), $keyId);
+      ), array(
+        '_index' => $keyIndex, 'version' => $GLOBALS['VERSION']
+      ), $keyId);
       for ($valueIndex = 0; $valueIndex < $valueAmount; ++$valueIndex) {
         $valueName = $valueList[$valueIndex];
         if ($valueName === '全部' || $valueName === '其它'
