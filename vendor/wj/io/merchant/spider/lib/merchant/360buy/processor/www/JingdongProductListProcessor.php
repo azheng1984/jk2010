@@ -137,6 +137,7 @@ class JingdongProductListProcessor {
 
   private function bindHistory($path, $status) {
     $replacementColumnList = array(
+      'category_id' => $this->categoryId,
       '_status' => $status,
       'version' => $GLOBALS['VERSION'],
     );

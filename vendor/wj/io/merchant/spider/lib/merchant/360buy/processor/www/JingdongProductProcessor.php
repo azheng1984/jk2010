@@ -2,9 +2,10 @@
 class JingdongProductProcessor {
   private $merchantProductId;
   private $categoryId;
-  private $merchantId;
+  private $agencyName;
   private $title;
   private $imageSrc;
+  private $merchantImageDigest;
   private $index;
   private $typeId;
   private $priceX100;
@@ -17,10 +18,13 @@ class JingdongProductProcessor {
 
   public function execute($path) {
     $this->merchantProductId = $path;
-    $this->initialize($path);
     $product = Db::getRow(
       'SELECT * FROM product WHERE merchant_product_id = ?', $path
     );
+    if (intval($product['version']) === $GLOBALS['VERSION']) {
+      return;
+    }
+    $this->initialize($path);
     $status = 200;
     try {
       if ($product === false) {
@@ -29,6 +33,7 @@ class JingdongProductProcessor {
       }
       $this->update($product);
     } catch (Exception $exception) {
+      var_dump($exception);
       $status = $exception->getCode();
     }
     $this->bindHistory($path, $status);
@@ -44,6 +49,7 @@ class JingdongProductProcessor {
       throw new Exception(null, 500);
     }
     $this->imageSrc = $matches[1];
+    $this->merchantImageDigest = $this->getImageDigest();
     preg_match(
       '{http://gate\.360buy\.com/InitCart\.aspx.*?ptype=(.*?)[^0-9]}',
       $html,
@@ -70,7 +76,9 @@ class JingdongProductProcessor {
       throw new Exception(null, 500);
     }
     $categoryName = iconv('gbk', 'utf-8', $matches[1]);
-    Db::bind('category', array('name' => $categoryName), null, $this->categoryId);
+    Db::bind(
+      'category', array('name' => $categoryName), null, $this->categoryId
+    );
     preg_match('{<h1>(.*?)</h1>}', $html, $matches);
     if (count($matches) === 0) {
       throw new Exception(null, 500);
@@ -82,21 +90,19 @@ class JingdongProductProcessor {
       $matches
     );
     if (count($matches) !== 0) {
-      $merchantName = iconv('gbk', 'utf-8', $matches[1]);
-      Db::bind(
-        'merchant', array('name' => $merchantName), null, $this->merchantId
-      );
+      $this->agencyName = iconv('gbk', 'utf-8', $matches[1]);
     }
     $this->priceX100 = $this->getPrice($path) * 100;
   }
 
   private function insert($path) {
-    $imageDigest = $this->bindImage();
+    $this->bindImage();
     $product = array(
       'merchant_product_id' => $path,
       'category_id' => $this->categoryId,
       'title' => $this->title,
-      'image_digest' => $imageDigest,
+      'merchant_image_digest' => $this->merchantImageDigest,
+      'image_digest' =>  md5($this->merchantImageDigest),
       'price_from_x_100' => $this->priceX100,
       'version' => $GLOBALS['VERSION']
     );
@@ -104,9 +110,10 @@ class JingdongProductProcessor {
       $product['_index'] = $this->index;
       $product['index_version'] = $GLOBALS['VERSION'];
     }
-    if ($this->merchantId !== null) {
-      $product['merchant_id'] = $this->merchantId;
+    if ($this->agencyName !== null) {
+      $product['agency_name'] = $this->agencyName;
     }
+    print_r($product);
     Db::insert('product', $product);
   }
 
@@ -115,29 +122,29 @@ class JingdongProductProcessor {
     if ($product['category_id'] !== $this->categoryId) {
       $updateColumnList['category_id'] = $this->categoryId;
     }
-    if ($product['merchant_id'] !== $this->merchantId) {
-      $updateColumnList['merchant_id'] = $this->merchantId;
+    if ($product['agency_name'] !== $this->agencyName) {
+      $updateColumnList['agency_name'] = $this->agencyName;
     }
     if ($product['title'] !== $this->title) {
       $updateColumnList['title'] = $this->title;
     }
-    if ($product['image_digest'] !== $this->imageDigest) {
-      $updateColumnList['image_digest'] = $this->imageDigest;
-      $this->bindImage($product['image_digest']);
+    if ($product['merchant_image_digest'] !== $this->merchantImageDigest) {
+      $this->bindImage();
+      $updateColumnList['merchant_image_digest'] = $this->merchantImageDigest;
+      $updateColumnList['image_digest'] = md5($this->merchantImageDigest);
     }
-    if ($product['price_from_x_100'] !== $this->priceX100) {
+    if (intval($product['price_from_x_100']) !== (int)$this->priceX100) {
       $updateColumnList['price_from_x_100'] = $this->priceX100;
     }
-    if ($product['_index'] !== $this->index) {
+    if ($this->index !== null && intval($product['_index']) !== $this->index) {
       $updateColumnList['_index'] = $this->index;
+    }
+    if ($this->index !== null
+      && intval($updateColumnList['index_version']) !== $GLOBALS['VERSION']) {
       $updateColumnList['index_version'] = $GLOBALS['VERSION'];
     }
-    if (count($updateColumnList) !== 0) {
-      $updateColumnList['change_list'] = implode(
-        ' ', array_keys($updateColumnList)
-      );
-    }
     $updateColumnList['version'] = $GLOBALS['VERSION'];
+    print_r($updateColumnList);
     Db::update(
       'product',
       $updateColumnList,
@@ -205,14 +212,10 @@ class JingdongProductProcessor {
     }
   }
 
-  private function bindImage($localDigest = null) {
-    $remoteDigest = $this->getImageDigest();
-    if ($localDigest !== $remoteDigest) {
-      list($domain, $path) = explode('/', $this->imageSrc, 2);
-      $result = WebClient::get($domain, '/'.$path);
-      $this->saveImage($result['content']);
-    }
-    return $remoteDigest;
+  private function bindImage() {
+    list($domain, $path) = explode('/', $this->imageSrc, 2);
+    $result = WebClient::get($domain, '/'.$path);
+    $this->saveImage($result['content']);
   }
 
   private function saveImage($image, $isNew = true) {
@@ -224,16 +227,16 @@ class JingdongProductProcessor {
   }
 
   private function getImageDigest() {
-    $fileName = end(explode('/', $this->imageSrc));
-    if (substr($fileName, -4, 4) !== '.jpg'
-      || substr($fileName, 0, 3) !== 'n1/') {
+    $fileName = end(explode('/', $this->imageSrc, 2));
+    if (substr($fileName, -4, 4) !== '.jpg') {
       throw new Exception(null, 500);
     }
-    return substr(substr($fileName, 0, -4), 0, 3);
+    return substr($fileName, 0, -4);
   }
 
   private function bindHistory($path, $status) {
     $replacementColumnList = array(
+      'category_id' => $this->categoryId,
       '_status' => $status,
       'version' => $GLOBALS['VERSION'],
     );
@@ -241,7 +244,8 @@ class JingdongProductProcessor {
       $replacementColumnList['last_ok_date'] = date('Y-m-d');
     }
     Db::bind('history', array(
-      'processor' => 'Product', 'path' => $path,
+      'processor' => 'Product',
+      'path' => $path,
     ), $replacementColumnList);
   }
 }
