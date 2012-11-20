@@ -45,7 +45,7 @@ class RunCommand {
 
   private function updateVersion($merchantName) {
     $this->versionInfo['merchant'][$merchantName] = true;
-    $merchantList = array(); //TODO
+    $merchantList = array('jingdong'); //TODO:配置
     $isUpdate = true;
     foreach ($merchantList as $merchant) {
       if (isset($version[$merchant]) === false) {

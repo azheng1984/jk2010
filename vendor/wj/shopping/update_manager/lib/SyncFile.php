@@ -36,12 +36,13 @@ class SyncFile {
     }
     ftp_login($ftp, "shopping_update_manager", "123456")
       or die('ftp password error');
-    //TODO 计算 resumepos
+    //TODO 为断点续传计算 resumepos
     if (ftp_get($ftp, $fileName, $fileName, FTP_BINARY) === false) {
       ftp_close($ftp);
       $this->getFile();
     }
     ftp_close($ftp);
+    //TODO 计算 md5（ftp 自动校验？）
   }
 
   public static function finialize() {
