@@ -112,7 +112,7 @@ class JingdongProductListProcessor {
       $keyId = null;
       Db::bind('property_key', array(
         'category_id' => $this->categoryId, 'name' => $keyName
-      ), array('_index' => $keyIndex, 'version' => SPIDER_VERSION), $keyId);
+      ), array('_index' => $keyIndex, 'version' => $GLOBALS['VERSION']), $keyId);
       for ($valueIndex = 0; $valueIndex < $valueAmount; ++$valueIndex) {
         $valueName = $valueList[$valueIndex];
         if ($valueName === '全部' || $valueName === '其它'
@@ -123,7 +123,7 @@ class JingdongProductListProcessor {
         Db::bind('property_value', array(
           'key_id' => $keyId, 'name' => $valueList[$valueIndex]
         ), array(
-          '_index' => $valueIndex, 'version' => SPIDER_VERSION
+          '_index' => $valueIndex, 'version' => $GLOBALS['VERSION']
         ), $valueId);
         $path = $valueLinkList[$valueIndex];
         $processor = new JingdongPropertyProductListProcessor(
@@ -138,7 +138,7 @@ class JingdongProductListProcessor {
   private function bindHistory($path, $status) {
     $replacementColumnList = array(
       '_status' => $status,
-      'version' => SPIDER_VERSION,
+      'version' => $GLOBALS['VERSION'],
     );
     if ($status === 200) {
       $replacementColumnList['last_ok_date'] = date('Y-m-d');

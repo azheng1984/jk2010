@@ -29,8 +29,7 @@ class Command {
 
   private function upgradeIndexVersion() {
     file_put_contents(
-      PORTAL_DATA_PATH.'version.php',
-      "<?php return array('delta' => true);"
+      PORTAL_DATA_PATH.'version.php', "<?php return array('delta' => true);"
     );
   }
 

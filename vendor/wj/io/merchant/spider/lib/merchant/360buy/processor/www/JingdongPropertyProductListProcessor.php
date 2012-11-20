@@ -25,7 +25,7 @@ class JingdongPropertyProductListProcessor {
       'processor' => 'ProductPropertyList', 'path' => $path,
     ), array(
       '_status' => $status,
-      'version' => SPIDER_VERSION,
+      'version' => $GLOBALS['VERSION'],
       'last_ok_date' => date('Y-m-d')
     ));
   }
@@ -50,7 +50,7 @@ class JingdongPropertyProductListProcessor {
         'category_id' => $this->categoryId,
         'name' => str_replace('：', '', $keyName)
       ),
-      array('version' => SPIDER_VERSION),
+      array('version' => $GLOBALS['VERSION']),
       $keyId
     );
     $valueName = iconv('gbk', 'utf-8', $matches[2]);
@@ -58,7 +58,7 @@ class JingdongPropertyProductListProcessor {
     Db::bind(
       'property_value',
       array('key_id' => $keyId, 'name' => $valueName),
-      array('version' => SPIDER_VERSION),
+      array('version' => $GLOBALS['VERSION']),
       $valueId
     );
     return $valueId;
@@ -90,7 +90,7 @@ class JingdongPropertyProductListProcessor {
       Db::execute(
         'REPLACE INTO product_property_value'
           .'(merchant_product_id, property_value_id, version) VALUES(?, ?, ?)',
-        $merchantProductId, $this->valueId, SPIDER_VERSION
+        $merchantProductId, $this->valueId, $GLOBALS['VERSION']
       );
     }
   }

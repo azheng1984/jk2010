@@ -235,7 +235,7 @@ class JingdongProductProcessor {
   private function bindHistory($path, $status) {
     $replacementColumnList = array(
       '_status' => $status,
-      'version' => SPIDER_VERSION,
+      'version' => $GLOBALS['VERSION'],
     );
     if ($status === 200) {
       $replacementColumnList['last_ok_date'] = date('Y-m-d');
