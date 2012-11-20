@@ -18,17 +18,22 @@ class JingdongPropertyProductListProcessor {
         $this->valueId = $this->getValueId();
       }
       $this->parseProductList();
+      $this->parseNextPage();
     } catch(Exception $exception) {
       $status = $exception->getCode();
     }
-    Db::bind('history', array(
-      'processor' => 'ProductPropertyList', 'path' => $path,
-    ), array(
+    $replacementColumnList = array(
       'category_id' => $this->categoryId,
       '_status' => $status,
-      'version' => $GLOBALS['VERSION'],
-      'last_ok_date' => date('Y-m-d')
-    ));
+      'version' => $GLOBALS['VERSION']
+    );
+    if ($status === 200) {
+      $replacementColumnList['last_ok_date'] = date('Y-m-d');
+    }
+    Db::bind('history', array(
+      'processor' => 'ProductPropertyList',
+      'path' => $path,
+    ), $replacementColumnList);
   }
 
   private function getValueId() {
