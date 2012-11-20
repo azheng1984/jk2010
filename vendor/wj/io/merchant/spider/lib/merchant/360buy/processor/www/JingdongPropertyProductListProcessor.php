@@ -24,6 +24,7 @@ class JingdongPropertyProductListProcessor {
     Db::bind('history', array(
       'processor' => 'ProductPropertyList', 'path' => $path,
     ), array(
+      'category_id' => $this->categoryId,
       '_status' => $status,
       'version' => $GLOBALS['VERSION'],
       'last_ok_date' => date('Y-m-d')
@@ -89,8 +90,10 @@ class JingdongPropertyProductListProcessor {
     foreach ($matches[1] as $merchantProductId) {
       Db::execute(
         'REPLACE INTO product_property_value'
-          .'(merchant_product_id, property_value_id, version) VALUES(?, ?, ?)',
-        $merchantProductId, $this->valueId, $GLOBALS['VERSION']
+          .'(category_id, merchant_product_id, property_value_id, version)'
+          .' VALUES(?, ?, ?, ?)',
+        $this->categoryId, $merchantProductId,
+        $this->valueId, $GLOBALS['VERSION']
       );
     }
   }

@@ -53,7 +53,7 @@ class Db {
   }
 
   public static function bind(
-    $table, $filterColumnList, $replacementColumnList = null, &$id
+    $table, $filterColumnList, $replacementColumnList = null, &$id = null
   ) {
     $select = array('id');
     if ($replacementColumnList !== null) {

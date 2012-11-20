@@ -14,5 +14,10 @@ return array(
     'dsn' => 'mysql:host=localhost;dbname=wj_spider_dangdang',
     'username' => 'root',
     'password' => 'a841107!',
+  ),
+  'update_manager' => array(
+    'dsn' => 'mysql:host=localhost;dbname=io_merchant_product_update_manager',
+    'username' => 'root',
+    'password' => 'a841107!',
   )
 );

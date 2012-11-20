@@ -26,9 +26,9 @@ class JingdongCategoryListProcessor {
         //WatchProductList（brand as category）
         continue;
       }
-      $categoryName = $matches[4][$index];
+      $categoryName = iconv('gbk', 'utf-8', $matches[4][$index]);
       $this->checkProductUpdateManagerTask($categoryName);
-      $this->setCategory(iconv('gbk', 'utf-8', $categoryName));
+      $this->bindCategory($categoryName);
       $path = $levelOneCategoryId.'-'
         .$matches[2][$index].'-'.$matches[3][$index];
       if ($this->categoryVersion !== $GLOBALS['VERSION']) {
@@ -37,8 +37,6 @@ class JingdongCategoryListProcessor {
         $this->executeHistory();
         $this->cleanProduct();
         $this->cleanProductPropertyValue();
-        $this->cleanPropertyKey();
-        $this->cleanPropertyValue();
         $isLast = false;
         if ($index === $lastIndex) {
           $isLast = true;
@@ -49,10 +47,11 @@ class JingdongCategoryListProcessor {
     }
   }
 
-  private function setCategory($name) {
+  private function bindCategory($name) {
     $category = Db::getRow(
-      'SELECT * FROM catagory WHERE name = ?', $name
+      'SELECT * FROM category WHERE name = ?', $name
     );
+    var_dump($category);
     if ($category === false) {
       Db::insert('category', array('name' => $name));
       $this->categoryId = Db::getLastInsertId();
@@ -67,7 +66,7 @@ class JingdongCategoryListProcessor {
     DbConnection::connect('update_manager');
     for (;;) {
       $id = Db::getColumn(
-       'SELECT id FROM task WHERE merchant_name = ?, category_name = ?',
+       'SELECT id FROM task WHERE merchant_name = ? AND category_name = ?',
        'jingdong', $categoryName
       );
       if ($id === false) {
@@ -110,14 +109,6 @@ class JingdongCategoryListProcessor {
     DbConnection::close();
   }
 
-  private function cleanProductPropertyValue() {
-    Db::execute(
-      'DELETE FROM product_property_value'
-        .' WHERE category_id = ? AND  version != ?',
-      $this->categoryId, $GLOBALS['VERSION']
-    );
-  }
-
   private function cleanProduct() {
     Db::execute(
       'DELETE FROM product WHERE category_id = ? AND version < ?',
@@ -125,17 +116,11 @@ class JingdongCategoryListProcessor {
     );
   }
 
-  private function cleanPropertyKey() {
+  private function cleanProductPropertyValue() {
     Db::execute(
-      'DELETE FROM property_key WHERE category_id = ? AND version != ?',
-      $this->categoryId, $GLOBALS['VERSION']
-    );
-  }
-
-  private function cleanPropertyValue() {
-    Db::execute(
-      'DELETE FROM property_value WHERE category_id = ? AND  version != ?',
-      $this->categoryId, $GLOBALS['VERSION']
+      'DELETE FROM product_property_value'
+        .' WHERE category_id = ? AND version != ?',
+        $this->categoryId, $GLOBALS['VERSION']
     );
   }
 }

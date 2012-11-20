@@ -7,6 +7,9 @@ class RunCommand {
       $processor = new JingdongCategoryListProcessor;
       $processor->execute();
       $this->cleanCategory();
+      $this->cleanProductPropertyValue();
+      $this->cleanPropertyKey();
+      $this->cleanPropertyValue();
       $this->cleanHistory();
       if ($GLOBALS['VERSION'] % 1000 === 0) {
         $this->cleanMerchant();
@@ -54,5 +57,19 @@ class RunCommand {
 
   private function upgradeVersion() {
     file_put_contents(ROOT_PATH.'data/version', ++$GLOBALS['VERSION']);
+  }
+
+  private function cleanPropertyKey() {
+    Db::execute(
+    'DELETE FROM property_key WHERE version != ?',
+    $this->categoryId, $GLOBALS['VERSION']
+    );
+  }
+
+  private function cleanPropertyValue() {
+    Db::execute(
+    'DELETE FROM property_value WHERE version != ?',
+    $this->categoryId, $GLOBALS['VERSION']
+    );
   }
 }
