@@ -20,6 +20,7 @@ class JingdongPropertyProductListProcessor {
       $this->parseProductList();
       $this->parseNextPage();
     } catch(Exception $exception) {
+      throw $exception;
       $status = $exception->getCode();
     }
     $replacementColumnList = array(
@@ -108,6 +109,7 @@ class JingdongPropertyProductListProcessor {
       '{href="([0-9-]+).html.*?class="next"}', $this->html, $matches
     );
     if (count($matches) > 0) {
+      var_dump($matches[1]);
       self::execute($matches[1]);
     }
   }

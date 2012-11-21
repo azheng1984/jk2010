@@ -88,8 +88,8 @@ class JingdongCategoryListProcessor {
 
   private function executeHistory() {
     $historyList = Db::getAll(
-        'SELECT * FROM history WHERE category_id = ? AND version != ?',
-        $this->categoryId, $GLOBALS['VERSION']
+      'SELECT * FROM history WHERE category_id = ? AND version != ?',
+      $this->categoryId, $GLOBALS['VERSION']
     );
     foreach ($historyList as $history) {
       $class = 'Jingdong'.$history['processor'].'Processor';

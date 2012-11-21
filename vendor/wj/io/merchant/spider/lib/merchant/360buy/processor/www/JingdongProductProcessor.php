@@ -33,7 +33,7 @@ class JingdongProductProcessor {
       }
       $this->update($product);
     } catch (Exception $exception) {
-      var_dump($exception);
+      throw $exception;
       $status = $exception->getCode();
     }
     $this->bindHistory($path, $status);
@@ -140,7 +140,7 @@ class JingdongProductProcessor {
       $updateColumnList['_index'] = $this->index;
     }
     if ($this->index !== null
-      && intval($updateColumnList['index_version']) !== $GLOBALS['VERSION']) {
+      && intval($product['index_version']) !== $GLOBALS['VERSION']) {
       $updateColumnList['index_version'] = $GLOBALS['VERSION'];
     }
     $updateColumnList['version'] = $GLOBALS['VERSION'];
