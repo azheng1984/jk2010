@@ -69,7 +69,6 @@ class JingdongCategoryListProcessor {
     $category = Db::getRow(
       'SELECT * FROM category WHERE name = ?', $this->categoryName
     );
-    var_dump($category);
     if ($category === false) {
       Db::insert('category', array('name' => $this->categoryName));
       $this->categoryId = Db::getLastInsertId();
