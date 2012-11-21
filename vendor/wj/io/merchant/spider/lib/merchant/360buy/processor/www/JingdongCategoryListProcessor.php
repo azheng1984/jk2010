@@ -13,7 +13,6 @@ class JingdongCategoryListProcessor {
     if (count($matches[0]) === 0) {
       throw new Exception(null, 500);
     }
-    $lastIndex = count($matches[1]) - 1;
     foreach ($matches[1] as $index => $levelOneCategoryId) {
       if ($matches[3][$index] === '000') {
         continue;
@@ -37,14 +36,31 @@ class JingdongCategoryListProcessor {
         $this->executeHistory();
         $this->cleanProduct();
         $this->cleanProductPropertyValue();
-        $isLast = false;
-        if ($index === $lastIndex) {
-          $isLast = true;
-        }
-        $this->addProductUpdateManagerTask($categoryName, $isLast);
+        $this->addProductUpdateManagerTask($categoryName);
       }
       $this->upgradeCategoryVersion();
     }
+    $categoryList = Db::getAll(
+      'SELECT id FROM category WHERE version != ?', $GLOBALS['version']
+    );
+    foreach ($categoryList as $category) {
+      $this->categoryId = $category['id'];
+      $this->checkProductUpdateManagerTask($category['name']);
+      $hasHistory = $this->executeHistory();
+      $this->cleanProduct();
+      if ($hasHistory && $category['version'] < ($GLOBALS['VERSION'] - 1)) {
+        ImageDb::delete($category['id']);
+        Db::delete('category', 'id = ?', $category['id']);
+        continue;
+      }
+      if ($hasHistory === false) {
+        continue;
+      }
+      $this->upgradeCategoryVersion();
+      $this->cleanProductPropertyValue();
+      $this->addProductUpdateManagerTask($categoryName);
+    }
+    $this->addProductUpdateManagerTask(' LAST');
   }
 
   private function bindCategory($name) {
@@ -59,7 +75,7 @@ class JingdongCategoryListProcessor {
       return;
     }
     $this->categoryId = $category['id'];
-    $this->categoryVersion = $category['version'];
+    $this->categoryVersion = intval($category['version']);
   }
 
   private function checkProductUpdateManagerTask($categoryName) {
@@ -87,15 +103,25 @@ class JingdongCategoryListProcessor {
   }
 
   private function executeHistory() {
-    $historyList = Db::getAll(
-      'SELECT * FROM history WHERE category_id = ? AND version != ?',
+    $historyIdList = Db::getAll(
+      'SELECT id FROM history WHERE category_id = ? AND version != ?',
       $this->categoryId, $GLOBALS['VERSION']
     );
-    foreach ($historyList as $history) {
+    if (count($historyIdList) === 0) {
+      return false;
+    }
+    foreach ($historyIdList as $historyId) {
+      $history = Db::getRow(
+        'SELECT processor, path, version FROM history WHERE id = ?', $historyId
+      );
+      if ($history['version'] === $GLOBALS['VERSION']) {
+        continue;
+      }
       $class = 'Jingdong'.$history['processor'].'Processor';
       $processor = new $class;
       $processor->execute($history['path']);
     }
+    return true;
   }
 
   private function addProductUpdateManagerTask($categoryName, $isLast) {
@@ -104,7 +130,6 @@ class JingdongCategoryListProcessor {
       'merchant_name' => 'jingdong',
       'category_name' => $categoryName,
       'version' => $GLOBALS['VERSION'],
-      'is_last' => $isLast
     ));
     DbConnection::close();
   }
@@ -120,7 +145,7 @@ class JingdongCategoryListProcessor {
     Db::execute(
       'DELETE FROM product_property_value'
         .' WHERE category_id = ? AND version != ?',
-        $this->categoryId, $GLOBALS['VERSION']
+      $this->categoryId, $GLOBALS['VERSION']
     );
   }
 }
