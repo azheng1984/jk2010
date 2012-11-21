@@ -8,7 +8,7 @@ class DbConnection {
   public static function connect($name, $pdo = null) {
     self::$list[] = self::$name;
     self::$name = $name;
-    if ($pdo !== null) {
+    if ($name !== null && $pdo !== null) {
       self::$pool[$name] = $pdo;
     }
   }
