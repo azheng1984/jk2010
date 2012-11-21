@@ -13,7 +13,7 @@ class Db {
   }
 
   public static function getLastInsertId() {
-    return DbConnection::get()->lastInsertId();
+    return DbConnection::getCurrent()->lastInsertId();
   }
 
   public static function execute($sql/*, $parameter, ...*/) {
@@ -83,7 +83,7 @@ class Db {
   }
 
   private static function call($parameterList) {
-    $connection = DbConnection::get();
+    $connection = DbConnection::getCurrent();
     $sql = array_shift($parameterList);
     //echo $sql.PHP_EOL;
     if (isset($parameterList[0]) && is_array($parameterList[0])) {

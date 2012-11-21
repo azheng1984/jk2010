@@ -25,9 +25,9 @@ class JingdongProductProcessor {
     if (intval($product['version']) === $GLOBALS['VERSION']) {
       return;
     }
-    $this->initialize($path);
     $status = 200;
     try {
+      $this->initialize($path);
       if ($product === false) {
         $this->insert($path);
         return;
