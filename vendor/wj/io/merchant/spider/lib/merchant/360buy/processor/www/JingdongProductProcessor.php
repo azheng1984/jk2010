@@ -1,5 +1,7 @@
 <?php
 class JingdongProductProcessor {
+  private $html;
+  private $url;
   private $merchantProductId;
   private $categoryId;
   private $categoryName;
@@ -12,6 +14,8 @@ class JingdongProductProcessor {
   private $priceX100;
   private static $userKey = null;
   private static $userKeyExpireTime = null;
+  private static $agencyNoMatchedCount = 0;
+  private static $hasAgencyMatched = false;
 
   public function __construct($index = null, $categoryId = null) {
     $this->index = $index;
@@ -46,11 +50,14 @@ class JingdongProductProcessor {
 
   private function initialize($path) {
     $result = WebClient::get('www.360buy.com', '/product/'.$path.'.html');
+    $this->url = 'www.360buy.com/product/'.$path.'.html';
     $html = $result['content'];
+    $this->html = $html;
     preg_match(
       '{jqzoom[\s\S]*? src="http://(.*?)"}', $html, $matches
     );
     if (count($matches) === 0) {
+      $this->saveMatchErrorLog('JingdongProductListProcessor:initialize#0');
       throw new Exception(null, 500);
     }
     $this->imageSrc = $matches[1];
@@ -61,6 +68,7 @@ class JingdongProductProcessor {
       $matches
     );
     if (count($matches) === 0) {
+      $this->saveMatchErrorLog('JingdongProductListProcessor:initialize#1');
       throw new Exception(null, 500);
     }
     $this->typeId = intval($matches[1]);
@@ -70,14 +78,17 @@ class JingdongProductProcessor {
       $matches
     );
     if (count($matches) === 0) {
+      $this->saveMatchErrorLog('JingdongProductListProcessor:initialize#2');
       throw new Exception(null, 500);
     }
     $list = explode('&nbsp;&gt;&nbsp;', $matches[1]);
     if (count($list) < 4) {
+      $this->saveMatchErrorLog('JingdongProductListProcessor:initialize#3');
       throw new Exception(null, 500);
     }
     preg_match('{>(.*?)<}', $list[2], $matches);
     if (count($matches) === 0) {
+      $this->saveMatchErrorLog('JingdongProductListProcessor:initialize#4');
       throw new Exception(null, 500);
     }
     $this->categoryName = iconv('gbk', 'utf-8', $matches[1]);
@@ -86,6 +97,7 @@ class JingdongProductProcessor {
     );
     preg_match('{<h1>(.*?)</h1>}', $html, $matches);
     if (count($matches) === 0) {
+      $this->saveMatchErrorLog('JingdongProductListProcessor:initialize#5');
       throw new Exception(null, 500);
     }
     $this->title = iconv('gbk', 'utf-8', $matches[1]);
@@ -94,8 +106,13 @@ class JingdongProductProcessor {
       $html,
       $matches
     );
-    if (count($matches) !== 0) {
+    $hasAgency = (count($matches) !== 0);
+    if ($hasAgency) {
+      self::$hasAgencyMatched = true;
       $this->agencyName = iconv('gbk', 'utf-8', $matches[1]);
+    }
+    if ($hasAgency === false) {
+      ++self::$agencyNoMatchedCount;
     }
     $this->priceX100 = $this->getPrice($path) * 100;
   }
@@ -176,6 +193,7 @@ class JingdongProductProcessor {
     preg_match('$"PromotionPrice":(.*?)}$', $result['content'], $matches);
     if (count($matches) === 0) {
       self::$userKey = null;
+      $this->saveMatchErrorLog('JingdongProductListProcessor:getPrice');
       throw new Exception(null, 404);
     }
     $this->resetCart($merchantProductId, $cookie, $result);
@@ -189,6 +207,7 @@ class JingdongProductProcessor {
     $header = $result['header'];
     preg_match('{user-key=(.*?);}', $result['header'], $matches);
     if (count($matches) === 0) {
+      $this->saveMatchErrorLog('JingdongProductListProcessor:initializeCart');
       throw new Exception(null, 500);
     }
     self::$userKey = $matches[1];
@@ -209,6 +228,7 @@ class JingdongProductProcessor {
         array(), $cookie.';cart-main="{'.$matches[1].'}"'
       );
       if ($result['content'] !== 'null({"Result":true})') {
+        $this->saveMatchErrorLog('JingdongProductListProcessor:resetCart');
         throw new Exception(null, 500);
       }
     } catch (Exception $exception) {
@@ -233,6 +253,7 @@ class JingdongProductProcessor {
   private function getImageDigest() {
     $fileName = end(explode('/', $this->imageSrc, 2));
     if (substr($fileName, -4, 4) !== '.jpg') {
+      $this->saveMatchErrorLog('JingdongProductListProcessor:getImageDigest');
       throw new Exception(null, 500);
     }
     return substr($fileName, 0, -4);
@@ -253,5 +274,26 @@ class JingdongProductProcessor {
       'processor' => 'Product',
       'path' => $path,
     ), $replacementColumnList);
+  }
+
+  private function saveMatchErrorLog($source) {
+    Db::insert('match_error_log', array(
+      'source' => $source,
+      'url' => $this->url,
+      'document' => $this->html,
+      'time' => date('Y-m-d H:i:s')
+    ));
+  }
+
+  public static function finalize() {
+    if (self::$hasAgencyMatched === false
+      && self::$agencyNoMatchedCount > 100000) {
+      Db::insert('match_error_log', array(
+      'source' => 'JingdongProductProcessor:NO_AGENCY_MATCHED',
+      'time' => date('Y-m-d H:i:s')
+      ));
+    }
+    self::$agencyNoMatchedCount = 0;
+    self::$hasAgencyMatched = false;
   }
 }

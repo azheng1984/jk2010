@@ -1,8 +1,13 @@
 <?php
 class JingdongProductListProcessor {
   private $html;
+  private $url;
   private $categoryId;
   private $page;
+  private static $nextPageNoMatchedCount = 0;
+  private static $hasNextPageMatched = false;
+  private static $propertyListNoMatchedCount = 0;
+  private static $hasPropertyListMatched = false;
 
   public function __construct($categoryId = null) {
     $this->categoryId = $categoryId;
@@ -13,6 +18,8 @@ class JingdongProductListProcessor {
     try {
       $result = WebClient::get('www.360buy.com', '/products/'.$path.'.html');
       $this->html = $result['content'];
+      
+      $this->url = 'www.360buy.com/products/'.$path.'.html';
       if ($this->categoryId === null) {
         $this->categoryId = $this->getCategoryId();
       }
@@ -36,6 +43,7 @@ class JingdongProductListProcessor {
       '{<div class="breadcrumb">([\s|\S]*?)</a></span>}', $this->html, $matches
     );
     if (count($matches) === 0) {
+      $this->saveMatchErrorLog('JingdongProductListProcessor:parseProductList#1');
       throw new Exception(null, 500);
     }
     $categoryName = iconv('gbk', 'utf-8', end(explode('html">', $matches[1])));
@@ -55,11 +63,13 @@ class JingdongProductListProcessor {
   private function parseProductList() {
     preg_match('{id="plist"([\s|\S]*)<!--plist end-->}', $this->html, $matches);
     if (count($matches) === 0) {
+      $this->saveMatchErrorLog('JingdongProductListProcessor:parseProductList#0');
       throw new Exception(null, 500);
     }
     $list = explode('<li', $matches[1]);
     array_shift($list);
     if (count($list) < 2) {
+      $this->saveMatchErrorLog('JingdongProductListProcessor:parseProductList#1');
       throw new Exception(null, 500);
     }
     $index = ($this->page - 1) * 36;
@@ -70,6 +80,7 @@ class JingdongProductListProcessor {
         $item, $matches
       );
       if (count($matches) === 0) {
+        $this->saveMatchErrorLog('JingdongProductListProcessor:parseProductList#2');
         throw new Exception(null, 500);
       }
       $merchantProductId = $matches[1];
@@ -83,11 +94,13 @@ class JingdongProductListProcessor {
     preg_match(
       '{href="([0-9-]+).html" class="next"}', $this->html, $matches
     );
-    file_put_contents('/home/azheng/x.html', $this->html);
     if (count($matches) > 0) {
+      self::$hasNextPageMatched = true;
       ++$this->page;
       self::execute($matches[1]);
+      return;
     }
+    ++self::$nextPageNoMatchedCount;
   }
 
   private function parsePropertyList() {
@@ -95,15 +108,23 @@ class JingdongProductListProcessor {
       '{<div id="select" [\s|\S]*<!--select end -->}', $this->html, $matches
     );
     if (count($matches) === 0) {
+      ++self::$propertyListNoMatchedCount;
       return;
     }
+    self::$hasPropertyListMatched = true;
     $section = iconv('gbk', 'utf-8', $matches[0]);
     preg_match_all('{<dl.*?</dl>}', $section, $matches);
+    if (count($matches[0]) === 0) {
+      $this->saveMatchErrorLog('JingdongProductListProcessor:parsePropertyList#0');
+    }
     $keyIndex = 0;
     foreach ($matches[0] as $item) {
       preg_match_all(
         "{<dt>(.*?)：</dt>}", $item, $matches
       );
+      if (count($matches[0]) === 0) {
+        $this->saveMatchErrorLog('JingdongProductListProcessor:parsePropertyList#1');
+      }
       $keyName = $matches[1][0];
       if ($keyName === '价格' || $keyName === '类别') {
         continue;
@@ -111,6 +132,9 @@ class JingdongProductListProcessor {
       preg_match_all(
         "{<a.*?href='(.*?).html'.*?>(.*?)</a>}", $item, $matches
       );
+      if (count($matches[0]) === 0) {
+        $this->saveMatchErrorLog('JingdongProductListProcessor:parsePropertyList#2');
+      }
       $valueLinkList = $matches[1];
       $valueList = $matches[2];
       $valueAmount = count($valueList);
@@ -156,5 +180,34 @@ class JingdongProductListProcessor {
     Db::bind('history', array(
       'processor' => 'ProductList', 'path' => $path,
     ), $replacementColumnList);
+  }
+
+  private function saveMatchErrorLog($source) {
+    Db::insert('match_error_log', array(
+      'source' => $source,
+      'url' => $this->url,
+      'document' => $this->html,
+      'time' => date('Y-m-d H:i:s')
+    ));
+  }
+
+  public static function finalize() {
+    if (self::$hasNextPageMatched === false 
+      && self::$nextPageNoMatchedCount > 100000) {
+      Db::insert('match_error_log', array(
+        'source' => 'JingdongPropertyProductListProcessor:NO_NEXT_PAGE_MATCHED',
+        'time' => date('Y-m-d H:i:s')
+      ));
+    }
+    self::$nextPageNoMatchedCount = 0;
+    self::$hasNextPageMatched = false;
+    if (self::$hasPropertyListMatched === false
+      && self::$propertyListNoMatchedCount > 100000) {
+      Db::insert('match_error_log', array(
+        'source' => 'JingdongProductListProcessor:NO_PROPERTY_LIST_MATCHED',
+        'time' => date('Y-m-d H:i:s')
+      ));
+    }
+    self::$hasPropertyListMatched = false;
   }
 }

@@ -6,14 +6,9 @@ class JingdongCategoryListProcessor {
 
   public function execute() {
     $result = WebClient::get('www.360buy.com', '/allSort.aspx');
-    preg_match_all(
-      '{products/([0-9]+)-([0-9]+)-([0-9]+).html.>(.*?)<}',
-      $result['content'],
-      $matches
+    $matches = $this->parseCategory(
+      'www.360buy.com/allSort.aspx', $result['content']
     );
-    if (count($matches[0]) === 0) {
-      throw new Exception(null, 500);
-    }
     foreach ($matches[1] as $index => $levelOneCategoryId) {
       if ($matches[3][$index] === '000') {
         continue;
@@ -27,11 +22,11 @@ class JingdongCategoryListProcessor {
         continue;
       }
       $this->categoryName = iconv('gbk', 'utf-8', $matches[4][$index]);
-      $this->checkProductUpdateManagerTask();
       $this->bindCategory();
       $path = $levelOneCategoryId.'-'
         .$matches[2][$index].'-'.$matches[3][$index];
       if ($this->categoryVersion !== $GLOBALS['VERSION']) {
+        $this->checkProductUpdateManagerTask();
         $productListProcessor = new JingdongProductListProcessor(
           $this->categoryId
         );
@@ -65,6 +60,24 @@ class JingdongCategoryListProcessor {
       $this->addProductUpdateManagerTask();
     }
     $this->addProductUpdateManagerTask(' LAST');
+  }
+
+  private function parseCategory($url, $html) {
+    preg_match_all(
+      '{products/([0-9]+)-([0-9]+)-([0-9]+).html.>(.*?)<}',
+      $html,
+      $matches
+    );
+    if (count($matches[0]) === 0) {
+      Db::insert('match_error_log', array(
+        'source' => 'JingdongCategoryListProcessor:parseCategory',
+        'url' => $url,
+        'document' => $html,
+        'time' => date('Y-m-d H:i:s')
+      ));
+      throw new Exception(null, 500);
+    }
+    return $matches;
   }
 
   private function bindCategory() {
