@@ -32,7 +32,9 @@ class JingdongCategoryListProcessor {
       $path = $levelOneCategoryId.'-'
         .$matches[2][$index].'-'.$matches[3][$index];
       if ($this->categoryVersion !== $GLOBALS['VERSION']) {
-        $productListProcessor = new JingdongProductListProcessor;
+        $productListProcessor = new JingdongProductListProcessor(
+          $this->categoryId
+        );
         $productListProcessor->execute($path);
         $this->executeHistory();
         $this->cleanProduct();

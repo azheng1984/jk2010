@@ -4,6 +4,10 @@ class JingdongProductListProcessor {
   private $categoryId;
   private $page;
 
+  public function __construct($categoryId = null) {
+    $this->categoryId = $categoryId;
+  }
+
   public function execute($path) {
     $status = 200;
     try {
@@ -69,7 +73,7 @@ class JingdongProductListProcessor {
         throw new Exception(null, 500);
       }
       $merchantProductId = $matches[1];
-      $processor = new JingdongProductProcessor($index);
+      $processor = new JingdongProductProcessor($index, $this->categoryId);
       $processor->execute($merchantProductId);
       ++$index;
     }
@@ -140,10 +144,12 @@ class JingdongProductListProcessor {
 
   private function bindHistory($path, $status) {
     $replacementColumnList = array(
-      'category_id' => $this->categoryId,
       '_status' => $status,
       'version' => $GLOBALS['VERSION'],
     );
+    if ($this->categoryId !== null) {
+      $replacementColumnList['category_id'] = $this->categoryId;
+    }
     if ($status === 200) {
       $replacementColumnList['last_ok_date'] = date('Y-m-d');
     }
