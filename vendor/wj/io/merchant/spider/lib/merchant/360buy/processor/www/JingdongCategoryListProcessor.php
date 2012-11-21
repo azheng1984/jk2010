@@ -1,6 +1,7 @@
 <?php
 class JingdongCategoryListProcessor {
   private $categoryId;
+  private $categoryName;
   private $categoryVersion;
 
   public function execute() {
@@ -25,9 +26,9 @@ class JingdongCategoryListProcessor {
         //WatchProductList（brand as category）
         continue;
       }
-      $categoryName = iconv('gbk', 'utf-8', $matches[4][$index]);
-      $this->checkProductUpdateManagerTask($categoryName);
-      $this->bindCategory($categoryName);
+      $this->categoryName = iconv('gbk', 'utf-8', $matches[4][$index]);
+      $this->checkProductUpdateManagerTask();
+      $this->bindCategory();
       $path = $levelOneCategoryId.'-'
         .$matches[2][$index].'-'.$matches[3][$index];
       if ($this->categoryVersion !== $GLOBALS['VERSION']) {
@@ -36,20 +37,21 @@ class JingdongCategoryListProcessor {
         $this->executeHistory();
         $this->cleanProduct();
         $this->cleanProductPropertyValue();
-        $this->addProductUpdateManagerTask($categoryName);
+        $this->addProductUpdateManagerTask();
       }
       $this->upgradeCategoryVersion();
     }
     $categoryList = Db::getAll(
-      'SELECT id FROM category WHERE version != ?', $GLOBALS['version']
+      'SELECT * FROM category WHERE version != ?', $GLOBALS['version']
     );
     foreach ($categoryList as $category) {
       $this->categoryId = $category['id'];
-      $this->checkProductUpdateManagerTask($category['name']);
+      $this->categoryName = $category['name'];
+      $this->checkProductUpdateManagerTask();
       $hasHistory = $this->executeHistory();
       $this->cleanProduct();
       if ($hasHistory && $category['version'] < ($GLOBALS['VERSION'] - 1)) {
-        ImageDb::delete($category['id']);
+        ImageDb::deleteDb($category['name']);
         Db::delete('category', 'id = ?', $category['id']);
         continue;
       }
@@ -58,18 +60,18 @@ class JingdongCategoryListProcessor {
       }
       $this->upgradeCategoryVersion();
       $this->cleanProductPropertyValue();
-      $this->addProductUpdateManagerTask($categoryName);
+      $this->addProductUpdateManagerTask();
     }
     $this->addProductUpdateManagerTask(' LAST');
   }
 
-  private function bindCategory($name) {
+  private function bindCategory() {
     $category = Db::getRow(
-      'SELECT * FROM category WHERE name = ?', $name
+      'SELECT * FROM category WHERE name = ?', $this->categoryName
     );
     var_dump($category);
     if ($category === false) {
-      Db::insert('category', array('name' => $name));
+      Db::insert('category', array('name' => $this->categoryName));
       $this->categoryId = Db::getLastInsertId();
       $this->categoryVersion = 0;
       return;
@@ -78,12 +80,12 @@ class JingdongCategoryListProcessor {
     $this->categoryVersion = intval($category['version']);
   }
 
-  private function checkProductUpdateManagerTask($categoryName) {
+  private function checkProductUpdateManagerTask() {
     DbConnection::connect('update_manager');
     for (;;) {
       $id = Db::getColumn(
        'SELECT id FROM task WHERE merchant_name = ? AND category_name = ?',
-       'jingdong', $categoryName
+       'jingdong', $this->categoryName
       );
       if ($id === false) {
         break;
@@ -124,19 +126,26 @@ class JingdongCategoryListProcessor {
     return true;
   }
 
-  private function addProductUpdateManagerTask($categoryName, $isLast) {
+  private function addProductUpdateManagerTask() {
     DbConnection::connect('update_manager');
     Db::insert('task', array(
       'merchant_name' => 'jingdong',
-      'category_name' => $categoryName,
+      'category_name' => $this->categoryName,
       'version' => $GLOBALS['VERSION'],
     ));
     DbConnection::close();
   }
 
   private function cleanProduct() {
-    Db::execute(
-      'DELETE FROM product WHERE category_id = ? AND version < ?',
+    $productIdList = Db::getAll(
+      'SELECT id FROM product WHERE category_id = ? AND version < ?',
+      $this->categoryId, $GLOBALS['VERSION'] - 1
+    );
+    foreach ($productIdList as $productId) {
+      ImageDb::delete($this->categoryName, $productId);
+    }
+    Db::delete(
+      'product', 'category_id = ? AND version < ?',
       $this->categoryId, $GLOBALS['VERSION'] - 1
     );
   }
