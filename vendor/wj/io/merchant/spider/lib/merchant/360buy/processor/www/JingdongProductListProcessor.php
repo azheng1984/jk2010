@@ -77,8 +77,9 @@ class JingdongProductListProcessor {
 
   private function parseNextPage() {
     preg_match(
-      '{href="([0-9-]+).html.*?class="next"}', $this->html, $matches
+      '{href="([0-9-]+).html" class="next"}', $this->html, $matches
     );
+    file_put_contents('/home/azheng/x.html', $this->html);
     if (count($matches) > 0) {
       ++$this->page;
       self::execute($matches[1]);

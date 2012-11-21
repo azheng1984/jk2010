@@ -105,7 +105,7 @@ class JingdongPropertyProductListProcessor {
 
   private function parseNextPage() {
     preg_match(
-      '{href="([0-9-]+).html.*?class="next"}', $this->html, $matches
+      '{href="([0-9-]+).html" class="next"}', $this->html, $matches
     );
     if (count($matches) > 0) {
       self::execute($matches[1]);
