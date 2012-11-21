@@ -2,6 +2,7 @@
 class JingdongProductProcessor {
   private $merchantProductId;
   private $categoryId;
+  private $categoryName;
   private $agencyName;
   private $title;
   private $imageSrc;
@@ -75,9 +76,9 @@ class JingdongProductProcessor {
     if (count($matches) === 0) {
       throw new Exception(null, 500);
     }
-    $categoryName = iconv('gbk', 'utf-8', $matches[1]);
+    $this->categoryName = iconv('gbk', 'utf-8', $matches[1]);
     Db::bind(
-      'category', array('name' => $categoryName), null, $this->categoryId
+      'category', array('name' => $this->categoryName), null, $this->categoryId
     );
     preg_match('{<h1>(.*?)</h1>}', $html, $matches);
     if (count($matches) === 0) {
@@ -219,10 +220,10 @@ class JingdongProductProcessor {
 
   private function saveImage($image, $isNew = true) {
     if ($isNew) {
-      ImageDb::insert($this->categoryId, $this->merchantProductId, $image);
+      ImageDb::insert($this->categoryName, $this->merchantProductId, $image);
       return;
     }
-    ImageDb::update($this->categoryId, $this->merchantProductId, $image);
+    ImageDb::update($this->categoryName, $this->merchantProductId, $image);
   }
 
   private function getImageDigest() {
