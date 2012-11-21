@@ -24,10 +24,12 @@ class JingdongPropertyProductListProcessor {
       $status = $exception->getCode();
     }
     $replacementColumnList = array(
-      'category_id' => $this->categoryId,
       '_status' => $status,
       'version' => $GLOBALS['VERSION']
     );
+    if ($this->categoryId !== null) {
+      $replacementColumnList['category_id'] = $this->categoryId;
+    }
     if ($status === 200) {
       $replacementColumnList['last_ok_date'] = date('Y-m-d');
     }

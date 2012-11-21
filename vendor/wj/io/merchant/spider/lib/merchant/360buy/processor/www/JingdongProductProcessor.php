@@ -13,8 +13,9 @@ class JingdongProductProcessor {
   private static $userKey = null;
   private static $userKeyExpireTime = null;
 
-  public function __construct($index) {
+  public function __construct($index = null, $categoryId = null) {
     $this->index = $index;
+    $this->categoryId = $categoryId;
   }
 
   public function execute($path) {
@@ -22,8 +23,12 @@ class JingdongProductProcessor {
     $product = Db::getRow(
       'SELECT * FROM product WHERE merchant_product_id = ?', $path
     );
-    if (intval($product['version']) === $GLOBALS['VERSION']) {
+    if ($product !== false
+      && intval($product['version']) === $GLOBALS['VERSION']) {
       return;
+    }
+    if ($product !== false && $this->categoryId === null) {
+      $this->categoryId = $product['category_id'];
     }
     $status = 200;
     try {
@@ -34,7 +39,6 @@ class JingdongProductProcessor {
       }
       $this->update($product);
     } catch (Exception $exception) {
-      throw $exception;
       $status = $exception->getCode();
     }
     $this->bindHistory($path, $status);
@@ -236,10 +240,12 @@ class JingdongProductProcessor {
 
   private function bindHistory($path, $status) {
     $replacementColumnList = array(
-      'category_id' => $this->categoryId,
       '_status' => $status,
       'version' => $GLOBALS['VERSION'],
     );
+    if ($this->categoryId !== null) {
+      $replacementColumnList['category_id'] = $this->categoryId;
+    }
     if ($status === 200) {
       $replacementColumnList['last_ok_date'] = date('Y-m-d');
     }

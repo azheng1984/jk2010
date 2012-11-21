@@ -11,16 +11,13 @@ class DbConnection {
     if (self::$current !== null) {
       self::$list[] = self::$current;
     }
-    if ($pdo === null) {
-      $pdo = self::get($name, $isPersistent);
-    }
     if ($pdo !== null) {
       $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
-    self::$current = $pdo;
-    if ($isPersistent && $name !== null) {
-      self::$pool[$name] = $pdo;
+    if ($pdo === null) {
+      $pdo = self::get($name, $isPersistent);
     }
+    self::$current = $pdo;
   }
 
   public static function close() {
@@ -46,12 +43,11 @@ class DbConnection {
   }
 
   private static function get($name, $isPersistent) {
-    $pdo = null;
-    if (isset(self::$pool[$name]) === false) {
-      $connection = self::getFactory()->get($name);
-      $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      $pdo = $connection;
+    if (isset(self::$pool[$name])) {
+      return self::$pool[$name];
     }
+    $pdo = self::getFactory()->get($name);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     if ($isPersistent) {
       self::$pool[$name] = $pdo;
     }
