@@ -2,8 +2,8 @@
 class DbConnection {
   private static $current = null;
   private static $pool = array();
-  private static $factory;
   private static $list;
+  private static $factory;
 
   public static function connect(
     $name = 'default', $pdo = null, $isPersistent = true
@@ -13,6 +13,9 @@ class DbConnection {
     }
     if ($pdo === null) {
       $pdo = self::get($name, $isPersistent);
+    }
+    if ($pdo !== null) {
+      $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
     self::$current = $pdo;
     if ($isPersistent && $name !== null) {
@@ -29,6 +32,9 @@ class DbConnection {
   }
 
   public static function getCurrent() {
+    if (self::$current === null) {
+      self::connect();
+    }
     return self::$current;
   }
 

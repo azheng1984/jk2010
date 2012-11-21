@@ -29,7 +29,7 @@ class ImageDb {
   }
 
   public static function deleteDb($categoryName) {
-    $path = IMAGE_PATH.'jingdong/'.$categoryName.'_image.sqlite';
+    $path = IMAGE_PATH.'jingdong/'.$categoryName.'.sqlite';
     if (file_exists($path)) {
       unlink($path);
     }
@@ -39,7 +39,7 @@ class ImageDb {
     if (self::$categoryName === $categoryName) {
       return DbConnection::connect(null, self::$connection);
     }
-    $path = IMAGE_PATH.'jingdong/'.$categoryName.'_image.sqlite';
+    $path = IMAGE_PATH.'jingdong/'.$categoryName.'.sqlite';
     $hasFile = file_exists($path);
     $pdo = new PDO('sqlite:'.$path);
     DbConnection::connect(null, $pdo);
