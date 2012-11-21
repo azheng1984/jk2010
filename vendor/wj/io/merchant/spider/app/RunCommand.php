@@ -9,6 +9,9 @@ class RunCommand {
       $this->cleanPropertyKey();
       $this->cleanPropertyValue();
       $this->cleanHistory();
+      JingdongProductListProcessor::finalize();
+      JingdongPropertyProductListProcessor::finalize();
+      JingdongProductProcessor::finalize();
       $this->upgradeVersion();
     }
   }
