@@ -32,7 +32,7 @@ class JingdongPropertyProductListProcessor {
       $replacementColumnList['last_ok_date'] = date('Y-m-d');
     }
     Db::bind('history', array(
-      'processor' => 'ProductPropertyList',
+      'processor' => 'PropertyProductList',
       'path' => $path,
     ), $replacementColumnList);
   }
@@ -94,13 +94,12 @@ class JingdongPropertyProductListProcessor {
       $matches
     );
     foreach ($matches[1] as $merchantProductId) {
-      Db::execute(
-        'REPLACE INTO product_property_value'
-          .'(category_id, merchant_product_id, property_value_id, version)'
-          .' VALUES(?, ?, ?, ?)',
-        $this->categoryId, $merchantProductId,
-        $this->valueId, $GLOBALS['VERSION']
-      );
+      Db::bind('product_property_value', array(
+        'merchant_product_id' => $merchantProductId,
+        'property_value_id' => $this->valueId
+      ), array(
+        'category_id' => $this->categoryId, 'version' => $GLOBALS['VERSION']
+      ));
     }
   }
 
@@ -109,7 +108,6 @@ class JingdongPropertyProductListProcessor {
       '{href="([0-9-]+).html.*?class="next"}', $this->html, $matches
     );
     if (count($matches) > 0) {
-      var_dump($matches[1]);
       self::execute($matches[1]);
     }
   }

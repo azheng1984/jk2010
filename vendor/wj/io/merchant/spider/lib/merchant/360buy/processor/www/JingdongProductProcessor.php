@@ -144,7 +144,6 @@ class JingdongProductProcessor {
       $updateColumnList['index_version'] = $GLOBALS['VERSION'];
     }
     $updateColumnList['version'] = $GLOBALS['VERSION'];
-    print_r($updateColumnList);
     Db::update(
       'product',
       $updateColumnList,

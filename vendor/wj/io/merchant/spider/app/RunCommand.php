@@ -6,53 +6,20 @@ class RunCommand {
       $GLOBALS['VERSION'] = $this->getVersion();
       $processor = new JingdongCategoryListProcessor;
       $processor->execute();
-      $this->cleanCategory();
-      $this->cleanProductPropertyValue();
       $this->cleanPropertyKey();
       $this->cleanPropertyValue();
       $this->cleanHistory();
-      if ($GLOBALS['VERSION'] % 1000 === 0) {
-        $this->cleanMerchant();
-      }
       $this->upgradeVersion();
     }
   }
 
   private function getVersion() {
-    return file_get_contents(ROOT_PATH.'data/version');
-  }
-
-  private function cleanCategory() {
-    $categoryList = Db::getAll(
-      'SELECT id FROM category WHERE version != ?', $GLOBALS['version']
-    );
-    foreach ($categoryList as $category) {
-      $productId = Db::getColumn(
-        'SELECT id FROM product WHERE category_id = ? LIMIT 1', $category['id']
-      );
-      if ($productId === false) {
-        Db::delete('DELETE FROM category WHERE id = ?', $category['id']);
-        continue;
-      }
-    }
+    return intval(file_get_contents(ROOT_PATH.'data/version'));
   }
 
   private function cleanHistory() {
     Db::execute("DELETE FROM history WHERE last_ok_date < '"
-      .date('Y-m-d', time() - (100 * 24 * 60 * 60)).'"');
-    Db::execute('DELETE FROM history WHERE _status = 404');
-  }
-
-  private function cleanMerchant() {
-    $merchantList = Db::getAll("SELECT id FROM merchant");
-    foreach ($merchantList as $merchant) {
-      $productId = Db::getColumn(
-        'SELECT id FROM product WHERE merchant_id = ? LIMIT 1', $merchant['id']
-      );
-      if ($productId === false) {
-        Db::delete('DELETE FROM merchant WHERE id = ?', $merchant['id']);
-      }
-    }
+      .date('Y-m-d', time() - (100 * 24 * 60 * 60)).'" OR _status = 404');
   }
 
   private function upgradeVersion() {
@@ -61,15 +28,13 @@ class RunCommand {
 
   private function cleanPropertyKey() {
     Db::execute(
-    'DELETE FROM property_key WHERE version != ?',
-    $this->categoryId, $GLOBALS['VERSION']
+      'DELETE FROM property_key WHERE version != ?', $GLOBALS['VERSION']
     );
   }
 
   private function cleanPropertyValue() {
     Db::execute(
-    'DELETE FROM property_value WHERE version != ?',
-    $this->categoryId, $GLOBALS['VERSION']
+      'DELETE FROM property_value WHERE version != ?', $GLOBALS['VERSION']
     );
   }
 }

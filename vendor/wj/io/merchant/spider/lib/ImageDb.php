@@ -37,6 +37,11 @@ class ImageDb {
     }
   }
 
+  public static function deleteDb($channel) {
+    $path = IMAGE_PATH.'jingdong/'.$channel.'_image.sqlite';
+    unlink($path);
+  }
+
   private static function connect($channel) {
     if (isset(self::$connectionList[$channel]) === false) {
       self::tryCreateDb($channel);//TODO
