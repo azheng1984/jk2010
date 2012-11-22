@@ -15,7 +15,7 @@ class JingdongProductProcessor {
   private static $userKey = null;
   private static $userKeyExpireTime = null;
   private static $agencyNoMatchedCount = 0;
-  private static $hasAgencyMatched = false;
+  private static $agencyMatchedCount = 0;
 
   public function __construct($index = null, $categoryId = null) {
     $this->index = $index;
@@ -108,7 +108,7 @@ class JingdongProductProcessor {
     );
     $hasAgency = (count($matches) !== 0);
     if ($hasAgency) {
-      self::$hasAgencyMatched = true;
+      ++self::$agencyMatchedCount;
       $this->agencyName = iconv('gbk', 'utf-8', $matches[1]);
     }
     if ($hasAgency === false) {
@@ -219,6 +219,7 @@ class JingdongProductProcessor {
       preg_match('$cart-main="{(.*?)}"$', $response['header'], $matches);
       if (count($matches) === 0) {
         self::$userKey = null;
+        //TODO: no match count
         throw new Exception(null, 404);
       }
       $result = WebClient::get(
@@ -280,20 +281,19 @@ class JingdongProductProcessor {
     Db::insert('match_error_log', array(
       'source' => $source,
       'url' => $this->url,
-      'document' => $this->html,
+      'document' => gzcompress($this->html),
       'time' => date('Y-m-d H:i:s')
     ));
   }
 
   public static function finalize() {
-    if (self::$hasAgencyMatched === false
-      && self::$agencyNoMatchedCount > 100000) {
-      Db::insert('match_error_log', array(
-      'source' => 'JingdongProductProcessor:NO_AGENCY_MATCHED',
+    Db::insert('match_log', array(
+      'source' => 'JingdongProductProcessor:next_page',
+      'match_count' => self::$agencyMatchedCount,
+      'no_match_count' => self::$agencyNoMatchedCount,
       'time' => date('Y-m-d H:i:s')
-      ));
-    }
+    ));
+    self::$agencyMatchedCount = 0;
     self::$agencyNoMatchedCount = 0;
-    self::$hasAgencyMatched = false;
   }
 }

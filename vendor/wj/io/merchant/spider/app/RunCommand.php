@@ -1,6 +1,10 @@
 <?php
 class RunCommand {
-  public function execute() {
+  public function execute($matchErrorLogId = null) {
+    if ($matchErrorLogId !== null) {
+      $this->exportMatchErrorLog($matchErrorLogId);
+      return;
+    }
     Lock::execute();
     for (;;) {
       $GLOBALS['VERSION'] = $this->getVersion();
@@ -39,5 +43,17 @@ class RunCommand {
     Db::execute(
       'DELETE FROM property_value WHERE version != ?', $GLOBALS['VERSION']
     );
+  }
+
+  private function exportMatchErrorLog($id) {
+    $log = Db::getRow('SELECT * FROM match_error_log WHERE id = ?', $id);
+    if ($log === false) {
+      return;
+    }
+    file_put_contents(
+      '/home/azheng/Desktop/'.$id.'.html', gzuncompress($log['document'])
+    );
+    unset($log['document']);
+    print_r($log);
   }
 }

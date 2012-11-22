@@ -5,7 +5,7 @@ class JingdongPropertyProductListProcessor {
   private $valueId;
   private $categoryId;
   private static $nextPageNoMatchedCount = 0;
-  private static $hasNextPageMatched = false;
+  private static $nextPageMatchedCount = 0;
 
   public function __construct($categoryId = null, $valueId = null) {
     $this->categoryId = $categoryId;
@@ -105,9 +105,7 @@ class JingdongPropertyProductListProcessor {
       $matches
     );
     if (count($matches[0]) === 0) {
-      $this->saveMatchErrorLog(
-        'JingdongPropertyProductListProcessor:parseProductList'
-      );
+      $this->checkProductList();
     }
     foreach ($matches[1] as $merchantProductId) {
       Db::bind('product_property_value', array(
@@ -119,12 +117,22 @@ class JingdongPropertyProductListProcessor {
     }
   }
 
+  private function checkProductList() {
+    preg_match('没有找到符合条件的商品', $this->html, $matches);
+    if (count($matches) > 0) {
+      return;
+    }
+    $this->saveMatchErrorLog(
+      'JingdongPropertyProductListProcessor:checkProductList'
+    );
+  }
+
   private function parseNextPage() {
     preg_match(
       '{href="([0-9-]+).html" class="next"}', $this->html, $matches
     );
     if (count($matches) > 0) {
-      self::$hasNextPageMatched = true;
+      ++self::$nextPageMatchedCount;
       self::execute($matches[1]);
       return;
     }
@@ -135,20 +143,19 @@ class JingdongPropertyProductListProcessor {
     Db::insert('match_error_log', array(
       'source' => $source,
       'url' => $this->url,
-      'document' => $this->html,
+      'document' => gzcompress($this->html),
       'time' => date('Y-m-d H:i:s')
     ));
   }
   
   public static function finalize() {
-    if (self::$hasNextPageMatched === false 
-      && self::$nextPageNoMatchedCount > 100000) {
-      Db::insert('match_error_log', array(
-        'source' => 'JingdongPropertyProductListProcessor:NO_NEXT_PAGE_MATCHED',
-        'time' => date('Y-m-d H:i:s')
-      ));
-    }
+    Db::insert('match_log', array(
+      'source' => 'JingdongPropertyProductListProcessor:next_page',
+      'match_count' => self::$nextPageMatchedCount,
+      'no_match_count' => self::$nextPageNoMatchedCount,
+      'time' => date('Y-m-d H:i:s')
+    ));
+    self::$hasNextPageMatched = 0;
     self::$nextPageNoMatchedCount = 0;
-    self::$hasNextPageMatched = false;
   }
 }
