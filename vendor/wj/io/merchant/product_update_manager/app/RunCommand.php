@@ -1,5 +1,5 @@
 <?php
-//TODO 修改 db 成 innodb
+//TODO 修改 所有 table 成 innodb 类型
 //TODO 删除 category name 中的 "其它" 前缀
 class RunCommand {
   private $versionInfo;
