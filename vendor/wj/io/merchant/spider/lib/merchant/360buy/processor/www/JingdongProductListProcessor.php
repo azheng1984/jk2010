@@ -5,9 +5,9 @@ class JingdongProductListProcessor {
   private $categoryId;
   private $page;
   private static $nextPageNoMatchedCount = 0;
-  private static $hasNextPageMatched = false;
+  private static $nextPageMatchedCount = 0;
   private static $propertyListNoMatchedCount = 0;
-  private static $hasPropertyListMatched = false;
+  private static $propertyListMatchedCount = 0;
 
   public function __construct($categoryId = null) {
     $this->categoryId = $categoryId;
@@ -95,7 +95,7 @@ class JingdongProductListProcessor {
       '{href="([0-9-]+).html" class="next"}', $this->html, $matches
     );
     if (count($matches) > 0) {
-      self::$hasNextPageMatched = true;
+      ++self::$nextPageMatchedCount;
       ++$this->page;
       self::execute($matches[1]);
       return;
@@ -111,7 +111,7 @@ class JingdongProductListProcessor {
       ++self::$propertyListNoMatchedCount;
       return;
     }
-    self::$hasPropertyListMatched = true;
+    ++self::$propertyListMatchedCount;
     $section = iconv('gbk', 'utf-8', $matches[0]);
     preg_match_all('{<dl.*?</dl>}', $section, $matches);
     if (count($matches[0]) === 0) {
@@ -186,28 +186,27 @@ class JingdongProductListProcessor {
     Db::insert('match_error_log', array(
       'source' => $source,
       'url' => $this->url,
-      'document' => $this->html,
+      'document' => gzcompress($this->html),
       'time' => date('Y-m-d H:i:s')
     ));
   }
 
   public static function finalize() {
-    if (self::$hasNextPageMatched === false 
-      && self::$nextPageNoMatchedCount > 100000) {
-      Db::insert('match_error_log', array(
-        'source' => 'JingdongPropertyProductListProcessor:NO_NEXT_PAGE_MATCHED',
-        'time' => date('Y-m-d H:i:s')
-      ));
-    }
+    Db::insert('match_log', array(
+      'source' => 'JingdongProductListProcessor:next_page',
+      'match_count' => self::$nextPageMatchedCount,
+      'no_match_count' => self::$nextPageNoMatchedCount,
+      'time' => date('Y-m-d H:i:s')
+    ));
+    self::$hasNextPageMatched = 0;
     self::$nextPageNoMatchedCount = 0;
-    self::$hasNextPageMatched = false;
-    if (self::$hasPropertyListMatched === false
-      && self::$propertyListNoMatchedCount > 100000) {
-      Db::insert('match_error_log', array(
-        'source' => 'JingdongProductListProcessor:NO_PROPERTY_LIST_MATCHED',
-        'time' => date('Y-m-d H:i:s')
-      ));
-    }
-    self::$hasPropertyListMatched = false;
+    Db::insert('match_log', array(
+      'source' => 'JingdongProductListProcessor:property_list',
+      'match_count' => self::$propertyListMatchedCount,
+      'no_match_count' => self::$propertyListNoMatchedCount,
+      'time' => date('Y-m-d H:i:s')
+    ));
+    self::$propertyListMatchedCount = 0;
+    self::$propertyListNoMatchedCount = 0;
   }
 }
