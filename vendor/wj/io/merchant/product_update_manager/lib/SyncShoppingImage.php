@@ -37,13 +37,8 @@ class SyncShoppingImage {
   }
 
   public static function delete($shoppingProductId) {
-    DbConnection::connect('shopping');
     $path = Db::getColumn('SELECT image_path FROM product WHERE id = ?', $shoppingProductId);
-    unlink(DATA_PATH.'product_image_sync/'.$path.'/'.$shoppingProductId.'.jpg');
-    DbConnection::close();
-    DbConnection::connect('default');
     Db::update('UPDATE image_folder SET amount = amount - 1 WHERE id = ?', self::getId($path));
-    DbConnection::close();
   }
 
   private static function getId($path) {

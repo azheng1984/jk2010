@@ -3,20 +3,24 @@ class SyncShoppingProduct {
   private function execute(
     $categoryName, $categoryId, $propertyList, $version, $merchantName
   ) {
+    $merchantId = 1;//TODO
+    DbConnection::connect($merchantName);
     $productList = Db::getAll(
       'SELECT * FROM product WHERE category_id = ?', $categoryId
     );
+    DbConnection::close();
     foreach ($productList as $product) {
       if ($product['version'] < $version) {
         ShoppingCommandFile::deleteProduct($product['shopping_id']);
-        ShoppingCommandFile::deleteProductSearch($product['shopping_id']);
         SyncShoppingImage::delete($product['shopping_id']);
         continue;
       }
+      DbConnection::connect($merchantName);
       $valueList = Db::getAll(
         'SELECT * FROM product_property_value WHERE merchant_product_id = ?',
         $product['merchant_product_id']
       );
+      DbConnection::close();
       $productPropertyList = array();
       $shoppingValueIdList = array();
       foreach ($valueList as $value) {
@@ -42,23 +46,24 @@ class SyncShoppingProduct {
       }
       $shoppingPropertyTextList = implode("\n", $shoppingPropertyList);
       $shoppingValueIdTextList = implode(' ', $shoppingValueIdList);
-      $shoppingProduct = null;
-      if ($product['shopping_product_id'] !== null) {
-        $shoppingProduct = Db::getRow(
-          'SELECT * FROM product WHERE id = ?', $product['shopping_product_id']
-        );
-      }
+      $shoppingProduct = Db::getRow(
+        'SELECT * FROM product'
+          .' WHERE merchant_id = ? AND merchant_product_id = ?',
+        $merchantId, $product['merchant_product_id']
+      );
       $imagePath = null;
       if ($shoppingProduct === null
         || $shoppingProduct['image_digest'] !== $product['image_digest']) {
         $imagePath = SyncShoppingImage::getImagePath();
       }
-      if (isset($product['price_to_x_100'])) {
+      if ($product !== null && isset($product['price_to_x_100']) === false) {
         $product['price_to_x_100'] = null;
       }
+      $keywordTextList = SyncShoppingProductSearch::getKeywords();
       if ($shoppingProduct === null) {
         $columnList = array(
           'merchant_id' => 1,//TODO
+          'merchant_product_id' => $product['merchant_product_id'],
           'uri_argument_list' => $product['merchant_product_id'],//TODO
           'image_path' => $imagePath,
           'image_digest' => $product['image_digest'],
@@ -67,22 +72,14 @@ class SyncShoppingProduct {
           'price_to_x_100' => $product['price_to_x_100'],
           'category_name' => $categoryName,
           'property_list' => $shoppingPropertyTextList,
-          'agency_name' => $product['agency_name']
+          'agency_name' => $product['agency_name'],
+          'keyword_list' => $keywordTextList,
+          'value_id_list' => $shoppingValueIdTextList
         );
-        DbConnection::connect('shopping');
-        Db::beginTransaction();
         Db::insert('product', $columnList);
         $shoppingProductId = Db::getLastInsertId();
-        ShoppingCommandFile::insertProduct($columnList);
+        ShoppingCommandFile::insertProduct($columnList, $shoppingProductId);
         SyncShoppingImage::execute($categoryId, $shoppingProductId, $imagePath);
-        SyncShoppingProductSearch::insert($product, $shoppingValueIdTextList);
-        Db::update(
-          'product',
-          array('shopping_product_id' => $shoppingProductId),
-          'id = ?', $product['id']
-        );
-        Db::commit();
-        DbConnection::close();
       }
       $replacementColumnList = array();
       if ($shoppingProduct['uri_argument_list'] !== $product['merchant_product_id']) {
@@ -113,11 +110,14 @@ class SyncShoppingProduct {
       if ($shoppingProduct['agency_name'] !== $product['agency_name']) {
         $replacementColumnList['agency_name'] = $product['agency_name'];
       }
-      DbConnection::connect('shopping');
+      if ($shoppingProduct['keyword_list'] !== $keywordTextList) {
+        $replacementColumnList['keyword_list'] = $keywordTextList;
+      }
+      if ($shoppingProduct['value_id_list'] !== $shoppingValueIdTextList) {
+        $replacementColumnList['value_id_list'] = $shoppingValueIdTextList;
+      }
       Db::update('product', $replacementColumnList);
-      DbConnection::close();
       ShoppingCommandFile::updateProduct($replacementColumnList);
-      SyncShoppingProductSearch::update($product, $replacementColumnList, $shoppingValueIdTextList);
     }
   }
 }
