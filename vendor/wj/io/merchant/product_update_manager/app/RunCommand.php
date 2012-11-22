@@ -7,6 +7,7 @@ class RunCommand {
   public function execute() {
     Lock::execute();
     Db::execute('SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED');
+    //TODO 清空可能因出错留下的文件/文件夹
     $GLOBALS['VERSION'] = $this->getVersion();
     for (;;) {
       $task = $this->getNextTask();
