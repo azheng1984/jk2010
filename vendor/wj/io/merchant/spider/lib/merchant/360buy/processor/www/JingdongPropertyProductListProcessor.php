@@ -97,7 +97,6 @@ class JingdongPropertyProductListProcessor {
   }
 
   private function parseProductList() {
-    //TODO 把没有商品作为正常情况
     preg_match_all(
       "{<div class='p-name'><a target='_blank'"
         ." href='http://www.360buy.com/product/([0-9]+).html'>}",
@@ -118,7 +117,7 @@ class JingdongPropertyProductListProcessor {
   }
 
   private function checkProductList() {
-    preg_match('没有找到符合条件的商品', $this->html, $matches);
+    preg_match('{没有找到符合条件的商品}', $this->html, $matches);
     if (count($matches) > 0) {
       return;
     }

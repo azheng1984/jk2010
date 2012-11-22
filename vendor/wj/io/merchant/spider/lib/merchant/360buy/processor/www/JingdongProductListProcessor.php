@@ -32,7 +32,6 @@ class JingdongProductListProcessor {
       }
       $this->parseNextPage();
     } catch (Exception $exception) {
-      throw $exception;
       $status = $exception->getCode();
     }
     $this->bindHistory($path, $status);

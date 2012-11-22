@@ -2,14 +2,14 @@
 class DbConnection {
   private static $current = null;
   private static $pool = array();
-  private static $list;
+  private static $stack;
   private static $factory;
 
   public static function connect(
     $name = 'default', $pdo = null, $isPersistent = true
   ) {
     if (self::$current !== null) {
-      self::$list[] = self::$current;
+      self::$stack[] = self::$current;
     }
     if ($pdo !== null) {
       $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -21,8 +21,8 @@ class DbConnection {
   }
 
   public static function close() {
-    if (count(self::$list) > 0) {
-      self::$current = array_pop(self::$list);
+    if (count(self::$stack) > 0) {
+      self::$current = array_pop(self::$stack);
       return;
     }
     self::$current = null;
@@ -39,7 +39,7 @@ class DbConnection {
     unset(self::$current);
     unset(self::$factory);
     unset(self::$pool);
-    unset(self::$list);
+    unset(self::$stack);
   }
 
   private static function get($name, $isPersistent) {
