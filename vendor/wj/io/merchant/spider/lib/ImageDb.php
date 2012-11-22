@@ -10,6 +10,15 @@ class ImageDb {
     return $image;
   }
 
+  public static function hasImage($categoryName, $productId) {
+    self::connect($categoryName);
+    $id = Db::getColumn(
+      'SELECT product_id FROM image WHERE product_id = ?', $productId
+    );
+    self::close();
+    return $id !== false;
+  }
+
   public static function insert($categoryName, $productId, $image) {
     self::connect($categoryName);
     Db::insert('image', array('product_id' => $productId, 'image' => $image));

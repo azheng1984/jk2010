@@ -13,7 +13,6 @@ class JingdongProductProcessor {
   private $typeId;
   private $priceX100;
   private static $userKey = null;
-  private static $userKeyExpireTime = null;
   private static $agencyNoMatchedCount = 0;
   private static $agencyMatchedCount = 0;
 
@@ -43,6 +42,7 @@ class JingdongProductProcessor {
       }
       $this->update($product);
     } catch (Exception $exception) {
+      throw $exception;
       $status = $exception->getCode();
     }
     $this->bindHistory($path, $status);
@@ -58,7 +58,7 @@ class JingdongProductProcessor {
     );
     if (count($matches) === 0) {
       $this->saveMatchErrorLog('JingdongProductListProcessor:initialize#0');
-      throw new Exception(null, 500);
+      throw new Exception(null, 500);//TODO retry 3 次(可能会被重定向到首页)
     }
     $this->imageSrc = $matches[1];
     $this->merchantImageDigest = $this->getImageDigest();
@@ -175,9 +175,7 @@ class JingdongProductProcessor {
   }
 
   private function getPrice($merchantProductId) {
-    if (self::$userKey === null || time() > self::$userKeyExpireTime) {
-      $this->initializeCart();
-    }
+    $this->initializeCart();
     $cookie = 'user-key='.self::$userKey;
     WebClient::get(
       'gate.360buy.com',
@@ -196,7 +194,6 @@ class JingdongProductProcessor {
       $this->saveMatchErrorLog('JingdongProductListProcessor:getPrice');
       throw new Exception(null, 404);
     }
-    $this->resetCart($merchantProductId, $cookie, $result);
     return $matches[1];
   }
 
@@ -211,44 +208,20 @@ class JingdongProductProcessor {
       throw new Exception(null, 500);
     }
     self::$userKey = $matches[1];
-    self::$userKeyExpireTime = time() + 24 * 3600;
-  }
-
-  private function resetCart($merchantProductId, $cookie, $response) {
-    try {
-      preg_match('$cart-main="{(.*?)}"$', $response['header'], $matches);
-      if (count($matches) === 0) {
-        self::$userKey = null;
-        //TODO: no match count
-        throw new Exception(null, 404);
-      }
-      $result = WebClient::get(
-        'cart.360buy.com',
-        '/cart/miniCartService.action?method=RemoveProduct&cartId='
-        .$merchantProductId,
-        array(), $cookie.';cart-main="{'.$matches[1].'}"'
-      );
-      if ($result['content'] !== 'null({"Result":true})') {
-        $this->saveMatchErrorLog('JingdongProductListProcessor:resetCart');
-        throw new Exception(null, 500);
-      }
-    } catch (Exception $exception) {
-      self::$userKey = null;
-    }
   }
 
   private function bindImage() {
     list($domain, $path) = explode('/', $this->imageSrc, 2);
     $result = WebClient::get($domain, '/'.$path);
-    $this->saveImage($result['content']);
-  }
-
-  private function saveImage($image, $isNew = true) {
-    if ($isNew) {
-      ImageDb::insert($this->categoryName, $this->merchantProductId, $image);
+    if (ImageDb::hasImage($this->categoryName, $this->merchantProductId)) {
+      ImageDb::update(
+        $this->categoryName, $this->merchantProductId, $result['content']
+      );
       return;
     }
-    ImageDb::update($this->categoryName, $this->merchantProductId, $image);
+    ImageDb::insert(
+      $this->categoryName, $this->merchantProductId, $result['content']
+    );
   }
 
   private function getImageDigest() {
