@@ -42,7 +42,6 @@ class JingdongProductProcessor {
       }
       $this->update($product);
     } catch (Exception $exception) {
-      throw $exception;
       $status = $exception->getCode();
     }
     $this->bindHistory($path, $status);
@@ -58,7 +57,7 @@ class JingdongProductProcessor {
     );
     if (count($matches) === 0) {
       $this->saveMatchErrorLog('JingdongProductListProcessor:initialize#0');
-      throw new Exception(null, 500);//TODO retry 3 次(可能会被重定向到首页)
+      throw new Exception(null, 500);
     }
     $this->imageSrc = $matches[1];
     $this->merchantImageDigest = $this->getImageDigest();
