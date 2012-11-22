@@ -1,11 +1,12 @@
 <?php
-//TODO:幂等
+//TODO 修改 db 成 innodb
 //TODO 删除 category name 中的 "其它" 前缀
 class RunCommand {
   private $versionInfo;
 
   public function execute() {
     Lock::execute();
+    Db::execute('SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED');
     $GLOBALS['VERSION'] = $this->getVersion();
     for (;;) {
       $task = $this->getNextTask();
