@@ -11,6 +11,7 @@ class SyncShoppingProduct {
         ShoppingCommandFile::deleteProduct($product['shopping_id']);
         ShoppingCommandFile::deleteProductSearch($product['shopping_id']);
         SyncShoppingImage::delete($product['shopping_id']);
+        continue;
       }
       $valueList = Db::getAll(
         'SELECT * FROM product_property_value WHERE merchant_product_id = ?',
@@ -69,17 +70,19 @@ class SyncShoppingProduct {
           'agency_name' => $product['agency_name']
         );
         DbConnection::connect('shopping');
+        Db::beginTransaction();
         Db::insert('product', $columnList);
         $shoppingProductId = Db::getLastInsertId();
-        DbConnection::close();
+        ShoppingCommandFile::insertProduct($columnList);
+        SyncShoppingImage::execute($categoryId, $shoppingProductId, $imagePath);
+        SyncShoppingProductSearch::insert($product, $shoppingValueIdTextList);
         Db::update(
           'product',
           array('shopping_product_id' => $shoppingProductId),
           'id = ?', $product['id']
         );
-        SyncShoppingImage::execute($categoryId, $shoppingProductId, $imagePath);
-        ShoppingCommandFile::insertProduct($columnList);
-        SyncShoppingProductSearch::insert($product, $shoppingValueIdTextList);
+        Db::commit();
+        DbConnection::close();
       }
       $replacementColumnList = array();
       if ($shoppingProduct['uri_argument_list'] !== $product['merchant_product_id']) {

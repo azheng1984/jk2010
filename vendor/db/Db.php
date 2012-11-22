@@ -16,6 +16,18 @@ class Db {
     return DbConnection::getCurrent()->lastInsertId();
   }
 
+  public static function beginTransaction() {
+    return DbConnection::getCurrent()->beginTransaction();
+  }
+
+  public static function commit() {
+    return DbConnection::getCurrent()->commit();
+  }
+
+  public static function rollback() {
+    return DbConnection::getCurrent()->rollBack();
+  }
+
   public static function execute($sql/*, $parameter, ...*/) {
     return self::call(func_get_args());
   }

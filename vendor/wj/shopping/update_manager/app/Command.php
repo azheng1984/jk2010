@@ -1,5 +1,5 @@
 <?php
-//TODO:幂等
+//TODO:幂等(如果已经执行一次，使用 replace 代替 insert)
 class Command {
   public function execute() {
     for (;;) {
