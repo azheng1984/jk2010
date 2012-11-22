@@ -17,14 +17,13 @@ class RunCommand {
         $this->updateVersion('jingdong');
         continue;
       }
-      DbConnection::connect($task['merchant_name']);
+      Db::beginTransaction();
       $shoppingCategoryId = SyncShoppingCategory::getCategoryId(
         $task['category_name']
       );
-      $categoryId = Db::getColumn(
-        'SELECT id FROM category WHERE name = ?', $task['category_name']
+      $propertyList = SyncShoppingProperty::getPropertyList(
+        $task['category_name'], $task['merchant_name'], $task['version']
       );
-      $propertyList = SyncShoppingProperty::getPropertyList($categoryId);
       SyncShoppingProduct::execute(
         $task['category_name'],
         $shoppingCategoryId,
@@ -32,15 +31,11 @@ class RunCommand {
         $task['version'],
         $task['merchant_name']
       );
-      DbConnection::close();
       ShoppingCommandFile::finalize($shoppingCategoryId);
       SyncShoppingImage::finalize($shoppingCategoryId);
       ShoppingRemoteTask::add($task);
-      DbConnection::connect('default');
       $this->removeTask($task['id']);
-      if ($task['is_last'] === '1') {
-        
-      }
+      Db::commit();
     }
   }
 

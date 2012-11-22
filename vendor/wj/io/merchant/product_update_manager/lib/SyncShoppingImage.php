@@ -52,6 +52,7 @@ class SyncShoppingImage {
   }
 
   public static function finalize($merchantId, $categoryName, $version) {
+    //TODO check dir size
     system('cd '.DATA_PATH.'product_image_staging');
     system('tar -zcf '.DATA_PATH.'product_image_sync/'.$merchantId.' '.$version.' '.$categoryName.'.tar.gz *');
     system('rm -rf '.DATA_PATH.'product_image_staging');

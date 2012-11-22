@@ -1,7 +1,6 @@
 <?php
 class SyncShoppingCategory {
   public static function getCategoryId($categoryName) {
-    DbConnection::connect('shopping');
     $category = Db::getRow(
       'SELECT id, version FROM category WHERE name = ?', $categoryName
     );
@@ -22,7 +21,6 @@ class SyncShoppingCategory {
       $id = Db::getLastInsertId();
       ShoppingCommandFile::insertCategory($id, $categoryName);
     }
-    DbConnection::close();
     return $id;
   }
 }
