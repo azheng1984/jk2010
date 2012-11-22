@@ -8,6 +8,14 @@ class RunCommand {
     $GLOBALS['VERSION'] = $this->getVersion();
     for (;;) {
       $task = $this->getNextTask();
+      if ($task === false) {
+        sleep(10);
+        continue;
+      }
+      if ($task['category_name'] === ' LAST') {
+        $this->updateVersion();
+        continue;
+      }
       DbConnection::connect($task['merchant_name']);
       $shoppingCategoryId = SyncShoppingCategory::getCategoryId(
         $task['category_name']
@@ -30,7 +38,7 @@ class RunCommand {
       DbConnection::connect('default');
       $this->removeTask($task['id']);
       if ($task['is_last'] === '1') {
-        $this->updateVersion();
+        
       }
     }
   }

@@ -111,6 +111,7 @@ class ShoppingCommandFile {
 
   public static function finalize() {
     fclose(self::$portalSyncFile);
+    //check file size
     $fileList = array();
     if (filesize(self::$portalSyncFileName) !== 0) {
       $fileList['portal'] = true;
