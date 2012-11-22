@@ -1,5 +1,6 @@
 <?php
 //TODO:幂等
+//TODO 删除 category name 中的 "其它" 前缀
 class RunCommand {
   private $versionInfo;
 
@@ -13,7 +14,7 @@ class RunCommand {
         continue;
       }
       if ($task['category_name'] === ' LAST') {
-        $this->updateVersion();
+        $this->updateVersion('jingdong');
         continue;
       }
       DbConnection::connect($task['merchant_name']);
