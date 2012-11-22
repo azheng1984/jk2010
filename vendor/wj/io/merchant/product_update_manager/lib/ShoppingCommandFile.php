@@ -35,6 +35,8 @@ class ShoppingCommandFile {
     $output .= $product['category_name']."\n";
     $output .= $product['property_list']."\n\n";
     $output .= $product['agency_name'];
+    $output .= $product['keyword_list']."\n";
+    $output .= $product['value_id_list']."\n";
     self::outputForPortal($output."\n");
   }
 
@@ -64,6 +66,12 @@ class ShoppingCommandFile {
     if (isset($product['agency_name'])) {
       $output .= "\n7".$product['agency_name'];
     }
+    if (isset($product['value_id_list'])) {
+      $output .= "\n3".$product['value_id_list'];
+    }
+    if (isset($product['keyword_list'])) {
+      $output .= "\n4".$product['keyword_list']."\n";
+    }
     self::outputForPortal($output."\n");
   }
 
@@ -71,61 +79,17 @@ class ShoppingCommandFile {
     self::outputForPortal("d\n".$id."\n");
   }
 
-  public static function insertProductSearch($priceFromX100, $id, $categoryId, $valueIdTextList, $keywordTextList) {
-    $output = "p\n".$id."\n";
-    $output .= $categoryId."\n";
-    $output .= $priceFromX100."\n";
-    $output .= $valueIdTextList."\n";
-    $output .= $keywordTextList."\n";
-    self::outputForPortal($output);
-  }
-
-  public static function updateProductSearch($product) {
-    $output = "u\n".$product['id'];
-    if (isset($product['category_id'])) {
-      $output .= "\n1".$product['category_id'];
-    }
-    if (isset($product['price_from_x_100'])) {
-      $output .= "\n2".$product['price_from_x_100'];
-    }
-    if (isset($product['value_id_list'])) {
-      $output .= "\n3".$product['value_id_list'];
-    }
-    if (isset($product['keyword_list'])) {
-      $output .= "\n4".$product['keyword_list']."\n";
-    }
-    self::outputForPortal($output);
-  }
-
-  public static function deleteProductSearch($id) {
-    self::outputForPortal("d\n".$id."\n");
-  }
-
   private static function outputForPortal($content) {
     fwrite(self::$portalSyncFile, $content);
-  }
-
-  private static function outputForProductSearch($content) {
-    fwrite(self::$productSearchSyncFile, $content);
   }
 
   public static function finalize() {
     fclose(self::$portalSyncFile);
     //TODO: check file size if = 0 return
-    $fileList = array();
     if (filesize(self::$portalSyncFileName) !== 0) {
-      $fileList['portal'] = true;
       system('gzip '.self::$portalSyncFileName);
     } else {
       unlink(self::$portalSyncFileName);
     }
-    fclose(self::$productSearchSyncFile);
-    if (filesize(self::$productSearchSyncFileName) !== 0) {
-      $fileList['product_search'] = true;
-      system('gzip '.self::$productSearchSyncFileName);
-    } else {
-      unlink(self::$productSearchSyncFileName);
-    }
-    return $fileList;
   }
 }
