@@ -1,10 +1,11 @@
 <?php
 class SyncShoppingCategory {
-  public static function getCategoryId($categoryName) {
+  public static function getCategoryId($categoryName, &$isNew) {
     $category = Db::getRow(
       'SELECT id, version FROM category WHERE name = ?', $categoryName
     );
     $id = null;
+    $isNew = false;
     if ($category !== false) {
       $id = $category['id'];
       if ($category['version'] !== $GLOBALS['VERSION']) {
@@ -19,7 +20,7 @@ class SyncShoppingCategory {
         array('name' => $categoryName, 'version' => $GLOBALS['VERSION'])
       );
       $id = Db::getLastInsertId();
-      ShoppingCommandFile::insertCategory($id, $categoryName);
+      $isNew = true;
     }
     return $id;
   }

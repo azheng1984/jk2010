@@ -1,5 +1,10 @@
 <?php
 class SyncShoppingImage {
+  public static function initialize() {
+    system('rm -rf '.DATA_PATH.'product_image_staging');
+    system('mkdir '.DATA_PATH.'product_image_staging');
+  }
+
   public static function execute($categoryId, $shoppingProductId, $imagePath) {
     $image = ImageDb::get($categoryId, $shoppingProductId);
     file_put_contents(

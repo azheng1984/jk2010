@@ -1,15 +1,11 @@
 <?php
 class ShoppingCommandFile {
-  private static $productSearchSyncFile = null;
-  private static $productSearchSyncFileName = null;
   private static $portalSyncFileName = '';
   private static $portalSyncFile = null;
 
-  public static function initialize($merchantId, $categoryName, $categoryId, $version) {
+  public static function initialize($merchantId, $categoryId, $version) {
     self::$portalSyncFileName = DATA_PATH.'portal_sync/'.$merchantId.'_'.$categoryId.'_'.$version.'_portal';
-    self::$portalSyncFile = fopen(self::$portalSyncFileName, 'a');
-    self::$productSearchSyncFileName = DATA_PATH.'product_search_sync/'.$merchantId.'_'.$categoryId.'_'.$version.'_product_search';
-    self::$productSearchSyncFile = fopen(self::$productSearchSyncFileName, 'a');
+    self::$portalSyncFile = fopen(self::$portalSyncFileName, 'w');
   }
 
   public static function insertCategory($id, $name) {

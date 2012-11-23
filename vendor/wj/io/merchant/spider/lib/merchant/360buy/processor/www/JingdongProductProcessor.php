@@ -1,4 +1,5 @@
 <?php
+//TODO history _status 14
 class JingdongProductProcessor {
   private $html;
   private $url;
@@ -190,7 +191,9 @@ class JingdongProductProcessor {
     preg_match('$"PromotionPrice":(.*?)}$', $result['content'], $matches);
     if (count($matches) === 0) {
       self::$userKey = null;
-      $this->saveMatchErrorLog('JingdongProductListProcessor:getPrice');
+      $this->saveMatchErrorLog(
+        'JingdongProductListProcessor:getPrice', $result['content']
+      );
       throw new Exception(null, 404);
     }
     return $matches[1];
@@ -203,7 +206,9 @@ class JingdongProductProcessor {
     $header = $result['header'];
     preg_match('{user-key=(.*?);}', $result['header'], $matches);
     if (count($matches) === 0) {
-      $this->saveMatchErrorLog('JingdongProductListProcessor:initializeCart');
+      $this->saveMatchErrorLog(
+        'JingdongProductListProcessor:initializeCart', var_export($result, true)
+      );
       throw new Exception(null, 500);
     }
     self::$userKey = $matches[1];
@@ -249,11 +254,14 @@ class JingdongProductProcessor {
     ), $replacementColumnList);
   }
 
-  private function saveMatchErrorLog($source) {
+  private function saveMatchErrorLog($source, $html = null) {
+    if ($html === null) {
+      $html = $this->html;
+    }
     Db::insert('match_error_log', array(
       'source' => $source,
       'url' => $this->url,
-      'document' => gzcompress($this->html),
+      'document' => gzcompress($html),
       'time' => date('Y-m-d H:i:s')
     ));
   }
