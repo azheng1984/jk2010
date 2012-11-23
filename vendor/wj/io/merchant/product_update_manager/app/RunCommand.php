@@ -7,7 +7,6 @@ class RunCommand {
   public function execute() {
     Lock::execute();
     Db::execute('SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED');
-    //TODO 清空可能因出错留下的文件/文件夹
     $GLOBALS['VERSION'] = $this->getVersion();
     for (;;) {
       $task = $this->getNextTask();
@@ -20,9 +19,19 @@ class RunCommand {
         continue;
       }
       Db::beginTransaction();
+      $isNew = null;
       $shoppingCategoryId = SyncShoppingCategory::getCategoryId(
-        $task['category_name']
+        $task['category_name'], $isNew
       );
+      ShoppingCommandFile::initialize(
+        1, $$shoppingCategoryId, $task['version']
+      );
+      SyncShoppingImage::initialize();
+      if ($isNew) {
+        ShoppingCommandFile::insertCategory(
+          $shoppingCategoryId, $task['category_name']
+        );
+      }
       $propertyList = SyncShoppingProperty::getPropertyList(
         $task['category_name'], $task['merchant_name'], $task['version']
       );

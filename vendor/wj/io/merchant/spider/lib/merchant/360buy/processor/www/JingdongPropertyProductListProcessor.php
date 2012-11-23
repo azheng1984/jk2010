@@ -117,7 +117,11 @@ class JingdongPropertyProductListProcessor {
   }
 
   private function checkProductList() {
-    preg_match('{没有找到符合条件的商品}', $this->html, $matches);
+    preg_match(
+      '{'.iconv('utf-8', 'gbk', '没有找到符合条件的商品').'}',
+      $this->html,
+      $matches
+    );
     if (count($matches) > 0) {
       return;
     }
