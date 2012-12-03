@@ -59,8 +59,8 @@ class SyncShoppingProduct {
       if ($product !== null && isset($product['price_to_x_100']) === false) {
         $product['price_to_x_100'] = null;
       }
-      $keywordTextList = SyncShoppingProductSearch::getKeywords();
       if ($shoppingProduct === null) {
+        $keywordTextList = Keyword::getList($product, $shoppingPropertyTextList);
         $columnList = array(
           'merchant_id' => 1,//TODO
           'merchant_product_id' => $product['merchant_product_id'],
@@ -110,8 +110,32 @@ class SyncShoppingProduct {
       if ($shoppingProduct['agency_name'] !== $product['agency_name']) {
         $replacementColumnList['agency_name'] = $product['agency_name'];
       }
-      if ($shoppingProduct['keyword_list'] !== $keywordTextList) {
-        $replacementColumnList['keyword_list'] = $keywordTextList;
+      //TODO 如果分词算法/字典更新，所有 keywords 都会更新
+      if (isset($replacementColumnList['title'])
+          || isset($replacementColumnList['category_name'])
+          || isset($replacementColumnList['property_list'])) {
+        $keywordList = explode(' ', $product['keyword_list']);
+        $keywordListByKey = array();
+        foreach ($keywordList as $keyword) {
+          $keywordListByKey[$keyword] = true;
+        }
+        $keywordTextList = self::getList($product, $shoppingPropertyTextList);
+        $currentKeywordList = explode(' ', $keywordTextList);
+        $isUpdated = false;
+        foreach ($currentKeywordList as $item) {
+          if (isset($keywordListByKey[$item])) {
+            unset($keywordListByKey[$itme]);
+            continue;
+          }
+          $isUpdated = true;
+          break;
+        }
+        if ($isUpdated !== true && count($keywordListByKey) !== 0) {
+          $isUpdated = true;
+        }
+        if ($isUpdated) {
+          $replacementColumnList['keyword_list'] = $keywordTextList;
+        }
       }
       if ($shoppingProduct['value_id_list'] !== $shoppingValueIdTextList) {
         $replacementColumnList['value_id_list'] = $shoppingValueIdTextList;

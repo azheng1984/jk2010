@@ -1,5 +1,5 @@
 <?php
-//TODO history _status 14
+//TODO history _status 14(10%)/0
 class JingdongProductProcessor {
   private $html;
   private $url;
@@ -29,6 +29,7 @@ class JingdongProductProcessor {
     );
     if ($product !== false
       && intval($product['version']) === $GLOBALS['VERSION']) {
+      $this->updateIndex($product);
       return;
     }
     if ($product !== false && $this->categoryId === null) {
@@ -44,8 +45,24 @@ class JingdongProductProcessor {
       $this->update($product);
     } catch (Exception $exception) {
       $status = $exception->getCode();
+      if ($status !== 500 || $status !== 404) {
+        throw $exception;
+      }
     }
     $this->bindHistory($path, $status);
+  }
+
+  private function updateIndex($product) {
+    if ($this->categoryId !== $product['category_id']
+     || $this->index === null || $this->index === intval($product['_index'])) {
+      return;
+    }
+    Db::update(
+      'product',
+      array('_index' => $this->index, 'index_version' => $GLOBALS['VERSION']),
+      'merchant_product_id = ?',
+      $product['merchant_product_id']
+    );
   }
 
   private function initialize($path) {
