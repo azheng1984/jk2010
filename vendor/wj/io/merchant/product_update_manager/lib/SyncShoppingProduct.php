@@ -60,7 +60,7 @@ class SyncShoppingProduct {
         $product['price_to_x_100'] = null;
       }
       if ($shoppingProduct === null) {
-        $keywordTextList = Keyword::getList($product, $shoppingPropertyTextList);
+        $keywordTextList = $this->getList($product, $shoppingPropertyTextList);
         $columnList = array(
           'merchant_id' => 1,//TODO
           'merchant_product_id' => $product['merchant_product_id'],
@@ -119,7 +119,7 @@ class SyncShoppingProduct {
         foreach ($keywordList as $keyword) {
           $keywordListByKey[$keyword] = true;
         }
-        $keywordTextList = self::getList($product, $shoppingPropertyTextList);
+        $keywordTextList = $this->getList($product, $shoppingPropertyTextList);
         $currentKeywordList = explode(' ', $keywordTextList);
         $isUpdated = false;
         foreach ($currentKeywordList as $item) {
@@ -143,5 +143,14 @@ class SyncShoppingProduct {
       Db::update('product', $replacementColumnList);
       ShoppingCommandFile::updateProduct($replacementColumnList);
     }
+  }
+
+   private function getList($product, $shoppingPropertyTextList) {
+    $keywords = $product['title'];
+    $keywords .= ' '.$product['category_name'];
+    $keywords .= ' '.$shoppingPropertyTextList;
+    $keywords = SegmentationService::execute($keywords);
+    $list = explode(' ', $keywords);
+    return implode(' ', array_unique($list));
   }
 }
