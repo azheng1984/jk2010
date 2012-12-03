@@ -1,18 +1,28 @@
 <?php
 class SyncShoppingProduct {
-  public function execute(
-    $categoryName, $categoryId, $propertyList, $version, $merchantName
+  public static function execute(
+    $categoryName, $shoppingCategoryId, $propertyList, $version, $merchantName
   ) {
     $merchantId = 1;//TODO
     DbConnection::connect($merchantName);
+    $categoryId = Db::getColumn(
+      'SELECT id FROM category WHERE name = ?', $categoryName
+    );
     $productList = Db::getAll(
       'SELECT * FROM product WHERE category_id = ?', $categoryId
     );
     DbConnection::close();
     foreach ($productList as $product) {
       if ($product['version'] < $version) {
-        ShoppingCommandFile::deleteProduct($product['shopping_id']);
-        SyncShoppingImage::delete($product['shopping_id']);
+        $shoppingProduct = Db::get(
+          'SELECT id, image_path FROM product'
+            .' WHERE merchant_id = ? AND merchant_product_id = ?',
+          1,
+          $product['merchant_product_id']
+        );
+        ShoppingCommandFile::deleteProduct($shoppingProduct['id']);
+        SyncShoppingImage::delete($shoppingProduct['image_path']);
+        Db::delete('product', 'id = ?', 1, $shoppingProduct['id']);
         continue;
       }
       DbConnection::connect($merchantName);
@@ -25,7 +35,7 @@ class SyncShoppingProduct {
       $shoppingValueIdList = array();
       foreach ($valueList as $value) {
         $value = $propertyList['value_list'][$value['property_value_id']];
-        $key = $$propertyList['key_list'][$value['key_id']];
+        $key = $propertyList['key_list'][$value['key_id']];
         if (isset($productPropertyList[$key['_index']]) === false) {
           $productPropertyList[$key['_index']] = array(
             'name' => $key['name'], 'value_list' => array()
@@ -52,15 +62,17 @@ class SyncShoppingProduct {
         $merchantId, $product['merchant_product_id']
       );
       $imagePath = null;
-      if ($shoppingProduct === null
+      if ($shoppingProduct === false
         || $shoppingProduct['image_digest'] !== $product['image_digest']) {
         $imagePath = SyncShoppingImage::getImagePath();
       }
-      if ($product !== null && isset($product['price_to_x_100']) === false) {
+      if (isset($product['price_to_x_100']) === false) {
         $product['price_to_x_100'] = null;
       }
-      if ($shoppingProduct === null) {
-        $keywordTextList = $this->getList($product, $shoppingPropertyTextList);
+      if ($shoppingProduct === false) {
+        $keywordTextList = self::getList(
+          $product, $categoryName, $shoppingPropertyTextList
+        );
         $columnList = array(
           'merchant_id' => 1,//TODO
           'merchant_product_id' => $product['merchant_product_id'],
@@ -79,18 +91,24 @@ class SyncShoppingProduct {
         Db::insert('product', $columnList);
         $shoppingProductId = Db::getLastInsertId();
         ShoppingCommandFile::insertProduct($columnList, $shoppingProductId);
-        SyncShoppingImage::execute($categoryId, $shoppingProductId, $imagePath);
+        SyncShoppingImage::execute(
+          $categoryName, $shoppingProductId, $product['merchant_product_id'], $imagePath
+        );
+        continue;
       }
       $replacementColumnList = array();
       if ($shoppingProduct['uri_argument_list'] !== $product['merchant_product_id']) {
         $replacementColumnList['uri_argument_list'] = $product['merchant_product_id'];
       }
+      var_dump($shoppingProduct);
       if ($shoppingProduct['image_path'] !== $product['image_path']) {
         $replacementColumnList['image_path'] = $product['image_path'];
       }
       if ($shoppingProduct['image_digest'] !== $product['image_digest']) {
         $replacementColumnList['image_digest'] = $product['image_digest'];
-        SyncShoppingImage::execute($categoryId, $shoppingProductId, $imagePath);
+        SyncShoppingImage::execute(
+          $categoryId, $shoppingProductId, $product['merchant_product_id'], $imagePath
+        );
       }
       if ($shoppingProduct['title'] !== $product['title']) {
         $replacementColumnList['title'] = $product['title'];
@@ -119,7 +137,9 @@ class SyncShoppingProduct {
         foreach ($keywordList as $keyword) {
           $keywordListByKey[$keyword] = true;
         }
-        $keywordTextList = $this->getList($product, $shoppingPropertyTextList);
+        $keywordTextList = self::getList(
+          $product, $categoryName, $shoppingPropertyTextList
+        );
         $currentKeywordList = explode(' ', $keywordTextList);
         $isUpdated = false;
         foreach ($currentKeywordList as $item) {
@@ -145,9 +165,11 @@ class SyncShoppingProduct {
     }
   }
 
-   private function getList($product, $shoppingPropertyTextList) {
+   private static function getList(
+    $product, $categoryName, $shoppingPropertyTextList
+   ) {
     $keywords = $product['title'];
-    $keywords .= ' '.$product['category_name'];
+    $keywords .= ' '.$categoryName;
     $keywords .= ' '.$shoppingPropertyTextList;
     $keywords = SegmentationService::execute($keywords);
     $list = explode(' ', $keywords);

@@ -35,7 +35,7 @@ class Db {
   public static function insert($table, $columnList) {
     self::execute(
       'INSERT INTO '.$table.'('.implode(array_keys($columnList), ', ')
-        .') VALUES('.str_repeat('?, ', count($columnList) - 1).'?)',
+        .') VALUES('.self::getParameterMarkerList(count($columnList)).')',
       array_values($columnList)
     );
   }
@@ -104,6 +104,16 @@ class Db {
     $statement = $connection->prepare($sql);
     $statement->execute($parameterList);
     return $statement;
+  }
+
+  private static function getParameterMarkerList($columnAmount) {
+    if ($columnAmount > 1) {
+      return str_repeat('?, ', $columnAmount - 1).'?';
+    }
+    if ($columnAmount === 1) {
+      return '?';
+    }
+    return '';
   }
 
   private static function updateDifference($table, $from, $to) {

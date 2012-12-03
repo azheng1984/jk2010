@@ -1,52 +1,68 @@
 <?php
 class ImageDb {
-  private static $connectionList = array();
+  private static $connection = null;
+  private static $categoryName = null;
 
-  public static function get($channel, $productId) {
-    self::connect($channel);
-    $image = Db::getColumn('image', array('product_id' => $productId));
-    DbConnection::connect(DB_NAME);
+  public static function get($categoryName, $productId) {
+    self::connect($categoryName);
+    $image = Db::getColumn(
+      'SELECT image FROM image WHERE product_id = ?', $productId
+    );
+    self::close();
     return $image;
   }
 
-  public static function insert($channel, $productId, $image) {
-    self::connect($channel);
+  public static function hasImage($categoryName, $productId) {
+    self::connect($categoryName);
+    $id = Db::getColumn(
+      'SELECT product_id FROM image WHERE product_id = ?', $productId
+    );
+    self::close();
+    return $id !== false;
+  }
+
+  public static function insert($categoryName, $productId, $image) {
+    self::connect($categoryName);
     Db::insert('image', array('product_id' => $productId, 'image' => $image));
-    DbConnection::connect(DB_NAME);
+    self::close();
   }
 
-  public static function update($tablePrefix, $productId, $image) {
-    self::connect($tablePrefix);
+  public static function update($categoryName, $productId, $image) {
+    self::connect($categoryName);
     Db::update('image', array('image' => $image), 'product_id = ?', $productId);
-    DbConnection::connect(DB_NAME);
+    self::close();
   }
 
-  public static function delete($channel, $productId) {
-    self::connect($channel);
+  public static function delete($categoryName, $productId) {
+    self::connect($categoryName);
     Db::delete('image', 'product_id = ?', $productId);
-    DbConnection::connect(DB_NAME);
+    self::close();
   }
 
-  public static function tryCreateDb($channel) {
-    $path = IMAGE_PATH.'jingdong/'.$channel.'_image.sqlite';
-    if (file_exists($path) === false) {
-      DbConnection::connect($channel.'_image', new PDO('sqlite:'.$path));
+  public static function deleteDb($categoryName) {
+    $path = IMAGE_PATH.'jingdong/'.$categoryName.'.sqlite';
+    if (file_exists($path)) {
+      unlink($path);
+    }
+  }
+
+  private static function connect($categoryName) {
+    if (self::$categoryName === $categoryName) {
+      return DbConnection::connect(null, self::$connection);
+    }
+    $path = IMAGE_PATH.'jingdong/'.$categoryName.'.sqlite';
+    $hasFile = file_exists($path);
+    $pdo = new PDO('sqlite:'.$path);
+    DbConnection::connect(null, $pdo);
+    if ($hasFile === false) {
       Db::execute('CREATE TABLE "image"'
         .'("product_id" INTEGER PRIMARY KEY NOT NULL, "image" BLOB NOT NULL)');
-      DbConnection::connect(DB_NAME);
     }
+    self::$categoryName = $categoryName;
+    self::$connection = $pdo;
   }
 
-  private static function connect($channel) {
-    if (isset(self::$connectionList[$channel]) === false) {
-      self::tryCreateDb($channel);//TODO
-      DbConnection::connect(
-        $channel.'_image',
-        new PDO('sqlite:'.IMAGE_PATH.'jingdong/'.$channel.'_image.sqlite')
-      );
-      self::$connectionList[$channel] = true;
-      return;
-    }
-    DbConnection::connect($channel.'_image');
+  private static function close() {
+    DbConnection::close();
   }
 }
