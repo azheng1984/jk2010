@@ -14,22 +14,23 @@ class SyncShoppingImage {
   public static function execute($categoryId, $shoppingProductId, $imagePath) {
     $image = ImageDb::get($categoryId, $shoppingProductId);
     file_put_contents(
-      DATA_PATH.'product_image_sync/'.$imagePath.$shoppingProductId.'.jpg', $image
+      DATA_PATH.'product_image_staging/'.$imagePath.'/'.$shoppingProductId.'.jpg', $image
     );
+    echo DATA_PATH.'product_image_staging/'.$imagePath.'/'.$shoppingProductId.'.jpg';
     return $imagePath;
   }
 
   public static function getImagePath() {
     $id = $this->getImageFolder();
     $levelOne = floor($id / 10000);
-    $folder = $levelOne;
-    if (is_dir($folder)) {
-      mkdir($folder);
+    $folder = levelOne;
+    if (is_dir(DATA_PATH.'product_image_staging/'.$folder)) {
+      mkdir(DATA_PATH.'product_image_staging/'.$folder);
     }
     $levelTwo = $id % 10000;
     $folder = $folder.'/'.$levelTwo;
-    if (is_dir($folder)) {
-      mkdir($folder);
+    if (is_dir(DATA_PATH.'product_image_staging/'.$folder)) {
+      mkdir(DATA_PATH.'product_image_staging/'.$folder);
     }
     return $folder;
   }
@@ -58,7 +59,17 @@ class SyncShoppingImage {
   }
 
   public static function finalize() {
-    //TODO check dir size
+    $dir = dir(DATA_PATH.'product_image_staging');
+    $hasDir = false;
+    while (false !== ($entry = $dir->read())) {
+      if ($entry !== '.' && $entry !== '..') {
+        $hasDir = true;
+        break;
+      }
+    }
+    if ($hasDir === false) {
+      return;
+    }
     system('cd '.DATA_PATH.'product_image_staging');
     system('tar -zcf '.DATA_PATH.'product_image_sync/'.self::$syncFileName.' *');
     system('rm -rf '.DATA_PATH.'product_image_staging');
