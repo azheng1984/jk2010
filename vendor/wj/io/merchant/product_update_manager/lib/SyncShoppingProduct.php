@@ -1,6 +1,6 @@
 <?php
 class SyncShoppingProduct {
-  private function execute(
+  public function execute(
     $categoryName, $categoryId, $propertyList, $version, $merchantName
   ) {
     $merchantId = 1;//TODO

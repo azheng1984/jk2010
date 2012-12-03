@@ -22,6 +22,7 @@ class SyncShoppingCategory {
       $id = Db::getLastInsertId();
       $isNew = true;
     }
+    //TODO check shopping version
     return $id;
   }
 }
