@@ -1,8 +1,14 @@
 <?php
 class SyncShoppingImage {
-  public static function initialize() {
+  private static $syncFileName = null;
+
+  public static function initialize($merchantId, $categoryId, $version) {
+    self::$syncFileName = $merchantId.' '.$categoryId.' '.$version.'.tar.gz';
     system('rm -rf '.DATA_PATH.'product_image_staging');
     system('mkdir '.DATA_PATH.'product_image_staging');
+    if (file_exists(DATA_PATH.'product_image_sync/'.self::$syncFileName)) {
+      system('rm '.DATA_PATH.'product_image_sync/'.self::$syncFileName);
+    }
   }
 
   public static function execute($categoryId, $shoppingProductId, $imagePath) {
@@ -51,10 +57,10 @@ class SyncShoppingImage {
     return $levelOne * 10000 + $levelTwo;
   }
 
-  public static function finalize($merchantId, $categoryName, $version) {
+  public static function finalize() {
     //TODO check dir size
     system('cd '.DATA_PATH.'product_image_staging');
-    system('tar -zcf '.DATA_PATH.'product_image_sync/'.$merchantId.' '.$version.' '.$categoryName.'.tar.gz *');
+    system('tar -zcf '.DATA_PATH.'product_image_sync/'.self::$syncFileName.' *');
     system('rm -rf '.DATA_PATH.'product_image_staging');
     system('mkdir '.DATA_PATH.'product_image_staging');
   }

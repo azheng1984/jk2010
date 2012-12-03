@@ -24,9 +24,9 @@ class RunCommand {
         $task['category_name'], $isNew
       );
       ShoppingCommandFile::initialize(
-        1, $$shoppingCategoryId, $task['version']
+        1, $shoppingCategoryId, $task['version']
       );
-      SyncShoppingImage::initialize();
+      SyncShoppingImage::initialize(1, $shoppingCategoryId, $task['version']);
       if ($isNew) {
         ShoppingCommandFile::insertCategory(
           $shoppingCategoryId, $task['category_name']
@@ -42,10 +42,12 @@ class RunCommand {
         $task['version'],
         $task['merchant_name']
       );
-      ShoppingCommandFile::finalize($shoppingCategoryId);
-      SyncShoppingImage::finalize($shoppingCategoryId);
-      ShoppingRemoteTask::add($task);
+      ShoppingCommandFile::finalize();
+      SyncShoppingImage::finalize();
+      ShoppingRemoteTask::add($shoppingCategoryId, 1, $task['version']);
       $this->removeTask($task['id']);
+      Db::rollback();
+      exit;
       Db::commit();
     }
   }
