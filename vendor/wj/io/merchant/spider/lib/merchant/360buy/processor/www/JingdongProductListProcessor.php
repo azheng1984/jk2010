@@ -1,4 +1,5 @@
 <?php
+//TODO history _status 0
 class JingdongProductListProcessor {
   private $html;
   private $url;
