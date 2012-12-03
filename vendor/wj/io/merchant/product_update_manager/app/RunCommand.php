@@ -44,7 +44,8 @@ class RunCommand {
       );
       ShoppingCommandFile::finalize();
       SyncShoppingImage::finalize();
-      ShoppingRemoteTask::add($shoppingCategoryId, 1, $task['version']);
+      sleep(100);
+//       ShoppingRemoteTask::add($shoppingCategoryId, 1, $task['version']);
       $this->removeTask($task['id']);
       Db::rollback();
       exit;
@@ -57,7 +58,7 @@ class RunCommand {
   }
 
   private function removeTask($id) {
-    Db::delete('task', $id);
+    Db::delete('task', 'id = ?', $id);
   }
 
   private function updateVersion($merchantName) {
