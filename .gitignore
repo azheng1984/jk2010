@@ -8,4 +8,4 @@ env.php
 *.sqlite
 Thumbs.db
 pinyin.dat
-*.tar.gz
+*.gz
