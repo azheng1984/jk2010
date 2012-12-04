@@ -6,7 +6,7 @@ class RunCommand {
 
   public function execute() {
     Lock::execute();
-    Db::execute('SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED');
+    Db::execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
     $GLOBALS['VERSION'] = $this->getVersion();
     for (;;) {
       $task = $this->getNextTask();
@@ -42,13 +42,18 @@ class RunCommand {
         $task['version'],
         $task['merchant_name']
       );
+      SyncShoppingProduct::execute(
+        $task['category_name'],
+        $shoppingCategoryId,
+        $propertyList,
+        $task['version'],
+        $task['merchant_name']
+      );
       ShoppingCommandFile::finalize();
       SyncShoppingImage::finalize();
       sleep(100);
-//       ShoppingRemoteTask::add($shoppingCategoryId, 1, $task['version']);
+      ShoppingRemoteTask::add($shoppingCategoryId, 1, $task['version']);
       $this->removeTask($task['id']);
-      Db::rollback();
-      exit;
       Db::commit();
     }
   }

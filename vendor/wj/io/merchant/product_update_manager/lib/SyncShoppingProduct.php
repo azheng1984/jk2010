@@ -1,5 +1,6 @@
 <?php
 class SyncShoppingProduct {
+
   public static function execute(
     $categoryName, $shoppingCategoryId, $propertyList, $version, $merchantName
   ) {
@@ -62,8 +63,7 @@ class SyncShoppingProduct {
         $merchantId, $product['merchant_product_id']
       );
       $imagePath = null;
-      if ($shoppingProduct === false
-        || $shoppingProduct['image_digest'] !== $product['image_digest']) {
+      if ($shoppingProduct === false) {
         $imagePath = SyncShoppingImage::getImagePath();
       }
       if (isset($product['price_to_x_100']) === false) {
@@ -71,8 +71,9 @@ class SyncShoppingProduct {
       }
       if ($shoppingProduct === false) {
         $keywordTextList = self::getList(
-          $product, $categoryName, $shoppingPropertyTextList
+          $product['title'], $categoryName, $shoppingPropertyTextList
         );
+        $keywordTextList = '';//TODO
         $columnList = array(
           'merchant_id' => 1,//TODO
           'merchant_product_id' => $product['merchant_product_id'],
@@ -100,14 +101,13 @@ class SyncShoppingProduct {
       if ($shoppingProduct['uri_argument_list'] !== $product['merchant_product_id']) {
         $replacementColumnList['uri_argument_list'] = $product['merchant_product_id'];
       }
-      var_dump($shoppingProduct);
-      if ($shoppingProduct['image_path'] !== $product['image_path']) {
-        $replacementColumnList['image_path'] = $product['image_path'];
-      }
       if ($shoppingProduct['image_digest'] !== $product['image_digest']) {
         $replacementColumnList['image_digest'] = $product['image_digest'];
         SyncShoppingImage::execute(
-          $categoryId, $shoppingProductId, $product['merchant_product_id'], $imagePath
+          $categoryId,
+          $shoppingProductId,
+          $product['merchant_product_id'],
+          $shoppingProduct['image_path']
         );
       }
       if ($shoppingProduct['title'] !== $product['title']) {
@@ -131,26 +131,25 @@ class SyncShoppingProduct {
       //TODO 如果分词算法/字典更新，所有 keywords 都会更新
       if (isset($replacementColumnList['title'])
           || isset($replacementColumnList['category_name'])
-          || isset($replacementColumnList['property_list'])) {
-        $keywordList = explode(' ', $product['keyword_list']);
+          || isset($replacementColumnList['property_list']) || true) {
+        $keywordTextList = self::getList(
+          $product['title'], $categoryName, $shoppingPropertyTextList
+        );
         $keywordListByKey = array();
-        foreach ($keywordList as $keyword) {
+        foreach (explode(' ', $keywordTextList) as $keyword) {
           $keywordListByKey[$keyword] = true;
         }
-        $keywordTextList = self::getList(
-          $product, $categoryName, $shoppingPropertyTextList
-        );
         $currentKeywordList = explode(' ', $keywordTextList);
         $isUpdated = false;
         foreach ($currentKeywordList as $item) {
           if (isset($keywordListByKey[$item])) {
-            unset($keywordListByKey[$itme]);
+            unset($keywordListByKey[$item]);
             continue;
           }
           $isUpdated = true;
           break;
         }
-        if ($isUpdated !== true && count($keywordListByKey) !== 0) {
+        if ($isUpdated === false && count($keywordListByKey) !== 0) {
           $isUpdated = true;
         }
         if ($isUpdated) {
@@ -160,15 +159,21 @@ class SyncShoppingProduct {
       if ($shoppingProduct['value_id_list'] !== $shoppingValueIdTextList) {
         $replacementColumnList['value_id_list'] = $shoppingValueIdTextList;
       }
-      Db::update('product', $replacementColumnList);
-      ShoppingCommandFile::updateProduct($replacementColumnList);
+      if (count($replacementColumnList) > 0) {
+        Db::update(
+          'product', $replacementColumnList, 'id = ?', $shoppingProduct['id']
+        );
+        ShoppingCommandFile::updateProduct(
+          $shoppingProduct['id'], $replacementColumnList
+        );
+      }
     }
   }
 
    private static function getList(
-    $product, $categoryName, $shoppingPropertyTextList
+     $title, $categoryName, $shoppingPropertyTextList
    ) {
-    $keywords = $product['title'];
+    $keywords = $title;
     $keywords .= ' '.$categoryName;
     $keywords .= ' '.$shoppingPropertyTextList;
     $keywords = SegmentationService::execute($keywords);
