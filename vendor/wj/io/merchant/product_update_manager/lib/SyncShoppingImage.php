@@ -18,7 +18,6 @@ class SyncShoppingImage {
     file_put_contents(
       DATA_PATH.'product_image_staging/'.$imagePath.'/'.$shoppingProductId.'.jpg', $image
     );
-    echo DATA_PATH.'product_image_staging/'.$imagePath.'/'.$shoppingProductId.'.jpg';
     return $imagePath;
   }
 
@@ -33,7 +32,6 @@ class SyncShoppingImage {
     $folder = $folder.'/'.$levelTwo;
     if (is_dir(DATA_PATH.'product_image_staging/'.$folder) === false) {
       mkdir(DATA_PATH.'product_image_staging/'.$folder);
-      echo DATA_PATH.'product_image_staging/'.$folder;
     }
     return $folder;
   }
@@ -81,7 +79,7 @@ class SyncShoppingImage {
         .self::$syncFileName.' -C '.DATA_PATH.'product_image_staging '
         .implode(' ', $dirList)
     );
-    //system('rm -rf '.DATA_PATH.'product_image_staging');
-    //system('mkdir '.DATA_PATH.'product_image_staging');
+    system('rm -rf '.DATA_PATH.'product_image_staging');
+    system('mkdir '.DATA_PATH.'product_image_staging');
   }
 }

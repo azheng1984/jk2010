@@ -33,11 +33,11 @@ class ShoppingCommandFile {
     $output .= $product['agency_name'];
     $output .= $product['keyword_list']."\n";
     $output .= $product['value_id_list']."\n";
-    self::outputForPortal($output."\n");
+    self::outputForPortal($output);
   }
 
-  public static function updateProduct($product) {
-    $output = "u\n".$product['id'];
+  public static function updateProduct($id, $product) {
+    $output = "u\n".$id;
     if (isset($product['uri_argument_list'])) {
       $output .= "\n0".$product['uri_argument_list'];
     }
@@ -63,10 +63,10 @@ class ShoppingCommandFile {
       $output .= "\n7".$product['agency_name'];
     }
     if (isset($product['value_id_list'])) {
-      $output .= "\n3".$product['value_id_list'];
+      $output .= "\n8".$product['value_id_list'];
     }
     if (isset($product['keyword_list'])) {
-      $output .= "\n4".$product['keyword_list']."\n";
+      $output .= "\n9".$product['keyword_list'];
     }
     self::outputForPortal($output."\n");
   }
@@ -81,7 +81,6 @@ class ShoppingCommandFile {
 
   public static function finalize() {
     fclose(self::$portalSyncFile);
-    //TODO: check file size if = 0 return
     if (filesize(self::$portalSyncFileName) !== 0) {
       system('gzip '.self::$portalSyncFileName);
     } else {
