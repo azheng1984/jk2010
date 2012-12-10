@@ -2,6 +2,7 @@
 class ShoppingCommandFile {
   private static $portalSyncFileName = '';
   private static $portalSyncFile = null;
+  private static $previousCommand = null;
 
   public static function initialize($merchantId, $categoryId, $version) {
     self::$portalSyncFileName = DATA_PATH.'portal_sync/'.$merchantId.'_'.$categoryId.'_'.$version;
@@ -9,19 +10,39 @@ class ShoppingCommandFile {
   }
 
   public static function insertCategory($id, $name) {
-    self::outputForPortal("c\n".$id."\n".$name."\n");
+    $command = '';
+    if (self::$previousCommand !== 'c') {
+      self::$previousCommand = 'c';
+      $command .= "c\n";
+    }
+    self::outputForPortal($command.$id."\n".$name."\n");
   }
 
   public static function insertPropertyKey($id, $name) {
-    self::outputForPortal("k\n".$id."\n".$name."\n");
+    $command = '';
+    if (self::$previousCommand !== 'k') {
+      self::$previousCommand = 'k';
+      $command .= "k\n";
+    }
+    self::outputForPortal($command.$id."\n".$name."\n");
   }
 
   public static function insertPropertyValue($id, $keyId, $name) {
-    self::outputForPortal("v\n".$id."\n".$keyId."\n".$name."\n");
+    $command = '';
+    if (self::$previousCommand !== 'v') {
+      self::$previousCommand = 'v';
+      $command .= "v\n";
+    }
+    self::outputForPortal($command.$id."\n".$keyId."\n".$name."\n");
   }
 
   public static function insertProduct($product, $id) {
-    $output = "p\n".$id."\n";
+    $output = '';
+    if (self::$previousCommand !== 'p') {
+      self::$previousCommand = 'p';
+      $output = "p\n";
+    }
+    $output .= $id."\n";
     $output .= $product['uri_argument_list']."\n";
     $output .= $product['image_path']."\n";
     $output .= $product['image_digest']."\n";
@@ -30,49 +51,59 @@ class ShoppingCommandFile {
     $output .= $product['price_to_x_100']."\n";
     $output .= $product['category_name']."\n";
     $output .= $product['property_list']."\n\n";
-    $output .= $product['agency_name'];
+    $output .= $product['agency_name']."\n";
     $output .= $product['keyword_list']."\n";
     $output .= $product['value_id_list']."\n";
     self::outputForPortal($output);
   }
 
-  public static function updateProduct($id, $product) {
-    $output = "u\n".$id;
-    if (isset($product['uri_argument_list'])) {
-      $output .= "\n0".$product['uri_argument_list'];
+  public static function updateProduct($id, $replacementColumnList) {
+    $output = '';
+    if (self::$previousCommand !== 'u') {
+      self::$previousCommand = 'u';
+      $output = "u\n";
     }
-    if (isset($product['image_digest'])) {
-      $output .= "\n1".$product['image_digest'];
+    $output = $id;
+    if (isset($replacementColumnList['uri_argument_list'])) {
+      $output .= "\n0".$replacementColumnList['uri_argument_list'];
     }
-    if (isset($product['title'])) {
-      $output .= "\n2".$product['title']."\n";
+    if (isset($replacementColumnList['image_digest'])) {
+      $output .= "\n1".$replacementColumnList['image_digest'];
     }
-    if (isset($product['price_from_x_100'])) {
-      $output .= "\n3".$product['price_from_x_100'];
+    if (isset($replacementColumnList['title'])) {
+      $output .= "\n2".$replacementColumnList['title'];
     }
-    if (isset($product['price_to_x_100'])) {
-      $output .= "\n4".$product['price_to_x_100'];
+    if (isset($replacementColumnList['price_from_x_100'])) {
+      $output .= "\n3".$replacementColumnList['price_from_x_100'];
     }
-    if (isset($product['category_name'])) {
-      $output .= "\n5".$product['category_name'];
+    if (isset($replacementColumnList['price_to_x_100'])) {
+      $output .= "\n4".$replacementColumnList['price_to_x_100'];
     }
-    if (isset($product['property_list'])) {
-      $output .= "\n6".$product['property_list']."\n";
+    if (isset($replacementColumnList['category_name'])) {
+      $output .= "\n5".$replacementColumnList['category_name'];
     }
-    if (isset($product['agency_name'])) {
-      $output .= "\n7".$product['agency_name'];
+    if (isset($replacementColumnList['property_list'])) {
+      $output .= "\n6".$replacementColumnList['property_list']."\n";
     }
-    if (isset($product['value_id_list'])) {
-      $output .= "\n8".$product['value_id_list'];
+    if (isset($replacementColumnList['agency_name'])) {
+      $output .= "\n7".$replacementColumnList['agency_name'];
     }
-    if (isset($product['keyword_list'])) {
-      $output .= "\n9".$product['keyword_list'];
+    if (isset($replacementColumnList['value_id_list'])) {
+      $output .= "\n8".$replacementColumnList['value_id_list'];
     }
-    self::outputForPortal($output."\n");
+    if (isset($replacementColumnList['keyword_list'])) {
+      $output .= "\n9".$replacementColumnList['keyword_list'];
+    }
+    self::outputForPortal($output."\n\n");
   }
 
   public static function deleteProduct($id) {
-    self::outputForPortal("d\n".$id."\n");
+    $command = '';
+    if (self::$previousCommand !== 'd') {
+      self::$previousCommand = 'd';
+      $command = "d\n";
+    }
+    self::outputForPortal($command.$id."\n");
   }
 
   private static function outputForPortal($content) {

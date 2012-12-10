@@ -35,7 +35,7 @@ class SyncShoppingProperty {
         'SELECT * FROM property_value WHERE key_id = ?', $key['id']
       );
       DbConnection::close();
-      foreach ($valueList as $value) {
+      foreach ($valueList as $value) {//TODO:key 和 value 分离，连续操作可以缩小传输文件
         $shoppingValue = Db::getRow(
           'SELECT * FROM property_value WHERE key_id = ? AND name = ?',
           $shoppingKeyId, $value['name']

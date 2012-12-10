@@ -1,28 +1,34 @@
 <?php
-//TODO:打包成一个传输文件，而不是三个
 class SyncFile {
-  private $fileList;
+  private static $comandFileName = null;
+  private static $comandZipFileName = null;
+  private static $imageZipFileName = null;
 
   public static function execute($task) {
-    $suffix = $task['merchant_id'].'_'.$task['category_id'].$task['version'];
-    $this->fileList = array(
-      'portal' => $suffix.'_portal',
-      'product_search' => $suffix.'_product_search'
+    $suffix = $task['merchant_id'].'_'.$task['category_id'].'_'.$task['version'];
+    self::$commandFileName = $suffix;
+    self::$imageZipFileName = $suffix.'.gz';
+    self::$comandZipFileName = $suffix.'.tar.gz';
+    $this->getFile(self::$imageZipFileName);
+    $this->getFile(self::$comandZipFileName);
+    self::system('cd '.DATA_PATH.'sync');
+    self::system('gzip -d '.self::$comandZipFileName);
+    self::system('cd '.IMAGE_PATH);
+    self::system(
+      'tar -zxf '.DATA_PATH.'sync/'.self::$imageZipFileName
     );
-    $this->fileList['portal_remote'] = $this->fileList['portal'].'.tar.gz';
-    $this->fileList['product_search_remote']
-      = $this->fileList['product_search'].'.tar.gz';
-    $this->fileList['image_folder_remote'] = $suffix.'_image_folder.tar.gz';
-    $this->getFile($this->fileList['portal_remote']);
-    system('tar -zxf '.$this->fileList['portal_remote']);
-    $this->getFile($this->fileList['product_search_remote']);
-    system('tar -zxf '.$this->fileList['product_search_remote']);
-    $this->getFile($this->fileList['image_folder_remote']);
-    system('cd '.IMAGE_PATH);
-    system(
-      'tar -zxf '.DATA_PATH.'sync/'.$this->fileList['image_folder_remote']
-    );
-    return $this->fileList;
+  }
+
+  public static function system($command) {
+    $return = null;
+    system($command, $return);
+    if ($return !== 0) {
+      throw new Exception;
+    }
+  }
+
+  public static function getCommandFilePath() {
+    return DATA_PATH.'sync/'.self::$comandFileName;
   }
 
   private static function getFile($fileName) {
@@ -34,20 +40,23 @@ class SyncFile {
       }
       sleep(10);
     }
-    ftp_login($ftp, "shopping_update_manager", "123456")
-      or die('ftp password error');
-    //TODO 为断点续传计算 resumepos
-    if (ftp_get($ftp, $fileName, $fileName, FTP_BINARY) === false) {
+    while (ftp_login($ftp, "t", "t") === false) {
+      sleep(10);
+    }
+    if (ftp_get(
+      $ftp, DATA_PATH.'sync/'.$fileName, $fileName, FTP_BINARY) === false
+    ) {
       ftp_close($ftp);
       $this->getFile();
+      sleep(10);
     }
     ftp_close($ftp);
-    //TODO 计算 md5（ftp 自动校验？）
   }
 
   public static function finialize() {
-    foreach ($this->fileList as $file) {
-      unlink(DATA_PATH.'sync/'.$file);
-    }
+    unlink(DATA_PATH.'sync/'.self::$comandFileName);
+    self::$comandFileName = null;
+    self::$comandZipFileName = null;
+    self::$imageZipFileName = null;
   }
 }

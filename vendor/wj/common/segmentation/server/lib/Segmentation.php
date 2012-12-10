@@ -1,10 +1,10 @@
 <?php
 class Segmentation {
   public static function initialize() {
-    mmseg_load_chars('/home/azheng/wj_vendor/anjuke-php-mmseg-cdbfeb3/data/chars.dic');
-    mmseg_load_words('/home/azheng/wj_vendor/anjuke-php-mmseg-cdbfeb3/data/words-sogou.dic');
-    mmseg_load_words('/home/azheng/wj_vendor/anjuke-php-mmseg-cdbfeb3/data/words-custom.dic');
-    //mmseg_load_words('/home/wz/anjuke-php-mmseg-cdbfeb3/data/words.dic');
+//     mmseg_load_chars('/home/azheng/wj_vendor/anjuke-php-mmseg-cdbfeb3/data/chars.dic');
+//     mmseg_load_words('/home/azheng/wj_vendor/anjuke-php-mmseg-cdbfeb3/data/words-sogou.dic');
+     mmseg_load_words('/home/azheng/wj_vendor/anjuke-php-mmseg-cdbfeb3/data/words-custom.dic');
+//     mmseg_load_words('/home/azheng/wj_vendor/anjuke-php-mmseg-cdbfeb3/data/words.dic');
   }
 
   public static function execute($text) {

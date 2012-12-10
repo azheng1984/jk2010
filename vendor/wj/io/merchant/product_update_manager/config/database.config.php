@@ -10,4 +10,9 @@ return array(
     'username' => 'root',
     'password' => 'a841107!',
   ),
+  'remote' => array(
+      'dsn' => 'mysql:host=localhost;dbname=shopping_update_manager',
+      'username' => 'root',
+      'password' => 'a841107!',
+  ),
 );

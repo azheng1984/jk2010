@@ -63,6 +63,7 @@ class JingdongProductProcessor {
       'merchant_product_id = ?',
       $product['merchant_product_id']
     );
+    //TODO:save to sync file
   }
 
   private function initialize($path) {
@@ -154,6 +155,7 @@ class JingdongProductProcessor {
     }
     print_r($product);
     Db::insert('product', $product);
+    //TODO:save to sync file
   }
 
   private function update($product) {
@@ -189,6 +191,7 @@ class JingdongProductProcessor {
       'merchant_product_id = ?',
       $product['merchant_product_id']
     );
+    //TODO:save to sync file
   }
 
   private function getPrice($merchantProductId) {
@@ -238,11 +241,13 @@ class JingdongProductProcessor {
       ImageDb::update(
         $this->categoryName, $this->merchantProductId, $result['content']
       );
+      //TODO:save to sync file
       return;
     }
     ImageDb::insert(
       $this->categoryName, $this->merchantProductId, $result['content']
     );
+    //TODO:save to sync file
   }
 
   private function getImageDigest() {

@@ -97,7 +97,7 @@ class Db {
   private static function call($parameterList) {
     $connection = DbConnection::getCurrent();
     $sql = array_shift($parameterList);
-    echo $sql.PHP_EOL;
+    //echo $sql.PHP_EOL;
     if (isset($parameterList[0]) && is_array($parameterList[0])) {
       $parameterList = $parameterList[0];
     }

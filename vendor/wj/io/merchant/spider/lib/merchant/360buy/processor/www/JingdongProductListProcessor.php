@@ -144,10 +144,11 @@ class JingdongProductListProcessor {
       ), array(
         '_index' => $keyIndex, 'version' => $GLOBALS['VERSION']
       ), $keyId);
+      //TODO:save to sync file
       for ($valueIndex = 0; $valueIndex < $valueAmount; ++$valueIndex) {
         $valueName = $valueList[$valueIndex];
         if ($valueName === '全部' || $valueName === '其它'
-          || $valueName === '其它'.$keyName || $valueName === '不限') {
+          || $valueName === '其他'.$keyName || $valueName === '不限') {
           continue;
         }
         $valueId = null;
@@ -156,6 +157,7 @@ class JingdongProductListProcessor {
         ), array(
           '_index' => $valueIndex, 'version' => $GLOBALS['VERSION']
         ), $valueId);
+        //TODO:save to sync file
         $path = $valueLinkList[$valueIndex];
         $processor = new JingdongPropertyProductListProcessor(
           $this->categoryId, $valueId
@@ -198,7 +200,7 @@ class JingdongProductListProcessor {
       'no_match_count' => self::$nextPageNoMatchedCount,
       'time' => date('Y-m-d H:i:s')
     ));
-    self::$hasNextPageMatched = 0;
+    self::$nextPageMatchedCount = 0;
     self::$nextPageNoMatchedCount = 0;
     Db::insert('match_log', array(
       'source' => 'JingdongProductListProcessor:property_list',

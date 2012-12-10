@@ -150,7 +150,7 @@ class JingdongPropertyProductListProcessor {
       'time' => date('Y-m-d H:i:s')
     ));
   }
-  
+
   public static function finalize() {
     Db::insert('match_log', array(
       'source' => 'JingdongPropertyProductListProcessor:next_page',
@@ -158,7 +158,7 @@ class JingdongPropertyProductListProcessor {
       'no_match_count' => self::$nextPageNoMatchedCount,
       'time' => date('Y-m-d H:i:s')
     ));
-    self::$hasNextPageMatched = 0;
+    self::$nextPageMatchedCount = 0;
     self::$nextPageNoMatchedCount = 0;
   }
 }

@@ -27,7 +27,7 @@ class RunCommand {
   }
 
   private function cleanHistory() {
-    Db::execute("DELETE FROM history WHERE last_ok_date < '"
+    Db::execute('DELETE FROM history WHERE last_ok_date < "'
       .date('Y-m-d', time() - (100 * 24 * 60 * 60)).'" OR _status = 404');
   }
 

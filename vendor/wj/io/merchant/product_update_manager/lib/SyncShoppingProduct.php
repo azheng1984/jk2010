@@ -28,8 +28,9 @@ class SyncShoppingProduct {
       }
       DbConnection::connect($merchantName);
       $valueList = Db::getAll(
-        'SELECT * FROM product_property_value WHERE merchant_product_id = ?',
-        $product['merchant_product_id']
+        'SELECT * FROM product_property_value'
+          .' WHERE merchant_product_id = ? AND category_id = ?',
+        $product['merchant_product_id'], $categoryId//product 可能会被分到不属于自身 category 的 property value
       );
       DbConnection::close();
       $productPropertyList = array();
@@ -55,7 +56,7 @@ class SyncShoppingProduct {
         $item .= implode("\n", $property['value_list']);
         $shoppingPropertyList[] = $item;
       }
-      $shoppingPropertyTextList = implode("\n", $shoppingPropertyList);
+      $shoppingPropertyTextList = implode("\n\n", $shoppingPropertyList);
       $shoppingValueIdTextList = implode(' ', $shoppingValueIdList);
       $shoppingProduct = Db::getRow(
         'SELECT * FROM product'
@@ -73,7 +74,6 @@ class SyncShoppingProduct {
         $keywordTextList = self::getList(
           $product['title'], $categoryName, $shoppingPropertyTextList
         );
-        $keywordTextList = '';//TODO
         $columnList = array(
           'merchant_id' => 1,//TODO
           'merchant_product_id' => $product['merchant_product_id'],
