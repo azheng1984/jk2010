@@ -2,13 +2,15 @@
 class Command {
   public function execute() {
     for (;;) {
-      $task = Db::getRow('SELECT * FROM task ORDER BY id LIMIT 1');
+      $task = Db::getRow(
+        'SELECT * FROM task WHERE status != "done" ORDER BY id LIMIT 1'
+      );
       if ($task !== false) {
-        if ($task['is_retry'] === '0') {
-          Db::update('task', array('is_retry' => 1), 'id = ?', $task['id']);
+        if ($task['status'] !== 'retry') {
+          Db::update('task', array('status' => 'retry'), 'id = ?', $task['id']);
         }
         $this->sync($task);
-        Db::delete('task', 'id = ?', $task['id']);
+        Db::udpate('task', array('status' => 'done'), 'id = ?', $task['id']);
         continue;
       }
     }
@@ -21,7 +23,7 @@ class Command {
       $syncDb->execute(
         $task['category_id'],
         $task['category_name'],
-        $task['is_retry']
+        $task['status']
       );
       SphinxIndex::indexDelta();
       $this->upgradeIndexVersion();
@@ -30,7 +32,7 @@ class Command {
       SyncFile::finialize();
     } catch (Exception $exception) {
       sleep(10);
-      $task['is_retry'] = '1';
+      $task['status'] = 'retry';
       $this->sync($task);
     }
   }

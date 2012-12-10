@@ -1,10 +1,12 @@
 <?php
-//TODO 删除 category name 中的 "其它" 前缀
 class RunCommand {
   private $versionInfo;
 
   public function execute() {
     Lock::execute();
+    //clean ftp folder
+    ShoppingCommandFile::clean();
+    SyncShoppingImage::clean();
     Db::execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
     $GLOBALS['VERSION'] = $this->getVersion();
     for (;;) {
@@ -15,7 +17,7 @@ class RunCommand {
         continue;
       }
       Db::beginTransaction();
-      if ($task['category_name'] === ' LAST') {
+      if ($task['category_name'] === '<LAST>') {
         $this->updateVersionInfo('jingdong');
         $this->removeTask($task['id']);
         continue;
@@ -25,9 +27,11 @@ class RunCommand {
         $task['category_name'], $isNew
       );
       ShoppingCommandFile::initialize(
-        1, $shoppingCategoryId, $task['version']
+        $task['id'], 1, $shoppingCategoryId, $task['version']
       );
-      SyncShoppingImage::initialize(1, $shoppingCategoryId, $task['version']);
+      SyncShoppingImage::initialize(
+        $task['id'], 1, $shoppingCategoryId, $task['version']
+      );
       if ($isNew) {
         ShoppingCommandFile::insertCategory(
           $shoppingCategoryId, $task['category_name']
@@ -45,11 +49,13 @@ class RunCommand {
       );
       ShoppingCommandFile::finalize();
       SyncShoppingImage::finalize();
-      ShoppingRemoteTask::add($shoppingCategoryId, 1, $task['version']);
+      ShoppingRemoteTask::add(
+        $task['id'], $shoppingCategoryId, 1, $task['version']
+      );
       $this->removeTask($task['id']);
       exit;
       Db::commit();
-      //TODO catch > rallback db & clean file
+      //TODO catch > rallback db
     }
   }
 

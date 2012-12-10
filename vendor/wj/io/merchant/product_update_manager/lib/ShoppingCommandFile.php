@@ -4,8 +4,11 @@ class ShoppingCommandFile {
   private static $portalSyncFile = null;
   private static $previousCommand = null;
 
-  public static function initialize($merchantId, $categoryId, $version) {
-    self::$portalSyncFileName = DATA_PATH.'portal_sync/'.$merchantId.'_'.$categoryId.'_'.$version;
+  public static function initialize(
+    $taskId, $merchantId, $categoryId, $version
+  ) {
+    self::$portalSyncFileName = DATA_PATH.'portal_sync/'
+      .$taskId.'_'.$merchantId.'_'.$categoryId.'_'.$version;
     self::$portalSyncFile = fopen(self::$portalSyncFileName, 'w');
   }
 
@@ -117,5 +120,9 @@ class ShoppingCommandFile {
     } else {
       unlink(self::$portalSyncFileName);
     }
+  }
+
+  public static function clean() {
+    
   }
 }

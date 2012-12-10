@@ -1,18 +1,19 @@
 <?php
 class SyncFile {
-  private static $comandFileName = null;
-  private static $comandZipFileName = null;
+  private static $commandFileName = null;
+  private static $commandZipFileName = null;
   private static $imageZipFileName = null;
 
   public static function execute($task) {
-    $suffix = $task['merchant_id'].'_'.$task['category_id'].'_'.$task['version'];
+    $suffix = $task['id'].'_'
+      .$task['merchant_id'].'_'.$task['category_id'].'_'.$task['version'];
     self::$commandFileName = $suffix;
     self::$imageZipFileName = $suffix.'.gz';
-    self::$comandZipFileName = $suffix.'.tar.gz';
+    self::$commandZipFileName = $suffix.'.tar.gz';
     $this->getFile(self::$imageZipFileName);
-    $this->getFile(self::$comandZipFileName);
+    $this->getFile(self::$commandZipFileName);
     self::system('cd '.DATA_PATH.'sync');
-    self::system('gzip -d '.self::$comandZipFileName);
+    self::system('gzip -d '.self::$commandZipFileName);
     self::system('cd '.IMAGE_PATH);
     self::system(
       'tar -zxf '.DATA_PATH.'sync/'.self::$imageZipFileName
@@ -28,7 +29,7 @@ class SyncFile {
   }
 
   public static function getCommandFilePath() {
-    return DATA_PATH.'sync/'.self::$comandFileName;
+    return DATA_PATH.'sync/'.self::$commandFileName;
   }
 
   private static function getFile($fileName) {
@@ -54,9 +55,9 @@ class SyncFile {
   }
 
   public static function finialize() {
-    unlink(DATA_PATH.'sync/'.self::$comandFileName);
-    self::$comandFileName = null;
-    self::$comandZipFileName = null;
+    unlink(self::getCommandFilePath());
+    self::$commandFileName = null;
+    self::$commandZipFileName = null;
     self::$imageZipFileName = null;
   }
 }
