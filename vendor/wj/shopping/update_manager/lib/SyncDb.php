@@ -1,36 +1,56 @@
 <?php
 class SyncDb {
   private $file;
+  private $categoryId;
+  private $categoryName;
+  private $isRetry;
 
-  public static function execute($fileName, $categoryId, $categoryName) {
-    $this->file = file(DATA_PATH.'sync/'.$fileName, 'r');
+  public function execute($categoryId, $categoryName, $isRetry) {
+    $this->categoryId = $categoryId;
+    $this->categoryName = $categoryName;
+    $this->isRetry = $isRetry === '1' ? true : false;
+    $this->file = file(SyncFile::getCommandFilePath(), 'r');
+    $command = null;
+    $previousCommand = null;
+    DbConnection::connect('portal');
     while(feof($this->file) !== true) {
       $command = fgets($this->file);
       if ($command === '') {
         continue;
       }
-      switch($command) {
-        case 'c':
-          $this->insertCategory();
-          break;
-        case 'k':
-          $this->insertKey();
-          break;
-        case 'v':
-          $this->insertValue();
-          break;
-        case 'p':
-          $this->insertProduct($categoryId, $categoryName);
-          break;
-        case 'u':
-          $this->updateProcuct($categoryId, $categoryName);
-          break;
-        case 'd':
-          $this->deleteProduct();
-          break;
+      if ($this->executeCommand($command) === false) {
+        $this->executeCommand($previousCommand, $command);
       }
+      $previousCommand = $command;
     }
+    DbConnection::close();
     fclose($this->file);
+  }
+
+  private function executeCommand($command, $id = null) {
+    switch($command) {
+      case 'c':
+        $this->insertCategory();
+        break;
+      case 'k':
+        $this->insertKey($id);
+        break;
+      case 'v':
+        $this->insertValue($id);
+        break;
+      case 'p':
+        $this->insertProduct($id);
+        break;
+      case 'u':
+        $this->updateProcuct($id);
+        break;
+      case 'd':
+        $this->deleteProduct($id);
+        break;
+      default:
+        return false;
+    }
+    return true;
   }
 
   public static function merge() {
@@ -42,15 +62,60 @@ class SyncDb {
         break;
       }
       $id = null;
-      foreach ($productList as $product) {
-        $id = $product['id'];
-        unset($product['id']);
-        if ($product['price_from_x_100'] === null) {
-          Db::delete('product', $product, 'id = ?', $id);
+      foreach ($productList as $productDelta) {
+        $id = $productDelta['id'];
+        unset($productDelta['id']);
+        if ($productDelta['price_from_x_100'] === null) {
           $imagePath = Db::getColumn('SELECT image_path FROM product WHERE id = ?', $id);
           unlink(IMAGE_PATH.$imagePath.'/'.$id.'.jpg');
+          Db::delete('product', $productDelta, 'id = ?', $id);
+          DbConnection::connect('search');
+          Db::delete('product', $productDelta, 'id = ?', $id);
+          DbConnection::close();
+          continue;
         }
-        Db::update('product', $product, 'id = ?', $id);
+        $product = array(
+          'id' => $productDelta['id']
+        );
+        if ($productDelta['title'] !== null) {
+          $product['title'] = $product['title'];
+        }
+        if ($productDelta['price_from_x_100'] !== null) {
+          $product['price_from_x_100'] = $productDelta['price_from_x_100'];
+          $productSearch = $productDelta['price_from_x_100'];
+        }
+        if ($productDelta['category_name'] !== null) {
+          $product['category_name'] = $productDelta['category_name'];
+        }
+        if ($productDelta['property_list'] !== null) {
+          $product['property_list'] = $productDelta['property_list'];
+        }
+        if ($product['value_id_list'] !== null) {
+          $productSearch['value_id_list'] = $productDelta['value_id_list'];
+        }
+        if ($product['keyword_list'] !== null) {
+          $productSearch['keyword_list'] = $productDelta['keyword_list'];
+        }
+        if ($product['popularity_rank'] !== null) {
+          $productSearch['popularity_rank'] = $productDelta['popularity_rank'];
+        }
+        Db::update('product', $productDelta, 'id = ?', $id);
+        if ($this->isRetry) {
+          DbConnection::connect('search');
+          Db::bind('product', array('id' => $id), $productSearch);
+          DbConnection::close();
+          continue;
+        }
+        $productSearch['id'] = $id;
+        if ($productDelta['is_new'] === '1') {
+          DbConnection::connect('search');
+          Db::insert('product', $productSearch);
+          DbConnection::close();
+          continue;
+        }
+        DbConnection::connect('search');
+        Db::update('product', $productSearch, 'id = ?', $id);
+        DbConnection::close();
       }
       DbConnection::connect('delta');
       Db::delete('product', 'id <= ?', $id);
@@ -58,39 +123,74 @@ class SyncDb {
     }
   }
 
-  private static function insertCategory() {
-    $id = fgets($this->file);
-    $name = fgets($this->file);
-    Db::insert('category', array('id' => $id, 'name' => $name));
+  private function insertCategory() {
+    if ($this->$isRetry) {
+      Db::bind(
+        'category',
+        array('id' => $this->categoryId),
+        array('name' => $this->categoryName)
+      );
+      return;
+    }
+    Db::insert('category', array(
+      'id' => $this->categoryId,
+      'name' => $this->categoryName
+    ));
   }
 
-  private static function insertKey() {
-    $id = fgets($this->file);
+  private function insertKey($id) {
+    if (id === null) {
+      $id = fgets($this->file);
+    }
     $name = fgets($this->file);
+    if ($this->$isRetry) {
+      Db::bind(
+        'property_key',
+        array('id' => $id),
+        array('name' => $name)
+      );
+      return;
+    }
     Db::insert('property_key', array('id' => $id, 'name' => $name));
   }
 
-  private static function insertValue() {
-    $id = fgets($this->file);
+  private function insertValue($id) {
+    if (id === null) {
+      $id = fgets($this->file);
+    }
     $keyId = fgets($this->file);
     $name = fgets($this->file);
+    if ($this->$isRetry) {
+      Db::bind(
+        'property_value',
+        array('id' => $id),
+        array('key_id'=>$keyId, 'name' => $name)
+      );
+      return;
+    }
     Db::insert(
       'property_value', array('id' => $id, 'name' => $name, 'key_id'=>$keyId)
     );
   }
 
-  private static function insertProduct($categoryName) {
+  private function insertProduct($id) {
+    if ($id === null) {
+      $id = fgets($this->file);
+    }
     $product = array();
+    $productDelta = array('is_new' => true);
     $product['uri_argument_list'] = fgets($this->file);
     $product['image_path'] = fgets($this->file);
     $product['image_digest'] = fgets($this->file);
     $product['title'] = fgets($this->file);
     $product['price_from_x_100'] = fgets($this->file);
+    $productDelta['price_from_x_100'] = $product['price_from_x_100'];
     $product['price_to_x_100'] = fgets($this->file);
     if ($product['price_to_x_100'] === '') {
       unset($product['price_to_x_100']);
     }
-    $product['category_name'] = $categoryName;
+    $product['category_name'] = $this->categoryName;
+    $productDelta['category_id'] = $this->categoryId;
     $propertyList = array();
     for (;;) {
       $line = fgets($this->file);
@@ -101,17 +201,30 @@ class SyncDb {
     }
     $product['property_list'] = implode("\n", $propertyList);
     $product['agency_name'] = fgets($this->file);
-    if ($product['agency_name'] === '') {
-      unset($product['agency_name']);
+    $productDelta['keyword_list'] = fgets($this->file);
+    $productDelta['value_id_list'] = fgets($this->file);
+    if ($this->$isRetry) {
+      DbConnection::connect('delta');
+      Db::bind('product', array('id' => $id), $productDelta);
+      DbConnection::close();
+      Db::bind('product', array('id' => $id), $product);
+      return;
     }
+    DbConnection::connect('delta');
+    $productDelta['id'] = $id;
+    Db::insert('product', array('id' => $id), $productDelta);
+    DbConnection::close();
+    $product['id'] = $id;
     Db::insert('product', $product);
   }
 
-  private static function updateProcuct($categoryId, $categoryName) {
+  private function updateProcuct($id) {
+    if ($id === null) {
+      $id = fgets($this->file);
+    }
     $product = array();
     $productDelta = array();
     $productSearch = array();
-    $id = fgets($this->file);
     for(;;) {
       $line = fgets($this->file);
       if ($line === '') {
@@ -129,8 +242,6 @@ class SyncDb {
           break;
         case '3':
           $productDelta['price_from_x_100'] = fgets($this->file);
-          $productSearch['price_from_x_100'] =
-            $productDelta['price_from_x_100'];
           break;
         case '4':
           $product['price_to_x_100'] = fgets($this->file);
@@ -139,8 +250,7 @@ class SyncDb {
           }
           break;
         case '5':
-          $productDelta['category_name'] = $categoryName;
-          $productSearch['category_id'] = $categoryId;
+          $productDelta['category_name'] = $this->categoryName;
           break;
         case '6':
           $propertyList = array();
@@ -155,48 +265,38 @@ class SyncDb {
           break;
         case '7':
           $product['agency_name'] = fgets($this->file);
-          if ($product['agency_name'] === '') {
-            $product['agency_name'] = null;
-          }
           break;
         case '8':
-          $productSearch['keyword_list'] = fgets($this->file);
-          if ($productSearch['keyword_list'] === '') {
-            $productSearch['keyword_list'] = null;
-          }
+          $productDelta['keyword_list'] = fgets($this->file);
           break;
         case '9':
-          $productSearch['value_id_list'] = fgets($this->file);
-          if ($productSearch['value_id_list'] === '') {
-            $productSearch['value_id_list'] = null;
-          }
+          $productDelta['value_id_list'] = fgets($this->file);
           break;
       }
     }
-    if (count($product) !== 0) {
-      Db::update('product', $product, 'id = ?', $product['id']);
+    if (count($product) > 0) {
+      Db::update('product', $product, 'id = ?', $id);
     }
-    if (count($productDelta) !== 0) {
+    if (count($productDelta) > 0) {
+      if ($this->isRetry) {
+        DbConnection::connect('delta');
+        Db::bind('product', array('id' => $id), $productDelta);
+        DbConnection::close();
+        return;
+      }
       $productDelta['id'] = $id;
       DbConnection::connect('delta');
       Db::insert('product', $productDelta);
       DbConnection::close();
     }
-    if (count($productSearch) !== 0) {
-      $productSearch['is_updated'] = true;
-      DbConnection::connect('product_search');
-      Db::update('product', $productSearch, 'id = ?', $id);
-      DbConnection::close();
-    }
   }
 
-  private static function deleteProduct() {
-    $id = fgets($this->file);
+  private function deleteProduct($id) {
+    if (id === null) {
+      $id = fgets($this->file);
+    }
     DbConnection::connect('delta');
     Db::insert('product', 'id = ?', $id);
-    DbConnection::close();
-    DbConnection::connect('product_search');
-    Db::delete('product', 'id = ?', $id);
     DbConnection::close();
   }
 }

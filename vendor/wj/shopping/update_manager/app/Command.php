@@ -1,28 +1,36 @@
 <?php
-//TODO: 如果有失败执行，使用 replace 代替 insert(幂等)
 class Command {
   public function execute() {
     for (;;) {
       $task = Db::getRow('SELECT * FROM task ORDER BY id LIMIT 1');
       if ($task !== false) {
+        if ($task['is_retry'] === '0') {
+          Db::update('task', array('is_retry' => 1), 'id = ?', $task['id']);
+        }
         $this->sync($task);
         Db::delete('task', 'id = ?', $task['id']);
         continue;
       }
-      sleep(10);
     }
   }
 
   private function sync($task) {
     try {
-      $fileList = SyncFile::execute($task);
-      SyncDb::execute($fileList['portal']);
+      SyncFile::execute($task);
+      $syncDb = new SyncDb;
+      $syncDb->execute(
+        $task['category_id'],
+        $task['category_name'],
+        $task['is_retry']
+      );
       SphinxIndex::indexDelta();
       $this->upgradeIndexVersion();
       SyncDb::merge();
       $this->upgradePortalVersion();
       SyncFile::finialize();
     } catch (Exception $exception) {
+      sleep(10);
+      $task['is_retry'] = '1';
       $this->sync($task);
     }
   }

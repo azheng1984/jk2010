@@ -1,5 +1,4 @@
 <?php
-//TODO 修改 所有 table 成 innodb 类型
 //TODO 删除 category name 中的 "其它" 前缀
 class RunCommand {
   private $versionInfo;
@@ -9,16 +8,18 @@ class RunCommand {
     Db::execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
     $GLOBALS['VERSION'] = $this->getVersion();
     for (;;) {
+      ShoppingRemoteTask::check();
       $task = $this->getNextTask();
       if ($task === false) {
         sleep(10);
         continue;
       }
+      Db::beginTransaction();
       if ($task['category_name'] === ' LAST') {
-        $this->updateVersion('jingdong');
+        $this->updateVersionInfo('jingdong');
+        $this->removeTask($task['id']);
         continue;
       }
-      Db::beginTransaction();
       $isNew = null;
       $shoppingCategoryId = SyncShoppingCategory::getCategoryId(
         $task['category_name'], $isNew
@@ -42,19 +43,13 @@ class RunCommand {
         $task['version'],
         $task['merchant_name']
       );
-      SyncShoppingProduct::execute(
-        $task['category_name'],
-        $shoppingCategoryId,
-        $propertyList,
-        $task['version'],
-        $task['merchant_name']
-      );
       ShoppingCommandFile::finalize();
       SyncShoppingImage::finalize();
-      sleep(100);
       ShoppingRemoteTask::add($shoppingCategoryId, 1, $task['version']);
       $this->removeTask($task['id']);
+      exit;
       Db::commit();
+      //TODO catch > rallback db & clean file
     }
   }
 
@@ -66,7 +61,7 @@ class RunCommand {
     Db::delete('task', 'id = ?', $id);
   }
 
-  private function updateVersion($merchantName) {
+  private function updateVersionInfo($merchantName) {
     $this->versionInfo['merchant'][$merchantName] = true;
     $merchantList = array('jingdong'); //TODO:配置
     $isUpdate = true;

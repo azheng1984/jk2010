@@ -39,7 +39,7 @@ class JingdongCategoryListProcessor {
       $this->upgradeCategoryVersion();
     }
     $categoryList = Db::getAll(
-      'SELECT * FROM category WHERE version != ?', $GLOBALS['version']
+      'SELECT * FROM category WHERE version != ?', $GLOBALS['VERSION']
     );
     foreach ($categoryList as $category) {
       $this->categoryId = $category['id'];
@@ -59,7 +59,16 @@ class JingdongCategoryListProcessor {
       $this->cleanProductPropertyValue();
       $this->addProductUpdateManagerTask();
     }
-    $this->addProductUpdateManagerTask(' LAST');
+    $this->categoryName = '+LAST';
+    DbConnection::connect('update_manager');
+    $id = Db::getColumn(
+      'SELECT id FROM task WHERE merchant_name = ? AND category_name = ?',
+      'jingdong', $this->categoryName
+    );
+    if ($id === false) {
+      $this->addProductUpdateManagerTask();
+    }
+    DbConnection::close();
   }
 
   private function parseCategory($url, $html) {
@@ -104,6 +113,7 @@ class JingdongCategoryListProcessor {
       if ($id === false) {
         break;
       }
+      echo 'waiting for update manager...'.PHP_EOL;
       sleep(10);
     }
     DbConnection::close();
@@ -119,16 +129,17 @@ class JingdongCategoryListProcessor {
   }
 
   private function executeHistory() {
-    $historyIdList = Db::getAll(
+    $historyList = Db::getAll(
       'SELECT id FROM history WHERE category_id = ? AND version != ?',
       $this->categoryId, $GLOBALS['VERSION']
     );
-    if (count($historyIdList) === 0) {
+    if (count($historyList) === 0) {
       return false;
     }
-    foreach ($historyIdList as $historyId) {
+    //TODO: 分批执行
+    foreach ($historyList as $history) {
       $history = Db::getRow(
-        'SELECT processor, path, version FROM history WHERE id = ?', $historyId
+        'SELECT processor, path, version FROM history WHERE id = ?', $history['id']
       );
       if ($history['version'] === $GLOBALS['VERSION']) {
         continue;
