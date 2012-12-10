@@ -1,7 +1,8 @@
 <?php
 class ShoppingRemoteTask {
-  static public function add($categoryId, $merchantId, $version) {
+  static public function add($id, $categoryId, $merchantId, $version) {
     $currentRemoteTask = array(
+      'id' => $id,
       'merchant_id' => $merchantId,
       'category_id' => $categoryId,
       'version' => $version

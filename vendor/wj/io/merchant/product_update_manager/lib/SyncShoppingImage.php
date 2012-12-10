@@ -2,8 +2,11 @@
 class SyncShoppingImage {
   private static $syncFileName = null;
 
-  public static function initialize($merchantId, $categoryId, $version) {
-    self::$syncFileName = $merchantId.'_'.$categoryId.'_'.$version.'.tar.gz';
+  public static function initialize(
+    $taskId, $merchantId, $categoryId, $version
+  ) {
+    self::$syncFileName =
+      $taskId.'_'.$merchantId.'_'.$categoryId.'_'.$version.'.tar.gz';
     system('rm -rf '.DATA_PATH.'product_image_staging');
     system('mkdir '.DATA_PATH.'product_image_staging');
     if (file_exists(DATA_PATH.'product_image_sync/'.self::$syncFileName)) {
@@ -81,5 +84,9 @@ class SyncShoppingImage {
     );
     system('rm -rf '.DATA_PATH.'product_image_staging');
     system('mkdir '.DATA_PATH.'product_image_staging');
+  }
+
+  public static function clean() {
+    
   }
 }

@@ -1,4 +1,5 @@
 <?php
+//TODO 删除 category name 中的 "其它" 前缀
 class JingdongCategoryListProcessor {
   private $categoryId;
   private $categoryName;
@@ -59,7 +60,7 @@ class JingdongCategoryListProcessor {
       $this->cleanProductPropertyValue();
       $this->addProductUpdateManagerTask();
     }
-    $this->categoryName = '+LAST';
+    $this->categoryName = '<LAST>';
     DbConnection::connect('update_manager');
     $id = Db::getColumn(
       'SELECT id FROM task WHERE merchant_name = ? AND category_name = ?',

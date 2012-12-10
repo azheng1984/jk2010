@@ -5,10 +5,10 @@ class SyncDb {
   private $categoryName;
   private $isRetry;
 
-  public function execute($categoryId, $categoryName, $isRetry) {
+  public function execute($categoryId, $categoryName, $status) {
     $this->categoryId = $categoryId;
     $this->categoryName = $categoryName;
-    $this->isRetry = $isRetry === '1' ? true : false;
+    $this->isRetry = ($status === 'retry' ? true : false);
     $this->file = file(SyncFile::getCommandFilePath(), 'r');
     $command = null;
     $previousCommand = null;
