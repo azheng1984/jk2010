@@ -1,4 +1,5 @@
 <?php
+//手工测试 update
 class SyncDb {
   private $file;
   private $categoryId;
@@ -8,20 +9,27 @@ class SyncDb {
   public function execute($categoryId, $categoryName, $status) {
     $this->categoryId = $categoryId;
     $this->categoryName = $categoryName;
-    $this->isRetry = ($status === 'retry' ? true : false);
-    $this->file = file(SyncFile::getCommandFilePath(), 'r');
+    $this->isRetry = $status === 'retry' ? true : false;
+    $this->file = fopen(SyncFile::getCommandFilePath(), 'r');
+    if ($this->file === null) {
+      throw new Exception;
+    }
     $command = null;
     $previousCommand = null;
     DbConnection::connect('portal');
-    while(feof($this->file) !== true) {
-      $command = fgets($this->file);
+    for (;;) {
+      $command = substr(fgets($this->file), 0, -1);
+      if ($command === false) {
+        break;
+      }
       if ($command === '') {
         continue;
       }
-      if ($this->executeCommand($command) === false) {
-        $this->executeCommand($previousCommand, $command);
+      if ($this->executeCommand($command) === true) {
+        $previousCommand = $command;
+        continue;
       }
-      $previousCommand = $command;
+      $this->executeCommand($previousCommand, $command);
     }
     DbConnection::close();
     fclose($this->file);
@@ -50,10 +58,11 @@ class SyncDb {
       default:
         return false;
     }
+    echo $command;
     return true;
   }
 
-  public static function merge() {
+  public function merge() {
     for (;;) {
       DbConnection::connect('delta');
       $productList = Db::getAll('SELECT * FROM product ORDER BY id LIMIT 1000');
@@ -124,7 +133,7 @@ class SyncDb {
   }
 
   private function insertCategory() {
-    if ($this->$isRetry) {
+    if ($this->isRetry) {
       Db::bind(
         'category',
         array('id' => $this->categoryId),
@@ -139,11 +148,11 @@ class SyncDb {
   }
 
   private function insertKey($id) {
-    if (id === null) {
-      $id = fgets($this->file);
+    if ($id === null) {
+      $id = substr(fgets($this->file), 0, -1);
     }
-    $name = fgets($this->file);
-    if ($this->$isRetry) {
+    $name = substr(fgets($this->file), 0, -1);
+    if ($this->isRetry) {
       Db::bind(
         'property_key',
         array('id' => $id),
@@ -155,12 +164,12 @@ class SyncDb {
   }
 
   private function insertValue($id) {
-    if (id === null) {
-      $id = fgets($this->file);
+    if ($id === null) {
+      $id = substr(fgets($this->file), 0, -1);
     }
-    $keyId = fgets($this->file);
-    $name = fgets($this->file);
-    if ($this->$isRetry) {
+    $keyId = substr(fgets($this->file), 0, -1);
+    $name = substr(fgets($this->file), 0, -1);
+    if ($this->isRetry) {
       Db::bind(
         'property_value',
         array('id' => $id),
@@ -175,17 +184,17 @@ class SyncDb {
 
   private function insertProduct($id) {
     if ($id === null) {
-      $id = fgets($this->file);
+      $id = substr(fgets($this->file), 0, -1);
     }
     $product = array();
     $productDelta = array('is_new' => true);
-    $product['uri_argument_list'] = fgets($this->file);
-    $product['image_path'] = fgets($this->file);
-    $product['image_digest'] = fgets($this->file);
-    $product['title'] = fgets($this->file);
-    $product['price_from_x_100'] = fgets($this->file);
+    $product['uri_argument_list'] = substr(fgets($this->file), 0, -1);
+    $product['image_path'] = substr(fgets($this->file), 0, -1);
+    $product['image_digest'] = substr(fgets($this->file), 0, -1);
+    $product['title'] = substr(fgets($this->file), 0, -1);
+    $product['price_from_x_100'] = substr(fgets($this->file), 0, -1);
     $productDelta['price_from_x_100'] = $product['price_from_x_100'];
-    $product['price_to_x_100'] = fgets($this->file);
+    $product['price_to_x_100'] = substr(fgets($this->file), 0, -1);
     if ($product['price_to_x_100'] === '') {
       unset($product['price_to_x_100']);
     }
@@ -193,17 +202,22 @@ class SyncDb {
     $productDelta['category_id'] = $this->categoryId;
     $propertyList = array();
     for (;;) {
-      $line = fgets($this->file);
+      $line = substr(fgets($this->file), 0, -1);
       if ($line === '') {
-        break;
+        
+        $line = substr(fgets($this->file), 0, -1);
+        if ($line === '') {
+          break;
+        }
+        $propertyList[] = '';
       }
       $propertyList[] = $line;
     }
     $product['property_list'] = implode("\n", $propertyList);
-    $product['agency_name'] = fgets($this->file);
-    $productDelta['keyword_list'] = fgets($this->file);
-    $productDelta['value_id_list'] = fgets($this->file);
-    if ($this->$isRetry) {
+    $product['agency_name'] = substr(fgets($this->file), 0, -1);
+    $productDelta['keyword_list'] = substr(fgets($this->file), 0, -1);
+    $productDelta['value_id_list'] = substr(fgets($this->file), 0, -1);
+    if ($this->isRetry) {
       DbConnection::connect('delta');
       Db::bind('product', array('id' => $id), $productDelta);
       DbConnection::close();
@@ -220,31 +234,31 @@ class SyncDb {
 
   private function updateProcuct($id) {
     if ($id === null) {
-      $id = fgets($this->file);
+      $id = substr(fgets($this->file), 0, -1);
     }
     $product = array();
     $productDelta = array();
     $productSearch = array();
     for(;;) {
-      $line = fgets($this->file);
+      $line = substr(fgets($this->file), 0, -1);
       if ($line === '') {
         break;
       }
       switch ($line) {
         case '0':
-          $product['uri_argument_list'] = fgets($this->file);
+          $product['uri_argument_list'] = substr(fgets($this->file), 0, -1);
           break;
         case '1':
-          $product['image_digest'] = fgets($this->file);
+          $product['image_digest'] = substr(fgets($this->file), 0, -1);
           break;
         case '2':
-          $productDelta['title'] = fgets($this->file);
+          $productDelta['title'] = substr(fgets($this->file), 0, -1);
           break;
         case '3':
-          $productDelta['price_from_x_100'] = fgets($this->file);
+          $productDelta['price_from_x_100'] = substr(fgets($this->file), 0, -1);
           break;
         case '4':
-          $product['price_to_x_100'] = fgets($this->file);
+          $product['price_to_x_100'] = substr(fgets($this->file), 0, -1);
           if ($product['price_to_x_100'] === '') {
             $product['price_to_x_100'] = null;
           }
@@ -255,22 +269,26 @@ class SyncDb {
         case '6':
           $propertyList = array();
           for (;;) {
-            $line = fgets($this->file);
+            $line = substr(fgets($this->file), 0, -1);
             if ($line === '') {
-              break;
+              $line = substr(fgets($this->file), 0, -1);
+              if ($line === '') {
+                break;
+              }
+              $propertyList[] = '';
             }
             $propertyList[] = $line;
           }
           $productDelta['property_list'] = implode("\n", $propertyList);
           break;
         case '7':
-          $product['agency_name'] = fgets($this->file);
+          $product['agency_name'] = substr(fgets($this->file), 0, -1);
           break;
         case '8':
-          $productDelta['keyword_list'] = fgets($this->file);
+          $productDelta['keyword_list'] = substr(fgets($this->file), 0, -1);
           break;
         case '9':
-          $productDelta['value_id_list'] = fgets($this->file);
+          $productDelta['value_id_list'] = substr(fgets($this->file), 0, -1);
           break;
       }
     }
@@ -292,8 +310,8 @@ class SyncDb {
   }
 
   private function deleteProduct($id) {
-    if (id === null) {
-      $id = fgets($this->file);
+    if ($id === null) {
+      $id = substr(fgets($this->file), 0, -1);
     }
     DbConnection::connect('delta');
     Db::insert('product', 'id = ?', $id);

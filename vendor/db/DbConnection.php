@@ -2,11 +2,11 @@
 class DbConnection {
   private static $current = null;
   private static $pool = array();
-  private static $stack;
+  private static $stack = array();
   private static $factory;
 
   public static function connect(
-    $name = 'default', $pdo = null, $isPersistent = true
+    $name = 'default', $pdo = null, $isReusable = true
   ) {
     if (self::$current !== null) {
       self::$stack[] = self::$current;
@@ -15,7 +15,7 @@ class DbConnection {
       $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
     if ($pdo === null) {
-      $pdo = self::get($name, $isPersistent);
+      $pdo = self::build($name, $isReusable);
     }
     self::$current = $pdo;
   }
@@ -28,6 +28,12 @@ class DbConnection {
     self::$current = null;
   }
 
+  public static function closeAll() {
+    while (self::$current !== null) {
+      self::close();
+    }
+  }
+
   public static function getCurrent() {
     if (self::$current === null) {
       self::connect();
@@ -36,19 +42,19 @@ class DbConnection {
   }
 
   public static function reset() {
-    unset(self::$current);
-    unset(self::$factory);
-    unset(self::$pool);
-    unset(self::$stack);
+    self::$current = null;
+    self::$stack = array();
+    self::$pool = array();
+    self::$factory = null;
   }
 
-  private static function get($name, $isPersistent) {
-    if (isset(self::$pool[$name])) {
+  private static function build($name, $isReusable) {
+    if ($isReusable && isset(self::$pool[$name])) {
       return self::$pool[$name];
     }
     $pdo = self::getFactory()->get($name);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    if ($isPersistent) {
+    if ($isReusable) {
       self::$pool[$name] = $pdo;
     }
     return $pdo;

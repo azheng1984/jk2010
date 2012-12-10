@@ -12,13 +12,8 @@ class ShoppingCommandFile {
     self::$portalSyncFile = fopen(self::$portalSyncFileName, 'w');
   }
 
-  public static function insertCategory($id, $name) {
-    $command = '';
-    if (self::$previousCommand !== 'c') {
-      self::$previousCommand = 'c';
-      $command .= "c\n";
-    }
-    self::outputForPortal($command.$id."\n".$name."\n");
+  public static function insertCategory() {
+    self::outputForPortal("c\n");
   }
 
   public static function insertPropertyKey($id, $name) {
@@ -52,8 +47,7 @@ class ShoppingCommandFile {
     $output .= $product['title']."\n";
     $output .= $product['price_from_x_100']."\n";
     $output .= $product['price_to_x_100']."\n";
-    $output .= $product['category_name']."\n";
-    $output .= $product['property_list']."\n\n";
+    $output .= $product['property_list']."\n\n\n";
     $output .= $product['agency_name']."\n";
     $output .= $product['keyword_list']."\n";
     $output .= $product['value_id_list']."\n";
@@ -66,36 +60,36 @@ class ShoppingCommandFile {
       self::$previousCommand = 'u';
       $output = "u\n";
     }
-    $output = $id;
+    $output .= $id."\n";
     if (isset($replacementColumnList['uri_argument_list'])) {
-      $output .= "\n0".$replacementColumnList['uri_argument_list'];
+      $output .= "\n0\n".$replacementColumnList['uri_argument_list'];
     }
     if (isset($replacementColumnList['image_digest'])) {
-      $output .= "\n1".$replacementColumnList['image_digest'];
+      $output .= "\n1\n".$replacementColumnList['image_digest'];
     }
     if (isset($replacementColumnList['title'])) {
-      $output .= "\n2".$replacementColumnList['title'];
+      $output .= "\n2\n".$replacementColumnList['title'];
     }
     if (isset($replacementColumnList['price_from_x_100'])) {
-      $output .= "\n3".$replacementColumnList['price_from_x_100'];
+      $output .= "\n3\n".$replacementColumnList['price_from_x_100'];
     }
     if (isset($replacementColumnList['price_to_x_100'])) {
-      $output .= "\n4".$replacementColumnList['price_to_x_100'];
+      $output .= "\n4\n".$replacementColumnList['price_to_x_100'];
     }
     if (isset($replacementColumnList['category_name'])) {
-      $output .= "\n5".$replacementColumnList['category_name'];
+      $output .= "\n5";
     }
     if (isset($replacementColumnList['property_list'])) {
-      $output .= "\n6".$replacementColumnList['property_list']."\n";
+      $output .= "\n6\n".$replacementColumnList['property_list']."\n\n";
     }
     if (isset($replacementColumnList['agency_name'])) {
-      $output .= "\n7".$replacementColumnList['agency_name'];
+      $output .= "\n7\n".$replacementColumnList['agency_name'];
     }
     if (isset($replacementColumnList['value_id_list'])) {
-      $output .= "\n8".$replacementColumnList['value_id_list'];
+      $output .= "\n8\n".$replacementColumnList['value_id_list'];
     }
     if (isset($replacementColumnList['keyword_list'])) {
-      $output .= "\n9".$replacementColumnList['keyword_list'];
+      $output .= "\n9\n".$replacementColumnList['keyword_list'];
     }
     self::outputForPortal($output."\n\n");
   }

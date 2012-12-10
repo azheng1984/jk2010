@@ -10,6 +10,8 @@ class Command {
           Db::update('task', array('status' => 'retry'), 'id = ?', $task['id']);
         }
         $this->sync($task);
+        echo 'OK!';
+        exit;
         Db::udpate('task', array('status' => 'done'), 'id = ?', $task['id']);
         continue;
       }
@@ -27,10 +29,12 @@ class Command {
       );
       SphinxIndex::indexDelta();
       $this->upgradeIndexVersion();
-      SyncDb::merge();
+      $syncDb->merge();
       $this->upgradePortalVersion();
       SyncFile::finialize();
     } catch (Exception $exception) {
+      throw $exception;
+      DbConnection::closeAll();
       sleep(10);
       $task['status'] = 'retry';
       $this->sync($task);
