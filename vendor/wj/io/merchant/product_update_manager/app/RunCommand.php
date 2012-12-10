@@ -33,9 +33,7 @@ class RunCommand {
         $task['id'], 1, $shoppingCategoryId, $task['version']
       );
       if ($isNew) {
-        ShoppingCommandFile::insertCategory(
-          $shoppingCategoryId, $task['category_name']
-        );
+        ShoppingCommandFile::insertCategory($task['category_name']);
       }
       $propertyList = SyncShoppingProperty::getPropertyList(
         $task['category_name'], $task['merchant_name'], $task['version']
@@ -50,12 +48,13 @@ class RunCommand {
       ShoppingCommandFile::finalize();
       SyncShoppingImage::finalize();
       ShoppingRemoteTask::add(
-        $task['id'], $shoppingCategoryId, 1, $task['version']
+        $task['id'], $shoppingCategoryId,
+        $task['category_name'], 1, $task['version']
       );
       $this->removeTask($task['id']);
       exit;
       Db::commit();
-      //TODO catch > rallback db
+      //TODO try catch > & DbConnection::closeAll() & rallback db;
     }
   }
 

@@ -1,15 +1,15 @@
 <?php
 class SphinxIndex {
   public static function indexDelta() {
-    DbConnection::connect('product_search');
+    DbConnection::connect('search');
     for (;;) {
       Db::execute('LOCK TABLES indexer_status WRITE');
       $status = Db::getColumn(
-        "SELECT status FROM indexer_status WHERE name = 'Main'"
+        "SELECT status FROM indexer_status WHERE name = 'main'"
       );
-      if ($status !== 'Running') {
+      if ($status !== 'running') {
         Db::update(
-          'indexer_status', array('_status' => 'Running'), "name = 'Delta'"
+          'indexer_status', array('status' => 'running'), "name = 'delta'"
         );
         Db::execute('UNLOCK TABLES');
         break;
@@ -19,7 +19,7 @@ class SphinxIndex {
     }
     self::system('indexer delta --config sphinx.conf');
     Db::update(
-      'indexer_status', array('_status' => 'OK'), "name = 'Delta'"
+      'indexer_status', array('status' => 'ok'), "name = 'delta'"
     );
     DbConnection::close();
   }
@@ -28,6 +28,10 @@ class SphinxIndex {
     $return = null;
     system($command, $return);
     if ($return !== 0) {
+      Db::update(
+        'indexer_status', array('status' => 'ok'), "name = 'delta'"
+      );
+      DbConnection::close();
       throw new Exception;
     }
   }
