@@ -1,9 +1,11 @@
 <?php
-class Command {
+//git 排除特定文件夹
+class ProcessCommand {
   public function execute() {
     for (;;) {
       $task = Db::getRow(
-        'SELECT * FROM task WHERE status != "done" ORDER BY id LIMIT 1'
+        'SELECT * FROM task WHERE status != "done" AND status != "init"'
+          .' ORDER BY id LIMIT 1'
       );
       if ($task !== false) {
         if ($task['status'] !== 'retry') {
@@ -13,14 +15,13 @@ class Command {
         echo 'OK!';
         exit;
         Db::udpate('task', array('status' => 'done'), 'id = ?', $task['id']);
-        continue;
+        SyncFile::remove();
       }
     }
   }
 
   private function sync($task) {
     try {
-      SyncFile::execute($task);
       $syncDb = new SyncDb;
       $syncDb->execute(
         $task['category_id'],
@@ -31,10 +32,10 @@ class Command {
       $this->upgradeIndexVersion();
       $syncDb->merge();
       $this->upgradePortalVersion();
-      SyncFile::finialize();
+      SphinxIndex::indexMain();
     } catch (Exception $exception) {
-      throw $exception;
       DbConnection::closeAll();
+      throw $exception;
       sleep(10);
       $task['status'] = 'retry';
       $this->sync($task);
