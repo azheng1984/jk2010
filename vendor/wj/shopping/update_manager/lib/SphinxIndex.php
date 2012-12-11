@@ -1,53 +1,42 @@
 <?php
 class SphinxIndex {
-//   private static $isLocked = false;
-
-//   public static function lock() {
-//     if (self::$isLocked) {
-//       return;
-//     }
-//     for (;;) {
-//       Db::execute('LOCK TABLES indexer_lock WRITE');
-//       $status = Db::getColumn(
-//         "SELECT status FROM indexer_lock WHERE id = 1"
-//       );
-//       if ($status === 'unlock') {
-//         Db::update(
-//           'indexer_lock', array('status' => 'lock'), "id = 1"
-//         );
-//         self::$isLocked = true;
-//         Db::execute('UNLOCK TABLES');
-//         break;
-//       }
-//       Db::execute('UNLOCK TABLES');
-//       sleep(10);
-//     }
-//   }
+  private static $mainDate = null;
 
   public static function indexDelta() {
     self::system('indexer delta --rotate');
   }
 
   public static function indexMain() {
-    DbConnection::connect('search');
-    try {
-      $recode = Db::getColumn('SELECT id FROM main_index_recode WHERE date = ?');
-      if ($recode !== false) {
-        self::merge();
-        self::system('indexer main --rotate');
+    $date = date('Y-m-d');
+    if (self::$mainDate !== $date) {
+      DbConnection::connect('search');
+      try {
+        $recode = Db::getColumn(
+          'SELECT id FROM main_index_date WHERE date = ?', $date
+        );
+        if ($recode === false) {
+          self::merge();
+          self::system('indexer main --rotate');
+        }
+        $recode = Db::update(
+          'main_index_date', array('date' => $date), 'id = 1'
+        );
+      } catch (Exception $ex) {
+        DbConnection::close();
+        sleep(10);
+        self::indexMain();
+        return;
       }
-    } catch (Exception $ex) {
       DbConnection::close();
-      sleep(10);
-      self::indexMain();
-      return;
+      self::$mainDate = $date;
     }
-    DbConnection::close();
   }
 
   private static function merge() {
     for (;;) {
-      $productList = Db::getAll('SELECT * FROM product_delta ORDER BY id LIMIT 1000');
+      $productList = Db::getAll(
+        'SELECT * FROM product_delta ORDER BY id LIMIT 1000'
+      );
       if (count($productList) === 0) {
         break;
       }
@@ -71,20 +60,10 @@ class SphinxIndex {
     }
   }
 
-//   public static function unlock() {
-//     Db::update(
-//       'indexer_lock', array('status' => 'unlock'), "id = 1"
-//     );
-//     self::$isLocked = false;
-//   }
-
   public static function system($command) {
     $return = null;
     system($command, $return);
     if ($return !== 0) {
-      Db::update(
-        'indexer_status', array('status' => 'unlock'), "id = 1"
-      );
       throw new Exception;
     }
   }

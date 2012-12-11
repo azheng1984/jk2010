@@ -1,5 +1,14 @@
 <?php
 return array(
-  'description' => 'Add your own description here',
-  'class' => 'Command'
+  'description' => 'xxx',
+  'sub' => array(
+    'download' => array(
+      'description' => '',
+      'class' => 'DownloadCommand',
+    ),
+    'process' => array(
+      'description' => '',
+      'class' => 'ProcessCommand',
+    ),
+  ),
 );
