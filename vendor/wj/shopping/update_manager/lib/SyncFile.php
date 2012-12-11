@@ -4,24 +4,26 @@ class SyncFile {
   private static $commandZipFileName = null;
   private static $imageZipFileName = null;
 
-  public static function execute($task) {
+  public static function initialize($task) {
     $suffix = $task['id'].'_'
       .$task['merchant_id'].'_'.$task['category_id'].'_'.$task['version'];
     self::$commandFileName = $suffix;
     self::$imageZipFileName = $suffix.'.tar.gz';
     self::$commandZipFileName = $suffix.'.gz';
+  }
+
+  public static function execute() {
     self::getFile(self::$imageZipFileName);
     self::getFile(self::$commandZipFileName);
     chdir(DATA_PATH.'sync');
-    //TODO clean sync
     self::system('gzip -df '.self::$commandZipFileName);
     chdir(IMAGE_PATH);
     self::system(
       'tar -zxf '.DATA_PATH.'sync/'.self::$imageZipFileName
     );
-  }
+  } 
 
-  public static function system($command) {
+  private static function system($command) {
     $return = null;
     system($command, $return);
     if ($return !== 0) {
@@ -55,11 +57,8 @@ class SyncFile {
     ftp_close($ftp);
   }
 
-  public static function finialize() {
+  public static function remove() {
     unlink(self::getCommandFilePath());
     unlink(self::getCommandFilePath().'.tar.gz');
-    self::$commandFileName = null;
-    self::$commandZipFileName = null;
-    self::$imageZipFileName = null;
   }
 }

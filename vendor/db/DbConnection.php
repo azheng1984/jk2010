@@ -29,9 +29,8 @@ class DbConnection {
   }
 
   public static function closeAll() {
-    while (self::$current !== null) {
-      self::close();
-    }
+    self::$stack = array();
+    self::$current = null;
   }
 
   public static function getCurrent() {

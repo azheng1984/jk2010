@@ -64,9 +64,7 @@ class SyncDb {
 
   public function merge() {
     for (;;) {
-      DbConnection::connect('delta');
-      $productList = Db::getAll('SELECT * FROM product ORDER BY id LIMIT 1000');
-      DbConnection::close();
+      $productList = Db::getAll('SELECT * FROM product_delta ORDER BY id LIMIT 1000');
       if (count($productList) === 0) {
         break;
       }
@@ -74,18 +72,20 @@ class SyncDb {
       foreach ($productList as $productDelta) {
         $id = $productDelta['id'];
         unset($productDelta['id']);
-        if ($productDelta['price_from_x_100'] === null) {
-          $imagePath = Db::getColumn('SELECT image_path FROM product WHERE id = ?', $id);
-          unlink(IMAGE_PATH.$imagePath.'/'.$id.'.jpg');
-          Db::delete('product', $productDelta, 'id = ?', $id);
-          DbConnection::connect('search');
-          Db::delete('product', $productDelta, 'id = ?', $id);
-          DbConnection::close();
+        if ($productDelta['price_from_x_100'] === null) {//TODO TEST return null
+          $imagePath = Db::getColumn(
+            'SELECT image_path FROM product WHERE id = ?', $id
+          );
+          if ($imagePath !== false) {
+            $filename = IMAGE_PATH.$imagePath.'/'.$id.'.jpg';
+            if (is_file($filename)) {
+              unlink($filename);
+            }
+            Db::delete('product', 'id = ?', $id);
+          }
           continue;
         }
-        $product = array(
-          'id' => $productDelta['id']
-        );
+        $product = array();
         if ($productDelta['title'] !== null) {
           $product['title'] = $product['title'];
         }
@@ -99,36 +99,9 @@ class SyncDb {
         if ($productDelta['property_list'] !== null) {
           $product['property_list'] = $productDelta['property_list'];
         }
-        if ($product['value_id_list'] !== null) {
-          $productSearch['value_id_list'] = $productDelta['value_id_list'];
-        }
-        if ($product['keyword_list'] !== null) {
-          $productSearch['keyword_list'] = $productDelta['keyword_list'];
-        }
-        if ($product['popularity_rank'] !== null) {
-          $productSearch['popularity_rank'] = $productDelta['popularity_rank'];
-        }
-        Db::update('product', $productDelta, 'id = ?', $id);
-        if ($this->isRetry) {
-          DbConnection::connect('search');
-          Db::bind('product', array('id' => $id), $productSearch);
-          DbConnection::close();
-          continue;
-        }
-        $productSearch['id'] = $id;
-        if ($productDelta['is_new'] === '1') {
-          DbConnection::connect('search');
-          Db::insert('product', $productSearch);
-          DbConnection::close();
-          continue;
-        }
-        DbConnection::connect('search');
-        Db::update('product', $productSearch, 'id = ?', $id);
-        DbConnection::close();
+        Db::update('product', $product, 'id = ?', $id);
       }
-      DbConnection::connect('delta');
-      Db::delete('product', 'id <= ?', $id);
-      DbConnection::close();
+      Db::delete('product_delta', 'id <= ?', $id);
     }
   }
 
@@ -187,19 +160,19 @@ class SyncDb {
       $id = substr(fgets($this->file), 0, -1);
     }
     $product = array();
-    $productDelta = array('is_new' => true);
+    $productSearchDelta = array();
     $product['uri_argument_list'] = substr(fgets($this->file), 0, -1);
     $product['image_path'] = substr(fgets($this->file), 0, -1);
     $product['image_digest'] = substr(fgets($this->file), 0, -1);
     $product['title'] = substr(fgets($this->file), 0, -1);
     $product['price_from_x_100'] = substr(fgets($this->file), 0, -1);
-    $productDelta['price_from_x_100'] = $product['price_from_x_100'];
+    $productSearchDelta['price_from_x_100'] = $product['price_from_x_100'];
     $product['price_to_x_100'] = substr(fgets($this->file), 0, -1);
     if ($product['price_to_x_100'] === '') {
       unset($product['price_to_x_100']);
     }
     $product['category_name'] = $this->categoryName;
-    $productDelta['category_id'] = $this->categoryId;
+    $productSearchDelta['category_id'] = $this->categoryId;
     $propertyList = array();
     for (;;) {
       $line = substr(fgets($this->file), 0, -1);
@@ -215,18 +188,18 @@ class SyncDb {
     }
     $product['property_list'] = implode("\n", $propertyList);
     $product['agency_name'] = substr(fgets($this->file), 0, -1);
-    $productDelta['keyword_list'] = substr(fgets($this->file), 0, -1);
-    $productDelta['value_id_list'] = substr(fgets($this->file), 0, -1);
+    $productSearchDelta['keyword_list'] = substr(fgets($this->file), 0, -1);
+    $productSearchDelta['value_id_list'] = substr(fgets($this->file), 0, -1);
     if ($this->isRetry) {
-      DbConnection::connect('delta');
-      Db::bind('product', array('id' => $id), $productDelta);
+      DbConnection::connect('search');
+      Db::bind('product', array('id' => $id), $productSearchDelta);
       DbConnection::close();
       Db::bind('product', array('id' => $id), $product);
       return;
     }
-    DbConnection::connect('delta');
-    $productDelta['id'] = $id;
-    Db::insert('product', array('id' => $id), $productDelta);
+    DbConnection::connect('search');
+    $productSearchDelta['id'] = $id;
+    Db::insert('product', array('id' => $id), $productSearchDelta);
     DbConnection::close();
     $product['id'] = $id;
     Db::insert('product', $product);
@@ -238,7 +211,21 @@ class SyncDb {
     }
     $product = array();
     $productDelta = array();
-    $productSearch = array();
+    $isInSearchProductDelta = true;
+    DbConnection::connect('search');
+    $productSearchDelta = Db::getRow(
+      'SELECT * FROM product_delta WHERE id = ?', $id
+    );
+    if ($productSearchDelta === false) {
+      $isInSearchProductDelta = false;
+      $productSearchDelta = Db::getRow(
+        'SELECT * FROM product WHERE id = ?', $id
+      );
+    }
+    if ($productSearchDelta === false) {
+      die('fatal error: product not found in product search');
+    }
+    DbConnection::close();
     for(;;) {
       $line = substr(fgets($this->file), 0, -1);
       if ($line === '') {
@@ -256,12 +243,10 @@ class SyncDb {
           break;
         case '3':
           $productDelta['price_from_x_100'] = substr(fgets($this->file), 0, -1);
+          $productSearchDelta = $productDelta['price_from_x_100'];
           break;
         case '4':
           $product['price_to_x_100'] = substr(fgets($this->file), 0, -1);
-          if ($product['price_to_x_100'] === '') {
-            $product['price_to_x_100'] = null;
-          }
           break;
         case '5':
           $productDelta['category_name'] = $this->categoryName;
@@ -285,10 +270,10 @@ class SyncDb {
           $product['agency_name'] = substr(fgets($this->file), 0, -1);
           break;
         case '8':
-          $productDelta['keyword_list'] = substr(fgets($this->file), 0, -1);
+          $productSearchDelta['keyword_list'] = substr(fgets($this->file), 0, -1);
           break;
         case '9':
-          $productDelta['value_id_list'] = substr(fgets($this->file), 0, -1);
+          $productSearchDelta['value_id_list'] = substr(fgets($this->file), 0, -1);
           break;
       }
     }
@@ -297,24 +282,44 @@ class SyncDb {
     }
     if (count($productDelta) > 0) {
       if ($this->isRetry) {
-        DbConnection::connect('delta');
-        Db::bind('product', array('id' => $id), $productDelta);
-        DbConnection::close();
+        Db::bind('product_delta', array('id' => $id), $productDelta);
         return;
       }
       $productDelta['id'] = $id;
-      DbConnection::connect('delta');
-      Db::insert('product', $productDelta);
-      DbConnection::close();
+      Db::insert('product_delta', $productDelta);
     }
+    DbConnection::connect('search');
+    if ($isInSearchProductDelta) {
+      Db::update('product_delta', $productSearchDelta, array('id' => $id));
+    } else {
+      Db::insert('product_delta', $productSearchDelta);
+    }
+    Db::update('product', $productSearchDelta, array('id' => $id));
+    DbConnection::close();
   }
 
   private function deleteProduct($id) {
     if ($id === null) {
       $id = substr(fgets($this->file), 0, -1);
     }
-    DbConnection::connect('delta');
-    Db::insert('product', 'id = ?', $id);
+    DbConnection::connect('search');
+    $searchDeltaProduct = Db::getRow(
+      'SELECT id FROM product_delta WHERE id = ?', $id
+    );
+    if ($searchDeltaProduct === false) {
+      Db::insert('product_delta', 'id = ?', $id);
+    } else {
+      Db::update(
+        'product_delta',
+        array(
+          'category_id' => null,
+          'price_from_x_100' => null,
+          'value_id_list' => null,
+          'keyword_list' => null
+        )
+      );
+    }
     DbConnection::close();
+    Db::insert('product_delta', 'id = ?', $id);
   }
 }

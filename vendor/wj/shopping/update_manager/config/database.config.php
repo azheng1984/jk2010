@@ -15,9 +15,4 @@ return array(
     'username' => 'root',
     'password' => 'a841107!',
   ),
-  'delta' => array(
-    'dsn' => 'mysql:host=localhost;dbname=shopping_portal_delta',
-    'username' => 'root',
-    'password' => 'a841107!',
-  )
 );
