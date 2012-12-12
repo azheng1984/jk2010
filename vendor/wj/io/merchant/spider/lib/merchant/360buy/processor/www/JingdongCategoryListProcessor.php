@@ -153,6 +153,10 @@ class JingdongCategoryListProcessor {
     return true;
   }
 
+  private function executeHistoryList($historyList) {
+    
+  }
+
   private function addProductUpdateManagerTask() {
     DbConnection::connect('update_manager');
     Db::insert('task', array(

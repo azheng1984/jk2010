@@ -5,6 +5,8 @@ class DownloadCommand {
       $task = Db::getRow(
         'SELECT * FROM task WHERE status = "init" ORDER BY id LIMIT 1'
       );
+      var_dump($task);
+      exit;
       if ($task !== false) {
         try {
           SyncFile::initialize($task);

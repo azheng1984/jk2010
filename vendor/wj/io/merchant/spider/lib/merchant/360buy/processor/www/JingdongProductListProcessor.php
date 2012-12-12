@@ -144,7 +144,6 @@ class JingdongProductListProcessor {
       ), array(
         '_index' => $keyIndex, 'version' => $GLOBALS['VERSION']
       ), $keyId);
-      //TODO:save to sync file
       for ($valueIndex = 0; $valueIndex < $valueAmount; ++$valueIndex) {
         $valueName = $valueList[$valueIndex];
         if ($valueName === '全部' || $valueName === '其它'
@@ -157,7 +156,6 @@ class JingdongProductListProcessor {
         ), array(
           '_index' => $valueIndex, 'version' => $GLOBALS['VERSION']
         ), $valueId);
-        //TODO:save to sync file
         $path = $valueLinkList[$valueIndex];
         $processor = new JingdongPropertyProductListProcessor(
           $this->categoryId, $valueId
