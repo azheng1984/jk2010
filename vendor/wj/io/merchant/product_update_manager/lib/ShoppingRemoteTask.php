@@ -30,7 +30,7 @@ class ShoppingRemoteTask {
       }
       DbConnection::close();
       $taskList = Db::getAll(
-        'SELECT * FROM remote_task WHERE status = "not_ready" ORDER BY id'
+        'SELECT * FROM remote_task WHERE status = "not_sync" ORDER BY id'
       );
       foreach ($taskList as $task) {
         DbConnection::connect('remote');
@@ -48,11 +48,11 @@ class ShoppingRemoteTask {
         }
         DbConnection::close();
         Db::update(
-          'remote_task', array('status' => 'ready'), 'id = ?', $task['id']
+          'remote_task', array('status' => 'sync'), 'id = ?', $task['id']
         );
       }
     } catch (Exception $exception) {
-      throw $exception;
+      throw $exception;//TODO ignore
     }
   }
 }

@@ -10,51 +10,56 @@ class RunCommand {
     Db::execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
     $GLOBALS['VERSION'] = $this->getVersion();
     for (;;) {
-      ShoppingRemoteTask::check();
-      $task = $this->getNextTask();
-      if ($task === false) {
-        sleep(10);
-        continue;
-      }
-      Db::beginTransaction();
-      if ($task['category_name'] === '<LAST>') {
-        $this->updateVersionInfo('jingdong');
+      try {
+        ShoppingRemoteTask::check();
+        $task = $this->getNextTask();
+        if ($task === false) {
+          sleep(10);
+          continue;
+        }
+        Db::beginTransaction();
+        if ($task['category_name'] === '<LAST>') {
+          $this->updateVersionInfo('jingdong');
+          $this->removeTask($task['id']);
+          continue;
+        }
+        $isNew = null;
+        $shoppingCategoryId = SyncShoppingCategory::getCategoryId(
+          $task['category_name'], $isNew
+        );
+        ShoppingCommandFile::initialize(
+          $task['id'], 1, $shoppingCategoryId, $task['version']
+        );
+        SyncShoppingImage::initialize(
+          $task['id'], 1, $shoppingCategoryId, $task['version']
+        );
+        if ($isNew) {
+          ShoppingCommandFile::insertCategory($task['category_name']);
+        }
+        $propertyList = SyncShoppingProperty::getPropertyList(
+          $task['category_name'], $task['merchant_name'], $task['version']
+        );
+        SyncShoppingProduct::execute(
+          $task['category_name'],
+          $shoppingCategoryId,
+          $propertyList,
+          $task['version'],
+          $task['merchant_name']
+        );
+        ShoppingCommandFile::finalize();
+        SyncShoppingImage::finalize();
+        ShoppingRemoteTask::add(
+          $task['id'], $shoppingCategoryId,
+          $task['category_name'], 1, $task['version']
+        );
         $this->removeTask($task['id']);
-        continue;
+        exit;
+        Db::commit();
+      } catch (Exception $exception) {
+        DbConnection::connect();
+        Db::rollback();
+        DbConnection::closeAll();
       }
-      $isNew = null;
-      $shoppingCategoryId = SyncShoppingCategory::getCategoryId(
-        $task['category_name'], $isNew
-      );
-      ShoppingCommandFile::initialize(
-        $task['id'], 1, $shoppingCategoryId, $task['version']
-      );
-      SyncShoppingImage::initialize(
-        $task['id'], 1, $shoppingCategoryId, $task['version']
-      );
-      if ($isNew) {
-        ShoppingCommandFile::insertCategory($task['category_name']);
-      }
-      $propertyList = SyncShoppingProperty::getPropertyList(
-        $task['category_name'], $task['merchant_name'], $task['version']
-      );
-      SyncShoppingProduct::execute(
-        $task['category_name'],
-        $shoppingCategoryId,
-        $propertyList,
-        $task['version'],
-        $task['merchant_name']
-      );
-      ShoppingCommandFile::finalize();
-      SyncShoppingImage::finalize();
-      ShoppingRemoteTask::add(
-        $task['id'], $shoppingCategoryId,
-        $task['category_name'], 1, $task['version']
-      );
-      $this->removeTask($task['id']);
-      exit;
-      Db::commit();
-      //TODO try catch > & DbConnection::closeAll() & rallback db;
     }
   }
 
