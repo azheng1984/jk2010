@@ -1,5 +1,5 @@
 <?php
-class Command {
+class DownloadCommand {
   public function execute() {
     for (;;) {
       $task = Db::getRow(

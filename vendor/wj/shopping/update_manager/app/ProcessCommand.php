@@ -1,5 +1,4 @@
 <?php
-//git 排除特定文件夹
 class ProcessCommand {
   public function execute() {
     for (;;) {
@@ -11,11 +10,12 @@ class ProcessCommand {
         if ($task['status'] !== 'retry') {
           Db::update('task', array('status' => 'retry'), 'id = ?', $task['id']);
         }
+        SyncFile::initialize($task);
         $this->sync($task);
+        //Db::update('task', array('status' => 'done'), 'id = ?', $task['id']);
+        //SyncFile::remove();
         echo 'OK!';
         exit;
-        Db::udpate('task', array('status' => 'done'), 'id = ?', $task['id']);
-        SyncFile::remove();
       } else {
         sleep(10);
       }
@@ -46,13 +46,13 @@ class ProcessCommand {
 
   private function upgradeIndexVersion() {
     file_put_contents(
-      PORTAL_DATA_PATH.'version.php', "<?php return array('delta' => true);"
+      DATA_PATH.'version.php', "<?php return array('delta' => true);"
     );
   }
 
   private function upgradePortalVersion() {
     file_put_contents(
-      PORTAL_DATA_PATH.'version.php',
+      DATA_PATH.'version.php',
       "<?php return array('delta' => false);"
     );
   }

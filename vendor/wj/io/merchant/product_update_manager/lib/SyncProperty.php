@@ -1,5 +1,5 @@
 <?php
-class SyncShoppingProperty {
+class SyncProperty {
   public static function getPropertyList(
     $categoryName, $merchantName, $version
   ) {
@@ -23,7 +23,7 @@ class SyncShoppingProperty {
           'name' => $key['name'], 'version' => $GLOBALS['VERSION']
         ));
         $shoppingKeyId = Db::getLastInsertId();
-        ShoppingCommandFile::insertPropertyKey($shoppingKeyId, $key['name']);
+        CommandSyncFile::insertPropertyKey($shoppingKeyId, $key['name']);
       }
       if ($shoppingKey !== false) {
         $shoppingKeyId = $shoppingKey['id'];
@@ -48,14 +48,13 @@ class SyncShoppingProperty {
             'version' => $GLOBALS['VERSION']
           ));
           $shoppingValueId = Db::getLastInsertId();
-          ShoppingCommandFile::insertPropertyValue(
+          CommandSyncFile::insertPropertyValue(
             $shoppingValueId, $shoppingKeyId, $value['name']
           );
         }
         if ($shoppingValue !== false) {
           $shoppingValueId = $shoppingValue['id'];
         }
-        //TODO check shopping version
         $value['shopping_id'] = $shoppingValueId;
         $result['value_list'][$value['id']] = $value;
       }

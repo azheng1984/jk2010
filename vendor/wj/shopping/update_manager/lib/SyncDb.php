@@ -58,11 +58,11 @@ class SyncDb {
       default:
         return false;
     }
-    echo $command;
     return true;
   }
 
   public function merge() {
+    DbConnection::connect('portal');
     for (;;) {
       $productList = Db::getAll('SELECT * FROM product_delta ORDER BY id LIMIT 1000');
       if (count($productList) === 0) {
@@ -103,6 +103,7 @@ class SyncDb {
       }
       Db::delete('product_delta', 'id <= ?', $id);
     }
+    DbConnection::close();
   }
 
   private function insertCategory() {
@@ -160,19 +161,19 @@ class SyncDb {
       $id = substr(fgets($this->file), 0, -1);
     }
     $product = array();
-    $productSearchDelta = array();
+    $searchDeltaProduct = array();
     $product['uri_argument_list'] = substr(fgets($this->file), 0, -1);
     $product['image_path'] = substr(fgets($this->file), 0, -1);
     $product['image_digest'] = substr(fgets($this->file), 0, -1);
     $product['title'] = substr(fgets($this->file), 0, -1);
     $product['price_from_x_100'] = substr(fgets($this->file), 0, -1);
-    $productSearchDelta['price_from_x_100'] = $product['price_from_x_100'];
+    $searchDeltaProduct['price_from_x_100'] = $product['price_from_x_100'];
     $product['price_to_x_100'] = substr(fgets($this->file), 0, -1);
     if ($product['price_to_x_100'] === '') {
       unset($product['price_to_x_100']);
     }
     $product['category_name'] = $this->categoryName;
-    $productSearchDelta['category_id'] = $this->categoryId;
+    $searchDeltaProduct['category_id'] = $this->categoryId;
     $propertyList = array();
     for (;;) {
       $line = substr(fgets($this->file), 0, -1);
@@ -188,18 +189,18 @@ class SyncDb {
     }
     $product['property_list'] = implode("\n", $propertyList);
     $product['agency_name'] = substr(fgets($this->file), 0, -1);
-    $productSearchDelta['keyword_list'] = substr(fgets($this->file), 0, -1);
-    $productSearchDelta['value_id_list'] = substr(fgets($this->file), 0, -1);
+    $searchDeltaProduct['keyword_list'] = substr(fgets($this->file), 0, -1);
+    $searchDeltaProduct['value_id_list'] = substr(fgets($this->file), 0, -1);
     if ($this->isRetry) {
       DbConnection::connect('search');
-      Db::bind('product', array('id' => $id), $productSearchDelta);
+      Db::bind('product_delta', array('id' => $id), $searchDeltaProduct);
       DbConnection::close();
       Db::bind('product', array('id' => $id), $product);
       return;
     }
     DbConnection::connect('search');
-    $productSearchDelta['id'] = $id;
-    Db::insert('product', array('id' => $id), $productSearchDelta);
+    $searchDeltaProduct['id'] = $id;
+    Db::insert('product_delta', array('id' => $id), $searchDeltaProduct);
     DbConnection::close();
     $product['id'] = $id;
     Db::insert('product', $product);
@@ -210,19 +211,19 @@ class SyncDb {
       $id = substr(fgets($this->file), 0, -1);
     }
     $product = array();
-    $productDelta = array();
+    $deltaProduct = array();
     $isInSearchProductDelta = true;
     DbConnection::connect('search');
-    $productSearchDelta = Db::getRow(
+    $searchDeltaProduct = Db::getRow(
       'SELECT * FROM product_delta WHERE id = ?', $id
     );
-    if ($productSearchDelta === false) {
+    if ($searchDeltaProduct === false) {
       $isInSearchProductDelta = false;
-      $productSearchDelta = Db::getRow(
+      $searchDeltaProduct = Db::getRow(
         'SELECT * FROM product WHERE id = ?', $id
       );
     }
-    if ($productSearchDelta === false) {
+    if ($searchDeltaProduct === false) {
       die('fatal error: product not found in product search');
     }
     DbConnection::close();
@@ -239,17 +240,17 @@ class SyncDb {
           $product['image_digest'] = substr(fgets($this->file), 0, -1);
           break;
         case '2':
-          $productDelta['title'] = substr(fgets($this->file), 0, -1);
+          $deltaProduct['title'] = substr(fgets($this->file), 0, -1);
           break;
         case '3':
-          $productDelta['price_from_x_100'] = substr(fgets($this->file), 0, -1);
-          $productSearchDelta = $productDelta['price_from_x_100'];
+          $deltaProduct['price_from_x_100'] = substr(fgets($this->file), 0, -1);
+          $searchDeltaProduct = $deltaProduct['price_from_x_100'];
           break;
         case '4':
           $product['price_to_x_100'] = substr(fgets($this->file), 0, -1);
           break;
         case '5':
-          $productDelta['category_name'] = $this->categoryName;
+          $deltaProduct['category_name'] = $this->categoryName;
           break;
         case '6':
           $propertyList = array();
@@ -264,37 +265,37 @@ class SyncDb {
             }
             $propertyList[] = $line;
           }
-          $productDelta['property_list'] = implode("\n", $propertyList);
+          $deltaProduct['property_list'] = implode("\n", $propertyList);
           break;
         case '7':
           $product['agency_name'] = substr(fgets($this->file), 0, -1);
           break;
         case '8':
-          $productSearchDelta['keyword_list'] = substr(fgets($this->file), 0, -1);
+          $searchDeltaProduct['keyword_list'] = substr(fgets($this->file), 0, -1);
           break;
         case '9':
-          $productSearchDelta['value_id_list'] = substr(fgets($this->file), 0, -1);
+          $searchDeltaProduct['value_id_list'] = substr(fgets($this->file), 0, -1);
           break;
       }
     }
     if (count($product) > 0) {
       Db::update('product', $product, 'id = ?', $id);
     }
-    if (count($productDelta) > 0) {
+    if (count($deltaProduct) > 0) {
       if ($this->isRetry) {
-        Db::bind('product_delta', array('id' => $id), $productDelta);
-        return;
+        Db::bind('product_delta', array('id' => $id), $deltaProduct);
+      } else {
+        $deltaProduct['id'] = $id;
+        Db::insert('product_delta', $deltaProduct);
       }
-      $productDelta['id'] = $id;
-      Db::insert('product_delta', $productDelta);
     }
     DbConnection::connect('search');
     if ($isInSearchProductDelta) {
-      Db::update('product_delta', $productSearchDelta, array('id' => $id));
+      Db::update('product_delta', $searchDeltaProduct, array('id' => $id));
     } else {
-      Db::insert('product_delta', $productSearchDelta);
+      Db::insert('product_delta', $searchDeltaProduct);
     }
-    Db::update('product', $productSearchDelta, array('id' => $id));
+    Db::update('product', $searchDeltaProduct, array('id' => $id));
     DbConnection::close();
   }
 

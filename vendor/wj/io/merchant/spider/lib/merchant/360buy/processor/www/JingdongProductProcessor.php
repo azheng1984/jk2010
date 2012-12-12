@@ -237,17 +237,15 @@ class JingdongProductProcessor {
   private function bindImage() {
     list($domain, $path) = explode('/', $this->imageSrc, 2);
     $result = WebClient::get($domain, '/'.$path);
-    if (ImageDb::hasImage($this->categoryName, $this->merchantProductId)) {
+    if (ImageDb::hasImage($this->categoryId, $this->merchantProductId)) {
       ImageDb::update(
-        $this->categoryName, $this->merchantProductId, $result['content']
+        $this->categoryId, $this->merchantProductId, $result['content']
       );
-      //TODO:save to sync file
       return;
     }
     ImageDb::insert(
-      $this->categoryName, $this->merchantProductId, $result['content']
+      $this->categoryId, $this->merchantProductId, $result['content']
     );
-    //TODO:save to sync file
   }
 
   private function getImageDigest() {

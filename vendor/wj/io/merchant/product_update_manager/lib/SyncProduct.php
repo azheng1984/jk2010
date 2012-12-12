@@ -1,50 +1,75 @@
 <?php
-class SyncShoppingProduct {
+class SyncProduct {
+  private static $version;
+  private static $categoryId;
+  private static $shoppingCategoryId;
+  private static $merchantId;
+  private static $merchantName;
+  private static $propertyList;
 
   public static function execute(
     $categoryName, $shoppingCategoryId, $propertyList, $version, $merchantName
   ) {
-    $merchantId = 1;//TODO
+    self::$merchantId = 1;//TODO
     DbConnection::connect($merchantName);
-    $categoryId = Db::getColumn(
+    self::$categoryId = Db::getColumn(
       'SELECT id FROM category WHERE name = ?', $categoryName
     );
+    self::$version = $version;
+    self::$merchantName = $merchantName;
+    self::$shoppingCategoryId = $shoppingCategoryId;
+    self::$propertyList = $propertyList;
     $productList = Db::getAll(
-      'SELECT * FROM product WHERE category_id = ?', $categoryId
+      'SELECT * FROM product WHERE category_id = ? ORDER BY id LIMIT 1000',
+      self::$categoryId
     );
+    self::sync($productList);
+    while (count($productList) === 1000) {
+      $product = end($productList);
+      $productList = Db::getAll(
+        'SELECT * FROM product WHERE category_id = ? AND id > ?'
+          .' ORDER BY id LIMIT 1000',
+        self::$categoryId, $product['id']
+      );
+      self::sync($productList);
+    }
     DbConnection::close();
+  }
+
+  private function sync($productList) {
     foreach ($productList as $product) {
-      if ($product['version'] < $version) {
-        $shoppingProduct = Db::get(
-          'SELECT id, image_path FROM product'
-            .' WHERE merchant_id = ? AND merchant_product_id = ?',
-          1,
-          $product['merchant_product_id']
-        );
-        ShoppingCommandFile::deleteProduct($shoppingProduct['id']);
-        SyncShoppingImage::delete($shoppingProduct['image_path']);
+      $shoppingProduct = Db::get(
+        'SELECT id, image_path FROM product'
+          .' WHERE merchant_id = ? AND merchant_product_id = ?',
+        self::$merchantId,
+        $product['merchant_product_id']
+      );
+      if ($product['version'] < self::$version) {
+        CommandSyncFile::deleteProduct($shoppingProduct['id']);
+        SyncImage::delete($shoppingProduct['image_path']);
         Db::delete('product', 'id = ?', 1, $shoppingProduct['id']);
         continue;
       }
-      DbConnection::connect($merchantName);
+      DbConnection::connect(self::$merchantName);
+      //product 可能会被分到不属于自身 category 的 property value
       $valueList = Db::getAll(
         'SELECT * FROM product_property_value'
           .' WHERE merchant_product_id = ? AND category_id = ?',
-        $product['merchant_product_id'], $categoryId//product 可能会被分到不属于自身 category 的 property value
+        $product['merchant_product_id'], self::$categoryId
       );
       DbConnection::close();
       $productPropertyList = array();
       $shoppingValueIdList = array();
       foreach ($valueList as $value) {
-        $value = $propertyList['value_list'][$value['property_value_id']];
-        $key = $propertyList['key_list'][$value['key_id']];
+        $value = self::$propertyList['value_list'][$value['property_value_id']];
+        $key = self::$propertyList['key_list'][$value['key_id']];
         if (isset($productPropertyList[$key['_index']]) === false) {
           $productPropertyList[$key['_index']] = array(
             'name' => $key['name'], 'value_list' => array()
           );
         }
         $productPropertyList[$key['_index']]['value_list'][$value['_index']] =
-          $value['name'];
+        $value['name'];
         $shoppingValueIdList[] = $value['shopping_id'];
       }
       sort($shoppingValueIdList);
@@ -58,21 +83,16 @@ class SyncShoppingProduct {
       }
       $shoppingPropertyTextList = implode("\n\n", $shoppingPropertyList);
       $shoppingValueIdTextList = implode(' ', $shoppingValueIdList);
-      $shoppingProduct = Db::getRow(
-        'SELECT * FROM product'
-          .' WHERE merchant_id = ? AND merchant_product_id = ?',
-        $merchantId, $product['merchant_product_id']
-      );
       $imagePath = null;
       if ($shoppingProduct === false) {
-        $imagePath = SyncShoppingImage::getImagePath();
+        $imagePath = SyncImage::allocateImageFolder();
       }
       if (isset($product['price_to_x_100']) === false) {
         $product['price_to_x_100'] = null;
       }
       if ($shoppingProduct === false) {
-        $keywordTextList = self::getList(
-          $product['title'], $categoryName, $shoppingPropertyTextList
+        $keywordTextList = self::getKeywordTextList(
+          $product['title'], self::$categoryName, $shoppingPropertyTextList
         );
         $columnList = array(
           'merchant_id' => 1,//TODO
@@ -83,7 +103,7 @@ class SyncShoppingProduct {
           'title' => $product['title'],
           'price_from_x_100' => $product['price_from_x_100'],
           'price_to_x_100' => $product['price_to_x_100'],
-          'category_name' => $categoryName,
+          'category_name' => self::$categoryName,
           'property_list' => $shoppingPropertyTextList,
           'agency_name' => $product['agency_name'],
           'keyword_list' => $keywordTextList,
@@ -91,9 +111,12 @@ class SyncShoppingProduct {
         );
         Db::insert('product', $columnList);
         $shoppingProductId = Db::getLastInsertId();
-        ShoppingCommandFile::insertProduct($columnList, $shoppingProductId);
-        SyncShoppingImage::execute(
-          $categoryName, $shoppingProductId, $product['merchant_product_id'], $imagePath
+        CommandSyncFile::insertProduct($columnList, $shoppingProductId);
+        SyncImage::bind(
+          self::$categoryId,
+          $shoppingProductId,
+          $product['merchant_product_id'],
+          $imagePath
         );
         continue;
       }
@@ -103,11 +126,11 @@ class SyncShoppingProduct {
       }
       if ($shoppingProduct['image_digest'] !== $product['image_digest']) {
         $replacementColumnList['image_digest'] = $product['image_digest'];
-        SyncShoppingImage::execute(
-          $categoryId,
-          $shoppingProductId,
-          $product['merchant_product_id'],
-          $shoppingProduct['image_path']
+        SyncImage::bind(
+        self::$categoryId,
+        $shoppingProductId,
+        $product['merchant_product_id'],
+        $shoppingProduct['image_path']
         );
       }
       if ($shoppingProduct['title'] !== $product['title']) {
@@ -119,8 +142,8 @@ class SyncShoppingProduct {
       if ($shoppingProduct['price_to_x_100'] !== $product['price_to_x_100']) {
         $replacementColumnList['price_to_x_100'] = $product['price_to_x_100'];
       }
-      if ($shoppingProduct['category_name'] !== $categoryName) {
-        $replacementColumnList['category_name'] = $categoryName;
+      if ($shoppingProduct['category_name'] !== self::$categoryName) {
+        $replacementColumnList['category_name'] = self::$categoryName;
       }
       if ($shoppingProduct['property_list'] !== $shoppingPropertyTextList) {
         $replacementColumnList['property_list'] = $shoppingPropertyTextList;
@@ -132,8 +155,8 @@ class SyncShoppingProduct {
       if (isset($replacementColumnList['title'])
           || isset($replacementColumnList['category_name'])
           || isset($replacementColumnList['property_list']) || true) {
-        $keywordTextList = self::getList(
-          $product['title'], $categoryName, $shoppingPropertyTextList
+        $keywordTextList = self::getKeywordTextList(
+          $product['title'], self::$categoryName, $shoppingPropertyTextList
         );
         $keywordListByKey = array();
         foreach (explode(' ', $keywordTextList) as $keyword) {
@@ -163,14 +186,14 @@ class SyncShoppingProduct {
         Db::update(
           'product', $replacementColumnList, 'id = ?', $shoppingProduct['id']
         );
-        ShoppingCommandFile::updateProduct(
+        CommandSyncFile::updateProduct(
           $shoppingProduct['id'], $replacementColumnList
         );
       }
     }
   }
 
-   private static function getList(
+   private static function getKeywordTextList(
      $title, $categoryName, $shoppingPropertyTextList
    ) {
     $keywords = $title;
