@@ -2,7 +2,7 @@
 class ImageDb {
   public static function get($categoryId, $productId) {
     DbConnection::connect('image');
-    $image = Db::getColumn($categoryId, array('product_id' => $productId));
+    $image = Db::getColumn('c'.$categoryId, array('product_id' => $productId));
     DbConnection::close();
     return $image;
   }
@@ -10,7 +10,7 @@ class ImageDb {
   public static function hasImage($categoryId, $productId) {
     DbConnection::connect('image');
     $id = Db::getColumn(
-      'SELECT product_id FROM image WHERE product_id = ?', $productId
+      'SELECT product_id FROM c'.$categoryId.' WHERE product_id = ?', $productId
     );
     DbConnection::close();
     return $id !== false;
@@ -19,7 +19,7 @@ class ImageDb {
   public static function insert($categoryId, $productId, $image) {
     DbConnection::connect('image');
     Db::insert(
-      $categoryId, array('product_id' => $productId, 'image' => $image)
+      'c'.$categoryId, array('product_id' => $productId, 'image' => $image)
     );
     DbConnection::close();
   }
@@ -27,27 +27,27 @@ class ImageDb {
   public static function update($categoryId, $productId, $image) {
     DbConnection::connect('image');
     Db::update(
-      $categoryId, array('image' => $image), 'product_id = ?', $productId
+      'c'.$categoryId, array('image' => $image), 'product_id = ?', $productId
     );
     DbConnection::close();
   }
 
   public static function delete($categoryId, $productId) {
     DbConnection::connect('image');
-    Db::delete($categoryId, 'product_id = ?', $productId);
+    Db::delete('c'.$categoryId, 'product_id = ?', $productId);
     DbConnection::close();
   }
 
   public static function deleteTable($categoryId) {
     DbConnection::connect('image');
-    Db::execute('DROP TABLE '.categoryId);
+    Db::execute('DROP TABLE c'.categoryId);
     DbConnection::close();
   }
 
   public static function createTable($categoryId) {
     DbConnection::connect('image');
     Db::execute(
-      'CREATE TABLE `'.$categoryId.'` (
+      'CREATE TABLE `c'.$categoryId.'` (
         `product_id` bigint(20) unsigned NOT NULL,
         `image` mediumblob NOT NULL,
         PRIMARY KEY (`product_id`)

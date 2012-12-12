@@ -1,15 +1,19 @@
 <?php
 class CommandSyncFile {
-  private static $portalSyncFileName = '';
+  private static $portalSyncFileName = null;
+  private static $fileName = null;
   private static $portalSyncFile = null;
   private static $previousCommand = null;
 
   public static function initialize(
     $taskId, $merchantId, $categoryId, $version
   ) {
-    self::$portalSyncFileName = FTP_PATH
-      .$taskId.'_'.$merchantId.'_'.$categoryId.'_'.$version;
+    self::$fileName = $taskId.'_'.$merchantId.'_'.$categoryId.'_'.$version;
+    self::$portalSyncFileName = DATA_PATH.'command_staging/'.self::$fileName;
     self::$portalSyncFile = fopen(self::$portalSyncFileName, 'w');
+    if (self::$portalSyncFile === false) {
+      throw new Exception;
+    }
   }
 
   public static function insertCategory() {
@@ -110,14 +114,24 @@ class CommandSyncFile {
   public static function finalize() {
     fclose(self::$portalSyncFile);
     if (filesize(self::$portalSyncFileName) !== 0) {
-      system('gzip '.self::$portalSyncFileName);
-    } else {
-      unlink(self::$portalSyncFileName);
+      self::system(
+        'tar -zcf '.FTP_PATH.self::$fileName.'.tar.gz'
+          .' -C '.DATA_PATH.'command_staging '.self::$fileName
+      );
     }
+    unlink(self::$portalSyncFileName);
   }
 
   public static function clean() {
-    system('rm -rf '.DATA_PATH.'command_staging');
-    system('mkdir '.DATA_PATH.'command_staging');
+    self::system('rm -rf '.DATA_PATH.'command_staging');
+    self:system('mkdir '.DATA_PATH.'command_staging');
+  }
+
+  private static function system($command) {
+    $return = null;
+    system($command, $return);
+    if ($return !== 0) {
+      throw new Exception;
+    }
   }
 }

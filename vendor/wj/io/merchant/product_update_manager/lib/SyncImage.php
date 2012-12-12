@@ -5,7 +5,7 @@ class SyncImage {
   ) {
     $image = ImageDb::get($categoryId, $productId);
     $dir = DATA_PATH.'product_image_staging/'.$imagePath;
-    if (is_dir($dir)) {
+    if (is_dir($dir) === false) {
       mkdir($dir, 0755, true);
     }
     file_put_contents($dir.'/'.$shoppingProductId.'.jpg', $image);
@@ -27,7 +27,7 @@ class SyncImage {
       return Db::getLastInsertId();
     }
     Db::update(
-    'image_folder', array('amount' => ++$row['amount']), 'id = ?', $row['id']
+      'image_folder', array('amount' => ++$row['amount']), 'id = ?', $row['id']
     );
     DbConnection::close();
     $levelOne = floor($row['id'] / 10000);
