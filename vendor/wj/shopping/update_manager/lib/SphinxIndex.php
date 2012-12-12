@@ -44,7 +44,7 @@ class SphinxIndex {
       foreach ($productList as $productDelta) {
         $id = $productDelta['id'];
         unset($productDelta['id']);
-        if ($productDelta['price_from_x_100'] === null) {//TODO TEST return null
+        if ($productDelta['price_from_x_100'] === null) {
           Db::delete('product', 'id = ?', $id);
           continue;
         }

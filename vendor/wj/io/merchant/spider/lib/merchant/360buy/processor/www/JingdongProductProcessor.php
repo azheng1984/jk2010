@@ -1,5 +1,4 @@
 <?php
-//TODO history _status 14(10%)/0
 class JingdongProductProcessor {
   private $html;
   private $url;
@@ -63,7 +62,6 @@ class JingdongProductProcessor {
       'merchant_product_id = ?',
       $product['merchant_product_id']
     );
-    //TODO:save to sync file
   }
 
   private function initialize($path) {
@@ -155,7 +153,6 @@ class JingdongProductProcessor {
     }
     print_r($product);
     Db::insert('product', $product);
-    //TODO:save to sync file
   }
 
   private function update($product) {
@@ -191,7 +188,6 @@ class JingdongProductProcessor {
       'merchant_product_id = ?',
       $product['merchant_product_id']
     );
-    //TODO:save to sync file
   }
 
   private function getPrice($merchantProductId) {

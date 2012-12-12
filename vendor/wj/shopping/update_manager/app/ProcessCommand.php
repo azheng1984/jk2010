@@ -11,8 +11,8 @@ class ProcessCommand {
           Db::update('task', array('status' => 'retry'), 'id = ?', $task['id']);
         }
         SyncFile::initialize($task);
-        //$this->sync($task);
-        //Db::update('task', array('status' => 'done'), 'id = ?', $task['id']);
+        $this->sync($task);
+        Db::update('task', array('status' => 'done'), 'id = ?', $task['id']);
         SyncFile::remove();
         echo 'OK!';
         exit;

@@ -13,6 +13,7 @@ class SyncProperty {
     );
     DbConnection::close();
     $result = array('key_list' => array(), 'value_list' => array());
+    $keyShoppingIdList = array();
     foreach ($keyList as $key) {
       $shoppingKey = Db::getRow(
         'SELECT * FROM property_key WHERE name = ?', $key['name']
@@ -24,18 +25,22 @@ class SyncProperty {
         ));
         $shoppingKeyId = Db::getLastInsertId();
         CommandSyncFile::insertPropertyKey($shoppingKeyId, $key['name']);
-      }
-      if ($shoppingKey !== false) {
+      } else {
         $shoppingKeyId = $shoppingKey['id'];
-        //TODO check shopping version
+        //TODO check update manager version
       }
+      $keyShoppingIdList[$key['id']] = $shoppingKeyId;
       $result['key_list'][$key['id']] = $key;
+    }
+    //key/value 操作分离，可以缩小同步文件
+    foreach ($keyList as $key) {
+      $shoppingKeyId = $keyShoppingIdList[$key['id']];
       DbConnection::connect($merchantName);
       $valueList = Db::getAll(
         'SELECT * FROM property_value WHERE key_id = ?', $key['id']
       );
       DbConnection::close();
-      foreach ($valueList as $value) {//TODO:key 和 value 分离，连续操作可以缩小传输文件
+      foreach ($valueList as $value) {
         $shoppingValue = Db::getRow(
           'SELECT * FROM property_value WHERE key_id = ? AND name = ?',
           $shoppingKeyId, $value['name']
