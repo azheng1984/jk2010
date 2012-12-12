@@ -8,18 +8,17 @@ class SyncFile {
     $suffix = $task['id'].'_'
       .$task['merchant_id'].'_'.$task['category_id'].'_'.$task['version'];
     self::$commandFileName = $suffix;
-    self::$imageZipFileName = $suffix.'.tar.gz';
-    self::$commandZipFileName = $suffix.'.gz';
+    self::$imageZipFileName = $suffix.'.image.tar.gz';
+    self::$commandZipFileName = $suffix.'.tar.gz';
   }
 
   public static function execute() {
     self::getFile(self::$imageZipFileName);
     self::getFile(self::$commandZipFileName);
-    chdir(DATA_PATH.'sync');
-    self::system('gzip -df '.self::$commandZipFileName);
-    chdir(IMAGE_PATH);
+    self::system('tar -zxf '.DATA_PATH.'sync/'.self::$commandZipFileName
+      .' -C '.DATA_PATH.'sync/');
     self::system(
-      'tar -zxf '.DATA_PATH.'sync/'.self::$imageZipFileName
+      'tar -zxf '.DATA_PATH.'sync/'.self::$imageZipFileName.' -C '.IMAGE_PATH
     );
   } 
 
@@ -60,5 +59,6 @@ class SyncFile {
   public static function remove() {
     unlink(self::getCommandFilePath());
     unlink(self::getCommandFilePath().'.tar.gz');
+    unlink(self::getCommandFilePath().'.image.tar.gz');
   }
 }

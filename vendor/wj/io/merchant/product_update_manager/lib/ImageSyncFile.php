@@ -6,9 +6,9 @@ class ImageSyncFile {
     $taskId, $merchantId, $categoryId, $version
   ) {
     self::$syncFileName =
-      $taskId.'_'.$merchantId.'_'.$categoryId.'_'.$version.'.tar.gz';
-    system('rm -rf '.DATA_PATH.'product_image_staging');
-    system('mkdir '.DATA_PATH.'product_image_staging');
+      $taskId.'_'.$merchantId.'_'.$categoryId.'_'.$version.'.image.tar.gz';
+    self::system('rm -rf '.DATA_PATH.'product_image_staging');
+    self::system('mkdir '.DATA_PATH.'product_image_staging');
   }
 
   public static function finalize() {
@@ -23,8 +23,8 @@ class ImageSyncFile {
     if (count($dirList) === 0) {
       return;
     }
-    system(
-      'tar -zcf '.DATA_PATH.'product_image_sync/'
+    self::system(
+      'tar -zcf '.FTP_PATH
         .self::$syncFileName.' -C '.DATA_PATH.'product_image_staging '
         .implode(' ', $dirList)
     );
@@ -32,7 +32,15 @@ class ImageSyncFile {
   }
 
   public static function clean() {
-    system('rm -rf '.DATA_PATH.'product_image_staging');
-    system('mkdir '.DATA_PATH.'product_image_staging');
+    self::system('rm -rf '.DATA_PATH.'product_image_staging');
+    self::system('mkdir '.DATA_PATH.'product_image_staging');
+  }
+
+  private static function system($command) {
+    $return = null;
+    system($command, $return);
+    if ($return !== 0) {
+      throw new Exception;
+    }
   }
 }

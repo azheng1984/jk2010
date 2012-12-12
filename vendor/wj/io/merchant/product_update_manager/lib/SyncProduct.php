@@ -2,6 +2,7 @@
 class SyncProduct {
   private static $version;
   private static $categoryId;
+  private static $categoryName;
   private static $shoppingCategoryId;
   private static $merchantId;
   private static $merchantName;
@@ -16,6 +17,7 @@ class SyncProduct {
       'SELECT id FROM category WHERE name = ?', $categoryName
     );
     self::$version = $version;
+    self::$categoryName = $categoryName;
     self::$merchantName = $merchantName;
     self::$shoppingCategoryId = $shoppingCategoryId;
     self::$propertyList = $propertyList;
@@ -23,22 +25,24 @@ class SyncProduct {
       'SELECT * FROM product WHERE category_id = ? ORDER BY id LIMIT 1000',
       self::$categoryId
     );
+    DbConnection::close();
     self::sync($productList);
     while (count($productList) === 1000) {
       $product = end($productList);
+      DbConnection::connect($merchantName);
       $productList = Db::getAll(
         'SELECT * FROM product WHERE category_id = ? AND id > ?'
           .' ORDER BY id LIMIT 1000',
         self::$categoryId, $product['id']
       );
+      DbConnection::close();
       self::sync($productList);
     }
-    DbConnection::close();
   }
 
   private function sync($productList) {
     foreach ($productList as $product) {
-      $shoppingProduct = Db::get(
+      $shoppingProduct = Db::getRow(
         'SELECT id, image_path FROM product'
           .' WHERE merchant_id = ? AND merchant_product_id = ?',
         self::$merchantId,

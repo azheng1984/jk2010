@@ -55,11 +55,13 @@ class RunCommand {
         exit;
         Db::commit();
       } catch (Exception $exception) {
+        throw $exception;
         DbConnection::connect();
         Db::rollback();
         DbConnection::closeAll();
         CommandSyncFile::clean();
         ImageSyncFile::clean();
+        sleep(10);
       }
     }
   }
@@ -84,7 +86,7 @@ class RunCommand {
     }
     if ($isUpdate) {
       $this->versionInfo['version'] = ++$this->versionInfo['version'];
-      $this->versionInfo['version']['merchant'] = array();
+      $this->versionInfo['merchant'] = array();
       ++$GLOBALS['VERSION'];
     }
     file_put_contents(
