@@ -7,5 +7,6 @@ jquery*
 env.php
 *.sqlite
 Thumbs.db
-pinyin.dat
 *.gz
+pinyin.dat
+*.sync
