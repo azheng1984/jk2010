@@ -1,13 +1,15 @@
 <?php
 class SyncFile {
   private static $commandFileName = null;
+  private static $fileNameSuffix = null;
   private static $commandZipFileName = null;
   private static $imageZipFileName = null;
 
   public static function initialize($task) {
     $suffix = $task['id'].'_'
       .$task['merchant_id'].'_'.$task['category_id'].'_'.$task['version'];
-    self::$commandFileName = $suffix;
+    self::$fileNameSuffix = $suffix;
+    self::$commandFileName = $suffix.'.sync';
     self::$imageZipFileName = $suffix.'.image.tar.gz';
     self::$commandZipFileName = $suffix.'.tar.gz';
   }
@@ -58,7 +60,8 @@ class SyncFile {
 
   public static function remove() {
     unlink(self::getCommandFilePath());
-    unlink(self::getCommandFilePath().'.tar.gz');
-    unlink(self::getCommandFilePath().'.image.tar.gz');
+    $filePathSuffix = DATA_PATH.'sync/'.self::$fileNameSuffix;
+    unlink($filePathSuffix.'.tar.gz');
+    unlink($filePathSuffix.'.image.tar.gz');
   }
 }

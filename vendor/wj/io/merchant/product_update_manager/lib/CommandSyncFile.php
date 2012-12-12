@@ -1,16 +1,18 @@
 <?php
 class CommandSyncFile {
-  private static $portalSyncFileName = null;
-  private static $fileName = null;
+  private static $portalSyncFilePath = null;
+  private static $fileNameSuffix = null;
   private static $portalSyncFile = null;
   private static $previousCommand = null;
 
   public static function initialize(
     $taskId, $merchantId, $categoryId, $version
   ) {
-    self::$fileName = $taskId.'_'.$merchantId.'_'.$categoryId.'_'.$version;
-    self::$portalSyncFileName = DATA_PATH.'command_staging/'.self::$fileName;
-    self::$portalSyncFile = fopen(self::$portalSyncFileName, 'w');
+    self::$fileNameSuffix =
+      $taskId.'_'.$merchantId.'_'.$categoryId.'_'.$version;
+    self::$portalSyncFilePath =
+      DATA_PATH.'command_staging/'.self::$fileNameSuffix.'.sync';
+    self::$portalSyncFile = fopen(self::$portalSyncFilePath, 'w');
     if (self::$portalSyncFile === false) {
       throw new Exception;
     }
@@ -113,13 +115,13 @@ class CommandSyncFile {
 
   public static function finalize() {
     fclose(self::$portalSyncFile);
-    if (filesize(self::$portalSyncFileName) !== 0) {
+    if (filesize(self::$portalSyncFilePath) !== 0) {
       self::system(
-        'tar -zcf '.FTP_PATH.self::$fileName.'.tar.gz'
-          .' -C '.DATA_PATH.'command_staging '.self::$fileName
+        'tar -zcf '.FTP_PATH.self::$fileNameSuffix.'.tar.gz'
+          .' -C '.DATA_PATH.'command_staging '.self::$fileNameSuffix.'.sync'
       );
     }
-    unlink(self::$portalSyncFileName);
+    unlink(self::$portalSyncFilePath);
   }
 
   public static function clean() {
