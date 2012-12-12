@@ -5,6 +5,11 @@ return array(
     'username' => 'root',
     'password' => 'a841107!',
   ),
+  'image' => array(
+    'dsn' => 'mysql:host=localhost;dbname=io_merchant_spider_jingdong_image',
+    'username' => 'root',
+    'password' => 'a841107!',
+  ),
   'dangdang' => array(
     'dsn' => 'mysql:host=localhost;dbname=wj_spider_dangdang',
     'username' => 'root',

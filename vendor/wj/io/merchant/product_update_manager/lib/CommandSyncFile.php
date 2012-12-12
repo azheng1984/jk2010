@@ -1,5 +1,5 @@
 <?php
-class ShoppingCommandFile {
+class CommandSyncFile {
   private static $portalSyncFileName = '';
   private static $portalSyncFile = null;
   private static $previousCommand = null;
@@ -7,7 +7,7 @@ class ShoppingCommandFile {
   public static function initialize(
     $taskId, $merchantId, $categoryId, $version
   ) {
-    self::$portalSyncFileName = DATA_PATH.'portal_sync/'
+    self::$portalSyncFileName = FTP_PATH
       .$taskId.'_'.$merchantId.'_'.$categoryId.'_'.$version;
     self::$portalSyncFile = fopen(self::$portalSyncFileName, 'w');
   }
@@ -117,6 +117,7 @@ class ShoppingCommandFile {
   }
 
   public static function clean() {
-    
+    system('rm -rf '.DATA_PATH.'command_staging');
+    system('mkdir '.DATA_PATH.'command_staging');
   }
 }

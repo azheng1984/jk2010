@@ -10,6 +10,11 @@ return array(
     'username' => 'root',
     'password' => 'a841107!',
   ),
+  'jingdong_image' => array(
+      'dsn' => 'mysql:host=localhost;dbname=io_merchant_spider_jingdong_image',
+      'username' => 'root',
+      'password' => 'a841107!',
+  ),
   'remote' => array(
       'dsn' => 'mysql:host=localhost;dbname=shopping_update_manager',
       'username' => 'root',

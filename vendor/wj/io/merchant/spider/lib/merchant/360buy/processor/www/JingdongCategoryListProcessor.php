@@ -49,7 +49,7 @@ class JingdongCategoryListProcessor {
       $hasHistory = $this->executeHistory();
       $this->cleanProduct();
       if ($hasHistory && $category['version'] < ($GLOBALS['VERSION'] - 1)) {
-        ImageDb::deleteDb($category['name']);
+        ImageDb::deleteTable($category['id']);
         Db::delete('category', 'id = ?', $category['id']);
         continue;
       }
@@ -97,6 +97,7 @@ class JingdongCategoryListProcessor {
     if ($category === false) {
       Db::insert('category', array('name' => $this->categoryName));
       $this->categoryId = Db::getLastInsertId();
+      ImageDb::createTable($this->categoryId);
       $this->categoryVersion = 0;
       return;
     }
@@ -168,7 +169,7 @@ class JingdongCategoryListProcessor {
       $this->categoryId, $GLOBALS['VERSION'] - 1
     );
     foreach ($productIdList as $productId) {
-      ImageDb::delete($this->categoryName, $productId);
+      ImageDb::delete($this->categoryId, $productId);
     }
     Db::delete(
       'product', 'category_id = ? AND version < ?',

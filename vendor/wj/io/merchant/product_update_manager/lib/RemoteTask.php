@@ -1,5 +1,5 @@
 <?php
-class ShoppingRemoteTask {
+class RemoteTask {
   static public function add(
     $id, $categoryId, $categoryName, $merchantId, $version
   ) {

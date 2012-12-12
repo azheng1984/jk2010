@@ -1,5 +1,5 @@
 <?php
-class SyncShoppingCategory {
+class SyncCategory {
   public static function getCategoryId($categoryName, &$isNew) {
     $category = Db::getRow(
       'SELECT id, version FROM category WHERE name = ?', $categoryName
@@ -22,7 +22,6 @@ class SyncShoppingCategory {
       $id = Db::getLastInsertId();
       $isNew = true;
     }
-    //TODO check shopping version
     return $id;
   }
 }

@@ -4,14 +4,13 @@ class RunCommand {
 
   public function execute() {
     Lock::execute();
-    //clean ftp folder
-    ShoppingCommandFile::clean();
-    SyncShoppingImage::clean();
+    CommandSyncFile::clean();
+    ImageSyncFile::clean();
     Db::execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
     $GLOBALS['VERSION'] = $this->getVersion();
     for (;;) {
       try {
-        ShoppingRemoteTask::check();
+        RemoteTask::check();
         $task = $this->getNextTask();
         if ($task === false) {
           sleep(10);
@@ -24,31 +23,31 @@ class RunCommand {
           continue;
         }
         $isNew = null;
-        $shoppingCategoryId = SyncShoppingCategory::getCategoryId(
+        $shoppingCategoryId = SyncCategory::getCategoryId(
           $task['category_name'], $isNew
         );
-        ShoppingCommandFile::initialize(
+        CommandSyncFile::initialize(
           $task['id'], 1, $shoppingCategoryId, $task['version']
         );
-        SyncShoppingImage::initialize(
+        ImageSyncFile::initialize(
           $task['id'], 1, $shoppingCategoryId, $task['version']
         );
         if ($isNew) {
-          ShoppingCommandFile::insertCategory($task['category_name']);
+          CommandSyncFile::insertCategory($task['category_name']);
         }
-        $propertyList = SyncShoppingProperty::getPropertyList(
+        $propertyList = SyncProperty::getPropertyList(
           $task['category_name'], $task['merchant_name'], $task['version']
         );
-        SyncShoppingProduct::execute(
+        SyncProduct::execute(
           $task['category_name'],
           $shoppingCategoryId,
           $propertyList,
           $task['version'],
           $task['merchant_name']
         );
-        ShoppingCommandFile::finalize();
-        SyncShoppingImage::finalize();
-        ShoppingRemoteTask::add(
+        CommandSyncFile::finalize();
+        ImageSyncFile::finalize();
+        RemoteTask::add(
           $task['id'], $shoppingCategoryId,
           $task['category_name'], 1, $task['version']
         );
@@ -59,6 +58,8 @@ class RunCommand {
         DbConnection::connect();
         Db::rollback();
         DbConnection::closeAll();
+        CommandSyncFile::clean();
+        ImageSyncFile::clean();
       }
     }
   }
