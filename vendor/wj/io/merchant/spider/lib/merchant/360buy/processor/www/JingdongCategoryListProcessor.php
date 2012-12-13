@@ -83,7 +83,8 @@ class JingdongCategoryListProcessor {
         'source' => 'JingdongCategoryListProcessor:parseCategory',
         'url' => $url,
         'document' => $html,
-        'time' => date('Y-m-d H:i:s')
+        'time' => date('Y-m-d H:i:s'),
+        'version' => $GLOBALS['VERSION']
       ));
       throw new Exception(null, 500);
     }
@@ -132,17 +133,28 @@ class JingdongCategoryListProcessor {
 
   private function executeHistory() {
     $historyList = Db::getAll(
-      'SELECT id FROM history WHERE category_id = ? AND version != ?',
+      'SELECT * FROM history WHERE category_id = ? AND version != ?'
+        .' ORDER BY id LIMIT 10000',
       $this->categoryId, $GLOBALS['VERSION']
     );
     if (count($historyList) === 0) {
       return false;
     }
-    //TODO: 分批执行
-    foreach ($historyList as $history) {
-      $history = Db::getRow(
-        'SELECT processor, path, version FROM history WHERE id = ?', $history['id']
+    $this->executeHistoryList($historyList);
+    while (count($historyList) === 10000) {
+      $history = end($historyList);
+      $historyList = Db::getAll(
+          'SELECT * FROM history WHERE category_id = ? AND version != ?'
+          .' AND id > ? ORDER BY id LIMIT 10000',
+          $this->categoryId, $GLOBALS['VERSION'], $history['id']
       );
+      $this->executeHistoryList($historyList);
+    }
+    return true;
+  }
+
+  private function executeHistoryList($historyList) {
+    foreach ($historyList as $history) {
       if ($history['version'] === $GLOBALS['VERSION']) {
         continue;
       }
@@ -150,11 +162,6 @@ class JingdongCategoryListProcessor {
       $processor = new $class;
       $processor->execute($history['path']);
     }
-    return true;
-  }
-
-  private function executeHistoryList($historyList) {
-    
   }
 
   private function addProductUpdateManagerTask() {
