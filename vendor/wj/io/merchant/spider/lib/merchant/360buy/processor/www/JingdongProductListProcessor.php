@@ -35,7 +35,9 @@ class JingdongProductListProcessor {
     } catch (Exception $exception) {
       $status = $exception->getCode();
     }
-    $this->bindHistory($path, $status);
+    History::bind(
+      'ProductList', $path, $status, $this->categoryId
+    );
   }
 
   private function getCategoryId() {
@@ -166,28 +168,13 @@ class JingdongProductListProcessor {
     }
   }
 
-  private function bindHistory($path, $status) {
-    $replacementColumnList = array(
-      '_status' => $status,
-      'version' => $GLOBALS['VERSION'],
-    );
-    if ($this->categoryId !== null) {
-      $replacementColumnList['category_id'] = $this->categoryId;
-    }
-    if ($status === 200) {
-      $replacementColumnList['last_ok_date'] = date('Y-m-d');
-    }
-    Db::bind('history', array(
-      'processor' => 'ProductList', 'path' => $path,
-    ), $replacementColumnList);
-  }
-
   private function saveMatchErrorLog($source) {
     Db::insert('match_error_log', array(
       'source' => $source,
       'url' => $this->url,
       'document' => gzcompress($this->html),
-      'time' => date('Y-m-d H:i:s')
+      'time' => date('Y-m-d H:i:s'),
+      'version' => $GLOBALS['VERSION']
     ));
   }
 
@@ -196,7 +183,8 @@ class JingdongProductListProcessor {
       'source' => 'JingdongProductListProcessor:next_page',
       'match_count' => self::$nextPageMatchedCount,
       'no_match_count' => self::$nextPageNoMatchedCount,
-      'time' => date('Y-m-d H:i:s')
+      'time' => date('Y-m-d H:i:s'),
+      'version' => $GLOBALS['VERSION']
     ));
     self::$nextPageMatchedCount = 0;
     self::$nextPageNoMatchedCount = 0;
@@ -204,7 +192,8 @@ class JingdongProductListProcessor {
       'source' => 'JingdongProductListProcessor:property_list',
       'match_count' => self::$propertyListMatchedCount,
       'no_match_count' => self::$propertyListNoMatchedCount,
-      'time' => date('Y-m-d H:i:s')
+      'time' => date('Y-m-d H:i:s'),
+      'version' => $GLOBALS['VERSION']
     ));
     self::$propertyListMatchedCount = 0;
     self::$propertyListNoMatchedCount = 0;

@@ -48,7 +48,7 @@ class JingdongProductProcessor {
         throw $exception;
       }
     }
-    $this->bindHistory($path, $status);
+    History::bind('Product', $path, $status, $this->categoryId);
   }
 
   private function updateIndex($product) {
@@ -253,23 +253,6 @@ class JingdongProductProcessor {
     return substr($fileName, 0, -4);
   }
 
-  private function bindHistory($path, $status) {
-    $replacementColumnList = array(
-      '_status' => $status,
-      'version' => $GLOBALS['VERSION'],
-    );
-    if ($this->categoryId !== null) {
-      $replacementColumnList['category_id'] = $this->categoryId;
-    }
-    if ($status === 200) {
-      $replacementColumnList['last_ok_date'] = date('Y-m-d');
-    }
-    Db::bind('history', array(
-      'processor' => 'Product',
-      'path' => $path,
-    ), $replacementColumnList);
-  }
-
   private function saveMatchErrorLog($source, $html = null) {
     if ($html === null) {
       $html = $this->html;
@@ -278,7 +261,8 @@ class JingdongProductProcessor {
       'source' => $source,
       'url' => $this->url,
       'document' => gzcompress($html),
-      'time' => date('Y-m-d H:i:s')
+      'time' => date('Y-m-d H:i:s'),
+      'version' => $GLOBALS['VERSION']
     ));
   }
 
@@ -287,7 +271,8 @@ class JingdongProductProcessor {
       'source' => 'JingdongProductProcessor:next_page',
       'match_count' => self::$agencyMatchedCount,
       'no_match_count' => self::$agencyNoMatchedCount,
-      'time' => date('Y-m-d H:i:s')
+      'time' => date('Y-m-d H:i:s'),
+      'version' => $GLOBALS['VERSION']
     ));
     self::$agencyMatchedCount = 0;
     self::$agencyNoMatchedCount = 0;

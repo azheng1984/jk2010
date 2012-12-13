@@ -6,6 +6,7 @@ class JingdongPropertyProductListProcessor {
   private $categoryId;
   private static $nextPageNoMatchedCount = 0;
   private static $nextPageMatchedCount = 0;
+  private static $cache = null;
 
   public function __construct($categoryId = null, $valueId = null) {
     $this->categoryId = $categoryId;
@@ -27,24 +28,10 @@ class JingdongPropertyProductListProcessor {
       throw $exception;
       $status = $exception->getCode();
     }
-    $replacementColumnList = array(
-      '_status' => $status,
-      'version' => $GLOBALS['VERSION']
-    );
-    if ($this->categoryId !== null) {
-      $replacementColumnList['category_id'] = $this->categoryId;
-    }
-    if ($status === 200) {
-      $replacementColumnList['last_ok_date'] = date('Y-m-d');
-    }
-    Db::bind('history', array(
-      'processor' => 'PropertyProductList',
-      'path' => $path,
-    ), $replacementColumnList);
+    History::bind('PropertyProductList', $path, $status, $this->categoryId);
   }
 
   private function getValueId() {
-    //TODO:缓存属性列表
     preg_match(
       "{<dt>(.*?)</dt><dd><div class='content'>.*?class=\"curr\">(.*?)</a>}",
       $this->html, $matches
@@ -55,20 +42,8 @@ class JingdongPropertyProductListProcessor {
       );
       throw new Exception(null, 500);
     }
-    $keyName = iconv('gbk', 'utf-8', $matches[1]);
-    if ($this->categoryId === null) {
-      $this->categoryId = $this->getCategoryId();
-    }
-    $keyId = null;
-    Db::bind(
-      'property_key',
-      array(
-        'category_id' => $this->categoryId,
-        'name' => str_replace('：', '', $keyName)
-      ),
-      array('version' => $GLOBALS['VERSION']),
-      $keyId
-    );
+    $keyName = str_replace('：', '', iconv('gbk', 'utf-8', $matches[1]));
+    $keyId = $this->getKeyId($keyName);
     $valueName = iconv('gbk', 'utf-8', $matches[2]);
     $valueId = null;
     Db::bind(
@@ -78,6 +53,27 @@ class JingdongPropertyProductListProcessor {
       $valueId
     );
     return $valueId;
+  }
+
+  private function getKeyId($keyName) {
+    if ($this->categoryId === null) {
+      $this->categoryId = $this->getCategoryId();
+    }
+    if (self::$cache['key_list'][$keyName]) {
+      return self::$cache['key_list'][$keyName];
+    }
+    $keyId = null;
+    Db::bind(
+      'property_key',
+      array(
+        'category_id' => $this->categoryId,
+        'name' => $keyName
+      ),
+      array('version' => $GLOBALS['VERSION']),
+      $keyId
+    );
+    self::$cache['key_list'][$keyName] = $keyId;
+    return $keyId;
   }
 
   private function getCategoryId() {
@@ -91,9 +87,27 @@ class JingdongPropertyProductListProcessor {
       throw new Exception(null, 500);
     }
     $categoryName = iconv('gbk', 'utf-8', end(explode('>', $matches[1][0])));
+    $this->initializeCache($categoryName);
+    if (self::$cache['category']['name'] === $categoryName) {
+      return self::$cache['category']['id'];
+    }
     $id = null;
     Db::bind('category', array('name' => $categoryName), null, $id);
+    self::$cache['category']['name'] = $categoryName;
+    self::$cache['category']['id'] = $id;
     return $id;
+  }
+
+  private function initializeCache($categoryName) {
+    if (self::$cache === null
+      || $GLOBALS['version'] !== self::$cache['version']
+      || self::$cache['category']['name'] !== $categoryName) {
+      self::$cache = array(
+        'version' => $GLOBALS['version'],
+        'category' => array('name' => null),
+        'key_list' => array()
+      );
+    }
   }
 
   private function parseProductList() {
@@ -147,7 +161,8 @@ class JingdongPropertyProductListProcessor {
       'source' => $source,
       'url' => $this->url,
       'document' => gzcompress($this->html),
-      'time' => date('Y-m-d H:i:s')
+      'time' => date('Y-m-d H:i:s'),
+      'version' => $GLOBALS['VERSION']
     ));
   }
 
@@ -156,7 +171,8 @@ class JingdongPropertyProductListProcessor {
       'source' => 'JingdongPropertyProductListProcessor:next_page',
       'match_count' => self::$nextPageMatchedCount,
       'no_match_count' => self::$nextPageNoMatchedCount,
-      'time' => date('Y-m-d H:i:s')
+      'time' => date('Y-m-d H:i:s'),
+      'version' => $GLOBALS['VERSION']
     ));
     self::$nextPageMatchedCount = 0;
     self::$nextPageNoMatchedCount = 0;
