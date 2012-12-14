@@ -39,9 +39,9 @@ class JingdongProductProcessor {
       $this->initialize($path);
       if ($product === false) {
         $this->insert($path);
-        return;
+      } else {
+        $this->update($product);
       }
-      $this->update($product);
     } catch (Exception $exception) {
       DbConnection::closeAll();
       if ($exception->getMessage() !== null) {
@@ -53,7 +53,7 @@ class JingdongProductProcessor {
         $this->saveMatchErrorLog($exception->getMessage());
       }
       $status = $exception->getCode();
-      if ($status !== 500 && $status !== 404) {
+      if ($status !== 500 && $status !== 404 && $status !== 503) {
         var_dump($exception);
         exit;
       }
@@ -86,6 +86,10 @@ class JingdongProductProcessor {
       throw new Exception('JingdongProductListProcessor:initialize#0', 500);
     }
     $this->imageSrc = $matches[1];
+    //fix url bug: 可能会出现反斜杠，比如 id:123385
+    if (strpos($this->imageSrc, '\\') !== false) {
+      $this->imageSrc = str_replace('\\', '/', $this->imageSrc);
+    }
     $this->merchantImageDigest = $this->getImageDigest();
     preg_match(
       '{http://gate\.360buy\.com/InitCart\.aspx.*?ptype=(.*?)[^0-9]}',
@@ -117,6 +121,12 @@ class JingdongProductProcessor {
       throw new Exception(null, 500);
     }
     $this->categoryName = iconv('gbk', 'utf-8', $matches[1]);
+    if (trim($this->categoryName) === '') {
+      var_dump($this->categoryName);
+      var_dump($path);
+      file_put_contents('/home/azheng/x.html', $this->html);
+      exit;
+    }
     Db::bind(
       'category', array('name' => $this->categoryName), null, $this->categoryId
     );
@@ -243,14 +253,29 @@ class JingdongProductProcessor {
   private function bindImage() {
     list($domain, $path) = explode('/', $this->imageSrc, 2);
     $result = JingdongWebClient::get($domain, '/'.$path);
+    $image = null;
+    try {
+      $thumb = new Imagick();
+      $thumb->readImageBlob($result['content']);
+      $thumb->resizeImage(180, 180, Imagick::FILTER_LANCZOS, 1);
+      $thumb->stripImage();
+      $image = $thumb->getImageBlob();
+      $thumb->clear();
+      $thumb->destroy();
+    } catch (Exception $exception) {
+      //TODO log
+      $thumb->clear();
+      $thumb->destroy();
+      throw new Exception(null, 500);
+    }
     if (ImageDb::hasImage($this->categoryId, $this->merchantProductId)) {
       ImageDb::update(
-        $this->categoryId, $this->merchantProductId, $result['content']
+        $this->categoryId, $this->merchantProductId, $image
       );
       return;
     }
     ImageDb::insert(
-      $this->categoryId, $this->merchantProductId, $result['content']
+      $this->categoryId, $this->merchantProductId, $image
     );
   }
 

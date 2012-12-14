@@ -24,11 +24,12 @@ class SyncImage {
     $row = Db::getRow('SELECT * FROM image_folder ORDER BY amount LIMIT 1');
     if ($row === false || $row['amount'] >= 10000) {
       Db::insert('image_folder', array());
-      return Db::getLastInsertId();
+      $row = array('id' => Db::getLastInsertId());
+    } else {
+      Db::update(
+        'image_folder', array('amount' => ++$row['amount']), 'id = ?', $row['id']
+      );
     }
-    Db::update(
-      'image_folder', array('amount' => ++$row['amount']), 'id = ?', $row['id']
-    );
     DbConnection::close();
     $levelOne = floor($row['id'] / 10000);
     $levelTwo = $row['id'] % 10000;
