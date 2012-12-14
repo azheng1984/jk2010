@@ -1,10 +1,10 @@
 <?php
-//TODO history _status 0
 class JingdongProductListProcessor {
   private $html;
   private $url;
   private $categoryId;
   private $page;
+  private $isHomePage;
   private static $nextPageNoMatchedCount = 0;
   private static $nextPageMatchedCount = 0;
   private static $propertyListNoMatchedCount = 0;
@@ -14,15 +14,15 @@ class JingdongProductListProcessor {
     $this->categoryId = $categoryId;
   }
 
-  public function execute($path) {
+  public function execute($path, $history = null) {
     $status = 200;
     try {
-      $result = WebClient::get('www.360buy.com', '/products/'.$path.'.html');
+      $result = JingdongWebClient::get('www.360buy.com', '/products/'.$path.'.html');
       $this->html = $result['content'];
-      
       $this->url = 'www.360buy.com/products/'.$path.'.html';
       if ($this->categoryId === null) {
         $this->categoryId = $this->getCategoryId();
+        $this->isHomePage = false;
       }
       if ($this->page === null) {
         $this->page = $this->getPage($path);
@@ -33,10 +33,24 @@ class JingdongProductListProcessor {
       }
       $this->parseNextPage();
     } catch (Exception $exception) {
+      DbConnection::closeAll();
+      if ($exception->getMessage() !== null) {
+        if ($this->isHomePage
+          && JingdongMatchChecker::execute(
+            'ProductList', $path, $this->html
+          ) !== false) {
+          return;
+        }
+        $this->saveMatchErrorLog($exception->getMessage());
+      }
       $status = $exception->getCode();
+      if ($status !== 500 && $status !== 404) {
+        var_dump($exception);
+        exit;
+      }
     }
     History::bind(
-      'ProductList', $path, $status, $this->categoryId
+      'ProductList', $path, $status, $this->categoryId, $history
     );
   }
 
@@ -45,12 +59,14 @@ class JingdongProductListProcessor {
       '{<div class="breadcrumb">([\s|\S]*?)</a></span>}', $this->html, $matches
     );
     if (count($matches) === 0) {
-      $this->saveMatchErrorLog('JingdongProductListProcessor:parseProductList#1');
-      throw new Exception(null, 500);
+      throw new Exception(
+        'JingdongProductListProcessor:parseProductList#1', 500
+      );
     }
     $categoryName = iconv('gbk', 'utf-8', end(explode('html">', $matches[1])));
     $id = null;
     Db::bind('category', array('name' => $categoryName), null, $id);
+    ImageDb::tryCreateTable($id);
     return $id;
   }
 
@@ -65,9 +81,11 @@ class JingdongProductListProcessor {
   private function parseProductList() {
     preg_match('{id="plist"([\s|\S]*)<!--plist end-->}', $this->html, $matches);
     if (count($matches) === 0) {
-      $this->saveMatchErrorLog('JingdongProductListProcessor:parseProductList#0');
-      throw new Exception(null, 500);
+      throw new Exception(
+        'JingdongProductListProcessor:parseProductList#0', 500
+      );
     }
+    $this->isHomePage = false;
     $list = explode('<li', $matches[1]);
     array_shift($list);
     if (count($list) < 2) {

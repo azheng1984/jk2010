@@ -1,4 +1,5 @@
 <?php
+//TODO 出现无限等待
 class JingdongPropertyProductListProcessor {
   private $html;
   private $url;
@@ -7,16 +8,17 @@ class JingdongPropertyProductListProcessor {
   private static $nextPageNoMatchedCount = 0;
   private static $nextPageMatchedCount = 0;
   private static $cache = null;
+  private $isHomePage;
 
   public function __construct($categoryId = null, $valueId = null) {
     $this->categoryId = $categoryId;
     $this->valueId = $valueId;
   }
 
-  public function execute($path) {
+  public function execute($path, $history = null) {
     $status = 200;
     try {
-      $result = WebClient::get('www.360buy.com', '/products/'.$path.'.html');
+      $result = JingdongWebClient::get('www.360buy.com', '/products/'.$path.'.html');
       $this->url = 'www.360buy.com/products/'.$path.'.html';
       $this->html = $result['content'];
       if ($this->valueId === null) {
@@ -25,10 +27,21 @@ class JingdongPropertyProductListProcessor {
       $this->parseProductList();
       $this->parseNextPage();
     } catch(Exception $exception) {
-      throw $exception;
+      DbConnection::closeAll();
+      if ($exception->getMessage() !== null) {
+        if ($this->isHomePage
+          && JingdongMatchChecker::execute(
+            'PropertyProductList', $path, $this->html
+          ) !== false) {
+          return;
+        }
+        $this->saveMatchErrorLog($exception->getMessage());
+      }
       $status = $exception->getCode();
     }
-    History::bind('PropertyProductList', $path, $status, $this->categoryId);
+    History::bind(
+      'PropertyProductList', $path, $status, $this->categoryId, $history
+    );
   }
 
   private function getValueId() {
@@ -37,11 +50,11 @@ class JingdongPropertyProductListProcessor {
       $this->html, $matches
     );
     if (count($matches) !== 3) {
-      $this->saveMatchErrorLog(
-        'JingdongPropertyProductListProcessor:getValueId'
+      throw new Exception(
+        'JingdongPropertyProductListProcessor:getValueId', 500
       );
-      throw new Exception(null, 500);
     }
+    $this->isHomePage = false;
     $keyName = str_replace('：', '', iconv('gbk', 'utf-8', $matches[1]));
     $keyId = $this->getKeyId($keyName);
     $valueName = iconv('gbk', 'utf-8', $matches[2]);
@@ -59,7 +72,7 @@ class JingdongPropertyProductListProcessor {
     if ($this->categoryId === null) {
       $this->categoryId = $this->getCategoryId();
     }
-    if (self::$cache['key_list'][$keyName]) {
+    if (isset(self::$cache['key_list'][$keyName])) {
       return self::$cache['key_list'][$keyName];
     }
     $keyId = null;
@@ -93,6 +106,7 @@ class JingdongPropertyProductListProcessor {
     }
     $id = null;
     Db::bind('category', array('name' => $categoryName), null, $id);
+    ImageDb::tryCreateTable($id);
     self::$cache['category']['name'] = $categoryName;
     self::$cache['category']['id'] = $id;
     return $id;
@@ -100,10 +114,10 @@ class JingdongPropertyProductListProcessor {
 
   private function initializeCache($categoryName) {
     if (self::$cache === null
-      || $GLOBALS['version'] !== self::$cache['version']
+      || $GLOBALS['VERSION'] !== self::$cache['version']
       || self::$cache['category']['name'] !== $categoryName) {
       self::$cache = array(
-        'version' => $GLOBALS['version'],
+        'version' => $GLOBALS['VERSION'],
         'category' => array('name' => null),
         'key_list' => array()
       );
@@ -139,8 +153,8 @@ class JingdongPropertyProductListProcessor {
     if (count($matches) > 0) {
       return;
     }
-    $this->saveMatchErrorLog(
-      'JingdongPropertyProductListProcessor:checkProductList'
+    throw new Exception(
+      'JingdongPropertyProductListProcessor:checkProductList', 500
     );
   }
 

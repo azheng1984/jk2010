@@ -21,7 +21,7 @@ class JingdongProductProcessor {
     $this->categoryId = $categoryId;
   }
 
-  public function execute($path) {
+  public function execute($path, $history = null) {
     $this->merchantProductId = $path;
     $product = Db::getRow(
       'SELECT * FROM product WHERE merchant_product_id = ?', $path
@@ -43,12 +43,22 @@ class JingdongProductProcessor {
       }
       $this->update($product);
     } catch (Exception $exception) {
+      DbConnection::closeAll();
+      if ($exception->getMessage() !== null) {
+        if (JingdongMatchChecker::execute(
+            'Product', $path, $this->html
+          ) !== false) {
+          return;
+        }
+        $this->saveMatchErrorLog($exception->getMessage());
+      }
       $status = $exception->getCode();
-      if ($status !== 500 || $status !== 404) {
-        throw $exception;
+      if ($status !== 500 && $status !== 404) {
+        var_dump($exception);
+        exit;
       }
     }
-    History::bind('Product', $path, $status, $this->categoryId);
+    History::bind('Product', $path, $status, $this->categoryId, $history);
   }
 
   private function updateIndex($product) {
@@ -65,7 +75,7 @@ class JingdongProductProcessor {
   }
 
   private function initialize($path) {
-    $result = WebClient::get('www.360buy.com', '/product/'.$path.'.html');
+    $result = JingdongWebClient::get('www.360buy.com', '/product/'.$path.'.html');
     $this->url = 'www.360buy.com/product/'.$path.'.html';
     $html = $result['content'];
     $this->html = $html;
@@ -73,8 +83,7 @@ class JingdongProductProcessor {
       '{jqzoom[\s\S]*? src="http://(.*?)"}', $html, $matches
     );
     if (count($matches) === 0) {
-      $this->saveMatchErrorLog('JingdongProductListProcessor:initialize#0');
-      throw new Exception(null, 500);
+      throw new Exception('JingdongProductListProcessor:initialize#0', 500);
     }
     $this->imageSrc = $matches[1];
     $this->merchantImageDigest = $this->getImageDigest();
@@ -111,6 +120,7 @@ class JingdongProductProcessor {
     Db::bind(
       'category', array('name' => $this->categoryName), null, $this->categoryId
     );
+    ImageDb::tryCreateTable($this->categoryId);
     preg_match('{<h1>(.*?)</h1>}', $html, $matches);
     if (count($matches) === 0) {
       $this->saveMatchErrorLog('JingdongProductListProcessor:initialize#5');
@@ -193,14 +203,14 @@ class JingdongProductProcessor {
   private function getPrice($merchantProductId) {
     $this->initializeCart();
     $cookie = 'user-key='.self::$userKey;
-    WebClient::get(
+    JingdongWebClient::get(
       'gate.360buy.com',
       '/InitCart.aspx?pid='.$merchantProductId.'&pcount=1&ptype='.$this->typeId,
       array(),
       $cookie,
       true
     );
-    $result = WebClient::get(
+    $result = JingdongWebClient::get(
       'cart.360buy.com', '/cart/miniCartService.action?method=GetCart',
       array(), $cookie, true
     );
@@ -216,7 +226,7 @@ class JingdongProductProcessor {
   }
 
   private function initializeCart() {
-    $result = WebClient::get(
+    $result = JingdongWebClient::get(
       'cart.360buy.com', '/cart/initGetCurrentCart.action', array(), null, true
     );
     $header = $result['header'];
@@ -232,7 +242,7 @@ class JingdongProductProcessor {
 
   private function bindImage() {
     list($domain, $path) = explode('/', $this->imageSrc, 2);
-    $result = WebClient::get($domain, '/'.$path);
+    $result = JingdongWebClient::get($domain, '/'.$path);
     if (ImageDb::hasImage($this->categoryId, $this->merchantProductId)) {
       ImageDb::update(
         $this->categoryId, $this->merchantProductId, $result['content']

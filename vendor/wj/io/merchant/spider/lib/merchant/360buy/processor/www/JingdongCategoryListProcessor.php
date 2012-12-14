@@ -6,7 +6,7 @@ class JingdongCategoryListProcessor {
   private $categoryVersion;
 
   public function execute() {
-    $result = WebClient::get('www.360buy.com', '/allSort.aspx');
+    $result = JingdongWebClient::get('www.360buy.com', '/allSort.aspx');
     $matches = $this->parseCategory(
       'www.360buy.com/allSort.aspx', $result['content']
     );
@@ -110,8 +110,8 @@ class JingdongCategoryListProcessor {
     DbConnection::connect('update_manager');
     for (;;) {
       $id = Db::getColumn(
-       'SELECT id FROM task WHERE merchant_name = ? AND category_name = ?',
-       'jingdong', $this->categoryName
+        'SELECT id FROM task WHERE merchant_name = ? AND category_name = ?',
+        'jingdong', $this->categoryName
       );
       if ($id === false) {
         break;
@@ -132,35 +132,45 @@ class JingdongCategoryListProcessor {
   }
 
   private function executeHistory() {
-    $historyList = Db::getAll(
-      'SELECT * FROM history WHERE category_id = ? AND version != ?'
-        .' ORDER BY id LIMIT 10000',
+    $historyIdList = Db::getAll(
+      'SELECT id FROM history WHERE category_id = ?'
+        .' AND (version != ? OR status != 200) ORDER BY id LIMIT 10000',
       $this->categoryId, $GLOBALS['VERSION']
     );
-    if (count($historyList) === 0) {
+    if (count($historyIdList) === 0) {
       return false;
     }
-    $this->executeHistoryList($historyList);
-    while (count($historyList) === 10000) {
-      $history = end($historyList);
-      $historyList = Db::getAll(
-          'SELECT * FROM history WHERE category_id = ? AND version != ?'
+    $this->executeHistoryIdList($historyIdList);
+    while (count($historyIdList) === 10000) {
+      $history = end($historyIdList);
+      $historyIdList = Db::getAll(
+        'SELECT id FROM history WHERE category_id = ?'
+          .' AND (version != ? OR status != 200)'
           .' AND id > ? ORDER BY id LIMIT 10000',
-          $this->categoryId, $GLOBALS['VERSION'], $history['id']
+        $this->categoryId, $GLOBALS['VERSION'], $history['id']
       );
-      $this->executeHistoryList($historyList);
+      $this->executeHistoryIdList($historyIdList);
     }
     return true;
   }
 
-  private function executeHistoryList($historyList) {
-    foreach ($historyList as $history) {
-      if ($history['version'] === $GLOBALS['VERSION']) {
+  private function executeHistoryIdList($historyIdList) {
+    foreach ($historyIdList as $historyId) {
+      $history = Db::getRow(
+        'SELECT processor, path, version, status FROM history WHERE id = ?',
+        $historyId
+      );
+      if ($history['version'] === $GLOBALS['VERSION']
+        && $history['status'] === '200') {
         continue;
       }
       $class = 'Jingdong'.$history['processor'].'Processor';
       $processor = new $class;
-      $processor->execute($history['path']);
+      $processor->execute($history['path'], array(
+        'id' => $historyId,
+        'category_id' => $this->categoryId,
+        'status' => $history['status']
+      ));
     }
   }
 

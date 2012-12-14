@@ -1,5 +1,7 @@
 <?php
 class ImageDb {
+  private static $tableList = array();
+
   public static function get($categoryId, $productId) {
     DbConnection::connect('image');
     $image = Db::getColumn('c'.$categoryId, array('product_id' => $productId));
@@ -41,6 +43,7 @@ class ImageDb {
   public static function deleteTable($categoryId) {
     DbConnection::connect('image');
     Db::execute('DROP TABLE c'.categoryId);
+    unset(self::$tableList[$categoryId]);
     DbConnection::close();
   }
 
@@ -54,5 +57,18 @@ class ImageDb {
       ) ENGINE=MyISAM DEFAULT CHARSET=latin1'
     );
     DbConnection::close();
+  }
+
+  public static function tryCreateTable($categoryId) {
+    if (isset(self::$tableList[$categoryId])) {
+      return;
+    }
+    DbConnection::connect('image');
+    $table = Db::getRow('SHOW TABLES LIKE "c'.$categoryId.'"');
+    DbConnection::close();
+    if ($table === false) {
+      self::createTable($categoryId);
+    }
+    self::$tableList[$categoryId] = true;
   }
 }

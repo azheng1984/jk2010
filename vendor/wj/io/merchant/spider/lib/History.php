@@ -1,20 +1,24 @@
 <?php
 class History {
-  public static function bind($processor, $path, $status, $categoryId) {
-    $history = Db::getRow(
-      'SELECT id, category_id, _status FROM history'
-        .' WHERE processor = ? AND path = ?',
-      $processor, $path
-    );
-    if ($history === false && $categoryId === null) {
+  public static function bind(
+    $processor, $path, $status, $categoryId, $oldHistory = null
+  ) {
+    if ($oldHistory === null) {
+      $oldHistory = Db::getRow(
+        'SELECT id, category_id, status FROM history'
+          .' WHERE processor = ? AND path = ?',
+        $processor, $path
+      );
+    }
+    if ($oldHistory === false && $categoryId === null) {
       return;
     }
-    if ($history === false) {
+    if ($oldHistory === false) {
       $history = array(
         'processor' => $processor,
         'path' => $path,
         'category_id' => $categoryId,
-        '_status' => $status,
+        'status' => $status,
         'last_ok_date' => date('Y-m-d'),
         'version' => $GLOBALS['VERSION'],
       );
@@ -25,15 +29,15 @@ class History {
       'version' => $GLOBALS['VERSION'],
     );
     if ($categoryId !== null
-      && intval($history['category_id']) !== $categoryId) {
+      && intval($oldHistory['category_id']) !== $categoryId) {
       $replacementColumnList['category_id'] = $categoryId;
     }
-    if ($status !== $history['_status']) {
-      $replacementColumnList['_status'] = $status;
+    if ($status !== $oldHistory['status']) {
+      $replacementColumnList['status'] = $status;
     }
     if ($status === 200) {
       $replacementColumnList['last_ok_date'] = date('Y-m-d');
     }
-    Db::update('history', $replacementColumnList, 'id = ?', $history['id']);
+    Db::update('history', $replacementColumnList, 'id = ?', $oldHistory['id']);
   }
 }
