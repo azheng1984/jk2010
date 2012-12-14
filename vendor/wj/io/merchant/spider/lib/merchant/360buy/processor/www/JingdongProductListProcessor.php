@@ -44,7 +44,7 @@ class JingdongProductListProcessor {
         $this->saveMatchErrorLog($exception->getMessage());
       }
       $status = $exception->getCode();
-      if ($status !== 500 && $status !== 404) {
+      if ($status !== 500 && $status !== 404 && $status !== 503) {
         var_dump($exception);
         exit;
       }
@@ -56,7 +56,7 @@ class JingdongProductListProcessor {
 
   private function getCategoryId() {
     preg_match(
-      '{<div class="breadcrumb">([\s|\S]*?)</a></span>}', $this->html, $matches
+      '{<div class="breadcrumb">\s+([\S ]*?)</a></span>}', $this->html, $matches
     );
     if (count($matches) === 0) {
       throw new Exception(
@@ -64,6 +64,13 @@ class JingdongProductListProcessor {
       );
     }
     $categoryName = iconv('gbk', 'utf-8', end(explode('html">', $matches[1])));
+    if (trim($categoryName) === '') {
+      var_dump($categoryName);
+      var_dump($this->url);
+      file_put_contents('/home/azheng/x.match.html', iconv('gbk', 'utf-8', var_export($matches, true)));
+      file_put_contents('/home/azheng/x.html', $this->html);
+      exit;
+    }
     $id = null;
     Db::bind('category', array('name' => $categoryName), null, $id);
     ImageDb::tryCreateTable($id);
@@ -178,7 +185,7 @@ class JingdongProductListProcessor {
         ), $valueId);
         $path = $valueLinkList[$valueIndex];
         $processor = new JingdongPropertyProductListProcessor(
-          $this->categoryId, $valueId
+          //$this->categoryId, $valueId
         );
         $processor->execute($path);
       }

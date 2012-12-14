@@ -91,21 +91,28 @@ class JingdongPropertyProductListProcessor {
 
   private function getCategoryId() {
     preg_match(
-      '{<div class="breadcrumb">([\s|\S]*)</a></span>}', $this->html, $matches
+      '{<div class="breadcrumb">\s+([\S ]*?)</a></span>}', $this->html, $matches
     );
-    if (count($matches[1]) === 0) {
+    if (count($matches) === 0) {
       $this->saveMatchErrorLog(
         'JingdongPropertyProductListProcessor:getCategoryId'
       );
       throw new Exception(null, 500);
     }
-    $categoryName = iconv('gbk', 'utf-8', end(explode('>', $matches[1][0])));
+    $categoryName = iconv('gbk', 'utf-8', end(explode('>', $matches[1])));
     $this->initializeCache($categoryName);
     if (self::$cache['category']['name'] === $categoryName) {
       return self::$cache['category']['id'];
     }
     $id = null;
     Db::bind('category', array('name' => $categoryName), null, $id);
+    if (trim($categoryName) === '') {
+      var_dump($categoryName);
+      var_dump($this->url);
+      file_put_contents('/home/azheng/x.match.html', iconv('gbk', 'utf-8', var_export($matches, true)));
+      file_put_contents('/home/azheng/x.html', $this->html);
+      exit;
+    }
     ImageDb::tryCreateTable($id);
     self::$cache['category']['name'] = $categoryName;
     self::$cache['category']['id'] = $id;

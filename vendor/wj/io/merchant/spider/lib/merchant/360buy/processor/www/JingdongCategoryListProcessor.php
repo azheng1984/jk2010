@@ -29,7 +29,7 @@ class JingdongCategoryListProcessor {
       if ($this->categoryVersion !== $GLOBALS['VERSION']) {
         $this->checkProductUpdateManagerTask();
         $productListProcessor = new JingdongProductListProcessor(
-          $this->categoryId
+          //$this->categoryId
         );
         $productListProcessor->execute($path);
         $this->executeHistory();
@@ -156,6 +156,7 @@ class JingdongCategoryListProcessor {
 
   private function executeHistoryIdList($historyIdList) {
     foreach ($historyIdList as $historyId) {
+      $historyId = $historyId['id'];
       $history = Db::getRow(
         'SELECT processor, path, version, status FROM history WHERE id = ?',
         $historyId
