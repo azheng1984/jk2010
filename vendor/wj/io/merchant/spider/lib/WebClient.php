@@ -67,10 +67,12 @@ class WebClient {
       );
     }
     if ($content === false) {
-      $code = curl_getinfo($handler, CURLINFO_HTTP_CODE);
-      throw new Exception(null, $code);
+      throw new Exception(null, 500);
     }
     $result = curl_getinfo($handler);
+    if ($result['http_code'] >= 400) {
+      throw new Exception(null, $result['http_code']);
+    }
     if ($returnResponseHeader) {
       list($header, $data) = explode("\r\n\r\n", $content, 2);
       $content = $data;
