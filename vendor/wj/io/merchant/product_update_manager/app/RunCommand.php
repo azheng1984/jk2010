@@ -52,7 +52,6 @@ class RunCommand {
           $task['category_name'], 1, $task['version']
         );
         $this->removeTask($task['id']);
-        exit;
         Db::commit();
       } catch (Exception $exception) {
         throw $exception;

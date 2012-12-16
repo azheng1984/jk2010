@@ -1,14 +1,14 @@
 <?php
-//TODO 出现无限等待
 class JingdongPropertyProductListProcessor {
   private $html;
   private $url;
   private $valueId;
   private $categoryId;
+  private $isFirstMatch;
   private static $nextPageNoMatchedCount = 0;
   private static $nextPageMatchedCount = 0;
   private static $cache = null;
-  private $isFirstMatch = true;
+  private static $ignoreValueName = null;
 
   public function __construct($categoryId = null, $valueId = null) {
     $this->categoryId = $categoryId;
@@ -16,6 +16,7 @@ class JingdongPropertyProductListProcessor {
   }
 
   public function execute($path, $history = null) {
+    $this->isFirstMatch = true;
     $status = 200;
     try {
       $result = JingdongWebClient::get('www.360buy.com', '/products/'.$path.'.html');
@@ -35,6 +36,7 @@ class JingdongPropertyProductListProcessor {
           ) !== false) {
           return;
         }
+        $this->saveMatchErrorLog($exception->getMessage());
       }
       $status = $exception->getCode();
     }
@@ -44,19 +46,16 @@ class JingdongPropertyProductListProcessor {
   }
 
   private function getValueId() {
-    preg_match(
-      "{<dt>(.*?)</dt><dd><div class='content'>.*?class=\"curr\">(.*?)</a>}",
-      $this->html, $matches
-    );
-    if (count($matches) !== 3) {
+    $result = $this->parse();
+    if ($result === false) {
       throw new Exception(
         'JingdongPropertyProductListProcessor:getValueId', 500
       );
     }
     $this->isFirstMatch = false;
-    $keyName = str_replace('：', '', iconv('gbk', 'utf-8', $matches[1]));
+    $keyName = str_replace('：', '', iconv('gbk', 'utf-8', $result['key']));
     $keyId = $this->getKeyId($keyName);
-    $valueName = iconv('gbk', 'utf-8', $matches[2]);
+    $valueName = iconv('gbk', 'utf-8', $result['value']);
     $valueId = null;
     Db::bind(
       'property_value',
@@ -65,6 +64,50 @@ class JingdongPropertyProductListProcessor {
       $valueId
     );
     return $valueId;
+  }
+
+  private function parse() {
+    if (self::$ignoreValueName === null) {
+      self::$ignoreValueName = iconv('utf-8', 'gbk', '不限');
+    }
+    preg_match(
+      '{<div class="mt"><h1>.*}', $this->html, $matches
+    );
+    if (count($matches) === 0) {
+      return false;
+    }
+    $filterList = explode('<dt>', $matches[0]);
+    $amount = count($filterList);
+    if ($amount < 2) {
+      return false;
+    }
+    $result = array();
+    for ($index = 1; $index < $amount; ++$index) {
+      $filter = $filterList[$index];
+      $needle = 'class="curr">'.self::$ignoreValueName;
+      if (strpos($filter, $needle) !== false) {
+        continue;
+      }
+      $tmp = explode('</dt>', $filter, 2);
+      if (count($tmp) !== 2) {
+        return false;
+      }
+      $result['key'] = $tmp[0];
+      $tmp = explode('class="curr">', $tmp[1], 2);
+      if (count($tmp) !== 2) {
+        return false;
+      }
+      $tmp = explode('</a>', $tmp[1], 2);
+      if (count($tmp) !== 2) {
+        return false;
+      }
+      $result['value'] = $tmp[0];
+    }
+    if (count($result) !== 2) {
+      return false;
+    }
+    var_dump($result);
+    return $result;
   }
 
   private function getKeyId($keyName) {
@@ -139,6 +182,7 @@ class JingdongPropertyProductListProcessor {
     );
     if (count($matches[0]) === 0) {
       $this->checkProductList();
+      return;
     }
     foreach ($matches[1] as $merchantProductId) {
       Db::bind('product_property_value', array(
@@ -170,7 +214,7 @@ class JingdongPropertyProductListProcessor {
     );
     if (count($matches) > 0) {
       ++self::$nextPageMatchedCount;
-      self::execute($matches[1]);
+      $this->execute($matches[1]);
       return;
     }
     ++self::$nextPageNoMatchedCount;

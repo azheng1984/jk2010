@@ -11,7 +11,7 @@ class SyncDb {
     $this->categoryName = $categoryName;
     $this->isRetry = $status === 'retry' ? true : false;
     $this->file = fopen(SyncFile::getCommandFilePath(), 'r');
-    if ($this->file === null) {
+    if ($this->file === false) {
       throw new Exception;
     }
     $command = null;
@@ -58,6 +58,7 @@ class SyncDb {
       default:
         return false;
     }
+    echo $command;
     return true;
   }
 
@@ -178,7 +179,6 @@ class SyncDb {
     for (;;) {
       $line = substr(fgets($this->file), 0, -1);
       if ($line === '') {
-        
         $line = substr(fgets($this->file), 0, -1);
         if ($line === '') {
           break;
@@ -192,6 +192,7 @@ class SyncDb {
     $searchDeltaProduct['keyword_list'] = substr(fgets($this->file), 0, -1);
     $searchDeltaProduct['value_id_list'] = substr(fgets($this->file), 0, -1);
     if ($this->isRetry) {
+      var_dump($id);
       DbConnection::connect('search');
       Db::bind('product_delta', array('id' => $id), $searchDeltaProduct);
       DbConnection::close();
