@@ -6,13 +6,13 @@ class WebClient {
     $domain, $path = '/', $headers = array(),
     $cookie = null, $returnResponseHeader = false, $retryTimes = 2
   ) {
-    echo $domain.$path;
+    //echo $domain.$path;
     $handler = self::getHandler($domain, $path, $headers);
     curl_setopt($handler, CURLOPT_HTTPGET, true);
     $result = self::execute(
       $handler, $cookie, $returnResponseHeader, $retryTimes
     );
-    echo '[OK]'.PHP_EOL;
+    //echo '[OK]'.PHP_EOL;
     return $result;
   }
 
