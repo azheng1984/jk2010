@@ -8,7 +8,7 @@ class JingdongPropertyProductListProcessor {
   private static $nextPageNoMatchedCount = 0;
   private static $nextPageMatchedCount = 0;
   private static $cache = null;
-  private $isHomePage;
+  private $isFirstMatch = true;
 
   public function __construct($categoryId = null, $valueId = null) {
     $this->categoryId = $categoryId;
@@ -28,14 +28,13 @@ class JingdongPropertyProductListProcessor {
       $this->parseNextPage();
     } catch(Exception $exception) {
       DbConnection::closeAll();
-      if ($exception->getMessage() !== null) {
-        if ($this->isHomePage
+      if ($exception->getMessage() !== '') {
+        if ($this->isFirstMatch
           && JingdongMatchChecker::execute(
             'PropertyProductList', $path, $this->html
           ) !== false) {
           return;
         }
-        $this->saveMatchErrorLog($exception->getMessage());
       }
       $status = $exception->getCode();
     }
@@ -54,7 +53,7 @@ class JingdongPropertyProductListProcessor {
         'JingdongPropertyProductListProcessor:getValueId', 500
       );
     }
-    $this->isHomePage = false;
+    $this->isFirstMatch = false;
     $keyName = str_replace('：', '', iconv('gbk', 'utf-8', $matches[1]));
     $keyId = $this->getKeyId($keyName);
     $valueName = iconv('gbk', 'utf-8', $matches[2]);

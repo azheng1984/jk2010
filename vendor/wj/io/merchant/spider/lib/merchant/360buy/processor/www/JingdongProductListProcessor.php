@@ -4,7 +4,7 @@ class JingdongProductListProcessor {
   private $url;
   private $categoryId;
   private $page;
-  private $isHomePage;
+  private $isFirstMatch = true;
   private static $nextPageNoMatchedCount = 0;
   private static $nextPageMatchedCount = 0;
   private static $propertyListNoMatchedCount = 0;
@@ -22,7 +22,7 @@ class JingdongProductListProcessor {
       $this->url = 'www.360buy.com/products/'.$path.'.html';
       if ($this->categoryId === null) {
         $this->categoryId = $this->getCategoryId();
-        $this->isHomePage = false;
+        $this->isFirstMatch = false;
       }
       if ($this->page === null) {
         $this->page = $this->getPage($path);
@@ -34,18 +34,19 @@ class JingdongProductListProcessor {
       $this->parseNextPage();
     } catch (Exception $exception) {
       DbConnection::closeAll();
-      if ($exception->getMessage() !== null) {
-        if ($this->isHomePage
+      if ($exception->getMessage() !== '') {
+        if ($this->isFirstMatch
           && JingdongMatchChecker::execute(
             'ProductList', $path, $this->html
           ) !== false) {
           return;
         }
-        $this->saveMatchErrorLog($exception->getMessage());
+        //$this->saveMatchErrorLog($exception->getMessage());
       }
       $status = $exception->getCode();
-      if ($status !== 500 && $status !== 404 && $status !== 503) {
+      if ($status !== 500 && $status !== 404 && $status !== 503 && $status !== 504) {
         var_dump($exception);
+        error_log(var_export($exception, true));
         exit;
       }
     }
@@ -92,7 +93,7 @@ class JingdongProductListProcessor {
         'JingdongProductListProcessor:parseProductList#0', 500
       );
     }
-    $this->isHomePage = false;
+    $this->isFirstMatch = false;
     $list = explode('<li', $matches[1]);
     array_shift($list);
     if (count($list) < 2) {

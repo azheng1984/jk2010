@@ -5,7 +5,7 @@ class JingdongMatchChecker {
   private static $path = null;
 
   public static function execute($processor, $path, $html) {
-    if (strpos($html, '{<title>京东网上商城') === false) {
+    if (strpos($html, '<title>京东网上商城') === false) {
       return false;
     }
     echo 'OK~';
