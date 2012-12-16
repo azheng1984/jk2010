@@ -4,7 +4,7 @@ class JingdongProductListProcessor {
   private $url;
   private $categoryId;
   private $page;
-  private $isFirstMatch = true;
+  private $isFirstMatch;
   private static $nextPageNoMatchedCount = 0;
   private static $nextPageMatchedCount = 0;
   private static $propertyListNoMatchedCount = 0;
@@ -15,6 +15,7 @@ class JingdongProductListProcessor {
   }
 
   public function execute($path, $history = null) {
+    $this->isFirstMatch = true;
     $status = 200;
     try {
       $result = JingdongWebClient::get('www.360buy.com', '/products/'.$path.'.html');
@@ -41,14 +42,9 @@ class JingdongProductListProcessor {
           ) !== false) {
           return;
         }
-        //$this->saveMatchErrorLog($exception->getMessage());
+        $this->saveMatchErrorLog($exception->getMessage());
       }
       $status = $exception->getCode();
-      if ($status !== 500 && $status !== 404 && $status !== 503 && $status !== 504) {
-        var_dump($exception);
-        error_log(var_export($exception, true));
-        exit;
-      }
     }
     History::bind(
       'ProductList', $path, $status, $this->categoryId, $history
@@ -125,7 +121,7 @@ class JingdongProductListProcessor {
     if (count($matches) > 0) {
       ++self::$nextPageMatchedCount;
       ++$this->page;
-      self::execute($matches[1]);
+      $this->execute($matches[1]);
       return;
     }
     ++self::$nextPageNoMatchedCount;
@@ -175,7 +171,8 @@ class JingdongProductListProcessor {
       for ($valueIndex = 0; $valueIndex < $valueAmount; ++$valueIndex) {
         $valueName = $valueList[$valueIndex];
         if ($valueName === '全部' || $valueName === '其它'
-          || $valueName === '其他'.$keyName || $valueName === '不限') {
+          || $valueName === '其他' || $valueName === '其他'.$keyName
+          || $valueName === '不限') {
           continue;
         }
         $valueId = null;

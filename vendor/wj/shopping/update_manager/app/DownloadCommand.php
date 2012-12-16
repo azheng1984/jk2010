@@ -5,14 +5,16 @@ class DownloadCommand {
       $task = Db::getRow(
         'SELECT * FROM task WHERE status = "init" ORDER BY id LIMIT 1'
       );
-      var_dump($task);
-      exit;
       if ($task !== false) {
         try {
           SyncFile::initialize($task);
           SyncFile::execute($task);
           Db::update('task', array('status' => 'ready'), 'id = ?', $task['id']);
-        } catch (Exception $ex) {}
+        } catch (Exception $ex) {
+          throw $ex;
+        }
+      } else {
+        sleep(10);
       }
     }
   }

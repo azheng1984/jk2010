@@ -45,20 +45,15 @@ class JingdongProductProcessor {
       }
     } catch (Exception $exception) {
       DbConnection::closeAll();
-      var_dump($exception->getMessage());
       if ($exception->getMessage() !== '') {
         if (JingdongMatchChecker::execute(
           'Product', $path, $this->html
         ) !== false) {
           return;
         }
+        $this->saveMatchErrorLog($exception->getMessage());
       }
       $status = $exception->getCode();
-      if ($status !== 500 && $status !== 404 && $status !== 503 && $status !== 504) {
-        var_dump($exception);
-        error_log(var_export($exception, true));
-        exit;
-      }
     }
     History::bind('Product', $path, $status, $this->categoryId, $history);
   }

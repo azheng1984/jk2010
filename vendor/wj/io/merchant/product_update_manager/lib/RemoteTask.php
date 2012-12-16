@@ -22,7 +22,7 @@ class RemoteTask {
       foreach ($taskList as $task) {
         if ($task['status'] === 'done') {
           DbConnection::connect('default');
-          Db::delete('DELETE FROM remote_task WHERE id = ?', $task['id']);
+          Db::delete('remote_task', 'id = ?', $task['id']);
           DbConnection::close();
           //TODO try backup/delete sync file
           Db::delete('task', 'id = ?', $task['id']);

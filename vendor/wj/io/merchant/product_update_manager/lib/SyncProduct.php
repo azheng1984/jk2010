@@ -203,7 +203,7 @@ class SyncProduct {
     $keywords = $title;
     $keywords .= ' '.$categoryName;
     $keywords .= ' '.$shoppingPropertyTextList;
-    $keywords = SegmentationService::execute($keywords);
+    $keywords = SegmentationService::execute(str_replace("\n", ' ', $keywords));
     $list = explode(' ', $keywords);
     return implode(' ', array_unique($list));
   }

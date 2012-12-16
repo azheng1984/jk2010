@@ -6,8 +6,8 @@ class SyncFile {
   private static $imageZipFileName = null;
 
   public static function initialize($task) {
-    $suffix = $task['id'].'_'
-      .$task['merchant_id'].'_'.$task['category_id'].'_'.$task['version'];
+    $suffix = $task['id'].'_'.$task['merchant_id']
+      .'_'.$task['category_id'].'_'.$task['version'];
     self::$fileNameSuffix = $suffix;
     self::$commandFileName = $suffix.'.sync';
     self::$imageZipFileName = $suffix.'.image.tar.gz';
@@ -39,13 +39,13 @@ class SyncFile {
   private static function getFile($fileName) {
     $ftp = null;
     for (;;) {
-      $ftp = ftp_connect("127.0.0.1");
+      $ftp = ftp_connect('127.0.0.1');
       if ($ftp !== false) {
         break;
       }
       sleep(10);
     }
-    while (ftp_login($ftp, "t", "t") === false) {
+    while (ftp_login($ftp, 't', 't') === false) {
       sleep(10);
     }
     $result = ftp_get($ftp, DATA_PATH.'sync/'.$fileName, $fileName, FTP_BINARY);
