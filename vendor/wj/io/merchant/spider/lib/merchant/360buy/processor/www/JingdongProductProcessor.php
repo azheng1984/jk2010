@@ -84,6 +84,7 @@ class JingdongProductProcessor {
     }
     $this->imageSrc = $matches[1];
     //fix url bug: 可能会出现反斜杠，比如 id:123385
+    //可能出现 http://img13.360buyimg.com/n1/null id:396603，使用空图片补充
     if (strpos($this->imageSrc, '\\') !== false) {
       $this->imageSrc = str_replace('\\', '/', $this->imageSrc);
     }

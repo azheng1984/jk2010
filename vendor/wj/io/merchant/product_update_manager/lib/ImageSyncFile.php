@@ -21,6 +21,7 @@ class ImageSyncFile {
       }
     }
     if (count($dirList) === 0) {
+      copy(DATA_PATH.'empty.tar.gz', FTP_PATH.self::$syncFileName);
       return;
     }
     self::system(

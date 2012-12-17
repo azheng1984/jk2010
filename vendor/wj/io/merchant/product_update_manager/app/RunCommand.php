@@ -1,11 +1,13 @@
 <?php
 class RunCommand {
   private $versionInfo;
+  private $remoteTaskIndex;
 
   public function execute() {
     Lock::execute();
     CommandSyncFile::clean();
     ImageSyncFile::clean();
+    $this->remoteTaskIndex = require DATA_PATH.'remote_task_index.php';
     Db::execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
     $GLOBALS['VERSION'] = $this->getVersion();
     for (;;) {
@@ -22,15 +24,20 @@ class RunCommand {
           $this->removeTask($task['id']);
           continue;
         }
+        ++$this->remoteTaskIndex;
+        file_put_contents(
+          DATA_PATH.'remote_task_index.php',
+          '<?php return '.$this->remoteTaskIndex.';'
+        );
         $isNew = null;
         $shoppingCategoryId = SyncCategory::getCategoryId(
           $task['category_name'], $isNew
         );
         CommandSyncFile::initialize(
-          $task['id'], 1, $shoppingCategoryId, $task['version']
+          $this->remoteTaskIndex, 1, $shoppingCategoryId, $task['version']
         );
         ImageSyncFile::initialize(
-          $task['id'], 1, $shoppingCategoryId, $task['version']
+          $this->remoteTaskIndex, 1, $shoppingCategoryId, $task['version']
         );
         if ($isNew) {
           CommandSyncFile::insertCategory($task['category_name']);
@@ -48,7 +55,7 @@ class RunCommand {
         CommandSyncFile::finalize();
         ImageSyncFile::finalize();
         RemoteTask::add(
-          $task['id'], $shoppingCategoryId,
+          $this->remoteTaskIndex, $shoppingCategoryId,
           $task['category_name'], 1, $task['version']
         );
         $this->removeTask($task['id']);
