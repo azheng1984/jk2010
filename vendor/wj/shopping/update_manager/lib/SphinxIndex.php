@@ -2,40 +2,30 @@
 class SphinxIndex {
   private static $mainDate = null;
 
-  public static function indexDelta() {
-    self::system('indexer delta --rotate');
-  }
-
-  public static function indexMain() {
+  public static function index() {
     $date = date('Y-m-d');
-    var_dump($date);
-    var_dump(self::$mainDate);
+    if (self::$mainDate === null) {
+      self::$mainDate = require DATA_PATH.'main_index_date.php';
+    }
+    self::system('indexer delta --rotate');
     if (self::$mainDate !== $date) {
-      DbConnection::connect('search');
       try {
-        $recode = Db::getColumn(
-          'SELECT id FROM main_index_date WHERE date = ?', $date
+        self::merge();
+        self::system('indexer --merge main delta --rotate');
+        file_put_contents(
+          DATA_PATH.'main_index_date.php',
+          '<?php return "'.$date.'";'
         );
-        var_dump($recode);
-        if ($recode === false) {
-          self::merge();
-          self::system('indexer main --rotate');
-          $recode = Db::update(
-            'main_index_date', array('date' => $date), 'id = 1'
-          );
-        }
+        self::$mainDate = $date;
       } catch (Exception $ex) {
-        DbConnection::close();
-        sleep(10);
-        self::indexMain();
-        return;
+        //DbConnection::closeAll();
+        throw $ex;
       }
-      DbConnection::close();
-      self::$mainDate = $date;
     }
   }
 
   private static function merge() {
+    DbConnection::connect('search');
     for (;;) {
       $productList = Db::getAll(
         'SELECT * FROM product_delta ORDER BY id LIMIT 1000'
@@ -51,16 +41,11 @@ class SphinxIndex {
           Db::delete('product', 'id = ?', $id);
           continue;
         }
-        $product = array(
-          'price_from_x_100' => $product['price_from_x_100'],
-          'keyword_list' => $product['keyword_list'],
-          'value_id_list' => $product['value_id_list'],
-          'popularity_rank' => $product['popularity_rank'],
-        );
-        Db::bind('product', array('id' => $id), $product);
+        Db::bind('product', array('id' => $id), $productDelta);
       }
       Db::delete('product_delta', 'id <= ?', $id);
     }
+    DbConnection::close();
   }
 
   public static function system($command) {
