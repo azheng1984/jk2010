@@ -2,11 +2,10 @@
 class PublisherNavigationScreen {
   private static $config = array(
     '/' => '首页',
-    '/performance_report' => '流量',
+    '/traffic' => '流量',
     '/order' => '订单',
     '/income' => '收入',
-
-    '/payment' => '结算',
+    '/settlement' => '结算',
     '/io' => '数据接口',
     '/ad' => '广告',
     '/account_setting' => '账户设置',
