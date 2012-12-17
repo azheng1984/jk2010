@@ -3,10 +3,10 @@ class ProcessCommand {
   public function execute() {
     for (;;) {
       $task = Db::getRow(
-        'SELECT * FROM task WHERE status != "done" AND status != "init"'
+        'SELECT * FROM task WHERE status != "done"'
           .' ORDER BY id LIMIT 1'
       );
-      if ($task !== false) {
+      if ($task !== false && $task['status'] !== 'init') {
         if ($task['status'] !== 'retry') {
           Db::update('task', array('status' => 'retry'), 'id = ?', $task['id']);
         }
