@@ -28,11 +28,10 @@ class ProcessCommand {
         $task['category_name'],
         $task['status']
       );
-      SphinxIndex::indexDelta();
+      SphinxIndex::index();
       $this->upgradeIndexVersion();
       $syncDb->merge();
       $this->upgradePortalVersion();
-      SphinxIndex::indexMain();
     } catch (Exception $exception) {
       DbConnection::closeAll();
       throw $exception;

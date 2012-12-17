@@ -53,7 +53,11 @@ class CommandSyncFile {
     $output .= $product['title']."\n";
     $output .= $product['price_from_x_100']."\n";
     $output .= $product['price_to_x_100']."\n";
-    $output .= $product['property_list']."\n\n\n";
+    if ($product['property_list'] === '') {
+      $output .= "\n\n";
+    } else {
+      $output .= $product['property_list']."\n\n\n";
+    }
     $output .= $product['agency_name']."\n";
     $output .= $product['keyword_list']."\n";
     $output .= $product['value_id_list']."\n";
@@ -86,7 +90,11 @@ class CommandSyncFile {
       $output .= "\n5";
     }
     if (isset($replacementColumnList['property_list'])) {
-      $output .= "\n6\n".$replacementColumnList['property_list']."\n\n";
+      if ($replacementColumnList['property_list'] !== '') {
+        $output .= "\n6\n".$replacementColumnList['property_list']."\n\n";
+      } else {
+        $output .= "\n6\n\n";
+      }
     }
     if (isset($replacementColumnList['agency_name'])) {
       $output .= "\n7\n".$replacementColumnList['agency_name'];
