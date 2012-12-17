@@ -201,7 +201,7 @@ class SyncDb {
     }
     DbConnection::connect('search');
     $searchDeltaProduct['id'] = $id;
-    Db::insert('product_delta', array('id' => $id), $searchDeltaProduct);
+    Db::insert('product_delta', $searchDeltaProduct);
     DbConnection::close();
     $product['id'] = $id;
     Db::insert('product', $product);

@@ -8,19 +8,22 @@ class SphinxIndex {
 
   public static function indexMain() {
     $date = date('Y-m-d');
+    var_dump($date);
+    var_dump(self::$mainDate);
     if (self::$mainDate !== $date) {
       DbConnection::connect('search');
       try {
         $recode = Db::getColumn(
           'SELECT id FROM main_index_date WHERE date = ?', $date
         );
+        var_dump($recode);
         if ($recode === false) {
           self::merge();
           self::system('indexer main --rotate');
+          $recode = Db::update(
+            'main_index_date', array('date' => $date), 'id = 1'
+          );
         }
-        $recode = Db::update(
-          'main_index_date', array('date' => $date), 'id = 1'
-        );
       } catch (Exception $ex) {
         DbConnection::close();
         sleep(10);
@@ -54,7 +57,7 @@ class SphinxIndex {
           'value_id_list' => $product['value_id_list'],
           'popularity_rank' => $product['popularity_rank'],
         );
-        Db::update('product', $product, 'id = ?', $id);
+        Db::bind('product', array('id' => $id), $product);
       }
       Db::delete('product_delta', 'id <= ?', $id);
     }
