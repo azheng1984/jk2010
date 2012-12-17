@@ -21,8 +21,6 @@ class PublisherAdScreen extends PublisherScreen {
     echo '描述';
     echo '<h3><a href="/ad/app">应用</a></h3>';
     echo '描述';
-    echo '<h3><a href="/ad/custom_link">自定义链接</a></h3>';
-    echo '描述';
     echo '</ul>';
     $this->renderFooter();
   }
