@@ -6,8 +6,7 @@ class SyncFile {
   private static $imageZipFileName = null;
 
   public static function initialize($task) {
-    $suffix = $task['id'].'_'.$task['merchant_id']
-      .'_'.$task['category_id'].'_'.$task['version'];
+    $suffix = $task['id'];
     self::$fileNameSuffix = $suffix;
     self::$commandFileName = $suffix.'.sync';
     self::$imageZipFileName = $suffix.'.image.tar.gz';
@@ -22,7 +21,7 @@ class SyncFile {
     self::system(
       'tar -zxf '.DATA_PATH.'sync/'.self::$imageZipFileName.' -C '.IMAGE_PATH
     );
-  } 
+  }
 
   private static function system($command) {
     $return = null;

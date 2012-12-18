@@ -9,7 +9,6 @@ class RunCommand {
     ImageSyncFile::clean();
     $this->remoteTaskIndex = require DATA_PATH.'remote_task_index.php';
     Db::execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
-    $GLOBALS['VERSION'] = $this->getVersion();
     for (;;) {
       try {
         RemoteTask::check();
@@ -19,46 +18,23 @@ class RunCommand {
           continue;
         }
         Db::beginTransaction();
-        if ($task['category_name'] === '<LAST>') {
-          $this->updateVersionInfo('jingdong');
-          $this->removeTask($task['id']);
-          continue;
-        }
         ++$this->remoteTaskIndex;
         file_put_contents(
           DATA_PATH.'remote_task_index.php',
           '<?php return '.$this->remoteTaskIndex.';'
         );
-        $isNew = null;
-        $shoppingCategoryId = SyncCategory::getCategoryId(
-          $task['category_name'], $isNew
-        );
-        CommandSyncFile::initialize(
-          $this->remoteTaskIndex, 1, $shoppingCategoryId, $task['version']
-        );
-        ImageSyncFile::initialize(
-          $this->remoteTaskIndex, 1, $shoppingCategoryId, $task['version']
-        );
-        if ($isNew) {
-          CommandSyncFile::insertCategory($task['category_name']);
-        }
-        $propertyList = SyncProperty::getPropertyList(
-          $task['category_name'], $task['merchant_name'], $task['version']
-        );
+        CommandSyncFile::initialize($this->remoteTaskIndex);
+        ImageSyncFile::initialize($this->remoteTaskIndex);
         SyncProduct::execute(
-          $task['category_name'],
-          $shoppingCategoryId,
-          $propertyList,
+          $task['category_id'],
           $task['version'],
-          $task['merchant_name']
+          'jingdong'
         );
         CommandSyncFile::finalize();
         ImageSyncFile::finalize();
-        RemoteTask::add(
-          $this->remoteTaskIndex, $shoppingCategoryId,
-          $task['category_name'], 1, $task['version']
-        );
+        RemoteTask::add($this->remoteTaskIndex, 1);
         $this->removeTask($task['id']);
+        exit;
         Db::commit();
       } catch (Exception $exception) {
         throw $exception;
@@ -78,31 +54,5 @@ class RunCommand {
 
   private function removeTask($id) {
     Db::delete('task', 'id = ?', $id);
-  }
-
-  private function updateVersionInfo($merchantName) {
-    $this->versionInfo['merchant'][$merchantName] = true;
-    $merchantList = array('jingdong'); //TODO:配置
-    $isUpdate = true;
-    foreach ($merchantList as $merchant) {
-      if (isset($version[$merchant]) === false) {
-        $isUpdate = false;
-        break;
-      }
-    }
-    if ($isUpdate) {
-      $this->versionInfo['version'] = ++$this->versionInfo['version'];
-      $this->versionInfo['merchant'] = array();
-      ++$GLOBALS['VERSION'];
-    }
-    file_put_contents(
-      DATA_PATH.'version.php',
-      '<?php return '.var_export($this->versionInfo, true).';'
-    );
-  }
-
-  private function getVersion() {
-    $this->versionInfo = require DATA_PATH.'version.php';
-    return $this->versionInfo['version'];
   }
 }

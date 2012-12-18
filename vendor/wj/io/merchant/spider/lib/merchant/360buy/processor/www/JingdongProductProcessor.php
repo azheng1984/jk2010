@@ -126,8 +126,12 @@ class JingdongProductProcessor {
       file_put_contents('/home/azheng/x.html', $this->html);
       exit;
     }
+    preg_match('{/products/(.*?)\.html}', $list[2], $matches);
+    //TODO 验证
+    $merchantCategoryId = $matches[1];
     Db::bind(
-      'category', array('name' => $this->categoryName), null, $this->categoryId
+      'category', array('merchant_category_id' => $merchantCategoryId),
+      array('name' => $this->categoryName), $this->categoryId
     );
     ImageDb::tryCreateTable($this->categoryId);
     preg_match('{<h1>(.*?)</h1>}', $html, $matches);

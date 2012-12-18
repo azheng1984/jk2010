@@ -23,11 +23,7 @@ class ProcessCommand {
   private function sync($task) {
     try {
       $syncDb = new SyncDb;
-      $syncDb->execute(
-        $task['category_id'],
-        $task['category_name'],
-        $task['status']
-      );
+      $syncDb->execute($task['merchant_id'], $task['status']);
       SphinxIndex::index();
       $this->upgradeIndexVersion();
       $syncDb->merge();

@@ -5,39 +5,14 @@ class CommandSyncFile {
   private static $portalSyncFile = null;
   private static $previousCommand = null;
 
-  public static function initialize(
-    $taskId, $merchantId, $categoryId, $version
-  ) {
-    self::$fileNameSuffix =
-      $taskId.'_'.$merchantId.'_'.$categoryId.'_'.$version;
+  public static function initialize($taskId) {
+    self::$fileNameSuffix = $taskId;
     self::$portalSyncFilePath =
       DATA_PATH.'command_staging/'.self::$fileNameSuffix.'.sync';
     self::$portalSyncFile = fopen(self::$portalSyncFilePath, 'w');
     if (self::$portalSyncFile === false) {
       throw new Exception;
     }
-  }
-
-  public static function insertCategory() {
-    self::outputForPortal("c\n");
-  }
-
-  public static function insertPropertyKey($id, $name) {
-    $command = '';
-    if (self::$previousCommand !== 'k') {
-      self::$previousCommand = 'k';
-      $command .= "k\n";
-    }
-    self::outputForPortal($command.$id."\n".$name."\n");
-  }
-
-  public static function insertPropertyValue($id, $keyId, $name) {
-    $command = '';
-    if (self::$previousCommand !== 'v') {
-      self::$previousCommand = 'v';
-      $command .= "v\n";
-    }
-    self::outputForPortal($command.$id."\n".$keyId."\n".$name."\n");
   }
 
   public static function insertProduct($product, $id) {
@@ -53,14 +28,8 @@ class CommandSyncFile {
     $output .= $product['title']."\n";
     $output .= $product['price_from_x_100']."\n";
     $output .= $product['price_to_x_100']."\n";
-    if ($product['property_list'] === '') {
-      $output .= "\n\n";
-    } else {
-      $output .= $product['property_list']."\n\n\n";
-    }
     $output .= $product['agency_name']."\n";
     $output .= $product['keyword_list']."\n";
-    $output .= $product['value_id_list']."\n";
     self::outputForPortal($output);
   }
 
@@ -86,24 +55,11 @@ class CommandSyncFile {
     if (isset($replacementColumnList['price_to_x_100'])) {
       $output .= "\n4\n".$replacementColumnList['price_to_x_100'];
     }
-    if (isset($replacementColumnList['category_name'])) {
-      $output .= "\n5";
-    }
-    if (isset($replacementColumnList['property_list'])) {
-      if ($replacementColumnList['property_list'] !== '') {
-        $output .= "\n6\n".$replacementColumnList['property_list']."\n\n";
-      } else {
-        $output .= "\n6\n\n";
-      }
-    }
     if (isset($replacementColumnList['agency_name'])) {
-      $output .= "\n7\n".$replacementColumnList['agency_name'];
-    }
-    if (isset($replacementColumnList['value_id_list'])) {
-      $output .= "\n8\n".$replacementColumnList['value_id_list'];
+      $output .= "\n5\n".$replacementColumnList['agency_name'];
     }
     if (isset($replacementColumnList['keyword_list'])) {
-      $output .= "\n9\n".$replacementColumnList['keyword_list'];
+      $output .= "\n6\n".$replacementColumnList['keyword_list'];
     }
     self::outputForPortal($output."\n\n");
   }
