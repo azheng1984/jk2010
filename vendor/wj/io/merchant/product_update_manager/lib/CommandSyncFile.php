@@ -6,6 +6,7 @@ class CommandSyncFile {
   private static $previousCommand = null;
 
   public static function initialize($taskId) {
+    self::$previousCommand = null;
     self::$fileNameSuffix = $taskId;
     self::$portalSyncFilePath =
       DATA_PATH.'command_staging/'.self::$fileNameSuffix.'.sync';
@@ -78,14 +79,17 @@ class CommandSyncFile {
   }
 
   public static function finalize() {
+    $isUpdate = false;
     fclose(self::$portalSyncFile);
     if (filesize(self::$portalSyncFilePath) !== 0) {
+      $isUpdate = true;
       self::system(
         'tar -zcf '.FTP_PATH.self::$fileNameSuffix.'.tar.gz'
           .' -C '.DATA_PATH.'command_staging '.self::$fileNameSuffix.'.sync'
       );
     }
     unlink(self::$portalSyncFilePath);
+    return $isUpdate;
   }
 
   public static function clean() {
