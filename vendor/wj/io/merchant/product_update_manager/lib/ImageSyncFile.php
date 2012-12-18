@@ -2,11 +2,8 @@
 class ImageSyncFile {
   private static $syncFileName = null;
 
-  public static function initialize(
-    $taskId, $merchantId, $categoryId, $version
-  ) {
-    self::$syncFileName =
-      $taskId.'_'.$merchantId.'_'.$categoryId.'_'.$version.'.image.tar.gz';
+  public static function initialize($taskId) {
+    self::$syncFileName = $taskId.'.image.tar.gz';
     self::system('rm -rf '.DATA_PATH.'product_image_staging');
     self::system('mkdir '.DATA_PATH.'product_image_staging');
   }

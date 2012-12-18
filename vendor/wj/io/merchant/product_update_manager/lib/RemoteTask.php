@@ -1,15 +1,7 @@
 <?php
 class RemoteTask {
-  static public function add(
-    $id, $categoryId, $categoryName, $merchantId, $version
-  ) {
-    $currentRemoteTask = array(
-      'id' => $id,
-      'merchant_id' => $merchantId,
-      'category_id' => $categoryId,
-      'category_name' => $categoryName,
-      'version' => $version
-    );
+  static public function add($id, $merchantId) {
+    $currentRemoteTask = array('id' => $id, 'merchant_id' => $merchantId);
     Db::insert('remote_task', $currentRemoteTask);
   }
 
@@ -40,10 +32,7 @@ class RemoteTask {
         if ($row === false) {
           Db::insert('task', array(
             'id' => $task['id'],
-            'merchant_id' => $task['merchant_id'],
-            'category_id' => $task['category_id'],
-            'category_name' => $task['category_name'],
-            'version' => $task['version'],
+            'merchant_id' => $task['merchant_id']
           ));
         }
         DbConnection::close();

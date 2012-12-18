@@ -2,6 +2,7 @@
 //TODO 删除 category name 中的 "其它" 前缀
 class JingdongCategoryListProcessor {
   private $categoryId;
+  private $merchantCategoryId;
   private $categoryName;
   private $categoryVersion;
 
@@ -23,9 +24,10 @@ class JingdongCategoryListProcessor {
         continue;
       }
       $this->categoryName = iconv('gbk', 'utf-8', $matches[4][$index]);
-      $this->bindCategory();
       $path = $levelOneCategoryId.'-'
         .$matches[2][$index].'-'.$matches[3][$index];
+      $this->merchantCategoryId = $path;
+      $this->bindCategory();
       if ($this->categoryVersion !== $GLOBALS['VERSION']) {
         $this->checkProductUpdateManagerTask();
         $productListProcessor = new JingdongProductListProcessor(
@@ -34,7 +36,6 @@ class JingdongCategoryListProcessor {
         $productListProcessor->execute($path);
         $this->executeHistory();
         $this->cleanProduct();
-        $this->cleanProductPropertyValue();
         $this->addProductUpdateManagerTask();
       }
       $this->upgradeCategoryVersion();
@@ -44,6 +45,7 @@ class JingdongCategoryListProcessor {
     );
     foreach ($categoryList as $category) {
       $this->categoryId = $category['id'];
+      $this->merchantCategoryId = $category['merchant_category_id'];
       $this->categoryName = $category['name'];
       $this->checkProductUpdateManagerTask();
       $hasHistory = $this->executeHistory();
@@ -57,19 +59,8 @@ class JingdongCategoryListProcessor {
         continue;
       }
       $this->upgradeCategoryVersion();
-      $this->cleanProductPropertyValue();
       $this->addProductUpdateManagerTask();
     }
-    $this->categoryName = '<LAST>';
-    DbConnection::connect('update_manager');
-    $id = Db::getColumn(
-      'SELECT id FROM task WHERE merchant_name = ? AND category_name = ?',
-      'jingdong', $this->categoryName
-    );
-    if ($id === false) {
-      $this->addProductUpdateManagerTask();
-    }
-    DbConnection::close();
   }
 
   private function parseCategory($url, $html) {
@@ -93,10 +84,14 @@ class JingdongCategoryListProcessor {
 
   private function bindCategory() {
     $category = Db::getRow(
-      'SELECT * FROM category WHERE name = ?', $this->categoryName
+      'SELECT * FROM category WHERE merchant_category_id = ?',
+        $this->merchantCategoryId
     );
     if ($category === false) {
-      Db::insert('category', array('name' => $this->categoryName));
+      Db::insert('category', array(
+        'merchant_category_id' => $this->merchantCategoryId,
+        'name' => $this->categoryName
+      ));
       $this->categoryId = Db::getLastInsertId();
       ImageDb::createTable($this->categoryId);
       $this->categoryVersion = 0;
@@ -110,9 +105,9 @@ class JingdongCategoryListProcessor {
     DbConnection::connect('update_manager');
     for (;;) {
       $id = Db::getColumn(
-        'SELECT id FROM task WHERE merchant_name = ? AND category_name = ?',
-        'jingdong', $this->categoryName
-      );
+        'SELECT id FROM task WHERE merchant_id = ? AND category_id = ?',
+        1, $this->categoryId
+      );//TODO merchant id hardcode
       if ($id === false) {
         break;
       }
@@ -178,8 +173,8 @@ class JingdongCategoryListProcessor {
   private function addProductUpdateManagerTask() {
     DbConnection::connect('update_manager');
     Db::insert('task', array(
-      'merchant_name' => 'jingdong',
-      'category_name' => $this->categoryName,
+      'merchant_id' => 1, //TODO
+      'category_id' => $this->categoryId,
       'version' => $GLOBALS['VERSION'],
     ));
     DbConnection::close();
@@ -196,14 +191,6 @@ class JingdongCategoryListProcessor {
     Db::delete(
       'product', 'category_id = ? AND version < ?',
       $this->categoryId, $GLOBALS['VERSION'] - 1
-    );
-  }
-
-  private function cleanProductPropertyValue() {
-    Db::execute(
-      'DELETE FROM product_property_value'
-        .' WHERE category_id = ? AND version != ?',
-      $this->categoryId, $GLOBALS['VERSION']
     );
   }
 }

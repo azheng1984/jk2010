@@ -7,8 +7,6 @@ class JingdongProductListProcessor {
   private $isFirstMatch;
   private static $nextPageNoMatchedCount = 0;
   private static $nextPageMatchedCount = 0;
-  private static $propertyListNoMatchedCount = 0;
-  private static $propertyListMatchedCount = 0;
 
   public function __construct($categoryId = null) {
     $this->categoryId = $categoryId;
@@ -29,9 +27,6 @@ class JingdongProductListProcessor {
         $this->page = $this->getPage($path);
       }
       $this->parseProductList();
-      if ($this->page === 1) {
-        $this->parsePropertyList();
-      }
       $this->parseNextPage();
     } catch (Exception $exception) {
       DbConnection::closeAll();
@@ -64,12 +59,23 @@ class JingdongProductListProcessor {
     if (trim($categoryName) === '') {
       var_dump($categoryName);
       var_dump($this->url);
-      file_put_contents('/home/azheng/x.match.html', iconv('gbk', 'utf-8', var_export($matches, true)));
+      file_put_contents(
+        '/home/azheng/x.match.html',
+        iconv('gbk', 'utf-8', var_export($matches, true))
+      );
       file_put_contents('/home/azheng/x.html', $this->html);
       exit;
     }
+    //TODO 验证
+    $tmp = explode('.', end(explode('products/', $matches[1])), 2);
+    $merchantCategoryId = $tmp[0];
     $id = null;
-    Db::bind('category', array('name' => $categoryName), null, $id);
+    Db::bind(
+      'category',
+      array('merchant_category_id' => $merchantCategoryId),
+      array('name' => $categoryName),
+      $id
+    );
     ImageDb::tryCreateTable($id);
     return $id;
   }
@@ -127,70 +133,6 @@ class JingdongProductListProcessor {
     ++self::$nextPageNoMatchedCount;
   }
 
-  private function parsePropertyList() {
-    preg_match(
-      '{<div id="select" [\s|\S]*<!--select end -->}', $this->html, $matches
-    );
-    if (count($matches) === 0) {
-      ++self::$propertyListNoMatchedCount;
-      return;
-    }
-    ++self::$propertyListMatchedCount;
-    $section = iconv('gbk', 'utf-8', $matches[0]);
-    preg_match_all('{<dl.*?</dl>}', $section, $matches);
-    if (count($matches[0]) === 0) {
-      $this->saveMatchErrorLog('JingdongProductListProcessor:parsePropertyList#0');
-    }
-    $keyIndex = 0;
-    foreach ($matches[0] as $item) {
-      preg_match_all(
-        "{<dt>(.*?)：</dt>}", $item, $matches
-      );
-      if (count($matches[0]) === 0) {
-        $this->saveMatchErrorLog('JingdongProductListProcessor:parsePropertyList#1');
-      }
-      $keyName = $matches[1][0];
-      if ($keyName === '价格' || $keyName === '类别') {
-        continue;
-      }
-      preg_match_all(
-        "{<a.*?href='(.*?).html'.*?>(.*?)</a>}", $item, $matches
-      );
-      if (count($matches[0]) === 0) {
-        $this->saveMatchErrorLog('JingdongProductListProcessor:parsePropertyList#2');
-      }
-      $valueLinkList = $matches[1];
-      $valueList = $matches[2];
-      $valueAmount = count($valueList);
-      $keyId = null;
-      Db::bind('property_key', array(
-        'category_id' => $this->categoryId, 'name' => $keyName
-      ), array(
-        '_index' => $keyIndex, 'version' => $GLOBALS['VERSION']
-      ), $keyId);
-      for ($valueIndex = 0; $valueIndex < $valueAmount; ++$valueIndex) {
-        $valueName = $valueList[$valueIndex];
-        if ($valueName === '全部' || $valueName === '其它'
-          || $valueName === '其他' || $valueName === '其他'.$keyName
-          || $valueName === '不限') {
-          continue;
-        }
-        $valueId = null;
-        Db::bind('property_value', array(
-          'key_id' => $keyId, 'name' => $valueList[$valueIndex]
-        ), array(
-          '_index' => $valueIndex, 'version' => $GLOBALS['VERSION']
-        ), $valueId);
-        $path = $valueLinkList[$valueIndex];
-        $processor = new JingdongPropertyProductListProcessor(
-          //$this->categoryId, $valueId
-        );
-        $processor->execute($path);
-      }
-      ++$keyIndex;
-    }
-  }
-
   private function saveMatchErrorLog($source) {
     Db::insert('match_error_log', array(
       'source' => $source,
@@ -211,14 +153,5 @@ class JingdongProductListProcessor {
     ));
     self::$nextPageMatchedCount = 0;
     self::$nextPageNoMatchedCount = 0;
-    Db::insert('match_log', array(
-      'source' => 'JingdongProductListProcessor:property_list',
-      'match_count' => self::$propertyListMatchedCount,
-      'no_match_count' => self::$propertyListNoMatchedCount,
-      'time' => date('Y-m-d H:i:s'),
-      'version' => $GLOBALS['VERSION']
-    ));
-    self::$propertyListMatchedCount = 0;
-    self::$propertyListNoMatchedCount = 0;
   }
 }
