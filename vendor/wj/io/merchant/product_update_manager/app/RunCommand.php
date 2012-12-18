@@ -26,15 +26,13 @@ class RunCommand {
         CommandSyncFile::initialize($this->remoteTaskIndex);
         ImageSyncFile::initialize($this->remoteTaskIndex);
         SyncProduct::execute(
-          $task['category_id'],
-          $task['version'],
-          'jingdong'
+          $task['category_id'], $task['version'], 'jingdong'
         );
-        CommandSyncFile::finalize();
-        ImageSyncFile::finalize();
-        RemoteTask::add($this->remoteTaskIndex, 1);
+        if (CommandSyncFile::finalize()) {
+          ImageSyncFile::finalize();
+          RemoteTask::add($this->remoteTaskIndex, 1);
+        }
         $this->removeTask($task['id']);
-        exit;
         Db::commit();
       } catch (Exception $exception) {
         throw $exception;

@@ -109,6 +109,9 @@ class SyncDb {
       unset($product['price_to_x_100']);
     }
     $product['agency_name'] = substr(fgets($this->file), 0, -1);
+    if ($product['agency_name'] === '') {
+      unset($product['agency_name']);
+    }
     $searchDeltaProduct['keyword_list'] = substr(fgets($this->file), 0, -1);
     if ($this->isRetry) {
       DbConnection::connect('search');
@@ -153,9 +156,15 @@ class SyncDb {
           break;
         case '4':
           $product['price_to_x_100'] = substr(fgets($this->file), 0, -1);
+          if ($product['price_to_x_100'] === '') {
+            $product['price_to_x_100'] = null;
+          }
           break;
         case '5':
           $product['agency_name'] = substr(fgets($this->file), 0, -1);
+          if ($product['agency_name'] === '') {
+            $product['agency_name'] = null;
+          }
           break;
         case '6':
           $searchProductReplacementColumnList['keyword_list'] = substr(
