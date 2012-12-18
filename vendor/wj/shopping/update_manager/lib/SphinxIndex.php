@@ -3,6 +3,7 @@ class SphinxIndex {
   private static $mainDate = null;
 
   public static function index() {
+    //TODO 构建多级索引，使用商品总数控制增量索引，用时间控制总索引更新
     $date = date('Y-m-d');
     if (self::$mainDate === null) {
       self::$mainDate = require DATA_PATH.'main_index_date.php';
