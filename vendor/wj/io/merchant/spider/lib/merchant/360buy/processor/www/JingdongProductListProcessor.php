@@ -57,8 +57,7 @@ class JingdongProductListProcessor {
     }
     $categoryName = iconv('gbk', 'utf-8', end(explode('html">', $matches[1])));
     if (trim($categoryName) === '') {
-      var_dump($categoryName);
-      var_dump($this->url);
+      error_log('fatal error: category name is empty, see http://'.$this->url);
       file_put_contents(
         '/home/azheng/x.match.html',
         iconv('gbk', 'utf-8', var_export($matches, true))
@@ -66,8 +65,18 @@ class JingdongProductListProcessor {
       file_put_contents('/home/azheng/x.html', $this->html);
       exit;
     }
-    //TODO 验证
-    $tmp = explode('.', end(explode('products/', $matches[1])), 2);
+    $tmp = explode('products/', $matches[1]);
+    if ($tmp < 2) {
+      throw new Exception(
+        'JingdongProductListProcessor:parseProductList#2', 500
+      );
+    }
+    $tmp = explode('.', end($tmp), 2);
+    if ($tmp < 2) {
+      throw new Exception(
+        'JingdongProductListProcessor:parseProductList#3', 500
+      );
+    }
     $merchantCategoryId = $tmp[0];
     $id = null;
     Db::bind(
@@ -98,7 +107,7 @@ class JingdongProductListProcessor {
     $this->isFirstMatch = false;
     $list = explode('<li', $matches[1]);
     array_shift($list);
-    if (count($list) < 2) {
+    if (count($list) === 0) {
       $this->saveMatchErrorLog('JingdongProductListProcessor:parseProductList#1');
       throw new Exception(null, 500);
     }

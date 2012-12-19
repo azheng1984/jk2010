@@ -120,14 +120,19 @@ class JingdongProductProcessor {
     }
     $this->categoryName = iconv('gbk', 'utf-8', $matches[1]);
     if (trim($this->categoryName) === '') {
-      error_log(var_export($this->categoryName, true));
-      var_dump($this->categoryName);
-      var_dump($path);
+      error_log('fatal error: category name is empty, see http://'.$this->url);
+      file_put_contents(
+        '/home/azheng/x.match.html',
+        iconv('gbk', 'utf-8', var_export($matches, true))
+      );
       file_put_contents('/home/azheng/x.html', $this->html);
       exit;
     }
     preg_match('{/products/(.*?)\.html}', $list[2], $matches);
-    //TODO 验证
+    if (count($matches) === 0) {
+      $this->saveMatchErrorLog('JingdongProductProcessor:initialize#5');
+      throw new Exception(null, 500);
+    }
     $merchantCategoryId = $matches[1];
     Db::bind(
       'category', array('merchant_category_id' => $merchantCategoryId),
@@ -136,7 +141,7 @@ class JingdongProductProcessor {
     ImageDb::tryCreateTable($this->categoryId);
     preg_match('{<h1>(.*?)</h1>}', $html, $matches);
     if (count($matches) === 0) {
-      $this->saveMatchErrorLog('JingdongProductProcessor:initialize#5');
+      $this->saveMatchErrorLog('JingdongProductProcessor:initialize#6');
       throw new Exception(null, 500);
     }
     $this->title = iconv('gbk', 'utf-8', $matches[1]);
@@ -269,7 +274,10 @@ class JingdongProductProcessor {
       $thumb->clear();
       $thumb->destroy();
     } catch (Exception $exception) {
-      //TODO log
+      $this->saveMatchErrorLog(
+        'JingdongProductProcessor:bindImage('.$this->imageFormat.')',
+        $result['content']
+      );
       $thumb->clear();
       $thumb->destroy();
       throw new Exception(null, 500);
