@@ -14,7 +14,7 @@ class SyncImage {
   public static function delete($imagePath) {
     list($levelOne, $levelTwo) = explode('/', $imagePath);
     $id = $levelOne * 10000 + $levelTwo;
-    Db::update(
+    Db::execute(
       'UPDATE image_folder SET amount = amount - 1 WHERE id = ?', $id
     );
   }

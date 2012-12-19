@@ -111,7 +111,7 @@ class JingdongCategoryListProcessor {
       if ($id === false) {
         break;
       }
-      echo 'waiting for update manager...'.PHP_EOL;
+      //echo 'waiting for update manager...'.PHP_EOL;
       sleep(10);
     }
     DbConnection::close();
@@ -139,10 +139,10 @@ class JingdongCategoryListProcessor {
     while (count($historyIdList) === 10000) {
       $history = end($historyIdList);
       $historyIdList = Db::getAll(
-        'SELECT id FROM history WHERE category_id = ?'
+        'SELECT id FROM history WHERE category_id = ? AND id = ? '
           .' AND (version != ? OR status != 200)'
-          .' AND id > ? ORDER BY id LIMIT 10000',
-        $this->categoryId, $GLOBALS['VERSION'], $history['id']
+          .' ORDER BY id LIMIT 10000',
+        $this->categoryId, $history['id'], $GLOBALS['VERSION']
       );
       $this->executeHistoryIdList($historyIdList);
     }
