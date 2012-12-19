@@ -6,8 +6,8 @@ class DownloadCommand {
         'SELECT * FROM task WHERE status = "init" ORDER BY id LIMIT 1'
       );
       if ($task !== false) {
-        echo 'start'.PHP_EOL;
-        var_dump($task);
+//        echo 'start'.PHP_EOL;
+//        var_dump($task);
         try {
           SyncFile::initialize($task);
           SyncFile::execute($task);
@@ -15,9 +15,9 @@ class DownloadCommand {
         } catch (Exception $ex) {
           throw $ex;
         }
-        echo 'end'.PHP_EOL;
+//        echo 'end'.PHP_EOL;
       } else {
-        echo 'sleeping'.PHP_EOL;
+//        echo 'sleeping'.PHP_EOL;
         sleep(10);
       }
     }

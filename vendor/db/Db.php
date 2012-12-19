@@ -102,7 +102,15 @@ class Db {
       $parameterList = $parameterList[0];
     }
     $statement = $connection->prepare($sql);
+    $isExit = false;
+    if (is_array($parameterList) === false) {
+      echo date('Y-m-d H:i:s');
+      $isExit = true;
+    }
     $statement->execute($parameterList);
+    if ($isExit) {
+      exit;
+    }
     return $statement;
   }
 

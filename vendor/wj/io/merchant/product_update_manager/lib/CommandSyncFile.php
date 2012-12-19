@@ -24,6 +24,7 @@ class CommandSyncFile {
     }
     $output .= $id."\n";
     $output .= $product['uri_argument_list']."\n";
+    $output .= $product['popularity_rank']."\n";
     $output .= $product['image_path']."\n";
     $output .= $product['image_digest']."\n";
     $output .= $product['title']."\n";
@@ -44,23 +45,26 @@ class CommandSyncFile {
     if (isset($replacementColumnList['uri_argument_list'])) {
       $output .= "\n0\n".$replacementColumnList['uri_argument_list'];
     }
+    if (isset($replacementColumnList['popularity_rank'])) {
+      $output .= "\n1\n".$replacementColumnList['popularity_rank'];
+    }
     if (isset($replacementColumnList['image_digest'])) {
-      $output .= "\n1\n".$replacementColumnList['image_digest'];
+      $output .= "\n2\n".$replacementColumnList['image_digest'];
     }
     if (isset($replacementColumnList['title'])) {
-      $output .= "\n2\n".$replacementColumnList['title'];
+      $output .= "\n3\n".$replacementColumnList['title'];
     }
     if (isset($replacementColumnList['price_from_x_100'])) {
-      $output .= "\n3\n".$replacementColumnList['price_from_x_100'];
+      $output .= "\n4\n".$replacementColumnList['price_from_x_100'];
     }
     if (isset($replacementColumnList['price_to_x_100'])) {
-      $output .= "\n4\n".$replacementColumnList['price_to_x_100'];
+      $output .= "\n5\n".$replacementColumnList['price_to_x_100'];
     }
     if (isset($replacementColumnList['agency_name'])) {
-      $output .= "\n5\n".$replacementColumnList['agency_name'];
+      $output .= "\n6\n".$replacementColumnList['agency_name'];
     }
     if (isset($replacementColumnList['keyword_list'])) {
-      $output .= "\n6\n".$replacementColumnList['keyword_list'];
+      $output .= "\n7\n".$replacementColumnList['keyword_list'];
     }
     self::outputForPortal($output."\n\n");
   }

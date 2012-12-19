@@ -4,13 +4,18 @@ class SyncProduct {
   private static $categoryId;
   private static $merchantId;
   private static $merchantName;
+  private static $productAmount;
 
   public static function execute($categoryId, $version, $merchantName) {
     self::$merchantId = 1;//TODO
-    DbConnection::connect($merchantName);
     self::$categoryId = $categoryId;
     self::$version = $version;
     self::$merchantName = $merchantName;
+    DbConnection::connect($merchantName);
+    self::$productAmount = Db::getColumn(
+      'SELECT product_amount FROM category WHERE id = ?',
+      self::$categoryId
+    );
     $productList = Db::getAll(
       'SELECT * FROM product WHERE category_id = ? ORDER BY id LIMIT 1000',
       self::$categoryId
@@ -37,11 +42,14 @@ class SyncProduct {
           .' WHERE merchant_id = ? AND merchant_product_id = ?',
         self::$merchantId,
         $product['merchant_product_id']
-      ); 
+      );
       if ($product['version'] < self::$version) {
+        if ($shoppingProduct === false) {
+          continue;
+        }
         CommandSyncFile::deleteProduct($shoppingProduct['id']);
         SyncImage::delete($shoppingProduct['image_path']);
-        Db::delete('product', 'id = ?', 1, $shoppingProduct['id']);
+        Db::delete('product', 'id = ?', $shoppingProduct['id']);
         continue;
       }
       $imagePath = null;
@@ -51,11 +59,20 @@ class SyncProduct {
       if (isset($product['price_to_x_100']) === false) {
         $product['price_to_x_100'] = null;
       }
+      //TODO process index version
+      $popularityRank =
+        (self::$productAmount - $product['index']) /
+          self::$productAmount;
+      if (self::$version !== $product['index_version']) {
+        $popularityRank = $popularityRank / self::$productAmount;
+      }
+      $popularityRank = intval($popularityRank * 1000000);
       if ($shoppingProduct === false) {
         $keywordTextList = self::getKeywordTextList($product['title']);
         $columnList = array(
           'merchant_id' => 1,//TODO
           'merchant_product_id' => $product['merchant_product_id'],
+          'popularity_rank' => $popularityRank,
           'uri_argument_list' => $product['merchant_product_id'],//TODO
           'image_path' => $imagePath,
           'image_digest' => $product['image_digest'],
@@ -80,13 +97,16 @@ class SyncProduct {
       if ($shoppingProduct['uri_argument_list'] !== $product['merchant_product_id']) {
         $replacementColumnList['uri_argument_list'] = $product['merchant_product_id'];
       }
+      if (intval($shoppingProduct['popularity_rank']) !== $popularityRank) {
+        $replacementColumnList['popularity_rank'] = $popularityRank;
+      }
       if ($shoppingProduct['image_digest'] !== $product['image_digest']) {
         $replacementColumnList['image_digest'] = $product['image_digest'];
         SyncImage::bind(
-        self::$categoryId,
-        $shoppingProductId,
-        $product['merchant_product_id'],
-        $shoppingProduct['image_path']
+          self::$categoryId,
+          $shoppingProduct['id'],
+          $product['merchant_product_id'],
+          $shoppingProduct['image_path']
         );
       }
       if ($shoppingProduct['title'] !== $product['title']) {
