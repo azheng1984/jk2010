@@ -107,7 +107,7 @@ class JingdongCategoryListProcessor {
       $id = Db::getColumn(
         'SELECT id FROM task WHERE merchant_id = ? AND category_id = ?',
         1, $this->categoryId
-      );//TODO merchant id hardcode
+      );//TODO merchant id hardcoded
       if ($id === false) {
         break;
       }
@@ -171,6 +171,16 @@ class JingdongCategoryListProcessor {
   }
 
   private function addProductUpdateManagerTask() {
+    $productAmount = Db::getRow(
+      'SELECT count(*) FROM product WHERE category_id = ? AND version = '
+        .$GLOBALS['VERSION'], $this->categoryId
+    );
+    Db::update(
+      'category',
+      array('product_amount' => $productAmount),
+      'id = ?',
+      $this->categoryId
+    );
     DbConnection::connect('update_manager');
     Db::insert('task', array(
       'merchant_id' => 1, //TODO

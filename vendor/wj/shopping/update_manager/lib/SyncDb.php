@@ -47,7 +47,7 @@ class SyncDb {
       default:
         return false;
     }
-    echo $command;
+    //echo $command;
     return true;
   }
 
@@ -99,6 +99,7 @@ class SyncDb {
     $product = array('merchant_id' => $this->merchantId);
     $searchDeltaProduct = array();
     $product['uri_argument_list'] = substr(fgets($this->file), 0, -1);
+    $searchDeltaProduct['popularity_rank'] = substr(fgets($this->file), 0, -1);
     $product['image_path'] = substr(fgets($this->file), 0, -1);
     $product['image_digest'] = substr(fgets($this->file), 0, -1);
     $product['title'] = substr(fgets($this->file), 0, -1);
@@ -145,28 +146,32 @@ class SyncDb {
           $product['uri_argument_list'] = substr(fgets($this->file), 0, -1);
           break;
         case '1':
-          $product['image_digest'] = substr(fgets($this->file), 0, -1);
+          $searchProductReplacementColumnList['popularity_rank']
+            = substr(fgets($this->file), 0, -1);
           break;
         case '2':
-          $deltaProduct['title'] = substr(fgets($this->file), 0, -1);
+          $product['image_digest'] = substr(fgets($this->file), 0, -1);
           break;
         case '3':
+          $deltaProduct['title'] = substr(fgets($this->file), 0, -1);
+          break;
+        case '4':
           $deltaProduct['price_from_x_100'] = substr(fgets($this->file), 0, -1);
           $searchProductReplacementColumnList['price_from_x_100'] = $deltaProduct['price_from_x_100'];
           break;
-        case '4':
+        case '5':
           $product['price_to_x_100'] = substr(fgets($this->file), 0, -1);
           if ($product['price_to_x_100'] === '') {
             $product['price_to_x_100'] = null;
           }
           break;
-        case '5':
+        case '6':
           $product['agency_name'] = substr(fgets($this->file), 0, -1);
           if ($product['agency_name'] === '') {
             $product['agency_name'] = null;
           }
           break;
-        case '6':
+        case '7':
           $searchProductReplacementColumnList['keyword_list'] = substr(
             fgets($this->file), 0, -1
           );
@@ -186,7 +191,7 @@ class SyncDb {
     }
     if (count($searchProductReplacementColumnList) > 0) {
       DbConnection::connect('search');
-      if (count($searchProductReplacementColumnList) === 2) {
+      if (count($searchProductReplacementColumnList) === 3) {
         if (Db::getColumn('SELECT id FROM product_delta WHERE id = ?', $id) === false) {
           $searchProductReplacementColumnList['id'] = $id;
           Db::insert(
@@ -201,26 +206,32 @@ class SyncDb {
           );
         }
       } else {
-        $searchProduct = Db::getRow(
+        $searchDeltaProduct = Db::getRow(
           'SELECT id FROM product_delta WHERE id = ?', $id
         );
-        if ($searchProduct !== false) {
+        if ($searchDeltaProduct !== false) {
           Db::update(
             'product_delta', $searchProductReplacementColumnList, 'id = ?', $id
           );
         } else {
-          $select = '';
+          $select = array();
           if (!isset($searchProductReplacementColumnList['price_from_x_100'])) {
-            $select = 'price_from_x_100';
-          } else {
-            $select = 'keyword_list';
+            $select[] = 'price_from_x_100';
           }
-          $column = Db::getColumn(
-            'SELECT '.$select.' FROM product WHERE id = ?', $id
+          if (!isset($searchProductReplacementColumnList['popularity_rank'])) {
+            $select[] = 'popularity_rank';
+          }
+          if (!isset($searchProductReplacementColumnList['keyword_list'])) {
+            $select[] = 'keyword_list';
+          }
+          $searchProduct = Db::getColumn(
+            'SELECT '.implode(',', $select).' FROM product WHERE id = ?', $id
           );
-          $searchProductReplacementColumnList[$select] = $column;
-          $searchProductReplacementColumnList['id'] = $id;
-          Db::insert('product_delta', $searchProductReplacementColumnList);
+          $searchProduct = array_merge(
+            $searchProduct, $searchProductReplacementColumnList
+          );
+          $searchProduct['id'] = $id;
+          Db::insert('product_delta', $searchProduct);
         }
       }
       DbConnection::close();
