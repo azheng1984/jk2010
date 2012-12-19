@@ -61,7 +61,7 @@ class SyncProduct {
       }
       //TODO process index version
       $popularityRank =
-        (self::$productAmount - $product['index']) /
+        (self::$productAmount - $product['_index']) /
           self::$productAmount;
       if (self::$version !== $product['index_version']) {
         $popularityRank = $popularityRank / self::$productAmount;

@@ -171,7 +171,7 @@ class JingdongCategoryListProcessor {
   }
 
   private function addProductUpdateManagerTask() {
-    $productAmount = Db::getRow(
+    $productAmount = Db::getColumn(
       'SELECT count(*) FROM product WHERE category_id = ? AND version = '
         .$GLOBALS['VERSION'], $this->categoryId
     );
