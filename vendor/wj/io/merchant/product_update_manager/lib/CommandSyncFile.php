@@ -41,7 +41,7 @@ class CommandSyncFile {
       self::$previousCommand = 'u';
       $output = "u\n";
     }
-    $output .= $id."\n";
+    $output .= $id;
     if (isset($replacementColumnList['uri_argument_list'])) {
       $output .= "\n0\n".$replacementColumnList['uri_argument_list'];
     }
