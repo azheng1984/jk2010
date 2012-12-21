@@ -14,7 +14,7 @@ class AdSenseScreen {
 //      '<script type="text/javascript"',
 //      'src="http://pagead2.googlesyndication.com/pagead/show_ads.js">',
 //      '</script>',
-        '<img src="/+/img/imgad.gif"/>',
+        '<img src="/+asset/img/imgad.gif"/>',
       '</div></div>';
   }
 }

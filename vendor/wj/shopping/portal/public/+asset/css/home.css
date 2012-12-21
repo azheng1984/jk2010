@@ -1,0 +1,308 @@
+#more_category {
+  margin-top:1px;
+}
+#more_category a {
+  background:url(/+asset/img/search.png) -141px -175px no-repeat;
+  padding-left:11px;
+  font-size:13px;
+  color: #909090;
+  border-color: #909090;border: 0;
+}
+#more_category a:hover {
+  background-position:-123px -201px;
+}
+#more_category a:hover {
+  color:#303030;
+}
+#arrow {
+  float:right;
+  margin-top:125px;
+  margin-right:10px;
+}
+#arrow_left {
+  float:left;
+  margin-top:119px;
+  margin-left:10px;
+}
+#home {
+  width:100%;
+  background:#f5f5f5;
+  border:1px solid #d8d8d8;
+  border-left:0;
+  border-right:0;
+  box-shadow: inset 0 1px 1px #eee;
+}
+/* slogon
+ *************************************/
+#slogon {
+  margin:10px;
+  width: 537px;
+  border-right:1px solid #d8d8d8;
+  color:#505050;
+  background-color:#fff;
+}
+#slogon h1 {
+  padding:0 0 3px 10px;
+  font-size:16px;
+}
+#slogon ul {
+  padding:0 0 8px 10px;
+  clear:left;
+}
+#slogon li {
+  margin:3px 3px 3px 25px;
+  font-size:13px;
+  color:#909090;
+  clear:left;
+  list-style-type:square;
+}
+#slogon span {
+  background:#f1f1f1;
+  padding:2px 5px;
+  border-radius:2px;
+}
+#slogon a, #slogon .ellipsis {
+  font-size:14px;
+  color:#06c;
+  border:0;
+}
+#slogon .span_over {
+  color:#707070;
+  
+}
+#slogon a:hover {
+  text-decoration:underline;
+}
+/* merchant category list
+ *************************************/
+ol {
+  padding:7px;
+  font-size:15px;
+}
+ol li {
+  clear:left;
+  margin:3px;
+  width:145px;
+  line-height:25px;
+  padding-left:10px;
+}
+ol .current {
+  color:#fff;
+  background:red;
+  border-radius:3px;
+}
+/* slideshow
+ *************************************/
+#slideshow {
+  width:960px;
+  padding-top:10px;
+}
+#slideshow .current {/* chrome & firefox 会 focus 没有 tabindex 的选定元素 */
+  outline:0;
+}
+#slide_wrapper {
+  margin-bottom:10px;
+  border:1px solid;
+  border-color:#e0e0e0 #d8d8d8 #d8d8d8;
+  background:#fff;
+  margin-top:-1px;
+  text-align:center;
+  width:100%;
+  box-shadow:0px 1px 2px #e5e5e5;
+}
+#slide {
+  float:left;
+/*
+  width:934px;
+  height:260px;
+  background:#efefef;
+  margin:13px 0 13px 13px;
+*/
+  margin:13px 0 7px 143px;
+
+  border:0;
+  text-align:center;
+}
+#slide img {
+}
+#slide_list {
+  float:right;
+  padding-right:10px;
+}
+#slide_list_2 {
+  float:right;
+  font-size:12px;
+  color:#909090;
+  margin-right:12px;
+}
+#slide_list_2 strong {
+  font-size:16px;
+}
+#slide_list a, #slide_list span {
+  display:inline-block;
+  font-size:11px;/* ie6 inline-block 最小高度等于文字高度 */
+  padding:0 8px;
+  line-height:21px;
+  border-radius:2px;
+  margin:0 2px;
+  *margin-top:4px;/* ie6/7 line-height 无法垂直居中 */
+}
+#slide_list a, #slide_list .item {
+  background:#e0e0e0;
+  color:#909090;
+  font-weight:normal;
+}
+#slide_list .current {
+  /*padding:1px 9px;*/
+}
+#slide_list a:hover, #slide_list .hover {
+  color:#fff;
+  background:#bbb;
+  cursor:pointer;
+}
+#slide_list span {
+	/*
+  background:red;
+  color:#fff;
+  border:1px solid;
+  border-color: #D00;
+  */
+  background:red;
+  color:#fff;
+}
+#merchant {
+  border:0;
+  color:#505050;
+  font-size:16px;
+  display:inline-block;
+  padding-bottom:10px;
+  padding:10px 0;
+  width:100%;
+  margin-right:10px;
+  background:#fff;
+  border-top:1px solid #e5e5e5;
+  text-align:left;
+}
+#merchant_name {
+  margin-left:12px;
+}
+#merchant a {
+  font-size:14px;
+  color:#505050;
+  border:1px solid;
+  border-color:#e5e5e5 #d0d0d0 #d0d0d0 #e5e5e5;
+  margin-left:2px;
+  padding:3px 8px;
+  background:url(/+asset/img/screen.png) 0 -70px repeat-x;
+  border-radius:3px;
+}
+#merchant a:hover {
+  color:#000;
+  border-color:#ddd #bbb #bbb #ddd;
+  box-shadow:0 0 3px #ddd;
+}
+#merchant_list_wrapper {
+  margin:10px;
+}
+#merchant_list {
+  width:315px;
+  clear:left;
+}
+#home h2 {
+  font-size:15px;
+  color:#909090;
+}
+#merchant_list.move {
+  overflow:hidden;
+  position:relative;/* 修正 ie6 hidden 无效 */
+}
+#merchant_list a, #merchant_list span, #merchant_list .item {
+  float:left;
+
+  margin:0 2px;
+  height:60px;
+  width:146px;
+  text-align:center;
+  background-color:#fff;
+}
+#merchant_list a:hover, #merchant_list .hover {
+  cursor:pointer;
+  border-color:#000;
+}
+#merchant_list span {
+  border-color:#e8e8e8 #d8d8d8 #fff #d8d8d8;
+}
+#merchant_list a img, #merchant_list span img {
+  width:110px;
+  padding:12px 18px;
+  _margin-bottom:5px;
+}
+#merchant_list span img:hover {
+}
+#merchant_list span:hover {
+
+}
+#merchant_list .current:hover {
+  border-color:#d8d8d8;
+  box-shadow:none;
+}
+#merchant_list .current img:hover {
+  border-color:red;
+}
+#merchant_list div {
+  position:relative;
+}
+#merchant_list div span {
+  border-top:1px solid #d8d8d8;
+}
+#merchant_list .current {
+  position:relative;/* ie6 默认 z-index 和显示顺序相反 */
+  box-shadow:none;
+}
+#merchant_list .current img {
+  border-color:red;
+}
+#next {
+  padding-top:10px;
+}
+#previous {
+  padding-bottom:10px;
+  margin-top:-70px;
+}
+#scroll {
+  float:right;
+  width:35px;
+}
+#scroll a, #scroll span {
+  float:left;
+  clear:left;
+  width:15px;
+  border:0;
+  margin-top:3px;
+  background:url(/+asset/img/home.png) -11px -1px no-repeat;
+  height:52px;
+  border-radius:2px;
+}
+#scroll a:hover, #scroll .hover {
+  cursor:pointer;
+  background-position:-46px -1px;
+}
+#scroll .small {
+  height:25px;
+  background-position:-11px -15px;
+}
+#scroll .small:hover, #scroll .small_hover {
+  background-position:-46px -15px;
+}
+#scroll .previous {
+  background-position:-81px -2px;
+}
+#scroll .previous:hover, #scroll .previous_hover {
+  background-position:-116px -2px;
+}
+#scroll .previous_small {
+  background-position:-81px -15px;
+}
+#scroll .previous_small:hover, #scroll .previous_small_hover {
+  background-position:-116px -15px;
+}

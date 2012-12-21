@@ -1,0 +1,43 @@
+#nav {
+  width:958px;
+  line-height:30px;
+  font-size:15px;
+  border:1px solid #e5e5e5;
+  border-bottom:0;
+}
+#nav span {
+  float:left;
+  padding:0 15px 0 8px;
+  background:url(/+asset/img/screen.png) right -137px no-repeat;
+}
+#nav h1 {
+  font-size:15px;
+  padding-left:8px;
+}
+#index {
+  padding:8px;
+  background:#f5f5f5;
+  border:1px solid #e5e5e5;
+  box-shadow:0 0 3px #e1e1e1;
+  *width:942px;/* ie7 会产生居中问题 */
+}
+table {
+  table-layout:fixed;
+  width:942px;
+  background:#fff;
+  border:1px solid #e5e5e5;
+  box-shadow:0 0 3px #e8e8e8;
+}
+td {
+  padding:5px 5px 5px 15px;
+  background:url(/+asset/img/screen.png) -510px -169px no-repeat;
+}
+td a {
+  border:0;
+  font-size:14px;
+  color:#06c;
+}
+td a:hover {
+  color:#06c;
+  text-decoration:underline;
+}
