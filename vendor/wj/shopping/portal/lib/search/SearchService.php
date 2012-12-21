@@ -24,7 +24,8 @@ class SearchService {
     if ($query === '') {
       return false;
     }
-    $result = $handler->Query($query, 'wj_product');
+    $result = $handler->Query($query, 'main');
+    //var_dump($result);
     if (isset($result['matches']) === false) {
       return false;
     }

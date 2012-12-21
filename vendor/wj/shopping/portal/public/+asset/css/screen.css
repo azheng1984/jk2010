@@ -282,3 +282,8 @@ input:focus {
   padding:0 8px 0 20px;
   color:#888;
 }
+#publisher {
+  float:right;
+  margin-top:12px;
+  color:#707070;
+}

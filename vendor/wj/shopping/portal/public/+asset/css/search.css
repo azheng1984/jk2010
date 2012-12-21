@@ -86,7 +86,7 @@ h1 {
   padding:0 8px;
 }
 #result {
-  width:770px;
+  width:960px;
 }
 /* toolbar
  ****************************/
@@ -196,7 +196,8 @@ h2 a:hover {
   width:100%;
   margin-top:8px;
   background:#fff;
-  box-shadow:0 0 3px #e8e8e8;
+  box-shadow: 0px 1px 2px #E5E5E5;
+  border-color: #E0E0E0 #D8D8D8 #D8D8D8 #E0E0E0;
 }
 #result td {
   overflow:hidden;

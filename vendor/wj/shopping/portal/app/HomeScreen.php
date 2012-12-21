@@ -41,7 +41,7 @@ class HomeScreen extends Screen {
       echo '<li><a href="/', urlencode($query[0]), '/">',
         $query[1], '</a></li>';
     }
-    echo '<li class="ellipsis">…</li></ul>';
+    echo '<li class="ellipsis"><span>…</span></li></ul>';
   }
 
   private function renderHome() {
@@ -109,7 +109,6 @@ class HomeScreen extends Screen {
     echo '<div id="slide_wrapper">';
     $this->renderSlogan();
     $this->renderMerchantList();
-    $this->renderScroll();
     echo '</div>';
   }
 
@@ -146,30 +145,6 @@ class HomeScreen extends Screen {
         $img, '</a>';
     }
     echo '</div></div>';
-  }
-
-  private function renderScroll() {
-    $previous = null;
-    $next = null;
-    $previousClass = ' class="previous"';
-    $nextClass = '';
-    if ($GLOBALS['PAGE'] > 1) {
-      $previous = $GLOBALS['PAGE'] - 1;
-      $nextClass = ' class="small"';
-    }
-//     if ($GLOBALS['PAGE'] < ceil($GLOBALS['MERCHANT_TYPE'][2] / 5)) {
-      $next = $GLOBALS['PAGE'] + 1;
-      $previousClass = ' class="small previous_small"';
-//     }
-    echo '<div id="scroll">';
-    if ($previous !== null) {
-      $href = $previous === 1 ? '/' : '?page='.$previous;
-      echo '<a', $previousClass, ' href="', $href, '" rel="nofollow"></a>';
-    }
-    if ($next !== null) {
-      echo '<a', $nextClass, ' href="?page=', $next, '" rel="nofollow"></a>';
-    }
-    echo '</div>';
   }
 
   private function addJsConfig() {
