@@ -1,5 +1,4 @@
 <?php
-//手工测试 update
 class SyncDb {
   private $file;
   private $merchantId;
@@ -227,6 +226,10 @@ class SyncDb {
           $searchProduct = Db::getColumn(
             'SELECT '.implode(',', $select).' FROM product WHERE id = ?', $id
           );
+          if ($searchProduct === false) {
+            error_log('fatal error, update product not in search db id:'.$id);
+            exit;
+          }
           $searchProduct = array_merge(
             $searchProduct, $searchProductReplacementColumnList
           );

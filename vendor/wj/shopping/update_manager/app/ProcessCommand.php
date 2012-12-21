@@ -30,7 +30,11 @@ class ProcessCommand {
       $this->upgradePortalVersion();
     } catch (Exception $exception) {
       DbConnection::closeAll();
-      throw $exception;
+      error_log(
+        var_export($exception, true),
+        0,
+        '/home/azheng/Desktop/home/shopping_update_manager_process_error.log'
+      );
       sleep(10);
       $task['status'] = 'retry';
       $this->sync($task);

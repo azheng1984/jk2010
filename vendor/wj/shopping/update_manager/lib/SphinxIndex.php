@@ -8,18 +8,17 @@ class SphinxIndex {
     if (self::$mainDate === null) {
       self::$mainDate = require DATA_PATH.'main_index_date.php';
     }
-    self::system('indexer delta --rotate');
+    self::system('indexer delta --rotate > /dev/null');
     if (self::$mainDate !== $date) {
       try {
         self::merge();
-        self::system('indexer --merge main delta --rotate');
+        self::system('indexer --merge main delta --rotate > /dev/null');
         file_put_contents(
           DATA_PATH.'main_index_date.php',
           '<?php return "'.$date.'";'
         );
         self::$mainDate = $date;
       } catch (Exception $ex) {
-        //DbConnection::closeAll();
         throw $ex;
       }
     }

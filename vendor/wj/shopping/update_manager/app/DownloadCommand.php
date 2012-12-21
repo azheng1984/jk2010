@@ -13,7 +13,12 @@ class DownloadCommand {
           SyncFile::execute($task);
           Db::update('task', array('status' => 'ready'), 'id = ?', $task['id']);
         } catch (Exception $ex) {
-          throw $ex;
+          error_log(
+            var_export($ex, true),
+            0,
+            '/home/azheng/Desktop/home/'
+              .'shopping_update_manager_download_error.log'
+          );
         }
 //        echo 'end'.PHP_EOL;
       } else {

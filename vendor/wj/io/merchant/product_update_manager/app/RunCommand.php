@@ -35,10 +35,14 @@ class RunCommand {
         $this->removeTask($task['id']);
         Db::commit();
       } catch (Exception $exception) {
-        throw $exception;
-        DbConnection::connect();
-        Db::rollback();
+        error_log(
+          var_export($exception, true),
+          0,
+          '/home/azheng/Desktop/home/'
+            .'io_merchant_product_update_manager_error.log'
+        );
         DbConnection::closeAll();
+        Db::rollback();
         CommandSyncFile::clean();
         ImageSyncFile::clean();
         sleep(10);
