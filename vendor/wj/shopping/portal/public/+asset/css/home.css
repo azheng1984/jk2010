@@ -42,7 +42,7 @@
   background-color:#fff;
 }
 #slogon h1 {
-  padding:5px 0 3px 10px;
+  padding:5px 0 5px 10px;
   font-size:16px;
 }
 #slogon ul {
@@ -50,7 +50,7 @@
   clear:left;
 }
 #slogon li {
-  margin:3px 3px 3px 25px;
+  margin:2px 3px 4px 25px;
   font-size:13px;
   color:#b0b0b0;
   clear:left;
