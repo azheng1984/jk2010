@@ -109,12 +109,6 @@ input:focus {
   background-image:url(/+asset/img/logo_4.png);
   cursor:pointer;/* ie7 */
 }
-#logo span:active {
-  top:1px;
-  left:1px;
-  width:105px;
-  height:25px;
-}
 #header input {
   float:left;
   font-size:16px;
@@ -230,29 +224,33 @@ input:focus {
 /* pagination */
 #pagination {
   width:100%;
-  line-height:26px;
+  line-height:30px;
   padding-top:8px;
   text-align:center;
 }
 #pagination a, #pagination span {
-  padding:4px 8px;
+  padding:6px 9px;
   border:1px solid;
-  border-radius:3px;
+  border-color:#eee #d0d0d0 #d0d0d0 #e0e0e0;
+  border-left:0;
 }
 #pagination a {
   color:#06c;
-  border-color:#e5e5e5;
   background:url(/+asset/img/screen.png) 0 -66px repeat-x;
 }
 #pagination a:hover {
   color:#fff;
-  border-color:#05a;
   background:#06c;
 }
 #pagination span {
-  border-color:#d00;
   background-color:red;
   color:#fff;
+}
+#pagination .prev, #pagination .next, #pagination .first {
+  border-left:1px solid #e0e0e0;
+}
+#pagination .prev, #pagination .next {
+  padding:6px 12px;
 }
 /* ad
  *************************************/
