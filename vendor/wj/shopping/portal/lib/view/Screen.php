@@ -36,7 +36,7 @@ abstract class Screen extends EtagView {
 
   private function renderCssLinkList() {
     foreach ($this->cssList as $name) {
-      echo '<link type="text/css" href="/+/css/', $name, '.',
+      echo '<link type="text/css" href="/+asset/css/', $name, '.',
         Asset::getMd5('css/'.$name.'.css'), '.css"',
         ' media="screen" rel="stylesheet"/>';
     }
@@ -44,7 +44,7 @@ abstract class Screen extends EtagView {
 
   private function renderJsLinkList() {
     foreach ($this->jsList as $name) {
-      echo '<script type="text/javascript" src="/+/js/', $name, '.',
+      echo '<script type="text/javascript" src="/+asset/js/', $name, '.',
         Asset::getMd5('js/'.$name.'.js'), '.js"></script>';
     }
   }
@@ -85,7 +85,7 @@ abstract class Screen extends EtagView {
 
   private function renderLogo() {
     echo '<div id="logo"><a href="/">货比万家<span></span></a></div>';
-    echo '<div>co-brand</div>';
+    setcookie('publisher', 'test');
   }
 
   private function renderSearch() {
@@ -110,9 +110,9 @@ abstract class Screen extends EtagView {
       'about.huobiwanjia.com/marketing">营销开放平台</a></div>';
   }
 
-  private function renderPublisher() {//TODO:加入应用 share
+  private function renderPublisher() {
     if (isset($_COOKIE['publisher'])) {//TODO
-      echo '合作伙伴:<a href="/"></a>';
+      echo '合作伙伴:<a href="http://hao.360.cn/">360</a>';
     }
   }
 
