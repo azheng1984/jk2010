@@ -112,7 +112,8 @@ abstract class Screen extends EtagView {
 
   private function renderPublisher() {
     if (isset($_COOKIE['publisher'])) {//TODO
-      echo '合作伙伴:<a href="http://hao.360.cn/">360</a>';
+      echo '<div id="publisher">合作伙伴: <a target="_blank" href="http://hao.360.cn/">'
+        .'360 网址导航</a></div>';
     }
   }
 

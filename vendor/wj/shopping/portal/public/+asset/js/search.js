@@ -372,8 +372,8 @@
   $(function() {
     search.initialize();
     search.renderPriceRange();
-    search.enhanceProductTagList();
-    search.renderTagList();
+    //search.enhanceProductTagList();
+    //search.renderTagList();
   });
 })();
 

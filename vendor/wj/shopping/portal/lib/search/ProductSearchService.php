@@ -17,8 +17,6 @@ class ProductSearchService {
     $mapping = array(
       'price' => 'lowest_price_x_100 ASC',
       '-price' => 'lowest_price_x_100 DESC',
-      'time' => 'publish_timestamp DESC',
-      'discount' => 'discount_x_10 ASC'
     );
     $handler->SetSortMode(
       SPH_SORT_EXTENDED, $mapping[$GLOBALS['SORT']].', popularity_rank DESC'

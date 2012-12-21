@@ -37,34 +37,35 @@
 #slogon {
   margin:10px;
   width: 537px;
-  border-right:1px solid #d8d8d8;
+  border-right:1px solid #e0e0e0;
   color:#505050;
   background-color:#fff;
 }
 #slogon h1 {
-  padding:0 0 3px 10px;
+  padding:5px 0 3px 10px;
   font-size:16px;
 }
 #slogon ul {
-  padding:0 0 8px 10px;
+  padding-left:10px;
   clear:left;
 }
 #slogon li {
   margin:3px 3px 3px 25px;
   font-size:13px;
-  color:#909090;
+  color:#b0b0b0;
   clear:left;
   list-style-type:square;
-}
-#slogon span {
-  background:#f1f1f1;
-  padding:2px 5px;
-  border-radius:2px;
 }
 #slogon a, #slogon .ellipsis {
   font-size:14px;
   color:#06c;
   border:0;
+}
+#slogon .ellipsis {
+  color:#b0b0b0;
+}
+#slogon .ellipsis span {
+	color:#505050;
 }
 #slogon .span_over {
   color:#707070;
@@ -103,7 +104,7 @@ ol .current {
 #slide_wrapper {
   margin-bottom:10px;
   border:1px solid;
-  border-color:#e0e0e0 #d8d8d8 #d8d8d8;
+  border-color:#e0e0e0 #d8d8d8 #d8d8d8 #e0e0e0;
   background:#fff;
   margin-top:-1px;
   text-align:center;
@@ -186,12 +187,13 @@ ol .current {
 #merchant_name {
   margin-left:12px;
 }
-#merchant a {
+#scroll {
+  float:right;
+  clear:left;
   font-size:14px;
   color:#505050;
   border:1px solid;
   border-color:#e5e5e5 #d0d0d0 #d0d0d0 #e5e5e5;
-  margin-left:2px;
   padding:3px 8px;
   background:url(/+asset/img/screen.png) 0 -70px repeat-x;
   border-radius:3px;
@@ -205,12 +207,14 @@ ol .current {
   margin:10px;
 }
 #merchant_list {
-  width:315px;
-  clear:left;
+width: 330px;
+clear: left;
+margin: 10px 25px;
 }
 #home h2 {
   font-size:15px;
   color:#909090;
+  margin-top:5px;
 }
 #merchant_list.move {
   overflow:hidden;
@@ -218,10 +222,9 @@ ol .current {
 }
 #merchant_list a, #merchant_list span, #merchant_list .item {
   float:left;
-
-  margin:0 2px;
+  margin:2px;
   height:60px;
-  width:146px;
+  width:160px;
   text-align:center;
   background-color:#fff;
 }
@@ -268,10 +271,6 @@ ol .current {
 #previous {
   padding-bottom:10px;
   margin-top:-70px;
-}
-#scroll {
-  float:right;
-  width:35px;
 }
 #scroll a, #scroll span {
   float:left;
