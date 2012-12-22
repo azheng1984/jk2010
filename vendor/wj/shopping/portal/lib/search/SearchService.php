@@ -1,6 +1,6 @@
 <?php
 class SearchService {
-  public static function getHandler($itemsPerPage = 16) {
+  public static function getHandler($itemsPerPage = 20) {
     $handler = new SphinxClient;
     $handler->SetServer('localhost', 9312);
     $handler->SetMaxQueryTime(1000);

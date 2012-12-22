@@ -44,21 +44,27 @@ class SearchProductListScreen {
   private static function renderProduct($id) {
     $product = Db::getRow('SELECT * FROM product WHERE id = ?', $id);
     $merchant = array('name' => '京东商城');//self::getMerchant($product['merchant_id']);
+    if ($product['agency_name'] !== null) {
+      $merchant['name'] .= ' <span>›</span> '.$product['agency_name'];
+    }
     $tagList = array();//self::initializeTagList($product);
 //     $href = self::getProductUri(
 //       $merchant['product_uri_format'],
 //       explode("\n", $product['merchant_uri_argument_list'])
 //     );
     $href = 'http://www.360buy.com/product/'.$product['uri_argument_list'].'.html';
+    $title = $product['title'];
+    $hoverTitle = '';
+    if (mb_strlen($title, 'UTF-8') > 100) {
+      $hoverTitle = ' title="'.$title.'"';//TODO 过滤 "
+      $title = mb_substr($title, 0, 100, 'UTF-8').'…';
+    }
     echo '<td><div class="image"><a href="',
       $href, '" target="_blank" rel="nofollow">',
       '<img alt="', $product['title'], '" src="',
       self::getImageUri($product), '"/></a></div>',//image
-      '<h3><a href="', $href, '" target="_blank" rel="nofollow">';
-    $title = $product['title'];
-    if (mb_strlen($title, 'UTF-8') > 60) {
-      $title = mb_substr($title, 0, 60, 'UTF-8');
-    }
+      '<h3><a', $hoverTitle, ' href="', $href, '" target="_blank" rel="nofollow">';
+
     echo self::highlight($title), '</a></h3>',//title
       '<div class="price">¥<span>',
       $product['price_from_x_100']/100, '</span></div>';//price

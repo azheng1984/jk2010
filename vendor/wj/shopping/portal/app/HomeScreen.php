@@ -141,7 +141,7 @@ class HomeScreen extends Screen {
 //         echo '<span>', $img, '</span>';
 //         continue;
 //       }
-      echo '<a href="', $hrefPrefix, 'merchant_id=', $id, '" rel="nofollow">',
+      echo '<a title="京东商城" href="', $hrefPrefix, 'merchant_id=', $id, '" rel="nofollow">',
         $img, '</a>';
     }
     echo '</div></div>';
