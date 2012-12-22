@@ -48,14 +48,11 @@ class IndexScreen extends Screen {
   private function renderNavigation() {
     echo '<div id="nav"><div class="content">',
       '<span><a href="/">首页</a></span>购物搜索排行';
-//     if ($GLOBALS['PAGE'] !== 1) {
-//       echo ' - 第 '.$GLOBALS['PAGE'].' 页';
-//     }
     echo '</div></div>';
   }
 
   private function renderLinkTable() {
-    $index = ($GLOBALS['PAGE'] - 1) * 2;
+    $index = ($GLOBALS['PAGE'] - 1) * 100;
     echo '<table><tr>';
     foreach ($this->linkList as $link) {
       if ($index % 5 === 0 && $index !== 0) {
@@ -75,7 +72,7 @@ class IndexScreen extends Screen {
 
   private function buildLinkList() {
     $result = array();
-    $offset = ($GLOBALS['PAGE'] - 1) * 2;
+    $offset = ($GLOBALS['PAGE'] - 1) * 100;
 //     if ($this->category === null) {
 //       $categoryList = Db::getAll(
 //         'SELECT * FROM category ORDER BY popularity_rank LIMIT '.$offset.', 100'
@@ -90,7 +87,7 @@ class IndexScreen extends Screen {
 //     }
     $queryList = Db::getAll(
       'SELECT name FROM query ORDER BY popularity_rank'
-        .' LIMIT '.$offset.', 2'
+        .' LIMIT '.$offset.', 100'
     );
     foreach ($queryList as $query) {
       $result[] = array(

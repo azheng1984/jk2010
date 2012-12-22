@@ -82,14 +82,13 @@ class SearchService {
   }
 
   private static function setPriceRange($handler) {
-    $max = 0;
     $min = 0;
-    //TODO: price_from/to 为 ''
+    $max = 4294967295;
     if (isset($GLOBALS['PRICE_FROM'])) {
-      $max = $GLOBALS['PRICE_FROM'] * 100;
+      $min = $GLOBALS['PRICE_FROM'] * 100;
     }
     if (isset($GLOBALS['PRICE_TO'])) {
-      $min = $GLOBALS['PRICE_TO'] * 100;
+      $max = $GLOBALS['PRICE_TO'] * 100;
     }
     if ($max === 0 && $min === 0) {
       return;
@@ -97,7 +96,7 @@ class SearchService {
     if ($min > $max) {
       list($min, $max) = array($max, $min);
     }
-    $handler->SetFilterRange('lowest_price_x_100', $min, $max);
+    $handler->SetFilterRange('price_from_x_100', $min, $max);
   }
 
   private static function setPage($handler, $itemsPerPage) {
