@@ -15,8 +15,8 @@ class ProductSearchService {
       return;
     }
     $mapping = array(
-      'price' => 'lowest_price_x_100 ASC',
-      '-price' => 'lowest_price_x_100 DESC',
+      'price' => 'price_from_x_100 ASC',
+      '-price' => 'price_from_x_100 DESC',
     );
     $handler->SetSortMode(
       SPH_SORT_EXTENDED, $mapping[$GLOBALS['SORT']].', popularity_rank DESC'
