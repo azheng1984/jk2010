@@ -36,9 +36,9 @@
  *************************************/
 #slogon {
   margin:10px;
-  width: 537px;
+  width: 527px;
   border-right:1px solid #e0e0e0;
-  color:#505050;
+
   background-color:#fff;
 }
 #slogon h1 {
@@ -95,8 +95,9 @@ ol .current {
 /* slideshow
  *************************************/
 #slideshow {
-  width:960px;
+  width:950px;
   padding-top:10px;
+  padding-left:10px;
 }
 #slideshow .current {/* chrome & firefox 会 focus 没有 tabindex 的选定元素 */
   outline:0;
@@ -205,6 +206,7 @@ ol .current {
 }
 #merchant_list_wrapper {
   margin:10px;
+  margin-left:5px;
 }
 #merchant_list {
 width: 330px;
@@ -213,7 +215,7 @@ margin: 10px 25px;
 }
 #home h2 {
   font-size:15px;
-  color:#909090;
+  color:#808080;
   margin-top:5px;
 }
 #merchant_list.move {

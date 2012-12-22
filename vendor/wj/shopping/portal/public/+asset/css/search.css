@@ -6,7 +6,6 @@
   border:1px solid #e5e5e5;
   border-bottom:0;
   overflow:hidden;
-
 }
 h1 {
   float:none;/*
@@ -201,7 +200,7 @@ h2 a:hover {
 }
 #result td {
   overflow:hidden;
-  border:1px solid #e5e5e5;
+  border:1px solid #eee;
   padding:10px;
 }
 #result td div, #result ul {
@@ -227,8 +226,9 @@ h2 a:hover {
   padding-top:10px;
 }
 #result h3 a {
-  font-size:14px;
+  font-size:13px;
   color:#06c;
+  word-break:break-all;
 }
 #result h3 a:hover, #result h3 a:hover span {
   text-decoration:underline;
@@ -265,13 +265,13 @@ h2 a:hover {
 }
 #result .price {
   font-size:12px;
-  color:#b1b1b1;
+  color:#c00;
 }
 #result .price span {
   margin-left:1px;
   font-weight:bold;
   font-size:13px;
-  color:#333;
+  color:#c00;
 }
 #result li {
   float:none;
@@ -295,7 +295,9 @@ h2 a:hover {
   background-position:-135px -89px;
 }
 #result .merchant {
-  color:#690;
+  color:#707070;
+}
+#result .merchant span {
 }
 /* tag
  **************************************/
