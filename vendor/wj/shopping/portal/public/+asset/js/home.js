@@ -270,8 +270,8 @@ huobiwanjia.home = function() {
     home.initializeList('slide_list');
     home.enhanceSlideList();
     /* merchant list enhancement */
-    home.initializeList('merchant_list');
-    home.enhanceMerchantList();
+    //home.initializeList('merchant_list');
+    //home.enhanceMerchantList();
     /* scroll enhancement */
     home.initializeList('scroll');
     home.enhanceScroll();

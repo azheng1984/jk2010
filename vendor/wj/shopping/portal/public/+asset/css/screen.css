@@ -231,7 +231,7 @@ input:focus {
 #pagination a, #pagination span {
   padding:6px 9px;
   border:1px solid;
-  border-color:#eee #d0d0d0 #d0d0d0 #e0e0e0;
+  border-color:#ddd #ccc #ccc #ddd;
   border-left:0;
 }
 #pagination a {
