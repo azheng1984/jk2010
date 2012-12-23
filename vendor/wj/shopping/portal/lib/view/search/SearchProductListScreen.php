@@ -12,12 +12,13 @@ class SearchProductListScreen {
     SearchExcerptionScreen::initialize(self::$keywordList);
     $index = 0;
     echo '<table><tr>';
+    $bottomLine = (int)ceil(count($GLOBALS['SEARCH_RESULT']['matches']) / 5);
     foreach ($GLOBALS['SEARCH_RESULT']['matches'] as $id => $result) {
       if ($index % 5 === 0 && $index !== 0) {
         echo '</tr><tr>';
       }
       ++$index;
-      self::renderProduct($id);
+      self::renderProduct($id, $index, $bottomLine, count($GLOBALS['SEARCH_RESULT']['matches']));
     }
     if ($index % 5 !== 0 && $index > 5) {
       $colspan = 5 - $index % 5;
@@ -41,7 +42,7 @@ class SearchProductListScreen {
     self::$keywordList = array_unique(self::$keywordList);
   }
 
-  private static function renderProduct($id) {
+  private static function renderProduct($id, $index, $bottomLine, $total) {
     $product = Db::getRow('SELECT * FROM product WHERE id = ?', $id);
     $merchant = array('name' => '京东商城');//self::getMerchant($product['merchant_id']);
     if ($product['agency_name'] !== null) {
@@ -59,7 +60,17 @@ class SearchProductListScreen {
       $hoverTitle = ' title="'.$title.'"';//TODO 过滤 "
       $title = mb_substr($title, 0, 100, 'UTF-8').'…';
     }
-    echo '<td><div class="image"><a href="',
+    echo '<td';
+    if ($bottomLine === 1 && $index === $total) {
+      echo ' class="nbb nrb"';
+    } elseif ($index === $bottomLine * 5) {
+      echo ' class="nbb nrb"';
+    } elseif ($index > ($bottomLine - 1) * 5) {
+      echo ' class="nbb"';
+    } elseif ($index % 5 === 0) {
+      echo ' class="nrb"';
+    }
+    echo '><div class="image"><a href="',
       $href, '" target="_blank" rel="nofollow">',
       '<img alt="', $product['title'], '" src="',
       self::getImageUri($product), '"/></a></div>',//image

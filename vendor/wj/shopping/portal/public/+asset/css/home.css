@@ -37,8 +37,7 @@
 #slogon {
   margin:10px;
   width: 527px;
-  border-right:1px solid #e0e0e0;
-
+  border-right:1px solid #ddd;
   background-color:#fff;
 }
 #slogon h1 {
@@ -50,11 +49,14 @@
   clear:left;
 }
 #slogon li {
-  margin:2px 3px 4px 25px;
+  margin:3px 3px 3px 25px;
   font-size:13px;
   color:#b0b0b0;
   clear:left;
   list-style-type:square;
+  width:460px;
+  border-bottom:1px dotted #c0c0c0;
+  text-align:left;
 }
 #slogon a, #slogon .ellipsis {
   font-size:14px;
@@ -105,12 +107,12 @@ ol .current {
 #slide_wrapper {
   margin-bottom:10px;
   border:1px solid;
-  border-color:#e0e0e0 #d8d8d8 #d8d8d8 #e0e0e0;
+  border-color:#eee #e0e0e0 #d0d0d0 #e0e0e0;
   background:#fff;
   margin-top:-1px;
   text-align:center;
   width:100%;
-  box-shadow:0px 1px 2px #e5e5e5;
+  box-shadow:0px 1px 2px #ddd;
 }
 #slide {
   float:left;
@@ -229,6 +231,7 @@ margin: 10px 25px;
   width:160px;
   text-align:center;
   background-color:#fff;
+  border:0;
 }
 #merchant_list a:hover, #merchant_list .hover {
   cursor:pointer;

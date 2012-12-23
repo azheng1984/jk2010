@@ -195,13 +195,22 @@ h2 a:hover {
   width:100%;
   margin-top:8px;
   background:#fff;
-  box-shadow: 0 1px 3px #eee;
-
+  box-shadow: 0 1px 3px #ddd;
+  border:1px solid;
+  border-color:#eee #e0e0e0 #d0d0d0 #e0e0e0;
 }
 #result td {
   overflow:hidden;
-  border:1px solid #eee;
+  border:1px solid #e8e8e8;
+  border-left:0;
+  border-top:0;
   padding:10px;
+}
+#result .nrb {
+  border-right:0;
+}
+#result .nbb {
+  border-bottom:0;
 }
 #result td div, #result ul {
   padding-top:2px;
@@ -296,6 +305,7 @@ h2 a:hover {
 }
 #result .merchant {
   color:#707070;
+  font-size:13px;
 }
 #result .merchant span {
 }
