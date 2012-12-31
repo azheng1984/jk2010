@@ -25,6 +25,9 @@ class PaginationScreen {
       if ($index === $firstPage) {
         $class = ' class="first" ';
       }
+      if ($index === $lastPage) {
+        $class = ' class="last" ';
+      }
       if ($index === $page) {
         echo '<span'.$class.'>', $index, '</span>';
         continue;
