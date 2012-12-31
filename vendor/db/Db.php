@@ -40,10 +40,11 @@ class Db {
     );
   }
 
-  public static function update($table, $columnList, $where = ''
-    /*, $parameter, ...*/) {
+  public static function update(
+    $table, $columnList, $where/*, $parameter, ...*/
+  ) {
     $parameterList = array_values($columnList);
-    if ($where !== '') {
+    if ($where !== null) {
       $where = ' WHERE '.$where;
       $parameterList = array_merge(
         $parameterList, array_slice(func_get_args(), 3)
@@ -55,9 +56,9 @@ class Db {
     );
   }
 
-  public static function delete($table, $where = ''/*, $parameter, ...*/) {
+  public static function delete($table, $where/*, $parameter, ...*/) {
     $parameterList = array();
-    if ($where !== '') {
+    if ($where !== null) {
       $where = ' WHERE '.$where;
       $parameterList = array_slice(func_get_args(), 2);
     }

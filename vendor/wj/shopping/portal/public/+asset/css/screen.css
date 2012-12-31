@@ -231,7 +231,7 @@ input:focus {
 #pagination a, #pagination span {
   padding:6px 9px;
   border:1px solid;
-  border-color:#ddd #ccc #ccc #ddd;
+  border-color:#e8e8e8 #e8e8e8 #d8d8d8 #e8e8e8;
   border-left:0;
 }
 #pagination a {
@@ -249,8 +249,12 @@ input:focus {
 #pagination .prev, #pagination .next, #pagination .first {
   border-left:1px solid #e0e0e0;
 }
+#pagination .last {
+  border-right:1px solid #d8d8d8;
+}
 #pagination .prev, #pagination .next {
   padding:6px 12px;
+  border-right:1px solid #d8d8d8;
 }
 /* ad
  *************************************/
