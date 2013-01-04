@@ -36,7 +36,7 @@ abstract class Screen extends EtagView {
 
   private function renderCssLinkList() {
     foreach ($this->cssList as $name) {
-      echo '<link type="text/css" href="/+asset/css/', $name, '.',
+      echo '<link type="text/css" href="/asset/css/', $name, '.',
         Asset::getMd5('css/'.$name.'.css'), '.css"',
         ' media="screen" rel="stylesheet"/>';
     }
@@ -44,16 +44,16 @@ abstract class Screen extends EtagView {
 
   private function renderJsLinkList() {
     foreach ($this->jsList as $name) {
-      echo '<script type="text/javascript" src="/+asset/js/', $name, '.',
+      echo '<script type="text/javascript" src="/asset/js/', $name, '.',
         Asset::getMd5('js/'.$name.'.js'), '.js"></script>';
     }
   }
 
   private function renderHtmlHead() {
     echo '<head><meta charset="UTF-8"/>';
-    $this->addCssLink('screen');
-    $this->addJsLink('jquery-1.7.2');
-    $this->addJsLink('screen');
+//     $this->addCssLink('screen');
+//     $this->addJsLink('jquery-1.7.2');
+//     $this->addJsLink('screen');
     $this->renderHtmlHeadContent();
     $this->renderCssLinkList();
     echo '</head>';
