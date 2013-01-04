@@ -5,6 +5,8 @@ class EditAction {
   }
 
   public function POST() {
+    $parser = new Markdown;
+    echo $parser->transform($_POST['content']);
     $lineList = explode("\n", $_POST['content']);
     foreach ($lineList as $line) {
       if ($line === '') {
