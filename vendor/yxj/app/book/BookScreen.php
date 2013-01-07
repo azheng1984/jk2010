@@ -8,12 +8,13 @@ class BookScreen extends Screen {
     $book = Db::getRow('SELECT * FROM book WHERE id = 1');
     echo '<h1>', $book['name'], '</h1>';
     NavigationScreen::render();
-    $page = Db::getRow('SELECT * FROM page WHERE id IN ('.$book['page_id_list'].')');
-    echo '<a href="/book/1/page/', $page['id'], '">', $page['name'] , '</a>';
-//     $lineList = Db::getAll('SELECT * FROM line WHERE id IN ('.$page['line_id_list'].')');
-//     foreach ($lineList as $line) {
-//       echo '<p>'.$line['content'].'</p>';
-//     }
+    $pageIdList = explode("\n", str_replace(' ', '', $book['page_id_list']));
+    $pageList = Db::getAll('SELECT * FROM page WHERE id IN ('.implode(',', $pageIdList).')');
+    echo '<ul>';
+    foreach ($pageList as $page) {
+      echo '<li><a href="/book/1/page/', $page['id'], '">',Db::getColumn('SELECT content FROM line WHERE id = '.$page['name_line_id']).'</a></li>';
+    }
+    echo '</ul>';
     echo '<p>广告</p>';
   }
 }
