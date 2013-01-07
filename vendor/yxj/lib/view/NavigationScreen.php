@@ -20,13 +20,14 @@ class NavigationScreen {
     if ($GLOBALS['NAVIGATION_MODULE'] === 'history') {
       echo '<li>历史</li>';
     } else {
-    echo '<li><a href="/book/1/history/">历史</a></li>';
+      echo '<li><a href="/book/1/history/">历史</a></li>';
     }
     if ($GLOBALS['NAVIGATION_MODULE'] === 'download') {
       echo '<li>下载</li>';
     } else {
       echo '<li><a href="/book/1/download/">下载</a></li>';
     }
+    echo '<li><a href="/book/1/edit/">工作版本</a></li>';
     if ($GLOBALS['NAVIGATION_MODULE'] === 'member') {
       echo '<li>成员</li>';
     } else {

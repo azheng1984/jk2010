@@ -13,7 +13,7 @@ class TopicAction {
     );
     Db::update(
       'topic',
-      array('last_post_time' => date('Y-m-d H:i:s')),
+      array('reply_time' => date('Y-m-d H:i:s')),
       'id = ?',
       $GLOBALS['PATH_SECTION_LIST'][4]
     );

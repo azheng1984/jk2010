@@ -1,8 +1,6 @@
 <?php
 class EditAction {
-  public function GET() {
-    echo 'xx';
-  }
+  public function GET() {}
 
   public function POST() {
     $parser = new Markdown;
