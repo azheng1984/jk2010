@@ -1,6 +1,11 @@
 <?php
 class EditAction {
-  public function GET() {}
+  public function GET() {
+    var_dump(unpack('L', pack('L', 72837283728)));
+    echo 9223372036854775805 + 1;
+    //18446744073709551615
+    
+  }
 
   public function POST() {
     $parser = new Markdown;
@@ -34,7 +39,9 @@ class EditAction {
       'book_id' => 1, 'name_line_id' => 1,
       'line_id_list' => $lineIdTextList, 'sha1' => $sha1,
       'creation_time' => date('Y-m-d H:i:s')
-    ), 'id = ?', $pageId);
-    //TODO 更新 book page list(str_replace)
+    ));
+    $pageId = Db::getLastInsertId();
+    //TODO 把当前 book 插入 history 页面, 更新 book page list(str_replace)
+    //301重定向到新页
   }
 }
