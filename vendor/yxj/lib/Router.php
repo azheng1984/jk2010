@@ -7,11 +7,6 @@ class Router {
       );
       return '/redirect';
     }
-    if ($_SERVER['SCRIPT_NAME'] === '/'
-        && isset($_GET['q']) && $_GET['q'] !== '') {
-      self::redirectQuery();
-      return '/redirect';
-    }
     $path = $_SERVER['REQUEST_URI'];
     $queryStringPosition = strpos($_SERVER['REQUEST_URI'], '?');
     if ($queryStringPosition !== false) {
@@ -67,16 +62,5 @@ class Router {
       return '/book';
     }
     return '/category';
-  }
-
-  private static function redirectQuery() {
-    $query = urlencode(trim($_GET['q']));
-    if ($query === '%2B') {
-      $query = '';
-    }
-    if ($query !== '') {
-      $query .= '/';
-    }
-    header('Location: /'.$query);
   }
 }
