@@ -103,11 +103,11 @@ abstract class Screen extends EtagView {
   private function renderDeclaration() {
     echo '© 2012 优选集 ',
       '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-       'youxuanji.com/book-1/">关于优选集</a> ',
+      'youxuanji.com/article-1/">关于优选集</a> ',
       '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-      'youxuanji.com/book-1/terms_of_use" rel="nofollow">使用条款</a>',
+      'youxuanji.com/article-1/terms_of_use" rel="nofollow">使用条款</a>',
       ' <a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-      'youxuanji.com/book-1/privcay"  rel="nofollow">隐私权政策</a> 沪ICP备0000000000号';
+      'youxuanji.com/article-1/privcay"  rel="nofollow">隐私权政策</a> 沪ICP备0000000000号';
   }
 
   private function renderJs() {
