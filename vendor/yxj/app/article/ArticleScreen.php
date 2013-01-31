@@ -1,12 +1,13 @@
 <?php
-class BookScreen extends Screen {
+class ArticleScreen extends Screen {
   protected function renderHtmlHeadContent() {
     echo '<title>优选集</title>';
   }
 
   protected function renderHtmlBodyContent() {
-    $book = Db::getRow('SELECT * FROM book WHERE id = 1');
+    $book = Db::getRow('SELECT * FROM article WHERE id = 1');
     echo '<h1>', $book['name'], '</h1>';
+    echo '<a href="/article-', $GLOBALS['BOOK_ID'], '/edit">编辑</a>';
     NavigationScreen::render();
 //     $pageIdList = explode("\n", $book['page_id_list']);
 //     $pageList = Db::getAll('SELECT * FROM page WHERE id IN ('.implode(',', $pageIdList).')');
@@ -22,7 +23,7 @@ class BookScreen extends Screen {
 //       }
 //       $index++;
 //     }
-    echo '</ol>';
+//     echo '</ol>';
     echo '<p>广告</p>';
   }
 }

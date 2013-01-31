@@ -83,7 +83,7 @@ abstract class Screen extends EtagView {
   }
 
   private function renderLogo() {
-    echo '<div id="logo"><a href="/">优选集<span></span></a></div>';
+    echo '<div id="logo"><a href="/">优选集<span></span></a> 攻略聚集地</div>';
     setcookie('publisher', 'test');
   }
 
@@ -103,11 +103,11 @@ abstract class Screen extends EtagView {
   private function renderDeclaration() {
     echo '© 2012 优选集 ',
       '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-       'youxuanji.com/book/1/">关于优选集</a> ',
+       'youxuanji.com/book-1/">关于优选集</a> ',
       '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-      'about.huobiwanjia.com/terms_of_use" rel="nofollow">使用条款</a>',
+      'youxuanji.com/book-1/terms_of_use" rel="nofollow">使用条款</a>',
       ' <a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-      'about.huobiwanjia.com/privacy"  rel="nofollow">隐私权政策</a> 沪ICP备0000000000号';
+      'youxuanji.com/book-1/privcay"  rel="nofollow">隐私权政策</a> 沪ICP备0000000000号';
   }
 
   private function renderJs() {
