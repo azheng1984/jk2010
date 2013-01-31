@@ -7,7 +7,7 @@ class ArticleScreen extends Screen {
   protected function renderHtmlBodyContent() {
     $book = Db::getRow('SELECT * FROM article WHERE id = 1');
     echo '<h1>', $book['name'], '</h1>';
-    echo '<a href="/article-', $GLOBALS['BOOK_ID'], '/edit">编辑</a>';
+    echo '<a href="/article-', $GLOBALS['ARTICLE_ID'], '/edit">编辑</a>';
     NavigationScreen::render();
 //     $pageIdList = explode("\n", $book['page_id_list']);
 //     $pageList = Db::getAll('SELECT * FROM page WHERE id IN ('.implode(',', $pageIdList).')');

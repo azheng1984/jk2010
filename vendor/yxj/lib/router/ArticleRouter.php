@@ -1,7 +1,7 @@
 <?php
 class ArticleRouter {
   public static function execute($id) {
-    $GLOBALS['BOOK_ID'] = $id;
+    $GLOBALS['ARTICLE_ID'] = $id;
     if (count($GLOBALS['PATH_SECTION_LIST']) === 3) {
       $GLOBALS['NAVIGATION_MODULE'] = 'browse';
       return '/article';
