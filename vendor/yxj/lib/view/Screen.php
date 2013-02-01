@@ -51,7 +51,7 @@ abstract class Screen extends EtagView {
 
   private function renderHtmlHead() {
     echo '<head><meta charset="UTF-8"/>';
-//     $this->addCssLink('screen');
+     $this->addCssLink('screen');
 //     $this->addJsLink('jquery-1.7.2');
 //     $this->addJsLink('screen');
     $this->renderHtmlHeadContent();
@@ -79,6 +79,7 @@ abstract class Screen extends EtagView {
     echo '<div id="header">';
     $this->renderLogo();
     $this->renderSearch();
+    $this->renderToolbar();
     echo '</div>';
   }
 
@@ -91,7 +92,11 @@ abstract class Screen extends EtagView {
     $query = isset($GLOBALS['QUERY']) ?
       htmlentities($GLOBALS['QUERY']['name'], ENT_QUOTES, 'UTF-8') : '';
     echo '<form action="/"><input type="text" name="q" maxlength="100" value="',
-      $query, '"/> <button type="submit">搜索</button></form>';
+      $query, '"/> <button type="submit"></button></form>';
+  }
+
+  private function renderToolbar() {
+    echo '<div id="toolbar"><a href="/sign_in">登录</a> <a href="/sign_up">注册</a></div>';
   }
 
   private function renderBodyFooter() {
@@ -105,9 +110,11 @@ abstract class Screen extends EtagView {
       '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
       'youxuanji.com/article-1/">关于优选集</a> ',
       '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
+      'youxuanji.com/article-1/copyright" rel="nofollow">版权声明</a>',
+      '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
       'youxuanji.com/article-1/terms_of_use" rel="nofollow">使用条款</a>',
       ' <a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-      'youxuanji.com/article-1/privcay"  rel="nofollow">隐私权政策</a> 沪ICP备0000000000号';
+      'youxuanji.com/article-1/privcay"  rel="nofollow">隐私权政策</a> <span>沪ICP备0000000000号</span>';
   }
 
   private function renderJs() {

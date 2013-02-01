@@ -14,7 +14,11 @@ class NavigationScreen {
         echo '<li>', $value, '</li>';
         continue;
       }
-      echo '<li><a href="/article-', $GLOBALS['ARTICLE_ID'], '/', $key, '/">', $value, '</a></li>';
+      echo '<li><a href="/article-', $GLOBALS['ARTICLE_ID'];
+      if ($key !== 'browse') {
+        echo '/', $key;
+      }
+      echo '/">', $value, '</a></li>';
     }
     echo '</ul>';
   }
