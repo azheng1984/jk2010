@@ -1,29 +1,24 @@
 <?php
 class ArticleScreen extends Screen {
+  private $book;
+
+  public function __construct() {
+    $this->book = Db::getRow('SELECT * FROM article WHERE id = 1');
+  }
+
   protected function renderHtmlHeadContent() {
-    echo '<title>优选集</title>';
+    echo '<title>', $this->book['name'], ' - 优选集</title>';
   }
 
   protected function renderHtmlBodyContent() {
-    $book = Db::getRow('SELECT * FROM article WHERE id = 1');
+    $book = $this->book;
     echo '<h1>', $book['name'], '</h1>';
-    echo '<a href="/article-', $GLOBALS['ARTICLE_ID'], '/edit">编辑</a>';
+    echo '作者：<a href="/user-1/">优选集</a>';
+    echo '<div>喜欢 | 关注 | 举报</div>';
     NavigationScreen::render();
-//     $pageIdList = explode("\n", $book['page_id_list']);
-//     $pageList = Db::getAll('SELECT * FROM page WHERE id IN ('.implode(',', $pageIdList).')');
-//     echo '<ol>';
-//     $index = 0;
-//     foreach ($pageList as $page) {
-//       if ($pageIdList[$index][0] === ' ') {
-//         echo '<ul>';
-//       }
-//       echo '<li><a href="/book/1/page/', $page['id'], '">',Db::getColumn('SELECT content FROM line WHERE id = '.$page['name_line_id']).'</a></li>';
-//       if ($pageIdList[$index][0] === ' ') {
-//         echo '</ul>';
-//       }
-//       $index++;
-//     }
-//     echo '</ol>';
+    echo '<a href="">+ 添加分组</a> | <a href="">+ 添加页面</a> | <a href="">+ 添加内容</a>';
+    echo '<div class="abstract">'.$book['abstract'].'</div><a href="">编辑</a>';
+    echo '<div class="content">'.$book['content'].'</div><a href="/article-', $GLOBALS['ARTICLE_ID'], '/edit">编辑</a>';
     echo '<p>广告</p>';
   }
 }

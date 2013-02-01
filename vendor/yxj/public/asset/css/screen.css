@@ -1,0 +1,134 @@
+body {
+  color:#333;
+  font:13px Arial,Helvetica,sans-serif;
+  line-height:20px;
+  margin:0;
+  background:#f1f1f1;
+}
+div, form, ol, ul, li, h1, h2, h3, table {
+  float:left;
+}
+a {
+  border-bottom:1px solid #b3b3b3;
+  color:#333;
+  text-decoration:none;
+}
+a:hover,a:active {
+  color:#101010;
+  border-color:#101010;
+}
+input:focus {
+  color:#101010;
+  outline:none;
+}
+#header input {
+  float:left;
+  font-size:16px;
+  padding:5px 5px 4px 5px;
+  margin:6px 0 0 5px;/* ie6 显示错误的边距 */
+  width:450px;
+  border:1px solid;
+  border-color:#b0b0b0 #ddd #ddd #b0b0b0;
+  box-shadow: inset 1px 1px 2px #eaeaea;/* firefox */
+}
+#header input:focus {
+  border-color:#a0a0a0 #cdcdcd #cdcdcd #a0a0a0;
+  box-shadow: inset 1px 1px 2px #cacaca;
+}
+#header button:hover, #header button:focus {
+  outline:none;
+  border-color:#909090 #d0d0d0 #d0d0d0 #909090;
+}
+#header button {
+  margin-top:6px;
+  width:30px;
+  height:30px;
+  border:0;
+  background:url(/asset/img/search_icon.png) no-repeat;
+  border:1px solid;
+  border-color:#b0b0b0 #e0e0e0 #e0e0e0 #fff;
+  border-left:0;
+  cursor:pointer;
+}
+#header, #footer, .content {
+  width:960px;
+  margin:0 auto;
+  float:none;
+  clear:both;
+}
+#logo a {
+  font-size:24px;
+  color:#000;
+  line-height:40px;
+  border:0;
+}
+#logo {
+  font-size:14px;
+  color:#909090;
+  margin-right:5px;
+}
+#toolbar {
+  float:right;
+  margin-top:12px;
+}
+#slogan {
+  background-color:#ffffee;
+  width:100%;
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:3px;
+  font-size:16px;
+  margin:10px 0;
+}
+#category_list {
+  background:#fff;
+  width:100%;
+  padding:10px;
+  border:1px solid #e0e0e0;
+  margin-bottom:10px;
+}
+#category_list a {
+  font-size:14px;
+  border:0;
+  color:#06c;
+}
+#category_list a:hover {
+  text-decoration:underline;
+}
+#header {
+  padding:5px 0 0 0;
+}
+#footer {
+  color:#707070;
+  line-height:40px;
+  padding-top:0px;
+  width:100%;/* ie7 */
+  clear:left;
+  background-color:#ddd;
+}
+#footer a {
+  color:#505050;
+  margin-left:10px;
+  border-bottom:1px solid #aaa;
+}
+#footer a:hover {
+  color:#101010;
+  border-color:#101010;
+}
+#footer span {
+  padding-left:10px;
+}
+h1 {
+  width: 100%;
+  background: white;
+  font-size: 18px;
+  font-weight: normal;
+  padding: 10px;
+}
+#category ol {
+  width:100%;
+  background:#fff;
+}
+#category li div {
+  width:100%;
+}

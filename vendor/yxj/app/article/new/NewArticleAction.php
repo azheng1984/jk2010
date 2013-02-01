@@ -1,5 +1,5 @@
 <?php
-class NewAction {
+class NewArticleAction {
   public function GET() {
   }
 
