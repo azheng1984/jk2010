@@ -76,11 +76,11 @@ abstract class Screen extends EtagView {
   }
 
   private function renderBodyHeader() {
-    echo '<div id="header">';
+    echo '<div id="header_wrapper"><div id="header">';
     $this->renderLogo();
     $this->renderSearch();
     $this->renderToolbar();
-    echo '</div>';
+    echo '</div></div>';
   }
 
   private function renderLogo() {
@@ -96,7 +96,16 @@ abstract class Screen extends EtagView {
   }
 
   private function renderToolbar() {
-    echo '<div id="toolbar"><a href="/sign_in">登录</a> <a href="/sign_up">注册</a></div>';
+    echo '<div id="toolbar">';
+    if (isset($_SESSION['user_id'])) {
+      DbConnection::connect('youxuanji');
+      $user = Db::getRow('SELECT * FROM user WHERE id = ?', $_SESSION['user_id']);
+      DbConnection::close();
+      echo '<a href="/user-',$user['id'],'/">'.$user['name'].'</a> <a href="/sign_out">退出</a>';
+    } else {
+      echo '<a href="/sign_in">登录</a> <a href="/sign_up">注册</a>';
+    }
+    echo ' <a href="/article/new">+ 写攻略</a></div>';
   }
 
   private function renderBodyFooter() {

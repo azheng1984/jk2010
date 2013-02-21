@@ -2,7 +2,8 @@
 class ArticleRouter {
   public static function execute($id) {
     $GLOBALS['ARTICLE_ID'] = $id;
-    if (count($GLOBALS['PATH_SECTION_LIST']) === 3) {
+    if (count($GLOBALS['PATH_SECTION_LIST']) === 3
+      && $GLOBALS['PATH_SECTION_LIST'][2] === '') {
       $GLOBALS['NAVIGATION_MODULE'] = 'browse';
       return '/article';
     }

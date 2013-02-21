@@ -12,7 +12,7 @@ class CategoryScreen extends Screen {
     echo '<ol>';
     foreach ($list as $item) {
       echo '<li>';
-      echo '<a href="/article-', $item['id'], '/">', $item['name'], '</a>';
+      echo '<a href="/article-', $item['id'], '/">', $item['title'], '</a>';
       echo '<div>', $item['abstract'], '</div>';
       echo '</li>';
     }

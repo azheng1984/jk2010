@@ -1,5 +1,5 @@
 <?php
-class ArticleScreen extends Screen {
+class CollectionScreen extends Screen {
   private $book;
 
   public function __construct() {
