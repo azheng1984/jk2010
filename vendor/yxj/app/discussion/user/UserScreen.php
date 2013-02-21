@@ -1,5 +1,5 @@
 <?php
-class MemberScreen extends Screen {
+class UserScreen extends Screen {
   protected function renderHtmlHeadContent() {
     echo '<title>优选集</title>';
   }

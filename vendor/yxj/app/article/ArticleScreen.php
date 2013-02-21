@@ -19,7 +19,7 @@ class ArticleScreen extends Screen {
     echo '作者：<a href="/user-', $book['user_id'], '/">', $authorName, '</a>';
     echo '<div>喜欢 < ', $book['like_amount'], ' > | 关注 | 举报</div>';
     NavigationScreen::render();
-    echo ' <a href="">+ 添加分组</a> | <a href="">+ 添加攻略</a> | <a href="edit">编辑</a>';
+    echo '<a href="edit">编辑</a>';
     echo '<div class="abstract">'.$book['abstract'].'</div>';
     echo '<div class="content">'.$book['content'].'</div>';
     echo '<p>版权：</p>';
