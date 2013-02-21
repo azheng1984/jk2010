@@ -1,6 +1,13 @@
 <?php
 return array(
-  'dsn' => 'mysql:host=localhost;dbname=youxuanji_article',
-  'username' => 'root',
-  'password' => 'a841107!',
+  'default' => array(
+    'dsn' => 'mysql:host=localhost;dbname=youxuanji_article',
+    'username' => 'root',
+    'password' => 'a841107!',
+  ),
+  'youxuanji' => array(
+    'dsn' => 'mysql:host=localhost;dbname=youxuanji',
+    'username' => 'root',
+    'password' => 'a841107!',
+  ),
 );

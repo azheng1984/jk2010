@@ -1,6 +1,7 @@
 <?php
 class Router {
   public static function execute() {
+    session_start();
     if ($_SERVER['SERVER_NAME'] !== $_SERVER['HTTP_HOST']) {
       header(
         'Location: http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']
@@ -19,25 +20,26 @@ class Router {
     }
     $depth = count($GLOBALS['PATH_SECTION_LIST']);
     if ($depth === 2) {
-      return '/';
+      return $path;
     }
     if ($GLOBALS['PATH_SECTION_LIST'][1] === 'search') {
       return SearchRouter::execute();
     }
     $tmp = explode('-', $GLOBALS['PATH_SECTION_LIST'][1], 2);
-    if (count($tmp) !== 2 || is_numeric($tmp[1]) === false) {
-      throw new Exception;
+    $id = null;
+    if (count($tmp) === 2 && is_numeric($tmp[1]) === true) {
+      $id = $tmp[1];
     }
-    try {
-      switch ($tmp[0]) {
-        case 'article':
-          return ArticleRouter::execute($tmp[1]);
-        case 'category':
-          return CategoryRouter::execute($tmp[1]);
-        case 'user':
-          return UserRouter::execute($tmp[1]);
-      }
-    } catch (Exception $excption) {}
-    //not found
+    switch ($tmp[0]) {
+      case 'article':
+        return ArticleRouter::execute($id);
+      case 'category':
+        return CategoryRouter::execute($id);
+      case 'user':
+        return UserRouter::execute($id);
+      default:
+        echo 'xxx';
+        return $path;
+    }
   }
 }

@@ -3,13 +3,12 @@ body {
   font:13px Arial,Helvetica,sans-serif;
   line-height:20px;
   margin:0;
-  background:#f1f1f1;
 }
 div, form, ol, ul, li, h1, h2, h3, table {
   float:left;
 }
 a {
-  border-bottom:1px solid #b3b3b3;
+  border-bottom:1px solid #888;
   color:#333;
   text-decoration:none;
 }
@@ -20,6 +19,12 @@ a:hover,a:active {
 input:focus {
   color:#101010;
   outline:none;
+}
+#header_wrapper {
+	background-color:#fff;
+  width:100%;
+  padding-bottom:6px;
+  border-bottom:#ddd 1px solid;
 }
 #header input {
   float:left;
@@ -64,8 +69,8 @@ input:focus {
 }
 #logo {
   font-size:14px;
-  color:#909090;
-  margin-right:5px;
+  color:#999;
+  margin-right:10px;
 }
 #toolbar {
   float:right;
@@ -85,7 +90,6 @@ input:focus {
   background:#fff;
   width:100%;
   padding:10px;
-  border:1px solid #e0e0e0;
   margin-bottom:10px;
 }
 #category_list a {
@@ -105,12 +109,11 @@ input:focus {
   padding-top:0px;
   width:100%;/* ie7 */
   clear:left;
-  background-color:#ddd;
 }
 #footer a {
   color:#505050;
   margin-left:10px;
-  border-bottom:1px solid #aaa;
+  border-bottom:1px solid #999;
 }
 #footer a:hover {
   color:#101010;
