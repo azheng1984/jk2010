@@ -13,7 +13,7 @@ class UserScreen extends Screen {
     DbConnection::connect('youxuanji');
     foreach ($categoryList as $categoryMeta) {
       $category = Db::getRow('SELECT * FROM category WHERE id = ?', $categoryMeta['id']);
-      echo '[', $category['name'], '] x ', $categoryMeta['article_amount'];
+      echo '[<a href="category-', $category['id'], '/">', $category['name'], '</a>] x ', $categoryMeta['article_amount'];
     }
     DbConnection::close();
     echo '<hr />';
