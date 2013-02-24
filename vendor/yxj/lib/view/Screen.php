@@ -106,7 +106,7 @@ abstract class Screen extends EtagView {
       $user = Db::getRow('SELECT * FROM user WHERE id = ?', $_SESSION['user_id']);
       DbConnection::close();
       $GLOBALS['USER'] = $user;
-      echo '<a href="/user-',$user['id'],'/">'.$user['name'].'</a> | <a href="/mention">@我的讨论</a> | <a href="/sign_out">退出</a>';
+      echo '<a href="/user-',$user['id'],'/">'.$user['name'].'</a> | <a href="/mention">提到我的讨论</a> | <a href="/sign_out">退出</a>';
     } else {
       echo '<a href="/sign_in">登录</a> <a href="/sign_up">注册</a>';
     }
