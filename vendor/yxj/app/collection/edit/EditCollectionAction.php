@@ -1,5 +1,5 @@
 <?php
-class EditArticleAction {
+class EditCollectionAction {
   public function GET() {
     var_dump(unpack('L', pack('L', 72837283728)));
     echo 9223372036854775805 + 1;

@@ -7,7 +7,8 @@ class ArticleScreen extends Screen {
   }
 
   protected function renderHtmlHeadContent() {
-    echo '<title>', $this->book['name'], ' - 优选集</title>';
+    echo '<title>', $this->book['title'], ' - 优选集</title>';
+    $this->addCssLink('article');
   }
 
   protected function renderHtmlBodyContent() {
@@ -17,12 +18,13 @@ class ArticleScreen extends Screen {
     DbConnection::close();
     echo '<h1>', $book['title'], '</h1>';
     echo '作者：<a href="/user-', $book['user_id'], '/">', $authorName, '</a>';
-    echo '<div>喜欢 < ', $book['like_amount'], ' > | 关注 | 举报</div>';
+    echo '<div><a href="like">喜欢</a> { ', $book['like_amount'], ' } | <a href="watch">关注</a> { 0 } | <a href="flag">举报</a></div>';
     NavigationScreen::render();
-    echo '<a href="edit">编辑</a>';
+    if (isset($_SESSION['user_id']) && $book['user_id'] === $_SESSION['user_id']) {
+      echo '<a href="edit">编辑</a>';
+    }
     echo '<div class="abstract">'.$book['abstract'].'</div>';
-    echo '<div class="content">'.$book['content'].'</div>';
-    echo '<p>版权：</p>';
-    echo '<p>广告</p>';
+    $parser = new Markdown;
+    echo '<div class="content">'.$parser->transform($book['content']).'</div>';
   }
 }

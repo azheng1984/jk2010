@@ -1,5 +1,5 @@
 <?php
-class NewArticleScreen extends Screen {
+class NewCollectionScreen extends Screen {
   protected function renderHtmlHeadContent() {
     echo '<title>优选集</title>';
     echo '<script src="/asset/js/markdown.js"></script>';

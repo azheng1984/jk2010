@@ -6,29 +6,18 @@ class EditArticleScreen extends Screen {
   }
 
   protected function renderHtmlBodyContent() {
-    $book = Db::getRow('SELECT * FROM book WHERE id = 1');
-    echo '<h1>', $book['name'], '</h1>';
+    $article = Db::getRow('SELECT * FROM article WHERE id = ?', $GLOBALS['ARTICLE_ID']);
+    echo '<h1>', $article['title'], '</h1>';
     NavigationScreen::render();
-    echo '<a href="/book-', $GLOBALS['BOOK_ID'], '/new/">添加页面</a>';
-//     $page = Db::getRow('SELECT * FROM page WHERE id = 1');
-//     echo '<h2>', Db::getColumn('SELECT content FROM line WHERE id = '.$page['name_line_id']), '</h2>';
-//     echo '<a href="1/edit">编辑</a>';
-//     $pageIdList = explode("\n", $page['line_id_list']);
-//     echo '<form action="1" method="POST"><textarea  id="content_input" name="content" style="width:500px;height:300px">';
-//     foreach ($pageIdList as $id) {
-//       if ($id === '') {
-//         echo "\n";
-//         continue;
-//       }
-//       $line = Db::getRow('SELECT * FROM line WHERE id = ?', $id);
-//       echo $line['content']."\n";
-//     }
-//     echo '</textarea>';
-//     echo '<div id="preview"> </div>';
-//     echo '<input type="submit" value="保存" />';
-//     echo '<a href="..">首页</a>';
-//     echo '<p>广告</p>';
+    echo '<form action="." method="POST">';
+    echo '<textarea  id="abstract" name="abstract" style="width:500px;height:300px">',$article['abstract'],'</textarea>';
+    echo '<textarea  id="content" name="content" style="width:500px;height:300px">';
+    echo $article['content'],'</textarea>';
+    echo '<input type="submit" value="发布" />';
+    echo '<input type="submit" value="保存草稿" />';
+    echo '</form>';
     ?>
+    <div id="preview"> </div>
         <script>
       function Editor(input, preview)
       {
@@ -40,7 +29,7 @@ class EditArticleScreen extends Screen {
 //        this.update();
       }
       var $ = function (id) { return document.getElementById(id); };
-      new Editor($("content_input"), $("preview"));
+      new Editor($("content"), $("preview"));
     </script>
     <?php
   }

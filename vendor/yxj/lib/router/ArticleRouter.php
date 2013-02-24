@@ -11,17 +11,30 @@ class ArticleRouter {
       $GLOBALS['NAVIGATION_MODULE'] = 'browse';
       return '/article/edit';
     }
-      if ($GLOBALS['PATH_SECTION_LIST'][2] === 'new') {
+        if ($GLOBALS['PATH_SECTION_LIST'][2] === 'new') {
       $GLOBALS['NAVIGATION_MODULE'] = 'browse';
       return '/article/new';
     }
+    if ($GLOBALS['PATH_SECTION_LIST'][2] === 'like') {
+      $GLOBALS['NAVIGATION_MODULE'] = 'browse';
+      return '/article/like';
+    }
     if ($GLOBALS['PATH_SECTION_LIST'][2] === 'discussion') {
       $GLOBALS['NAVIGATION_MODULE'] = 'discussion';
-      return '/article/discussion';
+      if ($GLOBALS['PATH_SECTION_LIST'][3] === 'new') {
+        return '/discussion/topic/new';
+      }
+      if ($GLOBALS['PATH_SECTION_LIST'][3] !== '') {
+        if ($GLOBALS['PATH_SECTION_LIST'][4] === 'new') {
+          return '/discussion/topic/post/new';
+        }
+        return '/discussion/topic';
+      }
+      return '/discussion';
     }
-    if ($GLOBALS['PATH_SECTION_LIST'][2] === 'member') {
-      $GLOBALS['NAVIGATION_MODULE'] = 'member';
-      return '/article/member';
+    if ($GLOBALS['PATH_SECTION_LIST'][2] === 'user') {
+      $GLOBALS['NAVIGATION_MODULE'] = 'user';
+      return '/discussion/user';
     }
   }
 }
