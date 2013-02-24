@@ -3,6 +3,7 @@ class NewArticleScreen extends Screen {
   protected function renderHtmlHeadContent() {
     echo '<title>优选集</title>';
     echo '<script src="/asset/js/markdown.js"></script>';
+
   }
 
   protected function renderHtmlBodyContent() {

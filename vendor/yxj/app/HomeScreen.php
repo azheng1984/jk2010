@@ -6,7 +6,7 @@ class HomeScreen extends Screen {
 
   protected function renderHtmlBodyContent() {
     echo '<div id="home" class="content">';
-    echo '<div id="slogan">Slogan：Who am I <a href="/article-1/">了解更多</a></div>';
+    echo '<div id="description">Slogan：Who am I <a href="/article-1/">了解更多</a></div>';
     echo '<div id="category_list">';
     echo '<p><a href="/category-1/">装饰装修</a></p>';
     echo '<p><a href="/category-1/">美食</a></p>';

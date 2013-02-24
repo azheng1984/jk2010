@@ -76,15 +76,19 @@ abstract class Screen extends EtagView {
   }
 
   private function renderBodyHeader() {
+    echo '<div id="top_wrapper"><div id="top"><div id="slogan">攻略聚集地</div>';
+    $this->renderToolbar();
+    echo '</div></div>';
     echo '<div id="header_wrapper"><div id="header">';
     $this->renderLogo();
     $this->renderSearch();
-    $this->renderToolbar();
+    echo ' <a href="/article/new">+ 写攻略</a></div>';
+    //$this->renderToolbar();
     echo '</div></div>';
   }
 
   private function renderLogo() {
-    echo '<div id="logo"><a href="/">优选集<span></span></a> 攻略聚集地</div>';
+    echo '<div id="logo"><a href="/">优选集<span></span></a></div>';
     setcookie('publisher', 'test');
   }
 
@@ -101,11 +105,12 @@ abstract class Screen extends EtagView {
       DbConnection::connect('youxuanji');
       $user = Db::getRow('SELECT * FROM user WHERE id = ?', $_SESSION['user_id']);
       DbConnection::close();
-      echo '<a href="/user-',$user['id'],'/">'.$user['name'].'</a> <a href="/sign_out">退出</a>';
+      $GLOBALS['USER'] = $user;
+      echo '<a href="/user-',$user['id'],'/">'.$user['name'].'</a> | <a href="/mention">@我的讨论</a> | <a href="/sign_out">退出</a>';
     } else {
       echo '<a href="/sign_in">登录</a> <a href="/sign_up">注册</a>';
     }
-    echo ' <a href="/article/new">+ 写攻略</a></div>';
+    echo '</div>';
   }
 
   private function renderBodyFooter() {
