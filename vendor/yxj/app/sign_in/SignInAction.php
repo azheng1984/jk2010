@@ -1,7 +1,6 @@
 <?php
 class SignInAction {
-  public function GET() {
-  }
+  public function GET() {}
 
   public function POST() {
     DbConnection::connect('youxuanji');

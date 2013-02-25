@@ -82,7 +82,7 @@ abstract class Screen extends EtagView {
     echo '<div id="header_wrapper"><div id="header">';
     $this->renderLogo();
     $this->renderSearch();
-    echo ' <a href="/article/new">+ 写攻略</a></div>';
+    echo '<div id="new"><a href="/article/new">+ 写攻略</a> <a href="/article/new_collection">+ 创建攻略集</a></div></div>';
     //$this->renderToolbar();
     echo '</div></div>';
   }
@@ -106,7 +106,11 @@ abstract class Screen extends EtagView {
       $user = Db::getRow('SELECT * FROM user WHERE id = ?', $_SESSION['user_id']);
       DbConnection::close();
       $GLOBALS['USER'] = $user;
-      echo '<a href="/user-',$user['id'],'/">'.$user['name'].'</a> | <a href="/mention">提到我的讨论</a> | <a href="/sign_out">退出</a>';
+      echo '<a href="/user-',$user['id'],'/">'.$user['name'].'</a> | <a href="/mention">提到我的讨论';
+      if ($user['unread_mention_amount'] !== '0') {
+        echo '(', $user['unread_mention_amount'], ')';
+      }
+      echo '</a> | <a href="/sign_out">退出</a>';
     } else {
       echo '<a href="/sign_in">登录</a> <a href="/sign_up">注册</a>';
     }
