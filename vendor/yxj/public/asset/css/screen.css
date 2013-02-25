@@ -150,5 +150,12 @@ h1 {
 }
 #new {
 	float:right;
-  padding-top:10px;
+  margin-top:10px;
+}
+#new a {
+  padding:5px 10px;
+  background:red;
+  color:#fff;
+  border-radius:3px;
+  border:0;
 }
