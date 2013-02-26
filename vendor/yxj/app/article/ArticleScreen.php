@@ -24,7 +24,6 @@ class ArticleScreen extends Screen {
       echo '<a href="edit">编辑</a>';
     }
     echo '<div class="abstract">'.$book['abstract'].'</div>';
-    $parser = new Markdown;
-    echo '<div class="content">'.$parser->transform($book['content']).'</div>';
+    echo '<div class="content">'.$book['content'].'</div>';
   }
 }
