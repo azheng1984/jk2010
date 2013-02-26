@@ -95,7 +95,7 @@ abstract class Screen extends EtagView {
   private function renderSearch() {
     $query = isset($GLOBALS['QUERY']) ?
       htmlentities($GLOBALS['QUERY']['name'], ENT_QUOTES, 'UTF-8') : '';
-    echo '<form action="/"><input type="text" name="q" maxlength="100" value="',
+    echo '<form action="/"><input type="text" name="q" maxlength="100" value="todo:搜索',
       $query, '"/> <button type="submit"></button></form>';
   }
 
@@ -106,11 +106,11 @@ abstract class Screen extends EtagView {
       $user = Db::getRow('SELECT * FROM user WHERE id = ?', $_SESSION['user_id']);
       DbConnection::close();
       $GLOBALS['USER'] = $user;
-      echo '<a href="/user-',$user['id'],'/">'.$user['name'].'</a> | <a href="/mention">提到我的讨论';
+      echo '<a href="/user-',$user['id'],'/">'.$user['name'].'</a> | <a href="/mention/">提到我的讨论';
       if ($user['unread_mention_amount'] !== '0') {
         echo '(', $user['unread_mention_amount'], ')';
       }
-      echo '</a> | <a href="/sign_out">退出</a>';
+      echo '</a> | <a href="/setting/">设置</a> | <a href="/sign_out">退出</a>';
     } else {
       echo '<a href="/sign_in">登录</a> <a href="/sign_up">注册</a>';
     }
@@ -126,13 +126,13 @@ abstract class Screen extends EtagView {
   private function renderDeclaration() {
     echo '© 2012 优选集 ',
       '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-      'youxuanji.com/article-1/">关于优选集</a> ',
+      'youxuanji.com/about/">关于优选集</a> ',
       '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-      'youxuanji.com/article-1/copyright" rel="nofollow">版权声明</a>',
+      'youxuanji.com/about/copyright" rel="nofollow">版权声明</a>',
       '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-      'youxuanji.com/article-1/terms_of_use" rel="nofollow">使用条款</a>',
+      'youxuanji.com/about/terms_of_use" rel="nofollow">使用条款</a>',
       ' <a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-      'youxuanji.com/article-1/privcay"  rel="nofollow">隐私权政策</a> <span>沪ICP备0000000000号</span>';
+      'youxuanji.com/about/privcay"  rel="nofollow">隐私权政策</a> <span>沪ICP备0000000000号</span>';
   }
 
   private function renderJs() {

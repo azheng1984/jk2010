@@ -8,6 +8,7 @@ class EditArticleScreen extends Screen {
   protected function renderHtmlBodyContent() {
     $article = Db::getRow('SELECT * FROM article WHERE id = ?', $GLOBALS['ARTICLE_ID']);
     echo '<h1>', $article['title'], '</h1>';
+    echo '<div class="todo">todo:编辑器整合 + 图片上传</div>';
     NavigationScreen::render();
     echo '<form action="." method="POST">';
     echo '<textarea  id="abstract" name="abstract" style="width:500px;height:300px">',$article['abstract'],'</textarea>';
@@ -17,20 +18,6 @@ class EditArticleScreen extends Screen {
     echo '<input type="submit" value="保存草稿" />';
     echo '</form>';
     ?>
-    <div id="preview"> </div>
-        <script>
-      function Editor(input, preview)
-      {
-    	  input.onkeyup = function () {
-            //alert(input.value);
-          preview.innerHTML = markdown.toHTML(input.value);
-        }
-//        input.editor = this;
-//        this.update();
-      }
-      var $ = function (id) { return document.getElementById(id); };
-      new Editor($("content"), $("preview"));
-    </script>
     <?php
   }
 }

@@ -7,7 +7,12 @@ class UserScreen extends Screen {
   protected function renderHtmlBodyContent() {
     $user = $GLOBALS['USER'];
     echo '<h2>', $GLOBALS['USER']['name'], '</h2>';
+    echo '<p>声望 [<b>',$user['reputation'],'</b>]</p>';
     echo '<p><a href="flag">举报</a></p>';
+    echo '<p>签名 [',$user['description'],']</p>';
+    echo '<p>位置 [',$user['description'],']</p>';
+    echo '<p>描述 [',$user['description'],']</p>';
+    echo '<p>绑定账户 [',$user['account_binding_list'],']</p>';
     echo '<p>攻略分类</p>';
     $categoryList = Db::getAll('SELECT * FROM user_article_category WHERE user_id = ?', $_SESSION['user_id']);
     DbConnection::connect('youxuanji');
