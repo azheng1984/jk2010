@@ -28,7 +28,7 @@ class CategoryScreen extends Screen {
       echo '<div>', $item['abstract'], '</div>';
       DbConnection::connect('youxuanji');
       $userName = Db::getColumn('SELECT name FROM user WHERE id = ?', $item['user_id']);
-      echo '<div>{ <a href="/user-', $item['user_id'], '/">', $userName, '</a> }</div>';
+      echo '<div><img src="/asset/img/avatar_small.jpg" /> { <a href="/user-', $item['user_id'], '/">', $userName, '</a> }</div>';
       echo '<div>喜欢 { ', $item['like_amount'], ' }</div>';
       echo '<div>关注 { ', $item['watch_amount'], ' }</div>';
       echo '<div>创建 { ', $item['creation_time'], ' }</div>';
@@ -36,8 +36,12 @@ class CategoryScreen extends Screen {
       DbConnection::close();
       echo '</li>';
     }
+    $tmp = '';
+    if ($orderBy === 'creation_time') {
+      $tmp = '?sort=time';
+    }
     echo '</ol>';
-    PaginationScreen::render('1', '100', '/category-2323/', '');
+    PaginationScreen::render('1', '100', '/category-2323/', $tmp);
     echo '</div>';
   }
 

@@ -11,8 +11,8 @@ class DiscussionScreen extends Screen {
     echo '<div><a href="new">+ 新建主题</a></div>';
     $items = Db::getAll('SELECT * FROM topic ORDER BY last_post_time DESC');
     foreach ($items as $item) {
-      echo '<div><a href="topic-', $item['id'], '/">',
-        $item['title'], '</a> ', $item['creation_time'] ,'</div>';
+      echo '<p><a href="topic-', $item['id'], '/">',
+        $item['title'], '</a> ', $item['creation_time'] ,' | <a href="#">赞</a> { ', $item['like_amount'], ' }</p>';
     }
   }
 }

@@ -12,7 +12,7 @@ class TopicScreen extends Screen {
     $items = Db::getAll('SELECT * FROM post WHERE topic_id = ? ORDER BY id', $GLOBALS['PATH_SECTION_LIST'][4]);
     $index = 1;
     foreach ($items as $item) {
-      echo '<div>', $item['content'], ' ', $item['creation_time'], ' #', $index++, '</div>';
+      echo '<p>', $item['content'], ' ', $item['creation_time'], ' #', $index++, '</p>';
     }
   }
 }

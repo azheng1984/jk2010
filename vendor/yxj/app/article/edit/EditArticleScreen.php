@@ -8,7 +8,7 @@ class EditArticleScreen extends Screen {
   protected function renderHtmlBodyContent() {
     $article = Db::getRow('SELECT * FROM article WHERE id = ?', $GLOBALS['ARTICLE_ID']);
     echo '<h1>', $article['title'], '</h1>';
-    echo '<div class="todo">todo:编辑器整合 + 图片上传</div>';
+    echo '<div class="todo">todo:编辑器整合 + 添加分段 + 图片上传</div>';
     NavigationScreen::render();
     echo '<form action="." method="POST">';
     echo '<textarea  id="abstract" name="abstract" style="width:500px;height:300px">',$article['abstract'],'</textarea>';
