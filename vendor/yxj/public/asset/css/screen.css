@@ -183,3 +183,10 @@ h1 {
 border: 0;
 color: #06C;
 }
+.big_number {
+	width:100%;
+}
+.big_number a {
+  font-size:16px;
+  font-weight:bold;
+}
