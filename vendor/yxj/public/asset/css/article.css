@@ -1,10 +1,16 @@
-.abstract {
+#abstract {
   clear:both;
   background:#ffffcc;
   width:100%;
   padding:10px;
 }
-.content {
-  float:none;
+#content {
+  width:100%;
   background:#ffccff;
+}
+#edui1 div {
+	float:none;
+}
+#edui1 #edui1_toolbarbox {
+  width:100%;
 }

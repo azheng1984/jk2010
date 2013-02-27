@@ -25,8 +25,8 @@ class ArticleScreen extends Screen {
       echo '<a href="edit">编辑</a>';
     }
     echo '<div>攻略被浏览 ', $book['page_view'], ' 次</div>';
-    echo '<div class="abstract">'.$book['abstract'].'</div>';
-    echo '<div class="content">'.$book['content'].'</div>';
+    echo '<div id="abstract">'.$book['abstract'].'</div>';
+    echo '<div id="content">'.$book['content'].'</div>';
   }
 
   private function printBreadcrumb() {
