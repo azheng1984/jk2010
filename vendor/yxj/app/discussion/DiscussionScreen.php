@@ -1,11 +1,14 @@
 <?php
 class DiscussionScreen extends Screen {
+  private $article;
+
   protected function renderHtmlHeadContent() {
     echo '<title>优选集</title>';
   }
 
   protected function renderHtmlBodyContent() {
     $book = Db::getRow('SELECT * FROM article WHERE id = ?', $GLOBALS['ARTICLE_ID']);
+    $this->article = $book;
     echo '<h1>', $book['title'], '</h1>';
     NavigationScreen::render();
     echo '<p><b>最近讨论</b> | 最热讨论</p>';

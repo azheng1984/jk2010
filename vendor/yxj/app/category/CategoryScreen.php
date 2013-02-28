@@ -77,9 +77,9 @@ class CategoryScreen extends Screen {
       $id = $category['parent_id'];
     }
     $list = array();
-    echo '<a href="/">首页</a> &gt; ';
+    echo '<a href="/">首页</a> › ';
     foreach ($categoryList as $category) {
-      echo '<a href ="/category-'.$category['id'].'/">'.$category['name'].'</a> &gt; ';
+      echo '<a href ="/category-'.$category['id'].'/">'.$category['name'].'</a> › ';
     }
     echo $GLOBALS['CATEGORY']['name'];
   }
