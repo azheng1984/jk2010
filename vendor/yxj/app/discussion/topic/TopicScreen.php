@@ -32,7 +32,7 @@ class TopicScreen extends Screen {
       echo '</td></tr>';
     }
     echo '</table>';
-    echo '<div><a href="new">+ 回应</a></div>';
+    echo '<div><a href="new">+ 回复</a></div>';
   }
 
   private function printUserInfo($userId) {

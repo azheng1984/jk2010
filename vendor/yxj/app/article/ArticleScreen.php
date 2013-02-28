@@ -28,7 +28,7 @@ class ArticleScreen extends Screen {
       }
     }
     echo '<p><a href="like">喜欢</a> { ', $book['like_amount'], ' } | <a href="watch">关注</a> { 0 } | 浏览 {', $book['page_view'], '} | <a href="flag">举报</a></p>';
-    echo '攻略作者<p><img src="/asset/img/avatar_middle.jpg" /></p> <p><a href="/user-', $book['user_id'], '/">', $author['name'], '</a></p>';
+    echo '作者<p><img src="/asset/img/avatar_middle.jpg" /></p> <p><a href="/user-', $book['user_id'], '/">', $author['name'], '</a></p>';
     echo '<p>', $author['signature'], '</p>';
     echo '<p>帐号: ',$author['id'], '</p>';
     echo '<p>声望: ',$author['reputation'], '</p>';
