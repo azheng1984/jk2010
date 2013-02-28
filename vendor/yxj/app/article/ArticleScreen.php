@@ -19,6 +19,14 @@ class ArticleScreen extends Screen {
     DbConnection::close();
     echo '<h1>', $book['title'], '</h1>';
     NavigationScreen::render();
+    if (isset($_SESSION['user_id']) && $book['user_id'] === $_SESSION['user_id']) {
+      if ($book['has_draft'] === '1') {
+        $time = Db::getColumn('SELECT creation_time FROM article_draft WHERE article_id = ?', $book['id']);
+        echo '<p><a href="edit">继续编辑</a> 草稿保存时间: ', $time, '</p>';
+      } else {
+        echo '<p><a href="edit">编辑</a></p>';
+      }
+    }
     echo '<p><a href="like">喜欢</a> { ', $book['like_amount'], ' } | <a href="watch">关注</a> { 0 } | 浏览 {', $book['page_view'], '} | <a href="flag">举报</a></p>';
     echo '攻略作者<p><img src="/asset/img/avatar_middle.jpg" /></p> <p><a href="/user-', $book['user_id'], '/">', $author['name'], '</a></p>';
     echo '<p>', $author['signature'], '</p>';
@@ -26,9 +34,6 @@ class ArticleScreen extends Screen {
     echo '<p>声望: ',$author['reputation'], '</p>';
     echo '<p>攻略: ',$author['article_amount'], '</p>';
     echo '{绑定帐号}';
-    if (isset($_SESSION['user_id']) && $book['user_id'] === $_SESSION['user_id']) {
-      echo '<a href="edit">编辑</a>';
-    }
     echo '<p id="menu">目录</p>';
     echo '<div id="abstract">'.$book['abstract'].'</div>';
     echo '<div id="content">'.$book['content'].'</div>';

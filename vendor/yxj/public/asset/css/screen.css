@@ -252,3 +252,17 @@ color: #06C;
   padding:6px 12px;
   border-right:1px solid #d8d8d8;
 }
+.edit input.publish {
+	background-color:#06c;
+  color:#fff;
+  border:0;
+  padding:6px 15px;
+}
+.edit input {
+  background-color:#eee;
+  color:#06c;
+  border:1px solid #ccc;
+	padding:6px 10px;
+  border-radius:3px;
+  margin-left:5px;
+}
