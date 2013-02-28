@@ -107,6 +107,7 @@ abstract class Screen extends EtagView {
       DbConnection::close();
       $GLOBALS['USER'] = $user;
       echo '<a href="/user-',$user['id'],'/">'.$user['name'].'</a> | <a href="/mention/">提到我的讨论';
+      echo ' | <a href="#">草稿</a>';
       if ($user['unread_mention_amount'] !== '0') {
         echo '(', $user['unread_mention_amount'], ')';
       }

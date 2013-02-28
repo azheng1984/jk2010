@@ -10,13 +10,23 @@ class EditArticleScreen extends Screen {
     echo '<h1>', $article['title'], '</h1>';
     echo '<div class="todo">todo:编辑器整合 + 添加分段 + 图片上传 + 草稿 + 预览</div>';
     NavigationScreen::render();
-    echo '<form action="." method="POST">';
-    echo '<textarea  id="abstract" name="abstract" style="width:500px;height:300px">',$article['abstract'],'</textarea>';
-    echo '<textarea  id="content" name="content" style="width:500px;height:300px">';
-    echo $article['content'],'</textarea>';
-    echo '<input type="submit" value="发布" />';
-    echo '<input type="submit" value="保存草稿" />';
-    echo '<input type="submit" value="预览" />';
+    echo '<form class="edit" action="." method="POST">';
+    if ($article['has_draft'] === '0') {
+      echo '<textarea  id="abstract" name="abstract" style="width:500px;height:300px">',$article['abstract'],'</textarea>';
+      echo '<textarea  id="content" name="content" style="width:500px;height:300px">';
+      echo $article['content'],'</textarea>';
+    } else {
+      $articleD = Db::getRow('SELECT abstract,content FROM article_draft WHERE article_id = ?', $article['id']);
+      echo '<textarea  id="abstract" name="abstract" style="width:500px;height:300px">',$articleD['abstract'],'</textarea>';
+      echo '<textarea  id="content" name="content" style="width:500px;height:300px">';
+      echo $articleD['content'],'</textarea>';
+    }
+    echo '<input name="submit" type="submit" value="保存草稿" />';
+    if ($article['is_published'] === '1') {
+      echo '<input name="submit" type="submit" value="还原到发布版本" />';
+    }
+    echo '<input name="submit" type="submit" value="预览" />';
+    echo '<input class="publish" name="submit" type="submit" value="发布" />';
     echo '</form>';
     ?>
     <script type="text/javascript" charset="utf-8" src="/asset/editor/editor_config.js"></script>
