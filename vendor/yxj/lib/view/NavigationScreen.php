@@ -11,7 +11,7 @@ class NavigationScreen {
     echo '<ul>';
     foreach (self::$config as $key => $value) {
       if ($GLOBALS['NAVIGATION_MODULE'] === $key) {
-        echo '<li>', $value, '</li>';
+        echo '<li><b>', $value, '</b></li>';
         continue;
       }
       echo '<li><a href="/article-', $GLOBALS['ARTICLE_ID'];
