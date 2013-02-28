@@ -10,6 +10,9 @@ div, form, ol, ul, li, h1, h2, h3, table {
 ul, li  {
   list-style:none;
 }
+td, tr {
+  border:1px solid #ccc;
+}
 a {
   border-bottom:1px solid #888;
   color:#333;
@@ -189,4 +192,63 @@ color: #06C;
 .big_number a {
   font-size:16px;
   font-weight:bold;
+}
+#stat {
+	width:200px;
+  text-align:center;
+}
+#stat .big {
+  font-weight:bold;
+  font-size:16px;
+  margin-left:10px;
+  width:60px;
+  color:#999;
+}
+#stat div {
+	width:50px;
+  color:#999;
+}
+.t_title {
+	width:100%;
+}
+#stat .reply {
+	color:#944;
+}
+ .id {
+	color:#999;
+}
+/* pagination */
+#pagination {
+  width:100%;
+  line-height:30px;
+  padding-top:8px;
+  text-align:center;
+}
+#pagination a, #pagination span {
+  padding:6px 9px;
+  border:1px solid;
+  border-color:#e8e8e8 #e8e8e8 #d8d8d8 #e8e8e8;
+  border-left:0;
+}
+#pagination a {
+  color:#06c;
+  background:url(/+asset/img/screen.png) 0 -66px repeat-x;
+}
+#pagination a:hover {
+  color:#fff;
+  background:#06c;
+}
+#pagination span {
+  background-color:red;
+  color:#fff;
+}
+#pagination .prev, #pagination .next, #pagination .first {
+  border-left:1px solid #e0e0e0;
+}
+#pagination .last {
+  border-right:1px solid #d8d8d8;
+}
+#pagination .prev, #pagination .next {
+  padding:6px 12px;
+  border-right:1px solid #d8d8d8;
 }

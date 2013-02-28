@@ -8,12 +8,13 @@ class UserScreen extends Screen {
     $user = $GLOBALS['USER'];
     echo '<h2>', $GLOBALS['USER']['name'], '</h2>';
     echo '<p><a href="flag">举报</a></p>';
+    echo '<p>帐号 [',$user['id'],']</p>';
     echo '<p>声望 [',$user['reputation'],']</p>';
     echo '<p>签名 [',$user['description'],']</p>';
     echo '<p>位置 [',$user['description'],']</p>';
     echo '<p>个人简介 [',$user['description'],']</p>';
     echo '<p>注册时间 [',$user['sign_up_time'],']</p>';
-    echo '<p>最后登录时间 [',$user['sign_in_time'],']</p>';
+    echo '<p>最后登录 [',$user['sign_in_time'],']</p>';
     echo '<p>绑定账户 [',$user['account_binding_list'],']</p>';
     echo '<p>个人主页被浏览 [',$user['page_view'],'] 次</p>';
     echo '<p>攻略分类</p>';
