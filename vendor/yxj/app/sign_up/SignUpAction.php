@@ -12,7 +12,7 @@ class SignUpAction {
       'password_sha1_digest' => sha1($_POST['password'].$time, true),
       'password_modification_time' => $time,
       'name' => $_POST['name'],
-      'creation_time' => $time,
+      'sign_up_time' => $time,
       'sign_in_time' => $time,
     ));
   }

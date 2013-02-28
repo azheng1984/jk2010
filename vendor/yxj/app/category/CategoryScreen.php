@@ -17,8 +17,15 @@ class CategoryScreen extends Screen {
       $orderBy = 'popularity_rank';
       echo '<div id="sort">排序：<strong>热门</strong> | <a href="?sort=time">创建时间</a></div>';
     }
+    $page = 1;
+    if ($GLOBALS['PATH_SECTION_LIST'][2] !== '') {
+      $page = $GLOBALS['PATH_SECTION_LIST'][2];
+    }
     $list = Db::getAll(
-      'SELECT a.* FROM article_category AS ac LEFT JOIN article AS a ON ac.article_id = a.id WHERE ac.category_id = ? ORDER BY ac.'.$orderBy,
+      'SELECT a.* FROM article_category'
+        .' AS ac LEFT JOIN article AS a ON ac.article_id = a.id'
+        .' WHERE ac.category_id = ? ORDER BY ac.'.$orderBy
+        .' LIMIT 0, 25',
       $GLOBALS['CATEGORY']['id']
     );
     echo '<ol>';
@@ -28,7 +35,7 @@ class CategoryScreen extends Screen {
       echo '<div>', $item['abstract'], '</div>';
       DbConnection::connect('youxuanji');
       $userName = Db::getColumn('SELECT name FROM user WHERE id = ?', $item['user_id']);
-      echo '<div><img src="/asset/img/avatar_small.jpg" /> { <a href="/user-', $item['user_id'], '/">', $userName, '</a> }</div>';
+      echo '<div><img src="/asset/img/avatar_small.jpg" /> { <a href="/user-', $item['user_id'], '/">', $userName, '</a>  }</div>';
       echo '<div>喜欢 { ', $item['like_amount'], ' }</div>';
       echo '<div>关注 { ', $item['watch_amount'], ' }</div>';
       echo '<div>创建 { ', $item['creation_time'], ' }</div>';
@@ -41,7 +48,7 @@ class CategoryScreen extends Screen {
       $tmp = '?sort=time';
     }
     echo '</ol>';
-    PaginationScreen::render('1', '100', '/category-2323/', $tmp);
+    PaginationScreen::render(intval($page), 1000, '/category-'.$GLOBALS['CATEGORY']['id'].'/', $tmp);
     echo '</div>';
   }
 

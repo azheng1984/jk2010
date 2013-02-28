@@ -15,16 +15,21 @@ class ArticleScreen extends Screen {
     $book = $this->book;
     $this->printBreadcrumb();
     DbConnection::connect('youxuanji');
-    $authorName = Db::getColumn('SELECT name FROM user WHERE id = ?', $book['user_id']);
+    $author = Db::getRow('SELECT * FROM user WHERE id = ?', $book['user_id']);
     DbConnection::close();
     echo '<h1>', $book['title'], '</h1>';
-    echo '作者：<img src="/asset/img/avatar_middle.jpg" /> <a href="/user-', $book['user_id'], '/">', $authorName, '</a>';
-    echo '<div><a href="like">喜欢</a> { ', $book['like_amount'], ' } | <a href="watch">关注</a> { 0 } | <a href="flag">举报</a></div>';
     NavigationScreen::render();
+    echo '<p><a href="like">喜欢</a> { ', $book['like_amount'], ' } | <a href="watch">关注</a> { 0 } | 浏览 {', $book['page_view'], '} | <a href="flag">举报</a></p>';
+    echo '攻略作者<p><img src="/asset/img/avatar_middle.jpg" /></p> <p><a href="/user-', $book['user_id'], '/">', $author['name'], '</a></p>';
+    echo '<p>', $author['signature'], '</p>';
+    echo '<p>帐号: ',$author['id'], '</p>';
+    echo '<p>声望: ',$author['reputation'], '</p>';
+    echo '<p>攻略: ',$author['article_amount'], '</p>';
+    echo '{绑定帐号}';
     if (isset($_SESSION['user_id']) && $book['user_id'] === $_SESSION['user_id']) {
       echo '<a href="edit">编辑</a>';
     }
-    echo '<div>攻略被浏览 ', $book['page_view'], ' 次</div>';
+    echo '<p id="menu">目录</p>';
     echo '<div id="abstract">'.$book['abstract'].'</div>';
     echo '<div id="content">'.$book['content'].'</div>';
   }

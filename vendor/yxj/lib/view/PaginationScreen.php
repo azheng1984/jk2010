@@ -1,7 +1,7 @@
 <?php
 class PaginationScreen {
   public static function render($page, $total, $prefix, $postfix,
-    $maximumPage = 50, $itemsPerPage = 20, $rel = ' rel="nofollow"') {
+    $maximumPage = 100, $itemsPerPage = 25, $rel = ' rel="nofollow"') {
     if ($total <= $itemsPerPage) {
       return;
     }

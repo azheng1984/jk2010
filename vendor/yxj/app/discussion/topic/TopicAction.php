@@ -7,6 +7,7 @@ class TopicAction {
       'post',
       array(
         'topic_id' => $GLOBALS['PATH_SECTION_LIST'][4],
+        'user_id' => $_SESSION['user_id'],
         'creation_time' => date('Y-m-d H:i:s'),
         'content' => $_POST['content']
       )
