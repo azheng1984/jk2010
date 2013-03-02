@@ -21,10 +21,11 @@ class ArticleScreen extends Screen {
     NavigationScreen::render();
     if (isset($_SESSION['user_id']) && $book['user_id'] === $_SESSION['user_id']) {
       if ($book['has_draft'] === '1') {
-        $time = Db::getColumn('SELECT creation_time FROM article_draft WHERE article_id = ?', $book['id']);
-        echo '<p><a href="edit">继续编辑</a> 草稿保存时间: ', $time, '</p>';
+        $time = Db::getColumn('SELECT creation_time FROM draft WHERE article_id = ?', $book['id']);
+        //echo '<p><a href="edit">继续编辑</a> 草稿保存时间: ', $time, '</p>';
       } else {
-        echo '<p><a href="edit">编辑</a></p>';
+        //echo '<p><a href="edit">编辑</a></p>';
+        echo '<p><a href="edit">删除攻略</a></p>';
       }
     }
     echo '<p><a href="like">喜欢</a> { ', $book['like_amount'], ' } | <a href="watch">关注</a> { 0 } | 浏览 {', $book['page_view'], '} | <a href="flag">举报</a></p>';
@@ -36,7 +37,22 @@ class ArticleScreen extends Screen {
     echo '{绑定帐号}';
     echo '<p id="menu">目录</p>';
     echo '<div id="abstract">'.$book['abstract'].'</div>';
-    echo '<div id="content">'.$book['content'].'</div>';
+//     if ($book['is_json_content'] === '0') {
+       echo '<div id="content">'.$book['content'].'</div>';
+//     } else {
+//      $this->printJsonContent();
+//    }
+  }
+
+  private function printJsonContent() {
+    $content = json_decode($this->book['content'], true);
+    //echo '<div id="content">'.$this->book['content'].'</div>';
+    $index = 1;
+    foreach ($content as $section) {
+      echo '<div class="section"><h2><span class="index">', $index, '</span> ', $section[0],'</h2><div>', $section[1], '</div>', '</div>';
+      ++$index;
+    }
+    echo '</div>';
   }
 
   private function printBreadcrumb() {

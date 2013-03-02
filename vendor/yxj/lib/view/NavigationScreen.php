@@ -3,7 +3,7 @@ class NavigationScreen {
   private static $config = array(
     'browse' => '浏览',
     'discussion' => '讨论',
-    //'member' => '成员',
+    'edit' => '编辑',
     //'download' => '下载',
   );
 
