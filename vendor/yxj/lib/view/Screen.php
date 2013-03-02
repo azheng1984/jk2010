@@ -108,9 +108,6 @@ abstract class Screen extends EtagView {
       $GLOBALS['USER'] = $user;
       echo '<a href="/user-',$user['id'],'/">'.$user['name'].'</a>';
       echo ' | <a href="#">草稿</a>(0)';
-      if ($user['unread_mention_amount'] !== '0') {
-        echo '(', $user['unread_mention_amount'], ')';
-      }
       echo '</a> | <a href="/setting/">设置</a> | <a href="/sign_out">退出</a>';
     } else {
       echo '<a href="/sign_in">登录</a> <a href="/sign_up">注册</a>';
