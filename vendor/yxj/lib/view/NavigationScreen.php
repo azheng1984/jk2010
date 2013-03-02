@@ -8,7 +8,7 @@ class NavigationScreen {
   );
 
   public static function render() {
-    echo '<ul>';
+    echo '<p><ul>';
     foreach (self::$config as $key => $value) {
       if ($GLOBALS['NAVIGATION_MODULE'] === $key) {
         echo '<li><b>', $value, '</b></li>';
@@ -20,6 +20,6 @@ class NavigationScreen {
       }
       echo '/">', $value, '</a></li>';
     }
-    echo '</ul>';
+    echo '</ul></p>';
   }
 }

@@ -7,10 +7,10 @@ class UserScreen extends Screen {
   protected function renderHtmlBodyContent() {
     $user = $GLOBALS['USER'];
     echo '<h2>', $GLOBALS['USER']['name'], '</h2>';
+    echo '<p>[',$user['signature'],']</p>';
     echo '<p><a href="flag">举报</a></p>';
     echo '<p>帐号 [',$user['id'],']</p>';
     echo '<p>声望 [',$user['reputation'],']</p>';
-    echo '<p>签名 [',$user['description'],']</p>';
     echo '<p>位置 [',$user['description'],']</p>';
     echo '<p>个人简介 [',$user['description'],']</p>';
     echo '<p>注册时间 [',$user['sign_up_time'],']</p>';
