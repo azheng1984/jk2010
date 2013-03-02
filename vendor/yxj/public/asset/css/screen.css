@@ -266,3 +266,20 @@ color: #06C;
   border-radius:3px;
   margin-left:5px;
 }
+.section, h2 {
+  width:100%;
+  clear:both;
+}
+h2 {
+  font-size:20px;
+  font-weight:normal;
+}
+.section .index {
+	color:#888;
+  text-shadow: white 0px 0.9090908765792847px 0px;
+  background:#eee;
+  padding:2px 4px;
+  margin-right:1px;
+  
+  border-radius:3px;
+}
