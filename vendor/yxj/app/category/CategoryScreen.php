@@ -35,10 +35,10 @@ class CategoryScreen extends Screen {
       echo '<div>', $item['abstract'], '</div>';
       DbConnection::connect('youxuanji');
       $userName = Db::getColumn('SELECT name FROM user WHERE id = ?', $item['user_id']);
-      echo '<div><img src="/asset/img/avatar_small.jpg" /> { <a href="/user-', $item['user_id'], '/">', $userName, '</a>  }</div>';
+      echo '<div><img src="/asset/img/avatar_small.jpg" /><a href="/user-', $item['user_id'], '/">', $userName, '</a>', $item['creation_time'], '</div>';
       echo '<div>喜欢 { ', $item['like_amount'], ' }</div>';
       echo '<div>关注 { ', $item['watch_amount'], ' }</div>';
-      echo '<div>创建 { ', $item['creation_time'], ' }</div>';
+      echo '<div>浏览 { ', $item['page_view'], ' }</div>';
       echo '<div>更新 { ', $item['modification_time'], ' }</div>';
       DbConnection::close();
       echo '</li>';

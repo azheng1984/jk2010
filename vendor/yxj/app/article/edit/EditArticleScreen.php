@@ -6,39 +6,38 @@ class EditArticleScreen extends Screen {
   }
 
   protected function renderHtmlBodyContent() {
+    NavigationScreen::render();
     $article = Db::getRow('SELECT * FROM article WHERE id = ?', $GLOBALS['ARTICLE_ID']);
-    echo '<p>标题: ', $article['title'], '</h1></p>';
+    echo '<form action=".." method="POST">';
+    echo '<p>标题: <input name="title" value="', $article['title'], '" /></h1></p>';
     echo '<p>分类: ', $article['category_id'], '</p>';
 //    echo '<div class="">目录</div> 添加章节 <form action="edit" method="POST">';
 //      echo '<p>序号: <input name="index" /> 标题: <input name="title" /> <button type="submit">添加</button></p></form>';
-    NavigationScreen::render();
-    echo '<form class="edit" action="." method="POST">';
+
+
     if ($article['has_draft'] === '0') {
-      echo '<textarea  id="abstract" name="abstract" style="width:500px;height:300px">',$article['abstract'],'</textarea>';
-      if ($article['is_json_content'] === '0') {
-        echo '<textarea  id="content" name="content" style="width:500px;height:300px">';
-        echo $article['content'],'</textarea>';
-      } else {
-        $this->printJsonContent($article['content']);
-      }
+      echo '<p><textarea  id="abstract" name="abstract" style="width:500px;height:300px">',$article['abstract'],'</textarea></p>';
+
+        echo '<p class="editor"><textarea  id="content" name="content" style="width:500px;height:300px">';
+        echo $article['content'],'</textarea></p>';
     } else {
       $articleD = Db::getRow('SELECT abstract,content FROM draft WHERE article_id = ?', $article['id']);
       echo '<textarea  id="abstract" name="abstract" style="width:500px;height:300px">',$articleD['abstract'],'</textarea>';
-      echo '<textarea  id="content" name="content" style="width:500px;height:300px">';
+      echo '<textarea  id="content" name="content">';
       echo $articleD['content'],'</textarea>';
     }
-    echo '<input name="submit" type="submit" value="保存草稿" />';
+    echo '<p><input name="submit" type="submit" value="保存草稿" />';
     if ($article['is_published'] === '1') {
       echo '<input name="submit" type="submit" value="还原到发布版本" />';
     }
     echo '<input name="submit" type="submit" value="预览" />';
-    echo '<input class="publish" name="submit" type="submit" value="发布" />';
+    echo '<input class="publish" name="submit" type="submit" value="发布" /></p>';
     echo '</form>';
     ?>
     <script type="text/javascript" charset="utf-8" src="/asset/editor/editor_config.js"></script>
     <script type="text/javascript" charset="utf-8" src="/asset/editor/editor_all.js"></script>
     <script type="text/javascript">
-    //var ue = UE.getEditor('content');
+    var ue = UE.getEditor('content');
     </script>
     <?php
   }
