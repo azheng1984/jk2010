@@ -106,9 +106,9 @@ abstract class Screen extends EtagView {
       $user = Db::getRow('SELECT * FROM user WHERE id = ?', $_SESSION['user_id']);
       DbConnection::close();
       $GLOBALS['USER'] = $user;
-      echo '<a href="/user-',$user['id'],'/">'.$user['name'].'</a>';
-      echo ' | <a href="#">草稿</a>(0)';
-      echo '</a> | <a href="/setting/">设置</a> | <a href="/sign_out">退出</a>';
+      echo '<a href="/user-',$user['id'],'">'.$user['name'].'</a>';
+      echo ' | <a href="/draft">草稿</a>(0)';
+      echo '</a> | <a href="/setting">设置</a> | <a href="/sign_out">退出</a>';
     } else {
       echo '<a href="/sign_in">登录</a> <a href="/sign_up">注册</a>';
     }
@@ -127,10 +127,10 @@ abstract class Screen extends EtagView {
       'youxuanji.com/about/">关于优选集</a> ',
       '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
       'youxuanji.com/about/copyright" rel="nofollow">版权声明</a>',
-      '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
+      ' <a href="http://', $GLOBALS['DOMAIN_PREFIX'],
       'youxuanji.com/about/terms_of_use" rel="nofollow">使用条款</a>',
       ' <a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-      'youxuanji.com/about/privcay"  rel="nofollow">隐私权政策</a> <span>沪ICP备0000000000号</span>';
+      'youxuanji.com/about/privacy"  rel="nofollow">隐私权政策</a> <span>沪ICP备0000000000号</span>';
   }
 
   private function renderJs() {
