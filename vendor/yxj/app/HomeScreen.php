@@ -6,7 +6,7 @@ class HomeScreen extends Screen {
 
   protected function renderHtmlBodyContent() {
     echo '<div id="home" class="content">';
-    echo '<div id="description">Slogan：Who am I <a href="/about/">了解更多</a></div>';
+    echo '<div id="description"><h1>分享攻略，集思广益。</h1><br />这里已经聚集了 2323 位用户，12331 篇攻略。<a href="/about/">了解更多</a></div>';
     DbConnection::connect('youxuanji');
     $categoryList = Db::getAll('SELECT * FROM category WHERE parent_id = 0');
     DbConnection::close();

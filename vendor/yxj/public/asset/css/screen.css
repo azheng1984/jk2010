@@ -27,13 +27,12 @@ input:focus {
   outline:none;
 }
 #header_wrapper {
-	background-color:#fff;
-  width:100%;
-  padding-bottom:6px;
-  border-bottom:#ddd 1px solid;
+background-color: white;
+width: 100%;
+padding: 5px 0 2px 0;
 }
 #top_wrapper {
-  background-color:#505050;
+  background-color:#f5f5f5;
   width:100%;
   padding-bottom:4px;
   margin-bottom:5px;
@@ -41,7 +40,7 @@ input:focus {
   color:#fff;
 }
 #top a {
-  color:#fff;
+  
 }
 #header input {
   float:left;
@@ -95,18 +94,34 @@ input:focus {
 }
 #slogan {
   margin-top:5px;
-  color:#ccc;
+  color:#888;
   margin-left:1px;
 }
 #description {
-  background-color:#fff;
-  width:100%;
+  background-color:#E9EEF2;
+  width:930px;
   padding:10px;
   border:1px solid #ccc;
   border-radius:3px;
-  font-size:16px;
-  margin:10px 0;
+  font-size:14px;
+  margin:10px 5px;
+  line-height:25px;
   box-shadow: 0px 1px 2px #DDD;
+  color:#555;
+}
+#description a{
+  float:right;
+  font-size:14px;
+  line-height:18px;
+}
+#description h1 {
+  line-height:30px;
+  font-size:18px;
+  width:950px;
+  background:none;
+  margin:0;
+  padding:0;
+  color:#000;
 }
 #category_list {
   background:#fff;
