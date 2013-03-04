@@ -1,10 +1,21 @@
 <?php
 class CategoryScreen extends Screen {
+  public function __construct() {
+    if (is_array($GLOBALS['PATH_SECTION_LIST'][1])) {
+       
+    } else {
+      throw new NotFoundException;
+    }
+  }
+
   protected function renderHtmlHeadContent() {
     echo '<title>优选集</title>';
   }
 
   protected function renderHtmlBodyContent() {
+    exit;
+    //if (is_array($var))
+    exit;
     echo '<div id="category" class="content">';
     $this->printBreadcrumb();
     echo '<h1>', $GLOBALS['CATEGORY']['name'], '</h1>';

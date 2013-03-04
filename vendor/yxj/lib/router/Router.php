@@ -6,7 +6,8 @@ class Router {
       header(
         'Location: http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']
       );
-      return '/redirect';
+      header('HTTP/1.1 301 Moved Permanently');
+      return;
     }
     $path = $_SERVER['REQUEST_URI'];
     $queryStringPosition = strpos($_SERVER['REQUEST_URI'], '?');
@@ -14,32 +15,34 @@ class Router {
       $path = substr($_SERVER['REQUEST_URI'], 0, $queryStringPosition);
     }
     $GLOBALS['PATH'] = $path;
-    $GLOBALS['PATH_SECTION_LIST'] = explode('/', $path);
-    if (isset($_GET['media']) && $_GET['media'] === 'json') {
-      $_SERVER['REQUEST_MEDIA_TYPE'] = 'Json';
+    if ($path === '/') {
+      $GLOBALS['PATH_SECTION_LIST'] = array('', '');
+      return '/';
     }
-    $depth = count($GLOBALS['PATH_SECTION_LIST']);
-    if ($depth === 2) {
-      return $path;
+    $sectionList = explode('/', $path);
+    $GLOBALS['PATH_SECTION_LIST'] = $sectionList;
+    $result = '';
+    $amount = count($sectionList);
+    for ($index = 1; $index < $amount; ++$index) {
+      $section = $sectionList[$index];
+      if ($section === '') {
+        unset($GLOBALS['PATH_SECTION_LIST'][$index]);
+        break;
+      }
+      if (ctype_digit($section)) {
+        break;
+      }
+      $dashPosition = strpos($section, '-');
+      if ($dashPosition === false) {
+        $result .= '/'.$section;
+        continue;
+      }
+      $tmp = substr($section, 0, $dashPosition);
+      $GLOBALS['PATH_SECTION_LIST'][$index] = array(
+        $tmp, substr($section, $dashPosition)
+      );
+      $result .= '/'.$tmp;
     }
-    if ($GLOBALS['PATH_SECTION_LIST'][1] === 'search') {
-      return SearchRouter::execute();
-    }
-    $tmp = explode('-', $GLOBALS['PATH_SECTION_LIST'][1], 2);
-    $id = null;
-    if (count($tmp) === 2 && is_numeric($tmp[1]) === true) {
-      $id = $tmp[1];
-    }
-    switch ($tmp[0]) {
-      case 'article':
-        return ArticleRouter::execute($id);
-      case 'category':
-        return CategoryRouter::execute($id);
-      case 'user':
-        return UserRouter::execute($id);
-      default:
-        echo 'xxx';
-        return $path;
-    }
+    return $result;
   }
 }

@@ -17,13 +17,14 @@ class ExceptionHandler {
   }
 
   public function handle($exception) {
-    if (!headers_sent()) {
-      $this->reload($exception);
+    if (headers_sent()) {
+      trigger_error($exception, E_USER_ERROR);
     }
-    trigger_error($exception, E_USER_ERROR);
+    $this->reload($exception);
   }
 
   private function reload($exception) {
+    $GLOBALS['EXCEPTION'] = $exception;
     if (!$exception instanceof ApplicationException) {
       $exception = new InternalServerErrorException;
     }
