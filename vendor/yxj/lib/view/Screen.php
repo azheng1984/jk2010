@@ -52,8 +52,8 @@ abstract class Screen extends EtagView {
   private function renderHtmlHead() {
     echo '<head><meta charset="UTF-8"/>';
      $this->addCssLink('screen');
-//     $this->addJsLink('jquery-1.7.2');
-//     $this->addJsLink('screen');
+     $this->addJsLink('jquery-1.9.1');
+     $this->addJsLink('screen');
     $this->renderHtmlHeadContent();
     $this->renderCssLinkList();
     echo '</head>';
@@ -68,69 +68,54 @@ abstract class Screen extends EtagView {
   }
 
   private function renderBodyWrapper() {
-    //echo '<div id="wrapper">';
     $this->renderBodyHeader();
+    echo '<div class="content_wrapper">';
     $this->renderHtmlBodyContent();
+    echo '</div>';
     $this->renderBodyFooter();
-    //echo '</div>';
   }
 
   private function renderBodyHeader() {
-    echo '<div id="top_wrapper"><div id="top"><div id="slogan">攻略聚集地</div>';
+    echo '<div id="top_wrapper"><div id="top">',
+      '<div id="slogan">攻略聚集地</div><div id="toolbar">';
     $this->renderToolbar();
-    echo '</div></div>';
-    echo '<div id="header_wrapper"><div id="header">';
-    $this->renderLogo();
+    echo '</div></div></div>';
+    echo '<div id="header_wrapper"><div id="header">',
+      '<div id="logo"><a href="/">优选集</a></div>';
     $this->renderSearch();
-    echo '<div id="new"><a href="/article/new">+ 写攻略</a></div></div>';
-    //$this->renderToolbar();
-    echo '</div></div>';
-  }
-
-  private function renderLogo() {
-    echo '<div id="logo"><a href="/">优选集<span></span></a></div>';
-    setcookie('publisher', 'test');
+    echo '<div id="new"><a href="/article/new">+ 写攻略</a></div></div></div>';
   }
 
   private function renderSearch() {
     $query = isset($GLOBALS['QUERY']) ?
       htmlentities($GLOBALS['QUERY']['name'], ENT_QUOTES, 'UTF-8') : '';
-    echo '<form action="/"><input type="text" name="q" maxlength="100" value="todo:搜索攻略',
+    echo '<form action="/"><input type="text" name="q" maxlength="100" value="',
       $query, '"/> <button type="submit"></button></form>';
   }
 
   private function renderToolbar() {
-    echo '<div id="toolbar">';
     if (isset($_SESSION['user_id'])) {
-      DbConnection::connect('youxuanji');
-      $user = Db::getRow('SELECT * FROM user WHERE id = ?', $_SESSION['user_id']);
-      DbConnection::close();
+      $user = Db::getRow(
+        'SELECT * FROM user WHERE id = ?', $_SESSION['user_id']
+      );
       $GLOBALS['USER'] = $user;
-      echo '<a href="/user-',$user['id'],'">'.$user['name'].'</a>';
-      echo ' | <a href="/draft">草稿</a>(0)';
-      echo '</a> | <a href="/setting">设置</a> | <a href="/sign_out">退出</a>';
-    } else {
-      echo '<a href="/sign_in">登录</a> <a href="/sign_up">注册</a>';
+      echo '<a href="/user-',$user['id'],'">'.$user['name'].'</a>',
+        ' | <a href="/draft">草稿</a>(', $user['draft_amount'], ')',
+        '</a> | <a href="/setting">设置</a> | <a href="/sign_out">退出</a>';
+      return;
     }
-    echo '</div>';
+    echo '<a href="/sign_in">登录</a> <a href="/sign_up">注册</a>';
   }
 
   private function renderBodyFooter() {
-    echo '<div id="footer"><div class="content">';
-    $this->renderDeclaration();
-    echo '</div></div>';
-  }
-
-  private function renderDeclaration() {
-    echo '© 2012 优选集 ',
-      '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-      'youxuanji.com/about/">关于优选集</a> ',
-      '<a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-      'youxuanji.com/about/copyright" rel="nofollow">版权声明</a>',
-      ' <a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-      'youxuanji.com/about/terms_of_use" rel="nofollow">使用条款</a>',
-      ' <a href="http://', $GLOBALS['DOMAIN_PREFIX'],
-      'youxuanji.com/about/privacy"  rel="nofollow">隐私权政策</a> <span>沪ICP备0000000000号</span>';
+    echo '<div id="footer_wrapper"><div id="footer">© 2012 优选集',
+      ' <a href="/about">关于优选集</a>',
+      ' <a href="/about/copyright" rel="nofollow">版权声明</a>',
+      ' <a href="/about/terms_of_use" rel="nofollow">使用条款</a>',
+      ' <a href="/about/privacy" rel="nofollow">隐私权政策</a>',
+      ' <a id="icp" href="http://www.miibeian.gov.cn/" target="_blank">',
+        '沪ICP备xxxxxxxxxx号</a>';
+    '</div></div>';
   }
 
   private function renderJs() {

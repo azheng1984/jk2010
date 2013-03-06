@@ -24,7 +24,7 @@ class ExceptionHandler {
   }
 
   private function reload($exception) {
-    $GLOBALS['EXCEPTION'] = $exception;
+    $GLOBALS['UNHANDLED_EXCEPTION'] = $exception;
     if (!$exception instanceof ApplicationException) {
       $exception = new InternalServerErrorException;
     }
