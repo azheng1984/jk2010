@@ -39,7 +39,7 @@ class Router {
       }
       $tmp = substr($section, 0, $dashPosition);
       $GLOBALS['PATH_SECTION_LIST'][$index] = array(
-        $tmp, substr($section, $dashPosition)
+        $tmp, substr($section, $dashPosition + 1)
       );
       $result .= '/'.$tmp;
     }

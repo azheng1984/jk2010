@@ -1,25 +1,32 @@
 <?php
 class CategoryScreen extends Screen {
+  private $category;
+
   public function __construct() {
-    if (is_array($GLOBALS['PATH_SECTION_LIST'][1])) {
-       
-    } else {
+    if (!is_array($GLOBALS['PATH_SECTION_LIST'][1])) {
+      throw new NotFoundException;
+    }
+    $id = $GLOBALS['PATH_SECTION_LIST'][1][1];
+    $this->category = Db::getRow('SELECT * FROM category WHERE id = ?', $id);
+    if ($this->category === false) {
       throw new NotFoundException;
     }
   }
 
   protected function renderHtmlHeadContent() {
-    echo '<title>优选集</title>';
+    echo '<title> - 优选集</title>';
   }
 
   protected function renderHtmlBodyContent() {
-    exit;
-    //if (is_array($var))
-    exit;
+//     
+//     exit;
+//     //if (is_array($var))
+//     exit;
     echo '<div id="category" class="content">';
     $this->printBreadcrumb();
-    echo '<h1>', $GLOBALS['CATEGORY']['name'], '</h1>';
+    echo '<h1>', $this->category['name'], '</h1>';
     $this->printChildren();
+    echo '攻略 | 讨论';
     $orderBy = null;
     if (isset($_GET['sort']) && $_GET['sort'] === 'time') {
       $orderBy = 'creation_time';
@@ -28,6 +35,7 @@ class CategoryScreen extends Screen {
       $orderBy = 'popularity_rank';
       echo '<div id="sort">排序：<strong>热门</strong> | <a href="?sort=time">创建时间</a></div>';
     }
+    exit;
     $page = 1;
     if ($GLOBALS['PATH_SECTION_LIST'][2] !== '') {
       $page = $GLOBALS['PATH_SECTION_LIST'][2];
@@ -64,34 +72,35 @@ class CategoryScreen extends Screen {
   }
 
   private function printChildren() {
-    DbConnection::connect('youxuanji');
-    $categoryList = Db::getAll('SELECT * FROM category WHERE parent_id = ?', $GLOBALS['CATEGORY']['id']);
-    DbConnection::close();
-    echo '<div id="category_list">';
+    $categoryList = Db::getAll(
+      'SELECT * FROM category WHERE parent_id = ?'
+        .' ORDER BY popularity_rank DESC',
+      $this->category['id']
+    );
+    echo '<ul id="category_list">';
     foreach ($categoryList as $category) {
-      echo '<p><a href="/category-', $category['id'], '/">', $category['name'], '</a></p>';
+      echo '<li><a href="/category-', $category['id'], '">', $category['name'], '</a></li>';
     }
-    if ($GLOBALS['CATEGORY']['is_leaf'] === false && $GLOBALS['CATEGORY']['article_amount'] !== 0) {
-      echo '<p><a href="other">其他</a></p>';
+    if ($this->category['is_leaf'] === false && $this->category['article_amount'] !== 0) {
+      echo '<li><a href="other">其他</a></li>';
     }
-    echo '</div>';
+    echo '</ul>';
   }
 
   private function printBreadcrumb() {
     $categoryList = array();
-    $id = $GLOBALS['CATEGORY']['parent_id'];
+    $id = $this->category['parent_id'];
     while ($id !== '0') {
-      DbConnection::connect('youxuanji');
       $category = Db::getRow('SELECT * FROM category WHERE id = ?', $id);
-      DbConnection::close();
       array_unshift($categoryList, $category);
       $id = $category['parent_id'];
     }
     $list = array();
     echo '<a href="/">首页</a> › ';
     foreach ($categoryList as $category) {
-      echo '<a href ="/category-'.$category['id'].'/">'.$category['name'].'</a> › ';
+      echo '<a href ="/category-', $category['id'], '/">',
+        $category['name'], '</a> › ';
     }
-    echo $GLOBALS['CATEGORY']['name'];
+    echo $this->category['name'];
   }
 }
