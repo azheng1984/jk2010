@@ -25,11 +25,7 @@ class Router {
     $amount = count($sectionList);
     for ($index = 1; $index < $amount; ++$index) {
       $section = $sectionList[$index];
-      if ($section === '') {
-        unset($GLOBALS['PATH_SECTION_LIST'][$index]);
-        break;
-      }
-      if (ctype_digit($section)) {
+      if ($section === '' || ctype_digit($section)) {
         break;
       }
       $dashPosition = strpos($section, '-');
@@ -43,6 +39,7 @@ class Router {
       );
       $result .= '/'.$tmp;
     }
+    //检查是否存在 app，如果不存在，返回 
     return $result;
   }
 }

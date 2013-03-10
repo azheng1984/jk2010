@@ -1,7 +1,9 @@
 <?php
 class PaginationScreen {
-  public static function render($page, $total, $prefix, $postfix,
-    $maximumPage = 100, $itemsPerPage = 25, $rel = ' rel="nofollow"') {
+  public static function render(
+    $page, $total, $prefix = '', $postfix = '', $pageOnePath = '.',
+    $maximumPage = 100, $itemsPerPage = 25, $rel = ' rel="nofollow"'
+  ) {
     if ($total <= $itemsPerPage) {
       return;
     }
@@ -13,8 +15,9 @@ class PaginationScreen {
     echo '<div id="pagination">';
     if ($page !== 1) {
       $previousPage = $page - 1;
-      $path = $previousPage === 1 ? '.' : $previousPage;
-      echo '<a class="prev" href="', $prefix, $path, $postfix, '"', $rel, '>‹ 上一页</a> ';
+      $path = $previousPage === 1 ?
+        $pageOnePath : $prefix.$previousPage.$postfix;
+      echo '<a class="prev" href="', $path, '"', $rel, '>‹ 上一页</a> ';
     }
     $lastPage = $firstPage + 9;
     if ($lastPage > $totalPage) {
@@ -29,11 +32,11 @@ class PaginationScreen {
         $class = ' class="last" ';
       }
       if ($index === $page) {
-        echo '<span'.$class.'>', $index, '</span>';
+        echo ' <span'.$class.'>', $index, '</span>';
         continue;
       }
-      $path = $index === 1 ? '.' : $index;
-      echo '<a href="', $prefix, $path, $postfix, '"', $rel, $class , '>',
+      $path = $index === 1 ? $pageOnePath : $prefix.$index.$postfix;
+      echo ' <a href="', $path, '"', $rel, $class , '>',
         $index, '</a>';
     }
     if ($page !== $totalPage) {

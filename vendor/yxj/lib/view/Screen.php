@@ -109,7 +109,7 @@ abstract class Screen extends EtagView {
 
   private function renderBodyFooter() {
     echo '<div id="footer_wrapper"><div id="footer">© 2012 优选集',
-      ' <a href="/about">关于优选集</a>',
+      ' <a href="/about/">关于优选集</a>',
       ' <a href="/about/copyright" rel="nofollow">版权声明</a>',
       ' <a href="/about/terms_of_use" rel="nofollow">使用条款</a>',
       ' <a href="/about/privacy" rel="nofollow">隐私权政策</a>',

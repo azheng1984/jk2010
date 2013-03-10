@@ -27,7 +27,7 @@ class HomeScreen extends Screen {
     );
     echo '<ul id="category_list">';
     foreach ($categoryList as $category) {
-      echo '<li><a href="/category-', $category['id'], '">',
+      echo '<li><a href="/category-', $category['id'], '/">',
         $category['name'], '</a></li>';
     }
     echo '</ul>';
