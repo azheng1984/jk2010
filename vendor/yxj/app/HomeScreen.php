@@ -1,7 +1,7 @@
 <?php
 class HomeScreen extends Screen {
   protected function renderHtmlHeadContent() {
-    echo '<title>优选集 - 攻略聚集地</title>';
+    echo '<title>优选集 - 品牌聚集地</title>';
   }
 
   protected function renderHtmlBodyContent() {
@@ -12,12 +12,6 @@ class HomeScreen extends Screen {
   }
 
   private function renderDescription() {
-    $amount = require DATA_PATH.'user_and_article_amount.php';
-    echo '<div id="description">',
-      '<h1>分享经验，集思广益。</h1>',
-      '<div>这里已经聚集了 ', $amount[0], ' 位用户，', $amount[1], ' 篇攻略。</div>',
-      '<a href="/about">了解更多</a>',
-    '</div>';
   }
 
   private function renderCategoryList() {
