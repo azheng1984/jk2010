@@ -77,13 +77,13 @@ abstract class Screen extends EtagView {
 
   private function renderBodyHeader() {
     echo '<div id="top_wrapper"><div id="top">',
-      '<div id="slogan">攻略聚集地</div><div id="toolbar">';
+      '<div id="slogan">品牌聚集地</div><div id="toolbar">';
     $this->renderToolbar();
     echo '</div></div></div>';
     echo '<div id="header_wrapper"><div id="header">',
       '<div id="logo"><a href="/">优选集</a></div>';
     $this->renderSearch();
-    echo '<div id="new"><a href="/article/new">+ 写攻略</a></div></div></div>';
+    echo '</div></div>';
   }
 
   private function renderSearch() {
@@ -108,7 +108,7 @@ abstract class Screen extends EtagView {
   }
 
   private function renderBodyFooter() {
-    echo '<div id="footer_wrapper"><div id="footer">© 2012 优选集',
+    echo '<div id="footer_wrapper"><div id="footer">© 2013 优选集',
       ' <a href="/about/">关于优选集</a>',
       ' <a href="/about/copyright" rel="nofollow">版权声明</a>',
       ' <a href="/about/terms_of_use" rel="nofollow">使用条款</a>',
