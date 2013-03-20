@@ -1,7 +1,6 @@
 <?php
 class Router {
   public static function execute() {
-    session_start();
     if ($_SERVER['SERVER_NAME'] !== $_SERVER['HTTP_HOST']) {
       header(
         'Location: http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']
@@ -39,7 +38,6 @@ class Router {
       );
       $result .= '/'.$tmp;
     }
-    //检查是否存在 app，如果不存在，返回 
     return $result;
   }
 }

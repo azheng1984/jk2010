@@ -77,11 +77,11 @@ abstract class Screen extends EtagView {
 
   private function renderBodyHeader() {
     echo '<div id="top_wrapper"><div id="top">',
-      '<div id="slogan">品牌聚集地</div><div id="toolbar">';
-    $this->renderToolbar();
+      '<div id="toolbar">';
+    //$this->renderToolbar();
     echo '</div></div></div>';
     echo '<div id="header_wrapper"><div id="header">',
-      '<div id="logo"><a href="/">优选集</a></div>';
+      '<div id="logo"><a href="/">优选集</a> - 品牌消费导航</div>';
     $this->renderSearch();
     echo '</div></div>';
   }
