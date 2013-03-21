@@ -43,13 +43,6 @@ class CategoryScreen extends Screen {
       $page = 1;
     }
     $start = ($this->page - 1) * 25;
-//     $list = Db::getAll(
-//       'SELECT a.* FROM article_category'
-//         .' AS ac LEFT JOIN article AS a ON ac.article_id = a.id'
-//         .' WHERE ac.category_id = ? ORDER BY ac.'.$sort
-//         .' LIMIT '.$start.', 25',
-//       $this->category['id']
-//     );
     if ($GLOBALS['PATH'] !== $this->baseHref) {
       $this->stop();
       header(
@@ -65,11 +58,6 @@ class CategoryScreen extends Screen {
       echo '其他';
     }
     echo $this->category['name'],'品牌';
-//     if ($this->sort === 'time') {
-//       echo ' - 创建时间';
-//     } else {
-//       echo ' - 热门';
-//     }
     if ($this->page !== 1) {
       echo ' - 第',$this->page,'页';
     }
@@ -85,59 +73,26 @@ class CategoryScreen extends Screen {
     }
     echo $this->category['name'], '品牌</h1>';
     $this->printChildren();
-    echo '<a href="promotion/">优惠促销</a> | <a href="activity/">有奖活动</a> | <a href="trial/">品牌试用</a>';
-    echo '<div>{'.$this->category['name'].'品牌列表'.'} <a href="brand/">更多'.$this->category['name'].'品牌</a></div>';
-    echo '<h2>'.$this->category['name'].'优惠促销'.'</h2>';
-    echo '<h2>'.$this->category['name'].'有奖活动'.'</h2>';
-    echo '<h2>'.$this->category['name'].'品牌试用'.'</h2>';
-    //覆盖范围：[请选择城市] | []线上 | []线下 | []仅显示有效信息
-//     $orderBy = null;
-//     if (isset($_GET['sort']) && $_GET['sort'] === 'time') {
-//       $orderBy = 'creation_time';
-//       echo '<div id="sort">排序：<a href=".">热门</a> | <strong>创建时间</strong></div>';
-//     } else {
-//       $orderBy = 'popularity_rank';
-//       echo '<div id="sort">排序：<strong>热门</strong> | <a href=".?sort=time" rel="nofollow">创建时间</a></div>';
-//     }
-//     $page = 1;
-//     if ($GLOBALS['PATH_SECTION_LIST'][2] !== '') {
-//       $page = $GLOBALS['PATH_SECTION_LIST'][2];
-//     }
-//     $list = Db::getAll(
-//       'SELECT a.* FROM article_category'
-//         .' ac LEFT JOIN article a ON ac.article_id = a.id'
-//         .' WHERE ac.category_id = ? ORDER BY ac.'.$orderBy
-//         .' LIMIT 0, 25',
-//       $this->category['id']
-//     );
-//     echo '<ol>';
-//     foreach ($list as $item) {
-//       echo '<li class="article">';
-//       echo '<a class="title" href="/article-', $item['id'], '/">', $item['title'], '</a>';
-//       echo '<div>', $item['abstract'], '</div>';
-//       $userName = Db::getColumn('SELECT name FROM user WHERE id = ?', $item['user_id']);
-//       echo '<div><a href="/user-', $item['user_id'], '/"><img src="/asset/image/avatar_small.jpg" />', $userName, '</a>', $item['creation_time'], '</div>';
-//       echo '<div>喜欢 { ', $item['like_amount'], ' }</div>';
-//       echo '<div>关注 { ', $item['watch_amount'], ' }</div>';
-//       echo '<div>浏览 { ', $item['page_view'], ' }</div>';
-//       echo '<div>更新 { ', $item['modification_time'], ' }</div>';
-//       if ($this->isOther !== true) {
-//         echo '<div>来自子分类: ';
-//         $this->printArticleCategory($item['category_id']);
-//         echo '</div>';
-//       }
-//       echo '</li>';
-//     }
-//     $tmp = '';
-//     if ($orderBy === 'creation_time') {
-//       $tmp = '?sort=time&page=';
-//     }
-//     echo '</ol>';
-//     if ($this->sort === null) {
-//       PaginationScreen::render(intval($this->page), 1000);
-//     } else {
-//       PaginationScreen::render(intval($this->page), 1000, $tmp, '', '?sort=time');
-//     }
+    echo '<div><a href="/category/new?parent_id=',$this->category['id'],'">添加分类</a></div>';
+    echo '<div><a href="/brand/new?category_id=',$this->category['id'],'">添加品牌</a></div>';
+    echo '<div><button onclick="alert(\'hi\')">删除分类</button></div>';
+    echo '<h2><a href="top/">十大', $this->category['name'], '品牌排名</a>（已有 23 人参与活动）</h2>';
+    $list = Db::getAll(
+      'SELECT b.* FROM brand_category'
+        .' bc LEFT JOIN brand b ON bc.brand_id = b.id'
+        .' WHERE bc.category_id = ? ORDER BY bc.popularity_rank LIMIT 0, 50',
+      $this->category['id']
+    );
+    echo '<ul>';
+    foreach ($list as $item) {
+      echo '<li>';
+      echo '<a class="title" href="/brand-', $item['id'], '/">', $item['name'], '</a>';
+      echo '<div>', $item['abstract'], '</div>';
+      echo '<div>{ ', $item['page_view'], ' }次浏览 源自：广州</div>';
+      echo '</li>';
+    }
+    echo '</ul>';
+    PaginationScreen::render(intval($this->page), 1000);
     echo '</div>';
   }
 

@@ -16,6 +16,7 @@ class HomeScreen extends Screen {
     $this->renderBrandList();
     $this->renderCategoryList();
     $this->renderLocationList();
+    $this->renderTopList();
     echo '</div>';
   }
 
@@ -24,6 +25,7 @@ class HomeScreen extends Screen {
   }
 
   private function renderBrandList() {
+    echo '<a href="/brand/new">添加品牌</a>';
     echo '<ul id="category_list">';
     foreach ($this->categoryList as $category) {
       $brand = Db::getRow(
@@ -38,7 +40,8 @@ class HomeScreen extends Screen {
   }
 
   private function renderCategoryList() {
-    echo '<h2>品牌分类</h2>';
+    echo '<div>品牌分类</div>';
+    echo '<div><a href="/category/new">添加</a></div>';
     echo '<ul id="category_list">';
     foreach ($this->categoryList as $category) {
       echo '<li><a href="/category-', $category['id'], '/">',
@@ -48,7 +51,8 @@ class HomeScreen extends Screen {
   }
 
   private function renderLocationList() {
-    echo '<h2>品牌发源地</h2>';
+    echo '<div>品牌发源地</div>';
+    echo '<div><a href="/location/new">添加</a></div>';
     $locationList = Db::getAll(
       'SELECT * FROM location WHERE parent_id = 0 AND is_active = 1',
         ' ORDER BY pinyin DESC'
@@ -57,6 +61,16 @@ class HomeScreen extends Screen {
     foreach ($locationList as $location) {
       echo '<li><a href="/location-', $location['id'], '/">',
       $location['name'], '</a></li>';
+    }
+    echo '</ul>';
+  }
+
+  private function renderTopList() {
+    echo '<div>十大品牌排名投票</div>';
+    echo '<ul id="category_list">';
+    foreach ($this->categoryList as $category) {
+      echo '<li><a href="/category-', $category['id'], '/top/">十大',
+      $category['name'], '品牌排名</a></li>';
     }
     echo '</ul>';
   }
