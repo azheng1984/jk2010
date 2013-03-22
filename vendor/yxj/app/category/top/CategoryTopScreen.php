@@ -18,7 +18,7 @@ class CategoryTopScreen extends Screen {
     echo '<li>1.</li>';
     echo '</ol>';
     echo '<div><a rel="nofollow" href="../top-2013/2">排名大于十的xxx品牌</a></div>';
-    echo '<div>品牌排名由用户投票产生，仅供参考。返回 <a href="#">xxx品牌列表</a>。</div>';
+    echo '<div>品牌排名由用户投票产生，仅供参考。返回 <a href="..">xxx品牌列表</a>。</div>';
     echo '<hr />';
     echo '<h2>相关十大品牌排名投票</h2>';
     echo '<div>十大xxx品牌排名 | </div>';

@@ -5,8 +5,8 @@ class HomeScreen extends Screen {
   protected function renderHtmlHeadContent() {
     echo '<title>优选集 - 品牌消费导航</title>';
     $this->categoryList = Db::getAll(
-      'SELECT * FROM category WHERE parent_id = 0 AND is_active = 1',
-      ' ORDER BY popularity_rank DESC'
+      'SELECT * FROM category WHERE parent_id = 0 AND is_active = 1'
+        .' ORDER BY popularity_rank DESC'
     );
   }
 
@@ -45,7 +45,11 @@ class HomeScreen extends Screen {
     echo '<ul id="category_list">';
     foreach ($this->categoryList as $category) {
       echo '<li><a href="/category-', $category['id'], '/">',
-        $category['name'], '</a></li>';
+        $category['name'], '</a>';
+      if ($category['brand_amount'] === '0') {
+        echo ' 删除';
+      }
+      echo '</li>';
     }
     echo '</ul>';
   }
@@ -60,7 +64,11 @@ class HomeScreen extends Screen {
     echo '<ul id="category_list">';
     foreach ($locationList as $location) {
       echo '<li><a href="/location-', $location['id'], '/">',
-      $location['name'], '</a></li>';
+      $location['name'], '</a>';
+      if ($location['brand_amount'] === '0') {
+        echo ' 删除';
+      }
+      echo '</li>';
     }
     echo '</ul>';
   }

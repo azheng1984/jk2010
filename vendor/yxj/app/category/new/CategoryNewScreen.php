@@ -5,7 +5,7 @@ class CategoryNewScreen {
   }
 
   public function render() {
-    echo '<form action="new" method="POST">';
+    echo '<form action="." method="POST">';
     echo '名称：<input name="name" />';
     $parentId = 0;
     if (isset($_GET['parent_id'])) {
