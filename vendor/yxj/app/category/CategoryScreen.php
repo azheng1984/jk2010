@@ -74,8 +74,12 @@ class CategoryScreen extends Screen {
     echo $this->category['name'], '品牌</h1>';
     $this->printChildren();
     echo '<div><a href="/category/new?parent_id=',$this->category['id'],'">添加分类</a></div>';
+    echo '<div><a href="/category-'.$this->category['id'].'/edit">修改</a></div>';
     echo '<div><a href="/brand/new?category_id=',$this->category['id'],'">添加品牌</a></div>';
-    echo '<div><button onclick="alert(\'hi\')">删除分类</button></div>';
+    if ($this->category['brand_amount'] === '0') {
+      echo '<script>function hi() { window.location = $.ajax({url:"", async:false, type:"DELETE"}).responseText; }</script>';
+      echo '<div><button onclick="hi()">删除分类</button></div>';
+    }
     echo '<h2><a href="top/">十大', $this->category['name'], '品牌排名</a>（已有 23 人参与活动）</h2>';
     $list = Db::getAll(
       'SELECT b.* FROM brand_category'
@@ -106,7 +110,7 @@ class CategoryScreen extends Screen {
     if (count($categoryList) === 0 && $this->isOther) {
       return;
     }
-    if (count($categoryList) === 0) {
+    if (count($categoryList) === 0 && $this->category['other_brand_amount'] !== '0') {
       echo '<a href ="/category-', $id, '-other/">其他</a>';
       return;
     }
@@ -122,19 +126,25 @@ class CategoryScreen extends Screen {
       return;
     }
     $categoryList = Db::getAll(
-      'SELECT * FROM category WHERE parent_id = ?'
+      'SELECT * FROM category WHERE parent_id = ? AND is_active = 1'
         .' ORDER BY popularity_rank DESC',
       $this->category['id']
     );
     echo '<ul id="category_list">';
     foreach ($categoryList as $category) {
-      echo '<li><a href="/category-', $category['id'], '/">', $category['name'], '</a></li>';
+      echo '<li><a href="/category-', $category['id'], '/">', $category['name'], '</a> ';
+      if ($category['brand_amount'] === '0') {
+        echo '删除';
+      }
+      echo '</li>';
     }
     if ($this->category['is_leaf'] === false && $this->category['article_amount'] !== 0) {
       
     }
-    echo '<li><a href="/category-',$this->category['id'],'-other/">其他</a></li>';
-    echo '</ul>';
+    if ($this->category['other_brand_amount'] !== '0') {
+      echo '<li><a href="/category-',$this->category['id'],'-other/">其他</a></li>';
+      echo '</ul>';
+    }
   }
 
   private function printBreadcrumb() {

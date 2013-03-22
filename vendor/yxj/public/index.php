@@ -12,6 +12,9 @@ $APP = new Application;
 $EXCEPTION_HANDLER = new ExceptionHandler($APP);
 $EXCEPTION_HANDLER->run();
 $path = Router::execute();
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method'])) {
+  $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
+}
 //TODO: 测试是否存在 session_id 的 cookie，如果存在，打开 session
 if ($path !== null) {
   $APP->run($path);
