@@ -1,7 +1,6 @@
 <?php
 class BrandScreen {
   public function __construct() {
-    
   }
 
   public function render() {
