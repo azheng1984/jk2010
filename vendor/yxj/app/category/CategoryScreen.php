@@ -82,16 +82,30 @@ class CategoryScreen extends Screen {
     }
     echo '<h2><a href="top/">十大', $this->category['name'], '品牌排名</a>（已有 23 人参与活动）</h2>';
     $list = Db::getAll(
-      'SELECT b.* FROM brand_category'
+      'SELECT b.*,bc.popularity_rank FROM brand_category'
         .' bc LEFT JOIN brand b ON bc.brand_id = b.id'
-        .' WHERE bc.category_id = ? ORDER BY bc.popularity_rank LIMIT 0, 50',
+        .' WHERE bc.category_id = ? ORDER BY bc.popularity_rank desc LIMIT 0, 50',
       $this->category['id']
     );
     echo '<ul>';
+    ?>
+    <script>
+    function updatePr(id) {
+      var a = $('#bpr' + id).val();
+      //$.ajax('/category-brand/', {'type':'PUT'});
+      //alert('ji');
+      $.ajax({url:'brand?brand_id=' + id, type:'POST', data: $('#f' + id).serialize(), async:false}); 
+      window.location.reload();
+      //alert('ji');
+      return false;
+    }
+    </script>
+    <?php
     foreach ($list as $item) {
       echo '<li>';
       echo '<a class="title" href="/brand-', $item['id'], '/">', $item['name'], '</a>';
       echo '<div>', $item['abstract'], '</div>';
+      echo '<div>PR:<form id="f', $item['id'], '" onsubmit="return updatePr(', $item['id'], ')"><input name="_method" value="PUT" type="hidden"/><input id="bpr', $item['id'], '" name="pr" value="', $item['popularity_rank'], '"/></form></div>';
       echo '<div>{ ', $item['page_view'], ' }次浏览 源自：广州</div>';
       echo '</li>';
     }

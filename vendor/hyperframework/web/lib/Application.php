@@ -17,14 +17,16 @@ class Application {
       throw new NotFoundException("Path '$path' not found");
     }
     foreach ($this->cache[0] as $name => $class) {
-      $this->process($path, $name, $class);
+      if ($this->process($path, $name, $class) === false) {
+        break;
+      }
     }
   }
 
   private function process($path, $name, $class) {
     if (isset($this->cache[$path][$name])) {
       $processor = new $class;
-      $processor->run($this->cache[$path][$name]);
+      return $processor->run($this->cache[$path][$name]);
     }
   }
 }
