@@ -16,9 +16,8 @@ class SignInAction {
       session_regenerate_id(true);
       $_SESSION['user_id'] = $user['id'];
       $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
-      header('HTTP/1.1 302 Found');
-      header('Location: http://dev.youxuanji.com/');
       Db::update('user', array('sign_in_time' => date('Y-m-d H:i:s')), 'id = ?', $user['id']);
+      $GLOBALS['APP']->redirect('http://dev.youxuanji.com/');
       return;
     }
     echo 'password error';

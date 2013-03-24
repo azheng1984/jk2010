@@ -1,11 +1,12 @@
 <?php
 class ExceptionHandler {
-  private $app;
-  private $configPath;
+  private $appClass;
+  private $config;
+  private $exception;
 
-  public function __construct($app, $configPath = CONFIG_PATH) {
-    $this->app = $app;
-    $this->configPath = $configPath;
+  public function __construct($config = null, $appClass = 'Application') {
+    $this->appClass = $appClass;
+    $this->config = $config;
   }
 
   public function run() {
@@ -20,18 +21,26 @@ class ExceptionHandler {
     if (headers_sent()) {
       trigger_error($exception, E_USER_ERROR);
     }
+    header_remove();
     $this->reload($exception);
   }
 
+  public function getException() {
+    return $this->exception;
+  }
+
   private function reload($exception) {
-    $GLOBALS['UNHANDLED_EXCEPTION'] = $exception;
+    $this->$exception = $exception;
     if (!$exception instanceof ApplicationException) {
       $exception = new InternalServerErrorException;
     }
-    $config = require $this->configPath.'error_handler.config.php';
+    if ($this->config === null) {
+      $this->config = require CONFIG_PATH.'error_handler.config.php';
+    }
     $statusCode = $exception->getCode();
-    if (isset($config[$statusCode])) {
-      $this->app->run($config[$statusCode]);
+    if (isset($this->config[$statusCode])) {
+      $app = new $this->appClass;
+      $app->run($this->config[$statusCode]);
     }
   }
 }

@@ -48,9 +48,7 @@ class BrandNewAction {
       $thumb->destroy();
     }
     Db::commit();
-    header('Location: http://dev.youxuanji.com/brand-'.$id.'/');
-    header('HTTP/1.1 302 Found');
-    return false;
+    $GLOBALS['APP']->redirect('http://dev.youxuanji.com/brand-'.$id.'/');
   }
 
   private function bindCategory($brandId, $categoryId, $rank) {
