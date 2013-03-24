@@ -1,6 +1,7 @@
 <?php
 class Application {
-  private $cache;
+  private static $cache;
+  private $isViewDisabled;
 
   public function run($path = null, $cache = null) {
     if ($path === null) {
@@ -8,25 +9,27 @@ class Application {
       $path = $segmentList[0];
     }
     if ($cache !== null) {
-      $this->cache = $cache;
+      self::$cache = $cache;
     }
-    if ($this->cache === null) {
-      $this->cache = require CACHE_PATH.'application.cache.php';
+    if (self::$cache === null) {
+      self::$cache = require CACHE_PATH.'application.cache.php';
     }
-    if (!isset($this->cache[$path])) {
-      throw new NotFoundException("Path '$path' not found");
+    if (!isset(self::$cache[$path])) {
+      throw new NotFoundException("Application path '$path' not found");
     }
-    foreach ($this->cache[0] as $name => $class) {
-      if ($this->process($path, $name, $class) === false) {
-        break;
-      }
+    if (isset(self::$cache[$path]['Action'])) {
+      $processor = new ActionProcessor;
+      $processor->run(self::$cache[$path]['Action']);
+    }
+    if (isset(self::$cache[$path]['View']) && $this->isViewDisabled !== true) {
+      $processor = new ViewProcessor;
+      $processor->run(self::$cache[$path]['View']);
     }
   }
 
-  private function process($path, $name, $class) {
-    if (isset($this->cache[$path][$name])) {
-      $processor = new $class;
-      return $processor->run($this->cache[$path][$name]);
-    }
+  public function redirect($location, $status = '302 Found') {
+    header('HTTP/1.1 '.$status);
+    header('Location: '.$location);
+    $this->isViewDisabled = true;
   }
 }

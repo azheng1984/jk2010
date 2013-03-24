@@ -8,8 +8,8 @@ require HYPERFRAMEWORK_PATH.'class_loader'.DIRECTORY_SEPARATOR
   .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';
 $CLASS_LOADER = new ClassLoader;
 $CLASS_LOADER->run();
-$APP = new Application;
-$EXCEPTION_HANDLER = new ExceptionHandler($APP);
+$APP = new MA;
+$EXCEPTION_HANDLER = new ExceptionHandler;
 $EXCEPTION_HANDLER->run();
 $path = Router::execute();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method'])) {

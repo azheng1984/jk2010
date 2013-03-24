@@ -10,7 +10,7 @@ class CategoryEditScreen {
     }
     $categoryId = $GLOBALS['PATH_SECTION_LIST'][1][1];
     $category = Db::getRow('SELECT * FROM category WHERE id = ?', $categoryId);
-    echo '<form action="." method="POST">';
+    echo '<form method="POST">';
     echo '<input type="hidden" name="_method" value="PUT" />';
     echo '名称：<input name="name" value="'.$category['name'].'"/>';
     echo '父分类 id：<input name="parent_id" value="'.$category['parent_id'].'" />';
