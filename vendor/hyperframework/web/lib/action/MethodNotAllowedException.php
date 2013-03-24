@@ -1,7 +1,14 @@
 <?php
 class MethodNotAllowedException extends ApplicationException {
-  public function __construct($methods, $message = null) {
-    parent::__construct($message, '405 Method Not Allowed');
-    header('Allow: '.implode(', ', $methods));
+  private $methods;
+
+  public function __construct($methods, $message = null, $previous = null) {
+    parent::__construct($message, '405 Method Not Allowed', $previous);
+    $this->methods = $methods;
+  }
+
+  public function resetHeader() {
+    parent::resetHeader();
+    header('Allow: '.implode(', ', $this->methods));
   }
 }

@@ -1,21 +1,19 @@
 <?php
 class ClassLoader {
   private $rootPath;
-  private $callback;
   private $classes;
   private $folders;
 
-  public function run($rootPath = ROOT_PATH, $cachePath = CACHE_PATH) {
-    list($this->classes, $this->folders) = require(
-      $cachePath.'class_loader.cache.php'
-    );
+  public function run($rootPath = ROOT_PATH, $configPath = CONFIG_PATH) {
     $this->rootPath = $rootPath;
-    $this->callback = array($this, 'load');
-    spl_autoload_register($this->callback);
+    $config = require $configPath.'class_loader.cache.php';
+    $this->classes = $config[0];
+    $this->folders = $config[1];
+    spl_autoload_register(array($this, 'load'));
   }
 
   public function stop() {
-    spl_autoload_unregister($this->callback);
+    spl_autoload_unregister(array($this, 'load'));
   }
 
   public function load($name) {
