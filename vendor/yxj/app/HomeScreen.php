@@ -21,7 +21,7 @@ class HomeScreen extends Screen {
   }
 
   private function renderDescription() {
-    echo '<div>slogan</div>';
+    echo '<div></div>';
   }
 
   private function renderBrandList() {

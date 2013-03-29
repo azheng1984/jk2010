@@ -1,8 +1,10 @@
 <?php
 class NotFoundScreen {
   public function render() {
-    throw new Exception('hi');
-    echo '404 Not Found page';
+    if ($GLOBALS['EXCEPTION_HANDLER']->getException() === null) {
+      throw new NotFoundException;
+    }
+    echo '<h1>404 Not Found page</h1>';
     //trigger_error($GLOBALS['UNHANDLED_EXCEPTION'], E_USER_ERROR);
   }
 }

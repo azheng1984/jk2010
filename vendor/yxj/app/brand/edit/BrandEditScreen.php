@@ -5,7 +5,8 @@ class BrandEditScreen {
   }
 
   public function render() {
-    echo '添加品牌';
+    
+    echo '修改品牌';
     echo '<form action="." method="POST" enctype="multipart/form-data">';
     echo '<div>名称：<input name="name" /></div>';
     echo '<div>图标：<input name="logo" type="file" /></div>';
