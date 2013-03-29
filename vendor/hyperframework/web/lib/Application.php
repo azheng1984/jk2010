@@ -11,7 +11,7 @@ class Application {
     if (self::$cache === null) {
       self::$cache = require CACHE_PATH.'application.cache.php';
     }
-    if (!isset(self::$cache[$path])) {
+    if (isset(self::$cache[$path]) === false) {
       throw new NotFoundException("Application path '$path' not found");
     }
     if (isset(self::$cache[$path]['Action'])) {

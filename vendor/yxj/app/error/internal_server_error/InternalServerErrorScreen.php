@@ -1,8 +1,11 @@
 <?php
 class InternalServerErrorScreen {
   public function render() {
-    //echo '500 Internal Server Error';
-    //var_dump($GLOBALS['EXCEPTION_HANDLER']->getException());
-    trigger_error($GLOBALS['EXCEPTION_HANDLER']->getException(), E_USER_ERROR);
+    if ($GLOBALS['EXCEPTION_HANDLER']->getException() === null) {
+      throw new NotFoundException;
+    }
+    echo '<h1>500 Internal Server Error</h1><pre>';
+    echo $GLOBALS['EXCEPTION_HANDLER']->getException();
+    echo '</pre>';
   }
 }

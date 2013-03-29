@@ -4,9 +4,9 @@ class ClassLoader {
   private $classes;
   private $folders;
 
-  public function run($rootPath = ROOT_PATH, $configPath = CONFIG_PATH) {
+  public function run($rootPath = ROOT_PATH, $cachePath = CACHE_PATH) {
     $this->rootPath = $rootPath;
-    $config = require $configPath.'class_loader.cache.php';
+    $config = require $cachePath.'class_loader.cache.php';
     $this->classes = $config[0];
     $this->folders = $config[1];
     spl_autoload_register(array($this, 'load'));

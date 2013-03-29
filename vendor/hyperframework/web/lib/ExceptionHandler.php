@@ -50,7 +50,7 @@ class ExceptionHandler {
         $app = new $this->appClass;
         $app->run($path);
       } catch (UnsupportedMediaTypeException $exception) {
-      } catch (Exception $exception) {
+      } catch (\Exception $exception) {
         trigger_error($exception, E_USER_ERROR);
       }
     }

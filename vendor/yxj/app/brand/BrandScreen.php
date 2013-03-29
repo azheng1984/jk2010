@@ -1,10 +1,13 @@
 <?php
 class BrandScreen {
   public function __construct() {
+    $id = $GLOBALS['PATH_SECTION_LIST'][1][1];
+    $brand = Db::getRow('SELECT * FROM brand WHERE id = ?', $id);
+    print_r($brand);
   }
 
   public function render() {
-    echo '<a href="">编辑</a>';
+    echo '<a href="edit">编辑</a>';
     echo '<h1>立顿</h1>';
     echo '<div>logo</div>';
     echo '<div>abstract</div>';
