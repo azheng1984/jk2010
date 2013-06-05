@@ -17,6 +17,10 @@ class CategoryScreen {
     $wrapper->render();
   }
 
+  public function function($list) {
+      return null;
+  }
+  
   public function renderContent() {
     $this->renderHot();
     $this->renderRencent();
