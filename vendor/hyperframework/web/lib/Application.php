@@ -26,7 +26,7 @@ class Application {
         $this->config = static::$cache[$path];
         $this->dispatch();
     }
-
+ 
     public function redirect($location, $statusCode = '302 Found') {
         header('HTTP/1.1 ' . $statusCode);
         header('Location: ' . $location);
@@ -39,16 +39,24 @@ class Application {
     }
 
     protected function executeAction() {
-        if (isset($this->config['Action'])) {
-            $processor = new Action\ActionProcessor;
-            $processor->run($this->config['Action']);
+        if (isset($this->config['Action']) === false) {
+            $this->checkImplicitAction();
+            return;
         }
+        $processor = new ActionProcessor;
+        $processor->run($this->config['Action']);
     }
 
     protected function executeView() {
         if ($this->isViewEnabled && isset($this->config['View'])) {
-            $processor = new View\ViewProcessor;
+            $processor = new ViewProcessor;
             $processor->run($this->config['View']);
+        }
+    }
+
+    private function checkImplicitAction() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') { 
+            throw new MethodNotAllowedException('GET');
         }
     }
 }
