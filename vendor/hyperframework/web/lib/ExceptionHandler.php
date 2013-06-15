@@ -36,7 +36,7 @@ class ExceptionHandler {
       $exception = new InternalServerErrorException;
     }
     $config = require $this->configPath.'error_handler.config.php';
-    $exception->resetHeader();
+    $exception->header();
     $statusCode = $exception->getCode();
     $path = null;
     if (isset($config[$statusCode])) {
