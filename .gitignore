@@ -1,6 +1,7 @@
 markdown.js
 Markdown.php
-.*.swp
+*.swp
+*.swo
 tags
 *.cache.php
 *~
