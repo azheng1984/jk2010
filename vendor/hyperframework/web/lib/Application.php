@@ -1,37 +1,54 @@
 <?php
+namespace Hyperframework::Web;
+
 class Application {
     private static $cache;
-    private $isViewDisabled;
+    private $config;
+    private $isViewEnabled = true;
 
+    public static function initialize($cache) {
+        static::$cache = $cache;
+    }
+ 
     public function run($path = null) {
         if ($path === null) {
             $segmentList = explode('?', $_SERVER['REQUEST_URI'], 2);
             $path = $segmentList[0];
         }
-        if (self::$cache === null) {
-            self::$cache = require CACHE_PATH.'application.cache.php';
+        if (static::$cache === null) {
+            static::$cache = require CACHE_PATH . 'application.cache.php';
         }
-        if (isset(self::$cache[$path]) === false) {
-            throw new NotFoundException("Application path '$path' not found");
+        if (isset(static::$cache[$path]) === false) {
+            throw new NotFoundException(
+                'Application path \'' . $path . '\' not found'
+            );
         }
-        if (isset(self::$cache[$path]['Action'])) {
-            $processor = new ActionProcessor;
-            $processor->run(self::$cache[$path]['Action']);
-        }
-        if (isset(self::$cache[$path]['View'])
-            && $this->isViewDisabled !== true) {
-            $processor = new ViewProcessor;
-            $processor->run(self::$cache[$path]['View']);
-        }
+        $this->config = static::$cache[$path];
+        $this->dispatch();
     }
 
     public function redirect($location, $statusCode = '302 Found') {
         header('HTTP/1.1 ' . $statusCode);
         header('Location: ' . $location);
-        $this->isViewDisabled = true;
+        $this->isViewEnabled = false;
     }
 
-    public static function initialize($cache) {
-        self::$cache = $cache;
+    protected function dispatch() {
+        $this->executeAction();
+        $this->executeView();
+    }
+
+    protected function executeAction() {
+        if (isset($this->config['Action'])) {
+            $processor = new Action\ActionProcessor;
+            $processor->run($this->config['Action']);
+        }
+    }
+
+    protected function executeView() {
+        if ($this->isViewEnabled && isset($this->config['View'])) {
+            $processor = new View\ViewProcessor;
+            $processor->run($this->config['View']);
+        }
     }
 }
