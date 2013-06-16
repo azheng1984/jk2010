@@ -9,6 +9,6 @@ class MethodNotAllowedException extends ApplicationException {
 
     public function header() {
         parent::header();
-        header('Allow: '.$this->methods);
+        header('Allow: ' . $this->methods);
     }
 }
