@@ -39,24 +39,18 @@ class Application {
     }
 
     protected function executeAction() {
-        if (isset($this->config['Action']) === false) {
-            $this->checkImplicitAction();
-            return;
+        $config = null;
+        if (isset($this->config['Action'])) {
+            $config = $this->config['Action'];
         }
         $processor = new ActionProcessor;
-        $processor->run($this->config['Action']);
+        $processor->run($config);
     }
 
     protected function executeView() {
         if ($this->isViewEnabled && isset($this->config['View'])) {
             $processor = new ViewProcessor;
             $processor->run($this->config['View']);
-        }
-    }
-
-    private function checkImplicitAction() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') { 
-            throw new MethodNotAllowedException('GET');
         }
     }
 }

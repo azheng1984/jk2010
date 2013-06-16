@@ -4,17 +4,32 @@ namespace Hyperframework::Web;
 class ActionProcessor {
     public function run($cache) {
         $method = $_SERVER['REQUEST_METHOD'];
-        if (isset($cache['method'][$method])) {
+        if ($method === 'HEAD' && isset($cache['method']['HEAD']) === false) {
+            $method = 'GET';
+        }
+        if ($cache === null) {
+            $this->checkImplicitAction($method);
+            return;
+        }
+        $methodList = $cache['method'];
+        if (isset($methodList[$method])) {
             $action = new $cache['class'];
             $action->$method();
+            return;
         }
         if (isset($cache['get_not_allowed'])) {
-            $this->throwMethodNotAllowedException($cache['method']);
+            $this->throwMethodNotAllowedException($methodList);
         }
         if ($method !== 'GET') {
-            $methodList = $cache['method'];//测试写时复制是否部分复制
+            $methodList['HEAD'] = 1;
             $methodList['GET'] = 1;
             $this->throwMethodNotAllowedException($methodList);
+        }
+    }
+
+    private function checkImplicitAction($method) {
+        if ($method !== 'GET') {
+            $this->throwMethodNotAllowedException(array('HEAD', 'GET'));
         }
     }
 
