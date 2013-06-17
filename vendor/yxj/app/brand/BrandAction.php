@@ -1,8 +1,13 @@
 <?php
 class BrandAction {
-  public function GET() {}
+  /**
+   * list * lsififi * main is the mos
+   */
+  public function GET() {
+  
+  }
 
-  public function  DELETE() {
+  public function DELETE() {
     Db::beginTransaction();
     try {
       Db::update('brand', array('is_active' => 0), 'id = ?');
