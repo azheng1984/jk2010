@@ -1,4 +1,6 @@
 <?php
+namespace Hyperframework\Web;
+
 class MethodNotAllowedException extends ApplicationException {
     private $methods;
 
