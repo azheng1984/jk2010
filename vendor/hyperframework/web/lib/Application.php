@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework::Web;
+namespace Hyperframework\Web;
 
 class Application {
     private static $cache;

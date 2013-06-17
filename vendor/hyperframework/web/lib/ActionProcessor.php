@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework::Web;
+namespace Hyperframework\Web;
 
 class ActionProcessor {
     public function run($cache) {
