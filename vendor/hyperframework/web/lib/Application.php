@@ -52,7 +52,7 @@ class Application {
             $config = $this->config['Action'];
         }
         $processor = new ActionProcessor;
-        $processor->run($config);
+        return $processor->run($config);
     }
 
     protected function executeView() {

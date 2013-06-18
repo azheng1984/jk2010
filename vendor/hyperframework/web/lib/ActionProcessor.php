@@ -8,8 +8,7 @@ class ActionProcessor {
             $method = 'GET';
         }
         if ($cache === null) {
-            $this->checkImplicitAction($method);
-            return;
+            return $this->checkImplicitAction($method);
         }
         $methodList = $cache['method'];
         if (isset($methodList[$method])) {
