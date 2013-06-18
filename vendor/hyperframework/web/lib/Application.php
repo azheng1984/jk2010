@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 class Application {
     private static $cache;
     private $config;
-    private $isViewProcessorEnabled = true;
+    private $isViewEnabled = true;
 
     public static function initialize($cache) {
         static::$cache = $cache;
@@ -30,15 +30,15 @@ class Application {
     public function redirect($location, $statusCode = '302 Found') {
         header('HTTP/1.1 ' . $statusCode);
         header('Location: ' . $location);
-        $this->disableViewProcessor();
+        $this->disableView();
     }
 
-    public function enableViewProcessor() {
-        $this->isViewProcessorEnabled = true;
+    public function enableView() {
+        $this->isViewEnabled = true;
     }
 
-    public function disableViewProcessor() {
-        $this->isViewProcessorEnabled = false;
+    public function disableView() {
+        $this->isViewEnabled = false;
     }
 
     protected function dispatch() {
@@ -56,7 +56,7 @@ class Application {
     }
 
     protected function executeView() {
-        if ($this->isViewProcessorEnabled === false) {
+        if ($this->isViewEnabled === false) {
             return;
         }
         if (isset($this->config['View']) === false) {
