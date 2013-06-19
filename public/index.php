@@ -16,4 +16,5 @@ $app = new Application;
 $exceptionHandler = new ExceptionHandler($app);
 $exceptionHandler->run();
 $router = new Router;
-$app->run($router->getPath());
+$config = ApplicationConfiguration::get($router->getPath());
+$app->run($config);

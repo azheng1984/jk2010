@@ -3,28 +3,16 @@ namespace Hyperframework\Web;
 
 class Application {
     private static $cache;
-    private $config;
     private $isViewEnabled = true;
+    private $actionResult;
 
     public static function initialize($cache) {
         static::$cache = $cache;
     }
  
-    public function run($path = null) {
-        if ($path === null) {
-            $segmentList = explode('?', $_SERVER['REQUEST_URI'], 2);
-            $path = $segmentList[0];
-        }
-        if (static::$cache === null) {
-            static::$cache = require CACHE_PATH . 'application.cache.php';
-        }
-        if (isset(static::$cache[$path]) === false) {
-            throw new NotFoundException(
-                'Application path \'' . $path . '\' not found'
-            );
-        }
-        $this->config = static::$cache[$path];
-        $this->dispatch();
+    public function run($config) {
+        $this->executeAction($config);
+        $this->executeView($config);
     }
  
     public function redirect($location, $statusCode = '302 Found') {
@@ -33,36 +21,27 @@ class Application {
         $this->disableView();
     }
 
-    public function enableView() {
-        $this->isViewEnabled = true;
+    public function getActionResult() {
+        return $this->actionResult;
     }
 
-    public function disableView() {
-        $this->isViewEnabled = false;
-    }
-
-    protected function dispatch() {
-        $this->executeAction();
-        $this->executeView();
-    }
-
-    protected function executeAction() {
-        $config = null;
-        if (isset($this->config['Action'])) {
-            $config = $this->config['Action'];
+    protected function executeAction($config) {
+        $actionConfig = null;
+        if (isset($config['Action'])) {
+            $actionCinfig = $['Action'];
         }
         $processor = new ActionProcessor;
-        return $processor->run($config);
+        $this->actionResult = $processor->run($actionConfig);
     }
 
-    protected function executeView() {
+    protected function executeView($config) {
         if ($this->isViewEnabled === false) {
             return;
         }
-        if (isset($this->config['View']) === false) {
+        if (isset($config['View']) === false) {
             throw new UnsupportedMediaTypeException;
         }
         $processor = new ViewProcessor;
-        $processor->run($this->config['View']);
+        $processor->run($config['View']);
     }
 }
