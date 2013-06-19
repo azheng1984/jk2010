@@ -4,6 +4,10 @@ namespace Hyperframework\Web;
 class ApplicationCache {
     private static $cache;
 
+    public function initialize($cache) {
+        static::$cache = $cache;
+    }
+
     public static function read($path = null) {
         if ($path === null) {
             $segmentList = explode('?', $_SERVER['REQUEST_URI'], 2);
