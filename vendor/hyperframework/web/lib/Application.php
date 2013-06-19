@@ -2,15 +2,10 @@
 namespace Hyperframework\Web;
 
 class Application {
-    private static $cache;
     private $isViewEnabled = true;
     private $actionResult;
 
-    public static function initialize($cache) {
-        static::$cache = $cache;
-    }
- 
-    public function run($config) {
+    public function run($cache) {
         $this->executeAction($config);
         $this->executeView($config);
     }

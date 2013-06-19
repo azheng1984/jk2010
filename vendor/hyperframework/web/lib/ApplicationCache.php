@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-class ApplicationCache {
+class ApplicationPropery {
     private static $cache;
 
     public function initialize($cache) {
