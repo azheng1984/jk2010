@@ -28,7 +28,7 @@ class Application {
     protected function executeAction($config) {
         $actionConfig = null;
         if (isset($config['Action'])) {
-            $actionCinfig = $['Action'];
+            $actionCinfig = $config['Action'];
         }
         $processor = new ActionProcessor;
         $this->actionResult = $processor->run($actionConfig);

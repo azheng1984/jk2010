@@ -8,13 +8,13 @@ class ActionProcessor {
             $method = 'GET';
         }
         if ($cache === null) {
-            return $this->checkImplicitAction($method);
+            $this->checkImplicitAction($method);
+            return;
         }
         $methodList = $cache['method'];
         if (isset($methodList[$method])) {
             $action = new $cache['class'];
-            $action->$method();
-            return;
+            return $action->$method();
         }
         if (isset($cache['get_not_allowed'])) {
             $this->throwMethodNotAllowedException($methodList);
