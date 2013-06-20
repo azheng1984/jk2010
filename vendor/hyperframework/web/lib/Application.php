@@ -25,17 +25,16 @@ class Application {
     protected function executeAction($info) {
         $actionInfo = null;
         if (isset($info['Action'])) {
-            $actionInfo = $config['Action'];
+            $actionInfo = $info['Action'];
         }
         $processor = new ActionProcessor;
         $this->actionResult = $processor->run($actionInfo);
     }
 
     protected function executeView($info) {
-        if ($this->isViewEnabled === false || isset($info['View']) === false) {
-            return;
+        if ($this->isViewEnabled && isset($info['View'])) {
+            $processor = new ViewProcessor;
+            $processor->run($info['View']);
         }
-        $processor = new ViewProcessor;
-        $processor->run($info['View']);
     }
 }
