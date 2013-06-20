@@ -32,11 +32,8 @@ class Application {
     }
 
     protected function executeView($info) {
-        if ($this->isViewEnabled === false) {
+        if ($this->isViewEnabled === false || isset($info['View']) === false) {
             return;
-        }
-        if (isset($info['View']) === false) {
-            throw new UnsupportedMediaTypeException;
         }
         $processor = new ViewProcessor;
         $processor->run($info['View']);
