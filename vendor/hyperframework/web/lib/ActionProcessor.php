@@ -2,21 +2,21 @@
 namespace Hyperframework\Web;
 
 class ActionProcessor {
-    public function run($cache) {
+    public function run($info) {
         $method = $_SERVER['REQUEST_METHOD'];
-        if ($method === 'HEAD' && isset($cache['method']['HEAD']) === false) {
+        if ($method === 'HEAD' && isset($info['method']['HEAD']) === false) {
             $method = 'GET';
         }
-        if ($cache === null) {
+        if ($info === null) {
             $this->checkImplicitAction($method);
             return;
         }
-        $methodList = $cache['method'];
+        $methodList = $info['method'];
         if (isset($methodList[$method])) {
-            $action = new $cache['class'];
+            $action = new $info['class'];
             return $action->$method();
         }
-        if (isset($cache['get_not_allowed'])) {
+        if (isset($info['get_not_allowed'])) {
             $this->throwMethodNotAllowedException($methodList);
         }
         if ($method !== 'GET') {

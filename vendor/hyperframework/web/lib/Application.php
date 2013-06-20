@@ -5,38 +5,40 @@ class Application {
     private $isViewEnabled = true;
     private $actionResult;
 
-    public function run($cache) {
-        $this->executeAction($config);
-        $this->executeView($config);
+    public function run($info) {
+        $this->executeAction($info);
+        $this->executeView($info);
     }
- 
-    public function redirect($location, $statusCode = '302 Found') {
-        header('HTTP/1.1 ' . $statusCode);
-        header('Location: ' . $location);
-        $this->disableView();
+
+    public function enableViewProcessor() {
+        $this->isViewProcessorEnabled = true;
+    }
+
+    public function disableViewProcessor() {
+        $this->isViewProcessorEnabled = false;
     }
 
     public function getActionResult() {
         return $this->actionResult;
     }
 
-    protected function executeAction($config) {
-        $actionConfig = null;
-        if (isset($config['Action'])) {
-            $actionCinfig = $config['Action'];
+    protected function executeAction($info) {
+        $actionInfo = null;
+        if (isset($info['Action'])) {
+            $actionInfo = $config['Action'];
         }
         $processor = new ActionProcessor;
-        $this->actionResult = $processor->run($actionConfig);
+        $this->actionResult = $processor->run($actionInfo);
     }
 
-    protected function executeView($config) {
+    protected function executeView($info) {
         if ($this->isViewEnabled === false) {
             return;
         }
-        if (isset($config['View']) === false) {
+        if (isset($info['View']) === false) {
             throw new UnsupportedMediaTypeException;
         }
         $processor = new ViewProcessor;
-        $processor->run($config['View']);
+        $processor->run($info['View']);
     }
 }
