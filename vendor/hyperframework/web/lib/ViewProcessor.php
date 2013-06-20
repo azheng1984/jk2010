@@ -2,15 +2,15 @@
 namespace Hyperframework\Web;
 
 class ViewProcessor {
-    public function run($cache) {
+    public function run($stucture) {
         if (isset($_SERVER['REQUEST_MEDIA_TYPE']) === false) {
-            $_SERVER['REQUEST_MEDIA_TYPE'] = key($cache);
+            $_SERVER['REQUEST_MEDIA_TYPE'] = key($info);
         }
         $type = $_SERVER['REQUEST_MEDIA_TYPE'];
-        if (isset($cache[$type]) === false) {
+        if (isset($info[$type]) === false) {
             throw new UnsupportedMediaTypeException;
         }
-        $view = new $cache[$type];
+        $view = new $info[$type];
         $view->render();
     }
 }
