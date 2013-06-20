@@ -32,7 +32,7 @@ class Application {
     }
 
     protected function executeView($info) {
-        if ($this->isViewEnabled && isset($info['View'])) {
+        if (isset($info['View']) && $this->isViewEnabled) {
             $processor = new ViewProcessor;
             $processor->run($info['View']);
         }
