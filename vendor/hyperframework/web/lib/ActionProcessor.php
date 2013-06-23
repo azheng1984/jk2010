@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 class ActionProcessor {
     public function run($info) {
         $method = $_SERVER['REQUEST_METHOD'];
-        if ($method === 'HEAD' && isset($info['method']['HEAD']) === false) {
+        if ($method === 'HEAD') {
             $method = 'GET';
         }
         if ($info === null) {
