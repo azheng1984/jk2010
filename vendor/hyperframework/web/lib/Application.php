@@ -30,7 +30,7 @@ class Application {
         $processor = new ActionProcessor;
         $this->actionResult = $processor->run($actionInfo);
     }
-
+ 
     protected function executeView($info) {
         if (isset($info['View']) && $this->isViewEnabled) {
             $processor = new ViewProcessor;
