@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 class ViewProcessor {
-    public function run($stucture) {
+    public function run($info) {
         if (isset($_SERVER['REQUEST_MEDIA_TYPE']) === false) {
             $_SERVER['REQUEST_MEDIA_TYPE'] = key($info);
         }

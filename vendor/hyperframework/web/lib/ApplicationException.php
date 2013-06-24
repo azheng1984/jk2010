@@ -7,8 +7,8 @@ abstract class ApplicationException extends \Exception {
         $this->code = $statusCode;
     }
 
-    public function header() {
+    public function rewriteHeader() {
         header_remove();
-        header('HTTP/1.1 '.$this->code);
+        header('HTTP/1.1 ' . $this->code);
     }
 }
