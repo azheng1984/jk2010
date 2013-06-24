@@ -10,12 +10,12 @@ class Application {
         $this->executeView($info);
     }
 
-    public function enableViewProcessor() {
-        $this->isViewProcessorEnabled = true;
+    public function enableView() {
+        $this->isViewEnabled = true;
     }
 
-    public function disableViewProcessor() {
-        $this->isViewProcessorEnabled = false;
+    public function disableView() {
+        $this->isViewEnabled = false;
     }
 
     public function getActionResult() {
