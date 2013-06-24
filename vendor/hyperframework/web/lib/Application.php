@@ -7,7 +7,7 @@ class Application {
 
     public function run($info) {
         $this->executeAction($info);
-        $this->executeView($info);
+        $this->renderView($info);
     }
 
     public function enableView() {
@@ -31,7 +31,7 @@ class Application {
         $this->actionResult = $processor->run($actionInfo);
     }
  
-    protected function executeView($info) {
+    protected function renderView($info) {
         if (isset($info['View']) && $this->isViewEnabled) {
             $processor = new ViewProcessor;
             $processor->run($info['View']);
