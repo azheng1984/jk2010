@@ -20,15 +20,15 @@ class ActionProcessor {
             $this->throwMethodNotAllowedException($methodList);
         }
         if ($method !== 'GET') {
-            $methodList['HEAD'] = 1;
             $methodList['GET'] = 1;
+            $methodList['HEAD'] = 1;
             $this->throwMethodNotAllowedException($methodList);
         }
     }
 
     private function checkImplicitAction($method) {
         if ($method !== 'GET') {
-            $this->throwMethodNotAllowedException(array('HEAD', 'GET'));
+            $this->throwMethodNotAllowedException(array('GET', 'HEAD'));
         }
     }
 
