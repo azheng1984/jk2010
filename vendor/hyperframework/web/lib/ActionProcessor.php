@@ -11,18 +11,18 @@ class ActionProcessor {
             $this->checkImplicitAction($method);
             return;
         }
-        $methodList = $info['method'];
-        if (isset($methodList[$method])) {
+        $methods = $info['methods'];
+        if (isset($methods[$method])) {
             $action = new $info['class'];
             return $action->$method();
         }
         if (isset($info['get_not_allowed'])) {
-            $this->throwMethodNotAllowedException($methodList);
+            $this->throwMethodNotAllowedException($methods);
         }
         if ($method !== 'GET') {
-            $methodList['GET'] = 1;
-            $methodList['HEAD'] = 1;
-            $this->throwMethodNotAllowedException($methodList);
+            $methods['GET'] = 1;
+            $methods['HEAD'] = 1;
+            $this->throwMethodNotAllowedException($methods);
         }
     }
 
@@ -32,9 +32,9 @@ class ActionProcessor {
         }
     }
 
-    private function throwMethodNotAllowedException($methodList) {
+    private function throwMethodNotAllowedException($methods) {
         throw new MethodNotAllowedException(
-            implode(', ', array_keys($methodList))
+            implode(', ', array_keys($methods))
         );
     }
 }
