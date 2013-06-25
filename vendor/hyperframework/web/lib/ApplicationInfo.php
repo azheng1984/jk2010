@@ -10,8 +10,8 @@ class ApplicationInfo {
 
     public static function get($path = null) {
         if ($path === null) {
-            $segmentList = explode('?', $_SERVER['REQUEST_URI'], 2);
-            $path = $segmentList[0];
+            $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
+            $path = $segments[0];
         }
         if (static::$cache === null) {
             static::$cache = require
