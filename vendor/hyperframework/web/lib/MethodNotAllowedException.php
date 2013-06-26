@@ -11,6 +11,6 @@ class MethodNotAllowedException extends ApplicationException {
 
     public function rewriteHeader() {
         parent::rewriteHeader();
-        header('Allow: ' . implode(', ', $this->methods);
+        header('Allow: ' . implode(', ', $this->methods));
     }
 }
