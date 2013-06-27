@@ -11,13 +11,13 @@ class ActionProcessor {
             $this->checkImplicitAction($method);
             return;
         }
-        $isExplicitMethod = isset($info['methods'][$method]);
-        if ($isExplicitMethod === false) {
+        $hasMethod = isset($info['methods'][$method]);
+        if ($hasMethod === false) {
             $this->checkImplicitMethod($info, $method);
         }
         $hasBeforeFilter = isset($info['before_filter']);
         $hasAfterFilter = isset($info['after_filter']);
-        if ($isExplicitMethod === false && $hasBeforeFilter === false &&
+        if ($hasMethod === false && $hasBeforeFilter === false &&
             $hasAfterFilter === false) {
             return;
         }
@@ -25,7 +25,7 @@ class ActionProcessor {
         if ($hasBeforeFilter) {
             $action->before();
         }
-        if ($isExplicitMethod) {
+        if ($hasMethod) {
             $result = $action->$method();
         }
         if ($hasAfterFilter) {
