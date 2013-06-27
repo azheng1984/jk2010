@@ -3,14 +3,14 @@ namespace Hyperframework\Web;
 
 class ExceptionHandler {
     private $configPath;
-    private $appClass;
+    private $applicationClass;
     private $exception;
 
     public function __construct(
-        $configPath = CONFIG_PATH, $appClass = 'Application'
+        $configPath = CONFIG_PATH, $applicationClass = 'Application'
     ) {
         $this->configPath = $configPath;
-        $this->appClass = $appClass;
+        $this->applicationClass = $applicationClass;
     }
 
     public function run() {
@@ -49,8 +49,8 @@ class ExceptionHandler {
         }
         if ($path !== null) {
             try {
-                $app = new $this->appClass;
-                $app->run($path);
+                $application = new $this->applicationClass;
+                $application->run($path);
             } catch (UnsupportedMediaTypeException $exception) {
             } catch (\Exception $exception) {
                 trigger_error($exception, E_USER_ERROR);
