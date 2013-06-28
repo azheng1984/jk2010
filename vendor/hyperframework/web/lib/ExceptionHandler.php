@@ -10,7 +10,7 @@ class ExceptionHandler {
         $configPath = CONFIG_PATH, $appClass = 'Application'
     ) {
         $this->configPath = $configPath;
-        $this->appClass = $applicationClass;
+        $this->appClass = $appClass;
     }
 
     public function run() {
