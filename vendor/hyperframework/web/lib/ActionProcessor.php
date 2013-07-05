@@ -41,7 +41,7 @@ class ActionProcessor {
     }
 
     private function checkImplicitMethod($info, $method) {
-        if (isset($info['get_not_allowed'])) {
+        if (isset($info['GET_not_allowed'])) {
             throw new MethodNotAllowedException(array_keys($info['methods']);
         }
         if ($method !== 'GET') {
