@@ -1,4 +1,6 @@
 <?php
+namespace Hyperframework;
+
 class ClassLoader {
   private $rootPath;
   private $classes;
@@ -17,6 +19,8 @@ class ClassLoader {
   }
 
   public function load($name) {
+    $x = explode('\\', $name);
+    $name = end($x);
     if (isset($this->classes[$name])) {
       require(
         $this->getFolder($this->classes[$name]).$name.'.php'
