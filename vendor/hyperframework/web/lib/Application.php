@@ -36,12 +36,12 @@ class Application {
         if (static::$info === null) {
             static::$info = require CACHE_PATH . 'appication_info.cache.php';
         }
-        if (isset(static::$cache[$path]) === false) {
+        if (isset(static::$info[$path]) === false) {
             throw new NotFoundException(
                 'Application path \'' . $path . '\' not found'
             );
         }
-        return static::$cache[$path];
+        return static::$info[$path];
     }
 
     protected function executeAction($info) {
