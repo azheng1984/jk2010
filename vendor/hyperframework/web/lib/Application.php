@@ -34,7 +34,7 @@ class Application {
             $path = $segments[0];
         }
         if (static::$info === null) {
-            static::$info = require CACHE_PATH . 'appication_info.cache.php';
+            static::$info = require CACHE_PATH . 'application_info.cache.php';
         }
         if (isset(static::$info[$path]) === false) {
             throw new NotFoundException(
