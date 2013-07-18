@@ -7,7 +7,7 @@ class ExceptionHandler {
     private $exception;
 
     public function __construct(
-        $configPath = CONFIG_PATH, $appClass = 'Application'
+        $configPath = CONFIG_PATH, $appClass = 'Hyperframework\Web\Application'
     ) {
         $this->configPath = $configPath;
         $this->appClass = $appClass;
@@ -26,6 +26,7 @@ class ExceptionHandler {
             trigger_error($exception, E_USER_ERROR);
         }
         $this->exception = $exception;
+        new Application;
         $this->reload($exception);
     }
 

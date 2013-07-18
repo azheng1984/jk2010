@@ -6,7 +6,7 @@ define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);
 define('HYPERFRAMEWORK_PATH', dirname(ROOT_PATH).DIRECTORY_SEPARATOR);
 require HYPERFRAMEWORK_PATH.'class_loader'.DIRECTORY_SEPARATOR
   .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';
-$classLoader = new ClassLoader;
+$classLoader = new Hyperframework\ClassLoader;
 $classLoader->run();
 $exceptionHandler = new CommandExceptionHandler;
 $exceptionHandler->run();

@@ -35,6 +35,6 @@ class ApplicationCache {
   }
 
   public function export() {
-    return array('application', $this->cache);
+    return array('application_info', $this->cache);
   }
 }
