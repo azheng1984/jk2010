@@ -22,6 +22,7 @@ class ActionProcessor {
             return;
         }
         $action = new $info['class'];
+        $result = null;
         if ($hasBeforeFilter) {
             $action->before();
         }
