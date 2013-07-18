@@ -26,7 +26,6 @@ class ExceptionHandler {
             trigger_error($exception, E_USER_ERROR);
         }
         $this->exception = $exception;
-        new Application;
         $this->reload($exception);
     }
 
