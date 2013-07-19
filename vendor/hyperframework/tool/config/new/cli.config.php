@@ -8,7 +8,7 @@ return array(
     '  }',
     '}',
   ),
-  'cache/' => 0777,
+  'tmp/cache/' => 0777,
   'config/build.config.php' => array(
     '<?php',
     'return array(',
