@@ -39,7 +39,7 @@ class ActionHandler {
             unset($cache['methods']);
         }
         if (count($cache) === 1) {
-            echo "Warning: Empty action in '$fullPath'" . PHP_EOL;
+            echo "Notice: Empty action in '$fullPath'" . PHP_EOL;
         }
         return $cache;
     }
