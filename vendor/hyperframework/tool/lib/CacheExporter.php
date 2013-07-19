@@ -1,30 +1,30 @@
 <?php
 class CacheExporter {
-  private $folder;
+    private $folder;
 
-  public function export($result) {
-    if ($result === null) {
-      return;
+    public function export($result) {
+        if ($result === null) {
+            return;
+        }
+        list($name, $cache) = $result->export();
+        file_put_contents(
+            $this->getPath($name),
+            '<?php'.PHP_EOL.'return '.var_export($cache, true).';'
+        );
     }
-    list($name, $cache) = $result->export();
-    file_put_contents(
-      $this->getPath($name),
-      '<?php'.PHP_EOL.'return '.var_export($cache, true).';'
-    );
-  }
 
-  private function getPath($name) {
-    if ($this->folder === null) {
-        $this->folder = 'cache';
-        $this->createFolder();
+    private function getPath($name) {
+        if ($this->folder === null) {
+            $this->folder = 'tmp/cache';
+            $this->createFolder();
+        }
+        return $this->folder.DIRECTORY_SEPARATOR.$name.'.cache.php';
     }
-    return $this->folder.DIRECTORY_SEPARATOR.$name.'.cache.php';
-  }
 
-  private function createFolder() {
-    if (!is_dir($this->folder)) {
-      mkdir($this->folder);
-      chmod($this->folder, 0777);
+    private function createFolder() {
+        if (!is_dir($this->folder)) {
+            mkdir($this->folder);
+            chmod($this->folder, 0777);
+        }
     }
-  }
 }

@@ -35,6 +35,9 @@ class ActionHandler {
             }
             $cache['methods'][$method] = true;
         }
+        if (count($cache['methods']) === 0) {
+            unset($cache['methods']);
+        }
         return $cache;
     }
 
