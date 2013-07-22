@@ -19,6 +19,7 @@ class ClassLoader {
     }
 
     public function load($name) {
+//        echo '>' . $name . PHP_EOL;
         $tmp = explode('\\', $name);
         $name = end($tmp);
         if (isset($this->classes[$name])) {
