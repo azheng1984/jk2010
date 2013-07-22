@@ -1,4 +1,5 @@
 <?php
+/*
 class ClassLoader {
     private $rootPath;
     private $callback;
@@ -43,4 +44,4 @@ class ClassLoader {
             return $this->folders[$folder[1]][0].DIRECTORY_SEPARATOR;
         }
     }
-}
+}*/

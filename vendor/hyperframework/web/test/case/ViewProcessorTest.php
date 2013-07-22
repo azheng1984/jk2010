@@ -17,18 +17,18 @@ class ViewProcessorTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testMethodNotAllowed() {
-    $this->setExpectedException('UnsupportedMediaTypeException');
+    $this->setExpectedException('Hyperframework\Web\UnsupportedMediaTypeException');
     $_SERVER['REQUEST_MEDIA_TYPE'] = 'Handheld';
     try {
       $this->process();
-    } catch (UnsupportedMediaTypeException $exception) {
+    } catch (Hyperframework\Web\UnsupportedMediaTypeException $exception) {
       $this->assertSame(0, count($GLOBALS['TEST_CALLBACK_TRACE']));
       throw $exception;
     }
   }
 
   private function process() {
-    $processor = new ViewProcessor;
+    $processor = new Hyperframework\Web\ViewProcessor;
     $processor->run(array('Screen' => 'TestScreen'));
   }
 }

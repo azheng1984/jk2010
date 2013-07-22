@@ -40,17 +40,10 @@ class ExceptionHandler {
         $config = require $this->configPath . 'error_handler.config.php';
         $exception->rewriteHeader();
         $statusCode = $exception->getCode();
-        $path = null;
         if (isset($config[$statusCode])) {
-            $path = $config[$statusCode];
-        }
-        if ($path === null && isset($config['default'])) {
-            $path = $config['default'];
-        }
-        if ($path !== null) {
             try {
                 $app = new $this->appClass;
-                $app->run($path);
+                $app->run($config[$statusCode]);
             } catch (UnsupportedMediaTypeException $exception) {
             } catch (\Exception $exception) {
                 trigger_error($exception, E_USER_ERROR);
