@@ -38,7 +38,7 @@ class Application {
         }
         if (isset(static::$info[$path]) === false) {
             throw new NotFoundException(
-                'Application path \'' . $path . '\' not found'
+                'Path \'' . $path . '\' not found'
             );
         }
         return static::$info[$path];
