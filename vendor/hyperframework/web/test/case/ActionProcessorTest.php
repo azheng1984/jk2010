@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-class ActionProcessorTest extends PHPUnit_Framework_TestCase {
+class ActionProcessorTest extends \PHPUnit_Framework_TestCase {
     protected function setUp() {
         $GLOBALS['TEST_CALLBACK_TRACE'] = array();
     }
@@ -31,7 +31,7 @@ class ActionProcessorTest extends PHPUnit_Framework_TestCase {
     private function process() {
         $processor = new ActionProcessor;
         $processor->run(
-            array('class' => 'TestAction', 'method' => array('GET'))
+            array('class' => 'TestAction', 'methods' => array('GET' => true))
         );
     }
 }
