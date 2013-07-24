@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 define('ROOT_PATH', dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR);
-define('CACHE_PATH', ROOT_PATH.'cache'.DIRECTORY_SEPARATOR);
+define('CACHE_PATH', ROOT_PATH.'tmp/cache'.DIRECTORY_SEPARATOR);
 define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);
 define('HYPERFRAMEWORK_PATH', dirname(ROOT_PATH).DIRECTORY_SEPARATOR);
 require HYPERFRAMEWORK_PATH.'class_loader'.DIRECTORY_SEPARATOR
