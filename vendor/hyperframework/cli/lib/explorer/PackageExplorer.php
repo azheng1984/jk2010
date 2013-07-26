@@ -1,11 +1,11 @@
 <?php
 class PackageExplorer {
   public function render($config) {
-    if (!is_array($config['sub'])) {
-      $config['sub'] = array();
+    if (!is_array($config['commands'])) {
+      $config['commands'] = array();
     }
     ExplorerContext::getExplorer('Command')->render(null, $config);
-    foreach ($this->getList($config['sub']) as $type => $values) {
+    foreach ($this->getList($config['commands']) as $type => $values) {
       if (count($values) !== 0) {
         $this->renderList($type, $values);
       }
@@ -18,7 +18,7 @@ class PackageExplorer {
       if (!is_array($item)) {
         $item = array('class' => $item);
       }
-      if (isset($item['sub'])) {
+      if (isset($item['commands'])) {
         unset($item['option']);
         $result['package'][$name] = $item;
         continue;
