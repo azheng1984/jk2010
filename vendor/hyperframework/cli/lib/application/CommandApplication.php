@@ -8,7 +8,7 @@ class CommandApplication {
   private $arguments = array();
 
   public function __construct($configPath = CONFIG_PATH) {
-    $this->config = require $configPath.'command_application.config.php';
+    $this->config = require $configPath.'application.config.php';
     $this->reader = new CommandReader;
     $this->initialize($this->config);
   }
@@ -64,10 +64,10 @@ class CommandApplication {
   }
 
   private function setCommand($name) {
-    if (!isset($this->config['children'][$name])) {
+    if (!isset($this->config['commands'][$name])) {
       throw new CommandException("Command '$name' not found");
     }
-    $this->initialize($this->config['children'][$name]);
+    $this->initialize($this->config['commands'][$name]);
     $this->optionParser = null;
     $this->isAllowOption = true;
   }
