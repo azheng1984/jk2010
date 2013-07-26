@@ -64,10 +64,10 @@ class CommandApplication {
   }
 
   private function setCommand($name) {
-    if (!isset($this->config['sub'][$name])) {
+    if (!isset($this->config['children'][$name])) {
       throw new CommandException("Command '$name' not found");
     }
-    $this->initialize($this->config['sub'][$name]);
+    $this->initialize($this->config['children'][$name]);
     $this->optionParser = null;
     $this->isAllowOption = true;
   }
