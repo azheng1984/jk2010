@@ -8,7 +8,7 @@ class ClassLoader {
 
     public function run($rootPath = ROOT_PATH, $cachePath = CACHE_PATH) {
         $this->rootPath = $rootPath;
-        $config = require $cachePath.'class_loader.cache.php';
+        $config = require $cachePath . 'class_loader.cache.php';
         $this->classes = $config[0];
         $this->folders = $config[1];
         spl_autoload_register(array($this, 'load'));
@@ -24,7 +24,7 @@ class ClassLoader {
         $name = end($tmp);
         if (isset($this->classes[$name])) {
             require(
-                $this->getFolder($this->classes[$name]).$name.'.php'
+                $this->getFolder($this->classes[$name]) . $name . '.php'
             );
         }
     }
@@ -35,14 +35,15 @@ class ClassLoader {
         }
         $folder = $this->folders[$index];
         if (is_array($folder)) {
-            return $this->getFullPath($folder).$folder[0].DIRECTORY_SEPARATOR;
+            return $this->getFullPath($folder) .
+                $folder[0] . DIRECTORY_SEPARATOR;
         }
-        return $this->rootPath.$folder.DIRECTORY_SEPARATOR;
+        return $this->rootPath . $folder . DIRECTORY_SEPARATOR;
     }
 
     private function getFullPath($folder) {
         if (isset($folder[1])) {
-            return $this->folders[$folder[1]][0].DIRECTORY_SEPARATOR;
+            return $this->folders[$folder[1]][0] . DIRECTORY_SEPARATOR;
         }
     }
 }
