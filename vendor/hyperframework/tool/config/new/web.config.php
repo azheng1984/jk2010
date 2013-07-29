@@ -57,6 +57,9 @@ return array(
     '$EXCEPTION_HANDLER->run();',
     '$APP->run();',
   ),
+  'test/phpunit.xml' => array(
+    '<phpunit bootstrap="./bootstrap.php" colors="true"></phpunit>'
+  ),
   'test/bootstrap.php' => array(
     '<?php',
     "define('TEST_PATH', dirname(__FILE__).DIRECTORY_SEPARATOR);",
@@ -65,8 +68,8 @@ return array(
     "define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);",
     "define('HYPERFRAMEWORK_PATH', ".$GLOBALS['HYPERFRAMEWORK_PATH'].');',
     'require '.$GLOBALS['CLASS_LOADER_PREFIX']
-      .".'class_loader'.DIRECTORY_SEPARATOR",
-    "  .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';",
+      ." . 'class_loader'.DIRECTORY_SEPARATOR .",
+    "    'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';",
     '$CLASS_LOADER = new ClassLoader;',
     '$CLASS_LOADER->run();',
   ),

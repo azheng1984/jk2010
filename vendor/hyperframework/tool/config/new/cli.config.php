@@ -40,7 +40,10 @@ return array(
     '$EXCEPTION_HANDLER->run();',
     '$APP = new CommandApplication;',
     '$APP->run();',
-   ),
+  ),
+  'test/phpunit.xml' => array(
+    '<phpunit bootstrap="./bootstrap.php" colors="true"></phpunit>'
+  ),
   'test/bootstrap.php' => array(
     '<?php',
     "define('TEST_PATH', dirname(__FILE__).DIRECTORY_SEPARATOR);",
