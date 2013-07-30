@@ -15,7 +15,7 @@ return array(
     "  'ClassLoader' => array('app', 'lib', HYPERFRAMEWORK_PATH.'cli/lib')",
     ');',
    ),
-  'config/command_application.config.php' => array(
+  'config/application.config.php' => array(
     '<?php',
     'return array(',
     "  'description' => 'Add your own description here',",
