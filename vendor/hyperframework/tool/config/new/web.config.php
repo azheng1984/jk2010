@@ -27,10 +27,13 @@ return array(
   'tmp/cache/' => 0777,
   'config/build.config.php' => array(
     '<?php',
-    'return array(',
-    "    'ClassLoader' => array('app', 'lib', HYPERFRAMEWORK_PATH.'web/lib'),",
-    "    'Application' => array('Action', 'View' => 'Screen'),",
-    ');',
+    "return array('ClassLoader', 'Application');",
+  ),
+  'config/application.config.php' => array(
+    "return array('Action', 'View' => 'Screen');"
+  ),
+  'config/class_loader.config.php' => array(
+    "return array('app', 'lib', HYPERFRAMEWORK_PATH.'web/lib');"
   ),
   'config/error_handler.config.php' => array(
     '<?php',
