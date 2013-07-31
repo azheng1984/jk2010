@@ -44,18 +44,18 @@ class Application {
         return static::$info[$path];
     }
 
-    protected function executeAction($info) {
+    protected function executeAction($info, $processor = 'ActionProcessor') {
         $actionInfo = null;
         if (isset($info['Action'])) {
             $actionInfo = $info['Action'];
         }
-        $processor = new ActionProcessor;
+        $processor = new $processor;
         $this->actionResult = $processor->run($actionInfo);
     }
 
-    protected function renderView($info) {
+    protected function renderView($info, $processor = 'ViewProcessor') {
         if (isset($info['View']) && $this->isViewEnabled) {
-            $processor = new ViewProcessor;
+            $processor = new $processor;
             $processor->run($info['View']);
         }
     }
