@@ -7,7 +7,7 @@ class ExceptionHandler {
     private $exception;
 
     public function __construct(
-        $configPath = CONFIG_PATH, $appClass = __NAMESPACE__ . '\Application'
+        $configPath = CONFIG_PATH, $appClass = 'Hyperframework\Web\Application'
     ) {
         $this->configPath = $configPath;
         $this->appClass = $appClass;

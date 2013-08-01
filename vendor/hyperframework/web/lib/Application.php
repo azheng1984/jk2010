@@ -45,7 +45,7 @@ class Application {
     }
 
     protected function executeAction(
-        $info, $processorClass = __NAMESPACE__ . '\ActionProcessor'
+        $info, $processorClass = 'Hyperframework\Web\ActionProcessor'
     ) {
         $actionInfo = null;
         if (isset($info['Action'])) {
@@ -56,7 +56,7 @@ class Application {
     }
 
     protected function renderView(
-        $info, $processorClass = __NAMESPACE__ . '\ViewProcessor'
+        $info, $processorClass = 'Hyperframework\Web\ViewProcessor'
     ) {
         if (isset($info['View']) && $this->isViewEnabled) {
             $processor = new $processorClass;
