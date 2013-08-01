@@ -44,18 +44,22 @@ class Application {
         return static::$info[$path];
     }
 
-    protected function executeAction($info, $processor = 'ActionProcessor') {
+    protected function executeAction(
+        $info, $processorClass = __NAMESPACE__ . '\ActionProcessor'
+    ) {
         $actionInfo = null;
         if (isset($info['Action'])) {
             $actionInfo = $info['Action'];
         }
-        $processor = new $processor;
+        $processor = new $processorClass;
         $this->actionResult = $processor->run($actionInfo);
     }
 
-    protected function renderView($info, $processor = 'ViewProcessor') {
+    protected function renderView(
+        $info, $processorClass = __NAMESPACE__ . '\ViewProcessor'
+    ) {
         if (isset($info['View']) && $this->isViewEnabled) {
-            $processor = new $processor;
+            $processor = new $processorClass;
             $processor->run($info['View']);
         }
     }
