@@ -29,10 +29,6 @@ class ExceptionHandler {
         $this->reload($exception);
     }
 
-    public function stop() {
-        restore_exception_handler();
-    }
-
     private function reload($exception) {
         if ($exception instanceof ApplicationException === false) {
             $exception = new InternalServerErrorException;
