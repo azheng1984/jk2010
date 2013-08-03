@@ -45,9 +45,12 @@ class ExceptionHandler {
                 $app = new $this->appClass;
                 $app->run($config[$statusCode]);
             } catch (UnsupportedMediaTypeException $exception) {
-            } catch (\Exception $exception) {
-                trigger_error($exception, E_USER_ERROR);
+            } catch (\Exception $reloadException) {
+                $message = $this->getException() . PHP_EOL . $reloadException;
+                trigger_error($message, E_USER_ERROR);
             }
+            return;
         }
+        trigger_error($this->getException(), E_USER_ERROR);
     }
 }

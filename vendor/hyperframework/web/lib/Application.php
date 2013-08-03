@@ -11,6 +11,7 @@ class Application {
     }
 
     public function run($path = null) {
+        throw new \Exception;
         $info = $this->getInfo($path);
         $this->executeAction($info);
         $this->renderView($info);
