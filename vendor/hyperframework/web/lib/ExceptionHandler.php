@@ -36,18 +36,17 @@ class ExceptionHandler {
         $config = require $this->configPath . 'error_handler.config.php';
         $exception->rewriteHeader();
         $statusCode = $exception->getCode();
-        if (isset($config[$statusCode])) {
-            try {
-                $app = new $this->appClass;
-                $app->run($config[$statusCode]);
-            } catch (UnsupportedMediaTypeException $exception) {
-            } catch (\Exception $exception) {
-                $message = 'Uncaught ' . $this->getException() . PHP_EOL .
-                    '[next]: ' . $exception . PHP_EOL;
-                trigger_error($message, E_USER_ERROR);
-            }
-            return;
+        if (isset($config[$statusCode]) === false) {
+            throw $this->getException();
         }
-        throw $this->getException();
+        try {
+            $app = new $this->appClass;
+            $app->run($config[$statusCode]);
+        } catch (UnsupportedMediaTypeException $exception) {
+        } catch (\Exception $exception) {
+            $message = 'Uncaught ' . $this->getException() . PHP_EOL .
+                '[next]: ' . $exception . PHP_EOL;
+            trigger_error($message, E_USER_ERROR);
+        }
     }
 }
