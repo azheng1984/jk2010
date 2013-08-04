@@ -38,11 +38,18 @@ class ExceptionHandler {
         try {
             $app = new $this->appClass;
             $app->run($config[$statusCode]);
-        } catch (UnsupportedMediaTypeException $exception) {
-        } catch (\Exception $exception) {
-            $message = 'Uncaught ' . $this->exception . PHP_EOL .
-                PHP_EOL . 'Next ' . $exception . PHP_EOL;
-            trigger_error($message, E_USER_ERROR);
+        } catch (\Exception $nextException) {
+            if ($nextException instanceof InternalServerErrorException ||
+                $nextException instanceof ApplicationException === false ||
+                $exception instanceof InternalServerErrorException) {
+                $message = 'Uncaught ' . $this->exception . PHP_EOL;
+                    . PHP_EOL . 'Next ' . $nextException . PHP_EOL;
+                trigger_error($message, E_USER_ERROR);
+            }
+            return;
+        }
+        if ($exception instanceof InternalServerErrorException) {
+            throw $this->exception;
         }
     }
 }
