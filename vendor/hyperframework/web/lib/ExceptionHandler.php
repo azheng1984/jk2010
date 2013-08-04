@@ -29,8 +29,8 @@ class ExceptionHandler {
         if ($exception instanceof ApplicationException === false) {
             $exception = new InternalServerErrorException;
         }
-        $config = require $this->configPath . 'error_handler.config.php';
         $exception->rewriteHeader();
+        $config = require $this->configPath . 'error_handler.config.php';
         $statusCode = $exception->getCode();
         if (isset($config[$statusCode]) === false) {
             throw $this->exception;
