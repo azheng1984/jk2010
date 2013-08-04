@@ -33,14 +33,14 @@ class ExceptionHandler {
         $exception->rewriteHeader();
         $statusCode = $exception->getCode();
         if (isset($config[$statusCode]) === false) {
-            throw $this->getException();
+            throw $this->exception;
         }
         try {
             $app = new $this->appClass;
             $app->run($config[$statusCode]);
         } catch (UnsupportedMediaTypeException $exception) {
         } catch (\Exception $exception) {
-            $message = 'Uncaught ' . $this->getException() . PHP_EOL .
+            $message = 'Uncaught ' . $this->exception . PHP_EOL .
                 PHP_EOL . 'Next ' . $exception . PHP_EOL;
             trigger_error($message, E_USER_ERROR);
         }
