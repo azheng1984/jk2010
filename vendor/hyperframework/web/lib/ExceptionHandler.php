@@ -40,7 +40,7 @@ class ExceptionHandler {
             $app = new $this->appClass;
             $app->run($config[$statusCode]);
         } catch (\Exception $recursiveException) {
-            $hasNextError =
+            $hasRecursiveError =
                 $recursiveException instanceof ApplicationException === false ||
                 $recursiveException instanceof InternalServerErrorException;
             if ($hasError === false && $hasRecursiveError) {
