@@ -39,16 +39,16 @@ class ExceptionHandler {
         try {
             $app = new $this->appClass;
             $app->run($config[$statusCode]);
-        } catch (\Exception $nextException) {
+        } catch (\Exception $recursiveException) {
             $hasNextError =
-                $nextException instanceof ApplicationException === false ||
-                $nextException instanceof InternalServerErrorException;
-            if ($hasError === false && $hasNextError) {
-                throw $nextException;
+                $recursiveException instanceof ApplicationException === false ||
+                $recursiveException instanceof InternalServerErrorException;
+            if ($hasError === false && $hasRecursiveError) {
+                throw $recursiveException;
             }
-            if ($hasError && $hasNextError) {
+            if ($hasError && $hasRecursiveError) {
                 $message = 'Uncaught ' . $this->exception . PHP_EOL .
-                    PHP_EOL . 'Next ' . $nextException . PHP_EOL;
+                    PHP_EOL . 'Next ' . $recursiveException . PHP_EOL;
                 trigger_error($message, E_USER_ERROR);
             }
         }
