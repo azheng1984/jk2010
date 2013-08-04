@@ -47,7 +47,7 @@ class ExceptionHandler {
                 throw $nextException;
             }
             if ($hasError && $hasNextError) {
-                $message = 'Uncaught ' . $this->exception . PHP_EOL
+                $message = 'Uncaught ' . $this->exception . PHP_EOL .
                     PHP_EOL . 'Next ' . $nextException . PHP_EOL;
                 trigger_error($message, E_USER_ERROR);
             }
