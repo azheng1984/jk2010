@@ -35,20 +35,24 @@ class ExceptionHandler {
         if (isset($config[$statusCode]) === false) {
             throw $this->exception;
         }
+        $hasError = $exception instanceof InternalServerErrorException;
         try {
             $app = new $this->appClass;
             $app->run($config[$statusCode]);
         } catch (\Exception $nextException) {
-            if ($nextException instanceof InternalServerErrorException ||
-                $nextException instanceof ApplicationException === false ||
-                $exception instanceof InternalServerErrorException) {
-                $message = 'Uncaught ' . $this->exception . PHP_EOL;
-                    . PHP_EOL . 'Next ' . $nextException . PHP_EOL;
+            $hasNextError =
+                $nextException instanceof InternalServerErrorException ||
+                $nextException instanceof ApplicationException === false;
+            if ($hasError === false && $hasNextError) {
+                throw $nextException;
+            }
+            if ($hasError && $hasNextError) {
+                $message = 'Uncaught ' . $this->exception . PHP_EOL
+                    PHP_EOL . 'Next ' . $nextException . PHP_EOL;
                 trigger_error($message, E_USER_ERROR);
             }
-            return;
         }
-        if ($exception instanceof InternalServerErrorException) {
+        if ($hasError) {
             throw $this->exception;
         }
     }
