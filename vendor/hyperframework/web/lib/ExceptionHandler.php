@@ -26,10 +26,6 @@ class ExceptionHandler {
             throw $exception;
         }
         $this->exception = $exception;
-        $this->reload($exception);
-    }
-
-    private function reload($exception) {
         if ($exception instanceof ApplicationException === false) {
             $exception = new InternalServerErrorException(null, $exception);
         }
