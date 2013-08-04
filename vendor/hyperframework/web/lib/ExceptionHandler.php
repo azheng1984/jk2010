@@ -44,8 +44,8 @@ class ExceptionHandler {
             $app->run($config[$statusCode]);
         } catch (UnsupportedMediaTypeException $exception) {
         } catch (\Exception $exception) {
-            $message = 'Uncaught ' . $this->getException() . PHP_EOL .
-                '[next]: ' . $exception . PHP_EOL;
+           $message = 'Uncaught ' . $this->getException() . PHP_EOL .
+                PHP_EOL . 'Next ' . $exception . PHP_EOL;
             trigger_error($message, E_USER_ERROR);
         }
     }
