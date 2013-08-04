@@ -23,7 +23,7 @@ class ExceptionHandler {
 
     public function handle($exception) {
         if (headers_sent()) {
-            trigger_error($exception, E_USER_ERROR);
+            throw $exception;
         }
         $this->exception = $exception;
         $this->reload($exception);
@@ -31,7 +31,7 @@ class ExceptionHandler {
 
     private function reload($exception) {
         if ($exception instanceof ApplicationException === false) {
-            $exception = new InternalServerErrorException;
+            $exception = new InternalServerErrorException(null, $exception);
         }
         $config = require $this->configPath . 'error_handler.config.php';
         $exception->rewriteHeader();
@@ -42,11 +42,12 @@ class ExceptionHandler {
                 $app->run($config[$statusCode]);
             } catch (UnsupportedMediaTypeException $exception) {
             } catch (\Exception $exception) {
-                $message = $this->getException() . PHP_EOL . $exception;
+                $message = 'Uncaught ' . $this->getException() . PHP_EOL .
+                    '[next]: ' . $exception . PHP_EOL;
                 trigger_error($message, E_USER_ERROR);
             }
             return;
         }
-        trigger_error($this->getException(), E_USER_ERROR);
+        throw $this->getException();
     }
 }

@@ -13,6 +13,7 @@ class Application {
     public function run($path = null) {
         $info = $this->getInfo($path);
         $this->executeAction($info);
+        throw new \Exception;
         $this->renderView($info);
     }
 
