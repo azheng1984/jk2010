@@ -27,7 +27,7 @@ class ExceptionHandler {
         }
         $this->exception = $exception;
         if ($exception instanceof ApplicationException === false) {
-            $exception = new InternalServerErrorException(null, $exception);
+            $exception = new InternalServerErrorException;
         }
         $config = require $this->configPath . 'error_handler.config.php';
         $exception->rewriteHeader();
@@ -41,8 +41,8 @@ class ExceptionHandler {
             $app->run($config[$statusCode]);
         } catch (\Exception $nextException) {
             $hasNextError =
-                $nextException instanceof InternalServerErrorException ||
-                $nextException instanceof ApplicationException === false;
+                $nextException instanceof ApplicationException === false ||
+                $nextException instanceof InternalServerErrorException;
             if ($hasError === false && $hasNextError) {
                 throw $nextException;
             }
