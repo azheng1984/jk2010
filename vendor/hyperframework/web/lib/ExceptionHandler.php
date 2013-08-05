@@ -38,6 +38,7 @@ class ExceptionHandler {
         try {
             $app = new $this->appClass;
             $app->run($config[$statusCode]);
+        } catch (UnsupportedMediaTypeException $recursiveException) {
         } catch (\Exception $recursiveException) {
             $message = 'Uncaught ' . $this->exception . PHP_EOL .
                 PHP_EOL . 'Next ' . $recursiveException . PHP_EOL;
