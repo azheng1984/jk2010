@@ -23,7 +23,7 @@ class ExceptionHandler {
 
     public function handle($exception) {
         if (headers_sent()) {
-            throw $exception;
+            $this->triggerError($exception);
         }
         $this->exception = $exception;
         if ($exception instanceof ApplicationException === false) {
@@ -33,7 +33,7 @@ class ExceptionHandler {
         $config = require $this->configPath . 'error_handler.config.php';
         $statusCode = $exception->getCode();
         if (isset($config[$statusCode]) === false) {
-            throw $this->exception;
+            $this->triggerError($this->exception);
         }
         $hasError = $exception instanceof InternalServerErrorException;
         try {
@@ -44,16 +44,23 @@ class ExceptionHandler {
                 $recursiveException instanceof ApplicationException === false ||
                 $recursiveException instanceof InternalServerErrorException;
             if ($hasError === false && $hasRecursiveError) {
-                throw $recursiveException;
+                $this>triggerError($recursiveException);
             }
             if ($hasError && $hasRecursiveError) {
                 $message = 'Uncaught ' . $this->exception . PHP_EOL .
                     PHP_EOL . 'Next ' . $recursiveException . PHP_EOL;
-                trigger_error($message, E_USER_ERROR);
+                $this->triggerError($message);
             }
         }
         if ($hasError) {
-            throw $this->exception;
+            $this->triggerError($this->exception);
         }
+    }
+
+    protected function triggerError($source, $level = E_USER_ERROR) {
+        if ($source instanceof \Exception && $level === E_USER_ERROR) {
+            throw $source;
+        }
+        trigger_error($source, $level);
     }
 }
