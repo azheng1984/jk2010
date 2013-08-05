@@ -35,24 +35,15 @@ class ExceptionHandler {
         if (isset($config[$statusCode]) === false) {
             $this->triggerError($this->exception);
         }
-        $hasError = $exception instanceof InternalServerErrorException;
         try {
             $app = new $this->appClass;
             $app->run($config[$statusCode]);
         } catch (\Exception $recursiveException) {
-            $hasRecursiveError =
-                $recursiveException instanceof ApplicationException === false ||
-                $recursiveException instanceof InternalServerErrorException;
-            if ($hasError === false && $hasRecursiveError) {
-                $this>triggerError($recursiveException);
-            }
-            if ($hasError && $hasRecursiveError) {
-                $message = 'Uncaught ' . $this->exception . PHP_EOL .
-                    PHP_EOL . 'Next ' . $recursiveException . PHP_EOL;
-                $this->triggerError($message);
-            }
+            $message = 'Uncaught ' . $this->exception . PHP_EOL .
+                PHP_EOL . 'Next ' . $recursiveException . PHP_EOL;
+            $this->triggerError($message);
         }
-        if ($hasError) {
+        if ($exception instanceof InternalServerErrorException) {
             $this->triggerError($this->exception);
         }
     }
