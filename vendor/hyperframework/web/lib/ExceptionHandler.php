@@ -49,10 +49,10 @@ class ExceptionHandler {
         }
     }
 
-    protected function triggerError($source, $level = E_USER_ERROR) {
-        if ($source instanceof \Exception && $level === E_USER_ERROR) {
-            throw $source;
+    protected function triggerError($data, $level = E_USER_ERROR) {
+        if ($data instanceof \Exception && $level === E_USER_ERROR) {
+            throw $data;
         }
-        trigger_error($source, $level);
+        trigger_error($data, $level);
     }
 }
