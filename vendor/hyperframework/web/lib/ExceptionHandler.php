@@ -19,7 +19,7 @@ class ExceptionHandler {
 
     public function handle($exception) {
         if (headers_sent()) {
-            $this->triggerError($exception);
+            $this->reportError($exception);
         }
         $this->exception = $exception;
         if ($exception instanceof ApplicationException === false) {
@@ -29,7 +29,7 @@ class ExceptionHandler {
         $config = require $this->configPath . 'error_handler.config.php';
         $statusCode = $exception->getCode();
         if (isset($config[$statusCode]) === false) {
-            $this->triggerError($this->exception);
+            $this->reportError($this->exception);
         }
         try {
             $this->reload($config[$statusCode]);
@@ -37,14 +37,14 @@ class ExceptionHandler {
         } catch (\Exception $recursiveException) {
             $message = 'Uncaught ' . $this->exception . PHP_EOL .
                 PHP_EOL . 'Next ' . $recursiveException . PHP_EOL;
-            $this->triggerError($message);
+            $this->reportError($message);
         }
         if ($exception instanceof InternalServerErrorException) {
-            $this->triggerError($this->exception);
+            $this->reportError($this->exception);
         }
     }
 
-    protected function triggerError($data, $level = E_USER_ERROR) {
+    protected function reportError($data, $level = E_USER_ERROR) {
         if ($data instanceof \Exception && $level === E_USER_ERROR) {
             throw $data;
         }
