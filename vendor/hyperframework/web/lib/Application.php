@@ -12,7 +12,7 @@ class Application {
     }
 
     public function run($path = null) {
-        $info = $this->getInfo($path);
+        $info = $this->getPathInfo($path);
         $this->executeAction($info);
         $this->renderView($info);
     }
