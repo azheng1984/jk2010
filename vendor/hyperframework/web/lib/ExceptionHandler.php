@@ -3,12 +3,9 @@ namespace Hyperframework\Web;
 
 class ExceptionHandler {
     private $configPath;
-    private $appClass;
     private $exception;
 
-    public function __construct(
-        $configPath = CONFIG_PATH, $appClass = 'Hyperframework\Web\Application'
-    ) {
+    public function __construct($configPath = CONFIG_PATH) {
         $this->configPath = $configPath;
         $this->appClass = $appClass;
     }
@@ -36,8 +33,7 @@ class ExceptionHandler {
             $this->triggerError($this->exception);
         }
         try {
-            $app = new $this->appClass;
-            $app->run($config[$statusCode]);
+            $this->reload($config[$statusCode]);
         } catch (UnsupportedMediaTypeException $ignoredException) {
         } catch (\Exception $recursiveException) {
             $message = 'Uncaught ' . $this->exception . PHP_EOL .
@@ -54,5 +50,10 @@ class ExceptionHandler {
             throw $data;
         }
         trigger_error($data, $level);
+    }
+
+    protected function reload($path) {
+        $app = new Application;
+        $app->run($path);
     }
 }
