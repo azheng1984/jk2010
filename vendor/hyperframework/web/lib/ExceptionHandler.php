@@ -7,7 +7,6 @@ class ExceptionHandler {
 
     public function __construct($configPath = CONFIG_PATH) {
         $this->configPath = $configPath;
-        $this->appClass = $appClass;
     }
 
     public function run() {
