@@ -29,7 +29,7 @@ class Application {
         return $this->actionResult;
     }
 
-    protected function getInfo($path) {
+    protected function getPathInfo($path) {
         if ($path === null) {
             $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
             $path = $segments[0];
