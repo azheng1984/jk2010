@@ -35,16 +35,19 @@ class ExceptionHandler {
             $this->reload($config[$statusCode]);
         } catch (UnsupportedMediaTypeException $ignoredException) {
         } catch (\Exception $recursiveException) {
-            $message = 'Uncaught ' . $this->exception . PHP_EOL .
-                PHP_EOL . 'Next ' . $recursiveException . PHP_EOL;
-            $this->reportError($message);
+            $this->reportError($this->exception, $recursiveException);
         }
         if ($exception instanceof InternalServerErrorException) {
             $this->reportError($this->exception);
         }
     }
 
-    protected function reportError($data) {
+    protected function reportError($first, $second = null) {
+        $data = $first;
+        if ($second !== null) {
+            $data = 'Uncaught ' . $first . PHP_EOL .
+                PHP_EOL . 'Next ' . $second . PHP_EOL;
+        }
         if ($data instanceof \Exception) {
             throw $data;
         }
