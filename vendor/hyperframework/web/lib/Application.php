@@ -3,11 +3,12 @@ namespace Hyperframework\Web;
 
 class Application {
     private static $info;
-    private $isViewEnabled = true;
     private $actionResult;
+    private $cachePath;
+    private $isViewEnabled = true;
 
-    public static function initialize($info) {
-        static::$info = $info;
+    public function __construct($cachePath = CACHE_PATH) {
+        $this->cachePath = $cachePath;
     }
 
     public function run($path = null) {
@@ -34,7 +35,7 @@ class Application {
             $path = $segments[0];
         }
         if (static::$info === null) {
-            static::$info = require CACHE_PATH . 'application.cache.php';
+            static::$info = require $this->cachePath . 'application.cache.php';
         }
         if (isset(static::$info[$path]) === false) {
             throw new NotFoundException(
