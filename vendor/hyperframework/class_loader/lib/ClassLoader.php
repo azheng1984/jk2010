@@ -6,11 +6,14 @@ class ClassLoader {
     private $classes;
     private $folders;
 
-    public function run($rootPath = ROOT_PATH, $cachePath = CACHE_PATH) {
+    public function run(
+        $rootPath = ROOT_PATH, $cacheDirectoryPath = CACHE_PATH
+    ) {
         $this->rootPath = $rootPath;
-        $config = require $cachePath . 'class_loader.cache.php';
-        $this->classes = $config[0];
-        $this->folders = $config[1];
+        //add reader
+        $info = require $cacheDirectoryPath . 'class_loader.cache.php';
+        $this->classes = $info[0];
+        $this->folders = $info[1];
         spl_autoload_register(array($this, 'load'));
     }
 
