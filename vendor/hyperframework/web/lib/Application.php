@@ -4,11 +4,11 @@ namespace Hyperframework\Web;
 class Application {
     private static $info;
     private $actionResult;
-    private $cacheDirectoryPath;
+    private $cacheDirectory;
     private $isViewEnabled = true;
 
-    public function __construct($cacheDirectoryPath = CACHE_PATH) {
-        $this->cacheDirectoryPath = $cacheDirectoryPath;
+    public function __construct($cacheDirectory = CACHE_PATH) {
+        $this->cacheDirectory = $cacheDirectory;
     }
 
     public function run($path = null) {
@@ -35,7 +35,7 @@ class Application {
             $path = $segments[0];
         }
         if (static::$info === null) {
-            static::$info = require $this->cacheDirectoryPath .
+            static::$info = require $this->cacheDirectory .
                 'application.cache.php';
         }
         if (isset(static::$info[$path]) === false) {
