@@ -21,6 +21,7 @@ class ClassLoader {
     }
 
     public function load($name) {
+        //use apc cache
 //        echo '>' . $name . PHP_EOL;
         $tmp = explode('\\', $name);
         $name = end($tmp);
