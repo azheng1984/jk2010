@@ -43,15 +43,15 @@ class ExceptionHandler {
     }
 
     protected function reportError($first, $second = null) {
-        $data = $first;
+        $message = $first;
         if ($second !== null) {
-            $data = 'Uncaught ' . $first . PHP_EOL .
+            $message = 'Uncaught ' . $first . PHP_EOL .
                 PHP_EOL . 'Next ' . $second . PHP_EOL;
         }
-        if ($data instanceof \Exception) {
-            throw $data;
+        if ($message instanceof \Exception) {
+            throw $message;
         }
-        trigger_error($data, 'E_USER_ERROR');
+        trigger_error($message, 'E_USER_ERROR');
     }
 
     protected function reload($path) {
