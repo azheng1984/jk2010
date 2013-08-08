@@ -13,3 +13,4 @@ Thumbs.db
 *.gz
 pinyin.dat
 *.sync
+cache/
