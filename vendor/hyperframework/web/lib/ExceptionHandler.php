@@ -2,11 +2,11 @@
 namespace Hyperframework\Web;
 
 class ExceptionHandler {
-    private $configDirectoryPath;
+    private $configDirectory;
     private $exception;
 
-    public function __construct($configDirectoryPath = CONFIG_PATH) {
-        $this->configDirectoryPath = $configDirectoryPath;
+    public function __construct($configDirectory = CONFIG_PATH) {
+        $this->configDirectory = $configDirectory;
     }
 
     public function run() {
@@ -26,8 +26,7 @@ class ExceptionHandler {
             $exception = new InternalServerErrorException;
         }
         $exception->rewriteHeader();
-        $config = require $this->configDirectoryPath .
-            'error_handler.config.php';
+        $config = require $this->configDirectory . 'error_handler.config.php';
         $statusCode = $exception->getCode();
         if (isset($config[$statusCode]) === false) {
             $this->reportError($this->exception);
