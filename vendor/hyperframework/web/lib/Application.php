@@ -77,12 +77,12 @@ class Application {
     }
 
     private function initializeInfo() {
-        $cachePath = (static::$cacheDirectory === null ?
+        $path = (static::$cacheDirectory === null ?
             CACHE_PATH : static::$cacheDirecotry) . 'application.cache.php';
         if (static::$cacheProvider === null) {
-            static::$info = require $cachePath;
+            static::$info = require $path;
             return;
         }
-        static::$info = static::$cacheProvider->get($cachePath);
+        static::$info = static::$cacheProvider->get($path);
     }
 }
