@@ -11,6 +11,10 @@ class Application {
         static::$cacheDirectory = $value;
     }
 
+    public static function setInfo($value) {
+        $this->info = $value;
+    }
+
     public function run($path = null) {
         $info = $this->getPathInfo($path);
         $this->executeAction($info);
