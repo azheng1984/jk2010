@@ -65,11 +65,11 @@ class ExceptionHandler {
     }
 
     private function getConfig() {
-        $configPath = ($this->configDirectory === null ?
+        $path = ($this->configDirectory === null ?
             CONFIG_PATH : $this->configDirectory) . 'error_handler.config.php';
         if ($this->configProvider === null) {
-            return require $configPath;
+            return require $path;
         }
-        return $this->configProvider->get($configPath);
+        return $this->configProvider->get($path);
     }
 }
