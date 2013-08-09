@@ -3,13 +3,14 @@ namespace Hyperframework\Web;
 
 class ExceptionHandler {
     private $configDirectory;
+    private $configProvider;
     private $exception;
 
     public function run() {
         set_exception_handler(array($this, 'handle'));
     }
 
-   public function handle($exception) {
+    public function handle($exception) {
         if (headers_sent()) {
             $this->reportError($exception);
         }
@@ -18,9 +19,6 @@ class ExceptionHandler {
             $exception = new InternalServerErrorException;
         }
         $exception->rewriteHeader();
-        $configDirectory = $this->configDirectory === null ?
-            CONFIG_PATH : $this->configDirectory;
-        $config = require $configDirectory . 'error_handler.config.php';
         $statusCode = $exception->getCode();
         if (isset($config[$statusCode]) === false) {
             $this->reportError($this->exception);
@@ -44,6 +42,10 @@ class ExceptionHandler {
         $this->configDirectory = $value;
     }
 
+    public function setConfigProvider($value) {
+       $this->configProvider = $value; 
+    }
+
     protected function reportError($first, $second = null) {
         $message = $first;
         if ($second !== null) {
@@ -59,5 +61,14 @@ class ExceptionHandler {
     protected function reload($path) {
         $app = new Application;
         $app->run($path);
+    }
+
+    private function getConfig() {
+        $configPath = ($this->configDirectory === null ?
+            CONFIG_PATH : $this->configDirectory) . 'error_handler.config.php';
+        if ($this->configProvider === null) {
+            return require $configPath;
+        }
+        return $this->configProvider->get($configPath);
     }
 }
