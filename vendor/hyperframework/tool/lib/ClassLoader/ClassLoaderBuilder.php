@@ -1,8 +1,6 @@
 <?php
 class ClassLoaderBuilder {
     public function build($config) {
-        var_dump($config);
-        return;
         $cache = new ClassLoaderCache;
         $directoryReader = new DirectoryReader(
             new ClassRecognizationHandler($cache)
