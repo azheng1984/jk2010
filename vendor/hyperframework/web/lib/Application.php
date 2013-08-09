@@ -56,7 +56,7 @@ class Application {
         return static::$info[$path];
     }
 
-   protected function executeAction(
+    protected function executeAction(
         $info, $processorClass = 'Hyperframework\Web\ActionProcessor'
     ) {
         $actionInfo = null;
@@ -77,8 +77,8 @@ class Application {
     }
 
     private function initializeInfo() {
-       $cachePath = (static::$cacheDirectory === null ?
-           CACHE_PATH : static::$cacheDirecotry) . 'application.cache.php';
+        $cachePath = (static::$cacheDirectory === null ?
+            CACHE_PATH : static::$cacheDirecotry) . 'application.cache.php';
         if (static::$cacheProvider === null) {
             static::$info = require $cachePath;
             return;
