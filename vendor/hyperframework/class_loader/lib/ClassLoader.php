@@ -1,6 +1,6 @@
 <?php
 namespace Hyperframework;
-
+//通过 apc 缓存 cache array
 class ClassLoader {
     private $rootPath;
     private $classes;
