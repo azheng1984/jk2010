@@ -5,19 +5,11 @@ class ExceptionHandler {
     private $configDirectory;
     private $exception;
 
-    public function __construct($configDirectory = CONFIG_PATH) {
-        $this->configDirectory = $configDirectory;
-    }
-
     public function run() {
         set_exception_handler(array($this, 'handle'));
     }
 
-    public function getException() {
-        return $this->exception;
-    }
-
-    public function handle($exception) {
+   public function handle($exception) {
         if (headers_sent()) {
             $this->reportError($exception);
         }
@@ -26,7 +18,9 @@ class ExceptionHandler {
             $exception = new InternalServerErrorException;
         }
         $exception->rewriteHeader();
-        $config = require $this->configDirectory . 'error_handler.config.php';
+        $configDirectory = $this->configDirectory === null ?
+            CONFIG_PATH : $this->configDirectory;
+        $config = require $configDirectory . 'error_handler.config.php';
         $statusCode = $exception->getCode();
         if (isset($config[$statusCode]) === false) {
             $this->reportError($this->exception);
@@ -40,6 +34,14 @@ class ExceptionHandler {
         if ($exception instanceof InternalServerErrorException) {
             $this->reportError($this->exception);
         }
+    }
+
+    public function getException() {
+        return $this->exception;
+    }
+
+    public function setConfigDirectory($value) {
+        $this->configDirectory = $value;
     }
 
     protected function reportError($first, $second = null) {
