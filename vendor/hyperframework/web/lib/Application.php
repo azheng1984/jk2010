@@ -4,6 +4,7 @@ namespace Hyperframework\Web;
 class Application {
     private static $info;
     private static $cacheDirectory;
+    private static $cacheProvider;
     private $actionResult;
     private $isViewEnabled = true;
 
@@ -11,8 +12,14 @@ class Application {
         static::$cacheDirectory = $value;
     }
 
-    public static function setInfo($value) {
-        $this->info = $value;
+    public static function setCacheProvider($value) {
+        static::$cacheProvider = $value;
+    }
+
+    public static function reset() {
+        static::$info = null;
+        static::$cacheDirectory = null;
+        static::$cacheProvider = null;
     }
 
     public function run($path = null) {
@@ -39,10 +46,7 @@ class Application {
             $path = $segments[0];
         }
         if (static::$info === null) {
-            $cacheDirectory =
-                static::$cacheDirectory === null ?
-                    CACHE_PATH : static::$cacheDirecotry;
-            static::$info = require $cacheDirectory . 'application.cache.php';
+            $this->initializeInfo();
         }
         if (isset(static::$info[$path]) === false) {
             throw new NotFoundException(
@@ -52,7 +56,7 @@ class Application {
         return static::$info[$path];
     }
 
-    protected function executeAction(
+   protected function executeAction(
         $info, $processorClass = 'Hyperframework\Web\ActionProcessor'
     ) {
         $actionInfo = null;
@@ -70,5 +74,15 @@ class Application {
             $processor = new $processorClass;
             $processor->run($info['View']);
         }
+    }
+
+    private function initializeInfo() {
+       $cachePath = (static::$cacheDirectory === null ?
+           CACHE_PATH : static::$cacheDirecotry) . 'application.cache.php';
+        if (static::$cacheProvider === null) {
+            static::$info = require $cachePath;
+            return;
+        }
+        static::$info = static::$cacheProvider->get($cachePath);
     }
 }
