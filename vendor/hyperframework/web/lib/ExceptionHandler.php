@@ -44,7 +44,7 @@ class ExceptionHandler {
     }
 
     public function setConfigProvider($value) {
-       $this->configProvider = $value; 
+       $this->configProvider = $value;
     }
 
     protected function reportError($first, $second = null) {
