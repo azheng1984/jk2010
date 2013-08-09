@@ -7,7 +7,6 @@ class CacheExporter {
             return;
         }
         list($name, $cache) = $result->export();
-        echo $name;
         file_put_contents(
             $this->getPath($name),
             '<?php'.PHP_EOL.'return '.var_export($cache, true).';'

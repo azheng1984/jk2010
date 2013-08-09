@@ -11,7 +11,7 @@ class ClassLoader {
     ) {
         $this->rootPath = $rootPath;
         $info = require $cacheDirectory . 'class_loader.cache.php';
-        var_dump($info);
+        //var_dump($info);
         $this->classes = $info[0];
         $this->folders = $info[1];
         spl_autoload_register(array($this, 'load'));
@@ -27,7 +27,7 @@ class ClassLoader {
         $tmp = explode('\\', $name);
         $name = end($tmp);
         if (isset($this->classes[$name])) {
-            echo $this->getFolder($this->classes[$name]) . $name . '.php'.PHP_EOL;
+           // echo $this->getFolder($this->classes[$name]) . $name . '.php'.PHP_EOL;
             require $this->getFolder($this->classes[$name]) . $name . '.php';
         }
     }
