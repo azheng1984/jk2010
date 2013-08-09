@@ -20,6 +20,7 @@ class ExceptionHandler {
         }
         $exception->rewriteHeader();
         $statusCode = $exception->getCode();
+        $config = $this->getConfig();
         if (isset($config[$statusCode]) === false) {
             $this->reportError($this->exception);
         }
