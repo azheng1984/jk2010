@@ -7,6 +7,7 @@ class CacheExporter {
             return;
         }
         list($name, $cache) = $result->export();
+        echo $name;
         file_put_contents(
             $this->getPath($name),
             '<?php'.PHP_EOL.'return '.var_export($cache, true).';'
@@ -15,9 +16,7 @@ class CacheExporter {
 
     private function getPath($name) {
         if ($this->folder === null) {
-            $this->folder = 'tmp';
-            $this->createFolder();
-            $this->folder = 'tmp' . DIRECTORY_SEPARATOR .'cache';
+            $this->folder = 'cache';
             $this->createFolder();
         }
         return $this->folder.DIRECTORY_SEPARATOR.$name.'.cache.php';
