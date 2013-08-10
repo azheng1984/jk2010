@@ -39,7 +39,9 @@ class ActionHandler {
             unset($cache['methods']);
         }
         if (count($cache) === 1) {
-            echo "Notice: Empty action in '$fullPath'" . PHP_EOL;
+            $relativePath = str_replace($_SERVER['PWD'] . '/', '',$fullPath);
+            echo 'Notice: Public method does not exsit in action \'',
+                $relativePath, '\'' , PHP_EOL;
         }
         return $cache;
     }
