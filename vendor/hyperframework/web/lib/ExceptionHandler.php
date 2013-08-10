@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 class ExceptionHandler {
-    private $configDirectory;
+    private $configPath;
     private $configProvider;
     private $exception;
 
@@ -39,8 +39,8 @@ class ExceptionHandler {
         return $this->exception;
     }
 
-    public function setConfigDirectory($value) {
-        $this->configDirectory = $value;
+    public function setConfigPath($value) {
+        $this->configPath = $value;
     }
 
     public function setConfigProvider($value) {
@@ -56,17 +56,18 @@ class ExceptionHandler {
         if ($message instanceof \Exception) {
             throw $message;
         }
-        trigger_error($message, 'E_USER_ERROR');
+        trigger_error($message, E_USER_ERROR);
     }
 
     protected function reload($path) {
         $app = new Application;
+        $app->setCachePath(CACHE_PATH . 'application.error.cache.php');
         $app->run($path);
     }
 
     private function getConfig() {
-        $path = ($this->configDirectory === null ?
-            CONFIG_PATH : $this->configDirectory) . 'error_handler.config.php';
+        $path = $this->configPath === null ?
+            CONFIG_PATH . 'exception_handler.config.php' : $this->configPath;
         if ($this->configProvider === null) {
             return require $path;
         }
