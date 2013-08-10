@@ -4,7 +4,8 @@
 class ApplicationBuilder {
     private $classLoader;
 
-    public function build($config) {
+    public function build() {
+        $config = require 'config' . DIRECTORY_SEPARATOR . 'application.config.php';
         $this->setUpClassLoader();
         $configuration = new ApplicationConfiguration;
         $handlers = $configuration->extract($config);

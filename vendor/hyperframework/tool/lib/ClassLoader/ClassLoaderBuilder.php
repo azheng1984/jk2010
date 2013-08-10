@@ -1,6 +1,7 @@
 <?php
 class ClassLoaderBuilder {
-    public function build($config) {
+    public function build() {
+        $config = require 'config' . DIRECTORY_SEPARATOR . 'class_loader.config.php';
         $cache = new ClassLoaderCache;
         $directoryReader = new DirectoryReader(
             new ClassRecognizationHandler($cache)

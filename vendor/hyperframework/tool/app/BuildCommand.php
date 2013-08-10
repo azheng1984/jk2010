@@ -2,8 +2,8 @@
 class BuildCommand {
     public function execute() {
         $exporter = new CacheExporter;
-        foreach ($this->getConfig() as $name => $config) {
-            $exporter->export($this->dispatch($name, $config));
+        foreach ($this->getConfig() as $name) {
+            $exporter->export($this->dispatch($name));
         }
     }
 
@@ -19,14 +19,14 @@ class BuildCommand {
         return $config;
     }
 
-    private function dispatch($name, $config) {
+    private function dispatch($name) {
         if (is_int($name)) {
             list($name, $config) = array($config, null);
         }
         try {
             $reflector = new ReflectionClass($name . 'Builder');
             $builder = $reflector->newInstance();
-            return $builder->build($config);
+            return $builder->build();
         } catch (Exception $exception) {
             throw new CommandException($exception->getMessage());
         }
