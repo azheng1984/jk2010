@@ -2,25 +2,11 @@
 namespace Hyperframework\Web;
 
 class Application {
-    private static $info;
-    private static $cacheDirectory;
-    private static $cacheProvider;
     private $actionResult;
+    private $cachePath;
+    private $cacheProvider;
+    private $info;
     private $isViewEnabled = true;
-
-    public static function setCacheDirectory($value) {
-        static::$cacheDirectory = $value;
-    }
-
-    public static function setCacheProvider($value) {
-        static::$cacheProvider = $value;
-    }
-
-    public static function reset() {
-        static::$info = null;
-        static::$cacheDirectory = null;
-        static::$cacheProvider = null;
-    }
 
     public function run($path = null) {
         $info = $this->getPathInfo($path);
@@ -40,20 +26,28 @@ class Application {
         return $this->actionResult;
     }
 
+    public function setCachePath($value) {
+        $this->cachePath = $value;
+    }
+
+    public function setCacheProvider($value) {
+        $this->cacheProvider = $value;
+    }
+
     protected function getPathInfo($path) {
         if ($path === null) {
             $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
             $path = $segments[0];
         }
-        if (static::$info === null) {
+        if ($this->info === null) {
             $this->initializeInfo();
         }
-        if (isset(static::$info[$path]) === false) {
+        if (isset($this->info[$path]) === false) {
             throw new NotFoundException(
                 'Path \'' . $path . '\' not found'
             );
         }
-        return static::$info[$path];
+        return $this->info[$path];
     }
 
     protected function executeAction(
@@ -77,12 +71,12 @@ class Application {
     }
 
     private function initializeInfo() {
-        $path = (static::$cacheDirectory === null ?
-            CACHE_PATH : static::$cacheDirecotry) . 'application.cache.php';
-        if (static::$cacheProvider === null) {
-            static::$info = require $path;
+        $path = $this->cachePath === null ?
+            CACHE_PATH . 'application.cache.php' : $this->cachePath;
+        if ($this->cacheProvider === null) {
+            $this->info = require $path;
             return;
         }
-        static::$info = static::$cacheProvider->get($path);
+        $this->info = $this->cacheProvider->get($path);
     }
 }
