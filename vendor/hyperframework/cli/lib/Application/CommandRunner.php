@@ -1,7 +1,7 @@
 <?php
 class CommandRunner {
   public function run($config, $options, $arguments) {
-    if (isset($config['sub'])) {
+    if (isset($config['commands'])) {
       ExplorerContext::getExplorer('Package')->render($config);
       return;
     }
