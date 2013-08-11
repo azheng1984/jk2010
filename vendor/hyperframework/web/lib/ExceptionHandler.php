@@ -6,6 +6,11 @@ class ExceptionHandler {
     private $configProvider;
     private $exception;
 
+    public function __construct($configPath = null, $configProvider = null) {
+        $this->configPath = $configPath;
+        $this->configProvider = $configProvider;
+    }
+
     public function run() {
         set_exception_handler(array($this, 'handle'));
     }
@@ -39,14 +44,6 @@ class ExceptionHandler {
         return $this->exception;
     }
 
-    public function setConfigPath($value) {
-        $this->configPath = $value;
-    }
-
-    public function setConfigProvider($value) {
-       $this->configProvider = $value;
-    }
-
     protected function reportError($first, $second = null) {
         $message = $first;
         if ($second !== null) {
@@ -60,8 +57,7 @@ class ExceptionHandler {
     }
 
     protected function reload($path) {
-        $app = new Application;
-        $app->setCachePath(CACHE_PATH . 'application.error.cache.php');
+        $app = new Application(CACHE_PATH . 'application.error.cache.php');
         $app->run($path);
     }
 
