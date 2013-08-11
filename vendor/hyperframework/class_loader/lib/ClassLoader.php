@@ -6,14 +6,18 @@ class ClassLoader {
     private $classes;
     private $folders;
 
-    public function run(
-        $rootPath = ROOT_PATH, $cacheDirectory = CACHE_PATH
-    ) {
+    public function run($rootPath = null, $cachePath = null) {
+        if ($rootPath === null) {
+            $rootPath = ROOT_PATH;
+        }
+        if ($cachePath === null) {
+            $cachePath = CACHE_PATH . 'class_loader.cache.php';
+        }
         $this->rootPath = $rootPath;
-        $info = require $cacheDirectory . 'class_loader.cache.php';
+        $cache = require $cachePath;
         //var_dump($info);
-        $this->classes = $info[0];
-        $this->folders = $info[1];
+        $this->classes = $cache[0];
+        $this->folders = $cache[1];
         spl_autoload_register(array($this, 'load'));
     }
 
