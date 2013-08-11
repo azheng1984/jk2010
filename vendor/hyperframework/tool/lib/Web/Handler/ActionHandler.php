@@ -38,11 +38,6 @@ class ActionHandler {
         if (count($cache['methods']) === 0) {
             unset($cache['methods']);
         }
-        if (count($cache) === 1) {
-            $relativePath = str_replace($_SERVER['PWD'] . '/', '',$fullPath);
-            echo 'Notice: Public method not fount in action \'',
-                $relativePath, '\'' , PHP_EOL;
-        }
         return $cache;
     }
 
