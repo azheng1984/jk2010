@@ -20,11 +20,10 @@ class ApplicationBuilder {
 
     protected function setUpClassLoader() {
         $rootPath = $_SERVER['PWD'].DIRECTORY_SEPARATOR;
-        $cachePath = $rootPath 
-            . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR;
-        $cacheFile = $cachePath . 'class_loader.cache.php';
-        if (!file_exists($cacheFile)) {
-            throw new Exception("File '$cacheFile' does not exsit");
+        $cachePath = $rootPath . 'cache' . DIRECTORY_SEPARATOR .
+            'class_loader.cache.php';
+        if (!file_exists($cachePath)) {
+            throw new Exception("File '$cachePath' does not exsit");
         }
         $this->classLoader = new Hyperframework\ClassLoader;
         $this->classLoader->run($rootPath, $cachePath);

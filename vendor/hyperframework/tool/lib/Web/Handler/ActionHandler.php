@@ -16,15 +16,15 @@ class ActionHandler {
         }
         $reflectors = $this->getMethodReflectors($class, $fullPath);
         foreach ($reflectors as $reflector) {
-            $method = $reflector->getName();
+            $method = strtoupper($reflector->getName());
             if (strpos($method, '__') === 0) {
                 continue;
             }
-            if ($method === 'before') {
+            if ($method === 'BEFORE') {
                 $cache['before_filter'] = true;
                 continue;
             }
-            if ($method === 'after') {
+            if ($method === 'AFTER') {
                 $cache['after_filter'] = true;
                 continue;
             }
