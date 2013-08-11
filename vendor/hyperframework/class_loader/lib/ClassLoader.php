@@ -10,10 +10,10 @@ class ClassLoader {
         if ($rootPath === null) {
             $rootPath = ROOT_PATH;
         }
+        $this->rootPath = $rootPath;
         if ($cachePath === null) {
             $cachePath = CACHE_PATH . 'class_loader.cache.php';
         }
-        $this->rootPath = $rootPath;
         $cache = require $cachePath;
         //var_dump($info);
         $this->classes = $cache[0];
