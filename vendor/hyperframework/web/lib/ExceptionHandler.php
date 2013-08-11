@@ -2,13 +2,17 @@
 namespace Hyperframework\Web;
 
 class ExceptionHandler {
+    private $applicationCachePath;
     private $configPath;
     private $configProvider;
     private $exception;
 
-    public function __construct($configPath = null, $configProvider = null) {
+    public function __construct(
+        $configPath = null, $configProvider = null, $applicationCachePath = null
+    ) {
         $this->configPath = $configPath;
         $this->configProvider = $configProvider;
+        $this->applicationCachePath = $applicationCachePath;
     }
 
     public function run() {
@@ -57,8 +61,15 @@ class ExceptionHandler {
     }
 
     protected function reload($path) {
-        $app = new Application(CACHE_PATH . 'application.error.cache.php');
+        $app = new Application($this->getApplicationCachePath());
         $app->run($path);
+    }
+
+    protected function getApplicationCachePath() {
+        if ($this->applicationCachePath === null) {
+            return CACHE_PATH . 'application.error.cache.php';
+        }
+        return $this->applicationCachePath;
     }
 
     private function getConfig() {
