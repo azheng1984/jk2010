@@ -5,8 +5,13 @@ class Application {
     private $actionResult;
     private $cachePath;
     private $cacheProvider;
-    private $info;
+    private $cache;
     private $isViewEnabled = true;
+
+    public function __construct($cachePath = null, $cacheProvider = null) {
+        $this->cachePath = $cachePath;
+        $this->cacheProvider = $cacheProvider;
+    }
 
     public function run($path = null) {
         $info = $this->getPathInfo($path);
@@ -26,28 +31,20 @@ class Application {
         return $this->actionResult;
     }
 
-    public function setCachePath($value) {
-        $this->cachePath = $value;
-    }
-
-    public function setCacheProvider($value) {
-        $this->cacheProvider = $value;
-    }
-
     protected function getPathInfo($path) {
         if ($path === null) {
             $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
             $path = $segments[0];
         }
-        if ($this->info === null) {
-            $this->initializeInfo();
+        if ($this->cache === null) {
+            $this->initializeCache();
         }
-        if (isset($this->info[$path]) === false) {
+        if (isset($this->cache[$path]) === false) {
             throw new NotFoundException(
                 'Path \'' . $path . '\' not found'
             );
         }
-        return $this->info[$path];
+        return $this->cache[$path];
     }
 
     protected function executeAction(
@@ -70,13 +67,13 @@ class Application {
         }
     }
 
-    private function initializeInfo() {
+    private function initializeCache() {
         $path = $this->cachePath === null ?
             CACHE_PATH . 'application.cache.php' : $this->cachePath;
         if ($this->cacheProvider === null) {
-            $this->info = require $path;
+            $this->cache = require $path;
             return;
         }
-        $this->info = $this->cacheProvider->get($path);
+        $this->cache = $this->cacheProvider->get($path);
     }
 }
