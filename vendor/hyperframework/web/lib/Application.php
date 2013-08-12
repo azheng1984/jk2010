@@ -42,33 +42,42 @@ class Application {
         if (isset($this->cache['paths'][$path]) === false) {
             throw new NotFoundException('Path \'' . $path . '\' not found');
         }
-        var_dump($this->cache);
         $info = $this->cache['paths'][$path];
         $info['namespace'] = $this->getNamespace($path);
         return $info;
     }
 
     protected function executeAction(
-        $info, $processorClass = 'Hyperframework\Web\ActionProcessor'
+        $pathInfo, $processorClass = 'Hyperframework\Web\ActionProcessor'
     ) {
-        $actionInfo = null;
-        if (isset($info['Action'])) {
-            $actionInfo = $info['Action'];
-            $actionInfo['namespace'] = $info['namespace'];
+        $info = null;
+        if (isset($pathInfo['Action'])) {
+            $info = $pathInfo['Action'];
+            $info['namespace'] = $pathInfo['namespace'];
         }
         $processor = new $processorClass;
-        $this->actionResult = $processor->run($actionInfo);
+        $this->actionResult = $processor->run($info);
     }
 
     protected function renderView(
-        $info, $processorClass = 'Hyperframework\Web\ViewProcessor'
+        $pathInfo, $processorClass = 'Hyperframework\Web\ViewProcessor'
     ) {
-        if (isset($info['View']) && $this->isViewEnabled) {
-            $viewInfo = $info['View'];
-            $viewInfo['namespace'] = $info['namespace'];
+        if (isset($pathInfo['View']) && $this->isViewEnabled) {
+            $info = $pathInfo['View'];
+            $info['namespace'] = $pathInfo['namespace'];
             $processor = new $processorClass;
-            $processor->run($viewInfo);
+            $processor->run($info);
         }
+    }
+
+    private function initializeCache() {
+        $path = $this->cachePath === null ?
+            CACHE_PATH . 'application.cache.php' : $this->cachePath;
+        if ($this->cacheProvider === null) {
+            $this->cache = require $path;
+            return;
+        }
+        $this->cache = $this->cacheProvider->get($path);
     }
 
     private function getNamespace($path) {
@@ -80,15 +89,5 @@ class Application {
             $namespace = $namespace[0] . \str_replace('/', '\\', $path);
         }
         return $namespace . '\\';
-    }
-
-    private function initializeCache() {
-        $path = $this->cachePath === null ?
-            CACHE_PATH . 'application.cache.php' : $this->cachePath;
-        if ($this->cacheProvider === null) {
-            $this->cache = require $path;
-            return;
-        }
-        $this->cache = $this->cacheProvider->get($path);
     }
 }
