@@ -16,7 +16,7 @@ class ClassLoaderCache {
     }
 
     public function export() {
-        return array('class_loader', $this->cache);
+        return array('class_loader' => $this->cache);
     }
 
     private function getIndex($rootFolder, $relativeFolder) {

@@ -6,11 +6,13 @@ class CacheExporter {
         if ($result === null) {
             return;
         }
-        list($name, $cache) = $result->export();
-        file_put_contents(
-            $this->getPath($name),
-            '<?php'.PHP_EOL.'return '.var_export($cache, true).';'
-        );
+        $caches = $result->export();
+        foreach ($caches as $name => $cache) {
+            file_put_contents(
+                $this->getPath($name),
+                '<?php'.PHP_EOL.'return '.var_export($cache, true).';'
+            );
+        }
     }
 
     private function getPath($name) {

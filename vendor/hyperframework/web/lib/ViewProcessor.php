@@ -10,7 +10,8 @@ class ViewProcessor {
         if (isset($info[$mediaType]) === false) {
             throw new UnsupportedMediaTypeException;
         }
-        $view = new $info[$mediaType];
+        $class = $info['namespace'] . $info[$mediaType];
+        $view = new $class;
         $view->render();
     }
 }

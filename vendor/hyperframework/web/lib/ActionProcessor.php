@@ -21,7 +21,8 @@ class ActionProcessor {
             $hasAfterFilter === false) {
             return;
         }
-        $action = new $info['class'];
+        $class = $info['namespace'] . $info['class'];
+        $action = new $class;
         $result = null;
         if ($hasBeforeFilter) {
             $action->before();

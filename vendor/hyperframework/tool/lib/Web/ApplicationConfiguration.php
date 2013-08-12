@@ -6,6 +6,10 @@ class ApplicationConfiguration {
     }
     $handlers = array();
     foreach ($config as $key => $value) {
+      if (strpos($key, '@') === 0) {
+          //todo: process property like '@error_path'
+          continue;
+      }
       if (is_int($key)) {
         list($key, $value) = array($value, null);
       }
