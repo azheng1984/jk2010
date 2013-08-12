@@ -33,18 +33,19 @@ class Application {
 
     protected function getPathInfo($path) {
         if ($path === null) {
-            $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
+            $segments = \explode('?', $_SERVER['REQUEST_URI'], 2);
             $path = $segments[0];
         }
         if ($this->cache === null) {
             $this->initializeCache();
         }
-        if (isset($this->cache[$path]) === false) {
-            throw new NotFoundException(
-                'Path \'' . $path . '\' not found'
-            );
+        if (isset($this->cache['paths'][$path]) === false) {
+            throw new NotFoundException('Path \'' . $path . '\' not found');
         }
-        return $this->cache[$path];
+        var_dump($this->cache);
+        $info = $this->cache['paths'][$path];
+        $info['namespace'] = $this->getNamespace($path);
+        return $info;
     }
 
     protected function executeAction(
@@ -53,6 +54,7 @@ class Application {
         $actionInfo = null;
         if (isset($info['Action'])) {
             $actionInfo = $info['Action'];
+            $actionInfo['namespace'] = $info['namespace'];
         }
         $processor = new $processorClass;
         $this->actionResult = $processor->run($actionInfo);
@@ -62,9 +64,22 @@ class Application {
         $info, $processorClass = 'Hyperframework\Web\ViewProcessor'
     ) {
         if (isset($info['View']) && $this->isViewEnabled) {
+            $viewInfo = $info['View'];
+            $viewInfo['namespace'] = $info['namespace'];
             $processor = new $processorClass;
-            $processor->run($info['View']);
+            $processor->run($viewInfo);
         }
+    }
+
+    private function getNamespace($path) {
+        if (isset($this->cache['namespace']) === false) {
+            return '\\';
+        }
+        $namespace = '\\' . $this->cache['namespace'];
+        if (isset($namespace['folder_mapping']) && $path !== '/') {
+            $namespace = $namespace[0] . \str_replace('/', '\\', $path);
+        }
+        return $namespace . '\\';
     }
 
     private function initializeCache() {

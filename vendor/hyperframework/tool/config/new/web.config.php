@@ -24,7 +24,7 @@ return array(
     '    }',
     '}',
   ),
-  'tmp/cache/' => 0777,
+  'cache/' => 0777,
   'config/build.config.php' => array(
     '<?php',
     "return array('ClassLoader', 'Application');",
@@ -46,7 +46,7 @@ return array(
   'public/index.php' => array(
     '<?php',
     "define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);",
-    "define('CACHE_PATH', ROOT_PATH . 'tmp' . DIRECTORY_SEPARATOR .",
+    "define('CACHE_PATH', ROOT_PATH . ",
     "    'cache' . DIRECTORY_SEPARATOR);",
     "define('CONFIG_PATH', ROOT_PATH . 'config' . DIRECTORY_SEPARATOR);",
     "define('HYPERFRAMEWORK_PATH', " . $GLOBALS['HYPERFRAMEWORK_PATH'] . ");",
