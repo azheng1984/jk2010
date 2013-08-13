@@ -85,11 +85,11 @@ class Application {
             return '\\';
         }
         $cache = $this->cache['namespace'];
-        if (is_array($cache) === false) {
+        if (\is_array($cache) === false) {
             return '\\' . $cache . '\\';
         }
         if (isset($cache['folder_mapping']) === false) {
-            throw new \Exception('Application cache format error');
+            throw new \Exception('Application cache format is incorrect');
         }
         $namespace = isset($cache[0]) ? $cache[0] : null;
         if ($path === '/') {
@@ -97,5 +97,5 @@ class Application {
         }
         $namespace = $namespace === null ? '' : '\\' . $namespace;
         return $namespace . \str_replace('/', '\\', $path) . '\\';
-   }
+    }
 }
