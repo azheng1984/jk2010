@@ -89,6 +89,7 @@ class ClassLoaderBuilder {
         // 3: 压缩路径(使用尽量少的配置完成文件定位)：在 folder_mapping 的情况下，在没有歧义时进行，比如 \X\Y\Z.php 对应 /x/Y/Z.php 路径，其实只要 X => x 足够了
         // 4: recursive = false 停止所有 children 的扫描，如果是 folder_mapping = true 时，在输出 cache 中设置中断匹配标记
         // 5: 配置允许 “叠加”, 除非是属性配置 比如 recursive = false/true
+        // 6: path 反向匹配命名空间（用于 app build）
         echo $namespace . ' > ' . $folder . PHP_EOL;
     }
 
