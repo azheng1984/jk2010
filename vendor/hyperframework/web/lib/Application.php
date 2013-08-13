@@ -84,10 +84,20 @@ class Application {
         if (isset($this->cache['namespace']) === false) {
             return '\\';
         }
-        $namespace = '\\' . $this->cache['namespace'];
-        if (isset($namespace['folder_mapping']) && $path !== '/') {
-            $namespace = $namespace[0] . \str_replace('/', '\\', $path);
+        if (is_array($this->cache['namespace']) === false) {
+            return '\\' . $this->cache['namespace'] . '\\';
         }
-        return $namespace . '\\';
+        if (isset($namespace['folder_mapping']) === false) {
+            return '\\' . $this->cache['namespace'][0] . '\\';
+        }
+        $namespace = $this->cache['namespace'][0];
+        if ($path !== '/') {
+            $namespace = $namespace === '\\' ? '' : $namespace;
+            $namespace = $namespace . \str_replace('/', '\\', $path);
+        }
+        if ($this->cache['namespace'][0] !== '\\') {
+            $namespace = '\\' . $namespace . '\\';
+        }
+        return $namespace;
     }
 }
