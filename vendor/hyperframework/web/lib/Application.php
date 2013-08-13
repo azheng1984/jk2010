@@ -91,13 +91,10 @@ class Application {
             return '\\' . $this->cache['namespace'][0] . '\\';
         }
         $namespace = $this->cache['namespace'][0];
-        if ($path !== '/') {
-            $namespace = $namespace === '\\' ? '' : $namespace;
-            $namespace = $namespace . \str_replace('/', '\\', $path);
+        if ($path === '/') {
+            return $namespace === '\\' ? '\\' : '\\' . $namespace . '\\';
         }
-        if ($this->cache['namespace'][0] !== '\\') {
-            $namespace = '\\' . $namespace . '\\';
-        }
-        return $namespace;
-    }
+        $namespace = $namespace === '\\' ? '' : '\\' . $namespace;
+        return $namespace . \str_replace('/', '\\', $path) . '\\';
+   }
 }
