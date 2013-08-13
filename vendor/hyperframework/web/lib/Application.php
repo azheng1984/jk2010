@@ -84,17 +84,18 @@ class Application {
         if (isset($this->cache['namespace']) === false) {
             return '\\';
         }
-        if (is_array($this->cache['namespace']) === false) {
-            return '\\' . $this->cache['namespace'] . '\\';
+        $cache = $this->cache['namespace'];
+        if (is_array($cache) === false) {
+            return '\\' . $cache . '\\';
         }
-        if (isset($namespace['folder_mapping']) === false) {
-            return '\\' . $this->cache['namespace'][0] . '\\';
+        if (isset($cache['folder_mapping']) === false) {
+            throw new \Exception('Application cache format error');
         }
-        $namespace = $this->cache['namespace'][0];
+        $namespace = isset($cache[0]) ? $cache[0] : null;
         if ($path === '/') {
-            return $namespace === '\\' ? '\\' : '\\' . $namespace . '\\';
+            return $namespace === null ? '\\' : '\\' . $namespace . '\\';
         }
-        $namespace = $namespace === '\\' ? '' : '\\' . $namespace;
+        $namespace = $namespace === null ? '' : '\\' . $namespace;
         return $namespace . \str_replace('/', '\\', $path) . '\\';
    }
 }
