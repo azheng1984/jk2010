@@ -42,7 +42,7 @@ class ClassLoaderBuilder {
         $namespaces = array();
         foreach ($current as $key => $value) {
             if (is_int($key)) {
-                $folders[] = $value;
+                $folders[$key] = $value;
             } else {
                 if (strncmp($key, '@', 1) === 0) {
                     continue;
@@ -63,11 +63,49 @@ class ClassLoaderBuilder {
                 }
             }
         }
-        if (count($folders) < 2) {
-            foreach ($folders as $folder) {
-                if (is_dir($folder) === false) {
-                    
+        if (count($folders) > 1) {
+            var_dump($folders);
+            foreach ($folders as $index => $folder) {
+                if (is_dir($folder)) {
+                    $d = dir($folder);
+                    while (false !== ($ns = $d->read())) {
+                        $childFolder = $folder . '/' . $ns;
+                        //echo '>' . $childFolder . '<' . PHP_EOL;
+                        if ($ns === '.' || $ns === '..') {
+                            continue;
+                        }
+                        if (is_dir($childFolder) === false) {
+                            $tmp = explode('.', $ns);
+                            //var_dump($tmp);
+                            $ns = $tmp[0];
+                            if (isset($current[$ns])) {
+                                throw new \Exception('Error: conflict class!');
+                            }
+                            $current[$ns] = $childFolder;
+                            continue;
+                        }
+                        if (isset($current[$ns])) {
+                            if (is_string($current[$ns])) {
+                                $current[$ns] = array($childFolder, $current[$ns]);
+                            } else {
+                                $current[$ns][] = $childFolder;
+                            }
+                        } else {
+                            $current[$ns] = $childFolder;
+                        }
+                        if (in_array($ns, $namespaces) === false) {
+                            $namespaces[] = $ns;
+                        }
+                    }
+                } else {
+                   $end = end(explode('/', $folder));
+                    $ns = current(explode('.', $end));
+                    if (isset($current[$ns])) {
+                       throw new \Exception('Error: conflict class!');
+                    }
+                    $current[$ns] = $folder;
                 }
+                unset($current[$index]);
             }
         }
         foreach ($namespaces as $namespace) {
