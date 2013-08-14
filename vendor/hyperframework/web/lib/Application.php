@@ -33,7 +33,7 @@ class Application {
 
     protected function getPathInfo($path) {
         if ($path === null) {
-            $segments = \explode('?', $_SERVER['REQUEST_URI'], 2);
+            $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
             $path = $segments[0];
         }
         if ($this->cache === null) {
@@ -85,7 +85,7 @@ class Application {
             return '\\';
         }
         $cache = $this->cache['namespace'];
-        if (\is_array($cache) === false) {
+        if (is_array($cache) === false) {
             return '\\' . $cache . '\\';
         }
         if (isset($cache['folder_mapping']) === false) {
@@ -96,6 +96,6 @@ class Application {
             return $namespace === null ? '\\' : '\\' . $namespace . '\\';
         }
         $namespace = $namespace === null ? '' : '\\' . $namespace;
-        return $namespace . \str_replace('/', '\\', $path) . '\\';
+        return $namespace . str_replace('/', '\\', $path) . '\\';
     }
 }
