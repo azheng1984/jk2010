@@ -170,12 +170,10 @@ class ClassLoaderBuilder {
         if (strncmp($folder, '/', 1) !== 0) {
             $folder = $_SERVER['PWD'] . '/' . $folder;
         }
-        print_r($properties);
         if (isset($properties['@exclude']) &&
             $properties['@exclude'] === true) {
             $exclude = true;
-            $folder = array($folder, '@exclude' => true);
-            echo '~~~~~~~';
+            $folder = array('@exclude' => array($folder));
             //echo '[exclude]';
         } else {
             unset($properties['@exclude']);
@@ -183,7 +181,6 @@ class ClassLoaderBuilder {
         if (isset($properties['@folder_mapping'])) {
             if (isset($properties['@exclude']) === false) {
                 $this->addClassMapping($namespace, $folder);
-                echo '!!!!';
                 return;
             }
         }
@@ -206,7 +203,14 @@ class ClassLoaderBuilder {
                     if (is_string($currentNamespace[$item])) {
                         $currentNamespace[$item] = array($currentNamespace[$item], $folder);
                     } else {
-                        $currentNamespace[$item][] = $folder; 
+                        if (isset($folder['@exclude'])) {
+                            if (isset($currentNamespace[$item]['@exclude']) === false) {
+                                $currentNamespace[$item]['@exclude'] = array();
+                            }
+                            $currentNamespace[$item]['@exclude'][] = $folder['$exclude'][0];
+                        } else {
+                            $currentNamespace[$item][] = $folder; 
+                        }
                     }
                 } else {
                     if (is_string($currentNamespace)) {
