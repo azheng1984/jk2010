@@ -1,6 +1,7 @@
 <?php
 class ClassLoaderBuilder {
     private $classMappings = array();
+    private $output = array();
 
     public function build() {
         $config = require 'config' . DIRECTORY_SEPARATOR . 'class_loader.config.php';
@@ -28,10 +29,7 @@ class ClassLoaderBuilder {
             }
             $target['@classes'] = $tmp['class_loader'];
         }
-        $cache = var_export($this->output, true);
-        echo $cache;
-        exit;
-        return $cache;
+        return array('class_loader' => $this->output);
     }
 
     private function checkConflict($parentNamespace, &$current) {
@@ -40,6 +38,8 @@ class ClassLoaderBuilder {
         }
         $folders = array();
         $namespaces = array();
+//        var_dump($parentNamespace);
+//        var_dump($current);
         foreach ($current as $key => $value) {
             if (is_int($key)) {
                 $folders[$key] = $value;
@@ -64,7 +64,7 @@ class ClassLoaderBuilder {
             }
         }
         if (count($folders) > 1) {
-            var_dump($folders);
+//            var_dump($folders);
             foreach ($folders as $index => $folder) {
                 if (is_dir($folder)) {
                     $d = dir($folder);
@@ -75,18 +75,7 @@ class ClassLoaderBuilder {
                             continue;
                         }
                         if (is_dir($childFolder) === false) {
-                            //add @classes mapping
-                            $tmp = explode('.', $ns);
-                            //var_dump($tmp);
-                            $ns = $tmp[0];
-                            // if (isset($current[$ns])) {
-                            //     continue;
-                            // }
-                            if ($parentNamespace !== null) {
-                                $ns = $parentNamespace . '\\' . $ns;
-                            }
-                            $this->addClassMapping($ns, $childFolder);
-                            //$current[$ns] = $childFolder;
+                            $this->addClassMapping($parentNamespace, $childFolder);
                             continue;
                         }
                         if (isset($current[$ns])) {
@@ -103,19 +92,18 @@ class ClassLoaderBuilder {
                         }
                     }
                 } else {
-                    $end = end(explode('/', $folder));
-                    $ns = current(explode('.', $end));
-                    if (isset($current[$ns])) {
-                        throw new \Exception('Error: conflict class \'' .
-                            $ns . '\'[2]!');
-                    }
-                    $current[$ns] = $folder;
+                    $this->addClassMapping($parentNamespace, $folder);
                 }
                 unset($current[$index]);
             }
         }
         foreach ($namespaces as $namespace) {
-            $this->checkConflict($namespace, $current[$namespace]);
+            if ($parentNamespace !== null) {
+                $parentNamespace = $parentNamespace . '\\' . $namespace;
+            } else {
+                $parentNamespace = $namespace;
+            }
+            $this->checkConflict($parentNamespace, $current[$namespace]);
         }
     }
 
@@ -195,9 +183,6 @@ class ClassLoaderBuilder {
         } else {
             unset($properties['@exclude']);
         }
-       // if (count($properties) > 0) {
-       //     $folder = array($folder) +  $properties;
-       // }
         if (isset($properties['@folder_mapping'])) {
             if (isset($properties['@exclude'])) {
                 return;
@@ -205,8 +190,6 @@ class ClassLoaderBuilder {
             $this->addClassMapping($namespace, $folder);
            return;
         }
-        //todo 自动扩展一个命名空间中的文件夹 & 上层自动匹配的文件夹检查是否有匹配的子 namespace
-
         $currentNamespace = &$this->output;
         $count = 0;
         $namespaces = explode('\\', $namespace);
@@ -260,9 +243,6 @@ class ClassLoaderBuilder {
             $this->classMappings[$namespace][0]->read($folder);
  
     }
-    
-
-    private $output = array();
 
     public function processProperties($config, $properties) {
         foreach ($config as $key => $value) {

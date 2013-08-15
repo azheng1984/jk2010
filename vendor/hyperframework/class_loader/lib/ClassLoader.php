@@ -1,10 +1,9 @@
 <?php
 namespace Hyperframework;
-//通过 apc 缓存 cache array
+
 class ClassLoader {
     private $rootPath;
-    private $classes;
-    private $folders;
+    private $cache;
 
     public function run($rootPath = null, $cachePath = null) {
         if ($rootPath === null) {
@@ -14,10 +13,8 @@ class ClassLoader {
         if ($cachePath === null) {
             $cachePath = CACHE_PATH . 'class_loader.cache.php';
         }
-        $cache = require $cachePath;
+        $this->cache = require $cachePath;
         //var_dump($info);
-        $this->classes = $cache[0];
-        $this->folders = $cache[1];
         spl_autoload_register(array($this, 'load'));
     }
 
@@ -26,13 +23,47 @@ class ClassLoader {
     }
 
     public function load($name) {
-        //use apc cache
+//        echo $name . '<br/>';
 //        echo '>' . $name . PHP_EOL;
-        $tmp = explode('\\', $name);
-        $name = end($tmp);
-        if (isset($this->classes[$name])) {
-           // echo $this->getFolder($this->classes[$name]) . $name . '.php'.PHP_EOL;
-            require $this->getFolder($this->classes[$name]) . $name . '.php';
+        $namespaces = explode('\\', $name);
+        $class = array_pop($namespaces);
+        $info = $this->cache;
+        $index = 0;
+        //var_dump($namespaces);
+        //var_dump($this->cache);
+        foreach ($namespaces as $namespace) {
+            if (isset($info[$namespace])) {
+
+            //echo '>'.$namespace;
+                $info = $info[$namespace];
+                ++$index;
+                continue;
+            }
+            break;
+        }
+        //echo $name;
+        //var_dump($info);
+        $amount = count($namespaces);
+        if ($amount !== $index || isset($info['@classes']) === false) {
+            $path = $info;
+            if (is_array($info)) {
+                $path = $info[0];
+            }
+            for ($index; $index < $amount; ++$index) {
+                $path .= '/' . $namespaces[$index];
+            }
+            //echo $path . '/'. $class . '.php';
+            require $path . '/'. $class . '.php';
+        } else {
+////            echo '@@@@' . $name;
+//            var_dump($info);
+//            echo '###';
+            if (isset($info['@classes'][0][$class])) {
+                $this->classes = $info['@classes'][0];
+                $this->folders = $info['@classes'][1];
+                //echo $this->getFolder($this->classes[$class]) . $class . '.php'.PHP_EOL;
+                require $this->getFolder($this->classes[$class]) . $class . '.php';
+            }
         }
     }
 
