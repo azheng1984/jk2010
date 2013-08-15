@@ -6,7 +6,10 @@ class CacheExporter {
         if ($result === null) {
             return;
         }
-        $caches = $result->export();
+        $caches = $result;
+        if (is_array($result) === false) {
+            $caches = $result->export();
+        }
         foreach ($caches as $name => $cache) {
             file_put_contents(
                 $this->getPath($name),
