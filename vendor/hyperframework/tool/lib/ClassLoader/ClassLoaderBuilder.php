@@ -5,6 +5,7 @@ class ClassLoaderBuilder {
     public function build() {
         $config = require 'config' . DIRECTORY_SEPARATOR . 'class_loader.config.php';
         $this->processNamespace('', $config, array());
+        $this->checkConflict(null, $this->output);
         foreach ($this->classMappings as $namespace => $classMapping) {
             $tmp = $classMapping[1]->export();
             $namespaces = explode('\\', $namespace);
@@ -27,14 +28,13 @@ class ClassLoaderBuilder {
             }
             $target['@classes'] = $tmp['class_loader'];
         }
-        $this->checkConflict($this->output);
         $cache = var_export($this->output, true);
         echo $cache;
         exit;
         return $cache;
     }
 
-    private function checkConflict(&$current) {
+    private function checkConflict($parentNamespace, &$current) {
         if (is_string($current)) {
             return;
         }
@@ -75,13 +75,18 @@ class ClassLoaderBuilder {
                             continue;
                         }
                         if (is_dir($childFolder) === false) {
+                            //add @classes mapping
                             $tmp = explode('.', $ns);
                             //var_dump($tmp);
                             $ns = $tmp[0];
-                            if (isset($current[$ns])) {
-                                throw new \Exception('Error: conflict class!');
+                            // if (isset($current[$ns])) {
+                            //     continue;
+                            // }
+                            if ($parentNamespace !== null) {
+                                $ns = $parentNamespace . '\\' . $ns;
                             }
-                            $current[$ns] = $childFolder;
+                            $this->addClassMapping($ns, $childFolder);
+                            //$current[$ns] = $childFolder;
                             continue;
                         }
                         if (isset($current[$ns])) {
@@ -98,10 +103,11 @@ class ClassLoaderBuilder {
                         }
                     }
                 } else {
-                   $end = end(explode('/', $folder));
+                    $end = end(explode('/', $folder));
                     $ns = current(explode('.', $end));
                     if (isset($current[$ns])) {
-                       throw new \Exception('Error: conflict class!');
+                        throw new \Exception('Error: conflict class \'' .
+                            $ns . '\'[2]!');
                     }
                     $current[$ns] = $folder;
                 }
@@ -109,7 +115,7 @@ class ClassLoaderBuilder {
             }
         }
         foreach ($namespaces as $namespace) {
-            $this->checkConflict($current[$namespace]);
+            $this->checkConflict($namespace, $current[$namespace]);
         }
     }
 
@@ -196,17 +202,8 @@ class ClassLoaderBuilder {
             if (isset($properties['@exclude'])) {
                 return;
             }
-            if (isset($this->classMappings[$namespace]) === false) {
-                $cache = new ClassLoaderCache;
-                $directoryReader = new DirectoryReader(
-                    new ClassRecognizationHandler($cache)
-                );
-                $this->classMappings[$namespace] = array(
-                    $directoryReader, $cache
-                );
-            }
-            $this->classMappings[$namespace][0]->read($folder);
-            return;
+            $this->addClassMapping($namespace, $folder);
+           return;
         }
         //todo 自动扩展一个命名空间中的文件夹 & 上层自动匹配的文件夹检查是否有匹配的子 namespace
 
@@ -249,6 +246,21 @@ class ClassLoaderBuilder {
         }
         //var_export($this->output);
     }
+
+    private function addClassMapping($namespace, $folder) {
+            if (isset($this->classMappings[$namespace]) === false) {
+                $cache = new ClassLoaderCache;
+                $directoryReader = new DirectoryReader(
+                    new ClassRecognizationHandler($cache)
+                );
+                $this->classMappings[$namespace] = array(
+                    $directoryReader, $cache
+                );
+            }
+            $this->classMappings[$namespace][0]->read($folder);
+ 
+    }
+    
 
     private $output = array();
 
