@@ -156,16 +156,8 @@ class ClassLoaderBuilder {
             }
             unset($properties['@root']);
         }
-        $recursive = true;
         $folderMapping = true;
         $exclude = false;
-        if (isset($properties['@recursive']) &&
-            $properties['@recursive'] === false) {
-            $recursive = false;
-        } else {
-            unset($properties['@recursive']);
-            //echo '[recursive]';
-        }
         if (isset($properties['@folder_mapping']) &&
             $properties['@folder_mapping'] === false) {
             $folderMapping = false;
@@ -231,17 +223,16 @@ class ClassLoaderBuilder {
     }
 
     private function addClassMapping($namespace, $folder) {
-            if (isset($this->classMappings[$namespace]) === false) {
-                $cache = new ClassLoaderCache;
-                $directoryReader = new DirectoryReader(
-                    new ClassRecognizationHandler($cache)
-                );
-                $this->classMappings[$namespace] = array(
-                    $directoryReader, $cache
-                );
-            }
-            $this->classMappings[$namespace][0]->read($folder);
- 
+        if (isset($this->classMappings[$namespace]) === false) {
+            $cache = new ClassLoaderCache;
+            $directoryReader = new DirectoryReader(
+                new ClassRecognizationHandler($cache)
+            );
+            $this->classMappings[$namespace] = array(
+                $directoryReader, $cache
+            );
+        }
+        $this->classMappings[$namespace][0]->read($folder);
     }
 
     public function processProperties($config, $properties) {
@@ -249,7 +240,6 @@ class ClassLoaderBuilder {
             if (is_int($key) === false && strncmp($key, '@', 1) === 0) {
                 //@root (可被覆盖或 '相对 root')
                 //@folder_mapping
-                //@recursive
                 //@exclude
                 $properties[$key] = $value;
              }
