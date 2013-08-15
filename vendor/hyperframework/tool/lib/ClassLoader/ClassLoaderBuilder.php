@@ -6,6 +6,8 @@ class ClassLoaderBuilder {
     public function build() {
         $config = require 'config' . DIRECTORY_SEPARATOR . 'class_loader.config.php';
         $this->processNamespace('', $config, array());
+        var_export($this->output);
+        exit;
         $this->checkConflict(null, $this->output);
         foreach ($this->classMappings as $namespace => $classMapping) {
             $tmp = $classMapping[1]->export();
@@ -29,7 +31,8 @@ class ClassLoaderBuilder {
             }
             $target['@classes'] = $tmp['class_loader'];
         }
-        return array('class_loader' => $this->output);
+        var_export($this->output);
+        //return array('class_loader' => $this->output);
     }
 
     private function checkConflict($parentNamespace, &$current) {
@@ -163,24 +166,26 @@ class ClassLoaderBuilder {
             $folderMapping = false;
         } else {
            unset($properties['@folder_mapping']);
-           // echo '[folder_mapping]';
         }
         if (strncmp($folder, '/', 1) !== 0) {
             $folder = $_SERVER['PWD'] . '/' . $folder;
         }
+        print_r($properties);
         if (isset($properties['@exclude']) &&
             $properties['@exclude'] === true) {
             $exclude = true;
+            $folder = array($folder, '@exclude' => true);
+            echo '~~~~~~~';
             //echo '[exclude]';
         } else {
             unset($properties['@exclude']);
         }
         if (isset($properties['@folder_mapping'])) {
-            if (isset($properties['@exclude'])) {
+            if (isset($properties['@exclude']) === false) {
+                $this->addClassMapping($namespace, $folder);
+                echo '!!!!';
                 return;
             }
-            $this->addClassMapping($namespace, $folder);
-           return;
         }
         $currentNamespace = &$this->output;
         $count = 0;
