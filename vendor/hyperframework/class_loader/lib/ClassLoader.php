@@ -33,7 +33,6 @@ class ClassLoader {
         //var_dump($this->cache);
         foreach ($namespaces as $namespace) {
             if (isset($info[$namespace])) {
-
             //echo '>'.$namespace;
                 $info = $info[$namespace];
                 ++$index;
@@ -44,18 +43,24 @@ class ClassLoader {
         //echo $name;
         //var_dump($info);
         $amount = count($namespaces);
-        if ($amount !== $index || isset($info['@classes']) === false) {
+        if ($amount !== $index || isset($info['@classes'][0][$class]) === false) {
             $path = $info;
             if (is_array($info)) {
-                $path = $info[0];
+                if (isset($info[0])) {
+                    $path = $info[0];
+                } else {
+                    return;
+                }
+            } elseif (is_string($path) === false) {
+                return;
             }
             for ($index; $index < $amount; ++$index) {
                 $path .= '/' . $namespaces[$index];
             }
-            //echo $path . '/'. $class . '.php';
+//            echo $path . '/'. $class . '.php' . PHP_EOL;
             require $path . '/'. $class . '.php';
         } else {
-////            echo '@@@@' . $name;
+//            echo '@@@@' . $name;
 //            var_dump($info);
 //            echo '###';
             if (isset($info['@classes'][0][$class])) {
