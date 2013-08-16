@@ -2,7 +2,7 @@
 class ClassLoaderBuilder {
     private $classMappings = array();
     private $output = array();
-
+    
     public function build() {
         $config = require 'config' . DIRECTORY_SEPARATOR . 'class_loader.config.php';
         $this->processNamespace('', $config, array());
@@ -33,6 +33,24 @@ class ClassLoaderBuilder {
         }
         var_export($this->output);
         //return array('class_loader' => $this->output);
+    }
+
+    private function checkExclude(&$current) {
+        foreach ($current as $key => $value) {
+            if (is_int($key)) {
+                if (isset($current[$key]['@exclude'])) {
+                    $path = $current[$key][0];
+                    foreach ($current as $key => $value) {
+                        if (is_int($key)) {}
+                    }
+                }
+            } else {
+                if (strncmp($key, '@', 1) === 0) {
+                    continue;
+                }
+                //$this->checkExclude($current[$key])
+            }
+        }
     }
 
     private function checkConflict($parentNamespace, &$current) {
@@ -159,8 +177,6 @@ class ClassLoaderBuilder {
             }
             unset($properties['@root']);
         }
-        $folderMapping = true;
-        $exclude = false;
         if (isset($properties['@folder_mapping']) &&
             $properties['@folder_mapping'] === false) {
             $folderMapping = false;
@@ -172,9 +188,7 @@ class ClassLoaderBuilder {
         }
         if (isset($properties['@exclude']) &&
             $properties['@exclude'] === true) {
-            $exclude = true;
-            $folder = array('@exclude' => array($folder));
-            //echo '[exclude]';
+            $folder = array('@exclude' => true, $folder);
         } else {
             unset($properties['@exclude']);
         }
@@ -203,14 +217,14 @@ class ClassLoaderBuilder {
                     if (is_string($currentNamespace[$item])) {
                         $currentNamespace[$item] = array($currentNamespace[$item], $folder);
                     } else {
-                        if (isset($folder['@exclude'])) {
-                            if (isset($currentNamespace[$item]['@exclude']) === false) {
-                                $currentNamespace[$item]['@exclude'] = array();
-                            }
-                            $currentNamespace[$item]['@exclude'][] = $folder['$exclude'][0];
-                        } else {
+                       // if (isset($folder['@exclude'])) {
+                       //     if (isset($currentNamespace[$item]['@exclude']) === false) {
+                       //         $currentNamespace[$item] = array();
+                       //     }
+                       //     $currentNamespace[$item][] = $folder['$exclude'][0];
+                       // } else {
                             $currentNamespace[$item][] = $folder; 
-                        }
+                       // }
                     }
                 } else {
                     if (is_string($currentNamespace)) {
