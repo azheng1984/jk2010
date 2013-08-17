@@ -1,19 +1,26 @@
 <?php
 class DirectoryReader {
   private $handler;
+  private $excludePaths;
+  private $initPath;
 
   public function __construct($handler) {
     $this->handler = $handler;
   }
 
-  public function read($rootPath, $relativePath = null) {
-    $this->execute(
-      $this->format($rootPath), $this->format($relativePath), true
-    );
+  public function read($rootPath, $relativePath = null, $excludePaths = array()) {
+      $initPath = $this->getFullPath($rootPath, $relativePath);
+      $this->excludePaths = $excludePaths;
+      $this->execute(
+        $this->format($rootPath), $this->format($relativePath), true
+      );
   }
 
   private function execute($rootPath, $relativePath, $isRecursive) {
     $fullPath = $this->getFullPath($rootPath, $relativePath);
+    if (in_array(str_replace($this->initPath, '', $fullPath, 1), $this->excludePaths)) {
+        return;
+    }
     if (!file_exists($fullPath)) {
       throw new Exception("Path '$fullPath' does not exist");
     }

@@ -2,12 +2,12 @@
 class ClassLoaderBuilder {
     private $classMappings = array();
     private $output = array();
+    private $excludePaths = array();
     
     public function build() {
         $config = require 'config' . DIRECTORY_SEPARATOR . 'class_loader.config.php';
+        $this->checkExcludePath('', $config);
         $this->processNamespace('', $config, array());
-        var_export($this->output);
-        exit;
         $this->checkConflict(null, $this->output);
         foreach ($this->classMappings as $namespace => $classMapping) {
             $tmp = $classMapping[1]->export();
@@ -35,20 +35,50 @@ class ClassLoaderBuilder {
         //return array('class_loader' => $this->output);
     }
 
-    private function checkExclude(&$current) {
+    private function checkExcludePath($namespace, &$current, $properties = array()) {
+        if (is_string($current) && isset($properties['exclude']) && $properties['exclude'] === true) {
+            $root = '';
+            if (isset($properties['root'])) {
+                $root = $properties['root'];
+            }
+            $target = &$this->excludePaths;
+            $namespaces = explode('\\', $namespace);
+            foreach ($namespaces as $item) {
+                if ($item === '') {
+                    continue;
+                }
+                if (isset($target[$item]) === false) {
+                   $target[$item] = array(); 
+                }
+                $target = &$target[$item];
+            }
+            $target[] = $root . $current;
+            return;
+        }
+        foreach ($current as $key => $value) {
+            if (is_string[$key] && $key === '@exclude') {
+                $properties['exclude'] = $value;
+            }
+            if (is_string[$key] && $key === '@root') {
+                $properties['root'] = $value; //只支持绝对路径的 root
+            }
+        }
+        $isExclude = false;
+        if (isset($properties['exclude']) && $properties['exclude'] === true) {
+            $isExclude = true;
+        }
         foreach ($current as $key => $value) {
             if (is_int($key)) {
-                if (isset($current[$key]['@exclude'])) {
-                    $path = $current[$key][0];
-                    foreach ($current as $key => $value) {
-                        if (is_int($key)) {}
-                    }
+                if ($isExclude && is_string($value)) {
+                    $this->checkExcludePath($namespace, $value, $properties);
+               } elseif (is_array($value)) {
+                    $this->checkExcludePath($namespace, &$current[$key], $properties);
                 }
             } else {
                 if (strncmp($key, '@', 1) === 0) {
                     continue;
                 }
-                //$this->checkExclude($current[$key])
+                $this->checkExcludePath($namespace . '\\' . $key, $current[$key], $properties);
             }
         }
     }
@@ -71,8 +101,12 @@ class ClassLoaderBuilder {
                 $namespaces[] = $key;
             }
         }
+        $excludePaths = $this->getExcludePaths($namespace, $folder);
         foreach ($folders as $folder) {
             foreach ($namespaces as $namespace) {
+                if (in_array($folder . '/' . $namespace, $excludePaths)) {//如果目录被 exclude，则不加
+                    continue;
+                }
                 if (is_dir($folder . '/' . $namespace)) {
                     if (is_string($current[$namespace])) {
                         $current[$namespace] = array(
@@ -95,7 +129,10 @@ class ClassLoaderBuilder {
                         if ($ns === '.' || $ns === '..') {
                             continue;
                         }
-                        if (is_dir($childFolder) === false) {
+                        if (in_array($childFolder, $excludePaths)) {//如果目录被 exclude，则不加
+                            continue;
+                        }
+                        if (is_dir($childFolder) === false) {//添加到文件映射
                             $this->addClassMapping($parentNamespace, $childFolder);
                             continue;
                         }
@@ -126,7 +163,18 @@ class ClassLoaderBuilder {
             }
             $this->checkConflict($parentNamespace, $current[$namespace]);
         }
-    }
+        $tmp = &$current;
+        foreach ($excludePaths as $path) {
+            //add empty namespace path
+            $subnamespaces = explode('/', substr($path, strlen($folder)));
+            foreach ($subnamespaces as $item) {
+                if (isset($tmp[$item] === false)) {
+                    $tmp[$item] = array();
+                }
+                $tmp = &$tmp[$item];
+            }
+        }
+   }
 
     public function processNamespace($namespace, $config, $properties) {
         if (is_string($config)) {
@@ -156,6 +204,7 @@ class ClassLoaderBuilder {
         $properties = $this->processProperties($config, $properties);
         foreach ($config as $key => $value) {
             if (strncmp($key, '@', 1) === 0) {
+                //todo add properties here
                 continue;
             }
             if (is_int($key)) {
@@ -186,17 +235,17 @@ class ClassLoaderBuilder {
         if (strncmp($folder, '/', 1) !== 0) {
             $folder = $_SERVER['PWD'] . '/' . $folder;
         }
-        if (isset($properties['@exclude']) &&
-            $properties['@exclude'] === true) {
-            $folder = array('@exclude' => true, $folder);
-        } else {
-            unset($properties['@exclude']);
-        }
         if (isset($properties['@folder_mapping'])) {
             if (isset($properties['@exclude']) === false) {
                 $this->addClassMapping($namespace, $folder);
                 return;
             }
+        }
+        if (isset($properties['@exclude']) &&
+            $properties['@exclude'] === true) {
+                return;
+        } else {
+            unset($properties['@exclude']);
         }
         $currentNamespace = &$this->output;
         $count = 0;
@@ -217,14 +266,7 @@ class ClassLoaderBuilder {
                     if (is_string($currentNamespace[$item])) {
                         $currentNamespace[$item] = array($currentNamespace[$item], $folder);
                     } else {
-                       // if (isset($folder['@exclude'])) {
-                       //     if (isset($currentNamespace[$item]['@exclude']) === false) {
-                       //         $currentNamespace[$item] = array();
-                       //     }
-                       //     $currentNamespace[$item][] = $folder['$exclude'][0];
-                       // } else {
-                            $currentNamespace[$item][] = $folder; 
-                       // }
+                        $currentNamespace[$item][] = $folder;
                     }
                 } else {
                     if (is_string($currentNamespace)) {
@@ -246,6 +288,7 @@ class ClassLoaderBuilder {
     }
 
     private function addClassMapping($namespace, $folder) {
+        //todo check exclude
         if (isset($this->classMappings[$namespace]) === false) {
             $cache = new ClassLoaderCache;
             $directoryReader = new DirectoryReader(
@@ -255,7 +298,38 @@ class ClassLoaderBuilder {
                 $directoryReader, $cache
             );
         }
-        $this->classMappings[$namespace][0]->read($folder);
+        $excludePaths = $this->getExcludePaths($namespace, $folder);
+        $this->classMappings[$namespace][0]->read($folder, null, $excludePaths);
+    }
+
+    private function getExcludePaths($namespace, $folder) {
+        $namespaces = explode('\\', $namespace);
+        $result = array();
+        $tmp = &$this->excludePaths;
+        $currentNamespace = '';
+        foreach ($namespaces as $item) {
+            if ($item === '') {
+                continue;
+            }
+            if (isset($tmp[$item])) {
+                foreach ($tmp[$item] as $key => $value) {
+                    if (is_int($key)) {
+                        if (strncmp($folder, $value, strlen($folder)) === 0) {
+                            $result[] = $value;
+                        }
+                    }
+                }
+            } else {
+                break;
+            }
+            $tmp = &$tmp[$item];
+            if ($currentNamespace === '') {
+                $currentNamespace = $item;
+            } else {
+                $currentNamespace .= '\\' . $item;
+            }
+        }
+        return $result;
     }
 
     public function processProperties($config, $properties) {
