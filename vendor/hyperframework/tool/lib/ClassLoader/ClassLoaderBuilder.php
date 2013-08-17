@@ -101,7 +101,7 @@ class ClassLoaderBuilder {
                 $namespaces[] = $key;
             }
         }
-        $excludePaths = $this->getExcludePaths($namespace, $folder);
+        $excludePaths = $this->getExcludePaths($namespace, $folder, true);
         foreach ($folders as $folder) {
             foreach ($namespaces as $namespace) {
                 if (in_array($folder . '/' . $namespace, $excludePaths)) {//如果目录被 exclude，则不加
@@ -298,15 +298,16 @@ class ClassLoaderBuilder {
                 $directoryReader, $cache
             );
         }
-        $excludePaths = $this->getExcludePaths($namespace, $folder);
+        $excludePaths = $this->getExcludePaths($namespace, $folder, false);
         $this->classMappings[$namespace][0]->read($folder, null, $excludePaths);
     }
 
-    private function getExcludePaths($namespace, $folder) {
+    private function getExcludePaths($namespace, $folder, $isFolderMapping) {
         $namespaces = explode('\\', $namespace);
         $result = array();
         $tmp = &$this->excludePaths;
         $currentNamespace = '';
+        $checkChildNamespace = true;
         foreach ($namespaces as $item) {
             if ($item === '') {
                 continue;
@@ -320,6 +321,7 @@ class ClassLoaderBuilder {
                     }
                 }
             } else {
+                $checkChildNamespace = false;
                 break;
             }
             $tmp = &$tmp[$item];
@@ -329,7 +331,31 @@ class ClassLoaderBuilder {
                 $currentNamespace .= '\\' . $item;
             }
         }
+        if ($checkChildNamespace && $isFolderMapping && is_array($tmp)) {
+            //检查所有下层 namespace 是否有排除的子文件夹
+            foreach ($tmp as $key => $value) {
+                if (is_string($tmp($key))) {
+                    $this->comparePathMapping($currentNamespace, $folder, $currentNamespace . '\\'. $key, $key[$tmp], $result);
+                }
+            }
+        }
         return $result;
+    }
+
+    private function comparePathMapping($baseNamespace, $baseFolder, $currentNamespace, $current, &$result) {
+        foreach ($current as $key => $value) {
+            if (is_string($tmp($key))) {
+                $this->comparePathMapping($baseNamespace, $baseFolder, $currentNamespace . '\\'. $key, $tmp[$key], $result);
+            } else {
+                $path = $tmp[$key];
+                if (strncmp($path, $baseFolder, strlen($baseFolder)) === 0) {
+                    if (substr($currentNamespace, strlen($baseNamespace)) ===
+                        str_replace('/', '\\', substr($path, strlen($baseFolder)))) {
+                        $result[] = $path;
+                    }
+                }
+            }
+        }
     }
 
     public function processProperties($config, $properties) {
