@@ -20,8 +20,7 @@ class ApplicationBuilder {
 
     protected function setUpClassLoader() {
         $rootPath = $_SERVER['PWD'].DIRECTORY_SEPARATOR;
-        $cachePath = $rootPath . 'cache' . DIRECTORY_SEPARATOR .
-            'class_loader.cache.php';
+        $cachePath = $rootPath . 'cache' . DIRECTORY_SEPARATOR;
         if (!file_exists($cachePath)) {
             throw new Exception("File '$cachePath' does not exsit");
         }
