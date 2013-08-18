@@ -18,9 +18,9 @@ class DirectoryReader {
 
   private function execute($rootPath, $relativePath, $isRecursive) {
     $fullPath = $this->getFullPath($rootPath, $relativePath);
-    if (in_array(str_replace($this->initPath, '', $fullPath, 1), $this->excludePaths)) {
+    if (in_array($fullPath, $this->excludePaths)) {
         return;
-    }
+    } 
     if (!file_exists($fullPath)) {
       throw new Exception("Path '$fullPath' does not exist");
     }
