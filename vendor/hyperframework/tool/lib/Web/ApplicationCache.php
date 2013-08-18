@@ -1,7 +1,6 @@
 <?php
 class ApplicationCache {
     private $cache;
-    private $errorCache;
 
     public function __construct($handlers) {
 //        $processors = array();
@@ -10,7 +9,6 @@ class ApplicationCache {
 //        }
 //        $this->cache = array($processors);
           $this->cache = array();
-          $this->errorCache = array();
     }
 
     public function append($relativeFolder, $name, $cache) {
@@ -21,28 +19,7 @@ class ApplicationCache {
         if (DIRECTORY_SEPARATOR !== '/') {
             $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
         }
-        //todo: duplicate code
-        if (strpos($path, '/error') === 0) {
-            if (!isset($this->errorCache[$path])) {
-                $this->errorCache[$path] = array($name => $cache);
-                return;
-            }
-            if (!isset($this->errorCache[$path][$name])) {
-                $this->errorCache[$path][$name] = $cache;
-                return;
-            }
-            if (!is_array($this->errorCache[$path][$name])) {
-                $this->errorCache[$path][$name] = array($this->errorCache[$path][$name]);
-            }
-            if (!is_array($cache)) {
-                $cache = array($cache);
-            }
-            $this->errorCache[$path][$name] = array_merge(
-                $cache, $this->errorCache[$path][$name]
-            );
-            return;
-        }
-        if (!isset($this->cache[$path])) {
+       if (!isset($this->cache[$path])) {
             $this->cache[$path] = array($name => $cache);
             return;
         }
@@ -76,9 +53,9 @@ class ApplicationCache {
     }
 
     public function export() {
+        $cache = array('namespace' => 'Hft\Application', 'paths' => $this->cache);
         return array(
-            'application' => $this->cache,
-            'application.error' => $this->errorCache
+            'application' => $cache,
         );
     }
 }
