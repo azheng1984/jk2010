@@ -31,8 +31,8 @@ class ClassLoaderBuilder {
             }
             $target['@classes'] = $tmp['class_loader'];
         }
-        var_export($this->output);
-        //return array('class_loader' => $this->output);
+       var_export($this->output);
+        return array('class_loader' => $this->output);
     }
 
     private function checkExcludePath($namespace, &$current, $properties = array()) {

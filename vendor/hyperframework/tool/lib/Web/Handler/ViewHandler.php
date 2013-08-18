@@ -11,6 +11,7 @@ class ViewHandler {
   }
 
   public function handle($class, $fullPath) {
+    $class = 'Hft\Application\\' . $class;
     foreach ($this->types as $type) {
       if (substr($class, -strlen($type)) === $type) {
         $this->verifyRenderingMethod($class, $fullPath);
