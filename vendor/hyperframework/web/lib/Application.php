@@ -2,14 +2,12 @@
 namespace Hyperframework\Web;
 
 class Application {
-    private static $cachePath;
     private static $cacheProvider;
     private static $cache;
     private $actionResult;
     private $isViewEnabled = true;
 
-    public function initialize($cachePath = null, $cacheProvider = null) {
-        static::$cachePath = $cachePath;
+    public function initialize($cacheProvider = null) {
         static::$cacheProvider = $cacheProvider;
         static::$cache = null;
     }
@@ -40,7 +38,6 @@ class Application {
         if (static::$cache === null) {
             $this->initializeCache();
         }
-        //print_r($this->cache);
         if (isset(static::$cache['paths'][$path]) === false) {
             throw new NotFoundException('Path \'' . $path . '\' not found');
         }
@@ -73,13 +70,13 @@ class Application {
     }
 
     private function initializeCache() {
-        $path = static::$cachePath === null ?
-            CACHE_PATH . 'application.cache.php' : static::$cachePath;
-        if (static::$cacheProvider === null) {
-            static::$cache = require $path;
+        if (is_object(static::$cacheProvider)) {
+            static::$cache = static::$cacheProvider->get();
             return;
         }
-        static::$cache = static::$cacheProvider->get($path);
+        $path = static::$cacheProvider === null ?
+            CACHE_PATH . 'application.cache.php' : static::$cacheProvder;
+        static::$cache = require $path;
     }
 
     private function getPathNamespace($path) {
