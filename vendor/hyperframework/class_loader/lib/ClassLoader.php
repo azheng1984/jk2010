@@ -58,6 +58,8 @@ class ClassLoader {
                 $path .= '/' . $namespaces[$index];
             }
 //            echo $path . '/'. $class . '.php' . PHP_EOL;
+//            echo $path.PHP_EOL;
+//            echo $class;
             require $path . '/'. $class . '.php';
         } else {
 //            echo '@@@@' . $name;

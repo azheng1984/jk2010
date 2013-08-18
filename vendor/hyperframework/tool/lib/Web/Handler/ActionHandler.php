@@ -9,6 +9,7 @@ class ActionHandler {
     }
 
     private function getCache($class, $fullPath) {
+        $class  = 'Hft\Application\\' . $class;
         $cache = array('class' => $class, 'methods' => array());
         $httpMethods = array('GET', 'POST', 'PUT', 'DELETE');
         if ($this->hasPrivateGet($class)) {

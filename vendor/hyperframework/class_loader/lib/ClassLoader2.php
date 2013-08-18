@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework;
 
-class ClassLoader {
+class ClassLoader2 {
     private $rootPath;
     private $callback;
     private $classes;

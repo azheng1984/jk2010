@@ -39,6 +39,7 @@ class Application {
         if ($this->cache === null) {
             $this->initializeCache();
         }
+        //print_r($this->cache);
         if (isset($this->cache['paths'][$path]) === false) {
             throw new NotFoundException('Path \'' . $path . '\' not found');
         }
