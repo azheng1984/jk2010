@@ -2,15 +2,16 @@
 namespace Hyperframework\Web;
 
 class Application {
+    private static $cachePath;
+    private static $cacheProvider;
+    private static $cache;
     private $actionResult;
-    private $cachePath;
-    private $cacheProvider;
-    private $cache;
     private $isViewEnabled = true;
 
-    public function __construct($cachePath = null, $cacheProvider = null) {
-        $this->cachePath = $cachePath;
-        $this->cacheProvider = $cacheProvider;
+    public function initialize($cachePath = null, $cacheProvider = null) {
+        static::$cachePath = $cachePath;
+        static::$cacheProvider = $cacheProvider;
+        static::$cache = null;
     }
 
     public function run($path = null) {
@@ -36,14 +37,14 @@ class Application {
             $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
             $path = $segments[0];
         }
-        if ($this->cache === null) {
+        if (static::$cache === null) {
             $this->initializeCache();
         }
         //print_r($this->cache);
-        if (isset($this->cache['paths'][$path]) === false) {
+        if (isset(static::$cache['paths'][$path]) === false) {
             throw new NotFoundException('Path \'' . $path . '\' not found');
         }
-        $info = $this->cache['paths'][$path];
+        $info = static::$cache['paths'][$path];
         $info['namespace'] = $this->getPathNamespace($path);
         return $info;
     }
@@ -72,20 +73,20 @@ class Application {
     }
 
     private function initializeCache() {
-        $path = $this->cachePath === null ?
-            CACHE_PATH . 'application.cache.php' : $this->cachePath;
-        if ($this->cacheProvider === null) {
-            $this->cache = require $path;
+        $path = static::$cachePath === null ?
+            CACHE_PATH . 'application.cache.php' : static::$cachePath;
+        if (static::$cacheProvider === null) {
+            static::$cache = require $path;
             return;
         }
-        $this->cache = $this->cacheProvider->get($path);
+        static::$cache = static::$cacheProvider->get($path);
     }
 
     private function getPathNamespace($path) {
-        if (isset($this->cache['namespace']) === false) {
+        if (isset(static::$cache['namespace']) === false) {
             return '\\';
         }
-        $cache = $this->cache['namespace'];
+        $cache = static::$cache['namespace'];
         if (is_array($cache) === false) {
             return '\\' . $cache . '\\';
         }

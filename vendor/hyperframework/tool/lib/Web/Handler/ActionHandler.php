@@ -9,8 +9,9 @@ class ActionHandler {
     }
 
     private function getCache($class, $fullPath) {
+        $className = $class;
         $class  = 'Hft\Application\\' . $class;
-        $cache = array('class' => $class, 'methods' => array());
+        $cache = array('class' => $className, 'methods' => array());
         $httpMethods = array('GET', 'POST', 'PUT', 'DELETE');
         if ($this->hasPrivateGet($class)) {
             $cache['GET_not_allowed'] = true;
