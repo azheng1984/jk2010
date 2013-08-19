@@ -2,15 +2,11 @@
 namespace Hyperframework\Web;
 
 class ExceptionHandler {
-    private $isObjectiveConfigProvider;
     private $configProvider;
     private $exception;
 
-    public function __construct(
-        $configProvider = null, $isObjectiveConfigProvider = false
-    ) {
+    public function __construct($configProvider = null) {
         $this->configProvider = $configProvider;
-        $this->isObjectiveConfigProvider = $isObjectiveConfigProvider;
     }
 
     public function run() {
@@ -64,9 +60,10 @@ class ExceptionHandler {
     }
 
     private function getConfig() {
-        if ($this->isObjectiveConfigProvider) {
-            $provider = new $this->configProvider;
-            return $provider->get();
+        if (is_array($this->configProvider)) {
+            $provider = is_object($this->configProvider) ?
+                $this->configProvider : new $this->configProvider[0];
+            return $provider->{$this->configProvider[1]}();
         }
         if ($this->configProvider === null) {
             return require CONFIG_PATH . 'exception_handler.config.php';
