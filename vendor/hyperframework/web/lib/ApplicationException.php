@@ -9,6 +9,6 @@ abstract class ApplicationException extends \Exception {
 
     public function rewriteHeader() {
         header_remove();
-        \header('HTTP/1.1 ' . $this->code);
+        header('HTTP/1.1 ' . $this->code);
     }
 }
