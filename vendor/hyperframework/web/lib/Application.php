@@ -85,18 +85,18 @@ class Application {
         if (isset(static::$cache['namespace']) === false) {
             return '\\';
         }
-        $cache = static::$cache['namespace'];
-        if (is_array($cache) === false) {
-            return '\\' . $cache . '\\';
+        $namespace = static::$cache['namespace'];
+        if (is_array($namespace) === false) {
+            return '\\' . $namespace. '\\';
         }
-        if (isset($cache['folder_mapping']) === false) {
+        if (isset($namespace['folder_mapping']) === false) {
             throw new \Exception('Application cache format is incorrect');
         }
-        $namespace = isset($cache['root']) ? $cache['root'] : null;
+        $root = isset($namespace['root']) ? $namespace['root'] : null;
         if ($path === '/') {
-            return $namespace === null ? '\\' : '\\' . $namespace . '\\';
+            return $root === null ? '\\' : '\\' . $root. '\\';
         }
-        $namespace = $namespace === null ? '' : '\\' . $namespace;
-        return $namespace . str_replace('/', '\\', $path) . '\\';
+        $root = $root === null ? '' : '\\' . $root;
+        return $root . str_replace('/', '\\', $path) . '\\';
     }
 }
