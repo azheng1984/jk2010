@@ -207,7 +207,6 @@ class ClassLoaderBuilder {
         $properties = $this->processProperties($config, $properties);
         foreach ($config as $key => $value) {
             if (strncmp($key, '@', 1) === 0) {
-                //todo add properties here
                 continue;
             }
             if (is_int($key)) {
@@ -291,7 +290,6 @@ class ClassLoaderBuilder {
     }
 
     private function addClassMapping($namespace, $folder) {
-        //todo check exclude
         if (isset($this->classMappings[$namespace]) === false) {
             $cache = new ClassLoaderCache;
             $directoryReader = new DirectoryReader(
