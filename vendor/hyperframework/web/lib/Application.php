@@ -70,19 +70,15 @@ class Application {
     }
 
     private function initializeCache() {
-        if (is_array(static::$cacheProvider)) {
-           static::$cache = $provider->static::$provider[1];
+        if (is_array(static::$configProvider)) {
+            $provider = is_object(static::$configProvider) ?
+                static::$configProvider : new static::$configProvider[0];
+            static::$cache = $provider->{self::$configProvider[1]}();
             return;
         }
-        $path = static::$cacheProvider === null ?
+       $path = static::$cacheProvider === null ?
             CACHE_PATH . 'application.cache.php' : static::$cacheProvder;
         static::$cache = require $path;
-    }
-
-    private function getCacheProviderObject() {
-        $provider = is_object(static::$cacheProvider[0]) ?
-           static::$cacheProvider[0] : new static::$cacheProvider[0];
-        return null;
     }
 
     private function getPathNamespace($path) {
