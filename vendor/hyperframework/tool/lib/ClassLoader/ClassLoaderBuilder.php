@@ -221,34 +221,34 @@ class ClassLoaderBuilder {
     }
 
     public function addMapping($namespace, $folder, $properties) {
-        if (isset($properties['@root'])) {
+        if (isset($properties['root'])) {
             if ($folder === '.') {
-                $folder = $properties['@root'];
+                $folder = $properties['root'];
             } else {
-                $folder = $properties['@root'] . '/'  . $folder;
+                $folder = $properties['root'] . '/'  . $folder;
             }
-            unset($properties['@root']);
+            unset($properties['root']);
         }
-        if (isset($properties['@folder_mapping']) &&
-            $properties['@folder_mapping'] === false) {
+        if (isset($properties['folder_mapping']) &&
+            $properties['folder_mapping'] === false) {
             $folderMapping = false;
         } else {
-           unset($properties['@folder_mapping']);
+           unset($properties['folder_mapping']);
         }
         if (strncmp($folder, '/', 1) !== 0) {
             $folder = $_SERVER['PWD'] . '/' . $folder;
         }
-        if (isset($properties['@folder_mapping'])) {
-            if (isset($properties['@exclude']) === false) {
+        if (isset($properties['folder_mapping'])) {
+            if (isset($properties['exclude']) === false) {
                 $this->addClassMapping($namespace, $folder);
                 return;
             }
         }
-        if (isset($properties['@exclude']) &&
-            $properties['@exclude'] === true) {
+        if (isset($properties['exclude']) &&
+            $properties['exclude'] === true) {
                 return;
         } else {
-            unset($properties['@exclude']);
+            unset($properties['exclude']);
         }
         $currentNamespace = &$this->output;
         $count = 0;
@@ -367,7 +367,7 @@ class ClassLoaderBuilder {
                 //@root (可被覆盖或 '相对 root')
                 //@folder_mapping
                 //@exclude
-                $properties[$key] = $value;
+                $properties[substr($key, 1)] = $value;
              }
         }
         return $properties;
