@@ -2,6 +2,8 @@
 return array(
   'app/HomeScreen.php' => array(
     '<?php',
+    'namespace Hft\Application;',
+    '',
     'class HomeScreen {',
     '    public function render() {',
     "        echo 'Welcome!';",
@@ -10,6 +12,8 @@ return array(
   ),
   'app/error/internal_server_error/InternalServerErrorScreen.php' => array(
     '<?php',
+    'namespace Hft\Application;',
+    '',
     'class InternalServerErrorScreen {',
     '    public function render() {',
     "      echo '500 Internal Server Error';",
@@ -18,6 +22,8 @@ return array(
   ),
   'app/error/not_found/NotFoundScreen.php' => array(
     '<?php',
+    'namespace Hft\Application;',
+    '',
     'class NotFoundScreen {',
     '    public function render() {',
     "      echo '404 Not Found';",
@@ -30,10 +36,12 @@ return array(
     "return array('ClassLoader', 'Application');",
   ),
   'config/application.config.php' => array(
+    '<?php',
     "return array('Action', 'View' => 'Screen');"
   ),
   'config/class_loader.config.php' => array(
-    "return array('app', 'lib', HYPERFRAMEWORK_PATH.'web/lib');"
+    '<?php',
+    "return array('Hft\\Application' => array('app', '@folder_mapping' => false), 'Hft' => 'lib', 'Hyperframework\Web' => HYPERFRAMEWORK_PATH.'web/lib');"
   ),
   'config/error_handler.config.php' => array(
     '<?php',
@@ -73,12 +81,14 @@ return array(
     'require '.$GLOBALS['CLASS_LOADER_PREFIX']
       ." . 'class_loader'.DIRECTORY_SEPARATOR .",
     "    'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';",
-    '$CLASS_LOADER = new ClassLoader;',
+    '$CLASS_LOADER = new Hyperframework\ClassLoader;',
     '$CLASS_LOADER->run();',
   ),
   'test/case/app/HomeScreenTest.php' => array(
     '<?php',
-    'class HomeScreenTest extends PHPUnit_Framework_TestCase {',
+    'namespace Hft\Application;',
+    '',
+    'class HomeScreenTest extends \PHPUnit_Framework_TestCase {',
     '    public function test() {',
     '    }',
     '}'
@@ -86,14 +96,18 @@ return array(
   'test/case/app/error/internal_server_error/InternalServerErrorScreenTest.php'
     => array(
       '<?php',
-      'class InternalServerErrorScreen extends PHPUnit_Framework_TestCase {',
+      'namespace Hft\Application;',
+      '',
+      'class InternalServerErrorScreenTest extends \PHPUnit_Framework_TestCase {',
       '    public function test() {',
       '    }',
       '}'
     ),
   'test/case/app/error/not_found/NotFoundScreenTest.php' => array(
     '<?php',
-    'class NotFoundScreenTest extends PHPUnit_Framework_TestCase {',
+     'namespace Hft\Application;',
+    '',
+    'class NotFoundScreenTest extends \PHPUnit_Framework_TestCase {',
     '    public function test() {',
     '    }',
     '}'
@@ -101,8 +115,12 @@ return array(
   'test/fixture/cache/' => 0777,
   'test/fixture/config/build.config.php' => array(
     '<?php',
-    "return array('ClassLoader' => array('lib'));",
-   ),
-  'test/fixture/lib/',
+    "return array('ClassLoader');",
+  ),
+  'test/fixture/config/class_loader.config.php' => array(
+    '<?php',
+    "return array('Hft\TestFixture' => 'lib');",
+  ),
+ 'test/fixture/lib/',
   'vendor/',
 );
