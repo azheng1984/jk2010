@@ -3,7 +3,7 @@ class ClassLoaderBuilder {
     private $classMappings = array();
     private $output = array();
     private $excludePaths = array();
-    
+
     public function build() {
         $config = require 'config' . DIRECTORY_SEPARATOR . 'class_loader.config.php';
         $this->checkExcludePath('', $config);
@@ -57,6 +57,7 @@ class ClassLoaderBuilder {
            }
            return;
         }
+        //var_dump($current);
         foreach ($current as $key => $value) {
             if (is_string($key) && $key === '@exclude') {
                 $properties['exclude'] = $value;

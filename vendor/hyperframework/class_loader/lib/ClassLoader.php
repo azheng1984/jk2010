@@ -43,6 +43,7 @@ class ClassLoader {
         //echo $name;
         //var_dump($info);
         $amount = count($namespaces);
+        //echo $index;
         if ($amount !== $index || isset($info['@classes'][0][$class]) === false) {
             $path = $info;
             if (is_array($info)) {
@@ -62,15 +63,19 @@ class ClassLoader {
 //            echo $class;
             require $path . '/'. $class . '.php';
         } else {
+           // echo '!@!';
 //            echo '@@@@' . $name;
 //            var_dump($info);
 //            echo '###';
-            if (isset($info['@classes'][0][$class])) {
-                $this->classes = $info['@classes'][0];
-                $this->folders = $info['@classes'][1];
-                //echo $this->getFolder($this->classes[$class]) . $class . '.php'.PHP_EOL;
-                require $this->getFolder($this->classes[$class]) . $class . '.php';
-            }
+            $this->classes = $info['@classes'][0];
+            $this->folders = $info['@classes'][1];
+            //echo $this->getFolder($this->classes[$class]) . $class . '.php'.PHP_EOL;
+            require $this->getFolder($this->classes[$class]) . $class . '.php';
+            /* elseif (isset($info[0])) {
+                require $info[0] . '/' . $class . '.php';
+            } elseif (is_string($info)) {
+                require $info . '/' . $class . '.php';
+            }*/
         }
     }
 
