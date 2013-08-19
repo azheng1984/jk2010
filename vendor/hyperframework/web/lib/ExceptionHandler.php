@@ -67,7 +67,7 @@ class ExceptionHandler {
         }
         if ($this->configProvider === null) {
             return require CONFIG_PATH . 'exception_handler.config.php';
-        } 
+        }
         return require $this->configProvider;
     }
 }

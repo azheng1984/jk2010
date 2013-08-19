@@ -70,13 +70,13 @@ class Application {
     }
 
     private function initializeCache() {
-        if (is_array(static::$configProvider)) {
-            $provider = is_object(static::$configProvider) ?
-                static::$configProvider : new static::$configProvider[0];
-            static::$cache = $provider->{self::$configProvider[1]}();
+        if (is_array(static::$cacheProvider)) {
+            $provider = is_object(static::$cacheProvider) ?
+                static::$cacheProvider : new static::$cacheProvider[0];
+            static::$cache = $provider->{self::$cacheProvider[1]}();
             return;
         }
-       $path = static::$cacheProvider === null ?
+        $path = static::$cacheProvider === null ?
             CACHE_PATH . 'application.cache.php' : static::$cacheProvder;
         static::$cache = require $path;
     }
@@ -92,7 +92,7 @@ class Application {
         if (isset($cache['folder_mapping']) === false) {
             throw new \Exception('Application cache format is incorrect');
         }
-        $namespace = isset($cache[0]) ? $cache[0] : null;
+        $namespace = isset($cache['root']) ? $cache['root'] : null;
         if ($path === '/') {
             return $namespace === null ? '\\' : '\\' . $namespace . '\\';
         }
