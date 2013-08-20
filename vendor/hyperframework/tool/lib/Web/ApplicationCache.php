@@ -19,6 +19,9 @@ class ApplicationCache {
         if (DIRECTORY_SEPARATOR !== '/') {
             $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
         }
+        if (strncmp('/error/', $path, 7) === 0) {
+            $path = 'error://' . substr($path, 7);
+        }
        if (!isset($this->cache[$path])) {
             $this->cache[$path] = array($name => $cache);
             return;
