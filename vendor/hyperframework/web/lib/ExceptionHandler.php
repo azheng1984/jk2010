@@ -24,7 +24,7 @@ class ExceptionHandler {
             $this->cleanOutput();
             $exception->sendHeader();
             try {
-                $this->displayError($this->getErrorPath($exception->getCode()));
+                $this->displayError($exception->getCode());
             } catch (\Exception $recursiveException) {
                 $this->reportError($this->exception, $recursiveException);
                 return;
@@ -59,17 +59,17 @@ class ExceptionHandler {
         }
     }
 
-    protected function getErrorPath($statusCode) {
-        return 'error://' .
-            strtolower(str_replace(' ', '_', substr($statusCode, 4)));
-    }
-
-    protected function displayError($path) {
+    protected function displayError($statusCode) {
         try {
             $app = new Application;
-            $app->run($path);
+            $app->run($this->getErrorPath($statusCode));
         } catch (NotFoundException $recursiveException) {
         } catch (UnsupportedMediaTypeException $recursiveException) {
         }
+    }
+
+    protected function getErrorPath($statusCode) {
+        return 'error://' .
+            strtolower(str_replace(' ', '_', substr($statusCode, 4)));
     }
 }
