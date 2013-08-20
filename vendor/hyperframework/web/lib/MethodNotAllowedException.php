@@ -9,8 +9,8 @@ class MethodNotAllowedException extends ApplicationException {
         $this->methods = $methods;
     }
 
-    public function rewriteHeader() {
-        parent::rewriteHeader();
+    public function sendHeader() {
+        parent::sendHeader();
         header('Allow: ' . implode(', ', $this->methods));
     }
 }

@@ -18,14 +18,14 @@ class ExceptionHandler {
         if ($exception instanceof ApplicationException === false) {
             $exception = new InternalServerErrorException;
         }
-        $exception->rewriteHeader();
+
         if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
             $this->previousRequestMethod = $_SERVER['REQUEST_METHOD'];
             $_SERVER['REQUEST_METHOD'] = 'GET';
-            $this->cleanOutputBuffer();
-            $statusCode = $exception->getCode();
+            $this->cleanOutput();
             try {
-                $this->displayError($this->getErrorPath($statusCode));
+                $exception->sendHeader();
+                $this->displayError($this->getErrorPath($exception->getCode()));
             } catch (\Exception $recursiveException) {
                 $this->reportError($this->exception, $recursiveException);
                 return;
@@ -53,8 +53,9 @@ class ExceptionHandler {
         throw $exception;
     }
 
-    protected function cleanOutputBuffer() {
-        if (ob_get_level() !== 0) {
+    protected function cleanOutput() {
+         header_remove();
+         if (ob_get_level() !== 0) {
             ob_end_clean();
         }
     }
