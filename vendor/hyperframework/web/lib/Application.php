@@ -71,8 +71,7 @@ class Application {
 
     private function initializeCache() {
         if (is_array(static::$cacheProvider)) {
-            $provider = is_object(static::$cacheProvider) ?
-                static::$cacheProvider : new static::$cacheProvider[0];
+            $provider = new static::$cacheProvider[0];
             static::$cache = $provider->{self::$cacheProvider[1]}();
             return;
         }
