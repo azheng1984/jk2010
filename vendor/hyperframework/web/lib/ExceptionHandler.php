@@ -19,10 +19,11 @@ class ExceptionHandler {
             $exception = new InternalServerErrorException;
         }
         $exception->rewriteHeader();
-        $statusCode = $exception->getCode();
         if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
             $this->previousRequestMethod = $_SERVER['REQUEST_METHOD'];
             $_SERVER['REQUEST_METHOD'] = 'GET';
+            $this->cleanOutputBuffer();
+            $statusCode = $exception->getCode();
             try {
                 $this->displayError($this->getErrorPath($statusCode));
             } catch (\Exception $recursiveException) {
@@ -58,6 +59,12 @@ class ExceptionHandler {
             $app->run($path);
         } catch (NotFoundException $recursiveException) {
         } catch (UnsupportedMediaTypeException $recursiveException) {
+        }
+    }
+
+    protected function cleanOutputBuffer() {
+        if (ob_get_level() !== 0) {
+            ob_end_clean();
         }
     }
 
