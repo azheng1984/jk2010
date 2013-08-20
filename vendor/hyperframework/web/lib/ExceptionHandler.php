@@ -25,8 +25,6 @@ class ExceptionHandler {
             $_SERVER['REQUEST_METHOD'] = 'GET';
             try {
                 $this->reload($this->getErrorPath($statusCode));
-            } catch (NotFoundException $recursiveException) {
-            } catch (UnsupportedMediaTypeException $recursiveException) {
             } catch (\Exception $recursiveException) {
                 $this->reportError($this->exception, $recursiveException);
                 return;
@@ -45,25 +43,26 @@ class ExceptionHandler {
         return $this->previousRequestMethod;
     }
 
-    protected function reportError($first, $second = null) {
-        $message = $first;
-        if ($second !== null) {
-            $message = 'Uncaught ' . $first . PHP_EOL .
-                PHP_EOL . 'Next ' . $second . PHP_EOL;
+    protected function reportError($exception, $recursiveException = null) {
+        if ($recursiveException !== null) {
+            $message = 'Uncaught ' . $exception. PHP_EOL .
+                PHP_EOL . 'Next ' . $recursiveException. PHP_EOL;
+            trigger_error($message, E_USER_ERROR);
         }
-        if ($message instanceof \Exception) {
-            throw $message;
-        }
-        trigger_error($message, E_USER_ERROR);
+        throw $exception;
     }
 
     protected function reload($path) {
-        $app = new Application;
-        $app->run($path);
+        try {
+            $app = new Application;
+            $app->run($path);
+        } catch (NotFoundException $recursiveException) {
+        } catch (UnsupportedMediaTypeException $recursiveException) {
+        }
     }
 
     protected function getErrorPath($statusCode) {
         return 'error://' .
-            strtolower(str_replace(' ', '_', substr($statusCode, 4))); 
+            strtolower(str_replace(' ', '_', substr($statusCode, 4)));
     }
 }
