@@ -18,7 +18,6 @@ class ExceptionHandler {
         if ($exception instanceof ApplicationException === false) {
             $exception = new InternalServerErrorException;
         }
-
         if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
             $this->previousRequestMethod = $_SERVER['REQUEST_METHOD'];
             $_SERVER['REQUEST_METHOD'] = 'GET';
