@@ -53,15 +53,6 @@ class ExceptionHandler {
         throw $exception;
     }
 
-    protected function displayError($path) {
-        try {
-            $app = new Application;
-            $app->run($path);
-        } catch (NotFoundException $recursiveException) {
-        } catch (UnsupportedMediaTypeException $recursiveException) {
-        }
-    }
-
     protected function cleanOutputBuffer() {
         if (ob_get_level() !== 0) {
             ob_end_clean();
@@ -71,5 +62,14 @@ class ExceptionHandler {
     protected function getErrorPath($statusCode) {
         return 'error://' .
             strtolower(str_replace(' ', '_', substr($statusCode, 4)));
+    }
+
+    protected function displayError($path) {
+        try {
+            $app = new Application;
+            $app->run($path);
+        } catch (NotFoundException $recursiveException) {
+        } catch (UnsupportedMediaTypeException $recursiveException) {
+        }
     }
 }
