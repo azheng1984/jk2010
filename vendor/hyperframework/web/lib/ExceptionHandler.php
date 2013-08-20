@@ -18,10 +18,6 @@ class ExceptionHandler {
         }
         $exception->rewriteHeader();
         $statusCode = $exception->getCode();
-        $config = $this->getConfig();
-        if (isset($config[$statusCode]) === false) {
-            $this->reportError($this->exception);
-        }
         try {
             $this->reload($this->getErrorPath($statusCode));
         } catch (UnsupportedMediaTypeException $ignoredException) {

@@ -43,13 +43,6 @@ return array(
     '<?php',
     "return array('Hft\\Application' => array('app', '@folder_mapping' => false), 'Hft' => 'lib', 'Hyperframework\Web' => HYPERFRAMEWORK_PATH.'web/lib');"
   ),
-  'config/error_handler.config.php' => array(
-    '<?php',
-    'return array(',
-    "    '404 Not Found' => '/error/not_found',",
-    "    '500 Internal Server Error' => '/error/internal_server_error',",
-    ');',
-  ),
   'lib/',
   'public/index.php' => array(
     '<?php',
