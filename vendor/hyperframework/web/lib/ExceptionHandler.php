@@ -10,11 +10,11 @@ class ExceptionHandler {
     }
 
     public function handle($exception) {
+        $this->exception = $exception;
         if (headers_sent()) {
             $this->reportError($exception);
             return;
         }
-        $this->exception = $exception;
         if ($exception instanceof ApplicationException === false) {
             $exception = new InternalServerErrorException;
         }
@@ -24,7 +24,7 @@ class ExceptionHandler {
             $this->previousRequestMethod = $_SERVER['REQUEST_METHOD'];
             $_SERVER['REQUEST_METHOD'] = 'GET';
             try {
-                $this->reload($this->getErrorPath($statusCode));
+                $this->displayError($this->getErrorPath($statusCode));
             } catch (\Exception $recursiveException) {
                 $this->reportError($this->exception, $recursiveException);
                 return;
@@ -52,7 +52,7 @@ class ExceptionHandler {
         throw $exception;
     }
 
-    protected function reload($path) {
+    protected function displayError($path) {
         try {
             $app = new Application;
             $app->run($path);
