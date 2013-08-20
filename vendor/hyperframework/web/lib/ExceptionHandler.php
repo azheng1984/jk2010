@@ -2,12 +2,7 @@
 namespace Hyperframework\Web;
 
 class ExceptionHandler {
-    private $configProvider;
     private $exception;
-
-    public function __construct($configProvider = null) {
-        $this->configProvider = $configProvider;
-    }
 
     public function run() {
         set_exception_handler(array($this, 'handle'));
@@ -28,7 +23,7 @@ class ExceptionHandler {
             $this->reportError($this->exception);
         }
         try {
-            $this->reload($config[$statusCode]);
+            $this->reload($this->getErrorPath($statusCode));
         } catch (UnsupportedMediaTypeException $ignoredException) {
         } catch (\Exception $recursiveException) {
             $this->reportError($this->exception, $recursiveException);
@@ -59,15 +54,8 @@ class ExceptionHandler {
         $app->run($path);
     }
 
-    private function getConfig() {
-        if (is_array($this->configProvider)) {
-            $provider = is_object($this->configProvider) ?
-                $this->configProvider : new $this->configProvider[0];
-            return $provider->{$this->configProvider[1]}();
-        }
-        if ($this->configProvider === null) {
-            return require CONFIG_PATH . 'exception_handler.config.php';
-        }
-        return require $this->configProvider;
+    protected function getErrorPath($statusCode) {
+       return 'error://' .
+           strtolower(str_replace(' ', '_', substr($statusCode, 4))); 
     }
 }
