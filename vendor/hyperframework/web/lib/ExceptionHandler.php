@@ -11,6 +11,7 @@ class ExceptionHandler {
     public function handle($exception) {
         if (headers_sent()) {
             $this->reportError($exception);
+            return;
         }
         $this->exception = $exception;
         if ($exception instanceof ApplicationException === false) {
@@ -18,11 +19,17 @@ class ExceptionHandler {
         }
         $exception->rewriteHeader();
         $statusCode = $exception->getCode();
-        try {
-            $this->reload($this->getErrorPath($statusCode));
-        } catch (UnsupportedMediaTypeException $ignoredException) {
-        } catch (\Exception $recursiveException) {
-            $this->reportError($this->exception, $recursiveException);
+        if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
+            $_SERVER['PREVIOUS_REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'];
+            $_SERVER['REQUEST_METHOD'] = 'GET';
+            try {
+                $this->reload($this->getErrorPath($statusCode));
+            } catch (NotFoundException $recursiveException) {
+            } catch (UnsupportedMediaTypeException $recursiveException) {
+            } catch (\Exception $recursiveException) {
+                $this->reportError($this->exception, $recursiveException);
+                return;
+            }
         }
         if ($exception instanceof InternalServerErrorException) {
             $this->reportError($this->exception);
@@ -51,7 +58,7 @@ class ExceptionHandler {
     }
 
     protected function getErrorPath($statusCode) {
-       return 'error://' .
-           strtolower(str_replace(' ', '_', substr($statusCode, 4))); 
+        return 'error://' .
+            strtolower(str_replace(' ', '_', substr($statusCode, 4))); 
     }
 }
