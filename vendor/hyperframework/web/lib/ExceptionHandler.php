@@ -3,6 +3,7 @@ namespace Hyperframework\Web;
 
 class ExceptionHandler {
     private $exception;
+    private $previousRequestMethod;
 
     public function run() {
         set_exception_handler(array($this, 'handle'));
@@ -20,7 +21,7 @@ class ExceptionHandler {
         $exception->rewriteHeader();
         $statusCode = $exception->getCode();
         if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
-            $_SERVER['PREVIOUS_REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'];
+            $this->previousRequestMethod = $_SERVER['REQUEST_METHOD'];
             $_SERVER['REQUEST_METHOD'] = 'GET';
             try {
                 $this->reload($this->getErrorPath($statusCode));
@@ -38,6 +39,10 @@ class ExceptionHandler {
 
     public function getException() {
         return $this->exception;
+    }
+
+    public function getPreviousRequestMethod() {
+        return $this->previousRequestMethod;
     }
 
     protected function reportError($first, $second = null) {
