@@ -23,8 +23,8 @@ class ExceptionHandler {
             $this->previousRequestMethod = $_SERVER['REQUEST_METHOD'];
             $_SERVER['REQUEST_METHOD'] = 'GET';
             $this->cleanOutput();
+            $exception->sendHeader();
             try {
-                $exception->sendHeader();
                 $this->displayError($this->getErrorPath($exception->getCode()));
             } catch (\Exception $recursiveException) {
                 $this->reportError($this->exception, $recursiveException);
@@ -54,8 +54,8 @@ class ExceptionHandler {
     }
 
     protected function cleanOutput() {
-         header_remove();
-         if (ob_get_level() !== 0) {
+        header_remove();
+        if (ob_get_level() !== 0) {
             ob_end_clean();
         }
     }
