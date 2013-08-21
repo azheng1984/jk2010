@@ -14,19 +14,19 @@ class ActionHandler {
         $cache = array('class' => $className, 'methods' => array());
         $httpMethods = array('GET', 'POST', 'PUT', 'DELETE');
         if ($this->hasPrivateGet($class)) {
-            $cache['GET_not_allowed'] = true;
+            $cache['get_not_allowed'] = true;
         }
         $reflectors = $this->getMethodReflectors($class, $fullPath);
         foreach ($reflectors as $reflector) {
-            $method = strtoupper($reflector->getName());
+            $method = strtolower($reflector->getName());
             if (strpos($method, '__') === 0) {
                 continue;
             }
-            if ($method === 'BEFORE') {
+            if ($method === 'before') {
                 $cache['before_filter'] = true;
                 continue;
             }
-            if ($method === 'AFTER') {
+            if ($method === 'after') {
                 $cache['after_filter'] = true;
                 continue;
             }
