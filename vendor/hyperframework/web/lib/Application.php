@@ -42,7 +42,7 @@ class Application {
             throw new NotFoundException('Path \'' . $path . '\' not found');
         }
         $info = static::$cache['paths'][$path];
-        $info['namespace'] = $this->getPathNamespace($path);
+        $info['namespace'] = $this->getNamespace($path);
         return $info;
     }
 
@@ -80,7 +80,7 @@ class Application {
         static::$cache = require $path;
     }
 
-    private function getPathNamespace($path) {
+    private function getNamespace($path) {
         if (isset(static::$cache['namespace']) === false) {
             return '\\';
         }
