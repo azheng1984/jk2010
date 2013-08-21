@@ -47,7 +47,7 @@ class ExceptionHandler {
 
     protected function cleanOutput() {
         header_remove();
-        if (ob_get_level() !== 0) {
+        if (ob_get_level() > 0) {
             ob_end_clean();
         }
     }
