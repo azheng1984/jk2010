@@ -56,13 +56,13 @@ class ExceptionHandler {
         $_SERVER['PREVIOUS_REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'];
         $_SERVER['REQUEST_METHOD'] = 'GET';
         try {
-            $this->reload($statusCode);
+            $this->reloadApplication($statusCode);
         } catch (NotFoundException $recursiveException) {
         } catch (UnsupportedMediaTypeException $recursiveException) {
         }
     }
 
-    protected function reload($statusCode) {
+    protected function reloadApplication($statusCode) {
         $app = new Application;
         $app->run($this->getErrorPath($statusCode));
     }
