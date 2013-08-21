@@ -41,8 +41,16 @@ return array(
   ),
   'config/class_loader.config.php' => array(
     '<?php',
-    "return array('Hft\\Application' => array('app', '@folder_mapping' => false), 'Hft' => 'lib', 'Hyperframework\Web' => HYPERFRAMEWORK_PATH.'web/lib');"
-  ),
+    'return array(',
+    "    'Hft' => array(",
+    "        'Application' => array(",
+    "            '@folder_mapping' => false,", 
+    "            'app'", 
+    "        ),",
+    "        'lib'",
+    "    ),",
+    "    'Hyperframework\Web' => HYPERFRAMEWORK_PATH . 'web/lib'",
+    ");"),
   'lib/',
   'public/index.php' => array(
     '<?php',
