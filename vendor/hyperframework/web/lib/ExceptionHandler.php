@@ -17,7 +17,7 @@ class ExceptionHandler {
         if ($exception instanceof ApplicationException === false) {
             $exception = new InternalServerErrorException;
         }
-        $this->cleanOutput();
+        $this->resetOutput();
         $exception->sendHeader();
         if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
             try {
@@ -45,7 +45,7 @@ class ExceptionHandler {
         throw $exception;
     }
 
-    protected function cleanOutput() {
+    protected function resetOutput() {
         header_remove();
         if (ob_get_level() > 0) {
             ob_end_clean();
