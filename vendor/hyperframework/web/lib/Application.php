@@ -70,14 +70,13 @@ class Application {
     }
 
     private function initializeCache() {
-        if (is_array(static::$cacheProvider)) {
-            $provider = new static::$cacheProvider[0]();
-            static::$cache = $provider->{static::$cacheProvider[1]}();
-            return;
+        if (static::$cacheProvider === null) {
+            static::$cacheProvider = array(
+                'Hyperframework\Web\ApplicationCacheProvider', 'get'
+            );
         }
-        $path = static::$cacheProvider === null ?
-            CACHE_PATH . 'application.cache.php' : static::$cacheProvder;
-        static::$cache = require $path;
+        $provider = new static::$cacheProvider[0];
+        static::$cache = $provider->{static::$cacheProvider[1]}();
     }
 
     private function getNamespace($path) {
