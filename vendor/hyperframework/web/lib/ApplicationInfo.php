@@ -33,10 +33,10 @@ class ApplicationInfo {
 
     private static function getPath() {
         $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
-        $path = $segments[0];
+        return $segments[0];
     }
 
-    private static function getCache($path) {
+    private static function getCache() {
         if (static::$cache === null) {
             static::initializeCache();
         }
