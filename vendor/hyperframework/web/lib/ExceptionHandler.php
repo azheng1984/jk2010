@@ -5,7 +5,7 @@ class ExceptionHandler {
     private static $exception;
 
     public static function run() {
-        set_exception_handler(array(__CLASS__, 'handle'));
+        set_exception_handler(array(get_called_class(), 'handle'));
     }
 
     public static function handle($exception) {
