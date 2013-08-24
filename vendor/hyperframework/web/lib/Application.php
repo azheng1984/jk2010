@@ -4,11 +4,20 @@ namespace Hyperframework\Web;
 class Application {
     private $actionResult;
     private $isViewEnabled = true;
+    private static $instances = array();
 
-    public function run($path = null) {
+    public static function run(
+        $path = null, $name = 'main', $class = __CLASS__
+    ) {
+        $app = new $class;
+        static::$instance[$name] = $app;
         $info = PathInfo::get($path);
-        $this->executeAction($info);
-        $this->renderView($info);
+        $app->executeAction($info);
+        $app->renderView($info);
+    }
+
+    public static function get($name = 'main') {
+        return satic::$instance[$name];
     }
 
     public function enableView() {
