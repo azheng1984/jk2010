@@ -6,7 +6,7 @@ class Application {
     private $isViewEnabled = true;
 
     public function run($path = null) {
-        $info = ApplicationInfo::getPathInfo($path);
+        $info = PathInfo::get($path);
         $this->executeAction($info);
         $this->renderView($info);
     }

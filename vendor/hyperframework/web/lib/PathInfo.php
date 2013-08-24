@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-class ApplicationInfo {
+class PathInfo {
     private static $cacheProvider;
     private static $cache;
 
@@ -10,7 +10,7 @@ class ApplicationInfo {
         static::$cache = null;
     }
 
-    public static function getPathInfo($path = null) {
+    public static function get($path = null) {
         if ($path === null) {
             $path = static::getPath();
         }
@@ -23,7 +23,7 @@ class ApplicationInfo {
         return $info;
     }
 
-    public static function isPathExists($path) {
+    public static function isExists($path) {
         if ($path === null) {
             $path = static::getPath();
         }
@@ -45,7 +45,7 @@ class ApplicationInfo {
 
     private static function initializeCache() {
         if (static::$cacheProvider === null) {
-            static::$cache = require CACHE_PATH . 'application.cache.php';
+            static::$cache = require CACHE_PATH . 'path_info.cache.php';
             return;
         }
         if (is_string(static::$cacheProvider)) {
