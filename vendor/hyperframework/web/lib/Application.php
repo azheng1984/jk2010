@@ -10,14 +10,14 @@ class Application {
         $path = null, $name = 'main', $class = __CLASS__
     ) {
         $app = new $class;
-        static::$instance[$name] = $app;
+        static::$instances[$name] = $app;
         $info = PathInfo::get($path);
         $app->executeAction($info);
         $app->renderView($info);
     }
 
     public static function get($name = 'main') {
-        return satic::$instance[$name];
+        return satic::$instances[$name];
     }
 
     public function enableView() {
