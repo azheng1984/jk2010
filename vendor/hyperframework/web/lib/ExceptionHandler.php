@@ -2,41 +2,45 @@
 namespace Hyperframework\Web;
 
 class ExceptionHandler {
-    private $exception;
+    private static $exception;
 
-    public function run() {
-        set_exception_handler(array($this, 'handle'));
+    public static function run() {
+        set_exception_handler(array(__CLASS__, 'handle'));
     }
 
-    public function handle($exception) {
-        $this->exception = $exception;
+    public static function handle($exception) {
+        static::$exception = $exception;
         if (headers_sent()) {
-            $this->reportError($exception);
+            static::reportError($exception);
             return;
         }
         if ($exception instanceof ApplicationException === false) {
             $exception = new InternalServerErrorException;
         }
-        $this->resetOutput();
+        static::resetOutput();
         $exception->sendHeader();
         if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
             try {
-                $this->displayError($exception->getCode());
+                static::displayError($exception->getCode());
             } catch (\Exception $recursiveException) {
-                $this->reportError($this->exception, $recursiveException);
+                static::reportError(static::$exception, $recursiveException);
                 return;
             }
         }
         if ($exception instanceof InternalServerErrorException) {
-            $this->reportError($this->exception);
+            static::reportError(static::$exception);
         }
     }
 
-    public function getException() {
-        return $this->exception;
+    public static function getException() {
+        return static::$exception;
     }
 
-    protected function reportError($exception, $recursiveException = null) {
+    public static function reset() {
+        static::$exception = null;
+    }
+
+    protected static function reportError($exception, $recursiveException = null) {
         if ($recursiveException !== null) {
             $message = 'Uncaught ' . $exception. PHP_EOL .
                 PHP_EOL . 'Next ' . $recursiveException. PHP_EOL;
@@ -45,29 +49,28 @@ class ExceptionHandler {
         throw $exception;
     }
 
-    protected function resetOutput() {
+    protected static function resetOutput() {
         header_remove();
         if (ob_get_level() > 0) {
             ob_end_clean();
         }
     }
 
-    protected function displayError($statusCode) {
+    protected static function displayError($statusCode) {
         $_SERVER['PREVIOUS_REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'];
         $_SERVER['REQUEST_METHOD'] = 'GET';
         try {
-            $this->runErrorApplication($statusCode);
+            static::runErrorApplication($statusCode);
         } catch (NotFoundException $recursiveException) {
         } catch (UnsupportedMediaTypeException $recursiveException) {
         }
     }
 
-    protected function runErrorApplication($statusCode) {
-        $app = new Application;
-        $app->run($this->getErrorPath($statusCode));
+    protected static function runErrorApplication($statusCode) {
+        Application::run(static::getErrorPath($statusCode), 'error');
     }
 
-    protected function getErrorPath($statusCode) {
+    protected static function getErrorPath($statusCode) {
         return 'error://' .
             strtolower(str_replace(' ', '_', substr($statusCode, 4)));
     }
