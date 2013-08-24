@@ -4,6 +4,8 @@ namespace Hyperframework;
 class ClassLoader {
     private static $rootPath;
     private static $cache;
+    private static $classes;
+    private static $folders;
 
     public static function run($rootPath = null, $cachePath = null) {
         if ($rootPath === null) {
@@ -75,7 +77,7 @@ class ClassLoader {
             static::$classes = $info['@classes'][0];
             static::$folders = $info['@classes'][1];
             //echo static::$getFolder($this->classes[$class]) . $class . '.php'.PHP_EOL;
-            require static::getFolder($this->classes[$class]) . $class . '.php';
+            require static::getFolder(static::$classes[$class]) . $class . '.php';
             /* elseif (isset($info[0])) {
                 require $info[0] . '/' . $class . '.php';
             } elseif (is_string($info)) {
