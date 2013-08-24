@@ -2,16 +2,12 @@
 namespace Hyperframework\Web;
 
 class Application {
+    private static $instances = array();
     private $actionResult;
     private $isViewEnabled = true;
-    private static $instances = array();
-
-    protected function __construct($name) {
-        static::$instances[$name] = $this;
-    }
 
     public static function run(
-        $path = null, $name = 'main', $class = __CLASS__
+        $path = null, $class = __CLASS__, $name = 'main'
     ) {
         $info = PathInfo::get($path);
         $app = new $class($name);
@@ -20,9 +16,13 @@ class Application {
     }
 
     public static function get($name = 'main') {
-        return satic::$instances[$name];
+        return static::$instances[$name];
     }
 
+    protected function __construct($name) {
+        static::$instances[$name] = $this;
+    }
+ 
     public function enableView() {
         $this->isViewEnabled = true;
     }

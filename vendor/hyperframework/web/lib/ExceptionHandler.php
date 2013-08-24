@@ -40,7 +40,9 @@ class ExceptionHandler {
         static::$exception = null;
     }
 
-    protected static function reportError($exception, $recursiveException = null) {
+    protected static function reportError(
+        $exception, $recursiveException = null
+    ) {
         if ($recursiveException !== null) {
             $message = 'Uncaught ' . $exception. PHP_EOL .
                 PHP_EOL . 'Next ' . $recursiveException. PHP_EOL;
@@ -67,7 +69,8 @@ class ExceptionHandler {
     }
 
     protected static function runErrorApplication($statusCode) {
-        Application::run(static::getErrorPath($statusCode), 'error');
+        $path = static::getErrorPath($statusCode);
+        Application::run($path, 'Hyperframework\Web\Application', 'error');
     }
 
     protected static function getErrorPath($statusCode) {
