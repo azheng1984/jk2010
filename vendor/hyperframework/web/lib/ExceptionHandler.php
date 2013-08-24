@@ -69,8 +69,7 @@ class ExceptionHandler {
     }
 
     protected static function runErrorApplication($statusCode) {
-        $path = static::getErrorPath($statusCode);
-        Application::run($path, 'error');
+        Application::run(static::getErrorPath($statusCode), 'error');
     }
 
     protected static function getErrorPath($statusCode) {
