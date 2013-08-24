@@ -2,35 +2,40 @@
 namespace Hyperframework;
 
 class ClassLoader {
-    private $rootPath;
-    private $cache;
+    private static $rootPath;
+    private static $cache;
 
-    public function run($rootPath = null, $cachePath = null) {
+    public static function run($rootPath = null, $cachePath = null) {
         if ($rootPath === null) {
             $rootPath = ROOT_PATH;
         }
-        $this->rootPath = $rootPath;
+        static::$rootPath = $rootPath;
         if ($cachePath === null) {
             $cachePath = CACHE_PATH . 'class_loader.cache.php';
         }
-        $this->cache = require $cachePath;
+        static::$cache = require $cachePath;
         //var_dump($info);
-        spl_autoload_register(array($this, 'load'));
+        spl_autoload_register(array(__CLASS__, 'load'));
     }
 
-    public function stop() {
+    public static function stop() {
         spl_autoload_unregister(array($this, 'load'));
     }
 
-    public function load($name) {
+    public static function reset() {
+        static::$rootPath = null;
+        static::$cache = null;
+    }
+
+    public static function load($name) {
 //        echo $name . '<br/>';
 //        echo '>' . $name . PHP_EOL;
         $namespaces = explode('\\', $name);
         $class = array_pop($namespaces);
-        $info = $this->cache;
+        $info = static::$cache;
         $index = 0;
         //var_dump($namespaces);
-        //var_dump($this->cache);
+        //var_dump(static::$cache);
         foreach ($namespaces as $namespace) {
             if (isset($info[$namespace])) {
             //echo '>'.$namespace;
@@ -67,10 +72,10 @@ class ClassLoader {
 //            echo '@@@@' . $name;
 //            var_dump($info);
 //            echo '###';
-            $this->classes = $info['@classes'][0];
-            $this->folders = $info['@classes'][1];
-            //echo $this->getFolder($this->classes[$class]) . $class . '.php'.PHP_EOL;
-            require $this->getFolder($this->classes[$class]) . $class . '.php';
+            static::$classes = $info['@classes'][0];
+            static::$folders = $info['@classes'][1];
+            //echo static::$getFolder($this->classes[$class]) . $class . '.php'.PHP_EOL;
+            require static::getFolder($this->classes[$class]) . $class . '.php';
             /* elseif (isset($info[0])) {
                 require $info[0] . '/' . $class . '.php';
             } elseif (is_string($info)) {
@@ -81,19 +86,19 @@ class ClassLoader {
 
     private function getFolder($index) {
         if ($index === true) {
-            return $this->rootPath;
+            return static::$rootPath;
         }
-        $folder = $this->folders[$index];
+        $folder = static::$folders[$index];
         if (is_array($folder)) {
-            return $this->getFullPath($folder) .
+            return static::getFullPath($folder) .
                 $folder[0] . DIRECTORY_SEPARATOR;
         }
-        return $this->rootPath . $folder . DIRECTORY_SEPARATOR;
+        return static::$rootPath . $folder . DIRECTORY_SEPARATOR;
     }
 
     private function getFullPath($folder) {
         if (isset($folder[1])) {
-            return $this->folders[$folder[1]][0] . DIRECTORY_SEPARATOR;
+            return static::$folders[$folder[1]][0] . DIRECTORY_SEPARATOR;
         }
     }
 }
