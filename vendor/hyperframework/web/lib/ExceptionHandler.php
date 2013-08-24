@@ -70,7 +70,7 @@ class ExceptionHandler {
 
     protected static function runErrorApplication($statusCode) {
         $path = static::getErrorPath($statusCode);
-        Application::run($path, 'Hyperframework\Web\Application', 'error');
+        Application::run($path, 'error');
     }
 
     protected static function getErrorPath($statusCode) {
