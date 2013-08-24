@@ -58,7 +58,7 @@ class ApplicationCache {
     public function export() {
         $cache = array('namespace' => 'Hft\Application', 'paths' => $this->cache);
         return array(
-            'application' => $cache,
+            'path_info' => $cache,
         );
     }
 }
