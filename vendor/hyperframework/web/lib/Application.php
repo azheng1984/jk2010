@@ -6,12 +6,15 @@ class Application {
     private $isViewEnabled = true;
     private static $instances = array();
 
+    protected function __construct($name) {
+        static::$instances[$name] = $this;
+    }
+
     public static function run(
         $path = null, $name = 'main', $class = __CLASS__
     ) {
-        $app = new $class;
-        static::$instances[$name] = $app;
         $info = PathInfo::get($path);
+        $app = new $class($name);
         $app->executeAction($info);
         $app->renderView($info);
     }
