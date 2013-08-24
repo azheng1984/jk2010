@@ -6,10 +6,9 @@ class Application {
     private $actionResult;
     private $isViewEnabled = true;
 
-    public static function run(
-        $path = null, $class = __CLASS__, $name = 'main'
-    ) {
+    public static function run($path = null, $name = 'main') {
         $info = PathInfo::get($path);
+        $class = get_called_class();
         $app = new $class($name);
         $app->executeAction($info);
         $app->renderView($info);
