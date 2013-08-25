@@ -40,7 +40,8 @@ class ExceptionHandler {
         return static::$exception;
     }
 
-    public static function reset() {
+    public static function stop() {
+        restore_exception_handler();
         static::$defaultErrorPath = null;
         static::$exception = null;
     }
