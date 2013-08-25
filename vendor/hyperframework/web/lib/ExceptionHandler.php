@@ -68,8 +68,7 @@ class ExceptionHandler {
     }
 
     protected static function runErrorApplication($statusCode) {
-        $path = static::getErrorPath($statusCode);
-        if ($path !== null) {
+        if (($path = static::getErrorPath($statusCode)) !== null) {
             Application::run($path, 'error');
         }
     }
@@ -84,6 +83,5 @@ class ExceptionHandler {
         if (PathInfo::exists($path)) {
             return $path;
         }
-        return null;
     }
 }
