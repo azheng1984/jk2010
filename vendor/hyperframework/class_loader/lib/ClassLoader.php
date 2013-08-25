@@ -21,7 +21,7 @@ class ClassLoader {
     }
 
     public static function stop() {
-        spl_autoload_unregister(array($this, 'load'));
+        spl_autoload_unregister(array(__CLASS__, 'load'));
     }
 
     public static function reset() {
