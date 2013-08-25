@@ -10,6 +10,17 @@ return array(
     '    }',
     '}',
   ),
+  'app/error/default/DefaultErrorScreen.php' => array(
+    '<?php',
+    'namespace Hft\Application;',
+    '',
+    'class DefaultErrorScreen {',
+    '    public function render() {',
+    "        echo Hyperframework\Web\ExceptionHandler" .
+                 "::getException()->getCode();",
+    '    }',
+    '}',
+  ),
   'app/error/internal_server_error/InternalServerErrorScreen.php' => array(
     '<?php',
     'namespace Hft\Application;',
@@ -62,12 +73,9 @@ return array(
     'require ' . $GLOBALS['CLASS_LOADER_PREFIX']
          . " . 'class_loader' . DIRECTORY_SEPARATOR .",
     "    'lib' . DIRECTORY_SEPARATOR . 'ClassLoader.php';",
-    '$CLASS_LOADER = new Hyperframework\ClassLoader;',
-    '$CLASS_LOADER->run();',
-    '$EXCEPTION_HANDLER = new Hyperframework\Web\ExceptionHandler;',
-    '$EXCEPTION_HANDLER->run();',
-    '$APP = new Hyperframework\Web\Application;',
-    '$APP->run();',
+    'Hyperframework\ClassLoader::run();',
+    'Hyperframework\Web\ExceptionHandler::run();',
+    'Hyperframework\Web\Application::run();',
   ),
   'test/phpunit.xml' => array(
     '<phpunit bootstrap="./bootstrap.php" colors="true"></phpunit>'
