@@ -79,9 +79,6 @@ class ExceptionHandler {
         if (PathInfo::exists($path)) {
             return $path;
         }
-        $path = 'error://default';
-        if (PathInfo::exists($path)) {
-            return $path;
-        }
+        return 'error://default';
     }
 }
