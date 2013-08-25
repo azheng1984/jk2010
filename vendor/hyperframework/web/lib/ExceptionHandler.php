@@ -2,6 +2,7 @@
 namespace Hyperframework\Web;
 
 class ExceptionHandler {
+    private static $defaultErrorPath = 'error://internal_server_error';
     private static $exception;
 
     public static function run() {
@@ -34,6 +35,10 @@ class ExceptionHandler {
 
     public static function getException() {
         return static::$exception;
+    }
+
+    public function setDefaultErrorPath($value) {
+        static::$defaultErrorPath = $value;
     }
 
     public static function reset() {
@@ -79,6 +84,6 @@ class ExceptionHandler {
         if (PathInfo::exists($path)) {
             return $path;
         }
-        return 'error://internal_server_error';
+        return static::$defaultErrorPath;
     }
 }
