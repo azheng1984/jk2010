@@ -8,8 +8,7 @@ class Application {
 
     public static function run($path = null, $name = 'main') {
         $info = PathInfo::get($path);
-        $class = get_called_class();
-        $app = new $class($name);
+        $app = static::create($name);
         $app->executeAction($info);
         $app->renderView($info);
     }
@@ -18,10 +17,6 @@ class Application {
         return static::$instances[$name];
     }
 
-    protected function __construct($name) {
-        static::$instances[$name] = $this;
-    }
- 
     public function enableView() {
         $this->isViewEnabled = true;
     }
@@ -34,6 +29,15 @@ class Application {
         return $this->actionResult;
     }
 
+    protected static function create($name) {
+        $class = get_called_class();
+        return new $class($name);
+    }
+
+    protected function __construct($name) {
+        static::$instances[$name] = $this;
+    }
+ 
     protected function executeAction(
         $pathInfo, $processorClass = 'Hyperframework\Web\ActionProcessor'
     ) {
