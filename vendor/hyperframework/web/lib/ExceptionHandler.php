@@ -5,9 +5,7 @@ class ExceptionHandler {
     private static $defaultErrorPath;
     private static $exception;
 
-    public static function run(
-        $defaultErrorPath = 'error://internal_server_error'
-    ) {
+    public static function run($defaultErrorPath = 'error://default') {
         static::$defaultErrorPath = $defaultErrorPath;  
         set_exception_handler(array(get_called_class(), 'handle'));
     }
