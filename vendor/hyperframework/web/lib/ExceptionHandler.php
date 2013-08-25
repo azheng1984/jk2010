@@ -63,17 +63,27 @@ class ExceptionHandler {
         $_SERVER['REQUEST_METHOD'] = 'GET';
         try {
             static::runErrorApplication($statusCode);
-        } catch (NotFoundException $recursiveException) {
         } catch (UnsupportedMediaTypeException $recursiveException) {
         }
     }
 
     protected static function runErrorApplication($statusCode) {
-        Application::run(static::getErrorPath($statusCode), 'error');
+        $path = static::getErrorPath($statusCode);
+        if ($path !== null) {
+            Application::run($path, 'error');
+        }
     }
 
     protected static function getErrorPath($statusCode) {
-        return 'error://' .
+        $path = 'error://' .
             strtolower(str_replace(' ', '_', substr($statusCode, 4)));
+        if (PathInfo::exists($path)) {
+            return $path;
+        }
+        $path = 'error://default';
+        if (PathInfo::exists($path)) {
+            return $path;
+        }
+        return null;
     }
 }

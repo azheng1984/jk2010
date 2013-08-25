@@ -23,7 +23,7 @@ class PathInfo {
         return $info;
     }
 
-    public static function isExists($path) {
+    public static function exists($path) {
         if ($path === null) {
             $path = static::getPath();
         }
