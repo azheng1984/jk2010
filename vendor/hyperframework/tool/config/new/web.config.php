@@ -10,34 +10,24 @@ return array(
     '    }',
     '}',
   ),
-  'app/error/default/DefaultErrorScreen.php' => array(
+  'app/error/client/ClientErrorScreen.php' => array(
     '<?php',
     'namespace Hft\Application;',
     '',
-    'class DefaultErrorScreen {',
+    'class ClientErrorScreen {',
     '    public function render() {',
-    "        echo Hyperframework\Web\ExceptionHandler" .
+    "        echo \Hyperframework\Web\ExceptionHandler" .
                  "::getException()->getCode();",
     '    }',
     '}',
   ),
-  'app/error/internal_server_error/InternalServerErrorScreen.php' => array(
+  'app/error/server/ServerErrorScreen.php' => array(
     '<?php',
     'namespace Hft\Application;',
     '',
-    'class InternalServerErrorScreen {',
+    'class ServerErrorScreen {',
     '    public function render() {',
-    "      echo '500 Internal Server Error';",
-    '    }',
-    '}',
-  ),
-  'app/error/not_found/NotFoundScreen.php' => array(
-    '<?php',
-    'namespace Hft\Application;',
-    '',
-    'class NotFoundScreen {',
-    '    public function render() {',
-    "      echo '404 Not Found';",
+    "      echo '5xx Server Error';",
     '    }',
     '}',
   ),
