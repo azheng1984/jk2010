@@ -41,6 +41,7 @@ class ExceptionHandler {
     }
 
     public static function reset() {
+        static::$defaultErrorPath = null;
         static::$exception = null;
     }
 
@@ -75,6 +76,10 @@ class ExceptionHandler {
         if (($path = static::getErrorPath($statusCode)) !== null) {
             Application::run($path, 'error');
         }
+    }
+
+    protected static function getDefaultErrorPath() {
+        return static::$defaultErrorPath;
     }
 
     protected static function getErrorPath($statusCode) {
