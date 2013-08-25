@@ -2,11 +2,9 @@
 namespace Hyperframework\Web;
 
 class ExceptionHandler {
-    private static $defaultErrorPath;
     private static $exception;
 
-    public static function run($defaultErrorPath = 'error://default') {
-        static::$defaultErrorPath = $defaultErrorPath;  
+    public static function run() {
         set_exception_handler(array(get_called_class(), 'handle'));
     }
 
@@ -40,7 +38,6 @@ class ExceptionHandler {
 
     public static function stop() {
         restore_exception_handler();
-        static::$defaultErrorPath = null;
         static::$exception = null;
     }
 
@@ -77,16 +74,10 @@ class ExceptionHandler {
         }
     }
 
-    protected static function getDefaultErrorPath() {
-        return static::$defaultErrorPath;
-    }
-
     protected static function getErrorPath($statusCode) {
-        $path = 'error://' .
-            strtolower(str_replace(' ', '_', substr($statusCode, 4)));
-        if (PathInfo::exists($path)) {
-            return $path;
+        if (strncmp($statusCode, '4', 1) === 0) {
+            return 'error://client';
         }
-        return static::$defaultErrorPath;
+        return 'error://server';
     }
 }
