@@ -17,11 +17,11 @@ class ClassLoader {
         }
         static::$cache = require $cachePath;
         //var_dump($info);
-        spl_autoload_register(array(__CLASS__, 'load'));
+        spl_autoload_register(array(get_called_class(), 'load'));
     }
 
     public static function stop() {
-        spl_autoload_unregister(array(__CLASS__, 'load'));
+        spl_autoload_unregister(array(get_called_class(), 'load'));
     }
 
     public static function reset() {
