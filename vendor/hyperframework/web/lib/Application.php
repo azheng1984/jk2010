@@ -40,7 +40,7 @@ class Application {
     protected function __construct($name) {
         static::$instances[$name] = $this;
     }
- 
+
     protected function executeAction(
         $pathInfo, $processorClass = 'Hyperframework\Web\ActionProcessor'
     ) {
