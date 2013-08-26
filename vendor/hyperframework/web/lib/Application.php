@@ -7,10 +7,10 @@ class Application {
     private $isViewEnabled = true;
 
     public static function run($path = null, $name = 'main') {
-        $info = PathInfo::get($path);
+        $pathInfo = PathInfo::get($path);
         $app = static::create($name);
-        $app->executeAction($info);
-        $app->renderView($info);
+        $app->executeAction($pathInfo);
+        $app->renderView($pathInfo);
     }
 
     public static function get($name = 'main') {
