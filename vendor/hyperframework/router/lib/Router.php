@@ -57,6 +57,7 @@ class Router {
                 $location .= '?' . $segments[1];
             }
             static::redirect($location);
+            return;
         }
         throw new Web\NotFoundException;
     }
