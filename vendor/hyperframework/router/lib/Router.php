@@ -31,10 +31,6 @@ class Router {
             $path .= '/' . $items[0];
             static::$parameters[] = $items[1];
         }
-        return static::checkPath();
-    }
-
-    protected static function checkPath() {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             return $path;
         }
