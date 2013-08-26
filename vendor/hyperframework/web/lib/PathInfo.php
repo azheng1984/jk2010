@@ -5,7 +5,7 @@ class PathInfo {
     private static $cacheProvider;
     private static $cache;
 
-    public static function initialize($cacheProvider = null) {
+    public static function initialize($cacheProvider) {
         static::$cacheProvider = $cacheProvider;
         static::$cache = null;
     }
