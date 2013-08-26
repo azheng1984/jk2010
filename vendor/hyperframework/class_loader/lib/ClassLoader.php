@@ -86,7 +86,7 @@ class ClassLoader {
         }
     }
 
-    private function getFolder($index) {
+    private static function getFolder($index) {
         if ($index === true) {
             return static::$rootPath;
         }
@@ -98,7 +98,7 @@ class ClassLoader {
         return static::$rootPath . $folder . DIRECTORY_SEPARATOR;
     }
 
-    private function getFullPath($folder) {
+    private static function getFullPath($folder) {
         if (isset($folder[1])) {
             return static::$folders[$folder[1]][0] . DIRECTORY_SEPARATOR;
         }
