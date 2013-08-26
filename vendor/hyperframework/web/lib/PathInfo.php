@@ -65,7 +65,7 @@ class PathInfo {
             return '\\' . $namespace. '\\';
         }
         if (isset($namespace['folder_mapping']) === false) {
-            throw new \Exception('Format of path info cache is incorrect');
+            throw new \Exception('Format of path info cache is not correct');
         }
         $root = isset($namespace['root']) ? $namespace['root'] : null;
         if ($path === '/') {
