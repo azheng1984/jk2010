@@ -15,7 +15,7 @@ class Application {
 
     public static function get($name = 'main') {
         if (isset(static::$instances[$name]) === false) {
-            throw new Exception('Application \'' . $name . '\' does not exist');
+            throw new Exception('Application \'' . $name . '\' not found');
         }
         return static::$instances[$name];
     }
