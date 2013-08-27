@@ -23,11 +23,11 @@ class ActionHandler {
                 continue;
             }
             if ($method === 'BEFORE') {
-                $cache['before_filter'] = true;
+                $cache['before'] = true;
                 continue;
             }
             if ($method === 'AFTER') {
-                $cache['after_filter'] = true;
+                $cache['after'] = true;
                 continue;
             }
             if (in_array($method, $httpMethods) === false) {
