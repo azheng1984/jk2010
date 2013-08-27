@@ -15,22 +15,22 @@ class ActionProcessor {
         if ($hasMethod === false) {
             $this->checkImplicitMethod($info, $method);
         }
-        $hasBefore = isset($info['before']);
-        $hasAfter = isset($info['after']);
-        if ($hasBefore === false && $hasMethod === false &&
-            $hasAfter === false) {
+        $hasBeforeFilter = isset($info['before_filter']);
+        $hasAfterFilter = isset($info['after_filter']);
+        if ($hasBeforeFilter === false && $hasMethod === false &&
+            $hasAfterFilter === false) {
             return;
         }
         $class = $info['namespace'] . $info['class'];
         $action = new $class;
         $result = null;
-        if ($hasBefore) {
+        if ($hasBeforeFilter) {
             $action->before();
         }
         if ($hasMethod) {
             $result = $action->$method();
         }
-        if ($hasAfter) {
+        if ($hasAfterFilter) {
             $action->after();
         }
         return $result;
