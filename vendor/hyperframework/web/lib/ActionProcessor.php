@@ -17,7 +17,8 @@ class ActionProcessor {
         }
         $hasBeforeFilter = isset($info['before_filter']);
         $hasAfterFilter = isset($info['after_filter']);
-        if ($hasBeforeFilter === false && $hasMethod === false &&
+        if ($hasBeforeFilter === false &&
+            $hasMethod === false &&
             $hasAfterFilter === false) {
             return;
         }
