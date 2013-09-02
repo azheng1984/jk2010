@@ -104,7 +104,7 @@ return array(
     ),
   'test/case/app/error/not_found/NotFoundScreenTest.php' => array(
     '<?php',
-     'namespace Hft\Application;',
+    'namespace Hft\Application;',
     '',
     'class NotFoundScreenTest extends \PHPUnit_Framework_TestCase {',
     '    public function test() {',

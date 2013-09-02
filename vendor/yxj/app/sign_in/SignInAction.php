@@ -1,5 +1,5 @@
 <?php
-namespace Youxuanji\app\sign_in;
+namespace youxuanji\app\sign_in;
 //use hyperframework\db;
 
 class SignInAction {
