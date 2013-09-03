@@ -1,16 +1,20 @@
 <?php
 namespace Hyperframework\Router;
 
+//router chain 的目的时把 url 变成 app path, 并对跨越 action 的参数进行处理
 class HierarchyFilter {
+    /**
+     * @return transformed uri => path
+     */
     public static function execute($uri = null) {
-        if ($uri === null ) {
+        if ($uri === null) {
             $orignalSegments = explode('?', $_SERVER['REQUEST_URI'], 2);
             $segments = $orignalSegments;
         } else {
             $orignalSegments = explode('?', $_SERVER['REQUEST_URI'], 2);
             $segments = explode('?', $uri, 2);
         }
-       if ($segments[0] === '/') {
+        if ($segments[0] === '/') {
             return static::check($segments, '/');
         }
         $path = $segment[0];
