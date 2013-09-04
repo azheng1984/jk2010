@@ -1,5 +1,7 @@
 <?php
 namespace Hyperframework\Router;
+use Hyperframework\Web\PathInfo as PathInfo;
+use Hyperframework\Web\NotFoundException as NotFoundException;
 
 //router chain 的目的时把 url 变成 app path, 并对跨越 action 的参数进行处理
 class HierarchyFilter {
@@ -18,16 +20,16 @@ class HierarchyFilter {
             return static::check($segments, '/');
         }
         $path = $segment[0];
-        if (Web\PathInfo::exists($path)) {
+        if (PathInfo::exists($path)) {
             return static::check($orignalSegments, $path);
         }
         if (substr($path, -1) === '/') {
             $path = substr($path, 0, strlen($path) - 1);
-            if (Web\PathInfo::exists($path)) {
+            if (PathInfo::exists($path)) {
                 $orignalSegments[0] = substr($orignalSegments[0], 0, strlen($orignalSegments[0]) - 1);
                 return static::check($orignalSegments, $path);
             } else {
-                throw new Web\NotFoundException;
+                throw new NotFoundException;
             }
         }
         $path = $path . '/';
@@ -35,7 +37,7 @@ class HierarchyFilter {
             $orignalSegments[0] = $orignalSegments[0] . '/';
             return static::check($orignalSegments, $path . '/');
         }
-        throw new Web\NotFoundException;
+        throw new NotFoundException;
     }
 
     private static function check($segments, $path) {
