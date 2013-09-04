@@ -4,14 +4,17 @@ use Hyperframework\Web\PathInfo as PathInfo;
 use Hyperframework\Web\NotFoundException as NotFoundException;
 
 class HierarchyFilter {
-    public static function execute($uri = null) {
-        if ($uri === null) {
-            $orignalSegments = explode('?', $_SERVER['REQUEST_URI'], 2);
+    public static function execute($processedUri = null, $requestUri = null) {
+        if ($requestUri === null) {
+            $requestUri = $_SERVER['REQUEST_URI'];
+        }
+        $orignalSegments = explode('?', $requestUri, 2);
+        if ($processedUri === null) {
             $segments = $orignalSegments;
         } else {
-            $orignalSegments = explode('?', $_SERVER['REQUEST_URI'], 2);
-            $segments = explode('?', $uri, 2);
+            $segments = explode('?', $processedUri, 2);
         }
+        //move to checkuri
         if ($segments[0] === '/') {
             return static::check($segments, '/');
         }
@@ -29,7 +32,7 @@ class HierarchyFilter {
             }
         }
         $path = $path . '/';
-        if (Web\PathInfo::exists($path)) {
+        if (PathInfo::exists($path)) {
             $orignalSegments[0] = $orignalSegments[0] . '/';
             return static::check($orignalSegments, $path . '/');
         }
@@ -37,13 +40,30 @@ class HierarchyFilter {
     }
 
     private static function check($segments, $path) {
-        $location = 'http://' . $_SERVER['SERVER_NAME'] . $segments[0];
-        if (isset($segments[1])) {
-            $location .= '?' . $segments[1];
-        }
+        $location = static::getLocation($segments);
         if (LocationMatcher::execute($location) === false) {
             return false;
         }
         return $path;
+    }
+
+    protected static function getLocation($segments) {
+        $location = static::getProtocol() . '://' .
+           static::getDomain() . $segments[0];
+        if (isset($segments[1])) {
+            $location .= '?' . $segments[1];
+        }
+        return $location;
+    }
+
+    protected static function getProtocol() {
+        if (isset($_SERVER['HTTPS'])) {
+            return 'https';
+        }
+        return  'http';
+    }
+
+    protected static function getDomain() {
+        return $_SERVER['SERVER_NAME'];
     }
 }
