@@ -3,11 +3,7 @@ namespace Hyperframework\Router;
 use Hyperframework\Web\PathInfo as PathInfo;
 use Hyperframework\Web\NotFoundException as NotFoundException;
 
-//router chain 的目的时把 url 变成 app path, 并对跨越 action 的参数进行处理
 class HierarchyFilter {
-    /**
-     * @return transformed uri => path
-     */
     public static function execute($uri = null) {
         if ($uri === null) {
             $orignalSegments = explode('?', $_SERVER['REQUEST_URI'], 2);
