@@ -52,7 +52,8 @@ class PathInfo {
             static::$cache = require static::$cacheProvider;
             return;
         }
-        static::$cacheProvider[0]::{static::$cacheProvider[1]}();
+        $providerClass = static::$cacheProvider[0];
+        $providerClass::{static::$cacheProvider[1]}();
     }
 
     private static function getNamespace($path) {
