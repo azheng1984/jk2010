@@ -41,6 +41,9 @@ class ClassLoaderBuilder {
                 $root = '';
                 if (isset($properties['root'])) {
                     $root = $properties['root'];
+                    if (substr($root, -1) !== '/') {
+                        $root .= '/';
+                    }
                 }
                 $target = &$this->excludePaths;
                 $namespaces = explode('\\', $namespace);
@@ -225,7 +228,11 @@ class ClassLoaderBuilder {
             if ($folder === '.') {
                 $folder = $properties['root'];
             } else {
-                $folder = $properties['root'] . '/'  . $folder;
+                $root = $properties['root'];
+                if (substr($properties['root'], -1) !== '/') {
+                    $root .= '/';
+                }
+                $folder = $root . $folder;
             }
             unset($properties['root']);
         }
