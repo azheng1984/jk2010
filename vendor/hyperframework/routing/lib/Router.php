@@ -3,21 +3,21 @@ namespace Hyperframework\Routing;
 
 class Router {
     public static function execute() {
-        $result = DashParameterFilter::execute();
-        $result2 = HierarchyFilter::execute($result['path']);
+        $result = static::parse();
+        $redirectType = HierarchyFilter::execute($result['path']);
         if (static::hasPrarameter($result['parameters'])) {
             $path = $result['path'];
-            if ($result2 === HierarchyFilter::REDIRECT_TO_FILE) {
+            if ($redirectType === HierarchyFilter::REDIRECT_TO_FILE) {
                 $path = substr($path, 0, strlen($path) - 1);
-            } elseif ($result2 === HierarchyFilter::REDIRECT_TO_DIRECTORY) {
+            } elseif ($redirectType === HierarchyFilter::REDIRECT_TO_DIRECTORY) {
                 $path = $path . '/';
             }
             static::initializeLink($path, $result['parameters']);
         }
-        if ($result2 !== null) {
+        if ($redirectType !== null) {
             $path = null;
             $tmp = explode('?', $_SERVER['REQUEST_URI'], 2);
-            if ($result2 === HierarchyFilter::REDIRECT_TO_FILE) {
+            if ($redirectType === HierarchyFilter::REDIRECT_TO_FILE) {
                 $path = substr($tmp[0], 0, strlen($tmp[0]) - 1);
             } else {
                 $path = $tmp[0] . '/';
@@ -31,6 +31,10 @@ class Router {
             return;
         }
         return $result['path'];
+    }
+
+    protected static function parse() {
+        return DashSeparatedParametersParser::execute();
     }
 
     private static function hasPrarameter($parameters) {
