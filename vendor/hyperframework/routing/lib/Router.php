@@ -4,7 +4,7 @@ namespace Hyperframework\Routing;
 class Router {
     public static function execute() {
         $result = static::parse();
-        $redirectType = HierarchyFilter::execute($result['path']);
+        $redirectType = HierarchyChecker::check($result['path']);
         if (static::hasPrarameter($result['parameters'])) {
             $path = $result['path'];
             if ($redirectType === HierarchyFilter::REDIRECT_TO_FILE) {

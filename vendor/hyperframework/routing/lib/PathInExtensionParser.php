@@ -2,14 +2,13 @@
 namespace Hyperframework\Routing;
 
 class PathInExtensionParser {
-    public static function execute($originalPath = null) {
-        if ($originalPath === null) {
-            $requestUri = $_SERVER['REQUEST_URI'];
-            $originalPath = explode('?', $requestUri, 2)[0];
+    public static function checker($uri = null) {
+        if ($uri === null) {
+            $uri = $_SERVER['REQUEST_URI'];
         }
         $path = '/';
         $parameters = array();
-        foreach (explode('/', $originalPath) as $segment) {
+        foreach (explode('/', explode('?', $uri, 2)[0]) as $segment) {
             if ($path !== '/') {
                 $path .= '/';
             }
