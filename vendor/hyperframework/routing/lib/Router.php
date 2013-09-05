@@ -5,7 +5,7 @@ class Router {
     public static function execute() {
         $result = DashParameterFilter::execute();
         $result2 = HierarchyFilter::execute($result['path']);
-        if (count($result['parameters']) > 0) {
+        if (static::hasPrarameter($result['parameters'])) {
             $path = $result['path'];
             if ($result2 === HierarchyFilter::REDIRECT_TO_FILE) {
                 $path = substr($path, 0, strlen($path) - 1);
@@ -33,6 +33,15 @@ class Router {
         return $result['path'];
     }
 
+    private static function hasPrarameter($parameters) {
+       foreach ($parameters as $item) {
+            if ($item !== null) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     protected static function verify($path, $parameters) {
         $pathInfo = \Hyperframework\Web\PathInfo::get($path);
         if (isset($pathInfo['Link']['verification'])) {
