@@ -9,7 +9,7 @@ class Router {
             $path = $result['path'];
             if ($result2 === HierarchyFilter::REDIRECT_TO_FILE) {
                 $path = substr($path, 0, strlen($path) - 1);
-            } elseif ($result2 === HierarchyFilter::REDIRECT_TO_DIRECTORY){
+            } elseif ($result2 === HierarchyFilter::REDIRECT_TO_DIRECTORY) {
                 $path = $path . '/';
             }
             static::verify($path, $result['parameters']);
@@ -41,7 +41,7 @@ class Router {
         }
         return false;
     }
-    
+
     protected static function verify($path, $parameters) {
         $pathInfo = \Hyperframework\Web\PathInfo::get($path);
         if (isset($pathInfo['Link']['verification'])) {
