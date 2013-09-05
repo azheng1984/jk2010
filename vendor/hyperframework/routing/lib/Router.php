@@ -34,7 +34,7 @@ class Router {
     }
 
     protected static function parse() {
-        return DashSeparatedParametersParser::execute();
+        return PathInExtensionParser::execute();
     }
 
     private static function hasPrarameter($parameters) {

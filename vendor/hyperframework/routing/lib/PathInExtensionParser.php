@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Routing;
 
-class DashSeparatedParametersParser {
+class PathInExtensionParser {
     public static function execute($originalPath = null) {
         if ($originalPath === null) {
             $requestUri = $_SERVER['REQUEST_URI'];
@@ -16,15 +16,14 @@ class DashSeparatedParametersParser {
             if ($segment === '') {
                 continue;
             }
-            $splittingPosition = strpos($segment, '-');
-            if ($splittingPosition === false) {
+            $position = strrpos($segment, '.');
+            if ($position === false) {
                 $path .= $segment;
                 $parameters[] = null;
                 continue;
             }
-            $items = explode('-', $segment, 2);
-            $path .= $items[0];
-            $parameters[] = $items[1];
+            $path .= substr($segment, $position + 1);
+            $parameters[] = substr($segment, 0, $position);
         }
         return array('path' => $path, 'parameters' => $parameters);
     }
