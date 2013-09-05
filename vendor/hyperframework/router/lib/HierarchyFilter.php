@@ -8,33 +8,32 @@ class HierarchyFilter {
         if ($requestUri === null) {
             $requestUri = $_SERVER['REQUEST_URI'];
         }
-        $orignalSegments = explode('?', $requestUri, 2);
+        $requestSegments = explode('?', $requestUri, 2);
         if ($processedUri === null) {
-            $segments = $orignalSegments;
+            $segments = $requestSegments;
         } else {
             $segments = explode('?', $processedUri, 2);
         }
-        //move to checkuri
         if ($segments[0] === '/') {
             return static::check($segments, '/');
         }
         $path = $segment[0];
         if (PathInfo::exists($path)) {
-            return static::check($orignalSegments, $path);
+            return static::check($requestSegments, $path);
         }
         if (substr($path, -1) === '/') {
             $path = substr($path, 0, strlen($path) - 1);
             if (PathInfo::exists($path)) {
-                $orignalSegments[0] = substr($orignalSegments[0], 0, strlen($orignalSegments[0]) - 1);
-                return static::check($orignalSegments, $path);
+                $requestSegments[0] = substr($requestSegments[0], 0, strlen($requestSegments[0]) - 1);
+                return static::check($requestSegments, $path);
             } else {
                 throw new NotFoundException;
             }
         }
         $path = $path . '/';
         if (PathInfo::exists($path)) {
-            $orignalSegments[0] = $orignalSegments[0] . '/';
-            return static::check($orignalSegments, $path . '/');
+            $requestSegments[0] = $requestSegments[0] . '/';
+            return static::check($requestSegments, $path . '/');
         }
         throw new NotFoundException;
     }
