@@ -7,9 +7,9 @@ class Router {
         $redirectType = HierarchyChecker::check($result['path']);
         if (static::hasPrarameter($result['parameters'])) {
             $path = $result['path'];
-            if ($redirectType === HierarchyFilter::REDIRECT_TO_FILE) {
+            if ($redirectType === HierarchyChecker::FILE_PATH) {
                 $path = substr($path, 0, strlen($path) - 1);
-            } elseif ($redirectType === HierarchyFilter::REDIRECT_TO_DIRECTORY) {
+            } elseif ($redirectType === HierarchyChecker::DIRECTORY_PATH) {
                 $path = $path . '/';
             }
             static::initializeLink($path, $result['parameters']);
@@ -17,7 +17,7 @@ class Router {
         if ($redirectType !== null) {
             $path = null;
             $tmp = explode('?', $_SERVER['REQUEST_URI'], 2);
-            if ($redirectType === HierarchyFilter::REDIRECT_TO_FILE) {
+            if ($redirectType === HierarchyChecker::FILE_PATH) {
                 $path = substr($tmp[0], 0, strlen($tmp[0]) - 1);
             } else {
                 $path = $tmp[0] . '/';
