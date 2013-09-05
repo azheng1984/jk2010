@@ -12,7 +12,7 @@ class Router {
             } elseif ($result2 === HierarchyFilter::REDIRECT_TO_DIRECTORY) {
                 $path = $path . '/';
             }
-            static::verify($path, $result['parameters']);
+            static::initializeLink($path, $result['parameters']);
         }
         if ($result2 !== null) {
             $path = null;
@@ -42,10 +42,10 @@ class Router {
         return false;
     }
 
-    protected static function verify($path, $parameters) {
+    protected static function initializeLink($path, $parameters) {
         $pathInfo = \Hyperframework\Web\PathInfo::get($path);
-        if (isset($pathInfo['Link']['verification'])) {
-            $pathInfo['Link']['class']::verify($parameters);
+        if (isset($pathInfo['Link']['initialization'])) {
+            $pathInfo['Link']['class']::initialization($parameters);
         }
     }
 
@@ -61,7 +61,7 @@ class Router {
     }
 
     protected static function redirect($location) {
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET' &&
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET' ||
             $_SERVER['REQUEST_METHOD'] !== 'HEAD') {
             return;
         }
