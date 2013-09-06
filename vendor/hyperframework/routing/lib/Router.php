@@ -5,23 +5,12 @@ class Router {
     public static function execute($path = null) {
         $result = static::parse($path);
         $redirectType = HierarchyChecker::check($result['path']);
-        if (static::hasPrarameter($result['parameters'])) {
-            $path = $result['path'];
-            if ($redirectType === HierarchyChecker::FILE) {
-                $path = substr($path, 0, strlen($path) - 1);
-            } elseif ($redirectType === HierarchyChecker::DIRECTORY) {
-                $path = $path . '/';
-            }
-            static::initializeLink($path, $result['parameters']);
-        }
+        static::initializeLink(
+            $result['path'], $result['parameters'], $redirectType
+        );
         if ($redirectType !== null) {
-            $path = null;
             $tmp = explode('?', $_SERVER['REQUEST_URI'], 2);
-            if ($redirectType === HierarchyChecker::FILE) {
-                $path = substr($tmp[0], 0, strlen($tmp[0]) - 1);
-            } else {
-                $path = $tmp[0] . '/';
-            }
+            $path = static::adjustPath($tmp[0], $redirectType);
             $queryString = '';
             if (isset($tmp[1])) {
                 $queryString = '?' . $tmp[1];
@@ -36,12 +25,26 @@ class Router {
         return PathInExtensionParser::parse($path);
     }
 
-
-    protected static function initializeLink($path, $parameters) {
+    protected static function initializeLink(
+        $path, $parameters, $redirectType
+    ) {
+        if (static::hasParameter($parameters) === false) {
+            return;
+        }
+        if ($redirectType !== null) {
+            $path = static::adjustPath($path, $redirectType);
+        }
         $pathInfo = \Hyperframework\Web\PathInfo::get($path);
         if (isset($pathInfo['Link']['initialization'])) {
             $pathInfo['Link']['class']::initialization($parameters);
         }
+    }
+
+    private static function adjustPath($path, $redirectType) {
+        if ($redirectType === HierarchyChecker::FILE) {
+            return substr($path, 0, strlen($path) - 1);
+        }
+        return $path . '/';
     }
 
     protected static function getLocation($path, $queryString){
@@ -68,7 +71,7 @@ class Router {
         }
     }
 
-    private static function hasPrarameter($parameters) {
+    private static function hasParameter($parameters) {
        foreach ($parameters as $item) {
             if ($item !== null) {
                 return true;
