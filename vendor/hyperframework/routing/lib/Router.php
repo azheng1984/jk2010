@@ -9,11 +9,11 @@ class Router {
         if ($redirectType !== null) {
             $path = static::adjustPath($path, $redirectType);
         }
-        static::initializeLink($path, $result['parameters'], $redirectType);
+        static::initializeLink($path, $result['parameters']);
         if ($redirectType !== null) {
             $tmp = explode('?', $_SERVER['REQUEST_URI'], 2);
             $path = $tmp[0] === $result['path'] ?
-                $path : $path = static::adjustPath($tmp[0], $redirectType);
+                $path : static::adjustPath($tmp[0], $redirectType);
             $queryString = '';
             if (isset($tmp[1])) {
                 $queryString = '?' . $tmp[1];
@@ -28,9 +28,7 @@ class Router {
         return PathInExtensionParser::parse($path);
     }
 
-    protected static function initializeLink(
-        $path, $parameters, $redirectType
-    ) {
+    protected static function initializeLink($path, $parameters) {
         $pathInfo = \Hyperframework\Web\PathInfo::get($path);
         if (isset($pathInfo['Link']['initialization'])) {
             $pathInfo['Link']['class']::initialize($parameters);
