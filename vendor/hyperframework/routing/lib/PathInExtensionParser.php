@@ -2,7 +2,7 @@
 namespace Hyperframework\Routing;
 
 class PathInExtensionParser {
-    public static function checker($uri = null) {
+    public static function parse($uri = null) {
         if ($uri === null) {
             $uri = $_SERVER['REQUEST_URI'];
         }
