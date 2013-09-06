@@ -1,7 +1,5 @@
 <?php
 namespace Hyperframework\Routing;
-use Hyperframework\Web\PathInfo as PathInfo;
-use Hyperframework\Web\NotFoundException as NotFoundException;
 
 class HierarchyChecker {
     const FILE = 0;
@@ -11,21 +9,28 @@ class HierarchyChecker {
         if ($path === null) {
             $path = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
         }
-        if (PathInfo::exists($path)) {
+        if (\Hyperframework\Web\PathInfo::exists($path)) {
            return;
         }
         if (substr($path, -1) === '/') {
-            $path = substr($path, 0, strlen($path) - 1);
-            if (PathInfo::exists($path)) {
-                return self::FILE;
-            } else {
-                throw new NotFoundException;
-            }
+            return static::redirectToFile($path);
         }
+        return static::redirectToDirectory($path);
+   }
+
+    private static function redirectToFile($path) {
+        $path = substr($path, 0, strlen($path) - 1);
+        if (\Hyperframework\Web\PathInfo::exists($path)) {
+            return self::FILE;
+        }
+        throw new \Hyperframework\Web\NotFoundException;
+    }
+
+    private static function redirectToFile($path) {
         $path = $path . '/';
-        if (PathInfo::exists($path)) {
+        if (\Hyperframework\Web\PathInfo::exists($path)) {
             return self::DIRECTORY;
         }
-        throw new NotFoundException;
+        throw new \Hyperframework\Web\NotFoundException;
     }
 }
