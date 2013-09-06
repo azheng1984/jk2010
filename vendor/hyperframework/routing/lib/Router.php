@@ -32,6 +32,12 @@ class Router {
         $pathInfo = \Hyperframework\Web\PathInfo::get($path);
         if (isset($pathInfo['Link']['initialization'])) {
             $pathInfo['Link']['class']::initialize($parameters);
+            return;
+        }
+        foreach ($parameters as $parameter) {
+            if ($parameter !== null) {
+                throw new \Hyperframework\Web\NotFoundException;
+            }
         }
     }
 
