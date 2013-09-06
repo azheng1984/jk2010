@@ -26,7 +26,7 @@ class HierarchyChecker {
         throw new \Hyperframework\Web\NotFoundException;
     }
 
-    private static function redirectToFile($path) {
+    private static function redirectToDirectory($path) {
         $path = $path . '/';
         if (\Hyperframework\Web\PathInfo::exists($path)) {
             return self::DIRECTORY;
