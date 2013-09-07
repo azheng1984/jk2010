@@ -2,8 +2,7 @@
 namespace Hyperframework\Routing;
 
 class Router {
-    public static function execute($path = null) {
-        $result = static::parse($path);
+    public static function execute($result) {
         $redirectType = HierarchyChecker::check($result['path']);
         $path = $result['path'];
         if ($redirectType !== null) {
@@ -22,10 +21,6 @@ class Router {
             return;
         }
         return $path;
-    }
-
-    protected static function parse($path = null) {
-        return PathInExtensionParser::parse($path);
     }
 
     protected static function initializeLink($path, $parameters) {
