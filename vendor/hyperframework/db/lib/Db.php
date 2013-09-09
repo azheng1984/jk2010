@@ -67,26 +67,20 @@ class Db {
 
     private static function call($arguments) {
         $sql = array_shift($arguments);
-        if (count($arguments) === 1) {
-            $first = reset($arguments);
-            if (is_array($first)) {
-                $arguments = $first;
-            }
-        }
-        if (isset($parameterList[0]) && is_array($parameterList[0])) {
-            $parameterList = $parameterList[0];
+        if (isset($parameters[0]) && is_array($parameters[0])) {
+            $parameters = $parameters[0];
         }
         $connection = DbConnection::getCurrent();
         $statement = $connection->prepare($sql);
-        $statement->execute($parameterList);
+        $statement->execute($parameters);
         return $statement;
    }
 
-    private static function getParameterPlaceholders($columnAmount) {
-        if ($columnAmount > 1) {
-            return str_repeat('?, ', $columnAmount - 1).'?';
+    private static function getParameterPlaceholders($amount) {
+        if ($amount > 1) {
+            return str_repeat('?, ', $amount - 1).'?';
         }
-        if ($columnAmount === 1) {
+        if ($amount === 1) {
             return '?';
         }
         return '';
