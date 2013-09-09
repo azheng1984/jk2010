@@ -10,10 +10,9 @@ class DbRowBinder {
         $sql = 'SELECT '.implode(', ', $columns).' FROM '.$table.' WHERE '
             .implode(' = ? AND ', array_keys($identitiyColumns)).' = ?';
         $argumentList = array_values($identitiyColumns);
-        array_unshift($argumentList, $sql);
-        $result = self::call($argumentList)->fetch(PDO::FETCH_ASSOC);
+        $result = Db::execute($sql, $argumentList)->fetch(PDO::FETCH_ASSOC);
         if ($result !== false && $replacementColumns !== null) {
-            self::updateDifference($table, $result, $replacementColumns);
+            static::updateDifference($table, $result, $replacementColumns);
         }
         if ($result !== false) {
             $id = $result['id'];
@@ -23,9 +22,9 @@ class DbRowBinder {
         if ($replacementColumns !== null) {
             $columnList = $replacementColumns + $identitiyColumns;
         }
-        self::insert($table, $columnList);
+        Db::insert($table, $columnList);
         if (func_num_args() > 3) {
-            $id = self::getLastInsertId();
+            $id = Db::getLastInsertId();
         }
         return true;
     }
@@ -38,7 +37,7 @@ class DbRowBinder {
             }
         }
         if (count($columnList) !== 0) {
-            self::update($table, $columnList, 'id = ?', $from['id']);
+            Db::update($table, $columnList, 'id = ?', $from['id']);
         }
     }
 }
