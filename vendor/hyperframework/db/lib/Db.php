@@ -35,7 +35,7 @@ class Db {
     public static function insert($table, $columnList) {
         self::execute(
             'INSERT INTO '.$table.'('.implode(array_keys($columnList), ', ')
-            .') VALUES('.self::getParameter(count($columnList)).')',
+            .') VALUES('.self::getParameterPlaceholders(count($columnList)).')',
                 array_values($columnList)
         );
     }
