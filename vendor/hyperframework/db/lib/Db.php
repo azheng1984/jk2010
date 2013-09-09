@@ -1,14 +1,14 @@
 <?php
 class Db {
-    public static function getColumn($sql/*, $parameter, ...*/) {
+    public static function getColumn($sql/*, $mixed, ...*/) {
         return self::call(func_get_args())->fetchColumn();
     }
 
-    public static function getRow($sql/*, $parameter, ...*/) {
+    public static function getRow($sql/*, $mixed, ...*/) {
         return self::call(func_get_args())->fetch(PDO::FETCH_ASSOC);
     }
 
-    public static function getAll($sql/*, $parameter, ...*/) {
+    public static function getAll($sql/*, $mixed, ...*/) {
         return self::call(func_get_args())->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -28,7 +28,7 @@ class Db {
         return DbConnection::getCurrent()->rollBack();
     }
 
-    public static function execute($sql/*, $parameter, ...*/) {
+    public static function execute($sql/*, $mixed, ...*/) {
         return self::call(func_get_args());
     }
 
@@ -41,7 +41,7 @@ class Db {
     }
 
     public static function update(
-        $table, $columns, $where/*, $parameter, ...*/
+        $table, $columns, $where/*, $mixed, ...*/
     ) {
         $parameterList = array_values($columnList);
         if ($where !== null) {
@@ -56,7 +56,7 @@ class Db {
         );
     }
 
-    public static function delete($table, $where/*, $parameter, ...*/) {
+    public static function delete($table, $where/*, $mixed, ...*/) {
         $parameterList = array();
         if ($where !== null) {
             $where = ' WHERE '.$where;
