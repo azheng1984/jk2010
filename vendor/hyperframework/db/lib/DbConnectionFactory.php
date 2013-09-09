@@ -1,5 +1,5 @@
 <?php
-//TODO 支持真持久链接 ATTR_PERSISTENT
+//TODO 支持真持久链接 attr_persistent
 class DbConnectionFactory {
   private static $config;
 
