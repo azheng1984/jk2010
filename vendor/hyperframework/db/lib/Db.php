@@ -35,13 +35,13 @@ class Db {
     public static function insert($table, $columnList) {
         self::execute(
             'INSERT INTO '.$table.'('.implode(array_keys($columnList), ', ')
-            .') VALUES('.self::getParameterMarkerList(count($columnList)).')',
+            .') VALUES('.self::getParameter(count($columnList)).')',
                 array_values($columnList)
-            );
+        );
     }
 
     public static function update(
-        $table, $columnList, $where/*, $parameter, ...*/
+        $table, $columns, $where/*, $parameter, ...*/
     ) {
         $parameterList = array_values($columnList);
         if ($where !== null) {
@@ -65,27 +65,24 @@ class Db {
         self::execute('DELETE FROM '.$table.$where, $parameterList);
     }
 
-    private static function call($parameterList) {
-        $connection = DbConnection::getCurrent();
-        $sql = array_shift($parameterList);
-        //echo $sql.PHP_EOL;
+    private static function call($arguments) {
+        $sql = array_shift($arguments);
+        if (count($arguments) === 1) {
+            $first = reset($arguments);
+            if (is_array($first)) {
+                $arguments = $first;
+            }
+        }
         if (isset($parameterList[0]) && is_array($parameterList[0])) {
             $parameterList = $parameterList[0];
         }
+        $connection = DbConnection::getCurrent();
         $statement = $connection->prepare($sql);
-        $isExit = false;
-        if (is_array($parameterList) === false) {
-            echo date('Y-m-d H:i:s');
-            $isExit = true;
-        }
         $statement->execute($parameterList);
-        if ($isExit) {
-            exit;
-        }
         return $statement;
-    }
+   }
 
-    private static function getParameterMarkerList($columnAmount) {
+    private static function getParameterPlaceholders($columnAmount) {
         if ($columnAmount > 1) {
             return str_repeat('?, ', $columnAmount - 1).'?';
         }
