@@ -24,8 +24,8 @@ class ApplicationBuilder {
         if (!file_exists($cachePath)) {
             throw new Exception("File '$cachePath' does not exsit");
         }
-        require HYPERFRAMEWORK_PATH . 'class_loader' . DIRECTORY_SEPARATOR .
-             'lib' . DIRECTORY_SEPARATOR . 'ClassLoader.php';
+        require HYPERFRAMEWORK_PATH . 'Hyperframework' .
+            DIRECTORY_SEPARATOR . 'ClassLoader.php';
         $this->classLoader = new Hyperframework\ClassLoader;
         $this->classLoader->run($rootPath, $cachePath);
     }

@@ -269,6 +269,7 @@ class ClassLoaderBuilder {
             ++$count;
             //echo $count . ' '. $item;
             if ($item === '') {
+                echo 'bug';
                 continue;
             }
             if ($count === $amount) {
@@ -294,7 +295,7 @@ class ClassLoaderBuilder {
             }
             $currentNamespace = &$currentNamespace[$item];
         }
-        //var_export($this->output);
+        var_export($this->output);
     }
 
     private function addClassMapping($namespace, $folder) {
