@@ -29,20 +29,18 @@ class Db {
     }
 
     public static function execute($sql/*, $mixed, ...*/) {
-        return self::call(func_get_args());
+        return self::call(func_get_args(), false);
     }
 
-    public static function insert($table, $columnList) {
+    public static function insert($table, $columns) {
         self::execute(
-            'INSERT INTO '.$table.'('.implode(array_keys($columnList), ', ')
-            .') VALUES('.self::getParameterPlaceholders(count($columnList)).')',
+            'INSERT INTO '.$table.'('.implode(array_keys($parameters), ', ')
+            .') VALUES('.self::getParameterPlaceholders(count($parameters)).')',
                 array_values($columnList)
         );
     }
 
-    public static function update(
-        $table, $columns, $where/*, $mixed, ...*/
-    ) {
+    public static function update($table, $columns, $where/*, $mixed, ...*/) {
         $parameterList = array_values($columnList);
         if ($where !== null) {
             $where = ' WHERE '.$where;
@@ -50,8 +48,8 @@ class Db {
                 $parameterList, array_slice(func_get_args(), 3)
             );
         }
-        self::execute(
-            'UPDATE '.$table.' SET '.implode(array_keys($columnList), ' = ?, ')
+        return self::execute(
+            'UPDATE ' . $table . ' SET ' . implode(array_keys($columnList), ' = ?, ')
             .' = ?'.$where, $parameterList
         );
     }
@@ -59,22 +57,29 @@ class Db {
     public static function delete($table, $where/*, $mixed, ...*/) {
         $parameterList = array();
         if ($where !== null) {
-            $where = ' WHERE '.$where;
+            $where = ' WHERE ' . $where;
             $parameterList = array_slice(func_get_args(), 2);
         }
-        self::execute('DELETE FROM '.$table.$where, $parameterList);
+        return self::execute('DELETE FROM ' . $table . $where, $parameterList);
     }
 
-    private static function call($arguments) {
+    private static function call($arguments, $isQuery = true) {
         $sql = array_shift($arguments);
-        if (isset($parameters[0]) && is_array($parameters[0])) {
+        $connection = DbConnection::getCurrent();
+        if (count($arguments) === 0) {
+            return $isQuery ?
+                $connection->query($sql) : $connection->exec($sql);
+        }
+        if (is_array($parameters[0])) {
             $parameters = $parameters[0];
         }
-        $connection = DbConnection::getCurrent();
         $statement = $connection->prepare($sql);
         $statement->execute($parameters);
-        return $statement;
-   }
+        if ($isQuery) {
+            return $statement;
+        }
+        return $statement->rowCount();
+    }
 
     private static function getParameterPlaceholders($amount) {
         if ($amount > 1) {
