@@ -28,16 +28,19 @@ class Db {
         return DbConnection::getCurrent()->rollBack();
     }
 
+    public static function prepare($sql, $driverOptions = array()) {
+        return DbConnection::getCurrent()->prepare($sql, $driverOptions);
+    }
+
     public static function execute($sql/*, $mixed, ...*/) {
         return self::call(func_get_args(), false);
     }
 
     public static function insert($table, $columns) {
-        self::execute(
-            'INSERT INTO '.$table.'('.implode(array_keys($parameters), ', ')
-            .') VALUES('.self::getParameterPlaceholders(count($parameters)).')',
-                array_values($columnList)
-        );
+        $sql = 'INSERT INTO '.$table.'('.implode(array_keys($parameters), ', ')
+            .') VALUES('.self::getParameterPlaceholders(count($parameters)).')';
+        $arguments = array_unshift(array_values($columns), $sql);
+        self::call($arguments, false, true);
     }
 
     public static function update($table, $columns, $where/*, $mixed, ...*/) {
@@ -63,7 +66,9 @@ class Db {
         return self::execute('DELETE FROM ' . $table . $where, $parameterList);
     }
 
-    private static function call($arguments, $isQuery = true) {
+    private static function call(
+        $arguments, $isQuery = true, $isInsert = false
+    ) {
         $sql = array_shift($arguments);
         $connection = DbConnection::getCurrent();
         if (count($arguments) === 0) {
@@ -78,7 +83,9 @@ class Db {
         if ($isQuery) {
             return $statement;
         }
-        return $statement->rowCount();
+        if ($isInsert === false) {
+            return $statement->rowCount();
+        }
     }
 
     private static function getParameterPlaceholders($amount) {
