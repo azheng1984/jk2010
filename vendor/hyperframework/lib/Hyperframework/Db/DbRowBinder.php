@@ -10,7 +10,7 @@ class DbRowBinder {
         $sql = 'SELECT '.implode(', ', $columns).' FROM '.$table.' WHERE '
             .implode(' = ? AND ', array_keys($identitiyColumns)).' = ?';
         $argumentList = array_values($identitiyColumns);
-        $result = Db::execute($sql, $argumentList)->fetch(PDO::FETCH_ASSOC);
+        $result = Db::getRow($sql, $argumentList);
         if ($result !== false && $replacementColumns !== null) {
             static::updateDifference($table, $result, $replacementColumns);
         }

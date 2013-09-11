@@ -6,13 +6,14 @@ class DbConnection {
   private static $factory;
 
   public static function connect(
-    $name = 'default', $pdo = null, $isReusable = true
+      $name = 'default', $pdo = null, $isReusable = true,
   ) {
     if (self::$current !== null) {
       self::$stack[] = self::$current;
     }
     if ($pdo !== null) {
       $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      //ATTR_EMULATE_PREPARES true by default
     }
     if ($pdo === null) {
       $pdo = self::build($name, $isReusable);
