@@ -12,7 +12,8 @@ class DbRowBinder {
             $columns = array_merge($columns, array_keys($replacementColumns));
         }
         $sql = 'SELECT ' . implode(', ', $columns) . ' FROM ' . $table .
-            ' WHERE ' . implode(' = ? AND ', array_keys($identitiyColumns)) . ' = ?';
+            ' WHERE ' . implode(' = ? AND ', array_keys($identitiyColumns)) .
+            ' = ?';
         $arguments = array_values($identitiyColumns);
         $result = Db::getRow($sql, $arguments);
         $status = self::NOT_MODIFIED;
