@@ -13,26 +13,26 @@ class Db {
     }
 
     public static function getLastInsertId() {
-        return DbConnection::getCurrent()->lastInsertId();
+        return static::getConnection()->lastInsertId();
     }
 
     public static function beginTransaction() {
-        return DbConnection::getCurrent()->beginTransaction();
+        return static::getConnection()->beginTransaction();
     }
 
     public static function commit() {
-        return DbConnection::getCurrent()->commit();
+        return static::getConnection()->commit();
     }
 
     public static function rollback() {
-        return DbConnection::getCurrent()->rollBack();
+        return static::getConnection()->rollBack();
     }
 
     public static function prepare($sql, $isEmulated = false) {
         $driverOptions = array(
             PDO::ATTR_EMULATE_PREPARES => $isEmulated,
         );
-        return DbConnection::getCurrent()->prepare($sql, $driverOptions);
+        return static::getConnection()->prepare($sql, $driverOptions);
     }
 
     public static function execute($sql/*, $mixed, ...*/) {
@@ -71,10 +71,14 @@ class Db {
         static::send($sql, $parameters, false);
     }
 
+    protected static function getConnection() {
+        return DbConnection::getCurrent();
+    }
+
     protected static function send(
         $sql, $parameters, $isQuery = true, $isInsert = false
     ) {
-        $connection = DbConnection::getCurrent();
+        $connection = static::getConnection();
         if ($parameters === null || count($parameters) === 0) {
             return $isQuery ?
                 $connection->query($sql) : $connection->exec($sql);
