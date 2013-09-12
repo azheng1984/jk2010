@@ -1,15 +1,15 @@
 <?php
 class Db {
     public static function getColumn($sql/*, $mixed, ...*/) {
-        return self::call(func_get_args())->fetchColumn();
+        return static::query(func_get_args())->fetchColumn();
     }
 
     public static function getRow($sql/*, $mixed, ...*/) {
-        return self::call(func_get_args())->fetch(PDO::FETCH_ASSOC);
+        return static::query(func_get_args())->fetch(PDO::FETCH_ASSOC);
     }
 
     public static function getAll($sql/*, $mixed, ...*/) {
-        return self::call(func_get_args())->fetchAll(PDO::FETCH_ASSOC);
+        return static::query(func_get_args())->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public static function getLastInsertId() {
@@ -28,50 +28,57 @@ class Db {
         return DbConnection::getCurrent()->rollBack();
     }
 
-    public static function prepare($sql, $driverOptions = array()) {
+    public static function prepare(
+        $sql, $isEmulated = false, $fetchMode = PDO::FETCH_ASSOC
+    ) {
+        $driverOptions = array(
+            PDO::ATTR_EMULATE_PREPARES => $isEmulated,
+            PDO::ATTR_DEFAULT_FETCH_MODE => $fetchMode
+        );
         return DbConnection::getCurrent()->prepare($sql, $driverOptions);
     }
 
     public static function execute($sql/*, $mixed, ...*/) {
-        return self::call(func_get_args(), false);
+        $parameters = func_get_args();
+        $sql = array_shift($parameters);
+        return static::send($sql, $parameters, false);
     }
 
     public static function insert($table, $columns) {
-        $sql = 'INSERT INTO '.$table.'('.implode(array_keys($parameters), ', ')
-            .') VALUES('.self::getParameterPlaceholders(count($parameters)).')';
-        $arguments = array_unshift(array_values($columns), $sql);
-        self::call($arguments, false, true);
+        $sql = 'INSERT INTO ' . $table . '(' .
+            implode(array_keys($parameters), ', ') . ') VALUES(' .
+            static::getParameterPlaceholders(count($parameters)) . ')';
+        static::send($sql, array_values($columns), false, true);
     }
 
     public static function update($table, $columns, $where/*, $mixed, ...*/) {
-        $parameterList = array_values($columnList);
+        $parameters = array_values($columns);
         if ($where !== null) {
-            $where = ' WHERE '.$where;
-            $parameterList = array_merge(
-                $parameterList, array_slice(func_get_args(), 3)
+            $where = ' WHERE ' . $where;
+            $parameters = array_merge(
+                $parameters, array_slice(func_get_args(), 3)
             );
         }
-        return self::execute(
-            'UPDATE ' . $table . ' SET ' . implode(array_keys($columnList), ' = ?, ')
-            .' = ?'.$where, $parameterList
-        );
+        $sql = 'UPDATE ' . $table . ' SET ' .
+            implode(array_keys($columns), ' = ?, ') . ' = ?' . $where;
+        static::send($sql, $parameters), false);
     }
 
     public static function delete($table, $where/*, $mixed, ...*/) {
-        $parameterList = array();
+        $parameters = array();
         if ($where !== null) {
             $where = ' WHERE ' . $where;
-            $parameterList = array_slice(func_get_args(), 2);
+            $parameters = array_slice(func_get_args(), 2);
         }
-        return self::execute('DELETE FROM ' . $table . $where, $parameterList);
+        $sql = 'DELETE FROM ' . $table . $where;
+        static::send($sql, $parameters, false);
     }
 
-    private static function call(
-        $arguments, $isQuery = true, $isInsert = false
+    protected static function send(
+        $sql, $parameters, $isQuery = true, $isInsert = false
     ) {
-        $sql = array_shift($arguments);
         $connection = DbConnection::getCurrent();
-        if (count($arguments) === 0) {
+        if ($parameters === null || count($parameters) === 0) {
             return $isQuery ?
                 $connection->query($sql) : $connection->exec($sql);
         }
@@ -88,9 +95,15 @@ class Db {
         }
     }
 
+    private static function query($arguments) {
+        $parameters = $arguments();
+        $sql = array_shift($parameters);
+        return static::send($sql, $parameters);
+    }
+
     private static function getParameterPlaceholders($amount) {
         if ($amount > 1) {
-            return str_repeat('?, ', $amount - 1).'?';
+            return str_repeat('?, ', $amount - 1) . '?';
         }
         if ($amount === 1) {
             return '?';
