@@ -28,12 +28,9 @@ class Db {
         return DbConnection::getCurrent()->rollBack();
     }
 
-    public static function prepare(
-        $sql, $isEmulated = false, $fetchMode = PDO::FETCH_ASSOC
-    ) {
+    public static function prepare($sql, $isEmulated = false) {
         $driverOptions = array(
             PDO::ATTR_EMULATE_PREPARES => $isEmulated,
-            PDO::ATTR_DEFAULT_FETCH_MODE => $fetchMode
         );
         return DbConnection::getCurrent()->prepare($sql, $driverOptions);
     }
