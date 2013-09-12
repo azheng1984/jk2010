@@ -13,7 +13,7 @@ class DbConnection {
     }
     if ($pdo !== null) {
       $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      //ATTR_EMULATE_PREPARES true by default
+      $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);//emulate by default, configurable
     }
     if ($pdo === null) {
       $pdo = self::build($name, $isReusable);
