@@ -11,7 +11,7 @@ $classLoader->run();
 $exceptionHandler = new CommandExceptionHandler;
 $exceptionHandler->run();
 if (!isset($_SERVER['PWD'])) {
-  $_SERVER['PWD'] = getcwd();
+    $_SERVER['PWD'] = getcwd();
 }
 $app = new CommandApplication;
 $app->run();
