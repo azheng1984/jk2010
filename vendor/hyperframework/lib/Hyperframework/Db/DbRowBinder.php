@@ -22,6 +22,9 @@ class DbRowBinder {
             ' = ?';
         $arguments = array_values($identitiyColumns);
         $result = $client::getRow($sql, $arguments);
+        if ($result !== false && $isset($identityColumns['id'])) {
+            $result['id'] = $identityColumns['id'];
+        }
         $status = self::NOT_MODIFIED;
         if ($result !== false && $replacementColumns !== null) {
             $status = static::updateDifference(
