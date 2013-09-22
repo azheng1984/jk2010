@@ -2,15 +2,18 @@
 namespace Hyperframework\Db;
 
 class DbRowBinder {
-    const INSERTED = 0;
-    const UPDATED = 1;
-    const NOT_MODIFIED = 2;
+    const STATUS_INSERTED = 0;
+    const STATUS_UPDATED = 1;
+    const STATUS_NOT_MODIFIED = 2;
+
+    const RETURN_TYPE_STATUS = 1;
+    const RETURN_TYPE_ID = 2;
 
     public static function bind(
         $table,
         $identityColumns,
         $replacementColumns = null,
-        $returnType = ,
+        $returnType = self::RETURN_TYPE_STATUS,
         $client = '\Hyperframework\Db\DbClient'
     ) {
         $columns = isset($identityColumns['id']) ? array() : array('id');
@@ -28,34 +31,60 @@ class DbRowBinder {
                 $table,
                 $identityColumns,
                 $replacementColumns,
-                $returnId
+                $resultType
             );
         }
         if ($isset($identityColumns['id'])) {
             $result['id'] = $identityColumns['id'];
         }
-        $status = self::NOT_MODIFIED;
+        $status = self::STATUS_NOT_MODIFIED;
         if ($replacementColumns !== null) {
             $status = static::updateDifference(
                 $client, $table, $result, $replacementColumns
             );
         }
-        return $returnId ? array($status, $result['id']) : $status;
+        $id = $result['id'];
+        $result = array();
+        if (($returnType & self::RETURN_TYPE_STATUS) > 0) {
+            $result['status'] = $status;
+        }
+        if (($returnType & self::RETURN_TYPE_ID) > 0) {
+            $result['id'] = $id;
+        }
+        $length = count($result);
+        if ($length === 0) {
+            return;
+        }
+        if ($length === 1) {
+            return current($result);
+        }
+        return $result;
     }
 
     private static function insert(
-        $client, $table, $identityColumns, $replacementColumns, $returnId
+        $client, $table, $identityColumns, $replacementColumns, $resultType
     ) {
         $columns = $identitiyColumns;
         if ($replacementColumns !== null) {
             $columns = $replacementColumns + $identitiyColumns;
         }
         $client::insert($table, $columns);
-        if ($returnId) {
-            return array(self::INSERTED, $client::getLastInsertId());
+        $result = array();
+        if (($returnType & self::RETURN_TYPE_STATUS) > 0) {
+            $result['status'] = $status;
         }
-        return self::INSERTED;
-    }
+        if (($returnType & self::RETURN_TYPE_ID) > 0) {
+            $result['id'] = $client::getLastInsertId();
+        }
+        $length = count($result);
+        if ($length === 0) {
+            return;
+        }
+        if ($length === 1) {
+            return current($result);
+        }
+        return $result;
+   }
 
     private static function updateDifference($client, $table, $from, $to) {
         $columns = array();
@@ -66,8 +95,8 @@ class DbRowBinder {
         }
         if (count($columns) !== 0) {
             $client::update($table, $columns, 'id = ?', $from['id']);
-            return self::UPDATED;
+            return self::STATUS_UPDATED;
         }
-        return self::NOT_MODIFIED;
+        return self::STATUS_NOT_MODIFIED;
     }
 }
