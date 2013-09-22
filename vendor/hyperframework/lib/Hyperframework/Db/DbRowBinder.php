@@ -10,7 +10,7 @@ class DbRowBinder {
         $table,
         $identityColumns,
         $replacementColumns = null,
-        $returnId = false,
+        $returnType = ,
         $client = '\Hyperframework\Db\DbClient'
     ) {
         $columns = isset($identityColumns['id']) ? array() : array('id');
