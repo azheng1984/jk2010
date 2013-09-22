@@ -18,22 +18,34 @@ class DbRowBinder {
             $columns = array_merge($columns, array_keys($replacementColumns));
         }
         $sql = 'SELECT ' . implode(', ', $columns) . ' FROM ' . $table .
-            ' WHERE ' . implode(' = ? AND ', array_keys($identitiyColumns)) .
+            ' WHERE ' . implode(' = ? AND ', array_keys($identityColumns)) .
             ' = ?';
         $arguments = array_values($identitiyColumns);
         $result = $client::getRow($sql, $arguments);
-        if ($result !== false && $isset($identityColumns['id'])) {
+        if ($result === false) {
+            return static::insert(
+                $client,
+                $table,
+                $identityColumns,
+                $replacementColumns,
+                $returnId
+            );
+        }
+        if ($isset($identityColumns['id'])) {
             $result['id'] = $identityColumns['id'];
         }
         $status = self::NOT_MODIFIED;
-        if ($result !== false && $replacementColumns !== null) {
+        if ($replacementColumns !== null) {
             $status = static::updateDifference(
                 $client, $table, $result, $replacementColumns
             );
         }
-        if ($result !== false) {
-            return $returnId ? array($status, $result['id']) : $status;
-        }
+        return $returnId ? array($status, $result['id']) : $status;
+    }
+
+    private static function insert(
+        $client, $table, $identityColumns, $replacementColumns, $returnId
+    ) {
         $columns = $identitiyColumns;
         if ($replacementColumns !== null) {
             $columns = $replacementColumns + $identitiyColumns;
