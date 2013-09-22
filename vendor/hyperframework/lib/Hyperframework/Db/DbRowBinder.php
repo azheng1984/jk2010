@@ -6,14 +6,14 @@ class DbRowBinder {
     const STATUS_UPDATED = 1;
     const STATUS_NOT_MODIFIED = 2;
 
-    const RETURN_TYPE_STATUS = 1;
-    const RETURN_TYPE_ID = 2;
+    const RETURN_STATUS = 1;
+    const RETURN_ID = 2;
 
     public static function bind(
         $table,
         $identityColumns,
         $replacementColumns = null,
-        $returnType = self::RETURN_TYPE_STATUS,
+        $return = self::RETURN_STATUS,
         $client = '\Hyperframework\Db\DbClient'
     ) {
         $columns = isset($identityColumns['id']) ? array() : array('id');
@@ -45,10 +45,10 @@ class DbRowBinder {
         }
         $id = $result['id'];
         $result = array();
-        if (($returnType & self::RETURN_TYPE_STATUS) > 0) {
+        if (($returnType & self::RETURN_STATUS) > 0) {
             $result['status'] = $status;
         }
-        if (($returnType & self::RETURN_TYPE_ID) > 0) {
+        if (($returnType & self::RETURN_ID) > 0) {
             $result['id'] = $id;
         }
         $length = count($result);
@@ -70,10 +70,10 @@ class DbRowBinder {
         }
         $client::insert($table, $columns);
         $result = array();
-        if (($returnType & self::RETURN_TYPE_STATUS) > 0) {
+        if (($returnType & self::RETURN_STATUS) > 0) {
             $result['status'] = $status;
         }
-        if (($returnType & self::RETURN_TYPE_ID) > 0) {
+        if (($returnType & self::RETURN_ID) > 0) {
             $result['id'] = $client::getLastInsertId();
         }
         $length = count($result);
