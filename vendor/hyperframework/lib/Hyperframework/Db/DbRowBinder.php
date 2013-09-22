@@ -31,7 +31,7 @@ class DbRowBinder {
                 $table,
                 $identityColumns,
                 $replacementColumns,
-                $resultType
+                $return
             );
         }
         if ($isset($identityColumns['id'])) {
