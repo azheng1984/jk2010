@@ -45,10 +45,10 @@ class DbRowBinder {
         }
         $id = $result['id'];
         $result = array();
-        if (($returnType & self::RETURN_STATUS) > 0) {
+        if (($return & self::RETURN_STATUS) > 0) {
             $result['status'] = $status;
         }
-        if (($returnType & self::RETURN_ID) > 0) {
+        if (($return & self::RETURN_ID) > 0) {
             $result['id'] = $id;
         }
         $length = count($result);
@@ -62,7 +62,7 @@ class DbRowBinder {
     }
 
     private static function insert(
-        $client, $table, $identityColumns, $replacementColumns, $resultType
+        $client, $table, $identityColumns, $replacementColumns, $return
     ) {
         $columns = $identitiyColumns;
         if ($replacementColumns !== null) {
@@ -70,10 +70,10 @@ class DbRowBinder {
         }
         $client::insert($table, $columns);
         $result = array();
-        if (($returnType & self::RETURN_STATUS) > 0) {
+        if (($return & self::RETURN_STATUS) > 0) {
             $result['status'] = $status;
         }
-        if (($returnType & self::RETURN_ID) > 0) {
+        if (($return & self::RETURN_ID) > 0) {
             $result['id'] = $client::getLastInsertId();
         }
         $length = count($result);
