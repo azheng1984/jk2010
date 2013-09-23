@@ -12,20 +12,7 @@ class DbDataBinder {
     public static function bind(
         $table, $identityColumns, $replacementColumns = null, $options = null
     ) {
-        $return = self::RETURN_STATUS;
-        $client = '\Hyperframework\Db\DbClient';
-        $primaryKey = 'id';
-        if ($options !== null) {
-            if (isset($options['return'])) {
-                $return = $options['return'];
-            }
-            if (isset($options['client'])) {
-                $client = $options['client'];
-            }
-            if (isset($options['primary_key'])) {
-                $primaryKey = $options['primary_key'];
-            }
-        }
+        list($return, $client, $primaryKey) = static::fetchOptions($options);
         $columns = $primaryKey !== null &&
             isset($identityColumns[$primaryKey]) ? array() : array($primaryKey);
         if ($replacementColumns !== null) {
@@ -50,7 +37,7 @@ class DbDataBinder {
                 $client, $table, $primaryKey, $result, $replacementColumns
             );
         }
-        $id = $result[$primaryKey]; //fix primary key = null
+        $id = $result[$primaryKey]; //todo fix primary key = null
         $result = array();
         if (($return & self::RETURN_STATUS) > 0) {
             $result['status'] = $status;
@@ -66,6 +53,29 @@ class DbDataBinder {
             return current($result);
         }
         return $result;
+    }
+
+    private static function fetchOptions($options) {
+        $return = self::RETURN_STATUS;
+        $client = '\Hyperframework\Db\DbClient';
+        $primaryKey = 'id';
+        if ($options === null) {
+            return array($return, $client, $primaryKey);
+        }
+        foreach ($options as $key => $value) {
+            switch ($key) {
+                case 'return':
+                    $return = $value;
+                    break;
+                case 'client':
+                    $client = $value;
+                    break;
+                case 'primary_key':
+                    $primaryKey = $value;
+                    break;
+            }
+        }
+        return array($return, $client, $primaryKey);
     }
 
     private static function insert(
