@@ -78,7 +78,7 @@ class DbDataBinder {
                 case 'update_filter_key':
                     $updateFilterKey = $value;
                     break;
-           }
+            }
         }
         if ($updateFilterKey === null) {
             $updateFilterKey = $idKey;
