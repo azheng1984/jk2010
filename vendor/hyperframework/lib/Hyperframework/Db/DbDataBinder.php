@@ -21,7 +21,7 @@ class DbDataBinder {
         $sql = 'SELECT ' . implode(', ', $columns) . ' FROM ' . $table .
             ' WHERE ' . implode(' = ? AND ', array_keys($identityColumns)) .
             ' = ?';
-        $arguments = array_values($identitiyColumns);
+        $arguments = array_values($identityColumns);
         $result = $client::getRow($sql, $arguments);
         if ($result === false) {
             return static::insert(
@@ -81,9 +81,9 @@ class DbDataBinder {
     private static function insert(
         $client, $table, $identityColumns, $replacementColumns, $return
     ) {
-        $columns = $identitiyColumns;
+        $columns = $identityColumns;
         if ($replacementColumns !== null) {
-            $columns = $replacementColumns + $identitiyColumns;
+            $columns = $replacementColumns + $identityColumns;
         }
         $client::insert($table, $columns);
         $result = array();
