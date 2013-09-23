@@ -12,8 +12,7 @@ class DbDataBinder {
     public static function bind(
         $table, $filterColumns, $replacementColumns = null, $options = null
     ) {
-        list($return, $client, $idKey, $updateFilterKey) =
-            static::fetchOptions($options);
+        list($return, $client, $idKey) = static::fetchOptions($options);
         $columns = $idKey !== null &&
             isset($filterColumns[$idKey]) ? array() : array($idKey);
         if ($replacementColumns !== null) {
@@ -60,9 +59,8 @@ class DbDataBinder {
         $return = self::RETURN_STATUS;
         $client = '\Hyperframework\Db\DbClient';
         $idKey = 'id';
-        $updateFilterKey = null;
         if ($options === null) {
-            return array($return, $client, $idKey, $idKey);
+            return array($return, $client, $idKey);
         }
         foreach ($options as $key => $value) {
             switch ($key) {
@@ -75,15 +73,9 @@ class DbDataBinder {
                 case 'id_key':
                     $idKey = $value;
                     break;
-                case 'update_filter_key':
-                    $updateFilterKey = $value;
-                    break;
             }
         }
-        if ($updateFilterKey === null) {
-            $updateFilterKey = $idKey;
-        }
-        return array($return, $client, $idKey, $updateFilterKey);
+        return array($return, $client, $idKey);
     }
 
     private static function insert(
