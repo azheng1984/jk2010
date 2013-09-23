@@ -101,7 +101,7 @@ class DbDataBinder {
             return current($result);
         }
         return $result;
-   }
+    }
 
     private static function updateDifference(
         $client, $table, $from, $to, $identityColumns
