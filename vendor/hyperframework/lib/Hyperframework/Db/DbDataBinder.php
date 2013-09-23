@@ -26,8 +26,8 @@ class DbDataBinder {
                 $primaryKey = $options['primary_key'];
             }
         }
-        $columns = isset($identityColumns[$primaryKey]) ?
-            array() : array($primaryKey);
+        $columns = $primaryKey !== null &&
+            isset($identityColumns[$primaryKey]) ? array() : array($primaryKey);
         if ($replacementColumns !== null) {
             $columns = array_merge($columns, array_keys($replacementColumns));
         }
@@ -50,7 +50,7 @@ class DbDataBinder {
                 $client, $table, $primaryKey, $result, $replacementColumns
             );
         }
-        $id = $result[$primaryKey];
+        $id = $result[$primaryKey]; //fix primary key = null
         $result = array();
         if (($return & self::RETURN_STATUS) > 0) {
             $result['status'] = $status;
@@ -94,8 +94,9 @@ class DbDataBinder {
    }
 
     private static function updateDifference(
-        $client, $table, $primaryKey, $from, $to
+        $client, $table, $from, $to, $identityColumns
     ) {
+        //TODO set primaryKey when identiryColumns = string
         $columns = array();
         foreach ($to as $key => $value) {
             if ($from[$key] !== $value) {
