@@ -10,26 +10,27 @@ class DbDataBinder {
     const RETURN_ID = 2;
 
     public static function bind(
-        $table, $identityColumns, $replacementColumns = null, $options = null
+        $table, $filterColumns, $replacementColumns = null, $options = null
     ) {
-        list($return, $client, $idKey) = static::fetchOptions($options);
+        list($return, $client, $idKey, $updateFilterKey) =
+            static::fetchOptions($options);
         $columns = $idKey !== null &&
-            isset($identityColumns[$idKey]) ? array() : array($idKey);
+            isset($filterColumns[$idKey]) ? array() : array($idKey);
         if ($replacementColumns !== null) {
             $columns = array_merge($columns, array_keys($replacementColumns));
         }
         $sql = 'SELECT ' . implode(', ', $columns) . ' FROM ' . $table .
-            ' WHERE ' . implode(' = ? AND ', array_keys($identityColumns)) .
+            ' WHERE ' . implode(' = ? AND ', array_keys($filterColumns)) .
             ' = ?';
-        $arguments = array_values($identityColumns);
+        $arguments = array_values($filterColumns);
         $result = $client::getRow($sql, $arguments);
         if ($result === false) {
             return static::insert(
-                $client, $table, $identityColumns, $replacementColumns, $return
+                $client, $table, $filterColumns, $replacementColumns, $return
             );
         }
-        if (isset($identityColumns[$idKey])) {
-            $result[$idKey] = $identityColumns[$idKey];
+        if (isset($filterColumns[$idKey])) {
+            $result[$idKey] = $filterColumns[$idKey];
         }
         $status = self::STATUS_NOT_MODIFIED;
         if ($replacementColumns !== null) {
@@ -37,7 +38,7 @@ class DbDataBinder {
                 $client, $table, $idKey, $result, $replacementColumns
             );
         }
-        $id = $result[$idKey]; //todo fix primary key = null
+        $id = $result[$idKey]; //todo fix id key = null
         $result = array();
         if (($return & self::RETURN_STATUS) > 0) {
             $result['status'] = $status;
@@ -59,8 +60,9 @@ class DbDataBinder {
         $return = self::RETURN_STATUS;
         $client = '\Hyperframework\Db\DbClient';
         $idKey = 'id';
+        $updateFilterKey = null;
         if ($options === null) {
-            return array($return, $client, $idKey);
+            return array($return, $client, $idKey, $idKey);
         }
         foreach ($options as $key => $value) {
             switch ($key) {
@@ -73,17 +75,23 @@ class DbDataBinder {
                 case 'id_key':
                     $idKey = $value;
                     break;
+                case 'update_filter_key':
+                    $updateFilterKey = $value;
+                    break;
            }
         }
-        return array($return, $client, $idKey);
+        if ($updateFilterKey === null) {
+            $updateFilterKey = $idKey;
+        }
+        return array($return, $client, $idKey, $updateFilterKey);
     }
 
     private static function insert(
-        $client, $table, $identityColumns, $replacementColumns, $return
+        $client, $table, $filterColumns, $replacementColumns, $return
     ) {
-        $columns = $identityColumns;
+        $columns = $filterColumns;
         if ($replacementColumns !== null) {
-            $columns = $replacementColumns + $identityColumns;
+            $columns = $replacementColumns + $filterColumns;
         }
         $client::insert($table, $columns);
         $result = array();
@@ -104,7 +112,7 @@ class DbDataBinder {
     }
 
     private static function updateDifference(
-        $client, $table, $from, $to, $identityColumns
+        $client, $table, $from, $to, $idKey
     ) {
         //TODO set idKey when identiryColumns = string
         $columns = array();
