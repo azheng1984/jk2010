@@ -12,9 +12,9 @@ class DbDataBinder {
     public static function bind(
         $table, $filterColumns, $replacementColumns = null, $options = null
     ) {
-        list($return, $client, $idKey) = static::fetchOptions($options);
-        $columns = $idKey !== null &&
-            isset($filterColumns[$idKey]) ? array() : array($idKey);
+        list($return, $client, $idName) = static::fetchOptions($options);
+        $columns = $idName !== null &&
+            isset($filterColumns[$idName]) ? array() : array($idName);
         if ($replacementColumns !== null) {
             $columns = array_merge($columns, array_keys($replacementColumns));
         }
@@ -28,16 +28,16 @@ class DbDataBinder {
                 $client, $table, $filterColumns, $replacementColumns, $return
             );
         }
-        if (isset($filterColumns[$idKey])) {
-            $result[$idKey] = $filterColumns[$idKey];
+        if (isset($filterColumns[$idName])) {
+            $result[$idName] = $filterColumns[$idName];
         }
         $status = self::STATUS_NOT_MODIFIED;
         if ($replacementColumns !== null) {
             $status = static::updateDifference(
-                $client, $table, $idKey, $result, $replacementColumns
+                $client, $table, $idName, $result, $replacementColumns
             );
         }
-        $id = $result[$idKey]; //todo fix id key = null
+        $id = $result[$idName]; //todo fix id key = null
         $result = array();
         if (($return & self::RETURN_STATUS) > 0) {
             $result['status'] = $status;
@@ -58,9 +58,9 @@ class DbDataBinder {
     private static function fetchOptions($options) {
         $return = self::RETURN_STATUS;
         $client = '\Hyperframework\Db\DbClient';
-        $idKey = 'id';
+        $idName = 'id';
         if ($options === null) {
-            return array($return, $client, $idKey);
+            return array($return, $client, $idName);
         }
         foreach ($options as $key => $value) {
             switch ($key) {
@@ -70,12 +70,12 @@ class DbDataBinder {
                 case 'client':
                     $client = $value;
                     break;
-                case 'id_key':
-                    $idKey = $value;
+                case 'id_name':
+                    $idName = $value;
                     break;
             }
         }
-        return array($return, $client, $idKey);
+        return array($return, $client, $idName);
     }
 
     private static function insert(
@@ -104,9 +104,9 @@ class DbDataBinder {
     }
 
     private static function updateDifference(
-        $client, $table, $from, $to, $idKey
+        $client, $table, $from, $to, $idName
     ) {
-        //TODO set idKey when identiryColumns = string
+        //TODO set idName when identiryColumns = string
         $columns = array();
         foreach ($to as $key => $value) {
             if ($from[$key] !== $value) {
@@ -115,7 +115,7 @@ class DbDataBinder {
         }
         if (count($columns) !== 0) {
             $client::update(
-                $table, $columns, $idKey . ' = ?', $from[$idKey]
+                $table, $columns, $idName . ' = ?', $from[$idName]
             );
             return self::STATUS_UPDATED;
         }
