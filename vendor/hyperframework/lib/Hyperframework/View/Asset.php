@@ -9,14 +9,11 @@ class Asset {
         return self::$cache;
     }
 
-    public static function getMd5($path) {
+    public static function getVersion($path) {
         $cache = self::getCache();
         if (isset($cache[$path])) {
             return $cache[$path];
         }
-    }
-
-    public static function getDigest($path) {
     }
 
     public static function renderJsLink() {
