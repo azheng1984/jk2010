@@ -1,9 +1,12 @@
 <?php
 namespace Hyperframwork\Db;
-
+//使用 ? 拼接 + prepared statement
+//options
+//1. client
+//2. batch_size (rows limit on one statement, 默认一次执行，由客户端控制条数)
 class DbBatchInsertCommand {
     public static function execute(
-        $table, $rows, $keys = null, $options = null
+        $table, $values, $names = null, $options = null
     ) {
     }
 }
