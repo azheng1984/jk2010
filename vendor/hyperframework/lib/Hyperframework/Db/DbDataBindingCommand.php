@@ -106,6 +106,7 @@ class DbDataBindingCommand {
     private static function updateDifference(
         $client, $table, $from, $to, $idName
     ) {
+        DbDataBindingCommand::RETURN_STATS
         //TODO set idName when identiryColumns = string
         $columns = array();
         foreach ($to as $key => $value) {
