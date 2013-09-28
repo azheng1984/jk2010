@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Db;
 
-class DbDataBindCommand {
+class DbDataBindingCommand {
     const STATUS_INSERTED = 0;
     const STATUS_UPDATED = 1;
     const STATUS_NOT_MODIFIED = 2;
