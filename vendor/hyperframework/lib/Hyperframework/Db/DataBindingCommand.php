@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Db;
 
-class DbDataBindingCommand {
+class DataBindingCommand {
     const STATUS_INSERTED = 0;
     const STATUS_UPDATED = 1;
     const STATUS_NOT_MODIFIED = 2;
@@ -57,7 +57,7 @@ class DbDataBindingCommand {
 
     private static function fetchOptions($options) {
         $return = self::RETURN_STATUS;
-        $client = '\Hyperframework\Db\DbClient';
+        $client = '\Hyperframework\Db\Client';
         $idName = 'id';
         if ($options === null) {
             return array($return, $client, $idName);
@@ -106,7 +106,6 @@ class DbDataBindingCommand {
     private static function updateDifference(
         $client, $table, $from, $to, $idName
     ) {
-        DbDataBindingCommand::RETURN_STATS
         //TODO set idName when identiryColumns = string
         $columns = array();
         foreach ($to as $key => $value) {
