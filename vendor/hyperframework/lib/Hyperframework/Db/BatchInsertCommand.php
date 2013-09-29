@@ -1,5 +1,6 @@
 <?php
-namespace Hyperframwork\Db;
+namespace Hyperframework\Db;
+
 //使用 ? 拼接 + server side prepared statement
 //options
 //1. client
