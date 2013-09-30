@@ -9,16 +9,14 @@ class Asset {
         return self::$cache;
     }
 
-    public static function getVersion($path) {
+    private static function getVersion($path) {
         $cache = self::getCache();
         if (isset($cache[$path])) {
             return $cache[$path];
         }
     }
 
-    public static function renderJsLink() {
-    }
-
-    public static function renderCssLink() {
+    public static function getUrl($path) {
+        //根据 include path 
     }
 }
