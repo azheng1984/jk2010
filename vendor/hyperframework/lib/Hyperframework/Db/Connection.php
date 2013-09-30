@@ -1,5 +1,7 @@
 <?php
-class DbConnection {
+namespace Hyperframework\Db;
+
+class Connection {
     private static $current = null;
     private static $pool = array();
     private static $stack = array();
@@ -62,7 +64,7 @@ class DbConnection {
 
     private static function getFactory() {
         if (self::$factory === null) {
-            self::$factory = new DbConnectionFactory;
+            self::$factory = new ConnectionFactory;
         }
         return self::$factory;
     }

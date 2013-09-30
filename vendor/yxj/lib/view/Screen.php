@@ -81,7 +81,7 @@ abstract class Screen extends EtagView {
     //$this->renderToolbar();
     echo '</div></div></div>';
     echo '<div id="header_wrapper"><div id="header">',
-      '<div id="logo"><a href="/">优选集</a> - 品牌消费导航</div>';
+      '<div id="logo"><a href="/">优选集</a> - 品牌消费社区</div>';
     $this->renderSearch();
     echo '</div></div>';
   }

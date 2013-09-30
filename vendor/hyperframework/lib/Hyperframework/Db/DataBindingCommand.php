@@ -6,9 +6,6 @@ class DataBindingCommand {
     const STATUS_UPDATED = 1;
     const STATUS_NOT_MODIFIED = 2;
 
-    const RETURN_STATUS = 1;
-    const RETURN_ID = 2;
-
     public static function execute(
         $table, $filterColumns, $replacementColumns = null, $options = null
     ) {
@@ -56,7 +53,7 @@ class DataBindingCommand {
     }
 
     private static function fetchOptions($options) {
-        $return = self::RETURN_STATUS;
+        $return = 'status';
         $client = '\Hyperframework\Db\Client';
         $idName = 'id';
         if ($options === null) {

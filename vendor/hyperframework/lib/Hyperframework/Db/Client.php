@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Db;
 
-class DbClient {
+class Client {
     public static function getColumn($sql/*, $mixed, ...*/) {
         return static::query(func_get_args())->fetchColumn();
     }
@@ -74,7 +74,7 @@ class DbClient {
     }
 
     protected static function getConnection() {
-        return DbConnection::getCurrent();
+        return Connection::getCurrent();
     }
 
     protected static function send(

@@ -4,18 +4,12 @@ define('CACHE_PATH', ROOT_PATH.'cache'.DIRECTORY_SEPARATOR);
 define('DATA_PATH', ROOT_PATH.'data'.DIRECTORY_SEPARATOR);
 define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);
 require CONFIG_PATH.'env.config.php';
-require HYPERFRAMEWORK_PATH.'class_loader'.DIRECTORY_SEPARATOR
-    .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';
+require HYPERFRAMEWORK_PATH . 'class_loader' . DIRECTORY_SEPARATOR .
+    'lib' . DIRECTORY_SEPARATOR . 'ClassLoader.php';
 //$CLASS_LOADER = new ClassLoader;
-if (MODE === 'development') {
-    Hyperframework\ClassLoader::disableCache();
-}
 Hyperframework\ClassLoader::run();
 $EXCEPTION_HANDLER = new ExceptionHandler;
 $EXCEPTION_HANDLER->run();
-if (MODE === 'development') {
-    Hyperframework\Web\PathInfo::disableCache();
-}
 $path = Router::execute();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method'])) {
     $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
