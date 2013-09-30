@@ -4,9 +4,11 @@ namespace Hyperframework\Web;
 class PathInfo {
     private static $cacheProvider;
     private static $cache;
+    private static $mode;
 
-    public static function initialize($cacheProvider) {
+    public static function initialize($cacheProvider, $mode = null) {
         static::$cacheProvider = $cacheProvider;
+        static::$mode = $mode;
         static::$cache = null;
     }
 

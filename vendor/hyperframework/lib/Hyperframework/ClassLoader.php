@@ -7,13 +7,19 @@ class ClassLoader {
     private static $classes;
     private static $folders;
 
-    public static function run($rootPath = null, $cachePath = null) {
+    public static function run($rootPath = null, $cachePath = null, $mode = null) {
         if ($rootPath === null) {
             $rootPath = ROOT_PATH;
         }
         static::$rootPath = $rootPath;
         if ($cachePath === null) {
             $cachePath = CACHE_PATH . 'class_loader.cache.php';
+        }
+        if ($mode === null) {
+            $mode = MODE;
+        }
+        if ($mode === 'development') {
+            //no cache
         }
         static::$cache = require $cachePath;
         //var_dump($info);

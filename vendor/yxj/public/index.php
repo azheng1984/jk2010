@@ -7,13 +7,13 @@ require CONFIG_PATH.'env.config.php';
 require HYPERFRAMEWORK_PATH.'class_loader'.DIRECTORY_SEPARATOR
     .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';
 //$CLASS_LOADER = new ClassLoader;
-if (MODE === 'dev') {
+if (MODE === 'development') {
     Hyperframework\ClassLoader::disableCache();
 }
 Hyperframework\ClassLoader::run();
 $EXCEPTION_HANDLER = new ExceptionHandler;
 $EXCEPTION_HANDLER->run();
-if (MODE === 'dev') {
+if (MODE === 'development') {
     Hyperframework\Web\PathInfo::disableCache();
 }
 $path = Router::execute();
