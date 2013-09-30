@@ -5,17 +5,23 @@ define('DATA_PATH', ROOT_PATH.'data'.DIRECTORY_SEPARATOR);
 define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);
 require CONFIG_PATH.'env.config.php';
 require HYPERFRAMEWORK_PATH.'class_loader'.DIRECTORY_SEPARATOR
-  .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';
-$CLASS_LOADER = new ClassLoader;
-$CLASS_LOADER->run();
+    .'lib'.DIRECTORY_SEPARATOR.'ClassLoader.php';
+//$CLASS_LOADER = new ClassLoader;
+if (MODE === 'dev') {
+    Hyperframework\ClassLoader::disableCache();
+}
+Hyperframework\ClassLoader::run();
 $EXCEPTION_HANDLER = new ExceptionHandler;
 $EXCEPTION_HANDLER->run();
+if (MODE === 'dev') {
+    Hyperframework\Web\PathInfo::disableCache();
+}
 $path = Router::execute();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method'])) {
-  $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
+    $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
 }
 //TODO: 测试是否存在 session_id 的 cookie，如果存在，打开 session
 if ($path !== null) {
-  $APP = new Application;
-  $APP->run($path);
+    $APP = new Application;
+    $APP->run($path);
 }
