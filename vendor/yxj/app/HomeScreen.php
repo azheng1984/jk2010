@@ -3,7 +3,7 @@ class HomeScreen extends Screen {
   private $categoryList;
 
   protected function renderHtmlHeadContent() {
-    echo '<title>优选集 - 品牌消费导航</title>';
+    echo '<title>优选集 - 品牌消费社区</title>';
     $this->categoryList = Db::getAll(
       'SELECT * FROM category WHERE parent_id = 0 AND is_active = 1'
         .' ORDER BY popularity_rank DESC'
