@@ -6,10 +6,13 @@ class PathInfo {
     private static $cache;
     private static $mode;
 
-    public static function initialize($cacheProvider, $mode = null) {
+    public static function setCacheProvider($cacheProvider) {
         static::$cacheProvider = $cacheProvider;
-        static::$mode = $mode;
         static::$cache = null;
+    }
+
+    public static function setMode($mode) {
+        static::$mode = $mode;
     }
 
     public static function get($path = null) {
