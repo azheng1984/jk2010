@@ -1,4 +1,6 @@
 <?php
+namespace Yxj\App;
+
 class HomeScreen extends Screen {
   private $categoryList;
 

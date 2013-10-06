@@ -1,11 +1,11 @@
 <?php
-namespace youxuanji\app\sign_in;
+namespace YouXuanJi\App\SignIn;
 //use hyperframework\db;
 
 class SignInAction {
-  public function GET() {}
+  public function get() {}
 
-  public function POST() {
+  public function post() {
     \DbConnection::connect('youxuanji');
     $user = \Db::getRow(
       'SELECT id, password_sha1_digest, password_modification_time FROM user WHERE email = ?', $_POST['email']

@@ -1,4 +1,6 @@
 <?php
+namespace Yxj\App\Brand;
+
 class BrandScreen {
   private $relatedCategoryList = array();
 
