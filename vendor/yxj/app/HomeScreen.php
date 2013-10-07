@@ -1,5 +1,5 @@
 <?php
-namespace Yxj\App;
+namespace YouXuanJi\App;
 
 class HomeScreen extends Screen {
   private $categoryList;

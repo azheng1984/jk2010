@@ -1,5 +1,5 @@
 <?php
-namespace Yxj\App\Brand;
+namespace YouXuanJi\App\Brand;
 
 class BrandScreen {
   private $relatedCategoryList = array();

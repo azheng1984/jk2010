@@ -1,11 +1,9 @@
 <?php
 class BrandEditScreen {
   public function __construct() {
-    
   }
 
   public function render() {
-    
     echo '修改品牌';
     echo '<form action="." method="POST" enctype="multipart/form-data">';
     echo '<div>名称：<input name="name" /></div>';
@@ -26,5 +24,6 @@ class BrandEditScreen {
     $parentId = 0;
     echo '<input type="submit" value="提交" />';
     echo '</form>';
+    echo 'href="/brand/edit-{id}"';
   }
 }
