@@ -2,7 +2,7 @@
 require HYPERFRAMEWORK_PATH . 'Config.php';
 Hyperframework\Config::set(
     ['Hyperframework\Web\PathInfo', 'enable_cache', false],
-    ['Hyperframework\ClassLoader', 'enable_cache', false]
+    ['Hyperframework\ClassLoader', 'enable_cache', false],
     ['Hyperframework\View\Asset', 'enable_cache', false]
 );
 /*
