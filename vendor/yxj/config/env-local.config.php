@@ -1,7 +1,6 @@
 <?php
 require HYPERFRAMEWORK_PATH . 'Config.php';
-use Hyperframework\Config;
-Config::set(
+Hyperframework\Config::set(
     ['Hyperframework\Web\PathInfo', 'enable_cache', false],
     ['Hyperframework\ClassLoader', 'enable_cache', false]
     ['Hyperframework\View\Asset', 'enable_cache', false]
