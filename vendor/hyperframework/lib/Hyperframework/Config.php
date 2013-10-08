@@ -4,10 +4,11 @@ namespace Hyperframework;
 class Config {
     private static $data = array();
 
-    public static function get($key) {
+    public static function get($key, $default = null) {
         if (isset(static::$data[$class][$key])) {
             return static::$data[$class][$key];
         }
+        return $default;
     }
 
     public static function set(/*$mixed, ...*/) {
