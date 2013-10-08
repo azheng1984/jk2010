@@ -1,7 +1,8 @@
 <?php
+define('HYPERFRAMEWORK_PATH', '');
 require HYPERFRAMEWORK_PATH . 'Config.php';
 Hyperframework\Config::set(
-    ['Env', 'development'],
+    ['ENV', 'development'],
     ['Hyperframework\Db\Connection\EnableEnv', false], //default: true
     ['Hyperframework\Web\PathInfo\EnableCache', false],
     ['Hyperframework\Web\View\Asset\EnableCache', false],
