@@ -1,8 +1,8 @@
 <?php
-define('HYPERFRAMEWORK_PATH', '');
+define('HYPERFRAMEWORK_PATH', '/usr/lib/hf/');
 require HYPERFRAMEWORK_PATH . 'Config.php';
 Hyperframework\Config::set(
-    ['ENV', 'development'],
+    ['Env', 'development'],
     ['Hyperframework\Db\Connection\EnableEnv', false], //default: true
     ['Hyperframework\Web\PathInfo\EnableCache', false],
     ['Hyperframework\Web\View\Asset\EnableCache', false],
