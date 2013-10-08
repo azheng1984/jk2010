@@ -9,6 +9,13 @@ class Asset {
         return self::$cache;
     }
 
+    private static function getConfig() {
+        if (self::$cache === null) {
+            self::$cache = require CACHE_PATH.'asset.cache.php';
+        }
+        return self::$cache;
+    }
+
     private static function getVersion($path) {
         $cache = self::getCache();
         if (isset($cache[$path])) {

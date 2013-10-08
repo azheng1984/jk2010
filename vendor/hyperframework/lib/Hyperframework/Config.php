@@ -25,7 +25,11 @@ class Config {
         }
     }
 
-    public static function mergePrefix($prefix, $data) {
+    public static function reset() {
+        static::$data = array();
+    }
+
+    private static function mergePrefix($prefix, $data) {
         if (is_string($data[0])) {
             static::$data[$prefix . '\\' . $data[0]] = $data[1];
             return;
@@ -37,9 +41,5 @@ class Config {
             }
             static::mergePrefix($prefix . '\\' . $key, $item);
         }
-    }
-
-    public static function reset() {
-        static::$data = array();
     }
 }
