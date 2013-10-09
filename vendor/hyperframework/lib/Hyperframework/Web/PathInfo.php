@@ -1,18 +1,12 @@
 <?php
 namespace Hyperframework\Web;
+use Hyperframework\Config;
 
 class PathInfo {
-    private static $cacheProvider;
     private static $cache;
-    private static $mode;
 
-    public static function setCacheProvider($cacheProvider) {
-        static::$cacheProvider = $cacheProvider;
+    public static function reset() {
         static::$cache = null;
-    }
-
-    public static function setMode($mode) {
-        static::$mode = $mode;
     }
 
     public static function get($path = null) {
@@ -49,16 +43,14 @@ class PathInfo {
     }
 
     private static function initializeCache() {
-        if (static::$cacheProvider === null) {
-            static::$cache = require CACHE_PATH . 'path_info.cache.php';
+        $provider = Config::get(__CLASS__ . '\CacheProvider');
+        if ($provider === null) {
+            static::$cache = require Config::get(
+                __CLASS__ . '\CachePath', CACHE_PATH . 'path_info.cache.php'
+            )
             return;
         }
-        if (is_string(static::$cacheProvider)) {
-            static::$cache = require static::$cacheProvider;
-            return;
-        }
-        $providerClass = static::$cacheProvider[0];
-        $providerClass::{static::$cacheProvider[1]}();
+        static::$cache = $provider::get();
     }
 
     private static function getNamespace($path) {
