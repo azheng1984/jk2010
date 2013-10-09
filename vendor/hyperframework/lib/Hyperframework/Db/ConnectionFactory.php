@@ -21,12 +21,12 @@ class ConnectionFactory {
 
     private function getConfig($name) {
         if (self::$config === null) {
-            self::$config = require CONFIG_PATH.'database.config.php';
+            self::$config = Config::loadFile('database');
         }
         if ($name === 'default' && isset(self::$config['dsn'])
             && is_string(self::$config['dsn'])) {
                 return self::$config;
-            }
+        }
         if (isset(self::$config[$name])) {
             return self::$config[$name];
         }

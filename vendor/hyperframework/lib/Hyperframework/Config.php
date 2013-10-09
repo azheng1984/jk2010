@@ -26,6 +26,9 @@ class Config {
         }
     }
 
+    public static function load($path) {
+    }
+
     public static function reset() {
         static::$data = array();
     }
