@@ -5,10 +5,6 @@ use Hyperframework\Config;
 class PathInfo {
     private static $cache;
 
-    public static function reset() {
-        static::$cache = null;
-    }
-
     public static function get($path = null) {
         if ($path === null) {
             $path = static::getPath();
@@ -30,6 +26,10 @@ class PathInfo {
         return isset($cache['paths'][$path]);
     }
 
+    public static function reset() {
+        static::$cache = null;
+    }
+
     private static function getPath() {
         $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
         return $segments[0];
@@ -43,14 +43,14 @@ class PathInfo {
     }
 
     private static function initializeCache() {
-        $provider = Config::get(__CLASS__ . '\CacheProvider');
-        if ($provider === null) {
+        $cacheProvider = Config::get(__CLASS__ . '\CacheProvider');
+        if ($cacheProvider === null) {
             static::$cache = require Config::get(
                 __CLASS__ . '\CachePath', CACHE_PATH . 'path_info.cache.php'
             )
             return;
         }
-        static::$cache = $provider::get();
+        static::$cache = $cacheProvider::get(__CLASS__ . '\\');
     }
 
     private static function getNamespace($path) {
