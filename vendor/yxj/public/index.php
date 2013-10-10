@@ -3,9 +3,11 @@
 //define('CACHE_PATH', ROOT_PATH.'cache'.DIRECTORY_SEPARATOR);
 //define('DATA_PATH', ROOT_PATH.'data'.DIRECTORY_SEPARATOR);
 //define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);
-function main() {
-    require dirname(__FILE__) . '/conifg/env.config.php';
-    require Hyperframework\Config::get('Hyperframework\LibPath') . 'class_loader' .
+
+function run() {
+    define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
+    require ROOT_PATH . 'conifg/env.config.php';
+    require Hyperframework\Config::get('Hyperframework\Path') . 'class_loader' .
         DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'ClassLoader.php';
     Hyperframework\ClassLoader::run();
     ExceptionHandler::run();
@@ -16,7 +18,7 @@ function main() {
     //TODO: 测试是否存在 session_id 的 cookie，如果存在，打开 session
     if ($path !== null) {
         $app = new Application;
-        $app->run($PATH);
+        $app->run($path);
     }
 }
-main();
+run();

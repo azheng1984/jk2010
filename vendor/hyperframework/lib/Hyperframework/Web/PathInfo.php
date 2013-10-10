@@ -47,7 +47,7 @@ class PathInfo {
         if ($cacheProvider === null) {
             static::$cache = require Config::get(
                 __CLASS__ . '\CachePath',
-                Config::get('Hyperframework\CachePath') . 'path_info.cache.php'
+                Hyperframwork\CACHE_PATH . 'path_info.cache.php'
             )
             return;
         }
