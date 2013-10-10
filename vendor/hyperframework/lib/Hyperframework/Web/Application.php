@@ -8,9 +8,9 @@ class Application {
 
     public static function run($path = null, $name = 'main') {
         $pathInfo = PathInfo::get($path);
-        $app = static::create($name);
-        $app->executeAction($pathInfo);
-        $app->renderView($pathInfo);
+        $application = static::create($name);
+        $application->executeAction($pathInfo);
+        $application->renderView($pathInfo);
     }
 
     public static function get($name = 'main') {

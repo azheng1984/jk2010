@@ -43,11 +43,12 @@ class PathInfo {
     }
 
     private static function initializeCache() {
-        $cacheProvider = Config::get('Hyperframework\CacheProvider');
+        $cacheProvider = Config::get('Hyperframework\AppCacheProvider');
         if ($cacheProvider === null) {
             static::$cache = require Config::get(
                 __CLASS__ . '\CachePath',
-                Hyperframwork\CACHE_PATH . 'path_info.cache.php'
+                constant(Hyperframwork\APP_NAMESPACE . 'CACHE_PATH')
+                    . 'path_info.cache.php'
             )
             return;
         }
