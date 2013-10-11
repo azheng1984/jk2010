@@ -55,7 +55,7 @@ class Config {
 
     public static function getCachePath() {
         if (isset(static::$data['Hyperframework\CachePath']) === false)) {
-            $data['Hyperframework\CachePath'] =
+            static::$data['Hyperframework\CachePath'] =
                 static::getRootPath() . 'cache' . DIRECTORY_SEPARATOR;
         }
         return static::$data['Hyperframework\CachePath'];
@@ -66,6 +66,11 @@ class Config {
     }
 
     public static function getConfigPath() {
+        if (isset(static::$data['Hyperframework\ConfigPath']) === false)) {
+            static::$data['Hyperframework\ConfigPath'] =
+                static::getRootPath() . 'config' . DIRECTORY_SEPARATOR;
+        }
+        return static::$data['Hyperframework\ConfigPath'];
     }
 
     public static function reset() {
