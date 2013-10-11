@@ -43,22 +43,16 @@ class Config {
     public static function getRootPath() {
     }
 
-    public static function setCachePath() {
+    public static function setCachePath($value) {
     }
 
-    public static function setConfigPath() {
+    public static function getCachePath() {
+    }
+
+    public static function setConfigPath($value) {
     }
 
     public static function getConfigPath() {
-    }
-
-    public static function getCacheProvider() {
-    }
-
-    public static function getConfigProvider() {
-    }
-
-    public static function setCacheProvider() {
     }
 
     public static function reset() {
