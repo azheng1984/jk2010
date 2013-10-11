@@ -3,17 +3,24 @@
 //define('CACHE_PATH', ROOT_PATH.'cache'.DIRECTORY_SEPARATOR);
 //define('DATA_PATH', ROOT_PATH.'data'.DIRECTORY_SEPARATOR);
 //define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);
+namespace Yxj;
 
-function run() {
-    define('Hyperframeowrk\APP_NAMESPACE', 'YouXuanJi');
-    define('YouXuanJi\ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
-    define('YouXuanJi\CONFIG_PATH', YouXuanJi\ROOT_PATH . 'config' . DIRECTORY_SEPARATOR);
-    define('YouXuanJi\CACHE_PATH' YouXuanJi\ROOT_PATH . 'cache' . DIRECTORY_SEPARATOR);
-    require YouXuanJi\CONFIG_PATH . 'env.config.php';
-    require YouXuanJi\HYPERFRAMEWORK_PATH . 'class_loader' .
+define('Yxj\ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
+define('Yxj\CONFIG_PATH', ROOT_PATH . 'config' . DIRECTORY_SEPARATOR);
+define('Yxj\CACHE_PATH', ROOT_PATH . 'cache' . DIRECTORY_SEPARATOR);
+
+function initialize() {
+    //require Config
+    Config::set('Hyperframework\ConfigPath', CONFIG_PATH);
+    Config::set('Hyperframework\CachePath', CACHE_PATH);
+    require CONFIG_PATH . 'env.config.php';
+    require HYPERFRAMEWORK_PATH . 'class_loader' .
         DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'ClassLoader.php';
     Hyperframework\ClassLoader::run();
     ExceptionHandler::run();
+} initialize();
+
+function run() {
     $path = Router::execute();
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method'])) {
         $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
@@ -22,5 +29,4 @@ function run() {
     if ($path !== null) {
         Application::run($path);
     }
-}
-run();
+} run();

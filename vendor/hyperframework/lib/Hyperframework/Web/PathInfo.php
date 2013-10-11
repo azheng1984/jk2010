@@ -43,18 +43,21 @@ class PathInfo {
     }
 
     private static function initializeCache() {
-        $cacheProvider = Config::get('Hyperframework\AppCacheProvider');
-        if ($cacheProvider === null) {
-            static::$cache = require Config::get(
-                __CLASS__ . '\CachePath',
-                constant(Hyperframwork\APP_NAMESPACE . 'CACHE_PATH')
-                    . 'path_info.cache.php'
-            )
+        $cacheProvider = Config::get('Hyperframework\CacheProvider');
+        if ($cacheProvider !== null) {
+            $path = Config::get(
+                __CLASS__ . '\CachePath', array('default' => 'path_info')
+            );
+            static::$cache = $cacheProvider::get($path);
             return;
         }
-        static::$cache = $cacheProvider::get(
-            Config::get(__CLASS__ . '\CachePath', 'path_info')
-        );
+        $path = require Config::get(__CLASS__ . '\CachePath');
+        if ($path === null) {
+            $path = Config::get(
+                'Hyperframework\CachePath', array('is_nullable' => false)
+            ) . 'path_info.cache.php';
+        }
+        static::$cache = require $path;
     }
 
     private static function getNamespace($path) {
