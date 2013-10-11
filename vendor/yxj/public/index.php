@@ -10,9 +10,9 @@ define('Yxj\CONFIG_PATH', ROOT_PATH . 'config' . DIRECTORY_SEPARATOR);
 define('Yxj\CACHE_PATH', ROOT_PATH . 'cache' . DIRECTORY_SEPARATOR);
 
 function initialize() {
-    //require Config
-    Config::set('Hyperframework\ConfigPath', CONFIG_PATH);
-    Config::set('Hyperframework\CachePath', CACHE_PATH);
+    //require Config;
+    Hyperframework\Config::set('Hyperframework\ConfigPath', CONFIG_PATH);
+    Hyperframework\Config::set('Hyperframework\CachePath', CACHE_PATH);
     require CONFIG_PATH . 'env.config.php';
     require HYPERFRAMEWORK_PATH . 'class_loader' .
         DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'ClassLoader.php';
@@ -30,3 +30,6 @@ function run() {
         Application::run($path);
     }
 } run();
+
+function finalize() {
+} finalize();
