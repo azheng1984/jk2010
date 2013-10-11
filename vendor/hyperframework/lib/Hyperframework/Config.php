@@ -38,18 +38,31 @@ class Config {
     }
 
     public static function setRootPath($value) {
+        static::$data['Hyperframework\RootPath'] = $value;
     }
 
     public static function getRootPath() {
+        if (isset(static::$data['Hyperframework\RootPath']) === false)) {
+            static::$data['Hyperframework\RootPath'] =
+                getcwd() . DIRECTORY_SEPARATOR;
+        }
+        return static::$data['Hyperframework\RootPath'];
     }
 
     public static function setCachePath($value) {
+        static::$data['Hyperframework\CachePath'] = $value;
     }
 
     public static function getCachePath() {
+        if (isset(static::$data['Hyperframework\CachePath']) === false)) {
+            $data['Hyperframework\CachePath'] =
+                static::getRootPath() . 'cache' . DIRECTORY_SEPARATOR;
+        }
+        return static::$data['Hyperframework\CachePath'];
     }
 
     public static function setConfigPath($value) {
+        static::$data['Hyperframework\ConfigPath'] = $value;
     }
 
     public static function getConfigPath() {
