@@ -1,18 +1,10 @@
 <?php
 namespace Yxj;
 
-define('Yxj\ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
-define('Yxj\CONFIG_PATH', ROOT_PATH . 'config' . DIRECTORY_SEPARATOR);
-define('Yxj\CACHE_PATH', ROOT_PATH . 'cache' . DIRECTORY_SEPARATOR);
-define('Yxj\DATA_PATH', ROOT_PATH . 'data' . DIRECTORY_SEPARATOR);
-define(
-    'Yxj\HYPERFRAMEWORK_PATH', '/srv/lib/hyperframework/lib/Hyperframework/'
-);
-
 function initialize() {
-    require HYPERFRAMEWORK_PATH . 'Config.php';
-    //Hyperframework\Config::setRootPath(ROOT_PATH);
-    require CONFIG_PATH . 'env.config.php';
+    $rootPath = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+    require $rootPath . 'config' . DIRECTORY_SEPARATOR . 'env.config.php';
+    Hyperframework\Config::setRootPath($rootPath);
     require HYPERFRAMEWORK_PATH . 'ClassLoader.php';
     Hyperframework\ClassLoader::run();
     Hyperframework\ExceptionHandler::run();

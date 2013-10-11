@@ -9,13 +9,14 @@ class Config {
         if (isset(static::$data[$class][$key])) {
             $value = static::$data[$class][$key];
         }
-        if ($value !== null) {
+        if ($value !== null || $options === null) {
             return $value;
         }
         if (isset($options['default'])) {
-            return $options['default'];
+            $value = $options['default'];
         }
-        if (isset($options['is_nullable']) &&
+        if ($value === null &&
+            isset($options['is_nullable']) &&
             $options['is_nullable'] === false) {
             throw new \Exception('Config \'' . $key . '\' is null');
         }
@@ -43,8 +44,7 @@ class Config {
 
     public static function getRootPath() {
         if (isset(static::$data['Hyperframework\RootPath']) === false)) {
-            static::$data['Hyperframework\RootPath'] =
-                dirname(getcwd()) . DIRECTORY_SEPARATOR;
+            throw new \Exception('Config \'Hyperframework\RootPath\' is null');
         }
         return static::$data['Hyperframework\RootPath'];
     }
