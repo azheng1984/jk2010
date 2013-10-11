@@ -6,14 +6,14 @@ class Application {
     private $actionResult;
     private $isViewEnabled = true;
 
-    public static function run($path = null, $name = 'main') {
+    public static function run($path = null, $name = 'default') {
         $pathInfo = PathInfo::get($path);
-        $application = static::create($name);
-        $application->executeAction($pathInfo);
-        $application->renderView($pathInfo);
+        $instance = static::createInstance($name);
+        $instance->executeAction($pathInfo);
+        $instance->renderView($pathInfo);
     }
 
-    public static function get($name = 'main') {
+    public static function get($name = 'default') {
         if (isset(static::$instances[$name]) === false) {
             throw new \Exception('Application \'' . $name . '\' not found');
         }
@@ -32,13 +32,16 @@ class Application {
         return $this->actionResult;
     }
 
-    protected static function create($name) {
+    protected static function createInstance($name) {
+        if (isset(static::$instances[$name])) {
+            throw new \Exception('Application \'' . $name . '\' existed');
+        }
         $class = get_called_class();
-        return new $class($name);
+        $instance = new $class($name);
+        static::$instances[$name] = $instance;
     }
 
-    protected function __construct($name) {
-        static::$instances[$name] = $this;
+    protected function __construct() {
     }
 
     protected function executeAction(

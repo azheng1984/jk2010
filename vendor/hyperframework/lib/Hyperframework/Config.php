@@ -4,11 +4,22 @@ namespace Hyperframework;
 class Config {
     private static $data = array();
 
-    public static function get($key, $default = null) {
+    public static function get($key, $options = null) {
+        $value = null;
         if (isset(static::$data[$class][$key])) {
-            return static::$data[$class][$key];
+            $value = static::$data[$class][$key];
         }
-        return $default;
+        if ($value !== null) {
+            return $value;
+        }
+        if (isset($options['default'])) {
+            return $options['default'];
+        }
+        if (isset($options['is_nullable']) &&
+            $options['is_nullable'] === false) {
+            throw new \Exception('Config \'' . $key . '\' is null');
+        }
+        return $value;
     }
 
     public static function set(/*$mixed, ...*/) {
