@@ -21,7 +21,7 @@ class ConnectionFactory {
 
     private function getConfig($name) {
         if (self::$config === null) {
-            self::$config = Config::loadFile('database');
+            $this->initializeConfig();
         }
         if ($name === 'default' && isset(self::$config['dsn'])
             && is_string(self::$config['dsn'])) {
@@ -31,5 +31,11 @@ class ConnectionFactory {
             return self::$config[$name];
         }
         throw new Exception("database config '$name' not found");
+    }
+
+    private function initializeConfig() {
+        self::$config = require Config::get(
+            'Hyperframework\ConfigPath', array('is_nullable' => false)
+        ) . 'database.config.php';
     }
 }

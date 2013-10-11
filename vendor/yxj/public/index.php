@@ -1,13 +1,10 @@
 <?php
-//define('ROOT_PATH', dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR);
-//define('CACHE_PATH', ROOT_PATH.'cache'.DIRECTORY_SEPARATOR);
-//define('DATA_PATH', ROOT_PATH.'data'.DIRECTORY_SEPARATOR);
-//define('CONFIG_PATH', ROOT_PATH.'config'.DIRECTORY_SEPARATOR);
 namespace Yxj;
 
 define('Yxj\ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 define('Yxj\CONFIG_PATH', ROOT_PATH . 'config' . DIRECTORY_SEPARATOR);
 define('Yxj\CACHE_PATH', ROOT_PATH . 'cache' . DIRECTORY_SEPARATOR);
+define('Yxj\DATA_PATH', ROOT_PATH . 'data' . DIRECTORY_SEPARATOR);
 
 function initialize() {
     //require Config;
