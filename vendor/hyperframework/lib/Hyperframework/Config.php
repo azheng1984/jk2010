@@ -44,7 +44,7 @@ class Config {
     public static function getRootPath() {
         if (isset(static::$data['Hyperframework\RootPath']) === false)) {
             static::$data['Hyperframework\RootPath'] =
-                getcwd() . DIRECTORY_SEPARATOR;
+                dirname(getcwd()) . DIRECTORY_SEPARATOR;
         }
         return static::$data['Hyperframework\RootPath'];
     }

@@ -10,8 +10,8 @@ define(
 );
 
 function initialize() {
-    chdir(ROOT_PATH);
     require HYPERFRAMEWORK_PATH . 'Config.php';
+    //Hyperframework\Config::setRootPath(ROOT_PATH);
     require CONFIG_PATH . 'env.config.php';
     require HYPERFRAMEWORK_PATH . 'ClassLoader.php';
     Hyperframework\ClassLoader::run();
