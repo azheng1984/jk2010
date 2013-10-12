@@ -18,7 +18,7 @@ class Config {
         if ($value === null &&
             isset($options['is_nullable']) &&
             $options['is_nullable'] === false) {
-            throw new \Exception('Config \'' . $name. '\' is null');
+            throw new \Exception('Config \'' . $name . '\' is null');
         }
         return $value;
     }
