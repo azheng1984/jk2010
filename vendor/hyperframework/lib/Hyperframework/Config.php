@@ -72,6 +72,10 @@ class Config {
         return static::$data['Hyperframework\ConfigPath'];
     }
 
+    public static function export() {
+        return static::$data;
+    }
+
     public static function reset() {
         static::$data = array();
     }
