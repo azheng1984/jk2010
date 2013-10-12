@@ -5,7 +5,7 @@ function initialize() {
     $rootPath = dirname(__DIR__) . DIRECTORY_SEPARATOR;
     require $rootPath . 'config' . DIRECTORY_SEPARATOR . 'env.config.php';
     Hyperframework\Config::setRootPath($rootPath);
-    require HYPERFRAMEWORK_PATH . 'ClassLoader.php';
+    require Config::getHyperframeworkLibraryPath(). 'ClassLoader.php';
     Hyperframework\ClassLoader::run();
     Hyperframework\ExceptionHandler::run();
 }
