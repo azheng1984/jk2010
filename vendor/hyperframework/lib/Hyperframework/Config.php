@@ -4,10 +4,10 @@ namespace Hyperframework;
 class Config {
     private static $data = array();
 
-    public static function get($key, $options = null) {
+    public static function get($name, $options = null) {
         $value = null;
-        if (isset(static::$data[$class][$key])) {
-            $value = static::$data[$class][$key];
+        if (isset(static::$data[$name])) {
+            $value = static::$data[$name];
         }
         if ($value !== null || $options === null) {
             return $value;
@@ -29,7 +29,7 @@ class Config {
             static::$data[$arguments[0]] = $arguments[1];
             return;
         }
-        foreach ($arguments as $key => $item) {
+        foreach ($arguments as $name => $item) {
             if (is_int($key)) {
                 static::$data[$item[0]] = $item[1];
                 return;

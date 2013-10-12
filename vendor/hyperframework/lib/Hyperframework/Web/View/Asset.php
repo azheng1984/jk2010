@@ -1,10 +1,14 @@
 <?php
+namespace Hyperframework\Web\View;
+
+use Hyperframework\Config;
+
 class Asset {
     private static $cache;
 
     private static function getCache() {
         if (self::$cache === null) {
-            self::$cache = require CACHE_PATH.'asset.cache.php';
+            self::$cache = require Config::getCachePath() . 'asset.cache.php';
         }
         return self::$cache;
     }
