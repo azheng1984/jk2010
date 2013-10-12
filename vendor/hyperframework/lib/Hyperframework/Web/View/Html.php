@@ -1,5 +1,7 @@
 <?php
-abstract class Screen extends EtagView {
+namespace Hyperframework\Web\View;
+
+abstract class Html {
     private $jsList = array();
     private $cssList = array();
     private $js = '';

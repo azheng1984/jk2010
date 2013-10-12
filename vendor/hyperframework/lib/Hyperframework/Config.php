@@ -18,7 +18,7 @@ class Config {
         if ($value === null &&
             isset($options['is_nullable']) &&
             $options['is_nullable'] === false) {
-            throw new \Exception('Config \'' . $key . '\' is null');
+            throw new \Exception('Config \'' . $name. '\' is null');
         }
         return $value;
     }
@@ -43,10 +43,9 @@ class Config {
     }
 
     public static function getRootPath() {
-        if (isset(static::$data['Hyperframework\RootPath']) === false)) {
-            throw new \Exception('Config \'Hyperframework\RootPath\' is null');
-        }
-        return static::$data['Hyperframework\RootPath'];
+        return static::get(
+            'Hyperframework\RootPath', array('is_nullable' => false)
+        );
     }
 
     public static function setCachePath($value) {

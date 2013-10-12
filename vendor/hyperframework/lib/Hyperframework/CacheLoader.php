@@ -3,10 +3,10 @@ namespace Hyperframework;
 
 class CacheLoader {
     public static function load($pathName, $defaultPath) {
-        $providerClass = Config::get('Hyperframework\CacheProvider');
-        if ($providerClass !== null) {
+        $cacheProvider = Config::get(__CLASS__ . '\CacheProvider');
+        if ($cacheProvider !== null) {
             $path = Config::get($pathName, array('default' => $defaultPath));
-            return $providerClass::get($path);
+            return $cacheProvider::get($path);
         }
         $path = require Config::get($pathName);
         if ($path === null) {

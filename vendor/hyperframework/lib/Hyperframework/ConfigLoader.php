@@ -3,10 +3,10 @@ namespace Hyperframework;
 
 class ConfigLoader {
     public static function load($pathName, $defaultPath) {
-        $providerClass = Config::get('Hyperframework\ConfigProvider');
-        if ($providerClass !== null) {
+        $configProvider = Config::get(__CLASS__ . '\ConfigProvider');
+        if ($configProvider !== null) {
             $path = Config::get($pathName, array('default' => $defaultPath);
-            return $providerClass::get($path);
+            return $configProvider::get($path);
         }
         $path = require Config::get($pathName);
         if ($path === null) {

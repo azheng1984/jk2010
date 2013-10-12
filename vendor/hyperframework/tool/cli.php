@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+throw new Exception;
 namespace Hyperframwork\Tool;
 
 define('Hyperframework\Tool\ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
