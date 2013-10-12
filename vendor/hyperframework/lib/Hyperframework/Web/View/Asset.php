@@ -1,23 +1,25 @@
 <?php
 namespace Hyperframework\Web\View;
 
-use Hyperframework\Config;
-
 class Asset {
     private static $cache;
 
     private static function getCache() {
         if (self::$cache === null) {
-            self::$cache = require Config::getCachePath() . 'asset.cache.php';
+            static::$cache = \Hyperframework\CacheLoader::load(
+                __CLASS__ . '\CachePath', 'asset'
+            );
         }
         return self::$cache;
     }
 
     private static function getConfig() {
-        if (self::$cache === null) {
-            self::$cache = require CACHE_PATH.'asset.cache.php';
+        if (self::$config === null) {
+            static::$config = \Hyperframework\ConfigLoader::load(
+                __CLASS__ . '\ConfigPath', 'asset'
+            );
         }
-        return self::$cache;
+        return self::$config;
     }
 
     private static function getVersion($path) {
