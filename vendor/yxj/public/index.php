@@ -8,7 +8,7 @@ function initialize() {
     require HYPERFRAMEWORK_PATH . 'ClassLoader.php';
     Hyperframework\ClassLoader::run();
     Hyperframework\ExceptionHandler::run();
-} initialize();
+}
 
 function run() {
     $path = Router::execute();
@@ -19,7 +19,11 @@ function run() {
     if ($path !== null) {
         Hyperframework\Application::run($path);
     }
-} run();
+}
 
 //function finalize() {
-//} finalize();
+//}
+
+initialize();
+run();
+//finalize();
