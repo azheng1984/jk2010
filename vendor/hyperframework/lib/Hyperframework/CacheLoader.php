@@ -8,7 +8,7 @@ class CacheLoader {
             $path = Config::get($pathName, array('default' => $defaultPath));
             return $cacheProvider::get($path);
         }
-        $path = require Config::get($pathName);
+        $path = Config::get($pathName);
         if ($path === null) {
             $path = Config::getCachePath() . $defaultPath. '.cache.php';
         }

@@ -8,7 +8,7 @@ class ConfigLoader {
             $path = Config::get($pathName, array('default' => $defaultPath);
             return $configProvider::get($path);
         }
-        $path = require Config::get($pathName);
+        $path = Config::get($pathName);
         if ($path === null) {
             $path = Config::getConfigPath() . $defaultPath. '.config.php';
         }
