@@ -1,16 +1,10 @@
 <?php
 namespace Yxj;
 
-function initialize() {
-    $rootPath = dirname(__DIR__) . DIRECTORY_SEPARATOR;
-    require $rootPath . 'config' . DIRECTORY_SEPARATOR . 'env.config.php';
-    Hyperframework\Config::setRootPath($rootPath);
-    require HYPERFRAMEWORK_PATH . 'ClassLoader.php';
-    Hyperframework\ClassLoader::run();
-    Hyperframework\ExceptionHandler::run();
-}
-
 function run() {
+    $rootPath = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+    require $rootPath . 'lib' . DIRECTORY_SEPARATOR . 'Bootstrap.php';
+    Bootstrap::run($rootPath);
     $path = Router::execute();
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method'])) {
         $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
@@ -21,9 +15,4 @@ function run() {
     }
 }
 
-//function finalize() {
-//}
-
-initialize();
 run();
-//finalize();
