@@ -1,4 +1,6 @@
 <?php
+namespace Yxj;
+
 class Router {
     public static function execute() {
         if ($_SERVER['SERVER_NAME'] !== $_SERVER['HTTP_HOST']) {
