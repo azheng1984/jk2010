@@ -1,5 +1,5 @@
 <?php
-class BrandNewAction {
+class Action {
   public function GET() {}
 
   public function POST() {

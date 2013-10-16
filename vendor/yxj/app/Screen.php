@@ -1,7 +1,7 @@
 <?php
-namespace YouXuanJi\App;
+namespace Yxj\App;
 
-class HomeScreen extends Screen {
+class Screen extends \Yxj\View\Screen {
   private $categoryList;
 
   protected function renderHtmlHeadContent() {
