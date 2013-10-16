@@ -1,7 +1,7 @@
 <?php
 namespace Yxj\App;
 
-class Screen extends \Yxj\View\Screen {
+class Html extends \Yxj\View\HtmlPage {
   private $categoryList;
 
   protected function renderHtmlHeadContent() {
