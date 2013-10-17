@@ -6,7 +6,7 @@ class Action {
     if ($_POST['name'] === '') {
       $_POST['name'] = '未命名';
     }
-    Db::beginTransaction();
+    \Hyperframework\Db\Client::beginTransaction();
     Db::insert('brand', array(
       'name' => $_POST['name'],
       'location_id' => $_POST['location_id'],
