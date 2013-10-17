@@ -1,5 +1,5 @@
 <?php
-namespace YouXuanJi\App\Brand;
+namespace YouXuanJi\Web\Brand;
 use Hyperframework\Db\Client as DbClient;
 
 class BrandAction {
