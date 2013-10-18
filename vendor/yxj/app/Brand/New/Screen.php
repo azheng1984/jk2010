@@ -1,5 +1,8 @@
 <?php
-class BrandNewScreen extends Screen {  
+namespace Dxl\App\Brand;
+use Dxl\View\Screen as Base;
+
+class Screen extends Base {
   protected function renderHtmlHeadContent() {
   }
 
