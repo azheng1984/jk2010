@@ -1,8 +1,10 @@
 <?php
 namespace Hyperframework\Web\View;
+use Hyperframework\Config;
 
 class Asset {
     private static $cache;
+    private static $config;
 
     private static function getCache() {
         if (self::$cache === null) {
@@ -22,14 +24,24 @@ class Asset {
         return self::$config;
     }
 
-    private static function getVersion($path) {
+    private static function getPath($path) {
         $cache = self::getCache();
         if (isset($cache[$path])) {
             return $cache[$path];
         }
+        $url = Asset::getUrl('/js/common', 'js');
+        $url = Asset::getUrl('/js/app', 'js');
     }
 
-    public static function getUrl($path) {
-        //根据 include path 
+    public static function getUrl($path, $extension) {
+        $extension = '.' . $extension;
+        $config = self::getConfig();
+        if (isset($config['path'])) {
+        }
+        $cache = self::getCache();
+        if (Config::get(__CLASS__ . '\EnablePrecompilation' === false)) {
+            return $path . $extension;
+        }
+        return $path . $cache[$path] . $extension;
     }
 }
