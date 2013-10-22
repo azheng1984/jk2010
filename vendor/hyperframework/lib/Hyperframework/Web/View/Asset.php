@@ -45,3 +45,11 @@ class Asset {
         return $path . $cache[$path] . $extension;
     }
 }
+
+Asset::getPaths('app_js');
+Asset::getPath('common', 'js');
+Asset::getPath('css/common', 'css');
+Asset::getPath('image/background', 'png');
+
+//Asset::getPath('/css/common', 'css');
+//Asset::getPath('/js/common', 'js');
