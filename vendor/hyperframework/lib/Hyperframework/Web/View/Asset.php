@@ -46,10 +46,17 @@ class Asset {
     }
 }
 
-Asset::getPaths('app_js');
-Asset::getPath('common', 'js');
-Asset::getPath('css/common', 'css');
-Asset::getPath('image/background', 'png');
+Asset::getManifest('app_js');
+// => /js/a.js & /js/b.js dev
+// => /js/app-123.js production
+
+Asset::getUrl('common', 'js');
+// => /js/common.js dev
+// => /js/common-123.js production
+
+Html::includeJs('app'); // %root%/config/asset/manifest/js/app.config.php
+Html::includeCss('common'); // css/common.css
+Html::includeImage('bk', 'png'); // image/bk.png
 
 //Asset::getPath('/css/common', 'css');
 //Asset::getPath('/js/common', 'js');
