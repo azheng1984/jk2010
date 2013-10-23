@@ -24,16 +24,16 @@ class Asset {
         return self::$config;
     }
 
-    private static function getPath($path) {
-        $cache = self::getCache();
-        if (isset($cache[$path])) {
-            return $cache[$path];
-        }
-        $url = Asset::getUrl('/js/common', 'js');
-        $url = Asset::getUrl('/js/app', 'js');
-    }
+//    private static function getPath($path) {
+//        $cache = self::getCache();
+//        if (isset($cache[$path])) {
+//            return $cache[$path];
+//        }
+//        $url = Asset::getUrl('/js/common', 'js');
+//        $url = Asset::getUrl('/js/app', 'js');
+//    }
 
-    public static function getUrl($path, $extension) {
+    public static function getUrl($path, $extension, $options = null) {
         $extension = '.' . $extension;
         $config = self::getConfig();
         if (isset($config['path'])) {
@@ -45,18 +45,3 @@ class Asset {
         return $path . $cache[$path] . $extension;
     }
 }
-
-Asset::getManifest('app_js');
-// => /js/a.js & /js/b.js dev
-// => /js/app-123.js production
-
-Asset::getUrl('common', 'js');
-// => /js/common.js dev
-// => /js/common-123.js production
-
-Html::includeJs('app'); // %root%/config/asset/manifest/js/app.config.php
-Html::includeCss('common'); // css/common.css
-Html::includeImage('bk', 'png'); // image/bk.png
-
-//Asset::getPath('/css/common', 'css');
-//Asset::getPath('/js/common', 'js');

@@ -10,17 +10,29 @@ abstract class Html {
     abstract protected function renderHtmlHeadContent();
     abstract protected function renderHtmlBodyContent();
 
-    public function addJs($js) {
-        $this->js .= $js;
+    public static function renderJsLink($path, $options = null) {
+        if (Config::get('Hyperframework\Html\MergeJs')) {
+            Html::renderJsLink('app');
+        } else {
+            Html::renderJsLink('common');
+            Html::renderJsLink('product');
+        }
     }
 
-    protected function addCssLink($name) {
-        $this->cssList[] = $name;
+    public static function renderCssLink($path, $options = null) {
     }
 
-    protected function addJsLink($name) {
-        $this->jsList[] = $name;
-    }
+//    public function addJs($js) {
+//        $this->js .= $js;
+//    }
+
+//    protected function addCssLink($name) {
+//        $this->cssList[] = $name;
+//    }
+//
+//    protected function addJsLink($name) {
+//        $this->jsList[] = $name;
+//    }
 
     protected function stop() {
         $stop = true;
