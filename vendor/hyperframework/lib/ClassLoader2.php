@@ -21,11 +21,27 @@ class ClassLoader2 {
     }
 
     public function load($name) {
+        if ($this->startsWith($name, 'Hyperframework\Tool\App')) {
+            require HYPERFRAMEWORK_PATH . 'tool/app/' . substr($name, strlen('Hyperframework/Tool/App'));
+            return;
+        }
+        if ($this->startsWith($name, 'Hyperframework\Tool')) {
+            require HYPERFRAMEWORK_PATH . 'tool/lib/' . substr($name, strlen('Hyperframework/Tool'));
+            return;
+        }
+        if ($this->startsWith($name, 'Hyperframework')) {
+            require HYPERFRAMEWORK_PATH . 'lib/' . substr($name, strlen('Hyperframework'));
+            return;
+        }
         if (isset($this->classes[$name])) {
             require(
                 $this->getFolder($this->classes[$name]).$name.'.php'
             );
         }
+    }
+
+    function startsWith($haystack, $needle) {
+        return $needle === "" || strpos($haystack, $needle) === 0;
     }
 
     private function getFolder($index) {
@@ -35,7 +51,7 @@ class ClassLoader2 {
         $folder = $this->folders[$index];
         if (is_array($folder)) {
             return $this->getFullPath($folder) . $folder[0] .
-                DIRECTORY_SEPARATOR;
+DIRECTORY_SEPARATOR;
         }
         return $this->rootPath . $folder . DIRECTORY_SEPARATOR;
     }
