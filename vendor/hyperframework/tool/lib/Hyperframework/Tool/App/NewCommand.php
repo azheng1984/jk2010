@@ -1,4 +1,6 @@
 <?php
+namespace Hyperframework\Tool\App;
+
 class NewCommand {
   public function execute($type, $hyperframeworkPath = HYPERFRAMEWORK_PATH) {
     $configPath = CONFIG_PATH.'new'.DIRECTORY_SEPARATOR.$type.'.config.php';
