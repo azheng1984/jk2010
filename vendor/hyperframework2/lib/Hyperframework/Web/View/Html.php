@@ -11,28 +11,28 @@ abstract class Html {
     abstract protected function renderHtmlBodyContent();
 
     public static function renderJsLink($path, $options = null) {
-        if (Config::get('Hyperframework\Html\MergeJs')) {
+        if (Config::get('Hyperframework\Html\MergeJsEnabled')) {
             Html::renderJsLink('app');
-        } else {
-            Html::renderJsLink('common');
-            Html::renderJsLink('product');
+            return;
         }
+        Html::renderJsLink('common');
+        Html::renderJsLink('product');
     }
 
     public static function renderCssLink($path, $options = null) {
     }
 
-//    public function addJs($js) {
-//        $this->js .= $js;
-//    }
+    //    public function addJs($js) {
+    //        $this->js .= $js;
+    //    }
 
-//    protected function addCssLink($name) {
-//        $this->cssList[] = $name;
-//    }
-//
-//    protected function addJsLink($name) {
-//        $this->jsList[] = $name;
-//    }
+    //    protected function addCssLink($name) {
+    //        $this->cssList[] = $name;
+    //    }
+    //
+    //    protected function addJsLink($name) {
+    //        $this->jsList[] = $name;
+    //    }
 
     protected function stop() {
         $stop = true;

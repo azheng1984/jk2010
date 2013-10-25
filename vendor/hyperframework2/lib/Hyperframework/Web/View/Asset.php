@@ -39,7 +39,7 @@ class Asset {
         if (isset($config['path'])) {
         }
         $cache = self::getCache();
-        if (Config::get(__CLASS__ . '\EnablePrecompilation' === false)) {
+        if (Config::get(__CLASS__ . '\PrecompilationEnabled' === false)) {
             return $path . $extension;
         }
         return $path . $cache[$path] . $extension;
