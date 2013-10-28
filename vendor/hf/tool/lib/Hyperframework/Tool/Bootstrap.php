@@ -9,8 +9,8 @@ class Bootstrap {
             dirname($rootPath) . DIRECTORY_SEPARATOR
         );
         require HYPERFRAMEWORK_PATH . 'lib' . DIRECTORY_SEPARATOR .
-            'Hyperframrwork' . DIRECTORY_SEPARATOR . 'ClassLoader.php';
-        ClassLoader::run();
-        \Hyperframework\Cli\ExceptionHander::run();
+            'Hyperframework' . DIRECTORY_SEPARATOR . 'ClassLoader.php';
+        \Hyperframework\ClassLoader::run();
+        \Hyperframework\Cli\ExceptionHandler::run();
     }
 }
