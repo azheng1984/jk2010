@@ -1,6 +1,6 @@
 <?php
 namespace Hyperframework\Tool;
-use Hyperframework\Cli\ExceptionHandler;
+use Hyperframework\Cli;
 
 class Bootstrap {
     public static function run($rootPath) {
@@ -11,6 +11,7 @@ class Bootstrap {
         require HYPERFRAMEWORK_PATH . 'lib' . DIRECTORY_SEPARATOR .
             'Hyperframework' . DIRECTORY_SEPARATOR . 'ClassLoader.php';
         \Hyperframework\ClassLoader::run();
-        \Hyperframework\Cli\ExceptionHandler::run();
+        Cli\ExceptionHandler::run();
+        Cli\Application\CliApplication::run();
     }
 }
