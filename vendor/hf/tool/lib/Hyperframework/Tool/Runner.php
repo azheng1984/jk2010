@@ -6,7 +6,7 @@ class Runner {
         $hyperframeworkPath = dirname($rootPath) . DIRECTORY_SEPARATOR . 'lib' .
             DIRECTORY_SEPARATOR . 'Hyperframework' . DIRECTORY_SEPARATOR;
         require $hyperframeworkPath . 'Config.php';
-        \Hyperframework\Config::set('Hyperframework\AppRootPath', $rootPath);
+        \Hyperframework\Config::set('Hyperframework\AppPath', $rootPath);
         require $hyperframeworkPath . 'ClassLoader.php';
         \Hyperframework\ClassLoader::run();
         \Hyperframework\Cli\ExceptionHandler::run();
