@@ -10,7 +10,7 @@ class Bootstrap {
         }
         //TODO: 测试是否存在 session_id 的 cookie，如果存在，打开 session
         if ($path !== null) {
-            \Hyperframework\Application::run($path);
+            \Hyperframework\Web\Application::run($path);
         }
     }
 

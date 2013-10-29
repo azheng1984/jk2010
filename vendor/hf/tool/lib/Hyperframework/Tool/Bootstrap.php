@@ -12,6 +12,6 @@ class Bootstrap {
             'Hyperframework' . DIRECTORY_SEPARATOR . 'ClassLoader.php';
         \Hyperframework\ClassLoader::run();
         Cli\ExceptionHandler::run();
-        Cli\Application\CliApplication::run();
+        Cli\Application::run();
     }
 }
