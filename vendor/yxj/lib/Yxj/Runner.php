@@ -16,7 +16,7 @@ class Runner {
 
     private static function initialize($rootPath) {
         require $rootPath . 'config' . DIRECTORY_SEPARATOR . 'env.config.php';
-        \Hyperframework\Config::setRootPath($rootPath);
+        \Hyperframework\Config::set('Hyperframework\AppRootPath', $rootPath);
         require HYPERFRAMEWORK_PATH . 'ClassLoader.php';
         \Hyperframework\ClassLoader::run();
         \Hyperframework\Web\ExceptionHandler::run();

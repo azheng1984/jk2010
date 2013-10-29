@@ -3,12 +3,13 @@ namespace Hyperframework\Tool;
 
 class Runner {
     public static function run($rootPath) {
-        require dirname($rootPath) . DIRECTORY_SEPARATOR .
-            'lib' . DIRECTORY_SEPARATOR .
-            'Hyperframework' . DIRECTORY_SEPARATOR . 'ClassLoader.php';
+        $hyperframeworkPath = dirname($rootPath) . DIRECTORY_SEPARATOR . 'lib' .
+            DIRECTORY_SEPARATOR . 'Hyperframework' . DIRECTORY_SEPARATOR;
+        require $hyperframeworkPath . 'Config.php';
+        \Hyperframework\Config::set('Hyperframework\AppRootPath', $rootPath);
+        require $hyperframeworkPath . 'ClassLoader.php';
         \Hyperframework\ClassLoader::run();
         \Hyperframework\Cli\ExceptionHandler::run();
         \Hyperframework\Cli\Application::run();
-        exit;
     }
 }
