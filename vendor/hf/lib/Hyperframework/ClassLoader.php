@@ -9,10 +9,11 @@ class ClassLoader {
     public static function load($name) {
         $name = str_replace('\\', '/', $name);
         if (static::startsWith($name, 'Hyperframework\Tool')) {
-            require '/home/azheng/daoxila_www/vendor/hf/tool/lib/' . $name . '.php';
+            require realpath('/home/az/daoxila_www/vendor/hf/tool/lib/' . $name . '.php');
+            return;
         }
         if (static::startsWith($name, 'Hyperframework')) {
-            require '/home/azheng/daoxila_www/vendor/hf/lib/' . $name . '.php';
+            require realpath('/home/az/daoxila_www/vendor/hf/lib/' . $name . '.php');
         }
    }
 

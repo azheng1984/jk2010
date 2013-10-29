@@ -11,7 +11,7 @@ class Application {
 
     public function __construct() {
         $this->config = \Hyperframework\ConfigLoader::load(
-            __CLASS__ . '\ConfigPath', 'application'
+            __CLASS__ . '\ConfigPath', 'app'
         );
         $this->reader = new Reader;
         $this->initialize($this->config);
