@@ -9,5 +9,6 @@ class Runner {
         \Hyperframework\ClassLoader::run();
         \Hyperframework\Cli\ExceptionHandler::run();
         \Hyperframework\Cli\Application::run();
+        exit;
     }
 }

@@ -1,4 +1,6 @@
 <?php
+namespace Hyperframework\Cli;
+
 class Application {
     private $config;
     private $reader;
@@ -7,14 +9,16 @@ class Application {
     private $options = array();
     private $arguments = array();
 
-    prifunction __construct($configPath = CONFIG_PATH) {
-        $this->config = require $configPath.'application.config.php';
-        $this->reader = new CommandReader;
+    public function __construct() {
+        $this->config = \Hyperframework\ConfigLoader::load(
+            __CLASS__ . '\ConfigPath', 'application'
+        );
+        $this->reader = new Reader;
         $this->initialize($this->config);
     }
 
     public static function run() {
-        $instance = new CliApplication;
+        $instance = new Application;
         return $instance->start();
     }
 

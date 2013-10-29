@@ -39,37 +39,37 @@ class Config {
     }
 
     public static function setRootPath($value) {
-        static::$data['Hyperframework\RootPath'] = $value;
+        static::$data[__CLASS__ . '\RootPath'] = $value;
     }
 
     public static function getRootPath() {
         return static::get(
-            'Hyperframework\RootPath', array('is_nullable' => false)
+            __CLASS__ . '\RootPath', array('is_nullable' => false)
         );
     }
 
     public static function setCachePath($value) {
-        static::$data['Hyperframework\CachePath'] = $value;
+        static::$data[__CLASS__ . '\CachePath'] = $value;
     }
 
     public static function getCachePath() {
-        if (isset(static::$data['Hyperframework\CachePath']) === false)) {
-            static::$data['Hyperframework\CachePath'] =
+        if (isset(static::$data[__CLASS__ . '\CachePath']) === false) {
+            static::$data[__CLASS__ . '\CachePath'] =
                 static::getRootPath() . 'cache' . DIRECTORY_SEPARATOR;
         }
-        return static::$data['Hyperframework\CachePath'];
+        return static::$data[__CLASS__ . '\CachePath'];
     }
 
     public static function setConfigPath($value) {
-        static::$data['Hyperframework\ConfigPath'] = $value;
+        static::$data[__CLASS__ . '\ConfigPath'] = $value;
     }
 
     public static function getConfigPath() {
-        if (isset(static::$data['Hyperframework\ConfigPath']) === false)) {
-            static::$data['Hyperframework\ConfigPath'] =
+        if (isset(static::$data[__CLASS__ . '\ConfigPath']) === false) {
+            static::$data[__CLASS__ . '\ConfigPath'] =
                 static::getRootPath() . 'config' . DIRECTORY_SEPARATOR;
         }
-        return static::$data['Hyperframework\ConfigPath'];
+        return static::$data[__CLASS__ . '\ConfigPath'];
     }
 
     public static function export() {
