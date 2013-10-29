@@ -15,7 +15,7 @@ class ClassLoader {
         if (static::startsWith($name, 'Hyperframework')) {
             require realpath('/home/az/daoxila_www/vendor/hf/lib/' . $name . '.php');
         }
-   }
+    }
 
     private static function startsWith($haystack, $needle) {
         return $needle === "" || strpos($haystack, $needle) === 0;
