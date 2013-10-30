@@ -7,13 +7,14 @@ class ClassLoader {
     }
 
     public static function load($name) {
+        //echo $name . PHP_EOL;
         $name = str_replace('\\', '/', $name);
         if (static::startsWith($name, 'Hyperframework\Tool')) {
-            require realpath('/home/az/daoxila_www/vendor/hf/tool/lib/' . $name . '.php');
+            require $GLOBALS['_SERVER']['HOME'] . '/daoxila_www/vendor/hf/tool/lib/' . $name . '.php';
             return;
         }
         if (static::startsWith($name, 'Hyperframework')) {
-            require realpath('/home/az/daoxila_www/vendor/hf/lib/' . $name . '.php');
+            require $GLOBALS['_SERVER']['HOME'] . '/daoxila_www/vendor/hf/lib/' . $name . '.php';
         }
     }
 
