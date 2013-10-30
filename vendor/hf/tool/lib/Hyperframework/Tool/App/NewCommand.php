@@ -2,15 +2,16 @@
 namespace Hyperframework\Tool\App;
 
 class NewCommand {
-    public function execute($type, $hyperframeworkPath = HYPERFRAMEWORK_PATH) {
-        $configPath = CONFIG_PATH.'new'.DIRECTORY_SEPARATOR.$type.'.config.php';
-        if (!file_exists($configPath)) {
-            throw new CommandException("Application type '$type' is invalid");
-        }
+    public function execute($type, $hyperframeworkPath = '~') {
+        $config = \Hyperframework\ConfigLoader::load(__CLASS__ . '\ConfigPath', 'new/' .  $type);
+        // CONFIG_PATH.'new'.DIRECTORY_SEPARATOR.$type.'.config.php';
+//        if (!file_exists($config)) {
+//            throw new CommandException("Application type '$type' is invalid");
+//        }
         $this->initialize($hyperframeworkPath);
-        $generator = new ScaffoldGenerator;
+        $generator = new \Hyperframework\Tool\ScaffoldGenerator;
         try {
-            $generator->generate(require $configPath);
+            $generator->generate($config);
         } catch (Exception $exception) {
             throw new CommandException($exception->getMessage());
         }
