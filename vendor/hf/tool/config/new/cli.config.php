@@ -1,4 +1,7 @@
 <?php
+$GLOBALS['HYPERFRAMEWORK_PATH'] = '';
+$GLOBALS['CLASS_LOADER_PREFIX'] = '';
+
 return array(
   'app/Command.php' => array(
     '<?php',
