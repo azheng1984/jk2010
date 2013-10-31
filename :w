@@ -1,10 +1,10 @@
 <?php
 namespace Hyperframework;
 
-class ConfigLoader {
+class CacheLoader {
     public static function load($pathConfigName, $defaultPath) {
         return DataLoader::load(
-            'config', $pathConfigName, $defaultPath, 'config'
+            $pathConfigName, $defaultPath, 'cache', 'data/cache'
         );
     }
 }

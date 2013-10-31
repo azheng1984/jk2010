@@ -2,7 +2,9 @@
 namespace Hyperframework;
 
 class DataLoader {
-    public static function load($pathConfigName, $defaultPath, $type) {
+    public static function load(
+        $type, $pathConfigName, $defaultPath, $defaultRootPath
+    ) {
         $provider = Config::get(get_called_class() . '\Provider');
         if ($provider !== null) {
             $path = Config::get(
@@ -12,18 +14,18 @@ class DataLoader {
         }
         $path = Config::get($pathConfigName);
         if ($path === null) {
-            $path = static::getRootPath($type) .
+            $path = static::getRootPath($defaultRootPath) .
                 $defaultPath . '.' . $type . '.php';
         }
         return require $path;
     }
 
-    private static function getRootPath($type) {
+    private static function getRootPath($defaultRootPath) {
         $result = Config::get(get_called_class() . '\RootPath');
         if ($result === null) {
             return Config::get(
                 'Hyperframework\AppPath', array('is_nullable' => false)
-            ) . $type . DIRECTORY_SEPARATOR;
+            ) . $defaultRootPath . DIRECTORY_SEPARATOR;
         }
         return $result;
     }

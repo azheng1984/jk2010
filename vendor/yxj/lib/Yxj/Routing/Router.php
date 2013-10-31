@@ -1,5 +1,5 @@
 <?php
-namespace Yxj;
+namespace Yxj\Routing;
 
 class Router {
     public static function execute() {

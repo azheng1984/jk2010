@@ -7,14 +7,18 @@ class ClassLoader {
     }
 
     public static function load($name) {
-        echo $name . PHP_EOL;
+        //echo $name . PHP_EOL;
         $name = str_replace('\\', '/', $name);
+        if (static::startsWith($name, 'Yxj/')) {
+            require '/srv/www/localhost/lib/' . $name . '.php';
+            return;
+        }
         if (static::startsWith($name, 'Hyperframework/Tool')) {
-            require $GLOBALS['_SERVER']['HOME'] . '/daoxila_www/vendor/hf/tool/lib/' . $name . '.php';
+            require '/home/azheng/daoxila_www/vendor/hf/tool/lib/' . $name . '.php';
             return;
         }
         if (static::startsWith($name, 'Hyperframework')) {
-            require $GLOBALS['_SERVER']['HOME'] . '/daoxila_www/vendor/hf/lib/' . $name . '.php';
+            require '/home/azheng/daoxila_www/vendor/hf/lib/' . $name . '.php';
         }
     }
 

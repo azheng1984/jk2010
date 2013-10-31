@@ -1,8 +1,10 @@
 <?php
 namespace Hyperframework;
 
-class CacheLoader extends DataLoader {
+class CacheLoader {
     public static function load($pathConfigName, $defaultPath) {
-        return parent::load($pathConfigName, $defaultPath, 'cache');
+        return DataLoader::load(
+            'cache', $pathConfigName, $defaultPath, 'data/cache'
+        );
     }
 }

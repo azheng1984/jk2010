@@ -4,7 +4,7 @@ namespace Yxj;
 class Runner {
     public static function run() {
         static::initialize();
-        $path = Router::execute();
+        $path = Routing\Router::execute();
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method'])) {
             $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
         }
@@ -15,7 +15,8 @@ class Runner {
     }
 
     private static function initialize() {
-        require $rootPath . 'config' . DIRECTORY_SEPARATOR . 'env.config.php';
+        require ROOT_PATH . 'config' . DIRECTORY_SEPARATOR .
+            'env' . DIRECTORY_SEPARATOR . 'env.config.php';
         \Hyperframework\Config::set('Hyperframework\AppPath', ROOT_PATH);
         require HYPERFRAMEWORK_PATH . 'ClassLoader.php';
         \Hyperframework\ClassLoader::run();
