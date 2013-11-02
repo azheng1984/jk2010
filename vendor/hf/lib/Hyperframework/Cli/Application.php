@@ -74,7 +74,7 @@ class Application {
 
     private function setCommand($name) {
         if (!isset($this->config['commands'][$name])) {
-            throw new CommandException("Command '$name' not found");
+            throw new CliException("Command '$name' not found");
         }
         $this->initialize($this->config['commands'][$name]);
         $this->optionParser = null;

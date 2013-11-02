@@ -7,6 +7,7 @@ class ClassLoader {
     }
 
     public static function load($name) {
+        $home = '/home/az';
         //echo $name . PHP_EOL;
         $name = str_replace('\\', '/', $name);
         if (static::startsWith($name, 'Yxj/')) {
@@ -14,11 +15,11 @@ class ClassLoader {
             return;
         }
         if (static::startsWith($name, 'Hyperframework/Tool')) {
-            require '/home/azheng/daoxila_www/vendor/hf/tool/lib/' . $name . '.php';
+            require $home . '/daoxila_www/vendor/hf/tool/lib/' . $name . '.php';
             return;
         }
         if (static::startsWith($name, 'Hyperframework')) {
-            require '/home/azheng/daoxila_www/vendor/hf/lib/' . $name . '.php';
+            require $home . '/daoxila_www/vendor/hf/lib/' . $name . '.php';
         }
     }
 

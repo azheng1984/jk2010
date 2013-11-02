@@ -11,7 +11,7 @@ class Writer {
             return;
         }
         if ($this->indentation < 0) {
-            throw new CommandException("Indentation '$this->indentation' is invalid");
+            throw new CliException("Indentation '$this->indentation' is invalid");
         }
         if ($this->isInsertEmptyLine) {
             $this->insertEmptyLine();

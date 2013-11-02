@@ -21,7 +21,7 @@ class OptionParser {
         }
         $config = $this->getItemConfig($name);
         if ($config === null) {
-            throw new CommandException("Option '$item' not allowed");
+            throw new CliException("Option '$item' not allowed");
         }
         if (isset($config['expansion'])) {
             $this->reader->expand($config['expansion']);
@@ -37,8 +37,8 @@ class OptionParser {
         $objectBuilder = new OptionObjectBuilder($config, $this->reader);
         try {
             return $objectBuilder->build();
-        } catch (CommandException $exception) {
-            throw new CommandException("Option '$item':".$exception->getMessage());
+        } catch (CliException $exception) {
+            throw new CliException("Option '$item':".$exception->getMessage());
         }
     }
 
