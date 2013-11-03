@@ -8,6 +8,7 @@ class Application {
 
     public static function run($path = null, $name = 'default') {
         $pathInfo = PathInfo::get($path);
+        var_dump($pathInfo);
         $instance = static::createInstance($name);
         $instance->executeAction($pathInfo);
         $instance->renderView($pathInfo);
@@ -62,6 +63,9 @@ class Application {
     ) {
         if (isset($pathInfo['View']) && $this->isViewEnabled) {
             $info = $pathInfo['View'];
+            if (is_string($info)) {
+               $info = ['Screen' => $info];
+            }
             $info['namespace'] = $pathInfo['namespace'];
             $processor = new $processorClass;
             $processor->run($info);

@@ -14,6 +14,7 @@ class PathInfo {
         }
         $info = $cache['paths'][$path];
         $info['namespace'] = static::getNamespace($path);
+        var_dump($info);
         return $info;
     }
 
@@ -51,14 +52,15 @@ class PathInfo {
         if (is_array($namespace) === false) {
             return '\\' . $namespace. '\\';
         }
-        if (isset($namespace['folder_mapping']) === false) {
-            throw new \Exception('Format of path info cache is not correct');
-        }
-        $root = isset($namespace['root']) ? $namespace['root'] : null;
-        if ($path === '/') {
-            return $root === null ? '\\' : '\\' . $root. '\\';
-        }
-        $root = $root === null ? '' : '\\' . $root;
-        return $root . str_replace('/', '\\', $path) . '\\';
+        //throw ...
+//        if (isset($namespace['folder_mapping']) === false) {
+//            throw new \Exception('Format of path info cache is not correct');
+//        }
+//        $root = isset($namespace['root']) ? $namespace['root'] : null;
+//        if ($path === '/') {
+//            return $root === null ? '\\' : '\\' . $root. '\\';
+//        }
+//        $root = $root === null ? '' : '\\' . $root;
+//        return $root . str_replace('/', '\\', $path) . '\\';
     }
 }
