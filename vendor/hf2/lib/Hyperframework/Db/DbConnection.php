@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Db;
 
-class Connection {
+class DbConnection {
     private static $current = null;
     private static $pool = array();
     private static $stack = array();

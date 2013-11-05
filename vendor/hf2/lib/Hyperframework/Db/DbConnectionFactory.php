@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Db;
 
-class ConnectionFactory {
+class DbConnectionFactory {
     private static $config;
 
     public function get($name) {

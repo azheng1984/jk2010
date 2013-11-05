@@ -2,7 +2,7 @@
 namespace Hyperframework;
 
 class ConfigLoader {
-    public static function load($pathName, $defaultPath) {
+    public static function load($pathName, $defaultPath, $hasEnv = false) {
         $configProvider = Config::get(__CLASS__ . '\ConfigProvider');
         if ($configProvider !== null) {
             $path = Config::get($pathName, array('default' => $defaultPath);

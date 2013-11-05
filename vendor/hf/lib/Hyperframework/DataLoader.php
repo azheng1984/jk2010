@@ -15,7 +15,7 @@ class DataLoader {
         $path = Config::get($pathConfigName);
         if ($path === null) {
             $path = static::getRootPath($defaultRootPath) .
-                $defaultPath . '.' . $type . '.php';
+                DIRECTORY_SEPARATOR . $defaultPath . '.' . $type . '.php';
         }
         return require $path;
     }
@@ -24,8 +24,8 @@ class DataLoader {
         $result = Config::get(get_called_class() . '\RootPath');
         if ($result === null) {
             return Config::get(
-                __NAMESPACE__ . '\AppPath', array('is_nullable' => false)
-            ) . $defaultRootPath . DIRECTORY_SEPARATOR;
+                'Hyperframework\AppPath', array('is_nullable' => false)
+            ) . DIRECTORY_SEPARATOR . $defaultRootPath;
         }
         return $result;
     }

@@ -1,10 +1,13 @@
 <?php
 namespace Hyperframework\Db;
 
-class DataBindingCommand {
+class DbDataBindingCommand {
     const STATUS_INSERTED = 0;
     const STATUS_UPDATED = 1;
     const STATUS_NOT_MODIFIED = 2;
+
+    const RETURN_STATUS = 1;
+    const RETURN_ID = 2;
 
     public static function execute(
         $table, $filterColumns, $replacementColumns = null, $options = null
@@ -103,7 +106,7 @@ class DataBindingCommand {
     private static function updateDifference(
         $client, $table, $from, $to, $idName
     ) {
-        //TODO set idName when identiryColumns = string
+        //TODO set idName when identityColumns = string
         $columns = array();
         foreach ($to as $key => $value) {
             if ($from[$key] !== $value) {
