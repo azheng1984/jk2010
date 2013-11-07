@@ -4,16 +4,18 @@ namespace Hyperframework;
 class EnvConfig {
     private static $data = array();
 
-    public static function has($name) {
-        return static::$data[$name];
+    public static function has($pathConfigName) {
+        if (isset(static::$data[$pathConfigName])) {
+            return static::$data[$pathConfigName];
+        }
     }
 
-    public static function enable($name) {
-        return static::$data[$name] = true;
+    public static function enable($pathConfigName) {
+        return static::$data[$pathConfigName] = true;
     }
 
-    public static function disable($name) {
-        return static::$data[$name] = false;
+    public static function disable($pathConfigName) {
+        return static::$data[$pathConfigName] = false;
     }
 
     public static function export() {
@@ -24,3 +26,5 @@ class EnvConfig {
         static::$data = array();
     }
 }
+
+EnvConfig::enable('\Hyperframework\Db\DbConnectionFactory\ConfigPath');
