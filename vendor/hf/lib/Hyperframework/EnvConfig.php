@@ -4,15 +4,15 @@ namespace Hyperframework;
 class EnvConfig {
     private static $data = array();
 
-    public static function hasEnv($name) {
+    public static function has($name) {
         return static::$data[$name];
     }
 
-    public static function enableEnv($name) {
+    public static function enable($name) {
         return static::$data[$name] = true;
     }
 
-    public static function disableEnv($name) {
+    public static function disable($name) {
         return static::$data[$name] = false;
     }
 
