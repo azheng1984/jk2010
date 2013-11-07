@@ -5,7 +5,8 @@ class ConfigLoader {
     public static function load(
         $pathConfigName, $defaultPath, $hasEnv = false
     ) {
-        if ($hasEnv) {
+        $hasEnvConfig = Config::hasEnv($pathConfigName);
+        if ($hasEnvConfig === true || ($hasEnvConfig === null && $hasEnv)) {
             $defaultPath = Config::get(
                 __NAMESPACE__ . '\AppEnv', array('is_nullable' => false)
             ) . DIRECTORY_SEPARATOR . $defaultPath;

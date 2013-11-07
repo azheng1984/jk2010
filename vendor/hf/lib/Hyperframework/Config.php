@@ -38,6 +38,15 @@ class Config {
         }
     }
 
+    public static function hasEnv($name) {
+    }
+
+    public static function enableEnv($name) {
+    }
+
+    public static function disableEnv($name) {
+    }
+
     public static function export() {
         return static::$data;
     }
