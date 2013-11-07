@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework;
 
-class Env {
+class EnvConfig {
     private static $data = array();
 
     public static function has($name) {
