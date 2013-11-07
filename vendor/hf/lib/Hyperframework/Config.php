@@ -39,12 +39,15 @@ class Config {
     }
 
     public static function hasEnv($name) {
+        return static::get(__CLASS__ . '\EnvFlags\\' . $name);
     }
 
     public static function enableEnv($name) {
+        return static::set(__CLASS__ . '\EnvFlags\\' . $name, true);
     }
 
     public static function disableEnv($name) {
+        return static::set(__CLASS__ . '\EnvFlags\\' . $name, false);
     }
 
     public static function export() {
