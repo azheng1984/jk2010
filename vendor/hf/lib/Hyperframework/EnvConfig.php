@@ -28,3 +28,15 @@ class EnvConfig {
 }
 
 EnvConfig::enable('\Hyperframework\Db\DbConnectionFactory\ConfigPath');
+
+Config::set('
+    \Hyperframework\Build',
+    ENV_CONFIG_PATH . DIRECTORY_SEPARATOR . 'xxx.config.php'
+);
+
+EnvConfig::disable('\Hyperframework\Db\DbConnectionFactory\ConfigPath');
+
+Config::set(
+    '\Hyperframework\Db\DbConnectionFactory\ConfigPath',
+    CONFIG_PATH . DIRECTORY_SEPARATOR . 'database.config.php'
+);
