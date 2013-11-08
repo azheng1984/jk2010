@@ -7,7 +7,7 @@ class ClassLoader {
     }
 
     public static function load($name) {
-        $home = '/home/az';
+        $home = '/home/azheng';
         //echo $name . PHP_EOL;
         $name = str_replace('\\', '/', $name);
         if (static::startsWith($name, 'Yxj/')) {
