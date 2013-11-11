@@ -1,5 +1,7 @@
 <?php
+namespace Yxj;
+
 return array(
     'vendor/abc/asset',
-    '/js_lib',
+    JS_LIB_PATH . '/js_lib'
 );
