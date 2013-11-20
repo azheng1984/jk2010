@@ -10,9 +10,7 @@ class ConfigLoader extends DataLoader {
                 __NAMESPACE__ . '\AppEnv', array('is_nullable' => false)
             ) . DIRECTORY_SEPARATOR . $defaultPath;
         }
-        return static::load(
-            'config', $pathConfigName, $defaultPath, 'config'
-        );
+        return static::load('config', $pathConfigName, $defaultPath);
     }
 
     protected static function getDefaultRootPath() {

@@ -2,6 +2,8 @@
 namespace Hyperframework;
 
 abstract class DataLoader {
+    abstract protected static function getDefaultRootPath();
+
     protected static function load($type, $pathConfigName, $defaultPath) {
         $provider = Config::get(get_called_class() . '\Provider');
         if ($provider !== null) {
@@ -17,8 +19,6 @@ abstract class DataLoader {
         }
         return require $path;
     }
-
-    abstract protected static function getDefaultRootPath();
 
     private static function getRootPath() {
         $result = Config::get(get_called_class() . '\RootPath');
