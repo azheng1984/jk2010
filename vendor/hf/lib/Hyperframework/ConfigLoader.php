@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework;
 
-class ConfigLoader {
+class ConfigLoader extends DataLoader {
     public static function load(
         $pathConfigName, $defaultPath, $hasEnv = false
     ) {
@@ -10,8 +10,14 @@ class ConfigLoader {
                 __NAMESPACE__ . '\AppEnv', array('is_nullable' => false)
             ) . DIRECTORY_SEPARATOR . $defaultPath;
         }
-        return DataLoader::load(
+        return static::load(
             'config', $pathConfigName, $defaultPath, 'config'
         );
+    }
+
+    protected static function getDefaultRootPath() {
+        return Config::get(
+            'Hyperframework\AppPath', array('is_nullable' => false)
+        ) . DIRECTORY_SEPARATOR . 'config';
     }
 }
