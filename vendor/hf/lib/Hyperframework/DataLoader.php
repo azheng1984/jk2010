@@ -3,7 +3,10 @@ namespace Hyperframework;
 
 class DataLoader {
     public static function load(
-        $pathConfigName, $defaultPathPrefix, $defaultPath, $defaultPathSuffix
+        $pathConfigName,
+        $defaultPathPrefix,
+        $defaultPath,
+        $defaultExtensionPrefix
     ) {
         $provider = Config::get(get_called_class() . '\Provider');
         if ($provider !== null) {
@@ -16,7 +19,7 @@ class DataLoader {
         if ($path === null) {
             $path = static::getRootPath($defaultPathPrefix) .
                 DIRECTORY_SEPARATOR . $defaultPath .
-                '.' . $defaultPathSuffix . '.php';
+                '.' . $defaultExtensionPrefix . '.php';
         }
         return require $path;
     }
