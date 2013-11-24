@@ -6,15 +6,14 @@ class Application {
     private $actionResult;
     private $isViewEnabled = true;
 
-    public static function run($path = null, $name = 'default') {
+    public static function run($path = null, $name = 'main') {
         $pathInfo = PathInfo::get($path);
-        var_dump($pathInfo);
         $instance = static::createInstance($name);
         $instance->executeAction($pathInfo);
         $instance->renderView($pathInfo);
     }
 
-    public static function get($name = 'default') {
+    public static function getInstance($name = 'main') {
         if (isset(static::$instances[$name]) === false) {
             throw new \Exception('Application \'' . $name . '\' not found');
         }

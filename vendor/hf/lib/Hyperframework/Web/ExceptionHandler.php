@@ -18,7 +18,7 @@ class ExceptionHandler {
             $exception = new InternalServerErrorException;
         }
         static::resetOutput();
-        $exception->sendHeader();
+        $exception->setHeader();
         if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
             try {
                 static::displayError($exception->getCode());
