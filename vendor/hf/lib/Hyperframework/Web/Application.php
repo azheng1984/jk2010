@@ -11,11 +11,6 @@ class Application {
         static::renderView($pathInfo);
     }
 
-    public static function reset() {
-        static::$actionResult = null;
-        static::$isViewEnabled = true;
-    }
-
     public static function enableView() {
         static::$isViewEnabled = true;
     }
@@ -26,6 +21,11 @@ class Application {
 
     public static function getActionResult() {
         return static::$actionResult;
+    }
+
+    public static function reset() {
+        static::$actionResult = null;
+        static::$isViewEnabled = true;
     }
 
     protected static function executeAction(
