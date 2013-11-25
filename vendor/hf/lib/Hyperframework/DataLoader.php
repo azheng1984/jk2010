@@ -28,7 +28,7 @@ class DataLoader {
         $result = Config::get(get_called_class() . '\RootPath');
         if ($result === null) {
             return Config::get(
-                'Hyperframework\AppPath', array('is_nullable' => false)
+                __NAMESPACE__ . '\AppPath', array('is_nullable' => false)
             ) . DIRECTORY_SEPARATOR . $defaultPathPrefix;
         }
         return $result;
