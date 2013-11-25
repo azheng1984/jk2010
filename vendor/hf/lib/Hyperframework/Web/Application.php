@@ -8,12 +8,12 @@ class Application {
 
     public static function run($path = null, $name = 'main') {
         $pathInfo = PathInfo::get($path);
-        $instance = static::createInstance($name);
+        $instance = static::create($name);
         $instance->executeAction($pathInfo);
         $instance->renderView($pathInfo);
     }
 
-    public static function getInstance($name = 'main') {
+    public static function get($name = 'main') {
         if (isset(static::$instances[$name]) === false) {
             throw new \Exception('Application \'' . $name . '\' not found');
         }
@@ -32,7 +32,7 @@ class Application {
         return $this->actionResult;
     }
 
-    protected static function createInstance($name) {
+    protected static function create($name) {
         if (isset(static::$instances[$name])) {
             throw new \Exception('Application \'' . $name . '\' existed');
         }
@@ -42,8 +42,7 @@ class Application {
         return $instance;
     }
 
-    protected function __construct() {
-    }
+    protected function __construct() {}
 
     protected function executeAction(
         $pathInfo, $processorClass = 'Hyperframework\Web\ActionProcessor'
