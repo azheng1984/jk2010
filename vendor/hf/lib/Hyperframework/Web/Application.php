@@ -43,7 +43,7 @@ class Application {
     protected static function renderView(
         $pathInfo, $processorClass = 'Hyperframework\Web\ViewProcessor'
     ) {
-        if (isset($pathInfo['View']) && $this->isViewEnabled) {
+        if (isset($pathInfo['View']) && static::$isViewEnabled) {
             $info = $pathInfo['View'];
             if (is_string($info)) {
                $info = ['Screen' => $info];
