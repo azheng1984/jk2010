@@ -2,22 +2,27 @@
 namespace Hyperframework\Web;
 
 class Application {
-    private static $instances = array();
+    private static $instance;
     private $actionResult;
     private $isViewEnabled = true;
 
-    public static function run($path = null, $name = 'main') {
+    public static function run($path = null) {
         $pathInfo = PathInfo::get($path);
-        $instance = static::create($name);
+        $instance = static::create();
         $instance->executeAction($pathInfo);
         $instance->renderView($pathInfo);
     }
 
-    public static function get($name = 'main') {
-        if (isset(static::$instances[$name]) === false) {
-            throw new \Exception('Application \'' . $name . '\' not found');
+    public static function get() {
+        $result = end(static::$instance);
+        if ($result === false) {
+            throw new \Exception('No application');
         }
-        return static::$instances[$name];
+        return $result;
+    }
+
+    public static function reset() {
+        static::$instance = null;
     }
 
     public function enableView() {
@@ -32,13 +37,13 @@ class Application {
         return $this->actionResult;
     }
 
-    protected static function create($name) {
-        if (isset(static::$instances[$name])) {
-            throw new \Exception('Application \'' . $name . '\' existed');
+    protected static function create() {
+        if (static::$instance !== null) {
+            throw new \Exception('Application already exists');
         }
         $class = get_called_class();
         $instance = new $class($name);
-        static::$instances[$name] = $instance;
+        static::$instances = $instance;
         return $instance;
     }
 

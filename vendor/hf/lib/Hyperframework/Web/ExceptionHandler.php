@@ -45,8 +45,8 @@ class ExceptionHandler {
         $exception, $recursiveException = null
     ) {
         if ($recursiveException !== null) {
-            $message = 'Uncaught ' . $exception. PHP_EOL .
-                PHP_EOL . 'Next ' . $recursiveException. PHP_EOL;
+            $message = 'Uncaught ' . $exception . PHP_EOL .
+                PHP_EOL . 'Next ' . $recursiveException . PHP_EOL;
             trigger_error($message, E_USER_ERROR);
         }
         throw $exception;
@@ -70,7 +70,8 @@ class ExceptionHandler {
 
     protected static function runErrorApplication($statusCode) {
         if (($path = static::getErrorPath($statusCode)) !== null) {
-            Application::run($path, 'error');
+            Application::reset();
+            Application::run($path);
         }
     }
 
