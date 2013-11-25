@@ -7,7 +7,7 @@ class ConfigLoader {
     ) {
         if ($hasEnv) {
             $defaultPath = Config::get(
-                __NAMESPACE__ . '\AppEnv', array('is_nullable' => false)
+                'Hyperframework\AppEnv', array('is_nullable' => false)
             ) . DIRECTORY_SEPARATOR . $defaultPath;
         }
         return DataLoader::load(
