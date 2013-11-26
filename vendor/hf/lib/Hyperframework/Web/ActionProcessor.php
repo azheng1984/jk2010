@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework\Web\Exception\MethodNotAllowedException;
+
 class ActionProcessor {
     public function run($info) {
         $method = $_SERVER['REQUEST_METHOD'];
@@ -39,7 +41,7 @@ class ActionProcessor {
 
     private function checkImplicitAction($method) {
         if ($method !== 'GET') {
-            throw new Exception\MethodNotAllowedException(array('GET', 'HEAD'));
+            throw new MethodNotAllowedException(array('GET', 'HEAD'));
         }
     }
 
@@ -47,13 +49,13 @@ class ActionProcessor {
         if (isset($info['get_not_allowed'])) {
             $methods = isset($info['methods']) ?
                 array_keys($info['methods']) : array();
-            throw new Exception\MethodNotAllowedException($methods);
+            throw new MethodNotAllowedException($methods);
         }
         if ($method !== 'GET') {
             $methods = isset($info['methods']) ? $info['methods'] : array();
             $methods['GET'] = 1;
             $methods['HEAD'] = 1;
-            throw new Exception\MethodNotAllowedException(array_keys($methods));
+            throw new MethodNotAllowedException(array_keys($methods));
         }
     }
 }
