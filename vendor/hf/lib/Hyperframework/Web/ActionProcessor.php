@@ -39,7 +39,7 @@ class ActionProcessor {
 
     private function checkImplicitAction($method) {
         if ($method !== 'GET') {
-            throw new MethodNotAllowedException(array('GET', 'HEAD'));
+            throw new Exception\MethodNotAllowedException(array('GET', 'HEAD'));
         }
     }
 
@@ -47,13 +47,13 @@ class ActionProcessor {
         if (isset($info['get_not_allowed'])) {
             $methods = isset($info['methods']) ?
                 array_keys($info['methods']) : array();
-            throw new MethodNotAllowedException($methods);
+            throw new Exception\MethodNotAllowedException($methods);
         }
         if ($method !== 'GET') {
             $methods = isset($info['methods']) ? $info['methods'] : array();
             $methods['GET'] = 1;
             $methods['HEAD'] = 1;
-            throw new MethodNotAllowedException(array_keys($methods));
+            throw new Exception\MethodNotAllowedException(array_keys($methods));
         }
     }
 }

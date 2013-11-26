@@ -8,7 +8,7 @@ class ViewProcessor {
         }
         $mediaType = $_SERVER['REQUEST_MEDIA_TYPE'];
         if (isset($info[$mediaType]) === false) {
-            throw new UnsupportedMediaTypeException;
+            throw new Exception\UnsupportedMediaTypeException;
         }
         $class = $info['namespace'] . $info[$mediaType];
         $view = new $class;

@@ -23,6 +23,11 @@ class Application {
         return static::$actionResult;
     }
 
+    public static function redirect($uri, $statusCode = 301) {
+        static::$isViewDisabled = true;
+        header('Location: ' . $uri, true, $statusCode);
+    }
+
     public static function reset() {
         static::$actionResult = null;
         static::$isViewEnabled = true;

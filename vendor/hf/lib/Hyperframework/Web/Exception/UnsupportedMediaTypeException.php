@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Web;
+namespace Hyperframework\Web\Exception;
 
 class UnsupportedMediaTypeException extends ApplicationException {
     public function __construct($message = null, $previous = null) {

@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Web;
+namespace Hyperframework\Web\Exception;
 
 class NotFoundException extends ApplicationException {
     public function __construct($message = null, $previous = null) {

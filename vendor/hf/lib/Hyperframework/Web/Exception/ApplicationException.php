@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Web;
+namespace Hyperframework\Web\Exception;
 
 abstract class ApplicationException extends \Exception {
     public function __construct($message, $statusCode, $previous) {
