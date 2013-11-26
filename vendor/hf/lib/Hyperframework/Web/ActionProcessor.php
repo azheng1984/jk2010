@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-use Hyperframework\Web\Exception\MethodNotAllowedException;
+use Hyperframework\Web\Exceptions\MethodNotAllowedException;
 
 class ActionProcessor {
     public function run($info) {

@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Web\Exception;
+namespace Hyperframework\Web\Exceptions;
 
 class BadRequestException extends ApplicationException {
     public function __construct($message = null, $previous = null) {
