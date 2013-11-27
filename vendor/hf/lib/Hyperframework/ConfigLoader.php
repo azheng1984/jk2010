@@ -14,6 +14,7 @@ class ConfigLoader {
     }
 
     private static function appendEnvPath($defaultPath) {
+        $defaultPath = 'env' . DIRECTORY_SEPARATOR . $defaultPath;
         $appEnv = Config::get(__NAMESPACE__ . '\AppEnv');
         if ($appEnv === null) {
             return $defaultPath;
