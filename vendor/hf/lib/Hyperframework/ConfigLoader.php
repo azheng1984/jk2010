@@ -14,11 +14,10 @@ class ConfigLoader {
     }
 
     private static function appendEnvPath($defaultPath) {
-        $defaultPath = 'env' . DIRECTORY_SEPARATOR . $defaultPath;
         $appEnv = Config::get(__NAMESPACE__ . '\AppEnv');
-        if ($appEnv === null) {
-            return $defaultPath;
+        if ($appEnv !== null) {
+            $defaultPath = $appEnv . DIRECTORY_SEPARATOR . $defaultPath;
         }
-        return $appEnv . DIRECTORY_SEPARATOR . $defaultPath;
+        return 'env' . DIRECTORY_SEPARATOR . $defaultPath;
     }
 }
