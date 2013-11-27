@@ -6,12 +6,18 @@ class ConfigLoader {
         $pathConfigName, $defaultPath, $hasEnv = false
     ) {
         if ($hasEnv) {
-            $defaultPath = Config::get(
-                __NAMESPACE__ . '\AppEnv', array('is_nullable' => false)
-            ) . DIRECTORY_SEPARATOR . $defaultPath;
+            $defaultPath = static::appendEnvPath($defaultPath);
         }
         return DataLoader::load(
             $pathConfigName, 'config', $defaultPath, 'config'
         );
+    }
+
+    private static function appendEnvPath($defaultPath) {
+        $appEnv = Config::get(__NAMESPACE__ . '\AppEnv');
+        if ($appEnv === null) {
+            return $defaultPath;
+        }
+        return $appEnv . DIRECTORY_SEPARATOR . $defaultPath;
     }
 }
