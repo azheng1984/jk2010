@@ -26,11 +26,11 @@ class DataLoader {
 
     private static function getRootPath($defaultPathPrefix) {
         $result = Config::get(get_called_class() . '\RootPath');
-        if ($result === null) {
-            return Config::get(
-                __NAMESPACE__ . '\AppPath', array('is_nullable' => false)
-            ) . DIRECTORY_SEPARATOR . $defaultPathPrefix;
+        if ($result !== null) {
+            return $result;
         }
-        return $result;
+        return Config::get(
+            __NAMESPACE__ . '\AppPath', array('is_nullable' => false)
+        ) . DIRECTORY_SEPARATOR . $defaultPathPrefix;
     }
 }

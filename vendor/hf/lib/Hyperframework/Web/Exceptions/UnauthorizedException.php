@@ -13,6 +13,6 @@ class UnauthorizedException extends ApplicationException {
 
     public function setHeader() {
         parent::setHeader();
-        header('WWW-Authenticate:' . $this->authenticationInfo);
+        header('WWW-Authenticate: ' . $this->authenticationInfo);
     }
 }

@@ -15,6 +15,6 @@ class ProxyAuthenticationRequiredException extends ApplicationException {
 
     public function setHeader() {
         parent::setHeader();
-        header('Proxy-Authenticate:' . $this->authenticationInfo);
+        header('Proxy-Authenticate: ' . $this->authenticationInfo);
     }
 }
