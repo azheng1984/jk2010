@@ -10,7 +10,7 @@ class PathInfo {
         }
         $cache = static::getCache();
         if (isset($cache['paths'][$path]) === false) {
-            throw new NotFoundException;
+            throw new Exceptions\NotFoundException;
         }
         $info = $cache['paths'][$path];
         $info['namespace'] = static::getNamespace($path);

@@ -9,13 +9,15 @@ class ExceptionHandler {
     }
 
     public static function handle($exception) {
+        var_dump($exception);
+        exit;
         static::$exception = $exception;
         if (headers_sent()) {
             static::reportError($exception);
             return;
         }
         if ($exception instanceof ApplicationException === false) {
-            $exception = new InternalServerErrorException;
+            $exception = new Exceptions\InternalServerErrorException;
         }
         static::resetOutput();
         $exception->setHeader();
@@ -27,7 +29,7 @@ class ExceptionHandler {
                 return;
             }
         }
-        if ($exception instanceof InternalServerErrorException) {
+        if ($exception instanceof Exceptions\InternalServerErrorException) {
             static::reportError(static::$exception);
         }
     }
@@ -64,8 +66,7 @@ class ExceptionHandler {
         $_SERVER['REQUEST_METHOD'] = 'GET';
         try {
             static::runErrorApplication($statusCode);
-        } catch (UnsupportedMediaTypeException $recursiveException) {
-        }
+        } catch (Exeptions\UnsupportedMediaTypeException $recursiveException) {}
     }
 
     protected static function runErrorApplication($statusCode) {

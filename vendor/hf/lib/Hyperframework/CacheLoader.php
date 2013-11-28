@@ -5,9 +5,9 @@ class CacheLoader {
     public static function load($pathConfigName, $defaultPath) {
         return DataLoader::load(
             $pathConfigName,
-            'data' . DIRECTORY_SEPARATOR . 'cache'
+            'data' . DIRECTORY_SEPARATOR . 'cache',
             $defaultPath,
-            'cache',
+            'cache'
         );
     }
 }
