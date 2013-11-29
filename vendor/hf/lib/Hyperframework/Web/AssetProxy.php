@@ -31,9 +31,9 @@ class AssetProxy {
                    echo $js;
                 }
             }
-            //not found
+        } else {
+            static::renderVendor($uri);
         }
-        static::renderVendor($uri);
      }
 
      private static function renderVendor($uri) {
