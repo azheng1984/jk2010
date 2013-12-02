@@ -37,6 +37,9 @@ class AssetProxy {
      }
 
      private static function renderVendor($uri) {
+       // ../tv/css/abc.css.less.php
+       // export => /tv/css/abc.css => merge + import => deploy
+       // => /tv/css/abc.css
        if (static::startsWith($uri, '/js/tv/')) {
            $path = \Hyperframework\Config::get('Hyperframework\AppPath') . '/vendor/tv/public' . $uri;
            if (file_exists($path)) {
