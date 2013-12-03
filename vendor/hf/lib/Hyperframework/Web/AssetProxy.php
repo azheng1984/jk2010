@@ -6,7 +6,7 @@ class AssetProxy {
         $uri = $_SERVER['REQUEST_URI'];
         $segments = explode('.', $uri);
         $pathPrefix = array_shift($segments);
-        if (static::startsWith($uri, '/js/yxj/')) {
+        if (static::startsWith($uri, '/js/')) {
             $assetPath = \Hyperframework\Config::get('Hyperframework\AppPath') . '/asset';
             // $tmp = explode('/', $filePath);
             // array_pop($tmp);
