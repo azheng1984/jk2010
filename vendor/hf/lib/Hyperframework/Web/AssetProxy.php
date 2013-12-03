@@ -37,6 +37,10 @@ class AssetProxy {
      }
 
      private static function renderVendor($uri) {
+    //asset-v11.js
+    //asset-v11.js.gz
+    //asset-v12.js
+    //asset-v12.js.gz
        // ../tv/css/abc.css.less.php
        // export => /tv/css/abc.css => merge + import => deploy
        // => /tv/css/abc.css
