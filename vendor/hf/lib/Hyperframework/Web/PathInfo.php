@@ -14,7 +14,6 @@ class PathInfo {
         }
         $info = $cache['paths'][$path];
         $info['namespace'] = static::getNamespace($path);
-        var_dump($info);
         return $info;
     }
 

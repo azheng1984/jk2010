@@ -6,8 +6,8 @@ class AssetProxy {
         $uri = $_SERVER['REQUEST_URI'];
         $segments = explode('.', $uri);
         $pathPrefix = array_shift($segments);
-        if (static::startsWith($uri, '/js/')) {
-            $assetPath = \Hyperframework\Config::get('Hyperframework\AppPath') . '/asset';
+        if (static::startsWith($uri, '/asset/js/')) {
+            $assetPath = \Hyperframework\Config::get('Hyperframework\AppPath');
             //$tmp = explode('/', $filePath);
             //array_pop($tmp);
             //$dirName = implode('/', $tmp);
@@ -18,7 +18,7 @@ class AssetProxy {
                 return;
             }
             if ($result[0] === $search) {
-                echo file_get_contents(\Hyperframework\Config::get('Hyperframework\AppPath') . '/asset' . $uri);
+                echo file_get_contents(\Hyperframework\Config::get('Hyperframework\AppPath') . $uri);
                 return;
             }
             $suffix = substr($result[0], strlen($search));
@@ -37,15 +37,15 @@ class AssetProxy {
     }
 
     private static function renderVendor($uri) {
-        //abc-c11.js
-        //abc-c11.js.gz
-        //abc-c12.js
-        //abc-c12.js.gz
+        //abc-11.js
+        //abc-11.js.gz
+        //abc-12.js
+        //abc-12.js.gz
         // ../tv/css/abc.css.less.php
         // export => /tv/css/abc.css => merge + import => deploy
         // => /tv/css/abc.css
         if (static::startsWith($uri, '/js/tv/')) {
-            $path = \Hyperframework\Config::get('Hyperframework\AppPath') . '/vendor/tv/public' . $uri;
+            $path = \Hyperframework\Config::get('Hyperframework\AppPath') . '/asset/vendor/tv/public' . $uri;
             if (file_exists($path)) {
                 require $path;
                 return;

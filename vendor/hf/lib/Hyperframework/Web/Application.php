@@ -51,7 +51,7 @@ class Application {
         if (isset($pathInfo['View']) && static::$isViewEnabled) {
             $info = $pathInfo['View'];
             if (is_string($info)) {
-               $info = ['Screen' => $info];
+               $info = ['View' => $info];
             }
             $info['namespace'] = $pathInfo['namespace'];
             $processor = new $processorClass;
