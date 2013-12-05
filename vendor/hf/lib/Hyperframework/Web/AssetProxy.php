@@ -8,8 +8,8 @@ class AssetProxy {
         $pathPrefix = array_shift($segments);
         if (static::startsWith($uri, '/js/')) {
             $assetPath = \Hyperframework\Config::get('Hyperframework\AppPath') . '/asset';
-            // $tmp = explode('/', $filePath);
-            // array_pop($tmp);
+            //$tmp = explode('/', $filePath);
+            //array_pop($tmp);
             //$dirName = implode('/', $tmp);
             $search = $assetPath . $pathPrefix . '.' . $segments[0];
             $result = glob($search . '*');
@@ -24,34 +24,34 @@ class AssetProxy {
             $suffix = substr($result[0], strlen($search));
             foreach (explode('.', $suffix) as $segment) {
                 if ($segment === 'php') {
-                   ob_start();
-                   require $result[0];
-                   $js = ob_get_contents();
-                   ob_clean();
-                   echo $js;
+                    ob_start();
+                    require $result[0];
+                    $js = ob_get_contents();
+                    ob_clean();
+                    echo $js;
                 }
             }
         } else {
             static::renderVendor($uri);
         }
-     }
+    }
 
-     private static function renderVendor($uri) {
-    //asset-v11.js
-    //asset-v11.js.gz
-    //asset-v12.js
-    //asset-v12.js.gz
-       // ../tv/css/abc.css.less.php
-       // export => /tv/css/abc.css => merge + import => deploy
-       // => /tv/css/abc.css
-       if (static::startsWith($uri, '/js/tv/')) {
-           $path = \Hyperframework\Config::get('Hyperframework\AppPath') . '/vendor/tv/public' . $uri;
-           if (file_exists($path)) {
-              require $path; 
-              return;
-           }
-       }
-       throw new Exceptions\NotFoundException;
+    private static function renderVendor($uri) {
+        //abc-c11.js
+        //abc-c11.js.gz
+        //abc-c12.js
+        //abc-c12.js.gz
+        // ../tv/css/abc.css.less.php
+        // export => /tv/css/abc.css => merge + import => deploy
+        // => /tv/css/abc.css
+        if (static::startsWith($uri, '/js/tv/')) {
+            $path = \Hyperframework\Config::get('Hyperframework\AppPath') . '/vendor/tv/public' . $uri;
+            if (file_exists($path)) {
+                require $path;
+                return;
+            }
+        }
+        throw new Exceptions\NotFoundException;
     }
 
     private static function startsWith($haystack, $needle) {
