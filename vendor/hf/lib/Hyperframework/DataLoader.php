@@ -17,9 +17,9 @@ class DataLoader {
         }
         $path = Config::get($pathConfigName);
         if ($path === null) {
-            $path = static::getRootPath($defaultPathPrefix) .
-                DIRECTORY_SEPARATOR . $defaultPath .
-                '.' . $defaultExtensionPrefix . '.php';
+            $path = static::getRootPath($defaultPathPrefix)
+                . DIRECTORY_SEPARATOR . $defaultPath
+                . '.' . $defaultExtensionPrefix . '.php';
         }
         return require $path;
     }
