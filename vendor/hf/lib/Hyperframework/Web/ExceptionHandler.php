@@ -47,8 +47,8 @@ class ExceptionHandler {
         $exception, $recursiveException = null
     ) {
         if ($recursiveException !== null) {
-            $message = 'Uncaught ' . $exception . PHP_EOL .
-                PHP_EOL . 'Next ' . $recursiveException . PHP_EOL;
+            $message = 'Uncaught ' . $exception . PHP_EOL
+                . PHP_EOL . 'Next ' . $recursiveException . PHP_EOL;
             trigger_error($message, E_USER_ERROR);
         }
         throw $exception;
