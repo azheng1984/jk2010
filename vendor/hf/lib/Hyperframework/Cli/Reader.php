@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
-class Reader {
+class ArgumentReader {
     private $arguments;
     private $length;
     private $index = 1;

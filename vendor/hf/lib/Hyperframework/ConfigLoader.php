@@ -1,14 +1,14 @@
 <?php
 namespace Hyperframework;
 
-class ConfigLoader {
+class ConfigLoader extends DataLoader {
     public static function load(
         $pathConfigName, $defaultPath, $hasEnv = false
     ) {
         if ($hasEnv) {
             $defaultPath = static::appendEnvPath($defaultPath);
         }
-        return DataLoader::load(
+        return parent::load(
             $pathConfigName, 'config', $defaultPath, 'config'
         );
     }

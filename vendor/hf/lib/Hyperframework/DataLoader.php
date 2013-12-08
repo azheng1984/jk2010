@@ -8,7 +8,8 @@ class DataLoader {
         $defaultPath,
         $defaultExtensionPrefix
     ) {
-        $provider = Config::get(get_called_class() . '\Provider');
+        $class = get_called_class();
+        $provider = Config::get($class . '\Provider');
         if ($provider !== null) {
             $path = Config::get(
                 $pathConfigName, array('default' => $defaultPath)
@@ -17,15 +18,15 @@ class DataLoader {
         }
         $path = Config::get($pathConfigName);
         if ($path === null) {
-            $path = static::getRootPath($defaultPathPrefix)
+            $path = static::getRootPath($defaultPathPrefix, $class)
                 . DIRECTORY_SEPARATOR . $defaultPath
                 . '.' . $defaultExtensionPrefix . '.php';
         }
         return require $path;
     }
 
-    private static function getRootPath($defaultPathPrefix) {
-        $result = Config::get(get_called_class() . '\RootPath');
+    private static function getRootPath($defaultPathPrefix, $class) {
+        $result = Config::get($class . '\RootPath');
         if ($result !== null) {
             return $result;
         }
