@@ -3,6 +3,7 @@ namespace Hyperframework\Web;
 
 class AssetProxy {
     public static function run() {
+        header('Cache-Control: private, max-age=0, must-revalidate');
         $uri = $_SERVER['REQUEST_URI'];
         $segments = explode('.', $uri);
         $pathPrefix = array_shift($segments);
@@ -37,13 +38,13 @@ class AssetProxy {
     }
 
     private static function renderVendor($uri) {
-        //abc-11.js
+        //abc-12.3.1-1234.js
         //abc-11.js.gz
         //abc-12.js
         //abc-12.js.gz
-        // ../tv/css/abc.css.less.php
-        // export => /tv/css/abc.css => merge + import => deploy
-        // => /tv/css/abc.css
+        //../tv/css/abc.css.less.php
+        //export => /tv/css/abc.css => merge + import => deploy
+        //=> /tv/css/abc.css
         if (static::startsWith($uri, '/js/tv/')) {
             $path = \Hyperframework\Config::get('Hyperframework\AppPath') . '/asset/vendor/tv/public' . $uri;
             if (file_exists($path)) {

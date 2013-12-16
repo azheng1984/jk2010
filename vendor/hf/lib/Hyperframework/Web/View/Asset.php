@@ -3,15 +3,21 @@ namespace Hyperframework\Web\View;
 
 class Asset {
     public static function renderJsLink($path) {
-        //check path namespace
-        $pathPrefix = \Hyperframework\Config::get(
-            __CLASS__ . '\PathPrefix', ['default' => '/asset/js/']
-        );
-        if (\Hyperframework\Config::get(__CLASS__ . '\CacheVersionEnabled')) {
-            echo '<script src="' . $pathPrefix . $path . '-' .
-                static::getCacheVersion($path) . '.js" ></script>';
+        $rootPath = '';
+        if (substr($path, 0, 1) !== '/' && substr($path, 0, 7) !== 'http://') {
+            $rootPath = \Hyperframework\Config::get(
+                __CLASS__ . '\JsRootPath', array('default' => '/asset/js/')
+            );
         }
-        echo '<script src="' . $pathPrefix . $path . '.js" ></script>';
+        $path = Asset::renderJsLink('hi');
+        $path = Asset::renderJsLink('http');
+        //check path namespace
+        if (\Hyperframework\Config::get(__CLASS__ . '\CacheVersionEnabled')) {
+            echo '<script src="' . $rootPath . $path . '-' .
+                static::getCacheVersion($path) . '.' . $extension . '"></script>';
+            return;
+        }
+        echo '<script src="' . $rootPath . $path . '.' . $extension . '"></script>';
     }
 
     public static function getCacheVersion($path) {

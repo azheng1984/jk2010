@@ -7,7 +7,7 @@ class CacheLoader extends DataLoader {
             $pathConfigName,
             'data' . DIRECTORY_SEPARATOR . 'cache',
             $defaultPath,
-            'cache'
+            '.cache.php'
         );
     }
 }

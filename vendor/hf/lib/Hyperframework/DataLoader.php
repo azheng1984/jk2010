@@ -4,9 +4,9 @@ namespace Hyperframework;
 class DataLoader {
     public static function load(
         $pathConfigName,
-        $defaultPathPrefix,
+        $defaultRootPath,
         $defaultPath,
-        $defaultExtensionPrefix
+        $defaultFileNameExtension = '.data.php'
     ) {
         $class = get_called_class();
         $provider = Config::get($class . '\Provider');
@@ -18,20 +18,20 @@ class DataLoader {
         }
         $path = Config::get($pathConfigName);
         if ($path === null) {
-            $path = static::getRootPath($defaultPathPrefix, $class)
+            $path = static::getRootPath($defaultRootPath, $class)
                 . DIRECTORY_SEPARATOR . $defaultPath
-                . '.' . $defaultExtensionPrefix . '.php';
+                . '.' . $defaultFileNameExtension;
         }
         return require $path;
     }
 
-    private static function getRootPath($defaultPathPrefix, $class) {
+    private static function getRootPath($default, $class) {
         $result = Config::get($class . '\RootPath');
         if ($result !== null) {
             return $result;
         }
         return Config::get(
             __NAMESPACE__ . '\AppPath', array('is_nullable' => false)
-        ) . DIRECTORY_SEPARATOR . $defaultPathPrefix;
+        ) . DIRECTORY_SEPARATOR . $default;
     }
 }

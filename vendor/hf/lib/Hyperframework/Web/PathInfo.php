@@ -45,11 +45,11 @@ class PathInfo {
 
     private static function getNamespace($path) {
         if (isset(static::$cache['namespace']) === false) {
-            return '\\';
+            return '';
         }
         $namespace = static::$cache['namespace'];
         if (is_array($namespace) === false) {
-            return '\\' . $namespace. '\\';
+            return $namespace. '\\';
         }
         //throw ...
 //        if (isset($namespace['folder_mapping']) === false) {
