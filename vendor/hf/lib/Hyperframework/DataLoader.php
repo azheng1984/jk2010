@@ -20,6 +20,14 @@ class DataLoader {
         return require $path;
     }
 
+    protected static function getDefaultRootPath() {
+        return 'data';
+    }
+
+    protected static function getDefaultFileNameExtension() {
+        return '.php';
+    }
+
     private static function getRootPath($class) {
         $result = Config::get($class . '\RootPath');
         if ($result !== null) {
@@ -28,13 +36,5 @@ class DataLoader {
         return Config::get(
             __NAMESPACE__ . '\AppPath', array('is_nullable' => false)
         ) . DIRECTORY_SEPARATOR . static::getDefaultRootPath();
-    }
-
-    protected static function getDefaultFileNameExtension() {
-        return '.php';
-    }
-
-    protected static function getDefaultRootPath() {
-        return 'data';
     }
 }

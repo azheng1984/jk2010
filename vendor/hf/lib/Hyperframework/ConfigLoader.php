@@ -13,12 +13,12 @@ class ConfigLoader extends DataLoader {
         return parent::load($pathConfigName, $defaultPath);
     }
 
-    protected static function getDefaultFileNameExtension() {
-        return '.config.php';
-    }
-
     protected static function getDefaultRootPath() {
         return 'config';
+    }
+
+    protected static function getDefaultFileNameExtension() {
+        return '.config.php';
     }
 
     private static function appendEnvPath($defaultPath) {
