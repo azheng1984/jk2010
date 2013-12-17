@@ -8,7 +8,7 @@ abstract class Html {
     protected function addJsLink($path, $isRelative = false) {
     }
 
-    protected function addCssLink($href) {
+    protected function addCssLink($path, $media = null, $isRelative = false) {
     }
 
     protected function renderJsLinks() {
