@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Web\View;
+namespace Hyperframework\Web\View\Asset;
 
 class AssetCacheVersion {
     private static $manifest;

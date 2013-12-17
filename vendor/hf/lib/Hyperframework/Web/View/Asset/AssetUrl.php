@@ -1,17 +1,13 @@
 <?php
-namespace Hyperframework\Web\View;
+namespace Hyperframework\Web\View\Asset;
 
 use \Hyperframework\Config;
 
 class AssetUrl {
-    public static function get($path, $options = null) {
-        $isRelative = isset($options['is_relative']) ?
-            $options['is_relative'] : false; 
+    public static function get($path, $isRelative = false) {
         $result = $path;
         if ($isRelative === false) {
-            $defaultRootPath = isset($options['default_root_path']) ?
-                $options['default_root_path'] : false;
-            $result = static::appendRoot($path, $defaultRootPath);
+           $result = static::appendRoot($path);
         }
         if (Config::get(__CLASS__ . '\CacheVersionEnabled') === false) {
             return static::addCacheVersion($path);
@@ -19,12 +15,16 @@ class AssetUrl {
         return $result;
     }
 
-    private static function appendRoot($path, $defaultRootPath) {
+    protected static function getDefaultRootPath() {
+        return '/asset';
+    }
+
+    private static function appendRoot($path) {
         if (substr($path, 0, 1) !== '/' && substr($path, 0, 7) !== 'http://') {
-            $rootPath = $defaultRootPath === null ? Config::get(
-                __CLASS__ . '\RootPath', array('default' => '/asset')
-            ) : $defaultRootPath;
-            return $rootPath . '/' . $path;
+            return Config::get(
+                get_called_class() . '\RootPath',
+                array('default' => static::getDefaultRootPath())
+            ) . '/' . $path;
         }
         return $path;
     }

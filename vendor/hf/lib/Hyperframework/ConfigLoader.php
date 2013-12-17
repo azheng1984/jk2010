@@ -6,11 +6,19 @@ class ConfigLoader extends DataLoader {
         $pathConfigName, $defaultPath, $hasEnv = false
     ) {
         if ($hasEnv) {
-            $defaultPath = static::appendEnvPath($defaultPath);
+            return parent::load(
+                $pathConfigName, static::appendEnvPath($defaultPath)
+            );
         }
-        return parent::load(
-            $pathConfigName, 'config', $defaultPath, '.config.php'
-        );
+        return parent::load($pathConfigName, $defaultPath);
+    }
+
+    protected static function getDefaultFileNameExtension() {
+        return '.config.php';
+    }
+
+    protected static function getDefaultRootPath() {
+        return 'config';
     }
 
     private static function appendEnvPath($defaultPath) {

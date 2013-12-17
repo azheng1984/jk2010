@@ -2,12 +2,11 @@
 namespace Hyperframework;
 
 class CacheLoader extends DataLoader {
-    public static function load($pathConfigName, $defaultPath) {
-        return parent::load(
-            $pathConfigName,
-            'data' . DIRECTORY_SEPARATOR . 'cache',
-            $defaultPath,
-            '.cache.php'
-        );
+    protected static function getDefaultFileNameExtension() {
+        return '.cache.php';
+    }
+
+    protected static function getDefaultRootPath() {
+        return 'data' . DIRECTORY_SEPARATOR . 'cache';
     }
 }
