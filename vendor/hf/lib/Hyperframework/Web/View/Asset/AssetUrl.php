@@ -39,13 +39,13 @@ class AssetUrl {
         if ($cacheVersion === null) {
             return $path;
         }
-        $name = basename($path);
-        $lastDotPosition = strrpos($name, '.');
+        $fileName = basename($path);
+        $lastDotPosition = strrpos($fileName, '.');
         if ($lastDotPosition === false) {
             return $path . '-' . $cacheVersion;
         }
-        return dirname($path) . '/' . substr($name, 0, $lastDotPosition)
-            . '.' . $cacheVersion . substr($name, $lastDotPosition);
+        return dirname($path) . '/' . substr($fileName, 0, $lastDotPosition)
+            . '.' . $cacheVersion . substr($fileName, $lastDotPosition);
     }
 
     private static function getCacheVersion($path, $isRelative) {
@@ -54,7 +54,7 @@ class AssetUrl {
         }
         if (static::$baseUrl === null) {
             throw new \Exception(
-                'Base url not set when getting relative path cache version'
+                'Base url not set when getting cache version of relative path'
             );
         }
         return static::getCacheVersion(static::$baseUrl . '/' . $path);

@@ -2,14 +2,23 @@
 namespace Hyperframework\Web\View;
 
 abstract class Html {
+    private $language = null;
     private $jsLinks = array();
     private $cssLinks = array();
 
     public function render() {
-        echo '<html><head></head><body></body></html>';
+        echo '<!DOCTYPE html><html><head>',
+            $this->renderHead(),
+            '</head><body>',
+            $this->renderBody(),
+            '</body></html>';
     }
 
-    abstract protected function renderBody();
+    public function setLanguage($value) {
+        $this->language = $value;
+    }
+
+    abstract protected function renderHead();
 
     abstract protected function renderBody();
 
