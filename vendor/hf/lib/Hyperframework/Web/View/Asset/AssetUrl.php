@@ -10,7 +10,7 @@ class AssetUrl {
         if ($isRelative === false) {
            $path = static::appendRoot($path);
         }
-        if (Config::get(__CLASS__ . '\CacheVersionEnabled')) {
+        if (Config::get('Hyperframework\Web\CacheVersionEnabled') !== false) {
             return static::addCacheVersion($path, $isRelative);
         }
         return $path;

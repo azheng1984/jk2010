@@ -5,16 +5,22 @@ class AssetProxy {
     public static function run() {
         header('Cache-Control: private, max-age=0, must-revalidate');
         $url = $_SERVER['REQUEST_URI'];
-        $path = null;
-        $segments = explode('.', $url);
-        if (count($segments === 1) {
-            $segments[] = explode('-', $url);
-            array_pop($segments);
-            $path = implode('-', $segments);
+        $assetCacheVersionEnabled =
+            Config::get('Hyperframework\Web\AssetCacheVersionEnabled');
+        if ($assetCacheVersionEnabled !== false) {
+            $segments = explode('.', $url);
+            if (count($segments === 1) {
+                $segments[] = explode('-', $url);
+                array_pop($segments);
+                $url = implode('-', $segments);
+            } else {
+                $extension = array_pop($segments);
+                array_pop($segments);
+                $url = implode('.', $segments) . '.' . $extension;
+            }
+            //no expire
         } else {
-            $extension = array_pop($segments);
-            array_pop($segments);
-            $path = implode('.', $segments) . '.' . $extension;
+            header('Cache-Control: private, max-age=0, must-revalidate');
         }
         $pathPrefix = array_shift($segments);
         if (static::startsWith($uri, '/asset/js/')) {
