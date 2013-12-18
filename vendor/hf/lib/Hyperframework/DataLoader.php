@@ -15,7 +15,7 @@ class DataLoader {
         if ($path === null) {
             $path = static::getRootPath($class)
                 . DIRECTORY_SEPARATOR . $defaultPath
-                . '.' . static::getDefaultFileNameExtension();
+                . static::getDefaultFileNameExtension();
         }
         return require $path;
     }

@@ -4,8 +4,18 @@ namespace Hyperframework\Web;
 class AssetProxy {
     public static function run() {
         header('Cache-Control: private, max-age=0, must-revalidate');
-        $uri = $_SERVER['REQUEST_URI'];
-        $segments = explode('.', $uri);
+        $url = $_SERVER['REQUEST_URI'];
+        $path = null;
+        $segments = explode('.', $url);
+        if (count($segments === 1) {
+            $segments[] = explode('-', $url);
+            array_pop($segments);
+            $path = implode('-', $segments);
+        } else {
+            $extension = array_pop($segments);
+            array_pop($segments);
+            $path = implode('.', $segments) . '.' . $extension;
+        }
         $pathPrefix = array_shift($segments);
         if (static::startsWith($uri, '/asset/js/')) {
             $assetPath = \Hyperframework\Config::get('Hyperframework\AppPath');

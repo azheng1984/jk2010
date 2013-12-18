@@ -37,8 +37,8 @@ class Application {
         $pathInfo, $processorClass = 'Hyperframework\Web\ActionProcessor'
     ) {
         $info = null;
-        if (isset($pathInfo['Action'])) {
-            $info = $pathInfo['Action'];
+        if (isset($pathInfo['action'])) {
+            $info = $pathInfo['action'];
             $info['namespace'] = $pathInfo['namespace'];
         }
         $processor = new $processorClass;
@@ -48,10 +48,10 @@ class Application {
     protected static function renderView(
         $pathInfo, $processorClass = 'Hyperframework\Web\ViewProcessor'
     ) {
-        if (isset($pathInfo['View']) && static::$isViewEnabled) {
-            $info = $pathInfo['View'];
+        if (isset($pathInfo['view']) && static::$isViewEnabled) {
+            $info = $pathInfo['view'];
             if (is_string($info)) {
-               $info = array('View' => $info);
+               $info = array('view' => $info);
             }
             $info['namespace'] = $pathInfo['namespace'];
             $processor = new $processorClass;

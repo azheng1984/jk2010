@@ -8,9 +8,9 @@ class AssetUrl {
 
     public static function get($path, $isRelative = false) {
         if ($isRelative === false) {
-           $path = static::appendRoot($result);
+           $path = static::appendRoot($path);
         }
-        if (Config::get(__CLASS__ . '\CacheVersionEnabled') === false) {
+        if (Config::get(__CLASS__ . '\CacheVersionEnabled')) {
             return static::addCacheVersion($path, $isRelative);
         }
         return $path;

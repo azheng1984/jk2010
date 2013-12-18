@@ -29,8 +29,8 @@ class Router {
     protected static function initializeLink($path, $parameters) {
         //TODO，按照 path 分割，一次初始化多个 link 对象
         $pathInfo = \Hyperframework\Web\PathInfo::get($path);
-        if (isset($pathInfo['Link']['initialization'])) {
-            $pathInfo['Link']['class']::initialize($parameters);
+        if (isset($pathInfo['link']['initialization'])) {
+            $pathInfo['link']['class']::initialize($parameters);
             return;
         }
         foreach ($parameters as $parameter) {
