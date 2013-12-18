@@ -6,7 +6,7 @@ class AssetProxy {
         header('Cache-Control: private, max-age=0, must-revalidate');
         $url = $_SERVER['REQUEST_URI'];
         $assetCacheVersionEnabled =
-            Config::get('Hyperframework\Web\AssetCacheVersionEnabled');
+            Config::get(__NAMESPACE__ . '\AssetCacheVersionEnabled');
         if ($assetCacheVersionEnabled !== false) {
             $segments = explode('.', $url);
             if (count($segments === 1) {
