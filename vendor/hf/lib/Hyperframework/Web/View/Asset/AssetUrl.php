@@ -11,7 +11,7 @@ class AssetUrl {
            $path = static::appendRoot($result);
         }
         if (Config::get(__CLASS__ . '\CacheVersionEnabled') === false) {
-            return static::insertCacheVersion($path, $isRelative);
+            return static::addCacheVersion($path, $isRelative);
         }
         return $path;
     }
@@ -34,7 +34,7 @@ class AssetUrl {
         return $path;
     }
 
-    private static function insertCacheVersion($path, $isRelative) {
+    private static function addCacheVersion($path, $isRelative) {
         $cacheVersion = static::getCacheVersion($path, $isRelative);
         if ($cacheVersion === null) {
             return $path;
