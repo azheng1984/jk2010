@@ -46,7 +46,7 @@ abstract class Html {
         }
     }
 
-    protected function renderPreloadedJsLink() {
+    protected function renderPreloadJsLink() {
         if (static::isJsPreloadEnabled()) {
             JsLink::render(Config::get(
                 __CLASS__ . '\JsPreloadFileName', array('default' => 'app.js')
