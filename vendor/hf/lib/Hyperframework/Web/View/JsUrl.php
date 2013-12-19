@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Web\View\Asset;
+namespace Hyperframework\Web\View;
 
 class JsUrl extends AssetUrl {
     protected static function getDefaultRootPath() {
