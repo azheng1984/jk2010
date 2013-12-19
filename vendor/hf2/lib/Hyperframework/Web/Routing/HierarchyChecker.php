@@ -19,7 +19,7 @@ class HierarchyChecker {
    }
 
     private static function redirectToFile($path) {
-        $path = substr($path, 0, strlen($path) - 1);
+        $path = substr($path, -1);
         if (\Hyperframework\Web\PathInfo::exists($path)) {
             return self::FILE;
         }
