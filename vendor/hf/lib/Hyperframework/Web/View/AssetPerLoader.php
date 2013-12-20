@@ -19,15 +19,14 @@ class AssetPreloader {
         return static::$hasJs;
     }
 
-    public function renderCssLink() {
+    public function getCssUrls() {
         $path = Config::get(
             __CLASS__ . '\CssPath', array('default' => 'app.css')
         );
         if (Config::get(__CLASS__ . '\CssManifestEnabled') === true) {
-            CssManifestLink::render($path);
-            return;
+            return CssManifest::getUrls($path);
         }
-        CssLink::render($path);
+        return array(CssUrl::get($path));
     }
 
     public function renderJsLink() {
