@@ -2,20 +2,14 @@
 namespace Hyperframework\Web\View;
 
 class CssLink {
-    private static $links = array();
-
-    public static function add($href, $media = null) {
-        static::$links[] = array($href, $media);
-    }
-
-    public static function render() {
-        foreach (static::$links as $link) {
-            echo '<link rel="stylesheet" type="text/css" href="', $link[0], '"';
-            if ($link[1] !== null) {
-                echo ' media="screen"';
-            }
-            echo '/>';
+    public static function render(
+        $path, $media = null, $isRelativePath = false
+    ) {
+        echo '<link rel="stylesheet" type="text/css" href="',
+            Asset\CssUrl::get($path, $isRelativePath), '"';
+        if ($media !== null) {
+            echo ' media="', $media, '"';
         }
-        static::$links[] = array();
+        echo '/>';
     }
 }
