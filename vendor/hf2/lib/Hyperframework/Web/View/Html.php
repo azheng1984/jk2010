@@ -29,9 +29,7 @@ abstract class Html {
         }
     }
 
-    protected function renderPreloadedJsLinks() {
-        JsLink::render('common.js');
-    }
+    protected function renderPreloadedJsLinks() {}
 
     public static function renderCssLink($path, $options = null) {
     }
