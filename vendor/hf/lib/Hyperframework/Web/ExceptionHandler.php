@@ -9,8 +9,6 @@ class ExceptionHandler {
     }
 
     public static function handle($exception) {
-        var_dump($exception);
-        exit;
         static::$exception = $exception;
         if (headers_sent()) {
             static::reportError($exception);
