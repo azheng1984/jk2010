@@ -19,6 +19,20 @@ abstract class Html {
         Html::renderJsLink('product');
     }
 
+    protected function renderJsLinks() {
+        if (($preloadJsUrls = JsPreloader::getUrls()) === null) {
+            $this->renderPreloadedJsLinks();
+            return;
+        }
+        foreach ($preloadJsUrls as $url) {
+            //
+        }
+    }
+
+    protected function renderPreloadedJsLinks() {
+        JsLink::render('common.js');
+    }
+
     public static function renderCssLink($path, $options = null) {
     }
 
