@@ -25,7 +25,7 @@ abstract class Html {
             return;
         }
         foreach ($preloadJsUrls as $url) {
-            //
+            JsLink::render($url); 
         }
     }
 

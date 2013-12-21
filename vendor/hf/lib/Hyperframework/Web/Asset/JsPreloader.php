@@ -1,9 +1,9 @@
 <?php
-namespace Hyperframework\Web\View;
+namespace Hyperframework\Web\Asset;
 
 class JsPreloader {
     public function getUrls($path = 'app.js') {
-        if (Config::get(__CLASS__ . '\Enabled') !== false) {
+        if (Config::get(__CLASS__ . '\Enabled') === false) {
             return null;
         }
         if (Config::get(__CLASS__ . '\MergeEnabled') === false) {

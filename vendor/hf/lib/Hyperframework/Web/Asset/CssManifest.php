@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Web\View;
+namespace Hyperframework\Web\Asset;
 
 class CssManifest {
     public static function getUrls($path, $vendor = null) {
