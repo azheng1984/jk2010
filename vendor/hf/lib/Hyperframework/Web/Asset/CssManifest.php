@@ -15,12 +15,14 @@ class CssManifest {
     private static function getFullPath($path, $vendor) {
         $suffix = DIRECTORY_SEPARATOR . 'asset' . DIRECTORY_SEPARATOR
             . 'css' . DIRECTORY_SEPARATOR . $path . '.manifest.php';
+        $appPath = Config::get(
+            'Hyperframework\AppPath', array('is_nullable' => false)
+        );
         if ($vendor === null) {
-            return Config::get('Hyperframework\AppPath') . $suffix;
+            return $appPath . $suffix;
         }
-        return Config::get('Hyperframework\AppPath') . DIRECTORY_SEPARATOR
-            . 'vendor' . DIRECTORY_SEPARATOR . $vendor
-            . DIRECTORY_SEPARATOR . $suffix;
+        return $appPath . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR
+            . $vendor . DIRECTORY_SEPARATOR . $suffix;
     }
 
     private static function getCacheFullPath($path, $vendor) {
