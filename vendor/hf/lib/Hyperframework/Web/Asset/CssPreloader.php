@@ -1,14 +1,21 @@
 <?php
 namespace Hyperframework\Web\Asset;
 
-class CssPreloader {
-    public function getUrls($path = 'app.css') {
-        if (Config::get(__CLASS__ . '\Enabled') === false) {
-            return null;
+class CssPreloader extends AssetPreloader {
+    public static function enabled() {
+        return Config::get(get_called_class() . '\Enabled') !== false;
+    }
+
+    protected static function render($path = 'app.css') {
+        if (static::enabled() === false) {
+            throw \Exception;
         }
-        if (Config::get(__CLASS__ . '\MergeEnabled') === false) {
-            return CssManifest::getUrls($path);
+        if (Config::get(__CLASS__ . '\ShouldRenderManifest')) {
+            static::renderUrls(CssManifest::getUrls($path));
         }
-        return array(CssUrl::get($path));
+        static::renderUrls(array(CssUrl::get($path)));
+    }
+
+    protected static function renderUrls($urls) {
     }
 }
