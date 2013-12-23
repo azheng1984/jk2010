@@ -2,6 +2,7 @@
 namespace Hyperframework\Web\Asset;
 
 class CssManifest {
+    //todo 和 asset proxy 统一 asset 定位逻辑
     public static function getUrls($path, $vendor = null) {
         $path = DIRECTORY_SEPARATOR . 'asset' . DIRECTORY_SEPARATOR
             . 'css' . DIRECTORY_SEPARATOR . $path;

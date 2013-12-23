@@ -8,10 +8,6 @@ class CssPreloader extends AssetPreloader {
         return static::$media = $value;
     }
 
-    protected static function getManifestUrls($path) {
-        CssManifest::getUrls($path);
-    }
-
     protected static function getUrl($path) {
         return CssUrl::get($path);
     }

@@ -2,7 +2,6 @@
 namespace Hyperframework\Web\Asset;
 
 abstract class AssetPreloader {
-    abstract protected static function getManifestUrls($path);
     abstract protected static function getUrl($path);
     abstract protected static function renderLink($url);
 
@@ -14,12 +13,6 @@ abstract class AssetPreloader {
         if (static::enabled() === false) {
             throw \Exception;
         }
-        if (Config::get(get_called_class() . '\ShouldSeparateFiles') === true) {
-            foreach (static::getManifestUrls($path) as $url) {
-               static::renderLink($url);
-            }
-            return;
-        }
-        static::renderLink(static::getUrl($path));
+        static::renderLink($url);
     }
 }
