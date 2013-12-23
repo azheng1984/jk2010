@@ -2,20 +2,25 @@
 namespace Hyperframework\Web\Asset;
 
 class CssPreloader extends AssetPreloader {
-    public static function enabled() {
-        return Config::get(get_called_class() . '\Enabled') !== false;
+    private static $media;
+
+    public static function setMedia($value) {
+        return static::$media = $value;
     }
 
-    protected static function render($path = 'app.css') {
-        if (static::enabled() === false) {
-            throw \Exception;
-        }
-        if (Config::get(__CLASS__ . '\ShouldRenderManifest')) {
-            static::renderUrls(CssManifest::getUrls($path));
-        }
-        static::renderUrls(array(CssUrl::get($path)));
+    protected static function getManifestUrls($path) {
+        CssManifest::getUrls($path);
     }
 
-    protected static function renderUrls($urls) {
+    protected static function getUrl($path) {
+        return CssUrl::get($path);
+    }
+
+    protected static function renderLink($url) {
+        echo '<link type="text/css" rel="stylesheet" href="' , $url , '"';
+        if (static::$media !== null) {
+            echo ' media="', static::$media, '"';
+        }
+        echo '/>';
     }
 }
