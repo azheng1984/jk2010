@@ -2,6 +2,12 @@
 namespace Hyperframework\Web\Asset;
 
 class CssPreloader {
+    private static $media;
+
+    public static function setMedia($value) {
+        return static::$media = $value;
+    }
+
     public static function enabled() {
         return Config::get(__CLASS__ . '\Enabled') !== false;
     }
@@ -10,6 +16,10 @@ class CssPreloader {
         if (static::enabled() === false) {
             throw \Exception;
         }
+        static::renderLink($path);
+    }
+
+    protected static function renderLink($path, $media) {
         $url = CssUrl::get($path);
         echo '<link type="text/css" rel="stylesheet" href="' , $url , '"';
         if (static::$media !== null) {

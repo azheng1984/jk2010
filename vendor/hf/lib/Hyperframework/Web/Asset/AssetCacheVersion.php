@@ -13,7 +13,6 @@ class AssetCacheVersion {
 
     private static function getManifest() {
         if ($manifest === null) {
-            
         }
         return static::$manifest;
     }
