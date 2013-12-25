@@ -10,8 +10,8 @@ class CssPreloader {
         if (static::enabled() === false) {
             throw \Exception;
         }
-        $url = CssUrl::get($path);
-        echo '<link type="text/css" rel="stylesheet" href="' , $url , '"';
+        echo '<link type="text/css" rel="stylesheet" href="',
+            CssUrl::get($path), '"';
         if (static::$media !== null) {
             echo ' media="', static::$media, '"';
         }
