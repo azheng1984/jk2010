@@ -27,6 +27,15 @@ abstract class Html {
         foreach ($preloadJsUrls as $url) {
             JsLink::render($url); 
         }
+
+        if (JsPreloader::enabled() === false) {
+            $this->renderPreloadedJsLinks();
+            return;
+        }
+        $preloadJsUrls = JsPreloader::getUrls();
+        foreach ($preloadJsUrls as $url) {
+            JsLink::render($url);
+        }
     }
 
     protected function renderPreloadedJsLinks() {}
