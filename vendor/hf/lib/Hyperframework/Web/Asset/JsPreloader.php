@@ -6,7 +6,7 @@ class JsPreloader {
         return Config::get(__CLASS__ . '\Enabled') !== false;
     }
 
-    public static function render($path) {
+    public static function render($path = 'app.js') {
         if (static::enabled() === false) {
             throw \Exception('Js preloader not enabled');
         }
