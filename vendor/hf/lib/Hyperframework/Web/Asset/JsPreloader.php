@@ -2,13 +2,15 @@
 namespace Hyperframework\Web\Asset;
 
 class JsPreloader {
-    public function getUrls($path = 'app.js') {
-        if (Config::get(__CLASS__ . '\Enabled') === false) {
-            return null;
+    public static function enabled() {
+        return Config::get(__CLASS__ . '\Enabled') !== false;
+    }
+
+    public static function render($path) {
+        if (static::enabled() === false) {
+            throw \Exception('Js preloader not enabled');
         }
-        if (Config::get(__CLASS__ . '\MergeEnabled') === false) {
-            return JsManifest::getUrls($path);
-        }
-        return array(JsUrl::get($path));
+        echo '<script type="text/javascript" src="',
+            JsUrl::get($path), '"></script>';
     }
 }

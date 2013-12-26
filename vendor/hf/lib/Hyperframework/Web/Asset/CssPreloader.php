@@ -8,7 +8,7 @@ class CssPreloader {
 
     public static function render($path) {
         if (static::enabled() === false) {
-            throw \Exception;
+            throw \Exception('Css preloader not enabled');
         }
         echo '<link type="text/css" rel="stylesheet" href="',
             CssUrl::get($path), '"';
