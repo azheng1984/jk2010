@@ -51,6 +51,7 @@ class AssetProxy {
         } else {
             static::renderVendor($uri);
         }
+        //Todo call pipline processor by extension & config
     }
 
     private static function renderVendor($uri) {

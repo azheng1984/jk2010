@@ -18,7 +18,6 @@ class CssManifest {
     private static function getFullPath($path, $vendor) {
         $path = DIRECTORY_SEPARATOR . 'asset' . DIRECTORY_SEPARATOR
             . 'css' . DIRECTORY_SEPARATOR . $path;
-
         $suffix = DIRECTORY_SEPARATOR . 'asset' . DIRECTORY_SEPARATOR
             . 'css' . DIRECTORY_SEPARATOR . $path . '.manifest.php';
         $appPath = Config::get(
