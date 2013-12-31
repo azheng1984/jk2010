@@ -62,8 +62,9 @@ class AssetProxy {
         //../tv/css/abc.css.less.php
         //export => /tv/css/abc.css => merge + import => deploy
         //=> /tv/css/abc.css
-        if (static::startsWith($uri, '/js/tv/')) {
-            $path = \Hyperframework\Config::get('Hyperframework\AppPath') . '/asset/vendor/tv/public' . $uri;
+        if (strpos($uri, '/js/tv/') === 0) {
+            $path = \Hyperframework\Config::get('Hyperframework\AppPath')
+                . '/asset/vendor/tv/public' . $uri;
             if (file_exists($path)) {
                 require $path;
                 return;
