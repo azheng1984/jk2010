@@ -48,16 +48,17 @@ class Application {
     protected static function renderView(
         $pathInfo, $processorClass = 'Hyperframework\Web\ViewProcessor'
     ) {
-        if ($_SERVER['REQUEST_METHOD'] !== 'HEAD'
-            && static::$isViewEnabled
-            && isset($pathInfo['view'])) {
-            $info = $pathInfo['view'];
-            if (is_string($info)) {
-                $info = array('view' => $info);
-            }
-            $info['namespace'] = $pathInfo['namespace'];
-            $processor = new $processorClass;
-            $processor->run($info);
+        if (static::$isViewEnabled === false
+            || isset($pathInfo['view']) === false
+            || $_SERVER['REQUEST_METHOD'] === 'HEAD') {
+            return;
         }
+        $info = $pathInfo['view'];
+        if (is_string($info)) {
+            $info = array('view' => $info);
+        }
+        $info['namespace'] = $pathInfo['namespace'];
+        $processor = new $processorClass;
+        $processor->run($info);
     }
 }
