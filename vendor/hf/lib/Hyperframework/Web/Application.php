@@ -53,7 +53,7 @@ class Application {
             && isset($pathInfo['view'])) {
             $info = $pathInfo['view'];
             if (is_string($info)) {
-               $info = array('view' => $info);
+                $info = array('view' => $info);
             }
             $info['namespace'] = $pathInfo['namespace'];
             $processor = new $processorClass;
