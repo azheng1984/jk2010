@@ -1,6 +1,6 @@
 <?php
 class BrandEditAction {
-  public function get() {}
+  private function get() {}
 
   public function post() {
   }

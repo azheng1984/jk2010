@@ -48,7 +48,9 @@ class Application {
     protected static function renderView(
         $pathInfo, $processorClass = 'Hyperframework\Web\ViewProcessor'
     ) {
-        if (isset($pathInfo['view']) && static::$isViewEnabled) {
+        if ($_SERVER['REQUEST_METHOD'] !== 'HEAD'
+            && static::$isViewEnabled
+            && isset($pathInfo['view'])) {
             $info = $pathInfo['view'];
             if (is_string($info)) {
                $info = array('view' => $info);
