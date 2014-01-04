@@ -39,11 +39,9 @@ class Application {
     protected static function renderView(
         $pathInfo, $dispatcherClass = 'Hyperframework\Web\ViewDispatcher'
     ) {
-        if (static::$isViewEnabled
-            && isset($pathInfo['view'])
-            && $_SERVER['REQUEST_METHOD'] !== 'HEAD') {
+        if (static::$isViewEnabled) {
             $dispatcher = new $dispatcherClass;
-            $dispatcher->run($pathInfo);
+            $dispatcher->run($pathInfo, static::$actionResult);
         }
     }
 
