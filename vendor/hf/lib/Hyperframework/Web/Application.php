@@ -19,13 +19,9 @@ class Application {
         static::$isViewEnabled = false;
     }
 
-    public static function getActionResult() {
-        return static::$actionResult;
-    }
-
-    public static function redirect($uri, $statusCode = 301) {
+    public static function redirect($url, $statusCode = 301) {
         static::$isViewDisabled = true;
-        header('Location: ' . $uri, true, $statusCode);
+        header('Location: ' . $url, true, $statusCode);
     }
 
     public static function reset() {
@@ -34,31 +30,28 @@ class Application {
     }
 
     protected static function executeAction(
-        $pathInfo, $processorClass = 'Hyperframework\Web\ActionProcessor'
+        $pathInfo, $dispatcherClass = 'Hyperframework\Web\ActionDispatcher'
     ) {
-        $info = null;
-        if (isset($pathInfo['action'])) {
-            $info = $pathInfo['action'];
-            $info['namespace'] = $pathInfo['namespace'];
-        }
-        $processor = new $processorClass;
-        static::$actionResult = $processor->run($info);
+        $dispatcher = new $dispatcherClass;
+        static::$actionResult = $dispatcher->run($pathInfo);
     }
 
     protected static function renderView(
-        $pathInfo, $processorClass = 'Hyperframework\Web\ViewProcessor'
+        $pathInfo, $dispatcherClass = 'Hyperframework\Web\ViewDispatcher'
     ) {
-        if (static::$isViewEnabled === false
-            || isset($pathInfo['view']) === false
-            || $_SERVER['REQUEST_METHOD'] === 'HEAD') {
-            return;
+        if (static::$isViewEnabled
+            && isset($pathInfo['view'])
+            && $_SERVER['REQUEST_METHOD'] !== 'HEAD') {
+            $dispatcher = new $dispatcherClass;
+            $dispatcher->run($pathInfo);
         }
-        $info = $pathInfo['view'];
-        if (is_string($info)) {
-            $info = array('view' => $info);
-        }
-        $info['namespace'] = $pathInfo['namespace'];
-        $processor = new $processorClass;
-        $processor->run($info);
+    }
+
+    protected static function getActionResult() {
+        return static::$actionResult;
+    }
+
+    protected static function setActionResult($value) {
+        static::$actionResult = $value;
     }
 }

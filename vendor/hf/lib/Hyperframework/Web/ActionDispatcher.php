@@ -3,8 +3,12 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Web\Exceptions\MethodNotAllowedException;
 
-class ActionProcessor {
-    public function run($info) {
+class ActionDispatcher {
+    public function run($pathInfo) {
+        $info = null;
+        if (isset($pathInfo['action'])) {
+            $info = $pathInfo['action'];
+        }
         $method = $_SERVER['REQUEST_METHOD'];
         if ($method === 'HEAD') {
             $method = 'GET';
@@ -13,7 +17,7 @@ class ActionProcessor {
             $this->checkImplicitAction($method);
             return;
         }
-        $hasMethod = isset($info['methods'][$method]);
+        $hasMethod = in_array($method, $info['methods']);
         if ($hasMethod === false) {
             $this->checkImplicitMethod($info, $method);
         }
@@ -24,7 +28,7 @@ class ActionProcessor {
             && $hasAfterFilter === false) {
             return;
         }
-        $class = $info['namespace'] . $info['class'];
+        $class = $pathInfo['namespace'] . $info['class'];
         $action = new $class;
         $result = null;
         if ($hasBeforeFilter) {
@@ -47,15 +51,17 @@ class ActionProcessor {
 
     private function checkImplicitMethod($info, $method) {
         if (isset($info['get_not_allowed'])) {
-            $methods = isset($info['methods']) ?
-                array_keys($info['methods']) : array();
+            $methods = isset($info['methods']) ? $info['methods'] : array();
             throw new MethodNotAllowedException($methods);
         }
-        if ($method !== 'GET') {
-            $methods = isset($info['methods']) ? $info['methods'] : array();
-            $methods['GET'] = 1;
-            $methods['HEAD'] = 1;
-            throw new MethodNotAllowedException(array_keys($methods));
+        if ($method === 'GET') {
+            return;
         }
+        $methods = isset($info['methods']) ? $info['methods'] : array();
+        if (in_array('GET', $methods) === false) {
+            $methods[] = 'HEAD';
+            $methods[] = 'GET';
+        }
+        throw new MethodNotAllowedException($methods);
     }
 }
