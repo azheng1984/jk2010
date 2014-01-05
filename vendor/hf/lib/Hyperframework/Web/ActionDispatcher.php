@@ -30,17 +30,15 @@ class ActionDispatcher {
         }
         $class = $pathInfo['namespace'] . $info['class'];
         $action = new $class;
-        $result = null;
         if ($hasBeforeFilter) {
             $action->before();
         }
         if ($hasMethod) {
-            $result = $action->$method();
+            $action->$method();
         }
         if ($hasAfterFilter) {
             $action->after();
         }
-        return $result;
     }
 
     private function checkImplicitAction($method) {
