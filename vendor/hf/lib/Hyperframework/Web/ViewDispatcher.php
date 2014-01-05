@@ -2,15 +2,17 @@
 namespace Hyperframework\Web;
 
 class ViewDispatcher {
-    public function run($pathInfo, $actionResult) {
+    public function run($pathInfo) {
         $class = $this->getViewClass($pathInfo);
-        $view = new $class;
-        $view->render($actionResult);
+        if ($class !== null) {
+            $view = new $class;
+            $view->render();
+        }
     }
 
     private function getViewClass($pathInfo) {
         if (isset($pathInfo['views'])) {
-            //todo return default view for json/xml by Config
+            //todo return default app views by Config or return null
         }
         $views = $pathInfo['views'];
         if (is_string($views)) {

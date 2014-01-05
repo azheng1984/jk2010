@@ -2,7 +2,6 @@
 namespace Hyperframework\Web;
 
 class Application {
-    private static $actionResult;
     private static $isViewEnabled = true;
 
     public static function run($path = null) {
@@ -20,12 +19,11 @@ class Application {
     }
 
     public static function redirect($url, $statusCode = 301) {
-        static::$isViewDisabled = true;
+        static::$isViewEnabled = false;
         header('Location: ' . $url, true, $statusCode);
     }
 
     public static function reset() {
-        static::$actionResult = null;
         static::$isViewEnabled = true;
     }
 
@@ -33,7 +31,7 @@ class Application {
         $pathInfo, $dispatcherClass = 'Hyperframework\Web\ActionDispatcher'
     ) {
         $dispatcher = new $dispatcherClass;
-        static::$actionResult = $dispatcher->run($pathInfo);
+        $dispatcher->run($pathInfo);
     }
 
     protected static function renderView(
@@ -41,15 +39,7 @@ class Application {
     ) {
         if (static::$isViewEnabled) {
             $dispatcher = new $dispatcherClass;
-            $dispatcher->run($pathInfo, static::$actionResult);
+            $dispatcher->run($pathInfo);
         }
-    }
-
-    protected static function getActionResult() {
-        return static::$actionResult;
-    }
-
-    protected static function setActionResult($value) {
-        static::$actionResult = $value;
     }
 }
