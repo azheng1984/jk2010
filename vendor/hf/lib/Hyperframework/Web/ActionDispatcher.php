@@ -28,7 +28,7 @@ class ActionDispatcher {
             && $hasAfterFilter === false) {
             return;
         }
-        $class = $pathInfo['namespace'] . $info['class'];
+        $class = $pathInfo['namespace'] . '\Action';
         $action = new $class;
         if ($hasBeforeFilter) {
             $action->before();

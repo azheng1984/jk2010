@@ -3,7 +3,7 @@ namespace Hyperframework\Web;
 
 class ViewDispatcher {
     public function run($pathInfo) {
-        $class = $pathInfo['namespace'] . $this->getMediaType($pathInfo);
+        $class = $pathInfo['namespace'] . '\\' . $this->getMediaType($pathInfo);
         $view = new $class;
         $view->render();
     }
