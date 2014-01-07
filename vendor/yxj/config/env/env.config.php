@@ -1,13 +1,11 @@
 <?php
 namespace Yxj;
 
-const ENV = 'dev-linux';
-define(
-    'Yxj\HYPERFRMEWORK_PATH', '/home/azheng/daoxila_www/vendor/hf/lib/Hyperframework/'
-);
+const ENV = 'development';
+const HYPERFRMEWORK_PATH = '/home/azheng/daoxila_www/vendor/hf/lib';
 require HYPERFRAMEWORK_PATH . 'Config.php';
 //\Hyperframework\Config::set(
-//    ['Hyperframework\Env', ENV],
+//    ['Hyperframework\AppEnv', ENV],
 //    ['Hyperframework\ClassLoader\CacheEnabled', false]
 //    ['Hyperframework\Web\PathInfo\CacheEnabled', false],
 //    ['Hyperframework\Web\View\Asset\CacheEnabled', false],
