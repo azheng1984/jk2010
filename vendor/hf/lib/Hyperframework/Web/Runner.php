@@ -13,14 +13,6 @@ class Runner {
         static::runApp($path);
     }
 
-    protected static function runApp() {
-        Application::run($path);
-    }
-
-    protected static function runAssetProxy() {
-        Asset\AssetProxy::run($path);
-    }
-
     protected static function initialize($hyperframeworkPath, $appPath) {
         \Hyperframework\Config::set('Hyperframework\AppPath', $appPath);
         require $hyperframeworkPath . DIRECTORY_SEPARATOR . 'Hyperframework'
@@ -42,9 +34,17 @@ class Runner {
         return strncmp($path, '/asset/', 7) === 0;
     }
 
+    protected static function runAssetProxy() {
+        Asset\AssetProxy::run($path);
+    }
+
     protected static function rewriteMethod() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method'])) {
             $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
         }
+    }
+
+    protected static function runApp() {
+        Application::run($path);
     }
 }

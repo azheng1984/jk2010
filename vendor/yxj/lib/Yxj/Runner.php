@@ -1,15 +1,21 @@
 <?php
 namespace Yxj;
 
-require HYPERFRAMEWORK_PATH . '\Web\Runner.php';
+require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Hyperframework'
+    . DIRECTORY_SEPARATOR . 'Web' . DIRECTORY_SEPARATOR . 'Runner.php';
 
 class Runner extends \Hyperframework\Web\Runner {
-    protected function getPath() {
+    protected static function getPath() {
         $requestPath = parent::getPath();
-        //router...
+        //use custom router
     }
 
-    protected function name($param) {
-        return null;
+    protected static function runApp($path) {
+        //use new app type
+    }
+
+    protected static function isAsset() {
+        //disable asset proxy
+        return false;
     }
 }
