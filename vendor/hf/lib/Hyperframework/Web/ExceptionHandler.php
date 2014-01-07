@@ -76,8 +76,8 @@ class ExceptionHandler {
 
     protected static function getErrorPath($statusCode) {
         if (strncmp($statusCode, '4', 1) === 0) {
-            return 'error://client';
+            return '#Error/Client';
         }
-        return 'error://server';
+        return '#Error/Server';
     }
 }

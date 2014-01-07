@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 class Application {
     private static $isViewEnabled = true;
 
-    public static function run($path = null) {
+    public static function run($path) {
         $pathInfo = PathInfo::get($path);
         static::executeAction($pathInfo);
         static::renderView($pathInfo);

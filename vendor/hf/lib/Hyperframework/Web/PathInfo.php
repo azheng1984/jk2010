@@ -4,10 +4,7 @@ namespace Hyperframework\Web;
 class PathInfo {
     private static $cache;
 
-    public static function get($path = null) {
-        if ($path === null) {
-            $path = static::getPath();
-        }
+    public static function get($path) {
         $cache = static::getCache();
         if (isset($cache['paths'][$path]) === false) {
             throw new Exceptions\NotFoundException;
@@ -17,21 +14,8 @@ class PathInfo {
         return $info;
     }
 
-    public static function exists($path) {
-        if ($path === null) {
-            $path = static::getPath();
-        }
-        $cache = static::getCache();
-        return isset($cache['paths'][$path]);
-    }
-
     public static function reset() {
         static::$cache = null;
-    }
-
-    private static function getPath() {
-        $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
-        return $segments[0];
     }
 
     private static function getCache() {
