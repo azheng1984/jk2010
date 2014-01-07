@@ -3,10 +3,15 @@ namespace Yxj\App\Article;
 
 class Html {
     public function render() {
-        if ($method !== 'GET') {
-            if ($message !== null) {
-                //show error page
-            }
-        }
+        //render header
+        //render status
+        //render article
+        //render footer
+    }
+
+    public function renderStatus() {
+    }
+
+    public function renderSelf() {
     }
 }
