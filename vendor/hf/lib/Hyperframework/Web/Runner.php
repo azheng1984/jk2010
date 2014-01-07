@@ -14,7 +14,7 @@ class Runner {
     }
 
     protected static function isAsset($path) {
-        return strncmp($path, '/asset/', 7);
+        return strncmp($path, '/asset/', 7) === 0;
     }
 
     protected static function initialize($hyperframeworkPath, $appPath) {

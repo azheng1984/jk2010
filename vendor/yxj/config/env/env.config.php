@@ -8,7 +8,7 @@ define(
 require HYPERFRAMEWORK_PATH . 'Config.php';
 //\Hyperframework\Config::set(
 //    ['Hyperframework\Env', ENV],
+//    ['Hyperframework\ClassLoader\CacheEnabled', false]
 //    ['Hyperframework\Web\PathInfo\CacheEnabled', false],
 //    ['Hyperframework\Web\View\Asset\CacheEnabled', false],
-//    ['Hyperframework\ClassLoader\CacheEnabled', false]
 //);
