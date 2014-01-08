@@ -17,26 +17,34 @@ class DataLoader {
                 . DIRECTORY_SEPARATOR . $defaultPath
                 . static::getDefaultFileNameExtension();
         }
-        return require $path;
+        static::loadContent($path);
     }
 
-    protected static function getDefaultRootPath() {
-        return 'data';
+    protected static function getRootPath($class) {
+        $result = Config::get($class . '\RootPath');
+        if ($result !== null) {
+            return $result;
+        }
     }
 
     protected static function getDefaultFileNameExtension() {
         return '.php';
     }
 
-    private static function getRootPath($class) {
-        $result = Config::get($class . '\RootPath');
-        if ($result !== null) {
-            return $result;
-        }
+    protected static function getDefaultRootPath() {
         $appPath = Config::getAppPath();
         if ($appPath === null) {
             throw new Exception;
         }
-        return $appPath . DIRECTORY_SEPARATOR . static::getDefaultRootPath();
+        return $appPath . DIRECTORY_SEPARATOR
+            . static::getDefaultAppRelativePath();
+    }
+
+    protected static function getDefaultAppRelativePath() {
+        return 'data';
+    }
+
+    protected static function loadContent($path) {
+        return require $path;
     }
 }

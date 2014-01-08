@@ -13,7 +13,7 @@ class ConfigLoader extends DataLoader {
         return parent::load($pathConfigName, $defaultPath);
     }
 
-    protected static function getDefaultRootPath() {
+    protected static function getDefaultAppRelativePath() {
         return 'config';
     }
 
@@ -21,8 +21,14 @@ class ConfigLoader extends DataLoader {
         return '.config.php';
     }
 
+    protected static function getEnvPath() {
+        return Config::get(__NAMESPACE__ . '\AppEnv', array(
+            'default' => array('type' => 'app_const', 'name' => 'ENV')
+        ));
+    }
+
     private static function appendEnvPath($defaultPath) {
-        $appEnv = Config::getAppEnv();
+        $appEnv = static::getEnvPath();
         if ($appEnv !== null) {
             $defaultPath = $appEnv . DIRECTORY_SEPARATOR . $defaultPath;
         }

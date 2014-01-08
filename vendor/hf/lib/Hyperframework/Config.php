@@ -29,12 +29,6 @@ class Config {
         ));
     }
 
-    public static function getAppEnv() {
-        return Config::get(__NAMESPACE__ . '\AppEnv', array(
-            'default' => array('type' => 'app_const', 'name' => 'ENV')
-        ));
-    }
-
     public static function set(/*$mixed, ...*/) {
         $arguments = func_get_args();
         if (is_string($arguments[0])) {
