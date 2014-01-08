@@ -22,7 +22,7 @@ class ConfigLoader extends DataLoader {
     }
 
     private static function appendEnvPath($defaultPath) {
-        $appEnv = Config::get(__NAMESPACE__ . '\AppEnv');
+        $appEnv = Config::getAppEnv();
         if ($appEnv !== null) {
             $defaultPath = $appEnv . DIRECTORY_SEPARATOR . $defaultPath;
         }

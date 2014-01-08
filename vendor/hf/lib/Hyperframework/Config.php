@@ -61,11 +61,11 @@ class Config {
     private static function getAppConst($name) {
         $appNamespace = static::get(__NAMESPACE__ . '\AppNamespace');
         if ($appNamespace === null) {
-            throw new Exception;
+            return;
         }
         $constName = $appNamespace . '\\' . $constName;
         if (defined($constName) === false) {
-            throw new Exception;
+            return;
         }
         return constant($constName);
     }
