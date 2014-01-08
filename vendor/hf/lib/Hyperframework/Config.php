@@ -24,9 +24,27 @@ class Config {
     }
 
     public static function getAppPath() {
+        return Config::get(__NAMESPACE__ . '\AppPath', array(
+            'default' => array('type' => 'app_const', 'name' => 'ROOT_PATH'),
+        ));
     }
 
     public static function getAppEnv() {
+        return Config::get(__NAMESPACE__ . '\AppEnv', array(
+            'default' => array('type' => 'app_const', 'name' => 'ENV'),
+        ));
+    }
+
+    private static function getAppConst($name) {
+        $appNamespace = static::get(__NAMESPACE__ . '\AppNamespace');
+        if ($appNamespace === null) {
+            throw new Exception;
+        }
+        $constName = $appNamespace . '\\' . $constName;
+        if (defined($constName) === false) {
+            throw new Exception;
+        }
+        return constant($constName);
     }
 
     public static function set(/*$mixed, ...*/) {

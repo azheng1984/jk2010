@@ -23,6 +23,7 @@ class Application {
         header('Location: ' . $url, true, $statusCode);
     }
 
+
     public static function reset() {
         static::$isViewEnabled = true;
     }

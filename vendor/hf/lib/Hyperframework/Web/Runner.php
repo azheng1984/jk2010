@@ -15,12 +15,12 @@ class Runner {
 
     protected static function initialize($hyperframeworkPath, $appNamespace) {
         require $hyperframeworkPath . DIRECTORY_SEPARATOR
-            . 'Hyperframework' . DIRECTORY_SEPARATOR. 'ClassLoader.php';
+            . 'Hyperframework' . DIRECTORY_SEPARATOR . 'ClassLoader.php';
         \Hyperframework\ClassLoader::run();
-        ExceptionHandler::run();
         \Hyperframework\Config::set(
             'Hyperframework\AppNamespace', $appNamespace
         );
+        ExceptionHandler::run();
     }
 
     protected static function getPath() {
