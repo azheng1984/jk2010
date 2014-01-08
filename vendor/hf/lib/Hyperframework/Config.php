@@ -25,13 +25,13 @@ class Config {
 
     public static function getAppPath() {
         return Config::get(__NAMESPACE__ . '\AppPath', array(
-            'default' => array('type' => 'app_const', 'name' => 'ROOT_PATH'),
+            'default' => array('type' => 'app_const', 'name' => 'ROOT_PATH')
         ));
     }
 
     public static function getAppEnv() {
         return Config::get(__NAMESPACE__ . '\AppEnv', array(
-            'default' => array('type' => 'app_const', 'name' => 'ENV'),
+            'default' => array('type' => 'app_const', 'name' => 'ENV')
         ));
     }
 
