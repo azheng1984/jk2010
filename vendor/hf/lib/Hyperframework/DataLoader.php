@@ -33,8 +33,15 @@ class DataLoader {
         if ($result !== null) {
             return $result;
         }
-        return Config::get(
-            __NAMESPACE__ . '\AppPath', array('is_nullable' => false)
-        ) . DIRECTORY_SEPARATOR . static::getDefaultRootPath();
+        $appPath = Config::getAppPath();
+        if ($appPath === null) {
+            throw new Exception;
+        }
+//        Config::getEnv();
+//        $appPath = Config::get('Hyperframework\AppPath');
+//        if ($appPath === null) {
+//            $appPath = Config::get('ROOT_PATH', array('type' => 'app_const'));
+//        }
+        return $appPath . DIRECTORY_SEPARATOR . static::getDefaultRootPath();
     }
 }

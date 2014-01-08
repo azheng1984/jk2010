@@ -23,6 +23,12 @@ class Config {
         return $value;
     }
 
+    public static function getAppPath() {
+    }
+
+    public static function getAppEnv() {
+    }
+
     public static function set(/*$mixed, ...*/) {
         $arguments = func_get_args();
         if (is_string($arguments[0])) {

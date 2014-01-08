@@ -1,12 +1,12 @@
 <?php
 namespace Yxj;
 
-const ENV = 'development';
+const ENV = 'production';
 const HYPERFRMEWORK_PATH = '/home/azheng/daoxila_www/vendor/hf/lib';
-require HYPERFRAMEWORK_PATH . 'Config.php';
+//require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Hyperframework'
+//    . DIRECTORY_SEPARATOR . 'Config.php';
 //\Hyperframework\Config::set(
-//    ['Hyperframework\AppEnv', ENV],
-//    ['Hyperframework\ClassLoader\CacheEnabled', false]
+//    ['Hyperframework\ClassLoader\CacheEnabled', false],
 //    ['Hyperframework\Web\PathInfo\CacheEnabled', false],
 //    ['Hyperframework\Web\View\Asset\CacheEnabled', false],
 //);
