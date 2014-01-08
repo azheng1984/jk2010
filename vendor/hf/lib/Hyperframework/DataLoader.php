@@ -37,10 +37,10 @@ class DataLoader {
             throw new Exception;
         }
         return $appPath . DIRECTORY_SEPARATOR
-            . static::getDefaultAppRelativePath();
+            . static::getDefaultRelativePathByApp();
     }
 
-    protected static function getDefaultAppRelativePath() {
+    protected static function getDefaultRelativePathByApp() {
         return 'data';
     }
 

@@ -13,7 +13,7 @@ class ConfigLoader extends DataLoader {
         return parent::load($pathConfigName, $defaultPath);
     }
 
-    protected static function getDefaultAppRelativePath() {
+    protected static function getDefaultRelativePathByApp() {
         return 'config';
     }
 

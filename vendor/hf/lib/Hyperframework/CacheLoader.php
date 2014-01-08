@@ -2,7 +2,7 @@
 namespace Hyperframework;
 
 class CacheLoader extends DataLoader {
-    protected static function getDefaultAppRelativePath() {
+    protected static function getDefaultRelativePathByApp() {
         return 'data' . DIRECTORY_SEPARATOR . 'cache';
     }
 
