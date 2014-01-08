@@ -35,18 +35,6 @@ class Config {
         ));
     }
 
-    private static function getAppConst($name) {
-        $appNamespace = static::get(__NAMESPACE__ . '\AppNamespace');
-        if ($appNamespace === null) {
-            throw new Exception;
-        }
-        $constName = $appNamespace . '\\' . $constName;
-        if (defined($constName) === false) {
-            throw new Exception;
-        }
-        return constant($constName);
-    }
-
     public static function set(/*$mixed, ...*/) {
         $arguments = func_get_args();
         if (is_string($arguments[0])) {
@@ -68,6 +56,18 @@ class Config {
 
     public static function reset() {
         static::$data = array();
+    }
+
+    private static function getAppConst($name) {
+        $appNamespace = static::get(__NAMESPACE__ . '\AppNamespace');
+        if ($appNamespace === null) {
+            throw new Exception;
+        }
+        $constName = $appNamespace . '\\' . $constName;
+        if (defined($constName) === false) {
+            throw new Exception;
+        }
+        return constant($constName);
     }
 
     private static function mergePrefix($prefix, $data) {
