@@ -8,20 +8,17 @@ abstract class DataLoader {
         $class = get_called_class();
         $delegate = Config::get($class . '\Delegate');
         if ($delegate !== null) {
-            if ($pathConfigName !== null) {
-                $config = Config::get(
-                    $pathConfigName, array('default' => $path)
-                );
-                if ($config !== $path) {
-                    $isRelativePath = false;
-                }
-                $path = $config;
-            }
-            return $delegate::get($path, $isRelativePath);
+           // if ($pathConfigName !== null) {
+           //     $config = Config::get(
+           //         $pathConfigName, array('default' => $path)
+           //     );
+           //     if ($config !== $path) {
+           //         $isRelativePath = false;
+           //     }
+           //     $path = $config;
+           // }
+            return $delegate::load($path, $pathConfigName, $isRelativePath);
         }
-        $path = Config::get(
-            $pathConfigName, array('default' => $path)
-        );
         if ($pathConfigName !== null) {
             $config = Config::get($pathConfigName);
             if ($config === null) {
@@ -33,7 +30,7 @@ abstract class DataLoader {
                 $path = $config;
             }
         }
-        static::loadContent($path);
+        return static::loadContent($path);
     }
 
     protected static function getAppPath() {
@@ -44,10 +41,6 @@ abstract class DataLoader {
                 'is_nullable' => false
             )
         );
-        Config::set('cnf_name', ROOT_PATH . '/list/config/path');
-    }
-
-    protected static function getFullPath() {
     }
 
     protected static function getRootPath($class) {
@@ -75,7 +68,7 @@ abstract class DataLoader {
         return 'data';
     }
 
-    protected static function loadContent($path) {
-        return require $path;
+    protected static function loadContent($fullPath) {
+        return require $fullPath;
     }
 }

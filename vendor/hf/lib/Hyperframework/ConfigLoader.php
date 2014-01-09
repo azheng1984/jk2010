@@ -22,9 +22,10 @@ class ConfigLoader extends DataLoader {
     }
 
     protected static function getEnvPath() {
-        return Config::get(__NAMESPACE__ . '\AppEnv', array(
-            'default' => array('type' => 'app_const', 'name' => 'ENV')
-        ));
+        return Config::get(
+            __NAMESPACE__ . '\AppEnv',
+            array('default' => array('app_const' => 'ENV'))
+        );
     }
 
     private static function appendEnvPath($defaultPath) {
