@@ -1,23 +1,45 @@
 <?php
 namespace Hyperframework;
 
-class DataLoader {
-    public static function load($pathConfigName, $defaultPath) {
+abstract class DataLoader {
+    public static function load(
+        $path, $pathConfigName = null, $isRelativePath = true
+    ) {
         $class = get_called_class();
         $provider = Config::get($class . '\Provider');
         if ($provider !== null) {
-            $path = Config::get(
-                $pathConfigName, array('default' => $defaultPath)
-            );
-            return $provider::get($path);
+            if ($pathConfigName !== null) {
+                $path = Config::get(
+                    $pathConfigName, array('default' => $path)
+                );
+            }
+            return $provider::get($path, $isRelative);
         }
-        $path = Config::get($pathConfigName);
+        $path = Config::get(
+            $pathConfigName, array('default' => $path)
+        );
+        if ($pathConfigName !== null) {
+            $path = Config::get($pathConfigName);
+        }
         if ($path === null) {
-            $path = static::getRootPath($class)
-                . DIRECTORY_SEPARATOR . $defaultPath
-                . static::getDefaultFileNameExtension();
+            $defaultPath = static::getRootPath($class) . DIRECTORY_SEPARATOR
+                . $path . static::getDefaultFileNameExtension();
         }
         static::loadContent($path);
+    }
+
+    protected static function getAppPath() {
+        return Config::get(
+            __NAMESPACE__ . '\AppPath',
+            array(
+                'default' => array('app_const' => 'ROOT_PATH'),
+                'is_nullable' => false
+            )
+        );
+        Config::set('cnf_name', ROOT_PATH . '/list/config/path');
+    }
+
+    protected static function getFullPath() {
     }
 
     protected static function getRootPath($class) {
@@ -25,6 +47,7 @@ class DataLoader {
         if ($result !== null) {
             return $result;
         }
+        return static::getDefaultRootPath();
     }
 
     protected static function getDefaultFileNameExtension() {
@@ -32,15 +55,15 @@ class DataLoader {
     }
 
     protected static function getDefaultRootPath() {
-        $appPath = Config::getAppPath();
+        $appPath = static::getAppPath();
         if ($appPath === null) {
             throw new Exception;
         }
         return $appPath . DIRECTORY_SEPARATOR
-            . static::getDefaultRelativePathByApp();
+            . static::getDefaultRootPathByApp();
     }
 
-    protected static function getDefaultRelativePathByApp() {
+    protected static function getDefaultRootPathByApp() {
         return 'data';
     }
 
