@@ -47,15 +47,15 @@ class Config {
     }
 
     private static function getAppConst($name) {
-        $appNamespace = static::get(__NAMESPACE__ . '\AppNamespace');
-        if ($appNamespace === null) {
+        $namespace = static::get(__NAMESPACE__ . '\AppNamespace');
+        if ($namespace === null) {
             return;
         }
-        $constName = $appNamespace . '\\' . $constName;
-        if (defined($constName) === false) {
+        $name = $namespace . '\\' . $name;
+        if (defined($name) === false) {
             return;
         }
-        return constant($constName);
+        return constant($name);
     }
 
     private static function mergePrefix($prefix, $data) {
