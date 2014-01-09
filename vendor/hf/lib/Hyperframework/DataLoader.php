@@ -6,24 +6,32 @@ abstract class DataLoader {
         $path, $pathConfigName = null, $isRelativePath = true
     ) {
         $class = get_called_class();
-        $provider = Config::get($class . '\Provider');
-        if ($provider !== null) {
+        $delegate = Config::get($class . '\Delegate');
+        if ($delegate !== null) {
             if ($pathConfigName !== null) {
-                $path = Config::get(
+                $config = Config::get(
                     $pathConfigName, array('default' => $path)
                 );
+                if ($config !== $path) {
+                    $isRelativePath = false;
+                }
+                $path = $config;
             }
-            return $provider::get($path, $isRelative);
+            return $delegate::get($path, $isRelativePath);
         }
         $path = Config::get(
             $pathConfigName, array('default' => $path)
         );
         if ($pathConfigName !== null) {
-            $path = Config::get($pathConfigName);
-        }
-        if ($path === null) {
-            $defaultPath = static::getRootPath($class) . DIRECTORY_SEPARATOR
-                . $path . static::getDefaultFileNameExtension();
+            $config = Config::get($pathConfigName);
+            if ($config === null) {
+                if ($isRelativePath) {
+                    $path = static::getRootPath() . DIRECTORY_SEPARATOR . $path;
+                }
+                $path = $path . static::getDefaultFileNameExtension();
+            } else {
+                $path = $config;
+            }
         }
         static::loadContent($path);
     }
@@ -60,10 +68,10 @@ abstract class DataLoader {
             throw new Exception;
         }
         return $appPath . DIRECTORY_SEPARATOR
-            . static::getDefaultRootPathByApp();
+            . static::getDefaultInAppRootPath();
     }
 
-    protected static function getDefaultRootPathByApp() {
+    protected static function getDefaultInAppRootPath() {
         return 'data';
     }
 
