@@ -46,7 +46,7 @@ class Runner {
         }
     }
 
-    protected static function runApp() {
+    protected static function runApp($path) {
         Application::run($path);
     }
 }

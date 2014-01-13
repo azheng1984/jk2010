@@ -5,6 +5,7 @@ abstract class DataLoader {
     public static function load(
         $path, $pathConfigName = null, $isRelativePath = true
     ) {
+        //var_dump($path);
         $class = get_called_class();
         $delegate = Config::get($class . '\Delegate');
         if ($delegate !== null) {
@@ -14,7 +15,9 @@ abstract class DataLoader {
             $config = Config::get($pathConfigName);
             if ($config === null) {
                 if ($isRelativePath) {
-                    $path = static::getRootPath() . DIRECTORY_SEPARATOR . $path;
+        //            var_dump(static::getRootPath($class));
+                    $path = static::getRootPath($class)
+                        . DIRECTORY_SEPARATOR . $path;
                 }
                 $path = $path . static::getDefaultFileNameExtension();
             } else {
@@ -46,6 +49,7 @@ abstract class DataLoader {
     }
 
     protected static function getAppPath() {
+        return \Yxj\ROOT_PATH;
         return Config::get(
             __NAMESPACE__ . '\AppPath',
             array(

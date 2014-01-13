@@ -21,7 +21,7 @@ class PathInfo {
     private static function getCache() {
         if (static::$cache === null) {
             static::$cache = \Hyperframework\CacheLoader::load(
-                __CLASS__ . '\CachePath', 'path_info'
+                'path_info', __CLASS__ . '\CachePath'
             );
         }
         return static::$cache;
