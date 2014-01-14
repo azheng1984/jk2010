@@ -25,10 +25,6 @@ class DataLoader {
         return static::loadByPath($path);
     }
 
-    protected static function getFileNameExtension() {
-        return '.php';
-    }
-
     protected static function getDefaultRootPath() {
         return \Yxj\ROOT_PATH;
         return Config::get(
@@ -38,6 +34,10 @@ class DataLoader {
                 'is_nullable' => false
             )
         );
+    }
+
+    protected static function getFileNameExtension() {
+        return '.php';
     }
 
     protected static function loadByPath($fullPath) {
