@@ -40,8 +40,8 @@ class DataLoader {
         return '.php';
     }
 
-    protected static function loadByPath($fullPath) {
-        return require $fullPath;
+    protected static function loadByPath($path) {
+        return require $path;
     }
 
     private static function getRootPath($class) {

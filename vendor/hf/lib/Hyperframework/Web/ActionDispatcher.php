@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 use Hyperframework\Web\Exceptions\MethodNotAllowedException;
 
 class ActionDispatcher {
-    public static final function run($pathInfo) {
+    public static function run($pathInfo) {
         $info = null;
         if (isset($pathInfo['action'])) {
             $info = $pathInfo['action'];
