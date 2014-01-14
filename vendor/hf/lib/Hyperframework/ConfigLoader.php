@@ -11,26 +11,23 @@ class ConfigLoader extends DataLoader {
         return parent::load($path, $pathConfigName, $isRelativePath);
     }
 
-    protected static function getEnvPath() {
-        return Config::get(
+    protected static function appendEnvPath($path) {
+        $appEnv = Config::get(
             __NAMESPACE__ . '\AppEnv',
             array('default' => array('app_const' => 'ENV'))
-        );
+        )
+        if ($appEnv === null) {
+            return $path;
+        }
+        return 'env' . DIRECTORY_SEPARATOR . $appEnv
+            . DIRECTORY_SEPARATOR . $path;
     }
 
-    protected static function getDefaultRootPathSuffix() {
-        return 'config';
+    protected static function getDefaultRootPath() {
+        return parent::getDefaultRootPath() . DIRECTORY_SEPARATOR . 'config';
     }
 
     protected static function getFileNameExtension() {
         return '.config.php';
-    }
-
-    private static function appendEnvPath($defaultPath) {
-        $appEnv = static::getEnvPath();
-        if ($appEnv !== null) {
-            $defaultPath = $appEnv . DIRECTORY_SEPARATOR . $defaultPath;
-        }
-        return 'env' . DIRECTORY_SEPARATOR . $defaultPath;
     }
 }
