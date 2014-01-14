@@ -8,15 +8,7 @@ class ConfigLoader extends DataLoader {
         if ($hasEnv) {
             $path = static::appendEnvPath($path);
         }
-        return parent::executeTemplate($path, $pathConfigName, $isRelativePath);
-    }
-
-    protected static function getDefaultRootPathSuffix() {
-        return 'data' . DIRECTORY_SEPARATOR . 'config';
-    }
-
-    protected static function getDefaultFileNameExtension() {
-        return '.config.php';
+        return parent::load($path, $pathConfigName, $isRelativePath);
     }
 
     protected static function getEnvPath() {
@@ -24,6 +16,14 @@ class ConfigLoader extends DataLoader {
             __NAMESPACE__ . '\AppEnv',
             array('default' => array('app_const' => 'ENV'))
         );
+    }
+
+    protected static function getDefaultRootPathSuffix() {
+        return 'config';
+    }
+
+    protected static function getFileNameExtension() {
+        return '.config.php';
     }
 
     private static function appendEnvPath($defaultPath) {

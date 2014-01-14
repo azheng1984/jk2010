@@ -1,16 +1,8 @@
 <?php
 namespace Hyperframework;
 
-abstract class DataLoader {
+class DataLoader {
     public static function load(
-        $path, $pathConfigName, $hasEnv = false, $isRelativePath = true
-    ) {
-        return parent::executeTemplate(
-            $path, $pathConfigName, $hasEnv, $isRelativePath
-        );
-    }
-
-    protected static final function executeTemplate(
         $path, $pathConfigName = null, $isRelativePath = true
     ) {
         //var_dump($path);
@@ -48,12 +40,11 @@ abstract class DataLoader {
     }
 
     protected static function getDefaultRootPath() {
-        return static::getAppPath() . DIRECTORY_SEPARATOR
-            . static::getDefaultRootPathSuffix();
+        return static::getAppPath() . DIRECTORY_SEPARATOR . 'data'
+            . DIRECTORY_SEPARATOR . static::getDefaultRootPathSuffix();
     }
 
     protected static function getDefaultRootPathSuffix() {
-        return 'data';
     }
 
     protected static function getAppPath() {

@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 class ViewDispatcher {
-    public static final function run($pathInfo) {
+    public static function run($pathInfo) {
         $class = $pathInfo['namespace'] . '\\'
             . static::getMediaType($pathInfo['views']);
         $view = new $class;
