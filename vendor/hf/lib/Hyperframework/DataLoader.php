@@ -24,7 +24,7 @@ abstract class DataLoader {
                 $path = $config;
             }
         }
-        return static::loadContent($path);
+        return static::loadByPath($path);
     }
 
     protected static function getRootPath($class) {
@@ -59,7 +59,7 @@ abstract class DataLoader {
         );
     }
 
-    protected static function loadContent($fullPath) {
+    protected static function loadByPath($fullPath) {
         return require $fullPath;
     }
 }

@@ -9,7 +9,7 @@ class ActionDispatcher {
         if (isset($pathInfo['action'])) {
             $info = $pathInfo['action'];
         }
-        $method = $_SERVER['REQUEST_METHOD'];
+        $method = $this->getMethod();
         if ($method === 'HEAD') {
             $method = 'GET';
         }
@@ -39,6 +39,13 @@ class ActionDispatcher {
         if ($hasAfterFilter) {
             $action->after();
         }
+    }
+
+    protected function getMethod() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method'])) {
+            return $_POST['_method'];
+        }
+        return $_SERVER['REQUEST_METHOD'];
     }
 
     private function checkImplicitAction($method) {

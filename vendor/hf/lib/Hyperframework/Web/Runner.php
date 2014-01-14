@@ -2,14 +2,13 @@
 namespace Hyperframework\Web;
 
 class Runner {
-    public static function run($hyperframeworkPath, $appNamespace) {
+    public final static function run($hyperframeworkPath, $appNamespace) {
         static::initialize($hyperframeworkPath, $appNamespace);
         $path = static::getPath();
         if (static::isAsset($path)) {
             static::runAssetProxy($path);
             return;
         }
-        static::rewriteMethod();
         static::runApp($path);
     }
 
@@ -38,12 +37,6 @@ class Runner {
 
     protected static function runAssetProxy() {
         Asset\AssetProxy::run($path);
-    }
-
-    protected static function rewriteMethod() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method'])) {
-            $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
-        }
     }
 
     protected static function runApp($path) {
