@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 class Runner {
-    public final static function run($hyperframeworkPath, $appNamespace) {
+    public static final function run($hyperframeworkPath, $appNamespace) {
         static::initialize($hyperframeworkPath, $appNamespace);
         $path = static::getPath();
         if (static::isAsset($path)) {

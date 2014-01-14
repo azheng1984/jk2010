@@ -3,18 +3,16 @@ namespace Hyperframework;
 
 class ConfigLoader extends DataLoader {
     public static function load(
-        $pathConfigName, $defaultPath, $hasEnv = false
+        $path, $pathConfigName, $hasEnv = false, $isRelativePath = true
     ) {
         if ($hasEnv) {
-            return parent::load(
-                $pathConfigName, static::appendEnvPath($defaultPath)
-            );
+            $path = static::appendEnvPath($path);
         }
-        return parent::load($pathConfigName, $defaultPath);
+        return parent::executeTemplate($path, $pathConfigName, $isRelativePath);
     }
 
     protected static function getDefaultRootPathSuffix() {
-        return 'config';
+        return 'data' . DIRECTORY_SEPARATOR . 'config';
     }
 
     protected static function getDefaultFileNameExtension() {

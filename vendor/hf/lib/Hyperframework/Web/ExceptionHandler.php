@@ -8,12 +8,12 @@ class ExceptionHandler {
         set_exception_handler(array(get_called_class(), 'handle'));
     }
 
-    public static function handle($exception) {
-        static::$exception = $exception;
+    public static final function handle($exception) {
         if (headers_sent()) {
             static::reportError($exception);
             return;
         }
+        static::exception = $exception;
         if ($exception instanceof ApplicationException === false) {
             $exception = new Exceptions\InternalServerErrorException;
         }
@@ -21,7 +21,7 @@ class ExceptionHandler {
         $exception->setHeader();
         if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
             try {
-                static::displayError($exception->getCode());
+                static::displayError($exception);
             } catch (\Exception $recursiveException) {
                 static::reportError(static::$exception, $recursiveException);
                 return;
@@ -36,9 +36,8 @@ class ExceptionHandler {
         return static::$exception;
     }
 
-    public static function stop() {
+    public static function reset()) {
         restore_exception_handler();
-        static::$exception = null;
     }
 
     protected static function reportError(
@@ -59,25 +58,7 @@ class ExceptionHandler {
         }
     }
 
-    protected static function displayError($statusCode) {
-        $_SERVER['PREVIOUS_REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'];
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        try {
-            static::runErrorApplication($statusCode);
-        } catch (Exeptions\UnsupportedMediaTypeException $recursiveException) {}
-    }
-
-    protected static function runErrorApplication($statusCode) {
-        if (($path = static::getErrorPath($statusCode)) !== null) {
-            Application::reset();
-            Application::run($path);
-        }
-    }
-
-    protected static function getErrorPath($statusCode) {
-        if (strncmp($statusCode, '4', 1) === 0) {
-            return '#Error/Client';
-        }
-        return '#Error/Server';
+    protected static function displayError($applicationException) {
+        ErrorApplication::run($applicationException->getCode());
     }
 }

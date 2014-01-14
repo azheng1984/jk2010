@@ -3,6 +3,14 @@ namespace Hyperframework;
 
 abstract class DataLoader {
     public static function load(
+        $path, $pathConfigName, $hasEnv = false, $isRelativePath = true
+    ) {
+        return parent::executeTemplate(
+            $path, $pathConfigName, $hasEnv, $isRelativePath
+        );
+    }
+
+    protected static final function executeTemplate(
         $path, $pathConfigName = null, $isRelativePath = true
     ) {
         //var_dump($path);
@@ -19,7 +27,7 @@ abstract class DataLoader {
                     $path = static::getRootPath($class)
                         . DIRECTORY_SEPARATOR . $path;
                 }
-                $path = $path . static::getDefaultFileNameExtension();
+                $path = $path . static::getFileNameExtension();
             } else {
                 $path = $config;
             }
@@ -35,7 +43,7 @@ abstract class DataLoader {
         return static::getDefaultRootPath();
     }
 
-    protected static function getDefaultFileNameExtension() {
+    protected static function getFileNameExtension() {
         return '.php';
     }
 

@@ -4,22 +4,22 @@ namespace Hyperframework\Web;
 use Hyperframework\Web\Exceptions\MethodNotAllowedException;
 
 class ActionDispatcher {
-    public function run($pathInfo) {
+    public static final function run($pathInfo) {
         $info = null;
         if (isset($pathInfo['action'])) {
             $info = $pathInfo['action'];
         }
-        $method = $this->getMethod();
+        $method = static::getMethod();
         if ($method === 'HEAD') {
             $method = 'GET';
         }
         if ($info === null) {
-            $this->checkImplicitAction($method);
+            static::checkImplicitAction($method);
             return;
         }
         $hasMethod = in_array($method, $info['methods']);
         if ($hasMethod === false) {
-            $this->checkImplicitMethod($info, $method);
+            static::checkImplicitMethod($info, $method);
         }
         $hasBeforeFilter = isset($info['before_filter']);
         $hasAfterFilter = isset($info['after_filter']);
@@ -41,20 +41,20 @@ class ActionDispatcher {
         }
     }
 
-    protected function getMethod() {
+    protected static function getMethod() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method'])) {
             return $_POST['_method'];
         }
         return $_SERVER['REQUEST_METHOD'];
     }
 
-    private function checkImplicitAction($method) {
+    private static function checkImplicitAction($method) {
         if ($method !== 'GET') {
             throw new MethodNotAllowedException(array('GET', 'HEAD'));
         }
     }
 
-    private function checkImplicitMethod($info, $method) {
+    private static function checkImplicitMethod($info, $method) {
         if (isset($info['get_not_allowed'])) {
             $methods = isset($info['methods']) ? $info['methods'] : array();
             throw new MethodNotAllowedException($methods);

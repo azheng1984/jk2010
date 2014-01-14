@@ -2,14 +2,14 @@
 namespace Hyperframework\Web;
 
 class ViewDispatcher {
-    public function run($pathInfo) {
+    public static final function run($pathInfo) {
         $class = $pathInfo['namespace'] . '\\'
-            . $this->getMediaType($pathInfo['views']);
+            . static::getMediaType($pathInfo['views']);
         $view = new $class;
         $view->render();
     }
 
-    private function getMediaType($views) {
+    private static function getMediaType($views) {
         if (is_string($views)) {
             $views = array($views);
         }

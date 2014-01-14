@@ -4,8 +4,8 @@ namespace Hyperframework\Web;
 class Application {
     private static $isViewEnabled = true;
 
-    public static function run($path) {
-        $pathInfo = PathInfo::get($path);
+    public static final function run($path) {
+        $pathInfo = static::getPathInfo();
         static::executeAction($pathInfo);
         static::renderView($pathInfo);
     }
@@ -27,19 +27,17 @@ class Application {
         static::$isViewEnabled = true;
     }
 
-    protected static function executeAction(
-        $pathInfo, $dispatcherClass = 'Hyperframework\Web\ActionDispatcher'
-    ) {
-        $dispatcher = new $dispatcherClass;
-        $dispatcher->run($pathInfo);
+    protected static function getPathInfo() {
+        return PathInfo::get($path);
     }
 
-    protected static function renderView(
-        $pathInfo, $dispatcherClass = 'Hyperframework\Web\ViewDispatcher'
-    ) {
+    protected static function executeAction($pathInfo) {
+        ActionDispatcher::run($pathInfo);
+    }
+
+    protected static function renderView($pathInfo) {
         if (static::$isViewEnabled && isset($pathInfo['views'])) {
-            $dispatcher = new $dispatcherClass;
-            $dispatcher->run($pathInfo);
+            ViewDispatcher::run($pathInfo);
         }
     }
 }
