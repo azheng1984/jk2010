@@ -7,6 +7,7 @@ class Application {
     public static function run($path) {
         $pathInfo = static::getPathInfo($path);
         static::executeAction($pathInfo);
+        var_dump($pathInfo);
         static::renderView($pathInfo);
     }
 

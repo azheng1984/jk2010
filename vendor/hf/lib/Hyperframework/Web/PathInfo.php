@@ -29,12 +29,12 @@ class PathInfo {
 
     private static function getNamespace($path) {
         if (isset(static::$cache['namespace']) === false) {
-            return '';
+            return static::$cache['paths'][$path]['namespace'];
         }
         $namespace = static::$cache['namespace'];
-        if (is_array($namespace) === false) {
-            return $namespace. '\\';
-        }
+        //if (is_array($namespace) === false) {
+            return $namespace. '\\' . static::$cache['paths'][$path]['namespace'];
+       // }
         //throw ...
 //        if (isset($namespace['folder_mapping']) === false) {
 //            throw new \Exception('Format of path info cache is not correct');
