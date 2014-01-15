@@ -33,8 +33,11 @@ class PathInfo {
         }
         $namespace = static::$cache['namespace'];
         //if (is_array($namespace) === false) {
+        if (isset(static::$cache['paths'][$path]['namespace'])) {
             return $namespace. '\\' . static::$cache['paths'][$path]['namespace'];
-       // }
+        }
+        return static::$cache['namespace'];
+        //}
         //throw ...
 //        if (isset($namespace['folder_mapping']) === false) {
 //            throw new \Exception('Format of path info cache is not correct');

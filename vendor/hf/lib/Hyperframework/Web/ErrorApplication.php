@@ -27,6 +27,6 @@ class ErrorApplication {
         Application::reset();
         try {
             Application::run($path);
-        } catch (Exeptions\UnsupportedMediaTypeException $recursiveException) {}
+        } catch (Exeptions\UnsupportedMediaTypeException $ignoredException)
     }
 }
