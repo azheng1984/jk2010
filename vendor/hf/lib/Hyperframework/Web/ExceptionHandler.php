@@ -13,7 +13,7 @@ class ExceptionHandler {
             static::reportError($exception);
             return;
         }
-        static::exception = $exception;
+        static::$exception = $exception;
         if ($exception instanceof ApplicationException === false) {
             $exception = new Exceptions\InternalServerErrorException;
         }
@@ -36,7 +36,7 @@ class ExceptionHandler {
         return static::$exception;
     }
 
-    public static function reset()) {
+    public static function reset() {
         restore_exception_handler();
     }
 

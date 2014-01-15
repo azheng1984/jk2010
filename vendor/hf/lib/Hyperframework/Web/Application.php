@@ -5,7 +5,7 @@ class Application {
     private static $isViewEnabled = true;
 
     public static function run($path) {
-        $pathInfo = static::getPathInfo();
+        $pathInfo = static::getPathInfo($path);
         static::executeAction($pathInfo);
         static::renderView($pathInfo);
     }
@@ -27,7 +27,7 @@ class Application {
         static::$isViewEnabled = true;
     }
 
-    protected static function getPathInfo() {
+    protected static function getPathInfo($path) {
         return PathInfo::get($path);
     }
 

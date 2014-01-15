@@ -3,7 +3,9 @@ namespace Hyperframework\Web;
 
 class ErrorApplication {
     public static function run($statusCode) {
-        static::initailize();
+        var_dump(ExceptionHandler::getException());
+        exit;
+        static::initialize();
         $path = static::getErrorPath($statusCode);
         if ($path !== null) {
             static::restart($path);

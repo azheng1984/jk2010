@@ -8,7 +8,9 @@ class DataLoader {
         $class = get_called_class();
         $delegate = Config::get($class . '\Delegate');
         if ($delegate !== null) {
-            return $delegate::load($path, $pathConfigName, $isRelativePath);
+            return $delegate::load(
+                $path, $pathConfigName, $isRelativePath, $extension
+            );
         }
         if ($pathConfigName !== null) {
             $configPath = Config::get($pathConfigName);
