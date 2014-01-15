@@ -3,7 +3,7 @@ namespace Hyperframework;
 
 class DataLoader {
     public static function load(
-        $path, $pathConfigName = null, $isRelativePath = true, $extension = null
+        $path, $pathConfigName = null, $isRelativePath = true
     ) {
         $class = get_called_class();
         $delegate = Config::get($class . '\Delegate');
@@ -28,6 +28,8 @@ class DataLoader {
         }
         return static::loadByPath($path);
     }
+
+    protected static function getFileNameExtension() {}
 
     protected static function getDefaultRootPath() {
         return \Yxj\ROOT_PATH;
