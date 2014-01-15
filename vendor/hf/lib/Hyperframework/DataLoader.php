@@ -19,6 +19,7 @@ class DataLoader {
                     $path = static::getRootPath($class)
                         . DIRECTORY_SEPARATOR . $path;
                 }
+                $extension = static::getFileNameExtension();
                 if ($extension !== null) {
                     $path = $path . $extension;
                 }
