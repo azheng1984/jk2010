@@ -7,14 +7,8 @@ class ErrorApplication {
     public static function run($statusCode) {
         $path = static::getErrorPath($statusCode);
         if ($path !== null) {
-            static::$previousRequestMethod = $_SERVER['REQUEST_METHOD'];
-            $_SERVER['REQUEST_METHOD'] = 'GET';
-            Application::reset();
-            try {
-                Application::run($path);
-            } catch (
-                Exeptions\UnsupportedMediaTypeException $ignoredException
-            ) {}
+            static::initialize();
+            static::runByPath($path);
         }
     }
 
@@ -31,5 +25,17 @@ class ErrorApplication {
             return '#Error/Client';
         }
         return '#Error/Server';
+    }
+
+    protected static function initialize() {
+        static::$previousRequestMethod = $_SERVER['REQUEST_METHOD'];
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+    }
+
+    protected static function runByPath($path) {
+        Application::reset();
+        try {
+            Application::run($path);
+        } catch (Exeptions\UnsupportedMediaTypeException $ignoredException) {}
     }
 }
