@@ -2,17 +2,26 @@
 namespace Hyperframework\Web;
 
 class ErrorApplication {
+    private static $previousRequestMethod;
+
     public static function run($statusCode) {
         static::initialize();
         $path = static::getErrorPath($statusCode);
-        echo $path;
         if ($path !== null) {
-            static::restart($path);
+            static::restartApplication($path);
         }
     }
 
+    public static function getPreviousRequestMethod() {
+        return static::$previousRequestMethod;
+    }
+
+    public static function reset() {
+        static::$previousRequestMethod = null;
+    }
+
     protected static function initialize() {
-        $_SERVER['PREVIOUS_REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'];
+        static::$previousRequestMethod = $_SERVER['REQUEST_METHOD'];
         $_SERVER['REQUEST_METHOD'] = 'GET';
     }
 
@@ -27,6 +36,6 @@ class ErrorApplication {
         Application::reset();
         try {
             Application::run($path);
-        } catch (Exeptions\UnsupportedMediaTypeException $ignoredException)
+        } catch (Exeptions\UnsupportedMediaTypeException $ignoredException) {}
     }
 }
