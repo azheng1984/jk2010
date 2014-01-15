@@ -3,12 +3,18 @@ namespace Hyperframework;
 
 class ConfigLoader extends DataLoader {
     public static function load(
-        $path, $pathConfigName, $hasEnv = false, $isRelativePath = true
+        $path,
+        $pathConfigName,
+        $hasEnv = false,
+        $isRelativePath = true,
+        $extension = '.config.php'
     ) {
         if ($hasEnv) {
             $path = static::appendEnvPath($path);
         }
-        return parent::load($path, $pathConfigName, $isRelativePath);
+        return parent::load(
+            $path, $pathConfigName, $isRelativePath, $extension
+        );
     }
 
     protected static function appendEnvPath($path) {
@@ -25,9 +31,5 @@ class ConfigLoader extends DataLoader {
 
     protected static function getDefaultRootPath() {
         return parent::getDefaultRootPath() . DIRECTORY_SEPARATOR . 'config';
-    }
-
-    protected static function getFileNameExtension() {
-        return '.config.php';
     }
 }

@@ -3,7 +3,7 @@ namespace Hyperframework;
 
 class DataLoader {
     public static function load(
-        $path, $pathConfigName = null, $isRelativePath = true
+        $path, $pathConfigName = null, $isRelativePath = true, $extension = null
     ) {
         $class = get_called_class();
         $delegate = Config::get($class . '\Delegate');
@@ -17,7 +17,9 @@ class DataLoader {
                     $path = static::getRootPath($class)
                         . DIRECTORY_SEPARATOR . $path;
                 }
-                $path = $path . static::getFileNameExtension();
+                if ($extension !== null) {
+                    $path = $path . $extension;
+                }
             } else {
                 $path = $configPath;
             }
@@ -34,10 +36,6 @@ class DataLoader {
                 'is_nullable' => false
             )
         );
-    }
-
-    protected static function getFileNameExtension() {
-        return '.php';
     }
 
     protected static function loadByPath($path) {
