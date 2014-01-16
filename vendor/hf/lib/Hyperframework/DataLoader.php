@@ -12,22 +12,30 @@ class DataLoader {
                 $path, $pathConfigName, $isRelativePath, $extension
             );
         }
+        $fullPath = static::getFullPath(
+            $path, $pathConfigName, $isRelativePath, $extension, $class
+        );
+        return static::loadByFullPath($fullPath);
+    }
+
+    protected static function getFullPath(
+        $path, $pathConfigName, $isRelativePath, $extension, $class
+    ) {
+        $config = null;
         if ($pathConfigName !== null) {
-            $configPath = Config::get($pathConfigName);
-            if ($configPath === null) {
-                if ($isRelativePath) {
-                    $path = static::getRootPath($class)
-                        . DIRECTORY_SEPARATOR . $path;
-                }
-                $extension = static::getFileNameExtension();
-                if ($extension !== null) {
-                    $path = $path . $extension;
-                }
-            } else {
-                $path = $configPath;
-            }
+            $config = Config::get($pathConfigName);
         }
-        return static::loadByPath($path);
+        if ($config !== null) {
+            return $config;
+        }
+        if ($isRelativePath) {
+            $path = static::getRootPath($class) . DIRECTORY_SEPARATOR . $path;
+        }
+        $extension = static::getFileNameExtension();
+        if ($extension !== null) {
+            $path = $path . $extension;
+        }
+        return $path;
     }
 
     protected static function getDefaultRootPath() {
@@ -43,8 +51,8 @@ class DataLoader {
 
     protected static function getFileNameExtension() {}
 
-    protected static function loadByPath($path) {
-        return require $path;
+    protected static function loadByFullPath($fullPath) {
+        return require $fullPath;
     }
 
     private static function getRootPath($class) {
