@@ -44,7 +44,7 @@ class Logger {
         }
         $path = Config::get(
             __CLASS__ . '\LogPath',
-            array('default' => APPLICATION_PATH . 'data/log.txt')
+            array('default' => array('relative_path' => 'data/log.txt'))
         );
         file_put_contents($path, $entry, FILE_APPEND | LOCK_EX);
     }

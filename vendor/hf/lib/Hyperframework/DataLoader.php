@@ -37,13 +37,7 @@ class DataLoader {
     }
 
     protected static function getDefaultRootPath() {
-        return Config::get(
-            __NAMESPACE__ . '\ApplicationPath',
-            array(
-                'default' => array('application_const' => 'ROOT_PATH'),
-                'is_nullable' => false
-            )
-        );
+        Config::getApplicationPath();
     }
 
     protected static function getFileNameExtension() {

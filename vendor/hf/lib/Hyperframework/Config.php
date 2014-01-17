@@ -23,6 +23,16 @@ class Config {
         return $value;
     }
 
+    public static function getApplicationPath() {
+        return Config::get(
+            __NAMESPACE__ . '\ApplicationPath',
+            array(
+                'default' => array('application_const' => 'ROOT_PATH'),
+                'is_nullable' => false
+            )
+        );
+    }
+
     public static function set(/*$mixed, ...*/) {
         $arguments = func_get_args();
         if (is_string($arguments[0])) {
