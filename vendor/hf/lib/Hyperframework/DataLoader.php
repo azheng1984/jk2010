@@ -8,18 +8,16 @@ class DataLoader {
         $class = get_called_class();
         $delegate = Config::get($class . '\Delegate');
         if ($delegate !== null) {
-            return $delegate::load(
-                $path, $pathConfigName, $isRelativePath, $extension
-            );
+            return $delegate::load($path, $pathConfigName, $isRelativePath);
         }
         $fullPath = static::getFullPath(
-            $path, $pathConfigName, $isRelativePath, $extension, $class
+            $path, $pathConfigName, $isRelativePath, $class
         );
         return static::loadByFullPath($fullPath);
     }
 
     protected static function getFullPath(
-        $path, $pathConfigName, $isRelativePath, $extension, $class
+        $path, $pathConfigName, $isRelativePath, $class
     ) {
         $config = null;
         if ($pathConfigName !== null) {
@@ -39,7 +37,6 @@ class DataLoader {
     }
 
     protected static function getDefaultRootPath() {
-        return \Yxj\ROOT_PATH;
         return Config::get(
             __NAMESPACE__ . '\AppPath',
             array(
