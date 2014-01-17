@@ -2,22 +2,24 @@
 namespace Hyperframework\Web;
 
 class Runner {
-    public static function run($hyperframeworkPath, $appNamespace) {
-        static::initialize($hyperframeworkPath, $appNamespace);
+    public static function run($hyperframeworkPath, $applicationNamespace) {
+        static::initialize($hyperframeworkPath, $applicationNamespace);
         $path = static::getPath();
         if (static::isAsset($path)) {
             static::runAssetProxy($path);
             return;
         }
-        static::runApp($path);
+        static::runApplication($path);
     }
 
-    protected static function initialize($hyperframeworkPath, $appNamespace) {
+    protected static function initialize(
+        $hyperframeworkPath, $applicationNamespace
+    ) {
         require $hyperframeworkPath . DIRECTORY_SEPARATOR
             . 'Hyperframework' . DIRECTORY_SEPARATOR . 'ClassLoader.php';
         \Hyperframework\ClassLoader::run();
         \Hyperframework\Config::set(
-            'Hyperframework\AppNamespace', $appNamespace
+            'Hyperframework\ApplicationNamespace', $applicationNamespace
         );
         ExceptionHandler::run();
     }
@@ -39,7 +41,7 @@ class Runner {
         Asset\AssetProxy::run($path);
     }
 
-    protected static function runApp($path) {
+    protected static function runApplication($path) {
         Application::run($path);
     }
 }

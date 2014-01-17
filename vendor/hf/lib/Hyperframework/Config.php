@@ -46,8 +46,8 @@ class Config {
         static::$data = array();
     }
 
-    private static function getAppConst($name) {
-        $namespace = static::get(__NAMESPACE__ . '\AppNamespace');
+    private static function getApplicationConst($name) {
+        $namespace = static::get(__NAMESPACE__ . '\ApplicationNamespace');
         if ($namespace === null) {
             return;
         }

@@ -38,9 +38,9 @@ class DataLoader {
 
     protected static function getDefaultRootPath() {
         return Config::get(
-            __NAMESPACE__ . '\AppPath',
+            __NAMESPACE__ . '\ApplicationPath',
             array(
-                'default' => array('app_const' => 'ROOT_PATH'),
+                'default' => array('application_const' => 'ROOT_PATH'),
                 'is_nullable' => false
             )
         );
