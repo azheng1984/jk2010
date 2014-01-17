@@ -31,7 +31,7 @@ class DataLoader {
         }
         $extension = static::getFileNameExtension();
         if ($extension !== null) {
-            $path = $path . $extension;
+            $path .= $extension;
         }
         return $path;
     }
@@ -46,7 +46,9 @@ class DataLoader {
         );
     }
 
-    protected static function getFileNameExtension() {}
+    protected static function getFileNameExtension() {
+        return '.php';
+    }
 
     protected static function loadByFullPath($fullPath) {
         return require $fullPath;

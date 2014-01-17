@@ -10,19 +10,15 @@ class ConfigLoader extends DataLoader {
     }
 
     protected static function appendEnvPath($path) {
-        $appEnv = Config::get(
-            __NAMESPACE__ . '\AppEnv',
-            array('default' => array('app_const' => 'ENV'))
+        $applicationEnv = Config::get(
+            __NAMESPACE__ . '\ApplicationEnv',
+            array('default' => array('applicaiton_const' => 'ENV'))
         )
-        if ($appEnv === null) {
+        if ($applicationEnv === null) {
             return $path;
         }
-        return 'env' . DIRECTORY_SEPARATOR . $appEnv
+        return 'env' . DIRECTORY_SEPARATOR . $applicationEnv
             . DIRECTORY_SEPARATOR . $path;
-    }
-
-    protected static function getFileNameExtension() {
-        return '.config.php';
     }
 
     protected static function getDefaultRootPath() {

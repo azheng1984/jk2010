@@ -1,7 +1,7 @@
 <?php
 namespace Yxj;
 
-const ENV = 'production';
+const Env = 'development';
 const HYPERFRMEWORK_PATH = '/home/azheng/daoxila_www/vendor/hf/lib';
 //require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Hyperframework'
 //    . DIRECTORY_SEPARATOR . 'Config.php';

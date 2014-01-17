@@ -34,8 +34,6 @@ class DbConnectionFactory {
     }
 
     private function initializeConfig() {
-        self::$config = require Config::get(
-            'Hyperframework\ConfigPath', array('is_nullable' => false)
-        ) . 'database.config.php';
+        self::$config = require ConfigLoader::loadByEnv()
     }
 }
