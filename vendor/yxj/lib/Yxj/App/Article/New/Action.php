@@ -1,4 +1,8 @@
 <?php
-class Action {
-    public function post() {}
+namespace Yxj\App\Article\New;
+
+class Action extends \Yxj\Web\Action\ArticleDataBindingAction {
+    public function post() {
+        parent::bind();
+    }
 }

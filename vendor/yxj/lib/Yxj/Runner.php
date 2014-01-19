@@ -14,7 +14,7 @@ class Runner extends \Hyperframework\Web\Runner {
         //use custom router
     }
 
-    protected static function runApp($path) {
+    protected static function runApplication($path) {
         //use new app type
     }
 
