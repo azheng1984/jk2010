@@ -1,7 +1,7 @@
 <?php
-namespace Yxj\Web\Action;
+namespace Yxj\BaseAction;
 
-abstract class ArticleDataBindingAction {
+abstract class ArticleAction {
     public function before() {
         //check autentication
     }
