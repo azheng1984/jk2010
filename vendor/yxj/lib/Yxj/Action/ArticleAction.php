@@ -12,7 +12,7 @@ abstract class ArticleAction {
                 'max_length' => 10,
                 'min_length' => 6,
                 'is_nullable' => false,
-                'type' => 'alpnum'
+                'type' => 'alpha&num'
             )
         );
         if ($binder::bind() !== false) {
