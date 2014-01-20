@@ -1,6 +1,9 @@
 <?php
 namespace Yxj\App\Article;
 
-class Action extends BaseAction {
-    public function delete() {}
+class Action extends \Yxj\Action\ArticleAction {
+    public function delete() {
+        //bind id
+        DbArticle::delete($articleId);
+    }
 }
