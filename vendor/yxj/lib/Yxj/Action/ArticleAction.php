@@ -7,12 +7,12 @@ abstract class ArticleAction {
     }
 
     protected function bind() {
-        $binder = new \Hyperframework\Web\DataBinder('Biz\Article', array(
+        $binder = new \Hyperframework\Web\DataBinder('Yxj\Biz\Article', array(
             'user_name' => array(
                 'max_length' => 10,
                 'min_length' => 6,
                 'is_nullable' => false,
-                'type' => 'alpha&num'
+                'type' => 'alpha & number'
             )
         );
         if ($binder::bind() !== false) {
