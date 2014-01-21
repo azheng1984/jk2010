@@ -5,8 +5,8 @@ class ErrorRunner {
     public static function run($statusCode) {
         $path = static::getPath($statusCode);
         if ($path !== null) {
-            static::initailize();
-            static::runApp($path);
+            static::initialize();
+            static::runApplication($path);
         }
     }
 
@@ -22,7 +22,7 @@ class ErrorRunner {
         $_SERVER['REQUEST_METHOD'] = 'GET';
     }
 
-    protected static function runApp($path) {
+    protected static function runApplication($path) {
         Application::reset();
         try {
             Application::run($path);

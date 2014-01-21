@@ -24,6 +24,7 @@ class Config {
     }
 
     public static function getApplicationPath() {
+        return \Yxj\ROOT_PATH;
         return Config::get(
             __NAMESPACE__ . '\ApplicationPath',
             array(

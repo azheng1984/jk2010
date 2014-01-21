@@ -37,7 +37,7 @@ class DataLoader {
     }
 
     protected static function getDefaultRootPath() {
-        Config::getApplicationPath();
+        return Config::getApplicationPath();
     }
 
     protected static function getFileNameExtension() {

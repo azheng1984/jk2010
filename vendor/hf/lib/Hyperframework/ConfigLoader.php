@@ -3,7 +3,7 @@ namespace Hyperframework;
 
 class ConfigLoader extends DataLoader {
     public static function loadByEnv(
-        $path, $pathConfigName, $isRelativePath = true,
+        $path, $pathConfigName, $isRelativePath = true
     ) {
         $path = static::appendEnvPath($path);
         return parent::load($path, $pathConfigName, $isRelativePath);
@@ -22,6 +22,6 @@ class ConfigLoader extends DataLoader {
     }
 
     protected static function getDefaultRootPath() {
-        return parent::getDefaultRootPath() . DIRECTORY_SEPARATOR . 'config';
+        return Config::getApplicationPath() . DIRECTORY_SEPARATOR . 'config';
     }
 }
