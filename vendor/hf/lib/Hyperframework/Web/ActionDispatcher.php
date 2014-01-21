@@ -1,8 +1,6 @@
 <?php
 namespace Hyperframework\Web;
 
-use Hyperframework\Web\Exceptions\MethodNotAllowedException;
-
 class ActionDispatcher {
     public static function run($pathInfo) {
         $info = null;

@@ -1,6 +1,8 @@
 <?php
 namespace Yxj\Action;
 
+use \Hyperframework\Web\PageNotFoundException; 
+
 abstract class ArticleAction {
     public function before() {
         //check autentication
@@ -23,6 +25,8 @@ abstract class ArticleAction {
             \Hyperframework\Web\Application::redirect(
                 '/article/' . $result['id'], 302
             );
+            return;
         }
+        throw new PageNotFoundException;
     }
 }

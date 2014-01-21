@@ -1,7 +1,7 @@
 <?php
-namespace Hyperframework\Web\ApplicationExceptions;
+namespace Hyperframework\Web;
 
-class BadGatewayException extends Base {
+class BadGatewayException extends ApplicationException {
     public function __construct($message = null, $previous = null) {
         parent::__construct($message, '502 Bad Gateway', $previous);
     }

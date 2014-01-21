@@ -17,7 +17,7 @@ class ViewDispatcher {
             return $views[0];
         }
         if (in_array($_SERVER['REQUEST_MEDIA_TYPE'], $views) === false) {
-            throw new Exceptions\UnsupportedMediaTypeException;
+            throw new UnsupportedMediaTypeException;
         }
         return $_SERVER['REQUEST_MEDIA_TYPE'];
     }
