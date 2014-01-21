@@ -1,4 +1,4 @@
 <?php
 class DataBinder {
-    public function bind($delegate, $inputConfig, $returnConfig) {}
+    public function bind($inputConfig, $delegateConfig = null) {}
 }
