@@ -1,7 +1,7 @@
 <?php
 namespace Yxj\Action;
 
-use \Hyperframework\Web\PageNotFoundException; 
+use \Hyperframework\Web;
 
 abstract class ArticleAction {
     public function before() {
@@ -9,8 +9,7 @@ abstract class ArticleAction {
     }
 
     protected function bind() {
-        $result = new \Hyperframework\Web\DataBinder::bind(
-            'Yxj\Biz\Article',
+        $result = Web\DataBinder::bind(
             array(
                 'user_name' => array(
                     'max_length' => 10,
@@ -19,14 +18,11 @@ abstract class ArticleAction {
                     'type' => 'alpha & number'
                 )
             ),
-            'id'
+            'Yxj\Biz\Article',
+            true
         );
-        if ($result['success']) {
-            \Hyperframework\Web\Application::redirect(
-                '/article/' . $result['id'], 302
-            );
-            return;
+        if ($result['is_success']) {
+            Web\Application::redirect('/article/' . $result['id'], 302);
         }
-        throw new PageNotFoundException;
     }
 }

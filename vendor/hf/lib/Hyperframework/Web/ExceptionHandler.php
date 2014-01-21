@@ -15,7 +15,7 @@ class ExceptionHandler {
         }
         static::$exception = $exception;
         if ($exception instanceof ApplicationException === false) {
-            $exception = new Exceptions\InternalServerErrorException;
+            $exception = new InternalServerErrorException;
         }
         static::resetOutput();
         $exception->setHeader();
@@ -27,7 +27,7 @@ class ExceptionHandler {
                 return;
             }
         }
-        if ($exception instanceof Exceptions\InternalServerErrorException) {
+        if ($exception instanceof InternalServerErrorException) {
             static::reportError(static::$exception);
         }
     }

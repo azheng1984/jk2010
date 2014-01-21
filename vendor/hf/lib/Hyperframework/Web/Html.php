@@ -2,6 +2,6 @@
 namespace Hyperframework\Web;
 
 class Html {
-    //form
-    //head
+    //form helper
+    //head helper
 }
