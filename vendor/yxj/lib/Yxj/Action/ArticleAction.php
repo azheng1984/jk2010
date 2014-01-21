@@ -7,17 +7,21 @@ abstract class ArticleAction {
     }
 
     protected function bind() {
-        $binder = new \Hyperframework\Web\DataBinder('Yxj\Biz\Article', array(
-            'user_name' => array(
-                'max_length' => 10,
-                'min_length' => 6,
-                'is_nullable' => false,
-                'type' => 'alpha & number'
-            )
+        $result = new \Hyperframework\Web\DataBinder::bind(
+            'Yxj\Biz\Article',
+            array(
+                'user_name' => array(
+                    'max_length' => 10,
+                    'min_length' => 6,
+                    'is_nullable' => false,
+                    'type' => 'alpha & number'
+                )
+            ),
+            'id'
         );
-        if ($binder::bind() !== false) {
+        if ($result['success']) {
             \Hyperframework\Web\Application::redirect(
-                '/article/' . $binder::getId(), 302
+                '/article/' . $result['id'], 302
             );
         }
     }

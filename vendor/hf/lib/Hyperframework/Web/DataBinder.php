@@ -1,5 +1,4 @@
 <?php
-namespace Hyperframework\Web;
-
 class DataBinder {
+    public function bind($delegate, $inputConfig, $returnConfig) {}
 }
