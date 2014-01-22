@@ -26,6 +26,6 @@ class ErrorRunner {
         Application::reset();
         try {
             Application::run($path);
-        } catch (Exeptions\UnsupportedMediaTypeException $ignoredException) {}
+        } catch (UnsupportedMediaTypeException $ignoredException) {}
     }
 }

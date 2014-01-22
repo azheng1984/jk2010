@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Web\Exceptions;
+namespace Hyperframework\Web;
 
 class UnauthorizedException extends ApplicationException {
     private $authenticationInfo;

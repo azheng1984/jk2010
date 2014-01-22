@@ -6,11 +6,8 @@ class DbDataBindingCommand {
     const STATUS_UPDATED = 1;
     const STATUS_NOT_MODIFIED = 2;
 
-    const RETURN_STATUS = 1;
-    const RETURN_ID = 2;
-
     public static function execute(
-        $table, $filterColumns, $replacementColumns = null, $options = null
+        $table, $filterColumns, $replacementColumns = null, $idColumn = 'id'
     ) {
         list($return, $client, $idName) = static::fetchOptions($options);
         $columns = $idName !== null &&
@@ -42,9 +39,7 @@ class DbDataBindingCommand {
         if (($return & self::RETURN_STATUS) > 0) {
             $result['status'] = $status;
         }
-        if (($return & self::RETURN_ID) > 0) {
-            $result['id'] = $id;
-        }
+        $result['id'] = $id;
         $length = count($result);
         if ($length === 0) {
             return;
@@ -57,7 +52,7 @@ class DbDataBindingCommand {
 
     private static function fetchOptions($options) {
         $return = 'status';
-        $client = '\Hyperframework\Db\Client';
+        $client = '\Hyperframework\DbClient';
         $idName = 'id';
         if ($options === null) {
             return array($return, $client, $idName);
