@@ -6,7 +6,7 @@ namespace Hyperframework\Db;
 //    'filters' => array('name' => 'xxx'),
 //    'replacements' => array('password', 'xx'),
 //    //'should_return_id' => true,
-//    //'id_name' => 'id'
+//    //'id_column' => 'id'
 //));
 //$id = $result['id'];
 //
