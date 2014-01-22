@@ -1,9 +1,11 @@
 <?php
-namespace Yxj\Action;
+namespace Yxj\DataBinder;
 
-use \Hyperframework\Web;
+class ArticleDataBinder {
+    protected function getInstance() {
+        return 'instance';
+    }
 
-abstract class ArticleDataBinder {
     protected function getInputConfig() {
         return array(
             'user_name' => array(
@@ -19,8 +21,10 @@ abstract class ArticleDataBinder {
     }
 
     public function bind() {
+        if (isset($data['id'])) {
+            //insert
+            return;
+        }
+        //update
     }
-:w
-    :w
-    public 
 }

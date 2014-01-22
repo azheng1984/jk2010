@@ -1,15 +1,32 @@
 <?php
 namespace Hyperframework\Db;
 
-class DbDataBindingCommand {
-    const STATUS_INSERTED = 0;
-    const STATUS_UPDATED = 1;
-    const STATUS_NOT_MODIFIED = 2;
+//$result = DbSaveCommand::execute(array(
+//    'table' => 'article',
+//    'filters' => array('name' => 'xxx'),
+//    'replacements' => array('password', 'xx'),
+//    //'should_return_id' => true,
+//    //'id_name' => 'id'
+//));
+//$id = $result['id'];
+//
+//$result = DbDataBindingCommand::execute(
+//    'table' => 'article', 'filters' => array('name' => 'abc')
+//);
 
+//$id = $result['id'];
+//$status = $result['status'];
+
+//$result = DbDataBindingCommand::execute([
+//    'table' => 'article',
+//    ...
+//]);
+
+class DbSaveCommand {
     public static function execute(
-        $table, $filterColumns, $replacementColumns = null, $idColumn = 'id'
+        $table, $filters, $replacements = null, $options = null
     ) {
-        list($return, $client, $idName) = static::fetchOptions($options);
+        list($shouldReturnId, $idName) = static::fetchOptions($options);
         $columns = $idName !== null &&
             isset($filterColumns[$idName]) ? array() : array($idName);
         if ($replacementColumns !== null) {
@@ -28,12 +45,13 @@ class DbDataBindingCommand {
         if (isset($filterColumns[$idName])) {
             $result[$idName] = $filterColumns[$idName];
         }
-        $status = self::STATUS_NOT_MODIFIED;
+        $status = 'not_modified';//created | updated
         if ($replacementColumns !== null) {
             $status = static::updateDifference(
                 $client, $table, $idName, $result, $replacementColumns
             );
         }
+        return '';
         $id = $result[$idName]; //todo fix id key = null
         $result = array();
         if (($return & self::RETURN_STATUS) > 0) {
