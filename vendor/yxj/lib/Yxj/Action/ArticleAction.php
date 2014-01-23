@@ -10,7 +10,7 @@ abstract class ArticleAction {
 
     protected function bind() {
         //和 validator 一起使用, validator 用于不许要提取的场景
-        $mapper = new Mapper(array(
+        $mapper = new InputMapper(array(
             'user_name' => array(
                 'max_length' => 10,
                 'min_length' => 6,

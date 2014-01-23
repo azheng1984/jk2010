@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-class Mapper {
+class InputMapper {
     public function __construct($config) {
     }
 }
