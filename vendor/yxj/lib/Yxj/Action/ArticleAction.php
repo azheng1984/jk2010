@@ -9,7 +9,8 @@ abstract class ArticleAction {
     }
 
     protected function bind() {
-        $filterResult = InputFilter::getRow(array(
+        //和 validator 一起使用, validator 用于不许要提取的场景
+        $mapper = new Mapper(array(
             'user_name' => array(
                 'max_length' => 10,
                 'min_length' => 6,
@@ -21,8 +22,12 @@ abstract class ArticleAction {
                 'target_path' => 'xxx'
             )
         ));
-        if ($filterResult['success']) {
-            if (isset($filterResult['data']['id'])) {
+        Validator::isValidRow();
+        Validator::isValid();
+        $data = $mapper->getData();
+        $errors = $mapper->getErrors();
+        if ($mapper->isValid()) {
+            if (isset($data['id'])) {
                 $userId = DbArticle::getUserIdById($filterResult['data']['id']);
                 if ($userId === $this->userId) {
                     //DbArticle::update($result['data']);
@@ -37,9 +42,7 @@ abstract class ArticleAction {
             Web\Application::redirect('/article/' . $result['data']['id'], 302);
             return;
         }
-        return array(
-            'article' => $result['data'], 'errors' => $result['errors']
-        );
+        return array('article' => $data, 'errors' => $errors);
 
 
         ArticleForm::bind($result['data'], $result['errors']);
