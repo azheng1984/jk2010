@@ -2,11 +2,10 @@
 namespace Yxj\Action;
 
 use Hyperframework\Web;
-use Yxj\DataBinder\ArticleDataBinder;
 
 abstract class ArticleAction {
     public function before() {
-        Security::check();
+        Security::check();//or bind user
     }
 
     protected function bind() {
@@ -22,16 +21,12 @@ abstract class ArticleAction {
                 'target_path' => 'xxx'
             )
         ));
-        $result = InputFilter::getFile(array(
-            'target_path' => 'xxx',
-            'max_size' => '123k',
-            'should_return' => true
-        ));
-        if ($result['is_success']) {
+        if ($result['success']) {
             if (isset($result['data']['id'])) {
                 $userId = DbArticle::getUserIdById($result['data']['id']);
                 if ($userId === $this->userId) {
                     DbArticle::update($result['data']);
+                    DbArticle::updateDiff($result['data'], $article);
                 } else {
                     //http 401 
                 }
@@ -40,11 +35,22 @@ abstract class ArticleAction {
                 $result['data']['id'] = DbArticle::insert($result['data']);
             }
             Web\Application::redirect('/article/' . $result['data']['id'], 302);
+            return;
         }
+        return array(
+            'article' => $result['data'], 'errors' => $result['errors']
+        );
+
+
         ArticleForm::bind($result['data'], $result['errors']);
 
 
-
+        $result = InputFilter::getFile(array(
+            'target_path' => 'xxx',
+            'max_size' => '123k',
+            'should_return' => true
+        ));
+ 
         $bindingResult = DataBinder::bind(
             array(
                 'id' => array(
