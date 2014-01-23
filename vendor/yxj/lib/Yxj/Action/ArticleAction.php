@@ -9,7 +9,7 @@ abstract class ArticleAction {
     }
 
     protected function bind() {
-        $result = InputFilter::getRow(array(
+        $filterResult = InputFilter::getRow(array(
             'user_name' => array(
                 'max_length' => 10,
                 'min_length' => 6,
@@ -21,18 +21,18 @@ abstract class ArticleAction {
                 'target_path' => 'xxx'
             )
         ));
-        if ($result['success']) {
-            if (isset($result['data']['id'])) {
-                $userId = DbArticle::getUserIdById($result['data']['id']);
+        if ($filterResult['success']) {
+            if (isset($filterResult['data']['id'])) {
+                $userId = DbArticle::getUserIdById($filterResult['data']['id']);
                 if ($userId === $this->userId) {
-                    DbArticle::update($result['data']);
-                    DbArticle::updateDiff($result['data'], $article);
+                    //DbArticle::update($result['data']);
+                    DbArticle::updateDifference($filterResult['data'], $article);
                 } else {
                     //http 401 
                 }
             } else {
-                $result['data']['user_id'] = $this->userId;
-                $result['data']['id'] = DbArticle::insert($result['data']);
+                $filterResult['data']['user_id'] = $this->userId;
+                $filterResult['data']['id'] = DbArticle::insert($result['data']);
             }
             Web\Application::redirect('/article/' . $result['data']['id'], 302);
             return;
