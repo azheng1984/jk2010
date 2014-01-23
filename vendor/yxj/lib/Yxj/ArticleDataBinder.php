@@ -11,18 +11,37 @@ class ArticleDataBinder {
         return 'instance';
     }
 
-    protected function getInputConfig() {
-        return array(
+    protected function bind() {
+        $userId = Security::check();
+        $result = InputFilter::execute(array(
             'user_name' => array(
                 'max_length' => 10,
                 'min_length' => 6,
                 'is_nullable' => false,
                 'type' => 'alpha & number'
             )
-        );
-       // if ($result['is_success']) {
-       //     Web\Application::redirect('/article/' . $result['id'], 302);
-       // }
+        ));
+        if ($result['is_success']) {
+            DbArticle::save($result['data']);
+            Web\Application::redirect('/article/' . $result['id'], 302);
+        }
+        ArticleForm::bind($result['data'], $result['errors']);
+
+        try {
+            $result = InputFilter::execute(array(
+                'user_name' => array(
+                    'max_length' => 10,
+                    'min_length' => 6,
+                    'is_nullable' => false,
+                    'type' => 'alpha & number'
+                )
+            ));
+            \Yxj\Biz\Article::save($result['data']);
+        } catch (DataBindingException $ex) {
+            Web\Application::redirect('/article/' . $result['data']['id'], 302);
+            return;
+        }
+        ArticleForm::bind($result['data'], $result['errors']);
     }
 
     protected static function renderForm() {
@@ -39,18 +58,28 @@ class ArticleDataBinder {
 
         $html = Html::bind('article', $data);
 
-
         $form = new Form($data);
         $form->begin(array('name' => 'article', 'method' => 'post'));
         $form->textbox(array('name' => 'title'));
         $form->select(array('name' => 'sex'));
         $form->end();
 
+        $dataSource = __CLASS__;
         Html::addDataSource('xyj/article', $data);
         Html::beginForm(array('name' => 'article', 'method' => 'post'));
         Html::textbox('bind' => 'xyj/article:title');
         Html::textArea('bind' => 'xyj/article:content');
         Html::endForm();
+
+        Html::beginBinding($data);
+        Html::textbox('bind' => 'title');
+        Html::endBinding();
+
+        Html::beginForm(['data_source' => $data]);
+        Html::textbox('bind' => 'title');
+        Html::endForm();
+
+        Html::textbox('bind' => 'title', 'data_source' => $data);
 
         $html->textarea(array('name' => 'article'));
 

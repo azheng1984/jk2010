@@ -6,10 +6,45 @@ use Yxj\DataBinder\ArticleDataBinder;
 
 abstract class ArticleAction {
     public function before() {
-        //check autentication
+        Security::check();
     }
 
     protected function bind() {
+        $result = InputFilter::getRow(array(
+            'user_name' => array(
+                'max_length' => 10,
+                'min_length' => 6,
+                'is_nullable' => false,
+                'type' => 'alpha & number'
+            ),
+            'avatar' => array(
+                'type' => 'file',
+                'target_path' => 'xxx'
+            )
+        ));
+        $result = InputFilter::getFile(array(
+            'target_path' => 'xxx',
+            'max_size' => '123k',
+            'should_return' => true
+        ));
+        if ($result['is_success']) {
+            if (isset($result['data']['id'])) {
+                $userId = DbArticle::getUserIdById($result['data']['id']);
+                if ($userId === $this->userId) {
+                    DbArticle::update($result['data']);
+                } else {
+                    //http 401 
+                }
+            } else {
+                $result['data']['user_id'] = $this->userId;
+                $result['data']['id'] = DbArticle::insert($result['data']);
+            }
+            Web\Application::redirect('/article/' . $result['data']['id'], 302);
+        }
+        ArticleForm::bind($result['data'], $result['errors']);
+
+
+
         $bindingResult = DataBinder::bind(
             array(
                 'id' => array(
