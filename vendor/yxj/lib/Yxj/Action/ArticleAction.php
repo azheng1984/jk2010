@@ -1,7 +1,8 @@
 <?php
 namespace Yxj\Action;
 
-use Hyperframework\Web;
+use Hyperframework\Web\Application;
+use Hyperframework\Web\InputMapper;
 
 abstract class ArticleAction {
     public function before() {
@@ -21,22 +22,30 @@ abstract class ArticleAction {
                 'target_path' => 'xxx'
             )
         ));
+        $mapper = new InputMapper(array(
+            'source' => 'get',
+            'name' => 'query',
+            'max_length' => 100
+        ));
+        if ($mapper->isValid()) {
+            return $mapper->getData();
+        }
+
         $data = $mapper->getData();
         $errors = $mapper->getErrors();
         if ($mapper->isValid()) {
             if (isset($data['id'])) {
                 $userId = DbArticle::getUserIdById($data['id']);
                 if ($userId === $this->userId) {
-                    //DbArticle::update($result['data']);
                     DbArticle::updateDifference($data, $article);
                 } else {
                     //http 401 
                 }
             } else {
                 $data['user_id'] = $this->userId;
-                $data['id'] = DbArticle::insert($result['data']);
+                $data['id'] = DbArticle::insert($data);
             }
-            Web\Application::redirect('/article/' . $data['id'], 302);
+            Application::redirect('/article/' . $data['id'], 302);
             return;
         }
         return array('article' => $data, 'errors' => $errors);

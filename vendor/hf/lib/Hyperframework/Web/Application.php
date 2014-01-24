@@ -26,7 +26,7 @@ class Application {
         $result = static::$actionResult;
         foreach (func_get_args() as $key) {
             if (isset($result[$key]) === false) {
-                return null;
+                return;
             }
             $result = $result[$key];
         }
