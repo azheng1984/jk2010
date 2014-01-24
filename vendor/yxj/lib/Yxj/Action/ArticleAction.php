@@ -15,7 +15,8 @@ abstract class ArticleAction {
                 'max_length' => 10,
                 'min_length' => 6,
                 'is_nullable' => false,
-                'type' => 'alpha & number'
+                'rename' => 'name',
+                'type' => 'alpha'
             ),
             'avatar' => array(
                 'type' => 'file',
@@ -23,14 +24,13 @@ abstract class ArticleAction {
             )
         ));
         $mapper = new InputMapper(array(
-            'source' => 'get',
+            'data_source' => 'get',
             'name' => 'query',
             'max_length' => 100
         ));
         if ($mapper->isValid()) {
             return $mapper->getData();
         }
-
         $data = $mapper->getData();
         $errors = $mapper->getErrors();
         if ($mapper->isValid()) {
