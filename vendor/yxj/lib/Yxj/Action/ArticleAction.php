@@ -8,8 +8,7 @@ abstract class ArticleAction {
         Security::check();//or bind user
     }
 
-    protected function bind() {
-        //和 validator 一起使用, validator 用于不许要提取的场景
+    protected function save() {
         $mapper = new InputMapper(array(
             'user_name' => array(
                 'max_length' => 10,
@@ -22,27 +21,39 @@ abstract class ArticleAction {
                 'target_path' => 'xxx'
             )
         ));
-        Validator::isValidRow();
-        Validator::isValid();
         $data = $mapper->getData();
         $errors = $mapper->getErrors();
         if ($mapper->isValid()) {
             if (isset($data['id'])) {
-                $userId = DbArticle::getUserIdById($filterResult['data']['id']);
+                $userId = DbArticle::getUserIdById($data['id']);
                 if ($userId === $this->userId) {
                     //DbArticle::update($result['data']);
-                    DbArticle::updateDifference($filterResult['data'], $article);
+                    DbArticle::updateDifference($data, $article);
                 } else {
                     //http 401 
                 }
             } else {
-                $filterResult['data']['user_id'] = $this->userId;
-                $filterResult['data']['id'] = DbArticle::insert($result['data']);
+                $data['user_id'] = $this->userId;
+                $data['id'] = DbArticle::insert($result['data']);
             }
-            Web\Application::redirect('/article/' . $result['data']['id'], 302);
+            Web\Application::redirect('/article/' . $data['id'], 302);
             return;
         }
         return array('article' => $data, 'errors' => $errors);
+
+
+
+
+
+
+
+
+
+        $article = Application::get('article');
+
+        Validator::isValidRow();
+        Validator::isValid();
+
 
 
         ArticleForm::bind($result['data'], $result['errors']);

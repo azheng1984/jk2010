@@ -26,17 +26,19 @@ class ActionDispatcher {
             && $hasAfterFilter === false) {
             return;
         }
+        $result = null;
         $class = $pathInfo['namespace'] . '\Action';
         $action = new $class;
         if ($hasBeforeFilter) {
             $action->before();
         }
         if ($hasMethod) {
-            $action->$method();
+            $result = $action->$method();
         }
         if ($hasAfterFilter) {
             $action->after();
         }
+        return $result;
     }
 
     protected static function getMethod() {

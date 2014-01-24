@@ -3,10 +3,11 @@ namespace Hyperframework\Web;
 
 class Application {
     private static $isViewEnabled = true;
+    private static $actionResult;
 
     public static function run($path) {
         $pathInfo = static::getPathInfo($path);
-        static::executeAction($pathInfo);
+        static::$actionResult = static::executeAction($pathInfo);
         static::renderView($pathInfo);
     }
 
@@ -16,6 +17,20 @@ class Application {
 
     public static function disableView() {
         static::$isViewEnabled = false;
+    }
+
+    public static function getActionResult($key = null/*, ...*/) {
+        if ($key === null) {
+            return static::$actionResult;
+        }
+        $result = static::$actionResult;
+        foreach (func_get_args() as $key) {
+            if (isset($result[$key]) === false) {
+                return null;
+            }
+            $result = $result[$key];
+        }
+        return $result;
     }
 
     public static function redirect($url, $statusCode = 301) {
@@ -32,7 +47,11 @@ class Application {
     }
 
     protected static function executeAction($pathInfo) {
-        ActionDispatcher::run($pathInfo);
+        return ActionDispatcher::run($pathInfo);
+    }
+
+    protected static function setActionResult($value) {
+        static::$actionResult = $value;
     }
 
     protected static function renderView($pathInfo) {
