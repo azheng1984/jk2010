@@ -36,7 +36,7 @@ abstract class ArticleAction {
         if ($mapper->isValid()) {
             if (isset($data['id'])) {
                 $userId = DbArticle::getUserIdById($data['id']);
-                if ($userId === $this->userId) {
+                if ($userId === $this->user['id']) {
                     DbArticle::updateDifference($data, $article);
                 } else {
                     //http 401 
