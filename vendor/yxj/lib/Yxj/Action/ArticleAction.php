@@ -28,10 +28,26 @@ abstract class ArticleAction {
             'name' => 'query',
             'max_length' => 100
         ));
-        if ($mapper->isValid()) {
-            return $mapper->getData();
-        }
+
+
         $data = $mapper->getData();
+        $errors = $mapper->getErrors();
+        if ($mapper->isValid()) {
+            //upload
+            //$mapper->isValid();
+        } else {
+        }
+
+        try {
+            $data = InputMapper::map($config);
+            //save...
+            //redirect
+        } catch (ValidationException $exception) {
+            return ['errors' => $exception->getErrors()];
+        }
+
+        Html::bind($data, $errors);
+
         $errors = $mapper->getErrors();
         if ($mapper->isValid()) {
             if (isset($data['id'])) {
