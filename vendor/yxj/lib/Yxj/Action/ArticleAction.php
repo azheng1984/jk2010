@@ -16,7 +16,8 @@ abstract class ArticleAction {
                 'min_length' => 6,
                 'is_nullable' => false,
                 'rename' => 'name',
-                'type' => 'alpha'
+                'type' => 'alpha',
+                'default' => 'az'
             ),
             'avatar' => array(
                 'type' => 'file',
