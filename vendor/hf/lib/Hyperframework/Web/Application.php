@@ -2,8 +2,8 @@
 namespace Hyperframework\Web;
 
 class Application {
-    private static $isViewEnabled = true;
     private static $actionResult;
+    private static $isViewEnabled = true;
 
     public static function run($path) {
         $pathInfo = static::getPathInfo($path);
@@ -39,6 +39,7 @@ class Application {
     }
 
     public static function reset() {
+        static::$actionResult = null;
         static::$isViewEnabled = true;
     }
 
