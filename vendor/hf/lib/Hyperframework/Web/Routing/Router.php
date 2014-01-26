@@ -11,6 +11,7 @@ class Router {
         if ($redirectType !== null) {
             $path = static::adjustPath($path, $redirectType);
         }
+        //cancel，没有 link 对象，可以通过 Router::getParameters(); 来获取参数，处理则和 get 参数保持一致
         static::initializeLink($path, $result['parameters']);
         if ($redirectType !== null) {
             $tmp = explode('?', $_SERVER['REQUEST_URI'], 2);
