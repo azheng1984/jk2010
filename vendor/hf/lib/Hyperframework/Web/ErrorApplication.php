@@ -2,12 +2,19 @@
 namespace Hyperframework\Web;
 
 class ErrorApplication {
+    private static $statusCode;
+
     public static function run($statusCode) {
+        static::$statusCode = $statusCode;
         $path = static::getPath($statusCode);
         $pathInfo = PathInfo::get($path);
         try {
             ViewDispatcher::run($pathInfo);
         } catch (UnsupportedMediaTypeException $ignoredException) {}
+    }
+
+    public static function getStatusCode() {
+        return static::$statusCode;
     }
 
     protected static function getPath($statusCode) {
