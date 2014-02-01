@@ -28,7 +28,7 @@ class ArticleDataBinder {
         ArticleForm::bind($result['data'], $result['errors']);
 
         try {
-            $result = InputFilter::execute(array(
+            $result = InputFilter::getResult(array(
                 'user_name' => array(
                     'max_length' => 10,
                     'min_length' => 6,
@@ -36,12 +36,12 @@ class ArticleDataBinder {
                     'type' => 'alpha & number'
                 )
             ));
-            \Yxj\Biz\Article::save($result['data']);
+            \Yxj\Biz\Article::save($mapper->getResult());
         } catch (DataBindingException $ex) {
-            Web\Application::redirect('/article/' . $result['data']['id'], 302);
+            Web\Application::redirect('/article/' . $result['id'], 302);
             return;
         }
-        ArticleForm::bind($result['data'], $result['errors']);
+        ArticleForm::bind($mapper->getInput(), $mapper->getErrors());
     }
 
     protected static function renderForm() {

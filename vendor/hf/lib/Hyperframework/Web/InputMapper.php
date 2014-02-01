@@ -6,6 +6,10 @@ class InputMapper {
     }
 
     public function getResult() {
+        //if invalid, throw ValidationException
+    }
+
+    public function getInput() {
     }
 
     public function getErrors() {

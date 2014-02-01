@@ -1,12 +1,16 @@
 <?php
 namespace Hyperframework\Web;
 
+//html helper
+//includes:
 //form helper
 //head helper
 //other html tag helper
 
 class Html {
-    public static function beginBinding($data, $errors = null) {
+    private $bindingStack;
+
+    public static function beginBinding($data = array(), $errors = null) {
     }
 
     public static function endBinding() {

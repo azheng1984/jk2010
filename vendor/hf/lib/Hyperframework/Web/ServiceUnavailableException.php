@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Web\Exceptions;
+namespace Hyperframework\Web;
 
 class ServiceUnavailableException extends ApplicationException {
     public function __construct($message = null, $previous = null) {

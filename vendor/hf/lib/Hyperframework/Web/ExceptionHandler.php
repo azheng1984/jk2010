@@ -59,6 +59,6 @@ class ExceptionHandler {
     }
 
     protected static function displayError($applicationException) {
-        ErrorRunner::run($applicationException->getCode());
+        ErrorApplication::run($applicationException->getCode());
     }
 }
