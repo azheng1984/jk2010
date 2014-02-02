@@ -23,12 +23,11 @@ class ExceptionHandler {
             try {
                 static::displayError($exception);
             } catch (\Exception $recursiveException) {
-                static::reportError(static::$exception, $recursiveException);
-                return;
+                static::triggerError(static::$exception, $recursiveException);
             }
         }
         if ($exception instanceof InternalServerErrorException) {
-            static::reportError(static::$exception);
+            static::triggerError(static::$exception);
         }
     }
 
@@ -40,7 +39,7 @@ class ExceptionHandler {
         restore_exception_handler();
     }
 
-    protected static function reportError(
+    protected static function triggerError(
         $exception, $recursiveException = null
     ) {
         if ($recursiveException !== null) {
