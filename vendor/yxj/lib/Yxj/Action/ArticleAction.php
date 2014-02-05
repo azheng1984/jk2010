@@ -10,6 +10,8 @@ abstract class ArticleAction {
     }
 
     protected function save() {
+        $mapperConfig = array();
+        JsValidation::generate($inputMapperConfig); //use js or html5?
         $mapper = new InputMapper(array(
             'user_name' => array(
                 'max_length' => 10,
@@ -29,7 +31,6 @@ abstract class ArticleAction {
             'name' => 'query',
             'max_length' => 100
         ));
-
 
         $data = $mapper->getData();
         $errors = $mapper->getErrors();
