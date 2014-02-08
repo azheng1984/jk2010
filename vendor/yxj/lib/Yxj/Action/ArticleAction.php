@@ -10,8 +10,8 @@ abstract class ArticleAction {
     }
 
     protected function save() {
-        $mapperConfig = array();
-        JsValidation::generate($inputMapperConfig); //use js or html5?
+        $inputConfig = array();
+        JsValidation::generate($inputConfig, $options);//use js or html5?
         $mapper = new InputMapper(array(
             'user_name' => array(
                 'max_length' => 10,
@@ -19,15 +19,15 @@ abstract class ArticleAction {
                 'is_nullable' => false,
                 'rename' => 'name',
                 'type' => 'alpha',
-                'default' => 'az'
+                'default' => 'az'//no js validation default value(should in html)
             ),
             'avatar' => array(
-                'type' => 'file',
-                'target_path' => 'xxx'
+                'source' => 'file',
+                //'target_path' => 'xxx' //no file process
             )
         ));
         $mapper = new InputMapper(array(
-            'data_source' => 'get',
+            'source' => 'get',
             'name' => 'query',
             'max_length' => 100
         ));
