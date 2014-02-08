@@ -2,22 +2,19 @@
 namespace Hyperframework;
 
 class DataLoader {
-    public static function load(
-        $path, $pathConfigName = null, $isRelativePath = true
-    ) {
+    public static function load($defaultPath, $pathConfigName = null) {
         $class = get_called_class();
         $delegate = Config::get($class . '\Delegate');
         if ($delegate !== null) {
-            return $delegate::load($path, $pathConfigName, $isRelativePath);
+            return $delegate::load($defaultPath, $pathConfigName);
         }
-        $fullPath = static::getFullPath(
-            $path, $pathConfigName, $isRelativePath, $class
+        return static::loadByFullPath(
+            static::getFullPath($defaultPath, $pathConfigName, $class)
         );
-        return static::loadByFullPath($fullPath);
     }
 
     protected static function getFullPath(
-        $path, $pathConfigName, $isRelativePath, $class
+        $defaultPath, $pathConfigName, $class
     ) {
         $config = null;
         if ($pathConfigName !== null) {
@@ -26,21 +23,15 @@ class DataLoader {
         if ($config !== null) {
             return $config;
         }
-        if ($isRelativePath) {
-            $path = static::getRootPath($class) . DIRECTORY_SEPARATOR . $path;
+        $rootPath = Config::get($class . '\RootPath');
+        if ($rootPath === null) {
+            $rootPath = static::getDefaultRootPath();
         }
-        $extension = static::getFileNameExtension();
-        if ($extension !== null) {
-            $path .= $extension;
-        }
-        return $path;
+        return $rootPath . DIRECTORY_SEPARATOR
+            . $defaultPath . static::getDefaultFileNameExtension();
     }
 
-    protected static function getDefaultRootPath() {
-        return Config::getApplicationPath();
-    }
-
-    protected static function getFileNameExtension() {
+    protected static function getDefaultFileNameExtension() {
         return '.php';
     }
 
@@ -48,11 +39,7 @@ class DataLoader {
         return require $fullPath;
     }
 
-    private static function getRootPath($class) {
-        $result = Config::get($class . '\RootPath');
-        if ($result !== null) {
-            return $result;
-        }
-        return static::getDefaultRootPath();
+    protected static function getDefaultRootPath() {
+        return Config::getApplicationPath();
     }
 }

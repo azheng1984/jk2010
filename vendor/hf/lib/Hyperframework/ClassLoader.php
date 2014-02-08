@@ -4,6 +4,7 @@ namespace Hyperframework;
 class ClassLoader {
     public static function run() {
         spl_autoload_register(array(__CLASS__, 'load'));
+        //load path cache or set dev mode
     }
 
     public static function load($name) {

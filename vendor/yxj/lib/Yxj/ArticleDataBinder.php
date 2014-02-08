@@ -1,4 +1,5 @@
 <?php
+//过时的设计
 namespace Yxj\DataBinder;
 
 //validation / upload filter
