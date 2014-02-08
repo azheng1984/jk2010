@@ -3,15 +3,21 @@ namespace Hyperframework;
 
 class ConfigLoader extends DataLoader {
     public static function loadByEnv($defaultPath, $pathConfigName) {
+        return parent::load(
+            static::appendEnvPath($defaultPath), $pathConfigName
+        );
+    }
+
+    protected static function appendEnvPath($defaultPath) {
         $applicationEnv = Config::get(
             __NAMESPACE__ . '\ApplicationEnv',
             array('default' => array('applicaiton_const' => 'ENV'))
         )
-        if ($applicationEnv !== null) {
-            $defaultPath = 'env' . DIRECTORY_SEPARATOR . $applicationEnv
-                . DIRECTORY_SEPARATOR . $defaultPath;
+        if ($applicationEnv === null) {
+            return $defaultPath;
         }
-        return parent::load($defaultPath, $pathConfigName);
+        return 'env' . DIRECTORY_SEPARATOR . $applicationEnv
+            . DIRECTORY_SEPARATOR . $defaultPath;
     }
 
     protected static function getDefaultRootPath() {
