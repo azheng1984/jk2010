@@ -27,8 +27,8 @@ class DataLoader {
         if ($rootPath === null) {
             $rootPath = static::getDefaultRootPath();
         }
-        return $rootPath . DIRECTORY_SEPARATOR
-            . $defaultPath . static::getDefaultFileNameExtension();
+        return $rootPath . DIRECTORY_SEPARATOR . $defaultPath
+            . static::getDefaultFileNameExtension();
     }
 
     protected static function getDefaultFileNameExtension() {
