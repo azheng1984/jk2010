@@ -35,11 +35,11 @@ class DataLoader {
         return '.php';
     }
 
-    protected static function loadByFullPath($fullPath) {
-        return require $fullPath;
-    }
-
     protected static function getDefaultRootPath() {
         return Config::getApplicationPath();
+    }
+
+    protected static function loadByFullPath($fullPath) {
+        return require $fullPath;
     }
 }
