@@ -10,8 +10,12 @@ abstract class ArticleAction {
     }
 
     protected function save() {
+<<<<<<< HEAD
         $inputConfig = array();
         JsValidation::generate($inputConfig, $options);//use js or html5?
+=======
+        JsValidation::generate($articleFormInputConfig); //use js or html5?
+>>>>>>> 51169888ca9228b3567469653fa2f2c3b0a0eb9f
         $mapper = new InputMapper(array(
             'user_name' => array(
                 'max_length' => 10,
