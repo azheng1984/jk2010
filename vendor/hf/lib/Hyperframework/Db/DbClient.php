@@ -58,8 +58,8 @@ class DbClient {
                 $parameters, array_slice(func_get_args(), 3)
             );
         }
-        $sql = 'UPDATE ' . $table . ' SET ' .
-            implode(array_keys($columns), ' = ?, ') . ' = ?' . $where;
+        $sql = 'UPDATE ' . $table . ' SET '
+            . implode(array_keys($columns), ' = ?, ') . ' = ?' . $where;
         static::send($sql, $parameters), false);
     }
 

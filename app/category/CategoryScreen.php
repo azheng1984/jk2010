@@ -2,7 +2,9 @@
 class CategoryScreen {
     private $cache;
 
-    public function render() {
+    public function render($abc) {
+        $this->$abc();
+    }
         if ($_GET['category'] !== 'home' &&
             !isset($_ENV['category'][$_GET['category']])) {
             throw new NotFoundException;
