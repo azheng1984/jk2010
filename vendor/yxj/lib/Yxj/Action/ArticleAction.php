@@ -16,18 +16,21 @@ abstract class ArticleAction {
 =======
         JsValidation::generate($articleFormInputConfig); //use js or html5?
 >>>>>>> 51169888ca9228b3567469653fa2f2c3b0a0eb9f
+        //js validation is a client subset of server validation
+        //js value and field type(css) is part of html
         $mapper = new InputMapper(array(
             'user_name' => array(
                 'max_length' => 10,
                 'min_length' => 6,
                 'is_nullable' => false,
-                'rename' => 'name',
                 'type' => 'alpha',
-                'default' => 'az'//no js validation default value(should in html)
+                //'default' => 'az'//no js validation default value(should in html)
+                //'rename' => 'name'//客户端验证必须是服务器端验证的一个子集
             ),
+            'content',
             'avatar' => array(
-                'source' => 'file',
-                //'target_path' => 'xxx' //no file process
+                'source' => 'GET',
+                //'target_path' => 'xxx'//map only, no file process, use plan old php, code as config
             )
         ));
         $mapper = new InputMapper(array(
@@ -42,6 +45,7 @@ abstract class ArticleAction {
             //upload
             //$mapper->isValid();
         } else {
+            //
         }
 
         try {
