@@ -10,9 +10,13 @@ namespace Hyperframework\Web;
 //);
 
 $someCode = array();
-$articleInputMapper = new InputMapper($config1, $config2);
+//$articleInputMapper = new InputMapper($config1, $config2);
+
 $articleInputMapper = InputMapper::getInstance('article');
-InputMapper::configSource();
+if ($articleInputMapper->isValid()) {
+
+}
+
 Html::beginBindingByInputMapper('article');
 $someCode = array();
 Html::endBinding();
@@ -20,7 +24,7 @@ Html::endBinding();
 class InputMapper {
     private static $instances = array();
 
-    private function __construct($fieldConfig, $globalConfig = null) {}
+    public function __construct($fieldConfig, $globalConfig = null) {}
 
     public function getResult() {
         //if invalid, throw ValidationException
