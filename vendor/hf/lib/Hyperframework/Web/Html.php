@@ -2,23 +2,26 @@
 namespace Hyperframework\Web;
 
 //html helper
-//includes:
+//includes
 //form helper
 //head helper
 //other html tag helper
 
+//Html::beginBindingByInputMapper('article');
+
 class Html {
     private $bindingStack;
 
-    //auto binding to current request method params
-    public static function beginBinding($data = null, $errors = null) {
+    public static function beginBinding($data, $errors = null) {
+    }
+
+    public static function beginBindingByInputMapper($name) {
     }
 
     public static function endBinding() {
     }
 
-    //auto binding
-    public static function beginForm($options) {
+    public static function beginForm($options = null) {
     }
 
     public static function endForm() {

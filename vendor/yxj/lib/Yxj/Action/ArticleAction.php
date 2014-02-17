@@ -12,7 +12,7 @@ abstract class ArticleAction {
     protected function save() {
 <<<<<<< HEAD
         $inputConfig = array();
-        JsValidation::generate($inputConfig, $options);//use js or html5?
+        JsValidation::generateByInputMapperConfig($inputConfig, $options);//use js or html5?
 =======
         JsValidation::generate($articleFormInputConfig); //use js or html5?
 >>>>>>> 51169888ca9228b3567469653fa2f2c3b0a0eb9f
@@ -31,7 +31,7 @@ abstract class ArticleAction {
             ),
             'content',
             'avatar' => array(
-                'source' => 'GET',
+                //'source' => 'GET', one input mapper only mapper one source
                 //'target_path' => 'xxx'//map only, no file process, use plan old php, code as config
             )
         ));
