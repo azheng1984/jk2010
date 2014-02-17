@@ -18,12 +18,14 @@ abstract class ArticleAction {
 >>>>>>> 51169888ca9228b3567469653fa2f2c3b0a0eb9f
         //js validation is a client subset of server validation
         //js value and field type(css) is part of html
+        $mapper = new InputMapper($config, 'GET');
         $mapper = new InputMapper(array(
             'user_name' => array(
                 'max_length' => 10,
                 'min_length' => 6,
                 'is_nullable' => false,
                 'type' => 'alpha',
+                'source' => 'GET',
                 //'default' => 'az'//no js validation default value(should in html)
                 //'rename' => 'name'//客户端验证必须是服务器端验证的一个子集
             ),

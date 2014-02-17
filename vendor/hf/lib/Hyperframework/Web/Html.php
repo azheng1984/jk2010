@@ -10,12 +10,14 @@ namespace Hyperframework\Web;
 class Html {
     private $bindingStack;
 
-    public static function beginBinding($data = array(), $errors = null) {
+    //auto binding to current request method params
+    public static function beginBinding($data = null, $errors = null) {
     }
 
     public static function endBinding() {
     }
 
+    //auto binding
     public static function beginForm($options) {
     }
 
