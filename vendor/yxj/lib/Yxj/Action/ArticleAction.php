@@ -29,7 +29,7 @@ abstract class ArticleAction {
             ),
             'content',
             'avatar' => array(
-                'source' => 'GET',
+                //'source' => 'GET', one input mapper only mapper one source
                 //'target_path' => 'xxx'//map only, no file process, use plan old php, code as config
             )
         ));

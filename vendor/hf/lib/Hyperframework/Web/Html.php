@@ -12,7 +12,7 @@ namespace Hyperframework\Web;
 class Html {
     private $bindingStack;
 
-    public static function beginBinding($data = null, $errors = null) {
+    public static function beginBinding($data, $errors = null) {
     }
 
     public static function beginBindingByInputMapper($name) {
