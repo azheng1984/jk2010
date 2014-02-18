@@ -42,8 +42,9 @@ class ActionDispatcher {
     }
 
     protected static function getMethod() {
-        $rewritingEnabled =
-            \Hyperframework\Config::get(__CLASS__ . '\MethodRewritingEnabled');
+        $rewritingEnabled = \Hyperframework\Config::get(
+            __CLASS__ . '\MethodRewritingEnabled'
+        );
         if ($rewritingEnabled !== false
             && $_SERVER['REQUEST_METHOD'] === 'POST'
             && isset($_POST['_method'])) {

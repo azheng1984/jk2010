@@ -17,12 +17,10 @@ namespace Hyperframework\Web;
 //
 //}
 
-Html::beginBindingByInputMapper('article');
+Html::beginBindingInputMapper('Article');
+
 //$someCode = array();
 //Html::endBinding();
-
-//    /article-field.config.php
-//    /article-global.config.php
 
 array(
     'fields' => array(
@@ -39,7 +37,7 @@ array(
 //    'hi2' => ''
 //));
 
-InputMapper::addConfig($config, array('source' => 'GET', 'name' => 'article');
+InputMapper::addConfig($config, array('source' => 'GET', 'name' => 'Article');
 
 return array(
     'source' => 'GET',

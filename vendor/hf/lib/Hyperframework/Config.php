@@ -23,12 +23,11 @@ class Config {
         return $value;
     }
 
-    public static function getApplicationPath() {
-        return \Yxj\ROOT_PATH;
+    public static function getAppPath() {
         return Config::get(
-            __NAMESPACE__ . '\ApplicationPath',
+            __NAMESPACE__ . '\AppPath',
             array(
-                'default' => array('application_const' => 'ROOT_PATH'),
+                'default' => array('app_const' => 'ROOT_PATH'),
                 'is_nullable' => false
             )
         );

@@ -1,8 +1,10 @@
 <?php
-class CategoryNewAction {
-  public function GET() {}
+namespace Yxj\App\Category\Add;
 
-  public function POST() {
+class Action {
+  public function get() {}
+
+  public function post() {
     if (Db::getColumn(
       'SELECT count(*) FROM category WHERE name = ?', $_POST['name']) !== '0'
     ) {
@@ -26,7 +28,7 @@ class CategoryNewAction {
     exit;
   }
 
-  public function PUT() {
+  public function put() {
     if (!is_array($GLOBALS['PATH_SECTION_LIST'][1])) {
       exit;
     }
@@ -37,7 +39,7 @@ class CategoryNewAction {
     ), 'id = ?', $categoryId);
   }
 
-  public function DELETE() {
+  public function delete() {
     if (!is_array($GLOBALS['PATH_SECTION_LIST'][1])) {
       exit;
     }

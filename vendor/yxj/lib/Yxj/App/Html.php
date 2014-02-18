@@ -1,5 +1,6 @@
 <?php
 namespace Yxj\App;
+
 use Yxj\Biz\Product;
 use Yxj\Db\DbProduct;
 
