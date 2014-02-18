@@ -44,7 +44,7 @@ InputMapper::addConfig($config, array('source' => 'GET', 'name' => 'article');
 return array(
     'source' => 'GET',
     'fields' => require __DIR__ . DIRECTORY_SEPARATOR
-        . 'article_fields.config.php'
+        . 'Article.Fields.config.php'
 );
 
 class InputMapper {
