@@ -7,7 +7,7 @@ namespace Hyperframework\Web;
 //head helper
 //other html tag helper
 
-//Html::beginBindingByInputMapper('article');
+//Html::beginBindingInputMapper('article');
 
 class Html {
     private $bindingStack;
@@ -15,7 +15,7 @@ class Html {
     public static function beginBinding($data, $errors = null) {
     }
 
-    public static function beginBindingByInputMapper($name) {
+    public static function beginBindingInputMapper($name) {
     }
 
     public static function endBinding() {
