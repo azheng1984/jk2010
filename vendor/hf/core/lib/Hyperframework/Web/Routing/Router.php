@@ -14,11 +14,12 @@ class Router {
         }
 
         // http://www.baidu.com/23232323.article/add/ =>
-        // http://www.baidu.com/ [1232445] . article/         /add => 404
+        // http://www.baidu.com/1232445.article/add => 404
+        //
+        // 转变成
+        // http://www.baidu.com/23232323.article/add/ => 404
+        //
         // /article/add segments[0][0] = 1232445;
-        // initialize();
-        // path mapper
-        // Link.php
 
         //cancel，没有 link 对象，可以通过 Router::getParameters(); 来获取参数，处理则和 get 参数保持一致
         static::initializeLink($path, $result['parameters']);
