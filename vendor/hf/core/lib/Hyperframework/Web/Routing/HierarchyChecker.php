@@ -1,4 +1,5 @@
 <?php
+// cancel，放在 view 里
 namespace Hyperframework\Routing;
 
 class HierarchyChecker {

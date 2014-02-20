@@ -2,6 +2,7 @@
 namespace Hyperframework\Routing;
 
 class Router {
+    //在统一的地方放置分离后的 path segments，以便 input mapper 调用
     public static function execute($result = null) {
         if ($result === null) {
             //TODO
@@ -14,6 +15,7 @@ class Router {
         }
 
         // http://www.baidu.com/23232323.article/add/ =>
+
         // http://www.baidu.com/1232445.article/add => 404
         //
         // 转变成
