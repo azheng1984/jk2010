@@ -27,3 +27,5 @@ class SegmentExtensionParser {
         return array('path' => $path, 'parameters' => $parameters);
     }
 }
+
+//    /main/article-232323/ => redirect /main/232323.article/
