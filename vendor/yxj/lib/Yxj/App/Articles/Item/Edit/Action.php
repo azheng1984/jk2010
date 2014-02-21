@@ -1,8 +1,10 @@
 <?php
-namespace Yxj\App\Article\Edit;
+namespace Yxj\App\Articles\Item\Edit;
 
 class Action extends \Yxj\Action\ArticleAction {
     public function put() {
         return parent::save();
     }
 }
+
+//http://i.taobao.com/article/edit/

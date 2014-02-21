@@ -1,5 +1,5 @@
 <?php
-namespace Yxj\App\Article;
+namespace Yxj\App\Articles\Item;
 
 class Action extends \Yxj\Action\ArticleAction {
     public function delete() {
