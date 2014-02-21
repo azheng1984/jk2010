@@ -7,4 +7,5 @@ class Action extends \Yxj\Action\ArticleAction {
     }
 }
 
-//http://i.taobao.com/article/edit/
+// http://taobao.com/article/12345
+// http://www.taobao.com/
