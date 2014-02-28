@@ -33,6 +33,10 @@ class Config {
         );
     }
 
+    public static function getDirectory() {
+        return __DIR__;
+    }
+
     public static function set(/*$mixed, ...*/) {
         $arguments = func_get_args();
         if (is_string($arguments[0])) {
