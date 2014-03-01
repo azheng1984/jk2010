@@ -23,18 +23,14 @@ class Config {
         return $value;
     }
 
-    public static function getAppPath() {
+    public static function getApplicationPath() {
         return Config::get(
-            __NAMESPACE__ . '\AppPath',
+            __NAMESPACE__ . '\ApplicationPath',
             array(
-                'default' => array('app_const' => 'ROOT_PATH'),
+                'default' => array('application_const' => 'ROOT_PATH'),
                 'is_nullable' => false
             )
         );
-    }
-
-    public static function getDirectory() {
-        return __DIR__;
     }
 
     public static function set(/*$mixed, ...*/) {

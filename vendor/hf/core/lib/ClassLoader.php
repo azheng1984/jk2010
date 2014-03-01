@@ -47,6 +47,7 @@ class ClassLoader {
         spl_autoload_register(array(__CLASS__, 'load'));
         if (class_exists(__NAMESPACE__ . '\Config')) {
         }
+        //load load CacheLoader & ConfigLoader in protected method
     }
 
     public static function load($name) {
