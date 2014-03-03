@@ -6,4 +6,4 @@ require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
     . DIRECTORY_SEPARATOR . 'init.php';
 require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Web'
     . DIRECTORY_SEPARATOR . 'Runner.php';
-\Hyperframework\Web\Runner::run(__NAMESPACE__, $initConfig);
+\Hyperframework\Web\Runner::run(__NAMESPACE__, get_init_config());
