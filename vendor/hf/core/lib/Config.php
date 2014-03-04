@@ -5,6 +5,8 @@ class Config {
     private static $data = array();
 
     public static function get($name, $options = null) {
+        if ($name === 'applicaton_path') {
+        }
         $value = null;
         if (isset(static::$data[$name])) {
             $value = static::$data[$name];
@@ -23,7 +25,7 @@ class Config {
         return $value;
     }
 
-    public static function getApplicationPath() {
+    private static function getApplicationPath() {
         return Config::get(
             __NAMESPACE__ . '\ApplicationPath',
             array(
