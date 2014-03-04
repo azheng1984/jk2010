@@ -4,7 +4,9 @@ namespace Hyperframework;
 class DataLoader {
     public static function load($defaultPath, $pathConfigName = null) {
         $class = get_called_class();
-        $delegate = Config::get($class . '\Delegate');
+        //ConfigMapper['Hyperframework\DataLoader'];
+        //ConfigMapper['Hyperframework\DataSource'];
+        $delegate = Config::get(ConfigMapper::get($class, 'cache_loader'));
         if ($delegate !== null) {
             return $delegate::load($defaultPath, $pathConfigName);
         }
@@ -23,10 +25,7 @@ class DataLoader {
         if ($config !== null) {
             return $config;
         }
-        $rootPath = Config::get($class . '\RootPath');
-        if ($rootPath === null) {
-            $rootPath = static::getDefaultRootPath();
-        }
+        $rootPath = static::getRootPath();
         return $rootPath . DIRECTORY_SEPARATOR . $defaultPath
             . static::getDefaultFileNameExtension();
     }
@@ -35,8 +34,8 @@ class DataLoader {
         return '.php';
     }
 
-    protected static function getDefaultRootPath() {
-        return Config::getApplicationPath();
+    protected static function getRootPath() {
+        return Config::getApplicationPath() . DIRECTORY_SEPARATOR . 'data';
     }
 
     protected static function loadByFullPath($fullPath) {
