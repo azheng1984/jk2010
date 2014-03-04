@@ -4,11 +4,9 @@ namespace Hyperframework;
 class DataLoader {
     public static function load($defaultPath, $pathConfigName = null) {
         $class = get_called_class();
-        //ConfigMapper['Hyperframework\DataLoader'];
-        //ConfigMapper['Hyperframework\DataSource'];
-        $delegate = Config::get(ConfigMapper::get($class, 'cache_loader'));
-        if ($delegate !== null) {
-            return $delegate::load($defaultPath, $pathConfigName);
+        $customLoader = Config::getClass($class);
+        if ($customLoader !== null) {
+            return $customLoader::load($defaultPath, $pathConfigName);
         }
         return static::loadByFullPath(
             static::getFullPath($defaultPath, $pathConfigName, $class)
