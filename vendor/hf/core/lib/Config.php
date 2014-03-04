@@ -4,9 +4,6 @@ namespace Hyperframework;
 class Config {
     private static $data = array();
 
-    public static function getClass($type) {
-    }
-
     public static function get($name, $options = null) {
         if ($name === 'applicaton_path') {
         }
