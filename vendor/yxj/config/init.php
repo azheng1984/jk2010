@@ -1,7 +1,7 @@
 <?php
 namespace Yxj;
 
-const HYPERFRMEWORK_PATH = '/home/azheng/daoxila_www/vendor/hf/lib';
+const HYPERFRMEWORK_PATH = '/home/azheng/daoxila_www/vendor/hf/core/lib';
 
 function get_init_config() {
     return array(
