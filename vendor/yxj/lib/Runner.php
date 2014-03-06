@@ -1,8 +1,8 @@
 <?php
 namespace Yxj;
 
-require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Hyperframework'
-    . DIRECTORY_SEPARATOR . 'Web' . DIRECTORY_SEPARATOR . 'Runner.php';
+require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Web'
+    . DIRECTORY_SEPARATOR . 'Runner.php';
 
 class Runner extends \Hyperframework\Web\Runner {
     public static function run() {
