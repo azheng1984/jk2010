@@ -1,64 +1,69 @@
 <?php
 namespace Hyperframework;
 
-class ClassLoader2 {
-    private $rootPath;
-    private $callback;
-    private $classes;
-    private $folders;
+//psr4
+//$standard = array(
+//    'namespace' => '/path',
+//    'namespace_2' => array('@psr0' => true, 'incude_path1', 'include_path2'),
+//    'namespace/3' => array('class_name2' => 'path3'),
+//    'class_name' => array('/path2'),
+//    'include_path',
+//    'include_path2' => array('@folder_mapping' => false),
+//);
 
-    public function run($rootPath = ROOT_PATH, $cachePath = CACHE_PATH) {
-        list($this->classes, $this->folders) = require(
-            $cachePath . 'class_loader.cache.php'
-        );
-        $this->rootPath = $rootPath;
-        $this->callback = array($this, 'load');
-        spl_autoload_register($this->callback);
+//psr4
+array('Namespace\Subnamespace' => 'path');
+
+//psr0
+array('Namespace_Subnamespace' => 'path');
+
+//include path / class map
+array('path');
+
+//bind target_path
+
+//default root path is current app root path
+array(
+    'Yxj' => 'lib', //@app
+    'Hyperframework' => 'vendor/hyperframework_core/lib', //@package
+    'Hyperframework\News' => 'vendor/hyperframework_news/lib', //@package
+
+    array('@root_path' => 'src', 'Namespace1', 'Namespace2'),
+    '@root_path' => dirname(cwd()),
+    //'@prefix' => array('Sf' => '@convert_underscore'),
+    'Ns\SubNs' => 'src',
+    'Namespace1',//under default root path @root/Namespace1 @has_prefix = true
+    'Namespace2',
+    'Ns2' => array('SubNs' => 'path'),
+    'Ns4' => array('@path' => array('N1', 'N2'));
+    'Ns3' => array('@append_prefix', '@path' => array('path')), //
+    array('@convert_underscore', 'Ns4' => array('@ignore_namespace' => 'Child', //default
+        '@path' => array('path1', 'path2'))),
+    //'Ns_SubNs' => array('@convert_underscore'),
+);
+
+class ClassLoader {
+    public static function run() {
+        spl_autoload_register(array(__CLASS__, 'load'));
+        if (class_exists(__NAMESPACE__ . '\Config')) {
+        }
+        //load load CacheLoader & ConfigLoader in protected method
     }
 
-    public function stop() {
-        spl_autoload_unregister($this->callback);
+    public static function load($name) {
+        require static::getPath($name);
     }
 
-    public function load($name) {
-        if ($this->startsWith($name, 'Hyperframework\Tool\App')) {
-            require HYPERFRAMEWORK_PATH . 'tool/app/' . substr($name, strlen('Hyperframework/Tool/App'));
-            return;
-        }
-        if ($this->startsWith($name, 'Hyperframework\Tool')) {
-            require HYPERFRAMEWORK_PATH . 'tool/lib/' . substr($name, strlen('Hyperframework/Tool'));
-            return;
-        }
-        if ($this->startsWith($name, 'Hyperframework')) {
-            require HYPERFRAMEWORK_PATH . 'lib/' . substr($name, strlen('Hyperframework'));
-            return;
-        }
-        if (isset($this->classes[$name])) {
-            require(
-                $this->getFolder($this->classes[$name]).$name.'.php'
-            );
-        }
+    protected static function loadConfigClass() {
     }
 
-    function startsWith($haystack, $needle) {
-        return $needle === "" || strpos($haystack, $needle) === 0;
+    private static function getPath($name) {
+        if (Config::get(__CLASS__ . '\CacheEnabled')) {
+            return static::getPathFromCache($name);
+        }
+        return ClassLocator::getPath($name);
     }
 
-    private function getFolder($index) {
-        if ($index === true) {
-            return $this->rootPath;
-        }
-        $folder = $this->folders[$index];
-        if (is_array($folder)) {
-            return $this->getFullPath($folder) . $folder[0] .
-DIRECTORY_SEPARATOR;
-        }
-        return $this->rootPath . $folder . DIRECTORY_SEPARATOR;
-    }
-
-    private function getFullPath($folder) {
-        if (isset($folder[1])) {
-            return $this->folders[$folder[1]][0].DIRECTORY_SEPARATOR;
-        }
+    private static function getPathFromCache($name) {
     }
 }
