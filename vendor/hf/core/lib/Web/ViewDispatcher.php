@@ -2,24 +2,14 @@
 namespace Hyperframework\Web;
 
 class ViewDispatcher {
-    public static function run($pathInfo) {
-        $class = $pathInfo['namespace']
-            . '\\' . static::getMediaType($pathInfo);
-        $view = new $class;
-        $view->render();
-    }
-
-    public static function getMediaType($pathInfo) {
-        $views = $pathInfo['views'];
-        if (is_string($views)) {
-            $views = array($views);
-        }
-        if (isset($_SERVER['REQUEST_MEDIA_TYPE']) === false) {
-            return $views[0];
-        }
-        if (in_array($_SERVER['REQUEST_MEDIA_TYPE'], $views) === false) {
+    public static function run($mediaType, $pathInfo) {
+        $isMediaTypeExists =
+            in_array($_SERVER['REQUEST_MEDIA_TYPE'], $pathInfo['views']);
+        if ($isMediaTypeExists === false) {
             throw new UnsupportedMediaTypeException;
         }
-        return $_SERVER['REQUEST_MEDIA_TYPE'];
+        $class = $pathInfo['namespace'] . '\\' . $mediaType;
+        $view = new $class;
+        $view->render();
     }
 }

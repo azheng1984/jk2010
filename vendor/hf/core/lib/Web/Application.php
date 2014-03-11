@@ -3,27 +3,29 @@ namespace Hyperframework\Web;
 
 class Application {
     private static $actionResult;
+    private static $pathInfo;
+    private static $mediaType;
     private static $isViewEnabled = true;
 
     public static function run($path) {
-        $pathInfo = static::getPathInfo($path);
-        static::$actionResult = static::executeAction($pathInfo);
-        static::renderView($pathInfo);
+        static::initialize($path);
+        static::executeAction();
+        static::renderView();
     }
 
     public static function enableView() {
-        static::$isViewEnabled = true;
+        self::$isViewEnabled = true;
     }
 
     public static function disableView() {
-        static::$isViewEnabled = false;
+        self::$isViewEnabled = false;
     }
 
     public static function getActionResult($key = null/*, ...*/) {
         if ($key === null) {
-            return static::$actionResult;
+            return self::$actionResult;
         }
-        $result = static::$actionResult;
+        $result = self::$actionResult;
         foreach (func_get_args() as $key) {
             if (isset($result[$key]) === false) {
                 return;
@@ -33,35 +35,71 @@ class Application {
         return $result;
     }
 
+    public static function getMediaType() {
+        return self::$mediaType;
+    }
+
     public static function redirect($url, $statusCode = 301) {
-        static::$isViewEnabled = false;
+        self::$isViewEnabled = false;
         header('Location: ' . $url, true, $statusCode);
     }
 
     public static function reset() {
-        static::$actionResult = null;
-        static::$isViewEnabled = true;
+        self::$actionResult = null;
+        self::$mediaType = null;
+        self::$pathInfo = null;
+        self::$isViewEnabled = true;
     }
 
-    protected static function getPathInfo($path) {
-        return PathInfo::get($path);
+    protected static function initialize($path) {
+        static::initializePathInfo($path);
+        static::initializeMediaType();
     }
 
-    protected static function executeAction($pathInfo) {
-        return ActionDispatcher::run($pathInfo);
+    protected static function initializeMediaType() {
+        if (isset($_SERVER['REQUEST_MEDIA_TYPE'])) {
+            self::$mediaType = $_SERVER['REQUEST_MEDIA_TYPE'];
+            return;
+        }
+        if (isset(self::$pathInfo['views']) === false) {
+            self::$mediaType = null;
+            return;
+        }
+        $views = self::$pathInfo['views'];
+        if (is_string($views)) {
+            self::$mediaType = $views;
+            return;
+        }
+        self::$mediaType = $views[0];
     }
 
-    protected static function renderView($pathInfo) {
-        if (static::$isViewEnabled && isset($pathInfo['views'])) {
-            ViewDispatcher::run($pathInfo);
+    protected static function initializePathInfo($path) {
+        self::$pathInfo = PathInfo::get($path);
+    }
+
+    protected static function setPathInfo($value) {
+        self:$pathInfo = $value; 
+    }
+
+    protected static function setMediaType($value) {
+        self::$mediaType = $value; 
+    }
+
+    protected static function executeAction() {
+        self::$actionResult = ActionDispatcher::run(self::$pathInfo);
+    }
+
+    protected static function renderView() {
+        if (self::$isViewEnabled) {
+            ViewDispatcher::run(self::$pathInfo, self::$mediaType);
         }
     }
 
     protected static function setActionResult($value) {
-        static::$actionResult = $value;
+        self::$actionResult = $value;
     }
 
     protected static function isViewEnabled() {
-        return static::$isViewEnabled;
+        return self::$isViewEnabled;
     }
 }
