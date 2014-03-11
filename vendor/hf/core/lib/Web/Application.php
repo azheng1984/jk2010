@@ -77,14 +77,6 @@ class Application {
         self::$pathInfo = PathInfo::get($path);
     }
 
-    protected static function setPathInfo($value) {
-        self:$pathInfo = $value; 
-    }
-
-    protected static function setMediaType($value) {
-        self::$mediaType = $value; 
-    }
-
     protected static function executeAction() {
         self::$actionResult = ActionDispatcher::run(self::$pathInfo);
     }
@@ -93,6 +85,14 @@ class Application {
         if (self::$isViewEnabled) {
             ViewDispatcher::run(self::$pathInfo, self::$mediaType);
         }
+    }
+
+    protected static function setPathInfo($value) {
+        self:$pathInfo = $value; 
+    }
+
+    protected static function setMediaType($value) {
+        self::$mediaType = $value; 
     }
 
     protected static function setActionResult($value) {
