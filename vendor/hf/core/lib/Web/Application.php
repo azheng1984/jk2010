@@ -51,17 +51,17 @@ class Application {
         return ActionDispatcher::run($pathInfo);
     }
 
+    protected static function renderView($pathInfo) {
+        if (static::$isViewEnabled && isset($pathInfo['views'])) {
+            ViewDispatcher::run($pathInfo);
+        }
+    }
+
     protected static function setActionResult($value) {
         static::$actionResult = $value;
     }
 
     protected static function isViewEnabled() {
         return static::$isViewEnabled;
-    }
-
-    protected static function renderView($pathInfo) {
-        if (static::$isViewEnabled && isset($pathInfo['views'])) {
-            ViewDispatcher::run($pathInfo);
-        }
     }
 }
