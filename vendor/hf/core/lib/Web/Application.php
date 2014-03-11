@@ -55,6 +55,10 @@ class Application {
         static::$actionResult = $value;
     }
 
+    protected static function isViewEnabled() {
+        return static::$isViewEnabled;
+    }
+
     protected static function renderView($pathInfo) {
         if (static::$isViewEnabled && isset($pathInfo['views'])) {
             ViewDispatcher::run($pathInfo);
