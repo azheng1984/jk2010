@@ -56,6 +56,16 @@ class Application {
         static::initializeMediaType();
     }
 
+    protected static function executeAction() {
+        self::$actionResult = ActionDispatcher::run(self::$pathInfo);
+    }
+
+    protected static function renderView() {
+        if (self::$isViewEnabled) {
+            ViewDispatcher::run(self::$pathInfo, self::$mediaType);
+        }
+    }
+
     protected static function initializeMediaType() {
         if (isset($_SERVER['REQUEST_MEDIA_TYPE'])) {
             self::$mediaType = $_SERVER['REQUEST_MEDIA_TYPE'];
@@ -75,16 +85,6 @@ class Application {
 
     protected static function initializePathInfo($path) {
         self::$pathInfo = PathInfo::get($path);
-    }
-
-    protected static function executeAction() {
-        self::$actionResult = ActionDispatcher::run(self::$pathInfo);
-    }
-
-    protected static function renderView() {
-        if (self::$isViewEnabled) {
-            ViewDispatcher::run(self::$pathInfo, self::$mediaType);
-        }
     }
 
     protected static function setPathInfo($value) {
