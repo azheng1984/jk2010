@@ -8,7 +8,7 @@ class Application {
     private static $isViewEnabled = true;
 
     public static function run($path) {
-        static::prepare($path);
+        static::initialize($path);
         static::executeAction();
         static::renderView();
     }
@@ -51,7 +51,7 @@ class Application {
         self::$isViewEnabled = true;
     }
 
-    protected static function prepare($path) {
+    protected static function initialize($path) {
         static::initializePathInfo($path);
         static::initializeMediaType();
     }
