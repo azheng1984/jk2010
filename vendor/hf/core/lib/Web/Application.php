@@ -35,10 +35,6 @@ class Application {
         return $result;
     }
 
-    public static function getMediaType() {
-        return self::$mediaType;
-    }
- 
     public static function redirect($url, $statusCode = 301) {
         self::$isViewEnabled = false;
         header('Location: ' . $url, true, $statusCode);
@@ -66,6 +62,7 @@ class Application {
         }
     }
 
+
     protected static function initializePathInfo($path) {
         self::$pathInfo = PathInfo::get($path);
     }
@@ -91,6 +88,10 @@ class Application {
         self:$pathInfo = $value; 
     }
 
+    protected static function getMediaType() {
+        return self::$mediaType;
+    }
+ 
     protected static function setMediaType($value) {
         self::$mediaType = $value; 
     }
