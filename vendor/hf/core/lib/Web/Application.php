@@ -38,7 +38,7 @@ class Application {
     public static function getMediaType() {
         return self::$mediaType;
     }
-
+ 
     public static function redirect($url, $statusCode = 301) {
         self::$isViewEnabled = false;
         header('Location: ' . $url, true, $statusCode);
