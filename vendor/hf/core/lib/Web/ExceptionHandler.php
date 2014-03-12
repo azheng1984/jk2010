@@ -13,7 +13,7 @@ class ExceptionHandler {
             static::reportError($exception);
             return;
         }
-        static::$exception = $exception;
+        self::$exception = $exception;
         if ($exception instanceof ApplicationException === false) {
             $exception = new InternalServerErrorException;
         }
@@ -23,16 +23,16 @@ class ExceptionHandler {
             try {
                 static::displayError($exception);
             } catch (\Exception $recursiveException) {
-                static::triggerError(static::$exception, $recursiveException);
+                static::triggerError(self::$exception, $recursiveException);
             }
         }
         if ($exception instanceof InternalServerErrorException) {
-            static::triggerError(static::$exception);
+            static::triggerError(self:$exception);
         }
     }
 
     public static function getException() {
-        return static::$exception;
+        return self::$exception;
     }
 
     public static function reset() {

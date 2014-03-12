@@ -5,7 +5,7 @@ class ErrorApplication {
     private static $statusCode;
 
     public static function run($statusCode) {
-        static::$statusCode = $statusCode;
+        self::$statusCode = $statusCode;
         $path = static::getPath($statusCode);
         $pathInfo = PathInfo::get($path);
         try {
@@ -14,7 +14,7 @@ class ErrorApplication {
     }
 
     public static function getStatusCode() {
-        return static::$statusCode;
+        return self::$statusCode;
     }
 
     protected static function getPath($statusCode) {
