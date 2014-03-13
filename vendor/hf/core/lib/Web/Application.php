@@ -13,14 +13,6 @@ class Application {
         static::renderView();
     }
 
-    final public static function enableView() {
-        self::$isViewEnabled = true;
-    }
-
-    final public static function disableView() {
-        self::$isViewEnabled = false;
-    }
-
     final public static function getActionResult($key = null/*, ...*/) {
         if ($key === null) {
             return self::$actionResult;
@@ -38,6 +30,14 @@ class Application {
     public static function redirect($url, $statusCode = 301) {
         self::$isViewEnabled = false;
         header('Location: ' . $url, true, $statusCode);
+    }
+
+    final public static function enableView() {
+        self::$isViewEnabled = true;
+    }
+
+    final public static function disableView() {
+        self::$isViewEnabled = false;
     }
 
     public static function reset() {
