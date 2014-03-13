@@ -6,15 +6,18 @@ class ErrorApplication {
 
     final public static function run($statusCode) {
         self::$statusCode = $statusCode;
-        $pathInfo = PathInfo::get(static::getPath($statusCode));
-        $mediaType = MediaTypeSelector::select($pathInfo);
         try {
-            ViewDispatcher::run($pathInfo, $mediaType);
-        } catch (UnsupportedMediaTypeException $ignoredException) {}
+            static::renderView(static::getPath($statusCode));
+        } catch (UnsupportedMediaTypeException $ignoredException) {}       
     }
 
     final public static function getStatusCode() {
         return self::$statusCode;
+    }
+
+    protected static function renderView($path) {
+        $pathInfo = PathInfo::get($path);
+        ViewDispatcher::run($pathInfo, MediaTypeSelector::select($pathInfo));
     }
 
     protected static function getPath($statusCode) {
