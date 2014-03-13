@@ -19,7 +19,8 @@ class ClassLoader {
         require static::getPath($name);
     }
 
-    protected static function loadConfigClass() {
+    protected static function getConfig() {
+        ConfigLoader::get('class_loader', __CLASS__ . '\CachePath');
     }
 
     private static function getPath($name) {

@@ -9,24 +9,22 @@ class PathInfo {
         if (isset($cache['paths'][$path]) === false) {
             throw new Exceptions\NotFoundException;
         }
-        $info = $cache['paths'][$path];
-        $info['namespace'] = static::getNamespace($path);
-        return $info;
+        $result = $cache['paths'][$path];
+        $result['namespace'] = static::getNamespace($path, $cache);
+        return $result;
     }
 
     public static function reset() {
         static::$cache = null;
     }
 
-    private static function getCache() {
-        if (static::$cache === null) {
-            static::$cache = \Hyperframework\CacheLoader::load(
-                'Hyperframework' . DIRECTORY_SEPARATOR . 'Web'
-                    . DIRECTORY_SEPARATOR . 'PathInfo',
-                __CLASS__ . '\CachePath'
+    protected static function getCache() {
+        if (self::$cache === null) {
+            self::$cache = \Hyperframework\CacheLoader::load(
+                'path_info', __CLASS__ . '\CachePath'
             );
         }
-        return static::$cache;
+        return self::$cache;
     }
 
     private static function getNamespace($path) {

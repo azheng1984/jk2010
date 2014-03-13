@@ -13,11 +13,11 @@ class Application {
         static::renderView();
     }
 
-    public static function enableView() {
+    final public static function enableView() {
         self::$isViewEnabled = true;
     }
 
-    public static function disableView() {
+    final public static function disableView() {
         self::$isViewEnabled = false;
     }
 
@@ -62,7 +62,7 @@ class Application {
         }
     }
 
-    protected static function initializePathInfo($path) {
+    protected static function initailizePathInfo($path) {
         self::$pathInfo = PathInfo::get($path);
     }
 
@@ -71,11 +71,12 @@ class Application {
             self::$mediaType = $_SERVER['REQUEST_MEDIA_TYPE'];
             return;
         }
-        if (isset(self::$pathInfo['views']) === false) {
+        $pathInfo = static::getPathInfo();
+        if (isset($pathInfo['views']) === false) {
             self::$mediaType = null;
             return;
         }
-        $views = self::$pathInfo['views'];
+        $views = $pathInfo['views'];
         if (is_string($views)) {
             self::$mediaType = $views;
             return;
@@ -83,27 +84,23 @@ class Application {
         self::$mediaType = $views[0];
     }
 
-    protected static function getPathInfo() {
+    final protected static function getPathInfo() {
         return self:$pathInfo;
     }
 
-    protected static function setPathInfo($value) {
-        self:$pathInfo = $value;
-    }
-
-    protected static function getMediaType() {
+    final protected static function getMediaType() {
         return self::$mediaType;
     }
- 
-    protected static function setMediaType($value) {
+
+    final protected static function setMediaType($value) {
         self::$mediaType = $value;
     }
 
-    protected static function setActionResult($value) {
+    final protected static function setActionResult($value) {
         self::$actionResult = $value;
     }
 
-    protected static function isViewEnabled() {
+    final protected static function isViewEnabled() {
         return self::$isViewEnabled;
     }
 }
