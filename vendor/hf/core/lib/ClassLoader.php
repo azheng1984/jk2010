@@ -30,6 +30,6 @@ class ClassLoader {
         return ClassLocator::getPath($name);
     }
 
-    private static function getPathFromCache($name) {
+    protected static function loadCache() {
     }
 }

@@ -8,7 +8,7 @@ class ExceptionHandler {
         set_exception_handler(array(get_called_class(), 'handle'));
     }
 
-    public static function handle($exception) {
+    final public static function handle($exception) {
         if (headers_sent()) {
             static::reportError($exception);
             return;
@@ -31,7 +31,7 @@ class ExceptionHandler {
         }
     }
 
-    public static function getException() {
+    final public static function getException() {
         return self::$exception;
     }
 

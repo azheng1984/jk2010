@@ -5,7 +5,10 @@ class PathInfo {
     private static $cache;
 
     public static function get($path) {
-        $cache = static::getCache();
+        if (self::$cache === null) {
+            self::$cache = static::loadCache();
+        }
+        $cache = self::$cache;
         if (isset($cache['paths'][$path]) === false) {
             throw new Exceptions\NotFoundException;
         }
@@ -18,13 +21,10 @@ class PathInfo {
         static::$cache = null;
     }
 
-    protected static function getCache() {
-        if (self::$cache === null) {
-            self::$cache = \Hyperframework\CacheLoader::load(
-                'path_info', __CLASS__ . '\CachePath'
-            );
-        }
-        return self::$cache;
+    protected static function loadCache() {
+        return \Hyperframework\CacheLoader::load(
+            'path_info', __CLASS__ . '\CachePath'
+        );
     }
 
     private static function getNamespace($path) {
