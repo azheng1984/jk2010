@@ -13,15 +13,7 @@ class Application {
         static::renderView();
     }
 
-    public static function enableView() {
-        self::$isViewEnabled = true;
-    }
-
-    public static function disableView() {
-        self::$isViewEnabled = false;
-    }
-
-    public static function getActionResult($key = null/*, ...*/) {
+    final public static function getActionResult($key = null/*, ...*/) {
         if ($key === null) {
             return self::$actionResult;
         }
@@ -40,10 +32,18 @@ class Application {
         header('Location: ' . $url, true, $statusCode);
     }
 
+    final public static function enableView() {
+        self::$isViewEnabled = true;
+    }
+
+    final public static function disableView() {
+        self::$isViewEnabled = false;
+    }
+
     public static function reset() {
         self::$actionResult = null;
-        self::$mediaType = null;
         self::$pathInfo = null;
+        self::$mediaType = null;
         self::$isViewEnabled = true;
     }
 
@@ -62,45 +62,35 @@ class Application {
         }
     }
 
-
-    protected static function initializePathInfo($path) {
+    protected static function initailizePathInfo($path) {
         self::$pathInfo = PathInfo::get($path);
     }
 
     protected static function initializeMediaType() {
-        if (isset($_SERVER['REQUEST_MEDIA_TYPE'])) {
-            self::$mediaType = $_SERVER['REQUEST_MEDIA_TYPE'];
-            return;
-        }
-        if (isset(self::$pathInfo['views']) === false) {
-            self::$mediaType = null;
-            return;
-        }
-        $views = self::$pathInfo['views'];
-        if (is_string($views)) {
-            self::$mediaType = $views;
-            return;
-        }
-        self::$mediaType = $views[0];
+        self::$mediaType = MediaTypeSelector::select(self::$pathInfo);
     }
 
-    protected static function setPathInfo($value) {
-        self:$pathInfo = $value; 
+    final protected static function getPathInfo() {
+        return self:$pathInfo;
     }
 
-    protected static function getMediaType() {
+    final protected static function setPathInfo($value) {
+        self:$pathInfo = $value;
+    }
+
+    final protected static function getMediaType() {
         return self::$mediaType;
     }
- 
-    protected static function setMediaType($value) {
-        self::$mediaType = $value; 
+
+    final protected static function setMediaType($value) {
+        self::$mediaType = $value;
     }
 
-    protected static function setActionResult($value) {
+    final protected static function setActionResult($value) {
         self::$actionResult = $value;
     }
 
-    protected static function isViewEnabled() {
+    final protected static function isViewEnabled() {
         return self::$isViewEnabled;
     }
 }

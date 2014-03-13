@@ -8,12 +8,12 @@ class ExceptionHandler {
         set_exception_handler(array(get_called_class(), 'handle'));
     }
 
-    public static function handle($exception) {
+    final public static function handle($exception) {
         if (headers_sent()) {
             static::reportError($exception);
             return;
         }
-        static::$exception = $exception;
+        self::$exception = $exception;
         if ($exception instanceof ApplicationException === false) {
             $exception = new InternalServerErrorException;
         }
@@ -23,16 +23,16 @@ class ExceptionHandler {
             try {
                 static::displayError($exception);
             } catch (\Exception $recursiveException) {
-                static::triggerError(static::$exception, $recursiveException);
+                static::triggerError(self::$exception, $recursiveException);
             }
         }
         if ($exception instanceof InternalServerErrorException) {
-            static::triggerError(static::$exception);
+            static::triggerError(self:$exception);
         }
     }
 
-    public static function getException() {
-        return static::$exception;
+    final public static function getException() {
+        return self::$exception;
     }
 
     public static function reset() {
