@@ -12,12 +12,12 @@ class ActionDispatcher {
             $method = 'GET';
         }
         if ($info === null) {
-            static::checkImplicitAction($method);
+            self::checkImplicitAction($method);
             return;
         }
         $hasMethod = in_array($method, $info['methods']);
         if ($hasMethod === false) {
-            static::checkImplicitMethod($info, $method);
+            self::checkImplicitMethod($info, $method);
         }
         $hasBeforeFilter = isset($info['before_filter']);
         $hasAfterFilter = isset($info['after_filter']);
