@@ -21,7 +21,7 @@ class Application {
         self::$isViewEnabled = false;
     }
 
-    public static function getActionResult($key = null/*, ...*/) {
+    final public static function getActionResult($key = null/*, ...*/) {
         if ($key === null) {
             return self::$actionResult;
         }
@@ -71,12 +71,11 @@ class Application {
             self::$mediaType = $_SERVER['REQUEST_MEDIA_TYPE'];
             return;
         }
-        $pathInfo = static::getPathInfo();
-        if (isset($pathInfo['views']) === false) {
+        if (isset(self::$pathInfo['views']) === false) {
             self::$mediaType = null;
             return;
         }
-        $views = $pathInfo['views'];
+        $views = self::$pathInfo['views'];
         if (is_string($views)) {
             self::$mediaType = $views;
             return;
@@ -86,6 +85,10 @@ class Application {
 
     final protected static function getPathInfo() {
         return self:$pathInfo;
+    }
+
+    final protected static function setPathInfo($value) {
+        self:$pathInfo = $value;
     }
 
     final protected static function getMediaType() {
