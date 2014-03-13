@@ -67,20 +67,7 @@ class Application {
     }
 
     protected static function initializeMediaType() {
-        if (isset($_SERVER['REQUEST_MEDIA_TYPE'])) {
-            self::$mediaType = $_SERVER['REQUEST_MEDIA_TYPE'];
-            return;
-        }
-        if (isset(self::$pathInfo['views']) === false) {
-            self::$mediaType = null;
-            return;
-        }
-        $views = self::$pathInfo['views'];
-        if (is_string($views)) {
-            self::$mediaType = $views;
-            return;
-        }
-        self::$mediaType = $views[0];
+        self::$mediaType = MediaTypeSelector::select(self::$pathInfo);
     }
 
     final protected static function getPathInfo() {

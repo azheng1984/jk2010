@@ -4,16 +4,16 @@ namespace Hyperframework\Web;
 class ErrorApplication {
     private static $statusCode;
 
-    public static function run($statusCode) {
+    final public static function run($statusCode) {
         self::$statusCode = $statusCode;
-        $path = static::getPath($statusCode);
-        $pathInfo = PathInfo::get($path);
+        $pathInfo = PathInfo::get(static::getPath($statusCode));
+        $mediaType = MediaTypeSelector::select($pathInfo);
         try {
-            ViewDispatcher::run($pathInfo);
+            ViewDispatcher::run($pathInfo, $mediaType);
         } catch (UnsupportedMediaTypeException $ignoredException) {}
     }
 
-    public static function getStatusCode() {
+    final public static function getStatusCode() {
         return self::$statusCode;
     }
 
