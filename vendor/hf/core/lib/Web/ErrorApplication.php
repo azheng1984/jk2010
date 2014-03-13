@@ -8,7 +8,7 @@ class ErrorApplication {
         self::$statusCode = $statusCode;
         try {
             static::renderView(static::getPath($statusCode));
-        } catch (UnsupportedMediaTypeException $ignoredException) {}       
+        } catch (UnsupportedMediaTypeException $ignoredException) {}
     }
 
     final public static function getStatusCode() {
