@@ -15,9 +15,8 @@ class ActionDispatcher {
             self::checkImplicitAction($method);
             return;
         }
-        $hasMethod = in_array($method, $info['methods']);
-        if ($hasMethod === false) {
-            self::checkImplicitMethod($info, $method);
+        if (in_array($method, $info['methods']) === false) {
+            self::checkImplicitMethod($method, $info);
         }
         $hasBeforeFilter = isset($info['before_filter']);
         $hasAfterFilter = isset($info['after_filter']);
@@ -43,11 +42,11 @@ class ActionDispatcher {
 
     private static function checkImplicitAction($method) {
         if ($method !== 'GET') {
-            throw new MethodNotAllowedException(array('GET', 'HEAD'));
+            throw new MethodNotAllowedException(array('HEAD', 'GET'));
         }
     }
 
-    private static function checkImplicitMethod($info, $method) {
+    private static function checkImplicitMethod($method, $info) {
         if (isset($info['get_not_allowed'])) {
             $methods = isset($info['methods']) ? $info['methods'] : array();
             throw new MethodNotAllowedException($methods);
