@@ -1,11 +1,14 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework\Config;
+
 class Application {
     private static $actionResult;
     private static $pathInfo;
     private static $mediaType;
     private static $isViewEnabled = true;
+    private static $isRequestMethodRewritingEnabled = true;
 
     public static function run($path) {
         static::initialize($path);
@@ -40,16 +43,22 @@ class Application {
         self::$isViewEnabled = false;
     }
 
+    final public static function disableRequestMethodRewriting() {
+        self::$isRequestMethodRewritingEnabled = false;
+    }
+
     public static function reset() {
         self::$actionResult = null;
         self::$pathInfo = null;
         self::$mediaType = null;
         self::$isViewEnabled = true;
+        self::$isRequestMethodRewritingEnabled = true;
     }
 
     protected static function initialize($path) {
         static::initializePathInfo($path);
         static::initializeMediaType();
+        static::rewriteRequestMethod();
     }
 
     protected static function executeAction() {
@@ -58,7 +67,7 @@ class Application {
 
     protected static function renderView() {
         if (self::$isViewEnabled) {
-            ViewDispatcher::run(self::$pathInfo, self::$mediaType);
+            ViewDispatcher::run(self::$mediaType, self::$pathInfo);
         }
     }
 
@@ -68,6 +77,15 @@ class Application {
 
     protected static function initializeMediaType() {
         self::$mediaType = MediaTypeSelector::select(self::$pathInfo);
+    }
+
+    protected static function rewriteRequestMethod() {
+        if (self::$isRequestMethodRewritingEnabled === false) {
+            return; 
+        }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method'])) {
+            $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
+        }
     }
 
     final protected static function getPathInfo() {
@@ -92,5 +110,9 @@ class Application {
 
     final protected static function isViewEnabled() {
         return self::$isViewEnabled;
+    }
+
+    final protected static function isRequestMethodWritingEnabled() {
+        return self::$isRequestMethodRewritingEnabled;
     }
 }

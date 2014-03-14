@@ -3,13 +3,13 @@ namespace Hyperframework\Web;
 
 class ActionDispatcher {
     public static function run($pathInfo) {
+        $method = $_SERVER['REQUEST_METHOD'];
+        if ($method === 'HEAD') {
+            $method = 'GET';
+        }
         $info = null;
         if (isset($pathInfo['action'])) {
             $info = $pathInfo['action'];
-        }
-        $method = static::getMethod();
-        if ($method === 'HEAD') {
-            $method = 'GET';
         }
         if ($info === null) {
             self::checkImplicitAction($method);
@@ -39,18 +39,6 @@ class ActionDispatcher {
             $action->after();
         }
         return $result;
-    }
-
-    protected static function getMethod() {
-        $rewritingEnabled = \Hyperframework\Config::get(
-            __CLASS__ . '\MethodRewritingEnabled'
-        );
-        if ($rewritingEnabled !== false
-            && $_SERVER['REQUEST_METHOD'] === 'POST'
-            && isset($_POST['_method'])) {
-            return $_POST['_method'];
-        }
-        return $_SERVER['REQUEST_METHOD'];
     }
 
     private static function checkImplicitAction($method) {
