@@ -56,8 +56,8 @@ class ActionDispatcher {
             return;
         }
         $methods = isset($info['methods']) ? $info['methods'] : array();
+        $methods[] = 'HEAD';
         if (in_array('GET', $methods) === false) {
-            $methods[] = 'HEAD';
             $methods[] = 'GET';
         }
         throw new MethodNotAllowedException($methods);
