@@ -4,6 +4,12 @@ namespace Hyperframework\Web;
 class ActionDispatcher {
     public static function run($pathInfo) {
         $method = $_SERVER['REQUEST_METHOD'];
+        if ($this->isHeadOnly()) {
+            //...
+            return;
+        }
+        $this->redirect() {
+        }
         if ($method === 'HEAD') {
             $method = 'GET';
         }
@@ -15,7 +21,8 @@ class ActionDispatcher {
             self::checkImplicitAction($method);
             return;
         }
-        if (in_array($method, $info['methods']) === false) {
+        if (isset($info['methods']) === false
+            || in_array($method, $info['methods']) === false) {
             self::checkImplicitMethod($method, $info);
         }
         $hasBeforeFilter = isset($info['before_filter']);
