@@ -6,8 +6,8 @@ class Config {
 
     public static function get($name, $options = null) {
         $value = null;
-        if (isset(static::$data[$name])) {
-            $value = static::$data[$name];
+        if (isset(self::$data[$name])) {
+            $value = self::$data[$name];
         }
         if ($value !== null || $options === null) {
             return $value;
@@ -36,12 +36,12 @@ class Config {
     public static function set(/*$mixed, ...*/) {
         $arguments = func_get_args();
         if (is_string($arguments[0])) {
-            static::$data[$arguments[0]] = $arguments[1];
+            self::$data[$arguments[0]] = $arguments[1];
             return;
         }
         foreach ($arguments as $name => $item) {
             if (is_int($key)) {
-                static::$data[$item[0]] = $item[1];
+                self::$data[$item[0]] = $item[1];
                 return;
             }
             static::mergePrefix($key, $item);
@@ -49,11 +49,11 @@ class Config {
     }
 
     public static function export() {
-        return static::$data;
+        return self::$data;
     }
 
     public static function reset() {
-        static::$data = array();
+        self::$data = array();
     }
 
     private static function getApplicationConst($name) {
@@ -70,12 +70,12 @@ class Config {
 
     private static function mergePrefix($prefix, $data) {
         if (is_string($data[0])) {
-            static::$data[$prefix . '\\' . $data[0]] = $data[1];
+            self::$data[$prefix . '\\' . $data[0]] = $data[1];
             return;
         }
         foreach ($data as $key => $item) {
             if (is_int($key)) {
-                static::$data[$prefix . '\\' . $item[0]] = $item[1];
+                self::$data[$prefix . '\\' . $item[0]] = $item[1];
                 continue;
             }
             static::mergePrefix($prefix . '\\' . $key, $item);
