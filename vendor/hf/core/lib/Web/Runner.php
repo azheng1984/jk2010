@@ -13,7 +13,7 @@ class Runner {
     }
 
     protected static function initialize($applicationNamespace, $config) {
-        $config['application_namespace'] = $applicationNamespace;
+        $config['Hyperframework\ApplicationNamespace'] = $applicationNamespace;
         $hyperframeworkPath = dirname(__DIR__);
         require $hyperframeworkPath . DIRECTORY_SEPARATOR . 'Config.php';
         \Hyperframework\Config::set($config);
