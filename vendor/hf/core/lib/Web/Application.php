@@ -35,10 +35,6 @@ class Application {
         header('Location: ' . $url, true, $statusCode);
     }
 
-    final public static function enableView() {
-        self::$isViewEnabled = true;
-    }
-
     final public static function disableView() {
         self::$isViewEnabled = false;
     }
