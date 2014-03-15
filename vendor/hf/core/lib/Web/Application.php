@@ -1,8 +1,6 @@
 <?php
 namespace Hyperframework\Web;
 
-use Hyperframework\Config;
-
 class Application {
     private static $actionResult;
     private static $pathInfo;
@@ -76,10 +74,9 @@ class Application {
     }
 
     protected static function rewriteRequestMethod() {
-        if (self::$isRequestMethodRewritingEnabled === false) {
-            return; 
-        }
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method'])) {
+        if (self::$isRequestMethodRewritingEnabled
+            && $_SERVER['REQUEST_METHOD'] === 'POST'
+            && isset($_POST['_method'])) {
             $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
         }
     }
