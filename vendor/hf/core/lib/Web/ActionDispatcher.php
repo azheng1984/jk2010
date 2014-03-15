@@ -3,21 +3,21 @@ namespace Hyperframework\Web;
 
 class ActionDispatcher {
     public static function run($pathInfo) {
+        $method = $_SERVER['REQUEST_METHOD'];
+        if ($method === 'HEAD') {
+            $method = 'GET';
+        }
         $info = null;
         if (isset($pathInfo['action'])) {
             $info = $pathInfo['action'];
-        }
-        $method = static::getMethod();
-        if ($method === 'HEAD') {
-            $method = 'GET';
         }
         if ($info === null) {
             self::checkImplicitAction($method);
             return;
         }
-        $hasMethod = in_array($method, $info['methods']);
-        if ($hasMethod === false) {
-            self::checkImplicitMethod($info, $method);
+        if (isset($info['methods']) === false
+            || in_array($method, $info['methods']) === false) {
+            self::checkImplicitMethod($method, $info);
         }
         $hasBeforeFilter = isset($info['before_filter']);
         $hasAfterFilter = isset($info['after_filter']);
@@ -41,25 +41,13 @@ class ActionDispatcher {
         return $result;
     }
 
-    protected static function getMethod() {
-        $rewritingEnabled = \Hyperframework\Config::get(
-            __CLASS__ . '\MethodRewritingEnabled'
-        );
-        if ($rewritingEnabled !== false
-            && $_SERVER['REQUEST_METHOD'] === 'POST'
-            && isset($_REQUEST['_method'])) {
-            return $_REQUEST['_method'];
-        }
-        return $_SERVER['REQUEST_METHOD'];
-    }
-
     private static function checkImplicitAction($method) {
         if ($method !== 'GET') {
-            throw new MethodNotAllowedException(array('GET', 'HEAD'));
+            throw new MethodNotAllowedException(array('HEAD', 'GET'));
         }
     }
 
-    private static function checkImplicitMethod($info, $method) {
+    private static function checkImplicitMethod($method, $info) {
         if (isset($info['get_not_allowed'])) {
             $methods = isset($info['methods']) ? $info['methods'] : array();
             throw new MethodNotAllowedException($methods);
@@ -68,8 +56,8 @@ class ActionDispatcher {
             return;
         }
         $methods = isset($info['methods']) ? $info['methods'] : array();
+        $methods[] = 'HEAD';
         if (in_array('GET', $methods) === false) {
-            $methods[] = 'HEAD';
             $methods[] = 'GET';
         }
         throw new MethodNotAllowedException($methods);

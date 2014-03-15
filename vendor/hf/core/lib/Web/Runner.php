@@ -26,7 +26,7 @@ class Runner {
         $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
         $result = $segments[0];
         if (strncmp($result, '#', 1) === 0) {
-            throw new Exceptions\NotFoundException;
+            throw new NotFoundException;
         }
         return $result;
     }
