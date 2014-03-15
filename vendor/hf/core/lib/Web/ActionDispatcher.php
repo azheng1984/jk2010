@@ -47,8 +47,8 @@ class ActionDispatcher {
         );
         if ($rewritingEnabled !== false
             && $_SERVER['REQUEST_METHOD'] === 'POST'
-            && isset($_POST['_method'])) {
-            return $_POST['_method'];
+            && isset($_REQUEST['_method'])) {
+            return $_REQUEST['_method'];
         }
         return $_SERVER['REQUEST_METHOD'];
     }
