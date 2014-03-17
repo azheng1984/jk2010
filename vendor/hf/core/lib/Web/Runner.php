@@ -1,6 +1,9 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework\Config;
+use Hyperframework\ClassLoader;
+
 class Runner {
     public static function run($applicationNamespace, $config = array()) {
         static::initialize($applicationNamespace, $config);
@@ -21,14 +24,14 @@ class Runner {
     protected static function initializeConfig($applicationNamespace, $config) {
         require static::getHyperframeworkPath()
             . DIRECTORY_SEPARATOR . 'Config.php';
-        \Hyperframework\Config::initialize($applicationNamespace);
-        \Hyperframework\Config::set($config);
+        Config::initialize($applicationNamespace);
+        Config::set($config);
     }
 
     protected static function initializeClassLoader() {
         require static::getHyperframeworkPath()
             . DIRECTORY_SEPARATOR . 'ClassLoader.php';
-        \Hyperframework\ClassLoader::run();
+        ClassLoader::run();
     }
 
     protected static function initializeExceptionHandler() {
@@ -53,7 +56,7 @@ class Runner {
     }
 
     protected static function runAssetProxy() {
-        Asset\AssetProxy::run($path);
+        AssetProxy::run($path);
     }
 
     protected static function runApplication($path) {
