@@ -4,6 +4,11 @@ namespace Hyperframework;
 class Config {
     private static $data = array();
 
+    public static function initailize($applicationNamespace) {
+        self::$data[__NAMESPACE__ . '\ApplicationNamespace']
+            = $applicationNamespace;
+    }
+
     public static function get($name, $options = null) {
         $value = null;
         if (isset(self::$data[$name])) {

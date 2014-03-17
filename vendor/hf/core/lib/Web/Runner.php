@@ -13,13 +13,30 @@ class Runner {
     }
 
     protected static function initialize($applicationNamespace, $config) {
-        $hyperframeworkPath = dirname(__DIR__);
-        require $hyperframeworkPath . DIRECTORY_SEPARATOR . 'Config.php';
-        $config['Hyperframework\ApplicationNamespace'] = $applicationNamespace;
+        static::initializeConfig($applicationNamespace, $config);
+        static::initializeClassLoader();
+        static::initializeExceptionHandler();
+    }
+
+    protected static function initializeConfig($applicationNamespace, $config) {
+        require static::getHyperframeworkPath()
+            . DIRECTORY_SEPARATOR . 'Config.php';
+        \Hyperframework\Config::initialize($applicationNamespace);
         \Hyperframework\Config::set($config);
-        require $hyperframeworkPath . DIRECTORY_SEPARATOR . 'ClassLoader.php';
+    }
+
+    protected static function initializeClassLoader() {
+        require static::getHyperframeworkPath()
+            . DIRECTORY_SEPARATOR . 'ClassLoader.php';
         \Hyperframework\ClassLoader::run();
+    }
+
+    protected static function initializeExceptionHandler() {
         ExceptionHandler::run();
+    }
+
+    final protected static function getHyperframeworkPath() {
+        return dirname(__DIR__);
     }
 
     protected static function getPath() {
