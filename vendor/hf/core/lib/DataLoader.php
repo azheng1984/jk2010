@@ -3,40 +3,36 @@ namespace Hyperframework;
 
 class DataLoader {
     public static function load($defaultPath, $pathConfigName = null) {
-        $class = get_called_class();
-        $delegate = Config::get($class . '\Delegate');
+        $delegate = Config::get(get_called_class() . '\Delegate');
         if ($delegate !== null) {
             return $delegate::load($defaultPath, $pathConfigName);
         }
-        return static::loadByFullPath(
-            static::getFullPath($defaultPath, $pathConfigName, $class)
+        return static::load(
+            static::getFullPath($defaultPath, $pathConfigName)
         );
     }
 
-    protected static function getFullPath(
-        $defaultPath, $pathConfigName, $class
-    ) {
-        $config = null;
+    protected static function getFullPath($defaultPath, $pathConfigName) {
+        $result = null;
         if ($pathConfigName !== null) {
-            $config = Config::get($pathConfigName);
+            $result = Config::get($pathConfigName);
         }
-        if ($config !== null) {
-            return $config;
+        if ($result !== null) {
+            return $result;
         }
-        $rootPath = static::getRootPath();
-        return $rootPath . DIRECTORY_SEPARATOR . $defaultPath
-            . static::getDefaultFileNameExtension();
+        return static::getDefaultRootPath() . DIRECTORY_SEPARATOR
+            . $defaultPath . static::getDefaultFileNameExtension();
     }
 
     protected static function getDefaultFileNameExtension() {
         return '.php';
     }
 
-    protected static function getRootPath() {
+    protected static function getDefaultRootPath() {
         return Config::getApplicationPath() . DIRECTORY_SEPARATOR . 'data';
     }
 
-    protected static function loadByFullPath($fullPath) {
-        return require $fullPath;
+    protected static function load($path) {
+        return require $path;
     }
 }
