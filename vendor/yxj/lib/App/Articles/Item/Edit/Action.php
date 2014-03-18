@@ -1,7 +1,9 @@
 <?php
 namespace Yxj\App\Articles\Item\Edit;
 
-class Action extends \Yxj\Action\ArticleAction {
+use Yxj\BaseAction;
+
+class Action extends BaseAction {
     public function put() {
         return parent::save();
     }
