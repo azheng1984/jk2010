@@ -6,7 +6,7 @@ class Application {
     private static $pathInfo;
     private static $mediaType;
     private static $isViewEnabled = true;
-    private static $isRequestMethodRewritingEnabled = true;
+    private static $shouldRewriteRequestMethod = true;
 
     public static function run($path) {
         static::initialize($path);
@@ -38,7 +38,7 @@ class Application {
     }
 
     final public static function disableRequestMethodRewriting() {
-        self::$isRequestMethodRewritingEnabled = false;
+        self::$shouldRewriteRequestMethod = false;
     }
 
     public static function reset() {
@@ -46,7 +46,7 @@ class Application {
         self::$pathInfo = null;
         self::$mediaType = null;
         self::$isViewEnabled = true;
-        self::$isRequestMethodRewritingEnabled = true;
+        self::$shouldRewriteRequestMethod = true;
     }
 
     protected static function initialize($path) {
@@ -74,7 +74,7 @@ class Application {
     }
 
     protected static function rewriteRequestMethod() {
-        if (self::$isRequestMethodRewritingEnabled
+        if (self::$shouldRewriteRequestMethod
             && $_SERVER['REQUEST_METHOD'] === 'POST'
             && isset($_POST['_method'])) {
             $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
@@ -105,7 +105,7 @@ class Application {
         return self::$isViewEnabled;
     }
 
-    final protected static function isRequestMethodWritingEnabled() {
-        return self::$isRequestMethodRewritingEnabled;
+    final protected static function shouldRewriteRequestMethod() {
+        return self::$shouldRewriteRequestMethod;
     }
 }
