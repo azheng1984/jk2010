@@ -43,6 +43,8 @@ class ClassLoader {
         self::$config = ConfigLoader::load(
             'class_loader.php', __CLASS__ . '\ConfigPath'
         );
+        if (Config::get(__CLASS__ . '\CacheEnabled')) {
+        }
     }
 
     final protected static function setConfig($value) {
