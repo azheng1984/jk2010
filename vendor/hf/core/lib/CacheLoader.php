@@ -2,8 +2,7 @@
 namespace Hyperframework;
 
 class CacheLoader extends DataLoader {
-    protected static function getDefaultRootPath() {
-        return Config::getApplicationPath() . DIRECTORY_SEPARATOR
-            . 'data' . DIRECTORY_SEPARATOR . 'cache';
+    protected static function getDefaultRootPathSuffix() {
+        return DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'cache';
     }
 }

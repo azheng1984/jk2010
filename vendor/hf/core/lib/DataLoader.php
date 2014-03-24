@@ -2,37 +2,33 @@
 namespace Hyperframework;
 
 class DataLoader {
-    public static function load($defaultPath, $pathConfigName = null) {
-        $delegate = Config::get(get_called_class() . '\Delegate');
-        if ($delegate !== null) {
-            return $delegate::load($defaultPath, $pathConfigName);
-        }
-        return static::load(
-            static::getFullPath($defaultPath, $pathConfigName)
-        );
-    }
-
-    protected static function getFullPath($defaultPath, $pathConfigName) {
-        $result = null;
+    final public static function load($defaultPath, $pathConfigName = null) {
+        $path = null;
         if ($pathConfigName !== null) {
-            $result = Config::get($pathConfigName);
+            $path = Config::get($pathConfigName);
         }
-        if ($result !== null) {
-            return $result;
+        if ($path === null) {
+            $path = $defaultPath;
         }
-        return static::getDefaultRootPath() . DIRECTORY_SEPARATOR
-            . $defaultPath . static::getDefaultFileNameExtension();
+        return require self::getFullPath($path);
     }
 
-    protected static function getDefaultFileNameExtension() {
-        return '.php';
+    protected static function getDefaultRootPathSuffix() {
+        return DIRECTORY_SEPARATOR . 'data';
     }
 
-    protected static function getDefaultRootPath() {
-        return Config::getApplicationPath() . DIRECTORY_SEPARATOR . 'data';
+    private static function getFullPath($path) {
+        if (self::isRelativePath($path) === false) {
+            return $path;
+        }
+        return Config::getApplicationPath() . getDefaultRootPathSuffix()
+            . DIRECTORY_SEPARATOR . $path;
     }
 
-    protected static function load($path) {
-        return require $path;
+    private static function isRelativePath($path) {
+        if (DIRECTORY_SEPARATOR === '/') {
+            return strncmp($path, '/', 1) !== 0;
+        }
+        return substr($path, 1, 1) !== ':' && strncmp($path, '\\', 1) !== 0;
     }
 }
