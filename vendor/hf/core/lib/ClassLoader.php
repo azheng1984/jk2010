@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework;
-
+//  /a/b/c
+//  [a] [b] [c]
 /*
 array(
     '@root_path' => 'a',
