@@ -40,6 +40,12 @@ class ClassLoader {
 
     protected static function initialize() {
         require __DIR__ . DIRECTORY_SEPARATOR . 'DataLoader.php';
+        if (Config::get(__CLASS__ . '\CacheEnabled')) {
+            require __DIR__ . DIRECTORY_SEPARATOR . 'CacheLoader.php';
+            self::$cache = ConfigLoader::load(
+                'class_loader.php', __CLASS__ . '\CachePath'
+            );
+        }
         require __DIR__ . DIRECTORY_SEPARATOR . 'ConfigLoader.php';
         self::$config = ConfigLoader::load(
             'class_loader.php', __CLASS__ . '\ConfigPath'
