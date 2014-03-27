@@ -1,17 +1,9 @@
 <?php
 namespace Hyperframework;
-//  /a/b/c
-//  [a] [b] [c]
-/*
-array(
-    '@root_path' => 'a',
-    '@path' => 'b',
-    'A' => array('@path' => array('x'), '@ignore_path' => 'x/b'),
-);
-*/
 
 class ClassLoader {
-    private static $config;
+    private static $hasMultipleTarget = false;
+    private static $cache;
 
     public static function run() {
         static::initailize();
@@ -19,34 +11,38 @@ class ClassLoader {
     }
 
     public static function load($name) {
-        $rootPath = Config::getApplicationPath();
-        $ignorePaths = array();
-        foreach (self::$config as $key => $value) {
-            if (strncmp($key, '@', 1) === 0) {
-                switch ($key) {
-                    case '@root_path':
-                        $rootPath = $value;
-                        break;
-                    case '@ignore_path':
-                        $ignorePath[] = $rootPath . $value;
-                        break;
-                    case '@path':
-                        $paths[] = $rootPath . $value;
-                        break;
-                }
-            }
-        }
     }
 
     protected static function initialize() {
         require __DIR__ . DIRECTORY_SEPARATOR . 'DataLoader.php';
+        if (Config::get(__CLASS__ . '\EnableCache') === false) {
+            self::$hasMultipleTarget = true;
+            require __DIR__ . DIRECTORY_SEPARATOR . 'ConfigLoader.php';
+            $config = ConfigLoader::load(
+                'class_loader.php', __CLASS__ . '\ConfigPath'
+            );
+            self::initializeCache($config);
+        }
         require __DIR__ . DIRECTORY_SEPARATOR . 'CacheLoader.php';
         self::$cache = ConfigLoader::load(
             'class_loader.php', __CLASS__ . '\CachePath'
         );
     }
 
-    final protected static function setConfig($value) {
-        self::$config = $value;
+    private static function initializeCache($config) {
+        $rootPath = Config::getApplicationPath();
+        $cache = array();
+        foreach ($config as $key => $value) {
+            $namespaces = explode('\\', $key);
+            $current =& $cache;
+            foreach ($namespaces as $namespace) {
+                if (isset($current[$namespace]) === false) {
+                    $current[$namespace] = array();
+                    unset($current);
+                }
+            }
+            end($namespaces);
+        }
+        self::$cache = $cache;
     }
 }
