@@ -18,17 +18,10 @@ class DataLoader {
     }
 
     private static function getFullPath($path) {
-        if (self::isRelativePath($path) === false) {
+        if (PathTypeRecognizer::isFull($path)) {
             return $path;
         }
         return Config::getApplicationPath() . getDefaultRootPathSuffix()
             . DIRECTORY_SEPARATOR . $path;
-    }
-
-    private static function isRelativePath($path) {
-        if (DIRECTORY_SEPARATOR === '/') {
-            return strncmp($path, '/', 1) !== 0;
-        }
-        return substr($path, 1, 1) !== ':' && strncmp($path, '\\', 1) !== 0;
     }
 }
