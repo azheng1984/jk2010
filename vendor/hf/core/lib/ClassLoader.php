@@ -16,19 +16,19 @@ final class ClassLoader {
     }
 
     public static function load($name) {
-        $namespace = null;
+        $segments = null;
         if (strpos('_', $name) !== false) {
-            $namespaces = explode('_', $name);
+            $segments = explode('_', $name);
         } else {
-            $namespaces = explode('\\', $name);
+            $segments = explode('\\', $name);
         }
         $current =& self::$cache;
         $index = 0;
         $path = null;
-        foreach ($namespaces as $namespace) {
+        foreach ($segments as $segment) {
             ++$index;
-            if (isset($current[$namespace])) {
-                $current =& $current[$namespace];
+            if (isset($current[$segment])) {
+                $current =& $current[$segment];
                 continue;
             }
             if (is_array($current)) {
@@ -41,11 +41,14 @@ final class ClassLoader {
             break;
         }
         if ($path === null) {
+            if (isset(self::$cache[''])) {
+                $path = $cache[''];
+            }
             return;
         }
         $suffix = null;
-        while (isset($namespaces[$index])) {
-            $suffix .= DIRECTORY_SEPARATOR . $namespaces[$index];
+        while (isset($segments[$index])) {
+            $suffix .= DIRECTORY_SEPARATOR . $segments[$index];
             ++$index;
         }
         if (self::$isOneToManyMappingAllowed && is_array($current[0])) {
