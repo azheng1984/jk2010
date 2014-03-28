@@ -24,25 +24,47 @@ final class ClassLoader {
         }
         $current =& self::$cache;
         $index = 0;
-        $basePath = null;
+        $path = null;
         foreach ($namespaces as $namespace) {
+            ++$index;
             if (isset($current[$namespace])) {
-                ++$index;
                 $current =& $current[$namespace];
                 continue;
             }
             if (is_array($current)) {
-                if (self::$isOneToManyMappingAllowed === false) {
-                    $basePath = $current[0];
-                    break;
-                } else {
-                    
+                if (isset($current[0]) === false) {
+                    return;
                 }
+                $path = $current[0];
             }
-            $basePath = $current;
+            $path = $current;
             break;
         }
-        //append namespace
+        if ($path === null) {
+            return;
+        }
+        $suffix = null;
+        while (isset($namespaces[$index])) {
+            $suffix .= DIRECTORY_SEPARATOR . $namespaces[$index];
+            ++$index;
+        }
+        if (self::$isOneToManyMappingAllowed && is_array($current[0])) {
+            $lastPathIndex = count($current[0]) - 1;
+            for ($pathIndex = 0; $pathIndex < $lastPathIndex; ++$pathIndex) {
+                $path .= $suffix;
+                if (file_exists($path)) {
+                    require $path;
+                    return;
+                }
+            }
+            $path = $current[0][$lastPathIndex];
+        }
+        if (self::$isFileExistsCheckEnabled) {
+            if (file_exists($path) === false) {
+                return;
+            }
+        }
+        require $path;
     }
 
     private static function initialize() {

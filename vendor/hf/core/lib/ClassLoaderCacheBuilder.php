@@ -4,7 +4,11 @@ namespace Hyperframework;
 class ClassLoaderCacheBuilder {
     public static function build($config) {
         $cache = array();
+        $applicationPath = Config::getApplicationPath();
         foreach ($config as $namespace => $path) {
+            if (PathTypeRecognizer::isFull($path) === false) {
+                $path = $applicationPath . DIRECTORY_SEPARATOR . $path;
+            }
             $segments = explode('\\', $namespace);
             $parent =& $cache;
             $amount = count($segments);
@@ -31,7 +35,7 @@ class ClassLoaderCacheBuilder {
                 if (is_string($parent[$segment])) {
                     $parent[$segment] = array($parent[$segment]);
                 }
-                $parent =& $parent[$segment]; 
+                $parent =& $parent[$segment];
             }
         }
         return $cache;
