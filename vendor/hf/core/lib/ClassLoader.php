@@ -1,24 +1,24 @@
 <?php
 namespace Hyperframework;
 
-class ClassLoader {
+final class ClassLoader {
     private static $isFileExistsCheckEnabled = false;
     private static $isOneToManyMappingAllowed = false;
     private static $cache;
 
-    final public static function run() {
-        static::initailize();
+    public static function run() {
+        self::initailize();
         spl_autoload_register(array(__CLASS__, 'load'));
     }
 
-    final public static function enableFileExistsCheck() {
+    public static function enableFileExistsCheck() {
         self::$isFileExistsCheckEnabled = true;
     }
 
-    final public static function load($name) {
+    public static function load($name) {
     }
 
-    protected static function initialize() {
+    private static function initialize() {
         require __DIR__ . DIRECTORY_SEPARATOR . 'DataLoader.php';
         require __DIR__ . DIRECTORY_SEPARATOR . 'PathTypeRecognizer.php';
         if (Config::get(__CLASS__ . '\EnableCache') === false) {
@@ -28,8 +28,8 @@ class ClassLoader {
             );
             require __DIR__ . DIRECTORY_SEPARATOR
                 . 'ClassLoaderCacheBuilder.php';
-            self::$isOneToManyMappingAllowed = true;
             self::$cache = ClassLoaderCacheBuilder::build($config);
+            self::$isOneToManyMappingAllowed = true;
             return;
         }
         require __DIR__ . DIRECTORY_SEPARATOR . 'CacheLoader.php';
