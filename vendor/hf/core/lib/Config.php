@@ -87,7 +87,7 @@ final class Config {
                 self::$data[$prefix . '\\' . $item[0]] = $item[1];
                 continue;
             }
-            static::mergePrefix($prefix . '\\' . $key, $item);
+            self::mergePrefix($prefix . '\\' . $key, $item);
         }
     }
 }
