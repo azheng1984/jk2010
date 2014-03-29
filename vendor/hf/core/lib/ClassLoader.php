@@ -73,7 +73,7 @@ final class ClassLoader {
     private static function initialize() {
         require __DIR__ . DIRECTORY_SEPARATOR . 'DataLoader.php';
         require __DIR__ . DIRECTORY_SEPARATOR . 'PathTypeRecognizer.php';
-        if (Config::get(__CLASS__ . '\EnableCache') === false) {
+        if (Config::get(__CLASS__ . '\CacheEnabled') === false) {
             require __DIR__ . DIRECTORY_SEPARATOR . 'ConfigLoader.php';
             $config = ConfigLoader::load(
                 'class_loader.php', __CLASS__ . '\ConfigPath'
