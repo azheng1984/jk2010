@@ -1,7 +1,8 @@
 <?php
 namespace Hyperframework;
 
-class Config {
+final class Config {
+    private static $applicationPath;
     private static $data = array();
 
     public static function initailize($applicationNamespace) {
@@ -29,13 +30,16 @@ class Config {
     }
 
     public static function getApplicationPath() {
-        return Config::get(
-            __NAMESPACE__ . '\ApplicationPath',
-            array(
-                'default' => array('application_const' => 'ROOT_PATH'),
-                'is_nullable' => false
-            )
-        );
+        if (self::$applicationPath === null) {
+            self::$applicationPath = self::get(
+                __NAMESPACE__ . '\ApplicationPath',
+                array(
+                    'default' => array('application_const' => 'ROOT_PATH'),
+                    'is_nullable' => false
+                )
+            );
+        }
+        return self::$applicationPath;
     }
 
     public static function set(/*$mixed, ...*/) {
@@ -49,7 +53,7 @@ class Config {
                 self::$data[$item[0]] = $item[1];
                 return;
             }
-            static::mergePrefix($key, $item);
+            self::mergePrefix($key, $item);
         }
     }
 

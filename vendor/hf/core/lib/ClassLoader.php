@@ -51,10 +51,11 @@ final class ClassLoader {
             $suffix .= DIRECTORY_SEPARATOR . $segments[$index];
             ++$index;
         }
+        $suffix .= '.php';
         if (self::$isOneToManyMappingAllowed && is_array($current[0])) {
             $lastPathIndex = count($current[0]) - 1;
             for ($pathIndex = 0; $pathIndex < $lastPathIndex; ++$pathIndex) {
-                $path .= $suffix;
+                $path = $current[0][$pathIndex] . $suffix;
                 if (file_exists($path)) {
                     require $path;
                     return;
@@ -62,6 +63,7 @@ final class ClassLoader {
             }
             $path = $current[0][$lastPathIndex];
         }
+        $path .= $suffix;
         if (self::$isFileExistsCheckEnabled) {
             if (file_exists($path) === false) {
                 return;
