@@ -22,24 +22,18 @@ class Runner {
     }
 
     protected static function initializeConfig($applicationNamespace, $config) {
-        require static::getHyperframeworkPath()
-            . DIRECTORY_SEPARATOR . 'Config.php';
+        require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Config.php';
         Config::initialize($applicationNamespace);
         Config::set($config);
     }
 
     protected static function initializeClassLoader() {
-        require static::getHyperframeworkPath()
-            . DIRECTORY_SEPARATOR . 'ClassLoader.php';
+        require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'ClassLoader.php';
         ClassLoader::run();
     }
 
     protected static function initializeExceptionHandler() {
         ExceptionHandler::run();
-    }
-
-    final protected static function getHyperframeworkPath() {
-        return dirname(__DIR__);
     }
 
     protected static function getPath() {

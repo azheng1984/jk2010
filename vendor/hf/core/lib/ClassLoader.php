@@ -85,7 +85,7 @@ final class ClassLoader {
             return;
         }
         require __DIR__ . DIRECTORY_SEPARATOR . 'CacheLoader.php';
-        self::$cache = ConfigLoader::load(
+        self::$cache = CacheLoader::load(
             'class_loader.php', __CLASS__ . '\CachePath'
         );
     }
