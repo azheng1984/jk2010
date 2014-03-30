@@ -2,7 +2,6 @@
 namespace Hyperframework;
 
 final class Config {
-    private static $applicationPath;
     private static $data = array();
 
     public static function initailize($applicationNamespace) {
@@ -14,12 +13,15 @@ final class Config {
         $value = null;
         if (isset(self::$data[$name])) {
             $value = self::$data[$name];
+        } elseif (isset($options['default'])) {
+            $value = $options['default'];
+        } elseif (isset($options['default_application_const'])) {
+            $value = self::getApplicationConst(
+                $options['default_application_const']
+            );
         }
         if ($value !== null || $options === null) {
             return $value;
-        }
-        if (isset($options['default'])) {
-            $value = $options['default'];
         }
         if ($value === null
             && isset($options['is_nullable'])
@@ -29,17 +31,8 @@ final class Config {
         return $value;
     }
 
-    public static function getApplicationPath() {
-        if (self::$applicationPath === null) {
-            self::$applicationPath = self::get(
-                __NAMESPACE__ . '.application_path',
-                array(
-                    'default' => array('application_const' => 'ROOT_PATH'),
-                    'is_nullable' => false
-                )
-            );
-        }
-        return self::$applicationPath;
+    public static function set($key, $value) {
+        self::$data[$key] = $value;
     }
 
     public static function merge($configs) {
@@ -48,8 +41,8 @@ final class Config {
         }
     }
 
-    public static function set($key, $value) {
-        self::$data[$key] = $value;
+    public static function delete($name) {
+        return unset(self::$data[$name]);
     }
 
     public static function export() {

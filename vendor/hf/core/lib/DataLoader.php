@@ -21,7 +21,7 @@ class DataLoader {
         if (PathTypeRecognizer::isFull($path)) {
             return $path;
         }
-        return Config::getApplicationPath() . getDefaultRootPathSuffix()
+        return ApplicationPath::get() . getDefaultRootPathSuffix()
             . DIRECTORY_SEPARATOR . $path;
     }
 }
