@@ -5,8 +5,8 @@ use Hyperframework\Config;
 use Hyperframework\ClassLoader;
 
 class Runner {
-    public static function run($applicationNamespace, $config = array()) {
-        static::initialize($applicationNamespace, $config);
+    public static function run($applicationNamespace, $configs = null) {
+        static::initialize($applicationNamespace, $configs);
         $path = static::getPath();
         if (static::isAsset($path)) {
             static::runAssetProxy($path);
@@ -15,16 +15,20 @@ class Runner {
         static::runApplication($path);
     }
 
-    protected static function initialize($applicationNamespace, $config) {
-        static::initializeConfig($applicationNamespace, $config);
+    protected static function initialize($applicationNamespace, $configs) {
+        static::initializeConfig($applicationNamespace, $configs);
         static::initializeClassLoader();
         static::initializeExceptionHandler();
     }
 
-    protected static function initializeConfig($applicationNamespace, $config) {
+    protected static function initializeConfig(
+        $applicationNamespace, $configs
+    ) {
         require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Config.php';
         Config::initialize($applicationNamespace);
-        Config::set($config);
+        if ($configs !== null) {
+            Config::merge($configs);
+        }
     }
 
     protected static function initializeClassLoader() {

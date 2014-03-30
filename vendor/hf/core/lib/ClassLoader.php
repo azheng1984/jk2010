@@ -75,10 +75,10 @@ final class ClassLoader {
     private static function initialize() {
         require __DIR__ . DIRECTORY_SEPARATOR . 'DataLoader.php';
         require __DIR__ . DIRECTORY_SEPARATOR . 'PathTypeRecognizer.php';
-        if (Config::get(__CLASS__ . '\CacheEnabled') === false) {
+        if (Config::get(__CLASS__ . '.CacheEnabled') === false) {
             require __DIR__ . DIRECTORY_SEPARATOR . 'ConfigLoader.php';
             $config = ConfigLoader::load(
-                'class_loader.php', __CLASS__ . '\ConfigPath'
+                'class_loader.php', __CLASS__ . '.ConfigPath'
             );
             require __DIR__ . DIRECTORY_SEPARATOR
                 . 'ClassLoaderCacheBuilder.php';
@@ -88,7 +88,7 @@ final class ClassLoader {
         }
         require __DIR__ . DIRECTORY_SEPARATOR . 'CacheLoader.php';
         self::$cache = CacheLoader::load(
-            'class_loader.php', __CLASS__ . '\CachePath'
+            'class_loader.php', __CLASS__ . '.CachePath'
         );
     }
 }

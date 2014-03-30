@@ -6,7 +6,7 @@ final class Config {
     private static $data = array();
 
     public static function initailize($applicationNamespace) {
-        self::$data[__NAMESPACE__ . '\ApplicationNamespace']
+        self::$data[__NAMESPACE__ . '.application_namespace']
             = $applicationNamespace;
     }
 
@@ -32,7 +32,7 @@ final class Config {
     public static function getApplicationPath() {
         if (self::$applicationPath === null) {
             self::$applicationPath = self::get(
-                __NAMESPACE__ . '\ApplicationPath',
+                __NAMESPACE__ . '.application_path',
                 array(
                     'default' => array('application_const' => 'ROOT_PATH'),
                     'is_nullable' => false
@@ -42,19 +42,14 @@ final class Config {
         return self::$applicationPath;
     }
 
-    public static function set(/*$mixed, ...*/) {
-        $arguments = func_get_args();
-        if (is_string($arguments[0])) {
-            self::$data[$arguments[0]] = $arguments[1];
-            return;
+    public static function merge($configs) {
+        foreach ($configs as $key => $value) {
+            self::$data[$key] = $value;
         }
-        foreach ($arguments as $name => $item) {
-            if (is_int($key)) {
-                self::$data[$item[0]] = $item[1];
-                return;
-            }
-            self::mergePrefix($key, $item);
-        }
+    }
+
+    public static function set($key, $value) {
+        self::$data[$key] = $value;
     }
 
     public static function export() {
@@ -66,28 +61,13 @@ final class Config {
     }
 
     private static function getApplicationConst($name) {
-        $namespace = static::get(__NAMESPACE__ . '\ApplicationNamespace');
+        $namespace = self::get(__NAMESPACE__ . '.application_namespace');
         if ($namespace === null) {
             return;
         }
-        $name = $namespace . '\\' . $name;
-        if (defined($name) === false) {
-            return;
-        }
-        return constant($name);
-    }
-
-    private static function mergePrefix($prefix, $data) {
-        if (is_string($data[0])) {
-            self::$data[$prefix . '\\' . $data[0]] = $data[1];
-            return;
-        }
-        foreach ($data as $key => $item) {
-            if (is_int($key)) {
-                self::$data[$prefix . '\\' . $item[0]] = $item[1];
-                continue;
-            }
-            self::mergePrefix($prefix . '\\' . $key, $item);
+        $name = $namespace . '.' . $name;
+        if (defined($name)) {
+            return constant($name);
         }
     }
 }
