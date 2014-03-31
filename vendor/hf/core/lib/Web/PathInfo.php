@@ -26,25 +26,34 @@ final class PathInfo {
 
     private static function build($relativeUrl) {
         if (Config::get(__CLASS__ . '.cache_enabled') === false) {
+            $path = null;
             $segments = explode('/', $relativeUrl);
+            $amount = count($segments);
+            $index = 0;
             foreach ($segments as $segment) {
+                ++$index;
                 $words = explode('_', $segment);
-                foreach $words;
+                foreach ($words as $word) {
+                    $path .= ucfirst($word);
+                }
+                if ($index < $amount) {
+                    $path .= '\\';
+                }
             }
             if (strncmp($path, '#', 1) !== 0) {
-                $basePath = '\App\\' . $basePath;
+                $path = '\App\\' . $path;
             }
-            $basePath = \Hyperframework\APPLICATION_NAMESPACE
-                . $basePath;
-            return PathInfoBuilder::build($basePath);
+            return PathInfoBuilder::build(
+                \Hyperframework\APPLICATION_NAMESPACE . $path
+            );
         }
         if (self::$cache === null) {
             self::$cache = CacheLoader::load(
                 'path_info.php', __CLASS__ . '.cache_path'
             );
         }
-        if (isset(self::$cache[$path])) {
-            return self::$cache[$path];
+        if (isset(self::$cache[$relativeUrl])) {
+            return self::$cache[$relativeUrl];
         }
     }
 }
