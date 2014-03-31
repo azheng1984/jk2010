@@ -7,10 +7,12 @@ class PathInfoBuilder {
     private $classLoader;
 
     public function build($path) {
-        //array(
-        //    'Hyperframework\Web\ActionInfoBuilder'
-        //    'Hyperframework\Web\ViewInfoBuilder'
+        //default config: array(
+        //    'Action' => 'Hyperframework\Web\ActionInfoBuilder'
+        //    array('View', 'Html', 'Desktop', 'Phone') => 'Hyperframework\Web\ViewInfoBuilder'
         //)
+        //1. tool 需要 merge app 的 class loader 可能需要 extends 类
+        //2. 需要链式派发，还是精确定位？
         $config = require 'config' . DIRECTORY_SEPARATOR . 'application.php';
         $this->setUpClassLoader();
         $configuration = new ApplicationConfiguration;
