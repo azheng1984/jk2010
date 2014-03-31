@@ -6,7 +6,7 @@ class PathInfoBuilder {
     private $cache;
     private $classLoader;
 
-    public function build() {
+    public function build($path) {
         //array(
         //    'Hyperframework\Web\ActionInfoBuilder'
         //    'Hyperframework\Web\ViewInfoBuilder'

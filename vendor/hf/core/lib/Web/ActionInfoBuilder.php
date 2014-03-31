@@ -1,4 +1,6 @@
 <?php
+namespace Hyperframework\Web;
+
 class ActionInfoBuilder {
     public function handle($class, $fullPath) {
         $postfix = 'Action';
