@@ -9,6 +9,9 @@ final class PathInfo {
 
     public static function get($path) {
         $result = self::build($path);
+        if ($result === null) {
+            throw new NotFoundException;
+        }
         $result['namespace'] = \Hyperframework\APPLICATION_NAMESPACE
             . '\App\\' . $result['namespace'];
         return $result;
@@ -28,7 +31,7 @@ final class PathInfo {
             );
         }
         if (isset(self::$cache[$path]) === false) {
-            throw new NotFoundException;
+            return;
         }
         return self::$cache[$path];
     }
