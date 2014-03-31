@@ -2,8 +2,8 @@
 namespace Yxj;
 
 define(__NAMESPACE__ . '\ROOT_PATH', dirname(__DIR__));
-require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
-    . DIRECTORY_SEPARATOR . 'path.php';
+$configs = require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
+    . DIRECTORY_SEPARATOR . 'init.php';
 require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Web'
     . DIRECTORY_SEPARATOR . 'Runner.php';
-\Hyperframework\Web\Runner::run(__NAMESPACE__);
+\Hyperframework\Web\Runner::run(ROOT_PATH, $configs);
