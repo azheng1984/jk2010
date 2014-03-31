@@ -5,8 +5,8 @@ require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Web'
     . DIRECTORY_SEPARATOR . 'Runner.php';
 
 class Runner extends Hyperframework\Web\Runner {
-    public static function run() {
-        parent::run(HYPERFRAMEWORK_PATH, __NAMESPACE__);
+    public static function run($applicationPath, $configs) {
+        parent::run(__NAMESPACE__, $applicationPath, $configs);
     }
 
     protected static function getPath() {

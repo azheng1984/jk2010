@@ -29,8 +29,8 @@ class Runner {
     protected static function initializeConstant(
         $applicationNamespace, $applicationPath
     ) {
-        const \Hyperframework\APPLICATION_NAMESPACE = $applicationNamespace;
-        const \Hyperframework\APPLICATION_PATH = $applicationPath;
+        define('\Hyperframework\APPLICATION_NAMESPACE', $applicationNamespace);
+        define('\Hyperframework\APPLICATION_PATH', $applicationPath);
     }
 
     protected static function initializeConfig($configs) {
