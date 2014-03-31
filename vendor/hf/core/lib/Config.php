@@ -16,11 +16,10 @@ final class Config {
                 $value = $options['default'];
             }
         }
-        if ($value !== null || $options === null) {
+        if ($value !== null) {
             return $value;
         }
-        if ($value === null
-            && isset($options['is_nullable'])
+        if (isset($options['is_nullable'])
             && $options['is_nullable'] === false) {
             throw new \Exception('Config \'' . $name . '\' is null');
         }
@@ -37,7 +36,7 @@ final class Config {
         }
     }
 
-    public static function delete($name) {
+    public static function remove($name) {
         return unset(self::$data[$name]);
     }
 
