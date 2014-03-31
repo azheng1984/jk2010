@@ -12,8 +12,11 @@ final class PathInfo {
         if ($result === null) {
             throw new NotFoundException;
         }
+        if (strncmp($path, '#', 1) === 0) {
+            $result['namespace'] =  '\App\\' . $result['namespace'];
+        }
         $result['namespace'] = \Hyperframework\APPLICATION_NAMESPACE
-            . '\App\\' . $result['namespace'];
+            . $result['namespace'];
         return $result;
     }
 
@@ -30,9 +33,8 @@ final class PathInfo {
                 'path_info.php', __CLASS__ . '.cache_path'
             );
         }
-        if (isset(self::$cache[$path]) === false) {
-            return;
+        if (isset(self::$cache[$path])) {
+            return self::$cache[$path];
         }
-        return self::$cache[$path];
     }
 }
