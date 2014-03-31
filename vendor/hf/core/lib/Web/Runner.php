@@ -22,8 +22,8 @@ class Runner {
         static::initializeExceptionHandler();
     }
 
-    protected static function initializeApplicationpath($value) {
-        define('Hyperframework\APPLICATION_PATH', $value);
+    protected static function initializeApplicationPath($value) {
+        const \Hyperframework\APPLICATION_PATH = $value;
     }
 
     protected static function initializeConfig($configs) {
