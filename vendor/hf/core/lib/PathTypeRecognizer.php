@@ -1,4 +1,6 @@
 <?php
+namespace Hyperframework;
+
 class PathTypeRecognizer {
     public static function isFull($path) {
         if (DIRECTORY_SEPARATOR === '/') {

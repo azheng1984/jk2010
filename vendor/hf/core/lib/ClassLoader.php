@@ -36,13 +36,14 @@ final class ClassLoader {
                     return;
                 }
                 $path = $current[0];
+                break;
             }
             $path = $current;
             break;
         }
         if ($path === null) {
-            if (isset(self::$cache[''])) {
-                $path = $cache[''];
+            if (isset(self::$cache[0])) {
+                $path = $cache[0];
             }
             return;
         }
