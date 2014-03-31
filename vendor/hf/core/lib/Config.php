@@ -10,8 +10,7 @@ final class Config {
             $result = self::$data[$name];
         } elseif (isset($options['default'])) {
             if (is_callable($options['default'])) {
-                $callback = $options['default'];
-                $result = $callback();
+                $result = $options['default']();
             } else {
                 $result = $options['default'];
             }
