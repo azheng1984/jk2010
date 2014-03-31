@@ -4,10 +4,9 @@ namespace Hyperframework;
 class ClassLoaderCacheBuilder {
     public static function build($config) {
         $cache = array();
-        $applicationPath = Config::getApplicationPath();
         foreach ($config as $namespace => $path) {
             if (PathTypeRecognizer::isFull($path) === false) {
-                $path = $applicationPath . DIRECTORY_SEPARATOR . $path;
+                $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . $path;
             }
             $segments = explode('\\', $namespace);
             $parent =& $cache;

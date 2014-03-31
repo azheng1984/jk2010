@@ -16,7 +16,7 @@ class Runner {
     }
 
     protected static function initialize($applicationPath, $configs) {
-        static::initailizeApplicationPath($applicationPath);
+        static::initializeApplicationPath($applicationPath);
         static::initializeConfig($configs);
         static::initializeClassLoader();
         static::initializeExceptionHandler();
