@@ -14,11 +14,12 @@ final class Config {
         if (isset(self::$data[$name])) {
             $value = self::$data[$name];
         } elseif (isset($options['default'])) {
-            $value = $options['default'];
-        } elseif (isset($options['default_application_const'])) {
-            $value = self::getApplicationConst(
-                $options['default_application_const']
-            );
+            if (is_callable($options['default'])) {
+                $callback = $options['default'];
+                $value = $callback();
+            } else {
+                $value = $options['default'];
+            }
         }
         if ($value !== null || $options === null) {
             return $value;
@@ -51,16 +52,5 @@ final class Config {
 
     public static function reset() {
         self::$data = array();
-    }
-
-    private static function getApplicationConst($name) {
-        $namespace = self::get(__NAMESPACE__ . '.application_namespace');
-        if ($namespace === null) {
-            return;
-        }
-        $name = $namespace . '.' . $name;
-        if (defined($name)) {
-            return constant($name);
-        }
     }
 }
