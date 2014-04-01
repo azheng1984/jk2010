@@ -1,18 +1,6 @@
 <?php
 namespace Hyperframework;
-// $cachePath = CacheLoader::getPath();
-// if (file_exists($cachePath)) {
-//     $cache = require $cachePath;
-// }
-//
-// ... $cache ...
-//
-// $cache = CacheLoader::load();
-//
-// $cache = CacheLoader::load('x.php', null,  true);
-// if ($cache === null) {
-//    ...
-// }
+
 class DataLoader {
     final public static function load(
         $defaultPath, $pathConfigName = null, $shouldCheckFileExists = false

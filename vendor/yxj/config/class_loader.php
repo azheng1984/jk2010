@@ -1,8 +1,6 @@
 <?php
-namespace Yxj;
-
 return array(
-    __NAMESPACE__ => 'lib'
+    'Yxj' => 'lib',
 );
 
 /*
