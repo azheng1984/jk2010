@@ -28,6 +28,7 @@ final class PathInfo {
         if (Config::get(__CLASS__ . '.cache_enabled') === false) {
             $path = null;
             $segments = explode('/', $relativeUrl);
+            array_shift($segments);
             $amount = count($segments);
             $index = 0;
             foreach ($segments as $segment) {
@@ -41,10 +42,14 @@ final class PathInfo {
                 }
             }
             if (strncmp($path, '#', 1) !== 0) {
-                $path = '\App\\' . $path;
+                $path = 'App\\' . $path;
             }
-            return PathInfoBuilder::build(
-                \Hyperframework\APPLICATION_NAMESPACE . $path
+            $builder = Config::get(
+                __CLASS__ . '.builder',
+                array('default' => __NAMESPACE__ . '\PathInfoBuilder')
+            );
+            return $builder::build(
+                \Hyperframework\APPLICATION_NAMESPACE . '\\' . $path
             );
         }
         if (self::$cache === null) {

@@ -6,7 +6,12 @@ require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Web'
 
 class Runner extends Hyperframework\Web\Runner {
     public static function run($applicationPath, $configs) {
-        $configs['path_info_builder'] = 'Yxj\PathInfoBuilder';
+        $options = array(
+            'full_name' => __CLASS__ . '.builder',
+            'default' => 'Hyperframework\Web\PathInfoBuilder'
+        );
+        Config::get('path_info_builder', $options); 
+        $configs['Hyperframework\Web\PathInfo.builder'] = 'Yxj\PathInfoBuilder';
         parent::run(__NAMESPACE__, $applicationPath, $configs);
     }
 
