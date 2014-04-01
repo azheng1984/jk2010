@@ -1,8 +1,15 @@
 <?php
 namespace Hyperframework;
-
+// $cachePath = CacheLoader::getPath();
+// if (file_exists($cachePath)) {
+//     $cache = require $cachePath;
+// }
 class DataLoader {
-    final public static function load($defaultPath, $pathConfigName = null) {
+    final public static function load($defaultPath, $pathConfigName = null, $shouldCheckFileExists = false) {
+        return require self::getPath($defaultPath, $pathConfigName);
+    }
+
+    final public static function getPath($defaultPath, $pathConfigName = null) {
         $path = null;
         if ($pathConfigName !== null) {
             $path = Config::get($pathConfigName);
@@ -10,7 +17,7 @@ class DataLoader {
         if ($path === null) {
             $path = $defaultPath;
         }
-        return require self::getFullPath($path);
+        return self::getFullPath($path);
     }
 
     protected static function getDefaultRootPathSuffix() {
