@@ -2,6 +2,11 @@
 namespace Yxj;
 
 return array(
+    __NAMESPACE__ => 'lib'
+);
+
+/*
+return array(
     'Hyperframework\Blog' => 'lib',
     'Hyperframework' => SHARE_LIB_PATH . 'hyperframework/core/lib',
     'Hyperframework\HtmlComponents' =>
@@ -11,3 +16,4 @@ return array(
     'Zend' => SHARE_LIB_PATH . 'zend/lib',
     'Symfony' => SHARE_LIB_PATH . 'symfony/lib',
 );
+*/

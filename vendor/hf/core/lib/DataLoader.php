@@ -4,9 +4,24 @@ namespace Hyperframework;
 // if (file_exists($cachePath)) {
 //     $cache = require $cachePath;
 // }
+//
+// ... $cache ...
+//
+// $cache = CacheLoader::load();
+//
+// $cache = CacheLoader::load('x.php', null,  true);
+// if ($cache === null) {
+//    ...
+// }
 class DataLoader {
-    final public static function load($defaultPath, $pathConfigName = null, $shouldCheckFileExists = false) {
-        return require self::getPath($defaultPath, $pathConfigName);
+    final public static function load(
+        $defaultPath, $pathConfigName = null, $shouldCheckFileExists = false
+    ) {
+        $path = self::getPath($defaultPath, $pathConfigName);
+        if ($shouldCheckFileExists && file_exists($path) === false) {
+            return;
+        }
+        return require $path;
     }
 
     final public static function getPath($defaultPath, $pathConfigName = null) {
