@@ -47,10 +47,14 @@ final class PathInfo {
             if (strncmp($path, '#', 1) !== 0) {
                 $path = 'App\\' . $path;
             }
-            $builder = Config::get(
-                'hyperframework.web.path_info.builder',
-                array('default' => 'Hyperframework\Web\PathInfoBuilder')
+            $builder = ConfigLoader::load(
+                'path_info_builder.php',
+                'hyperframework.web.path_info.builder_config_name',
+                true
             );
+            if ($builder === null) {
+                $builder = 'Hyperframework\Web\PathInfoBuilder';
+            }
             return $builder::build(
                 \Hyperframework\APPLICATION_NAMESPACE . '\\' . $path
             );
