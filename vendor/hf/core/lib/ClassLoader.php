@@ -82,21 +82,18 @@ final class ClassLoader {
     private static function initialize() {
         require __DIR__ . DIRECTORY_SEPARATOR . 'DataLoader.php';
         require __DIR__ . DIRECTORY_SEPARATOR . 'PathTypeRecognizer.php';
-        if (Config::get(__CLASS__ . '.cache_enabled')) {
+        if (Config::get('hyperframework.class_loader.cache_enabled')) {
             require __DIR__ . DIRECTORY_SEPARATOR . 'CacheLoader.php';
             self::$cache = CacheLoader::load(
-                'class_loader.php', 'hyperframework.classloader.cache_path'
+                'class_loader.php', 'hyperframework.class_loader.cache_path'
             );
             return;
-            'PathInfo\BuilderConfigName'
-            'hyperframework.web_path_info_builder_config_name'
         }
         require __DIR__ . DIRECTORY_SEPARATOR . 'ConfigLoader.php';
         $config = ConfigLoader::load(
-            'class_loader.php', __CLASS__ . '\ConfigPath'
+            'class_loader.php', 'hyperframework.class_loader.config_path'
         );
-        require __DIR__ . DIRECTORY_SEPARATOR
-            . 'ClassLoaderCacheBuilder.php';
+        require __DIR__ . DIRECTORY_SEPARATOR . 'ClassLoaderCacheBuilder.php';
         self::$cache = ClassLoaderCacheBuilder::build($config);
         self::$isOneToManyMappingAllowed = true;
     }
