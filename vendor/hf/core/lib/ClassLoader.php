@@ -85,13 +85,15 @@ final class ClassLoader {
         if (Config::get(__CLASS__ . '.cache_enabled')) {
             require __DIR__ . DIRECTORY_SEPARATOR . 'CacheLoader.php';
             self::$cache = CacheLoader::load(
-                'class_loader.php', __CLASS__ . '.cache_path'
+                'class_loader.php', 'hyperframework.classloader.cache_path'
             );
             return;
+            'PathInfo\BuilderConfigName'
+            'hyperframework.web_path_info_builder_config_name'
         }
         require __DIR__ . DIRECTORY_SEPARATOR . 'ConfigLoader.php';
         $config = ConfigLoader::load(
-            'class_loader.php', __CLASS__ . '.config_path'
+            'class_loader.php', __CLASS__ . '\ConfigPath'
         );
         require __DIR__ . DIRECTORY_SEPARATOR
             . 'ClassLoaderCacheBuilder.php';

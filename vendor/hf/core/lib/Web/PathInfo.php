@@ -25,7 +25,7 @@ final class PathInfo {
     }
 
     private static function build($relativeUrl) {
-        if (Config::get(__CLASS__ . '.cache_enabled') === false) {
+        if (Config::get('Hyperframework.Web.PathInfo.CacheEnabled') === false) {
             $path = null;
             $segments = explode('/', $relativeUrl);
             array_shift($segments);
@@ -45,8 +45,8 @@ final class PathInfo {
                 $path = 'App\\' . $path;
             }
             $builder = Config::get(
-                __CLASS__ . '.builder',
-                array('default' => __NAMESPACE__ . '\PathInfoBuilder')
+                'Hyperframework.Web.PathInfo.Builder',
+                array('default' => 'Hyperframework\Web\PathInfoBuilder')
             );
             return $builder::build(
                 \Hyperframework\APPLICATION_NAMESPACE . '\\' . $path
@@ -54,7 +54,7 @@ final class PathInfo {
         }
         if (self::$cache === null) {
             self::$cache = CacheLoader::load(
-                'path_info.php', __CLASS__ . '.cache_path'
+                'path_info.php', 'Hyperframework.Web.PathInfo.CachePath'
             );
         }
         if (isset(self::$cache[$relativeUrl])) {

@@ -4,9 +4,8 @@ namespace Yxj;
 const HYPERFRMEWORK_PATH = '/home/azheng/daoxila_www/vendor/hf/core/lib';
 
 //return array(
-//    'Hyperframework\ClassLoader.cache_enabled' => false,
-//    'Hyperframework\Web\PathInfo.cache_enabled' => false,
-//    'Hyperframework\Web\View\Asset.cache_enabled' => false,
+//    'Hyperframework.ClassLoader.CacheEnabled' => false,
+//    'Hyperframework.Web.PathInfo.CacheEnabled' => false,
 //);
 
 //return array(
