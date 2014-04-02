@@ -14,6 +14,7 @@ class Runner extends Hyperframework\Web\Runner {
         Config::set(
             'Hyperframework.Web.PathInfo.Builder', 'Yxj\PathInfoBuilder'
         );
+        parent::runApplication($path);
         //use new app type
     }
 
