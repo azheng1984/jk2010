@@ -7,12 +7,12 @@ use Hyperframework\CacheLoader;
 final class PathInfo {
     private static $cache;
 
-    public static function get($relativeUrl) {
-        $result = self::build($relativeUrl);
+    public static function get($path) {
+        $result = self::build($path);
         if ($result === null) {
             throw new NotFoundException;
         }
-        if ($relativeUrl[0] !== '#') {
+        if ($path[0] !== '#') {
             $result['namespace'] =  '\App\\' . $result['namespace'];
         }
         $result['namespace'] = \Hyperframework\APPLICATION_NAMESPACE
@@ -24,13 +24,13 @@ final class PathInfo {
         self::$cache = null;
     }
 
-    private static function build($relativeUrl) {
+    private static function build($path) {
         $isCacheEnabled = Config::get(
             'hyperframework.web.path_info.cache_enabled'
         );
         if ($isCacheEnabled === false) {
-            $path = null;
-            $segments = explode('/', $relativeUrl);
+            $name = null;
+            $segments = explode('/', $path);
             array_shift($segments);
             $amount = count($segments);
             $index = 0;
@@ -38,14 +38,14 @@ final class PathInfo {
                 ++$index;
                 $words = explode('_', $segment);
                 foreach ($words as $word) {
-                    $path .= ucfirst($word);
+                    $name .= ucfirst($word);
                 }
                 if ($index < $amount) {
-                    $path .= '\\';
+                    $name .= '\\';
                 }
             }
             if (strncmp($path, '#', 1) !== 0) {
-                $path = 'App\\' . $path;
+                $name = 'App\\' . $name;
             }
             $builder = ConfigLoader::load(
                 'path_info_builder.php',
@@ -55,17 +55,15 @@ final class PathInfo {
             if ($builder === null) {
                 $builder = 'Hyperframework\Web\PathInfoBuilder';
             }
-            return $builder::build(
-                \Hyperframework\APPLICATION_NAMESPACE . '\\' . $path
-            );
+            return $builder::build($name);
         }
         if (self::$cache === null) {
             self::$cache = CacheLoader::load(
                 'path_info.php', 'hyperframework.web.path_info.cache_path'
             );
         }
-        if (isset(self::$cache[$relativeUrl])) {
-            return self::$cache[$relativeUrl];
+        if (isset(self::$cache[$path])) {
+            return self::$cache[$path];
         }
     }
 }

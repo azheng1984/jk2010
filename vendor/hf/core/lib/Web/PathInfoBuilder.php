@@ -13,6 +13,11 @@ class PathInfoBuilder {
         //)
         //1. tool 需要 merge app 的 class loader 可能需要 extends 类
         //2. 需要链式派发，还是精确定位？
+
+        return array(
+            array('Html', 'Json'),
+        );
+
         $config = require 'config' . DIRECTORY_SEPARATOR . 'application.php';
         $this->setUpClassLoader();
         $configuration = new ApplicationConfiguration;
@@ -64,10 +69,10 @@ class PathInfoBuilder {
         }
     }
 
-    public static function build($path) {
-        $dir = Hyperframework\APPLICATION_PATH . DIRECTORY_SEPARATOR . 'lib'
-            . DIRECTORY_SEPARATOR . 'App' . DIRECTORY_SEPARATOR  . $path;
-
+    public static function build($name) {
+        $baseNamespace = Hyperframework\APPLICATION_PATH . DIRECTORY_SEPARATOR
+            . 'lib' . DIRECTORY_SEPARATOR . $name;
+        $basePath = Hyperframework\APPLICATION_NAMESPACE . $name;
     }
 
     private static function getNamespace($path) {
