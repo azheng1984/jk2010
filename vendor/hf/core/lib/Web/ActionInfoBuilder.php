@@ -10,9 +10,8 @@ class ActionInfoBuilder {
         return $this->getCache($class, $fullPath);
     }
 
-    private function getCache($class, $fullPath) {
+    private function getCache($class) {
         $className = $class;
-        $class  = 'Hft\Application\\' . $class;
         $cache = array('class' => $className, 'methods' => array());
         $httpMethods = array('GET', 'POST', 'PUT', 'DELETE');
         if ($this->hasPrivateGet($class)) {
@@ -24,11 +23,11 @@ class ActionInfoBuilder {
             if (strpos($method, '__') === 0) {
                 continue;
             }
-            if ($method === 'BEFORE') {
+            if ($method === 'before') {
                 $cache['before_filter'] = true;
                 continue;
             }
-            if ($method === 'AFTER') {
+            if ($method === 'after') {
                 $cache['after_filter'] = true;
                 continue;
             }
