@@ -11,6 +11,6 @@ class MediaTypeSelector {
         if (is_string($views)) {
             return $views;
         }
-        return $views[0];
+        return $view[0];
     }
 }

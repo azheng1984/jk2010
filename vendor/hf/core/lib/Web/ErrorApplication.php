@@ -16,8 +16,7 @@ class ErrorApplication {
     }
 
     protected static function renderView($path) {
-        $pathInfo = PathInfo::get($path);
-        ViewDispatcher::run(MediaTypeSelector::select($pathInfo), $pathInfo);
+        ViewDispatcher::run(PathInfo::get($path));
     }
 
     protected static function getPath() {

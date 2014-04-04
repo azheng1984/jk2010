@@ -4,7 +4,6 @@ namespace Hyperframework\Web;
 class Application {
     private static $actionResult;
     private static $pathInfo;
-    private static $mediaType;
     private static $isViewEnabled = true;
     private static $shouldRewriteRequestMethod = true;
 
@@ -44,15 +43,14 @@ class Application {
     public static function reset() {
         self::$actionResult = null;
         self::$pathInfo = null;
-        self::$mediaType = null;
         self::$isViewEnabled = true;
         self::$shouldRewriteRequestMethod = true;
     }
 
     protected static function initialize($path) {
         static::initializePathInfo($path);
-        static::initializeMediaType();
         static::rewriteRequestMethod();
+        static::initializeMediaType();
     }
 
     protected static function executeAction() {
@@ -70,6 +68,19 @@ class Application {
     }
 
     protected static function initializeMediaType() {
+        if (isset($_SERVER['REQUEST_MEDIA_TYPE'])) {
+            return;
+        }
+        if (isset(self::$pathInfo['views']) === false) {
+            return;
+        }
+        $views = $pathInfo['views'];
+        if (is_string($views)) {
+            $_SERVER['REQUEST_MEDIA_TYPE'] = $views;
+            return;
+        }
+        return $view[0];
+
         self::$mediaType = MediaTypeSelector::select(self::$pathInfo);
     }
 
@@ -87,14 +98,6 @@ class Application {
 
     final protected static function setPathInfo($value) {
         self:$pathInfo = $value;
-    }
-
-    final protected static function getMediaType() {
-        return self::$mediaType;
-    }
-
-    final protected static function setMediaType($value) {
-        self::$mediaType = $value;
     }
 
     final protected static function setActionResult($value) {
