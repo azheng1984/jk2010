@@ -3,10 +3,16 @@ namespace Hyperframework\Web;
 
 class PathInfoBuilder {
     private $handlers;
+    private $defaultView;
     private $cache;
     private $classLoader;
 
     public function build($path, $options = null) {
+        if (isset($options['default_view']) === false) {
+            self::$defaultView = $options['default_view'];
+        } else {
+            self::$defaultView = array('Html', 'Xml', 'Json');
+        }
         $config = require 'config' . DIRECTORY_SEPARATOR . 'application.php';
         $this->setUpClassLoader();
         $configuration = new ApplicationConfiguration;

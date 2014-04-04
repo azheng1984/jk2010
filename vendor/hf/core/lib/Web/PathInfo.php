@@ -9,12 +9,12 @@ final class PathInfo {
     private static $builder;
     private static $builderConfig;
 
-    public static function get($path) {
-        $result = self::build($path);
+    public static function get($urlPath) {
+        $result = self::build($urlPath);
         if ($result === null) {
             throw new NotFoundException;
         }
-        if ($path[0] !== '#') {
+        if ($urlPath[0] !== '#') {
             $result['namespace'] =  '\App\\' . $result['namespace'];
         }
         $result['namespace'] = \Hyperframework\APPLICATION_NAMESPACE
@@ -26,7 +26,7 @@ final class PathInfo {
         self::$cache = null;
     }
 
-    private static function build($path) {
+    private static function buildByUrlPath($urlPath) {
         $isCacheEnabled = Config::get(
             'hyperframework.web.path_info.cache_enabled'
         );
@@ -69,5 +69,8 @@ final class PathInfo {
         if (isset(self::$cache[$path])) {
             return self::$cache[$path];
         }
+    }
+
+    public static function buildByFileSystemPath($fileSystemPath) {
     }
 }
