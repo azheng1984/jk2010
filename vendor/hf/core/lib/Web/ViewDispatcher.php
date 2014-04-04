@@ -7,7 +7,7 @@ class ViewDispatcher {
         static::dispatch($pathInfo);
     }
 
-    protected static function initailize($pathInfo) {
+    protected static function initialize($pathInfo) {
         if (isset($pathInfo['views']) === false) {
             throw new NotAcceptableException;
         }
