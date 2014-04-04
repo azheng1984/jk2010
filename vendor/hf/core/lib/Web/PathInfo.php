@@ -6,6 +6,8 @@ use Hyperframework\CacheLoader;
 
 final class PathInfo {
     private static $cache;
+    private static $builder;
+    private static $builderConfig;
 
     public static function get($path) {
         $result = self::build($path);
@@ -47,15 +49,17 @@ final class PathInfo {
             if (strncmp($path, '#', 1) !== 0) {
                 $name = 'App\\' . $name;
             }
-            $builder = ConfigLoader::load(
-                'path_info_builder.php',
-                'hyperframework.web.path_info.builder_config_name',
-                true
-            );
-            if ($builder === null) {
-                $builder = 'Hyperframework\Web\PathInfoBuilder';
+            if (self::$builder === null) {
+                self::$builderConfig = ConfigLoader::load(
+                    'path_info_builder.php',
+                    'hyperframework.web.path_info.builder_config_name',
+                    true
+                );
+                if (isset(self::$builderConfig['class'])) {
+                    self::$builder = 'Hyperframework\Web\PathInfoBuilder';
+                }
             }
-            return $builder::build($name);
+            return self::$builder::build($name, self::$builderConfig);
         }
         if (self::$cache === null) {
             self::$cache = CacheLoader::load(

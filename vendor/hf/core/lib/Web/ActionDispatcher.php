@@ -48,6 +48,7 @@ class ActionDispatcher {
     }
 
     private static function checkImplicitMethod($method, $info) {
+        //'hyperframework.web.action_dispatcher.rewrite_method_enabled' => false;
         if (isset($info['get_not_allowed'])) {
             $methods = isset($info['methods']) ? $info['methods'] : array();
             throw new MethodNotAllowedException($methods);

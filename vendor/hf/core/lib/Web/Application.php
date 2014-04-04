@@ -8,7 +8,7 @@ class Application {
     private static $shouldRewriteRequestMethod = true;
 
     public static function run($path) {
-        static::initialize($path);
+        static::initializePathInfo($path);
         static::executeAction();
         static::renderView();
     }
@@ -47,13 +47,8 @@ class Application {
         self::$shouldRewriteRequestMethod = true;
     }
 
-    protected static function initialize($path) {
-        static::initializePathInfo($path);
-        static::rewriteRequestMethod();
-        static::initializeMediaType();
-    }
-
     protected static function executeAction() {
+        self::rewriteRequestMethod();
         self::$actionResult = ActionDispatcher::run(self::$pathInfo);
     }
 
@@ -65,23 +60,6 @@ class Application {
 
     protected static function initailizePathInfo($path) {
         self::$pathInfo = PathInfo::get($path);
-    }
-
-    protected static function initializeMediaType() {
-        if (isset($_SERVER['REQUEST_MEDIA_TYPE'])) {
-            return;
-        }
-        if (isset(self::$pathInfo['views']) === false) {
-            return;
-        }
-        $views = $pathInfo['views'];
-        if (is_string($views)) {
-            $_SERVER['REQUEST_MEDIA_TYPE'] = $views;
-            return;
-        }
-        return $view[0];
-
-        self::$mediaType = MediaTypeSelector::select(self::$pathInfo);
     }
 
     protected static function rewriteRequestMethod() {

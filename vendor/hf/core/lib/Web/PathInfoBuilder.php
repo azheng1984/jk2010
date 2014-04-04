@@ -6,7 +6,7 @@ class PathInfoBuilder {
     private $cache;
     private $classLoader;
 
-    public function build($path) {
+    public function build($path, $options = null) {
         $config = require 'config' . DIRECTORY_SEPARATOR . 'application.php';
         $this->setUpClassLoader();
         $configuration = new ApplicationConfiguration;
