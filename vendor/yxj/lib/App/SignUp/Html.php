@@ -1,5 +1,5 @@
 <?php
-class SignUpScreen extends Screen {
+class SignUpScreen extends Html {
   protected function renderHtmlHeadContent() {
     echo '<title>优选集 - 攻略聚集地</title>';
   }

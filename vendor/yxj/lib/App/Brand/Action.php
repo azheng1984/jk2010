@@ -1,6 +1,7 @@
 <?php
 namespace YouXuanJi\Web\Brand;
-use Hyperframework\Db\Client as DbClient;
+
+use Hyperframework\Db\DbClient;
 
 class BrandAction {
     public function delete() {
