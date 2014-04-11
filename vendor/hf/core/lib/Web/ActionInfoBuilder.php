@@ -13,7 +13,7 @@ class ActionInfoBuilder {
     private function getCache($class) {
         $className = $class;
         $cache = array('class' => $className, 'methods' => array());
-        $httpMethods = array('GET', 'POST', 'PUT', 'DELETE');
+        $httpMethods = array('get', 'post', 'patch', 'put', 'delete');
         if ($this->hasPrivateGet($class)) {
             $cache['get_not_allowed'] = true;
         }
@@ -51,10 +51,10 @@ class ActionInfoBuilder {
 
     private function hasPrivateGet($class) {
         $reflector = new ReflectionClass($class);
-        if ($reflector->hasMethod('GET') === false) {
+        if ($reflector->hasMethod('get') === false) {
             return false;
         }
-        $getMethod = $reflector->getMethod('GET');
+        $getMethod = $reflector->getMethod('get');
         return $getMethod->isPrivate();
     }
 }

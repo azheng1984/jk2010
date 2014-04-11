@@ -1,5 +1,5 @@
 <?php
-namespace Yxj\App\Article\Async;
+namespace Yxj\App\Articles\Async;
 
 class Action {
 }

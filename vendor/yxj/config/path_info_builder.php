@@ -3,4 +3,4 @@ return array(
 //    'class' => 'Yxj\PathInfoBuilder',
 //    'default_view' => 'Html',
 );
-//Html > Xml > Json > Yaml > 字母顺序
+//Html > Xml > Json > 字母顺序

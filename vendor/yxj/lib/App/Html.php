@@ -3,8 +3,9 @@ namespace Yxj\App;
 
 use Yxj\Biz\Product;
 use Yxj\Db\DbProduct;
+use Yxj\View\AbstractHtml;
 
-class Html extends \Yxj\View\Html {
+class Html extends AbstractHtml {
     private $categoryList;
 
     protected function renderHtmlHeadContent() {
