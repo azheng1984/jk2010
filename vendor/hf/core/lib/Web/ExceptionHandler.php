@@ -5,7 +5,7 @@ class ExceptionHandler {
     private static $exception;
     private static $statusCode;
 
-    public static function run() {
+    final public static function run() {
         set_exception_handler(array(get_called_class(), 'handle'));
     }
 
@@ -41,7 +41,7 @@ class ExceptionHandler {
         return self::$statusCode;
     }
 
-    public static function reset() {
+    final public static function reset() {
         restore_exception_handler();
         self::$exception = null;
         self::$statusCode = null;
