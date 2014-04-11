@@ -21,7 +21,7 @@ class ExceptionHandler {
         $exception->setHeader();
         if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
             try {
-                static::displayError($exception);
+                static::displayError();
             } catch (\Exception $recursiveException) {
                 static::triggerError(self::$exception, $recursiveException);
             }
@@ -57,7 +57,9 @@ class ExceptionHandler {
         }
     }
 
-    protected static function displayError($applicationException) {
-        ErrorApplication::run($applicationException->getCode());
+    protected static function displayError() {
+        try {
+            ViewDispatcher::run(PathInfo::get('#Error'));
+        } catch (NotAcceptableException $ignoredException) {}
     }
 }
