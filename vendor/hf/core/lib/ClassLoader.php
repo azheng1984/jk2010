@@ -4,15 +4,11 @@ namespace Hyperframework;
 final class ClassLoader {
     private static $isFileExistsCheckEnabled = false;
     private static $isOneToManyMappingAllowed = false;
-    private static $cache;
+    private static $cache = array();
 
     public static function run() {
         self::initailize();
         spl_autoload_register(array(__CLASS__, 'load'));
-    }
-
-    public static function enableFileExistsCheck() {
-        self::$isFileExistsCheckEnabled = true;
     }
 
     public static function load($name) {
@@ -73,10 +69,19 @@ final class ClassLoader {
         require $path;
     }
 
+    public static function enableFileExistsCheck() {
+        self::$isFileExistsCheckEnabled = true;
+    }
+
+    public static function appendConfig($config) {
+        ClassLoaderCacheBuilder::append(self::$cache, $config);
+        self::$isOneToManyMappingAllowed = true;
+    }
+
     public static function reset() {
         $isFileExistsCheckEnabled = false;
         $isOneToManyMappingAllowed = false;
-        $cache = null;
+        $cache = array();
     }
 
     private static function initialize() {
@@ -90,11 +95,10 @@ final class ClassLoader {
             return;
         }
         require __DIR__ . DIRECTORY_SEPARATOR . 'ConfigLoader.php';
+        require __DIR__ . DIRECTORY_SEPARATOR . 'ClassLoaderCacheBuilder.php';
         $config = ConfigLoader::load(
             'class_loader.php', 'hyperframework.class_loader.config_path'
         );
-        require __DIR__ . DIRECTORY_SEPARATOR . 'ClassLoaderCacheBuilder.php';
-        self::$cache = ClassLoaderCacheBuilder::build($config);
-        self::$isOneToManyMappingAllowed = true;
+        self::appendConfig($config);
     }
 }

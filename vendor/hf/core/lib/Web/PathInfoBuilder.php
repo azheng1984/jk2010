@@ -4,8 +4,8 @@ namespace Hyperframework\Web;
 use Hyperframework\ConfigLoader;
 
 class PathInfoBuilder {
-    private $handlers;
     private $defaultView;
+    private $handlers;
     private $cache;
     private $classLoader;
 
@@ -15,7 +15,6 @@ class PathInfoBuilder {
         } else {
             self::$defaultView = array('Html', 'Xml', 'Json');
         }
-        $config = require 'config' . DIRECTORY_SEPARATOR . 'application.php';
         //if run in tool context append class loader path
         $this->setUpClassLoader();
         $configuration = new ApplicationConfiguration;

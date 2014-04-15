@@ -41,7 +41,7 @@ class ExceptionHandler {
         return self::$statusCode;
     }
 
-    final public static function reset() {
+    public static function reset() {
         restore_exception_handler();
         self::$exception = null;
         self::$statusCode = null;
