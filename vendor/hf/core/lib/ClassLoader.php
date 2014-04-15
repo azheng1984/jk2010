@@ -4,7 +4,7 @@ namespace Hyperframework;
 final class ClassLoader {
     private static $isFileExistsCheckEnabled = false;
     private static $isOneToManyMappingAllowed = false;
-    private static $cache = array();
+    private static $cache;
 
     public static function run() {
         self::initailize();
@@ -81,7 +81,7 @@ final class ClassLoader {
     public static function reset() {
         $isFileExistsCheckEnabled = false;
         $isOneToManyMappingAllowed = false;
-        $cache = array();
+        $cache = null;
     }
 
     private static function initialize() {

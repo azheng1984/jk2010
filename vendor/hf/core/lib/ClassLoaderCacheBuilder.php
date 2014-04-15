@@ -39,4 +39,7 @@ class ClassLoaderCacheBuilder {
         }
         return $cache;
     }
+
+    public static function append(&$cache, $config) {
+    }
 }
