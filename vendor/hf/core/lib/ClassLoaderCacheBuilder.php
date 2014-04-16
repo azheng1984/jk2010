@@ -3,7 +3,15 @@ namespace Hyperframework;
 
 class ClassLoaderCacheBuilder {
     public static function build($config) {
-        $cache = array();
+        $cache = null;
+        self::append($cache, $config);
+        return $cache;
+    }
+
+    public static function append(&$cache, $config) {
+        if ($cache === null) {
+            $cache = array();
+        }
         foreach ($config as $namespace => $path) {
             if (PathTypeRecognizer::isFull($path) === false) {
                 $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . $path;
@@ -37,9 +45,5 @@ class ClassLoaderCacheBuilder {
                 $parent =& $parent[$segment];
             }
         }
-        return $cache;
-    }
-
-    public static function append(&$cache, $config) {
     }
 }
