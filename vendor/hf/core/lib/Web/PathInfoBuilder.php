@@ -15,7 +15,6 @@ class PathInfoBuilder {
         } else {
             self::$defaultView = array('Html', 'Xml', 'Json');
         }
-        //if run in tool context append class loader path
         $this->setUpClassLoader();
         $configuration = new ApplicationConfiguration;
         $handlers = $configuration->extract($config);
@@ -29,10 +28,13 @@ class PathInfoBuilder {
     }
 
     protected function setUpClassLoader() {
-        $rootPath = $_SERVER['PWD'].DIRECTORY_SEPARATOR;
-        $cachePath = $rootPath . 'cache' . DIRECTORY_SEPARATOR . 'class_loader.cache.php';
-        if (!file_exists($cachePath)) {
+        $rootPath = $_SERVER['PWD'] . DIRECTORY_SEPARATOR;
+        $configPath = $rootPath . 'config' . DIRECTORY_SEPARATOR . 'class_loader.php';
+        $config = ConfigLoader::load($configPath, array(''));
+        if ($config === null) {
             throw new Exception("File '$cachePath' does not exsit");
+        }
+        if (!file_exists($cachePath)) {
         }
         require HYPERFRAMEWORK_PATH . 'Hyperframework' .
             DIRECTORY_SEPARATOR . 'ClassLoader.php';

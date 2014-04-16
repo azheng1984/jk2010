@@ -1,9 +1,9 @@
 <?php
 namespace Hyperframework;
 
-class ClassLoaderCacheBuilder {
+final class ClassLoaderCacheBuilder {
     public static function build($config) {
-        self::append($cache, $config);
+        static::append($cache, $config);
         return $cache;
     }
 
