@@ -69,13 +69,12 @@ final class ClassLoader {
         require $path;
     }
 
-    public static function enableFileExistsCheck() {
-        self::$isFileExistsCheckEnabled = true;
+    public static function appendCache($cache) {
+        ClassLoaderCacheBuilder::append(self::$cache, $cache);
     }
 
-    public static function appendConfig($config) {
-        ClassLoaderCacheBuilder::append(self::$cache, $config);
-        self::$isOneToManyMappingAllowed = true;
+    public static function enableFileExistsCheck() {
+        self::$isFileExistsCheckEnabled = true;
     }
 
     public static function reset() {
@@ -99,6 +98,7 @@ final class ClassLoader {
         $config = ConfigLoader::load(
             'class_loader.php', 'hyperframework.class_loader.config_path'
         );
-        self::appendConfig($config);
+        self::$cache = ClassLoaderCacheBuilder::build($config);
+        self::$isOneToManyMappingAllowed = true;
     }
 }

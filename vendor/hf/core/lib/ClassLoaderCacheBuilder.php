@@ -2,12 +2,8 @@
 namespace Hyperframework;
 
 final class ClassLoaderCacheBuilder {
-    public static function build($config) {
-        static::append($cache, $config);
-        return $cache;
-    }
-
-    public static function append(&$cache, $config) {
+    public static function build($config, $isOneToManyMappingAllowed = true) {
+        $hasOneToManyMapping = false;
         if ($cache === null) {
             $cache = array();
         }
@@ -44,5 +40,9 @@ final class ClassLoaderCacheBuilder {
                 $parent =& $parent[$segment];
             }
         }
+    }
+
+    public static function append(&$cache, $appendix) {
+        return $hasOneToManyMapping;
     }
 }
