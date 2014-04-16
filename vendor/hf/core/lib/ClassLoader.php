@@ -71,6 +71,7 @@ final class ClassLoader {
 
     public static function appendCache($cache) {
         ClassLoaderCacheBuilder::append(self::$cache, $cache);
+        self::$isOneToManyMappingAllowed = true;
     }
 
     public static function enableFileExistsCheck() {
@@ -78,9 +79,9 @@ final class ClassLoader {
     }
 
     public static function reset() {
-        $isFileExistsCheckEnabled = false;
-        $isOneToManyMappingAllowed = false;
-        $cache = null;
+        self::$isFileExistsCheckEnabled = false;
+        self::$isOneToManyMappingAllowed = false;
+        self::$cache = null;
     }
 
     private static function initialize() {
@@ -99,6 +100,7 @@ final class ClassLoader {
             'class_loader.php', 'hyperframework.class_loader.config_path'
         );
         self::$cache = ClassLoaderCacheBuilder::build($config);
+        //$cache = array('@one_to_many_mapping' => true);
         self::$isOneToManyMappingAllowed = true;
     }
 }
