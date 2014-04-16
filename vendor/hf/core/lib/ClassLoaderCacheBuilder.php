@@ -3,7 +3,6 @@ namespace Hyperframework;
 
 class ClassLoaderCacheBuilder {
     public static function build($config) {
-        $cache = null;
         self::append($cache, $config);
         return $cache;
     }
