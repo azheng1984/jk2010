@@ -42,9 +42,10 @@ final class ClassLoaderCacheBuilder {
                 $parent =& $parent[$segment];
             }
         }
+        return $hasConflict;
     }
 
-    public static function append(&$cache, $appendix) {
+    public static function merge(&$firstCache, $secondCache) {
         return $hasConflict;
     }
 }

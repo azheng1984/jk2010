@@ -5,7 +5,6 @@ final class ClassLoader {
     private static $isFileExistsCheckEnabled = false;
     private static $hasOneToManyMapping = false;
     private static $cache;
-    private static $map;
 
     public static function run() {
         self::initailize();
