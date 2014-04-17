@@ -61,19 +61,16 @@ final class ClassLoader {
             $path = $current[0][$lastPathIndex];
         }
         $path .= $suffix;
-        if (self::$isFileExistsCheckEnabled) {
-            if (file_exists($path) === false) {
-                return;
-            }
+        if (self::$isFileExistsCheckEnabled === false || file_exists($path)) {
+            require $path;
         }
-        require $path;
     }
 
     public static function enableFileExistsCheck() {
         self::$isFileExistsCheckEnabled = true;
     }
 
-    public static function mergeCache($cache) {
+    public static function addCache($cache) {
         if (ClassLoaderCacheBuilder::merge(self::$cache, $cache)) {
             self::$hasOneToManyMapping = true;
         };
@@ -96,7 +93,7 @@ final class ClassLoader {
         require __DIR__ . DIRECTORY_SEPARATOR . 'PathTypeRecognizer.php';
         if (Config::get('hyperframework.class_loader.enable_cache')) {
             require __DIR__ . DIRECTORY_SEPARATOR . 'CacheLoader.php';
-            self::$map = CacheLoader::load(
+            self::$cache = CacheLoader::load(
                 'class_loader.php', 'hyperframework.class_loader.cache_path'
             );
             return;

@@ -46,6 +46,7 @@ final class ClassLoaderCacheBuilder {
     }
 
     public static function merge(&$firstCache, $secondCache) {
+        $hasConflict = false;
         return $hasConflict;
     }
 }
