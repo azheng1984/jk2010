@@ -9,43 +9,23 @@ class PathInfoBuilder {
     private $cache;
     private $classLoader;
 
-    public function build($path, $options = null) {
+    public function build($path, $namespace, $options = null) {
         if (isset($options['default_view']) === false) {
             self::$defaultView = $options['default_view'];
         } else {
             self::$defaultView = array('Html', 'Xml', 'Json');
         }
-        $this->setUpClassLoader();
+        foreach(scandir($path) as $fileName) {
+            
+        }
         $configuration = new ApplicationConfiguration;
         $handlers = $configuration->extract($config);
         $cache = new ApplicationCache($handlers);
         $directoryReader = new DirectoryReader(
             new ApplicationHandler($handlers, $cache)
         );
-        $directoryReader->read($_SERVER['PWD'].DIRECTORY_SEPARATOR.'app');
-        $this->tearDownClassLoader();
+        $directoryReader->read($_SERVER['PWD'] . DIRECTORY_SEPARATOR .'app');
         return $cache;
-    }
-
-    protected function setUpClassLoader() {
-        $rootPath = $_SERVER['PWD'] . DIRECTORY_SEPARATOR;
-        $configPath = $rootPath . 'config' . DIRECTORY_SEPARATOR . 'class_loader.php';
-        $config = ConfigLoader::load($configPath, array(''));
-        if ($config === null) {
-            throw new Exception("File '$cachePath' does not exsit");
-        }
-        if (!file_exists($cachePath)) {
-        }
-        require HYPERFRAMEWORK_PATH . 'Hyperframework' .
-            DIRECTORY_SEPARATOR . 'ClassLoader.php';
-        $this->classLoader = new Hyperframework\ClassLoader;
-        $this->classLoader->run($rootPath, $cachePath);
-    }
-
-    protected function tearDownClassLoader() {
-        if ($this->classLoader !== null) {
-            $this->classLoader->stop();
-        }
     }
 
     public function __construct($handlers, $cache) {

@@ -28,10 +28,10 @@ final class PathInfo {
 
     private static function buildByUrlPath($urlPath) {
         $isCacheEnabled = Config::get(
-            'hyperframework.web.path_info.cache_enabled'
+            'hyperframework.web.path_info.enable_cache'
         );
         if ($isCacheEnabled === false) {
-            $name = null;
+            $path = null;
             $segments = explode('/', $path);
             array_shift($segments);
             $amount = count($segments);
@@ -40,14 +40,16 @@ final class PathInfo {
                 ++$index;
                 $words = explode('_', $segment);
                 foreach ($words as $word) {
-                    $name .= ucfirst($word);
+                    $path .= ucfirst($word);
                 }
                 if ($index < $amount) {
-                    $name .= '\\';
+                    $path .= '\\';
                 }
             }
             if (strncmp($path, '#', 1) !== 0) {
-                $name = 'App\\' . $name;
+                $path = 'App\\' . $path;
+            } else {
+                $path =substr($path, 1);
             }
             if (self::$builder === null) {
                 self::$builderConfig = ConfigLoader::load(
@@ -56,10 +58,17 @@ final class PathInfo {
                     true
                 );
                 if (isset(self::$builderConfig['class'])) {
+                    self::builder = self::$builderConfig['class'];
+                } else {
                     self::$builder = 'Hyperframework\Web\PathInfoBuilder';
                 }
             }
-            return self::$builder::build($name, self::$builderConfig);
+            return self::$builder::build(
+                \Hyperframework\APPLICATION_NAMESPACE,
+                \Hyperframework\APPLICATION_PATH . DIRECTORY_SEPARATOR . 'lib',
+                $namespace
+                //self::$builderConfig,
+            );
         }
         if (self::$cache === null) {
             self::$cache = CacheLoader::load(

@@ -66,7 +66,7 @@ class ExceptionHandler {
     }
 
     protected static function displayError() {
-        $pathInfo = PathInfo::get('#Error');
+        $pathInfo = PathInfo::get('#ErrorApp');
         try {
             ViewDispatcher::run($pathInfo);
         } catch (NotAcceptableException $ignoredException) {}
