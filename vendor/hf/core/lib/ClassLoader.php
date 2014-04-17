@@ -3,8 +3,9 @@ namespace Hyperframework;
 
 final class ClassLoader {
     private static $isFileExistsCheckEnabled = false;
-    private static $isOneToManyMappingAllowed = false;
+    private static $hasOneToManyMapping = false;
     private static $cache;
+    private static $map;
 
     public static function run() {
         self::initailize();
@@ -69,27 +70,34 @@ final class ClassLoader {
         require $path;
     }
 
-    public static function appendCache($cache) {
-        ClassLoaderCacheBuilder::append(self::$cache, $cache);
-        self::$isOneToManyMappingAllowed = true;
-    }
-
     public static function enableFileExistsCheck() {
         self::$isFileExistsCheckEnabled = true;
     }
 
+    public static function mergeCache($cache) {
+        if (ClassLoaderCacheBuilder::merge(self::$cache, $cache)) {
+            self::$hasOneToManyMapping = true;
+        };
+    }
+
+    public static function addConfig($config) {
+        if (ClassLoaderCacheBuilder::build(self::$cache, $config)) {
+            self::$hasOneToManyMapping = true;
+        };
+    }
+
     public static function reset() {
         self::$isFileExistsCheckEnabled = false;
-        self::$isOneToManyMappingAllowed = false;
+        self::$hasOneToManyMapping = false;
         self::$cache = null;
     }
 
     private static function initialize() {
         require __DIR__ . DIRECTORY_SEPARATOR . 'DataLoader.php';
         require __DIR__ . DIRECTORY_SEPARATOR . 'PathTypeRecognizer.php';
-        if (Config::get('hyperframework.class_loader.cache_enabled')) {
+        if (Config::get('hyperframework.class_loader.enable_cache')) {
             require __DIR__ . DIRECTORY_SEPARATOR . 'CacheLoader.php';
-            self::$cache = CacheLoader::load(
+            self::$map = CacheLoader::load(
                 'class_loader.php', 'hyperframework.class_loader.cache_path'
             );
             return;
@@ -99,8 +107,6 @@ final class ClassLoader {
         $config = ConfigLoader::load(
             'class_loader.php', 'hyperframework.class_loader.config_path'
         );
-        self::$cache = ClassLoaderCacheBuilder::build($config);
-        //$cache = array('@one_to_many_mapping' => true);
-        self::$isOneToManyMappingAllowed = true;
+        self::addConfig($config);
     }
 }

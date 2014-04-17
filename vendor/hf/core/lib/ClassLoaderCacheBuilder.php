@@ -2,8 +2,10 @@
 namespace Hyperframework;
 
 final class ClassLoaderCacheBuilder {
-    public static function build($config, $isOneToManyMappingAllowed = true) {
-        $hasOneToManyMapping = false;
+    public static function build(
+        &$cache, $config, $isOneToManyMappingAllowed = true
+    ) {
+        $hasConflict = false;
         if ($cache === null) {
             $cache = array();
         }
@@ -43,6 +45,6 @@ final class ClassLoaderCacheBuilder {
     }
 
     public static function append(&$cache, $appendix) {
-        return $hasOneToManyMapping;
+        return $hasConflict;
     }
 }
