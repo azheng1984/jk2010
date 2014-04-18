@@ -6,8 +6,6 @@ use Hyperframework\CacheLoader;
 
 final class PathInfo {
     private static $cache;
-    private static $builder;
-    private static $builderConfig;
 
     public static function get($urlPath) {
         $result = self::build($urlPath);
@@ -30,7 +28,7 @@ final class PathInfo {
         $isCacheEnabled = Config::get(
             'hyperframework.web.path_info.enable_cache'
         );
-        if ($isCacheEnabled) {
+        if ($isCacheEnabled !== false) {
             if (self::$cache === null) {
                 self::$cache = CacheLoader::load(
                     'path_info.php', 'hyperframework.web.path_info.cache_path'
@@ -61,24 +59,14 @@ final class PathInfo {
         } else {
             $path =substr($path, 1);
         }
-        if (self::$builder === null) {
-            self::$builderConfig = ConfigLoader::load(
-                'path_info_cache_builder.php',
-                'hyperframework.web.path_info.builder_config_name',
-                true
-            );
-            if (isset(self::$builderConfig['class'])) {
-                self::$builder = self::$builderConfig['class'];
-                unset(self::$builderConfig['class']);
-            } else {
-                self::$builder = 'Hyperframework\Web\PathInfoBuilder';
-            }
+        $builder = Config::get('hyperframework.web.path_info.builder');
+        if ($builder === null) {
+            $builder = __NAMESPACE__ . '\\PathInfoBuilder';
         }
         return self::$builder::build(
             \Hyperframework\APPLICATION_PATH . DIRECTORY_SEPARATOR
                 . 'lib' . DIRECTORY_SEPARATOR . $namespace,
             \Hyperframework\APPLICATION_NAMESPACE . '\\' . $namespace,
-            self::$builderConfig,
         );
     }
 }
