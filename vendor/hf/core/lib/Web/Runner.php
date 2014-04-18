@@ -24,16 +24,20 @@ class Runner {
     }
 
     protected static function initializeConfig() {
+        static::loadConfigClass();
+        static::loadInitConfigs();
+    }
+
+    protected static function loadConfigClass() {
         require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Config.php';
-        $configs = self::getInitConfigs();
+    }
+
+    protected static function loadInitConfigs() {
+        $configs = require \Hyperframework\APPLICATION_PATH
+            . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'init.php';
         if ($configs !== null) {
             Config::merge($configs);
         }
-    }
-
-    protected static function getInitConfigs() {
-        return require \Hyperframework\APPLICATION_PATH . DIRECTORY_SEPARATOR
-            . 'config' . DIRECTORY_SEPARATOR . 'init.php';
     }
 
     protected static function initializeClassLoader() {
