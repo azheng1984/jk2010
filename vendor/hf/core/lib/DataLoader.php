@@ -12,7 +12,11 @@ class DataLoader {
         return require $path;
     }
 
-    final public static function getPath($defaultPath, $pathConfigName = null) {
+    protected static function getDefaultRootPathSuffix() {
+        return DIRECTORY_SEPARATOR . 'data';
+    }
+
+    private static function getPath($defaultPath, $pathConfigName = null) {
         $path = null;
         if ($pathConfigName !== null) {
             $path = Config::get($pathConfigName);
@@ -20,14 +24,6 @@ class DataLoader {
         if ($path === null) {
             $path = $defaultPath;
         }
-        return self::getFullPath($path);
-    }
-
-    protected static function getDefaultRootPathSuffix() {
-        return DIRECTORY_SEPARATOR . 'data';
-    }
-
-    private static function getFullPath($path) {
         if (PathTypeRecognizer::isFull($path)) {
             return $path;
         }
