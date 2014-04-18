@@ -14,14 +14,14 @@ final class Config {
         self::$data[$key] = $value;
     }
 
-    public static function merge($configs) {
+    public static function remove($name) {
+        return unset(self::$data[$name]);
+    }
+
+    public static function import($configs) {
         foreach ($configs as $key => $value) {
             self::$data[$key] = $value;
         }
-    }
-
-    public static function remove($name) {
-        return unset(self::$data[$name]);
     }
 
     public static function export() {

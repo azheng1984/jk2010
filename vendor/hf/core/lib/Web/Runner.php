@@ -23,32 +23,6 @@ class Runner {
         static::initializeExceptionHandler();
     }
 
-    protected static function initializeConfig() {
-        static::loadConfigClass();
-        static::loadConfigs();
-    }
-
-    protected static function loadConfigClass() {
-        require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Config.php';
-    }
-
-    protected static function loadConfigs() {
-        $configs = require \Hyperframework\APPLICATION_PATH
-            . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'init.php';
-        if ($configs !== null) {
-            Config::merge($configs);
-        }
-    }
-
-    protected static function initializeClassLoader() {
-        require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'ClassLoader.php';
-        ClassLoader::run();
-    }
-
-    protected static function initializeExceptionHandler() {
-        ExceptionHandler::run();
-    }
-
     protected static function getPath() {
         $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
         $result = $segments[0];
@@ -71,5 +45,31 @@ class Runner {
 
     protected static function runApplication($path) {
         Application::run($path);
+    }
+
+    protected static function initializeConfig() {
+        static::loadConfigClass();
+        static::loadConfigs();
+    }
+
+    protected static function initializeClassLoader() {
+        require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'ClassLoader.php';
+        ClassLoader::run();
+    }
+
+    protected static function initializeExceptionHandler() {
+        ExceptionHandler::run();
+    }
+
+    protected static function loadConfigClass() {
+        require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Config.php';
+    }
+
+    protected static function loadConfigs() {
+        $configs = require \Hyperframework\APPLICATION_PATH
+            . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'init.php';
+        if ($configs !== null) {
+            Config::import($configs);
+        }
     }
 }
