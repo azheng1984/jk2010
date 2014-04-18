@@ -25,14 +25,14 @@ class Runner {
 
     protected static function initializeConfig() {
         static::loadConfigClass();
-        static::loadInitConfigs();
+        static::loadConfigs();
     }
 
     protected static function loadConfigClass() {
         require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Config.php';
     }
 
-    protected static function loadInitConfigs() {
+    protected static function loadConfigs() {
         $configs = require \Hyperframework\APPLICATION_PATH
             . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'init.php';
         if ($configs !== null) {
