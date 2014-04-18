@@ -7,7 +7,7 @@ final class ClassLoader {
     private static $cache;
 
     public static function run() {
-        self::initailize();
+        static::initailize();
         spl_autoload_register(array(__CLASS__, 'load'));
     }
 
