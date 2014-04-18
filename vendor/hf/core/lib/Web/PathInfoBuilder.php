@@ -3,7 +3,7 @@ namespace Hyperframework\Web;
 
 use Hyperframework\ConfigLoader;
 
-class PathInfoCacheBuilder {
+class PathInfoBuilder {
     private $defaultView;
     private $cache;
 
