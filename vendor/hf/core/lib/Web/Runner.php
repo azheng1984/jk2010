@@ -5,10 +5,10 @@ use Hyperframework\Config;
 use Hyperframework\ClassLoader;
 
 class Runner {
-    public static function run(
-        $applicationNamespace, $applicationPath, $configs = null
-    ) {
-        static::initialize($applicationNamespace, $applicationPath, $configs);
+    public static function run($applicationNamespace, $applicationPath) {
+        define('Hyperframework\APPLICATION_NAMESPACE', $applicationNamespace);
+        define('Hyperframework\APPLICATION_PATH', $applicationPath);
+        static::initialize();
         $path = static::getPath();
         if (static::isAsset($path)) {
             static::runAssetProxy($path);
@@ -17,27 +17,23 @@ class Runner {
         static::runApplication($path);
     }
 
-    protected static function initialize(
-        $applicationNamespace, $applicationPath, $configs
-    ) {
-        static::initializeConstant($applicationNamespace, $applicationPath);
-        static::initializeConfig($configs);
+    protected static function initialize() {
+        static::initializeConfig();
         static::initializeClassLoader();
         static::initializeExceptionHandler();
     }
 
-    protected static function initializeConstant(
-        $applicationNamespace, $applicationPath
-    ) {
-        define('Hyperframework\APPLICATION_NAMESPACE', $applicationNamespace);
-        define('Hyperframework\APPLICATION_PATH', $applicationPath);
-    }
-
-    protected static function initializeConfig($configs) {
+    protected static function initializeConfig() {
         require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Config.php';
+        $configs = self::getInitConfigs();
         if ($configs !== null) {
             Config::merge($configs);
         }
+    }
+
+    protected static function getInitConfigs() {
+        return require \Hyperframework\APPLICATION_PATH . DIRECTORY_SEPARATOR
+            . 'config' . DIRECTORY_SEPARATOR . 'init.php';
     }
 
     protected static function initializeClassLoader() {

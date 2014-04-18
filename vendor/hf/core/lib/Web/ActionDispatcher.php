@@ -43,7 +43,7 @@ class ActionDispatcher {
 
     private static function checkImplicitAction($method) {
         if ($method !== 'GET') {
-            throw new MethodNotAllowedException(array('HEAD', 'GET'));
+            throw new HttpMethodNotAllowedException(array('HEAD', 'GET'));
         }
     }
 

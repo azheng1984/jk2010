@@ -61,7 +61,7 @@ final class PathInfo {
         }
         $builder = Config::get('hyperframework.web.path_info.builder');
         if ($builder === null) {
-            $builder = __NAMESPACE__ . '\\PathInfoBuilder';
+            $builder = __NAMESPACE__ . '\PathInfoBuilder';
         }
         return $builder::build(
             \Hyperframework\APPLICATION_PATH . DIRECTORY_SEPARATOR
