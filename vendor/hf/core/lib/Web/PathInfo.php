@@ -63,7 +63,7 @@ final class PathInfo {
         if ($builder === null) {
             $builder = __NAMESPACE__ . '\\PathInfoBuilder';
         }
-        return self::$builder::build(
+        return $builder::build(
             \Hyperframework\APPLICATION_PATH . DIRECTORY_SEPARATOR
                 . 'lib' . DIRECTORY_SEPARATOR . $namespace,
             \Hyperframework\APPLICATION_NAMESPACE . '\\' . $namespace,
