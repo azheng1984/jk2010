@@ -1,5 +1,8 @@
 <?php
 namespace Yxj;
 
-class Runner extends Hyperframework\Web\Runner { 
+require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Web'
+    . DIRECTORY_SEPARATOR . 'Runner.php';
+ 
+class Runner extends Hyperframework\Web\Runner {
 }
