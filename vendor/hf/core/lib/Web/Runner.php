@@ -18,8 +18,8 @@ class Runner {
     }
 
     protected static function initialize() {
-        static::initializeConfig();
-        static::initializeClassLoader();
+    static::initializeConfig();
+    static::initializeClassLoader();
         static::initializeExceptionHandler();
     }
 
@@ -49,11 +49,10 @@ class Runner {
 
     protected static function initializeConfig() {
         require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Config.php';
-        global $INIT_CONFIGS;
-        if ($INIT_CONFIGS !== null) {
-            Config::import($INIT_CONFIGS);
+        if (isset($GLOBALS['INIT_CONFIGS'])
+            && $GLOBALS['INIT_CONFIGS'] !== null) {
+            Config::import($GLOBALS['INIT_CONFIGS']);
         }
-        unset($GLOBALS['INIT_CONFIGS']);
     }
 
     protected static function initializeClassLoader() {
