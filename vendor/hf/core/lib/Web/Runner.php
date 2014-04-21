@@ -47,7 +47,7 @@ class Runner {
         Application::run($path);
     }
 
-    protected static function initializeConfig() {
+    protected static function initializeConfig($configs = null) {
         require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Config.php';
         $configs = require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
             . DIRECTORY_SEPARATOR . 'init.php';
