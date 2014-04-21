@@ -53,7 +53,7 @@ class Runner {
             return;
         }
         if ($GLOBALS['INIT_CONFIGS'] !== null) {
-            Config::import($GLOBALS['INIT_CONFIG']);
+            Config::import($GLOBALS['INIT_CONFIGS']);
         }
         unset($GLOBALS['INIT_CONFIGS']);
     }
