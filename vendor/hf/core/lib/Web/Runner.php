@@ -49,11 +49,9 @@ class Runner {
 
     protected static function initializeConfig() {
         require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Config.php';
-        if (isset($GLOBALS['INIT_CONFIGS']) === false) {
-            return;
-        }
-        if ($GLOBALS['INIT_CONFIGS'] !== null) {
-            Config::import($GLOBALS['INIT_CONFIGS']);
+        global $INIT_CONFIGS;
+        if ($INIT_CONFIGS !== null) {
+            Config::import($INIT_CONFIGS);
         }
         unset($GLOBALS['INIT_CONFIGS']);
     }
