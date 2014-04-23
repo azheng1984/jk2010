@@ -6,11 +6,9 @@ use Hyperframework\ConfigLoader;
 class PathInfoBuilder {
     private static $config;
 
-    public static function build($path, $namespace) {
+    public static function build($path, $namespace, $defaultView = null) {
         $config = ConfigLoader::load();
-        if (isset($config['default_view']) === false) {
-            $defaultView = $config['default_view'];
-        } else {
+        if ($defaultView === null) {
             $defaultView = array('Html', 'Xml', 'Json');
         }
         $cache = array('namespace' => $namespace);
