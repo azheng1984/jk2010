@@ -52,10 +52,4 @@ class PathInfoBuilder {
         }
         return $cache;
     }
-
-    private static function getConfig() {
-        if (self::$config === null) {
-        }
-        return self::$config;
-    }
 }

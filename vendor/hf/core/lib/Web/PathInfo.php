@@ -56,7 +56,7 @@ final class PathInfo {
         }
         $config = ConfigLoader::load(
             'path_info_builder.php',
-            'hyperframework.path_info_builder.config_path'
+            'hyperframework.path_info.builder_config_path'
         );
         $builder = __NAMESPACE__ . '\PathInfoBuilder';
         $options = null;
