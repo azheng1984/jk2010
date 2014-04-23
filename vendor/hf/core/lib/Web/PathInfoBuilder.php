@@ -7,7 +7,6 @@ class PathInfoBuilder {
     private static $config;
 
     public static function build($path, $namespace, $defaultView = null) {
-        $config = ConfigLoader::load();
         if ($defaultView === null) {
             $defaultView = array('Html', 'Xml', 'Json');
         }
@@ -53,10 +52,6 @@ class PathInfoBuilder {
 
     private static function getConfig() {
         if (self::$config === null) {
-            self::$config = ConfigLoader::load(
-                'path_info_builder.php',
-                'hyperframework.path_info_builder.config_path'
-            );
         }
         return self::$config;
     }
