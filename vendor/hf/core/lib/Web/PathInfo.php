@@ -59,21 +59,21 @@ final class PathInfo {
             'hyperframework.path_info_builder.config_path'
         );
         $builder = __NAMESPACE__ . '\PathInfoBuilder';
-        $defaultView = null;
+        $options = null;
         if ($config !== null) {
             if (isset($config['class'])) {
                 $builder = $config['class'];
                 unset($config['class']);
             }
-            if (isset($config['default_view'])) {
-                $defaultView = $config['default_view'];
+            if (isset($config['options'])) {
+                $options = $config['options'];
             }
         }
         return $builder::build(
             \Hyperframework\APPLICATION_PATH . DIRECTORY_SEPARATOR
                 . 'lib' . DIRECTORY_SEPARATOR . $namespace,
             \Hyperframework\APPLICATION_NAMESPACE . '\\' . $namespace,
-            $defaultView
+            $options
         );
     }
 }
