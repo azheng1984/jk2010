@@ -30,10 +30,11 @@ class PathInfoBuilder {
             }
         }
         if (count($cache['views']) > 1) {
-            uksort($cache['views'], function($first, $second) {
+            $callback = function($first, $second) use ($defaultView) {
                 return array_search($first, $defaultView)
-                    < array_search($second, $defaultView);
-            });
+                    > array_search($second, $defaultView);
+            };
+            uksort($cache['views'], $callback);
         }
         return $cache;
     }
