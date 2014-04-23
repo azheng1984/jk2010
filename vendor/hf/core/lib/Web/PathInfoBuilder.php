@@ -48,4 +48,3 @@ class PathInfoBuilder {
         return self::$config;
     }
 }
-//hyperframework.com hyperframework.org
