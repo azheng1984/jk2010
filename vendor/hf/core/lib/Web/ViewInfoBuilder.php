@@ -12,9 +12,8 @@ class ViewInfoBuilder {
         $this->types = $types;
     }
 
-    public function handle($class, $fullPath) {
-        $className = $class;
-        $class = 'Hft\Application\\' . $class;
+    public function build($namespace, $class) {
+        $class = $namespace . $class;
         foreach ($this->types as $type) {
             if (substr($class, -strlen($type)) === $type) {
                 $this->verifyRenderingMethod($class, $fullPath);
@@ -24,11 +23,9 @@ class ViewInfoBuilder {
     }
 
     private function verifyTypes($types) {
-        foreach ($types as $type) {
-            $pattern = '/^([A-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)$/';
-            if (!preg_match($pattern, $type)) {
-                throw new Exception("View type '$type' is invalid");
-            }
+        $pattern = '/^([A-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)$/';
+        if (!preg_match($pattern, $type)) {
+            throw new Exception("View type '$type' is invalid");
         }
     }
 

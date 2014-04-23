@@ -25,9 +25,15 @@ class PathInfoBuilder {
                 $cache['action'] = ActionInfoBuilder::build($namespace);
             } else {
                 $cache['views'][$class] = ViewInfoBuilder::build(
-                    $namespace, $class, $defaultView
+                    $namespace, $class
                 );
             }
+        }
+        if (count($cache['views']) > 1) {
+            uksort($cache['views'], function($first, $second) {
+                return array_search($first, $defaultView)
+                    < array_search($second, $defaultView);
+            });
         }
         return $cache;
     }
