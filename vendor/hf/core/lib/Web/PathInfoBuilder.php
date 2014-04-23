@@ -7,13 +7,7 @@ class PathInfoBuilder {
     private $defaultView;
     private $cache;
 
-    public static function buildAll($path, $namespace, $options = null) {
-        if (is_dir()) {
-            //build();
-        }
-    }
-
-    public static function build($path, $namespace, $options = null) {
+    public static function build($path, $namespace) {
         if (isset($options['default_view']) === false) {
             self::$defaultView = $options['default_view'];
         } else {
