@@ -4,32 +4,42 @@ namespace Hyperframework\Web;
 use Hyperframework\ConfigLoader;
 
 class PathInfoBuilder {
-    private $defaultView;
-    private $cache;
+    private static $config;
 
     public static function build($path, $namespace) {
-        if (isset($options['default_view']) === false) {
-            self::$defaultView = $options['default_view'];
+        $config = ConfigLoader::load();
+        if (isset($config['default_view']) === false) {
+            $defaultView = $config['default_view'];
         } else {
-            self::$defaultView = array('Html', 'Xml', 'Json');
+            $defaultView = array('Html', 'Xml', 'Json');
         }
-        $cache = null;
+        $cache = array('namespace' => $namespace);
         foreach(scandir($path) as $entry) {
-            if ($entry === '.' || $entry === '..') {
+            if ($entry === '.' || $entry === '..' || is_dir($path . $entry)) {
                 continue;
             }
             $classRecognizer = new ClassRecognizer;
-            $class = $classRecognizer->getClass($entry);
-            if ($class === null) {
-                return;
-            }
+            $class = $classRecognizer->getClass($namespace . '\\' .$entry);
             $fullName = $namespace . '\\' . $class;
-            if ($class === 'Action') {
-                ActionInfoBuilder::build($cache, $fullName);
+            if ($entry === 'Action') {
+                $cache['action'] = ActionInfoBuilder::build($namespace);
             } else {
-                ViewInfoBuilder::build($cache, $fullName);
+                $cache['views'][$class] = ViewInfoBuilder::build(
+                    $namespace, $class, $defaultView
+                );
             }
         }
         return $cache;
     }
+
+    private static function getConfig() {
+        if (self::$config === null) {
+            self::$config = ConfigLoader::load(
+                'path_info_builder.php',
+                'hyperframework.path_info_builder.config_path'
+            );
+        }
+        return self::$config;
+    }
 }
+//hyperframework.com hyperframework.org

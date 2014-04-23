@@ -12,11 +12,6 @@ final class PathInfo {
         if ($result === null) {
             throw new NotFoundException;
         }
-        if ($urlPath[0] !== '#') {
-            $result['namespace'] =  '\App\\' . $result['namespace'];
-        }
-        $result['namespace'] = \Hyperframework\APPLICATION_NAMESPACE
-            . $result['namespace'];
         return $result;
     }
 
