@@ -18,8 +18,8 @@ class Runner {
     }
 
     protected static function initialize() {
-    static::initializeConfig();
-    static::initializeClassLoader();
+        static::initializeConfig();
+        static::initializeClassLoader();
         static::initializeExceptionHandler();
     }
 
@@ -47,13 +47,9 @@ class Runner {
         Application::run($path);
     }
 
-    protected static function initializeConfig($configs = null) {
+    protected static function initializeConfig() {
         require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Config.php';
-        $configs = require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
-            . DIRECTORY_SEPARATOR . 'init.php';
-        if ($configs !== null) {
-            Config::import($configs);
-        }
+        static::importConfig()
     }
 
     protected static function initializeClassLoader() {
@@ -63,5 +59,13 @@ class Runner {
 
     protected static function initializeExceptionHandler() {
         ExceptionHandler::run();
+    }
+
+    protected static function importConfig() {
+        $configs = require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
+            . DIRECTORY_SEPARATOR . 'init.php';
+        if ($configs !== null) {
+            Config::import($configs);
+        }
     }
 }
