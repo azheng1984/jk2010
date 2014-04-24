@@ -1,4 +1,5 @@
 <?php
+//tool 每次处理都会检查和加载此文件, 并使用其中配置
 return array(
     'hyperframework.class_loader.enable_cache' => false,
 
