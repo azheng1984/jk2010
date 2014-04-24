@@ -14,6 +14,9 @@ class Runner {
             static::runAssetProxy($path);
             return;
         }
+        if (static::isBuilder()) {
+            static::runBuilder();
+        }
         static::runApplication($path);
     }
 
