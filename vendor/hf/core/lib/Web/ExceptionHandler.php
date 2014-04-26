@@ -11,7 +11,7 @@ class ExceptionHandler {
 
     final public static function handle($exception) {
         if (headers_sent()) {
-            static::reportError($exception);
+            static::triggerError($exception);
             return;
         }
         self::$exception = $exception;
