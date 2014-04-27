@@ -1,5 +1,5 @@
 <?php
-namespace Yxj;
+namespace ProjectName;
 
 class Runner extends \Hyperframework\Web\Runner {
 }
