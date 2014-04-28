@@ -10,7 +10,9 @@ class Router {
         if ($extensionPosition === false) {
             return $urlPath;
         }
-        $_SERVER['REQUEST_MEDIA_TYPE'] = substr($path, $extensionPosition + 1);
-        return substr($path, 0, $extensionPosition);
+        $_SERVER['REQUEST_MEDIA_TYPE'] = substr(
+            $urlPath, $extensionPosition + 1
+        );
+        return substr($urlPath, 0, $extensionPosition);
     }
 }
