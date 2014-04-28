@@ -19,7 +19,7 @@ final class PathInfo {
         self::$cache = null;
     }
 
-    private static function build($urlPath) {
+    private static function build($path) {
         $isCacheEnabled = Config::get(
             'hyperframework.web.path_info.enable_cache'
         );
@@ -34,7 +34,7 @@ final class PathInfo {
             }
             return;
         }
-        $path = null;
+        $namespace = null;
         $segments = explode('/', $path);
         array_shift($segments);
         $amount = count($segments);
@@ -43,16 +43,16 @@ final class PathInfo {
             ++$index;
             $words = explode('_', $segment);
             foreach ($words as $word) {
-                $path .= ucfirst($word);
+                $namespace .= ucfirst($word);
             }
             if ($index < $amount) {
-                $path .= '\\';
+                $namespace .= '\\';
             }
         }
         if (strncmp($path, '#', 1) !== 0) {
-            $path = 'App\\' . $path;
+            $namespace = 'App\\' . $namespace;
         } else {
-            $path =substr($path, 1);
+            $namespace =substr($namespace, 1);
         }
         $config = ConfigLoader::load(
             'path_info_builder.php',

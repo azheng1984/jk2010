@@ -7,7 +7,7 @@ use Hyperframework\ClassLoader;
 class Runner {
     public static function run($namespace, $rootPath) {
         define('Hyperframework\APPLICATION_NAMESPACE', $namespace);
-        define('Hyperframework\APPLICATION_ROOT_PATH', $rootPath);
+        define('Hyperframework\APPLICATION_PATH', $rootPath);
         static::initialize();
         $urlPath = static::getUrlPath();
         if (static::isAsset($urlPath)) {
@@ -23,7 +23,7 @@ class Runner {
         static::initializeExceptionHandler();
     }
 
-    protected static function getPath() {
+    protected static function getUrlPath() {
         $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
         $result = $segments[0];
         if ($result === '') {
@@ -44,8 +44,8 @@ class Runner {
     }
 
     protected static function runApplication($urlPath) {
-        $applicationPath = Router::run($urlpath);
-        Application::run($applicationPath);
+        $path = Router::run($urlPath);
+        Application::run($path);
     }
 
     protected static function initializeConfig() {
