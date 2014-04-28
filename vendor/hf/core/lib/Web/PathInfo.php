@@ -7,8 +7,8 @@ use Hyperframework\CacheLoader;
 final class PathInfo {
     private static $cache;
 
-    public static function get($urlPath) {
-        $result = self::build($urlPath);
+    public static function get($path) {
+        $result = self::build($path);
         if ($result === null) {
             throw new NotFoundException;
         }
@@ -19,7 +19,7 @@ final class PathInfo {
         self::$cache = null;
     }
 
-    private static function build($urlPath) {
+    private static function build($path) {
         $isCacheEnabled = Config::get(
             'hyperframework.web.path_info.enable_cache'
         );
@@ -34,7 +34,7 @@ final class PathInfo {
             }
             return;
         }
-        $path = null;
+        $namespace = null;
         $segments = explode('/', $path);
         array_shift($segments);
         $amount = count($segments);
@@ -43,16 +43,16 @@ final class PathInfo {
             ++$index;
             $words = explode('_', $segment);
             foreach ($words as $word) {
-                $path .= ucfirst($word);
+                $namespace .= ucfirst($word);
             }
             if ($index < $amount) {
-                $path .= '\\';
+                $namespace .= '\\';
             }
         }
         if (strncmp($path, '#', 1) !== 0) {
-            $path = 'App\\' . $path;
+            $namespace = 'App\\' . $namespace;
         } else {
-            $path =substr($path, 1);
+            $namespace =substr($namespace, 1);
         }
         $config = ConfigLoader::load(
             'path_info_builder.php',
@@ -70,9 +70,9 @@ final class PathInfo {
             }
         }
         return $builder::build(
-            \Hyperframework\APPLICATION_PATH . DIRECTORY_SEPARATOR
+            \Hyperframework\APPLICATION_ROOT_PATH . DIRECTORY_SEPARATOR
                 . 'lib' . DIRECTORY_SEPARATOR . $namespace,
-            \Hyperframework\APPLICATION_NAMESPACE . '\\' . $namespace,
+            \Hyperframework\APPLICATION_ROOT_NAMESPACE . '\\' . $namespace,
             $options
         );
     }

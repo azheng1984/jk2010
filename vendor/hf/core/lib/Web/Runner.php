@@ -5,16 +5,16 @@ use Hyperframework\Config;
 use Hyperframework\ClassLoader;
 
 class Runner {
-    public static function run($applicationNamespace, $applicationPath) {
-        define('Hyperframework\APPLICATION_NAMESPACE', $applicationNamespace);
-        define('Hyperframework\APPLICATION_PATH', $applicationPath);
+    public static function run($rootNamespace, $rootPath) {
+        define('Hyperframework\APPLICATION_ROOT_NAMESPACE', $rootNamespace);
+        define('Hyperframework\APPLICATION_ROOT_PATH', $rootPath);
         static::initialize();
-        $path = static::getPath();
-        if (static::isAsset($path)) {
-            static::runAssetProxy($path);
+        $urlPath = static::getUrlPath();
+        if (static::isAsset($urlPath)) {
+            static::runAssetProxy($urlPath);
             return;
         }
-        static::runApplication($path);
+        static::runApplication($urlPath);
     }
 
     protected static function initialize() {
@@ -23,7 +23,7 @@ class Runner {
         static::initializeExceptionHandler();
     }
 
-    protected static function getPath() {
+    protected static function getUrlPath() {
         $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
         $result = $segments[0];
         if ($result === '') {
@@ -35,16 +35,17 @@ class Runner {
         return $result;
     }
 
-    protected static function isAsset($path) {
-        return strncmp($path, '/asset/', 7) === 0;
+    protected static function isAsset($urlPath) {
+        return strncmp($urlPath, '/asset/', 7) === 0;
     }
 
-    protected static function runAssetProxy() {
-        AssetProxy::run($path);
+    protected static function runAssetProxy($urlPath) {
+        AssetProxy::run($urlPath);
     }
 
-    protected static function runApplication($path) {
-        Application::run($path);
+    protected static function runApplication($urlPath) {
+        $applicationPath = Router::run($urlPath);
+        Application::run($applicationPath);
     }
 
     protected static function initializeConfig() {
