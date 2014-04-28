@@ -70,9 +70,9 @@ final class PathInfo {
             }
         }
         return $builder::build(
-            \Hyperframework\APPLICATION_PATH . DIRECTORY_SEPARATOR
+            \Hyperframework\APPLICATION_ROOT_PATH . DIRECTORY_SEPARATOR
                 . 'lib' . DIRECTORY_SEPARATOR . $namespace,
-            \Hyperframework\APPLICATION_NAMESPACE . '\\' . $namespace,
+            \Hyperframework\APPLICATION_ROOT_NAMESPACE . '\\' . $namespace,
             $options
         );
     }
