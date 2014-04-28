@@ -44,8 +44,8 @@ class Runner {
     }
 
     protected static function runApplication($urlPath) {
-        $path = Router::run($urlPath);
-        Application::run($path);
+        $applicationPath = Router::run($urlPath);
+        Application::run($applicationPath);
     }
 
     protected static function initializeConfig() {
