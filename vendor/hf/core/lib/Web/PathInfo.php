@@ -7,12 +7,17 @@ use Hyperframework\CacheLoader;
 final class PathInfo {
     private static $cache;
 
-    public static function get($urlPath) {
-        $result = self::build($urlPath);
+    public static function get($path) {
+        $result = self::build($path);
         if ($result === null) {
             throw new NotFoundException;
         }
         return $result;
+    }
+
+    public static function getViewTypes() {
+        $cache = self::getCache();
+        return $cache['view_types'];
     }
 
     public static function reset() {
@@ -29,8 +34,8 @@ final class PathInfo {
                     'path_info.php', 'hyperframework.web.path_info.cache_path'
                 );
             }
-            if (isset(self::$cache[$path])) {
-                return self::$cache[$path];
+            if (isset(self::$cache['paths'][$path])) {
+                return self::$cache['paths'][$path];
             }
             return;
         }

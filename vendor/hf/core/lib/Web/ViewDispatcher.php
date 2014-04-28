@@ -23,6 +23,7 @@ class ViewDispatcher {
     }
 
     protected static function dispatch($pathInfo) {
+//        $pathInfo['view_types'];
         $class = $pathInfo['namespace'] . '\\' . $_SERVER['REQUEST_MEDIA_TYPE'];
         $view = new $class;
         $view->render();
