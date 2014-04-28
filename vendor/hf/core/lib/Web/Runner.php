@@ -35,12 +35,12 @@ class Runner {
         return $result;
     }
 
-    protected static function isAsset($path) {
-        return strncmp($path, '/asset/', 7) === 0;
+    protected static function isAsset($urlPath) {
+        return strncmp($urlPath, '/asset/', 7) === 0;
     }
 
-    protected static function runAssetProxy() {
-        AssetProxy::run($path);
+    protected static function runAssetProxy($urlPath) {
+        AssetProxy::run($urlPath);
     }
 
     protected static function runApplication($urlPath) {
