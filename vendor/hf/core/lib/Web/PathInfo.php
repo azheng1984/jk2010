@@ -15,11 +15,6 @@ final class PathInfo {
         return $result;
     }
 
-    public static function getViewTypes() {
-        $cache = self::getCache();
-        return $cache['view_types'];
-    }
-
     public static function reset() {
         self::$cache = null;
     }
@@ -34,8 +29,8 @@ final class PathInfo {
                     'path_info.php', 'hyperframework.web.path_info.cache_path'
                 );
             }
-            if (isset(self::$cache['paths'][$path])) {
-                return self::$cache['paths'][$path];
+            if (isset(self::$cache[$path])) {
+                return self::$cache[$path];
             }
             return;
         }

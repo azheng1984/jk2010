@@ -2,14 +2,15 @@
 namespace Hyperframework;
 
 class Router {
-    public static function getPath($path) {
+    public static function run($urlPath) {
         if (substr($path, -1) === '/') {
             return substr($path, 0, -1);
         }
-        $dotPosition = strpos($path, '.');
-        if ($dotPosition !== false) {
-            $_SERVER['REQUEST_MEDIA_TYPE'] = substr($dotPosition, $dotPosition);
-            return substr($path, 0, $dotPosition);
+        $extensionPosition = strpos($path, '.');
+        if ($extensionPosition === false) {
+            return $urlPath;
         }
+        $_SERVER['REQUEST_MEDIA_TYPE'] = substr($path, $extensionPosition + 1);
+        return substr($path, 0, $extensionPosition);
     }
 }
