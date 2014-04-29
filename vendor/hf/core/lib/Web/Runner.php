@@ -5,22 +5,21 @@ use Hyperframework\Config;
 use Hyperframework\ClassLoader;
 
 class Runner {
-    public static function run($rootNamespace, $rootPath) {
-        static::initialize($rootNamespace, $rootPath);
+    public static function initialize($rootNamespace, $rootPath) {
+        define('Hyperframework\APPLICATION_ROOT_NAMESPACE', $rootNamespace);
+        define('Hyperframework\APPLICATION_ROOT_PATH', $rootPath);
+        static::initializeConfig();
+        static::initializeClassLoader();
+        static::initializeExceptionHandler();
+    }
+
+    public static function run() {
         $urlPath = static::getUrlPath();
         if (static::isAsset($urlPath)) {
             static::runAssetProxy($urlPath);
             return;
         }
         static::runApplication($urlPath);
-    }
-
-    protected static function initialize($rootNamespace, $rootPath) {
-        define('Hyperframework\APPLICATION_ROOT_NAMESPACE', $rootNamespace);
-        define('Hyperframework\APPLICATION_ROOT_PATH', $rootPath);
-        static::initializeConfig();
-        static::initializeClassLoader();
-        static::initializeExceptionHandler();
     }
 
     protected static function getUrlPath() {
