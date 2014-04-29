@@ -6,9 +6,7 @@ use Hyperframework\ClassLoader;
 
 class Runner {
     public static function run($rootNamespace, $rootPath) {
-        define('Hyperframework\APPLICATION_ROOT_NAMESPACE', $rootNamespace);
-        define('Hyperframework\APPLICATION_ROOT_PATH', $rootPath);
-        static::initialize();
+        static::initialize($rootNamespace, $rootPath);
         $urlPath = static::getUrlPath();
         if (static::isAsset($urlPath)) {
             static::runAssetProxy($urlPath);
@@ -17,7 +15,9 @@ class Runner {
         static::runApplication($urlPath);
     }
 
-    protected static function initialize() {
+    protected static function initialize($rootNamespace, $rootPath) {
+        define('Hyperframework\APPLICATION_ROOT_NAMESPACE', $rootNamespace);
+        define('Hyperframework\APPLICATION_ROOT_PATH', $rootPath);
         static::initializeConfig();
         static::initializeClassLoader();
         static::initializeExceptionHandler();
