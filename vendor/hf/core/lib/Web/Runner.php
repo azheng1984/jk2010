@@ -6,7 +6,9 @@ use Hyperframework\ClassLoader;
 
 class Runner {
     public static function run($rootNamespace, $rootPath) {
-        static::initialize($rootNamespace, $rootPath);
+        define('Hyperframework\APPLICATION_ROOT_NAMESPACE', $rootNamespace);
+        define('Hyperframework\APPLICATION_ROOT_PATH', $rootPath);
+        static::initialize();
         $urlPath = static::getUrlPath();
         if (static::isAsset($urlPath)) {
             static::runAssetProxy($urlPath);
@@ -15,9 +17,7 @@ class Runner {
         static::runApplication($urlPath);
     }
 
-    protected static function initialize($rootNamespace, $rootPath) {
-        define('Hyperframework\APPLICATION_ROOT_NAMESPACE', $rootNamespace);
-        define('Hyperframework\APPLICATION_ROOT_PATH', $rootPath);
+    protected static function initialize() {
         static::initializeConfig();
         static::initializeClassLoader();
         static::initializeExceptionHandler();
@@ -36,7 +36,7 @@ class Runner {
     }
 
     protected static function isAsset($urlPath) {
-        return strncmp($urlPath, '/assets/', 8) === 0;
+        return strncmp($urlPath, '/asset/', 7) === 0;
     }
 
     protected static function runAssetProxy($urlPath) {
@@ -67,8 +67,8 @@ class Runner {
     }
 
     protected static function importInitConfig() {
-        $configs = require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
-            . DIRECTORY_SEPARATOR . 'init.php';
+        $configs = require ROOT_PATH . DIRECTORY_SEPARATOR
+            . 'config' . DIRECTORY_SEPARATOR . 'init.php';
         if ($configs !== null) {
             Config::import($configs);
         }
