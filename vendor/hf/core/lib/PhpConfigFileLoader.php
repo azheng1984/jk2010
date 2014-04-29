@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework;
 
-class ConfigLoader extends DataLoader {
+class PhpConfigFileLoader extends PhpDataFileLoader {
     protected static function getDefaultPathPrefix() {
         return DIRECTORY_SEPARATOR . 'config';
     }

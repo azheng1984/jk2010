@@ -2,7 +2,8 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Config;
-use Hyperframework\CacheLoader;
+use Hyperframework\PhpCacheFileLoader;
+use Hyperframework\PhpConfigFileLoader;
 
 final class PathInfo {
     private static $cache;
@@ -25,7 +26,7 @@ final class PathInfo {
         );
         if ($isCacheEnabled !== false) {
             if (self::$cache === null) {
-                self::$cache = CacheLoader::load(
+                self::$cache = PhpCacheFileLoader::load(
                     'path_info.php', 'hyperframework.web.path_info.cache_path'
                 );
             }
@@ -54,9 +55,10 @@ final class PathInfo {
         } else {
             $namespace =substr($namespace, 1);
         }
-        $config = ConfigLoader::load(
+        $config = PhpConfigFileLoader::load(
             'path_info_builder.php',
-            'hyperframework.path_info.builder_config_path'
+            'hyperframework.path_info.builder_config_path',
+            true
         );
         $builder = __NAMESPACE__ . '\PathInfoBuilder';
         $options = null;

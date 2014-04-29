@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework;
 
-class DataLoader {
+class PhpDataFileLoader {
     final public static function load(
         $defaultPath, $pathConfigName = null, $shouldCheckFileExists = false
     ) {

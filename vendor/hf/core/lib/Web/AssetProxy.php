@@ -23,7 +23,7 @@ class AssetProxy {
             header('Cache-Control: private, max-age=0, must-revalidate');
         }
         $pathPrefix = array_shift($segments);
-        if (static::startsWith($uri, '/asset/js/')) {
+        if (static::startsWith($uri, '/assets/js/')) {
             $assetPath = \Hyperframework\Config::get('Hyperframework\AppPath');
             //$tmp = explode('/', $filePath);
             //array_pop($tmp);
