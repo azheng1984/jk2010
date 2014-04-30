@@ -6,10 +6,13 @@ class PathTypeRecognizer {
         if (isset($path[0]) === false) {
             return false;
         }
+        if (DIRECTORY_SEPARATOR === '/') {
+            return $path[0] === '/';
+        }
         if ($path[0] === '/' || $path[0] === '\\') {
             return true;
         }
-        if (DIRECTORY_SEPARATOR === '/' || isset($path[1]) === false) {
+        if (isset($path[1]) === false) {
             return false;
         }
         if ($path[1] === ':') {
