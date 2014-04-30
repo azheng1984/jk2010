@@ -22,6 +22,20 @@ class Runner {
         static::runApplication($urlPath);
     }
 
+    protected static function initializeConfig() {
+        static::loadConfigClass();
+        static::importInitConfig();
+    }
+
+    protected static function initializeClassLoader() {
+        require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'ClassLoader.php';
+        ClassLoader::run();
+    }
+
+    protected static function initializeExceptionHandler() {
+        ExceptionHandler::run();
+    }
+
     protected static function getUrlPath() {
         $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
         $result = $segments[0];
@@ -45,20 +59,6 @@ class Runner {
     protected static function runApplication($urlPath) {
         $applicationPath = Router::run($urlPath);
         Application::run($applicationPath);
-    }
-
-    protected static function initializeConfig() {
-        static::loadConfigClass();
-        static::importInitConfig();
-    }
-
-    protected static function initializeClassLoader() {
-        require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'ClassLoader.php';
-        ClassLoader::run();
-    }
-
-    protected static function initializeExceptionHandler() {
-        ExceptionHandler::run();
     }
 
     protected static function loadConfigClass() {
