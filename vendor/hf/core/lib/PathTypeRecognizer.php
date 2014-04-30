@@ -3,9 +3,18 @@ namespace Hyperframework;
 
 class PathTypeRecognizer {
     public static function isFull($path) {
-        if (DIRECTORY_SEPARATOR === '/') {
-            return strncmp($path, '/', 1) === 0;
+        if (isset($path[0]) === false) {
+            return false;
         }
-        return substr($path, 1, 1) === ':' || strncmp($path, '\\', 1) === 0;
+        if ($path[0] === '/' || $path[0] === '\\') {
+            return true;
+        }
+        if (DIRECTORY_SEPARATOR === '/' || isset($path[1]) === false) {
+            return false;
+        }
+        if ($path[1] === ':') {
+            return true;
+        }
+        return false;
     }
 }

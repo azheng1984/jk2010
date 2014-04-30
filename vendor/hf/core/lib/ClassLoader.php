@@ -1,17 +1,17 @@
 <?php
 namespace Hyperframework;
 
-class ClassLoader {
+final class ClassLoader {
     private static $isFileExistsCheckEnabled = false;
     private static $hasOneToManyMapping = false;
     private static $cache;
 
-    final public static function run() {
-        static::initailize();
+    public static function run() {
+        self::initailize();
         spl_autoload_register(array(__CLASS__, 'load'));
     }
 
-    final public static function load($name) {
+    public static function load($name) {
         $segments = null;
         if (strpos('_', $name) !== false) {
             $segments = explode('_', $name);
@@ -66,21 +66,17 @@ class ClassLoader {
         }
     }
 
-    final public static function enableFileExistsCheck() {
+    public static function enableFileExistsCheck() {
         self::$isFileExistsCheckEnabled = true;
     }
 
-    final public static function setCache($value) {
-        self::$cache = $value;
-    }
-
-    final public static function addCache($cache) {
+    public static function addCache($cache) {
         if (ClassLoaderCacheBuilder::merge(self::$cache, $cache)) {
             self::$hasOneToManyMapping = true;
         };
     }
 
-    final public static function addConfig($config) {
+    public static function addConfig($config) {
         if (ClassLoaderCacheBuilder::build(self::$cache, $config)) {
             self::$hasOneToManyMapping = true;
         };
@@ -92,7 +88,7 @@ class ClassLoader {
         self::$cache = null;
     }
 
-    protected static function initialize() {
+    private static function initialize() {
         require __DIR__ . DIRECTORY_SEPARATOR . 'PhpDataFileLoader.php';
         require __DIR__ . DIRECTORY_SEPARATOR . 'PathTypeRecognizer.php';
         if (Config::get('hyperframework.class_loader.enable_cache') !== false) {
