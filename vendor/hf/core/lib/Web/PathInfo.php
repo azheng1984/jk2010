@@ -65,7 +65,6 @@ final class PathInfo {
         if ($config !== null) {
             if (isset($config['class'])) {
                 $builder = $config['class'];
-                unset($config['class']);
             }
             if (isset($config['options'])) {
                 $options = $config['options'];

@@ -91,7 +91,7 @@ final class ClassLoader {
     private static function initialize() {
         require __DIR__ . DIRECTORY_SEPARATOR . 'DataLoader.php';
         require __DIR__ . DIRECTORY_SEPARATOR . 'PathTypeRecognizer.php';
-        if (Config::get('hyperframework.class_loader.enable_cache')) {
+        if (Config::get('hyperframework.class_loader.enable_cache') !== false) {
             require __DIR__ . DIRECTORY_SEPARATOR . 'CacheLoader.php';
             self::$cache = CacheLoader::load(
                 'class_loader.php', 'hyperframework.class_loader.cache_path'
