@@ -1,17 +1,17 @@
 <?php
 namespace Hyperframework;
 
-final class ClassLoader {
+class ClassLoader {
     private static $isFileExistsCheckEnabled = false;
     private static $hasOneToManyMapping = false;
     private static $cache;
 
-    public static function run() {
+    final public static function run() {
         static::initailize();
         spl_autoload_register(array(__CLASS__, 'load'));
     }
 
-    public static function load($name) {
+    final public static function load($name) {
         $segments = null;
         if (strpos('_', $name) !== false) {
             $segments = explode('_', $name);
@@ -66,17 +66,21 @@ final class ClassLoader {
         }
     }
 
-    public static function enableFileExistsCheck() {
+    final public static function enableFileExistsCheck() {
         self::$isFileExistsCheckEnabled = true;
     }
 
-    public static function addCache($cache) {
+    final public static function setCache($value) {
+        self::$cache = $value;
+    }
+
+    final public static function addCache($cache) {
         if (ClassLoaderCacheBuilder::merge(self::$cache, $cache)) {
             self::$hasOneToManyMapping = true;
         };
     }
 
-    public static function addConfig($config) {
+    final public static function addConfig($config) {
         if (ClassLoaderCacheBuilder::build(self::$cache, $config)) {
             self::$hasOneToManyMapping = true;
         };
@@ -88,7 +92,7 @@ final class ClassLoader {
         self::$cache = null;
     }
 
-    private static function initialize() {
+    protected static function initialize() {
         require __DIR__ . DIRECTORY_SEPARATOR . 'PhpDataFileLoader.php';
         require __DIR__ . DIRECTORY_SEPARATOR . 'PathTypeRecognizer.php';
         if (Config::get('hyperframework.class_loader.enable_cache') !== false) {
@@ -101,9 +105,7 @@ final class ClassLoader {
         require __DIR__ . DIRECTORY_SEPARATOR . 'PhpConfigFileLoader.php';
         require __DIR__ . DIRECTORY_SEPARATOR . 'ClassLoaderCacheBuilder.php';
         $config = PhpConfigFileLoader::load(
-            'class_loader.php',
-            'hyperframework.class_loader.config_path',
-            true
+            'class_loader.php', 'hyperframework.class_loader.config_path'
         );
         if ($config !== null) {
             self::addConfig($config);
