@@ -89,19 +89,17 @@ final class ClassLoader {
     }
 
     private static function initialize() {
-        require_once __DIR__ . DIRECTORY_SEPARATOR . 'PhpDataFileLoader.php';
-        require_once __DIR__ . DIRECTORY_SEPARATOR . 'PathTypeRecognizer.php';
+        require __DIR__ . DIRECTORY_SEPARATOR . 'PhpDataFileLoader.php';
+        require __DIR__ . DIRECTORY_SEPARATOR . 'PathTypeRecognizer.php';
         if (Config::get('hyperframework.class_loader.enable_cache') !== false) {
-            require_once __DIR__ . DIRECTORY_SEPARATOR
-                . 'PhpCacheFileLoader.php';
+            require __DIR__ . DIRECTORY_SEPARATOR . 'PhpCacheFileLoader.php';
             self::$cache = PhpCacheFileLoader::load(
                 'class_loader.php', 'hyperframework.class_loader.cache_path'
             );
             return;
         }
-        require_once __DIR__ . DIRECTORY_SEPARATOR . 'PhpConfigFileLoader.php';
-        require_once __DIR__ . DIRECTORY_SEPARATOR
-            . 'ClassLoaderCacheBuilder.php';
+        require __DIR__ . DIRECTORY_SEPARATOR . 'PhpConfigFileLoader.php';
+        require __DIR__ . DIRECTORY_SEPARATOR . 'ClassLoaderCacheBuilder.php';
         $config = PhpConfigFileLoader::load(
             'class_loader.php', 'hyperframework.class_loader.config_path'
         );
