@@ -14,6 +14,10 @@ final class Config {
         self::$data[$key] = $value;
     }
 
+    public static function has($name) {
+        return isset(self::$data[$name]);
+    }
+
     public static function remove($name) {
         return unset(self::$data[$name]);
     }

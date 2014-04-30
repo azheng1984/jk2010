@@ -6,6 +6,9 @@ class PhpDataFileLoader {
         $defaultPath, $pathConfigName = null, $shouldCheckFileExists = false
     ) {
         $path = self::getPath($defaultPath, $pathConfigName);
+        if ($path === null) {
+            return;
+        }
         if ($shouldCheckFileExists && file_exists($path) === false) {
             return;
         }
@@ -20,6 +23,9 @@ class PhpDataFileLoader {
         $path = null;
         if ($pathConfigName !== null) {
             $path = Config::get($pathConfigName);
+        }
+        if ($path === false) {
+            return;
         }
         if ($path === null) {
             $path = $defaultPath;
