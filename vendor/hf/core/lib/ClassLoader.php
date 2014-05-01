@@ -21,12 +21,19 @@ final class ClassLoader {
         $current =& self::$cache;
         $index = 0;
         $path = null;
+        $matches = null;
+        $hasOneToManyMapping = self::$hasOneToManyMapping;
+        if ($hasOneToManyMapping) {
+            $matches = array();
+        }
         foreach ($segments as $segment) {
             ++$index;
             if (isset($current[$segment])) {
                 $current =& $current[$segment];
                 continue;
             }
+            // Ns1\Ns2 => '/path' 
+            // Ns1\Ns2\List => '/path2' should /path/List when has one to many mapping
             if (is_array($current)) {
                 if (isset($current[0]) === false) {
                     return;
@@ -49,7 +56,7 @@ final class ClassLoader {
             ++$index;
         }
         $suffix .= '.php';
-        if (self::$isOneToManyMappingAllowed && is_array($current[0])) {
+        if ($hasOneToManyMapping && is_array($current[0])) {
             $lastPathIndex = count($current[0]) - 1;
             for ($pathIndex = 0; $pathIndex < $lastPathIndex; ++$pathIndex) {
                 $path = $current[0][$pathIndex] . $suffix;
