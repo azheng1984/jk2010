@@ -1,4 +1,6 @@
 <?php
+namespace Hyperframework;
+
 class WebClient {
     private static $handlers = array();
 
