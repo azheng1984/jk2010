@@ -1,3 +1,7 @@
+<html>
+    <body>
+    </body>
+</html>
 <?php
 namespace ProjectNamespace;
 
