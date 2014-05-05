@@ -1,2 +1,2 @@
 <?php
-return 130901;
+return array('prefix' => '2.3.3', 'version' => 130601);
