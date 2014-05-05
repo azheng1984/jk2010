@@ -13,5 +13,5 @@ Thumbs.db
 *.gz
 pinyin.dat
 *.sync
-/cache/
-/config/env/init.php
+#cache/
+config/env/init.php
