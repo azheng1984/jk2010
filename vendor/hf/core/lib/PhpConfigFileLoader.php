@@ -3,6 +3,6 @@ namespace Hyperframework;
 
 class PhpConfigFileLoader extends PhpDataFileLoader {
     protected static function getDefaultRootPathSuffix() {
-        return DIRECTORY_SEPARATOR . 'config';
+        return APPLICATION_PATH . DIRECTORY_SEPARATOR . 'config';
     }
 }

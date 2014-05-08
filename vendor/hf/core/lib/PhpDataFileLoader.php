@@ -16,7 +16,7 @@ class PhpDataFileLoader {
     }
 
     protected static function getDefaultRootPathSuffix() {
-        return DIRECTORY_SEPARATOR . 'data';
+        return APPLICATION_PATH;
     }
 
     private static function getPath($defaultPath, $pathConfigName = null) {
@@ -33,7 +33,6 @@ class PhpDataFileLoader {
         if (PathTypeRecognizer::isFull($path)) {
             return $path;
         }
-        return APPLICATION_PATH . getDefaultRootPathSuffix()
-            . DIRECTORY_SEPARATOR . $path;
+        return static::getDefaultRootPathSuffix() . DIRECTORY_SEPARATOR . $path;
     }
 }
