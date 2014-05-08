@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Web\Asset;
+namespace Hyperframework\Web;
 
 use \Hyperframework\Config;
 
