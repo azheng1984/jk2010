@@ -29,7 +29,7 @@ class AssetProxy {
             //array_pop($tmp);
             //$dirName = implode('/', $tmp);
             $search = $assetPath . $pathPrefix . '.' . $segments[0];
-            $result = glob($search . '*');
+            $result = glob($search . '*.js');
             if (count($result) === 0) {
                 throw new Exceptions\NotFoundException;
                 return;

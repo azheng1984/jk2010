@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework\Config;
+
 class Runner {
     public static function run() {
         $urlPath = static::getUrlPath();
