@@ -1,2 +1,2 @@
 <?php
-//require all css/ files
+//require all css files
