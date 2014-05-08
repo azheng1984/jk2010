@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Web\Asset;
+namespace Hyperframework\Web;
 
 class CssPreloader {
     public static function enabled() {

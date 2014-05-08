@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-use \Hyperframework\Config;
+use Hyperframework\Config;
 
 class AssetUrl {
     private static $baseUrl;
