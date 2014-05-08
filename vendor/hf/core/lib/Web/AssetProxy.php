@@ -72,12 +72,4 @@ class AssetProxy {
         }
         throw new Exceptions\NotFoundException;
     }
-
-    private static function startsWith($haystack, $needle) {
-        return $needle === "" || strpos($haystack, $needle) === 0;
-    }
-
-    private static function endsWith($haystack, $needle) {
-        return $needle === "" || substr($haystack, -strlen($needle)) === $needle;
-    }
 }
