@@ -16,8 +16,7 @@ class PhpDataFileLoader {
             $path = $defaultPath;
         }
         if (PathTypeRecognizer::isFull($path) === false) {
-            $path = static::getDefaultRootPathSuffix()
-                . DIRECTORY_SEPARATOR . $path;
+            $path = static::getDefaultRootPath() . DIRECTORY_SEPARATOR . $path;
         }
         if ($shouldCheckFileExists && file_exists($path) === false) {
             return;
@@ -25,7 +24,7 @@ class PhpDataFileLoader {
         return require $path;
     }
 
-    protected static function getDefaultRootPathSuffix() {
+    protected static function getDefaultRootPath() {
         return APPLICATION_PATH;
     }
 }

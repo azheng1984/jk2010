@@ -28,6 +28,9 @@ class Runner {
     }
 
     protected static function runAssetProxy($urlPath) {
+        if (Config::get('hyperframework.web.enable_asset_proxy') !== true) {
+            throw new NotFoundException;
+        }
         AssetProxy::run($urlPath);
     }
 
