@@ -1,2 +1,3 @@
 <?php
-//require all main/js files
+//require vendor/js files
+//require all assets/main/js files
