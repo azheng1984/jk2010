@@ -1,2 +1,2 @@
 <?php
-//require all js files
+//require all main/js files
