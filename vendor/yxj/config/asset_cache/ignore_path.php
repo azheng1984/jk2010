@@ -1,1 +1,1 @@
-main
+assets/main
