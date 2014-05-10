@@ -1,4 +1,4 @@
 .block {
-    background: url(inline-file:/cache/images/documents.png);
+    background: url(__inline-file:/cache/images/documents.png);
     background: url(/cache/images/documents.png);
 }
