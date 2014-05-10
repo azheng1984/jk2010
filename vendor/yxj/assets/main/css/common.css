@@ -1,1 +1,3 @@
-
+.list {
+    background: url(inline-file:hello.png);
+}
