@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Web;
+namespace Hyperframework\Cli;
 
 class Initializer {
     protected static function initializeExceptionHandler() {
