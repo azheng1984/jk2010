@@ -28,15 +28,17 @@ class AssetProxy {
         $segments = explode('/', $path);
         $fileName = array_pop($segments);
         $dirName = implode(DIRECTORY_SEPARATOR, $segments);
-        $rootPaths = self::getIncludePath();
-        $ignorePaths = self::getIgnorePath();
-        foreach ($rootPaths as $rootPath) {
-            if (is_dir($rootPath . $dirName)) {
-                $fullPath = $rootPath . $dirName
+        $includePaths = self::getIncludePath();
+        $excludePaths = self::getExcludePath();
+        foreach ($includePaths as $includePath) {
+            if (is_dir($includePath . $dirName)) {
+                $fullPath = $includePath . $dirName
                     . DIRECTORY_SEPARATOR . $fileName;
                 $files = glob($fullPath . '*');
                 foreach ($files as $file) {
-                    if (self::isExcluded($file))
+                    if (self::isExcluded($excludePaths, $includePath, $file)) {
+                        continue;
+                    }
                     $suffix = substr($file, strlen($fullPath) - 1);
                     if ($suffix === '') {
                         return $file;
@@ -54,6 +56,18 @@ class AssetProxy {
         throw new NotFoundException;
     }
 
+    private static function isExcluded($excludePaths, $includePath, $filePath) {
+        foreach ($excludedPaths as $excludePath) {
+            if (strlen($includePath) > strlen($excludePath)) {
+                continue;
+            }
+            if (strncmp($filePath, $excludePath, strlen($excludePath)) === 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static function render($path) {
         $segments = explode('.', $path);
         $output = file_get_contents($path);
@@ -62,11 +76,11 @@ class AssetProxy {
             if (self::isValidFilterType($fileType) === false) {
                 return;
             }
-            $content = self::filte($content, $fileType);
+            $content = self::filter($content, $fileType);
         }
     }
 
-    private static function filte($content, $fileType) {
+    private static function filter($content, $fileType) {
         if ($fileType === 'php') {
             ob_start();
             eval('?>' . $content);
