@@ -1,7 +1,9 @@
 <?php
 namespace Hyperframework\Web;
 
-class Initializer {
+require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'AbstractInitializer.php';
+
+class Initializer extends \Hyperframework\AbstractInitializer {
     protected static function initializeExceptionHandler() {
         ExcpetionHander::run();
     }
