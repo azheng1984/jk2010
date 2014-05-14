@@ -20,7 +20,7 @@ class Initializer {
 
     protected static function initializeClassLoader() {
         if (Config::get('hyperframework.use_composer_autoload') === true) {
-            require \Hyperframework\APPLICATION_ROOT_PATH_
+            require \Hyperframework\APPLICATION_ROOT_PATH
                 . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
             return;
         }
