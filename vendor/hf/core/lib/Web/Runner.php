@@ -7,11 +7,11 @@ class Runner {
     public static function run() {
         $urlPath = static::getUrlPath();
         $assetPath = static::getAssetPath($urlPath);
-        if ($assetPath === false) {
-            static::runApplication($urlPath);
+        if ($assetPath !== false) {
+            static::runAssetProxy($assetPath);
             return;
         }
-        static::runAssetProxy($assetPath);
+        static::runApplication(static::getApplicationPath($urlPath));
     }
 
     protected static function getUrlPath() {
@@ -46,12 +46,25 @@ class Runner {
         return substr($urlPath, $prefixLength - 1);
     }
 
-    protected static function runAssetProxy($urlPath) {
-        AssetProxy::run($urlPath);
+    protected static function getApplicationPath($urlPath) {
+        if (substr($path, -1) === '/') {
+            return substr($path, 0, -1);
+        }
+        $extensionPosition = strpos($path, '.');
+        if ($extensionPosition === false) {
+            return $urlPath;
+        }
+        $_SERVER['REQUEST_MEDIA_TYPE'] = substr(
+            $urlPath, $extensionPosition + 1
+        );
+        return substr($urlPath, 0, $extensionPosition);
     }
 
-    protected static function runApplication($urlPath) {
-        $applicationPath = Router::run($urlPath);
+    protected static function runAssetProxy($assetPath) {
+        AssetProxy::run($assetPath);
+    }
+
+    protected static function runApplication($applicationPath) {
         Application::run($applicationPath);
     }
 }
