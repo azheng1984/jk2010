@@ -2,8 +2,9 @@
 namespace Hyperframework\Web;
 
 class AssetProxy {
-    public static function run() {
-        $url = $_SERVER['REQUEST_URI'];
+    public static function run($urlPath) {
+        Config::get('hyperframework.web.asset_cache_url_path_prefix');
+        $urlPathPrefix = AssetUrlPathPrefix::get();
         $isAssetCacheVersionEnabled = Config::get(
             'hyperframework.web.enable_asset_cache_version'
         ) !== false;

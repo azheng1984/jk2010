@@ -6,11 +6,12 @@ use Hyperframework\Config;
 class Runner {
     public static function run() {
         $urlPath = static::getUrlPath();
-        if (static::isAsset($urlPath)) {
-            static::runAssetProxy($urlPath);
+        $assetPath = static::getAssetPath($urlPath);
+        if ($assetPath === false) {
+            static::runApplication($urlPath);
             return;
         }
-        static::runApplication($urlPath);
+        static::runAssetProxy($assetPath);
     }
 
     protected static function getUrlPath() {
@@ -25,14 +26,27 @@ class Runner {
         return $result;
     }
 
-    protected static function isAsset($urlPath) {
-        return strncmp($urlPath, '/assets/', 8) === 0;
+    protected static function getAssetPath($urlPath) {
+        if (Config::get('hyperframework.web.enable_asset_proxy') !== true) {
+            return false;
+        }
+        $segments = parse_url(AssetCacheUrlPrefix::get());
+        if (isset($segments['path']) === false || $segments['path'] === '/') {
+            return $urlPath;
+        }
+        $prefix = $segments['path'];
+        $prefixLength = count($prefix);
+        if ($prefix[$perfixLength - 1] !== '/') {
+            $prefix .= '/';
+            $prefixLength += 1;
+        }
+        if (strncmp($urlPath, $prefix, $prefixLength) !== 0) {
+            return false;
+        }
+        return substr($urlPath, $prefixLength - 1);
     }
 
     protected static function runAssetProxy($urlPath) {
-        if (Config::get('hyperframework.web.enable_asset_proxy') !== true) {
-            throw new NotFoundException;
-        }
         AssetProxy::run($urlPath);
     }
 
