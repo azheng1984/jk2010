@@ -1,4 +1,6 @@
 <?php
+namespace Hyperframework\Web;
+
 class AssetCacheUrlPrefix {
     private static $value;
 
