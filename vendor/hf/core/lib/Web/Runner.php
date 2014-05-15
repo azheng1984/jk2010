@@ -6,10 +6,12 @@ use Hyperframework\Config;
 class Runner {
     public static function run() {
         $urlPath = static::getUrlPath();
-        $assetPath = static::getAssetPath($urlPath);
-        if ($assetPath !== false) {
-            static::runAssetProxy($assetPath);
-            return;
+        if (Config::get('hyperframework.web.enable_asset_proxy') === true) {
+            $assetPath = static::getAssetPath($urlPath);
+            if ($assetPath !== false) {
+                static::runAssetProxy($assetPath);
+                return;
+            }
         }
         static::runApplication(static::getApplicationPath($urlPath));
     }
@@ -27,9 +29,6 @@ class Runner {
     }
 
     protected static function getAssetPath($urlPath) {
-        if (Config::get('hyperframework.web.enable_asset_proxy') !== true) {
-            return false;
-        }
         $segments = parse_url(AssetCacheUrlPrefix::get());
         if (isset($segments['path']) === false || $segments['path'] === '/') {
             return $urlPath;
