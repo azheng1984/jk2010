@@ -2,14 +2,11 @@
 namespace Hyperframework\Web;
 
 class AssetProxy {
-    public static function run($urlPath) {
-        Config::get('hyperframework.web.asset_cache_url_path_prefix');
-        $urlPathPrefix = AssetUrlPathPrefix::get();
-        $isAssetCacheVersionEnabled = Config::get(
+    public static function run($path) {
+        if (Config::get(
             'hyperframework.web.enable_asset_cache_version'
-        ) !== false;
-        if ($isAssetCacheVersionEnabled) {
-            $segments = explode('.', $url);
+        ) !== false) {
+            $segments = explode('.', $path);
             $amount = count($segments);
             if ($amount < 3) {
                 throw new Exception;

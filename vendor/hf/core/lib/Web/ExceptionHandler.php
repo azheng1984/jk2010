@@ -60,8 +60,10 @@ class ExceptionHandler {
 
     protected static function resetOutput() {
         header_remove();
-        if (ob_get_level() > 0) {
+        $level = ob_get_level();
+        while ($level > 0) {
             ob_end_clean();
+            --$level;
         }
     }
 
