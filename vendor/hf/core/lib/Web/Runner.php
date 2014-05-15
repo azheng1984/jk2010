@@ -60,11 +60,11 @@ class Runner {
         return substr($urlPath, 0, $extensionPosition);
     }
 
-    protected static function runAssetProxy($assetPath) {
-        AssetProxy::run($assetPath);
+    protected static function runAssetProxy($path) {
+        AssetProxy::run($path);
     }
 
-    protected static function runApplication($applicationPath) {
-        Application::run($applicationPath);
+    protected static function runApplication($path) {
+        Application::run($path);
     }
 }
