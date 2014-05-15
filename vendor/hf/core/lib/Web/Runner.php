@@ -35,7 +35,7 @@ class Runner {
             return $urlPath;
         }
         $prefix = $segments['path'];
-        $prefixLength = count($prefix);
+        $prefixLength = strlen($prefix);
         if ($prefix[$perfixLength - 1] !== '/') {
             $prefix .= '/';
             $prefixLength += 1;
