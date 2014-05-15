@@ -82,9 +82,7 @@ class AssetProxy {
         if ($fileType === 'php') {
             ob_start();
             eval('?>' . $content);
-            $result = ob_get_contents();
-            ob_end_clean();
-            return $result;
+            return ob_get_clean();
         }
         return $content;
     }
