@@ -48,7 +48,8 @@ class Runner {
         if ($urlPath === '/') {
             return $urlPath;
         }
-        while (substr($urlPath, -1) === '/') {
+        $urlPath = preg_replace('`/+`', '/', $urlPath);
+        if (substr($urlPath, -1) === '/') {
             $urlPath = substr($urlPath, 0, -1);
         }
         if ($urlPath === '') {
