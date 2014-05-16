@@ -30,10 +30,10 @@ class Runner {
 
     protected static function getAssetPath($urlPath) {
         $prefix = AssetCachePathPrefix::get();
-        if ($prefix === '/') {
+        $prefixLength = strlen($prefix);
+        if ($prefix === '/' || $prefixLength === 0) {
             return $urlPath;
         }
-        $prefixLength = strlen($prefix);
         if ($prefix[$perfixLength - 1] !== '/') {
             $prefix .= '/';
             $prefixLength += 1;
