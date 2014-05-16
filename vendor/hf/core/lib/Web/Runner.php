@@ -45,8 +45,11 @@ class Runner {
     }
 
     protected static function getApplicationPath($urlPath) {
-        if (substr($urlPath, -1) === '/') {
-            return substr($urlPath, 0, -1);
+        if ($urlPath === '/') {
+            return $urlPath;
+        }
+        while (substr($urlPath, -1) === '/') {
+            $urlPath = substr($urlPath, 0, -1);
         }
         $extensionPosition = strrpos($urlPath, '.');
         if ($extensionPosition === false
