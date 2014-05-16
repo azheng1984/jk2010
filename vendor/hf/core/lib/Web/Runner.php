@@ -29,11 +29,11 @@ class Runner {
     }
 
     protected static function getAssetPath($urlPath) {
-        $segments = parse_url(AssetCacheUrlPrefix::get());
-        if (isset($segments['path']) === false || $segments['path'] === '/') {
+        $segments = parse_url();
+        $prefix = AssetCachePathPrefix::get();
+        if ($prefix === '/') {
             return $urlPath;
         }
-        $prefix = $segments['path'];
         $prefixLength = strlen($prefix);
         if ($prefix[$perfixLength - 1] !== '/') {
             $prefix .= '/';
