@@ -48,7 +48,7 @@ class Runner {
         if ($urlPath === '/') {
             return $urlPath;
         }
-        $urlPath = rtrim(preg_replace('`/+`', '/', $urlPath), '/');
+        $urlPath = rtrim(preg_replace('#/{2,}#', '/', $urlPath), '/');
         if ($urlPath === '') {
             return '/';
         }
