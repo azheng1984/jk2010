@@ -51,6 +51,9 @@ class Runner {
         while (substr($urlPath, -1) === '/') {
             $urlPath = substr($urlPath, 0, -1);
         }
+        if ($urlPath === '') {
+            return '/';
+        }
         $extensionPosition = strrpos($urlPath, '.');
         if ($extensionPosition === false
             || $extensionPosition < strrpos($urlPath, '/')) {
