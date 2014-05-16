@@ -1,14 +1,10 @@
 <?php
-class DirectoryReader {
+class DirectoryScanner {
     private $handler;
     private $excludePaths;
     private $initPath;
 
-    public function __construct($handler) {
-        $this->handler = $handler;
-    }
-
-    public function read($rootPath, $relativePath = null, $excludePaths = array()) {
+    public function run($include, $exclude, $callback) {
         $initPath = $this->getFullPath($rootPath, $relativePath);
         $this->excludePaths = $excludePaths;
         $this->execute(
