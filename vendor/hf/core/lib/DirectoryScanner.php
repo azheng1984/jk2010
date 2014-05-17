@@ -2,47 +2,25 @@
 namespace Hyperframework\Web;
 
 class DirecotoryScanner {
-    private $handler;
-    private $excludePaths;
+    private static $handler;
 
-    public function __construct($handler) {
-        $this->handler = $handler;
-    }
-
-    public function scan($includePaths, $excludePaths = null) {
-        if (is_array($includePaths) === false) {
-            $includePaths = array($includePaths);
-        }
-        $this->initializeExcludePaths($excludePaths);
-        foreach ($includePaths as $includePath) {
-            $this->execute(rtrim($includePath, '\/'));
-        }
-    }
-
-    private function initializeExcludePaths($paths) {
-        if ($paths === null) {
-            return;
-        }
+    public static function scan($handler, $paths) {
+        self::$handler = $handler;
         if (is_array($paths) === false) {
             $paths = array($paths);
         }
-        $this->excludePath = array();
         foreach ($paths as $path) {
-            $path = realpath($path);
-            if ($path === false) {
-                throw new Exception("Path '" . $path . "' not found");
-            }
-            $this->exceludePath[] = $path;
+            self::execute(rtrim($path, '\/'));
         }
     }
 
-    private static function execute($includePath, $relativePath = null) {
-        $path = $includePath;
+    private static function execute($rootPath, $relativePath = null) {
+        $path = $rootPath;
         if ($relativePath !== null) {
             $path .= DIRECTORY_SEPARATOR . $relativePath;
         }
         if (is_file($path)) {
-            self::$handler->handle($includePath, $relativePath);
+            self::$handler->handle($rootPath, $relativePath);
             return;
         }
         if (is_dir($path)) {
@@ -50,16 +28,10 @@ class DirecotoryScanner {
                 if ($entry === '.' || $entry === '..') {
                     continue;
                 }
-                if ($this->$excludePath !== null) {
-                    $realPath = realpath($path . DIRECTORY_SEPARATOR . $entry);
-                    if (in_array($realPath, $this->excludePaths)) {
-                        continue;
-                    }
-                }
                 if ($relativePath !== null) {
                     $entry = $relativePath . DIRECTORY_SEPARATOR . $entry;
                 }
-                $this->execute($includePath, $entry);
+                self::execute($rootPath, $entry);
             }
         }
         throw new Exception("Path '" . $path . "' not found");
