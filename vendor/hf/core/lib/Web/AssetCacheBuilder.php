@@ -5,13 +5,12 @@ use Hyperframework\DirectoryScanner;
 
 class AssetCacheBuilder {
     public static function run() {
+        $fileHandler = function($basePath, $relativePath) {
+        }
+        $directoryHandler = function($basePath, $relativePath) {
+        }
         DirectoryScanner::run(
-            function() {
-
-            }, self::getIncludePaths()
+            self::getIncludePaths(), $fileHandler, $directoryHandler
         );
-    }
-
-    private static function scanDirectory($rootPath, $relativePath) {
     }
 }
