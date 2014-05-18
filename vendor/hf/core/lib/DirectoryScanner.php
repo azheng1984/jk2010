@@ -1,29 +1,33 @@
 <?php
-namespace Hyperframework\Web;
+namespace Hyperframework;
 
 class DirecotoryScanner {
-    private static $handler;
+    private $handler;
+    private $shouldHandleDirectory = true;
+    private $shouldHandleFile = true;
+    private $shouldUseRelativePathInCallback = true;
 
-    public static function scan($handler, $paths) {
+    public function run(
+        $paths, $fileHandler, $directoryHandler = null, $callbackFields = null
+    ) {
         self::$handler = $handler;
         if (is_array($paths) === false) {
             $paths = array($paths);
         }
         foreach ($paths as $path) {
-            self::execute(rtrim($path, '\/'));
+            $this->basePath = $path;
+            self::$handler->setBasePath($path);
+            self::scan(rtrim($path, '\/'));
         }
     }
 
-    private static function execute($rootPath, $relativePath = null) {
+    private function scan($basePath, $relativePath = null) {
         $path = $rootPath;
         if ($relativePath !== null) {
             $path .= DIRECTORY_SEPARATOR . $relativePath;
         }
-        if (is_file($path)) {
-            self::$handler->handle($rootPath, $relativePath);
-            return;
-        }
         if (is_dir($path)) {
+            self::$handler($relativePath);
             foreach (scandir($path) as $entry) {
                 if ($entry === '.' || $entry === '..') {
                     continue;
@@ -31,9 +35,10 @@ class DirecotoryScanner {
                 if ($relativePath !== null) {
                     $entry = $relativePath . DIRECTORY_SEPARATOR . $entry;
                 }
-                self::execute($rootPath, $entry);
+                self::scan($rootPath, $entry);
+                return;
             }
         }
-        throw new Exception("Path '" . $path . "' not found");
+        self::$handler->handleFile($relativePath);
     }
 }
