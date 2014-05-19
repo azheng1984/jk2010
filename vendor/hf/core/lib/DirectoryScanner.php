@@ -13,7 +13,7 @@ class DirecotoryScanner {
     public function scan($path) {
         $realPath = realpath($path);
         if ($realPath === false) {
-            throw new Exception("Path '" . $path . "' not found");
+            throw new Exception("Path '" . $path . "' does not exist");
         }
         $this->execute($realPath);
     }
