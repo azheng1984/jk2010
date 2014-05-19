@@ -30,8 +30,8 @@ class DirecotoryScanner {
             $callback = $this->directoryHandler;
             $callback($fullPath, $relativePath);
         }
-        $directory = opendir($fullPath);
-        while (($child = readdir($directory)) !== false) {
+        $handle = opendir($fullPath);
+        while (($child = readdir($handle)) !== false) {
             if ($child === '.' || $child === '..') {
                 continue;
             }
@@ -44,6 +44,6 @@ class DirecotoryScanner {
                 $childFullPath, $relativePath . DIRECTORY_SEPARATOR . $child
             );
         }
-        closedir($directory);
+        closedir($handle);
     }
 }
