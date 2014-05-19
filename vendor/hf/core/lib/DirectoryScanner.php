@@ -31,7 +31,7 @@ class DirecotoryScanner {
             $callback($fullPath, $relativePath);
         }
         $directory = opendir($fullPath);
-        foreach (($child = readdir($directory)) !== false) {
+        while (($child = readdir($directory)) !== false) {
             if ($child === '.' || $child === '..') {
                 continue;
             }
