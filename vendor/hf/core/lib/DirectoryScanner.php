@@ -2,43 +2,46 @@
 namespace Hyperframework;
 
 class DirecotoryScanner {
-    private $handler;
-    private $shouldHandleDirectory = true;
-    private $shouldHandleFile = true;
-    private $shouldUseRelativePathInCallback = true;
+    private $fileHandler;
+    private $directoryHandler;
 
-    public function run(
-        $paths, $fileHandler, $directoryHandler = null, $callbackFields = null
-    ) {
-        self::$handler = $handler;
-        if (is_array($paths) === false) {
-            $paths = array($paths);
-        }
-        foreach ($paths as $path) {
-            $this->basePath = $path;
-            self::$handler->setBasePath($path);
-            self::scan(rtrim($path, '\/'));
-        }
+    public function __construct($fileHandler, $directoryHandler = null) {
+        $this->fileHandler = $fileHandler;
+        $this->directoryHandler = $directoryHandler;
     }
 
-    private function scan($basePath, $relativePath = null) {
-        $path = $rootPath;
-        if ($relativePath !== null) {
-            $path .= DIRECTORY_SEPARATOR . $relativePath;
+    public function scan($path) {
+        $realPath = realpath($path);
+        if ($realPath === false) {
+            throw new Exception("Path '" . $path . "' not found");
         }
-        if (is_dir($path)) {
-            self::$handler($relativePath);
-            foreach (scandir($path) as $entry) {
-                if ($entry === '.' || $entry === '..') {
-                    continue;
-                }
-                if ($relativePath !== null) {
-                    $entry = $relativePath . DIRECTORY_SEPARATOR . $entry;
-                }
-                self::scan($rootPath, $entry);
-                return;
+        $this->execute($realPath);
+    }
+
+    private function execute($fullPath, $relativePath = null) {
+        if (is_file($fullPath)) {
+            if ($this->fileHandler !== null) {
+                $callback = $this->fileHandler;
+                $callback($fullPath, $relativePath);
             }
+            return;
         }
-        self::$handler->handleFile($relativePath);
+        if ($this->directoryHandler !== null && $relativePath !== null) {
+            $callback = $this->directoryHandler;
+            $callback($fullPath, $relativePath);
+        }
+        foreach (scandir($fullPath) as $child) {
+            if ($child === '.' || $child === '..') {
+                continue;
+            }
+            $childFullPath = $fullPath . DIRECTORY_SEPARATOR . $child;
+            if ($relativePath === null) {
+                $this->execute($childFullPath, $child);
+                continue;
+            }
+            $this->execute(
+                $childFullPath, $relativePath . DIRECTORY_SEPARATOR . $child
+            );
+        }
     }
 }
