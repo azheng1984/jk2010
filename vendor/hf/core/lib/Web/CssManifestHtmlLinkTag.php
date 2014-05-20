@@ -12,6 +12,8 @@ class CssManifestHtmlLinkTag {
                 echo ' media="', $media, '"';
             }
             echo '/>';
+            return;
         }
+        //todo
     }
 }
