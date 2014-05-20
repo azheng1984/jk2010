@@ -3,7 +3,7 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Config;
 
-class CssManifestLink {
+class CssManifestHtmlLinkTag {
     public static function render($path, $media = null) {
         Config::get('hyperframework.web.separate_asset_manifest_link');
         if (static::enabled() === false) {
