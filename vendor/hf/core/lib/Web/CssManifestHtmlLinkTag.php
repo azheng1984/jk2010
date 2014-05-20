@@ -5,16 +5,13 @@ use Hyperframework\Config;
 
 class CssManifestHtmlLinkTag {
     public static function render($path, $media = null) {
-        Config::get('hyperframework.web.separate_asset_manifest_link');
-        if (static::enabled() === false) {
-            throw \Exception('Css preloader not enabled');
+        if (Config::get('hyperframework.web.separate_asset_manifest_merging') === true) {
+            echo '<link type="text/css" rel="stylesheet" href="',
+                AssetCacheUrl::get($path), '"';
+            if ($media !== null) {
+                echo ' media="', $media, '"';
+            }
+            echo '/>';
         }
-        if (Config)
-        echo '<link type="text/css" rel="stylesheet" href="',
-            CssUrl::get($path), '"';
-        if ($media !== null) {
-            echo ' media="', $media, '"';
-        }
-        echo '/>';
     }
 }
