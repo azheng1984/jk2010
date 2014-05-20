@@ -5,11 +5,7 @@ use Hyperframework\Config;
 
 class CssManifestHtmlLinkTag {
     public static function render($path, $media = null) {
-        if (
-            Config::get(
-                'hyperframework.web.enable_assets_concatenation'
-            ) === true
-        ) {
+        if (Config::get('hyperframework.web.concatenate_assets') === true) {
             echo '<link type="text/css" rel="stylesheet" href="',
                 AssetCacheUrl::get($path), '"';
             if ($media !== null) {
