@@ -1,15 +1,15 @@
 <?php
 namespace Hyperframework\Web;
 
-class CssPreloader {
-    public static function enabled() {
-        return Config::get(__CLASS__ . '\Enabled') !== false;
-    }
+use Hyperframework\Config;
 
-    public static function render($path = 'app.css', $media = null) {
+class CssManifestLink {
+    public static function render($path, $media = null) {
+        Config::get('hyperframework.web.separate_asset_manifest_link');
         if (static::enabled() === false) {
             throw \Exception('Css preloader not enabled');
         }
+        if (Config)
         echo '<link type="text/css" rel="stylesheet" href="',
             CssUrl::get($path), '"';
         if ($media !== null) {
