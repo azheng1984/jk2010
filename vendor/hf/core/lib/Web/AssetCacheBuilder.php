@@ -8,12 +8,14 @@ class AssetCacheBuilder {
         $outputRootPath = self::getOutputRootPath();
         $fileHandler = function($fullPath, $relativePath) {
             $result = AssetFilterChain::execute($fullPath);
-            $result['file_name'];
             $relativePath = dirname($relativePath)
                 . DIRECTORY_SEPARATOR . $result['file_name'];
-            if (self::compareContent($result['content'], $relativePath)) {
+            $isUpdated = self::compareContent(
+                $result['content'], self::getCurrentCache($relativePath)
+            );
+            if ($isUpdated) {
                 $version = self::updateVersion();
-                self::outputCache(, $version);
+                self::outputCache($result['content'], $relativePath, $version);
             }
         }
         $directoryHandler = function($fullPath, $relativePath) use (
