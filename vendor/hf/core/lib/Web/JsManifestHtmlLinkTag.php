@@ -1,16 +1,24 @@
 <?php
-namespace Hyperframework\Web\Asset;
+namespace Hyperframework\Web;
 
-class JsPreloader {
-    public static function enabled() {
-        return Config::get(__CLASS__ . '\Enabled') !== false;
+use Hyperframework\Config;
+
+class JsManifestHtmlLinkTag {
+    public static function render($path, $shouldConcatenateFiles = null) {
+        if ($shouldConcatenateFiles === null) {
+            $shouldConcatenateFiles =
+                Config::get('hyperframework.web.concatenate_assets') === true;
+        }
+        if ($shouldConcatenateFiles === true) {
+            self::renderItem($path);
+            return;
+        }
+        foreach (AssetManifest::getPaths($path) as $path) {
+            self::renderItem($path);
+        }
     }
 
-    public static function render($path = 'app.js') {
-        if (static::enabled() === false) {
-            throw \Exception('Js preloader not enabled');
-        }
-        echo '<script type="text/javascript" src="',
-            JsUrl::get($path), '"></script>';
+    private static function renderItem($path) {
+        echo '<script src="', AssetCacheUrl::get($path), '"></script>';
     }
 }
