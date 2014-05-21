@@ -21,8 +21,7 @@ class CssManifestHtmlLinkTag {
     }
 
     private static function renderItem($path, $media) {
-        echo '<link rel="stylesheet" href="',
-            AssetCacheUrl::get($path), '"';
+        echo '<link rel="stylesheet" href="', AssetCacheUrl::get($path), '"';
         if ($media !== null) {
             echo ' media="', $media, '"';
         }
