@@ -9,10 +9,10 @@ class CssManifestHtmlLinkTag {
     ) {
         if ($shouldConcatenateFiles === null) {
             $shouldConcatenateFiles = Config::get(
-                'hyperframework.web.concatenate_asset_manifest_files'
+                'hyperframework.web.concatenate_files_in_asset_manifest'
             );
         }
-        if ($shouldConcatenateFiles === false) {
+        if ($shouldConcatenateFiles !== false) {
             self::renderItem($path, $media);
             return;
         }
