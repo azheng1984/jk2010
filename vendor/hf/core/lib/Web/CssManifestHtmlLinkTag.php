@@ -8,10 +8,11 @@ class CssManifestHtmlLinkTag {
         $path, $media = null, $shouldConcatenateFiles = null
     ) {
         if ($shouldConcatenateFiles === null) {
-            $shouldConcatenateFiles =
-                Config::get('hyperframework.web.concatenate_assets') === true;
+            $shouldConcatenateFiles = Config::get(
+                'hyperframework.web.concatenate_asset_manifest_files'
+            );
         }
-        if ($shouldConcatenateFiles === true) {
+        if ($shouldConcatenateFiles === false) {
             self::renderItem($path, $media);
             return;
         }
@@ -21,10 +22,10 @@ class CssManifestHtmlLinkTag {
     }
 
     private static function renderItem($path, $media) {
-        echo '<link rel="stylesheet" href="', AssetCacheUrl::get($path), '"';
+        echo '<link rel="stylesheet"';
         if ($media !== null) {
             echo ' media="', $media, '"';
         }
-        echo '/>';
+        echo ' href="', AssetCacheUrl::get($path), '"/>';
     }
 }
