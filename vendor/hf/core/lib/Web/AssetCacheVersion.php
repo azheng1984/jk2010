@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Web\Asset;
+namespace Hyperframework\Web;
 
 class AssetCacheVersion {
     private static $manifest;
@@ -13,7 +13,10 @@ class AssetCacheVersion {
 
     private static function getManifest() {
         if ($manifest === null) {
+            self::$manifest = \Hyperframework\PhpFileDataLoader::load(
+                'hyperframework'
+            );
         }
-        return static::$manifest;
+        return self::$manifest;
     }
 }
