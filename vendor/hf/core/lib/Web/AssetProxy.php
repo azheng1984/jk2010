@@ -9,17 +9,21 @@ class AssetProxy {
             $segments = explode('.', $path);
             $amount = count($segments);
             if ($amount < 3) {
-                throw new Exception;
+               throw new NotFoundException; 
             }
-            //todo 检查版本，如果不匹配，抛出 not found
+            if (self::isVersionMatched($segments[$amount - 2]) === false) {
+               throw new NotFoundException; 
+            }
             unset($segments[$amount - 2]);
-            if (self::isValidFilterType($segments[$amount - 1])) {
-                throw new NotFoundException;
-            }
             $path = implode('.', $segments);
         }
         $file = self::getFile($path);
-        echo AssetFilterChain::process($file);
+        $realPath = null;
+        $result = AssetFilterChain::process($file, $realPath);
+        if ($realPath !== $path) {
+            throw new NotFoundException;
+        }
+        echo $result;
     }
 
     private static function searchFile($path) {
