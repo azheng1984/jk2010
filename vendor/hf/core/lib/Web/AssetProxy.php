@@ -11,13 +11,14 @@ class AssetProxy {
             if ($amount < 3) {
                throw new NotFoundException; 
             }
-            if (self::isVersionMatched($segments[$amount - 2]) === false) {
-               throw new NotFoundException; 
-            }
+            $version = $segments[$amount - 2];
             unset($segments[$amount - 2]);
             $path = implode('.', $segments);
+            if (AssetCacheVersion::get($path) === $segments[$amount - 2]) {
+                throw new NotFoundException; 
+            }
         }
-        $file = self::getFile($path);
+        $file = self::searchFile($path);
         $realPath = null;
         $result = AssetFilterChain::process($file, $realPath);
         if ($realPath !== $path) {
@@ -38,16 +39,13 @@ class AssetProxy {
                     . DIRECTORY_SEPARATOR . $fileName;
                 $files = glob($fullPath . '*');
                 foreach ($files as $file) {
-                    if (self::isExcluded($excludePaths, $includePath, $file)) {
-                        continue;
-                    }
                     $suffix = substr($file, strlen($fullPath) - 1);
                     if ($suffix === '') {
                         return $file;
                     }
                     $filterTypes = explode('.', $suffix);
                     foreach ($types as $type) {
-                        if (static::isValidFilterSuffix($type) === false) {
+                        if (AssetFilterChain::isValidFilterSuffix($type) === false) {
                             break;
                         }
                     }
@@ -56,17 +54,5 @@ class AssetProxy {
             }
         }
         throw new NotFoundException;
-    }
-
-    private static function isExcluded($excludePaths, $includePath, $filePath) {
-        foreach ($excludedPaths as $excludePath) {
-            if (strlen($includePath) > strlen($excludePath)) {
-                continue;
-            }
-            if (strncmp($filePath, $excludePath, strlen($excludePath)) === 0) {
-                return true;
-            }
-        }
-        return false;
     }
 }
