@@ -40,7 +40,7 @@ class AssetProxy {
                     . DIRECTORY_SEPARATOR . $fileName;
                 $files = glob($fullPath . '*');
                 foreach ($files as $file) {
-                    if (AssetFilterChain::removeFilterExtensions($file)
+                    if (AssetFilterChain::removeInternalFileExtensions($file)
                         === $file) {
                         return $file;
                     }

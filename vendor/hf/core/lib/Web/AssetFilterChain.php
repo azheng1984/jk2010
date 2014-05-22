@@ -22,7 +22,9 @@ class AssetFilterChain {
         return $content;
     }
 
-    public static function removeInternalFileExtensions($path) {
+    public static function removeInternalFileNameExtensions($path) {
+        //path.js.php
+        //path.js
         $segments = explode('.', $path);
         for (;;) {
             $filterType = array_pop($segments);
