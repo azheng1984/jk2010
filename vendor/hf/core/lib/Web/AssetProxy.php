@@ -3,9 +3,9 @@ namespace Hyperframework\Web;
 
 class AssetProxy {
     public static function run($path) {
-        if (Config::get(
-            'hyperframework.web.enable_asset_cache_version'
-        ) !== false) {
+        if (Config::get('hyperframework.web.enable_asset_cache_version')
+            !== false
+        ) {
             $segments = explode('.', $path);
             $amount = count($segments);
             if ($amount < 3) {
@@ -19,6 +19,9 @@ class AssetProxy {
             }
         }
         $file = self::searchFile($path);
+        if ($file === null) {
+            throw new NotFoundException; 
+        }
         $realPath = null;
         $result = AssetFilterChain::process($file, $realPath);
         if ($realPath !== $path) {
@@ -31,28 +34,29 @@ class AssetProxy {
         $segments = explode('/', $path);
         $fileName = array_pop($segments);
         $dirName = implode(DIRECTORY_SEPARATOR, $segments);
-        $includePaths = self::getIncludePath();
-        $excludePaths = self::getExcludePath();
-        foreach ($includePaths as $includePath) {
+        foreach (self::getIncludePaths() as $includePath) {
             if (is_dir($includePath . $dirName)) {
                 $fullPath = $includePath . $dirName
                     . DIRECTORY_SEPARATOR . $fileName;
                 $files = glob($fullPath . '*');
                 foreach ($files as $file) {
-                    $suffix = substr($file, strlen($fullPath) - 1);
-                    if ($suffix === '') {
+                    if (AssetFilterChain::removeFilterExtensions($file)
+                        === $file) {
                         return $file;
                     }
-                    $filterTypes = explode('.', $suffix);
-                    foreach ($types as $type) {
-                        if (AssetFilterChain::isValidFilterSuffix($type) === false) {
-                            break;
-                        }
-                    }
-                    return $file;
                 }
             }
         }
-        throw new NotFoundException;
+    }
+
+    private static function getIncludePaths() {
+        $paths =  \Hyperframework\PhpConfigDataLoader::load(
+            'hyperframework.web.asset_cache.include_paths_config_path',
+            'asset_cache' . DIRECTORY_SEPARATOR . 'include_paths.php',
+            true
+        );
+        if ($paths === null) {
+            return array();
+        }
     }
 }

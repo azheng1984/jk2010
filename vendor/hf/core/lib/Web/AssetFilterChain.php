@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 class AssetFilterChain {
-    private static function render($path) {
+    private static function process($path) {
         $segments = explode('.', $path);
         $output = file_get_contents($path);
         for (;;) {
@@ -14,6 +14,9 @@ class AssetFilterChain {
         }
     }
 
+    public static function removeFilterExtensions($path) {
+    }
+
     private static function filter($content, $fileType) {
         if ($fileType === 'php') {
             ob_start();
@@ -21,5 +24,9 @@ class AssetFilterChain {
             return ob_get_clean();
         }
         return $content;
+    }
+
+    private static function isValidFilterTypes($path) {
+        return null;
     }
 }
