@@ -8,7 +8,7 @@ class AssetManifest {
             throw new Exception;
         }
         $result = array();
-        $paths = self::parse($path);
+        $paths = self::getInnerPaths($path);
         foreach ($paths as $item) {
             $item = self::removeBasePath($item);
             if ($item === null) {
@@ -20,7 +20,7 @@ class AssetManifest {
     }
 
     public static function getContent($path) {
-        $paths = self::parse($path);
+        $paths = self::getInnerPaths($path);
         $result = null;
         foreach ($paths as $path) {
             $result .= file_get_contents($path);
@@ -28,9 +28,9 @@ class AssetManifest {
         return $result;
     }
 
-    private static function parse($path) {
+    private static function getInnerPaths($path) {
         $items = explode("\n", file_get_contents($path));
-        //todo
+        //todo 解析 manifest 生成 inner paths
     }
 
     private static function removeBasePath($path) {
