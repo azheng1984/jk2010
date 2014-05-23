@@ -5,10 +5,6 @@ use Hyperframework\Config;
 
 class AssetCacheUrl {
     public function get($path) {
-        $prefix = Config::get('hyperframework.web.asset_cache_prefix');
-        if ($prefix !== null) {
-            $path = $prefix . $path;
-        }
         if (Config::get('hyperframework.web.enable_asset_cache_version')) {
             $segments = explode('.', $path);
             $cacheVersion = AssetCacheVersion::get($path);
@@ -20,6 +16,10 @@ class AssetCacheUrl {
                 array_push($segments, $lastSegment);
                 $result = implode('.', $segments);
             }
+        }
+        $prefix = Config::get('hyperframework.web.asset_cache_url_prefix');
+        if ($prefix !== null) {
+            $path = $prefix . $path;
         }
         return AssetUrl::get($result);
     }
