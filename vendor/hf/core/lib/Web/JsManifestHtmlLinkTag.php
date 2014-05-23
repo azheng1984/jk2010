@@ -14,7 +14,7 @@ class JsManifestHtmlLinkTag {
             self::renderItem($path);
             return;
         }
-        foreach (AssetManifest::getInnerRelativePaths($path) as $path) {
+        foreach (AssetManifest::getInnerUrlPaths($path) as $path) {
             self::renderItem($path);
         }
     }

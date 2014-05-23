@@ -2,8 +2,8 @@
 namespace Hyperframework\Web;
 
 class AssetManifest {
-    public static function getInnerRelativePaths($relativePath) {
-        $path = self::getFullPath($relativePath);
+    public static function getInnerUrlPaths($urlPath) {
+        $path = self::getFullPath($urlPath);
         if ($path === null) {
             throw new Exception;
         }
@@ -28,9 +28,15 @@ class AssetManifest {
         return $result;
     }
 
-    private static function removeBasePath() {
+    private static function parse($path) {
+        $items = explode("\n", file_get_contents($path));
+        //todo
     }
 
-    private static function getFullPath($relativePath) {
+    private static function removeBasePath($path) {
+    }
+
+    private static function getFullPath($urlPath) {
+        //search file
     }
 }

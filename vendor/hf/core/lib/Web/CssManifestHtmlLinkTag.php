@@ -16,7 +16,7 @@ class CssManifestHtmlLinkTag {
             self::renderItem($path, $media);
             return;
         }
-        foreach (AssetManifest::getInnerPaths($path) as $path) {
+        foreach (AssetManifest::getInnerUrlPaths($path) as $path) {
             self::renderItem($path, $media);
         }
     }
