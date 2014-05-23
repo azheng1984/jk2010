@@ -6,13 +6,13 @@ use Hyperframework\Config;
 class AssetCacheUrl {
     public function get($path) {
         if (Config::get('hyperframework.web.enable_asset_cache_version')) {
+            $version = AssetCacheVersion::get($path);
             $segments = explode('.', $path);
-            $cacheVersion = AssetCacheVersion::get($path);
             if (count($segments) === 1) {
-                $result .= '-' . $cacheVersion;
+                $path .= '-' . $version;
             } else {
                 $lastSegment = array_pop($segments);
-                array_push($segments, $cacheVersion);
+                array_push($segments, $version);
                 array_push($segments, $lastSegment);
                 $result = implode('.', $segments);
             }
@@ -21,6 +21,6 @@ class AssetCacheUrl {
         if ($prefix !== null) {
             $path = $prefix . $path;
         }
-        return AssetUrl::get($result);
+        return AssetUrl::get($path);
     }
 }
