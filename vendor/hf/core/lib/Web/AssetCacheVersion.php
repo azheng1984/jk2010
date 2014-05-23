@@ -2,6 +2,7 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Config;
+use Hyperframework\PhpFileConfigLoader;
 
 class AssetCacheVersion {
     private static $manifest;
@@ -27,7 +28,7 @@ class AssetCacheVersion {
 
     private static function getCurrent() {
         if (self::$current === null) {
-            self::$current = self::getPrefix() . \Hyperframework\PhpFileConfigLoader::load(
+            self::$current = self::getPrefix() . PhpFileConfigLoader::load(
                 'hyperframework.web.asset_cache.version_path',
                 'asset_cache' . DIRECTORY_SEPARATOR . 'version.php'
             );
@@ -37,7 +38,7 @@ class AssetCacheVersion {
 
     private static function getManifest() {
         if (self::$manifest === null) {
-            self::$manifest = \Hyperframework\PhpFileConfigLoader::load(
+            self::$manifest = PhpFileConfigLoader::load(
                 'hyperframework.web.asset_cache.manifest_path',
                 'asset_cache' . DIRECTORY_SEPARATOR . 'manifest.php'
             );
