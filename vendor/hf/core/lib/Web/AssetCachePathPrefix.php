@@ -12,7 +12,7 @@ class AssetCachePathPrefix {
             'hyperframework.web.asset_cache_path_prefix'
         );
         if (self::$value === null) {
-            self::$value = '/cache/';
+            self::$value = '/cache';
         }
         return self::$value;
     }

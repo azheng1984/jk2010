@@ -1,4 +1,4 @@
 <?php
 return array(
-    'jquery' => 130601
+    'jquery.js' => 130601
 );

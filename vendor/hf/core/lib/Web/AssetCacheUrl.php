@@ -17,10 +17,6 @@ class AssetCacheUrl {
                 $result = implode('.', $segments);
             }
         }
-        $prefix = Config::get('hyperframework.web.asset_cache_url_prefix');
-        if ($prefix !== null) {
-            $path = $prefix . $path;
-        }
-        return AssetUrl::get($path);
+        return AssetUrl::get(AssetCachePathPrefix::get() . $path);
     }
 }

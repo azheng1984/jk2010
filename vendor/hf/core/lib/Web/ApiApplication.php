@@ -11,7 +11,9 @@ class ApiApplication extends Application {
     protected function renderView() {
         $mediaType = $_SERVER['REQUEST_MEDIA_TYPE'];
         if ($mediaType === null) {
-            $mediaType = Config::get('hyperframework.web.api_application.default_media_type');
+            $mediaType = Config::get(
+                'hyperframework.web.api_application.default_media_type'
+            );
             if ($mediaType === null) {
                 $mediaType = 'json';
             }
