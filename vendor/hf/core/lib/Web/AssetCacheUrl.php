@@ -1,7 +1,14 @@
 <?php
+namespace Hyperframework\Web;
+
+use Hyperframework\Config;
+
 class AssetCacheUrl {
     public function get($path) {
-        $result = Config::get('hyperframework.web.asset_cache_prefix') . '/' . $path;
+        $prefix = Config::get('hyperframework.web.asset_cache_prefix');
+        if ($prefix !== null) {
+            $path = $prefix . $path;
+        }
         if (Config::get('hyperframework.web.enable_asset_cache_version')) {
             $segments = explode('.', $path);
             $cacheVersion = AssetCacheVersion::get($path);
@@ -14,6 +21,6 @@ class AssetCacheUrl {
                 $result = implode('.', $segments);
             }
         }
-        return $result;
+        return AssetUrl::get($result);
     }
 }
