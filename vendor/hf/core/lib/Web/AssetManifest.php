@@ -19,11 +19,11 @@ class AssetManifest {
         return $result;
     }
 
-    public static function getContent($path) {
+    public static function process($content) {
         $paths = self::getInnerPaths($path);
         $result = null;
         foreach ($paths as $path) {
-            $result .= file_get_contents($path);
+            $result .= AssetFilterChain::process($path);
         }
         return $result;
     }

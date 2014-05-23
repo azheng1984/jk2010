@@ -17,6 +17,8 @@ class AssetFilterChain {
                 $content = self::processjs($content);
             } elseif ($fileType === 'css') {
                 $content = self::processCss($content);
+            } elseif ($fileType === 'manifest') {
+                $content = AssetManifest::process($content);
             }
         }
         return $content;
