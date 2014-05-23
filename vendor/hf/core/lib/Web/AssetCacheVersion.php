@@ -22,8 +22,11 @@ class AssetCacheVersion {
                 'hyperframework.web.asset_cache.version_prefix',
                 'asset_cache' . DIRECTORY_SEPARATOR . 'manifest.php'
             );
+            if (self::$prefix === null) {
+                self::$prefix = '';
+            }
         }
-        return self::$manifest;
+        return self::$prefix;
     }
 
     private static function getCurrent() {
