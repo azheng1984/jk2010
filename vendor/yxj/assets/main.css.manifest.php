@@ -1,3 +1,6 @@
+<?php
+//可以通过 php 来定义变量,或加载配置
+?>
 ./main/css/.
 dream/up.css.php
 vendor/css
@@ -11,8 +14,3 @@ c:\windows\.
 vendor/css
 #//require_css dir
 #//require_js dir
-
-<?php
-//css.manifest
-//可以通过 php 生成 manifest 这样就可以支持按照后缀过滤文件了
-//Config::get('');
