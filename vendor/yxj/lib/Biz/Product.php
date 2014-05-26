@@ -1,5 +1,5 @@
 <?php
-namespace Yxj\Core;
+namespace Yxj\Domain;
 
 class Product {
 }
