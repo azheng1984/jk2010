@@ -2,7 +2,13 @@
 namespace Hyperframework\Web;
 
 class FormMaker {
-    public static function renderInput($name) {
+    private $data;
+
+    public function __construct($data = null) {
+        $this->data = $data;
+    }
+
+    public function renderTextBox($name) {
         echo '<input';
         if (isset($attributes['id'])) {
             if ($attributes['id'] === true) {
@@ -17,22 +23,37 @@ class FormMaker {
                 echo ' ="', $name, '"';
             }
         }
-        $value = ViewContext::get($name);
-        if ($value !== null) {
+        if (empty($this->data[$name]) === false) {
             echo ' value="', $value, '"';
         }
         echo '/>';
     }
 
-    public static function renderCsrfProtectionField() {
+    public function renderCsrfProtectionField() {
     }
 
-    public static function begin() {
+    public function begin($attributes = null) {
     }
 
-    public static function end() {
+    public function end() {
+        echo '</form>';
+    }
+
+    protected static function get($name) {
+        if (isset($this->data[$name])) {
+            return $this->data[$name];
+        }
     }
 }
+
+$formMaker = new FormMaker($product);
+$formMaker->renderInputBox();
+
+$formMaker = new FormMaker($product);
+$formMaker->begin('method="POST" action="/article"');
+$formMaker->renderInputBox();
+//echo '</form>';
+$formMaker->end();
 
 $product = null;
 ViewContext::push($product);
