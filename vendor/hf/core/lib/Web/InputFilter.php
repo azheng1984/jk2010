@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-class Input {
+class InputFilter {
     private static $instances = array();
     private static $configs = array();
 

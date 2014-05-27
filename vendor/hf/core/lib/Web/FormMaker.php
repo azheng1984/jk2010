@@ -1,5 +1,5 @@
 <?php
-class HtmlForm {
+class FormMaker {
     public function __construct($data = null) {
     }
 
