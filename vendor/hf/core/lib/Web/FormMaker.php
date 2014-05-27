@@ -23,25 +23,28 @@ class FormMaker {
         }
         echo '/>';
     }
+
+    public static function renderCsrfProtectionField() {
+    }
+
+    public static function begin() {
+    }
+
+    public static function end() {
+    }
 }
 
+$product = null;
 ViewContext::push($product);
 echo '<form id="category" method="GET" action="/article">';
-FormMaker::begin('id="category" method="GET" action="/article"', $product);
 
-//复杂的是可能的
-if (isset($errors['category'])) {
-}
+//显示错误，复杂的是可能的，只在 disable js 的时候才 "统一显示"，否则应该使用 js 验证 + 递交
+//ErrorMessage::render();
+
 FormMaker::renderTextBox(array(
-    'id', 'name' => 'category', 'class' => 'doc',
-    'onclick="callback()"'
+    'id', 'name' => 'category', 'class' => 'doc', 'onclick="callback()"'
 ));
-
-FormMaker::renderErrorMessage('category');
-
-FormMaker::checkError('name');
 FormMaker::renderTextArea(array('id', 'name' => 'description', 'class="bit"'));
-FormMaker::end();
 
 echo '</form>';
 ViewContext::pop();
