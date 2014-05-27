@@ -26,9 +26,9 @@ class FormMaker {
 }
 
 ViewContext::push($product);
-echo '<form method="GET" action="/article">';
+echo '<form id="category" method="GET" action="/article">';
 
-FormMaker::begin('name="category" method="GET" action="/article"', $product);
+FormMaker::begin('id="category" method="GET" action="/article"', $product);
 FormMaker::renderTextInput(array(
     'id', 'name' => 'category', 'class' => 'doc', 'onclick="callback()"'
 ));
@@ -37,4 +37,5 @@ FormMaker::renderTextarea(
 );
 FormMaker::end();
 
+echo '</form>';
 ViewContext::pop();
