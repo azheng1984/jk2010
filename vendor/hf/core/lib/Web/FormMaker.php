@@ -27,13 +27,21 @@ class FormMaker {
 
 ViewContext::push($product);
 echo '<form id="category" method="GET" action="/article">';
-
 FormMaker::begin('id="category" method="GET" action="/article"', $product);
+
+//复杂的是可能的
+if (isset($errors['category'])) {
+}
 FormMaker::renderTextBox(array(
-    'id', 'name' => 'category', 'class' => 'doc', 'onclick="callback()"'
+    'id', 'name' => 'category', 'class' => 'doc',
+    'onclick="callback()"'
 ));
+
+FormMaker::renderErrorMessage('category');
+
+FormMaker::checkError('name');
 FormMaker::renderTextArea(array('id', 'name' => 'description', 'class="bit"'));
 FormMaker::end();
 
 echo '</form>';
-ViewContext::pop()
+ViewContext::pop();

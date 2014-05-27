@@ -1,4 +1,6 @@
 <?php
+namespace Hyperframework\Web;
+
 class ViewContext {
     private static $stack = array();
 
