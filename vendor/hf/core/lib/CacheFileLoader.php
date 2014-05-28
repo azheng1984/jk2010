@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework;
 
-class PhpCacheFileLoader extends PhpDataFileLoader {
+class CacheFileLoader extends DataFileLoader {
     protected static function getDefaultBasePath() {
         return APPLICATION_PATH . DIRECTORY_SEPARATOR . 'tmp'
             . DIRECTORY_SEPARATOR . 'cache';
