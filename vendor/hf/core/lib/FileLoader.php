@@ -10,7 +10,7 @@ class FileLoader {
         );
     }
 
-    final public static function loadRaw(
+    final public static function loadData(
         $defaultPath, $pathConfigName = null, $shouldCheckFileExists = false
     ) {
         return self::load(
@@ -18,7 +18,7 @@ class FileLoader {
         );
     }
 
-    private static function load(
+    final private static function load(
         $defaultPath, $pathConfigName, $shouldCheckFileExists, $isPhp
     ) {
         $path = self::getPath();
