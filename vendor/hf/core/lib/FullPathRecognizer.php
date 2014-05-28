@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework;
 
-class FullPathChecker {
+class FullPathRecognizer {
     public static function isFull($path) {
         if (isset($path[0]) === false) {
             return false;
