@@ -55,7 +55,7 @@ final class PathInfo {
         } else {
             $namespace =substr($namespace, 1);
         }
-        $config = PhpConfigFileLoader::load(
+        $config = ConfigFileLoader::loadPhp(
             'path_info_builder.php',
             'hyperframework.path_info.builder_config_path',
             true
