@@ -1,9 +1,9 @@
 <?php
-namespace Hyperframework\Web;
+namespace Hyperframework\Web\Html;
 
 use Hyperframework\Config;
 
-class CssManifestHtmlLinkTag {
+class CssManifestLinkTag {
     public static function render(
         $path, $media = null, $shouldConcatenateFiles = null
     ) {

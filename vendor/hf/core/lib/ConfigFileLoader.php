@@ -2,7 +2,7 @@
 namespace Hyperframework;
 
 class PhpConfigFileLoader extends PhpDataFileLoader {
-    protected static function getDefaultRootPath() {
+    protected static function getDefaultBasePath() {
         return APPLICATION_PATH . DIRECTORY_SEPARATOR . 'config';
     }
 }
