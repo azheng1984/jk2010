@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-class FormMaker {
+class Form {
     private $data;
 
     public function __construct($data = null) {
@@ -46,7 +46,7 @@ class FormMaker {
     }
 }
 
-$formMaker = new FormMaker($product);
+$form = new Form($product);
 $formMaker->begin('method="POST" action="/article"');
 //$formMaker->renderByConfigs($configs);
 echo '<label for="category">分类:</label>';

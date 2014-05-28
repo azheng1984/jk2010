@@ -3,7 +3,7 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Config;
 
-class JsManifestHtmlLinkTag {
+class JsManifestLinkTag {
     public static function render($path, $shouldConcatenateFiles = null) {
         if ($shouldConcatenateFiles === null) {
             $shouldConcatenateFiles = Config::get(
