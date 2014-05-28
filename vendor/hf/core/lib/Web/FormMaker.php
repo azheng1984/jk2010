@@ -47,12 +47,10 @@ class FormMaker {
 }
 
 $formMaker = new FormMaker($product);
-$formMaker->renderInputBox();
-
-$formMaker = new FormMaker($product);
 $formMaker->begin('method="POST" action="/article"');
+//$formMaker->renderByConfigs($configs);
+echo '<label for="category">分类:</label>';
 $formMaker->renderInputBox();
-//echo '</form>';
 $formMaker->end();
 
 $product = null;
@@ -62,10 +60,13 @@ echo '<form id="category" method="GET" action="/article">';
 //显示错误，复杂的是可能的，只在 disable js 的时候才 "统一显示"，否则应该使用 js 验证 + 递交
 //ErrorMessage::render();
 
-FormMaker::renderTextBox(array(
-    'id', 'name' => 'category', 'class' => 'doc', 'onclick="callback()"'
+//render item 必须有 name 或者 "id & name"
+$this->renderLabel('category', '分类');
+$this->renderTextBox(array(
+    'id & name' => 'category',
+    'class="doc" onclick="callback()"'
 ));
-FormMaker::renderTextArea(array('id', 'name' => 'description', 'class="bit"'));
+FormMaker::renderTextArea(array('name="description" class="bit"'));
 
 echo '</form>';
 ViewContext::pop();
