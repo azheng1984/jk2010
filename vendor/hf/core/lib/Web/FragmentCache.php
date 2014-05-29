@@ -13,7 +13,7 @@ class FragmentCache {
             'hyperframework.web.fragment_cache.source_file_base_path'
         );
         if ($result === null) {
-            $result = Hyperframework\APPLICATION_ROOT_PATH
+            $result = \Hyperframework\APPLICATION_ROOT_PATH
                 . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR
                 . 'fragment_cache' . DIRECTORY_SEPARATOR;
         }
@@ -25,7 +25,7 @@ class FragmentCache {
             'hyperframework.web.fragment_cache.cache_file_base_path'
         );
         if ($result === null) {
-            $result = Hyperframework\APPLICATION_ROOT_PATH
+            $result = \Hyperframework\APPLICATION_ROOT_PATH
                 . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . 'cache'
                 . DIRECTORY_SEPARATOR . 'fragment' . DIRECTORY_SEPARATOR;
         }
