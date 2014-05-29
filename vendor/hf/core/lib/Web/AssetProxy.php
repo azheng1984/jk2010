@@ -4,8 +4,8 @@ namespace Hyperframework\Web;
 class AssetProxy {
     public static function run($path) {
         if (Config::get('hyperframework.web.enable_asset_cache_versioning')
-            !== false)
-        {
+            !== false
+        ) {
             $segments = explode('.', $path);
             $amount = count($segments);
             if ($amount < 3) {

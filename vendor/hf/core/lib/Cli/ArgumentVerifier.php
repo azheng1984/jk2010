@@ -6,7 +6,8 @@ class ArgumentVerifier {
         $parameters = $this->getParameters($reflector);
         $minimum = $this->getMinimum($parameters);
         $maximum = count($parameters);
-        if ($length < $minimum || ($length > $maximum && $isInfinite === false)) {
+        if ($length < $minimum || ($length > $maximum && $isInfinite === false)
+        ) {
             $expectation = $this->getExpectation($minimum, $maximum, $isInfinite);
             throw new CliException(
                 "Argument length error(expected:$expectation actual:$length)"
