@@ -58,5 +58,6 @@ class AssetProxy {
         if ($paths === null) {
             return array();
         }
+        return $paths;
     }
 }
