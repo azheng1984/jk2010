@@ -65,8 +65,8 @@ class Application {
     protected static function rewriteRequestMethod() {
         if (self::$shouldRewriteRequestMethod
             && $_SERVER['REQUEST_METHOD'] === 'POST'
-            && isset($_POST['_method']))
-        {
+            && isset($_POST['_method'])
+        ) {
             $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
         }
     }

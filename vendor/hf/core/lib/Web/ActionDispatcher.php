@@ -16,14 +16,16 @@ class ActionDispatcher {
             return;
         }
         if (isset($info['methods']) === false
-            || in_array($method, $info['methods']) === false) {
+            || in_array($method, $info['methods']) === false
+        ) {
             self::checkImplicitMethod($method, $info);
         }
         $hasBeforeFilter = isset($info['before_filter']);
         $hasAfterFilter = isset($info['after_filter']);
         if ($hasMethod === false
             && $hasBeforeFilter === false
-            && $hasAfterFilter === false) {
+            && $hasAfterFilter === false
+        ) {
             return;
         }
         $result = null;
