@@ -6,7 +6,7 @@ class InputFilter {
     private static $configs = array();
 
     public static function getInstance($name) {
-        //load field & global config from config file using data loader
+        //load field & global config from config file using config file loader
     }
 
     public static function addConfig($fieldConfig, $globalConfig) {

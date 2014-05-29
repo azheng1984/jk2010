@@ -50,7 +50,7 @@ class AssetProxy {
     }
 
     private static function getIncludePaths() {
-        $paths =  \Hyperframework\PhpConfigDataLoader::load(
+        $paths =  \Hyperframework\ConfigFileLoader::loadPhp(
             'hyperframework.web.asset_cache.include_paths_config_path',
             'asset_cache' . DIRECTORY_SEPARATOR . 'include_paths.php',
             true
