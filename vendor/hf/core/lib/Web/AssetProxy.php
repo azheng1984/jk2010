@@ -3,24 +3,24 @@ namespace Hyperframework\Web;
 
 class AssetProxy {
     public static function run($path) {
-        if (Config::get('hyperframework.web.enable_asset_cache_version')
-            !== false
-        ) {
+        if (Config::get('hyperframework.web.enable_asset_cache_versioning')
+            !== false)
+        {
             $segments = explode('.', $path);
             $amount = count($segments);
             if ($amount < 3) {
-               throw new NotFoundException; 
+               throw new NotFoundException;
             }
             $version = $segments[$amount - 2];
             unset($segments[$amount - 2]);
             $path = implode('.', $segments);
             if (AssetCacheVersion::get($path) === $segments[$amount - 2]) {
-                throw new NotFoundException; 
+                throw new NotFoundException;
             }
         }
         $file = self::searchFile($path);
         if ($file === null) {
-            throw new NotFoundException; 
+            throw new NotFoundException;
         }
         $realPath = null;
         $result = AssetFilterChain::process($file, $realPath);

@@ -54,7 +54,8 @@ class Runner {
         }
         $extensionPosition = strrpos($urlPath, '.');
         if ($extensionPosition === false
-            || $extensionPosition < strrpos($urlPath, '/')) {
+            || $extensionPosition < strrpos($urlPath, '/'))
+        {
             return $urlPath;
         }
         $_SERVER['REQUEST_MEDIA_TYPE'] = substr(
