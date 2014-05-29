@@ -18,22 +18,6 @@ class FileLoader {
         );
     }
 
-    final private static function load(
-        $defaultPath, $pathConfigName, $shouldCheckFileExists, $isPhp
-    ) {
-        $path = self::getPath();
-        if ($path === null) {
-            return;
-        }
-        if ($shouldCheckFileExists && file_exists($path) === false) {
-            return;
-        }
-        if ($isPhp) {
-            return require $path;
-        }
-        return file_get_contents($path);
-    }
-
     final public static function getPath($defaultPath, $pathConfigName = null) {
         $path = null;
         if ($pathConfigName !== null) {
@@ -56,5 +40,21 @@ class FileLoader {
 
     protected static function getDefaultBasePath() {
         return APPLICATION_PATH;
+    }
+
+    final private static function load(
+        $defaultPath, $pathConfigName, $shouldCheckFileExists, $isPhp
+    ) {
+        $path = self::getPath();
+        if ($path === null) {
+            return;
+        }
+        if ($shouldCheckFileExists && file_exists($path) === false) {
+            return;
+        }
+        if ($isPhp) {
+            return require $path;
+        }
+        return file_get_contents($path);
     }
 }
