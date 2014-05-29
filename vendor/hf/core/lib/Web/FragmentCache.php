@@ -27,7 +27,7 @@ class FragmentCache {
         if ($result === null) {
             $result = \Hyperframework\APPLICATION_ROOT_PATH
                 . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . 'cache'
-                . DIRECTORY_SEPARATOR . 'fragment' . DIRECTORY_SEPARATOR;
+                . DIRECTORY_SEPARATOR . 'fragments' . DIRECTORY_SEPARATOR;
         }
         return $result;
     }
