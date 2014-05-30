@@ -30,8 +30,7 @@ array(
 
 FormBuilder::render(array(
     'data' => $_GET,
-    'attr' => 'method="GET" action="/product"',
-    'validation_config_name' => 'product',
+    'attr' => 'action="/product"',
     'fields' => array(
         'id' => array(
             'type' => 'Hidden',
@@ -42,14 +41,6 @@ FormBuilder::render(array(
         ),
         'category',
     ),
-    'extra_fields' => array(
-        'submit' => array(
-            'type' => 'Submit',
-            'attr' => 'class="main" value="提交"',
-        )
-    ),
-    'validation_field_patch' => array(
-    )
 ));
 
 $product = InputFilter::execute(array(
