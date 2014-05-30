@@ -10,12 +10,9 @@ class Form {
 
     public function renderTextBox($name) {
         echo '<input';
-        if (isset($attributes['id'])) {
-            if ($attributes['id'] === true) {
-                $attributes['id'] = $name;
-            }
-            echo ' id="', $attributes['id'], '"';
-            unset($attributes['id']);
+        if (isset($attributes['id & name'])) {
+            echo ' id="', $attributes['id & name'], '"';
+            $name = $attributes['id & name'];
         }
         echo ' name="', $name, '"';
         if ($attributes !== null) {
@@ -50,7 +47,7 @@ $form = new Form($product);
 $formMaker->begin('method="POST" action="/article"');
 //$formMaker->renderByConfigs($configs);
 echo '<label for="category">分类:</label>';
-$formMaker->renderInputBox();
+$formMaker->renderInputBox($input, $error);
 $formMaker->end();
 
 $product = null;
