@@ -43,6 +43,19 @@ class Form {
     }
 }
 
+FormBuilder::render($configs, $data);
+$product = InputBinder::bind($configs);
+
+$formFilter = new FormFilter('product');
+$formFilter->addValidation(new InputFilter('product'));
+$form = FormFilter::getAll('product', true);
+
+$filter = InputFilter('product', true);
+$filter->getText();
+$filter->getAll();
+
+$form = FormFilter::get('hi', 'list', 'main');
+
 $form = new Form($product);
 $formMaker->begin('method="POST" action="/article"');
 //$formMaker->renderByConfigs($configs);

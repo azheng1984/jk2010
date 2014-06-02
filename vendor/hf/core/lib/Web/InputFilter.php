@@ -5,6 +5,9 @@ class InputFilter {
     private static $instances = array();
     private static $configs = array();
 
+    public static function createByFormFieldConfig() {
+    }
+
     public static function getInstance($name) {
         //load field & global config from config file using config file loader
     }

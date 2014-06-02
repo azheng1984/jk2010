@@ -30,24 +30,73 @@ array(
 
 FormBuilder::render(array(
     'data' => $_GET,
-    'attr' => 'action="/product"',
+    'method' => 'GET',
+    'attr' => 'method="POST" action="/product"',
     'fields' => array(
         'id' => array(
             'type' => 'Hidden',
         ),
+        'amount' => array(
+            'type' => 'number',
+            'laber' => '总数',
+            'attr' => 'min="1" max="100" required',
+        )
         'content' => array(
+            'attr' => 'max="' . Product::MAX_AGE
+                . '" min="' . Product::MIN_AGE . '" required'
             'label' => '内容',
             'type' => 'TextArea',
         ),
         'category',
-    ),
+        array(
+            'type' => 'Submit',
+            'value' => '提交'
+        ),
+    )
 ));
 
+try {
+    FormFilter::execute('product', array(
+    ));
+    $product = InputFilter::execute(array(
+    ), array(
+        'validation' => '',
+        'form' => 'product'
+    ));
+} catch (ValidationFailException $ex) {
+}
+
+
+InputFilterCollection::execute(
+    new FormFilter('product'),
+    new InputFilter(array(
+        '' => '',
+        '' => ''
+    ))
+);
+
+class ProductFormBuilder {
+    public function getRenderingConfig() {
+    }
+
+    public function getValidationConfig() {
+    }
+}
+
+$product = InputFilter::execute(
+    $config, ProductForm::getValidationConfig()
+);
+
+InputFilter::execute($config);
+
+//type="email"
 $product = InputFilter::execute(array(
     'data' => $_GET,
     'validation_config_name' => 'product',
     'extra_fields' => array()
 ));
+
+//min max require
 
 try {
     $product = $filter->get('title', 'category');
