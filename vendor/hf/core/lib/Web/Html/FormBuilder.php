@@ -1,11 +1,18 @@
 <?php
 namespace Hyperframework\Web\Html;
 
+class FormBuilder {
+    public static function render(
+        $renderingConfigs, $data, $method = null, $validationConfigs = null
+    ) {
+    }
+}
+FormFilter::render('product');
 //form rendering definition
 array(
     'category' => array(
+        'id',
         //rendering
-        'has_id' => true,
 //        'type' => 'email',
         'label' => '分类',
         //validation
@@ -127,3 +134,8 @@ class FormBuilder {
         }
     }
 }
+
+FormBuilder::render('rendering_configs', 'validation_configs', $data);
+FormFilter::execute('validation_configs', 'inclusion_fields or rendering_configs', 'request_method');
+// rendering_configs validation_configs request_method => form builder configs
+// 1. 是否需要使用 inclusion fields
