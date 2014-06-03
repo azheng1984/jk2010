@@ -31,20 +31,21 @@ array(
 FormBuilder::render(array(
     'data' => $_GET,
     'method' => 'GET',
-    'attr' => 'method="POST" action="/product"',
+    'action="/product"',
     'fields' => array(
         'id' => array(
             'type' => 'Hidden',
         ),
         'amount' => array(
             'type' => 'number',
-            'laber' => '总数',
-            'attr' => 'min="1" max="100" required',
+            'label' => '总数',
+            'min="1" max="100" required',
         )
         'content' => array(
-            'attr' => 'max="' . Product::MAX_AGE
+            'max="' . Product::MAX_AGE
                 . '" min="' . Product::MIN_AGE . '" required'
             'label' => '内容',
+            'pattern' => '',
             'type' => 'TextArea',
         ),
         'category',
@@ -55,17 +56,24 @@ FormBuilder::render(array(
     )
 ));
 
+$form = new Form($data, 'product');
+$form = new FormBuilder(array(
+    'data' => $data,
+    'method' => 'GET',
+    'input_filter_configs' => 'product',
+));
+
 try {
     FormFilter::execute('product', array(
+        'check_patterns' => true,
+        'ignored_patterns' => 'category',
+        'inclusions' => array('category', 'content'),
     ));
-    $product = InputFilter::execute(array(
-    ), array(
-        'validation' => '',
-        'form' => 'product'
-    ));
-} catch (ValidationFailException $ex) {
+    Validator::execute('', $data);
+    $product = InputFilter::execute(
+    );
+} catch (ValidationException $ex) {
 }
-
 
 InputFilterCollection::execute(
     new FormFilter('product'),
@@ -103,9 +111,11 @@ try {
 }
 
 $form = new Form(array(
-    'validation_config_name' => 'product'
+    'validation_configs' => 'product'
     'data' => $data
 ));
+
+new Form($data);
 
 //hyperframework.web.html.form.html5 = true
 //hyperframework.web.html.form.has_id = true
