@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web\Html;
 
-class Form {
+class FormHelper {
     private $data;
 
     public function __construct($data = null) {
@@ -42,6 +42,8 @@ class Form {
         }
     }
 }
+
+FormBuilder::render('product', array('data' => $data));
 
 FormBuilder::render($configs, $data);
 $product = InputBinder::bind($configs);

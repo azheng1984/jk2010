@@ -63,7 +63,7 @@ FormBuilder::render(array(
     )
 ));
 
-$form = new Form($data, 'product');
+$form = new FormHelper($data);
 $form = new FormBuilder(array(
     'data' => $data,
     'method' => 'GET',
