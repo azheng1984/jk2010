@@ -5,7 +5,7 @@ class FormFilter {
 }
 try {
     $data = FormFilter::execute('product', array(
-        'fields' => array('category', 'content'),
+        'permitted_fields' => array('category', 'content'),
         'use_patterns' => true,
         'patterns' => 'category',
     ));
