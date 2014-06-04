@@ -74,7 +74,7 @@ try {
     FormFilter::execute('product', array(
         'check_patterns' => true,
         'ignored_patterns' => 'category',
-        'inclusions' => array('category', 'content'),
+        'permitted_fields' => array('category', 'content'),
     ));
     Validator::execute('', $data);
     $product = InputFilter::execute(

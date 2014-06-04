@@ -8,7 +8,7 @@ try {
         'permitted_fields' => array(
             'category' => array('pattern' => ''), 'content'
         ),
-        'use_patterns' => true,
+        'validate_patterns' => true,
 //        'patterns' => 'category',
     ));
     Validator::execute($rules, $data);
