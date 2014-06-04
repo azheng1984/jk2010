@@ -5,11 +5,13 @@ class FormFilter {
 }
 try {
     $data = FormFilter::execute('product', array(
-        'permitted_fields' => array('category', 'content'),
+        'permitted_fields' => array(
+            'category' => array('pattern' => ''), 'content'
+        ),
         'use_patterns' => true,
-        'patterns' => 'category',
+//        'patterns' => 'category',
     ));
     Validator::execute($rules, $data);
-    //equals to InputFilter::execute($configs, $method = null);
+    //equals to InputFilter::execute($configs);
 } catch (ValidationException) {
 }
