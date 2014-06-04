@@ -1,6 +1,6 @@
 <?php
 class FormFilter {
-    public static function execute($mixed/*, ...*/) {
+    public static function execute($configs/*, ...*/) {
     }
 }
 try {
@@ -11,7 +11,6 @@ try {
         'validate_patterns' => true,
 //        'patterns' => 'category',
     ));
-    Validator::execute($rules, $data);
     //equals to InputFilter::execute($configs);
 } catch (ValidationException) {
 }

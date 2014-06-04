@@ -1,11 +1,17 @@
 <?php
 namespace Hyperframework\Web\Html;
 
+$f = new FormHelper($data);
+$f = FormHelper::create($configs);
+
 class FormHelper {
     private $data;
 
     public function __construct($data = null) {
         $this->data = $data;
+    }
+
+    public function static create($configs) {
     }
 
     public function renderTextBox($name) {

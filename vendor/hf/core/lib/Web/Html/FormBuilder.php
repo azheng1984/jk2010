@@ -2,11 +2,10 @@
 namespace Hyperframework\Web\Html;
 
 class FormBuilder {
-    public static function render(
-        $renderingConfigs, $data, $method = null, $validationConfigs = null
-    ) {
+    public static function render($configs/*, ...*/) {
     }
 }
+
 FormFilter::render('product');
 //form rendering definition
 array(
