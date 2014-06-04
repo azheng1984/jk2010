@@ -36,14 +36,14 @@ array(
 
 FormBuilder::render(array(
     'data' => $_GET,
+    'name="" action="/product"',
     'method' => 'GET',
-    'action="/product"',
     'fields' => array(
         'id' => array(
             'type' => 'Hidden',
         ),
         'amount' => array(
-            'type' => 'number',
+            'type' => 'Number',
             'label' => '总数',
             'min="1" max="100" required',
         )
@@ -59,8 +59,12 @@ FormBuilder::render(array(
             'type' => 'Submit',
             'value' => '提交'
         ),
-    )
+    ),
 ));
+
+array('id & name' => 'category', 'class="main"');
+
+//$f->render('category');
 
 $form = new FormHelper($data);
 $form = new FormBuilder(array(

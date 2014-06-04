@@ -1,17 +1,23 @@
 <?php
 namespace Hyperframework\Web\Html;
 
-$f = new FormHelper($data);
-$f = FormHelper::create($configs);
-
 class FormHelper {
-    private $data;
+    private $configsList;
 
     public function __construct($data = null) {
-        $this->data = $data;
+        $this->configsList = array();
+        $this->configsList[] = array('data' => $data);
     }
 
-    public function static create($configs) {
+    public function addConfigs($configs) {
+    }
+
+    public function static create($configs/*, ...*/) {
+        $instance = new FormHelper;
+        foreach (func_get_args() as $configs) {
+            $instance->addConfigs($configs);
+        }
+        return $instance;
     }
 
     public function renderTextBox($name) {
