@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web\Html;
 /*
- *array(
+array(
     'data' => $_GET,
     'name="" action="/product"',
     'method' => 'GET',
@@ -28,7 +28,8 @@ namespace Hyperframework\Web\Html;
         ),
     ),
 );
- */
+//key 对应拦截增强指令，如果没有，则直接通过属性输出,类似 min max 和 required
+*/
 class FormBuilder {
     public static function render($configs/*, ...*/) {
     }
