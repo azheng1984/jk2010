@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework;
 
-abstract class AbstractEnvInitializer {
+abstract class AbstractEnvironmentBuilder {
     public static function run($rootNamespace, $rootPath) {
         define('Hyperframework\APPLICATION_ROOT_NAMESPACE', $rootNamespace);
         define('Hyperframework\APPLICATION_ROOT_PATH', $rootPath);
