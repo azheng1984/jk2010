@@ -2,7 +2,7 @@
 use Hyperframework\Config;
 
 class Router {
-    public function __construct() {
+    public function execute() {
         if (Config::get('hyperframework.web.enable_asset_proxy') === true) {
             $assetPath = $this->getAssetPath($urlPath);
             if ($assetPath !== false) {
@@ -15,7 +15,10 @@ class Router {
         );
     }
 
-    protected static function getUrlPath() {
+    public function getId(0) {
+    }
+
+    protected function getUrlPath() {
         $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
         $result = $segments[0];
         if ($result === '') {
@@ -27,7 +30,7 @@ class Router {
         return $result;
     }
 
-    protected static function getAssetPath($urlPath) {
+    protected function getAssetPath($urlPath) {
         $prefix = AssetCachePathPrefix::get();
         $prefixLength = strlen($prefix);
         if ($prefix === '/' || $prefixLength === 0) {
@@ -43,7 +46,7 @@ class Router {
         return substr($urlPath, $prefixLength - 1);
     }
 
-    protected static function getApplicationPath($urlPath) {
+    protected function getApplicationPath($urlPath) {
         if ($urlPath === '/') {
             return $urlPath;
         }

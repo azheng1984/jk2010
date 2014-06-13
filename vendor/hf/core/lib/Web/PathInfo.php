@@ -18,6 +18,8 @@ final class PathInfo {
 
     public static function reset() {
         self::$cache = null;
+        $article_id = $_GET[0];
+        $article_id = $_GET[1];
     }
 
     private static function build($path) {

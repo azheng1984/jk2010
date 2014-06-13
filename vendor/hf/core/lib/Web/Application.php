@@ -7,7 +7,8 @@ class Application {
     private static $isViewEnabled = true;
     private static $shouldRewriteRequestMethod = true;
 
-    public static function run($path) {
+    public static function run($path, $params = null) {
+        $articleId = $_GET['#0'];
         static::initializePathInfo($path);
         static::executeAction();
         static::renderView();
@@ -54,7 +55,7 @@ class Application {
 
     protected static function renderView() {
         if (self::$isViewEnabled) {
-            ViewDispatcher::run(self::$mediaType, self::$pathInfo);
+            ViewDispatcher::run(self::$mediaType, self::$pathInfo, self::$actionResult);
         }
     }
 
