@@ -1,9 +1,9 @@
 <?php
 namespace Hyperframework\Cli;
 
-require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'AbstractInitializer.php';
+require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'AbstractEnviromentBuilder.php';
 
-class Initializer {
+class EnviromentBuilder {
     protected static function initializeExceptionHandler() {
         ExcpetionHandler::run();
     }
