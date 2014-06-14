@@ -13,8 +13,8 @@ class Application {
     }
 
     public static function redirect($url, $statusCode = 301) {
-        self::$isViewEnabled = false;
         header('Location: ' . $url, true, $statusCode);
+        self::$isViewEnabled = false;
     }
 
     final public static function disableView() {

@@ -1,10 +1,16 @@
 <?php
 class ActionResult {
-    final public static function getActionResult($key = null/*, ...*/) {
+    private static $data;
+
+    public static function initialize($data) {
+        self::$data = $data;
+    }
+
+    public static function get($key = null/*, ...*/) {
         if ($key === null) {
-            return self::$actionResult;
+            return self::$data;
         }
-        $result = self::$actionResult;
+        $result = self::$data;
         foreach (func_get_args() as $key) {
             if (isset($result[$key]) === false) {
                 return;
@@ -14,16 +20,7 @@ class ActionResult {
         return $result;
     }
 
-    final protected static function setActionResult($value) {
-        self::$actionResult = $value;
-    }
-
     public static function reset() {
-        self::$actionResult = null;
-        self::$pathInfo = null;
-        self::$isViewEnabled = true;
-        self::$shouldRewriteRequestMethod = true;
+        self::$data = null;
     }
-
-
 }
