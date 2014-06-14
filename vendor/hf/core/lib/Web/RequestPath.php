@@ -1,31 +1,8 @@
 <?php
 class RequestPath {
     private static $segments;
-    private static $params;
 
-    public static function initialize($segments, $params = array()) {
-    }
-
-    public static function getParam($name) {
-        if (isset(self::$params[$name])) {
-            return self::$params[$name];
-        }
-    }
-
-    public static function setParam($name, $value) {
-        return self::$params[$name] = $value;
-    }
-
-    public static function getParams() {
-        return self::$params;
-    }
-
-    public static function hasParam($name) {
-        return isset(self::$params[$name]);
-    }
-
-    public static function removeParam($name) {
-        unset(self::$params[$name]);
+    public static function initialize($path = null) {
     }
 
     public static function getSegment($index) {

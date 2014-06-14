@@ -6,7 +6,7 @@ use Hyperframework\Web\RequestPath;
 class Action extends \Yxj\Actions\ArticleAction {
     public function before() {
         $articleId = RequestPath::getId();
-        RequestPath::get(0);
+        PathContext::get('id');
         $this->params['id'];
         get('#article_id');
         ActionResult::get('article_id');
