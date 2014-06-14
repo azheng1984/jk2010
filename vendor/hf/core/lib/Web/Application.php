@@ -2,30 +2,14 @@
 namespace Hyperframework\Web;
 
 class Application {
-    private static $actionResult;
     private static $pathInfo;
     private static $isViewEnabled = true;
     private static $shouldRewriteRequestMethod = true;
 
-    public static function run($path, $params = null) {
-        $articleId = $_GET['#0'];
+    public static function run($path) {
         static::initializePathInfo($path);
         static::executeAction();
         static::renderView();
-    }
-
-    final public static function getActionResult($key = null/*, ...*/) {
-        if ($key === null) {
-            return self::$actionResult;
-        }
-        $result = self::$actionResult;
-        foreach (func_get_args() as $key) {
-            if (isset($result[$key]) === false) {
-                return;
-            }
-            $result = $result[$key];
-        }
-        return $result;
     }
 
     public static function redirect($url, $statusCode = 301) {
@@ -42,7 +26,6 @@ class Application {
     }
 
     public static function reset() {
-        self::$actionResult = null;
         self::$pathInfo = null;
         self::$isViewEnabled = true;
         self::$shouldRewriteRequestMethod = true;
@@ -50,12 +33,14 @@ class Application {
 
     protected static function executeAction() {
         self::rewriteRequestMethod();
-        self::$actionResult = ActionDispatcher::run(self::$pathInfo);
+        ActionResult::initialize(
+            ActionDispatcher::run(self::$pathInfo)
+        );
     }
 
     protected static function renderView() {
         if (self::$isViewEnabled) {
-            ViewDispatcher::run(self::$mediaType, self::$pathInfo, self::$actionResult);
+            ViewDispatcher::run(self::$pathInfo);
         }
     }
 
@@ -78,10 +63,6 @@ class Application {
 
     final protected static function setPathInfo($value) {
         self:$pathInfo = $value;
-    }
-
-    final protected static function setActionResult($value) {
-        self::$actionResult = $value;
     }
 
     final protected static function isViewEnabled() {
