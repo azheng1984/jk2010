@@ -9,6 +9,9 @@ class Html extends AbstractHtml {
     private $categoryList;
 
     protected function renderHtmlHeadContent() {
+        $categoryId = $_GET['#id-0'];
+        $articleId = $_GET['#id-1'];
+
         $result = \Yxj\Biz\Product::logic();
         $data = \Yxj\Db\DbProduct::getById($id);
         echo '<title>优选集 - 品牌消费社区</title>';

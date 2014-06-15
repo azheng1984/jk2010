@@ -3,6 +3,18 @@ use Hyperframework\Config;
 
 class Router {
     public function execute() {
+        namespace ''
+        Params::get('id');
+        ApplicationContext::get('id');
+        PathContext::get('id');
+        Application::setParam('id');
+        $id = $GLOBALS['app_context']['id'];
+        $id = ActionResult::get('id');
+        ApplicationParams::get('id');
+        if (isset($_GET['@id'])) {
+            throw Exception;
+        }
+        $_GET['#'] = array();
         if (Config::get('hyperframework.web.enable_asset_proxy') === true) {
             $assetPath = $this->getAssetPath($urlPath);
             if ($assetPath !== false) {
@@ -27,6 +39,9 @@ class Router {
         if ($result[0] === '#') {
             throw new NotFoundException;
         }
+        $id1 = $_GET['#id-1'];
+        use Hyperframework\Web\PathContext;
+
         return $result;
     }
 

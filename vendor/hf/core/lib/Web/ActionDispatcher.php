@@ -28,17 +28,18 @@ class ActionDispatcher {
         ) {
             return;
         }
+        $applicationContext = new ApplicationContext;
         $result = null;
         $class = $pathInfo['namespace'] . '\Action';
-        $action = new $class;
+        $action = new $class($applicationContext);
         if ($hasBeforeFilter) {
-            $action->before();
+            $action->before($applicationContext);
         }
         if ($hasMethod) {
-            $result = $action->$method();
+            $result = $action->$method($applicationContext);
         }
         if ($hasAfterFilter) {
-            $action->after();
+            $action->after($applicationContext);
         }
         return $result;
     }

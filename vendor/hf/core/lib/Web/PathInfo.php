@@ -8,8 +8,8 @@ use Hyperframework\PhpConfigFileLoader;
 final class PathInfo {
     private static $cache;
 
-    public static function get($path) {
-        $result = self::build($path);
+    public static function get($path, $applicationNamespace = 'App') {
+        $result = self::build($path, $applicationNamespace);
         if ($result === null) {
             throw new NotFoundException;
         }
@@ -22,7 +22,7 @@ final class PathInfo {
         $article_id = $_GET[1];
     }
 
-    private static function build($path) {
+    private static function build($path, $isInternal) {
         $isCacheEnabled = Config::get(
             'hyperframework.web.path_info.enable_cache'
         );

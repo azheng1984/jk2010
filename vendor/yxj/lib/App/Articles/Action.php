@@ -4,11 +4,11 @@ namespace Yxj\App\Articles;
 use Hyperframework\Web\RequestPath;
 
 class Action extends \Yxj\Actions\ArticleAction {
-    public function before() {
-        $articleId = RequestPath::getId();
+    public function before($ctx) {
+        $articleId = $ctx->get('id');
         PathContext::get('id');
         $this->params['id'];
-        get('#article_id');
+        $articleId = $_GET('#id');
         ActionResult::get('article_id');
     }
 

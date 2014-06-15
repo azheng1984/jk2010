@@ -8,8 +8,9 @@ class ViewDispatcher {
         }
         $class = $pathInfo['namespace'] . '\\'
             . static::getClass($pathInfo['views']);
-        $view = new $class;
-        $view->render();
+        $applicationContext = new ApplicationContext;
+        $view = new $class($applicationContext);
+        $view->render($applicationContext);
     }
 
     protected static function initialize($views) {
