@@ -17,10 +17,6 @@ class Application {
         self::$isViewEnabled = false;
     }
 
-    final public static function disableView() {
-        self::$isViewEnabled = false;
-    }
-
     final public static function disableRequestMethodRewriting() {
         self::$shouldRewriteRequestMethod = false;
     }
@@ -33,8 +29,8 @@ class Application {
 
     protected static function executeAction() {
         self::rewriteRequestMethod();
-        ActionResult::initialize(
-            ActionDispatcher::run(self::$pathInfo)
+        ApplicationContext::set(
+            'action_result', ActionDispatcher::run(self::$pathInfo)
         );
     }
 
@@ -63,6 +59,10 @@ class Application {
 
     final protected static function setPathInfo($value) {
         self:$pathInfo = $value;
+    }
+
+    final protected static function disableView() {
+        self::$isViewEnabled = false;
     }
 
     final protected static function isViewEnabled() {

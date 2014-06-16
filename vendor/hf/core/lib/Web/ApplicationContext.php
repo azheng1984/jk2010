@@ -10,7 +10,19 @@ class ApplicationContext {
         }
     }
 
-    public static function getAll() {
+    public function __set($name) {
+        if (unset($ctx->id)) {
+        }
+        if (isset($ctx->id['id'])) {
+        }
+        $ctx->id = 23;
+        $ctx->get('id');
+        $ctx->has('id');
+    }
+
+    public static function 
+
+    public static function export() {
         return self::$params;
     }
 
