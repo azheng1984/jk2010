@@ -6,7 +6,7 @@ class Application {
     private static $isViewEnabled = true;
     private static $shouldRewriteRequestMethod = true;
 
-    public static function run($path) {
+    public static function run() {
         static::initializePathInfo($path);
         static::executeAction();
         static::renderView();
