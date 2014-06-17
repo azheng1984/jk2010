@@ -1,7 +1,7 @@
 <?php
-namespace Hyperframework\Web\Exceptions;
+namespace Hyperframework\Web;
 
-class ExpectationFailedException extends ApplicationException {
+class ExpectationFailedException extends AppException {
     public function __construct($message = null, $previous = null) {
         parent::__construct($message, '417 Expectation Failed', $previous);
     }

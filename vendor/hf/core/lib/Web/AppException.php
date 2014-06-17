@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-abstract class ApplicationException extends \Exception {
+abstract class AppException extends \Exception {
     public function __construct($message, $statusCode, $previous) {
         parent::__construct($message, null, $previous);
         $this->code = $statusCode;

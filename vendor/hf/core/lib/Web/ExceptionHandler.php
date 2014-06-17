@@ -15,7 +15,7 @@ class ExceptionHandler {
             return;
         }
         self::$exception = $exception;
-        if ($exception instanceof ApplicationException === false) {
+        if ($exception instanceof AppException === false) {
             $exception = new InternalServerErrorException;
         }
         self::$statusCode = $exception->getCode();
@@ -70,7 +70,7 @@ class ExceptionHandler {
     protected static function displayError() {
         $pathInfo = PathInfo::get('/', 'ErrorApp');
         try {
-            ViewDispatcher::run($pathInfo);
+            ViewDispatcher::run($pathInfo, null);
         } catch (NotAcceptableException $ignoredException) {}
     }
 }

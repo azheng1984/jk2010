@@ -1,73 +1,39 @@
 <?php
 namespace Hyperframework\Web;
 
-use Hyperframework\Config;
-
 class Router {
-    public function execute() {
-        if (Config::get('hyperframework.web.enable_asset_proxy') === true) {
-            $assetPath = $this->getAssetPath($urlPath);
-            if ($assetPath !== false) {
-                return array('is_asset' => true, 'path' => $assetPath);
+    public function execute($app) {
+        $segments = RequestPath::getSegments();
+        $ids = array();
+        $path = '';
+        foreach ($segments as $segment) {
+            if (ctype_digit($segment)) {
+                $path .= 'item';
+                $ids[] = $segment;
+            } elseif ($segment === 'item') {
+                throw new NotFoundException;
+            }
+            $path .= '/' . $segment;
+        }
+        $idCount = count($ids);
+        if ($idCount !== 0) {
+            if ($idCount === 1) {
+                $app->setParam('id', $ids[0]);
+            } else {
+                $index = 0;
+                foreach ($ids as $id) {
+                    $app->setParam('id_' . $index, $id);
+                    ++$index;
+                }
             }
         }
-        return array(
-            'is_asset' => false,
-            'path' => $this->getApplicationPath($urlPath)
-        );
-    }
-
-    public function getId(0) {
-    }
-
-    protected function getUrlPath() {
-        $segments = explode('?', $_SERVER['REQUEST_URI'], 2);
-        $result = $segments[0];
-        if ($result === '') {
-            return '/';
+        if (strrpos(end($segments), '.') === false) {
+            return $path;
         }
-        if ($result[0] === '#') {
-            throw new NotFoundException;
-        }
-        $id1 = $_GET['#id-1'];
-        use Hyperframework\Web\PathContext;
-
-        return $result;
-    }
-
-    protected function getAssetPath($urlPath) {
-        $prefix = AssetCachePathPrefix::get();
-        $prefixLength = strlen($prefix);
-        if ($prefix === '/' || $prefixLength === 0) {
-            return $urlPath;
-        }
-        if ($prefix[$perfixLength - 1] !== '/') {
-            $prefix .= '/';
-            $prefixLength += 1;
-        }
-        if (strncmp($urlPath, $prefix, $prefixLength) !== 0) {
-            return false;
-        }
-        return substr($urlPath, $prefixLength - 1);
-    }
-
-    protected function getApplicationPath($urlPath) {
-        if ($urlPath === '/') {
-            return $urlPath;
-        }
-        $urlPath = preg_replace('#/{2,}#', '/', rtrim($urlPath, '/'));
-        if ($urlPath === '') {
-            return '/';
-        }
-        $extensionPosition = strrpos($urlPath, '.');
-        if ($extensionPosition === false
-            || $extensionPosition < strrpos($urlPath, '/'))
-        {
-            return $urlPath;
-        }
+        $extensionPosition = strrpos($path, '.');
         $_SERVER['REQUEST_MEDIA_TYPE'] = substr(
-            $urlPath, $extensionPosition + 1
+            $path, $extensionPosition + 1
         );
-        return substr($urlPath, 0, $extensionPosition);
+        return substr($path, 0, $extensionPosition);
     }
 }

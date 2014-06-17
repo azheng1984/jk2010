@@ -3,23 +3,29 @@ namespace Hyperframework\Web;
 
 class Runner {
     public static function run() {
-        $router = static::getRouter();
-        $target = $router->execute();
-        if ($target['is_asset']) {
-            static::runAssetProxy($target['path']);
+        if (static::isAsset()) {
+            static::runAssetProxy();
         }
-        static::runApplication($target['path']);
+        static::runApp();
     }
 
-    protected static function getRouter() {
-        return new Router;
+    protected function isAsset($urlPath) {
+        if (Config::get('hyperframework.web.enable_asset_proxy') !== true) {
+            return false;
+        }
+        $prefix = AssetCachePathPrefix::get();
+        if (strncmp($_SERVER['REQUEST_URI'], $prefix, strlen($prefix)) === 0) {
+            return true;
+        }
+        return false;
     }
 
-    protected static function runAssetProxy($path) {
-        AssetProxy::run($path);
+    protected static function runAssetProxy() {
+        AssetProxy::run();
     }
 
-    protected static function runApplication($path) {
-        Application::run($path);
+    protected static function runApp() {
+        $app = new App;
+        $app->run();
     }
 }
