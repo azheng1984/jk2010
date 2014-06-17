@@ -15,18 +15,25 @@ class App {
     }
 
     public function getParam($name) {
+        if (isset($this->params[$name])) {
+            return $this->params[$name];
+        }
     }
 
     public function setParam($name, $value) {
+        $this->params[$name] = $value;
     }
 
     public function hasParam($name) {
+        return isset($this->params[$name]);
     }
 
     public function removeParam($name) {
+        return unset($this->params[$name]);
     }
 
     public function getParams() {
+        return $this->params;
     }
 
     public function getActionResult() {

@@ -3,7 +3,10 @@ namespace YouXuanJi\App\SignIn;
 //use hyperframework\db;
 
 class SignInAction {
-  public function get() {}
+    public function get($app) {
+        if ($app->getParam('path')) {
+        }
+    }
 
   public function post() {
     \DbConnection::connect('youxuanji');
