@@ -17,13 +17,13 @@ class App {
     public function getParam($name) {
     }
 
-    public function setParam() {
+    public function setParam($name, $value) {
     }
 
-    public function hasParam() {
+    public function hasParam($name) {
     }
 
-    public function removeParam() {
+    public function removeParam($name) {
     }
 
     public function getParams() {
@@ -47,13 +47,13 @@ class App {
         $this->actionResult = ActionDispatcher::run($this->pathInfo, $this);
     }
 
-    protected static function renderView() {
+    protected function renderView() {
         if ($this->isViewEnabled) {
             ViewDispatcher::run($this->pathInfo, $this);
         }
     }
 
-    protected static function initailizePathInfo() {
+    protected function initailizePathInfo() {
         $this->pathInfo = PathInfo::get($this->getPath());
     }
 
@@ -61,7 +61,7 @@ class App {
         return Router::execute($this);
     }
 
-    protected static function rewriteRequestMethod() {
+    protected function rewriteRequestMethod() {
         if ($this->shouldRewriteRequestMethod
             && $_SERVER['REQUEST_METHOD'] === 'POST'
             && isset($_POST['_method'])

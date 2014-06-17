@@ -2,7 +2,10 @@
 namespace Yxj\App\Article;
 
 class Html {
-    public function render() {
+    public function render($app) {
+        $app->getParam('id');
+        //Application::getActionResult();
+        //Application::getParam('id');
         $form = HtmlForm($input);
         echo '<form method="GET">';
         echo '<label for="name"></label>'
