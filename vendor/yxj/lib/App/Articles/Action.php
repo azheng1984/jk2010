@@ -11,6 +11,7 @@ class Action extends \Yxj\Actions\ArticleAction {
         Application::set();
         $this->params['id'];
         $app->getParams('id');
+        $ctx->getParams('id');
         $articleId = $_GET('#id');
         $actionResult = $app->getActionResult();
     }
