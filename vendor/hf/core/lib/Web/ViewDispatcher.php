@@ -2,17 +2,17 @@
 namespace Hyperframework\Web;
 
 class ViewDispatcher {
-    public static function run($pathInfo, $app) {
+    public static function run($pathInfo, $ctx) {
         $class = static::getViewClass($pathInfo);
         if ($class === null) {
             throw new NotAcceptableException;
         }
-        static::dispatch($class, $app);
+        static::dispatch($class, $ctx);
     }
 
-    protected static function dispatch($class, $app) {
-        $view = new $class($app);
-        $view->render($app);
+    protected static function dispatch($class, $ctx) {
+        $view = new $class($ctx);
+        $view->render($ctx);
     }
 
     protected static function getViewClass($pathInfo) {

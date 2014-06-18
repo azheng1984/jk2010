@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 class ActionDispatcher {
-    public static function run($pathInfo, $app) {
+    public static function run($pathInfo, $ctx) {
         $method = $_SERVER['REQUEST_METHOD'];
         if ($method === 'HEAD') {
             $method = 'GET';
@@ -30,15 +30,15 @@ class ActionDispatcher {
         }
         $result = null;
         $class = $pathInfo['namespace'] . '\Action';
-        $action = new $class($app);
+        $action = new $class($ctx);
         if ($hasBeforeFilter) {
-            $action->before($app);
+            $action->before($ctx);
         }
         if ($hasMethod) {
-            $result = $action->$method($app);
+            $result = $action->$method($ctx);
         }
         if ($hasAfterFilter) {
-            $action->after($app);
+            $action->after($ctx);
         }
         return $result;
     }
