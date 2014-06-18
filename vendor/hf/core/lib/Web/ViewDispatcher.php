@@ -1,30 +1,46 @@
 <?php
 namespace Hyperframework\Web;
 
-class ViewDispatcher {
+final class ViewDispatcher {
+    private $defaultViewClasses;
+
     public static function run($pathInfo, $ctx) {
-        $class = static::getViewClass($pathInfo);
+        $class = self::getViewClass($pathInfo);
         if ($class === null) {
             throw new NotAcceptableException;
         }
-        static::dispatch($class, $ctx);
+        self::dispatch($class, $ctx);
     }
 
-    protected static function dispatch($class, $ctx) {
-        $view = new $class($ctx);
-        $view->render($ctx);
+    public static function setDefaultViewClasses($classes) {
+        self::$defaultViewClasses = $classes;
     }
 
-    protected static function getViewClass($pathInfo) {
-        if (isset($pathInfo['views']) === false) {
-            return;
+    private static function getViewClass($pathInfo) {
+        if (isset($pathInfo['views']) === false || ) {
+            return self::getDefaultViewClass();
         }
         $class = null;
-        if ($_SERVER['REQUEST_MEDIA_TYPE'] === null) {
-            $class = reset($views[0]);
+        if (empty($_SERVER['REQUEST_MEDIA_TYPE'])) {
+            $class = reset($views);
         } elseif (isset($views[$_SERVER['REQUEST_MEDIA_TYPE']]) {
             $class = $views[$_SERVER['REQUEST_MEDIA_TYPE']];
+        } else {
+            return self::getDefaultViewClass();
         }
-        return $pathInfo['namespace'] . '\\' . $class;
+        $class = $pathInfo['namespace'] . '\\' . $class;
+    }
+
+    private static function getDefaultViewClass() {
+        if (isset($_SERVER['REQUEST_MEDIA_TYPE'])
+            && isset(self::$defaultViewClasses[$_SERVER['REQUEST_MEDIA_TYPE']])
+        ) {
+            return self::$defaultViewClasses[$_SERVER['REQUEST_MEDIA_TYPE']];
+        }
+    }
+
+    private static function dispatch($class, $ctx) {
+        $view = new $class;
+        $view->render($ctx);
     }
 }

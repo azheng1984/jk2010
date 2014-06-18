@@ -45,6 +45,10 @@ class App {
         $this->isViewEnabled = false;
     }
 
+    public function disableView() {
+        $this->isViewEnabled = false;
+    }
+
     final public function disableRequestMethodRewriting() {
         $this->shouldRewriteRequestMethod = false;
     }
