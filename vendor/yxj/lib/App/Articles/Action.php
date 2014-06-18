@@ -10,6 +10,7 @@ class Action extends \Yxj\Actions\ArticleAction {
         PathContext::get('id');
         Application::set();
         $this->params['id'];
+        $app->getParams('id');
         $articleId = $_GET('#id');
         $actionResult = $app->getActionResult();
     }
