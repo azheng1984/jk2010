@@ -72,6 +72,9 @@ class App {
         return Router::execute($this);
     }
 
+    protected function parseRequestBody() {
+    }
+
     protected function rewriteRequestMethod() {
         if ($this->shouldRewriteRequestMethod
             && $_SERVER['REQUEST_METHOD'] === 'POST'
