@@ -8,7 +8,7 @@ class JsonRequestBodyParser {
         }
         $GLOBALS['HTTP_RAW_POST_DATA'] = file_get_contents('php://input');
         $maxLength = self:::getMaxLength();
-        if ($maxLength != 0
+        if ($maxLength !== 0
             && strlen($GLOBALS['HTTP_RAW_POST_DATA']) > $maxLength) {
             throw new RequestEntityTooLargeException;
         }
