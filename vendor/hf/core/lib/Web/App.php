@@ -7,11 +7,18 @@ class App {
     private $params = array();
     private $isViewEnabled = true;
     private $shouldRewriteRequestMethod = true;
+    private $shouldParseJsonRequestBody = true;
 
     public function run() {
-        $this->initializePathInfo();
+        $this->initialize();
         $this->executeAction();
         $this->renderView();
+    }
+
+    public function initialize() {
+        $this->parseJsonRequestBody();
+        $this->rewriteRequestMethod();
+        $this->initializePathInfo();
     }
 
     public function getParam($name) {
@@ -53,8 +60,11 @@ class App {
         $this->shouldRewriteRequestMethod = false;
     }
 
+    final public function disableParseJsonRequestBody() {
+        $this->shouldParseJsonRequestBody = false;
+    }
+
     protected function executeAction() {
-        $this->rewriteRequestMethod();
         $this->actionResult = ActionDispatcher::run($this->pathInfo, $this);
     }
 
@@ -72,7 +82,9 @@ class App {
         return Router::execute($this);
     }
 
-    protected function parseRequestBody() {
+    protected function parseJsonRequestBody() {
+        if ($this->shouldParseJsonRequestBody()) {
+        }
     }
 
     protected function rewriteRequestMethod() {
@@ -106,5 +118,9 @@ class App {
 
     final protected function shouldRewriteRequestMethod() {
         return $this->shouldRewriteRequestMethod;
+    }
+
+    final protected function shouldParseJsonRequestBody() {
+        return $this->shouldParseJsonRequestBody;
     }
 }

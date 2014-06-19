@@ -1,9 +1,11 @@
 <?php
 namespace Hyperframework\Web;
 
+namespace Hyperframework\Config;
+
 class ActionDispatcher {
     public static function run($pathInfo, $ctx) {
-        $method = $_SERVER['REQUEST_METHOD'];
+        $method = self::getRequestMethod();
         if ($method === 'HEAD') {
             $method = 'GET';
         }
@@ -41,6 +43,16 @@ class ActionDispatcher {
             $action->after($ctx);
         }
         return $result;
+    }
+
+    private static function getRequestMethod() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
+            isset($_POST['_method']) &&
+            Config::get('hyperframework.web.rewrite_request_method') !== false
+        ) {
+            return $_POST['_method'];
+        }
+        return $_SERVER['REQUEST_METHOD'];
     }
 
     private static function checkImplicitAction($method) {
