@@ -40,7 +40,7 @@ class Router {
         return substr($path, 0, $extensionPosition);
     }
 
-    protected static function isId($path, $segment) {
+    protected static function isId($segment) {
         return ctype_digit($segment[0]);
     }
 
