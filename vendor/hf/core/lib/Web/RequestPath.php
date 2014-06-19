@@ -19,7 +19,11 @@ final class RequestPath {
 
     public static function getSegments() {
         if (self::$segments === null) {
-            self::$segments = explode('/', ltrim(self::get(), '/'));
+            $path = self::get();
+            if ($path === '/') {
+                self::$segments = array();
+            }
+            self::$segments = explode('/', trim($path, '/'));
         }
         return self::$segments;
     }

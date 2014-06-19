@@ -6,8 +6,6 @@ class App {
     private $actionResult;
     private $params = array();
     private $isViewEnabled = true;
-    private $shouldRewriteRequestMethod = true;
-    private $shouldParseJsonRequestBody = true;
 
     public function run() {
         $this->initialize();
@@ -15,9 +13,8 @@ class App {
         $this->renderView();
     }
 
-    public function initialize() {
-        $this->parseJsonRequestBody();
-        $this->rewriteRequestMethod();
+    protected function initialize() {
+        $this->parseRequestBody();
         $this->initializePathInfo();
     }
 
@@ -56,14 +53,6 @@ class App {
         $this->isViewEnabled = false;
     }
 
-    final public function disableRequestMethodRewriting() {
-        $this->shouldRewriteRequestMethod = false;
-    }
-
-    final public function disableParseJsonRequestBody() {
-        $this->shouldParseJsonRequestBody = false;
-    }
-
     protected function executeAction() {
         $this->actionResult = ActionDispatcher::run($this->pathInfo, $this);
     }
@@ -82,17 +71,11 @@ class App {
         return Router::execute($this);
     }
 
-    protected function parseJsonRequestBody() {
-        if ($this->shouldParseJsonRequestBody()) {
-        }
-    }
-
-    protected function rewriteRequestMethod() {
-        if ($this->shouldRewriteRequestMethod
-            && $_SERVER['REQUEST_METHOD'] === 'POST'
-            && isset($_POST['_method'])
+    protected function parseRequestBody() {
+        if (isset($_SERVER['CONTENT_TYPE'])
+            && $_SERVER['CONTENT_TYPE'] === 'application/json'
         ) {
-            $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
+            JsonRequestBodyParser::run();
         }
     }
 
@@ -114,13 +97,5 @@ class App {
 
     final protected function isViewEnabled() {
         return $this->isViewEnabled;
-    }
-
-    final protected function shouldRewriteRequestMethod() {
-        return $this->shouldRewriteRequestMethod;
-    }
-
-    final protected function shouldParseJsonRequestBody() {
-        return $this->shouldParseJsonRequestBody;
     }
 }

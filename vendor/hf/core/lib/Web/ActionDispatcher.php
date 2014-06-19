@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-namespace Hyperframework\Config;
+use Hyperframework\Config;
 
 class ActionDispatcher {
     public static function run($pathInfo, $ctx) {
