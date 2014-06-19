@@ -2,12 +2,12 @@
 namespace Hyperframework\Web;
 
 class Router {
-    public static function execute($ctx) {
+    public static function run($ctx) {
         $segments = RequestPath::getSegments();
         $ids = array();
         $path = '';
         foreach ($segments as $segment) {
-            if (static::isId($path, $segemnt)) {
+            if (static::isId($segemnt)) {
                 $path .= 'item';
                 $ids[] = $segment;
             } elseif ($segment === 'item') {
