@@ -1,15 +1,15 @@
 <?php
 namespace Hyperframework\Web;
 
-class Router {
-    public static function run($ctx) {
+final class Router {
+    public static function run($ctx, $options = null) {
         $segments = RequestPath::getSegments();
-        $ids = array();
+        $params = array();
         $path = '';
         foreach ($segments as $segment) {
-            if (static::isId($segemnt)) {
+            if (static::isParam($segemnt)) {
                 $path .= 'item';
-                $ids[] = $segment;
+                $params[] = $segment;
             } elseif ($segment === 'item') {
                 throw new NotFoundException;
             }
@@ -18,17 +18,8 @@ class Router {
         if ($path === '') {
             return '/';
         }
-        $idCount = count($ids);
-        if ($idCount !== 0) {
-            if ($idCount === 1) {
-                $ctx->setParam('id', $ids[0]);
-            } else {
-                $index = 0;
-                foreach ($ids as $id) {
-                    $ctx->setParam('id_' . $index, $id);
-                    ++$index;
-                }
-            }
+        for($index = 0; isset($params[$index]); ++$index) {
+            $ctx->setParam($index, $params[$index]);
         }
         if (strrpos(end($segments), '.') === false) {
             return $path;
@@ -40,7 +31,7 @@ class Router {
         return substr($path, 0, $extensionPosition);
     }
 
-    protected static function isId($segment) {
+    protected static function isParam($segment) {
         return ctype_digit($segment[0]);
     }
 

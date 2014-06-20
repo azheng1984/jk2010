@@ -7,15 +7,12 @@ abstract class RequestBodyParser {
             return;
         }
         $GLOBALS['HTTP_RAW_POST_DATA'] = file_get_contents('php://input');
-        $maxLength = self:::getMaxLength();
+        $maxLength = self::getMaxLength();
         if ($maxLength !== 0
             && strlen($GLOBALS['HTTP_RAW_POST_DATA']) > $maxLength) {
             throw new RequestEntityTooLargeException;
         }
-        $tmp = static::parse();
-        if ($tmp !== null) {
-            $_POST = $tmp;
-        }
+        $_POST = static::parse()
     }
 
     abstract protected static function parse();
