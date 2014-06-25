@@ -5,7 +5,6 @@ class App {
     private $pathInfo;
     private $actionResult;
     private $params = array();
-    private $isViewEnabled = true;
 
     public function run() {
         $this->initialize();
@@ -46,11 +45,11 @@ class App {
 
     public function redirect($url, $statusCode = 301) {
         header('Location: ' . $url, true, $statusCode);
-        $this->isViewEnabled = false;
+        $this->quit();
     }
 
-    public function disableView() {
-        $this->isViewEnabled = false;
+    public function quit() {
+        exit;
     }
 
     protected function executeAction() {
@@ -58,9 +57,7 @@ class App {
     }
 
     protected function renderView() {
-        if ($this->isViewEnabled) {
-            ViewDispatcher::run($this->pathInfo, $this);
-        }
+        ViewDispatcher::run($this->pathInfo, $this);
     }
 
     protected function initailizePathInfo() {
@@ -89,13 +86,5 @@ class App {
 
     final protected function setPathInfo($value) {
         $this->pathInfo = $value;
-    }
-
-    final protected function disableView() {
-        $this->isViewEnabled = false;
-    }
-
-    final protected function isViewEnabled() {
-        return $this->isViewEnabled;
     }
 }

@@ -9,7 +9,8 @@ final class ViewDispatcher {
         if ($class === null) {
             throw new NotAcceptableException;
         }
-        self::dispatch($class, $ctx);
+        $view = new $class;
+        $view->render($ctx);
     }
 
     public static function setDefaultViewClasses($classes) {
@@ -37,10 +38,5 @@ final class ViewDispatcher {
         ) {
             return self::$defaultViewClasses[$_SERVER['REQUEST_MEDIA_TYPE']];
         }
-    }
-
-    private static function dispatch($class, $ctx) {
-        $view = new $class;
-        $view->render($ctx);
     }
 }
