@@ -19,7 +19,7 @@ final class Config {
     }
 
     public static function remove($name) {
-        return unset(self::$data[$name]);
+        unset(self::$data[$name]);
     }
 
     public static function import($configs) {

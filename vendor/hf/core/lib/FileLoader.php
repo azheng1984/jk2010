@@ -45,7 +45,7 @@ class FileLoader {
     final private static function load(
         $defaultPath, $pathConfigName, $shouldCheckFileExists, $isPhp
     ) {
-        $path = self::getPath();
+        $path = self::getPath($defaultPath);
         if ($path === null) {
             return;
         }

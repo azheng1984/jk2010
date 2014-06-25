@@ -12,7 +12,7 @@ final class Router {
             if ($segment === 'item') {
                 throw new NotFoundException;
             }
-            if (static::isParam($segemnt)) {
+            if (static::isParam($segment)) {
                 $path .= 'item';
                 $params[] = $segment;
             }

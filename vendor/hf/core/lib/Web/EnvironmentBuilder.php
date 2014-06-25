@@ -6,6 +6,6 @@ require dirname(__DIR__) . DIRECTORY_SEPARATOR
 
 class EnvironmentBuilder extends \Hyperframework\AbstractEnvironmentBuilder {
     protected static function initializeExceptionHandler() {
-        ExcpetionHander::run();
+        ExceptionHandler::run();
     }
 }

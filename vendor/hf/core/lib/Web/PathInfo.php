@@ -2,8 +2,8 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Config;
-use Hyperframework\PhpCacheFileLoader;
-use Hyperframework\PhpConfigFileLoader;
+use Hyperframework\CacheFileLoader;
+use Hyperframework\ConfigFileLoader;
 
 final class PathInfo {
     private static $cache;
@@ -28,7 +28,7 @@ final class PathInfo {
         );
         if ($isCacheEnabled !== false) {
             if (self::$cache === null) {
-                self::$cache = PhpCacheFileLoader::load(
+                self::$cache = CacheFileLoader::loadPhp(
                     'path_info.php', 'hyperframework.web.path_info.cache_path'
                 );
             }

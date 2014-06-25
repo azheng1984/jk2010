@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework\Config;
+
 class Runner {
     public static function run() {
         if (static::isAsset()) {
@@ -9,7 +11,7 @@ class Runner {
         static::runApp();
     }
 
-    protected function isAsset($urlPath) {
+    protected static function isAsset() {
         if (Config::get('hyperframework.web.enable_asset_proxy') !== true) {
             return false;
         }

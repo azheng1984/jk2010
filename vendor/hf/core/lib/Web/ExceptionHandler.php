@@ -29,7 +29,7 @@ class ExceptionHandler {
             }
         }
         if ($exception instanceof InternalServerErrorException) {
-            static::triggerError(self:$exception);
+            static::triggerError(self::$exception);
         }
     }
 

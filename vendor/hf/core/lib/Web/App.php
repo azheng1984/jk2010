@@ -28,7 +28,7 @@ class App {
     }
 
     public function removeParam($name) {
-        return unset($this->params[$name]);
+        unset($this->params[$name]);
     }
 
     public function getParams() {
@@ -64,12 +64,12 @@ class App {
 
     protected function finalize() {}
 
-    protected function initailizePathInfo() {
+    protected function initializePathInfo() {
         $this->pathInfo = PathInfo::get($this->getPath());
     }
 
     protected function getPath() {
-        return Router::execute($this);
+        return Router::run($this);
     }
 
     protected function parseRequestBody() {

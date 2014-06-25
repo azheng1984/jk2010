@@ -17,7 +17,7 @@ abstract class AbstractEnvironmentBuilder {
 
     protected static function initializeClassLoader() {
         if (Config::get('hyperframework.use_composer_autoload') === true) {
-            require APPLICATION_ROOT_PATH . 'vendor'
+            require APPLICATION_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor'
                 . DIRECTORY_SEPARATOR . 'autoload.php';
             return;
         }
@@ -28,11 +28,11 @@ abstract class AbstractEnvironmentBuilder {
     abstract protected static function initializeExceptionHandler();
 
     protected static function loadConfigClass() {
-        require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Config.php';
+        require __DIR__ . DIRECTORY_SEPARATOR . 'Config.php';
     }
 
     protected static function importInitConfig() {
-        $configs = require ROOT_PATH . DIRECTORY_SEPARATOR
+        $configs = require APPLICATION_ROOT_PATH . DIRECTORY_SEPARATOR
             . 'config' . DIRECTORY_SEPARATOR . 'init.php';
         if ($configs !== null) {
             Config::import($configs);
