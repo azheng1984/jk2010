@@ -15,3 +15,4 @@ pinyin.dat
 *.sync
 #cache/
 config/env/init.php
+composer.phar
