@@ -14,7 +14,7 @@ class Runner {
             return false;
         }
         $prefix = AssetCachePathPrefix::get();
-        if (strncmp($_SERVER['REQUEST_URI'], $prefix, strlen($prefix)) === 0) {
+        if (strncmp(RequestPath::get(), $prefix, strlen($prefix)) === 0) {
             return true;
         }
         return false;

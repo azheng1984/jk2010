@@ -18,7 +18,7 @@ final class ViewDispatcher {
     }
 
     private static function getViewClass($pathInfo) {
-        if (isset($pathInfo['views']) === false || ) {
+        if (isset($pathInfo['views']) === false) {
             return self::getDefaultViewClass();
         }
         $class = null;
