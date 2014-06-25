@@ -10,11 +10,7 @@ class App {
         $this->initialize();
         $this->executeAction();
         $this->renderView();
-    }
-
-    protected function initialize() {
-        $this->parseRequestBody();
-        $this->initializePathInfo();
+        $this->finalize();
     }
 
     public function getParam($name) {
@@ -49,7 +45,13 @@ class App {
     }
 
     public function quit() {
+        $this->finalize();
         exit;
+    }
+
+    protected function initialize() {
+        $this->parseRequestBody();
+        $this->initializePathInfo();
     }
 
     protected function executeAction() {
@@ -59,6 +61,8 @@ class App {
     protected function renderView() {
         ViewDispatcher::run($this->pathInfo, $this);
     }
+
+    protected function finalize() {}
 
     protected function initailizePathInfo() {
         $this->pathInfo = PathInfo::get($this->getPath());
