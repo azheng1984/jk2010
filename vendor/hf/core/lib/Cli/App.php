@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
-class Application {
+class App {
     private $config;
     private $reader;
     private $isAllowOption = true;
