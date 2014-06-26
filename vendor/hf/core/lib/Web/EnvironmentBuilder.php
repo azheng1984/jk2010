@@ -1,11 +1,11 @@
 <?php
 namespace Hyperframework\Web;
 
-require dirname(__DIR__) . DIRECTORY_SEPARATOR
-    . 'AbstractEnvironmentBuilder.php';
+require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'EnvironmentBuilder.php';
 
-class EnvironmentBuilder extends \Hyperframework\AbstractEnvironmentBuilder {
-    protected static function initializeExceptionHandler() {
+class EnvironmentBuilder extends \Hyperframework\EnvironmentBuilder {
+    protected static function run($rootNamespace, $rootPath) {
+        parent::run($rootNamespace, $rootPath);
         ExceptionHandler::run();
     }
 }

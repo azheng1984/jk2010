@@ -1,13 +1,12 @@
 <?php
 namespace Hyperframework;
 
-abstract class AbstractEnvironmentBuilder {
+class EnvironmentBuilder {
     public static function run($rootNamespace, $rootPath) {
         define('Hyperframework\APPLICATION_ROOT_NAMESPACE', $rootNamespace);
         define('Hyperframework\APPLICATION_ROOT_PATH', $rootPath);
         static::initializeConfig();
         static::initializeClassLoader();
-        static::initializeExceptionHandler();
     }
 
     protected static function initializeConfig() {
@@ -24,8 +23,6 @@ abstract class AbstractEnvironmentBuilder {
         require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'ClassLoader.php';
         ClassLoader::run();
     }
-
-    abstract protected static function initializeExceptionHandler();
 
     protected static function loadConfigClass() {
         require __DIR__ . DIRECTORY_SEPARATOR . 'Config.php';
