@@ -29,10 +29,10 @@ class EnvironmentBuilder {
     }
 
     protected static function importInitConfig() {
-        $configs = require APPLICATION_ROOT_PATH . DIRECTORY_SEPARATOR
+        $config = require APPLICATION_ROOT_PATH . DIRECTORY_SEPARATOR
             . 'config' . DIRECTORY_SEPARATOR . 'init.php';
-        if ($configs !== null) {
-            Config::import($configs);
+        if ($config !== null) {
+            Config::import($config);
         }
     }
 }

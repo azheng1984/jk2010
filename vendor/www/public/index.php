@@ -10,6 +10,10 @@ require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
 require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Web'
     . DIRECTORY_SEPARATOR . 'EnvironmentBuilder.php';
 EnvironmentBuilder::run(__NAMESPACE__, ROOT_PATH);
-echo 'hi';
+$f = new \Hyperframework\Web\Html\FormHelper;
+$f->begin();
+$f->renderTextBox(array('id' => 'content'));
+$f->end();
+//echo 'hi';
 exit;
 Runner::run();

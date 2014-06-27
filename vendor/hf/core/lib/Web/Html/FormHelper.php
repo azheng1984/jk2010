@@ -2,38 +2,49 @@
 namespace Hyperframework\Web\Html;
 
 class FormHelper {
-    private $configsList;
+    private $data;
+    private $configs = array();
 
     public function __construct($data = null) {
-        $this->configsList = array();
-        $this->configsList[] = array('data' => $data);
+        $this->data = $data;
     }
 
-    public function addConfigs($configs) {
+    public function addConfig($config) {
     }
 
-    public function static create($configs/*, ...*/) {
-        $instance = new FormHelper;
-        foreach (func_get_args() as $configs) {
-            $instance->addConfigs($configs);
-        }
-        return $instance;
+    public static function create($options) {
     }
 
-    public function renderTextBox($name) {
+    public function renderTextBox($attrs) {
         echo '<input';
-        if (isset($attributes['id & name'])) {
-            echo ' id="', $attributes['id & name'], '"';
-            $name = $attributes['id & name'];
-        }
-        echo ' name="', $name, '"';
-        if ($attributes !== null) {
-            foreach ($attributes as $key => $value) {
-                echo ' ="', $name, '"';
+        $name = null;
+        if (is_string($attrs)) {
+            $name = $attrs;
+            $attrs = null;
+        } else {
+            if (isset($attrs['id'])) {
+                echo ' id="', $attrs['id'], '"';
+                if (isset($attrs['name']) === false) {
+                    $name = $attrs['id'];
+                } else {
+                    $name = $attrs['name'];
+                }
+                unset($attrs['id']);
+            } else {
+                $name = $attrs['name'];
             }
         }
+        echo ' name="', $name, '"';
         if (empty($this->data[$name]) === false) {
             echo ' value="', $value, '"';
+        }
+        if ($attrs !== null) {
+            foreach ($attrs as $key => $value) {
+                if (is_int($key)) {
+                    echo ' ', $value;
+                }
+                echo ' ', $key, '="', $name, '"';
+            }
         }
         echo '/>';
     }
@@ -41,16 +52,11 @@ class FormHelper {
     public function renderCsrfProtectionField() {
     }
 
-    public function begin($attributes = null) {
+    public function begin($attrs = null) {
+        echo '<form>';
     }
 
     public function end() {
         echo '</form>';
-    }
-
-    protected static function get($name) {
-        if (isset($this->data[$name])) {
-            return $this->data[$name];
-        }
     }
 }

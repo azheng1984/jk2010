@@ -8,7 +8,7 @@ class InputFilter {
     public static function createByFormFieldConfig() {
     }
 
-    public static function getInstance($name) {
+    public static function create($options) {
         //load field & global config from config file using config file loader
     }
 

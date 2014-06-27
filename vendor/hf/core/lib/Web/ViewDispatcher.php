@@ -9,7 +9,7 @@ final class ViewDispatcher {
         if ($class === null) {
             throw new NotAcceptableException;
         }
-        $view = new $class;
+        $view = new $class($ctx);
         $view->render($ctx);
     }
 
