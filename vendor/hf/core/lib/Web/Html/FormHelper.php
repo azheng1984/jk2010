@@ -1,6 +1,11 @@
 <?php
 namespace Hyperframework\Web\Html;
 
+//new FormHelper($data);
+//$f->addConfig($filterConfig);
+//$f->renderTextBox('content');
+//$f->end();
+
 class FormHelper {
     private $data;
     private $configs = array();

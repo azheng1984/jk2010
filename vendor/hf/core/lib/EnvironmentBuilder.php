@@ -15,12 +15,12 @@ class EnvironmentBuilder {
     }
 
     protected static function initializeClassLoader() {
-        if (Config::get('hyperframework.use_composer_autoload') === true) {
+        if (Config::get('hyperframework.use_composer_class_loader') === true) {
             require APPLICATION_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor'
                 . DIRECTORY_SEPARATOR . 'autoload.php';
             return;
         }
-        require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'ClassLoader.php';
+        require __DIR__ . DIRECTORY_SEPARATOR . 'ClassLoader.php';
         ClassLoader::run();
     }
 
