@@ -48,7 +48,7 @@ class ActionDispatcher {
     private static function getRequestMethod() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
             isset($_POST['_method']) &&
-            Config::get('hyperframework.web.rewrite_request_method') !== false
+            Config::get('hyperframework.web.rewrite_request_method') !== true 
         ) {
             return $_POST['_method'];
         }

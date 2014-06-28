@@ -39,7 +39,7 @@ class App {
         return $this->actionResult;
     }
 
-    public function redirect($url, $statusCode = 301) {
+    public function redirect($url, $statusCode = 302) {
         header('Location: ' . $url, true, $statusCode);
         $this->quit();
     }

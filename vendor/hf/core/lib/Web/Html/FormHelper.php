@@ -1,11 +1,6 @@
 <?php
 namespace Hyperframework\Web\Html;
 
-//new FormHelper($data);
-//$f->addConfig($filterConfig);
-//$f->renderTextBox('content');
-//$f->end();
-
 class FormHelper {
     private $data;
     private $configs = array();
@@ -41,7 +36,7 @@ class FormHelper {
         }
         echo ' name="', $name, '"';
         if (empty($this->data[$name]) === false) {
-            echo ' value="', $value, '"';
+            echo ' value="', $this->data[$name], '"';
         }
         if ($attrs !== null) {
             foreach ($attrs as $key => $value) {
@@ -55,10 +50,12 @@ class FormHelper {
     }
 
     public function renderCsrfProtectionField() {
+        echo '<input type="hidden" name="csrf" value="xxx"/>';
     }
 
     public function begin($attrs = null) {
         echo '<form>';
+        $this->renderCsrfProtectionField();
     }
 
     public function end() {

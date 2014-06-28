@@ -4,15 +4,20 @@ namespace Hyperframework\Web\Html;
 class FormBuilder {
     private $formHelper;
 
-    public function __construct($data) {
-        $formHelper = new FormHelper($data);
+    public function __construct($data = null) {
+        $this->formHelper = new FormHelper($data);
     }
 
-    public function render($config/*, ...*/) {
-        foreach (func_get_args() as $config) {
-            $formHelper->addConfig($config);
+    public function render($config) {
+        $this->formHelper->begin();
+        foreach ($config as $attrs) {
+            $type = $attrs['type'];
+            unset($attrs['type']);
+            call_user_func_array(
+                array($this->formHelper, 'render'. $type),
+                $attrs
+            );
         }
-        foreach ($config as $key => $value) {
-        }
+        $this->formHelper->end();
     }
 }

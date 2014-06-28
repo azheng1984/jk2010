@@ -3,7 +3,7 @@ namespace Hyperframework\Web;
 
 class JsonView {
     public function render($ctx) {
-        header('application/json');
+        header('Content-Type: application/json');
         echo json_encode($ctx->getActionResult());
     }
 }
