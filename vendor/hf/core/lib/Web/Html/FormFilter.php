@@ -32,11 +32,11 @@ self::save();
 
 private function save() {
     try {
-        InputHelper::save('article');
+        Db::save('article', '');
+        InputFilter::save('article');
     } catch (Exception $ex) {
     }
 }
 
 DbArticle::delete($id);
 DbArticle::getRow($id);
-

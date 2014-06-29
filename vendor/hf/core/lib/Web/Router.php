@@ -21,8 +21,11 @@ final class Router {
         if ($path === '') {
             return '/';
         }
-        for($index = 0; isset($params[$index]); ++$index) {
-            $ctx->setParam($index, $params[$index]);
+        $paramCount = count($params);
+        if ($paramCount !== 0) {
+            for ($index = 0; $index < $paramCount; ++$index) {
+                $ctx->setParam($index, $params[$paramCount - $index - 1]);
+            }
         }
         if (strrpos(end($segments), '.') === false) {
             return $path;

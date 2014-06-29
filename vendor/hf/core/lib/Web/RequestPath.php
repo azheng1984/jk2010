@@ -7,8 +7,7 @@ final class RequestPath {
 
     public static function get() {
         if (self::$path === null) {
-            $tmp = explode('?', $_SERVER['REQUEST_URI'], 2);
-            self::$path = reset($tmp);
+            self::$path = reset(explode('?', $_SERVER['REQUEST_URI'], 2));
             if (self::$path === '') {
                 self::$path = '/';
             } elseif (strpos(self::$path, '//') !== false) {
