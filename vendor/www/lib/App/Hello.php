@@ -23,6 +23,36 @@ class Hello {
     }
 
     private static function save() {
-        DbArticle::saveForm();
+        InputBinder::save('article');
+    }
+}
+
+class InputBinder {
+    public static function save($config, $dbTableName = null) {
+        if ($dbTableName === null) {
+            $dbTableName = $config;
+        }
+        $result = InputFilter::execute($config);
+        Db::save($result);
+    }
+}
+
+private static function save() {
+    $article = FormFilter::execute('article');
+    $article = InputFilter::execute($article, array('...'));
+    $originalArticle = DbArticle::getRow('*', 'id=' . $article['id']);
+    if ($originalArticle === null || $userId = $article['user_id']) {
+        DbArticle::save($article);
+    }
+}
+
+private static function save() {
+    $article = FormFilter::execute('article');
+    DbArticle::save($article);
+}
+
+class DbArticle extends DbTable {
+    protected static function getTableName() {
+        return 'article';
     }
 }
