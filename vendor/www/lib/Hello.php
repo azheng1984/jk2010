@@ -2,6 +2,10 @@
 namespace Hft;
 
 class Hello {
+    public function before() {
+        //todo: security check
+    }
+
     public static function patch() {
         $this->save();
     }
@@ -11,11 +15,11 @@ class Hello {
     }
 
     public function delete($app) {
-        DbArticle::delete($app->getParam(0));
+        DbArticle::delete($app->getParam('id'));
     }
 
     public function get($app) {
-        $articleId = $app->getParam(0);
+        $articleId = $app->getParam('id');
     }
 
     private static function save() {

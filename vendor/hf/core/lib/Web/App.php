@@ -50,6 +50,7 @@ class App {
     }
 
     protected function initialize() {
+        $this->rewriteRequestMethod();
         $this->parseRequestBody();
         $this->initializePathInfo();
     }
@@ -64,12 +65,14 @@ class App {
 
     protected function finalize() {}
 
-    protected function initializePathInfo() {
-        $this->pathInfo = PathInfo::get($this->getPath());
-    }
-
-    protected function getPath() {
-        return Router::run($this);
+    protected function rewriteRequestMethod() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
+            isset($_POST['_method']) &&
+            Config::get('hyperframework.web.rewrite_request_method') !== true 
+        ) {
+            $_SERVER['ORIGINAL_REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'];
+            $_SERVER['REQUEST_METHOD'] = $_POST['_method'];
+        }
     }
 
     protected function parseRequestBody() {
@@ -78,6 +81,14 @@ class App {
         ) {
             JsonRequestBodyParser::run();
         }
+    }
+
+    protected function initializePathInfo() {
+        $this->pathInfo = PathInfo::get($this->getPath());
+    }
+
+    protected function getPath() {
+        return Router::run($this);
     }
 
     final protected function setActionResult($value) {

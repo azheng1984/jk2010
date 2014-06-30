@@ -12,7 +12,7 @@ class Router {
             if ($segment === 'item') {
                 throw new NotFoundException;
             }
-            if (static::isParam($segment)) {
+            if (static::isId($segment)) {
                 $path .= 'item';
                 $params[] = $segment;
             }
@@ -36,7 +36,7 @@ class Router {
         return substr($path, 0, $extensionPosition);
     }
 
-    protected static function isParam($segment) {
+    protected static function isId($segment) {
         return ctype_digit($segment);
     }
 }

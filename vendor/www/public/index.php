@@ -1,6 +1,6 @@
 <?php
 namespace Hft;
-
+print_r($_SERVER);
 use Hyperframework\Web\EnvironmentBuilder;
 use Hyperframework\Web\Runner;
 

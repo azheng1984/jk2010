@@ -3,9 +3,9 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Config;
 
-class ActionDispatcher {
+final class ActionDispatcher {
     public static function run($pathInfo, $ctx) {
-        $method = self::getRequestMethod();
+        $method = $_SERVER['REQUEST_METHOD'];
         if ($method === 'HEAD') {
             $method = 'GET';
         }
@@ -45,15 +45,6 @@ class ActionDispatcher {
         return $result;
     }
 
-    private static function getRequestMethod() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
-            isset($_POST['_method']) &&
-            Config::get('hyperframework.web.rewrite_request_method') !== true 
-        ) {
-            return $_POST['_method'];
-        }
-        return $_SERVER['REQUEST_METHOD'];
-    }
 
     private static function checkImplicitAction($method) {
         if ($method !== 'GET') {
