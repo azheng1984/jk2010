@@ -1,8 +1,8 @@
 <?php
 namespace Hyperframework\Web;
 
-final class Router {
-    public static function run($ctx, $segments = null) {
+class Router {
+    final public static function run($ctx, $segments = null) {
         if ($segments === null) {
             $segments = RequestPath::getSegments();
         }
@@ -22,10 +22,9 @@ final class Router {
             return '/';
         }
         $paramCount = count($params);
-        if ($paramCount !== 0) {
-            for ($index = 0; $index < $paramCount; ++$index) {
-                $ctx->setParam($index, $params[$paramCount - $index - 1]);
-            }
+        if ($paramCount > 0) {
+            $ctx->setParam('ids', $params);
+            $ctx->setParam('id', $params[$paramCount - 1]);
         }
         if (strrpos(end($segments), '.') === false) {
             return $path;
