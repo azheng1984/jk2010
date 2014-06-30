@@ -30,9 +30,7 @@ class Router {
             return $path;
         }
         $extensionPosition = strrpos($path, '.');
-        $_SERVER['REQUEST_MEDIA_TYPE'] = substr(
-            $path, $extensionPosition + 1
-        );
+        $_SERVER['REQUEST_MEDIA_TYPE'] = substr($path, $extensionPosition + 1);
         return substr($path, 0, $extensionPosition);
     }
 

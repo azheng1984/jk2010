@@ -51,6 +51,7 @@ class App {
 
     protected function initialize() {
         $this->rewriteRequestMethod();
+        //todo csrf check
         $this->parseRequestBody();
         $this->initializePathInfo();
     }

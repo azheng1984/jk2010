@@ -23,6 +23,6 @@ class Hello {
     }
 
     private static function save() {
-        Db::save('article');
+        DbArticle::saveForm();
     }
 }
