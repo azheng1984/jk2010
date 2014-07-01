@@ -79,6 +79,10 @@ class DbClient {
         static::send($sql, $parameters, false);
     }
 
+    public static function deleteById($table, $id) {
+        static::delete($table, 'id = ?', $id);
+    }
+
     public static function save($table, $row, $options = null) {
         DbSaveCommand::run($table, $row, $options);
     }

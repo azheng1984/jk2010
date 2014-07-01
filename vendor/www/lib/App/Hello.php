@@ -39,15 +39,21 @@ class InputBinder {
             $dbTableName = $config;
         }
         $result = InputFilter::execute($config);
-        DbUtil::save($result);
+        DbClient::save($result);
     }
 }
 
 private static function save() {
     $article = FormFilter::execute('article');
     $article = Validator::execute($article, array('...'));
-    DbUtil::save('article', $article);
-    DbMyUtil::getRowById('article', $article);
+    DbClient::save('article', $article);
+
+    $row = DbClient::getRowById('article', $id, 'title');
+    $title = $row['title'];
+    $title = DbClient::getColumn(
+        'SELECT title From article WHERE id = ?', $id
+    );
+
     $originalArticle = DbArticle::getRow('*', 'id=' . $article['id']);
     if ($originalArticle === null || $userId = $article['user_id']) {
         DbArticle::save($article);
