@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Db;
 
-class DbUtil extends DbClient {
+class DbUtil {
     public static function getRowById($table, $id, $selector = '*') {
     }
 

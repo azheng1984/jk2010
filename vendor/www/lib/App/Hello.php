@@ -39,7 +39,7 @@ class InputBinder {
             $dbTableName = $config;
         }
         $result = InputFilter::execute($config);
-        Db::save($result);
+        DbUtil::save($result);
     }
 }
 
@@ -47,7 +47,7 @@ private static function save() {
     $article = FormFilter::execute('article');
     $article = Validator::execute($article, array('...'));
     DbUtil::save('article', $article);
-
+    DbMyUtil::getRowById('article', $article);
     $originalArticle = DbArticle::getRow('*', 'id=' . $article['id']);
     if ($originalArticle === null || $userId = $article['user_id']) {
         DbArticle::save($article);
