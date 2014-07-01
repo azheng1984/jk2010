@@ -21,10 +21,15 @@ namespace Hyperframework\Db;
 //    'table' => 'article',
 //    ...
 //]);
+//todo
+//删除 filter columns，自动识别 id，除非在 options 设置识别域
 
 class DbSaveCommand {
+    public static function execute($table, &$row, $options = null) {
+    }
+
     public static function execute(
-        $table, $filters, $replacements = null, $options = null
+        $table, $filterColumns, $replacementColumns = null, $options = null
     ) {
         list($shouldReturnId, $idName) = static::fetchOptions($options);
         $columns = $idName !== null &&
@@ -33,8 +38,8 @@ class DbSaveCommand {
             $columns = array_merge($columns, array_keys($replacementColumns));
         }
         $sql = 'SELECT ' . implode(', ', $columns) . ' FROM ' . $table .
-            ' WHERE ' . implode(' = ? AND ', array_keys($filterColumns)) .
-            ' = ?';
+            ' WHERE ' . implode(' = ? AND `', array_keys($filterColumns)) .
+            '` = ?';
         $arguments = array_values($filterColumns);
         $result = $client::getRow($sql, $arguments);
         if ($result === false) {

@@ -5,7 +5,7 @@ namespace Hyperframework\Db;
 //options
 //1. client
 //2. batch_size (rows limit on one statement, 默认一次执行，由客户端控制条数)
-class DbBatchInsertCommand {
+class DbImportCommand {
     public static function execute(
         $table, $values, $names = null, $options = null
     ) {

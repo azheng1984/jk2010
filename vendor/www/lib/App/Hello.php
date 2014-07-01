@@ -15,7 +15,12 @@ class Hello {
     }
 
     public function delete($app) {
-        DbArticle::delete($app->getParam('id'));
+
+        DbClient::delete('article', 'id = ?', $app->getParam('id'));
+        DbClient::delete('command', 'article_id = ?', $app->getParam('id'));
+
+        DbArticle::deleteById($app->getParam('id'));
+        DbDeleteByIdCommand::execute('article', $app->getParam('id'));
     }
 
     public function get($app) {
@@ -39,7 +44,7 @@ class InputBinder {
 
 private static function save() {
     $article = FormFilter::execute('article');
-    $article = InputFilter::execute($article, array('...'));
+    $article = Validator::execute($article, array('...'));
     $originalArticle = DbArticle::getRow('*', 'id=' . $article['id']);
     if ($originalArticle === null || $userId = $article['user_id']) {
         DbArticle::save($article);
@@ -51,7 +56,7 @@ private static function save() {
     DbArticle::save($article);
 }
 
-class DbArticle extends DbTable {
+final class DbArticle extends DbTable {
     protected static function getTableName() {
         return 'article';
     }
