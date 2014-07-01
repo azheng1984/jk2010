@@ -10,6 +10,12 @@ class DbClient {
         return static::query(func_get_args())->fetch(PDO::FETCH_ASSOC);
     }
 
+    public static function getRowById($table, $id, $selector = '*') {
+        return static::query(
+            'SELECT ' . $selector . ' FROM ' . $table . ' WHERE id = ?' , $id
+        );
+    }
+
     public static function getAll($sql/*, $mixed, ...*/) {
         return static::query(func_get_args())->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -71,6 +77,10 @@ class DbClient {
         }
         $sql = 'DELETE FROM ' . $table . $where;
         static::send($sql, $parameters, false);
+    }
+
+    public static function save($table, $row, $options = null) {
+        DbSaveCommand::run($table, $row, $options);
     }
 
     protected static function getConnection() {
