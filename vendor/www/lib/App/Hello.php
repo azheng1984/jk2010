@@ -15,12 +15,11 @@ class Hello {
     }
 
     public function delete($app) {
-
         DbClient::delete('article', 'id = ?', $app->getParam('id'));
         DbClient::delete('command', 'article_id = ?', $app->getParam('id'));
 
         DbArticle::deleteById($app->getParam('id'));
-        DbDeleteByIdCommand::execute('article', $app->getParam('id'));
+        DbClient::deleteById('article', $app->getParam('id'));
     }
 
     public function get($app) {
@@ -44,12 +43,13 @@ class InputBinder {
 }
 
 private static function save() {
-    $article = FormFilter::execute('article');
-    $article = Validator::execute($article, array('...'));
+    $article = FormFilter::run('article');
+    $article = Validator::run($article, array('...'));
     DbClient::save('article', $article);
 
     $row = DbClient::getRowById('article', $id, 'title');
     $title = $row['title'];
+
     $title = DbClient::getColumn(
         'SELECT title From article WHERE id = ?', $id
     );

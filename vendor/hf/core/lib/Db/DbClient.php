@@ -11,7 +11,7 @@ class DbClient {
     }
 
     public static function getRowById($table, $id, $selector = '*') {
-        return static::query(
+        return static::getRow(
             'SELECT ' . $selector . ' FROM ' . $table . ' WHERE id = ?' , $id
         );
     }
