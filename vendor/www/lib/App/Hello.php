@@ -28,7 +28,8 @@ class Hello {
     }
 
     private static function save() {
-        InputBinder::save('article');
+        DbClient::save('article', FormFilter::run('article'));
+        //InputBinder::save('article');
     }
 }
 
@@ -45,6 +46,8 @@ class InputBinder {
 private static function save() {
     $article = FormFilter::execute('article');
     $article = Validator::execute($article, array('...'));
+    DbUtil::save('article', $article);
+
     $originalArticle = DbArticle::getRow('*', 'id=' . $article['id']);
     if ($originalArticle === null || $userId = $article['user_id']) {
         DbArticle::save($article);
