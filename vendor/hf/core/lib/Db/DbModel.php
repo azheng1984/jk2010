@@ -4,7 +4,7 @@ class DbModel {
     public static function getRowById($id, $selector = '*') {
     }
 
-    public static function save($row) {
+    public static function save(&$row) {
     }
 
     public static function insert($row) {
