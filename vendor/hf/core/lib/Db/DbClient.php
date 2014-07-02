@@ -49,23 +49,23 @@ class DbClient {
         return static::send($sql, $parameters, false);
     }
 
-    public static function insert($table, $columns) {
+    public static function insert($table, $row) {
         $sql = 'INSERT INTO ' . $table . '(' .
-            implode(array_keys($parameters), ', ') . ') VALUES(' .
-            static::getParameterPlaceholders(count($parameters)) . ')';
-        static::send($sql, array_values($columns), false, true);
+            implode(array_keys($row), ', ') . ') VALUES(' .
+            static::getParameterPlaceholders(count($row)) . ')';
+        static::send($sql, array_values($row), false, true);
     }
 
-    public static function update($table, $columns, $where/*, $mixed, ...*/) {
-        $parameters = array_values($columns);
+    public static function update($table, $row, $where/*, $mixed, ...*/) {
+        $parameters = array_values($row);
         if ($where !== null) {
             $where = ' WHERE ' . $where;
             $parameters = array_merge(
-                $parameters, array_slice(func_get_args(), 3)
+                $row, array_slice(func_get_args(), 3)
             );
         }
         $sql = 'UPDATE ' . $table . ' SET '
-            . implode(array_keys($columns), ' = ?, ') . ' = ?' . $where;
+            . implode(array_keys($row), ' = ?, ') . ' = ?' . $where;
         static::send($sql, $parameters), false);
     }
 
@@ -128,3 +128,10 @@ class DbClient {
         return '';
     }
 }
+
+DbArticle
+  'create_time'
+
+DbClient::  xxxx ('article')
+
+$article->getComments();
