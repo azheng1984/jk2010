@@ -128,10 +128,3 @@ class DbClient {
         return '';
     }
 }
-
-DbArticle
-  'create_time'
-
-DbClient::  xxxx ('article')
-
-$article->getComments();
