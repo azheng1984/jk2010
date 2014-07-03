@@ -2,8 +2,11 @@
 
 class Html {
     public static function render($app) {
-        $app->getActionResult('article');
-        $app->getActionResult('errors');
-        FormBuilder::run('article', $article, $errors);
+        FormBuilder::run(
+            'article',
+            $app->getActionResult('article'),
+            $app->getActionResult('errors'),
+            Article::getValidationRules()
+        );
     }
 }
