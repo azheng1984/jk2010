@@ -1,5 +1,13 @@
 <?php
 namespace Hft;
+class a {
+    public static function hello() {
+        echo 'hi';
+    }
+}
+$b = 'Hft\a';
+$b::hello();
+exit;
 print_r($_SERVER);
 use Hyperframework\Web\EnvironmentBuilder;
 use Hyperframework\Web\Runner;

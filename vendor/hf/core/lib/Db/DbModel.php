@@ -31,6 +31,11 @@ class DbModel {
     }
 
     protected static function getTableName() {
-        return get_called_class();
+        $class = get_called_class();
+        $position = strrpos($class, '\\');
+        if ($position !== false) {
+            return substr($class, $position + 1);
+        }
+        return $class;
     }
 }
