@@ -32,34 +32,24 @@ class Hello {
     }
 }
 
-class InputBinder {
-    public static function save($config, $dbTableName = null) {
-        if ($dbTableName === null) {
-            $dbTableName = $config;
-        }
-        $result = InputFilter::execute($config);
-        DbClient::save($result);
-    }
-}
-
 private static function save() {
     $article = FormFilter::run('article');
     //$article = Validator::run($article, array('...'));
     Article::save($article);
 
-    DbClient::save('article', $article);
-    DbClient::update();
-    DbClient::insert();
+    $article = Article::getRowById($id, 'title');
 
-    Article::getRowById($id, 'title');
+    $comments = Article::getComments($article['id'], 1, 3);
+    Artile::getRowById($id);
+
     $row = DbClient::getRowById('article', $id, 'title');
-    $title = $row['title'];
-
-    Article::getTitleById($id);
 
     $title = DbClient::getColumn(
         'SELECT title From article WHERE id = ?', $id
     );
+
+    Article::getRowById($id, 'count(*)');
+    Article::has($id);
 
     $originalArticle = DbArticle::getRow('*', 'id=' . $article['id']);
     if ($originalArticle === null || $userId = $article['user_id']) {
@@ -71,5 +61,3 @@ private static function save() {
     $article = FormFilter::execute('article');
     DbArticle::save($article);
 }
-
-

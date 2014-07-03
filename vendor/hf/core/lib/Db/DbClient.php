@@ -10,6 +10,11 @@ class DbClient {
         return static::query(func_get_args())->fetch(PDO::FETCH_ASSOC);
     }
 
+    public static function getRowByColumns($table, $columns, $selector = '*') {
+        $result = self::queryByColumns($table, $columns, $selector);
+        return $result->fetch(PDO::FETCH_ASSOC);
+    }
+
     public static function getRowById($table, $id, $selector = '*') {
         return static::getRow(
             'SELECT ' . $selector . ' FROM ' . $table . ' WHERE id = ?' , $id
@@ -18,6 +23,11 @@ class DbClient {
 
     public static function getAll($sql/*, $mixed, ...*/) {
         return static::query(func_get_args())->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getAllByColumns($table, $columns, $selector = '*') {
+        $result = self::queryByColumns($table, $columns, $selector);
+        return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public static function getLastInsertId() {
@@ -50,7 +60,7 @@ class DbClient {
     }
 
     public static function insert($table, $row) {
-        $sql = 'INSERT INTO ' . $table . '(' .
+        $sql = 'INSERT INTO `' . $table . '`(' .
             implode(array_keys($row), ', ') . ') VALUES(' .
             static::getParameterPlaceholders(count($row)) . ')';
         static::send($sql, array_values($row), false, true);
@@ -84,7 +94,7 @@ class DbClient {
     }
 
     public static function save($table, &$row, $options = null) {
-        DbSaveCommand::run($table, $row, $options);
+        return DbSaveCommand::run($table, $row, $options);
     }
 
     protected static function getConnection() {
@@ -116,6 +126,22 @@ class DbClient {
         $parameters = $arguments();
         $sql = array_shift($parameters);
         return static::send($sql, $parameters);
+    }
+
+    private static function queryByColumns($table, $columns, $selector) {
+        $params = array();
+        $where = null;
+        foreach ($columns as $key => $value) {
+            $params[] = $value; 
+            if ($where === null) {
+                $where = $key . ' = ?';
+                continue;
+            }
+            $where .= ' AND ' . $key . ' = ?';
+        }
+        $sql = 'SELECT ' . $selector . ' FROM ' . $table . ' WHERE ' . $where;
+        array_unshift($params, $sql);
+        return self::query($params);
     }
 
     private static function getParameterPlaceholders($amount) {
