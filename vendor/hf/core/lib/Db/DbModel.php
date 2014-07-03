@@ -1,12 +1,15 @@
 <?php
 namespace Hyperframework\Db;
 
+use Hyperframework\Validator;
+
 class DbModel {
     public static function getRowById($id, $selector = '*') {
         return DbClient::getRowById(static::getTableName(), $id, $selector);
     }
 
     public static function save(&$row, $options = null) {
+        static::validate($row);
         return DbSaveCommand::save(static::getTableName(), $row, $options);
     }
 
@@ -22,4 +25,13 @@ class DbModel {
         }
         return $class;
     }
+
+    protected static function validate($row) {
+        $rules = static::getValidationRules();
+        if ($rules !== null) {
+            Validator::run($row, $rules);
+        }
+    }
+
+    protected static function getValidationRules() {}
 }

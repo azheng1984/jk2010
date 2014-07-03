@@ -1,5 +1,25 @@
 <?php
 namespace Hft;
+print_r($GLOBALS);
+exit;
+$x = array('xxx' => 'x');
+
+list($b['xxx']) = $x;
+print_r($b);
+exit;
+
+isset($x['x']) ? $x['x'] : null;
+
+$ar = $app->getActionResult();
+xxx($ar, 'k1', 'k2');
+$query = Extractor::run($_GET, 'query');
+Extractor::run($actionResult, array('action, errors'));
+
+isset($result['errors']['xx']);
+
+$x['x'];
+var_dump(array_column($x, 'xxx'));
+exit;
 class a {
     public static function hello() {
         echo 'hi';

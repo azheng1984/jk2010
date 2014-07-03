@@ -14,9 +14,14 @@ class App {
     }
 
     public function getParam($name) {
-        if (isset($this->params[$name])) {
-            return $this->params[$name];
+        if ($source === null) {
+            if (isset($this->params[$name])) {
+                return $this->params[$name];
+            }
         }
+        InputFilter::run('article', $_COOKIE);
+        DataFilter::run(array('array'), $data);
+        FormFilter::run('article');
     }
 
     public function setParam($name, $value) {
@@ -35,8 +40,18 @@ class App {
         return $this->params;
     }
 
-    public function getActionResult() {
-        return $this->actionResult;
+    public function getActionResult($key = null/*, ...*/) {
+        if ($key === null) {
+            return $this->actionResult;
+        }
+        $result = $this->actionResult;
+        foreach (func_get_args() as $key) {
+            if (isset($result[$key]) === false) {
+                return;
+            }
+            $result = $result[$key];
+        }
+        return $result;
     }
 
     public function redirect($url, $statusCode = 302) {

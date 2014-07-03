@@ -141,7 +141,7 @@ class DbClient {
         }
         $sql = 'SELECT ' . $selector . ' FROM ' . $table;
         if ($where !== null) {
-           $sql .= ' WHERE ' . $where;
+            $sql .= ' WHERE ' . $where;
         }
         array_unshift($params, $sql);
         return self::query($params);
