@@ -10,14 +10,6 @@ class DbModel {
         return DbSaveCommand::save(static::getTableName(), $row, $options);
     }
 
-    public static function delete($where/*, $mixed, ...*/) {
-        $args = func_get_args();
-        array_unshift($args, static::getTableName());
-        return call_user_func_array(
-            'Hyperframework\Db\DbClient::delete', $args
-        );
-    }
-
     public static function deleteById($id) {
         return DbClient::deleteById(static::getTableName(), $id);
     }
