@@ -60,7 +60,7 @@ class DbClient {
     }
 
     public static function insert($table, $row) {
-        $sql = 'INSERT INTO `' . $table . '`(' .
+        $sql = 'INSERT INTO ' . $table . '(' .
             implode(array_keys($row), ', ') . ') VALUES(' .
             static::getParameterPlaceholders(count($row)) . ')';
         static::send($sql, array_values($row), false, true);
@@ -139,7 +139,10 @@ class DbClient {
             }
             $where .= ' AND ' . $key . ' = ?';
         }
-        $sql = 'SELECT ' . $selector . ' FROM ' . $table . ' WHERE ' . $where;
+        $sql = 'SELECT ' . $selector . ' FROM ' . $table;
+        if ($where !== null) {
+           $sql .= ' WHERE ' . $where;
+        }
         array_unshift($params, $sql);
         return self::query($params);
     }
