@@ -19,9 +19,6 @@ class App {
                 return $this->params[$name];
             }
         }
-        InputFilter::run('article', $_COOKIE);
-        DataFilter::run(array('array'), $data);
-        FormFilter::run('article');
     }
 
     public function setParam($name, $value) {
