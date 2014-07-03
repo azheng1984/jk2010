@@ -44,11 +44,18 @@ class InputBinder {
 
 private static function save() {
     $article = FormFilter::run('article');
-    $article = Validator::run($article, array('...'));
-    DbClient::save('article', $article);
+    //$article = Validator::run($article, array('...'));
+    Article::save($article);
 
+    DbClient::save('article', $article);
+    DbClient::update();
+    DbClient::insert();
+
+    Article::getRowById($id, 'title');
     $row = DbClient::getRowById('article', $id, 'title');
     $title = $row['title'];
+
+    Article::getTitleById($id);
 
     $title = DbClient::getColumn(
         'SELECT title From article WHERE id = ?', $id
@@ -65,8 +72,4 @@ private static function save() {
     DbArticle::save($article);
 }
 
-final class DbArticle extends DbTable {
-    protected static function getTableName() {
-        return 'article';
-    }
-}
+
