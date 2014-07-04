@@ -13,6 +13,7 @@ class ActionInfoBuilder {
     private function getCache($class) {
         $className = $class;
         $cache = array('class' => $className, 'methods' => array());
+        //todo: configurable
         $httpMethods = array('get', 'post', 'patch', 'put', 'delete');
         if ($this->hasPrivateGetMethod($class)) {
             $cache['get_not_allowed'] = true;

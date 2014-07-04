@@ -5,6 +5,7 @@ class InputFilter {
     private static $instances = array();
     private static $configs = array();
 
+    //move to FormFilter
     public static function createByFormFieldConfig() {
     }
 
@@ -19,6 +20,10 @@ class InputFilter {
         //config load from config and share with asset/js
         //config should be shared with client controller - js, not client model
     }
+
+    $input = $app->filter(
+        array('user_id' => 'required', 'email' => 'email', 'title'), 'GET'
+    );
 
     public function isValid() {
     }

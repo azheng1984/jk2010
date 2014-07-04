@@ -35,6 +35,14 @@ class App {
         return $this->params;
     }
 
+    public function filter($fields, $source = null) {
+        return InputFilter::run($fields, $source);
+    }
+
+    public function getForm($name) {
+        return FormFilter::run($name);
+    }
+
     public function getActionResult($name = null) {
         if ($name === null) {
             return $this->actionResult;
