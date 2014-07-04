@@ -41,7 +41,9 @@ class App {
         if ($name === null) {
             return $this->actionResult;
         }
-        return $this->actionResult($name);
+        if (isset($this->actionResult[$name])) {
+            return $this->actionResult[$name];
+        }
     }
 
     public function redirect($url, $statusCode = 302) {
