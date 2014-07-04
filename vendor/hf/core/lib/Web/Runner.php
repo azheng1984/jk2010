@@ -23,7 +23,7 @@ class Runner {
     }
 
     protected static function runAssetProxy() {
-        AssetProxy::run();
+        AssetProxy::run;
     }
 
     protected static function runApp() {

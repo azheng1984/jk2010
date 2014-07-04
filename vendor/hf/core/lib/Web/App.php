@@ -35,7 +35,7 @@ class App {
         return $this->params;
     }
 
-    public function filter($fields, $source = null) {
+    public function filter($fields, $source) {
         return InputFilter::run($fields, $source);
     }
 

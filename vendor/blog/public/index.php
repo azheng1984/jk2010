@@ -4,7 +4,7 @@ namespace Hyperframework\Blog;
 use Hyperframework\Web\EnvironmentBuilder;
 use Hyperframework\Web\Runner;
 
-define('Hft\ROOT_PATH', dirname(__DIR__));
+define('Hyperframework\Blog\ROOT_PATH', dirname(__DIR__));
 require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
     . DIRECTORY_SEPARATOR . 'init_const.php';
 require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Web'
