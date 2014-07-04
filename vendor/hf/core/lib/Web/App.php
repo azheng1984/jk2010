@@ -14,10 +14,8 @@ class App {
     }
 
     public function getParam($name) {
-        if ($source === null) {
-            if (isset($this->params[$name])) {
-                return $this->params[$name];
-            }
+        if (isset($this->params[$name])) {
+            return $this->params[$name];
         }
     }
 

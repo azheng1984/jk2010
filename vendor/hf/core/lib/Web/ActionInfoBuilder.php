@@ -14,13 +14,13 @@ class ActionInfoBuilder {
         $className = $class;
         $cache = array('class' => $className, 'methods' => array());
         $httpMethods = array('get', 'post', 'patch', 'put', 'delete');
-        if ($this->hasPrivateGet($class)) {
+        if ($this->hasPrivateGetMethod($class)) {
             $cache['get_not_allowed'] = true;
         }
         $reflectors = $this->getMethodReflectors($class, $fullPath);
         foreach ($reflectors as $reflector) {
             $method = strtoupper($reflector->getName());
-            if (strpos($method, '__') === 0) {
+            if (strncmp($method, '__', 2) === 0) {
                 continue;
             }
             if ($method === 'before') {
@@ -49,7 +49,7 @@ class ActionInfoBuilder {
         return $reflector->getMethods(ReflectionMethod::IS_PUBLIC);
     }
 
-    private function hasPrivateGet($class) {
+    private function hasPrivateGetMethod($class) {
         $reflector = new ReflectionClass($class);
         if ($reflector->hasMethod('get') === false) {
             return false;
