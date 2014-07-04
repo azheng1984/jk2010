@@ -38,7 +38,7 @@ class App {
     }
 
     public function getActionResult($name = null) {
-        if ($key === null) {
+        if ($name === null) {
             return $this->actionResult;
         }
         return $this->actionResult($name);
