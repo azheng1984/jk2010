@@ -37,18 +37,11 @@ class App {
         return $this->params;
     }
 
-    public function getActionResult($key = null/*, ...*/) {
+    public function getActionResult($name = null) {
         if ($key === null) {
             return $this->actionResult;
         }
-        $result = $this->actionResult;
-        foreach (func_get_args() as $key) {
-            if (isset($result[$key]) === false) {
-                return;
-            }
-            $result = $result[$key];
-        }
-        return $result;
+        return $this->actionResult($name);
     }
 
     public function redirect($url, $statusCode = 302) {

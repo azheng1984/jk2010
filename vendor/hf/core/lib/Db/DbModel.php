@@ -8,9 +8,9 @@ class DbModel {
         return DbClient::getRowById(static::getTableName(), $id, $selector);
     }
 
-    public static function save(&$row, $options = null) {
+    public static function save(&$row) {
         static::validate($row);
-        return DbSaveCommand::save(static::getTableName(), $row, $options);
+        return DbSaveCommand::save(static::getTableName(), $row);
     }
 
     public static function deleteById($id) {
