@@ -5,7 +5,8 @@ use Hyperframework\ValidationException;
 
 class Action {
     public function patch($ctx) {
-        $ctx->filter(array());
+        $article = $ctx->filter(['content', 'title']);
+        Article::updateFragment($article);
     }
 
     public function post($ctx) {
@@ -17,6 +18,4 @@ class Action {
             return ['article' => $article, 'errors' => $e->getErrors()];
         }
     }
-
-
 }

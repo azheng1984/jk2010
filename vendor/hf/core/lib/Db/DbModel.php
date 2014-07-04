@@ -2,6 +2,7 @@
 namespace Hyperframework\Db;
 
 use Hyperframework\Validator;
+use Hyperframework\ValidationException;
 
 class DbModel {
     public static function getRowById($id, $selector = '*') {
@@ -9,7 +10,10 @@ class DbModel {
     }
 
     public static function save(&$row) {
-        static::validate($row);
+        $errors = static::validate($row);
+        if ($errors !== null) {
+            throw new ValidationException($errors);
+        }
         return DbSaveCommand::save(static::getTableName(), $row);
     }
 
@@ -29,7 +33,7 @@ class DbModel {
     protected static function validate($row) {
         $rules = static::getValidationRules();
         if ($rules !== null) {
-            Validator::run($row, $rules);
+            return Validator::run($row, $rules);
         }
     }
 
