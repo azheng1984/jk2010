@@ -1,21 +1,15 @@
 <?php
 namespace Hyperframework\Blog\App;
 
-use Hyperframework\ValidationException;
+use Hyperframework\Blog\Modles\Article;
 
 class Action {
     public function patch($ctx) {
-        $article = $ctx->filter(['content', 'title']);
-        Article::updateFragment($article);
-    }
-
-    public function post($ctx) {
         $article = $ctx->getForm('article');
-        try {
-            Article::save($article);
-            $ctx->redirect('/articles/' . $article['id']);
-        } catch (ValidationException $e) {
-            return ['article' => $article, 'errors' => $e->getErrors()];
+        if (Article::isValid($article, $errors) === false) {
+            return compact('article', 'errors');
         }
+        Article::save($article);
+        $ctx->redirect('/articles/' . $article['id']);
     }
 }

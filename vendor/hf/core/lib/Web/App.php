@@ -35,7 +35,7 @@ class App {
         return $this->params;
     }
 
-    public function filter($fields, $source) {
+    public function filter($fields, $source = null) {
         return InputFilter::run($fields, $source);
     }
 
@@ -64,7 +64,7 @@ class App {
 
     protected function initialize() {
         $this->rewriteRequestMethod();
-        //todo csrf check
+        $this->checkCsrf();
         $this->parseRequestBody();
         $this->initializePathInfo();
     }
@@ -99,6 +99,10 @@ class App {
 
     protected function initializePathInfo() {
         $this->pathInfo = PathInfo::get($this->getPath());
+    }
+
+    protected function checkCsrf() {
+        //todo
     }
 
     protected function getPath() {
