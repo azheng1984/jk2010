@@ -4,16 +4,16 @@ namespace Hft\Models;
 use Hyperframework\Validator;
 
 class Article extends DbModel {
-    private static $rules;
+    private static $validationRules;
 
     public static function isValid($row, &$errors) {
         return Validator::run(static::getValidationRules(), $row, $errors);
     }
 
     public static function getValidationRules() {
-        if (self::$rules === null) {
-            self::$rules = [];
+        if (self::$validationRules === null) {
+            self::$validationRules = [];
         }
-        return self::$rules;
+        return self::$validatonRules;
     }
 }
