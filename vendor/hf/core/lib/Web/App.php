@@ -64,8 +64,8 @@ class App {
 
     protected function initialize() {
         $this->rewriteRequestMethod();
-        $this->checkCsrf();
         $this->parseRequestBody();
+        $this->checkCsrf();
         $this->initializePathInfo();
     }
 
@@ -97,12 +97,12 @@ class App {
         }
     }
 
-    protected function initializePathInfo() {
-        $this->pathInfo = PathInfo::get($this->getPath());
-    }
-
     protected function checkCsrf() {
         //todo
+    }
+
+    protected function initializePathInfo() {
+        $this->pathInfo = PathInfo::get($this->getPath());
     }
 
     protected function getPath() {
