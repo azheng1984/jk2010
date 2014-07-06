@@ -1,8 +1,6 @@
 <?php
 namespace Hyperframework\Db;
 
-use Hyperframework\Validator;
-
 class DbModel {
     public static function getRowById($id, $selector = '*') {
         return DbClient::getRowById(static::getTableName(), $id, $selector);
@@ -24,14 +22,4 @@ class DbModel {
         }
         return $class;
     }
-
-    protected static function isValid($row, &$errors = null) {
-        $rules = static::getValidationRules();
-        if ($rules !== null) {
-            $errors = Validator::run($row, $rules);
-        }
-        return $errors === null;
-    }
-
-    protected static function getValidationRules() {}
 }

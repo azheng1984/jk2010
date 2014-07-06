@@ -1,17 +1,13 @@
 <?php
 class index {
     protected static function name() {
-       echo 'hi';
+        echo 'hi';
     }
 }
 
 class index2 extends index {
-    public static function name() {
-        parent::name();
-    }
-
-    public static function getValidationRules() {
-    }
+    public static function name() {parent::name();}
+    public static function getValidationRules() {}
 }
 
 index2::name();
