@@ -1,13 +1,13 @@
 <?php
-namespace Hft\Models;
+namespace Hyperframework\Blog\Models;
 
 use Hyperframework\Validator;
 
-class Article extends DbModel {
+final class Article extends \Hyperframework\Db\DbModel {
     private static $validationRules;
 
     public static function isValid($row, &$errors) {
-        return Validator::run(static::getValidationRules(), $row, $errors);
+        return Validator::run(self::getValidationRules(), $row, $errors);
     }
 
     public static function getValidationRules() {
