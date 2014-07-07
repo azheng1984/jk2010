@@ -32,10 +32,6 @@ class DbModel {
         return DbSaveCommand::save(static::getTableName(), $row);
     }
 
-    public static function deleteByColumns($columns) {
-        return DbClient::deleteByColumns(static::getTableName(), $columns);
-    }
-
     public static function deleteById($id) {
         return DbClient::deleteById(static::getTableName(), $id);
     }

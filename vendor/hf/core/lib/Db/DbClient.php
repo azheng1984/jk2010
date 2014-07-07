@@ -74,7 +74,7 @@ class DbClient {
         $sql = 'INSERT INTO ' . $table . '('
             . implode(array_keys($row), ', ') . ') VALUES('
             . static::getParameterPlaceholders(count($row)) . ')';
-        static::send($sql, array_values($row), false, true);
+        static::send($sql, array_values($row), false);
     }
 
     public static function update($table, $row, $where/*, $mixed, ...*/) {
@@ -119,9 +119,7 @@ class DbClient {
         return Connection::getCurrent();
     }
 
-    protected static function send(
-        $sql, $params, $isQuery = true, $isInsert = false
-    ) {
+    protected static function send($sql, $params, $isQuery = true) {
         $connection = static::getConnection();
         if ($params === null || count($parameters) === 0) {
             return $isQuery ?
@@ -134,9 +132,6 @@ class DbClient {
         $statement->execute($params);
         if ($isQuery) {
             return $statement;
-        }
-        if ($isInsert === false) {
-            return $statement->rowCount();
         }
     }
 
