@@ -12,8 +12,8 @@ class DbClient {
     }
 
     public static function getColumnByColumns($table, $columns, $selector) {
-        $sql = 'SELECT ' . $columnName . ' FROM ' . $table . ' WHERE id = ?';
-        return static::getColumn($sql, $id);
+        $result = self::queryByColumns($table, $columns, $selector);
+        return $result->fetchColumn();
     }
 
     public static function getRow($sql/*, $mixed, ...*/) {

@@ -17,7 +17,6 @@ class DbModel {
     }
 
     public static function getRowByColumns($columns, $selector = '*') {
-        Article::getRowByColumns(array('title' => $title), '*');
         return DbClient::getRowByColumns(
             static::getTableName(), $columns, $selector
         );
