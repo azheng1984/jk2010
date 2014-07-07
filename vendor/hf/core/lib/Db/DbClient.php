@@ -93,6 +93,13 @@ class DbClient {
         static::delete($table, 'id = ?', $id);
     }
 
+    public static function deleteByColumns($table, $columns) {
+        extract(self::buildWhereByColumns($columns);
+        static::send(
+            'DELETE FROM ' . $table . ' WHERE ' . $where, $params, false
+        );
+    }
+
     public static function save($table, &$row, $options = null) {
         return DbSaveCommand::run($table, $row, $options);
     }
@@ -129,6 +136,16 @@ class DbClient {
     }
 
     private static function queryByColumns($table, $columns, $selector) {
+        extract(self::buildWhereByColumns($columns);
+        $sql = 'SELECT ' . $selector . ' FROM ' . $table;
+        if ($where !== null) {
+            $sql .= ' WHERE ' . $where;
+        }
+        array_unshift($params, $sql);
+        return self::query($params);
+    }
+
+    private static function buildWhereByColumns($columns) {
         $params = array();
         $where = null;
         foreach ($columns as $key => $value) {
@@ -139,12 +156,10 @@ class DbClient {
             }
             $where .= ' AND ' . $key . ' = ?';
         }
-        $sql = 'SELECT ' . $selector . ' FROM ' . $table;
-        if ($where !== null) {
-            $sql .= ' WHERE ' . $where;
+        if ($where === null) {
+            throw new \Exception;
         }
-        array_unshift($params, $sql);
-        return self::query($params);
+        return compact($where, $params);
     }
 
     private static function getParameterPlaceholders($amount) {
