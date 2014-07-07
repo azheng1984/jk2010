@@ -12,6 +12,12 @@ class DbModel {
         );
     }
 
+    public static function getAllByColumns($columns, $selector = '*') {
+        return DbClient::getAllByColumns(
+            static::getTableName(), $columns, $selector
+        );
+    }
+
     public static function save(&$row) {
         return DbSaveCommand::save(static::getTableName(), $row);
     }

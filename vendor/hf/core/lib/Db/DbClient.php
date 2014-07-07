@@ -60,9 +60,9 @@ class DbClient {
     }
 
     public static function insert($table, $row) {
-        $sql = 'INSERT INTO ' . $table . '(' .
-            implode(array_keys($row), ', ') . ') VALUES(' .
-            static::getParameterPlaceholders(count($row)) . ')';
+        $sql = 'INSERT INTO ' . $table . '('
+            . implode(array_keys($row), ', ') . ') VALUES('
+            . static::getParameterPlaceholders(count($row)) . ')';
         static::send($sql, array_values($row), false, true);
     }
 

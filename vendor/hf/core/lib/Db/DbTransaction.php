@@ -7,9 +7,9 @@ class DbTransaction {
             DbClient::beginTransaction();
             $callback();
             DbClient::commit();
-        } catch (\Exception $exception) {
+        } catch (\Exception $e) {
             DbClient::rollback();
-            throw $exception;
+            throw $e;
         }
     }
 }
