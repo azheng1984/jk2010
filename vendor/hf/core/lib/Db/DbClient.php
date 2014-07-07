@@ -6,11 +6,6 @@ class DbClient {
         return static::query(func_get_args())->fetchColumn();
     }
 
-    public static function getColumnByColumns($table, $columns, $selector) {
-        $result = self::queryByColumns($table, $columns, $selector);
-        return $result->fetchColumn();
-    }
-
     public static function getColumnById($table, $id, $selector) {
         $sql = 'SELECT ' . $selector. ' FROM ' . $table . ' WHERE id = ?';
         return static::getColumn($sql, $id);
@@ -99,15 +94,15 @@ class DbClient {
         static::send($sql, $parameters, false);
     }
 
-    public static function deleteById($table, $id) {
-        static::delete($table, 'id = ?', $id);
-    }
-
     public static function deleteByColumns($table, $columns) {
         extract(self::buildWhereByColumns($columns);
         static::send(
             'DELETE FROM ' . $table . ' WHERE ' . $where, $params, false
         );
+    }
+
+    public static function deleteById($table, $id) {
+        static::delete($table, 'id = ?', $id);
     }
 
     public static function save($table, &$row, $options = null) {
