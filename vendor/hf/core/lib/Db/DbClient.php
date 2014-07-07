@@ -6,14 +6,14 @@ class DbClient {
         return static::query(func_get_args())->fetchColumn();
     }
 
-    public static function getColumnById($table, $id, $selector) {
-        $sql = 'SELECT ' . $selector. ' FROM ' . $table . ' WHERE id = ?';
-        return static::getColumn($sql, $id);
-    }
-
     public static function getColumnByColumns($table, $columns, $selector) {
         $result = self::queryByColumns($table, $columns, $selector);
         return $result->fetchColumn();
+    }
+
+    public static function getColumnById($table, $id, $selector) {
+        $sql = 'SELECT ' . $selector. ' FROM ' . $table . ' WHERE id = ?';
+        return static::getColumn($sql, $id);
     }
 
     public static function getRow($sql/*, $mixed, ...*/) {
