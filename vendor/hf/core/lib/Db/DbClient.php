@@ -12,8 +12,9 @@ class DbClient {
     }
 
     public static function getColumnById($table, $id, $selector) {
-        $sql = 'SELECT ' . $selector. ' FROM ' . $table . ' WHERE id = ?';
-        return static::getColumn($sql, $id);
+        return static::getColumn(
+            'SELECT ' . $selector. ' FROM ' . $table . ' WHERE id = ?', $id
+        );
     }
 
     public static function getRow($sql/*, $mixed, ...*/) {
@@ -64,9 +65,9 @@ class DbClient {
     }
 
     public static function execute($sql/*, $mixed, ...*/) {
-        $parameters = func_get_args();
-        $sql = array_shift($parameters);
-        return static::send($sql, $parameters, false);
+        $params = func_get_args();
+        $sql = array_shift($params);
+        return static::send($sql, $params, false);
     }
 
     public static function insert($table, $row) {
@@ -77,30 +78,30 @@ class DbClient {
     }
 
     public static function update($table, $row, $where/*, $mixed, ...*/) {
-        $parameters = array_values($row);
+        $params = array_values($row);
         if ($where !== null) {
             $where = ' WHERE ' . $where;
-            $parameters = array_merge(
+            $params = array_merge(
                 $row, array_slice(func_get_args(), 3)
             );
         }
         $sql = 'UPDATE ' . $table . ' SET '
             . implode(array_keys($row), ' = ?, ') . ' = ?' . $where;
-        static::send($sql, $parameters), false);
+        static::send($sql, $params), false);
     }
 
     public static function delete($table, $where/*, $mixed, ...*/) {
-        $parameters = array();
+        $params = array();
         if ($where !== null) {
             $where = ' WHERE ' . $where;
-            $parameters = array_slice(func_get_args(), 2);
+            $params = array_slice(func_get_args(), 2);
         }
         $sql = 'DELETE FROM ' . $table . $where;
-        static::send($sql, $parameters, false);
+        static::send($sql, $params, false);
     }
 
     public static function deleteByColumns($table, $columns) {
-        extract(self::buildWhereByColumns($columns);
+        list($where, $params) = self::buildWhereByColumns($columns);
         static::send(
             'DELETE FROM ' . $table . ' WHERE ' . $where, $params, false
         );
@@ -119,18 +120,18 @@ class DbClient {
     }
 
     protected static function send(
-        $sql, $parameters, $isQuery = true, $isInsert = false
+        $sql, $params, $isQuery = true, $isInsert = false
     ) {
         $connection = static::getConnection();
-        if ($parameters === null || count($parameters) === 0) {
+        if ($params === null || count($parameters) === 0) {
             return $isQuery ?
                 $connection->query($sql) : $connection->exec($sql);
         }
-        if (is_array($parameters[0])) {
-            $parameters = $parameters[0];
+        if (is_array($params[0])) {
+            $params = $parameters[0];
         }
         $statement = $connection->prepare($sql);
-        $statement->execute($parameters);
+        $statement->execute($params);
         if ($isQuery) {
             return $statement;
         }
@@ -139,14 +140,13 @@ class DbClient {
         }
     }
 
-    private static function query($arguments) {
-        $parameters = $arguments();
-        $sql = array_shift($parameters);
-        return static::send($sql, $parameters);
+    private static function query($params) {
+        $sql = array_shift($params);
+        return static::send($sql, $params);
     }
 
     private static function queryByColumns($table, $columns, $selector) {
-        extract(self::buildWhereByColumns($columns);
+        list($where, $params) = self::buildWhereByColumns($columns);
         $sql = 'SELECT ' . $selector . ' FROM ' . $table;
         if ($where !== null) {
             $sql .= ' WHERE ' . $where;
@@ -169,7 +169,7 @@ class DbClient {
         if ($where === null) {
             throw new \Exception;
         }
-        return compact($where, $params);
+        return array($where, $params);
     }
 
     private static function getParameterPlaceholders($amount) {
