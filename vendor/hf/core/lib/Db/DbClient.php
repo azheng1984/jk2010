@@ -1,9 +1,19 @@
 <?php
 namespace Hyperframework\Db;
-
+ 
 class DbClient {
     public static function getColumn($sql/*, $mixed, ...*/) {
         return static::query(func_get_args())->fetchColumn();
+    }
+
+    public static function getColumnById($table, $id, $selector) {
+        $sql = 'SELECT ' . $selector. ' FROM ' . $table . ' WHERE id = ?';
+        return static::getColumn($sql, $id);
+    }
+
+    public static function getColumnByColumns($table, $columns, $selector) {
+        $sql = 'SELECT ' . $columnName . ' FROM ' . $table . ' WHERE id = ?';
+        return static::getColumn($sql, $id);
     }
 
     public static function getRow($sql/*, $mixed, ...*/) {
