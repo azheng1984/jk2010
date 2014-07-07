@@ -26,12 +26,16 @@ namespace Hyperframework\Db;
 
 class DbSaveCommand {
     public static function execute($table, &$row, $options = null) {
+        //todo 返回有意义的数据
+    }
+
+    protected static function () {
     }
 
     public static function execute(
         $table, $filterColumns, $replacementColumns = null, $options = null
     ) {
-        list($shouldReturnId, $idName) = static::fetchOptions($options);
+        list($shouldGetLastInsertId, $idName) = static::fetchOptions($options);
         $columns = $idName !== null &&
             isset($filterColumns[$idName]) ? array() : array($idName);
         if ($replacementColumns !== null) {

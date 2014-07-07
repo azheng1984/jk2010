@@ -73,7 +73,7 @@ class DbClient {
     public static function insert($table, $row) {
         $sql = 'INSERT INTO ' . $table . '('
             . implode(array_keys($row), ', ') . ') VALUES('
-            . static::getParameterPlaceholders(count($row)) . ')';
+            . static::getParamPlaceholders(count($row)) . ')';
         static::send($sql, array_values($row));
     }
 
@@ -165,11 +165,11 @@ class DbClient {
         return array($where, $params);
     }
 
-    private static function getParameterPlaceholders($amount) {
-        if ($amount > 1) {
-            return str_repeat('?, ', $amount - 1) . '?';
+    private static function getParamPlaceholders($count) {
+        if ($count > 1) {
+            return str_repeat('?, ', $count - 1) . '?';
         }
-        if ($amount === 1) {
+        if ($count === 1) {
             return '?';
         }
         return '';
