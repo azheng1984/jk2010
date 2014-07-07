@@ -67,14 +67,14 @@ class DbClient {
     public static function execute($sql/*, $mixed, ...*/) {
         $params = func_get_args();
         $sql = array_shift($params);
-        return static::send($sql, $params);
+        static::send($sql, $params);
     }
 
     public static function insert($table, $row) {
         $sql = 'INSERT INTO ' . $table . '('
             . implode(array_keys($row), ', ') . ') VALUES('
             . static::getParameterPlaceholders(count($row)) . ')';
-        return static::send($sql, array_values($row));
+        static::send($sql, array_values($row));
     }
 
     public static function update($table, $row, $where/*, $mixed, ...*/) {
@@ -87,7 +87,7 @@ class DbClient {
         }
         $sql = 'UPDATE ' . $table . ' SET '
             . implode(array_keys($row), ' = ?, ') . ' = ?' . $where;
-        return static::send($sql, $params));
+        static::send($sql, $params));
     }
 
     public static function delete($table, $where/*, $mixed, ...*/) {
@@ -97,18 +97,18 @@ class DbClient {
             $params = array_slice(func_get_args(), 2);
         }
         $sql = 'DELETE FROM ' . $table . $where;
-        return static::send($sql, $params);
+        static::send($sql, $params);
     }
 
     public static function deleteByColumns($table, $columns) {
         list($where, $params) = self::buildWhereByColumns($columns);
-        return static::send(
+        static::send(
             'DELETE FROM ' . $table . ' WHERE ' . $where, $params
         );
     }
 
     public static function deleteById($table, $id) {
-        return static::delete($table, 'id = ?', $id);
+        static::delete($table, 'id = ?', $id);
     }
 
     public static function save($table, &$row, $options = null) {
