@@ -67,14 +67,14 @@ class DbClient {
     public static function execute($sql/*, $mixed, ...*/) {
         $params = func_get_args();
         $sql = array_shift($params);
-        return static::send($sql, $params, false);
+        return static::send($sql, $params);
     }
 
     public static function insert($table, $row) {
         $sql = 'INSERT INTO ' . $table . '('
             . implode(array_keys($row), ', ') . ') VALUES('
             . static::getParameterPlaceholders(count($row)) . ')';
-        static::send($sql, array_values($row), false);
+        return static::send($sql, array_values($row));
     }
 
     public static function update($table, $row, $where/*, $mixed, ...*/) {
@@ -87,7 +87,7 @@ class DbClient {
         }
         $sql = 'UPDATE ' . $table . ' SET '
             . implode(array_keys($row), ' = ?, ') . ' = ?' . $where;
-        static::send($sql, $params), false);
+        return static::send($sql, $params));
     }
 
     public static function delete($table, $where/*, $mixed, ...*/) {
@@ -97,18 +97,18 @@ class DbClient {
             $params = array_slice(func_get_args(), 2);
         }
         $sql = 'DELETE FROM ' . $table . $where;
-        static::send($sql, $params, false);
+        return static::send($sql, $params);
     }
 
     public static function deleteByColumns($table, $columns) {
         list($where, $params) = self::buildWhereByColumns($columns);
-        static::send(
-            'DELETE FROM ' . $table . ' WHERE ' . $where, $params, false
+        return static::send(
+            'DELETE FROM ' . $table . ' WHERE ' . $where, $params
         );
     }
 
     public static function deleteById($table, $id) {
-        static::delete($table, 'id = ?', $id);
+        return static::delete($table, 'id = ?', $id);
     }
 
     public static function save($table, &$row, $options = null) {
@@ -119,7 +119,7 @@ class DbClient {
         return Connection::getCurrent();
     }
 
-    protected static function send($sql, $params, $isQuery = true) {
+    protected static function send($sql, $params) {
         $connection = static::getConnection();
         if ($params === null || count($parameters) === 0) {
             return $isQuery ?
@@ -130,9 +130,7 @@ class DbClient {
         }
         $statement = $connection->prepare($sql);
         $statement->execute($params);
-        if ($isQuery) {
-            return $statement;
-        }
+        return $statement;
     }
 
     private static function query($params) {
