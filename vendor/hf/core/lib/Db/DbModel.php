@@ -2,30 +2,12 @@
 namespace Hyperframework\Db;
 
 class DbModel {
-    public static function getColumnByColumns($columns, $selector) {
-        return DbClient::getColumnByColumns(
-            static::getTableName(), $columns, $selector
-        );
-    }
-
     public static function getColumnById($id, $selector) {
         return DbClient::getColumnById(static::getTableName(), $id, $selector);
     }
 
-    public static function getRowByColumns($columns, $selector = '*') {
-        return DbClient::getRowByColumns(
-            static::getTableName(), $columns, $selector
-        );
-    }
-
     public static function getRowById($id, $selector = '*') {
         return DbClient::getRowById(static::getTableName(), $id, $selector);
-    }
-
-    public static function getAllByColumns($columns, $selector = '*') {
-        return DbClient::getAllByColumns(
-            static::getTableName(), $columns, $selector
-        );
     }
 
     public static function save(&$row) {
