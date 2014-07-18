@@ -2,8 +2,10 @@
 namespace Hyperframework\Db;
 
 class DbModel {
-    public static function getColumnById($id, $selector) {
-        return DbClient::getColumnById(static::getTableName(), $id, $selector);
+    public static function getColumnById($id, $columnName) {
+        return DbClient::getColumnById(
+            static::getTableName(), $id, $columnName
+        );
     }
 
     public static function getRowById($id, $selector = '*') {
