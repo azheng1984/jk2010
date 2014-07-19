@@ -77,8 +77,8 @@ class DbClient {
         static::send($sql, array_values($row));
     }
 
-    public static function update($table, $row, $where/*, $mixed, ...*/) {
-        $params = array_values($row);
+    public static function update($table, $columns, $where/*, $mixed, ...*/) {
+        $params = array_values($columns);
         if ($where !== null) {
             $where = ' WHERE ' . $where;
             $params = array_merge(
@@ -86,8 +86,13 @@ class DbClient {
             );
         }
         $sql = 'UPDATE ' . $table . ' SET '
-            . implode(array_keys($row), ' = ?, ') . ' = ?' . $where;
+            . implode(array_keys($columns), ' = ?, ') . ' = ?' . $where;
         static::send($sql, $params));
+    }
+
+    public static function updateByColumns(
+        $table, $replacementColumns, $filterColumns
+    ) {
     }
 
     public static function delete($table, $where/*, $mixed, ...*/) {
