@@ -12,9 +12,10 @@ class DbClient {
     }
 
     public static function getColumnById($table, $id, $selector) {
-        return static::getColumn(
-            'SELECT ' . $selector. ' FROM ' . $table . ' WHERE id = ?', $id
-        );
+        $sql = 'SELECT ' . $selector . ' FROM '
+            . static::getConnection()->quoteIdentifier($table)
+            . ' WHERE id = ?';
+        return static::getColumn($sql, $id);
     }
 
     public static function getRow($sql/*, $mixed, ...*/) {
@@ -27,9 +28,10 @@ class DbClient {
     }
 
     public static function getRowById($table, $id, $selector = '*') {
-        return static::getRow(
-            'SELECT ' . $selector . ' FROM ' . $table . ' WHERE id = ?' , $id
-        );
+        $sql = 'SELECT ' . $selector . ' FROM '
+            . static::getConnection()->quoteIdentifier($table)
+            . ' WHERE id = ?';
+        return static::getRow($sql, $id);
     }
 
     public static function getAll($sql/*, $mixed, ...*/) {
@@ -71,8 +73,12 @@ class DbClient {
     }
 
     public static function insert($table, $row) {
-        $sql = 'INSERT INTO ' . $table . '('
-            . implode(array_keys($row), ', ') . ') VALUES('
+        $keys = array();
+        foreach (array_keys($row) as $key) {
+            $keys[] = static::getConnection()->quoteIdentifier($key);
+        }
+        $sql = 'INSERT INTO ' . static::getConnection()->quoteIdentifier($table)
+            . '(' . implode($keys, ', ') . ') VALUES('
             . static::getParamPlaceholders(count($row)) . ')';
         static::send($sql, array_values($row));
     }
@@ -85,8 +91,13 @@ class DbClient {
                 $row, array_slice(func_get_args(), 3)
             );
         }
-        $sql = 'UPDATE ' . $table . ' SET '
-            . implode(array_keys($columns), ' = ?, ') . ' = ?' . $where;
+        $tmp = null;
+        $connetction = static::getConnection();
+        foreach (array_keys($columns) as $key) {
+            $tmp .= $connection->quoteIdentifier($key) . ' = ?';
+        }
+        $sql = 'UPDATE ' . $connection->quoteIdentifier($table)
+            . ' SET ' . $tmp . $where;
         static::send($sql, $params));
     }
 
@@ -110,14 +121,16 @@ class DbClient {
             $where = ' WHERE ' . $where;
             $params = array_slice(func_get_args(), 2);
         }
-        $sql = 'DELETE FROM ' . $table . $where;
+        $sql = 'DELETE FROM ' . static::getConnection()->quoteIdentifier($table)
+            . $where;
         static::send($sql, $params);
     }
 
     public static function deleteByColumns($table, $columns) {
         list($where, $params) = self::buildWhereByColumns($columns);
         static::send(
-            'DELETE FROM ' . $table . ' WHERE ' . $where, $params
+            'DELETE FROM ' . static::getConnection()->quoteIdentifier($table)
+                . ' WHERE ' . $where, $params
         );
     }
 
@@ -154,7 +167,8 @@ class DbClient {
 
     private static function queryByColumns($table, $columns, $selector) {
         list($where, $params) = self::buildWhereByColumns($columns);
-        $sql = 'SELECT ' . $selector . ' FROM ' . $table;
+        $sql = 'SELECT ' . $selector . ' FROM '
+            . static::getConnection()->quoteIdentifier($table);
         if ($where !== null) {
             $sql .= ' WHERE ' . $where;
         }
@@ -165,13 +179,13 @@ class DbClient {
     private static function buildWhereByColumns($columns) {
         $params = array();
         $where = null;
+        $connection = static::getConnection();
         foreach ($columns as $key => $value) {
             $params[] = $value; 
-            if ($where === null) {
-                $where = $key . ' = ?';
-                continue;
+            if ($where !== null) {
+                $where = ' AND ';
             }
-            $where .= ' AND ' . $key . ' = ?';
+            $where .= $connection->quoteIdentifier($key) . ' = ?';
         }
         if ($where === null) {
             throw new \Exception;
