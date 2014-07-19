@@ -93,6 +93,11 @@ class DbClient {
     public static function updateByColumns(
         $table, $replacementColumns, $filterColumns
     ) {
+        list($where, $params) = self::buildWhereByColumns($filterColumns);
+        call_user_func_array(
+            'static::update',
+            array($table, $replacementColumns, $where) + $params
+        );
     }
 
     public static function delete($table, $where/*, $mixed, ...*/) {
