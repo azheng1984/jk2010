@@ -100,6 +100,10 @@ class DbClient {
         );
     }
 
+    public static function updateById($table, $columns, $id) {
+        static::update($table, $columns, 'id = ?', $id);
+    }
+
     public static function delete($table, $where/*, $mixed, ...*/) {
         $params = array();
         if ($where !== null) {
