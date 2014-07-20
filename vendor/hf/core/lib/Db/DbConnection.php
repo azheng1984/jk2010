@@ -25,18 +25,16 @@ class DbConnection {
         self::$current = $pdo;
     }
 
-    public static function quoteIdentifier($name) {
-        if (self::identifierQuotes === null) {
-            self::identifierQuotes = static::getIdentifierQuotes();
+    public static function quoteIdentifier($identifier) {
+        if (self::identifierQuotationMarks === null) {
+            self::identifierQuotationMarks =
+                static::getIdentifierQuotationMarks();
         }
-        if (strpos($name, '.') === false) {
-            return self::identifierQuotes[0] . $name
-                . self::identifierQuotes[1];
-        }
-        return $name;
+        return self::identifierQuotationMarks[0] . $identifier
+            . self::identifierQuotationMarks[1];
     }
 
-    protected static function getIdentifierQuotes() {
+    protected static function getIdentifierQuotationMarks() {
         switch (self::$current->getAttribute(PDO::ATTR_DRIVER_NAME)) {
             case 'sqlsrv':
                 return array('[', ']');
