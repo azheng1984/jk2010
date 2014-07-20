@@ -5,7 +5,7 @@ class DbConnection {
     private static $current = null;
     private static $pool = array();
     private static $stack = array();
-    private static $identifierQuotes;
+    private static $identifierQuotationMarks;
     private static $factory;
 
     public static function connect(
@@ -13,7 +13,7 @@ class DbConnection {
     ) {
         if (self::$current !== null) {
             self::$stack[] = self::$current;
-            self::$identifierQuotes = null;
+            self::$identifierQuotationMarks = null;
         }
         if ($pdo !== null) {
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -36,10 +36,10 @@ class DbConnection {
 
     protected static function getIdentifierQuotationMarks() {
         switch (self::$current->getAttribute(PDO::ATTR_DRIVER_NAME)) {
-            case 'sqlsrv':
-                return array('[', ']');
             case 'mysql':
                 return array('`', '`');
+            case 'sqlsrv':
+                return array('[', ']');
             default:
                 return array('"', '"');
         }
