@@ -7,6 +7,7 @@ class Runner {
     public static function run() {
         if (static::isAsset()) {
             static::runAssetProxy();
+            return;
         }
         static::runApp();
     }
@@ -23,7 +24,7 @@ class Runner {
     }
 
     protected static function runAssetProxy() {
-        AssetProxy::run;
+        AssetProxy::run();
     }
 
     protected static function runApp() {

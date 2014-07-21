@@ -1,6 +1,6 @@
 <?php
 namespace Hyperframework\Db;
- 
+
 class DbClient {
     public static function getColumn($sql/*, $mixed, ...*/) {
         return static::query(func_get_args())->fetchColumn();

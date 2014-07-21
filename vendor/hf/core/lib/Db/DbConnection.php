@@ -67,6 +67,7 @@ class DbConnection {
 
     public static function reset() {
         self::$current = null;
+        self::$identifierQuotationMarks = null;
         self::$stack = array();
         self::$pool = array();
         self::$factory = null;

@@ -24,8 +24,8 @@ class ExceptionHandler {
         if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
             try {
                 static::displayError();
-            } catch (\Exception $recursiveException) {
-                static::triggerError(self::$exception, $recursiveException);
+            } catch (\Exception $e) {
+                static::triggerError(self::$exception, $e);
             }
         }
         if ($exception instanceof InternalServerErrorException) {
@@ -71,6 +71,6 @@ class ExceptionHandler {
         $pathInfo = PathInfo::get('/', 'ErrorApp');
         try {
             ViewDispatcher::run($pathInfo, null);
-        } catch (NotAcceptableException $ignoredException) {}
+        } catch (NotAcceptableException $e) {}
     }
 }

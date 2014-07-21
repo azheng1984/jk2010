@@ -1,4 +1,4 @@
-<?pb
+<?php
 namespace Hyperframework\Db;
 
 class DbModel {
