@@ -2,11 +2,18 @@
 namespace Hyperframework\Web;
 
 class InputFilter {
-    private static $instances = array();
-    private static $configs = array();
+    public static function run($fields, $source) {
+        if (is_array($fields) === false) {
+            $fields = array($fields);
+        }
+        if ($source === null) {
+            $source = $_SERVER['REQUEST_METHOD'] === 'GET'
+                || $_SERVER['REQUEST_METHOD'] === 'HEAD' ? $_GET : $_POST;
+        }
 
-    //move to FormFilter
-    public static function createByFormFieldConfig() {
+        $query = $ctx->getParam('query', $_GET);
+        $query = $ctx->getParam('query', $_COOKIE);
+
     }
 
     public static function create($options) {

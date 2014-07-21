@@ -35,8 +35,12 @@ class App {
         return $this->params;
     }
 
-    public function filter($fields, $source = null) {
-        return InputFilter::run($fields, $source);
+    public function filter($source, $fields) {
+        if (is_string($source)) {
+            $source = '_' . $source;
+            $source = isset($GLOBALS[$source]) ? null : $GLOBALS[$source];
+        }
+        return DataFilter::run($fields, $source);
     }
 
     public function getForm($name) {
