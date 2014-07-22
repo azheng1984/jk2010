@@ -37,7 +37,7 @@ class App {
         return $this->params;
     }
 
-    public function filter($source, $fields) {
+    public function getInput($source, $fields) {
         if ($source === 'SERVER') {
             return DataFilter::run($_SERVER, $fields);
         }
