@@ -3,7 +3,7 @@ namespace Hyperframework\Web;
 
 class RequestBodyParser {
     public static function run() {
-        if ((int)ini_get('enable_post_data_reading') === 0) {
+        if (!ini_get('enable_post_data_reading')) {
             return;
         }
         $GLOBALS['HTTP_RAW_POST_DATA'] = file_get_contents('php://input');
