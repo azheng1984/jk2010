@@ -1,2 +1,5 @@
 <?php
-var_dump(INPUT_ENV);
+$x = '_SERVER';
+var_dump($GLOBALS['_SERVER']);
+
+$_SERVER;
