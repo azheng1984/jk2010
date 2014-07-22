@@ -42,8 +42,8 @@ class App {
             return DataFilter::run($_SERVER, $fields);
         }
         $source = '_' . $source;
-        $source = isset($$source) ? $$source : null;
-        return DataFilter::run($source, $fields);
+        $data = isset($$source) ? $$source : null;
+        return DataFilter::run($data, $fields);
     }
 
     public function getForm($name) {
