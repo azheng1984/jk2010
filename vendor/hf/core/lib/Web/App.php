@@ -21,20 +21,20 @@ class App {
         }
     }
 
-    public function setParam($name, $value) {
-        $this->params[$name] = $value;
+    public function getParams() {
+        return $this->params;
     }
 
-    public function hasParam($name) {
-        return isset($this->params[$name]);
+    public function setParam($name, $value) {
+        $this->params[$name] = $value;
     }
 
     public function removeParam($name) {
         unset($this->params[$name]);
     }
 
-    public function getParams() {
-        return $this->params;
+    public function hasParam($name) {
+        return isset($this->params[$name]);
     }
 
     public function getInput($source, $fields) {
