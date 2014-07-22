@@ -1,5 +1,3 @@
 <?php
-$x = '_SERVER';
-var_dump($GLOBALS['_SERVER']);
-
-$_SERVER;
+namespace _123;
+echo __NAMESPACE__;

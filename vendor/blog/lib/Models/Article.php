@@ -20,7 +20,7 @@ final class Article extends \Hyperframework\Db\DbModel {
     }
 
     public static function getCount() {
-        return DbClient::getColumn('SELECT COUNT(*) FROM Article');        
+        return DbClient::getColumn('SELECT COUNT(*) FROM Article');
     }
 
     public static function getTopLike() {

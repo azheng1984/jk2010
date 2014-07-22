@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Blog\App;
+namespace Hyperframework\Blog\App\Comments;
 
 use Hyperframework\Blog\Modles\Article;
 
