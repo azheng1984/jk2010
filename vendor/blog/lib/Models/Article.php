@@ -16,7 +16,7 @@ final class Article extends \Hyperframework\Db\DbModel {
         if (self::$validationRules === null) {
             self::$validationRules = [];
         }
-        return self::$validatonRules;
+        return self::$validationRules;
     }
 
     public static function getCount() {
