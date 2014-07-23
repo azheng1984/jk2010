@@ -7,7 +7,6 @@ class FormHelper {
 
     public function __construct($data = null, $config = null) {
         $this->data = $data;
-        $args = func_get_args();
         //parse config
         $this->config = $config;
     }

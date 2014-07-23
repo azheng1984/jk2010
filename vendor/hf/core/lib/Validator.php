@@ -2,6 +2,6 @@
 namespace Hyperframework;
 
 class Validator {
-    public static function run($rules, $data, &$errors) {
+    public static function run($data, $rules, &$errors = null) {
     }
 }

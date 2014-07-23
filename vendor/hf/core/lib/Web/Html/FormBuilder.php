@@ -4,7 +4,7 @@ namespace Hyperframework\Web\Html;
 class FormBuilder {
     public static function run($data, $config) {
         FormBuilder::run($article, 'article');
-        //merge config
+        //parse config
         $formHelper = new FormHelper($data, $config);
         $formHelper->begin();
         foreach ($config as $attrs) {
