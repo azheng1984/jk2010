@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Blog;
 
-use Hyperframework\Web\EnvironmentBuilder;
 use Hyperframework\Web\Runner;
 
 define('Hyperframework\Blog\ROOT_PATH', dirname(__DIR__));
