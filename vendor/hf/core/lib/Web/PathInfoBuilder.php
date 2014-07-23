@@ -2,6 +2,7 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\ConfigLoader;
+use Hyperframework\ClassRecognizer;
 
 class PathInfoBuilder {
     private static $config;
@@ -15,16 +16,18 @@ class PathInfoBuilder {
         }
         $cache = array('namespace' => $namespace);
         foreach(scandir($path) as $entry) {
-            if ($entry === '.' || $entry === '..' || is_dir($path . $entry)) {
+            if ($entry === '.' || $entry === '..' || is_dir($path . '/' . $entry)) {
                 continue;
             }
+            // echo $path . '/' . $entry;
             $classRecognizer = new ClassRecognizer;
-            $class = $classRecognizer->getClass($namespace . '\\' .$entry);
+            $class = $classRecognizer->getClass($entry);
             $fullName = $namespace . '\\' . $class;
-            if ($entry === 'Action') {
-                $cache['action'] = ActionInfoBuilder::build($namespace);
+            if ($class === 'Action') {
+                //$cache['action'] = ActionInfoBuilder::build($namespace);
             } else {
-                $cache['views'][$class] = ViewInfoBuilder::build(
+                $builder = new ViewInfoBuilder($defaultView);
+                $cache['views'] = $builder->build(
                     $namespace, $class
                 );
             }

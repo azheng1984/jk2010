@@ -8,8 +8,8 @@ use Hyperframework\ConfigFileLoader;
 final class PathInfo {
     private static $cache;
 
-    public static function get($path, $applicationNamespace = 'App') {
-        $result = self::build($path, $applicationNamespace);
+    public static function get($path, $appName = 'App') {
+        $result = self::build($path, $appName);
         if ($result === null) {
             throw new NotFoundException;
         }
@@ -20,7 +20,7 @@ final class PathInfo {
         self::$cache = null;
     }
 
-    private static function build($path, $isInternal) {
+    private static function build($path, $appName) {
         $isCacheEnabled = Config::get(
             'hyperframework.web.path_info.enable_cache'
         );
@@ -51,9 +51,13 @@ final class PathInfo {
             }
         }
         if (strncmp($path, '#', 1) !== 0) {
-            $namespace = 'App\\' . $namespace;
+            if ($namespace == '') {
+                $namespace = 'App';
+            } else {
+                $namespace = 'App\\' . $namespace;
+            }
         } else {
-            $namespace =substr($namespace, 1);
+            $namespace = substr($namespace, 1);
         }
         $config = ConfigFileLoader::loadPhp(
             'path_info_builder.php',

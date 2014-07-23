@@ -1,7 +1,7 @@
 <?php
-namespace Hyperframework\Web\Exceptions;
+namespace Hyperframework\Web;
 
-class InternalServerErrorException extends ApplicationException {
+class InternalServerErrorException extends AppException {
     public function __construct($message = null, $previous = null) {
         parent::__construct($message, '500 Internal Server Error', $previous);
     }

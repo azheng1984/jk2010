@@ -2,7 +2,7 @@
     "autoload": {
         "psr-4": {
           "Hyperframework\\": "../hf/core/lib/",
-          "Hft\\": "lib/"
+          "Hyperframework\\Blog\\": "lib/"
         }
     }
 }

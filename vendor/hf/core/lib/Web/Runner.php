@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Config;
-use Hyperframework\EnviromentBuilder;
+use Hyperframework\EnvironmentBuilder;
 
 class Runner {
     public static function run($rootNamespace, $rootPath) {
@@ -17,7 +17,7 @@ class Runner {
     protected static function initialize($rootNamespace, $rootPath) {
         require dirname(__DIR__) . DIRECTORY_SEPARATOR
             . 'EnvironmentBuilder.php';
-        EnviromentBuilder::run($rootNamespace, $rootPath);
+        EnvironmentBuilder::run($rootNamespace, $rootPath);
         ExceptionHandler::run();
     }
 

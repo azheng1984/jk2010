@@ -8,29 +8,30 @@ class ViewInfoBuilder {
         if (!is_array($types)) {
             $types = array($types);
         }
-        $this->verifyTypes($types);
+        //$this->verifyTypes($types);
         $this->types = $types;
     }
 
     public function build($namespace, $class) {
-        $class = $namespace . $class;
+        $class = $namespace .'\\' . $class;
         foreach ($this->types as $type) {
             if (substr($class, -strlen($type)) === $type) {
+                $fullPath = '';
                 $this->verifyRenderingMethod($class, $fullPath);
-                return array($type => $className);
+                return array($type => $class);
             }
         }
     }
 
     private function verifyTypes($types) {
         $pattern = '/^([A-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)$/';
-        if (!preg_match($pattern, $type)) {
+        if (!preg_match($pattern, $types)) {
             throw new Exception("View type '$type' is invalid");
         }
     }
 
     private function verifyRenderingMethod($class, $fullPath) {
-        $reflector = new ReflectionClass($class);
+        $reflector = new \ReflectionClass($class);
         if (!$reflector->hasMethod('render')) {
             throw new Exception("Rendering method of view not found in '$fullPath'");
         }

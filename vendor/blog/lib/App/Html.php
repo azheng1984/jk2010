@@ -1,13 +1,14 @@
 <?php
-namespace Hyperframework\Blog\App\Comments;
+namespace Hyperframework\Blog\App;
 
 class Html {
-    public static function render($ctx) {
-        FormBuilder::run(
-            'article',
-            $ctx->getActionResult('article'),
-            $ctx->getActionResult('errors'),
-            Article::getValidationRules()
-        );
+    public function render($ctx) {
+        echo 'hello';
+//        FormBuilder::run(
+//            'article',
+//            $ctx->getActionResult('article'),
+//            $ctx->getActionResult('errors'),
+//            Article::getValidationRules()
+//        );
     }
 }

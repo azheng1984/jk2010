@@ -21,15 +21,16 @@ final class ViewDispatcher {
         if (isset($pathInfo['views']) === false) {
             return self::getDefaultViewClass();
         }
+        $views = $pathInfo['views'];
         $class = null;
         if (empty($_SERVER['REQUEST_MEDIA_TYPE'])) {
             $class = reset($views);
-        } elseif (isset($views[$_SERVER['REQUEST_MEDIA_TYPE']]) {
+        } elseif (isset($views[$_SERVER['REQUEST_MEDIA_TYPE']])) {
             $class = $views[$_SERVER['REQUEST_MEDIA_TYPE']];
         } else {
             return self::getDefaultViewClass();
         }
-        $class = $pathInfo['namespace'] . '\\' . $class;
+        return $class;
     }
 
     private static function getDefaultViewClass() {
