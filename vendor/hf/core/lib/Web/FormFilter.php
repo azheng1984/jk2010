@@ -2,7 +2,8 @@
 namespace Hyperframework\Web\Html;
 
 class FormFilter {
-    public static function execute($name) {
+    public static function run($config) {
+        //preprocess config
         $result = array();
         foreach ($config as $attrs) {
             $name = $attrs['name'];

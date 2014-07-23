@@ -46,8 +46,8 @@ class App {
         return DataFilter::run($data, $fields);
     }
 
-    public function getForm($name) {
-        return FormFilter::run($name);
+    public function getForm($config) {
+        FormFilter::run($config);
     }
 
     public function getActionResult($name = null) {

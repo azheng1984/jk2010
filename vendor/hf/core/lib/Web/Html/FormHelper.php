@@ -3,16 +3,22 @@ namespace Hyperframework\Web\Html;
 
 class FormHelper {
     private $data;
-    private $configs = array();
+    private $config;
 
-    public function __construct($data = null) {
+    public function __construct($data = null, $config = null) {
         $this->data = $data;
+        $args = func_get_args();
+        //parse config
+        $this->config = $config;
     }
 
-    public function addConfig($config) {
+    public function begin($attrs = null) {
+        echo '<form>';
+        $this->renderCsrfProtectionField();
     }
 
-    public static function create($options) {
+    public function end() {
+        echo '</form>';
     }
 
     public function renderTextBox($attrs) {
@@ -51,14 +57,5 @@ class FormHelper {
 
     public function renderCsrfProtectionField() {
         echo '<input type="hidden" name="csrf" value="xxx"/>';
-    }
-
-    public function begin($attrs = null) {
-        echo '<form>';
-        $this->renderCsrfProtectionField();
-    }
-
-    public function end() {
-        echo '</form>';
     }
 }

@@ -2,22 +2,19 @@
 namespace Hyperframework\Web\Html;
 
 class FormBuilder {
-    private $formHelper;
-
-    public function __construct($data = null) {
-        $this->formHelper = new FormHelper($data);
-    }
-
-    public function render($config) {
-        $this->formHelper->begin();
+    public static function run($data, $config) {
+        FormBuilder::run($article, 'article');
+        //merge config
+        $formHelper = new FormHelper($data, $config);
+        $formHelper->begin();
         foreach ($config as $attrs) {
             $type = $attrs['type'];
             unset($attrs['type']);
             call_user_func_array(
-                array($this->formHelper, 'render'. $type),
+                array($formHelper, 'render' . $type),
                 $attrs
             );
         }
-        $this->formHelper->end();
+        $formHelper->end();
     }
 }
