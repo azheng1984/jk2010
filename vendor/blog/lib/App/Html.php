@@ -9,14 +9,22 @@ class Html {
         FormBuilder::run(
             $ctx->getActionResult('article'),
             array(
-                'import' => 'article',
-                'fields' => array(
-                    'title' => array('type' => 'TextBox'),
-                    'body' => array('type' => 'TextArea'),
-                ),
+                'base' => 'article',
                 'errors' => $ctx->getActionResult('errors'),
                 'validation_rules' => Article::getValidationRules()
             )
         );
+
+//        FormBuilder::run(
+//            $ctx->getActionResult('article'),
+//            array(
+//                'base' => 'article',
+//                'fields' => array(
+//                    'title' => array('type' => 'TextBox'),
+//                ),
+//                'errors' => $ctx->getActionResult('errors'),
+//                'validation_rules' => Article::getValidationRules()
+//            )
+//        );
     }
 }

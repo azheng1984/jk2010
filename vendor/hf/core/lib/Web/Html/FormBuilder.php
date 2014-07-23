@@ -7,8 +7,8 @@ class FormBuilder {
     public static function run($data, $config) {
         //parse config
         $formHelper = new FormHelper($data, $config);
-        if (isset($config['import'])) {
-            //merge config
+        if (isset($config['base'])) {
+            //include extenconfig
             ConfigFileLoader::loadPhp('form/article.php');
         }
         $formHelper->begin();
