@@ -2,14 +2,23 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Config;
+use Hyperframework\EnviromentBuilder;
 
 class Runner {
-    public static function run() {
+    public static function run($rootNamespace, $rootPath) {
+        static::initialize($rootNamespace, $rootPath);
         if (static::isAsset()) {
             static::runAssetProxy();
             return;
         }
         static::runApp();
+    }
+
+    protected static function initialize($rootNamespace, $rootPath) {
+        require dirname(__DIR__) . DIRECTORY_SEPARATOR
+            . 'EnvironmentBuilder.php';
+        EnviromentBuilder::run($rootNamespace, $rootPath);
+        ExceptionHandler::run();
     }
 
     protected static function isAsset() {
