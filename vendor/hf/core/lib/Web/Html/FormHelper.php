@@ -37,10 +37,6 @@ class FormHelper {
         if (is_array($this->attrs)) {
             $attrs = array_merge($this->attrs, $attrs);
         }
-        $isCsrfProtectionEnabled = true;
-        if (isset($attrs[':enable_csrf_protection'])) {
-            $isCsrfProtectionEnabled = $attrs[':enable_csrf_protection']; 
-        }
         echo '<form';
         foreach ($attrs as $key => $value) {
             if (is_int($key)) {
@@ -50,10 +46,18 @@ class FormHelper {
             }
         }
         echo '>';
+        $isCsrfProtectionEnabled = null;
+        if (isset($attrs[':enable_csrf_protection'])) {
+            $isCsrfProtectionEnabled = $attrs[':enable_csrf_protection']; 
+        }
+        if ($isCsrfProtectionEnabled === null) {
+            $isCsrfProtectionEnabled = Config::get(
+                'hyperframework.enable_csrf_protection'
+            );
+        }
         if (isset($attrs['method'])
             && $attrs['method'] === 'POST'
             && $isCsrfProtectionEnabled !== false
-            && Config::get('hyperframework.enable_csrf_protection') !== false
         ) {
             $this->renderCsrfProtectionField();
         }
