@@ -21,7 +21,14 @@ class FormHelper {
     public function begin($attrs = null) {
         echo '<form';
         echo '>';
-        $this->renderCsrfProtectionField();
+        if (isset($attrs['method'])
+            && $attrs['method'] === 'POST'
+            && (isset($attrs['enable_csrf_protection']) === false
+                || $attrs['enable_csrf_protection'] !== false)
+            && Config::get('hyperframework.enable_csrf_protection') !== false
+        ) {
+            $this->renderCsrfProtectionField();
+        }
     }
 
     public function end() {
@@ -87,6 +94,17 @@ class FormHelper {
     public function renderSelect($attrs) {
         echo '<select';
         echo '>';
+        $value = $data[$attrs['name']];
+        if (isset($attrs['optgroups'])) {
+        }
+        if (isset($attrs['options'])) {
+            foreach ($attrs['options'] as $option) {
+                echo '<option'
+                if ($option['value'] === $value) {
+                }
+                echo '<option>', $option['name'], '</option>'
+            }
+        }
         echo '</select>';
     }
 
