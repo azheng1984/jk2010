@@ -19,7 +19,7 @@ class FormHelper {
             return;
         }
         if (isset($config[':fields'])) {
-            $this->fields = $config['fields'];
+            $this->fields = $config[':fields'];
             unset($config[':fields']);
         }
         if (isset($config[':validation_rules'])) {
@@ -38,15 +38,14 @@ class FormHelper {
             $attrs = array_merge($this->attrs, $attrs);
         }
         $isCsrfProtectionEnabled = true;
-        if (isset($attrs['enable_csrf_protection'])) {
-            $isCsrfProtectionEnabled = $attrs['enable_csrf_protection']; 
-            unset($attrs['enable_csrf_protection']);
+        if (isset($attrs[':enable_csrf_protection'])) {
+            $isCsrfProtectionEnabled = $attrs[':enable_csrf_protection']; 
         }
         echo '<form';
         foreach ($attrs as $key => $value) {
             if (is_int($key)) {
                 echo ' ', $value;
-            } else {
+            } elseif ($key[0] !== ':') {
                 echo ' ', $key, '="', $name, '"';
             }
         }
@@ -125,10 +124,10 @@ class FormHelper {
         echo '<select';
         echo '>';
         $value = $data[$attrs['name']];
-        if (isset($attrs['optgroups'])) {
+        if (isset($attrs[':optgroups'])) {
         }
-        if (isset($attrs['options'])) {
-            foreach ($attrs['options'] as $option) {
+        if (isset($attrs[':options'])) {
+            foreach ($attrs[':options'] as $option) {
                 echo '<option'
                 if ($option['value'] === $value) {
                 }
