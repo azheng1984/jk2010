@@ -9,7 +9,9 @@ class FormHelper {
         $this->data = $data;
         if (isset($config['base'])) {
             $baseConfig = static::getBaseConfig($config['base']);
-            //merge config
+            $this->config = array_merge_recursive($baseConfig, $config);
+            unset($this->config['base']);
+            return;
         }
         $this->config = $config;
     }
@@ -19,7 +21,13 @@ class FormHelper {
     }
 
     public function begin($attrs = null) {
-        //merge config
+        if (isset($this->config['attrs'])) {
+            if ($attrs === null) {
+                $attrs = $config['attrs'];
+            } else {
+                $attrs = array_merge($config['attrs'], $attrs);
+            }
+        }
         $isCsrfProtectionEnabled = true;
         if (isset($attrs['enable_csrf_protection'])) {
             $isCsrfProtectionEnabled = $attrs['enable_csrf_protection']; 
@@ -125,6 +133,10 @@ class FormHelper {
     }
 
     protected function renderInput($attrs) {
+        $name = $attrs['name'];
+        if (isset($this->config[$name])) {
+            $config = array_merge($this->config[$name]);
+        }
         echo '<input';
         $name = null;
         if (is_string($attrs)) {
