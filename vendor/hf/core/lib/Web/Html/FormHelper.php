@@ -3,18 +3,31 @@ namespace Hyperframework\Web\Html;
 
 class FormHelper {
     private $data;
-    private $config;
+    private $attrs;
+    private $fields;
+    private $validationRules;
 
     public function __construct($data = null, $config = null) {
         $this->data = $data;
+        if ($config === null) {
+            return;
+        }
         if (isset($config['base'])) {
             $baseConfig = static::getBaseConfig($config['base']);
             //todo: recursive base
-            $this->config = array_merge_recursive($baseConfig, $config);
-            unset($this->config['base']);
+            $config = array_merge_recursive($baseConfig, $config);
+            unset($config['base']);
             return;
         }
-        $this->config = $config;
+        if (isset($config['fields'])) {
+            $this->fields = $config['fields'];
+            unset($config['fields']);
+        }
+        if (isset($config['validation_rules'])) {
+            $this->validtionRules = $config['validation_rules'];
+            unset($config['validation_rules']);
+        }
+        $this->attrs = $config;
     }
 
     protected static function getBaseConfig($name) {
@@ -22,11 +35,11 @@ class FormHelper {
     }
 
     public function begin($attrs = null) {
-        if (isset($this->config['attrs'])) {
+        if (count($this->attrs) === 0) {
             if ($attrs === null) {
-                $attrs = $config['attrs'];
+                $attrs = $this->config;
             } else {
-                $attrs = array_merge($config['attrs'], $attrs);
+                $attrs = array_merge_recursive($this->config, $attrs);
             }
         }
         $isCsrfProtectionEnabled = true;
