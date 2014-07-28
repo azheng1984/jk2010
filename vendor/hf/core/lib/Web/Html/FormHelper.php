@@ -9,6 +9,7 @@ class FormHelper {
         $this->data = $data;
         if (isset($config['base'])) {
             $baseConfig = static::getBaseConfig($config['base']);
+            //todo: recursive base
             $this->config = array_merge_recursive($baseConfig, $config);
             unset($this->config['base']);
             return;
@@ -112,6 +113,7 @@ class FormHelper {
     }
 
     public function renderSelect($attrs) {
+        $attrs = array_merge_recursive($this->config[$attrs['name']], $attrs);
         echo '<select';
         echo '>';
         $value = $data[$attrs['name']];
@@ -133,9 +135,16 @@ class FormHelper {
     }
 
     protected function renderInput($attrs) {
-        $name = $attrs['name'];
-        if (isset($this->config[$name])) {
-            $config = array_merge($this->config[$name]);
+        $name = null;
+        if (isset($attrs['name'])) {
+            $name = $attrs['name'];
+        } elseif (isset($attrs['id'])) {
+            $name = $attrs['id'];
+        }
+        if ($name !== null) {
+            if (isset($this->config['fields'][$name])) {
+                $attrs = array_merge($this->config['fields'][$name], $attrs);
+            }
         }
         echo '<input';
         $name = null;
