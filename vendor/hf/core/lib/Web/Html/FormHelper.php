@@ -35,12 +35,8 @@ class FormHelper {
     }
 
     public function begin($attrs = null) {
-        if (count($this->attrs) === 0) {
-            if ($attrs === null) {
-                $attrs = $this->config;
-            } else {
-                $attrs = array_merge_recursive($this->config, $attrs);
-            }
+        if (is_array($this->attrs)) {
+            $attrs = array_merge_recursive($this->attrs, $attrs);
         }
         $isCsrfProtectionEnabled = true;
         if (isset($attrs['enable_csrf_protection'])) {
