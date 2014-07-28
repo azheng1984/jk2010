@@ -12,20 +12,19 @@ class FormHelper {
         if ($config === null) {
             return;
         }
-        if (isset($config['base'])) {
-            $baseConfig = static::getBaseConfig($config['base']);
+        if (isset($config[':base'])) {
+            $baseConfig = static::getBaseConfig($config[':base']);
             //todo: recursive base
             $config = array_merge_recursive($baseConfig, $config);
-            unset($config['base']);
             return;
         }
-        if (isset($config['fields'])) {
+        if (isset($config[':fields'])) {
             $this->fields = $config['fields'];
-            unset($config['fields']);
+            unset($config[':fields']);
         }
-        if (isset($config['validation_rules'])) {
+        if (isset($config[':validation_rules'])) {
             $this->validtionRules = $config['validation_rules'];
-            unset($config['validation_rules']);
+            unset($config[':validation_rules']);
         }
         $this->attrs = $config;
     }
@@ -36,7 +35,7 @@ class FormHelper {
 
     public function begin($attrs = null) {
         if (is_array($this->attrs)) {
-            $attrs = array_merge_recursive($this->attrs, $attrs);
+            $attrs = array_merge($this->attrs, $attrs);
         }
         $isCsrfProtectionEnabled = true;
         if (isset($attrs['enable_csrf_protection'])) {
