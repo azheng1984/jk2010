@@ -23,7 +23,7 @@ class FormHelper {
             unset($config[':fields']);
         }
         if (isset($config[':validation_rules'])) {
-            $this->validtionRules = $config['validation_rules'];
+            $this->validtionRules = $config[':validation_rules'];
             unset($config[':validation_rules']);
         }
         $this->attrs = $config;
@@ -48,7 +48,7 @@ class FormHelper {
         echo '>';
         $isCsrfProtectionEnabled = null;
         if (isset($attrs[':enable_csrf_protection'])) {
-            $isCsrfProtectionEnabled = $attrs[':enable_csrf_protection']; 
+            $isCsrfProtectionEnabled = $attrs[':enable_csrf_protection'];
         }
         if ($isCsrfProtectionEnabled === null) {
             $isCsrfProtectionEnabled = Config::get(
