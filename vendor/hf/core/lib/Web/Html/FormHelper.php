@@ -59,7 +59,7 @@ class FormHelper {
             && $attrs['method'] === 'POST'
             && $isCsrfProtectionEnabled !== false
         ) {
-            $this->renderCsrfProtectionField();
+            $this->renderCsrfProtection();
         }
     }
 
