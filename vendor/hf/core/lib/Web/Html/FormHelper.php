@@ -19,12 +19,24 @@ class FormHelper {
     }
 
     public function begin($attrs = null) {
+        //merge config
+        $isCsrfProtectionEnabled = true;
+        if (isset($attrs['enable_csrf_protection'])) {
+            $isCsrfProtectionEnabled = $attrs['enable_csrf_protection']; 
+            unset($attrs['enable_csrf_protection']);
+        }
         echo '<form';
+        foreach ($attrs as $key => $value) {
+            if (is_int($key)) {
+                echo ' ', $value;
+            } else {
+                echo ' ', $key, '="', $name, '"';
+            }
+        }
         echo '>';
         if (isset($attrs['method'])
             && $attrs['method'] === 'POST'
-            && (isset($attrs['enable_csrf_protection']) === false
-                || $attrs['enable_csrf_protection'] !== false)
+            && $isCsrfProtectionEnabled !== false
             && Config::get('hyperframework.enable_csrf_protection') !== false
         ) {
             $this->renderCsrfProtectionField();
