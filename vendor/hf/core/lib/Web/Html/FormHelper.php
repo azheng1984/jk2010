@@ -16,7 +16,7 @@ class FormHelper {
             $baseConfig = static::getBaseConfig($config[':base']);
             //todo: recursive base
             $config = array_merge_recursive($baseConfig, $config);
-            return;
+            unset($config[':base']);
         }
         if (isset($config[':fields'])) {
             $this->fields = $config[':fields'];
