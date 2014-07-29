@@ -3,12 +3,14 @@ namespace Hyperframework\Web\Html;
 
 class FormHelper {
     private $data;
+    private $errors;
     private $attrs;
     private $fields;
     private $validationRules;
 
-    public function __construct($data = null, $config = null) {
+    public function __construct($data = null, $config = null, $errors = null) {
         $this->data = $data;
+        $this->errors = $errors;
         if ($config === null) {
             return;
         }
@@ -138,6 +140,9 @@ class FormHelper {
             }
         }
         echo '</select>';
+    }
+
+    protected function renderError($name) {
     }
 
     protected function renderCsrfProtection() {
