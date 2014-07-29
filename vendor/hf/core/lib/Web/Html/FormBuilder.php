@@ -8,15 +8,11 @@ class FormBuilder {
         //todo merge base config
         $formHelper = static::getFormHelper($data, $config, $errors);
         $formHelper->begin();
-        //':fields' => array(
-        //    'title' => 'xxx',
-        //    array(
-        //        ':fields' => array(
-        //        ),
-        //        'label' => '订单',
-        //    )
-        //);
         foreach ($config[':fields'] as $name => $attrs) {
+            if (is_int($name) && isset($attrs[':fields'])) {
+                static::renderFieldSet($attrs);
+                continue;
+            }
             call_user_func(
                 array(
                     $formHelper, 'render' . $attrs[':type'],
@@ -29,5 +25,8 @@ class FormBuilder {
 
     protected static function getFormHelper($data, $config, $errors) {
         return new FormHelper($data, $config, $errors);
+    }
+
+    protected static function renderFieldSet($config) {
     }
 }
