@@ -51,7 +51,15 @@ class FormBuilder {
 
     private static function renderFieldSet($config, $formHelper) {
         echo '<fieldset';
-        //todo render attr
+        foreach ($config as $key => $value) {
+            if (is_string($key) === false) {
+                echo ' ' . $value;
+                continue;
+            }
+            if ($key[0] !== ':') {
+                echo ' ' . $key . '="' . $value. '"';
+            }
+        }
         echo '>';
         static::renderFields($config['fields'], $formHelper);
         echo '</fieldset>';
