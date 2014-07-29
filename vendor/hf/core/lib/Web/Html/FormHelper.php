@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework\Web\Html;
 
+use Hyperframework\Web\FormConfigLoader;
+
 class FormHelper {
     private $data;
     private $errors;
@@ -14,25 +16,18 @@ class FormHelper {
         if ($config === null) {
             return;
         }
-        if (isset($config[':base'])) {
-            $baseConfig = static::getBaseConfig($config[':base']);
-            //todo: recursive base
-            $config = array_merge_recursive($baseConfig, $config);
-            unset($config[':base']);
+        if (is_string($config)) {
+            $config = static::getConfig($config);
         }
         if (isset($config[':fields'])) {
             $this->fields = $config[':fields'];
             unset($config[':fields']);
         }
-        if (isset($config[':validation_rules'])) {
-            $this->validtionRules = $config[':validation_rules'];
-            unset($config[':validation_rules']);
-        }
         $this->attrs = $config;
     }
 
-    protected static function getBaseConfig($name) {
-        return ConfigFileLoader::loadPhp('form/' . $name . '.php');
+    protected static function getConfig($name) {
+        return FormConfigLoader::run($name);
     }
 
     public function begin($attrs = null) {
@@ -143,6 +138,9 @@ class FormHelper {
     }
 
     protected function renderError($name) {
+    }
+
+    protected function renderLabel() {
     }
 
     protected function renderCsrfProtection() {
