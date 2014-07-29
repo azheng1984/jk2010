@@ -8,11 +8,20 @@ class FormBuilder {
         //todo merge base config
         $formHelper = static::getFormHelper($data, $config, $errors);
         $formHelper->begin();
-        //$config[':field_sets'];
+        //':fields' => array(
+        //    'title' => 'xxx',
+        //    array(
+        //        ':fields' => array(
+        //        ),
+        //        'label' => '订单',
+        //    )
+        //);
         foreach ($config[':fields'] as $name => $attrs) {
-            $attrs['name'] = $name;
             call_user_func(
-                array($formHelper, 'render' . $attrs[':type']), $attrs
+                array(
+                    $formHelper, 'render' . $attrs[':type'],
+                    array('name' => $name)
+                )
             );
         }
         $formHelper->end();
