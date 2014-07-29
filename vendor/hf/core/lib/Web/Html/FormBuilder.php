@@ -8,6 +8,7 @@ class FormBuilder {
         //todo merge base config
         $formHelper = static::getFormHelper($data, $config, $errors);
         $formHelper->begin();
+        //$config[':field_sets'];
         foreach ($config[':fields'] as $name => $attrs) {
             $attrs['name'] = $name;
             call_user_func(
