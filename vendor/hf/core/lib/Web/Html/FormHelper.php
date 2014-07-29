@@ -51,6 +51,7 @@ class FormHelper {
             $isCsrfProtectionEnabled = Config::get(
                 'hyperframework.enable_csrf_protection'
             );
+            Config::redirect('hyperframework.enable_csrf_protection');
         }
         if (isset($attrs['method'])
             && $attrs['method'] === 'POST'
