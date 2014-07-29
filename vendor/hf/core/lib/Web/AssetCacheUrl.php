@@ -5,9 +5,7 @@ use Hyperframework\Config;
 
 class AssetCacheUrl {
     public function get($path) {
-        if (Config::get('hyperframework.web.enable_asset_cache_versioning')
-            !== false
-        ) {
+        if (Config::get('enable_asset_cache_versioning') !== false) {
             $version = AssetCacheVersion::get($path);
             $segments = explode('.', $path);
             if (count($segments) === 1) {

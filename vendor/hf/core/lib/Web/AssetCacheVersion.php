@@ -19,7 +19,7 @@ class AssetCacheVersion {
     private static function getPrefix() {
         if (self::$prefix === null) {
             self::$prefix = Config::get(
-                'hyperframework.web.asset_cache.version_prefix',
+                'asset_cache.version_prefix',
                 'asset_cache' . DIRECTORY_SEPARATOR . 'manifest.php'
             );
             if (self::$prefix === null) {
@@ -32,7 +32,7 @@ class AssetCacheVersion {
     private static function getCurrent() {
         if (self::$current === null) {
             self::$current = self::getPrefix() . ConfigFileLoader::loadPhp(
-                'hyperframework.web.asset_cache.version_path',
+                'asset_cache.version_path',
                 'asset_cache' . DIRECTORY_SEPARATOR . 'version.php'
             );
         }
@@ -42,7 +42,7 @@ class AssetCacheVersion {
     private static function getManifest() {
         if (self::$manifest === null) {
             self::$manifest = PhpFileConfigLoader::load(
-                'hyperframework.web.asset_cache.manifest_path',
+                'asset_cache.manifest_path',
                 'asset_cache' . DIRECTORY_SEPARATOR . 'manifest.php'
             );
         }

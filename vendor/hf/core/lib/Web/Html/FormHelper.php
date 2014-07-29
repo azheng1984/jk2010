@@ -137,10 +137,10 @@ class FormHelper {
         echo '</select>';
     }
 
-    protected function renderError($name) {
+    protected function renderLabel() {
     }
 
-    protected function renderLabel() {
+    protected function renderError($name) {
     }
 
     protected function renderCsrfProtection() {
