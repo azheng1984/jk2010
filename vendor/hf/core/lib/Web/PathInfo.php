@@ -22,12 +22,12 @@ final class PathInfo {
 
     private static function build($path, $appName) {
         $isCacheEnabled = Config::get(
-            'hyperframework.web.path_info.enable_cache'
+            'hyperframework.path_info.enable_cache'
         );
         if ($isCacheEnabled !== false) {
             if (self::$cache === null) {
                 self::$cache = CacheFileLoader::loadPhp(
-                    'path_info.php', 'hyperframework.web.path_info.cache_path'
+                    'path_info.php', 'hyperframework.path_info.cache_path'
                 );
             }
             if (isset(self::$cache[$path])) {

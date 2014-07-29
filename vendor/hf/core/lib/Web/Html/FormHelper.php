@@ -8,14 +8,18 @@ class FormHelper {
     private $errors;
     private $attrs;
     private $fields;
-    private $validationRules;
 
-    public function __construct($data = null, $config = null, $errors = null) {
-        $this->data = $data;
-        $this->errors = $errors;
-        if ($config === null) {
+    public function __construct($options) {
+        if (isset($options['data'])) {
+            $this->data = $options['data'];
+        }
+        if (isset($options['errors'])) {
+            $this->data = $options['errors'];
+        }
+        if (isset($options['config']) === false) {
             return;
         }
+        $config = $options['config'];
         if (is_string($config)) {
             $config = static::getConfig($config);
         }
@@ -31,17 +35,15 @@ class FormHelper {
     }
 
     public function begin($attrs = null) {
-        if (is_array($this->attrs)) {
-            $attrs = array_merge($this->attrs, $attrs);
-        }
-        echo '<form';
-        foreach ($attrs as $key => $value) {
-            if (is_int($key)) {
-                echo ' ', $value;
-            } elseif ($key[0] !== ':') {
-                echo ' ', $key, '="', $name, '"';
+        if ($this->attrs !== null) {
+            if ($attrs === null) {
+                $this->attrs = $attrs;
+            } else {
+                $attrs = array_merge($this->attrs, $attrs);
             }
         }
+        echo '<form';
+        $this->renderAttrs($attrs);
         echo '>';
         $isCsrfProtectionEnabled = null;
         if (isset($attrs[':enable_csrf_protection'])) {
@@ -66,89 +68,94 @@ class FormHelper {
     }
 
     public function renderText($attrs) {
-        $attrs['type'] = 'text';
-        $this->renderInput($attrs);
+        $this->renderInput('text', $attrs);
     }
 
     public function renderCheckBox($attrs) {
-        $attrs['type'] = 'checkbox';
-        $this->renderInput($attrs);
+        $this->renderInput('checkbox', $attrs);
     }
 
     public function renderRadio($attrs) {
-        $attrs['type'] = 'radio';
-        $this->renderInput($attrs);
+        $this->renderInput('radio', $attrs);
     }
 
     public function renderPassword($attrs) {
-        $attrs['type'] = 'password';
-        $this->renderInput($attrs);
+        $this->renderInput('password', $attrs);
     }
 
     public function renderSubmit($attrs) {
-        $attrs['type'] = 'submit';
-        $this->renderInput($attrs);
+        $this->renderInput('submit', $attrs);
     }
 
     public function renderReset($attrs) {
-        $attrs['type'] = 'reset';
-        $this->renderInput($attrs);
+        $this->renderInput('reset', $attrs);
     }
 
     public function renderHidden($attrs) {
-        $attrs['type'] = 'hidden';
-        $this->renderInput($attrs);
+        $this->renderInput('hidden', $attrs);
     }
 
     public function renderButton($attrs) {
-        $attrs['type'] = 'button';
-        $this->renderInput($attrs);
+        $this->renderInput('button', $attrs);
     }
 
     public function renderFile($attrs) {
-        $attrs['type'] = 'file';
-        $this->renderInput($attrs);
+        $this->renderInput('file', $attrs);
     }
 
     public function renderTextArea($attrs) {
+        $attrs = $this->getFullFieldAttrs($attrs);
         echo '<textarea';
+        $this->renderAttrs($attrs);
         echo '>';
         if (isset($data[$attrs['name']])) {
-            echo $data[$attrs['name']];
-        } else if (isset($attrs['value'])) {
-            echo $attrs['value'];
+            echo htmlspecialchars($data[$attrs['name']]);
+        } elseif (isset($attrs[':content'])) {
+            echo $attrs[':content'];
         }
         echo '</textarea>';
+        $this->renderError($attrs['name']);
     }
 
     public function renderSelect($attrs) {
-        $attrs = array_merge_recursive($this->config[$attrs['name']], $attrs);
+        $attrs = $this->getFullFieldAttrs($attrs);
         echo '<select';
+        $this->renderAttrs($attrs);
         echo '>';
         $value = $data[$attrs['name']];
         foreach ($attrs[':options'] as $option) {
+            if (is_array($option) === false) {
+                $option = array('value' => $option, ':content' => $option);
+            } elseif (isset($option[':content']) === false && isset($option['value'])) {
+                $option[':content'] = $option['value'];
+            }
             if (isset($option[':options'])) {
-                //... render option group
+                //... render optgroup
             }
-            echo '<option'
+            echo '<option';
+            $this->renderAttrs($option);
             if ($option['value'] === $value) {
+                echo ' selected="selected"';
             }
-            echo '<option>', $option['name'], '</option>'
+            echo '>';
+            $option[':content'], '</option>'
         }
         echo '</select>';
-    }
-
-    protected function renderLabel() {
+        $this->renderError($attrs['name']);
     }
 
     protected function renderError($name) {
+        if (isset($this->errors[$name])) {
+            echo '<span class="error">',
+                htmlspecialchars($this->errors['name']), '</span>';
+        }
     }
 
     protected function renderCsrfProtection() {
         $this->renderHidden(array('name' => 'csrf', 'value' => ''));
     }
 
-    protected function renderInput($attrs) {
+    protected function renderInput($type, $attrs) {
         $name = null;
         if (isset($attrs['name'])) {
             $name = $attrs['name'];
@@ -183,13 +190,44 @@ class FormHelper {
             echo ' value="', $this->data[$name], '"';
         }
         if ($attrs !== null) {
-            foreach ($attrs as $key => $value) {
-                if (is_int($key)) {
-                    echo ' ', $value;
-                }
+            $this->renderAttrs($attrs);
+        }
+        echo '/>';
+        $this->renderError();
+    }
+
+    private function getFullFieldAttrs($attrs) {
+        if (is_array($attrs) === false) {
+            $attrs = array('name' => $attrs);
+        }
+        if (isset($this->fields[$attrs['name']])) {
+            $attrs = array_merge_recursive(
+                $this->fields[$attrs['name']], $attrs
+            );
+        }
+        if (isset($attrs['name']) === false && isset($attrs['id'])) {
+            $attrs['name'] = $attrs['id'];
+        }
+        return $attrs;
+
+        $article = $ctx->getInput(
+            'GET', array('title' => array('default' => 'xxx'), 'email', 'body')
+        );
+        if (DataValidation::isValid($article['email'], 'email')) {
+        }
+        $ctx->getForm('article');
+    }
+
+    private function renderAttrs($attrs) {
+        if (is_array($attrs) === false) {
+            return;
+        }
+        foreach ($attrs as $key => $value) {
+            if (is_int($key)) {
+                echo ' ', $value;
+            } elseif ($key[0] !== ':') {
                 echo ' ', $key, '="', $name, '"';
             }
         }
-        echo '/>';
     }
 }
