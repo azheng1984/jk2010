@@ -51,9 +51,9 @@ class FormHelper {
         }
         if ($isCsrfProtectionEnabled === null) {
             $isCsrfProtectionEnabled = Config::get(
-                'hyperframework.enable_csrf_protection'
+                'hyperframework.web.enable_csrf_protection'
             );
-            Config::redirect('hyperframework.enable_csrf_protection');
+            Config::redirect('hyperframework.web.enable_csrf_protection');
         }
         if (isset($attrs['method'])
             && $attrs['method'] === 'POST'
@@ -114,7 +114,6 @@ class FormHelper {
             echo $attrs[':content'];
         }
         echo '</textarea>';
-        $this->renderError($attrs['name']);
     }
 
     public function renderSelect($attrs) {
@@ -141,10 +140,9 @@ class FormHelper {
             $option[':content'], '</option>'
         }
         echo '</select>';
-        $this->renderError($attrs['name']);
     }
 
-    protected function renderError($name) {
+    public function renderError($name) {
         if (isset($this->errors[$name])) {
             echo '<span class="error">',
                 htmlspecialchars($this->errors['name']), '</span>';
@@ -193,7 +191,6 @@ class FormHelper {
             $this->renderAttrs($attrs);
         }
         echo '/>';
-        $this->renderError();
     }
 
     private function getFullFieldAttrs($attrs) {
@@ -209,13 +206,6 @@ class FormHelper {
             $attrs['name'] = $attrs['id'];
         }
         return $attrs;
-
-        $article = $ctx->getInput(
-            'GET', array('title' => array('default' => 'xxx'), 'email', 'body')
-        );
-        if (DataValidation::isValid($article['email'], 'email')) {
-        }
-        $ctx->getForm('article');
     }
 
     private function renderAttrs($attrs) {
