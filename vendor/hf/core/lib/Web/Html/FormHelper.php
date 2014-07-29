@@ -130,14 +130,14 @@ class FormHelper {
         echo '<select';
         echo '>';
         $value = $data[$attrs['name']];
-        if (isset($attrs[':optgroups'])) {
-        } elseif (isset($attrs[':options'])) {
-            foreach ($attrs[':options'] as $option) {
-                echo '<option'
-                if ($option['value'] === $value) {
-                }
-                echo '<option>', $option['name'], '</option>'
+        foreach ($attrs[':options'] as $option) {
+            if (isset($option[':options'])) {
+                //... render option group
             }
+            echo '<option'
+            if ($option['value'] === $value) {
+            }
+            echo '<option>', $option['name'], '</option>'
         }
         echo '</select>';
     }
