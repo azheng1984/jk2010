@@ -38,9 +38,9 @@ class Logger {
         if ($type & self::$types[$level] === 0) {
             return;
         }
-        $appender = Config::get('hyperframework.log_writer');
-        if ($appender !== null) {
-            $appender::write($type, $entry);
+        $writer = Config::get('hyperframework.log_writer');
+        if ($writer !== null) {
+            $writer::write($type, $entry);
             return;
         }
         $path = Config::get('hyperframework.log_path');
