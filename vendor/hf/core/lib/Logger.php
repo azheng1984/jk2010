@@ -2,50 +2,50 @@
 namespace Hyperframework;
 
 class Logger {
-    const TYPE_TRACE = 2;
-    const TYPE_DEBUG = 4;
-    const TYPE_INFO  = 8;
-    const TYPE_WARN  = 16;
-    const TYPE_ERROR = 32;
+    private static $types = array(
+        'error' => 32,
+        'warn' => 16,
+        'info' => 8,
+        'debug' => 4,
+        'trace' => 2,
+    );
 
     public static function trace($entry) {
-        static::output(self::TYPE_TRACE, $entry);
+        static::output('trace', $entry);
     }
 
     public static function debug($entry) {
-        static::output(self::TYPE_DEBUG, $entry);
+        static::output('debug', $entry);
     }
 
     public static function info($entry) {
-        static::output(self::TYPE_INFO, $entry);
+        static::output('info', $entry);
     }
 
     public static function warn($entry) {
-        static::output(self::TYPE_WARN, $entry);
+        static::output('warn', $entry);
     }
 
     public static function error($entry) {
-        static::output(self::TYPE_ERROR, $entry);
+        static::output('error', $entry);
     }
 
     protected static function output($type, $entry) {
-        $errorReporting = Config::get(
-            __CLASS__ . '\ErrorReporting',
-            //todo 使用常量会导致 logger 类被提前加载
-            array('default' => self::TYPE_WARN | self::TYPE_ERROR)
-        );
-        if ($type & $errorReporting === 0) {
+        $threshold = Config::get('hyperframework.log_level');
+        if ($type & self::$types[$shreshold] === 0) {
             return;
         }
-        $delegate = Config::get(__CLASS__, '\Delegate');
-        if ($delegate !== null) {
-            $delegate->output($type, $entry);
+        $appender = Config::get('hyperframework.log_writer');
+        if ($appender !== null) {
+            $appender::write($type, $entry);
             return;
         }
-        $path = Config::get(
-            __CLASS__ . '\LogPath',
-            array('default' => array('relative_path' => 'data/log.txt'))
-        );
+        $path = Config::get('hyperframework.log_path');
+        if ($path === null) {
+            $path = APPLICATION_PATH . 'data' . DIRECTORY_SEPARATOR . 'log.txt';
+        } elseif (FullPathRecognizer::isFull($path) === false) {
+            $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . $path;
+        }
         file_put_contents($path, $entry, FILE_APPEND | LOCK_EX);
     }
 }

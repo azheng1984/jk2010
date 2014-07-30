@@ -1,8 +1,6 @@
 <?php
 namespace Hyperframework\Web;
 
-use Hyperframework\DataFilter;
-
 class App {
     private $pathInfo;
     private $actionResult;
@@ -35,19 +33,6 @@ class App {
 
     public function hasParam($name) {
         return isset($this->params[$name]);
-    }
-
-    public function getInput($source, $fields) {
-        if ($source === 'SERVER') {
-            return DataFilter::run($_SERVER, $fields);
-        }
-        $source = '_' . $source;
-        $data = isset($$source) ? $$source : null;
-        return DataFilter::run($data, $fields);
-    }
-
-    public function getForm($config) {
-        FormFilter::run($config);
     }
 
     public function getActionResult($name = null) {

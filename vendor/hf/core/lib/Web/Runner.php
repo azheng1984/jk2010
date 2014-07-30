@@ -22,7 +22,7 @@ class Runner {
     }
 
     protected static function isAsset() {
-        if (Config::get('hyperframework.enable_asset_proxy') !== true) {
+        if (Config::get('hyperframework.web.enable_asset_proxy') !== true) {
             return false;
         }
         $prefix = AssetCachePathPrefix::get();
