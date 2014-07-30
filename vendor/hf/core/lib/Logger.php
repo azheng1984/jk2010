@@ -31,8 +31,11 @@ class Logger {
     }
 
     protected static function output($type, $entry) {
-        $threshold = Config::get('hyperframework.log_level');
-        if ($type & self::$types[$shreshold] === 0) {
+        $level = Config::get('hyperframework.log_level');
+        if ($level === null) {
+            $level = 'warn';
+        }
+        if ($type & self::$types[$level] === 0) {
             return;
         }
         $appender = Config::get('hyperframework.log_writer');
