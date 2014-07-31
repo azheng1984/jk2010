@@ -9,7 +9,7 @@ final class ActionDispatcher {
         if (isset($pathInfo['action'])) {
             $actionInfo = $pathInfo['action'];
         }
-        $method = self::getMethod($actionInfo);
+        $method = static::getMethod($actionInfo);
         $hasBeforeFilter = isset($actionInfo['before_filter']);
         $hasAfterFilter = isset($actionInfo['after_filter']);
         if ($method === null
