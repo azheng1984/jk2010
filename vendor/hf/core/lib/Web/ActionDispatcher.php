@@ -40,7 +40,7 @@ final class ActionDispatcher {
         }
         if ($actionInfo === null) {
             if ($method !== 'GET') {
-                throw new HttpMethodNotAllowedException(array('HEAD', 'GET'));
+                throw new MethodNotAllowedException(array('HEAD', 'GET'));
             }
             return;
         }
