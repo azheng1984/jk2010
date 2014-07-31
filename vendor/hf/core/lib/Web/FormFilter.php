@@ -19,24 +19,11 @@ class FormFilter {
             } else {
                 $result[$name] = null;
             }
-            $query = $ctx->getInput(
-                'GET', array('name' => 'query', 'default' => 'hello');
-            );
         }
         return $result;
-
-        $articleFormConfig = array(
-            ':base' => 'article',
-            ':validation_rules' => Article::getValidationRules(),
-        )
-        FormBuilder::run($articleFormconfig);
-
-        $article = $ctx->getForm('article');
-        if (Article::isValid($article, $errors)) {
-        }
     }
 
-    protected static function getConfig($name) {
+    protected static function loadConfig($name) {
         return FormConfigLoader::run($name);
     }
 }

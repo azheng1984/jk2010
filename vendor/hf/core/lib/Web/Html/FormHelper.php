@@ -21,7 +21,7 @@ class FormHelper {
         }
         $config = $options['config'];
         if (is_string($config)) {
-            $config = static::getConfig($config);
+            $config = static::loadConfig($config);
         }
         if (isset($config[':fields'])) {
             $this->fields = $config[':fields'];
@@ -30,7 +30,7 @@ class FormHelper {
         $this->attrs = $config;
     }
 
-    protected static function getConfig($name) {
+    protected static function loadConfig($name) {
         return FormConfigLoader::run($name);
     }
 

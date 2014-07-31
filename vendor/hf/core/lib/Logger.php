@@ -3,11 +3,11 @@ namespace Hyperframework;
 
 class Logger {
     private static $types = array(
-        'error' => 32,
-        'warn' => 16,
-        'info' => 8,
-        'debug' => 4,
-        'trace' => 2,
+        'error' => 0,
+        'warn' => 1,
+        'info' => 2,
+        'debug' => 3,
+        'trace' => 4,
     );
 
     public static function trace($entry) {
@@ -35,7 +35,7 @@ class Logger {
         if ($level === null) {
             $level = 'warn';
         }
-        if ($type & self::$types[$level] === 0) {
+        if ($type > self::$types[$level]) {
             return;
         }
         $writer = Config::get('hyperframework.log_writer');
