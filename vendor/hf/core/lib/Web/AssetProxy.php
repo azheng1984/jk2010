@@ -3,7 +3,7 @@ namespace Hyperframework\Web;
 
 class AssetProxy {
     public static function run($path) {
-        if (Config::get('hyperframework.web.enable_asset_cache_versioning')
+        if (Config::get('hyperframework.asset_cache.enable_versioning')
             !== false
         ) {
             $segments = explode('.', $path);
@@ -51,7 +51,7 @@ class AssetProxy {
 
     private static function getIncludePaths() {
         $paths =  \Hyperframework\ConfigFileLoader::loadPhp(
-            'hyperframework.web.asset_cache.include_paths_config_path',
+            'hyperframework.asset_cache.include_paths_config_path',
             'asset_cache' . DIRECTORY_SEPARATOR . 'include_paths.php',
             true
         );

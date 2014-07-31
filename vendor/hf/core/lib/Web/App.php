@@ -74,7 +74,7 @@ class App {
     protected function rewriteRequestMethod() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
             isset($_POST['_method']) &&
-            Config::get('rewrite_request_method') !== true 
+            Config::get('hyperframework.rewrite_request_method') !== true 
         ) {
             $_SERVER['ORIGINAL_REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'];
             $_SERVER['REQUEST_METHOD'] = $_POST['_method'];

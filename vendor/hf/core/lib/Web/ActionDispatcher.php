@@ -5,38 +5,26 @@ use Hyperframework\Config;
 
 final class ActionDispatcher {
     public static function run($pathInfo, $ctx) {
-        $method = $_SERVER['REQUEST_METHOD'];
-        if ($method === 'HEAD') {
-            $method = 'GET';
-        }
-        $info = null;
+        $actionInfo = null;
         if (isset($pathInfo['action'])) {
-            $info = $pathInfo['action'];
+            $actionInfo = $pathInfo['action'];
         }
-        if ($info === null) {
-            self::checkImplicitAction($method);
-            return;
-        }
-        if (isset($info['methods']) === false
-            || in_array($method, $info['methods']) === false
-        ) {
-            self::checkImplicitMethod($method, $info);
-        }
-        $hasBeforeFilter = isset($info['before_filter']);
-        $hasAfterFilter = isset($info['after_filter']);
-        if ($hasMethod === false
+        $method = self::getMethod($actionInfo);
+        $hasBeforeFilter = isset($actionInfo['before_filter']);
+        $hasAfterFilter = isset($actionInfo['after_filter']);
+        if ($method === null
             && $hasBeforeFilter === false
             && $hasAfterFilter === false
         ) {
             return;
         }
         $result = null;
-        $class = $pathInfo['namespace'] . '\Action';
+        $class = static::getClass($pathInfo);
         $action = new $class($ctx);
         if ($hasBeforeFilter) {
             $action->before($ctx);
         }
-        if ($hasMethod) {
+        if ($method !== null) {
             $result = $action->$method($ctx);
         }
         if ($hasAfterFilter) {
@@ -45,26 +33,40 @@ final class ActionDispatcher {
         return $result;
     }
 
-
-    private static function checkImplicitAction($method) {
-        if ($method !== 'GET') {
-            throw new HttpMethodNotAllowedException(array('HEAD', 'GET'));
+    protected static function getMethod($actionInfo) {
+        $method = $_SERVER['REQUEST_METHOD'];
+        if ($method === 'HEAD') {
+            $method = 'GET';
         }
-    }
-
-    private static function checkImplicitMethod($method, $info) {
-        if (isset($info['get_not_allowed'])) {
-            $methods = isset($info['methods']) ? $info['methods'] : array();
+        if ($actionInfo === null) {
+            if ($method !== 'GET') {
+                throw new HttpMethodNotAllowedException(array('HEAD', 'GET'));
+            }
+            return;
+        }
+        if (isset($actionInfo['methods'])
+            && in_array($method, $actionInfo['methods'])
+        ) {
+            return strtolower($method);
+        }
+        if (isset($actionInfo['get_not_allowed'])) {
+            $methods = isset($actionInfo['methods']) ?
+                $actionInfo['methods'] : array();
             throw new MethodNotAllowedException($methods);
         }
         if ($method === 'GET') {
             return;
         }
-        $methods = isset($info['methods']) ? $info['methods'] : array();
+        $methods = isset($actionInfo['methods']) ?
+            $actionInfo['methods'] : array();
         $methods[] = 'HEAD';
         if (in_array('GET', $methods) === false) {
             $methods[] = 'GET';
         }
         throw new MethodNotAllowedException($methods);
+    }
+
+    protected static function getClass($pathInfo) {
+        return $pathInfo['namespace'] . '\Action';
     }
 }

@@ -10,7 +10,7 @@ class FragmentCache {
 
     public static function getSourceFileBasePath() {
         $result = Config::get(
-            'hyperframework.web.fragment_cache.source_file_base_path'
+            'hyperframework.fragment_cache.source_file_base_path'
         );
         if ($result === null) {
             $result = \Hyperframework\APPLICATION_ROOT_PATH
@@ -22,7 +22,7 @@ class FragmentCache {
 
     public static function getCacheFileBasePath() {
         $result = Config::get(
-            'hyperframework.web.fragment_cache.cache_file_base_path'
+            'hyperframework.fragment_cache.cache_file_base_path'
         );
         if ($result === null) {
             $result = \Hyperframework\APPLICATION_ROOT_PATH
@@ -36,7 +36,7 @@ class FragmentCache {
         if (self::$basePath !== null) {
             return self::$basePath;
         }
-        if (Config::get('hyperframework.web.enable_fragment_cache') === false) {
+        if (Config::get('hyperframework.fragment_cache.enable') === false) {
             self::$basePath = self::getSourceFileBasePath();
         } else {
             self::$basePath = self::getCacheFileBasePath();
