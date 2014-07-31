@@ -39,10 +39,10 @@ final class ActionDispatcher {
             $method = 'GET';
         }
         if ($actionInfo === null) {
-            if ($method !== 'GET') {
-                throw new MethodNotAllowedException(array('HEAD', 'GET'));
+            if ($method === 'GET') {
+                return;
             }
-            return;
+            throw new MethodNotAllowedException(array('HEAD', 'GET'));
         }
         if (isset($actionInfo['methods'])
             && in_array($method, $actionInfo['methods'])
