@@ -31,7 +31,7 @@ class FormHelper {
     }
 
     protected static function loadConfig($name) {
-        return FormConfigLoader::run($name);
+        return FormConfigLoader::load($name);
     }
 
     public function begin($attrs = null) {

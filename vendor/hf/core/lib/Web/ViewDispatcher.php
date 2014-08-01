@@ -30,7 +30,7 @@ final class ViewDispatcher {
         } else {
             return self::getDefaultViewClass();
         }
-        return $class;
+        return $pathInfo['namespace'] . '\\' . $class;
     }
 
     private static function getDefaultViewClass() {
