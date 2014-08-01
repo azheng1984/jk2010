@@ -4,8 +4,8 @@ namespace Hyperframework\Web;
 class App {
     private $path;
     private $pathInfo;
-    private $actionResult;
     private $params = array();
+    private $actionResult;
 
     public function run() {
         $this->initialize();
@@ -35,7 +35,6 @@ class App {
     public function hasParam($name) {
         return isset($this->params[$name]);
     }
-
 
     public function getActionResult($name = null) {
         if ($name === null) { 
@@ -112,15 +111,15 @@ class App {
         return $this->path = $value;
     }
 
-    final protected function setActionResult($value) {
-        return $this->actionResult = $value;
-    }
-
     final protected function getPathInfo() {
         return $this->pathInfo;
     }
 
     final protected function setPathInfo($value) {
         $this->pathInfo = $value;
+    }
+
+    final protected function setActionResult($value) {
+        return $this->actionResult = $value;
     }
 }

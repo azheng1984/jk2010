@@ -1,28 +1,29 @@
 <?php
 namespace Hyperframework\Web;
 
-final class ViewDispatcher {
-    private static $defaultViewClasses;
+class ViewDispatcher {
+    private static $defaultClasses;
 
-    public static function run($pathInfo, $ctx) {
-        $class = self::getViewClass($pathInfo);
+    final public static function run($pathInfo, $ctx) {
+        $class = self::getClass($pathInfo);
         if ($class === null) {
             throw new NotAcceptableException;
         }
         $view = new $class($ctx);
         $view->render($ctx);
     }
+
     public static function reset() {
-        self::$defaultViewClasses = null;
+        self::$defaultClasses = null;
     }
 
-    public static function setDefaultViewClasses($classes) {
-        self::$defaultViewClasses = $classes;
+    protected static function getNamespace($pathInfo) {
+        return $pathInfo['namespace'];
     }
 
-    private static function getViewClass($pathInfo) {
+    private static function getClass($pathInfo) {
         if (isset($pathInfo['views']) === false) {
-            return self::getDefaultViewClass();
+            return self::getDefaultClass();
         }
         $views = $pathInfo['views'];
         $class = null;
@@ -31,16 +32,16 @@ final class ViewDispatcher {
         } elseif (isset($views[$_SERVER['REQUEST_MEDIA_TYPE']])) {
             $class = $views[$_SERVER['REQUEST_MEDIA_TYPE']];
         } else {
-            return self::getDefaultViewClass();
+            return self::getDefaultClass();
         }
-        return $pathInfo['namespace'] . '\\' . $class;
+        return static::getNamespace($pathInfo) . '\\' . $class;
     }
 
-    private static function getDefaultViewClass() {
+    private static function getDefaultClass() {
         if (isset($_SERVER['REQUEST_MEDIA_TYPE'])
-            && isset(self::$defaultViewClasses[$_SERVER['REQUEST_MEDIA_TYPE']])
+            && isset(self::$defaultClasses[$_SERVER['REQUEST_MEDIA_TYPE']])
         ) {
-            return self::$defaultViewClasses[$_SERVER['REQUEST_MEDIA_TYPE']];
+            return self::$defaultClasses[$_SERVER['REQUEST_MEDIA_TYPE']];
         }
     }
 }

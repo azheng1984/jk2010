@@ -3,8 +3,8 @@ namespace Hyperframework;
 
 class EnvironmentBuilder {
     public static function run($rootNamespace, $rootPath) {
-        define('Hyperframework\APPLICATION_ROOT_NAMESPACE', $rootNamespace);
-        define('Hyperframework\APPLICATION_ROOT_PATH', $rootPath);
+        define('Hyperframework\APP_ROOT_NAMESPACE', $rootNamespace);
+        define('Hyperframework\APP_ROOT_PATH', $rootPath);
         static::initializeConfig();
         static::initializeClassLoader();
     }
@@ -16,7 +16,7 @@ class EnvironmentBuilder {
 
     protected static function initializeClassLoader() {
         if (Config::get('hyperframework.use_composer_class_loader') === true) {
-            require APPLICATION_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor'
+            require APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor'
                 . DIRECTORY_SEPARATOR . 'autoload.php';
             return;
         }
@@ -29,7 +29,7 @@ class EnvironmentBuilder {
     }
 
     protected static function importInitConfig() {
-        $config = require APPLICATION_ROOT_PATH . DIRECTORY_SEPARATOR
+        $config = require APP_ROOT_PATH . DIRECTORY_SEPARATOR
             . 'config' . DIRECTORY_SEPARATOR . 'init.php';
         if ($config !== null) {
             Config::import($config);

@@ -6,35 +6,31 @@ use Hyperframework\CacheFileLoader;
 use Hyperframework\ConfigFileLoader;
 
 final class PathInfo {
-    private static $cache;
-
-    public static function get($path, $baseNamespace = 'App') {
-        $result = self::build($path, $baseNamespace);
+    public static function get($path, $type = 'App') {
+        $result = null;
+        if (Config::get('hyperframework.path_info.enable_cache') !== false) {
+            $cacheFolder = Config::get('hyperframework.path_info.cache_folder');
+            if ($cacheFolder === null) {
+                $cacheFolder = 'path_info';
+            }
+            if (self::$cache === null) {
+                self::$cache = CacheFileLoader::loadPhp(
+                    $cacheFolder . DIRECTORY_SEPARATOR . $type. '.php',
+                );
+            }
+            if (isset(self::$cache[$path])) {
+                $result = self::$cache[$path];
+            }
+        } else {
+            $result = self::build($path, $type);
+        }
         if ($result === null) {
             throw new NotFoundException;
         }
         return $result;
     }
 
-    public static function reset() {
-        self::$cache = null;
-    }
-
-    private static function build($path, $appName) {
-        $isCacheEnabled = Config::get(
-            'hyperframework.path_info.enable_cache'
-        );
-        if ($isCacheEnabled !== false) {
-            if (self::$cache === null) {
-                self::$cache = CacheFileLoader::loadPhp(
-                    'path_info.php', 'hyperframework.path_info.cache_path'
-                );
-            }
-            if (isset(self::$cache[$path])) {
-                return self::$cache[$path];
-            }
-            return;
-        }
+    private static function build($path, $type) {
         $namespace = null;
         $segments = explode('/', $path);
         array_shift($segments);
