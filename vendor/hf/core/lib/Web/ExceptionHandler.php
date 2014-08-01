@@ -3,7 +3,6 @@ namespace Hyperframework\Web;
 
 class ExceptionHandler {
     private static $exception;
-    private static $statusCode;
 
     final public static function run() {
         set_exception_handler(array(get_called_class(), 'handle'));
@@ -18,7 +17,6 @@ class ExceptionHandler {
         if ($exception instanceof HttpException === false) {
             $exception = new InternalServerErrorException;
         }
-        self::$statusCode = $exception->getCode();
         static::resetOutput();
         $exception->setHeader();
         if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
@@ -37,13 +35,8 @@ class ExceptionHandler {
         return self::$exception;
     }
 
-    final public static function getStatusCode() {
-        return self::$statusCode;
-    }
-
     public static function reset() {
         self::$exception = null;
-        self::$statusCode = null;
     }
 
     protected static function triggerError(
@@ -69,7 +62,7 @@ class ExceptionHandler {
     protected static function displayError() {
         $pathInfo = PathInfo::get('/', 'ErrorApp');
         try {
-            ViewDispatcher::run($pathInfo, null);
+            ViewDispatcher::run($pathInfo, self::$exception);
         } catch (NotAcceptableException $e) {}
     }
 }

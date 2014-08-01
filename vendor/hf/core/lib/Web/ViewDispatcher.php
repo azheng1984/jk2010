@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 final class ViewDispatcher {
-    private $defaultViewClasses;
+    private static $defaultViewClasses;
 
     public static function run($pathInfo, $ctx) {
         $class = self::getViewClass($pathInfo);
@@ -11,6 +11,9 @@ final class ViewDispatcher {
         }
         $view = new $class($ctx);
         $view->render($ctx);
+    }
+    public static function reset() {
+        self::$defaultViewClasses = null;
     }
 
     public static function setDefaultViewClasses($classes) {
