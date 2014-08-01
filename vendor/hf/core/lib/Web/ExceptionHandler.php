@@ -15,7 +15,7 @@ class ExceptionHandler {
             return;
         }
         self::$exception = $exception;
-        if ($exception instanceof AppException === false) {
+        if ($exception instanceof HttpException === false) {
             $exception = new InternalServerErrorException;
         }
         self::$statusCode = $exception->getCode();

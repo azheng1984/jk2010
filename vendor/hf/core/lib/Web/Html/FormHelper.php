@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web\Html;
 
-use Hyperframework\Web\FormConfigLoader;
+use Hyperframework\ConfigFileLoader;
 
 class FormHelper {
     private $data;
@@ -31,7 +31,9 @@ class FormHelper {
     }
 
     protected static function loadConfig($name) {
-        return FormConfigLoader::load($name);
+        return ConfigFileLoader::getPhp(
+            'form' . DIRECTORY_SEPARATOR . $name . '.php'
+        );
     }
 
     public function begin($attrs = null) {

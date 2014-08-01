@@ -1,7 +1,7 @@
 <?php
-namespace Hyperframework\Web\Exceptions;
+namespace Hyperframework\Web;
 
-class LengthRequiredException extends ApplicationException {
+class LengthRequiredHttpException extends HttpException {
     public function __construct($message = null, $previous = null) {
         parent::__construct($message, '411 Length Required', $previous);
     }
