@@ -8,8 +8,8 @@ use Hyperframework\ConfigFileLoader;
 final class PathInfo {
     private static $cache;
 
-    public static function get($path, $appName = 'App') {
-        $result = self::build($path, $appName);
+    public static function get($path, $baseNamespace = 'App') {
+        $result = self::build($path, $baseNamespace);
         if ($result === null) {
             throw new NotFoundException;
         }
