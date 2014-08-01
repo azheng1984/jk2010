@@ -2,6 +2,7 @@
 namespace Hyperframework\Web;
 
 class App {
+    private $path;
     private $pathInfo;
     private $actionResult;
     private $params = array();
@@ -35,6 +36,7 @@ class App {
         return isset($this->params[$name]);
     }
 
+
     public function getActionResult($name = null) {
         if ($name === null) { 
             return $this->actionResult;
@@ -58,6 +60,7 @@ class App {
         $this->rewriteRequestMethod();
         $this->parseRequestBody();
         $this->checkCsrf();
+        $this->initializePath();
         $this->initializePathInfo();
     }
 
@@ -93,12 +96,20 @@ class App {
         //todo
     }
 
-    protected function initializePathInfo() {
-        $this->pathInfo = PathInfo::get($this->getPath());
+    protected function initializePath() {
+        $this->path = Router::run($this);
     }
 
-    protected function getPath() {
-        return Router::run($this);
+    protected function initializePathInfo() {
+        $this->pathInfo = PathInfo::get($this->path);
+    }
+
+    final protected function getPath() {
+        return $this->path;
+    }
+
+    final protected function setPath($value) {
+        return $this->path = $value;
     }
 
     final protected function setActionResult($value) {
