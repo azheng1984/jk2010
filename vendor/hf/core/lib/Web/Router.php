@@ -13,8 +13,9 @@ class Router {
                 throw new NotFoundException;
             }
             if (static::isId($segment)) {
-                $path .= 'item';
+                $path .= '/item';
                 $params[] = $segment;
+                continue;
             }
             $path .= '/' . $segment;
         }
