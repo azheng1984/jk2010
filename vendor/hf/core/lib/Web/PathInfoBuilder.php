@@ -33,6 +33,9 @@ class PathInfoBuilder {
         $namespace = \Hyperframework\APP_ROOT_NAMESPACE . '\\' . $namespace;
         $pathInfo = array();
         $viewTypes = array();
+        if (is_dir($folder) === false) {
+            throw new NotFoundException;
+        }
         foreach(scandir($folder) as $entry) {
             if ($entry === '.'
                 || $entry === '..'
@@ -60,6 +63,8 @@ class PathInfoBuilder {
             );
         }
         $pathInfo['namespace'] = $namespace;
+        //var_dump($pathInfo);
+        //exit;
         return $pathInfo;
     }
 }

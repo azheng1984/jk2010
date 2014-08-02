@@ -4,8 +4,8 @@ namespace Hyperframework\Web;
 class ActionInfoBuilder {
     public static function run($class, &$pathInfo) {
         $cache = array('class' => $class, 'methods' => array());
-        if (self::hasPrivateGetMethod($class)) {
-            $cache['get_not_allowed'] = true;
+        if (self::isGetMethodAllowed($class) === false) {
+            $cache['get_not_allowed'] = false;
         }
         $reflectors = self::getMethodReflectors($class);
         foreach ($reflectors as $reflector) {
@@ -34,12 +34,12 @@ class ActionInfoBuilder {
         return $reflector->getMethods(\ReflectionMethod::IS_PUBLIC);
     }
 
-    private static function hasPrivateGetMethod($class) {
+    private static function isGetMethodAllowed($class) {
         $reflector = new \ReflectionClass($class);
         if ($reflector->hasMethod('get') === false) {
-            return false;
+            return true;
         }
         $getMethod = $reflector->getMethod('get');
-        return $getMethod->isPrivate();
+        return $getMethod->isPublic();
     }
 }

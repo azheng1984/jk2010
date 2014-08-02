@@ -26,7 +26,7 @@ class Router {
             $ctx->setParam('ids', $params);
             $ctx->setParam('id', $params[$paramCount - 1]);
         }
-        if (strrpos(end($segments), '.') === false) {
+        if (strrpos(end($segments), '.') < 1) {
             return $path;
         }
         $extensionPosition = strrpos($path, '.');

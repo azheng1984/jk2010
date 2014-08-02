@@ -4,7 +4,7 @@ namespace Hyperframework\Blog\App;
 use Hyperframework\Web\Html\FormBuilder;
 use Hyperframework\Blog\Models\Article;
 
-class Html {
+class Json {
     public function render($ctx) {
         echo 'hi';
 //        FormBuilder::run(

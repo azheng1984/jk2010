@@ -65,6 +65,7 @@ class ExceptionHandler {
                 PathInfo::get('/', 'ErrorApp'), $exception
             );
         } catch (NotFoundException $e) {
-        } catch (NotAcceptableException $e) {}
+        } catch (NotAcceptableException $e) {
+        }
     }
 }

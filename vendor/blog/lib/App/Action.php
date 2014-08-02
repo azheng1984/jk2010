@@ -4,8 +4,8 @@ namespace Hyperframework\Blog\App;
 use Hyperframework\Blog\Modles\Article;
 
 class Action {
-    private function get() {
-        echo 'hi';
+    public function after($ctx) {
+        echo 'xx';
     }
 
     public function patch($ctx) {
