@@ -2,15 +2,7 @@
 namespace Hyperframework\Web;
 
 class ActionInfoBuilder {
-    public function handle($class, $fullPath) {
-        $postfix = 'Action';
-        if (substr($class, -(strlen($postfix))) !== $postfix) {
-            return;
-        }
-        return $this->getCache($class, $fullPath);
-    }
-
-    private function getCache($class) {
+    public static function run($class, &$pathInfo) {
         $className = $class;
         $cache = array('class' => $className, 'methods' => array());
         //todo: configurable
@@ -18,7 +10,7 @@ class ActionInfoBuilder {
         if ($this->hasPrivateGetMethod($class)) {
             $cache['get_not_allowed'] = true;
         }
-        $reflectors = $this->getMethodReflectors($class, $fullPath);
+        $reflectors = $this->getMethodReflectors($class);
         foreach ($reflectors as $reflector) {
             $method = strtoupper($reflector->getName());
             if (strncmp($method, '__', 2) === 0) {
@@ -34,7 +26,7 @@ class ActionInfoBuilder {
             }
             if (in_array($method, $httpMethods) === false) {
                 throw new Exception(
-                    "Error: Invalid public method '$method' in '$fullPath'"
+                    "Error: Invalid public method '$method' in '$class'"
                 );
             }
             $cache['methods'][$method] = true;
@@ -42,10 +34,10 @@ class ActionInfoBuilder {
         if (count($cache['methods']) === 0) {
             unset($cache['methods']);
         }
-        return $cache;
+        $pathInfo['action'] = $cache;
     }
 
-    private function getMethodReflectors($class, $fullPath) {
+    private function getMethodReflectors($class) {
         $reflector = new ReflectionClass($class);
         return $reflector->getMethods(ReflectionMethod::IS_PUBLIC);
     }

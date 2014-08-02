@@ -7,52 +7,55 @@ use Hyperframework\ClassRecognizer;
 class PathInfoBuilder {
     private static $config;
 
-    public static function build($path, $namespace, $options = null) {
-        $defaultView = null;
-        if ($options === null || isset($options['default_view']) === false) {
-            $defaultView = array('Html', 'Xml', 'Json');
-        } else {
-            $defaultView = $options['default_view'];
-        }
-        $cache = array('namespace' => $namespace);
-        foreach(scandir($path) as $entry) {
-            if ($entry === '.' || $entry === '..' || is_dir($path . '/' . $entry)) {
+    private static function getNamespace($path, $type) {
+        $segments = explode('/', $path);
+        $result = $type;
+        foreach ($segments as $segment) {
+            if ($segment === '') {
                 continue;
             }
-            // echo $path . '/' . $entry;
-            $classRecognizer = new ClassRecognizer;
-            $class = $classRecognizer->getClass($entry);
-            $fullName = $namespace . '\\' . $class;
-            if ($class === 'Action') {
-                //$cache['action'] = ActionInfoBuilder::build($namespace);
-            } else {
-                $builder = new ViewInfoBuilder($defaultView);
-                $cache['views'] = $builder->build(
-                    $namespace, $class
-                );
+            $result .= '\\';
+            foreach (explode('_', $segment) as $item) {
+                $result .= ucfirst($item);
             }
         }
-        if (count($cache['views']) > 1) {
-            $callback = function($first, $second) use ($defaultView) {
-                $pos1 = array_search($first, $defaultView);
-                $pos2 = array_search($second, $defaultView);
-                if ($pos2 === false && $pos1 === false) {
-                    return 0;
-                }
-                if ($pos1 === false) {
-                    return 1;
-                }
-                if ($pos2 === false) {
-                    return -1;
-                }
-                if ($pos1 > $pos2) {
-                    return 1;
-                }
-                return -1;
-                
-            };
-            uksort($cache['views'], $callback);
+        return $result;
+    }
+
+    public static function run($path, $type, $options = null) {
+        $namespace = self::getNamespace($path);
+        $folder = $namespace;
+        if (DIRECTORY_SEPARATOR !== '\\') {
+            $folder = str_replace('\\', '/', $folder);
         }
-        return $cache;
+        $folder = \Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'lib'
+            . DIRECTORY_SEPARATOR . $folder;
+        $namespace = \Hyperframework\APP_ROOT_NAMESPACE . '\\' . $namespace;
+        $pathInfo = array();
+        $viewTypes = array();
+        foreach(scandir($folder) as $entry) {
+            if ($entry === '.'
+                || $entry === '..'
+                || is_dir($path . DIRECTORY_SEPARATOR . $entry)
+            ) {
+                continue;
+            }
+            $name = ClassRecognizer::getName($entry);
+            if ($name === 'Action') {
+                ActionInfoBuilder::build($namespace . '\\' . $name);
+            } else {
+                $viewTypes[] = $name;
+            }
+        }
+        if (count($viewNames) > 1) {
+            $viewOrder = null;
+            if (isset($options['view_order']) !== false) {
+                $viewOrder = $options['view_order'];
+            }
+            ViewInfoBuilder::run(
+                $namespace, $viewTypes, $viewOrder, $pathInfo
+            );
+        }
+        return $pathInfo;
     }
 }

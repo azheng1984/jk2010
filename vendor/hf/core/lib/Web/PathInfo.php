@@ -15,7 +15,7 @@ final class PathInfo {
             }
             if (self::$cache === null) {
                 self::$cache = CacheFileLoader::loadPhp(
-                    $cacheFolder . DIRECTORY_SEPARATOR . $type. '.php'
+                    $cacheFolder . DIRECTORY_SEPARATOR . $type . '.php'
                 );
             }
             if (isset(self::$cache[$path])) {
