@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 class ViewInfoBuilder {
-    public function run($namespace, $types, $order = null) {
+    public static function run($namespace, $types, $order = null, &$pathInfo) {
         if ($order === null) {
             $order = array('Html', 'Xml', 'Json');
         } elseif (is_string($order)) {
@@ -14,7 +14,7 @@ class ViewInfoBuilder {
         $views = array();
         foreach ($types as $type) {
             $class = $namespace .'\\' . $type;
-            $this->verifyRenderingMethod($class);
+            self::verifyRenderingMethod($class);
             $views[self::getKey($type)] = $type;
         }
         $callback = function($first, $second) use ($order) {
@@ -38,7 +38,7 @@ class ViewInfoBuilder {
         $pathInfo['views'] = $views;
     }
 
-    private function getKey($type) {
+    private static function getKey($type) {
         $result = null;
         $length = strlen($type);
         for ($index = 0; $index < $length; ++$index) {
@@ -49,13 +49,14 @@ class ViewInfoBuilder {
                     $result .= '_';
                 }
                 $result .= strtolower($char);
+                continue;
             }
             $result .= $char;
         }
         return $result;
     }
 
-    private function verifyRenderingMethod($class) {
+    private static function verifyRenderingMethod($class) {
         $reflector = new \ReflectionClass($class);
         if (!$reflector->hasMethod('render')) {
             throw new \Exception(

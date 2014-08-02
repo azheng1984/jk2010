@@ -23,7 +23,7 @@ class PathInfoBuilder {
     }
 
     public static function run($path, $type, $options = null) {
-        $namespace = self::getNamespace($path);
+        $namespace = self::getNamespace($path, $type);
         $folder = $namespace;
         if (DIRECTORY_SEPARATOR !== '\\') {
             $folder = str_replace('\\', '/', $folder);
@@ -36,18 +36,21 @@ class PathInfoBuilder {
         foreach(scandir($folder) as $entry) {
             if ($entry === '.'
                 || $entry === '..'
-                || is_dir($path . DIRECTORY_SEPARATOR . $entry)
+                || is_dir($folder . DIRECTORY_SEPARATOR . $entry)
             ) {
                 continue;
             }
             $name = ClassRecognizer::getName($entry);
+            if ($name === null) {
+                continue;
+            }
             if ($name === 'Action') {
-                ActionInfoBuilder::build($namespace . '\\' . $name);
+                ActionInfoBuilder::run($namespace . '\\' . $name, $pathInfo);
             } else {
                 $viewTypes[] = $name;
             }
         }
-        if (count($viewNames) > 1) {
+        if (count($viewTypes) !== 0) {
             $viewOrder = null;
             if (isset($options['view_order']) !== false) {
                 $viewOrder = $options['view_order'];
@@ -56,6 +59,7 @@ class PathInfoBuilder {
                 $namespace, $viewTypes, $viewOrder, $pathInfo
             );
         }
+        $pathInfo['namespace'] = $namespace;
         return $pathInfo;
     }
 }

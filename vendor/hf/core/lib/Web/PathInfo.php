@@ -6,6 +6,8 @@ use Hyperframework\CacheFileLoader;
 use Hyperframework\ConfigFileLoader;
 
 final class PathInfo {
+    private static $cache;
+
     public static function get($path, $type = 'App') {
         $result = null;
         if (Config::get('hyperframework.path_info.enable_cache') !== false) {
@@ -31,7 +33,7 @@ final class PathInfo {
     }
 
     private static function build($path, $type) {
-        $builderConfig = ConfigFileLoader::loadPhp(
+        $config = ConfigFileLoader::loadPhp(
             'path_info_builder.php',
             'hyperframework.path_info.builder_config_path',
             true
@@ -46,6 +48,6 @@ final class PathInfo {
                 $options = $config['options'];
             }
         }
-        return $builder::build($path, $type, $options);
+        return $builder::run($path, $type, $options);
     }
 }

@@ -6,14 +6,15 @@ use Hyperframework\Blog\Models\Article;
 
 class Html {
     public function render($ctx) {
-        FormBuilder::run(
-            $ctx->getActionResult('article'),
-            array(
-                'base' => 'article',
-                'errors' => $ctx->getActionResult('errors'),
-                'validation_rules' => Article::getValidationRules()
-            )
-        );
+        echo 'hi';
+//        FormBuilder::run(
+//            $ctx->getActionResult('article'),
+//            array(
+//                'base' => 'article',
+//                'errors' => $ctx->getActionResult('errors'),
+//                'validation_rules' => Article::getValidationRules()
+//            )
+//        );
 
 //        FormBuilder::run(
 //            $ctx->getActionResult('article'),

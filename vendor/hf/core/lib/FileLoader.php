@@ -39,7 +39,7 @@ class FileLoader {
     }
 
     protected static function getDefaultBasePath() {
-        return APPLICATION_PATH;
+        return APP_ROOT_PATH;
     }
 
     final private static function load(

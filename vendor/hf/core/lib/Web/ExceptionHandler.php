@@ -60,11 +60,12 @@ class ExceptionHandler {
     }
 
     protected static function displayError() {
+        var_dump(self::$exception);
         try {
             ViewDispatcher::run(
                 PathInfo::get('/', 'ErrorApp'), self::$exception
             );
-        } catch (NotFoundException $e) {}
+        } catch (NotFoundException $e) {
         } catch (NotAcceptableException $e) {}
     }
 }
