@@ -15,7 +15,7 @@ final class PathInfo {
             }
             if (self::$cache === null) {
                 self::$cache = CacheFileLoader::loadPhp(
-                    $cacheFolder . DIRECTORY_SEPARATOR . $type. '.php',
+                    $cacheFolder . DIRECTORY_SEPARATOR . $type. '.php'
                 );
             }
             if (isset(self::$cache[$path])) {
@@ -31,31 +31,7 @@ final class PathInfo {
     }
 
     private static function build($path, $type) {
-        $namespace = null;
-        $segments = explode('/', $path);
-        array_shift($segments);
-        $amount = count($segments);
-        $index = 0;
-        foreach ($segments as $segment) {
-            ++$index;
-            $words = explode('_', $segment);
-            foreach ($words as $word) {
-                $namespace .= ucfirst($word);
-            }
-            if ($index < $amount) {
-                $namespace .= '\\';
-            }
-        }
-        if (strncmp($path, '#', 1) !== 0) {
-            if ($namespace == '') {
-                $namespace = 'App';
-            } else {
-                $namespace = 'App\\' . $namespace;
-            }
-        } else {
-            $namespace = substr($namespace, 1);
-        }
-        $config = ConfigFileLoader::loadPhp(
+        $builderConfig = ConfigFileLoader::loadPhp(
             'path_info_builder.php',
             'hyperframework.path_info.builder_config_path',
             true
@@ -70,11 +46,6 @@ final class PathInfo {
                 $options = $config['options'];
             }
         }
-        return $builder::build(
-            \Hyperframework\APPLICATION_ROOT_PATH . DIRECTORY_SEPARATOR
-                . 'lib' . DIRECTORY_SEPARATOR . $namespace,
-            \Hyperframework\APPLICATION_ROOT_NAMESPACE . '\\' . $namespace,
-            $options
-        );
+        return $builder::build($path, $type, $options);
     }
 }
