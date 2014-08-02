@@ -21,7 +21,7 @@ class ExceptionHandler {
         $exception->setHeader();
         if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
             try {
-                static::displayError();
+                static::displayError($exception);
             } catch (\Exception $e) {
                 static::triggerError(self::$exception, $e);
             }
@@ -31,7 +31,7 @@ class ExceptionHandler {
         }
     }
 
-    final public static function getException() {
+    protected static function getException() {
         return self::$exception;
     }
 
@@ -59,11 +59,10 @@ class ExceptionHandler {
         }
     }
 
-    protected static function displayError() {
-        var_dump(self::$exception);
+    protected static function displayError($exception) {
         try {
             ViewDispatcher::run(
-                PathInfo::get('/', 'ErrorApp'), self::$exception
+                PathInfo::get('/', 'ErrorApp'), $exception
             );
         } catch (NotFoundException $e) {
         } catch (NotAcceptableException $e) {}

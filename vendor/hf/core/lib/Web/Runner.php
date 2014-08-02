@@ -18,7 +18,7 @@ class Runner {
         require dirname(__DIR__) . DIRECTORY_SEPARATOR
             . 'EnvironmentBuilder.php';
         EnvironmentBuilder::run($rootNamespace, $rootPath);
-//        ExceptionHandler::run();
+        ExceptionHandler::run();
     }
 
     protected static function isAsset() {

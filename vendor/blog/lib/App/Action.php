@@ -4,7 +4,7 @@ namespace Hyperframework\Blog\App;
 use Hyperframework\Blog\Modles\Article;
 
 class Action {
-    public function get() {
+    private function get() {
         echo 'hi';
     }
 

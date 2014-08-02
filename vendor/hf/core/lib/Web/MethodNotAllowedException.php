@@ -1,7 +1,7 @@
 <?php
-namespace Hyperframework\Web\Exceptions;
+namespace Hyperframework\Web;
 
-class MethodNotAllowedException extends ApplicationException {
+class MethodNotAllowedException extends HttpException {
     private $methods;
 
     public function __construct($methods, $message = null, $previous = null) {
