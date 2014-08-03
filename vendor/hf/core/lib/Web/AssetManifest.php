@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework\FullPathRecognizer;
+
 class AssetManifest {
     public static function getInnerUrlPaths($urlPath) {
         $path = self::getFullPath($urlPath);
@@ -19,18 +21,35 @@ class AssetManifest {
         return $result;
     }
 
-    public static function process($content) {
-        $paths = self::getInnerPaths($path);
+    public static function process($basePath, $content) {
+        $paths = self::getInnerPaths($basePath, $content);
         $result = null;
         foreach ($paths as $path) {
-            $result .= AssetFilterChain::process($path);
+            $result .= AssetFilterChain::run($path);
         }
         return $result;
     }
 
-    private static function getInnerPaths($path) {
-        $items = explode("\n", file_get_contents($path));
-        //todo 解析 manifest 生成 inner paths
+    private static function getInnerPaths($basePath, $content) {
+        $result = array();
+        $items = explode("\n", $content);
+        foreach ($items as $item) {
+            $item = trim($item);
+            if ($item === '') {
+                continue;
+            }
+            if (FullPathRecognizer::isFull($item) === false) {
+                $item = $basePath . DIRECTORY_SEPARATOR . $item;
+            }
+            if (is_dir($item)) {
+                $scanner = new \Hyperframework\DirectoryScanner(function($path) use (&$result) {
+                    $result[]= $path;
+                });
+                $scanner->scan($item);
+            }
+            $result[] = $item;
+        }
+        return $result;
     }
 
     private static function removeBasePath($path) {
@@ -38,5 +57,11 @@ class AssetManifest {
 
     private static function getFullPath($urlPath) {
         //search file
+        //  .
+        //  asset\a.php
+        //  \assets\abc.php
+        //  //assets/
+        //  /asset
+        //  c:\
     }
 }

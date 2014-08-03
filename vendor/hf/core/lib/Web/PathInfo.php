@@ -35,7 +35,7 @@ final class PathInfo {
     private static function build($path, $type) {
         $config = ConfigFileLoader::loadPhp(
             'path_info_builder.php',
-            'hyperframework.path_info.builder_config_path',
+            'hyperframework.path_info_builder.config_path',
             true
         );
         $builder = __NAMESPACE__ . '\PathInfoBuilder';

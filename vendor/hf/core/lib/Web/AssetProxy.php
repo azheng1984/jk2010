@@ -48,7 +48,6 @@ class AssetProxy {
                 $fileFullPath = $folderFullPath
                     . DIRECTORY_SEPARATOR . $fileName;
                 $files = glob($fileFullPath . '*');
-                //var_dump($files);
                 foreach ($files as $file) {
                     $tmp = explode('/', $file);
                     $tmp = end($tmp);
@@ -63,7 +62,7 @@ class AssetProxy {
 
     private static function getIncludePaths() {
         $paths =  \Hyperframework\ConfigFileLoader::loadPhp(
-            'hyperframework.asset_cache.include_paths_config_path',
+            'hyperframework.asset_cache.include_paths.config_path',
             'asset_cache' . DIRECTORY_SEPARATOR . 'include_paths.php',
             true
         );

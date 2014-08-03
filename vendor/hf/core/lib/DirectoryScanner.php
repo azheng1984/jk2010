@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework;
 
-class DirecotoryScanner {
+class DirectoryScanner {
     private $fileHandler;
     private $directoryHandler;
 
