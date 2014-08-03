@@ -1,8 +1,12 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework\Config;
+use Hyperframework\FullPathRecognizer;
+
 class AssetProxy {
-    public static function run($path) {
+    public static function run() {
+        $path = RequestPath::get();
         if (Config::get('hyperframework.asset_cache.enable_versioning')
             !== false
         ) {
@@ -22,26 +26,34 @@ class AssetProxy {
         if ($file === null) {
             throw new NotFoundException;
         }
-        $realPath = null;
-        $result = AssetFilterChain::process($file, $realPath);
-        if ($realPath !== $path) {
-            throw new NotFoundException;
-        }
-        echo $result;
+        echo AssetFilterChain::run($file);
     }
 
     private static function searchFile($path) {
+        $prefix = AssetCachePathPrefix::get();
+        $path = substr($path, strlen($prefix));
         $segments = explode('/', $path);
         $fileName = array_pop($segments);
-        $dirName = implode(DIRECTORY_SEPARATOR, $segments);
+        $folder = implode(DIRECTORY_SEPARATOR, $segments);
         foreach (self::getIncludePaths() as $includePath) {
-            if (is_dir($includePath . $dirName)) {
-                $fullPath = $includePath . $dirName
+            $folderFullPath = $includePath;
+            if ($folder !== '') {
+                $folderFullPath .=  DIRECTORY_SEPARATOR . $folder;
+            } 
+            if (FullPathRecognizer::isFull($folderFullPath) === false) {
+                $folderFullPath = \Hyperframework\APP_ROOT_PATH
+                    . DIRECTORY_SEPARATOR . $folderFullPath;
+            }
+            if (is_dir($folderFullPath)) {
+                $fileFullPath = $folderFullPath
                     . DIRECTORY_SEPARATOR . $fileName;
-                $files = glob($fullPath . '*');
+                $files = glob($fileFullPath . '*');
+                //var_dump($files);
                 foreach ($files as $file) {
-                    if (AssetFilterChain::removeInternalFileExtensions($file)
-                        === $file) {
+                    $tmp = explode('/', $file);
+                    $tmp = end($tmp);
+                    if (AssetFilterChain::removeInternalFileNameExtensions($tmp)
+                        === $fileName) {
                         return $file;
                     }
                 }
@@ -56,7 +68,7 @@ class AssetProxy {
             true
         );
         if ($paths === null) {
-            return array();
+            return array('assets');
         }
         return $paths;
     }

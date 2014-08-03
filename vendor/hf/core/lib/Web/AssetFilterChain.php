@@ -3,21 +3,22 @@ namespace Hyperframework\Web;
 
 //todo filter 配置
 class AssetFilterChain {
-    private static function process($path) {
+    public static function run($path) {
         $segments = explode('.', $path);
-        $output = file_get_contents($path);
+        $content = file_get_contents($path);
+        array_shift($segments);
         for (;;) {
-            $filterType = array_pop($path);
-            if (self::isValidFilterType($fileType) === false) {
+            $filterType = array_pop($segments);
+            if (self::isValidFilterType($filterType) === false) {
                 break;
             }
-            if ($fileType === 'php') {
+            if ($filterType === 'php') {
                 $content = self::processPhp($content);
-            } elseif ($fileType === 'js') {
+            } elseif ($filterType === 'js') {
                 $content = self::processjs($content);
-            } elseif ($fileType === 'css') {
+            } elseif ($filterType === 'css') {
                 $content = self::processCss($content);
-            } elseif ($fileType === 'manifest') {
+            } elseif ($filterType === 'manifest') {
                 $content = AssetManifest::process($content);
             }
         }
@@ -26,16 +27,16 @@ class AssetFilterChain {
 
     public static function removeInternalFileNameExtensions($path) {
         //path.js.php
-        //path.js
         $segments = explode('.', $path);
+        $result = array(array_shift($segments));
         for (;;) {
             $filterType = array_pop($segments);
-            if ($fileType !== 'php') {
-                array_push($filterType);
+            if ($filterType !== 'php') {
+                array_push($result, $filterType);
                 break;
             }
         }
-        return implode('.', $segments);
+        return implode('.', $result);
     }
 
     private static function gzip($content) {
@@ -43,11 +44,12 @@ class AssetFilterChain {
         if ($result === false) {
             throw new Exception;
         }
+        header('Content-Encoding: gzip');
         return $result;
     }
 
     private static function processJs($content) {
-        $content = JsCompressor::process($content);
+        $content = JsCompressor::run($content);
         return self::gzip($content);
     }
 
@@ -62,7 +64,7 @@ class AssetFilterChain {
         return ob_get_clean();
     }
 
-    private static function isValidFilterType($fileType) {
-        return $fileType === 'js' || $fileType === 'css' || $fileType === 'php';
+    private static function isValidFilterType($filterType) {
+        return $filterType === 'js' || $filterType === 'css' || $filterType === 'php';
     }
 }

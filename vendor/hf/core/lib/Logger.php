@@ -45,9 +45,9 @@ class Logger {
         }
         $path = Config::get('hyperframework.log_path');
         if ($path === null) {
-            $path = APPLICATION_PATH . 'data' . DIRECTORY_SEPARATOR . 'log.txt';
+            $path = APP_ROOT_PATH . 'data' . DIRECTORY_SEPARATOR . 'log.txt';
         } elseif (FullPathRecognizer::isFull($path) === false) {
-            $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . $path;
+            $path = APP_ROOT_PATH . DIRECTORY_SEPARATOR . $path;
         }
         file_put_contents($path, $entry, FILE_APPEND | LOCK_EX);
     }
