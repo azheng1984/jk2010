@@ -13,15 +13,12 @@ class AssetCacheVersion {
         if (isset($manifest[$path])) {
             return self::getPrefix() . $manifest[$path];
         }
-        self::getCurrent();
+        return self::getDefault();
     }
 
     private static function getPrefix() {
         if (self::$prefix === null) {
-            self::$prefix = Config::get(
-                'hyperframework.asset_cache.version_prefix',
-                'asset_cache' . DIRECTORY_SEPARATOR . 'manifest.php'
-            );
+            self::$prefix = Config::get('hyperframework.asset.version_prefix');
             if (self::$prefix === null) {
                 self::$prefix = '';
             }
@@ -29,11 +26,11 @@ class AssetCacheVersion {
         return self::$prefix;
     }
 
-    private static function getCurrent() {
+    private static function getDefault() {
         if (self::$current === null) {
             self::$current = self::getPrefix() . ConfigFileLoader::loadPhp(
-                'hyperframework.asset_cache.version_path',
-                'asset_cache' . DIRECTORY_SEPARATOR . 'version.php'
+                'asset' . DIRECTORY_SEPARATOR . 'version.php',
+                'hyperframework.asset.version.config_path'
             );
         }
         return self::$current;
@@ -42,8 +39,8 @@ class AssetCacheVersion {
     private static function getManifest() {
         if (self::$manifest === null) {
             self::$manifest = PhpFileConfigLoader::load(
-                'hyperframework.asset_cache.manifest_path',
-                'asset_cache' . DIRECTORY_SEPARATOR . 'manifest.php'
+                'asset' . DIRECTORY_SEPARATOR . 'version_manifest.php',
+                'hyperframework.asset.version_manifest.config_path'
             );
         }
         return self::$manifest;

@@ -7,23 +7,7 @@ use Hyperframework\ClassRecognizer;
 class PathInfoBuilder {
     private static $config;
 
-    private static function getNamespace($path, $type) {
-        $segments = explode('/', $path);
-        $result = $type;
-        foreach ($segments as $segment) {
-            if ($segment === '') {
-                continue;
-            }
-            $result .= '\\';
-            foreach (explode('_', $segment) as $item) {
-                $result .= ucfirst($item);
-            }
-        }
-        return $result;
-    }
-
-    public static function run($path, $type, $options = null) {
-        $namespace = self::getNamespace($path, $type);
+    public static function runByNamespace($namespace, $type, $options) {
         $folder = $namespace;
         if (DIRECTORY_SEPARATOR !== '\\') {
             $folder = str_replace('\\', '/', $folder);
@@ -66,5 +50,24 @@ class PathInfoBuilder {
         //var_dump($pathInfo);
         //exit;
         return $pathInfo;
+    }
+
+    public static function run($path, $type, $options = null) {
+        $namespace = self::getNamespace($path, $type);
+    }
+
+    private static function getNamespace($path, $type) {
+        $segments = explode('/', $path);
+        $result = $type;
+        foreach ($segments as $segment) {
+            if ($segment === '') {
+                continue;
+            }
+            $result .= '\\';
+            foreach (explode('_', $segment) as $item) {
+                $result .= ucfirst($item);
+            }
+        }
+        return $result;
     }
 }

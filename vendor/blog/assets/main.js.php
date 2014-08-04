@@ -1,2 +1,4 @@
-<?php
-echo microtime(true);
+var hi = "liset\"";
+if (hi) {
+     microtime(true);
+}

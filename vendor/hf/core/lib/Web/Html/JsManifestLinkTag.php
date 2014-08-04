@@ -7,7 +7,7 @@ class JsManifestLinkTag {
     public static function render($path, $shouldConcatenateFiles = null) {
         if ($shouldConcatenateFiles === null) {
             $shouldConcatenateFiles = Config::get(
-                'hyperframework.web.concatenate_files_in_asset_manifest'
+                'hyperframework.asset.concatenate_manifest'
             );
         }
         if ($shouldConcatenateFiles !== false) {
