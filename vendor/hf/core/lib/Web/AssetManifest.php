@@ -5,16 +5,18 @@ use Hyperframework\FullPathRecognizer;
 
 class AssetManifest {
     public static function getInnerUrlPaths($urlPath) {
-        $path = self::getFullPath($urlPath);
+        $basePath = dirname($urlPath);
+        $urlPath = substr($urlPath, 1);
+        $path = AssetProxy::searchFile($urlPath);
         if ($path === null) {
-            throw new Exception;
+            throw new \Exception;
         }
         $result = array();
-        $paths = self::getInnerPaths($path);
+        $paths = self::getInnerPaths(dirname($path), file_get_contents($path));
         foreach ($paths as $item) {
-            $item = self::removeBasePath($item);
+            $item = self::getUrl($item);
             if ($item === null) {
-                throw new Exception;
+                throw new \Exception;
             }
             $result[] = $item;
         }
@@ -46,15 +48,25 @@ class AssetManifest {
                     $result[]= $path;
                 });
                 $scanner->scan($item);
+                continue;
             }
             $result[] = $item;
         }
         return $result;
     }
 
-    private static function removeBasePath($path) {
-    }
-
-    private static function getFullPath($urlPath) {
+    private static function getUrl($path) {
+        $includePaths = AssetProxy::getIncludePaths();
+        foreach ($includePaths as $includePath) {
+            if (FullPathRecognizer::isFull($includePath) === false) {
+                $includePath = \Hyperframework\APP_ROOT_PATH
+                    . DIRECTORY_SEPARATOR . $includePath;
+            }
+            if (strncmp($includePath, $path, strlen($includePath)) === 0) {
+                return AssetFilterChain::removeInternalFileNameExtensions(
+                    substr($path, strlen($includePath)
+                ));
+            }
+        }
     }
 }

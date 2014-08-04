@@ -4,19 +4,17 @@ namespace Hyperframework\Web;
 use Hyperframework\Config;
 
 class AssetUrl {
-    public function get($path) {
+    public static function get($path) {
         if (Config::get(
             'hyperframework.asset.enable_versioning') !== false
         ) {
             $version = AssetCacheVersion::get($path);
-            $segments = explode('.', $path);
-            if (count($segments) === 1) {
+            $pos = strrpos($path, '.');
+            if ($pos === false) {
                 $path .= '-' . $version;
             } else {
-                $lastSegment = array_pop($segments);
-                array_push($segments, $version);
-                array_push($segments, $lastSegment);
-                $result = implode('.', $segments);
+                $path = substr($path, 0, $pos)
+                    . '.' . $version . '.' . substr($path, $pos + 1);
             }
         }
         return Config::get('hyperframework.asset.url_prefix')

@@ -2,6 +2,8 @@
 namespace Hyperframework\Web\Html;
 
 use Hyperframework\Config;
+use Hyperframework\Web\AssetUrl;
+use Hyperframework\Web\AssetManifest;
 
 class CssManifestLinkTag {
     public static function render(
@@ -9,7 +11,7 @@ class CssManifestLinkTag {
     ) {
         if ($shouldConcatenateFiles === null) {
             $shouldConcatenateFiles = Config::get(
-                'concatenate_files_in_asset_manifest'
+                'hyperframework.asset.concatenate_manifest'
             );
         }
         if ($shouldConcatenateFiles !== false) {
@@ -26,6 +28,6 @@ class CssManifestLinkTag {
         if ($media !== null) {
             echo ' media="', $media, '"';
         }
-        echo ' href="', AssetCacheUrl::get($path), '"/>';
+        echo ' href="', AssetUrl::get($path), '"/>';
     }
 }
