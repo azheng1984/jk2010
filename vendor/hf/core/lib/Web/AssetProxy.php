@@ -7,13 +7,11 @@ use Hyperframework\FullPathRecognizer;
 class AssetProxy {
     public static function run() {
         $path = RequestPath::get();
-        if (Config::get('hyperframework.asset_cache.enable_versioning')
-            !== false
-        ) {
+        if (Config::get('hyperframework.asset.enable_versioning') !== false) {
             $segments = explode('.', $path);
             $amount = count($segments);
             if ($amount < 3) {
-               throw new NotFoundException;
+                throw new NotFoundException;
             }
             $version = $segments[$amount - 2];
             unset($segments[$amount - 2]);
@@ -30,8 +28,8 @@ class AssetProxy {
     }
 
     private static function searchFile($path) {
-        $prefix = AssetCachePathPrefix::get();
-        $path = substr($path, strlen($prefix));
+        $prefix = AssetPathPrefix::get();
+        $path = substr($path, strlen($prefix) + 1);
         $segments = explode('/', $path);
         $fileName = array_pop($segments);
         $folder = implode(DIRECTORY_SEPARATOR, $segments);
@@ -62,8 +60,8 @@ class AssetProxy {
 
     private static function getIncludePaths() {
         $paths =  \Hyperframework\ConfigFileLoader::loadPhp(
-            'hyperframework.asset_cache.include_paths.config_path',
-            'asset_cache' . DIRECTORY_SEPARATOR . 'include_paths.php',
+            'hyperframework.asset.include_paths.config_path',
+            'asset' . DIRECTORY_SEPARATOR . 'include_paths.php',
             true
         );
         if ($paths === null) {
