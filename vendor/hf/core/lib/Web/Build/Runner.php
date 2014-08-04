@@ -7,9 +7,14 @@ use Hyperframework\Cli\ExceptionHandler;
 class Runner {
     public static function run($rootNamespace, $rootPath) {
         static::initialize($rootNamespace, $rootPath);
+        //read option
         //class_loader cache
-        //asset cache
         //path_info cache
+        //asset cache
+        self::buildPathInfoCache();
+    }
+
+    private static function buildPathInfoCache() {
     }
 
     protected static function initialize($rootNamespace, $rootPath) {
