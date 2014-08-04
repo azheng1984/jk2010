@@ -15,6 +15,7 @@ class Runner {
     }
 
     private static function buildPathInfoCache() {
+        //$namespace = $namespace;
     }
 
     protected static function initialize($rootNamespace, $rootPath) {

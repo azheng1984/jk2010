@@ -7,6 +7,11 @@ use Hyperframework\ClassRecognizer;
 class PathInfoBuilder {
     private static $config;
 
+    public static function run($path, $type, $options) {
+        $namespace = self::convertToNamespace($path, $type);
+        return self::runByNamespace($namespace, $type, $options);
+    }
+
     public static function runByNamespace($namespace, $type, $options) {
         $folder = $namespace;
         if (DIRECTORY_SEPARATOR !== '\\') {
@@ -47,16 +52,10 @@ class PathInfoBuilder {
             );
         }
         $pathInfo['namespace'] = $namespace;
-        //var_dump($pathInfo);
-        //exit;
         return $pathInfo;
     }
 
-    public static function run($path, $type, $options = null) {
-        $namespace = self::getNamespace($path, $type);
-    }
-
-    private static function getNamespace($path, $type) {
+    private static function convertToNamespace($path, $type) {
         $segments = explode('/', $path);
         $result = $type;
         foreach ($segments as $segment) {
