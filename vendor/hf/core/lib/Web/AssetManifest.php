@@ -56,12 +56,5 @@ class AssetManifest {
     }
 
     private static function getFullPath($urlPath) {
-        //search file
-        //  .
-        //  asset\a.php
-        //  \assets\abc.php
-        //  //assets/
-        //  /asset
-        //  c:\
     }
 }
