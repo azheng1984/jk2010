@@ -3,7 +3,7 @@ namespace Hyperframework\Web;
 
 class ActionInfoBuilder {
     public static function run($class, &$pathInfo) {
-        $cache = array('class' => $class, 'methods' => array());
+        $cache = array('methods' => array());
         if (self::isGetMethodAllowed($class) === false) {
             $cache['get_not_allowed'] = false;
         }

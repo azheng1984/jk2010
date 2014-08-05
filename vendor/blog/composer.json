@@ -1,10 +1,10 @@
 {
     "autoload": {
         "psr-4": {
-          "Hyperframework\\": "../hf/core/lib/"
+          "Hyperframework\\": "../hf/core/lib/",
+          "Hyperframework\\Blog\\": ["lib/", "ext/"]
         },
         "psr-0": {
-          "Hyperframework\\Blog\\": ["lib/", "ext/"]
         }
     }
 }
