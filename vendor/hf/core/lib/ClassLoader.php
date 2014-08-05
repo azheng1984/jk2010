@@ -13,6 +13,7 @@ final class ClassLoader {
 
     public static function load($name) {
         $segments = null;
+        //默认 psr4, 没有找到时降级到 psr0
         if (strpos('_', $name) !== false) {
             $segments = explode('_', $name);
         } else {
