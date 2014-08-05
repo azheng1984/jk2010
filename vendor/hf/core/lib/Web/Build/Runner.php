@@ -18,25 +18,10 @@ class Runner {
         $root = Hyeprframework\APP_ROOT_PATH
             . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . $type;
         $pathInfo = array();
-
-        $scanner = new DirectoryScanner(function($path) use (&$pathInfo){
-            $name = basename($path, $relativePath);
-            if ($name === 'Action') {
-                ActionInfoBuilder::($relativePath, $pathInfo[$path]);
-            } else {
-                ViewInfoBuilder::($relativePath, $pathInfo[$path]);
-            }
-        }, function($path, $relativePath) use (&$pathInfo) {
-            $name = basename($path);
-            if ($name === 'Action') {
-            } else {
-            }
-        });
-        $scanner->run();
     }
 
     private static function get($path, $folder, &$pathInfo) {
-        foreach(scandir($folder) as $entry) {
+        foreach (scandir($folder) as $entry) {
             if ($entry === '.'
                 || $entry === '..'
             ) {
