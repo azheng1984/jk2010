@@ -17,8 +17,6 @@ class ClassLoaderCacheBuilder {
                     str_replace("\\", DIRECTORY_SEPARATOR, $key), 0, strlen($key) -1));
             }
         }
-        print_r($psr4);
-        exit;
         $cache = array();
         foreach ($psr4 as $namespace => &$paths) {
             foreach ($paths as $path) {
