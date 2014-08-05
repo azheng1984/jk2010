@@ -8,10 +8,12 @@ class Runner {
     public static function run($rootNamespace, $rootPath) {
         static::initialize($rootNamespace, $rootPath);
         //path_info cache
-        //preprocess composer class_loader cache
         //generate asset cache
+        //preprocess composer class_loader cache
         self::buildPathInfoCache('App');
         self::buildPathInfoCache('ErrorApp');
+        AssetCacheBuilder::run();
+        ClassLoaderCacheBuilder::run();
     }
 
     private static function buildPathInfoCache($type) {
