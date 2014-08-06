@@ -11,11 +11,13 @@ class ClassLoaderCacheBuilder {
         $psr0 = require($folder . DIRECTORY_SEPARATOR . 'autoload_namespaces.php');
         $psr4 = require($folder . DIRECTORY_SEPARATOR . 'autoload_psr4.php');
         foreach ($psr0 as $key => $item) {
+            if (strpos($key, '\\') === false) {
+                $key = str_replace('_', '\\', $key);
+            }
             if (isset($psr4[$key])) {
                 $psr4[$key] = array();
             }
             foreach ($item as $i) {
-                //do: 处理下划线
                 $psr4[$key][] =realpath($i . DIRECTORY_SEPARATOR . substr(
                     str_replace("\\", DIRECTORY_SEPARATOR, $key), 0, strlen($key) -1));
             }
@@ -33,11 +35,72 @@ class ClassLoaderCacheBuilder {
         $file = $defaultNode[0];
         for ($index = $defaultNodeIndex; $index <= $maxIndex; ++$index) {
             $file .= DIRECTORY_SEPARATOR . $segments[$index];
+            if (is_file($file) || is_dir($file)) {
+                self::add($namespace, $defaultNode[0]);
+            }
         }
-        if (is_file($file) || is_dir($file)) {
-            self::add($namespace, $defaultNode[0]);
+        self::checkExpansion($defaultNode);
+    }
+
+    private static function checkExpansion(&$node) {
+        if (isset($node[0]) === false) {
+            return;
         }
-        //do: 检查 default node 的所有子路经是否都被封死
+        if (self::isExpanded($node, $node[0])) {
+            unset($node[0]);
+        }
+    }
+
+    private static function isExpanded(&$node, $path) {
+        if (is_file($path) === true) {
+            return true;
+        }
+        foreach (scandir($path) as $entry) {
+            if ($entry === '..' || $entry === '.') {
+                continue;
+            }
+            if (isset($node[$entry]) === false) {
+                return false;
+            }
+            if (isset($node[$entry][0]) === false) {
+                $tmp = self::isExpanded(
+                    $node[$entry], $path . DIRECTORY_SEPARATOR . $entry
+                );
+                if ($tmp === false) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    protected static function checkForwardConfilict(&$node, $path, $namespace) {
+        foreach (scandir($path) as $entry) {
+            if ($entry === '..' || $entry === '.') {
+                continue;
+            }
+            if (isset($node[$entry])) {
+                $currentPath = null;
+                if (isset($node[$entry][0])) {
+                    $currentPath = $node[$entry][0]; 
+                } elseif (is_string($node[$entry])) {
+                    $currentPath = $node[$entry];
+                }
+                if ($currentPath === null) {
+                    self::checkForwardConfilict(
+                        $node[$entry],
+                        $path . DIRECTORY_SEPARATOR . $entry,
+                        $namespace . '\\' . $entry
+                    );
+                }
+                if ($currentPath !== $path . DIRECTORY_SEPARATOR . $entry) {
+                    self::add(
+                        $namespace . '\\' . $entry,
+                        $path . DIRECTORY_SEPARATOR . $entry
+                    );
+                }
+            }
+        }
     }
 
     private static function add($namespace, $path) {
@@ -87,10 +150,8 @@ class ClassLoaderCacheBuilder {
                         break;
                     }
                     self::expandAll($namespace, $path);
-                    //展开所有直接子节点后重新插入，因为不可能有两个默认路径
                 } else {
                     $parent[$segment][0] = $path;
-                    //backward default node check
                     if ($defaultNode !== null) {
                         self::checkDefaultNode(
                             $defaultNode,
@@ -98,24 +159,32 @@ class ClassLoaderCacheBuilder {
                             $defaultNodeIndex,
                             $maxIndex,
                             $namespace
-                        )
+                        );
                     }
                     if (isset($parent[$segment][0]) === false) {
                         break;
                     }
-                    //forward default node 检查所有带路径数据的子节点
-                    //如果is not direct children & 存在冲突，当前路径显式插入冲突位置(default node is conflict node)
-                    //check current node's children are all listed
-                    //if all listed, reset node
+                    self::checkForwardConfilict(
+                        $parent[$segment], $path, $namespace
+                    );
+                    self::checkExpansion($parent[$segment]);
                 }
             }
         }
     }
 
     private static function expandAll($namespace, $path) {
+        if (is_dir($path) === false) {
+            throw new \Exception('confilict');
+        }
         foreach (scandir($path) as $entry) {
-            if ($entry) {
+            if ($entry === '..' || $entry === '.') {
+                continue;
             }
+            self::add(
+                $namespace . '\\' . $name,
+                $path . DIRECTORY_SEPARATOR . $entry
+            );
         }
     }
 }
