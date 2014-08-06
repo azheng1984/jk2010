@@ -75,33 +75,35 @@ class ClassLoaderCacheBuilder {
         }
     }
 
-    public function getClasses($path) {
-        $phpCode = file_get_contents($path);
+    private static function getClasses($path) {
+        $code = file_get_contents($path);
         $classes = array();
-        $namespace = 0;  
-        $tokens = token_get_all($phpcode); 
-        $count = count($tokens); 
-        $dlm = false;
-        for ($i = 2; $i < $count; $i++) { 
-            if ((isset($tokens[$i - 2][1])
-                && ($tokens[$i - 2][1] == "phpnamespace" || $tokens[$i - 2][1] == "namespace")) || 
-                ($dlm && $tokens[$i - 1][0] == T_NS_SEPARATOR && $tokens[$i][0] == T_STRING)) { 
-                if (!$dlm) $namespace = 0; 
-                if (isset($tokens[$i][1])) {
-                    $namespace = $namespace ? $namespace . "\\" . $tokens[$i][1] : $tokens[$i][1];
-                    $dlm = true; 
-                }   
-            }       
-            elseif ($dlm && ($tokens[$i][0] != T_NS_SEPARATOR)
-                && ($tokens[$i][0] != T_STRING)) {
-                $dlm = false; 
-            } 
-            if (($tokens[$i - 2][0] == T_CLASS || (isset($tokens[$i - 2][1])
-                && $tokens[$i - 2][1] == "phpclass")) 
-                    && $tokens[$i - 1][0] == T_WHITESPACE && $tokens[$i][0] == T_STRING) {
-                $class_name = $tokens[$i][1]; 
-                if (!isset($classes[$namespace])) $classes[$namespace] = array();
-                $classes[$namespace][] = $class_name;
+        $namespace = '';
+        $tokens = token_get_all($code);
+        $count = count($tokens);
+        for ($index = 0; $index < $count; $index++) {
+            if (isset($tokens[$index][0]) === false) {
+                continue;
+            }
+            if ($tokens[$index][0] === T_NAMESPACE) {
+                $namespace = '';
+                ++$index;
+                while ($index < $count) {
+                    if (isset($tokens[$index][0]) && $tokens[$index][0] === T_STRING) {
+                        $namespace .= "\\" . $tokens[$index][1];
+                    } elseif ($tokens[$index] === '{' || $tokens[$index]=== ';') {
+                        break;
+                    }
+                    ++$index;
+                }
+            } elseif ($tokens[$index][0] === T_CLASS) {
+                while ($index < $count) {
+                    if (isset($tokens[$index][0]) && $tokens[$index][0] === T_STRING) {
+                        $classes[] = $namespace . "\\" . $tokens[$index][1];
+                        break;
+                    }
+                    ++$index;
+                }
             }
         }
         return $classes;
