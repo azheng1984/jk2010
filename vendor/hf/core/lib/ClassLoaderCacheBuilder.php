@@ -100,8 +100,11 @@ class ClassLoaderCacheBuilder {
                             $namespace
                         )
                     }
+                    if (isset($parent[$segment][0]) === false) {
+                        break;
+                    }
                     //forward default node 检查所有带路径数据的子节点
-                    //如果存在冲突，当前路径显式插入冲突位置(default node is conflict node)
+                    //如果is not direct children & 存在冲突，当前路径显式插入冲突位置(default node is conflict node)
                     //check current node's children are all listed
                     //if all listed, reset node
                 }
