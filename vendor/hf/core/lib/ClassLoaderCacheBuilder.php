@@ -1,32 +1,125 @@
 <?php
 namespace Hyperframework;
 
+// todo:
+// Db.php
+// Db
+
 class ClassLoaderCacheBuilder {
-    private static $cache = array();
+    private static $cache;
+    private static $composerClassMap = array();
 
     public static function run() {
         $folder = \Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR
             . 'vendor' . DIRECTORY_SEPARATOR . 'composer';
-        //$classMap = require($folder . DIRECTORY_SEPARATOR . 'autoload_classmap.php');
+        self::$composerClassMap = require($folder . DIRECTORY_SEPARATOR . 'autoload_classmap.php');
         $psr0 = require($folder . DIRECTORY_SEPARATOR . 'autoload_namespaces.php');
         $psr4 = require($folder . DIRECTORY_SEPARATOR . 'autoload_psr4.php');
-        foreach ($psr0 as $key => $item) {
-            if (strpos($key, '\\') === false) {
-                $key = str_replace('_', '\\', $key);
+        $psr4Cache = array();
+        self::$cache =& $psr4Cache;
+        foreach ($psr4 as $namespace => $paths) {
+            foreach ($paths as $path) {
+                self::add(rtrim($namespace, '\\'), realpath($path));
             }
-            if (isset($psr4[$key])) {
-                $psr4[$key] = array();
+        }
+        $psr0Cache = array();
+        self::$cache =& $psr0Cache;
+        foreach ($psr0 as $key => $paths) {
+            $namespace = $key;
+            if (substr($key, -1) !== '\\') {
+                $tmp = explode('\\', $key);
+                array_push($tmp, str_replace('_', '\\', array_pop($tmp)));
+                $namespace = implode('\\', $tmp);
+            }
+            if (self::isPsr4($psr4Cache, $key)) {
+                foreach ($paths as $path) {
+                    self::generatePsr0ClassMap($path);
+                }
+                continue;
             }
             foreach ($item as $i) {
-                $psr4[$key][] =realpath($i . DIRECTORY_SEPARATOR . substr(
-                    str_replace("\\", DIRECTORY_SEPARATOR, $key), 0, strlen($key) -1));
+                self::add(rtrim($namespace, '\\'), realpath($path));
             }
         }
-        foreach ($psr4 as $namespace => &$paths) {
-            foreach ($paths as $path) {
-                self::add($namespace, $path);
+        $result = array();
+        if (count(self::$composerClassMap) !== 0) {
+            $result['map'] = true;
+        }
+        if (count($psr4Cache) !== 0) {
+            $result['psr4'] = $psr4Cache;
+        }
+        if (count($psr0Cache) !== 0) {
+            $result['psr0'] = $psr0Cache;
+        }
+        $path = \Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR
+            . 'tmp' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR
+            . 'class_loader.php', 
+        file_put_contents($path, var_export($result, true));
+    }
+
+    private static function generatePsr0ClassMap($path) {
+        if (is_file($path)) {
+            $class = self::getClasses($path);
+            foreach ($class as $i) {
+                if (isset(self::$composerClassMap[$i]) === false) {
+                    self::$composerClassMap[$i] = $path;
+                }
+            }
+            return;
+        }
+        foreach (scandir($path) as $entry) {
+            if ($entry === '..' || $entry === '.') {
+                continue;
+            }
+            self::generatePsr0ClassMap($path);
+        }
+    }
+
+    public function getClasses($path) {
+        $phpCode = file_get_contents($path);
+        $classes = array();
+        $namespace = 0;  
+        $tokens = token_get_all($phpcode); 
+        $count = count($tokens); 
+        $dlm = false;
+        for ($i = 2; $i < $count; $i++) { 
+            if ((isset($tokens[$i - 2][1])
+                && ($tokens[$i - 2][1] == "phpnamespace" || $tokens[$i - 2][1] == "namespace")) || 
+                ($dlm && $tokens[$i - 1][0] == T_NS_SEPARATOR && $tokens[$i][0] == T_STRING)) { 
+                if (!$dlm) $namespace = 0; 
+                if (isset($tokens[$i][1])) {
+                    $namespace = $namespace ? $namespace . "\\" . $tokens[$i][1] : $tokens[$i][1];
+                    $dlm = true; 
+                }   
+            }       
+            elseif ($dlm && ($tokens[$i][0] != T_NS_SEPARATOR)
+                && ($tokens[$i][0] != T_STRING)) {
+                $dlm = false; 
+            } 
+            if (($tokens[$i - 2][0] == T_CLASS || (isset($tokens[$i - 2][1])
+                && $tokens[$i - 2][1] == "phpclass")) 
+                    && $tokens[$i - 1][0] == T_WHITESPACE && $tokens[$i][0] == T_STRING) {
+                $class_name = $tokens[$i][1]; 
+                if (!isset($classes[$namespace])) $classes[$namespace] = array();
+                $classes[$namespace][] = $class_name;
             }
         }
+        return $classes;
+    }
+
+    private static function isPsr4($cache, $name) {
+        $node =& $cache;
+        foreach (explode('\\', trim($name, '\\')) as $item) {
+            if (isset($node[$item])) {
+                if (isset($node[$item][0]) || is_string($node[$item])) {
+                    true;
+                }
+                $node =& $node[$item];
+            } else {
+                return false;
+            }
+        }
+        return false;
     }
 
     private static function checkDefaultNode(
@@ -106,7 +199,7 @@ class ClassLoaderCacheBuilder {
     private static function add($namespace, $path) {
         $segments = explode('\\', $namespace);
         array_pop($segments);
-        $parent =& $cache;
+        $parent =& self::$cache;
         $maxIndex = count($segments) - 1;
         $defaultNode = null;
         $defaultNodeIndex = null;
