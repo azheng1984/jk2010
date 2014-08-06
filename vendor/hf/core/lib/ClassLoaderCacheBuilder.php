@@ -37,7 +37,7 @@ class ClassLoaderCacheBuilder {
         if (is_file($file) || is_dir($file)) {
             self::add($namespace, $defaultNode[0]);
         }
-        //do: 如果 default node 的所有子路经都被封死，删除 default node 的默认值(default node 失效)
+        //do: 检查 default node 的所有子路经是否都被封死
     }
 
     private static function add($namespace, $path) {
@@ -48,12 +48,23 @@ class ClassLoaderCacheBuilder {
         $defaultNode = null;
         $defaultNodeIndex = null;
         for ($index = 0; $index <= $maxIndex; ++$index) {
+            if (is_string($parent) || isset($parent[0])) {
+                $defaultNode =& $parent;
+                $defaultNodeIndex = $index - 1;
+            }
+            $segment = $segments[$index];
+            if (is_string($parent)) {
+                $parent = array($parent, $segment => null);
+            } elseif ($parent === null) {
+                $parent = array($segment => null);
+            } elseif (isset($parent[$segment]) === false) {
+                $parent[$segment] = null;
+            }
+            if ($index !== $maxIndex) {
+                $parent =& $parent[$segment];
+                continue;
+            }
             if (isset($parent[$segment]) === false) {
-                if ($index !== $maxIndex) {
-                    $parent[$segment] = array();
-                    $parent =& $parent[$segment];
-                    continue;
-                }
                 $parent[$segment] = $path;
                 if ($defaultNode !== null) {
                     self::checkDefaultNode(
@@ -64,23 +75,44 @@ class ClassLoaderCacheBuilder {
                         $namespace
                     );
                 }
-                break;
-            }
-            if ($index === $maxIndex) {
-                if (is_string($parent[$segment]) || isset($parent[$segment[0]])) {
-                    //展开所有后重新插入，因为不可能有两个默认路径
-                    break;
+            } else {
+                $currentPath = null;
+                if (is_string($parent[$segment])) {
+                    $currentPath = $parent[$segment];
+                } elseif (isset($parent[$segment][0])) {
+                    $currentPath = $parent[$segment][0];
                 }
-                $parent[$segment][0] = $path;
-                //检查所有带路径数据的子节点
-                //如果存在，当前路径显式插入冲突位置（由于重复插入路径，递归需加判断）
-                break;
+                if ($currentPath !== null) {
+                    if ($currentPath === $path) {
+                        break;
+                    }
+                    self::expandAll($namespace, $path);
+                    //展开所有直接子节点后重新插入，因为不可能有两个默认路径
+                } else {
+                    $parent[$segment][0] = $path;
+                    //backward default node check
+                    if ($defaultNode !== null) {
+                        self::checkDefaultNode(
+                            $defaultNode,
+                            $segments,
+                            $defaultNodeIndex,
+                            $maxIndex,
+                            $namespace
+                        )
+                    }
+                    //forward default node 检查所有带路径数据的子节点
+                    //如果存在冲突，当前路径显式插入冲突位置(default node is conflict node)
+                    //check current node's children are all listed
+                    //if all listed, reset node
+                }
             }
-            if (isset($parent[$segment][0])) {
-                $defaultNode =& $parent[$segment];
-                $defaultNodeIndex = $index;
+        }
+    }
+
+    private static function expandAll($namespace, $path) {
+        foreach (scandir($path) as $entry) {
+            if ($entry) {
             }
-            $parent =& $parent[$segment];
         }
     }
 }
