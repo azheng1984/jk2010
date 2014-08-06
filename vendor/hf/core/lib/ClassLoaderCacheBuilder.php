@@ -37,7 +37,7 @@ class ClassLoaderCacheBuilder {
                 }
                 continue;
             }
-            foreach ($item as $i) {
+            foreach ($paths as $path) {
                 self::add(rtrim($namespace, '\\'), realpath($path));
             }
         }
@@ -53,7 +53,7 @@ class ClassLoaderCacheBuilder {
         }
         $path = \Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR
             . 'tmp' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR
-            . 'class_loader.php', 
+            . 'class_loader.php';
         file_put_contents($path, var_export($result, true));
     }
 
