@@ -1,10 +1,6 @@
 <?php
 namespace Hyperframework;
 
-// todo:
-// Db.php
-// Db
-
 class ClassLoaderCacheBuilder {
     private static $cache;
     private static $composerClassMap = array();
@@ -57,12 +53,25 @@ class ClassLoaderCacheBuilder {
         file_put_contents($path, var_export($result, true));
     }
 
-    private static function generatePsr0ClassMap($path) {
-        if (is_file($path)) {
-            $class = self::getClasses($path);
-            foreach ($class as $i) {
-                if (isset(self::$composerClassMap[$i]) === false) {
-                    self::$composerClassMap[$i] = $path;
+    private static function isClassFile($path) {
+        $tmp = explode(DIRECTORY_SEPARATOR, $path);
+        return ClassRecognizer::getName(array_pop($tmp)) !== null;
+    }
+
+    private static function generatePsr0ClassMap($basePath, $relativePath = null) {
+        $path = $basePath . DIRECTORY_SEPARATOR . $relativePath;
+        if (is_file($path) && self::isClassFile($path)) {
+            $classes = self::getClasses($path);
+            foreach ($classes as $class) {
+                $tmp = explode($class, '\\');
+                array_push(
+                    $tmp, str_replace('_', DIRECTORY_SEPARATOR, array_pop($tmp))
+                );
+                $tmp = implode(DIRECTORY_SEPARATOR, $tmp) . '.php';
+                if ($tmp === $relativePath) {
+                    if (isset(self::$composerClassMap[$class]) === false) {
+                        self::$composerClassMap[$class] = $path;
+                    }
                 }
             }
             return;
@@ -71,7 +80,9 @@ class ClassLoaderCacheBuilder {
             if ($entry === '..' || $entry === '.') {
                 continue;
             }
-            self::generatePsr0ClassMap($path);
+            self::generatePsr0ClassMap(
+                $basePath, $relativePath. DIRECTORY_SEPARATOR . $entry
+            );
         }
     }
 
@@ -130,7 +141,7 @@ class ClassLoaderCacheBuilder {
         $file = $defaultNode[0];
         for ($index = $defaultNodeIndex; $index <= $maxIndex; ++$index) {
             $file .= DIRECTORY_SEPARATOR . $segments[$index];
-            if (is_file($file) || is_dir($file)) {
+            if ((is_file($file) && self::isClassFile($file)) || is_dir($file)) {
                 self::add($namespace, $defaultNode[0]);
             }
         }
@@ -199,6 +210,9 @@ class ClassLoaderCacheBuilder {
     }
 
     private static function add($namespace, $path) {
+        if (is_file($path) && self::isClassFile($path) === false) {
+            return;
+        }
         $segments = explode('\\', $namespace);
         array_pop($segments);
         $parent =& self::$cache;
