@@ -1,5 +1,4 @@
-array (
-  'map' => true,
+<?php return array (
   'psr4' => 
   array (
     'Hyperframework' => '/home/az/quickquick/vendor/blog/lib',

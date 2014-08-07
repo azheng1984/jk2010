@@ -8,4 +8,5 @@ $baseDir = dirname($vendorDir);
 return array(
     'Hyperframework\\Blog\\' => array($baseDir . '/lib'),
     'Hyperframework\\' => array($baseDir . '/../hf/core/lib'),
+    '' => array($baseDir . '/ext', $baseDir . '/ext2'),
 );

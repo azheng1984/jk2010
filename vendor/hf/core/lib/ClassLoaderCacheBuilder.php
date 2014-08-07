@@ -15,23 +15,26 @@ class ClassLoaderCacheBuilder {
         self::$cache =& $psr4Cache;
         foreach ($psr4 as $namespace => $paths) {
             foreach ($paths as $path) {
-                self::add(rtrim($namespace, '\\'), realpath($path));
+                $realPath = realpath($path);
+                if ($realPath !== false) {
+                    self::add(rtrim($namespace, '\\'), $realPath);
+                }
             }
         }
         $psr0Cache = array();
         self::$cache =& $psr0Cache;
         foreach ($psr0 as $key => $paths) {
-            $namespace = $key;
-            if (substr($key, -1) !== '\\') {
-                $tmp = explode('\\', $key);
-                array_push($tmp, str_replace('_', '\\', array_pop($tmp)));
-                $namespace = implode('\\', $tmp);
-            }
             if (self::isPsr4($psr4Cache, $key)) {
                 foreach ($paths as $path) {
                     self::generatePsr0ClassMap($path);
                 }
                 continue;
+            }
+            $namespace = $key;
+            if (substr($key, -1) !== '\\') {
+                $tmp = explode('\\', $key);
+                array_push($tmp, str_replace('_', '\\', array_pop($tmp)));
+                $namespace = implode('\\', $tmp);
             }
             foreach ($paths as $path) {
                 self::add(rtrim($namespace, '\\'), realpath($path));
@@ -50,7 +53,7 @@ class ClassLoaderCacheBuilder {
         $path = \Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR
             . 'tmp' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR
             . 'class_loader.php';
-        file_put_contents($path, var_export($result, true));
+        file_put_contents($path, '<?php return ' . var_export($result, true));
     }
 
     private static function isClassFile($path) {
@@ -60,7 +63,10 @@ class ClassLoaderCacheBuilder {
 
     private static function generatePsr0ClassMap($basePath, $relativePath = null) {
         $path = $basePath . DIRECTORY_SEPARATOR . $relativePath;
-        if (is_file($path) && self::isClassFile($path)) {
+        if (is_file($path)) {
+            if (self::isClassFile($path) === false) {
+                return;
+            }
             $classes = self::getClasses($path);
             foreach ($classes as $class) {
                 $tmp = explode($class, '\\');
@@ -68,10 +74,11 @@ class ClassLoaderCacheBuilder {
                     $tmp, str_replace('_', DIRECTORY_SEPARATOR, array_pop($tmp))
                 );
                 $tmp = implode(DIRECTORY_SEPARATOR, $tmp) . '.php';
-                if ($tmp === $relativePath) {
-                    if (isset(self::$composerClassMap[$class]) === false) {
-                        self::$composerClassMap[$class] = $path;
-                    }
+                if ($tmp !== $relativePath) {
+                    continue;
+                }
+                if (isset(self::$composerClassMap[$class]) === false) {
+                    self::$composerClassMap[$class] = $path;
                 }
             }
             return;
@@ -120,9 +127,9 @@ class ClassLoaderCacheBuilder {
         return $classes;
     }
 
-    private static function isPsr4($cache, $name) {
+    private static function isPsr4($cache, $key) {
         $node =& $cache;
-        foreach (explode('\\', trim($name, '\\')) as $item) {
+        foreach (explode('\\', rtrim($key, '\\')) as $item) {
             if (isset($node[$item])) {
                 if (isset($node[$item][0]) || is_string($node[$item])) {
                     true;
