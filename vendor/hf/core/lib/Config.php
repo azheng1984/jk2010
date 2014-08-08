@@ -3,14 +3,10 @@ namespace Hyperframework;
 
 final class Config {
     private static $data = array();
-    private static $externalDataSource;
 
     public static function get($name) {
-        if (array_key_exists($name, self::$data)) {
+        if (isset(self::$data[$name])) {
             return self::$data[$name];
-        }
-        if (self::$externalDataSource !== null) {
-            return self::$externalDataSource::get($name);
         }
     }
 
@@ -32,12 +28,7 @@ final class Config {
         }
     }
 
-    public static function setExternalDataSource($instance) {
-        self::$externalDataSource = $instance;
-    }
-
     public static function reset() {
         self::$data = array();
-        self::$externalDataSource = null;
     }
 }
