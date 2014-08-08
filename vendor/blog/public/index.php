@@ -9,4 +9,4 @@ require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
 require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Web'
     . DIRECTORY_SEPARATOR . 'Runner.php';
 Runner::run(__NAMESPACE__, ROOT_PATH);
-\Ns::hi();
+echo basename('adsf\dsf');

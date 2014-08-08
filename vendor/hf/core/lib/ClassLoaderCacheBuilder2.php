@@ -72,7 +72,8 @@ class ClassLoaderCacheBuilder {
     }
 
     private static function isClassFile($path) {
-        return ClassFileHelper::getClassNameByFileName(basename($path)) !== null;
+        $tmp = explode(DIRECTORY_SEPARATOR, $path);
+        return ClassRecognizer::getName(array_pop($tmp)) !== null;
     }
 
     private static function generatePsr0ClassMap($basePath, $relativePath = null) {
@@ -105,6 +106,55 @@ class ClassLoaderCacheBuilder {
                 $basePath, $relativePath. DIRECTORY_SEPARATOR . $entry
             );
         }
+    }
+
+    private static function getClasses($filePath) {
+        $code = file_get_contents($filePath);
+        $classes = array();
+        $namespace = '';
+        $tokens = token_get_all($code);
+        $count = count($tokens);
+        for ($index = 0; $index < $count; $index++) {
+            if (isset($tokens[$index][0]) === false) {
+                continue;
+            }
+            if ($tokens[$index][0] === T_NAMESPACE) {
+                $namespace = '';
+                ++$index;
+                while ($index < $count) {
+                    if (isset($tokens[$index][0]) && $tokens[$index][0] === T_STRING) {
+                        $namespace .= "\\" . $tokens[$index][1];
+                    } elseif ($tokens[$index] === '{' || $tokens[$index]=== ';') {
+                        break;
+                    }
+                    ++$index;
+                }
+            } elseif ($tokens[$index][0] === T_CLASS) {
+                while ($index < $count) {
+                    if (isset($tokens[$index][0]) && $tokens[$index][0] === T_STRING) {
+                        $classes[] = $namespace . "\\" . $tokens[$index][1];
+                        break;
+                    }
+                    ++$index;
+                }
+            }
+        }
+        return $classes;
+    }
+
+    private static function isPsr4($cache, $key) {
+        $node =& $cache;
+        foreach (explode('\\', rtrim($key, '\\')) as $item) {
+            if (isset($node[$item])) {
+                if (isset($node[$item][0]) || is_string($node[$item])) {
+                    true;
+                }
+                $node =& $node[$item];
+            } else {
+                return false;
+            }
+        }
+        return false;
     }
 
     private static function checkDefaultNode(
@@ -150,6 +200,35 @@ class ClassLoaderCacheBuilder {
             }
         }
         return true;
+    }
+
+    protected static function checkForwardConfilict(&$node, $path, $namespace) {
+        foreach (scandir($path) as $entry) {
+            if ($entry === '..' || $entry === '.') {
+                continue;
+            }
+            if (isset($node[$entry])) {
+                $currentPath = null;
+                if (isset($node[$entry][0])) {
+                    $currentPath = $node[$entry][0]; 
+                } elseif (is_string($node[$entry])) {
+                    $currentPath = $node[$entry];
+                }
+                if ($currentPath === null) {
+                    self::checkForwardConfilict(
+                        $node[$entry],
+                        $path . DIRECTORY_SEPARATOR . $entry,
+                        $namespace . '\\' . $entry
+                    );
+                }
+                if ($currentPath !== $path . DIRECTORY_SEPARATOR . $entry) {
+                    self::add(
+                        $namespace . '\\' . $entry,
+                        $path . DIRECTORY_SEPARATOR . $entry
+                    );
+                }
+            }
+        }
     }
 
     private static function add($namespace, $path) {
@@ -202,6 +281,24 @@ class ClassLoaderCacheBuilder {
                         break;
                     }
                     self::expandAll($namespace, $path);
+                } else {
+                    $parent[$segment][0] = $path;
+                    if ($defaultNode !== null) {
+                        self::checkDefaultNode(
+                            $defaultNode,
+                            $segments,
+                            $defaultNodeIndex,
+                            $maxIndex,
+                            $namespace
+                        );
+                    }
+                    if (isset($parent[$segment][0]) === false) {
+                        break;
+                    }
+                    self::checkForwardConfilict(
+                        $parent[$segment], $path, $namespace
+                    );
+                    self::checkExpansion($parent[$segment]);
                 }
             }
         }

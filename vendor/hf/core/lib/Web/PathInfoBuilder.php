@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\ConfigLoader;
-use Hyperframework\ClassRecognizer;
+use Hyperframework\ClassFileHelper;
 
 class PathInfoBuilder {
     private static $config;
@@ -32,7 +32,7 @@ class PathInfoBuilder {
             ) {
                 continue;
             }
-            $name = ClassRecognizer::getName($entry);
+            $name = ClassFileHelper::getClassNameByFileName($entry);
             if ($name === null) {
                 continue;
             }
