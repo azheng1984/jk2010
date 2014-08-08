@@ -26,6 +26,10 @@ final class Config {
         return self::get($name) !== null;
     }
 
+    public static function remove($key) {
+        self::set($key, null);
+    }
+
     public static function import($configs) {
         foreach ($configs as $key => $value) {
             self::$data[$key] = $value;
