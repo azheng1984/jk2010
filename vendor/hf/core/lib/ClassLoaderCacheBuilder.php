@@ -5,7 +5,7 @@ class ClassLoaderCacheBuilder {
     private static $classMap = array();
     private static $psr4Cache = array();
     private static $psr0Cache = array();
-    private static $psr0ClassMap = array();
+    private static $psr4Classes = array();
 
     public static function run() {
         $folder = \Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR
@@ -19,12 +19,17 @@ class ClassLoaderCacheBuilder {
         $psr4Config = require(
             $folder . DIRECTORY_SEPARATOR . 'autoload_psr4.php'
         );
-        self::generatePsr0ClassMap($psr0Config);
-        self::generatePsr0Cache();
-        if (count(self::$psr0Cache) === 0) {
-            self::$psr0Cache = null;
+        self::processPsr0Config($psr0Config);
+        if (count($psr0Cache) !== 0) {
+            self::$psr4Cache[0] = false;
         }
-        self::generatePsr4Cache($psr4Config);
+        self::processPsr4Config($psr4Config);
+        foreach (self::$psr4Classes as $class => $path) {
+            self::addPsr4Class($class, $path);
+        }
+        if (count(self::$psr0Cache) !== 0) {
+            unset(self::$psr4Cache[0]);
+        }
         $result = array();
         if (count(self::$composerClassMap) !== 0) {
             $result['map'] = true;
@@ -32,7 +37,7 @@ class ClassLoaderCacheBuilder {
         if (count($psr4Cache) !== 0) {
             $result['psr4'] = $psr4Cache;
         }
-        if ($psr0Cache !== null) {
+        if (count($psr0Cache) !== 0) {
             $result['psr0'] = $psr0Cache;
         }
         $path = \Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR
@@ -41,48 +46,73 @@ class ClassLoaderCacheBuilder {
         file_put_contents($path, '<?php return ' . var_export($result, true));
     }
 
-    private static function generatePsr0ClassMapByConfig($config) {
+    private static function processPsr0Config($config) {
         foreach ($config as $key => $paths) {
             foreach ($paths as $path) {
                 $path = realpath($path);
                 if ($path === null) {
                     continue;
                 }
+                if ($key === '') {
+                    self::generatePsr0Cache($path, $key);
+                }
+                $relativePath = str_replace('\\', DIRECTORY_SEPARATOR, $key);
+                $folder1 = $path . DIRECTORY_SEPARATOR . $relativePath;
+                if (is_dir($folder1)) {
+                    self::generatePsr0Cache($path, $relativePath);
+                }
                 $tmp = explode($key, '\\');
                 array_push(
                     $tmp, str_replace('_', DIRECTORY_SEPARATOR, array_pop($tmp))
                 );
-                $tmp = implode(DIRECTORY_SEPARATOR, $tmp);
-                self::generatePsr0ClassMap($classPrefix, $tmp);
-                self::generatePsr0ClassMap($classPrefix, $path);
-                // a\b_c\
-                // a\b\c\
-                // a\b\c.php
+                $relativePath = implode(DIRECTORY_SEPARATOR, $tmp);
+                $folder2 = $path . DIRECTORY_SEPARATOR . $relativePath;
+                if ($folder2 !== $folder1 && is_dir($folder2)) {
+                    self::generatePsr0Cache($path, $relativePath);
+                }
                 $lastChar = substr($path, -1);
                 if ($lastChar !== '_' && $lastChar !== '\\') {
+                    $relativePath .= '.php'
+                    $file = $path . DIRECTORY_SEPARATOR . $relativePath;
+                    if (is_file($file)) {
+                        self::generatePsr0Cache($path, $relativePath);
+                    }
                 }
             }
         }
     }
 
-    private static function generatePsr0ClassMap($basePath, $relativePath = null) {
-        $path = $basePath . DIRECTORY_SEPARATOR . $relativePath;
+    private static function generatePsr0Cache($basePath, $relativePath) {
+        $path = $basePath;
+        if ($relativePath !== '') {
+           $path .= DIRECTORY_SEPARATOR . $relativePath;
+        }
         if (is_file($path)) {
             if (self::isClassFile($path) === false) {
                 return;
             }
-            $classes = self::getClasses($path);
+            $classes = ClassFileHelper::getClasses($path);
             foreach ($classes as $class) {
                 $tmp = explode($class, '\\');
+                $className = array_pop($tmp);
                 array_push(
-                    $tmp, str_replace('_', DIRECTORY_SEPARATOR, array_pop($tmp))
+                    $tmp, str_replace('_', DIRECTORY_SEPARATOR, $className)
                 );
                 $tmp = implode(DIRECTORY_SEPARATOR, $tmp) . '.php';
                 if ($tmp !== $relativePath) {
                     continue;
                 }
-                if (isset(self::$composerClassMap[$class]) === false) {
-                    self::$composerClassMap[$class] = $path;
+                if (strpos($className, '_') !== false) {
+                    if (strpos($class, '\\') === false
+                        && isset(self::$psr4Cache[0]) === false
+                        && isset(self::$psr4Cache[$class]) === false
+                    ) {
+                        self::addPsr0Cache($class, $path, $basePath);
+                    } else {
+                        self::$classMap[$class] = $path;
+                    }
+                } else {
+                    self::$psr4Classes[$class] = $path;
                 }
             }
             return;
@@ -97,143 +127,65 @@ class ClassLoaderCacheBuilder {
         }
     }
 
-    private static function genPsr0ClassMap($) {
-        return null;
-    }
-    
-
-    private static function generatePsr0Cache($config) {
-        foreach ($psr0Config as $key => $paths) {
-            foreach ($paths as $path) {
-                self::generatePsr0ClassMap($path);
-            }
-        }
-        if (count(self::$levelOnePsr0Classes) === 0) {
-            return;
-        }
-        $classes = array();
-        foreach (self::$levelOnePsr0Classes) as $class) {
-            $segments = explode('_', $class);
-            $count = count($segments);
-            if (isset($classes[$count]) === false) {
-                $classes[$count] = array();
-            }
-            $classes[$count][] = $segments;
-            krsort($classes);
-            foreach ($classes as $items) {
-                if ($items as $item) {
-                    if ($psr0Cache === 0) {
-                    }
-                }
-            }
-        }
-    }
-
-    private static function generatePsr4Cache($config) {
-    }
-
     private static function isClassFile($path) {
         return ClassFileHelper::getClassNameByFileName(basename($path)) !== null;
     }
 
-
-    private static function checkDefaultNode(
-        &$defaultNode, $segments, $defaultNodeindex, $maxIndex, $namespace
-    ) {
-        $file = $defaultNode[0];
-        for ($index = $defaultNodeIndex; $index <= $maxIndex; ++$index) {
-            $file .= DIRECTORY_SEPARATOR . $segments[$index];
-            if ((is_file($file) && self::isClassFile($file)) || is_dir($file)) {
-                self::add($namespace, $defaultNode[0]);
-            }
-        }
-        self::checkExpansion($defaultNode);
-    }
-
-    private static function checkExpansion(&$node) {
-        if (isset($node[0]) === false) {
+    private static function addPsr0Cache($class, $path, $basePath) {
+        if (isset(self::$psr0Cache[0]) === false) {
+            self::$psr0Cache[0] = $basePath;
             return;
         }
-        if (self::isExpanded($node, $node[0])) {
-            unset($node[0]);
-        }
-    }
-
-    private static function isExpanded(&$node, $path) {
-        if (is_file($path) === true) {
-            return true;
-        }
-        foreach (scandir($path) as $entry) {
-            if ($entry === '..' || $entry === '.') {
+        $segments = explode('_', $class);
+        $node =& self::$psr0Cache;
+        $count = count($segments);
+        $index = 0;
+        for ($index = 0; $index < $count; ++$index) {
+            if ($index + 1 === $count) {
+                self::$classMap[$class] = $path;
+                return;
+            }
+            if (is_string($node)) {
+                if ($node === $basePath) {
+                    return;
+                }
+                if ($index + 2 === $count) {
+                    self::$classMap[$class] = $path;
+                    return;
+                }
+                $node = array(0 => $node, $segments[$index] => $basePath);
+                return;
+            } elseif (isset($node[0]) && $node[0] === $basePath) {
+                return;
+            }
+            if (isset($node[$segments[$index]])) {
+                $node =& $node[$segments[$index]];
+                if ($index !== 0
+                    || substr($basePath, -1) !== DIRECTORY_SEPARATOR
+                ) {
+                    $basePath .= DIRECTORY_SEPARATOR;
+                }
+                $basePath .= $segments[$index];
                 continue;
             }
-            if (isset($node[$entry]) === false) {
-                return false;
-            }
-            if (isset($node[$entry][0]) === false) {
-                $tmp = self::isExpanded(
-                    $node[$entry], $path . DIRECTORY_SEPARATOR . $entry
-                );
-                if ($tmp === false) {
-                    return false;
-                }
-            }
+            $node[$segments[$index]]] = $basePath;
+            return;
         }
-        return true;
     }
 
-    private static function add($namespace, $path) {
+    private static function addPsr4Cache($namespace, $path) {
         if (is_file($path) && self::isClassFile($path) === false) {
+            return;
+        }
+        $node =& self::$cache;
+        if (count($node) === 0) {
+            $node[0] = $path;
             return;
         }
         $segments = explode('\\', $namespace);
         array_pop($segments);
-        $parent =& self::$cache;
         $maxIndex = count($segments) - 1;
-        $defaultNode = null;
-        $defaultNodeIndex = null;
         for ($index = 0; $index <= $maxIndex; ++$index) {
-            if (is_string($parent) || isset($parent[0])) {
-                $defaultNode =& $parent;
-                $defaultNodeIndex = $index - 1;
-            }
-            $segment = $segments[$index];
-            if (is_string($parent)) {
-                $parent = array($parent, $segment => null);
-            } elseif ($parent === null) {
-                $parent = array($segment => null);
-            } elseif (isset($parent[$segment]) === false) {
-                $parent[$segment] = null;
-            }
-            if ($index !== $maxIndex) {
-                $parent =& $parent[$segment];
-                continue;
-            }
-            if (isset($parent[$segment]) === false) {
-                $parent[$segment] = $path;
-                if ($defaultNode !== null) {
-                    self::checkDefaultNode(
-                        $defaultNode,
-                        $segments,
-                        $defaultNodeIndex,
-                        $maxIndex,
-                        $namespace
-                    );
-                }
-            } else {
-                $currentPath = null;
-                if (is_string($parent[$segment])) {
-                    $currentPath = $parent[$segment];
-                } elseif (isset($parent[$segment][0])) {
-                    $currentPath = $parent[$segment][0];
-                }
-                if ($currentPath !== null) {
-                    if ($currentPath === $path) {
-                        break;
-                    }
-                    self::expandAll($namespace, $path);
-                }
-            }
         }
     }
 
