@@ -82,6 +82,9 @@ class ClassLoaderCacheBuilder {
         }
     }
 
+    private static function processPsr4Config($config) {
+    }
+
     private static function generatePsr0Cache($basePath, $relativePath) {
         $path = $basePath;
         if ($relativePath !== '') {
