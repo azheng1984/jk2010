@@ -4,12 +4,13 @@
   },
     "autoload": {
         "psr-0": {
-            "Ns": "ext"
+            "Ns": "ext",
+            "": "fallback0"
         }
         ,"psr-4": {
           "Hyperframework\\": "../hf/core/lib/",
           "Hyperframework\\Blog\\": "lib/",
-          "": ["ext", "ext2"]
+          "": "fallback4"
         }
     }
 }

@@ -3,10 +3,18 @@ namespace Hyperframework;
 
 final class Config {
     private static $data = array();
+    private static $isConstDataSourceEnabled = false;
+    private static $constPrefix;
 
     public static function get($name) {
-        if (isset(self::$data[$name])) {
+        if (array_key_exists($name, self::$data)) {
             return self::$data[$name];
+        }
+        if (self::$isConstDataSourceEnabled === true) {
+            $constName = self::$constPrefix . $name;
+            if (defined($constName))  {
+                return constant($constName);
+            }
         }
     }
 
@@ -15,11 +23,7 @@ final class Config {
     }
 
     public static function has($name) {
-        return isset(self::$data[$name]);
-    }
-
-    public static function remove($name) {
-        unset(self::$data[$name]);
+        return self::get($name) !== null;
     }
 
     public static function import($configs) {
@@ -28,11 +32,14 @@ final class Config {
         }
     }
 
-    public static function export() {
-        return self::$data;
+    public static function enableConstDataSource($prefix) {
+        self::$isConstDataSourceEnabled = true;
+        self::$constPrefix = $prefix;
     }
 
     public static function reset() {
         self::$data = array();
+        self::$isConstDataSourceEnabled = false;
+        self::$constPrefix = null;
     }
 }
