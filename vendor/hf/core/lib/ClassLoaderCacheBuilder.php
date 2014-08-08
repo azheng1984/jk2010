@@ -41,6 +41,67 @@ class ClassLoaderCacheBuilder {
         file_put_contents($path, '<?php return ' . var_export($result, true));
     }
 
+    private static function generatePsr0ClassMapByConfig($config) {
+        foreach ($config as $key => $paths) {
+            foreach ($paths as $path) {
+                $path = realpath($path);
+                if ($path === null) {
+                    continue;
+                }
+                $tmp = explode($key, '\\');
+                array_push(
+                    $tmp, str_replace('_', DIRECTORY_SEPARATOR, array_pop($tmp))
+                );
+                $tmp = implode(DIRECTORY_SEPARATOR, $tmp);
+                self::generatePsr0ClassMap($classPrefix, $tmp);
+                self::generatePsr0ClassMap($classPrefix, $path);
+                // a\b_c\
+                // a\b\c\
+                // a\b\c.php
+                $lastChar = substr($path, -1);
+                if ($lastChar !== '_' && $lastChar !== '\\') {
+                }
+            }
+        }
+    }
+
+    private static function generatePsr0ClassMap($basePath, $relativePath = null) {
+        $path = $basePath . DIRECTORY_SEPARATOR . $relativePath;
+        if (is_file($path)) {
+            if (self::isClassFile($path) === false) {
+                return;
+            }
+            $classes = self::getClasses($path);
+            foreach ($classes as $class) {
+                $tmp = explode($class, '\\');
+                array_push(
+                    $tmp, str_replace('_', DIRECTORY_SEPARATOR, array_pop($tmp))
+                );
+                $tmp = implode(DIRECTORY_SEPARATOR, $tmp) . '.php';
+                if ($tmp !== $relativePath) {
+                    continue;
+                }
+                if (isset(self::$composerClassMap[$class]) === false) {
+                    self::$composerClassMap[$class] = $path;
+                }
+            }
+            return;
+        }
+        foreach (scandir($path) as $entry) {
+            if ($entry === '..' || $entry === '.') {
+                continue;
+            }
+            self::generatePsr0ClassMap(
+                $basePath, $relativePath. DIRECTORY_SEPARATOR . $entry
+            );
+        }
+    }
+
+    private static function genPsr0ClassMap($) {
+        return null;
+    }
+    
+
     private static function generatePsr0Cache($config) {
         foreach ($psr0Config as $key => $paths) {
             foreach ($paths as $path) {
@@ -75,37 +136,6 @@ class ClassLoaderCacheBuilder {
         return ClassFileHelper::getClassNameByFileName(basename($path)) !== null;
     }
 
-    private static function generatePsr0ClassMap($basePath, $relativePath = null) {
-        $path = $basePath . DIRECTORY_SEPARATOR . $relativePath;
-        if (is_file($path)) {
-            if (self::isClassFile($path) === false) {
-                return;
-            }
-            $classes = self::getClasses($path);
-            foreach ($classes as $class) {
-                $tmp = explode($class, '\\');
-                array_push(
-                    $tmp, str_replace('_', DIRECTORY_SEPARATOR, array_pop($tmp))
-                );
-                $tmp = implode(DIRECTORY_SEPARATOR, $tmp) . '.php';
-                if ($tmp !== $relativePath) {
-                    continue;
-                }
-                if (isset(self::$composerClassMap[$class]) === false) {
-                    self::$composerClassMap[$class] = $path;
-                }
-            }
-            return;
-        }
-        foreach (scandir($path) as $entry) {
-            if ($entry === '..' || $entry === '.') {
-                continue;
-            }
-            self::generatePsr0ClassMap(
-                $basePath, $relativePath. DIRECTORY_SEPARATOR . $entry
-            );
-        }
-    }
 
     private static function checkDefaultNode(
         &$defaultNode, $segments, $defaultNodeindex, $maxIndex, $namespace

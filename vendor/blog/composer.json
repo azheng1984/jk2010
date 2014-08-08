@@ -1,8 +1,5 @@
 {
-  "require" : {
-      "symfony/console":"2.*"
-  },
-    "autoload": {
+   "autoload": {
         "psr-0": {
             "Ns": "ext",
             "": "fallback0"
@@ -12,5 +9,8 @@
           "Hyperframework\\Blog\\": "lib/",
           "": "fallback4"
         }
-    }
+    },
+  "require" : {
+      "symfony/console":"2.*"
+  }
 }
