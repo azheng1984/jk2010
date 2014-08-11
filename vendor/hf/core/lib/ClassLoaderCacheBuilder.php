@@ -7,7 +7,6 @@ class ClassLoaderCacheBuilder {
     private static $psr4Classes = array();
     private static $psr0Cache = array();
     private static $psr0CacheFlagNodes = array();
-    private static $psr4CacheFlagNodes = array();
     private static $psr0Classes = array();
     private static $psr0ClassMap = array();
 
@@ -290,13 +289,13 @@ class ClassLoaderCacheBuilder {
             }
             return -1;
         });
-        self::$psr4CacheFlagNodes = self::$psr4Cache;
+        $psr4CacheFlagNodes = self::$psr4Cache;
         foreach (self::$psr4Classes as $class => $basePath) {
             $skipFlagNodeCheck = false;
             $cacheValuePath = '';
             $path = $basePath;
             $segments = explode('\\', $class);
-            $flagNode =& self::$psr4CacheFlagNodes;
+            $flagNode =& $psr4CacheFlagNodes;
             $node =& self::$psr4Cache;
             $cacheValue = $basePath;
             $lastCacheValue =& $cacheValue;
