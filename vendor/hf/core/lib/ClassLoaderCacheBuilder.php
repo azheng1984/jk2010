@@ -377,21 +377,20 @@ class ClassLoaderCacheBuilder {
         }
         $namespace = trim($namespace, '\\');
         if ($namespace === '') {
-           if (isset(self::$psr4Cache[0]) === false) {
-               self::$psr4Cache[0] = $path;
-           } else {
-               self::expandAll($namespace, $path);
-           }
-           return;
+            if (isset(self::$psr4Cache[0]) === false) {
+                self::$psr4Cache[0] = $path;
+            } else {
+                self::expandAll($namespace, $path);
+            }
+            return;
         }
-        $node =& self::$cache;
         $segments = explode('\\', $namespace);
         $count = count($segments);
-        $cacheValuePath = '';
+        $cacheValuePath = $path;
         $node =& self::$psr4Cache;
+        $cacheKey = 0;
         $cacheValue = $path;
         $lastCacheValue =& $value;
-        $cacheKey = 0;
         $hasCacheNode = true;
         for ($index = 0; $index < $count; ++$index) {
             if ($index + 1 === $count) { //todo check is file
