@@ -403,7 +403,7 @@ class ClassLoaderCacheBuilder {
         $hasNode = true;
         for ($index = 0; $index < $count; ++$index) {
             if ($hasNode && isset($node[$segments[$index]])) {
-                $node =& $node[$segments];
+                $node =& $node[$segments[$index]];
                 $cacheKey = $segments[$index];
                 if (is_string($node) && $node === $path) {
                     return;
@@ -412,13 +412,19 @@ class ClassLoaderCacheBuilder {
                 }
                 if (is_string($node) || isset($node[0])) {
                     $defaultNode = $node;
+                    $cacheValuePath = '';
+                } else {
+                    $cacheValuePath .= DIRECTORY_SEPARATOR . $segments[$index];
                 }
                 continue;
             } else {
+                if ($hasNode === false) {
+                    $lastCacheValue = array($segments[$index] => $path);
+                    $lastCacheValue =& $lastCacheValue[$segments[$index]];
+                }
                 $hasNode = false;
+                $cacheValuePath .= DIRECTORY_SEPARATOR . $segments[$index];
             }
-            $lastCacheValue = array($segments[$index] => $path);
-            $lastCacheValue =& $lastCacheValue[$segments[$index]];
         }
         if ($hasNode) {
             self::expandAll($namespace, $path);
@@ -429,7 +435,6 @@ class ClassLoaderCacheBuilder {
             if (is_array($defaultNode)) {
                 $defaultPath = $defaultNode[0];
             }
-            $cacheValuePath .= DIRECTORY_SEPARATOR . $segments[$index];
             if (is_dir($defaultPath . $cacheValuePath)) {
                 self::expandAll($namespace, $path);
                 return;
