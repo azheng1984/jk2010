@@ -1,13 +1,11 @@
 <?php return array (
   'psr4' => 
   array (
-    'Hyperframework' => '/home/az/quickquick/vendor/blog/lib',
-  ),
-  'psr0' => 
-  array (
-    'Symfony' => 
+    0 => '/home/az/quickquick/vendor/blog/fallback4',
+    'Hyperframework' => 
     array (
-      'Component' => '/home/az/quickquick/vendor/blog/vendor/symfony/console',
+      0 => '/home/az/quickquick/vendor/hf/core/lib',
+      'Blog' => '/home/az/quickquick/vendor/blog/lib',
     ),
   ),
 )

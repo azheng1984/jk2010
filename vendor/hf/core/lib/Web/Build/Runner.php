@@ -3,7 +3,7 @@ namespace Hyperframework\Web\Build;
 
 use Hyperframework\EnvironmentBuilder;
 use Hyperframework\ClassLoaderCacheBuilder;
-use Hyperframework\ClassRecognizer;
+use Hyperframework\ClassFileHelper;
 use Hyperframework\Cli\ExceptionHandler;
 
 use Hyperframework\Web\ActionInfoBuilder;
@@ -56,7 +56,7 @@ class Runner {
                 );
                 continue;
             }
-            $name = ClassRecognizer::getName($entry);
+            $name = ClassFileHelper::getClassNameByFileName($entry);
             if ($name === null) {
                 continue;
             }

@@ -23,7 +23,7 @@ class ClassLoaderCacheBuilder {
             $folder . DIRECTORY_SEPARATOR . 'autoload_psr4.php'
         );
         self::processPsr0Config($psr0Config);
-        $hasPsr0Cache = count($psr0Cache) !== 0;
+        $hasPsr0Cache = count(self::$psr0Cache) !== 0;
         if ($hasPsr0Cache) {
             self::$psr4Cache[0] = false;
         }
@@ -38,7 +38,7 @@ class ClassLoaderCacheBuilder {
             }
         }
         $result = array();
-        if (count(self::$composerClassMap) !== 0) {
+        if (count(self::$classMap) !== 0) {
             $result['map'] = self::$classMap;
         }
         if (count(self::$psr4Cache) !== 0) {
@@ -62,13 +62,14 @@ class ClassLoaderCacheBuilder {
                 }
                 if ($key === '') {
                     self::generatePsr0ClassMap($key, $path, $key);
+                    continue;
                 }
                 $relativePath = str_replace('\\', DIRECTORY_SEPARATOR, $key);
                 $folder1 = $path . DIRECTORY_SEPARATOR . $relativePath;
                 if (is_dir($folder1)) {
                     self::generatePsr0ClassMap($key, $path, $relativePath);
                 }
-                $tmp = explode($key, '\\');
+                $tmp = explode('\\', $key);
                 array_push(
                     $tmp, str_replace('_', DIRECTORY_SEPARATOR, array_pop($tmp))
                 );
@@ -79,7 +80,7 @@ class ClassLoaderCacheBuilder {
                 }
                 $lastChar = substr($key, -1);
                 if ($lastChar !== '_' && $lastChar !== '\\') {
-                    $relativePath .= '.php'
+                    $relativePath .= '.php';
                     $file = $path . DIRECTORY_SEPARATOR . $relativePath;
                     if (is_file($file)) {
                         self::generatePsr0ClassMap($key, $path, $relativePath);
@@ -240,7 +241,7 @@ class ClassLoaderCacheBuilder {
         if (count($config) === 0) {
             return;
         }
-        uksort(self::$config, function($a, $b) {
+        uksort($config, function($a, $b) {
             if ($a === '') {
                 return -1;
             }
@@ -338,7 +339,7 @@ class ClassLoaderCacheBuilder {
                     }
                 } else {
                     $defaultPath = null;
-                    if (is_string[$node]) {
+                    if (is_string($node)) {
                         $defaultPath = $node;
                     } elseif (isset($node[0])) {
                         $defaultPath = $node[0];
@@ -404,19 +405,11 @@ class ClassLoaderCacheBuilder {
         for ($index = 0; $index < $count; ++$index) {
             if ($hasNode && isset($node[$segments[$index]])) {
                 $node =& $node[$segments[$index]];
-                if (is_string($node) && $node === $path) {
-                    return;
-                } elseif (isset($node[0]) && $node[0] === $path) {
-                    return;
-                }
                 if (is_string($node) || isset($node[0])) {
                     $defaultNode = $node;
                     $defaultRelativePath = '';
-                } elseif ($defaultNode !== null) {
-                    $defaultRelativePath .=
-                        DIRECTORY_SEPARATOR . $segments[$index];
+                    continue;
                 }
-                continue;
             } else {
                 if ($hasNode) {
                     $cacheKey = $segments[$index];
@@ -425,13 +418,17 @@ class ClassLoaderCacheBuilder {
                     $lastCacheValue = array($segments[$index] => $path);
                     $lastCacheValue =& $lastCacheValue[$segments[$index]];
                 }
-                if ($defaultNode !== null) {
-                    $defaultRelativePath .=
-                        DIRECTORY_SEPARATOR . $segments[$index];
-                }
+            }
+            if ($defaultNode !== null) {
+                $defaultRelativePath .= DIRECTORY_SEPARATOR . $segments[$index];
             }
         }
         if ($hasNode) {
+            if (is_string($node) && $node === $path) {
+                return;
+            } elseif (isset($node[0]) && $node[0] === $path) {
+                return;
+            }
             self::expandAll($namespace, $path);
             return;
         }
@@ -461,13 +458,13 @@ class ClassLoaderCacheBuilder {
                 if (self::isClassFile($path)) {
                     self::addPsr4Cache(
                         $namespace . '\\' . ClassFileHelper::getClassNameByFileName($entry),
-                        $path . DIRECTORY_SEPARATOR . $entry,
+                        $path . DIRECTORY_SEPARATOR . $entry
                     );
                 }
             }
             self::addPsr4Cache(
                 $namespace . '\\' . $entry,
-                $path . DIRECTORY_SEPARATOR . $entry,
+                $path . DIRECTORY_SEPARATOR . $entry
             );
         }
     }
