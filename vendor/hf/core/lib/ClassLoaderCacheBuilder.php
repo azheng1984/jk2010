@@ -391,7 +391,7 @@ class ClassLoaderCacheBuilder {
         }
         $segments = explode('\\', $namespace);
         $count = count($segments);
-        $cacheValuePath = $path;
+        $defaultRelativePath = '';
         $node =& self::$psr4Cache;
         $defaultNode = null;
         if (is_string($node) || isset($node[0])) {
@@ -404,7 +404,6 @@ class ClassLoaderCacheBuilder {
         for ($index = 0; $index < $count; ++$index) {
             if ($hasNode && isset($node[$segments[$index]])) {
                 $node =& $node[$segments[$index]];
-                $cacheKey = $segments[$index];
                 if (is_string($node) && $node === $path) {
                     return;
                 } elseif (isset($node[0]) && $node[0] === $path) {
@@ -412,18 +411,24 @@ class ClassLoaderCacheBuilder {
                 }
                 if (is_string($node) || isset($node[0])) {
                     $defaultNode = $node;
-                    $cacheValuePath = '';
-                } else {
-                    $cacheValuePath .= DIRECTORY_SEPARATOR . $segments[$index];
+                    $defaultRelativePath = '';
+                } elseif ($defaultNode !== null) {
+                    $defaultRelativePath .=
+                        DIRECTORY_SEPARATOR . $segments[$index];
                 }
                 continue;
             } else {
-                if ($hasNode === false) {
+                if ($hasNode) {
+                    $cacheKey = $segments[$index];
+                    $hasNode = false;
+                } else {
                     $lastCacheValue = array($segments[$index] => $path);
                     $lastCacheValue =& $lastCacheValue[$segments[$index]];
                 }
-                $hasNode = false;
-                $cacheValuePath .= DIRECTORY_SEPARATOR . $segments[$index];
+                if ($defaultNode !== null) {
+                    $defaultRelativePath .=
+                        DIRECTORY_SEPARATOR . $segments[$index];
+                }
             }
         }
         if ($hasNode) {
@@ -435,10 +440,13 @@ class ClassLoaderCacheBuilder {
             if (is_array($defaultNode)) {
                 $defaultPath = $defaultNode[0];
             }
-            if (is_dir($defaultPath . $cacheValuePath)) {
+            if (is_dir($defaultPath . $defaultRelativePath)) {
                 self::expandAll($namespace, $path);
                 return;
             }
+        }
+        if (is_string($node)) {
+            $node = array(0 => $node);
         }
         $node[$cacheKey] = $cacheValue;
     }
