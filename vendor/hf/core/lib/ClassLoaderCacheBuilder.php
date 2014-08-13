@@ -39,7 +39,7 @@ class ClassLoaderCacheBuilder {
         }
         $result = array();
         if (count(self::$classMap) !== 0) {
-            $result['map'] = self::$classMap;
+            $result['classes'] = self::$classMap;
         }
         if (count(self::$psr4Cache) !== 0) {
             $result['psr4'] = self::$psr4Cache;
@@ -107,7 +107,7 @@ class ClassLoaderCacheBuilder {
                 if (strncmp($classPrefix, $class, strlen($classPrefix)) !== 0) {
                     continue;
                 }
-                $tmp = explode($class, '\\');
+                $tmp = explode('\\', $class);
                 $className = array_pop($tmp);
                 array_push(
                     $tmp, str_replace('_', DIRECTORY_SEPARATOR, $className)
@@ -126,7 +126,7 @@ class ClassLoaderCacheBuilder {
                     if (strpos($class, '\\') === false) {
                         self::$psr0ClassMap[$class] = $path;
                     } else {
-                        self::$psr4Classes[$class] = $path;
+                        self::$psr4Classes[$class] = $basePath;
                     }
                 }
             }
@@ -188,7 +188,7 @@ class ClassLoaderCacheBuilder {
                 if (isset(self::$classMap[$class])) {
                     return;
                 }
-                $tmp = explode($class, '\\');
+                $tmp = explode('\\', $class);
                 $className = array_pop($tmp);
                 array_push(
                     $tmp, str_replace('_', DIRECTORY_SEPARATOR, $className)
