@@ -8,7 +8,10 @@ $baseDir = dirname($vendorDir);
 return array(
     'Zend\\' => array($vendorDir . '/zendframework/zendframework/library'),
     'ZendXml' => array($vendorDir . '/zendframework/zendxml/library'),
+    'Symfony\\Component\\DomCrawler\\' => array($vendorDir . '/symfony/dom-crawler'),
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
+    'Symfony\\Component\\ClassLoader\\' => array($vendorDir . '/symfony/class-loader'),
+    'Symfony\\Component\\BrowserKit\\' => array($vendorDir . '/symfony/browser-kit'),
     'Ns' => array($baseDir . '/ext'),
     'A' => array($baseDir . '/psr0'),
     '' => array($baseDir . '/fallback0'),

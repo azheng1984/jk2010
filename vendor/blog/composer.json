@@ -13,6 +13,9 @@
     },
   "require" : {
       "symfony/console":"2.*",
-      "zendframework/zendframework":"2.*"
+      "zendframework/zendframework":"2.*",
+        "symfony/browser-kit": "self.version",
+        "symfony/class-loader": "self.version",
+        "symfony/console": "self.version"
   }
 }
