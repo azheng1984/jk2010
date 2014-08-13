@@ -29,7 +29,7 @@ class ClassLoaderCacheBuilder {
             self::$psr4Cache[0] = false;
         }
         self::processPsr4Config($psr4Config);
-        self::addPsr4Classes();
+        self::processPsr4Classes();
         if ($hasPsr0Cache) {
             unset(self::$psr4Cache[0]);
         }
@@ -165,7 +165,9 @@ class ClassLoaderCacheBuilder {
                     }
                 } else {
                     if (strpos($class, '\\') === false) {
-                        self::$psr0Classes[$class] = $basePath;
+                        if (isset(self::$classMap[$class]) === false) {
+                            self::$psr0Classes[$class] = $basePath;
+                        }
                     } else {
                         self::$psr0ClassMap[$class] = $path;
                     }
@@ -276,6 +278,7 @@ class ClassLoaderCacheBuilder {
                     $flagNode =& $flagNode[$segments[$index]];
                     ++$index;
                 }
+                return;
             }
         }
     }
@@ -428,6 +431,7 @@ class ClassLoaderCacheBuilder {
                     $flagNode =& $flagNode[$segments[$index]];
                     ++$index;
                 }
+                return;
             }
         }
     }
