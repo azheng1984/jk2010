@@ -2,8 +2,6 @@
 namespace Hyperframework;
 
 final class ClassLoader {
-    private static $isFileExistsCheckEnabled = false;
-    private static $hasOneToManyMapping = false;
     private static $cache;
 
     public static function run() {
@@ -12,6 +10,46 @@ final class ClassLoader {
     }
 
     public static function load($name) {
+        if (isset(self::$cache['classes'][$name])) {
+            require self::$cache['classes'][$name];
+            return;
+        }
+        if (isset(self::$cache['psr4'])) {
+            $node =& self::$cache['psr4'];
+            $segments = explode('\\', $name);
+            $path = null;
+            $prefixIndex = null;
+            $count = count($segments);
+            for ($index = 0; $index < $count; ++$count) {
+                if (is_string($node)) {
+                    $path = $node;
+                    $prefixIndex = $index;
+                } elseif (isset($node[0])) {
+                    $path = $node[0];
+                    $prefixIndex = $index;
+                }
+                if (isset($node[$segment]) === false) {
+                    if ($path !== null) {
+                        ++$prefixIndex;
+                        while ($prefixIndex < $count) {
+                            $path .= DIRECTORY_SEPARATOR
+                                . $segments[$prefixIndex];
+                            ++$prefixIndex;
+                        }
+                        require $path . '.php';
+                        return;
+                    }
+                    break;
+                }
+                $node =& $node[$segment];
+            }
+        }
+        if (isset(self::$cache['psr0'])) {
+            $node =& self::$cache['psr0'];
+            $segments = explode('_', $name);
+            foreach ($segments as $segment) {
+            }
+        }
         $segments = null;
         //默认 psr4, 没有找到时降级到 psr0
         if (strpos('_', $name) !== false) {
@@ -74,45 +112,16 @@ final class ClassLoader {
         }
     }
 
-    public static function enableFileExistsCheck() {
-        self::$isFileExistsCheckEnabled = true;
-    }
-
-    public static function addCache($cache) {
-        if (ClassLoaderCacheBuilder::merge(self::$cache, $cache)) {
-            self::$hasOneToManyMapping = true;
-        };
-    }
-
-    public static function addConfig($config) {
-        if (ClassLoaderCacheBuilder::build(self::$cache, $config)) {
-            self::$hasOneToManyMapping = true;
-        };
-    }
-
     public static function reset() {
-        self::$isFileExistsCheckEnabled = false;
-        self::$hasOneToManyMapping = false;
         self::$cache = null;
     }
 
     private static function initialize() {
         require __DIR__ . DIRECTORY_SEPARATOR . 'FileLoader.php';
         require __DIR__ . DIRECTORY_SEPARATOR . 'FullPathRecognizer.php';
-        if (Config::get('hyperframework.class_loader.enable_cache') !== false) {
-            require __DIR__ . DIRECTORY_SEPARATOR . 'CacheFileLoader.php';
-            self::$cache = CacheFileLoader::loadPhp(
-                'class_loader.php', 'hyperframework.class_loader.cache_path'
-            );
-            return;
-        }
-        require __DIR__ . DIRECTORY_SEPARATOR . 'ConfigFileLoader.php';
-        require __DIR__ . DIRECTORY_SEPARATOR . 'ClassLoaderCacheBuilder.php';
-        $config = ConfigFileLoader::loadPhp(
-            'class_loader.php', 'hyperframework.class_loader.config_path'
+        require __DIR__ . DIRECTORY_SEPARATOR . 'CacheFileLoader.php';
+        self::$cache = CacheFileLoader::loadPhp(
+            'class_loader.php', 'hyperframework.class_loader.cache_path'
         );
-        if ($config !== null) {
-            self::addConfig($config);
-        }
     }
 }
