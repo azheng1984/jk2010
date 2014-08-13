@@ -7,6 +7,7 @@ class ClassLoaderCacheBuilder {
     private static $psr4Classes = array();
     private static $psr0Cache = array();
     private static $psr0CacheFlagNodes = array();
+    private static $psr4CacheFlagNodes = null;
     private static $psr0Classes = array();
     private static $psr0ClassMap = array();
 
@@ -34,7 +35,7 @@ class ClassLoaderCacheBuilder {
         }
         foreach (self::$psr0ClassMap as $class => $path) {
             if (isset(self::$classMap[$class]) === false
-                && self::checkPsr4Cache($class) === false
+                && self::checkPsr4Class($class) === false
             ) {
                 self::$classMap[$class] = $path;
             }
@@ -55,15 +56,14 @@ class ClassLoaderCacheBuilder {
         file_put_contents($path, '<?php return ' . var_export($result, true));
     }
 
-    private static function checkPsr4Cache($class) {
+    private static function checkPsr4Class($class) {
         $node =& self::$psr4Cache;
         $defaultNode = null;
         if (is_string($node) || isset($node[0])) {
             $defaultNode = $node;
         }
-        $items = explode('\\', $class);
-        foreach ($items as $item) {
-            if (isset($node[$item])) {
+        foreach (explode('\\', $class) as $segment) {
+            if (isset($node[$segment])) {
                 $node =& $node;
                 if (is_string($node) || isset($node[0])) {
                    $defaultNode = $node;
@@ -98,7 +98,12 @@ class ClassLoaderCacheBuilder {
                     continue;
                 }
                 $relativePath = str_replace('\\', DIRECTORY_SEPARATOR, $key);
-                $folder1 = $path . DIRECTORY_SEPARATOR . $relativePath;
+                $folder1 = $path;
+                if (substr($path, -1) !== DIRECTORY_SEPARATOR) {
+                    $folder1 .= DIRECTORY_SEPARATOR;
+                }
+                $file = $folder2 = $folder1;
+                $folder1 .= $relativePath;
                 if (is_dir($folder1)) {
                     self::generatePsr0ClassMap($key, $path, $relativePath);
                 }
@@ -107,14 +112,14 @@ class ClassLoaderCacheBuilder {
                     $tmp, str_replace('_', DIRECTORY_SEPARATOR, array_pop($tmp))
                 );
                 $relativePath = implode(DIRECTORY_SEPARATOR, $tmp);
-                $folder2 = $path . DIRECTORY_SEPARATOR . $relativePath;
+                $folder2 .= $relativePath;
                 if ($folder2 !== $folder1 && is_dir($folder2)) {
                     self::generatePsr0ClassMap($key, $path, $relativePath);
                 }
                 $lastChar = substr($key, -1);
                 if ($lastChar !== '_' && $lastChar !== '\\') {
                     $relativePath .= '.php';
-                    $file = $path . DIRECTORY_SEPARATOR . $relativePath;
+                    $file .= $relativePath;
                     if (is_file($file)) {
                         self::generatePsr0ClassMap($key, $path, $relativePath);
                     }
@@ -128,8 +133,11 @@ class ClassLoaderCacheBuilder {
         $classPrefix, $basePath, $relativePath
     ) {
         $path = $basePath;
+        if (substr($path, -1) !== DIRECTORY_SEPARATOR) {
+            $path .= DIRECTORY_SEPARATOR;
+        }
         if ($relativePath !== '') {
-            $path .= DIRECTORY_SEPARATOR . $relativePath;
+            $path .= $relativePath;
         }
         if (is_file($path)) {
             if (self::isClassFile($path) === false) {
@@ -149,17 +157,17 @@ class ClassLoaderCacheBuilder {
                 if ($tmp !== $relativePath) {
                     continue;
                 }
-                if (strpos($className, '_') !== false) {
-                    if (strpos($class, '\\') === false) {
-                        self::$psr0Classes[$class] = $basePath;
-                    } else {
-                        self::$psr0ClassMap[$class] = $path;
-                    }
-                } else {
+                if (strpos($className, '_') === false) {
                     if (strpos($class, '\\') === false) {
                         self::$psr0ClassMap[$class] = $path;
                     } else {
                         self::$psr4Classes[$class] = $basePath;
+                    }
+                } else {
+                    if (strpos($class, '\\') === false) {
+                        self::$psr0Classes[$class] = $basePath;
+                    } else {
+                        self::$psr0ClassMap[$class] = $path;
                     }
                 }
             }
@@ -199,13 +207,25 @@ class ClassLoaderCacheBuilder {
         }
     }
 
+    private static function addPsr0ClassMap($class, $basePath) {
+        if (isset(self::$psr0ClassMap[$class])) {
+            return;
+        }
+        $tmp = explode('\\', $class);
+        $className = array_pop($tmp);
+        array_push(
+            $tmp, str_replace('_', DIRECTORY_SEPARATOR, $className)
+        );
+        $tmp = implode(DIRECTORY_SEPARATOR, $tmp) . '.php';
+        if (substr($basePath, -1) !== DIRECTORY_SEPARATOR) {
+            $basePath .= DIRECTORY_SEPARATOR;
+        }
+        self::$classMap[$class] = $basePath . $tmp;
+    }
+
     private static function addPsr0Cache($class, $basePath) {
         if (isset(self::$psr4Cache[$class])) {
-            if (isset(self::$classMap[$class])) {
-                return;
-            }
-            $tmp = str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
-            self::$classMap[$class] = $basePath . DIRECTORY_SEPARATOR . $tmp;
+            self::addPsr0ClassMap($class, $basePath);
             return;
         }
         $segments = explode('_', $class);
@@ -218,25 +238,15 @@ class ClassLoaderCacheBuilder {
         $count = count($segments);
         for ($index = 0; $index < $count; ++$index) {
             if ($index + 1 === $count) {
-                if (isset(self::$classMap[$class])) {
-                    return;
-                }
-                $tmp = explode('\\', $class);
-                $className = array_pop($tmp);
-                array_push(
-                    $tmp, str_replace('_', DIRECTORY_SEPARATOR, $className)
-                );
-                $tmp = implode(DIRECTORY_SEPARATOR, $tmp) . '.php';
-                self::$classMap[$class] = $basePath
-                    . DIRECTORY_SEPARATOR . $tmp;
+                self::addPsr0ClassMap($class, $basePath);
                 return;
             }
-            if ($hasCacheNode && is_string($node)) {
-                if ($node === $basePath) {
+            if ($hasCacheNode) {
+                if (is_string($node) && $node === $basePath) {
+                    return;
+                } elseif (isset($node[0]) && $node[0] === $basePath) {
                     return;
                 }
-            } elseif ($hasCacheNode && isset($node[0]) && $node[0] === $basePath) {
-                return;
             }
             if ($hasCacheNode) {
                 $cacheKey = $segments[$index];
@@ -302,7 +312,7 @@ class ClassLoaderCacheBuilder {
         }
     }
 
-    private static function addPsr4Classes() {
+    private static function processPsr4Classes() {
         if (count(self::$psr4Classes) === 0) {
             return;
         }
@@ -323,83 +333,100 @@ class ClassLoaderCacheBuilder {
             }
             return -1;
         });
-        $psr4CacheFlagNodes = self::$psr4Cache;
+        self::$psr4CacheFlagNodes = self::$psr4Cache;
         foreach (self::$psr4Classes as $class => $basePath) {
-            $skipFlagNodeCheck = false;
-            $cacheValuePath = '';
-            $path = $basePath;
-            $segments = explode('\\', $class);
-            $flagNode =& $psr4CacheFlagNodes;
-            $node =& self::$psr4Cache;
-            $cacheValue = $basePath;
-            $lastCacheValue =& $cacheValue;
-            $cacheKey = 0;
-            $hasCacheNode = true;
-            $count = count($segments);
-            for ($index = 0; $index < $count; ++$index) {
-                if ($index + 1 === $count) {
-                    if (isset(self::$classMap[$class])) {
-                        return;
-                    }
-                    $path = $basePath
-                        . str_replace('\\', DIRECTORY_SEPARATOR, $class)
-                        . '.php';
-                    self::$classMap[$class] = $path;
+            self::addPsr4Class($class, $basePath);
+        }
+    }
+
+    private static function addPsr4Class($class, $basePath) {
+        $skipFlagNodeCheck = false;
+        $cacheValuePath = '';
+        $path = $basePath;
+        $segments = explode('\\', $class);
+        $flagNode =& self::$psr4CacheFlagNodes;
+        $node =& self::$psr4Cache;
+        $cacheValue = $basePath;
+        $lastCacheValue =& $cacheValue;
+        $cacheKey = 0;
+        $hasCacheNode = true;
+        $count = count($segments);
+        for ($index = 0; $index < $count; ++$index) {
+            if ($index + 1 === $count) {
+                if (isset(self::$classMap[$class])) {
                     return;
                 }
-                if ($hasCacheNode && is_string($node)) {
-                    if ($node === $path) {
-                        return;
-                    }
-                } elseif ($hasCacheNode && isset($node[0]) && $node[0] === $path) {
+                if (substr($basePath, -1) !== DIRECTORY_SEPARATOR) {
+                    $basePath .= DIRECTORY_SEPARATOR;
+                }
+                $path = $basePath
+                    . str_replace('\\', DIRECTORY_SEPARATOR, $class)
+                    . '.php';
+                self::$classMap[$class] = $path;
+                return;
+            }
+            if ($hasCacheNode) {
+                if (is_string($node) && $node === $path) {
+                    return;
+                } elseif (isset($node[0]) && $node[0] === $path) {
                     return;
                 }
-                if ($hasCacheNode) {
-                    $cacheKey = $segments[$index];
+            }
+            if ($hasCacheNode) {
+                $cacheKey = $segments[$index];
+            } else {
+                $path = rtrim($basePath, DIRECTORY_SEPARATOR)
+                    . $cacheValuePath . DIRECTORY_SEPARATOR
+                    . $segments[$index];
+                $lastCacheValue = array($segments[$index] => $path);
+                $lastCacheValue =& $lastCacheValue[$segments[$index]];
+            }
+            if ($skipFlagNodeCheck === false
+                && isset($flagNode[$segments[$index]])
+            ) {
+                $flagNode =& $flagNode[$segments[$index]];
+                if ($hasCacheNode && isset($node[$cacheKey])) {
+                    $node =& $node[$segments[$index]];
                 } else {
-                    $lastCacheValue = array($segments[$index] => $basePath);
-                    $lastCacheValue =& $lastCacheValue[$segments[$index]];
+                    $hasCacheNode = false;
+                    $cacheValuePath .= DIRECTORY_SEPARATOR
+                        . $segments[$index];
                 }
-                if ($skipFlagNodeCheck === true
-                    && isset($flagNode[$segments[$index]])
-                ) {
-                    $flagNode =& $flagNode[$segments[$index]];
-                    if ($hasCacheNode && isset($node[$cacheKey])) {
-                        $node =& $node[$segments[$index]];
-                    } else {
-                        $hasCacheNode = false;
-                        $cacheValuePath .= DIRECTORY_SEPARATOR . $segments[$index];
+            } else {
+                $defaultPath = null;
+                if (is_string($node)) {
+                    $defaultPath = $node;
+                } elseif (isset($node[0])) {
+                    $defaultPath = $node[0];
+                }
+                if ($defaultPath !== null) {
+                    $dir = rtrim($defaultPath, DIRECTORY_SEPARATOR)
+                        . $cacheValuePath . DIRECTORY_SEPARATOR
+                        . $segments[$index];
+                    if ($dir === $lastCacheValue) {
+                        return;
                     }
-                } else {
-                    $defaultPath = null;
-                    if (is_string($node)) {
-                        $defaultPath = $node;
-                    } elseif (isset($node[0])) {
-                        $defaultPath = $node[0];
-                    }
-                    if ($defaultPath !== null && is_dir(
-                        $defaultPath . $cacheValuePath
-                            . DIRECTORY_SEPARATOR . $segments[$index]
-                    )) {
+                    if (is_dir($dir)) {
                         $hasCacheNode = false;
                         $skipFlagNodeCheck = true;
-                        $cacheValuePath .= DIRECTORY_SEPARATOR . $segments[$index];
+                        $cacheValuePath .= DIRECTORY_SEPARATOR
+                            . $segments[$index];
                         continue;
                     }
-                    if (isset(self::$psr4Cache[0]) === false) {
-                        self::$psr4Cache[0] = $cacheValue;
-                    } elseif (is_string($node)) {
-                        $node = array(0 => $node, $cacheKey => $cacheValue);
-                    } else {
-                        $node[$cacheKey] = $cacheValue;
+                }
+                if (isset(self::$psr4Cache[0]) === false) {
+                    self::$psr4Cache[0] = $cacheValue;
+                } elseif (is_string($node)) {
+                    $node = array(0 => $node, $cacheKey => $cacheValue);
+                } else {
+                    $node[$cacheKey] = $cacheValue;
+                }
+                while ($index < $count) {
+                    if (isset($flagNode[$segments[$index]]) === false) {
+                        $flagNode[$segments[$index]] = array();
                     }
-                    while ($index < $count) {
-                        if (isset($flagNode[$segments[$index]]) === false) {
-                            $flagNode[$segments[$index]] = array();
-                        }
-                        $flagNode =& $flagNode[$segments[$index]];
-                        ++$index;
-                    }
+                    $flagNode =& $flagNode[$segments[$index]];
+                    ++$index;
                 }
             }
         }
