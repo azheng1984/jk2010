@@ -2,6 +2,7 @@
    "autoload": {
         "psr-0": {
             "Ns": "ext",
+            "A": "psr0",
             "": "fallback0"
         }
         ,"psr-4": {

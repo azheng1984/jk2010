@@ -94,6 +94,7 @@ class ClassLoaderCacheBuilder {
                     continue;
                 }
                 if ($key === '') {
+                    //echo $path . PHP_EOL;
                     self::generatePsr0ClassMap($key, $path, $key);
                     continue;
                 }
@@ -127,6 +128,7 @@ class ClassLoaderCacheBuilder {
     private static function generatePsr0ClassMap(
         $classPrefix, $basePath, $relativePath
     ) {
+        //echo $relativePath . PHP_EOL;
         $path = $basePath;
         if ($relativePath !== '') {
             $path .= DIRECTORY_SEPARATOR . $relativePath;
@@ -146,6 +148,7 @@ class ClassLoaderCacheBuilder {
                     $tmp, str_replace('_', DIRECTORY_SEPARATOR, $className)
                 );
                 $tmp = implode(DIRECTORY_SEPARATOR, $tmp) . '.php';
+                //echo $tmp . PHP_EOL;
                 if ($tmp !== $relativePath) {
                     continue;
                 }
@@ -482,6 +485,8 @@ class ClassLoaderCacheBuilder {
     }
 
     private static function expandAll($namespace, $path) {
+        echo $namespace . PHP_EOL;
+        echo $path . PHP_EOL;
         foreach (scandir($path) as $entry) {
             if ($entry === '..' || $entry === '.') {
                 continue;
@@ -490,19 +495,19 @@ class ClassLoaderCacheBuilder {
                 $path .= DIRECTORY_SEPARATOR;
             }
             $path = $path . $entry;
-            if ($namespace !== '') {
-                $namespace .= '\\';
-            }
             if (is_file($path)) {
                 if (self::isClassFile($path)) {
                     self::addPsr4Cache(
-                        $namespace . ClassFileHelper::getClassNameByFileName($entry),
-                        $path
+                        $namespace . '\\' . ClassFileHelper::getClassNameByFileName($entry),
+                        $path . DIRECTORY_SEPARATOR . $entry
                     );
                 }
                 return;
             }
-            self::addPsr4Cache($namespace . $entry, $path);
+            self::addPsr4Cache(
+                $namespace . '\\' . $entry,
+                $path . DIRECTORY_SEPARATOR . $entry
+            );
         }
     }
 
