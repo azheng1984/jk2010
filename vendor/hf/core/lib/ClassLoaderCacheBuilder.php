@@ -53,7 +53,9 @@ class ClassLoaderCacheBuilder {
         $path = \Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR
             . 'tmp' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR
             . 'class_loader.php';
-        file_put_contents($path, '<?php return ' . var_export($result, true));
+        file_put_contents(
+            $path, '<?php return ' . var_export($result, true) . ';'
+        );
     }
 
     private static function checkPsr4Class($class) {
@@ -253,7 +255,9 @@ class ClassLoaderCacheBuilder {
             if ($hasCacheNode) {
                 $cacheKey = $segments[$index];
             } else {
-                $lastCacheValue = array($segments[$index] => $basePath);
+                $lastCacheValue = array(
+                    $segments[$index] => rtrim($basePath, DIRECTORY_SEPARATOR)
+                );
                 $lastCacheValue =& $lastCacheValue[$segments[$index]];
             }
             if (isset($flagNode[$segments[$index]])) {
@@ -345,7 +349,7 @@ class ClassLoaderCacheBuilder {
     private static function addPsr4Class($class, $basePath) {
         $skipFlagNodeCheck = false;
         $cacheValuePath = '';
-        $path = $basePath;
+        $path = rtrim($basePath, DIRECTORY_SEPARATOR);
         $segments = explode('\\', $class);
         $flagNode =& self::$psr4CacheFlagNodes;
         $node =& self::$psr4Cache;
@@ -448,7 +452,7 @@ class ClassLoaderCacheBuilder {
         $namespace = trim($namespace, '\\');
         if ($namespace === '') {
             if (isset(self::$psr4Cache[0]) === false) {
-                self::$psr4Cache[0] = $path;
+                self::$psr4Cache[0] = rtrim($path, DIRECTORY_SEPARATOR);
             } else {
                 self::expandAll($namespace, $path);
             }
@@ -463,7 +467,7 @@ class ClassLoaderCacheBuilder {
             $defaultNode = $node;
         }
         $cacheKey = $segments[0];
-        $cacheValue = $path;
+        $cacheValue = rtrim($path, DIRECTORY_SEPARATOR);
         $lastCacheValue =& $cacheValue;
         $hasNode = true;
         for ($index = 0; $index < $count; ++$index) {
@@ -479,7 +483,9 @@ class ClassLoaderCacheBuilder {
                     $cacheKey = $segments[$index];
                     $hasNode = false;
                 } else {
-                    $lastCacheValue = array($segments[$index] => $path);
+                    $lastCacheValue = array($segments[$index] => rtrim(
+                        $path, DIRECTORY_SEPARATOR
+                    ));
                     $lastCacheValue =& $lastCacheValue[$segments[$index]];
                 }
             }
@@ -501,7 +507,12 @@ class ClassLoaderCacheBuilder {
             if (is_array($defaultNode)) {
                 $defaultPath = $defaultNode[0];
             }
-            if (is_dir($defaultPath . $defaultRelativePath)) {
+            if ($defaultRelativePath === '') {
+                $defaultRelativePath = DIRECTORY_SEPARATOR;
+            }
+            if (is_dir(
+                rtrim($defaultPath, DIRECTORY_SEPARATOR) . $defaultRelativePath
+            )) {
                 self::expandAll($namespace, $path);
                 return;
             }
@@ -526,10 +537,9 @@ class ClassLoaderCacheBuilder {
             }
             if (is_file($path)) {
                 if (self::isClassFile($path)) {
-                    self::addPsr4Cache(
-                        $namespace . ClassFileHelper::getClassNameByFileName($entry),
-                        $path
-                    );
+                    $namespace .=
+                        ClassFileHelper::getClassNameByFileName($entry);
+                    self::addPsr4Cache($namespace, $path);
                 }
                 return;
             }

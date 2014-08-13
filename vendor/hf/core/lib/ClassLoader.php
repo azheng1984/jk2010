@@ -5,8 +5,17 @@ final class ClassLoader {
     private static $cache;
 
     public static function run() {
-        self::initailize();
+        self::initialize();
         spl_autoload_register(array(__CLASS__, 'load'));
+    }
+
+    public static function initialize() {
+        require __DIR__ . DIRECTORY_SEPARATOR . 'FileLoader.php';
+        require __DIR__ . DIRECTORY_SEPARATOR . 'FullPathRecognizer.php';
+        require __DIR__ . DIRECTORY_SEPARATOR . 'CacheFileLoader.php';
+        self::$cache = CacheFileLoader::loadPhp(
+            'class_loader.php', 'hyperframework.class_loader.cache_path'
+        );
     }
 
     public static function load($name) {
@@ -15,29 +24,29 @@ final class ClassLoader {
             return;
         }
         if (isset(self::$cache['psr4'])) {
-            if (self::searchTree(self::$cache['psr4'], explode('\\', $name))) {
+            if (self::search(self::$cache['psr4'], explode('\\', $name))) {
                 return;
             }
         }
         if (isset(self::$cache['psr0'])) {
-            self::searchTree(self::$cache['psr0'], explode('_', $name));
+            self::search(self::$cache['psr0'], explode('_', $name));
         }
     }
 
-    private static function searchTree(&$node, $segments) {
+    private static function search(&$node, $segments) {
         $path = null;
         $prefixIndex = null;
         $count = count($segments);
-        for ($index = 0; $index < $count; ++$count) {
+        for ($index = 0; $index < $count; ++$index) {
             if (is_array($node)) {
                 if (isset($node[0])) {
                     $path = $node[0];
                     $prefixIndex = $index;
                 }
-                if (isset($node[$segment]) === false) {
+                if (isset($node[$segments[$index]]) === false) {
                     break;
                 }
-                $node =& $node[$segment];
+                $node =& $node[$segments[$index]];
             } else {
                 $path = $node;
                 $prefixIndex = $index;
@@ -46,8 +55,7 @@ final class ClassLoader {
         }
         if ($path !== null) {
             while ($prefixIndex < $count) {
-                $path .= DIRECTORY_SEPARATOR
-                    . $segments[$prefixIndex];
+                $path .= DIRECTORY_SEPARATOR . $segments[$prefixIndex];
                 ++$prefixIndex;
             }
             require $path . '.php';
@@ -58,14 +66,5 @@ final class ClassLoader {
 
     public static function reset() {
         self::$cache = null;
-    }
-
-    private static function initialize() {
-        require __DIR__ . DIRECTORY_SEPARATOR . 'FileLoader.php';
-        require __DIR__ . DIRECTORY_SEPARATOR . 'FullPathRecognizer.php';
-        require __DIR__ . DIRECTORY_SEPARATOR . 'CacheFileLoader.php';
-        self::$cache = CacheFileLoader::loadPhp(
-            'class_loader.php', 'hyperframework.class_loader.cache_path'
-        );
     }
 }

@@ -19,4 +19,4 @@
   array (
     0 => '/home/az/quickquick/vendor/blog/psr0',
   ),
-)
+);
