@@ -397,13 +397,14 @@ class ClassLoaderCacheBuilder {
         if (is_string($node) || isset($node[0])) {
             $defaultNode = $node;
         }
-        $cacheKey = 0;
+        $cacheKey = $segments[0];
         $cacheValue = $path;
         $lastCacheValue =& $cacheValue;
-        $hasCacheNode = true;
+        $hasNode = true;
         for ($index = 0; $index < $count; ++$index) {
             if ($hasNode && isset($node[$segments[$index]])) {
                 $node =& $node[$segments];
+                $cacheKey = $segments[$index];
                 if (is_string($node) && $node === $path) {
                     return;
                 } elseif (isset($node[0]) && $node[0] === $path) {
@@ -418,19 +419,23 @@ class ClassLoaderCacheBuilder {
             }
             $lastCacheValue = array($segments[$index] => $path);
             $lastCacheValue =& $lastCacheValue[$segments[$index]];
-            if ($defaultNode !== null) {
-                $defaultPath = $defaultNode;
-                if (is_array($defaultNode)) {
-                    $defaultPath = $defaultNode[0];
-                }
-                $cacheValuePath .= DIRECTORY_SEPARATOR . $segments[$index];
-                if (is_dir($defaultPath . $cacheValuePath)) {
-                    continue;
-                }
-            }
-            $node[$cacheKey] = $cacheValue;
         }
-        self::expandAll($namespace, $path);
+        if ($hasNode) {
+            self::expandAll($namespace, $path);
+            return;
+        }
+        if ($defaultNode !== null) {
+            $defaultPath = $defaultNode;
+            if (is_array($defaultNode)) {
+                $defaultPath = $defaultNode[0];
+            }
+            $cacheValuePath .= DIRECTORY_SEPARATOR . $segments[$index];
+            if (is_dir($defaultPath . $cacheValuePath)) {
+                self::expandAll($namespace, $path);
+                return;
+            }
+        }
+        $node[$cacheKey] = $cacheValue;
     }
 
     private static function expandAll($namespace, $path) {
