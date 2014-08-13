@@ -15,7 +15,9 @@ final class ClassLoader {
             return;
         }
         if (isset(self::$cache['psr4'])) {
-            self::searchTree(self::$cache['psr4'], explode('\\', $name));
+            if (self::searchTree(self::$cache['psr4'], explode('\\', $name))) {
+                return;
+            }
         }
         if (isset(self::$cache['psr0'])) {
             self::searchTree(self::$cache['psr0'], explode('_', $name));
@@ -49,8 +51,9 @@ final class ClassLoader {
                 ++$prefixIndex;
             }
             require $path . '.php';
-            return;
+            return true;
         }
+        return false;
     }
 
     public static function reset() {
