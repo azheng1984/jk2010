@@ -52,6 +52,10 @@ class ClassCacheBuilder {
         }
     }
 
+    private static function generateAutoLoadFiles() {
+        autoload_files.php
+    }
+
     private static function clearCache($folder, $keepDir = false) {
         foreach (scandir($folder) as $entry) {
             if ($entry === '..' || $entry === '.') {
