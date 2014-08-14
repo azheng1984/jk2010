@@ -3,7 +3,7 @@ namespace Hyperframework;
 
 class ClassCacheBuilder {
     private static $classMap = array();
-    private static $cacheRootPath;
+    private static $rootPath;
     private static $isZeroFolderEnabled;
 
     public static function run() {
@@ -14,11 +14,11 @@ class ClassCacheBuilder {
         } else {
             self::$isZeroFolderEnabled = false;
         }
-        self::$cacheRootPath = Config::get(
-            'hyperframework.class_loader.cache_root_path'
+        self::$rootPath = Config::get(
+            'hyperframework.class_loader.root_path'
         );
-        if (self::$cacheRootPath === null) {
-            self::$cacheRootPath = APP_ROOT_PATH . DIRECTORY_SEPARATOR
+        if (self::$rootPath === null) {
+            self::$rootPath = APP_ROOT_PATH . DIRECTORY_SEPARATOR
                 . 'tmp' . DIRECTORY_SEPARATOR . 'cache'
                 . DIRECTORY_SEPARATOR . 'lib';
         }
@@ -39,21 +39,13 @@ class ClassCacheBuilder {
         self::processPsr4Config($psr4Config);
         self::processPsr0Config($psr0Config);
         self::generateCache();
-        $phar = new \Phar(self::$cacheRootPath . '/../lib.phar');
-        $phar->buildFromDirectory('/home/az/quickquick/vendor/backup');
-        $phar->buildFromDirectory('/home/az/quickquick/vendor/packages');
-        $phar->buildFromDirectory('/home/az/vim74');
-        $phar->buildFromDirectory('/home/az/goagent-3.0');
-        $phar->buildFromDirectory('/home/az/Downloads/wwwroot');
-        $phar->buildFromDirectory('/home/az/Downloads/zf2-master');
-        $phar->buildFromDirectory(self::$cacheRootPath);
     }
 
     private static function generateCache() {
-        if (is_dir(self::$cacheRootPath)) {
-            self::clearCache(self::$cacheRootPath, true);
+        if (is_dir(self::$rootPath)) {
+            self::clearCache(self::$rootPath, true);
         } else {
-            mkdir(self::$cacheRootPath);
+            mkdir(self::$rootPath);
         }
         foreach (self::$classMap as $key => $value) {
             self::copyFile($key, $value);
@@ -94,7 +86,7 @@ class ClassCacheBuilder {
             $segments = explode('\\', $class);
         }
         $count = count($segments);
-        $path = self::$cacheRootPath;
+        $path = self::$rootPath;
         for ($index = 0; $index < $count - 1; ++$index) {
             $path .= DIRECTORY_SEPARATOR . $segments[$index];
             if (is_dir($path) === false) {

@@ -2,7 +2,7 @@
 namespace Hyperframework;
 
 final class ClassLoader {
-    private static $cacheRootPath;
+    private static $rootPath;
     private static $isZeroFolderEnabled;
 
     public static function run() {
@@ -11,11 +11,11 @@ final class ClassLoader {
     }
 
     public static function initialize() {
-        self::$cacheRootPath = Config::get(
-            'hyperframework.class_loader.cache_root_path'
+        self::$rootPath = Config::get(
+            'hyperframework.class_loader.root_path'
         );
-        if (self::$cacheRootPath === null) {
-            self::$cacheRootPath = APP_ROOT_PATH . DIRECTORY_SEPARATOR
+        if (self::$rootPath === null) {
+            self::$rootPath = APP_ROOT_PATH . DIRECTORY_SEPARATOR
                 . 'tmp' . DIRECTORY_SEPARATOR . 'cache'
                 . DIRECTORY_SEPARATOR . 'lib';
         }
@@ -26,17 +26,17 @@ final class ClassLoader {
 
     public static function load($name) {
         if (self::$isZeroFolderEnabled && strpos($name, '\\') === false) {
-            require self::$cacheRootPath . DIRECTORY_SEPARATOR . '0'
+            require self::$rootPath . DIRECTORY_SEPARATOR . '0'
                 . DIRECTORY_SEPARATOR
                 . str_replace('_', DIRECTORY_SEPARATOR, $name) . '.php';
             return;
         }
-        require self::$cacheRootPath . DIRECTORY_SEPARATOR
+        require self::$rootPath . DIRECTORY_SEPARATOR
             . str_replace('\\', DIRECTORY_SEPARATOR, $name) . '.php';
     }
 
     public static function reset() {
-        self::$cacheRootPath = null;
+        self::$rootPath = null;
         self::$isZeroFolderEnabled = null;
     }
 }
