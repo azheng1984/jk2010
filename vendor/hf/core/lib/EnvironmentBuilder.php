@@ -6,8 +6,7 @@ class EnvironmentBuilder {
         define('Hyperframework\APP_ROOT_NAMESPACE', $rootNamespace);
         define('Hyperframework\APP_ROOT_PATH', $rootPath);
         static::initializeConfig();
-        static::loadFiles();
-        static::initializeClassLoader();
+        static::initializeAutoloader();
     }
 
     protected static function initializeConfig() {
@@ -15,12 +14,17 @@ class EnvironmentBuilder {
         static::importInitConfig();
     }
 
-    protected static function initializeClassLoader() {
-        if (Config::get('hyperframework.use_composer_class_loader') === true) {
+    protected static function initializeAutoloader() {
+        if (Config::get('hyperframework.use_composer_autoloader') === true) {
             require APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor'
                 . DIRECTORY_SEPARATOR . 'autoload.php';
             return;
         }
+        static::loadFiles();
+        static::initializeClassLoader();
+    }
+
+    protected static function initializeClassLoader() {
         require __DIR__ . DIRECTORY_SEPARATOR . 'ClassLoader.php';
         ClassLoader::run();
     }
@@ -33,7 +37,7 @@ class EnvironmentBuilder {
         if ($path === null) {
             $path = APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'tmp'
                 . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR
-                . 'autoload_files' . DIRECTORY_SEPARATOR . 'load.php';
+                . 'autoload_files.php';
         }
         require $path;
     }
