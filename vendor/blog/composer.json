@@ -9,8 +9,7 @@
           "Hyperframework\\": "../hf/core/lib/",
           "Hyperframework\\Blog\\": "lib/",
           "": "fallback4"
-        },
-        "files": ["src/MyLibrary/functions.php"]
+        }
     },
     "repositories": [
         {
@@ -18,6 +17,5 @@
         }
     ],
     
-  "require" : { },
-"include-path": ["lib/"]
+  "require" : { }
 }

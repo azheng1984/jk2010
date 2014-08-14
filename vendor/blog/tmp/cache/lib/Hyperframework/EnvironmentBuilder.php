@@ -1,14 +1,12 @@
 <?php
 namespace Hyperframework;
-        require __DIR__ . DIRECTORY_SEPARATOR . 'FileLoader.php';
-        require __DIR__ . DIRECTORY_SEPARATOR . 'FullPathRecognizer.php';
-        require __DIR__ . DIRECTORY_SEPARATOR . 'CacheFileLoader.php';
  
 class EnvironmentBuilder {
     public static function run($rootNamespace, $rootPath) {
         define('Hyperframework\APP_ROOT_NAMESPACE', $rootNamespace);
         define('Hyperframework\APP_ROOT_PATH', $rootPath);
         static::initializeConfig();
+        static::loadFiles();
         static::initializeClassLoader();
     }
 
@@ -25,6 +23,19 @@ class EnvironmentBuilder {
         }
         require __DIR__ . DIRECTORY_SEPARATOR . 'ClassLoader.php';
         ClassLoader::run();
+    }
+
+    protected static function loadFiles() {
+        if (Config::get('hyperframework.autoload_files.enable') !== true) {
+            return;
+        }
+        $path = Config::get('hyperframework.autoload_files.path');
+        if ($path === null) {
+            $path = APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'tmp'
+                . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR
+                . 'autoload_files' . DIRECTORY_SEPARATOR . 'load.php';
+        }
+        require $path;
     }
 
     protected static function loadConfigClass() {

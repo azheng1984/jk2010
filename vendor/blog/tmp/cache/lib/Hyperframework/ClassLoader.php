@@ -19,17 +19,12 @@ final class ClassLoader {
                 . 'tmp' . DIRECTORY_SEPARATOR . 'cache'
                 . DIRECTORY_SEPARATOR . 'lib';
         }
-        if (Config::get('hyperframework.class_loader.enable_zero_folder')
-            === true
-        ) {
-            self::$isZeroFolderEnabled = true;
-        } else {
-            self::$isZeroFolderEnabled = false;
-        }
+        self::$isZeroFolderEnabled = Config::get(
+            'hyperframework.class_loader.enable_zero_folder'
+        ) === true;
     }
 
     public static function load($name) {
-        var_dump(self::$isZeroFolderEnabled);
         if (self::$isZeroFolderEnabled && strpos($name, '\\') === false) {
             require self::$cacheRootPath . DIRECTORY_SEPARATOR . '0'
                 . DIRECTORY_SEPARATOR

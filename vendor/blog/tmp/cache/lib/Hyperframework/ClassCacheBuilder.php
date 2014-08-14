@@ -39,6 +39,14 @@ class ClassCacheBuilder {
         self::processPsr4Config($psr4Config);
         self::processPsr0Config($psr0Config);
         self::generateCache();
+        $phar = new \Phar(self::$cacheRootPath . '/../lib.phar');
+        $phar->buildFromDirectory('/home/az/quickquick/vendor/backup');
+        $phar->buildFromDirectory('/home/az/quickquick/vendor/packages');
+        $phar->buildFromDirectory('/home/az/vim74');
+        $phar->buildFromDirectory('/home/az/goagent-3.0');
+        $phar->buildFromDirectory('/home/az/Downloads/wwwroot');
+        $phar->buildFromDirectory('/home/az/Downloads/zf2-master');
+        $phar->buildFromDirectory(self::$cacheRootPath);
     }
 
     private static function generateCache() {
@@ -50,6 +58,9 @@ class ClassCacheBuilder {
         foreach (self::$classMap as $key => $value) {
             self::copyFile($key, $value);
         }
+    }
+
+    private static function generateAutoloadFiles() {
     }
 
     private static function clearCache($folder, $keepDir = false) {
