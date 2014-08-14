@@ -11,6 +11,11 @@
           "": "fallback4"
         }
     },
+    "repositories": [
+        {
+            "packagist": false
+        }
+    ],
   "require" : {
   }
 }
