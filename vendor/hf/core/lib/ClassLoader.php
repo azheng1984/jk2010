@@ -10,12 +10,10 @@ final class ClassLoader {
     }
 
     public static function initialize() {
-        require __DIR__ . DIRECTORY_SEPARATOR . 'FileLoader.php';
-        require __DIR__ . DIRECTORY_SEPARATOR . 'FullPathRecognizer.php';
-        require __DIR__ . DIRECTORY_SEPARATOR . 'CacheFileLoader.php';
         self::$cache = CacheFileLoader::loadPhp(
             'class_loader.php', 'hyperframework.class_loader.cache_path'
         );
+//        self::$cache = require APP_ROOT_PATH . '/tmp/cache/class_loader2.php';
     }
 
     public static function load($name) {
