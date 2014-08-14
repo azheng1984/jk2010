@@ -42,10 +42,32 @@ class ClassCacheBuilder {
     }
 
     private static function generateCache() {
-        //delete .php file only
-        system('rm -rf ' . self::$cacheRootPath . DIRECTORY_SEPARATOR . '*');
+        if (is_dir(self::$cacheRootPath)) {
+            self::clearCache(self::$cacheRootPath, true);
+        } else {
+            mkdir(self::$cacheRootPath);
+        }
         foreach (self::$classMap as $key => $value) {
             self::copyFile($key, $value);
+        }
+    }
+
+    private static function clearCache($folder, $keepDir = false) {
+        foreach (scandir($folder) as $entry) {
+            if ($entry === '..' || $entry === '.') {
+                continue;
+            }
+            $path = $folder . '/' . $entry;
+            if (is_file($path)) {
+                if (self::isClassFile($path)) {
+                    unlink($path);
+                }
+            } else {
+                self::clearCache($path);
+            }
+        }
+        if ($keepDir === false && count(scandir($folder)) === 2) {
+            rmdir($folder);
         }
     }
 

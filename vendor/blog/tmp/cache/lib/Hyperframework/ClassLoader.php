@@ -29,12 +29,8 @@ final class ClassLoader {
     }
 
     public static function load($name) {
-        if (self::$isZeroFolderEnabled) {
-            if (strpos('\\', $name) === false) {
-                require self::$cacheRootPath . DIRECTORY_SEPARATOR
-                    . str_replace('\\', DIRECTORY_SEPARATOR, $name) . '.php';
-                return;
-            }
+        var_dump(self::$isZeroFolderEnabled);
+        if (self::$isZeroFolderEnabled && strpos($name, '\\') === false) {
             require self::$cacheRootPath . DIRECTORY_SEPARATOR . '0'
                 . DIRECTORY_SEPARATOR
                 . str_replace('_', DIRECTORY_SEPARATOR, $name) . '.php';
