@@ -111,7 +111,13 @@ class FormHelper {
         $this->renderAttrs($attrs);
         echo '>';
         if (isset($data[$attrs['name']])) {
-            echo htmlspecialchars($data[$attrs['name']]);
+            if (isset($attrs[':encode_html_special_chars'])
+                && $attrs[':encode_html_special_chars'] === false
+            ) {
+                echo $data[$attrs['name']];
+            } else {
+                echo htmlspecialchars($data[$attrs['name']]);
+            }
         } elseif (isset($attrs[':content'])) {
             echo $attrs[':content'];
         }
