@@ -9,3 +9,4 @@ require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Web'
     . DIRECTORY_SEPARATOR . 'Runner.php';
 
 Runner::run(__NAMESPACE__, ROOT_PATH);
+//phpinfo();

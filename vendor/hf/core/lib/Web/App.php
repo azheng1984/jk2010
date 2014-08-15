@@ -58,7 +58,6 @@ class App {
     protected function initialize() {
         $this->rewriteRequestMethod();
         $this->parseRequestBody();
-        $this->checkCsrf();
         $this->initializePath();
         $this->initializePathInfo();
     }
@@ -89,10 +88,6 @@ class App {
         ) {
             JsonRequestBodyParser::run();
         }
-    }
-
-    protected function checkCsrf() {
-        //todo
     }
 
     protected function initializePath() {
