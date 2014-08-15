@@ -120,35 +120,40 @@ class FormHelper {
         echo '<select';
         $this->renderAttrs($attrs);
         echo '>';
-        $value = null;
+        $selectedValue = null;
         if (isset($attrs['name']) && isset($this->data[$attrs['name']])) {
-            $value = $this->data[$attrs['name']];
+            $selectedValue = $this->data[$attrs['name']];
         }
         if (isset($attrs[':options'])) {
-            $this->renderOptions($attrs[':options'], $value);
+            $this->renderOptions($attrs[':options'], $selectedValue);
         }
         echo '</select>';
     }
 
     private function renderOptions(
-        $options, $value, $isOptGroupAllowed = true
+        $options, $selectedValue, $isOptGroupAllowed = true
     ) {
         foreach ($options as $option) {
              if (is_array($option) === false) {
                  $option = array('value' => $option, ':content' => $option);
-             } elseif (isset($option[':content']) === false && isset($option['value'])) {
-                 $option[':content'] = $option['value'];
-             }
-             if ($isOptGroupAllowed && isset($option[':options'])) {
+             } elseif ($isOptGroupAllowed && isset($option[':options'])) {
                  echo '<optgroup';
                  $this->renderAttrs($option);
                  echo '>';
-                 $this->renderOptions($option[':options'], false);
+                 $this->renderOptions(
+                     $option[':options'], $selectedValue, false
+                 );
                  echo '</optgroup>';
+                 continue;
+             } elseif (isset($option['value']) === false) {
+                 continue;
+             }
+             if (isset($option[':content']) === false) {
+                 $option[':content'] = $option['value'];
              }
              echo '<option';
              $this->renderAttrs($option);
-             if ($option['value'] === $value) {
+             if ($option['value'] === $selectedValue) {
                  echo ' selected="selected"';
              }
              echo '>', $option[':content'], '</option>';

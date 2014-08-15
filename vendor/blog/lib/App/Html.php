@@ -14,12 +14,13 @@ class Html {
         $f->renderFile(array('id' => 'hello', 'class' => 'hi'));
         $f->renderTextArea(array('id' => 'hello', 'class' => 'hi'));
         $f->renderSelect(array(
-            'id' => 'hello',
-            'value' => 'hi',
+            'name' => 'hello',
             ':options' => array(
                 'xx',
                 'yy',
-                array(':options' => array('zz'), 'label' => 'hello')
+               array(
+                   ':options' => array('hi'), 'label' => 'hello'
+               )
             ),
         ));
         $f->end();
