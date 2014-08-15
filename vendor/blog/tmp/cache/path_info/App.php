@@ -7,6 +7,7 @@
       array (
         0 => 'PATCH',
       ),
+      'before_filter' => true,
       'after_filter' => true,
     ),
     'views' => 

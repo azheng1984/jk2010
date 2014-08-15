@@ -120,30 +120,40 @@ class FormHelper {
         echo '<select';
         $this->renderAttrs($attrs);
         echo '>';
-        $value = null;
-        if (isset($attrs['name']) && isset($this->data[$attrs['name']])) {
-            $value = $this->data[$attrs['name']];
-        }
+        $value = $this->data[$attrs['name']];
         if (isset($attrs[':options'])) {
-            $this->renderOptions($attrs[':options'], $value);
+            foreach ($attrs[':options'] as $option) {
+                if (is_array($option) === false) {
+                    $option = array('value' => $option, ':content' => $option);
+                } elseif (isset($option[':content']) === false && isset($option['value'])) {
+                    $option[':content'] = $option['value'];
+                }
+                if (isset($option[':options'])) {
+                    echo '<optgroup label="German Cars">';
+                    //... render optgroup
+                    echo '</optgroup>';
+                }
+                echo '<option';
+                $this->renderAttrs($option);
+                if ($option['value'] === $value) {
+                    echo ' selected="selected"';
+                }
+                echo '>', $option[':content'], '</option>';
+            }
         }
         echo '</select>';
     }
 
-    private function renderOptions(
-        $options, $value, $isOptGroupAllowed = true
-    ) {
-        foreach ($options as $option) {
+    private function renderOptions($options, $isOptGroupAllowed = true) {
+        foreach ($attrs[':options'] as $option) {
              if (is_array($option) === false) {
                  $option = array('value' => $option, ':content' => $option);
              } elseif (isset($option[':content']) === false && isset($option['value'])) {
                  $option[':content'] = $option['value'];
              }
              if ($isOptGroupAllowed && isset($option[':options'])) {
-                 echo '<optgroup';
-                 $this->renderAttrs($option);
-                 echo '>';
-                 $this->renderOptions($option[':options'], false);
+                 echo '<optgroup label="German Cars">';
+                 //... render optgroup
                  echo '</optgroup>';
              }
              echo '<option';

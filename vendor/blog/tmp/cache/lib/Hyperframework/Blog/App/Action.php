@@ -3,7 +3,13 @@ namespace Hyperframework\Blog\App;
 
 use Hyperframework\Blog\Modles\Article;
 
+use Hyperframework\Web\CsrfProtection;
+
 class Action {
+    public function before() {
+        CsrfProtection::run();
+    }
+
     public function after($ctx) {
         echo 'xx';
     }
