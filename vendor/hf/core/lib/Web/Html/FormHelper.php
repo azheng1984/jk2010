@@ -130,6 +130,21 @@ class FormHelper {
         echo '</select>';
     }
 
+
+    public function renderError($name = null) {
+        if ($name === null) {
+            if ($this->errors === null) {
+                return;
+            }
+            foreach (array_keys($this->errors) as $name) {
+                $this->renderError($name);
+            } 
+        } elseif (isset($this->errors[$name])) {
+            echo '<span class="error">',
+                htmlspecialchars($this->errors['name']), '</span>';
+        }
+    }
+
     private function renderOptions(
         $options, $selectedValue, $isOptGroupAllowed = true
     ) {
@@ -158,20 +173,6 @@ class FormHelper {
              }
              echo '>', $option[':content'], '</option>';
          }
-    }
-
-    public function renderError($name = null) {
-        if ($name === null) {
-            if ($this->errors === null) {
-                return;
-            }
-            foreach (array_keys($this->errors) as $name) {
-                $this->renderError($name);
-            } 
-        } elseif (isset($this->errors[$name])) {
-            echo '<span class="error">',
-                htmlspecialchars($this->errors['name']), '</span>';
-        }
     }
 
     protected function renderCsrfProtection() {

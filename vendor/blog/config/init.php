@@ -10,5 +10,6 @@ return array(
 //    'hyperframework.class_loader.root_path' => 'phar://' . ROOT_PATH . '/tmp/cache/lib.phar',
     'hyperframework.use_composer_autoloader' => true,
     'hyperframework.path_info.enable_cache' => false,
+    'hyperframework.web.disable_custom_error_page' => true,
 //    'hyperframework.class_loader.enable_zero_folder' => true,
 );

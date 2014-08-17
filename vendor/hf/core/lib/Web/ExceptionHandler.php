@@ -1,10 +1,15 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework\Config;
+use Hyperframework\Web\Html\ErrorPage;
+
 class ExceptionHandler {
     private static $exception;
 
     final public static function run() {
+        //Config::get('hyperframework.web.enable_error_profiler');
+        ob_start();
         set_exception_handler(array(get_called_class(), 'handle'));
     }
 
@@ -17,11 +22,15 @@ class ExceptionHandler {
         if ($exception instanceof HttpException === false) {
             $exception = new InternalServerErrorException;
         }
+        if (Config::get('hyperframework.web.enable_error_profiler') === true) {
+            ErrorPage::render($exception);
+            return;
+        }
         static::resetOutput();
         $exception->setHeader();
         if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
             try {
-                static::displayError($exception);
+                static::displayCustomErrorPage($exception);
             } catch (\Exception $e) {
                 static::triggerError(self::$exception, $e);
             }
@@ -59,7 +68,8 @@ class ExceptionHandler {
         }
     }
 
-    protected static function displayError($exception) {
+    protected static function displayCustomErrorPage($exception) {
+        var_dump($_SERVER);
         try {
             ViewDispatcher::run(
                 PathInfo::get('/', 'ErrorApp'), $exception

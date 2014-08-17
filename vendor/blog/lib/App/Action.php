@@ -8,6 +8,8 @@ use Hyperframework\Web\CsrfProtection;
 class Action {
     public function before() {
         CsrfProtection::run();
+        echo 'xx';
+        throw new \Exception;
     }
 
     public function after($ctx) {
