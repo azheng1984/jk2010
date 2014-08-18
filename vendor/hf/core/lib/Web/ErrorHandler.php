@@ -9,6 +9,23 @@ class ErrorHandler {
     private static $log;
     private static $isOutputBufferEnabled;
     private static $isDebugEnabled;
+    private $levels = array(
+        E_DEPRECATED        => 'Deprecated',
+        E_USER_DEPRECATED   => 'User Deprecated',
+        E_NOTICE            => 'Notice',
+        E_USER_NOTICE       => 'User Notice',
+        E_STRICT            => 'Runtime Notice',
+        E_WARNING           => 'Warning',
+        E_USER_WARNING      => 'User Warning',
+        E_COMPILE_WARNING   => 'Compile Warning',
+        E_CORE_WARNING      => 'Core Warning',
+        E_USER_ERROR        => 'User Error',
+        E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
+        E_COMPILE_ERROR     => 'Compile Error',
+        E_PARSE             => 'Parse Error',
+        E_ERROR             => 'Error',
+        E_CORE_ERROR        => 'Core Error'
+    );
 
     final public static function run() {
         if (Config::get('hyperframework.web.error_handler.debug.enable') === true) {
