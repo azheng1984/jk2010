@@ -1,6 +1,6 @@
 <?php
 namespace Hyperframework\Web;
-
+sdf
 class App {
     private $path;
     private $pathInfo;
@@ -8,8 +8,6 @@ class App {
     private $actionResult;
 
     public function run() {
-        echo error_from_app;
-//        throw new \Exception;
         $this->initialize();
         $this->executeAction();
         $this->renderView();
