@@ -23,36 +23,6 @@ class ErrorHandler {
         }
     }
 
-    final public static function handleFatalError() {
-        if (self::$isDebugEnabled === false || self::$exception !== null) {
-            return;
-        }
-        $error = error_get_last();
-        if ($error === null) {
-            return;
-        }
-        if (ErrorCodeHelper::isFatalError($error['type'])) {
-            self::handleError(
-                $error['type'],
-                $error['message'],
-                $error['file'],
-                $error['line'],
-                true
-            );
-        }
-    }
-
-    final public static function handleError(
-        $type, $message, $file, $line, $isFatal = false
-    ) {
-        if (error_reporting() & $type) {
-            $code = $isFatal ? 1 : 0;
-            return self::handleException(new ErrorException(
-                $message, $code, $type, $file, $line
-            ));
-        }
-    }
-
     final public static function handleException($exception) {
         if (self::$exception !== null) {
             return false;
@@ -85,6 +55,36 @@ class ErrorHandler {
             }
         }
         exit(1);
+    }
+
+    final public static function handleError(
+        $type, $message, $file, $line, $isFatal = false
+    ) {
+        if (error_reporting() & $type) {
+            $code = $isFatal ? 1 : 0;
+            return self::handleException(new ErrorException(
+                $message, $code, $type, $file, $line
+            ));
+        }
+    }
+
+    final public static function handleFatalError() {
+        if (self::$isDebugEnabled === false || self::$exception !== null) {
+            return;
+        }
+        $error = error_get_last();
+        if ($error === null) {
+            return;
+        }
+        if (ErrorCodeHelper::isFatalError($error['type'])) {
+            self::handleError(
+                $error['type'],
+                $error['message'],
+                $error['file'],
+                $error['line'],
+                true
+            );
+        }
     }
 
     protected static function cleanOutputBuffer() {
