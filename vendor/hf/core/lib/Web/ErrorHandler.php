@@ -3,73 +3,30 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Config;
 use Hyperframework\Web\Html\DebugPage;
+use ErrorException;
 
 class ErrorHandler {
     private static $exception;
-    private static $log;
-    private static $isOutputBufferEnabled;
     private static $isDebugEnabled;
-    private static $hasError;
-    private static $isCalled;
-
-    private $levels = array(
-        E_DEPRECATED        => 'Deprecated',
-        E_USER_DEPRECATED   => 'User Deprecated',
-        E_NOTICE            => 'Notice',
-        E_USER_NOTICE       => 'User Notice',
-        E_STRICT            => 'Runtime Notice',
-        E_WARNING           => 'Warning',
-        E_USER_WARNING      => 'User Warning',
-        E_COMPILE_WARNING   => 'Compile Warning',
-        E_CORE_WARNING      => 'Core Warning',
-        E_USER_ERROR        => 'User Error',
-        E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
-        E_COMPILE_ERROR     => 'Compile Error',
-        E_PARSE             => 'Parse Error',
-        E_ERROR             => 'Error',
-        E_CORE_ERROR        => 'Core Error'
-    );
+    private static $outputBufferLevel;
 
     final public static function run() {
-        if (ini_get('display_errors') === '1') {
-            ini_set('display_errors', false);
-            self::$isDebugEnabled = true;
-            Config::get('hyperframework.web.error_handler.debug.format');
-            //html for text
-            if (Config::get('hyperframework.web.error_handler.debug.enable_output_buffer') !== false) {
-                if (ob_get_level() === 0 || headers_sent() === false) {
-                    $ref =& self::$isOutpuBufferEnabled;
-                    ob_start(function($input) use (&$ref){
-                        $ref = false;
-                        return $input;
-                    });
-                    self::$isOutputBufferEnabled = true;
-                }
-            }
-        }
         $class = get_called_class();
         set_error_handler(array($class, 'handleError'), E_ALL);
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
-    }
-
-    final public static function handleError($type, $message, $file, $line) {
-        if (self::$hasError) {
-            return;
-        }
-        if (error_reporting() & $type) {
-            if (self::$isDebugEnabled) {
-                self::$hasError = true;
-                ini_set('display_errors', true);
-            }
-            self::$exception = new \ErrorException(
-                $message, 0, $type, $file, $line
-            );
-            self::handleException($exception);
+        if (ini_get('display_errors') === '1') {
+            self::$isDebugEnabled = true;
+            ini_set('display_errors', false);
+            ob_start();
+            self::$outputBufferLevel = ob_get_level();
         }
     }
 
     final public static function handleFatalError() {
+        if (self::$isDebugEnabled === false) {
+            return;
+        }
         $error = error_get_last();
         if ($error === null) {
             return;
@@ -87,48 +44,59 @@ class ErrorHandler {
                 $error['type'],
                 $error['message'],
                 $error['file'],
-                $error['line']
+                $error['line'],
+                true
             );
         }
     }
 
+    final public static function handleError(
+        $type, $message, $file, $line, $isFatal = false
+    ) {
+        if (error_reporting() & $type) {
+            if (self::$isDebugEnabled) {
+                ini_set('display_errors', true);
+            }
+            if ($isFatal === false) {
+                self::writeErrorLog($type, $message, $file, $line, $isFatal);
+            }
+            $code = $isFatal ? 1 : 0;
+            return self::handleException(new ErrorException(
+                $message, $code, $type, $file, $line
+            ));
+        }
+    }
+
     final public static function handleException($exception) {
+        if (self::$exception !== null) {
+            return false;
+        }
         self::$exception = $exception;
+        if ($exception instanceof ErrorException === false) {
+            if (self::$isDebugEnabled) {
+                ini_set('display_errors', true);
+            }
+            self::writeExceptionLog($exception);
+        }
+        if (self::$isDebugEnabled !== true) {
+            static::cleanOutputBuffer();
+        } else {
+            $headers = headers_list();
+            $outputBuffer = static::getOutputBuffer($headers);
+        }
+        header_remove();
         if ($exception instanceof HttpException === false) {
             $exception = new InternalServerErrorException;
         }
-        if (headers_sent()) {
-            if (self::$isDebugEnabled !== true) {
-                self::writeExceptionLog($exception);
-                exit(1);
-            }
-        }
-        if (self::$isDebugEnabled !== true) {
-            header_remove();
-            $exception->setHeader();
-            static::cleanOutputBuffer();
-        } elseif (self::$isOutpuBufferEnabled) {
-            //check if gzip is enabled
-            //add header
-            self::$output = static::getOutputBuffer();
-        } else {
-            self::$headers = headers_list();
-            //check if gzip is enabled
-            //add header
-            static::flushOutputBuffer();
-        }
-        if (self::$isDebugEnabled) {
-            static::renderDebugPage($exception);
-        } else {
-            if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
-                static::renderCustomErrorPage(self::$exception);
+        $exception->setHeader();
+        if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
+            if (self::$isDebugEnabled) {
+                static::renderDebugPage($headers, $outputBuffer);
+            } else {
+                static::renderCustomErrorPage();
             }
         }
         exit(1);
-    }
-
-    protected static function renderDebugPage($exception) {
-        DebugPage::render(self::$exception);
     }
 
     protected static function cleanOutputBuffer() {
@@ -139,93 +107,79 @@ class ErrorHandler {
         }
     }
 
-    protected static function getOutputBuffer() {
-        $obLevel = ob_get_level();
-        while ($obLevel > 1) {
-            ob_end_clean();
+    protected static function getOutputBuffer($headers) {
+        $outputBufferLevel = ob_get_level();
+        while ($outputBufferLevel > self::$outputBufferLevel) {
+            ob_end_flush();
             --$obLevel;
         }
         $content = ob_get_contents();
         ob_end_clean();
+        foreach ($headers as $header) {
+            $header = str_replace(' ', '', strtolower($header));
+            if ($header === 'content-encoding:gzip') {
+                $result = gzuncompress($content);
+                if ($result !== false) {
+                    return $result;
+                }
+                break;
+            } elseif ($header === 'content-encoding:deflate') {
+                $result = gzinflate($content);
+                if ($result !== false) {
+                    return $result;
+                }
+                break;
+            }
+        }
         return $content;
     }
 
-    protected static function flushOutputBuffer() {
-        $obLevel = ob_get_level();
-        while ($obLevel > 0) {
-            ob_end_flush();
-            --$obLevel;
-        }
+    protected static function renderDebugPage($headers, $outputBuffer) {
+        DebugPage::render(self::$exception, $headers, $outputBuffer);
     }
 
-//    private static function renderErrorPage($exception) {
-//        $class = get_called_class();
-//        if (self::$isDebugEnabled) {
-//            $outputBuffer = self::flushOutputBuffer();
-//            ErrorPage::renderError($error, self::$outputBuffer);
-//            return;
-//        }
-//        self::resetOutput();
-//        self::renderCustomErrorPage($exception);
-//    }
-//
-//    protected static function generateErrorLogMessage(
-//        $error, $recursiveError = null
-//    ) {
-//        error_log($message);
-//    }
-//
-//    protected static function generateExceptionLogMessage(
-//        $exception, $recursiveException = null
-//    ) {
-//        if ($recursiveException !== null) {
-//            $message = 'Uncaught ' . $exception . PHP_EOL
-//                . PHP_EOL . 'Next ' . $recursiveException . PHP_EOL;
-//            return;
-//        }
-//        throw $exception;
-//    }
-//
-//    protected static function writeLog($message) {
-//        error_log($message);
-//    }
-//
-//
-//    protected static function getException() {
-//        return self::$exception;
-//    }
-//
-//    public static function reset() {
-//        self::$exception = null;
-//    }
-//
-//    protected static function triggerError(
-//        $exception, $recursiveException = null
-//    ) {
-//        if ($recursiveException !== null) {
-//            $message = 'Uncaught ' . $exception . PHP_EOL
-//                . PHP_EOL . 'Next ' . $recursiveException . PHP_EOL;
-//            trigger_error($message, E_USER_ERROR);
-//        }
-//        throw $exception;
-//    }
-//
-//    protected static function resetOutput() {
-//        header_remove();
-//        $obLevel = ob_get_level();
-//        while ($obLevel > 0) {
-//            ob_end_clean();
-//            --$obLevel;
-//        }
-//    }
-//
-//    protected static function renderCustomErrorPage($exception) {
-//        try {
-//            ViewDispatcher::run(
-//                PathInfo::get('/', 'ErrorApp'), $exception
-//            );
-//        } catch (NotFoundException $e) {
-//        } catch (NotAcceptableException $e) {
-//        }
-//    }
+    protected static function renderCustomErrorPage() {
+        ViewDispatcher::run(
+            PathInfo::get('/', 'ErrorApp'), self::$exception
+        );
+    }
+
+    protected static function writeErrorLog(
+        $type, $message, $file, $line, $isFatal
+    ) {
+        $levels = array(
+            E_DEPRECATED        => 'Deprecated',
+            E_USER_DEPRECATED   => 'User Deprecated',
+            E_NOTICE            => 'Notice',
+            E_USER_NOTICE       => 'User Notice',
+            E_STRICT            => 'Runtime Notice',
+            E_WARNING           => 'Warning',
+            E_USER_WARNING      => 'User Warning',
+            E_COMPILE_WARNING   => 'Compile Warning',
+            E_CORE_WARNING      => 'Core Warning',
+            E_USER_ERROR        => 'User Error',
+            E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
+            E_COMPILE_ERROR     => 'Compile Error',
+            E_PARSE             => 'Parse Error',
+            E_ERROR             => 'Error',
+            E_CORE_ERROR        => 'Core Error'
+        );
+        self::writeLog(self::$exception);
+    }
+
+    protected static function writeExceptionLog($exception) {
+        self::writeLog($exception);
+    }
+
+    protected static function writeLog($message) {
+        error_log($message);
+    }
+
+    protected static function getException() {
+        return self::$exception;
+    }
+
+    public static function reset() {
+        self::$exception = null;
+    }
 }
