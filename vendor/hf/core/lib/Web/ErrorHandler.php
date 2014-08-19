@@ -119,7 +119,6 @@ class ErrorHandler {
         foreach ($headers as $header) {
             $header = str_replace(' ', '', strtolower($header));
             if ($header === 'content-encoding:gzip') {
-                $content = 'asdfdsffs';
                 $result = file_get_contents(
                     'compress.zlib://data:;base64,' . base64_encode($content)
                 );
