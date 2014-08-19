@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web\Html;
 
-class ErrorPage {
+class DebugPage {
     public static function render($exception) {
         self::resetOutput();
         print_r($exception);

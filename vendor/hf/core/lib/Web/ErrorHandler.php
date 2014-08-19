@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Config;
-use Hyperframework\Web\Html\ErrorPage;
+use Hyperframework\Web\Html\DebugPage;
 
 class ErrorHandler {
     private static $exception;
@@ -10,6 +10,7 @@ class ErrorHandler {
     private static $isOutputBufferEnabled;
     private static $isDebugEnabled;
     private static $hasError;
+    private static $isCalled;
 
     private $levels = array(
         E_DEPRECATED        => 'Deprecated',
@@ -37,7 +38,11 @@ class ErrorHandler {
             //html for text
             if (Config::get('hyperframework.web.error_handler.debug.enable_output_buffer') !== false) {
                 if (ob_get_level() === 0 || headers_sent() === false) {
-                    ob_start();
+                    $ref =& self::$isOutpuBufferEnabled;
+                    ob_start(function($input) use (&$ref){
+                        $ref = false;
+                        return $input;
+                    });
                     self::$isOutputBufferEnabled = true;
                 }
             }
@@ -97,26 +102,33 @@ class ErrorHandler {
                 self::writeExceptionLog($exception);
                 exit(1);
             }
-        } else {
-            self::$headers = headers_list();
-            header_remove();
-            $exception->setHeader();
         }
         if (self::$isDebugEnabled !== true) {
+            header_remove();
+            $exception->setHeader();
             static::cleanOutputBuffer();
         } elseif (self::$isOutpuBufferEnabled) {
+            //check if gzip is enabled
+            //add header
             self::$output = static::getOutputBuffer();
         } else {
+            self::$headers = headers_list();
+            //check if gzip is enabled
+            //add header
             static::flushOutputBuffer();
         }
         if (self::$isDebugEnabled) {
+            static::renderDebugPage($exception);
+        } else {
             if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
                 static::renderCustomErrorPage(self::$exception);
             }
-        } else {
-            ErrorPage::renderException(self::$exception);
         }
         exit(1);
+    }
+
+    protected static function renderDebugPage($exception) {
+        DebugPage::render(self::$exception);
     }
 
     protected static function cleanOutputBuffer() {
@@ -129,10 +141,6 @@ class ErrorHandler {
 
     protected static function getOutputBuffer() {
         $obLevel = ob_get_level();
-        if ($obLevel < 1) {
-            //display output buffer error!!!
-            return;
-        }
         while ($obLevel > 1) {
             ob_end_clean();
             --$obLevel;
