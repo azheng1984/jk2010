@@ -8,13 +8,10 @@ class App {
     private $actionResult;
 
     public function run() {
-        ob_start('ob_gzhandler');
-        echo 'asdfddddddddddddddd;
         $this->initialize();
         $this->executeAction();
         $this->renderView();
-        $this->finalize();';
-        adsfsd;
+        $this->finalize();;
     }
 
     public function getParam($name) {

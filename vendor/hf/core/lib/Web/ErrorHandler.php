@@ -1,9 +1,9 @@
 <?php
 namespace Hyperframework\Web;
 
-use Hyperframework\Config;
-use Hyperframework\Web\Html\DebugPage;
 use ErrorException;
+use Hyperframework\ErrorCodeHelper;
+use Hyperframework\Web\Html\DebugPage;
 
 class ErrorHandler {
     private static $exception;
@@ -15,8 +15,8 @@ class ErrorHandler {
         set_error_handler(array($class, 'handleError'), E_ALL);
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
-        if (ini_get('display_errors') === '1') {
-            self::$isDebugEnabled = true;
+        self::$isDebugEnabled = ini_get('display_errors') === '1';
+        if (self::$isDebugEnabled) {
             ini_set('display_errors', false);
             ob_start();
             self::$outputBufferLevel = ob_get_level();
@@ -24,22 +24,14 @@ class ErrorHandler {
     }
 
     final public static function handleFatalError() {
-        if (self::$isDebugEnabled === false) {
+        if (self::$isDebugEnabled === false || self::$exception !== null) {
             return;
         }
         $error = error_get_last();
         if ($error === null) {
             return;
         }
-        $fatalErrorTypes = array(
-            E_ERROR,
-            E_PARSE,
-            E_CORE_ERROR,
-            E_CORE_WARNING,
-            E_COMPILE_ERROR,
-            E_COMPILE_WARNING
-        );
-        if (in_array($error['type'], $fatalErrorTypes)) {
+        if (ErrorCodeHelper::isFatalError($error['type'])) {
             self::handleError(
                 $error['type'],
                 $error['message'],
@@ -54,12 +46,6 @@ class ErrorHandler {
         $type, $message, $file, $line, $isFatal = false
     ) {
         if (error_reporting() & $type) {
-            if (self::$isDebugEnabled) {
-                ini_set('display_errors', true);
-            }
-            if ($isFatal === false) {
-                self::writeErrorLog($type, $message, $file, $line, $isFatal);
-            }
             $code = $isFatal ? 1 : 0;
             return self::handleException(new ErrorException(
                 $message, $code, $type, $file, $line
@@ -72,17 +58,19 @@ class ErrorHandler {
             return false;
         }
         self::$exception = $exception;
-        if ($exception instanceof ErrorException === false) {
-            if (self::$isDebugEnabled) {
-                ini_set('display_errors', true);
-            }
+        if (self::$isDebugEnabled) {
+            ini_set('display_errors', true);
+        }
+        if ($exception instanceof ErrorException) {
+            self::writeErrorLog($exception);
+        } else {
             self::writeExceptionLog($exception);
         }
-        if (self::$isDebugEnabled !== true) {
-            static::cleanOutputBuffer();
-        } else {
+        if (self::$isDebugEnabled) {
             $outputBuffer = static::getOutputBuffer();
             $headers = headers_list();
+        } else {
+            static::cleanOutputBuffer();
         }
         header_remove();
         if ($exception instanceof HttpException === false) {
@@ -147,31 +135,19 @@ class ErrorHandler {
         );
     }
 
-    protected static function writeErrorLog(
-        $type, $message, $file, $line, $isFatal
-    ) {
-        $levels = array(
-            E_DEPRECATED        => 'Deprecated',
-            E_USER_DEPRECATED   => 'User Deprecated',
-            E_NOTICE            => 'Notice',
-            E_USER_NOTICE       => 'User Notice',
-            E_STRICT            => 'Runtime Notice',
-            E_WARNING           => 'Warning',
-            E_USER_WARNING      => 'User Warning',
-            E_COMPILE_WARNING   => 'Compile Warning',
-            E_CORE_WARNING      => 'Core Warning',
-            E_USER_ERROR        => 'User Error',
-            E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
-            E_COMPILE_ERROR     => 'Compile Error',
-            E_PARSE             => 'Parse Error',
-            E_ERROR             => 'Error',
-            E_CORE_ERROR        => 'Core Error'
-        );
-        self::writeLog(self::$exception);
+    protected static function writeErrorLog($exception) {
+        if ($exception->getCode() === 1) {
+            return;
+        }
+        $message = 'PHP ' . ErrorCodeHelper::toString($exception->getSeverity())
+            . ': ' . $exception->getMessage() . ' in ' . $exception->getFile()
+            . ':'. $exception->getLine() . PHP_EOL . 'Stack trace:'
+            . $exception->getTraceAsString();
+        self::writeLog($message);
     }
 
-    protected static function writeExceptionLog($exception) {
-        self::writeLog($exception);
+    protected static function writeExceptionLog() {
+        self::writeLog('PHP Fatal error: Uncaught ' . self::$exception);
     }
 
     protected static function writeLog($message) {

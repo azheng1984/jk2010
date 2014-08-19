@@ -8,6 +8,6 @@ class DebugPage {
         echo '<h1>BEBUG</h1>';
         var_dump($exception);
         var_dump($headers);
-        var_dump($outputBuffer);
+        echo $outputBuffer;
     }
 }
