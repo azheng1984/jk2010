@@ -8,12 +8,13 @@ class App {
     private $actionResult;
 
     public function run() {
-        echo error_from_app;
-//        throw new \Exception;
+        ob_start('ob_gzhandler');
+        echo 'asdfddddddddddddddd;
         $this->initialize();
         $this->executeAction();
         $this->renderView();
-        $this->finalize();
+        $this->finalize();';
+        adsfsd;
     }
 
     public function getParam($name) {

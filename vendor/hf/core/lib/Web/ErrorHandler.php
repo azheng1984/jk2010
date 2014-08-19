@@ -81,8 +81,8 @@ class ErrorHandler {
         if (self::$isDebugEnabled !== true) {
             static::cleanOutputBuffer();
         } else {
+            $outputBuffer = static::getOutputBuffer();
             $headers = headers_list();
-            $outputBuffer = static::getOutputBuffer($headers);
         }
         header_remove();
         if ($exception instanceof HttpException === false) {
@@ -107,18 +107,22 @@ class ErrorHandler {
         }
     }
 
-    protected static function getOutputBuffer($headers) {
+    protected static function getOutputBuffer() {
         $outputBufferLevel = ob_get_level();
         while ($outputBufferLevel > self::$outputBufferLevel) {
             ob_end_flush();
-            --$obLevel;
+            --$outputBufferLevel;
         }
         $content = ob_get_contents();
         ob_end_clean();
+        $headers = headers_list();
         foreach ($headers as $header) {
             $header = str_replace(' ', '', strtolower($header));
             if ($header === 'content-encoding:gzip') {
-                $result = gzuncompress($content);
+                $content = 'asdfdsffs';
+                $result = file_get_contents(
+                    'compress.zlib://data:;base64,' . base64_encode($content)
+                );
                 if ($result !== false) {
                     return $result;
                 }
