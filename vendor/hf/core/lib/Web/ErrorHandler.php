@@ -32,6 +32,7 @@ class ErrorHandler {
             ini_set('display_errors', true);
         } else {
             if (headers_sent()) {
+                exit(1);
             }
         }
         if ($exception instanceof ErrorException) {
