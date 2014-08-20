@@ -40,16 +40,19 @@ class ErrorHandler {
             $outputBuffer = static::getOutputBuffer();
             $headers = headers_list();
         } else {
-            if (headers_sent()) {
-                exit(1);
-            }
             static::cleanOutputBuffer();
         }
-        header_remove();
-        if ($exception instanceof HttpException) {
-            $exception->setHeader();
+        if (headers_sent()) {
+            if (self::$isDebugEnabled === false) {
+                exit(1);
+            }
         } else {
-            header('HTTP/1.1 500 Internal Server Error');
+            header_remove();
+            if ($exception instanceof HttpException) {
+                $exception->setHeader();
+            } else {
+                header('HTTP/1.1 500 Internal Server Error');
+            }
         }
         if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
             if (self::$isDebugEnabled) {
