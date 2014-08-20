@@ -65,6 +65,7 @@ class DbClient {
         $driverOptions = array(
             PDO::ATTR_EMULATE_PREPARES => $isEmulated,
         );
+        //todo log sql
         return static::getConnection()->prepare($sql, $driverOptions);
     }
 
@@ -149,6 +150,7 @@ class DbClient {
     }
 
     protected static function send($sql, $params, $isQuery = false) {
+        //todo log sql
         $connection = static::getConnection();
         if ($params === null || count($params) === 0) {
             return $isQuery ?
