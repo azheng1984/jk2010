@@ -36,17 +36,21 @@ class ErrorHandler {
         } else {
             self::writeExceptionLog($exception);
         }
-        if (self::$isDebugEnabled) {
-            $outputBuffer = static::getOutputBuffer();
-            $headers = headers_list();
-        } else {
-            static::cleanOutputBuffer();
-        }
+        $headers = null;
+        $outputBuffer = null;
         if (headers_sent()) {
-            if (self::$isDebugEnabled === false) {
+            if (self::$isDebugEnabled) {
+                $headers = headers_list();
+            } else {
                 exit(1);
             }
         } else {
+            if (self::$isDebugEnabled) {
+                $outputBuffer = static::getOutputBuffer();
+                $headers = headers_list();
+            } else {
+                static::cleanOutputBuffer();
+            }
             header_remove();
             if ($exception instanceof HttpException) {
                 $exception->setHeader();
@@ -110,23 +114,47 @@ class ErrorHandler {
         }
         $content = ob_get_contents();
         ob_end_clean();
-        $headers = headers_list();
-        foreach ($headers as $header) {
+        if ($content === '') {
+            return;
+        }
+        $charset = null;
+        $encoding = null;
+        foreach (headers_list() as $header) {
             $header = str_replace(' ', '', strtolower($header));
             if ($header === 'content-encoding:gzip') {
+                $encoding = 'gzip';
+            } elseif ($header === 'content-encoding:deflate') {
+                $encoding = 'deflate';
+            } elseif (strncmp('content-type:', $header, 13) === 0) {
+                $header = substr($header, 13);
+                $segments = explode(';', $header);
+                foreach ($segments as $segment) {
+                    if (strncmp('charset=', $segment, 8) === 0) {
+                        $charset = substr($segment, 8);
+                        break;
+                    }
+                }
+            }
+        }
+        if ($encoding !== null) {
+            if ($encoding === 'gzip') {
                 $result = file_get_contents(
                     'compress.zlib://data:;base64,' . base64_encode($content)
                 );
                 if ($result !== false) {
-                    return $result;
+                    $content = $result;
                 }
-                break;
-            } elseif ($header === 'content-encoding:deflate') {
+            } elseif ($encoding === 'deflate') {
                 $result = gzinflate($content);
                 if ($result !== false) {
-                    return $result;
+                    $content = $result;
                 }
-                break;
+            }
+        }
+        if ($charset !== null && $charset !== 'utf-8') {
+            $result = iconv($charset, 'utf-8', $content);
+            if ($result !== false) {
+                $content = $result;
             }
         }
         return $content;
