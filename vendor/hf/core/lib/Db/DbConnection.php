@@ -11,7 +11,7 @@ class DbConnection {
     private static $factory;
 
     public static function connect(
-        $name = 'default', $pdo = null, $isReusable = true
+        $name = null, $pdo = null, $isReusable = true
     ) {
         if (self::$current !== null) {
             self::$stack[] = self::$current;

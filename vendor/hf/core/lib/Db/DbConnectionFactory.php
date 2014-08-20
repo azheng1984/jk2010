@@ -8,16 +8,14 @@ use Hyperframework\ConfigFileLoader;
 class DbConnectionFactory {
     private static $config;
 
-    public function get($name) {
+    public function get($name = null) {
         $config = $this->getConfig($name);
         if (isset($config['dsn'])) {
             $username = isset($config['username']) ? $config['username'] : null;
             $password = isset($config['password']) ? $config['password'] : null;
+            $options = isset($config['options']) ? $config['options'] : null;
             return new PDO(
-                $config['dsn'],
-                $username,
-                $password,
-                array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8')
+                $config['dsn'], $username, $password, $options
             );
         }
         throw new Exception;
@@ -27,7 +25,7 @@ class DbConnectionFactory {
         if (self::$config === null) {
             $this->initializeConfig();
         }
-        if ($name === 'default' && isset(self::$config['dsn'])
+        if ($name === null && isset(self::$config['dsn'])
             && is_string(self::$config['dsn'])) {
                 return self::$config;
         }
