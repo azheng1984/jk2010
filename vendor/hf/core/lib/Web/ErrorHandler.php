@@ -46,10 +46,11 @@ class ErrorHandler {
             static::cleanOutputBuffer();
         }
         header_remove();
-        if ($exception instanceof HttpException === false) {
-            $exception = new InternalServerErrorException;
+        if ($exception instanceof HttpException) {
+            $exception->setHeader();
+        } else {
+            header('HTTP/1.1 500 Internal Server Error');
         }
-        $exception->setHeader();
         if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
             if (self::$isDebugEnabled) {
                 static::renderDebugPage($headers, $outputBuffer);
