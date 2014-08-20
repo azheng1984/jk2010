@@ -8,9 +8,6 @@ class App {
     private $actionResult;
 
     public function run() {
-        header('Content-Type:text/html; charset=GBK');
-        echo iconv('utf-8', 'gbk', '柯震东吧');
-        sdf;
         $this->initialize();
         $this->executeAction();
         $this->renderView();
