@@ -30,10 +30,6 @@ class ErrorHandler {
         self::$exception = $exception;
         if (self::$isDebugEnabled) {
             ini_set('display_errors', true);
-        } else {
-            if (headers_sent()) {
-                exit(1);
-            }
         }
         if ($exception instanceof ErrorException) {
             self::writeErrorLog($exception);
@@ -44,6 +40,9 @@ class ErrorHandler {
             $outputBuffer = static::getOutputBuffer();
             $headers = headers_list();
         } else {
+            if (headers_sent()) {
+                exit(1);
+            }
             static::cleanOutputBuffer();
         }
         header_remove();
