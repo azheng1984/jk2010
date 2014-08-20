@@ -115,7 +115,7 @@ class ErrorHandler {
         $content = ob_get_contents();
         ob_end_clean();
         if ($content === '') {
-            return '';
+            return;
         }
         $charset = null;
         $encoding = null;

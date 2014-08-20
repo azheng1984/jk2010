@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework\Db;
 
+use PDO;
+
 class DbClient {
     public static function getColumn($sql/*, $mixed, ...*/) {
         return static::query(func_get_args())->fetchColumn();
@@ -13,7 +15,7 @@ class DbClient {
 
     public static function getColumnById($table, $id, $selector) {
         $sql = 'SELECT ' . $selector . ' FROM '
-            . static::getConnection()->quoteIdentifier($table)
+            . self::quoteIdentifier($table)
             . ' WHERE id = ?';
         return static::getColumn($sql, $id);
     }
@@ -29,7 +31,7 @@ class DbClient {
 
     public static function getRowById($table, $id, $selector = '*') {
         $sql = 'SELECT ' . $selector . ' FROM '
-            . static::getConnection()->quoteIdentifier($table)
+            . self::quoteIdentifier($table)
             . ' WHERE id = ?';
         return static::getRow($sql, $id);
     }
@@ -75,9 +77,9 @@ class DbClient {
     public static function insert($table, $row) {
         $keys = array();
         foreach (array_keys($row) as $key) {
-            $keys[] = static::getConnection()->quoteIdentifier($key);
+            $keys[] = self::quoteIdentifier($key);
         }
-        $sql = 'INSERT INTO ' . static::getConnection()->quoteIdentifier($table)
+        $sql = 'INSERT INTO ' . self::quoteIdentifier($table)
             . '(' . implode($keys, ', ') . ') VALUES('
             . static::getParamPlaceholders(count($row)) . ')';
         static::send($sql, array_values($row));
@@ -94,11 +96,11 @@ class DbClient {
         $tmp = null;
         $connetction = static::getConnection();
         foreach (array_keys($columns) as $key) {
-            $tmp .= $connection->quoteIdentifier($key) . ' = ?';
+            $tmp .= self::quoteIdentifier($key) . ' = ?';
         }
-        $sql = 'UPDATE ' . $connection->quoteIdentifier($table)
+        $sql = 'UPDATE ' . self::quoteIdentifier($table)
             . ' SET ' . $tmp . $where;
-        static::send($sql, $params));
+        static::send($sql, $params);
     }
 
     public static function updateByColumns(
@@ -121,7 +123,7 @@ class DbClient {
             $where = ' WHERE ' . $where;
             $params = array_slice(func_get_args(), 2);
         }
-        $sql = 'DELETE FROM ' . static::getConnection()->quoteIdentifier($table)
+        $sql = 'DELETE FROM ' . self::quoteIdentifier($table)
             . $where;
         static::send($sql, $params);
     }
@@ -129,7 +131,7 @@ class DbClient {
     public static function deleteByColumns($table, $columns) {
         list($where, $params) = self::buildWhereByColumns($columns);
         static::send(
-            'DELETE FROM ' . static::getConnection()->quoteIdentifier($table)
+            'DELETE FROM ' . self::quoteIdentifier($table)
                 . ' WHERE ' . $where, $params
         );
     }
@@ -143,32 +145,36 @@ class DbClient {
     }
 
     protected static function getConnection() {
-        return Connection::getCurrent();
+        return DbConnection::getCurrent();
     }
 
-    protected static function send($sql, $params) {
+    protected static function send($sql, $params, $isQuery = false) {
         $connection = static::getConnection();
-        if ($params === null || count($parameters) === 0) {
+        if ($params === null || count($params) === 0) {
             return $isQuery ?
                 $connection->query($sql) : $connection->exec($sql);
         }
         if (is_array($params[0])) {
-            $params = $parameters[0];
+            $params = $params[0];
         }
         $statement = $connection->prepare($sql);
         $statement->execute($params);
         return $statement;
     }
 
+    public static function quoteIdentifier($identifier) {
+        return DbConnection::quoteIdentifier($identifier);
+    }
+
     private static function query($params) {
         $sql = array_shift($params);
-        return static::send($sql, $params);
+        return static::send($sql, $params, true);
     }
 
     private static function queryByColumns($table, $columns, $selector) {
         list($where, $params) = self::buildWhereByColumns($columns);
         $sql = 'SELECT ' . $selector . ' FROM '
-            . static::getConnection()->quoteIdentifier($table);
+            . self::quoteIdentifier($table);
         if ($where !== null) {
             $sql .= ' WHERE ' . $where;
         }
@@ -185,7 +191,7 @@ class DbClient {
             if ($where !== null) {
                 $where = ' AND ';
             }
-            $where .= $connection->quoteIdentifier($key) . ' = ?';
+            $where .= self::quoteIdentifier($key) . ' = ?';
         }
         if ($where === null) {
             throw new \Exception;

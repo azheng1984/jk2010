@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework\Db;
 
+use PDO;
+
 class DbConnection {
     private static $current = null;
     private static $pool = array();
@@ -9,7 +11,7 @@ class DbConnection {
     private static $factory;
 
     public static function connect(
-        $name = 'default', $pdo = null, $isReusable = true,
+        $name = 'default', $pdo = null, $isReusable = true
     ) {
         if (self::$current !== null) {
             self::$stack[] = self::$current;
@@ -23,26 +25,6 @@ class DbConnection {
             $pdo = self::create($name, $isReusable);
         }
         self::$current = $pdo;
-    }
-
-    public static function quoteIdentifier($identifier) {
-        if (self::identifierQuotationMarks === null) {
-            self::identifierQuotationMarks =
-                static::getIdentifierQuotationMarks();
-        }
-        return self::identifierQuotationMarks[0] . $identifier
-            . self::identifierQuotationMarks[1];
-    }
-
-    protected static function getIdentifierQuotationMarks() {
-        switch (self::$current->getAttribute(PDO::ATTR_DRIVER_NAME)) {
-            case 'mysql':
-                return array('`', '`');
-            case 'sqlsrv':
-                return array('[', ']');
-            default:
-                return array('"', '"');
-        }
     }
 
     public static function close() {
@@ -63,6 +45,29 @@ class DbConnection {
             self::connect();
         }
         return self::$current;
+    }
+
+    public static function quoteIdentifier($identifier) {
+        if (self::$identifierQuotationMarks === null) {
+            self::$identifierQuotationMarks =
+                static::getIdentifierQuotationMarks();
+        }
+        return self::$identifierQuotationMarks[0] . $identifier
+            . self::$identifierQuotationMarks[1];
+    }
+
+    protected static function getIdentifierQuotationMarks() {
+        if (self::$current === null) {
+            static::connect();
+        }
+        switch (self::$current->getAttribute(PDO::ATTR_DRIVER_NAME)) {
+            case 'mysql':
+                return array('`', '`');
+            case 'sqlsrv':
+                return array('[', ']');
+            default:
+                return array('"', '"');
+        }
     }
 
     public static function reset() {
@@ -87,7 +92,7 @@ class DbConnection {
 
     private static function getFactory() {
         if (self::$factory === null) {
-            self::$factory = new ConnectionFactory;
+            self::$factory = new DbConnectionFactory;
         }
         return self::$factory;
     }

@@ -11,7 +11,7 @@ class App {
         $this->initialize();
         $this->executeAction();
         $this->renderView();
-        $this->finalize();;
+        $this->finalize();
     }
 
     public function getParam($name) {
@@ -37,7 +37,7 @@ class App {
     }
 
     public function getActionResult($name = null) {
-        if ($name === null) { 
+        if ($name === null) {
             return $this->actionResult;
         }
         if (isset($this->actionResult[$name])) {

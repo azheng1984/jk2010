@@ -1,6 +1,9 @@
 <?php
 namespace Hyperframework\Db;
 
+use Hyperframework\ConfigFileLoader;
+use PDO;
+
 class DbConnectionFactory {
     private static $config;
 
@@ -30,10 +33,10 @@ class DbConnectionFactory {
         if (isset(self::$config[$name])) {
             return self::$config[$name];
         }
-        throw new Exception("database config '$name' not found");
+        throw new \Exception("database config '$name' not found");
     }
 
     private function initializeConfig() {
-        self::$config = require ConfigLoader::loadByEnv()
+        self::$config = ConfigFileLoader::loadPhp('db.php');
     }
 }

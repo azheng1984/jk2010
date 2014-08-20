@@ -2,15 +2,13 @@
 namespace Hyperframework\Blog\App;
 
 use Hyperframework\Blog\Modles\Article;
-
 use Hyperframework\Web\CsrfProtection;
+use Hyperframework\Db\DbClient;
 
 class Action {
     public function before() {
         CsrfProtection::run();
-        //trigger_error('adf', E_ERROR);
-        echo 'xx';
-  //      throw new \Exception;
+        print_r(DbClient::getRowById('Article', 3));
     }
 
     public function after($ctx) {
