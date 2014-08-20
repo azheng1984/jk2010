@@ -37,7 +37,7 @@ class ErrorHandler {
             self::writeExceptionLog($exception);
         }
         $headers = null;
-        $outputBuffer = false;
+        $outputBuffer = null;
         if (headers_sent()) {
             if (self::$isDebugEnabled) {
                 $headers = headers_list();
@@ -115,7 +115,7 @@ class ErrorHandler {
         $content = ob_get_contents();
         ob_end_clean();
         if ($content === '') {
-            return;
+            return '';
         }
         $charset = null;
         $encoding = null;
