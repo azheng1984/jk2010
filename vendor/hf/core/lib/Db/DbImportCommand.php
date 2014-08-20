@@ -2,43 +2,63 @@
 namespace Hyperframework\Db;
 
 use PDO;
-//使用 ? 拼接 + server side prepared statement
-//options:
-//column_names: 设置 rows 的名称, 压缩 rows 的 key
-//batch_size (rows limit on one statement, 默认一次执行，由客户端控制条数)
+use Exception;
+
 class DbImportCommand {
     public static function run($table, $rows, $options = null) {
-        $keys = array();
-        $row = $rows[0];
-        foreach (array_keys($row) as $key) {
-            $keys[] = DbClient::quoteIdentifier($key);
-        }
-        $sql = 'INSERT INTO ' . DbClient::quoteIdentifier($table)
-            . '(' . implode($keys, ', ') . ') VALUES';
         $count = count($rows);
-        $values = array();
-        for ($index = 0; $index < $count; ++$index) {
-            if ($index !== 0) {
-                $sql .= ',';
+        if ($count === 0) {
+            return;
+        }
+        $columnNames = null; ;
+        if ($options['column_names']) {
+            $columnNames = $options['column_names'];
+        } else {
+            $columnNames = array_keys($rows[0]);
+        }
+        $columnCount = count($columnNames);
+        if ($columnCount === 0) {
+            throw new Exception;
+        }
+        $batchSize = 1000;
+        if ($options['batch_size']) {
+            if ($options['batch_size'] === false) {
+                $batchSize = $count;
+            } else {
+                $options['batch_size'] = $options['batch_size'];
             }
-            $sql .= '(' . static::getParamPlaceholders(count($row)) . ')';
-            $values = array_merge($values, array_values($rows[$index]));
         }
-        $statement = DbClient::prepare(
-            $sql, array(PDO::ATTR_EMULATE_PREPARES => false)
-        );
-        var_dump($statement);
-        var_dump($values);
-        $statement->execute($values);
-    }
-
-    private static function getParamPlaceholders($count) {
-        if ($count > 1) {
-            return str_repeat('?, ', $count - 1) . '?';
+        $row = $rows[0];
+        foreach ($columnNames as &$columnName) {
+            $columnName = DbClient::quoteIdentifier($columnName);
         }
-        if ($count === 1) {
-            return '?';
+        $prefix = 'INSERT INTO ' . DbClient::quoteIdentifier($table)
+            . '(' . implode($columnNames, ', ') . ') VALUES';
+        $placeHolders = '(' . str_repeat('?, ', count($columnNames) - 1) . '?)';
+        $statement = null;
+        $index = 0;
+        while ($index < $count) {
+            $values = array();
+            $size = $batchSize;
+            if ($index + $batchSize >= $count) {
+                $size = $count - $index;
+            }
+            if ($statement === null || $size !== $batchSize) {
+                $sql = $prefix . str_repeat($placeHolders . ',', $size - 1)
+                    . $placeHolders;
+                $statement = DbClient::prepare(
+                    $sql, array(PDO::ATTR_EMULATE_PREPARES => false)
+                );
+            }
+            while ($size > 0) {
+                if (count($rows[$index]) !== $columnCount) {
+                    throw new Exception;
+                }
+                $values = array_merge($values, array_values($rows[$index]));
+                ++$index;
+                --$size;
+            }
+            $statement->execute($values);
         }
-        throw new \Exception;
     }
 }

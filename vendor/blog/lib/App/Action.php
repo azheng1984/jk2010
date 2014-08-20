@@ -8,11 +8,15 @@ use Hyperframework\Db\DbImportCommand;
 
 class Action {
     public function before() {
-        CsrfProtection::run();
-        DbImportCommand::run('Article', [array('id' => 7, 'name' => 'xx'), array('id' => 8, 'name' => 'xx')]);
+       CsrfProtection::run();
+      // $v = array();
+      // for ($i = 15000; $i < 16500; ++$i) {
+      //     $v[] = array('id' => $i, 'name' => $i . 'v');
+      // }
+      // DbImportCommand::run('Article', $v);
       //  $record = array('id' => 4, 'name' => 'save!!');
       //  DbClient::save('Article', $record);
-        print_r(DbClient::getColumnById('Article', 4, 'name'));
+      print_r(DbClient::getColumnByColumns('Article', array('id' => '16499'), 'name'));
     }
 
     public function after($ctx) {
