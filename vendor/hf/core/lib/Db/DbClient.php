@@ -2,6 +2,7 @@
 namespace Hyperframework\Db;
 
 use PDO;
+use Exception;
 
 class DbClient {
     public static function getColumn($sql/*, $mixed, ...*/) {
@@ -61,7 +62,7 @@ class DbClient {
         return static::getConnection()->rollBack();
     }
 
-    public static function prepare($sql, $isEmulated = false) {
+    public static function prepare($sql, $driverOptions = array()) {
         $driverOptions = array(
             PDO::ATTR_EMULATE_PREPARES => $isEmulated,
         );
@@ -141,8 +142,14 @@ class DbClient {
         static::delete($table, 'id = ?', $id);
     }
 
-    public static function save($table, &$row, $options = null) {
-        return DbSaveCommand::run($table, $row, $options);
+    public static function save($table, &$row) {
+        if (isset($row['id'])) {
+            static::insert($table, $row);
+            $row['id'] = static::getLastInsertId();
+        }
+        $id = $row['id'];
+        unset($row['id']);
+        static::update($table, $row, 'id = ?', $id);
     }
 
     protected static function getConnection() {
@@ -208,6 +215,6 @@ class DbClient {
         if ($count === 1) {
             return '?';
         }
-        return '';
+        throw new Exception;
     }
 }

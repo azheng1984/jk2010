@@ -8,7 +8,8 @@ use Hyperframework\Db\DbClient;
 class Action {
     public function before() {
         CsrfProtection::run();
-        DbClient::deleteByColumns('Article', array('id' => 4));
+        $record = array('id' => 4, 'name' => 'save!!');
+        DbClient::save('Article', $record);
         print_r(DbClient::getColumnById('Article', 4, 'name'));
     }
 
