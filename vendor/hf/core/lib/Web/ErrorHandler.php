@@ -137,21 +137,33 @@ class ErrorHandler {
             }
         }
         if ($encoding !== null) {
-            if ($encoding === 'gzip') {
-                $result = file_get_contents(
-                    'compress.zlib://data:;base64,' . base64_encode($content)
-                );
-                if ($result !== false) {
-                    $content = $result;
-                }
-            } elseif ($encoding === 'deflate') {
-                $result = gzinflate($content);
-                if ($result !== false) {
-                    $content = $result;
-                }
+            $content = static::decodeOutputBuffer($content, $encoding);
+        } 
+        if ($charset !== null) {
+            $content = static::convertOutputBufferCharset($content, $charset);
+        }
+        return $content;
+    }
+
+    protected static function decodeOutputBuffer($content, $encoding) {
+        if ($encoding === 'gzip') {
+            $result = file_get_contents(
+                'compress.zlib://data:;base64,' . base64_encode($content)
+            );
+            if ($result !== false) {
+                $content = $result;
+            }
+        } elseif ($encoding === 'deflate') {
+            $result = gzinflate($content);
+            if ($result !== false) {
+                $content = $result;
             }
         }
-        if ($charset !== null && $charset !== 'utf-8') {
+        return $content;
+    }
+
+    protected static function convertOutputBufferCharset($content, $charset) {
+        if ($charset !== 'utf-8') {
             $result = iconv($charset, 'utf-8', $content);
             if ($result !== false) {
                 $content = $result;
