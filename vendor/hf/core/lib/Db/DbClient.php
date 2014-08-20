@@ -90,7 +90,7 @@ class DbClient {
         if ($where !== null) {
             $where = ' WHERE ' . $where;
             $params = array_merge(
-                $row, array_slice(func_get_args(), 3)
+                $params, array_slice(func_get_args(), 3)
             );
         }
         $tmp = null;
@@ -109,7 +109,7 @@ class DbClient {
         list($where, $params) = self::buildWhereByColumns($filterColumns);
         call_user_func_array(
             'static::update',
-            array($table, $replacementColumns, $where) + $params
+            array_merge(array($table, $replacementColumns, $where), $params)
         );
     }
 

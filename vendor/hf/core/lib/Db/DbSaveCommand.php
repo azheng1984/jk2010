@@ -25,11 +25,8 @@ namespace Hyperframework\Db;
 //删除 filter columns，自动识别 id，除非在 options 设置识别域
 
 class DbSaveCommand {
-    public static function execute($table, &$row, $options = null) {
-        //todo 返回有意义的数据
-    }
-
-    protected static function () {
+    public static function execute($table, &$row) {
+        //return 0 if inserted
     }
 
     public static function execute(
