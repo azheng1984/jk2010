@@ -1,5 +1,6 @@
 <?php
 namespace Hyperframework\Db;
+
 use PDO;
 //使用 ? 拼接 + server side prepared statement
 //options:
