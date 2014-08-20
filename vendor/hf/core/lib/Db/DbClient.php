@@ -63,9 +63,9 @@ class DbClient {
     }
 
     public static function prepare($sql, $driverOptions = array()) {
-        $driverOptions = array(
-            PDO::ATTR_EMULATE_PREPARES => $isEmulated,
-        );
+       // $driverOptions = array(
+       //     PDO::ATTR_EMULATE_PREPARES => $isEmulated,
+       // );
         //todo log sql
         return static::getConnection()->prepare($sql, $driverOptions);
     }
