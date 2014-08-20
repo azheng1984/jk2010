@@ -30,6 +30,9 @@ class ErrorHandler {
         self::$exception = $exception;
         if (self::$isDebugEnabled) {
             ini_set('display_errors', true);
+        } else {
+            if (headers_sent()) {
+            }
         }
         if ($exception instanceof ErrorException) {
             self::writeErrorLog($exception);
