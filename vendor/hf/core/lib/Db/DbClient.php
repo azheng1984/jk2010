@@ -203,7 +203,7 @@ class DbClient {
             $where .= self::quoteIdentifier($key) . ' = ?';
         }
         if ($where === null) {
-            throw new \Exception;
+            throw new Exception;
         }
         return array($where, $params);
     }

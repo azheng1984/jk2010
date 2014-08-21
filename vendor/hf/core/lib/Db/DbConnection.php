@@ -60,6 +60,7 @@ class DbConnection {
     }
 
     public static function closeAll() {
+        self::$identifierQuotationMarks = null;
         self::$stack = array();
         self::$current = null;
     }
@@ -78,6 +79,14 @@ class DbConnection {
         }
         return self::$identifierQuotationMarks[0] . $identifier
             . self::$identifierQuotationMarks[1];
+    }
+
+    public static function reset() {
+        self::$current = null;
+        self::$identifierQuotationMarks = null;
+        self::$factory = null;
+        self::$stack = array();
+        self::$pool = array();
     }
 
     protected static function getFactory() {
@@ -104,13 +113,5 @@ class DbConnection {
             default:
                 return array('"', '"');
         }
-    }
-
-    public static function reset() {
-        self::$current = null;
-        self::$identifierQuotationMarks = null;
-        self::$factory = null;
-        self::$stack = array();
-        self::$pool = array();
     }
 }
