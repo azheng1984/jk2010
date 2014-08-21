@@ -37,7 +37,7 @@ class DbConnection {
         } else {
             if ($isReusable) {
                 if (isset(self::$pool[$name]) && $pdo !== self::$pool[$name]) {
-                    throw new Exception('confilict');
+                    throw new Exception('conflict');
                 }
                 self::$pool[$name] = $pdo;
             }
