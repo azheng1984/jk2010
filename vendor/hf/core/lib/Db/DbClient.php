@@ -16,8 +16,7 @@ class DbClient {
 
     public static function getColumnById($table, $id, $selector) {
         $sql = 'SELECT ' . $selector . ' FROM '
-            . self::quoteIdentifier($table)
-            . ' WHERE id = ?';
+            . self::quoteIdentifier($table) . ' WHERE id = ?';
         return static::getColumn($sql, $id);
     }
 
@@ -32,8 +31,7 @@ class DbClient {
 
     public static function getRowById($table, $id, $selector = '*') {
         $sql = 'SELECT ' . $selector . ' FROM '
-            . self::quoteIdentifier($table)
-            . ' WHERE id = ?';
+            . self::quoteIdentifier($table) . ' WHERE id = ?';
         return static::getRow($sql, $id);
     }
 
@@ -183,8 +181,7 @@ class DbClient {
 
     private static function queryByColumns($table, $columns, $selector) {
         list($where, $params) = self::buildWhereByColumns($columns);
-        $sql = 'SELECT ' . $selector . ' FROM '
-            . self::quoteIdentifier($table);
+        $sql = 'SELECT ' . $selector . ' FROM ' . self::quoteIdentifier($table);
         if ($where !== null) {
             $sql .= ' WHERE ' . $where;
         }
