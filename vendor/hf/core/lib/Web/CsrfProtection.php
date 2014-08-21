@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
+use Exception;
 use Hyperframework\Config;
 
 class CsrfProtection {
@@ -14,7 +15,8 @@ class CsrfProtection {
             return;
         }
         if (static::isValid() === false) {
-            throw new \Exception;
+            //reset token
+            throw new Exception;
         }
     }
 

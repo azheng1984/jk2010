@@ -63,9 +63,6 @@ class DbClient {
     }
 
     public static function prepare($sql, $driverOptions = array()) {
-       // $driverOptions = array(
-       //     PDO::ATTR_EMULATE_PREPARES => $isEmulated,
-       // );
         //todo log sql
         return static::getConnection()->prepare($sql, $driverOptions);
     }
@@ -81,9 +78,13 @@ class DbClient {
         foreach (array_keys($row) as $key) {
             $keys[] = self::quoteIdentifier($key);
         }
+        $columnCount = count($row);
+        if ($columnCount === 0) {
+            throw new Exception;
+        }
+        $placeHolders = str_repeat('?, ', $columnCount - 1) . '?';
         $sql = 'INSERT INTO ' . self::quoteIdentifier($table)
-            . '(' . implode($keys, ', ') . ') VALUES('
-            . static::getParamPlaceholders(count($row)) . ')';
+            . '(' . implode($keys, ', ') . ') VALUES(' . $placeholders . ')';
         static::send($sql, array_values($row));
     }
 
@@ -194,7 +195,6 @@ class DbClient {
     private static function buildWhereByColumns($columns) {
         $params = array();
         $where = null;
-        $connection = static::getConnection();
         foreach ($columns as $key => $value) {
             $params[] = $value; 
             if ($where !== null) {
@@ -206,15 +206,5 @@ class DbClient {
             throw new \Exception;
         }
         return array($where, $params);
-    }
-
-    private static function getParamPlaceholders($count) {
-        if ($count > 1) {
-            return str_repeat('?, ', $count - 1) . '?';
-        }
-        if ($count === 1) {
-            return '?';
-        }
-        throw new Exception;
     }
 }

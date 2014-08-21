@@ -15,12 +15,7 @@ class CssCompressor {
         fclose($p[1]);
         $err = stream_get_contents($p[2]);
         fclose($p[2]);
-        echo $err;
-        //var_dump(proc_close($rc));
+        proc_close($rc);
         return $result;
-
-        $content = str_replace('"', '\\"', $content);
-        return exec('echo "' . $content . '" | cleancss');
-        //默认使用 nodejs => clean-css
     }
 }
