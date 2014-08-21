@@ -9,8 +9,8 @@ class DbConnection {
     private static $current;
     private static $identifierQuotationMarks;
     private static $factory;
-    private static $pool = array();
     private static $stack = array();
+    private static $pool = array();
 
     public static function connect($name = 'default', $options = null) {
         $pdo = null;
@@ -109,8 +109,8 @@ class DbConnection {
     public static function reset() {
         self::$current = null;
         self::$identifierQuotationMarks = null;
+        self::$factory = null;
         self::$stack = array();
         self::$pool = array();
-        self::$factory = null;
     }
 }
