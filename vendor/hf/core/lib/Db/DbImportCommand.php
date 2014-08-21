@@ -10,7 +10,7 @@ class DbImportCommand {
         if ($count === 0) {
             return;
         }
-        $columnNames = null; ;
+        $columnNames = null;
         if ($options['column_names']) {
             $columnNames = $options['column_names'];
         } else {
@@ -34,7 +34,7 @@ class DbImportCommand {
         }
         $prefix = 'INSERT INTO ' . DbClient::quoteIdentifier($table)
             . '(' . implode($columnNames, ', ') . ') VALUES';
-        $placeHolders = '(' . str_repeat('?, ', count($columnNames) - 1) . '?)';
+        $placeHolders = '(' . str_repeat('?, ', $columnCount - 1) . '?)';
         $statement = null;
         $index = 0;
         while ($index < $count) {

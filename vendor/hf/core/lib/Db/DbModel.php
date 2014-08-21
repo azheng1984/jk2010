@@ -11,7 +11,7 @@ class DbModel {
     }
 
     public static function save(&$row) {
-        return DbSaveCommand::save(static::getTableName(), $row);
+        return DbClient::save(static::getTableName(), $row);
     }
 
     public static function deleteById($id) {
