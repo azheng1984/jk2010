@@ -17,9 +17,9 @@ class DebugPage {
         echo '<h2>';
         if ($isError) {
             if ($exception->getCode() === 0) {
-                echo ErrorCodeHelper::toString($exception->getSeverity()) . ': ';
+                echo '[', ErrorCodeHelper::toString($exception->getSeverity()), '] ';
             } else {
-                echo 'Fatal Error: ';
+                echo '[Fatal Error] ';
             }
         } else {
             echo get_class($exception);

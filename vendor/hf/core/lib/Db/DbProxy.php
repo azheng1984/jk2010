@@ -6,17 +6,14 @@ use PDO;
 class DbProxy extends PDO {
     private $connectionName;
     private $filters = array();
-    private $count = 0;
+    private $index = 0;
 
     public function setConnectionName($name) {
         $this->connectionName = $name;
     }
 
-    public function addFilter($filter) {
-        self::$filters[] = $filter;
-    }
-
     public function prepare($sql, $driverOptions = array()) {
+        $index = ++self::$index;
         foreach ($filters as $filter) {
             $sql = $filter->filterSql($sql);
         }
@@ -30,12 +27,12 @@ class DbProxy extends PDO {
     }
 
     public function exec($sql) {
-        ++$this->count;
-        foreach ($this->preprocessers as $callback) {
-            $sql = $callback($sql);
+        $index = ++self::$index;
+        foreach (self::$sqlFilters as $callback) {
+            $sql = $callback($this, $sql);
         }
         foreach ($preExecuteEventHandlers as $callback) {
-            $callback($this->count);
+            $callback($count);
         }
         $result = parent::exec($sql);
         foreach ($postExecuteEventHandlers as $callback) {
@@ -44,13 +41,13 @@ class DbProxy extends PDO {
         return $result;
     }
 
-    public function addSqlPreprocessor($callback) {
+    public static function addPrepareSqlEventHandler($callback) {
     }
 
-    public function addPreExecuteEventHandler($callback) {
+    public static function addPreExecuteEventHandler($callback) {
     }
 
-    public function addPostExecuteEventHandler($callback) {
+    public static function addPostExecuteEventHandler($callback) {
     }
 
     public function query($sql) {

@@ -65,9 +65,9 @@ class DbConnection {
         self::$stack = array();
     }
 
-    public static function getCurrent() {
-        if (self::$current === null) {
-            self::connect();
+    public static function getCurrent($default = 'default') {
+        if (self::$current === null && $default !== null) {
+            self::connect($default);
         }
         return self::$current;
     }

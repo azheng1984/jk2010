@@ -147,10 +147,6 @@ class DbClient {
         return static::update($table, $row, 'id = ?', $id);
     }
 
-    protected static function getConnection() {
-        return DbConnection::getCurrent();
-    }
-
     public static function prepare($sql, $driverOptions = array()) {
         return static::getConnection()->prepare($sql, $driverOptions);
     }
@@ -170,6 +166,10 @@ class DbClient {
             return $statement;
         }
         return $statement->rowCount();
+    }
+
+    protected static function getConnection() {
+        return DbConnection::getCurrent();
     }
 
     public static function quoteIdentifier($identifier) {
