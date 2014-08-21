@@ -107,7 +107,7 @@ class FormHelper {
             ) {
                 echo $data[$attrs['name']];
             } else {
-                echo htmlspecialchars($data[$attrs['name']]);
+                echo self::encodeHtmlSpecialChars($data[$attrs['name']]);
             }
         } elseif (isset($attrs[':content'])) {
             echo $attrs[':content'];
@@ -140,8 +140,9 @@ class FormHelper {
                 $this->renderError($name);
             } 
         } elseif (isset($this->errors[$name])) {
-            echo '<span class="error">',
-                htmlspecialchars($this->errors['name']), '</span>';
+            echo '<span class="error">', self::encodeHtmlSpecialChars(
+                $this->errors['name']
+            ), '</span>';
         }
     }
 
@@ -190,7 +191,7 @@ class FormHelper {
                 ) {
                     $attrs['value'] = $data[$attrs['name']];
                 } else {
-                    $attrs['value'] = htmlspecialchars(
+                    $attrs['value'] = self::encodeHtmlSpecialChars(
                         $this->data[$attrs['name']]
                     );
                 }
@@ -209,6 +210,10 @@ class FormHelper {
             $this->renderAttrs($attrs);
         }
         echo '/>';
+    }
+
+    protected function encodeHtmlSpecialChars($content) {
+        return htmlspecialchars($content, ENT_QUOTES | ENT_DISALLOWED)
     }
 
     private function getFullFieldAttrs($attrs) {
