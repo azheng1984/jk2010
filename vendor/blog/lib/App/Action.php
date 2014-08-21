@@ -8,7 +8,6 @@ use Hyperframework\Db\DbImportCommand;
 
 class Action {
     public function before() {
-       asdfsfsaf();
        CsrfProtection::run();
       // $v = array();
       // for ($i = 15000; $i < 16500; ++$i) {
@@ -17,7 +16,7 @@ class Action {
       // DbImportCommand::run('Article', $v);
       //  $record = array('id' => 4, 'name' => 'save!!');
       //  DbClient::save('Article', $record);
-      print_r(DbClient::getColumnByColumns('Article', array('id' => '16499'), 'name'));
+      print_r(DbClient::getColumnByColumns('Article', array('id' => '4'), 'name'));
     }
 
     public function after($ctx) {

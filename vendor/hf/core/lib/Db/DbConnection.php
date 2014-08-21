@@ -3,6 +3,7 @@ namespace Hyperframework\Db;
 
 use PDO;
 use Exception;
+use Hyperframework\Config;
 
 class DbConnection {
     private static $current;
@@ -18,7 +19,7 @@ class DbConnection {
         }
         $isReusable = $name !== null;
         if (isset($options['is_reusable'])) {
-            $if ($options['is_reusable'] === true && $name === null) {
+            if ($options['is_reusable'] === true && $name === null) {
                 throw new Exception;
             }
             $isReusable = $options['is_reusable'];
