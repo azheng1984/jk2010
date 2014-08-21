@@ -120,7 +120,9 @@ class DbClient {
         }
         $id = $row['id'];
         unset($row['id']);
-        return static::update($table, $row, 'id = ?', $id);
+        $result = static::update($table, $row, 'id = ?', $id);
+        $row['id'] = $id;
+        return $result;
     }
 
     public static function execute($sql/*, $mixed, ...*/) {
