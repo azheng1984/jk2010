@@ -46,28 +46,6 @@ class DbClient {
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function getLastInsertId() {
-        return static::getConnection()->lastInsertId();
-    }
-
-    public static function beginTransaction() {
-        return static::getConnection()->beginTransaction();
-    }
-
-    public static function commit() {
-        return static::getConnection()->commit();
-    }
-
-    public static function rollback() {
-        return static::getConnection()->rollBack();
-    }
-
-    public static function execute($sql/*, $mixed, ...*/) {
-        $params = func_get_args();
-        $sql = array_shift($params);
-        return static::sendSql($sql, $params);
-    }
-
     public static function insert($table, $row) {
         $keys = array();
         foreach (array_keys($row) as $key) {
@@ -147,6 +125,32 @@ class DbClient {
         return static::update($table, $row, 'id = ?', $id);
     }
 
+    public static function execute($sql/*, $mixed, ...*/) {
+        $params = func_get_args();
+        $sql = array_shift($params);
+        return static::sendSql($sql, $params);
+    }
+ 
+    public static function getLastInsertId() {
+        return static::getConnection()->lastInsertId();
+    }
+
+    public static function beginTransaction() {
+        return static::getConnection()->beginTransaction();
+    }
+
+    public static function commit() {
+        return static::getConnection()->commit();
+    }
+
+    public static function rollback() {
+        return static::getConnection()->rollBack();
+    }
+
+    public static function quoteIdentifier($identifier) {
+        return static::getConnection()->quoteIdentifier($identifier);
+    }
+
     public static function prepare($sql, $driverOptions = array()) {
         return static::getConnection()->prepare($sql, $driverOptions);
     }
@@ -170,10 +174,6 @@ class DbClient {
 
     protected static function getConnection() {
         return DbContext::getConnection();
-    }
-
-    public static function quoteIdentifier($identifier) {
-        return static::getConnection()->quoteIdentifier($identifier);
     }
 
     private static function query($params) {
