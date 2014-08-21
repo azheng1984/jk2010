@@ -96,8 +96,7 @@ class DbClient {
             $where = ' WHERE ' . $where;
             $params = array_slice(func_get_args(), 2);
         }
-        $sql = 'DELETE FROM ' . self::quoteIdentifier($table)
-            . $where;
+        $sql = 'DELETE FROM ' . self::quoteIdentifier($table) . $where;
         return static::sendSql($sql, $params);
     }
 
