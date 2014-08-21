@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Db;
 
-class DbProxyStatement {
+class DbStatement {
     private $statement;
     private $sql;
     private $connectionName;

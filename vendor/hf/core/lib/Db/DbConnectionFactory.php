@@ -14,11 +14,11 @@ class DbConnectionFactory {
             $username = isset($config['username']) ? $config['username'] : null;
             $password = isset($config['password']) ? $config['password'] : null;
             $options = isset($config['options']) ? $config['options'] : null;
-            $pdo = new DbProxy(
+            $connection = new DbConnection(
                 $config['dsn'], $username, $password, $options
             );
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            return $pdo;
+            $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $connection;
         }
         throw new Exception;
     }

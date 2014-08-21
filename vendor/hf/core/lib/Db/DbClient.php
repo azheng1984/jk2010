@@ -169,11 +169,11 @@ class DbClient {
     }
 
     protected static function getConnection() {
-        return DbConnection::getCurrent();
+        return DbContext::getConnection();
     }
 
     public static function quoteIdentifier($identifier) {
-        return DbConnection::quoteIdentifier($identifier);
+        return static::getConnection()->quoteIdentifier($identifier);
     }
 
     private static function query($params) {

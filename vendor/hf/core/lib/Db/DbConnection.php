@@ -2,110 +2,84 @@
 namespace Hyperframework\Db;
 
 use PDO;
-use Exception;
-use Hyperframework\Config;
 
-class DbConnection {
-    private static $current;
-    private static $identifierQuotationMarks;
-    private static $factory;
-    private static $stack = array();
-    private static $pool = array();
+class DbConnection extends PDO {
+    private $name;
+    private $identifierQuotationMarks;
+    private $filters = array();
+    private static $index = 0;
 
-    public static function connect($name = 'default', $options = null) {
-        $pdo = null;
-        if (isset($options['pdo'])) {
-            $pdo = $options['pdo'];
-        }
-        $isReusable = $name !== null;
-        if (isset($options['is_reusable'])) {
-            if ($options['is_reusable'] === true && $name === null) {
-                throw new Exception;
-            }
-            $isReusable = $options['is_reusable'];
-        }
-        if ($pdo === null) {
-            if ($name === null) {
-                throw new Exception;
-            }
-            if ($isReusable === false || isset(self::$pool[$name]) === false) {
-                $pdo = self::getFactory()->build($name);
-                if ($isReusable) {
-                    self::$pool[$name] = $pdo;
-                }
-            }
-        } else {
-            if ($isReusable) {
-                if (isset(self::$pool[$name]) && $pdo !== self::$pool[$name]) {
-                    throw new Exception('conflict');
-                }
-                self::$pool[$name] = $pdo;
-            }
-        }
-        if (self::$current !== null) {
-            self::$identifierQuotationMarks = null;
-            self::$stack[] = self::$current;
-        }
-        self::$current = $pdo;
-        return $pdo;
+    public function setConnectionName($name) {
+        $this->connectionName = $name;
     }
 
-    public static function close() {
-        self::$identifierQuotationMarks = null;
-        if (count(self::$stack) > 0) {
-            self::$current = array_pop(self::$stack);
-            return;
+    public function getConnectionName() {
+        return $this->connectionName;
+    }
+
+    public function prepare($sql, $driverOptions = array()) {
+       // $index = ++self::$index;
+       // foreach ($filters as $filter) {
+       //     $sql = $filter->filterSql($sql);
+       // }
+        $statement = parent::prepare($sql, $driverOptions);
+        return $statement;
+       // foreach ($filters as $filter) {
+       //     $filter->afterPrepare();
+       // }
+       // return new DbProxyStatement(
+       //     $statement, $this, $sql, $this->connectionName
+       // );
+    }
+
+    public function exec($sql) {
+       // $index = ++self::$index;
+       // foreach (self::$sqlFilters as $callback) {
+       //     $sql = $callback($this, $sql);
+       // }
+       // foreach ($preExecuteEventHandlers as $callback) {
+       //     $callback($count);
+       // }
+       // foreach ($postExecuteEventHandlers as $callback) {
+       //     $callback($this->count);
+       // }
+
+        $result = parent::exec($sql);
+        return $result;
+    }
+
+    public static function addPrepareSqlEventHandler(
+        $callback, $connectionName = null
+    ) {
+    }
+
+    public static function addPreExecuteEventHandler($callback) {
+    }
+
+    public static function addPostExecuteEventHandler($callback) {
+    }
+
+    public function query($sql) {
+        foreach ($preExecuteEventHandlers as $callback) {
+            $callback();
         }
-        self::$current = null;
-    }
-
-    public static function closeAll() {
-        self::$identifierQuotationMarks = null;
-        self::$current = null;
-        self::$stack = array();
-    }
-
-    public static function getCurrent($default = 'default') {
-        if (self::$current === null && $default !== null) {
-            self::connect($default);
+        return parent::query($sql);
+        foreach ($postExecuteEventHandlers as $callback) {
+            $callback();
         }
-        return self::$current;
     }
 
-    public static function quoteIdentifier($identifier) {
-        if (self::$identifierQuotationMarks === null) {
-            self::$identifierQuotationMarks =
-                static::getIdentifierQuotationMarks();
+    public function quoteIdentifier($identifier) {
+        if ($this->identifierQuotationMarks === null) {
+            $this->identifierQuotationMarks =
+                $this->getIdentifierQuotationMarks();
         }
-        return self::$identifierQuotationMarks[0] . $identifier
-            . self::$identifierQuotationMarks[1];
+        return $this->identifierQuotationMarks[0] . $identifier
+            . $this->identifierQuotationMarks[1];
     }
 
-    public static function reset() {
-        self::$current = null;
-        self::$identifierQuotationMarks = null;
-        self::$factory = null;
-        self::$stack = array();
-        self::$pool = array();
-    }
-
-    protected static function getFactory() {
-        if (self::$factory === null) {
-            $class = Config::get('hyperframework.db.connection.factory');
-            if ($class !== null) {
-                self::$factory = new $class;
-            } else {
-                self::$factory = new DbConnectionFactory;
-            }
-        }
-        return self::$factory;
-    }
-
-    protected static function getIdentifierQuotationMarks() {
-        if (self::$current === null) {
-            static::connect();
-        }
-        switch (self::$current->getAttribute(PDO::ATTR_DRIVER_NAME)) {
+    protected function getIdentifierQuotationMarks() {
+        switch ($this->getAttribute(PDO::ATTR_DRIVER_NAME)) {
             case 'mysql':
                 return array('`', '`');
             case 'sqlsrv':
