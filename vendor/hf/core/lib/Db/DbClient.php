@@ -55,7 +55,7 @@ class DbClient {
         }
         $placeHolders = str_repeat('?, ', $columnCount - 1) . '?';
         $sql = 'INSERT INTO ' . self::quoteIdentifier($table)
-            . '(' . implode($keys, ', ') . ') VALUES(' . $placeholders . ')';
+            . '(' . implode($keys, ', ') . ') VALUES(' . $placeHolders . ')';
         return static::sendSql($sql, array_values($row));
     }
 
