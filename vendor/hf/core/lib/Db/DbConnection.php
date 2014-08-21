@@ -10,21 +10,27 @@ class DbConnection {
     private static $identifierQuotationMarks;
     private static $factory;
 
-    public static function connect(
-        $name = null, $pdo = null, $isReusable = true
-    ) {
+    public static function connect($name = null, $options = null) {
         if (self::$current !== null) {
             self::$stack[] = self::$current;
             self::$identifierQuotationMarks = null;
         }
-        if ($pdo !== null) {
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);//emulate by default, configurable
+        $pdo = null;
+        if (isset($options['pdo'])) {
+            $pdo = $options['pdo'];
+        }
+        $isReusable = false;
+        if (isset($options['is_reusable'])) {
+            $isReusable = $options['is_reusable'];
         }
         if ($pdo === null) {
-            $pdo = self::create($name, $isReusable);
+            $pdo = static::create($name, $isReusable);
+        } else {
+            if ($isReusable) {
+            }
         }
         self::$current = $pdo;
+        return $pdo;
     }
 
     public static function close() {

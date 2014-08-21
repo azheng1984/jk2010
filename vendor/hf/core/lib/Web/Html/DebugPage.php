@@ -59,15 +59,19 @@ class DebugPage {
                 echo $header . '<br>';
             }
         }
+        echo '<h2>stack trace</h2>';
         if ($isError === false || $exception->getCode() === 0) {
-            echo '<h2>stack trace</h2>';
             echo implode('<br>', explode("\n", $exception->getTraceAsString()));
+        } else {
+            echo '<span style="color:#999;background-color:#eee">UNAVAILABLE</span>';
         }
         echo '<h2>output</h2>';
         if (strlen($outputBuffer) > 1) {
-            echo htmlspecialchars($outputBuffer);
+            //var_dump(mb_detect_encoding($outputBuffer));
+            echo htmlspecialchars($outputBuffer, ENT_QUOTES | ENT_SUBSTITUTE);
         } else {
             echo '<span style="color:#999;background-color:#eee">EMPTY</span>';
         }
+        echo '<hr /> Powered by Hyperframework';
     }
 }
