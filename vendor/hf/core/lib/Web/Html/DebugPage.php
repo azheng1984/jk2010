@@ -48,9 +48,16 @@ class DebugPage {
         unset($lines[$index]);
         unset($lines[$index + 1]);
         echo implode("<br />", $lines);
-        echo '<h2>headers</h2>';
+        echo '<h2>stack trace</h2>';
+        if ($isError === false || $exception->getCode() === 0) {
+            echo implode('<br>', explode("\n", $exception->getTraceAsString()));
+        } else {
+            echo '<span style="color:#999;background-color:#eee">UNAVAILABLE</span>';
+        }
+        echo '<h2>output</h2>';
+        echo '<h3>headers</h3>';
         if ($isHeadersSent) {
-            echo '<h3>Already Sent</h3>';
+            echo '<h4>Already Sent</h4>';
         }
         if (count($headers) === 0) {
             echo '<span style="color:#999;background-color:#eee">EMPTY</span>';
@@ -59,13 +66,7 @@ class DebugPage {
                 echo $header . '<br>';
             }
         }
-        echo '<h2>stack trace</h2>';
-        if ($isError === false || $exception->getCode() === 0) {
-            echo implode('<br>', explode("\n", $exception->getTraceAsString()));
-        } else {
-            echo '<span style="color:#999;background-color:#eee">UNAVAILABLE</span>';
-        }
-        echo '<h2>output</h2>';
+        echo '<h3>body</h3>';
         if (strlen($outputBuffer) > 1) {
             //var_dump(mb_detect_encoding($outputBuffer));
             echo htmlspecialchars($outputBuffer, ENT_QUOTES | ENT_SUBSTITUTE);
