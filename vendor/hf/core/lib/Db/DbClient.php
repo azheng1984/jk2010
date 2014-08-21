@@ -92,7 +92,6 @@ class DbClient {
             );
         }
         $tmp = null;
-        $connetction = static::getConnection();
         foreach (array_keys($columns) as $key) {
             $tmp .= self::quoteIdentifier($key) . ' = ?';
         }
@@ -153,12 +152,10 @@ class DbClient {
     }
 
     public static function prepare($sql, $driverOptions = array()) {
-        //todo log sql
         return static::getConnection()->prepare($sql, $driverOptions);
     }
 
     protected static function sendSql($sql, $params, $isQuery = false) {
-        //todo log sql
         $connection = static::getConnection();
         if ($params === null || count($params) === 0) {
             return $isQuery ?
