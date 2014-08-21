@@ -6,10 +6,14 @@ use PDO;
 class DbProxy extends PDO {
     private $connectionName;
     private $filters = array();
-    private $index = 0;
+    private static $index = 0;
 
     public function setConnectionName($name) {
         $this->connectionName = $name;
+    }
+
+    public function getConnectionName() {
+        return $this->connectionName;
     }
 
     public function prepare($sql, $driverOptions = array()) {
@@ -41,7 +45,9 @@ class DbProxy extends PDO {
         return $result;
     }
 
-    public static function addPrepareSqlEventHandler($callback) {
+    public static function addPrepareSqlEventHandler(
+        $callback, $connectionName = null
+    ) {
     }
 
     public static function addPreExecuteEventHandler($callback) {
