@@ -8,13 +8,7 @@ use Hyperframework\Db\DbImportCommand;
 
 class Action {
     public function before() {
-        ob_start('ob_gzhandler');
-        //afasdfdaf();
-        //header('content-type:text/html;charset=gbk');
-        echo iconv('utf-8', 'gb2312', '都市的柏油路太硬　xxxxxxxxx<>""xxxxxxxxxxxxxx');
-        //echo ;
-        ob_end_flush();
-        echo asdfsfsaf;
+       asdfsfsaf();
        CsrfProtection::run();
       // $v = array();
       // for ($i = 15000; $i < 16500; ++$i) {
