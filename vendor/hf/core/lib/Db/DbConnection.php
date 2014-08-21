@@ -2,38 +2,55 @@
 namespace Hyperframework\Db;
 
 use PDO;
+use Exception;
 
 class DbConnection {
-    private static $current = null;
-    private static $pool = array();
-    private static $stack = array();
+    private static $current;
     private static $identifierQuotationMarks;
     private static $factory;
+    private static $pool = array();
+    private static $stack = array();
 
-    public static function connect($name = null, $options = null) {
-        if (self::$current !== null) {
-            self::$stack[] = self::$current;
-            self::$identifierQuotationMarks = null;
-        }
+    public static function connect($name = 'default', $options = null) {
         $pdo = null;
         if (isset($options['pdo'])) {
             $pdo = $options['pdo'];
         }
-        $isReusable = false;
+        $isReusable = $name !== null;
         if (isset($options['is_reusable'])) {
+            $if ($options['is_reusable'] === true && $name === null) {
+                throw new Exception;
+            }
             $isReusable = $options['is_reusable'];
         }
         if ($pdo === null) {
-            $pdo = static::create($name, $isReusable);
+            if ($name === null) {
+                throw new Exception;
+            }
+            if ($isReusable === false || isset(self::$pool[$name]) === false) {
+                $pdo = self::getFactory()->build($name);
+                if ($isReusable) {
+                    self::$pool[$name] = $pdo;
+                }
+            }
         } else {
             if ($isReusable) {
+                if (isset(self::$pool[$name]) && $pdo !== self::$pool[$name]) {
+                    throw new Exception('confilict');
+                }
+                self::$pool[$name] = $pdo;
             }
+        }
+        if (self::$current !== null) {
+            self::$identifierQuotationMarks = null;
+            self::$stack[] = self::$current;
         }
         self::$current = $pdo;
         return $pdo;
     }
 
     public static function close() {
+        self::$identifierQuotationMarks = null;
         if (count(self::$stack) > 0) {
             self::$current = array_pop(self::$stack);
             return;
@@ -62,6 +79,18 @@ class DbConnection {
             . self::$identifierQuotationMarks[1];
     }
 
+    protected static function getFactory() {
+        if (self::$factory === null) {
+            $class = Config::get('hyperframework.db.connection.factory');
+            if ($class !== null) {
+                self::$factory = new $class;
+            } else {
+                self::$factory = new DbConnectionFactory;
+            }
+        }
+        return self::$factory;
+    }
+
     protected static function getIdentifierQuotationMarks() {
         if (self::$current === null) {
             static::connect();
@@ -82,24 +111,5 @@ class DbConnection {
         self::$stack = array();
         self::$pool = array();
         self::$factory = null;
-    }
-
-    private static function create($name, $isReusable) {
-        if ($isReusable && isset(self::$pool[$name])) {
-            return self::$pool[$name];
-        }
-        $pdo = self::getFactory()->get($name);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        if ($isReusable) {
-            self::$pool[$name] = $pdo;
-        }
-        return $pdo;
-    }
-
-    private static function getFactory() {
-        if (self::$factory === null) {
-            self::$factory = new DbConnectionFactory;
-        }
-        return self::$factory;
     }
 }
