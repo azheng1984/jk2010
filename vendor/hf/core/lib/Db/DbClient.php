@@ -62,15 +62,10 @@ class DbClient {
         return static::getConnection()->rollBack();
     }
 
-    public static function prepare($sql, $driverOptions = array()) {
-        //todo log sql
-        return static::getConnection()->prepare($sql, $driverOptions);
-    }
-
     public static function execute($sql/*, $mixed, ...*/) {
         $params = func_get_args();
         $sql = array_shift($params);
-        static::send($sql, $params);
+        return static::sendSql($sql, $params);
     }
 
     public static function insert($table, $row) {
@@ -85,7 +80,7 @@ class DbClient {
         $placeHolders = str_repeat('?, ', $columnCount - 1) . '?';
         $sql = 'INSERT INTO ' . self::quoteIdentifier($table)
             . '(' . implode($keys, ', ') . ') VALUES(' . $placeholders . ')';
-        static::send($sql, array_values($row));
+        return static::sendSql($sql, array_values($row));
     }
 
     public static function update($table, $columns, $where/*, $mixed, ...*/) {
@@ -103,21 +98,21 @@ class DbClient {
         }
         $sql = 'UPDATE ' . self::quoteIdentifier($table)
             . ' SET ' . $tmp . $where;
-        static::send($sql, $params);
+        return static::sendSql($sql, $params);
     }
 
     public static function updateByColumns(
         $table, $replacementColumns, $filterColumns
     ) {
         list($where, $params) = self::buildWhereByColumns($filterColumns);
-        call_user_func_array(
+        return call_user_func_array(
             'static::update',
             array_merge(array($table, $replacementColumns, $where), $params)
         );
     }
 
     public static function updateById($table, $columns, $id) {
-        static::update($table, $columns, 'id = ?', $id);
+        return static::update($table, $columns, 'id = ?', $id);
     }
 
     public static function delete($table, $where/*, $mixed, ...*/) {
@@ -128,19 +123,19 @@ class DbClient {
         }
         $sql = 'DELETE FROM ' . self::quoteIdentifier($table)
             . $where;
-        static::send($sql, $params);
+        return static::sendSql($sql, $params);
     }
 
     public static function deleteByColumns($table, $columns) {
         list($where, $params) = self::buildWhereByColumns($columns);
-        static::send(
+        return static::sendSql(
             'DELETE FROM ' . self::quoteIdentifier($table)
                 . ' WHERE ' . $where, $params
         );
     }
 
     public static function deleteById($table, $id) {
-        static::delete($table, 'id = ?', $id);
+        return static::delete($table, 'id = ?', $id);
     }
 
     public static function save($table, &$row) {
@@ -150,14 +145,19 @@ class DbClient {
         }
         $id = $row['id'];
         unset($row['id']);
-        static::update($table, $row, 'id = ?', $id);
+        return static::update($table, $row, 'id = ?', $id);
     }
 
     protected static function getConnection() {
         return DbConnection::getCurrent();
     }
 
-    protected static function send($sql, $params, $isQuery = false) {
+    public static function prepare($sql, $driverOptions = array()) {
+        //todo log sql
+        return static::getConnection()->prepare($sql, $driverOptions);
+    }
+
+    protected static function sendSql($sql, $params, $isQuery = false) {
         //todo log sql
         $connection = static::getConnection();
         if ($params === null || count($params) === 0) {
@@ -169,7 +169,10 @@ class DbClient {
         }
         $statement = $connection->prepare($sql);
         $statement->execute($params);
-        return $statement;
+        if ($isQuery) {
+            return $statement;
+        }
+        return $statement->rowCount();
     }
 
     public static function quoteIdentifier($identifier) {
@@ -178,7 +181,7 @@ class DbClient {
 
     private static function query($params) {
         $sql = array_shift($params);
-        return static::send($sql, $params, true);
+        return static::sendSql($sql, $params, true);
     }
 
     private static function queryByColumns($table, $columns, $selector) {

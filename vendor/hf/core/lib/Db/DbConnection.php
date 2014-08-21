@@ -61,8 +61,8 @@ class DbConnection {
 
     public static function closeAll() {
         self::$identifierQuotationMarks = null;
-        self::$stack = array();
         self::$current = null;
+        self::$stack = array();
     }
 
     public static function getCurrent() {
