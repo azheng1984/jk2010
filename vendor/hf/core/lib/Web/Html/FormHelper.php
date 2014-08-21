@@ -52,7 +52,7 @@ class FormHelper {
             && $attrs['method'] === 'POST'
             && CsrfProtection::isEnabled()
         ) {
-            $this->renderCsrfProtection();
+            $this->renderCsrfProtectionField();
         }
     }
 
@@ -130,7 +130,6 @@ class FormHelper {
         echo '</select>';
     }
 
-
     public function renderError($name = null) {
         if ($name === null) {
             if ($this->errors === null) {
@@ -144,6 +143,46 @@ class FormHelper {
                 $this->errors['name']
             ), '</span>';
         }
+    }
+
+    public function renderCsrfProtectionField() {
+        echo '<input type="hidden" name="',
+            CsrfProtection::getTokenName(),
+            '" value="', CsrfProtection::getToken(), '"/>';
+    }
+
+    private function encodeHtmlSpecialChars($content) {
+        return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE);
+    }
+
+    private function renderInput($type, $attrs, $bindingAttr = 'value') {
+        $attrs = self::getFullFieldAttrs($attrs);
+        if ($bindingAttr === 'value' && isset($attrs['name'])) {
+            if (isset($this->data[$attrs['name']])) {
+                if (isset($attrs[':encode_html_special_chars'])
+                    && $attrs[':encode_html_special_chars'] === false
+                ) {
+                    $attrs['value'] = $data[$attrs['name']];
+                } else {
+                    $attrs['value'] = self::encodeHtmlSpecialChars(
+                        $this->data[$attrs['name']]
+                    );
+                }
+            }
+        }
+        if ($bindingAttr === 'checked' && isset($attrs['name'])) {
+            if (isset($this->data[$attrs['name']])
+                && isset($attrs['value'])
+                && $attrs['value'] === $this->data[$attrs['name']]
+            ) {
+                $attrs['checked'] = 'checked';
+            }
+        }
+        echo '<input type="', $type, '"';
+        if ($attrs !== null) {
+            $this->renderAttrs($attrs);
+        }
+        echo '/>';
     }
 
     private function renderOptions(
@@ -174,46 +213,6 @@ class FormHelper {
              }
              echo '>', $option[':content'], '</option>';
          }
-    }
-
-    protected function renderCsrfProtection() {
-        echo '<input type="hidden" name="',
-            CsrfProtection::getTokenName(),
-            '" value="', CsrfProtection::getToken(), '"/>';
-    }
-
-    protected function renderInput($type, $attrs, $bindingAttr = 'value') {
-        $attrs = self::getFullFieldAttrs($attrs);
-        if ($bindingAttr === 'value' && isset($attrs['name'])) {
-            if (isset($this->data[$attrs['name']])) {
-                if (isset($attrs[':encode_html_special_chars'])
-                    && $attrs[':encode_html_special_chars'] === false
-                ) {
-                    $attrs['value'] = $data[$attrs['name']];
-                } else {
-                    $attrs['value'] = self::encodeHtmlSpecialChars(
-                        $this->data[$attrs['name']]
-                    );
-                }
-            }
-        }
-        if ($bindingAttr === 'checked' && isset($attrs['name'])) {
-            if (isset($this->data[$attrs['name']])
-                && isset($attrs['value'])
-                && $attrs['value'] === $this->data[$attrs['name']]
-            ) {
-                $attrs['checked'] = 'checked';
-            }
-        }
-        echo '<input type="', $type, '"';
-        if ($attrs !== null) {
-            $this->renderAttrs($attrs);
-        }
-        echo '/>';
-    }
-
-    protected function encodeHtmlSpecialChars($content) {
-        return htmlspecialchars($content, ENT_QUOTES | ENT_DISALLOWED)
     }
 
     private function getFullFieldAttrs($attrs) {
