@@ -9,12 +9,12 @@ class DbConnection extends PDO {
     private $filters = array();
     private static $index = 0;
 
-    public function setConnectionName($name) {
-        $this->connectionName = $name;
+    public function setName($name) {
+        $this->name = $name;
     }
 
-    public function getConnectionName() {
-        return $this->connectionName;
+    public function getName() {
+        return $this->name;
     }
 
     public function prepare($sql, $driverOptions = array()) {
@@ -27,7 +27,7 @@ class DbConnection extends PDO {
        // foreach ($filters as $filter) {
        //     $filter->afterPrepare();
        // }
-       // return new DbProxyStatement(
+       // return new DbStatementProxy(
        //     $statement, $this, $sql, $this->connectionName
        // );
     }

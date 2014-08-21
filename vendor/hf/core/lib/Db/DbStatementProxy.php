@@ -1,15 +1,15 @@
 <?php
 namespace Hyperframework\Db;
 
-class DbStatement {
+class DbStatementProxy {
     private $statement;
     private $sql;
-    private $connectionName;
+    private $connection;
 
-    public function __construct($statement, $sql, $connectionName) {
+    public function __construct($statement, $connection, $sql) {
         $this->statement = $statement;
+        $this->connection = $connection;
         $this->sql = $sql;
-        $this->connectionName = $connectionName;
     }
 
     public function execute($params = null) {

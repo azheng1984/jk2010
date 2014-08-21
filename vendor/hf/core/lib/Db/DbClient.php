@@ -116,6 +116,7 @@ class DbClient {
         if (isset($row['id'])) {
             static::insert($table, $row);
             $row['id'] = static::getLastInsertId();
+            return 1;
         }
         $id = $row['id'];
         unset($row['id']);
