@@ -28,7 +28,8 @@ class DbContext {
                 throw new Exception;
             }
             if ($isReusable === false || isset(self::$pool[$name]) === false) {
-                $connection = self::getFactory()->build($name);
+                $factory = self::getFactory();
+                $connection = $factory::build($name);
                 if ($isReusable) {
                     self::$pool[$name] = $connection;
                 }
@@ -79,11 +80,11 @@ class DbContext {
 
     protected static function getFactory() {
         if (self::$factory === null) {
-            $class = Config::get('hyperframework.db.connection.factory');
-            if ($class !== null) {
-                self::$factory =  new $class;
-            } else {
-                self::$factory = new DbConnectionFactory;
+            self::$factory = Config::get(
+                'hyperframework.db.connection.factory'
+            );
+            if (self::$factory === null) {
+                self::$factory = '\Hyperframework\Db\DbConnectionFactory';
             }
         }
         return self::$factory;

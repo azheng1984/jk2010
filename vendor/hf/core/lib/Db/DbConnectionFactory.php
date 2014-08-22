@@ -3,12 +3,13 @@ namespace Hyperframework\Db;
 
 use PDO;
 use Exception;
+use Hyperframework\Config;
 use Hyperframework\ConfigFileLoader;
 
 class DbConnectionFactory {
     private static $config;
 
-    public function build($name = 'default') {
+    public static function build($name = 'default') {
         $config = self::getConfig($name);
         if (isset($config['dsn']) === false) {
             throw new Exception;
@@ -29,20 +30,16 @@ class DbConnectionFactory {
         return new DbConnection($name, $dsn, $username, $password, $options);
     }
 
-    protected static function initializeConnectionEventHandlers() {
-        $profiler = '\Hyperframework\Db\DbProfiler';
-        DbStatementProxy::addExecutingEventHandler(
-            array($profiler, 'onStatementExecuting')
-        );
-        DbStatementProxy::addExecutedEventHandler(
-            array($profiler, 'onStatementExecuted')
-        );
-        DbConnection::addExecutingEventHandler(
-            array($profiler, 'onConnectionExecuting')
-        );
-        DbConnection::addExecutedEventHandler(
-            array($profiler, 'onConnectionExecuted')
-        );
+    protected static function initializeProfiler() {
+        if (Config::get('hyperframework.db.profiler.enable') === true) {
+            $profiler = static::getProfiler();
+            DbConnection::setProfiler($profiler);
+            DbStatementProxy::setProfiler($profiler);
+        }
+    }
+
+    protected static function getProfiler() {
+        return '\Hyperframework\Db\DbProfiler';
     }
 
     private static function getConfig($name) {
@@ -62,7 +59,7 @@ class DbConnectionFactory {
 
     private static function initialize() {
         self::initializeConfig();
-        self::initializeConnectionEventHandlers();
+        self::initializeProfiler();
     }
 
     private static function initializeConfig() {

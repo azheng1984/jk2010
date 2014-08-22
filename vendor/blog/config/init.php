@@ -12,4 +12,5 @@ return array(
     'hyperframework.path_info.enable_cache' => false,
     'hyperframework.web.disable_custom_error_page' => true,
 //    'hyperframework.class_loader.enable_zero_folder' => true,
+    'hyperframework.db.profiler.enable' => true,
 );

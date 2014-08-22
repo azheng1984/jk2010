@@ -4,10 +4,9 @@ namespace Hyperframework\Db;
 use PDO;
 
 class DbConnection extends PDO {
+    private static $profiler;
     private $name;
     private $identifierQuotationMarks;
-    private static $executingEventHandlers = array();
-    private static $executedEventHandlers = array();
 
     public function __construct(
         $name, $dsn, $userName = null, $password = null, $driverOptions = null
@@ -25,38 +24,33 @@ class DbConnection extends PDO {
         return new DbStatementProxy($statement, $this);
     }
 
+    public static function setProfiler($profiler) {
+        self::$profiler = $profiler;
+    }
+
     public function exec($sql) {
-        self::triggerExecutingEvent($sql);
-        $result = parent::exec($sql);
-        self::triggerExecutedEvent($result);
-        return $result;
+        return self::sendSql($sql);
     }
 
     public function query($sql) {
-        self::triggerExecutingEvent($sql, true);
-        $result = parent::query($sql);
-        self::triggerExecutedEvent($result);
+        return self::sendSql($sql, true);
+    }
+
+    protected function sendSql($sql, $isQuery = false) {
+        $profiler = self::$profiler;
+        if ($profiler !== null) {
+            $profiler::onConnectionExecuting($this, $sql, $isQuery);
+        }
+        $result = null;
+        if ($isQuery) {
+            $result = parent::query($sql);
+        } else {
+            $result = parent::exec($sql);
+        }
+        if ($profiler !== null) {
+            $profiler::onConnectionExecuted($this, $result);
+        }
         return $result;
-    }
-
-    protected function triggerExecutingEvent($sql, $isQuery) {
-       foreach (self::$executingEventHandlers as $callback) {
-           call_user_func($callback, $this, $sql, $isQuery);
-       }
-    }
-
-    protected function triggerExecutedEvent($result) {
-       foreach (self::$executedEventHandlers as $callback) {
-           call_user_func($callback, $this, $result);
-       }
-    }
-
-    public static function addExecutingEventHandler($callback) {
-        self::$executingEventHandlers[] = $callback;
-    }
-
-    public static function addExecutedEventHandler($callback) {
-        self::$executedEventHandlers[] = $callback;
     }
 
     public function quoteIdentifier($identifier) {
