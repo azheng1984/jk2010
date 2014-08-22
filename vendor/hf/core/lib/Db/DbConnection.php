@@ -35,6 +35,15 @@ class DbConnection extends PDO {
         return self::sendSql($sql, true);
     }
 
+    public function quoteIdentifier($identifier) {
+        if ($this->identifierQuotationMarks === null) {
+            $this->identifierQuotationMarks =
+                $this->getIdentifierQuotationMarks();
+        }
+        return $this->identifierQuotationMarks[0] . $identifier
+            . $this->identifierQuotationMarks[1];
+    }
+
     protected function sendSql($sql, $isQuery = false) {
         if ($this->isProfilerEnabled) {
             DbProfiler::onConnectionExecuting($this, $sql, $isQuery);
@@ -49,15 +58,6 @@ class DbConnection extends PDO {
             DbProfiler::onConnectionExecuted($this, $result);
         }
         return $result;
-    }
-
-    public function quoteIdentifier($identifier) {
-        if ($this->identifierQuotationMarks === null) {
-            $this->identifierQuotationMarks =
-                $this->getIdentifierQuotationMarks();
-        }
-        return $this->identifierQuotationMarks[0] . $identifier
-            . $this->identifierQuotationMarks[1];
     }
 
     protected function getIdentifierQuotationMarks() {

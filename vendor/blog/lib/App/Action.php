@@ -16,6 +16,7 @@ class Action {
         // DbImportCommand::run('Article', $v);
 //        $record = array('id' => 1001, 'name' => 'save!!');
 //        DbClient::save('Article', $record);
+        DbClient::getAll('select * from Article');
         print_r(DbClient::getColumnByColumns('Article', array('id' => '4'), 'name'));
     }
 

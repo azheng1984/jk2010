@@ -21,9 +21,12 @@ class DbProfiler {
     }
 
     public static function onStatementExecuted($statement) {
-        echo adfads;
         $time_end = microtime(true);
         $time = $time_end - self::$startTime;
         echo $time * 1000 . 'ms' . '<br>';
+    }
+
+    public static function getProfile($param) {
+        return null;
     }
 }

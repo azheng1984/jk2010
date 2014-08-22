@@ -78,7 +78,7 @@ class DbContext {
         self::$pool = array();
     }
 
-    protected static function getFactory() {
+    private static function getFactory() {
         if (self::$factory === null) {
             self::$factory = Config::get(
                 'hyperframework.db.connection.factory'

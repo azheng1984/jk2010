@@ -3,7 +3,6 @@ namespace Hyperframework\Db;
 
 use PDO;
 use Exception;
-use Hyperframework\Config;
 use Hyperframework\ConfigFileLoader;
 
 class DbConnectionFactory {
