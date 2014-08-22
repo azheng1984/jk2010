@@ -114,15 +114,15 @@ class DbClient {
 
     public static function save($table, &$row) {
         if (isset($row['id'])) {
-            static::insert($table, $row);
-            $row['id'] = static::getLastInsertId();
-            return 1;
+            $id = $row['id'];
+            unset($row['id']);
+            $result = static::update($table, $row, 'id = ?', $id);
+            $row['id'] = $id;
+            return $result;
         }
-        $id = $row['id'];
-        unset($row['id']);
-        $result = static::update($table, $row, 'id = ?', $id);
-        $row['id'] = $id;
-        return $result;
+        static::insert($table, $row);
+        $row['id'] = static::getLastInsertId();
+        return 1;
     }
 
     public static function execute($sql/*, $mixed, ...*/) {

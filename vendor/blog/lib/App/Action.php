@@ -15,15 +15,20 @@ class Action {
         //     $v[] = array('id' => $i, 'name' => $i . 'v');
         // }
         // DbImportCommand::run('Article', $v);
-//      $record = array('id' => 1001, 'name' => 'save!!');
-//      DbClient::save('Article', $record);
-        $s = DbClient::prepare('select * from Article where id = 8', array(
-            PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC));
-        $s->setFetchMode(PDO::FETCH_ASSOC);
+      $record = array('string' =>iconv('utf-8','gb2312', '巍峨哦'), 'date' => '2011-12-12', 'float' => '23.2');
+      DbClient::save('bin_test', $record);
+        $s = DbClient::prepare(
+            'select * from bin_test order by id desc limit 1',
+            array(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC)
+        );
+        //$s->setFetchMode(PDO::FETCH_ASSOC);
         //$s->setAttribute();
-//        $s->bindValue(1, 1);
+        $param = null;//1000;
         $s->execute();
-        print_r($s->fetchAll(null));
+        //$s->bindColumn(2, $param);
+        //var_dump($s->getColumnMeta(0));
+        var_dump($s->fetch());
+        //var_dump($param);
         //var_dump($s->fetch(PDO::FETCH_OBJ));
         //$s->nextRowset();
         //var_dump($s->fetch(PDO::FETCH_ASSOC));

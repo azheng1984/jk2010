@@ -38,12 +38,12 @@ class DbStatementProxy {
     public function bindColumn(
         $column,
         &$param,
-        $type = null,
+        $type = PDO::PARAM_STR,
         $maxLength = null,
         $driverOptions = null
     ) {
         return $this->statement->bindColumn(
-            $column, $param, $type, $maxLength, $driverData
+            $column, $param, $type, $maxLength, $driverOptions
         );
     }
 
@@ -149,7 +149,7 @@ class DbStatementProxy {
         );
     }
 
-    public function __call($n, $b) {
-       return call_user_func_array(array($this->statement,$n), $b); 
-    }
+//    public function __call($n, $b) {
+//       return call_user_func_array(array($this->statement,$n), $b); 
+//    }
 }
