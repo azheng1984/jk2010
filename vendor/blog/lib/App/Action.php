@@ -18,8 +18,7 @@ class Action {
       $record = array('string' =>iconv('utf-8','gb2312', '巍峨哦'), 'date' => '2011-12-12', 'float' => '23.2');
       DbClient::save('bin_test', $record);
         $s = DbClient::prepare(
-            'select * from bin_test order by id desc limit 1',
-            array(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC)
+            'select * from bin_test order by id desc limit 1'
         );
         //$s->setFetchMode(PDO::FETCH_ASSOC);
         //$s->setAttribute();
