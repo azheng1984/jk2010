@@ -69,10 +69,12 @@ class ErrorHandler {
     }
 
     final public static function handleError(
-        $type, $message, $file, $line, $isFatal = false
+        $type, $message, $file, $line, $context, $isFatal = false
     ) {
         if (error_reporting() & $type) {
             $code = $isFatal ? 1 : 0;
+            echo $line;
+            var_dump($isFatal);
             return self::handleException(new ErrorException(
                 $message, $code, $type, $file, $line
             ));
@@ -93,6 +95,7 @@ class ErrorHandler {
                 $error['message'],
                 $error['file'],
                 $error['line'],
+                null,
                 true
             );
         }

@@ -6,11 +6,14 @@ use PDO;
 class DbConnection extends PDO {
     private $name;
     private $identifierQuotationMarks;
-    private $filters = array();
-    private static $index = 0;
+    private static $executingEventHandlers = array();
+    private static $executedEventHandlers = array();
 
-    public function setName($name) {
+    public function __construct(
+        $name, $dsn, $userName = null, $password = null, $driverOptions = null
+    ) {
         $this->name = $name;
+        parent::__construct($dsn, $userName, $password, $driverOptions);
     }
 
     public function getName() {
@@ -18,55 +21,42 @@ class DbConnection extends PDO {
     }
 
     public function prepare($sql, $driverOptions = array()) {
-       // $index = ++self::$index;
-       // foreach ($filters as $filter) {
-       //     $sql = $filter->filterSql($sql);
-       // }
         $statement = parent::prepare($sql, $driverOptions);
-        return $statement;
-       // foreach ($filters as $filter) {
-       //     $filter->afterPrepare();
-       // }
-       // return new DbStatementProxy(
-       //     $statement, $this, $sql, $this->connectionName
-       // );
+        return new DbStatementProxy($statement, $this);
     }
 
     public function exec($sql) {
-       // $index = ++self::$index;
-       // foreach (self::$sqlFilters as $callback) {
-       //     $sql = $callback($this, $sql);
-       // }
-       // foreach ($preExecuteEventHandlers as $callback) {
-       //     $callback($count);
-       // }
-       // foreach ($postExecuteEventHandlers as $callback) {
-       //     $callback($this->count);
-       // }
-
+        self::triggerExecutingEvent($sql);
         $result = parent::exec($sql);
+        self::triggerExecutedEvent($result);
         return $result;
     }
 
-    public static function addPrepareSqlEventHandler(
-        $callback, $connectionName = null
-    ) {
-    }
-
-    public static function addPreExecuteEventHandler($callback) {
-    }
-
-    public static function addPostExecuteEventHandler($callback) {
-    }
-
     public function query($sql) {
-        foreach ($preExecuteEventHandlers as $callback) {
-            $callback();
-        }
-        return parent::query($sql);
-        foreach ($postExecuteEventHandlers as $callback) {
-            $callback();
-        }
+        self::triggerExecutingEvent($sql, true);
+        $result = parent::query($sql);
+        self::triggerExecutedEvent($result);
+        return $result;
+    }
+
+    protected function triggerExecutingEvent($sql, $isQuery) {
+       foreach (self::$executingEventHandlers as $callback) {
+           call_user_func($callback, $this, $sql, $isQuery);
+       }
+    }
+
+    protected function triggerExecutedEvent($result) {
+       foreach (self::$executedEventHandlers as $callback) {
+           call_user_func($callback, $this, $result);
+       }
+    }
+
+    public static function addExecutingEventHandler($callback) {
+        self::$executingEventHandlers[] = $callback;
+    }
+
+    public static function addExecutedEventHandler($callback) {
+        self::$executedEventHandlers[] = $callback;
     }
 
     public function quoteIdentifier($identifier) {

@@ -3,18 +3,43 @@ namespace Hyperframework\Db;
 
 class DbStatementProxy {
     private $statement;
-    private $sql;
     private $connection;
+    private static $executingEventHandlers = array();
+    private static $executedEventHandlers = array();
 
-    public function __construct($statement, $connection, $sql) {
+    public function __construct($statement, $connection) {
         $this->statement = $statement;
         $this->connection = $connection;
-        $this->sql = $sql;
     }
 
     public function execute($params = null) {
-        echo $this->sql;
-        $this->statement->execute($params);
+        self::triggerExecutingEvent();
+        $result = $this->statement->execute($params);
+        self::triggerExecutedEvent();
+    }
+
+    public function getConnection() {
+        return $this->connection;
+    }
+
+    protected function triggerExecutingEvent() {
+       foreach (self::$executingEventHandlers as $callback) {
+           call_user_func($callback, $this);
+       }
+    }
+
+    protected function triggerExecutedEvent() {
+       foreach (self::$executedEventHandlers as $callback) {
+           call_user_func($callback, $this);
+       }
+    }
+
+    public static function addExecutingEventHandler($callback) {
+        self::$executingEventHandlers[] = $callback;
+    }
+
+    public static function addExecutedEventHandler($callback) {
+        self::$executedEventHandlers[] = $callback;
     }
 
     public function __call($method, $params) {

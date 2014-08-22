@@ -81,7 +81,7 @@ class DbContext {
         if (self::$factory === null) {
             $class = Config::get('hyperframework.db.connection.factory');
             if ($class !== null) {
-                self::$factory = new $class;
+                self::$factory =  new $class;
             } else {
                 self::$factory = new DbConnectionFactory;
             }
