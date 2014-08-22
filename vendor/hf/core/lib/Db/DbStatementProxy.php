@@ -1,34 +1,33 @@
 <?php
 namespace Hyperframework\Db;
 
+use Hyperframework\Config;
+
 class DbStatementProxy {
-    private static $profiler;
     private $statement;
     private $connection;
+    private $isProfilerEnabled;
 
     public function __construct($statement, $connection) {
         $this->statement = $statement;
         $this->connection = $connection;
+        $this->isProfilerEnabled =
+            Config::get('hyperframework.db.profiler.enable') === true;
     }
 
     public function execute($params = null) {
-        $profiler = self::$profiler;
-        if ($profiler !== null) {
-            $profiler::onStatementExecuting($this);
+        if ($this->isProfilerEnabled) {
+            DbProfiler::onStatementExecuting($this);
         }
         $result = $this->statement->execute($params);
-        if ($profiler !== null) {
-            $profiler::onStatementExecuted($this);
+        if ($this->isProfilerEnabled !== null) {
+            DbProfiler::onStatementExecuted($this);
         }
         return $result;
     }
 
     public function getConnection() {
         return $this->connection;
-    }
-
-    public static function setProfiler($profiler) {
-        self::$profiler = $profiler;
     }
 
     public function getSql() {

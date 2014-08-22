@@ -30,21 +30,9 @@ class DbConnectionFactory {
         return new DbConnection($name, $dsn, $username, $password, $options);
     }
 
-    protected static function initializeProfiler() {
-        if (Config::get('hyperframework.db.profiler.enable') === true) {
-            $profiler = static::getProfiler();
-            DbConnection::setProfiler($profiler);
-            DbStatementProxy::setProfiler($profiler);
-        }
-    }
-
-    protected static function getProfiler() {
-        return '\Hyperframework\Db\DbProfiler';
-    }
-
     private static function getConfig($name) {
         if (self::$config === null) {
-            self::initialize();
+            self::initializeConfig();
         }
         if ($name === 'default' && isset(self::$config['dsn'])
             && is_string(self::$config['dsn'])
@@ -55,11 +43,6 @@ class DbConnectionFactory {
             return self::$config[$name];
         }
         throw new Exception("Database config '$name' not found");
-    }
-
-    private static function initialize() {
-        self::initializeConfig();
-        self::initializeProfiler();
     }
 
     private static function initializeConfig() {

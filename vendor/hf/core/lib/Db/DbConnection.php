@@ -2,16 +2,19 @@
 namespace Hyperframework\Db;
 
 use PDO;
+use Hyperframework\Config;
 
 class DbConnection extends PDO {
-    private static $profiler;
     private $name;
+    private $isProfilerEnabled;
     private $identifierQuotationMarks;
 
     public function __construct(
         $name, $dsn, $userName = null, $password = null, $driverOptions = null
     ) {
         $this->name = $name;
+        $this->isProfilerEnabled =
+            Config::get('hyperframework.db.profiler.enable') === true;
         parent::__construct($dsn, $userName, $password, $driverOptions);
     }
 
@@ -24,10 +27,6 @@ class DbConnection extends PDO {
         return new DbStatementProxy($statement, $this);
     }
 
-    public static function setProfiler($profiler) {
-        self::$profiler = $profiler;
-    }
-
     public function exec($sql) {
         return self::sendSql($sql);
     }
@@ -37,9 +36,8 @@ class DbConnection extends PDO {
     }
 
     protected function sendSql($sql, $isQuery = false) {
-        $profiler = self::$profiler;
-        if ($profiler !== null) {
-            $profiler::onConnectionExecuting($this, $sql, $isQuery);
+        if ($this->isProfilerEnabled) {
+            DbProfiler::onConnectionExecuting($this, $sql, $isQuery);
         }
         $result = null;
         if ($isQuery) {
@@ -47,8 +45,8 @@ class DbConnection extends PDO {
         } else {
             $result = parent::exec($sql);
         }
-        if ($profiler !== null) {
-            $profiler::onConnectionExecuted($this, $result);
+        if ($this->isProfilerEnabled) {
+            DbProfiler::onConnectionExecuted($this, $result);
         }
         return $result;
     }
