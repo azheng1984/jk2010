@@ -29,25 +29,30 @@ class DebugPage {
         }
         echo $exception->getMessage();
         echo '</h2>';
-        echo '<h3>',$exception->getFile(), '</h3>';
-        $sourceCode = highlight_file($exception->getFile(), true);
-        $lines = explode("<br />", $sourceCode);
-        $index = 1;
-        $count = count($lines);
-        foreach ($lines as &$line) {
-            $content = $line;
-            $line = '<span style="color:#ccc;width:';
-            $line .= (strlen($count)) * 10;
-            $line .= 'px;display:inline-block">' . $index .'</span> ' . $content;
-            ++$index;
+        if ($exception->getFile() === 'Unknown') {
+            echo '<h3>FILE:</h3>';
+            echo '<span style="color:#999;background-color:#eee">UNKNOWN</span>';
+        } else {
+            echo '<h3>FILE: ',$exception->getFile(), '</h3>';
+            $sourceCode = highlight_file($exception->getFile(), true);
+            $lines = explode("<br />", $sourceCode);
+            $index = 1;
+            $count = count($lines);
+            foreach ($lines as &$line) {
+                $content = $line;
+                $line = '<span style="color:#ccc;width:';
+                $line .= (strlen($count)) * 10;
+                $line .= 'px;display:inline-block">' . $index .'</span> ' . $content;
+                ++$index;
+            }
+            $index = $exception->getLine() - 1;
+            $lines[$index - 1] = $lines[$index - 1]
+                . '<div style="background-color:#ff6">' . $lines[$index] . '</div>'
+                . $lines[$index + 1];
+            unset($lines[$index]);
+            unset($lines[$index + 1]);
+            echo implode("<br />", $lines);
         }
-        $index = $exception->getLine() - 1;
-        $lines[$index - 1] = $lines[$index - 1]
-            . '<div style="background-color:#ff6">' . $lines[$index] . '</div>'
-            . $lines[$index + 1];
-        unset($lines[$index]);
-        unset($lines[$index + 1]);
-        echo implode("<br />", $lines);
         echo '<h2>stack trace</h2>';
         if ($isError === false || $exception->getCode() === 0) {
             echo implode('<br>', explode("\n", $exception->getTraceAsString()));

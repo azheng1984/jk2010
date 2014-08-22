@@ -3,7 +3,7 @@ namespace Hyperframework\Db;
 
 use Hyperframework\Config;
 
-class DbStatementProxy {
+class DbStatementProxy implements \Traversable{
     private $statement;
     private $connection;
     private $isProfilerEnabled;
@@ -41,7 +41,7 @@ class DbStatementProxy {
         $maxLength = null,
         $driverData = null
     ) {
-        $this->statement->bindColumn(
+        return $this->statement->bindColumn(
             $column, $param, $type, $maxLength, $driverData
         );
     }
@@ -53,21 +53,21 @@ class DbStatementProxy {
         $length = null,
         $driverOptions = null
     ) {
-        $this->statement->bindParam(
+        return $this->statement->bindParam(
             $param, $variable, $dataType, $length, $driverOptions
         );
     }
 
     public function bindValue($param, $value, $dataType = PDO::PARAM_STR) {
-        $this->statement->bindValue($param, $value, $dataType);
+        return $this->statement->bindValue($param, $value, $dataType);
     }
 
     public function closeCursor() {
-        $this->statement->closeCursor();
+        return $this->statement->closeCursor();
     }
 
     public function columnCount() {
-        $this->statement->columnCount();
+        return $this->statement->columnCount();
     }
 
     public function debugDumpParams() {
@@ -75,11 +75,11 @@ class DbStatementProxy {
     }
 
     public function errorCode() {
-        $this->statement->errorCode();
+        return $this->statement->errorCode();
     }
 
     public function errorInfo() {
-        $this->statement->errorInfo();
+        return $this->statement->errorInfo();
     }
 
     public function fetch(
@@ -87,7 +87,7 @@ class DbStatementProxy {
         $cursorOrientation = PDO::FETCH_ORI_NEXT,
         $cursorOffset = 0
     ) {
-        $this->statement->fetch(
+        return $this->statement->fetch(
             $fetchStyle, $cursorOrientation, $cursorOffset
         );
     }
@@ -95,42 +95,42 @@ class DbStatementProxy {
     public function fetchAll(
         $fetchStyle, $fetchArgument = null, $constructorArguments = array()
     ) {
-        $this->statement->fetchAll(
+        return $this->statement->fetchAll(
             $fetchStyle, $fetchArgument, $constructorArguments
         );
     }
 
     public function fetchColumn($columnNumber = 0) {
-        $this->statement->fetchColumn($columnNumber);
+        return $this->statement->fetchColumn($columnNumber);
     }
 
     public function fetchObject(
         $className = "stdClass", $constructArguments = null
     ) {
-        $this->statement->fetchObject($className, $constructArguments); 
+        return $this->statement->fetchObject($className, $constructArguments); 
     }
 
     public function getAttribute($attribute) {
-        $this->statement->getAttribute($attribute);
+        return $this->statement->getAttribute($attribute);
     }
 
     public function getColumnMeta($column) {
-        $this->statement->getColumnMeta($column);
+        return $this->statement->getColumnMeta($column);
     }
 
     public function nextRowset() {
-        $this->statement->nextRowset();
+        return $this->statement->nextRowset();
     }
 
     public function rowCount() {
-        $this->statement->rowCount();
+        return $this->statement->rowCount();
     }
 
     public function setAttribute($attribute, $value) {
-        $this->statement->setAttribute($attribute, $value);
+        return $this->statement->setAttribute($attribute, $value);
     }
 
     public function setFetchMode($mode) {
-        $this->statement->setFetchMode($mode);
+        return $this->statement->setFetchMode($mode);
     }
 }
