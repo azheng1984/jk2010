@@ -1,9 +1,10 @@
 <?php
 namespace Hyperframework\Db;
 
+use PDO;
 use Hyperframework\Config;
 
-class DbStatementProxy implements \Traversable{
+class DbStatementProxy {
     private $statement;
     private $connection;
     private $isProfilerEnabled;
@@ -39,7 +40,7 @@ class DbStatementProxy implements \Traversable{
         &$param,
         $type = null,
         $maxLength = null,
-        $driverData = null
+        $driverOptions = null
     ) {
         return $this->statement->bindColumn(
             $column, $param, $type, $maxLength, $driverData
@@ -83,7 +84,7 @@ class DbStatementProxy implements \Traversable{
     }
 
     public function fetch(
-        $fetchStyle,
+        $fetchStyle = null,
         $cursorOrientation = PDO::FETCH_ORI_NEXT,
         $cursorOffset = 0
     ) {
@@ -93,11 +94,23 @@ class DbStatementProxy implements \Traversable{
     }
 
     public function fetchAll(
-        $fetchStyle, $fetchArgument = null, $constructorArguments = array()
+        $fetchStyle = null,
+        $fetchArgument = null,
+        $constructorArguments = array()
     ) {
-        return $this->statement->fetchAll(
-            $fetchStyle, $fetchArgument, $constructorArguments
-        );
+        if ($fetchStyle === null) {
+            return $this->statement->fetchAll();
+        }
+        if ($fetchStyle === PDO::FETCH_COLUMN || $fetchStyle === PDO::FETCH_FUNC
+        ) {
+            return $this->statement->fetchAll($fetchStyle, $fetchArgument);
+        }
+        if ($fetchStyle === PDO::FETCH_CLASS) {
+            return $this->statement->fetchAll(
+                $fetchStyle, $fetchArgument, $constructorArguments
+            );
+        }
+        return $this->statement->fetchAll($fetchStyle);
     }
 
     public function fetchColumn($columnNumber = 0) {
@@ -105,7 +118,7 @@ class DbStatementProxy implements \Traversable{
     }
 
     public function fetchObject(
-        $className = "stdClass", $constructArguments = null
+        $className = "stdClass", $constructArguments = array()
     ) {
         return $this->statement->fetchObject($className, $constructArguments); 
     }
@@ -131,6 +144,12 @@ class DbStatementProxy implements \Traversable{
     }
 
     public function setFetchMode($mode) {
-        return $this->statement->setFetchMode($mode);
+        return call_user_func_array(
+            array($this->statement, 'setFetchMode'), func_get_args()
+        );
+    }
+
+    public function __call($n, $b) {
+       return call_user_func_array(array($this->statement,$n), $b); 
     }
 }
