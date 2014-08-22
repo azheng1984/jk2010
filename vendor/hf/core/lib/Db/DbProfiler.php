@@ -5,6 +5,7 @@ class DbProfiler {
     private static $startTime;
 
     public static function onConnectionExecuting($connection, $sql, $isQuery) {
+        echo $connection()->getName() . ': ';
         echo $sql . '<br>';
         self::$startTime = microtime(true);
     }
@@ -16,6 +17,7 @@ class DbProfiler {
     }
 
     public static function onStatementExecuting($statement) {
+        echo $statement->getConnection()->getName() . ': ';
         echo $statement->getSql() . '<br>';
         self::$startTime = microtime(true);
     }
