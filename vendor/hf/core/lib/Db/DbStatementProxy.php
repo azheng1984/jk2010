@@ -145,8 +145,4 @@ class DbStatementProxy {
             array($this->statement, 'setFetchMode'), func_get_args()
         );
     }
-
-//    public function __call($n, $b) {
-//       return call_user_func_array(array($this->statement,$n), $b); 
-//    }
 }

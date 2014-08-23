@@ -31,8 +31,22 @@ class DbConnection extends PDO {
         return self::sendSql($sql);
     }
 
-    public function query($sql) {
-        return self::sendSql($sql, true);
+    public function query(
+        $sql, $fetchStyle = null, $extraParam1 = null, $extraParam2 = null
+    ) {
+        $argumentCount = func_num_args();
+        if ($argumentCount === 1) {
+            return self::sendSql($sql, true);
+        }
+        switch ($argumentCount) {
+            case 2: return self::sendSql($sql, true, array($fetchStyle));
+            case 3: return self::sendSql(
+                $sql, true, array($fetchStyle, $extraParam1)
+            );
+            default: return self::sendSql(
+                $sql, true, array($fetchStyle, $extraParam1, $extraParam2)
+            );
+        }
     }
 
     public function quoteIdentifier($identifier) {
@@ -44,13 +58,33 @@ class DbConnection extends PDO {
             . $this->identifierQuotationMarks[1];
     }
 
-    protected function sendSql($sql, $isQuery = false) {
+    protected function sendSql($sql, $isQuery = false, $fetchOptions = null) {
         if ($this->isProfilerEnabled) {
             DbProfiler::onConnectionExecuting($this, $sql, $isQuery);
         }
         $result = null;
         if ($isQuery) {
-            $result = parent::query($sql);
+            if ($fetchOptions === null) {
+                $result = parent::query($sql);
+            } else {
+                switch (count($fetchOptions)) {
+                    case 1:
+                        $result = parent::query($sql, $fetchOptions[0]);
+                        break;
+                    case 2:
+                        $result = parent::query(
+                            $sql, $fetchOptions[0], $fetchOptions[1]
+                        );
+                        break;
+                    default:
+                        $result = parent::query(
+                            $sql,
+                            $fetchOptions[0],
+                            $fetchOptions[1],
+                            $fetchOptions[2]
+                        );
+                }
+            }
         } else {
             $result = parent::exec($sql);
         }
