@@ -20,13 +20,13 @@ class Action {
         $s = DbClient::prepare(
             'select * from bin_test order by id desc limit 1'
         );
-        //$s->setFetchMode(PDO::FETCH_ASSOC);
+        $s->setFetchMode(PDO::FETCH_CLASS, __CLASS__);
         //$s->setAttribute();
         $param = null;//1000;
         $s->execute();
         //$s->bindColumn(2, $param);
         //var_dump($s->getColumnMeta(0));
-        var_dump($s->fetch());
+        var_dump($s->fetchAll());
         //var_dump($param);
         //var_dump($s->fetch(PDO::FETCH_OBJ));
         //$s->nextRowset();

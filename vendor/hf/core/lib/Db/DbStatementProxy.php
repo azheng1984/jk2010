@@ -98,19 +98,16 @@ class DbStatementProxy {
         $fetchArgument = null,
         $constructorArguments = array()
     ) {
-        if ($fetchStyle === null) {
-            return $this->statement->fetchAll();
-        }
-        if ($fetchStyle === PDO::FETCH_COLUMN || $fetchStyle === PDO::FETCH_FUNC
-        ) {
-            return $this->statement->fetchAll($fetchStyle, $fetchArgument);
-        }
-        if ($fetchStyle === PDO::FETCH_CLASS) {
-            return $this->statement->fetchAll(
+        switch (func_num_args()) {
+            case 0: return $this->statement->fetchAll();
+            case 1: return $this->statement->fetchAll($fetchStyle);
+            case 2: return $this->statement->fetchAll(
+                $fetchStyle, $fetchArgument
+            );
+            default: return $this->statement->fetchAll(
                 $fetchStyle, $fetchArgument, $constructorArguments
             );
         }
-        return $this->statement->fetchAll($fetchStyle);
     }
 
     public function fetchColumn($columnNumber = 0) {
@@ -118,9 +115,9 @@ class DbStatementProxy {
     }
 
     public function fetchObject(
-        $className = "stdClass", $constructArguments = array()
+        $className = "stdClass", $constructorArguments = array()
     ) {
-        return $this->statement->fetchObject($className, $constructArguments); 
+        return $this->statement->fetchObject($className, $constructorArguments); 
     }
 
     public function getAttribute($attribute) {
