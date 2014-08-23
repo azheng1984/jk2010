@@ -2,33 +2,37 @@
 namespace Hyperframework\Db;
 
 class DbProfiler {
-    private static $startTime;
+    private static $current;
+    private static $profiles = array();
 
     public static function onConnectionExecuting($connection, $sql, $isQuery) {
-        echo $connection()->getName() . ': ';
-        echo $sql . '<br>';
-        self::$startTime = microtime(true);
+        self::$current = array(
+            'start_time' => microtime(true),
+            'sql' => $sql
+        );
     }
 
     public static function onConnectionExecuted($connection, $result) {
-        $time_end = microtime(true);
-        $time = $time_end - self::$startTime;
-        echo $time * 1000 . 'ms' . '<br>';
+        self::$profiles[] = array(
+            'connection_name' => $connection->getName(),
+            'sql' => self::$current['sql'],
+            'time' => self::$current['start_time'] - microtime(true)
+        );
     }
 
     public static function onStatementExecuting($statement) {
-        echo $statement->getConnection()->getName() . ': ';
-        echo $statement->getSql() . '<br>';
-        self::$startTime = microtime(true);
+        self::$current = array('start_time' => microtime(true));
     }
 
     public static function onStatementExecuted($statement) {
-        $time_end = microtime(true);
-        $time = $time_end - self::$startTime;
-        echo $time * 1000 . 'ms' . '<br>';
+        self::$profiles[] = array(
+            'connection_name' => $statement->getConnection()->getName(),
+            'sql' => $statement->getSql(),
+            'time' => self::$current['start_time'] - microtime(true)
+        );
     }
 
-    public static function getProfile($param) {
-        return null;
+    public static function getProfiles() {
+        return self::$profiles;
     }
 }

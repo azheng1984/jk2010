@@ -33,6 +33,8 @@ class DbContext {
                 if ($isReusable) {
                     self::$pool[$name] = $connection;
                 }
+            } else {
+                $connection = self::$pool[$name];
             }
         } else {
             if ($isReusable) {
