@@ -11,7 +11,7 @@ class DbProfiler {
             'sql' => $sql,
             'start_time' => microtime(true)
         );
-        //write debug log if enabled
+        //todo write debug log if enabled
     }
 
     public static function onConnectionExecuted($connection, $result) {
@@ -21,7 +21,7 @@ class DbProfiler {
 
     public static function onStatementExecuting($statement) {
         self::$current = array('start_time' => microtime(true));
-        //write debug log if enabled
+        //todo write debug log if enabled
     }
 
     public static function onStatementExecuted($statement) {

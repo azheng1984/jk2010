@@ -6,6 +6,7 @@ use Hyperframework\Web\CsrfProtection;
 use Hyperframework\Db\DbClient;
 use Hyperframework\Db\DbImportCommand;
 use Hyperframework\Db\DbProfiler;
+use Hyperframework\WebClient;
 use PDO;
 
 class Action {
@@ -33,9 +34,10 @@ class Action {
         //$s->nextRowset();
         //var_dump($s->fetch(PDO::FETCH_ASSOC));
         //$stat->debugDumpParams();
-        DbClient::getAll('select * from Article');
-        print_r(DbClient::getColumnByColumns('Article', array('id' => '4'), 'name'));
-        var_dump(DbProfiler::getProfiles());
+//        DbClient::getAll('select * from Article');
+//       print_r(DbClient::getColumnByColumns('Article', array('id' => '4'), 'name'));
+//        var_dump(DbProfiler::getProfiles());
+        print_r(WebClient::get('www.baidu.com', '/'));
     }
 
     public function after($ctx) {

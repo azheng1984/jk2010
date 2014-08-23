@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework;
 
+use Exception;
+
 class WebClient {
     private static $handlers = array();
 
@@ -42,6 +44,7 @@ class WebClient {
             $handler = curl_init();
             curl_setopt($handler, CURLOPT_ENCODING, 'gzip');
             curl_setopt($handler, CURLOPT_TIMEOUT, 30);
+            curl_setopt($handler, CURLOPT_BINARYTRANSFER, 1);
             curl_setopt($handler, CURLOPT_FOLLOWLOCATION, 1);
             curl_setopt($handler, CURLOPT_RETURNTRANSFER, 1);
             self::$handlers[$domain] = $handler;
