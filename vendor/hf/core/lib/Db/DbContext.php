@@ -53,6 +53,13 @@ class DbContext {
         return $connection;
     }
 
+    public static function getConnection($default = 'default') {
+        if (self::$current === null && $default !== null) {
+            self::connect($default);
+        }
+        return self::$current;
+    }
+
     public static function close() {
         if (count(self::$stack) > 0) {
             self::$current = array_pop(self::$stack);
@@ -64,13 +71,6 @@ class DbContext {
     public static function closeAll() {
         self::$current = null;
         self::$stack = array();
-    }
-
-    public static function getConnection($default = 'default') {
-        if (self::$current === null && $default !== null) {
-            self::connect($default);
-        }
-        return self::$current;
     }
 
     public static function reset() {

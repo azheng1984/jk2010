@@ -7,28 +7,29 @@ class DbProfiler {
 
     public static function onConnectionExecuting($connection, $sql, $isQuery) {
         self::$current = array(
-            'start_time' => microtime(true),
-            'sql' => $sql
+            'connection_name' => $connection->getName(),
+            'sql' => $sql,
+            'start_time' => microtime(true)
         );
+        //write debug log if enabled
     }
 
     public static function onConnectionExecuted($connection, $result) {
-        self::$profiles[] = array(
-            'connection_name' => $connection->getName(),
-            'sql' => self::$current['sql'],
-            'time' => self::getRunningTime()
-        );
+        self::$current['running_time'] = self::getRunningTime();
+        self::$profiles[] = self::$current;
     }
 
     public static function onStatementExecuting($statement) {
         self::$current = array('start_time' => microtime(true));
+        //write debug log if enabled
     }
 
     public static function onStatementExecuted($statement) {
         self::$profiles[] = array(
             'connection_name' => $statement->getConnection()->getName(),
             'sql' => $statement->getSql(),
-            'time' => self::getRunningTime()
+            'start_time' => self::$current['start_time'],
+            'running_time' => self::getRunningTime()
         );
     }
 
