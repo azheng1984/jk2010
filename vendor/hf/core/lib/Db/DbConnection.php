@@ -38,15 +38,15 @@ class DbConnection extends PDO {
         if ($argumentCount === 1) {
             return self::sendSql($sql, true);
         }
-        switch ($argumentCount) {
-            case 2: return self::sendSql($sql, true, array($fetchStyle));
-            case 3: return self::sendSql(
-                $sql, true, array($fetchStyle, $extraParam1)
-            );
-            default: return self::sendSql(
-                $sql, true, array($fetchStyle, $extraParam1, $extraParam2)
-            );
+        if ($argumentCount === 2) {
+            return self::sendSql($sql, true, array($fetchStyle));
         }
+        if ($argumentCount === 3) {
+            return self::sendSql($sql, true, array($fetchStyle, $extraParam1));
+        }
+        return self::sendSql(
+            $sql, true, array($fetchStyle, $extraParam1, $extraParam2)
+        );
     }
 
     public function quoteIdentifier($identifier) {
