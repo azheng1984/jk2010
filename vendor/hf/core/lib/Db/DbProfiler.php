@@ -16,7 +16,7 @@ class DbProfiler {
         self::$profiles[] = array(
             'connection_name' => $connection->getName(),
             'sql' => self::$current['sql'],
-            'time' => self::$current['start_time'] - microtime(true)
+            'time' => self::getRunningTime()
         );
     }
 
@@ -28,11 +28,15 @@ class DbProfiler {
         self::$profiles[] = array(
             'connection_name' => $statement->getConnection()->getName(),
             'sql' => $statement->getSql(),
-            'time' => self::$current['start_time'] - microtime(true)
+            'time' => self::getRunningTime()
         );
     }
 
     public static function getProfiles() {
         return self::$profiles;
+    }
+
+    private static function getRunningTime() {
+        return microtime(true) - self::$current['start_time'];
     }
 }

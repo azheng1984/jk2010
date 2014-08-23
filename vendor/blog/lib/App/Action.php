@@ -33,7 +33,7 @@ class Action {
         //$s->nextRowset();
         //var_dump($s->fetch(PDO::FETCH_ASSOC));
         //$stat->debugDumpParams();
-        //DbClient::getAll('select * from Article');
+        DbClient::getAll('select * from Article');
         print_r(DbClient::getColumnByColumns('Article', array('id' => '4'), 'name'));
         var_dump(DbProfiler::getProfiles());
     }

@@ -16,28 +16,28 @@ class DbContext {
         if (isset($options['connection'])) {
             $connection = $options['connection'];
         }
-        $isReusable = $name !== null;
-        if (isset($options['is_reusable'])) {
-            if ($options['is_reusable'] === true && $name === null) {
+        $isShared = $name !== null;
+        if (isset($options['is_shared'])) {
+            if ($options['is_shared'] === true && $name === null) {
                 throw new Exception;
             }
-            $isReusable = $options['is_reusable'];
+            $isShared = $options['is_shared'];
         }
         if ($connection === null) {
             if ($name === null) {
                 throw new Exception;
             }
-            if ($isReusable === false || isset(self::$pool[$name]) === false) {
+            if ($isShared === false || isset(self::$pool[$name]) === false) {
                 $factory = self::getFactory();
                 $connection = $factory::build($name);
-                if ($isReusable) {
+                if ($isShared) {
                     self::$pool[$name] = $connection;
                 }
             } else {
                 $connection = self::$pool[$name];
             }
         } else {
-            if ($isReusable) {
+            if ($isShared) {
                 if (isset(self::$pool[$name])
                     && $connection !== self::$pool[$name]
                 ) {
