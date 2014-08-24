@@ -42,7 +42,8 @@ class WebClient {
     private static function getHandler($domain, $path, $headers) {
         if (!isset(self::$handlers[$domain])) {
             $handler = curl_init();
-            curl_setopt($handler, CURLOPT_ENCODING, 'gzip');
+            //curl_setopt($handler, CURLOPT_HTTPHEADER, array('Accept-Encoding: gzip'));
+            //curl_setopt($handler, CURLOPT_ENCODING, 'gzip');
             curl_setopt($handler, CURLOPT_TIMEOUT, 30);
             curl_setopt($handler, CURLOPT_BINARYTRANSFER, 1);
             curl_setopt($handler, CURLOPT_FOLLOWLOCATION, 1);
@@ -52,6 +53,7 @@ class WebClient {
         $handler = self::$handlers[$domain];
         $headers[] = 'Accept: */*';
         $headers[] = 'Accept-Language: zh-CN';
+        $headers[] = 'Accept-Encoding: gzip';
         //$headers[] = 'User-Agent: Mozilla/5.0 '
         //  .'(compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)';
         curl_setopt($handler, CURLOPT_HTTPHEADER, $headers);
