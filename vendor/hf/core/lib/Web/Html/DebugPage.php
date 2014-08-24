@@ -6,7 +6,10 @@ use Hyperframework\ErrorCodeHelper;
 
 class DebugPage {
     public static function render(
-        $exception, $headers = null, $outputBuffer = null
+        $exception,
+        $previousErrors = null,
+        $headers = null,
+        $outputBuffer = null
     ) {
         $isError = $exception instanceof ErrorException;
         $isHeadersSent = headers_sent();
@@ -58,6 +61,10 @@ class DebugPage {
             echo implode('<br>', explode("\n", $exception->getTraceAsString()));
         } else {
             echo '<span style="color:#999;background-color:#eee">UNAVAILABLE</span>';
+        }
+        if ($previousErrors !== null) {
+            echo '<h2>previous errors</h2>';
+            var_dump($previousErrors);
         }
         echo '<h2>output</h2>';
         echo '<h3>headers</h3>';

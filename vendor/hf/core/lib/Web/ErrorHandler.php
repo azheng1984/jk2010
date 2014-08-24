@@ -9,6 +9,7 @@ class ErrorHandler {
     private static $exception;
     private static $isDebugEnabled;
     private static $outputBufferLevel;
+    private static $previousErrors;
 
     final public static function run() {
         $class = get_called_class();
@@ -73,12 +74,20 @@ class ErrorHandler {
     ) {
         if (error_reporting() & $type) {
             $code = $isFatal ? 1 : 0;
-            echo $line;
-            var_dump($isFatal);
             return self::handleException(new ErrorException(
                 $message, $code, $type, $file, $line
             ));
         }
+        if (self::$errors === null) {
+            self::$errors = array();
+        }
+        self::$previousErrors[] = array(
+            'type' => $type,
+            'message' => $message,
+            'file' => $file,
+            'line' => $line,
+            'context' => $context
+        );
     }
 
     final public static function handleFatalError() {
@@ -176,7 +185,9 @@ class ErrorHandler {
     }
 
     protected static function renderDebugPage($headers, $outputBuffer) {
-        DebugPage::render(self::$exception, $headers, $outputBuffer);
+        DebugPage::render(
+            self::$exception, self::$previousErrors, $headers, $outputBuffer
+        );
     }
 
     protected static function renderCustomErrorPage() {
@@ -208,7 +219,14 @@ class ErrorHandler {
         return self::$exception;
     }
 
+    protected static function getPreviousErrors() {
+        return self::$exception;
+    }
+
     public static function reset() {
         self::$exception = null;
+        self::$isDebugEnabled = null;
+        self::$outputBufferLevel = null;
+        self::$previousErrors = null;
     }
 }
