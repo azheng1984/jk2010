@@ -78,6 +78,7 @@ class ErrorHandler {
                 $message, $code, $type, $file, $line
             ));
         }
+        //todo write debug log on dev env
         if (self::$isDebugEnabled === false) {
             return;
         }
@@ -222,7 +223,7 @@ class ErrorHandler {
         return self::$exception;
     }
 
-    protected static function getignoredErrors() {
+    protected static function getIgnoredErrors() {
         return self::$ignoredErrors;
     }
 

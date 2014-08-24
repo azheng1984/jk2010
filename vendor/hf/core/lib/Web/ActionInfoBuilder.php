@@ -10,7 +10,7 @@ class ActionInfoBuilder {
         $reflectors = self::getMethodReflectors($class);
         foreach ($reflectors as $reflector) {
             $method = $reflector->getName();
-            if ($method === 'head') {
+            if (strtolower($method) === 'head') {
                 throw new Exception("Public method 'head' not allowed.");
             }
             if (strncmp($method, '__', 2) === 0) {

@@ -6,7 +6,7 @@ use Exception;
 class WebClient {
     private static $handlers = array();
 
-    public static function get(
+    public function get(
         $domain, $path = '/', $headers = array(),
         $cookie = null, $returnResponseHeader = false, $retryTimes = 2
     ) {
@@ -20,7 +20,7 @@ class WebClient {
         return $result;
     }
 
-    public static function post(
+    public function post(
         $domain, $path = '/', $uploadData = null, $headers = array(),
         $cookie = null, $returnResponseHeader = false, $retryTimes = 0
     ) {
@@ -32,7 +32,10 @@ class WebClient {
         );
     }
 
-    public static function close() {
+    public function sendRequest($method) {
+    }
+
+    public function close() {
         foreach (self::$handlers as $handler) {
             curl_close($handler);
         }
@@ -90,4 +93,21 @@ class WebClient {
         $result['content'] = $content;
         return $result;
     }
+
+    public function patch() {
+    }
+
+    public function put() {
+    }
+
+    public function delete() {
+    }
+
+    public function head() {
+    }
+
+    public function options() {
+    }
+
+
 }
