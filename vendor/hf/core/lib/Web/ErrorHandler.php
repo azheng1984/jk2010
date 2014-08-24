@@ -222,8 +222,8 @@ class ErrorHandler {
         return self::$exception;
     }
 
-    protected static function getPreviousErrors() {
-        return self::$exception;
+    protected static function getignoredErrors() {
+        return self::$ignoredErrors;
     }
 
     public static function reset() {
