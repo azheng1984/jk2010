@@ -9,7 +9,7 @@ class ErrorHandler {
     private static $exception;
     private static $isDebugEnabled;
     private static $outputBufferLevel;
-    private static $previousErrors;
+    private static $ignoredErrors;
 
     final public static function run() {
         $class = get_called_class();
@@ -78,10 +78,13 @@ class ErrorHandler {
                 $message, $code, $type, $file, $line
             ));
         }
-        if (self::$errors === null) {
-            self::$errors = array();
+        if (self::$isDebugEnabled === false) {
+            return;
         }
-        self::$previousErrors[] = array(
+        if (self::$ignoredErrors === null) {
+            self::$ignoredErrors = array();
+        }
+        self::$ignoredErrors[] = array(
             'type' => $type,
             'message' => $message,
             'file' => $file,
@@ -186,7 +189,7 @@ class ErrorHandler {
 
     protected static function renderDebugPage($headers, $outputBuffer) {
         DebugPage::render(
-            self::$exception, self::$previousErrors, $headers, $outputBuffer
+            self::$exception, self::$ignoredErrors, $headers, $outputBuffer
         );
     }
 
@@ -227,6 +230,6 @@ class ErrorHandler {
         self::$exception = null;
         self::$isDebugEnabled = null;
         self::$outputBufferLevel = null;
-        self::$previousErrors = null;
+        self::$ignoredErrors = null;
     }
 }

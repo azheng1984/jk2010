@@ -7,7 +7,7 @@ use Hyperframework\ErrorCodeHelper;
 class DebugPage {
     public static function render(
         $exception,
-        $previousErrors = null,
+        $ignoredErrors = null,
         $headers = null,
         $outputBuffer = null
     ) {
@@ -63,8 +63,8 @@ class DebugPage {
             echo '<span style="color:#999;background-color:#eee">UNAVAILABLE</span>';
         }
         if ($previousErrors !== null) {
-            echo '<h2>previous errors</h2>';
-            var_dump($previousErrors);
+            echo '<h2>ignored errors</h2>';
+            var_dump($ignoredErrors);
         }
         echo '<h2>output</h2>';
         echo '<h3>headers</h3>';
