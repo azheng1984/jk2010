@@ -106,6 +106,9 @@ class WebClient {
     public function head() {
     }
 
+    public function trace() {
+    }
+
     public function options() {
     }
 }
