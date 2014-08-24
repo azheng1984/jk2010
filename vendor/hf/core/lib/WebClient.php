@@ -32,7 +32,7 @@ class WebClient {
         );
     }
 
-    public function sendRequest($method) {
+    public function send($method) {
     }
 
     public function close() {
@@ -108,6 +108,4 @@ class WebClient {
 
     public function options() {
     }
-
-
 }
