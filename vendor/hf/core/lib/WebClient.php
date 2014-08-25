@@ -58,12 +58,19 @@ class WebClient {
         }
     }
 
-    public function addOutputWrapper() {
-        $callback = function($handle, $content) {
-            echo $content;
-            return strlen($content);
-        };
-        curl_setopt($this->handle, CURLOPT_WRITEFUNCTION, $callback);
+    private function addReadWrapper() {
+        $callback = null;
+        if ($this->options[CURLOPT_READFUNCTION]) {
+            $readCallback = $this->options[CURLOPT_READFUNCTION];
+            $callback = function($handle, $dirty, $max) use ($readCallback) {
+                return $readCallback($handle, null, $max);
+            }
+        } else {
+            $callback = function() {
+                throw new Exception;
+            };
+        }
+        curl_setopt($this->handle, CURLOPT_READFUNCTION, $callback);
     }
 
     public funciton getInfo($name) {
