@@ -7,7 +7,7 @@ class Logger {
         'alert' => 1,
         'critical' => 2,
         'error' => 3,
-        'warn' => 4,
+        'warning' => 4,
         'notice' => 5,
         'info' => 6,
         'debug' => 7,
@@ -26,7 +26,7 @@ class Logger {
     }
 
     public static function warn($entry) {
-        static::output('warn', $entry);
+        static::write('warning', $entry);
     }
 
     public static function error($entry) {

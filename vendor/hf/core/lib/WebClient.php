@@ -4,13 +4,74 @@ namespace Hyperframework;
 use Exception;
 
 class WebClient {
-    private static $handlers = array();
+    private $handle;
+    private $options;
+    private $stdout;
+    private $stderr;
 
-    public function get(
+    public function __construct() {
+        $this->handler = curl_init();
+    }
+
+    public function setOptions($options) {
+       curl_setopt_array($this->handle, $options);
+       foreach ($options as $name => $value) {
+           if (isset($this->options[$name])) {
+               unset($this->options[$name]);
+           }
+           $this->options[$name] = $value;
+       }
+    }
+
+    public function setOption($name, $value) {
+        curl_setopt($this->handle, $name, $value);
+        if (isset($this->options[$name])) {
+            unset($this->options[$name]);
+        }
+        $this->options[$name] = $value;
+    }
+
+    public funciton getInfo($name) {
+        return curl_getinfo($name);
+    }
+
+    public function pause($bitmask) {
+        //php 5.5
+        $result = curl_pause($this->handle, $bitmast);
+        //if ($result !== CURLE_OK) {
+        //    throw new \Exception;
+        //}
+    }
+
+    public function reset() {
+        //php 5.5
+        curl_reset($this->handle);
+    }
+
+    public function close() {
+        curl_close($this->handle);
+        $this->handler = null;
+    }
+
+    public function __destruct() {
+        if ($this->handler !== null) {
+            $this->close();
+        }
+    }
+
+    public function __clone() {
+        $this->handle = curl_copy_handle(self::$handler);
+    }
+
+    public function get($url, $options) {
+        curl_setopt($this->handler, CURLOPT_HTTPGET, true);
+        self::send($url);
+    }
+
+    public function get($url, $options)
         $domain, $path = '/', $headers = array(),
         $cookie = null, $returnResponseHeader = false, $retryTimes = 2
     ) {
-        echo $domain.$path;
         $handler = self::getHandler($domain, $path, $headers);
         curl_setopt($handler, CURLOPT_HTTPGET, true);
         $result = self::execute(
@@ -20,19 +81,44 @@ class WebClient {
         return $result;
     }
 
-    public function post(
-        $domain, $path = '/', $uploadData = null, $headers = array(),
-        $cookie = null, $returnResponseHeader = false, $retryTimes = 0
-    ) {
-        $handler = self::getHandler($domain, $path, $headers);
-        curl_setopt($handler, CURLOPT_POST, true);
-        curl_setopt($handler, CURLOPT_POSTFIELDS, $uploadData);
+    public function post($url) {
+        curl_setopt($this->handle, CURLOPT_POST, true);
+        curl_setopt($this->handle, CURLOPT_POSTFIELDS, $uploadData);
         return self::execute(
             $handler, $cookie, $returnResponseHeader, $retryTimes
         );
+        curl_setopt($handle, CURLOPT_POSTFIELDS, null);
     }
 
-    public function send($method) {
+    protected function send($url, $options) {
+        if (is_array($options)) {
+            curl_setopt_array($this->handle, $options);
+        }
+        curl_exec($this->handler);
+        if (is_array($options)) {
+            foreach ($options as $name => $value) {
+                if (isset($this->options[$name])) {
+                    curl_setopt($handle, $name, $this->options[$name]);
+                } else {
+                    if ((defined('CURLOPT_HTTP200ALIASES')
+                            && $name === CURLOPT_HTTP200ALIASES)
+                        || $name === CURLOPT_HTTPHEADER
+                        || $name === CURLOPT_POSTQUOTE
+                        || $name === CURLOPT_QUOTE
+                    ) {
+                        curl_setopt($handle, $name, array());
+                    } elseif ($name === CURLOPT_FILE) {
+                        if (version_compare(phpversion(), "5.5.0", ">=")) {
+                            curl_setopt($handle, $name, null);
+                        } else {
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static function sendAll($handlers) {
     }
 
     public function close() {
