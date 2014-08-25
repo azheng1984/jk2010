@@ -6,12 +6,9 @@ use Exception;
 class WebClient {
     private $handle;
     private $options;
-    private $dirtyOptions;
+    private $temporaryOptions;
     private $defaultStreams;
-
-//    private $callbackOptions;
-//    private $streamWrappers;
-    private $dirtyStreamOptions = array();
+    private $isInFileOptionDirty;
 
     public function __construct() {
         $this->handler = curl_init();
@@ -125,7 +122,16 @@ class WebClient {
                         curl_setopt($this->handle, $name, null);
                         continue;
                     }
-                    if ($name === CURLOPT_FILE) {
+                    if ($name === CURLOPT_FILE || CURLOPT_WRITEHEADER) {
+                        //cli use stdout and reuse
+                        curl_setopt($this->handle, $name, fopen('php://output', 'w'));
+                        continue;
+                    } elseif ($name === CURLOPT_STDERR) {
+                        //cli use stderr and reuse
+                        curl_setopt($this->handle, $name, fopen('php://stderr', 'w'));
+                        continue;
+                    } elseif ($name === CURLOPT_INFILE) {
+                    }
                         $this->dirtyStreamOptions[CURLOPT_FILE] = true;
                         if (isset($this->options[CURLOPT_WRITEFUNCTION])
                             === false

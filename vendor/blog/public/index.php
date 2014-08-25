@@ -2,14 +2,49 @@
 namespace Hyperframework\Blog;
 
 $fp = fopen("php://output", 'w');
-var_dump($fp);
-$fp = fopen("php://output", 'w');
-var_dump($fp);                   
-$fp = fopen("php://output", 'w');
-fclose($fp);
+fwrite($fp, "hello1");
+$fp2 = fopen("php://output", 'w');
+fwrite($fp2, "hello2");
+fwrite($fp, "hello3");
+$x = array();
+    $fp3 = fopen("php://output", 'w');
+for ($i= 0; $i < 100000; ++$i) {
+    $x[] = fopen("php://output", 'w');
+}
+function convertToBytes($memoryLimit)
+    {
+        if ('-1' === $memoryLimit) {
+            return -1;
+        }
+
+        $memoryLimit = strtolower($memoryLimit);
+        $max = strtolower(ltrim($memoryLimit, '+'));
+        if (0 === strpos($max, '0x')) {
+            $max = intval($max, 16);
+        } elseif (0 === strpos($max, '0')) {
+            $max = intval($max, 8);
+        } else {
+            $max = intval($max);
+        }
+
+        switch (substr($memoryLimit, -1)) {
+            case 't': $max *= 1024;
+            case 'g': $max *= 1024;
+            case 'm': $max *= 1024;
+            case 'k': $max *= 1024;
+        }
+
+        return $max;
+    }
+echo '<br>' . sprintf('%.1f MB', memory_get_peak_usage(true) / 1048576);
+//fwrite(STDERR, "...");
+//fwrite(STDOUT, 'hi..x.');
+fwrite($fp3, PHP_SAPI);
+fclose($fp3);
+//error_log('hello!!!!');
 var_dump($fp);
 exit;
-//fwrite($fp, "hello");
+fwrite($fp, "hello");
 //echo 'hi';
 ////fclose($fp);
 //exit;
