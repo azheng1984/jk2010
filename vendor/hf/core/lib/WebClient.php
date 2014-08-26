@@ -93,6 +93,7 @@ class WebClient {
                     'msg' => $info['msg'],
                     'content' => curl_multi_getcontent($info['handle'])
                 );
+                var_dump($request['client']);
                 //callback
                 curl_multi_remove_handle(self::$multiHandle, $info['handle']);
             }
