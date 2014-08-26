@@ -5,65 +5,71 @@ use Exception;
 
 class WebClient {
     private $handle;
-    private $options;
+    private $options = array();
     private $temporaryOptions;
-    private $defaultStreams;
+    private $stdStreams;
     private $isInFileOptionDirty;
+    private static $isOldCurl;
 
     public function __construct() {
-        $this->handler = curl_init();
+        if (self::$isOldCurl === null) {
+            self::$isOldCurl = version_compare(phpversion(), '5.5.0', '<');
+        }
+        $this->handle = curl_init();
     }
 
     public function setOptions($options) {
-        if (version_compare(phpversion(), '5.5.0', '>=')) {
-            curl_setopt_array($this->handle, $options);
-            foreach ($options as $name => $value) {
-                if ($value !== null) {
-                    $this->options[$name] = $value;
-                } else {
-                    unset($this->options[$name]);
-                }
+        curl_setopt_array($this->handle, $options);
+        foreach ($options as $name => $value) {
+            if ($value !== null) {
+                $this->options[$name] = $value;
+            } else {
+                unset($this->options[$name]);
             }
-        } else {
-            foreach ($options as $name => $value) {
-                $this->setOption($name, $value);
+            if ($this->temporaryOptions !== null) {
+                unset($this->temporaryOptions[$name]);
             }
+        }
+        if (self::$isOldCurl) {
+            $this->processDirtyInFileOption($options);
         }
     }
 
     public function setOption($name, $value) {
-        if (version_compare(phpversion(), '5.5.0', '<')) {
-            if ($name === CURLOPT_FILE) {
-                if (isset($this->dirtyStreamOptions[CURLOPT_FILE])) {
-                    unset($this->dirtyStreamOptions[CURLOPT_FILE]);
-                    if (isset($this->options[CURLOPT_WRITEFUNCTION]) === false) {
-                        curl_setopt(
-                            $this->handle, CURLOPT_WRITEFUNCTION, null;
-                        );
-                    }
-                }
-            } elseif ($name === CURLOPT_WRITEFUNCTION)  {
-                if ($value === null
-                    && isset($this->dirtyStreamOptions[CURLOPT_FILE])
-                ) {
-                    $this->addOutputWrapper();
-                }
+        $this->setOptions(array($name => $value));
+    }
+
+    private function processDirtyInFileOption($options) {
+        if (array_key_exists($options, CURLOPT_INFILE)) {
+            if ($value === null) {
+                $this->isInFileOptionDirty = true;
+                $this->addReadWrapper();
+                continue;
             }
-        }
-        curl_setopt($this->handle, $name, $value);
-        if ($value !== null) {
-            $this->options[$name] = $value;
-        } else {
-            unset($this->options[$name]);
+            $this->isInFileOptionDirty = false;
+            $readCallback = $this->getReadCallback();
+            if ($readCallback === null) {
+                curl_setopt($this->handle, CURLOPT_READFUNCTION, null);
+            } else {
+                curl_setopt(
+                    $this->handle, CURLOPT_READFUNCTION, $readCallback
+                );
+            }
+        } elseif (array_key_exists($options, CURLOPT_READFUNCTION)
+            && $this->isInFileOptionDirty
+        ) {
+            $this->addReadWrapper();
         }
     }
 
     private function addReadWrapper() {
         $callback = null;
-        if ($this->options[CURLOPT_READFUNCTION]) {
-            $readCallback = $this->options[CURLOPT_READFUNCTION];
-            $callback = function($handle, $dirty, $max) use ($readCallback) {
-                return $readCallback($handle, null, $max);
+        $readCallback = $this->getReadCallback();
+        if ($readCallback !== null) {
+            $callback = function($handle, $dirtyHandle, $maxLength)
+                use ($readCallback)
+            {
+                return call_user_func($readCallback, $handle, null, $maxLength);
             }
         } else {
             $callback = function() {
@@ -73,16 +79,121 @@ class WebClient {
         curl_setopt($this->handle, CURLOPT_READFUNCTION, $callback);
     }
 
-    public funciton getInfo($name) {
-        return curl_getinfo($name);
+    private function getReadCallback() {
+        $readCallback = null;
+        if ($this->temporaryOptions !== null && array_key_exists(
+            $this->temporaryOptions, CURLOPT_READFUNCTION
+        )) {
+            $readCallback =
+                $this->temporaryOptions[CURLOPT_READFUNCTION];
+        } elseif (isset($this->options[CURLOPT_READFUNCTION])) {
+            $readCallback = $this->options[CURLOPT_READFUNCTION];
+        }
+        return $realCallback;
+    }
+
+    protected function send($url, $options) {
+        if ($this->temporaryOptions !== null) {
+            foreach ($this->temporaryOptions as $name => $value) {
+                if (isset($this->options[$name])) {
+                    curl_setopt($handle, $name, $this->options[$name]);
+                } else {
+                    if ((defined('CURLOPT_HTTP200ALIASES')
+                            && $name === CURLOPT_HTTP200ALIASES)
+                        || $name === CURLOPT_HTTPHEADER
+                        || $name === CURLOPT_POSTQUOTE
+                        || $name === CURLOPT_QUOTE
+                    ) {
+                        curl_setopt($handle, $name, array());
+                        continue;
+                    }
+                    if (self::$isOldCurl === false) {
+                        curl_setopt($this->handle, $name, null);
+                        continue;
+                    }
+                    if ($name === CURLOPT_FILE || CURLOPT_WRITEHEADER) {
+                        curl_setopt(
+                            $this->handle, $name, $this->getStdStream()
+                        );
+                        continue;
+                    } elseif ($name === CURLOPT_STDERR) {
+                        curl_setopt(
+                            $this->handle, $name, $this->getStdStream(true)
+                        );
+                        continue;
+                    } elseif ($name === CURLOPT_INFILE) {
+                        continue;
+                    }
+                    curl_setopt($this->handle, $name, null);
+                }
+            }
+        }
+        if ($options !== null) {
+            curl_setopt_array($this->handle, $options);
+        }
+        if (self::$isOldCurl) {
+            $tmp = array();
+            if (array_key_exists($options, CURLOPT_INFILE)) {
+                $tmp[CURLOPT_INFILE] = $options[CURLOPT_INFILE];
+            } elseif (array_key_exists($this->temporaryOptions, CURLOPT_INFILE)
+            ) {
+                if (isset($this->options[CURLOPT_INFILE])) {
+                    $tmp[CURLOPT_INFILE] = $this->options[CURLOPT_INFILE];
+                } else {
+                    $tmp[CURLOPT_INFILE] = null;
+                }
+            } elseif (array_key_exists($options, CURLOPT_READFUNCTION)) {
+                $tmp[CURLOPT_READFUNCTION] = $options[CURLOPT_READFUNCTION];
+            } elseif (array_key_exists(
+                $this->temporaryOptions, CURLOPT_READFUNCTION
+            )) {
+                if (isset($this->options[CURLOPT_READFUNCTION])) {
+                    $tmp[CURLOPT_READFUNCTION] =
+                        $this->options[CURLOPT_READFUNCTION];
+                } else {
+                    $tmp[CURLOPT_READFUNCTION] = null;
+                }
+            }
+            $this->temporaryOptions = $options;
+            $this->processDirtyInFileOption($tmp);
+        } else {
+            $this->temporaryOptions = $options;
+        }
+        curl_exec($this->handler);
+    }
+
+    private function getStdSteam($isError = false) {
+        if (PHP_SAPI === 'cli' ) {
+            if ($isError) {
+                return STDERR;
+            }
+            return STDOUT;
+        }
+        if ($this->stdSteams === null) {
+            $this->stdSteams = array();
+        }
+        if ($isError) {
+            if (isset($this->stdSteams['error']) === false) {
+                $this->stdSteams['error'] = fopen('php://stderr', 'w');
+            }
+            return $this->stdSteams['error'];
+        }
+        if (isset($this->stdSteams['output']) === false) {
+            $this->stdSteams['output'] = fopen('php://output', 'w');
+        }
+        return $this->stdSteams['output'];
+    }
+
+    public funciton getInfo($name = 0) {
+        return curl_getinfo($this->handle, $name);
     }
 
     public function pause($bitmask) {
         //php 5.5
         $result = curl_pause($this->handle, $bitmast);
-        //if ($result !== CURLE_OK) {
-        //    throw new \Exception;
-        //}
+        if ($result !== CURLE_OK) {
+            throw new Exception;
+        }
     }
 
     public function reset() {
@@ -102,7 +213,7 @@ class WebClient {
     }
 
     public function __clone() {
-        $this->handle = curl_copy_handle(self::$handler);
+        $this->handle = curl_copy_handle(self::$handle);
     }
 
     public function get($url, $options) {
@@ -110,87 +221,7 @@ class WebClient {
         self::send($url);
     }
 
-    protected function send($url, $options) {
-        if ($this->temporaryOptions !== null) {
-            foreach ($this->temporaryOptions as $name => $value) {
-                if (isset($this->options[$name])) {
-                    curl_setopt($handle, $name, $this->options[$name]);
-                } else {
-                    if ((defined('CURLOPT_HTTP200ALIASES')
-                            && $name === CURLOPT_HTTP200ALIASES)
-                        || $name === CURLOPT_HTTPHEADER
-                        || $name === CURLOPT_POSTQUOTE
-                        || $name === CURLOPT_QUOTE
-                    ) {
-                        curl_setopt($handle, $name, array());
-                        continue;
-                    }
-                    if (version_compare(phpversion(), '5.5.0', '>=')) {
-                        curl_setopt($this->handle, $name, null);
-                        continue;
-                    }
-                    if ($name === CURLOPT_FILE || CURLOPT_WRITEHEADER) {
-                        //cli use stdout and reuse
-                        curl_setopt($this->handle, $name, fopen('php://output', 'w'));
-                        continue;
-                    } elseif ($name === CURLOPT_STDERR) {
-                        //cli use stderr and reuse
-                        curl_setopt($this->handle, $name, fopen('php://stderr', 'w'));
-                        continue;
-                    } elseif ($name === CURLOPT_INFILE) {
-                    }
-                        $this->dirtyStreamOptions[CURLOPT_FILE] = true;
-                        if (isset($this->options[CURLOPT_WRITEFUNCTION])
-                            === false
-                        ) {
-                            $this->addOutputWrapper();
-                        }
-                        continue;
-                    } elseif ($name === CURLOPT_WRITEFUNCTION) {
-                        if (isset($this->dirtyStreamOptions[CURLOPT_FILE])) {
-                            $this->addOutputWrapper();
-                            continue;
-                        }
-                    }
-                    curl_setopt($this->handle, $name, null);
-                }
-            }
-            $this->temporaryOptions = null;
-        }
-        if (is_array($options)) {
-            curl_setopt_array($this->handle, $options);
-            $this->temporaryOptions = $options;
-        }
-        curl_exec($this->handler);
-        $this->temporaryOptions = $options;
-    }
-
     public static function sendAll($handlers) {
-                 if ($name === CURLOPT_INFILE) {
-                        if (version_compare(phpversion(), '5.5.0', '>=')) {
-                            curl_setopt($this->handle, $name, null);
-                        } else {
-                            if (isset($this->callbackOptions[CURLOPT_INFILE]) === false) {
-                                $callback = function($handle, $content) {
-                                    throw new Exception;
-                                }
-                                curl_setopt(
-                                    $this->handle, CURLOPT_READFUNCTION, $callback;
-                                );
-                            }
-                            $this->callbackOptions[CURLOPT_READFUNCTION] =
-                                array('has_wrapper' = true);
-                        }
-
-                    }
-
-    }
-
-    public function close() {
-        foreach (self::$handlers as $handler) {
-            curl_close($handler);
-        }
-        self::$handlers = array();
     }
 
     public function get($url, $options)
