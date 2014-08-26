@@ -12,8 +12,6 @@ class WebClient {
     private $stdStreams;
     private $isInFileOptionDirty;
 
-    //multi_process_result_function
-
     public function __construct($options = null) {
         if (self::$isOldCurl === null) {
             self::$isOldCurl = version_compare(phpversion(), '5.5.0', '<');
@@ -34,9 +32,9 @@ class WebClient {
         $maxHandles = 100;
         $shouldCloseClient = false;
         $shouldReturnResult = true;
-        $selectTimeout = 1;
         $getRequestFunction = null;
-        $processResultFunction = null;
+        $selectTimeout = 1;
+        $processResponseFunction = null;
         if (count($requests) === 0) {
             return;
         }
@@ -86,7 +84,11 @@ class WebClient {
                 $status = curl_multi_exec(self::$multiHandle, $isRunning);
             } while ($status == CURLM_CALL_MULTI_PERFORM);
             if ($status !== CURLM_OK) {
-                throw new Exception;
+                $message = '';
+                if (self::$isOldCurl === false) {
+                    $message = curl_multi_strerror($status);
+                }
+                throw new Exception($message, $status);
             }
             while ($info = curl_multi_info_read(self::$multiHandle)) {
                 $handleId = intval($info['handle']);
@@ -94,13 +96,17 @@ class WebClient {
                 $client = $request['client'];
                 $request['result'] = array(
                     'code' => $info['result'],
-                    'msg' => $info['msg'],
+                    'msg' => $info['msg']
                 );
-                if ($this->getOption(CURLOPT_RETURNTRANSFER) === true) {
-                    $result['result']['content'] =
+                if ($client->getOption(CURLOPT_RETURNTRANSFER) == true) {
+                    $request['result']['content'] =
                         curl_multi_getcontent($info['handle']);
                 }
-                //callback
+                if ($processResponseFunction !== null) {
+                    call_user_func(
+                        $processResponseFunction, $request, $response
+                    );
+                }
                 curl_multi_remove_handle(self::$multiHandle, $info['handle']);
             }
             if ($isRunning) {
@@ -129,7 +135,7 @@ class WebClient {
             CURLOPT_TIMEOUT => 30,
             CURLOPT_ENCODING => '',
             CURLOPT_FOLLOWLOCATION => 1,
-//            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_RETURNTRANSFER => 1,
         );
     }
 
