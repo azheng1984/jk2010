@@ -39,6 +39,7 @@ class Action {
 //        var_dump(DbProfiler::getProfiles());
         $client = new WebClient;
         var_dump($client->get('http://www.baidu.com/'));
+        var_dump($client->getInfo());
     }
 
     public function after($ctx) {

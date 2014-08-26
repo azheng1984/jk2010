@@ -26,12 +26,19 @@ class WebClient {
         }
     }
 
-    public static function sendAll($requests) {
+    public static function sendAll($requests, $options = null) {
+        if (count($request) === 0) {
+            return;
+        }
+        if (self::$multiHandle === null) {
+            self::$multiHandle = curl_multi_init();
+        }
         foreach ($requests as $request) {
             if (isset($request['client']) === false) {
                 throw new Exception;
             }
-            if ($request['client'] instanceof WebClient === false) {
+            $client = $request['client'];
+            if ($client instanceof WebClient === false) {
                 throw new Exception;
             }
             if (isset($request['method']) === false) {
@@ -44,7 +51,33 @@ class WebClient {
             if (isset($request['options']) === false) {
                 $options = $request['options'];
             }
+            $client->prepare(
+                $request['method'], $request['url'], $request['options']
+            );
+            curl_multi_add_handle(self::$multiHandle, $client->handle);
         }
+        foreach ($requests as $request) {
+            $client = $request['client'];
+            curl_multi_remove_handle(self::$multiHandle, $client->handle);
+        }
+    }
+
+    public static function setMultiOptions($options) {
+    }
+
+    public static function setMultiOption($name, $value) {
+    }
+
+    public static function closeMultiHandle() {
+        if (self::$multiHandle === null) {
+            throw new Exception;
+        }
+        curl_multi_close(self::$multiHandle);
+        self::$multiHandle = null;
+    }
+
+    public static function getMultiInfo() {
+        return curl_multi_info_read(self::$multiHandle);
     }
 
     protected function getDefaultOptions() {
@@ -53,7 +86,6 @@ class WebClient {
             CURLOPT_ENCODING => '',
             CURLOPT_FOLLOWLOCATION => 1,
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_HEADER => 1
         );
     }
 
@@ -76,6 +108,11 @@ class WebClient {
     }
 
     protected function send($method, $url, $options) {
+        $this->prepare($method, $url, $options);
+        return curl_exec($this->handle);
+    }
+
+    protected function prepare($method, $url, $options) {
         if ($this->temporaryOptions !== null) {
             foreach ($this->temporaryOptions as $name => $value) {
                 if ($options !== null && array_key_exists($options, $name)) {
@@ -136,7 +173,6 @@ class WebClient {
         }
         curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($this->handle, CURLOPT_URL, $url);
-        return curl_exec($this->handle);
     }
 
     private function addReadWrapper() {
