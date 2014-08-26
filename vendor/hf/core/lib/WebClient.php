@@ -5,8 +5,8 @@ use Exception;
 
 class WebClient {
     private static $isOldCurl;
-    private $handle;
     private static $multiHandle;
+    private $handle;
     private $options = array();
     private $temporaryOptions;
     private $stdStreams;
@@ -30,9 +30,9 @@ class WebClient {
         $requests, $requestOptions = null, $multiOptions = null
     ) {
         $maxHandles = 100;
+        $getRequestFunction = null;
         $shouldCloseClient = false;
         $shouldReturnResult = true;
-        $getRequestFunction = null;
         $selectTimeout = 1;
         $processResponseFunction = null;
         if (count($requests) === 0) {
@@ -82,7 +82,7 @@ class WebClient {
         do {
             do {
                 $status = curl_multi_exec(self::$multiHandle, $isRunning);
-            } while ($status == CURLM_CALL_MULTI_PERFORM);
+            } while ($status === CURLM_CALL_MULTI_PERFORM);
             if ($status !== CURLM_OK) {
                 $message = '';
                 if (self::$isOldCurl === false) {
@@ -276,7 +276,10 @@ class WebClient {
         return $this->stdStreams['output'];
     }
 
-    public function getInfo($name = 0) {
+    public function getInfo($name = null) {
+        if ($name === null) {
+            return curl_getinfo($this->handle);
+        }
         return curl_getinfo($this->handle, $name);
     }
 
