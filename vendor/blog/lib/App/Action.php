@@ -38,8 +38,10 @@ class Action {
 //       print_r(DbClient::getColumnByColumns('Article', array('id' => '4'), 'name'));
 //        var_dump(DbProfiler::getProfiles());
         $client = new WebClient;
-        var_dump($client->get('http://www.baidu.com/'));
-        var_dump($client->getInfo());
+        //var_dump($client->get('http://www.baidu.com/'));
+        //var_dump($client->getInfo());
+        var_dump(WebClient::sendAll(array('http://www/baidu.com/')));
+        
     }
 
     public function after($ctx) {

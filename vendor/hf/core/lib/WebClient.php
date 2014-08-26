@@ -29,28 +29,31 @@ class WebClient {
     public static function sendAll(
         $requests, $clientOptions = null, $multiOptions = null
     ) {
-        //扩展 multiOptions 加入是否 reset client, 执行窗口大小, callback function
+        //扩展 multiOptions 加入是否 reset client,
+        //执行窗口大小, is return result 
+        //callback function
+        //timeout value
         //client options 也可以有是否 option
-        if (count($request) === 0) {
+        if (count($requests) === 0) {
             return;
         }
         if (self::$multiHandle === null) {
             self::$multiHandle = curl_multi_init();
         }
-        $handleMap = array();
+        $handleMaps = array();
         foreach ($requests as $key => &$request) {
             if (is_string($request)) {
                 $request = array('url' => $request);
             }
             if (isset($request['client']) === false) {
-                $request['client'] = $client;
+                $request['client'] = new WebClient;
             } else {
                 if ($request['client'] instanceof WebClient === false) {
                     throw new Exception;
                 }
             }
             $client = $request['client'];
-            $handleMap[intval($client->handle)] = $key;
+            $handleMaps[intval($client->handle)] = $key;
             $method = null;
             if (isset($request['method']) === false) {
                 $method = 'GET';
@@ -61,7 +64,7 @@ class WebClient {
                 throw new Exception;
             }
             $options = null;
-            if (isset($request['options']) === false) {
+            if (isset($request['options'])) {
                 $options = $request['options'];
                 if ($clientOptions !== null) {
                     $options += $clientOptions;
@@ -70,7 +73,7 @@ class WebClient {
                 $options = $clientOptions;
             }
             $client->prepare(
-                $request['method'], $request['url'], $request['options']
+                $method, $request['url'], $options
             );
             curl_multi_add_handle(self::$multiHandle, $client->handle);
         }
@@ -83,7 +86,8 @@ class WebClient {
                 throw new Exception;
             }
             while ($info = curl_multi_info_read(self::$multiHandle)) {
-                $request = $requests[$handleMap[intval($info['handle'])]];
+                $handleId = intval($info['handle']);
+                $request = $requests[$handleMaps[$handleId]];
                 $request['result'] = array(
                     'code' => $info['result'],
                     'msg' => $info['msg'],
