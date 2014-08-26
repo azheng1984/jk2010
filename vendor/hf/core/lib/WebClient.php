@@ -27,7 +27,7 @@ class WebClient {
     }
 
     public static function sendAll(
-        $requests, $clientOptions = null, $multiOptions = null
+        $requests, $requestOptions = null, $multiOptions = null
     ) {
         //扩展 multiOptions 加入是否 reset client,
         //执行窗口大小, is return result 
