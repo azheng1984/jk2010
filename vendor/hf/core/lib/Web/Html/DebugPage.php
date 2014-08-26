@@ -62,7 +62,7 @@ class DebugPage {
         } else {
             echo '<span style="color:#999;background-color:#eee">UNAVAILABLE</span>';
         }
-        if ($previousErrors !== null) {
+        if ($ignoredErrors !== null) {
             echo '<h2>ignored errors</h2>';
             var_dump($ignoredErrors);
         }

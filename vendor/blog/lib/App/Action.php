@@ -37,7 +37,8 @@ class Action {
 //        DbClient::getAll('select * from Article');
 //       print_r(DbClient::getColumnByColumns('Article', array('id' => '4'), 'name'));
 //        var_dump(DbProfiler::getProfiles());
-        print_r(WebClient::get('www.baidu.com', '/'));
+        $client = new WebClient;
+        var_dump($client->get('http://www.baidu.com/'));
     }
 
     public function after($ctx) {

@@ -6,12 +6,13 @@ use Exception;
 class WebClient {
     private static $isOldCurl;
     private $handle;
+    private static $multiHandle;
     private $options = array();
     private $temporaryOptions;
     private $stdStreams;
     private $isInFileOptionDirty;
 
-    public function __construct() {
+    public function __construct($options = null) {
         if (self::$isOldCurl === null) {
             self::$isOldCurl = version_compare(phpversion(), '5.5.0', '<');
         }
@@ -19,6 +20,30 @@ class WebClient {
         $defaultOptions = $this->getDefaultOptions();
         if ($defaultOptions !== null) {
             $this->setOptions($defaultOptions);
+        }
+        if ($options !== null) {
+            $this->setOptions($defaultOptions);
+        }
+    }
+
+    public static function sendAll($requests) {
+        foreach ($requests as $request) {
+            if (isset($request['client']) === false) {
+                throw new Exception;
+            }
+            if ($request['client'] instanceof WebClient === false) {
+                throw new Exception;
+            }
+            if (isset($request['method']) === false) {
+                throw new Exception;
+            }
+            if (isset($request['url']) === false) {
+                throw new Exception;
+            }
+            $options = null;
+            if (isset($request['options']) === false) {
+                $options = $request['options'];
+            }
         }
     }
 
@@ -111,7 +136,7 @@ class WebClient {
         }
         curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($this->handle, CURLOPT_URL, $url);
-        curl_exec($this->handle);
+        return curl_exec($this->handle);
     }
 
     private function addReadWrapper() {
@@ -122,7 +147,7 @@ class WebClient {
                 use ($readCallback)
             {
                 return call_user_func($readCallback, $handle, null, $maxLength);
-            }
+            };
         } else {
             $callback = function() {
                 throw new Exception;
@@ -166,7 +191,7 @@ class WebClient {
         return $this->stdSteams['output'];
     }
 
-    public funciton getInfo($name = 0) {
+    public function getInfo($name = 0) {
         return curl_getinfo($this->handle, $name);
     }
 
@@ -202,38 +227,35 @@ class WebClient {
         $this->handle = curl_copy_handle(self::$handle);
     }
 
-    public static function sendAll($requests) {
-    }
-
     public function head($url, $options = null) {
-        self::send('HEAD', $url, $options);
+        return self::send('HEAD', $url, $options);
     }
 
     public function get($url, $options = null) {
-        self::send('GET', $url, $options);
+        return self::send('GET', $url, $options);
     }
 
     public function post($url, $options = null) {
-        self::send('POST', $url, $options);
+        return self::send('POST', $url, $options);
     }
 
     public function patch($url, $options = null) {
-        self::send('PATCH', $url, $options);
+        return self::send('PATCH', $url, $options);
     }
 
     public function put($url, $options = null) {
-        self::send('PUT', $url, $options);
+        return self::send('PUT', $url, $options);
     }
 
     public function delete($url, $options = null) {
-        self::send('DELETE', $url, $options);
+        return self::send('DELETE', $url, $options);
     }
 
     public function options($url, $options = null) {
-        self::send('OPTIONS', $url, $options);
+        return self::send('OPTIONS', $url, $options);
     }
 
     public function trace($url, $options = null) {
-        self::send('TRACE', $url, $options);
+        return self::send('TRACE', $url, $options);
     }
 }
