@@ -98,7 +98,7 @@ class WebClient {
                     'code' => $info['result'],
                     'msg' => $info['msg']
                 );
-                if ($client->getOption(CURLOPT_RETURNTRANSFER) == true) {
+                if ($client->getOption(CURLOPT_RETURNTRANSFER)) {
                     $request['result']['content'] =
                         curl_multi_getcontent($info['handle']);
                 }
