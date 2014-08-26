@@ -12,6 +12,8 @@ class WebClient {
     private $stdStreams;
     private $isInFileOptionDirty;
 
+    //multi_process_result_function
+
     public function __construct($options = null) {
         if (self::$isOldCurl === null) {
             self::$isOldCurl = version_compare(phpversion(), '5.5.0', '<');
@@ -29,11 +31,12 @@ class WebClient {
     public static function sendAll(
         $requests, $requestOptions = null, $multiOptions = null
     ) {
-        //扩展 multiOptions 加入是否 reset client,
-        //执行窗口大小, is return result 
-        //callback function
-        //timeout value
-        //client options 也可以有是否 option
+        $maxHandles = 100;
+        $shouldCloseClient = false;
+        $shouldReturnResult = true;
+        $selectTimeout = 1;
+        $getRequestFunction = null;
+        $processResultFunction = null;
         if (count($requests) === 0) {
             return;
         }
@@ -66,11 +69,11 @@ class WebClient {
             $options = null;
             if (isset($request['options'])) {
                 $options = $request['options'];
-                if ($clientOptions !== null) {
-                    $options += $clientOptions;
+                if ($requestOptions !== null) {
+                    $options += $requestOptions;
                 }
             } else {
-                $options = $clientOptions;
+                $options = $requestOptions;
             }
             $client->prepare(
                 $method, $request['url'], $options
@@ -88,23 +91,22 @@ class WebClient {
             while ($info = curl_multi_info_read(self::$multiHandle)) {
                 $handleId = intval($info['handle']);
                 $request = $requests[$handleMaps[$handleId]];
+                $client = $request['client'];
                 $request['result'] = array(
                     'code' => $info['result'],
                     'msg' => $info['msg'],
-                    'content' => curl_multi_getcontent($info['handle'])
                 );
-                var_dump($request['client']);
+                if ($this->getOption(CURLOPT_RETURNTRANSFER) === true) {
+                    $result['result']['content'] =
+                        curl_multi_getcontent($info['handle']);
+                }
                 //callback
                 curl_multi_remove_handle(self::$multiHandle, $info['handle']);
             }
             if ($isRunning) {
-                curl_multi_select(self::$multiHandle, 0.25);
+                curl_multi_select(self::$multiHandle, $selectTimeout);
             }
         } while ($isRunning);
-        foreach ($requests as $request) {
-            $client = $request['client'];
-            curl_multi_remove_handle(self::$multiHandle, $client->handle);
-        }
         return $requests;
     }
 
@@ -127,7 +129,7 @@ class WebClient {
             CURLOPT_TIMEOUT => 30,
             CURLOPT_ENCODING => '',
             CURLOPT_FOLLOWLOCATION => 1,
-            CURLOPT_RETURNTRANSFER => 1,
+//            CURLOPT_RETURNTRANSFER => 1,
         );
     }
 
@@ -201,7 +203,7 @@ class WebClient {
                 || array_key_exists($this->options, CURLOPT_INFILE)
             ) {
                 $this->isInFileOptionDirty = false;
-                $readCallback = $this->getReadCallback();
+                $readCallback = $this->$this->getOption(CURLOPT_READFUNCTION);
                 if ($readCallback === null) {
                     curl_setopt($this->handle, CURLOPT_READFUNCTION, null);
                 } else {
@@ -219,7 +221,7 @@ class WebClient {
 
     private function addReadWrapper() {
         $callback = null;
-        $readCallback = $this->getReadCallback();
+        $readCallback = $this->getOption(CURLOPT_READFUNCTION);
         if ($readCallback !== null) {
             $callback = function($handle, $dirtyHandle, $maxLength)
                 use ($readCallback)
@@ -234,17 +236,16 @@ class WebClient {
         curl_setopt($this->handle, CURLOPT_READFUNCTION, $callback);
     }
 
-    private function getReadCallback() {
-        $readCallback = null;
+    private function getOption($name) {
+        $result = null;
         if ($this->temporaryOptions !== null && array_key_exists(
-            $this->temporaryOptions, CURLOPT_READFUNCTION
+            $this->temporaryOptions, $name
         )) {
-            $readCallback =
-                $this->temporaryOptions[CURLOPT_READFUNCTION];
-        } elseif (isset($this->options[CURLOPT_READFUNCTION])) {
-            $readCallback = $this->options[CURLOPT_READFUNCTION];
+            $result = $this->temporaryOptions[$name];
+        } elseif (isset($this->options[$name])) {
+            $result = $this->options[$name];
         }
-        return $realCallback;
+        return $result;
     }
 
     private function getStdStream($isError = false) {
