@@ -26,23 +26,32 @@ class WebClient {
         }
     }
 
-    public static function sendAll($requests, $options = null) {
+    public static function sendAll($requests, $multiOptions = null) {
         if (count($request) === 0) {
             return;
         }
         if (self::$multiHandle === null) {
             self::$multiHandle = curl_multi_init();
         }
-        foreach ($requests as $request) {
+        foreach ($requests as &$request) {
+            if (is_string($request)) {
+                $request = array('url' => $request);
+            }
+            $client = null;
             if (isset($request['client']) === false) {
-                throw new Exception;
+                $client = new WebClient;
+                $request['client'] = $client;
+            } else {
+                $client = $request['client'];
+                if ($client instanceof WebClient === false) {
+                    throw new Exception;
+                }
             }
-            $client = $request['client'];
-            if ($client instanceof WebClient === false) {
-                throw new Exception;
-            }
+            $method = null;
             if (isset($request['method']) === false) {
-                throw new Exception;
+                $method = 'GET';
+            } else {
+                $method = $request['method'];
             }
             if (isset($request['url']) === false) {
                 throw new Exception;
