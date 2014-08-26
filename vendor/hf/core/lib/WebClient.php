@@ -205,26 +205,26 @@ class WebClient {
         return $realCallback;
     }
 
-    private function getStdSteam($isError = false) {
+    private function getStdStream($isError = false) {
         if (PHP_SAPI === 'cli' ) {
             if ($isError) {
                 return STDERR;
             }
             return STDOUT;
         }
-        if ($this->stdSteams === null) {
-            $this->stdSteams = array();
+        if ($this->stdStreams === null) {
+            $this->stdStreams = array();
         }
         if ($isError) {
-            if (isset($this->stdSteams['error']) === false) {
-                $this->stdSteams['error'] = fopen('php://stderr', 'w');
+            if (isset($this->stdStreams['error']) === false) {
+                $this->stdStreams['error'] = fopen('php://stderr', 'w');
             }
-            return $this->stdSteams['error'];
+            return $this->stdStreams['error'];
         }
-        if (isset($this->stdSteams['output']) === false) {
-            $this->stdSteams['output'] = fopen('php://output', 'w');
+        if (isset($this->stdStreams['output']) === false) {
+            $this->stdStreams['output'] = fopen('php://output', 'w');
         }
-        return $this->stdSteams['output'];
+        return $this->stdStreams['output'];
     }
 
     public function getInfo($name = 0) {
