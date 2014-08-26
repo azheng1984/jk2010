@@ -165,7 +165,7 @@ class WebClient {
     protected function prepare($method, $url, $options) {
         if ($this->temporaryOptions !== null) {
             foreach ($this->temporaryOptions as $name => $value) {
-                if ($options !== null && array_key_exists($options, $name)) {
+                if ($options !== null && array_key_exists($name, $options)) {
                     continue;
                 }
                 if (isset($this->options[$name])) {
@@ -205,8 +205,8 @@ class WebClient {
         }
         $this->temporaryOptions = $options;
         if (self::$isOldCurl && $this->isInFileOptionDirty) {
-            if (array_key_exists($options, CURLOPT_INFILE)
-                || array_key_exists($this->options, CURLOPT_INFILE)
+            if (array_key_exists(CURLOPT_INFILE, $options)
+                || array_key_exists(CURLOPT_INFILE, $this->options)
             ) {
                 $this->isInFileOptionDirty = false;
                 $readCallback = $this->$this->getOption(CURLOPT_READFUNCTION);
@@ -245,7 +245,7 @@ class WebClient {
     private function getOption($name) {
         $result = null;
         if ($this->temporaryOptions !== null && array_key_exists(
-            $this->temporaryOptions, $name
+            $name, $this->temporaryOptions
         )) {
             $result = $this->temporaryOptions[$name];
         } elseif (isset($this->options[$name])) {
