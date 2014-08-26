@@ -26,27 +26,31 @@ class WebClient {
         }
     }
 
-    public static function sendAll($requests, $multiOptions = null) {
+    public static function sendAll(
+        $requests, $clientOptions = null, $multiOptions = null
+    ) {
+        //扩展 multiOptions 加入是否 reset client, 执行窗口大小, callback function
+        //client options 也可以有是否 option
         if (count($request) === 0) {
             return;
         }
         if (self::$multiHandle === null) {
             self::$multiHandle = curl_multi_init();
         }
-        foreach ($requests as &$request) {
+        $handleMap = array();
+        foreach ($requests as $key => &$request) {
             if (is_string($request)) {
                 $request = array('url' => $request);
             }
-            $client = null;
             if (isset($request['client']) === false) {
-                $client = new WebClient;
                 $request['client'] = $client;
             } else {
-                $client = $request['client'];
-                if ($client instanceof WebClient === false) {
+                if ($request['client'] instanceof WebClient === false) {
                     throw new Exception;
                 }
             }
+            $client = $request['client'];
+            $handleMap[intval($client->handle)] = $key;
             $method = null;
             if (isset($request['method']) === false) {
                 $method = 'GET';
@@ -59,16 +63,44 @@ class WebClient {
             $options = null;
             if (isset($request['options']) === false) {
                 $options = $request['options'];
+                if ($clientOptions !== null) {
+                    $options += $clientOptions;
+                }
+            } else {
+                $options = $clientOptions;
             }
             $client->prepare(
                 $request['method'], $request['url'], $request['options']
             );
             curl_multi_add_handle(self::$multiHandle, $client->handle);
         }
+        $isRunning = null;
+        do {
+            do {
+                $status = curl_multi_exec(self::$multiHandle, $isRunning);
+            } while ($status == CURLM_CALL_MULTI_PERFORM);
+            if ($status !== CURLM_OK) {
+                throw new Exception;
+            }
+            while ($info = curl_multi_info_read(self::$multiHandle)) {
+                $request = $requests[$handleMap[intval($info['handle'])]];
+                $request['result'] = array(
+                    'code' => $info['result'],
+                    'msg' => $info['msg'],
+                    'content' => curl_multi_getcontent($info['handle'])
+                );
+                //callback
+                curl_multi_remove_handle(self::$multiHandle, $info['handle']);
+            }
+            if ($isRunning) {
+                curl_multi_select(self::$multiHandle, 0.25);
+            }
+        } while ($isRunning);
         foreach ($requests as $request) {
             $client = $request['client'];
             curl_multi_remove_handle(self::$multiHandle, $client->handle);
         }
+        return $requests;
     }
 
     public static function setMultiOptions($options) {
@@ -83,10 +115,6 @@ class WebClient {
         }
         curl_multi_close(self::$multiHandle);
         self::$multiHandle = null;
-    }
-
-    public static function getMultiInfo() {
-        return curl_multi_info_read(self::$multiHandle);
     }
 
     protected function getDefaultOptions() {
