@@ -31,7 +31,6 @@ class WebClient {
             $this->setOptions($defaultOptions);
         }
     }
-
     private static function addMultiRequest() {
         $request = null;
         if (self::$multiPendingRequests !== null) {
@@ -125,6 +124,9 @@ class WebClient {
         if ($multiOptions !== null) {
             foreach ($multiOptions as $name => $value) {
                 if (is_int($name)) {
+                    if (self::$isOldCurl) {
+                        throw new Exception;
+                    }
                     curl_multi_setopt(self::$multiHandle, $name, $value);
                 }
             }
@@ -185,6 +187,9 @@ class WebClient {
         foreach ($options as $name => $value) {
             self::$multiOptions[$name] = $value;
             if (self::$multiHandle !== null && is_int($name)) {
+                if (self::$isOldCurl) {
+                    throw new Exception;
+                }
                 curl_multi_setopt(self::$multiHandle, $name, $value);
             }
         }
@@ -385,16 +390,13 @@ class WebClient {
     }
 
     public function reset() {
-        if (self::$isOldCurl) {
-            throw new Exception;
+        if (self::$isOldCurl === false) {
+            curl_reset($this->handle);
+            $this->options = array();
+            $this->temporaryOptions = null;
+            return;
         }
-        curl_reset($this->handle);
-        $this->options = array();
-        $this->temporaryOptions = null;
-        $this->isInFileOptionDirty = null;
-    }
-
-    public static function resetStaticProperties() {
+        throw new Exception;
     }
 
     public function close() {
