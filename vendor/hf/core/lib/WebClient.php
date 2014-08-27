@@ -17,7 +17,6 @@ class WebClient {
             self::$isOldCurl = version_compare(phpversion(), '5.5.0', '<');
         }
         $this->handle = curl_init();
-        return;
         $defaultOptions = $this->getDefaultOptions();
         if ($defaultOptions !== null) {
             $this->setOptions($defaultOptions);
@@ -97,7 +96,7 @@ class WebClient {
                 if (self::$isOldCurl === false) {
                     $message = curl_multi_strerror($status);
                 }
-                throw new Exception($message, $status);
+                throw new CurlMultiException($message, $status);
             }
             while ($info = curl_multi_info_read(self::$multiHandle)) {
                 $handleId = intval($info['handle']);
@@ -169,7 +168,11 @@ class WebClient {
 
     protected function send($method, $url, $options) {
         $this->prepare($method, $url, $options);
-        return curl_exec($this->handle);
+        $result = curl_exec($this->handle);
+        if ($result === false) {
+            throw new CurlException(curl_error(), curl_errno());
+        }
+        return $result;
     }
 
     protected function prepare($method, $url, $options) {
