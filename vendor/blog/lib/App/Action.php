@@ -16,8 +16,8 @@ class Action {
         $client->setOption(CURLOPT_HEADER, true);
         $client->setOption(CURLINFO_HEADER_OUT, true);
         //$client->setOption(CURLOPT_NETRC, null);
-        //$client->setOption(CURLOPT_ENCODING, null);
-        $client->get('http://zhidao.baidu.com/', array(CURLOPT_ENCODING => ''));
+        $client->setOption(CURLOPT_ENCODING, null);
+        $client->get('http://zhidao.baidu.com/', array(CURLOPT_ENCODING => 0));
         print_r($client->getInfo());
         $client->get('http://zhidao.baidu.com/');
         print_r($client->getInfo());

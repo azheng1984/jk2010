@@ -8,7 +8,6 @@ class WebClient {
     private static $stdStreams;
     private static $multiHandle;
     private static $multiOptions = array();
-    private static $multiTemporaryOptions;
     private static $multiPendingRequests;
     private static $multiProcessingRequests;
     private static $multiRequestOptions;
@@ -118,7 +117,11 @@ class WebClient {
                 if (isset(self::$multiOptions[$name])) {
                     self::setMultiOption($name, self::$multiOptions[$name]);
                 } else {
-                    self::setMultiOption($name, null);
+                    if ($name === CURLMOPT_MAXCONNECTS) {
+                        self::setMultiOption($name, 10);
+                    } else {
+                        self::setMultiOption($name, null);
+                    }
                 }
             }
         }
@@ -179,7 +182,11 @@ class WebClient {
                 curl_multi_remove_handle(self::$multiHandle, $info['handle']);
             }
             if ($isRunning) {
-                curl_multi_select(self::$multiHandle, $selectTimeout);
+                $tmp = curl_multi_select(self::$multiHandle, $selectTimeout);
+                //https://bugs.php.net/bug.php?id=61141
+                if ($tmp === -1) {
+                    usleep(100);
+                };
             }
         } while ($hasPendingRequest || $isRunning);
     }
@@ -233,19 +240,18 @@ class WebClient {
             CURLOPT_FOLLOWLOCATION => 1,
             CURLOPT_MAXREDIRS => 100,
             CURLOPT_RETURNTRANSFER => 1,
-            //CURLOPT_ENCODING => '',
+            CURLOPT_ENCODING => '',
         );
     }
 
     public function setOptions($options) {
         curl_setopt_array($this->handle, $options);
         foreach ($options as $name => $value) {
-            if ($value !== null) {
-                $this->options[$name] = $value;
-            } else {
+            if (array_key_exists($name, $this->options)) {
                 unset($this->options[$name]);
             }
-            if ($this->temporaryOptions !== null) {
+            $this->options[$name] = $value;
+            if (self::$isOldCurl && $this->temporaryOptions !== null) {
                 unset($this->temporaryOptions[$name]);
             }
         }
@@ -274,10 +280,6 @@ class WebClient {
             curl_setopt($handle, $name, array());
             return;
         }
-        if (self::$isOldCurl === false) {
-            curl_setopt($this->handle, $name, null);
-            return;
-        }
         if ($name === CURLOPT_FILE || CURLOPT_WRITEHEADER) {
             curl_setopt(
                 $this->handle, $name, $this->getStdStream()
@@ -288,16 +290,60 @@ class WebClient {
             );
         } elseif ($name === CURLOPT_INFILE) {
             $this->isInFileOptionDirty = true;
+        } elseif ($name === CURLOPT_DNS_USE_GLOBAL_CACHE
+            || $name === CURLOPT_NOPROGRESS
+            || $name === CURLOPT_SSL_VERIFYPEER
+        ) {
+            curl_setopt($this->handle, $name, true);
+        } elseif ($name === CURL_MAX_WRITE_SIZE) {
+            curl_setopt($this->handle, $name, 16384);
+        } elseif ($name === CURLOPT_CONNECTTIMEOUT) {
+            curl_setopt($this->handle, $name, 300);
+        } elseif ($name === CURLOPT_CONNECTTIMEOUT_MS) {
+            curl_setopt($this->handle, $name, 300000);
+        } elseif ($name === CURLOPT_DNS_CACHE_TIMEOUT) {
+            curl_setopt($this->handle, $name, 120);
+        } elseif ($name === CURLOPT_FTPSSLAUTH) {
+            curl_setopt($this->handle, $name, CURLFTPAUTH_DEFAULT);//0
+        } elseif ($name === CURLOPT_HTTP_VERSION) {
+            curl_setopt($this->handle, $name, CURL_HTTP_VERSION_NONE);//0
+        } elseif ($name === CURLOPT_HTTPAUTH || $name === CURLOPT_PROXYAUTH) {
+            curl_setopt($this->handle, $name, CURLAUTH_BASIC);//1
+        } elseif ($name === CURLOPT_INFILESIZE) {
+            curl_setopt($this->handle, $name, -1);
+        } elseif ($name === CURLOPT_MAXCONNECTS) {
+            curl_setopt($this->handle, $name, 5);
+        } elseif ($name === CURLOPT_MAXREDIRS) {
+            curl_setopt($this->handle, $name, -1);
+        } elseif ($name === CURLOPT_PROTOCOLS || $name === CURLOPT_REDIR_PROTOCOLS) {
+            curl_setopt($this->handle, $name, CURLPROTO_ALL);//-1
+        } elseif ($name === CURLOPT_PROXYTYPE) {
+            curl_setopt($this->handle, $name, CURLPROXY_HTTP);//0
+        } elseif ($name === CURLOPT_SSL_VERIFYHOST) {
+            curl_setopt($this->handle, $name, 2);
+        } elseif ($name === CURLOPT_SSLVERSION) {
+            curl_setopt($this->handle, $name, CURL_SSLVERSION_DEFAULT);//0
+        } elseif ($name === CURLOPT_TIMECONDITION) {
+            curl_setopt($this->handle, $name, CURL_TIMECOND_IFMODSINCE);//1
+        } elseif ($name === CURLOPT_SSH_AUTH_TYPES) {
+            curl_setopt($this->handle, $name, CURLSSH_AUTH_ANY);//-1
+        } elseif ($name === CURLOPT_IPRESOLVE) {
+            curl_setopt($this->handle, $name, CURL_IPRESOLVE_WHATEVER);//0
+        } elseif ($name === CURLOPT_SSLCERTTYPE || $name === CURLOPT_SSLKEYTYPE) {
+            curl_setopt($this->handle, $name, 'PEM');
+        } elseif ($name === CURLOPT_SSLENGINE_DEFAULT) {
+            curl_setopt($this->handle, $name, CURLE_SSL_ENGINE_SETFAILED);//54
         } else {
             curl_setopt($this->handle, $name, null);
         }
     }
 
     protected function prepare($method, $url, $options) {
+        var_dump(CURLE_SSL_ENGINE_SETFAILED);
         if ($this->temporaryOptions !== null) {
             if (self::$isOldCurl === false) {
                 curl_reset($this->handle);
-                curl_setopt_array($this->options);
+                curl_setopt_array($this->handle, $this->options);
             } else {
                 foreach ($this->temporaryOptions as $name => $value) {
                     if ($options !== null && array_key_exists($name, $options)) {
