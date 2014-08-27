@@ -191,6 +191,9 @@ class WebClient {
                     throw new Exception;
                 }
                 curl_multi_setopt(self::$multiHandle, $name, $value);
+                if (self::$multiTemporaryOptions !== null) {
+                    unset(self::$multiTemporaryOptions[$name]);
+                }
             }
         }
     }
@@ -260,6 +263,35 @@ class WebClient {
         return $result;
     }
 
+    private function resetOption($name) {
+        if ($name === CURLOPT_HTTPHEADER
+            || $name === CURLOPT_POSTQUOTE
+            || $name === CURLOPT_QUOTE
+            || (defined('CURLOPT_HTTP200ALIASES')
+                && $name === CURLOPT_HTTP200ALIASES)
+        ) {
+            curl_setopt($handle, $name, array());
+            return;
+        }
+        if (self::$isOldCurl === false) {
+            curl_setopt($this->handle, $name, null);
+            return;
+        }
+        if ($name === CURLOPT_FILE || CURLOPT_WRITEHEADER) {
+            curl_setopt(
+                $this->handle, $name, $this->getStdStream()
+            );
+        } elseif ($name === CURLOPT_STDERR) {
+            curl_setopt(
+                $this->handle, $name, $this->getStdStream(true)
+            );
+        } elseif ($name === CURLOPT_INFILE) {
+            $this->isInFileOptionDirty = true;
+        } else {
+            curl_setopt($this->handle, $name, null);
+        }
+    }
+
     protected function prepare($method, $url, $options) {
         if ($this->temporaryOptions !== null) {
             foreach ($this->temporaryOptions as $name => $value) {
@@ -269,32 +301,7 @@ class WebClient {
                 if (isset($this->options[$name])) {
                     curl_setopt($handle, $name, $this->options[$name]);
                 } else {
-                    if ($name === CURLOPT_HTTPHEADER
-                        || $name === CURLOPT_POSTQUOTE
-                        || $name === CURLOPT_QUOTE
-                        || (defined('CURLOPT_HTTP200ALIASES')
-                            && $name === CURLOPT_HTTP200ALIASES)
-                    ) {
-                        curl_setopt($handle, $name, array());
-                        continue;
-                    }
-                    if (self::$isOldCurl === false) {
-                        curl_setopt($this->handle, $name, null);
-                        continue;
-                    }
-                    if ($name === CURLOPT_FILE || CURLOPT_WRITEHEADER) {
-                        curl_setopt(
-                            $this->handle, $name, $this->getStdStream()
-                        );
-                    } elseif ($name === CURLOPT_STDERR) {
-                        curl_setopt(
-                            $this->handle, $name, $this->getStdStream(true)
-                        );
-                    } elseif ($name === CURLOPT_INFILE) {
-                        $this->isInFileOptionDirty = true;
-                    } else {
-                        curl_setopt($this->handle, $name, null);
-                    }
+                    self::resetOption($name);
                 }
             }
         }
@@ -394,13 +401,17 @@ class WebClient {
             throw new Exception;
         }
         if (self::$isOldCurl === false) {
+            $this->temporaryOptions = null;
             curl_reset($this->handle);
         } else {
-            curl_close($this->handle);
-            $this->handle = curl_init();
+            foreach ($this->options as $name => $value) {
+                $this->resetOptions($name);
+                if ($this->temporaryOptions !== null) {
+                    unset($this->temporaryOptions[$name]);
+                }
+            }
         }
         $this->options = array();
-        $this->temporaryOptions = null;
     }
 
     public function close() {
