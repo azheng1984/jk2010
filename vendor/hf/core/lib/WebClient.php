@@ -12,6 +12,7 @@ class WebClient {
     private static $multiProcessingRequests;
     private static $multiRequestOptions;
     private static $multiGetRequestCallback;
+    private static $defaultOptionValues;
     private $handle;
     private $options = array();
     private $temporaryOptions;
@@ -290,7 +291,11 @@ class WebClient {
             );
         } elseif ($name === CURLOPT_INFILE) {
             $this->isInFileOptionDirty = true;
-        } elseif ($name === CURLOPT_DNS_USE_GLOBAL_CACHE
+        }
+        if (self::$defaultOptionValues === null) {
+            self::$defaultOptionValues = array();
+        }
+        elseif ($name === CURLOPT_DNS_USE_GLOBAL_CACHE
             || $name === CURLOPT_NOPROGRESS
             || $name === CURLOPT_SSL_VERIFYPEER
         ) {
@@ -339,7 +344,6 @@ class WebClient {
     }
 
     protected function prepare($method, $url, $options) {
-        var_dump(CURLE_SSL_ENGINE_SETFAILED);
         if ($this->temporaryOptions !== null) {
             if (self::$isOldCurl === false) {
                 curl_reset($this->handle);
