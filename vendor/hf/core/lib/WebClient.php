@@ -5,11 +5,11 @@ use Exception;
 
 class WebClient {
     private static $isOldCurl;
+    private static $stdStreams;
     private static $multiHandle;
     private $handle;
     private $options = array();
     private $temporaryOptions;
-    private $stdStreams;
     private $isInFileOptionDirty;
 
     public function __construct($options = null) {
@@ -17,6 +17,7 @@ class WebClient {
             self::$isOldCurl = version_compare(phpversion(), '5.5.0', '<');
         }
         $this->handle = curl_init();
+        return;
         $defaultOptions = $this->getDefaultOptions();
         if ($defaultOptions !== null) {
             $this->setOptions($defaultOptions);
@@ -26,7 +27,9 @@ class WebClient {
         }
     }
 
-    private static function addMultiRequest($index, $request, &$handleMaps) {
+    private static function addMultiRequest(
+        $index, &$request, $requestOptions, &$handleMaps
+    ) {
         if (is_string($request)) {
             $request = array('url' => $request);
         }
@@ -60,23 +63,21 @@ class WebClient {
             $method, $request['url'], $options
         );
         $handleMaps[intval($client->handle)] = $index;
+        //var_dump($client->handle);
         curl_multi_add_handle(self::$multiHandle, $client->handle);
     }
 
-    WebClient::sendAll($res, function($response) {
-    });
-
     public static function sendAll(
         $requests,
-        $processResponseFunction,
+        $processResponseCallback,
         $requestOptions = null,
         $multiOptions = null
     ) {
         $maxHandles = 100;
-        $getRequestFunction = null;
+        $getRequestCallback = null;
         $selectTimeout = 1;
         $handleCount = 0;
-        if (count($requests) === 0 && $getRequestFunction === null) {
+        if (count($requests) === 0 && $getRequestCallback === null) {
             return;
         }
         if (self::$multiHandle === null) {
@@ -84,8 +85,7 @@ class WebClient {
         }
         $handleMaps = array();
         foreach ($requests as $index => &$request) {
-            if ($handleCount === $maxHandles) {
-            }
+            self::addMultiRequest($index, $request, $requestOptions, $handleMaps);
         }
         $isRunning = null;
         do {
@@ -111,9 +111,9 @@ class WebClient {
                     $request['result']['content'] =
                         curl_multi_getcontent($info['handle']);
                 }
-                if ($processResponseFunction !== null) {
+                if ($processResponseCallback !== null) {
                     call_user_func(
-                        $processResponseFunction, $request, $response
+                        $processResponseCallback, $request
                     );
                 }
                 curl_multi_remove_handle(self::$multiHandle, $info['handle']);
@@ -308,6 +308,12 @@ class WebClient {
             throw new Exception;
         }
         curl_reset($this->handle);
+        $this->options = array();
+        $this->temporaryOptions = null;
+        $this->isInFileOptionDirty = null;
+    }
+
+    public static function resetStaticProperties() {
     }
 
     public function close() {

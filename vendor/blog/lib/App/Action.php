@@ -42,9 +42,14 @@ class Action {
         //var_dump($client->get('http://www.baidu.com/'));
         //var_dump($client->getInfo());
         //var_dump($client->getInfo());
+        $callback = function ($response) {
+            print_r($response);
+        };
         var_dump(
             WebClient::sendAll(
-                array('http://www.baidu.com/adsfsdfsf32'), array(CURLOPT_HEADER => 1)
+                array('http://www.baidu.com/adsfsdfsf32'),
+                $callback,
+                array(CURLOPT_HEADER => 1)
             )
         );
     }
