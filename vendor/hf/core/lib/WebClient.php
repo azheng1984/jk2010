@@ -7,6 +7,8 @@ class WebClient {
     private static $isOldCurl;
     private static $stdStreams;
     private static $multiHandle;
+    private static $multiOptions;
+    private static $multiTemporaryOptions;
     private static $multiRequests;
     private static $multiRequestOptions;
     private static $multiProcessingRequests;
@@ -96,7 +98,7 @@ class WebClient {
         }
         self::$multiGetRequestCallback = null;
         self::$multiProcessingRequests = array();
-        $maxHandles = 100;
+        $maxHandles = 1;
         $getRequestCallback = null;
         $selectTimeout = 1;
         $handleCount = 0;
@@ -107,7 +109,6 @@ class WebClient {
             self::$multiHandle = curl_multi_init();
         }
         $hasRequest = true;
-        $processingRequests = array();
         for ($index = 0; $index < $maxHandles; ++$index) {
             $hasRequest = self::addMultiRequest() !== false;
             if ($hasRequest === false) {
@@ -124,6 +125,7 @@ class WebClient {
                 if (self::$isOldCurl === false) {
                     $message = curl_multi_strerror($status);
                 }
+                self::closeMultiHandle();
                 throw new CurlMultiException($message, $status);
             }
             while ($info = curl_multi_info_read(self::$multiHandle)) {
@@ -162,6 +164,7 @@ class WebClient {
             throw new Exception;
         }
         curl_multi_close(self::$multiHandle);
+        //todo reset other static params
         self::$multiHandle = null;
     }
 

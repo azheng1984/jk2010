@@ -48,7 +48,7 @@ class Action {
         };
         var_dump(
             WebClient::sendAll(
-                array('http://www.baidu.com/adsfsdfsf32'),
+                array('http://www.baidu.com/', 'http://www.baidu.com/'),
                 $callback,
                 array(CURLOPT_HEADER => 1)
             )
