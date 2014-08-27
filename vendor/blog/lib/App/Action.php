@@ -42,8 +42,9 @@ class Action {
         //var_dump($client->get('http://www.baidu.com/'));
         //var_dump($client->getInfo());
         //var_dump($client->getInfo());
-        $callback = function ($response) {
-            print_r($response);
+        $callback = function ($res) {
+            print_r($res['client']->getInfo());
+            print_r($res);
         };
         var_dump(
             WebClient::sendAll(

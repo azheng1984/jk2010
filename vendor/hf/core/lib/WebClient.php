@@ -68,7 +68,7 @@ class WebClient {
 
     public static function sendAll(
         $requests,
-        $processResponseCallback,
+        $onCompleteCallback,
         $requestOptions = null,
         $multiOptions = null
     ) {
@@ -84,7 +84,9 @@ class WebClient {
         }
         $handleMaps = array();
         foreach ($requests as $index => &$request) {
-            self::addMultiRequest($index, $request, $requestOptions, $handleMaps);
+            self::addMultiRequest(
+                $index, $request, $requestOptions, $handleMaps
+            );
         }
         $isRunning = null;
         do {
@@ -101,18 +103,14 @@ class WebClient {
             while ($info = curl_multi_info_read(self::$multiHandle)) {
                 $handleId = intval($info['handle']);
                 $request = $requests[$handleMaps[$handleId]];
-                $client = $request['client'];
-                $request['result'] = array(
-                    'code' => $info['result'],
-                    'msg' => $info['msg']
-                );
-                if ($client->getOption(CURLOPT_RETURNTRANSFER)) {
-                    $request['result']['content'] =
+                $response = array('curl_code' => $info['result']);
+                if ($request['client']->getOption(CURLOPT_RETURNTRANSFER)) {
+                    $response['content'] =
                         curl_multi_getcontent($info['handle']);
                 }
-                if ($processResponseCallback !== null) {
+                if ($onCompleteCallback !== null) {
                     call_user_func(
-                        $processResponseCallback, $request
+                        $onCompleteCallback, $request, $response
                     );
                 }
                 curl_multi_remove_handle(self::$multiHandle, $info['handle']);
