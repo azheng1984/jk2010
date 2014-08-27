@@ -31,6 +31,7 @@ class WebClient {
             $this->setOptions($defaultOptions);
         }
     }
+
     private static function addMultiRequest() {
         $request = null;
         if (self::$multiPendingRequests !== null) {
@@ -232,7 +233,7 @@ class WebClient {
             CURLOPT_FOLLOWLOCATION => 1,
             CURLOPT_MAXREDIRS => 100,
             CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_ENCODING => '',
+            //CURLOPT_ENCODING => '',
         );
     }
 
@@ -294,14 +295,19 @@ class WebClient {
 
     protected function prepare($method, $url, $options) {
         if ($this->temporaryOptions !== null) {
-            foreach ($this->temporaryOptions as $name => $value) {
-                if ($options !== null && array_key_exists($name, $options)) {
-                    continue;
-                }
-                if (isset($this->options[$name])) {
-                    curl_setopt($handle, $name, $this->options[$name]);
-                } else {
-                    self::resetOption($name);
+            if (self::$isOldCurl === false) {
+                curl_reset($this->handle);
+                curl_setopt_array($this->options);
+            } else {
+                foreach ($this->temporaryOptions as $name => $value) {
+                    if ($options !== null && array_key_exists($name, $options)) {
+                        continue;
+                    }
+                    if (isset($this->options[$name])) {
+                        curl_setopt($handle, $name, $this->options[$name]);
+                    } else {
+                        self::resetOption($name);
+                    }
                 }
             }
         }
