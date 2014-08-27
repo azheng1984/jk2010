@@ -53,6 +53,10 @@ class Action {
                 array(CURLOPT_HEADER => 1)
             )
         );
+        $client = new WebClient;
+        $client->setOption();
+        echo $client->post('http://zhidao.baidu.com/');
+        echo $client->post('http://zhidao.baidu.com/');
     }
 
     public function after($ctx) {
