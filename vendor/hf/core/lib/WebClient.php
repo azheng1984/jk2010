@@ -7,7 +7,7 @@ class WebClient {
     private static $isOldCurl;
     private static $stdStreams;
     private static $multiHandle;
-    private static $multiOptions;
+    private static $multiOptions = array();
     private static $multiTemporaryOptions;
     private static $multiPendingRequests;
     private static $multiProcessingRequests;
@@ -95,14 +95,13 @@ class WebClient {
         } else {
             self::$multiPendingRequests = null;
         }
-        self::$multiGetRequestCallback = null;
+        self::$multiRequestOptions = $requestOptions;
         self::$multiProcessingRequests = array();
-        $maxHandles = 100;//must >= 1
-        $getRequestCallback = null;
-        $selectTimeout = 1;
-        $handleCount = 0;
+        self::$multiGetRequestCallback = self::getMultiOptions(
+            'get_request_callback'
+        );
         if (self::$multiPendingRequests === null
-            && $getRequestCallback === null
+            && self::$multiGetRequestCallback === null
         ) {
             return;
         }
@@ -111,14 +110,38 @@ class WebClient {
             if (self::$multiOptions !== null) {
                 self::setMultiOptions(self::$multiOptions);
             }
+        } elseif (self::$multiTemporaryOptions !== null) {
+            foreach (self::$multiTemporaryOptions as $name => $value) {
+                if (is_int($name) === false) {
+                    continue;
+                }
+                if (isset(self::$multiOptions[$name])) {
+                    self::setMultiOption($name, self::$multiOptions[$name]);
+                } else {
+                    self::setMultiOption($name, null);
+                }
+            }
         }
+        if ($multiOptions !== null) {
+            foreach ($multiOptions as $name => $value) {
+                if (is_int($name)) {
+                    curl_multi_setopt(self::$multiHandle, $name, $value);
+                }
+            }
+        }
+        self::$multiTemporaryOptions = $multiOptions;
         $hasPendingRequest = true;
+        $maxHandles = self::getMultiOptions('max_handles', 100);
+        if ($maxHandles < 1) {
+            throw new Exception;
+        }
         for ($index = 0; $index < $maxHandles; ++$index) {
             $hasPendingRequest = self::addMultiRequest() !== false;
             if ($hasPendingRequest === false) {
                 break;
             }
         }
+        $selectTimeout = self::getMultiOptions('select_timeout', 1);
         $isRunning = null;
         do {
             do {
@@ -159,9 +182,31 @@ class WebClient {
     }
 
     public static function setMultiOptions($options) {
+        foreach ($options as $name => $value) {
+            self::$multiOptions[$name] = $value;
+            if (self::$multiHandle !== null && is_int($name)) {
+                curl_multi_setopt(self::$multiHandle, $name, $value);
+            }
+        }
+    }
+
+    public static function getMultiOptions($name, $default = null) {
+        $result = null;
+        if (self::$multiTemporaryOptions !== null
+            && array_key_exists($name, self::$multiTemporaryOptions)
+        ) {
+            $result = self::$multiTemporaryOptions[$name];
+        } elseif (isset(self::$multiOptions[$name])) {
+            $result = self::$multiOptions[$name];
+        }
+        if ($result === null) {
+            return $default;
+        }
+        return $result;
     }
 
     public static function setMultiOption($name, $value) {
+        self::setMultiOpitons(array($name, $value));
     }
 
     public static function closeMultiHandle() {
@@ -169,7 +214,6 @@ class WebClient {
             throw new Exception;
         }
         curl_multi_close(self::$multiHandle);
-        //todo reset other static params
         self::$multiHandle = null;
     }
 
@@ -292,15 +336,13 @@ class WebClient {
     }
 
     private function getOption($name) {
-        $result = null;
-        if ($this->temporaryOptions !== null && array_key_exists(
-            $name, $this->temporaryOptions
-        )) {
-            $result = $this->temporaryOptions[$name];
+        if ($this->temporaryOptions !== null
+            && array_key_exists($name, $this->temporaryOptions)
+        ) {
+            return $this->temporaryOptions[$name];
         } elseif (isset($this->options[$name])) {
-            $result = $this->options[$name];
+            return $this->options[$name];
         }
-        return $result;
     }
 
     private function getStdStream($isError = false) {
