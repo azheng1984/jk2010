@@ -7,6 +7,10 @@ class WebClient {
     private static $isOldCurl;
     private static $stdStreams;
     private static $multiHandle;
+    private static $multiRequests;
+    private static $multiRequestOptions;
+    private static $multiProcessingRequests;
+    private static $multiGetRequestCallback;
     private $handle;
     private $options = array();
     private $temporaryOptions;
@@ -26,9 +30,25 @@ class WebClient {
         }
     }
 
-    private static function addMultiRequest(
-        $index, &$request, $requestOptions, &$handleMaps
-    ) {
+    private static function addMultiRequest() {
+        $request = null;
+        if (self::$multiRequests !== null) {
+            $key = key(self::$multiRequests);
+            if ($key !== null) {
+                $request = self::$multiRequests[$key];
+                if ($request === null) {
+                    throw new Exception;
+                }
+                unset(self::$multiRequests[$key]);
+            } else {
+                self::$multiRequests = null;
+            }
+        } elseif (self::$multiGetRequestCallback !== null) {
+            $request = call_user_func(self::multiGetRequestCallback);
+        }
+        if ($request == false) {
+            return false;
+        }
         if (is_string($request)) {
             $request = array('url' => $request);
         }
@@ -52,17 +72,14 @@ class WebClient {
         $options = null;
         if (isset($request['options'])) {
             $options = $request['options'];
-            if ($requestOptions !== null) {
-                $options += $requestOptions;
+            if (self::$multiRequestOptions !== null) {
+                $options += self::$multiRequestOptions;
             }
         } else {
-            $options = $requestOptions;
+            $options = self::$multiRequestOptions;
         }
-        $client->prepare(
-            $method, $request['url'], $options
-        );
-        $handleMaps[intval($client->handle)] = $index;
-        //var_dump($client->handle);
+        $client->prepare($method, $request['url'], $options);
+        self::$multiProcessingRequests[intval($client->handle)] = $request;
         curl_multi_add_handle(self::$multiHandle, $client->handle);
     }
 
@@ -72,6 +89,13 @@ class WebClient {
         $requestOptions = null,
         $multiOptions = null
     ) {
+        if ($requests !== null && count($requests) !== 0) {
+            self::$multiRequests = $requests;
+        } else {
+            self::$multiRequests = null;
+        }
+        self::$multiGetRequestCallback = null;
+        self::$multiProcessingRequests = array();
         $maxHandles = 100;
         $getRequestCallback = null;
         $selectTimeout = 1;
@@ -82,11 +106,13 @@ class WebClient {
         if (self::$multiHandle === null) {
             self::$multiHandle = curl_multi_init();
         }
-        $handleMaps = array();
-        foreach ($requests as $index => &$request) {
-            self::addMultiRequest(
-                $index, $request, $requestOptions, $handleMaps
-            );
+        $hasRequest = true;
+        $processingRequests = array();
+        for ($index = 0; $index < $maxHandles; ++$index) {
+            $hasRequest = self::addMultiRequest() !== false;
+            if ($hasRequest === false) {
+                break;
+            }
         }
         $isRunning = null;
         do {
@@ -102,7 +128,7 @@ class WebClient {
             }
             while ($info = curl_multi_info_read(self::$multiHandle)) {
                 $handleId = intval($info['handle']);
-                $request = $requests[$handleMaps[$handleId]];
+                $request = self::$multiProcessingRequests[$handleId];
                 $response = array('curl_code' => $info['result']);
                 if ($request['client']->getOption(CURLOPT_RETURNTRANSFER)) {
                     $response['content'] =
@@ -112,6 +138,10 @@ class WebClient {
                     call_user_func(
                         $onCompleteCallback, $request, $response
                     );
+                }
+                unset(self::$multiProcessingRequests[$handleId]);
+                if ($hasRequest) {
+                    $hasRequest = self::addMultiRequest() !== false;
                 }
                 curl_multi_remove_handle(self::$multiHandle, $info['handle']);
             }
