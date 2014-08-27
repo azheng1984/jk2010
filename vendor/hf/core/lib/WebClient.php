@@ -390,13 +390,17 @@ class WebClient {
     }
 
     public function reset() {
+        if ($this->handle === null) {
+            throw new Exception;
+        }
         if (self::$isOldCurl === false) {
             curl_reset($this->handle);
-            $this->options = array();
-            $this->temporaryOptions = null;
-            return;
+        } else {
+            curl_close($this->handle);
+            $this->handle = curl_init();
         }
-        throw new Exception;
+        $this->options = array();
+        $this->temporaryOptions = null;
     }
 
     public function close() {
