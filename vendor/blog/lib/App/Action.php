@@ -42,9 +42,11 @@ class Action {
         //var_dump($client->get('http://www.baidu.com/'));
         //var_dump($client->getInfo());
         //var_dump($client->getInfo());
-        var_dump(WebClient::sendAll(
-            array('http://www.baidu.com/adsfsdfsf32'
-        ), array(CURLOPT_HEADER => 1)));
+        var_dump(
+            WebClient::sendAll(
+                array('http://www.baidu.com/adsfsdfsf32'), array(CURLOPT_HEADER => 1)
+            )
+        );
     }
 
     public function after($ctx) {

@@ -26,57 +26,66 @@ class WebClient {
         }
     }
 
+    private static function addMultiRequest($index, $request, &$handleMaps) {
+        if (is_string($request)) {
+            $request = array('url' => $request);
+        }
+        if (isset($request['client']) === false) {
+            $request['client'] = new WebClient;
+        } else {
+            if ($request['client'] instanceof WebClient === false) {
+                throw new Exception;
+            }
+        }
+        $client = $request['client'];
+        $method = null;
+        if (isset($request['method']) === false) {
+            $method = 'GET';
+        } else {
+            $method = $request['method'];
+        }
+        if (isset($request['url']) === false) {
+            throw new Exception;
+        }
+        $options = null;
+        if (isset($request['options'])) {
+            $options = $request['options'];
+            if ($requestOptions !== null) {
+                $options += $requestOptions;
+            }
+        } else {
+            $options = $requestOptions;
+        }
+        $client->prepare(
+            $method, $request['url'], $options
+        );
+        $handleMaps[intval($client->handle)] = $index;
+        curl_multi_add_handle(self::$multiHandle, $client->handle);
+    }
+
+    WebClient::sendAll($res, function($response) {
+    });
+
     public static function sendAll(
-        $requests, $requestOptions = null, $multiOptions = null
+        $requests,
+        $processResponseFunction,
+        $requestOptions = null,
+        $multiOptions = null
     ) {
         $maxHandles = 100;
         $getRequestFunction = null;
-        $shouldCloseClient = false;
-        $shouldReturnResult = true;
         $selectTimeout = 1;
-        $processResponseFunction = null;
-        if (count($requests) === 0) {
+        $handleCount = 0;
+        if (count($requests) === 0 && $getRequestFunction === null) {
             return;
         }
         if (self::$multiHandle === null) {
             self::$multiHandle = curl_multi_init();
         }
         $handleMaps = array();
-        foreach ($requests as $key => &$request) {
-            if (is_string($request)) {
-                $request = array('url' => $request);
+        foreach ($requests as $index => &$request) {
+            if ($handleCount === $maxHandles) {
             }
-            if (isset($request['client']) === false) {
-                $request['client'] = new WebClient;
-            } else {
-                if ($request['client'] instanceof WebClient === false) {
-                    throw new Exception;
-                }
-            }
-            $client = $request['client'];
-            $handleMaps[intval($client->handle)] = $key;
-            $method = null;
-            if (isset($request['method']) === false) {
-                $method = 'GET';
-            } else {
-                $method = $request['method'];
-            }
-            if (isset($request['url']) === false) {
-                throw new Exception;
-            }
-            $options = null;
-            if (isset($request['options'])) {
-                $options = $request['options'];
-                if ($requestOptions !== null) {
-                    $options += $requestOptions;
-                }
-            } else {
-                $options = $requestOptions;
-            }
-            $client->prepare(
-                $method, $request['url'], $options
-            );
-            curl_multi_add_handle(self::$multiHandle, $client->handle);
         }
         $isRunning = null;
         do {
@@ -113,7 +122,6 @@ class WebClient {
                 curl_multi_select(self::$multiHandle, $selectTimeout);
             }
         } while ($isRunning);
-        return $requests;
     }
 
     public static function setMultiOptions($options) {
@@ -133,9 +141,11 @@ class WebClient {
     protected function getDefaultOptions() {
         return array(
             CURLOPT_TIMEOUT => 30,
-            CURLOPT_ENCODING => '',
+            CURLOPT_CONNECTTIMEOUT => 30,
             CURLOPT_FOLLOWLOCATION => 1,
+            CURLOPT_MAXREDIRS => 100,
             CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_ENCODING => '',
         );
     }
 
