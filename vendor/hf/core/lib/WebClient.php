@@ -9,9 +9,9 @@ class WebClient {
     private static $multiHandle;
     private static $multiOptions;
     private static $multiTemporaryOptions;
-    private static $multiRequests;
-    private static $multiRequestOptions;
+    private static $multiPendingRequests;
     private static $multiProcessingRequests;
+    private static $multiRequestOptions;
     private static $multiGetRequestCallback;
     private $handle;
     private $options = array();
@@ -34,16 +34,16 @@ class WebClient {
 
     private static function addMultiRequest() {
         $request = null;
-        if (self::$multiRequests !== null) {
-            $key = key(self::$multiRequests);
+        if (self::$multiPendingRequests !== null) {
+            $key = key(self::$multiPendingRequests);
             if ($key !== null) {
-                $request = self::$multiRequests[$key];
+                $request = self::$multiPendingRequests[$key];
                 if ($request === null) {
                     throw new Exception;
                 }
-                unset(self::$multiRequests[$key]);
+                unset(self::$multiPendingRequests[$key]);
             } else {
-                self::$multiRequests = null;
+                self::$multiPendingRequests = null;
             }
         } elseif (self::$multiGetRequestCallback !== null) {
             $request = call_user_func(self::multiGetRequestCallback);
@@ -53,6 +53,8 @@ class WebClient {
         }
         if (is_string($request)) {
             $request = array('url' => $request);
+        } elseif (isset($request['url']) === false) {
+            throw new Exception;
         }
         if (isset($request['client']) === false) {
             $request['client'] = new WebClient;
@@ -67,9 +69,6 @@ class WebClient {
             $method = 'GET';
         } else {
             $method = $request['method'];
-        }
-        if (isset($request['url']) === false) {
-            throw new Exception;
         }
         $options = null;
         if (isset($request['options'])) {
@@ -92,26 +91,31 @@ class WebClient {
         $multiOptions = null
     ) {
         if ($requests !== null && count($requests) !== 0) {
-            self::$multiRequests = $requests;
+            self::$multiPendingRequests = $requests;
         } else {
-            self::$multiRequests = null;
+            self::$multiPendingRequests = null;
         }
         self::$multiGetRequestCallback = null;
         self::$multiProcessingRequests = array();
-        $maxHandles = 1;
+        $maxHandles = 100;//must >= 1
         $getRequestCallback = null;
         $selectTimeout = 1;
         $handleCount = 0;
-        if (count($requests) === 0 && $getRequestCallback === null) {
+        if (self::$multiPendingRequests === null
+            && $getRequestCallback === null
+        ) {
             return;
         }
         if (self::$multiHandle === null) {
             self::$multiHandle = curl_multi_init();
+            if (self::$multiOptions !== null) {
+                self::setMultiOptions(self::$multiOptions);
+            }
         }
-        $hasRequest = true;
+        $hasPendingRequest = true;
         for ($index = 0; $index < $maxHandles; ++$index) {
-            $hasRequest = self::addMultiRequest() !== false;
-            if ($hasRequest === false) {
+            $hasPendingRequest = self::addMultiRequest() !== false;
+            if ($hasPendingRequest === false) {
                 break;
             }
         }
@@ -125,7 +129,8 @@ class WebClient {
                 if (self::$isOldCurl === false) {
                     $message = curl_multi_strerror($status);
                 }
-                self::closeMultiHandle();
+                curl_multi_close(self::$multiHandle);
+                self::$multiHandle = null;
                 throw new CurlMultiException($message, $status);
             }
             while ($info = curl_multi_info_read(self::$multiHandle)) {
@@ -142,15 +147,15 @@ class WebClient {
                     );
                 }
                 unset(self::$multiProcessingRequests[$handleId]);
-                if ($hasRequest) {
-                    $hasRequest = self::addMultiRequest() !== false;
+                if ($hasPendingRequest) {
+                    $hasPendingRequest = self::addMultiRequest() !== false;
                 }
                 curl_multi_remove_handle(self::$multiHandle, $info['handle']);
             }
             if ($isRunning) {
                 curl_multi_select(self::$multiHandle, $selectTimeout);
             }
-        } while ($isRunning);
+        } while ($hasPendingRequest || $isRunning);
     }
 
     public static function setMultiOptions($options) {
