@@ -313,7 +313,7 @@ class WebClient {
             }
             return $result;
         }
-        if (self::$oldCurlMultiHandle === null)) {
+        if (self::$oldCurlMultiHandle === null) {
             self::$oldCurlMultiHandle = curl_multi_init();
         }
         curl_multi_add_handle(self::$oldCurlMultiHandle, $this->handle);
