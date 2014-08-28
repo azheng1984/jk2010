@@ -8,6 +8,7 @@ class WebClient {
     private static $stdStreams;
     private static $multiHandle;
     private static $multiOptions = array();
+    private static $multiTemporaryOptions;
     private static $multiPendingRequests;
     private static $multiProcessingRequests;
     private static $multiRequestOptions;
@@ -16,7 +17,6 @@ class WebClient {
     private $handle;
     private $options = array();
     private $temporaryOptions;
-    private $isInFileOptionDirty;
 
     public function __construct($options = null) {
         if (self::$isOldCurl === null) {
@@ -24,10 +24,15 @@ class WebClient {
         }
         $this->handle = curl_init();
         $defaultOptions = $this->getDefaultOptions();
-        if ($defaultOptions !== null) {
-            $this->setOptions($defaultOptions);
+        if ($defaultOptions === null) {
+            $defaultOptions = array();
         }
         if ($options !== null) {
+            foreach ($options as $name => $value) {
+                $defaltOptions[$name] = $value;
+            }
+        }
+        if (count($defaultOptions) !== 0) {
             $this->setOptions($defaultOptions);
         }
     }
@@ -207,7 +212,11 @@ class WebClient {
         }
     }
 
-    public static function getMultiOptions($name, $default = null) {
+    public static function setMultiOption($name, $value) {
+        self::setMultiOpitons(array($name, $value));
+    }
+
+    private static function getMultiOptions($name, $default = null) {
         $result = null;
         if (self::$multiTemporaryOptions !== null
             && array_key_exists($name, self::$multiTemporaryOptions)
@@ -220,10 +229,6 @@ class WebClient {
             return $default;
         }
         return $result;
-    }
-
-    public static function setMultiOption($name, $value) {
-        self::setMultiOpitons(array($name, $value));
     }
 
     public static function closeMultiHandle() {
@@ -266,7 +271,9 @@ class WebClient {
         $this->prepare($method, $url, $options);
         $result = curl_exec($this->handle);
         if ($result === false) {
-            throw new CurlException(curl_error(), curl_errno());
+            throw new CurlException(
+                curl_error($this->handle), curl_errno($this->handle)
+            );
         }
         return $result;
     }

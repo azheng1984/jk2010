@@ -1,5 +1,9 @@
 <?php
 namespace Hyperframework\Blog;
+if (isset($_GET['skip'])) {
+    echo 'OK';
+    return;
+}
 
 use Hyperframework\Web\Runner;
 define('Hyperframework\Blog\ROOT_PATH', dirname(__DIR__));
