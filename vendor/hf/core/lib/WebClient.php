@@ -28,7 +28,7 @@ class WebClient {
         }
         if ($options !== null) {
             foreach ($options as $name => $value) {
-                $defaltOptions[$name] = $value;
+                $defaultOptions[$name] = $value;
             }
         }
         if (count($defaultOptions) !== 0) {
@@ -89,7 +89,7 @@ class WebClient {
 
     public static function sendAll(
         $requests,
-        $onCompleteCallback,
+        $onCompleteCallback = null,
         $requestOptions = null,
         $multiOptions = null
     ) {
@@ -166,13 +166,17 @@ class WebClient {
             }
             while ($info = curl_multi_info_read(self::$multiHandle)) {
                 $handleId = intval($info['handle']);
-                $request = self::$multiProcessingRequests[$handleId];
-                $response = array('curl_code' => $info['result']);
-                if ($request['client']->getOption(CURLOPT_RETURNTRANSFER)) {
-                    $response['content'] =
-                        curl_multi_getcontent($info['handle']);
-                }
                 if ($onCompleteCallback !== null) {
+                    $request = self::$multiProcessingRequests[$handleId];
+                    $response = array('curl_code' => $info['result']);
+                    if ($info['result'] !== CURLE_OK) {
+                        $response['error'] =
+                            curl_error($info['handle']);
+                    }
+                    if ($request['client']->getOption(CURLOPT_RETURNTRANSFER)) {
+                        $response['content'] =
+                            curl_multi_getcontent($info['handle']);
+                    }
                     call_user_func(
                         $onCompleteCallback, $request, $response
                     );
@@ -273,8 +277,8 @@ class WebClient {
 
     protected function getDefaultOptions() {
         return array(
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_CONNECTTIMEOUT => 30,
+            CURLOPT_TIMEOUT => 3,
+            CURLOPT_CONNECTTIMEOUT => 3,
             CURLOPT_FOLLOWLOCATION => 1,
             CURLOPT_MAXREDIRS => 100,
             CURLOPT_RETURNTRANSFER => 1,
@@ -299,7 +303,7 @@ class WebClient {
         }
         $options[CURLOPT_CUSTOMREQUEST] = $method;
         $options[CURLOPT_URL] = $url;
-        self::send($options);
+        return self::send($options);
     }
 
     public function send($options = null) {
@@ -317,6 +321,7 @@ class WebClient {
             self::$oldCurlMultiHandle = curl_multi_init();
         }
         curl_multi_add_handle(self::$oldCurlMultiHandle, $this->handle);
+        $result = true;
         $isRunning = null;
         do {
             do {
@@ -333,12 +338,23 @@ class WebClient {
                 self::$multiHandle = null;
                 throw new CurlMultiException($message, $status);
             }
+            if ($info = curl_multi_info_read(self::$multiHandle)) {
+                if ($info['result'] !== CURLE_OK) {
+                    throw new CurlException(
+                        curl_error($this->handle), $info['result']
+                    );
+                }
+                if ($this->getOption(CURLOPT_RETURNTRANSFER)) {
+                    $result = curl_multi_getcontent($this->handle);
+                }
+            }
             if ($isRunning && curl_multi_select(self::$isRunning) === -1) {
                 //https://bugs.php.net/bug.php?id=61141
                 usleep(100);
             }
         } while ($running);
         curl_multi_remove_handle(self::$oldCurlMultiHandle, $this->handle);
+        return $result;
     }
 
     protected function prepare($options) {
@@ -413,35 +429,37 @@ class WebClient {
         $this->handle = curl_copy_handle(self::$handle);
     }
 
-    public function head($url, $options = null) {
+    public function head($url, $headers = null, $options = null) {
         return self::sendHttp('HEAD', $url, $options);
     }
 
-    public function get($url, $options = null) {
+    public function get($url, $headers = null, $options = null) {
         return self::sendHttp('GET', $url, $options);
     }
 
-    public function post($url, $fields = null, $options = null) {
+    public function post($url, $data = null, $headers = null, $options = null) {
         return self::sendHttp('POST', $url, $options);
     }
 
-    public function patch($url, $fields = null, $options = null) {
+    public function patch(
+        $url, $data = null,$headers = null,  $options = null
+    ) {
         return self::sendHttp('PATCH', $url, $options);
     }
 
-    public function put($url, $fields = null, $options = null) {
+    public function put($url, $data = null, $headers = null, $options = null) {
         return self::sendHttp('PUT', $url, $options);
     }
 
-    public function delete($url, $options = null) {
+    public function delete($url, $headers = null, $options = null) {
         return self::sendHttp('DELETE', $url, $options);
     }
 
-    public function options($url, $options = null) {
+    public function options($url, $headers = null, $options = null) {
         return self::sendHttp('OPTIONS', $url, $options);
     }
 
-    public function trace($url, $options = null) {
+    public function trace($url, $headers = null, $options = null) {
         return self::sendHttp('TRACE', $url, $options);
     }
 }

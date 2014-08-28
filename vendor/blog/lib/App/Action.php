@@ -14,27 +14,47 @@ class Action {
         CsrfProtection::run();
 
 $time_start = microtime(true);
-//for ($i = 0; $i < 100; ++$i) {
-//    WebClient::sendAll(array('https://i.mi.com/'), function ($req, $res){
-//        echo strlen($res['content']) . '<br>';
+
+echo 'sa';
+//for ($i = 0; $i < 10; ++$i) {
+//    WebClient::sendAll(array('http://www.google.com.hk/'), function ($req, $res){
+//        print_r($res);
 //        $req['client']->close();
 //    });
 //}
-//echo 'sa';
 
 //echo 'no share sid';
 $client = new WebClient;
 //$s = curl_share_init();
 //curl_share_setopt($s, CURLSHOPT_UNSHARE, CURL_LOCK_DATA_SSL_SESSION);
 //$client->setOption(CURLOPT_SHARE, $s);
-for ($i = 0; $i < 10; ++$i) {
-    echo '.';
-    if (strlen($client->get('https://i.mi.com/')) === 0) {
-        echo  'x';
-    };
-    ob_flush();
+
+$client->setOptions(array(
+    CURLOPT_HTTPHEADER => array(
+        'Cookie: x',
+        'Accept:',
+    ),
+    CURLINFO_HEADER_OUT => 1,
+    CURLOPT_HEADER => 1,
+    CURLOPT_COOKIE => 'hi',
+    CURLOPT_POSTFIELDS=> 'hi=%sdi+1:',
+));
+
+//array('xml' => 'dfasdf');
+//array('json' => 'dfasdf');
+//array('form-data' => 'dfasdf');
+//array('form-multi' => 'dfasdf');
+
+for ($i = 0; $i < 1; ++$i) {
+    //echo '.';
+    //if (strlen($r = ) === 0) {
+    //    echo  $r;
+        $client->get('http://sh.daoxila.com/');
+    //};
+//    ob_flush();
 }
-$client->close();
+print_r($client->getInfo());
+//$client->close();
 //
 //$time_end = microtime(true);
 //$time = $time_end - $time_start;
