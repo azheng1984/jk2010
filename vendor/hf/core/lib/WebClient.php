@@ -14,7 +14,7 @@ class WebClient {
     private static $multiGetRequestCallback;
     private $handle;
     private $options = array();
-    private $hasTemporaryOptions;
+    private $temporaryOptions;
 
     public function __construct($options = null) {
         if (self::$isOldCurl === null) {
@@ -64,7 +64,8 @@ class WebClient {
                 throw new Exception;
             }
         }
-        self::$multiProcessingRequests[intval($client->handle)] = $request;
+        $handleId = intval($request['client']->handle);
+        self::$multiProcessingRequests[$handleId] = $request;
         if (self::$multiRequestOptions !== null) {
             foreach (self::$multiRequestOptions as $name => $value) {
                 if (isset($request[$name]) === false) {
@@ -72,7 +73,8 @@ class WebClient {
                 }
             }
         }
-        $options = unset($request['client']);
+        $options = $request;
+        unset($options['client']);
         $request['client']->prepare($options);
         curl_multi_add_handle(self::$multiHandle, $request['client']->handle);
     }
@@ -190,6 +192,16 @@ class WebClient {
         } while ($hasPendingRequest || $isRunning);
     }
 
+    private function getOption($name) {
+        if ($this->temporaryOptions !== null
+            && array_key_exists($name, $this->temporaryOptions)
+        ) {
+            return $this->temporaryOptions[$name];
+        } elseif (isset($this->options[$name])) {
+            return $this->options[$name];
+        }
+    }
+
     public static function setMultiOptions($options) {
         foreach ($options as $name => $value) {
             self::$multiOptions[$name] = $value;
@@ -289,7 +301,7 @@ class WebClient {
 
     public function send($options = null) {
         $this->prepare($options);
-        if ($isOldCurl === false) {
+        if (self::$isOldCurl === false) {
             $result = curl_exec($this->handle);
             if ($result === false) {
                 throw new CurlException(
@@ -301,7 +313,7 @@ class WebClient {
     }
 
     protected function prepare($options) {
-        if ($this->hasTemporaryOptions === true) {
+        if ($this->temporaryOptions !== null) {
             if (self::$isOldCurl === false) {
                 curl_reset($this->handle);
             } else {
@@ -312,9 +324,9 @@ class WebClient {
         curl_setopt_array($this->handle, $this->options);
         if ($options !== null && count($options) !== 0) {
             curl_setopt_array($this->handle, $options);
-            $this->hasTemporaryOptions = true;
+            $this->temporaryOptions = $options;
         } else {
-            $this->hasTemporaryOptions = false;
+            $this->temporaryOptions = null;
         }
     }
 
@@ -342,7 +354,7 @@ class WebClient {
             curl_close($this->handle);
             $this->hanlde = curl_init();
         }
-        $this->hasTemporaryOptions = false;
+        $this->temporaryOptions = null;
         $this->options = array();
     }
 
