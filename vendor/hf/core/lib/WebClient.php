@@ -12,6 +12,7 @@ class WebClient {
     private static $multiProcessingRequests;
     private static $multiRequestOptions;
     private static $multiGetRequestCallback;
+    private static $oldCurlMultiHandle;
     private $handle;
     private $options = array();
     private $temporaryOptions;
@@ -239,6 +240,8 @@ class WebClient {
     public static function closeMultiHandle() {
         curl_multi_close(self::$multiHandle);
         self::$multiHandle = null;
+        self::$multiOptions = array();
+        self::$multiTemporaryOptions = null;
     }
 
     public static function resetMultiHandle() {
@@ -310,6 +313,32 @@ class WebClient {
             }
             return $result;
         }
+        if (self::$oldCurlMultiHandle === null)) {
+            self::$oldCurlMultiHandle = curl_multi_init();
+        }
+        curl_multi_add_handle(self::$oldCurlMultiHandle, $this->handle);
+        $isRunning = null;
+        do {
+            do {
+                $status = curl_multi_exec(
+                    self::$oldCurlMultiHandle, $isRunning
+                );
+            } while ($status === CURLM_CALL_MULTI_PERFORM);
+            if ($status !== CURLM_OK) {
+                $message = '';
+                if (self::$isOldCurl === false) {
+                    $message = curl_multi_strerror($status);
+                }
+                curl_multi_close(self::$multiHandle);
+                self::$multiHandle = null;
+                throw new CurlMultiException($message, $status);
+            }
+            if ($isRunning && curl_multi_select(self::$isRunning) === -1) {
+                //https://bugs.php.net/bug.php?id=61141
+                usleep(100);
+            }
+        } while ($running);
+        curl_multi_remove_handle(self::$oldCurlMultiHandle, $this->handle);
     }
 
     protected function prepare($options) {
@@ -361,6 +390,11 @@ class WebClient {
     public function close() {
         curl_close($this->handle);
         $this->handle = null;
+        if (self::$isOldCurl) {
+            if (self::$oldCurlMultiHandle !== null) {
+                curl_multi_close(self::$oldCurlMultiHandle);
+            }
+        }
     }
 
     public function __destruct() {
