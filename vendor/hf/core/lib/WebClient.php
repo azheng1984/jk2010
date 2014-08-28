@@ -384,7 +384,13 @@ class WebClient {
             $this->hanlde = curl_init();
         }
         $this->temporaryOptions = null;
-        $this->options = array();
+        $this->options = $this->getDefaultOptions();
+        if ($this->options === null) {
+            $this->options = array();
+        }
+        if (count($this->options) !== 0) {
+            curl_setopt_array($this->options);
+        }
     }
 
     public function close() {
