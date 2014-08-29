@@ -298,13 +298,62 @@ class WebClient {
         $this->setOptions(array($name => $value));
     }
 
-    private function sendHttp($method, $url, $options) {
+    private function sendHttp($method, $url, $data, $headers, $options) {
         if ($options === null) {
             $options = array();
+        }
+        if ($headers !== null && count($headers) !== 0) {
+            curl_setopt(CURLOPT_POST, true);
+            $defaultHeaders = self::getOption(CURLOPT_HTTPHEADER);
+            if ($defaultHeaders !== null) {
+                //todo merge same key headers
+                foreach ($headres as $header) {
+                    $defaultHeaders[] = $header;
+                }
+                $header = $defaultHeaders;
+            }
+        }
+        if ($data !== null) {
+            self::setData($data);
         }
         $options[CURLOPT_CUSTOMREQUEST] = $method;
         $options[CURLOPT_URL] = $url;
         return self::send($options);
+    }
+
+    private function setData($data) {
+        if (is_string($data)) {
+            curl_setopt(CURLOPT_POSTFIELDS, $data);
+        }
+        $content = reset($data);
+        $mime = key($data);
+        if ($mime !== 'multipart/form-data') {
+            if (is_string($content)) {
+                curl_setopt(CURLOPT_POSTFIELDS, $data);
+                //todo rewrite content type and length
+            } else {
+                throw new Exception;
+            }
+        } else {
+            if (self::$isOldCurl) {
+                //check has file params, if have, add read hook
+                //todo check postfields or handle has been set? if has been set reset handle
+            } else {
+                foreach ($data as $key => &$value) {
+                    if (is_array($value)) {
+                        if (isset($value['path']) === false) {
+                            throw new Exception;
+                        }
+                        $type = null;
+                        if (isset($value['type'])) {
+                            $type = $value['type'];
+                        }
+                        $value = curl_file_create($value['path'], $type, $key);
+                    }
+                }
+                curl_setopt(CURLOPT_POSTFIELDS, $data);
+            }
+        }
     }
 
     public function send($options = null) {
@@ -431,32 +480,32 @@ class WebClient {
     }
 
     public function head($url, $headers = null, $options = null) {
-        return self::sendHttp('HEAD', $url, $options);
+        return self::sendHttp('HEAD', $url, null, $headers, $options);
     }
 
-    public function get($url,$headers = null, $options = null) {
-        return self::sendHttp('GET', $url, $options);
+    public function get($url, $headers = null, $options = null) {
+        return self::sendHttp('GET', $url, null, $headers, $options);
     }
 
     public function post($url, $data = null, $headers = null, $options = null) {
-        return self::sendHttp('POST', $url, $options);
+        return self::sendHttp('POST', $url, $data, $headers, $options);
     }
 
     public function patch(
         $url, $data = null,$headers = null,  $options = null
     ) {
-        return self::sendHttp('PATCH', $url, $options);
+        return self::sendHttp('PATCH', $url, $data, $headers, $options);
     }
 
     public function put($url, $data = null, $headers = null, $options = null) {
-        return self::sendHttp('PUT', $url, $options);
+        return self::sendHttp('PUT', $url, $data, $headers, $options);
     }
 
     public function delete($url, $headers = null, $options = null) {
-        return self::sendHttp('DELETE', $url, $options);
+        return self::sendHttp('DELETE', $url, null, $headers, $options);
     }
 
     public function options($url, $headers = null, $options = null) {
-        return self::sendHttp('OPTIONS', $url, $options);
+        return self::sendHttp('OPTIONS', $url, null, $headers, $options);
     }
 }

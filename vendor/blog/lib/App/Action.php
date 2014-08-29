@@ -29,12 +29,15 @@ $client = new WebClient;
 //$client->setOption(CURLOPT_SHARE, $s);
 $p = true;
 $client->setOptions(array(
-    CURLOPT_HEADER=> 1,
+    CURLOPT_HEADER => 1,
     CURLINFO_HEADER_OUT => 1,
     CURLOPT_POST => true,
     CURLOPT_COOKIE => 'hi',
-    CURLOPT_POSTFIELDS => '@hello',
+    CURLOPT_COOKIE => null,
+    CURLOPT_POSTFIELDS => null,
+    //CURLOPT_POSTFIELDS => '{key:"value"}',
     CURLOPT_HTTPHEADER => array(
+        'Content-Type: applicatoin/json'
 //        'Content-Type: application/x-www-form-urlencoded',
 //        'Content-Length:5',
     ),
