@@ -316,29 +316,38 @@ class WebClient {
         if ($data !== null) {
             self::setData($data);
         }
-        $options[CURLOPT_CUSTOMREQUEST] = $method;
         $options[CURLOPT_URL] = $url;
+        $options[CURLOPT_CUSTOMREQUEST] = $method;
         return self::send($options);
     }
 
-    private function setData($data) {
+    private function setData($data, &$options) {
         if (is_string($data)) {
-            curl_setopt(CURLOPT_POSTFIELDS, $data);
+            $options[CURLOPT_POSTFIELDS] = $data;
+            return;
         }
         $content = reset($data);
         $mime = key($data);
+        //todo encode url encode form
         if ($mime !== 'multipart/form-data') {
             if (is_string($content)) {
-                curl_setopt(CURLOPT_POSTFIELDS, $data);
+                $options[CURLOPT_POSTFIELDS] = $data;
                 //todo rewrite content type and length
             } else {
                 throw new Exception;
             }
         } else {
             if (self::$isOldCurl) {
-                //check has file params, if have, add read hook
-                //todo check postfields or handle has been set? if has been set reset handle
+                foreach ($data as $key => $value) {
+                    if (is_array($key) || $value[0] === '@') {
+                        $boundary = '--BOUNDARY-' . sha1(uniqid(mt_rand(), true));
+                        //todo check postfields or handle has been set? if has been set reset handle
+                        $this->temporaryOptions['should_reset'] = true;
+                        $options[CURLOPT_READFUNCTION] = self::getFormDataCallback($data);
+                }
+                $options[CURLOPT_POSTFIELDS] = $data;
             } else {
+                //todo enable safe post fields
                 foreach ($data as $key => &$value) {
                     if (is_array($value)) {
                         if (isset($value['path']) === false) {
@@ -351,7 +360,70 @@ class WebClient {
                         $value = curl_file_create($value['path'], $type, $key);
                     }
                 }
-                curl_setopt(CURLOPT_POSTFIELDS, $data);
+                $options(CURLOPT_POSTFIELDS, $data);
+            }
+        }
+    }
+
+    private function getSendFormDataCallback($data) {
+        $cache = null;
+        $file = null;
+        return function($handle, $inFile, $maxLength) use (&$data, &$cache) {
+            if ($isEnd) {
+                return;
+            }
+            $cacheLength = strlen($cache);
+            if ($cacheLength !== 0) {
+                if ($maxLength <= $cacheLength) {
+                    $result = substr($cache, 0, $maxLength);
+                    $cache = substr($cache, $maxLength);
+                    return $result;
+                } else {
+                    $result = $cache;
+                    $cache = null;
+                    return $result;
+                }
+            }
+            if ($file === null) {
+                if (count($data) === 0) {
+                    $isEnd = true;
+                    return $boundary . '--';
+                }
+                $name = key($data);
+                $value = $data[$key];
+                $cache = $value['headers'];
+                if (isset($value['content'])) {
+                    $cache .= $value['content'];
+                } else {
+                    $file = fopen($value['file_path'], 'r');
+                    $position = 0;
+                }
+                unset($data[$key]);
+                $cacheLength = strlen($cache);
+                if ($cacheLength !== 0) {
+                    if ($maxLength <= $cacheLength) {
+                        $result = substr($cache, 0, $maxLength);
+                        $cache = substr($cache, $maxLength);
+                        return $result;
+                    } else {
+                        $result = $cache;
+                        $cache = null;
+                        return $result;
+                    }
+                }
+            } else {
+                $result = fgets($file, $maxLength);
+                if ($result === false) {
+                    throw Exception;
+                }
+                if (feof($file)) {
+                    fclose($file);
+                    $file = null;
+                }
+                fclose($handle);
+                if (strlen($result) === 0) {
+                    //todo read next
+                }
             }
         }
     }
