@@ -15,6 +15,7 @@ class Action {
 
 $time_start = microtime(true);
 
+echo 'sa';
 //for ($i = 0; $i < 10; ++$i) {
 //    WebClient::sendAll(array('http://www.google.com.hk/'), function ($req, $res){
 //        print_r($res);
@@ -29,50 +30,39 @@ $client = new WebClient;
 //$client->setOption(CURLOPT_SHARE, $s);
 $p = true;
 $client->setOptions(array(
-    CURLOPT_HEADER=> 1,
     CURLINFO_HEADER_OUT => 1,
+    CURLOPT_HEADER => 1,
     CURLOPT_POST => true,
     CURLOPT_COOKIE => 'hi',
-    CURLOPT_POSTFIELDS => '@hello',
+    CURLOPT_POSTFIELDS=> 'hi2=hi',
     CURLOPT_HTTPHEADER => array(
-//        'Content-Type: application/x-www-form-urlencoded',
-//        'Content-Length:5',
+        'Content-Type: application/x-www-form-urlencoded',
+        'Content-Length:5',
     ),
-//    array('application/json' => 'sdsdfdf'),
-//    array('multipart/form-data' => array(
-//        'file' => array('mime' => 'pdf', 'name' => 'lil', 'type' => 'file')
-//    ));
     CURLOPT_READFUNCTION => function($h, $b, $c) use(&$p) {
     //return;
-    var_dump('hi');
     echo $c;
     if ($p === true) {
         $p = false;
         return 'hi=hi';
     }
-    },CURLOPT_WRITEFUNCTION => function($h, $x) {
-        echo $x;
-        return strlen($x);
-    },
+}
 ));
 
-array('application/xml' => 'dfasdf');
-array('application/json' => 'dfasdf');
-array('multipart/form-data' => array(
-));
-array('' => 'dfasdf');
+//array('xml' => 'dfasdf');
+//array('json' => 'dfasdf');
+//array('form-data' => 'dfasdf');
+//array('form-multi' => 'dfasdf');
 
 for ($i = 0; $i < 1; ++$i) {
     //echo '.';
     //if (strlen($r = ) === 0) {
     //    echo  $r;
-        var_dump($client->patch('http://localhost:8080/index.php?b=1'));
+        echo $client->post('http://localhost/?b=1');
     //};
 //    ob_flush();
 }
-$info = $client->getInfo();
-//echo $info['request_header'];
-print_r($info);
+print_r($client->getInfo());
 //$client->close();
 //
 //$time_end = microtime(true);

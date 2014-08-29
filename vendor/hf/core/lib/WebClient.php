@@ -4,7 +4,6 @@ namespace Hyperframework;
 use Exception;
 
 class WebClient {
-    private static $isOldCurl;
     private static $multiHandle;
     private static $multiOptions = array();
     private static $multiTemporaryOptions;
@@ -12,10 +11,12 @@ class WebClient {
     private static $multiProcessingRequests;
     private static $multiRequestOptions;
     private static $multiGetRequestCallback;
+    private static $isOldCurl;
     private static $oldCurlMultiHandle;
     private $handle;
     private $options = array();
     private $temporaryOptions;
+    private $responseHeaders;
 
     public function __construct($options = null) {
         if (self::$isOldCurl === null) {
@@ -433,7 +434,7 @@ class WebClient {
         return self::sendHttp('HEAD', $url, $options);
     }
 
-    public function get($url, $headers = null, $options = null) {
+    public function get($url,$headers = null, $options = null) {
         return self::sendHttp('GET', $url, $options);
     }
 
@@ -457,9 +458,5 @@ class WebClient {
 
     public function options($url, $headers = null, $options = null) {
         return self::sendHttp('OPTIONS', $url, $options);
-    }
-
-    public function trace($url, $headers = null, $options = null) {
-        return self::sendHttp('TRACE', $url, $options);
     }
 }
