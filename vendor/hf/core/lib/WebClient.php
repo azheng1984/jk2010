@@ -321,84 +321,109 @@ class WebClient {
         return self::send($options);
     }
 
+    private function mergeHeaders($headers, &$options) {
+    }
+
+    $client->post('xx', array(
+        'type' => 'multipart/form-data',
+        'content' => array(
+            'file' => array('file' => '/xx')
+        ),
+        'file' => 'xx'
+    ));
+
     private function setData($data, &$options) {
         if (is_string($data)) {
             $options[CURLOPT_POSTFIELDS] = $data;
             return;
         }
-        $content = reset($data);
-        $mime = key($data);
-        //todo encode url encode form
-        if ($mime !== 'multipart/form-data') {
-            if (is_string($content)) {
-                $options[CURLOPT_POSTFIELDS] = $data;
-                //todo rewrite content type and length
+        if (count($data) === 1) {
+            $data = array('type' => key($data), 'content' => reset($data));
+        }
+        if ($data['type'] === 'application/x-www-form-urlencoded') {
+            if (is_array($data)) {
+                //todo array to string & urlencode
             } else {
-                throw new Exception;
+                $options[CURLOPT_POSTFIELDS] = $data['content'];
+            }
+        } elseif ($data['type'] !== 'multipart/form-data') {
+            if (isset($data['content'])) {
+                $options[CURLOPT_POSTFIELDS] = $data[''];
+            }
+            if (isset($data['content'])) {
+                $options[CURLOPT_POSTFIELDS] = $data;
+                //todo add content type header
+                return;
+            } elseif (isset($data['file'])) {
+                $options[CURLOPT_READFUNCTION] = self::getSendContentCallback($data);
             }
         } else {
             if (self::$isOldCurl) {
                 foreach ($data as $key => $value) {
                     if (is_array($key) || $value[0] === '@') {
+                        //todo check postfields has been set? if has been set reset handle()
+                        //$this->temporaryOptions['ignored_options'] = array(CURLOPT_POSTFIEDLS);
                         $boundary = '--BOUNDARY-' . sha1(uniqid(mt_rand(), true));
-                        //todo check postfields or handle has been set? if has been set reset handle
-                        $this->temporaryOptions['should_reset'] = true;
-                        $options[CURLOPT_READFUNCTION] = self::getFormDataCallback($data);
+                        //set content type header
+                        $options[CURLOPT_READFUNCTION] = self::getFormDataCallback($data, $boundary);
+                        return;
+                    }
                 }
-                $options[CURLOPT_POSTFIELDS] = $data;
             } else {
-                //todo enable safe post fields
+                $options[CURLOPT_SAFE_UPLOAD] = true;
                 foreach ($data as $key => &$value) {
                     if (is_array($value)) {
-                        if (isset($value['path']) === false) {
+                        if (isset($value['file']) === false) {
                             throw new Exception;
                         }
                         $type = null;
                         if (isset($value['type'])) {
                             $type = $value['type'];
                         }
-                        $value = curl_file_create($value['path'], $type, $key);
+                        $value = curl_file_create($value['file'], $type, $key);
                     }
                 }
-                $options(CURLOPT_POSTFIELDS, $data);
             }
+            $options[CURLOPT_POSTFIELDS] = $data;
         }
     }
 
-    private function getSendFormDataCallback($data) {
+    private function getSendContentCallback($data) {
+    }
+
+    private function getSendFormDataCallback($data, $boundary) {
+        foreach ($data as $key => &$value) {
+            $header = $boundary . "\r\n";
+            $type = null;
+            $fileName = null;
+            if (isset($value['content']) === false && isset($value['file'])) {
+                $fileName = '"; filename="' . basename($value['file']) . '"';
+                $type = 'application/octet-stream';
+            }
+            if (isset($value['type'])) {
+                $type = $value['type'];
+            }
+            if ($type !== null) {
+                $type = "\r\nContent-Type: " . $type;
+            }
+            $header .= 'Content-Disposition: form-data; name="' . $key
+                . $fileName . $type . "\r\n";
+            if (is_array($value) === false) {
+                $value = array('content' => $value);
+            }
+            $value['header'] = $header;
+        }
         $cache = null;
         $file = null;
-        return function($handle, $inFile, $maxLength) use (&$data, &$cache) {
+        $isFirst = true;
+        $isEnd = false;
+        return function($handle, $inFile, $maxLength) use (
+            &$data, &$cache, &$file, &$isFirst, &$isEnd
+        ) {
             if ($isEnd) {
                 return;
             }
-            $cacheLength = strlen($cache);
-            if ($cacheLength !== 0) {
-                if ($maxLength <= $cacheLength) {
-                    $result = substr($cache, 0, $maxLength);
-                    $cache = substr($cache, $maxLength);
-                    return $result;
-                } else {
-                    $result = $cache;
-                    $cache = null;
-                    return $result;
-                }
-            }
-            if ($file === null) {
-                if (count($data) === 0) {
-                    $isEnd = true;
-                    return $boundary . '--';
-                }
-                $name = key($data);
-                $value = $data[$key];
-                $cache = $value['headers'];
-                if (isset($value['content'])) {
-                    $cache .= $value['content'];
-                } else {
-                    $file = fopen($value['file_path'], 'r');
-                    $position = 0;
-                }
-                unset($data[$key]);
+            for (;;) {
                 $cacheLength = strlen($cache);
                 if ($cacheLength !== 0) {
                     if ($maxLength <= $cacheLength) {
@@ -411,21 +436,47 @@ class WebClient {
                         return $result;
                     }
                 }
-            } else {
-                $result = fgets($file, $maxLength);
-                if ($result === false) {
-                    throw Exception;
-                }
-                if (feof($file)) {
-                    fclose($file);
-                    $file = null;
-                }
-                fclose($handle);
-                if (strlen($result) === 0) {
-                    //todo read next
+                if ($file === null) {
+                    if (count($data) === 0) {
+                        $isEnd  = true;
+                        return "\r\n" . $boundary . '--';
+                    }
+                    $name = key($data);
+                    $value = $data[$key];
+                    $cache = null;
+                    if ($isFirst === false) {
+                        $cache = "\r\n";
+                    } else {
+                        $isFirst = false;
+                    }
+                    $cache .= $value['header'];
+                    if (isset($value['content'])) {
+                        $cache .= $value['content'];
+                    } elseif ($isset($value['file'])) {
+                        if ($value['file'] !== '') {
+                            $file = fopen($value['file'], 'r');
+                            if ($file === false) {
+                                throw new Exception;
+                            }
+                        }
+                    }
+                    unset($data[$key]);
+                } else {
+                    $result = fgets($file, $maxLength);
+                    if ($result === false) {
+                        throw Exception;
+                    }
+                    if (feof($file)) {
+                        fclose($file);
+                        $file = null;
+                    }
+                    fclose($handle);
+                    if (strlen($result) !== 0) {
+                        return $result;
+                    }
                 }
             }
-        }
+        };
     }
 
     public function send($options = null) {

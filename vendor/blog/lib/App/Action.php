@@ -35,9 +35,12 @@ $client->setOptions(array(
     CURLOPT_COOKIE => 'hi',
     CURLOPT_COOKIE => null,
     CURLOPT_POSTFIELDS => null,
-    //CURLOPT_POSTFIELDS => '{key:"value"}',
+    CURLOPT_POSTFIELDS => array(
+        'name' => 'hi',
+        'file[0]' => curl_file_create('/home/az/Desktop/sd.fie28932duiru', null),
+        'file[1]' => curl_file_create('/home/az/Desktop/sd.fie28932duiru', null)),
     CURLOPT_HTTPHEADER => array(
-        'Content-Type: applicatoin/json'
+//        'Content-Type: applicatoin/json'
 //        'Content-Type: application/x-www-form-urlencoded',
 //        'Content-Length:5',
     ),
@@ -69,7 +72,7 @@ for ($i = 0; $i < 1; ++$i) {
     //echo '.';
     //if (strlen($r = ) === 0) {
     //    echo  $r;
-        var_dump($client->patch('http://localhost:8080/index.php?b=1'));
+        var_dump($client->post('http://localhost/index.php?b=1'));
     //};
 //    ob_flush();
 }
