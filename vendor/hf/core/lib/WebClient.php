@@ -26,7 +26,6 @@ class WebClient {
         if (self::$isOldCurl === null) {
             self::$isOldCurl = version_compare(phpversion(), '5.5.0', '<');
         }
-        $this->handle = curl_init();
         $defaultOptions = $this->getDefaultOptions();
         if ($defaultOptions === null) {
             $defaultOptions = array();
@@ -85,7 +84,7 @@ class WebClient {
         curl_multi_add_handle(self::$multiHandle, $client->handle);
     }
 
-    private static function getMultiOptionDefaultValue($name) {
+    private static function getDefaultMultiOptionValue($name) {
         if ($name === CURLMOPT_MAXCONNECTS) {
             return 10;
         }
@@ -127,7 +126,7 @@ class WebClient {
                     self::setMultiOption($name, self::$multiOptions[$name]);
                 } else {
                     self::setMultiOption(
-                        $name, self::getMultiOptionDefaultValue($name)
+                        $name, self::getDefaultMultiOptionValue($name)
                     );
                 }
             }
@@ -215,24 +214,36 @@ class WebClient {
     public static function setMultiOptions($options) {
         foreach ($options as $name => $value) {
             self::$multiOptions[$name] = $value;
+            if (self::$multiTemporaryOptions !== null) {
+                unset(self::$multiTemporaryOptions[$name]);
+            }
             if (self::$multiHandle !== null && is_int($name)) {
                 if (self::$isOldCurl) {
                     throw new Exception;
                 }
                 curl_multi_setopt(self::$multiHandle, $name, $value);
-                if (self::$multiTemporaryOptions !== null) {
-                    unset(self::$multiTemporaryOptions[$name]);
-                }
             }
         }
     }
 
     public static function setMultiOption($name, $value) {
-        self::setMultiOpitons(array($name, $value));
+        self::$multiOptions[$name] = $value;
+        if (self::$multiTemporaryOptions !== null) {
+            unset(self::$multiTemporaryOptions[$name]);
+        }
+        if (self::$multiHandle !== null && is_int($name)) {
+            if (self::$isOldCurl) {
+                throw new Exception;
+            }
+            curl_multi_setopt(self::$multiHandle, $name, $value);
+        }
     }
 
     public static function removeMultiOption($name) {
-        //todo
+        self::setMultiOptions(
+            array($name, self::getDefaultMultiOptionValue($name))
+        );
+        unset(self::$multiOptions[$name]);
     }
 
     private static function getMultiOptions($name, $default = null) {
@@ -265,7 +276,7 @@ class WebClient {
                         curl_multi_setopt(
                             self::$multiHandle,
                             $name,
-                            self::getMultiOptionDefaultValue($name)
+                            self::getDefaultMultiOptionValue($name)
                         );
                     }
                 }
@@ -277,7 +288,7 @@ class WebClient {
                 curl_multi_setopt(
                     self::$multiHandle,
                     $name,
-                    self::getMultiOptionDefaultValue($name)
+                    self::getDefaultMultiOptionValue($name)
                 );
             }
         }
