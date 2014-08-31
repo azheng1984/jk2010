@@ -14,8 +14,12 @@ class WebClient {
     private static $isOldCurl;
     private static $oldCurlMultiHandle;
     private $handle;
-    private $options = array();
-    private $temporaryOptions;
+    private $headers = array();
+    private $curlOptions = array();
+    private $ignoredCurlOptions;
+    private $temporaryCurlOptions;
+    private $isCurlOptionChanged;
+    private $rawResponseHeaders;
     private $responseHeaders;
 
     public function __construct($options = null) {
@@ -66,7 +70,7 @@ class WebClient {
                 throw new Exception;
             }
         }
-        $handleId = intval($request['client']->handle);
+        $handleId = (int)$request['client']->handle;
         self::$multiProcessingRequests[$handleId] = $request;
         if (self::$multiRequestOptions !== null) {
             foreach (self::$multiRequestOptions as $name => $value) {
@@ -166,7 +170,7 @@ class WebClient {
                 throw new CurlMultiException($message, $status);
             }
             while ($info = curl_multi_info_read(self::$multiHandle)) {
-                $handleId = intval($info['handle']);
+                $handleId = (int)$info['handle'];
                 if ($onCompleteCallback !== null) {
                     $request = self::$multiProcessingRequests[$handleId];
                     $response = array('curl_code' => $info['result']);
@@ -174,7 +178,7 @@ class WebClient {
                         $response['error'] =
                             curl_error($info['handle']);
                     }
-                    if ($request['client']->getOption(CURLOPT_RETURNTRANSFER)) {
+                    if ($request['client']->getCurlOption(CURLOPT_RETURNTRANSFER)) {
                         $response['content'] =
                             curl_multi_getcontent($info['handle']);
                     }
@@ -198,13 +202,13 @@ class WebClient {
         } while ($hasPendingRequest || $isRunning);
     }
 
-    private function getOption($name) {
-        if ($this->temporaryOptions !== null
-            && array_key_exists($name, $this->temporaryOptions)
+    private function getCurlOption($name) {
+        if ($this->temporaryCurlOptions !== null
+            && array_key_exists($name, $this->temporaryCurlOptions)
         ) {
-            return $this->temporaryOptions[$name];
-        } elseif (isset($this->options[$name])) {
-            return $this->options[$name];
+            return $this->temporaryCurlOptions[$name];
+        } elseif (isset($this->curlOptions[$name])) {
+            return $this->curlOptions[$name];
         }
     }
 
@@ -288,10 +292,27 @@ class WebClient {
     }
 
     public function setOptions($options) {
-        curl_setopt_array($this->handle, $options);
-        foreach ($options as $name => $value) {
-            $this->options[$name] = $value;
+        if (isset($options['headers'])) {
+            $this->setHeaders($options['headers']);
+            unset($options['headers']);
         }
+        $this->isCurlOptionChanged = true;
+        foreach ($options as $name => $value) {
+            if (is_int($name)) {
+                $this->curlOptions[$name] = $value;
+            } else {
+                throw new Exception;
+            }
+        }
+    }
+
+    public function removeOption($name) {
+        if ($name === 'headers') {
+            $this->headers = array();
+            return;
+        }
+        $this->isCurlOptionChanged = true;
+        unset($this->curlOptions[$name]);
     }
 
     public function setOption($name, $value) {
@@ -303,36 +324,81 @@ class WebClient {
             $options = array();
         }
         if ($headers !== null && count($headers) !== 0) {
-            curl_setopt(CURLOPT_POST, true);
-            $defaultHeaders = self::getOption(CURLOPT_HTTPHEADER);
-            if ($defaultHeaders !== null) {
-                //todo merge same key headers
-                foreach ($headres as $header) {
-                    $defaultHeaders[] = $header;
+            if (isset($options['headers']) && count($options['headers']) !== 0) {
+                foreach ($headers as $key => $value) {
+                    if (is_int($key)) {
+                        $options['headers'][] = $key;
+                    } else {
+                        if (array_key_exists($key, $options['headers'])) {
+                            unset($options['headers'][$key]);
+                        }
+                    }
+                    $options['headers'][$key] = $value;
                 }
-                $header = $defaultHeaders;
+            } else {
+                $options['headers'] = $headers;
             }
         }
         if ($data !== null) {
-            self::setData($data);
+            $options['data'] = $data;
         }
         $options[CURLOPT_URL] = $url;
         $options[CURLOPT_CUSTOMREQUEST] = $method;
         return self::send($options);
     }
 
-    private function mergeHeaders($headers, &$options) {
+    private function setTemporaryHeaders($headers, &$options) {
+        if ($headers === null || count($headers) === 0) {
+            return;
+        }
+        if ($options === null) {
+            $options = array();
+        }
+        if (isset($options['headers']) === false) {
+            $options['headers'] = array();
+        }
+        foreach ($headers as $key => $value) {
+            if (is_int($key)) {
+                $tmp = explode(':', $value, 2);
+                $key = $tmp[0];
+                $value = null;
+                if (count($tmp) === 2) {
+                    $value = $tmp[1];
+                }
+            }
+            if ($key == '') {
+                throw new Exception;
+            }
+            $options['headers'][$key] = $value;
+        }
     }
 
-    $client->post('xx', array(
-        'type' => 'multipart/form-data',
-        'content' => array(
-            'file' => array('file' => '/xx')
-        ),
-        'file' => 'xx'
-    ));
+    public function setHeaders($headers) {
+        if ($this->headers === null) {
+            $this->headers = array();
+        }
+        foreach ($headers as $key => $value) {
+            if (is_int($key)) {
+                $tmp = explode(':', $value, 2);
+                $key = $tmp[0];
+                $value = null;
+                if (count($tmp) === 2) {
+                    $value = $tmp[1];
+                }
+            }
+            if ($key == '') {
+                throw new Exception;
+            }
+            $this->headers[$key] = $value;
+        }
+    }
+
+    public function resetHeaders() {
+        $this->headers = null;
+    }
 
     private function setData($data, &$options) {
+        curl_setopt(CURLOPT_POST, true);
         if (is_string($data)) {
             $options[CURLOPT_POSTFIELDS] = $data;
             return;
@@ -342,53 +408,158 @@ class WebClient {
         }
         if ($data['type'] === 'application/x-www-form-urlencoded') {
             if (is_array($data)) {
-                //todo array to string & urlencode
+                $content = null;
+                foreach ($data as $key => $value) {
+                    if ($content !== null) {
+                        $content .= '&';
+                    }
+                    $content .= urlencode($key) . '=' . urlencode($value);
+                }
+                $options[CURLOPT_POSTFIELDS] = $content;
             } else {
-                $options[CURLOPT_POSTFIELDS] = $data['content'];
+                $options[CURLOPT_POSTFIELDS] = (string)$data['content'];
             }
         } elseif ($data['type'] !== 'multipart/form-data') {
+            $this->setTemporaryHeaders(
+                array('Content-Type' => $data['type']), $options
+            );
             if (isset($data['content'])) {
-                $options[CURLOPT_POSTFIELDS] = $data[''];
-            }
-            if (isset($data['content'])) {
-                $options[CURLOPT_POSTFIELDS] = $data;
-                //todo add content type header
-                return;
+                $options[CURLOPT_POSTFIELDS] = (string)$data['content'];
             } elseif (isset($data['file'])) {
-                $options[CURLOPT_READFUNCTION] = self::getSendContentCallback($data);
+                $size = filesize($data['file']);
+                if ($size === false) {
+                    throw new Exception;
+                }
+                $this->setTemporaryHeader(array('Content-Length' => $size), $options);
+                if ($size !== 0) {
+                    if (isset($this->curlOptions[CURLOPT_POSTFIELDS])) {
+                        if (isset($options['ignored_curl_optoins']) === false) {
+                            $options['ignored_curl_options'] = array();
+                        }
+                        $options['ignored_curl_options'][] = CURLOPT_POSTFIELDS;
+                    }
+                    $options[CURLOPT_READFUNCTION] = self::getSendContentCallback($data);
+                } else {
+                    $options[CURLOPT_POSTFIELDS] = '';
+                }
             }
         } else {
-            if (self::$isOldCurl) {
-                foreach ($data as $key => $value) {
-                    if (is_array($key) || $value[0] === '@') {
-                        //todo check postfields has been set? if has been set reset handle()
-                        //$this->temporaryOptions['ignored_options'] = array(CURLOPT_POSTFIEDLS);
-                        $boundary = '--BOUNDARY-' . sha1(uniqid(mt_rand(), true));
-                        //set content type header
-                        $options[CURLOPT_READFUNCTION] = self::getFormDataCallback($data, $boundary);
-                        return;
+            if (isset($data['content']) === false
+                || is_array($data['content']) === false
+            ) {
+                throw new Exception;
+            }
+            $isSafe = true;
+            $canUsePostFields = true;
+            foreach ($data['content'] as $key => $value) {
+                if (is_array($value) === false) {
+                    $value = (string)$value;
+                    if (is_int($key)) {
+                        throw new Exception;
                     }
-                }
-            } else {
-                $options[CURLOPT_SAFE_UPLOAD] = true;
-                foreach ($data as $key => &$value) {
-                    if (is_array($value)) {
-                        if (isset($value['file']) === false) {
-                            throw new Exception;
+                    if (strlen($value) !== 0 && $value[0] === '@') {
+                        if (self::$isOldCurl) {
+                            $canUsePostFields = false;
+                            break;
                         }
-                        $type = null;
+                        $isSafe = false;
+                    }
+                } else {
+                    if (isset($value['content'])) {
                         if (isset($value['type'])) {
-                            $type = $value['type'];
+                            $canUsePostFields = false;
+                            break;
                         }
-                        $value = curl_file_create($value['file'], $type, $key);
+                        $value = (string)$value;
+                        if (strlen($value) !== 0 && $value[0] === '@') {
+                            if (self::$isOldCurl) {
+                                $canUsePostFields = false;
+                                break;
+                            }
+                            $isSafe = false;
+                        }
+                    } elseif (self::$isOldCurl) {
+                        if (isset($value['type'])
+                            && $value['type'] !== 'application/octet-stream'
+                        ) {
+                            $canUsePostFields = false;
+                            break;
+                        }
                     }
                 }
             }
-            $options[CURLOPT_POSTFIELDS] = $data;
+            if ($canUsePostFields) {
+                if (self::$isOldCurl) {
+                    if ($isSafe === false) {
+                        $options[CURLOPT_SAFE_UPLOAD] = true;
+                    }
+                    foreach ($data as $key => &$value) {
+                        if (is_array($value)) {
+                            if (isset($value['content'])) {
+                                $value = $value['content'];
+                            } elseif (isset($value['file'])) {
+                                throw new Exception;
+                            }
+                            $type = null;
+                            if (isset($value['type'])) {
+                                $type = $value['type'];
+                            }
+                            $fileName = basename($value['file']);
+                            if (isset($value['file_name'])) {
+                                $file = $value['file_name'];
+                            }
+                            $value = curl_file_create(
+                                $value['file'], $type, $fileName
+                            );
+                        }
+                    }
+                } else {
+                    foreach ($data as $key => &$value) {
+                        if (is_array($value)) {
+                            if (isset($value['content'])) {
+                                $value = $value['content'];
+                            } elseif (isset($value['file'])) {
+                                $value = '@' . $value['file'];
+                            }
+                        }
+                    }
+                }
+                $options[CURLOPT_POSTFIELDS] = $data;
+                return;
+            }
+            if (isset($this->curlOptions[CURLOPT_POSTFIELDS])) {
+                if (isset($options['ignored_optoins']) === false) {
+                    $options['ignored_options'] = array();
+                }
+                $options['ignored_options'][] = CURLOPT_POSTFIELDS;
+            }
+            $boundary = '--BOUNDARY-' . sha1(uniqid(mt_rand(), true));
+            $this->setTemporaryHeader(
+                array('Content-Type' => 'multipart/form-data; boundary='
+                    . $boundary
+                ),
+                $options
+            );
+            $options[CURLOPT_READFUNCTION] = self::getFormDataCallback($data, $boundary);
         }
     }
 
     private function getSendContentCallback($data) {
+        $file = fopen($data['file']);
+        if ($file === false) {
+            throw new Exception;
+        }
+        return function($handle, $inFile, $maxLength) use (&$file) {
+            if (feof($file)) {
+                fclose($file);
+                return '';
+            }
+            $result = fgets($file, $maxLength);
+            if ($result === false) {
+                throw Exception;
+            }
+            return $result;
+        };
     }
 
     private function getSendFormDataCallback($data, $boundary) {
@@ -470,7 +641,6 @@ class WebClient {
                         fclose($file);
                         $file = null;
                     }
-                    fclose($handle);
                     if (strlen($result) !== 0) {
                         return $result;
                     }
@@ -488,50 +658,111 @@ class WebClient {
                     curl_error($this->handle), curl_errno($this->handle)
                 );
             }
-            return $result;
-        }
-        if (self::$oldCurlMultiHandle === null) {
-            self::$oldCurlMultiHandle = curl_multi_init();
-        }
-        curl_multi_add_handle(self::$oldCurlMultiHandle, $this->handle);
-        $result = true;
-        $isRunning = null;
-        do {
+        } else {
+            if (self::$oldCurlMultiHandle === null) {
+                self::$oldCurlMultiHandle = curl_multi_init();
+            }
+            curl_multi_add_handle(self::$oldCurlMultiHandle, $this->handle);
+            $result = true;
+            $isRunning = null;
             do {
-                $status = curl_multi_exec(
-                    self::$oldCurlMultiHandle, $isRunning
-                );
-            } while ($status === CURLM_CALL_MULTI_PERFORM);
-            if ($status !== CURLM_OK) {
-                $message = '';
-                if (self::$isOldCurl === false) {
-                    $message = curl_multi_strerror($status);
-                }
-                curl_multi_close(self::$multiHandle);
-                self::$multiHandle = null;
-                throw new CurlMultiException($message, $status);
-            }
-            if ($info = curl_multi_info_read(self::$multiHandle)) {
-                if ($info['result'] !== CURLE_OK) {
-                    throw new CurlException(
-                        curl_error($this->handle), $info['result']
+                do {
+                    $status = curl_multi_exec(
+                        self::$oldCurlMultiHandle, $isRunning
                     );
+                } while ($status === CURLM_CALL_MULTI_PERFORM);
+                if ($status !== CURLM_OK) {
+                    $message = '';
+                    if (self::$isOldCurl === false) {
+                        $message = curl_multi_strerror($status);
+                    }
+                    curl_multi_close(self::$multiHandle);
+                    self::$multiHandle = null;
+                    throw new CurlMultiException($message, $status);
                 }
-                if ($this->getOption(CURLOPT_RETURNTRANSFER)) {
-                    $result = curl_multi_getcontent($this->handle);
+                if ($info = curl_multi_info_read(self::$multiHandle)) {
+                    if ($info['result'] !== CURLE_OK) {
+                        throw new CurlException(
+                            curl_error($this->handle), $info['result']
+                        );
+                    }
+                    if ($this->getCurlOption(CURLOPT_RETURNTRANSFER)) {
+                        $result = curl_multi_getcontent($this->handle);
+                    }
                 }
+                if ($isRunning && curl_multi_select(self::$isRunning) === -1) {
+                    //https://bugs.php.net/bug.php?id=61141
+                    usleep(100);
+                }
+            } while ($running);
+            curl_multi_remove_handle(self::$oldCurlMultiHandle, $this->handle);
+        }
+        if ($this->getCurlOption(CURLOPT_RETURNTRANSFER) == true
+            && $this->getCurlOption(CURLOPT_HEADER) === true
+        ) {
+            $tmp = explode("\r\n\r\n", $result, 2);
+            $this->rawResponseHeaders = $tmp[0];
+            $this->responseHeaders = array();
+            foreach (explode("\r\n", $tmp[0]) as $item) {
+                $tmp = explode(':', $item, 2);
+                $value = null;
+                if (isset($tmp[1])) {
+                    $value = $tmp[1];
+                }
+                $this->responseHeaders[$tmp[0]] = $value;
             }
-            if ($isRunning && curl_multi_select(self::$isRunning) === -1) {
-                //https://bugs.php.net/bug.php?id=61141
-                usleep(100);
-            }
-        } while ($running);
-        curl_multi_remove_handle(self::$oldCurlMultiHandle, $this->handle);
+            $result = $tmp[1];
+        }
         return $result;
     }
 
+    public function getResponseHeader($name) {
+        if (isset($this->responseHeaders[$name])) {
+            return $this->responseHeaders[$name];
+        }
+    }
+
+    public function getResponseHeaders() {
+        return $this->responseHeaders;
+    }
+
+    public function getRawResponseHeaders() {
+        return $this->rawResponseHeaders;
+    }
+
     protected function prepare($options) {
-        if ($this->temporaryOptions !== null) {
+        if (isset($options['headers']) || count($this->headers) !== 0) {
+            $headers = null;
+            if (isset($options['headers'])) {
+                $headers = $options['headers'];
+                unset($options['headers']);
+            }
+            if (isset($this->curlOptions[CURLOPT_HTTPHEADER])) {
+                $this->setTemporaryHeaders(
+                    $this->curlOptions[CURLOPT_HTTPHEADER], $options
+                );
+            }
+            if (count($this->headers) !== 0) {
+                $this->setTemporaryHeaders($this->headers, $options);
+            }
+            if ($headers !== null) {
+                $this->setTemporaryHeaders($headers, $options);
+            }
+            $headers = array();
+            foreach ($options['headers'] as $key => $value) {
+                $headers[] = $key . ': ' . $value;
+            }
+            unset($options['headers']);
+            $options[CURLOPT_HTTPHEADER] = $headers;
+        }
+        if (isset($options['data'])) {
+            $this->setData($options['data'], $options);
+            unset($options['data']);
+        }
+        if ($this->isCurlOptionChanged !== true
+            && $this->temporaryCurlOptions !== null
+            || $this->ignoredCurlOptions
+        ) {
             if (self::$isOldCurl === false) {
                 curl_reset($this->handle);
             } else {
@@ -539,13 +770,36 @@ class WebClient {
                 $this->handle = curl_init();
             }
         }
-        curl_setopt_array($this->handle, $this->options);
+        $this->isCurlOptionChanged = false;
+        $this->ignoredCurlOptions = null;
+        if (isset($options['ignored_curl_options'])) {
+            $this->ignoredCurlOptions = $options['ignored_curl_options'];
+            unset($options['ignored_curl_options']);
+        }
+        foreach ($options as $key => $value) {
+            if (is_int($key) === false) {
+                throw new Exception;
+            }
+        }
+        if ($this->ignoredCurlOptions === null) {
+            curl_setopt_array($this->handle, $this->curlOptions);
+        } else {
+            $tmp = $this->curlOptions;
+            foreach ($ignoredCurlOptions as $item) {
+                if (is_int($item)) {
+                    unset($tmp[$item]);
+                }
+            }
+            curl_setopt_array($this->handle, $tmp);
+        }
         if ($options !== null && count($options) !== 0) {
             curl_setopt_array($this->handle, $options);
-            $this->temporaryOptions = $options;
+            $this->temporaryCurlOptions = $options;
         } else {
-            $this->temporaryOptions = null;
+            $this->temporaryCurlOptions = null;
         }
+        $this->rawResponseHeaders = null;
+        $this->responseHeaders = null;
     }
 
     public function getInfo($name = null) {
@@ -572,13 +826,14 @@ class WebClient {
             curl_close($this->handle);
             $this->hanlde = curl_init();
         }
-        $this->temporaryOptions = null;
-        $this->options = $this->getDefaultOptions();
-        if ($this->options === null) {
-            $this->options = array();
+        $this->temporaryCurlOptions = null;
+        $this->headers = array();
+        $this->curlOptions = $this->getDefaultOptions();
+        if ($this->curlOptions === null) {
+            $this->curlOptions = array();
         }
-        if (count($this->options) !== 0) {
-            curl_setopt_array($this->options);
+        if (count($this->curlOptions) !== 0) {
+            curl_setopt_array($this->curlOptions);
         }
     }
 

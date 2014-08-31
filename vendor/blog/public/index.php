@@ -1,5 +1,7 @@
 <?php
 namespace Hyperframework\Blog;
+$x = curl_init();
+//echo (string)array();
 if (isset($_GET['b'])) {
     echo file_get_contents('php://input');
     print_r($_POST);

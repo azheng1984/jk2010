@@ -35,10 +35,10 @@ $client->setOptions(array(
     CURLOPT_COOKIE => 'hi',
     CURLOPT_COOKIE => null,
     CURLOPT_POSTFIELDS => null,
-    CURLOPT_POSTFIELDS => array(
-        'name' => 'hi',
-        'file[0]' => curl_file_create('/home/az/Desktop/sd.fie28932duiru', null),
-        'file[1]' => curl_file_create('/home/az/Desktop/sd.fie28932duiru', null)),
+//    CURLOPT_POSTFIELDS => array(
+//        'name' => 'hi',
+//        'file[0]' => curl_file_create('/home/az/Desktop/sd.fie28932duiru', null),
+//        'file[1]' => curl_file_create('/home/az/Desktop/sd.fie28932duiru', null)),
     CURLOPT_HTTPHEADER => array(
 //        'Content-Type: applicatoin/json'
 //        'Content-Type: application/x-www-form-urlencoded',

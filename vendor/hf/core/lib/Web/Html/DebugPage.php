@@ -41,7 +41,19 @@ class DebugPage {
             $lines = explode("<br />", $sourceCode);
             $index = 1;
             $count = count($lines);
-            foreach ($lines as &$line) {
+            $errorLine = $exception->getLine() - 1;
+            foreach ($lines as $key => &$line) {
+                if ($index - 21 > $errorLine || $index + 19 < $errorLine) {
+                    if ($key === 0) {
+                        $lines[$key] = '<code><span style="color:#000">';
+                    } elseif ($key === $count - 1) {
+                        $lines[$key] = '</span></code>';
+                    } else {
+                        unset($lines[$key]);
+                    }
+                    ++$index;
+                    continue;
+                }
                 $content = $line;
                 $line = '<span style="color:#ccc;width:';
                 $line .= (strlen($count)) * 10;
