@@ -861,6 +861,10 @@ class WebClient {
             curl_close($this->handle);
             $this->hanlde = curl_init();
         }
+        $this->ignoredCurlOptions = null;
+        $this->isCurlOptionChanged = false;
+        $this->rawResponseHeaders = null;
+        $this->responseHeaders = null;
         $this->temporaryCurlOptions = null;
         $this->headers = array();
         $this->curlOptions = $this->getDefaultOptions();
