@@ -420,8 +420,8 @@ class WebClient {
         }
     }
 
-    public function resetHeaders() {
-        $this->headers = null;
+    public function removeHeader($name) {
+        unset($this->headers[$name]);
     }
 
     private function setData($data, &$options) {
@@ -744,15 +744,33 @@ class WebClient {
                 if (isset($tmp2[1])) {
                     $value = $tmp2[1];
                 }
-                $this->responseHeaders[$tmp2[0]] = $value;
+                if (isset($this->responseHeaders[$tmp2[0]])) {
+                    if (is_array($this->responseHeaders[$tmp2[0]]) === false) {
+                        $this->responseHeaders[$tmp2[0]] =
+                            array($this->responseHeaders[$tmp2[0]]);
+                    }
+                    $this->responseHeaders[$tmp2[0]][] = $value;
+                } else {
+                    $this->responseHeaders[$tmp2[0]] = $value;
+                }
             }
             $result = $tmp[1];
         }
         return $result;
     }
 
-    public function getResponseHeader($name) {
+    public function getResponseHeader($name, $isDuplicationEnabled = false) {
         if (isset($this->responseHeaders[$name])) {
+            if (is_array($this->responseHeaders[$name])) {
+                if ($isDuplicationEnabled) {
+                    return $this->responseHeaders[$name];
+                } else {
+                    return end($this->responseHeaders[$name]);
+                }
+            }
+            if ($isDuplicationEnabled) {
+                return array($this->responseHeaders[$name]);
+            }
             return $this->responseHeaders[$name];
         }
     }
@@ -785,7 +803,13 @@ class WebClient {
             }
             $headers = array();
             foreach ($options['headers'] as $key => $value) {
-                $headers[] = $key . ': ' . $value;
+                if (is_array($value)) {
+                    foreach ($value as $item) {
+                        $headers[] = $key . ': ' . $item;
+                    }
+                } else {
+                    $headers[] = $key . ': ' . $value;
+                }
             }
             unset($options['headers']);
             $options[CURLOPT_HTTPHEADER] = $headers;
