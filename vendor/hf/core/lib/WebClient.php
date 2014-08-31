@@ -262,6 +262,9 @@ class WebClient {
     }
 
     public static function closeMultiHandle() {
+        if (self::$multiHandle === null) {
+            return;
+        }
         curl_multi_close(self::$multiHandle);
         self::$multiHandle = null;
         self::$multiOptions = array();
@@ -269,6 +272,11 @@ class WebClient {
     }
 
     public static function resetMultiHandle() {
+        if (self::$multiHandle === null) {
+            self::$multiOptions = array();
+            self::$multiTemporaryOptions = null;
+            return;
+        }
         if (self::$multiTemporaryOptions !== null) {
             foreach (self::$multiTemporaryOptions as $name => $value) {
                 if (isset(self::$multiOptions[$name]) === false) {
