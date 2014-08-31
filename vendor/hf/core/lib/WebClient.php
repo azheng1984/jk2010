@@ -34,7 +34,7 @@ class WebClient {
         if ($options !== null) {
             foreach ($options as $name => $value) {
                 $defaultOptions[$name] = $value;
-            }
+                }
         }
         if (count($defaultOptions) !== 0) {
             $this->setOptions($defaultOptions);
@@ -70,8 +70,6 @@ class WebClient {
                 throw new Exception;
             }
         }
-        $handleId = (int)$request['client']->handle;
-        self::$multiProcessingRequests[$handleId] = $request;
         if (self::$multiRequestOptions !== null) {
             foreach (self::$multiRequestOptions as $name => $value) {
                 if (isset($request[$name]) === false) {
@@ -80,9 +78,11 @@ class WebClient {
             }
         }
         $options = $request;
+        $client = $options['client']; 
         unset($options['client']);
-        $request['client']->prepare($options);
-        curl_multi_add_handle(self::$multiHandle, $request['client']->handle);
+        $client->prepare($options);
+        self::$multiProcessingRequests[(int)$client->handle] = $request;
+        curl_multi_add_handle(self::$multiHandle, $client->handle);
     }
 
     private static function getMultiOptionDefaultValue($name) {
@@ -818,14 +818,17 @@ class WebClient {
             $this->setData($options['data'], $options);
             unset($options['data']);
         }
-        if ($this->isCurlOptionChanged !== true
-            && $this->temporaryCurlOptions !== null
-            || $this->ignoredCurlOptions
+        if ($this->isCurlOptionChanged === true
+            || $this->temporaryCurlOptions !== null
+            || $this->ignoredCurlOptions !== null
+            || $this->handle === null
         ) {
-            if (self::$isOldCurl === false) {
+            if ($this->handle !== null && self::$isOldCurl === false) {
                 curl_reset($this->handle);
             } else {
-                curl_close($this->handle);
+                if ($this->handle !== null) {
+                    curl_close($this->handle);
+                }
                 $this->handle = curl_init();
             }
         }
@@ -862,6 +865,9 @@ class WebClient {
     }
 
     public function getInfo($name = null) {
+        if ($this->handle === null) {
+            throw new Exception;
+        }
         if ($name === null) {
             return curl_getinfo($this->handle);
         }
@@ -917,7 +923,9 @@ class WebClient {
     }
 
     public function __clone() {
-        $this->handle = curl_copy_handle(self::$handle);
+        if ($this->handle !== null) {
+            $this->handle = curl_copy_handle($this->handle);
+        }
     }
 
     public function head($url, $headers = null, $options = null) {
