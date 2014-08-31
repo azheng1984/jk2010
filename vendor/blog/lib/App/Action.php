@@ -28,8 +28,11 @@ $client = new WebClient;
 //curl_share_setopt($s, CURLSHOPT_UNSHARE, CURL_LOCK_DATA_SSL_SESSION);
 //$client->setOption(CURLOPT_SHARE, $s);
 $p = true;
+$f = fopen('/tmp/hi.txt', 'w+');
 $client->setOptions(array(
     CURLOPT_HEADER => 1,
+//    CURLOPT_FILE => $f,
+    CURLOPT_WRITEHEADER => $f,
     CURLINFO_HEADER_OUT => 1,
     CURLOPT_POST => true,
     CURLOPT_COOKIE => 'hi',
@@ -49,6 +52,7 @@ $client->setOptions(array(
 //        'file' => array('mime' => 'pdf', 'name' => 'lil', 'type' => 'file')
 //    ));
     CURLOPT_READFUNCTION => function($h, $b, $c) use(&$p) {
+        //var_dump($h);
     //return;
     var_dump('hi');
     echo $c;
@@ -56,10 +60,17 @@ $client->setOptions(array(
         $p = false;
         return 'hi=hi';
     }
-    },CURLOPT_WRITEFUNCTION => function($h, $x) {
-        echo $x;
-        return strlen($x);
     },
+//    CURLOPT_WRITEFUNCTION => function($h, $x) {
+////echo $x;
+//        return strlen($x);
+//    },
+    CURLOPT_HEADERFUNCTION => function($h, $x) {
+
+        //var_dump($h);
+echo $x;
+        return strlen($x);
+    }
 ));
 
 array('application/xml' => 'dfasdf');
@@ -77,6 +88,7 @@ for ($i = 0; $i < 1; ++$i) {
 //    ob_flush();
 }
 $info = $client->getInfo();
+var_dump( $client->getResponseHeaders());
 //echo $info['request_header'];
 print_r($info);
 //$client->close();

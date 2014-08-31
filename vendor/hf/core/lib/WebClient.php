@@ -299,6 +299,33 @@ class WebClient {
         $this->isCurlOptionChanged = true;
         foreach ($options as $name => $value) {
             if (is_int($name)) {
+                if ($name === CURLOPT_HEADERFUNCTION 
+                    || $name === CURLOPT_WRITEFUNCTION
+                ) {
+                    $client = $this;
+                    $value = function($handle, $data) use ($client, $value) {
+                        return call_user_func($value, $client, $data);
+                    };
+                } elseif ($name === CURLOPT_READFUNCTION
+                    || (defined('CURLOPT_PASSWDFUNCTION')
+                        && $name === CURLOPT_PASSWDFUNCTION)
+                ) {
+                    $client = $this;
+                    $value = function($handle, $arg1, $arg2)
+                        use ($client, $value)
+                    {
+                        return call_user_func($value, $client, $arg1, $arg2);
+                    };
+                } elseif ($name === CURLOPT_PROGRESSFUNCTION) {
+                    $client = $this;
+                    $value = function($handle, $arg1, $arg2, $arg3, $arg4)
+                        use ($client, $value)
+                    {
+                        return call_user_func(
+                            $value, $client, $arg1, $arg2, $arg3, $arg4
+                        );
+                    };
+                }
                 $this->curlOptions[$name] = $value;
             } else {
                 throw new Exception;
@@ -697,19 +724,27 @@ class WebClient {
             } while ($running);
             curl_multi_remove_handle(self::$oldCurlMultiHandle, $this->handle);
         }
-        if ($this->getCurlOption(CURLOPT_RETURNTRANSFER) == true
-            && $this->getCurlOption(CURLOPT_HEADER) === true
+        $url = $this->getCurlOption(CURLOPT_URL);
+        if (is_string($result)
+            && $url != null
+            && strncmp($url, 'http', 4) === 0
+            && $this->getCurlOption(CURLOPT_HEADER) == true
         ) {
             $tmp = explode("\r\n\r\n", $result, 2);
             $this->rawResponseHeaders = $tmp[0];
             $this->responseHeaders = array();
+            $isFirst = true;
             foreach (explode("\r\n", $tmp[0]) as $item) {
-                $tmp = explode(':', $item, 2);
-                $value = null;
-                if (isset($tmp[1])) {
-                    $value = $tmp[1];
+                if ($isFirst) {
+                    $isFirst = false;
+                    continue;
                 }
-                $this->responseHeaders[$tmp[0]] = $value;
+                $tmp2 = explode(':', $item, 2);
+                $value = null;
+                if (isset($tmp2[1])) {
+                    $value = $tmp2[1];
+                }
+                $this->responseHeaders[$tmp2[0]] = $value;
             }
             $result = $tmp[1];
         }
