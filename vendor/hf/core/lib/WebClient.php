@@ -400,6 +400,10 @@ class WebClient {
         }
     }
 
+    public function setHeader($name, $value) {
+        $this->setHeaders(array($name => $value));
+    }
+
     public function setHeaders($headers) {
         if ($this->headers === null) {
             $this->headers = array();
