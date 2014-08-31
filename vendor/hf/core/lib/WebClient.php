@@ -759,16 +759,16 @@ class WebClient {
         return $result;
     }
 
-    public function getResponseHeader($name, $isDuplicationEnabled = false) {
+    public function getResponseHeader($name, $isMultiple = false) {
         if (isset($this->responseHeaders[$name])) {
             if (is_array($this->responseHeaders[$name])) {
-                if ($isDuplicationEnabled) {
+                if ($isMultiple) {
                     return $this->responseHeaders[$name];
                 } else {
                     return end($this->responseHeaders[$name]);
                 }
             }
-            if ($isDuplicationEnabled) {
+            if ($isMultiple) {
                 return array($this->responseHeaders[$name]);
             }
             return $this->responseHeaders[$name];
