@@ -231,6 +231,10 @@ class WebClient {
         self::setMultiOpitons(array($name, $value));
     }
 
+    public static function removeMultiOption($name) {
+        //todo
+    }
+
     private static function getMultiOptions($name, $default = null) {
         $result = null;
         if (self::$multiTemporaryOptions !== null
