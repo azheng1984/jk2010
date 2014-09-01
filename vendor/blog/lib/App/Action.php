@@ -15,12 +15,12 @@ class Action {
 
 $time_start = microtime(true);
 
-//for ($i = 0; $i < 10; ++$i) {
-//    WebClient::sendAll(array('http://www.google.com.hk/'), function ($req, $res){
-//        print_r($res);
-//        $req['client']->close();
-//    });
-//}
+for ($i = 0; $i < 10; ++$i) {
+    WebClient::sendAll(array('http://www.google.com.hk/'), function ($req, $res){
+        print_r($res);
+        $req['client']->close();
+    });
+}
 
 //echo 'no share sid';
 $client = new WebClient;

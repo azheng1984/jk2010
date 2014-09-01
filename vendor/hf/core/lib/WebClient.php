@@ -214,7 +214,12 @@ class WebClient {
             self::$multiOptions = self::getDefaultMultiOptions();
             if (self::$multiOptions === null) {
                 self::$multiOptions = array();
+            } elseif (count(self::$multiOptions) !== 0) {
+                self::setMultiOptions(self::$multiOptions);
             }
+        }
+        if ($options === null) {
+            return;
         }
         foreach ($options as $name => $value) {
             self::$multiOptions[$name] = $value;
