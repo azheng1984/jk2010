@@ -15,12 +15,12 @@ class Action {
 
 $time_start = microtime(true);
 
-for ($i = 0; $i < 10; ++$i) {
-    WebClient::sendAll(array('http://www.baidu.com/'), function ($req, $res){
-        print_r($res);
-        $req['client']->close();
-    });
-}
+//for ($i = 0; $i < 10; ++$i) {
+//    WebClient::sendAll(array('http://www.baidu.com/'), function ($req, $res){
+//        print_r($res);
+//        $req['client']->close();
+//    });
+//}
 
 //echo 'no share sid';
 $client = new WebClient;
@@ -28,49 +28,51 @@ $client = new WebClient;
 //curl_share_setopt($s, CURLSHOPT_UNSHARE, CURL_LOCK_DATA_SSL_SESSION);
 //$client->setOption(CURLOPT_SHARE, $s);
 $p = true;
-$f = fopen('/tmp/hi.txt', 'w+');
+$f = fopen('/tmp/xx.txt', 'r');
 $client->setOptions(array(
     CURLOPT_HEADER => 1,
-//    CURLOPT_FILE => $f,
-    CURLOPT_WRITEHEADER => $f,
+    CURLOPT_INFILE => $f,
+    CURLOPT_INFILESIZE => 5,
+//    CURLOPT_WRITEHEADER => $f,
     CURLINFO_HEADER_OUT => 1,
     CURLOPT_POST => true,
-    CURLOPT_COOKIE => 'hi',
-    CURLOPT_COOKIE => null,
+    CURLOPT_UPLOAD => true,
+//    CURLOPT_COOKIE => 'hi',
+//    CURLOPT_COOKIE => null,
     CURLOPT_POSTFIELDS => null,
-//    CURLOPT_POSTFIELDS => array(
-//        'name' => 'hi',
-//        'file[0]' => curl_file_create('/home/az/Desktop/sd.fie28932duiru', null),
-//        'file[1]' => curl_file_create('/home/az/Desktop/sd.fie28932duiru', null)),
+    CURLOPT_POSTFIELDS => array(
+        'name' => 'hi',
+        'file[0]' => curl_file_create('/home/az/Desktop/sd.fie28932duiru', null),
+        'file[1]' => curl_file_create('/home/az/Desktop/sd.fie28932duiru', null)),
     CURLOPT_HTTPHEADER => array(
 //        'Content-Type: applicatoin/json'
 //        'Content-Type: application/x-www-form-urlencoded',
-//        'Content-Length:5',
+//        'Content-Length:' . filesize('/tmp/xx.txt'),
     ),
 //    array('application/json' => 'sdsdfdf'),
 //    array('multipart/form-data' => array(
 //        'file' => array('mime' => 'pdf', 'name' => 'lil', 'type' => 'file')
 //    ));
     CURLOPT_READFUNCTION => function($h, $b, $c) use(&$p) {
-        //var_dump($h);
-    //return;
-    var_dump('hi');
-    echo $c;
-    if ($p === true) {
-        $p = false;
-        return 'hi=hi';
-    }
+      //var_dump($h);
+  //return;
+   var_dump('hi');
+   echo $c;
+   if ($p === true) {
+       $p = false;
+       return 'hi=hi';
+   }
     },
 //    CURLOPT_WRITEFUNCTION => function($h, $x) {
 ////echo $x;
 //        return strlen($x);
 //    },
-    CURLOPT_HEADERFUNCTION => function($h, $x) {
-
-        //var_dump($h);
-echo $x;
-        return strlen($x);
-    }
+//    CURLOPT_HEADERFUNCTION => function($h, $x) {
+//
+//        //var_dump($h);
+//echo $x;
+//        return strlen($x);
+//    }
 ));
 
 array('application/xml' => 'dfasdf');
@@ -83,7 +85,7 @@ for ($i = 0; $i < 1; ++$i) {
     //echo '.';
     //if (strlen($r = ) === 0) {
     //    echo  $r;
-        var_dump($client->post('http://localhost/index.php?b=1'));
+        echo $client->post('http://localhost/index.php?b=1');
     //};
 //    ob_flush();
 }

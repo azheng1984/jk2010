@@ -1,5 +1,25 @@
 <?php
 namespace Hyperframework\Blog;
+$path = '/home/az/zend/init autoloader.php';
+//foreach ($path as $key => $value){
+//echo 'hi';
+//}
+//        $handle = curl_init('file://' . $path);
+//        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+//        curl_setopt($handle, CURLOPT_NOBODY, true);
+//        curl_setopt($handle, CURLOPT_HEADER, true);
+//        $headers = curl_exec($handle);
+//        echo $headers;
+//        if ($headers === false) {
+//            throw new Exception;
+//            echo 'false';
+//        }
+//        curl_close($handle);
+//        if (preg_match('/Content-Length: (\d+)/', $headers, $matches)) {
+//            echo $matches[1];
+//        }
+//exit;
+//echo PHP_INT_SIZE;
 //$x = array();
 //echo $x['xx'];
 //var_dump( == null);

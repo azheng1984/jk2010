@@ -398,6 +398,26 @@ class WebClient {
         return self::send($options);
     }
 
+    private static function getFileSize($path) {
+        if (PHP_INT_SIZE === 8) {
+            return filesize($path);
+        }
+        $handle = curl_init('file://' . $path);
+        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($handle, CURLOPT_NOBODY, true);
+        curl_setopt($handle, CURLOPT_HEADER, true);
+        $headers = curl_exec($handle);
+        if ($headers === false) {
+            throw new Exception;
+        }
+        curl_close($handle);
+        if (preg_match('/Content-Length: (\d+)/', $headers, $matches)) {
+            return $matches[1];
+        } else {
+            throw new Exception;
+        }
+    }
+
     private function setTemporaryHeaders($headers, &$options = null) {
         if ($headers === null || count($headers) === 0) {
             return;
@@ -529,7 +549,7 @@ class WebClient {
                             break;
                         }
                         if (isset($value['file_name'])
-                            && $value['file_name'] !== basename($value['file']);
+                            && $value['file_name'] !== basename($value['file'])
                         ) {
                             $shouldUseCurlPostFieldsOption = false;
                             break;
@@ -597,18 +617,10 @@ class WebClient {
                     array('Content-Length' => $size), $options
                 );
             } elseif (isset($data['file'])) {
-                $size = filesize($data['file']);
-                if ($size === false) {
-                    throw new Exception;
-                }
-                $this->setTemporaryHeader(
-                    array('Content-Length' => $size), $options
-                );
-                if ($size !== 0) {
-                    $this->addIgnoreOption(CURLOPT_POSTFIELDS, $options);
-                    $options[CURLOPT_READFUNCTION] =
-                        self::getSendContentCallback($data);
-                }
+                $this->addIgnoreOption(CURLOPT_READFUNCTION, $options);
+                $options[CURLOPT_UPLOAD] = true;
+                $options[CURLOPT_INFILE] = $data['file'];
+                $options[CURLOPT_INFILESIZE] = self::getFileSize($data['file']);
             }
         }
     }
@@ -749,7 +761,7 @@ class WebClient {
                 self::$oldCurlMultiHandle = curl_multi_init();
             }
             curl_multi_add_handle(self::$oldCurlMultiHandle, $this->handle);
-            $result = true;
+            $result = null;
             $isRunning = null;
             do {
                 do {
@@ -772,9 +784,7 @@ class WebClient {
                             curl_error($this->handle), $info['result']
                         );
                     }
-                    if ($this->getCurlOption(CURLOPT_RETURNTRANSFER)) {
-                        $result = curl_multi_getcontent($this->handle);
-                    }
+                    $result = curl_multi_getcontent($this->handle);
                 }
                 if ($isRunning && curl_multi_select(self::$isRunning) === -1) {
                     //https://bugs.php.net/bug.php?id=61141
@@ -793,7 +803,17 @@ class WebClient {
             && strncmp($url, 'http', 4) === 0
             && $this->getCurlOption(CURLOPT_HEADER) == true
         ) {
-            $tmp = explode("\r\n\r\n", $result, 2);
+            while (true) {
+                $tmp = explode("\r\n\r\n", $result, 2);
+                if (strncmp($tmp[0], 'HTTP/1.1 100 ', 12) === 0) {
+                    if (isset($tmp[1]) === false) {
+                        break;
+                    }
+                    $result = $tmp[1];
+                    continue;
+                }
+                break;
+            }
             $this->rawResponseHeaders = $tmp[0];
             $this->responseHeaders = array();
             $isFirst = true;
@@ -874,8 +894,8 @@ class WebClient {
                     $headers[] = $key . ': ' . $value;
                 }
             }
-            unset($options['headers']);
             $options[CURLOPT_HTTPHEADER] = $headers;
+            unset($options['headers']);
         }
         if (isset($options['data'])) {
             $this->setData($options['data'], $options);
@@ -910,7 +930,7 @@ class WebClient {
             curl_setopt_array($this->handle, $this->curlOptions);
         } else {
             $tmp = $this->curlOptions;
-            foreach ($ignoredCurlOptions as $item) {
+            foreach ($this->ignoredCurlOptions as $item) {
                 if (is_int($item)) {
                     unset($tmp[$item]);
                 }
