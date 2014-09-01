@@ -373,7 +373,9 @@ class WebClient {
             $options = array();
         }
         if ($headers !== null && count($headers) !== 0) {
-            if (isset($options['headers']) && count($options['headers']) !== 0) {
+            if (isset($options['headers'])
+                && count($options['headers']) !== 0
+            ) {
                 foreach ($headers as $key => $value) {
                     if (is_int($key)) {
                         $options['headers'][] = $key;
