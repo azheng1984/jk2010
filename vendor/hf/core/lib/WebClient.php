@@ -22,7 +22,7 @@ class WebClient {
     private $rawResponseHeaders;
     private $responseHeaders;
 
-    public function __construct(array $options = null) {
+    public function __construct($options = null) {
         if (self::$isOldCurl === null) {
             self::$isOldCurl = version_compare(phpversion(), '5.5.0', '<');
         }
@@ -46,9 +46,6 @@ class WebClient {
             $key = key(self::$multiPendingRequests);
             if ($key !== null) {
                 $request = self::$multiPendingRequests[$key];
-                if ($request === null) {
-                    throw new Exception;
-                }
                 unset(self::$multiPendingRequests[$key]);
             } else {
                 self::$multiPendingRequests = null;
@@ -56,22 +53,18 @@ class WebClient {
         } elseif (self::$multiGetRequestCallback !== null) {
             $request = call_user_func(self::multiGetRequestCallback);
         }
-        if ($request == false) {
+        if ($request === null) {
             return false;
         }
-        if (is_string($request)) {
+        if (is_array($request) === false) {
             $request = array(CURLOPT_URL => $request);
         }
         if (isset($request['client']) === false) {
             $request['client'] = new WebClient;
-        } else {
-            if ($request['client'] instanceof WebClient === false) {
-                throw new Exception;
-            }
         }
         if (self::$multiRequestOptions !== null) {
             foreach (self::$multiRequestOptions as $name => $value) {
-                if (isset($request[$name]) === false) {
+                if (array_key_exists($name, $request) === false) {
                     $request[$name] = $value;
                 }
             }
@@ -92,10 +85,10 @@ class WebClient {
     }
 
     public static function sendAll(
-        array $requests,
+        $requests,
         $onCompleteCallback = null,
-        array $requestOptions = null,
-        array $multiOptions = null
+        $requestOptions = null,
+        $multiOptions = null
     ) {
         if ($requests !== null && count($requests) !== 0) {
             self::$multiPendingRequests = $requests;
@@ -104,15 +97,10 @@ class WebClient {
         }
         self::$multiRequestOptions = $requestOptions;
         self::$multiProcessingRequests = array();
-        if (self::$multiPendingRequests === null
-            && self::$multiGetRequestCallback === null
-        ) {
-            return;
-        }
         if (self::$multiHandle === null) {
             self::$multiHandle = curl_multi_init();
             if (self::$multiOptions === null) {
-                self::setMultiOptions(array());
+                self::initializeMultiOptions();
             } else {
                 self::setMultiOptions(self::$multiOptions);
             }
@@ -156,6 +144,9 @@ class WebClient {
             }
         }
         $selectTimeout = self::getMultiOption('select_timeout', 1);
+        if ($selectTimeout <= 0) {
+            throw new Exception;
+        }
         $isRunning = null;
         do {
             do {
@@ -166,8 +157,7 @@ class WebClient {
                 if (self::$isOldCurl === false) {
                     $message = curl_multi_strerror($status);
                 }
-                curl_multi_close(self::$multiHandle);
-                self::$multiHandle = null;
+                self::closeMultiHandle();
                 throw new CurlMultiException($message, $status);
             }
             while ($info = curl_multi_info_read(self::$multiHandle)) {
@@ -176,13 +166,11 @@ class WebClient {
                     $request = self::$multiProcessingRequests[$handleId];
                     $response = array('curl_code' => $info['result']);
                     if ($info['result'] !== CURLE_OK) {
-                        $response['error'] =
-                            curl_error($info['handle']);
+                        $response['error'] = curl_error($info['handle']);
                     }
-                    if ($request['client']->getCurlOption(CURLOPT_RETURNTRANSFER)) {
-                        $response['content'] =
-                            curl_multi_getcontent($info['handle']);
-                    }
+                    $response['result'] = $request['client']->processResponse(
+                        curl_multi_getcontent($info['handle'])
+                    );
                     call_user_func(
                         $onCompleteCallback, $request, $response
                     );
@@ -203,24 +191,9 @@ class WebClient {
         } while ($hasPendingRequest || $isRunning);
     }
 
-    private function getCurlOption($name) {
-        if ($this->temporaryCurlOptions !== null
-            && array_key_exists($name, $this->temporaryCurlOptions)
-        ) {
-            return $this->temporaryCurlOptions[$name];
-        } elseif (isset($this->curlOptions[$name])) {
-            return $this->curlOptions[$name];
-        }
-    }
-
-    public static function setMultiOptions(array $options) {
+    public static function setMultiOptions($options) {
         if (self::$multiOptions === null) {
-            self::$multiOptions = self::getDefaultMultiOptions();
-            if (self::$multiOptions === null) {
-                self::$multiOptions = array();
-            } elseif (count(self::$multiOptions) !== 0) {
-                self::setMultiOptions(self::$multiOptions);
-            }
+            self::initializeMultiOptions();
         }
         foreach ($options as $name => $value) {
             self::$multiOptions[$name] = $value;
@@ -236,13 +209,22 @@ class WebClient {
         }
     }
 
+    private static function initializeMultiOptions() {
+        self::$multiOptions = self::getDefaultMultiOptions();
+        if (self::$multiOptions === null) {
+            self::$multiOptions = array();
+        } elseif (count(self::$multiOptions) !== 0) {
+            self::setMultiOptions(self::$multiOptions);
+        }
+    }
+
     public static function setMultiOption($name, $value) {
         self::setMultiOptions(array($name => $value));
     }
 
     public static function removeMultiOption($name) {
-        self::setMultiOptions(
-            array($name, self::getDefaultMultiOptionValue($name))
+        self::setMultiOption(
+            $name, self::getDefaultMultiOptionValue($name)
         );
         unset(self::$multiOptions[$name]);
     }
@@ -252,18 +234,14 @@ class WebClient {
     }
 
     private static function getMultiOption($name, $default = null) {
-        $result = null;
         if (self::$multiTemporaryOptions !== null
             && array_key_exists($name, self::$multiTemporaryOptions)
         ) {
-            $result = self::$multiTemporaryOptions[$name];
-        } elseif (isset(self::$multiOptions[$name])) {
-            $result = self::$multiOptions[$name];
+            return self::$multiTemporaryOptions[$name];
+        } elseif (array_key_exists($name, self::$multiOptions)) {
+            return self::$multiOptions[$name];
         }
-        if ($result === null) {
-            return $default;
-        }
-        return $result;
+        return $default;
     }
 
     public static function closeMultiHandle() {
@@ -272,40 +250,43 @@ class WebClient {
         }
         curl_multi_close(self::$multiHandle);
         self::$multiHandle = null;
-        self::$multiOptions = array();
+        self::$multiOptions = null;
         self::$multiTemporaryOptions = null;
     }
 
     public static function resetMultiHandle() {
         if (self::$multiHandle === null) {
-            self::$multiOptions = array();
+            self::$multiOptions = null;
             self::$multiTemporaryOptions = null;
             return;
         }
         if (self::$multiTemporaryOptions !== null) {
             foreach (self::$multiTemporaryOptions as $name => $value) {
-                if (isset(self::$multiOptions[$name]) === false) {
-                    if (is_int($name)) {
-                        curl_multi_setopt(
-                            self::$multiHandle,
-                            $name,
-                            self::getDefaultMultiOptionValue($name)
-                        );
-                    }
+                if (array_key_exists($name, self::$multiOptions)) {
+                    continue;
+                }
+                if (is_int($name)) {
+                    curl_multi_setopt(
+                        self::$multiHandle,
+                        $name,
+                        self::getDefaultMultiOptionValue($name)
+                    );
                 }
             }
         }
         self::$multiTemporaryOptions = null;
-        foreach (self::$multiOptions as $name => $value) {
-            if (is_int($name)) {
-                curl_multi_setopt(
-                    self::$multiHandle,
-                    $name,
-                    self::getDefaultMultiOptionValue($name)
-                );
+        if (self::$multiOptions !== null) {
+            foreach (self::$multiOptions as $name => $value) {
+                if (is_int($name)) {
+                    curl_multi_setopt(
+                        self::$multiHandle,
+                        $name,
+                        self::getDefaultMultiOptionValue($name)
+                    );
+                }
             }
         }
-        self::$multiOptions = array();
+        self::$multiOptions = null;
     }
 
     protected function getDefaultOptions() {
@@ -319,7 +300,7 @@ class WebClient {
         );
     }
 
-    public function setOptions(array $options) {
+    public function setOptions($options) {
         if (isset($options['headers'])) {
             $this->setHeaders($options['headers']);
             unset($options['headers']);
@@ -366,6 +347,9 @@ class WebClient {
             $this->headers = array();
             return;
         }
+        if (is_int($name) === false) {
+            throw new Exception;
+        }
         $this->isCurlOptionChanged = true;
         unset($this->curlOptions[$name]);
     }
@@ -374,9 +358,17 @@ class WebClient {
         $this->setOptions(array($name => $value));
     }
 
-    private function sendHttp(
-        $method, $url, $data, array $headers = null, array $options = null
-    ) {
+    private function getCurlOption($name) {
+        if ($this->temporaryCurlOptions !== null
+            && array_key_exists($name, $this->temporaryCurlOptions)
+        ) {
+            return $this->temporaryCurlOptions[$name];
+        } elseif (isset($this->curlOptions[$name])) {
+            return $this->curlOptions[$name];
+        }
+    }
+
+    private function sendHttp($method, $url, $data, $headers, $options) {
         if ($options === null) {
             $options = array();
         }
@@ -389,8 +381,8 @@ class WebClient {
                         if (array_key_exists($key, $options['headers'])) {
                             unset($options['headers'][$key]);
                         }
+                        $options['headers'][$key] = $value;
                     }
-                    $options['headers'][$key] = $value;
                 }
             } else {
                 $options['headers'] = $headers;
@@ -404,9 +396,7 @@ class WebClient {
         return self::send($options);
     }
 
-    private function setTemporaryHeaders(
-        array $headers, array &$options = null
-    ) {
+    private function setTemporaryHeaders($headers, &$options = null) {
         if ($headers === null || count($headers) === 0) {
             return;
         }
@@ -425,7 +415,7 @@ class WebClient {
                     $value = $tmp[1];
                 }
             }
-            if ($key == '') {
+            if ($key == null) {
                 throw new Exception;
             }
             $options['headers'][$key] = $value;
@@ -436,7 +426,7 @@ class WebClient {
         $this->setHeaders(array($name => $value));
     }
 
-    public function setHeaders(array $headers) {
+    private function setHeaders($headers) {
         if ($this->headers === null) {
             $this->headers = array();
         }
@@ -449,7 +439,7 @@ class WebClient {
                     $value = $tmp[1];
                 }
             }
-            if ($key == '') {
+            if ($key == null) {
                 throw new Exception;
             }
             $this->headers[$key] = $value;
@@ -460,19 +450,25 @@ class WebClient {
         unset($this->headers[$name]);
     }
 
-    private function setData($data, array &$options) {
+    private function setData($data, &$options) {
         curl_setopt(CURLOPT_POST, true);
-        if (is_string($data)) {
+        if (is_array($data) === false) {
             $options[CURLOPT_POSTFIELDS] = $data;
             return;
         }
         if (count($data) === 1) {
             $data = array('type' => key($data), 'content' => reset($data));
         }
+        if (isset($data['type']) === false) {
+            throw new Exception;
+        }
+        $this->setTemporaryHeaders(
+            array('Content-Type' => $data['type']), $options
+        );
         if ($data['type'] === 'application/x-www-form-urlencoded') {
-            if (is_array($data)) {
+            if (is_array($data['content'])) {
                 $content = null;
-                foreach ($data as $key => $value) {
+                foreach ($data['content'] as $key => $value) {
                     if ($content !== null) {
                         $content .= '&';
                     }
@@ -482,47 +478,29 @@ class WebClient {
             } else {
                 $options[CURLOPT_POSTFIELDS] = (string)$data['content'];
             }
-        } elseif ($data['type'] !== 'multipart/form-data') {
-            $this->setTemporaryHeaders(
-                array('Content-Type' => $data['type']), $options
-            );
-            if (isset($data['content'])) {
-                $options[CURLOPT_POSTFIELDS] = (string)$data['content'];
-            } elseif (isset($data['file'])) {
-                $size = filesize($data['file']);
-                if ($size === false) {
-                    throw new Exception;
-                }
-                $this->setTemporaryHeader(array('Content-Length' => $size), $options);
-                if ($size !== 0) {
-                    if (isset($this->curlOptions[CURLOPT_POSTFIELDS])) {
-                        if (isset($options['ignored_curl_optoins']) === false) {
-                            $options['ignored_curl_options'] = array();
-                        }
-                        $options['ignored_curl_options'][] = CURLOPT_POSTFIELDS;
-                    }
-                    $options[CURLOPT_READFUNCTION] = self::getSendContentCallback($data);
-                } else {
-                    $options[CURLOPT_POSTFIELDS] = '';
-                }
+        } elseif ($data['type'] === 'multipart/form-data') {
+            if (isset($data['content']) === false) {
+                $this->setTemporaryHeader(
+                    array('Content-Length' => 0), $options
+                );
+                return;
             }
-        } else {
-            if (isset($data['content']) === false
-                || is_array($data['content']) === false
-            ) {
-                throw new Exception;
+            if (is_array($data['content']) === false) {
+                $content = (string)$data['content'];
+                $options[CURLOPT_POSTFIELDS] = $content;
+                $this->setTemporaryHeader(
+                    array('Content-Length' => strlen($content)), $options
+                );
+                return;
             }
             $isSafe = true;
-            $canUsePostFields = true;
+            $shouldUseCurlPostFieldsOption = true;
             foreach ($data['content'] as $key => $value) {
                 if (is_array($value) === false) {
                     $value = (string)$value;
-                    if (is_int($key)) {
-                        throw new Exception;
-                    }
                     if (strlen($value) !== 0 && $value[0] === '@') {
                         if (self::$isOldCurl) {
-                            $canUsePostFields = false;
+                            $shouldUseCurlPostFieldsOption = false;
                             break;
                         }
                         $isSafe = false;
@@ -530,29 +508,35 @@ class WebClient {
                 } else {
                     if (isset($value['content'])) {
                         if (isset($value['type'])) {
-                            $canUsePostFields = false;
+                            $shouldUseCurlPostFieldsOption = false;
                             break;
                         }
-                        $value = (string)$value;
+                        $value = (string)$value['content'];
                         if (strlen($value) !== 0 && $value[0] === '@') {
                             if (self::$isOldCurl) {
-                                $canUsePostFields = false;
+                                $shouldUseCurlPostFieldsOption = false;
                                 break;
                             }
                             $isSafe = false;
                         }
-                    } elseif (self::$isOldCurl) {
+                    } elseif (isset($value['file']) && self::$isOldCurl) {
                         if (isset($value['type'])
                             && $value['type'] !== 'application/octet-stream'
                         ) {
-                            $canUsePostFields = false;
+                            $shouldUseCurlPostFieldsOption = false;
+                            break;
+                        }
+                        if (isset($value['file_name'])
+                            && $value['file_name'] !== basename($value['file']);
+                        ) {
+                            $shouldUseCurlPostFieldsOption = false;
                             break;
                         }
                     }
                 }
             }
-            if ($canUsePostFields) {
-                if (self::$isOldCurl) {
+            if ($shouldUseCurlPostFieldsOption) {
+                if (self::$isOldCurl === false) {
                     if ($isSafe === false) {
                         $options[CURLOPT_SAFE_UPLOAD] = true;
                     }
@@ -560,8 +544,10 @@ class WebClient {
                         if (is_array($value)) {
                             if (isset($value['content'])) {
                                 $value = $value['content'];
-                            } elseif (isset($value['file'])) {
-                                throw new Exception;
+                                continue;
+                            } elseif (isset($value['file']) === false) {
+                                $value = null;
+                                continue;
                             }
                             $type = null;
                             if (isset($value['type'])) {
@@ -590,12 +576,7 @@ class WebClient {
                 $options[CURLOPT_POSTFIELDS] = $data;
                 return;
             }
-            if (isset($this->curlOptions[CURLOPT_POSTFIELDS])) {
-                if (isset($options['ignored_optoins']) === false) {
-                    $options['ignored_options'] = array();
-                }
-                $options['ignored_options'][] = CURLOPT_POSTFIELDS;
-            }
+            $this->addIgnoreOption(CURLOPT_POSTFIELDS, $options);
             $boundary = '--BOUNDARY-' . sha1(uniqid(mt_rand(), true));
             $this->setTemporaryHeader(
                 array('Content-Type' => 'multipart/form-data; boundary='
@@ -603,11 +584,43 @@ class WebClient {
                 ),
                 $options
             );
-            $options[CURLOPT_READFUNCTION] = self::getFormDataCallback($data, $boundary);
+            $options[CURLOPT_READFUNCTION] = self::getFormDataCallback(
+                $data, $boundary
+            );
+        } else {
+            if (isset($data['content'])) {
+                $options[CURLOPT_POSTFIELDS] = (string)$data['content'];
+                $size = strlen($options[CURLOPT_POSTFIELDS]);
+                $this->setTemporaryHeader(
+                    array('Content-Length' => $size), $options
+                );
+            } elseif (isset($data['file'])) {
+                $size = filesize($data['file']);
+                if ($size === false) {
+                    throw new Exception;
+                }
+                $this->setTemporaryHeader(
+                    array('Content-Length' => $size), $options
+                );
+                if ($size !== 0) {
+                    $this->addIgnoreOption(CURLOPT_POSTFIELDS, $options);
+                    $options[CURLOPT_READFUNCTION] =
+                        self::getSendContentCallback($data);
+                }
+            }
         }
     }
 
-    private function getSendContentCallback(array $data) {
+    private function addIgnoreOption($name, &$options) {
+        if (isset($this->curlOptions[$name])) {
+            if (isset($options['ignored_curl_optoins']) === false) {
+                $options['ignored_curl_options'] = array();
+            }
+            $options['ignored_curl_options'][] = $name;
+        }
+    }
+
+    private function getSendContentCallback($data) {
         $file = fopen($data['file']);
         if ($file === false) {
             throw new Exception;
@@ -625,26 +638,36 @@ class WebClient {
         };
     }
 
-    private function getSendFormDataCallback(array $data, $boundary) {
+    private function getSendFormDataCallback($data, $boundary) {
         foreach ($data as $key => &$value) {
             $header = $boundary . "\r\n";
-            $type = null;
-            $fileName = null;
-            if (isset($value['content']) === false && isset($value['file'])) {
-                $fileName = '"; filename="' . basename($value['file']) . '"';
-                $type = 'application/octet-stream';
+            if (is_array($value) === false) {
+                $value = array('content' => $value);
             }
-            if (isset($value['type'])) {
+            $fileName = null;
+            if (array_key_exists('file_name')) {
+                $fileName = $value['file_name'];
+            } elseif (isset($value['content']) === false
+                && isset($value['file'])) {
+                $fileName = basename($value['file']);
+            }
+            if ($fileName !== null) {
+                $fileName = '"; filename="' . $fileName . '"';
+            }
+            $type = null;
+            if (array_key_exists('type', $value)) {
                 $type = $value['type'];
+            } elseif (isset($value['content']) === false
+                && isset($value['file']) === true
+            ) {
+                $type = 'application/octet-stream';
             }
             if ($type !== null) {
                 $type = "\r\nContent-Type: " . $type;
             }
-            $header .= 'Content-Disposition: form-data; name="' . $key
+            $header .= 'Content-Disposition: form-data; name="' . $key . '"'
                 . $fileName . $type . "\r\n";
-            if (is_array($value) === false) {
-                $value = array('content' => $value);
-            }
+            
             $value['header'] = $header;
         }
         $cache = null;
@@ -686,12 +709,10 @@ class WebClient {
                     $cache .= $value['header'];
                     if (isset($value['content'])) {
                         $cache .= $value['content'];
-                    } elseif ($isset($value['file'])) {
-                        if ($value['file'] !== '') {
-                            $file = fopen($value['file'], 'r');
-                            if ($file === false) {
-                                throw new Exception;
-                            }
+                    } elseif (isset($value['file']) && $value['file'] == null) {
+                        $file = fopen($value['file'], 'r');
+                        if ($file === false) {
+                            throw new Exception;
                         }
                     }
                     unset($data[$key]);
@@ -704,7 +725,7 @@ class WebClient {
                         fclose($file);
                         $file = null;
                     }
-                    if (strlen($result) !== 0) {
+                    if ($result !== '') {
                         return $result;
                     }
                 }
@@ -712,7 +733,7 @@ class WebClient {
         };
     }
 
-    public function send(array $options = null) {
+    public function send($options = null) {
         $this->prepare($options);
         if (self::$isOldCurl === false) {
             $result = curl_exec($this->handle);
@@ -760,6 +781,10 @@ class WebClient {
             } while ($running);
             curl_multi_remove_handle(self::$oldCurlMultiHandle, $this->handle);
         }
+        return $this->processResponse($result);
+    }
+
+    private function processResponse($result) {
         $url = $this->getCurlOption(CURLOPT_URL);
         if (is_string($result)
             && $url != null
@@ -819,7 +844,7 @@ class WebClient {
         return $this->rawResponseHeaders;
     }
 
-    protected function prepare(array $options = null) {
+    protected function prepare($options) {
         if (isset($options['headers']) || count($this->headers) !== 0) {
             $headers = null;
             if (isset($options['headers'])) {
@@ -977,7 +1002,7 @@ class WebClient {
     }
 
     public function patch(
-        $url, $data = null,$headers = null,  $options = null
+        $url, $data = null, $headers = null, $options = null
     ) {
         return self::sendHttp('PATCH', $url, $data, $headers, $options);
     }

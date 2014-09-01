@@ -1,6 +1,9 @@
 <?php
 namespace Hyperframework\Blog;
-
+//$x = array();
+//echo $x['xx'];
+//var_dump( == null);
+//exit;
 //function x(array &$w = null) {
 //    $w = 'hi';
 //    var_dump($w);
