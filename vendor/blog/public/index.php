@@ -1,7 +1,14 @@
 <?php
 namespace Hyperframework\Blog;
-$x = curl_init();
-//echo (string)array();
+
+//function x(array &$w = null) {
+//    $w = 'hi';
+//    var_dump($w);
+//}
+//$x = 2;
+//x();
+//return;
+
 if (isset($_GET['b'])) {
     echo file_get_contents('php://input');
     print_r($_POST);

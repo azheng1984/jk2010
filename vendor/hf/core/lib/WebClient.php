@@ -22,7 +22,7 @@ class WebClient {
     private $rawResponseHeaders;
     private $responseHeaders;
 
-    public function __construct($options = null) {
+    public function __construct(array $options = null) {
         if (self::$isOldCurl === null) {
             self::$isOldCurl = version_compare(phpversion(), '5.5.0', '<');
         }
@@ -92,10 +92,10 @@ class WebClient {
     }
 
     public static function sendAll(
-        $requests,
+        array $requests,
         $onCompleteCallback = null,
-        $requestOptions = null,
-        $multiOptions = null
+        array $requestOptions = null,
+        array $multiOptions = null
     ) {
         if ($requests !== null && count($requests) !== 0) {
             self::$multiPendingRequests = $requests;
@@ -111,7 +111,11 @@ class WebClient {
         }
         if (self::$multiHandle === null) {
             self::$multiHandle = curl_multi_init();
-            self::setMultiOptions(self::$multiOptions);
+            if (self::$multiOptions === null) {
+                self::setMultiOptions(array());
+            } else {
+                self::setMultiOptions(self::$multiOptions);
+            }
         } elseif (self::$multiTemporaryOptions !== null) {
             foreach (self::$multiTemporaryOptions as $name => $value) {
                 if (is_int($name) === false) {
@@ -209,7 +213,7 @@ class WebClient {
         }
     }
 
-    public static function setMultiOptions($options) {
+    public static function setMultiOptions(array $options) {
         if (self::$multiOptions === null) {
             self::$multiOptions = self::getDefaultMultiOptions();
             if (self::$multiOptions === null) {
@@ -217,9 +221,6 @@ class WebClient {
             } elseif (count(self::$multiOptions) !== 0) {
                 self::setMultiOptions(self::$multiOptions);
             }
-        }
-        if ($options === null) {
-            return;
         }
         foreach ($options as $name => $value) {
             self::$multiOptions[$name] = $value;
@@ -318,7 +319,7 @@ class WebClient {
         );
     }
 
-    public function setOptions($options) {
+    public function setOptions(array $options) {
         if (isset($options['headers'])) {
             $this->setHeaders($options['headers']);
             unset($options['headers']);
@@ -373,7 +374,9 @@ class WebClient {
         $this->setOptions(array($name => $value));
     }
 
-    private function sendHttp($method, $url, $data, $headers, $options) {
+    private function sendHttp(
+        $method, $url, $data, array $headers = null, array $options = null
+    ) {
         if ($options === null) {
             $options = array();
         }
@@ -401,7 +404,9 @@ class WebClient {
         return self::send($options);
     }
 
-    private function setTemporaryHeaders($headers, &$options) {
+    private function setTemporaryHeaders(
+        array $headers, array &$options = null
+    ) {
         if ($headers === null || count($headers) === 0) {
             return;
         }
@@ -431,7 +436,7 @@ class WebClient {
         $this->setHeaders(array($name => $value));
     }
 
-    public function setHeaders($headers) {
+    public function setHeaders(array $headers) {
         if ($this->headers === null) {
             $this->headers = array();
         }
@@ -455,7 +460,7 @@ class WebClient {
         unset($this->headers[$name]);
     }
 
-    private function setData($data, &$options) {
+    private function setData($data, array &$options) {
         curl_setopt(CURLOPT_POST, true);
         if (is_string($data)) {
             $options[CURLOPT_POSTFIELDS] = $data;
@@ -602,7 +607,7 @@ class WebClient {
         }
     }
 
-    private function getSendContentCallback($data) {
+    private function getSendContentCallback(array $data) {
         $file = fopen($data['file']);
         if ($file === false) {
             throw new Exception;
@@ -620,7 +625,7 @@ class WebClient {
         };
     }
 
-    private function getSendFormDataCallback($data, $boundary) {
+    private function getSendFormDataCallback(array $data, $boundary) {
         foreach ($data as $key => &$value) {
             $header = $boundary . "\r\n";
             $type = null;
@@ -707,7 +712,7 @@ class WebClient {
         };
     }
 
-    public function send($options = null) {
+    public function send(array $options = null) {
         $this->prepare($options);
         if (self::$isOldCurl === false) {
             $result = curl_exec($this->handle);
@@ -814,7 +819,7 @@ class WebClient {
         return $this->rawResponseHeaders;
     }
 
-    protected function prepare($options) {
+    protected function prepare(array $options = null) {
         if (isset($options['headers']) || count($this->headers) !== 0) {
             $headers = null;
             if (isset($options['headers'])) {
