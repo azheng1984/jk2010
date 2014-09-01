@@ -5,7 +5,7 @@ use Exception;
 
 class WebClient {
     private static $multiHandle;
-    private static $multiOptions = array();
+    private static $multiOptions;
     private static $multiTemporaryOptions;
     private static $multiPendingRequests;
     private static $multiProcessingRequests;
@@ -33,7 +33,7 @@ class WebClient {
         if ($options !== null) {
             foreach ($options as $name => $value) {
                 $defaultOptions[$name] = $value;
-                }
+            }
         }
         if (count($defaultOptions) !== 0) {
             $this->setOptions($defaultOptions);
@@ -104,9 +104,6 @@ class WebClient {
         }
         self::$multiRequestOptions = $requestOptions;
         self::$multiProcessingRequests = array();
-        self::$multiGetRequestCallback = self::getMultiOptions(
-            'get_request_callback'
-        );
         if (self::$multiPendingRequests === null
             && self::$multiGetRequestCallback === null
         ) {
@@ -114,9 +111,7 @@ class WebClient {
         }
         if (self::$multiHandle === null) {
             self::$multiHandle = curl_multi_init();
-            if (self::$multiOptions !== null) {
-                self::setMultiOptions(self::$multiOptions);
-            }
+            self::setMultiOptions(self::$multiOptions);
         } elseif (self::$multiTemporaryOptions !== null) {
             foreach (self::$multiTemporaryOptions as $name => $value) {
                 if (is_int($name) === false) {
@@ -142,8 +137,11 @@ class WebClient {
             }
         }
         self::$multiTemporaryOptions = $multiOptions;
+        self::$multiGetRequestCallback = self::getMultiOption(
+            'get_request_callback'
+        );
         $hasPendingRequest = true;
-        $maxHandles = self::getMultiOptions('max_handles', 100);
+        $maxHandles = self::getMultiOption('max_handles', 100);
         if ($maxHandles < 1) {
             throw new Exception;
         }
@@ -153,7 +151,7 @@ class WebClient {
                 break;
             }
         }
-        $selectTimeout = self::getMultiOptions('select_timeout', 1);
+        $selectTimeout = self::getMultiOption('select_timeout', 1);
         $isRunning = null;
         do {
             do {
@@ -212,6 +210,12 @@ class WebClient {
     }
 
     public static function setMultiOptions($options) {
+        if (self::$multiOptions === null) {
+            self::$multiOptions = self::getDefaultMultiOptions();
+            if (self::$multiOptions === null) {
+                self::$multiOptions = array();
+            }
+        }
         foreach ($options as $name => $value) {
             self::$multiOptions[$name] = $value;
             if (self::$multiTemporaryOptions !== null) {
@@ -227,16 +231,7 @@ class WebClient {
     }
 
     public static function setMultiOption($name, $value) {
-        self::$multiOptions[$name] = $value;
-        if (self::$multiTemporaryOptions !== null) {
-            unset(self::$multiTemporaryOptions[$name]);
-        }
-        if (self::$multiHandle !== null && is_int($name)) {
-            if (self::$isOldCurl) {
-                throw new Exception;
-            }
-            curl_multi_setopt(self::$multiHandle, $name, $value);
-        }
+        self::setMultiOptions(array($name => $value));
     }
 
     public static function removeMultiOption($name) {
@@ -246,7 +241,11 @@ class WebClient {
         unset(self::$multiOptions[$name]);
     }
 
-    private static function getMultiOptions($name, $default = null) {
+    protected static function getDefaultMultiOptions() {
+        return array();
+    }
+
+    private static function getMultiOption($name, $default = null) {
         $result = null;
         if (self::$multiTemporaryOptions !== null
             && array_key_exists($name, self::$multiTemporaryOptions)
