@@ -24,7 +24,7 @@ class WebClient {
 
     public function __construct(array $options = null) {
         if (self::$isOldCurl === null) {
-            self::$isOldCurl = version_compare(phpversion(), '5.5.0', '<');
+            self::$isOldCurl = true;// version_compare(phpversion(), '5.5.0', '<');
         }
         $defaultOptions = $this->getDefaultOptions();
         if ($defaultOptions === null) {
@@ -767,11 +767,11 @@ class WebClient {
                     if (self::$isOldCurl === false) {
                         $message = curl_multi_strerror($status);
                     }
-                    curl_multi_close(self::$multiHandle);
-                    self::$multiHandle = null;
+                    curl_multi_close(self::$oldCurlMultiHandle);
+                    self::$oldCurlMultiHandle = null;
                     throw new CurlMultiException($message, $status);
                 }
-                if ($info = curl_multi_info_read(self::$multiHandle)) {
+                if ($info = curl_multi_info_read(self::$oldCurlMultiHandle)) {
                     if ($info['result'] !== CURLE_OK) {
                         throw new CurlException(
                             curl_error($this->handle), $info['result']
@@ -779,11 +779,14 @@ class WebClient {
                     }
                     $result = curl_multi_getcontent($this->handle);
                 }
-                if ($isRunning && curl_multi_select(self::$isRunning) === -1) {
+                if ($isRunning
+                    && curl_multi_select(self::$oldCurlMultiHandle, $isRunning)
+                        === -1
+                ) {
                     //https://bugs.php.net/bug.php?id=61141
                     usleep(100);
                 }
-            } while ($running);
+            } while ($isRunning);
             curl_multi_remove_handle(self::$oldCurlMultiHandle, $this->handle);
         }
         return $this->processResponse($result);

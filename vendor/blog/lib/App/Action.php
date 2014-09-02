@@ -55,10 +55,10 @@ $x['hi'];
 
 //echo end($x);
 //xx($x);
-var_dump(is_array($x));
+//var_dump(is_array($x));
 $x = [];
 
-var_dump($x instanceof \arrayaccess);
+//var_dump($x instanceof \arrayaccess);
 //for ($i = 0; $i < 10; ++$i) {
 //    WebClient::sendAll(array('http://www.baidu.com/'), function ($req, $res){
 //        print_r($res);
@@ -79,7 +79,7 @@ exit;
 $p = true;
 $f = fopen('/home/az/vim74/Filelist', 'r');
 $client->setOptions(array(
-    CURLOPT_HEADER => 1,
+//    CURLOPT_HEADER => 1,
     CURLOPT_INFILE => $f,
     CURLOPT_INFILESIZE => filesize('/home/az/vim74/Filelist'),
 //    CURLOPT_WRITEHEADER => $f,
