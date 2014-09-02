@@ -9,11 +9,56 @@ use Hyperframework\Db\DbProfiler;
 use Hyperframework\WebClient;
 use PDO;
 
+interface mi {
+
+}
+class obj implements mi, \ArrayAccess {
+    private $container = array();
+    public function __construct() {
+        $this->container = array(
+            "one"   => 1,
+            "two"   => 2,
+            "three" => 3,
+        );
+    }
+    public function offsetSet($offset, $value) {
+        if (is_null($offset)) {
+            $this->container[] = $value;
+        } else {
+            $this->container[$offset] = $value;
+        }
+    }
+    public function offsetExists($offset) {
+        return isset($this->container[$offset]);
+    }
+    public function offsetUnset($offset) {
+        unset($this->container[$offset]);
+    }
+    public function offsetGet($offset) {
+        return isset($this->container[$offset]) ? $this->container[$offset] : null;
+    }
+}
+
+function xx(array $x) {
+}
+
 class Action {
     public function before() {
         CsrfProtection::run();
 $time_start = microtime(true);
+$path = '/home/az/zend/init autoloader.php';
+function x(array $path) {
+}
+$x = new obj;
+$x['hi'];
+//current($x);
 
+//echo end($x);
+//xx($x);
+var_dump(is_array($x));
+$x = [];
+
+var_dump($x instanceof \arrayaccess);
 //for ($i = 0; $i < 10; ++$i) {
 //    WebClient::sendAll(array('http://www.baidu.com/'), function ($req, $res){
 //        print_r($res);
@@ -26,12 +71,17 @@ $client = new WebClient;
 //$s = curl_share_init();
 //curl_share_setopt($s, CURLSHOPT_UNSHARE, CURL_LOCK_DATA_SSL_SESSION);
 //$client->setOption(CURLOPT_SHARE, $s);
+
+$client->post('http://localhost', array('file' => '/home/az/vim74/Filelist'));
+echo $client->post('http://localhost?b=1', '@/home/az/vim74/Filelist');
+
+exit;
 $p = true;
-$f = fopen('/tmp/xx.txt', 'r');
+$f = fopen('/home/az/vim74/Filelist', 'r');
 $client->setOptions(array(
     CURLOPT_HEADER => 1,
     CURLOPT_INFILE => $f,
-    CURLOPT_INFILESIZE => filesize('/tmp/xx.txt'),
+    CURLOPT_INFILESIZE => filesize('/home/az/vim74/Filelist'),
 //    CURLOPT_WRITEHEADER => $f,
     CURLINFO_HEADER_OUT => 1,
     CURLOPT_UPLOAD => true,

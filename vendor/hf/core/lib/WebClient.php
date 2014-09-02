@@ -300,41 +300,47 @@ class WebClient {
         );
     }
 
+    private function addCurlCallbackWrapper(&$options) {
+        foreach ($options as $name => &$value) {
+            if ($name === CURLOPT_HEADERFUNCTION 
+                || $name === CURLOPT_WRITEFUNCTION
+            ) {
+                $client = $this;
+                $value = function($handle, $data) use ($client, $value) {
+                    return call_user_func($value, $client, $data);
+                };
+            } elseif ($name === CURLOPT_READFUNCTION
+                || (defined('CURLOPT_PASSWDFUNCTION')
+                    && $name === CURLOPT_PASSWDFUNCTION)
+            ) {
+                $client = $this;
+                $value = function($handle, $arg1, $arg2)
+                    use ($client, $value)
+                {
+                    return call_user_func($value, $client, $arg1, $arg2);
+                };
+            } elseif ($name === CURLOPT_PROGRESSFUNCTION) {
+                $client = $this;
+                $value = function($handle, $arg1, $arg2, $arg3, $arg4)
+                    use ($client, $value)
+                {
+                    return call_user_func(
+                        $value, $client, $arg1, $arg2, $arg3, $arg4
+                    );
+                };
+            }
+        }
+    }
+
     public function setOptions($options) {
         if (isset($options['headers'])) {
             $this->setHeaders($options['headers']);
             unset($options['headers']);
         }
         $this->isCurlOptionChanged = true;
+        $this->addCurlCallbackWrapper($options);
         foreach ($options as $name => $value) {
-            if (is_int($name)) {
-                if ($name === CURLOPT_HEADERFUNCTION 
-                    || $name === CURLOPT_WRITEFUNCTION
-                ) {
-                    $client = $this;
-                    $value = function($handle, $data) use ($client, $value) {
-                        return call_user_func($value, $client, $data);
-                    };
-                } elseif ($name === CURLOPT_READFUNCTION
-                    || (defined('CURLOPT_PASSWDFUNCTION')
-                        && $name === CURLOPT_PASSWDFUNCTION)
-                ) {
-                    $client = $this;
-                    $value = function($handle, $arg1, $arg2)
-                        use ($client, $value)
-                    {
-                        return call_user_func($value, $client, $arg1, $arg2);
-                    };
-                } elseif ($name === CURLOPT_PROGRESSFUNCTION) {
-                    $client = $this;
-                    $value = function($handle, $arg1, $arg2, $arg3, $arg4)
-                        use ($client, $value)
-                    {
-                        return call_user_func(
-                            $value, $client, $arg1, $arg2, $arg3, $arg4
-                        );
-                    };
-                }
+            if (is_int($name) === false) {
                 $this->curlOptions[$name] = $value;
             } else {
                 throw new Exception;
@@ -473,10 +479,10 @@ class WebClient {
     }
 
     private function setData($data, &$options) {
-        curl_setopt(CURLOPT_POST, true);
+        $options[CURLOPT_POST] = true;
         $this->setTemporaryHeaders(array('Expect' => null), $options);
         if (is_array($data) === false) {
-            $options[CURLOPT_POSTFIELDS] = $data;
+            $options[CURLOPT_POSTFIELDS] = array($data);
             return;
         }
         if (count($data) === 1) {
@@ -503,7 +509,7 @@ class WebClient {
             }
         } elseif ($data['type'] === 'multipart/form-data') {
             if (isset($data['content']) === false) {
-                $this->setTemporaryHeader(
+                $this->setTemporaryHeaders(
                     array('Content-Length' => 0), $options
                 );
                 return;
@@ -511,7 +517,7 @@ class WebClient {
             if (is_array($data['content']) === false) {
                 $content = (string)$data['content'];
                 $options[CURLOPT_POSTFIELDS] = $content;
-                $this->setTemporaryHeader(
+                $this->setTemporaryHeaders(
                     array('Content-Length' => strlen($content)), $options
                 );
                 return;
@@ -561,7 +567,7 @@ class WebClient {
             if ($shouldUseCurlPostFieldsOption) {
                 if (self::$isOldCurl === false) {
                     if ($isSafe === false) {
-                        $options[CURLOPT_SAFE_UPLOAD] = true;
+                        //$options[CURLOPT_SAFE_UPLOAD] = true;
                     }
                     foreach ($data as $key => &$value) {
                         if (is_array($value)) {
@@ -601,7 +607,7 @@ class WebClient {
             }
             $this->addIgnoredCurlOption(CURLOPT_POSTFIELDS, $options);
             $boundary = '--BOUNDARY-' . sha1(uniqid(mt_rand(), true));
-            $this->setTemporaryHeader(
+            $this->setTemporaryHeaders(
                 array('Content-Type' => 'multipart/form-data; boundary='
                     . $boundary
                 ),
@@ -614,7 +620,7 @@ class WebClient {
             if (isset($data['content'])) {
                 $options[CURLOPT_POSTFIELDS] = (string)$data['content'];
                 $size = strlen($options[CURLOPT_POSTFIELDS]);
-                $this->setTemporaryHeader(
+                $this->setTemporaryHeaders(
                     array('Content-Length' => $size), $options
                 );
             } elseif (isset($data['file'])) {
@@ -841,7 +847,11 @@ class WebClient {
         return $this->rawResponseHeaders;
     }
 
-    protected function prepare($options) {
+    protected function prepare(array $options) {
+        if (isset($options['data'])) {
+            $this->setData($options['data'], $options);
+            unset($options['data']);
+        }
         if (isset($options['headers']) || count($this->headers) !== 0) {
             $headers = null;
             if (isset($options['headers'])) {
@@ -871,10 +881,6 @@ class WebClient {
             }
             $options[CURLOPT_HTTPHEADER] = $headers;
             unset($options['headers']);
-        }
-        if (isset($options['data'])) {
-            $this->setData($options['data'], $options);
-            unset($options['data']);
         }
         if ($this->isCurlOptionChanged === true
             || $this->temporaryCurlOptions !== null
@@ -913,6 +919,7 @@ class WebClient {
             curl_setopt_array($this->handle, $tmp);
         }
         if ($options !== null && count($options) !== 0) {
+            $this->addCurlCallbackWrapper($options);
             curl_setopt_array($this->handle, $options);
             $this->temporaryCurlOptions = $options;
         } else {
@@ -1008,11 +1015,13 @@ class WebClient {
         return self::sendHttp('PUT', $url, $data, $headers, $options);
     }
 
-    public function delete($url, $headers = null, $options = null) {
+    public function delete($url, array $headers = null, array $options = null) {
         return self::sendHttp('DELETE', $url, null, $headers, $options);
     }
 
-    public function options($url, $headers = null, $options = null) {
+    public function options(
+        $url, array $headers = null, array $options = null
+    ) {
         return self::sendHttp('OPTIONS', $url, null, $headers, $options);
     }
 }

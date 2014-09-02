@@ -1,6 +1,9 @@
 <?php
 namespace Hyperframework\Blog;
-$path = '/home/az/zend/init autoloader.php';
+
+//x($path);
+//echo $path['hi'];
+//exit;
 //foreach ($path as $key => $value){
 //echo 'hi';
 //}
@@ -34,7 +37,7 @@ $path = '/home/az/zend/init autoloader.php';
 
 if (isset($_GET['b'])) {
 //    header('http/1.1    204');
-    header(' ');
+//    header(' ');
     echo file_get_contents('php://input');
     print_r($_POST);
     print_r($_FILES);

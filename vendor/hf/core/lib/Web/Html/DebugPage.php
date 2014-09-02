@@ -42,8 +42,9 @@ class DebugPage {
             $index = 1;
             $count = count($lines);
             $errorLine = $exception->getLine() - 1;
+            //todo 窗口化，窗口大小固定 21，除非文件大小小于 21
             foreach ($lines as $key => &$line) {
-                if ($index - 21 > $errorLine || $index + 19 < $errorLine) {
+                if ($index - 11 > $errorLine || $index + 9 < $errorLine) {
                     if ($key === 0) {
                         $lines[$key] = '<code><span style="color:#000">';
                     } elseif ($key === $count - 1) {
