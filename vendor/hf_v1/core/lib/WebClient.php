@@ -733,15 +733,7 @@ class WebClient {
                 $options[CURLOPT_POSTFIELDS] = $data;
                 return;
             }
-            $this->addIgnoredCurlOption(CURLOPT_POSTFIELDS, $options);
             $boundary = sha1(uniqid(mt_rand(), true));
-            $this->setTemporaryHeaders(
-                array('Content-Type' => 'multipart/form-data; boundary='
-                    . $boundary
-                ),
-//                array('Content-Type: plain/text'),
-                $options
-            );
             foreach ($data as $key => &$value) {
                 if (is_int($key) && isset($value['name'])) {
                     $key = $value['name'];
@@ -779,6 +771,14 @@ class WebClient {
                 $value['header'] = $header;
             }
             $size = $this->getFormDataSize($data, $boundary);
+            $this->addIgnoredCurlOption(CURLOPT_POSTFIELDS, $options);
+            $this->setTemporaryHeaders(
+                array('Content-Type' => 'multipart/form-data; boundary='
+                    . $boundary
+                ),
+//                array('Content-Type: plain/text'),
+                $options
+            );
             $this->setTemporaryHeaders(
                 array('Content-Length' => $size), $options
             );
@@ -807,14 +807,15 @@ class WebClient {
     private function getFormDataSize(array $data, $boundary) {
         $result = 0;
         foreach ($data as $item) {
-            $result += strlen($item['header']);
+            $result = bcadd(strlen($item['header']), $result, 0);
             if (isset($item['content'])) {
-                $result += strlen($item['content']);
+                $result = bcadd(strlen($item['content']), $result, 0);
             } elseif (isset($item['file'])) {
-                $result += self::getFileSize($item['file']);
+                $result = bcadd(self::getFileSize($item['file']), $result, 0);
             }
         }
-        $result += count($data)  * 2 + strlen($boundary) + 6;
+        $result = bcadd(bcmul(count($data), 2, 0), $result, 0);
+        $result = bcadd(strlen($boundary) + 6, $result, 0);
         return $result;
     }
 
