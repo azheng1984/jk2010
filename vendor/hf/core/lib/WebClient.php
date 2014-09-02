@@ -375,7 +375,7 @@ class WebClient {
     }
 
     private function sendHttp(
-        $method, $url, $data, array $headers, array $options
+        $method, $url, $data, array $headers = null, array $options = null
     ) {
         if ($options === null) {
             $options = array();
@@ -482,7 +482,7 @@ class WebClient {
         unset($this->headers[$name]);
     }
 
-    private function setData(array $data, array &$options) {
+    private function setData($data, array &$options) {
         $options[CURLOPT_POST] = true;
         $this->setTemporaryHeaders(array('Expect' => null), $options);
         if (is_array($data) === false) {
