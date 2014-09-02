@@ -85,10 +85,10 @@ class WebClient {
     }
 
     public static function sendAll(
-        $requests,
+        array $requests = null,
         $onCompleteCallback = null,
-        $requestOptions = null,
-        $multiOptions = null
+        array $requestOptions = null,
+        array $multiOptions = null
     ) {
         if ($requests !== null && count($requests) !== 0) {
             self::$multiPendingRequests = $requests;
@@ -191,7 +191,7 @@ class WebClient {
         } while ($hasPendingRequest || $isRunning);
     }
 
-    public static function setMultiOptions($options) {
+    public static function setMultiOptions(array $options) {
         if (self::$multiOptions === null) {
             self::initializeMultiOptions();
         }
@@ -300,7 +300,7 @@ class WebClient {
         );
     }
 
-    private function addCurlCallbackWrapper(&$options) {
+    private function addCurlCallbackWrapper(array &$options) {
         foreach ($options as $name => &$value) {
             if ($name === CURLOPT_HEADERFUNCTION 
                 || $name === CURLOPT_WRITEFUNCTION
@@ -332,7 +332,7 @@ class WebClient {
         }
     }
 
-    public function setOptions($options) {
+    public function setOptions(array $options) {
         if (isset($options['headers'])) {
             $this->setHeaders($options['headers']);
             unset($options['headers']);
@@ -374,7 +374,9 @@ class WebClient {
         }
     }
 
-    private function sendHttp($method, $url, $data, $headers, $options) {
+    private function sendHttp(
+        $method, $url, $data, array $headers, array $options
+    ) {
         if ($options === null) {
             $options = array();
         }
@@ -424,7 +426,9 @@ class WebClient {
         }
     }
 
-    private function setTemporaryHeaders($headers, &$options = null) {
+    private function setTemporaryHeaders(
+        array $headers, array &$options = null
+    ) {
         if ($headers === null || count($headers) === 0) {
             return;
         }
@@ -454,7 +458,7 @@ class WebClient {
         $this->setHeaders(array($name => $value));
     }
 
-    private function setHeaders($headers) {
+    public function setHeaders(array $headers) {
         if ($this->headers === null) {
             $this->headers = array();
         }
@@ -478,7 +482,7 @@ class WebClient {
         unset($this->headers[$name]);
     }
 
-    private function setData($data, &$options) {
+    private function setData(array $data, array &$options) {
         $options[CURLOPT_POST] = true;
         $this->setTemporaryHeaders(array('Expect' => null), $options);
         if (is_array($data) === false) {
@@ -632,7 +636,7 @@ class WebClient {
         }
     }
 
-    private function addIgnoredCurlOption($name, &$options) {
+    private function addIgnoredCurlOption($name, array &$options) {
         if (isset($this->curlOptions[$name])) {
             if (isset($options['ignored_curl_optoins']) === false) {
                 $options['ignored_curl_options'] = array();
@@ -641,7 +645,7 @@ class WebClient {
         }
     }
 
-    private function getSendFormDataCallback($data, $boundary) {
+    private function getSendFormDataCallback(array $data, $boundary) {
         foreach ($data as $key => &$value) {
             $header = $boundary . "\r\n";
             if (is_array($value) === false) {
@@ -736,7 +740,7 @@ class WebClient {
         };
     }
 
-    public function send($options = null) {
+    public function send(array $options = null) {
         $this->prepare($options);
         if (self::$isOldCurl === false) {
             $result = curl_exec($this->handle);
