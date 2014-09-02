@@ -33,6 +33,8 @@ $path = '/home/az/zend/init autoloader.php';
 //return;
 
 if (isset($_GET['b'])) {
+//    header('http/1.1    204');
+    header(' ');
     echo file_get_contents('php://input');
     print_r($_POST);
     print_r($_FILES);

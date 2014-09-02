@@ -406,12 +406,12 @@ class WebClient {
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($handle, CURLOPT_NOBODY, true);
         curl_setopt($handle, CURLOPT_HEADER, true);
-        $headers = curl_exec($handle);
-        if ($headers === false) {
+        $header = curl_exec($handle);
+        if ($header === false) {
             throw new Exception;
         }
         curl_close($handle);
-        if (preg_match('/Content-Length: (\d+)/', $headers, $matches)) {
+        if (preg_match('/Content-Length: (\d+)/', $header, $matches)) {
             return $matches[1];
         } else {
             throw new Exception;
@@ -474,6 +474,7 @@ class WebClient {
 
     private function setData($data, &$options) {
         curl_setopt(CURLOPT_POST, true);
+        $this->setTemporaryHeaders(array('Expect' => null), $options);
         if (is_array($data) === false) {
             $options[CURLOPT_POSTFIELDS] = $data;
             return;
@@ -598,7 +599,7 @@ class WebClient {
                 $options[CURLOPT_POSTFIELDS] = $data;
                 return;
             }
-            $this->addIgnoreOption(CURLOPT_POSTFIELDS, $options);
+            $this->addIgnoredCurlOption(CURLOPT_POSTFIELDS, $options);
             $boundary = '--BOUNDARY-' . sha1(uniqid(mt_rand(), true));
             $this->setTemporaryHeader(
                 array('Content-Type' => 'multipart/form-data; boundary='
@@ -617,7 +618,7 @@ class WebClient {
                     array('Content-Length' => $size), $options
                 );
             } elseif (isset($data['file'])) {
-                $this->addIgnoreOption(CURLOPT_READFUNCTION, $options);
+                $this->addIgnoredCurlOption(CURLOPT_READFUNCTION, $options);
                 $options[CURLOPT_UPLOAD] = true;
                 $options[CURLOPT_INFILE] = $data['file'];
                 $options[CURLOPT_INFILESIZE] = self::getFileSize($data['file']);
@@ -625,31 +626,13 @@ class WebClient {
         }
     }
 
-    private function addIgnoreOption($name, &$options) {
+    private function addIgnoredCurlOption($name, &$options) {
         if (isset($this->curlOptions[$name])) {
             if (isset($options['ignored_curl_optoins']) === false) {
                 $options['ignored_curl_options'] = array();
             }
             $options['ignored_curl_options'][] = $name;
         }
-    }
-
-    private function getSendContentCallback($data) {
-        $file = fopen($data['file']);
-        if ($file === false) {
-            throw new Exception;
-        }
-        return function($handle, $inFile, $maxLength) use (&$file) {
-            if (feof($file)) {
-                fclose($file);
-                return '';
-            }
-            $result = fgets($file, $maxLength);
-            if ($result === false) {
-                throw Exception;
-            }
-            return $result;
-        };
     }
 
     private function getSendFormDataCallback($data, $boundary) {
@@ -797,47 +780,39 @@ class WebClient {
     }
 
     private function processResponse($result) {
+        if ($this->getCurlOption(CURLOPT_HEADER) != true) {
+            return $result;
+        }
         $url = $this->getCurlOption(CURLOPT_URL);
         if (is_string($result)
             && $url != null
-            && strncmp($url, 'http', 4) === 0
-            && $this->getCurlOption(CURLOPT_HEADER) == true
+            && (strncmp($url, 'http:', 5) === 0
+                || strncmp($url, 'https:', 6) === 0)
         ) {
-            while (true) {
-                $tmp = explode("\r\n\r\n", $result, 2);
-                if (strncmp($tmp[0], 'HTTP/1.1 100 ', 12) === 0) {
-                    if (isset($tmp[1]) === false) {
-                        break;
-                    }
-                    $result = $tmp[1];
-                    continue;
-                }
-                break;
-            }
-            $this->rawResponseHeaders = $tmp[0];
+            $headerSize = $this->getInfo(CURLINFO_HEADER_SIZE);
+            $this->rawResponseHeaders = substr($result, 0, $headerSize);
             $this->responseHeaders = array();
-            $isFirst = true;
-            foreach (explode("\r\n", $tmp[0]) as $item) {
-                if ($isFirst) {
-                    $isFirst = false;
+            $headers = explode("\r\n", $this->rawResponseHeaders);
+            foreach ($headers as $header) {
+                if (strpos($header, ':') === false) {
                     continue;
                 }
-                $tmp2 = explode(':', $item, 2);
+                $tmp = explode(':', $header, 2);
                 $value = null;
-                if (isset($tmp2[1])) {
-                    $value = $tmp2[1];
+                if (isset($tmp[1])) {
+                    $value = ltrim($tmp[1], ' ');
                 }
-                if (isset($this->responseHeaders[$tmp2[0]])) {
-                    if (is_array($this->responseHeaders[$tmp2[0]]) === false) {
-                        $this->responseHeaders[$tmp2[0]] =
-                            array($this->responseHeaders[$tmp2[0]]);
+                if (isset($this->responseHeaders[$tmp[0]])) {
+                    if (is_array($this->responseHeaders[$tmp[0]]) === false) {
+                        $this->responseHeaders[$tmp[0]] =
+                            array($this->responseHeaders[$tmp[0]]);
                     }
-                    $this->responseHeaders[$tmp2[0]][] = $value;
+                    $this->responseHeaders[$tmp[0]][] = $value;
                 } else {
-                    $this->responseHeaders[$tmp2[0]] = $value;
+                    $this->responseHeaders[$tmp[0]] = $value;
                 }
             }
-            $result = $tmp[1];
+            $result = substr($result, $headerSize);
         }
         return $result;
     }

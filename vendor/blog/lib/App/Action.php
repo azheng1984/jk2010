@@ -12,7 +12,6 @@ use PDO;
 class Action {
     public function before() {
         CsrfProtection::run();
-
 $time_start = microtime(true);
 
 //for ($i = 0; $i < 10; ++$i) {
@@ -32,11 +31,11 @@ $f = fopen('/tmp/xx.txt', 'r');
 $client->setOptions(array(
     CURLOPT_HEADER => 1,
     CURLOPT_INFILE => $f,
-    CURLOPT_INFILESIZE => 5,
+    CURLOPT_INFILESIZE => filesize('/tmp/xx.txt'),
 //    CURLOPT_WRITEHEADER => $f,
     CURLINFO_HEADER_OUT => 1,
-    CURLOPT_POST => true,
     CURLOPT_UPLOAD => true,
+    CURLOPT_POST => true,
 //    CURLOPT_COOKIE => 'hi',
 //    CURLOPT_COOKIE => null,
     CURLOPT_POSTFIELDS => null,
@@ -45,6 +44,7 @@ $client->setOptions(array(
         'file[0]' => curl_file_create('/home/az/Desktop/sd.fie28932duiru', null),
         'file[1]' => curl_file_create('/home/az/Desktop/sd.fie28932duiru', null)),
     CURLOPT_HTTPHEADER => array(
+        'hi:hello'
 //        'Content-Type: applicatoin/json'
 //        'Content-Type: application/x-www-form-urlencoded',
 //        'Content-Length:' . filesize('/tmp/xx.txt'),
@@ -53,16 +53,16 @@ $client->setOptions(array(
 //    array('multipart/form-data' => array(
 //        'file' => array('mime' => 'pdf', 'name' => 'lil', 'type' => 'file')
 //    ));
-    CURLOPT_READFUNCTION => function($h, $b, $c) use(&$p) {
-      //var_dump($h);
-  //return;
-   var_dump('hi');
-   echo $c;
-   if ($p === true) {
-       $p = false;
-       return 'hi=hi';
-   }
-    },
+//    CURLOPT_READFUNCTION => function($h, $b, $c) use(&$p) {
+//      //var_dump($h);
+//  //return;
+//   var_dump('hi');
+//   echo $c;
+//   if ($p === true) {
+//       $p = false;
+//       return 'hi=hi';
+//   }
+//    },
 //    CURLOPT_WRITEFUNCTION => function($h, $x) {
 ////echo $x;
 //        return strlen($x);
@@ -98,6 +98,16 @@ print_r($info);
 //$time_end = microtime(true);
 //$time = $time_end - $time_start;
 //echo "Did in $time seconds\n";
+$ch= curl_init();
+curl_setopt($ch, CURLOPT_URL, 'http://baidu.com');
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('hi:hello'));
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('hi2:hello'));
+
+ curl_setopt($ch,    CURLINFO_HEADER_OUT, 1);
+
+//curl_exec($ch);
+
+//print_r(curl_getinfo($ch));
     }
 
     public function after($ctx) {
