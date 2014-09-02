@@ -34,7 +34,6 @@ namespace Hyperframework\Blog;
 //$x = 2;
 //x();
 //return;
-
 if (isset($_GET['b'])) {
 //    header('http/1.1    204');
 //    header(' ');
