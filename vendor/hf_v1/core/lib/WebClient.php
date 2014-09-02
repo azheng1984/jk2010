@@ -828,8 +828,6 @@ class WebClient {
     }
 
     private function getSendFormDataCallback(array $data, $boundary) {
-        //$size = 0;
-        //$content = '';
         $cache = null;
         $file = null;
         $isFirst = true;
@@ -846,21 +844,16 @@ class WebClient {
                     if ($maxLength <= $cacheLength) {
                         $result = substr($cache, 0, $maxLength);
                         $cache = substr($cache, $maxLength);
-                       // $size += strlen($result);
-                       // $content .= $result;
                         return $result;
                     } else {
                         $result = $cache;
                         $cache = null;
-                       // $content .= $result;
-                       // $size += strlen($result);
                         return $result;
                     }
                 }
                 if ($file === null) {
                     if (count($data) === 0) {
                         $isEnd  = true;
-                        //$size += strlen("\r\n" . $boundary . "--\r\n");
                         return "\r\n--" . $boundary . "--\r\n";
                     }
                     $name = key($data);
@@ -894,8 +887,6 @@ class WebClient {
                         $file = null;
                     }
                     if ($result !== '') {
-                       // $content .= $result;
-                       // $size += strlen($result);
                         return $result;
                     }
                 }
