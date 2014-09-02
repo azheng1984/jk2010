@@ -1,39 +1,55 @@
 <?php
 namespace Hyperframework\Db;
 
+use PDO;
+use Exception;
+use Hyperframework\ConfigFileLoader;
+
 class DbConnectionFactory {
     private static $config;
 
-    public function get($name) {
-        $config = $this->getConfig($name);
-        if (isset($config['dsn'])) {
-            $username = isset($config['username']) ? $config['username'] : null;
-            $password = isset($config['password']) ? $config['password'] : null;
-            return new PDO(
-                $config['dsn'],
-                $username,
-                $password,
-                array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8')
-            );
+    public static function build($name = 'default') {
+        $config = self::getConfig($name);
+        if (isset($config['dsn']) === false) {
+            throw new Exception;
         }
-        throw new Exception;
+        $username = isset($config['username']) ? $config['username'] : null;
+        $password = isset($config['password']) ? $config['password'] : null;
+        $options = isset($config['options']) ? $config['options'] : null;
+        $connection = self::getConnection(
+            $name, $config['dsn'], $username, $password, $options
+        );
+        $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $connection;
     }
 
-    private function getConfig($name) {
+    protected static function getConnection(
+        $name, $dsn, $username, $password, $options
+    ) {
+        return new DbConnection($name, $dsn, $username, $password, $options);
+    }
+
+    private static function getConfig($name) {
         if (self::$config === null) {
-            $this->initializeConfig();
+            self::initializeConfig();
         }
         if ($name === 'default' && isset(self::$config['dsn'])
-            && is_string(self::$config['dsn'])) {
-                return self::$config;
+            && is_string(self::$config['dsn'])
+        ) {
+            return self::$config;
         }
         if (isset(self::$config[$name])) {
             return self::$config[$name];
         }
-        throw new Exception("database config '$name' not found");
+        throw new Exception("Database config '$name' not found");
     }
 
-    private function initializeConfig() {
-        self::$config = require ConfigLoader::loadByEnv()
+    private static function initializeConfig() {
+        self::$config = ConfigFileLoader::loadPhp(
+            'db.php', 'hyperframework.db.config_path'
+        );
+        if (self::$config === null) {
+            throw new Exception;
+        }
     }
 }

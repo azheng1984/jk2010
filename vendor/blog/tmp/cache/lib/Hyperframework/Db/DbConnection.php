@@ -1,41 +1,101 @@
 <?php
 namespace Hyperframework\Db;
 
-class DbConnection {
-    private static $current = null;
-    private static $pool = array();
-    private static $stack = array();
-    private static $identifierQuotationMarks;
-    private static $factory;
+use PDO;
+use Hyperframework\Config;
 
-    public static function connect(
-        $name = 'default', $pdo = null, $isReusable = true,
+class DbConnection extends PDO {
+    private $name;
+    private $isProfilerEnabled;
+    private $identifierQuotationMarks;
+
+    public function __construct(
+        $name, $dsn, $userName = null, $password = null, $driverOptions = null
     ) {
-        if (self::$current !== null) {
-            self::$stack[] = self::$current;
-            self::$identifierQuotationMarks = null;
-        }
-        if ($pdo !== null) {
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);//emulate by default, configurable
-        }
-        if ($pdo === null) {
-            $pdo = self::create($name, $isReusable);
-        }
-        self::$current = $pdo;
+        $this->name = $name;
+        $this->isProfilerEnabled =
+            Config::get('hyperframework.db.profiler.enable') === true;
+        parent::__construct($dsn, $userName, $password, $driverOptions);
     }
 
-    public static function quoteIdentifier($identifier) {
-        if (self::identifierQuotationMarks === null) {
-            self::identifierQuotationMarks =
-                static::getIdentifierQuotationMarks();
-        }
-        return self::identifierQuotationMarks[0] . $identifier
-            . self::identifierQuotationMarks[1];
+    public function getName() {
+        return $this->name;
     }
 
-    protected static function getIdentifierQuotationMarks() {
-        switch (self::$current->getAttribute(PDO::ATTR_DRIVER_NAME)) {
+    public function prepare($sql, $driverOptions = array()) {
+        $statement = parent::prepare($sql, $driverOptions);
+        return new DbStatementProxy($statement, $this);
+    }
+
+    public function exec($sql) {
+        return self::sendSql($sql);
+    }
+
+    public function query(
+        $sql, $fetchStyle = null, $extraParam1 = null, $extraParam2 = null
+    ) {
+        $argumentCount = func_num_args();
+        if ($argumentCount === 1) {
+            return self::sendSql($sql, true);
+        }
+        if ($argumentCount === 2) {
+            return self::sendSql($sql, true, array($fetchStyle));
+        }
+        if ($argumentCount === 3) {
+            return self::sendSql($sql, true, array($fetchStyle, $extraParam1));
+        }
+        return self::sendSql(
+            $sql, true, array($fetchStyle, $extraParam1, $extraParam2)
+        );
+    }
+
+    public function quoteIdentifier($identifier) {
+        if ($this->identifierQuotationMarks === null) {
+            $this->identifierQuotationMarks =
+                $this->getIdentifierQuotationMarks();
+        }
+        return $this->identifierQuotationMarks[0] . $identifier
+            . $this->identifierQuotationMarks[1];
+    }
+
+    protected function sendSql($sql, $isQuery = false, $fetchOptions = null) {
+        if ($this->isProfilerEnabled) {
+            DbProfiler::onConnectionExecuting($this, $sql, $isQuery);
+        }
+        $result = null;
+        if ($isQuery) {
+            if ($fetchOptions === null) {
+                $result = parent::query($sql);
+            } else {
+                switch (count($fetchOptions)) {
+                    case 1:
+                        $result = parent::query($sql, $fetchOptions[0]);
+                        break;
+                    case 2:
+                        $result = parent::query(
+                            $sql, $fetchOptions[0], $fetchOptions[1]
+                        );
+                        break;
+                    default:
+                        $result = parent::query(
+                            $sql,
+                            $fetchOptions[0],
+                            $fetchOptions[1],
+                            $fetchOptions[2]
+                        );
+                }
+            }
+        } else {
+            $result = parent::exec($sql);
+        }
+        if ($this->isProfilerEnabled) {
+            DbProfiler::onConnectionExecuted($this, $result);
+        }
+        return $result;
+    }
+
+    protected function getIdentifierQuotationMarks() {
+        switch ($this->getAttribute(PDO::ATTR_DRIVER_NAME)) {
             case 'mysql':
                 return array('`', '`');
             case 'sqlsrv':
@@ -43,52 +103,5 @@ class DbConnection {
             default:
                 return array('"', '"');
         }
-    }
-
-    public static function close() {
-        if (count(self::$stack) > 0) {
-            self::$current = array_pop(self::$stack);
-            return;
-        }
-        self::$current = null;
-    }
-
-    public static function closeAll() {
-        self::$stack = array();
-        self::$current = null;
-    }
-
-    public static function getCurrent() {
-        if (self::$current === null) {
-            self::connect();
-        }
-        return self::$current;
-    }
-
-    public static function reset() {
-        self::$current = null;
-        self::$identifierQuotationMarks = null;
-        self::$stack = array();
-        self::$pool = array();
-        self::$factory = null;
-    }
-
-    private static function create($name, $isReusable) {
-        if ($isReusable && isset(self::$pool[$name])) {
-            return self::$pool[$name];
-        }
-        $pdo = self::getFactory()->get($name);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        if ($isReusable) {
-            self::$pool[$name] = $pdo;
-        }
-        return $pdo;
-    }
-
-    private static function getFactory() {
-        if (self::$factory === null) {
-            self::$factory = new ConnectionFactory;
-        }
-        return self::$factory;
     }
 }

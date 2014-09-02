@@ -1,9 +1,12 @@
 <?php
 namespace Hyperframework\Db;
 
+use PDO;
+use Exception;
+
 class DbClient {
     public static function getColumn($sql/*, $mixed, ...*/) {
-        return static::query(func_get_args())->fetchColumn();
+        $statement= static::query(func_get_args())->fetchColumn();
     }
 
     public static function getColumnByColumns($table, $columns, $selector) {
@@ -13,8 +16,7 @@ class DbClient {
 
     public static function getColumnById($table, $id, $selector) {
         $sql = 'SELECT ' . $selector . ' FROM '
-            . static::getConnection()->quoteIdentifier($table)
-            . ' WHERE id = ?';
+            . self::quoteIdentifier($table) . ' WHERE id = ?';
         return static::getColumn($sql, $id);
     }
 
@@ -29,8 +31,7 @@ class DbClient {
 
     public static function getRowById($table, $id, $selector = '*') {
         $sql = 'SELECT ' . $selector . ' FROM '
-            . static::getConnection()->quoteIdentifier($table)
-            . ' WHERE id = ?';
+            . self::quoteIdentifier($table) . ' WHERE id = ?';
         return static::getRow($sql, $id);
     }
 
@@ -43,6 +44,93 @@ class DbClient {
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public static function insert($table, $row) {
+        $keys = array();
+        foreach (array_keys($row) as $key) {
+            $keys[] = self::quoteIdentifier($key);
+        }
+        $columnCount = count($row);
+        if ($columnCount === 0) {
+            throw new Exception;
+        }
+        $placeHolders = str_repeat('?, ', $columnCount - 1) . '?';
+        $sql = 'INSERT INTO ' . self::quoteIdentifier($table)
+            . '(' . implode($keys, ', ') . ') VALUES(' . $placeHolders . ')';
+        return static::sendSql($sql, array_values($row));
+    }
+
+    public static function update($table, $columns, $where/*, $mixed, ...*/) {
+        $params = array_values($columns);
+        if ($where !== null) {
+            $where = ' WHERE ' . $where;
+            $params = array_merge(
+                $params, array_slice(func_get_args(), 3)
+            );
+        }
+        $tmp = null;
+        foreach (array_keys($columns) as $key) {
+            $tmp .= self::quoteIdentifier($key) . ' = ?';
+        }
+        $sql = 'UPDATE ' . self::quoteIdentifier($table)
+            . ' SET ' . $tmp . $where;
+        return static::sendSql($sql, $params);
+    }
+
+    public static function updateByColumns(
+        $table, $replacementColumns, $filterColumns
+    ) {
+        list($where, $params) = self::buildWhereByColumns($filterColumns);
+        return call_user_func_array(
+            'static::update',
+            array_merge(array($table, $replacementColumns, $where), $params)
+        );
+    }
+
+    public static function updateById($table, $columns, $id) {
+        return static::update($table, $columns, 'id = ?', $id);
+    }
+
+    public static function delete($table, $where/*, $mixed, ...*/) {
+        $params = array();
+        if ($where !== null) {
+            $where = ' WHERE ' . $where;
+            $params = array_slice(func_get_args(), 2);
+        }
+        $sql = 'DELETE FROM ' . self::quoteIdentifier($table) . $where;
+        return static::sendSql($sql, $params);
+    }
+
+    public static function deleteByColumns($table, $columns) {
+        list($where, $params) = self::buildWhereByColumns($columns);
+        return static::sendSql(
+            'DELETE FROM ' . self::quoteIdentifier($table)
+                . ' WHERE ' . $where, $params
+        );
+    }
+
+    public static function deleteById($table, $id) {
+        return static::delete($table, 'id = ?', $id);
+    }
+
+    public static function save($table, &$row) {
+        if (isset($row['id'])) {
+            $id = $row['id'];
+            unset($row['id']);
+            $result = static::update($table, $row, 'id = ?', $id);
+            $row['id'] = $id;
+            return $result;
+        }
+        static::insert($table, $row);
+        $row['id'] = static::getLastInsertId();
+        return 1;
+    }
+
+    public static function execute($sql/*, $mixed, ...*/) {
+        $params = func_get_args();
+        $sql = array_shift($params);
+        return static::sendSql($sql, $params);
+    }
+ 
     public static function getLastInsertId() {
         return static::getConnection()->lastInsertId();
     }
@@ -59,116 +147,43 @@ class DbClient {
         return static::getConnection()->rollBack();
     }
 
-    public static function prepare($sql, $isEmulated = false) {
-        $driverOptions = array(
-            PDO::ATTR_EMULATE_PREPARES => $isEmulated,
-        );
+    public static function quoteIdentifier($identifier) {
+        return static::getConnection()->quoteIdentifier($identifier);
+    }
+
+    public static function prepare($sql, $driverOptions = array()) {
         return static::getConnection()->prepare($sql, $driverOptions);
     }
 
-    public static function execute($sql/*, $mixed, ...*/) {
-        $params = func_get_args();
-        $sql = array_shift($params);
-        static::send($sql, $params);
-    }
-
-    public static function insert($table, $row) {
-        $keys = array();
-        foreach (array_keys($row) as $key) {
-            $keys[] = static::getConnection()->quoteIdentifier($key);
-        }
-        $sql = 'INSERT INTO ' . static::getConnection()->quoteIdentifier($table)
-            . '(' . implode($keys, ', ') . ') VALUES('
-            . static::getParamPlaceholders(count($row)) . ')';
-        static::send($sql, array_values($row));
-    }
-
-    public static function update($table, $columns, $where/*, $mixed, ...*/) {
-        $params = array_values($columns);
-        if ($where !== null) {
-            $where = ' WHERE ' . $where;
-            $params = array_merge(
-                $row, array_slice(func_get_args(), 3)
-            );
-        }
-        $tmp = null;
-        $connetction = static::getConnection();
-        foreach (array_keys($columns) as $key) {
-            $tmp .= $connection->quoteIdentifier($key) . ' = ?';
-        }
-        $sql = 'UPDATE ' . $connection->quoteIdentifier($table)
-            . ' SET ' . $tmp . $where;
-        static::send($sql, $params));
-    }
-
-    public static function updateByColumns(
-        $table, $replacementColumns, $filterColumns
-    ) {
-        list($where, $params) = self::buildWhereByColumns($filterColumns);
-        call_user_func_array(
-            'static::update',
-            array($table, $replacementColumns, $where) + $params
-        );
-    }
-
-    public static function updateById($table, $columns, $id) {
-        static::update($table, $columns, 'id = ?', $id);
-    }
-
-    public static function delete($table, $where/*, $mixed, ...*/) {
-        $params = array();
-        if ($where !== null) {
-            $where = ' WHERE ' . $where;
-            $params = array_slice(func_get_args(), 2);
-        }
-        $sql = 'DELETE FROM ' . static::getConnection()->quoteIdentifier($table)
-            . $where;
-        static::send($sql, $params);
-    }
-
-    public static function deleteByColumns($table, $columns) {
-        list($where, $params) = self::buildWhereByColumns($columns);
-        static::send(
-            'DELETE FROM ' . static::getConnection()->quoteIdentifier($table)
-                . ' WHERE ' . $where, $params
-        );
-    }
-
-    public static function deleteById($table, $id) {
-        static::delete($table, 'id = ?', $id);
-    }
-
-    public static function save($table, &$row, $options = null) {
-        return DbSaveCommand::run($table, $row, $options);
-    }
-
-    protected static function getConnection() {
-        return Connection::getCurrent();
-    }
-
-    protected static function send($sql, $params) {
+    protected static function sendSql($sql, $params, $isQuery = false) {
         $connection = static::getConnection();
-        if ($params === null || count($parameters) === 0) {
+        if ($params === null || count($params) === 0) {
             return $isQuery ?
                 $connection->query($sql) : $connection->exec($sql);
         }
         if (is_array($params[0])) {
-            $params = $parameters[0];
+            $params = $params[0];
         }
         $statement = $connection->prepare($sql);
         $statement->execute($params);
-        return $statement;
+        if ($isQuery) {
+            return $statement;
+        }
+        return $statement->rowCount();
+    }
+
+    protected static function getConnection() {
+        return DbContext::getConnection();
     }
 
     private static function query($params) {
         $sql = array_shift($params);
-        return static::send($sql, $params);
+        return static::sendSql($sql, $params, true);
     }
 
     private static function queryByColumns($table, $columns, $selector) {
         list($where, $params) = self::buildWhereByColumns($columns);
-        $sql = 'SELECT ' . $selector . ' FROM '
-            . static::getConnection()->quoteIdentifier($table);
+        $sql = 'SELECT ' . $selector . ' FROM ' . self::quoteIdentifier($table);
         if ($where !== null) {
             $sql .= ' WHERE ' . $where;
         }
@@ -179,27 +194,16 @@ class DbClient {
     private static function buildWhereByColumns($columns) {
         $params = array();
         $where = null;
-        $connection = static::getConnection();
         foreach ($columns as $key => $value) {
             $params[] = $value; 
             if ($where !== null) {
                 $where = ' AND ';
             }
-            $where .= $connection->quoteIdentifier($key) . ' = ?';
+            $where .= self::quoteIdentifier($key) . ' = ?';
         }
         if ($where === null) {
-            throw new \Exception;
+            throw new Exception;
         }
         return array($where, $params);
-    }
-
-    private static function getParamPlaceholders($count) {
-        if ($count > 1) {
-            return str_repeat('?, ', $count - 1) . '?';
-        }
-        if ($count === 1) {
-            return '?';
-        }
-        return '';
     }
 }

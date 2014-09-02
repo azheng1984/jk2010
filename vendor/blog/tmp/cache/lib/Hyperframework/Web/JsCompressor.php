@@ -15,8 +15,7 @@ class JsCompressor {
         fclose($p[1]);
         $err = stream_get_contents($p[2]);
         fclose($p[2]);
-        echo $err;
-        //var_dump(proc_close($rc));
+        proc_close($rc);
         return $result;
     }
 }

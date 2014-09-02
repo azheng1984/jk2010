@@ -52,7 +52,7 @@ class FormHelper {
             && $attrs['method'] === 'POST'
             && CsrfProtection::isEnabled()
         ) {
-            $this->renderCsrfProtection();
+            $this->renderCsrfProtectionField();
         }
     }
 
@@ -107,7 +107,7 @@ class FormHelper {
             ) {
                 echo $data[$attrs['name']];
             } else {
-                echo htmlspecialchars($data[$attrs['name']]);
+                echo self::encodeHtmlSpecialChars($data[$attrs['name']]);
             }
         } elseif (isset($attrs[':content'])) {
             echo $attrs[':content'];
@@ -120,22 +120,12 @@ class FormHelper {
         echo '<select';
         $this->renderAttrs($attrs);
         echo '>';
-        $value = $data[$attrs['name']];
-        foreach ($attrs[':options'] as $option) {
-            if (is_array($option) === false) {
-                $option = array('value' => $option, ':content' => $option);
-            } elseif (isset($option[':content']) === false && isset($option['value'])) {
-                $option[':content'] = $option['value'];
-            }
-            if (isset($option[':options'])) {
-                //... render optgroup
-            }
-            echo '<option';
-            $this->renderAttrs($option);
-            if ($option['value'] === $value) {
-                echo ' selected="selected"';
-            }
-            echo '>', $option[':content'], '</option>';
+        $selectedValue = null;
+        if (isset($attrs['name']) && isset($this->data[$attrs['name']])) {
+            $selectedValue = $this->data[$attrs['name']];
+        }
+        if (isset($attrs[':options'])) {
+            $this->renderOptions($attrs[':options'], $selectedValue);
         }
         echo '</select>';
     }
@@ -149,18 +139,23 @@ class FormHelper {
                 $this->renderError($name);
             } 
         } elseif (isset($this->errors[$name])) {
-            echo '<span class="error">',
-                htmlspecialchars($this->errors['name']), '</span>';
+            echo '<span class="error">', self::encodeHtmlSpecialChars(
+                $this->errors['name']
+            ), '</span>';
         }
     }
 
-    protected function renderCsrfProtection() {
+    public function renderCsrfProtectionField() {
         echo '<input type="hidden" name="',
             CsrfProtection::getTokenName(),
             '" value="', CsrfProtection::getToken(), '"/>';
     }
 
-    protected function renderInput($type, $attrs, $bindingAttr = 'value') {
+    private function encodeHtmlSpecialChars($content) {
+        return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE);
+    }
+
+    private function renderInput($type, $attrs, $bindingAttr = 'value') {
         $attrs = self::getFullFieldAttrs($attrs);
         if ($bindingAttr === 'value' && isset($attrs['name'])) {
             if (isset($this->data[$attrs['name']])) {
@@ -169,7 +164,7 @@ class FormHelper {
                 ) {
                     $attrs['value'] = $data[$attrs['name']];
                 } else {
-                    $attrs['value'] = htmlspecialchars(
+                    $attrs['value'] = self::encodeHtmlSpecialChars(
                         $this->data[$attrs['name']]
                     );
                 }
@@ -188,6 +183,36 @@ class FormHelper {
             $this->renderAttrs($attrs);
         }
         echo '/>';
+    }
+
+    private function renderOptions(
+        $options, $selectedValue, $isOptGroupAllowed = true
+    ) {
+        foreach ($options as $option) {
+             if (is_array($option) === false) {
+                 $option = array('value' => $option, ':content' => $option);
+             } elseif ($isOptGroupAllowed && isset($option[':options'])) {
+                 echo '<optgroup';
+                 $this->renderAttrs($option);
+                 echo '>';
+                 $this->renderOptions(
+                     $option[':options'], $selectedValue, false
+                 );
+                 echo '</optgroup>';
+                 continue;
+             } elseif (isset($option['value']) === false) {
+                 continue;
+             }
+             if (isset($option[':content']) === false) {
+                 $option[':content'] = $option['value'];
+             }
+             echo '<option';
+             $this->renderAttrs($option);
+             if ($option['value'] === $selectedValue) {
+                 echo ' selected="selected"';
+             }
+             echo '>', $option[':content'], '</option>';
+         }
     }
 
     private function getFullFieldAttrs($attrs) {

@@ -13,7 +13,16 @@ class Html {
         $f->renderCheckBox(array('id' => 'hello', 'value' => 'hi'));
         $f->renderFile(array('id' => 'hello', 'class' => 'hi'));
         $f->renderTextArea(array('id' => 'hello', 'class' => 'hi'));
-        //$f->renderSelect(array('id' => 'hello', 'value' => 'hi'));
+        $f->renderSelect(array(
+            'name' => 'hello',
+            ':options' => array(
+                'xx',
+                'yy',
+               array(
+                   ':options' => array('hi'), 'label' => 'hello'
+               )
+            ),
+        ));
         $f->end();
     }
 }

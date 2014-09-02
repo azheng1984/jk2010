@@ -2,35 +2,48 @@
 namespace Hyperframework;
 
 class Logger {
-    private static $types = array(
-        'trace' => 0,
-        'debug' => 1,
-        'info' => 2,
-        'warn' => 3,
-        'error' => 4,
+    private static $levels = array(
+        'emergency' => 0,
+        'alert' => 1,
+        'critical' => 2,
+        'error' => 3,
+        'warning' => 4,
+        'notice' => 5,
+        'info' => 6,
+        'debug' => 7,
     );
 
-    public static function trace($entry) {
-        static::output('trace', $entry);
+    public static function debug($message, $context = null) {
+        static::write('debug',$message, $context);
     }
 
-    public static function debug($entry) {
-        static::output('debug', $entry);
+    public static function info($message, $context = null) {
+        static::write('info',$message, $context);
     }
 
-    public static function info($entry) {
-        static::output('info', $entry);
+    public static function notice($message, $context = null) {
+        static::write('notice', $entry);
     }
 
     public static function warn($entry) {
-        static::output('warn', $entry);
+        static::write('warning', $entry);
     }
 
     public static function error($entry) {
         static::output('error', $entry);
     }
 
-    protected static function output($type, $entry) {
+    public static function critical($entry) {
+        static::write('critical', $entry);
+    }
+
+    public static function alert() {
+    }
+
+    public static function emergancy() {
+    }
+
+    protected static function write($level, $message, $context) {
         $level = Config::get('hyperframework.log_level');
         if ($level === null) {
             $level = 'warn';
