@@ -72,7 +72,7 @@ $client = new WebClient;
 //curl_share_setopt($s, CURLSHOPT_UNSHARE, CURL_LOCK_DATA_SSL_SESSION);
 //$client->setOption(CURLOPT_SHARE, $s);
 
-$client->post('http://localhost', array('file' => '/home/az/vim74/Filelist'));
+//$client->post('http://localhost', array('file' => '/home/az/vim74/Filelist'));
 echo $client->post('http://localhost?b=1', '@/home/az/vim74/Filelist');
 
 exit;

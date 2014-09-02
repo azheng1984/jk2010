@@ -22,7 +22,7 @@ class WebClient {
     private $rawResponseHeaders;
     private $responseHeaders;
 
-    public function __construct($options = null) {
+    public function __construct(array $options = null) {
         if (self::$isOldCurl === null) {
             self::$isOldCurl = version_compare(phpversion(), '5.5.0', '<');
         }
@@ -340,7 +340,7 @@ class WebClient {
         $this->isCurlOptionChanged = true;
         $this->addCurlCallbackWrapper($options);
         foreach ($options as $name => $value) {
-            if (is_int($name) === false) {
+            if (is_int($name)) {
                 $this->curlOptions[$name] = $value;
             } else {
                 throw new Exception;
@@ -482,7 +482,7 @@ class WebClient {
         $options[CURLOPT_POST] = true;
         $this->setTemporaryHeaders(array('Expect' => null), $options);
         if (is_array($data) === false) {
-            $options[CURLOPT_POSTFIELDS] = array($data);
+            $options[CURLOPT_POSTFIELDS] =$data;
             return;
         }
         if (count($data) === 1) {
@@ -567,7 +567,7 @@ class WebClient {
             if ($shouldUseCurlPostFieldsOption) {
                 if (self::$isOldCurl === false) {
                     if ($isSafe === false) {
-                        //$options[CURLOPT_SAFE_UPLOAD] = true;
+                        $options[CURLOPT_SAFE_UPLOAD] = true;
                     }
                     foreach ($data as $key => &$value) {
                         if (is_array($value)) {
@@ -789,9 +789,8 @@ class WebClient {
         if ($this->getCurlOption(CURLOPT_HEADER) != true) {
             return $result;
         }
-        $url = $this->getCurlOption(CURLOPT_URL);
+        $url = $this->getCurlOption(CURLINFO_HTTP_CODE);
         if (is_string($result)
-            && $url != null
             && (strncmp($url, 'http:', 5) === 0
                 || strncmp($url, 'https:', 6) === 0)
         ) {
@@ -993,25 +992,29 @@ class WebClient {
         }
     }
 
-    public function head($url, $headers = null, $options = null) {
+    public function head($url, array $headers = null, array $options = null) {
         return self::sendHttp('HEAD', $url, null, $headers, $options);
     }
 
-    public function get($url, $headers = null, $options = null) {
+    public function get($url, array $headers = null, array $options = null) {
         return self::sendHttp('GET', $url, null, $headers, $options);
     }
 
-    public function post($url, $data = null, $headers = null, $options = null) {
+    public function post(
+        $url, $data = null, array $headers = null, array $options = null
+    ) {
         return self::sendHttp('POST', $url, $data, $headers, $options);
     }
 
     public function patch(
-        $url, $data = null, $headers = null, $options = null
+        $url, $data = null, array $headers = null, array $options = null
     ) {
         return self::sendHttp('PATCH', $url, $data, $headers, $options);
     }
 
-    public function put($url, $data = null, $headers = null, $options = null) {
+    public function put(
+        $url, $data = null, array $headers = null, array $options = null
+    ) {
         return self::sendHttp('PUT', $url, $data, $headers, $options);
     }
 
