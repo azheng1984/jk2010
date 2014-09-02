@@ -624,9 +624,6 @@ class WebClient {
         if (isset($data['type']) === false) {
             throw new Exception;
         }
-        $this->setTemporaryHeaders(
-            array('Content-Type' => $data['type']), $options
-        );
         if ($data['type'] === 'application/x-www-form-urlencoded') {
             if (is_array($data['content'])) {
                 $content = null;
@@ -737,15 +734,19 @@ class WebClient {
                 return;
             }
             $this->addIgnoredCurlOption(CURLOPT_POSTFIELDS, $options);
-            $boundary = '--BOUNDARY-' . sha1(uniqid(mt_rand(), true));
+            $boundary = sha1(uniqid(mt_rand(), true));
             $this->setTemporaryHeaders(
                 array('Content-Type' => 'multipart/form-data; boundary='
                     . $boundary
                 ),
+//                array('Content-Type: plain/text'),
                 $options
             );
             foreach ($data as $key => &$value) {
-                $header = $boundary . "\r\n";
+                if (is_int($key) && isset($value['name'])) {
+                    $key = $value['name'];
+                }
+                $header = '--' . $boundary . "\r\n";
                 if (is_array($value) === false) {
                     $value = array('content' => $value);
                 }
@@ -760,7 +761,7 @@ class WebClient {
                     $fileName = basename($value['file']);
                 }
                 if ($fileName !== null) {
-                    $fileName = '"; filename="' . $fileName . '"';
+                    $fileName = '; filename="' . $fileName . '"';
                 }
                 $type = null;
                 if (array_key_exists('type', $value)) {
@@ -768,13 +769,13 @@ class WebClient {
                 } elseif (isset($value['content']) === false
                     && isset($value['file']) === true
                 ) {
-                    $type = 'application/octet-stream';
+                    $type = 'application/octet-stream;';
                 }
                 if ($type !== null) {
                     $type = "\r\nContent-Type: " . $type;
                 }
                 $header .= 'Content-Disposition: form-data; name="' . $key . '"'
-                    . $fileName . $type . "\r\n";
+                    . $fileName . $type . "\r\n\r\n";
                 $value['header'] = $header;
             }
             $size = $this->getFormDataSize($data, $boundary);
@@ -785,6 +786,9 @@ class WebClient {
                 $data, $boundary
             );
         } else {
+            $this->setTemporaryHeaders(
+                array('Content-Type' => $data['type']), $options
+            );
             if (isset($data['content'])) {
                 $options[CURLOPT_POSTFIELDS] = (string)$data['content'];
                 $size = strlen($options[CURLOPT_POSTFIELDS]);
@@ -810,10 +814,7 @@ class WebClient {
                 $result += self::getFileSize($item['file']);
             }
         }
-        $result += count($data)  * 2 + strlen($boundary) + 2;
-        //var_dump($result);
-        //exit;
-        return 0;
+        $result += count($data)  * 2 + strlen($boundary) + 6;
         return $result;
     }
 
@@ -827,43 +828,40 @@ class WebClient {
     }
 
     private function getSendFormDataCallback(array $data, $boundary) {
-        $size = 0;
-        $content = '';
+        //$size = 0;
+        //$content = '';
         $cache = null;
         $file = null;
         $isFirst = true;
         $isEnd = false;
         return function($handle, $inFile, $maxLength) use (
-            &$data, &$cache, &$file, &$isFirst, &$isEnd, $boundary, &$size,&$content
+            &$data, &$cache, &$file, &$isFirst, &$isEnd, $boundary
         ) {
             if ($isEnd) {
                 return;
             }
-            var_dump($data);
             for (;;) {
-                //echo $cache;
                 $cacheLength = strlen($cache);
                 if ($cacheLength !== 0) {
                     if ($maxLength <= $cacheLength) {
                         $result = substr($cache, 0, $maxLength);
                         $cache = substr($cache, $maxLength);
-                        $size += strlen($result);
-                        $content .= $result;
+                       // $size += strlen($result);
+                       // $content .= $result;
                         return $result;
                     } else {
                         $result = $cache;
                         $cache = null;
-                        $content .= $result;
-                        $size += strlen($result);
+                       // $content .= $result;
+                       // $size += strlen($result);
                         return $result;
                     }
                 }
                 if ($file === null) {
                     if (count($data) === 0) {
                         $isEnd  = true;
-                        $size += strlen("\r\n" . $boundary . '--');
-                        echo '<'  . $size .'>';
-                        return "\r\n" . $boundary . '--';
+                        //$size += strlen("\r\n" . $boundary . "--\r\n");
+                        return "\r\n--" . $boundary . "--\r\n";
                     }
                     $name = key($data);
                     $value = $data[$name];
@@ -886,15 +884,18 @@ class WebClient {
                 } else {
                     $result = fgets($file, $maxLength);
                     if ($result === false) {
-                        throw Exception;
+                        if (!feof($file)) {
+                            throw new Exception;
+                        }
+                        $result = '';
                     }
                     if (feof($file)) {
                         fclose($file);
                         $file = null;
                     }
                     if ($result !== '') {
-                        $content .= $result;
-                        $size += strlen($result);
+                       // $content .= $result;
+                       // $size += strlen($result);
                         return $result;
                     }
                 }
