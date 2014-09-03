@@ -566,6 +566,9 @@ class WebClient {
         }
     }
 
+    final protected function setTemporaryIgnoredOption($name, $value) {
+    }
+
     public function setHeader($name, $value) {
         $this->setHeaders(array($name => $value));
     }
