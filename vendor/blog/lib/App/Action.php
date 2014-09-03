@@ -19,17 +19,18 @@ class Action {
                 array(
                     'client' => new WebClient,
                     CURLOPT_HEADER => 1,
-                    CURLOPT_URL => 'http://localhost/?r=1',
                     CURLOPT_POSTFIELDS => null,
                     CURLOPT_POST => true
                 )
-            ), function($client, $req, $res) {
+            ), function($client, $options, $response) {
             print_r($req);
             //print_r($req['client']->getInfo());
             var_dump($client->getResponseCount());
             var_dump($client->getResponseHeaders(0));
             echo $res['content'];
-        });
+            }, array(
+                CURLOPT_URL => 'http://localhost/?r=1',
+            ));
 //        $client = new WebClient;
 //          $client->post('http://localhost/?r=1', null, null, array(CURLOPT_HEADER => 1));
 //        print_r($client->getResponseHeader("Set-Cookie", true));
