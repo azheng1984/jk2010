@@ -12,60 +12,18 @@ use PDO;
 class Action {
     public function before() {
         CsrfProtection::run();
-        $client = new WebClient;
-        $client->reset();
-        $client->get('http://baidu.com/', null, array(CURLOPT_HEADER => 1));
-        var_dump($client->getResponseHeaders());
-        var_dump($client->getInfo());
-        var_dump($client->getResponseCount('Set-Cookie', true));
-        exit;
-//      echo $client->get('http://localhost?r=1');
-        WebClient::sendAll(
-            array(
-                array(
-                    'client' => new WebClient,
-                    CURLOPT_HEADER => 1,
-                    CURLOPT_POSTFIELDS => null,
-                    CURLOPT_POST => true
-                )
-            ), function($client, $options, $result) {
-            print_r($options);
-            //print_r($req['client']->getInfo());
-            var_dump($client->getResponseCount());
-            var_dump($client->getResponseHeaders(0));
-            print_r($result);
-            }, array(
-                CURLOPT_URL => 'http://localhost/?r=1',
-            ));
-//        $client = new WebClient;
-//          $client->post('http://localhost/?r=1', null, null, array(CURLOPT_HEADER => 1));
-//        print_r($client->getResponseHeader("Set-Cookie", true));
-//        print_r( $client->getInfo());
-//        print_r( $client->getResponseHeaders());
-//        echo $client->getRawResponseHeaders();
-
-        exit;
-$time_start = microtime(true);
-
-//var_dump($x instanceof \arrayaccess);
-//for ($i = 0; $i < 10; ++$i) {
-//    WebClient::sendAll(array('http://www.baidu.com/'), function ($req, $res){
-//        print_r($res);
-//        $req['client']->close();
-//    });
-//}
 $f = fopen('/home/az/vim74/Filelist', 'r');
 
 $client2 = new WebClient;
-//$client = clone $client2;
+$client = clone $client2;
 echo $client->post(
     'http://localhost?b=1'
-,array('multipart/form-data' => array(
-    't[]' => array('content' => 'hi', 'type' => 'application/octet-stream', 'file_name' => 'hi'),
-    array('name' => 't[]', 'content' => 'hi=helo', 'type' => ''),
+    ,array('multipart/form-data' => array(
+//    't[]' => array('content' => 'hi', 'type' => 'application/octet-stream', 'file_name' => 'hi'),
+//    array('name' => 't[]', 'content' => 'hi=helo', 'type' => ''),
 //    't[]' => array('content' => 'hi=helo2', 'type' => ''),
-    't2[]' => array('file' => '/home/az/vim74/Filelist', 'type' => 'application/octet-stream'),
-    array('name' => 't2[]', 'file' => '/home/az/vim74/uninstal.txt','file_name' =>'hi', 'type' => 'application/octet-stream')
+//    't2[]' => array('file' => '/home/az/vim74/Filelist', 'type' => 'application/octet-stream'),
+    array('name' => 't2[]', 'file' => '/home/az/x;type=', 'type' => 'application/octet-stream')
     )),
      null, array(CURLOPT_HEADER => 1, CURLINFO_HEADER_OUT => 1)
 );

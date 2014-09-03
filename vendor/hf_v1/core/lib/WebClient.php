@@ -653,7 +653,16 @@ class WebClient {
             $data = $data['content'];
             $isSafe = true;
             $shouldUseCurlPostFieldsOption = true;
+            $keys = array();
             foreach ($data as $key => $value) {
+                if (is_int($key) && isset($value['name'])) {
+                    $key = $value['name'];
+                }
+                if (isset($keys[$key])) {
+                    $shouldUseCurlPostFieldsOption = false;
+                    break;
+                }
+                $keys[(string)$key] = true;
                 if (is_array($value) === false) {
                     $value = (string)$value;
                     if (strlen($value) !== 0 && $value[0] === '@') {
@@ -684,10 +693,21 @@ class WebClient {
                             $shouldUseCurlPostFieldsOption = false;
                             break;
                         }
+                        if (strpos($value['file'], ';type=') !== false) {
+                            $shouldUseCurlPostFieldsOption = false;
+                            break;
+                        }
                     }
                 }
             }
             if ($shouldUseCurlPostFieldsOption) {
+                foreach ($data as $key => $value) {
+                    if (is_int($key) && isset($value['name'])) {
+                        $data[$value['name']] = $value;
+                        unset($data[$value['name']]['name']);
+                        unset($data[$key]);
+                    }
+                }
                 if (self::$isOldCurl === false) {
                     if ($isSafe === false) {
                         $options[CURLOPT_SAFE_UPLOAD] = true;
@@ -728,6 +748,8 @@ class WebClient {
                         }
                     }
                 }
+                print_r($data);
+                $options[CURLOPT_SAFE_UPLOAD] = false;
                 $options[CURLOPT_POSTFIELDS] = $data;
                 return;
             }
@@ -822,7 +844,7 @@ class WebClient {
         return $result;
     }
 
-    public function addContentLength($leftOperand, $rightOperand) {
+    private function addContentLength($leftOperand, $rightOperand) {
         if (PHP_INT_SIZE === 8) {
             return $leftOperand + $rightOperand;
         }
