@@ -28,15 +28,15 @@ $client = new WebClient;
 echo $client->post(
     'http://localhost?b=1'
 ,array('multipart/form-data' => array(
-    //'t' => array('content' => 'hi', 'type' => 'application/octet-stream'),
+    't[]' => array('content' => 'hi', 'type' => 'application/octet-stream'),
     array('name' => 't[]', 'content' => 'hi=helo', 'type' => ''),
-    't[]' => array('content' => 'hi=helo2', 'type' => ''),
-    't2[]' => array('file' => '/home/az/vim74/Filelist', 'type' => 'application/octet-stream'),
-    array('name' => 't2[]', 'file' => '/home/az/vim74/Filelist','file_name' =>'hi', 'type' => 'application/octet-stream')
+//    't[]' => array('content' => 'hi=helo2', 'type' => ''),
+//    't2[]' => array('file' => '/home/az/vim74/Filelist', 'type' => 'application/octet-stream'),
+//    array('name' => 't2[]', 'file' => '/home/az/vim74/uninstal.txt','file_name' =>'hi', 'type' => 'application/octet-stream')
     )),
      null, array(CURLOPT_HEADER => 1, CURLINFO_HEADER_OUT => 1)
 );
-
+echo filesize('/home/az/vim74/uninstal.txt');
 print_r($client->getInfo());
 
 exit;

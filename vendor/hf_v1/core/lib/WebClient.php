@@ -776,7 +776,7 @@ class WebClient {
                 array('Content-Type' => 'multipart/form-data; boundary='
                     . $boundary
                 ),
-//                array('Content-Type: plain/text'),
+//               array('Content-Type: plain/text'),
                 $options
             );
             $this->setTemporaryHeaders(
