@@ -14,6 +14,7 @@ class WebClient {
     private static $isOldCurl;
     private $handle;
     private $oldCurlMultiHandle;
+    private $queryParams;
     private $headers = array();
     private $curlOptions = array();
     private $ignoredCurlOptions;
@@ -330,6 +331,10 @@ class WebClient {
             $this->setHeaders($options['headers']);
             unset($options['headers']);
         }
+        if (isset($options['query_params'])) {
+            $this->queryParams = $options['query_params'];
+            unset($options['query_params']);
+        }
         $this->isCurlOptionChanged = true;
         $this->addCurlCallbackWrapper($options);
         foreach ($options as $name => $value) {
@@ -399,29 +404,9 @@ class WebClient {
         }
     }
 
-    private function sendHttp(
-        $method, $url, $data, array $headers = null, array $options = null
-    ) {
+    private function sendHttp($method, $url, $data, array $options = null) {
         if ($options === null) {
             $options = array();
-        }
-        if ($headers !== null && count($headers) !== 0) {
-            if (isset($options['headers'])
-                && is_array($options['headers'])
-            ) {
-                foreach ($headers as $key => $value) {
-                    if (is_int($key)) {
-                        $options['headers'][] = $key;
-                    } else {
-                        if (array_key_exists($key, $options['headers'])) {
-                            unset($options['headers'][$key]);
-                        }
-                        $options['headers'][$key] = $value;
-                    }
-                }
-            } else {
-                $options['headers'] = $headers;
-            }
         }
         if ($data !== null) {
             $options['data'] = $data;
@@ -513,6 +498,57 @@ class WebClient {
             }
             $options[CURLOPT_HTTPHEADER] = $headers;
             unset($options['headers']);
+        }
+        $queryParams = null;
+        if (array_key_exists('query_params', $options)) {
+            $queryParams = $options['query_params'];
+            unset($options['query_params']);
+        } elseif ($this->queryParams !== null) {
+            $queryParams = $this->queryParams;
+        }
+        if ($queryParams !== null) {
+            if (is_array($queryParams) === false) {
+                throw new Exception;
+            }
+            if (count($queryParams) > 0) {
+                $queryString = '';
+                foreach ($queryParams as $key => $value) {
+                    if ($queryString !== '') {
+                        $queryString .= '&';
+                    }
+                    $queryString .= urlencode($key) . '=' . urlencode($value);
+                }
+                $url = null;
+                if (isset($options[CURLOPT_URL])) {
+                    $url = $options[CURLOPT_URL];
+                } elseif (isset($this->curlOptions[CURLOPT_URL])) {
+                    $url = $this->curlOptions[CURLOPT_URL];
+                }
+                if ($url !== null) {
+                    $numberSignPosition = strpos($url, '#');
+                    $questionMarkPosition = strpos($url, '?');
+                    if ($numberSignPosition === false
+                        && $questionMarkPosition === false
+                    ) {
+                        $url .= '?' . $queryString;
+                    } elseif ($numberSignPosition === false) {
+                        $url = substr($url, 0, $questionMarkPosition)
+                            . '?' . $queryString;
+                    } elseif ($questionMarkPosition === false
+                        || $numberSignPosition < $questionMarkPosition
+                    ) {
+                        $url = substr($url, 0, $numberSignPosition)
+                            . '?' . $queryString
+                            . substr($url, $numberSignPosition);
+                    } elseif ($numberSignPosition > $questionMarkPosition) {
+                        $url = substr($url, 0, $questionMarkPosition)
+                            . '?' . $queryString
+                            . substr($url, $numberSignPosition);
+                    }
+                    echo $url ."\r\n";
+                    $options[CURLOPT_URL] = $url;
+                }
+            }
         }
         if ($this->isCurlOptionChanged === true
             || $this->temporaryCurlOptions !== null
@@ -1107,39 +1143,31 @@ class WebClient {
         }
     }
 
-    public function head($url, array $headers = null, array $options = null) {
-        return self::sendHttp('HEAD', $url, null, $headers, $options);
+    public function head($url, array $options = null) {
+        return self::sendHttp('HEAD', $url, null, $options);
     }
 
-    public function get($url, array $headers = null, array $options = null) {
-        return self::sendHttp('GET', $url, null, $headers, $options);
+    public function get($url, array $options = null) {
+        return self::sendHttp('GET', $url, null, $options);
     }
 
-    public function post(
-        $url, $data = null, array $headers = null, array $options = null
-    ) {
-        return self::sendHttp('POST', $url, $data, $headers, $options);
+    public function post($url, $data = null, array $options = null) {
+        return self::sendHttp('POST', $url, $data, $options);
     }
 
-    public function patch(
-        $url, $data = null, array $headers = null, array $options = null
-    ) {
-        return self::sendHttp('PATCH', $url, $data, $headers, $options);
+    public function patch($url, $data = null, array $options = null) {
+        return self::sendHttp('PATCH', $url, $data, $options);
     }
 
-    public function put(
-        $url, $data = null, array $headers = null, array $options = null
-    ) {
-        return self::sendHttp('PUT', $url, $data, $headers, $options);
+    public function put($url, $data = null, array $options = null) {
+        return self::sendHttp('PUT', $url, $data, $options);
     }
 
-    public function delete($url, array $headers = null, array $options = null) {
-        return self::sendHttp('DELETE', $url, null, $headers, $options);
+    public function delete($url, array $options = null) {
+        return self::sendHttp('DELETE', $url, null, $options);
     }
 
-    public function options(
-        $url, array $headers = null, array $options = null
-    ) {
-        return self::sendHttp('OPTIONS', $url, null, $headers, $options);
+    public function options($url, array $options = null) {
+        return self::sendHttp('OPTIONS', $url, null, $options);
     }
 }

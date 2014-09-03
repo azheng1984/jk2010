@@ -16,10 +16,19 @@ $f = fopen('/home/az/vim74/Filelist', 'r');
 
 $client2 = new WebClient;
 $client = clone $client2;
+
+echo $client->get('http://localhost/#hi', array(
+        'query_params' => array(
+            'b' => 1,
+            'abc' => 'hel?#我们'
+        )
+    )
+);
+
 echo $client->post(
-    'http://localhost?b=1'
+    'http://localhost:8080/index.php?b=1'
     ,array('multipart/form-data' => array(
-//    't[]' => array('content' => 'hi', 'type' => 'application/octet-stream', 'file_name' => 'hi'),
+    't2[]' => array('content' => 'hi', 'type' => 'application/octet-stream', 'file_name' => 'hi'),
 //    array('name' => 't[]', 'content' => 'hi=helo', 'type' => ''),
 //    't[]' => array('content' => 'hi=helo2', 'type' => ''),
 //    't2[]' => array('file' => '/home/az/vim74/Filelist', 'type' => 'application/octet-stream'),
@@ -30,7 +39,6 @@ echo $client->post(
 echo filesize('/home/az/vim74/uninstal.txt');
 print_r($client->getInfo());
 
-exit;
 
 //$client->post('http://localhost', array('file' => '/home/az/vim74/Filelist'));
 //echo $client->post('http://localhost?b=1', '@/home/az/vim74/Filelist');
