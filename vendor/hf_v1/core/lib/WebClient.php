@@ -383,6 +383,10 @@ class WebClient {
             $this->headers = array();
             return;
         }
+        if ($name === 'query_params') {
+            $this->queryParams = array();
+            return;
+        }
         if (is_int($name) === false) {
             throw new Exception;
         }
@@ -545,7 +549,6 @@ class WebClient {
                             . '?' . $queryString
                             . substr($url, $numberSignPosition);
                     }
-                    echo $url ."\r\n";
                     $options[CURLOPT_URL] = $url;
                 }
             }
@@ -1117,6 +1120,7 @@ class WebClient {
         $this->responseHeaders = null;
         $this->temporaryCurlOptions = null;
         $this->headers = array();
+        $this->queryParams = null;
         $defaultOptions = $this->getDefaultOptions();
         if ($defaultOptions === null) {
             $this->curlOptions = array();
