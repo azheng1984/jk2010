@@ -100,21 +100,21 @@ class WebClient {
             }
             while ($info = curl_multi_info_read(self::$multiHandle)) {
                 $handleId = (int)$info['handle'];
-                $request = self::$multiProcessingRequests[$handleId];
+                $options = self::$multiProcessingRequests[$handleId];
                 unset(self::$multiProcessingRequests[$handleId]);
                 if ($onCompleteCallback !== null) {
-                    $response = array('curl_code' => $info['result']);
-                    $client = $request['client'];
-                    unset($request['client']);
+                    $client = $options['client'];
+                    unset($options['client']);
+                    $result = array('curl_code' => $info['result']);
                     if ($info['result'] !== CURLE_OK) {
-                        $response['error'] = curl_error($info['handle']);
+                        $result['error'] = curl_error($info['handle']);
                     } else {
-                        $response['content'] = $client->processResponse(
+                        $result['content'] = $client->processResponse(
                             curl_multi_getcontent($info['handle'])
                         );
                     }
                     call_user_func(
-                        $onCompleteCallback, $client, $request, $response
+                        $onCompleteCallback, $client, $options, $result
                     );
                 }
                 if ($hasPendingRequest) {

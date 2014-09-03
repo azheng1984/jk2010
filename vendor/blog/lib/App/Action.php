@@ -22,12 +22,12 @@ class Action {
                     CURLOPT_POSTFIELDS => null,
                     CURLOPT_POST => true
                 )
-            ), function($client, $options, $response) {
-            print_r($req);
+            ), function($client, $options, $result) {
+            print_r($options);
             //print_r($req['client']->getInfo());
             var_dump($client->getResponseCount());
             var_dump($client->getResponseHeaders(0));
-            echo $res['content'];
+            echo $result['content'];
             }, array(
                 CURLOPT_URL => 'http://localhost/?r=1',
             ));
