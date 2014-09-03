@@ -12,7 +12,28 @@ use PDO;
 class Action {
     public function before() {
         CsrfProtection::run();
-        WebClient::sendAll(array('http://www.baidu.com/'), function() {});
+        $client = new WebClient;
+//      echo $client->get('http://localhost?r=1');
+        WebClient::sendAll(
+            array(
+                array(CURLOPT_HEADER => 1,
+                CURLOPT_URL => 'http://www.baidu.com/',
+                CURLOPT_POSTFIELDS => null,
+                CURLOPT_POST => true
+            )), function($req, $res) {
+            //print_r($req);
+            //print_r($req['client']->getInfo());
+            var_dump($req['client']->getResponseHeaders());
+            //print_r($res);
+        });
+//        $client = new WebClient;
+//          $client->post('http://localhost/?r=1', null, null, array(CURLOPT_HEADER => 1));
+//        print_r($client->getResponseHeader("Set-Cookie", true));
+//        print_r( $client->getInfo());
+//        print_r( $client->getResponseHeaders());
+//        echo $client->getRawResponseHeaders();
+
+        exit;
 $time_start = microtime(true);
 
 //var_dump($x instanceof \arrayaccess);

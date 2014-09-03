@@ -772,7 +772,6 @@ class WebClient {
                 array('Content-Type' => 'multipart/form-data; boundary='
                     . $boundary
                 ),
-//               array('Content-Type: plain/text'),
                 $options
             );
             $this->setTemporaryHeaders(
@@ -950,9 +949,14 @@ class WebClient {
         if ($protocol === 'http' || $protocol === 'https') {
             $headerSize = $this->getInfo(CURLINFO_HEADER_SIZE);
             $this->rawResponseHeaders = substr($result, 0, $headerSize);
+            $headers = explode("\r\n", trim($this->rawResponseHeaders));
             $this->responseHeaders = array();
-            $headers = explode("\r\n", $this->rawResponseHeaders);
+            $current = array();
             foreach ($headers as $header) {
+                if ($header === '') {
+                    $this->responseHeaders[] = $current;
+                    $current = array();
+                }
                 if (strpos($header, ':') === false) {
                     continue;
                 }
@@ -961,45 +965,64 @@ class WebClient {
                 if (isset($tmp[1])) {
                     $value = ltrim($tmp[1], ' ');
                 }
-                if (isset($this->responseHeaders[$tmp[0]])) {
-                    if (is_array($this->responseHeaders[$tmp[0]]) === false) {
-                        $this->responseHeaders[$tmp[0]] =
-                            array($this->responseHeaders[$tmp[0]]);
+                if (isset($current[$tmp[0]])) {
+                    if (is_array($current[$tmp[0]]) === false) {
+                        $current[$tmp[0]] = array($current[$tmp[0]]);
                     }
-                    $this->responseHeaders[$tmp[0]][] = $value;
+                    $current[$tmp[0]][] = $value;
                 } else {
-                    $this->responseHeaders[$tmp[0]] = $value;
+                    $current[$tmp[0]] = $value;
                 }
             }
+            $this->responseHeaders[] = $current;
+            //print_r($this->responseHeaders);
             return substr($result, $headerSize);
         }
         return $result;
     }
 
-    public function getResponseHeader($name, $isMultiple = false) {
-        if (isset($this->responseHeaders[$name])) {
-            if (is_array($this->responseHeaders[$name])) {
+    public function getResponseHeader(
+        $name, $isMultiple = false, $responseIndex = null
+    ) {
+        $headers = $this->getResponseHeaders($responseIndex);
+        if (isset($headers[$name])) {
+            if (is_array($headers[$name])) {
                 if ($isMultiple) {
-                    return $this->responseHeaders[$name];
+                    return $headers[$name];
                 } else {
-                    return end($this->responseHeaders[$name]);
+                    return end($headers[$name]);
                 }
             }
             if ($isMultiple) {
-                return array($this->responseHeaders[$name]);
+                return array($headers[$name]);
             }
-            return $this->responseHeaders[$name];
+            return $headers[$name];
         }
     }
 
-    public function getResponseHeaders() {
-        return $this->responseHeaders;
+    public function getResponseHeaders($responseIndex = null) {
+        if ($this->responseHeaders === null) {
+            return;
+        }
+        if ($responseIndex === null) {
+            return end($this->responseHeaders);
+        } else {
+            if (isset($this->responseHeaders[$responseIndex])) {
+                return $this->responseHeaders[$responseIndex];
+            }
+        }
     }
 
     public function getRawResponseHeaders() {
         return $this->rawResponseHeaders;
     }
 
+    public function getResponseCount() {
+        if ($this->responseHeaders === null) {
+            return 0;
+        }
+        return count($this->responseHeaders);
+    }
 
     public function getInfo($name = null) {
         if ($this->handle === null) {

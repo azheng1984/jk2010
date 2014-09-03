@@ -36,12 +36,24 @@ namespace Hyperframework\Blog;
 if (isset($_GET['b'])) {
 //    header('http/1.1    204');
 //    header(' ');
+
 echo file_get_contents('php://input');
     print_r($_POST);
     print_r($_FILES);
     echo $_SERVER['REQUEST_METHOD'];
     exit;
 }
+
+if (isset($_GET['r'])) {
+    if ($_GET['r'] < 10) {
+       header('http/1.1 302');
+       header('Location: http://localhost/?r='. ($_GET['r'] + 1));
+    }
+    header('http1.1/:1');
+    echo $_GET['r'];
+    exit;
+}
+
 use Hyperframework\Web\Runner;
 define('Hyperframework\Blog\ROOT_PATH', dirname(__DIR__));
 require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
