@@ -821,7 +821,8 @@ class WebClient {
         $dataCount = count($data);
         $result = $this->addContentLength($dataCount, $result);
         $result = $this->addContentLength($dataCount, $result);
-        return $this->addContentLength(strlen($boundary) + 6, $result);
+        $result = $this->addContentLength(strlen($boundary) + 6, $result);
+        return $result;
     }
 
     public function addContentLength($leftOperand, $rightOperand) {
@@ -837,15 +838,16 @@ class WebClient {
         }
         $result = '';
         $tmp = 0;
-        $index = 0;
-        while ($rightOperandLength > $index || $leftOperandLength > $index) {
+        $leftIndex = $leftOperandLength - 1;
+        $rightIndex = $rightOperandLength - 1;
+        while ($rightIndex >= 0 || $leftIndex >= 0) {
             $left = 0;
             $right = 0;
-            if ($leftOperandLength > $index) {
-                $left = $leftOperandString[$index];
+            if ($leftIndex >= 0) {
+                $left = $leftOperandString[$leftIndex];
             }
-            if ($rightOperandLength > $index) {
-                $right = $rightOperandString[$index];
+            if ($rightIndex >= 0) {
+                $right = $rightOperandString[$rightIndex];
             }
             $tmp += $left + $right;
             if ($tmp > 9) {
@@ -855,7 +857,8 @@ class WebClient {
                 $result = $tmp . $result;
                 $tmp = 0;
             }
-            ++$index;
+            --$leftIndex;
+            --$rightIndex;
         }
         if ($tmp !== 0) {
             return '1' . $result;
