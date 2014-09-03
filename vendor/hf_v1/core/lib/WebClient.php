@@ -110,7 +110,7 @@ class WebClient {
                     if ($info['result'] !== CURLE_OK) {
                         $result['error'] = curl_error($info['handle']);
                     } else {
-                        $result['content'] = $client->processResponse(
+                        $result['content'] = $client->prepareResponse(
                             curl_multi_getcontent($info['handle'])
                         );
                     }
@@ -165,7 +165,7 @@ class WebClient {
         $options = $request;
         $client = $options['client']; 
         unset($options['client']);
-        $client->prepare($options);
+        $client->prepareRequest($options);
         self::$multiProcessingRequests[(int)$client->handle] = $request;
         curl_multi_add_handle(self::$multiHandle, $client->handle);
     }
@@ -394,11 +394,11 @@ class WebClient {
         unset($this->curlOptions[$name]);
     }
 
-    public function setOption($name, $value) {
+    final public function setOption($name, $value) {
         $this->setOptions(array($name => $value));
     }
 
-    private function getCurlOption($name) {
+    final protected function getCurlOption($name) {
         if ($this->temporaryCurlOptions !== null
             && array_key_exists($name, $this->temporaryCurlOptions)
         ) {
@@ -424,7 +424,7 @@ class WebClient {
         if ($options === null) {
             $options = array();
         }
-        $this->prepare($options);
+        $this->prepareRequest($options);
         if (self::$isOldCurl === false) {
             $result = curl_exec($this->handle);
             if ($result === false) {
@@ -468,10 +468,10 @@ class WebClient {
             } while ($isRunning);
             curl_multi_remove_handle($this->oldCurlMultiHandle, $this->handle);
         }
-        return $this->processResponse($result);
+        return $this->perpareResponse($result);
     }
 
-    private function prepare(array $options) {
+    protected function prepareRequest(array $options) {
         if (isset($options['data'])) {
             $this->setData($options['data'], $options);
             unset($options['data']);
@@ -788,7 +788,6 @@ class WebClient {
                         }
                     }
                 }
-                print_r($data);
                 $options[CURLOPT_SAFE_UPLOAD] = false;
                 $options[CURLOPT_POSTFIELDS] = $data;
                 return;
@@ -1001,7 +1000,7 @@ class WebClient {
         };
     }
 
-    private function processResponse($result) {
+    protected function prepareResponse($result) {
         if ($this->getCurlOption(CURLOPT_HEADER) == false
             || is_string($result) === false
         ) {
