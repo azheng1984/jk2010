@@ -655,7 +655,7 @@ class WebClient {
             $shouldUseCurlPostFieldsOption = true;
             $keys = array();
             foreach ($data as $key => $value) {
-                if (is_int($key) && isset($value['name'])) {
+                if (isset($value['name'])) {
                     $key = $value['name'];
                 }
                 if (isset($keys[$key])) {
@@ -702,9 +702,8 @@ class WebClient {
             }
             if ($shouldUseCurlPostFieldsOption) {
                 foreach ($data as $key => $value) {
-                    if (is_int($key) && isset($value['name'])) {
+                    if (isset($value['name'])) {
                         $data[$value['name']] = $value;
-                        unset($data[$value['name']]['name']);
                         unset($data[$key]);
                     }
                 }
@@ -755,7 +754,7 @@ class WebClient {
             }
             $boundary = sha1(uniqid(mt_rand(), true));
             foreach ($data as $key => &$value) {
-                if (is_int($key) && isset($value['name'])) {
+                if (isset($value['name'])) {
                     $key = $value['name'];
                 }
                 $header = '--' . $boundary . "\r\n";
