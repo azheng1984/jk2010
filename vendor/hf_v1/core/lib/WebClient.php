@@ -384,7 +384,7 @@ class WebClient {
             return;
         }
         if ($name === 'query_params') {
-            $this->queryParams = array();
+            $this->queryParams = null;
             return;
         }
         if (is_int($name) === false) {
