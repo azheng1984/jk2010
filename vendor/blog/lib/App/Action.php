@@ -16,15 +16,18 @@ class Action {
 //      echo $client->get('http://localhost?r=1');
         WebClient::sendAll(
             array(
-                array(CURLOPT_HEADER => 1,
-                CURLOPT_URL => 'http://localhost/?r=1',
-                CURLOPT_POSTFIELDS => null,
-                CURLOPT_POST => true
-            )), function($req, $res) {
-            //print_r($req);
+                array(
+                    'client' => new WebClient,
+                    CURLOPT_HEADER => 1,
+                    CURLOPT_URL => 'http://localhost/?r=1',
+                    CURLOPT_POSTFIELDS => null,
+                    CURLOPT_POST => true
+                )
+            ), function($client, $req, $res) {
+            print_r($req);
             //print_r($req['client']->getInfo());
-            var_dump($req['client']->getResponseCount());
-            var_dump($req['client']->getResponseHeaders(0));
+            var_dump($client->getResponseCount());
+            var_dump($client->getResponseHeaders(0));
             echo $res['content'];
         });
 //        $client = new WebClient;

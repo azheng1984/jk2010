@@ -100,22 +100,23 @@ class WebClient {
             }
             while ($info = curl_multi_info_read(self::$multiHandle)) {
                 $handleId = (int)$info['handle'];
+                $request = self::$multiProcessingRequests[$handleId];
+                unset(self::$multiProcessingRequests[$handleId]);
                 if ($onCompleteCallback !== null) {
-                    $request = self::$multiProcessingRequests[$handleId];
                     $response = array('curl_code' => $info['result']);
+                    $client = $request['client'];
+                    unset($request['client']);
                     if ($info['result'] !== CURLE_OK) {
                         $response['error'] = curl_error($info['handle']);
                     } else {
-                        $response['content'] =
-                            $request['client']->processResponse(
-                                curl_multi_getcontent($info['handle'])
-                            );
+                        $response['content'] = $client->processResponse(
+                            curl_multi_getcontent($info['handle'])
+                        );
                     }
                     call_user_func(
-                        $onCompleteCallback, $request, $response
+                        $onCompleteCallback, $client, $request, $response
                     );
                 }
-                unset(self::$multiProcessingRequests[$handleId]);
                 if ($hasPendingRequest) {
                     $hasPendingRequest = self::addMultiRequest() !== false;
                 }
