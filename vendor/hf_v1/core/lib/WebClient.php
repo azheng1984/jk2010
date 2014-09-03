@@ -546,7 +546,7 @@ class WebClient {
         $this->isInitialized = true;
     }
 
-    private function setTemporaryHeaders(array $headers) {
+    protected function setTemporaryHeaders(array $headers) {
         if (count($headers) === 0) {
             return;
         }
