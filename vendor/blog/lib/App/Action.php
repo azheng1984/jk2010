@@ -25,6 +25,7 @@ $time_start = microtime(true);
 $f = fopen('/home/az/vim74/Filelist', 'r');
 
 $client = new WebClient;
+echo $client->addContentLength(8, '99999999999999999999999923232393');
 echo $client->post(
     'http://localhost?b=1'
 ,array('multipart/form-data' => array(

@@ -1,6 +1,5 @@
 <?php
 namespace Hyperframework\Blog;
-
 //x($path);
 //echo $path['hi'];
 //exit;
@@ -43,7 +42,6 @@ echo file_get_contents('php://input');
     echo $_SERVER['REQUEST_METHOD'];
     exit;
 }
-phpinfo();
 use Hyperframework\Web\Runner;
 define('Hyperframework\Blog\ROOT_PATH', dirname(__DIR__));
 require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'

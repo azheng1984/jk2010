@@ -807,16 +807,60 @@ class WebClient {
     private function getFormDataSize(array $data, $boundary) {
         $result = 0;
         foreach ($data as $item) {
-            $result = bcadd(strlen($item['header']), $result, 0);
+            $result = $this->addContentLength(strlen($item['header']), $result);
             if (isset($item['content'])) {
-                $result = bcadd(strlen($item['content']), $result, 0);
+                $result = $this->addContentLength(
+                    strlen($item['content']), $result
+                );
             } elseif (isset($item['file'])) {
-                $result = bcadd(self::getFileSize($item['file']), $result, 0);
+                $result = $this->addContentLength(
+                    self::getFileSize($item['file']), $result
+                );
             }
         }
-        $result = bcadd(bcmul(count($data), 2, 0), $result, 0);
-        $result = bcadd(strlen($boundary) + 6, $result, 0);
-        return $result;
+        $dataCount = count($data);
+        $result = $this->addContentLength($dataCount, $result);
+        $result = $this->addContentLength($dataCount, $result);
+        return $this->addContentLength(strlen($boundary) + 6, $result);
+    }
+
+    public function addContentLength($leftOperand, $rightOperand) {
+//        if (PHP_INT_SIZE === 8) {
+//            return $leftOperand + $rightOperand;
+//        }
+        $leftOperandString = (string)$leftOperand;
+        $rightOperandString = (string)$rightOperand;
+        $leftOperandLength = strlen($leftOperandString);
+        $rightOperandLength = strlen($rightOperandString);
+        if ($leftOperandLength < 10 && $rightOperandLength < 10) {
+            return $leftOperand + $rightOperand;
+        }
+        $result = '';
+        $tmp = 0;
+        $index = 0;
+        while ($rightOperandLength > $index || $leftOperandLength > $index) {
+            $left = 0;
+            $right = 0;
+            if ($leftOperandLength > $index) {
+                $left = $leftOperandString[$index];
+            }
+            if ($rightOperandLength > $index) {
+                $right = $rightOperandString[$index];
+            }
+            $tmp += $left + $right;
+            if ($tmp > 9) {
+                $tmp -= 10;
+                $tmp = 1;
+            } else {
+                $tmp = 0;
+            }
+            $result = $tmp . $result;
+            ++$index;
+        }
+        if ($tmp !== 0) {
+            return '1' . $result;
+        }
+        return $result === '' ? 0 : $result;
     }
 
     private function addIgnoredCurlOption($name, array &$options) {
