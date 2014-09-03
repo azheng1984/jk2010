@@ -825,14 +825,15 @@ class WebClient {
     }
 
     public function addContentLength($leftOperand, $rightOperand) {
-//        if (PHP_INT_SIZE === 8) {
-//            return $leftOperand + $rightOperand;
-//        }
+        if (PHP_INT_SIZE === 8) {
+            return $leftOperand + $rightOperand;
+        }
         $leftOperandString = (string)$leftOperand;
         $rightOperandString = (string)$rightOperand;
         $leftOperandLength = strlen($leftOperandString);
         $rightOperandLength = strlen($rightOperandString);
         if ($leftOperandLength < 10 && $rightOperandLength < 10) {
+            echo 'hi';
             return $leftOperand + $rightOperand;
         }
         $result = '';
@@ -849,12 +850,12 @@ class WebClient {
             }
             $tmp += $left + $right;
             if ($tmp > 9) {
-                $tmp -= 10;
+                $result = $tmp - 10 . $result;
                 $tmp = 1;
             } else {
+                $result = $tmp . $result;
                 $tmp = 0;
             }
-            $result = $tmp . $result;
             ++$index;
         }
         if ($tmp !== 0) {
