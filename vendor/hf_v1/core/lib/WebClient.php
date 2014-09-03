@@ -421,6 +421,9 @@ class WebClient {
     }
 
     public function send(array $options = null) {
+        if ($options === null) {
+            $options = array();
+        }
         $this->prepare($options);
         if (self::$isOldCurl === false) {
             $result = curl_exec($this->handle);
