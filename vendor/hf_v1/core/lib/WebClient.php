@@ -514,41 +514,42 @@ class WebClient {
             if (is_array($queryParams) === false) {
                 throw new Exception;
             }
-            if (count($queryParams) > 0) {
-                $queryString = '';
-                foreach ($queryParams as $key => $value) {
-                    if ($queryString !== '') {
-                        $queryString .= '&';
-                    }
-                    $queryString .= urlencode($key) . '=' . urlencode($value);
+            $queryString = '';
+            foreach ($queryParams as $key => $value) {
+                if ($queryString !== '') {
+                    $queryString .= '&';
                 }
-                $url = null;
-                if (isset($options[CURLOPT_URL])) {
-                    $url = $options[CURLOPT_URL];
-                } elseif (isset($this->curlOptions[CURLOPT_URL])) {
-                    $url = $this->curlOptions[CURLOPT_URL];
+                $queryString .= urlencode($key) . '=' . urlencode($value);
+            }
+            $url = null;
+            if (isset($options[CURLOPT_URL])) {
+                $url = $options[CURLOPT_URL];
+            } elseif (isset($this->curlOptions[CURLOPT_URL])) {
+                $url = $this->curlOptions[CURLOPT_URL];
+            }
+            if ($url !== null) {
+                if ($queryString !== '') {
+                    $queryString = '?' . $queryString;
                 }
-                if ($url !== null) {
-                    $numberSignPosition = strpos($url, '#');
-                    $questionMarkPosition = strpos($url, '?');
-                    if ($numberSignPosition === false
-                        && $questionMarkPosition === false
-                    ) {
-                        $url .= '?' . $queryString;
-                    } elseif ($numberSignPosition === false) {
-                        $url = substr($url, 0, $questionMarkPosition)
-                            . '?' . $queryString;
-                    } elseif ($questionMarkPosition === false
-                        || $numberSignPosition < $questionMarkPosition
-                    ) {
-                        $url = substr($url, 0, $numberSignPosition) . '?'
-                            . $queryString . substr($url, $numberSignPosition);
-                    } elseif ($numberSignPosition > $questionMarkPosition) {
-                        $url = substr($url, 0, $questionMarkPosition) . '?'
-                            . $queryString . substr($url, $numberSignPosition);
-                    }
-                    $options[CURLOPT_URL] = $url;
+                $numberSignPosition = strpos($url, '#');
+                $questionMarkPosition = strpos($url, '?');
+                if ($numberSignPosition === false
+                    && $questionMarkPosition === false
+                ) {
+                    $url .= $queryString;
+                } elseif ($numberSignPosition === false) {
+                    $url = substr($url, 0, $questionMarkPosition)
+                        . $queryString;
+                } elseif ($questionMarkPosition === false
+                    || $numberSignPosition < $questionMarkPosition
+                ) {
+                    $url = substr($url, 0, $numberSignPosition)
+                        . $queryString . substr($url, $numberSignPosition);
+                } elseif ($numberSignPosition > $questionMarkPosition) {
+                    $url = substr($url, 0, $questionMarkPosition)
+                        . $queryString . substr($url, $numberSignPosition);
                 }
+                $options[CURLOPT_URL] = $url;
             }
         }
         if ($this->isCurlOptionChanged === true
