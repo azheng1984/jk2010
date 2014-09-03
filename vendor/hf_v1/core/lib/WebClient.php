@@ -1046,14 +1046,13 @@ class WebClient {
     }
 
     public function reset() {
-        if ($this->handle === null) {
-            return;
-        }
-        if (self::$isOldCurl === false) {
-            curl_reset($this->handle);
-        } else {
-            curl_close($this->handle);
-            $this->hanlde = null;
+        if ($this->handle !== null) {
+            if (self::$isOldCurl === false) {
+                curl_reset($this->handle);
+            } else {
+                curl_close($this->handle);
+                $this->hanlde = null;
+            }
         }
         $this->ignoredCurlOptions = null;
         $this->isCurlOptionChanged = false;
