@@ -318,6 +318,7 @@ class WebClient {
             CURLOPT_TIMEOUT => 3,
             CURLOPT_CONNECTTIMEOUT => 3,
             CURLOPT_FOLLOWLOCATION => 1,
+            CURLOPT_AUTOREFERER => 1,
             CURLOPT_MAXREDIRS => 100,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_ENCODING => '',
@@ -976,7 +977,6 @@ class WebClient {
                 }
             }
             $this->responseHeaders[] = $current;
-            //print_r($this->responseHeaders);
             return substr($result, $headerSize);
         }
         return $result;
@@ -1053,7 +1053,7 @@ class WebClient {
             curl_reset($this->handle);
         } else {
             curl_close($this->handle);
-            $this->hanlde = curl_init();
+            $this->hanlde = null;
         }
         $this->ignoredCurlOptions = null;
         $this->isCurlOptionChanged = false;
@@ -1061,12 +1061,11 @@ class WebClient {
         $this->responseHeaders = null;
         $this->temporaryCurlOptions = null;
         $this->headers = array();
-        $this->curlOptions = $this->getDefaultOptions();
-        if ($this->curlOptions === null) {
+        $defaultOptions = $this->getDefaultOptions();
+        if ($defaultOptions === null) {
             $this->curlOptions = array();
-        }
-        if (count($this->curlOptions) !== 0) {
-            curl_setopt_array($this->curlOptions);
+        } else {
+            $this->setOptions($defaultOptions);
         }
     }
 

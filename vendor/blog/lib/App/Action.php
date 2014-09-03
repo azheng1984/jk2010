@@ -13,6 +13,12 @@ class Action {
     public function before() {
         CsrfProtection::run();
         $client = new WebClient;
+        $client->reset();
+        $client->get('http://baidu.com/', null, array(CURLOPT_HEADER => 1));
+        var_dump($client->getResponseHeaders());
+        var_dump($client->getInfo());
+        var_dump($client->getResponseCount('Set-Cookie', true));
+        exit;
 //      echo $client->get('http://localhost?r=1');
         WebClient::sendAll(
             array(
@@ -27,7 +33,7 @@ class Action {
             //print_r($req['client']->getInfo());
             var_dump($client->getResponseCount());
             var_dump($client->getResponseHeaders(0));
-            echo $result['content'];
+            print_r($result);
             }, array(
                 CURLOPT_URL => 'http://localhost/?r=1',
             ));
