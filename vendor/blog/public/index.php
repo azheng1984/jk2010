@@ -63,9 +63,9 @@ require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Web'
     . DIRECTORY_SEPARATOR . 'Runner.php';
 Runner::run(__NAMESPACE__, ROOT_PATH);
 ?>
-<form method="get" enctype="multipart/form-data" action="#sdf?q=s#2233">
-<input type="checkbox" name ="hi" value="1"/>
-<input type="checkbox" name ="hi" value="2"/>
+<form method="get" enctype="application/x-www-form-urlencoded" action="#sdf?q=s#2233">
+<input type="checkbox" name ="hi" value="9"/>
+<input type="checkbox" name ="hi" value="10"/>
 
 <input type="submit" />
 </form>

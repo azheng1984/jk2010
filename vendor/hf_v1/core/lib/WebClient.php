@@ -541,13 +541,11 @@ class WebClient {
                     } elseif ($questionMarkPosition === false
                         || $numberSignPosition < $questionMarkPosition
                     ) {
-                        $url = substr($url, 0, $numberSignPosition)
-                            . '?' . $queryString
-                            . substr($url, $numberSignPosition);
+                        $url = substr($url, 0, $numberSignPosition) . '?'
+                            . $queryString . substr($url, $numberSignPosition);
                     } elseif ($numberSignPosition > $questionMarkPosition) {
-                        $url = substr($url, 0, $questionMarkPosition)
-                            . '?' . $queryString
-                            . substr($url, $numberSignPosition);
+                        $url = substr($url, 0, $questionMarkPosition) . '?'
+                            . $queryString . substr($url, $numberSignPosition);
                     }
                     $options[CURLOPT_URL] = $url;
                 }
