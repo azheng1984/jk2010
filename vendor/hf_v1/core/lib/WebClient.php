@@ -833,7 +833,6 @@ class WebClient {
         $leftOperandLength = strlen($leftOperandString);
         $rightOperandLength = strlen($rightOperandString);
         if ($leftOperandLength < 10 && $rightOperandLength < 10) {
-            echo 'hi';
             return $leftOperand + $rightOperand;
         }
         $result = '';
@@ -861,7 +860,7 @@ class WebClient {
         if ($tmp !== 0) {
             return '1' . $result;
         }
-        return $result === '' ? 0 : $result;
+        return $result;
     }
 
     private function addIgnoredCurlOption($name, array &$options) {
