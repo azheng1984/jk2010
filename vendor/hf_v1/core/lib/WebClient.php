@@ -454,28 +454,6 @@ class WebClient {
     }
 
     protected function prepareRequest(array $options) {
-        $headers = null;
-        if ($this->temporaryHeaders !== null) {
-            $headers = $this->temporaryHeaders;
-            $this->temporaryHeaders = null;
-        }
-        if (array_key_exists(CURLOPT_HTTPHEADER, $options) === false
-            && isset($this->options[CURLOPT_HTTPHEADER])
-        ) {
-            $this->setTemporaryHeaders($this->options[CURLOPT_HTTPHEADER]);
-        }
-        if (isset($this->options['headers'])) {
-            $this->setTemporaryHeaders($this->options['headers']);
-        }
-        if (isset($options[CURLOPT_HTTPHEADER])) {
-            $this->setTemporaryHeaders($options[CURLOPT_HTTPHEADER]);
-        }
-        if (isset($options['headers'])) {
-            $this->setTemporaryHeaders($options['headers']);
-        }
-        if ($headers !== null) {
-            $this->setTemporaryHeaders($headers);
-        }
         if (isset($options['data'])) {
             $this->setData($options['data'], $options);
             unset($options['data']);
@@ -491,6 +469,15 @@ class WebClient {
             if (is_array($queryParams) === false) {
                 throw new Exception;
             }
+            $url = null;
+            if (array_key_exists(CURLOPT_URL, $options)) {
+                $url = $options[CURLOPT_URL];
+            } elseif (isset($this->options[CURLOPT_URL])) {
+                $url = $this->options[CURLOPT_URL];
+            }
+            if ($url === null) {
+                return;
+            }
             $queryString = '';
             foreach ($queryParams as $key => $value) {
                 if ($queryString !== '') {
@@ -498,36 +485,28 @@ class WebClient {
                 }
                 $queryString .= urlencode($key) . '=' . urlencode($value);
             }
-            $url = null;
-            if (array_key_exists(CURLOPT_URL, $options)) {
-                $url = $options[CURLOPT_URL];
-            } elseif (isset($this->options[CURLOPT_URL])) {
-                $url = $this->options[CURLOPT_URL];
+            if ($queryString !== '') {
+                $queryString = '?' . $queryString;
             }
-            if ($url !== null) {
-                if ($queryString !== '') {
-                    $queryString = '?' . $queryString;
-                }
-                $numberSignPosition = strpos($url, '#');
-                $questionMarkPosition = strpos($url, '?');
-                if ($numberSignPosition === false
-                    && $questionMarkPosition === false
-                ) {
-                    $url .= $queryString;
-                } elseif ($numberSignPosition === false) {
-                    $url = substr($url, 0, $questionMarkPosition)
-                        . $queryString;
-                } elseif ($questionMarkPosition === false
-                    || $numberSignPosition < $questionMarkPosition
-                ) {
-                    $url = substr($url, 0, $numberSignPosition)
-                        . $queryString . substr($url, $numberSignPosition);
-                } elseif ($numberSignPosition > $questionMarkPosition) {
-                    $url = substr($url, 0, $questionMarkPosition)
-                        . $queryString . substr($url, $numberSignPosition);
-                }
-                $options[CURLOPT_URL] = $url;
+            $numberSignPosition = strpos($url, '#');
+            $questionMarkPosition = strpos($url, '?');
+            if ($numberSignPosition === false
+                && $questionMarkPosition === false
+            ) {
+                $url .= $queryString;
+            } elseif ($numberSignPosition === false) {
+                $url = substr($url, 0, $questionMarkPosition)
+                    . $queryString;
+            } elseif ($questionMarkPosition === false
+                || $numberSignPosition < $questionMarkPosition
+            ) {
+                $url = substr($url, 0, $numberSignPosition)
+                    . $queryString . substr($url, $numberSignPosition);
+            } elseif ($numberSignPosition > $questionMarkPosition) {
+                $url = substr($url, 0, $questionMarkPosition)
+                    . $queryString . substr($url, $numberSignPosition);
             }
+            $options[CURLOPT_URL] = $url;
         }
         if ($this->isInitialized === true || $this->handle === null) {
             if ($this->handle !== null && self::$isOldCurl === false) {
@@ -549,6 +528,28 @@ class WebClient {
             if (is_int($key)) {
                 $curlOptions[$key] = $value;
             }
+        }
+        $headers = null;
+        if ($this->temporaryHeaders !== null) {
+            $headers = $this->temporaryHeaders;
+            $this->temporaryHeaders = null;
+        }
+        if (array_key_exists(CURLOPT_HTTPHEADER, $options) === false
+            && isset($this->options[CURLOPT_HTTPHEADER])
+        ) {
+            $this->setTemporaryHeaders($this->options[CURLOPT_HTTPHEADER]);
+        }
+        if (isset($this->options['headers'])) {
+            $this->setTemporaryHeaders($this->options['headers']);
+        }
+        if (isset($options[CURLOPT_HTTPHEADER])) {
+            $this->setTemporaryHeaders($options[CURLOPT_HTTPHEADER]);
+        }
+        if (isset($options['headers'])) {
+            $this->setTemporaryHeaders($options['headers']);
+        }
+        if ($headers !== null) {
+            $this->setTemporaryHeaders($headers);
         }
         if ($this->temporaryHeaders !== null) {
             $tmp = array();
