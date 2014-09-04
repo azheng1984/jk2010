@@ -314,8 +314,8 @@ class WebClient {
 
     protected function getDefaultOptions() {
         return array(
-            CURLOPT_TIMEOUT => 3,
-            CURLOPT_CONNECTTIMEOUT => 3,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_CONNECTTIMEOUT => 30,
             CURLOPT_FOLLOWLOCATION => 1,
             CURLOPT_AUTOREFERER => 1,
             CURLOPT_MAXREDIRS => 100,
