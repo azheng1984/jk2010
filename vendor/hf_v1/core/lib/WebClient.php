@@ -165,6 +165,9 @@ class WebClient {
         $client = $options['client']; 
         unset($options['client']);
         $client->prepareRequest($options);
+        if ($client instanceof WebClient === false) {
+            throw new Exception;
+        }
         self::$multiProcessingRequests[(int)$client->handle] = $request;
         curl_multi_add_handle(self::$multiHandle, $client->handle);
     }
