@@ -529,17 +529,6 @@ class WebClient {
                 $options[CURLOPT_URL] = $url;
             }
         }
-        if ($this->temporaryHeaders !== null) {
-            $tmp = array();
-            foreach ($this->temporaryHeaders as $key => $value) {
-                if ($value === null) {
-                    continue;
-                }
-                $tmp[] = $key . ': ' . $value;
-            }
-            $curlOptions[CURLOPT_HTTPHEADER] = $tmp;
-            $this->temporaryHeaders = null;
-        }
         if ($this->isInitialized === true || $this->handle === null) {
             if ($this->handle !== null && self::$isOldCurl === false) {
                 curl_reset($this->handle);
@@ -560,6 +549,17 @@ class WebClient {
             if (is_int($key)) {
                 $curlOptions[$key] = $value;
             }
+        }
+        if ($this->temporaryHeaders !== null) {
+            $tmp = array();
+            foreach ($this->temporaryHeaders as $key => $value) {
+                if ($value === null) {
+                    continue;
+                }
+                $tmp[] = $key . ': ' . $value;
+            }
+            $curlOptions[CURLOPT_HTTPHEADER] = $tmp;
+            $this->temporaryHeaders = null;
         }
         $this->addCurlCallbackWrapper($curlOptions);
         curl_setopt_array($this->handle, $curlOptions);
