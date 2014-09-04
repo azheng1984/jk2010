@@ -468,7 +468,7 @@ class WebClient {
         return $this->initializeResponse($result);
     }
 
-    protected function initializeRequestOptions(array &$options) {
+    protected function processRequestOptions(array &$options) {
         if (isset($options['data'])) {
             $this->setData($options['data'], $options);
             unset($options['data']);
@@ -523,15 +523,13 @@ class WebClient {
             }
             $options[CURLOPT_URL] = $url;
         }
-        if ($this->isInitialized === true || $this->handle === null) {
-            if ($this->handle !== null && self::$isOldCurl === false) {
-                curl_reset($this->handle);
-            } else {
-                if ($this->handle !== null) {
-                    curl_close($this->handle);
-                }
-                $this->handle = curl_init();
+        if ($this->handle !== null && self::$isOldCurl === false) {
+            curl_reset($this->handle);
+        } else {
+            if ($this->handle !== null) {
+                curl_close($this->handle);
             }
+            $this->handle = curl_init();
         }
         $curlOptions = array();
         foreach ($this->options as $key => $value) {
@@ -565,6 +563,7 @@ class WebClient {
         }
         $this->addCurlCallbackWrapper($curlOptions);
         curl_setopt_array($this->handle, $curlOptions);
+        $this->isNew = false;
         $this->temporaryOptions = $options;
         $this->rawResponseHeaders = null;
         $this->responseHeaders = null;
@@ -583,7 +582,7 @@ class WebClient {
 
     final protected function initializeRequest(array $options) {
         $this->isInitialized = false;
-        $this->initializeRequestOptions($options);
+        $this->processRequestOptions($options);
         $this->isInitialized = true;
     }
 
@@ -1184,9 +1183,7 @@ class WebClient {
 
     public function reset() {
         if ($this->handle !== null) {
-            if (self::$isOldCurl === false) {
-                curl_reset($this->handle);
-            } else {
+            if (self::$isOldCurl) {
                 curl_close($this->handle);
                 $this->hanlde = null;
             }
