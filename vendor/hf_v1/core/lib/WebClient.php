@@ -165,7 +165,7 @@ class WebClient {
         $options = $request;
         $client = $options['client']; 
         unset($options['client']);
-        $client->initializeRequest($options);
+        $client->prepare($options);
         if ($client instanceof WebClient === false) {
             throw new Exception;
         }
@@ -421,7 +421,7 @@ class WebClient {
         if ($options === null) {
             $options = array();
         }
-        $this->initializeRequest($options);
+        $this->prepare($options);
         if (self::$isOldCurl === false) {
             $result = curl_exec($this->handle);
             if ($result === false) {
@@ -468,7 +468,7 @@ class WebClient {
         return $this->initializeResponse($result);
     }
 
-    protected function processRequestOptions(array &$options) {
+    protected function initializeRequest(array &$options) {
         if (isset($options['data'])) {
             $this->setData($options['data'], $options);
             unset($options['data']);
@@ -563,7 +563,6 @@ class WebClient {
         }
         $this->addCurlCallbackWrapper($curlOptions);
         curl_setopt_array($this->handle, $curlOptions);
-        $this->isNew = false;
         $this->temporaryOptions = $options;
         $this->rawResponseHeaders = null;
         $this->responseHeaders = null;
@@ -580,9 +579,9 @@ class WebClient {
         }
     }
 
-    final protected function initializeRequest(array $options) {
+    final protected function prepare(array $options) {
         $this->isInitialized = false;
-        $this->processRequestOptions($options);
+        $this->initializeRequest($options);
         $this->isInitialized = true;
     }
 
@@ -1182,12 +1181,6 @@ class WebClient {
     }
 
     public function reset() {
-        if ($this->handle !== null) {
-            if (self::$isOldCurl) {
-                curl_close($this->handle);
-                $this->hanlde = null;
-            }
-        }
         $this->isInitialized = null;
         $this->rawResponseHeaders = null;
         $this->responseHeaders = null;
