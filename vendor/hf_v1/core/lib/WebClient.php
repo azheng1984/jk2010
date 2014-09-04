@@ -377,7 +377,7 @@ class WebClient {
         $this->setOptions(array($name => $value));
     }
 
-    final protected function getOption($name) {
+    protected function getOption($name) {
         if ($this->temporaryOptions !== null
             && array_key_exists($name, $this->temporaryOptions)
         ) {
