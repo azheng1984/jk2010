@@ -624,9 +624,16 @@ class WebClient {
     }
 
     private function setData($data, array &$options) {
-        $options[CURLOPT_POST] = true;
-        $this->setTemporaryHeaders(array('Expect:'));
+        $this->setTemporaryHeaders(array('Content-Length' => null));
+        if (isset($this->temporaryHeaders['Expect']) === false) {
+            $this->setTemporaryHeaders(array('Expect:'));
+        }
         if (is_array($data) === false) {
+            unset($options[CURLOPT_UPLOAD]);
+            $this->setTemporaryRemovedOption(CURLOPT_UPLOAD);
+            unset($options[CURLOPT_PUT]);
+            $this->setTemporaryRemovedOption(CURLOPT_PUT);
+            $options[CURLOPT_POST] = true;
             $options[CURLOPT_POSTFIELDS] =$data;
             return;
         }
@@ -637,6 +644,7 @@ class WebClient {
             throw new Exception;
         }
         if ($data['type'] === 'application/x-www-form-urlencoded') {
+            $this->enableCurlPostFields($options);
             if (is_array($data['content'])) {
                 $content = null;
                 foreach ($data['content'] as $key => $value) {
@@ -656,10 +664,8 @@ class WebClient {
             }
             if (is_array($data['content']) === false) {
                 $content = (string)$data['content'];
+                $this->enableCurlPostFields($options);
                 $options[CURLOPT_POSTFIELDS] = $content;
-                $this->setTemporaryHeaders(
-                    array('Content-Length' => strlen($content))
-                );
                 return;
             }
             $data = $data['content'];
@@ -759,9 +765,7 @@ class WebClient {
                         }
                     }
                 }
-                unset($options[CURLOPT_READFUNCTION]);
-                $this->setTemporaryRemovedOption(CURLOPT_READFUNCTION);
-                $options[CURLOPT_SAFE_UPLOAD] = false;
+                $this->enableCurlPostFields($options);
                 $options[CURLOPT_POSTFIELDS] = $data;
                 return;
             }
@@ -808,18 +812,18 @@ class WebClient {
                     'multipart/form-data; boundary=' . $boundary)
             );
             $this->setTemporaryHeaders(array('Content-Length' => $size));
+            $this->enableCurlPostFields($options);
+            unset($options[CURLOPT_POSTFIELDS]);
+            $this->setTemporaryRemovedOption(CURLOPT_POSTFIELDS);
             $options[CURLOPT_READFUNCTION] = $this->getSendFormDataCallback(
                 $data, $boundary
             );
         } else {
             $this->setTemporaryHeaders(array('Content-Type' => $data['type']));
             if (isset($data['content'])) {
-                //ignore read function?
+                $this->enableCurlPostFields($options);
                 $options[CURLOPT_POSTFIELDS] = (string)$data['content'];
-                $size = strlen($options[CURLOPT_POSTFIELDS]);
-                $this->setTemporaryHeaders(array('Content-Length' => $size));
             } elseif (isset($data['file'])) {
-                //todo check
                 unset($options[CURLOPT_READFUNCTION]);
                 $this->setTemporaryRemovedOption(CURLOPT_READFUNCTION);
                 $options[CURLOPT_UPLOAD] = true;
@@ -827,6 +831,14 @@ class WebClient {
                 $options[CURLOPT_INFILESIZE] = self::getFileSize($data['file']);
             }
         }
+    }
+
+    private function enableCurlPostFields(&$options) {
+        unset($options[CURLOPT_UPLOAD]);
+        $this->setTemporaryRemovedOption(CURLOPT_UPLOAD);
+        unset($options[CURLOPT_PUT]);
+        $this->setTemporaryRemovedOption(CURLOPT_PUT);
+        $options[CURLOPT_POST] = true;
     }
 
     private function getFormDataSize(array $data, $boundary) {

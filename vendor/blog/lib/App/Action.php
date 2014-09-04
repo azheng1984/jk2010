@@ -24,6 +24,8 @@ echo $client->get('http://localhost/#hi', array(
         )
     )
 );
+
+print_r($client->getInfo());
 echo $client->post(
     'http://localhost/index.php?b=1'
     ,array('multipart/form-data' => array(
@@ -35,32 +37,35 @@ echo $client->post(
     )),
      array(CURLOPT_HEADER => 1, CURLINFO_HEADER_OUT => 1)
 );
+
 echo filesize('/home/az/vim74/uninstal.txt');
 print_r($client->getInfo());
-
+$p = true;
 //$client->post('http://localhost', array('file' => '/home/az/vim74/Filelist'));
 //echo $client->post('http://localhost?b=1', '@/home/az/vim74/Filelist');
-
+$client = new WebClient;
 $client->setOptions(array(
-//    CURLOPT_HEADER => 1,
-    CURLOPT_INFILE => $f,
-    CURLOPT_INFILESIZE => filesize('/home/az/vim74/Filelist'),
+    CURLOPT_HEADER => 1,
+//    CURLOPT_INFILE => $f,
+//    CURLOPT_INFILESIZE => 5,// filesize('/home/az/vim74/Filelist'),
 //    CURLOPT_WRITEHEADER => $f,
     CURLINFO_HEADER_OUT => 1,
-    CURLOPT_UPLOAD => true,
+//    CURLOPT_UPLOAD => true,
+//    CURLOPT_PUT => true,
+    //
     CURLOPT_POST => true,
 //    CURLOPT_COOKIE => 'hi',
 //    CURLOPT_COOKIE => null,
-    CURLOPT_POSTFIELDS => null,
     CURLOPT_POSTFIELDS => array(
         'name' => 'hi',
-        'file[0]' => curl_file_create('/home/az/Desktop/sd.fie28932duiru', null),
-        'file[1]' => curl_file_create('/home/az/Desktop/sd.fie28932duiru', null)),
+        'file[0]' => curl_file_create('/home/az/Desktop/today', null),
+        'file[1]' => curl_file_create('/home/az/Desktop/today', null)),
+//    CURLOPT_POSTFIELDS => 'hello from post fields',
     CURLOPT_HTTPHEADER => array(
-        'hi:hello'
-//        'Content-Type: applicatoin/json'
+       'Expect:',
+        'Content-Length:',// . filesize('/tmp/xx.txt'),
+       'Content-Type:applicatoin/json',
 //        'Content-Type: application/x-www-form-urlencoded',
-//        'Content-Length:' . filesize('/tmp/xx.txt'),
     ),
 //    array('application/json' => 'sdsdfdf'),
 //    array('multipart/form-data' => array(
@@ -69,7 +74,7 @@ $client->setOptions(array(
 //    CURLOPT_READFUNCTION => function($h, $b, $c) use(&$p) {
 //      //var_dump($h);
 //  //return;
-//   var_dump('hi');
+//   echo ('-------------hi---------------');
 //   echo $c;
 //   if ($p === true) {
 //       $p = false;
@@ -92,11 +97,11 @@ for ($i = 0; $i < 1; ++$i) {
     //echo '.';
     //if (strlen($r = ) === 0) {
     //    echo  $r;
-//        echo $client->post('http://localhost/index.php?b=1');
+        echo $client->post('http://localhost/index.php?b=1');
     //};
 //    ob_flush();
 }
-//$info = $client->getInfo();
+var_dump($client->getInfo());
 //var_dump( $client->getResponseHeaders());
 //echo $info['request_header'];
 //$client->close();
