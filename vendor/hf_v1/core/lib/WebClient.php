@@ -625,7 +625,7 @@ class WebClient {
 
     private function setData($data, array &$options) {
         $options[CURLOPT_POST] = true;
-        $this->setTemporaryHeaders(array('Expect' => null));
+        $this->setTemporaryHeaders(array('Expect:'));
         if (is_array($data) === false) {
             $options[CURLOPT_POSTFIELDS] =$data;
             return;
@@ -765,7 +765,7 @@ class WebClient {
                 $options[CURLOPT_POSTFIELDS] = $data;
                 return;
             }
-            $boundary = sha1(uniqid(mt_rand(), true));
+            $boundary = 'BOUNDARY-' . sha1(uniqid(mt_rand(), true));
             foreach ($data as $key => &$value) {
                 if (isset($value['name'])) {
                     $key = $value['name'];
