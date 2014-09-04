@@ -326,9 +326,11 @@ class WebClient {
     }
 
     public function setOptions(array $options) {
-        if (isset($options['header'])) {
-            $this->setHeaders($options['header']);
-            unset($options['header']);
+        if (array_key_exists('headers', $options)) {
+            if ($options['headers'] !== null) {
+                $this->setHeaders($options['headers']);
+                unset($options['headers']);
+            }
         }
         foreach ($options as $name => $value) {
             $this->options[$name] = $value;
