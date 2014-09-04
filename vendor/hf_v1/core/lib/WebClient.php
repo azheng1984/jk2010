@@ -833,14 +833,32 @@ class WebClient {
             );
         } else {
             $this->setTemporaryHeaders(array('Content-Type' => $data['type']));
+            $data = $data['content'];
             if (isset($data['content'])) {
                 $this->enableCurlPostFieldsOption($options);
                 $options[CURLOPT_POSTFIELDS] = (string)$data['content'];
             } elseif (isset($data['file'])) {
+                $file = fopen($data['file'], 'r');
+                if ($file === false) {
+                    throw new Exception;
+                }
+                $size = self::getFileSize($data['file']);
+                if ($this->isLargerThanInt($size)) {
+                    $this->setTemporaryHeaders(
+                        array('Content-Length' => $size)
+                    );
+                    $this->enableCurlPostFieldsOption($options);
+                    unset($options[CURLOPT_POSTFIELDS]);
+                    $this->setTemporaryRemovedOption(CURLOPT_POSTFIELDS);
+                    $options[CURLOPT_READFUNCTION] = $this->getSendFileCallback(
+                        $file
+                    );
+                    return;
+                }
                 unset($options[CURLOPT_READFUNCTION]);
                 $this->setTemporaryRemovedOption(CURLOPT_READFUNCTION);
                 $options[CURLOPT_UPLOAD] = true;
-                $options[CURLOPT_INFILE] = $data['file'];
+                $options[CURLOPT_INFILE] = $file;
                 $options[CURLOPT_INFILESIZE] = self::getFileSize($data['file']);
             }
         }
@@ -873,6 +891,21 @@ class WebClient {
         $result = $this->addContentLength($dataCount, $result);
         $result = $this->addContentLength(strlen($boundary) + 6, $result);
         return $result;
+    }
+
+    private function isLargerThanInt($size) {
+        return true;
+        if (is_int($size)) {
+            return false;
+        }
+        $length = strlen($size);
+        if ($length < 10) {
+            return false;
+        }
+        if ($length > 10) {
+            return true;
+        }
+        return strcmp($size, PHP_INT_MAX) > 0;
     }
 
     private function addContentLength($leftOperand, $rightOperand) {
@@ -914,6 +947,19 @@ class WebClient {
             return '1' . $result;
         }
         return $result;
+    }
+
+    private function getSendFileCallback($file) {
+        return function($handle, $inFile, $maxLength) use (&$file) {
+            $result = fgets($file, $maxLength);
+            if ($result === false) {
+                if (feof($file)) {
+                    return;
+                }
+                throw Exception;
+            }
+            return $result;
+        };
     }
 
     private function getSendFormDataCallback(array $data, $boundary) {
