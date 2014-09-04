@@ -532,6 +532,9 @@ class WebClient {
         if ($this->temporaryHeaders !== null) {
             $tmp = array();
             foreach ($this->temporaryHeaders as $key => $value) {
+                if ($value === null) {
+                    continue;
+                }
                 $tmp[] = $key . ': ' . $value;
             }
             $curlOptions[CURLOPT_HTTPHEADER] = $tmp;
@@ -583,7 +586,7 @@ class WebClient {
             if (is_int($key)) {
                 $tmp = explode(':', $value, 2);
                 $key = $tmp[0];
-                $value = null;
+                $value = '';
                 if (count($tmp) === 2) {
                     $value = $tmp[1];
                 }
@@ -603,11 +606,7 @@ class WebClient {
         unset($this->options[$name]);
     }
 
-    public function setHeader($name, $value) {
-        $this->setHeaders(array($name => $value));
-    }
-
-    public function setHeaders(array $headers) {
+    private function setHeaders(array $headers) {
         if (isset($this->options['headers']) === false) {
             $this->options['headers'] = array();
         }
@@ -615,17 +614,13 @@ class WebClient {
             if (is_int($key)) {
                 $tmp = explode(':', $value, 2);
                 $key = $tmp[0];
-                $value = null;
+                $value = '';
                 if (count($tmp) === 2) {
                     $value = $tmp[1];
                 }
             }
             $this->options['headers'][$key] = $value;
         }
-    }
-
-    public function removeHeader($name) {
-        unset($this->options['headers'][$name]);
     }
 
     private function setData($data, array &$options) {
