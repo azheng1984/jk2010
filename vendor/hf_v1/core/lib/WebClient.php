@@ -326,6 +326,10 @@ class WebClient {
     }
 
     public function setOptions(array $options) {
+        if (isset($options['header'])) {
+            $this->setHeaders($options['header']);
+            unset($options['header']);
+        }
         foreach ($options as $name => $value) {
             $this->options[$name] = $value;
         }
@@ -450,6 +454,11 @@ class WebClient {
     }
 
     protected function prepareRequest(array $options) {
+        $headers = null;
+        if ($this->temporaryHeaders !== null) {
+            $headers = $this->temporaryHeaders;
+            $this->temporaryHeaders = null;
+        }
         if (isset($this->options[CURLOPT_HTTPHEADER])) {
             $this->setTemporaryHeaders($this->options[CURLOPT_HTTPHEADER]);
         }
@@ -461,6 +470,9 @@ class WebClient {
         }
         if (isset($options['headers'])) {
             $this->setTemporaryHeaders($options['headers']);
+        }
+        if ($headers !== null) {
+            $this->setTemporaryHeaders($headers);
         }
         if (isset($options['data'])) {
             $this->setData($options['data'], $options);
@@ -554,6 +566,7 @@ class WebClient {
             foreach ($this->temporaryRemovedOptions as $key => $value) {
                 $this->options[$key] = $value;
             }
+            $this->temporaryRemovedOptions = null;
         }
     }
 
