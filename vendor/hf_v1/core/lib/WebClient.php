@@ -18,7 +18,7 @@ class WebClient {
     private $temporaryOptions;
     private $temporaryRemovedOptions;
     private $temporaryHeaders;
-    private $isInitalized;
+    private $isInitialized;
     private $rawResponseHeaders;
     private $responseHeaders;
 
@@ -459,8 +459,8 @@ class WebClient {
             $headers = $this->temporaryHeaders;
             $this->temporaryHeaders = null;
         }
-        if (isset(array_key_exists(CURLOPT_HTTPHEADER, $options) === false
-            && $this->options[CURLOPT_HTTPHEADER])
+        if (array_key_exists(CURLOPT_HTTPHEADER, $options) === false
+            && isset($this->options[CURLOPT_HTTPHEADER])
         ) {
             $this->setTemporaryHeaders($this->options[CURLOPT_HTTPHEADER]);
         }
@@ -561,7 +561,7 @@ class WebClient {
                 $curlOptions[$key] = $value;
             }
         }
-        $this->addCurlCallbackWrapper($curlOpitons);
+        $this->addCurlCallbackWrapper($curlOptions);
         curl_setopt_array($this->handle, $curlOptions);
         $this->temporaryOptions = $options;
         $this->rawResponseHeaders = null;
@@ -596,7 +596,7 @@ class WebClient {
     }
 
     private function setTemporaryRemovedOption($name) {
-        if (array_key_exists($this->options[$name]) === false) {
+        if (array_key_exists($name, $this->options) === false) {
             return;
         }
         if ($this->temporaryRemovedOptions === null) {

@@ -24,15 +24,14 @@ echo $client->get('http://localhost/#hi', array(
         )
     )
 );
-
 echo $client->post(
     'http://localhost/index.php?b=1'
     ,array('multipart/form-data' => array(
 //    't2[]' => array('content' => 'hi', 'type' => 'application/octet-stream', 'file_name' => 'hi'),
-    array('name' => 't[]', 'content' => 'hi=helo'),
-//    't[]' => array('content' => 'hi=helo2', 'type' => ''),
-//    't2[]' => array('file' => '/home/az/vim74/Filelist', 'type' => 'application/octet-stream'),
-//    array('name' => 't2[]', 'file' => '/home/az/:w', 'type' => 'application/octet-stream')
+//    array('name' => 't[]', 'content' => 'hi=helo'),
+    't[]' => array('content' => 'hi=helo2', 'type' => ''),
+    't2[]' => array('file' => '/home/az/vim74/Filelist', 'type' => 'application/octet-stream'),
+    array('name' => 't2[]', 'file' => '/home/az/:w', 'type' => 'application/octet-stream')
     )),
      array(CURLOPT_HEADER => 1, CURLINFO_HEADER_OUT => 1)
 );
