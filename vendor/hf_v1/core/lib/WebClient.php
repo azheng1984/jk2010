@@ -110,7 +110,7 @@ class WebClient {
                     if ($info['result'] !== CURLE_OK) {
                         $result['error'] = curl_error($info['handle']);
                     } else {
-                        $result['content'] = $client->prepareResponse(
+                        $result['content'] = $client->initializeResponse(
                             curl_multi_getcontent($info['handle'])
                         );
                     }
@@ -165,7 +165,7 @@ class WebClient {
         $options = $request;
         $client = $options['client']; 
         unset($options['client']);
-        $client->initialize($options);
+        $client->initializeRequest($options);
         if ($client instanceof WebClient === false) {
             throw new Exception;
         }
@@ -421,7 +421,7 @@ class WebClient {
         if ($options === null) {
             $options = array();
         }
-        $this->initialize($options);
+        $this->initializeRequest($options);
         if (self::$isOldCurl === false) {
             $result = curl_exec($this->handle);
             if ($result === false) {
@@ -465,10 +465,10 @@ class WebClient {
             } while ($isRunning);
             curl_multi_remove_handle($this->oldCurlMultiHandle, $this->handle);
         }
-        return $this->prepareResponse($result);
+        return $this->initializeResponse($result);
     }
 
-    protected function prepareRequest(array &$options) {
+    protected function initializeRequestOptions(array &$options) {
         if (isset($options['data'])) {
             $this->setData($options['data'], $options);
             unset($options['data']);
@@ -581,10 +581,14 @@ class WebClient {
         }
     }
 
-    final protected function initialize(array $options) {
+    final protected function initializeRequest(array $options) {
         $this->isInitialized = false;
-        $this->prepareRequest($options);
+        $this->initializeRequestOptions($options);
         $this->isInitialized = true;
+    }
+
+    final protected function isInitialized() {
+        return $this->isInitialized;
     }
 
     private function getHeaders(array $options = null) {
@@ -1072,7 +1076,7 @@ class WebClient {
         };
     }
 
-    protected function prepareResponse($result) {
+    protected function initializeResponse($result) {
         if ($this->getOption(CURLOPT_HEADER) == false
             || is_string($result) === false
         ) {
