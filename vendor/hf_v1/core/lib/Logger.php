@@ -2,6 +2,7 @@
 namespace Hyperframework;
 
 class Logger {
+    private static $level;
     private static $levels = array(
         'emergency' => 0,
         'alert' => 1,
@@ -13,28 +14,40 @@ class Logger {
         'debug' => 7,
     );
 
-    public static function debug($message, $context = null) {
-        static::write('debug',$message, $context);
+    private static function getLevel() {
+        if (self::$level === null) {
+            $level = Config::get('hyperframework.log_level');
+            if ($level !== null && isset(self::$levels[$level])) {
+                self::$level = self::$levels[$level];
+            } else {
+                self::$level = 6;
+            }
+        }
+        return self::$level;
     }
 
-    public static function info($message, $context = null) {
-        static::write('info',$message, $context);
+    public static function debug(/*$param, ...*/) {
+        if (self::getLevel() === 7) {
+            static::write('debug', func_get_args());
+        }
     }
 
-    public static function notice($message, $context = null) {
-        static::write('notice', $entry);
+    public static function info(/*$param, ...*/) {
+        if (self::getLevel() >= 6) {
+            static::write('info', func_get_args());
+        }
     }
 
-    public static function warn($entry) {
-        static::write('warning', $entry);
+    public static function notice() {
     }
 
-    public static function error($entry) {
-        static::output('error', $entry);
+    public static function warn() {
     }
 
-    public static function critical($entry) {
-        static::write('critical', $entry);
+    public static function error() {
+    }
+
+    public static function critical() {
     }
 
     public static function alert() {
@@ -43,17 +56,13 @@ class Logger {
     public static function emergancy() {
     }
 
-    protected static function write($level, $message, $context) {
-        $level = Config::get('hyperframework.log_level');
-        if ($level === null) {
-            $level = 'warn';
-        }
-        if ($type < self::$types[$level]) {
-            return;
-        }
+    protected static function write($level, array $params) {
         $writer = Config::get('hyperframework.log_writer');
+        if (count($params) === 0) {
+            throw new Exception;
+        }
         if ($writer !== null) {
-            $writer::write($type, $entry);
+            $writer::write($level, $params);
             return;
         }
         $path = Config::get('hyperframework.log_path');

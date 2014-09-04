@@ -279,7 +279,11 @@ class WebClient {
 
     private static function getFileSize($path) {
         if (PHP_INT_SIZE === 8) {
-            return filesize($path);
+            $result = filesize($path);
+            if ($result === false) {
+                throw new Exception;
+            }
+            return $result;
         }
         $handle = curl_init('file://' . $path);
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
