@@ -843,7 +843,7 @@ class WebClient {
                     throw new Exception;
                 }
                 $size = self::getFileSize($data['file']);
-                if ($this->isLargerThanInt($size)) {
+                if ($this->isLargerThanMaxInt($size)) {
                     $this->setTemporaryHeaders(
                         array('Content-Length' => $size)
                     );
@@ -893,8 +893,7 @@ class WebClient {
         return $result;
     }
 
-    private function isLargerThanInt($size) {
-        return true;
+    private function isLargerThanMaxInt($size) {
         if (is_int($size)) {
             return false;
         }
