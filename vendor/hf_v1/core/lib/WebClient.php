@@ -651,7 +651,7 @@ class WebClient {
             throw new Exception;
         }
         if ($data['type'] === 'application/x-www-form-urlencoded') {
-            $this->enableCurlPostFields($options);
+            $this->enableCurlPostFieldsOption($options);
             if (is_array($data['content'])) {
                 $content = null;
                 foreach ($data['content'] as $key => $value) {
@@ -671,7 +671,7 @@ class WebClient {
             }
             if (is_array($data['content']) === false) {
                 $content = (string)$data['content'];
-                $this->enableCurlPostFields($options);
+                $this->enableCurlPostFieldsOption($options);
                 $options[CURLOPT_POSTFIELDS] = $content;
                 return;
             }
@@ -772,7 +772,7 @@ class WebClient {
                         }
                     }
                 }
-                $this->enableCurlPostFields($options);
+                $this->enableCurlPostFieldsOption($options);
                 $options[CURLOPT_POSTFIELDS] = $data;
                 return;
             }
@@ -819,7 +819,7 @@ class WebClient {
                     'multipart/form-data; boundary=' . $boundary)
             );
             $this->setTemporaryHeaders(array('Content-Length' => $size));
-            $this->enableCurlPostFields($options);
+            $this->enableCurlPostFieldsOption($options);
             unset($options[CURLOPT_POSTFIELDS]);
             $this->setTemporaryRemovedOption(CURLOPT_POSTFIELDS);
             $options[CURLOPT_READFUNCTION] = $this->getSendFormDataCallback(
@@ -828,7 +828,7 @@ class WebClient {
         } else {
             $this->setTemporaryHeaders(array('Content-Type' => $data['type']));
             if (isset($data['content'])) {
-                $this->enableCurlPostFields($options);
+                $this->enableCurlPostFieldsOption($options);
                 $options[CURLOPT_POSTFIELDS] = (string)$data['content'];
             } elseif (isset($data['file'])) {
                 unset($options[CURLOPT_READFUNCTION]);
@@ -840,7 +840,7 @@ class WebClient {
         }
     }
 
-    private function enableCurlPostFields(&$options) {
+    private function enableCurlPostFieldsOption(&$options) {
         unset($options[CURLOPT_UPLOAD]);
         $this->setTemporaryRemovedOption(CURLOPT_UPLOAD);
         unset($options[CURLOPT_PUT]);
