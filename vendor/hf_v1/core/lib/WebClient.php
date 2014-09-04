@@ -165,7 +165,7 @@ class WebClient {
         $options = $request;
         $client = $options['client']; 
         unset($options['client']);
-        $client->execute($options);
+        $client->initialize($options);
         if ($client instanceof WebClient === false) {
             throw new Exception;
         }
@@ -421,7 +421,7 @@ class WebClient {
         if ($options === null) {
             $options = array();
         }
-        $this->execute($options);
+        $this->initialize($options);
         if (self::$isOldCurl === false) {
             $result = curl_exec($this->handle);
             if ($result === false) {
@@ -581,7 +581,7 @@ class WebClient {
         }
     }
 
-    final protected function execute(array $options) {
+    final protected function initialize(array $options) {
         $this->isInitialized = false;
         $this->prepareRequest($options);
         $this->isInitialized = true;
