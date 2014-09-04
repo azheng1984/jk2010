@@ -165,7 +165,7 @@ class WebClient {
         $options = $request;
         $client = $options['client']; 
         unset($options['client']);
-        $client->prepareRequest($options);
+        $client->execute($options);
         if ($client instanceof WebClient === false) {
             throw new Exception;
         }
@@ -421,7 +421,7 @@ class WebClient {
         if ($options === null) {
             $options = array();
         }
-        $this->prepareRequest($options);
+        $this->execute($options);
         if (self::$isOldCurl === false) {
             $result = curl_exec($this->handle);
             if ($result === false) {
@@ -468,7 +468,7 @@ class WebClient {
         return $this->prepareResponse($result);
     }
 
-    protected function prepareRequest(array $options) {
+    protected function prepareRequest(array &$options) {
         if (isset($options['data'])) {
             $this->setData($options['data'], $options);
             unset($options['data']);
@@ -568,7 +568,6 @@ class WebClient {
         $this->temporaryOptions = $options;
         $this->rawResponseHeaders = null;
         $this->responseHeaders = null;
-        $this->isInitialized = true;
         if ($this->removedOptions !== null
             && $this->isPreviousRemovedOptions !== true
         ) {
@@ -580,6 +579,12 @@ class WebClient {
             $this->removedOptions = null;
             $this->isPreviousRemovedOptions = false;
         }
+    }
+
+    final protected function execute(array $options) {
+        $this->isInitialized = false;
+        $this->prepareRequest($options);
+        $this->isInitialized = true;
     }
 
     private function getHeaders(array $options = null) {
@@ -665,9 +670,9 @@ class WebClient {
         if (array_key_exists($name, $this->options) === false) {
             return;
         }
-        if ($this->isPreviousRemovedOptions) {
-            $this->isPreviousRemovedOptions = false;
+        if ($this->isPreviousRemovedOptions === true) {
             $this->removedOptions = array();
+            $this->isPreviousRemovedOptions = false;
         } elseif ($this->removedOptions === null) {
             $this->removedOptions = array();
         }
