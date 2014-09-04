@@ -234,7 +234,6 @@ class WebClient {
         }
         curl_multi_close(self::$multiHandle);
         self::$multiHandle = null;
-        self::$multiOptions = null;
         self::$multiTemporaryOptions = null;
     }
 
