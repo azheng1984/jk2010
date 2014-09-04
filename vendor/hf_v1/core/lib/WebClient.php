@@ -459,7 +459,9 @@ class WebClient {
             $headers = $this->temporaryHeaders;
             $this->temporaryHeaders = null;
         }
-        if (isset($this->options[CURLOPT_HTTPHEADER])) {
+        if (isset(array_key_exists(CURLOPT_HTTPHEADER, $options) === false
+            && $this->options[CURLOPT_HTTPHEADER])
+        ) {
             $this->setTemporaryHeaders($this->options[CURLOPT_HTTPHEADER]);
         }
         if (isset($this->options['headers'])) {
