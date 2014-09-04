@@ -556,7 +556,13 @@ class WebClient {
                 if ($value === null) {
                     continue;
                 }
-                $tmp[] = $key . ': ' . $value;
+                if (is_array($value)) {
+                    foreach ($value as $item) {
+                        $tmp[] = $key . ':' . $item;
+                    }
+                } else {
+                    $tmp[] = $key . ':' . $value;
+                }
             }
             $curlOptions[CURLOPT_HTTPHEADER] = $tmp;
             $this->temporaryHeaders = null;
