@@ -16,6 +16,7 @@ class WebClient {
     private $oldCurlMultiHandle;
     private $options = array();
     private $temporaryOptions;
+    private $temporaryRemovedOptions;
     private $temporaryHeaders;
     private $isInitalized;
     private $rawResponseHeaders;
@@ -376,6 +377,11 @@ class WebClient {
         ) {
             return $this->temporaryOptions[$name];
         } elseif (isset($this->options[$name])) {
+            if ($this->temporaryRemovedOptions !== null
+                && isset($this->temporaryRemovedOptions[$name])
+            ) {
+                return;
+            }
             return $this->options[$name];
         }
     }
@@ -514,8 +520,8 @@ class WebClient {
             foreach ($this->temporaryHeaders as $key => $value) {
                 $tmp[] = $key . ': ' . $value;
             }
-            $options[CURLOPT_HTTPHEADER] = $tmp;
-            $this->temporaryOptions = null;
+            $curlOptions[CURLOPT_HTTPHEADER] = $tmp;
+            $this->temporaryHeaders = null;
         }
         if ($this->isInitialized === true || $this->handle === null) {
             if ($this->handle !== null && self::$isOldCurl === false) {
@@ -527,23 +533,28 @@ class WebClient {
                 $this->handle = curl_init();
             }
         }
-        $tmp = array();
+        $curlOptions = array();
         foreach ($this->options as $key => $value) {
             if (is_int($key)) {
-                $tmp[$key] = $value;
+                $curlOptions[$key] = $value;
             }
         }
         foreach ($options as $key => $value) {
             if (is_int($key)) {
-                $tmp[$key] = $value;
+                $curlOptions[$key] = $value;
             }
         }
-        $this->addCurlCallbackWrapper($tmp);
-        curl_setopt_array($this->handle, $tmp);
+        $this->addCurlCallbackWrapper($curlOpitons);
+        curl_setopt_array($this->handle, $curlOptions);
         $this->temporaryOptions = $options;
         $this->rawResponseHeaders = null;
         $this->responseHeaders = null;
         $this->isInitialized = true;
+        if ($this->temporaryRemovedOptions !== null) {
+            foreach ($this->temporaryRemovedOptions as $key => $value) {
+                $this->options[$key] = $value;
+            }
+        }
     }
 
     final protected function setTemporaryHeaders(array $headers) {
@@ -566,7 +577,15 @@ class WebClient {
         }
     }
 
-    final protected function setTemporaryIgnoredOption($name, $value) {
+    private function setTemporaryRemovedOption($name) {
+        if (array_key_exists($this->options[$name]) === false) {
+            return;
+        }
+        if ($this->temporaryRemovedOptions === null) {
+            $this->temporaryRemovedOptions = array();
+        }
+        $this->temporaryRemovedOptions[$name] = $this->options[$name];
+        unset($this->options[$name]);
     }
 
     public function setHeader($name, $value) {
@@ -730,6 +749,8 @@ class WebClient {
                         }
                     }
                 }
+                unset($options[CURLOPT_READFUNCTION]);
+                $this->setTemporaryRemovedOption(CURLOPT_READFUNCTION);
                 $options[CURLOPT_SAFE_UPLOAD] = false;
                 $options[CURLOPT_POSTFIELDS] = $data;
                 return;
@@ -773,9 +794,8 @@ class WebClient {
             }
             $size = $this->getFormDataSize($data, $boundary);
             $this->setTemporaryHeaders(
-                array('Content-Type' => 'multipart/form-data; boundary='
-                    . $boundary
-                )
+                array('Content-Type' =>
+                    'multipart/form-data; boundary=' . $boundary)
             );
             $this->setTemporaryHeaders(array('Content-Length' => $size));
             $options[CURLOPT_READFUNCTION] = $this->getSendFormDataCallback(
@@ -784,10 +804,14 @@ class WebClient {
         } else {
             $this->setTemporaryHeaders(array('Content-Type' => $data['type']));
             if (isset($data['content'])) {
+                //ignore read function?
                 $options[CURLOPT_POSTFIELDS] = (string)$data['content'];
                 $size = strlen($options[CURLOPT_POSTFIELDS]);
                 $this->setTemporaryHeaders(array('Content-Length' => $size));
             } elseif (isset($data['file'])) {
+                //todo check
+                unset($options[CURLOPT_READFUNCTION]);
+                $this->setTemporaryRemovedOption(CURLOPT_READFUNCTION);
                 $options[CURLOPT_UPLOAD] = true;
                 $options[CURLOPT_INFILE] = $data['file'];
                 $options[CURLOPT_INFILESIZE] = self::getFileSize($data['file']);
@@ -1043,11 +1067,11 @@ class WebClient {
         $this->rawResponseHeaders = null;
         $this->responseHeaders = null;
         $this->temporaryOptions = null;
+        $this->temporaryRemovedOptions = null;
         $this->temporaryHeaders = null;
-        $this->options = array();
-        $defaultOptions = $this->getDefaultOptions();
-        if ($defaultOptions !== null) {
-            $this->setOptions($defaultOptions);
+        $this->options = $this->getDefaultOptions();
+        if (is_array($this->options === false)) {
+            $this->options = array();
         }
     }
 
