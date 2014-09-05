@@ -95,11 +95,11 @@ class Logger {
             throw new Exception;
         }
         $writer = Config::get('hyperframework.log_writer');
+        $content = self::build($level, $params);
         if ($writer !== null) {
-            $writer::write($level, $params);
+            $writer::write($content);
             return;
         }
-        $content = self::build($level, $params);
         $path = static::getPath();
         if (file_put_contents($path, $content, FILE_APPEND | LOCK_EX) === false)
         {
