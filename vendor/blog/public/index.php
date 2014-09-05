@@ -1,8 +1,5 @@
 <?php
 namespace Hyperframework\Blog;
-echo CURLE_OK . ' ';
-echo CURLM_OK . ' ';
-exit;
     
 //printf('xx%%%', 'hi');
 //@printf('xx%s');
