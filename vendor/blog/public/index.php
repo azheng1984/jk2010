@@ -1,5 +1,6 @@
 <?php
 namespace Hyperframework\Blog;
+//printf('xx%%%', 'hi');
 //@printf('xx%s');
 //x($path);
 //echo $path['hi'];

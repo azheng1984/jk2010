@@ -217,6 +217,7 @@ class ErrorHandler {
 
     protected static function writeLog($message) {
         error_log($message);
+        //throw new \Exception;
     }
 
     protected static function getException() {

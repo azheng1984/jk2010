@@ -164,10 +164,10 @@ class WebClient {
         $options = $request;
         $client = $options['client']; 
         unset($options['client']);
-        $client->prepare($options);
         if ($client instanceof WebClient === false) {
             throw new Exception;
         }
+        $client->prepare($options);
         self::$multiProcessingRequests[(int)$client->handle] = $request;
         curl_multi_add_handle(self::$multiHandle, $client->handle);
     }
@@ -710,7 +710,8 @@ class WebClient {
                     }
                 } else {
                     if (isset($value['content'])) {
-                        if (isset($value['type'])) {
+                        if (isset($value['type']) || isset($value['file_name'])
+                        ) {
                             $shouldUseCurlPostFieldsOption = false;
                             break;
                         }
