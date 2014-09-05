@@ -598,6 +598,9 @@ class WebClient {
         }
         $result = $this->temporaryHeaders;
         if ($headers !== null) {
+            if (is_array($headers) === false) {
+                throw new Exception;
+            }
             $temporaryHeaders = $result;
             $this->temporaryHeaders = null;
             $this->setTemporaryHeaders($headers);
