@@ -2,6 +2,7 @@
 namespace Hyperframework;
 
 use Exception;
+use Closure;
 
 class Logger {
     private static $thresholdCode;
@@ -94,26 +95,36 @@ class Logger {
         if ($paramCount === 0) {
             throw new Exception;
         }
+        if ($params[0] instanceof Closure) {
+            $callback = $params[0];
+            $params = $callback();
+            if ($params === null) {
+                return;
+            }
+        }
         $writer = Config::get('hyperframework.log_writer');
-        $content = self::build($level, $params);
         if ($writer !== null) {
-            $writer::write($content);
+            $writer::write($level, $params);
             return;
         }
         $path = static::getPath();
+        $content = self::build($level, $params);
         if (file_put_contents($path, $content, FILE_APPEND | LOCK_EX) === false)
         {
             throw new Exception;
         }
     }
 
-    protected static function build($level, array $params) {
-        $content = date('Y/m/d h:i:s') . ' [' . $level . '] ';
-        if (count($params) > 1) {
-            $content .= call_user_func_array('sprintf', $params) . PHP_EOL;
-        } else {
-            $content .= $params[0];
+    protected static function build($level, $params) {
+        $prefix = date('Y/m/d h:i:s') . ' [' . $level . '] ';
+        if (is_array($params)) {
+            if (count($params) > 1) {
+                return $prefix
+                    . call_user_func_array('sprintf', $params) . PHP_EOL;
+            } else {
+                return $prefix . $params[0];
+            }
         }
-        return $content;
+        return $prefix . $params;
     }
 }

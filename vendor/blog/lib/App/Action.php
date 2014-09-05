@@ -13,7 +13,9 @@ use PDO;
 class Action {
     public function before() {
         CsrfProtection::run();
-        Logger::info('hello %s %s', 123, 'hello');
+        Logger::info(function() {
+            return array('hello %s %s', 123, 'hello');
+        });
     }
 
     public function after($ctx) {
