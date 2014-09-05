@@ -526,7 +526,7 @@ class WebClient {
     }
 
     final protected function prepare(array $options) {
-        $this->isPrepared = false;
+//        $this->isPrepared = false;
         $this->temporaryHeaders = null;
         $this->temporaryOptions = null;
         $this->removedOptions = null;
@@ -580,10 +580,11 @@ class WebClient {
             }
             $this->isPreviousRemovedOptions = true;
         } else {
-           // $this->removedOptions = null;
-           // $this->isPreviousRemovedOptions = false;
+            // $this->removedOptions = null;
+            // $this->isPreviousRemovedOptions = false;
         }
-        $this->isPrepared = true;
+        //merge options
+//      $this->isPrepared = true;
     }
 
     private function getHeaders(array $options = null) {
