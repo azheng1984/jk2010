@@ -17,9 +17,7 @@ class WebClient {
     private $options = array();
     private $temporaryOptions;
     private $removedOptions;
-    private $isPreviousRemovedOptions; //remove
     private $temporaryHeaders;
-    private $isPrepared; //remove
     private $rawResponseHeaders;
     private $responseHeaders;
 
@@ -113,6 +111,7 @@ class WebClient {
                         $result['content'] = $client->initializeResponse(
                             curl_multi_getcontent($info['handle'])
                         );
+                        $client->finalize();
                     }
                     call_user_func(
                         $onCompleteCallback, $client, $options, $result
@@ -384,24 +383,16 @@ class WebClient {
         $this->setOptions(array($name => $value));
     }
 
-    final protected function getOption($name, array $options = null) {
+    protected function getOption($name) {
         if ($name === 'headers' || $name === CURLOPT_HTTPHEADER) {
-            return $this->getHeaders($options);
+            return $this->getHeaders();
         }
-        if ($options !== null && array_key_exists($name, $options)
-        ) {
-            return $options[$name];
-        } elseif ($this->temporaryOptions !== null
+        if ($this->temporaryOptions !== null
             && array_key_exists($name, $this->temporaryOptions)
         ) {
             return $this->temporaryOptions[$name];
         } elseif (isset($this->options[$name])) {
-            $removedOptions = $this->getRemovedOptions();
-            if ($removedOptions === null
-                || in_array($name, $removedOptions) === false
-            ) {
-                return $this->options[$name];
-            }
+            return $this->options[$name];
         }
     }
 
@@ -465,7 +456,8 @@ class WebClient {
             } while ($isRunning);
             curl_multi_remove_handle($this->oldCurlMultiHandle, $this->handle);
         }
-        return $this->initializeResponse($result);
+        $result = $this->initializeResponse($result);
+        $this->finalize();
     }
 
     protected function initializeOptions(array &$options) {
@@ -525,11 +517,10 @@ class WebClient {
         }
     }
 
-    final protected function prepare(array $options) {
-//        $this->isPrepared = false;
-        $this->temporaryHeaders = null;
-        $this->temporaryOptions = null;
-        $this->removedOptions = null;
+    final private function prepare(array $options) {
+        $this->rawResponseHeaders = null;
+        $this->responseHeaders = null;
+        $this->temporaryOptions =& $options;
         $this->initializeOptions($options);
         if ($this->handle !== null && self::$isOldCurl === false) {
             curl_reset($this->handle);
@@ -550,8 +541,8 @@ class WebClient {
                 $curlOptions[$key] = $value;
             }
         }
-        $headers = $this->getHeaders($options);
-        if ($headers !== null) {
+        $headers = $this->getHeaders();
+        if ($headers !== null || count($headers) !== 0) {
             $tmp = array();
             foreach ($headers as $key => $value) {
                 if ($value === null) {
@@ -566,42 +557,29 @@ class WebClient {
                 }
             }
             $curlOptions[CURLOPT_HTTPHEADER] = $tmp;
+        } else {
+            unset($curlOptions[CURLOPT_HTTPHEADER]);
         }
         $this->addCurlCallbackWrapper($curlOptions);
         curl_setopt_array($this->handle, $curlOptions);
-        $this->temporaryOptions = $options;
-        $this->rawResponseHeaders = null;
-        $this->responseHeaders = null;
+    }
+
+    private function finalize() {
         if ($this->removedOptions !== null
             && $this->isPreviousRemovedOptions !== true
         ) {
             foreach ($this->removedOptions as $key => $value) {
                 $this->options[$key] = $value;
             }
-            $this->isPreviousRemovedOptions = true;
-        } else {
-            // $this->removedOptions = null;
-            // $this->isPreviousRemovedOptions = false;
         }
-        //merge options
-//      $this->isPrepared = true;
+        $this->removedOptions = null;
+        $this->temporaryHeaders = null;
+        $this->temporaryOptions = null;
     }
 
-    private function getHeaders(array $options = null) {
+    private function getHeaders() {
         $headers = null;
-        if ($options !== null && array_key_exists('headers', $options)) {
-            $headers = $options['headers'];
-            if (array_key_exists(CURLOPT_HTTPHEADER, $options)) {
-                $keys = array_flip(array_keys($options));
-                if ($keys[CURLOPT_HTTPHEADER] > $keys['headers']) {
-                    $headers = $options[CURLOPT_HTTPHEADER];
-                }
-            }
-        } elseif ($options !== null
-            && array_key_exists(CURLOPT_HTTPHEADER, $options)
-        ) {
-            $headers = $options[CURLOPT_HTTPHEADER];
-        } elseif ($this->temporaryOptions !== null
+        if ($this->temporaryOptions !== null
             && array_key_exists('headers', $this->temporaryOptions)
         ) {
             $headers = $this->temporaryOptions['headers'];
@@ -616,15 +594,11 @@ class WebClient {
         ) {
             $headers = $options[CURLOPT_HTTPHEADER];
         } elseif (isset($this->options['headers'])) {
-            $removedOptions = $this->getRemovedOptions();
-            if ($removedOptions === null
-                || in_array('headers', $removedOptions) === false) {
-                $headers = $this->options['headers'];
-            }
+            $headers = $this->options['headers'];
         }
         $result = $this->temporaryHeaders;
         if ($headers !== null) {
-            $temporaryHeaders = $this->temporaryHeaders;
+            $temporaryHeaders = $result;
             $this->temporaryHeaders = null;
             $this->setTemporaryHeaders($headers);
             if ($temporaryHeaders !== null) {
@@ -636,20 +610,7 @@ class WebClient {
         return $result;
     }
 
-    private function getRemovedOptions() {
-        if ($this->isPrepared && $this->isPreviousRemovedOptions) {
-            return $this->removedOptions;
-        } elseif ($this->isPrepared !== true
-            && $this->isPreviousRemovedOptions !== true
-        ) {
-            return $this->removedOptions;
-        }
-    }
-
     final protected function setTemporaryHeaders(array $headers) {
-        if (count($headers) === 0) {
-            return;
-        }
         if ($this->temporaryHeaders === null) {
             $this->temporaryHeaders = array();
         }
@@ -669,10 +630,6 @@ class WebClient {
     private function setRemovedOption($name) {
         if (array_key_exists($name, $this->options) === false) {
             return;
-        }
-        if ($this->isPreviousRemovedOptions === true) {
-            $this->removedOptions = array();
-            $this->isPreviousRemovedOptions = false;
         } elseif ($this->removedOptions === null) {
             $this->removedOptions = array();
         }
@@ -1179,12 +1136,10 @@ class WebClient {
     }
 
     public function reset() {
-        $this->isPrepared = null;
         $this->rawResponseHeaders = null;
         $this->responseHeaders = null;
         $this->temporaryOptions = null;
         $this->removedOptions = null;
-        $this->isPreviousRemovedOptions = null;
         $this->temporaryHeaders = null;
         $this->options = array();
         $defaultOptions = $this->getDefaultOptions();
