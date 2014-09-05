@@ -458,6 +458,7 @@ class WebClient {
         }
         $result = $this->initializeResponse($result);
         $this->finalize();
+        return $result;
     }
 
     protected function initializeOptions(array &$options) {
@@ -550,10 +551,10 @@ class WebClient {
                 }
                 if (is_array($value)) {
                     foreach ($value as $item) {
-                        $tmp[] = $key . ':' . $item;
+                        $tmp[] = $key . ': ' . trim($item, ' ');
                     }
                 } else {
-                    $tmp[] = $key . ':' . $value;
+                    $tmp[] = $key . ': ' . trim($value, ' ');
                 }
             }
             $curlOptions[CURLOPT_HTTPHEADER] = $tmp;

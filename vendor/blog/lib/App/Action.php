@@ -17,13 +17,13 @@ $f = fopen('/home/az/vim74/Filelist', 'r');
 $client2 = new WebClient;
 $client = clone $client2;
 
-echo $client->get('http://localhost/#hi', array(
+echo ($client->get('http://localhost/#hi', array(
         'query_params' => array(
             'b' => 1,
             'abc' => 'hel?#我们'
         )
     )
-);
+));
 
 print_r($client->getInfo());
 echo $client->post(

@@ -40,6 +40,7 @@ if (isset($_GET['b'])) {
 //    header(' ');
 //var_dump(\getallheaders());
 echo file_get_contents('php://input');
+    print_r($_GET);
     print_r($_POST);
     print_r($_FILES);
     echo $_SERVER['REQUEST_METHOD'];
