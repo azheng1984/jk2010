@@ -95,7 +95,7 @@ class WebClient {
                     $message = curl_multi_strerror($status);
                 }
                 self::closeMultiHandle();
-                throw new CurlMultiException($message, $status);
+                throw new CurlException($message, $status, 'multi');
             }
             while ($info = curl_multi_info_read(self::$multiHandle)) {
                 $handleId = (int)$info['handle'];
@@ -436,7 +436,7 @@ class WebClient {
                 if ($status !== CURLM_OK) {
                     curl_multi_close($this->oldCurlMultiHandle);
                     $this->oldCurlMultiHandle = null;
-                    throw new CurlMultiException('', $status);
+                    throw new CurlException('', $status, 'multi');
                 }
                 if ($info = curl_multi_info_read($this->oldCurlMultiHandle)) {
                     if ($info['result'] !== CURLE_OK) {
