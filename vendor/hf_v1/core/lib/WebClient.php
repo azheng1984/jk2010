@@ -1094,24 +1094,29 @@ class WebClient {
 
     public function getResponseHeaders($responseIndex = null) {
         if ($this->responseHeaders === null) {
-            return;
+            throw new Exception;
         }
         if ($responseIndex === null) {
             return end($this->responseHeaders);
         } else {
             if (isset($this->responseHeaders[$responseIndex])) {
                 return $this->responseHeaders[$responseIndex];
+            } else {
+                throw new Exception;
             }
         }
     }
 
     public function getRawResponseHeaders() {
+        if ($this->responseHeaders === null) {
+            throw new Exception;
+        }
         return $this->rawResponseHeaders;
     }
 
     public function getResponseCount() {
         if ($this->responseHeaders === null) {
-            return 0;
+            throw new Exception;
         }
         return count($this->responseHeaders);
     }
