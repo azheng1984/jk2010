@@ -46,6 +46,7 @@ $p = true;
 //$client->post('http://localhost', array('file' => '/home/az/vim74/Filelist'));
 //echo $client->post('http://localhost?b=1', '@/home/az/vim74/Filelist');
 $client = new WebClient;
+$client->reset();
 $client->setOptions(array(
     CURLOPT_HEADER => 1,
 //    CURLOPT_INFILE => $f,
