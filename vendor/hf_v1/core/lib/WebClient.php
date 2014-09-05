@@ -647,12 +647,8 @@ class WebClient {
             $this->setTemporaryHeaders(array('Expect:'));
         }
         if (is_array($data) === false) {
-            unset($options[CURLOPT_UPLOAD]);
-            $this->setRemovedOption(CURLOPT_UPLOAD);
-            unset($options[CURLOPT_PUT]);
-            $this->setRemovedOption(CURLOPT_PUT);
-            $options[CURLOPT_POST] = true;
-            $options[CURLOPT_POSTFIELDS] =$data;
+            $this->enableCurlPostFieldsOption($options);
+            $options[CURLOPT_POSTFIELDS] = $data;
             return;
         }
         if (count($data) === 1) {
