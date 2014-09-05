@@ -13,10 +13,7 @@ use PDO;
 class Action {
     public function before() {
         CsrfProtection::run();
-        //Logger::info('hello');
-        $client = new WebClient();
-        $client->get('http://www.baidu.com/s', array(CURLINFO_HEADER_OUT => 'ture'));
-        print_r($client->getInfo()); 
+        Logger::info('hello %s %s', 123, 'hello');
     }
 
     public function after($ctx) {
