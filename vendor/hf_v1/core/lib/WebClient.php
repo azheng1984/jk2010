@@ -631,7 +631,7 @@ class WebClient {
         }
     }
 
-    private function setRemovedOption($name) {
+    private function removeOptionTemporarily($name) {
         if (array_key_exists($name, $this->options) === false) {
             return;
         } elseif ($this->removedOptions === null) {
@@ -829,7 +829,7 @@ class WebClient {
             $this->setTemporaryHeaders(array('Content-Length' => $size));
             $this->enableCurlPostFieldsOption($options);
             unset($options[CURLOPT_POSTFIELDS]);
-            $this->setRemovedOption(CURLOPT_POSTFIELDS);
+            $this->removeOptionTemporarily(CURLOPT_POSTFIELDS);
             $options[CURLOPT_READFUNCTION] = $this->getSendFormDataCallback(
                 $data, $boundary
             );
@@ -851,14 +851,14 @@ class WebClient {
                     );
                     $this->enableCurlPostFieldsOption($options);
                     unset($options[CURLOPT_POSTFIELDS]);
-                    $this->setRemovedOption(CURLOPT_POSTFIELDS);
+                    $this->removeOptionTemporarily(CURLOPT_POSTFIELDS);
                     $options[CURLOPT_READFUNCTION] = $this->getSendFileCallback(
                         $file
                     );
                     return;
                 }
                 unset($options[CURLOPT_READFUNCTION]);
-                $this->setRemovedOption(CURLOPT_READFUNCTION);
+                $this->removeOptionTemporarily(CURLOPT_READFUNCTION);
                 $options[CURLOPT_UPLOAD] = true;
                 $options[CURLOPT_INFILE] = $file;
                 $options[CURLOPT_INFILESIZE] = self::getFileSize($data['file']);
@@ -868,9 +868,9 @@ class WebClient {
 
     private function enableCurlPostFieldsOption(&$options) {
         unset($options[CURLOPT_UPLOAD]);
-        $this->setRemovedOption(CURLOPT_UPLOAD);
+        $this->removeOptionTemporarily(CURLOPT_UPLOAD);
         unset($options[CURLOPT_PUT]);
-        $this->setRemovedOption(CURLOPT_PUT);
+        $this->removeOptionTemporarily(CURLOPT_PUT);
         $options[CURLOPT_POST] = true;
     }
 
