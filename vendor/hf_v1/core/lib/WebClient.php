@@ -1108,7 +1108,7 @@ class WebClient {
     }
 
     public function getRawResponseHeaders() {
-        if ($this->responseHeaders === null) {
+        if ($this->rawResponseHeaders === null) {
             throw new Exception;
         }
         return $this->rawResponseHeaders;
