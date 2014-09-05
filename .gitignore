@@ -16,3 +16,4 @@ pinyin.dat
 #cache/
 config/env/init.php
 composer.phar
+*.log
