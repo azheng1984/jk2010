@@ -7,9 +7,9 @@ class WebClient {
     private static $multiHandle;
     private static $multiOptions;
     private static $multiTemporaryOptions;
+    private static $multiRequestOptions;
     private static $multiPendingRequests;
     private static $multiProcessingRequests;
-    private static $multiRequestOptions;
     private static $multiGetRequestCallback;
     private static $isOldCurl;
     private $handle;
