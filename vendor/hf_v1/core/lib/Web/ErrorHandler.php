@@ -35,10 +35,13 @@ class ErrorHandler {
     protected static function getExitLevel() {
         if (self::$exitLevel === null) {
             $exitLevel = Config::get('hyperframework.error_handler.exit_level');
-            if ($exitLevel === null) {
-                $exitLevel = 'notice';
+            if (is_string($exitLevel)) {
+            } elseif ($exitLevel == null) {
+                $exitLevel === 'notice';
             }
         }
+        //[notice | warning | error] use firelogger to see others (or use int code)
+        //todo convert to bit
     }
 
     final public static function handleException($exception) {
