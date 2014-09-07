@@ -13,7 +13,7 @@ class ErrorHandler {
     private static $outputBufferLevel;
     private static $ignoredErrors;
     private static $isDefaultErrorLogEnabled;
-    private static $level;
+    private static $exitLevel;
 
     final public static function run() {
         $class = get_called_class();
@@ -32,11 +32,11 @@ class ErrorHandler {
         }
     }
 
-    protected static function getLevel() {
-        if (self::$level === null) {
-            $level = Config::get('hyperframework.error_handler.level');
-            if ($level === null) {
-                $level = 'notice';
+    protected static function getExitLevel() {
+        if (self::$exitLevel === null) {
+            $exitLevel = Config::get('hyperframework.error_handler.exit_level');
+            if ($exitLevel === null) {
+                $exitLevel = 'notice';
             }
         }
     }
