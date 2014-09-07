@@ -4,23 +4,30 @@ namespace Hyperframework\Web;
 use ErrorException;
 use Hyperframework\ErrorCodeHelper;
 use Hyperframework\Web\Html\DebugPage;
+use Hyperframework\Logger;
+use Hyperframework\Config;
 
 class ErrorHandler {
     private static $exception;
     private static $isDebugEnabled;
     private static $outputBufferLevel;
     private static $ignoredErrors;
+    private static $isDefaultErrorLogEnabled;
 
     final public static function run() {
         $class = get_called_class();
-        set_error_handler(array($class, 'handleError'), E_ALL);
+        set_error_handler(array($class, 'handleError'));
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
         self::$isDebugEnabled = ini_get('display_errors') === '1';
         if (self::$isDebugEnabled) {
-            ini_set('display_errors', false);
+            ini_set('display_errors', '0');
             ob_start();
             self::$outputBufferLevel = ob_get_level();
+        }
+        self::$isDefaultErrorLogEnabled = ini_get('log_errors') === '1';
+        if (self::$isDefaultErrorLogEnabled) {
+            ini_set('log_errors', '0');
         }
     }
 
@@ -28,10 +35,13 @@ class ErrorHandler {
         if (self::$exception !== null) {
             return false;
         }
-        self::$exception = $exception;
-        if (self::$isDebugEnabled) {
-            ini_set('display_errors', true);
+        if (self::$isDefaultErrorLogEnabled) {
+            ini_set('log_errors', '1');
         }
+        if (self::$isDebugEnabled) {
+            ini_set('display_errors', '1');
+        }
+        self::$exception = $exception;
         if ($exception instanceof ErrorException) {
             self::writeErrorLog($exception);
         } else {
@@ -78,7 +88,6 @@ class ErrorHandler {
                 $message, $code, $type, $file, $line
             ));
         }
-        //todo write debug log on dev env
         if (self::$isDebugEnabled === false) {
             return;
         }
@@ -95,9 +104,6 @@ class ErrorHandler {
     }
 
     final public static function handleFatalError() {
-        if (self::$isDebugEnabled === false || self::$exception !== null) {
-            return;
-        }
         $error = error_get_last();
         if ($error === null) {
             return;
@@ -201,23 +207,53 @@ class ErrorHandler {
     }
 
     protected static function writeErrorLog($exception) {
-        if ($exception->getCode() === 1) {
-            return;
-        }
         $message = 'PHP ' . ErrorCodeHelper::toString($exception->getSeverity())
             . ': ' . $exception->getMessage() . ' in ' . $exception->getFile()
             . ':'. $exception->getLine() . PHP_EOL . 'Stack trace:'
             . $exception->getTraceAsString();
-        self::writeLog($message);
+        self::writeLog($message, $exception->getSeverity());
     }
 
     protected static function writeExceptionLog() {
-        self::writeLog('PHP Fatal error: Uncaught ' . self::$exception);
+        self::writeLog(
+            'PHP Fatal error: Uncaught ' . self::$exception, E_ERROR
+        );
     }
 
-    protected static function writeLog($message) {
-        error_log($message);
-        //throw new \Exception;
+    protected static function writeLog($message, $severity) {
+        $logger = Config::get('hyperframework.logger');
+        if ($logger) {
+            $method = self::getLogMethod($severity);
+            $logger::$method($message);
+        } else {
+            if (Config::get('hyperframework.logger.enable')) {
+                $method = self::getLogMethod($severity);
+                Logger::$method($message);
+            } else {
+                error_log($message);
+            }
+        }
+    }
+
+    protected static function getLogMethod($severity) {
+        $maps = array(
+            E_DEPRECATED        => 'info',
+            E_USER_DEPRECATED   => 'info',
+            E_NOTICE            => 'notice',
+            E_USER_NOTICE       => 'notice',
+            E_STRICT            => 'notice',
+            E_WARNING           => 'warn',
+            E_USER_WARNING      => 'warn',
+            E_COMPILE_WARNING   => 'warn',
+            E_CORE_WARNING      => 'warn',
+            E_USER_ERROR        => 'error',
+            E_RECOVERABLE_ERROR => 'error',
+            E_COMPILE_ERROR     => 'error',
+            E_PARSE             => 'error',
+            E_ERROR             => 'error',
+            E_CORE_ERROR        => 'error',
+        );
+        return $maps[$severity];
     }
 
     protected static function getException() {

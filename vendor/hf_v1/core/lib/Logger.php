@@ -20,7 +20,7 @@ class Logger {
 
     private static function getThresholdCode() {
         if (self::$thresholdCode === null) {
-            $level = Config::get('hyperframework.log_level');
+            $level = Config::get('hyperframework.logger.level');
             if ($level !== null && isset(self::$levels[$level])) {
                 self::$thresholdCode = self::$levels[$level];
             } else {
@@ -78,7 +78,7 @@ class Logger {
 
     protected static function getPath() {
         if (self::$path === null) {
-            $path = Config::get('hyperframework.log_path');
+            $path = Config::get('hyperframework.logger.path');
             if ($path === null) {
                 $path = APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'log'
                     . DIRECTORY_SEPARATOR . 'app.log';
@@ -102,7 +102,7 @@ class Logger {
                 return;
             }
         }
-        $writer = Config::get('hyperframework.log_writer');
+        $writer = Config::get('hyperframework.logger.writer');
         if ($writer !== null) {
             $writer::write($level, $params);
             return;
