@@ -221,17 +221,16 @@ class ErrorHandler {
     }
 
     protected static function writeLog($message, $severity) {
-        $logger = Config::get('hyperframework.logger');
-        if ($logger) {
+        if (Config::get('hyperframework.logger.enable')) {
             $method = self::getLogMethod($severity);
-            $logger::$method($message);
-        } else {
-            if (Config::get('hyperframework.logger.enable')) {
-                $method = self::getLogMethod($severity);
-                Logger::$method($message);
+            $logger = Config::get('hyperframework.logger.class');
+            if ($logger) {
+               $logger::$method($message);
             } else {
-                error_log($message);
+                Logger::$method($message);
             }
+        } else {
+            error_log($message);
         }
     }
 
@@ -248,10 +247,10 @@ class ErrorHandler {
             E_CORE_WARNING      => 'warn',
             E_USER_ERROR        => 'error',
             E_RECOVERABLE_ERROR => 'error',
-            E_COMPILE_ERROR     => 'error',
-            E_PARSE             => 'error',
-            E_ERROR             => 'error',
-            E_CORE_ERROR        => 'error',
+            E_ERROR             => 'fatal',
+            E_COMPILE_ERROR     => 'fatal',
+            E_PARSE             => 'fatal',
+            E_CORE_ERROR        => 'fatal',
         );
         return $maps[$severity];
     }

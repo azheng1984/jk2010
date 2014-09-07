@@ -8,14 +8,12 @@ class Logger {
     private static $thresholdCode;
     private static $path;
     private static $levels = array(
-        'emergency' => 0,
-        'alert' => 1,
-        'critical' => 2,
-        'error' => 3,
-        'warning' => 4,
-        'notice' => 5,
-        'info' => 6,
-        'debug' => 7
+        'fatal' => 0,
+        'error' => 1,
+        'warning' => 2,
+        'notice' => 3,
+        'info' => 4,
+        'debug' => 5
     );
 
     private static function getThresholdCode() {
@@ -60,20 +58,10 @@ class Logger {
         }
     }
 
-    public static function critical(/*$param, ...*/) {
+    public static function fatal(/*$param, ...*/) {
         if (self::getThresholdCode() >= 2) {
-            static::write('critical', func_get_args());
+            static::write('fatal', func_get_args());
         }
-    }
-
-    public static function alert(/*$param, ...*/) {
-        if (self::getThresholdCode() >= 1) {
-            static::write('alert', func_get_args());
-        }
-    }
-
-    public static function emergancy(/*$param, ...*/) {
-        static::write('emergancy', func_get_args());
     }
 
     protected static function getPath() {
