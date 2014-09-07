@@ -22,44 +22,44 @@ class Logger {
             if ($level !== null && isset(self::$levels[$level])) {
                 self::$thresholdCode = self::$levels[$level];
             } else {
-                self::$thresholdCode = 6;
+                self::$thresholdCode = 4;
             }
         }
         return self::$thresholdCode;
     }
 
     public static function debug(/*$param, ...*/) {
-        if (self::getThresholdCode() === 7) {
+        if (self::getThresholdCode() === 5) {
             static::write('debug', func_get_args());
         }
     }
 
     public static function info(/*$param, ...*/) {
-        if (self::getThresholdCode() >= 6) {
+        if (self::getThresholdCode() >= 4) {
             static::write('info', func_get_args());
         }
     }
 
     public static function notice(/*$param, ...*/) {
-        if (self::getThresholdCode() >= 5) {
+        if (self::getThresholdCode() >= 3) {
             static::write('notice', func_get_args());
         }
     }
 
     public static function warn(/*$param, ...*/) {
-        if (self::getThresholdCode() >= 4) {
+        if (self::getThresholdCode() >= 2) {
             static::write('warning', func_get_args());
         }
     }
 
     public static function error(/*$param, ...*/) {
-        if (self::getThresholdCode() >= 3) {
+        if (self::getThresholdCode() >= 1) {
             static::write('error', func_get_args());
         }
     }
 
     public static function fatal(/*$param, ...*/) {
-        if (self::getThresholdCode() >= 2) {
+        if (self::getThresholdCode() >= 0) {
             static::write('fatal', func_get_args());
         }
     }

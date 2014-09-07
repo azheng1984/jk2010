@@ -13,6 +13,7 @@ class ErrorHandler {
     private static $outputBufferLevel;
     private static $ignoredErrors;
     private static $isDefaultErrorLogEnabled;
+    private static $level;
 
     final public static function run() {
         $class = get_called_class();
@@ -28,6 +29,15 @@ class ErrorHandler {
         self::$isDefaultErrorLogEnabled = ini_get('log_errors') === '1';
         if (self::$isDefaultErrorLogEnabled) {
             ini_set('log_errors', '0');
+        }
+    }
+
+    protected static function getLevel() {
+        if (self::$level === null) {
+            $level = Config::get('hyperframework.error_handler.level');
+            if ($level === null) {
+                $level = 'notice';
+            }
         }
     }
 
@@ -236,11 +246,11 @@ class ErrorHandler {
 
     protected static function getLogMethod($severity) {
         $maps = array(
+            E_STRICT            => 'info',
             E_DEPRECATED        => 'info',
             E_USER_DEPRECATED   => 'info',
             E_NOTICE            => 'notice',
             E_USER_NOTICE       => 'notice',
-            E_STRICT            => 'notice',
             E_WARNING           => 'warn',
             E_USER_WARNING      => 'warn',
             E_COMPILE_WARNING   => 'warn',
@@ -250,7 +260,7 @@ class ErrorHandler {
             E_ERROR             => 'fatal',
             E_COMPILE_ERROR     => 'fatal',
             E_PARSE             => 'fatal',
-            E_CORE_ERROR        => 'fatal',
+            E_CORE_ERROR        => 'fatal'
         );
         return $maps[$severity];
     }
