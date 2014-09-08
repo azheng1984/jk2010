@@ -119,7 +119,6 @@ class ErrorHandler {
 
     final public static function handleFatalError() {
         $error = error_get_last();
-        var_dump($error);
         if ($error === null) {
             return;
         }
