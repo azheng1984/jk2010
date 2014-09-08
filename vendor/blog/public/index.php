@@ -28,8 +28,7 @@ require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Web'
     . DIRECTORY_SEPARATOR . 'Runner.php';
 Runner::run(__NAMESPACE__, ROOT_PATH);
 //throw new \Exception
-trigger_error('xx', E_USER_ERROR);
-adf();
+//trigger_error('xx', E_USER_ERROR);
 ?>
 <form method="get" enctype="application/x-www-form-urlencoded" action="#sdf?q=s#2233">
 <input type="checkbox" name ="hi" value="9"/>

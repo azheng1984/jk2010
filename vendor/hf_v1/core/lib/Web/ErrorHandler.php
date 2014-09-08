@@ -12,31 +12,37 @@ class ErrorHandler {
     private static $isDebugEnabled;
     private static $outputBufferLevel;
     private static $ignoredErrors;
-    private static $isDefaultErrorLogEnabled;
     private static $exitLevel;
+    private static $errorReporting;
 
     final public static function run() {
+        self::$isDebugEnabled = ini_get('display_errors') === '1';
+        self::$errorReporting = error_reporting();
         $class = get_called_class();
-        set_error_handler(array($class, 'handleError'));
+        if (self::$isDebugEnabled) {
+            set_error_handler(array($class, 'handleError'), E_ALL | E_STRICT);
+        } else {
+            set_error_handler(
+                array($class, 'handleError'), self::$error_reporting
+            );
+        }
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
-        self::$isDebugEnabled = ini_get('display_errors') === '1';
         if (self::$isDebugEnabled) {
-            ini_set('display_errors', '0');
             ob_start();
             self::$outputBufferLevel = ob_get_level();
         }
-        self::$isDefaultErrorLogEnabled = ini_get('log_errors') === '1';
-        if (self::$isDefaultErrorLogEnabled) {
-            ini_set('log_errors', '0');
+        $tmp = 0;
+        if (self::$errorReporting & E_COMPILE_WARNING) {
+            $tmp = E_COMPILE_WARNING;
         }
+        error_reporting($tmp);
     }
 
     protected static function getExitLevel() {
         if (self::$exitLevel === null) {
             $exitLevel = Config::get('hyperframework.error_handler.exit_level');
-            if (is_string($exitLevel)) {
-            } elseif ($exitLevel == null) {
+            if ($exitLevel == null) {
                 $exitLevel === 'notice';
             }
         }
@@ -48,12 +54,7 @@ class ErrorHandler {
         if (self::$exception !== null) {
             return false;
         }
-        if (self::$isDefaultErrorLogEnabled) {
-            ini_set('log_errors', '1');
-        }
-        if (self::$isDebugEnabled) {
-            ini_set('display_errors', '1');
-        }
+        error_reporting(self::$errorReporting);
         self::$exception = $exception;
         if ($exception instanceof ErrorException) {
             self::writeErrorLog($exception);
@@ -95,29 +96,30 @@ class ErrorHandler {
     final public static function handleError(
         $type, $message, $file, $line, $context, $isFatal = false
     ) {
-        if (error_reporting() & $type) {
-            $code = $isFatal ? 1 : 0;
-            return self::handleException(new ErrorException(
-                $message, $code, $type, $file, $line
-            ));
-        }
+        $code = $isFatal ? 1 : 0;
+        $e = new ErrorException($message, $code, $type, $file, $line);
         if (self::$isDebugEnabled === false) {
-            return;
+            return self::handleException($e);
         }
-        if (self::$ignoredErrors === null) {
-            self::$ignoredErrors = array();
+        if (error_reporting() & $type) {
+            self::handleException($e);
+        } else {
+            if (self::$ignoredErrors === null) {
+                self::$ignoredErrors = array();
+            }
+            self::$ignoredErrors[] = array(
+                'type' => $type,
+                'message' => $message,
+                'file' => $file,
+                'line' => $line,
+                'context' => $context
+            );
         }
-        self::$ignoredErrors[] = array(
-            'type' => $type,
-            'message' => $message,
-            'file' => $file,
-            'line' => $line,
-            'context' => $context
-        );
     }
 
     final public static function handleFatalError() {
         $error = error_get_last();
+        var_dump($error);
         if ($error === null) {
             return;
         }
@@ -256,14 +258,14 @@ class ErrorHandler {
             E_USER_NOTICE       => 'notice',
             E_WARNING           => 'warn',
             E_USER_WARNING      => 'warn',
-            E_COMPILE_WARNING   => 'warn',
-            E_CORE_WARNING      => 'warn',
+            //E_COMPILE_WARNING   => 'warn',
+            //E_CORE_WARNING      => 'warn',
             E_USER_ERROR        => 'error',
             E_RECOVERABLE_ERROR => 'error',
             E_ERROR             => 'fatal',
             E_COMPILE_ERROR     => 'fatal',
             E_PARSE             => 'fatal',
-            E_CORE_ERROR        => 'fatal'
+            //E_CORE_ERROR        => 'fatal'
         );
         return $maps[$severity];
     }
