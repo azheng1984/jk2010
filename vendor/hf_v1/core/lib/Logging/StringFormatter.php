@@ -5,6 +5,9 @@ class StringFormatter {
     public static function format($level, $params) {
         Config::get('hyperframework.logger.type');
         if ($params[0] instanceof Closure) {
+            if (count($params) > 1) {
+                throw new Exception;
+            }
             $callback = $params[0];
             $params = $callback();
         }
