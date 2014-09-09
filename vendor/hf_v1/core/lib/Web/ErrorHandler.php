@@ -131,6 +131,8 @@ class ErrorHandler {
 
     final public static function handleFatalError() {
         $error = error_get_last();
+        echo 'xxxxxxxx';
+        var_dump($error);
         if ($error === null) {
             return;
         }
