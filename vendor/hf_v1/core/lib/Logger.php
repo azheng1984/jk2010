@@ -8,77 +8,65 @@ class Logger {
     private static $thresholdCode;
     private static $path;
     private static $levels = array(
-        'emergency' => 0,
-        'alert' => 1,
-        'critical' => 2,
-        'error' => 3,
-        'warning' => 4,
-        'notice' => 5,
-        'info' => 6,
-        'debug' => 7
+        'fatal' => 0,
+        'error' => 1,
+        'warning' => 2,
+        'notice' => 3,
+        'info' => 4,
+        'debug' => 5
     );
 
     private static function getThresholdCode() {
         if (self::$thresholdCode === null) {
-            $level = Config::get('hyperframework.log_level');
+            $level = Config::get('hyperframework.logger.level');
             if ($level !== null && isset(self::$levels[$level])) {
                 self::$thresholdCode = self::$levels[$level];
             } else {
-                self::$thresholdCode = 6;
+                self::$thresholdCode = 4;
             }
         }
         return self::$thresholdCode;
     }
 
     public static function debug(/*$param, ...*/) {
-        if (self::getThresholdCode() === 7) {
+        if (self::getThresholdCode() === 5) {
             static::write('debug', func_get_args());
         }
     }
 
     public static function info(/*$param, ...*/) {
-        if (self::getThresholdCode() >= 6) {
+        if (self::getThresholdCode() >= 4) {
             static::write('info', func_get_args());
         }
     }
 
     public static function notice(/*$param, ...*/) {
-        if (self::getThresholdCode() >= 5) {
+        if (self::getThresholdCode() >= 3) {
             static::write('notice', func_get_args());
         }
     }
 
     public static function warn(/*$param, ...*/) {
-        if (self::getThresholdCode() >= 4) {
+        if (self::getThresholdCode() >= 2) {
             static::write('warning', func_get_args());
         }
     }
 
     public static function error(/*$param, ...*/) {
-        if (self::getThresholdCode() >= 3) {
+        if (self::getThresholdCode() >= 1) {
             static::write('error', func_get_args());
         }
     }
 
-    public static function critical(/*$param, ...*/) {
-        if (self::getThresholdCode() >= 2) {
-            static::write('critical', func_get_args());
+    public static function fatal(/*$param, ...*/) {
+        if (self::getThresholdCode() >= 0) {
+            static::write('fatal', func_get_args());
         }
-    }
-
-    public static function alert(/*$param, ...*/) {
-        if (self::getThresholdCode() >= 1) {
-            static::write('alert', func_get_args());
-        }
-    }
-
-    public static function emergancy(/*$param, ...*/) {
-        static::write('emergancy', func_get_args());
     }
 
     protected static function getPath() {
         if (self::$path === null) {
-            $path = Config::get('hyperframework.log_path');
+            $path = Config::get('hyperframework.logger.path');
             if ($path === null) {
                 $path = APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'log'
                     . DIRECTORY_SEPARATOR . 'app.log';
@@ -102,7 +90,7 @@ class Logger {
                 return;
             }
         }
-        $writer = Config::get('hyperframework.log_writer');
+        $writer = Config::get('hyperframework.logger.writer');
         if ($writer !== null) {
             $writer::write($level, $params);
             return;

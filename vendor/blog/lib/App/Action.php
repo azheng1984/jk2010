@@ -12,6 +12,7 @@ use PDO;
 
 class Action {
     public function before() {
+    //    throw new \Exception;
         CsrfProtection::run();
         Logger::info(function() {
             return array('hello %s %s', 123, 'hello');
@@ -19,6 +20,7 @@ class Action {
     }
 
     public function after($ctx) {
+        
     }
 
     public function patch($ctx) {

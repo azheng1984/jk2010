@@ -7,9 +7,9 @@ class WebClient {
     private static $multiHandle;
     private static $multiOptions;
     private static $multiTemporaryOptions;
+    private static $multiRequestOptions;
     private static $multiPendingRequests;
     private static $multiProcessingRequests;
-    private static $multiRequestOptions;
     private static $multiGetRequestCallback;
     private static $isOldCurl;
     private $handle;
@@ -527,6 +527,7 @@ class WebClient {
         $this->responseHeaders = null;
         $this->temporaryOptions =& $options;
         $this->initializeOptions($options);
+<<<<<<< HEAD
         if ($this->handle !== null && self::isOldCurl() === false) {
             curl_reset($this->handle);
         } else {
@@ -535,6 +536,8 @@ class WebClient {
             }
             $this->handle = curl_init();
         }
+=======
+>>>>>>> 43494931578034bfd9ab44a646e5764ba7f510ff
         $curlOptions = array();
         foreach ($this->options as $key => $value) {
             if (is_int($key)) {
@@ -566,6 +569,14 @@ class WebClient {
             unset($curlOptions[CURLOPT_HTTPHEADER]);
         }
         $this->addCurlCallbackWrapper($curlOptions);
+        if ($this->handle !== null && self::$isOldCurl === false) {
+            curl_reset($this->handle);
+        } else {
+            if ($this->handle !== null) {
+                curl_close($this->handle);
+            }
+            $this->handle = curl_init();
+        }
         curl_setopt_array($this->handle, $curlOptions);
     }
 
@@ -635,7 +646,7 @@ class WebClient {
         }
     }
 
-    private function setRemovedOption($name) {
+    private function removeOptionTemporarily($name) {
         if (array_key_exists($name, $this->options) === false) {
             return;
         } elseif ($this->removedOptions === null) {
@@ -833,7 +844,7 @@ class WebClient {
             $this->setTemporaryHeaders(array('Content-Length' => $size));
             $this->enableCurlPostFieldsOption($options);
             unset($options[CURLOPT_POSTFIELDS]);
-            $this->setRemovedOption(CURLOPT_POSTFIELDS);
+            $this->removeOptionTemporarily(CURLOPT_POSTFIELDS);
             $options[CURLOPT_READFUNCTION] = $this->getSendFormDataCallback(
                 $data, $boundary
             );
@@ -855,14 +866,14 @@ class WebClient {
                     );
                     $this->enableCurlPostFieldsOption($options);
                     unset($options[CURLOPT_POSTFIELDS]);
-                    $this->setRemovedOption(CURLOPT_POSTFIELDS);
+                    $this->removeOptionTemporarily(CURLOPT_POSTFIELDS);
                     $options[CURLOPT_READFUNCTION] = $this->getSendFileCallback(
                         $file
                     );
                     return;
                 }
                 unset($options[CURLOPT_READFUNCTION]);
-                $this->setRemovedOption(CURLOPT_READFUNCTION);
+                $this->removeOptionTemporarily(CURLOPT_READFUNCTION);
                 $options[CURLOPT_UPLOAD] = true;
                 $options[CURLOPT_INFILE] = $file;
                 $options[CURLOPT_INFILESIZE] = self::getFileSize($data['file']);
@@ -872,9 +883,9 @@ class WebClient {
 
     private function enableCurlPostFieldsOption(&$options) {
         unset($options[CURLOPT_UPLOAD]);
-        $this->setRemovedOption(CURLOPT_UPLOAD);
+        $this->removeOptionTemporarily(CURLOPT_UPLOAD);
         unset($options[CURLOPT_PUT]);
-        $this->setRemovedOption(CURLOPT_PUT);
+        $this->removeOptionTemporarily(CURLOPT_PUT);
         $options[CURLOPT_POST] = true;
     }
 
