@@ -1171,12 +1171,8 @@ class WebClient {
     }
 
     public function __clone() {
-        if ($this->handle !== null) {
-            $this->handle = curl_copy_handle($this->handle);
-        }
-        if ($this->oldCurlMultiHandle !== null) {
-            $this->oldCurlMultiHandle = null;
-        }
+        $this->handle = null;
+        $this->oldCurlMultiHandle = null;
     }
 
     public function head($url, array $options = null) {
