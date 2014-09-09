@@ -58,7 +58,7 @@ class WebClient {
         if ($multiOptions !== null) {
             foreach ($multiOptions as $name => $value) {
                 if (is_int($name)) {
-                    if (self::$isOldCurl) {
+                    if (self::isOldCurl()) {
                         throw new Exception;
                     }
                     curl_multi_setopt(self::$multiHandle, $name, $value);
@@ -91,7 +91,7 @@ class WebClient {
             } while ($status === CURLM_CALL_MULTI_PERFORM);
             if ($status !== CURLM_OK) {
                 $message = '';
-                if (self::$isOldCurl === false) {
+                if (self::isOldCurl() === false) {
                     $message = curl_multi_strerror($status);
                 }
                 self::closeMultiHandle();
@@ -189,7 +189,7 @@ class WebClient {
                 unset(self::$multiTemporaryOptions[$name]);
             }
             if (self::$multiHandle !== null && is_int($name)) {
-                if (self::$isOldCurl) {
+                if (self::isOldCurl()) {
                     throw new Exception;
                 }
                 curl_multi_setopt(self::$multiHandle, $name, $value);
@@ -301,10 +301,14 @@ class WebClient {
         }
     }
 
-    public function __construct(array $options = null) {
+    final protected function isOldCurl() {
         if (self::$isOldCurl === null) {
             self::$isOldCurl = version_compare(phpversion(), '5.5.0', '<');
         }
+        return self::$isOldCurl;
+    }
+
+    public function __construct(array $options = null) {
         $defaultOptions = $this->getDefaultOptions();
         if ($defaultOptions === null) {
             $defaultOptions = array();
@@ -413,7 +417,7 @@ class WebClient {
             $options = array();
         }
         $this->prepare($options);
-        if (self::$isOldCurl === false) {
+        if (self::isOldCurl() === false) {
             $result = curl_exec($this->handle);
             if ($result === false) {
                 throw new CurlException(
@@ -523,7 +527,7 @@ class WebClient {
         $this->responseHeaders = null;
         $this->temporaryOptions =& $options;
         $this->initializeOptions($options);
-        if ($this->handle !== null && self::$isOldCurl === false) {
+        if ($this->handle !== null && self::isOldCurl() === false) {
             curl_reset($this->handle);
         } else {
             if ($this->handle !== null) {
@@ -698,7 +702,7 @@ class WebClient {
                 if (is_array($value) === false) {
                     $value = (string)$value;
                     if (strlen($value) !== 0 && $value[0] === '@') {
-                        if (self::$isOldCurl) {
+                        if (self::isOldCurl()) {
                             $shouldUseCurlPostFieldsOption = false;
                             break;
                         }
@@ -713,13 +717,13 @@ class WebClient {
                         }
                         $value = (string)$value['content'];
                         if (strlen($value) !== 0 && $value[0] === '@') {
-                            if (self::$isOldCurl) {
+                            if (self::isOldCurl()) {
                                 $shouldUseCurlPostFieldsOption = false;
                                 break;
                             }
                             $isSafe = false;
                         }
-                    } elseif (isset($value['file']) && self::$isOldCurl) {
+                    } elseif (isset($value['file']) && self::isOldCurl()) {
                         if (isset($value['file_name'])
                             && $value['file_name'] !== basename($value['file'])
                         ) {
@@ -740,7 +744,7 @@ class WebClient {
                         unset($data[$key]);
                     }
                 }
-                if (self::$isOldCurl === false) {
+                if (self::isOldCurl() === false) {
                     if ($isSafe === false) {
                         $options[CURLOPT_SAFE_UPLOAD] = true;
                     }
@@ -1132,7 +1136,7 @@ class WebClient {
     }
 
     public function pause($bitmask) {
-        if (self::$isOldCurl) {
+        if (self::isOldCurl()) {
             throw new Exception;
         }
         $result = curl_pause($this->handle, $bitmast);
