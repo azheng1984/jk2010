@@ -2,9 +2,10 @@
 namespace Hyperframework\Web;
 
 use ErrorException;
+use Exception;
 use Hyperframework\ErrorCodeHelper;
 use Hyperframework\Web\Html\DebugPage;
-use Hyperframework\Logger;
+use Hyperframework\Logging\Logger;
 use Hyperframework\Config;
 
 class ErrorHandler {
@@ -20,7 +21,7 @@ class ErrorHandler {
         self::$errorReporting = error_reporting();
         $class = get_called_class();
         set_error_handler(
-            array($class, 'handleError'), self::$errorReporting
+            array($class, 'handleError'), E_ALL
         );
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
@@ -65,11 +66,15 @@ class ErrorHandler {
         }
     }
 
-    final public static function handleException($exception) {
+    final public static function handleException($exception, $isError = false) {
         if (self::$exception !== null) {
-            return false;
+            if ($isError) {
+                echo 'xx';
+                var_dump(self::$exception);
+                return false;
+            }
+            throw $exception;
         }
-        error_reporting(self::$errorReporting);
         self::$exception = $exception;
         if ($exception instanceof ErrorException) {
             self::writeErrorLog($exception);
@@ -119,7 +124,8 @@ class ErrorHandler {
     ) {
         $code = $isFatal ? 1 : 0;
         return self::handleException(
-            new ErrorException($message, $code, $type, $file, $line)
+            new ErrorException($message, $code, $type, $file, $line),
+            true
         );
     }
 
