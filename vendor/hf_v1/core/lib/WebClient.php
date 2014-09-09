@@ -527,17 +527,6 @@ class WebClient {
         $this->responseHeaders = null;
         $this->temporaryOptions =& $options;
         $this->initializeOptions($options);
-<<<<<<< HEAD
-        if ($this->handle !== null && self::isOldCurl() === false) {
-            curl_reset($this->handle);
-        } else {
-            if ($this->handle !== null) {
-                curl_close($this->handle);
-            }
-            $this->handle = curl_init();
-        }
-=======
->>>>>>> 43494931578034bfd9ab44a646e5764ba7f510ff
         $curlOptions = array();
         foreach ($this->options as $key => $value) {
             if (is_int($key)) {
@@ -569,7 +558,7 @@ class WebClient {
             unset($curlOptions[CURLOPT_HTTPHEADER]);
         }
         $this->addCurlCallbackWrapper($curlOptions);
-        if ($this->handle !== null && self::$isOldCurl === false) {
+        if ($this->handle !== null && self::isOldCurl() === false) {
             curl_reset($this->handle);
         } else {
             if ($this->handle !== null) {
