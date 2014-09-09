@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Logging;
+namespace Hyperframework;
 
 use Exception;
 use Closure;
@@ -53,11 +53,9 @@ class Logger {
     }
 
     private static function log($level, array $params) {
-        $content = null;
         $handler = Config::get('hyperframework.logger.handler');
         if ($handler == null) {
-            $content = StringFormatter::format($level, $params);
-            FileWriter::write($content);
+            LogHandler::log($level, $params);
         }
         $handler::log($level, $params);
     }
