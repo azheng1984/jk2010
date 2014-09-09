@@ -518,7 +518,7 @@ class WebClient {
         }
     }
 
-    final private function prepare(array $options) {
+    private function prepare(array $options) {
         $this->rawResponseHeaders = null;
         $this->responseHeaders = null;
         $this->temporaryOptions =& $options;
