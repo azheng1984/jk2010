@@ -37,7 +37,9 @@ class DebugPage {
             echo '<span style="color:#999;background-color:#eee">UNKNOWN</span>';
         } else {
             echo '<h3>FILE: ',$exception->getFile(), '</h3>';
-            $sourceCode = highlight_file($exception->getFile(), true);
+            $sourceCode = highlight_string(
+                file_get_contents($exception->getFile()), true
+            );//highlight_file 会附带 compile warning
             $lines = explode("<br />", $sourceCode);
             $index = 1;
             $count = count($lines);
@@ -63,10 +65,12 @@ class DebugPage {
             }
             $index = $exception->getLine() - 1;
             $lines[$index - 1] = $lines[$index - 1]
-                . '<div style="background-color:#ff6">' . $lines[$index] . '</div>'
-                . $lines[$index + 1];
+                . '<div style="background-color:#ff6">' . $lines[$index] . '</div>';
             unset($lines[$index]);
-            unset($lines[$index + 1]);
+            if (isset($lines[$index + 1])) {
+                $lines[$index - 1] . $lines[$index + 1];
+                unset($lines[$index + 1]);
+            }
             echo implode("<br />", $lines);
         }
         echo '<h2>stack trace</h2>';

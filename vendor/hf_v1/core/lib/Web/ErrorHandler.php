@@ -20,7 +20,7 @@ class ErrorHandler {
         self::$errorReporting = error_reporting();
         $class = get_called_class();
         set_error_handler(
-            array($class, 'handleError'), self::$error_reporting
+            array($class, 'handleError'), self::$errorReporting
         );
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
@@ -241,14 +241,9 @@ class ErrorHandler {
     }
 
     protected static function writeLog($message, $severity) {
-        if (Config::get('hyperframework.logger.enable')) {
+        if (Config::get('hyperframework.logger.log_errors')) {
             $method = self::getLogMethod($severity);
-            $logger = Config::get('hyperframework.logger.class');
-            if ($logger) {
-               $logger::$method($message);
-            } else {
-                Logger::$method($message);
-            }
+            Logger::$method($message);
         } else {
             error_log($message);
         }

@@ -13,6 +13,7 @@ use PDO;
 class Action {
     public function before() {
     //    throw new \Exception;
+        print_r($_SERVER);
         CsrfProtection::run();
         Logger::info(function() {
             return array('hello %s %s', 123, 'hello');
