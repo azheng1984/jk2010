@@ -20,7 +20,7 @@ class ErrorHandler {
         self::$errorReporting = error_reporting();
         $class = get_called_class();
         if (self::$isDebugEnabled) {
-            set_error_handler(array($class, 'handleError'), E_ALL | E_STRICT);
+            set_error_handler(array($class, 'handleError'));
         } else {
             set_error_handler(
                 array($class, 'handleError'), self::$error_reporting
@@ -45,9 +45,28 @@ class ErrorHandler {
             if ($exitLevel == null) {
                 $exitLevel === 'notice';
             }
+            if (is_int($exitLevel) === false) {
+                $tmp = 0;
+                if ($exitLevel === 'notice') {
+                    $tmp = 0;
+                } elseif ($exitLevel === 'warning') {
+                    $tmp = 1;
+                } elseif ($exitLevel === 'error') {
+                    $tmp = 2;
+                } else {
+                    throw new Exception;
+                }
+                $exitLevel =
+                    E_ALL & ~E_STRICT & ~E_USER_DEPRECATED & ~E_DEPRECATED;
+                if ($tmp > 0) {
+                    $exitLevel = $exitLevel & ~E_NOTICE & ~E_USER_NOTICE;
+                }
+                if ($tmp > 1) {
+                    $exitLevel = $exitLevel & ~E_NOTICE & ~E_USER_WARNING;
+                }
+            }
+            self::$exitLevel = $exitLevel;
         }
-        //[notice | warning | error] use firelogger to see others (or use int code)
-        //todo convert to bit
     }
 
     final public static function handleException($exception) {
@@ -58,6 +77,11 @@ class ErrorHandler {
         self::$exception = $exception;
         if ($exception instanceof ErrorException) {
             self::writeErrorLog($exception);
+            if ($exception->getCode() === 0
+                && $exception->getSeverity() & self::getExitLevel() === 0
+            ) {
+                return;
+            }
         } else {
             self::writeExceptionLog($exception);
         }
@@ -257,14 +281,11 @@ class ErrorHandler {
             E_USER_NOTICE       => 'notice',
             E_WARNING           => 'warn',
             E_USER_WARNING      => 'warn',
-            //E_COMPILE_WARNING   => 'warn',
-            //E_CORE_WARNING      => 'warn',
             E_USER_ERROR        => 'error',
             E_RECOVERABLE_ERROR => 'error',
             E_ERROR             => 'fatal',
             E_COMPILE_ERROR     => 'fatal',
             E_PARSE             => 'fatal',
-            //E_CORE_ERROR        => 'fatal'
         );
         return $maps[$severity];
     }
@@ -275,12 +296,5 @@ class ErrorHandler {
 
     protected static function getIgnoredErrors() {
         return self::$ignoredErrors;
-    }
-
-    public static function reset() {
-        self::$exception = null;
-        self::$isDebugEnabled = null;
-        self::$outputBufferLevel = null;
-        self::$ignoredErrors = null;
     }
 }
