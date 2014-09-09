@@ -19,13 +19,9 @@ class ErrorHandler {
         self::$isDebugEnabled = ini_get('display_errors') === '1';
         self::$errorReporting = error_reporting();
         $class = get_called_class();
-        if (self::$isDebugEnabled) {
-            set_error_handler(array($class, 'handleError'));
-        } else {
-            set_error_handler(
-                array($class, 'handleError'), self::$error_reporting
-            );
-        }
+        set_error_handler(
+            array($class, 'handleError'), self::$error_reporting
+        );
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
         if (self::$isDebugEnabled) {
@@ -80,6 +76,7 @@ class ErrorHandler {
             if ($exception->getCode() === 0
                 && $exception->getSeverity() & self::getExitLevel() === 0
             ) {
+                self::$exception = null;
                 return;
             }
         } else {
@@ -121,24 +118,9 @@ class ErrorHandler {
         $type, $message, $file, $line, $context, $isFatal = false
     ) {
         $code = $isFatal ? 1 : 0;
-        $e = new ErrorException($message, $code, $type, $file, $line);
-        if (self::$isDebugEnabled === false) {
-            return self::handleException($e);
-        }
-        if (error_reporting() & $type) {
-            self::handleException($e);
-        } else {
-            if (self::$ignoredErrors === null) {
-                self::$ignoredErrors = array();
-            }
-            self::$ignoredErrors[] = array(
-                'type' => $type,
-                'message' => $message,
-                'file' => $file,
-                'line' => $line,
-                'context' => $context
-            );
-        }
+        return self::handleException(
+            new ErrorException($message, $code, $type, $file, $line)
+        );
     }
 
     final public static function handleFatalError() {
