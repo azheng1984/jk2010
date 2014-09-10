@@ -270,7 +270,7 @@ class ErrorHandler {
             E_RECOVERABLE_ERROR => 'error',
             E_ERROR             => 'fatal',
             E_COMPILE_ERROR     => 'fatal',
-            E_PARSE             => 'fatal',
+            E_PARSE             => 'fatal'
         );
         return $maps[$severity];
     }

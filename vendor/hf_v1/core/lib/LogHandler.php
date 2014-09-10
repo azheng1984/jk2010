@@ -5,8 +5,8 @@ use Exception;
 use Closure;
 
 class LogHandler {
-    private static $path;
     private static $protocol;
+    private static $path;
 
     public static function log($level, array $params) {
         $content = static::format($level, $params);
