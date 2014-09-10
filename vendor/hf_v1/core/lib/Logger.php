@@ -8,47 +8,47 @@ class Logger {
     private static $thresholdCode;
     private static $path;
     private static $levels = array(
-        'fatal' => 0,
-        'error' => 1,
-        'warning' => 2,
-        'notice' => 3,
-        'info' => 4,
-        'debug' => 5
+        'FATAL' => 0,
+        'ERROR' => 1,
+        'WARNING' => 2,
+        'NOTICE' => 3,
+        'INFO' => 4,
+        'DEBUG' => 5
     );
 
     public static function debug(/*$param, ...*/) {
         if (self::getThresholdCode() === 5) {
-            static::log('debug', func_get_args());
+            static::log('DEBUG', func_get_args());
         }
     }
 
     public static function info(/*$param, ...*/) {
         if (self::getThresholdCode() >= 4) {
-            static::log('info', func_get_args());
+            static::log('INFO', func_get_args());
         }
     }
 
     public static function notice(/*$param, ...*/) {
         if (self::getThresholdCode() >= 3) {
-            static::log('notice', func_get_args());
+            static::log('NOTICE', func_get_args());
         }
     }
 
     public static function warn(/*$param, ...*/) {
         if (self::getThresholdCode() >= 2) {
-            static::log('warning', func_get_args());
+            static::log('WARNING', func_get_args());
         }
     }
 
     public static function error(/*$param, ...*/) {
         if (self::getThresholdCode() >= 1) {
-            static::log('error', func_get_args());
+            static::log('ERROR', func_get_args());
         }
     }
 
     public static function fatal(/*$param, ...*/) {
         if (self::getThresholdCode() >= 0) {
-            static::log('fatal', func_get_args());
+            static::log('FATAL', func_get_args());
         }
     }
 

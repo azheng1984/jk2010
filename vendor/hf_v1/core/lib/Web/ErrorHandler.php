@@ -29,6 +29,10 @@ class ErrorHandler {
             ob_start();
             self::$outputBufferLevel = ob_get_level();
         }
+        self::disableErrorReporting();
+    }
+
+    private static function disableErrorReporting() {
         $tmp = 0;
         if (self::$errorReporting & E_COMPILE_WARNING) {
             $tmp = E_COMPILE_WARNING;
@@ -69,19 +73,19 @@ class ErrorHandler {
     final public static function handleException($exception, $isError = false) {
         if (self::$exception !== null) {
             if ($isError) {
-                echo 'xx';
-                var_dump(self::$exception);
                 return false;
             }
             throw $exception;
         }
         self::$exception = $exception;
+        error_reporting(self::$errorReporting);
         if ($exception instanceof ErrorException) {
             self::writeErrorLog($exception);
             if ($exception->getCode() === 0
                 && $exception->getSeverity() & self::getExitLevel() === 0
             ) {
                 self::$exception = null;
+                self::disableErrorReporting();
                 return;
             }
         } else {
@@ -131,8 +135,6 @@ class ErrorHandler {
 
     final public static function handleFatalError() {
         $error = error_get_last();
-        echo 'xxxxxxxx';
-        var_dump($error);
         if ($error === null) {
             return;
         }

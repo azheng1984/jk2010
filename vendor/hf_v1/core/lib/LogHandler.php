@@ -21,10 +21,10 @@ class LogHandler {
     public static function writeSyslog($level, $content) {
         $priority = null;
         switch ($level) {
-            case 'debug': $priority = LOG_DEBUG; break;
-            case 'info': $priority = LOG_INFO; break;
-            case 'notice': $priority = LOG_NOTICE; break;
-            case 'warning': $priority = LOG_WARNING; break;
+            case 'DEBUG': $priority = LOG_DEBUG; break;
+            case 'INFO': $priority = LOG_INFO; break;
+            case 'NOTICE': $priority = LOG_NOTICE; break;
+            case 'WARNING': $priority = LOG_WARNING; break;
             default: $priority = LOG_ERR;
         }
         syslog($priority, $content);
@@ -70,11 +70,13 @@ class LogHandler {
                 $count = 1;
             }
         }
-        $prefix = PHP_EOL . date('Y-m-d h:i:s') . ' [' . $level . '] ';
+        $prefix = PHP_EOL . '[' . date('Y-m-d h:i:s') . '] [' . $level . '] ';
+        $message = null;
         if ($count > 1) {
-            return $prefix . call_user_func_array('sprintf', $params);
+            $message = call_user_func_array('sprintf', $params);
         } else {
-            return $prefix . $params[0];
+            $message = $params[0];
         }
+        $return $prefix . str_replace(PHP_EOL, '  ' . PHP_EOL, $message);
     }
 }

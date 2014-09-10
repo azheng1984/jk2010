@@ -466,27 +466,16 @@ class WebClient {
     }
 
     protected function initializeOptions(array &$options) {
-        if (isset($options['data'])) {
+        $data = $this->getOption('data');
+        if ($data !== null) {
             $this->setData($options['data'], $options);
-            unset($options['data']);
         }
-        $queryParams = null;
-        if (array_key_exists('query_params', $options)) {
-            $queryParams = $options['query_params'];
-            unset($options['query_params']);
-        } elseif (isset($this->options['query_params'])) {
-            $queryParams = $this->options['query_params'];
-        }
+        $queryParams = $this->getOption('query_params');
         if ($queryParams !== null) {
             if (is_array($queryParams) === false) {
                 throw new Exception;
             }
-            $url = null;
-            if (array_key_exists(CURLOPT_URL, $options)) {
-                $url = $options[CURLOPT_URL];
-            } elseif (isset($this->options[CURLOPT_URL])) {
-                $url = $this->options[CURLOPT_URL];
-            }
+            $url = $this->getOption(CURLOPT_URL);
             if ($url === null) {
                 return;
             }
