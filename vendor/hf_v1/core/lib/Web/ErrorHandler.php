@@ -5,7 +5,7 @@ use ErrorException;
 use Exception;
 use Hyperframework\ErrorCodeHelper;
 use Hyperframework\Web\Html\DebugPage;
-use Hyperframework\Logging\Logger;
+use Hyperframework\Logger;
 use Hyperframework\Config;
 
 class ErrorHandler {
@@ -44,7 +44,7 @@ class ErrorHandler {
         if (self::$exitLevel === null) {
             $exitLevel = Config::get('hyperframework.error_handler.exit_level');
             if ($exitLevel == null) {
-                $exitLevel === 'notice';
+                $exitLevel = 'notice';
             }
             if (is_int($exitLevel) === false) {
                 $tmp = 0;

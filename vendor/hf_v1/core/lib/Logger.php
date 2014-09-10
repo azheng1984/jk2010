@@ -1,9 +1,6 @@
 <?php
 namespace Hyperframework;
 
-use Exception;
-use Closure;
-
 class Logger {
     private static $thresholdCode;
     private static $path;
@@ -56,8 +53,9 @@ class Logger {
         $handler = Config::get('hyperframework.logger.handler');
         if ($handler == null) {
             LogHandler::log($level, $params);
+        } else {
+            $handler::log($level, $params);
         }
-        $handler::log($level, $params);
     }
 
     private static function getThresholdCode() {

@@ -13,5 +13,5 @@ return array(
     'hyperframework.web.disable_custom_error_page' => true,
 //    'hyperframework.class_loader.enable_zero_folder' => true,
     'hyperframework.db.profiler.enable' => true,
-    'hyperframework.logger.enable' => true,
+    'hyperframework.logger.log_errors' => true,
 );

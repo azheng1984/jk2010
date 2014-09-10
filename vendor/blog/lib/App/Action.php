@@ -13,11 +13,10 @@ use PDO;
 class Action {
     public function before() {
     //    throw new \Exception;
-        $f = $x;
-        print_r($_SERVER);
+        //print_r($_SERVER);
         CsrfProtection::run();
         Logger::info(function() {
-            return array('hello %s %s', 123, 'hello');
+            return array('hello' . PHP_EOL . '%s %s', 123, 'hello');
         });
     }
 

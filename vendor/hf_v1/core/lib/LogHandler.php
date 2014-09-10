@@ -2,14 +2,17 @@
 namespace Hyperframework;
 
 use Exception;
+use Closure;
 
 class LogHandler {
+    private static $path;
     public static function log($level, array $params) {
 //      Config::('hyperframework.log_handler.syslog.enable');
 //      Config::('hyperframework.log_handler.file.enable');
 //      Config::('hyperframework.log_handler.file.path');
 //      Config::('hyperframework.log_handler.file.paths');
-        static::format($level, $params);
+        $content = static::format($level, $params);
+        static::writeFile($content);
     }
 
     protected static function handleFile() {
@@ -31,7 +34,7 @@ class LogHandler {
     }
 
     protected static function writeFile($content) {
-        $path = static::getPath();
+        $path = static::getDefaultFilePath();
         if (file_put_contents($path, $content, FILE_APPEND | LOCK_EX) === false)
         {
             throw new Exception;
@@ -54,10 +57,7 @@ class LogHandler {
 
     protected static function format($level, array $params) {
         $count = count($params);
-        if ($count === 0) {
-            return;
-        }
-        if ($params[0] instanceof Closure) {
+        if ($count > 0 && $params[0] instanceof Closure) {
             if ($count > 1) {
                 throw new Exception;
             }
@@ -72,11 +72,13 @@ class LogHandler {
         }
         $prefix = PHP_EOL . '[' . date('Y-m-d h:i:s') . '] [' . $level . '] ';
         $message = null;
-        if ($count > 1) {
-            $message = call_user_func_array('sprintf', $params);
-        } else {
-            $message = $params[0];
+        if ($count > 0) {
+            if ($count > 1) {
+                $message = call_user_func_array('sprintf', $params);
+            } else {
+                $message = $params[0];
+            }
         }
-        $return $prefix . str_replace(PHP_EOL, '  ' . PHP_EOL, $message);
+        return $prefix . str_replace(PHP_EOL, PHP_EOL . "\t", $message);
     }
 }
