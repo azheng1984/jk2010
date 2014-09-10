@@ -20,9 +20,7 @@ class ErrorHandler {
         self::$isDebugEnabled = ini_get('display_errors') === '1';
         self::$errorReporting = error_reporting();
         $class = get_called_class();
-        set_error_handler(
-            array($class, 'handleError'), E_ALL
-        );
+        set_error_handler(array($class, 'handleError'), self::$errorReporting);
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
         if (self::$isDebugEnabled) {
