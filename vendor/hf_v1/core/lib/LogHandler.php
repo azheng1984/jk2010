@@ -5,35 +5,21 @@ use Exception;
 use Closure;
 
 class LogHandler {
-    private static $path;
+    private static $paths;
+
     public static function log($level, array $params) {
-//      Config::('hyperframework.log_handler.syslog.enable');
-//      Config::('hyperframework.log_handler.file.enable');
-//      Config::('hyperframework.log_handler.file.path');
-//      Config::('hyperframework.log_handler.file.paths');
+        Config::('hyperframework.log_handler.enable');
+        Config::('hyperframework.log_handler.path');
+        Config::('hyperframework.log_handler.paths');
+    }
+
+    protected static function handle($level, $params) {
         $content = static::format($level, $params);
         static::writeFile($content);
     }
 
-    protected static function handleFile() {
-    }
-
-    protected static function handleSyslog() {
-    }
-
-    public static function writeSyslog($level, $content) {
-        $priority = null;
-        switch ($level) {
-            case 'DEBUG': $priority = LOG_DEBUG; break;
-            case 'INFO': $priority = LOG_INFO; break;
-            case 'NOTICE': $priority = LOG_NOTICE; break;
-            case 'WARNING': $priority = LOG_WARNING; break;
-            default: $priority = LOG_ERR;
-        }
-        syslog($priority, $content);
-    }
-
-    protected static function writeFile($content) {
+    protected static function write($content) {
+        if ($)
         $path = static::getDefaultFilePath();
         if (file_put_contents($path, $content, FILE_APPEND | LOCK_EX) === false)
         {
