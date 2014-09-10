@@ -79,7 +79,6 @@ class ErrorHandler {
         }
         self::$exception = $exception;
         error_reporting(self::$errorReporting);
-        var_dump($isError);
         if ($isError) {
             self::writeErrorLog($exception);
             if ($exception->getCode() === 0

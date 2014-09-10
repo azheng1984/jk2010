@@ -14,11 +14,12 @@ class Action {
     public function before() {
         //throw new \Exception;
         //print_r($_SERVER);
-        $x= $sdf;
+        $x = $sdf;
         CsrfProtection::run();
         Logger::info(function() {
             return array('hello' . PHP_EOL . '%s %s', 123, 'hello');
         });
+        Logger::info('');
     }
 
     public function after($ctx) {

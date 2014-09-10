@@ -73,7 +73,7 @@ class LogHandler {
                 $count = 1;
             }
         }
-        $prefix = PHP_EOL . date('Y-m-d h:i:s') . ' [' . $level . '] ';
+        $prefix = PHP_EOL . date('Y-m-d h:i:s') . ' [' . $level . ']';
         $message = null;
         if ($count > 0) {
             if ($count > 1) {
@@ -81,6 +81,12 @@ class LogHandler {
             } else {
                 $message = $params[0];
             }
+        }
+        if ($message == '') {
+            return $prefix;
+        }
+        if (strncmp($message, PHP_EOL, strlen(PHP_EOL)) !== 0) {
+            $prefix = $prefix . ' ';
         }
         return $prefix . str_replace(PHP_EOL, PHP_EOL . "\t", $message);
     }
