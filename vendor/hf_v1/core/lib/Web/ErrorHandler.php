@@ -40,7 +40,9 @@ class ErrorHandler {
 
     protected static function getExitLevel() {
         if (self::$exitLevel === null) {
-            $exitLevel = Config::get('hyperframework.error_handler.exit_level');
+            $exitLevel = Config::get(
+                'hyperframework.web.error_handler.exit_level'
+            );
             if ($exitLevel == null) {
                 $exitLevel = 'notice';
             }
@@ -57,11 +59,11 @@ class ErrorHandler {
                 }
                 $exitLevel =
                     E_ALL & ~E_STRICT & ~E_USER_DEPRECATED & ~E_DEPRECATED;
-                if ($tmp > 0) {
-                    $exitLevel = $exitLevel & ~E_NOTICE & ~E_USER_NOTICE;
+                if ($tmp < 2) {
+                    $exitLevel = $exitLevel & ~E_WARNING & ~E_USER_WARNING;
                 }
-                if ($tmp > 1) {
-                    $exitLevel = $exitLevel & ~E_NOTICE & ~E_USER_WARNING;
+                if ($tmp < 1) {
+                    $exitLevel = $exitLevel & ~E_NOTICE & ~E_USER_NOTICE;
                 }
             }
             self::$exitLevel = $exitLevel;
@@ -77,10 +79,11 @@ class ErrorHandler {
         }
         self::$exception = $exception;
         error_reporting(self::$errorReporting);
-        if ($exception instanceof ErrorException) {
+        var_dump($isError);
+        if ($isError) {
             self::writeErrorLog($exception);
             if ($exception->getCode() === 0
-                && $exception->getSeverity() & self::getExitLevel() === 0
+                && ($exception->getSeverity() & self::getExitLevel()) === 0
             ) {
                 self::$exception = null;
                 self::disableErrorReporting();
