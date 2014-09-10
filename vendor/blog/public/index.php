@@ -1,5 +1,6 @@
 <?php
 namespace Hyperframework\Blog;
+file_put_contents('.a+d://', 'x');
 
 if (isset($_GET['b'])) {
 echo file_get_contents('php://input');

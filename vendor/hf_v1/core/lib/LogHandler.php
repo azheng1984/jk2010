@@ -45,7 +45,7 @@ class LogHandler {
             self::$protocol = 'file';
         } else {
             $protocol = 'file';
-            if (preg_match('#^([a-zA-Z0-9.]+)://#', $path, $matches)) {
+            if (preg_match('#^([a-zA-Z0-9.+]+)://#', $path, $matches)) {
                 $protocol = $matches[1];
             }
             self::$protocol = $protocol;
