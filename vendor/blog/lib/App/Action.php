@@ -12,7 +12,7 @@ use PDO;
 
 class Action {
     public function before() {
-        //throw new \Exception;
+        throw new \Exception;
         //print_r($_SERVER);
         $x = $sdf;
         CsrfProtection::run();
