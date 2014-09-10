@@ -5,40 +5,57 @@ use Exception;
 use Closure;
 
 class LogHandler {
-    private static $paths;
+    private static $path;
+    private static $protocol;
 
     public static function log($level, array $params) {
-        Config::('hyperframework.log_handler.enable');
-        Config::('hyperframework.log_handler.path');
-        Config::('hyperframework.log_handler.paths');
-    }
-
-    protected static function handle($level, $params) {
         $content = static::format($level, $params);
-        static::writeFile($content);
+        static::write($content);
     }
 
     protected static function write($content) {
-        if ($)
-        $path = static::getDefaultFilePath();
-        if (file_put_contents($path, $content, FILE_APPEND | LOCK_EX) === false)
-        {
+        $flag = null;
+        if (self::getProtocol() === 'file') {
+            $flag = FILE_APPEND | LOCK_EX;
+        }
+        if (file_put_contents(static::getPath(), $content, $flag) === false) {
             throw new Exception;
         }
     }
 
-    protected static function getDefaultFilePath() {
+    protected static function getPath() {
         if (self::$path === null) {
-            $path = Config::get('hyperframework.logger.path');
-            if ($path === null) {
-                $path = APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'log'
-                    . DIRECTORY_SEPARATOR . 'app.log';
-            } elseif (FullPathRecognizer::isFull($path) === false) {
+            self::initializePath();
+        }
+        return self::$path;
+    }
+
+    protected static function getProtocol() {
+        if (self::$protocol === null) {
+            self::initializePath();
+        }
+        return self::$protocol;
+    }
+
+    private static function initializePath() {
+        $path = Config::get('hyperframework.log_handler.path');
+        if ($path === null) {
+            self::$path = APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'log'
+                . DIRECTORY_SEPARATOR . 'app.log';
+            self::$protocol = 'file';
+        } else {
+            $protocol = 'file';
+            if (preg_match('#^([a-zA-Z0-9.]+)://#', $path, $matches)) {
+                $protocol = $matches[1];
+            }
+            self::$protocol = $protocol;
+            if ($protocol === 'file'
+                && FullPathRecognizer::isFull($path) === false
+            ) {
                 $path = APP_ROOT_PATH . DIRECTORY_SEPARATOR . $path;
             }
             self::$path = $path;
         }
-        return self::$path;
     }
 
     protected static function format($level, array $params) {
