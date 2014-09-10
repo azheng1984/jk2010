@@ -468,7 +468,7 @@ class WebClient {
     protected function initializeOptions(array &$options) {
         $data = $this->getOption('data');
         if ($data !== null) {
-            $this->setData($options['data'], $options);
+            $this->setData($data, $options);
         }
         $queryParams = $this->getOption('query_params');
         if ($queryParams !== null) {
