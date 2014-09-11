@@ -7,7 +7,7 @@ use Closure;
 class LogHandler {
     private static $protocol;
     private static $path;
-    private static $timestampFormat;
+    private static $timeFormat;
 
     public static function log($level, array $params) {
         $content = static::format($level, $params);
@@ -39,14 +39,14 @@ class LogHandler {
     }
 
     private static function getTimestamp() {
-        if (self::$timestampFormat === null) {
-            self::$timestampFormat =
-                Config::get('hyperframework.log_handler.timestamp_format');
-            if (self::$timestampFormat === null) {
-                self::$timestampFormat = 'Y-m-d h:i:s';
+        if (self::$timeFormat === null) {
+            self::$timeFormat =
+                Config::get('hyperframework.log_handler.time_format');
+            if (self::$timeFormat === null) {
+                self::$timeFormat = 'Y-m-d h:i:s';
             }
         }
-        return date(self::$timestampFormat);
+        return date(self::$timeFormat);
     }
 
     private static function initializePath() {
@@ -97,12 +97,9 @@ class LogHandler {
             }
             if ($params[1] != '') {
                 $result .= ' |';
-                if (strncmp($params[1], PHP_EOL, strlen(PHP_EOL)) !== 0) {
-                    $result .= ' ';
-                }
-                $result .= str_replace(PHP_EOL, PHP_EOL . "\t> ", $params[1]);
+                self::appendValue($result, $params[1]);
             }
-            $result .= self::encode($params[2]);
+            $result .= self::convert($params[2]);
         } else {
             $message = null;
             if ($count > 2 || is_array($params[1])) {
@@ -117,29 +114,29 @@ class LogHandler {
             }
             if ($message != '') {
                 $result .= ' |';
-                if (strncmp($message, PHP_EOL, strlen(PHP_EOL)) !== 0) {
-                    $result .= ' ';
-                }
-                $result .= str_replace(PHP_EOL, PHP_EOL . "\t> ", $message);
+                self::appendValue($result, $message);
             }
         }
         return $result . PHP_EOL;
     }
 
-    private static function encode(array $data, $level = 1) {
+    private static function appendValue(&$data, $value, $prefix = "\t> ") {
+        if (strncmp($value, PHP_EOL, strlen(PHP_EOL)) !== 0) {
+            $value = ' ' . $value;
+        }
+        $data .= str_replace(PHP_EOL, PHP_EOL . $prefix, $value);
+    }
+
+    private static function convert(array $data, $depth = 1) {
         $result = null;
-        $prefix = str_repeat("\t", $level);
+        $prefix = str_repeat("\t", $depth);
         foreach ($data as $key => $value) {
             $result .= PHP_EOL . $prefix . $key . ':';
             if (is_array($value)) {
-                $value = self::encode($value, $level + 1);
-            } else {
-                $value = str_replace(PHP_EOL, PHP_EOL . $prefix . "\t> ", $value);
-                if ($value != '') {
-                    $value = ' ' . $value;
-                }
+                $result .= self::encode($value, $depth + 1);
+            } elseif ($value != '') {
+                self::appendValue($result, $value, $prefix . "\t> ");
             }
-            $result .= $value;
         }
         return $result;
     }
