@@ -7,7 +7,7 @@ use Closure;
 class LogHandler {
     private static $protocol;
     private static $path;
-    private static $timeFormat;
+    private static $timestampFormat;
 
     public static function log($level, array $params) {
         $content = static::format($level, $params);
@@ -39,14 +39,14 @@ class LogHandler {
     }
 
     private static function getTimestamp() {
-        if (self::$timeFormat === null) {
-            self::$timeFormat =
-                Config::get('hyperframework.log_handler.time_format');
-            if (self::$timeFormat === null) {
-                self::$timeFormat = 'Y-m-d h:i:s';
+        if (self::$timestampFormat === null) {
+            self::$timestampFormat =
+                Config::get('hyperframework.log_handler.timestamp_format');
+            if (self::$timestampFormat === null) {
+                self::$timestampFormat = 'Y-m-d h:i:s';
             }
         }
-        return date(self::$timeFormat);
+        return date(self::$timestampFormat);
     }
 
     private static function initializePath() {
@@ -120,11 +120,27 @@ class LogHandler {
         return $result . PHP_EOL;
     }
 
-    private static function appendValue(&$data, $value, $prefix = "\t> ") {
+    private static function appendValue(&$data, $value, $prefix = "\t>") {
+        if (strpos($value, PHP_EOL) === false) {
+            $data .= ' ' . $value;
+            return;
+        }
         if (strncmp($value, PHP_EOL, strlen(PHP_EOL)) !== 0) {
             $value = ' ' . $value;
         }
-        $data .= str_replace(PHP_EOL, PHP_EOL . $prefix, $value);
+        $value = str_replace(PHP_EOL, PHP_EOL . $prefix . ' ', $value);
+        $value = str_replace(
+            PHP_EOL . $prefix . ' ' . PHP_EOL,
+            PHP_EOL . $prefix . PHP_EOL,
+            $value
+        );
+        if (substr($value, -1) === ' ') {
+            $tail = substr($value, -strlen($prefix) - strlen(PHP_EOL) - 1);
+            if ($tail === PHP_EOL . $prefix . ' ') {
+                $value = rtrim($value, ' ');
+            }
+        }
+        $data .= $value;
     }
 
     private static function convert(array $data, $depth = 1) {
@@ -133,9 +149,9 @@ class LogHandler {
         foreach ($data as $key => $value) {
             $result .= PHP_EOL . $prefix . $key . ':';
             if (is_array($value)) {
-                $result .= self::encode($value, $depth + 1);
+                $result .= self::convert($value, $depth + 1);
             } elseif ($value != '') {
-                self::appendValue($result, $value, $prefix . "\t> ");
+                self::appendValue($result, $value, $prefix . "\t>");
             }
         }
         return $result;

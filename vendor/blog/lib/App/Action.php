@@ -18,7 +18,10 @@ class Action {
         //print_r($_SERVER);
         CsrfProtection::run();
         Logger::info(
-            'name.hi', array('hello %s', 'az'), array('happy' => array("li\nfe"))
+            'name.hi', array('hello %s', 'az'), array('happy' => array("l\ni\n\nfe\n"))
+        );
+        Logger::info(
+            'name.hi', array('hello %s', 'az'), array('happy' => array("\n"))
         );
         Logger::info(function() {
             return array('hello!', 'hello' . PHP_EOL . '%s %s', 123, 'hello');
