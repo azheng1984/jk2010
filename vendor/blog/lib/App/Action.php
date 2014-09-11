@@ -26,7 +26,7 @@ class Action {
         Logger::info(function() {
             return array('hello!', 'hello' . PHP_EOL . '%s %s', 123, 'hello');
         });
-        Logger::info('name', null);
+        Logger::info(null, null, array('hi'));
     }
 
     public function after($ctx) {
