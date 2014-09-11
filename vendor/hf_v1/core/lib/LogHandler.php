@@ -24,52 +24,6 @@ class LogHandler {
         }
     }
 
-    protected static function getPath() {
-        if (self::$path === null) {
-            self::initializePath();
-        }
-        return self::$path;
-    }
-
-    protected static function getProtocol() {
-        if (self::$protocol === null) {
-            self::initializePath();
-        }
-        return self::$protocol;
-    }
-
-    private static function getTimestamp() {
-        if (self::$timestampFormat === null) {
-            self::$timestampFormat =
-                Config::get('hyperframework.log_handler.timestamp_format');
-            if (self::$timestampFormat === null) {
-                self::$timestampFormat = 'Y-m-d h:i:s';
-            }
-        }
-        return date(self::$timestampFormat);
-    }
-
-    private static function initializePath() {
-        $path = Config::get('hyperframework.log_handler.path');
-        if ($path === null) {
-            self::$path = APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'log'
-                . DIRECTORY_SEPARATOR . 'app.log';
-            self::$protocol = 'file';
-        } else {
-            $protocol = 'file';
-            if (preg_match('#^([a-zA-Z0-9.+]+)://#', $path, $matches)) {
-                $protocol = strtolower($matches[1]);
-            }
-            self::$protocol = $protocol;
-            if ($protocol === 'file'
-                && FullPathRecognizer::isFull($path) === false
-            ) {
-                $path = APP_ROOT_PATH . DIRECTORY_SEPARATOR . $path;
-            }
-            self::$path = $path;
-        }
-    }
-
     protected static function format($level, array $params) {
         $count = count($params);
         if ($count !== 0 && $params[0] instanceof Closure) {
@@ -147,6 +101,52 @@ class LogHandler {
             }
         }
         return $result . PHP_EOL;
+    }
+
+    protected static function getPath() {
+        if (self::$path === null) {
+            self::initializePath();
+        }
+        return self::$path;
+    }
+
+    protected static function getProtocol() {
+        if (self::$protocol === null) {
+            self::initializePath();
+        }
+        return self::$protocol;
+    }
+
+    private static function getTimestamp() {
+        if (self::$timestampFormat === null) {
+            self::$timestampFormat =
+                Config::get('hyperframework.log_handler.timestamp_format');
+            if (self::$timestampFormat === null) {
+                self::$timestampFormat = 'Y-m-d h:i:s';
+            }
+        }
+        return date(self::$timestampFormat);
+    }
+
+    private static function initializePath() {
+        $path = Config::get('hyperframework.log_handler.path');
+        if ($path === null) {
+            self::$path = APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'log'
+                . DIRECTORY_SEPARATOR . 'app.log';
+            self::$protocol = 'file';
+        } else {
+            $protocol = 'file';
+            if (preg_match('#^([a-zA-Z0-9.+]+)://#', $path, $matches)) {
+                $protocol = strtolower($matches[1]);
+            }
+            self::$protocol = $protocol;
+            if ($protocol === 'file'
+                && FullPathRecognizer::isFull($path) === false
+            ) {
+                $path = APP_ROOT_PATH . DIRECTORY_SEPARATOR . $path;
+            }
+            self::$path = $path;
+        }
     }
 
     private static function appendValue(&$data, $value, $prefix = "\t>") {
