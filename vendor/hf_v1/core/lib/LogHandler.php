@@ -84,10 +84,31 @@ class LogHandler {
                 throw new Exception;
             }
         }
+        $params[0] = '';
         if ($count < 2) {
             throw new Exception;
         }
-        $result = self::getTimestamp() . ' | ' . $level . ' | ' . $params[0];
+        if (preg_match('/^[A-Z0-9_]+$/', $level) !== 1) {
+            throw new Exception;
+        }
+        $result = self::getTimestamp();
+        if (strpos($result, '|') !== false
+            || strpos($result, PHP_EOL) !== false
+        ) {
+            throw new Exception;
+        }
+        $result .= ' | ' . $level;
+        $name = null;
+        if ($params[0] != '') {
+            $name = $params[0];
+            if (preg_match('/^[0-9a-zA-Z_.]+$/', $name) === 0
+                || $name[0] === '.'
+                || substr($name, -1) === '.'
+            ) {
+                throw new Exception;
+            }
+            $result .= ' | ' . $name;
+        }
         if ($count > 2 && is_array($params[2])) {
             if ($count > 3) {
                 throw new Exception;
@@ -96,7 +117,11 @@ class LogHandler {
                 $params[1] = call_user_func_array('sprintf', $params[1]);
             }
             if ($params[1] != '') {
-                $result .= ' |';
+                if ($name === null) {
+                    $result .= ' ||';
+                } else {
+                    $result .= ' |';
+                }
                 self::appendValue($result, $params[1]);
             }
             $result .= self::convert($params[2]);
@@ -113,7 +138,11 @@ class LogHandler {
                 $message = $params[1];
             }
             if ($message != '') {
-                $result .= ' |';
+                if ($name === null) {
+                    $result .= ' ||';
+                } else {
+                    $result .= ' |';
+                }
                 self::appendValue($result, $message);
             }
         }
@@ -147,6 +176,9 @@ class LogHandler {
         $result = null;
         $prefix = str_repeat("\t", $depth);
         foreach ($data as $key => $value) {
+            if (preg_match('/^[0-9a-zA-Z_]+$/', $key) === 0) {
+                throw new Exception;
+            }
             $result .= PHP_EOL . $prefix . $key . ':';
             if (is_array($value)) {
                 $result .= self::convert($value, $depth + 1);

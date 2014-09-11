@@ -294,7 +294,7 @@ class WebClient {
             throw new Exception;
         }
         curl_close($handle);
-        if (preg_match('/Content-Length: (\d+)/', $header, $matches)) {
+        if (preg_match('/Content-Length: (\d+)/', $header, $matches) === 1) {
             return $matches[1];
         } else {
             throw new Exception;

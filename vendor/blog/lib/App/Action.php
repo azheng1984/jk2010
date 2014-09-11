@@ -21,7 +21,7 @@ class Action {
             'name.hi', array('hello %s', 'az'), array('happy' => array("l\ni\n\nfe\n"))
         );
         Logger::info(
-            'name.hi', array('hello %s', 'az'), array('happy' => array("\n"))
+            'name.hi', array("\n"), array('happy' => array("\n"))
         );
         Logger::info(function() {
             return array('hello!', 'hello' . PHP_EOL . '%s %s', 123, 'hello');
