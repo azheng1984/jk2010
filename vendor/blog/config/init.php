@@ -14,5 +14,5 @@ return array(
 //    'hyperframework.class_loader.enable_zero_folder' => true,
     'hyperframework.db.profiler.enable' => true,
     'hyperframework.logger.log_errors' => true,
-    'hyperframework.log_handler.path' => 'php://output',
+//    'hyperframework.log_handler.path' => 'php://output',
 );

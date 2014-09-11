@@ -13,37 +13,37 @@ class Logger {
         'DEBUG' => 5
     );
 
-    public static function debug(/*$param, ...*/) {
+    public static function debug(/*...*/) {
         if (self::getThresholdCode() === 5) {
             static::log('DEBUG', func_get_args());
         }
     }
 
-    public static function info(/*$param, ...*/) {
+    public static function info(/*...*/) {
         if (self::getThresholdCode() >= 4) {
             static::log('INFO', func_get_args());
         }
     }
 
-    public static function notice(/*$param, ...*/) {
+    public static function notice(/*...*/) {
         if (self::getThresholdCode() >= 3) {
             static::log('NOTICE', func_get_args());
         }
     }
 
-    public static function warn(/*$param, ...*/) {
+    public static function warn(/*...*/) {
         if (self::getThresholdCode() >= 2) {
             static::log('WARNING', func_get_args());
         }
     }
 
-    public static function error(/*$param, ...*/) {
+    public static function error(/*...*/) {
         if (self::getThresholdCode() >= 1) {
             static::log('ERROR', func_get_args());
         }
     }
 
-    public static function fatal(/*$param, ...*/) {
+    public static function fatal(/*...*/) {
         if (self::getThresholdCode() >= 0) {
             static::log('FATAL', func_get_args());
         }

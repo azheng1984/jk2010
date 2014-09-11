@@ -10,16 +10,20 @@ use Hyperframework\WebClient;
 use Hyperframework\Logger;
 use PDO;
 
+//throw new \Exception;
 class Action {
     public function before() {
-        throw new \Exception;
+        //throw new \PDOException;
+        $x = $y;
         //print_r($_SERVER);
-        $x = $sdf;
         CsrfProtection::run();
+        Logger::info(
+            'name.hi', array('hello %s', 'az'), array('happy' => array('life'))
+        );
         Logger::info(function() {
-            return array('hello' . PHP_EOL . '%s %s', 123, 'hello');
+            return array('hello!', 'hello' . PHP_EOL . '%s %s', 123, 'hello');
         });
-        Logger::info('');
+        Logger::info('name', null);
     }
 
     public function after($ctx) {

@@ -236,7 +236,7 @@ class ErrorHandler {
         );
     }
 
-    protected static function getErrorLog() {
+    protected static function getDefaultErrorLog() {
         $exception = self::$exception;
         return 'PHP ' . ErrorCodeHelper::toString($exception->getSeverity())
             . ': ' . $exception->getMessage() . ' in ' . $exception->getFile()
@@ -244,47 +244,47 @@ class ErrorHandler {
             . $exception->getTraceAsString();
     }
 
-    protected static function getExceptionLog() {
+    protected static function getDefaultExceptionLog() {
         return 'PHP Fatal error: Uncaught ' . self::$exception;
     }
 
     protected static function writeLog($exception, $isError) {
-        $message = null;
-        if($isError) {
-            $message = self::getErrorLog($exception);
-        } else {
-            $message = self::getExceptionLog($exception);
-        }
         if (Config::get('hyperframework.logger.log_errors')) {
-            $severity = E_ERROR;
+            $name = 'hyperframework.error_handler.';
+            $data = array();
+            $severity = null;
             if ($isError) {
+                $name .= 'error';
                 $severity = $exception->getSeverity();
+                $data['severity'] = ErrorCodeHelper::toString($severity);
+            } else {
+                $name .= 'exception';
+                $data['class'] = get_class($exception);
+                $data['code'] = $exception->getCode();
+                $severity = E_ERROR;
+            }
+            $data['file'] = $exception->getFile();
+            $data['line'] = $exception->getLine();
+            $data['traces'] = array();
+            //todo file line class may undefined
+            //todo ignore trace in fatal error(isError = true)
+            foreach ($exception->getTrace() as $item) {
+                $data['traces'][] = array(
+                    'file' => $item['file'],
+                    'line' => $item['line'],
+                    'class' => $item['class'],
+                    'function' => $item['function']
+                );
             }
             $method = self::getLogMethod($severity);
-            Logger::$method($message);
-//            $message = PHP_EOL . 'type: error_handler.'; //. PHP_EOL;
-//            if ($isError) {
-//                $message .= " " . 'error' . PHP_EOL;
-//                $message .= 'severity:';// . PHP_EOL;
-//                $message .= " "
-//                    . ErrorCodeHelper::toString($exception->getSeverity())
-//                    . PHP_EOL;
-//            } else {
-//                $message .= " " . 'exception' . PHP_EOL;
-//                $message .= 'class:';
-//                $message .= " " . get_class($exception) . PHP_EOL;
-//            }
-//            $message = $message
-//                . 'message:'// . PHP_EOL
-//                . " " . $exception->getMessage() . PHP_EOL
-//                . 'file:' //. PHP_EOL
-//                . " " . $exception->getFile() . PHP_EOL
-//                . 'line:' //. PHP_EOL
-//                . " " . $exception->getLine() . PHP_EOL
-//                . 'stack_trace:';
-//               // . "\t" . $exception->getTraceAsString();
-//            Logger::$method($message);
+            Logger::$method($name, $exception->getMessage(), $data);
         } else {
+           $message = null;
+           if($isError) {
+               $message = self::getDefaultErrorLog($exception);
+           } else {
+               $message = self::getDefaultExceptionLog($exception);
+           }
            error_log($message);
         }
     }
