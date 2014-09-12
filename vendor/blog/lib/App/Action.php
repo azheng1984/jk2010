@@ -27,6 +27,8 @@ class Action {
             return array('hello', 'hello' . PHP_EOL . '%s %s', 123, 'hello');
         });
         Logger::info('name.xx', null, array('hi`~~`'));
+        WebClient::sendAll(array('http://www.baidu.com/'), function($client, $req, $res) {
+        });
         DbClient::getRowById('Article', 2);
     }
 

@@ -12,7 +12,7 @@ class CommandRunner {
         $verifier->verify(
             $reflector, count($arguments), in_array('infinite', $config, true)
         );
-        $class = 'Hyperframework\Tool\App\\' . $config['class'];
+        $class = $config['class'];
         $reflector->invokeArgs(new $class($options), $arguments);
     }
 
@@ -21,7 +21,7 @@ class CommandRunner {
             throw new CliException('Command class not defined');
         }
         try {
-            return new \ReflectionMethod('Hyperframework\Tool\App\\' . $config['class'], 'execute');
+            return new \ReflectionMethod($config['class'], 'execute');
         } catch (\ReflectionException $exception) {
             throw new CliException($exception->getMessage());
         }

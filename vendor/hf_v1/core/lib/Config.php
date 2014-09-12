@@ -27,8 +27,4 @@ final class Config {
             self::$data[$key] = $value;
         }
     }
-
-    public static function reset() {
-        self::$data = array();
-    }
 }

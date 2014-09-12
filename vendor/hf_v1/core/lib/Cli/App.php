@@ -10,15 +10,15 @@ class App {
     private $arguments = array();
 
     public function __construct() {
-        $this->config = \Hyperframework\ConfigLoader::load(
-            __CLASS__ . '\ConfigPath', 'app'
+        $this->config = \Hyperframework\ConfigFileLoader::loadPhp(
+           'application.config.php'
         );
         $this->reader = new Reader;
         $this->initialize($this->config);
     }
 
     public static function run() {
-        $instance = new Application;
+        $instance = new App;
         return $instance->start();
     }
 

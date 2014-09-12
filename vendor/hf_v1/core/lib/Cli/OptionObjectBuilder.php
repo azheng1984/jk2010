@@ -23,7 +23,7 @@ class OptionObjectBuilder {
         try {
             return new \ReflectionClass($this->config['class']);
         } catch (\ReflectionException $excpetion) {
-            throw new CliExeption($excpetion->getMessage());
+            throw new CliException($excpetion->getMessage());
         }
     }
 

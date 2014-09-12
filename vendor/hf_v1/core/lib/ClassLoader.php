@@ -34,9 +34,4 @@ final class ClassLoader {
         require self::$rootPath . DIRECTORY_SEPARATOR
             . str_replace('\\', DIRECTORY_SEPARATOR, $name) . '.php';
     }
-
-    public static function reset() {
-        self::$rootPath = null;
-        self::$isZeroFolderEnabled = null;
-    }
 }

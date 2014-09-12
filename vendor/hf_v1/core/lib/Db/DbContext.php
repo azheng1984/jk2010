@@ -73,13 +73,6 @@ class DbContext {
         self::$stack = array();
     }
 
-    public static function reset() {
-        self::$current = null;
-        self::$factory = null;
-        self::$stack = array();
-        self::$pool = array();
-    }
-
     private static function getFactory() {
         if (self::$factory === null) {
             self::$factory = Config::get(

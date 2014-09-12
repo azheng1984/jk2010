@@ -99,22 +99,21 @@ class WebClient {
             }
             while ($info = curl_multi_info_read(self::$multiHandle)) {
                 $handleId = (int)$info['handle'];
-                $options = self::$multiProcessingRequests[$handleId];
+                list($client, $request) =
+                    self::$multiProcessingRequests[$handleId];
                 unset(self::$multiProcessingRequests[$handleId]);
                 if ($onCompleteCallback !== null) {
-                    $client = $options['client'];
-                    unset($options['client']);
-                    $result = array('curl_code' => $info['result']);
+                    $response = array('curl_code' => $info['result']);
                     if ($info['result'] !== CURLE_OK) {
-                        $result['error'] = curl_error($info['handle']);
+                        $response['error'] = curl_error($info['handle']);
                     } else {
-                        $result['content'] = $client->initializeResponse(
+                        $response['content'] = $client->initializeResponse(
                             curl_multi_getcontent($info['handle'])
                         );
                         $client->finalize();
                     }
                     call_user_func(
-                        $onCompleteCallback, $client, $options, $result
+                        $onCompleteCallback, $client, $request, $response
                     );
                 }
                 if ($hasPendingRequest) {
@@ -151,10 +150,8 @@ class WebClient {
         if (is_array($request) === false) {
             $request = array(CURLOPT_URL => $request);
         }
-        if (isset($request['client']) === false) {
-            $class = get_called_class();
-            $request['client'] = new $class;
-        }
+        $class = get_called_class();
+        $client = new $class;
         if (self::$multiRequestOptions !== null) {
             foreach (self::$multiRequestOptions as $name => $value) {
                 if (array_key_exists($name, $request) === false) {
@@ -162,14 +159,12 @@ class WebClient {
                 }
             }
         }
-        $options = $request;
-        $client = $options['client']; 
-        unset($options['client']);
         if ($client instanceof WebClient === false) {
             throw new Exception;
         }
-        $client->prepare($options);
-        self::$multiProcessingRequests[(int)$client->handle] = $request;
+        $client->prepare($request);
+        self::$multiProcessingRequests[(int)$client->handle]
+            = array($client, $request);
         curl_multi_add_handle(self::$multiHandle, $client->handle);
     }
 
