@@ -11,17 +11,16 @@ class DbProfiler {
             'sql' => $sql,
             'start_time' => microtime(true)
         );
-        //todo write debug log if enabled
     }
 
     public static function onConnectionExecuted($connection, $result) {
         self::$current['running_time'] = self::getRunningTime();
         self::$profiles[] = self::$current;
+        Logger::debug('hyperframework.db.profiler.query');
     }
 
     public static function onStatementExecuting($statement) {
         self::$current = array('start_time' => microtime(true));
-        //todo write debug log if enabled
     }
 
     public static function onStatementExecuted($statement) {
@@ -31,6 +30,7 @@ class DbProfiler {
             'start_time' => self::$current['start_time'],
             'running_time' => self::getRunningTime()
         );
+        Logger::debug('hyperframework.db.profiler.query');
     }
 
     public static function getProfiles() {
