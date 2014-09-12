@@ -152,7 +152,8 @@ class WebClient {
             $request = array(CURLOPT_URL => $request);
         }
         if (isset($request['client']) === false) {
-            $request['client'] = new WebClient;
+            $class = get_called_class();
+            $request['client'] = new $class;
         }
         if (self::$multiRequestOptions !== null) {
             foreach (self::$multiRequestOptions as $name => $value) {

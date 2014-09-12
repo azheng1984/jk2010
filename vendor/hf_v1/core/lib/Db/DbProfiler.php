@@ -44,10 +44,6 @@ class DbProfiler {
         return self::$profilers;
     }
 
-    public static function reset() {
-        self::$profilers = array();
-    }
-
     private static function getRunningTime() {
         return microtime(true) - self::$current['start_time'];
     }
