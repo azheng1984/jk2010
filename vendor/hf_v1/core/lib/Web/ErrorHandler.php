@@ -68,6 +68,7 @@ class ErrorHandler {
             }
             self::$exitLevel = $exitLevel;
         }
+        return self::$exitLevel;
     }
 
     final public static function handleException($exception, $isError = false) {
