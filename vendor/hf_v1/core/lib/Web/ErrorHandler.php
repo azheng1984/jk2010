@@ -44,7 +44,7 @@ class ErrorHandler {
                 'hyperframework.web.error_handler.exit_level'
             );
             if ($exitLevel == null) {
-                $exitLevel = 'notice';
+                $exitLevel = 'NOTICE';
             }
             if (is_int($exitLevel) === false) {
                 $tmp = 0;
@@ -52,7 +52,7 @@ class ErrorHandler {
                     $tmp = 2;
                 } elseif ($exitLevel === 'WARNING') {
                     $tmp = 1;
-                } elseif ($exitLevel !== 'ERROR') {
+                } elseif ($exitLevel !== 'FATAL') {
                     throw new Exception;
                 }
                 $exitLevel =
@@ -261,7 +261,7 @@ class ErrorHandler {
                 $name = 'hyperframework.error_handler.exception';
                 $data['class'] = get_class($exception);
                 $data['code'] = $exception->getCode();
-                $method = 'error';
+                $method = 'fatal';
             }
             $data['file'] = $exception->getFile();
             $data['line'] = $exception->getLine();
@@ -305,8 +305,8 @@ class ErrorHandler {
             E_USER_NOTICE       => 'notice',
             E_WARNING           => 'warn',
             E_USER_WARNING      => 'warn',
-            E_USER_ERROR        => 'error',
-            E_RECOVERABLE_ERROR => 'error',
+            E_USER_ERROR        => 'fatal',
+            E_RECOVERABLE_ERROR => 'fatal',
             E_ERROR             => 'fatal',
             E_COMPILE_ERROR     => 'fatal',
             E_PARSE             => 'fatal'
