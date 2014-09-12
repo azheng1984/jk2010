@@ -15,6 +15,7 @@ class Action {
     public function before() {
         //throw new \PDOException;
         $x = $y;
+        sdf();
         //print_r($_SERVER);
         CsrfProtection::run();
         Logger::info(

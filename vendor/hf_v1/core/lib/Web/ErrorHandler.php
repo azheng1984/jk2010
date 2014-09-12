@@ -265,16 +265,13 @@ class ErrorHandler {
             }
             $data['file'] = $exception->getFile();
             $data['line'] = $exception->getLine();
-            $data['traces'] = array();
-            //todo file line class may undefined
-            //todo ignore trace in fatal error(isError = true)
-            foreach ($exception->getTrace() as $item) {
-                $data['traces'][] = array(
-                    'file' => $item['file'],
-                    'line' => $item['line'],
-                    'class' => $item['class'],
-                    'function' => $item['function']
-                );
+            if ($isError === false || $exception->getCode() === 0) {
+                $data['traces'] = array();
+                foreach ($exception->getTrace() as $item) {
+                    unset($item['type']);
+                    unset($item['args']);
+                    $data['traces'][] = $item;
+                }
             }
             $method = self::getLogMethod($severity);
             Logger::$method($name, $exception->getMessage(), $data);

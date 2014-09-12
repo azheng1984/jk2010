@@ -5,20 +5,22 @@ use Hyperframework\Logger;
 
 class DbProfiler {
     private static $current;
-    private static $profiles = array();
+    private static $profilers = array();
 
     public static function onConnectionExecuting($connection, $sql, $isQuery) {
         self::$current = array(
-            'connection_name' => $connection->getName(),
             'sql' => $sql,
             'start_time' => microtime(true)
         );
+        $connectionName = $connection->getName();
+        if ($connectionName !== 'default') {
+            self::$current['connection_name'] = $connectionName;
+        }
     }
 
     public static function onConnectionExecuted($connection, $result) {
         self::$current['running_time'] = self::getRunningTime();
-        self::$profiles[] = self::$current;
-        Logger::debug('hyperframework.db.profiler.profile', self::$current);
+        self::$profilers[] = self::$current;
     }
 
     public static function onStatementExecuting($statement) {
@@ -27,17 +29,23 @@ class DbProfiler {
 
     public static function onStatementExecuted($statement) {
         $profile = array(
-            'connection_name' => $statement->getConnection()->getName(),
             'sql' => $statement->getSql(),
             'start_time' => self::$current['start_time'],
             'running_time' => self::getRunningTime()
         );
-        self::$profiles[] = $profile;
-        Logger::debug('hyperframework.db.profiler.profile', $profile);
+        $connectionName = $statement->getConnection()->getName();
+        if ($connectionName !== 'default') {
+            $profile['connection_name'] = $connectionName;
+        }
+        self::$profilers[] = $profile;
     }
 
-    public static function getProfiles() {
-        return self::$profiles;
+    public static function getProfilers() {
+        return self::$profilers;
+    }
+
+    public static function reset() {
+        self::$profilers = array();
     }
 
     private static function getRunningTime() {
