@@ -7,7 +7,6 @@ use Closure;
 class LogHandler {
     private static $protocol;
     private static $path;
-    private static $timestampFormat;
 
     public static function log($level, array $params) {
         $content = static::format($level, $params);
@@ -45,13 +44,7 @@ class LogHandler {
         if (preg_match('/^[A-Z0-9_]+$/', $level) !== 1) {
             throw new Exception;
         }
-        $result = self::getTimestamp();
-        if (strpos($result, '|') !== false
-            || strpos($result, PHP_EOL) !== false
-        ) {
-            throw new Exception;
-        }
-        $result .= ' | ' . $level;
+        $result = self::getTimestamp() . ' | ' . $level;
         $name = null;
         if ($params[0] != '') {
             $name = $params[0];
@@ -118,14 +111,7 @@ class LogHandler {
     }
 
     private static function getTimestamp() {
-        if (self::$timestampFormat === null) {
-            self::$timestampFormat =
-                Config::get('hyperframework.log_handler.timestamp_format');
-            if (self::$timestampFormat === null) {
-                self::$timestampFormat = 'Y-m-d h:i:s';
-            }
-        }
-        return date(self::$timestampFormat);
+        return date('Y-m-d h:i:s');
     }
 
     private static function initializePath() {
