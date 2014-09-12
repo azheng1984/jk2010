@@ -55,12 +55,14 @@ class LogHandler {
             }
             $result .= ' | ' . $name;
         }
-        if ($count > 2 && is_array($params[2])) {
-            if ($count > 3) {
-                throw new Exception;
-            }
-            if (is_array($params[1])) {
+        if ($count === 3 && is_array($params[2])
+            || $count === 2 && is_array($params[1])
+        ) {
+            if ($count === 3 && is_array($params[1])) {
                 $params[1] = call_user_func_array('sprintf', $params[1]);
+            } elseif ($count === 2) {
+                $params[2] = $params[1];
+                $params[1] = null;
             }
             if ($params[1] != '') {
                 if ($name === null) {
@@ -74,11 +76,6 @@ class LogHandler {
         } else {
             $message = null;
             if ($count > 2 || is_array($params[1])) {
-                if (is_array($params[1])) {
-                    $params = $params[1];
-                } else {
-                   unset($params[0]);
-                }
                 $message = call_user_func_array('sprintf', $params);
             } else {
                 $message = $params[1];

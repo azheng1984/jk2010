@@ -16,7 +16,7 @@ class DbProfiler {
     public static function onConnectionExecuted($connection, $result) {
         self::$current['running_time'] = self::getRunningTime();
         self::$profiles[] = self::$current;
-        Logger::debug('hyperframework.db.profiler.query');
+        Logger::debug('hyperframework.db.profiler.query', self::$current);
     }
 
     public static function onStatementExecuting($statement) {
@@ -24,13 +24,14 @@ class DbProfiler {
     }
 
     public static function onStatementExecuted($statement) {
-        self::$profiles[] = array(
+        $profile = array(
             'connection_name' => $statement->getConnection()->getName(),
             'sql' => $statement->getSql(),
             'start_time' => self::$current['start_time'],
             'running_time' => self::getRunningTime()
         );
-        Logger::debug('hyperframework.db.profiler.query');
+        Logger::debug('hyperframework.db.profiler.query', $profile);
+        self::$profiles[] = $profile;
     }
 
     public static function getProfiles() {
