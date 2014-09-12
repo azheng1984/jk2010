@@ -24,9 +24,9 @@ class Action {
             'name.hi', array("\n"), array('happy' => array("\n"))
         );
         Logger::info(function() {
-            return array('hello!', 'hello' . PHP_EOL . '%s %s', 123, 'hello');
+            return array('hello', 'hello' . PHP_EOL . '%s %s', 123, 'hello');
         });
-        Logger::info(null, null, array('hi'));
+        Logger::info('name.xx', null, array('hi`~~`'));
     }
 
     public function after($ctx) {

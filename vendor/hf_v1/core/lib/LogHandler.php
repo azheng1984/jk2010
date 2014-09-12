@@ -37,7 +37,6 @@ class LogHandler {
                 throw new Exception;
             }
         }
-        $params[0] = '';
         if ($count < 2) {
             throw new Exception;
         }
@@ -46,9 +45,10 @@ class LogHandler {
         }
         $result = self::getTimestamp() . ' | ' . $level;
         $name = null;
+        var_dump($params);
         if ($params[0] != '') {
             $name = $params[0];
-            if (preg_match('/^[0-9a-zA-Z_.]+$/', $name) === 0
+            if (preg_match('/^[a-zA-Z0-9_.]+$/', $name) === 0
                 || $name[0] === '.'
                 || substr($name, -1) === '.'
             ) {
