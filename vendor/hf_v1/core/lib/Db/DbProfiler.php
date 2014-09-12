@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Db;
 
+use Hyperframework\Config;
 use Hyperframework\Logger;
 
 class DbProfiler {

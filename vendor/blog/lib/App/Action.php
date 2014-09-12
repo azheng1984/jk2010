@@ -10,11 +10,11 @@ use Hyperframework\WebClient;
 use Hyperframework\Logger;
 use PDO;
 
+//throw new \Exception;
 class Action {
     public function before() {
         //throw new \PDOException;
         $x = $y;
-//        sdf();
         //print_r($_SERVER);
         CsrfProtection::run();
         Logger::info(
@@ -31,6 +31,7 @@ class Action {
     }
 
     public function after($ctx) {
+        
     }
 
     public function patch($ctx) {
