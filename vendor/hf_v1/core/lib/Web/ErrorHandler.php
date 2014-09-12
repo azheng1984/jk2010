@@ -268,9 +268,20 @@ class ErrorHandler {
             if ($isError === false || $exception->getCode() === 0) {
                 $data['traces'] = array();
                 foreach ($exception->getTrace() as $item) {
-                    unset($item['type']);
-                    unset($item['args']);
-                    $data['traces'][] = $item;
+                    $trace = array();
+                    if (isset($item['file'])) {
+                        $trace['file'] = $item['file'];
+                    }
+                    if (isset($item['line'])) {
+                        $trace['line'] = $item['line'];
+                    }
+                    if (isset($item['class'])) {
+                        $trace['class'] = $item['class'];
+                    }
+                    if (isset($item['function'])) {
+                        $trace['function'] = $item['function'];
+                    }
+                    $data['traces'][] = $trace;
                 }
             }
             $method = self::getLogMethod($severity);
@@ -295,8 +306,8 @@ class ErrorHandler {
             E_USER_NOTICE       => 'notice',
             E_WARNING           => 'warn',
             E_USER_WARNING      => 'warn',
-            E_USER_ERROR        => 'error',
-            E_RECOVERABLE_ERROR => 'error',
+            E_USER_ERROR        => 'fatal',
+            E_RECOVERABLE_ERROR => 'fatal',
             E_ERROR             => 'fatal',
             E_COMPILE_ERROR     => 'fatal',
             E_PARSE             => 'fatal'

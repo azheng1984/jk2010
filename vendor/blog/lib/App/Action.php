@@ -10,7 +10,6 @@ use Hyperframework\WebClient;
 use Hyperframework\Logger;
 use PDO;
 
-//throw new \Exception;
 class Action {
     public function before() {
         //throw new \PDOException;
@@ -32,7 +31,6 @@ class Action {
     }
 
     public function after($ctx) {
-        
     }
 
     public function patch($ctx) {
