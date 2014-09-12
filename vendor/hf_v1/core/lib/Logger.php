@@ -1,7 +1,9 @@
 <?php
 namespace Hyperframework;
 
-class Logger {
+use Exception;
+
+final class Logger {
     private static $thresholdCode;
     private static $path;
     private static $levels = array(
@@ -61,7 +63,10 @@ class Logger {
     private static function getThresholdCode() {
         if (self::$thresholdCode === null) {
             $level = Config::get('hyperframework.logger.level');
-            if ($level !== null && isset(self::$levels[$level])) {
+            if ($level !== null) {
+                if (isset(self::$levels[$level]) === false) {
+                    throw new Exception;
+                }
                 self::$thresholdCode = self::$levels[$level];
             } else {
                 self::$thresholdCode = 4;
