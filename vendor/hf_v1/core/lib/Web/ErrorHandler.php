@@ -48,11 +48,11 @@ class ErrorHandler {
             }
             if (is_int($exitLevel) === false) {
                 $tmp = 0;
-                if ($exitLevel === 'notice') {
+                if ($exitLevel === 'NOTICE') {
                     $tmp = 2;
-                } elseif ($exitLevel === 'warning') {
+                } elseif ($exitLevel === 'WARNING') {
                     $tmp = 1;
-                } elseif ($exitLevel !== 'error') {
+                } elseif ($exitLevel !== 'ERROR') {
                     throw new Exception;
                 }
                 $exitLevel =
@@ -251,16 +251,17 @@ class ErrorHandler {
         if (Config::get('hyperframework.error_handler.enable_logger')) {
             $name = null;
             $data = array();
-            $severity = null;
+            $method = null;
             if ($isError) {
                 $name = 'hyperframework.error_handler.error';
                 $severity = $exception->getSeverity();
                 $data['severity'] = ErrorCodeHelper::toString($severity);
+                $method = self::getLogMethod($severity);
             } else {
                 $name = 'hyperframework.error_handler.exception';
                 $data['class'] = get_class($exception);
                 $data['code'] = $exception->getCode();
-                $severity = E_ERROR;
+                $method = 'error';
             }
             $data['file'] = $exception->getFile();
             $data['line'] = $exception->getLine();
@@ -283,7 +284,6 @@ class ErrorHandler {
                     $data['traces'][] = $trace;
                 }
             }
-            $method = self::getLogMethod($severity);
             Logger::$method($name, $exception->getMessage(), $data);
         } else {
            $message = null;
@@ -305,8 +305,8 @@ class ErrorHandler {
             E_USER_NOTICE       => 'notice',
             E_WARNING           => 'warn',
             E_USER_WARNING      => 'warn',
-            E_USER_ERROR        => 'fatal',
-            E_RECOVERABLE_ERROR => 'fatal',
+            E_USER_ERROR        => 'error',
+            E_RECOVERABLE_ERROR => 'error',
             E_ERROR             => 'fatal',
             E_COMPILE_ERROR     => 'fatal',
             E_PARSE             => 'fatal'
