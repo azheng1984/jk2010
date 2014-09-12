@@ -5,7 +5,6 @@ use Hyperframework\Logger;
 
 class DbProfiler {
     private static $current;
-    private static $profilers = array();
 
     public static function onConnectionExecuting($connection, $sql, $isQuery) {
         self::$current = array(
@@ -20,7 +19,7 @@ class DbProfiler {
 
     public static function onConnectionExecuted($connection, $result) {
         self::$current['running_time'] = self::getRunningTime();
-        self::$profilers[] = self::$current;
+        self::handle(self::$current);
     }
 
     public static function onStatementExecuting($statement) {
@@ -37,11 +36,18 @@ class DbProfiler {
         if ($connectionName !== 'default') {
             $profile['connection_name'] = $connectionName;
         }
-        self::$profilers[] = $profile;
+        self::handle($profile);
     }
 
-    public static function getProfilers() {
-        return self::$profilers;
+    private static function handle($profile) {
+        $callback = Config::get(
+            'hyperframework.db.profiler.handle_profile_callback'
+        );
+        if ($callback === null) {
+            Logger::debug('hyperframework.db.profiler.profile', $profile);
+        } else {
+            call_user_func($callback, $profile);
+        }
     }
 
     private static function getRunningTime() {
