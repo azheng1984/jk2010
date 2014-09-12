@@ -49,21 +49,19 @@ class ErrorHandler {
             if (is_int($exitLevel) === false) {
                 $tmp = 0;
                 if ($exitLevel === 'notice') {
-                    $tmp = 0;
+                    $tmp = 2;
                 } elseif ($exitLevel === 'warning') {
                     $tmp = 1;
-                } elseif ($exitLevel === 'error') {
-                    $tmp = 2;
-                } else {
+                } elseif ($exitLevel !== 'error') {
                     throw new Exception;
                 }
                 $exitLevel =
                     E_ALL & ~E_STRICT & ~E_USER_DEPRECATED & ~E_DEPRECATED;
                 if ($tmp < 2) {
-                    $exitLevel = $exitLevel & ~E_WARNING & ~E_USER_WARNING;
+                    $exitLevel = $exitLevel & ~E_NOTICE & ~E_USER_NOTICE;
                 }
                 if ($tmp < 1) {
-                    $exitLevel = $exitLevel & ~E_NOTICE & ~E_USER_NOTICE;
+                    $exitLevel = $exitLevel & ~E_WARNING & ~E_USER_WARNING;
                 }
             }
             self::$exitLevel = $exitLevel;
