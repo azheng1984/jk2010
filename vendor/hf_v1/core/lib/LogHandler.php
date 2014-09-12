@@ -45,7 +45,6 @@ class LogHandler {
         }
         $result = self::getTimestamp() . ' | ' . $level;
         $name = null;
-        var_dump($params);
         if ($params[0] != '') {
             $name = $params[0];
             if (preg_match('/^[a-zA-Z0-9_.]+$/', $name) === 0
