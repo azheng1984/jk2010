@@ -6,6 +6,7 @@ use Hyperframework\Logger;
 
 class DbProfiler {
     private static $current;
+    private static $profileHandlers = array();
 
     public static function onConnectionExecuting($connection, $sql, $isQuery) {
         self::$current = array(
@@ -40,14 +41,22 @@ class DbProfiler {
         self::handle($profile);
     }
 
+    public static function addProfileHandler($callback) {
+        self::$profileHandler[] = $callback;
+    }
+
     private static function handle($profile) {
-        $callback = Config::get(
-            'hyperframework.db.profiler.handle_profile_callback'
+        $isLoggerEnabled = Config::get(
+            'hyperframework.db.profiler.enable_logger'
         );
-        if ($callback === null) {
+        if ($isLoggerEnabled === null) {
+            $isLoggerEnabled = true;
+        }
+        if ($isLoggerEnabled != false) {
             Logger::debug('hyperframework.db.profiler.profile', $profile);
-        } else {
-            call_user_func($callback, $profile);
+        }
+        foreach (self::$profileHandlers as $handler) {
+            call_user_func($handler, $profile);
         }
     }
 
