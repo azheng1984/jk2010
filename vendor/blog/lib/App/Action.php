@@ -27,6 +27,7 @@ class Action {
             return array('hello', 'hello' . PHP_EOL . '%s %s', 123, 'hello');
         });
         Logger::info('name.xx', null, array('hi`~~`'));
+        DbClient::getRowById('Article', 2);
     }
 
     public function after($ctx) {

@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework\Db;
 
+use Hyperframework\Logger;
+
 class DbProfiler {
     private static $current;
     private static $profiles = array();
@@ -16,7 +18,7 @@ class DbProfiler {
     public static function onConnectionExecuted($connection, $result) {
         self::$current['running_time'] = self::getRunningTime();
         self::$profiles[] = self::$current;
-        Logger::debug('hyperframework.db.profiler.query', self::$current);
+        Logger::debug('hyperframework.db.profiler.profile', self::$current);
     }
 
     public static function onStatementExecuting($statement) {
@@ -30,8 +32,8 @@ class DbProfiler {
             'start_time' => self::$current['start_time'],
             'running_time' => self::getRunningTime()
         );
-        Logger::debug('hyperframework.db.profiler.query', $profile);
         self::$profiles[] = $profile;
+        Logger::debug('hyperframework.db.profiler.profile', $profile);
     }
 
     public static function getProfiles() {

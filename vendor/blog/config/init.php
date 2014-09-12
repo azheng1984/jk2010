@@ -13,6 +13,8 @@ return array(
     'hyperframework.web.error_handler.exit_level' => 'warning',
 //    'hyperframework.class_loader.enable_zero_folder' => true,
     'hyperframework.db.profiler.enable' => true,
-    'hyperframework.logger.log_errors' => true,
+    'hyperframework.logger.level' => 'DEBUG',
+    'hyperframework.error_handler.enable_logger' => true,
+
 //    'hyperframework.log_handler.path' => 'php://output',
 );

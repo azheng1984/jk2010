@@ -249,7 +249,7 @@ class ErrorHandler {
     }
 
     protected static function writeLog($exception, $isError) {
-        if (Config::get('hyperframework.logger.log_errors')) {
+        if (Config::get('hyperframework.error_handler.enable_logger')) {
             $name = 'hyperframework.error_handler.';
             $data = array();
             $severity = null;
