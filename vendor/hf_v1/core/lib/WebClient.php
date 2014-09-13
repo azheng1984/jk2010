@@ -520,7 +520,7 @@ class WebClient {
             }
         }
         $headers = $this->getHeaders();
-        if ($headers !== null || count($headers) !== 0) {
+        if ($headers !== null && count($headers) !== 0) {
             $tmp = array();
             foreach ($headers as $key => $value) {
                 if ($value === null) {
