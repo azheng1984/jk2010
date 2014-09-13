@@ -61,6 +61,6 @@ class DbProfiler {
     }
 
     private static function getRunningTime() {
-        return microtime(true) - self::$current['start_time'];
+        return sprintf('%F', microtime(true) - self::$current['start_time']);
     }
 }
