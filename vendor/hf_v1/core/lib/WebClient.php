@@ -159,9 +159,6 @@ class WebClient {
                 }
             }
         }
-        if ($client instanceof WebClient === false) {
-            throw new Exception;
-        }
         $client->prepare($request);
         self::$multiProcessingRequests[(int)$client->handle]
             = array($client, $request);
@@ -695,8 +692,8 @@ class WebClient {
                     }
                 } else {
                     if (isset($value['content'])) {
-                        if (isset($value['type']) || isset($value['file_name'])
-                        ) {
+                        if (isset($value['type']) || isset($value['file_name']))
+                        {
                             $shouldUseCurlPostFieldsOption = false;
                             break;
                         }
