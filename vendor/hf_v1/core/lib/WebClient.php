@@ -327,8 +327,8 @@ class WebClient {
 
     public function setOptions(array $options) {
         foreach ($options as $name => $value) {
-            if ($name === CURLOPT_HTTPHEADER) {
-                $name = 'headers';
+            if ($name === 'headers') {
+                $name = CURLOPT_HTTPHEADER;
             }
             $this->options[$name] = $value;
         }

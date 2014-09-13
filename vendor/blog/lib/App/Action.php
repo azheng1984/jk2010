@@ -29,6 +29,16 @@ class Action {
         Logger::info('name.xx', null, array('hi`~~`'));
         WebClient::sendAll(array('http://www.baidu.com/'), function($client, $req, $res) {
         });
+        $client = new WebClient;
+        $client->setOption('headers', array('Accept'));
+        $client->get('http://www.baidu.com', array(
+            //'headers' => array(
+            //    'x: xxx',
+            //    'x' => array('xx', 'xx2', null),
+            //),
+            CURLINFO_HEADER_OUT=>true
+        ));
+        print_r($client->getInfo());
         DbClient::getRowById('Article', 2);
     }
 
