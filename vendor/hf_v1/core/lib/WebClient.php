@@ -15,8 +15,7 @@ class WebClient {
     private $handle;
     private $oldCurlMultiHandle;
     private $options = array();
-    private $temporaryOptions;
-    private $temporaryHeaders;
+    private $requestOptions;
     private $rawResponseHeaders;
     private $responseHeaders;
 
@@ -385,8 +384,8 @@ class WebClient {
     }
 
     protected function getRequestOption($name) {
-        if (isset($this->temporaryOptions[$name])) {
-            return $this->temporaryOptions[$name];
+        if (isset($this->requestOptions[$name])) {
+            return $this->requestOptions[$name];
         }
     }
 
@@ -512,7 +511,7 @@ class WebClient {
             }
             $options[$key] = $value;
         }
-        $this->temporaryOptions =& $options;
+        $this->requestOptions =& $options;
         $this->initializeOptions($options);
         $curlOptions = array();
         foreach ($options as $key => $value) {
@@ -552,13 +551,12 @@ class WebClient {
     }
 
     private function finalize() {
-        $this->temporaryHeaders = null;
-        $this->temporaryOptions = null;
+        $this->requestOptions = null;
     }
 
     final private function getHeaders() {
-        if (isset($this->temporaryOptions[CURLOPT_HTTPHEADER])) {
-            $headers = $this->temporaryOptions[CURLOPT_HTTPHEADER];
+        if (isset($this->requestOptions[CURLOPT_HTTPHEADER])) {
+            $headers = $this->requestOptions[CURLOPT_HTTPHEADER];
             if (is_array($headers) === false) {
                 throw new Exception;
             }
@@ -588,19 +586,19 @@ class WebClient {
     }
 
     final protected function addTemporaryHeaders(array $headers) {
-        if ($this->temporaryOptions === null) {
+        if ($this->requestOptions === null) {
             throw new Exception;
         }
-        if (isset($this->temporaryOptions[CURLOPT_HTTPHEADER]) === false) {
-            $this->temporaryOptions[CURLOPT_HTTPHEADER] = $headers;
+        if (isset($this->requestOptions[CURLOPT_HTTPHEADER]) === false) {
+            $this->requestOptions[CURLOPT_HTTPHEADER] = $headers;
             return;
         } elseif (
-            is_array($this->temporaryOptions[CURLOPT_HTTPHEADER]) === false
+            is_array($this->requestOptions[CURLOPT_HTTPHEADER]) === false
         ) {
             throw new Exception;
         }
         foreach ($headers as $header) {
-            $this->temporaryOptions[CURLOPT_HTTPHEADER][] = $headers;
+            $this->requestOptions[CURLOPT_HTTPHEADER][] = $headers;
         }
     }
 
@@ -1102,8 +1100,7 @@ class WebClient {
     public function reset() {
         $this->rawResponseHeaders = null;
         $this->responseHeaders = null;
-        $this->temporaryOptions = null;
-        $this->temporaryHeaders = null;
+        $this->requestOptions = null;
         $this->options = array();
         $defaultOptions = $this->getDefaultOptions();
         if ($defaultOptions !== null) {
