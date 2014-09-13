@@ -30,7 +30,7 @@ class Action {
         WebClient::sendAll(array('http://www.baidu.com/'), function($client, $req, $res) {
         });
         $client = new WebClient;
-        $client->setOption('headers', array('Accept'));
+        $client->setOption('headers', array('x' => 'xx'));
         $client->get('http://www.baidu.com', array(
             //'headers' => array(
             //    'x: xxx',
