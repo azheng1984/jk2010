@@ -151,10 +151,10 @@ class WebClient {
         $class = get_called_class();
         $client = new $class;
         if (self::$multiRequestOptions !== null) {
-            foreach (self::$multiRequestOptions as $name => $value) {
-                if (array_key_exists($name, $request) === false) {
-                    $request[$name] = $value;
-                }
+            $tmp = $request;
+            $request = self::$multiRequestOptions;
+            foreach ($tmp as $name => $value) {
+                $request[$name] = $value;
             }
         }
         $client->prepare($request);
@@ -505,10 +505,10 @@ class WebClient {
     private function prepare(array $options) {
         $this->rawResponseHeaders = null;
         $this->responseHeaders = null;
-        foreach ($this->options as $key => $value) {
-            if (array_key_exists($key, $options) === false) {
-                $options[$key] = $value;
-            }
+        $tmp = $options;
+        $options = $this->options;
+        foreach ($tmp as $key => $value) {
+            $options[$key] = $value;
         }
         $this->temporaryOptions =& $options;
         $this->initializeOptions($options);
