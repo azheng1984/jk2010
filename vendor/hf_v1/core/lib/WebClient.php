@@ -585,7 +585,7 @@ class WebClient {
         }
     }
 
-    final protected function addTemporaryHeaders(array $headers) {
+    final protected function addRequestHeaders(array $headers) {
         if ($this->requestOptions === null) {
             throw new Exception;
         }
@@ -603,9 +603,9 @@ class WebClient {
     }
 
     private function setData($data, array &$options) {
-        $this->addTemporaryHeaders('Content-Length' => null));
+        $this->addRequestHeaders('Content-Length' => null));
         if (isset($this->temporaryHeaders['Expect']) === false) {
-            $this->addTemporaryHeaders(array('Expect:'));
+            $this->addRequestHeaders(array('Expect:'));
         }
         if (is_array($data) === false) {
             $this->enableCurlPostFieldsOption($options);
@@ -634,7 +634,7 @@ class WebClient {
             }
         } elseif ($data['type'] === 'multipart/form-data') {
             if (isset($data['content']) === false) {
-                $this->addTemporaryHeaders(array('Content-Length' => 0));
+                $this->addRequestHeaders(array('Content-Length' => 0));
                 return;
             }
             if (is_array($data['content']) === false) {
@@ -783,18 +783,18 @@ class WebClient {
                 $value['header'] = $header;
             }
             $size = $this->getFormDataSize($data, $boundary);
-            $this->addTemporaryHeaders(
+            $this->addRequestHeaders(
                 array('Content-Type' =>
                     'multipart/form-data; boundary=' . $boundary)
             );
-            $this->addTemporaryHeaders(array('Content-Length' => $size));
+            $this->addRequestHeaders(array('Content-Length' => $size));
             $this->enableCurlPostFieldsOption($options);
             unset($options[CURLOPT_POSTFIELDS]);
             $options[CURLOPT_READFUNCTION] = $this->getSendFormDataCallback(
                 $data, $boundary
             );
         } else {
-            $this->addTemporaryHeaders(array('Content-Type' => $data['type']));
+            $this->addRequestHeaders(array('Content-Type' => $data['type']));
             $data = $data['content'];
             if (isset($data['content'])) {
                 $this->enableCurlPostFieldsOption($options);
@@ -806,7 +806,7 @@ class WebClient {
                 }
                 $size = self::getFileSize($data['file']);
                 if ($this->isLargerThanMaxInt($size)) {
-                    $this->addTemporaryHeaders(
+                    $this->addRequestHeaders(
                         array('Content-Length' => $size)
                     );
                     $this->enableCurlPostFieldsOption($options);
