@@ -378,16 +378,15 @@ class WebClient {
         $this->setOptions(array($name => $value));
     }
 
-    protected function getOption($name) {
-        if ($name === 'headers' || $name === CURLOPT_HTTPHEADER) {
-            return $this->getHeaders();
-        }
-        if ($this->temporaryOptions !== null
-            && array_key_exists($name, $this->temporaryOptions)
-        ) {
-            return $this->temporaryOptions[$name];
-        } elseif (isset($this->options[$name])) {
+    final public function getOption($name) {
+        if (isset($this->options[$name])) {
             return $this->options[$name];
+        }
+    }
+
+    protected function getRequestOption($name) {
+        if (isset($this->temporaryOptions[$name])) {
+            return $this->temporaryOptions[$name];
         }
     }
 
@@ -457,16 +456,16 @@ class WebClient {
     }
 
     protected function initializeOptions(array &$options) {
-        $data = $this->getOption('data');
+        $data = $this->getRequestOption('data');
         if ($data !== null) {
             $this->setData($data, $options);
         }
-        $queryParams = $this->getOption('query_params');
+        $queryParams = $this->getRequestOption('query_params');
         if ($queryParams !== null) {
             if (is_array($queryParams) === false) {
                 throw new Exception;
             }
-            $url = $this->getOption(CURLOPT_URL);
+            $url = $this->getRequestOption(CURLOPT_URL);
             if ($url === null) {
                 return;
             }
@@ -508,6 +507,9 @@ class WebClient {
         $tmp = $options;
         $options = $this->options;
         foreach ($tmp as $key => $value) {
+            if ($key === 'headers') {
+                $key = CURLOPT_HTTPHEADER;
+            }
             $options[$key] = $value;
         }
         $this->temporaryOptions =& $options;
@@ -554,63 +556,58 @@ class WebClient {
         $this->temporaryOptions = null;
     }
 
-    private function getHeaders() {
-        $headers = null;
-        if ($this->temporaryOptions !== null
-            && array_key_exists('headers', $this->temporaryOptions)
-        ) {
-            $headers = $this->temporaryOptions['headers'];
-            if (array_key_exists(CURLOPT_HTTPHEADER, $this->temporaryOptions)) {
-                $keys = array_flip(array_keys($this->temporaryOptions));
-                if ($keys[CURLOPT_HTTPHEADER] > $keys['headers']) {
-                    $headers = $this->temporaryOptions[CURLOPT_HTTPHEADER];
-                }
-            }
-        } elseif ($this->temporaryOptions !== null
-            && array_key_exists(CURLOPT_HTTPHEADER, $this->temporaryOptions)
-        ) {
-            $headers = $options[CURLOPT_HTTPHEADER];
-        } elseif (isset($this->options['headers'])) {
-            $headers = $this->options['headers'];
-        }
-        $result = $this->temporaryHeaders;
-        if ($headers !== null) {
+    final private function getHeaders() {
+        if (isset($this->temporaryOptions[CURLOPT_HTTPHEADER])) {
+            $headers = $this->temporaryOptions[CURLOPT_HTTPHEADER];
             if (is_array($headers) === false) {
                 throw new Exception;
             }
-            $temporaryHeaders = $result;
-            $this->temporaryHeaders = null;
-            $this->setTemporaryHeaders($headers);
-            if ($temporaryHeaders !== null) {
-                $this->setTemporaryHeaders($temporaryHeaders);
+            $result = array();
+            foreach ($headers as $key => $value) {
+                if (is_int($key)) {
+                    if (is_array($value) === false) {
+                        $value = array($value);
+                    }
+                    foreach ($value as $key2 => $value2) {
+                        if (is_int($key2)) {
+                            $tmp2 = explode(':', $value2, 2);
+                            $key2 = $tmp2[0];
+                            $value2 = '';
+                            if (count($tmp2) === 2) {
+                                $value2 = $tmp2[1];
+                            }
+                        }
+                        $result[$key2] = $value2;
+                    }
+                    continue;
+                }
+                $result[$key] = $value;
             }
-            $result = $this->temporaryHeaders;
-            $this->temporaryHeaders = $temporaryHeaders;
+            return $result;
         }
-        return $result;
     }
 
-    final protected function setTemporaryHeaders(array $headers) {
-        if ($this->temporaryHeaders === null) {
-            $this->temporaryHeaders = array();
+    final protected function addTemporaryHeaders(array $headers) {
+        if ($this->temporaryOptions === null) {
+            throw new Exception;
         }
-        foreach ($headers as $key => $value) {
-            if (is_int($key)) {
-                $tmp = explode(':', $value, 2);
-                $key = $tmp[0];
-                $value = '';
-                if (count($tmp) === 2) {
-                    $value = $tmp[1];
-                }
-            }
-            $this->temporaryHeaders[$key] = $value;
+        if (isset($this->temporaryOptions[CURLOPT_HTTPHEADER]) === false) {
+            $this->temporaryOptions[CURLOPT_HTTPHEADER] = $headers;
+            return;
+        } elseif (
+            is_array($this->temporaryOptions[CURLOPT_HTTPHEADER]) === false
+        ) {
+            throw new Exception;
+        }
+        foreach ($headers as $header) {
+            $this->temporaryOptions[CURLOPT_HTTPHEADER][] = $headers;
         }
     }
 
     private function setData($data, array &$options) {
-        $this->setTemporaryHeaders(array('Content-Length' => null));
+        $this->addTemporaryHeaders('Content-Length' => null));
         if (isset($this->temporaryHeaders['Expect']) === false) {
-            $this->setTemporaryHeaders(array('Expect:'));
+            $this->addTemporaryHeaders(array('Expect:'));
         }
         if (is_array($data) === false) {
             $this->enableCurlPostFieldsOption($options);
@@ -639,7 +636,7 @@ class WebClient {
             }
         } elseif ($data['type'] === 'multipart/form-data') {
             if (isset($data['content']) === false) {
-                $this->setTemporaryHeaders(array('Content-Length' => 0));
+                $this->addTemporaryHeaders(array('Content-Length' => 0));
                 return;
             }
             if (is_array($data['content']) === false) {
@@ -788,18 +785,18 @@ class WebClient {
                 $value['header'] = $header;
             }
             $size = $this->getFormDataSize($data, $boundary);
-            $this->setTemporaryHeaders(
+            $this->addTemporaryHeaders(
                 array('Content-Type' =>
                     'multipart/form-data; boundary=' . $boundary)
             );
-            $this->setTemporaryHeaders(array('Content-Length' => $size));
+            $this->addTemporaryHeaders(array('Content-Length' => $size));
             $this->enableCurlPostFieldsOption($options);
             unset($options[CURLOPT_POSTFIELDS]);
             $options[CURLOPT_READFUNCTION] = $this->getSendFormDataCallback(
                 $data, $boundary
             );
         } else {
-            $this->setTemporaryHeaders(array('Content-Type' => $data['type']));
+            $this->addTemporaryHeaders(array('Content-Type' => $data['type']));
             $data = $data['content'];
             if (isset($data['content'])) {
                 $this->enableCurlPostFieldsOption($options);
@@ -811,7 +808,7 @@ class WebClient {
                 }
                 $size = self::getFileSize($data['file']);
                 if ($this->isLargerThanMaxInt($size)) {
-                    $this->setTemporaryHeaders(
+                    $this->addTemporaryHeaders(
                         array('Content-Length' => $size)
                     );
                     $this->enableCurlPostFieldsOption($options);
@@ -992,7 +989,7 @@ class WebClient {
     }
 
     protected function initializeResponse($result) {
-        if ($this->getOption(CURLOPT_HEADER) == false
+        if ($this->getRequestOption(CURLOPT_HEADER) == false
             || is_string($result) === false
         ) {
             return $result;
