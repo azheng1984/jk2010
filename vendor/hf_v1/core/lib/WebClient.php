@@ -142,7 +142,7 @@ class WebClient {
                 self::$multiPendingRequests = null;
             }
         } elseif (self::$multiGetRequestCallback !== null) {
-            $request = call_user_func(self::multiGetRequestCallback);
+            $request = call_user_func(self::$multiGetRequestCallback);
         }
         if ($request === null) {
             return false;
