@@ -94,7 +94,6 @@ class WebClient {
                 if (self::isOldCurl() === false) {
                     $message = curl_multi_strerror($status);
                 }
-                self::closeMultiHandle();
                 throw new CurlException($message, $status, 'multi');
             }
             while ($info = curl_multi_info_read(self::$multiHandle)) {
@@ -172,7 +171,7 @@ class WebClient {
         return null;
     }
 
-    public static function setMultiOptions(array $options) {
+    final public static function setMultiOptions(array $options) {
         if (self::$multiOptions === null) {
             self::initializeMultiOptions();
         }
@@ -192,17 +191,17 @@ class WebClient {
 
     private static function initializeMultiOptions() {
         self::$multiOptions = array();
-        $options = self::getDefaultMultiOptions();
+        $options = static::getDefaultMultiOptions();
         if (is_array($options)) {
             self::setMultiOptions($options);
         }
     }
 
-    public static function setMultiOption($name, $value) {
+    final public static function setMultiOption($name, $value) {
         self::setMultiOptions(array($name => $value));
     }
 
-    public static function removeMultiOption($name) {
+    final public static function removeMultiOption($name) {
         self::setMultiOption(
             $name, self::getDefaultMultiOptionValue($name)
         );
@@ -224,7 +223,7 @@ class WebClient {
         return $default;
     }
 
-    public static function closeMultiHandle() {
+    final public static function closeMultiHandle() {
         if (self::$multiHandle === null) {
             return;
         }
@@ -233,7 +232,7 @@ class WebClient {
         self::$multiTemporaryOptions = null;
     }
 
-    public static function resetMultiHandle() {
+    final public static function resetMultiHandle() {
         if (self::$multiHandle === null) {
             self::$multiOptions = null;
             self::$multiTemporaryOptions = null;
