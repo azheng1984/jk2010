@@ -160,8 +160,8 @@ class WebClient {
             }
         }
         $client->prepare($request);
-        self::$multiProcessingRequests[(int)$client->handle]
-            = array($client, $request);
+        self::$multiProcessingRequests[(int)$client->handle] =
+            array($client, $request);
         curl_multi_add_handle(self::$multiHandle, $client->handle);
     }
 
