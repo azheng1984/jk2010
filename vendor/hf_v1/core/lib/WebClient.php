@@ -16,7 +16,6 @@ class WebClient {
     private $oldCurlMultiHandle;
     private $options = array();
     private $temporaryOptions;
-    private $removedOptions;
     private $temporaryHeaders;
     private $rawResponseHeaders;
     private $responseHeaders;
@@ -506,14 +505,14 @@ class WebClient {
     private function prepare(array $options) {
         $this->rawResponseHeaders = null;
         $this->responseHeaders = null;
+        foreach ($this->options as $key => $value) {
+            if (array_key_exists($key, $options) === false) {
+                $options[$key] = $value;
+            }
+        }
         $this->temporaryOptions =& $options;
         $this->initializeOptions($options);
         $curlOptions = array();
-        foreach ($this->options as $key => $value) {
-            if (is_int($key)) {
-                $curlOptions[$key] = $value;
-            }
-        }
         foreach ($options as $key => $value) {
             if (is_int($key)) {
                 $curlOptions[$key] = $value;
@@ -551,14 +550,6 @@ class WebClient {
     }
 
     private function finalize() {
-        if ($this->removedOptions !== null
-            && $this->isPreviousRemovedOptions !== true
-        ) {
-            foreach ($this->removedOptions as $key => $value) {
-                $this->options[$key] = $value;
-            }
-        }
-        $this->removedOptions = null;
         $this->temporaryHeaders = null;
         $this->temporaryOptions = null;
     }
@@ -614,16 +605,6 @@ class WebClient {
             }
             $this->temporaryHeaders[$key] = $value;
         }
-    }
-
-    private function removeOptionTemporarily($name) {
-        if (array_key_exists($name, $this->options) === false) {
-            return;
-        } elseif ($this->removedOptions === null) {
-            $this->removedOptions = array();
-        }
-        $this->removedOptions[$name] = $this->options[$name];
-        unset($this->options[$name]);
     }
 
     private function setData($data, array &$options) {
@@ -814,7 +795,6 @@ class WebClient {
             $this->setTemporaryHeaders(array('Content-Length' => $size));
             $this->enableCurlPostFieldsOption($options);
             unset($options[CURLOPT_POSTFIELDS]);
-            $this->removeOptionTemporarily(CURLOPT_POSTFIELDS);
             $options[CURLOPT_READFUNCTION] = $this->getSendFormDataCallback(
                 $data, $boundary
             );
@@ -836,14 +816,12 @@ class WebClient {
                     );
                     $this->enableCurlPostFieldsOption($options);
                     unset($options[CURLOPT_POSTFIELDS]);
-                    $this->removeOptionTemporarily(CURLOPT_POSTFIELDS);
                     $options[CURLOPT_READFUNCTION] = $this->getSendFileCallback(
                         $file
                     );
                     return;
                 }
                 unset($options[CURLOPT_READFUNCTION]);
-                $this->removeOptionTemporarily(CURLOPT_READFUNCTION);
                 $options[CURLOPT_UPLOAD] = true;
                 $options[CURLOPT_INFILE] = $file;
                 $options[CURLOPT_INFILESIZE] = self::getFileSize($data['file']);
@@ -853,9 +831,7 @@ class WebClient {
 
     private function enableCurlPostFieldsOption(&$options) {
         unset($options[CURLOPT_UPLOAD]);
-        $this->removeOptionTemporarily(CURLOPT_UPLOAD);
         unset($options[CURLOPT_PUT]);
-        $this->removeOptionTemporarily(CURLOPT_PUT);
         $options[CURLOPT_POST] = true;
     }
 
@@ -1130,7 +1106,6 @@ class WebClient {
         $this->rawResponseHeaders = null;
         $this->responseHeaders = null;
         $this->temporaryOptions = null;
-        $this->removedOptions = null;
         $this->temporaryHeaders = null;
         $this->options = array();
         $defaultOptions = $this->getDefaultOptions();
