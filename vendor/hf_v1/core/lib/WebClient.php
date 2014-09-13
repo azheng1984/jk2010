@@ -554,7 +554,7 @@ class WebClient {
         $this->requestOptions = null;
     }
 
-    final private function getHeaders() {
+    private function getHeaders() {
         if (isset($this->requestOptions[CURLOPT_HTTPHEADER])) {
             $headers = $this->requestOptions[CURLOPT_HTTPHEADER];
             if (is_array($headers) === false) {
