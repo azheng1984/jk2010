@@ -603,7 +603,7 @@ class WebClient {
     }
 
     private function setData($data, array &$options) {
-        $this->addRequestHeaders('Content-Length' => null));
+        $this->addRequestHeaders(array('Content-Length' => null));
         if (isset($this->temporaryHeaders['Expect']) === false) {
             $this->addRequestHeaders(array('Expect:'));
         }
