@@ -316,11 +316,6 @@ class ErrorHandler {
             E_USER_NOTICE       => 'notice',
             E_WARNING           => 'warn',
             E_USER_WARNING      => 'warn',
-            E_USER_ERROR        => 'fatal',
-            E_RECOVERABLE_ERROR => 'fatal',
-            E_ERROR             => 'fatal',
-            E_COMPILE_ERROR     => 'fatal',
-            E_PARSE             => 'fatal'
         );
         return $maps[self::$exception->getSeverity()];
     }
