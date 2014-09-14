@@ -603,10 +603,7 @@ class WebClient {
     }
 
     private function setData($data, array &$options) {
-        $this->addRequestHeaders(array('Content-Length' => null));
-        if (isset($this->temporaryHeaders['Expect']) === false) {
-            $this->addRequestHeaders(array('Expect:'));
-        }
+        $this->addRequestHeaders(array('Content-Length' => null, 'Expect'));
         if (is_array($data) === false) {
             $this->enableCurlPostFieldsOption($options);
             $options[CURLOPT_POSTFIELDS] = $data;

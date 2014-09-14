@@ -25,7 +25,7 @@ final class Config {
     public static function import($configs) {
         $namespace = null;
         foreach ($configs as $key => $value) {
-            if ($key ==='#') {
+            if (is_int($key)) {
                 $namespace = $value;
                 continue;
             }

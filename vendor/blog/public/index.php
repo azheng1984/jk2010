@@ -2,8 +2,13 @@
 namespace Hyperframework\Blog;
 
 //$s = microtime(true);
+//$xxx = 'x';
+//
+//$x = array();
 //for ($i = 0; $i < 1000000; ++$i) {
-//    preg_match('/^[a-zA-Z0-9_]+$/', 'INFO');
+//    $x['x'] = $i;
+//    //is_int($xxx);
+////    preg_match('/^[a-zA-Z0-9_]+$/', 'INFO');
 //    //rand();
 //    //preg_match('/\w+/', 'INFO');
 //    //strpos('INFOxxxxx', 'N');
@@ -12,6 +17,7 @@ namespace Hyperframework\Blog;
 //}
 //echo (microtime(true) - $s) * 1000;
 //exit;
+
 if (isset($_GET['b'])) {
 echo file_get_contents('php://input');
     print_r($_GET);
