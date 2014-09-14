@@ -1,5 +1,6 @@
 <?php
 namespace Hyperframework\Blog;
+
 //$s = microtime(true);
 //for ($i = 0; $i < 1000000; ++$i) {
 //    preg_match('/^[a-zA-Z0-9_]+$/', 'INFO');

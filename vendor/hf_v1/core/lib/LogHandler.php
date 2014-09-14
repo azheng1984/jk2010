@@ -45,7 +45,7 @@ class LogHandler {
         }
         $result = self::getTimestamp() . ' | ' . $level;
         $name = null;
-        if ($params[0] != '') {
+        if ((string)$params[0] !== '') {
             $name = $params[0];
             if (preg_match('/^[a-zA-Z0-9_.]+$/', $name) === 0
                 || $name[0] === '.'
@@ -64,7 +64,7 @@ class LogHandler {
                 $params[2] = $params[1];
                 $params[1] = null;
             }
-            if ($params[1] != '') {
+            if ((string)$params[1] !== '') {
                 if ($name === null) {
                     $result .= ' ||';
                 } else {
@@ -80,7 +80,7 @@ class LogHandler {
             } else {
                 $message = $params[1];
             }
-            if ($message != '') {
+            if ((string)$message !== '') {
                 if ($name === null) {
                     $result .= ' ||';
                 } else {
@@ -164,7 +164,7 @@ class LogHandler {
             $result .= PHP_EOL . $prefix . $key . ':';
             if (is_array($value)) {
                 $result .= self::convert($value, $depth + 1);
-            } elseif ($value != '') {
+            } elseif ((string)$value !== '') {
                 self::appendValue($result, $value, $prefix . "\t>");
             }
         }

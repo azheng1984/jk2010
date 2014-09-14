@@ -142,7 +142,7 @@ class ErrorHandler {
                     throw new Exception;
                 }
                 $exitLevel =
-                    E_ALL & ~E_STRICT & ~E_USER_DEPRECATED & ~E_DEPRECATED;
+                    E_ALL & ~E_STRICT & ~E_DEPRECATED & ~E_USER_DEPRECATED;
                 if ($tmp < 2) {
                     $exitLevel = $exitLevel & ~E_NOTICE & ~E_USER_NOTICE;
                 }
@@ -268,7 +268,10 @@ class ErrorHandler {
             } else {
                 $name = 'hyperframework.error_handler.exception';
                 $data['class'] = get_class($exception);
-                $data['code'] = $exception->getCode();
+                $code = $exception->getCode();
+                if ($code !== null) {
+                    $data['code'] = $code;
+                }
             }
             $data['file'] = $exception->getFile();
             $data['line'] = $exception->getLine();

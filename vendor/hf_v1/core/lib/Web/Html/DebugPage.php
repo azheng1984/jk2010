@@ -97,8 +97,10 @@ class DebugPage {
         }
         echo '<h3>body</h3>';
         if (strlen($outputBuffer) > 1) {
+            echo '<pre>';
             //var_dump(mb_detect_encoding($outputBuffer));
             echo htmlspecialchars($outputBuffer, ENT_QUOTES | ENT_SUBSTITUTE);
+            echo '</pre>';
         } else {
             echo '<span style="color:#999;background-color:#eee">EMPTY</span>';
         }

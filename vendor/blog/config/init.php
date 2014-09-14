@@ -11,7 +11,7 @@ return array(
 //    'class_loader.root_path' => 'phar://' . ROOT_PATH . '/tmp/cache/lib.phar',
     'use_composer_autoloader' => true,
     'path_info.enable_cache' => false,
-    'web.error_handler.exit_level' => 'NOTICE',
+//    'web.error_handler.exit_level' => 'NOTICE',
 //    'class_loader.enable_zero_folder' => true,
     'db.profiler.enable' => true,
     'logger.level' => 'DEBUG',

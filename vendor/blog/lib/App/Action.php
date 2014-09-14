@@ -13,8 +13,7 @@ use PDO;
 //throw new \Exception;
 class Action {
     public function before() {
-        //throw new \PDOException;
-        $x = $y;
+        //throw new hi('hhi', null);
         //print_r($_SERVER);
         CsrfProtection::run();
         Logger::info(
