@@ -138,7 +138,7 @@ class ErrorHandler {
                     $tmp = 2;
                 } elseif ($exitLevel === 'WARNING') {
                     $tmp = 1;
-                } elseif ($exitLevel !== 'FATAL') {
+                } elseif ($exitLevel !== 'ERROR') {
                     throw new Exception;
                 }
                 $exitLevel =

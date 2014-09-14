@@ -11,7 +11,7 @@ class EnvironmentBuilder {
 
     protected static function initializeConfig() {
         static::loadConfigClass();
-        static::importInitConfig();
+        static::importConfig();
     }
 
     protected static function initializeAutoloader() {
@@ -46,9 +46,9 @@ class EnvironmentBuilder {
         require __DIR__ . DIRECTORY_SEPARATOR . 'Config.php';
     }
 
-    protected static function importInitConfig() {
+    protected static function importConfig() {
         $config = require APP_ROOT_PATH . DIRECTORY_SEPARATOR
-            . 'config' . DIRECTORY_SEPARATOR . 'init_env.php';
+            . 'config' . DIRECTORY_SEPARATOR . 'init.php';
         if ($config !== null) {
             Config::import($config);
         }
