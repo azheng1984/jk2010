@@ -383,7 +383,7 @@ class WebClient {
         }
     }
 
-    protected function getRequestOption($name) {
+    final protected function getRequestOption($name) {
         if (isset($this->requestOptions[$name])) {
             return $this->requestOptions[$name];
         }
