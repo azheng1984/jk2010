@@ -10,7 +10,9 @@ use Hyperframework\Config;
 
 class ErrorHandler {
     private static $exception;
+    private static $isError;
     private static $shouldExit;
+    private static $exitLevel;
     private static $isDebugEnabled;
     private static $outputBufferLevel;
     private static $errorReporting;
@@ -37,19 +39,21 @@ class ErrorHandler {
             }
             throw $exception;
         }
+        error_reporting(self::$errorReporting);
         self::$exception = $exception;
+        self::$isError = $isError;
         if ($isError) {
-            $exitLevel = $this->getExitLevel();
+            $exitLevel = self::getExitLevel();
             self::$shouldExit = (self::$exception->getSeverity() & $exitLevel)
                 !== 0;
         } else {
             self::$shouldExit = true;
         }
-        error_reporting(self::$errorReporting);
-        self::writeLog($exception, $isError);
+        self::writeLog();
         if ($isError) {
             if (self::$shouldExit === false) {
                 self::$exception = null;
+                self::$isError = null;
                 self::disableErrorReporting();
                 return;
             }
@@ -91,8 +95,7 @@ class ErrorHandler {
     ) {
         $code = $isFatal ? 1 : 0;
         return self::handleException(
-            new ErrorException($message, $code, $type, $file, $line),
-            true
+            new ErrorException($message, $code, $type, $file, $line), true
         );
     }
 
@@ -121,7 +124,7 @@ class ErrorHandler {
         error_reporting($tmp);
     }
 
-    protected static function getExitLevel() {
+    private static function getExitLevel() {
         if (self::$exitLevel === null) {
             $exitLevel = Config::get(
                 'hyperframework.web.error_handler.exit_level'
@@ -254,7 +257,9 @@ class ErrorHandler {
         return self::$shouldExit;
     }
 
-    protected static function writeLog($exception, $isError) {
+    protected static function writeLog() {
+        $isError = self::$isError;
+        $exception = self::$exception;
         if (Config::get('hyperframework.error_handler.enable_logger')) {
             $name = null;
             $data = array();
@@ -325,8 +330,12 @@ class ErrorHandler {
         return $maps[$severity];
     }
 
-    protected static function getException() {
+    final protected static function getException() {
         return self::$exception;
+    }
+
+    final protected static function isError() {
+        return self::$isError;
     }
 
     protected static function getIgnoredErrors() {
