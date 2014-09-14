@@ -250,6 +250,10 @@ class ErrorHandler {
         return 'PHP Fatal error: Uncaught ' . self::$exception;
     }
 
+    final protected static function shouldExit() {
+        return self::$shouldExit;
+    }
+
     protected static function writeLog($exception, $isError) {
         if (Config::get('hyperframework.error_handler.enable_logger')) {
             $name = null;
