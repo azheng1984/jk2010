@@ -253,10 +253,6 @@ class ErrorHandler {
         return 'PHP Fatal error: Uncaught ' . self::$exception;
     }
 
-    final protected static function shouldExit() {
-        return self::$shouldExit;
-    }
-
     protected static function writeLog() {
         $isError = self::$isError;
         $exception = self::$exception;
@@ -336,6 +332,10 @@ class ErrorHandler {
 
     final protected static function isError() {
         return self::$isError;
+    }
+
+    final protected static function shouldExit() {
+        return self::$shouldExit;
     }
 
     protected static function getIgnoredErrors() {
