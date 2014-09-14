@@ -10,11 +10,11 @@ use Hyperframework\Config;
 
 class ErrorHandler {
     private static $exception;
+    private static $shouldExit;
     private static $isDebugEnabled;
     private static $outputBufferLevel;
-    private static $ignoredErrors;
-    private static $exitLevel;
     private static $errorReporting;
+    private static $ignoredErrors;
 
     final public static function run() {
         self::$isDebugEnabled = ini_get('display_errors') === '1';
@@ -77,18 +77,21 @@ class ErrorHandler {
             throw $exception;
         }
         self::$exception = $exception;
-        error_reporting(self::$errorReporting);
         if ($isError) {
-            self::writeLog($exception, true);
-            if ($exception->getCode() === 0
-                && ($exception->getSeverity() & self::getExitLevel()) === 0
-            ) {
+            $exitLevel = $this->getExitLevel();
+            self::$shouldExit = (self::$exception->getSeverity() & $exitLevel)
+                !== 0;
+        } else {
+            self::$shouldExit = true;
+        }
+        error_reporting(self::$errorReporting);
+        self::writeLog($exception, $isError);
+        if ($isError) {
+            if (self::$shouldExit === false) {
                 self::$exception = null;
                 self::disableErrorReporting();
                 return;
             }
-        } else {
-            self::writeLog($exception, false);
         }
         $headers = null;
         $outputBuffer = null;
@@ -256,7 +259,11 @@ class ErrorHandler {
                 $name = 'hyperframework.error_handler.error';
                 $severity = $exception->getSeverity();
                 $data['severity'] = ErrorCodeHelper::toString($severity);
-                $method = self::getLogMethod($severity);
+                if (self::$shouldExit) {
+                    $method = 'fatal';
+                } else {
+                    $method = self::getLogMethod($severity);
+                }
             } else {
                 $name = 'hyperframework.error_handler.exception';
                 $data['class'] = get_class($exception);

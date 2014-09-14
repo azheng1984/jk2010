@@ -23,7 +23,15 @@ final class Config {
     }
 
     public static function import($configs) {
+        $namespace = null;
         foreach ($configs as $key => $value) {
+            if ($key ==='#') {
+                $namespace = $value;
+                continue;
+            }
+            if ($namespace !== null) {
+                $key = $namespace . '.' . $key;
+            }
             self::$data[$key] = $value;
         }
     }
