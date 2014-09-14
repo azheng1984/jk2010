@@ -262,18 +262,13 @@ class ErrorHandler {
             $method = null;
             if ($isError) {
                 $name = 'hyperframework.error_handler.error';
-                $severity = $exception->getSeverity();
-                $data['severity'] = ErrorCodeHelper::toString($severity);
-                if (self::$shouldExit) {
-                    $method = 'fatal';
-                } else {
-                    $method = self::getLogMethod($severity);
-                }
+                $data['severity'] = ErrorCodeHelper::toString(
+                    $exception->getSeverity()
+                );
             } else {
                 $name = 'hyperframework.error_handler.exception';
                 $data['class'] = get_class($exception);
                 $data['code'] = $exception->getCode();
-                $method = 'fatal';
             }
             $data['file'] = $exception->getFile();
             $data['line'] = $exception->getLine();
@@ -296,19 +291,23 @@ class ErrorHandler {
                     $data['traces'][] = $trace;
                 }
             }
+            $method = self::getLogMethod();
             Logger::$method($name, $exception->getMessage(), $data);
         } else {
            $message = null;
            if($isError) {
-               $message = self::getDefaultErrorLog($exception);
+               $message = self::getDefaultErrorLog();
            } else {
-               $message = self::getDefaultExceptionLog($exception);
+               $message = self::getDefaultExceptionLog();
            }
            error_log($message);
         }
     }
 
-    protected static function getLogMethod($severity) {
+    private static function getLogMethod() {
+        if (self::$shouldExit) {
+            return 'fatal';
+        }
         $maps = array(
             E_STRICT            => 'info',
             E_DEPRECATED        => 'info',
@@ -323,7 +322,7 @@ class ErrorHandler {
             E_COMPILE_ERROR     => 'fatal',
             E_PARSE             => 'fatal'
         );
-        return $maps[$severity];
+        return $maps[self::$exception->getSeverity()];
     }
 
     final protected static function getException() {
