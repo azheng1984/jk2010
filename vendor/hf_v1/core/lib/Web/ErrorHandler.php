@@ -30,45 +30,6 @@ class ErrorHandler {
         self::disableErrorReporting();
     }
 
-    private static function disableErrorReporting() {
-        $tmp = 0;
-        if (self::$errorReporting & E_COMPILE_WARNING) {
-            $tmp = E_COMPILE_WARNING;
-        }
-        error_reporting($tmp);
-    }
-
-    protected static function getExitLevel() {
-        if (self::$exitLevel === null) {
-            $exitLevel = Config::get(
-                'hyperframework.web.error_handler.exit_level'
-            );
-            if ($exitLevel == null) {
-                $exitLevel = 'NOTICE';
-            }
-            if (is_int($exitLevel) === false) {
-                $tmp = 0;
-                if ($exitLevel === 'NOTICE') {
-                    $tmp = 2;
-                } elseif ($exitLevel === 'WARNING') {
-                    $tmp = 1;
-                } elseif ($exitLevel !== 'FATAL') {
-                    throw new Exception;
-                }
-                $exitLevel =
-                    E_ALL & ~E_STRICT & ~E_USER_DEPRECATED & ~E_DEPRECATED;
-                if ($tmp < 2) {
-                    $exitLevel = $exitLevel & ~E_NOTICE & ~E_USER_NOTICE;
-                }
-                if ($tmp < 1) {
-                    $exitLevel = $exitLevel & ~E_WARNING & ~E_USER_WARNING;
-                }
-            }
-            self::$exitLevel = $exitLevel;
-        }
-        return self::$exitLevel;
-    }
-
     final public static function handleException($exception, $isError = false) {
         if (self::$exception !== null) {
             if ($isError) {
@@ -150,6 +111,45 @@ class ErrorHandler {
                 true
             );
         }
+    }
+
+    private static function disableErrorReporting() {
+        $tmp = 0;
+        if (self::$errorReporting & E_COMPILE_WARNING) {
+            $tmp = E_COMPILE_WARNING;
+        }
+        error_reporting($tmp);
+    }
+
+    protected static function getExitLevel() {
+        if (self::$exitLevel === null) {
+            $exitLevel = Config::get(
+                'hyperframework.web.error_handler.exit_level'
+            );
+            if ($exitLevel == null) {
+                $exitLevel = 'NOTICE';
+            }
+            if (is_int($exitLevel) === false) {
+                $tmp = 0;
+                if ($exitLevel === 'NOTICE') {
+                    $tmp = 2;
+                } elseif ($exitLevel === 'WARNING') {
+                    $tmp = 1;
+                } elseif ($exitLevel !== 'FATAL') {
+                    throw new Exception;
+                }
+                $exitLevel =
+                    E_ALL & ~E_STRICT & ~E_USER_DEPRECATED & ~E_DEPRECATED;
+                if ($tmp < 2) {
+                    $exitLevel = $exitLevel & ~E_NOTICE & ~E_USER_NOTICE;
+                }
+                if ($tmp < 1) {
+                    $exitLevel = $exitLevel & ~E_WARNING & ~E_USER_WARNING;
+                }
+            }
+            self::$exitLevel = $exitLevel;
+        }
+        return self::$exitLevel;
     }
 
     protected static function cleanOutputBuffer() {
