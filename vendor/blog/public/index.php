@@ -1,5 +1,7 @@
 <?php
 namespace Hyperframework\Blog;
+$x = array();
+var_dump(end($x));
 
 //$s = microtime(true);
 //$xxx = 'x';

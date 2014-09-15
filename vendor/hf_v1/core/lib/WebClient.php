@@ -18,6 +18,7 @@ class WebClient {
     private $requestOptions;
     private $rawResponseHeaders;
     private $responseHeaders;
+    private $responseCount;
 
     public static function sendAll(
         array $requests = null,
@@ -503,6 +504,7 @@ class WebClient {
     private function prepare(array $options) {
         $this->rawResponseHeaders = null;
         $this->responseHeaders = null;
+        $this->responseCount = null;
         $tmp = $options;
         $options = $this->options;
         foreach ($tmp as $key => $value) {
@@ -603,7 +605,7 @@ class WebClient {
     }
 
     private function setData($data, array &$options) {
-        $this->addRequestHeaders(array('Content-Length' => null, 'Expect'));
+        $this->addRequestHeaders(array('Expect', 'Content-Length' => null));
         if (is_array($data) === false) {
             $this->enableCurlPostFieldsOption($options);
             $options[CURLOPT_POSTFIELDS] = $data;
@@ -984,6 +986,7 @@ class WebClient {
     }
 
     protected function initializeResponse($result) {
+        $this->responseCount = 1;
         if ($this->getRequestOption(CURLOPT_HEADER) == false
             || is_string($result) === false
         ) {
@@ -1021,6 +1024,7 @@ class WebClient {
                 }
             }
             $this->responseHeaders[] = $current;
+            $this->responseCount = count($this->responseHeaders);
             return substr($result, $headerSize);
         }
         return $result;
@@ -1068,10 +1072,10 @@ class WebClient {
     }
 
     public function getResponseCount() {
-        if ($this->responseHeaders === null) {
+        if ($this->responseCount === null) {
             throw new Exception;
         }
-        return count($this->responseHeaders);
+        return $this->responseCount);
     }
 
     public function getInfo($name = null) {
@@ -1097,6 +1101,7 @@ class WebClient {
     public function reset() {
         $this->rawResponseHeaders = null;
         $this->responseHeaders = null;
+        $this->responseCount = null;
         $this->requestOptions = null;
         $this->options = array();
         $defaultOptions = $this->getDefaultOptions();
@@ -1107,7 +1112,7 @@ class WebClient {
 
     public function close() {
         if ($this->handle === null) {
-            return;
+            throw new Exception;
         }
         curl_close($this->handle);
         $this->handle = null;
