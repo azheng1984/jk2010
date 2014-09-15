@@ -52,6 +52,10 @@ class DebugPage {
                     } elseif ($key === $count - 1) {
                         $lines[$key] = '</span></code>';
                     } else {
+                        //if ($index === 193) {
+                        //    echo 193;
+                        //}
+                    //    echo $key. ' ';
                         unset($lines[$key]);
                     }
                     ++$index;
@@ -68,9 +72,10 @@ class DebugPage {
                 . '<div style="background-color:#ff6">' . $lines[$index] . '</div>';
             unset($lines[$index]);
             if (isset($lines[$index + 1])) {
-                $lines[$index - 1] . $lines[$index + 1];
+                $lines[$index - 1] .= $lines[$index + 1];
                 unset($lines[$index + 1]);
             }
+            //print_r($lines);
             echo implode("<br />", $lines);
         }
         echo '<h2>stack trace</h2>';
