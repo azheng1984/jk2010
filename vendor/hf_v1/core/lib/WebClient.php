@@ -191,7 +191,7 @@ class WebClient {
     private static function initializeMultiOptions() {
         self::$multiOptions = array();
         $options = static::getDefaultMultiOptions();
-        if (is_array($options)) {
+        if ($options !== null)) {
             self::setMultiOptions($options);
         }
     }
@@ -207,9 +207,7 @@ class WebClient {
         unset(self::$multiOptions[$name]);
     }
 
-    protected static function getDefaultMultiOptions() {
-        return array();
-    }
+    protected static function getDefaultMultiOptions() {}
 
     private static function getMultiOption($name, $default = null) {
         if (self::$multiTemporaryOptions !== null

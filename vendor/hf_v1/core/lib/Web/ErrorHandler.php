@@ -279,17 +279,17 @@ class ErrorHandler {
                 $data['traces'] = array();
                 foreach ($exception->getTrace() as $item) {
                     $trace = array();
-                    if (isset($item['file'])) {
-                        $trace['file'] = $item['file'];
-                    }
-                    if (isset($item['line'])) {
-                        $trace['line'] = $item['line'];
-                    }
                     if (isset($item['class'])) {
                         $trace['class'] = $item['class'];
                     }
                     if (isset($item['function'])) {
                         $trace['function'] = $item['function'];
+                    }
+                    if (isset($item['file'])) {
+                        $trace['file'] = $item['file'];
+                    }
+                    if (isset($item['line'])) {
+                        $trace['line'] = $item['line'];
                     }
                     $data['traces'][] = $trace;
                 }
