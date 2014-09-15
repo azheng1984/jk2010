@@ -1007,6 +1007,7 @@ class WebClient {
             foreach ($headers as $header) {
                 if ($header === '') {
                     $this->responseHeaders[] = $current;
+                    ++$this->responseCount;
                     $current = array();
                 }
                 if (strpos($header, ':') === false) {
@@ -1027,7 +1028,6 @@ class WebClient {
                 }
             }
             $this->responseHeaders[] = $current;
-            $this->responseCount = count($this->responseHeaders);
             return substr($result, $headerSize);
         }
         return $result;
@@ -1078,7 +1078,7 @@ class WebClient {
         if ($this->responseCount === null) {
             throw new Exception;
         }
-        return $this->responseCount);
+        return $this->responseCount;
     }
 
     public function getInfo($name = null) {
@@ -1092,7 +1092,7 @@ class WebClient {
     }
 
     public function pause($bitmask) {
-        if (self::isOldCurl()) {
+        if ($this->handle === null || self::isOldCurl()) {
             throw new Exception;
         }
         $result = curl_pause($this->handle, $bitmast);
