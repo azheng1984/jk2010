@@ -986,6 +986,9 @@ class WebClient {
     }
 
     protected function initializeResponse($result) {
+        if ($result === false) {
+            return false;
+        }
         $this->responseCount = 1;
         if ($this->getRequestOption(CURLOPT_HEADER) == false
             || is_string($result) === false
