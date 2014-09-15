@@ -996,7 +996,11 @@ class WebClient {
         $url = $this->getInfo(CURLINFO_EFFECTIVE_URL);
         $tmp = explode('://', $url, 2);
         $protocol = strtolower($tmp[0]);
-        if ($protocol === 'http' || $protocol === 'https') {
+        if ($protocol === 'http'
+            || $protocol === 'https'
+            || $protocol === 'file'
+            || $protocol === 'ftp'
+        ) {
             $headerSize = $this->getInfo(CURLINFO_HEADER_SIZE);
             $this->rawResponseHeaders = substr($result, 0, $headerSize);
             $headers = explode("\r\n", trim($this->rawResponseHeaders));

@@ -8,7 +8,6 @@ class App {
     private $actionResult;
 
     public function run() {
-        $x = $y;
         $this->initialize();
         $this->executeAction();
         $this->renderView();

@@ -1,6 +1,9 @@
 #!/usr/bin/env php
 <?php
 namespace Tc;
+
+print_r($_SERVER['argv']);
+
 define('Tc\ROOT_PATH', __DIR__);
 //require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
 //    . DIRECTORY_SEPARATOR . 'init_const.php';
