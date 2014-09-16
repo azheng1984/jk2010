@@ -328,6 +328,8 @@ class WebClient {
         foreach ($options as $name => $value) {
             if ($name === 'headers') {
                 $name = CURLOPT_HTTPHEADER;
+            } elseif ($name === 'url') {
+                $name = CURLOPT_URL;
             }
             $this->options[$name] = $value;
         }
@@ -366,8 +368,10 @@ class WebClient {
     }
 
     public function removeOption($name) {
-        if ($name === CURLOPT_HTTPHEADER) {
-            $name = 'headers';
+        if ($name === 'headers') {
+            $name = CURLOPT_HTTPHEADER;
+        } elseif ($name === 'url') {
+            $name = CURLOPT_URL;
         }
         unset($this->options[$name]);
     }
@@ -508,6 +512,8 @@ class WebClient {
         foreach ($tmp as $key => $value) {
             if ($key === 'headers') {
                 $key = CURLOPT_HTTPHEADER;
+            } elseif ($name === 'url') {
+                $name = CURLOPT_URL;
             }
             $options[$key] = $value;
         }
