@@ -512,7 +512,7 @@ class WebClient {
         foreach ($tmp as $key => $value) {
             if ($key === 'headers') {
                 $key = CURLOPT_HTTPHEADER;
-            } elseif ($name === 'url') {
+            } elseif ($key === 'url') {
                 $name = CURLOPT_URL;
             }
             $options[$key] = $value;

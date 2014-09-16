@@ -6,7 +6,6 @@ return array(
     'asset.concatenate_manifest' => false,
     'asset.enable_versioning' => true,
     'asset.enable_proxy' => true,
-    'autoload_files.enable' => true,
     'path_info.enable_cache' => false,
 //    'class_loader.root_path' => 'phar://' . ROOT_PATH . '/tmp/cache/lib.phar',
     'use_composer_autoloader' => true,
