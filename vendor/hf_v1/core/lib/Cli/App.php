@@ -7,7 +7,7 @@ class App {
     private $config;
 
     public function __construct() {
-        this->config = ConfigFileLoader::loadPhp('app.php');
+        $this->config = ConfigFileLoader::loadPhp('app.php');
     }
 
     public function run() {
