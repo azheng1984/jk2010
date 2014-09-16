@@ -1,6 +1,17 @@
 <?php
 return array(
-    'description' => 'Hyperframework CLI Tool 0.2.1',
+    'description' => 'Hyperframework CLI Tool',
+    'version' => '1.1.1',
+    'usage' => 'main (x | x | x)',
+    'options' => array(
+        'name-of-option' => 'message',
+        'x,name-of-option <arg-name>' => array(
+            'class' => 'xx',
+            'callback' => 'xx',
+            'description' => 'x'
+        ),
+        'l,name-of-option[=<arg-key>]' => 'message',
+    ),
     'commands' => array(
         'hello' => array(
 //            'alias' => 'shit',
