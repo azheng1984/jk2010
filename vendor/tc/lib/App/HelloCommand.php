@@ -2,10 +2,9 @@
 namespace Tc\App;
 
 class HelloCommand {
-    public function __construct($options) {
-    }
-
-    public function execute($hi, $hi2 = null) {
-        echo $hi;
+    public function execute($arg1, $arg2) {
+        Context::getOption('header');
+        Context::getOptionCount();
+        $ctx->getParams();
     }
 }

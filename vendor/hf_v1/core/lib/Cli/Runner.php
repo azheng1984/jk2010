@@ -1,13 +1,13 @@
 <?php
 namespace Hyperframework\Cli;
 
-use Hyperframework\Config;
 use Hyperframework\EnvironmentBuilder;
 
 class Runner {
     public static function run($rootNamespace, $rootPath) {
         static::initialize($rootNamespace, $rootPath);
-        static::runApp();
+        $app = new App;
+        $app->run();
     }
 
     protected static function initialize($rootNamespace, $rootPath) {
@@ -15,13 +15,5 @@ class Runner {
             . 'EnvironmentBuilder.php';
         EnvironmentBuilder::run($rootNamespace, $rootPath);
         ErrorHandler::run();
-    }
-
-    protected static function runApp() {
-$app = new App;
-$app->run();
-
-//        $app = new App;
-//        $app->run();
     }
 }

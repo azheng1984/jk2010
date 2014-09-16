@@ -11,7 +11,7 @@ class ErrorHandler {
     }
 
     public static function handle($exception) {
-        fwrite(STDERR, $exception . PHP_EOL);
-        exit($exception->getCode());
+        fwrite(STDERR, $exception->getMessage() . PHP_EOL);
+        exit(1);
     }
 }
