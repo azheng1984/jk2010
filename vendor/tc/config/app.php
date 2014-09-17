@@ -1,11 +1,12 @@
 <?php
 return array(
-    'description' => 'Hyperframework CLI Tool',
+    'name' => 'hf',
     'version' => '1.1.1',
-    'usage' => 'main (x | x | x)',
+    'description' => 'Hyperframework CLI Tool',
+    'usage' => 'main (-x | -x | -x)',
     'options' => array(
         'name-of-option' => 'message',
-        'x,name-of-option <arg-name>' => array(
+        '-x, --name-of-option[<arg-name>]' => array(
             'class' => 'xx',
             'callback' => 'xx',
             'description' => 'x'
