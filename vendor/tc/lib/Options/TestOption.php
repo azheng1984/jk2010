@@ -1,5 +1,5 @@
 <?php
-namespace Tc;
+namespace Tc\Subcommands;
 
 class TestOption {
     public function __construct($hi) {

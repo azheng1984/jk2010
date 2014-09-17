@@ -1,42 +1,34 @@
 <?php
 return array(
     'name' => 'hf',
+    'namespace' => 'Tc',
     'version' => '1.1.1',
     'description' => 'Hyperframework CLI Tool',
-    'usage' => 'main (-x | -x | -x)',
-    'options' => array(
-        'name-of-option' => 'message',
-        '-x, --name-of-option[<arg-name>]' => array(
-            'class' => 'xx',
-            'callback' => 'xx',
-            'description' => 'x'
-        ),
-        'l,name-of-option[=<arg-key>]' => 'message',
+    'usage' => array(
+        '--main --opt[=<arg>] (--opt1 | --opt2 | --opt3) <arg>',
+        '[options] [<arg>]...',
     ),
-    'commands' => array(
+    'options' => array(
+        'name-of-option',
+        'name-of-option2' => 'description',
+        'n, name-of-option3[=<arg-name>]' => array(
+            'class' => 'xx',
+            'description' => 'x',
+            'multiple',
+        ),
+        'name-of-option[=<arg-key>]' => 'message',
+    ),
+//    'class' => 'Command', //default
+    'subcommands' => array(
         'hello' => array(
-//            'alias' => 'shit',
+//          'alias' => 'shit',
             'description' => 'Build application',
-            'class' => '\Tc\App\HelloCommand',
-            'option' => array(
-                'hi' => array('short' => 'h', 'class' => '\Tc\TestOption', 'infinite'),
-                'hi2' => array('short' => 2, 'description' => 'hello hi2'),
+//          'class' => 'HelloCommand', //default
+            'options' => array(
+                'h, hi' => array('class' => 'TestOption', 'multiple'),
+                'hi2' => array('description' => 'hello hi2'),
                 'flatoption',
             ),
-//            'commands' => array(
-//                'dis' => array(
-//                    'description' => 'hi',
-//                    'class' => '\Tc\App\HelloCommand',
-//                    'commands' => array(
-//                        'dis' => array(
-//                            'description' => 'hi',
-//                            'class' => '\Tc\App\HelloCommand',
-//                        )                
-//                    )
-//                ),
-//
-//            )
         ),
     ),
-    'option' => array('hi'),
 );

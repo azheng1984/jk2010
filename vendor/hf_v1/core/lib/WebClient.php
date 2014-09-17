@@ -36,9 +36,9 @@ class WebClient {
         if (self::$multiHandle === null) {
             self::$multiHandle = curl_multi_init();
             if (self::$multiOptions === null) {
-                self::initializeMultiOptions();
+                self::initializeAsyncOptions();
             } else {
-                self::setMultiOptions(self::$multiOptions);
+                self::setAsyncOptions(self::$multiOptions);
             }
         } elseif (self::$multiTemporaryOptions !== null) {
             foreach (self::$multiTemporaryOptions as $name => $value) {
@@ -46,10 +46,10 @@ class WebClient {
                     continue;
                 }
                 if (isset(self::$multiOptions[$name])) {
-                    self::setMultiOption($name, self::$multiOptions[$name]);
+                    self::setAsyncOption($name, self::$multiOptions[$name]);
                 } else {
-                    self::setMultiOption(
-                        $name, self::getDefaultMultiOptionValue($name)
+                    self::setAsyncOption(
+                        $name, self::getDefaultAsyncOptionValue($name)
                     );
                 }
             }
@@ -65,21 +65,21 @@ class WebClient {
             }
         }
         self::$multiTemporaryOptions = $multiOptions;
-        self::$multiGetRequestCallback = self::getMultiOption(
+        self::$multiGetRequestCallback = self::getAsyncOption(
             'get_request_callback'
         );
         $hasPendingRequest = true;
-        $maxHandles = self::getMultiOption('max_handles', 100);
+        $maxHandles = self::getAsyncOption('max_handles', 100);
         if ($maxHandles < 1) {
             throw new Exception;
         }
         for ($index = 0; $index < $maxHandles; ++$index) {
-            $hasPendingRequest = self::addMultiRequest() !== false;
+            $hasPendingRequest = self::addAsyncRequest() !== false;
             if ($hasPendingRequest === false) {
                 break;
             }
         }
-        $selectTimeout = self::getMultiOption('select_timeout', 1);
+        $selectTimeout = self::getAsyncOption('select_timeout', 1);
         if ($selectTimeout <= 0) {
             throw new Exception;
         }
@@ -115,7 +115,7 @@ class WebClient {
                     );
                 }
                 if ($hasPendingRequest) {
-                    $hasPendingRequest = self::addMultiRequest() !== false;
+                    $hasPendingRequest = self::addAsyncRequest() !== false;
                 }
                 curl_multi_remove_handle(self::$multiHandle, $info['handle']);
             }
@@ -129,7 +129,7 @@ class WebClient {
         } while ($hasPendingRequest || $isRunning);
     }
 
-    private static function addMultiRequest() {
+    private static function addAsyncRequest() {
         $request = null;
         if (self::$multiPendingRequests !== null) {
             $key = key(self::$multiPendingRequests);
@@ -163,16 +163,16 @@ class WebClient {
         curl_multi_add_handle(self::$multiHandle, $client->handle);
     }
 
-    private static function getDefaultMultiOptionValue($name) {
+    private static function getDefaultAsyncOptionValue($name) {
         if ($name === CURLMOPT_MAXCONNECTS) {
             return 10;
         }
         return null;
     }
 
-    final public static function setMultiOptions(array $options) {
+    final public static function setAsyncOptions(array $options) {
         if (self::$multiOptions === null) {
-            self::initializeMultiOptions();
+            self::initializeAsyncOptions();
         }
         foreach ($options as $name => $value) {
             self::$multiOptions[$name] = $value;
@@ -188,28 +188,28 @@ class WebClient {
         }
     }
 
-    private static function initializeMultiOptions() {
+    private static function initializeAsyncOptions() {
         self::$multiOptions = array();
-        $options = static::getDefaultMultiOptions();
+        $options = static::getDefaultAsyncOptions();
         if ($options !== null) {
-            self::setMultiOptions($options);
+            self::setAsyncOptions($options);
         }
     }
 
-    final public static function setMultiOption($name, $value) {
-        self::setMultiOptions(array($name => $value));
+    final public static function setAsyncOption($name, $value) {
+        self::setAsyncOptions(array($name => $value));
     }
 
-    final public static function removeMultiOption($name) {
-        self::setMultiOption(
-            $name, self::getDefaultMultiOptionValue($name)
+    final public static function removeAsyncOption($name) {
+        self::setAsyncOption(
+            $name, self::getDefaultAsyncOptionValue($name)
         );
         unset(self::$multiOptions[$name]);
     }
 
-    protected static function getDefaultMultiOptions() {}
+    protected static function getDefaultAsyncOptions() {}
 
-    private static function getMultiOption($name, $default = null) {
+    private static function getAsyncOption($name, $default = null) {
         if (self::$multiTemporaryOptions !== null
             && array_key_exists($name, self::$multiTemporaryOptions)
         ) {
@@ -229,7 +229,7 @@ class WebClient {
         self::$multiTemporaryOptions = null;
     }
 
-    final public static function resetHandle() {
+    final public static function resetAsyncHandle() {
         if (self::$multiHandle === null) {
             self::$multiOptions = null;
             self::$multiTemporaryOptions = null;
@@ -246,7 +246,7 @@ class WebClient {
                     curl_multi_setopt(
                         self::$multiHandle,
                         $name,
-                        self::getDefaultMultiOptionValue($name)
+                        self::getDefaultAsyncOptionValue($name)
                     );
                 }
             }
@@ -258,7 +258,7 @@ class WebClient {
                     curl_multi_setopt(
                         self::$multiHandle,
                         $name,
-                        self::getDefaultMultiOptionValue($name)
+                        self::getDefaultAsyncOptionValue($name)
                     );
                 }
             }
