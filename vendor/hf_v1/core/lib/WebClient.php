@@ -4,13 +4,13 @@ namespace Hyperframework;
 use Exception;
 
 class WebClient {
-    private static $multiHandle;
-    private static $multiOptions;
-    private static $multiTemporaryOptions;
-    private static $multiRequestOptions;
-    private static $multiPendingRequests;
-    private static $multiProcessingRequests;
-    private static $multiGetRequestCallback;
+    private static $asyncHandle;
+    private static $asyncOptions;
+    private static $asyncTemporaryOptions;
+    private static $asyncRequestOptions;
+    private static $asyncPendingRequests;
+    private static $asyncProcessingRequests;
+    private static $asyncGetRequestCallback;
     private static $isOldCurl;
     private $handle;
     private $oldCurlMultiHandle;
@@ -27,26 +27,26 @@ class WebClient {
         array $multiOptions = null
     ) {
         if ($requests !== null && count($requests) !== 0) {
-            self::$multiPendingRequests = $requests;
+            self::$asyncPendingRequests = $requests;
         } else {
-            self::$multiPendingRequests = null;
+            self::$asyncPendingRequests = null;
         }
-        self::$multiRequestOptions = $requestOptions;
-        self::$multiProcessingRequests = array();
-        if (self::$multiHandle === null) {
-            self::$multiHandle = curl_multi_init();
-            if (self::$multiOptions === null) {
+        self::$asyncRequestOptions = $requestOptions;
+        self::$asyncProcessingRequests = array();
+        if (self::$asyncHandle === null) {
+            self::$asyncHandle = curl_multi_init();
+            if (self::$asyncOptions === null) {
                 self::initializeAsyncOptions();
             } else {
-                self::setAsyncOptions(self::$multiOptions);
+                self::setAsyncOptions(self::$asyncOptions);
             }
-        } elseif (self::$multiTemporaryOptions !== null) {
-            foreach (self::$multiTemporaryOptions as $name => $value) {
+        } elseif (self::$asyncTemporaryOptions !== null) {
+            foreach (self::$asyncTemporaryOptions as $name => $value) {
                 if (is_int($name) === false) {
                     continue;
                 }
-                if (isset(self::$multiOptions[$name])) {
-                    self::setAsyncOption($name, self::$multiOptions[$name]);
+                if (isset(self::$asyncOptions[$name])) {
+                    self::setAsyncOption($name, self::$asyncOptions[$name]);
                 } else {
                     self::setAsyncOption(
                         $name, self::getDefaultAsyncOptionValue($name)
@@ -60,12 +60,12 @@ class WebClient {
                     if (self::isOldCurl()) {
                         throw new Exception;
                     }
-                    curl_multi_setopt(self::$multiHandle, $name, $value);
+                    curl_multi_setopt(self::$asyncHandle, $name, $value);
                 }
             }
         }
-        self::$multiTemporaryOptions = $multiOptions;
-        self::$multiGetRequestCallback = self::getAsyncOption(
+        self::$asyncTemporaryOptions = $multiOptions;
+        self::$asyncGetRequestCallback = self::getAsyncOption(
             'get_request_callback'
         );
         $hasPendingRequest = true;
@@ -86,7 +86,7 @@ class WebClient {
         $isRunning = null;
         do {
             do {
-                $status = curl_multi_exec(self::$multiHandle, $isRunning);
+                $status = curl_multi_exec(self::$asyncHandle, $isRunning);
             } while ($status === CURLM_CALL_MULTI_PERFORM);
             if ($status !== CURLM_OK) {
                 $message = '';
@@ -95,11 +95,11 @@ class WebClient {
                 }
                 throw new CurlException($message, $status, 'multi');
             }
-            while ($info = curl_multi_info_read(self::$multiHandle)) {
+            while ($info = curl_multi_info_read(self::$asyncHandle)) {
                 $handleId = (int)$info['handle'];
                 list($client, $request) =
-                    self::$multiProcessingRequests[$handleId];
-                unset(self::$multiProcessingRequests[$handleId]);
+                    self::$asyncProcessingRequests[$handleId];
+                unset(self::$asyncProcessingRequests[$handleId]);
                 if ($onCompleteCallback !== null) {
                     $response = array('curl_code' => $info['result']);
                     if ($info['result'] !== CURLE_OK) {
@@ -117,10 +117,10 @@ class WebClient {
                 if ($hasPendingRequest) {
                     $hasPendingRequest = self::addAsyncRequest() !== false;
                 }
-                curl_multi_remove_handle(self::$multiHandle, $info['handle']);
+                curl_multi_remove_handle(self::$asyncHandle, $info['handle']);
             }
             if ($isRunning) {
-                $tmp = curl_multi_select(self::$multiHandle, $selectTimeout);
+                $tmp = curl_multi_select(self::$asyncHandle, $selectTimeout);
                 //https://bugs.php.net/bug.php?id=61141
                 if ($tmp === -1) {
                     usleep(100);
@@ -131,16 +131,16 @@ class WebClient {
 
     private static function addAsyncRequest() {
         $request = null;
-        if (self::$multiPendingRequests !== null) {
-            $key = key(self::$multiPendingRequests);
+        if (self::$asyncPendingRequests !== null) {
+            $key = key(self::$asyncPendingRequests);
             if ($key !== null) {
-                $request = self::$multiPendingRequests[$key];
-                unset(self::$multiPendingRequests[$key]);
+                $request = self::$asyncPendingRequests[$key];
+                unset(self::$asyncPendingRequests[$key]);
             } else {
-                self::$multiPendingRequests = null;
+                self::$asyncPendingRequests = null;
             }
-        } elseif (self::$multiGetRequestCallback !== null) {
-            $request = call_user_func(self::$multiGetRequestCallback);
+        } elseif (self::$asyncGetRequestCallback !== null) {
+            $request = call_user_func(self::$asyncGetRequestCallback);
         }
         if ($request === null) {
             return false;
@@ -150,17 +150,17 @@ class WebClient {
         }
         $class = get_called_class();
         $client = new $class;
-        if (self::$multiRequestOptions !== null) {
+        if (self::$asyncRequestOptions !== null) {
             $tmp = $request;
-            $request = self::$multiRequestOptions;
+            $request = self::$asyncRequestOptions;
             foreach ($tmp as $name => $value) {
                 $request[$name] = $value;
             }
         }
         $client->prepare($request);
-        self::$multiProcessingRequests[(int)$client->handle] =
+        self::$asyncProcessingRequests[(int)$client->handle] =
             array($client, $request);
-        curl_multi_add_handle(self::$multiHandle, $client->handle);
+        curl_multi_add_handle(self::$asyncHandle, $client->handle);
     }
 
     private static function getDefaultAsyncOptionValue($name) {
@@ -171,25 +171,25 @@ class WebClient {
     }
 
     final public static function setAsyncOptions(array $options) {
-        if (self::$multiOptions === null) {
+        if (self::$asyncOptions === null) {
             self::initializeAsyncOptions();
         }
         foreach ($options as $name => $value) {
-            self::$multiOptions[$name] = $value;
-            if (self::$multiTemporaryOptions !== null) {
-                unset(self::$multiTemporaryOptions[$name]);
+            self::$asyncOptions[$name] = $value;
+            if (self::$asyncTemporaryOptions !== null) {
+                unset(self::$asyncTemporaryOptions[$name]);
             }
-            if (self::$multiHandle !== null && is_int($name)) {
+            if (self::$asyncHandle !== null && is_int($name)) {
                 if (self::isOldCurl()) {
                     throw new Exception;
                 }
-                curl_multi_setopt(self::$multiHandle, $name, $value);
+                curl_multi_setopt(self::$asyncHandle, $name, $value);
             }
         }
     }
 
     private static function initializeAsyncOptions() {
-        self::$multiOptions = array();
+        self::$asyncOptions = array();
         $options = static::getDefaultAsyncOptions();
         if ($options !== null) {
             self::setAsyncOptions($options);
@@ -204,65 +204,65 @@ class WebClient {
         self::setAsyncOption(
             $name, self::getDefaultAsyncOptionValue($name)
         );
-        unset(self::$multiOptions[$name]);
+        unset(self::$asyncOptions[$name]);
     }
 
     protected static function getDefaultAsyncOptions() {}
 
     private static function getAsyncOption($name, $default = null) {
-        if (self::$multiTemporaryOptions !== null
-            && array_key_exists($name, self::$multiTemporaryOptions)
+        if (self::$asyncTemporaryOptions !== null
+            && array_key_exists($name, self::$asyncTemporaryOptions)
         ) {
-            return self::$multiTemporaryOptions[$name];
-        } elseif (array_key_exists($name, self::$multiOptions)) {
-            return self::$multiOptions[$name];
+            return self::$asyncTemporaryOptions[$name];
+        } elseif (array_key_exists($name, self::$asyncOptions)) {
+            return self::$asyncOptions[$name];
         }
         return $default;
     }
 
     final public static function closeAsyncHandle() {
-        if (self::$multiHandle === null) {
+        if (self::$asyncHandle === null) {
             return;
         }
-        curl_multi_close(self::$multiHandle);
-        self::$multiHandle = null;
-        self::$multiTemporaryOptions = null;
+        curl_multi_close(self::$asyncHandle);
+        self::$asyncHandle = null;
+        self::$asyncTemporaryOptions = null;
     }
 
     final public static function resetAsyncHandle() {
-        if (self::$multiHandle === null) {
-            self::$multiOptions = null;
-            self::$multiTemporaryOptions = null;
+        if (self::$asyncHandle === null) {
+            self::$asyncOptions = null;
+            self::$asyncTemporaryOptions = null;
             return;
         }
-        if (self::$multiTemporaryOptions !== null) {
-            foreach (self::$multiTemporaryOptions as $name => $value) {
-                if (self::$multiOptions !== null
-                    && array_key_exists($name, self::$multiOptions)
+        if (self::$asyncTemporaryOptions !== null) {
+            foreach (self::$asyncTemporaryOptions as $name => $value) {
+                if (self::$asyncOptions !== null
+                    && array_key_exists($name, self::$asyncOptions)
                 ) {
                     continue;
                 }
                 if (is_int($name)) {
                     curl_multi_setopt(
-                        self::$multiHandle,
+                        self::$asyncHandle,
                         $name,
                         self::getDefaultAsyncOptionValue($name)
                     );
                 }
             }
-            self::$multiTemporaryOptions = null;
+            self::$asyncTemporaryOptions = null;
         }
-        if (self::$multiOptions !== null) {
-            foreach (self::$multiOptions as $name => $value) {
+        if (self::$asyncOptions !== null) {
+            foreach (self::$asyncOptions as $name => $value) {
                 if (is_int($name)) {
                     curl_multi_setopt(
-                        self::$multiHandle,
+                        self::$asyncHandle,
                         $name,
                         self::getDefaultAsyncOptionValue($name)
                     );
                 }
             }
-            self::$multiOptions = null;
+            self::$asyncOptions = null;
         }
     }
 
