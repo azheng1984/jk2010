@@ -220,7 +220,7 @@ class WebClient {
         return $default;
     }
 
-    final public static function closeMultiHandle() {
+    final public static function closeAsyncHandle() {
         if (self::$multiHandle === null) {
             return;
         }
@@ -229,7 +229,7 @@ class WebClient {
         self::$multiTemporaryOptions = null;
     }
 
-    final public static function resetMultiHandle() {
+    final public static function resetHandle() {
         if (self::$multiHandle === null) {
             self::$multiOptions = null;
             self::$multiTemporaryOptions = null;

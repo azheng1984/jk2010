@@ -51,12 +51,12 @@ final class Logger {
         }
     }
 
-    private static function log($level, array $params) {
+    private static function log($level, array $args) {
         $handler = Config::get('hyperframework.logger.handler');
         if ($handler == null) {
-            LogHandler::log($level, $params);
+            LogHandler::log($level, $args);
         } else {
-            $handler::log($level, $params);
+            $handler::log($level, $args);
         }
     }
 

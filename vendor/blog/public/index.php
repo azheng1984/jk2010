@@ -1,5 +1,10 @@
 <?php
 namespace Hyperframework\Blog;
+$x = array();
+if ($x == false) {
+    echo 'xx'; 
+}
+exit;
 
 //$x = array();
 //var_dump(end($x));
