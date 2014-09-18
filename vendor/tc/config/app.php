@@ -9,6 +9,7 @@ return array(
         '[options] [<arg>]...',
     ), //optional, [options] <argument_name_from_command> or [options] <command> [...]
     //可以设置 generate_usage = false 配置，或 usage => false 来禁用
+    //最简单的配置，逻辑尽量用代码写
     'options' => array(
         'name-of-option',
         'name-of-option2' => 'description',
