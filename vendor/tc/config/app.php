@@ -7,7 +7,7 @@ return array(
     'usage' => array(
         '--main --opt[=<arg>] (--opt1 | --opt2 | --opt3) <arg>',
         '[options] [<arg>]...',
-    ),
+    ), //optional, [options] <argument_name_from_command> or [options] <command> [...]
     'options' => array(
         'name-of-option',
         'name-of-option2' => 'description',
