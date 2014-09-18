@@ -24,7 +24,7 @@ class WebClient {
         array $requests = null,
         $onCompleteCallback = null,
         array $requestOptions = null,
-        array $multiOptions = null
+        array $asyncOptions = null
     ) {
         if ($requests !== null && count($requests) !== 0) {
             self::$asyncPendingRequests = $requests;
@@ -54,8 +54,8 @@ class WebClient {
                 }
             }
         }
-        if ($multiOptions !== null) {
-            foreach ($multiOptions as $name => $value) {
+        if ($asyncOptions !== null) {
+            foreach ($asyncOptions as $name => $value) {
                 if (is_int($name)) {
                     if (self::isOldCurl()) {
                         throw new Exception;
@@ -64,7 +64,7 @@ class WebClient {
                 }
             }
         }
-        self::$asyncTemporaryOptions = $multiOptions;
+        self::$asyncTemporaryOptions = $asyncOptions;
         self::$asyncGetRequestCallback = self::getAsyncOption(
             'get_request_callback'
         );
