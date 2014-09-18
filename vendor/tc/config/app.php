@@ -19,13 +19,15 @@ return array(
         'name-of-option[=<arg-key>]' => 'message',
     ),
 //    'class' => 'Command', //default
-    'subcommands' => array(
-        'hello' => array(
+    'subcommands' => array( //none(subcommands = 'subcommands')
+        //subcommands or subcommands = true or subcommands = 'path'
+        'hello' => array( //inline. lazy load is supported
 //          'alias' => 'shit',
+            'usage' => '',
             'description' => 'Build application',
 //          'class' => 'HelloCommand', //default
             'options' => array(
-                'h, hi' => array('class' => 'TestOption', 'multiple'),
+                'h, hi' => array('multiple'),
                 'hi2' => array('description' => 'hello hi2'),
                 'flatoption',
             ),
