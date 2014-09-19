@@ -18,11 +18,10 @@ return array(
                 'name' => ''
             )
         ),
-        'opt[=<arg>]',
+        'x, opt[=<arg>]',
         'name-of-option',
         'name-of-option2' => 'description',
         'n, name-of-option3[=<arg-name>]' => array(
-            'class' => 'xx',
             'description' => 'x',
             'multiple',
         ),
