@@ -1,4 +1,5 @@
 <?php
+namespace Hyperframework\Cli;
 
 class CommandParser {
     public static function getOptions() {
@@ -14,5 +15,8 @@ class CommandParser {
     }
 
     public static function getSubcommandName() {
+    }
+
+    public static function getUsageName() {
     }
 }

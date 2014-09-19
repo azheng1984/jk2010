@@ -6,8 +6,9 @@ use Hyperframework\EnvironmentBuilder;
 class Runner {
     public static function run($rootNamespace, $rootPath) {
         static::initialize($rootNamespace, $rootPath);
-        $command = new $rootNamespace . '\Command';
-        $command->execute();
+        $class = $rootNamespace . '\Command';
+        $command = new $class;
+        $command->execute(array());
     }
 
     protected static function initialize($rootNamespace, $rootPath) {
@@ -15,12 +16,5 @@ class Runner {
             . 'EnvironmentBuilder.php';
         EnvironmentBuilder::run($rootNamespace, $rootPath);
         ErrorHandler::run();
-    }
-
-    protected static function prepare() {
-        return array(
-            'command' => '',
-            'app' => '',
-        );
     }
 }

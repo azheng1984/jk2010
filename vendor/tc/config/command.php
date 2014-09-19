@@ -5,10 +5,17 @@ return array(
     'version' => '1.1.1',
     'description' => 'Hyperframework CLI Tool',
     'usage' => array(
-        '--main --opt[=<arg>] (--opt1 | --opt2 | --opt3) <arg>',
-        '[options] [<arg>]...',
-    ),
+        'usage_name' => '--main --opt[=<arg>] (--opt1 | --opt2 | --opt3) <arg>',
+        '[options] [<arg>...]',
+    ), //$files
     'options' => array(
+        array(
+            'group name append option/options postfix automaticly',
+            array(
+                'name' => ''
+            )
+        ),
+        'opt[=<arg>]',
         'name-of-option',
         'name-of-option2' => 'description',
         'n, name-of-option3[=<arg-name>]' => array(
@@ -22,7 +29,7 @@ return array(
     'subcommands' => array( //none(subcommands = 'subcommands')
         //subcommands or subcommands = true or subcommands = 'path'
         'hello' => array( //inline. lazy load is supported
-//          'alias' => 'shit',
+//          'alias' => 'hill',
             'usage' => '',
             'description' => 'Build application',
 //          'class' => 'HelloCommand', //default
@@ -32,5 +39,5 @@ return array(
                 'flatoption',
             ),
         ),
-    ),
+    )
 );
