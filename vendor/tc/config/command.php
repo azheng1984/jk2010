@@ -13,7 +13,7 @@ return array(
     //最简单的配置，逻辑尽量用代码写
     'options' => array(
         array(
-            'group name append option/options postfix automaticly',
+            'group name',
             array(
                 'name' => ''
             )
