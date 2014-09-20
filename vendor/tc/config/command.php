@@ -29,8 +29,8 @@ return array(
         '--name-of-option[=<arg-key>]' => 'message',
     ),
 //    'class' => 'Command', //default
-    'subcommands' => array( //none(subcommands = 'subcommands')
-        //subcommands or subcommands = true or subcommands = 'path'
+    'subcommands' => array( // subcommands as true equals (subcommands = 'subcommands')
+        //subcommands = 'folder'
         'hello' => array( //inline. lazy load is supported
 //          'alias' => 'hill',
             'usage' => '',
