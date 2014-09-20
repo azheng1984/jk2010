@@ -1,6 +1,12 @@
 #!/usr/bin/env php
 <?php
-namespace Tc;
+//namespace Tc;
+
+$phar = new Phar('test.phar', 0, 'test.phar');
+$phar->buildFromDirectory(dirname(__FILE__) . '/test');
+$phar->setStub($phar->createDefaultStub('index.php', 'index.php'));
+$phar->compressFiles(Phar::GZ);
+exit;
 
 define('Tc\ROOT_PATH', __DIR__);
 require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'

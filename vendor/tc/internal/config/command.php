@@ -10,8 +10,6 @@ return array(
         '[options] [<arg>]...',
         '[options] [<command>]',
     ),
-    //最简单的配置，逻辑尽量用代码写
-    //  xxxx cmd -xxd lai
     'options' => array(
         array(
             'group name',
