@@ -2,7 +2,7 @@
 namespace Tc;
 
 return array(
-    'hyperframework.cli.mode' => 'complex',
+    'hyperframework.cli.command_collection.enable' => true,
     'hyperframework.asset.concatenate_manifest' => false,
     'hyperframework.asset.enable_versioning' => true,
     'hyperframework.asset.enable_proxy' => true,

@@ -2,6 +2,7 @@
 namespace Hyperframework\Cli;
 
 use Hyperframework\EnvironmentBuilder;
+use Hyperframework\Config;
 
 class Runner {
     public static function run($rootNamespace, $rootPath) {
@@ -11,16 +12,17 @@ class Runner {
 
     public static function dispatch() {
         $rootNamespace = \Hyperframework\APP_ROOT_NAMESPACE;
-        $mode = 'complex';
-        if ($mode === 'simple') {
-            $class = $rootNamespace . '\Command';
-            $command = new $class;
-            $command->execute(array());
-        } else {
+        $isCollection =
+            Config::get('hyperframework.cli.command_collection.enable') == true;
+        if ($isCollection) {
             $class = $rootNamespace . '\CommandCollection';
             $commandCollection = new $class;
             $commandCollection->execute(array());
             $class = $rootNamespace . '\Commands\HelloCommand';
+            $command = new $class;
+            $command->execute(array());
+        } else {
+            $class = $rootNamespace . '\Command';
             $command = new $class;
             $command->execute(array());
         }
