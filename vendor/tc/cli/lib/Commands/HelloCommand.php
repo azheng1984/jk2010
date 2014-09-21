@@ -11,6 +11,7 @@ class HelloCommand {
 //    }
 //
     public function execute(array $args) {
+        echo 'hi from cmd';
     }
 //
 //    public function execute(array $options, array $args) {

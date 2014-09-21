@@ -8,8 +8,6 @@ return array(
         'usage_name' => '--main --opt[=<arg>] (--opt1 | --opt2 | --opt3) <arg>',
         '--main --opt[=<arg>] (--opt1 | --opt2 | --opt3) <arg>',
         '[options] [<arg>]...',
-        '--version',
-        '--cmdopt command',
         '[options] command'
     ),
     'options' => array(
@@ -28,9 +26,8 @@ return array(
         ),
         '--name-of-option[=<arg-key>]' => 'message',
     ),
-//    'class' => 'Command', //default
-    'commands' => array( // subcommands as true equals (subcommands = 'subcommands')
-        //subcommands = 'folder'
+//    'class' => 'CommandCollection', //default null
+    'commands' => array( //subcommands = 'folder'
         'hello' => array( //inline. lazy load is supported
 //          'alias' => 'hill',
             'usage' => '',
