@@ -10,7 +10,8 @@ class Runner {
     }
 
     public static function dispatch() {
-        $mode = 'simple';
+        $rootNamespace = \Hyperframework\APP_ROOT_NAMESPACE;
+        $mode = 'complex';
         if ($mode === 'simple') {
             $class = $rootNamespace . '\Command';
             $command = new $class;
@@ -19,6 +20,9 @@ class Runner {
             $class = $rootNamespace . '\CommandCollection';
             $commandCollection = new $class;
             $commandCollection->execute(array());
+            $class = $rootNamespace . '\Commands\HelloCommand';
+            $command = new $class;
+            $command->execute(array());
         }
     }
 
