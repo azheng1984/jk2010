@@ -3,6 +3,8 @@ namespace Hyperframework\Cli;
 
 use Hyperframework\EnvironmentBuilder;
 use Hyperframework\Config;
+use Hyperframework\ConfigFileLoader;
+use Hyperframework\Cli\CommandParser;
 
 class Runner {
     public static function run($rootNamespace, $rootPath) {
@@ -14,6 +16,14 @@ class Runner {
         $rootNamespace = \Hyperframework\APP_ROOT_NAMESPACE;
         $isCollection =
             Config::get('hyperframework.cli.command_collection.enable') == true;
+        $configFileName = 'command.php';
+        if ($isCollection) {
+            $configFileName = 'command_collection.php';
+        }
+        CommandParser::run(
+            ConfigFileLoader::loadPhp($configFileName),
+            $isCollection
+        );
         if ($isCollection) {
             $class = $rootNamespace . '\CommandCollection';
             $commandCollection = new $class;
