@@ -3,6 +3,6 @@ namespace Tc;
 
 class CommandCollection {
     public function execute($options) {
-        echo 'hi from collection' . PHP_EOL;
+        echo 'Usage: tc [options] command-line' . PHP_EOL;
     }
 }
