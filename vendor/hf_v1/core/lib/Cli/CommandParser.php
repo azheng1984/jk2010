@@ -83,7 +83,7 @@ class CommandParser {
         }
         $result = array(
             'name' => $name,
-            'has_argument' => $hasArgument
+            'has_argument' => -1
         );
         if ($hasArgument) {
             if ($isEnumArgument) {
@@ -101,7 +101,11 @@ class CommandParser {
                     throw new Exception;
                 }
             }
-            $result['is_optional_argument'] = $isOptoinalArgument;
+            if ($isOptoinalArgument) {
+                $result['has_argument'] = 0;
+            } else {
+                $result['has_argument'] = 1;
+            }
         }
         return $result;
     }
