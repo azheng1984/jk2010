@@ -1,12 +1,21 @@
 <?php
 namespace Hyperframework\Blog; //$x = array();
+
+$name = 'adfas | df';
 //var_dump(end($x));
 
-//$s = microtime(true);
-////$xxx = 'x';
-//
-////$x = array();
-//for ($i = 0; $i < 100000; ++$i) {
+$s = microtime(true);
+
+//$xxx = 'x';
+//$x = array();
+//for ($i = 0; $i < 1000000; ++$i) {
+//    //strpos($name, '|');
+//    //explode('|', $name);
+//    //$name = str_replace(' | ', '|', $name);
+//    //preg_match('/^[a-zA-Z0-9-|]+$/', $name);
+//    //preg_match('/^([a-zA-Z0-9-|]|( \| ))+$/', $name);
+//    //exit;
+//    //preg_match('/^([a-zA-Z0-9-|]|( \| ))+$/', $name);
 //}
 //echo (microtime(true) - $s) * 1000;
 //exit;

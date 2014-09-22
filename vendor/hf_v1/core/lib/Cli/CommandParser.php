@@ -85,17 +85,21 @@ class CommandParser {
         if (preg_match('/^[a-zA-Z0-9-]{2,}$/', $name) !== 1) {
             throw new Exception;
         }
-        $pattern = 'a-zA-Z0-9-';
-        if ($isEnumArgument) {
-            $result['enum_values'] = array();
-            $pattern .= '|';
-            foreach (explode('|', $argumentName) as $value) {
-                $result['enum_values'] = trim($value, ' ');
-            }
-        }
         if ($hasArgument) {
-            if (preg_match('/^[' . $pattern . ']{2,}$/', $argumentName) !== 1) {
-                throw new Exception;
+            if ($isEnumArgument) {
+                $result['enum_values'] = array();
+                str_replace(' | ', '|', $argumentName);
+                if (preg_match('/^[a-zA-Z0-9-|]+$/', $argumentName) !== 1) {
+                    throw new Exception;
+                }
+                $values = explode('|', str_replace(' ', '', $argumentName));
+                foreach ($values as $value) {
+                    $result['enum_values'] = trim($value, ' ');
+                }
+            } else {
+                if (preg_match('/^[a-zA-Z0-9-]{2,}$/', $argumentName) !== 1) {
+                    throw new Exception;
+                }
             }
             $result['is_enum_argument'] = $isEnumArgument;
             $result['is_optional_argument'] = $isOptoinalArgument;
