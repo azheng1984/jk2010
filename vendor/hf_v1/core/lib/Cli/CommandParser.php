@@ -88,18 +88,13 @@ class CommandParser {
         if ($hasArgument) {
             if ($isEnumArgument) {
                 $result['argument_values'] = array();
-                str_replace(' | ', '|', $argumentName);
+                $argumentName = str_replace(' | ', '|', $argumentName);
                 if (preg_match('/^[a-zA-Z0-9-|]+$/', $argumentName) !== 1) {
                     throw new Exception;
                 }
-                $values = explode('|', str_replace(' ', '', $argumentName));
-                foreach ($values as $value) {
-                    $result['argument_values'] = trim($value, ' ');
-                }
-            } else {
-                if (preg_match('/^[a-zA-Z0-9-]{2,}$/', $argumentName) !== 1) {
-                    throw new Exception;
-                }
+                $result['argument_values'] = explode('|', $argumentName);
+            } elseif (preg_match('/^[a-zA-Z0-9-]{2,}$/', $argumentName) !== 1) {
+                throw new Exception;
             }
             if ($isOptoinalArgument) {
                 $result['has_argument'] = 0;
