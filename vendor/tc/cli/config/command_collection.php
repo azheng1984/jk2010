@@ -10,6 +10,8 @@ return array(
         '[options] [<arg>]...',
         '[options] command-line'
     ),
+    'repeatable_options' => array('-c', '--man', '--list'),
+    'mutex_options' => array('xx'),
     'options' => array(
         array(
             'group name',
@@ -17,12 +19,12 @@ return array(
                 '--name' => ''
             )
         ),
-        '-x, --opt[=(a|b|c)]',
+        '-x, --opt[=(ax-d|bd-sf|cds-fadf)]',
         '--name-of-option',
         '--name-of-option2' => 'description',
         '-n, --name-of-option3[=<arg-name>]' => array(
             'description' => 'x',
-            'multiple',
+            'repeatable',
         ),
         '--name-of-option[=<arg-key>]' => 'message',
     ),
@@ -39,7 +41,6 @@ return array(
                 '-h, --hi' => array('multiple'),
                 '--hi2' => array('description' => 'hello hi2'),
                 '--flatoption',
-                '--global-option' //display global option
             ),
         ),
     )

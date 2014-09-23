@@ -28,7 +28,9 @@ class HelloCommand {
 // */
 //    }
 //
-//    public function execute(array $options, $arg1, array $args) {
+//    public function execute($options, $arg1, array $args) {
+    //    $options->get();
+    //    $options->getAll('header');
 //    }
 //
 //    public function execute(array $options) {

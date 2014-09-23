@@ -4,7 +4,52 @@ namespace Hyperframework\Cli;
 use Exception;
 
 class CommandParser {
-    public static function parseUsage() {
+    public static function parseCommand() {
+    }
+//    -d ((-c <list>)|(-a <max>))
+//    'usage' => array(
+//        'usage_name' => '--main --opt[=<arg>] (--opt1 | --opt2 | --opt3) <arg>',
+//        '--main --opt[=<arg>] [--a --b (--c|--d|(--g [-d]))] (--opt1|--opt2|--opt3) [--x|--y|--x]<arg>',
+//        '([-h|--header] --opt[=(on|off)]|(--opt1|--opt2|--opt3[=(on|off)])) <arg>',
+//        '[options] [<arg>]...',
+//        '[options] command-line'
+//    ),
+// --c (--a|--b|--c) [--a] [--b] [<file>...]
+//   (--a|--b [--c])
+//    array(
+//        'options' => array(
+//        ),
+//        'arguments' => array(
+//
+//        ),
+//    );
+
+//$option->get();
+//$option->has('disable');
+//$option->getValues();
+
+    public static function parseUsage($usage) {
+        $length = strlen($usage);
+        $items = explode(' ', $usage);
+        for ($index = 0; $index < $length; ++$length) {
+            $char = $usage[$index];
+            if ($char === '-') {
+                //option
+            }
+            if ($char === '(') {
+                //required
+            }
+            if ($char === '[') {
+                //optional
+            }
+            if ($char === '<') {
+                //argument
+            }
+            //command-line
+        }
+    }
+
+    private static function parseUsageOption($usage, &$index) {
     }
 
     public static function parseLongOption($option) {
@@ -88,7 +133,6 @@ class CommandParser {
         if ($hasArgument) {
             if ($isEnumArgument) {
                 $result['argument_values'] = array();
-                $argumentName = str_replace(' | ', '|', $argumentName);
                 if (preg_match('/^[a-zA-Z0-9-|]+$/', $argumentName) !== 1) {
                     throw new Exception;
                 }
@@ -105,77 +149,8 @@ class CommandParser {
         return $result;
     }
 
-    public static function parseShortOption($option) {
-        $length = strlen($option);
-        if ($length < 2 || $option[0] !== '-') {
-            throw new Exception;
-        }
-        $name = $option[1];
-        $argumentName = null;
-        $isOptionalArgument = false;
-        $isEnumArgument = false;
-        $hasArgument = false;
-        for ($index = 2; $index < $length; ++$index) {
-            $char = $option[$index];
-            if ($argumentName === null) {
-                if ($hasArgument === false) {
-                    if ($char === ' ') {
-                        continue;
-                    }
-                    if ($char === '[') {
-                        if ($item[2][$length - 1] !== ']') {
-                            throw new Exception;
-                        }
-                        --$length;
-                        ++$index;
-                        if (isset($item[2][$index])
-                            && $item[2][$index] === '='
-                        ) {
-                            $isOptionalArgument = true;
-                        } else {
-                            throw new Exception;
-                        }
-                        $hasArgument = true;
-                        continue;
-                    }
-                } else {
-                    if ($char === '(') {
-                        if ($item[2][$length - 1] !== ')') {
-                            throw new Exception;
-                        }
-                        --$length;
-                        $isEnumArgument = true;
-                        $argumentName = '';
-                        continue;
-                    }
-                    if ($char === '<') {
-                        if ($item[2][$length - 1] !== '>') {
-                            throw new Exception;
-                        }
-                        --$length;
-                        $argumentName = '';
-                        continue;
-                    }
-                }
-                throw new Exception;
-            }
-            $argumentName .= $char;
-        }
-        if (ctype_alnum($name) === false) {
-            throw new Exception;
-        }
-        $result = array(
-            'name' => $name,
-            'has_argument' => $hasArgument
-        );
-        if ($hasArgument) {
-            if (preg_match('/^[a-zA-Z0-9-]+$/', $argumentName) !== 1) {
-                throw new Exception;
-            }
-            $result['is_enum_argument'] = $isEnumArgument;
-            $result['is_optional_argument'] = $isOptoinalArgument;
-        }
-        return $result;
+    public static function parseShortOption() {
+        //reuse long option parser
     }
 
     public static function run($config, $isCollection) {
@@ -193,11 +168,10 @@ class CommandParser {
                         $value = null;
                     }
                 }
-                $key = str_replace(', ', '', $key);
                 $shortOption;
                 $longOption;
-                if (strpos($key, ',') !== false) {
-                    $items = explode(',', $key);
+                if (strpos($key, ', ') !== false) {
+                    $items = explode(', ', $key);
                     if (count($items) !== 2) {
                         throw new Exception;
                     }
