@@ -193,7 +193,7 @@ class CommandParser {
                         $value = null;
                     }
                 }
-                $key = str_replace(' ', '', $key);
+                $key = str_replace(', ', '', $key);
                 $shortOption;
                 $longOption;
                 if (strpos($key, ',') !== false) {
