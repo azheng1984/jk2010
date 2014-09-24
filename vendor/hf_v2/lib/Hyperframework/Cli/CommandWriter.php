@@ -26,6 +26,9 @@ class CommandWriter {
   }
 
   private function insertEmptyLine() {
+    '-c<arg>'
+    '-c[<arg>]'
+    '-c,--cvar[=<arg>]'
     echo PHP_EOL;
     $this->isInsertEmptyLine = false;
     return;
