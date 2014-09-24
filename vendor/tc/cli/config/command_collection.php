@@ -5,10 +5,10 @@ return array(
     'version' => '1.1.1',
     'description' => 'Hyperframework CLI Tool',
     'usage' => array(
-        'usage_name' => '--main --opt[=<arg>] (--opt1 | --opt2 | --opt3) <arg>',
-        '--main --opt[=<arg>] (--opt1 | --opt2 | --opt3) <arg>',
-        '[options] [<arg>]...',
-        '[options] command-line'
+        'usage_name' => '--main --opt[=<arg>] (--opt1|--opt2|--opt3) <arg>',
+        '--main --opt[=<arg>] (--opt1opt2|--opt3)<arg>',
+        '[options] [<arg>]',
+        '[options] command'
     ),
     'repeatable_options' => array('-c', '--man', '--list'),
     'mutex_options' => array('xx'),
@@ -19,12 +19,13 @@ return array(
                 '--name' => ''
             )
         ),
-        '-x, --opt[=(ax-d|bd-sf|cds-fadf)]',
+        '-x,--opt[=(ax-d|bd-sf|cds-fadf)]',
         '--name-of-option',
         '--name-of-option2' => 'description',
-        '-n, --name-of-option3[=<arg-name>]' => array(
+        '-n,--name-of-option3[=<arg-name>]' => array(
             'description' => 'x',
             'repeatable',
+            'required'
         ),
         '--name-of-option[=<arg-key>]' => 'message',
     ),
