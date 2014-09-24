@@ -9,10 +9,11 @@ class CommandParser {
 //    -d ((-c <list>)|(-a <max>))
 //    'usage' => array(
 //        'usage_name' => '--main --opt[=<arg>] (--opt1 | --opt2 | --opt3) <arg>',
-//        '--main --opt[=<arg>] [--a --b (--c|--d|(--g [-d]))] (--opt1|--opt2|--opt3) [--x|--y|--x]<arg>',
+//        '--main --opt[=<arg>]
+//        [--a --b (--c|--d|(--g [-d]))] (--opt1|--opt2|--opt3) [--x|--y|--x]<arg>',
 //        '([-h|--header] --opt[=(on|off)]|(--opt1|--opt2|--opt3[=(on|off)])) <arg>',
 //        '[options] [<arg>]...',
-//        '[options] command-line'
+//        '[options] command'
 //    ),
 // --c (--a|--b|--c) [--a] [--b] [<file>...]
 //   (--a|--b [--c])
@@ -20,13 +21,12 @@ class CommandParser {
 //        'options' => array(
 //        ),
 //        'arguments' => array(
-//
-//        ),
+//        'arg1', '[<arg2>]', '[<arg2>]...'
 //    );
-
-//$option->get();
-//$option->has('disable');
-//$option->getValues();
+//    'Arguments:' => array(
+//        'xx' => 'xx',
+//        'xx2' => 'xx',
+//    );
 
     public static function parseUsage($usage) {
         $length = strlen($usage);
