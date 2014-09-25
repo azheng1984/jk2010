@@ -7,24 +7,16 @@ return array(
     'arguments' => array('arg1', '[arg2]...'),
     'options' => array(
         array(
-            'title' => 'f1 group',
-            '--f1' => array('repeatable'),
-            array(
-                '--good' => '',
-                '--bad' => '',
-                'mutex',
-                //'required',
-                //'repeatable'
-            )
+            '--good' => '',
+            '--bad' => '',
+            'mutex',
+            //'required',
+            //'repeatable'
         ),
         array(
-            'title' => 'f2 group',
-            '--f2' => array('repeatable'),
-            array(
-                '--slow' => '',
-                '--fast' => '',
-                'mutex',
-            )
+            '--slow' => '',
+            '--fast' => '',
+            'mutex',
         ),
         '-x,--opt[=(ax-d|bd-sf|cds-fadf)]',
         '--name-of-option',
@@ -35,14 +27,9 @@ return array(
             'required',
         ),
         '--name-of-option[=<arg-key>]' => 'message',
-        'mutex' => array(
-            '--f1', '--f2', 'required'
-        ),
     ),
 //  'class' => 'CommandCollection', //default null
     'commands' => array( //subcommands = 'folder'
-        array(
-        ),
         'hello' => array( //inline. lazy load is supported
 //          'alias' => 'hill',
             'description' => 'Build application',
