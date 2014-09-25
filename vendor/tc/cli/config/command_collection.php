@@ -4,7 +4,7 @@ return array(
     'namespace' => 'Tc',
     'version' => '1.1.1',
     'description' => 'Hyperframework CLI Tool',
-    'arguments' => array('arg1', '[arg2]...'),
+    'arguments' => array('<arg1>', '[<arg2>...]'),
     'options' => array(
         array(
             '--good' => '',
@@ -29,7 +29,7 @@ return array(
         '--name-of-option[=<arg-key>]' => 'message',
     ),
 //  'class' => 'CommandCollection', //default null
-    'commands' => array( //subcommands = 'folder'
+    'commands' => array( //or subcommands = 'folder' default to config/commands
         'hello' => array( //inline. lazy load is supported
 //          'alias' => 'hill',
             'description' => 'Build application',
