@@ -15,7 +15,7 @@ class CommandParser {
 //        '[options] [<arg>]...',
 //        '[options] command'
 //    ),
-// --c (--a|--b|--c) [--a] [--b] [<file>...]
+// (--a|--b|--c) [--good] [--bad] [<file>...]
 //   (--a|--b [--c])
 //    array(
 //        'options' => array(
@@ -170,8 +170,8 @@ class CommandParser {
                 }
                 $shortOption;
                 $longOption;
-                if (strpos($key, ', ') !== false) {
-                    $items = explode(', ', $key);
+                if (strpos($key, ',') !== false) {
+                    $items = explode(',', $key);
                     if (count($items) !== 2) {
                         throw new Exception;
                     }
@@ -182,6 +182,7 @@ class CommandParser {
                         throw new Exception;
                     }
                     $shortOption = $item[0][1];
+                    $longOption = ltrim($item[1]);
                 } else {
                 }
             }
