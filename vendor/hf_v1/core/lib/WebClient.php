@@ -808,7 +808,7 @@ class WebClient {
                     throw new Exception;
                 }
                 $size = self::getFileSize($data['file']);
-                if ($this->isLargerThanMaxInt($size)) {
+                if ($this->isLargerThanIntMax($size)) {
                     $this->addRequestHeaders(
                         array('Content-Length' => $size)
                     );
@@ -854,7 +854,7 @@ class WebClient {
         return $result;
     }
 
-    private function isLargerThanMaxInt($size) {
+    private function isLargerThanIntMax($size) {
         if (is_int($size)) {
             return false;
         }

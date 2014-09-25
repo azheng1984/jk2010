@@ -5,51 +5,78 @@ use Exception;
 
 class CommandParser {
     public static function parseCommand() {
-    }
-//    -d ((-c <list>)|(-a <max>))
-//    'usage' => array(
-//        'usage_name' => '--main --opt[=<arg>] (--opt1 | --opt2 | --opt3) <arg>',
-//        '--main --opt[=<arg>]
-//        [--a --b (--c|--d|(--g [-d]))] (--opt1|--opt2|--opt3) [--x|--y|--x]<arg>',
-//        '([-h|--header] --opt[=(on|off)]|(--opt1|--opt2|--opt3[=(on|off)])) <arg>',
-//        '[options] [<arg>]...',
-//        '[options] command'
-//    ),
-// (--a|--b|--c) [--good] [--bad] [<file>...]
-//   (--a|--b [--c])
-//    array(
-//        'options' => array(
-//        ),
-//        'arguments' => array(
-//        'arg1', '[<arg2>]', '[<arg2>]...'
-//    );
-//    'Arguments:' => array(
-//        'xx' => 'xx',
-//        'xx2' => 'xx',
-//    );
-
-    public static function parseUsage($usage) {
-        $length = strlen($usage);
-        $items = explode(' ', $usage);
-        for ($index = 0; $index < $length; ++$length) {
-            $char = $usage[$index];
-            if ($char === '-') {
-                //option
+        $count = count($_SERVER['argv']);
+        $options;
+        $arguments;
+        $isArgument = false;
+        for ($index = 1; $index < $count; ++$count) {
+            $element = $_SERVER['argv'][$index];
+            $length = strlen($element);
+            if ($length === 0
+                || $element[0] !== '-'
+                || $element === '-'
+                || $isArgument
+            ) {
             }
-            if ($char === '(') {
-                //required
+            if ($element === '--') {
+                $isArgument = true;
+                continue;
             }
-            if ($char === '[') {
-                //optional
+            if ($element[1] !== '-') {
+                //short
+                $option = $element[1];
+                if (isset($options[$option]) === false) {
+                    throw new Exception;
+                }
+            } else {
+                //long
             }
-            if ($char === '<') {
-                //argument
-            }
-            //command-line
         }
     }
 
-    private static function parseUsageOption($usage, &$index) {
+    public static function parseArgument($config) {
+        $isOptional = false;
+        $isRepeatable = false;
+        $length = strlen($config);
+        if ($length < 3) {
+            throw new Exception;
+        }
+        if ($config[0] === '[') {
+            $isOptional = true;
+            if ($config[$length - 1] !== ']') {
+                throw new Exception;
+            }
+            $config = substr($config, 1, $length - 2);
+            $length -= 2;
+            if ($length < 3) {
+                throw new Exception;
+            }
+        }
+        if ($config[0] === '<') {
+            if (substr($config, -3) === '...') {
+                $config = substr($config, 0, $length - 3);
+                $length -= 3;
+                $isRepeatable = true;
+                if ($length < 3) {
+                    throw new Exception;
+                }
+            }
+            if ($config[$length - 1] !== '>') {
+                throw new Exception;
+            }
+            $name = substr($config, 1, $length - 2);
+            if (preg_match('/^[a-zA-Z0-9-]+$/', $name) !== 1) {
+                throw new Exception;
+            } else {
+                return array(
+                    'name' => $name,
+                    'is_optional' => $isOptional,
+                    'is_repeatable' => $isRepeatable
+                );
+            }
+        } else {
+            throw new Exception;
+        }
     }
 
     public static function parseLongOption($option) {
@@ -187,9 +214,6 @@ class CommandParser {
                 }
             }
         }
-        $argv = $_SERVER['argv'];
-    //  print_r($config);
-        print_r($_SERVER);
     }
 
     public static function getOptions() {
@@ -205,8 +229,5 @@ class CommandParser {
     }
 
     public static function getCommandName() {
-    }
-
-    public static function getUsageName() {
     }
 }
