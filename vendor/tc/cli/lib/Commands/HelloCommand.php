@@ -33,8 +33,16 @@ class HelloCommand {
     //    $options->getAll('header');
 //    }
 //
-//    public function execute(array $options) {
-//    }
+    //inject_options => false 
+    // <arg> <file>...
+    // $file => <file>
+    // $file = null => [<file>]
+    // array $files => <file>...
+    // array $files = array() => [<file>...]
+    // 2 => '<arg...>' //no 3 => array('<arg...>' => 'xxxx')
+    // 自然语言语义
+    public function execute(array $options, $arg, array $files = null) {
+    }
 //
 //    public function execute(array $elements) {
 //        is_int($key); //argument
