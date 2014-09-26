@@ -25,12 +25,13 @@ class CommandParser {
                 || $isArgument
             ) {
                 if ($isCollection) {
-                    if (self::hasCommand() === false) {
+                    if (self::hasCommand($element) === false) {
                         throw new Exception;
                     }
-                    list($options, $arguments) =
+                    list($commandOptions, $arguments) =
                         self::getCommandConfig($element);
                     $isCollection = false;
+                    $options += $commandOptions;
                     continue;
                 }
                 $argCount = count($arguments);
@@ -336,9 +337,6 @@ class CommandParser {
     }
 
     public static function getElements() {
-    }
-
-    public static function getCollectionOptions() {
     }
 
     public static function getCommandName() {
