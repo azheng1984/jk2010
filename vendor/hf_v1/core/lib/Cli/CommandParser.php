@@ -204,7 +204,7 @@ class CommandParser {
         $isEnumArgument = false;
         $hasArgument = false;
         for ($index = 0; $index < $length; ++$index) {
-            $char = $item[2][$index];
+            $char = $option[$index];
             if ($index < 2) {
                 if ($char === '-') {
                     continue;
@@ -212,24 +212,19 @@ class CommandParser {
                     throw new Exception;
                 }
             }
-            if ($argumentName === null 
-                && $char !== '['
-                && $char !== '='
-            ) {
+            if ($argumentName === null && $char !== '[' && $char !== '=') {
                 $name .= $char;
                 continue;
             }
             if ($argumentName === null) {
                 if ($hasArgument === false) {
                     if ($char === '[') {
-                        if ($item[2][$length - 1] !== ']') {
+                        if ($option[$length - 1] !== ']') {
                             throw new Exception;
                         }
                         --$length;
                         ++$index;
-                        if (isset($item[2][$index])
-                            && $item[2][$index] === '='
-                        ) {
+                        if (isset($option[$index]) && $opiton[$index] === '=') {
                             $isOptionalArgument = true;
                         } else {
                             throw new Exception;
@@ -243,7 +238,7 @@ class CommandParser {
                     }
                 } else {
                     if ($char === '(') {
-                        if ($item[2][$length - 1] !== ')') {
+                        if ($option[$length - 1] !== ')') {
                             throw new Exception;
                         }
                         --$length;
@@ -252,7 +247,7 @@ class CommandParser {
                         continue;
                     }
                     if ($char === '<') {
-                        if ($item[2][$length - 1] !== '>') {
+                        if ($option[$length - 1] !== '>') {
                             throw new Exception;
                         }
                         --$length;
@@ -290,8 +285,81 @@ class CommandParser {
         return $result;
     }
 
-    public static function parseShortOption() {
-        //reuse long option parser
+    public static function parseShortOption($option) {
+        $length = strlen($option);
+        if ($length < 2) {
+            throw new Exception;
+        }
+        if ($option[0] !== '-') {
+            throw new Exception;
+        }
+        $name = $option[1];
+        $index = 2;
+        if ($length > 2 && $option[2] === ' ') {
+            $index = 3;
+        }
+        $argumentName = null;
+        $isOptionalArgument = false;
+        $isEnumArgument = false;
+        $hasArgument = false;
+        for (; $index < $length; ++$index) {
+            $char = $option[$index];
+            if ($argumentName === null) {
+                if ($hasArgument === false) {
+                    if ($char === '[') {
+                        if ($index !== 2 || $option[$length - 1] !== ']') {
+                            throw new Exception;
+                        }
+                        --$length;
+                        continue;
+                    }
+                } else {
+                    if ($char === '(') {
+                        if ($option[$length - 1] !== ')') {
+                            throw new Exception;
+                        }
+                        --$length;
+                        $isEnumArgument = true;
+                        $argumentName = '';
+                        continue;
+                    }
+                    if ($char === '<') {
+                        if ($option[$length - 1] !== '>') {
+                            throw new Exception;
+                        }
+                        --$length;
+                        $argumentName = '';
+                        continue;
+                    }
+                }
+                throw new Exception;
+            }
+            $argumentName .= $char;
+        }
+        if (preg_match('/^[a-zA-Z0-9]$/', $name) !== 1) {
+            throw new Exception;
+        }
+        $result = array(
+            'name' => $name,
+            'has_argument' => -1
+        );
+        if ($hasArgument) {
+            if ($isEnumArgument) {
+                $result['argument_values'] = array();
+                if (preg_match('/^[a-zA-Z0-9-|]+$/', $argumentName) !== 1) {
+                    throw new Exception;
+                }
+                $result['argument_values'] = explode('|', $argumentName);
+            } elseif (preg_match('/^[a-zA-Z0-9-]{2,}$/', $argumentName) !== 1) {
+                throw new Exception;
+            }
+            if ($isOptoinalArgument) {
+                $result['has_argument'] = 0;
+            } else {
+                $result['has_argument'] = 1;
+            }
+        }
+        return $result;
     }
 
     public static function run($config, $isCollection) {
