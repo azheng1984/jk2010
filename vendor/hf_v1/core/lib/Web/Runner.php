@@ -7,7 +7,7 @@ use Hyperframework\EnvironmentBuilder;
 class Runner {
     public static function run($rootNamespace, $rootPath) {
         static::initialize($rootNamespace, $rootPath);
-        if (static::isAsset()) {
+        if (self::isAssetProxyEnabled() && static::isAsset()) {
             static::runAssetProxy();
             return;
         }
@@ -21,20 +21,17 @@ class Runner {
         ErrorHandler::run();
     }
 
+    final protected static function isAssetProxyEnabled() {
+        return Config::get('hyperframework.asset.enable_proxy') === true;
+    }
+
     protected static function isAsset() {
-        if (Config::get('hyperframework.asset.enable_proxy') !== true) {
-            return false;
-        }
         $prefix = AssetPathPrefix::get() . '/';
-        if (strncmp(RequestPath::get(), $prefix, strlen($prefix)) === 0) {
-            return true;
-        }
-        return false;
+        return strncmp(RequestPath::get(), $prefix, strlen($prefix)) === 0;
     }
 
     protected static function runAssetProxy() {
-        $assetProxy = new AssetProxy;
-        $assetProxy->run();
+        AssetProxy::run();
     }
 
     protected static function runApp() {
