@@ -148,6 +148,7 @@ class CommandParser {
         }
     }
 
+    //使用自然内部接口代替刻意留给外部的接口
     //用于继承 +  construct 自动处理部分选项
     public static function getOptions() {
     }
