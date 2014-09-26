@@ -330,15 +330,15 @@ class CommandParser {
         }
     }
 
+    //用于继承 +  construct 自动处理部分选项
     public static function getOptions() {
     }
 
+    //过滤器自动验证, give argument a name
     public static function getArguments() {
     }
 
-    public static function getElements() {
-    }
-
+    //通过过滤器处理时用于区分
     public static function getCommandName() {
     }
 }
