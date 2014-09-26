@@ -39,8 +39,7 @@ class HelloCommand {
     // $file = null => [<file>]
     // array $files => <file>...
     // array $files = array() => [<file>...]
-    // 2 => '<arg...>' //no 3 => array('<arg...>' => 'xxxx')
-    // 自然语言语义
+    // 2 => '<arg>...' //no 3 => array('<arg>' => 'xxxx')
     public function execute(array $options, $arg, array $files = null) {
     }
 //

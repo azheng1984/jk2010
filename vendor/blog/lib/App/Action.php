@@ -30,7 +30,6 @@ class Action {
     }
 
     public function after($ctx) {
-        
     }
 
     public function patch($ctx) {
