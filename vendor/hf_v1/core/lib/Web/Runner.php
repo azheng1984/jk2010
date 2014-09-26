@@ -1,8 +1,8 @@
 <?php
 namespace Hyperframework\Web;
 
-use Hyperframework\Config;
 use Hyperframework\EnvironmentBuilder;
+use Hyperframework\Config;
 
 class Runner {
     public static function run($rootNamespace, $rootPath) {

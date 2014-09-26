@@ -2,17 +2,12 @@
 namespace Hyperframework\Web;
 
 class App {
-    private $isRunning;
     private $path;
     private $pathInfo;
     private $params = array();
     private $actionResult;
 
     public function run() {
-        if ($isRunning) {
-            throw new Exception;
-        }
-        $this->isRunning = true;
         $this->initialize();
         $this->executeAction();
         $this->renderView();
