@@ -6,7 +6,7 @@ return array(
     'description' => 'Hyperframework CLI Tool', //optional
     'arguments' => array('<arg1>', '<arg2>...'),
     //'inject_options' => false, //commands only, hf.cli.commands.inject_options to set all
-    // = false to disable collection & commands options injection
+    // = false to disable passing collection & commands options
     //default: use command execute function signature
     //collection must not have arguments
     'options' => array(
