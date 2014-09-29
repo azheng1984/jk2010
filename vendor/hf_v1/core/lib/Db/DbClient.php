@@ -44,7 +44,7 @@ class DbClient {
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function insert($table, $row) {
+    public static function insert($row) {
         $keys = array();
         foreach (array_keys($row) as $key) {
             $keys[] = self::quoteIdentifier($key);
@@ -84,10 +84,6 @@ class DbClient {
             'static::update',
             array_merge(array($table, $replacementColumns, $where), $params)
         );
-    }
-
-    public static function updateById($table, $columns, $id) {
-        return static::update($table, $columns, 'id = ?', $id);
     }
 
     public static function delete($table, $where/*, $mixed, ...*/) {
