@@ -6,12 +6,12 @@ class DbTable {
         return DbClient::getColumnById(static::getName(), $id, $selector);
     }
 
-    public static function getRowById($id, $selector = '*') {
-        return DbClient::getRowById(static::getName(), $id, $selector);
-    }
-
     public static function getColumnByColumns($columns, $selector) {
         return DbClient::getColumnByColumns(static::getName(), $columns, $selector);
+    }
+
+    public static function getRowById($id, $selector = '*') {
+        return DbClient::getRowById(static::getName(), $id, $selector);
     }
 
     public static function getRowByColumns($columns, $selector = '*') {
@@ -19,15 +19,6 @@ class DbTable {
             static::getName(), $columns, $selector = '*'
         );
     }
-
-    public static function save(&$row) {
-        DbClient::save(static::getName(), $row);
-    }
-
-    public static function deleteById($id) {
-        return DbClient::deleteById(static::getName(), $id);
-    }
-
 
     public static function getAllByColumns($columns, $selector = '*') {
         return DbClient::getAllByColumns(
@@ -39,21 +30,20 @@ class DbTable {
         return DbClient::insert(static::getName(), $row);
     }
 
-//    public static function update($table, $columns, $where/*, $mixed, ...*/) {
-//    }
+    public static function save(&$row) {
+        DbClient::save(static::getName(), $row);
+    }
 
     public static function updateByColumns(
         $table, $replacementColumns, $filterColumns
     ) {
     }
 
-//    public static function delete($table, $where/*, $mixed, ...*/) {
-//    }
-
-    public static function deleteById($table, $id) {
+    public static function deleteById($id) {
+        return DbClient::deleteById(static::getName(), $id);
     }
 
-    public static function deleteByColumns($table, $columns) {
+    public static function deleteByColumns($columns) {
     }
 
     protected static function getName() {
