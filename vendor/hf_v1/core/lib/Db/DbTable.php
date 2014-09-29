@@ -14,6 +14,12 @@ class DbTable {
         return DbClient::getColumnByColumns(static::getName(), $columns, $selector);
     }
 
+    public static function getRowByColumns($columns, $selector = '*') {
+        return DbClient::getRowByColumns(
+            static::getName(), $columns, $selector = '*'
+        );
+    }
+
     public static function save(&$row) {
         DbClient::save(static::getName(), $row);
     }
@@ -22,11 +28,6 @@ class DbTable {
         return DbClient::deleteById(static::getName(), $id);
     }
 
-    public static function getRowByColumns($table, $columns, $selector = '*') {
-        return DbClient::getRowByColumns(
-            static::getName(), $columns, $selector = '*'
-        );
-    }
 
     public static function getAllByColumns($columns, $selector = '*') {
         return DbClient::getAllByColumns(
@@ -35,19 +36,19 @@ class DbTable {
     }
 
     public static function insert($row) {
-        return DbClient::insert(static::getName());
+        return DbClient::insert(static::getName(), $row);
     }
 
-    public static function update($table, $columns, $where/*, $mixed, ...*/) {
-    }
+//    public static function update($table, $columns, $where/*, $mixed, ...*/) {
+//    }
 
     public static function updateByColumns(
         $table, $replacementColumns, $filterColumns
     ) {
     }
 
-    public static function delete($table, $where/*, $mixed, ...*/) {
-    }
+//    public static function delete($table, $where/*, $mixed, ...*/) {
+//    }
 
     public static function deleteById($table, $id) {
     }
@@ -64,9 +65,11 @@ class DbTable {
         return $class;
     }
 
+    //constrains
     protected static function validate() {
     }
 
+    //trigger
     protected static function onUpdating() {
     }
 
@@ -83,5 +86,11 @@ class DbTable {
     }
 
     protected static function onDeleted() {
+    }
+
+    protected static function onSelecting() {
+    }
+
+    protected static function onSelected() {
     }
 }
