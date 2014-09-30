@@ -54,33 +54,4 @@ class DbTable {
         }
         return $class;
     }
-
-    //constrains
-    protected static function validate() {
-    }
-
-    //trigger
-    protected static function onUpdating() {
-    }
-
-    protected static function onUpdated() {
-    }
-
-    protected static function onInserting() {
-    }
-
-    protected static function onInserted() {
-    }
-
-    protected static function onDeleting() {
-    }
-
-    protected static function onDeleted() {
-    }
-
-    protected static function onSelecting() {
-    }
-
-    protected static function onSelected() {
-    }
 }
