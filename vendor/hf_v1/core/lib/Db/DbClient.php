@@ -10,8 +10,8 @@ class DbClient {
     public static function getHandler($name) {
         $productHandler = DbClient::getHandler('Product');
         $productHandler->getColumnByColumns(array('name' => 'xxx'));
-        $productHandler->isValid();
-        $productHandler->isValidForUpdate();
+        $productHandler->isValid($product);
+        $productHandler->isValidForUpdate($partial);
     }
 
     public static function getColumn($sql/*, $mixed, ...*/) {
