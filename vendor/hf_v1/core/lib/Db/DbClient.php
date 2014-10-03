@@ -45,9 +45,7 @@ class DbClient {
     }
 
     public static function count($table) {
-        return static::getColumn(
-            'SELECT COUNT(*) FROM ' . self::quoteIdentifier($table)
-        );
+        return static::calculate($table, '*', 'COUNT');
     }
 
     public static function min($table, $columnName) {
@@ -196,7 +194,9 @@ class DbClient {
 
     private static function calculate($table, $columnName, $function) {
         $table = self::quoteIdentifier($table);
-        $columnName = self::quoteIdentifier($columnName);
+        if ($columnName !== '*') {
+            $columnName = self::quoteIdentifier($columnName);
+        }
         return static::getColumn(
             'SELECT ' . $function . '(' . $columnName . ') FROM ' . $table
         );
