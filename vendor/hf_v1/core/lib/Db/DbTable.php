@@ -3,6 +3,7 @@ namespace Hyperframework\Db;
 
 abstract class DbTable {
     private static $client;
+    private $name;
 
     protected function getClient() {
         if (self::$client === null) {
@@ -69,14 +70,17 @@ abstract class DbTable {
     }
 
     protected function getName() {
-        $class = get_called_class();
-        $position = strrpos($name, '\\');
-        if ($position !== false) {
-            $class = substr($class, $position + 1);
+        if ($this->name === null) {
+            $class = get_called_class();
+            $position = strrpos($name, '\\');
+            if ($position !== false) {
+                $class = substr($class, $position + 1);
+            }
+            if (strncmp('Db', $class, 2) !== 0) {
+                throw new Exception;
+            }
+            $this->name = substr($class, 2);
         }
-        if (strncmp('Db', $class, 2) !== 0) {
-            throw new Exception;
-        }
-        return substr($class, 2);
+        return $this->name;
     }
 }
