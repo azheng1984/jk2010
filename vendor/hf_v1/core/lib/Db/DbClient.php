@@ -45,7 +45,7 @@ class DbClient {
     }
 
     public static function count($table) {
-        return static::calculate($table, '*', 'COUNT');
+        return self::calculate($table, '*', 'COUNT');
     }
 
     public static function min($table, $columnName) {
