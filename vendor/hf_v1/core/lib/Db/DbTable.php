@@ -42,7 +42,7 @@ abstract class DbTable {
     public function update($columns, $where/*, ...*/) {
         $args = func_get_args();
         array_unshift($args, $this->getTableName());
-        call_user_func_array(array($this->getClient(), 'update'), $args);
+        return call_user_func_array(array($this->getClient(), 'update'), $args);
     }
 
     public function updateByColumns($replacementColumns, $filterColumns) {
@@ -58,7 +58,7 @@ abstract class DbTable {
     public function delete($where/*, ...*/) {
         $args = func_get_args();
         array_unshift($args, $this->getTableName());
-        call_user_func_array(array($this->getClient(), 'delete'), $args);
+        return call_user_func_array(array($this->getClient(), 'delete'), $args);
     }
 
     public function deleteById($id) {
@@ -66,7 +66,9 @@ abstract class DbTable {
     }
 
     public function deleteByColumns($columns) {
-        $productHandler = DbClient::getHandler('Product');
+        return $this->getClient()->deleteByColumns(
+            $this->getTableName(), $columns
+        );
     }
 
     protected function getClient() {
