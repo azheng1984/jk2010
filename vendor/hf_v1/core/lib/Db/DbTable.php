@@ -1,57 +1,66 @@
 <?php
 namespace Hyperframework\Db;
 
-class DbTable {
-    public static function getColumnById($id, $selector) {
+abstract class DbTable {
+    public function getColumnById($id, $selector) {
         return DbClient::getColumnById(static::getName(), $id, $selector);
     }
 
-    public static function getColumnByColumns($columns, $selector) {
+    public function getColumnByColumns($columns, $selector) {
         return DbClient::getColumnByColumns(static::getName(), $columns, $selector);
     }
 
-    public static function getRowById($id, $selector = '*') {
+    public function getRowById($id, $selector = '*') {
         return DbClient::getRowById(static::getName(), $id, $selector);
     }
 
-    public static function getRowByColumns($columns, $selector = '*') {
+    public function getRowByColumns($columns, $selector = '*') {
         return DbClient::getRowByColumns(
             static::getName(), $columns, $selector = '*'
         );
     }
 
-    public static function getAllByColumns($columns, $selector = '*') {
+    public function getAllByColumns($columns, $selector = '*') {
         return DbClient::getAllByColumns(
             static::getName(), $columns, $selector = '*'
         );
     }
 
-    public static function insert($row) {
-        return DbClient::insert(static::getName(), $row);
+    public function insert($row) {
+        return DbClient::insert(static::getTableName(), $row);
     }
 
-    public static function save(&$row) {
+    public function save(&$row) {
         DbClient::save(static::getName(), $row);
     }
 
-    public static function updateByColumns(
+    public function update($columns, $where/*, ...*/) {
+    }
+
+    public function updateByColumns(
         $table, $replacementColumns, $filterColumns
     ) {
     }
 
-    public static function deleteById($id) {
+    public function delete($where/*, ...*/) {
+    }
+
+    public function deleteById($id) {
         return DbClient::deleteById(static::getName(), $id);
     }
 
-    public static function deleteByColumns($columns) {
+    public function deleteByColumns($columns) {
     }
 
-    protected static function getName() {
+    protected function getName() {
         $class = get_called_class();
-        $position = strrpos($class, '\\');
+        $position = strrpos($name, '\\');
         if ($position !== false) {
-            return substr($class, $position + 1);
+            $class = substr($class, $position + 1);
         }
-        return $class;
+        if (strncmp('Db', $class, 2) !== 0) {
+            throw new Exception;
+        }
+        return substr($class, 2);
     }
 }

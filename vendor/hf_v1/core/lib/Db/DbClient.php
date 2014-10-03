@@ -5,6 +5,15 @@ use PDO;
 use Exception;
 
 class DbClient {
+    private static $handlers = array();
+
+    public static function getHandler($name) {
+        $productHandler = DbClient::getHandler('Product');
+        $productHandler->getColumnByColumns(array('name' => 'xxx'));
+        $productHandler->isValid();
+        $productHandler->isValidForUpdate();
+    }
+
     public static function getColumn($sql/*, $mixed, ...*/) {
         $statement= static::query(func_get_args())->fetchColumn();
     }
