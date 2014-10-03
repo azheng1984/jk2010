@@ -36,6 +36,28 @@ abstract class DbTable {
         );
     }
 
+    public static function count() {
+        return static::getClient()->count(static::getTableName());
+    }
+
+    public static function min($columnName) {
+        return static::getClient()->min(static::getTableName(), $columnName);
+    }
+
+    public static function max($columnName) {
+        return static::getClient()->max(static::getTableName(), $columnName);
+    }
+
+    public static function sum($columnName) {
+        return static::getClient()->sum(static::getTableName(), $columnName);
+    }
+
+    public static function average($columnName) {
+        return static::getClient()->average(
+            static::getTableName(), $columnName
+        );
+    }
+
     public static function insert($row) {
         return static::getClient()->insert(
             static::getTableName(), $row

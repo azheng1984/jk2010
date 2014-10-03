@@ -44,6 +44,28 @@ class DbClient {
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public static function count($table) {
+        return static::getColumn(
+            'SELECT COUNT(*) FROM ' . self::quoteIdentifier($table)
+        );
+    }
+
+    public static function min($table, $columnName) {
+        return self::calculate($table, $columnName, 'MIN');
+    }
+
+    public static function max($table, $columnName) {
+        return self::calculate($table, $columnName, 'MAX');
+    }
+
+    public static function sum($table, $columnName) {
+        return self::calculate($table, $columnName, 'SUM');
+    }
+
+    public static function average($table, $columnName) {
+        return self::calculate($table, $columnName, 'AVG');
+    }
+
     public static function insert($row) {
         $keys = array();
         foreach (array_keys($row) as $key) {
@@ -170,6 +192,14 @@ class DbClient {
 
     protected static function getConnection() {
         return DbContext::getConnection();
+    }
+
+    private static function calculate($table, $columnName, $function) {
+        $table = self::quoteIdentifier($table);
+        $columnName = self::quoteIdentifier($columnName);
+        return static::getColumn(
+            'SELECT ' . $function . '(' . $columnName . ') FROM ' . $table
+        );
     }
 
     private static function query($params) {
