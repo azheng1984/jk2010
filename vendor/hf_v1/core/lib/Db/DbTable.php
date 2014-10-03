@@ -58,50 +58,14 @@ abstract class DbTable {
         );
     }
 
-    public static function insert($row) {
-        return static::getClient()->insert(
-            static::getTableName(), $row
-        );
-    }
-
-    public static function update($columns, $where/*, ...*/) {
-        $args = func_get_args();
-        array_unshift($args, static::getTableName());
-        return call_user_func_array(
-            array(static::getClient(), 'update'), $args
-        );
-    }
-
-    public static function updateByColumns(
-        $replacementColumns, $filterColumns
-    ) {
-        return static::getClient()->updateByColumns(
-            static::getTableName(), $replacementColumns, $filterColumns
-        );
-    }
-
     public static function save(&$row) {
         return static::getClient()->save(
             static::getTableName(), $row
         );
     }
 
-    public static function delete($where/*, ...*/) {
-        $args = func_get_args();
-        array_unshift($args, static::getTableName());
-        return call_user_func_array(
-            array(static::getClient(), 'delete'), $args
-        );
-    }
-
     public static function deleteById($id) {
         return static::getClient()->deleteById(static::getTableName(), $id);
-    }
-
-    public static function deleteByColumns($columns) {
-        return static::getClient()->deleteByColumns(
-            static::getTableName(), $columns
-        );
     }
 
     protected static function getClient() {
