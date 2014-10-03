@@ -1,23 +1,6 @@
 <?php
 namespace Hyperframework\Blog; //$x = array();
 
-class x {
-    private $x = 'x';
-}
-
-class y {
-    private static $x = 'y';
-
-    static public function xx() {
-        echo self::$x;
-    }
-}
-
-$y = new y;
-$y->xx();
-
-exit;
-
 $name = 'adfas | df';
 //var_dump(end($x));
 

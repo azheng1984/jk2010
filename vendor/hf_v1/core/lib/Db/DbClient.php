@@ -6,7 +6,7 @@ use Exception;
 
 class DbClient {
     public static function getColumn($sql/*, $mixed, ...*/) {
-        $statement= static::query(func_get_args())->fetchColumn();
+        return static::query(func_get_args())->fetchColumn();
     }
 
     public static function getColumnByColumns($table, $columns, $selector) {

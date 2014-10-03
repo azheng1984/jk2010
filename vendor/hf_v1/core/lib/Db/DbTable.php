@@ -115,7 +115,7 @@ abstract class DbTable {
         $instance = self::getInstance();
         if ($instance->name === null) {
             $class = get_called_class();
-            $position = strrpos($name, '\\');
+            $position = strrpos($class, '\\');
             if ($position !== false) {
                 $class = substr($class, $position + 1);
             }

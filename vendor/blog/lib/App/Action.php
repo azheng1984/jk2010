@@ -15,6 +15,7 @@ class Action {
     public function before() {
         //throw new hi('hhi', null);
         //print_r($_SERVER);
+        var_dump(\Hyperframework\Blog\Db\DbArticle::count());
         CsrfProtection::run();
         Logger::info(
             'name.hi', array('hello %s', 'az'), array('happy' => array("l\ni\n\nfe\n"))
