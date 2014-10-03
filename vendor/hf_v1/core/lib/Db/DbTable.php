@@ -3,83 +3,93 @@ namespace Hyperframework\Db;
 
 abstract class DbTable {
     private static $client;
+    private static $instances = array();
     private $name;
 
     public function getColumnById($id, $selector) {
-        return $this->getClient()->getColumnById(
-            $this->getTableName(), $id, $selector
+        return static::getClient()->getColumnById(
+            static::getTableName(), $id, $selector
         );
     }
 
     public function getColumnByColumns($columns, $selector) {
-        return $this->getClient()->getColumnByColumns(
-            $this->getTableName(), $columns, $selector
+        return static::getClient()->getColumnByColumns(
+            static::getTableName(), $columns, $selector
         );
     }
 
     public function getRowById($id, $selector = '*') {
-        return $this->getClient()->getRowById(
-            $this->getTableName(), $id, $selector
+        return static::getClient()->getRowById(
+            static::getTableName(), $id, $selector
         );
     }
 
     public function getRowByColumns($columns, $selector = '*') {
-        return $this->getClient()->getRowByColumns(
-            $this->getTableName(), $columns, $selector = '*'
+        return static::getClient()->getRowByColumns(
+            static::getTableName(), $columns, $selector = '*'
         );
     }
 
     public function getAllByColumns($columns, $selector = '*') {
-        return $this->getClient()->getAllByColumns(
-            $this->getTableName(), $columns, $selector = '*'
+        return static::getClient()->getAllByColumns(
+            static::getTableName(), $columns, $selector = '*'
         );
     }
 
     public function insert($row) {
-        return $this->getClient()->insert($this->getTableName(), $row);
+        return static::getClient()->insert(
+            static::getTableName(), $row
+        );
     }
 
     public function update($columns, $where/*, ...*/) {
         $args = func_get_args();
-        array_unshift($args, $this->getTableName());
-        return call_user_func_array(array($this->getClient(), 'update'), $args);
+        array_unshift($args, static::getTableName());
+        return call_user_func_array(
+            array(static::getClient(), 'update'), $args
+        );
     }
 
     public function updateByColumns($replacementColumns, $filterColumns) {
-        return $this->getClient()->updateByColumns(
-            $this->getTableName(), $replacementColumns, $filterColumns
+        return static::getClient()->updateByColumns(
+            static::getTableName(), $replacementColumns, $filterColumns
         );
     }
 
     public function save(&$row) {
-        return $this->getClient()->save($this->getTableName(), $row);
+        return static::getClient()->save(
+            static::getTableName(), $row
+        );
     }
 
     public function delete($where/*, ...*/) {
         $args = func_get_args();
-        array_unshift($args, $this->getTableName());
-        return call_user_func_array(array($this->getClient(), 'delete'), $args);
-    }
-
-    public function deleteById($id) {
-        return $this->getClient()->deleteById($this->getTableName(), $id);
-    }
-
-    public function deleteByColumns($columns) {
-        return $this->getClient()->deleteByColumns(
-            $this->getTableName(), $columns
+        array_unshift($args, static::getTableName());
+        return call_user_func_array(
+            array(static::getClient(), 'delete'), $args
         );
     }
 
-    protected function getClient() {
+    public function deleteById($id) {
+        return static::getClient()->deleteById(static::getTableName(), $id);
+    }
+
+    public function deleteByColumns($columns) {
+        return static::getClient()->deleteByColumns(
+            static::getTableName(), $columns
+        );
+    }
+
+    protected static function getClient() {
         if (self::$client === null) {
             self::$client = new DbClient;
         }
         return self::$client;
     }
 
-    protected function getTableName() {
-        if ($this->name === null) {
+    protected static function getTableName() {
+        $instance = self::getInstance();
+        if ($instance->name === null) {
             $class = get_called_class();
             $position = strrpos($name, '\\');
             if ($position !== false) {
@@ -88,8 +98,16 @@ abstract class DbTable {
             if (strncmp('Db', $class, 2) !== 0) {
                 throw new Exception;
             }
-            $this->name = substr($class, 2);
+            $instance->name = substr($class, 2);
         }
-        return $this->name;
+        return $instance->name;
+    }
+
+    final protected static function getInstance() {
+        $class = get_called_class();
+        if (isset(self::$instances[$class]) === false) {
+            self::$instances[$class] = new $class;
+        }
+        return self::$instances[$class];
     }
 }
