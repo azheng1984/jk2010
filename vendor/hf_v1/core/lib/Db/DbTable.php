@@ -2,8 +2,8 @@
 namespace Hyperframework\Db;
 
 abstract class DbTable {
-    private static $client;
     private static $instances = array();
+    private static $client;
     private $name;
 
     public function getColumnById($id, $selector) {
