@@ -6,43 +6,43 @@ abstract class DbTable {
     private static $client;
     private $name;
 
-    public function getColumnById($id, $selector) {
+    public static function getColumnById($id, $selector) {
         return static::getClient()->getColumnById(
             static::getTableName(), $id, $selector
         );
     }
 
-    public function getColumnByColumns($columns, $selector) {
+    public static function getColumnByColumns($columns, $selector) {
         return static::getClient()->getColumnByColumns(
             static::getTableName(), $columns, $selector
         );
     }
 
-    public function getRowById($id, $selector = '*') {
+    public static function getRowById($id, $selector = '*') {
         return static::getClient()->getRowById(
             static::getTableName(), $id, $selector
         );
     }
 
-    public function getRowByColumns($columns, $selector = '*') {
+    public static function getRowByColumns($columns, $selector = '*') {
         return static::getClient()->getRowByColumns(
             static::getTableName(), $columns, $selector = '*'
         );
     }
 
-    public function getAllByColumns($columns, $selector = '*') {
+    public static function getAllByColumns($columns, $selector = '*') {
         return static::getClient()->getAllByColumns(
             static::getTableName(), $columns, $selector = '*'
         );
     }
 
-    public function insert($row) {
+    public static function insert($row) {
         return static::getClient()->insert(
             static::getTableName(), $row
         );
     }
 
-    public function update($columns, $where/*, ...*/) {
+    public static function update($columns, $where/*, ...*/) {
         $args = func_get_args();
         array_unshift($args, static::getTableName());
         return call_user_func_array(
@@ -50,19 +50,19 @@ abstract class DbTable {
         );
     }
 
-    public function updateByColumns($replacementColumns, $filterColumns) {
+    public static function updateByColumns($replacementColumns, $filterColumns) {
         return static::getClient()->updateByColumns(
             static::getTableName(), $replacementColumns, $filterColumns
         );
     }
 
-    public function save(&$row) {
+    public static function save(&$row) {
         return static::getClient()->save(
             static::getTableName(), $row
         );
     }
 
-    public function delete($where/*, ...*/) {
+    public static function delete($where/*, ...*/) {
         $args = func_get_args();
         array_unshift($args, static::getTableName());
         return call_user_func_array(
@@ -70,11 +70,11 @@ abstract class DbTable {
         );
     }
 
-    public function deleteById($id) {
+    public static function deleteById($id) {
         return static::getClient()->deleteById(static::getTableName(), $id);
     }
 
-    public function deleteByColumns($columns) {
+    public static function deleteByColumns($columns) {
         return static::getClient()->deleteByColumns(
             static::getTableName(), $columns
         );
