@@ -14,55 +14,62 @@ abstract class DbTable {
 
     public function getColumnById($id, $selector) {
         return $this->getClient()->getColumnById(
-            $this->getName(), $id, $selector
+            $this->getTableName(), $id, $selector
         );
-        $productDao = DbClient::getDao('Product');
-        $productDao->getRowById('');
     }
 
     public function getColumnByColumns($columns, $selector) {
         return $this->getClient()->getColumnByColumns(
-            $this->getName(), $columns, $selector
+            $this->getTableName(), $columns, $selector
         );
     }
 
     public function getRowById($id, $selector = '*') {
-        return $this->getClient()->getRowById($this->getName(), $id, $selector);
+        return $this->getClient()->getRowById(
+            $this->getTableName(), $id, $selector
+        );
     }
 
     public function getRowByColumns($columns, $selector = '*') {
         return $this->getClient()->getRowByColumns(
-            $this->getName(), $columns, $selector = '*'
+            $this->getTableName(), $columns, $selector = '*'
         );
     }
 
     public function getAllByColumns($columns, $selector = '*') {
         return $this->getClient()->getAllByColumns(
-            $this->getName(), $columns, $selector = '*'
+            $this->getTableName(), $columns, $selector = '*'
         );
     }
 
     public function insert($row) {
-        return $this->getClient()->insert($this->getName(), $row);
+        return $this->getClient()->insert($this->getTableName(), $row);
     }
 
     public function update($columns, $where/*, ...*/) {
+        $args = func_get_args();
+        array_unshift($args, $this->getTableName());
+        call_user_func_array(array($this->getClient(), 'update'), $args);
     }
 
-    public function updateByColumns(
-        $table, $replacementColumns, $filterColumns
-    ) {
+    public function updateByColumns($replacementColumns, $filterColumns) {
+        return $this->getClient()->updateByColumns(
+            $this->getTableName(), $replacementColumns, $filterColumns
+        );
     }
 
     public function save(&$row) {
-        return $this->getClient()->save($this->getName(), $row);
+        return $this->getClient()->save($this->getTableName(), $row);
     }
 
     public function delete($where/*, ...*/) {
+        $args = func_get_args();
+        array_unshift($args, $this->getTableName());
+        call_user_func_array(array($this->getClient(), 'delete'), $args);
     }
 
     public function deleteById($id) {
-        return $this->getClient()->deleteById($this->getName(), $id);
+        return $this->getClient()->deleteById($this->getTableName(), $id);
     }
 
     public function deleteByColumns($columns) {
