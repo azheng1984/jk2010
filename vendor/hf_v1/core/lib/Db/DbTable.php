@@ -5,13 +5,6 @@ abstract class DbTable {
     private static $client;
     private $name;
 
-    protected function getClient() {
-        if (self::$client === null) {
-            self::$client = new DbClient;
-        }
-        return self::$client;
-    }
-
     public function getColumnById($id, $selector) {
         return $this->getClient()->getColumnById(
             $this->getTableName(), $id, $selector
@@ -74,6 +67,13 @@ abstract class DbTable {
 
     public function deleteByColumns($columns) {
         $productHandler = DbClient::getHandler('Product');
+    }
+
+    protected function getClient() {
+        if (self::$client === null) {
+            self::$client = new DbClient;
+        }
+        return self::$client;
     }
 
     protected function getTableName() {
