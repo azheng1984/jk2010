@@ -5,18 +5,6 @@ use PDO;
 use Exception;
 
 class DbClient {
-    private static $daos = array();
-
-    public static function getDao($name) {
-        if ($name[0] !== '\\') {
-        }
-        if (isset(self::$daos[$name]) === false) {
-            $class = \Hyperframework\APP_ROOT_NAMESPACE . '\Db\Db' . $name;
-            self::$daos[$name] = new $class;
-        }
-        return self::$daos[$name];
-    }
-
     public static function getColumn($sql/*, $mixed, ...*/) {
         $statement= static::query(func_get_args())->fetchColumn();
     }
