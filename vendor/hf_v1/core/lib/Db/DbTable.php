@@ -59,9 +59,7 @@ abstract class DbTable {
     }
 
     public static function save(&$row) {
-        return static::getClient()->save(
-            static::getTableName(), $row
-        );
+        return static::getClient()->save(static::getTableName(), $row);
     }
 
     public static function deleteById($id) {
