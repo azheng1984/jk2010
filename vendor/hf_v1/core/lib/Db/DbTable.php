@@ -72,7 +72,9 @@ abstract class DbTable {
         );
     }
 
-    public static function updateByColumns($replacementColumns, $filterColumns) {
+    public static function updateByColumns(
+        $replacementColumns, $filterColumns
+    ) {
         return static::getClient()->updateByColumns(
             static::getTableName(), $replacementColumns, $filterColumns
         );

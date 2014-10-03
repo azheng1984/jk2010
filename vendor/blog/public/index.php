@@ -6,10 +6,10 @@ class x {
 }
 
 class y {
-    private $x = 'y';
+    private static $x = 'y';
 
-    public function xx() {
-        echo $this->x;
+    static public function xx() {
+        echo self::$x;
     }
 }
 
