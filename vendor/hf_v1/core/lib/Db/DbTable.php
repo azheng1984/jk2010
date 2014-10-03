@@ -26,13 +26,13 @@ abstract class DbTable {
 
     public static function getRowByColumns($columns, $selector = '*') {
         return static::getClient()->getRowByColumns(
-            static::getTableName(), $columns, $selector = '*'
+            static::getTableName(), $columns, $selector
         );
     }
 
     public static function getAllByColumns($columns, $selector = '*') {
         return static::getClient()->getAllByColumns(
-            static::getTableName(), $columns, $selector = '*'
+            static::getTableName(), $columns, $selector
         );
     }
 
