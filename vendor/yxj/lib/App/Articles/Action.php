@@ -21,6 +21,9 @@ class Action extends \Yxj\Actions\ArticleAction {
         $categoryId = $app->getParam('id_0');
         $article = new ArticleInputMapper::execute();
         if ($article !== null) {
+            DbClient::insert('article', $article);
+            DbClient::getHandler('Article');
+            $article = DbClient::getHandler('Article');
             Db::insert('article', $article);
         }
         return ArticleInputMapper::getErrors();

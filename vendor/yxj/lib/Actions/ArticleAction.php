@@ -65,6 +65,9 @@ abstract class ArticleAction {
             if (isset($data['id'])) {
                 $userId = DbArticle::getUserIdById($data['id']);
                 if ($userId === $this->user['id']) {
+                    $articleDao = DbClient::getDao('Article');
+                    DbClient::getDao('Article')->save($data);
+                    DbArticle::save($data);
                     DbArticle::updateDifference($data, $article);
                 } else {
                     //http 401 

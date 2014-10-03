@@ -2,36 +2,47 @@
 namespace Hyperframework\Db;
 
 abstract class DbTable {
+    private static $client;
+
+    protected function getClient() {
+        if (self::$client === null) {
+            self::$client = new DbClient;
+        }
+        return self::$client;
+    }
+
     public function getColumnById($id, $selector) {
-        return DbClient::getColumnById(static::getName(), $id, $selector);
+        return $this->getClient()->getColumnById(
+            $this->getName(), $id, $selector
+        );
+        $productDao = DbClient::getDao('Product');
+        $productDao->getRowById('');
     }
 
     public function getColumnByColumns($columns, $selector) {
-        return DbClient::getColumnByColumns(static::getName(), $columns, $selector);
+        return $this->getClient()->getColumnByColumns(
+            $this->getName(), $columns, $selector
+        );
     }
 
     public function getRowById($id, $selector = '*') {
-        return DbClient::getRowById(static::getName(), $id, $selector);
+        return $this->getClient()->getRowById($this->getName(), $id, $selector);
     }
 
     public function getRowByColumns($columns, $selector = '*') {
-        return DbClient::getRowByColumns(
-            static::getName(), $columns, $selector = '*'
+        return $this->getClient()->getRowByColumns(
+            $this->getName(), $columns, $selector = '*'
         );
     }
 
     public function getAllByColumns($columns, $selector = '*') {
-        return DbClient::getAllByColumns(
-            static::getName(), $columns, $selector = '*'
+        return $this->getClient()->getAllByColumns(
+            $this->getName(), $columns, $selector = '*'
         );
     }
 
     public function insert($row) {
-        return DbClient::insert(static::getTableName(), $row);
-    }
-
-    public function save(&$row) {
-        DbClient::save(static::getName(), $row);
+        return $this->getClient()->insert($this->getName(), $row);
     }
 
     public function update($columns, $where/*, ...*/) {
@@ -42,14 +53,19 @@ abstract class DbTable {
     ) {
     }
 
+    public function save(&$row) {
+        return $this->getClient()->save($this->getName(), $row);
+    }
+
     public function delete($where/*, ...*/) {
     }
 
     public function deleteById($id) {
-        return DbClient::deleteById(static::getName(), $id);
+        return $this->getClient()->deleteById($this->getName(), $id);
     }
 
     public function deleteByColumns($columns) {
+        $productHandler = DbClient::getHandler('Product');
     }
 
     protected function getName() {

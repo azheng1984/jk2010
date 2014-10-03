@@ -1,5 +1,5 @@
 <?php
-namespace Yxj\Model;
+namespace Yxj\Db;
 
 use Hyeprframework\Db\DbTable;
 

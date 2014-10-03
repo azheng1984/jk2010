@@ -13,7 +13,7 @@ class Html extends AbstractHtml {
         $articleId = $_GET['#id-1'];
 
         $result = \Yxj\Biz\Product::logic();
-        $data = \Yxj\Db\DbProduct::getById($id);
+        $data = DbProduct::getRowById($id);
         echo '<title>优选集 - 品牌消费社区</title>';
         $this->categoryList = Db::getAll(
             'SELECT * FROM category WHERE parent_id = 0 AND is_active = 1'

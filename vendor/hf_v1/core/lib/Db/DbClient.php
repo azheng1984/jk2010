@@ -5,13 +5,14 @@ use PDO;
 use Exception;
 
 class DbClient {
-    private static $handlers = array();
+    private static $daos = array();
 
-    public static function getHandler($name) {
-        $productHandler = DbClient::getHandler('Product');
-        $productHandler->getColumnByColumns(array('name' => 'xxx'));
-        $productHandler->isValid($product);
-        $productHandler->isValidForUpdate($partial);
+    public static function getDao($name) {
+        if (isset(self::$daos[$name]) === false) {
+            $class = \Hyperframework\APP_ROOT_NAMESPACE . '\Db\Db' . $name;
+            self::$daos[$name] = new $class;
+        }
+        return self::$daos[$name];
     }
 
     public static function getColumn($sql/*, $mixed, ...*/) {

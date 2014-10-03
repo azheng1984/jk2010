@@ -1,6 +1,23 @@
 <?php
 namespace Hyperframework\Blog; //$x = array();
 
+class x {
+    private $x = 'x';
+}
+
+class y {
+    private $x = 'y';
+
+    public function xx() {
+        echo $this->x;
+    }
+}
+
+$y = new y;
+$y->xx();
+
+exit;
+
 $name = 'adfas | df';
 //var_dump(end($x));
 
