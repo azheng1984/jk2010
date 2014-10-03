@@ -69,7 +69,7 @@ abstract class DbTable {
         $productHandler = DbClient::getHandler('Product');
     }
 
-    protected function getName() {
+    protected function getTableName() {
         if ($this->name === null) {
             $class = get_called_class();
             $position = strrpos($name, '\\');
