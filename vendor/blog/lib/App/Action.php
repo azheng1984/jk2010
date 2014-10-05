@@ -18,8 +18,8 @@ class Action {
         var_dump(\Hyperframework\Blog\Db\DbArticle::count());
         var_dump(\Hyperframework\Db\DbClient::inTransaction());
 
-        $row = DbCache::get('Product', $id);
-        DbCache::delete('Product', $id);
+        $row = DbProduct::getCacheById($id);
+        DbProduct::deleteCacheById($id);
 
         DbClient::getRowById();
         DbClient::getById($id, $modificationTime, $columnNames);

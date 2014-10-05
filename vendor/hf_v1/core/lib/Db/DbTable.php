@@ -24,6 +24,12 @@ abstract class DbTable {
         );
     }
 
+    public static function getCacheById($id, $mixed = null) {
+    }
+
+    public static function deleteCacheById($id) {
+    }
+
     public static function getRowByColumns(
         $columns, array $columnNames = null
     ) {
