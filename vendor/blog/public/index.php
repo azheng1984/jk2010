@@ -1,10 +1,10 @@
 <?php
 namespace Hyperframework\Blog; //$x = array();
 
-$name = 'adfas | df';
+
 //var_dump(end($x));
 
-$s = microtime(true);
+//$s = microtime(true);
 
 //$xxx = 'x';
 //$x = array();

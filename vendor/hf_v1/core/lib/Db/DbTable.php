@@ -6,33 +6,37 @@ abstract class DbTable {
     private static $client;
     private $name;
 
-    public static function getColumnById($id, $selector) {
+    public static function getColumnById($id, $columnName) {
         return static::getClient()->getColumnById(
-            static::getTableName(), $id, $selector
+            static::getTableName(), $id, $columnName
         );
     }
 
-    public static function getColumnByColumns($columns, $selector) {
+    public static function getColumnByColumns($columns, $columnName) {
         return static::getClient()->getColumnByColumns(
-            static::getTableName(), $columns, $selector
+            static::getTableName(), $columns, $columnName
         );
     }
 
-    public static function getRowById($id, $selector = '*') {
+    public static function getRowById($id, array $columnNames = null) {
         return static::getClient()->getRowById(
-            static::getTableName(), $id, $selector
+            static::getTableName(), $id, $columnNames
         );
     }
 
-    public static function getRowByColumns($columns, $selector = '*') {
+    public static function getRowByColumns(
+        $columns, array $columnNames = null
+    ) {
         return static::getClient()->getRowByColumns(
-            static::getTableName(), $columns, $selector
+            static::getTableName(), $columns, $columnNames
         );
     }
 
-    public static function getAllByColumns($columns, $selector = '*') {
+    public static function getAllByColumns(
+        $columns, array $columnNames = null
+    ) {
         return static::getClient()->getAllByColumns(
-            static::getTableName(), $columns, $selector
+            static::getTableName(), $columns, $columnNames
         );
     }
 
@@ -58,7 +62,7 @@ abstract class DbTable {
         );
     }
 
-    public static function save(&$row) {
+    public static function save(array &$row) {
         return static::getClient()->save(static::getTableName(), $row);
     }
 

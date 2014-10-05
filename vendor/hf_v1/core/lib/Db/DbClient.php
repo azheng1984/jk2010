@@ -163,6 +163,10 @@ class DbClient {
         return static::getConnection()->rollBack();
     }
 
+    public static function inTransaction() {
+        return static::getConnection()->inTransaction();
+    }
+
     public static function quoteIdentifier($identifier) {
         return static::getConnection()->quoteIdentifier($identifier);
     }

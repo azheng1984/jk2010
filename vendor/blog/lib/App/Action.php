@@ -16,6 +16,14 @@ class Action {
         //throw new hi('hhi', null);
         //print_r($_SERVER);
         var_dump(\Hyperframework\Blog\Db\DbArticle::count());
+        var_dump(\Hyperframework\Db\DbClient::inTransaction());
+
+        $row = DbCache::get('Product', $id);
+        DbCache::delete('Product', $id);
+
+        DbClient::getRowById();
+        DbClient::getById($id, $modificationTime, $columnNames);
+
         CsrfProtection::run();
         Logger::info(
             'name.hi', array('hello %s', 'az'), array('happy' => array("l\ni\n\nfe\n"))
