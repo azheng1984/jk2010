@@ -9,8 +9,8 @@ class DbClient {
         return static::query(func_get_args())->fetchColumn();
     }
 
-    public static function getColumnByColumns($table, $columns, $selector) {
-        $result = self::queryByColumns($table, $columns, $selector);
+    public static function getColumnByColumns($table, $columns, $columnName) {
+        $result = self::queryByColumns($table, $columns, $columnName);
         return $result->fetchColumn();
     }
 
