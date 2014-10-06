@@ -64,7 +64,7 @@ class DbClient {
         return self::calculate($table, $columnName, 'AVG');
     }
 
-    public static function insert($row) {
+    public static function insert($table, $row) {
         $keys = array();
         foreach (array_keys($row) as $key) {
             $keys[] = self::quoteIdentifier($key);
@@ -128,7 +128,7 @@ class DbClient {
         return static::delete($table, 'id = ?', $id);
     }
 
-    public static function save($table, &$row) {
+    public static function save($table, array &$row) {
         if (isset($row['id'])) {
             $id = $row['id'];
             unset($row['id']);
