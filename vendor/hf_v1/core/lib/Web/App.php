@@ -17,9 +17,7 @@ class App {
     }
 
     public function getParam($name) {
-        if (isset($this->params[$name])) {
-            return $this->params[$name];
-        }
+        return $this->params[$name];
     }
 
     public function getParams() {
@@ -40,11 +38,9 @@ class App {
 
     public function getActionResult($name = null) {
         if ($name === null) {
-            return $this->actionResult;
+            $result = $this->actionResult;
         }
-        if (isset($this->actionResult[$name])) {
-            return $this->actionResult[$name];
-        }
+        return $this->actionResult[$name];
     }
 
     public function redirect($url, $statusCode = 302) {

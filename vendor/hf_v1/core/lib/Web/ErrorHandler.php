@@ -43,7 +43,7 @@ class ErrorHandler {
         self::$exception = $exception;
         self::$isError = $isError;
         if ($isError) {
-            $exitLevel = self::getExitLevel();
+            $exitLevel = E_ALL & ~E_STRICT & ~E_DEPRECATED & ~E_USER_DEPRECATED;
             self::$shouldExit = (self::$exception->getSeverity() & $exitLevel)
                 !== 0;
         } else {
@@ -122,37 +122,6 @@ class ErrorHandler {
             $tmp = E_COMPILE_WARNING;
         }
         error_reporting($tmp);
-    }
-
-    private static function getExitLevel() {
-        if (self::$exitLevel === null) {
-            $exitLevel = Config::get(
-                'hyperframework.web.error_handler.exit_level'
-            );
-            if ($exitLevel == null) {
-                $exitLevel = 'NOTICE';
-            }
-            if (is_int($exitLevel) === false) {
-                $tmp = 0;
-                if ($exitLevel === 'NOTICE') {
-                    $tmp = 2;
-                } elseif ($exitLevel === 'WARNING') {
-                    $tmp = 1;
-                } elseif ($exitLevel !== 'ERROR') {
-                    throw new Exception;
-                }
-                $exitLevel =
-                    E_ALL & ~E_STRICT & ~E_DEPRECATED & ~E_USER_DEPRECATED;
-                if ($tmp < 2) {
-                    $exitLevel = $exitLevel & ~E_NOTICE & ~E_USER_NOTICE;
-                }
-                if ($tmp < 1) {
-                    $exitLevel = $exitLevel & ~E_WARNING & ~E_USER_WARNING;
-                }
-            }
-            self::$exitLevel = $exitLevel;
-        }
-        return self::$exitLevel;
     }
 
     protected static function cleanOutputBuffer() {
