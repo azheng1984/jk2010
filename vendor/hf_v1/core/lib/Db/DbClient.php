@@ -14,12 +14,6 @@ class DbClient {
         return $result->fetchColumn();
     }
 
-    public static function getColumnById($table, $id, $selector) {
-        $sql = 'SELECT ' . $selector . ' FROM '
-            . self::quoteIdentifier($table) . ' WHERE id = ?';
-        return static::getColumn($sql, $id);
-    }
-
     public static function getRow($sql/*, $mixed, ...*/) {
         return static::query(func_get_args())->fetch(PDO::FETCH_ASSOC);
     }
@@ -29,12 +23,6 @@ class DbClient {
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public static function getRowById($table, $id, $selector = '*') {
-        $sql = 'SELECT ' . $selector . ' FROM '
-            . self::quoteIdentifier($table) . ' WHERE id = ?';
-        return static::getRow($sql, $id);
-    }
-
     public static function getAll($sql/*, $mixed, ...*/) {
         return static::query(func_get_args())->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -42,6 +30,12 @@ class DbClient {
     public static function getAllByColumns($table, $columns, $selector = '*') {
         $result = self::queryByColumns($table, $columns, $selector);
         return $result->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getById($table, $id, $columnNameOrNames = null) {
+        $sql = 'SELECT ' . $selector . ' FROM '
+            . self::quoteIdentifier($table) . ' WHERE id = ?';
+        return static::getColumn($sql, $id);
     }
 
     public static function count($table) {
