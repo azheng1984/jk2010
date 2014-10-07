@@ -6,6 +6,12 @@ abstract class DbTable {
     private static $client;
     private $name;
 
+    public static function getById($id, array $columnNameOrNames = null) {
+        return static::getClient()->getById(
+            static::getTableName(), $id, $columnNameOrNames
+        );
+    }
+
     public static function getColumnByColumns($columns, $columnName) {
         return static::getClient()->getColumnByColumns(
             static::getTableName(), $columns, $columnName
@@ -25,12 +31,6 @@ abstract class DbTable {
     ) {
         return static::getClient()->getAllByColumns(
             static::getTableName(), $columns, $columnNames
-        );
-    }
-
-    public static function getById($id, array $columnNameOrNames = null) {
-        return static::getClient()->getById(
-            static::getTableName(), $id, $columnNameOrNames
         );
     }
 
