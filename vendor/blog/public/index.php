@@ -1,6 +1,13 @@
 <?php
 namespace Hyperframework\Blog; //$x = array();
-
+$x = null;
+$x['x'] = 2;
+var_dump($x);
+$y = $x['xx']['xxxx'];
+var_dump($x['xx']);
+$y = $x;
+$x['xx'] = 's';
+exit;
 
 //var_dump(end($x));
 

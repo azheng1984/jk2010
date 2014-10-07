@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework\Web;
 
+use Exception;
+
 class App {
     private $path;
     private $pathInfo;
