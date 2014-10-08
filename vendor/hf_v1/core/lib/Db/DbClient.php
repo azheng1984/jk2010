@@ -5,6 +5,12 @@ use PDO;
 use Exception;
 
 class DbClient {
+    public static function getById($table, $id, $columnNameOrNames = null) {
+        $sql = 'SELECT ' . $selector . ' FROM '
+            . self::quoteIdentifier($table) . ' WHERE id = ?';
+        return static::getColumn($sql, $id);
+    }
+
     public static function getColumn($sql/*, $mixed, ...*/) {
         return static::query(func_get_args())->fetchColumn();
     }
@@ -30,12 +36,6 @@ class DbClient {
     public static function getAllByColumns($table, $columns, $selector = '*') {
         $result = self::queryByColumns($table, $columns, $selector);
         return $result->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public static function getById($table, $id, $columnNameOrNames = null) {
-        $sql = 'SELECT ' . $selector . ' FROM '
-            . self::quoteIdentifier($table) . ' WHERE id = ?';
-        return static::getColumn($sql, $id);
     }
 
     public static function count($table) {
@@ -219,7 +219,7 @@ class DbClient {
         $params = array();
         $where = null;
         foreach ($columns as $key => $value) {
-            $params[] = $value; 
+            $params[] = $value;
             if ($where !== null) {
                 $where = ' AND ';
             }

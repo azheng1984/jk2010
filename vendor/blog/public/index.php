@@ -1,13 +1,9 @@
 <?php
 namespace Hyperframework\Blog; //$x = array();
 
-//var_dump(end($x));
-
-//$s = microtime(true);
-
-//$xxx = 'x';
 //$x = array();
 //for ($i = 0; $i < 1000000; ++$i) {
+//    $helper::hi();
 //    //strpos($name, '|');
 //    //explode('|', $name);
 //    //$name = str_replace(' | ', '|', $name);
