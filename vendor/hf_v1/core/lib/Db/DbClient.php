@@ -219,7 +219,7 @@ class DbClient {
         $params = array();
         $where = null;
         foreach ($columns as $key => $value) {
-            $params[] = $value; 
+            $params[] = $value;
             if ($where !== null) {
                 $where = ' AND ';
             }
