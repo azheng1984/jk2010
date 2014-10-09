@@ -1,6 +1,15 @@
 <?php
 namespace Hyperframework\Blog; //$x = array();
 
+class x {
+    public function xxx() {
+        var_dump(isset($this));
+    }
+}
+$x = new x();
+$x->xxx();
+exit;
+
 //$x = array();
 //for ($i = 0; $i < 1000000; ++$i) {
 //    $helper::hi();
