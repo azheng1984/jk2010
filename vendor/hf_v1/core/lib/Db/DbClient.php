@@ -169,11 +169,7 @@ class DbClient {
         return static::getConnection()->prepare($sql, $driverOptions);
     }
 
-    protected static function getConnection() {
-        return DbContext::getConnection();
-    }
-
-    private static function sendSql($sql, $params, $isQuery = false) {
+    protected static function sendSql($sql, $params, $isQuery = false) {
         $connection = static::getConnection();
         if ($params === null || count($params) === 0) {
             return $isQuery ?
@@ -188,6 +184,10 @@ class DbClient {
             return $statement;
         }
         return $statement->rowCount();
+    }
+
+    protected static function getConnection() {
+        return DbContext::getConnection();
     }
 
     private static function calculate($table, $columnName, $function) {
