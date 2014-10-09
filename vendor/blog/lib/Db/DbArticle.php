@@ -1,28 +1,11 @@
 <?php
 namespace Hyperframework\Blog\Db;
 
+use Hyperframework\Db\DbTable;
 use Hyperframework\Db\DbClient;
-use Hyperframework\Validator;
-use Hyperframework\Blog\Models\Comment;
+use Hyperframework\Blog\Db\DbComment;
 
-final class Article extends \Hyperframework\Db\DbTable {
-    private static $validationRules;
-
-    public static function isValid($row, &$errors) {
-        return Validator::run(self::getValidationRules(), $row, $errors);
-    }
-
-    public static function getValidationRules() {
-        if (self::$validationRules === null) {
-            self::$validationRules = [];
-        }
-        return self::$validationRules;
-    }
-
-    public static function getCount() {
-        return DbClient::getColumn('SELECT COUNT(*) FROM Article');
-    }
-
+final class DbArticle extends DbTable {
     public static function getTopLike() {
         return DbClient::getColumn(
             'SELECT * FROM Article ORDER BY like_count DESC LIMIT 1'
