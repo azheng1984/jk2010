@@ -5,7 +5,7 @@ return array(
     'version' => '1.1.1',
     'description' => 'Hyperframework CLI Tool', //optional
     'arguments' => array('<arg1>', '<arg2>...'),
-    //'inject_options' => false, //commands only, hf.cli.commands.inject_options to set all
+    //'pass_options' => false, //commands only, hf.cli.commands.pass_options to set all
     // = false to disable passing collection & commands options
     //default: use command execute function signature
     //collection must not have arguments
@@ -29,11 +29,10 @@ return array(
         '--name-of-option[=<arg-key>]' => 'message',
     ),
     //'class' => 'CommandCollection', //default CommandCollection
-    // \Xx\CommandCollection //same as php
+    //\Xx\CommandCollection //same as php
     //CommandCollection if have options
     'commands' => array( //or subcommands = 'folder' default to config/commands
         'hello' => array( //inline. lazy load is supported
-//          'alias' => 'hill',
             'description' => 'Build application',
 //          'class' => 'HelloCommand', //default
             'options' => array(

@@ -14,17 +14,11 @@ use PDO;
 //throw new \Exception;
 class Action {
     public function before() {
-        //throw new hi('hhi', null);
         //print_r($_SERVER);
-        //DbContext::getConnection()->close();
+        //var_dump(DbClient::beginTransaction());
         var_dump(DbArticle::count());
-        sleep(10);
-        var_dump(DbClient::beginTransaction());
         var_dump(DbClient::inTransaction());
-
         $row = DbArticle::getById(100);
-
-
         CsrfProtection::run();
         Logger::info(
             'name.hi', array('hello %s', 'az'), array('happy' => array("l\ni\n\nfe\n"))
