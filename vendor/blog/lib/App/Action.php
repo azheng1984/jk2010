@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Blog\App;
 
-use Hyperframework\Blog\Modles\Article;
+use Hyperframework\Blog\Db\DbArticle;
 use Hyperframework\Web\CsrfProtection;
 use Hyperframework\Db\DbClient;
 use Hyperframework\Db\DbImportCommand;
@@ -18,11 +18,8 @@ class Action {
         var_dump(\Hyperframework\Blog\Db\DbArticle::count());
         var_dump(\Hyperframework\Db\DbClient::inTransaction());
 
-        $row = DbProduct::getCacheById($id);
-        DbProduct::deleteCacheById($id);
+        $row = DbArticle::getById(100);
 
-        DbClient::getRowById();
-        DbClient::getById($id, $modificationTime, $columnNames);
 
         CsrfProtection::run();
         Logger::info(

@@ -6,7 +6,7 @@ use Exception;
 
 class DbClient {
     public static function getById($table, $id, $columnNameOrNames = null) {
-        $sql = 'SELECT ' . $selector . ' FROM '
+        $sql = 'SELECT * FROM '
             . self::quoteIdentifier($table) . ' WHERE id = ?';
         return static::getColumn($sql, $id);
     }
