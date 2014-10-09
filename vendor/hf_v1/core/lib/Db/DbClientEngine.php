@@ -4,7 +4,7 @@ namespace Hyperframework\Db;
 use PDO;
 use Exception;
 
-class DbClientHelper {
+class DbClientEngine {
     public function getById($table, $id, $columnNameOrNames = null) {
         $sql = 'SELECT * FROM '
             . self::quoteIdentifier($table) . ' WHERE id = ?';

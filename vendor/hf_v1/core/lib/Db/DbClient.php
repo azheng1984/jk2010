@@ -4,7 +4,7 @@ namespace Hyperframework\Db;
 use Hyperframework\Config;
 
 class DbClient {
-    private $helper;
+    private $engine;
 
     public static function getById($table, $id, $columnNameOrNames = null) {
         return $this->getHelper()->getById(
