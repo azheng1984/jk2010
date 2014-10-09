@@ -57,7 +57,11 @@ abstract class DbTable {
         return DbClient::save(static::getTableName(), $row);
     }
 
-    public static function delete($id) {
+    public static function delete($idOrRow) {
+        $id = $idOrRow;
+        if (is_array($idOrRow)) {
+            $id = $idOrRow['id'];
+        }
         return DbClient::deleteById(static::getTableName(), $id);
     }
 

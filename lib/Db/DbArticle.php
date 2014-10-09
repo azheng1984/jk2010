@@ -12,10 +12,10 @@ final class DbArticle extends DbTable {
         );
     }
 
-    public static function delete($id) {
-        DbTransaction::run(function() use ($id) {
-            parent::deleteById($id);
-            DbComment::deleteByColumns(['article_id' => $id]);
+    public static function delete($row) {
+        DbTransaction::run(function() use ($row) {
+            parent::delete($row);
+            DbClient::deleteByColumns('Comment', ['article_id' => $row['id']]);
         });
     }
 }
