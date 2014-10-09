@@ -51,7 +51,9 @@ abstract class DbTable {
     }
 
     public static function average($columnName) {
-        return static::getClient()->average(static::getTableName(), $columnName);
+        return static::getClient()->average(
+            static::getTableName(), $columnName
+        );
     }
 
     public static function save(array &$row) {
