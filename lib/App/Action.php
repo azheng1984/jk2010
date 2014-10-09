@@ -4,6 +4,7 @@ namespace Hyperframework\Blog\App;
 use Hyperframework\Blog\Db\DbArticle;
 use Hyperframework\Web\CsrfProtection;
 use Hyperframework\Db\DbClient;
+use Hyperframework\Db\DbContext;
 use Hyperframework\Db\DbImportCommand;
 use Hyperframework\Db\DbProfiler;
 use Hyperframework\WebClient;
@@ -15,8 +16,11 @@ class Action {
     public function before() {
         //throw new hi('hhi', null);
         //print_r($_SERVER);
-        var_dump(\Hyperframework\Blog\Db\DbArticle::count());
-        var_dump(\Hyperframework\Db\DbClient::inTransaction());
+        //DbContext::getConnection()->close();
+        var_dump(DbArticle::count());
+        sleep(10);
+        var_dump(DbClient::beginTransaction());
+        var_dump(DbClient::inTransaction());
 
         $row = DbArticle::getById(100);
 

@@ -5,7 +5,7 @@ abstract class DbTable {
     private static $instances = array();
     private $name;
 
-    public static function getById($id, array $columnNameOrNames = null) {
+    public static function getById($id, $columnNameOrNames = null) {
         return DbClient::getById(
             static::getTableName(), $id, $columnNameOrNames
         );
