@@ -1,6 +1,0 @@
-<?php
-return array(
-    ['Hyperframework\ClassLoader\CacheEnabled', false],
-    ['Hyperframework\Web\PathInfo\CacheEnabled', false],
-    ['Hyperframework\Web\View\Asset\CacheEnabled', false],
-);
