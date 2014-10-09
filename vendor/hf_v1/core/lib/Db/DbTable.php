@@ -3,17 +3,16 @@ namespace Hyperframework\Db;
 
 abstract class DbTable {
     private static $instances = array();
-    private static $client;
     private $name;
 
     public static function getById($id, $columnNameOrNames = null) {
-        return static::getClient()->getById(
+        return DbClient::getById(
             static::getTableName(), $id, $columnNameOrNames
         );
     }
 
     public static function getColumnByColumns($columns, $columnName) {
-        return static::getClient()->getColumnByColumns(
+        return DbClient::getColumnByColumns(
             static::getTableName(), $columns, $columnName
         );
     }
@@ -21,7 +20,7 @@ abstract class DbTable {
     public static function getRowByColumns(
         $columns, array $columnNames = null
     ) {
-        return static::getClient()->getRowByColumns(
+        return DbClient::getRowByColumns(
             static::getTableName(), $columns, $columnNames
         );
     }
@@ -29,33 +28,33 @@ abstract class DbTable {
     public static function getAllByColumns(
         $columns, array $columnNames = null
     ) {
-        return static::getClient()->getAllByColumns(
+        return DbClient::getAllByColumns(
             static::getTableName(), $columns, $columnNames
         );
     }
 
     public static function count() {
-        return static::getClient()->count(static::getTableName());
+        return DbClient::count(static::getTableName());
     }
 
     public static function min($columnName) {
-        return static::getClient()->min(static::getTableName(), $columnName);
+        return DbClient::min(static::getTableName(), $columnName);
     }
 
     public static function max($columnName) {
-        return static::getClient()->max(static::getTableName(), $columnName);
+        return DbClient::max(static::getTableName(), $columnName);
     }
 
     public static function sum($columnName) {
-        return static::getClient()->sum(static::getTableName(), $columnName);
+        return DbClient::sum(static::getTableName(), $columnName);
     }
 
     public static function average($columnName) {
-        return static::getClient()->average(static::getTableName(), $columnName);
+        return DbClient::average(static::getTableName(), $columnName);
     }
 
     public static function save(array &$row) {
-        return static::getClient()->save(static::getTableName(), $row);
+        return DbClient::save(static::getTableName(), $row);
     }
 
     public static function delete($idOrRow) {
@@ -63,14 +62,7 @@ abstract class DbTable {
         if (is_array($idOrRow)) {
             $id = $idOrRow['id'];
         }
-        return static::getClient()->deleteById(static::getTableName(), $id);
-    }
-
-    protected static function getClient() {
-        if (self::$client === null) {
-            self::$client = new DbClient;
-        }
-        return self::$client;
+        return DbClient::deleteById(static::getTableName(), $id);
     }
 
     protected static function getTableName() {
