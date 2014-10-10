@@ -3,7 +3,6 @@ namespace Hyperframework\Db;
 
 abstract class DbTable {
     private static $instances = array();
-    private static $client;
     private $name;
 
     public static function getById($id, $columnNameOrNames = null) {
@@ -69,15 +68,11 @@ abstract class DbTable {
     protected static function getTableName() {
         $instance = self::getInstance();
         if ($instance->name === null) {
-            $class = get_called_class();
+            $instance->name = get_called_class();
             $position = strrpos($class, '\\');
             if ($position !== false) {
-                $class = substr($class, $position + 1);
+                $instance->name = substr($class, $position + 1);
             }
-            if (strncmp('Db', $class, 2) !== 0) {
-                throw new Exception;
-            }
-            $instance->name = substr($class, 2);
         }
         return $instance->name;
     }

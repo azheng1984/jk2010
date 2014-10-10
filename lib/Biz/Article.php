@@ -1,11 +1,11 @@
 <?php
-namespace Hyperframework\Blog\Db;
+namespace Hyperframework\Blog\Biz;
 
 use Hyperframework\Db\DbTable;
 use Hyperframework\Db\DbClient;
-use Hyperframework\Blog\Db\DbComment;
+use Hyperframework\Blog\Biz\Comment;
 
-final class DbArticle extends DbTable {
+class Article extends DbTable {
     public static function getTopLike() {
         $client = static::getClient();
         return $client->getColumn(
@@ -16,11 +16,14 @@ final class DbArticle extends DbTable {
         );
     }
 
-    public static function delete($row) {
-        DbTransaction::run(function() use ($row) {
+    public static function delete($article) {
+        DbTransaction::run(function() use ($article) {
             parent::delete($row);
             static::getClient()->deleteByColumns('Comment', ['article_id' => $row['id']]);
             DbClient::deleteByColumns('Comment', ['article_id' => $row['id']]);
         });
+    }
+
+    public static function isPopular($article) {
     }
 }
