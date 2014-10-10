@@ -35,7 +35,7 @@ class DbClient {
     }
 
     public static function getAll($sql/*, $mixed, ...*/) {
-        return $this->getEngine()->getAll(func_get_args());
+        return $this->getEngine()->getAll($sql, $params);
     }
 
     public static function getAllByColumns(

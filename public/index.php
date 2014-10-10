@@ -2,12 +2,20 @@
 namespace Hyperframework\Blog; //$x = array();
 
 class x {
+    public $x = 'xxx';
     public function xxx() {
         var_dump(isset($this));
     }
 }
+
 $x = new x();
-$x->xxx();
+foreach ($x as $i) {
+    echo $i;
+} 
+//$a = array('x' => 'xxx');
+//echo $a->x;
+//$x = new x();
+//echo $x['x'];
 exit;
 
 //$x = array();
