@@ -1,12 +1,14 @@
 <?php
 namespace Hyperframework\Db;
 
-abstract class DbActiveRecord implements ArrayAccess, Iterator {
+use ArrayAccess;
+
+abstract class DbActiveRecord implements ArrayAccess {
     private static $tableNames = array();
     private $row;
 
     public function __construct(array $row = null) {
-        $this->$row = $row;
+        $this->row = $row;
     }
 
     public static function getById($id) {
@@ -76,12 +78,24 @@ abstract class DbActiveRecord implements ArrayAccess, Iterator {
         return DbClient::average(static::getTableName(), $columnName);
     }
 
-    public function save() {
-        return DbClient::save(static::getTableName(), $this->row);
+    public function offsetSet($offset, $value) {
+        if (is_null($offset)) {
+            $this->row[] = $value;
+        } else {
+            $this->row[$offset] = $value;
+        }
     }
 
-    public function delete() {
-        return DbClient::deleteById(static::getTableName(), $this->row['id']);
+    public function offsetExists($offset) {
+        return isset($this->row[$offset]);
+    }
+
+    public function offsetUnset($offset) {
+        unset($this->row[$offset]);
+    }
+
+    public function offsetGet($offset) {
+        return $this->row[$offset];
     }
 
     public function getRow() {
@@ -90,6 +104,14 @@ abstract class DbActiveRecord implements ArrayAccess, Iterator {
 
     public function setRow(array $value) {
         $this->row = $value;
+    }
+
+    public function save() {
+        return DbClient::save(static::getTableName(), $this->row);
+    }
+
+    public function delete() {
+        return DbClient::deleteById(static::getTableName(), $this->row['id']);
     }
 
     protected static function getTableName() {

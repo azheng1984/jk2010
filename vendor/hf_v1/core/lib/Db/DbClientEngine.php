@@ -8,7 +8,7 @@ class DbClientEngine {
     public function getById($table, $id, $columnNameOrNames = null) {
         $sql = 'SELECT * FROM '
             . self::quoteIdentifier($table) . ' WHERE id = ?';
-        return static::getColumn($sql, $id);
+        return static::getRow($sql, $id);
     }
 
     public function getColumn($sql/*, $mixed, ...*/) {

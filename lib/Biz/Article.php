@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Blog\Biz;
 
-use Hyperframework\Db\DbTable;
+use Hyperframework\Db\DbActiveRecord;
 use Hyperframework\Db\DbClient;
 use Hyperframework\Blog\Biz\Comment;
 

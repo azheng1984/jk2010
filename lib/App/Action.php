@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Blog\App;
 
-use Hyperframework\Blog\Db\DbArticle;
+use Hyperframework\Blog\Biz\Article;
 use Hyperframework\Web\CsrfProtection;
 use Hyperframework\Db\DbClient;
 use Hyperframework\Db\DbContext;
@@ -16,9 +16,10 @@ class Action {
     public function before() {
         //print_r($_SERVER);
         //var_dump(DbClient::beginTransaction());
-        var_dump(DbArticle::count());
+        var_dump(Article::count());
         var_dump(DbClient::inTransaction());
-        $row = DbArticle::getById(100);
+        $article = Article::getById(100);
+        var_dump($article['name']);
         CsrfProtection::run();
         Logger::info(
             'name.hi', array('hello %s', 'az'), array('happy' => array("l\ni\n\nfe\n"))

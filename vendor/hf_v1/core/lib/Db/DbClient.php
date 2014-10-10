@@ -7,71 +7,71 @@ class DbClient {
     private static $engine;
 
     public static function getById($table, $id, $columnNameOrNames = null) {
-        return $this->getEngine()->getById(
-            $table, $id, $columnNameOrNames = null
+        return self::getEngine()->getById(
+            $table, $id, $columnNameOrNames
         );
     }
 
     public static function getColumn($sql/*, $mixed, ...*/) {
-        return $this->getEngine()->getColumn($sql, $params);
+        return self::getEngine()->getColumn($sql, $params);
     }
 
     public static function getColumnByColumns($table, $columns, $columnName) {
-        return $this->getEngine()->getColumnByColumns(
+        return self::getEngine()->getColumnByColumns(
             $table, $columns, $columnName
         );
     }
 
     public static function getRow($sql/*, $mixed, ...*/) {
-        return $this->getEngine()->getRow($sql, $params);
+        return self::getEngine()->getRow($sql, $params);
     }
 
     public static function getRowByColumns(
         $table, $columns, $columnNames = null
     ) {
-        return $this->getEngine()->getRowByColumns(
+        return self::getEngine()->getRowByColumns(
             $table, $columns, $columnNames
         );
     }
 
     public static function getAll($sql/*, $mixed, ...*/) {
-        return $this->getEngine()->getAll($sql, $params);
+        return self::getEngine()->getAll($sql, $params);
     }
 
     public static function getAllByColumns(
         $table, $columns, $columnNameOrNames = null
     ) {
-        return $this->getEngine()->getAllByColumns(
+        return self::getEngine()->getAllByColumns(
             $table, $columns, $columnNameOrNames
         );
     }
 
     public static function count($table) {
-        return $this->getEngine()->count($table);
+        return self::getEngine()->count($table);
     }
 
     public static function min($table, $columnName) {
-        return $this->getEngine()->min($table, $columnName);
+        return self::getEngine()->min($table, $columnName);
     }
 
     public static function max($table, $columnName) {
-        return $this->getEngine()->max($table, $columnName);
+        return self::getEngine()->max($table, $columnName);
     }
 
     public static function sum($table, $columnName) {
-        return $this->getEngine()->sum($table, $columnName);
+        return self::getEngine()->sum($table, $columnName);
     }
 
     public static function average($table, $columnName) {
-        return $this->getEngine()->average($table, $columnName);
+        return self::getEngine()->average($table, $columnName);
     }
 
     public static function insert($table, $row) {
-        return $this->getEngine()->insert($table, $row);
+        return self::getEngine()->insert($table, $row);
     }
 
     public static function update($table, $columns, $where/*, $mixed, ...*/) {
-        return $this->getEngine()->update(func_get_args());
+        return self::getEngine()->update(func_get_args());
     }
 
     public static function updateByColumns(
@@ -80,7 +80,7 @@ class DbClient {
     }
 
     public static function delete($table, $where/*, $mixed, ...*/) {
-        return $this->getEngine()->delete(func_get_args());
+        return self::getEngine()->delete(func_get_args());
     }
 
     public static function deleteByColumns($table, $columns) {
