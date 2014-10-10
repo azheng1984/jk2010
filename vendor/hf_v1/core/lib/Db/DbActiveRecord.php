@@ -37,7 +37,7 @@ abstract class DbActiveRecord implements ArrayAccess, Iterator {
         return $result;
     }
 
-    public static function getBySql($sql) {
+    public static function getBySql($sql/*, ...*/) {
         $row = DbClient::getRow(self::completeSelectSql($sql));
         if ($row === null) {
             return;
@@ -46,8 +46,8 @@ abstract class DbActiveRecord implements ArrayAccess, Iterator {
         return new $class($row);
     }
 
-    public static function getAllBySql($sql) {
-        $rows = DbClient::getAll(self::completeSqlPrefix($sql));
+    public static function getAllBySql($sql/*, ...*/) {
+        $rows = DbClient::getAll(self::completeSelectSql($sql));
         $result = array();
         $class = get_called_class();
         foreach ($rows as $row) {
@@ -104,5 +104,16 @@ abstract class DbActiveRecord implements ArrayAccess, Iterator {
     }
 
     private static function completeSelectSql($sql) {
+        if (strlen($sql) > 6) {
+            if (ctype_alnum($sql[6]) === false
+                && strtoupper(substr($sql, 0, 6)) === 'SELECT'
+            ) {
+                return $sql;
+            }
+        }
+        $tableName = DbClient::getConnection()->quoteIdentifies(
+            static::getTableName()
+        );
+        return 'SELECT * FROM ' . $tableName . ' ';
     }
 }
