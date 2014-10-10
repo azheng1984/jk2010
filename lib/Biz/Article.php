@@ -12,15 +12,15 @@ class Article extends DbTable {
         );
     }
 
-    public static function delete($article) {
-        DbTransaction::run(function() use ($article) {
-            parent::delete($article);
+    public static function delete($row) {
+        DbTransaction::run(function() use ($row) {
+            parent::delete($row);
             DbClient::deleteByColumns(
-                'Comment', ['article_id' => $article['id']]
+                'Comment', ['article_id' => $row['id']]
             );
         });
     }
 
-    public static function isPopular($article) {
+    public static function isPopular($row) {
     }
 }
