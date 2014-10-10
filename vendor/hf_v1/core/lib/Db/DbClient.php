@@ -4,74 +4,74 @@ namespace Hyperframework\Db;
 use Hyperframework\Config;
 
 class DbClient {
-    private $engine;
+    private static $engine;
 
     public static function getById($table, $id, $columnNameOrNames = null) {
-        return $this->getHelper()->getById(
+        return $this->getEngine()->getById(
             $table, $id, $columnNameOrNames = null
         );
     }
 
     public static function getColumn($sql/*, $mixed, ...*/) {
-        return $this->getHelper()->getColumn($sql, $params);
+        return $this->getEngine()->getColumn($sql, $params);
     }
 
     public static function getColumnByColumns($table, $columns, $columnName) {
-        return $this->getHelper()->getColumnByColumns(
+        return $this->getEngine()->getColumnByColumns(
             $table, $columns, $columnName
         );
     }
 
     public static function getRow($sql/*, $mixed, ...*/) {
-        return $this->getHelper()->getRow($sql, $params);
+        return $this->getEngine()->getRow($sql, $params);
     }
 
     public static function getRowByColumns(
         $table, $columns, $columnNames = null
     ) {
-        return $this->getHelper()->getRowByColumns(
+        return $this->getEngine()->getRowByColumns(
             $table, $columns, $columnNames
         );
     }
 
     public static function getAll($sql/*, $mixed, ...*/) {
-        return $this->getHelper()->getAll(func_get_args());
+        return $this->getEngine()->getAll(func_get_args());
     }
 
     public static function getAllByColumns(
         $table, $columns, $columnNameOrNames = null
     ) {
-        return $this->getHelper()->getAllByColumns(
+        return $this->getEngine()->getAllByColumns(
             $table, $columns, $columnNameOrNames
         );
     }
 
     public static function count($table) {
-        return $this->getHelper()->count($table);
+        return $this->getEngine()->count($table);
     }
 
     public static function min($table, $columnName) {
-        return $this->getHelper()->min($table, $columnName);
+        return $this->getEngine()->min($table, $columnName);
     }
 
     public static function max($table, $columnName) {
-        return $this->getHelper()->max($table, $columnName);
+        return $this->getEngine()->max($table, $columnName);
     }
 
     public static function sum($table, $columnName) {
-        return $this->getHelper()->sum($table, $columnName);
+        return $this->getEngine()->sum($table, $columnName);
     }
 
     public static function average($table, $columnName) {
-        return $this->getHelper()->average($table, $columnName);
+        return $this->getEngine()->average($table, $columnName);
     }
 
     public static function insert($table, $row) {
-        return $this->getHelper()->insert($table, $row);
+        return $this->getEngine()->insert($table, $row);
     }
 
     public static function update($table, $columns, $where/*, $mixed, ...*/) {
-        return $this->getHelper()->update(func_get_args());
+        return $this->getEngine()->update(func_get_args());
     }
 
     public static function updateByColumns(
@@ -80,7 +80,7 @@ class DbClient {
     }
 
     public static function delete($table, $where/*, $mixed, ...*/) {
-        return $this->getHelper()->delete(func_get_args());
+        return $this->getEngine()->delete(func_get_args());
     }
 
     public static function deleteByColumns($table, $columns) {
@@ -123,26 +123,26 @@ class DbClient {
     }
 
     public static function prepare($sql, $driverOptions = array()) {
-        return self::getHelper()->prepare($sql, $driverOptions);
+        return self::getEngine()->prepare($sql, $driverOptions);
     }
 
     final protected static function sendSql($sql, $params, $isQuery = false) {
-        return self::getHelper()->sendSql($sql, $params, $isQuery);
+        return self::getEngine()->sendSql($sql, $params, $isQuery);
     }
 
     final protected static function getConnection() {
-        return self::getHelper()->getConnection();
+        return self::getEngine()->getConnection();
     }
 
-    final protected static function getHelper() {
-        if (self::$helper === null) {
-            $class = Config::get('hyperframework.db.client.helper');
+    final protected static function getEngine() {
+        if (self::$engine === null) {
+            $class = Config::get('hyperframework.db.client.engine');
             if ($class === null) {
-                self::$helper = new DbClientHelper;
+                self::$engine = new DbClientEngine;
             } else {
-                self::$helper = new $class;
+                self::$engine = new $class;
             }
         }
-        return self::$helper;
+        return self::$engine;
     }
 }

@@ -145,23 +145,23 @@ class DbClientEngine {
         return static::getConnection()->lastInsertId();
     }
 
-    public static function beginTransaction() {
+    public function beginTransaction() {
         return static::getConnection()->beginTransaction();
     }
 
-    public static function commit() {
+    public function commit() {
         return static::getConnection()->commit();
     }
 
-    public static function rollback() {
+    public function rollback() {
         return static::getConnection()->rollBack();
     }
 
-    public static function inTransaction() {
+    public function inTransaction() {
         return static::getConnection()->inTransaction();
     }
 
-    public static function quoteIdentifier($identifier) {
+    public function quoteIdentifier($identifier) {
         return static::getConnection()->quoteIdentifier($identifier);
     }
 
@@ -190,7 +190,7 @@ class DbClientEngine {
         return DbContext::getConnection();
     }
 
-    private static function calculate($table, $columnName, $function) {
+    private function calculate($table, $columnName, $function) {
         $table = self::quoteIdentifier($table);
         if ($columnName !== '*') {
             $columnName = self::quoteIdentifier($columnName);
@@ -200,12 +200,12 @@ class DbClientEngine {
         );
     }
 
-    private static function query($params) {
+    private function query($params) {
         $sql = array_shift($params);
         return static::sendSql($sql, $params, true);
     }
 
-    private static function queryByColumns($table, $columns, $selector) {
+    private function queryByColumns($table, $columns, $selector) {
         list($where, $params) = self::buildWhereByColumns($columns);
         $sql = 'SELECT ' . $selector . ' FROM ' . self::quoteIdentifier($table);
         if ($where !== null) {
@@ -215,7 +215,7 @@ class DbClientEngine {
         return self::query($params);
     }
 
-    private static function buildWhereByColumns($columns) {
+    private function buildWhereByColumns($columns) {
         $params = array();
         $where = null;
         foreach ($columns as $key => $value) {
