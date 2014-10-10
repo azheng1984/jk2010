@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Db;
 
+use Exception;
 use ArrayAccess;
 
 abstract class DbActiveRecord implements ArrayAccess {
@@ -8,7 +9,7 @@ abstract class DbActiveRecord implements ArrayAccess {
     private $row;
 
     public function __construct(array $row = array()) {
-        $this->row = $row;
+        $this->setRow($row);
     }
 
     public static function getById($id) {
@@ -83,8 +84,8 @@ abstract class DbActiveRecord implements ArrayAccess {
     }
 
     public function offsetSet($offset, $value) {
-        if (is_null($offset)) {
-            $this->row[] = $value;
+        if ($offset === null) {
+            throw new Exception;
         } else {
             $this->row[$offset] = $value;
         }

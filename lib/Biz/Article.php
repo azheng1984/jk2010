@@ -6,8 +6,12 @@ use Hyperframework\Db\DbClient;
 use Hyperframework\Blog\Biz\Comment;
 
 class Article extends DbActiveRecord {
-    public static function getTopLiked() {
-       return static::getBySql('ORDER BY like_count DESC LIMIT 1');
+    public static function getXxx($id = null) {
+        $sql = 'ORDER BY like_count DESC LIMIT 1';
+        if ($id === null) {
+            return static::getBySql($sql);
+        }
+        return static::getBySql('WHERE id = ? ' . $sql, $id);
     }
 
     public function delete() {
@@ -15,6 +19,13 @@ class Article extends DbActiveRecord {
             parent::delete();
             DbClient::deleteByColumns('Comment', ['article_id' => $this['id']]);
         });
+    }
+
+    public function getAuthor() {
+        return Author::getById($this['author_id']);
+    }
+
+    public function getPictureUrl() {
     }
 
     public function isPopular() {
