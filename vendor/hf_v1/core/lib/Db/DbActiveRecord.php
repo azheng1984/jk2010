@@ -111,9 +111,7 @@ abstract class DbActiveRecord implements ArrayAccess, Iterator {
                 return $sql;
             }
         }
-        $tableName = DbClient::getConnection()->quoteIdentifies(
-            static::getTableName()
-        );
-        return 'SELECT * FROM ' . $tableName . ' ';
+        return 'SELECT * FROM '
+            . DbClient::quoteIdentifies(static::getTableName()) . ' ';
     }
 }

@@ -126,12 +126,12 @@ class DbClient {
         return self::getEngine()->prepare($sql, $driverOptions);
     }
 
-    final protected static function sendSql($sql, $params, $isQuery = false) {
-        return self::getEngine()->sendSql($sql, $params, $isQuery);
+    public static function getConnection() {
+        return self::getEngine()->getConnection();
     }
 
-    final protected static function getConnection() {
-        return self::getEngine()->getConnection();
+    final protected static function sendSql($sql, $params, $isQuery = false) {
+        return self::getEngine()->sendSql($sql, $params, $isQuery);
     }
 
     final protected static function getEngine() {
