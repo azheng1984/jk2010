@@ -7,15 +7,7 @@ use Hyperframework\Blog\Biz\Comment;
 
 class Article extends DbActiveRecord {
     public static function getTopLiked() {
-        return static::getByColumns();
-        return static::getBySql();
-        return static::getAllBySql();
-        return static::getAllByColumns();
-        return static::getAllByColumns();
-
-        return static::getAllBySql(
-            'SELECT * FROM Article ORDER BY like_count DESC LIMIT 1'
-        );
+       return static::getAllBySql('ORDER BY like_count DESC LIMIT 1');
     }
 
     public function delete() {
