@@ -40,7 +40,9 @@ abstract class DbActiveRecord implements ArrayAccess {
     }
 
     public static function getBySql($sql/*, ...*/) {
-        $row = DbClient::getRow(self::completeSelectSql($sql));
+        $args = func_get_args();
+        array_shift($args);
+        $row = DbClient::getRow(self::completeSelectSql($sql), $args);
         if ($row === null) {
             return;
         }
@@ -51,7 +53,9 @@ abstract class DbActiveRecord implements ArrayAccess {
     public static function getAllBySql($sql/*, ...*/) {
         $result = array();
         $class = get_called_class();
-        $rows = DbClient::getAll(self::completeSelectSql($sql));
+        $args = func_get_args();
+        array_shift($args);
+        $rows = DbClient::getAll(self::completeSelectSql($sql), $args);
         foreach ($rows as $row) {
             $result[] = new $class($row);
         }
