@@ -18,6 +18,44 @@ abstract class DbActiveRecord implements ArrayAccess, Iterator {
         return new $class($row);
     }
 
+    public static function getByColumns($columns) {
+        $row = DbClient::getRowByColumns(static::getTableName(), $columns);
+        if ($row === null) {
+            return;
+        }
+        $class = get_called_class();
+        return new $class($row);
+    }
+
+    public static function getAllByColumns($columns) {
+        $rows = DbClient::getAllByColumns(static::getTableName(), $columns);
+        $result = array();
+        $class = get_called_class();
+        foreach ($rows as $row) {
+            $result[] = new $class($row);
+        }
+        return $result;
+    }
+
+    public static function getBySql($sql) {
+        $row = DbClient::getRow($sql);
+        if ($row === null) {
+            return;
+        }
+        $class = get_called_class();
+        return new $class($row);
+    }
+
+    public static function getAllBySql($sql) {
+        $rows = DbClient::getAll($sql);
+        $result = array();
+        $class = get_called_class();
+        foreach ($rows as $row) {
+            $result[] = new $class($row);
+        }
+        return $result;
+    }
+
     public static function count() {
         return DbClient::count(static::getTableName());
     }
