@@ -7,7 +7,7 @@ abstract class DbActiveRecord implements ArrayAccess {
     private static $tableNames = array();
     private $row;
 
-    public function __construct(array $row = null) {
+    public function __construct(array $row = array()) {
         $this->row = $row;
     }
 
@@ -138,6 +138,6 @@ abstract class DbActiveRecord implements ArrayAccess {
             }
         }
         return 'SELECT * FROM '
-            . DbClient::quoteIdentifies(static::getTableName()) . ' ';
+            . DbClient::quoteIdentifier(static::getTableName()) . ' ';
     }
 }

@@ -19,6 +19,7 @@ class Action {
         var_dump(Article::count());
         var_dump(DbClient::inTransaction());
         $article = Article::getById(100);
+        Article::getBySql('where name like "%d"');
         var_dump($article['name']);
         CsrfProtection::run();
         Logger::info(
