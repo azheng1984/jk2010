@@ -14,7 +14,7 @@ class DbClient {
 
     public static function findColumn($sql/*, ...*/) {
         return self::getEngine()->findColumn(
-            $sql, $this->getParams(func_get_args())
+            $sql, self::getParams(func_get_args())
         );
     }
 
@@ -28,7 +28,7 @@ class DbClient {
 
     public static function findRow($sql/*, ...*/) {
         return self::getEngine()->findRow(
-            $sql, $this->getParams(func_get_args())
+            $sql, self::getParams(func_get_args())
         );
     }
 

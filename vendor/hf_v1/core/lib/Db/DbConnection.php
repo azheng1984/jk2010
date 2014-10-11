@@ -28,7 +28,7 @@ class DbConnection extends PDO {
     }
 
     public function exec($sql) {
-        return self::sendSql($sql);
+        return $this->sendSql($sql);
     }
 
     public function query(
@@ -36,15 +36,15 @@ class DbConnection extends PDO {
     ) {
         $argumentCount = func_num_args();
         if ($argumentCount === 1) {
-            return self::sendSql($sql, true);
+            return $this->sendSql($sql, true);
         }
         if ($argumentCount === 2) {
-            return self::sendSql($sql, true, array($fetchStyle));
+            return $this->sendSql($sql, true, array($fetchStyle));
         }
         if ($argumentCount === 3) {
-            return self::sendSql($sql, true, array($fetchStyle, $extraParam1));
+            return $this->sendSql($sql, true, array($fetchStyle, $extraParam1));
         }
-        return self::sendSql(
+        return $this->sendSql(
             $sql, true, array($fetchStyle, $extraParam1, $extraParam2)
         );
     }
@@ -53,7 +53,7 @@ class DbConnection extends PDO {
         if ($this->isProfilerEnabled) {
             DbProfiler::onTransactionOperationExecuting($this, 'begin');
         }
-        $this->beginTransaction();
+        parent::beginTransaction();
         if ($this->isProfilerEnabled) {
             DbProfiler::onTransactionOperationExecuted();
         }
@@ -63,7 +63,7 @@ class DbConnection extends PDO {
         if ($this->isProfilerEnabled) {
             DbProfiler::onTransactionOperationExecuting($this, 'commit');
         }
-        $this->commit();
+        parent::commit();
         if ($this->isProfilerEnabled) {
             DbProfiler::onTransactionOperationExecuted();
         }
@@ -73,7 +73,7 @@ class DbConnection extends PDO {
         if ($this->isProfilerEnabled) {
             DbProfiler::onTransactionOperationExecuting($this, 'rollback');
         }
-        $this->rollBack();
+        parent::rollBack();
         if ($this->isProfilerEnabled) {
             DbProfiler::onTransactionOperationExecuted();
         }

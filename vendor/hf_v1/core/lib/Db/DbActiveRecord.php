@@ -54,7 +54,7 @@ abstract class DbActiveRecord implements ArrayAccess {
 
     public static function findById($id) {
         $row = DbClient::findById(static::getTableName(), $id);
-        if ($row === null) {
+        if ($row === false) {
             return;
         }
         $class = get_called_class();
@@ -70,7 +70,7 @@ abstract class DbActiveRecord implements ArrayAccess {
             $sql = array_shift($args);
             $row = DbClient::findRow(self::completeSelectSql($sql), $args);
         }
-        if ($row === null) {
+        if ($row === false) {
             return;
         }
         $class = get_called_class();
