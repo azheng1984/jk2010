@@ -14,7 +14,7 @@ class DbProfiler {
         self::$current = array(
             'transaction' => $operation, 'start_time' => microtime(true)
         );
-        //todo move to top
+        //todo move connection name field to to top
         $connectionName = $connection->getName();
         if ($connectionName !== 'default') {
             self::$current['connection_name'] = $connectionName;

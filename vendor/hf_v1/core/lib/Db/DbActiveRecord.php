@@ -21,7 +21,7 @@ abstract class DbActiveRecord implements ArrayAccess {
         return new $class($row);
     }
 
-    public static function getByColumns($columns) {
+    public static function get(array $columns) {
         $row = DbClient::getRowByColumns(static::getTableName(), $columns);
         if ($row === null) {
             return;
@@ -30,7 +30,7 @@ abstract class DbActiveRecord implements ArrayAccess {
         return new $class($row);
     }
 
-    public static function getAllByColumns($columns) {
+    public static function getAll(array $columns = null) {
         $result = array();
         $class = get_called_class();
         $rows = DbClient::getAllByColumns(static::getTableName(), $columns);
