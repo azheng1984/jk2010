@@ -77,29 +77,37 @@ class DbClient {
     }
 
     public static function update($table, $columns, $where/*, $mixed, ...*/) {
-        return self::getEngine()->update(func_get_args());
+        return self::getEngine()->update(
+            $table, $columns, $where, self::getParams(func_get_args(), 3)
+        );
     }
 
     public static function updateByColumns(
         $table, $replacementColumns, $filterColumns
     ) {
+        return self::getEngine()->updateByColumns(
+            $table, $replacementColumns, $filterColumns
+        );
     }
 
     public static function delete($table, $where/*, $mixed, ...*/) {
-        return self::getEngine()->delete(func_get_args());
+        return self::getEngine()->delete(self::getParams(func_get_args(), 2));
     }
 
     public static function deleteByColumns($table, $columns) {
+        return self::getEngine()->deleteByColumns($table, $columns);
     }
 
     public static function deleteById($table, $id) {
+        return self::getEngine()->deleteById($table, $id);
     }
 
     public static function save($table, array &$row) {
+        return self::getEngine()->save($table, $row);
     }
 
     public static function execute($sql/*, $mixed, ...*/) {
-        return self::sendSql($sql, self::getParams(func_get_args()));
+        return self::getEngine()->execute($sql, self::getParams(func_get_args()));
     }
  
     public static function getLastInsertId() {
@@ -134,18 +142,6 @@ class DbClient {
         return self::getEngine()->getConnection();
     }
 
-    private static function getParams($args) {
-        if (isset($args[1]) && is_array($args[1])) {
-            return $args[1];
-        }
-        array_shift($args);
-        return $args;
-    }
-
-    final protected static function sendSql($sql, $params, $isQuery = false) {
-        return self::getEngine()->sendSql($sql, $params, $isQuery);
-    }
-
     final protected static function getEngine() {
         if (self::$engine === null) {
             $class = Config::get('hyperframework.db.client.engine');
@@ -156,5 +152,12 @@ class DbClient {
             }
         }
         return self::$engine;
+    }
+
+    private static function getParams($args, $offset = 1) {
+        if (isset($args[$offset]) && is_array($args[$offset])) {
+            return $args[$offset];
+        }
+        return array_slice($args, $offset);
     }
 }

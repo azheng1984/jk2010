@@ -8,11 +8,11 @@ class DbClientEngine {
     public function getById($table, $id, $columnNameOrNames = null) {
         $sql = 'SELECT * FROM '
             . self::quoteIdentifier($table) . ' WHERE id = ?';
-        return static::getRow($sql, $id);
+        return static::getRow($sql, array($id));
     }
 
-    public function getColumn($sql/*, $mixed, ...*/) {
-        return static::query(func_get_args())->fetchColumn();
+    public function getColumn($sql, array $params = null) {
+        return static::query($sql, $params)->fetchColumn();
     }
 
     public function getColumnByColumns($table, $columns, $columnName) {
@@ -20,8 +20,8 @@ class DbClientEngine {
         return $result->fetchColumn();
     }
 
-    public function getRow($sql/*, $mixed, ...*/) {
-        return static::query(func_get_args())->fetch(PDO::FETCH_ASSOC);
+    public function getRow($sql, array $params = null) {
+        return static::query($sql, $params)->fetch(PDO::FETCH_ASSOC);
     }
 
     public function getRowByColumns($table, $columns, $selector = '*') {
@@ -29,8 +29,8 @@ class DbClientEngine {
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getAll($sql/*, $mixed, ...*/) {
-        return static::query(func_get_args())->fetchAll(PDO::FETCH_ASSOC);
+    public function getAll($sql, array $params = null) {
+        return static::query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getAllByColumns($table, $columns, $selector = '*') {
@@ -73,13 +73,12 @@ class DbClientEngine {
         return static::sendSql($sql, array_values($row));
     }
 
-    public function update($table, $columns, $where/*, $mixed, ...*/) {
-        $params = array_values($columns);
+    public function update($table, $columns, $where, array $params = null) {
         if ($where !== null) {
             $where = ' WHERE ' . $where;
-            $params = array_merge(
-                $params, array_slice(func_get_args(), 3)
-            );
+            $params = array_merge(array_values($columns), $params);
+        } else {
+            $params = array_values($columns);
         }
         $tmp = null;
         foreach (array_keys($columns) as $key) {
@@ -100,11 +99,9 @@ class DbClientEngine {
         );
     }
 
-    public function delete($table, $where/*, $mixed, ...*/) {
-        $params = array();
+    public function delete($table, $where, array $params = null) {
         if ($where !== null) {
             $where = ' WHERE ' . $where;
-            $params = array_slice(func_get_args(), 2);
         }
         $sql = 'DELETE FROM ' . self::quoteIdentifier($table) . $where;
         return static::sendSql($sql, $params);
@@ -135,9 +132,7 @@ class DbClientEngine {
         return 1;
     }
 
-    public function execute($sql/*, $mixed, ...*/) {
-        $params = func_get_args();
-        $sql = array_shift($params);
+    public function execute($sql, array $params = null) {
         return static::sendSql($sql, $params);
     }
  
@@ -165,11 +160,15 @@ class DbClientEngine {
         return static::getConnection()->quoteIdentifier($identifier);
     }
 
+    public function getConnection() {
+        return DbContext::getConnection();
+    }
+
     public function prepare($sql, $driverOptions = array()) {
         return $this->getConnection()->prepare($sql, $driverOptions);
     }
 
-    public function sendSql($sql, $params, $isQuery = false) {
+    protected function sendSql($sql, $params, $isQuery = false) {
         $connection = $this->getConnection();
         if ($params === null || count($params) === 0) {
             return $isQuery ?
@@ -186,23 +185,18 @@ class DbClientEngine {
         return $statement->rowCount();
     }
 
-    public function getConnection() {
-        return DbContext::getConnection();
-    }
-
     private function calculate($table, $columnName, $function) {
         $table = self::quoteIdentifier($table);
         if ($columnName !== '*') {
             $columnName = self::quoteIdentifier($columnName);
         }
-        return static::getColumn(
+        return $this->getColumn(
             'SELECT ' . $function . '(' . $columnName . ') FROM ' . $table
         );
     }
 
-    private function query($params) {
-        $sql = array_shift($params);
-        return static::sendSql($sql, $params, true);
+    private function query($sql, $params) {
+        return $this->sendSql($sql, $params, true);
     }
 
     private function queryByColumns($table, $columns, $selector) {
@@ -212,7 +206,7 @@ class DbClientEngine {
             $sql .= ' WHERE ' . $where;
         }
         array_unshift($params, $sql);
-        return self::query($params);
+        return $this->query($params);
     }
 
     private function buildWhereByColumns($columns) {
