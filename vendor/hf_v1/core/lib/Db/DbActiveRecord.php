@@ -1,8 +1,8 @@
 <?php
 namespace Hyperframework\Db;
 
-use Exception;
 use ArrayAccess;
+use Exception;
 
 abstract class DbActiveRecord implements ArrayAccess {
     private static $tableNames = array();

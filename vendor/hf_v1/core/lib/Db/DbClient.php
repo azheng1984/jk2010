@@ -95,31 +95,31 @@ class DbClient {
     public static function execute($sql/*, $mixed, ...*/) {
         $params = func_get_args();
         $sql = array_shift($params);
-        return static::sendSql($sql, $params);
+        return self::sendSql($sql, $params);
     }
  
     public static function getLastInsertId() {
-        return static::getConnection()->lastInsertId();
+        return self::getEngine()->lastInsertId();
     }
 
     public static function beginTransaction() {
-        return static::getConnection()->beginTransaction();
+        return self::getEngine()->beginTransaction();
     }
 
     public static function commit() {
-        return static::getConnection()->commit();
+        return self::getEngine()->commit();
     }
 
     public static function rollback() {
-        return static::getConnection()->rollBack();
+        return self::getEngine()->rollBack();
     }
 
     public static function inTransaction() {
-        return static::getConnection()->inTransaction();
+        return self::getEngine()->inTransaction();
     }
 
     public static function quoteIdentifier($identifier) {
-        return static::getConnection()->quoteIdentifier($identifier);
+        return self::getEngine()->quoteIdentifier($identifier);
     }
 
     public static function prepare($sql, $driverOptions = array()) {
