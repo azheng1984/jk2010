@@ -16,7 +16,6 @@ class Action {
     public function before() {
         //print_r($_SERVER);
         var_dump(DbClient::beginTransaction());
-        exit;
         var_dump(Article::count());
         var_dump(DbClient::inTransaction());
         $article = Article::findById(1);
