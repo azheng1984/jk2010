@@ -61,8 +61,15 @@ abstract class DbActiveRecord implements ArrayAccess {
         return new $class($row);
     }
 
-    public static function find(array $columns = null) {
-        $row = DbClient::findRowByColumns(static::getTableName(), $columns);
+    public static function find($arg/*, ...*/) {
+        $row = null;
+        if (is_array($arg)) {
+            $row = DbClient::findRowByColumns(static::getTableName(), $arg);
+        } else {
+            $args = func_get_args();
+            $sql = array_shift($args);
+            $row = DbClient::findRow(self::completeSelectSql($sql), $args);
+        }
         if ($row === null) {
             return;
         }
@@ -70,33 +77,16 @@ abstract class DbActiveRecord implements ArrayAccess {
         return new $class($row);
     }
 
-    public static function findAll(array $columns = null) {
+    public static function findAll($arg/*, ...*/) {
         $result = array();
         $class = get_called_class();
-        $rows = DbClient::findAllByColumns(static::getTableName(), $columns);
-        foreach ($rows as $row) {
-            $result[] = new $class($row);
+        if (is_array($arg)) {
+            $rows = DbClient::findAllByColumns(static::getTableName(), $columns);
+        } else {
+            $args = func_get_args();
+            $sql = array_shift($args);
+            $rows = DbClient::findAll(self::completeSelectSql($sql), $args);
         }
-        return $result;
-    }
-
-    public static function findBySql($sql/*, ...*/) {
-        $args = func_get_args();
-        array_shift($args);
-        $row = DbClient::findRow(self::completeSelectSql($sql), $args);
-        if ($row === null) {
-            return;
-        }
-        $class = get_called_class();
-        return new $class($row);
-    }
-
-    public static function findAllBySql($sql/*, ...*/) {
-        $result = array();
-        $class = get_called_class();
-        $args = func_get_args();
-        array_shift($args);
-        $rows = DbClient::findAll(self::completeSelectSql($sql), $args);
         foreach ($rows as $row) {
             $result[] = new $class($row);
         }
