@@ -12,7 +12,7 @@ class DbClient {
         );
     }
 
-    public static function getColumn($sql/*, $mixed, ...*/) {
+    public static function getColumn($sql/*, ...*/) {
         return self::getEngine()->getColumn(
             $sql, $this->getParams(func_get_args())
         );
@@ -26,7 +26,7 @@ class DbClient {
         );
     }
 
-    public static function getRow($sql/*, $mixed, ...*/) {
+    public static function getRow($sql/*, ...*/) {
         return self::getEngine()->getRow(
             $sql, $this->getParams(func_get_args())
         );
@@ -40,7 +40,7 @@ class DbClient {
         );
     }
 
-    public static function getAll($sql/*, $mixed, ...*/) {
+    public static function getAll($sql/*, ...*/) {
         return self::getEngine()->getAll(
             $sql, $this->getParams(func_get_args())
         );
@@ -78,9 +78,7 @@ class DbClient {
         return self::getEngine()->insert($table, $row);
     }
 
-    public static function update(
-        $table, array $columns, $where/*, $mixed, ...*/
-    ) {
+    public static function update($table, array $columns, $where/*, ...*/) {
         return self::getEngine()->update(
             $table, $columns, $where, self::getParams(func_get_args(), 3)
         );
@@ -94,7 +92,7 @@ class DbClient {
         );
     }
 
-    public static function delete($table, $where/*, $mixed, ...*/) {
+    public static function delete($table, $where/*, ...*/) {
         return self::getEngine()->delete(self::getParams(func_get_args(), 2));
     }
 
@@ -110,7 +108,7 @@ class DbClient {
         return self::getEngine()->save($table, $row);
     }
 
-    public static function execute($sql/*, $mixed, ...*/) {
+    public static function execute($sql/*, ...*/) {
         return self::getEngine()->execute(
             $sql, self::getParams(func_get_args())
         );
