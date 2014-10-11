@@ -81,7 +81,9 @@ abstract class DbActiveRecord implements ArrayAccess {
         $result = array();
         $class = get_called_class();
         if (is_array($arg)) {
-            $rows = DbClient::findAllByColumns(static::getTableName(), $columns);
+            $rows = DbClient::findAllByColumns(
+                static::getTableName(), $columns
+            );
         } else {
             $args = func_get_args();
             $sql = array_shift($args);
