@@ -8,10 +8,28 @@ class DbProfiler {
     private static $current;
     private static $profileHandlers = array();
 
+    public static function onTransactionOperationExecuting(
+        $connection, $operation
+    ) {
+        self::$current = array(
+            'transaction' => $operation, 'start_time' => microtime(true)
+        );
+        //todo move to top
+        $connectionName = $connection->getName();
+        if ($connectionName !== 'default') {
+            self::$current['connection_name'] = $connectionName;
+        }
+    }
+
+    public static function onTransactionOperationExecuted() {
+        self::$current['running_time'] = self::getRunningTime();
+        self::handle(self::$current);
+    }
+
+
     public static function onConnectionExecuting($connection, $sql, $isQuery) {
         self::$current = array(
-            'sql' => $sql,
-            'start_time' => microtime(true)
+            'sql' => $sql, 'start_time' => microtime(true)
         );
         $connectionName = $connection->getName();
         if ($connectionName !== 'default') {

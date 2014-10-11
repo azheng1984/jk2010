@@ -49,6 +49,36 @@ class DbConnection extends PDO {
         );
     }
 
+    public function beginTransaction() {
+        if ($this->isProfilerEnabled) {
+            DbProfiler::onTransactionOperationExecuting($this, 'begin');
+        }
+        $this->beginTransaction();
+        if ($this->isProfilerEnabled) {
+            DbProfiler::onTransactionOperationExecuted();
+        }
+    }
+
+    public function commit() {
+        if ($this->isProfilerEnabled) {
+            DbProfiler::onTransactionOperationExecuting($this, 'commit');
+        }
+        $this->commit();
+        if ($this->isProfilerEnabled) {
+            DbProfiler::onTransactionOperationExecuted();
+        }
+    }
+
+    public function rollBack() {
+        if ($this->isProfilerEnabled) {
+            DbProfiler::onTransactionOperationExecuting($this, 'rollback');
+        }
+        $this->rollBack();
+        if ($this->isProfilerEnabled) {
+            DbProfiler::onTransactionOperationExecuted();
+        }
+    }
+
     public function quoteIdentifier($identifier) {
         if ($this->identifierQuotationMarks === null) {
             $this->identifierQuotationMarks =
