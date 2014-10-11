@@ -5,35 +5,35 @@ use PDO;
 use Exception;
 
 class DbClientEngine {
-    public function getById($table, $id, $columnNameOrNames = null) {
+    public function findById($table, $id, $columnNameOrNames = null) {
         $sql = 'SELECT * FROM '
             . $this->quoteIdentifier($table) . ' WHERE id = ?';
-        return $this->getRow($sql, array($id));
+        return $this->findRow($sql, array($id));
     }
 
-    public function getColumn($sql, array $params = null) {
+    public function findColumn($sql, array $params = null) {
         return $this->query($sql, $params)->fetchColumn();
     }
 
-    public function getColumnByColumns($table, array $columns, $columnName) {
+    public function findColumnByColumns($table, array $columns, $columnName) {
         $result = $this->queryByColumns($table, $columns, $columnName);
         return $result->fetchColumn();
     }
 
-    public function getRow($sql, array $params = null) {
+    public function findRow($sql, array $params = null) {
         return $this->query($sql, $params)->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getRowByColumns($table, array $columns, $selector = '*') {
+    public function findRowByColumns($table, array $columns, $selector = '*') {
         $result = $this->queryByColumns($table, $columns, $selector);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getAll($sql, array $params = null) {
+    public function findAll($sql, array $params = null) {
         return $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getAllByColumns($table, array $columns, $selector = '*') {
+    public function findAllByColumns($table, array $columns, $selector = '*') {
         $result = $this->queryByColumns($table, $columns, $selector);
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -192,7 +192,7 @@ class DbClientEngine {
         if ($columnName !== '*') {
             $columnName = $this->quoteIdentifier($columnName);
         }
-        return $this->getColumn(
+        return $this->findColumn(
             'SELECT ' . $function . '(' . $columnName . ') FROM ' . $table
         );
     }

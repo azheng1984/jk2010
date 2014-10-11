@@ -61,8 +61,8 @@ abstract class DbActiveRecord implements ArrayAccess {
         return new $class($row);
     }
 
-    public static function find(array $columns = null) {
-        $row = DbClient::findRowByColumns(static::getTableName(), $columns);
+    public static function get(array $columns = null) {
+        $row = DbClient::getRowByColumns(static::getTableName(), $columns);
         if ($row === null) {
             return;
         }
@@ -70,20 +70,20 @@ abstract class DbActiveRecord implements ArrayAccess {
         return new $class($row);
     }
 
-    public static function findAll(array $columns = null) {
+    public static function getAll(array $columns = null) {
         $result = array();
         $class = get_called_class();
-        $rows = DbClient::findAllByColumns(static::getTableName(), $columns);
+        $rows = DbClient::getAllByColumns(static::getTableName(), $columns);
         foreach ($rows as $row) {
             $result[] = new $class($row);
         }
         return $result;
     }
 
-    public static function findBySql($sql/*, ...*/) {
+    public static function getBySql($sql/*, ...*/) {
         $args = func_get_args();
         array_shift($args);
-        $row = DbClient::findRow(self::completeSelectSql($sql), $args);
+        $row = DbClient::getRow(self::completeSelectSql($sql), $args);
         if ($row === null) {
             return;
         }
@@ -91,12 +91,12 @@ abstract class DbActiveRecord implements ArrayAccess {
         return new $class($row);
     }
 
-    public static function findAllBySql($sql/*, ...*/) {
+    public static function getAllBySql($sql/*, ...*/) {
         $result = array();
         $class = get_called_class();
         $args = func_get_args();
         array_shift($args);
-        $rows = DbClient::findAll(self::completeSelectSql($sql), $args);
+        $rows = DbClient::getAll(self::completeSelectSql($sql), $args);
         foreach ($rows as $row) {
             $result[] = new $class($row);
         }

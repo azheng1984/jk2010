@@ -6,50 +6,50 @@ use Hyperframework\Config;
 class DbClient {
     private static $engine;
 
-    public static function getById($table, $id, $columnNameOrNames = null) {
-        return self::getEngine()->getById(
+    public static function findById($table, $id, $columnNameOrNames = null) {
+        return self::getEngine()->findById(
             $table, $id, $columnNameOrNames
         );
     }
 
-    public static function getColumn($sql/*, ...*/) {
-        return self::getEngine()->getColumn(
+    public static function findColumn($sql/*, ...*/) {
+        return self::getEngine()->findColumn(
             $sql, $this->getParams(func_get_args())
         );
     }
 
-    public static function getColumnByColumns(
+    public static function findColumnByColumns(
         $table, array $columns, $columnName
     ) {
-        return self::getEngine()->getColumnByColumns(
+        return self::getEngine()->findColumnByColumns(
             $table, $columns, $columnName
         );
     }
 
-    public static function getRow($sql/*, ...*/) {
-        return self::getEngine()->getRow(
+    public static function findRow($sql/*, ...*/) {
+        return self::getEngine()->findRow(
             $sql, $this->getParams(func_get_args())
         );
     }
 
-    public static function getRowByColumns(
+    public static function findRowByColumns(
         $table, array $columns, array $columnNames = null
     ) {
-        return self::getEngine()->getRowByColumns(
+        return self::getEngine()->findRowByColumns(
             $table, $columns, $columnNames
         );
     }
 
-    public static function getAll($sql/*, ...*/) {
-        return self::getEngine()->getAll(
+    public static function findAll($sql/*, ...*/) {
+        return self::getEngine()->findAll(
             $sql, $this->getParams(func_get_args())
         );
     }
 
-    public static function getAllByColumns(
+    public static function findAllByColumns(
         $table, array $columns, $columnNameOrNames = null
     ) {
-        return self::getEngine()->getAllByColumns(
+        return self::getEngine()->findAllByColumns(
             $table, $columns, $columnNameOrNames
         );
     }
