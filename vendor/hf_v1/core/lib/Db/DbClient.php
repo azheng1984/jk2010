@@ -18,7 +18,9 @@ class DbClient {
         );
     }
 
-    public static function getColumnByColumns($table, $columns, $columnName) {
+    public static function getColumnByColumns(
+        $table, array $columns, $columnName
+    ) {
         return self::getEngine()->getColumnByColumns(
             $table, $columns, $columnName
         );
@@ -31,7 +33,7 @@ class DbClient {
     }
 
     public static function getRowByColumns(
-        $table, $columns, $columnNames = null
+        $table, array $columns, array $columnNames = null
     ) {
         return self::getEngine()->getRowByColumns(
             $table, $columns, $columnNames
@@ -45,7 +47,7 @@ class DbClient {
     }
 
     public static function getAllByColumns(
-        $table, $columns, $columnNameOrNames = null
+        $table, array $columns, $columnNameOrNames = null
     ) {
         return self::getEngine()->getAllByColumns(
             $table, $columns, $columnNameOrNames
@@ -72,18 +74,20 @@ class DbClient {
         return self::getEngine()->average($table, $columnName);
     }
 
-    public static function insert($table, $row) {
+    public static function insert($table, array $row) {
         return self::getEngine()->insert($table, $row);
     }
 
-    public static function update($table, $columns, $where/*, $mixed, ...*/) {
+    public static function update(
+        $table, array $columns, $where/*, $mixed, ...*/
+    ) {
         return self::getEngine()->update(
             $table, $columns, $where, self::getParams(func_get_args(), 3)
         );
     }
 
     public static function updateByColumns(
-        $table, $replacementColumns, $filterColumns
+        $table, array $replacementColumns, array $filterColumns
     ) {
         return self::getEngine()->updateByColumns(
             $table, $replacementColumns, $filterColumns
@@ -94,7 +98,7 @@ class DbClient {
         return self::getEngine()->delete(self::getParams(func_get_args(), 2));
     }
 
-    public static function deleteByColumns($table, $columns) {
+    public static function deleteByColumns($table, array $columns) {
         return self::getEngine()->deleteByColumns($table, $columns);
     }
 
@@ -134,7 +138,7 @@ class DbClient {
         return self::getEngine()->quoteIdentifier($identifier);
     }
 
-    public static function prepare($sql, $driverOptions = array()) {
+    public static function prepare($sql, array $driverOptions = array()) {
         return self::getEngine()->prepare($sql, $driverOptions);
     }
 
@@ -154,7 +158,7 @@ class DbClient {
         return self::$engine;
     }
 
-    private static function getParams($args, $offset = 1) {
+    private static function getParams(array $args, $offset = 1) {
         if (isset($args[$offset]) && is_array($args[$offset])) {
             return $args[$offset];
         }

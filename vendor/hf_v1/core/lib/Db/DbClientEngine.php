@@ -15,7 +15,7 @@ class DbClientEngine {
         return static::query($sql, $params)->fetchColumn();
     }
 
-    public function getColumnByColumns($table, $columns, $columnName) {
+    public function getColumnByColumns($table, array $columns, $columnName) {
         $result = self::queryByColumns($table, $columns, $columnName);
         return $result->fetchColumn();
     }
@@ -24,7 +24,7 @@ class DbClientEngine {
         return static::query($sql, $params)->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getRowByColumns($table, $columns, $selector = '*') {
+    public function getRowByColumns($table, array $columns, $selector = '*') {
         $result = self::queryByColumns($table, $columns, $selector);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
@@ -33,7 +33,7 @@ class DbClientEngine {
         return static::query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getAllByColumns($table, $columns, $selector = '*') {
+    public function getAllByColumns($table, array $columns, $selector = '*') {
         $result = self::queryByColumns($table, $columns, $selector);
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -58,7 +58,7 @@ class DbClientEngine {
         return self::calculate($table, $columnName, 'AVG');
     }
 
-    public function insert($table, $row) {
+    public function insert($table, array $row) {
         $keys = array();
         foreach (array_keys($row) as $key) {
             $keys[] = self::quoteIdentifier($key);
@@ -73,7 +73,9 @@ class DbClientEngine {
         return static::sendSql($sql, array_values($row));
     }
 
-    public function update($table, $columns, $where, array $params = null) {
+    public function update(
+        $table, array $columns, $where, array $params = null
+    ) {
         if ($where !== null) {
             $where = ' WHERE ' . $where;
             $params = array_merge(array_values($columns), $params);
@@ -90,7 +92,7 @@ class DbClientEngine {
     }
 
     public function updateByColumns(
-        $table, $replacementColumns, $filterColumns
+        $table, array $replacementColumns, array $filterColumns
     ) {
         list($where, $params) = self::buildWhereByColumns($filterColumns);
         return call_user_func_array(
@@ -107,7 +109,7 @@ class DbClientEngine {
         return static::sendSql($sql, $params);
     }
 
-    public function deleteByColumns($table, $columns) {
+    public function deleteByColumns($table, array $columns) {
         list($where, $params) = self::buildWhereByColumns($columns);
         return static::sendSql(
             'DELETE FROM ' . self::quoteIdentifier($table)
@@ -164,11 +166,11 @@ class DbClientEngine {
         return DbContext::getConnection();
     }
 
-    public function prepare($sql, $driverOptions = array()) {
+    public function prepare($sql, array $driverOptions = array()) {
         return $this->getConnection()->prepare($sql, $driverOptions);
     }
 
-    protected function sendSql($sql, $params, $isQuery = false) {
+    protected function sendSql($sql, array $params, $isQuery = false) {
         $connection = $this->getConnection();
         if ($params === null || count($params) === 0) {
             return $isQuery ?
@@ -195,11 +197,11 @@ class DbClientEngine {
         );
     }
 
-    private function query($sql, $params) {
+    private function query($sql, array $params) {
         return $this->sendSql($sql, $params, true);
     }
 
-    private function queryByColumns($table, $columns, $selector) {
+    private function queryByColumns($table, array $columns, $selector) {
         list($where, $params) = self::buildWhereByColumns($columns);
         $sql = 'SELECT ' . $selector . ' FROM ' . self::quoteIdentifier($table);
         if ($where !== null) {
@@ -209,7 +211,7 @@ class DbClientEngine {
         return $this->query($params);
     }
 
-    private function buildWhereByColumns($columns) {
+    private function buildWhereByColumns(array $columns) {
         $params = array();
         $where = null;
         foreach ($columns as $key => $value) {
