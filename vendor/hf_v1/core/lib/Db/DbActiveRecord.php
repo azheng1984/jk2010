@@ -12,6 +12,46 @@ abstract class DbActiveRecord implements ArrayAccess {
         $this->setRow($row);
     }
 
+    public function save() {
+        return DbClient::save(static::getTableName(), $this->row);
+    }
+
+    public function delete() {
+        return DbClient::deleteById(static::getTableName(), $this->row['id']);
+    }
+
+    public function offsetSet($offset, $value) {
+        if ($offset === null) {
+            throw new Exception;
+        } else {
+            $this->row[$offset] = $value;
+        }
+    }
+
+    public function offsetExists($offset) {
+        return isset($this->row[$offset]);
+    }
+
+    public function offsetUnset($offset) {
+        unset($this->row[$offset]);
+    }
+
+    public function offsetGet($offset) {
+        return $this->row[$offset];
+    }
+
+    public function getRow() {
+        return $this->row;
+    }
+
+    public function setRow(array $value) {
+        $this->row = $value;
+    }
+
+    public function mergeRow(array $value) {
+        $this->row = $value + $this->row;
+    }
+
     public static function getById($id) {
         $row = DbClient::getById(static::getTableName(), $id);
         if ($row === null) {
@@ -83,46 +123,6 @@ abstract class DbActiveRecord implements ArrayAccess {
         return DbClient::average(static::getTableName(), $columnName);
     }
 
-    public function offsetSet($offset, $value) {
-        if ($offset === null) {
-            throw new Exception;
-        } else {
-            $this->row[$offset] = $value;
-        }
-    }
-
-    public function offsetExists($offset) {
-        return isset($this->row[$offset]);
-    }
-
-    public function offsetUnset($offset) {
-        unset($this->row[$offset]);
-    }
-
-    public function offsetGet($offset) {
-        return $this->row[$offset];
-    }
-
-    public function getRow() {
-        return $this->row;
-    }
-
-    public function setRow(array $value) {
-        $this->row = $value;
-    }
-
-    public function mergeRow(array $value) {
-        $this->row = $value + $this->row;
-    }
-
-    public function save() {
-        return DbClient::save(static::getTableName(), $this->row);
-    }
-
-    public function delete() {
-        return DbClient::deleteById(static::getTableName(), $this->row['id']);
-    }
-
     protected static function getTableName() {
         $class = get_called_class();
         if (isset(self::$tableNames[$class]) === false) {
@@ -136,8 +136,8 @@ abstract class DbActiveRecord implements ArrayAccess {
 
     private static function completeSelectSql($sql) {
         if (strlen($sql) > 6) {
-            if (ctype_alnum($sql[6]) === false
-                && strtoupper(substr($sql, 0, 6)) === 'SELECT'
+            if (strtoupper(substr($sql, 0, 6)) === 'SELECT'
+                && ctype_alnum($sql[6]) === false
             ) {
                 return $sql;
             }

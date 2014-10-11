@@ -26,7 +26,6 @@ class DbProfiler {
         self::handle(self::$current);
     }
 
-
     public static function onConnectionExecuting($connection, $sql, $isQuery) {
         self::$current = array(
             'sql' => $sql, 'start_time' => microtime(true)
