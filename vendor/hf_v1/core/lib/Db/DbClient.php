@@ -111,7 +111,9 @@ class DbClient {
     }
 
     public static function execute($sql/*, $mixed, ...*/) {
-        return self::getEngine()->execute($sql, self::getParams(func_get_args()));
+        return self::getEngine()->execute(
+            $sql, self::getParams(func_get_args())
+        );
     }
  
     public static function getLastInsertId() {
