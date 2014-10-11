@@ -111,6 +111,10 @@ abstract class DbActiveRecord implements ArrayAccess {
         $this->row = $value;
     }
 
+    public function mergeRow(array $value) {
+        $this->row = $value + $this->row;
+    }
+
     public function save() {
         return DbClient::save(static::getTableName(), $this->row);
     }

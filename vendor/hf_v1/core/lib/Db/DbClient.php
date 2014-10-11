@@ -13,7 +13,9 @@ class DbClient {
     }
 
     public static function getColumn($sql/*, $mixed, ...*/) {
-        return self::getEngine()->getColumn($sql, $params);
+        return self::getEngine()->getColumn(
+            $sql, $this->getParams(func_get_args())
+        );
     }
 
     public static function getColumnByColumns($table, $columns, $columnName) {
@@ -23,7 +25,9 @@ class DbClient {
     }
 
     public static function getRow($sql/*, $mixed, ...*/) {
-        return self::getEngine()->getRow($sql, $params);
+        return self::getEngine()->getRow(
+            $sql, $this->getParams(func_get_args())
+        );
     }
 
     public static function getRowByColumns(
@@ -35,7 +39,9 @@ class DbClient {
     }
 
     public static function getAll($sql/*, $mixed, ...*/) {
-        return self::getEngine()->getAll($sql, $params);
+        return self::getEngine()->getAll(
+            $sql, $this->getParams(func_get_args())
+        );
     }
 
     public static function getAllByColumns(
@@ -93,9 +99,7 @@ class DbClient {
     }
 
     public static function execute($sql/*, $mixed, ...*/) {
-        $params = func_get_args();
-        $sql = array_shift($params);
-        return self::sendSql($sql, $params);
+        return self::sendSql($sql, self::getParams(func_get_args()));
     }
  
     public static function getLastInsertId() {
@@ -128,6 +132,14 @@ class DbClient {
 
     public static function getConnection() {
         return self::getEngine()->getConnection();
+    }
+
+    private static function getParams($args) {
+        if (isset($args[1]) && is_array($args[1])) {
+            return $args[1];
+        }
+        array_shift($args);
+        return $args;
     }
 
     final protected static function sendSql($sql, $params, $isQuery = false) {
