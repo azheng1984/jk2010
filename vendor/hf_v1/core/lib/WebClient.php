@@ -223,7 +223,6 @@ class WebClient {
     final public static function closeAsyncHandle() {
         if (self::$asyncHandle === null) {
             return;
-        }
         curl_multi_close(self::$asyncHandle);
         self::$asyncHandle = null;
         self::$asyncTemporaryOptions = null;
@@ -401,10 +400,10 @@ class WebClient {
         }
         $options[CURLOPT_URL] = $url;
         $options[CURLOPT_CUSTOMREQUEST] = $method;
-        return self::send($options);
+        return $this->run($options);
     }
 
-    public function send(array $options = null) {
+    public function run(array $options = null) {
         if ($options === null) {
             $options = array();
         }
@@ -1139,30 +1138,30 @@ class WebClient {
     }
 
     public function head($url, array $options = null) {
-        return self::sendHttp('HEAD', $url, null, $options);
+        return $this->sendHttp('HEAD', $url, null, $options);
     }
 
     public function get($url, array $options = null) {
-        return self::sendHttp('GET', $url, null, $options);
+        return $this->sendHttp('GET', $url, null, $options);
     }
 
     public function post($url, $data = null, array $options = null) {
-        return self::sendHttp('POST', $url, $data, $options);
+        return $this->sendHttp('POST', $url, $data, $options);
     }
 
     public function patch($url, $data = null, array $options = null) {
-        return self::sendHttp('PATCH', $url, $data, $options);
+        return $this->sendHttp('PATCH', $url, $data, $options);
     }
 
     public function put($url, $data = null, array $options = null) {
-        return self::sendHttp('PUT', $url, $data, $options);
+        return $this->sendHttp('PUT', $url, $data, $options);
     }
 
     public function delete($url, array $options = null) {
-        return self::sendHttp('DELETE', $url, null, $options);
+        return $this->sendHttp('DELETE', $url, null, $options);
     }
 
     public function options($url, array $options = null) {
-        return self::sendHttp('OPTIONS', $url, null, $options);
+        return $this->sendHttp('OPTIONS', $url, null, $options);
     }
 }
