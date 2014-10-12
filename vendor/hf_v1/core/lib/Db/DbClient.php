@@ -159,7 +159,10 @@ class DbClient {
     }
 
     private static function getParams(array $args, $offset = 1) {
-        if (isset($args[$offset]) && is_array($args[$offset])) {
+        if (isset($args[$offset]) === false) {
+            return;
+        }
+        if (is_array($args[$offset])) {
             return $args[$offset];
         }
         return array_slice($args, $offset);
