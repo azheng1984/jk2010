@@ -223,6 +223,7 @@ class WebClient {
     final public static function closeAsyncHandle() {
         if (self::$asyncHandle === null) {
             return;
+        }
         curl_multi_close(self::$asyncHandle);
         self::$asyncHandle = null;
         self::$asyncTemporaryOptions = null;
