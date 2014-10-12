@@ -84,20 +84,8 @@ class DbClient {
         );
     }
 
-    public static function updateByColumns(
-        $table, array $replacementColumns, array $filterColumns
-    ) {
-        return self::getEngine()->updateByColumns(
-            $table, $replacementColumns, $filterColumns
-        );
-    }
-
     public static function delete($table, $where/*, ...*/) {
         return self::getEngine()->delete(self::getParams(func_get_args(), 2));
-    }
-
-    public static function deleteByColumns($table, array $columns) {
-        return self::getEngine()->deleteByColumns($table, $columns);
     }
 
     public static function deleteById($table, $id) {
