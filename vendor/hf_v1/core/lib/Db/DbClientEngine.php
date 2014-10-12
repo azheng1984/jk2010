@@ -211,7 +211,6 @@ class DbClientEngine {
     private function queryByColumns(
         $table, array $columns, array $columnNames = null
     ) {
-        list($where, $params) = $this->buildWhereByColumns($columns);
         $selector = null;
         if ($columnNames === null) {
             $selector = '*';
@@ -224,6 +223,7 @@ class DbClientEngine {
             }
             $selector = implode(', ', $columnNames);
         }
+        list($where, $params) = $this->buildWhereByColumns($columns);
         $sql = 'SELECT ' . $selector . ' FROM '
             . $this->quoteIdentifier($table);
         if ($where !== null) {
