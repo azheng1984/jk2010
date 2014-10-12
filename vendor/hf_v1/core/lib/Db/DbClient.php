@@ -7,9 +7,7 @@ class DbClient {
     private static $engine;
 
     public static function findById($table, $id, $columnNameOrNames = null) {
-        return self::getEngine()->findById(
-            $table, $id, $columnNameOrNames
-        );
+        return self::getEngine()->findById($table, $id, $columnNameOrNames);
     }
 
     public static function findColumn($sql/*, ...*/) {
@@ -97,7 +95,9 @@ class DbClient {
     }
 
     public static function delete($table, $where/*, ...*/) {
-        return self::getEngine()->delete(self::getParams(func_get_args(), 2));
+        return self::getEngine()->delete(
+            $table, $where, self::getParams(func_get_args(), 2)
+        );
     }
 
     public static function deleteById($table, $id) {
@@ -127,7 +127,7 @@ class DbClient {
     }
 
     public static function rollback() {
-        return self::getEngine()->rollBack();
+        return self::getEngine()->rollback();
     }
 
     public static function inTransaction() {
