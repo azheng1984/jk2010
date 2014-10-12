@@ -400,10 +400,10 @@ class WebClient {
         }
         $options[CURLOPT_URL] = $url;
         $options[CURLOPT_CUSTOMREQUEST] = $method;
-        return $this->run($options);
+        return $this->send($options);
     }
 
-    public function run(array $options = null) {
+    public function send(array $options = null) {
         if ($options === null) {
             $options = array();
         }
