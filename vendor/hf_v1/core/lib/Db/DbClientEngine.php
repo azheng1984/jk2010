@@ -16,7 +16,7 @@ class DbClientEngine {
     }
 
     public function findColumnByColumns($table, array $columns, $columnName) {
-        $result = $this->queryByColumns($table, $columns, $columnName);
+        $result = $this->queryByColumns($table, $columns, array($columnName));
         return $result->fetchColumn();
     }
 
@@ -24,8 +24,10 @@ class DbClientEngine {
         return $this->query($sql, $params)->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function findRowByColumns($table, array $columns, $selector = '*') {
-        $result = $this->queryByColumns($table, $columns, $selector);
+    public function findRowByColumns(
+        $table, array $columns, array $columnNames = null
+    ) {
+        $result = $this->queryByColumns($table, $columns, $columnNames);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -33,8 +35,10 @@ class DbClientEngine {
         return $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function findAllByColumns($table, array $columns, $selector = '*') {
-        $result = $this->queryByColumns($table, $columns, $selector);
+    public function findAllByColumns(
+        $table, array $columns, array $columnNames = null
+    ) {
+        $result = $this->queryByColumns($table, $columns, $columnNames);
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -204,14 +208,28 @@ class DbClientEngine {
         return $this->sendSql($sql, $params, true);
     }
 
-    private function queryByColumns($table, array $columns, $selector) {
+    private function queryByColumns(
+        $table, array $columns, array $columnNames = null
+    ) {
         list($where, $params) = $this->buildWhereByColumns($columns);
-        $sql = 'SELECT ' . $selector . ' FROM ' . $this->quoteIdentifier($table);
+        $selector = null;
+        if ($columnNames === null) {
+            $selector = '*';
+        } else {
+            if (count($columnNames) === 0) {
+                throw new Exception;
+            }
+            foreach ($columnNames as &$name) {
+                $name = $this->quoteIdentifier($name);
+            }
+            $selector = implode(', ', $columnNames);
+        }
+        $sql = 'SELECT ' . $selector . ' FROM '
+            . $this->quoteIdentifier($table);
         if ($where !== null) {
             $sql .= ' WHERE ' . $where;
         }
-        array_unshift($params, $sql);
-        return $this->query($params);
+        return $this->sendSql($sql, $params, true);
     }
 
     private function buildWhereByColumns(array $columns) {
