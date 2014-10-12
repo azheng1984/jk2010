@@ -55,23 +55,35 @@ class DbClient {
     }
 
     public static function count($table, $where = null/*, ...*/) {
-        return self::getEngine()->count($table);
+        return self::getEngine()->count(
+            $table, $where, self::getParams(func_get_args(), 2)
+        );
     }
 
-    public static function min($table, $columnName) {
-        return self::getEngine()->min($table, $columnName);
+    public static function min($table, $columnName, $where = null/*, ...*/) {
+        return self::getEngine()->min(
+            $table, $columnName, $where, self::getParams(func_get_args(), 3)
+        );
     }
 
-    public static function max($table, $columnName) {
-        return self::getEngine()->max($table, $columnName);
+    public static function max($table, $columnName, $where = null/*, ...*/) {
+        return self::getEngine()->max(
+            $table, $columnName, $where, self::getParams(func_get_args(), 3)
+        );
     }
 
-    public static function sum($table, $columnName) {
-        return self::getEngine()->sum($table, $columnName);
+    public static function sum($table, $columnName, $where = null/*, ...*/) {
+        return self::getEngine()->sum(
+            $table, $columnName, $where, self::getParams(func_get_args(), 3)
+        );
     }
 
-    public static function average($table, $columnName) {
-        return self::getEngine()->average($table, $columnName);
+    public static function average(
+        $table, $columnName, $where = null/*, ...*/
+    ) {
+        return self::getEngine()->average(
+            $table, $columnName, $where, self::getParams(func_get_args(), 3)
+        );
     }
 
     public static function insert($table, array $row) {
