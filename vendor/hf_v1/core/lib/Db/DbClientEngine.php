@@ -38,24 +38,32 @@ class DbClientEngine {
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function count($table) {
-        return $this->calculate($table, '*', 'COUNT');
+    public function count($table, $where = null, array $params = null) {
+        return $this->calculate($table, '*', 'COUNT', $where, $params);
     }
 
-    public function min($table, $columnName) {
-        return $this->calculate($table, $columnName, 'MIN');
+    public function min(
+        $table, $columnName, $where = null, array $params = null
+    ) {
+        return $this->calculate($table, $columnName, 'MIN', $where, $params);
     }
 
-    public function max($table, $columnName) {
-        return $this->calculate($table, $columnName, 'MAX');
+    public function max(
+        $table, $columnName, $where = null, array $params = null
+    ) {
+        return $this->calculate($table, $columnName, 'MAX', $where, $params);
     }
 
-    public function sum($table, $columnName) {
-        return $this->calculate($table, $columnName, 'SUM');
+    public function sum(
+        $table, $columnName, $where = null, array $params = null
+    ) {
+        return $this->calculate($table, $columnName, 'SUM', $where, $params);
     }
 
-    public function average($table, $columnName) {
-        return $this->calculate($table, $columnName, 'AVG');
+    public function average(
+        $table, $columnName, $where = null, array $params = null
+    ) {
+        return $this->calculate($table, $columnName, 'AVG', $where, $params);
     }
 
     public function insert($table, array $row) {
@@ -76,6 +84,9 @@ class DbClientEngine {
     public function update(
         $table, array $columns, $where, array $params = null
     ) {
+        if (is_array($where)) {
+            list($where, $params) = $this->buildWhereByColumns($where);
+        }
         if ($where !== null) {
             $where = ' WHERE ' . $where;
             $params = array_merge(array_values($columns), $params);
@@ -91,36 +102,6 @@ class DbClientEngine {
         return $this->sendSql($sql, $params);
     }
 
-    public function updateByColumns(
-        $table, array $replacementColumns, array $filterColumns
-    ) {
-        list($where, $params) = $this->buildWhereByColumns($filterColumns);
-        return call_user_func_array(
-            '$this->update',
-            array_merge(array($table, $replacementColumns, $where), $params)
-        );
-    }
-
-    public function delete($table, $where, array $params = null) {
-        if ($where !== null) {
-            $where = ' WHERE ' . $where;
-        }
-        $sql = 'DELETE FROM ' . $this->quoteIdentifier($table) . $where;
-        return $this->sendSql($sql, $params);
-    }
-
-    public function deleteByColumns($table, array $columns) {
-        list($where, $params) = $this->buildWhereByColumns($columns);
-        return $this->sendSql(
-            'DELETE FROM ' . $this->quoteIdentifier($table)
-                . ' WHERE ' . $where, $params
-        );
-    }
-
-    public function deleteById($table, $id) {
-        return $this->delete($table, 'id = ?', $id);
-    }
-
     public function save($table, array &$row) {
         if (isset($row['id'])) {
             $id = $row['id'];
@@ -132,6 +113,21 @@ class DbClientEngine {
         $this->insert($table, $row);
         $row['id'] = $this->getLastInsertId();
         return 1;
+    }
+
+    public function delete($table, $where, array $params = null) {
+        if (is_array($where)) {
+            list($where, $params) = $this->buildWhereByColumns($where);
+        }
+        if ($where !== null) {
+            $where = ' WHERE ' . $where;
+        }
+        $sql = 'DELETE FROM ' . $this->quoteIdentifier($table) . $where;
+        return $this->sendSql($sql, $params);
+    }
+
+    public function deleteById($table, $id) {
+        return $this->delete($table, 'id = ?', $id);
     }
 
     public function execute($sql, array $params = null) {
@@ -187,13 +183,20 @@ class DbClientEngine {
         return $statement->rowCount();
     }
 
-    private function calculate($table, $columnName, $function) {
+    private function calculate(
+        $table, $columnName, $function, $where, array $params = null
+    ) {
         $table = $this->quoteIdentifier($table);
         if ($columnName !== '*') {
             $columnName = $this->quoteIdentifier($columnName);
         }
+        if (is_array($where)) {
+            list($where, $params) = $this->buildWhereByColumns($where);
+        }
         return $this->findColumn(
-            'SELECT ' . $function . '(' . $columnName . ') FROM ' . $table
+            'SELECT ' . $function . '(' . $columnName . ') FROM ' . $table,
+            $where,
+            $params
         );
     }
 

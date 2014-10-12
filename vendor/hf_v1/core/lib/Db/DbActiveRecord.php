@@ -44,12 +44,12 @@ abstract class DbActiveRecord implements ArrayAccess {
         return $this->row;
     }
 
-    public function setRow(array $value) {
-        $this->row = $value;
+    public function setRow(array $row) {
+        $this->row = $row;
     }
 
-    public function mergeRow(array $value) {
-        $this->row = $value + $this->row;
+    public function mergeRow(array $row) {
+        $this->row = $row + $this->row;
     }
 
     public static function findById($id) {
@@ -67,8 +67,8 @@ abstract class DbActiveRecord implements ArrayAccess {
             $row = DbClient::findRowByColumns(static::getTableName(), $arg);
         } else {
             $args = func_get_args();
-            $sql = array_shift($args);
-            $row = DbClient::findRow(self::completeSelectSql($sql), $args);
+            array_shift($args);
+            $row = DbClient::findRow(self::completeSelectSql($arg), $args);
         }
         if ($row === false) {
             return;
@@ -86,8 +86,8 @@ abstract class DbActiveRecord implements ArrayAccess {
             );
         } else {
             $args = func_get_args();
-            $sql = array_shift($args);
-            $rows = DbClient::findAll(self::completeSelectSql($sql), $args);
+            array_shift($args);
+            $rows = DbClient::findAll(self::completeSelectSql($arg), $args);
         }
         foreach ($rows as $row) {
             $result[] = new $class($row);
@@ -95,24 +95,46 @@ abstract class DbActiveRecord implements ArrayAccess {
         return $result;
     }
 
-    public static function count() {
-        return DbClient::count(static::getTableName());
+    public static function count($where = null/*, ...*/) {
+        return DbClient::count(
+            static::getTableName(), $where, array_slice(func_get_args(), 1)
+        );
     }
 
-    public static function min($columnName) {
-        return DbClient::min(static::getTableName(), $columnName);
+    public static function min($columnName, $where = null/*, ...*/) {
+        return DbClient::min(
+            static::getTableName(),
+            $columnName,
+            $where,
+            array_slice(func_get_args(), 2)
+        );
     }
 
-    public static function max($columnName) {
-        return DbClient::max(static::getTableName(), $columnName);
+    public static function max($columnName, $where = null/*, ...*/) {
+        return DbClient::max(
+            static::getTableName(),
+            $columnName,
+            $where,
+            array_slice(func_get_args(), 2)
+        );
     }
 
-    public static function sum($columnName) {
-        return DbClient::sum(static::getTableName(), $columnName);
+    public static function sum($columnName, $where = null/*, ...*/) {
+        return DbClient::sum(
+            static::getTableName(),
+            $columnName,
+            $where,
+            array_slice(func_get_args(), 2)
+        );
     }
 
-    public static function average($columnName) {
-        return DbClient::average(static::getTableName(), $columnName);
+    public static function average($columnName, $where = null/*, ...*/) {
+        return DbClient::average(
+            static::getTableName(),
+            $columnName,
+            $where,
+            array_slice(func_get_args(), 2)
+        );
     }
 
     protected static function getTableName() {

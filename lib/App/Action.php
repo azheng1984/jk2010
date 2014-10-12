@@ -19,7 +19,7 @@ class Action {
         var_dump(Article::count());
         var_dump(DbClient::inTransaction());
         $article = Article::findById(1);
-        var_dump(Article::find('where id = :id and name like ?', 1, '%x%'));
+        var_dump(Article::find('WHERE id = :id AND name LIKE ?', 1, '%x%'));
         //Article::getBySql('where name like "%d"');
         if ($article !== null) {
             var_dump($article->getRow()['name']);

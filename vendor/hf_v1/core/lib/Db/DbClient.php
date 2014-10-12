@@ -54,7 +54,7 @@ class DbClient {
         );
     }
 
-    public static function count($table) {
+    public static function count($table, $where = null/*, ...*/) {
         return self::getEngine()->count($table);
     }
 
