@@ -9,6 +9,33 @@ abstract class DbActiveRecord implements ArrayAccess {
     private $row;
 
     public function __construct(array $row = array()) {
+        return Article::findAll();
+
+        Article::select()->loadAll();
+        Article::findAll();
+
+        $article['authors']->load();
+
+        $column = Article::select('id')->getColumn();
+        $article = Article::select()->where()->get();
+        $article = Article::select()->where()->getAll();
+        $authors = $articles['authors']->getLast();
+        $authors = $articles['authors']->count();
+        $authors = $articles['authors']->load();
+        $authors = $articles['authors']->getAll();
+
+        $authors = $articles['authors']->load();
+
+        $articles = Article::select()->where('id' => $id)->all();
+
+        $articles = Article::select()->last();
+        $articles = Article::select()->first();
+
+        $articles = Article::select()->first()->fetchAll();
+        $articles = Article::select()->first()->fetch();
+        $articles = Article::select()->first()->fetchColumn();
+
+        $articles = Article::select()->first()->count();
         $this->setRow($row);
     }
 
@@ -61,17 +88,16 @@ abstract class DbActiveRecord implements ArrayAccess {
         return new $class($row);
     }
 
-    public static function find(/*...*/) {
+    public static function find($arg/*, ...*/) {
         $row = null;
-        $args = func_get_args();
-        if (count($args) === 0) {
-            $args = array(array());
+        if ($arg === null) {
+            $arg = array();
         }
-        if (is_array($args[0])) {
-            $row = DbClient::findRowByColumns(static::getTableName(), $args[0]);
+        if (is_array($arg)) {
+            $row = DbClient::findRowByColumns(static::getTableName(), $arg);
         } else {
-            $sql = array_shift($args);
-            $row = DbClient::findRow(self::completeSelectSql($sql), $args);
+            array_shift($args);
+            $row = DbClient::findRow(self::completeSelectSql($arg), $args);
         }
         if ($row === false) {
             return;
@@ -85,7 +111,7 @@ abstract class DbActiveRecord implements ArrayAccess {
         $class = get_called_class();
         $args = func_get_args();
         if (count($args) === 0) {
-            $args = array(array());
+            $args[] = array();
         }
         if (is_array($args[0])) {
             $rows = DbClient::findAllByColumns(
@@ -99,9 +125,6 @@ abstract class DbActiveRecord implements ArrayAccess {
             $result[] = new $class($row);
         }
         return $result;
-    }
-
-    public static function select() {
     }
 
     public static function count($where = null/*, ...*/) {

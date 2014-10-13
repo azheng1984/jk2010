@@ -6,13 +6,6 @@ use Hyperframework\Config;
 class DbClient {
     private static $engine;
 
-    public static function select() {
-        $item::findById('sql');
-        $item::select()->where(['id' => $id])->fetch();
-        $item = DbClient::select()->from()->where()->fetch();
-        $item = DbClient::select()->from()->where()->fetchAll();
-    }
-
     public static function findById($table, $id, $columnNameOrNames = null) {
         return self::getEngine()->findById($table, $id, $columnNameOrNames);
     }
