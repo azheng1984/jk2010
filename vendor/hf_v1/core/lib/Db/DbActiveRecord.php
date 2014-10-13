@@ -61,17 +61,17 @@ abstract class DbActiveRecord implements ArrayAccess {
         return new $class($row);
     }
 
-    public static function find($arg/*, ...*/) {
+    public static function find(/*...*/) {
         $row = null;
-        if ($arg === null) {
-            $arg = array();
+        $args = func_get_args();
+        if (count($args) === 0) {
+            $args = array(array());
         }
-        if (is_array($arg)) {
-            $row = DbClient::findRowByColumns(static::getTableName(), $arg);
+        if (is_array($args[0])) {
+            $row = DbClient::findRowByColumns(static::getTableName(), $args[0]);
         } else {
-            $args = func_get_args();
-            array_shift($args);
-            $row = DbClient::findRow(self::completeSelectSql($arg), $args);
+            $sql = array_shift($args);
+            $row = DbClient::findRow(self::completeSelectSql($sql), $args);
         }
         if ($row === false) {
             return;
@@ -80,25 +80,28 @@ abstract class DbActiveRecord implements ArrayAccess {
         return new $class($row);
     }
 
-    public static function findAll($arg/*, ...*/) {
+    public static function findAll(/*...*/) {
         $result = array();
         $class = get_called_class();
-        if ($arg === null) {
-            $arg = array();
+        $args = func_get_args();
+        if (count($args) === 0) {
+            $args = array(array());
         }
-        if (is_array($arg)) {
+        if (is_array($args[0])) {
             $rows = DbClient::findAllByColumns(
-                static::getTableName(), $columns
+                static::getTableName(), $args[0]
             );
         } else {
-            $args = func_get_args();
-            array_shift($args);
-            $rows = DbClient::findAll(self::completeSelectSql($arg), $args);
+            $sql = array_shift($args);
+            $rows = DbClient::findAll(self::completeSelectSql($sql), $args);
         }
         foreach ($rows as $row) {
             $result[] = new $class($row);
         }
         return $result;
+    }
+
+    public static function select() {
     }
 
     public static function count($where = null/*, ...*/) {
