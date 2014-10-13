@@ -9,33 +9,6 @@ abstract class DbActiveRecord implements ArrayAccess {
     private $row;
 
     public function __construct(array $row = array()) {
-        return Article::findAll();
-
-        Article::select()->loadAll();
-        Article::findAll();
-
-        $article['authors']->load();
-
-        $column = Article::select('id')->getColumn();
-        $article = Article::select()->where()->get();
-        $article = Article::select()->where()->getAll();
-        $authors = $articles['authors']->getLast();
-        $authors = $articles['authors']->count();
-        $authors = $articles['authors']->load();
-        $authors = $articles['authors']->getAll();
-
-        $authors = $articles['authors']->load();
-
-        $articles = Article::select()->where('id' => $id)->all();
-
-        $articles = Article::select()->last();
-        $articles = Article::select()->first();
-
-        $articles = Article::select()->first()->fetchAll();
-        $articles = Article::select()->first()->fetch();
-        $articles = Article::select()->first()->fetchColumn();
-
-        $articles = Article::select()->first()->count();
         $this->setRow($row);
     }
 
