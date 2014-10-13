@@ -61,7 +61,7 @@ abstract class DbActiveRecord implements ArrayAccess {
         return new $class($row);
     }
 
-    public static function find($arg/*, ...*/) {
+    public static function findBySql($arg/*, ...*/) {
         $row = null;
         if ($arg === null) {
             $arg = array();
@@ -79,7 +79,10 @@ abstract class DbActiveRecord implements ArrayAccess {
         return new $class($row);
     }
 
-    public static function findAll(/*...*/) {
+    public static function findByColumns() {
+    }
+
+    public static function findAllBySql(/*...*/) {
         $result = array();
         $class = get_called_class();
         $args = func_get_args();
@@ -98,6 +101,9 @@ abstract class DbActiveRecord implements ArrayAccess {
             $result[] = new $class($row);
         }
         return $result;
+    }
+
+    public static function findAllByColumns(/*...*/) {
     }
 
     public static function count($where = null/*, ...*/) {
