@@ -63,6 +63,9 @@ abstract class DbActiveRecord implements ArrayAccess {
 
     public static function find($arg/*, ...*/) {
         $row = null;
+        if ($arg === null) {
+            $arg = array();
+        }
         if (is_array($arg)) {
             $row = DbClient::findRowByColumns(static::getTableName(), $arg);
         } else {
@@ -80,6 +83,9 @@ abstract class DbActiveRecord implements ArrayAccess {
     public static function findAll($arg/*, ...*/) {
         $result = array();
         $class = get_called_class();
+        if ($arg === null) {
+            $arg = array();
+        }
         if (is_array($arg)) {
             $rows = DbClient::findAllByColumns(
                 static::getTableName(), $columns
