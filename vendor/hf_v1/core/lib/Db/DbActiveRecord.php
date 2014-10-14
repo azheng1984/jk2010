@@ -52,6 +52,18 @@ abstract class DbActiveRecord implements ArrayAccess {
         $this->row = $row + $this->row;
     }
 
+    public static function find($where/*, ...*/) {
+        if (is_array($where)) {
+            $class = get_called_class();
+            return new $class(
+                DbClient::findRowByColumns(static::getTableName(), $columns)
+            );
+        }
+        $args = func_get_args();
+        $args[0] = 'WHERE ' . $args[0];
+        return call_user_func_array($class . '::findBySql', $args);
+    }
+
     public static function findById($id) {
         $row = DbClient::findById(static::getTableName(), $id);
         if ($row === false) {
@@ -62,35 +74,43 @@ abstract class DbActiveRecord implements ArrayAccess {
     }
 
     public static function findBySql($sql/*, ...*/) {
-        $args = func_get_args();
-        array_shift($args);
+        if (isset($args[1]) && is_array($args[1])) {
+            $args = $args[1];
+        } else {
+            $args = func_get_args();
+            array_shift($args);
+        }
         $class = get_called_class();
         return new $class(
             DbClient::findRow(self::completeSelectSql($sql), $args);
         );
     }
 
-    public static function findByColumns(array $columns) {
-        $class = get_called_class();
-        return new $class(
-            DbClient::findRowByColumns(static::getTableName(), $columns)
-        );
+    public static function findAll($where/*, ...*/) {
+        if (is_array($where)) {
+            $rows = DbClient::findAllByColumns(
+                static::getTableName(), $columns
+            );
+            $result = array();
+            $class = get_called_class();
+            foreach ($rows as $row) {
+                $result[] = new $class($row);
+            }
+            return $result;
+        }
+        $args = func_get_args();
+        $args[0] = 'WHERE ' . $args[0];
+        return call_user_func_array($class . '::findAllBySql', $args);
     }
 
     public static function findAllBySql($sql/*, ...*/) {
-        $args = func_get_args();
-        array_shift($args);
-        $rows = DbClient::findAll(self::completeSelectSql($sql), $args);
-        $result = array();
-        $class = get_called_class();
-        foreach ($rows as $row) {
-            $result[] = new $class($row);
+        if (isset($args[1]) && is_array($args[1])) {
+            $args = $args[1];
+        } else {
+            $args = func_get_args();
+            array_shift($args);
         }
-        return $result;
-    }
-
-    public static function findAllByColumns(array $columns) {
-        $rows = DbClient::findAllByColumns(static::getTableName(), $columns);
+        $rows = DbClient::findAll(self::completeSelectSql($sql), $args);
         $result = array();
         $class = get_called_class();
         foreach ($rows as $row) {
