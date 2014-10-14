@@ -40,7 +40,7 @@ class DbClient {
 
     public static function findAll($sql/*, ...*/) {
         return self::getEngine()->findAll(
-            $sql, $this->getParams(func_get_args())
+            $sql, self::getParams(func_get_args())
         );
     }
 

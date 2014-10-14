@@ -32,6 +32,8 @@ class DbClientEngine {
     }
 
     public function findAll($sql, array $params = null) {
+        print_r($params);
+        echo $sql;
         return $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -175,9 +177,6 @@ class DbClientEngine {
         if ($params === null || count($params) === 0) {
             return $isQuery ?
                 $connection->query($sql) : $connection->exec($sql);
-        }
-        if (is_array($params[0])) {
-            $params = $params[0];
         }
         $statement = $connection->prepare($sql);
         $statement->execute($params);
