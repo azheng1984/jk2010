@@ -89,7 +89,7 @@ abstract class DbActiveRecord implements ArrayAccess {
         );
     }
 
-    public static function findAll($where/*, ...*/) {
+    public static function findAll($where = null/*, ...*/) {
         if ($where === null) {
             $where = array();
         }
