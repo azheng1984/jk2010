@@ -61,49 +61,42 @@ abstract class DbActiveRecord implements ArrayAccess {
         return new $class($row);
     }
 
-    public static function findBySql($arg/*, ...*/) {
-        $row = null;
-        if ($arg === null) {
-            $arg = array();
-        }
-        if (is_array($arg)) {
-            $row = DbClient::findRowByColumns(static::getTableName(), $arg);
-        } else {
-            array_shift($args);
-            $row = DbClient::findRow(self::completeSelectSql($arg), $args);
-        }
-        if ($row === false) {
-            return;
-        }
+    public static function findBySql($sql/*, ...*/) {
+        $args = func_get_args();
+        array_shift($args);
         $class = get_called_class();
-        return new $class($row);
+        return new $class(
+            DbClient::findRow(self::completeSelectSql($sql), $args);
+        );
     }
 
-    public static function findByColumns() {
+    public static function findByColumns(array $columns) {
+        $class = get_called_class();
+        return new $class(
+            DbClient::findRowByColumns(static::getTableName(), $columns)
+        );
     }
 
-    public static function findAllBySql(/*...*/) {
+    public static function findAllBySql($sql/*, ...*/) {
+        $args = func_get_args();
+        array_shift($args);
+        $rows = DbClient::findAll(self::completeSelectSql($sql), $args);
         $result = array();
         $class = get_called_class();
-        $args = func_get_args();
-        if (count($args) === 0) {
-            $args[] = array();
-        }
-        if (is_array($args[0])) {
-            $rows = DbClient::findAllByColumns(
-                static::getTableName(), $args[0]
-            );
-        } else {
-            $sql = array_shift($args);
-            $rows = DbClient::findAll(self::completeSelectSql($sql), $args);
-        }
         foreach ($rows as $row) {
             $result[] = new $class($row);
         }
         return $result;
     }
 
-    public static function findAllByColumns(/*...*/) {
+    public static function findAllByColumns(array $columns) {
+        $rows = DbClient::findAllByColumns(static::getTableName(), $columns);
+        $result = array();
+        $class = get_called_class();
+        foreach ($rows as $row) {
+            $result[] = new $class($row);
+        }
+        return $result;
     }
 
     public static function count($where = null/*, ...*/) {
