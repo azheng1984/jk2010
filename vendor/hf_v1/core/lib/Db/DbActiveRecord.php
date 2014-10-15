@@ -118,7 +118,6 @@ abstract class DbActiveRecord implements ArrayAccess {
         } else {
             array_shift($args);
         }
-       echo self::completeSelectSql($sql);
         $rows = DbClient::findAll(self::completeSelectSql($sql), $args);
         $result = array();
         $class = get_called_class();

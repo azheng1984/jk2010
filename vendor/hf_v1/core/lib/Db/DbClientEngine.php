@@ -32,8 +32,6 @@ class DbClientEngine {
     }
 
     public function findAll($sql, array $params = null) {
-        print_r($params);
-        echo $sql;
         return $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
     }
 
