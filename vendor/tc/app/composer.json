@@ -1,0 +1,21 @@
+{
+   "autoload": {
+        "psr-0": {
+            "Ns": "ext",
+            "A": "psr0",
+            "": "fallback0"
+        }
+        ,"psr-4": {
+          "Hyperframework\\": "../../hf_v1/core/lib/",
+          "Tc\\": "lib/",
+          "": "fallback4"
+        }
+    },
+    "repositories": [
+        {
+            "packagist": false
+        }
+    ],
+    
+  "require" : { }
+}
