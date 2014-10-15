@@ -52,13 +52,13 @@ abstract class DbActiveRecord implements ArrayAccess {
         $this->row = $row + $this->row;
     }
 
-    public static function find($mixed/*, ...*/) {
-        if ($mixed === null) {
-            $mixed = array();
+    public static function find($where/*, ...*/) {
+        if ($where === null) {
+            $where = array();
         }
         $class = get_called_class();
-        if (is_array($mixed)) {
-            $row = DbClient::findRowByColumns(static::getTableName(), $mixed);
+        if (is_array($where)) {
+            $row = DbClient::findRowByColumns(static::getTableName(), $where);
             if ($row === false) {
                 return;
             }
@@ -93,13 +93,13 @@ abstract class DbActiveRecord implements ArrayAccess {
         return new $class($row);
     }
 
-    public static function findAll($mixed = null/*, ...*/) {
-        if ($mixed === null) {
-            $mixed = array();
+    public static function findAll($where = null/*, ...*/) {
+        if ($where === null) {
+            $where = array();
         }
         $class = get_called_class();
-        if (is_array($mixed)) {
-            $rows = DbClient::findAllByColumns(static::getTableName(), $mixed);
+        if (is_array($where)) {
+            $rows = DbClient::findAllByColumns(static::getTableName(), $where);
             $result = array();
             foreach ($rows as $row) {
                 $result[] = new $class($row);
