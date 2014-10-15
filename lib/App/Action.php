@@ -15,18 +15,18 @@ use PDO;
 class Action {
     public function before() {
         //print_r($_SERVER);
-//        var_dump(DbClient::beginTransaction());
-//        var_dump(Article::count());
-//        var_dump(DbClient::inTransaction());
+//      var_dump(DbClient::beginTransaction());
+//      var_dump(Article::count());
+//      var_dump(DbClient::inTransaction());
         $article = Article::findById(1);
-        var_dump(Article::findAllBySql('WHERE name LIKE ? LIMIT 2', '%x%'));
+        var_dump(Article::findAll('name LIKE ? limit 2', '%x%'));
         $name = 'x';
         Article::findAll(['name' => $name]);
         Article::findAll('name = :name', array(':name' => $name));
-        var_dump(Article::findBySql('WHERE name LIKE ? limit 1', '%x%'));
+        var_dump(Article::find('name LIKE ?', '%x%'));
+        //Article::getBySql('where name like "%d"');
         if ($article !== null) {
             var_dump($article->getRow()['name']);
-            var_dump($article['name']);
         }
         CsrfProtection::run();
         Logger::info(
