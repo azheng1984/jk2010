@@ -4,11 +4,10 @@ namespace Hyperframework\Cli;
 use Exception;
 
 class CommandParser {
-    private $elements;
-    private $collectionOptions;
-    private $commandName;
-    private $options;
-    private $arguments;
+    private static $commandName = null;
+    private static $collectionOptions = array();
+    private static $options = array();
+    private static $arguments = array();
 
     private static function getCollectionOptions() {
     }
@@ -16,15 +15,15 @@ class CommandParser {
     private static function getCommandConfig($name = null) {
     }
 
-    public static function parseCommand($isCollection) {
+    public static function execute($isCommandCollection) {
         $arguments = array();
         $options = array();
-        if ($isCollection) {
+        if ($isCommandCollection) {
             $opitons = self::getCollectionOptions();
         } else {
             list($options, $arguments) = self::getCommandConfig($element);
         }
-        $hasCommand = $isCollection;
+        $hasCommand = $isCommandCollection;
         $count = count($_SERVER['argv']);
         $isArgument = false;
         $argumentIndex = 0;
@@ -159,6 +158,11 @@ class CommandParser {
             }
         }
         foreach ($options as $name => $option) {
+            if (isset($option['argument_values'])) {
+                if (in_array($result['options'][$name], $option['argument_values']) === false) {
+                    throw new Exception;
+                }
+            }
             if (isset($option['is_required']) && $option['is_required']) {
                 if (isset($result['options'][$name])) {
                     continue;
@@ -183,7 +187,7 @@ class CommandParser {
                 throw new Exception;
             }
         }
-        if ($isCollection) {
+        if ($isCommandCollection) {
             $result['collection_options'] = array();
             foreach ($result['options'] as $name => $value) {
                 if ($options[$name]['is_collection_option']) {
@@ -195,8 +199,10 @@ class CommandParser {
         return $result;
     }
 
-    //使用自然内部接口代替刻意留给外部的接口
     //用于继承 +  construct 自动处理部分选项
+    public static function getCollectionOptions() {
+    }
+
     public static function getOptions() {
     }
 

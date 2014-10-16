@@ -47,7 +47,28 @@ class ConfigParser {
         }
     }
 
-    public static function parseLongOption($option) {
+    public static function getDefaultArgumentConfig() {
+    }
+
+    public static function checkArgumentConfig() {
+    }
+
+    public static function parseOption($option) {
+        if (strlen($option) < 2) {
+            throw new Exception;
+        }
+        if ($option[0] !== '-') {
+            throw new Exception;
+        }
+        if (strpos($option, ',')) {
+            //long style arg
+        } else {
+            if ($option[1] === '-') {
+                //long style arg
+            } else {
+            }
+        }
+        if (strpos$option)
         $length = strlen($option);
         if ($length < 4) {
             throw new Exception;
