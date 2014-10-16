@@ -16,9 +16,6 @@ class CommandParser {
     private static function getCommandConfig($name = null) {
     }
 
-    public static function hasCommand($name) {
-    }
-
     public static function parseCommand($isCollection) {
         $arguments = array();
         $options = array();
@@ -41,9 +38,6 @@ class CommandParser {
                 || $isArgument
             ) {
                 if ($hasCommand) {
-                    if (self::hasCommand($element) === false) {
-                        throw new Exception;
-                    }
                     list($commandOptions, $arguments) =
                         self::getCommandConfig($element);
                     $hasCommand = false;
@@ -191,15 +185,12 @@ class CommandParser {
         }
         if ($isCollection) {
             $result['collection_options'] = array();
-            $result['command_options'] = array();
             foreach ($result['options'] as $name => $value) {
                 if ($options[$name]['is_collection_option']) {
                     $result['collection_options'][$name] = $value;
-                } else {
-                    $result['command_options'][$name] = $value;
+                    unset($result['options'][$name]);
                 }
             }
-            unset($result['options']);
         }
         return $result;
     }
