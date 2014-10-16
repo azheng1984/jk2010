@@ -10,12 +10,28 @@ class CommandParser {
     private $options;
     private $arguments;
 
-    public static function parseCommand() {
+    private static function getCollectionOptions() {
+    }
+
+    private static function getCommandConfig($name = null) {
+    }
+
+    public static function hasCommand($name) {
+    }
+
+    public static function parseCommand($isCollection) {
+        $arguments = array();
+        $options = array();
+        if ($isCollection) {
+            $opitons = self::getCollectionOptions();
+        } else {
+            list($options, $arguments) = self::getCommandConfig($element);
+        }
+        $hasCommand = $isCollection;
         $count = count($_SERVER['argv']);
-        $options;
-        $arguments;
-        $isCollection;
+        $isArgument = false;
         $argumentIndex = 0;
+        $result = array('arguments' => array(), 'options' => array());
         for ($index = 1; $index < $count; ++$count) {
             $element = $_SERVER['argv'][$index];
             $length = strlen($element);
@@ -24,26 +40,26 @@ class CommandParser {
                 || $element === '-'
                 || $isArgument
             ) {
-                if ($isCollection) {
+                if ($hasCommand) {
                     if (self::hasCommand($element) === false) {
                         throw new Exception;
                     }
                     list($commandOptions, $arguments) =
                         self::getCommandConfig($element);
-                    $isCollection = false;
+                    $hasCommand = false;
                     $options += $commandOptions;
                     continue;
                 }
-                $argCount = count($arguments);
-                if ($argCount > $argumentIndex) {
+                $argumentCount = count($arguments);
+                if ($argumentCount > $argumentIndex) {
                     if ($arguments[$argumentIndex]['is_collection']) {
                         $result['arguments'][] = array($element);
                     }
-                    $result['argument'][] = $element;
+                    $result['arguments'][] = $element;
                 } else {
-                    $lastArg = $arguments[$argCount - 1];
-                    if ($lastArg['is_collection']) {
-                        $result['arguments'][$argCount - 1][] = $element;
+                    $lastArgument = $arguments[$argumentCount - 1];
+                    if ($lastArgument['is_collection']) {
+                        $result['arguments'][$argumentCount - 1][] = $element;
                     } else {
                         throw new Exception;
                     }
@@ -52,100 +68,140 @@ class CommandParser {
                 continue;
             }
             if ($element === '--') {
-                if ($isCollection) {
+                if ($hasCommand) {
                     throw new Exception;
                 }
                 $isArgument = true;
                 continue;
             }
             if ($element[1] !== '-') {
-                $i = 1;
-                while ($length >= 2) {
-                    $optionName = $element[$i];
+                $charIndex = 1;
+                while ($length > 1) {
+                    $optionName = $element[$charIndex];
                     if (isset($options[$optionName]) === false) {
                         throw new Exception;
                     }
-                    $optionArg = true;
+                    if (isset($options[$optionName]['name'])) {
+                        $optionName = $options[$optionName]['name'];
+                    }
+                    $optionArgument = true;
                     $option = $options[$optionName];
                     if ($option['has_argument'] === 0) {
                         if ($length > 2) {
-                            $optionArg = substr($element, 1 + $i);
+                            $optionArgument = substr($element, 1 + $charIndex);
                         }
                     } elseif ($option['has_argument'] === 1) {
                         if ($length > 2) {
-                            $optionArg = substr($element, 1 + $i);
+                            $optionArgument = substr($element, 1 + $charIndex);
                         } else {
                             ++$index;
                             if ($index >= $count) {
                                 throw new Exception;
                             }
-                            $optionArg = $_SERVER['argv'][$index];
+                            $optionArgument = $_SERVER['argv'][$index];
                         }
                     }
-                    foreach ($option['mutex_options'] as $item) {
-                        if (isset($result['options'][$item])) {
-                            throw new Exception;
+                    if (isset($option['mutex_options'])) {
+                        foreach ($option['mutex_options'] as $item) {
+                            if (isset($result['options'][$item])) {
+                                throw new Exception;
+                            }
                         }
                     }
                     if ($option['is_repeatable']) {
                         if (isset($result['options'][$optionName])) {
-                            $result['options'][$optionName][] = $optionArg;
+                            $result['options'][$optionName][] = $optionArgument;
                         } else {
-                            $result['options'][$optionName] = array($optionArg);
+                            $result['options'][$optionName] = array($optionArgument);
                         }
+                    } else {
+                        $result['options'][$optionName] = $optionArgument;
                     }
-                    $result['options'][$optionName] = $optionArg;
-                    if ($optionArg !== true) {
+                    if ($optionArgument !== true) {
                         break;
                     }
-                    ++$i;
+                    ++$charIndex;
                     --$length;
                 }
             } else {
-                $optionArg = true;
+                $optionArgument = true;
                 $optionName = substr($element[0], 2);
                 if (strpos($element, '=') !== false) {
-                    list($optionName, $optionArg) = explode('=', $element, 2);
+                    list($optionName, $optionArgument) = explode('=', $element, 2);
                 }
                 if (isset($options[$optionName])) {
                     throw new Exception;
                 }
                 $option = $options[$optionName];
-                if ($option['has_argument'] === 0) {
-                    $result['options'][] = array($optionName, $optionArg);
-                } elseif ($option['has_argument'] === 1) {
-                    if ($optionArg === null) {
+                if ($option['has_argument'] === 1) {
+                    if ($optionArgument === null) {
                         ++$index;
                         if ($index >= $count) {
                             throw new Exception;
                         }
-                        $optionArg = $_SERVER['argv'][$index];
+                        $optionArgument = $_SERVER['argv'][$index];
                     }
-                    $result['options'][$optionName] = $optionArg;
                 } else {
-                    if ($optionArg !== null) {
+                    if ($optionArgument !== true) {
                         throw new Exception;
                     }
                 }
-            }
-        }
-        foreach ($requiredOptions as $index => $item) {
-            if (is_array($item)) {
-                foreach ($item as $option) {
-                    if (isset($result['options'][$option]) === false) {
-                        unset($requiredOptions[$index]);
-                        continue 2;
+                if (isset($option['mutex_options'])) {
+                    foreach ($option['mutex_options'] as $item) {
+                        if (isset($result['options'][$item])) {
+                            throw new Exception;
+                        }
                     }
                 }
-            } elseif (isset($result['options'][$item]) === false) {
-                unset($requiredOptions[$index]);
-                continue;
+                if ($option['is_repeatable']) {
+                    if (isset($result['options'][$optionName])) {
+                        $result['options'][$optionName][] = $optionArgument;
+                    } else {
+                        $result['options'][$optionName] = array($optionArgument);
+                    }
+                } else {
+                    $result['options'][$optionName] = $optionArgument;
+                }
             }
-            throw new Exception;
         }
-        if ($argIndex < self::getRequiredArgumentNumber()) {
-            throw new Exception;
+        foreach ($options as $name => $option) {
+            if (isset($option['is_required']) && $option['is_required']) {
+                if (isset($result['options'][$name])) {
+                    continue;
+                }
+                if (isset($option['mutex_options'])) {
+                    foreach ($option['mutex_options'] as $mutexOption) {
+                        if (isset($result['options'][$mutexOption])) {
+                            continue 2;
+                        }
+                    }
+                }
+                throw new Exception;
+            }
         }
+        $count = 0;
+        foreach ($arguments as $argument) {
+            if ($argument['is_optional']) {
+                break;
+            }
+            ++$count;
+            if ($count > $argumentIndex) {
+                throw new Exception;
+            }
+        }
+        if ($isCollection) {
+            $result['collection_options'] = array();
+            $result['command_options'] = array();
+            foreach ($result['options'] as $name => $value) {
+                if ($options[$name]['is_collection_option']) {
+                    $result['collection_options'][$name] = $value;
+                } else {
+                    $result['command_options'][$name] = $value;
+                }
+            }
+            unset($result['options']);
+        }
+        return $result;
     }
 
     //使用自然内部接口代替刻意留给外部的接口

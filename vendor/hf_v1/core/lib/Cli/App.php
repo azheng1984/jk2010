@@ -7,6 +7,8 @@ use Hyperframework\Cli\CommandParser;
 
 class App {
     public function run() {
+        $args = $_SERVER['argv'];
+        array_shift($args);
         $isCollection =
             Config::get('hyperframework.cli.command_collection.enable') === true;
         $configPath = $isCollection ? 'command_collection.php' : 'command.php';
@@ -14,5 +16,9 @@ class App {
             $collectionConfig =
                 ConfigFileLoader::loadPhp('command_collection.php');
         }
+        //execute collection
+    }
+
+    public function executeCollection() {
     }
 }
