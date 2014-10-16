@@ -66,6 +66,7 @@ class ConfigParser {
             if ($option[1] === '-') {
                 //long style arg
             } else {
+                //insert space
             }
         }
         if (strpos$option)
