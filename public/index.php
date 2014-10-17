@@ -1,6 +1,11 @@
 <?php
 namespace Hyperframework\Blog; //$x = array();
-
+class a implements \arrayaccess {
+    public function __call($x, $y) {
+    }
+}
+$x = new a();
+exit;
 //$x = array();
 //for ($i = 0; $i < 1000000; ++$i) {
 //    $helper::hi();
