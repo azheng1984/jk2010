@@ -6,6 +6,7 @@ use Exception;
 
 abstract class DbActiveRecord implements ArrayAccess {
     private static $tableNames = array();
+    private $metadata;
     private $row;
 
     public function __construct(array $row = array()) {
@@ -169,15 +170,78 @@ abstract class DbActiveRecord implements ArrayAccess {
         );
     }
 
-    protected static function getTableName() {
+    protected static function buildMetadata($metadata) {
+        parent::buildMetadata($metadata);
+        $metadata([
+            'table_name' => 'xxx',
+            'enable_type_column' => true
+        ], [
+            'has_one' => 'xxx'
+        ]);
+
+        $metadata(
+            'table_name', 'hello',
+            'enable_type_column', true,
+            'has_one', ['author', 'disable' => 'true'],
+            'has_one', 'title',
+            'has_one', 'image',
+        );
+
+        $metadata(
+            array('table_name' => 'hello'),
+            array('has_one' => 'author'),
+            array('has_one' => 'title'),
+            array('has_one' => 'image'),
+        );
+
+        $metadata(
+            ['table_name' => 'hello'],
+            ['has_one' => ['author', 'list' => 'xxx']],
+            ['has_one' => 'title'],
+            ['has_one' => 'image'],
+        );
+
+        $metadata->getTableName();
+        $metadata->getRelationships();
+
+        $metadata->setTableName('xxx')
+            ->enableTypeColumn()
+            ->append()relationships(array(
+                'has_one' => 'author',
+                'has_many' => 'images'
+            ))
+            ->hasOne('author')
+            ->hasMany('images')
+            ->belongsTo('face')
+            ->hasAndBelongsToMany('clocks');
+            ->addRelationships(function($ctx) {
+                $ctx->hasOne('author')
+                    ->hasMany('images')
+                    ->belongsTo('face')
+                    ->hasAndBelongsToMany('clocks');
+            }
+    }
+
+    protected static function getMetadata() {
         $class = get_called_class();
-        if (isset(self::$tableNames[$class]) === false) {
+        if (isset(self::$metadataCache[$class]) === false) {
+            self::$metadataCache[$class] = new DbActiveRecordMetadata;
+            static::buildMetadata(self::$metadataCache[$class]);
+        }
+        return self::$metadataCache[$class];
+    }
+
+    final protected static function getTableName() {
+        $tableName = static::getMetadata()->getTableName();
+        if ($tableName === null) {
+            $class = get_called_class();
             $position = strrpos($class, '\\');
             if ($position !== false) {
-                self::$tableNames[$class] = substr($class, $position + 1);
+                $tableName = substr($class, $position + 1);
             }
+            static::getMetadata()->setTableName($tableName);
         }
-        return self::$tableNames[$class];
+        return $tableName;
     }
 
     private static function completeSelectSql($sql) {

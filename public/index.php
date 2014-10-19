@@ -1,19 +1,22 @@
 <?php
 namespace Hyperframework\Blog; //$x = array();
 
+$s = microtime(true);
 //$x = array();
-//for ($i = 0; $i < 1000000; ++$i) {
-//    $helper::hi();
-//    //strpos($name, '|');
-//    //explode('|', $name);
-//    //$name = str_replace(' | ', '|', $name);
-//    //preg_match('/^[a-zA-Z0-9-|]+$/', $name);
-//    //preg_match('/^([a-zA-Z0-9-|]|( \| ))+$/', $name);
-//    //exit;
-//    //preg_match('/^([a-zA-Z0-9-|]|( \| ))+$/', $name);
-//}
-//echo (microtime(true) - $s) * 1000;
-//exit;
+$x = array();
+for ($i = 0; $i < 1000000; ++$i) {
+    $x = [0 => $i];
+    //$x[0] = $i;
+    //strpos($name, '|');
+    //explode('|', $name);
+    //$name = str_replace(' | ', '|', $name);
+    //preg_match('/^[a-zA-Z0-9-|]+$/', $name);
+    //preg_match('/^([a-zA-Z0-9-|]|( \| ))+$/', $name);
+    //exit;
+    //preg_match('/^([a-zA-Z0-9-|]|( \| ))+$/', $name);
+}
+echo (microtime(true) - $s) * 1000;
+exit;
 
 if (isset($_GET['b'])) {
 echo file_get_contents('php://input');
