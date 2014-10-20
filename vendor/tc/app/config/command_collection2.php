@@ -5,20 +5,25 @@ return array(
     'version' => '1.1.1',
     'description' => 'Hyperframework CLI Tool', //optional
     'arguments' => array('<arg1>', '<arg2>...'),
+
     //'pass_options' => false, //commands only, hf.cli.commands.pass_options to set all
     // = false to disable passing collection & commands options
     //default: use command execute function signature
     //collection must not have arguments
-    $article['comments']->select()->limit(4)->getAll();
-    $article['comments']->limit(4)->getAll();
+
     'options' => array(
+        'required',
         array(
-            '--good' => '', '--bad' => '', 'mutex', 'required', 'repeatable'
+            'mutex',
+            'required',
+            'repeatable',
+            '--good' => '',
+            '--bad' => '',
         ),
         array(
+            'mutex',
             '--slow' => '',
             '--fast' => '',
-            'mutex',
         ),
         '-x <arg>',
         '-x (a|b|c)',
@@ -30,12 +35,13 @@ return array(
         '-n, --name-of-option3 <arg-name>',
         '-n, --name-of-option3=<arg-name>',
         '-n, --name-of-option3[=<arg-name>]' => array(
-            'description' => 'x',
             'repeatable',
             'required',
+            'description' => 'x',
         ),
         '--name-of-option[=<arg-key>]' => 'message',
     ),
+
     //'class' => 'CommandCollection', //default CommandCollection
     //\Xx\CommandCollection //same as php
     //CommandCollection if have options

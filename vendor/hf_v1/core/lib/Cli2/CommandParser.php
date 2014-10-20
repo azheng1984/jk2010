@@ -158,8 +158,8 @@ class CommandParser {
             }
         }
         foreach ($options as $name => $option) {
-            if (isset($option['argument_values'])) {
-                if (in_array($result['options'][$name], $option['argument_values']) === false) {
+            if (isset($option['values'])) {
+                if (in_array($result['options'][$name], $option['values']) === false) {
                     throw new Exception;
                 }
             }
