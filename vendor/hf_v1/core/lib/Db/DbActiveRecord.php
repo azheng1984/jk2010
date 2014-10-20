@@ -184,7 +184,7 @@ abstract class DbActiveRecord implements ArrayAccess {
         $metadata(
             ['table_name' => 'xx'],
             ['has_one' => 'product'],
-            ['has_many'] => 'images'],
+            ['has_many'] => 'images']
         );
     }
 
