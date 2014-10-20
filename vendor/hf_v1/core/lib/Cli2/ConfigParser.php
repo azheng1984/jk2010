@@ -60,13 +60,24 @@ class ConfigParser {
         if ($option[0] !== '-') {
             throw new Exception;
         }
-        if (strpos($option, ',')) {
-            //long style arg
-        } else {
-            if ($option[1] === '-') {
-                //long style arg
-            } else {
-                //insert space
+        $alias = null;
+        if (strpos($option, ',') !== false) {
+            $tmps = explode(',', $option, 2);
+            $shortOption = trim($tmps[0]);
+            if (strlen($shortOption) !== 2) {
+                throw new Exception;
+            }
+            $alias = $shortOption[1];
+            $option = trim($tmps[1]);
+        } elseif ($option[1] !== '-') {
+            if (strlen($option) > 2) {
+                if ($option[2] === '[') {
+                    $option = str_replace('[', '[=', 1);
+                } elseif ($option[2] === '<') {
+                    $option = str_replace('<', '=<', 1);
+                } elseif ($option[2] === '(') {
+                    $option = str_replace('(', '=(', 1);
+                }
             }
         }
         if (strpos$option)
