@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 class ViewInfoBuilder {
-    public static function run($namespace, $types, $order = null, &$pathInfo) {
+    public static function build($namespace, $types, $order = null, &$pathInfo) {
         if ($order === null) {
             $order = array('Html', 'Xml', 'Json');
         } elseif (is_string($order)) {

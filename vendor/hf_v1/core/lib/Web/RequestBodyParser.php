@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 class RequestBodyParser {
-    public static function run() {
+    public static function parse() {
         if (!ini_get('enable_post_data_reading')) {
             return;
         }
@@ -13,10 +13,10 @@ class RequestBodyParser {
         ) {
             throw new RequestEntityTooLargeException;
         }
-        $_POST = static::parse();
+        $_POST = static::buildPostData();
     }
 
-    protected static function parse() {
+    protected static function buildPostData() {
         return $GLOBALS['HTTP_RAW_POST_DATA'];
     }
 

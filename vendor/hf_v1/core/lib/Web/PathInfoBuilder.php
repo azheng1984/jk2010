@@ -7,12 +7,12 @@ use Hyperframework\ClassFileHelper;
 class PathInfoBuilder {
     private static $config;
 
-    public static function run($path, $type, $options) {
+    public static function buildByPath($path, $type, $options) {
         $namespace = self::convertToNamespace($path, $type);
-        return self::runByNamespace($namespace, $type, $options);
+        return self::buildByNamespace($namespace, $type, $options);
     }
 
-    public static function runByNamespace($namespace, $type, $options) {
+    public static function buildByNamespace($namespace, $type, $options) {
         $folder = $namespace;
         if (DIRECTORY_SEPARATOR !== '\\') {
             $folder = str_replace('\\', '/', $folder);
@@ -37,7 +37,7 @@ class PathInfoBuilder {
                 continue;
             }
             if ($name === 'Action') {
-                ActionInfoBuilder::run($namespace . '\\' . $name, $pathInfo);
+                ActionInfoBuilder::build($namespace . '\\' . $name, $pathInfo);
             } else {
                 $viewTypes[] = $name;
             }
@@ -47,7 +47,7 @@ class PathInfoBuilder {
             if (isset($options['view_order']) !== false) {
                 $viewOrder = $options['view_order'];
             }
-            ViewInfoBuilder::run(
+            ViewInfoBuilder::build(
                 $namespace, $viewTypes, $viewOrder, $pathInfo
             );
         }

@@ -48,6 +48,6 @@ final class PathInfo {
                 $options = $config['options'];
             }
         }
-        return $builder::run($path, $type, $options);
+        return $builder::buildByPath($path, $type, $options);
     }
 }

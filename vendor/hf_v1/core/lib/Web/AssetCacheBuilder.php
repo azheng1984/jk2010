@@ -5,7 +5,7 @@ use Hyperframework\DirectoryScanner;
 use Hyperframework\Config;
 
 class AssetCacheBuilder {
-    public static function run() {
+    public static function build() {
         $outputRootPath = self::getOutputRootPath();
         if (is_dir($outputRootPath) === false) {
             mkdir($outputRootPath);

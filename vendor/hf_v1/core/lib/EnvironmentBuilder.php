@@ -2,7 +2,7 @@
 namespace Hyperframework;
  
 class EnvironmentBuilder {
-    public static function run($rootNamespace, $rootPath) {
+    public static function build($rootNamespace, $rootPath) {
         define('Hyperframework\APP_ROOT_NAMESPACE', $rootNamespace);
         define('Hyperframework\APP_ROOT_PATH', $rootPath);
         static::initializeConfig();
