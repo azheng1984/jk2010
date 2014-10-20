@@ -180,6 +180,14 @@ abstract class DbActiveRecord implements ArrayAccess {
         return self::$tableNames[$class];
     }
 
+    protected static function loadMetadata($metadata) {
+        $metadata(
+            ['table_name' => 'xx'],
+            ['has_one' => 'product'],
+            ['has_many'] => 'images'],
+        );
+    }
+
     private static function completeSelectSql($sql) {
         if (strlen($sql) > 6) {
             if (strtoupper(substr($sql, 0, 6)) === 'SELECT'
