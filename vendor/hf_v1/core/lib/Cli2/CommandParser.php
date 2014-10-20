@@ -74,8 +74,8 @@ class CommandParser {
                     if (isset($options[$optionName]) === false) {
                         throw new Exception;
                     }
-                    if (isset($options[$optionName]['name'])) {
-                        $optionName = $options[$optionName]['name'];
+                    if (isset($options[$optionName]['full_name'])) {
+                        $optionName = $options[$optionName]['full_name'];
                     }
                     $optionArgument = true;
                     $option = $options[$optionName];

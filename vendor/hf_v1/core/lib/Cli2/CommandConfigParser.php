@@ -5,24 +5,51 @@ class CommandConfigParser {
     public static function getOptions($config) {
         if (isset($config['options'])) {
             if (is_array($config['options']) === false) {
-                $config['options'] = array($config['options']);
-            }
-            foreach ($options as $key => $value) {
-                if (is_int($key)) {
-                    if (is_array($value)) {//group
-                        continue;
-                    } else {
-                        $key = $value;
-                        $value = array();
-                    }
-                }
-                static::parseOptionKey($key);
+                return self::parseOptions(array($config['options']));
+            } else {
+                return self::parseOptions($config['options']);
             }
         }
         return array();
     }
 
-    private static function parseOptions($config, $attributes = null) {
+    private static function parseOptions(
+        array $config, array $attributes = array()
+    ) {
+        $result = array();
+        $shouldCheckAttribute = true;
+        foreach ($config as $key => $value) {
+            if (is_int($key)) {
+                if (is_array($value)) {
+                    $result += self::parseOptions($value, $attributes);
+                    $shouldCheckAttribute = false;
+                    continue;
+                } else {
+                    if ($shouldCheckAttribute) {
+                        if (isset($value[0]) && $value[0] !== '-') {
+                            $attributes[$value] = true;
+                            continue;
+                        }
+                    }
+                    $key = $value;
+                    $value = array();
+                }
+            } elseif ($shouldCheckAttribute
+                && isset($key[0])
+                && $key[0] !== '-'
+            ) {
+                $attributes[$key] = $value;
+                continue;
+            }
+            $shouldCheckAttribute = false;
+            $option = static::parseOptionKey($key);
+            $name = $option['name'];
+            unset($option['name']);
+            if (isset($option['short_name'])) {
+                $option[$option['short_name']] = array('full_name' => $name);
+            }
+            $result[$name] = $option + $value + $attributes;
+        }
     }
 
     public static function getArguments($config) {
@@ -93,7 +120,7 @@ class CommandConfigParser {
         if ($optionKey[0] !== '-') {
             throw new Exception;
         }
-        $alias = null;
+        $shortName = null;
         $isShort = false;
         if (strpos($optionKey, ',') !== false) {
             $tmps = explode(',', $optionKey, 2);
@@ -101,8 +128,8 @@ class CommandConfigParser {
             if (strlen($shortOption) !== 2) {
                 throw new Exception;
             }
-            $alias = $shortOption[1];
-            if (ctype_alnum($alias) === false) {
+            $shortName = $shortOption[1];
+            if (ctype_alnum($shortName) === false) {
                 throw new Exception;
             }
             $optionKey = ltrim($tmps[1]);
@@ -193,8 +220,8 @@ class CommandConfigParser {
             'name' => $name,
             'has_argument' => -1
         );
-        if ($alias !== null) {
-            $result['alias'] = $alias;
+        if ($shortName !== null) {
+            $result['short_name'] = $shortName;
         }
         if ($hasArgument) {
             if ($isEnumArgument) {
