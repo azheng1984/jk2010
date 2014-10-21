@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
-abstract class AbstructCommand extends Executor {
+abstract class AbstructCommand extends ExecutableElement {
     protected function getArguments() {
         $this->getContext()->getArguments();
     }
