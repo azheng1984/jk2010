@@ -22,7 +22,7 @@ class OptionRouter {
             }
         ]);
 
-        $result['option'] = '-x';
+        $result['name'] = '-x';
         $result['return'] = $xxx;
 
         return false;
