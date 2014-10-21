@@ -10,6 +10,8 @@ abstract class ExecutableElement {
 
     abstract public function execute(/*...*/) {}
 
+    abstract protected function getOptions();
+
     protected function getContext() {
         return $this->ctx;
     }
@@ -20,10 +22,6 @@ abstract class ExecutableElement {
 
     protected function dispatchAll($config) {
         OptionCallback::dispatchAll($this->getOptions(), $config);
-    }
-
-    protected function getOptions() {
-        $this->getContext()->getOptions();
     }
 
     protected function quit() {
