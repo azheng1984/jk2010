@@ -12,7 +12,7 @@ class OptionRouter {
             }
         ]));
 
-        $result = OptionRouter::run([
+        $result = OptionRouter::run($options, [
             '-x' => function() {
             }
         ], [
@@ -20,8 +20,8 @@ class OptionRouter {
             }
         ]);
 
-        if ($result === false) {
-        }
+        $result['name'] = '-x';
+        $result['return'] = $xxx;
 
         return false;
     }
