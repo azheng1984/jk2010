@@ -3,7 +3,7 @@ namespace Hyperframework\Cli;
 
 class OptionGroupDispatcher {
     private static $depth = 0;
-    private static $dispatches = array();
+    private static $stoppedDepths = array();
 
     public static function dispatch($options, $config) {
         while ($this->dispatch([
