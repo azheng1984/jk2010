@@ -6,7 +6,7 @@ class ClassCacheBuilder {
     private static $rootPath;
     private static $isZeroFolderEnabled;
 
-    public static function run() {
+    public static function build() {
         if (Config::get('hyperframework.class_loader.enable_zero_folder')
             === true
         ) {

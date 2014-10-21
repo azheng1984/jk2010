@@ -8,7 +8,7 @@ class LogHandler {
     private static $protocol;
     private static $path;
 
-    public static function log($level, array $args) {
+    public static function handle($level, array $args) {
         $content = static::format($level, $args);
         static::write($content);
     }

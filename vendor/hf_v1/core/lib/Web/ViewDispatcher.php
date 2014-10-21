@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 class ViewDispatcher {
     private static $defaultClasses;
 
-    final public static function run($pathInfo, $ctx) {
+    final public static function dispatch($pathInfo, $ctx) {
         $class = self::getClass($pathInfo);
         if ($class === null) {
             throw new NotAcceptableException;

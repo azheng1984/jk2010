@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 class JsCompressor {
-    public static function run($content) {
+    public static function compress($content) {
         $ds = array(
             0 => array('pipe', 'r'),
             1 => array('pipe', 'w'),

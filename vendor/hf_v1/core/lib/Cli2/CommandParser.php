@@ -15,7 +15,7 @@ class CommandParser {
     private static function getCommandConfig($name = null) {
     }
 
-    public static function run($isCommandCollection) {
+    public static function parse($isCommandCollection) {
         $arguments = array();
         $options = array();
         if ($isCommandCollection) {

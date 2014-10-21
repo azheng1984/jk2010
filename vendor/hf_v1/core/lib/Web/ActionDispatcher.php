@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 use Hyperframework\Config;
 
 final class ActionDispatcher {
-    public static function run($pathInfo, $ctx) {
+    public static function dispatch($pathInfo, $ctx) {
         $actionInfo = null;
         if (isset($pathInfo['action'])) {
             $actionInfo = $pathInfo['action'];
