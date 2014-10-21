@@ -3,7 +3,8 @@ namespace Hyperframework\Cli;
 
 abstract class ExecutableElement {
     private $ctx;
-    private $dispatchStack = array();
+    private $dispatchDepth = 0;
+    private $stoppedDispatchDepth = 0;
 
     public function __construct($ctx) {
         $this->ctx = $ctx;
@@ -18,14 +19,19 @@ abstract class ExecutableElement {
     }
 
     protected function dispatch($config) {
-        OptionCallback::dispatch($this->getOptions(), $config);
+        ++$this->dispatchDepth;
+        //dispatch
+        --$this->dispatchDepth;
     }
 
     protected function dispatchAll($config) {
-        OptionCallback::dispatchAll($this->getOptions(), $config);
+        ++$this->dispatchDepth;
+        //dispatch
+        --$this->dispatchDepth;
     }
 
     protected function stopDispatch() {
+        $this->stoppedDispatchDepth = $this->dispatchDepth;
     }
 
     protected function quit() {
