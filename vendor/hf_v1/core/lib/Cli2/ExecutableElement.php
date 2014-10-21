@@ -8,7 +8,7 @@ abstract class ExecutableElement {
         $this->ctx = $ctx;
     }
 
-    abstract public function execute(/*...*/) {}
+    abstract public function execute(/*...*/);
 
     abstract protected function getOptions();
 
