@@ -1,9 +1,8 @@
 <?php
 namespace Hyperframework\Cli;
 
-class OptionDispatcher {
-    public static function ($options, $config) {
-
+class OptionCallback {
+    public static function dispatch($options, $config) {
         while (OptionDispatcher::dispatch([
             '-x' => function() {
             }
@@ -12,7 +11,7 @@ class OptionDispatcher {
             }
         ]));
 
-        OptionDispatcher::dispatchAll(['-x' => function() {
+        OptionRouter::run(['-x' => function() {
         }]);
 
         isset($options['-x']);
