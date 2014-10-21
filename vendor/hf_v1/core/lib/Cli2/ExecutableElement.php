@@ -4,7 +4,7 @@ namespace Hyperframework\Cli;
 abstract class ExecutableElement {
     private $ctx;
     private $dispatchDepth = 0;
-    private $stoppedDispatchDepth = 0;
+    private $stoppedDispatchDepth;
 
     public function __construct($ctx) {
         $this->ctx = $ctx;
