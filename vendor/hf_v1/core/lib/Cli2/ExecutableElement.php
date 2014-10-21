@@ -3,6 +3,7 @@ namespace Hyperframework\Cli;
 
 abstract class ExecutableElement {
     private $ctx;
+    private $dispatchStack = array();
 
     public function __construct($ctx) {
         $this->ctx = $ctx;
