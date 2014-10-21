@@ -5,7 +5,7 @@ use PDO;
 use Exception;
 
 class DbImportCommand {
-    public static function run($table, $rows, $options = null) {
+    public static function execute($table, $rows, $options = null) {
         $count = count($rows);
         if ($count === 0) {
             return;

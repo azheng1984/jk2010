@@ -4,17 +4,17 @@ namespace Hyperframework\Cli;
 use Exception;
 
 class OptionConfigParser {
-    public static function execute($config) {
+    public static function run($config) {
         if (is_array($config) === false) {
             if (is_string($config) === false) {
                 throw new Exception;
             }
             $config = array($config);
         }
-        return self::parseAll($config);
+        return self::parseGroup($config);
     }
 
-    protected static function parseAll(
+    protected static function parseGroup(
         array $config, array $attributes = array()
     ) {
         $result = array();
@@ -22,7 +22,7 @@ class OptionConfigParser {
         foreach ($config as $key => $value) {
             if (is_int($key)) {
                 if (is_array($value)) {
-                    $result = self::parseAll($value, $attributes) + $result;
+                    $result = self::parseGroup($value, $attributes) + $result;
                     $shouldCheckAttribute = false;
                     continue;
                 } else {
