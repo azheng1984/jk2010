@@ -25,7 +25,7 @@ abstract class ExecutableElement {
         OptionCallback::dispatchAll($this->getOptions(), $config);
     }
 
-    protected function stopDispatch($level = 1) {
+    protected function stopDispatch() {
     }
 
     protected function quit() {
