@@ -14,8 +14,6 @@ class OptionCallback {
                     '-x' => function($value) {
                     }
                 ]);
-                $ctx->getOptionValue();
-                $ctx->quit();
                 return;
             }
         ], [
