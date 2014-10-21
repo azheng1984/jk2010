@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 class CssCompressor {
-    public static function process($content) {
+    public static function compress($content) {
         $ds = array(
             0 => array('pipe', 'r'),
             1 => array('pipe', 'w'),

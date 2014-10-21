@@ -61,11 +61,13 @@ class App {
     }
 
     protected function executeAction() {
-        $this->actionResult = ActionDispatcher::run($this->pathInfo, $this);
+        $this->actionResult = ActionDispatcher::dispatch(
+            $this->pathInfo, $this
+        );
     }
 
     protected function renderView() {
-        ViewDispatcher::run($this->pathInfo, $this);
+        ViewDispatcher::dispatch($this->pathInfo, $this);
     }
 
     protected function finalize() {}
@@ -84,7 +86,7 @@ class App {
         if (isset($_SERVER['CONTENT_TYPE'])
             && $_SERVER['CONTENT_TYPE'] === 'application/json'
         ) {
-            JsonRequestBodyParser::run();
+            JsonRequestBodyParser::parse();
         }
     }
 

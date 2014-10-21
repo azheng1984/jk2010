@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 class JsonRequestBodyParser extends RequestBodyParser {
-    protected static function parse() {
+    protected static function buildPostData() {
         if ($GLOBALS['HTTP_RAW_POST_DATA'] === '') {
             return;
         }
