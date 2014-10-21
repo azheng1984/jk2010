@@ -2,9 +2,8 @@
 namespace Hyperframework\Cli;
 
 class OptionRouter {
-    public static function run($config) {
-
-        while (OptionRouter::run([
+    public static function route($options, $config) {
+        while (CommandOptionRouter::route([
             '-x' => function() {
             }
         ], [
@@ -12,7 +11,7 @@ class OptionRouter {
             }
         ]));
 
-        $result = OptionRouter::runAll($options, [
+        $result = OptionRouter::routeAll($options, [
             '-x' => function($router) {
                 $router->quit();
             }
@@ -26,5 +25,8 @@ class OptionRouter {
         $result['return'] = $xxx;
 
         return false;
+    }
+
+    public static function routeAll($options, $config) {
     }
 }

@@ -91,7 +91,7 @@ class App {
     }
 
     protected function initializePath() {
-        $this->path = Router::run($this);
+        $this->path = Router::route($this);
     }
 
     protected function initializePathInfo() {
