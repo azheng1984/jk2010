@@ -12,15 +12,17 @@ class OptionRouter {
             }
         ]));
 
-        $result = OptionRouter::run($options, [
-            '-x' => function() {
+        $result = OptionRouter::runAll($options, [
+            '-x' => function($router) {
+                $router->quit();
             }
         ], [
-            '-y' => function() {
+            '-y' => function($router) {
+                $router->quit();
             }
         ]);
 
-        $result['name'] = '-x';
+        $result['found'] = '-x';
         $result['return'] = $xxx;
 
         return false;
