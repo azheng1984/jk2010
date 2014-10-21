@@ -2,6 +2,15 @@
 namespace Tc\Commands;
 
 class HelloCommand {
+    private $ctx;
+
+    public function __construct($ctx) {
+        $this->ctx = $ctx;
+    }
+
+    protected function getContext() {
+    }
+
 //    public function execute($arg1, $arg2 = null) {
 //    }
 //
@@ -10,9 +19,19 @@ class HelloCommand {
 //        }
 //    }
 //
+
     public function execute(array $args) {
+        $this->getContext()->dispatchOptions([]);
+
+        $this->dispatch(['-x' => array()]);
+        $this->dispatchAll([]);
+
+        $this->getOptions();
+        $this->getArguments();
+        $this->quit();
         echo 'hi from cmd';
     }
+
 //
 //    public function execute(array $options, array $args) {
 //        if (isset($options['article'])) {

@@ -3,7 +3,8 @@ namespace Hyperframework\Cli;
 
 class OptionDispatcher {
     public static function ($options, $config) {
-        while (OptionDispatcher::dispatch($options, [
+
+        while (OptionDispatcher::dispatch([
             '-x' => function() {
             }
         ], [
@@ -11,13 +12,26 @@ class OptionDispatcher {
             }
         ]));
 
+        OptionDispatcher::dispatchAll(['-x' => function() {
+        }]);
+
+        isset($options['-x']);
+        $options = $options->toArray();
+
+        if (isset($options['-x'])) {
+        }
+
+        $options->toArray();
+
+        $options->dispatchAll();
+
         $result = OptionDispatcher::dispatchAll($options, [
-            '-x' => function($router) {
-                $router->quit();
+            '-x' => function($ctx) {
+                $ctx->stop();
             }
         ], [
-            '-y' => function($router) {
-                $router->quit();
+            '-y' => function($ctx) {
+                $ctx->stop();
             }
         ]);
 
@@ -27,6 +41,6 @@ class OptionDispatcher {
         return false;
     }
 
-    public static function routeAll($options, $config) {
+    public static function dispatchAll($options, $config) {
     }
 }

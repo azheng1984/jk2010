@@ -15,15 +15,15 @@ class CommandParser {
     private static function getCommandConfig($name = null) {
     }
 
-    public static function parse($isCommandCollection) {
+    public static function parse($isCollection) {
         $arguments = array();
         $options = array();
-        if ($isCommandCollection) {
+        if ($isCollection) {
             $opitons = self::getCollectionOptions();
         } else {
             list($options, $arguments) = self::getCommandConfig($element);
         }
-        $hasCommand = $isCommandCollection;
+        $hasCommand = $isCollection;
         $count = count($_SERVER['argv']);
         $isArgument = false;
         $argumentIndex = 0;
@@ -187,7 +187,7 @@ class CommandParser {
                 throw new Exception;
             }
         }
-        if ($isCommandCollection) {
+        if ($isCollection) {
             $result['collection_options'] = array();
             foreach ($result['options'] as $name => $value) {
                 if ($options[$name]['is_collection_option']) {
@@ -199,11 +199,11 @@ class CommandParser {
         return $result;
     }
 
-    //用于继承 +  construct 自动处理部分选项
     public static function getCollectionOptions() {
     }
 
-    public static function getOptions() {
+    //用于继承 +  construct 自动处理部分选项
+    public static function getCommandOptions() {
     }
 
     //过滤器自动验证, give argument a name
