@@ -23,7 +23,7 @@ class DbProfiler {
 
     public static function onTransactionOperationExecuted() {
         self::$current['running_time'] = self::getRunningTime();
-        self::handle(self::$current);
+        self::handleProfile(self::$current);
     }
 
     public static function onConnectionExecuting($connection, $sql, $isQuery) {
@@ -38,7 +38,7 @@ class DbProfiler {
 
     public static function onConnectionExecuted($connection, $result) {
         self::$current['running_time'] = self::getRunningTime();
-        self::handle(self::$current);
+        self::handleProfile(self::$current);
     }
 
     public static function onStatementExecuting($statement) {
@@ -55,14 +55,14 @@ class DbProfiler {
         if ($connectionName !== 'default') {
             $profile['connection_name'] = $connectionName;
         }
-        self::handle($profile);
+        self::handleProfile($profile);
     }
 
     public static function addProfileHandler($callback) {
         self::$profileHandler[] = $callback;
     }
 
-    private static function handle($profile) {
+    private static function handleProfile($profile) {
         $isLoggerEnabled = Config::get(
             'hyperframework.db.profiler.enable_logger'
         );

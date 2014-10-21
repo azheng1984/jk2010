@@ -4,20 +4,18 @@ namespace Hyperframework\Cli;
 use Exception;
 
 class ArgumentConfigParser {
-    public static function parse($config) {
+    public static function parseConfig($config) {
         if (is_array($config) === false) {
             $config = array($config);
         }
         $result = array();
         foreach ($config as $item) {
-            $result[] = static::parseItem($item);
+            $result[] = static::parseConfigItem($item);
         }
         return $result;
     }
 
-    public static function parseMethod(
-        $commandClassName, $shouldPassOptions
-    ) {
+    public static function parseMethod($commandClassName, $shouldPassOptions) {
     }
 
     protected static function parseConfigItem($config) {
