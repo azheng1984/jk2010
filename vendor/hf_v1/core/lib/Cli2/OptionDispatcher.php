@@ -2,7 +2,7 @@
 namespace Hyperframework\Cli;
 
 class OptionDispatcher {
-    public static function dispatch($options, $config) {
+    public static function ($options, $config) {
         while (OptionDispatcher::dispatch($options, [
             '-x' => function() {
             }
@@ -27,6 +27,6 @@ class OptionDispatcher {
         return false;
     }
 
-    public static function dispatchAll($options, $config) {
+    public static function routeAll($options, $config) {
     }
 }
