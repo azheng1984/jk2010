@@ -27,6 +27,18 @@ class App {
         exit;
     }
 
+    public function getCollectionOptions() {
+    }
+
+    public function getCommandOptions() {
+    }
+
+    public function getArguments() {
+    }
+
+    public function getCommandName() {
+    }
+
     protected function initialize() {
     }
 

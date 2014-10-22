@@ -3,10 +3,10 @@ namespace Hyperframework\Cli;
 
 abstract class AbstructCommand extends ExecutableElement {
     protected function getArguments() {
-        return CommandParser::getArguments();
+        return $this->getApp()->getArguments();
     }
 
     protected function getOptions() {
-        return CommandParser::getCommandOptions();
+        return $this->getApp()->getCommandOptions();
     }
 }
