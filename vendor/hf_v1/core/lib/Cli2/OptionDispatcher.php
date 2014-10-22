@@ -64,8 +64,10 @@ class OptionGroupDispatcher {
     public static function dispatchAll($options, $config) {
         ++self::$depth;
         if (isset(self::$stoppedDepths[self::$depth])) {
-            //todo break
-            unset(self::$stoppedDepths[self::$depth]);
+            if (isset(self::$stoppedDepths[self::$depth])) {
+                //todo break
+                unset(self::$stoppedDepths[self::$depth]);
+            }
         }
         --self::$depth;
     }
