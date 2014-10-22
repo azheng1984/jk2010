@@ -10,10 +10,14 @@ class App {
     private $collectionOptions = array();
     private $commandOptions = array();
     private $arguments = array();
+    private $hasCollection;
 
     public function run() {
         $this->initialize();
-        //execute collection
+        if ($this->hasCollection) {
+            $this->executeCollection();
+        }
+        $this->executeCommand();
         $this->finalize();
     }
 
@@ -47,8 +51,10 @@ class App {
     protected function initialize() {
         $args = $_SERVER['argv'];
         array_shift($args);
-        $isCollection =
+        $this->hasCollection =
             Config::get('hyperframework.cli.command_collection.enable') === true;
+        $commandParser = new CommandParser;
+        $commandParser->parse($hasCollection);
         $configPath = $isCollection ? 'command_collection.php' : 'command.php';
         if ($isCollection) {
             $collectionConfig =
