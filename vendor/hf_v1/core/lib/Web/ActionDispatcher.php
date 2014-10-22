@@ -3,8 +3,8 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Config;
 
-final class ActionDispatcher {
-    public static function dispatch($pathInfo, $ctx) {
+final class ActionInvoker {
+    public static function invoke($pathInfo, $ctx) {
         $actionInfo = null;
         if (isset($pathInfo['action'])) {
             $actionInfo = $pathInfo['action'];
