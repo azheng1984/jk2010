@@ -9,13 +9,17 @@ class HelloCommand extends AbstractCommand {
     }
 
     protected function getContext() {
-        $this->dispatchAll([
+        $results = $this->dispatchAll([
             '-x' => function() {
             },
             '-y' => function() {
                 $this->stopDispatch();
             }
         ]);
+        $result['name'];
+        $result['return'];
+        foreach ($results as $result) {
+        }
     }
 
 //    public function execute($arg1, $arg2 = null) {
