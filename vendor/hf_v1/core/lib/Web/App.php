@@ -61,9 +61,7 @@ class App {
     }
 
     protected function executeAction() {
-        $this->actionResult = ActionDispatcher::dispatch(
-            $this->pathInfo, $this
-        );
+        $this->actionResult = ControllerHandler::handle($this->pathInfo, $this);
     }
 
     protected function renderView() {
