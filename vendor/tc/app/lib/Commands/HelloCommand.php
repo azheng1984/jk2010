@@ -2,16 +2,6 @@
 namespace Tc\Commands;
 
 class HelloCommand extends AbstractCommand {
-    private $ctx;
-
-    public function __construct($ctx) {
-        $this->ctx = $ctx;
-    }
-
-    protected function getContext() {
-
-    }
-
 //    public function execute($arg1, $arg2 = null) {
 //    }
 //
