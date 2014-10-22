@@ -2,11 +2,40 @@
 namespace Hyperframework\Cli;
 
 use Hyperframework\EnvironmentBuilder;
+use Hyperframework\Config;
+use Hyperframework\ConfigFileLoader;
+use Hyperframework\Cli\CommandParser;
 
 class Runner {
     public static function run($rootNamespace, $rootPath) {
         static::initialize($rootNamespace, $rootPath);
-        static::runApp();
+        static::dispatch();
+    }
+
+    public static function dispatch() {
+        $rootNamespace = \Hyperframework\APP_ROOT_NAMESPACE;
+        $isCollection =
+            Config::get('hyperframework.cli.command_collection.enable') == true;
+        $configFileName = 'command.php';
+        if ($isCollection) {
+            $configFileName = 'command_collection.php';
+        }
+        ConfigParser::run(
+            ConfigFileLoader::loadPhp($configFileName),
+            $isCollection
+        );
+        if ($isCollection) {
+            $class = $rootNamespace . '\CommandCollection';
+            $commandCollection = new $class;
+            $commandCollection->execute(array());
+            $class = $rootNamespace . '\Commands\HelloCommand';
+            $command = new $class;
+            $command->execute(array());
+        } else {
+            $class = $rootNamespace . '\Command';
+            $command = new $class;
+            $command->execute(array());
+        }
     }
 
     protected static function initialize($rootNamespace, $rootPath) {
@@ -14,29 +43,5 @@ class Runner {
             . 'EnvironmentBuilder.php';
         EnvironmentBuilder::run($rootNamespace, $rootPath);
         ErrorHandler::run();
-    }
-
-    protected static function runApp() {
-        $app = new App;
-        $app->run();
-//        ConfigParser::run();
-//        $isCollection =
-//            Config::get('hyperframework.cli.command_collection.enable') === true;
-//        //$configPath = $isCollection ? 'command_collection.php' : 'command.php';
-//        if ($isCollection) {
-//            $commandParser = new CommandParser;
-//            $collectionClass = ConfigParser::getCollectionClass();
-//            $collection = new $collectionClass;
-//            $collection->execute(CommandParser::getCollectionOptions());
-//        }
-//        $commandName = CommandParser::getCommandName();
-//        CollectionParser::parse();
-//        if ($hasCommandOptions) {
-//            array_unshift($commandOptions, $commandArgs);
-//        }
-//        $command = new $commandClass;
-//        call_user_method_array($command, 'execute', $commandArgs);
-
-
     }
 }
