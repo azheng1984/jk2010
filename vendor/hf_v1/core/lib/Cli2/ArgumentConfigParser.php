@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
+use ReflectionMethod;
 use Exception;
 
 class ArgumentConfigParser {
@@ -16,6 +17,18 @@ class ArgumentConfigParser {
     }
 
     public static function parseMethod($commandClassName) {
+        $method = new ReflectionMethod($commandClassName, 'execute');
+        $params = $method->getParameters();
+        $results = array();
+        foreach $params as $param) {
+            //todo inflect name
+            $results[] = array(
+                'name' => $param->getName(),
+                'is_optional' => $param->isOptional()
+                'is_collection' => $param->isArray()
+            );
+        }
+        return $results;
     }
 
     protected static function parseConfigItem($config) {
