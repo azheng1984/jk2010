@@ -9,17 +9,7 @@ class HelloCommand extends AbstractCommand {
     }
 
     protected function getContext() {
-        $results = $this->dispatchAll([
-            '-x' => function() {
-            },
-            '-y' => function() {
-                $this->stopDispatch();
-            }
-        ]);
-        foreach ($results as $result) {
-            $result['name'];
-            $result['return'];
-        }
+
     }
 
 //    public function execute($arg1, $arg2 = null) {
@@ -32,14 +22,17 @@ class HelloCommand extends AbstractCommand {
 //
 
     public function execute(array $args) {
-        $this->getContext()->dispatchOptions([]);
-
-        $this->dispatch(['-x' => array()]);
-        $this->dispatchAll([]);
-
-        $this->getOptions();
-        $this->getArguments();
-        $this->quit();
+        $results = $this->dispatchAll([
+            '-x' => function() {
+            },
+            '-y' => function() {
+                $this->stopDispatch();
+            }
+        ]);
+        foreach ($results as $result) {
+            $result['name'];
+            $result['return'];
+        }
         echo 'hi from cmd';
     }
 
