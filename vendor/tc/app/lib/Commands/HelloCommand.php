@@ -31,7 +31,7 @@ class HelloCommand extends AbstractCommand {
                 //
             }
 
-            foreach ($options as $option) {
+            foreach ($this->getOptions() as $key => $value) {
                 switch ($option) {
                 case '-x':
                     //xx
@@ -63,6 +63,7 @@ class HelloCommand extends AbstractCommand {
                 $this->dispatchAll([]);
             }
         ]);
+
         foreach ($results as $result) {
             $result['name'];
             $result['return'];

@@ -15,7 +15,7 @@ class ArgumentConfigParser {
         return $result;
     }
 
-    public static function parseMethod($commandClassName, $shouldPassOptions) {
+    public static function parseMethod($commandClassName) {
     }
 
     protected static function parseConfigItem($config) {

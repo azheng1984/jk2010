@@ -22,12 +22,14 @@ class App {
     public function executeCollection() {
     }
 
-    public function initialize() {
-    }
-
     public function quit() {
+        $this->finalize();
+        exit;
     }
 
-    public function finalize() {
+    protected function initialize() {
+    }
+
+    protected function finalize() {
     }
 }

@@ -2,21 +2,18 @@
 namespace Hyperframework\Cli;
 
 abstract class ExecutableElement {
-    private $ctx;
+    private $app;
 
-    public function __construct($ctx) {
-        $this->ctx = $ctx;
+    public function __construct($app) {
+        $this->app = $app;
     }
 
     abstract public function execute(/*...*/);
 
     abstract protected function getOptions();
 
-    protected function getContext() {
-        if ($this->hasOption('xx')) {
-            $xx = $this->getOption('xx');
-        }
-        return $this->ctx;
+    protected function getApp() {
+        return $this->app;
     }
 
     protected function hasOption($name) {
@@ -30,6 +27,6 @@ abstract class ExecutableElement {
     }
 
     protected function quit() {
-        $this->getContext()->quit();
+        $this->getApp()->quit();
     }
 }
