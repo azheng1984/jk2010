@@ -10,6 +10,7 @@ return array(
     // = false to disable passing collection & commands options
     //default: use command execute function signature
     //collection must not have arguments
+    //cancel! get options via $this
 
     'options' => array(
         'required',

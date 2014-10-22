@@ -9,21 +9,25 @@ class CommandParser {
     private static $options = array();
     private static $arguments = array();
 
-    private static function getCollectionOptions() {
+    private static function getCollectionOptionConfig() {
     }
 
-    private static function getCommandConfig($name = null) {
+    private static function getCommandOptionConfig($name = null) {
     }
 
-    public static function parse($isCollection) {
+    private static function getCommandArgumentConfig($name = null) {
+    }
+
+    public static function parse($hasCollection) {
         $arguments = array();
         $options = array();
-        if ($isCollection) {
-            $opitons = self::getCollectionOptions();
+        if ($hasCollection) {
+            $opitons = self::getCollectionOptionConfig();
         } else {
-            list($options, $arguments) = self::getCommandConfig($element);
+            $options = self::getCommandOptionConfig($element);
+            $arguments = self::getCommandArgumentConfig($element);
         }
-        $hasCommand = $isCollection;
+        $isCollection = $hasCollection;
         $count = count($_SERVER['argv']);
         $isArgument = false;
         $argumentIndex = 0;
@@ -36,11 +40,11 @@ class CommandParser {
                 || $element === '-'
                 || $isArgument
             ) {
-                if ($hasCommand) {
-                    list($commandOptions, $arguments) =
-                        self::getCommandConfig($element);
-                    $hasCommand = false;
-                    $options += $commandOptions;
+                if ($isCollection) {
+                    $arguments = self::getCommandArgumentConfig($element);
+                    $options = self::getCommandOptionConfig($element)
+                        + $options;
+                    $isCollection = false;
                     continue;
                 }
                 $argumentCount = count($arguments);
@@ -61,7 +65,7 @@ class CommandParser {
                 continue;
             }
             if ($element === '--') {
-                if ($hasCommand) {
+                if ($isCollection) {
                     throw new Exception;
                 }
                 $isArgument = true;
@@ -187,7 +191,7 @@ class CommandParser {
                 throw new Exception;
             }
         }
-        if ($isCollection) {
+        if ($hasCollection) {
             $result['collection_options'] = array();
             foreach ($result['options'] as $name => $value) {
                 if ($options[$name]['is_collection_option']) {

@@ -22,11 +22,45 @@ class HelloCommand extends AbstractCommand {
 //
 
     public function execute(array $args) {
+        xxx -y -x -h
+
+            if (isset($options['-x'])) {
+            }
+
+            if (isset($options['-y'])) {
+                //
+            }
+
+            foreach ($options as $option) {
+                switch ($option) {
+                case '-x':
+                    //xx
+                    break;
+                case '-y':
+                    //yy
+                    break;
+                }
+            }
+
+            $result = OptionDispatcher::dispatch(array(
+                '-x' => function($value) {
+                    OptionDispatcher::dispatch([
+                    ]);
+                    $this->dispatch([
+                    ]);
+                    OptionDispatcher::stopDispatch();
+                },
+                '-y' => function() {
+                }
+            ));
+
         $results = $this->dispatchAll([
-            '-x' => function() {
+            '-x' => function() use ($this as $x) {
             },
             '-y' => function() {
                 $this->stopDispatch();
+                $x = 'xx';
+                $this->dispatchAll([]);
             }
         ]);
         foreach ($results as $result) {
