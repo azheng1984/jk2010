@@ -1,7 +1,7 @@
 <?php
 namespace Tc\Commands;
 
-class HelloCommand {
+class HelloCommand extends AbstractCommand {
     private $ctx;
 
     public function __construct($ctx) {
@@ -9,6 +9,12 @@ class HelloCommand {
     }
 
     protected function getContext() {
+        $this->dispatchAll([
+            '-x' => function() {
+            },
+            '-y' => function() {
+            }
+        ]);
     }
 
 //    public function execute($arg1, $arg2 = null) {
