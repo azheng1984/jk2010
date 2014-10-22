@@ -6,8 +6,8 @@ use Hyperframework\ConfigFileLoader;
 use Hyperframework\Cli\CommandParser;
 
 class App {
-    private $collectionOptions = array();
     private $commandName = null;
+    private $collectionOptions = array();
     private $commandOptions = array();
     private $arguments = array();
 
