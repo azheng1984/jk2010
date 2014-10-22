@@ -13,6 +13,7 @@ class HelloCommand extends AbstractCommand {
             '-x' => function() {
             },
             '-y' => function() {
+                $this->stopDispatch();
             }
         ]);
     }
