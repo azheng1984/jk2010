@@ -16,9 +16,9 @@ class HelloCommand extends AbstractCommand {
                 $this->stopDispatch();
             }
         ]);
-        $result['name'];
-        $result['return'];
         foreach ($results as $result) {
+            $result['name'];
+            $result['return'];
         }
     }
 
