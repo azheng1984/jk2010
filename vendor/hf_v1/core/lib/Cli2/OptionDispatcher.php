@@ -55,7 +55,9 @@ class OptionGroupDispatcher {
 
     public static function dispatch($options, $config) {
         ++self::$depth;
-        unset(self::$stoppedDepths[self::$depth]);
+        if (isset(self::$stoppedDepths[self::$depth])) {
+            throw new Exception;
+        }
         --self::$depth;
     }
 
@@ -70,6 +72,9 @@ class OptionGroupDispatcher {
 
     public static function stopDispatch() {
         //if not dispatch all throw exception
+        if (self::$depth === 0) {
+            throw new Exception;
+        }
         self::$stoppedDepths[self::$depth] = true;
     }
 }
