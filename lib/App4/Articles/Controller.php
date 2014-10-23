@@ -16,5 +16,8 @@ class Controller extends AbstractController {
 }
 
 // post /articles => redirect new resource
-// patch /articles/332323
+
+// get /articles  /articles/22222
+
+// patch/put /articles/332323
 // delete /articles/21323/comments

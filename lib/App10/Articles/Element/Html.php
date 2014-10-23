@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Blog\App\Article\Index;
+namespace Hyperframework\Blog\App\Articles\Item;
 
 class Html {
     public function render($ctx) {

@@ -45,7 +45,13 @@ class Action {
     public function after($ctx) {
     }
 
-    public function patch($ctx) {
+    public function get() {
+    }
+
+    public function delete($ctx) {
+    }
+
+    public function update($ctx) {
         echo 'hello';
     }
 }
