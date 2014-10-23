@@ -10,9 +10,9 @@ class ArticleController {
     public function delete() {
     }
 
-    public function update() {
+    public function post() {
     }
 
-    public function create() {
+    public function patch() {
     }
 }
