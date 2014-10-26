@@ -11,7 +11,7 @@ class HelloCommand extends AbstractCommand {
 //    }
 //
 
-    public function execute(array $args) {
+    public function run(array $args) {
         xxx -y -x -h
 
             if (isset($options['-x'])) {
