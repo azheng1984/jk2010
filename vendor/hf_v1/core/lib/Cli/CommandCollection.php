@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
-abstract class AbstructCommandCollection extends ExecutableElement {
+abstract class CommandCollection extends ExecutableElement {
     protected function getOptions() {
         return $this->getApp()->getCollectionOptions();
     }

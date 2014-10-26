@@ -1,7 +1,7 @@
 <?php
 namespace Tc\Commands;
 
-class HelloCommand extends AbstractCommand {
+class HelloCommand extends Command {
 //    public function execute($arg1, $arg2 = null) {
 //    }
 //

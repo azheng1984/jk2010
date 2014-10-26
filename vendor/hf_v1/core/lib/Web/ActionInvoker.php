@@ -3,7 +3,7 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Config;
 
-final class ActionInvoker {
+final class ActionInvoke {
     public static function invoke($pathInfo, $ctx) {
         $actionInfo = null;
         if (isset($pathInfo['action'])) {
