@@ -26,8 +26,6 @@ class ArticleController extends Controller {
     public function runNewAction() {
     }
 
-    public function doNewAction() {
-    }
 
     public function newAction() {
     }
@@ -38,15 +36,12 @@ class ArticleController extends Controller {
     public function add() {
     }
 
-    public function handleNewAction() {
-    }
-
-    public function handleNewAction() {
+    private function handleNewAction() {
     }
 
     public function handleCreateAction() {
     }
 
-    public function handleDeleteAction() {
+    private function handleDeleteAction() {
     }
 }
