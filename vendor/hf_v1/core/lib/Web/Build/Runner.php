@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Web\Build;
 
+use Hyperframework;
 use Hyperframework\EnvironmentBuilder;
 use Hyperframework\ClassCacheBuilder;
 use Hyperframework\ClassFileHelper;
@@ -19,12 +20,12 @@ class Runner {
     }
 
     private static function buildPathInfoCache($type) {
-        $root = \Hyperframework\APP_ROOT_PATH
+        $root = Hyperframework\APP_ROOT_PATH
             . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . $type;
         $pathInfo = array();
-        self::get('/', $root, \Hyperframework\APP_ROOT_NAMESPACE .'\\' . $type, $pathInfo);
+        self::get('/', $root, Hyperframework\APP_ROOT_NAMESPACE .'\\' . $type, $pathInfo);
         $content = var_export($pathInfo, true);
-        $folder = \Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR
+        $folder = Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR
             . 'tmp' . DIRECTORY_SEPARATOR . 'cache'
             . DIRECTORY_SEPARATOR .  'path_info';
         if (is_dir($folder) === false) {

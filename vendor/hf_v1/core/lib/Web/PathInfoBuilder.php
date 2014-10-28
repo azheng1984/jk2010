@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework;
 use Hyperframework\ConfigLoader;
 use Hyperframework\ClassFileHelper;
 
@@ -17,9 +18,9 @@ class PathInfoBuilder {
         if (DIRECTORY_SEPARATOR !== '\\') {
             $folder = str_replace('\\', '/', $folder);
         }
-        $folder = \Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'lib'
+        $folder = Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'lib'
             . DIRECTORY_SEPARATOR . $folder;
-        $namespace = \Hyperframework\APP_ROOT_NAMESPACE . '\\' . $namespace;
+        $namespace = Hyperframework\APP_ROOT_NAMESPACE . '\\' . $namespace;
         $pathInfo = array();
         $viewTypes = array();
         if (is_dir($folder) === false) {

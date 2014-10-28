@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework;
 use Hyperframework\FullPathRecognizer;
 
 class AssetManifest {
@@ -44,7 +45,7 @@ class AssetManifest {
                 $item = $basePath . DIRECTORY_SEPARATOR . $item;
             }
             if (is_dir($item)) {
-                $scanner = new \Hyperframework\DirectoryScanner(function($path) use (&$result) {
+                $scanner = new Hyperframework\DirectoryScanner(function($path) use (&$result) {
                     $result[]= $path;
                 });
                 $scanner->scan($item);
@@ -59,7 +60,7 @@ class AssetManifest {
         $includePaths = AssetProxy::getIncludePaths();
         foreach ($includePaths as $includePath) {
             if (FullPathRecognizer::isFull($includePath) === false) {
-                $includePath = \Hyperframework\APP_ROOT_PATH
+                $includePath = Hyperframework\APP_ROOT_PATH
                     . DIRECTORY_SEPARATOR . $includePath;
             }
             if (strncmp($includePath, $path, strlen($includePath)) === 0) {

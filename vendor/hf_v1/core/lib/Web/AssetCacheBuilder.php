@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework;
 use Hyperframework\DirectoryScanner;
 use Hyperframework\Config;
 
@@ -33,10 +34,10 @@ class AssetCacheBuilder {
     public static function getOutputRootPath() {
         $path = Config::get('hyperframework.asset.cache_path');
         if ($path === null) {
-            $path = \Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'public'
+            $path = Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'public'
                 . str_replace('/', DIRECTORY_SEPARATOR, AssetPathPrefix::get());
         } elseif (FullPathRecognizer::isFull($path)) {
-            $path = \Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR . $path;
+            $path = Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR . $path;
         }
         $version = AssetCacheVersion::get(null);
         return $path . '-' . $version;
