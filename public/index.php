@@ -2,10 +2,16 @@
 namespace Hyperframework\Main; //$x = array();
 //print_r(opcache_get_status("/home/az/quickquick/config/init.php"));
 class _xx {
-public function hi() {
-echo 'hi';  
+    public function hi() {
+        echo 'hi';  
+    }
 }
+function main() {
+   echo 'xxx';
 }
+echo main();
+//echo __NAMESPACE__;
+exit;
 
 //$s = microtime(true);
 ////$x = array();
