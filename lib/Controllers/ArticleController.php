@@ -1,6 +1,9 @@
 <?php
 
 class ArticleController {
+    public function __construct($app, $params) {
+    }
+
     public function onExecuting() {
     }
 
@@ -14,9 +17,6 @@ class ArticleController {
     }
 
     public function doDeleteAction() {
-    }
-
-    public function doFavoriteAction() {
     }
 
     public function doListAction() {
