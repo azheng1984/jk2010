@@ -1,6 +1,6 @@
 <?php
 
-class ArticleController extends Controller {
+class ArticlesController extends Controller {
     public function __construct($app, $params) {
     }
 
