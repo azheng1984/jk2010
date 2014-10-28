@@ -13,6 +13,12 @@ class PathInfoBuilder {
         return self::buildByNamespace($namespace, $type, $options);
     }
 
+    public static function getController($path) {
+    }
+
+    public static function getViewName($path) {
+    }
+
     public static function buildByNamespace($namespace, $type, $options) {
         $folder = $namespace;
         if (DIRECTORY_SEPARATOR !== '\\') {

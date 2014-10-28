@@ -20,16 +20,16 @@ final class ControllerHandler {
         }
         $result = null;
         $class = static::getClass($pathInfo);
-        $action = new $class($app);
-        if ($hasBeforeFilter) {
-            $action->before();
-        }
+        $controller = new $class($app);
+//        if ($hasBeforeFilter) {
+//            $controller->initialize();
+//        }
         if ($method !== null) {
             $result = $action->$method();
         }
-        if ($hasAfterFilter) {
-            $action->after();
-        }
+//        if ($hasAfterFilter) {
+//            $controller->finalize();
+//        }
         return $result;
     }
 
