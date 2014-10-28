@@ -1,4 +1,5 @@
 <?php
+namespace Youxuanji\Main;
 
 class ArticlesController extends Controller {
     public function __construct($app, $params) {
