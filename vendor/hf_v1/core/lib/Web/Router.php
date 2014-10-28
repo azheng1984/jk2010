@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 class Router {
-    final public static function execute($ctx, $segments = null) {
+    final public static function execute($app, $segments = null) {
         if ($segments === null) {
             $segments = RequestPath::getSegments();
         }
@@ -24,8 +24,8 @@ class Router {
         }
         $paramCount = count($params);
         if ($paramCount > 0) {
-            $ctx->setParam('ids', $params);
-            $ctx->setParam('id', $params[$paramCount - 1]);
+            $app->setParam('ids', $params);
+            $app->setParam('id', $params[$paramCount - 1]);
         }
         if (strrpos(end($segments), '.') < 1) {
             return $path;

@@ -4,13 +4,13 @@ namespace Hyperframework\Web;
 class ViewDispatcher {
     private static $defaultClasses;
 
-    final public static function dispatch($pathInfo, $ctx) {
+    final public static function dispatch($pathInfo, $actionResult) {
         $class = self::getClass($pathInfo);
         if ($class === null) {
             throw new NotAcceptableException;
         }
-        $view = new $class($ctx);
-        $view->render($ctx);
+        $view = new $class;
+        $view->render($actionResult);
     }
 
     public static function reset() {

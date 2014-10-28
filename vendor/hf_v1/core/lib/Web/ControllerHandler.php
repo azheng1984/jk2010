@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 use Hyperframework\Config;
 
 final class ControllerHandler {
-    public static function handle($pathInfo, $ctx) {
+    public static function handle($pathInfo, $app) {
         $actionInfo = null;
         if (isset($pathInfo['controller'])) {
             $actionInfo = $pathInfo['controller'];
@@ -20,15 +20,15 @@ final class ControllerHandler {
         }
         $result = null;
         $class = static::getClass($pathInfo);
-        $action = new $class($ctx);
+        $action = new $class($app);
         if ($hasBeforeFilter) {
-            $action->before($ctx);
+            $action->before();
         }
         if ($method !== null) {
-            $result = $action->$method($ctx);
+            $result = $action->$method();
         }
         if ($hasAfterFilter) {
-            $action->after($ctx);
+            $action->after();
         }
         return $result;
     }

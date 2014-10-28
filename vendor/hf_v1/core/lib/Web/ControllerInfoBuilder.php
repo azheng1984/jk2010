@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-class ActionInfoBuilder {
+class ControllerInfoBuilder {
     public static function build($class, &$pathInfo) {
         $cache = array('methods' => array());
         if (self::isGetMethodAllowed($class) === false) {
