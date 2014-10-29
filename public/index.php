@@ -1,6 +1,16 @@
 <?php
-
 namespace Hyperframework\Blog; //$x = array();
+
+class index {
+    public function name() {
+        require __DIR__ . '/hi.php';
+    }
+}
+$x = new index;
+$x->name();
+echo $x->hi;
+exit;
+
 //print_r(opcache_get_status("/home/az/quickquick/config/init.php"));
 
 //$s = microtime(true);
@@ -55,3 +65,35 @@ Runner::run(__NAMESPACE__, ROOT_PATH);
 
 <input type="submit" />
 </form>
+<?php
+
+if ($this->isMediaType('html')) {
+    return;
+}
+
+if ($this->isMediaType('json')) {
+}
+
+switch ($this->getViewFormat()) {
+    case 'json':
+        return new Xml;
+    case 'media':
+        return $this->getXmlData();
+    case 'rss':
+        return $this->getRssData();
+}
+
+$this->bindRender([
+    'json' => function() {
+        $this->renderJson();
+    },
+    'bai' => function() {
+        $this->renderJson();
+    }
+]);
+
+$this->renderJson(function() {
+});
+$this->renderXml(function() {
+});
+$this->render();

@@ -24,10 +24,6 @@ class Controller {
         $this->app->removeParam($name);
     }
 
-    public function setView($name) {
-        $this->app->setView($name);
-    }
-
     protected function quit() {
         $this->app->quit();
     }

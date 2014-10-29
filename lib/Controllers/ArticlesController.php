@@ -7,11 +7,29 @@ class ArticlesController extends Controller {
 
 //    public function onExecuting() {
 //    }
-//
+
 //    public function onExecuted() {
 //    }
 
     public function doShowAction() {
+        $format = $this->getRequestFormat();
+        if ($this->isJsonFormat()$format === 'json') {
+            $this->renderJson(function() use ($data) {
+            });
+            return;
+            return new JsonView(function() use ($data) {
+            });
+            return $this->createJsonView(function() use ($data) {
+                //render callback
+            });
+        } elseif ($format === 'json') {
+            return $this->createJsonView(function() use ($data) {
+            });
+            //render json data
+            //return new JsonView($data);
+        } elseif ($format === 'xml') {
+            return new XmlView($data);
+        }
     }
 
     public function doNewAction() {
@@ -23,35 +41,3 @@ class ArticlesController extends Controller {
     public function doListAction() {
     }
 }
-
-namespace Youxuanji\View;
-
-$this->setLayout('list');
-
-$this->setBlock('xxx', function() {
-});
-
-$this->setBlock('');
-$this->setBlock('xxx');
-
-$this->setBlockNamespace();
-
-$this->renderBlock('xxx');
-
-$this->setLayout('xxx');
-$this->renderBlock('xxx', function() {
-});
-
-$this->renderBlock('xx', function() {
-});
-
-$this->setBlock('xxx', function() {
-    $this->renderBlock('rename');
-});
-
-$this->renameBlock('xxx', 'xxxxx');
-
-$this->setBlock('xxx', function() {
-});
-
-$this->extend();

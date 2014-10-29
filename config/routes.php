@@ -3,7 +3,7 @@ return [
     'articles' => [
         'namespace' => 'Articles', //default
         'type' => 'collection', //singular by default if has member set collection automaticly
-        'children' => [], //as collection paths when type = collection or has member config
+        'children' => ['comments' => 'shallow'], //as collection paths when type = collection or has member config
         'additional_children' => ['index' => 'IndexPreview'], //rename children?
         'set_child_name' => ['IndexPreview' => 'index'],
         'additional_children' => ['new' => ['children' => ['preview']]], //postpone
