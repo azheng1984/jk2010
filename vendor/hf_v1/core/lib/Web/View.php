@@ -7,7 +7,11 @@ class View implements ArrayAccess {
     private $actionResult;
 
     public function render($actionResult) {
-        $this->actionResult = $actionResult;
+        if (is_array($actionResult)) {
+            $this->actionResult = $actionResult;
+        } else {
+            $this->actionResult = array('action_result' => $actionResult);
+        }
     }
 
     public function __invoke($function) {
