@@ -24,6 +24,10 @@ class Controller {
         $this->app->removeParam($name);
     }
 
+    protected function disableView() {
+        $this->app->disableView();
+    }
+
     protected function quit() {
         $this->app->quit();
     }
