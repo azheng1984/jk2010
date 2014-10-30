@@ -4,13 +4,13 @@ namespace Hyperframework\Web;
 use ArrayAccess;
 
 class View implements ArrayAccess {
-    private $actionResult;
+    private $model;
 
     public function render($actionResult) {
         if (is_array($actionResult)) {
-            $this->actionResult = $actionResult;
+            $this->model = $actionResult;
         } else {
-            $this->actionResult = array('action_result' => $actionResult);
+            $this->model = array('action_result' => $actionResult);
         }
     }
 
