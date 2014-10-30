@@ -6,12 +6,16 @@ use ArrayAccess;
 class View implements ArrayAccess {
     private $model;
 
-    public function render($actionResult) {
-        if (is_array($actionResult)) {
+    public function __construct(array $actionResult = null) {
+        if ($actionResult !== null) {
             $this->model = $actionResult;
         } else {
-            $this->model = array('action_result' => $actionResult);
+            $this->model = [];
         }
+    }
+
+    public function render() {
+        //render default template if exist
     }
 
     public function __invoke($function) {
