@@ -12,8 +12,15 @@ class ArticlesController extends Controller {
 //    }
 
     public function doShowAction() {
+        $this->render(['json' => function() {
+            return encode_json($data);
+        }, 'html', 'xml' => function() {
+            return $data;
+        }]);
         $format = $this->getRequestFormat();
-        if ($this->isJsonFormat()$format === 'json') {
+        if ($format === 'json') {
+            echo ....;
+            return;
             $this->renderJson(function() use ($data) {
             });
             return;

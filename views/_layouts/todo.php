@@ -1,2 +1,5 @@
 <?php
-namespace Youxuanji;
+$this(function() {
+});
+return function() {?>
+<? };

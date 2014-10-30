@@ -2,13 +2,24 @@
 namespace Hyperframework\Blog; //$x = array();
 
 class index {
-    public function name() {
-        require __DIR__ . '/hi.php';
+    public function call() {
+        $this(function() {
+            echo 'hi';
+        });
+    }
+
+    public function __invoke($callback) {
+        $callback();
     }
 }
 $x = new index;
-$x->name();
-echo $x->hi;
+
+$this(function() {
+});
+return function() {
+
+};
+//echo $x->hi;
 exit;
 
 //print_r(opcache_get_status("/home/az/quickquick/config/init.php"));
