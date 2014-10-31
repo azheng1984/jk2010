@@ -20,6 +20,7 @@ class RequestBodyParser {
         return $GLOBALS['HTTP_RAW_POST_DATA'];
     }
 
+    //todo remove, 测试是否自动限制 by post size
     private static function getMaxLength() {
         $config = ini_get('post_max_size');
         if (strlen($result) < 2) {

@@ -2,16 +2,51 @@
 
 //v2
 return [
+//todo 分离模块路由
+//    'admin' => [
+//        'type' => 'module',
+//        'children' => ''
+//        'controller' => 'Admin\IndexController', //default
+//    ],
     'articles' => [
-        'children' => [
-            'comments' => [
-                'actions' => [
-                    '' => ''
-                ]
-            ]
-        ]
+        'type' => 'collection',
+//        'children' => [
+//            'comments'
+//        ],
+        'element' => [
+            'id_pattern' => '/()+/',
+            'children' => 'comments',
+            'formats' => ['css'],
+        ],
+        'formats' => ['xml'],
     ],
+    'search',
+    'rss',
+    'tags' => [
+        'type' => 'collection'
+    ],
+    'xx' => [
+        'type' => 'flag',
+        'children' => [
+        ],
+    ],
+    'comments' => ['list'],
+    'sign_in' => ['children' => 'single'],
 ];
+
+function($segment) {
+    if ($segment === 'xx') {
+        return $segment;
+    }
+    return [
+        'articles' => function($segment) {
+            if ($segment === 'id') {
+            }
+        },
+        'tags' => function($segment) {},
+        'sign_in',
+    ]
+}
 
 //v1
 return [

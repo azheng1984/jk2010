@@ -9,11 +9,11 @@ class Router {
         $params = array();
         $path = '';
         foreach ($segments as $segment) {
-            if ($segment === 'item') {
+            if ($segment === 'element') {
                 throw new NotFoundException;
             }
             if (static::isId($segment)) {
-                $path .= '/item';
+                $path .= '/element';
                 $params[] = $segment;
                 continue;
             }

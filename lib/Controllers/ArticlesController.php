@@ -3,6 +3,8 @@ namespace Youxuanji\Main\Controllers;
 
 class ArticlesController extends Controller {
     public function __construct($app) {
+        $this->addBeforeFilter();
+        $this->addAfterFilter();
     }
 
 //    public function onActionExecuting() {
@@ -12,6 +14,7 @@ class ArticlesController extends Controller {
 //    }
 
     public function doShowAction() {
+
         $this->render(['json' => function() {
             return encode_json($data);
         }, 'html', 'xml' => function() {
