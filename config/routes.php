@@ -8,30 +8,33 @@ return [
 //        'children' => ''
 //        'controller' => 'Admin\IndexController', //default
 //    ],
+    // /articles/232323/
     'articles' => [
         'type' => 'collection',
 //        'children' => [
 //            'comments'
 //        ],
-        'element' => [
-            'id_pattern' => '/()+/',
+        'item' => [
+            'id_pattern' => '/()+/', //default: ctypenum
             'children' => 'comments',
-            'formats' => ['css'],
+            'formats' => ['[xml]'],
         ],
         'formats' => ['xml'],
+//      'controller' => 'ArticleController', => code map
     ],
     'search',
     'rss',
     'tags' => [
         'type' => 'collection'
     ],
+    /search?key=sdsf&key2=df
     'xx' => [
         'type' => 'flag',
         'children' => [
         ],
     ],
     'comments' => ['list'],
-    'sign_in' => ['children' => 'single'],
+    'sign_in' => ['children' => 'xxewe'],
 ];
 
 function($segment) {
