@@ -3,7 +3,7 @@ namespace Hyperframework\Web;
 
 use ArrayAccess;
 
-class View implements ArrayAccess {
+abstract class View implements ArrayAccess {
     private $model;
 
     public function __construct(array $actionResult = null) {
@@ -14,9 +14,7 @@ class View implements ArrayAccess {
         }
     }
 
-    public function render() {
-        //render default template if exist
-    }
+    abstract public function render();
 
     public function __invoke($function) {
         $function();
