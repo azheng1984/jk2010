@@ -5,6 +5,7 @@ use ArrayAccess;
 
 abstract class View implements ArrayAccess {
     private $model;
+    private $blocks;
 
     public function __construct(array $model = null) {
         if ($model !== null) {
@@ -15,6 +16,18 @@ abstract class View implements ArrayAccess {
     }
 
     abstract public function render();
+
+    public function renderBlock($name, $default = null) {
+    }
+
+    public function setBlock($name, $value) {
+    }
+
+    public function extend($layout) {
+    }
+
+    public function setLayout() {
+    }
 
     public function __invoke($function) {
         $function();

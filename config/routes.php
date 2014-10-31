@@ -1,4 +1,19 @@
 <?php
+
+//v2
+return [
+    'articles' => [
+        'children' => [
+            'comments' => [
+                'actions' => [
+                    '' => ''
+                ]
+            ]
+        ]
+    ],
+];
+
+//v1
 return [
     'articles' => [
         'namespace' => 'Articles', //default

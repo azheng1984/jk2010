@@ -48,6 +48,9 @@ class App {
         $this->quit();
     }
 
+    public function disableView() {
+    }
+
     public function quit() {
         $this->finalize();
         exit;

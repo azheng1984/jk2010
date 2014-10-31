@@ -5,10 +5,10 @@ class ArticlesController extends Controller {
     public function __construct($app) {
     }
 
-//    public function onExecuting() {
+//    public function onActionExecuting() {
 //    }
 
-//    public function onExecuted() {
+//    public function onActionExecuted() {
 //    }
 
     public function doShowAction() {

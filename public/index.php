@@ -1,26 +1,7 @@
 <?php
 namespace Hyperframework\Blog; //$x = array();
 
-class index {
-    public function call() {
-        $this(function() {
-            echo 'hi';
-        });
-    }
-
-    public function __invoke($callback) {
-        $callback();
-    }
-}
-$x = new index;
-
-$this(function() {
-});
-return function() {
-
-};
 //echo $x->hi;
-exit;
 
 //print_r(opcache_get_status("/home/az/quickquick/config/init.php"));
 
