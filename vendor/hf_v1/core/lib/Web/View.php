@@ -6,9 +6,9 @@ use ArrayAccess;
 abstract class View implements ArrayAccess {
     private $model;
 
-    public function __construct(array $actionResult = null) {
-        if ($actionResult !== null) {
-            $this->model = $actionResult;
+    public function __construct(array $model = null) {
+        if ($model !== null) {
+            $this->model = $model;
         } else {
             $this->model = [];
         }
@@ -18,5 +18,25 @@ abstract class View implements ArrayAccess {
 
     public function __invoke($function) {
         $function();
+    }
+
+    public function offsetSet($offset, $value) {
+        if ($offset === null) {
+            throw new Exception;
+        } else {
+            $this->model[$offset] = $value;
+        }
+    }
+
+    public function offsetExists($offset) {
+        return isset($this->model[$offset]);
+    }
+
+    public function offsetUnset($offset) {
+        unset($this->model[$offset]);
+    }
+
+    public function offsetGet($offset) {
+        return $this->model[$offset];
     }
 }
