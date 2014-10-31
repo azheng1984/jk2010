@@ -3,7 +3,7 @@ namespace Hyperframework\Web;
 
 use ArrayAccess;
 
-abstract class View implements ArrayAccess {
+abstract class ViewTemplateEngine implements ArrayAccess {
     private $model;
     private $blocks;
 

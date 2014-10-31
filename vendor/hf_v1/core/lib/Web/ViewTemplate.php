@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-class ViewTemplate extends View {
+class ViewTemplate extends ViewTemplateEngine {
     public function render() {
         //render default template if exist
     }
