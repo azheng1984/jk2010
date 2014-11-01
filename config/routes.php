@@ -1,12 +1,16 @@
 <?php
 //v3
 //module 是否已经是约定俗成？
+$this->defineSegment('post' => [
+    'children' => 'comments'
+]);
 return [
     'articles' => [
-        'include' => ['commentable'], //concern
+        'include' => ['commentable', 'postable'], //concern
         'type' => 'collection',
         'item' => [
-            'id_pattern' => '/list/',
+            'segment_pattern' => '/list/',
+            'segment_name' => 'name',
             'children' => [
             ],
         ],
