@@ -1,7 +1,8 @@
 <?php
 //v3
 //module 是否已经是约定俗成？
-$this->defineSegment('post' => [
+$this->defineSegment('posts' => [
+    'type' => 'collection',
     'children' => 'comments'
 ]);
 return [
