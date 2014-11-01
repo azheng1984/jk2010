@@ -1,4 +1,46 @@
 <?php
+//v3
+//module 是否已经是约定俗成？
+return [
+    'articles' => [
+        'include' => ['commentable'], //concern
+        'type' => 'collection',
+        'item' => [
+            'id_pattern' => '/list/',
+            'children' => [
+            ],
+        ],
+        'excluded_actions' => ['get'],
+        'actions' => [''],
+        'shallow_nesting' => true,
+        'formats' => ['[xml]', 'rss'],
+        'callback' => function($ctx) {
+            if (in_array($ctx->getAction(), ['edit', 'create'])) {
+                $this->setController('ArticlesCommentsController');
+            }
+            if ($ctx->getDomain(0) !== 'admin') {
+                return false;
+            }
+            if ($ctx->getAction() === 'new') {
+                $this->setAction('add');
+            }
+        },
+        'children' => [
+        ],
+    ],
+];
+
+return [
+    [
+        'get', 'from' => 'asfdsf', 'to' => 'article#create', 'subdomain' => 'admin'
+    ],
+    [
+        'post', 'from' => 'xxx'
+    ],
+];
+
+$this->match('post', 'asfdsf/:id/:user_id', 'article#create', ['constrains']);
+$this->match('[:controller[:action[:id]]]');
 
 //v2
 return [
@@ -14,10 +56,38 @@ return [
 //        'children' => [
 //            'comments'
 //        ],
+        function($node) {
+            $node->setType('collection');
+        },
         'item' => [
             'id_pattern' => '/()+/', //default: ctypenum
-            'children' => 'comments',
             'formats' => ['[xml]'],
+            [
+                'comments' => [
+                    function($node) {
+                        $node->addLink(
+                        );
+                    }
+                    'links' => [
+                        [
+                            'name' => 'ArticlesCommentsController'
+                            //'target' => 'articles_comments',
+                            'actions' => ['create'],
+                        ]
+                    ],
+                    'actions' => ['create'],
+                    'controller' => 'ArticlesCommentsController',
+                    'formats' => 'xml'
+                    //'actions' => ['delete'],
+                ], //'link' to /comments will render comments
+            ],
+            function($ctx) {
+                if (in_array($ctx->getAction(), ['action', 'xxx'])) {
+                    $node->setController(
+                        'ArticlesCommentsController', ['create']
+                    );
+                }
+            },
         ],
         'formats' => ['xml'],
 //      'controller' => 'ArticleController', => code map
@@ -27,7 +97,7 @@ return [
     'tags' => [
         'type' => 'collection'
     ],
-    /search?key=sdsf&key2=df
+    // /search?key=sdsf&key2=df
     'xx' => [
         'type' => 'flag',
         'children' => [
@@ -36,6 +106,14 @@ return [
     'comments' => ['list'],
     'sign_in' => ['children' => 'xxewe'],
 ];
+
+$this->xx('articles/{}/{}', '');
+$this->xx('articles/{}/{}', '');
+$this->addLink('articles/comments', []);
+$this->addLink('articles/comments', []);
+$this->changeController('articles/comments', []);
+
+//  /articles/comments
 
 function($segment) {
     if ($segment === 'xx') {
