@@ -51,6 +51,9 @@ class App {
     public function disableView() {
     }
 
+    public function setView($name) {
+    }
+
     public function quit() {
         $this->finalize();
         exit;

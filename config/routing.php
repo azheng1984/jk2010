@@ -5,18 +5,47 @@ $this->defineSegment('posts' => [
     'type' => 'collection',
     'children' => 'comments'
 ]);
+$this->setRoot('index'); //default
+$this->addRoutes
+    ['GET', '/seach[/:query]', ['constrains' => ('query')]],
+);
+
+$this->setDefaultModule('main');
+$this->disableRestful();
+
+if ($this->getDomain(3) === 'admin') {
+    $this->setModule('admin', ['namespace' => 'Admin']);
+    $this->setModuleNamespace('admin', 'Admin'); //default
+    $this->fail(); //throw not found exception;
+}
+if ($this->segment[0] === 'search') {
+    $this->setSegments(['search']);
+    $app->setParam('query', $segment[1]);
+} elseif ($this->segment[0]) {
+}
+
+$router->addConfig();
+$router->setRoot(null);
+$router->disableRestfulActionConvension();
+$router->disableShowAndIndexActionConvension();
+
+/articles/index
+/articles/2323/comments
+
 return [
+    'index',
     'articles' => [
         'include' => ['commentable', 'postable'], //concern
         'type' => 'collection',
         'item' => [
-            'segment_pattern' => '/list/',
-            'segment_name' => 'name',
+            'segment_pattern' => '/[0-9]+/', //default
+            'segment_name' => 'id', //default
             'children' => [
             ],
         ],
         'excluded_actions' => ['get'],
         'actions' => [''],
+        'restful' => false,
         'shallow_nesting' => true,
         'formats' => ['[xml]', 'rss'],
         'callback' => function($ctx) {

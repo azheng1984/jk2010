@@ -28,6 +28,10 @@ class Controller {
         $this->app->disableView();
     }
 
+    protected function setView($name) {
+        $this->app->setView($name);
+    }
+
     protected function quit() {
         $this->app->quit();
     }
