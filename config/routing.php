@@ -18,19 +18,37 @@ if ($this->getDomain(3) === 'admin') {
     $this->setModuleNamespace('admin', 'Admin'); //default
     $this->fail(); //throw not found exception;
 }
-if ($this->segment[0] === 'search') {
+
+if ($this->match(':module/search/:id[/dsfadf/]', ['params' => ''])) {
+    $app->setParam(':id', $result[0]);
+    $this->rewritePath('search');
+}
+if ($path === '/login') {
+}
+
+if ($this->match('search/*query', [
+    ':query' => ['ctype' => 'wildcard'], //'\d+' // default regex
+    'methods' => ['get','post'],
+    'subdomain' => 'user',
+    'callback' => function($ctx) {
+        if (preg_match($query)) {
+        }
+        return true;
+    },
+])) {
+    $this->rewritePath('search');
+    $app->redirect('/xxxx');
     $this->setSegments(['search']);
-    $app->setParam('query', $segment[1]);
+    $app->setParam('query', $this->getSegment[1]);
+    $this->setController('article'); // skip default mapping
+    $this->setAction('new'); // optional
+    return ['controller', 'action'];
 } elseif ($this->segment[0]) {
 }
 
-$router->addConfig();
 $router->setRoot(null);
 $router->disableRestfulActionConvension();
 $router->disableShowAndIndexActionConvension();
-
-/articles/index
-/articles/2323/comments
 
 return [
     'index',
@@ -45,12 +63,17 @@ return [
         ],
         'excluded_actions' => ['get'],
         'actions' => [''],
-        'restful' => false,
+        'enable_show_and_index_action_convension' => false,
+        'enable_restful_action_convension' => false,
         'shallow_nesting' => true,
         'formats' => ['[xml]', 'rss'],
         'callback' => function($ctx) {
             if (in_array($ctx->getAction(), ['edit', 'create'])) {
-                $this->setController('ArticlesCommentsController');
+                $this->setController('articles_comments');
+                $this->setControllerClass('ArticlesCommentsController');
+                $this->setActionMehtod('doNewAction');
+                $this->setAction('xxx');
+                $this->setModule();
             }
             if ($ctx->getDomain(0) !== 'admin') {
                 return false;
