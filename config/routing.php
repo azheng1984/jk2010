@@ -7,7 +7,7 @@ $this->defineSegment('posts' => [
 ]);
 $this->setRoot('index'); //default
 $this->addRoutes
-    ['GET', '/seach(/:query)', ['constrains' => ('query')]],
+    ['get', '/search(/*query)', ['constrains' => ('query')]],
 );
 
 $this->setDefaultModule('main');
@@ -18,27 +18,39 @@ if ($this->getDomain(3) === 'admin') {
     if ($this->getModule() === 'admin') {
         $this->setModuleNamespace('Admin'); //default
     }
-    $this->fail(); //throw not found exception;
+    return false; //throw not found exception;
 }
 
-if ($this->match(':module/:controller/:action/:id(/dsfadf/)', ['params' => ''])) {
-    $app->setParam(':id', $result[0]);
-    $this->rewritePath('search');
+if ($this->matchByRegex( //postpone
+    'get', '',
+    'params' => [0 => 'module', 1 => 'controller', 2 => 'month'],
+    'callback' => function() {
+    }
+)) {
+}
+
+if ($this->match(':module/:controller/:action/:id(/prefix:year(:month){:day}postfix)', ['params' => ''])) {
+    $app->setParam('id', $result[0]);
+    $this->setPath('search');
     return;
 }
 if ($path === '/login') {
 }
 
-if ($this->match('get', 'search/*query', [
-    ':query' => ['ctype' => 'alnum'], //'\d+' // default regex
-    'methods' => ['get', 'post'],
-    'subdomain' => 'user',
+if ($this->match('get', 'search/*query(.:format)', [//get is default method
+    ':query' => ['ctype' => 'alnum'], //'\d+' // default regex postpone
+    ':format' => '(rss|xml)',
+    'methods' => ['get' => 'show', 'post' => 'create'],
+    'subdomain' => 'user', //postpone
     'callback' => function($ctx) {
         if (preg_match($query)) {
         }
         return true;
     },
 ])) {
+    explode('-', $app->getParam('mixed_params'));
+    if ($app->getParam('format')) {
+    }
     $this->setPath('search');
     $app->redirect('/xxxx');
     //$this->setSegments(['search']);
@@ -47,9 +59,12 @@ if ($this->match('get', 'search/*query', [
     $this->setController('article');
     $this->setAction('new');
 
-    return 'home';
-    return 'main/home';
-    return 'main/home#show';
+    return;
+    return 'search';
+    return 'main/search';
+    return 'main/search#show';
+
+    return false; //throw new not_found exception
 
 } elseif ($this->segment[0]) {
 }
