@@ -22,14 +22,14 @@ if ($this->getDomain(3) === 'admin') {
 }
 
 if ($this->matchByRegex( //postpone
-    'get', '',
+    'get', '(.*?)/(.*?)/$',
     'params' => [0 => 'module', 1 => 'controller', 2 => 'month'],
     'callback' => function() {
     }
 )) {
 }
 
-if ($this->match('(:country/):module/:controller/:action/:id(/prefix:year(:month){:day}postfix)', ['params' => ''])) {
+if ($this->match('(:country/):module/:controller/:action/:id(/prefix:year:month{:day}postfix)', ['params' => ''])) {
     $app->setParam('id', $result[0]);
     $this->setPath('search');
     return;
@@ -38,7 +38,7 @@ if ($path === '/login') {
 }
 
 if ($this->match('get', 'search/*query(.:format)', [//get is default method
-    ':query' => ['ctype' => 'alnum'], //'\d+' // default regex postpone
+    ':query' => ['ctype' => 'alnum'], //'\d+' // default regex, postpone
     ':format' => '(rss|xml)',
     'methods' => ['get' => 'show', 'post' => 'create'],
     'subdomain' => 'user', //postpone
