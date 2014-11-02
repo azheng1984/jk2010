@@ -7,7 +7,7 @@ $this->defineSegment('posts' => [
 ]);
 $this->setRoot('index'); //default
 $this->addRoutes
-    ['GET', '/seach[/:query]', ['constrains' => ('query')]],
+    ['GET', '/seach(/:query)', ['constrains' => ('query')]],
 );
 
 $this->setDefaultModule('main');
@@ -15,20 +15,23 @@ $this->disableRestful();
 
 if ($this->getDomain(3) === 'admin') {
     $this->setModule('admin', ['namespace' => 'Admin']);
-    $this->setModuleNamespace('admin', 'Admin'); //default
+    if ($this->getModule() === 'admin') {
+        $this->setModuleNamespace('Admin'); //default
+    }
     $this->fail(); //throw not found exception;
 }
 
-if ($this->match(':module/search/:id[/dsfadf/]', ['params' => ''])) {
+if ($this->match(':module/:controller/:action/:id(/dsfadf/)', ['params' => ''])) {
     $app->setParam(':id', $result[0]);
     $this->rewritePath('search');
+    return;
 }
 if ($path === '/login') {
 }
 
-if ($this->match('search/*query', [
-    ':query' => ['ctype' => 'wildcard'], //'\d+' // default regex
-    'methods' => ['get','post'],
+if ($this->match('get', 'search/*query', [
+    ':query' => ['ctype' => 'alnum'], //'\d+' // default regex
+    'methods' => ['get', 'post'],
     'subdomain' => 'user',
     'callback' => function($ctx) {
         if (preg_match($query)) {
@@ -36,13 +39,18 @@ if ($this->match('search/*query', [
         return true;
     },
 ])) {
-    $this->rewritePath('search');
+    $this->setPath('search');
     $app->redirect('/xxxx');
-    $this->setSegments(['search']);
+    //$this->setSegments(['search']);
     $app->setParam('query', $this->getSegment[1]);
-    $this->setController('article'); // skip default mapping
-    $this->setAction('new'); // optional
-    return ['controller', 'action'];
+
+    $this->setController('article');
+    $this->setAction('new');
+
+    return 'home';
+    return 'main/home';
+    return 'main/home#show';
+
 } elseif ($this->segment[0]) {
 }
 
@@ -50,6 +58,8 @@ $router->setRoot(null);
 $router->disableRestfulActionConvension();
 $router->disableShowAndIndexActionConvension();
 
+//next
+//if some value is setted, value will be overwrite
 return [
     'index',
     'articles' => [
@@ -86,16 +96,6 @@ return [
         ],
     ],
 ];
-
-return [
-    [
-        'get', 'from' => 'asfdsf', 'to' => 'article#create', 'subdomain' => 'admin'
-    ],
-    [
-        'post', 'from' => 'xxx'
-    ],
-];
-
 $this->match('post', 'asfdsf/:id/:user_id', 'article#create', ['constrains']);
 $this->match('[:controller[:action[:id]]]');
 
