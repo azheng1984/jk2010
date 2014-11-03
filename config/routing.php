@@ -86,6 +86,7 @@ return [
 ];
 //  /articles/:id => articles#show
 //v4
+
 return [
     'index', //default root
     'articles' => function($ctx) {
@@ -96,7 +97,8 @@ return [
             $ctx->setFormats();
         }
     },
-        'type' => 'collection',
+        if ($this->match('[0-9]+'))
+    return ['type' => 'collection',
         'children' => [
         ],
         'item' => [
@@ -109,8 +111,8 @@ return [
                 'sigle',
             ],
         ],
-        'formats' => ['xml', 'html']
-        '' => function($callback) {
+        'formats' => ['default' => 'xml', 'html'],
+        'parser' => function() {
         }
     ],
 ];
