@@ -37,9 +37,10 @@ if ($this->match('(:country/):module/:controller/:action/:id(/prefix:year:month{
 if ($path === '/login') {
 }
 
-if ($this->match('get', 'search/*query(.:format)', [//get is default method
+if ($this->match('get', 'search/*query', [//get is default method
     ':query' => ['ctype' => 'alnum'], //'\d+' // default regex, postpone
-    ':format' => '(rss|xml)',
+    'formats' => ['[rss]', 'xml'], //same as default routing
+    // option method config or method argument is conflict
     'methods' => ['get' => 'show', 'post' => 'create'],
     'subdomain' => 'user', //postpone
     'callback' => function($ctx) {
