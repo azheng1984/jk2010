@@ -1,6 +1,11 @@
 <?php
 namespace Hyperframework\Blog; //$x = array();
 
+if (preg_match('#([a-z])((([A-Z]))+)#', 'aBCD', $matches)) {
+    print_r($matches);
+}
+exit;
+
 //echo $x->hi;
 
 //print_r(opcache_get_status("/home/az/quickquick/config/init.php"));

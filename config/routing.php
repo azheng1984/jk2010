@@ -40,7 +40,7 @@ if ($path === '/login') {
 //表示集合
 if ($this->match('get', 'search/*query', [//get is default method
     ':query' => ['ctype' => 'alnum'], //'\d+' // default regex, postpone
-    'formats' => ['[rss]', 'xml'], //same as default routing
+    'formats' => ['default' => 'rss', 'xml'], //same as default routing
     // option method config or method argument is conflict
     'methods' => ['get' => 'show', 'post' => 'create'],
     'protocol' => 'https', //postpone, 简单的是简单的，负责的是可能的
@@ -94,7 +94,7 @@ return [
         'enable_show_and_index_action_convension' => false,
         'enable_restful_action_convension' => false,
         'shallow_nesting' => true,
-        'formats' => ['[xml]', 'rss'],
+        'formats' => ['default' => 'xml', 'rss'],
         'callback' => function($ctx) {
             if (in_array($ctx->getAction(), ['edit', 'create'])) {
                 $this->setController('articles_comments');
