@@ -21,14 +21,12 @@ if ($this->getDomain(3) === 'admin') {
     return false; //throw not found exception;
 }
 
-if ($this->matchByRegex( //postpone
-    'get', '(.*?)/(.*?)/$',
-    'params' => [0 => 'module', 1 => 'controller', 2 => 'month'],
+if ($this->matchByRegex(
+    'get', '(?<controller>.*?)/(?<action>.*?)/$',
     'callback' => function() {
     }
 )) {
 }
-
 if ($this->match('(:country/):module/:controller/:action/:id(/prefix:year:month{:day}postfix)', ['params' => ''])) {
     $app->setParam('id', $result[0]);
     $this->setPath('search');
@@ -39,13 +37,15 @@ if ($path === '/login') {
 //单复数分离，单数接收字符串，复数只能接收数组 cancel，优先考虑使用复数（一致）
 //表示集合
 if ($this->match('get', 'search/*query', [//get is default method
-    ':query' => ['ctype' => 'alnum'], //'\d+' // default regex, postpone
+    ':query' => ['ctype' => 'alnum'], //'\d+' // default regex, cancel 
+    ':id' => 'prod-[0-9]{10}', //可以通过在匹配后处理来提高效率，因为不需要执行后期的匹配操作
     'formats' => ['default' => 'rss', 'xml'], //same as default routing
     // option method config or method argument is conflict
     'methods' => ['get' => 'show', 'post' => 'create'],
-    'protocol' => 'https', //postpone, 简单的是简单的，负责的是可能的
-    'subdomain' => 'user', //postpone
-    'callback' => function($ctx) {
+    //'protocol' => 'https', //postpone, 简单的是简单的，负责的是可能的
+    //'port' => '80', //postpone
+    //'subdomain' => 'user', //postpone
+    'extra' => function($ctx) {
         if (preg_match($query)) {
         }
         return true;
@@ -76,27 +76,53 @@ $router->setRoot(null);
 $router->disableRestfulActionConvension();
 $router->disableShowAndIndexActionConvension();
 
+//todo add extra default action
+
 //next
 //if some value is setted, value will be overwrite
 return [
     'index',
     'articles' => [
-        'include' => ['commentable', 'postable'], //concern
-        'type' => 'collection',
-        'item' => [
-            'segment_pattern' => '/[0-9]+/', //default
-            'segment_name' => 'id', //default
-            'children' => [
-            ],
-        ],
-        'excluded_actions' => ['get'],
-        'actions' => [''],
-        'enable_show_and_index_action_convension' => false,
-        'enable_restful_action_convension' => false,
-        'shallow_nesting' => true,
-        'formats' => ['default' => 'xml', 'rss'],
-        'callback' => function($ctx) {
+//     'include' => ['commentable', 'postable'], //concern, shared config - postpone
+       'type' => 'collection',
+       'item' => [
+           'segment_pattern' => '[0-9]+', //default
+           'segment_name' => 'id', //default
+           'children' => [
+           ],
+       ],
+       //和 controller 一致，列出所有 action
+       'actions' => ['show'],
+       // get /articles/basic  patch/put /article/delete
+       //when restful actoin convension is null, default => create => methods: all
+       //if no restriction, all method except convensions is mapping to all
+       //'extra_actions' => [], // extend default actions, if list one, list all - 一致性
+       'actions' => [
+           'setting' => ['methods' => ['get', 'post'], 'matcher' => function() {
+           }],
+       ],
+       'on_fail' => function($ctx) {
+           if ($ctx->match(':action')) {
+               //check action
+               return;
+           } else {
+               //fail
+           }
+       },
+       'enable_show_and_index_action_convension' => false, // - cancel, 通过全局配置 - 一致性
+       'enable_new_and_edit_action_convension' => false,//remove new and edit default action//use removeDefaultMethods method instead
+       'enable_restful_action_convension' => false, //disable create update delete - cancel
+       'shallow_nesting' => true,
+       'formats' => ['default' => 'xml', 'rss'],
+       'extra' => function($ctx) {
+            if ($this->match('setting(/:xxxx)');
+            $ctx->addAction();
+            if ($ctx->match('get', 'edit')) {
+                $ctx->setAction('edit');
+                return true;
+            }
             if (in_array($ctx->getAction(), ['edit', 'create'])) {
+                $method = $this->getMethod();
                 $this->setController('articles_comments');
                 $this->setControllerClass('ArticlesCommentsController');
                 $this->setActionMehtod('doNewAction');

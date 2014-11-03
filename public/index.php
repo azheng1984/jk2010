@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Blog; //$x = array();
-
-if (preg_match('#([a-z])((([A-Z]))+)#', 'aBCD', $matches)) {
+if (preg_match('#^/(.*)/foo/(.*)$#', '/zoo/woo/foo/bar/baz', $matches)) {
     print_r($matches);
 }
 exit;
@@ -13,8 +12,17 @@ exit;
 //$s = microtime(true);
 ////$x = array();
 //$x = array();
-//for ($i = 0; $i < 1000000; ++$i) {
-//    $x = [0 => $i];
+//for ($i = 0; $i < 100000; ++$i) {
+////if (preg_match('#^(?<name>[0-9a-z]+)(?<name2>(?<name4>(?<hello>[0-9A-Z]))+)#', 'xxxxxxxxxxxxdddd', $matches)) {
+////    //print_r($matches);
+////}
+//if (preg_match('#^([0-9a-z]+)((([0-9A-Z]))+)#', 'xxxxxxxxxxxxdddd', $matches)) {
+//    //print_r($matches);
+//}
+////if (preg_match('#^([0-9a-z]+)#', 'xxx', $matches)) {
+////    //print_r($matches);
+////}
+////    $x = [0 => $i];
 //    //$x[0] = $i;
 //    //strpos($name, '|');
 //    //explode('|', $name);
