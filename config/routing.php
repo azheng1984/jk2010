@@ -6,7 +6,7 @@ $this->defineSegment('posts' => [
     'children' => 'comments'
 ]);
 $this->setRoot('index'); //default
-$this->addRoutes
+$this->addRoutes(
     ['get', '/search(/*query)', ['constrains' => ('query')]],
 );
 
@@ -42,7 +42,7 @@ if ($this->match('get', 'search/*query', [//get is default method
     'formats' => ['default' => 'rss', 'xml'], //same as default routing
     // option method config or method argument is conflict
     'methods' => ['get' => 'show', 'post' => 'create'],
-    //'protocol' => 'https', //postpone, 简单的是简单的，负责的是可能的
+    //'protocol' => 'https', //postpone, 简单的是简单的，负责的是可能的，全部放入 extra
     //'port' => '80', //postpone
     //'subdomain' => 'user', //postpone
     'extra' => function($ctx) {
@@ -76,10 +76,49 @@ $router->setRoot(null);
 $router->disableRestfulActionConvension();
 $router->disableShowAndIndexActionConvension();
 
-//todo add extra default action
+//todo add extra default action like edit new update...
 
+return [
+    'index',
+    'articles' => function() {
+        return [];
+    }
+];
+//  /articles/:id => articles#show
+//v4
+return [
+    'index', //default root
+    'articles' => function($ctx) {
+        $ctx->setType('collection');
+        $ctx->setMetadata('children');
+        $ctx->setMetadata('item', []);
+        if ($ctx->dispatch() === false) {
+            $ctx->setFormats();
+        }
+    },
+        'type' => 'collection',
+        'children' => [
+        ],
+        'item' => [
+            'segment_pattern' => '[0-9]+', //default
+            'segment_name' => 'id', //default
+            'formats' => '',
+            'shallow_nesting' => true,
+            'children' => [
+                'comments',
+                'sigle',
+            ],
+        ],
+        'formats' => ['xml', 'html']
+        '' => function($callback) {
+        }
+    ],
+];
+
+
+//v3
 //next
-//if some value is setted, value will be overwrite
+//if some value is setted(:action / :controller), value will be overwrite
 return [
     'index',
     'articles' => [
@@ -91,8 +130,12 @@ return [
            'children' => [
            ],
        ],
+       '' => function($match) {
+       }
+       'actions' => ['show' => 'get'],
        //和 controller 一致，列出所有 action
        'actions' => ['show'],
+       'shallow_nesting' => true,
        // get /articles/basic  patch/put /article/delete
        //when restful actoin convension is null, default => create => methods: all
        //if no restriction, all method except convensions is mapping to all
@@ -101,7 +144,7 @@ return [
            'setting' => ['methods' => ['get', 'post'], 'matcher' => function() {
            }],
        ],
-       'on_fail' => function($ctx) {
+       'callback' => function($ctx) {
            if ($ctx->match(':action')) {
                //check action
                return;
@@ -112,7 +155,6 @@ return [
        'enable_show_and_index_action_convension' => false, // - cancel, 通过全局配置 - 一致性
        'enable_new_and_edit_action_convension' => false,//remove new and edit default action//use removeDefaultMethods method instead
        'enable_restful_action_convension' => false, //disable create update delete - cancel
-       'shallow_nesting' => true,
        'formats' => ['default' => 'xml', 'rss'],
        'extra' => function($ctx) {
             if ($this->match('setting(/:xxxx)');
