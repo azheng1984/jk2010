@@ -36,12 +36,14 @@ if ($this->match('(:country/):module/:controller/:action/:id(/prefix:year:month{
 }
 if ($path === '/login') {
 }
-
+//单复数分离，单数接收字符串，复数只能接收数组 cancel，优先考虑使用复数（一致）
+//表示集合
 if ($this->match('get', 'search/*query', [//get is default method
     ':query' => ['ctype' => 'alnum'], //'\d+' // default regex, postpone
     'formats' => ['[rss]', 'xml'], //same as default routing
     // option method config or method argument is conflict
     'methods' => ['get' => 'show', 'post' => 'create'],
+    'protocol' => 'https', //postpone, 简单的是简单的，负责的是可能的
     'subdomain' => 'user', //postpone
     'callback' => function($ctx) {
         if (preg_match($query)) {
@@ -112,6 +114,7 @@ return [
         ],
     ],
 ];
+
 $this->match('post', 'asfdsf/:id/:user_id', 'article#create', ['constrains']);
 $this->match('[:controller[:action[:id]]]');
 
