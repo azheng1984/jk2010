@@ -5,6 +5,12 @@ $this->defineSegment('posts' => [
     'type' => 'collection',
     'children' => 'comments'
 ]);
+if ($segment[0] === '/') {
+    return 'index#show';
+}
+if (in_array($segment[0], ['login'])) {
+}
+
 $this->setRoot('index'); //default
 $this->addRoutes(
     ['get', '/search(/*query)', ['constrains' => ('query')]],
@@ -32,8 +38,6 @@ if ($this->match('(:country/):module/:controller/:action/:id(/prefix:year:month{
     $this->setPath('search');
     return;
 }
-if ($path === '/login') {
-}
 //单复数分离，单数接收字符串，复数只能接收数组 cancel，优先考虑使用复数（一致）
 //表示集合
 if ($this->match('get', 'search/*query', [//get is default method
@@ -42,7 +46,7 @@ if ($this->match('get', 'search/*query', [//get is default method
     'formats' => ['default' => 'rss', 'xml'], //same as default routing
     // option method config or method argument is conflict
     'methods' => ['get' => 'show', 'post' => 'create'],
-    //'protocol' => 'https', //postpone, 简单的是简单的，负责的是可能的，全部放入 extra
+    //'protocol' => 'https', //postpone, 简单的是简单的，复杂的是可能的，全部放入 extra
     //'port' => '80', //postpone
     //'subdomain' => 'user', //postpone
     'extra' => function($ctx) {
@@ -50,6 +54,7 @@ if ($this->match('get', 'search/*query', [//get is default method
         }
         return true;
     },
+    $this->setParam('xx', 'xx');
 ])) {
     explode('-', $app->getParam('mixed_params'));
     if ($app->getParam('format')) {
@@ -72,47 +77,105 @@ if ($this->match('get', 'search/*query', [//get is default method
 } elseif ($this->segment[0]) {
 }
 
+if ($this->parse([
+    'index',
+    'articles' => function($ctx) {
+        if (isset($ctx[0]) === false) {
+            $ctx[':controller'] = 'articles';
+            return;
+        }
+        if (isId($ctx[0])) {
+            return $ctx->next(function() {});
+        }
+    }
+])) {
+    return;
+}
+if ($this->) {
+    return;
+}
+
 $router->setRoot(null);
 $router->disableRestfulActionConvension();
 $router->disableShowAndIndexActionConvension();
 
-//todo add extra default action like edit new update...
+$this->setSegment('article', [
+    'index' => function() {
+    }
+]);
 
-return [
+$this->Path([
     'index',
     'articles' => function() {
-        return [];
-    }
-];
-//  /articles/:id => articles#show
-//v4
-
-return [
-    'index', //default root
-    'articles' => function($ctx) {
-        $ctx->setType('collection');
-        $ctx->setMetadata('children');
-        $ctx->setMetadata('item', []);
-        if ($ctx->dispatch() === false) {
-            $ctx->setFormats();
-        }
+        $this->dispatch()
     },
-        if ($this->match('[0-9]+'))
-    return ['type' => 'collection',
+]);
+
+//todo add extra default action like edit new update...
+
+//  /articles/:id => articles#show
+
+//v5
+if ($this->matchResources('articles', [
+    'id_pattern' => '[0-9]+',
+    'excluded_actions' => '',
+    'extra_actions' => '',
+    'actions' => '',
+    'formats' => [],
+    'extra' => function($ctx) {
+        $this->fail(); //throw not found exception
+    }
+])) {
+    return;
+}
+if ($this->matchScope('articles/:article_id', function() {
+    if ($this->matchGet('setting(/:action)')) {
+        return;
+    }
+    if ($this->matchResource('comments')) {
+        return;
+    }
+})) {
+    return;
+}
+if ($this->matchResources('articles/:article_id/comments', [
+    'formats' => [],
+])) {
+    return;
+}
+if ($this->matchResource('account', [
+])) {
+    return;
+}
+if ($this->matchResource('account/setting', [
+])) {
+}
+if ($this->match('articles/:article_id/comments/layout(/:xxx)', [
+])) {
+    return;
+}
+
+//v4
+return [
+    'articles' => [
         'children' => [
         ],
         'item' => [
-            'segment_pattern' => '[0-9]+', //default
-            'segment_name' => 'id', //default
+            'id_pattern' => '[0-9]+', //default
+            //'name' => 'article_id', //default
             'formats' => '',
-            'shallow_nesting' => true,
+            'shallow_nesting' => true, //default
             'children' => [
-                'comments',
+                'comments' [
+                    'item' => [],
+                    'children' => ['reply'],
+                ],
                 'sigle',
             ],
+            'this' => '',
         ],
         'formats' => ['default' => 'xml', 'html'],
-        'parser' => function() {
+        'this' => function() {
         }
     ],
 ];
