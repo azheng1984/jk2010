@@ -146,16 +146,17 @@ if ($this->matchResources([
 ])) {
     return;
 }
-if ($this->matchResource(['articles/:id'])) {
-    return;
-}
+
+if ($this->matchResource(['articles'])) return; //short way
+
 if ($this->matchResource('articles/:id')) {
     return;
 }
 if ($this->matchScope('articles/:article_id', function() {
     if ($this->matchGet('setting(/:action)')) {
+        return; //success
         $this->fail(); //fast fail
-        $this->clearMatch();
+        $this->deleteMatch();
         return; //scope fail
     }
     if ($this->matchResources('comments')) { //shallow by default
