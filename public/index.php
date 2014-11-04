@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Blog; //$x = array();
-if (true) return;
-return;
+
 if (preg_match('#^/(.*)/foo/(.*)$#', '/zoo/woo/foo/bar/baz', $matches)) {
     print_r($matches);
 }

@@ -147,6 +147,9 @@ if ($this->matchResources([
 
 if ($this->matchResource(['articles'])) return; //short way
 
+$this->matchResource('articles') && return;
+
+
 if ($this->matchResource('articles/:id')) {
     return;
 }
