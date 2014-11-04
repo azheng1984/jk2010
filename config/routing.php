@@ -107,12 +107,10 @@ if ($this->matchResources('articles', [
 if ($this->matchResources('articles', [])) {
     return;
 }
-
-if ($this->matchResources('articles/:id/comments', ['shallow' => true])) {
+if ($this->matchResources('articles/:id/comments', ['element_actions' => false])) {
 }
 
-if ($this->matchResources('articles/:id/comments', ['shallow' => true])) {
-}
+if ($this->matchResources('comments', ['collection_actions' => false])) return;
 
 if ($this->matchScope('admin', function() {
     $this->includeRoutes('admin');
