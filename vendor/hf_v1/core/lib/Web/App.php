@@ -6,7 +6,8 @@ use Exception;
 class App {
     private $path;
     private $pathInfo;
-    private $params = array();
+    private $view;
+    private $routeParams = array();
     private $actionResult;
 
     public function run() {
@@ -16,24 +17,24 @@ class App {
         $this->finalize();
     }
 
-    public function getParam($name) {
-        return $this->params[$name];
+    public function getRouteParam($name) {
+        return $this->routeParams[$name];
     }
 
-    public function getParams() {
-        return $this->params;
+    public function getRouteParams() {
+        return $this->routeParams;
     }
 
-    public function setParam($name, $value) {
-        $this->params[$name] = $value;
+    public function setRouteParam($name, $value) {
+        $this->routeParams[$name] = $value;
     }
 
-    public function removeParam($name) {
-        unset($this->params[$name]);
+    public function removeRouteParam($name) {
+        unset($this->routeParams[$name]);
     }
 
-    public function hasParam($name) {
-        return isset($this->params[$name]);
+    public function hasRouteParam($name) {
+        return isset($this->routeParams[$name]);
     }
 
     public function getActionResult($name = null) {
@@ -51,7 +52,11 @@ class App {
     public function disableView() {
     }
 
-    public function setView($name) {
+    public function enableView() {
+    }
+
+    public function setView($value) {
+        $this->view = $value;
     }
 
     public function quit() {

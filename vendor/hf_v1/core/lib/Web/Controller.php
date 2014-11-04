@@ -8,20 +8,16 @@ class Controller {
        $this->app = $app;
     }
 
-    protected static function getParam($name) {
-        $this->app->getParam($name);
+    protected static function getRouteParam($name) {
+        $this->app->getRouteParam($name);
     }
 
-    protected function hasParam($name) {
-        $this->app->hasParam($name);
+    protected static function getRouteParams() {
+        $this->app->getRouteParams();
     }
 
-    protected function setParam($name, $value) {
-        $this->app->setParam($name, $value);
-    }
-
-    protected function removeParam($name) {
-        $this->app->removeParam($name);
+    protected function hasRouteParam($name) {
+        $this->app->hasRouteParam($name);
     }
 
     protected function disableView() {
