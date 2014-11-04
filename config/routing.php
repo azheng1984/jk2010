@@ -27,7 +27,7 @@ if ($this->getDomain(3) === 'admin') {
     return false; //throw not found exception;
 }
 
-if ($this->matchByRegex(
+if ($this->matchRegex(
     'get', '(?<controller>.*?)/(?<action>.*?)/$',
     'callback' => function() {
     }
@@ -77,24 +77,6 @@ if ($this->match('get', 'search/*query', [//get is default method
 } elseif ($this->segment[0]) {
 }
 
-if ($this->parse([
-    'index',
-    'articles' => function($ctx) {
-        if (isset($ctx[0]) === false) {
-            $ctx[':controller'] = 'articles';
-            return;
-        }
-        if (isId($ctx[0])) {
-            return $ctx->next(function() {});
-        }
-    }
-])) {
-    return;
-}
-if ($this->) {
-    return;
-}
-
 //$router->setRoot(null); //postpone
 //$router->disableRestfulActionConvension(); //postpone
 //$router->disableShowAndIndexActionConvension(); //postpone
@@ -105,28 +87,85 @@ if ($this->) {
 
 //v5
 if ($this->matchResources('articles', [
-    'id_pattern' => '[0-9]+',
-    'excluded_actions' => '', //rails except
-    'extra_actions' => '', //rails add
-    'actions' => ['show', 'new', 'index'],
+    'actions' => ['delete', 'show', 'edit', 'update' => 'get'], //default
+    'collection_actions' => ['index', 'create', 'reply' => 'post', 'magic' => 'all'], //default
+    'extra_collection_actions' => '', //rails collection closure
+    'element_actions' => ['index', 'create', 'reply' => 'post'], //default
+    'extra_element_actions' => '', //rails member cloure
+    'excluded_actions' => '', //rails except, confilct with actions only
+    'id' => '[0-9]+', //default
+//  'extra_actions' => '', //rails member cloure
     'formats' => [],
     'extra' => function($ctx) {
-        $this->fail(); //throw not found exception
-    }
+        $this->fail(); //throw not found exception, fast fail by default, better than return false;
+        //extra constrains
+    },
 ])) {
+    return false; // equals to $this->fail();
+}
+
+if ($this->matchResources('articles', [])) {
     return;
 }
-if ($this->matchScope('articles/:article_id', function() {
-    if ($this->matchGet('setting(/:action)')) {
-        return;
-    }
-    if ($this->matchResource('comments')) {
+
+if ($this->matchResources('articles/:id/comments', ['shallow' => true])) {
+}
+
+if ($this->matchResources('articles/:id/comments', ['shallow' => true])) {
+}
+
+if ($this->matchScope('admin', function() {
+    $this->includeRoutes('admin');
+}
+
+if ($this->matchScope('articles', function() {
+    if ($this->matchScope(':article_id', function() {
+    })) {
         return;
     }
 })) {
     return;
 }
-if ($this->matchScope('articles/:article_id/' function() {
+
+if ($this->matchResources('comemnts', ['actions' => []])) {
+    return;
+}
+
+if ($this->matchResource('articles/:id', [ //detect item by end with :x - dynamic resource
+    ':id' => '[0-9]+', //default
+    'excluded_actions' => '', //rails except
+    'extra_actions' => '', //rails member cloure
+    'actions' => ['delete', 'show', 'edit', 'update'], //default
+//    'formats' => [],
+])) {
+    return;
+}
+if ($this->matchResources([
+    'articles',
+    'articles/:article_id/comments'
+])) {
+    return;
+}
+if ($this->matchResource(['articles/:id'])) {
+    return;
+}
+if ($this->matchResource('articles/:id')) {
+    return;
+}
+if ($this->matchScope('articles/:article_id', function() {
+    if ($this->matchGet('setting(/:action)')) {
+        $this->fail(); //fast fail
+        $this->clear();
+        return; //scope fail
+    }
+    if ($this->matchResources('comments')) { //shallow by default
+        return; //success
+    }
+    return; //fail
+})) {
+    return;
+}
+if ($this->matchScope('articles/:article_id' function() {
     if ($this->matchComment()) {
     } //help function
 }) {
