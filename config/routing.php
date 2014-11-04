@@ -155,7 +155,7 @@ if ($this->matchResource('articles/:id')) {
 if ($this->matchScope('articles/:article_id', function() {
     if ($this->matchGet('setting(/:action)')) {
         $this->fail(); //fast fail
-        $this->clear();
+        $this->clearMatch();
         return; //scope fail
     }
     if ($this->matchResources('comments')) { //shallow by default
