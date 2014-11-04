@@ -24,8 +24,8 @@ class Controller {
         $this->app->disableView();
     }
 
-    protected function setView($name) {
-        $this->app->setView($name);
+    protected function setView($value) {
+        $this->app->setView($value);
     }
 
     protected function quit() {
