@@ -95,21 +95,9 @@ if ($this->) {
     return;
 }
 
-$router->setRoot(null);
-$router->disableRestfulActionConvension();
-$router->disableShowAndIndexActionConvension();
-
-$this->setSegment('article', [
-    'index' => function() {
-    }
-]);
-
-$this->Path([
-    'index',
-    'articles' => function() {
-        $this->dispatch()
-    },
-]);
+//$router->setRoot(null); //postpone
+//$router->disableRestfulActionConvension(); //postpone
+//$router->disableShowAndIndexActionConvension(); //postpone
 
 //todo add extra default action like edit new update...
 
@@ -118,9 +106,9 @@ $this->Path([
 //v5
 if ($this->matchResources('articles', [
     'id_pattern' => '[0-9]+',
-    'excluded_actions' => '',
-    'extra_actions' => '',
-    'actions' => '',
+    'excluded_actions' => '', //rails except
+    'extra_actions' => '', //rails add
+    'actions' => ['show', 'new', 'index'],
     'formats' => [],
     'extra' => function($ctx) {
         $this->fail(); //throw not found exception
@@ -138,9 +126,10 @@ if ($this->matchScope('articles/:article_id', function() {
 })) {
     return;
 }
-if ($this->matchResources('articles/:article_id/comments', [
-    'formats' => [],
-])) {
+if ($this->matchScope('articles/:article_id/' function() {
+    if ($this->matchComment()) {
+    } //help function
+}) {
     return;
 }
 if ($this->matchResource('account', [
