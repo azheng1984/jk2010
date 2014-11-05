@@ -4,7 +4,7 @@ namespace Hyperframework\Blog;
 use Hyperframework\Web\Router as Base;
 
 class Router extends Base {
-    public function config() {
+    public function parse() {
         $this->match('/');
         $this->matchResource('article');
         $this->matchScope('article', function() {
