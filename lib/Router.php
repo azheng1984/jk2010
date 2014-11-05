@@ -15,15 +15,17 @@ class Router extends Base {
         $this->match('article/:id(/*comments)', [':id' => '[0-9]+', 'formats' => 'jpg']);
         $this->match('article/:id(/*comments)', [':id' => '[0-9]+']);
 
-        if ($this->match('/')) return;
+        if ($this->match('/')) return 'main/index/show';
+        if ($this->match('article/:id(/*comments)', [':id' => '[0-9]+']))
+            return 'comments/show';
         if ($this->matchResource('article')) return;
         if ($this->matchScope('article', function() {
             echo $this->getPath();
-            $this->match('*path');
+            $this->matchPost('*path');
         })) return;
-        if ($this->match('(:module(/:controller(/:action)))', [':id' => '[0-9]+'])) return;
-        if ($this->match('article/:id(/*comments)', [':id' => '[0-9]+', 'formats' => 'jpg'])) return;
-        if ($this->match('article/:id(/*comments)', [':id' => '[0-9]+'])) return;
+        if ($this->matchGet('(:module(/:controller(/:action)))', [':id' => '[0-9]+'])) return;
+        if ($this->matchPost('article/:id(/*comments)', [':id' => '[0-9]+', 'formats' => 'jpg'])) return;
+        if ($this->matchDelete('article/:id(/*comments)', [':id' => '[0-9]+'])) return;
 
     }
 }
