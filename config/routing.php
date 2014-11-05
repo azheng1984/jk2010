@@ -147,9 +147,6 @@ if ($this->matchResources([
 
 if ($this->matchResource(['articles'])) return; //short way
 
-$this->matchResource('articles') && return;
-
-
 if ($this->matchResource('articles/:id')) {
     return;
 }
@@ -158,7 +155,7 @@ if ($this->matchScope('articles/:article_id', function() {
         return; //success
         $this->fail(); //fast fail
         $this->deleteMatch();
-        return; //scope fail
+        //scope fail
     }
     if ($this->matchResources('comments')) { //shallow by default
         return; //success

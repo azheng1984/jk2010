@@ -3,6 +3,7 @@ namespace Hyperframework\Web;
 
 class Router {
     private $app;
+    private $path;
 
     public function __construct($app) {
         $this->app = $app;
@@ -16,7 +17,11 @@ class Router {
     }
 
     public function getPath() {
-        return RequestPath::get();
+        if ($this->path === null) {
+            $this->path = RequestPath::get();
+            $this->path = rtrim($this->path, '/');
+        }
+        return $this->path;
     }
 
     protected function parse() {
@@ -37,6 +42,12 @@ class Router {
     protected function hasParam($name) {
     }
 
+    protected function isMatched() {
+    }
+
+    protected function deleteMatch() {
+    }
+
     protected function redirect() {
     }
 
@@ -53,7 +64,7 @@ class Router {
                 $requestMethod = $_SERVER['REQUEST_METHOD'];
                 $isMethodAllowed = false;
                 foreach ($options['methods'] as $method) {
-                    if ($method === $requestMethod) {
+                    if (strtoupper($method) === $requestMethod) {
                         $isMethodAllowed = true;
                         break;
                     }
@@ -63,16 +74,20 @@ class Router {
                 }
             }
         }
-        $hasOptionalSegment = strpos($pattern, '(');
-        $hasDynamicSegment = strpos($pattern, ':');
-        $hasWildcardSegment = strpos($pattern, '*');
+        $hasOptionalSegment = strpos($pattern, '(') !== false;
+        $hasDynamicSegment = strpos($pattern, ':') !== false;
+        $hasWildcardSegment = strpos($pattern, '*') !== false;
         $hasFormat = isset($options['formats']);
         if ($hasFormat && is_array($options['formats']) === false) {
-            throw new Exception;
+            $options['formats'] = [$options['formats']];
         }
         $path = $this->getPath();
-        if ($hasFormat === false && $hasOptionalSegment === false && $hasDynamicSegment === false) {
-            if ($path === $pattern) {
+        if ($hasFormat === false
+            && $hasOptionalSegment === false
+            && $hasWildcardSegment === false
+            && $hasDynamicSegment === false
+        ) {
+            if ($path === '/' . $pattern) {
                 if (isset($options['extra'])) {
                     $function = $options['extra'];
                     return $function() !== false;
@@ -120,7 +135,7 @@ class Router {
             }
         }
         echo $pattern;
-        $result = preg_match('#^' . $pattern . '$#', $path, $matches);
+        $result = preg_match('#^/' . $pattern . '$#', $path, $matches);
         if ($result === false) {
             throw new Exception;
         }
@@ -146,9 +161,27 @@ class Router {
                     return false;
                 }
             }
+            $pattern = '#^[a-zA-Z_][a-zA-Z0-9_]*$#';
+            print_r($matches);
+            if (isset($matches['module']) && isset($options[':module']) === false) {
+                if (preg_match($pattern, $matches['module']) === 0) {
+                    return false;
+                }
+            }
+            if (isset($matches['controller']) && isset($options[':controller']) === false) {
+                if (preg_match($pattern, $matches['controller']) === 0) {
+                    return false;
+                }
+            }
+            if (isset($matches['action']) && isset($options[':action']) === false) {
+                if (preg_match($pattern, $matches['action']) === 0) {
+                    return false;
+                }
+            }
             foreach ($matches as $key => $value) {
                 if (is_string($key)) {
                     if ($key === 'module') {
+                        $pattern = '#^[a-zA-Z_][a-zA-Z0-9_]*$#';
                         $this->setModule($value);
                     } elseif ($key === 'controller') {
                         $this->setController($value);
@@ -159,29 +192,122 @@ class Router {
                     }
                 }
             }
-            print_r($matches);
             return true;
         }
         return false;
     }
 
-    protected function matchGet($pattern, $options) {
+    protected function matchGet($pattern, array $options = null) {
         $options['methods'] = 'get';
         return $this->match($pattern, $options);
     }
 
-    protected function matchPost($pattern, $options) {
+    protected function matchPost($pattern, array $options = null) {
         $options['methods'] = 'post';
         return $this->match($pattern, $options);
     }
 
-    protected function matchResources($pattern, $options) {
+    //if ($this->matchResources('articles/:article_id/comments')) return;
+    protected function matchResources($pattern, array $options = null) {
     }
 
-    protected function matchResource($pattern, $options) {
+    //if ($this->matchResource('account')) return;
+    protected function matchResource($pattern, array $options = null) {
+        $matchOptions = null;
+        if ($options !== null) {
+            if (isset($options['action'])) {
+            }
+            if (isset($options['formats'])) {
+                $matchOptions['formats'] = $options['formats'];
+            }
+        }
+        $action = null;
+        $isMatched = false;
+        $actions = ['new', 'show', 'create', 'update', 'delete', 'edit'];
+        $requestMethod = $_SERVER['REQUEST_METHOD'];
+        if ($requestMethod === 'GET') {
+             if (in_array('show', $actions)) {
+                 echo $pattern . 'xx';
+                 if ($this->matchGet($pattern, $matchOptions)) {
+                     $action = 'show';
+                     $isMatched = true;
+                 }
+             } elseif (in_array('new', $actions)) {
+                if (substr($this->getPath(), -3) === 'new') {
+                    if ($this->matchGet($pattern . '/new', $matchOptions)) {
+                        $action = 'new';
+                        $isMatched = true;
+                    }
+                }
+            } elseif (in_array('edit', $actions)) {
+                if (substr($this->getPath(), -4) === 'edit') {
+                    if ($this->matchGet($pattern . '/edit', $matchOptions)) {
+                        $action = 'edit';
+                        $isMatched = true;
+                    }
+                }
+            }
+        } elseif ($requestMethod === 'PUT' || $requestMethod === 'PATCH') {
+            $matchOptions['methods'] = ['put' , 'patch'];
+            if ($this->match($pattern, $matchOptions)) {
+                $action = 'update';
+                $isMatched = true;
+            }
+        } elseif ($requestMethod === 'POST') {
+            if ($this->matchPost($pattern, $matchOptions)) {
+                $action = 'create';
+                $isMatched = true;
+            }
+        } elseif ($requestMethod === 'DELETE') {
+            if ($this->matchDelete($pattern, $matchOptions)) {
+                $action = 'delete';
+                $isMatched = true;
+            }
+        }
+        if ($isMatched) {
+            echo 'resource matched!';
+            $controller = $pattern;
+            if (($tmp = strrpos($pattern, '/')) !== false) {
+                $controller = substr($pattern, $tmp + 1);
+            }
+            //todo recoverable
+            $this->setController($controller);
+            $this->setAction($action);
+            if (isset($options['extra'])) {
+                $function = $options['extra'];
+                if ($function() !== false) {
+                    return true;
+                }
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
-    protected function matchScope($pattern, $function, array $options = null) {
+    protected function matchScope($prefix, $function) {
+        $path = $this->getPath();
+        $prefix = '/' . $prefix;
+        if (strncmp($path, $prefix, strlen($prefix)) === 0) {
+            $tmp = substr($path, strlen($prefix));
+            if ($tmp === '') {
+                $tmp = '/';
+            }
+            if ($tmp[0] !== '/') {
+                return false;
+            }
+            $this->setPath($tmp);
+            $function();
+            $this->setPath($path);
+            if ($this->isMatched()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected function setPath($value) {
+        $this->path = $value;
     }
 
     protected function setModule($value) {

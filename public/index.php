@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Blog; //$x = array();
+namespace _;
 $p = 'aticles/#:id';
 $key = ':id';
 $value = '[0-9]+';
@@ -8,6 +8,15 @@ $p = preg_replace(
     '(?<\1>[^/]+?)',
     $p
 );
+
+class _ {
+    public function __construct() {
+//        echo 'hi';
+    }
+}
+(new _);
+
+namespace Hyperframework\Blog; //$x = array();
 //echo $p;
 //exit;
 
@@ -110,3 +119,5 @@ $this->renderJson(function() {
 $this->renderXml(function() {
 });
 $this->render();
+
+
