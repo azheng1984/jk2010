@@ -19,7 +19,7 @@ class Router {
     public function getPath() {
         if ($this->path === null) {
             $this->path = RequestPath::get();
-            $this->path = rtrim($this->path, '/');
+            $this->path = '/' . trim($this->path, '/');
         }
         return $this->path;
     }
@@ -87,7 +87,10 @@ class Router {
             && $hasWildcardSegment === false
             && $hasDynamicSegment === false
         ) {
-            if ($path === '/' . $pattern) {
+            if ($pattern !== '/') {
+                $pattern = '/' . $pattern;
+            }
+            if ($path === $pattern) {
                 if (isset($options['extra'])) {
                     $function = $options['extra'];
                     return $function() !== false;
@@ -265,7 +268,6 @@ class Router {
             }
         }
         if ($isMatched) {
-            echo 'resource matched!';
             $controller = $pattern;
             if (($tmp = strrpos($pattern, '/')) !== false) {
                 $controller = substr($pattern, $tmp + 1);
@@ -273,6 +275,7 @@ class Router {
             //todo recoverable
             $this->setController($controller);
             $this->setAction($action);
+            echo '[resource ' . $controller . ' matched!]';
             if (isset($options['extra'])) {
                 $function = $options['extra'];
                 if ($function() !== false) {

@@ -5,6 +5,7 @@ use Hyperframework\Web\Router as Base;
 
 class Router extends Base {
     public function parse() {
+        $this->match('/');
         $this->matchResource('article');
         $this->matchScope('article', function() {
             echo $this->getPath();
