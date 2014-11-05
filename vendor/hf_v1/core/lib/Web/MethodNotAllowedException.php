@@ -4,13 +4,17 @@ namespace Hyperframework\Web;
 class MethodNotAllowedException extends HttpException {
     private $methods;
 
-    public function __construct($methods, $message = null, $previous = null) {
+    public function __construct(
+        array $methods = null, $message = null, $previous = null
+    ) {
         parent::__construct($message, '405 Method Not Allowed', $previous);
         $this->methods = $methods;
     }
 
     public function sendHeader() {
         parent::sendHeader();
-        header('Allow: ' . implode(', ', $this->methods));
+        if ($this->methods !== null) {
+            header('Allow: ' . implode(', ', $this->methods));
+        }
     }
 }

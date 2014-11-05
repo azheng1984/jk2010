@@ -1,5 +1,15 @@
 <?php
 namespace Hyperframework\Blog; //$x = array();
+$p = 'aticles/#:id';
+$key = ':id';
+$value = '[0-9]+';
+$p = preg_replace(
+    '#\{?\#:([0-9a-zA-Z]+)\}?#',
+    '(?<\1>[^/]+?)',
+    $p
+);
+//echo $p;
+//exit;
 
 //echo $x->hi;
 
@@ -50,11 +60,13 @@ if (isset($_GET['r'])) {
     exit;
 }
 
-use Hyperframework\Web\Runner;
+//use Hyperframework\Web\Runner;
 define('Hyperframework\Blog\ROOT_PATH', dirname(__DIR__));
 require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
     . DIRECTORY_SEPARATOR . 'init_const.php';
 require HYPERFRAMEWORK_PATH . DIRECTORY_SEPARATOR . 'Web'
+    . DIRECTORY_SEPARATOR . 'Runner.php';
+require ROOT_PATH . DIRECTORY_SEPARATOR . 'lib'
     . DIRECTORY_SEPARATOR . 'Runner.php';
 Runner::run(__NAMESPACE__, ROOT_PATH);
 //throw new \Exception
@@ -85,7 +97,6 @@ switch ($this->getViewFormat()) {
 $this->bindRender([
     'json' => function() {
         $this->renderJson();
-        $this->disableView();
         $this->disableView();
         return;
     },

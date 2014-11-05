@@ -82,6 +82,7 @@ class App {
 
     protected function finalize() {}
 
+    //todo remove
     protected function rewriteRequestMethod() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
             isset($_POST['_method']) &&
@@ -92,6 +93,7 @@ class App {
         }
     }
 
+    //todo remove postpone
     protected function parseRequestBody() {
         if (isset($_SERVER['CONTENT_TYPE'])
             && $_SERVER['CONTENT_TYPE'] === 'application/json'
@@ -101,7 +103,7 @@ class App {
     }
 
     protected function initializePath() {
-        $this->path = Router::execute($this);
+        $this->path = Router::run($this);
     }
 
     protected function initializePathInfo() {
