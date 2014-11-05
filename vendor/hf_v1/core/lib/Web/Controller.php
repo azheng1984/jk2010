@@ -28,10 +28,6 @@ class Controller {
         $this->app->setView($value);
     }
 
-    protected function quit() {
-        $this->app->quit();
-    }
-
     protected function redirect($url, $statusCode = 302) {
         $this->app->redirect($url, $statusCode);
     }
