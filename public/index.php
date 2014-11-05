@@ -15,7 +15,6 @@ class _ {
     }
 }
 (new _);
-
 namespace Hyperframework\Blog; //$x = array();
 //echo $p;
 //exit;
