@@ -19,10 +19,13 @@ class Router extends Base {
         if ($this->match('article/:id(/*comments)', [':id' => '[0-9]+']))
             return 'comments/show';
         if ($this->matchResource('article')) return;
-        if ($this->matchScope('article', function() {
+        if ($this->matchScope('main', function() {
             echo $this->getPath();
             $this->matchPost('*path');
-        })) return;
+        })) {
+            $this->setModule('main');
+            return;
+        }
         if ($this->matchGet('(:module(/:controller(/:action)))', [':id' => '[0-9]+'])) return;
         if ($this->matchPost('article/:id(/*comments)', [':id' => '[0-9]+', 'formats' => 'jpg'])) return;
         if ($this->matchDelete('article/:id(/*comments)', [':id' => '[0-9]+'])) return;
