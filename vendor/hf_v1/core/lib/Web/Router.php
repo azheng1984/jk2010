@@ -300,9 +300,12 @@ class Router {
                 return false;
             }
             $this->setPath($tmp);
-            $function();
+            $result = $function();
             $this->setPath($path);
             if ($this->isMatched()) {
+                //todo store result with match object
+                if ($result === null) {
+                }
                 return true;
             }
         }
