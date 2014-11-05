@@ -24,6 +24,10 @@ class Controller {
         $this->app->disableView();
     }
 
+    protected function enableView() {
+        $this->app->enableView();
+    }
+
     protected function setView($value) {
         $this->app->setView($value);
     }

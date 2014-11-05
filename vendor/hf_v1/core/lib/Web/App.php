@@ -7,6 +7,7 @@ class App {
     private $path;
     private $pathInfo;
     private $view;
+    private $isViewEnabled;
     private $routeParams = array();
     private $actionResult;
 

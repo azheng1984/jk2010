@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 class Router {
-    final public static function execute($app, $segments = null) {
+    final public static function run($app, $segments = null) {
         if ($segments === null) {
             $segments = RequestPath::getSegments();
         }

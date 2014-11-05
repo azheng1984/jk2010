@@ -1,11 +1,6 @@
 <?php
 namespace Hyperframework\Blog; //$x = array();
 
-if (preg_match('#^/(.*)/foo/(.*)$#', '/zoo/woo/foo/bar/baz', $matches)) {
-    print_r($matches);
-}
-exit;
-
 //echo $x->hi;
 
 //print_r(opcache_get_status("/home/az/quickquick/config/init.php"));
@@ -90,6 +85,9 @@ switch ($this->getViewFormat()) {
 $this->bindRender([
     'json' => function() {
         $this->renderJson();
+        $this->disableView();
+        $this->disableView();
+        return;
     },
     'bai' => function() {
         $this->renderJson();
