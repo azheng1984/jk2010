@@ -70,21 +70,25 @@ abstract class Router {
         } else {
             $controller = $this->getController();
             if ($controller === null) {
-                return 'IndexController';
+                $class = 'IndexController';
+            } else {
+                $tmp = ucwords(str_replace('_', ' ', $controller));
+                $class = str_replace(' ', '', $tmp) . 'Controller';
             }
-            $tmp = ucwords(str_replace('_', ' ', $controller));
-            $class = str_replace(' ', '', $tmp) . 'Controller';
         }
         if ($class[0] === '\\') {
             return substr($class, 1);
         }
         $moduleNamespace = null;
         if (Config::get('hyperframework.web.enable_module') === true) {
-            $moduleNamespace = '\\' . $this->getModuleNamespace();
+            $moduleNamespace = $this->getModuleNamespace();
         }
-        $namespace = Hyperframework\APP_ROOT_NAMESPACE . $moduleNamespace;
-        if ($namespace !== '') {
+        $namespace = Hyperframework\APP_ROOT_NAMESPACE;
+        if ($namespace !== null) {
             $namespace .= '\\';
+        }
+        if ($moduleNamespace !== null) {
+            $namespace .= $moduleNamespace . '\\';
         }
         return $namespace . 'Controllers\\' . $class;
     }
