@@ -46,8 +46,8 @@ class Router {
     protected function isMatched() {
     }
 
-    protected function setIsMatched($value) {
-        $this->isMatched = $value;
+    protected function setMatchStatus($isMatched) {
+        $this->isMatched = $isMatched;
     }
 
     protected function redirect() {
