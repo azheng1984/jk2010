@@ -1,39 +1,46 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework\Config;
+use Hyperframework\Web\NotFoundException;
+use Exception;
+
 class Router {
     private $app;
-    private $moduleName;
+    private $params = [];
+    private $module;
     private $moduleNamespace;
-    private $controllerName;
+    private $controller;
     private $controllerClass;
-    private $actionName;
+    private $action;
     private $actionMethod;
+    private $result;
     private $path;
     private $isMatched;
 
     public function __construct($app) {
         $this->app = $app;
+        $this->parseReturnValue($this->parse());
+        if ($this->isMatched() === false) {
+            throw new NotFoundException;
+        }
+        if (Config::get('hyperframework.web.enable_module') === true) {
+            if (isset($this->result['module']) === null) {
+                throw new Exception;
+            }
+        }
+        if (isset($this->result['controller']) === false
+            || isset($this->result['action']) === false
+        ) {
+            throw new Exception;
+        }
     }
 
-    public function run() {
-        $result = $this->parse();
-        $this->parseReturnValue($result);
+    protected function parse() {
+//        return require ConfigFileLoader::loadPhp();
     }
 
-    public function getController() {
-    }
-
-    public function getControllerClass() {
-    }
-
-    public function getModule() {
-    }
-
-    public function getModuleNamespace() {
-    }
-
-    public function getPath() {
+    protected function getPath() {
         if ($this->path === null) {
             $this->path = RequestPath::get();
             $this->path = '/' . trim($this->path, '/');
@@ -41,22 +48,24 @@ class Router {
         return $this->path;
     }
 
-    protected function parse() {
-    }
-
     protected function getParam($name) {
+        return $this->params[$name];
     }
 
     protected function getParams() {
+        return $this->params;
     }
 
     protected function setParam($name, $value) {
+        $this->params[$name] = $value;
     }
 
     protected function removeParam($name) {
+        unset($this->params[$name]);
     }
 
     protected function hasParam($name) {
+        return isset($this->params[$name]);
     }
 
     protected function isMatched() {
@@ -76,6 +85,9 @@ class Router {
     }
 
     protected function match($pattern, array $options = null) {
+        if ($this->isMatched()) {
+            throw new Exception;
+        }
         if ($options !== null) {
             if (isset($options['methods'])) {
                 if (is_string($options['methods'])) {
@@ -298,13 +310,16 @@ class Router {
             $this->setController($controller);
             $this->setAction($action);
             echo '[resource action ' . $controller .'/' . $action . ' matched!]';
-            $this->isMatched = true;
+            $this->setMatchStatus(true);
             return true;
         }
         return false;
     }
 
     protected function matchScope($prefix, $function) {
+        if ($this->isMatched()) {
+            throw new Exception;
+        }
         $path = $this->getPath();
         $prefix = '/' . $prefix;
         if (strncmp($path, $prefix, strlen($prefix)) === 0) {
@@ -320,7 +335,7 @@ class Router {
             $this->setPath($path);
             if ($this->isMatched()) {
                 $this->parseReturnValue($result);
-                return true;
+                return $result !== false;
             }
         }
         return false;
@@ -328,6 +343,10 @@ class Router {
 
     private function parseReturnValue($value) {
         if ($value === null) {
+            return;
+        }
+        if ($value === false) {
+            $this->setMatchStatus(false);
             return;
         }
         if (is_string($result)) {
@@ -346,9 +365,10 @@ class Router {
                 default:
                     throw new Exception;
             }
-        } else {
+        } elseif ($value !== true) {
             throw new Exception;
         }
+        $this->setMatchStatus(true);
     }
 
     protected function setPath($value) {
@@ -359,16 +379,20 @@ class Router {
         $this->module = $value;
     }
 
+    public function getModule($param) {
+        return $this->module;
+    }
+
+    protected function setModuleNamespace($value) {
+        $this->moduleNamespace = $value;
+    }
+
     protected function setController($value) {
         $this->controller = $value;
     }
 
     protected function setAction($value) {
         $this->action = $value;
-    }
-
-    protected function setModuleNamespace($value) {
-        $this->moduleNamespace = $value;
     }
 
     protected function setControllerClass($value) {

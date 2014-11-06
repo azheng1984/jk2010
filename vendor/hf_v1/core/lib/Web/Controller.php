@@ -9,15 +9,23 @@ class Controller {
     }
 
     protected static function getRouteParam($name) {
-        $this->app->getRouteParam($name);
+        $this->app->getRouter()->getParam($name);
     }
 
     protected static function getRouteParams() {
-        $this->app->getRouteParams();
+        $this->app->getRouter()->getParams();
+    }
+
+    protected static function setRouteParam($name, $value) {
+        $this->app->getRouter()->setParam($name, $value);
+    }
+
+    protected static function removeRouteParam($name) {
+        $this->app->getRouter()->removeParam($name);
     }
 
     protected function hasRouteParam($name) {
-        $this->app->hasRouteParam($name);
+        $this->app->getRouter()->hasParam($name);
     }
 
     protected function disableView() {

@@ -4,12 +4,10 @@ namespace Hyperframework\Web;
 use Exception;
 
 class App {
-    private $path;
-    private $pathInfo;
+    private $router;
+    private $actionResult;
     private $view;
     private $isViewEnabled;
-    private $routeParams = array();
-    private $actionResult;
 
     public function run() {
         $this->initialize();
@@ -18,24 +16,12 @@ class App {
         $this->finalize();
     }
 
-    public function getRouteParam($name) {
-        return $this->routeParams[$name];
+    public function getRouter() {
+        return $this->router;
     }
 
-    public function getRouteParams() {
-        return $this->routeParams;
-    }
-
-    public function setRouteParam($name, $value) {
-        $this->routeParams[$name] = $value;
-    }
-
-    public function removeRouteParam($name) {
-        unset($this->routeParams[$name]);
-    }
-
-    public function hasRouteParam($name) {
-        return isset($this->routeParams[$name]);
+    protected function setRouter($router) {
+        $this->router = $router;
     }
 
     public function getActionResult($name = null) {
@@ -68,7 +54,7 @@ class App {
     protected function initialize() {
         $this->rewriteRequestMethod();
         $this->parseRequestBody();
-        $this->initializePath();
+        $this->initializeRouter();
         $this->initializePathInfo();
     }
 
@@ -102,8 +88,8 @@ class App {
         }
     }
 
-    protected function initializePath() {
-        $this->path = Router::run($this);
+    protected function initializeRouter() {
+        $this->router = new Router($this);
     }
 
     protected function initializePathInfo() {
