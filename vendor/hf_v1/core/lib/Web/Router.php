@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework;
 use Hyperframework\Config;
 use Hyperframework\Web\NotFoundException;
 use Exception;
@@ -63,15 +64,29 @@ abstract class Router {
     }
 
     public function getControllerClass() {
+        $class = null;
         if ($this->controllerClass !== null) {
-            return $this->controllerClass;
+            $class = $this->controllerClass;
+        } else {
+            $controller = $this->getController();
+            if ($controller === null) {
+                return 'IndexController';
+            }
+            $tmp = ucwords(str_replace('_', ' ', $controller));
+            $class = str_replace(' ', '', $tmp) . 'Controller';
         }
-        $controller = $this->getController();
-        if ($controller === null) {
-            return 'IndexController';
+        if ($class[0] === '\\') {
+            return substr($class, 1);
         }
-        return str_replace(' ', '', ucwords(str_replace('_', ' ', $controller)))
-            . 'Controller';
+        $moduleNamespace = null;
+        if (Config::get('hyperframework.web.enable_module') === true) {
+            $moduleNamespace = '\\' . $this->getModuleNamespace();
+        }
+        $namespace = Hyperframework\APP_ROOT_NAMESPACE . $moduleNamespace;
+        if ($namespace !== '') {
+            $namespace .= '\\';
+        }
+        return $namespace . 'Controllers\\' . $class;
     }
 
     protected function isMatched() {
