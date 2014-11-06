@@ -4,6 +4,7 @@ namespace Hyperframework\Web;
 class Router {
     private $app;
     private $path;
+    private $isMatched;
 
     public function __construct($app) {
         $this->app = $app;
@@ -45,7 +46,7 @@ class Router {
     protected function isMatched() {
     }
 
-    protected function deleteMatch() {
+    protected function setIsMatched($value) {
     }
 
     protected function redirect() {
