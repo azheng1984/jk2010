@@ -28,7 +28,7 @@ abstract class Router {
 
     protected function parse() {
         if ($this->match('/')) return;
-        $pattern = '/:controller/:action';
+        $pattern = ':controller/:action';
         if (Config::get('hyperframework.web.enable_module') === true) {
             $pattern = '(:module/)' . $pattern;
         }
