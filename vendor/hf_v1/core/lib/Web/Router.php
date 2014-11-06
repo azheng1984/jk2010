@@ -63,6 +63,21 @@ abstract class Router {
         return isset($this->params[$name]);
     }
 
+    public function getModuleNamespace() {
+        if (Config::get('hyperframework.web.enable_module') !== true) {
+            return;
+        }
+        if ($this->moduleNamespace !== null) {
+            return $this->moduleNamespace;
+        }
+        if ($this->module === null) {
+            return 'Main';
+        }
+        return str_replace(
+            ' ', '', ucwords(str_replace('_', ' ', $this->module))
+        );
+    }
+
     public function getControllerClass() {
         $class = null;
         if ($this->controllerClass !== null) {
@@ -80,17 +95,28 @@ abstract class Router {
             return substr($class, 1);
         }
         $moduleNamespace = null;
-        if (Config::get('hyperframework.web.enable_module') === true) {
-            $moduleNamespace = $this->getModuleNamespace();
-        }
         $namespace = Hyperframework\APP_ROOT_NAMESPACE;
         if ($namespace !== null) {
             $namespace .= '\\';
         }
+        $moduleNamespace = $this->getModuleNamespace();
         if ($moduleNamespace !== null) {
             $namespace .= $moduleNamespace . '\\';
         }
         return $namespace . 'Controllers\\' . $class;
+    }
+
+    public function getActionMethod() {
+        if ($this->actionMethod !== null) {
+            return $this->actionMethod;
+        }
+        if ($this->action === null) {
+            return 'doShowAction';
+        }
+        $tmp = str_replace(
+            ' ', '', ucwords(str_replace('_', ' ', $this->action))
+        );
+        return 'do' . $tmp . 'Action';
     }
 
     protected function isMatched() {
@@ -114,21 +140,26 @@ abstract class Router {
             throw new Exception;
         }
         if ($options !== null) {
-            if (isset($options['methods'])) {
-                if (is_string($options['methods'])) {
-                    $options['methods'] = [$options['methods']];
+            //preprocess for options
+        }
+        if (($spacePosition = strpos($pattern, ' ')) !== false) {
+            $methods = substr($pattern, 0, $spacePosition);
+            $pattern = substr($pattern, $spacePosition + 1);
+            if (strpos($methods, '|') !== false) {
+                $methods = explode('|', $methods);
+            } else {
+                $methods = [$methods];
+            }
+            $requestMethod = $_SERVER['REQUEST_METHOD'];
+            $isMethodAllowed = false;
+            foreach ($methods as $method) {
+                if (strtoupper($method) === $requestMethod) {
+                    $isMethodAllowed = true;
+                    break;
                 }
-                $requestMethod = $_SERVER['REQUEST_METHOD'];
-                $isMethodAllowed = false;
-                foreach ($options['methods'] as $method) {
-                    if (strtoupper($method) === $requestMethod) {
-                        $isMethodAllowed = true;
-                        break;
-                    }
-                }
-                if ($isMethodAllowed === false) {
-                    return false;
-                }
+            }
+            if ($isMethodAllowed === false) {
+                return false;
             }
         }
         $hasOptionalSegment = strpos($pattern, '(') !== false;
@@ -258,16 +289,6 @@ abstract class Router {
         return false;
     }
 
-    protected function matchGet($pattern, array $options = null) {
-        $options['methods'] = 'get';
-        return $this->match($pattern, $options);
-    }
-
-    protected function matchPost($pattern, array $options = null) {
-        $options['methods'] = 'post';
-        return $this->match($pattern, $options);
-    }
-
     //if ($this->matchResources('articles/:article_id/comments')) return;
     protected function matchResources($pattern, array $options = null) {
     }
@@ -287,7 +308,15 @@ abstract class Router {
         }
         $action = null;
         $isMatched = false;
-        $actions = ['now' => 'GET', 'show', 'create', 'update', 'delete', 'edit'];
+        //$actions = ['show' => ':id', 'index' => '/', 'create' =>'/', 'update' => ':id', 'delete', 'edit'];
+        $actions = [
+            'show' => 'GET /'; ['methods' => 'GET', 'pattern' => '/'],
+            'new' => 'GET|POST :id/new'; ['methods' => 'GET', 'pattern' => '/'],
+            'update' => ['methods' => ['PATCH', 'PUT'], 'pattern' => ':id'],
+            'create' => ['methods' => 'POST', 'pattern' => ':id'],
+            'delete' => ['methods' => 'GET', 'pattern' => '/'],,
+            'edit' => ['methods' => 'GET', 'pattern' => '/'],
+        ];
         $requestMethod = $_SERVER['REQUEST_METHOD'];
         if ($requestMethod === 'GET') {
              if (in_array('show', $actions)) {

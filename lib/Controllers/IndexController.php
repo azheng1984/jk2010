@@ -1,8 +1,8 @@
 <?php
-namespace Hyperframework\Blog;
+namespace Hyperframework\Blog\Controllers;
 
 class IndexController {
-    public function show() {
-        echo 'hello';
-    }
+//    public function show() {
+//        echo 'hello';
+//    }
 }
