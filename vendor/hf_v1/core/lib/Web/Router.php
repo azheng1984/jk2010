@@ -44,6 +44,8 @@ class Router {
     }
 
     protected function isMatched() {
+        hyperframework.web.view.types = ['html', 'mobile']
+        hyperframework.web.view.format_error.status_code = 404
     }
 
     protected function setMatchStatus($isMatched) {
