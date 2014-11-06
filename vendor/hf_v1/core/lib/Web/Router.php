@@ -5,7 +5,7 @@ use Hyperframework\Config;
 use Hyperframework\Web\NotFoundException;
 use Exception;
 
-class Router {
+abstract class Router {
     private $app;
     private $params = [];
     private $module;
@@ -14,7 +14,6 @@ class Router {
     private $controllerClass;
     private $action;
     private $actionMethod;
-    private $result;
     private $path;
     private $isMatched;
 
@@ -24,20 +23,15 @@ class Router {
         if ($this->isMatched() === false) {
             throw new NotFoundException;
         }
-        if (Config::get('hyperframework.web.enable_module') === true) {
-            if (isset($this->result['module']) === null) {
-                throw new Exception;
-            }
-        }
-        if (isset($this->result['controller']) === false
-            || isset($this->result['action']) === false
-        ) {
-            throw new Exception;
-        }
     }
 
     protected function parse() {
-//        return require ConfigFileLoader::loadPhp();
+        if ($this->match('/')) return;
+        $pattern = '/:controller/:action';
+        if (Config::get('hyperframework.web.enable_module') === true) {
+            $pattern = '(:module/)' . $pattern;
+        }
+        $this->match($pattern);
     }
 
     protected function getPath() {
@@ -48,24 +42,36 @@ class Router {
         return $this->path;
     }
 
-    protected function getParam($name) {
+    public function getParam($name) {
         return $this->params[$name];
     }
 
-    protected function getParams() {
+    public function getParams() {
         return $this->params;
     }
 
-    protected function setParam($name, $value) {
+    public function setParam($name, $value) {
         $this->params[$name] = $value;
     }
 
-    protected function removeParam($name) {
+    public function removeParam($name) {
         unset($this->params[$name]);
     }
 
-    protected function hasParam($name) {
+    public function hasParam($name) {
         return isset($this->params[$name]);
+    }
+
+    public function getControllerClass() {
+        if ($this->controllerClass !== null) {
+            return $this->controllerClass;
+        }
+        $controller = $this->getController();
+        if ($controller === null) {
+            return 'IndexController';
+        }
+        return str_replace(' ', '', ucwords(str_replace('_', ' ', $controller)))
+            . 'Controller';
     }
 
     protected function isMatched() {
@@ -227,7 +233,7 @@ class Router {
                     }
                 }
             }
-            $this->isMatched = true;
+            $this->setMatchStatus(true);
             return true;
         }
         return false;
@@ -262,7 +268,7 @@ class Router {
         }
         $action = null;
         $isMatched = false;
-        $actions = ['new', 'show', 'create', 'update', 'delete', 'edit'];
+        $actions = ['now' => 'GET', 'show', 'create', 'update', 'delete', 'edit'];
         $requestMethod = $_SERVER['REQUEST_METHOD'];
         if ($requestMethod === 'GET') {
              if (in_array('show', $actions)) {
