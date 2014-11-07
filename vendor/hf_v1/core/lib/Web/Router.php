@@ -240,12 +240,6 @@ abstract class Router {
                     return false;
                 }
             }
-            if (isset($options['extra'])) {
-                $tmp = $this->verifyExtraMatchConstrains($options['extra']);
-                if ($tmp === false) {
-                    return false;
-                }
-            }
             $pattern = '#^[a-zA-Z_][a-zA-Z0-9_]*$#';
             print_r($matches);
             if (isset($matches['module']) && isset($options[':module']) === false) {
@@ -260,6 +254,14 @@ abstract class Router {
             }
             if (isset($matches['action']) && isset($options[':action']) === false) {
                 if (preg_match($pattern, $matches['action']) === 0) {
+                    return false;
+                }
+            }
+            if (isset($options['extra'])) {
+                $tmp = $this->verifyExtraMatchConstrains(
+                    $options['extra'], $matches
+                );
+                if ($tmp === false) {
                     return false;
                 }
             }
@@ -283,16 +285,16 @@ abstract class Router {
         return false;
     }
 
-    private function verifyExtraMatchConstrains($extra) {
+    private function verifyExtraMatchConstrains($extra, array $matches = null) {
         if (is_array($extra)) {
             foreach ($extra as $function) {
-                if ($function() === false) {
+                if ($function($matches) === false) {
                     return false;
                 }
             }
             return true;
         } else {
-            return $function() !== false;
+            return $function($matches) !== false;
         }
     }
 
