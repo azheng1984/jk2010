@@ -16,6 +16,7 @@ abstract class Router {
     private $action;
     private $actionMethod;
     private $path;
+    private $scopeMatches;
     private $isMatched;
 
     public function __construct($app) {
@@ -23,6 +24,27 @@ abstract class Router {
         $this->parseReturnValue($this->parse());
         if ($this->isMatched() === false) {
             throw new NotFoundException;
+        }
+        if ($this->matchScope([
+            '/dsfsdf/:sdfd',
+            ':sdfd' => 'xx',
+            'extra' => function($matches) {
+            }
+        ], function() {
+            if ($this->match()) {
+            }
+        })) {
+        }
+
+        if ($this->matchScope([
+            '/dsfsdf/:sdfd',
+            ':sdfd' => 'xx',
+            'extra' => function($matches) {
+            }
+        ], function() {
+            if ($this->match()) {
+            }
+        })) {
         }
     }
 
@@ -320,7 +342,7 @@ abstract class Router {
             'delete' => ['DELETE', '/'],
             'edit' => ['GET', 'edit'],
             'reply' => ['GET', ':id/reply', ':id' => '[a-z]+', 'extra' => function() {}],
-            'xx' => ['GET', 'edit', 'methods' => 'GET']
+            'xx' => ['GET', 'edit', ['methods' => 'GET']]
         ];
         $requestMethod = $_SERVER['REQUEST_METHOD'];
         foreach ($defaultActions as $key => $value) {
