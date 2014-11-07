@@ -93,7 +93,6 @@ if ($this->matchResources('articles', [
     ], //rails collection closure
     'element_actions' => [], //['index', 'create', 'reply' => 'post'],
     'ignored_actions' => [''],
-    'mode' => 'collection', // 'mode' => 'element'
     'ignore_element_actions' => true,
     'extra_element_actions' => '', //rails member closure
     'formats' => [],
