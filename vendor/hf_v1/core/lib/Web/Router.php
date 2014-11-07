@@ -292,7 +292,7 @@ abstract class Router {
             }
             return true;
         } else {
-            return $function();
+            return $function() !== false;
         }
     }
 
@@ -318,10 +318,6 @@ abstract class Router {
             'delete' => ['DELETE', '/'],
             'edit' => ['GET', 'edit'],
             'reply' => ['GET', ':id/reply', ':id' => '[a-z]+', 'extra' => function() {}],
-            // method
-            // [array option]
-            // [string method(, array option)]
-            // [string method, string pattern(, array option)]
             'xx' => ['GET', 'edit', 'methods' => 'GET']
         ];
         $requestMethod = $_SERVER['REQUEST_METHOD'];
@@ -414,7 +410,7 @@ abstract class Router {
                     }
                 }
             }
-            if ($this->match($pattern, $matchOptions)) {
+            if ($this->match($pattern, $actionOptions)) {
                 $action = $key;
             }
             break;
