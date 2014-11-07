@@ -96,9 +96,6 @@ if ($this->matchResources('articles', [
     'ignore_element_actions' => true,
     'ignore_collection_actions' => true,
     'extra_element_actions' => '', //rails member closure
-    'excluded_actions' => [''],
-    'exclude_element_actions' => true,
-    'remove_collection_actions' => true,
     'formats' => [],
     'extra' => function() {
         //extra constrains
