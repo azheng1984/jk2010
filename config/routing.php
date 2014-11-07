@@ -91,11 +91,13 @@ if ($this->matchResources('articles', [
         'reply' => ['GET', ':id/reply(/:extra_param)', ['belongs_to_element' => true, 'extra' => function() {}, ':extra_param' => 'A[0-9]+']],
         'search' // same as 'search' => ['GET', 'search']
     ], //rails collection closure
-    'element_actions' => [], //['index', 'create', 'reply' => 'post'],
     'ignored_actions' => [''],
+
     'ignore_element_actions' => true,
     'ignore_collection_actions' => true,
+    'element_actions' => [], //['index', 'create', 'reply' => 'post'],
     'extra_element_actions' => '', //rails member closure
+
     'formats' => [],
     'extra' => function() {
         //extra constrains

@@ -175,8 +175,7 @@ abstract class Router {
             }
             if ($path === $pattern) {
                 if (isset($options['extra'])) {
-                    $function = $options['extra'];
-                    return $function() !== false;
+                    return $this->verifyExtraMatchConstrains($options['extra']);
                 }
                 return true;
             }
@@ -226,12 +225,6 @@ abstract class Router {
             throw new Exception;
         }
         if ($result === 1) {
-            if (isset($options['extra'])) {
-                $function = $options['extra'];
-                if ($function() === false) {
-                    return false;
-                }
-            }
             if ($hasFormat) {
                 if (isset($matches['format']) === false) {
                     if (isset($options['formats']['default'])) {
@@ -244,6 +237,12 @@ abstract class Router {
                 } elseif (
                     in_array($matches['format'], $options['formats']) === false
                 ) {
+                    return false;
+                }
+            }
+            if (isset($options['extra'])) {
+                $tmp = $this->verifyExtraMatchConstrains($options['extra']);
+                if ($tmp === false) {
                     return false;
                 }
             }
@@ -284,15 +283,28 @@ abstract class Router {
         return false;
     }
 
+    private function verifyExtraMatchConstrains($extra) {
+        if (is_array($extra)) {
+            foreach ($extra as $function) {
+                if ($function() === false) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return $function();
+        }
+    }
+
     protected function matchResources($pattern, array $options = null) {
         $defaultActions = [
             'index' => ['GET'],
-            'show' => ['GET', ':id', ['belongs_to_element' => true]],
+            'show' => ['GET', ':id', 'belongs_to_element' => true],
             'new' => ['GET', 'new'],
-            'edit' => ['GET', ':id/edit', ['belongs_to_element' => true]],
+            'edit' => ['GET', ':id/edit', 'belongs_to_element' => true],
             'create' => ['POST'],
-            'update' => ['PATCH | PUT', ':id', ['belongs_to_element' => true]],
-            'delete' => ['DELETE', ':id', ['belongs_to_element' => true]],
+            'update' => ['PATCH | PUT', ':id', 'belongs_to_element' => true],
+            'delete' => ['DELETE', ':id', 'belongs_to_element' => true],
         ];
     }
 
@@ -305,12 +317,30 @@ abstract class Router {
             'create' => 'POST',
             'delete' => 'DELETE',
             'edit' => ['GET', 'edit'],
+            'reply' => ['GET', 'reply', 'extra' => function() {}],
+            // method
+            // [array option]
+            // [string method(, array option)]
+            // [string method, string pattern(, array option)]
+            'xx' => ['GET', 'edit', 'methods' => 'GET']
         ];
         $requestMethod = $_SERVER['REQUEST_METHOD'];
         foreach ($defaultActions as $key => $value) {
-            $isMethodMatched = false;
-            if (is_array($value) === false) {
+            if (is_int($key)) {
+                if (isset($defaultActions[$value])) {
+                    $key = $value;
+                    $value = $defaultActions[$value];
+                } else {
+                    $key = $value;
+                    $value = ['GET', $value];
+                }
+            } elseif (is_array($value) === false) {
                 $value = [$value];
+            }
+            if (isset($value[0]) === false) {
+                throw new Exception;
+            }
+            if (is_array($value[0])) {
             }
             if (strpos($value[0], '|') !== false) {
                 $tmps = explode('|', $value[0]);
@@ -321,6 +351,7 @@ abstract class Router {
             } else {
                 $value[0] = [strtoupper($value[0])];
             }
+            $isMethodMatched = false;
             foreach ($value[0] as $method) {
                 if ($method === $requestMethod) {
                     $isMethodMatched = true;
@@ -330,27 +361,54 @@ abstract class Router {
             if ($isMethodMatched === false) {
                 continue;
             }
+            $matchOptions = [];
             if (isset($value[1]) !== false) {
-                if ($value[1] === '' || $value[1] === '/') {
-                    throw new Exception;
-                }
-                $suffix = '/' . $value[1];
-                if (substr($this->getPath(), -strlen($suffix)) !== false) {
-                    $pattern .= $suffix;
+                if (is_array($value[1])) {
+                    $matchOptions = $value[1];
                 } else {
-                    continue;
+                    if ($value[1] === '') {
+                        throw new Exception;
+                    }
+                    $suffix
+                    if ($value[1] !== '/') {
+                        $suffix = '/' . $value[1];
+                        if (substr($this->getPath(), -strlen($suffix)) !== false) {
+                            $pattern .= $suffix;
+                        } else {
+                            continue;
+                        }
+                    }
+                    if(isset($value[2])) {
+                        if (is_array($value[2]) === false) {
+                            throw new Exception;
+                        }
+                        $matchOptions = $value[2];
+                    }
                 }
             }
-            $matchOptions = [];
             if ($options !== null) {
-                if (isset($options['id'])) {
+                if (isset($options['id'])
+                    && isset($matchOptions[':id']) === false
+                ) {
                     $matchOptions[':id'] = $options['id'];
                 }
-                if (isset($options['formats'])) {
+                if (isset($options['formats'])
+                    && isset($matchOptions['formats']) === false
+                ) {
                     $matchOptions['formats'] = $options['formats'];
                 }
                 if (isset($options['extra'])) {
-                    $matchOptions['extra'] = $options['extra'];
+                    if (isset($matchOptions['extra'])) {
+                        if (is_array($matchOptions['extra'])) {
+                            $matchOptions[] = $options['extra'];
+                        } else {
+                            $matchOptions['extra'] = [
+                                $matchOptions['extra'], $options['extra']
+                            ];
+                        }
+                    } else {
+                        $matchOptions['extra'] = $options['extra'];
+                    }
                 }
             }
             if ($this->match($pattern, $matchOptions)) {
