@@ -127,8 +127,8 @@ abstract class Router {
         $this->isMatched = $isMatched;
     }
 
-    protected function redirect() {
-        $this->app->redirect();
+    protected function redirect($url, $statusCode = 302) {
+        $this->app->redirect($url, $statusCode);
     }
 
     protected function getApp() {
@@ -365,7 +365,6 @@ abstract class Router {
             $this->setController($controller);
             $this->setAction($action);
             echo '[resource action ' . $controller .'/' . $action . ' matched!]';
-            $this->setMatchStatus(true);
             return true;
         }
         return false;
