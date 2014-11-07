@@ -284,7 +284,6 @@ abstract class Router {
         return false;
     }
 
-    //if ($this->matchResources('articles/:article_id/comments')) return;
     protected function matchResources($pattern, array $options = null) {
         $defaultActions = [
             'index' => 'GET',
@@ -297,7 +296,6 @@ abstract class Router {
         ];
     }
 
-    //if ($this->matchResource('account')) return;
     protected function matchResource($pattern, array $options = null) {
         $matchOptions = null;
         if ($options !== null) {
@@ -312,7 +310,6 @@ abstract class Router {
         }
         $action = null;
         $isMatched = false;
-        //$actions = ['show' => ':id', 'index' => '/', 'create' =>'/', 'update' => ':id', 'delete', 'edit'];
         $defaultActions = [
             'show' => 'GET',
             'new' => ['GET', 'new'],
@@ -322,43 +319,45 @@ abstract class Router {
             'edit' => ['GET', 'edit'],
         ];
         $requestMethod = $_SERVER['REQUEST_METHOD'];
-        if ($requestMethod === 'GET') {
-             if (in_array('show', $actions)) {
-                 if ($this->matchGet($pattern, $matchOptions)) {
-                     $action = 'show';
-                     $isMatched = true;
-                 }
-             } elseif (in_array('new', $actions)) {
-                if (substr($this->getPath(), -3) === 'new') {
-                    if ($this->matchGet($pattern . '/new', $matchOptions)) {
-                        $action = 'new';
-                        $isMatched = true;
-                    }
+        foreach ($defaultActions as $key => $value) {
+            $isMethodMatched = false;
+            if (is_array($value) === false) {
+                $value = [$value];
+            }
+            if (strpos($value[0], '|') !== false) {
+                $tmps = explode('|', $value[0]);
+                $value[0] = [];
+                foreach ($tmps as $tmp) {
+                    $value[0] = strtoupper(trim($tmp));
                 }
-            } elseif (in_array('edit', $actions)) {
-                if (substr($this->getPath(), -4) === 'edit') {
-                    if ($this->matchGet($pattern . '/edit', $matchOptions)) {
-                        $action = 'edit';
-                        $isMatched = true;
-                    }
+            } else {
+                $value[0] = [strtoupper($value[0])];
+            }
+            foreach ($value[0] as $method) {
+                if ($method === $requestMethod) {
+                    $isMethodMatched = true;
+                    break;
                 }
             }
-        } elseif ($requestMethod === 'PUT' || $requestMethod === 'PATCH') {
-            $matchOptions['methods'] = ['put' , 'patch'];
-            if ($this->match($pattern, $matchOptions)) {
-                $action = 'update';
-                $isMatched = true;
+            if ($isMethodMatched === false) {
+                continue;
             }
-        } elseif ($requestMethod === 'POST') {
-            if ($this->matchPost($pattern, $matchOptions)) {
-                $action = 'create';
-                $isMatched = true;
+            if (isset($value[1]) !== false) {
+                if ($value[1] === '' || $value[1] === '/') {
+                    throw new Exception;
+                }
+                $suffix = '/' . $value[1];
+                if (substr($this->getPath(), -strlen($suffix)) !== false) {
+                    $pattern .= $suffix;
+                } else {
+                    continue;
+                }
             }
-        } elseif ($requestMethod === 'DELETE') {
-            if ($this->matchDelete($pattern, $matchOptions)) {
-                $action = 'delete';
-                $isMatched = true;
+            $isMatched = $this->match($pattern, $matchOptions);
+            if ($isMatched) {
+                $action = $key;
             }
+            break;
         }
         if ($isMatched) {
             $controller = $pattern;
