@@ -369,7 +369,6 @@ abstract class Router {
                     if ($value[1] === '') {
                         throw new Exception;
                     }
-                    $suffix
                     if ($value[1] !== '/') {
                         $suffix = '/' . $value[1];
                         if (substr($this->getPath(), -strlen($suffix)) !== false) {
@@ -388,26 +387,30 @@ abstract class Router {
             }
             if ($options !== null) {
                 if (isset($options['id'])
-                    && isset($matchOptions[':id']) === false
+                    && isset($actionOptions[':id']) === false
                 ) {
-                    $matchOptions[':id'] = $options['id'];
+                    $actionOptions[':id'] = $options['id'];
                 }
                 if (isset($options['formats'])
-                    && isset($matchOptions['formats']) === false
+                    && isset($actionOptions['formats']) === false
                 ) {
-                    $matchOptions['formats'] = $options['formats'];
+                    $actionOptions['formats'] = $options['formats'];
                 }
                 if (isset($options['extra'])) {
-                    if (isset($matchOptions['extra'])) {
-                        if (is_array($matchOptions['extra'])) {
-                            $matchOptions[] = $options['extra'];
+                    if (isset($actionOptions['extra'])) {
+                        $extra = $options['extra'];
+                        if (is_array($extra) === false) {
+                            $extra = [$extra];
+                        }
+                        if (is_array($actionOptions['extra'])) {
+                            $extra = array_merge(
+                                $extra, $actionOptions['extra']
+                            );
                         } else {
-                            $matchOptions['extra'] = [
-                                $matchOptions['extra'], $options['extra']
-                            ];
+                            $extra[] = $actionOptions['extra'];
                         }
                     } else {
-                        $matchOptions['extra'] = $options['extra'];
+                        $actionOptions['extra'] = $options['extra'];
                     }
                 }
             }
