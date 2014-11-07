@@ -298,11 +298,11 @@ abstract class Router {
 
     protected function matchResources($pattern, array $options = null) {
         $defaultActions = [
-            'index' => ['GET'],
+            'index' => ['GET', '/'],
             'show' => ['GET', ':id', 'belongs_to_element' => true],
             'new' => ['GET', 'new'],
             'edit' => ['GET', ':id/edit', 'belongs_to_element' => true],
-            'create' => ['POST'],
+            'create' => ['POST', '/'],
             'update' => ['PATCH | PUT', ':id', 'belongs_to_element' => true],
             'delete' => ['DELETE', ':id', 'belongs_to_element' => true],
         ];
@@ -311,11 +311,11 @@ abstract class Router {
     protected function matchResource($pattern, array $options = null) {
         $action = null;
         $defaultActions = [
-            'show' => 'GET',
+            'show' => ['GET', '/'],
             'new' => ['GET', 'new'],
-            'update' => 'PATCH | PUT',
-            'create' => 'POST',
-            'delete' => 'DELETE',
+            'update' => ['PATCH | PUT', '/'],
+            'create' => ['POST', '/'],
+            'delete' => ['DELETE', '/'],
             'edit' => ['GET', 'edit'],
             'reply' => ['GET', 'reply', 'extra' => function() {}],
             // method
