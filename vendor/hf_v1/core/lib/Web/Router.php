@@ -309,7 +309,6 @@ abstract class Router {
             }
         }
         $action = null;
-        $isMatched = false;
         $defaultActions = [
             'show' => 'GET',
             'new' => ['GET', 'new'],
@@ -353,13 +352,12 @@ abstract class Router {
                     continue;
                 }
             }
-            $isMatched = $this->match($pattern, $matchOptions);
-            if ($isMatched) {
+            if ($this->match($pattern, $matchOptions)) {
                 $action = $key;
             }
             break;
         }
-        if ($isMatched) {
+        if ($this->isMatched()) {
             $controller = $pattern;
             if (($slashPosition = strrpos($pattern, '/')) !== false) {
                 $controller = substr($pattern, $slashPosition + 1);
