@@ -310,13 +310,13 @@ abstract class Router {
             'new' => ['GET', 'new'],
             'edit' => ['GET', ':id/edit'],
             'create' => ['POST'],
-            'update' => ['PATCH|PUT', ':id'],
+            'update' => ['PATCH PUT', ':id'],
             'delete' => ['DELETE', ':id'],
         ];
         $actions = [
             'show' => 'GET',
             'new' => ['GET', 'new'],
-            'update' => 'PATCH|PUT',
+            'update' => 'PATCH PUT',
             'create' => 'POST',
             'delete' => 'DELETE',
             'edit' => ['GET', 'edit'],
