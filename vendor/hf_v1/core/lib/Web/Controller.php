@@ -1,11 +1,14 @@
 <?php
 namespace Hyperframework\Web;
 
-class Controller {
+class Controller implements ArrayAccess {
     private $app;
 
     public function __construct($app) {
-       $this->app = $app;
+        $this->app = $app;
+        $this['article'] = Article::getById($this->getRouteParam['id']);
+        if ($this['article'] !== null) {
+        }
     }
 
     protected static function getRouteParam($name) {

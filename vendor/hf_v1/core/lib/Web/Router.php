@@ -286,13 +286,22 @@ abstract class Router {
 
     //if ($this->matchResources('articles/:article_id/comments')) return;
     protected function matchResources($pattern, array $options = null) {
+        $defaultActions = [
+            'index' => 'GET',
+            'show' => ['GET', ':id'],
+            'new' => ['GET', 'new'],
+            'edit' => ['GET', ':id/edit'],
+            'create' => ['POST'],
+            'update' => ['PATCH | PUT', ':id'],
+            'delete' => ['DELETE', ':id'],
+        ];
     }
 
     //if ($this->matchResource('account')) return;
     protected function matchResource($pattern, array $options = null) {
         $matchOptions = null;
         if ($options !== null) {
-            if (isset($options['action'])) {
+            if (isset($options['actions'])) {
             }
             if (isset($options['formats'])) {
                 $matchOptions['formats'] = $options['formats'];
@@ -304,16 +313,7 @@ abstract class Router {
         $action = null;
         $isMatched = false;
         //$actions = ['show' => ':id', 'index' => '/', 'create' =>'/', 'update' => ':id', 'delete', 'edit'];
-        $actions = [
-            'index' => 'GET',
-            'show' => ['GET', ':id'],
-            'new' => ['GET', 'new'],
-            'edit' => ['GET', ':id/edit'],
-            'create' => ['POST'],
-            'update' => ['PATCH | PUT', ':id'],
-            'delete' => ['DELETE', ':id'],
-        ];
-        $actions = [
+        $defaultActions = [
             'show' => 'GET',
             'new' => ['GET', 'new'],
             'update' => 'PATCH | PUT',
