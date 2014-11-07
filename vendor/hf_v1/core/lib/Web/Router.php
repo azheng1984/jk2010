@@ -317,7 +317,7 @@ abstract class Router {
             'create' => ['POST', '/'],
             'delete' => ['DELETE', '/'],
             'edit' => ['GET', 'edit'],
-            'reply' => ['GET', 'reply', 'extra' => function() {}],
+            'reply' => ['GET', ':id/reply', ':id' => '[a-z]+', 'extra' => function() {}],
             // method
             // [array option]
             // [string method(, array option)]
