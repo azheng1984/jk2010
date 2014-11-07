@@ -1,10 +1,10 @@
 <?php
 namespace Hyperframework\Web;
 
+use Exception;
 use Hyperframework;
 use Hyperframework\Config;
 use Hyperframework\Web\NotFoundException;
-use Exception;
 
 abstract class Router {
     private $app;

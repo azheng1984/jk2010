@@ -82,24 +82,28 @@ if ($this->match('get', 'search/*query', [//get is default method
 //  /articles/:id => articles#show
 
 //v5
+//$this->setDefaultActions(); //postpone
 if ($this->matchResources('articles', [
-    'actions' => ['delete', 'show', 'edit', 'update' => 'GET'],
+//  'default_actions' => [''],
+    'actions' => ['delete', 'show', 'edit', 'update' => 'GET'], //rails only
 //  'extra_collection_actions' => // ['index', 'create', 'reply' => 'post', 'magic'],
     'extra_actions' => [
-        'reply' => ['GET', ':id/reply(/:extra_param)'],
+        'reply' => ['GET', ':id/reply(/:extra_param)', ['belongs_to_element' => true, 'extra' => function() {}, ':extra_param' => 'A[0-9]+']],
         'search' // same as 'search' => ['GET', 'search']
     ], //rails collection closure
+    'element_actions' => [], //['index', 'create', 'reply' => 'post'],
+    'ignored_actions' => [''],
+    'mode' => 'collection', // 'mode' => 'element'
+    'ignore_element_actions' => true,
     'extra_element_actions' => '', //rails member closure
-    'ignored_actions' => '',
-    'element_actions' => false, //['index', 'create', 'reply' => 'post'],
-    'collection_actions' => false, // ['index', 'create', 'reply' => 'post', 'magic'], 'id' => '[0-9]+', //default
     'formats' => [],
     'extra' => function() {
         //extra constrains
     },
 ])) {
-    return false; // equals to $this->fail();
+    return false; //equals to $this->fail();
 }
+//$this->resumeDefaultActions(); //resume
 
 if ($this->matchResources('articles', [])) {
     return;
