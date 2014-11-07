@@ -286,13 +286,13 @@ abstract class Router {
 
     protected function matchResources($pattern, array $options = null) {
         $defaultActions = [
-            'index' => 'GET',
-            'show' => ['GET', ':id'],
+            'index' => ['GET'],
+            'show' => ['GET', ':id', ['belongs_to_element' => true]],
             'new' => ['GET', 'new'],
-            'edit' => ['GET', ':id/edit'],
+            'edit' => ['GET', ':id/edit', ['belongs_to_element' => true]],
             'create' => ['POST'],
-            'update' => ['PATCH | PUT', ':id'],
-            'delete' => ['DELETE', ':id'],
+            'update' => ['PATCH | PUT', ':id', ['belongs_to_element' => true]],
+            'delete' => ['DELETE', ':id', ['belongs_to_element' => true]],
         ];
     }
 
