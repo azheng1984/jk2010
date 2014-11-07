@@ -140,26 +140,21 @@ abstract class Router {
             throw new Exception;
         }
         if ($options !== null) {
-            //preprocess for options
-        }
-        if (($spacePosition = strpos($pattern, ' ')) !== false) {
-            $methods = substr($pattern, 0, $spacePosition);
-            $pattern = substr($pattern, $spacePosition + 1);
-            if (strpos($methods, '|') !== false) {
-                $methods = explode('|', $methods);
-            } else {
-                $methods = [$methods];
-            }
-            $requestMethod = $_SERVER['REQUEST_METHOD'];
-            $isMethodAllowed = false;
-            foreach ($methods as $method) {
-                if (strtoupper($method) === $requestMethod) {
-                    $isMethodAllowed = true;
-                    break;
+            if (isset($options['methods'])) {
+                if (is_string($options['methods'])) {
+                    $options['methods'] = [$options['methods']];
                 }
-            }
-            if ($isMethodAllowed === false) {
-                return false;
+                $requestMethod = $_SERVER['REQUEST_METHOD'];
+                $isMethodAllowed = false;
+                foreach ($options['methods'] as $method) {
+                    if (strtoupper($method) === $requestMethod) {
+                        $isMethodAllowed = true;
+                        break;
+                    }
+                }
+                if ($isMethodAllowed === false) {
+                    return false;
+                }
             }
         }
         $hasOptionalSegment = strpos($pattern, '(') !== false;
@@ -310,12 +305,21 @@ abstract class Router {
         $isMatched = false;
         //$actions = ['show' => ':id', 'index' => '/', 'create' =>'/', 'update' => ':id', 'delete', 'edit'];
         $actions = [
-            'show' => 'GET /'; ['methods' => 'GET', 'pattern' => '/'],
-            'new' => 'GET|POST :id/new'; ['methods' => 'GET', 'pattern' => '/'],
-            'update' => ['methods' => ['PATCH', 'PUT'], 'pattern' => ':id'],
-            'create' => ['methods' => 'POST', 'pattern' => ':id'],
-            'delete' => ['methods' => 'GET', 'pattern' => '/'],,
-            'edit' => ['methods' => 'GET', 'pattern' => '/'],
+            'index' => 'GET',
+            'show' => ['GET', ':id'],
+            'new' => ['GET', 'new'],
+            'edit' => ['GET', ':id/edit'],
+            'create' => ['POST'],
+            'update' => ['PATCH|PUT', ':id'],
+            'delete' => ['DELETE', ':id'],
+        ];
+        $actions = [
+            'show' => 'GET',
+            'new' => ['GET', 'new'],
+            'update' => 'PATCH|PUT',
+            'create' => 'POST',
+            'delete' => 'DELETE',
+            'edit' => ['GET', 'edit'],
         ];
         $requestMethod = $_SERVER['REQUEST_METHOD'];
         if ($requestMethod === 'GET') {
@@ -393,6 +397,16 @@ abstract class Router {
             }
         }
         return false;
+    }
+
+    protected function matchGet($pattern, array $options = null) {
+        $options['methods'] = 'GET';
+        return $this->match($pattern, $options);
+    }
+
+    protected function matchPost($pattern, array $options = null) {
+        $options['methods'] = 'POST';
+        return $this->match($pattern, $options);
     }
 
     private function parseReturnValue($value) {

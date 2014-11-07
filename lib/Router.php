@@ -15,10 +15,10 @@ class Router extends Base {
         });
         $this->setMatchStatus(false);
         $this->match('(:module(/:controller(/:action)))', [':id' => '[0-9]+']);
-        $this->match('GET (:module(/:controller(/:action)))', [':id' => '[0-9]+']);
+        $this->matchGet('(:module(/:controller(/:action)))', [':id' => '[0-9]+']);
         $this->setMatchStatus(false);
         $this->match('article/:id(/*comments)', [':id' => '[0-9]+', 'formats' => 'jpg']);
-        $this->match('PUT|PATCH article/:id(/*comments)', [':id' => '[0-9]+', 'formats' => 'jpg']);
+        $this->matchPatch('article/:id(/*comments)', [':id' => '[0-9]+', 'formats' => 'jpg']);
         $this->setMatchStatus(false);
         $this->match('article/:id(/*comments)', [':id' => '[0-9]+']);
 exit;
