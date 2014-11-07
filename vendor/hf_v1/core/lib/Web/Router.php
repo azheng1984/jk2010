@@ -297,17 +297,6 @@ abstract class Router {
     }
 
     protected function matchResource($pattern, array $options = null) {
-        $matchOptions = null;
-        if ($options !== null) {
-            if (isset($options['actions'])) {
-            }
-            if (isset($options['formats'])) {
-                $matchOptions['formats'] = $options['formats'];
-            }
-            if (isset($options['extra'])) {
-                $matchOptions['extra'] = $options['extra'];
-            }
-        }
         $action = null;
         $defaultActions = [
             'show' => 'GET',
@@ -350,6 +339,18 @@ abstract class Router {
                     $pattern .= $suffix;
                 } else {
                     continue;
+                }
+            }
+            $matchOptions = [];
+            if ($options !== null) {
+                if (isset($options['id'])) {
+                    $matchOptions[':id'] = $options['id'];
+                }
+                if (isset($options['formats'])) {
+                    $matchOptions['formats'] = $options['formats'];
+                }
+                if (isset($options['extra'])) {
+                    $matchOptions['extra'] = $options['extra'];
                 }
             }
             if ($this->match($pattern, $matchOptions)) {

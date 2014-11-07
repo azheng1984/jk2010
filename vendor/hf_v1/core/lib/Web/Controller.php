@@ -6,9 +6,6 @@ class Controller implements ArrayAccess {
 
     public function __construct($app) {
         $this->app = $app;
-        $this['article'] = Article::getById($this->getRouteParam['id']);
-        if ($this['article'] !== null) {
-        }
     }
 
     protected static function getRouteParam($name) {

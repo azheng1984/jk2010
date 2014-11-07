@@ -30,9 +30,9 @@ namespace Hyperframework\Blog; //$x = array();
 ////if (preg_match('#^(?<name>[0-9a-z]+)(?<name2>(?<name4>(?<hello>[0-9A-Z]))+)#', 'xxxxxxxxxxxxdddd', $matches)) {
 ////    //print_r($matches);
 ////}
-//if (preg_match('#^([0-9a-z]+)((([0-9A-Z]))+)#', 'xxxxxxxxxxxxdddd', $matches)) {
-//    //print_r($matches);
-//}
+////if (preg_match('#^([0-9a-z]+)((([0-9A-Z]))+)#', 'xxxxxxxxxxxxdddd', $matches)) {
+////    //print_r($matches);
+////}
 ////if (preg_match('#^([0-9a-z]+)#', 'xxx', $matches)) {
 ////    //print_r($matches);
 ////}
@@ -45,6 +45,8 @@ namespace Hyperframework\Blog; //$x = array();
 //    //preg_match('/^([a-zA-Z0-9-|]|( \| ))+$/', $name);
 //    //exit;
 //    //preg_match('/^([a-zA-Z0-9-|]|( \| ))+$/', $name);
+//    //isset($x[0]);
+////    array_key_exists(0, $x);
 //}
 //echo (microtime(true) - $s) * 1000;
 //exit;

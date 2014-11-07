@@ -1,6 +1,4 @@
 <?php
-//v3
-//module 是否已经是约定俗成？
 $this->defineSegment('posts' => [
     'type' => 'collection',
     'children' => 'comments'
@@ -38,8 +36,6 @@ if ($this->match('(:country/):module/:controller/:action/:id(/prefix:year:month{
     $this->setPath('search');
     return;
 }
-//单复数分离，单数接收字符串，复数只能接收数组 cancel，优先考虑使用复数（一致）
-//表示集合
 if ($this->match('get', 'search/*query', [//get is default method
     ':query' => ['ctype' => 'alnum'], //'\d+' // default regex, cancel 
     ':id' => 'prod-[0-9]{10}', //可以通过在匹配后处理来提高效率，因为不需要执行后期的匹配操作
@@ -69,8 +65,8 @@ if ($this->match('get', 'search/*query', [//get is default method
 
     return;
     return 'search';
-    return 'main/search';
-    return 'main/search#show';
+    return 'search/show';
+    return 'main/search/show';
 
     return false; //throw new not_found exception
 
@@ -87,17 +83,18 @@ if ($this->match('get', 'search/*query', [//get is default method
 
 //v5
 if ($this->matchResources('articles', [
-    'actions' => ['delete', 'show', 'edit', 'update' => 'get'], //default
-    'collection_actions' => ['index', 'create', 'reply' => 'post', 'magic' => 'all'], //default
-    'extra_collection_actions' => '', //rails collection closure
-    'element_actions' => ['index', 'create', 'reply' => 'post'], //default
-    'extra_element_actions' => '', //rails member cloure
-    'excluded_actions' => '', //rails except, confilct with actions only
-    'id' => '[0-9]+', //default
-//  'extra_actions' => '', //rails member cloure
+    'actions' => ['delete', 'show', 'edit', 'update' => 'GET'],
+//  'extra_collection_actions' => // ['index', 'create', 'reply' => 'post', 'magic'],
+    'extra_actions' => [
+        'reply' => ['GET', ':id/reply(/:extra_param)'],
+        'search' // same as 'search' => ['GET', 'search']
+    ], //rails collection closure
+    'extra_element_actions' => '', //rails member closure
+    'ignored_actions' => '',
+    'element_actions' => false, //['index', 'create', 'reply' => 'post'],
+    'collection_actions' => false, // ['index', 'create', 'reply' => 'post', 'magic'], 'id' => '[0-9]+', //default
     'formats' => [],
-    'extra' => function($ctx) {
-        $this->fail(); //throw not found exception, fast fail by default, better than return false;
+    'extra' => function() {
         //extra constrains
     },
 ])) {
