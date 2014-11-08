@@ -279,43 +279,112 @@ abstract class Router {
     }
 
     protected function matchResources($pattern, array $options = null) {
-        $defaultActions = [
-            'index' => ['GET', '/'],
-            'show' => ['GET', ':id', 'belongs_to_element' => true],
-            'new' => ['GET', 'new'],
-            'edit' => ['GET', ':id/edit', 'belongs_to_element' => true],
-            'create' => ['POST', '/'],
-            'update' => ['PATCH | PUT', ':id', 'belongs_to_element' => true],
-            'delete' => ['DELETE', ':id', 'belongs_to_element' => true],
-        ];
+        $hasOptions = true;
+        if ($options === null) {
+            $hasOptions = false;
+            $options = [];
+        }
+        if ($hasOptions === false) {
+            return $this->matchResource($pattern, $options);
+        }
+        $hasDefaultActions = isset($options['actions']) === false;
+        if ($hasDefaultActions
+            && isset($options['default_actions']) === false
+        ) {
+            $options['default_actions'] = [
+                'index' => ['GET', '/'],
+                'show' => ['GET', ':id', 'belongs_to_element' => true],
+                'new' => ['GET', 'new'],
+                'edit' => ['GET', ':id/edit', 'belongs_to_element' => true],
+                'create' => ['POST', '/'],
+                'update' => ['PATCH | PUT', ':id', 'belongs_to_element' => true],
+                'delete' => ['DELETE', ':id', 'belongs_to_element' => true],
+            ];
+        }
+        if ($hasDefaultActions
+            && isset($options['ignore_collection_actions'])
+        ) {
+            foreach ($options['default_actions'] as $key => $value) {
+                if (isset($value['belongs_to_element']) === false
+                    || $value['belongs_to_element'] !== true
+                ) {
+                    unset($options['default_actions'][$key]);
+                }
+            }
+        }
+        if (isset($options['element_actions'])) {
+            $options['ignore_element_actions'] = true;
+            if (isset($options['extra_element_actions'])) {
+                $options['extra_element_actions'] = array_merge(
+                    $options['element_actions'],
+                    $options['extra_element_actions']
+                );
+            } else {
+                $options['extra_element_actions'] = $options['element_actions'];
+            }
+        }
+        if ($hasDefaultActions && isset($options['ignore_element_actions'])) {
+            foreach ($options['default_actions'] as $key => $value) {
+                if (isset($value['belongs_to_element'])
+                    && $value['belongs_to_element'] === true
+                ) {
+                    unset($options['default_actions'][$key]);
+                }
+            }
+        }
+        if (isset($options['extra_element_actions'])) {
+            if (isset($options['extra_actions']) === false) {
+                $options['extra_actions'] = [];
+            }
+            foreach ($options['extra_element_actions'] as $key => $value) {
+                if (is_int($key)) {
+                    $key = $value;
+                    $value = ':id/' . $value;
+                } else {
+                    if (is_string($value)) {
+                        $value = ':id/' . $value;
+                    } else {
+                        if (isset($value[1])) {
+                            $value[1] = ':id/' . $value[1];
+                        } else {
+                            $value[1] = ':id/' . $key;
+                        }
+                    }
+                }
+                $options['extra_actions'][$key] = $value;
+            }
+        }
+        return $this->matchResource($pattern, $options);
     }
 
     protected function matchResource($pattern, array $options = null) {
-        $defaultActions = [
-            'show' => ['GET', '/'],
-            'new' => ['GET', 'new'],
-            'update' => ['PATCH | PUT', '/'],
-            'create' => ['POST', '/'],
-            'delete' => ['DELETE', '/'],
-            'edit' => ['GET', 'edit'],
-        //    'reply' => ['GET', ':id/reply', ':id' => '[a-z]+', 'extra' => function() {}],
-        ];
-        if (isset($options['ignored_actions'])) {
-        }
-        if (isset($options['ignore_collection_actions'])) {
-        }
-        if (isset($options['ignore_element_actions'])) {
-        }
-        if (isset($options['actions'])) {
-        }
-        if (isset($options['element_actions'])) {
+        $actions = null;
+        if (isset($options['action'])) {
+            $action = $options['action'];
+        } else {
+            if (isset($options['default_actions'])) {
+                $actions = $options['default_actions'];
+            } else {
+                $actions = [
+                    'show' => ['GET', '/'],
+                    'new' => ['GET', 'new'],
+                    'update' => ['PATCH | PUT', '/'],
+                    'create' => ['POST', '/'],
+                    'delete' => ['DELETE', '/'],
+                    'edit' => ['GET', 'edit'],
+                ];
+            }
+            if (isset($options['ignored_actions'])) {
+                foreach ($options['ignored_actions'] as $action) {
+                    unset($actions[$action]);
+                }
+            }
         }
         if (isset($options['extra_actions'])) {
-        }
-        if (isset($options['extra_element_actions'])) {
+            $actions = array_merge($actions, $options['extra_actions']);
         }
         $requestMethod = $_SERVER['REQUEST_METHOD'];
-        foreach ($defaultActions as $key => $value) {
+        foreach ($actions as $key => $value) {
             if (is_int($key)) {
                 if (isset($defaultActions[$value])) {
                     $key = $value;
@@ -420,6 +489,7 @@ abstract class Router {
             return true;
         }
         return false;
+
     }
 
     protected function matchScope($prefix, $function) {
