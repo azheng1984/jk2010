@@ -16,7 +16,6 @@ abstract class Router {
     private $action;
     private $actionMethod;
     private $path;
-    private $scopeMatches;
     private $isMatched;
 
     public function __construct($app) {
@@ -24,27 +23,6 @@ abstract class Router {
         $this->parseReturnValue($this->parse());
         if ($this->isMatched() === false) {
             throw new NotFoundException;
-        }
-        if ($this->matchScope([
-            '/dsfsdf/:sdfd',
-            ':sdfd' => 'xx',
-            'extra' => function($matches) {
-            }
-        ], function() {
-            if ($this->match()) {
-            }
-        })) {
-        }
-
-        if ($this->matchScope([
-            '/dsfsdf/:sdfd',
-            ':sdfd' => 'xx',
-            'extra' => function($matches) {
-            }
-        ], function() {
-            if ($this->match()) {
-            }
-        })) {
         }
     }
 
@@ -151,27 +129,7 @@ abstract class Router {
 
     protected function redirect($url, $statusCode = 302) {
         $this->app->redirect($url, $statusCode);
-    }
-
-    protected function getApp() {
-        return $this->app;
-    }
-
-    protected function match($pattern, array $options = null) {
-        if ($this->isMatched()) {
-            throw new Exception;
-        }
-        if ($options !== null) {
-            if (isset($options['methods'])) {
-                if (is_string($options['methods'])) {
-                    $options['methods'] = [$options['methods']];
-                }
-                $requestMethod = $_SERVER['REQUEST_METHOD'];
-                $isMethodAllowed = false;
-                foreach ($options['methods'] as $method) {
-                    if (strtoupper($method) === $requestMethod) {
-                        $isMethodAllowed = true;
-                        break;
+              break;
                     }
                 }
                 if ($isMethodAllowed === false) {
@@ -333,7 +291,6 @@ abstract class Router {
     }
 
     protected function matchResource($pattern, array $options = null) {
-        $action = null;
         $defaultActions = [
             'show' => ['GET', '/'],
             'new' => ['GET', 'new'],
@@ -341,9 +298,22 @@ abstract class Router {
             'create' => ['POST', '/'],
             'delete' => ['DELETE', '/'],
             'edit' => ['GET', 'edit'],
-            'reply' => ['GET', ':id/reply', ':id' => '[a-z]+', 'extra' => function() {}],
-            'xx' => ['GET', 'edit', ['methods' => 'GET']]
+        //    'reply' => ['GET', ':id/reply', ':id' => '[a-z]+', 'extra' => function() {}],
         ];
+        if (isset($options['ignored_actions'])) {
+        }
+        if (isset($options['ignore_collection_actions'])) {
+        }
+        if (isset($options['ignore_element_actions'])) {
+        }
+        if (isset($options['actions'])) {
+        }
+        if (isset($options['element_actions'])) {
+        }
+        if (isset($options['extra_actions'])) {
+        }
+        if (isset($options['extra_element_actions'])) {
+        }
         $requestMethod = $_SERVER['REQUEST_METHOD'];
         foreach ($defaultActions as $key => $value) {
             if (is_int($key)) {
