@@ -312,18 +312,11 @@ abstract class Router {
                 }
             }
         }
-        if (isset($options['element_actions'])) {
-            $options['ignore_element_actions'] = true;
-            if (isset($options['extra_element_actions'])) {
-                $options['extra_element_actions'] = array_merge(
-                    $options['element_actions'],
-                    $options['extra_element_actions']
-                );
-            } else {
-                $options['extra_element_actions'] = $options['element_actions'];
-            }
-        }
-        if ($hasDefaultActions && isset($options['ignore_element_actions'])) {
+        if ($hasDefaultActions
+            && (isset($options['ignore_element_actions'])
+                || isset($options['element_actions'])
+            )
+        ) {
             foreach ($options['default_actions'] as $key => $value) {
                 if (isset($value['belongs_to_element'])
                     && $value['belongs_to_element'] === true
@@ -332,29 +325,62 @@ abstract class Router {
                 }
             }
         }
-        if (isset($options['extra_element_actions'])) {
-            if (isset($options['extra_actions']) === false) {
-                $options['extra_actions'] = [];
-            }
-            foreach ($options['extra_element_actions'] as $key => $value) {
-                if (is_int($key)) {
-                    $key = $value;
-                    $value = ':id/' . $value;
-                } else {
-                    if (is_string($value)) {
-                        $value = ':id/' . $value;
-                    } else {
-                        if (isset($value[1])) {
-                            $value[1] = ':id/' . $value[1];
+        $tmp = null;
+        $extraAction = isset($options['extra_actions']) ?
+            $options['extra_actions'] : null;
+        $extraElementActions = isset($options['extra_element_actions']) ?
+            $options['extra_element_actions'] : null;
+        $elementActions = isset($options['element_actions']) ?
+            $options['element_actions'] : null;
+        if ($extraElementActions !== null || $elementActions !== null) {
+            for (;;) {
+                if ($elementActions === null) {
+                    if ($extraAction !== null) {
+                        if ($tmp === null) {
+                            $tmp = $extraAction;
                         } else {
-                            $value[1] = ':id/' . $key;
+                            array_merge($tmp, $extraAction);
                         }
+                    } elseif ($extraElementActions !== null) {
+                        $elementActions = $extraElementActions;
+                        $extraElementActions = null;
                     }
                 }
-                $options['extra_actions'][$key] = $value;
+                if ($elementActions === null) {
+                    break;
+                }
+                if ($tmp === null) {
+                    $tmp = [];
+                }
+                foreach ($options['extra_element_actions'] as $key => $value) {
+                    if (is_int($key)) {
+                        $key = $value;
+                        $value = ':id/' . $value;
+                    } else {
+                        if (is_string($value)) {
+                            $value = ':id/' . $value;
+                        } else {
+                            if (isset($value[1])) {
+                                $value[1] = ':id/' . $value[1];
+                            } else {
+                                $value[1] = ':id/' . $key;
+                            }
+                        }
+                    }
+                    $tmp[$key] = $value;
+                }
+            }
+            if ($tmp !== null) {
+                $options['extra_actions'] = $tmp;
             }
         }
         return $this->matchResource($pattern, $options);
+    }
+
+    private function getElementAction(
+        $collectionActions, $elementActions
+    ) {
+        return null;
     }
 
     protected function matchResource($pattern, array $options = null) {

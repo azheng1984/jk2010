@@ -13,8 +13,22 @@ class _ {
     public function __construct() {
 //        echo 'hi';
     }
+
+    public function name() {
+        $this->xx('xx');
+    }
+
+    private function xx($param) {
+        echo 'yy';
+    }
 }
-(new _);
+class index extends _{
+   protected function xx($param) {
+       echo 'xx';
+   }
+}
+//(new index)->name();
+exit;
 namespace Hyperframework\Blog; //$x = array();
 //echo $p;
 //exit;
