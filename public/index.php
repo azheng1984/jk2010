@@ -28,7 +28,6 @@ class index extends _{
    }
 }
 //(new index)->name();
-exit;
 namespace Hyperframework\Blog; //$x = array();
 //echo $p;
 //exit;

@@ -129,7 +129,27 @@ abstract class Router {
 
     protected function redirect($url, $statusCode = 302) {
         $this->app->redirect($url, $statusCode);
-              break;
+    }
+
+    protected function getApp() {
+        return $this->app;
+    }
+
+    protected function match($pattern, array $options = null) {
+        if ($this->isMatched()) {
+            throw new Exception;
+        }
+        if ($options !== null) {
+            if (isset($options['methods'])) {
+                if (is_string($options['methods'])) {
+                    $options['methods'] = [$options['methods']];
+                }
+                $requestMethod = $_SERVER['REQUEST_METHOD'];
+                $isMethodAllowed = false;
+                foreach ($options['methods'] as $method) {
+                    if (strtoupper($method) === $requestMethod) {
+                        $isMethodAllowed = true;
+                        break;
                     }
                 }
                 if ($isMethodAllowed === false) {
