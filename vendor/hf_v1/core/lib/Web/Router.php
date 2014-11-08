@@ -432,9 +432,9 @@ abstract class Router {
                     }
                 }
             }
-        } elseif (isset($options['ignored_actions'])) {
-            if ($defaultActions !== null) {
-                $actions = $defaultActions;
+        } else {
+            $actions = $defaultActions;
+            if ($actions !== null) {
                 foreach ($actions as $key => $value) {
                     if (is_int($key)) {
                         unset($actions[$key]);
@@ -448,8 +448,10 @@ abstract class Router {
                         unset($actions[$key]);
                     }
                 }
-                foreach ($options['ignored_actions'] as $action) {
-                    unset($defaultActions[$action]);
+                if (isset($options['ignored_actions'])) {
+                    foreach ($options['ignored_actions'] as $item) {
+                        unset($actions[$item]);
+                    }
                 }
             }
         }

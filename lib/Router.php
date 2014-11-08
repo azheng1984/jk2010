@@ -8,6 +8,7 @@ class Router extends Base {
         $this->match('/');
         $this->setMatchStatus(false);
         $this->matchResource('article');
+        exit;
         $this->setMatchStatus(false);
         $this->matchScope('article', function() {
             echo $this->getPath();
