@@ -332,47 +332,45 @@ abstract class Router {
             $options['extra_element_actions'] : null;
         $elementActions = isset($options['element_actions']) ?
             $options['element_actions'] : null;
-        if ($extraElementActions !== null || $elementActions !== null) {
-            for (;;) {
-                if ($elementActions === null) {
-                    if ($extraAction !== null) {
-                        if ($tmp === null) {
-                            $tmp = $extraAction;
-                        } else {
-                            array_merge($tmp, $extraAction);
-                        }
-                    } elseif ($extraElementActions !== null) {
-                        $elementActions = $extraElementActions;
-                        $extraElementActions = null;
+        for (;;) {
+            if ($elementActions === null) {
+                if ($extraAction !== null) {
+                    if ($tmp === null) {
+                        $tmp = $extraAction;
+                    } else {
+                        array_merge($tmp, $extraAction);
                     }
                 }
-                if ($elementActions === null) {
+                if ($extraElementActions !== null) {
+                    $elementActions = $extraElementActions;
+                    $extraElementActions = null;
+                } else {
                     break;
                 }
-                if ($tmp === null) {
-                    $tmp = [];
-                }
-                foreach ($options['extra_element_actions'] as $key => $value) {
-                    if (is_int($key)) {
-                        $key = $value;
+            }
+            if ($tmp === null) {
+                $tmp = [];
+            }
+            foreach ($elementActions as $key => $value) {
+                if (is_int($key)) {
+                    $key = $value;
+                    $value = ':id/' . $value;
+                } else {
+                    if (is_string($value)) {
                         $value = ':id/' . $value;
                     } else {
-                        if (is_string($value)) {
-                            $value = ':id/' . $value;
+                        if (isset($value[1])) {
+                            $value[1] = ':id/' . $value[1];
                         } else {
-                            if (isset($value[1])) {
-                                $value[1] = ':id/' . $value[1];
-                            } else {
-                                $value[1] = ':id/' . $key;
-                            }
+                            $value[1] = ':id/' . $key;
                         }
                     }
-                    $tmp[$key] = $value;
                 }
+                $tmp[$key] = $value;
             }
-            if ($tmp !== null) {
-                $options['extra_actions'] = $tmp;
-            }
+        }
+        if ($tmp !== null) {
+            $options['extra_actions'] = $tmp;
         }
         return $this->matchResource($pattern, $options);
     }
