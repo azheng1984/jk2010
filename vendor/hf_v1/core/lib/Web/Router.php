@@ -469,7 +469,7 @@ abstract class Router {
                 $actions = array_merge($actions, $options['extra_actions']);
             }
         }
-        if ($actions === null) {
+        if ($actions === null || count($actions) === 0) {
             throw new Exception;
         }
         if (isset($options['id'])) {
