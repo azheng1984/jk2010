@@ -308,7 +308,11 @@ abstract class Router {
                 if (isset($value['belongs_to_element']) === false
                     || $value['belongs_to_element'] !== true
                 ) {
-                    unset($options['default_actions'][$key]);
+                    if (is_int($key)) {
+                        unset($options['default_actions'][$key]);
+                    } else {
+                        $options['default_actions'][$key]['ignore'] = true;
+                    }
                 }
             }
         }
@@ -321,7 +325,7 @@ abstract class Router {
                 if (isset($value['belongs_to_element'])
                     && $value['belongs_to_element'] === true
                 ) {
-                    unset($options['default_actions'][$key]);
+                    $options['default_actions'][$key]['ignore'] = true;
                 }
             }
         }
@@ -353,11 +357,15 @@ abstract class Router {
             }
             foreach ($elementActions as $key => $value) {
                 if (is_int($key)) {
+                    if (isset($options['default_actions'][$value])) {
+                        $tmp[$value] = $options['default_actions'][$value];
+                        continue;
+                    }
                     $key = $value;
-                    $value = ':id/' . $value;
+                    $value = [1 => ':id/' . $value];
                 } else {
                     if (is_string($value)) {
-                        $value = ':id/' . $value;
+                        $value = [1 => ':id/' . $value];
                     } else {
                         if (isset($value[1])) {
                             $value[1] = ':id/' . $value[1];
@@ -375,129 +383,143 @@ abstract class Router {
         return $this->matchResource($pattern, $options);
     }
 
-    private function getElementAction(
-        $collectionActions, $elementActions
-    ) {
-        return null;
-    }
-
     protected function matchResource($pattern, array $options = null) {
-        $actions = null;
-        if (isset($options['action'])) {
-            $action = $options['action'];
+        $defaultActions = null;
+        if (isset($options['default_actions'])) {
+            $defaultActions = $options['default_actions'];
         } else {
-            if (isset($options['default_actions'])) {
-                $actions = $options['default_actions'];
-            } else {
-                $actions = [
-                    'show' => ['GET', '/'],
-                    'new' => ['GET', 'new'],
-                    'update' => ['PATCH | PUT', '/'],
-                    'create' => ['POST', '/'],
-                    'delete' => ['DELETE', '/'],
-                    'edit' => ['GET', 'edit'],
-                ];
+            $defaultActions = [
+                'show' => ['GET', '/'],
+                'new' => ['GET', 'new'],
+                'update' => ['PATCH | PUT', '/'],
+                'create' => ['POST', '/'],
+                'delete' => ['DELETE', '/'],
+                'edit' => ['GET', 'edit'],
+            ];
+        }
+        $actions = null;
+        if (isset($options['actions'])) {
+            $actions = $options['actions'];
+            foreach ($actions as $key => $value) {
+                if (is_int($key)) {
+                    if (isset($actions[$value])) {
+                        throw new Exception;
+                    }
+                    if (isset($defaultActions[$value])) {
+                        $actions[$value] = $defaultActions[$value];
+                    } else {
+                        $actions[$value] = [];
+                    }
+                }
             }
-            if (isset($options['ignored_actions'])) {
+        } elseif (isset($options['ignored_actions'])) {
+            if ($defaultActions !== null) {
+                $actions = $defaultActions;
+                foreach ($actions as $key => $value) {
+                    if (is_int($key)) {
+                        unset($actions[$key]);
+                        if (isset($actions[$value])) {
+                            throw new Exception;
+                        }
+                        $actions[$value] = [];
+                    } elseif (isset($value['ignore'])
+                        && $value['ignore'] === true
+                    ) {
+                        unset($actions[$key]);
+                    }
+                }
                 foreach ($options['ignored_actions'] as $action) {
-                    unset($actions[$action]);
+                    unset($defaultActions[$action]);
                 }
             }
         }
         if (isset($options['extra_actions'])) {
-            $actions = array_merge($actions, $options['extra_actions']);
-        }
-        $requestMethod = $_SERVER['REQUEST_METHOD'];
-        foreach ($actions as $key => $value) {
-            if (is_int($key)) {
-                if (isset($defaultActions[$value])) {
-                    $key = $value;
-                    $value = $defaultActions[$value];
-                } else {
-                    $key = $value;
-                    $value = ['GET', $value];
-                }
-            } elseif (is_array($value) === false) {
-                $value = [$value];
-            }
-            if (isset($value[0]) === false) {
-                throw new Exception;
-            }
-            if (is_array($value[0])) {
-            }
-            if (strpos($value[0], '|') !== false) {
-                $tmps = explode('|', $value[0]);
-                $value[0] = [];
-                foreach ($tmps as $tmp) {
-                    $value[0] = strtoupper(trim($tmp));
-                }
-            } else {
-                $value[0] = [strtoupper($value[0])];
-            }
-            $isMethodMatched = false;
-            foreach ($value[0] as $method) {
-                if ($method === $requestMethod) {
-                    $isMethodMatched = true;
-                    break;
-                }
-            }
-            if ($isMethodMatched === false) {
-                continue;
-            }
-            $matchOptions = [];
-            if (isset($value[1]) !== false) {
-                if (is_array($value[1])) {
-                    $matchOptions = $value[1];
-                } else {
-                    if ($value[1] === '') {
+            foreach ($options['extra_actions'] as $key => $value) {
+                if (is_int($key)) {
+                    unset($options['extra_actions']);
+                    if (isset($options['extra_actions'][$value])) {
                         throw new Exception;
                     }
-                    if ($value[1] !== '/') {
-                        $suffix = '/' . $value[1];
-                        if (substr($this->getPath(), -strlen($suffix)) !== false) {
-                            $pattern .= $suffix;
-                        } else {
-                            continue;
-                        }
-                    }
-                    if(isset($value[2])) {
-                        if (is_array($value[2]) === false) {
-                            throw new Exception;
-                        }
-                        $matchOptions = $value[2];
-                    }
+                    $options['extra_actions'][$value] = [];
                 }
             }
-            if ($options !== null) {
-                if (isset($options['id'])
-                    && isset($actionOptions[':id']) === false
-                ) {
-                    $actionOptions[':id'] = $options['id'];
+            if ($actions === null) {
+                $actions = $options['extra_actions'];
+            } else {
+                $actions = array_merge($actions, $options['extra_actions']);
+            }
+        }
+        if ($actions === null) {
+            throw new Exception;
+        }
+        if (isset($options['id'])) {
+            $options[':id'] = $options['id'];
+        }
+        $requestMethod = $_SERVER['REQUEST_METHOD'];
+        $action = null;
+        foreach ($actions as $key => $value) {
+            $action = $key;
+            if (is_array($value) === false) {
+                $value = [$value];
+            }
+            if (isset($value[0])) {
+                if (strpos($value[0], '|') !== false) {
+                    $tmps = explode('|', $value[0]);
+                    $value[0] = [];
+                    foreach ($tmps as $tmp) {
+                        $value[0] = strtoupper(trim($tmp));
+                    }
+                } else {
+                    $value[0] = [strtoupper($value[0])];
                 }
-                if (isset($options['formats'])
-                    && isset($actionOptions['formats']) === false
-                ) {
-                    $actionOptions['formats'] = $options['formats'];
+            } else {
+                $value[0] = ['GET'];
+            }
+            if (in_array($requestMethod, $value[0]) === false) {
+                continue;
+            }
+            unset($value[0]);
+            $suffix = null;
+            if (isset($value[1])) {
+                $suffix = '/' . $value[1];
+                unset($value[1]);
+            } else {
+                $suffix = '/' . $key;
+            }
+            $actionPattern = $pattern;
+            if ($suffix !== '/') {
+                if (preg_match('#[0-9a-zA-Z_]#', $suffix) === 1) {
+                    if (substr($this->getPath(), -strlen($suffix)) === false) {
+                        continue;
+                    }
                 }
-                if (isset($options['extra'])) {
-                    if (isset($actionOptions['extra'])) {
-                        $extra = $options['extra'];
-                        if (is_array($extra) === false) {
-                            $extra = [$extra];
-                        }
-                        if (is_array($actionOptions['extra'])) {
-                            $extra = array_merge(
-                                $extra, $actionOptions['extra']
-                            );
-                        } else {
-                            $extra[] = $actionOptions['extra'];
-                        }
+                $actionPattern .= $suffix;
+            }
+            $actionOptions = null;
+            if (count($value) !== 0) {
+                $actionOptions = $value;
+                $actionExtra = null;
+                if (isset($actionOptions['extra'])) {
+                    $actionExtra = $actionOptions['extra'];
+                }
+                if ($options !== null) {
+                    $actionOptoins = $options + $actionOptions;
+                }
+                if (isset($options['extra']) && $actionExtra !== null) {
+                    $extra = $options['extra'];
+                    if (is_array($extra) === false) {
+                        $extra = [$extra];
+                    }
+                    if (is_array($actionExtra)) {
+                        $extra = array_merge($extra, $actionExtra);
                     } else {
-                        $actionOptions['extra'] = $options['extra'];
+                        $extra[] = $actionExtra;
                     }
                 }
+            } else {
+                $actionOptions = $options;
             }
-            if ($this->match($pattern, $actionOptions)) {
+            if ($this->match($actionPattern, $actionOptions)) {
                 $action = $key;
             }
             break;
@@ -513,7 +535,6 @@ abstract class Router {
             return true;
         }
         return false;
-
     }
 
     protected function matchScope($prefix, $function) {
