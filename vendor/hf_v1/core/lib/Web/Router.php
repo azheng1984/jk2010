@@ -510,7 +510,7 @@ abstract class Router {
             }
             $actionPattern = $pattern;
             if ($suffix !== '/') {
-                if (preg_match('#[0-9a-zA-Z_]#', $suffix) === 1) {
+                if (preg_match('#[0-9a-zA-Z_]+#', $suffix) === 1) {
                     if (substr($this->getPath(), -strlen($suffix)) === false) {
                         continue;
                     }
