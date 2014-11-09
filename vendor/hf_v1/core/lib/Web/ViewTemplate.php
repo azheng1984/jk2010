@@ -1,8 +1,9 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework;
 use Hyperframework\Config;
-use Hyperframework\FileLoader;
+use Hyperframework\FullPathRecognizer;
 
 class ViewTemplate extends ViewTemplateEngine {
     public function render($name) {
@@ -10,7 +11,10 @@ class ViewTemplate extends ViewTemplateEngine {
         if ($path === null) {
             $path = 'views';
         }
+        if (FullPathRecognizer::isFull($path) === false) {
+            $path = Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR . $path;
+        }
         $path .= DIRECTORY_SEPARATOR . $name;
-        FileLoader::loadPhp($path);
+        require $path;
     }
 }
