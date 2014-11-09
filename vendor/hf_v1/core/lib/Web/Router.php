@@ -461,6 +461,7 @@ abstract class Router {
                     }
                 }
             }
+            unset($options['actions']);
         } else {
             $actions = $defaultActions;
             if ($actions !== null) {
@@ -473,7 +474,11 @@ abstract class Router {
                         if (is_string($value) === false) {
                             throw new Exception;
                         }
-                        $actions[$value] = [];
+                        if (isset($defaultActions[$value])) {
+                            $actions[$value] = $defaultActions[$value];
+                        } else {
+                            $actions[$value] = [];
+                        }
                     } elseif (isset($value['ignore'])
                         && $value['ignore'] === true
                     ) {
@@ -484,6 +489,7 @@ abstract class Router {
                     foreach ($options['ignored_actions'] as $item) {
                         unset($actions[$item]);
                     }
+                    unset($options['ignored_actions']);
                 }
             }
         }
@@ -499,25 +505,31 @@ abstract class Router {
                     if (is_string($value) === false) {
                         throw new Exception;
                     }
-                    $actions[$value] = [];
+                    if (isset($defaultActions[$value])) {
+                        $actions[$value] = $defaultActions[$value];
+                    } else {
+                        $actions[$value] = [];
+                    }
                 }
                 if (isset($actions[$key])) {
                     throw new Exception;
                 }
                 $action[$key] = $value;
-
             }
             if ($actions === null) {
                 $actions = $options['extra_actions'];
             } else {
                 $actions = array_merge($actions, $options['extra_actions']);
             }
+            unset($options['extra_actions']);
         }
         if ($actions === null || count($actions) === 0) {
             throw new Exception;
         }
         if (isset($options['id'])) {
             $options[':id'] = $options['id'];
+        } else {
+            $options[':id'] = '\d+';
         }
         $requestMethod = $_SERVER['REQUEST_METHOD'];
         $action = null;
@@ -531,7 +543,7 @@ abstract class Router {
                     $tmps = explode('|', $value[0]);
                     $value[0] = [];
                     foreach ($tmps as $tmp) {
-                        $value[0] = strtoupper(trim($tmp));
+                        $value[0][] = strtoupper(trim($tmp));
                     }
                 } else {
                     $value[0] = [strtoupper($value[0])];
@@ -569,7 +581,7 @@ abstract class Router {
                     $actionExtra = $actionOptions['extra'];
                 }
                 if ($options !== null) {
-                    $actionOptoins = $options + $actionOptions;
+                    $actionOptions = $options + $actionOptions;
                 }
                 if (isset($options['extra']) && $actionExtra !== null) {
                     $extra = $options['extra'];
@@ -585,10 +597,14 @@ abstract class Router {
             } else {
                 $actionOptions = $options;
             }
+            //print_r($options);
+            echo $actionPattern;
             if ($this->match($actionPattern, $actionOptions)) {
+                print_r($actionOptions);
+                 var_dump($actionPattern);
                 $action = $key;
+                break;
             }
-            break;
         }
         if ($this->isMatched()) {
             $controller = $pattern;
