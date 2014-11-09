@@ -5,7 +5,8 @@ use ArrayAccess;
 
 abstract class ViewTemplateEngine implements ArrayAccess {
     private $model;
-    private $blocks;
+    private $blocks = [];
+    private $layout;
 
     public function __construct(array $model = null) {
         if ($model !== null) {
@@ -18,15 +19,23 @@ abstract class ViewTemplateEngine implements ArrayAccess {
     abstract public function render($name);
 
     public function renderBlock($name, $default = null) {
+        $function = $this->blocks[$name];
+        $function();
     }
 
-    public function setBlock($name, $value) {
+    public function setBlock($name, $function) {
+        $this->blocks[$name] = $function;
     }
 
     public function extend($layout) {
     }
 
-    public function setLayout() {
+    public function setLayout($value) {
+        $this->layout = $value;
+    }
+
+    public function getLayout() {
+        return $this->layout;
     }
 
     public function __invoke($function) {

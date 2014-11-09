@@ -14,7 +14,15 @@ class ViewTemplate extends ViewTemplateEngine {
         if (FullPathRecognizer::isFull($path) === false) {
             $path = Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR . $path;
         }
+        $root = $path;
         $path .= DIRECTORY_SEPARATOR . $name;
-        require $path;
+        $function = require $path;
+        if ($this->getLayout() !== null) {
+            require $root . '/_layouts/' . $this->getLayout();
+        } else {
+            if ($function !== null) {
+                $function();
+            }
+        }
     }
 }

@@ -1,5 +1,7 @@
-hello world
 <?php
 $this(function() {
-    echo 'hi';
+    $this->setLayout('todo.php');
 });
+$this->setBlock('body', function() { ?>
+hello world
+<?php });

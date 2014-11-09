@@ -1,8 +1,7 @@
-<?php
-$this(function() {
-});
-return function() {?>
-<div>
-    <span><?= $this['result'] ?></span>
-</div>
-<? };
+<html>
+<body>
+header
+<?php $this->renderBlock('body'); ?>
+footer
+</body>
+</html>
