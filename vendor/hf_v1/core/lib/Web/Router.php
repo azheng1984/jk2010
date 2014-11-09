@@ -331,6 +331,9 @@ abstract class Router {
                     || $value['belongs_to_element'] !== true
                 ) {
                     if (is_int($key)) {
+                        if (is_string($value) === false) {
+                            throw new Exception;
+                        }
                         unset($options['default_actions'][$key]);
                     } else {
                         $options['default_actions'][$key]['ignore'] = true;
