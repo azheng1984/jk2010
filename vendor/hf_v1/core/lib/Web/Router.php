@@ -299,13 +299,8 @@ abstract class Router {
     }
 
     protected function matchResources($pattern, array $options = null) {
-        $hasOptions = true;
         if ($options === null) {
-            $hasOptions = false;
-            $options = [];
-        }
-        if ($hasOptions === false) {
-            return $this->matchResource($pattern, $options);
+            return $this->matchResource($pattern);
         }
         $hasDefaultActions = isset($options['actions']) === false;
         if ($hasDefaultActions
@@ -317,7 +312,9 @@ abstract class Router {
                 'new' => ['GET', 'new'],
                 'edit' => ['GET', ':id/edit', 'belongs_to_element' => true],
                 'create' => ['POST', '/'],
-                'update' => ['PATCH | PUT', ':id', 'belongs_to_element' => true],
+                'update' => [
+                    'PATCH | PUT', ':id', 'belongs_to_element' => true
+                ],
                 'delete' => ['DELETE', ':id', 'belongs_to_element' => true],
             ];
         }
@@ -349,22 +346,14 @@ abstract class Router {
                 }
             }
         }
-        $tmp = null;
         $extraAction = isset($options['extra_actions']) ?
-            $options['extra_actions'] : null;
+            $options['extra_actions'] : [];
         $extraElementActions = isset($options['extra_element_actions']) ?
             $options['extra_element_actions'] : null;
         $elementActions = isset($options['element_actions']) ?
             $options['element_actions'] : null;
         for (;;) {
             if ($elementActions === null) {
-                if ($extraAction !== null) {
-                    if ($tmp === null) {
-                        $tmp = $extraAction;
-                    } else {
-                        array_merge($tmp, $extraAction);
-                    }
-                }
                 if ($extraElementActions !== null) {
                     $elementActions = $extraElementActions;
                     $extraElementActions = null;
@@ -372,14 +361,16 @@ abstract class Router {
                     break;
                 }
             }
-            if ($tmp === null) {
-                $tmp = [];
-            }
             foreach ($elementActions as $key => $value) {
                 if (is_int($key)) {
                     if (isset($options['default_actions'][$value])) {
-                        $tmp[$value] = $options['default_actions'][$value];
-                        continue;
+                        $default = $options['default_actions'][$value];
+                        if (isset($default['belongs_to_element'])
+                            && $default['belongs_to_element'] === true
+                        ) {
+                            $extraActions[] = $value;
+                            continue;
+                        }
                     }
                     $key = $value;
                     $value = [1 => ':id/' . $value];
@@ -394,11 +385,14 @@ abstract class Router {
                         }
                     }
                 }
-                $tmp[$key] = $value;
+                if (isset($extraActions[$key])) {
+                    throw new Exception;
+                }
+                $extraActions[$key] = $value;
             }
         }
-        if ($tmp !== null) {
-            $options['extra_actions'] = $tmp;
+        if (count($extraActions) !== 0) {
+            $options['extra_actions'] = $extraActions;
         }
         return $this->matchResource($pattern, $options);
     }
@@ -456,14 +450,21 @@ abstract class Router {
             }
         }
         if (isset($options['extra_actions'])) {
+            if ($actions === null) {
+                $actions = [];
+            }
             foreach ($options['extra_actions'] as $key => $value) {
                 if (is_int($key)) {
-                    unset($options['extra_actions']);
-                    if (isset($options['extra_actions'][$value])) {
+                    if (isset($actions[$value])) {
                         throw new Exception;
                     }
-                    $options['extra_actions'][$value] = [];
+                    $actions[$value] = [];
                 }
+                if (isset($actions[$key])) {
+                    throw new Exception;
+                }
+                $action[$key] = $value;
+
             }
             if ($actions === null) {
                 $actions = $options['extra_actions'];

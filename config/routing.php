@@ -92,7 +92,6 @@ if ($this->matchResources('articles', [
         'search' // same as 'search' => ['GET', 'search']
     ], //rails collection closure
     'ignored_actions' => [''],
-
     'ignore_element_actions' => true,
     'ignore_collection_actions' => true,
     'element_actions' => [], //['index', 'create', 'reply' => 'post'],
