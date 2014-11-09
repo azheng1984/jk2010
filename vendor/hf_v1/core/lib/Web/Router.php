@@ -16,7 +16,7 @@ abstract class Router {
     private $action;
     private $actionMethod;
     private $path;
-    private $isMatched;
+    private $isMatched = false;
 
     public function __construct($app) {
         $this->app = $app;
@@ -61,6 +61,10 @@ abstract class Router {
 
     public function hasParam($name) {
         return isset($this->params[$name]);
+    }
+
+    public function getController() {
+        return $this->controller;
     }
 
     public function getModuleNamespace() {
@@ -177,6 +181,7 @@ abstract class Router {
                 if (isset($options['extra'])) {
                     return $this->verifyExtraMatchConstrains($options['extra']);
                 }
+                $this->setMatchStatus(true);
                 return true;
             }
             return false;
@@ -219,7 +224,6 @@ abstract class Router {
                 $pattern .= '\.(?<format>[0-9a-zA-Z.]+?)';
             }
         }
-        echo $pattern;
         $result = preg_match('#^/' . $pattern . '$#', $path, $matches);
         if ($result === false) {
             throw new Exception;
@@ -241,7 +245,6 @@ abstract class Router {
                 }
             }
             $pattern = '#^[a-zA-Z_][a-zA-Z0-9_]*$#';
-            print_r($matches);
             if (isset($matches['module']) && isset($options[':module']) === false) {
                 if (preg_match($pattern, $matches['module']) === 0) {
                     return false;
@@ -534,7 +537,9 @@ abstract class Router {
             unset($value[0]);
             $suffix = null;
             if (isset($value[1])) {
-                $suffix = '/' . $value[1];
+                if ($value[1] !== '/' && $value[1] != '') {
+                    $suffix = '/' . $value[1];
+                }
                 unset($value[1]);
             } else {
                 $suffix = '/' . $key;

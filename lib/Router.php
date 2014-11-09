@@ -5,9 +5,10 @@ use Hyperframework\Web\Router as Base;
 
 class Router extends Base {
     public function parse() {
-        $this->match('/');
-        $this->setMatchStatus(false);
+//        $this->match('/');
+//        $this->setMatchStatus(false);
         $this->matchResources('articles', []);
+        echo $this->getControllerClass();
         exit;
         $this->setMatchStatus(false);
         $this->matchScope('article', function() {
