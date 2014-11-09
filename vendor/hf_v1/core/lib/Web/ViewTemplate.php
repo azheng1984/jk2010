@@ -16,13 +16,21 @@ class ViewTemplate extends ViewTemplateEngine {
         }
         $root = $path;
         $path .= DIRECTORY_SEPARATOR . $name;
-        $function = require $path;
+        $function = $this->renderTemplate($path);
+        $layout = $this->getLayout();
         if ($this->getLayout() !== null) {
-            require $root . '/_layouts/' . $this->getLayout();
+            do { 
+                $layout = $this->getLayout();
+                $this->renderTemplate($root . '/_layouts/' . $layout);
+            } while ($this->getLayout() !== $layout && $this->getLayout() !== null);
         } else {
             if ($function !== null) {
                 $function();
             }
         }
+    }
+
+    private function renderTemplate($path) {
+        return include $path;
     }
 }

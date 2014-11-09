@@ -1,7 +1,9 @@
-<html>
-<body>
+<?php
+$this->setLayout('html.php');
+$this->setBlock('body', function() {?>
 header
-<?php $this->renderBlock('body'); ?>
+<div id="content">
+    <?php $this->renderBlock('content'); ?>
+</div>
 footer
-</body>
-</html>
+<?php });

@@ -2,6 +2,6 @@
 $this(function() {
     $this->setLayout('todo.php');
 });
-$this->setBlock('body', function() { ?>
+$this->setBlock('content', function() { ?>
 hello world
 <?php });
