@@ -76,13 +76,13 @@ abstract class Router {
     }
 
     public function getModuleNamespace() {
+        if (Config::get('hyperframework.web.enable_module') !== true) {
+            return;
+        }
         if ($this->moduleNamespace !== null) {
             return $this->moduleNamespace;
         }
         if ($this->module === null) {
-            if (Config::get('hyperframework.web.enable_module') !== true) {
-                return;
-            }
             return 'Main';
         }
         return str_replace(
