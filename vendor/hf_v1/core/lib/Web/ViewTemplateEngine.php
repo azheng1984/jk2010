@@ -15,7 +15,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         }
     }
 
-    abstract public function render();
+    abstract public function render($name);
 
     public function renderBlock($name, $default = null) {
     }

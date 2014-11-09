@@ -1,10 +1,31 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework\Config;
+
 class ViewDispatcher {
     private static $defaultClasses;
 
-    final public static function dispatch($pathInfo, $actionResult) {
+    final public static function dispatch($app) {
+        $view = new ViewTemplate($app->getActionResult());
+        $name = '';
+        $router = $app->getRouter();
+        if ($router->getModule()) {
+            $name .= $module;
+        }
+        if ($router->getController()) {
+            $name .= $router->getController() . '/';
+        }
+        if ($router->getAction()) {
+            $name .= $router->getAction();
+        }
+        if ($router->hasParam('format')) {
+            $name .= $router->getParam('format');
+        }
+        $name .= '.php';
+        $view->render($name);
+        return;
+
         $class = self::getClass($pathInfo);
         if ($class === null) {
             throw new NotAcceptableException;

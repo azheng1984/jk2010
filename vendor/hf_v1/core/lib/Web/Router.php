@@ -72,7 +72,7 @@ abstract class Router {
     }
 
     public function getAction() {
-        return $this->controller;
+        return $this->action;
     }
 
     public function getModuleNamespace() {
@@ -131,7 +131,7 @@ abstract class Router {
         return 'do' . $tmp . 'Action';
     }
 
-    protected function isMatched() {
+    public function isMatched() {
         return $this->isMatched;
     }
 

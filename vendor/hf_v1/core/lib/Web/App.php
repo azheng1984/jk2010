@@ -55,15 +55,15 @@ class App {
         $this->rewriteRequestMethod();
         $this->parseRequestBody();
         $this->initializeRouter();
-        $this->initializePathInfo();
+        //$this->initializePathInfo();
     }
 
     protected function executeAction() {
-        $this->actionResult = ControllerHandler::handle($this->pathInfo, $this);
+        $this->actionResult = ControllerHandler::handle($this);
     }
 
     protected function renderView() {
-        ViewDispatcher::dispatch($this->pathInfo, $this);
+        ViewDispatcher::dispatch($this);
     }
 
     protected function finalize() {}
@@ -90,6 +90,9 @@ class App {
 
     protected function initializeRouter() {
         $this->router = new Router($this);
+        if ($this->router->isMatched() === false) {
+            throw new NotFoundException;
+        }
     }
 
     protected function initializePathInfo() {

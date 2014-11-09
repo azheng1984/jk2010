@@ -4,7 +4,19 @@ namespace Hyperframework\Web;
 use Hyperframework\Config;
 
 final class ControllerHandler {
-    public static function handle($pathInfo, $app) {
+    public static function handle($app) {
+        $router = $app->getRouter();
+        $class = $router->getControllerClass();
+        if ($class === null) {
+            throw new Exception;
+        }
+        $action = $router->getActionMethod();
+        $controller = new $class($app);
+        if (method_exists($controller, $action)) {
+            return $controller->$action();
+        }
+        return;
+
         $actionInfo = null;
         if (isset($pathInfo['controller'])) {
             $actionInfo = $pathInfo['controller'];

@@ -11,7 +11,7 @@ class Router extends Base {
         echo $this->getControllerClass();
         echo $this->getActionMethod();
         echo $this->getModuleNamespace();
-        exit;
+        return;
         $this->setMatchStatus(false);
         $this->matchScope('article', function() {
             echo $this->getPath();
