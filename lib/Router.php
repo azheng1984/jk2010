@@ -7,7 +7,7 @@ class Router extends Base {
     public function parse() {
         $this->match('/');
         $this->setMatchStatus(false);
-        $this->matchResource('article');
+        $this->matchResources('articles', []);
         exit;
         $this->setMatchStatus(false);
         $this->matchScope('article', function() {

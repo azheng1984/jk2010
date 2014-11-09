@@ -302,7 +302,11 @@ abstract class Router {
         if ($options === null) {
             return $this->matchResource($pattern);
         }
-        $hasDefaultActions = isset($options['actions']) === false;
+        $hasCollectionActions = isset($options['collection_actions']);
+        $hasElementActions = isset($options['element_actions']);
+        $hasDefaultActions = isset($options['actions']) === false && (
+            $hasCollectionActions === false || $hasElementActions === false
+        );
         if ($hasDefaultActions
             && isset($options['default_actions']) === false
         ) {
@@ -318,9 +322,7 @@ abstract class Router {
                 'delete' => ['DELETE', ':id', 'belongs_to_element' => true],
             ];
         }
-        if ($hasDefaultActions
-            && isset($options['ignore_collection_actions'])
-        ) {
+        if ($hasDefaultActions && $hasCollectionActions) {
             foreach ($options['default_actions'] as $key => $value) {
                 if (isset($value['belongs_to_element']) === false
                     || $value['belongs_to_element'] !== true
@@ -333,11 +335,7 @@ abstract class Router {
                 }
             }
         }
-        if ($hasDefaultActions
-            && (isset($options['ignore_element_actions'])
-                || isset($options['element_actions'])
-            )
-        ) {
+        if ($hasDefaultActions && $hasElementActions) {
             foreach ($options['default_actions'] as $key => $value) {
                 if (isset($value['belongs_to_element'])
                     && $value['belongs_to_element'] === true
@@ -346,11 +344,28 @@ abstract class Router {
                 }
             }
         }
-        $extraAction = isset($options['extra_actions']) ?
+        if ($hasCollectionActions && $options['collection_actions'] !== false) {
+            if (isset($options['extra_actions']) === false) {
+                $options['extra_actions'] = $options['collection_actions'];
+            } else {
+                foreach ($options['collection_actions'] as $key => $value) {
+                    if (is_int($key)) {
+                        $options['extra_actions'][] = $value;
+                    } else {
+                        if (isset($options['extra_actions'][$key])) {
+                            throw new Exception;
+                        }
+                        $options['extra_actions'][$key] = $value;
+                    }
+                }
+            }
+        }
+        $extraActions = isset($options['extra_actions']) ?
             $options['extra_actions'] : [];
         $extraElementActions = isset($options['extra_element_actions']) ?
             $options['extra_element_actions'] : null;
-        $elementActions = isset($options['element_actions']) ?
+        $elementActions = $hasElementActions
+            && $options['element_actions'] !== false ?
             $options['element_actions'] : null;
         for (;;) {
             if ($elementActions === null) {
