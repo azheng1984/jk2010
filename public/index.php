@@ -36,33 +36,34 @@ namespace Hyperframework\Blog; //$x = array();
 
 //print_r(opcache_get_status("/home/az/quickquick/config/init.php"));
 
-//$s = microtime(true);
-////$x = array();
+$s = microtime(true);
 //$x = array();
-//for ($i = 0; $i < 100000; ++$i) {
-////if (preg_match('#^(?<name>[0-9a-z]+)(?<name2>(?<name4>(?<hello>[0-9A-Z]))+)#', 'xxxxxxxxxxxxdddd', $matches)) {
-////    //print_r($matches);
-////}
-////if (preg_match('#^([0-9a-z]+)((([0-9A-Z]))+)#', 'xxxxxxxxxxxxdddd', $matches)) {
-////    //print_r($matches);
-////}
-////if (preg_match('#^([0-9a-z]+)#', 'xxx', $matches)) {
-////    //print_r($matches);
-////}
-////    $x = [0 => $i];
-//    //$x[0] = $i;
-//    //strpos($name, '|');
-//    //explode('|', $name);
-//    //$name = str_replace(' | ', '|', $name);
-//    //preg_match('/^[a-zA-Z0-9-|]+$/', $name);
-//    //preg_match('/^([a-zA-Z0-9-|]|( \| ))+$/', $name);
-//    //exit;
-//    //preg_match('/^([a-zA-Z0-9-|]|( \| ))+$/', $name);
-//    //isset($x[0]);
-////    array_key_exists(0, $x);
+$x = array();
+for ($i = 0; $i < 1000000; ++$i) {
+    gettype($x);
+//if (preg_match('#^(?<name>[0-9a-z]+)(?<name2>(?<name4>(?<hello>[0-9A-Z]))+)#', 'xxxxxxxxxxxxdddd', $matches)) {
+//    //print_r($matches);
 //}
-//echo (microtime(true) - $s) * 1000;
-//exit;
+//if (preg_match('#^([0-9a-z]+)((([0-9A-Z]))+)#', 'xxxxxxxxxxxxdddd', $matches)) {
+//    //print_r($matches);
+//}
+//if (preg_match('#^([0-9a-z]+)#', 'xxx', $matches)) {
+//    //print_r($matches);
+//}
+//    $x = [0 => $i];
+    //$x[0] = $i;
+    //strpos($name, '|');
+    //explode('|', $name);
+    //$name = str_replace(' | ', '|', $name);
+    //preg_match('/^[a-zA-Z0-9-|]+$/', $name);
+    //preg_match('/^([a-zA-Z0-9-|]|( \| ))+$/', $name);
+    //exit;
+    //preg_match('/^([a-zA-Z0-9-|]|( \| ))+$/', $name);
+    //isset($x[0]);
+//    array_key_exists(0, $x);
+}
+echo (microtime(true) - $s) * 1000;
+exit;
 
 if (isset($_GET['b'])) {
 echo file_get_contents('php://input');

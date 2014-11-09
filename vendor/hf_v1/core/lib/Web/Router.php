@@ -328,6 +328,9 @@ abstract class Router {
                     || $value['belongs_to_element'] !== true
                 ) {
                     if (is_int($key)) {
+                        if (is_string($value) === false) {
+                            throw new Exception;
+                        }
                         unset($options['default_actions'][$key]);
                     } else {
                         $options['default_actions'][$key]['ignore'] = true;
@@ -378,6 +381,9 @@ abstract class Router {
             }
             foreach ($elementActions as $key => $value) {
                 if (is_int($key)) {
+                    if (is_string($value) === false) {
+                        throw new Exception;
+                    }
                     if (isset($options['default_actions'][$value])) {
                         $default = $options['default_actions'][$value];
                         if (isset($default['belongs_to_element'])
@@ -434,6 +440,9 @@ abstract class Router {
                     if (isset($actions[$value])) {
                         throw new Exception;
                     }
+                    if (is_string($value) === false) {
+                        throw new Exception;
+                    }
                     if (isset($defaultActions[$value])) {
                         $actions[$value] = $defaultActions[$value];
                     } else {
@@ -448,6 +457,9 @@ abstract class Router {
                     if (is_int($key)) {
                         unset($actions[$key]);
                         if (isset($actions[$value])) {
+                            throw new Exception;
+                        }
+                        if (is_string($value) === false) {
                             throw new Exception;
                         }
                         $actions[$value] = [];
@@ -471,6 +483,9 @@ abstract class Router {
             foreach ($options['extra_actions'] as $key => $value) {
                 if (is_int($key)) {
                     if (isset($actions[$value])) {
+                        throw new Exception;
+                    }
+                    if (is_string($value) === false) {
                         throw new Exception;
                     }
                     $actions[$value] = [];
