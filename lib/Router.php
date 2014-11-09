@@ -9,6 +9,8 @@ class Router extends Base {
 //        $this->setMatchStatus(false);
         $this->matchResources('articles', []);
         echo $this->getControllerClass();
+        echo $this->getActionMethod();
+        echo $this->getModuleNamespace();
         exit;
         $this->setMatchStatus(false);
         $this->matchScope('article', function() {

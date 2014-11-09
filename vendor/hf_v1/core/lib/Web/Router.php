@@ -63,18 +63,26 @@ abstract class Router {
         return isset($this->params[$name]);
     }
 
+    public function getModule() {
+        return $this->module;
+    }
+
     public function getController() {
         return $this->controller;
     }
 
+    public function getAction() {
+        return $this->controller;
+    }
+
     public function getModuleNamespace() {
-        if (Config::get('hyperframework.web.enable_module') !== true) {
-            return;
-        }
         if ($this->moduleNamespace !== null) {
             return $this->moduleNamespace;
         }
         if ($this->module === null) {
+            if (Config::get('hyperframework.web.enable_module') !== true) {
+                return;
+            }
             return 'Main';
         }
         return str_replace(
@@ -666,10 +674,6 @@ abstract class Router {
 
     protected function setModule($value) {
         $this->module = $value;
-    }
-
-    public function getModule($param) {
-        return $this->module;
     }
 
     protected function setModuleNamespace($value) {
