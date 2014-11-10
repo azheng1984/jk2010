@@ -669,6 +669,21 @@ abstract class Router {
         return $this->match($pattern, $options);
     }
 
+    protected function matchPut($pattern, array $options = null) {
+        $options['methods'] = 'PUT';
+        return $this->match($pattern, $options);
+    }
+
+    protected function matchPatch($pattern, array $options = null) {
+        $options['methods'] = 'PATCH';
+        return $this->match($pattern, $options);
+    }
+
+    protected function matchDelete($pattern, array $options = null) {
+        $options['methods'] = 'DELETE';
+        return $this->match($pattern, $options);
+    }
+
     private function parseReturnValue($value) {
         if ($value === null) {
             return;
