@@ -22,8 +22,9 @@ class ViewTemplate extends ViewTemplateEngine {
         if ($this->getLayout() !== null) {
             do { 
                 $layout = $this->getLayout();
+                $this->setLayout(null);
                 $this->renderTemplate($root . '/_layouts/' . $layout);
-            } while ($this->getLayout() !== $layout && $this->getLayout() !== null);
+            } while ($this->getLayout() !== null);
         } else {
             if ($function instanceof Closure) {
                 $function();
