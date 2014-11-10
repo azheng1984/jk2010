@@ -222,7 +222,7 @@ abstract class Router {
             }
             if (strpos($pattern, '#:') !== false) {
                 $pattern = preg_replace(
-                    '#\{?\#:([a-zA-Z0-9]+)\}?#',
+                    '#\{?\#:([a-zA-Z0-9_]+)\}?#',
                     '(?<\1>[^/]+?)',
                     $pattern
                 );
@@ -230,18 +230,19 @@ abstract class Router {
         }
         if ($hasWildcardSegment) {
             $pattern = preg_replace(
-                '#\{?\*([a-zA-Z0-9]+)\}?#',
+                '#\{?\*([a-zA-Z0-9_]+)\}?#',
                 '(?<\1>.+?)',
                 $pattern
             );
         }
         if ($hasFormat) {
             if (isset($options['formats']['default'])) {
-                $pattern .= '(\.(?<format>[0-9a-zA-Z.]+?))?';
+                $pattern .= '(\.(?<format>[0-9a-zA-Z-.]+?))?';
             } else {
-                $pattern .= '\.(?<format>[0-9a-zA-Z.]+?)';
+                $pattern .= '\.(?<format>[0-9a-zA-Z-.]+?)';
             }
         }
+        var_dump($pattern);
         $result = preg_match('#^/' . $pattern . '$#', $path, $matches);
         if ($result === false) {
             throw new Exception;
@@ -320,17 +321,15 @@ abstract class Router {
     }
 
     protected function matchResources($pattern, array $options = null) {
-        if ($options === null) {
-            return $this->matchResource($pattern);
-        }
+        $hasOptions = $options !== null;
         $hasCollectionActions = isset($options['collection_actions']);
         $hasElementActions = isset($options['element_actions']);
         $hasDefaultActions = isset($options['actions']) === false && (
             $hasCollectionActions === false || $hasElementActions === false
         );
-        if ($hasDefaultActions
+        if ($hasOptions === false || ($hasDefaultActions
             && isset($options['default_actions']) === false
-        ) {
+        )) {
             $options['default_actions'] = [
                 'index' => ['GET', '/'],
                 'show' => ['GET', ':id', 'belongs_to_element' => true],
@@ -342,6 +341,9 @@ abstract class Router {
                 ],
                 'delete' => ['DELETE', ':id', 'belongs_to_element' => true],
             ];
+            if ($hasOptions === false) {
+                return $this->matchResource($pattern, $options);
+            }
         }
         if ($hasDefaultActions && $hasCollectionActions) {
             foreach ($options['default_actions'] as $key => $value) {
@@ -569,6 +571,8 @@ abstract class Router {
             if (isset($value[1])) {
                 if ($value[1] !== '/' && $value[1] != '') {
                     $suffix = '/' . $value[1];
+                } else {
+                    $suffix = '/';
                 }
                 unset($value[1]);
             } else {
@@ -576,13 +580,16 @@ abstract class Router {
             }
             $actionPattern = $pattern;
             if ($suffix !== '/') {
-                if (preg_match('#[0-9a-zA-Z_]+#', $suffix) === 1) {
-                    if (substr($this->getPath(), -strlen($suffix)) === false) {
+                if (preg_match('#/[^*:(]+$#', $suffix, $matches) === 1) {
+                    if (substr($this->getPath(), -strlen($matches[0]))
+                        !== $matches[0]
+                    ) {
                         continue;
                     }
                 }
                 $actionPattern .= $suffix;
             }
+            //var_dump($suffix);
             $actionOptions = null;
             if (count($value) !== 0) {
                 $actionOptions = $value;
@@ -607,11 +614,9 @@ abstract class Router {
             } else {
                 $actionOptions = $options;
             }
-            //print_r($options);
-            echo $actionPattern;
             if ($this->match($actionPattern, $actionOptions)) {
-                print_r($actionOptions);
-                 var_dump($actionPattern);
+                var_dump($actionOptions);
+                var_dump($actionPattern);
                 $action = $key;
                 break;
             }

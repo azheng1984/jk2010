@@ -6,19 +6,20 @@ use Hyperframework\Config;
 final class ControllerHandler {
     public static function handle($app) {
         $router = $app->getRouter();
-        $class = $router->getControllerClass();
-        if ($class === null) {
+        $controllerClass = $router->getControllerClass();
+        var_dump($controllerClass);
+        if ($controllerClass === null) {
             throw new NotFoundException;
         }
-        $action = $router->getActionMethod();
-        var_dump($action);
-        if ($action === null) {
+        $actionMethod = $router->getActionMethod();
+        var_dump($actionMethod);
+        if ($actionMethod === null) {
             throw new NotFoundException;
         }
-        $controller = new $class($app);
+        $controller = new $controllerClass($app);
         //todo filter
-        if (method_exists($controller, $action)) {
-            return $controller->$action();
+        if (method_exists($controller, $actionMethod)) {
+            return $controller->$actionMethod();
         }
         return;
 

@@ -5,12 +5,9 @@ use Hyperframework\Web\Router as Base;
 
 class Router extends Base {
     public function parse() {
-//        $this->match('/');
-//        $this->setMatchStatus(false);
-        if ($this->matchResource('articles/:article_id/comment')) return;
-//        echo 'xx';
-//        exit;
-        if ($this->match('/:article_id')) return 'index/show';
+        if ($this->match('/')) return;
+        if ($this->matchResources('articles/:article_id/comments')) return;
+        if ($this->matchResources('articles')) return;
         return;
 
         $this->setMatchStatus(false);
@@ -24,7 +21,7 @@ class Router extends Base {
         $this->matchGet('(:module(/:controller(/:action)))', [':id' => '[0-9]+']);
         $this->setMatchStatus(false);
         $this->match('article/:id(/*comments)', [':id' => '[0-9]+', 'formats' => 'jpg']);
-//        $this->matchPatch('article/:id(/*comments)', [':id' => '[0-9]+', 'formats' => 'jpg']);
+//      $this->matchPatch('article/:id(/*comments)', [':id' => '[0-9]+', 'formats' => 'jpg']);
         $this->setMatchStatus(false);
         $this->match('article/:id(/*comments)', [':id' => '[0-9]+']);
 exit;
