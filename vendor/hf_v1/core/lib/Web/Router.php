@@ -77,6 +77,9 @@ abstract class Router {
     }
 
     public function getController() {
+        if ($this->controller === null) {
+            return 'index';
+        }
         return $this->controller;
     }
 
@@ -131,6 +134,9 @@ abstract class Router {
             return $this->actionMethod;
         }
         $action = $this->getAction();
+        if ($action === null) {
+            return;
+        }
         $tmp = str_replace(' ', '', ucwords(str_replace('_', ' ', $action)));
         return 'do' . $tmp . 'Action';
     }
