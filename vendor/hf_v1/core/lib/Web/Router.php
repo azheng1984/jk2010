@@ -17,7 +17,7 @@ abstract class Router {
     private $actionMethod;
     private $path;
     private $scopeFormats;
-    private $scopeMatches;
+    private $scopeMatchStack;
     private $shouldMatchScope = false;
     private $isMatched = false;
 
@@ -318,11 +318,11 @@ abstract class Router {
                 }
             }
             if ($this->shouldMatchScope) {
-                if ($this->scopeMatches === null) {
-                    $this->scopeMatches = [];
+                if ($this->scopeMatchStack === null) {
+                    $this->scopeMatchStack = [];
                 }
                 print_r($matches);
-                $this->scopeMatches[] = $matches;
+                $this->scopeMatchStack[] = $matches;
                 if ($hasFormat) {
                     end($matches);
                     if ($isOptionalFormat) {
@@ -337,8 +337,8 @@ abstract class Router {
                 }
                 return end($matches);
             }
-            if ($this->scopeMatches !== null) {
-                foreach ($this->scopeMatches as $tmp) {
+            if ($this->scopeMatchStack !== null) {
+                foreach ($this->scopeMatchStack as $tmp) {
                     $this->setMatches($tmp);
                 }
             }
@@ -382,12 +382,25 @@ abstract class Router {
         $this->setPath('/' . $path);
         $result = $function();
         $this->setPath($previousPath);
-        array_pop($this->scopeMatches);
+        array_pop($this->scopeMatchStack);
         if (isset($defination['formats'])) {
             $this->scopeFormats = null;
         }
         $this->parseReturnValue($result);
         return $this->isMatched();
+    }
+
+    protected function getScopeMatches() {
+        $result = [];
+        if ($this->scopeMatchStack === null) {
+            return $result;
+        }
+        foreach ($this->scopeMatchStack as $matches) {
+            foreach ($matches as $key => $value) {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
     }
 
     private function setMatches($matches) {
