@@ -16,6 +16,8 @@ abstract class Router {
     private $action;
     private $actionMethod;
     private $path;
+    private $scopeMatches;
+    private $shouldMatchScope = false;
     private $isMatched = false;
 
     public function __construct($app) {
@@ -191,6 +193,7 @@ abstract class Router {
             && $hasOptionalSegment === false
             && $hasWildcardSegment === false
             && $hasDynamicSegment === false
+            && $this->shouldMatchScope ===  false
         ) {
             if ($pattern !== '/') {
                 $pattern = '/' . $pattern;
@@ -235,15 +238,31 @@ abstract class Router {
                 $pattern
             );
         }
+        $formatPattern = null;
+        $isOptionalFormat = isset($options['formats']['default']);
         if ($hasFormat) {
-            if (isset($options['formats']['default'])) {
-                $pattern .= '(\.(?<format>[0-9a-zA-Z]+?))?';
+            if ($isOptionalFormat) {
+                $formatPattern = '(\.(?<format>[0-9a-zA-Z]+?))?';
             } else {
-                $pattern .= '\.(?<format>[0-9a-zA-Z]+?)';
+                $formatPattern = '\.(?<format>[0-9a-zA-Z]+?)';
             }
         }
+        if ($this->shouldMatchScope) {
+            if ($hasFormat) {
+                $pattern = '#^/' . $pattern;
+                if ($isOptionalFormat === false) {
+                    $pattern .=  '/(.*?' . $formatPattern . ')$#';
+                } else {
+                    $pattern .= '($|/(.+?' . $formatPattern . '))$#';
+                }
+            } else {
+                $pattern = '#^/' . $pattern . '($|/.*$)#';
+            }
+        } else {
+            $pattern = '#^/' . $pattern . $formatPattern . '$#';
+        }
         var_dump($pattern);
-        $result = preg_match('#^/' . $pattern . '$#', $path, $matches);
+        $result = preg_match($pattern, $path, $matches);
         if ($result === false) {
             throw new Exception;
         }
@@ -287,24 +306,85 @@ abstract class Router {
                     return false;
                 }
             }
-            foreach ($matches as $key => $value) {
-                if (is_string($key)) {
-                    if ($key === 'module') {
-                        $pattern = '#^[a-zA-Z_][a-zA-Z0-9_]*$#';
-                        $this->setModule($value);
-                    } elseif ($key === 'controller') {
-                        $this->setController($value);
-                    } elseif ($key === 'action') {
-                        $this->setAction($value);
+            if ($this->shouldMatchScope) {
+                if ($this->scopeMatches === null) {
+                    $this->scopeMatches = [];
+                }
+                print_r($matches);
+                $this->scopeMatches[] = $matches;
+                if ($hasFormat) {
+                    end($matches);
+                    if ($isOptionalFormat) {
+                        if (isset($matches['format'])) {
+                            return $matches[key($matches) - 2];
+                        } else {
+                            return end($matches);
+                        }
                     } else {
-                        $this->setParam($key, $value);
+                        return $matches[key($matches) - 1];
                     }
                 }
+                return end($matches);
             }
+            if ($this->scopeMatches !== null) {
+                foreach ($this->scopeMatches as $tmp) {
+                    $this->setMatches($tmp);
+                }
+            }
+            $this->setMatches($matches);
             $this->setMatchStatus(true);
             return true;
         }
         return false;
+    }
+
+    protected function matchScope($defination, $function) {
+        if ($this->isMatched()) {
+            throw new Exception;
+        }
+        $path = $this->getPath();
+        $pattern = null;
+        $options = null;
+        if (is_array($defination)) {
+            if (isset($defination[0]) === false) {
+                throw new Exception;
+            }
+            $pattern = $defination[0];
+            unset($defination[0]);
+            $options = $defination;
+        } else {
+            $pattern = $defination;
+        }
+        $this->shouldMatchScope = true;
+        $path = $this->match($pattern, $options);
+        $this->shouldMatchScope = false;
+        if ($path === false) {
+            return false;
+        }
+        $previousPath = $this->getPath();
+        $this->setPath('/' . $path);
+        var_dump($this->getPath());
+        $result = $function();
+        $this->setPath($previousPath);
+        array_pop($this->scopeMatches);
+        $this->parseReturnValue($result);
+        return $this->isMatched();
+    }
+
+    private function setMatches($value) {
+        foreach ($matches as $key => $value) {
+            if (is_string($key)) {
+                if ($key === 'module') {
+                    $this->setModule($value);
+                } elseif ($key === 'controller') {
+                    $this->setController($value);
+                } elseif ($key === 'action') {
+                    $this->setAction($value);
+                } else {
+                    $this->setParam($key, $value);
+                }
+            }
+        }
     }
 
     private function verifyExtraMatchConstrains($extra, array $matches = null) {
@@ -630,31 +710,6 @@ abstract class Router {
             $this->setAction($action);
             echo '[resource action ' . $controller .'/' . $action . ' matched!]';
             return true;
-        }
-        return false;
-    }
-
-    protected function matchScope($prefix, $function) {
-        if ($this->isMatched()) {
-            throw new Exception;
-        }
-        $path = $this->getPath();
-        $prefix = '/' . $prefix;
-        if (strncmp($path, $prefix, strlen($prefix)) === 0) {
-            $tmp = substr($path, strlen($prefix));
-            if ($tmp === '') {
-                $tmp = '/';
-            }
-            if ($tmp[0] !== '/') {
-                return false;
-            }
-            $this->setPath($tmp);
-            $result = $function();
-            $this->setPath($path);
-            if ($this->isMatched()) {
-                $this->parseReturnValue($result);
-                return $result !== false;
-            }
         }
         return false;
     }
