@@ -64,6 +64,15 @@ abstract class Router {
     }
 
     public function getModule() {
+        if (Config::get('hyperframework.web.enable_module') !== true) {
+            return;
+        }
+        if ($this->moduleNamespace !== null) {
+            return $this->moduleNamespace;
+        }
+        if ($this->module === null) {
+            return 'main';
+        }
         return $this->module;
     }
 
@@ -72,6 +81,9 @@ abstract class Router {
     }
 
     public function getAction() {
+        if ($this->action === null) {
+            return 'show';
+        }
         return $this->action;
     }
 
@@ -82,12 +94,8 @@ abstract class Router {
         if ($this->moduleNamespace !== null) {
             return $this->moduleNamespace;
         }
-        if ($this->module === null) {
-            return 'Main';
-        }
-        return str_replace(
-            ' ', '', ucwords(str_replace('_', ' ', $this->module))
-        );
+        $module = $this->getModule();
+        return str_replace(' ', '', ucwords(str_replace('_', ' ', $module)));
     }
 
     public function getControllerClass() {
@@ -97,7 +105,7 @@ abstract class Router {
         } else {
             $controller = $this->getController();
             if ($controller === null) {
-                $class = 'IndexController';
+                return;
             } else {
                 $tmp = ucwords(str_replace('_', ' ', $controller));
                 $class = str_replace(' ', '', $tmp) . 'Controller';
@@ -122,12 +130,8 @@ abstract class Router {
         if ($this->actionMethod !== null) {
             return $this->actionMethod;
         }
-        if ($this->action === null) {
-            return 'doShowAction';
-        }
-        $tmp = str_replace(
-            ' ', '', ucwords(str_replace('_', ' ', $this->action))
-        );
+        $action = $this->getAction();
+        $tmp = str_replace(' ', '', ucwords(str_replace('_', ' ', $action)));
         return 'do' . $tmp . 'Action';
     }
 
@@ -662,8 +666,8 @@ abstract class Router {
             $this->setMatchStatus(false);
             return;
         }
-        if (is_string($result)) {
-            $tmps = explode('/', $result);
+        if (is_string($value)) {
+            $tmps = explode('/', $value);
             switch (count($tmps)) {
                 case 1:
                     $this->setAction($tmps[0]);
@@ -671,10 +675,12 @@ abstract class Router {
                 case 2:
                     $this->setController($tmps[0]);
                     $this->setAction($tmps[1]);
+                    break;
                 case 3:
                     $this->setModule($tmps[0]);
                     $this->setController($tmps[1]);
                     $this->setAction($tmps[2]);
+                    break;
                 default:
                     throw new Exception;
             }

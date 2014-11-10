@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
+use Closure;
 use Hyperframework;
 use Hyperframework\Config;
 use Hyperframework\FullPathRecognizer;
@@ -24,7 +25,7 @@ class ViewTemplate extends ViewTemplateEngine {
                 $this->renderTemplate($root . '/_layouts/' . $layout);
             } while ($this->getLayout() !== $layout && $this->getLayout() !== null);
         } else {
-            if ($function !== null) {
+            if ($function instanceof Closure) {
                 $function();
             }
         }

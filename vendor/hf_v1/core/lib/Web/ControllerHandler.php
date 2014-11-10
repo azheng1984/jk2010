@@ -8,10 +8,15 @@ final class ControllerHandler {
         $router = $app->getRouter();
         $class = $router->getControllerClass();
         if ($class === null) {
-            throw new Exception;
+            throw new NotFoundException;
         }
         $action = $router->getActionMethod();
+        var_dump($action);
+        if ($action === null) {
+            throw new NotFoundException;
+        }
         $controller = new $class($app);
+        //todo filter
         if (method_exists($controller, $action)) {
             return $controller->$action();
         }

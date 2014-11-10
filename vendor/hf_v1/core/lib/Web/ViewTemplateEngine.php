@@ -2,6 +2,7 @@
 namespace Hyperframework\Web;
 
 use ArrayAccess;
+use Exception;
 
 abstract class ViewTemplateEngine implements ArrayAccess {
     private $model;
@@ -19,19 +20,23 @@ abstract class ViewTemplateEngine implements ArrayAccess {
     abstract public function render($name);
 
     public function renderBlock($name, $default = null) {
-        $function = $this->blocks[$name];
-        $function();
+        if (isset($this->blocks[$name])) {
+            $function = $this->blocks[$name];
+            $function();
+        } else {
+            if ($default === null) {
+                throw new Exception("View block '$name' not found");
+            }
+            $default();
+        }
     }
 
     public function setBlock($name, $function) {
         $this->blocks[$name] = $function;
     }
 
-    public function extend($layout) {
-    }
-
-    public function setLayout($value) {
-        $this->layout = $value;
+    public function setLayout($layout) {
+        $this->layout = $layout;
     }
 
     public function getLayout() {

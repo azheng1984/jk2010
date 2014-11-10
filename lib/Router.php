@@ -7,11 +7,12 @@ class Router extends Base {
     public function parse() {
 //        $this->match('/');
 //        $this->setMatchStatus(false);
-        $this->matchResources('articles', []);
-        echo $this->getControllerClass();
-        echo $this->getActionMethod();
-        echo $this->getModuleNamespace();
+        if ($this->matchResource('articles/:article_id/comment')) return;
+//        echo 'xx';
+//        exit;
+        if ($this->match('/:article_id')) return 'index/show';
         return;
+
         $this->setMatchStatus(false);
         $this->matchScope('article', function() {
             echo $this->getPath();
