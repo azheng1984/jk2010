@@ -16,6 +16,7 @@ abstract class Router {
     private $action;
     private $actionMethod;
     private $path;
+    private $scopeFormats;
     private $scopeMatches;
     private $shouldMatchScope = false;
     private $isMatched = false;
@@ -160,6 +161,8 @@ abstract class Router {
     }
 
     protected function match($pattern, array $options = null) {
+        echo '>';
+        var_dump($pattern);
         if ($this->isMatched()) {
             throw new Exception;
         }
@@ -185,6 +188,14 @@ abstract class Router {
         $hasDynamicSegment = strpos($pattern, ':') !== false;
         $hasWildcardSegment = strpos($pattern, '*') !== false;
         $hasFormat = isset($options['formats']);
+        if ($this->scopeFormats !== null) {
+            echo 'xxxxxxxxxxxxx';
+            if ($hasFormat) {
+                throw new Exception;
+            }
+            $options['formats'] = $this->scopeFormats;
+            $hasFormat = true;
+        }
         if ($hasFormat && is_array($options['formats']) === false) {
             $options['formats'] = [$options['formats']];
         }
@@ -256,7 +267,7 @@ abstract class Router {
                     $pattern .= '($|/(.+?' . $formatPattern . '))$#';
                 }
             } else {
-                $pattern = '#^/' . $pattern . '($|/.*$)#';
+                $pattern = '#^/' . $pattern . '($|/(.*)$)#';
             }
         } else {
             $pattern = '#^/' . $pattern . $formatPattern . '$#';
@@ -362,16 +373,24 @@ abstract class Router {
             return false;
         }
         $previousPath = $this->getPath();
+        if (isset($defination['formats'])) {
+            if ($this->scopeFormats !== null) {
+                throw new Exception;
+            }
+            $this->scopeFormats = $defination['formats'];
+        }
         $this->setPath('/' . $path);
-        var_dump($this->getPath());
         $result = $function();
         $this->setPath($previousPath);
         array_pop($this->scopeMatches);
+        if (isset($defination['formats'])) {
+            $this->scopeFormats = null;
+        }
         $this->parseReturnValue($result);
         return $this->isMatched();
     }
 
-    private function setMatches($value) {
+    private function setMatches($matches) {
         foreach ($matches as $key => $value) {
             if (is_string($key)) {
                 if ($key === 'module') {
@@ -518,6 +537,9 @@ abstract class Router {
         if (count($extraActions) !== 0) {
             $options['extra_actions'] = $extraActions;
         }
+        unset($options['collection_actions']);
+        unset($options['element_actions']);
+        unset($options['extra_element_actions']);
         return $this->matchResource($pattern, $options);
     }
 
@@ -615,6 +637,7 @@ abstract class Router {
             }
             unset($options['extra_actions']);
         }
+        unset($options['default_actions']);
         if ($actions === null || count($actions) === 0) {
             throw new Exception;
         }
@@ -647,29 +670,6 @@ abstract class Router {
                 continue;
             }
             unset($value[0]);
-            $suffix = null;
-            if (isset($value[1])) {
-                if ($value[1] !== '/' && $value[1] != '') {
-                    $suffix = '/' . $value[1];
-                } else {
-                    $suffix = '/';
-                }
-                unset($value[1]);
-            } else {
-                $suffix = '/' . $key;
-            }
-            $actionPattern = $pattern;
-            if ($suffix !== '/') {
-                if (preg_match('#/[^*:(]+$#', $suffix, $matches) === 1) {
-                    if (substr($this->getPath(), -strlen($matches[0]))
-                        !== $matches[0]
-                    ) {
-                        continue;
-                    }
-                }
-                $actionPattern .= $suffix;
-            }
-            //var_dump($suffix);
             $actionOptions = null;
             if (count($value) !== 0) {
                 $actionOptions = $value;
@@ -694,6 +694,34 @@ abstract class Router {
             } else {
                 $actionOptions = $options;
             }
+            $suffix = null;
+            if (isset($value[1])) {
+                if ($value[1] !== '/' && $value[1] != '') {
+                    $suffix = '/' . $value[1];
+                } else {
+                    $suffix = '/';
+                }
+                unset($value[1]);
+            } else {
+                $suffix = '/' . $key;
+            }
+            $actionPattern = $pattern;
+            if ($suffix !== '/') {
+                if (isset($actionOptions['formats']) === null
+                    && $this->scopeFormats === null
+                    && preg_match('#/[^*:(]+$#', $suffix, $matches) === 1
+                ) {
+                    if (substr($this->getPath(), -strlen($matches[0]))
+                        !== $matches[0]
+                    ) {
+                        echo '*';
+                        var_dump($actionPattern);
+                        continue;
+                    }
+                }
+                $actionPattern .= $suffix;
+            }
+            var_dump($actionPattern);
             if ($this->match($actionPattern, $actionOptions)) {
                 var_dump($actionOptions);
                 var_dump($actionPattern);
