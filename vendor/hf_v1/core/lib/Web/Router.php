@@ -237,9 +237,9 @@ abstract class Router {
         }
         if ($hasFormat) {
             if (isset($options['formats']['default'])) {
-                $pattern .= '(\.(?<format>[0-9a-zA-Z-.]+?))?';
+                $pattern .= '(\.(?<format>[0-9a-zA-Z]+?))?';
             } else {
-                $pattern .= '\.(?<format>[0-9a-zA-Z-.]+?)';
+                $pattern .= '\.(?<format>[0-9a-zA-Z]+?)';
             }
         }
         var_dump($pattern);
