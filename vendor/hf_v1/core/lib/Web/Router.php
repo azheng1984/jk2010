@@ -294,17 +294,23 @@ abstract class Router {
                 }
             }
             $pattern = '#^[a-zA-Z_][a-zA-Z0-9_]*$#';
-            if (isset($matches['module']) && isset($options[':module']) === false) {
+            if (isset($matches['module'])
+                && isset($options[':module']) === false
+            ) {
                 if (preg_match($pattern, $matches['module']) === 0) {
                     return false;
                 }
             }
-            if (isset($matches['controller']) && isset($options[':controller']) === false) {
+            if (isset($matches['controller'])
+                && isset($options[':controller']) === false
+            ) {
                 if (preg_match($pattern, $matches['controller']) === 0) {
                     return false;
                 }
             }
-            if (isset($matches['action']) && isset($options[':action']) === false) {
+            if (isset($matches['action'])
+                && isset($options[':action']) === false
+            ) {
                 if (preg_match($pattern, $matches['action']) === 0) {
                     return false;
                 }
@@ -749,7 +755,6 @@ abstract class Router {
             }
             $this->setController($controller);
             $this->setAction($action);
-            echo '[resource action ' . $controller .'/' . $action . ' matched!]';
             return true;
         }
         return false;
