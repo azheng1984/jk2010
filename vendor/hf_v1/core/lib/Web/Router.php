@@ -459,6 +459,9 @@ abstract class Router {
                 'delete' => ['DELETE', ':id', 'belongs_to_element' => true],
             ];
             if ($hasOptions === false) {
+                foreach ($options['default_actions'] as &$value) {
+                    unset($value['belongs_to_element']);
+                }
                 return $this->matchResource($pattern, $options);
             }
         }
@@ -555,10 +558,8 @@ abstract class Router {
         if (count($extraActions) !== 0) {
             $options['extra_actions'] = $extraActions;
         }
-        if (isset($options['default_opitons'])) {
-            foreach ($options['default_options'] as &$value) {
-                unset($value['belongs_to_element']);
-            }
+        foreach ($options['default_actions'] as &$value) {
+            unset($value['belongs_to_element']);
         }
         unset($options['collection_actions']);
         unset($options['element_actions']);
@@ -732,7 +733,7 @@ abstract class Router {
             if ($suffix !== '/') {
                 if (isset($actionOptions['formats']) === null
                     && $this->scopeFormats === null
-                    && preg_match('#^[^*:(]+$#', $suffix, $matches) === 1
+                    && preg_match('#^[^*:(#]+$#', $suffix, $matches) === 1
                 ) {
                     if (substr($this->getPath(), -strlen($matches[0]))
                         !== $matches[0]

@@ -5,6 +5,7 @@ use Hyperframework\Web\Router as Base;
 
 class Router extends Base {
     public function parse() {
+        if ($this->matchResources('articles')) echo 'xxxxxxx'; return;
         if ($this->matchScope(['xxx/:xxx_id', 'formats' => ['jpg']], function() {
             if ($this->match('/')) {
                 return;
@@ -21,7 +22,6 @@ class Router extends Base {
         })) return;
         if ($this->match('/')) return;
         if ($this->matchResources('articles/:article_id/comments')) return;
-        if ($this->matchResources('articles')) return;
         return;
 
         $this->setMatchStatus(false);
