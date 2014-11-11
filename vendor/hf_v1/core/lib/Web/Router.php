@@ -67,14 +67,8 @@ abstract class Router {
     }
 
     public function getModule() {
-        if (Config::get('hyperframework.web.enable_module') !== true) {
-            return;
-        }
-        if ($this->moduleNamespace !== null) {
-            return $this->moduleNamespace;
-        }
         if ($this->module === null) {
-            return 'main';
+            return Config::get('hyperframework.web.default_module');
         }
         return $this->module;
     }
@@ -94,13 +88,13 @@ abstract class Router {
     }
 
     public function getModuleNamespace() {
-        if (Config::get('hyperframework.web.enable_module') !== true) {
-            return;
-        }
         if ($this->moduleNamespace !== null) {
             return $this->moduleNamespace;
         }
         $module = $this->getModule();
+        if ($module === null) {
+            return;
+        }
         return str_replace(' ', '', ucwords(str_replace('_', ' ', $module)));
     }
 
