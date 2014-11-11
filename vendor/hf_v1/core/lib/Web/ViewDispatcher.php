@@ -20,7 +20,7 @@ class ViewDispatcher {
             $name .= $router->getAction();
         }
         if ($router->hasParam('format')) {
-            $name .= $router->getParam('format');
+            $name .= '.' . $router->getParam('format');
         }
         $name .= '.php';
         $view->render($name);

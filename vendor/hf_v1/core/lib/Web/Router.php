@@ -555,6 +555,11 @@ abstract class Router {
         if (count($extraActions) !== 0) {
             $options['extra_actions'] = $extraActions;
         }
+        if (isset($options['default_opitons'])) {
+            foreach ($options['default_options'] as &$value) {
+                unset($value['belongs_to_element']);
+            }
+        }
         unset($options['collection_actions']);
         unset($options['element_actions']);
         unset($options['extra_element_actions']);
@@ -688,6 +693,17 @@ abstract class Router {
                 continue;
             }
             unset($value[0]);
+            $suffix = null;
+            if (isset($value[1])) {
+                if ($value[1] !== '/' && $value[1] != '') {
+                    $suffix = '/' . $value[1];
+                } else {
+                    $suffix = '/';
+                }
+                unset($value[1]);
+            } else {
+                $suffix = '/' . $key;
+            }
             $actionOptions = null;
             if (count($value) !== 0) {
                 $actionOptions = $value;
@@ -711,17 +727,6 @@ abstract class Router {
                 }
             } else {
                 $actionOptions = $options;
-            }
-            $suffix = null;
-            if (isset($value[1])) {
-                if ($value[1] !== '/' && $value[1] != '') {
-                    $suffix = '/' . $value[1];
-                } else {
-                    $suffix = '/';
-                }
-                unset($value[1]);
-            } else {
-                $suffix = '/' . $key;
             }
             $actionPattern = $pattern;
             if ($suffix !== '/') {
