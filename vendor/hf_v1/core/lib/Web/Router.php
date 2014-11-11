@@ -161,8 +161,6 @@ abstract class Router {
     }
 
     protected function match($pattern, array $options = null) {
-        echo '>';
-        var_dump($pattern);
         if ($this->isMatched()) {
             throw new Exception;
         }
@@ -184,12 +182,14 @@ abstract class Router {
                 }
             }
         }
+        if (strpos($pattern, '#') !== false) {
+            throw new Exception;
+        }
         $hasOptionalSegment = strpos($pattern, '(') !== false;
         $hasDynamicSegment = strpos($pattern, ':') !== false;
         $hasWildcardSegment = strpos($pattern, '*') !== false;
         $hasFormat = isset($options['formats']);
         if ($this->scopeFormats !== null) {
-            echo 'xxxxxxxxxxxxx';
             if ($hasFormat) {
                 throw new Exception;
             }
@@ -330,7 +330,6 @@ abstract class Router {
                 print_r($matches);
                 $this->scopeMatchStack[] = $matches;
                 if ($hasFormat) {
-                    end($matches);
                     if ($isOptionalFormat) {
                         if (isset($matches['format'])) {
                             return $matches[key($matches) - 2];
