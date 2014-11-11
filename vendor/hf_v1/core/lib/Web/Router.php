@@ -793,6 +793,9 @@ abstract class Router {
         if (is_string($value)) {
             $tmps = explode('/', $value);
             switch (count($tmps)) {
+                case 1:
+                    $this->setAction($tmps[1]);
+                    break;
                 case 2:
                     $this->setController($tmps[0]);
                     $this->setAction($tmps[1]);
