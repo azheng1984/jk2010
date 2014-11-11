@@ -791,6 +791,9 @@ abstract class Router {
             return;
         }
         if (is_string($value)) {
+            if ($value === '') {
+                throw new Exception;
+            }
             $tmps = explode('/', $value);
             switch (count($tmps)) {
                 case 1:
