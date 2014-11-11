@@ -667,6 +667,8 @@ abstract class Router {
         }
         if (isset($options['id'])) {
             $options[':id'] = $options['id'];
+        } elseif (isset($options[':id']) === false) {
+            throw new Exception;
         } else {
             $options[':id'] = '\d+';
         }
