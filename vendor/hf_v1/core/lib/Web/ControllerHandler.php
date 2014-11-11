@@ -8,7 +8,9 @@ final class ControllerHandler {
         $router = $app->getRouter();
         $controllerClass = $router->getControllerClass();
         var_dump($controllerClass);
-        if ($controllerClass === null) {
+        if ($controllerClass === null
+            || class_exists($controllerClass) === false
+        ) {
             throw new NotFoundException;
         }
         $actionMethod = $router->getActionMethod();

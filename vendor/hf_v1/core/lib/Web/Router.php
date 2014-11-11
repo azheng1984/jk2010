@@ -29,14 +29,7 @@ abstract class Router {
         }
     }
 
-    protected function parse() {
-        if ($this->match('/')) return;
-        $pattern = ':controller/:action';
-        if (Config::get('hyperframework.web.enable_module') === true) {
-            $pattern = '(:module/)' . $pattern;
-        }
-        $this->match($pattern);
-    }
+    abstract protected function parse();
 
     protected function getPath() {
         if ($this->path === null) {
