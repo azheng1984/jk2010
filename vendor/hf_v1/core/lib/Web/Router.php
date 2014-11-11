@@ -455,7 +455,7 @@ abstract class Router {
                 $options[':id'] = '\d+';
             }
         } else {
-            $options[':id'] = '\d+';
+            $options = [':id' => '\d+'];
         }
         if ($hasOptions === false || ($hasDefaultActions
             && isset($options['default_actions']) === false
