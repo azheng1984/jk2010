@@ -120,7 +120,6 @@ abstract class Router {
         if ($class[0] === '\\') {
             return substr($class, 1);
         }
-        $moduleNamespace = null;
         $namespace = Hyperframework\APP_ROOT_NAMESPACE;
         if ($namespace !== null) {
             $namespace .= '\\';
