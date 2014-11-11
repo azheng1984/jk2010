@@ -664,12 +664,12 @@ abstract class Router {
         if ($actions === null || count($actions) === 0) {
             throw new Exception;
         }
-        if (preg_match('#:id($|/)#', $pattern) !== 0) {
+        if (preg_match('#[:*]id($|[/{])#', $pattern) !== 0) {
             throw new Exception;
         }
         if (isset($options['id'])) {
             $options[':id'] = $options['id'];
-        } elseif (isset($options[':id']) === false) {
+        } elseif (isset($options[':id'])) {
             throw new Exception;
         } else {
             $options[':id'] = '\d+';
