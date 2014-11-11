@@ -443,6 +443,20 @@ abstract class Router {
         $hasDefaultActions = isset($options['actions']) === false && (
             $hasCollectionActions === false || $hasElementActions === false
         );
+        if (preg_match('#[:*]id($|[/{])#', $pattern) !== 0) {
+            throw new Exception;
+        }
+        if ($hasOptions) {
+            if (isset($options['id'])) {
+                $options[':id'] = $options['id'];
+            } elseif (isset($options[':id'])) {
+                throw new Exception;
+            } else {
+                $options[':id'] = '\d+';
+            }
+        } else {
+            $options[':id'] = '\d+';
+        }
         if ($hasOptions === false || ($hasDefaultActions
             && isset($options['default_actions']) === false
         )) {
@@ -663,16 +677,6 @@ abstract class Router {
         unset($options['default_actions']);
         if ($actions === null || count($actions) === 0) {
             throw new Exception;
-        }
-        if (preg_match('#[:*]id($|[/{])#', $pattern) !== 0) {
-            throw new Exception;
-        }
-        if (isset($options['id'])) {
-            $options[':id'] = $options['id'];
-        } elseif (isset($options[':id'])) {
-            throw new Exception;
-        } else {
-            $options[':id'] = '\d+';
         }
         $requestMethod = $_SERVER['REQUEST_METHOD'];
         $action = null;

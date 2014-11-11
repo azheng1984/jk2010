@@ -5,8 +5,7 @@ use Hyperframework\Web\Router as Base;
 
 class Router extends Base {
     public function parse() {
-        if ($this->matchResources('dsf/:id{df}/dsf')) echo 'xxxxxxx'; return;
-        if ($this->matchResources('articles')) echo 'xxxxxxx'; return;
+        if ($this->matchResources('articles')) return;
         if ($this->matchScope(['xxx/:xxx_id', 'formats' => ['jpg']], function() {
             if ($this->match('/')) {
                 return;
