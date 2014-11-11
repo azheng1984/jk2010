@@ -728,19 +728,16 @@ abstract class Router {
             if ($suffix !== '/') {
                 if (isset($actionOptions['formats']) === null
                     && $this->scopeFormats === null
-                    && preg_match('#/[^*:(]+$#', $suffix, $matches) === 1
+                    && preg_match('#^[^*:(]+$#', $suffix, $matches) === 1
                 ) {
                     if (substr($this->getPath(), -strlen($matches[0]))
                         !== $matches[0]
                     ) {
-                        echo '*';
-                        var_dump($actionPattern);
                         continue;
                     }
                 }
                 $actionPattern .= $suffix;
             }
-            var_dump($actionPattern);
             if ($this->match($actionPattern, $actionOptions)) {
                 var_dump($actionOptions);
                 var_dump($actionPattern);
