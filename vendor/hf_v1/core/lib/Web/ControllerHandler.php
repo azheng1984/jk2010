@@ -30,32 +30,5 @@ final class ControllerHandler {
 //            }
 //        }
         return;
-
-        $actionInfo = null;
-        if (isset($pathInfo['controller'])) {
-            $actionInfo = $pathInfo['controller'];
-        }
-        $method = static::getMethod($actionInfo);
-        $hasBeforeFilter = isset($actionInfo['before_filter']);
-        $hasAfterFilter = isset($actionInfo['after_filter']);
-        if ($method === null
-            && $hasBeforeFilter === false
-            && $hasAfterFilter === false
-        ) {
-            return;
-        }
-        $result = null;
-        $class = static::getClass($pathInfo);
-        $controller = new $class($app);
-//        if ($hasBeforeFilter) {
-//            $controller->initialize();
-//        }
-        if ($method !== null) {
-            $result = $action->$method();
-        }
-//        if ($hasAfterFilter) {
-//            $controller->finalize();
-//        }
-        return $result;
     }
 }

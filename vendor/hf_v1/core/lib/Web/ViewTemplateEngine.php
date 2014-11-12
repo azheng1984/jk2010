@@ -21,7 +21,17 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         }
     }
 
-    public function renderBlock($name, $default = null) {
+    public function render($path) {
+        $this->renderTemplate($path);
+        $layout = $this->getLayout();
+        if ($layout !== null) {
+            $this->renderLayout($layout);
+        }
+    }
+
+    abstract protected function renderTemplate($path);
+
+    protected function renderBlock($name, $default = null) {
         if (isset($this->blocks[$name])) {
             $function = $this->blocks[$name];
             $function();
@@ -33,27 +43,17 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         }
     }
 
-    public function setBlock($name, $function) {
+    protected function setBlock($name, $function) {
         $this->blocks[$name] = $function;
     }
 
-    public function setLayout($path) {
+    protected function setLayout($path) {
         $this->layout = $path;
     }
 
-    public function getLayout() {
+    protected function getLayout() {
         return $this->layout;
     }
-
-    public function render($path) {
-        $this->renderTemplate($path);
-        $layout = $this->getLayout();
-        if ($layout !== null) {
-            $this->renderLayout($layout);
-        }
-    }
-
-    abstract protected function renderTemplate($path);
 
     protected function renderLayout($path) {
         if ($path === null) {
