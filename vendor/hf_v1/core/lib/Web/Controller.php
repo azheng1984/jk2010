@@ -10,7 +10,9 @@ class Controller implements ArrayAccess {
     }
 
     public function addBeforeFilter($callback, array $options = null) {
-        $this->addBeforeFilter('addFilter', []);
+        $this->addBeforeFilter('beginTransaction', []);
+        $this->addAfterFilter('commitTransaction', []);
+        $this->addAfterThrowingFilter('rollbackTransaction', []);
     }
 
     public function addAfterFilter($callback, array $options = null) {
