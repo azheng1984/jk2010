@@ -8,7 +8,9 @@ $p = preg_replace(
     '(?<\1>[^/]+?)',
     $p
 );
-
+function hi() {
+    echo 'xx';
+}
 class _ {
     public function __construct() {
 //        echo 'hi';
@@ -27,6 +29,7 @@ class index extends _{
        echo 'xx';
    }
 }
+
 //(new index)->name();
 namespace Hyperframework\Blog; //$x = array();
 //echo $p;
