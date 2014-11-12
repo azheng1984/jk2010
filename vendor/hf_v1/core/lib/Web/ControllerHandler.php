@@ -3,8 +3,8 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Config;
 
-final class ControllerHandler {
-    public static function handle($app) {
+class ControllerHandler {
+    public function handle($app) {
         $router = $app->getRouter();
         $controllerClass = $router->getControllerClass();
         if ($controllerClass === null
@@ -12,11 +12,14 @@ final class ControllerHandler {
         ) {
             throw new NotFoundException;
         }
+        $controller = new $controllerClass($app);
+        $controller->getFilters('before');
+        $controller->getFilters('after');
+        $controller->getFilters('after_throwing');
         $actionMethod = $router->getActionMethod();
         if ($actionMethod === null) {
             throw new NotFoundException;
         }
-        $controller = new $controllerClass($app);
         //todo filter
 //        $filters = $controller->getFilters('before_action');
         if (method_exists($controller, $actionMethod)) {
@@ -30,5 +33,8 @@ final class ControllerHandler {
 //            }
 //        }
         return;
+    }
+
+    public function next() {
     }
 }

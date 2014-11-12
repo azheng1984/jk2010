@@ -3,24 +3,47 @@ namespace Hyperframework\Web;
 
 class Controller implements ArrayAccess {
     private $app;
+    private $filters;
 
     public function __construct($app) {
         $this->app = $app;
     }
 
-    protected static function getRouteParam($name) {
+    public function addBeforeFilter($callback, array $options = null) {
+    }
+
+    public function addAfterFilter($callback, array $options = null) {
+    }
+
+    public function addAfterThrowingFilter(
+        $callback, array $options = null
+    ) {
+    }
+
+    public function addAroundFilter($callback, array $options = null) {
+    }
+
+    public function getApp() {
+        return $this->app;
+    }
+
+    public function getFilters() {
+        return $this->filters;
+    }
+
+    protected function getRouteParam($name) {
         $this->app->getRouter()->getParam($name);
     }
 
-    protected static function getRouteParams() {
+    protected function getRouteParams() {
         $this->app->getRouter()->getParams();
     }
 
-    protected static function setRouteParam($name, $value) {
+    protected function setRouteParam($name, $value) {
         $this->app->getRouter()->setParam($name, $value);
     }
 
-    protected static function removeRouteParam($name) {
+    protected function removeRouteParam($name) {
         $this->app->getRouter()->removeParam($name);
     }
 
@@ -42,9 +65,5 @@ class Controller implements ArrayAccess {
 
     protected function redirect($url, $statusCode = 302) {
         $this->app->redirect($url, $statusCode);
-    }
-
-    protected function getApp() {
-        return $this->app;
     }
 }
