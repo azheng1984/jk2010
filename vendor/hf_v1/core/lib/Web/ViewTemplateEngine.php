@@ -45,10 +45,11 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         return $this->layout;
     }
 
-    public function render($name) {
-        $this->renderTemplate($name);
-        if ($this->getLayout() !== null) {
-            $this->renderLayout();
+    public function render($path) {
+        $this->renderTemplate($path);
+        $layout = $this->getLayout();
+        if ($layout !== null) {
+            $this->renderLayout($layout);
         }
     }
 
