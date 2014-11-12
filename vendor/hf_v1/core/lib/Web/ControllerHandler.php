@@ -58,41 +58,4 @@ final class ControllerHandler {
 //        }
         return $result;
     }
-
-    protected static function getMethod($actionInfo) {
-        $method = $_SERVER['REQUEST_METHOD'];
-        if ($method === 'HEAD') {
-            $method = 'GET';
-        }
-        if ($actionInfo === null) {
-            if ($method === 'GET') {
-                return;
-            }
-            throw new MethodNotAllowedException(array('HEAD', 'GET'));
-        }
-        if (isset($actionInfo['methods'])
-            && in_array($method, $actionInfo['methods'])
-        ) {
-            return strtolower($method);
-        }
-        if (isset($actionInfo['get_not_allowed'])) {
-            $methods = isset($actionInfo['methods']) ?
-                $actionInfo['methods'] : array();
-            throw new MethodNotAllowedException($methods);
-        }
-        if ($method === 'GET') {
-            return;
-        }
-        $methods = isset($actionInfo['methods']) ?
-            $actionInfo['methods'] : array();
-        $methods[] = 'HEAD';
-        if (in_array('GET', $methods) === false) {
-            $methods[] = 'GET';
-        }
-        throw new MethodNotAllowedException($methods);
-    }
-
-    protected static function getClass($pathInfo) {
-        return $pathInfo['namespace'] . '\Action';
-    }
 }

@@ -7,7 +7,7 @@ class App {
     private $router;
     private $actionResult;
     private $view;
-    private $isViewEnabled;
+    private $isViewEnabled = true;
 
     public function run() {
         $this->initialize();
@@ -46,6 +46,10 @@ class App {
         $this->view = $value;
     }
 
+    public function getView() {
+        return $this->view;
+    }
+
     public function quit() {
         $this->finalize();
         exit;
@@ -63,7 +67,9 @@ class App {
     }
 
     protected function renderView() {
-        ViewDispatcher::dispatch($this);
+        if ($this->isViewEnabled) {
+            ViewHandler::handle($this);
+        }
     }
 
     protected function finalize() {}
