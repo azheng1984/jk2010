@@ -3,11 +3,15 @@ namespace Hyperframework\Web;
 
 use ArrayAccess;
 use Exception;
+use Hyperframework\FullPathRecognizer;
+use Hyperframework\Config;
+use Hyperframework;
 
 abstract class ViewTemplateEngine implements ArrayAccess {
     private $model;
     private $blocks = [];
     private $layout;
+    private $viewRootPath;
 
     public function __construct(array $model = null) {
         if ($model !== null) {
@@ -16,8 +20,6 @@ abstract class ViewTemplateEngine implements ArrayAccess {
             $this->model = [];
         }
     }
-
-    abstract public function render($name);
 
     public function renderBlock($name, $default = null) {
         if (isset($this->blocks[$name])) {
@@ -41,6 +43,42 @@ abstract class ViewTemplateEngine implements ArrayAccess {
 
     public function getLayout() {
         return $this->layout;
+    }
+
+    public function render($name) {
+        $this->renderTemplate($name);
+        $layout = $this->getLayout();
+        if ($this->getLayout() !== null) {
+            $layout = $this->getLayout();
+            $this->renderLayout($layout);
+        }
+    }
+
+    abstract protected function renderTemplate($path);
+
+    protected function renderLayout($path) {
+        if (FullPathRecognizer::isFull($path) === false) {
+            $path = $this->getViewRootPath() . DIRECTORY_SEPARATOR
+                . '_layouts' . DIRECTORY_SEPARATOR . $path;
+        }
+        $this->renderTemplate($path);
+    }
+
+    protected function getViewRootPath() {
+        if ($this->viewRootPath === null) {
+            $path = Config::get('hyperframework.web.view.root_path');
+            if ($path === null) {
+                $path = Hyperframework\APP_ROOT_PATH
+                    . DIRECTORY_SEPARATOR . 'views';
+            } else {
+                if (FullPathRecognizer::isFull($path) === false) {
+                    $path = Hyperframework\APP_ROOT_PATH
+                        . DIRECTORY_SEPARATOR . $path;
+                }
+            }
+            $this->viewRootPath = $path;
+        }
+        return $this->viewRootPath;
     }
 
     public function __invoke($function) {
