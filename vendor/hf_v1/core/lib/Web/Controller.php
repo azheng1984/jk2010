@@ -10,6 +10,7 @@ class Controller implements ArrayAccess {
     }
 
     public function addBeforeFilter($callback, array $options = null) {
+        $this->addBeforeFilter('addFilter', []);
     }
 
     public function addAfterFilter($callback, array $options = null) {
