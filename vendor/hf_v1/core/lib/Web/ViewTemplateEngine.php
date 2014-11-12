@@ -37,8 +37,8 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         $this->blocks[$name] = $function;
     }
 
-    public function setLayout($layout) {
-        $this->layout = $layout;
+    public function setLayout($path) {
+        $this->layout = $path;
     }
 
     public function getLayout() {

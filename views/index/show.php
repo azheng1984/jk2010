@@ -1,6 +1,5 @@
-<?php 
-echo '>';
-var_dump($path);
+<?php
+var_dump($this->path);
 $this(function() {
     $this['title'] = 'xxx';
     $var = 'xx';
