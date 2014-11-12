@@ -15,11 +15,11 @@ class Controller implements ArrayAccess {
         $this->addAfterThrowingFilter('rollbackTransaction', []);
 
         $this->addBeforeFilter('#beginTransaction', []);
-        $this->addAfterFilter('#commitTransaction', []);
+        $this->addAfterReturningFilter('#commitTransaction', []);
         $this->addAfterThrowingFilter('#rollbackTransaction', []);
 
         $this->addBeforeFilter(':beginTransaction', []);
-        $this->addAfterFilter(':commitTransaction', []);
+        $this->addAfterReturningFilter(':commitTransaction', []);
         $this->addAfterThrowingFilter(':rollbackTransaction', []);
     }
 
