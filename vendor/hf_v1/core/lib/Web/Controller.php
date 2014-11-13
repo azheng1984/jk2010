@@ -10,6 +10,9 @@ class Controller implements ArrayAccess {
     }
 
     public function addBeforeFilter($callback, array $options = null) {
+        // options
+        // prepend
+        // name
         //return false; equals $this->app->quit();
     }
 

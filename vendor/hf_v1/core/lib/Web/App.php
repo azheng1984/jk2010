@@ -24,15 +24,15 @@ class App {
         $this->router = $router;
     }
 
-    public function setActionResult($value) {
-        return $this->actionResult = $value;
-    }
-
     public function getActionResult($name = null) {
         if ($name === null) {
             $result = $this->actionResult;
         }
         return $this->actionResult[$name];
+    }
+
+    public function setActionResult($value) {
+        return $this->actionResult = $value;
     }
 
     public function redirect($url, $statusCode = 302) {
@@ -41,9 +41,11 @@ class App {
     }
 
     public function disableView() {
+        $this->isViewEnabled = false;
     }
 
     public function enableView() {
+        $this->isViewEnabled = true;
     }
 
     public function setView($value) {
@@ -66,7 +68,7 @@ class App {
     }
 
     protected function executeAction() {
-        $this->actionResult = ControllerHandler::handle($this);
+        $this->actionResult = ActionInvoker::invoke($this);
     }
 
     protected function renderView() {
