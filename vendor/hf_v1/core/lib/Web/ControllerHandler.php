@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 use Hyperframework\Config;
 
 class ControllerHandler {
-    public function handle($app) {
+    public static function handle($app) {
         $router = $app->getRouter();
         $controllerClass = $router->getControllerClass();
         if ($controllerClass === null
@@ -13,28 +13,28 @@ class ControllerHandler {
             throw new NotFoundException;
         }
         $controller = new $controllerClass($app);
-        $controller->getFilters('before');
-        $controller->getFilters('after');
-        $controller->getFilters('after_throwing');
+        $beforeFilters = [];
+        $afterReturningFilters = [];
+        $afterThrowingFilters = [];
+        $filters = $controller->getFilters();
+        foreach ($filters as $filter) {
+            switch ($filter['type']) {
+                case 'before':
+                    break;
+                case 'after':
+                    break;
+                case 'after_throwing':
+                    break;
+                case 'after_returning':
+                    break;
+            }
+        }
         $actionMethod = $router->getActionMethod();
         if ($actionMethod === null) {
             throw new NotFoundException;
         }
-        //todo filter
-//        $filters = $controller->getFilters('before_action');
         if (method_exists($controller, $actionMethod)) {
             return $controller->$actionMethod();
         }
-//        $filters = $controller->getFilters('after_action');
-//        if ($filters !== null) {
-//            $this->addBeforeActionFilter('callback');
-//            foreach ($filters as $filter) {
-//                $filter();
-//            }
-//        }
-        return;
-    }
-
-    public function next() {
     }
 }

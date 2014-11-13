@@ -24,6 +24,10 @@ class App {
         $this->router = $router;
     }
 
+    public function setActionResult($value) {
+        return $this->actionResult = $value;
+    }
+
     public function getActionResult($name = null) {
         if ($name === null) {
             $result = $this->actionResult;
@@ -59,7 +63,6 @@ class App {
         $this->rewriteRequestMethod();
         $this->parseRequestBody();
         $this->initializeRouter();
-        //$this->initializePathInfo();
     }
 
     protected function executeAction() {
@@ -74,7 +77,7 @@ class App {
 
     protected function finalize() {}
 
-    //todo remove
+    //todo move to router
     protected function rewriteRequestMethod() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
             isset($_POST['_method']) &&
@@ -96,32 +99,5 @@ class App {
 
     protected function initializeRouter() {
         $this->router = new Router($this);
-        if ($this->router->isMatched() === false) {
-            throw new NotFoundException;
-        }
-    }
-
-    protected function initializePathInfo() {
-        $this->pathInfo = PathInfo::get($this->path);
-    }
-
-    final protected function getPath() {
-        return $this->path;
-    }
-
-    final protected function setPath($value) {
-        return $this->path = $value;
-    }
-
-    final protected function getPathInfo() {
-        return $this->pathInfo;
-    }
-
-    final protected function setPathInfo($value) {
-        $this->pathInfo = $value;
-    }
-
-    final protected function setActionResult($value) {
-        return $this->actionResult = $value;
     }
 }

@@ -10,17 +10,7 @@ class Controller implements ArrayAccess {
     }
 
     public function addBeforeFilter($callback, array $options = null) {
-        $this->addBeforeFilter('beginTransaction', []);
-        $this->addAfterFilter('commitTransaction', []);
-        $this->addAfterThrowingFilter('rollbackTransaction', []);
-
-        $this->addBeforeFilter('#beginTransaction', []);
-        $this->addAfterReturningFilter('#commitTransaction', []);
-        $this->addAfterThrowingFilter('#rollbackTransaction', []);
-
-        $this->addBeforeFilter(':beginTransaction', []);
-        $this->addAfterReturningFilter(':commitTransaction', []);
-        $this->addAfterThrowingFilter(':rollbackTransaction', []);
+        //return false; equals $this->app->quit();
     }
 
     public function addAfterFilter($callback, array $options = null) {
@@ -32,6 +22,13 @@ class Controller implements ArrayAccess {
     }
 
     public function addAroundFilter($callback, array $options = null) {
+        if (version_compare(phpversion(), '5.5.0', '<')) {
+            throw new Exception;
+        }
+        $this->filters[] = ['around', $callback, $options];
+    }
+
+    public function removeFilter($name) {
     }
 
     public function getApp() {

@@ -8,9 +8,29 @@ $p = preg_replace(
     '(?<\1>[^/]+?)',
     $p
 );
-function hi() {
-    echo 'xx';
-}
+
+//function hi($controller) {
+//    echo 'start out';
+//    if (false) {
+//        echo 'start';
+//        yield;
+//        echo 'end';
+//    }
+//    yield;
+//    echo 'end out';
+//}
+
+//$x = hi('x');
+//var_dump($x->valid());
+//var_dump($x->next());
+
+//foreach (hi() as $item) {
+//    echo $item;
+//    if ($item === 2) {
+//        throw new \Exception;
+//    }
+//}
+
 class _ {
     public function __construct() {
 //        echo 'hi';
