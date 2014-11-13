@@ -74,6 +74,9 @@ class Controller implements ArrayAccess {
         $this->app->setView($value);
     }
 
+    public function render() {
+    }
+
     protected function redirect($url, $statusCode = 302) {
         $this->app->redirect($url, $statusCode);
     }

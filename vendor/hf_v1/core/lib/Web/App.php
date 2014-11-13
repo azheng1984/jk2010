@@ -12,7 +12,6 @@ class App {
     public function run() {
         $this->initialize();
         $this->executeAction();
-        $this->renderView();
         $this->finalize();
     }
 
@@ -40,11 +39,11 @@ class App {
         $this->quit();
     }
 
-    public function disableView() {
+    final public function disableView() {
         $this->isViewEnabled = false;
     }
 
-    public function enableView() {
+    final public function enableView() {
         $this->isViewEnabled = true;
     }
 
@@ -68,13 +67,76 @@ class App {
     }
 
     protected function executeAction() {
-        $this->actionResult = ActionInvoker::invoke($this);
+        $router = $this->getRouter();
+        $controllerClass = $router->getControllerClass();
+        if ($controllerClass === null
+            || class_exists($controllerClass) === false
+        ) {
+            throw new NotFoundException;
+        }
+        $controller = new $controllerClass($this);
+        $controller->run();
+        $filters = $controller->getFilters();
+        foreach ($filters as $filter) {
+            switch ($filter[0]) {
+                case 'before':
+                    break;
+                case 'after':
+                    break;
+                case 'after_throwing':
+                    break;
+                case 'after_returning':
+                    break;
+                case 'around':
+                    break;
+            }
+        }
+        $actionMethod = $router->getActionMethod();
+        if ($actionMethod === null) {
+            throw new NotFoundException;
+        }
+        try {
+            if (method_exists($controller, $actionMethod)) {
+                $this->actionResult = $controller->$actionMethod();
+            }
+            if ($controller->isRendered()) {
+                $controller->render();
+            }
+        } catch (Exception $e) {
+            //execute after throwing filter
+        }
+        //execute after returning filter
     }
 
-    protected function renderView() {
-        if ($this->isViewEnabled) {
-            ViewHandler::handle($this);
+    protected function render() {
+        $this->setRenderStatus(true);
+        if ($this->isViewRendered === false) {
+            return;
         }
+        $view = $this->getView();
+        if (is_object($view)) {
+            if (method_exsits($view, 'render')) {
+                $view->render();
+                return;
+            } else {
+                throw new Exception;
+            }
+        }
+        if ($view === null) {
+            $router = $this->getRouter();
+            if ($router->getModule() !== null) {
+                $view .= $module;
+            }
+            $view .= $router->getController() . '/' . $router->getAction();
+            if ($router->hasParam('format')) {
+                $view .= '.' . $router->getParam('format');
+            }
+            $view .= '.php';
+        } elseif (is_string($view) === false) {
+            throw new Exception;
+        }
+        $template = new ViewTemplate($app->getActionResult());
+        $template->render($view);
     }
 
     protected function finalize() {}
