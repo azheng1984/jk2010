@@ -12,20 +12,113 @@ class Controller {
         $this->app = $app;
     }
 
+    private function getFilter($config) {
+    }
+
     public function run() {
         $filters = $this->getFilters();
-        foreach ($filters as $filter) {
+        $action = $this->getRouter()->getAction();
+        if ($action === null) {
+            throw new Exception;
+        }
+        $tmps = [];
+        foreach ($filters as $key => $filter) {
+            $options = null;
+            if (isset($filter[2])) {
+                $options = $filter[2];
+            } else {
+                $tmps[] = $filter;
+            }
+            if (isset($options['ignore_actions'])) {
+                if (in_array($action, $options['ignore_actions'])) {
+                    continue;
+                }
+            }
+            if (isset($options['actions'])) {
+                if (in_array($action, $options['actions']) === false) {
+                    continue;
+                }
+            }
+            if (isset($options['prepend']) && $options['prepend'] === true) {
+                array_unshift($tmps, $filter);
+            }
+        }
+        $filters = $tmps;
+        foreach ($filters as &$filter) {
             switch ($filter[0]) {
                 case 'before':
-                    break;
-                case 'after':
-                    break;
-                case 'after_throwing':
-                    break;
-                case 'after_returning':
-                    break;
+                    if (is_string($filter[1])) {
+                        if ($filter[1] === '') {
+                            throw new Exception;
+                        }
+                        if ($filter[1][0] === ':') {
+                            $method = substr($filter[1][0], 1);
+                            if ($this->$method() === false) {
+                                $this->getApp()->quit();
+                            }
+                            break;
+                        }
+                        $class = $filter[1];
+                        $filter = new $class;
+                        if ($filter->run($this) === false) {
+                            $this->getApp()->quit();
+                        }
+                        break;
+                    } elseif (is_object($filter[1])) {
+                        if ($filter[1] instanceof Closure) {
+                            $function = $filter[1];
+                            if ($function($this) === false) {
+                                $this->getApp()->quit();
+                            }
+                            break;
+                        }
+                        if ($filter[1]->run($this)) {
+                            $this->getApp()->run();
+                        }
+                    }
+                    throw new Exception;
                 case 'around':
-                    break;
+                    if (is_string($filter[1])) {
+                        if ($filter[1] === '') {
+                            throw new Exception;
+                        }
+                        if ($filter[1][0] === ':') {
+                            $method = substr($filter[1][0], 1);
+                            $generator = $this->$method();
+                            if ($generator instanceof Generator === false) {
+                                throw new Exception;
+                            }
+                            if ($generator->next() === false) {
+                                $this->getApp()->quit();
+                            }
+                            $filter[1] = $generator;
+                            break;
+                        }
+                        $class = $filter[1];
+                        $object = new $class;
+                        $generator = $object->run($this);
+                        if ($generator instanceof Generator === false) {
+                            throw new Exception;
+                        }
+                        if ($generator->next() === false) {
+                            $this->getApp()->quit();
+                        }
+                        $filter[1] = $generator;
+                        break;
+                    } elseif (is_object($filter[1])) {
+                        if ($filter[1] instanceof Closure) {
+                            $function = $filter[1];
+                            if ($function($this) === false) {
+                                $this->getApp()->quit();
+                            }
+                            break;
+                        }
+                        if ($filter[1]->run($this)) {
+                            $this->getApp()->run();
+                        }
+                    }
+                    throw new Exception;
+                }
             }
         }
         $app = $this->getApp();
@@ -41,6 +134,26 @@ class Controller {
             }
         } catch (Exception $e) {
             //execute after throwing filter
+            foreach ($filters as $filter) {
+                switch ($filter[0]) {
+                    case 'before':
+                        break;
+                    case 'around':
+                        break;
+                    case 'after':
+                        break;
+                }
+            }
+        }
+        foreach ($filters as $filter) {
+            switch ($filter[0]) {
+                case 'before':
+                    break;
+                case 'around':
+                    break;
+                case 'after':
+                    break;
+            }
         }
         //execute after returning filter
     }
@@ -61,12 +174,6 @@ class Controller {
     public function addAfterFilter($callback, array $options = null) {
     }
 
-    public function addAfterThrowingFilter($callback, array $options = null) {
-    }
-
-    public function addAfterReturningFilter($callback, array $options = null) {
-    }
-
     public function addAroundFilter($callback, array $options = null) {
         if (version_compare(phpversion(), '5.5.0', '<')) {
             throw new Exception;
@@ -75,10 +182,45 @@ class Controller {
     }
 
     public function removeFilter($name) {
+        foreach ($this->filters as $key => $value) {
+            if (isset($value[2]) && isset($value[2]['name'])) {
+                if ($value[2]['name'] === $name) {
+                    unset($this->filters[$key]);
+                } else {
+                    continue;
+                }
+            } elseif (is_string($value[0])) {
+                if ($value[0] === $name) {
+                    unset($this->filters[$key]);
+                }
+            }
+        }
     }
 
     public function getFilters() {
-        return $this->filters;
+        $tmps = [];
+        foreach ($filters as $key => $filter) {
+            $options = null;
+            if (isset($filter[2])) {
+                $options = $filter[2];
+            } else {
+                $tmps[] = $filter;
+            }
+            if (isset($options['ignore_actions'])) {
+                if (in_array($action, $options['ignore_actions'])) {
+                    continue;
+                }
+            }
+            if (isset($options['actions'])) {
+                if (in_array($action, $options['actions']) === false) {
+                    continue;
+                }
+            }
+            if (isset($options['prepend']) && $options['prepend'] === true) {
+                array_unshift($tmps, $filter);
+            }
+        }
+        return $tmps;
     }
 
     public function getApp() {

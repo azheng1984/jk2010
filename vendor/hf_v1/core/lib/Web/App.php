@@ -1,8 +1,6 @@
 <?php
 namespace Hyperframework\Web;
 
-use Exception;
-
 class App {
     private $router;
 
@@ -35,6 +33,10 @@ class App {
         $this->initializeRouter();
     }
 
+    protected function initializeRouter() {
+        $this->router = new Router($this);
+    }
+
     protected function getController() {
         $router = $this->getRouter();
         $controllerClass = $router->getControllerClass();
@@ -47,8 +49,4 @@ class App {
     }
 
     protected function finalize() {}
-
-    protected function initializeRouter() {
-        $this->router = new Router($this);
-    }
 }
