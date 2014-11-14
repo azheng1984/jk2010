@@ -1,9 +1,15 @@
 <?php
 namespace Hyperframework\Web;
 
+use Generator;
+use Closure;
+use Exception;
+
 class Controller {
     private $app;
-    private $filters = [];
+    private $filterChain = [];
+    private $isFilterChainReversed = false;
+    private $isFilterChainQuitted = false;
     private $actionResult;
     private $view;
     private $isViewEnabled = true;
@@ -12,115 +18,7 @@ class Controller {
         $this->app = $app;
     }
 
-    private function getFilter($config) {
-    }
-
     public function run() {
-        $filters = $this->getFilters();
-        $action = $this->getRouter()->getAction();
-        if ($action === null) {
-            throw new Exception;
-        }
-        $tmps = [];
-        foreach ($filters as $key => $filter) {
-            $options = null;
-            if (isset($filter[2])) {
-                $options = $filter[2];
-            } else {
-                $tmps[] = $filter;
-            }
-            if (isset($options['ignore_actions'])) {
-                if (in_array($action, $options['ignore_actions'])) {
-                    continue;
-                }
-            }
-            if (isset($options['actions'])) {
-                if (in_array($action, $options['actions']) === false) {
-                    continue;
-                }
-            }
-            if (isset($options['prepend']) && $options['prepend'] === true) {
-                array_unshift($tmps, $filter);
-            }
-        }
-        $filters = $tmps;
-        foreach ($filters as &$filter) {
-            switch ($filter[0]) {
-                case 'before':
-                    if (is_string($filter[1])) {
-                        if ($filter[1] === '') {
-                            throw new Exception;
-                        }
-                        if ($filter[1][0] === ':') {
-                            $method = substr($filter[1][0], 1);
-                            if ($this->$method() === false) {
-                                $this->getApp()->quit();
-                            }
-                            break;
-                        }
-                        $class = $filter[1];
-                        $filter = new $class;
-                        if ($filter->run($this) === false) {
-                            $this->getApp()->quit();
-                        }
-                        break;
-                    } elseif (is_object($filter[1])) {
-                        if ($filter[1] instanceof Closure) {
-                            $function = $filter[1];
-                            if ($function($this) === false) {
-                                $this->getApp()->quit();
-                            }
-                            break;
-                        }
-                        if ($filter[1]->run($this)) {
-                            $this->getApp()->run();
-                        }
-                    }
-                    throw new Exception;
-                case 'around':
-                    if (is_string($filter[1])) {
-                        if ($filter[1] === '') {
-                            throw new Exception;
-                        }
-                        if ($filter[1][0] === ':') {
-                            $method = substr($filter[1][0], 1);
-                            $generator = $this->$method();
-                            if ($generator instanceof Generator === false) {
-                                throw new Exception;
-                            }
-                            if ($generator->next() === false) {
-                                $this->getApp()->quit();
-                            }
-                            $filter[1] = $generator;
-                            break;
-                        }
-                        $class = $filter[1];
-                        $object = new $class;
-                        $generator = $object->run($this);
-                        if ($generator instanceof Generator === false) {
-                            throw new Exception;
-                        }
-                        if ($generator->next() === false) {
-                            $this->getApp()->quit();
-                        }
-                        $filter[1] = $generator;
-                        break;
-                    } elseif (is_object($filter[1])) {
-                        if ($filter[1] instanceof Closure) {
-                            $function = $filter[1];
-                            if ($function($this) === false) {
-                                $this->getApp()->quit();
-                            }
-                            break;
-                        }
-                        if ($filter[1]->run($this)) {
-                            $this->getApp()->run();
-                        }
-                    }
-                    throw new Exception;
-                }
-            }
-        }
         $app = $this->getApp();
         $router = $app->getRouter();
         $actionMethod = $router->getActionMethod();
@@ -128,99 +26,140 @@ class Controller {
             throw new NotFoundException;
         }
         try {
-            $this->executeAction($actionMethod);
-            if ($this->isViewEnabled) {
-                $this->renderView();
-            }
-        } catch (Exception $e) {
-            //execute after throwing filter
-            foreach ($filters as $filter) {
-                switch ($filter[0]) {
-                    case 'before':
-                        break;
-                    case 'around':
-                        break;
-                    case 'after':
-                        break;
+            foreach ($this->filterChain &$filterConfig) {
+                $filterType = $filterConfig['type'];
+                if ($filterType === 'before' || $filterType === 'around') {
+                    $this->runFilter($filterConfig);
                 }
             }
-        }
-        foreach ($filters as $filter) {
-            switch ($filter[0]) {
-                case 'before':
-                    break;
-                case 'around':
-                    break;
-                case 'after':
-                    break;
+            $this->executeAction($actionMethod);
+            if ($this->isViewEnabled()) {
+                $this->renderView();
             }
+            array_reverse($this->filterChain);
+            $this->isFilterChainReversed = true;
+            foreach ($this->filterChain as &$filterConfig) {
+                $filterType = $filterConfig['type'];
+                if ($filterType === 'after' || $filterType === 'yielded') {
+                    $this->runFilter($filterConfig);
+                }
+            }
+            $this->isFilterChainQuitted = true;
+        } catch (Exception $e) {
+            $this->quitFilterChain($e);
         }
-        //execute after returning filter
     }
 
-    public function executeAction($method) {
+    private function executeAction($method) {
         if (method_exists($this, $method)) {
             $this->setActionResult($controller->$method());
         }
     }
 
-    public function addBeforeFilter($callback, array $options = null) {
-        // options
-        // prepend
-        // name
-        //return false; equals $this->app->quit();
+    public function addBeforeFilter($filter, array $options = null) {
+        $this->addFilter('before', $filter, $options);
     }
 
-    public function addAfterFilter($callback, array $options = null) {
+    public function addAfterFilter($filter, array $options = null) {
+        $this->addFilter('after', $filter, $options);
     }
 
-    public function addAroundFilter($callback, array $options = null) {
+    public function addAroundFilter($filter, array $options = null) {
         if (version_compare(phpversion(), '5.5.0', '<')) {
             throw new Exception;
         }
-        $this->filters[] = ['around', $callback, $options];
+        $this->addFilter('around', $filter, $options);
     }
 
     public function removeFilter($name) {
-        foreach ($this->filters as $key => $value) {
-            if (isset($value[2]) && isset($value[2]['name'])) {
-                if ($value[2]['name'] === $name) {
-                    unset($this->filters[$key]);
+        foreach ($this->filterChain as $key => $value) {
+            if (isset($value['options']) && isset($value['options']['name'])) {
+                if ($value['options']['name'] === $name) {
+                    unset($this->filterChain[$key]);
                 } else {
                     continue;
                 }
-            } elseif (is_string($value[0])) {
-                if ($value[0] === $name) {
-                    unset($this->filters[$key]);
+            } elseif (is_string($value['filter'])) {
+                if ($value['filter'] === $name) {
+                    unset($this->filterChain[$key]);
                 }
             }
         }
     }
 
-    public function getFilters() {
-        $tmps = [];
-        foreach ($filters as $key => $filter) {
-            $options = null;
-            if (isset($filter[2])) {
-                $options = $filter[2];
+    private function runFilter(array &$config, $return = false) {
+        if ($this->isFilterChainQuitted) {
+            throw new Exception;
+        }
+        $result = null;
+        if (is_string($config['filter'])) {
+            if ($config['filter'] === '') {
+                throw new Exception;
+            }
+            if ($config['filter'][0] === ':') {
+                $method = substr($config['filter'], 1);
+                $result = $this->$method();
+            }
+            $class = $config['filter'];
+            $filter = new $class;
+            $result = $filter->run($this);
+        } elseif ($config['type'] !== 'yielded' && is_object($filter[1])) {
+            if ($config['filter'] instanceof Closure) {
+                $function = $filter[1];
+                $result = $function($this);
             } else {
-                $tmps[] = $filter;
+                $result = $filter[1]->run($this);
             }
-            if (isset($options['ignore_actions'])) {
-                if (in_array($action, $options['ignore_actions'])) {
-                    continue;
-                }
+        } elseif ($config['type'] !== 'yielded') {
+            throw new Exception;
+        }
+        if ($config['type'] === 'around') {
+            if ($result instanceof Generator === false) {
+                throw new Exception;
             }
-            if (isset($options['actions'])) {
-                if (in_array($action, $options['actions']) === false) {
-                    continue;
-                }
+            if ($result->next() === false || $result->valid() === false) {
+                $result = false;
+            } else {
+                $config['type'] = 'yielded';
+                $config['filter'] = $result;
+                $result = null;
             }
-            if (isset($options['prepend']) && $options['prepend'] === true) {
-                array_unshift($tmps, $filter);
+        } elseif ($config['type'] === 'yielded') {
+            $result = $config['filter']->next();
+            $config['type'] = 'finished';
+        }
+        if ($return === false && $result === false) {
+            $this->quit();
+        }
+        return $result;
+    }
+
+    private function addFilter($type, $filter, array $options = null) {
+        $filterConfig = [
+            'type' => $type, 'filter' => $filter, 'options' => $options
+        ];
+        $action = $this->getRouter()->getAction();
+        if ($action === null) {
+            throw new Exception;
+        }
+        if ($options === null) {
+            $this->filterChain[] = $filterConfig;
+        }
+        if (isset($options['ignore_actions'])) {
+            if (in_array($action, $options['ignore_actions'])) {
+                continue;
             }
         }
-        return $tmps;
+        if (isset($options['actions'])) {
+            if (in_array($action, $options['actions']) === false) {
+                continue;
+            }
+        }
+        if (isset($options['prepend']) && $options['prepend'] === true) {
+            array_unshift($this->filterChain, $filterConfig);
+        } else {
+            $this->filterChain[] = $filterConfig;
+        }
     }
 
     public function getApp() {
@@ -309,7 +248,56 @@ class Controller {
         return $this->actionResult = $value;
     }
 
+    public function quit() {
+        $this->quitFilterChain();
+        $this->getApp()->quit();
+    }
+
     public function redirect($url, $statusCode = 302) {
+        $this->quitFilterChain();
         $this->getApp()->redirect($url, $statusCode);
+    }
+
+    private function quitFilterChain($excption = null) {
+        if ($this->isFilterChainQuitted) {
+            return;
+        }
+        $shouldRunYieldedFiltersOnly = $exception === null
+            || $this->isFilterChainReversed === true;
+        $shouldRunAfterFilter = false;
+        if ($this->isFilterChainReversed === false) {
+            array_reverse($this->filterChain);
+        }
+        foreach ($this->filterChain as &$filterConfig) {
+            if ($filterConfig['type'] === 'yielded'
+                || ($shouldRunAfterFilter && $filterConfig['type'] === 'after')
+            ) {
+                try {
+                    if ($exception !== null) {
+                        $shouldRunAfterFilter =
+                            $filterConfig['filter']->throw($exception) !== false
+                                && $shouldRunYieldedFiltersOnly === false;
+                    } else {
+                        $result = null;
+                        if ($filterConfig['type'] === 'yielded') {
+                            $result = $filterConfig['filter']->next();
+                        } else {
+                            $result = $this->runFilter(
+                                $filterConfig['filter'], true
+                            );
+                        }
+                        if ($result === false) {
+                            $shouldRunYieldedFiltersOnly = true;
+                        }
+                    }
+                } catch (Exception $excepition) {
+                    $shouldRunAfterFilter = false;
+                }
+            }
+        }
+        $this->isFilterChainQuitted = true;
+        if ($exception !== null) {
+            throw $exception;
+        }
     }
 }
