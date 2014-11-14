@@ -3,9 +3,10 @@ namespace Hyperframework\Web;
 
 class Controller {
     private $app;
-    private $isViewEnabled;
+    private $filters = [];
     private $actionResult;
-    private $filters;
+    private $view;
+    private $isViewEnabled = true;
 
     public function __construct($app) {
         $this->app = $app;
@@ -34,8 +35,8 @@ class Controller {
             throw new NotFoundException;
         }
         try {
-            $this->executeAction($method);
-            if ($this->isViewEnabled()) {
+            $this->executeAction($actionMethod);
+            if ($this->isViewEnabled) {
                 $this->renderView();
             }
         } catch (Exception $e) {
@@ -116,6 +117,10 @@ class Controller {
         $this->isViewEnabled = true;
     }
 
+    public function isViewEnabled() {
+        return $this->isViewEnabled;
+    }
+
     public function setView($value) {
         $this->view = $value;
     }
@@ -147,7 +152,7 @@ class Controller {
         } elseif (is_string($view) === false) {
             throw new Exception;
         }
-        $template = new ViewTemplate($app->getActionResult());
+        $template = new ViewTemplate($this->getActionResult());
         $template->render($view);
     }
 

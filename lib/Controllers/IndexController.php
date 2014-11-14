@@ -1,7 +1,9 @@
 <?php
 namespace Hyperframework\Blog\Controllers;
 
-class IndexController {
+use Hyperframework\Web\Controller;
+
+class IndexController extends Controller {
 //    public function show() {
 //        echo 'hello';
 //    }
