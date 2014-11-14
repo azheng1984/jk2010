@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-class Controller implements ArrayAccess {
+class Controller {
     private $app;
     private $isViewEnabled;
     private $actionResult;
@@ -44,43 +44,39 @@ class Controller implements ArrayAccess {
         //execute after returning filter
     }
 
-    protected function executeAction($method) {
+    public function executeAction($method) {
         if (method_exists($this, $method)) {
             $this->setActionResult($controller->$method());
         }
     }
 
-    protected function addBeforeFilter($callback, array $options = null) {
+    public function addBeforeFilter($callback, array $options = null) {
         // options
         // prepend
         // name
         //return false; equals $this->app->quit();
     }
 
-    protected function addAfterFilter($callback, array $options = null) {
+    public function addAfterFilter($callback, array $options = null) {
     }
 
-    protected function addAfterThrowingFilter(
-        $callback, array $options = null
-    ) {
+    public function addAfterThrowingFilter($callback, array $options = null) {
     }
 
-    protected function addAfterReturningFilter(
-        $callback, array $options = null
-    ) {
+    public function addAfterReturningFilter($callback, array $options = null) {
     }
 
-    protected function addAroundFilter($callback, array $options = null) {
+    public function addAroundFilter($callback, array $options = null) {
         if (version_compare(phpversion(), '5.5.0', '<')) {
             throw new Exception;
         }
         $this->filters[] = ['around', $callback, $options];
     }
 
-    protected function removeFilter($name) {
+    public function removeFilter($name) {
     }
 
-    protected function getFilters() {
+    public function getFilters() {
         return $this->filters;
     }
 
@@ -155,14 +151,14 @@ class Controller implements ArrayAccess {
         $template->render($view);
     }
 
-    protected function getActionResult($name = null) {
+    public function getActionResult($name = null) {
         if ($name === null) {
             $result = $this->actionResult;
         }
         return $this->actionResult[$name];
     }
 
-    protected function setActionResult($value) {
+    public function setActionResult($value) {
         return $this->actionResult = $value;
     }
 

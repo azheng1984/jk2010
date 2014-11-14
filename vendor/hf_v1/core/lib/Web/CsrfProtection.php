@@ -15,7 +15,7 @@ class CsrfProtection {
             return;
         }
         if (static::isValid() === false) {
-            //reset token
+            //todo reset token
             throw new Exception;
         }
     }
