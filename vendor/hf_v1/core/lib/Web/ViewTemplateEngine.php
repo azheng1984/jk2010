@@ -3,9 +3,9 @@ namespace Hyperframework\Web;
 
 use ArrayAccess;
 use Exception;
+use Hyperframework;
 use Hyperframework\FullPathRecognizer;
 use Hyperframework\Config;
-use Hyperframework;
 
 abstract class ViewTemplateEngine implements ArrayAccess {
     private $model;
