@@ -8,7 +8,7 @@ class IndexController extends Controller {
         parent::__construct($app);
         $this->addAroundFilter(':hi');
         $this->addAfterFilter(':hi2');
-        $this->addAroundFilter(function($controller) {
+        $this->addAroundFilter(function() {
             try {
                 echo 'love in';
                 yield;
@@ -19,6 +19,7 @@ class IndexController extends Controller {
             }
         });
         $this->addAfterFilter(':hi3');
+        $this->removeFilter(':hi');
     }
 
     protected function hi() {

@@ -31,10 +31,10 @@ class Controller {
     }
 
     final protected function runBeforeFilters() {
-        foreach ($this->filterChain as &$filterConfig) {
-            $filterType = $filterConfig['type'];
-            if ($filterType === 'before' || $filterType === 'around') {
-                $this->runFilter($filterConfig);
+        foreach ($this->filterChain as &$config) {
+            $type = $config['type'];
+            if ($type === 'before' || $type === 'around') {
+                $this->runFilter($config);
             }
         }
     }
@@ -44,10 +44,10 @@ class Controller {
             $this->filterChain = array_reverse($this->filterChain);
             $this->isFilterChainReversed = true;
         }
-        foreach ($this->filterChain as &$filterConfig) {
-            $filterType = $filterConfig['type'];
-            if ($filterType === 'after' || $filterType === 'yielded') {
-                $this->runFilter($filterConfig);
+        foreach ($this->filterChain as &$config) {
+            $type = $config['type'];
+            if ($type === 'after' || $type === 'yielded') {
+                $this->runFilter($config);
             }
         }
     }
