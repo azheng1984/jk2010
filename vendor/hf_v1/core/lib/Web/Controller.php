@@ -143,7 +143,7 @@ class Controller {
     }
 
     private function addFilter($type, $filter, array $options = null) {
-        $filterConfig = [
+        $config = [
             'type' => $type, 'filter' => $filter, 'options' => $options
         ];
         $action = $this->getRouter()->getAction();
@@ -151,23 +151,31 @@ class Controller {
             throw new Exception;
         }
         if ($options === null) {
-            $this->filterChain[] = $filterConfig;
+            $this->filterChain[] = $config;
             return;
         }
         if (isset($options['ignore_actions'])) {
-            if (in_array($action, $options['ignore_actions'])) {
-                continue;
+            if (is_string($options['ignore_actions'])) {
+                if ($options['ignore_actions'] === $action) {
+                    return;
+                }
+            } elseif (in_array($action, $options['ignore_actions'])) {
+                return;
             }
         }
         if (isset($options['actions'])) {
-            if (in_array($action, $options['actions']) === false) {
-                continue;
+            if (is_string($options['actions'])) {
+                if ($options['actions'] !== $action) {
+                    return;
+                }
+            } elseif (in_array($action, $options['actions']) === false) {
+                return;
             }
         }
         if (isset($options['prepend']) && $options['prepend'] === true) {
-            array_unshift($this->filterChain, $filterConfig);
+            array_unshift($this->filterChain, $config);
         } else {
-            $this->filterChain[] = $filterConfig;
+            $this->filterChain[] = $config;
         }
     }
 
