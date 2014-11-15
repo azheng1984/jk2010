@@ -1,8 +1,11 @@
 <?php
 namespace Hyperframework\Web;
 
+use Exception;
+
 class App {
     private $router;
+    private $controller;
 
     public function run() {
         $this->initialize();
@@ -13,10 +16,6 @@ class App {
 
     public function getRouter() {
         return $this->router;
-    }
-
-    protected function setRouter($router) {
-        $this->router = $router;
     }
 
     public function redirect($url, $statusCode = 302) {
@@ -31,21 +30,34 @@ class App {
 
     protected function initialize() {
         $this->initializeRouter();
+        $this->initializeController();
     }
 
     protected function initializeRouter() {
-        $this->router = new Router($this);
+        $this->setRouter(new Router($this));
     }
 
-    protected function getController() {
+    protected function initializeController() {
         $router = $this->getRouter();
         $controllerClass = $router->getControllerClass();
         if ($controllerClass === null
             || class_exists($controllerClass) === false
         ) {
-            throw new NotFoundException;
+            throw new Exception;
         }
-        return new $controllerClass($this);
+        $this->setController(new $controllerClass($this));
+    }
+
+    protected function setRouter($router) {
+        $this->router = $router;
+    }
+
+    protected function setController($controller) {
+        $this->controller = $controller;
+    }
+
+    protected function getController() {
+        return $this->controller;
     }
 
     protected function finalize() {}
