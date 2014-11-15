@@ -227,6 +227,7 @@ class Controller {
         if (is_object($view)) {
             if (method_exsits($view, 'render')) {
                 $view->render();
+                $this->disableView();
                 return;
             } else {
                 throw new Exception;
@@ -247,6 +248,7 @@ class Controller {
         }
         $template = new ViewTemplate($this->getActionResult());
         $template->render($view);
+        $this->disableView();
     }
 
     public function getActionResult($name = null) {
