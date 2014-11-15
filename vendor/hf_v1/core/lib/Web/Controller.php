@@ -84,8 +84,6 @@ class Controller {
             if (isset($value['options']['name'])) {
                 if ($value['options']['name'] === $name) {
                     unset($this->filterChain[$key]);
-                } else {
-                    continue;
                 }
             } elseif (is_string($value['filter'])) {
                 if ($value['filter'] === $name) {
