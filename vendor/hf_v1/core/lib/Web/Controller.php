@@ -1,9 +1,9 @@
 <?php
 namespace Hyperframework\Web;
 
+use Exception;
 use Generator;
 use Closure;
-use Exception;
 
 class Controller {
     private $app;
@@ -19,40 +19,48 @@ class Controller {
     }
 
     public function run() {
-        $app = $this->getApp();
-        $router = $app->getRouter();
-        $actionMethod = $router->getActionMethod();
-        if ($actionMethod === null) {
-            throw new NotFoundException;
-        }
         try {
-            foreach ($this->filterChain &$filterConfig) {
-                $filterType = $filterConfig['type'];
-                if ($filterType === 'before' || $filterType === 'around') {
-                    $this->runFilter($filterConfig);
-                }
-            }
+            $this->runBeforeFilters();
             $this->executeAction($actionMethod);
             if ($this->isViewEnabled()) {
                 $this->renderView();
             }
-            array_reverse($this->filterChain);
-            $this->isFilterChainReversed = true;
-            foreach ($this->filterChain as &$filterConfig) {
-                $filterType = $filterConfig['type'];
-                if ($filterType === 'after' || $filterType === 'yielded') {
-                    $this->runFilter($filterConfig);
-                }
-            }
-            $this->isFilterChainQuitted = true;
+            $this->runAfterFilters();
         } catch (Exception $e) {
             $this->quitFilterChain($e);
         }
     }
 
+    private function runBeforeFilters() {
+        foreach ($this->filterChain &$filterConfig) {
+            $filterType = $filterConfig['type'];
+            if ($filterType === 'before' || $filterType === 'around') {
+                $this->runFilter($filterConfig);
+            }
+        }
+    }
+
+    private function runAfterFilters() {
+        array_reverse($this->filterChain);
+        $this->isFilterChainReversed = true;
+        foreach ($this->filterChain as &$filterConfig) {
+            $filterType = $filterConfig['type'];
+            if ($filterType === 'after' || $filterType === 'yielded') {
+                $this->runFilter($filterConfig);
+            }
+        }
+        $this->isFilterChainQuitted = true;
+    }
+
     private function executeAction($method) {
+        $router = $this->getRouter();
+        $method = $router->getActionMethod();
+        if ($method === null) {
+            throw new Exception;
+        }
         if (method_exists($this, $method)) {
-            $this->setActionResult($controller->$method());
+            $actionResult = $controller->$method();
+            $this->setActionResult($actionResult);
         }
     }
 
@@ -72,6 +80,9 @@ class Controller {
     }
 
     public function removeFilter($name) {
+        if ($this->isFilterChainQuitted) {
+            throw new Exception;
+        }
         foreach ($this->filterChain as $key => $value) {
             if (isset($value['options']) && isset($value['options']['name'])) {
                 if ($value['options']['name'] === $name) {
@@ -117,7 +128,7 @@ class Controller {
             if ($result instanceof Generator === false) {
                 throw new Exception;
             }
-            if ($result->next() === false || $result->valid() === false) {
+            if ($result->current() === false || $result->valid() === false) {
                 $result = false;
             } else {
                 $config['type'] = 'yielded';
@@ -126,7 +137,7 @@ class Controller {
             }
         } elseif ($config['type'] === 'yielded') {
             $result = $config['filter']->next();
-            $config['type'] = 'finished';
+            $config['type'] = 'closed';
         }
         if ($return === false && $result === false) {
             $this->quit();
@@ -135,6 +146,9 @@ class Controller {
     }
 
     private function addFilter($type, $filter, array $options = null) {
+        if ($this->isFilterChainQuitted) {
+            throw new Exception;
+        }
         $filterConfig = [
             'type' => $type, 'filter' => $filter, 'options' => $options
         ];
@@ -262,11 +276,13 @@ class Controller {
         if ($this->isFilterChainQuitted) {
             return;
         }
+        $this->isFilterChainQuitted = true;
         $shouldRunYieldedFiltersOnly = $exception === null
-            || $this->isFilterChainReversed === true;
+            || $this->isFilterChainReversed === false;
         $shouldRunAfterFilter = false;
         if ($this->isFilterChainReversed === false) {
             array_reverse($this->filterChain);
+            $this->isFilterChainReversed = true;
         }
         foreach ($this->filterChain as &$filterConfig) {
             if ($filterConfig['type'] === 'yielded'
@@ -295,7 +311,6 @@ class Controller {
                 }
             }
         }
-        $this->isFilterChainQuitted = true;
         if ($exception !== null) {
             throw $exception;
         }
