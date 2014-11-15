@@ -33,6 +33,5 @@ class IndexController extends Controller {
 
     protected function hi3() {
         echo 'after2';
-        throw new \Exception;
     }
 }
