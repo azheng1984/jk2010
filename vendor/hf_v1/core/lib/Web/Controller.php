@@ -59,7 +59,7 @@ class Controller {
             throw new Exception;
         }
         if (method_exists($this, $method)) {
-            $actionResult = $controller->$method();
+            $actionResult = $this->$method();
             $this->setActionResult($actionResult);
         }
     }
