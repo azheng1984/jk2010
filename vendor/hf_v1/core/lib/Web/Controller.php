@@ -21,7 +21,7 @@ class Controller {
     public function run() {
         try {
             $this->runBeforeFilters();
-            $this->executeAction($actionMethod);
+            $this->executeAction();
             if ($this->isViewEnabled()) {
                 $this->renderView();
             }
@@ -32,7 +32,7 @@ class Controller {
     }
 
     private function runBeforeFilters() {
-        foreach ($this->filterChain &$filterConfig) {
+        foreach ($this->filterChain as &$filterConfig) {
             $filterType = $filterConfig['type'];
             if ($filterType === 'before' || $filterType === 'around') {
                 $this->runFilter($filterConfig);
@@ -41,7 +41,7 @@ class Controller {
     }
 
     private function runAfterFilters() {
-        array_reverse($this->filterChain);
+        $this->filterChain = array_reverse($this->filterChain);
         $this->isFilterChainReversed = true;
         foreach ($this->filterChain as &$filterConfig) {
             $filterType = $filterConfig['type'];
@@ -52,7 +52,7 @@ class Controller {
         $this->isFilterChainQuitted = true;
     }
 
-    private function executeAction($method) {
+    private function executeAction() {
         $router = $this->getRouter();
         $method = $router->getActionMethod();
         if ($method === null) {
@@ -80,9 +80,6 @@ class Controller {
     }
 
     public function removeFilter($name) {
-        if ($this->isFilterChainQuitted) {
-            throw new Exception;
-        }
         foreach ($this->filterChain as $key => $value) {
             if (isset($value['options']) && isset($value['options']['name'])) {
                 if ($value['options']['name'] === $name) {
@@ -110,16 +107,19 @@ class Controller {
             if ($config['filter'][0] === ':') {
                 $method = substr($config['filter'], 1);
                 $result = $this->$method();
+            } else {
+                $class = $config['filter'];
+                $filter = new $class;
+                $result = $filter->run($this);
             }
-            $class = $config['filter'];
-            $filter = new $class;
-            $result = $filter->run($this);
-        } elseif ($config['type'] !== 'yielded' && is_object($filter[1])) {
+        } elseif ($config['type'] !== 'yielded'
+            && is_object($config['filter'])
+        ) {
             if ($config['filter'] instanceof Closure) {
-                $function = $filter[1];
+                $function = $config['filter'];
                 $result = $function($this);
             } else {
-                $result = $filter[1]->run($this);
+                $result = $config['filter']->run($this);
             }
         } elseif ($config['type'] !== 'yielded') {
             throw new Exception;
@@ -146,9 +146,6 @@ class Controller {
     }
 
     private function addFilter($type, $filter, array $options = null) {
-        if ($this->isFilterChainQuitted) {
-            throw new Exception;
-        }
         $filterConfig = [
             'type' => $type, 'filter' => $filter, 'options' => $options
         ];
@@ -158,6 +155,7 @@ class Controller {
         }
         if ($options === null) {
             $this->filterChain[] = $filterConfig;
+            return;
         }
         if (isset($options['ignore_actions'])) {
             if (in_array($action, $options['ignore_actions'])) {
@@ -177,6 +175,9 @@ class Controller {
     }
 
     public function getApp() {
+        if ($this->app === null) {
+            throw new Exception('99% consturct not called ...');
+        }
         return $this->app;
     }
 
@@ -236,8 +237,8 @@ class Controller {
         }
         if ($view === null) {
             $router = $this->getRouter();
-            if ($router->getModule() !== null) {
-                $view .= $module;
+            if ($router->getModuleDirectory() !== null) {
+                $view .= $this->getModuleDirectory();
             }
             $view .= $router->getController() . '/' . $router->getAction();
             if ($router->hasParam('format')) {
@@ -281,7 +282,7 @@ class Controller {
             || $this->isFilterChainReversed === false;
         $shouldRunAfterFilter = false;
         if ($this->isFilterChainReversed === false) {
-            array_reverse($this->filterChain);
+            $this->filterChain = array_reverse($this->filterChain);
             $this->isFilterChainReversed = true;
         }
         foreach ($this->filterChain as &$filterConfig) {

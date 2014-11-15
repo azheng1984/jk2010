@@ -8,27 +8,6 @@ $p = preg_replace(
     '(?<\1>[^/]+?)',
     $p
 );
-function hi() {
-    try {
-        echo 'in';
-        yield;
-        echo 'out';
-    } catch (\Exception $e) {
-    }
-}
-$x = hi();
-$x->current();
-$x->throw(new \Exception);
-var_dump($x);
-var_dump($x->current());
-var_dump($x->valid());
-exit;
-echo 'xx';
-var_dump($x->next());
-exit;
-$x->next();
-var_dump($x->valid());
-exit;
 //function hi($controller) {
 //    echo 'start out';
 //    if (false) {

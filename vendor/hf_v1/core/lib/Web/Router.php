@@ -80,6 +80,17 @@ abstract class Router {
         return $this->action;
     }
 
+    public function getModuleDirectory() {
+        $module = $this->getModule();
+        if ($module === null) {
+            return;
+        }
+        if (DIRECTORY_SEPARATOR === '/') {
+            return $module;
+        }
+        return str_replace('/', '\\', $module);
+    }
+
     public function getModuleNamespace() {
         if ($this->moduleNamespace !== null) {
             return $this->moduleNamespace;
@@ -88,6 +99,9 @@ abstract class Router {
         if ($module === null) {
             return;
         }
+        $module = str_replace(
+            ' ', '\\', ucwords(str_replace('/', ' ', $module))
+        );
         return str_replace(' ', '', ucwords(str_replace('_', ' ', $module)));
     }
 
@@ -283,7 +297,8 @@ abstract class Router {
             if (isset($matches['module'])
                 && isset($options[':module']) === false
             ) {
-                if (preg_match($pattern, $matches['module']) === 0) {
+                $module = str_replace('/', '0', $matches['module']);
+                if (preg_match($pattern, $module) === 0) {
                     return false;
                 }
             }
@@ -803,13 +818,10 @@ abstract class Router {
                     $this->setController($tmps[0]);
                     $this->setAction($tmps[1]);
                     break;
-                case 3:
-                    $this->setModule($tmps[0]);
-                    $this->setController($tmps[1]);
-                    $this->setAction($tmps[2]);
-                    break;
                 default:
-                    throw new Exception;
+                    $this->setAction(array_pop($tmps));
+                    $this->setController(array_pop($tmps));
+                    $this->setModule(implode('/', $tmps));
             }
         } elseif ($value !== true) {
             throw new Exception;
