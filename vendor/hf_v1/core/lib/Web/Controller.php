@@ -31,7 +31,7 @@ class Controller {
         }
     }
 
-    private function runBeforeFilters() {
+    final protected function runBeforeFilters() {
         foreach ($this->filterChain as &$filterConfig) {
             $filterType = $filterConfig['type'];
             if ($filterType === 'before' || $filterType === 'around') {
@@ -40,7 +40,7 @@ class Controller {
         }
     }
 
-    private function runAfterFilters() {
+    final protected function runAfterFilters() {
         $this->filterChain = array_reverse($this->filterChain);
         $this->isFilterChainReversed = true;
         foreach ($this->filterChain as &$filterConfig) {
@@ -52,7 +52,7 @@ class Controller {
         $this->isFilterChainQuitted = true;
     }
 
-    private function executeAction() {
+    protected function executeAction() {
         $router = $this->getRouter();
         $method = $router->getActionMethod();
         if ($method === null) {
@@ -273,7 +273,7 @@ class Controller {
         $this->getApp()->redirect($url, $statusCode);
     }
 
-    private function quitFilterChain($excption = null) {
+    final protected function quitFilterChain($excption = null) {
         if ($this->isFilterChainQuitted) {
             return;
         }
