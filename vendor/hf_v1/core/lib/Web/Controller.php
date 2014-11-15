@@ -292,9 +292,9 @@ class Controller {
             ) {
                 try {
                     if ($exception !== null) {
-                        $shouldRunAfterFilter =
-                            $filterConfig['filter']->throw($exception) !== false
-                                && $shouldRunYieldedFiltersOnly === false;
+                        $result = $filterConfig['filter']->throw($exception);
+                        $shouldRunAfterFilter = $result !== false
+                            && $shouldRunYieldedFiltersOnly === false;
                         $exception = null;
                     } else {
                         if ($this->runFilter($filterConfig, true) === false) {
