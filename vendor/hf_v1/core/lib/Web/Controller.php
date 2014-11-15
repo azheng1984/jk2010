@@ -297,13 +297,7 @@ class Controller {
                                 && $shouldRunYieldedFiltersOnly === false;
                         $exception = null;
                     } else {
-                        $result = null;
-                        if ($filterConfig['type'] === 'yielded') {
-                            $result = $filterConfig['filter']->next();
-                        } else {
-                            $result = $this->runFilter($filterConfig, true);
-                        }
-                        if ($result === false) {
+                        if ($this->runFilter($filterConfig, true) === false) {
                             $shouldRunYieldedFiltersOnly = true;
                         }
                     }

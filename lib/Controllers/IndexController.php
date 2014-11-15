@@ -15,17 +15,17 @@ class IndexController extends Controller {
                 echo 'love out';
             } catch (\Exception $e) {
                 echo 'eat ex!!';
-                throw $e;
+ //               throw $e;
             }
         });
         $this->addAfterFilter(':hi3', ['prepend' => true, 'actions' => 'delete']);
-        $this->removeFilter(':hi');
+//        $this->removeFilter(':hi');
     }
 
     protected function hi() {
-        echo 'in';
+        echo 'in!!!';
         yield;
-        echo 'out';
+        echo 'out!!!';
     }
 
     protected function hi2() {
