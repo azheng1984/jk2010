@@ -5,7 +5,7 @@ class MethodNotAllowedException extends HttpException {
     private $methods;
 
     public function __construct(
-        array $methods = null, $message = null, $previous = null
+        array $methods = ['GET', 'HEAD'], $message = null, $previous = null
     ) {
         parent::__construct($message, '405 Method Not Allowed', $previous);
         $this->methods = $methods;

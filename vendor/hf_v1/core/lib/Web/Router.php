@@ -25,6 +25,10 @@ abstract class Router {
         $this->app = $app;
         $this->parseReturnValue($this->parse());
         if ($this->isMatched() === false) {
+            $tmp = in_array($_SERVER['REQUEST_METHOD'], ['GET', 'HEAD']);
+            if ($tmp === false) {
+                throw new MethodNotAllowedException;
+            }
             throw new NotFoundException;
         }
     }
