@@ -9,7 +9,6 @@ class Controller {
     private $app;
     private $filterChain = [];
     private $isFilterChainReversed = false;
-    private $isFilterChainQuitted = false;
     private $actionResult;
     private $view;
     private $isViewEnabled = true;
@@ -271,10 +270,6 @@ class Controller {
     }
 
     final protected function quitFilterChain($exception = null) {
-        if ($this->isFilterChainQuitted) {
-            return;
-        }
-        $this->isFilterChainQuitted = true;
         $shouldRunYieldedFiltersOnly = $exception === null
             || $this->isFilterChainReversed === false;
         $shouldRunAfterFilter = false;
