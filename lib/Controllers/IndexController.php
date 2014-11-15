@@ -13,6 +13,9 @@ class IndexController extends Controller {
                 echo 'love in';
                 yield;
                 echo 'love out';
+                if ($this->isSuccess()) {
+                    echo 'yes!';
+                }
             } catch (\Exception $e) {
                 echo 'eat ex!!';
  //               throw $e;

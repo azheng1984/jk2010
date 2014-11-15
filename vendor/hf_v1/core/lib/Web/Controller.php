@@ -32,11 +32,11 @@ class Controller {
         }
     }
 
-    final protected function setSuccessStatus($isSuccess) {
+    protected function setSuccessStatus($isSuccess) {
         $this->isSuccess = $isSuccess;
     }
 
-    final protected function isSuccess() {
+    public function isSuccess() {
         return $this->isSuccess;
     }
 
