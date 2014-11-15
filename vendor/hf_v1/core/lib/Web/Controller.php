@@ -81,7 +81,7 @@ class Controller {
 
     public function removeFilter($name) {
         foreach ($this->filterChain as $key => $value) {
-            if (isset($value['options']) && isset($value['options']['name'])) {
+            if (isset($value['options']['name'])) {
                 if ($value['options']['name'] === $name) {
                     unset($this->filterChain[$key]);
                 } else {
