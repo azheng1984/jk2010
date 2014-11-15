@@ -11,7 +11,6 @@ class Controller {
     private $isFilterChainReversed = false;
     private $actionResult;
     private $view;
-    private $isSuccess = false;
     private $isViewEnabled = true;
 
     public function __construct($app) {
@@ -25,19 +24,10 @@ class Controller {
             if ($this->isViewEnabled()) {
                 $this->renderView();
             }
-            $this->setSuccessStatus(true);
             $this->runAfterFilters();
         } catch (Exception $e) {
             $this->quitFilterChain($e);
         }
-    }
-
-    protected function setSuccessStatus($isSuccess) {
-        $this->isSuccess = $isSuccess;
-    }
-
-    public function isSuccess() {
-        return $this->isSuccess;
     }
 
     final protected function runBeforeFilters() {
