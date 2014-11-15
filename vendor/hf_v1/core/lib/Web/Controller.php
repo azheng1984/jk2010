@@ -96,9 +96,6 @@ class Controller {
     }
 
     private function runFilter(array &$config, $return = false) {
-        if ($this->isFilterChainQuitted) {
-            throw new Exception;
-        }
         $result = null;
         if (is_string($config['filter'])) {
             if ($config['filter'] === '') {
@@ -273,7 +270,7 @@ class Controller {
         $this->getApp()->redirect($url, $statusCode);
     }
 
-    final protected function quitFilterChain($excption = null) {
+    final protected function quitFilterChain($exception = null) {
         if ($this->isFilterChainQuitted) {
             return;
         }
@@ -294,14 +291,13 @@ class Controller {
                         $shouldRunAfterFilter =
                             $filterConfig['filter']->throw($exception) !== false
                                 && $shouldRunYieldedFiltersOnly === false;
+                        $exception = null;
                     } else {
                         $result = null;
                         if ($filterConfig['type'] === 'yielded') {
                             $result = $filterConfig['filter']->next();
                         } else {
-                            $result = $this->runFilter(
-                                $filterConfig['filter'], true
-                            );
+                            $result = $this->runFilter($filterConfig, true);
                         }
                         if ($result === false) {
                             $shouldRunYieldedFiltersOnly = true;
