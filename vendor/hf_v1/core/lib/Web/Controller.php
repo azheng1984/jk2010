@@ -40,15 +40,16 @@ class Controller {
     }
 
     final protected function runAfterFilters() {
-        $this->filterChain = array_reverse($this->filterChain);
-        $this->isFilterChainReversed = true;
+        if ($this->isFilterChainReversed === false) {
+            $this->filterChain = array_reverse($this->filterChain);
+            $this->isFilterChainReversed = true;
+        }
         foreach ($this->filterChain as &$filterConfig) {
             $filterType = $filterConfig['type'];
             if ($filterType === 'after' || $filterType === 'yielded') {
                 $this->runFilter($filterConfig);
             }
         }
-        $this->isFilterChainQuitted = true;
     }
 
     protected function executeAction() {
