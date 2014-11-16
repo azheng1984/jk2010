@@ -116,16 +116,14 @@ abstract class Router {
         }
         $moduleNamespace = $this->getModuleNamespace();
         if ($moduleNamespace !== null) {
-            if ($moduleNamespace == '') {
-                throw new Exception;
-            }
-            if ($moduleNamespace[0] === '\\') {
-                return substr($moduleNamespace, 1) . '\Controllers\\' . $class;
-            }
             $moduleNamespace .= '\\';
         }
-        return Hyperframework\APP_ROOT_NAMESPACE . '\Controllers\\'
+        return $this->getControllerClassRootNamespace() . '\Controllers\\'
             . $moduleNamespace . $class;
+    }
+
+    protected function getControllerClassRootNamespace() {
+        return Hyperframework\APP_ROOT_NAMESPACE;
     }
 
     public function getAction() {
