@@ -105,7 +105,7 @@ abstract class Router {
         } else {
             $controller = $this->getController();
             if ($controller === null) {
-                return;
+                throw new Exception;
             } else {
                 $tmp = ucwords(str_replace('_', ' ', $controller));
                 $class = str_replace(' ', '', $tmp) . 'Controller';
