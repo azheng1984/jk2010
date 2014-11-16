@@ -1,17 +1,14 @@
 <?php
-var_dump($this->pathStack);
+$this->extend('_layouts/todo');
 $this(function() {
     $this['title'] = 'xxx';
     $this['description'] = 'xxx';
-    $this->extend('todo.php');
 });
-?>
-<?php $this->setBlock('content', function() { ?>
-home
-<?php });
-$this->setBlock('menu', function() { ?>
-menu
-<?php });
+$this->setBlock('content', function() {
+});
+$this->setBlock('menu', function() {
+    $this->render('index/_hello');
+});
 $this->setBlock('left', function() { ?>
 left
 <?php });

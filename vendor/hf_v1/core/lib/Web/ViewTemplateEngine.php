@@ -11,6 +11,8 @@ abstract class ViewTemplateEngine implements ArrayAccess {
     private $model;
     private $blocks = [];
     private $viewRootPath;
+    private $pathStack = [];
+    private $optionStack = [];
 
     public function __construct(array $model = null) {
         if ($model !== null) {
@@ -34,18 +36,18 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         }
     }
 
-    protected function setBlock($name, $function) {
-        $this->blocks[$name] = $function;
+    protected function pushOptions($options) {
     }
 
-    protected function renderLayout($path) {
-        if ($path == '') {
-            throw new Exception;
-        }
-        if ($path[0] !== '/') {
-            $path = '/_layouts/' . $path;
-        }
-        $this->render($path);
+    protected function popOptions() {
+    }
+
+    protected function getOptions() {
+    }
+
+    protected function setBlock($name, $function) {
+        //$this->blocks[$name] = array($function, $this->getPath());
+        $this->blocks[$name] = $function;
     }
 
     protected function getViewRootPath() {
