@@ -11,8 +11,9 @@ abstract class ViewTemplateEngine implements ArrayAccess {
     private $model;
     private $blocks = [];
     private $viewRootPath;
-    private $pathStack = [];
-    private $optionStack = [];
+    private $contextStack = [];
+//    private $pathStack = [];
+//    private $optionStack = [];
 
     public function __construct(array $model = null) {
         if ($model !== null) {
@@ -22,6 +23,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         }
     }
 
+    //change name to load
     abstract protected function render($path, array $options = null);
 
     protected function renderBlock($name, $default = null) {

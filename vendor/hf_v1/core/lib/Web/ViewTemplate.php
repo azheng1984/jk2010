@@ -4,6 +4,9 @@ namespace Hyperframework\Web;
 use Hyperframework\FullPathRecognizer;
 
 class ViewTemplate extends ViewTemplateEngine {
+    private $pathStack = [];
+    private $optionStack = [];
+
     public function render($path, array $options = []) {
         $parentPath = null;
         if (count($this->pathStack) !== 0) {
