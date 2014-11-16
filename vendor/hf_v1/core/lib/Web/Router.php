@@ -118,13 +118,13 @@ abstract class Router {
                 $class = str_replace(' ', '', $tmp) . 'Controller';
             }
         }
-        $moduleNamespace = $this->getModuleNamespace();
-        if ($moduleNamespace !== null) {
-            $moduleNamespace .= '\\';
-        }
         $rootNamespace = $this->getControllerRootNamespace();
         if ($rootNamespace !== null) {
             $rootNamespace .= '\\';
+        }
+        $moduleNamespace = $this->getModuleNamespace();
+        if ($moduleNamespace !== null) {
+            $moduleNamespace .= '\\';
         }
         return $rootNamespace . 'Controllers\\' . $moduleNamespace . $class;
     }

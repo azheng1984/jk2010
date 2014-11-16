@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
+use Hyperframework;
 use Hyperframework\EnvironmentBuilder;
 use Hyperframework\Config;
 use Hyperframework\ConfigFileLoader;
@@ -13,7 +14,7 @@ class Runner {
     }
 
     public static function dispatch() {
-        $rootNamespace = \Hyperframework\APP_ROOT_NAMESPACE;
+        $rootNamespace = Hyperframework\APP_ROOT_NAMESPACE;
         $isCollection =
             Config::get('hyperframework.cli.command_collection.enable') == true;
         $configFileName = 'command.php';
@@ -24,15 +25,18 @@ class Runner {
             ConfigFileLoader::loadPhp($configFileName),
             $isCollection
         );
+        if ($rootNamespace !== null) {
+            $rootNamespace .= '\\';
+        }
         if ($isCollection) {
-            $class = $rootNamespace . '\CommandCollection';
+            $class = $rootNamespace . 'CommandCollection';
             $commandCollection = new $class;
             $commandCollection->execute(array());
-            $class = $rootNamespace . '\Commands\HelloCommand';
+            $class = $rootNamespace . 'Commands\HelloCommand';
             $command = new $class;
             $command->execute(array());
         } else {
-            $class = $rootNamespace . '\Command';
+            $class = $rootNamespace . 'Command';
             $command = new $class;
             $command->execute(array());
         }
