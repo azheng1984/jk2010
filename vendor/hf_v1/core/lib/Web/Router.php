@@ -102,6 +102,12 @@ abstract class Router {
         $class = null;
         if ($this->controllerClass !== null) {
             $class = $this->controllerClass;
+            if ($class == '') {
+                throw new Exception;
+            }
+            if ($class[0] === '\\') {
+                return substr($class, 1);
+            }
         } else {
             $controller = $this->getController();
             if ($controller === null) {
@@ -111,21 +117,18 @@ abstract class Router {
                 $class = str_replace(' ', '', $tmp) . 'Controller';
             }
         }
-        if ($class[0] === '\\') {
-            return substr($class, 1);
-        }
         $moduleNamespace = $this->getModuleNamespace();
         if ($moduleNamespace !== null) {
             $moduleNamespace .= '\\';
         }
-        $rootNamespace = $this->getControllerClassRootNamespace();
+        $rootNamespace = $this->getControllerRootNamespace();
         if ($rootNamespace !== null) {
             $rootNamespace .= '\\';
         }
         return $rootNamespace . 'Controllers\\' . $moduleNamespace . $class;
     }
 
-    protected function getControllerClassRootNamespace() {
+    protected function getControllerRootNamespace() {
         return Hyperframework\APP_ROOT_NAMESPACE;
     }
 
