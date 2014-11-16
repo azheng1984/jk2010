@@ -10,7 +10,6 @@ use Hyperframework\Config;
 abstract class ViewTemplateEngine implements ArrayAccess {
     private $model;
     private $blocks = [];
-    private $layout;
     private $viewRootPath;
 
     public function __construct(array $model = null) {
@@ -21,15 +20,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         }
     }
 
-    public function render($path) {
-        $this->renderTemplate($path);
-        $layout = $this->getLayout();
-        if ($layout !== null) {
-            $this->renderLayout($layout);
-        }
-    }
-
-    abstract protected function renderTemplate($path);
+    abstract protected function render($path, array $options = null);
 
     protected function renderBlock($name, $default = null) {
         if (isset($this->blocks[$name])) {
@@ -47,14 +38,6 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         $this->blocks[$name] = $function;
     }
 
-    protected function setLayout($path) {
-        $this->layout = $path;
-    }
-
-    protected function getLayout() {
-        return $this->layout;
-    }
-
     protected function renderLayout($path) {
         if ($path === null) {
             $path = $this->getLayout();
@@ -66,7 +49,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
             $path = $this->getViewRootPath() . DIRECTORY_SEPARATOR
                 . '_layouts' . DIRECTORY_SEPARATOR . $path;
         }
-        $this->renderTemplate($path);
+        $this->render($path);
     }
 
     protected function getViewRootPath() {
