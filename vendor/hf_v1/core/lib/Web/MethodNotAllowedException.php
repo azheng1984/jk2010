@@ -11,9 +11,9 @@ class MethodNotAllowedException extends HttpException {
         $this->methods = $methods;
     }
 
-    public function sendHeader() {
-        parent::sendHeader();
-        if ($this->methods !== null) {
+    public function setHeader() {
+        parent::setHeader();
+        if (count($this->methods) !== 0) {
             header('Allow: ' . implode(', ', $this->methods));
         }
     }

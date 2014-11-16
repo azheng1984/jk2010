@@ -25,10 +25,6 @@ abstract class Router {
         $this->app = $app;
         $this->parseReturnValue($this->parse());
         if ($this->isMatched() === false) {
-            $tmp = in_array($_SERVER['REQUEST_METHOD'], ['GET', 'HEAD']);
-            if ($tmp === false) {
-                throw new MethodNotAllowedException;
-            }
             throw new NotFoundException;
         }
     }
@@ -70,20 +66,6 @@ abstract class Router {
         return $this->module;
     }
 
-    public function getController() {
-        if ($this->controller === null) {
-            return 'index';
-        }
-        return $this->controller;
-    }
-
-    public function getAction() {
-        if ($this->action === null) {
-            return 'show';
-        }
-        return $this->action;
-    }
-
     public function getModuleDirectory() {
         $module = $this->getModule();
         if ($module === null) {
@@ -95,7 +77,7 @@ abstract class Router {
         return str_replace('/', '\\', $module);
     }
 
-    public function getModuleNamespace() {
+    protected function getModuleNamespace() {
         if ($this->moduleNamespace !== null) {
             return $this->moduleNamespace;
         }
@@ -103,10 +85,17 @@ abstract class Router {
         if ($module === null) {
             return;
         }
-        $module = str_replace(
+        $tmp = str_replace(
             ' ', '\\', ucwords(str_replace('/', ' ', $module))
         );
-        return str_replace(' ', '', ucwords(str_replace('_', ' ', $module)));
+        return str_replace(' ', '', ucwords(str_replace('_', ' ', $tmp)));
+    }
+
+    public function getController() {
+        if ($this->controller === null) {
+            return 'index';
+        }
+        return $this->controller;
     }
 
     public function getControllerClass() {
@@ -125,15 +114,19 @@ abstract class Router {
         if ($class[0] === '\\') {
             return substr($class, 1);
         }
-        $namespace = null;
-        $moduleNamespace = $this->getModuleNamespace();
-        if ($moduleNamespace !== null) {
-            $namespace = $moduleNamespace . '\\';
+        $namespace = $this->getModuleNamespace();
+        if ($namespace !== null) {
+            $namespace .= '\\';
         }
-        if ($namespace === null || $namespace[0] !== '\\') {
-            $namespace = Hyperframework\APP_ROOT_NAMESPACE . '\\' . $namespace;
+        return Hyperframework\APP_ROOT_NAMESPACE . '\Controllers\\'
+            . $namespace . $class;
+    }
+
+    public function getAction() {
+        if ($this->action === null) {
+            return 'show';
         }
-        return $namespace . 'Controllers\\' . $class;
+        return $this->action;
     }
 
     public function getActionMethod() {
