@@ -74,7 +74,7 @@ abstract class Router {
         if (DIRECTORY_SEPARATOR === '/') {
             return $module;
         }
-        return str_replace('/', '\\', $module);
+        return str_replace('/', DIRECTORY_SEPARATOR, $module);
     }
 
     protected function getModuleNamespace() {
