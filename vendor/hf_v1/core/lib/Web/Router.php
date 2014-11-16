@@ -114,12 +114,12 @@ abstract class Router {
         if ($class[0] === '\\') {
             return substr($class, 1);
         }
-        $namespace = $this->getModuleNamespace();
-        if ($namespace !== null) {
-            $namespace .= '\\';
+        $moduleNamespace = $this->getModuleNamespace();
+        if ($moduleNamespace !== null) {
+            $moduleNamespace .= '\\';
         }
         return Hyperframework\APP_ROOT_NAMESPACE . '\Controllers\\'
-            . $namespace . $class;
+            . $moduleNamespace . $class;
     }
 
     public function getAction() {
