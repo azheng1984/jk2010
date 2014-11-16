@@ -14,8 +14,7 @@ class IndexController extends Controller {
                 yield;
                 echo 'love out';
             } catch (\Exception $e) {
-                echo 'eat ex!!';
- //               throw $e;
+               throw $e;
             }
         });
         $this->addAfterFilter(':hi3', ['prepend' => true, 'actions' => 'delete']);

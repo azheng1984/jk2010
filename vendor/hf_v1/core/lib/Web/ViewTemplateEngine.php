@@ -39,15 +39,11 @@ abstract class ViewTemplateEngine implements ArrayAccess {
     }
 
     protected function renderLayout($path) {
-        if ($path === null) {
-            $path = $this->getLayout();
-            if ($path === null) {
-                throw new Exception;
-            }
+        if ($path == '') {
+            throw new Exception;
         }
-        if (FullPathRecognizer::isFull($path) === false) {
-            $path = $this->getViewRootPath() . DIRECTORY_SEPARATOR
-                . '_layouts' . DIRECTORY_SEPARATOR . $path;
+        if ($path[0] !== '/') {
+            $path = '/_layouts/' . $path;
         }
         $this->render($path);
     }

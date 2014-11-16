@@ -241,8 +241,9 @@ class Controller {
         }
         if ($view === null) {
             $router = $this->getRouter();
-            if ($router->getModuleDirectory() !== null) {
-                $view .= $this->getModuleDirectory();
+            $view = '/';
+            if ($router->getModule() !== null) {
+                $view .= $this->getModule();
             }
             $view .= $router->getController() . '/' . $router->getAction();
             if ($router->hasParam('format')) {
