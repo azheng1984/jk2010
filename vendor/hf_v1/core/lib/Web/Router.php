@@ -122,8 +122,7 @@ abstract class Router {
         if ($rootNamespace !== null) {
             $rootNamespace .= '\\';
         }
-        return $rootNamespace . 'Controllers\\'
-            . $moduleNamespace . $class;
+        return $rootNamespace . 'Controllers\\' . $moduleNamespace . $class;
     }
 
     protected function getControllerClassRootNamespace() {
