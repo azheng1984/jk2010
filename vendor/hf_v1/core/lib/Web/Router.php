@@ -13,6 +13,7 @@ abstract class Router {
     private $moduleNamespace;
     private $controller;
     private $controllerClass;
+    private $controllerRootNamespace;
     private $action;
     private $actionMethod;
     private $path;
@@ -129,7 +130,14 @@ abstract class Router {
     }
 
     protected function getControllerRootNamespace() {
-        return Hyperframework\APP_ROOT_NAMESPACE;
+        if ($this->controllerRootNamespace === null) {
+            return Hyperframework\APP_ROOT_NAMESPACE;
+        }
+        return $this->controllerRootNamespace;
+    }
+
+    protected function setControllerRootNamespace($value) {
+        $this->controllerRootNamespace = $value;
     }
 
     public function getAction() {
