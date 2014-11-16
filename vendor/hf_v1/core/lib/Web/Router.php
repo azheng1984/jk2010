@@ -117,6 +117,11 @@ abstract class Router {
         $moduleNamespace = $this->getModuleNamespace();
         if ($moduleNamespace !== null) {
             $moduleNamespace .= '\\';
+        } elseif ($moduleNamespace == '') {
+            throw new Exception;
+        }
+        if ($moduleNamespace !== null && $moduleNamespace[0] === '\\') {
+            return $moduleNamespace . '\Controllers\\' . $class;
         }
         return Hyperframework\APP_ROOT_NAMESPACE . '\Controllers\\'
             . $moduleNamespace . $class;
