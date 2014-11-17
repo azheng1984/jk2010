@@ -2,7 +2,13 @@
 $this->extend('/_layout/app');
 $this->usePath('_layout/app', 'app');
 $this->usePath('xxxx');
-$this->usePath('xxxx/list');
+$this->usePath('root://xxxx/list');
+
+$this->usePath('vendor://lib/base');
+$this->load('vendor://main/article/list');
+$this->load('main/article/list');
+$this->load('root://main/article/list');
+
 $this->setBlock('hello', function() {
 });
 $this(function() {
