@@ -1,9 +1,10 @@
 <?php
-$this->setLayout('html');
-$this->setLayout('/_layouts/html.php');
+$this->usePath('_system/admin/user');
+$this->extend('/_layouts/app');
 
-$this->render('_topic_views');
-$this->render('/article/_topic_views.php');
-$this->render('/_common/adsense.php');
+$this->load('user/load');
+$this->load('_topic_views');
+$this->load('user/_topic_views');
+$this->load('user/_common/adsense');
 
-$this->render('/_layouts/html.php');
+$this->load('/_layouts/html');

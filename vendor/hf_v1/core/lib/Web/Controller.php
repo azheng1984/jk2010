@@ -254,7 +254,7 @@ class Controller {
             throw new Exception;
         }
         $template = new ViewTemplate($this->getActionResult());
-        $template->render($view);
+        $template->load($view);
         $this->disableView();
     }
 

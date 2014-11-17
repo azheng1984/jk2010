@@ -7,7 +7,7 @@ $this(function() {
 $this->setBlock('content', function() {
 });
 $this->setBlock('menu', function() {
-    $this->render('index/_hello');
+    $this->load('index/_hello');
 });
 $this->setBlock('left', function() { ?>
 left

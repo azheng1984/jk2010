@@ -9,22 +9,58 @@ use Hyperframework\Config;
 
 abstract class ViewTemplateEngine implements ArrayAccess {
     private $model;
-    private $blocks = [];
+    private $includeFileFunction;
+    private $fullPath;
     private $viewRootPath;
-    private $contextStack = [];
-//    private $pathStack = [];
-//    private $optionStack = [];
+    private $blocksStack = [];
+    private $pathStack = [];
+    private $optionStack = [];
 
-    public function __construct(array $model = null) {
-        if ($model !== null) {
-            $this->model = $model;
-        } else {
-            $this->model = [];
+    public function __construct($includeFileFunction, array $model) {
+        $this->includeFileFunction = $includeFileFunction;
+        $this->model = $model;
+    }
+
+    public function load($path, array $options = []) {
+        $parentPath = null;
+        if (count($this->pathStack) !== 0) {
+            $parentPath = end($this->pathStack);
+        }
+        if ($path === null || $path == '') {
+            throw new Exception;
+        }
+        $extensionPattern = '#\.[.0-9a-zA-Z]+$#';
+        if (preg_match($extensionPattern, $path, $matches) === 0) {
+            if ($parentPath === null) {
+                throw new Exception;
+            }
+            preg_match($extensionPattern, $parentPath, $matches);
+            $path .= $matches[0];
+        }
+        if (DIRECTORY_SEPARATOR !== '/') {
+            $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        }
+        $this->pathStack[] = $path;
+        $this->optionStack[] = $options;
+        $this->fullPath = $this->getViewRootPath()
+            . DIRECTORY_SEPARATOR . end($this->pathStack);
+        $includeFileFunction = $this->includeFileFunction;
+        $includeFileFunction();
+        $options = array_pop($this->optionStack);
+        if (isset($options['layout'])) {
+            $this->load($options['layout'], ['blocks' => $this->getBlocks()]);
         }
     }
 
-    //change name to load
-    abstract protected function render($path, array $options = null);
+    protected function getFullPath() {
+        return $this->fullPath;
+    }
+
+    protected function extend($layout) {
+        $options = array_pop($this->optionStack);
+        $options['layout'] = $layout;
+        array_push($this->optionStack, $options);
+    }
 
     protected function renderBlock($name, $default = null) {
         if (isset($this->blocks[$name])) {
@@ -38,18 +74,26 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         }
     }
 
-    protected function pushOptions($options) {
+    private function pushOptions($options) {
     }
 
-    protected function popOptions() {
+    private function popOptions() {
     }
 
-    protected function getOptions() {
+    private function getOptions() {
     }
 
     protected function setBlock($name, $function) {
         //$this->blocks[$name] = array($function, $this->getPath());
         $this->blocks[$name] = $function;
+    }
+
+    private function getBlocks() {
+        return $this->blocks;
+    }
+
+    private function pushBlocks($blocks) {
+        $this->blocks[] = $blocks;
     }
 
     protected function getViewRootPath() {
@@ -67,6 +111,10 @@ abstract class ViewTemplateEngine implements ArrayAccess {
             $this->viewRootPath = $path;
         }
         return $this->viewRootPath;
+    }
+
+    public function setViewRootPath($value) {
+        $this->viewRootPath = $value;
     }
 
     public function __invoke($function) {
