@@ -1,4 +1,4 @@
-<?php $this->extend('index/_hello_layout'); ?>
+<?php $this->extend('_hello_layout'); ?>
 hello!!!!!!!!!!!
 <?php
 $this->setBlock('hi', function() {
