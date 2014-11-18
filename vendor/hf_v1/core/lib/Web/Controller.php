@@ -152,12 +152,12 @@ class Controller {
             $this->filterChain[] = $config;
             return;
         }
-        if (isset($options['ignore_actions'])) {
-            if (is_string($options['ignore_actions'])) {
-                if ($options['ignore_actions'] === $action) {
+        if (isset($options['ignored_actions'])) {
+            if (is_string($options['ignored_actions'])) {
+                if ($options['ignored_actions'] === $action) {
                     return;
                 }
-            } elseif (in_array($action, $options['ignore_actions'])) {
+            } elseif (in_array($action, $options['ignored_actions'])) {
                 return;
             }
         }

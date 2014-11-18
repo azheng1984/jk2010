@@ -11,12 +11,11 @@ use Hyperframework\Config;
 abstract class ViewTemplateEngine implements ArrayAccess {
     private $model;
     private $includeFileFunction;
+    private $blocks = [];
     private $contextStack = [];
-    private $isParent = false;
     private $rootPath;
     private $fullPath;
     private $layout;
-    private $blocks;
 
     public function __construct($includeFileFunction, array $model = null) {
         $this->includeFileFunction = $includeFileFunction;
@@ -35,30 +34,11 @@ abstract class ViewTemplateEngine implements ArrayAccess {
             preg_match($extensionPattern, $this->fullPath, $matches);
             $path .= $matches[0];
         }
-        $context['root_path'] = $this->rootPath;
-        $context['full_path'] = $this->fullPath;
-        $context['layout'] = $this->layout;
-        $isParent = $this->isParent;
-        if ($isParent === false) {
-            $context['blocks'] = &$this->blocks;
-            $this->blocks = [];
-        }
-        array_push($this->contextStack, $context);
+        $this->pushContext();
         if (DIRECTORY_SEPARATOR !== '/') {
             $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
         }
-        if ($path[0] !== DIRECTORY_SEPARATOR) {
-            if ($this->fullPath === null) {
-                throw new Exception;
-            }
-            $tmps = explode(DIRECTORY_SEPARATOR, $this->fullPath);
-            array_pop($tmps);
-            $path = implode(DIRECTORY_SEPARATOR, $tmps)
-                . DIRECTORY_SEPARATOR . $path;
-        } else {
-            $path = $this->getRootPath() . $path;
-        }
-        $this->fullPath = $path;
+        $this->fullPath = $this->getRootPath() . DIRECTORY_SEPARATOR . $path;
         if (isset($options['layout'])) {
             $this->layout = $options['layout'];
         } else {
@@ -67,17 +47,9 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         $includeFileFunction = $this->includeFileFunction;
         $includeFileFunction($this->fullPath);
         if ($this->layout !== null) {
-            $this->isParent = true;
             $this->load($this->layout);
-            $this->isParent = false;
         }
-        $context = array_pop($this->contextStack);
-        $this->rootPath = $context['root_path'];
-        $this->fullPath = $context['full_path'];
-        $this->layout = $context['layout'];
-        if ($isParent === false) {
-            $this->blocks = &$context['blocks'];
-        }
+        $this->popContext();
     }
 
     protected function getFullPath() {
@@ -89,19 +61,11 @@ abstract class ViewTemplateEngine implements ArrayAccess {
     }
 
     protected function renderBlock($name, Closure $default = null) {
-        $context = [
-            'layout' => $this->layout,
-            'root_path' => $this->rootPath,
-            'full_path' => $this->fullPath,
-            'blocks' => &$this->blocks
-        ];
-        array_push($this->contextStack, $context);
-        $this->layout = null;
+        $this->pushContext();
         if (isset($this->blocks[$name])) {
             $function = $this->blocks[$name]['function'];
             $this->rootPath = $this->blocks[$name]['root_path'];
             $this->fullPath = $this->blocks[$name]['full_path'];
-            $this->blocks = &$this->blocks[$name]['blocks'];
             $function();
         } else {
             if ($default === null) {
@@ -109,11 +73,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
             }
             $default();
         }
-        $context = array_pop($this->contextStack);
-        $this->layout = $context['layout'];
-        $this->rootPath = $context['root_path'];
-        $this->fullPath = $context['full_path'];
-        $this->blocks = &$context['blocks'];
+        $this->popContext();
     }
 
     protected function setBlock($name, Closure $function) {
@@ -121,14 +81,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
             'function' => $function,
             'root_path' => $this->rootPath,
             'full_path' => $this->fullPath,
-            'blocks' => &$this->blocks,
         ];
-    }
-
-    protected function appendBlock($name, Closure $function) {
-    }
-
-    protected function prependBlock($name, Closure $function) {
     }
 
     protected function getRootPath() {
@@ -174,5 +127,21 @@ abstract class ViewTemplateEngine implements ArrayAccess {
 
     public function offsetGet($offset) {
         return $this->model[$offset];
+    }
+
+    private function pushContext() {
+        $context = [
+            'root_path' => $this->rootPath,
+            'full_path' => $this->fullPath,
+            'layout' => $this->layout
+        ];
+        array_push($this->contextStack, $context);
+    }
+
+    private function popContext() {
+        $context = array_pop($this->contextStack);
+        $this->rootPath = $context['root_path'];
+        $this->fullPath = $context['full_path'];
+        $this->layout = $context['layout'];
     }
 }

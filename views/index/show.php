@@ -1,5 +1,5 @@
 <?php
-$this->extend('/_layouts/todo');
+$this->extend('index/_layout');
 $this(function() {
     $this['title'] = 'xxx';
     $this['description'] = 'xxx';
@@ -7,7 +7,7 @@ $this(function() {
 $this->setBlock('content', function() {
 });
 $this->setBlock('menu', function() {
-    $this->load('_hello');
+    $this->load('index/_hello');
 });
 $this->setBlock('left', function() { ?>
 left
