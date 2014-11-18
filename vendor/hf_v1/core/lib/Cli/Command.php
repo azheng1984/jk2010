@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
-abstract class Command extends ExecutableElement {
+abstract class Command extends Executor {
     protected function getArguments() {
         return $this->getApp()->getArguments();
     }
