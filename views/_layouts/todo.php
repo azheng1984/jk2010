@@ -1,5 +1,5 @@
 <?php
-$this->extend('_layouts/html');
+$this->setLayout('_layouts/html');
 $this->setBlock('body', function() {?>
     header
     <div id="content">

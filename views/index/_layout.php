@@ -1,2 +1,2 @@
 <?php
-$this->extend('_layouts/todo');
+$this->setLayout('_layouts/todo');

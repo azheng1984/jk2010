@@ -1,3 +1,7 @@
 xxxxx
 <?php
-$this->renderBlock('hi');
+$this->renderBlock('hi', function() {
+    echo 'hi';
+});
+?>
+yyyyy

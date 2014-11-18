@@ -231,6 +231,7 @@ class Controller {
     public function renderView() {
         $view = $this->getView();
         if (is_object($view)) {
+            echo $xx;
             if (method_exsits($view, 'render')) {
                 $view->render();
                 $this->disableView();

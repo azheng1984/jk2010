@@ -35,15 +35,18 @@ abstract class ViewTemplateEngine implements ArrayAccess {
             $path .= $matches[0];
         }
         $this->pushContext();
+        if (isset($options['layout'])) {
+            $this->setLayout($options['layout']);
+        } else {
+            $this->setLayout(null);
+        }
+        if (isset($options['root_path'])) {
+            $this->setRootPath($options['root_path']);
+        }
         if (DIRECTORY_SEPARATOR !== '/') {
             $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
         }
         $this->fullPath = $this->getRootPath() . DIRECTORY_SEPARATOR . $path;
-        if (isset($options['layout'])) {
-            $this->layout = $options['layout'];
-        } else {
-            $this->layout = null;
-        }
         $includeFileFunction = $this->includeFileFunction;
         $includeFileFunction($this->fullPath);
         if ($this->layout !== null) {
@@ -56,15 +59,15 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         return $this->fullPath;
     }
 
-    protected function extend($layout) {
-        $this->layout = $layout;
+    protected function setLayout($value) {
+        $this->layout = $value;
     }
 
     protected function renderBlock($name, Closure $default = null) {
         $this->pushContext();
         if (isset($this->blocks[$name])) {
             $function = $this->blocks[$name]['function'];
-            $this->rootPath = $this->blocks[$name]['root_path'];
+            $this->setRootPath($this->blocks[$name]['root_path']);
             $this->fullPath = $this->blocks[$name]['full_path'];
             $function();
         } else {
@@ -96,7 +99,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
                         . DIRECTORY_SEPARATOR . $path;
                 }
             }
-            $this->rootPath = $path;
+            $this->setRootPath($path);
         }
         return $this->rootPath;
     }
