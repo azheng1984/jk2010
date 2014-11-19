@@ -4,6 +4,8 @@ namespace Hyperframework\Web\Html;
 use Hyperframework\ConfigFileLoader;
 use Hyperframework\Web\CsrfProtection;
 
+//todo remove config file
+//todo error as data?
 class FormHelper {
     private $data;
     private $errors;
@@ -29,12 +31,6 @@ class FormHelper {
             unset($config[':fields']);
         }
         $this->attrs = $config;
-    }
-
-    protected static function loadConfig($name) {
-        return ConfigFileLoader::getPhp(
-            'form' . DIRECTORY_SEPARATOR . $name . '.php'
-        );
     }
 
     public function begin($attrs = null) {
