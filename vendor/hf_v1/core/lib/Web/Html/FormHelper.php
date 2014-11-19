@@ -143,8 +143,9 @@ class FormHelper {
         }
         if ($bindingAttr === 'checked' && isset($attrs['name'])) {
             if (isset($this->data[$attrs['name']]) && isset($attrs['value'])) {
-                $value = strval($attrs['value']);
-                if ($value === strval($this->data[$attrs['name']])) {
+                $value = (string)$attrs['value'];
+                $data = $this->data[$attrs['name']];
+                if ($value == $data && $value === (string)$data) {
                     $attrs['checked'] = 'checked';
                 }
             }
@@ -159,9 +160,6 @@ class FormHelper {
     private function renderOptions(
         array $options, $selectedValue, $isOptGroupAllowed = true
     ) {
-        if ($selectedValue !== null) {
-            $selectedValue = strval($selectedValue);
-        }
         foreach ($options as $option) {
             if (is_array($option) === false) {
                 $option = array('value' => $option, ':content' => $option);
@@ -182,9 +180,8 @@ class FormHelper {
             }
             echo '<option';
             $this->renderAttrs($option);
-            if ($selectedValue !== null
-                && strval($option['value']) === $selectedValue
-            ) {
+            $value = (string)$option['value'];
+            if ($value == $selectedValue && $value === (string)$selectedValue) {
                 echo ' selected="selected"';
             }
             echo '>', $option[':content'], '</option>';

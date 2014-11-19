@@ -71,9 +71,8 @@ abstract class Router {
         if ($this->moduleNamespace !== null) {
             return $this->moduleNamespace;
         }
-        //todo math compare by default
-        $module = strval($this->getModule());
-        if ($module != 0 && $module == '') {
+        $module = (string)$this->getModule();
+        if ($module === '') {
             return;
         }
         $tmp = str_replace(
@@ -92,7 +91,7 @@ abstract class Router {
     public function getControllerClass() {
         $class = null;
         if ($this->controllerClass !== null) {
-            $class = strval($this->controllerClass);
+            $class = (string)$this->controllerClass;
             if ($class === '') {
                 return $this->controllerClass;
             }
@@ -100,7 +99,7 @@ abstract class Router {
                 return substr($class, 1);
             }
         } else {
-            $controller = strval($this->getController());
+            $controller = (string)$this->getController();
             if ($controller === '') {
                 return;
             } else {
@@ -141,7 +140,7 @@ abstract class Router {
         if ($this->actionMethod !== null) {
             return $this->actionMethod;
         }
-        $action = strval($this->getAction());
+        $action = (string)$this->getAction();
         if ($action === '') {
             return;
         }

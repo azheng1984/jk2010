@@ -8,6 +8,29 @@ $p = preg_replace(
     '(?<\1>[^/]+?)',
     $p
 );
+class x {
+    public function __tostring() {
+        return 'xxx';
+    }
+}
+class y {
+    public function __tostring() {
+        return 'xxx';
+    }
+}
+$x = new x;
+$y = new y;
+var_dump($x == $y);
+exit;
+
+function xx(string $x) {
+}
+$x = (string)$x;
+xx($x);
+
+$x = (string)$x;
+var_dump($x == 'xxx');
+exit;
 //function hi($controller) {
 //    echo 'start out';
 //    if (false) {
