@@ -4,43 +4,16 @@ namespace Hyperframework\Web\Html;
 use Hyperframework\ConfigFileLoader;
 use Hyperframework\Web\CsrfProtection;
 
-//todo remove config file
-//todo error as data, or options to data & error?
 class FormHelper {
     private $data;
     private $errors;
-    private $attrs;
-    private $fields;
 
-    public function __construct($options = null) {
-        if (isset($options['data'])) {
-            $this->data = $options['data'];
-        }
-        if (isset($options['errors'])) {
-            $this->data = $options['errors'];
-        }
-        if (isset($options['config']) === false) {
-            return;
-        }
-        $config = $options['config'];
-        if (is_string($config)) {
-            $config = static::loadConfig($config);
-        }
-        if (isset($config[':fields'])) {
-            $this->fields = $config[':fields'];
-            unset($config[':fields']);
-        }
-        $this->attrs = $config;
+    public function __construct(array $data = null, array $errors = null) {
+        $this->data = $data;
+        $this->errors = $errors;
     }
 
-    public function begin($attrs = null) {
-        if ($this->attrs !== null) {
-            if ($attrs === null) {
-                $this->attrs = $attrs;
-            } else {
-                $attrs = array_merge($this->attrs, $attrs);
-            }
-        }
+    public function begin(array $attrs = null) {
         echo '<form';
         $this->renderAttrs($attrs);
         echo '>';
@@ -56,43 +29,43 @@ class FormHelper {
         echo '</form>';
     }
 
-    public function renderText($attrs) {
+    public function renderText(array $attrs) {
         $this->renderInput('text', $attrs);
     }
 
-    public function renderCheckBox($attrs) {
+    public function renderCheckBox(array $attrs) {
         $this->renderInput('checkbox', $attrs, 'checked');
     }
 
-    public function renderRadio($attrs) {
+    public function renderRadio(array $attrs) {
         $this->renderInput('radio', $attrs, 'checked');
     }
 
-    public function renderPassword($attrs) {
+    public function renderPassword(array $attrs) {
         $this->renderInput('password', $attrs);
     }
 
-    public function renderSubmit($attrs) {
+    public function renderSubmit(array $attrs) {
         $this->renderInput('submit', $attrs);
     }
 
-    public function renderReset($attrs) {
+    public function renderReset(array $attrs) {
         $this->renderInput('reset', $attrs);
     }
 
-    public function renderHidden($attrs) {
+    public function renderHidden(array $attrs) {
         $this->renderInput('hidden', $attrs);
     }
 
-    public function renderButton($attrs) {
+    public function renderButton(array $attrs) {
         $this->renderInput('button', $attrs);
     }
 
-    public function renderFile($attrs) {
+    public function renderFile(array $attrs) {
         $this->renderInput('file', $attrs, null);
     }
 
-    public function renderTextArea($attrs) {
+    public function renderTextArea(array $attrs) {
         $attrs = $this->getFullFieldAttrs($attrs);
         echo '<textarea';
         $this->renderAttrs($attrs);
@@ -111,7 +84,7 @@ class FormHelper {
         echo '</textarea>';
     }
 
-    public function renderSelect($attrs) {
+    public function renderSelect(array $attrs) {
         $attrs = $this->getFullFieldAttrs($attrs);
         echo '<select';
         $this->renderAttrs($attrs);
@@ -151,7 +124,7 @@ class FormHelper {
         return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE);
     }
 
-    private function renderInput($type, $attrs, $bindingAttr = 'value') {
+    private function renderInput($type, array $attrs, $bindingAttr = 'value') {
         $attrs = self::getFullFieldAttrs($attrs);
         if ($bindingAttr === 'value' && isset($attrs['name'])) {
             if (isset($this->data[$attrs['name']])) {
@@ -182,7 +155,7 @@ class FormHelper {
     }
 
     private function renderOptions(
-        $options, $selectedValue, $isOptGroupAllowed = true
+        array $options, $selectedValue, $isOptGroupAllowed = true
     ) {
         foreach ($options as $option) {
              if (is_array($option) === false) {
@@ -211,7 +184,7 @@ class FormHelper {
          }
     }
 
-    private function getFullFieldAttrs($attrs) {
+    private function getFullFieldAttrs(array $attrs) {
         if ($attrs === null) {
             return;
         }
@@ -227,16 +200,10 @@ class FormHelper {
                 $attrs['name'] = $name;
             }
         }
-        if ($name === null) {
-            return $attrs;
-        }
-        if (isset($this->fields[$name])) {
-            $attrs = array_merge_recursive($this->fields[$name], $attrs);
-        }
         return $attrs;
     }
 
-    private function renderAttrs($attrs) {
+    private function renderAttrs(array $attrs) {
         foreach ($attrs as $key => $value) {
             if (is_int($key)) {
                 echo ' ', $value;
