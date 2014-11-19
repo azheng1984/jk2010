@@ -15,7 +15,9 @@ class FormHelper {
 
     public function begin(array $attrs = null) {
         echo '<form';
-        $this->renderAttrs($attrs);
+        if ($attrs !== null) {
+            $this->renderAttrs($attrs);
+        }
         echo '>';
         if (isset($attrs['method'])
             && $attrs['method'] === 'POST'
@@ -29,7 +31,7 @@ class FormHelper {
         echo '</form>';
     }
 
-    public function renderText(array $attrs) {
+    public function renderTextField(array $attrs) {
         $this->renderInput('text', $attrs);
     }
 
@@ -37,23 +39,15 @@ class FormHelper {
         $this->renderInput('checkbox', $attrs, 'checked');
     }
 
-    public function renderRadio(array $attrs) {
+    public function renderRadioButton(array $attrs) {
         $this->renderInput('radio', $attrs, 'checked');
     }
 
-    public function renderPassword(array $attrs) {
+    public function renderPasswordField(array $attrs) {
         $this->renderInput('password', $attrs);
     }
 
-    public function renderSubmit(array $attrs) {
-        $this->renderInput('submit', $attrs);
-    }
-
-    public function renderReset(array $attrs) {
-        $this->renderInput('reset', $attrs);
-    }
-
-    public function renderHidden(array $attrs) {
+    public function renderHiddenField(array $attrs) {
         $this->renderInput('hidden', $attrs);
     }
 
@@ -61,7 +55,15 @@ class FormHelper {
         $this->renderInput('button', $attrs);
     }
 
-    public function renderFile(array $attrs) {
+    public function renderSubmitButton(array $attrs) {
+        $this->renderInput('submit', $attrs);
+    }
+
+    public function renderResetButton(array $attrs) {
+        $this->renderInput('reset', $attrs);
+    }
+
+    public function renderFileField(array $attrs) {
         $this->renderInput('file', $attrs, null);
     }
 
