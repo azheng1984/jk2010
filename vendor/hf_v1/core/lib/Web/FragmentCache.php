@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
+//todo fragment cache builder
 class FragmentCache {
     private static $basePath;
 
