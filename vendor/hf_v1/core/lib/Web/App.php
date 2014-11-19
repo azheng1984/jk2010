@@ -40,7 +40,7 @@ class App {
     protected function initializeController() {
         $router = $this->getRouter();
         $controllerClass = $router->getControllerClass();
-        if ($controllerClass === null
+        if ($controllerClass == ''
             || class_exists($controllerClass) === false
         ) {
             throw new Exception;

@@ -92,7 +92,7 @@ abstract class Router {
         $class = null;
         if ($this->controllerClass !== null) {
             $class = strval($this->controllerClass);
-            if ($class == '') {
+            if ($class === '') {
                 return $this->controllerClass;
             }
             if ($class[0] === '\\') {
@@ -862,12 +862,18 @@ abstract class Router {
     }
 
     protected function getRequestMethod() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
-            isset($_POST['_method']) &&
-            Config::get('hyperframework.web.rewrite_request_method') !== false
-        ) {
-            //todo support x head
-            return $_POST['_method'];
+        if (Config::get('hyperframework.web.rewrite_request_method') !== false)
+        {
+            if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
+                return strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
+            }
+            $param = Config::get('hyperframework.web.request_method_param');
+            if ($param == '') {
+                $param = '_method';
+            }
+            if (isset($_POST[$param])) {
+                return strtoupper($_POST[$param]);
+            }
         }
         return $_SERVER['REQUEST_METHOD'];
     }

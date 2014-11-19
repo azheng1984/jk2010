@@ -55,7 +55,7 @@ class Controller {
     protected function executeAction() {
         $router = $this->getRouter();
         $method = $router->getActionMethod();
-        if ($method === null) {
+        if ($method == '') {
             throw new Exception;
         }
         if (method_exists($this, $method)) {
@@ -229,7 +229,7 @@ class Controller {
             $view = null;
             $router = $this->getRouter();
             $view = '/';
-            if ($router->getModule() !== null) {
+            if ($router->getModule() != '') {
                 $view .= $this->getModule();
             }
             $controller = $router->getController();
@@ -241,8 +241,9 @@ class Controller {
                 throw new Exception;
             }
             $view .=  $controller . '/' . $action;
-            if ($router->hasParam('format') != '') {
-                $view .= '.' . $router->getParam('format');
+            $format = $router->hasParam('format');
+            if ($format != '') {
+                $view .= '.' . $format;
             }
             $view .= '.php';
             $this->view = $view;
