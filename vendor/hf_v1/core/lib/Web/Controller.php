@@ -145,7 +145,7 @@ class Controller {
             'type' => $type, 'filter' => $filter, 'options' => $options
         ];
         $action = $this->getRouter()->getAction();
-        if ($action === null) {
+        if ($action == '') {
             throw new Exception;
         }
         if ($options === null) {
@@ -225,13 +225,34 @@ class Controller {
     }
 
     public function getView() {
+        if ($this->view === null) {
+            $view = null;
+            $router = $this->getRouter();
+            $view = '/';
+            if ($router->getModule() !== null) {
+                $view .= $this->getModule();
+            }
+            $controller = $router->getController();
+            if ($controller == '') {
+                throw new Exception;
+            }
+            $action = $router->getAction();
+            if ($action == '') {
+                throw new Exception;
+            }
+            $view .=  $controller . '/' . $action;
+            if ($router->hasParam('format') != '') {
+                $view .= '.' . $router->getParam('format');
+            }
+            $view .= '.php';
+            $this->view = $view;
+        }
         return $this->view;
     }
 
     public function renderView() {
         $view = $this->getView();
         if (is_object($view)) {
-            echo $xx;
             if (method_exsits($view, 'render')) {
                 $view->render();
                 $this->disableView();
@@ -240,23 +261,13 @@ class Controller {
                 throw new Exception;
             }
         }
-        if ($view === null) {
-            $router = $this->getRouter();
-            $view = '/';
-            if ($router->getModule() !== null) {
-                $view .= $this->getModule();
-            }
-            $view .= $router->getController() . '/' . $router->getAction();
-            if ($router->hasParam('format')) {
-                $view .= '.' . $router->getParam('format');
-            }
-            $view .= '.php';
-        } elseif (is_string($view) === false) {
-            throw new Exception;
+        if (is_string($view)) {
+            $template = new ViewTemplate($this->getActionResult());
+            $template->load($view);
+            $this->disableView();
+            return;
         }
-        $template = new ViewTemplate($this->getActionResult());
-        $template->load($view);
-        $this->disableView();
+        throw new Exception;
     }
 
     public function getActionResult($name = null) {

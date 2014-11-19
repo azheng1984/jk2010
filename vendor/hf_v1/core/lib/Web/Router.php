@@ -67,23 +67,12 @@ abstract class Router {
         return $this->module;
     }
 
-    public function getModuleDirectory() {
-        $module = $this->getModule();
-        if ($module === null) {
-            return;
-        }
-        if (DIRECTORY_SEPARATOR === '/') {
-            return $module;
-        }
-        return str_replace('/', DIRECTORY_SEPARATOR, $module);
-    }
-
     protected function getModuleNamespace() {
         if ($this->moduleNamespace !== null) {
             return $this->moduleNamespace;
         }
         $module = $this->getModule();
-        if ($module === null) {
+        if ($module == '') {
             return;
         }
         $tmp = str_replace(
@@ -102,28 +91,28 @@ abstract class Router {
     public function getControllerClass() {
         $class = null;
         if ($this->controllerClass !== null) {
-            $class = $this->controllerClass;
+            $class = strval($this->controllerClass);
             if ($class == '') {
-                throw new Exception;
+                return $this->controllerClass;
             }
             if ($class[0] === '\\') {
                 return substr($class, 1);
             }
         } else {
             $controller = $this->getController();
-            if ($controller === null) {
-                throw new Exception;
+            if ($controller == '') {
+                return;
             } else {
                 $tmp = ucwords(str_replace('_', ' ', $controller));
                 $class = str_replace(' ', '', $tmp) . 'Controller';
             }
         }
         $rootNamespace = $this->getControllerRootNamespace();
-        if ($rootNamespace !== null) {
+        if ($rootNamespace != '') {
             $rootNamespace .= '\\';
         }
         $moduleNamespace = $this->getModuleNamespace();
-        if ($moduleNamespace !== null) {
+        if ($moduleNamespace != '') {
             $moduleNamespace .= '\\';
         }
         return $rootNamespace . 'Controllers\\' . $moduleNamespace . $class;
@@ -152,7 +141,7 @@ abstract class Router {
             return $this->actionMethod;
         }
         $action = $this->getAction();
-        if ($action === null) {
+        if ($action == '') {
             return;
         }
         $tmp = str_replace(' ', '', ucwords(str_replace('_', ' ', $action)));
