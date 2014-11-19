@@ -15,31 +15,17 @@ class EnvironmentBuilder {
     }
 
     protected static function initializeAutoloader() {
-        if (Config::get('hyperframework.use_composer_autoloader') === true) {
-            require APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor'
+        $autoloadFilePath = Config::get(
+            'hyperframework.composer_autoload_file_path'
+        );
+        if ($autoloadFilePath === null) {
+            $autoloadFilePath = APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor'
                 . DIRECTORY_SEPARATOR . 'autoload.php';
-            return;
+        } elseif (FullPathRecognizer::isFull($autoloadFilePath) === false) {
+            $autoloadFilePath = APP_ROOT_PATH . DIRECTORY_SEPARATOR
+                . $autoloadFilePath;
         }
-        static::loadFiles();
-        static::initializeClassLoader();
-    }
-
-    protected static function initializeClassLoader() {
-        require __DIR__ . DIRECTORY_SEPARATOR . 'ClassLoader.php';
-        ClassLoader::run();
-    }
-
-    protected static function loadFiles() {
-        if (Config::get('hyperframework.autoload_files.enable') !== true) {
-            return;
-        }
-        $path = Config::get('hyperframework.autoload_files.path');
-        if ($path === null) {
-            $path = APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'tmp'
-                . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR
-                . 'autoload_files.php';
-        }
-        require $path;
+        require $autoloadFilePath;
     }
 
     protected static function loadConfigClass() {
