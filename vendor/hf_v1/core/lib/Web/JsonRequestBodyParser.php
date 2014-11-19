@@ -10,7 +10,7 @@ class JsonRequestBodyParser extends RequestBodyParser {
             $GLOBALS['HTTP_RAW_POST_DATA'], true, 1024, JSON_BIGINT_AS_STRING
         );
         if (json_last_error() !== JSON_ERROR_NONE) {
-            //throw exception;
+            //throw exception?
         }
         return $result;
     }
