@@ -179,7 +179,10 @@ class Controller {
 
     public function getApp() {
         if ($this->app === null) {
-            throw new Exception('99% consturct not called ...');
+            throw new Exception(
+                'app equals to null'
+                    . '(may be consturctor of \'Controller\' is not called)'
+            );
         }
         return $this->app;
     }

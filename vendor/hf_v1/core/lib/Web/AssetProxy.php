@@ -7,7 +7,7 @@ use Hyperframework\FullPathRecognizer;
 class AssetProxy {
     public static function run() {
         $path = RequestPath::get();
-        if (Config::get('hyperframework.asset.enable_versioning') !== false) {
+        if (Config::get('hyperframework.web.asset.enable_versioning') !== false) {
             $segments = explode('.', $path);
             $amount = count($segments);
             if ($amount < 3) {
@@ -60,7 +60,7 @@ class AssetProxy {
 
     public static function getIncludePaths() {
         $paths =  \Hyperframework\ConfigFileLoader::loadPhp(
-            'hyperframework.asset.include_paths.config_path',
+            'hyperframework.web.asset.include_paths.config_path',
             'asset' . DIRECTORY_SEPARATOR . 'include_paths.php',
             true
         );

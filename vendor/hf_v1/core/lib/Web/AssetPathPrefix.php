@@ -10,7 +10,7 @@ class AssetPathPrefix {
         if (self::$value !== null) {
             return self::$value;
         }
-        self::$value = Config::get('hyperframework.asset.path_prefix');
+        self::$value = Config::get('hyperframework.web.asset.path_prefix');
         if (self::$value === null) {
             self::$value = '/cache';
         }

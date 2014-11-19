@@ -2,44 +2,91 @@
 namespace Hyperframework\Web;
 
 use Hyperframework;
-use Hyperframework\DirectoryScanner;
-use Hyperframework\Config;
+use Hyperframework\EnvironmentBuilder;
+use Hyperframework\ClassCacheBuilder;
+use Hyperframework\ClassFileHelper;
+use Hyperframework\Cli\ExceptionHandler;
 
-class AssetCacheBuilder {
-    public static function build() {
-        $outputRootPath = self::getOutputRootPath();
-        if (is_dir($outputRootPath) === false) {
-            mkdir($outputRootPath);
+class Runner {
+    public static function run($rootNamespace, $rootPath) {
+        static::initialize($rootNamespace, $rootPath);
+        self::buildPathInfoCache('App');
+        self::buildPathInfoCache('ErrorApp');
+        AssetCacheBuilder::run();
+        ClassCacheBuilder::run();
+    }
+
+    private static function buildPathInfoCache($type) {
+        $root = Hyperframework\APP_ROOT_PATH
+            . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . $type;
+        $pathInfo = array();
+        self::get('/', $root, Hyperframework\APP_ROOT_NAMESPACE .'\\' . $type, $pathInfo);
+        $content = var_export($pathInfo, true);
+        $folder = Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR
+            . 'tmp' . DIRECTORY_SEPARATOR . 'cache'
+            . DIRECTORY_SEPARATOR .  'path_info';
+        if (is_dir($folder) === false) {
+            mkdir($folder);
         }
-        $fileHandler = function($fullPath, $relativePath)use($outputRootPath) {
-            $result = AssetFilterChain::run($fullPath);
-            $path = $outputRootPath . '/' . $relativePath;
-            $path = AssetFilterChain::removeInternalFileNameExtensions($path);
-            file_put_contents($path, $result);
-        };
-        $directoryHandler = function($fullPath, $relativePath) use (
-            $outputRootPath
-        ) {
-            $outputPath = $outputRootPath . DIRECTORY_SEPARATOR . $relativePath;
-            if (is_dir($outputPath) === false) {
-                mkdir($outputPath);
+        file_put_contents(
+            $folder . DIRECTORY_SEPARATOR . $type . '.php', '<?php return ' . $content
+        );
+    }
+
+    private static function get($path, $folder, $namespace, &$pathInfo) {
+        $viewTypes = array();
+        $pathInfo[$path] = array();
+        foreach (scandir($folder) as $entry) {
+            if ($entry === '.' || $entry === '..') {
+                continue;
             }
-        };
-        $scanner = new DirectoryScanner($fileHandler, $directoryHandler);
-        foreach (AssetProxy::getIncludePaths() as $path) {
-            $scanner->scan($path);
+            if (is_dir($folder . DIRECTORY_SEPARATOR . $entry)) {
+                $tmp = $path;
+                if ($path !== '/') {
+                    $tmp .= '/';
+                }
+                self::get(
+                    $tmp . self::convertToPath($entry),
+                    $folder . DIRECTORY_SEPARATOR . $entry,
+                    $namespace .'\\'. $entry,
+                    $pathInfo
+                );
+                continue;
+            }
+            $name = ClassFileHelper::getClassNameByFileName($entry);
+            if ($name === null) {
+                continue;
+            }
+            if ($name === 'Action') {
+                ActionInfoBuilder::run($namespace . '\\' . $name, $pathInfo[$path]);
+            } else {
+                $viewTypes[] = $name;
+            }
+        }
+        if (count($viewTypes) !== 0) {
+            $viewOrder = null;
+            if (isset($options['view_order']) !== false) {
+                $viewOrder = $options['view_order'];
+            }
+            ViewInfoBuilder::run(
+                $namespace, $viewTypes, $viewOrder, $pathInfo[$path]
+            );
+        }
+        if (count($pathInfo[$path]) !== 0) {
+            $pathInfo[$path]['namespace'] = $namespace;
+        } else {
+            unset($pathInfo[$path]);
         }
     }
 
-    public static function getOutputRootPath() {
-        $path = Config::get('hyperframework.asset.cache_path');
-        if ($path === null) {
-            $path = Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'public'
-                . str_replace('/', DIRECTORY_SEPARATOR, AssetPathPrefix::get());
-        } elseif (FullPathRecognizer::isFull($path)) {
-            $path = Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR . $path;
-        }
-        $version = AssetCacheVersion::get(null);
-        return $path . '-' . $version;
+    private static function convertToPath($namespace) {
+        return strtolower($namespace);
+    }
+
+    protected static function initialize($rootNamespace, $rootPath) {
+        require dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR
+            . 'EnvironmentBuilder.php';
+        EnvironmentBuilder::run($rootNamespace, $rootPath);
+        ExceptionHandler::run();
     }
 }

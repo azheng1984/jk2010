@@ -6,7 +6,7 @@ use Hyperframework\Config;
 class AssetUrl {
     public static function get($path) {
         if (Config::get(
-            'hyperframework.asset.enable_versioning') !== false
+            'hyperframework.asset.web.enable_versioning') !== false
         ) {
             $version = AssetCacheVersion::get($path);
             $pos = strrpos($path, '.');
@@ -17,7 +17,7 @@ class AssetUrl {
                     . '.' . $version . '.' . substr($path, $pos + 1);
             }
         }
-        return Config::get('hyperframework.asset.url_prefix')
+        return Config::get('hyperframework.web.asset.url_prefix')
             . AssetPathPrefix::get() . $path;
     }
 }
