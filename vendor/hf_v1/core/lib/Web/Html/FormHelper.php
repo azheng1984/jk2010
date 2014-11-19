@@ -159,31 +159,36 @@ class FormHelper {
     private function renderOptions(
         array $options, $selectedValue, $isOptGroupAllowed = true
     ) {
+        if ($selectedValue !== null) {
+            $selectedValue = strval($selectedValue);
+        }
         foreach ($options as $option) {
-             if (is_array($option) === false) {
-                 $option = array('value' => $option, ':content' => $option);
-             } elseif ($isOptGroupAllowed && isset($option[':options'])) {
-                 echo '<optgroup';
-                 $this->renderAttrs($option);
-                 echo '>';
-                 $this->renderOptions(
-                     $option[':options'], $selectedValue, false
-                 );
-                 echo '</optgroup>';
-                 continue;
-             } elseif (isset($option['value']) === false) {
-                 continue;
-             }
-             if (isset($option[':content']) === false) {
-                 $option[':content'] = $option['value'];
-             }
-             echo '<option';
-             $this->renderAttrs($option);
-             if ($option['value'] === $selectedValue) {
-                 echo ' selected="selected"';
-             }
-             echo '>', $option[':content'], '</option>';
-         }
+            if (is_array($option) === false) {
+                $option = array('value' => $option, ':content' => $option);
+            } elseif ($isOptGroupAllowed && isset($option[':options'])) {
+                echo '<optgroup';
+                $this->renderAttrs($option);
+                echo '>';
+                $this->renderOptions(
+                    $option[':options'], $selectedValue, false
+                );
+                echo '</optgroup>';
+                continue;
+            } elseif (isset($option['value']) === false) {
+                continue;
+            }
+            if (isset($option[':content']) === false) {
+                $option[':content'] = $option['value'];
+            }
+            echo '<option';
+            $this->renderAttrs($option);
+            if ($selectedValue !== null
+                && strval($option['value']) === $selectedValue
+            ) {
+                echo ' selected="selected"';
+            }
+            echo '>', $option[':content'], '</option>';
+        }
     }
 
     private function getFullFieldAttrs(array $attrs) {

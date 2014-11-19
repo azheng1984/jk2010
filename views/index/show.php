@@ -6,9 +6,11 @@ $this(function() {
     $this['description'] = 'xxx';
 });
 $this->setBlock('content', function() {
-    $f = new FormHelper(['hi' => 'hello world']);
+    $f = new FormHelper(['hi' => '3']);
     $f->begin();
-    $f->renderTextBox(['name' => 'hi']);
+    $f->renderTextField(['name' => 'hi']);
+    $f->renderTextArea(['name' => 'hi']);
+    $f->renderSelect(['name' => 'hi', ':options' => ['1', 'hi', '2', '3']]);
     $f->end();
 });
 $this->setBlock('menu', function() {
