@@ -11,17 +11,6 @@ $p = preg_replace(
 if ($data['x'] === false) {
     $data['x'] = 'false';
 }
-echo (int)false;
-exit;
-
-function xx(string $x) {
-}
-$x = (string)$x;
-xx($x);
-
-$x = (string)$x;
-var_dump($x == 'xxx');
-exit;
 //function hi($controller) {
 //    echo 'start out';
 //    if (false) {
