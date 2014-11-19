@@ -5,7 +5,7 @@ use Hyperframework\ConfigFileLoader;
 use Hyperframework\Web\CsrfProtection;
 
 //todo remove config file
-//todo error as data?
+//todo error as data, or options to data & error?
 class FormHelper {
     private $data;
     private $errors;
