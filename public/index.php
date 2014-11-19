@@ -8,9 +8,6 @@ $p = preg_replace(
     '(?<\1>[^/]+?)',
     $p
 );
-if ($data['x'] === false) {
-    $data['x'] = 'false';
-}
 //function hi($controller) {
 //    echo 'start out';
 //    if (false) {
