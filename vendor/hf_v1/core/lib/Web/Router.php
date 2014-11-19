@@ -71,8 +71,9 @@ abstract class Router {
         if ($this->moduleNamespace !== null) {
             return $this->moduleNamespace;
         }
-        $module = $this->getModule();
-        if ($module == '') {
+        //todo math compare by default
+        $module = strval($this->getModule());
+        if ($module != 0 && $module == '') {
             return;
         }
         $tmp = str_replace(
@@ -99,20 +100,20 @@ abstract class Router {
                 return substr($class, 1);
             }
         } else {
-            $controller = $this->getController();
-            if ($controller == '') {
+            $controller = strval($this->getController());
+            if ($controller === '') {
                 return;
             } else {
                 $tmp = ucwords(str_replace('_', ' ', $controller));
                 $class = str_replace(' ', '', $tmp) . 'Controller';
             }
         }
-        $rootNamespace = $this->getControllerRootNamespace();
-        if ($rootNamespace != '') {
+        $rootNamespace = strval($this->getControllerRootNamespace());
+        if ($rootNamespace !== '') {
             $rootNamespace .= '\\';
         }
-        $moduleNamespace = $this->getModuleNamespace();
-        if ($moduleNamespace != '') {
+        $moduleNamespace = strval($this->getModuleNamespace());
+        if ($moduleNamespace !== '') {
             $moduleNamespace .= '\\';
         }
         return $rootNamespace . 'Controllers\\' . $moduleNamespace . $class;
@@ -140,8 +141,8 @@ abstract class Router {
         if ($this->actionMethod !== null) {
             return $this->actionMethod;
         }
-        $action = $this->getAction();
-        if ($action == '') {
+        $action = strval($this->getAction());
+        if ($action === '') {
             return;
         }
         $tmp = str_replace(' ', '', ucwords(str_replace('_', ' ', $action)));

@@ -142,11 +142,11 @@ class FormHelper {
             }
         }
         if ($bindingAttr === 'checked' && isset($attrs['name'])) {
-            if (isset($this->data[$attrs['name']])
-                && isset($attrs['value'])
-                && $attrs['value'] === $this->data[$attrs['name']]
-            ) {
-                $attrs['checked'] = 'checked';
+            if (isset($this->data[$attrs['name']]) && isset($attrs['value'])) {
+                $value = strval($attrs['value']);
+                if ($value === strval($this->data[$attrs['name']])) {
+                    $attrs['checked'] = 'checked';
+                }
             }
         }
         echo '<input type="', $type, '"';
