@@ -8,19 +8,10 @@ $p = preg_replace(
     '(?<\1>[^/]+?)',
     $p
 );
-class x {
-    public function __tostring() {
-        return 'xxx';
-    }
+if ($data['x'] === false) {
+    $data['x'] = 'false';
 }
-class y {
-    public function __tostring() {
-        return 'xxx';
-    }
-}
-$x = new x;
-$y = new y;
-var_dump($x == $y);
+echo (int)false;
 exit;
 
 function xx(string $x) {
