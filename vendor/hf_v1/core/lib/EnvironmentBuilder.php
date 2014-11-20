@@ -10,8 +10,13 @@ class EnvironmentBuilder {
     }
 
     protected static function initializeConfig() {
+        require __DIR__ . DIRECTORY_SEPARATOR . 'Config.php';
         static::loadConfigClass();
-        static::importConfig();
+        $config = require APP_ROOT_PATH . DIRECTORY_SEPARATOR
+            . 'config' . DIRECTORY_SEPARATOR . 'init.php';
+        if ($config !== null) {
+            Config::import($config);
+        }
     }
 
     protected static function initializeAutoloader() {
@@ -26,17 +31,5 @@ class EnvironmentBuilder {
                 . $autoloadFilePath;
         }
         require $autoloadFilePath;
-    }
-
-    protected static function loadConfigClass() {
-        require __DIR__ . DIRECTORY_SEPARATOR . 'Config.php';
-    }
-
-    protected static function importConfig() {
-        $config = require APP_ROOT_PATH . DIRECTORY_SEPARATOR
-            . 'config' . DIRECTORY_SEPARATOR . 'init.php';
-        if ($config !== null) {
-            Config::import($config);
-        }
     }
 }
