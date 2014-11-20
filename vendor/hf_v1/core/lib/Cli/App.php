@@ -13,6 +13,9 @@ class App {
     private $hasCollection;
 
     public function run() {
+        ArgumentConfigParser::_test();
+        OptionConfigParser::_test();
+        CommandParser::_test();
         $this->initialize();
         if ($this->hasCollection) {
             $this->executeCollection();
@@ -52,17 +55,17 @@ class App {
         $args = $_SERVER['argv'];
         array_shift($args);
         $this->hasCollection =
-            Config::get('hyperframework.cli.command_collection.enable') === true;
+            Config::get('hyperframework.cli.enable_subcommands') === true;
         $commandParser = new CommandParser;
-        $commandParser->parse($hasCollection);
-        $configPath = $isCollection ? 'command_collection.php' : 'command.php';
-        if ($isCollection) {
-            $collectionConfig =
-                ConfigFileLoader::loadPhp('command_collection.php');
-        }
+        $commandParser->parse($this->hasCollection);
+        var_dump($commandParser->getSubcommand());
+        var_dump($commandParser->getCollectionOptions());
+        var_dump($commandParser->getOptions());
+        var_dump($commandParser->getArguments());
+        //$configPath = $isCollection ? 'command_collection.php' : 'command.php';
+        //$collectionConfig = ConfigFileLoader::loadPhp($configPath);
         //parse command
     }
 
-    protected function finalize() {
-    }
+    protected function finalize() {}
 }

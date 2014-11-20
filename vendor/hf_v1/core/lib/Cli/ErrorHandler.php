@@ -13,7 +13,8 @@ class ErrorHandler {
     }
 
     public static function handle($exception) {
-        fwrite(STDERR, $exception->getMessage() . PHP_EOL);
+        echo $exception;
+        //fwrite(STDERR, $exception->getMessage() . PHP_EOL);
         static::quit();
     }
 

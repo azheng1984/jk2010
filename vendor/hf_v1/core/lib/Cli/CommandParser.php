@@ -2,20 +2,49 @@
 namespace Hyperframework\Cli;
 
 use Exception;
+use Hyperframework\ConfigFileLoader;
 
 class CommandParser {
-    private static $commandName = null;
     private static $collectionOptions = array();
+    private static $subcommand = null;
     private static $options = array();
     private static $arguments = array();
 
+    public static function _test() {}
+
     private static function getCollectionOptionConfig() {
+        $config = ConfigFileLoader::loadPhp('command_collection.php');
+        if (isset($config['options'])) {
+            return OptionConfigParser::parse($config);
+        }
     }
 
-    private static function getCommandOptionConfig($name = null) {
+    private static function getOptionConfig($name = null) {
+        $path = null;
+        if ($name === null) {
+            $path = 'command.php';
+        } else {
+            $path = 'commands/' . $name . '.php';
+        }
+        $config = ConfigFileLoader::loadPhp($path);
+        if (isset($config['options'])) {
+            return OptionConfigParser::parse($config);
+        }
+        return [];
     }
 
-    private static function getCommandArgumentConfig($name = null) {
+    private static function getArgumentConfig($name = null) {
+        $path = null;
+        if ($name === null) {
+            $path = 'command.php';
+        } else {
+            $path = 'commands/' . $name . '.php';
+        }
+        $config = ConfigFileLoader::loadPhp($path);
+        if (isset($config['arguments'])) {
+            return ArgumentConfigParser::parse($config);
+        }
+        return [];
     }
 
     public static function parse($hasCollection) {
@@ -24,8 +53,8 @@ class CommandParser {
         if ($hasCollection) {
             $opitons = self::getCollectionOptionConfig();
         } else {
-            $options = self::getCommandOptionConfig($element);
-            $arguments = self::getCommandArgumentConfig($element);
+            $options = self::getOptionConfig();
+            $arguments = self::getArgumentConfig();
         }
         $isCollection = $hasCollection;
         $count = count($_SERVER['argv']);
@@ -41,8 +70,8 @@ class CommandParser {
                 || $isArgument
             ) {
                 if ($isCollection) {
-                    $arguments = self::getCommandArgumentConfig($element);
-                    $options = self::getCommandOptionConfig($element)
+                    $arguments = self::getArgumentConfig($element);
+                    $options = self::getOptionConfig($element)
                         + $options;
                     $isCollection = false;
                     continue;
@@ -204,17 +233,21 @@ class CommandParser {
     }
 
     public static function getCollectionOptions() {
+        return self::$collectionOptions;
+    }
+
+    //通过过滤器处理时用于区分
+    public static function getSubcommand() {
+        return self::$subcommand;
     }
 
     //用于继承 +  construct 自动处理部分选项
-    public static function getCommandOptions() {
+    public static function getOptions() {
+        return self::$options;
     }
 
     //过滤器自动验证, give argument a name
     public static function getArguments() {
-    }
-
-    //通过过滤器处理时用于区分
-    public static function getCommandName() {
+        return self::$arguments;
     }
 }

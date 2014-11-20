@@ -1,7 +1,8 @@
 <?php
 namespace Tc;
 
-return array(
+return [
+//    '[hyperframework]',
     'hyperframework.cli.command_collection.enable' => true,
     'hyperframework.asset.concatenate_manifest' => false,
     'hyperframework.asset.enable_versioning' => true,
@@ -17,4 +18,4 @@ return array(
     'hyperframework.logger.level' => 'DEBUG',
     'hyperframework.error_handler.enable_logger' => true,
 //    'hyperframework.log_handler.path' => 'php://output',
-);
+];

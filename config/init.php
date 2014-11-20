@@ -17,6 +17,6 @@ return array(
     'error_handler.enable_logger' => true,
 //    'log_handler.path' => 'php://output',
     /////////////////////////
-    '[blog]',
+    '[hyperframework.blog]',
     'xx' => 'xxx'
 );

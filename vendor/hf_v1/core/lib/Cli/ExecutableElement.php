@@ -8,8 +8,6 @@ abstract class ExecutableElement {
         $this->app = $app;
     }
 
-    abstract public function execute(/*...*/);
-
     abstract protected function getOptions();
 
     protected function getApp() {

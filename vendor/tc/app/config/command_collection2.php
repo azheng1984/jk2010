@@ -42,10 +42,10 @@ return array(
         ),
         '--name-of-option[=<arg-key>]' => 'message',
     ),
-
     //'class' => 'CommandCollection', //default CommandCollection
     //\Xx\CommandCollection //same as php
     //CommandCollection if have options
+
     'commands' => array( //or subcommands = 'folder' default to config/commands
         'hello' => array( //inline. lazy load is supported
             'description' => 'Build application',

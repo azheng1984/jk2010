@@ -5,33 +5,35 @@ use ReflectionMethod;
 use Exception;
 
 class ArgumentConfigParser {
-    public static function parseConfig($config) {
+    public static function _test() {}
+
+    public static function parse($config) {
         if (is_array($config) === false) {
             $config = array($config);
         }
         $result = array();
         foreach ($config as $item) {
-            $result[] = static::parseConfigItem($item);
+            $result[] = static::parseItem($item);
         }
         return $result;
     }
 
-    public static function parseMethod($commandClassName) {
-        $method = new ReflectionMethod($commandClassName, 'execute');
+    public static function parseMethod($class) {
+        $method = new ReflectionMethod($class, 'execute');
         $params = $method->getParameters();
         $results = array();
-        foreach $params as $param) {
+        foreach ($params as $param) {
             //todo inflect name
             $results[] = array(
                 'name' => $param->getName(),
-                'is_optional' => $param->isOptional()
+                'is_optional' => $param->isOptional(),
                 'is_collection' => $param->isArray()
             );
         }
         return $results;
     }
 
-    protected static function parseConfigItem($config) {
+    private static function parseItem($config) {
         $isOptional = false;
         $isCollection = false;
         $length = strlen($config);
