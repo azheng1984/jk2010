@@ -123,15 +123,9 @@ class FormHelper {
         $attrs = self::getFullFieldAttrs($attrs);
         if ($bindingAttr === 'value' && isset($attrs['name'])) {
             if (isset($this->data[$attrs['name']])) {
-                if (isset($attrs[':encode_html_special_chars'])
-                    && $attrs[':encode_html_special_chars'] === false
-                ) {
-                    $attrs['value'] = $data[$attrs['name']];
-                } else {
-                    $attrs['value'] = self::encodeSpecialChars(
-                        $this->data[$attrs['name']]
-                    );
-                }
+                $attrs['value'] = self::encodeSpecialChars(
+                    $this->data[$attrs['name']]
+                );
             }
         }
         if ($bindingAttr === 'checked' && isset($attrs['name'])) {
