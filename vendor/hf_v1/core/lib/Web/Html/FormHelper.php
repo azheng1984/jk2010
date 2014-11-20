@@ -73,15 +73,9 @@ class FormHelper {
         $this->renderAttrs($attrs);
         echo '>';
         if (isset($data[$attrs['name']])) {
-            if (isset($attrs[':encode_html_special_chars'])
-                && $attrs[':encode_html_special_chars'] === false
-            ) {
-                echo $data[$attrs['name']];
-            } else {
-                echo self::encodeHtmlSpecialChars($data[$attrs['name']]);
-            }
+            echo self::encodeSpecialChars($data[$attrs['name']]);
         } elseif (isset($attrs[':content'])) {
-            echo $attrs[':content'];
+            echo self::encodeSpecialChars($attrs[':content']);
         }
         echo '</textarea>';
     }
@@ -110,7 +104,7 @@ class FormHelper {
                 $this->renderError($name);
             } 
         } elseif (isset($this->errors[$name])) {
-            echo '<span class="error">', self::encodeHtmlSpecialChars(
+            echo '<span class="error">', self::encodeSpecialChars(
                 $this->errors['name']
             ), '</span>';
         }
@@ -122,7 +116,7 @@ class FormHelper {
             '" value="', CsrfProtection::getToken(), '"/>';
     }
 
-    private function encodeHtmlSpecialChars($content) {
+    private function encodeSpecialChars($content) {
         return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE);
     }
 
@@ -135,7 +129,7 @@ class FormHelper {
                 ) {
                     $attrs['value'] = $data[$attrs['name']];
                 } else {
-                    $attrs['value'] = self::encodeHtmlSpecialChars(
+                    $attrs['value'] = self::encodeSpecialChars(
                         $this->data[$attrs['name']]
                     );
                 }
@@ -184,7 +178,8 @@ class FormHelper {
             if ($value == $selectedValue && $value === (string)$selectedValue) {
                 echo ' selected="selected"';
             }
-            echo '>', $option[':content'], '</option>';
+            echo '>', self::encodeSpecialChars($option[':content']),
+                '</option>';
         }
     }
 
