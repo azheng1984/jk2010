@@ -1,73 +1,61 @@
 <?php
 namespace Hyperframework\Cli;
 
+use Hyperframework;
 use Hyperframework\Config;
 use Hyperframework\ConfigFileLoader;
 use Hyperframework\Cli\CommandParser;
 
 class App {
-    //isSubcommandEnabled
-    private $hasCollection;
-    //parentOptions
-    private $collectionOptions = array();
-    private $subcommand = null;
-    private $options = array();
-    private $arguments = array();
+    private $commandParser;
 
     public function run() {
         ArgumentConfigParser::_test();
         OptionConfigParser::_test();
         CommandParser::_test();
         $this->initialize();
-        if ($this->hasCollection) {
-            $this->executeCollection();
-        }
         $this->executeCommand();
         $this->finalize();
     }
 
-    protected function getCommandCollectionOptions() {
+    protected function hasOption() {
     }
 
-    protected function executeCollection() {}
-
-    protected function executeCommand() {}
+    protected function executeCommand() {
+        if ($this->hasOption('--help')) {
+            //render HelpView
+        }
+        if ($this->hasOption('--version')) {
+            //render version
+        }
+        $class = Hyperframework\APP_ROOT_NAMESPACE . '\Command';
+        $command = new $class($class);
+        call_user_method_array(
+            'execute', $command, $this->commandParser->getArguments()
+        );
+    }
 
     public function quit() {
         $this->finalize();
         exit;
     }
 
-    public function getCollectionOptions() {
-        return $this->parentOptions;
-    }
-
-    public function getSubcommand() {
-        return $this->subcommand;
-    }
-
-    public function getOptions() {
-        return $this->options;
-    }
-
-    public function getArguments() {
-        return $this->arguments;
-    }
-
     protected function initialize() {
         $args = $_SERVER['argv'];
         array_shift($args);
-        $this->hasCollection =
-            Config::get('hyperframework.cli.multiple_commands') === true;
-        $commandParser = new CommandParser;
-        $commandParser->parse($this->hasCollection);
-        var_dump($commandParser->getSubcommand());
-        var_dump($commandParser->getCollectionOptions());
-        var_dump($commandParser->getOptions());
-        var_dump($commandParser->getArguments());
+        $this->commandParser = new CommandParser;
+        $this->commandParser->parse($this->hasMultipleCommand());
+        var_dump($this->commandParser->getSubcommand());
+        var_dump($this->commandParser->getParentOptions());
+        var_dump($this->commandParser->getOptions());
+        var_dump($this->commandParser->getArguments());
         //$configPath = $isCollection ? 'command_collection.php' : 'command.php';
         //$collectionConfig = ConfigFileLoader::loadPhp($configPath);
         //parse command
+    }
+
+    protected function hasMultipleCommand() {
+        return false;
     }
 
     protected function finalize() {}

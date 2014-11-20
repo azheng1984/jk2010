@@ -12,13 +12,6 @@ class CommandParser {
 
     public static function _test() {}
 
-    private static function getCollectionOptionConfig() {
-        $config = ConfigFileLoader::loadPhp('command_collection.php');
-        if (isset($config['options'])) {
-            return OptionConfigParser::parse($config);
-        }
-    }
-
     private static function getOptionConfig($name = null) {
         $path = null;
         if ($name === null) {
@@ -51,7 +44,7 @@ class CommandParser {
         $arguments = array();
         $options = array();
         if ($hasCollection) {
-            $opitons = self::getCollectionOptionConfig();
+            $opitons = self::getOptionConfig();
         } else {
             $options = self::getOptionConfig();
             $arguments = self::getArgumentConfig();
@@ -235,7 +228,7 @@ class CommandParser {
     }
 
     public static function getParentOptions() {
-        return self::$collectionOptions;
+        return self::$parentOptions;
     }
 
     //通过过滤器处理时用于区分
