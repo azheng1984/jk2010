@@ -2,7 +2,7 @@
 namespace Hyperframework\Blog;
 
 return array(
-    'hyperframework',
+    '[hyperframework]',
     'asset.concatenate_manifest' => false,
     'asset.enable_versioning' => true,
     'asset.enable_proxy' => true,
@@ -17,6 +17,6 @@ return array(
     'error_handler.enable_logger' => true,
 //    'log_handler.path' => 'php://output',
     /////////////////////////
-    'blog',
+    '[blog]',
     'xx' => 'xxx'
 );

@@ -26,7 +26,14 @@ final class Config {
         $namespace = null;
         foreach ($configs as $key => $value) {
             if (is_int($key)) {
-                $namespace = $value;
+                $length = strlen($value);
+                if ($length === 0
+                    || $value[0] !== '['
+                    || $value[$length - 1] !== ']'
+                ) {
+                    throw new Exception;
+                }
+                $namespace = substr($value, 1, $length - 2);
                 continue;
             }
             if ($namespace !== null) {
