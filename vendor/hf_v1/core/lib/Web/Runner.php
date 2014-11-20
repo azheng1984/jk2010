@@ -15,6 +15,7 @@ class Runner {
     }
 
     protected static function initialize($rootNamespace, $rootPath) {
+        chdir($rootPath);
         require dirname(__DIR__) . DIRECTORY_SEPARATOR
             . 'EnvironmentBuilder.php';
         EnvironmentBuilder::build($rootNamespace, $rootPath);
