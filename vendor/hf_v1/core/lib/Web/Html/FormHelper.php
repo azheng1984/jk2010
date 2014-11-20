@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Web\Html;
 
-use Hyperframework\ConfigFileLoader;
 use Hyperframework\Web\CsrfProtection;
 
 class FormHelper {
