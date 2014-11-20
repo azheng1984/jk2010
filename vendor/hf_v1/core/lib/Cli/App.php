@@ -6,9 +6,9 @@ use Hyperframework\ConfigFileLoader;
 use Hyperframework\Cli\CommandParser;
 
 class App {
-    private $commandName = null;
+    private $subcommand = null;
     private $collectionOptions = array();
-    private $commandOptions = array();
+    private $options = array();
     private $arguments = array();
     private $hasCollection;
 
@@ -39,16 +39,16 @@ class App {
         return $this->collectionOptions;
     }
 
-    public function getCommandOptions() {
-        return $this->commandOptions;
+    public function getOptions() {
+        return $this->options;
     }
 
     public function getArguments() {
         return $this->arguments;
     }
 
-    public function getCommandName() {
-        return $this->commandName;
+    public function getSubcommand() {
+        return $this->subcommand;
     }
 
     protected function initialize() {
