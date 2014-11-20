@@ -35,12 +35,14 @@ final class Config {
                 }
                 $namespace = substr($value, 1, $length - 2);
                 if ($namespace === '') {
-                    throw new Exception;
+                    $namespace = null;
+                } else {
+                    $namespace .= '.';
                 }
                 continue;
             }
             if ($namespace !== null) {
-                $key = $namespace . '.' . $key;
+                $key = $namespace . $key;
             }
             self::$data[$key] = $value;
         }
