@@ -29,6 +29,7 @@ class ArgumentConfigParser {
                 'is_optional' => $param->isOptional(),
                 'is_collection' => $param->isArray()
             );
+            //todo check valid for collection argument
         }
         return $results;
     }

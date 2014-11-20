@@ -71,8 +71,7 @@ class CommandParser {
             ) {
                 if ($isCollection) {
                     $arguments = self::getArgumentConfig($element);
-                    $options = self::getOptionConfig($element)
-                        + $options;
+                    $options = self::getOptionConfig($element) + $options;
                     $isCollection = false;
                     continue;
                 }
