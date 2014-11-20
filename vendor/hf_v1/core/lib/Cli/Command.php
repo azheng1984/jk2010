@@ -10,6 +10,6 @@ abstract class Command extends ExecutableElement {
         return $this->getApp()->getOptions();
     }
 
-    public static function getArguments($param) {
+    protected function getParentOptions() {
     }
 }

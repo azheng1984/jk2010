@@ -6,7 +6,9 @@ use Hyperframework\ConfigFileLoader;
 use Hyperframework\Cli\CommandParser;
 
 class App {
+    //isSubcommandEnabled
     private $hasCollection;
+    //parentOptions
     private $collectionOptions = array();
     private $subcommand = null;
     private $options = array();
@@ -24,11 +26,12 @@ class App {
         $this->finalize();
     }
 
-    protected function executeCollection() {
+    protected function getCommandCollectionOptions() {
     }
 
-    protected function executeCommand() {
-    }
+    protected function executeCollection() {}
+
+    protected function executeCommand() {}
 
     public function quit() {
         $this->finalize();
@@ -36,7 +39,7 @@ class App {
     }
 
     public function getCollectionOptions() {
-        return $this->collectionOptions;
+        return $this->parentOptions;
     }
 
     public function getSubcommand() {
@@ -55,7 +58,7 @@ class App {
         $args = $_SERVER['argv'];
         array_shift($args);
         $this->hasCollection =
-            Config::get('hyperframework.cli.enable_subcommands') === true;
+            Config::get('hyperframework.cli.multiple_commands') === true;
         $commandParser = new CommandParser;
         $commandParser->parse($this->hasCollection);
         var_dump($commandParser->getSubcommand());

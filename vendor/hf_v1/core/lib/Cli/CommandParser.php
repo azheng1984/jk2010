@@ -5,7 +5,7 @@ use Exception;
 use Hyperframework\ConfigFileLoader;
 
 class CommandParser {
-    private static $collectionOptions = array();
+    private static $parentOptions = array();
     private static $subcommand = null;
     private static $options = array();
     private static $arguments = array();
@@ -82,6 +82,9 @@ class CommandParser {
                     }
                     $result['arguments'][] = $element;
                 } else {
+                    if (isset($arguments[$argumentCount - 1]) === false) {
+                        throw new Exception;
+                    }
                     $lastArgument = $arguments[$argumentCount - 1];
                     if ($lastArgument['is_collection']) {
                         $result['arguments'][$argumentCount - 1][] = $element;
@@ -231,7 +234,7 @@ class CommandParser {
         return $result;
     }
 
-    public static function getCollectionOptions() {
+    public static function getParentOptions() {
         return self::$collectionOptions;
     }
 
