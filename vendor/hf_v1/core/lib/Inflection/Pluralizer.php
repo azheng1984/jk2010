@@ -2,6 +2,6 @@
 namespace Hyperframework;
 
 class Pluralizer {
-    public static function pluralize() {
+    public static function run($word) {
     }
 }
