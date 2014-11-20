@@ -1,19 +1,15 @@
 <?php
 namespace Hyperframework\Cli;
 
-use Hyperframework;
 use Hyperframework\EnvironmentBuilder;
-use Hyperframework\Config;
-use Hyperframework\ConfigFileLoader;
-use Hyperframework\Cli\CommandParser;
 
 class Runner {
     public static function run($rootNamespace, $rootPath) {
         static::initialize($rootNamespace, $rootPath);
-        static::dispatch();
+        static::runApp();
     }
 
-    public static function dispatch() {
+    public static function runApp() {
         $app = new App;
         $app->run();
 //        $rootNamespace = Hyperframework\APP_ROOT_NAMESPACE;
