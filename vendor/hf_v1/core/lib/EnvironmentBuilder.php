@@ -11,7 +11,6 @@ class EnvironmentBuilder {
 
     protected static function initializeConfig() {
         require __DIR__ . DIRECTORY_SEPARATOR . 'Config.php';
-        static::loadConfigClass();
         $config = require APP_ROOT_PATH . DIRECTORY_SEPARATOR
             . 'config' . DIRECTORY_SEPARATOR . 'init.php';
         if ($config !== null) {
