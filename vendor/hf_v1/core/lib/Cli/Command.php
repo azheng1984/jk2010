@@ -40,4 +40,9 @@ abstract class Command {
 
     protected function getCommandParser() {
     }
+
+    public function renderHelp() {
+        $helpView = new HelpView;
+        $helpView->render();
+    }
 }

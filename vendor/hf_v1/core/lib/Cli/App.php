@@ -8,6 +8,7 @@ use Hyperframework\Cli\CommandParser;
 
 class App {
     private $commandParser;
+    private $version;
 
     public function run() {
         ArgumentConfigParser::_test();
@@ -18,21 +19,32 @@ class App {
         $this->finalize();
     }
 
-    protected function hasOption() {
+    protected function hasOption($name) {
+        $options = $this->commandParser->getOptions();
+        return isset($options[$name]);
     }
 
     protected function executeCommand() {
-        if ($this->hasOption('--help')) {
-            //render HelpView
-        }
         if ($this->hasOption('--version')) {
-            //render version
+            $this->renderVersion();
+            return;
         }
         $class = Hyperframework\APP_ROOT_NAMESPACE . '\Command';
         $command = new $class($class);
-        call_user_method_array(
-            'execute', $command, $this->commandParser->getArguments()
-        );
+        if ($this->hasOption('--help')) {
+            $command->renderHelp();
+        } else {
+            call_user_method_array(
+                'execute', $command, $this->commandParser->getArguments()
+            );
+        }
+    }
+
+    protected function renderVersion() {
+        echo $this->getVersion();
+    }
+
+    protected function getVersion() {
     }
 
     public function quit() {
