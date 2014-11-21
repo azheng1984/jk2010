@@ -4,22 +4,22 @@ class MultipleCommandApp extends App {
         return true;
     }
 
+    public function hasSubcommand() {
+    }
+
+    public function getGlobalOption() {
+    }
+
     protected function executeCommand() {
-        if ($this->hasSubcommand()) {
-            if ($this->hasParentOption('--version')) {
-                $this->renderVersion();
-                return;
-            }
-        } else {
-            if ($this->hasOption('--version')) {
-                $this->renderVersion();
-                return;
-            }
-        }
-        if ($this->hasOption('--version')) {
+        if ($this->hasGlobalOption('--version')) {
+            $this->renderVersion();
+            return;
         }
         $class = Hyperframework\APP_ROOT_NAMESPACE . '\Command';
         $command = new $class($class);
+        if ($this->hasGlobalOption('--help')) {
+            //global help
+        }
         if ($this->hasOption('--help')) {
             $command->renderHelp();
         } else {

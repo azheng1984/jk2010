@@ -5,7 +5,7 @@ use Exception;
 use Hyperframework\ConfigFileLoader;
 
 class CommandParser {
-    private static $parentOptions = array();
+    private static $globalOptions = array();
     private static $subcommand = null;
     private static $options = array();
     private static $arguments = array();
@@ -227,7 +227,7 @@ class CommandParser {
         return $result;
     }
 
-    public static function getParentOptions() {
+    public static function getGlobalOptions() {
         return self::$parentOptions;
     }
 
