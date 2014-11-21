@@ -1,4 +1,6 @@
 <?php
 return [
-    'options' => ['xx'],
+    'options' => [
+        '--xx'
+    ],
 ];

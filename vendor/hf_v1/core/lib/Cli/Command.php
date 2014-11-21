@@ -52,7 +52,7 @@ abstract class Command {
     }
 
     public function renderHelp() {
-        $helpView = new HelpView;
-        $helpView->render();
+        $view = new HelpView;
+        $view->render();
     }
 }

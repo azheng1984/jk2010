@@ -5,56 +5,27 @@ use Exception;
 use Hyperframework\ConfigFileLoader;
 
 class CommandParser {
-    private static $globalOptions = array();
-    private static $subcommand = null;
-    private static $options = array();
-    private static $arguments = array();
-
     public static function _test() {}
-
-    private static function getOptionConfig($name = null) {
-        $path = null;
-        if ($name === null) {
-            $path = 'command.php';
-        } else {
-            $path = 'commands/' . $name . '.php';
-        }
-        $config = ConfigFileLoader::loadPhp($path);
-        if (isset($config['options'])) {
-            return OptionConfigParser::parse($config);
-        }
-        return [];
-    }
-
-    private static function getArgumentConfig($name = null) {
-        $path = null;
-        if ($name === null) {
-            $path = 'command.php';
-        } else {
-            $path = 'commands/' . $name . '.php';
-        }
-        $config = ConfigFileLoader::loadPhp($path);
-        if (isset($config['arguments'])) {
-            return ArgumentConfigParser::parse($config);
-        }
-        return [];
-    }
 
     public static function parse($hasMultipleCommands) {
         $arguments = array();
         $options = array();
         if ($hasMultipleCommands) {
-            $opitons = self::getOptionConfig();
+            $opitons = static::getOptionConfig();
         } else {
-            $options = self::getOptionConfig();
-            $arguments = self::getArgumentConfig();
+            $options = static::getOptionConfig();
+            $arguments = static::getArgumentConfig();
         }
+        $optionType = 'global_options';
         $isGlobal = $hasMultipleCommands;
         $count = count($_SERVER['argv']);
         $isArgument = false;
         $argumentIndex = 0;
         $result = array('arguments' => array(), 'options' => array());
-        for ($index = 1; $index < $count; ++$count) {
+        if ($hasMultipleCommands) {
+            $result['global_options'] = array();
+        }
+        for ($index = 1; $index < $count; ++$index) {
             $element = $_SERVER['argv'][$index];
             $length = strlen($element);
             if ($length === 0
@@ -63,9 +34,11 @@ class CommandParser {
                 || $isArgument
             ) {
                 if ($isGlobal) {
-                    $arguments = self::getArgumentConfig($element);
-                    $options = self::getOptionConfig($element) + $options;
+                    $result['subcommand'] = $element;
+                    $arguments = static::getArgumentConfig($element);
+                    $options = static::getOptionConfig($element) + $options;
                     $isGlobal= false;
+                    $optionType = 'options';
                     continue;
                 }
                 $argumentCount = count($arguments);
@@ -131,12 +104,12 @@ class CommandParser {
                     }
                     if ($option['is_repeatable']) {
                         if (isset($result['options'][$optionName])) {
-                            $result['options'][$optionName][] = $optionArgument;
+                            $result[$optionType][$optionName][] = $optionArgument;
                         } else {
-                            $result['options'][$optionName] = array($optionArgument);
+                            $result[$optionType][$optionName] = array($optionArgument);
                         }
                     } else {
-                        $result['options'][$optionName] = $optionArgument;
+                        $result[$optionType][$optionName] = $optionArgument;
                     }
                     if ($optionArgument !== true) {
                         break;
@@ -146,11 +119,11 @@ class CommandParser {
                 }
             } else {
                 $optionArgument = true;
-                $optionName = substr($element[0], 2);
+                $optionName = substr($element, 2);
                 if (strpos($element, '=') !== false) {
                     list($optionName, $optionArgument) = explode('=', $element, 2);
                 }
-                if (isset($options[$optionName])) {
+                if (isset($options[$optionName]) === false) {
                     throw new Exception;
                 }
                 $option = $options[$optionName];
@@ -174,37 +147,20 @@ class CommandParser {
                         }
                     }
                 }
-                if ($option['is_repeatable']) {
+                if (isset($option['is_repeatable'])
+                    && $option['is_repeatable']
+                ) {
                     if (isset($result['options'][$optionName])) {
-                        $result['options'][$optionName][] = $optionArgument;
+                        $result[$optionType][$optionName][] = $optionArgument;
                     } else {
-                        $result['options'][$optionName] = array($optionArgument);
+                        $result[$optionType][$optionName] = array($optionArgument);
                     }
                 } else {
-                    $result['options'][$optionName] = $optionArgument;
+                    $result[$optionType][$optionName] = $optionArgument;
                 }
             }
         }
-        foreach ($options as $name => $option) {
-            if (isset($option['values'])) {
-                if (in_array($result['options'][$name], $option['values']) === false) {
-                    throw new Exception;
-                }
-            }
-            if (isset($option['is_required']) && $option['is_required']) {
-                if (isset($result['options'][$name])) {
-                    continue;
-                }
-                if (isset($option['mutex_options'])) {
-                    foreach ($option['mutex_options'] as $mutexOption) {
-                        if (isset($result['options'][$mutexOption])) {
-                            continue 2;
-                        }
-                    }
-                }
-                throw new Exception;
-            }
-        }
+        self::checkOptions($options, $result['options']);
         $count = 0;
         foreach ($arguments as $argument) {
             if ($argument['is_optional']) {
@@ -215,34 +171,57 @@ class CommandParser {
                 throw new Exception;
             }
         }
-        if ($hasMultipleCommands) {
-            $result['global_options'] = array();
-            foreach ($result['options'] as $name => $value) {
-                if ($options[$name]['is_global_option']) {
-                    $result['global_options'][$name] = $value;
-                    unset($result['options'][$name]);
-                }
-            }
-        }
         return $result;
     }
 
-    public static function getGlobalOptions() {
-        return self::$globalOptions;
+    private static function checkOptions($config, $result) {
+        foreach ($config as $name => $option) {
+            if (isset($option['values'])) {
+                if (in_array($result[$name], $option['values']) === false) {
+                    throw new Exception;
+                }
+            }
+            if (isset($option['is_required']) && $option['is_required']) {
+                if (isset($result[$name])) {
+                    continue;
+                }
+                if (isset($option['mutex_options'])) {
+                    foreach ($option['mutex_options'] as $mutexOption) {
+                        if (isset($result[$mutexOption])) {
+                            continue 2;
+                        }
+                    }
+                }
+                throw new Exception;
+            }
+        }
     }
 
-    //通过过滤器处理时用于区分
-    public static function getSubcommand() {
-        return self::$subcommand;
+    protected static function getOptionConfig($subcommand = null) {
+        $path = null;
+        if ($subcommand === null) {
+            $path = 'command.php';
+        } else {
+            $path = 'commands/' . $subcommand . '.php';
+        }
+        $config = ConfigFileLoader::loadPhp($path);
+        if (isset($config['options'])) {
+            return OptionConfigParser::parse($config['options']);
+        }
+        return [];
     }
 
-    //用于继承 +  construct 自动处理部分选项
-    public static function getOptions() {
-        return self::$options;
-    }
-
-    //过滤器自动验证, give argument a name
-    public static function getArguments() {
-        return self::$arguments;
+    protected static function getArgumentConfig($subcommand = null) {
+        $path = null;
+        if ($subcommand === null) {
+            $path = 'command.php';
+        } else {
+            $path = 'subcommand/' . $subcommand . '.php';
+        }
+        $config = ConfigFileLoader::loadPhp($path);
+        if (isset($config['arguments'])) {
+            return ArgumentConfigParser::parse($config);
+        }
+        return [];
     }
 }

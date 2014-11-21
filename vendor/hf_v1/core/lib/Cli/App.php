@@ -9,6 +9,8 @@ use Hyperframework\Cli\CommandParser;
 class App {
     private $commandParser;
     private $commandClass;
+    private $options;
+    private $arguments;
 
     public function run() {
         ArgumentConfigParser::_test();
@@ -35,8 +37,8 @@ class App {
         if ($this->hasOption('--help')) {
             $command->renderHelp();
         } else {
-            call_user_method_array(
-                'execute', $command, $this->commandParser->getArguments()
+            call_user_func_array(
+                [$command, 'execute'], $this->commandParser->getArguments()
             );
         }
     }
