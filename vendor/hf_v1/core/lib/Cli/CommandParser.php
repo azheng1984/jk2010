@@ -2,18 +2,15 @@
 namespace Hyperframework\Cli;
 
 use Exception;
-use Hyperframework\ConfigFileLoader;
 
 class CommandParser {
     public static function _test() {}
 
     public static function parse($hasMultipleCommands) {
-        $arguments = array();
-        $options = array();
-        if ($hasMultipleCommands) {
-            $opitons = static::getOptionConfig();
-        } else {
-            $options = static::getOptionConfig();
+        $arguments = null;
+        $options = null;
+        $opitons = static::getOptionConfig();
+        if ($hasMultipleCommands === false) {
             $arguments = static::getArgumentConfig();
         }
         $optionType = 'global_options';
@@ -21,9 +18,9 @@ class CommandParser {
         $count = count($_SERVER['argv']);
         $isArgument = false;
         $argumentIndex = 0;
-        $result = array('arguments' => array(), 'options' => array());
+        $result = array('arguments' => [], 'options' => []);
         if ($hasMultipleCommands) {
-            $result['global_options'] = array();
+            $result['global_options'] = [];
         }
         for ($index = 1; $index < $count; ++$index) {
             $element = $_SERVER['argv'][$index];
@@ -198,30 +195,10 @@ class CommandParser {
     }
 
     protected static function getOptionConfig($subcommand = null) {
-        $path = null;
-        if ($subcommand === null) {
-            $path = 'command.php';
-        } else {
-            $path = 'commands/' . $subcommand . '.php';
-        }
-        $config = ConfigFileLoader::loadPhp($path);
-        if (isset($config['options'])) {
-            return OptionConfigParser::parse($config['options']);
-        }
-        return [];
+        return CommandConfig::get('options', $subcommand);
     }
 
     protected static function getArgumentConfig($subcommand = null) {
-        $path = null;
-        if ($subcommand === null) {
-            $path = 'command.php';
-        } else {
-            $path = 'subcommand/' . $subcommand . '.php';
-        }
-        $config = ConfigFileLoader::loadPhp($path);
-        if (isset($config['arguments'])) {
-            return ArgumentConfigParser::parse($config);
-        }
-        return [];
+        return CommandConfig::get('arguments', $subcommand);
     }
 }

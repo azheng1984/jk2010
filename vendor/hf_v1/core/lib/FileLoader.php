@@ -2,34 +2,22 @@
 namespace Hyperframework;
 
 class FileLoader {
-    final public static function loadPhp(
-        $defaultPath, $pathConfigName = null, $shouldCheckFileExists = false
-    ) {
-        return self::load(
-            $defaultPath, $pathConfigName, $shouldCheckFileExists, true
-        );
+    final public static function loadPhp($path, $pathConfigName = null) {
+        return self::load($path, $pathConfigName, true);
     }
 
-    final public static function loadData(
-        $defaultPath, $pathConfigName = null, $shouldCheckFileExists = false
-    ) {
-        return self::load(
-            $defaultPath, $pathConfigName, $shouldCheckFileExists, false
-        );
+    final public static function loadData($path, $pathConfigName = null) {
+        return self::load($path, $pathConfigName, false);
     }
 
-    final public static function getPath($defaultPath, $pathConfigName = null) {
-        $path = null;
+    final public static function getFullPath($path, $pathConfigName = null) {
         if ($pathConfigName !== null) {
-            $path = Config::get($pathConfigName);
+            $tmp = Config::get($pathConfigName);
+            if ($tmp !== null) {
+                $path = $tmp;
+            }
         }
-        if ($path === false) {
-            return;
-        }
-        if ($path === null) {
-            $path = $defaultPath;
-        }
-        if ($path === null) {
+        if ($path == '' && (string)$path === '') {
             return;
         }
         if (FullPathRecognizer::isFull($path) === false) {
@@ -38,22 +26,25 @@ class FileLoader {
         return $path;
     }
 
+    private static function hasFile($path, $pathConfigName = null) {
+        $path = self::getFullPath($path, $pathConfigName);
+        if ($path === null) {
+            return false;
+        }
+        return file_exists($path);
+    }
+
     protected static function getDefaultBasePath() {
         return APP_ROOT_PATH;
     }
 
-    final private static function load(
-        $defaultPath, $pathConfigName, $shouldCheckFileExists, $isPhp
-    ) {
-        $path = self::getPath($defaultPath);
+    private static function load($path, $pathConfigName, $isPhp) {
+        $path = self::getFullPath($path, $pathConfigName);
         if ($path === null) {
-            return;
-        }
-        if ($shouldCheckFileExists && file_exists($path) === false) {
-            return;
+            throw new Exception;
         }
         if ($isPhp) {
-            return require $path;
+            return include $path;
         }
         return file_get_contents($path);
     }
