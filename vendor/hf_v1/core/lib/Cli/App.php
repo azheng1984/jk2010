@@ -7,8 +7,7 @@ use Hyperframework\ConfigFileLoader;
 use Hyperframework\Cli\CommandParser;
 
 class App {
-    private $commandParser;
-    private $commandClass;
+    private $commandConfig;
     private $options;
     private $arguments;
 
@@ -21,35 +20,47 @@ class App {
         $this->finalize();
     }
 
-    protected function hasOption($name) {
-        $options = $this->commandParser->getOptions();
-        return isset($options[$name]);
+    public function hasOption($name) {
+        return isset($this->options[$name]);
+    }
+
+    public function getOption($name) {
+        if (isset($this->options[$name])) {
+            return $this->options[$name];
+        }
+    }
+
+    public function getArguments() {
+        return $this->arguments;
     }
 
     protected function executeCommand() {
-        if ($this->hasOption('--version')) {
-            //check has version config
+        $config = $this->getCommandConfig();
+        if ($this->hasOption('version')) {
             $this->renderVersion();
             return;
         }
-        $class = $this->getCommandClass();
+        $class = $config->get('class');
+        if ($class === null) {
+            throw new Exception;
+        }
         $command = new $class($this);
-        if ($this->hasOption('--help')) {
+        if ($this->hasOption('help')) {
             $command->renderHelp();
         } else {
             call_user_func_array(
-                [$command, 'execute'], $this->commandParser->getArguments()
+                [$command, 'execute'], $this->getArguments()
             );
         }
     }
 
-    protected function getCommandClass() {
-        //read config file to get class name
-        return Hyperframework\APP_ROOT_NAMESPACE . '\Command';
-    }
-
     protected function renderVersion() {
-        //render version by config
+        $config = $this->getCommandConfig();
+        $version = $config->get('version');
+        if ($version == '' && '' === (string)$version) {
+            $version = 'unknown';
+        }
+        echo 'version ', $version;
     }
 
     public function quit() {
@@ -58,17 +69,19 @@ class App {
     }
 
     protected function initialize() {
-        $args = $_SERVER['argv'];
-        array_shift($args);
-        $this->commandParser = new CommandParser;
-        $this->commandParser->parse($this->hasMultipleCommands());
-        var_dump($this->commandParser->getSubcommand());
-        var_dump($this->commandParser->getGlobalOptions());
-        var_dump($this->commandParser->getOptions());
-        var_dump($this->commandParser->getArguments());
-        //$configPath = $isCollection ? 'command_collection.php' : 'command.php';
-        //$collectionConfig = ConfigFileLoader::loadPhp($configPath);
-        //parse command
+        $result = CommandParser::parse($this->getCommandConfig());
+        var_dump($result);
+        //$result['options'];
+        //$result['commands'];
+    }
+
+    public function getCommandConfig() {
+        if ($this->commandConfig === null) {
+            $this->commandConfig = new CommandConfig(
+                $this->hasMultipleCommands()
+            );
+        }
+        return $this->commandConfig;
     }
 
     protected function hasMultipleCommands() {

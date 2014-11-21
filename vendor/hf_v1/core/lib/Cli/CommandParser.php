@@ -6,22 +6,22 @@ use Exception;
 class CommandParser {
     public static function _test() {}
 
-    public static function parse($hasMultipleCommands) {
+    public static function parse($commandConfig) {
         $arguments = null;
-        $options = null;
-        $opitons = static::getOptionConfig();
-        if ($hasMultipleCommands === false) {
-            $arguments = static::getArgumentConfig();
+        $options = $commandConfig->getOptionConfig();
+        $result = array('arguments' => [], 'options' => []);
+        $optionType = null;
+        if ($hasMultipleCommands) {
+            $result['global_options'] = [];
+            $optionType = 'global_options';
+        } else {
+            $arguments = $commandConfig->getArgumentConfig();
+            $optionType = 'options';
         }
-        $optionType = 'global_options';
         $isGlobal = $hasMultipleCommands;
         $count = count($_SERVER['argv']);
         $isArgument = false;
         $argumentIndex = 0;
-        $result = array('arguments' => [], 'options' => []);
-        if ($hasMultipleCommands) {
-            $result['global_options'] = [];
-        }
         for ($index = 1; $index < $count; ++$index) {
             $element = $_SERVER['argv'][$index];
             $length = strlen($element);
@@ -31,9 +31,13 @@ class CommandParser {
                 || $isArgument
             ) {
                 if ($isGlobal) {
+                    if (static::hasSubcommand($element) === false) {
+                        throw new Exception;
+                    }
+                    static::checkOption($options, $result[$optionType]);
                     $result['subcommand'] = $element;
-                    $arguments = static::getArgumentConfig($element);
-                    $options = static::getOptionConfig($element) + $options;
+                    $options = $commandConfig->getOptionConfig($element);
+                    $arguments = $commandConfig->getArgumentConfig($element);
                     $isGlobal= false;
                     $optionType = 'options';
                     continue;
@@ -192,13 +196,5 @@ class CommandParser {
                 throw new Exception;
             }
         }
-    }
-
-    protected static function getOptionConfig($subcommand = null) {
-        return CommandConfig::get('options', $subcommand);
-    }
-
-    protected static function getArgumentConfig($subcommand = null) {
-        return CommandConfig::get('arguments', $subcommand);
     }
 }

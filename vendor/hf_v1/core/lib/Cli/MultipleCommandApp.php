@@ -5,14 +5,14 @@ class MultipleCommandApp extends App {
     private $subcommand;
     private $globalOptions;
 
+    public function hasMultipleCommand() {
+        return true;
+    }
+
     public function getSubcommand() {
         if ($this->isSubcommand() === false) {
             return;
         }
-    }
-
-    public function hasMultipleCommands() {
-        return true;
     }
 
     public function isSubcommand() {

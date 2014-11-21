@@ -11,27 +11,11 @@ class ArgumentConfigParser {
         if (is_array($config) === false) {
             $config = array($config);
         }
-        $result = array();
+        $result = [];
         foreach ($config as $item) {
             $result[] = static::parseItem($item);
         }
         return $result;
-    }
-
-    public static function parseMethod($class) {
-        $method = new ReflectionMethod($class, 'execute');
-        $params = $method->getParameters();
-        $results = array();
-        foreach ($params as $param) {
-            //todo inflect name
-            $results[] = array(
-                'name' => $param->getName(),
-                'is_optional' => $param->isOptional(),
-                'is_collection' => $param->isArray()
-            );
-            //todo check valid for collection argument
-        }
-        return $results;
     }
 
     private static function parseItem($config) {
