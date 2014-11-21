@@ -8,7 +8,7 @@ use Hyperframework\Cli\CommandParser;
 
 class App {
     private $commandParser;
-    private $version;
+    private $commandClass;
 
     public function run() {
         ArgumentConfigParser::_test();
@@ -26,11 +26,12 @@ class App {
 
     protected function executeCommand() {
         if ($this->hasOption('--version')) {
+            //check has version config
             $this->renderVersion();
             return;
         }
-        $class = Hyperframework\APP_ROOT_NAMESPACE . '\Command';
-        $command = new $class($class);
+        $class = $this->getCommandClass();
+        $command = new $class($this);
         if ($this->hasOption('--help')) {
             $command->renderHelp();
         } else {
@@ -40,11 +41,13 @@ class App {
         }
     }
 
-    protected function renderVersion() {
-        echo $this->getVersion();
+    protected function getCommandClass() {
+        //read config file to get class name
+        return Hyperframework\APP_ROOT_NAMESPACE . '\Command';
     }
 
-    protected function getVersion() {
+    protected function renderVersion() {
+        //render version by config
     }
 
     public function quit() {

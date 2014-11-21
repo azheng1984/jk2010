@@ -1,10 +1,16 @@
 <?php
 class MultipleCommandApp extends App {
+    public function getSubcommand() {
+        if ($this->isSubcommand() === false) {
+            return;
+        }
+    }
+
     public function hasMultipleCommands() {
         return true;
     }
 
-    public function hasSubcommand() {
+    public function isSubcommand() {
     }
 
     public function getGlobalOption() {
@@ -18,12 +24,7 @@ class MultipleCommandApp extends App {
         if ($this->hasGlobalOption('--help')) {
             $this->renderGlobalHelp();
         }
-        $class = Hyperframework\APP_ROOT_NAMESPACE . '\Command';
-        if ($this->hasSubcommand()) {
-            $tmp = ucwords(str_replace('-', ' ', $this->getSubcommand()));
-            $tmp = str_replace(' ', '', $tmp) . 'Command';
-            $class = Hyperframework\APP_ROOT_NAMESPACE . '\\' . $tmp;
-        }
+        $class = $this->getCommandClass();
         $command = new $class($this);
         if ($this->hasOption('--help')) {
             $command->renderHelp();
@@ -32,6 +33,16 @@ class MultipleCommandApp extends App {
                 'execute', $command, $this->commandParser->getArguments()
             );
         }
+    }
+
+    protected function getCommandClass() {
+        //read config file to get class name
+        if ($this->isSubcommand()) {
+            $tmp = ucwords(str_replace('-', ' ', $this->getCommand()));
+            $tmp = str_replace(' ', '', $tmp) . 'Command';
+            return Hyperframework\APP_ROOT_NAMESPACE . '\\' . $tmp;
+        }
+        return parent::getCommandClass();
     }
 
     protected function renderGlobalHelp() {
