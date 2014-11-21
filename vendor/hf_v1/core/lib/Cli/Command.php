@@ -22,6 +22,16 @@ abstract class Command {
         return $options[$name];
     }
 
+    protected function hasGlobalOption($name) {
+        $options = $this->getGlobalOptions();
+        return isset($options[$name]);
+    }
+
+    protected function getGlobalOption($name) {
+        $options = $this->getGlobalOptions();
+        return $options[$name];
+    }
+
     protected function quit() {
         $this->getApp()->quit();
     }
@@ -34,7 +44,7 @@ abstract class Command {
         return $this->getApp()->getOptions();
     }
 
-    protected function getParentOptions() {
+    protected function getGlobalOptions() {
         return $this->getApp()->getParentOptions();
     }
 

@@ -56,9 +56,9 @@ class App {
         $args = $_SERVER['argv'];
         array_shift($args);
         $this->commandParser = new CommandParser;
-        $this->commandParser->parse($this->hasMultipleCommand());
+        $this->commandParser->parse($this->hasMultipleCommands());
         var_dump($this->commandParser->getSubcommand());
-        var_dump($this->commandParser->getParentOptions());
+        var_dump($this->commandParser->getGlobalOptions());
         var_dump($this->commandParser->getOptions());
         var_dump($this->commandParser->getArguments());
         //$configPath = $isCollection ? 'command_collection.php' : 'command.php';
@@ -66,7 +66,7 @@ class App {
         //parse command
     }
 
-    protected function hasMultipleCommand() {
+    protected function hasMultipleCommands() {
         return false;
     }
 

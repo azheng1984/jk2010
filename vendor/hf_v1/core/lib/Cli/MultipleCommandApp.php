@@ -1,6 +1,6 @@
 <?php
 class MultipleCommandApp extends App {
-    public function hasMultipleCommand() {
+    public function hasMultipleCommands() {
         return true;
     }
 
@@ -15,11 +15,16 @@ class MultipleCommandApp extends App {
             $this->renderVersion();
             return;
         }
-        $class = Hyperframework\APP_ROOT_NAMESPACE . '\Command';
-        $command = new $class($class);
         if ($this->hasGlobalOption('--help')) {
-            //global help
+            $this->renderGlobalHelp();
         }
+        $class = Hyperframework\APP_ROOT_NAMESPACE . '\Command';
+        if ($this->hasSubcommand()) {
+            $tmp = ucwords(str_replace('-', ' ', $this->getSubcommand()));
+            $tmp = str_replace(' ', '', $tmp) . 'Command';
+            $class = Hyperframework\APP_ROOT_NAMESPACE . '\\' . $tmp;
+        }
+        $command = new $class($this);
         if ($this->hasOption('--help')) {
             $command->renderHelp();
         } else {
@@ -27,5 +32,9 @@ class MultipleCommandApp extends App {
                 'execute', $command, $this->commandParser->getArguments()
             );
         }
+    }
+
+    protected function renderGlobalHelp() {
+        //render default global help
     }
 }

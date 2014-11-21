@@ -40,16 +40,16 @@ class CommandParser {
         return [];
     }
 
-    public static function parse($hasCollection) {
+    public static function parse($hasMultipleCommands) {
         $arguments = array();
         $options = array();
-        if ($hasCollection) {
+        if ($hasMultipleCommands) {
             $opitons = self::getOptionConfig();
         } else {
             $options = self::getOptionConfig();
             $arguments = self::getArgumentConfig();
         }
-        $isCollection = $hasCollection;
+        $isGlobal = $hasMultipleCommands;
         $count = count($_SERVER['argv']);
         $isArgument = false;
         $argumentIndex = 0;
@@ -62,10 +62,10 @@ class CommandParser {
                 || $element === '-'
                 || $isArgument
             ) {
-                if ($isCollection) {
+                if ($isGlobal) {
                     $arguments = self::getArgumentConfig($element);
                     $options = self::getOptionConfig($element) + $options;
-                    $isCollection = false;
+                    $isGlobal= false;
                     continue;
                 }
                 $argumentCount = count($arguments);
@@ -89,7 +89,7 @@ class CommandParser {
                 continue;
             }
             if ($element === '--') {
-                if ($isCollection) {
+                if ($isGlobal) {
                     throw new Exception;
                 }
                 $isArgument = true;
@@ -215,11 +215,11 @@ class CommandParser {
                 throw new Exception;
             }
         }
-        if ($hasCollection) {
-            $result['collection_options'] = array();
+        if ($hasMultipleCommands) {
+            $result['global_options'] = array();
             foreach ($result['options'] as $name => $value) {
-                if ($options[$name]['is_collection_option']) {
-                    $result['collection_options'][$name] = $value;
+                if ($options[$name]['is_global_option']) {
+                    $result['global_options'][$name] = $value;
                     unset($result['options'][$name]);
                 }
             }
@@ -228,7 +228,7 @@ class CommandParser {
     }
 
     public static function getGlobalOptions() {
-        return self::$parentOptions;
+        return self::$globalOptions;
     }
 
     //通过过滤器处理时用于区分
