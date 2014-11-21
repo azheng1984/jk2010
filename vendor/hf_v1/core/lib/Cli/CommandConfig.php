@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
+use ReflectionMethod;
 use Hyperframework;
 use Hyperframework\ConfigFileLoader;
 
@@ -33,7 +34,7 @@ class CommandConfig {
             $config = ConfigFileLoader::loadPhp(
                 'command.php', 'hyperframework.cli.command_config_path'
             );
-            $this->initializeConfig($config);
+            $this->initializeConfig($config, false);
             $this->configFile = $config;
             return $config;
         }
@@ -41,7 +42,7 @@ class CommandConfig {
             $config = ConfigFileLoader::loadPhp(
                 $this->getSubcommandConfigPath()
             );
-            $this->initializeConfig($config);
+            $this->initializeConfig($config, true);
             $this->subcommandConfigFiles[$subcommand] = $config;
         }
         return $this->subcommandConfigFiles[$subcommand];
@@ -87,7 +88,7 @@ class CommandConfig {
         return OptionConfigParser::parse($config);
     }
 
-    private function getSubcommandConfigFilePath($subcommand) {
+    private function getSubcommandConfigPath($subcommand) {
         $folder = Config::get('hyperframework.cli.subcommand_config_root_path');
         if ($folder === null) {
             $folder = 'subcommand';
@@ -112,10 +113,10 @@ class CommandConfig {
         if ($class[0] === '\\') {
             $config['class'] = substr($class, 1);
         }
-        $config['class'] = Hyperframework\APP_ROOT_NAMESPACE . $class;
+        $config['class'] = Hyperframework\APP_ROOT_NAMESPACE . '\\' . $class;
     }
 
-    private function initializeOptionConfig(&$config) {
+    private function initializeOptions(&$config) {
         if (isset($config['options'])) {
             $config['options'] = $this->parseOptionConfig($config['options']);
         } else {
@@ -123,7 +124,7 @@ class CommandConfig {
         }
     }
 
-    private function initializeArgumentConfig(&$config, $isSubcommand) {
+    private function initializeArguments(&$config, $isSubcommand) {
         if ($this->hasMultipleCommands() && $isSubcommand = false) {
             if (isset($config['arguments'])) {
                 throw new Exception;

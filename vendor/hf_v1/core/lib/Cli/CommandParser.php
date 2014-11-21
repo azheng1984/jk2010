@@ -4,18 +4,16 @@ namespace Hyperframework\Cli;
 use Exception;
 
 class CommandParser {
-    public static function _test() {}
-
-    public static function parse($commandConfig) {
+    public static function parse($commandConfig, $hasMultipleCommands) {
         $arguments = null;
-        $options = $commandConfig->getOptionConfig();
+        $options = $commandConfig->get('options');
         $result = array('arguments' => [], 'options' => []);
         $optionType = null;
         if ($hasMultipleCommands) {
             $result['global_options'] = [];
             $optionType = 'global_options';
         } else {
-            $arguments = $commandConfig->getArgumentConfig();
+            $arguments = $commandConfig->get('arguments');
             $optionType = 'options';
         }
         $isGlobal = $hasMultipleCommands;
@@ -36,8 +34,8 @@ class CommandParser {
                     }
                     static::checkOption($options, $result[$optionType]);
                     $result['subcommand'] = $element;
-                    $options = $commandConfig->getOptionConfig($element);
-                    $arguments = $commandConfig->getArgumentConfig($element);
+                    $options = $commandConfig->get('options', $element);
+                    $arguments = $commandConfig->get('arguments', $element);
                     $isGlobal= false;
                     $optionType = 'options';
                     continue;
@@ -105,9 +103,11 @@ class CommandParser {
                     }
                     if ($option['is_repeatable']) {
                         if (isset($result['options'][$optionName])) {
-                            $result[$optionType][$optionName][] = $optionArgument;
+                            $result[$optionType][$optionName][] =
+                                $optionArgument;
                         } else {
-                            $result[$optionType][$optionName] = array($optionArgument);
+                            $result[$optionType][$optionName] =
+                                array($optionArgument);
                         }
                     } else {
                         $result[$optionType][$optionName] = $optionArgument;
@@ -122,7 +122,8 @@ class CommandParser {
                 $optionArgument = true;
                 $optionName = substr($element, 2);
                 if (strpos($element, '=') !== false) {
-                    list($optionName, $optionArgument) = explode('=', $element, 2);
+                    list($optionName, $optionArgument) =
+                        explode('=', $element, 2);
                 }
                 if (isset($options[$optionName]) === false) {
                     throw new Exception;
@@ -154,7 +155,8 @@ class CommandParser {
                     if (isset($result['options'][$optionName])) {
                         $result[$optionType][$optionName][] = $optionArgument;
                     } else {
-                        $result[$optionType][$optionName] = array($optionArgument);
+                        $result[$optionType][$optionName] =
+                            array($optionArgument);
                     }
                 } else {
                     $result[$optionType][$optionName] = $optionArgument;

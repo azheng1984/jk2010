@@ -69,10 +69,11 @@ class App {
     }
 
     protected function initialize() {
-        $result = CommandParser::parse($this->getCommandConfig());
-        var_dump($result);
-        //$result['options'];
-        //$result['commands'];
+        $result = CommandParser::parse(
+            $this->getCommandConfig(), $this->hasMultipleCommands()
+        );
+        $this->options = $result['options'];
+        $this->arguments = $result['arguments'];
     }
 
     public function getCommandConfig() {

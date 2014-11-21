@@ -1,12 +1,9 @@
 <?php
 namespace Hyperframework\Cli;
 
-use ReflectionMethod;
 use Exception;
 
 class ArgumentConfigParser {
-    public static function _test() {}
-
     public static function parse($config) {
         if (is_array($config) === false) {
             $config = array($config);
