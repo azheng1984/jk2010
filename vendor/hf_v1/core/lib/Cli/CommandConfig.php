@@ -27,52 +27,21 @@ class CommandConfig {
 
     final public function getAll($subcommand = null) {
         if ($subcommand === null) {
-            if ($config !== null) {
-                return $config;
+            if ($this->configFile !== null) {
+                return $this->configFile;
             }
-            //config
-            $config = ConfigFileLoader::loadPhp('command.php');
-            $this->initializeClass($config);
-            if (isset($config['options'])) {
-                $config['options'] = $this->parseOptionConfig(
-                    $config['options']
-                );
-            } else {
-                $config['options'] = [];
-            }
-            if (isset($config['arguments'])) {
-                if ($this->hasMultipleCommands()) {
-                    throw new Exception;
-                }
-                $config['arguments'] = $this->parseArgumentConfig(
-                    $config['arguments']
-                );
-            } elseif ($this->hasMultipleCommands() === false) {
-                $class = null;
-                $config['arguments'] = $this->getDefaultArgumentConfig($class);
-            }
+            $config = ConfigFileLoader::loadPhp(
+                'command.php', 'hyperframework.cli.command_config_path'
+            );
+            $this->initializeConfig($config);
             $this->configFile = $config;
             return $config;
         }
         if (isset($this->subcommandConfigFiles[$subcommand]) === false) {
-            //config
             $config = ConfigFileLoader::loadPhp(
-                'subcommand/' . $subcommand . '.php'
+                $this->getSubcommandConfigPath()
             );
-            $this->initializeClass($config);
-            if (isset($config['options'])) {
-                $config['options'] = $this->parseOptionConfig(
-                    $config['options']
-                );
-            }
-            if (isset($config['arguments'])) {
-                $config['arguments'] = $this->parseArgumentConfig(
-                    $config['arguments']
-                );
-            } else {
-                $config['arguments'] =
-                    $this->getDefaultArgumentConfig($config['class']);
-            }
+            $this->initializeConfig($config);
             $this->subcommandConfigFiles[$subcommand] = $config;
         }
         return $this->subcommandConfigFiles[$subcommand];
@@ -83,8 +52,7 @@ class CommandConfig {
     }
 
     public function hasSubcommand($name) {
-        //config
-        return ConfigFileLoader::hasFile('subcommand/' . $name . '.php');
+        return ConfigFileLoader::hasFile($this->getSubcommandConfigPath());
     }
 
     protected function parseArgumentConfig($config) {
@@ -119,6 +87,20 @@ class CommandConfig {
         return OptionConfigParser::parse($config);
     }
 
+    private function getSubcommandConfigFilePath($subcommand) {
+        $folder = Config::get('hyperframework.cli.subcommand_config_root_path');
+        if ($folder === null) {
+            $folder = 'subcommand';
+        }
+        return $folder . DIRECTORY_SEPARATOR . $subcommand . '.php';
+    }
+
+    private function initializeConfig(&$config, $isSubcommand) {
+        $this->initializeClass($config);
+        $this->initializeOptions($config);
+        $this->initializeArguments($config, $isSubcommand);
+    }
+
     private function initializeClass(array &$config) {
         if (isset($config['class']) === false) {
             $config['class'] = $this->getDefaultCommandClass();
@@ -131,5 +113,31 @@ class CommandConfig {
             $config['class'] = substr($class, 1);
         }
         $config['class'] = Hyperframework\APP_ROOT_NAMESPACE . $class;
+    }
+
+    private function initializeOptionConfig(&$config) {
+        if (isset($config['options'])) {
+            $config['options'] = $this->parseOptionConfig($config['options']);
+        } else {
+            $config['options'] = [];
+        }
+    }
+
+    private function initializeArgumentConfig(&$config, $isSubcommand) {
+        if ($this->hasMultipleCommands() && $isSubcommand = false) {
+            if (isset($config['arguments'])) {
+                throw new Exception;
+            }
+            return;
+        }
+        if (isset($config['arguments'])) {
+            $config['arguments'] = $this->parseArgumentConfig(
+                $config['arguments']
+            );
+        } else {
+            $config['arguments'] = $this->getDefaultArgumentConfig(
+                $config['class']
+            );
+        }
     }
 }
