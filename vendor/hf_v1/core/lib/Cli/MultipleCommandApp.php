@@ -9,6 +9,11 @@ class MultipleCommandApp extends App {
         return true;
     }
 
+    protected function fetchCommandElements($elements) {
+        $this->subcommand = $result['subcommand'];
+        $this->globalOptions = $result['global_options'];
+    }
+
     public function getSubcommand() {
         if ($this->isSubcommand() === false) {
             return;

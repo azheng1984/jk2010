@@ -12,9 +12,6 @@ class App {
     private $arguments;
 
     public function run() {
-        ArgumentConfigParser::_test();
-        OptionConfigParser::_test();
-        CommandParser::_test();
         $this->initialize();
         $this->executeCommand();
         $this->finalize();
@@ -69,11 +66,13 @@ class App {
     }
 
     protected function initialize() {
-        $result = CommandParser::parse(
-            $this->getCommandConfig(), $this->hasMultipleCommands()
-        );
-        $this->options = $result['options'];
-        $this->arguments = $result['arguments'];
+        $result = CommandParser::parse($this->getCommandConfig());
+        $this->fetchCommandElements($result);
+    }
+
+    protected function fetchCommandElements($elements) {
+        $this->options = $elements['options'];
+        $this->arguments = $elements['arguments'];
     }
 
     public function getCommandConfig() {

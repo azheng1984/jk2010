@@ -48,7 +48,7 @@ class CommandConfig {
         return $this->subcommandConfigFiles[$subcommand];
     }
 
-    protected function hasMultipleCommands() {
+    public function hasMultipleCommands() {
         return $this->hasMultipleCommands;
     }
 

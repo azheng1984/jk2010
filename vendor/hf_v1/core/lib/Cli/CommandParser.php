@@ -4,19 +4,19 @@ namespace Hyperframework\Cli;
 use Exception;
 
 class CommandParser {
-    public static function parse($commandConfig, $hasMultipleCommands) {
+    public static function parse($commandConfig) {
         $arguments = null;
         $options = $commandConfig->get('options');
         $result = array('arguments' => [], 'options' => []);
         $optionType = null;
-        if ($hasMultipleCommands) {
+        if ($commandConfig->hasMultipleCommands()) {
             $result['global_options'] = [];
             $optionType = 'global_options';
         } else {
             $arguments = $commandConfig->get('arguments');
             $optionType = 'options';
         }
-        $isGlobal = $hasMultipleCommands;
+        $isGlobal = $commandConfig->hasMultipleCommands();
         $count = count($_SERVER['argv']);
         $isArgument = false;
         $argumentIndex = 0;
