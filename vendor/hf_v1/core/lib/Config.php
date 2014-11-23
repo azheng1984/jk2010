@@ -28,7 +28,7 @@ final class Config {
         if (is_string($configs)) {
             $configs = ConfigFileLoader::load($configs);
         }
-        if ($config === null) {
+        if ($configs === null) {
             return;
         }
         if (is_array($configs) === false) {

@@ -11,9 +11,11 @@ class Runner {
     }
 
     protected static function initialize($appRootNamespace, $appRootPath) {
-        chdir($rootPath);
-        require dirname(__DIR__) . DIRECTORY_SEPARATOR
-            . 'EnvironmentBuilder.php';
+        chdir($appRootPath);
+        if (class_exists('Hyperframework\EnvironmentBuilder') === false) {
+            require dirname(__DIR__) . DIRECTORY_SEPARATOR
+                . 'EnvironmentBuilder.php';
+        }
         EnvironmentBuilder::build($appRootNamespace, $appRootPath);
         ErrorHandler::run();
     }

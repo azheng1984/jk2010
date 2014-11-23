@@ -10,11 +10,13 @@ class EnvironmentBuilder {
     }
 
     protected static function initializeConfig() {
-        require __DIR__ . DIRECTORY_SEPARATOR . 'Config.php';
-        $config = require APP_ROOT_PATH . DIRECTORY_SEPARATOR
+        if (class_exists('Hyperframework\Config') === false) {
+            require __DIR__ . DIRECTORY_SEPARATOR . 'Config.php';
+        }
+        $configs = require APP_ROOT_PATH . DIRECTORY_SEPARATOR
             . 'config' . DIRECTORY_SEPARATOR . 'init.php';
-        if ($config !== null) {
-            Config::import($config);
+        if ($configs !== null) {
+            Config::import($configs);
         }
     }
 
