@@ -861,6 +861,7 @@ abstract class Router {
         $this->actionMethod = $value;
     }
 
+    //todo cache result & use this to get request method
     protected function getRequestMethod() {
         if (Config::get('hyperframework.web.rewrite_request_method') !== false)
         {
