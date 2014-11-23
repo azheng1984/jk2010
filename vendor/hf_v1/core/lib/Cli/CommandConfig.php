@@ -32,21 +32,34 @@ class CommandConfig {
             if ($this->configFile !== null) {
                 return $this->configFile;
             }
-            $path = 'command.php';
-            $rootPath = Config::get(
-                'hyperframework.cli.command_config_root_path'
-            );
-            if ($rootPath !== null) {
-                $path = $rootPath . DIRECTORY_SEPARATOR . $path;
-            }
-            $configPath = ConfigFileLoader::getFullPath(
-                $path, 'hyperframework.cli.command_config_path'
-            );
-            if ($configPath === false) {
-                $config = [];
+            $config = null;
+            $configPath = Config::get('hyperframework.cli.command_config_path');
+            if ($configPath !== false) {
+                $isDefaultConfigPath = false;
+                if ($configPath === null) {
+                    $isDefaultConfigPath = true;
+                    $configPath = 'command.php';
+                }
+                if (FullPathRecognizer::isFull($configPath) === false) {
+                    $configRootPath = Config::get(
+                        'hyperframework.cli.command_config_root_path'
+                    );
+                    if ($configRootPath !== null) {
+                        $configPath = $configRootPath
+                            . DIRECTORY_SEPARATOR . $configPath;
+                    }
+                }
+                if (file_exists($configPath)) {
+                    $config = require $configPath;
+                    $this->initializeConfig($config, false);
+                } else {
+                    if ($isDefaultPath === false) {
+                        throw new Exception;
+                    }
+                    $config = [];
+                }
             } else {
-                $config = require $configPath;
-                $this->initializeConfig($config, false);
+                $config = [];
             }
             $this->configFile = $config;
             return $config;
@@ -109,26 +122,27 @@ class CommandConfig {
         if ($folder === null) {
             $folder = 'subcommand';
         }
+        $path = $folder . DIRECTORY_SEPARATOR . $subcommand . '.php'
         $rootPath = Config::get(
             'hyperframework.cli.command_config_root_path'
         );
         if ($rootPath !== null) {
-            if (FullPathRecognizer::isFull($folder) === false) {
-                $folder = $rootPath . DIRECTORY_SEPARATOR . $folder;
+            if (FullPathRecognizer::isFull($path) === false) {
+                $path = $rootPath . DIRECTORY_SEPARATOR . $path;
+            } else {
+                return $path;
             }
         }
-        return ConfigFileLoader::getFullPath(
-            $folder . DIRECTORY_SEPARATOR . $subcommand . '.php'
-        );
+        return ConfigFileLoader::getFullPath($path);
     }
 
     private function initializeConfig(&$config, $isSubcommand) {
-        $this->initializeClass($config);
+        $this->initializeClass($config, $isSubcommand);
         $this->initializeOptions($config);
         $this->initializeArguments($config, $isSubcommand);
     }
 
-    private function initializeClass(array &$config) {
+    private function initializeClass(array &$config, $isSubcommand) {
         if (isset($config['class']) === false) {
             $config['class'] = $this->getDefaultCommandClass();
         }
@@ -138,10 +152,14 @@ class CommandConfig {
         }
         if ($class[0] === '\\') {
             $config['class'] = substr($class, 1);
+            return;
         }
         $namespace = Config::get('hyperframework.cli.command_root_namespace');
         if ($namespace === null) {
             $namespace = Hyperframework\APP_ROOT_NAMESPACE;
+        }
+        if ($isSubcommand) {
+            $namespace .= '\Subcommands';
         }
         $config['class'] = $namespace . '\\' . $class;
     }
