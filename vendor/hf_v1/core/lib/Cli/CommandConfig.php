@@ -2,9 +2,11 @@
 namespace Hyperframework\Cli;
 
 use ReflectionMethod;
+use Exception;
 use Hyperframework;
 use Hyperframework\ConfigFileLoader;
-use Hyperframework\FullPathRecognizer
+use Hyperframework\Config;
+use Hyperframework\FullPathRecognizer;
 
 class CommandConfig {
     private $configFile;
@@ -53,7 +55,7 @@ class CommandConfig {
                     $config = require $configPath;
                     $this->initializeConfig($config, false);
                 } else {
-                    if ($isDefaultPath === false) {
+                    if ($isDefaultConfigPath === false) {
                         throw new Exception;
                     }
                     $config = [];
@@ -122,7 +124,7 @@ class CommandConfig {
         if ($folder === null) {
             $folder = 'subcommand';
         }
-        $path = $folder . DIRECTORY_SEPARATOR . $subcommand . '.php'
+        $path = $folder . DIRECTORY_SEPARATOR . $subcommand . '.php';
         $rootPath = Config::get(
             'hyperframework.cli.command_config_root_path'
         );
@@ -164,6 +166,7 @@ class CommandConfig {
         $config['class'] = $namespace . '\\' . $class;
     }
 
+    //add --help and --version option
     private function initializeOptions(&$config) {
         if (isset($config['options'])) {
             $config['options'] = $this->parseOptionConfig($config['options']);

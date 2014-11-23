@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
+use Exception;
 use Hyperframework;
 use Hyperframework\Config;
 use Hyperframework\ConfigFileLoader;
