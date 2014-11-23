@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework;
 
+use Exception;
+
 final class Config {
     private static $data = array();
 
@@ -23,6 +25,15 @@ final class Config {
     }
 
     public static function import($configs) {
+        if (is_string($configs)) {
+            $configs = ConfigFileLoader::load($configs);
+        }
+        if ($config === null) {
+            return;
+        }
+        if (is_array($configs) === false) {
+            throw new Exception;
+        }
         $namespace = null;
         foreach ($configs as $key => $value) {
             if (is_int($key)) {

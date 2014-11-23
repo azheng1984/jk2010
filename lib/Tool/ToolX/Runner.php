@@ -5,11 +5,14 @@ use Hyperframework\Cli\Runner as Base;
 use Hyperframework\Config;
 use Hyperframework;
 
-require Hyperframework\Blog\HYPERFRAMEWORK_PATH . '/Cli/Runner.php';
+if (class_exists('Hyperframework\Cli\Runner') === false) {
+    require Hyperframework\Blog\HYPERFRAMEWORK_PATH . '/Cli/Runner.php';
+}
 
 class Runner extends Base {
     protected static function initialize($appRootNamespace, $appRootPath) {
         parent::initialize($appRootNamespace, $appRootPath);
+        //Config::import('task_x/init.php');
         Config::import([
             '[hyperframework.cli]',
             'command_root_namespace' => __NAMESPACE__,
