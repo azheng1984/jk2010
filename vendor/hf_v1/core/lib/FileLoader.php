@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework;
 
+use Exception;
+
 class FileLoader {
     final public static function loadPhp($path, $pathConfigName = null) {
         return self::load($path, $pathConfigName, true);
@@ -18,20 +20,12 @@ class FileLoader {
             }
         }
         if ($path == '' && (string)$path === '') {
-            return;
+            return false;
         }
         if (FullPathRecognizer::isFull($path) === false) {
             $path = static::getDefaultBasePath() . DIRECTORY_SEPARATOR . $path;
         }
         return $path;
-    }
-
-    private static function hasFile($path, $pathConfigName = null) {
-        $path = self::getFullPath($path, $pathConfigName);
-        if ($path === null) {
-            return false;
-        }
-        return file_exists($path);
     }
 
     protected static function getDefaultBasePath() {
@@ -40,7 +34,7 @@ class FileLoader {
 
     private static function load($path, $pathConfigName, $isPhp) {
         $path = self::getFullPath($path, $pathConfigName);
-        if ($path === null) {
+        if ($path === false) {
             throw new Exception;
         }
         if ($isPhp) {
