@@ -12,14 +12,6 @@ if (class_exists('Hyperframework\Cli\Runner') === false) {
 class Runner extends Base {
     protected static function initialize($appRootNamespace, $appRootPath) {
         parent::initialize($appRootNamespace, $appRootPath);
-        //Config::import('task_x/init.php');
-        Config::import([
-            '[hyperframework.cli]',
-            'command_root_namespace' => __NAMESPACE__,
-            'command_config_root_path' => $appRootPath
-                . DIRECTORY_SEPARATOR . 'config'
-                . DIRECTORY_SEPARATOR . 'tool'
-                . DIRECTORY_SEPARATOR . 'tool_x',
-        ]);
+        Config::import('tool/tool_x/init.php');
     }
 }

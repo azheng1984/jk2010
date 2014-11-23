@@ -26,7 +26,7 @@ final class Config {
 
     public static function import($configs) {
         if (is_string($configs)) {
-            $configs = ConfigFileLoader::load($configs);
+            $configs = ConfigFileLoader::loadPhp($configs);
         }
         if ($configs === null) {
             return;

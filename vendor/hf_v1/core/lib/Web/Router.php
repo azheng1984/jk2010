@@ -115,12 +115,12 @@ abstract class Router {
         if ($moduleNamespace !== '') {
             $moduleNamespace .= '\\';
         }
-        return $rootNamespace . 'Controllers\\' . $moduleNamespace . $class;
+        return $rootNamespace . $moduleNamespace . $class;
     }
 
     protected function getControllerRootNamespace() {
         if ($this->controllerRootNamespace === null) {
-            return Hyperframework\APP_ROOT_NAMESPACE;
+            return Hyperframework\APP_ROOT_NAMESPACE . '\Controllers';
         }
         return $this->controllerRootNamespace;
     }
