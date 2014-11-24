@@ -36,8 +36,7 @@ class Runner {
             } else {
                 $commonLibRootPath =
                     dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR
-                        . 'common' . DIRECTORY_SEPARATOR
-                        . 'lib';
+                        . 'common' . DIRECTORY_SEPARATOR . 'lib';
             }
             require $commonLibRootPath
                 . DIRECTORY_SEPARATOR . 'EnvironmentBuilder.php';

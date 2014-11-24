@@ -20,6 +20,7 @@ class EnvironmentBuilder {
             }
             Config::set('hyperframework.app_root_path', $appRootPath);
         }
+        //config
         $configs = require Config::get('hyperframework.app_root_path')
             . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'init.php';
         if ($configs !== null) {
