@@ -6,6 +6,9 @@ use Hyperframework\Common\EnvironmentBuilder;
 
 class Runner {
     public static function run($appRootPath = null) {
+        if ($appRootPath === null) {
+            $appRootPath = dirname(getcwd());
+        }
         static::initialize($appRootPath);
         static::runApp();
     }
@@ -33,9 +36,6 @@ class Runner {
             }
             require $commonLibRootPath
                 . DIRECTORY_SEPARATOR . 'EnvironmentBuilder.php';
-        }
-        if ($appRootPath === null) {
-            $appRootPath = dirname(getcwd());
         }
         EnvironmentBuilder::build($appRootPath);
     }
