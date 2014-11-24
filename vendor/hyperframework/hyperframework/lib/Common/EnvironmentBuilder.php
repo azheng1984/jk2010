@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Common;
 
+use Exception;
 use Hyperframework;
  
 class EnvironmentBuilder {

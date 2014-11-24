@@ -4,8 +4,8 @@ namespace Hyperframework\Cli;
 use Hyperframework\Common\EnvironmentBuilder;
 
 class Runner {
-    public static function run() {
-        static::initialize();
+    public static function run($appRootNamespace = null, $appRootPath = null) {
+        static::initialize($appRootNamespace, $appRootPath);
         static::runApp();
     }
 
@@ -16,7 +16,7 @@ class Runner {
 
     protected static function initialize($appRootNamespace, $appRootPath) {
         static::initilaizeEnvironment($appRootNamespace, $appRootPath);
-        static::initilaizeErrorHandler();
+        static::initializeErrorHandler();
     }
 
     protected static function initilaizeEnvironment(
@@ -25,7 +25,7 @@ class Runner {
         $hasEnvironmentBuilderClass = class_exists(
             'Hyperframework\Common\EnvironmentBuilder'
         );
-        if ($hasEnviromentBuilderClass === false) {
+        if ($hasEnvironmentBuilderClass === false) {
             $commonLibRootPath = null;
             if (basename(__DIR__) === 'Cli') {
                 $commonLibRootPath =
@@ -39,13 +39,13 @@ class Runner {
             require $commonLibRootPath
                 . DIRECTORY_SEPARATOR . 'EnvironmentBuilder.php';
         }
-        if ($appRootPath = null) {
+        if ($appRootPath === null) {
             $appRootPath = getcwd();
         }
         EnvironmentBuilder::build($appRootNamespace, $appRootPath);
     }
 
-    protected function initializeErrorHandler() {
+    protected static function initializeErrorHandler() {
         ErrorHandler::run();
     }
 }
