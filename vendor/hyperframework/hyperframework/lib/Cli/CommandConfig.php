@@ -53,7 +53,6 @@ class CommandConfig {
                 }
                 if (file_exists($configPath)) {
                     $config = require $configPath;
-                    $this->initializeConfig($config, false);
                 } else {
                     if ($isDefaultConfigPath === false) {
                         throw new Exception;
@@ -63,6 +62,7 @@ class CommandConfig {
             } else {
                 $config = [];
             }
+            $this->initializeConfig($config, false);
             $this->configFile = $config;
             return $config;
         }
@@ -158,8 +158,9 @@ class CommandConfig {
         }
         $namespace = Config::get('hyperframework.cli.command_root_namespace');
         if ($namespace === null) {
-            $namespace = Hyperframework\APP_ROOT_NAMESPACE;
+            $namespace = Config::get('hyperframework.cli.app_root_namespace');
         }
+        //check is null namespace
         if ($isSubcommand) {
             $namespace .= '\Subcommands';
         }

@@ -120,7 +120,8 @@ abstract class Router {
 
     protected function getControllerRootNamespace() {
         if ($this->controllerRootNamespace === null) {
-            return Hyperframework\APP_ROOT_NAMESPACE . '\Controllers';
+            return Config::get('hyperframework.app_root_namespace')
+                . '\Controllers';
         }
         return $this->controllerRootNamespace;
     }

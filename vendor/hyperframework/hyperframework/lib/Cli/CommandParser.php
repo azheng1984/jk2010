@@ -177,8 +177,8 @@ class CommandParser {
         return $result;
     }
 
-    private static function checkOptions($config, $result) {
-        foreach ($config as $name => $option) {
+    private static function checkOptions($configs, $result) {
+        foreach ($configs as $name => $option) {
             if (isset($option['values'])) {
                 if (in_array($result[$name], $option['values']) === false) {
                     throw new Exception;

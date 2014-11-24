@@ -4,8 +4,10 @@ namespace Hyperframework\Cli;
 use Hyperframework\Common\EnvironmentBuilder;
 
 class Runner {
-    public static function run($appRootNamespace = null, $appRootPath = null) {
-        static::initialize($appRootNamespace, $appRootPath);
+    private static $appRootPath;
+
+    public static function run($appRootPath = null) {
+        static::initialize($appRootPath);
         static::runApp();
     }
 
@@ -14,14 +16,12 @@ class Runner {
         $app->run();
     }
 
-    protected static function initialize($appRootNamespace, $appRootPath) {
-        static::initilaizeEnvironment($appRootNamespace, $appRootPath);
+    protected static function initialize($appRootPath) {
+        static::initilaizeEnvironment($appRootPath);
         static::initializeErrorHandler();
     }
 
-    protected static function initilaizeEnvironment(
-        $appRootNamespace, $appRootPath
-    ) {
+    protected static function initilaizeEnvironment($appRootPath) {
         $hasEnvironmentBuilderClass = class_exists(
             'Hyperframework\Common\EnvironmentBuilder'
         );
@@ -42,7 +42,7 @@ class Runner {
         if ($appRootPath === null) {
             $appRootPath = getcwd();
         }
-        EnvironmentBuilder::build($appRootNamespace, $appRootPath);
+        EnvironmentBuilder::build($appRootPath);
     }
 
     protected static function initializeErrorHandler() {

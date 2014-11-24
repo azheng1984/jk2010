@@ -29,7 +29,11 @@ class FileLoader {
     }
 
     protected static function getDefaultBasePath() {
-        return APP_ROOT_PATH;
+        $appRootPath = Config::get('hyperframework.app_root_path');
+        if ($appRootPath === null) {
+            throw new Exception;
+        }
+        return $appRootPath;
     }
 
     private static function load($path, $pathConfigName, $isPhp) {

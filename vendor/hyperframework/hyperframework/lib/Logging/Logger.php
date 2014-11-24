@@ -2,6 +2,7 @@
 namespace Hyperframework\Logging;
 
 use Exception;
+use Hyperframework\Common\Config;
 
 final class Logger {
     private static $thresholdCode;

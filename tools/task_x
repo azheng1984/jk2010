@@ -11,4 +11,4 @@ require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
 chdir(ROOT_PATH);
 require ROOT_PATH . DIRECTORY_SEPARATOR . 'lib'
     . DIRECTORY_SEPARATOR . 'Tool/ToolX/Runner.php';
-Runner::run(__NAMESPACE__, ROOT_PATH);
+Runner::run(ROOT_PATH);

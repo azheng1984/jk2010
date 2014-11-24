@@ -10,10 +10,8 @@ if (class_exists('Hyperframework\Cli\Runner') === false) {
 }
 
 class Runner extends Base {
-    protected static function initialize(
-        $appRootNamespace = null, $appRootPath = null
-    ) {
-        parent::initialize($appRootNamespace, $appRootPath);
+    protected static function initialize($appRootPath) {
+        parent::initialize($appRootPath);
         Config::import('tool/tool_x/init.php');
     }
 }

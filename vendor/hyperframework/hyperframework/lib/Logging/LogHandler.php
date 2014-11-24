@@ -3,7 +3,8 @@ namespace Hyperframework\Logging;
 
 use Exception;
 use Closure;
-use Hyperframework;
+use Hyperframework\Common\Config;
+use Hyperframework\Common\FullPathRecognizer;
 
 class LogHandler {
     private static $protocol;
@@ -114,8 +115,8 @@ class LogHandler {
     private static function initializePath() {
         $path = Config::get('hyperframework.log_handler.log_path');
         if ($path === null) {
-            self::$path = Hyperframework\APP_ROOT_PATH . DIRECTORY_SEPARATOR
-                . 'log' . DIRECTORY_SEPARATOR . 'app.log';
+            self::$path = Config::get('hyperframework.app_root_path')
+                . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'app.log';
             self::$protocol = 'file';
         } else {
             $protocol = 'file';

@@ -104,10 +104,7 @@ require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
     . DIRECTORY_SEPARATOR . 'init_const.php';
 require ROOT_PATH . DIRECTORY_SEPARATOR . 'lib'
     . DIRECTORY_SEPARATOR . 'Runner.php';
-Runner::run(__NAMESPACE__, ROOT_PATH);
-
-use Hyperframework\WebClient\Curl;
-use Hyperframework\WebClient\CurlException;
+Runner::run(ROOT_PATH);
 
 //throw new \Exception
 //trigger_error('xx', E_USER_ERROR);
