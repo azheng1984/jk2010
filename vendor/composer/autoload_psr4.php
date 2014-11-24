@@ -7,6 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Hyperframework\\Blog\\' => array($baseDir . '/lib'),
-    'Hyperframework\\' => array($vendorDir . '/hf_v1/core/lib'),
+    'Hyperframework\\' => array($vendorDir . '/hyperframework/hyperframework/lib'),
     '' => array($baseDir . '/fallback4'),
 );

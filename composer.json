@@ -6,7 +6,7 @@
             "": "fallback0"
         }
         ,"psr-4": {
-          "Hyperframework\\": "/home/az/quickquick/vendor/hf_v1/core/lib/",
+          "Hyperframework\\": "/home/az/quickquick/vendor/hyperframework/hyperframework/lib/",
           "Hyperframework\\Blog\\": "lib/",
           "": "fallback4"
         }

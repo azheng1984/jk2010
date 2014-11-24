@@ -1,13 +1,6 @@
 <?php
-namespace _;
-$p = 'aticles/#:id';
-$key = ':id';
-$value = '[0-9]+';
-$p = preg_replace(
-    '#\{?\#:([0-9a-zA-Z]+)\}?#',
-    '(?<\1>[^/]+?)',
-    $p
-);
+namespace hi;
+
 //function hi($controller) {
 //    echo 'start out';
 //    if (false) {
@@ -112,6 +105,10 @@ require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
 require ROOT_PATH . DIRECTORY_SEPARATOR . 'lib'
     . DIRECTORY_SEPARATOR . 'Runner.php';
 Runner::run(__NAMESPACE__, ROOT_PATH);
+
+use Hyperframework\WebClient\Curl;
+use Hyperframework\WebClient\CurlException;
+
 //throw new \Exception
 //trigger_error('xx', E_USER_ERROR);
 return function() { ?>

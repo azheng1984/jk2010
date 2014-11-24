@@ -1,0 +1,63 @@
+<?php
+namespace Hyperframework\Web;
+
+use Hyperframework\EnvironmentBuilder;
+use Hyperframework\Config;
+use Hyperframework;
+
+class Runner {
+    public static function run() {
+        static::initialize();
+        static::runApp();
+    }
+
+    protected static function initialize() {
+        if (defined('Hyperframework\APP_ROOT_PATH') === false) {
+            define('Hyperframework\APP_ROOT_PATH', dirname(getcwd()));
+        }
+        chdir(Hyperframework\APP_ROOT_PATH);
+        if (class_exists('Hyperframework\EnvironmentBuilder') === false) {
+            if (defined('Hyperframework\COMMON_LIB_ROOT_PATH') === false) {
+                define(
+                    'Hyperframework\COMMON_LIB_ROOT_PATH',
+                    Hyperframework\APP_ROOT_PATH
+                    . '\vendor\hyperframework_common\lib'
+                );
+            }
+            require  . DIRECTORY_SEPARATOR
+                . 'EnvironmentBuilder.php';
+        }
+        EnvironmentBuilder::build($appRootNamespace, $appRootPath);
+        ErrorHandler::run();
+    }
+
+    protected static function runApp() {
+        $app = new App;
+        $app->run();
+    }
+
+    protected static function initializeConfig() {
+        if (class_exists('Hyperframework\Config') === false) {
+            require __DIR__ . DIRECTORY_SEPARATOR . 'Config.php';
+        }
+        $configs = require APP_ROOT_PATH . DIRECTORY_SEPARATOR
+            . 'config' . DIRECTORY_SEPARATOR . 'init.php';
+        if ($configs !== null) {
+            Config::import($configs);
+        }
+    }
+
+    protected static function initializeAutoloader() {
+        $autoloadFilePath = Config::get(
+            'hyperframework.composer_autoload_file_path'
+        );
+        if ($autoloadFilePath === null) {
+            $autoloadFilePath = APP_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor'
+                . DIRECTORY_SEPARATOR . 'autoload.php';
+        } elseif (FullPathRecognizer::isFull($autoloadFilePath) === false) {
+            $autoloadFilePath = APP_ROOT_PATH . DIRECTORY_SEPARATOR
+                . $autoloadFilePath;
+        }
+        require $autoloadFilePath;
+    }
+}
