@@ -74,15 +74,12 @@ class Curl {
             throw new Exception;
         }
         for ($index = 0; $index < $maxHandles; ++$index) {
-            $hasPendingRequest = self::addAsyncRequest() !== false;
+            $hasPendingRequest = self::addAsyncRequests() !== false;
             if ($hasPendingRequest === false) {
                 break;
             }
         }
-        $selectTimeout = self::getAsyncOption('select_timeout', 1);//rename?
-        if ($selectTimeout <= 0) {
-            throw new Exception;
-        }
+        $selectTimeout = PHP_INT_MAX / 1000 - 2;
         $isRunning = null;
         do {
             do {
@@ -115,7 +112,7 @@ class Curl {
                     );
                 }
                 if ($hasPendingRequest) {
-                    $hasPendingRequest = self::addAsyncRequest() !== false;
+                    $hasPendingRequest = self::addAsyncRequests() !== false;
                 }
                 curl_multi_remove_handle(self::$asyncHandle, $info['handle']);
             }
@@ -129,7 +126,7 @@ class Curl {
         } while ($hasPendingRequest || $isRunning);
     }
 
-    private static function addAsyncRequest() {
+    private static function addAsyncRequests() {
         $request = null;
         if (self::$asyncPendingRequests !== null) {
             $key = key(self::$asyncPendingRequests);
