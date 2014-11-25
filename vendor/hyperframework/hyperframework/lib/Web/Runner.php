@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework\Common\Config;
 use Hyperframework\Common\Runner as Base;
 
 class Runner extends Base {
