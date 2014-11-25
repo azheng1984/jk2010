@@ -6,9 +6,12 @@ use Exception;
 final class Config {
     private static $data = array();
 
-    public static function get($name) {
+    public static function get($name, $isNullable = true) {
         if (isset(self::$data[$name])) {
             return self::$data[$name];
+        }
+        if ($isNullable === false) {
+            throw new Exception;
         }
     }
 
