@@ -420,6 +420,7 @@ class Curl {
             curl_multi_add_handle($this->oldCurlMultiHandle, $this->handle);
             $result = null;
             $isRunning = null;
+            $selectTimeout = PHP_INT_MAX / 1000 - 2;//test, may be (int)$timeout === 0
             do {
                 do {
                     $status = curl_multi_exec(
@@ -439,12 +440,14 @@ class Curl {
                     }
                     $result = curl_multi_getcontent($this->handle);
                 }
-                if ($isRunning
-                    && curl_multi_select($this->oldCurlMultiHandle, $isRunning)
-                        === -1
-                ) {
-                    //https://bugs.php.net/bug.php?id=61141
-                    usleep(100);
+                if ($isRunning) {
+                    $tmp = curl_multi_select(
+                        $this->oldCurlMultiHandle, $selectTimeout
+                    );
+                    if ($tmp === -1) {
+                        //https://bugs.php.net/bug.php?id=61141
+                        usleep(100);
+                    }
                 }
             } while ($isRunning);
             curl_multi_remove_handle($this->oldCurlMultiHandle, $this->handle);
