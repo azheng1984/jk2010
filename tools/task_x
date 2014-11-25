@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
-namespace Hyperframework\Blog\Tool\Toolx\Runner;
+namespace Hyperframework\Blog\Tool\ToolX;
 
-define(__NAMESPACE__ . '\ROOT_PATH', dirname(__DIR__));
-require ROOT_PATH . '/vendor/autoload.php';
-Runner::run(ROOT_PATH);
+define(__NAMESPACE__ . '\APP_ROOT_PATH', dirname(__DIR__));
+require APP_ROOT_PATH . '/vendor/autoload.php';
+Runner::run(APP_ROOT_PATH);

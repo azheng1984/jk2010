@@ -99,7 +99,7 @@ if (isset($_GET['r'])) {
     exit;
 }
 
-require dirname(__DIR__) . '\vendor\autoload.php';
+require dirname(__DIR__) . '/vendor/autoload.php';
 Runner::run();
 
 //throw new \Exception

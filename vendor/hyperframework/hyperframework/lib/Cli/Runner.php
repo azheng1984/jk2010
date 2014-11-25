@@ -4,7 +4,7 @@ namespace Hyperframework\Cli;
 use Hyperframework\Common\Runner as Base;
 
 class Runner extends Base {
-    private $appRootPath;
+    private static $appRootPath;
 
     public static function run($appRootPath) {
         self::$appRootPath = $appRootPath;

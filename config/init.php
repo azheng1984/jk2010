@@ -3,7 +3,6 @@ namespace Hyperframework\Blog;
 
 return array(
     '[hyperframework]',
-    'app_root_path' => ROOT_PATH,
     'app_root_namespace' => __NAMESPACE__,
     'asset.concatenate_manifest' => false,
     'asset.enable_versioning' => true,

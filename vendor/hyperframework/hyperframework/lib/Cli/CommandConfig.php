@@ -158,13 +158,14 @@ class CommandConfig {
         }
         $namespace = Config::get('hyperframework.cli.command_root_namespace');
         if ($namespace === null) {
-            $namespace = Config::get('hyperframework.cli.app_root_namespace');
+            $namespace = Config::get('hyperframework.app_root_namespace');
         }
-        //check is null namespace
         if ($isSubcommand) {
             $namespace .= '\Subcommands';
         }
-        $config['class'] = $namespace . '\\' . $class;
+        if ($namespace != '' && (string)$namespace !== '') {
+            $config['class'] = $namespace . '\\' . $class;
+        }
     }
 
     //add --help and --version option

@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 use Hyperframework\Common\Runner as Base;
 
 class Runner extends Base {
-    private $appRootPath;
+    private static $appRootPath;
 
     protected static function initializeErrorHandler() {
         ErrorHandler::run();

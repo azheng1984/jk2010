@@ -3,6 +3,7 @@ namespace Tc;
 
 return [
 //    '[hyperframework]',
+    'hyperframework.app_root_namespace' => __NAMESPACE__,
     'hyperframework.cli.command_collection.enable' => true,
     'hyperframework.asset.concatenate_manifest' => false,
     'hyperframework.asset.enable_versioning' => true,
