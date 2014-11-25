@@ -4,8 +4,8 @@ namespace Hyperframework\Cli;
 use Exception;
 use ReflectionMethod;
 use Hyperframework;
-use Hyperframework\Common\ConfigFileLoader;
 use Hyperframework\Common\Config;
+use Hyperframework\Common\ConfigFileLoader;
 use Hyperframework\Common\FullPathRecognizer;
 
 class CommandConfig {
