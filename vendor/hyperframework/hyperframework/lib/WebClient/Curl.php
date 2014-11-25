@@ -10,7 +10,7 @@ class Curl {
     private static $asyncRequestOptions;
     private static $asyncPendingRequests;
     private static $asyncProcessingRequests;
-    private static $asyncFetchRequestCallback;
+    private static $asyncRequestFetchingCallback;
     private static $isOldCurl;
     private $handle;
     private $oldCurlMultiHandle;
@@ -65,8 +65,8 @@ class Curl {
             }
         }
         self::$asyncTemporaryOptions = $asyncOptions;
-        self::$asyncFetchRequestCallback = self::getAsyncOption(
-            'fetch_request_callback'
+        self::$asyncRequestFetchingCallback = self::getAsyncOption(
+            'request_fetching_callback'
         );
         $hasPendingRequest = true;
         $maxHandles = self::getAsyncOption('max_handles', 100);
@@ -139,8 +139,8 @@ class Curl {
             } else {
                 self::$asyncPendingRequests = null;
             }
-        } elseif (self::$asyncFetchRequestCallback !== null) {
-            $request = call_user_func(self::$asyncFetchRequestCallback);
+        } elseif (self::$asyncRequestFetchingCallback !== null) {
+            $request = call_user_func(self::$asyncRequestFetchingCallback);
         }
         if ($request === null) {
             return false;
