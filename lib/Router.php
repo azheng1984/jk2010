@@ -4,7 +4,7 @@ namespace Hyperframework\Blog;
 use Hyperframework\Web\Router as Base;
 
 class Router extends Base {
-    public function parse() {
+    protected function parse() {
         if ($this->matchResources('articles')) return;
         if ($this->matchScope(['xxx/:xxx_id', 'formats' => ['jpg']], function() {
             if ($this->match('/')) {
