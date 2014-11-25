@@ -6,8 +6,7 @@ use Hyperframework\Common\Runner as Base;
 
 class Runner extends Base {
     protected static function runApp() {
-        $app = new App;
-        $app->run();
+        throw new Exception;
     }
 
     protected static function initializeErrorHandler() {
