@@ -79,7 +79,7 @@ class Curl {
                 break;
             }
         }
-        $selectTimeout = self::getAsyncOption('select_timeout', 1);
+        $selectTimeout = self::getAsyncOption('select_timeout', 1);//rename?
         if ($selectTimeout <= 0) {
             throw new Exception;
         }
