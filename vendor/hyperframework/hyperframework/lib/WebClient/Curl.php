@@ -79,7 +79,7 @@ class Curl {
                 break;
             }
         }
-        $selectTimeout = PHP_INT_MAX / 1000 - 2;
+        $selectTimeout = PHP_INT_MAX / 1000 - 2;//test, may be (int)$timeout === 0
         $isRunning = null;
         do {
             do {
