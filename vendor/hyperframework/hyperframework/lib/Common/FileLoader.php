@@ -29,8 +29,8 @@ class FileLoader {
     }
 
     protected static function getDefaultBasePath() {
-        $appRootPath = Config::get('hyperframework.app_root_path');
-        if ($appRootPath == '' && (string)$appRootPath === '') {
+        $appRootPath = (string)Config::get('hyperframework.app_root_path');
+        if ($appRootPath === '') {
             throw new Exception;
         }
         return $appRootPath;

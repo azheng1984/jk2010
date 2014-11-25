@@ -18,7 +18,7 @@ class Runner extends Base {
     }
 
     protected static function initializeAppRootPath() {
-        if ($appRootPath == '' && (string)$appRootPath === '') {
+        if ((string)self::$appRootPath === '') {
             throw new Exception;
         }
         Config::set('hyperframework.app_root_path', self::$appRootPath);
