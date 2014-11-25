@@ -99,12 +99,8 @@ if (isset($_GET['r'])) {
     exit;
 }
 
-define('Hyperframework\Blog\ROOT_PATH', dirname(__DIR__));
-require ROOT_PATH . DIRECTORY_SEPARATOR . 'config'
-    . DIRECTORY_SEPARATOR . 'init_const.php';
-require ROOT_PATH . DIRECTORY_SEPARATOR . 'lib'
-    . DIRECTORY_SEPARATOR . 'Runner.php';
-Runner::run(ROOT_PATH);
+require dirname(__DIR__) . '\vendor\autoload.php';
+Runner::run();
 
 //throw new \Exception
 //trigger_error('xx', E_USER_ERROR);

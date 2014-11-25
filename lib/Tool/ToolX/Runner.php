@@ -1,17 +1,12 @@
 <?php
 namespace Hyperframework\Blog\Tool\ToolX;
 
-use Hyperframework\Cli\Runner as Base;
 use Hyperframework\Common\Config;
-use Hyperframework;
-
-if (class_exists('Hyperframework\Cli\Runner') === false) {
-    require Hyperframework\Blog\HYPERFRAMEWORK_PATH . '/Cli/Runner.php';
-}
+use Hyperframework\Cli\Runner as Base;
 
 class Runner extends Base {
-    protected static function initialize($appRootPath) {
-        parent::initialize($appRootPath);
+    protected static function initializeConfig() {
+        parent::initializeConfig();
         Config::import('tool/tool_x/init.php');
     }
 }
