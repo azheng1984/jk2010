@@ -107,11 +107,11 @@ abstract class Router {
                 $class = str_replace(' ', '', $tmp) . 'Controller';
             }
         }
-        $rootNamespace = strval($this->getControllerRootNamespace());
+        $rootNamespace = (string)$this->getControllerRootNamespace();
         if ($rootNamespace !== '') {
             $rootNamespace .= '\\';
         }
-        $moduleNamespace = strval($this->getModuleNamespace());
+        $moduleNamespace = (string)$this->getModuleNamespace();
         if ($moduleNamespace !== '') {
             $moduleNamespace .= '\\';
         }
@@ -120,8 +120,13 @@ abstract class Router {
 
     protected function getControllerRootNamespace() {
         if ($this->controllerRootNamespace === null) {
-            return Config::get('hyperframework.app_root_namespace')
-                . '\Controllers';
+            $appRootNamespace = (string)Config::get(
+                'hyperframework.app_root_namespace'
+            );
+            if ($appRootNamespace === '') {
+                return 'Controllers';
+            }
+            return $appRootNamespace . '\Controllers';
         }
         return $this->controllerRootNamespace;
     }
