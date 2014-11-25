@@ -27,6 +27,7 @@ class MultipleCommandApp extends App {
     }
 
     protected function executeCommand() {
+        $config = $this->getCommandConfig();
         if ($this->hasGlobalOption('version')) {
             $this->renderVersion();
             return;
@@ -34,7 +35,7 @@ class MultipleCommandApp extends App {
         if ($this->hasGlobalOption('help')) {
             $this->renderGlobalHelp();
         }
-        $class = $this->getCommandClass();
+        $class = $config->get('class');
         $command = new $class($this);
         if ($this->hasOption('help')) {
             $command->renderHelp();
@@ -43,16 +44,6 @@ class MultipleCommandApp extends App {
                 'execute', $command, $this->commandParser->getArguments()
             );
         }
-    }
-
-    protected function getCommandClass() {
-        //read config file to get class name
-        if ($this->isSubcommand()) {
-            $tmp = ucwords(str_replace('-', ' ', $this->getSubcommand()));
-            $tmp = str_replace(' ', '', $tmp) . 'Command';
-            return Hyperframework\APP_ROOT_NAMESPACE . '\\' . $tmp;
-        }
-        return parent::getCommandClass();
     }
 
     protected function renderGlobalHelp() {

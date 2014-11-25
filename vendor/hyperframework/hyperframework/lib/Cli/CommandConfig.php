@@ -158,12 +158,18 @@ class CommandConfig {
         }
         $namespace = Config::get('hyperframework.cli.command_root_namespace');
         if ($namespace === null) {
-            $namespace = Config::get('hyperframework.app_root_namespace');
+            $namespace = (string)Config::get(
+                'hyperframework.app_root_namespace'
+            );
         }
         if ($isSubcommand) {
-            $namespace .= '\Subcommands';
+            if ($namespace === '') {
+                $namespace = 'Subcommands';
+            } else {
+                $namespace .= '\Subcommands';
+            }
         }
-        if ($namespace != '' && (string)$namespace !== '') {
+        if ($namespace !== '') {
             $config['class'] = $namespace . '\\' . $class;
         }
     }
