@@ -16,14 +16,14 @@ class Runner extends Base {
         $app->run();
     }
 
-    protected static function initializeErrorHandler() {
-        ErrorHandler::run();
-    }
-
-    protected static function getAppRootPath() {
+    protected static function initializeAppRootPath() {
         if (self::$appRootPath === null) {
             throw new Exception;
         }
-        return self::$appRootPath;
+        Config::set('hyperframework.app_root_path', self::$appRootPath);
+    }
+
+    protected static function initializeErrorHandler() {
+        ErrorHandler::run();
     }
 }

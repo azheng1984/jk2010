@@ -10,24 +10,24 @@ class Runner {
     }
 
     protected static function initialize() {
+        static::initializeAppRootPath();
         static::initializeConfig();
         static::initializeErrorHandler();
-    }
-
-    protected static function initializeConfig() {
-        Config::set('hyperframework.app_root_path', static::getAppRootPath());
-        Config::import('init.php');
     }
 
     protected static function runApp() {
         throw new Exception;
     }
 
-    protected static function initializeErrorHandler() {
+    protected static function initializeConfig() {
+        Config::import('init.php');
+    }
+
+    protected static function initializeAppRootPath() {
         throw new Exception;
     }
 
-    protected static function getAppRootPath() {
+    protected static function initializeErrorHandler() {
         throw new Exception;
     }
 }
