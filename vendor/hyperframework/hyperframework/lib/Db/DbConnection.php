@@ -2,6 +2,7 @@
 namespace Hyperframework\Db;
 
 use PDO;
+use Exception;
 use Hyperframework\Common\Config;
 
 class DbConnection extends PDO {
@@ -106,13 +107,16 @@ class DbConnection extends PDO {
                             $sql, $fetchOptions[0], $fetchOptions[1]
                         );
                         break;
-                    default:
+                    case 3:
                         $result = parent::query(
                             $sql,
                             $fetchOptions[0],
                             $fetchOptions[1],
                             $fetchOptions[2]
                         );
+                       break;
+                    default:
+                       throw new Exception;
                 }
             }
         } else {
