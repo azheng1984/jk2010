@@ -15,10 +15,6 @@ class Runner extends Base {
         $app->run();
     }
 
-    protected static function setAppRootPath($value) {
-        self::$appRootPath = $value;
-    }
-
     protected static function getAppRootPath() {
         if (self::$appRootPath === null) {
             self::$appRootPath = dirname(getcwd());

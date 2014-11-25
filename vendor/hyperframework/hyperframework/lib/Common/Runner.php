@@ -4,8 +4,6 @@ namespace Hyperframework\Common;
 use Hyperframework\Common\Config;
 
 class Runner {
-    private static $appRootPath;
-
     public static function run() {
         static::initialize();
         static::runApp();
@@ -29,14 +27,7 @@ class Runner {
         throw new Exception;
     }
 
-    protected static function setAppRootPath($value) {
-        self::$appRootPath = $value;
-    }
-
     protected static function getAppRootPath() {
-        if (self::$appRootPath === null) {
-            throw new Exception;
-        }
-        return self::$appRootPath;
+        throw new Exception;
     }
 }
