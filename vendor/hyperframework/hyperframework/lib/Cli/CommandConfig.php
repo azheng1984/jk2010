@@ -1,8 +1,8 @@
 <?php
 namespace Hyperframework\Cli;
 
-use ReflectionMethod;
 use Exception;
+use ReflectionMethod;
 use Hyperframework;
 use Hyperframework\Common\ConfigFileLoader;
 use Hyperframework\Common\Config;
