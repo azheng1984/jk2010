@@ -9,7 +9,7 @@ class Curl {
     private static $asyncTemporaryOptions;
     private static $asyncRequestOptions;
     private static $asyncPendingRequests;
-    private static $asyncMaxRequests;
+    private static $asyncMaxHandles;
     private static $asyncProcessingRequests;
     private static $asyncRequestFetchingCallback;
     private static $isOldCurl;
@@ -105,18 +105,18 @@ class Curl {
                         self::$asyncProcessingRequests[$handleId];
                     unset(self::$asyncProcessingRequests[$handleId]);
                     if ($onCompleteCallback !== null) {
-                        $response = array('curl_code' => $info['result']);
+                        $context = array('curl_code' => $info['result']);
                         if ($info['result'] !== CURLE_OK) {
-                            $response['error'] = curl_error($info['handle']);
+                            $context['error'] = curl_error($info['handle']);
                         } else {
-                            $response['content'] = $client->initializeResponse(
+                            $context['result'] = $client->initializeResponse(
                                 curl_multi_getcontent($info['handle'])
                             );
                             $client->finalize();
                         }
-                        call_user_func(
-                            $onCompleteCallback, $client, $request, $response
-                        );
+                        $context['request'] = $request;
+                        $context['client'] = $client;
+                        call_user_func($onCompleteCallback, $context);
                     }
                     curl_multi_remove_handle(
                         self::$asyncHandle, $info['handle']

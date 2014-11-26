@@ -2,6 +2,7 @@
 namespace Hyperframework\Blog\Controllers;
 
 use Hyperframework\Web\Controller;
+use Hyperframework\WebClient\Curl;
 
 class IndexController extends Controller {
     public function __construct($app) {
@@ -22,6 +23,10 @@ class IndexController extends Controller {
     }
 
     protected function hi() {
+        $curl = new Curl;
+        echo Curl::sendAll(['http://www.baidu.com/'], function($context) {
+            print_r($context);
+        });
         echo 'in!!!';
         yield;
         echo 'out!!!';
