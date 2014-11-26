@@ -90,8 +90,7 @@ class Curl {
                 do {
                     $status = curl_multi_exec(self::$asyncHandle, $isRunning);
                 } while ($status === CURLM_CALL_MULTI_PERFORM);
-                //after curl version 7.20.0,
-                //CURLM_CALL_MULTI_PERFORM is deprecated
+                //CURLM_CALL_MULTI_PERFORM is deprecated(curl version 7.20.0)
                 if ($status !== CURLM_OK) {
                     $message = '';
                     if (self::isOldCurl() === false) {
@@ -106,7 +105,7 @@ class Curl {
                     unset(self::$asyncProcessingRequests[$handleId]);
                     if ($onCompleteCallback !== null) {
                         $context = array('curl_code' => $info['result']);
-                        if ($info['response'] !== CURLE_OK) {
+                        if ($info['result'] !== CURLE_OK) {
                             $context['error'] = curl_error($info['handle']);
                         } else {
                             $context['response'] = $client->initializeResponse(
@@ -488,8 +487,7 @@ class Curl {
                         $this->oldCurlMultiHandle, $isRunning
                     );
                 } while ($status === CURLM_CALL_MULTI_PERFORM);
-                //after curl version 7.20.0,
-                //CURLM_CALL_MULTI_PERFORM is deprecated
+                //CURLM_CALL_MULTI_PERFORM is deprecated(curl version 7.20.0)
                 if ($status !== CURLM_OK) {
                     curl_multi_close($this->oldCurlMultiHandle);
                     $this->oldCurlMultiHandle = null;
