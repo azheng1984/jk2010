@@ -106,10 +106,10 @@ class Curl {
                     unset(self::$asyncProcessingRequests[$handleId]);
                     if ($onCompleteCallback !== null) {
                         $context = array('curl_code' => $info['result']);
-                        if ($info['result'] !== CURLE_OK) {
+                        if ($info['response'] !== CURLE_OK) {
                             $context['error'] = curl_error($info['handle']);
                         } else {
-                            $context['result'] = $client->initializeResponse(
+                            $context['response'] = $client->initializeResponse(
                                 curl_multi_getcontent($info['handle'])
                             );
                             $client->finalize();
