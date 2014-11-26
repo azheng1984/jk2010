@@ -15,7 +15,7 @@ class Curl {
     private $asyncRequestFetchingCallback;
     private $handle;
     private $oldCurlMultiHandle;
-    private $options = array();
+    private $options;
     private $requestOptions;
     private $rawResponseHeaders;
     private $responseHeaders;
@@ -272,6 +272,9 @@ class Curl {
     protected function getDefaultAsyncOptions() {}
 
     private function getAsyncOption($name, $default = null) {
+        if ($this->asyncOptions === null) {
+            $this->initializeAsyncOptions();
+        }
         if ($this->asyncTemporaryOptions !== null
             && array_key_exists($name, $this->asyncTemporaryOptions)
         ) {
@@ -291,7 +294,7 @@ class Curl {
         $this->asyncTemporaryOptions = null;
     }
 
-    final public function resetAsyncHandle() {
+    final public function asyncReset() {
         if ($this->asyncHandle === null) {
             $this->asyncOptions = null;
             $this->asyncTemporaryOptions = null;
@@ -359,21 +362,6 @@ class Curl {
         return self::$isOldCurl;
     }
 
-    public function __construct(array $options = null) {
-        $defaultOptions = $this->getDefaultOptions();
-        if ($defaultOptions === null) {
-            $defaultOptions = array();
-        } elseif (is_array($defaultOptions) ===  false) {
-            throw new Exception;
-        }
-        if ($options !== null) {
-            foreach ($options as $name => $value) {
-                $defaultOptions[$name] = $value;
-            }
-        }
-        $this->setOptions($defaultOptions);
-    }
-
     protected function getDefaultOptions() {
         return array(
             CURLOPT_TIMEOUT => 30,
@@ -386,7 +374,17 @@ class Curl {
         );
     }
 
+    private function initializeOptions() {
+        $this->options = array();
+        if ($this->options !== null) {
+            $this->setAsyncOptions($this->getDefaultOptions());
+        }
+    }
+
     public function setOptions(array $options) {
+        if ($this->options === null) {
+            $this->initializeOptions();
+        }
         foreach ($options as $name => $value) {
             if ($name === 'headers') {
                 $name = CURLOPT_HTTPHEADER;
@@ -443,6 +441,9 @@ class Curl {
     }
 
     final public function getOption($name) {
+        if ($this->options === null) {
+            $this->initializeOptions();
+        }
         if (isset($this->options[$name])) {
             return $this->options[$name];
         }
@@ -553,8 +554,7 @@ class Curl {
             ) {
                 $url .= $queryString;
             } elseif ($numberSignPosition === false) {
-                $url = substr($url, 0, $questionMarkPosition)
-                    . $queryString;
+                $url = substr($url, 0, $questionMarkPosition) . $queryString;
             } elseif ($questionMarkPosition === false
                 || $numberSignPosition < $questionMarkPosition
             ) {
