@@ -21,19 +21,7 @@ class Curl {
     private $responseHeaders;
     private $responseCount;
 
-    public static function sendAll(
-        array $requests = null,
-        $onCompleteCallback = null,
-        array $requestOptions = null,
-        array $asyncOptions = null
-    ) {
-        if ($requests !== null && count($requests) !== 0) {
-            self::$asyncPendingRequests = $requests;
-        } else {
-            self::$asyncPendingRequests = null;
-        }
-        self::$asyncRequestOptions = $requestOptions;
-        self::$asyncProcessingRequests = array();
+    public static function asyncSend(array $asyncOptions = null) {
         if (self::$asyncHandle === null) {
             self::$asyncHandle = curl_multi_init();
             if (self::$asyncOptions === null) {
@@ -66,6 +54,22 @@ class Curl {
             }
         }
         self::$asyncTemporaryOptions = $asyncOptions;
+        self::$asyncProcessingRequests = array();
+        self::$asyncPendingRequests = self::getAsyncOption('requests');
+        if (self::$asyncPendingRequests !== null
+            && is_array(self::$asyncPendingRequests) === false
+        ) {
+            throw new Exception;
+        }
+        self::$asyncRequestOptions = self::getAsyncOption(
+            'request_options'
+        );
+        if (self::$asyncRequestOptions !== null
+            && is_array(self::$asyncRequestOptions) === false
+        ) {
+            throw new Exception;
+        }
+        $onCompleteCallback = self::getAsyncOption('on_complete');
         self::$asyncRequestFetchingCallback = self::getAsyncOption(
             'request_fetching_callback'
         );
@@ -73,15 +77,15 @@ class Curl {
         if (self::$asyncMaxHandles < 1) {
             throw new Exception;
         }
-        $status = self::fetchAsyncRequests() !== false;
-        if ($status === false) {
-            return;
-        }
         $sleepTime = self::getAsyncOption('sleep_time');
         if ($sleepTime === null) {
             $sleepTime = 1;
         } else {
             $sleepTime = $sleepTime / 1000;
+        }
+        $status = self::fetchAsyncRequests() !== false;
+        if ($status === false) {
+            return;
         }
         $hasPendingRequest = true;
         $isRunning = $status === true;

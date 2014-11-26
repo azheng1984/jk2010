@@ -24,25 +24,31 @@ class IndexController extends Controller {
 
     protected function hi() {
         $curl = new Curl;
-        echo Curl::sendAll(['http://www.baidu.com/', 'http://www.baidu.com/'], function($ctx) {
-            $ctx['request'];
-            $ctx['client'];
-            print_r($ctx);
-        }, null, ['request_fetching_callback' => function() {
-            if (isset($this->x) === false) {
-                $this->x = 0;
+        Curl::asyncSend([
+        ]);
+        echo Curl::asyncSend([
+            'requests' => ['www.baidu.com/', 'www.baidu.com/'],
+            'on_complete' => function($ctx) {
+                $ctx['request'];
+                $ctx['client'];
+                print_r($ctx);
+            },
+            'request_fetching_callback' => function() {
+                if (isset($this->x) === false) {
+                    $this->x = 0;
+                }
+                echo 'ok!' . $this->x;
+                usleep(100000);
+                $this->x++;
+                if ($this->x < 10) {
+                    return;
+                }
+                return false;
             }
-            usleep(10);
-            $this->x++;
-//            flush();
-            if ($this->x < 1000) {
-                return;
-            }
-            return false;
-        }]);
-        echo Curl::sendAll(['http://www.baidu.com/'], function($ctx) {
-            print_r($ctx);
-        });
+        ]);
+//        echo Curl::sendAll(['www.baidu.com/'], function($ctx) {
+//            print_r($ctx);
+//        });
         echo 'in!!!';
         yield;
         echo 'out!!!';
