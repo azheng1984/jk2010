@@ -135,7 +135,7 @@ class Curl {
                 if ($isRunning) {
                     $timeout = null;
                     if ($hasPendingRequest === false
-                        || self::$maxHandles ===
+                        || self::$asyncMaxHandles ===
                             count(self::$asyncProcessingRequests)
                     ) {
                         $timeout = PHP_INT_MAX >> 10;
