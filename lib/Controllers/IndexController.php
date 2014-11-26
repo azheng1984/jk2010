@@ -41,7 +41,7 @@ class IndexController extends Controller {
                 usleep(100000);
                 $this->x++;
                 if ($this->x < 10) {
-                    return;
+                    return 'www.baidu.com';
                 }
                 return false;
             }

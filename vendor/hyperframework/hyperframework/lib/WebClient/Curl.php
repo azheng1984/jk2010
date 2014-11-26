@@ -20,7 +20,7 @@ class Curl {
     private $rawResponseHeaders;
     private $responseHeaders;
     private $responseCount;
-
+    
     public static function asyncSend(array $asyncOptions = null) {
         if (self::$asyncHandle === null) {
             self::$asyncHandle = curl_multi_init();
