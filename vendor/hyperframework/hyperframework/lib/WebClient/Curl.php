@@ -4,15 +4,15 @@ namespace Hyperframework\WebClient;
 use Exception;
 
 class Curl {
-    private static $asyncHandle;
-    private static $asyncOptions;
-    private static $asyncTemporaryOptions;
-    private static $asyncRequestOptions;
-    private static $asyncPendingRequests;
-    private static $asyncMaxHandles;
-    private static $asyncProcessingRequests;
-    private static $asyncRequestFetchingCallback;
     private static $isOldCurl;
+    private $asyncHandle;
+    private $asyncOptions;
+    private $asyncTemporaryOptions;
+    private $asyncRequestOptions;
+    private $asyncPendingRequests;
+    private $asyncMaxHandles;
+    private $asyncProcessingRequests;
+    private $asyncRequestFetchingCallback;
     private $handle;
     private $oldCurlMultiHandle;
     private $options = array();
@@ -20,25 +20,25 @@ class Curl {
     private $rawResponseHeaders;
     private $responseHeaders;
     private $responseCount;
-    
-    public static function asyncSend(array $asyncOptions = null) {
-        if (self::$asyncHandle === null) {
-            self::$asyncHandle = curl_multi_init();
-            if (self::$asyncOptions === null) {
-                self::initializeAsyncOptions();
+
+    public function asyncSend(array $asyncOptions = null) {
+        if ($this->asyncHandle === null) {
+            $this->asyncHandle = curl_multi_init();
+            if ($this->asyncOptions === null) {
+                $this->initializeAsyncOptions();
             } else {
-                self::setAsyncOptions(self::$asyncOptions);
+                $this->setAsyncOptions($this->asyncOptions);
             }
-        } elseif (self::$asyncTemporaryOptions !== null) {
-            foreach (self::$asyncTemporaryOptions as $name => $value) {
+        } elseif ($this->asyncTemporaryOptions !== null) {
+            foreach ($this->asyncTemporaryOptions as $name => $value) {
                 if (is_int($name) === false) {
                     continue;
                 }
-                if (isset(self::$asyncOptions[$name])) {
-                    self::setAsyncOption($name, self::$asyncOptions[$name]);
+                if (isset($this->asyncOptions[$name])) {
+                    $this->setAsyncOption($name, $this->asyncOptions[$name]);
                 } else {
-                    self::setAsyncOption(
-                        $name, self::getDefaultAsyncOptionValue($name)
+                    $this->setAsyncOption(
+                        $name, $this->getDefaultAsyncOptionValue($name)
                     );
                 }
             }
@@ -49,41 +49,41 @@ class Curl {
                     if (self::isOldCurl()) {
                         throw new Exception;
                     }
-                    curl_multi_setopt(self::$asyncHandle, $name, $value);
+                    curl_multi_setopt($this->asyncHandle, $name, $value);
                 }
             }
         }
-        self::$asyncTemporaryOptions = $asyncOptions;
-        self::$asyncProcessingRequests = array();
-        self::$asyncPendingRequests = self::getAsyncOption('requests');
-        if (self::$asyncPendingRequests !== null
-            && is_array(self::$asyncPendingRequests) === false
+        $this->asyncTemporaryOptions = $asyncOptions;
+        $this->asyncProcessingRequests = array();
+        $this->asyncPendingRequests = $this->getAsyncOption('requests');
+        if ($this->asyncPendingRequests !== null
+            && is_array($this->asyncPendingRequests) === false
         ) {
             throw new Exception;
         }
-        self::$asyncRequestOptions = self::getAsyncOption(
+        $this->asyncRequestOptions = $this->getAsyncOption(
             'request_options'
         );
-        if (self::$asyncRequestOptions !== null
-            && is_array(self::$asyncRequestOptions) === false
+        if ($this->asyncRequestOptions !== null
+            && is_array($this->asyncRequestOptions) === false
         ) {
             throw new Exception;
         }
-        $onCompleteCallback = self::getAsyncOption('on_complete');
-        self::$asyncRequestFetchingCallback = self::getAsyncOption(
+        $onCompleteCallback = $this->getAsyncOption('on_complete');
+        $this->asyncRequestFetchingCallback = $this->getAsyncOption(
             'request_fetching_callback'
         );
-        self::$asyncMaxHandles = self::getAsyncOption('max_handles', 1024);
-        if (self::$asyncMaxHandles < 1) {
+        $this->asyncMaxHandles = $this->getAsyncOption('max_handles', 1024);
+        if ($this->asyncMaxHandles < 1) {
             throw new Exception;
         }
-        $sleepTime = self::getAsyncOption('sleep_time');
+        $sleepTime = $this->getAsyncOption('sleep_time');
         if ($sleepTime === null) {
             $sleepTime = 1;
         } else {
             $sleepTime = $sleepTime / 1000;
         }
-        $status = self::fetchAsyncRequests() !== false;
+        $status = $this->fetchAsyncRequests() !== false;
         if ($status === false) {
             return;
         }
@@ -92,7 +92,7 @@ class Curl {
         for (;;) {
             if ($isRunning) {
                 do {
-                    $status = curl_multi_exec(self::$asyncHandle, $isRunning);
+                    $status = curl_multi_exec($this->asyncHandle, $isRunning);
                 } while ($status === CURLM_CALL_MULTI_PERFORM);
                 //CURLM_CALL_MULTI_PERFORM is deprecated(curl version 7.20.0)
                 if ($status !== CURLM_OK) {
@@ -102,11 +102,11 @@ class Curl {
                     }
                     throw new CurlException($message, $status, 'multi');
                 }
-                while ($info = curl_multi_info_read(self::$asyncHandle)) {
+                while ($info = curl_multi_info_read($this->asyncHandle)) {
                     $handleId = (int)$info['handle'];
                     list($client, $request) =
-                        self::$asyncProcessingRequests[$handleId];
-                    unset(self::$asyncProcessingRequests[$handleId]);
+                        $this->asyncProcessingRequests[$handleId];
+                    unset($this->asyncProcessingRequests[$handleId]);
                     if ($onCompleteCallback !== null) {
                         $context = array('curl_code' => $info['result']);
                         if ($info['result'] !== CURLE_OK) {
@@ -122,11 +122,11 @@ class Curl {
                         call_user_func($onCompleteCallback, $context);
                     }
                     curl_multi_remove_handle(
-                        self::$asyncHandle, $info['handle']
+                        $this->asyncHandle, $info['handle']
                     );
                 }
                 if ($hasPendingRequest) {
-                    $status = self::fetchAsyncRequests();
+                    $status = $this->fetchAsyncRequests();
                     if ($status === true) {
                         $isRunning = true;
                         continue;
@@ -138,14 +138,14 @@ class Curl {
                 if ($isRunning) {
                     $timeout = null;
                     if ($hasPendingRequest === false
-                        || self::$asyncMaxHandles ===
-                            count(self::$asyncProcessingRequests)
+                        || $this->asyncMaxHandles ===
+                            count($this->asyncProcessingRequests)
                     ) {
                         $timeout = PHP_INT_MAX >> 10;
                     } else {
                         $timeout = $sleepTime;
                     }
-                    $status = curl_multi_select(self::$asyncHandle, $timeout);
+                    $status = curl_multi_select($this->asyncHandle, $timeout);
                     //https://bugs.php.net/bug.php?id=61141
                     if ($status === -1) {
                         usleep(100);
@@ -157,7 +157,7 @@ class Curl {
                 }
                 $time = $sleepTime * 1000;
                 for (;;) {
-                    $status = self::fetchAsyncRequests();
+                    $status = $this->fetchAsyncRequests();
                     if ($status === false) {
                         return;
                     }
@@ -170,27 +170,27 @@ class Curl {
         }
     }
 
-    private static function fetchAsyncRequests() {
+    private function fetchAsyncRequests() {
         $hasNewRequest = false;
-        $requestCount = count(self::$asyncProcessingRequests);
-        for (; $requestCount <= self::$asyncMaxHandles; ++$requestCount) {
+        $requestCount = count($this->asyncProcessingRequests);
+        for (; $requestCount <= $this->asyncMaxHandles; ++$requestCount) {
             $request = null;
-            if (self::$asyncPendingRequests !== null) {
-                $key = key(self::$asyncPendingRequests);
+            if ($this->asyncPendingRequests !== null) {
+                $key = key($this->asyncPendingRequests);
                 if ($key !== null) {
-                    $request = self::$asyncPendingRequests[$key];
-                    unset(self::$asyncPendingRequests[$key]);
+                    $request = $this->asyncPendingRequests[$key];
+                    unset($this->asyncPendingRequests[$key]);
                 } else {
-                    self::$asyncPendingRequests = null;
+                    $this->asyncPendingRequests = null;
                 }
             }
             if ($request === null) {
-                if (self::$asyncRequestFetchingCallback !== null) {
+                if ($this->asyncRequestFetchingCallback !== null) {
                     $request = call_user_func(
-                        self::$asyncRequestFetchingCallback
+                        $this->asyncRequestFetchingCallback
                     );
                     if ($request === false) {
-                        self::$asyncRequestFetchingCallback = null;
+                        $this->asyncRequestFetchingCallback = null;
                         return $hasNewRequest;
                     }
                     if ($request === null) {
@@ -209,126 +209,126 @@ class Curl {
             }
             $class = get_called_class();
             $client = new $class;
-            if (self::$asyncRequestOptions !== null) {
+            if ($this->asyncRequestOptions !== null) {
                 $tmp = $request;
-                $request = self::$asyncRequestOptions;
+                $request = $this->asyncRequestOptions;
                 foreach ($tmp as $name => $value) {
                     $request[$name] = $value;
                 }
             }
             $client->prepare($request);
-            self::$asyncProcessingRequests[(int)$client->handle] =
+            $this->asyncProcessingRequests[(int)$client->handle] =
                 array($client, $request);
-            if (curl_multi_add_handle(self::$asyncHandle, $client->handle) !== 0) {
+            if (curl_multi_add_handle($this->asyncHandle, $client->handle) !== 0) {
                 throw new Exception;//curl exception
             }
         }
     }
 
-    private static function getDefaultAsyncOptionValue($name) {
+    private function getDefaultAsyncOptionValue($name) {
         if ($name === CURLMOPT_MAXCONNECTS) {
             return 10;
         }
         return null;
     }
 
-    final public static function setAsyncOptions(array $options) {
-        if (self::$asyncOptions === null) {
-            self::initializeAsyncOptions();
+    final public function setAsyncOptions(array $options) {
+        if ($this->asyncOptions === null) {
+            $this->initializeAsyncOptions();
         }
         foreach ($options as $name => $value) {
-            self::$asyncOptions[$name] = $value;
-            if (self::$asyncTemporaryOptions !== null) {
-                unset(self::$asyncTemporaryOptions[$name]);
+            $this->asyncOptions[$name] = $value;
+            if ($this->asyncTemporaryOptions !== null) {
+                unset($this->asyncTemporaryOptions[$name]);
             }
-            if (self::$asyncHandle !== null && is_int($name)) {
+            if ($this->asyncHandle !== null && is_int($name)) {
                 if (self::isOldCurl()) {
                     throw new Exception;
                 }
-                curl_multi_setopt(self::$asyncHandle, $name, $value);
+                curl_multi_setopt($this->asyncHandle, $name, $value);
             }
         }
     }
 
-    private static function initializeAsyncOptions() {
-        self::$asyncOptions = array();
-        $options = static::getDefaultAsyncOptions();
+    private function initializeAsyncOptions() {
+        $this->asyncOptions = array();
+        $options = $this->getDefaultAsyncOptions();
         if ($options !== null) {
-            self::setAsyncOptions($options);
+            $this->setAsyncOptions($options);
         }
     }
 
-    final public static function setAsyncOption($name, $value) {
-        self::setAsyncOptions(array($name => $value));
+    final public function setAsyncOption($name, $value) {
+        $this->setAsyncOptions(array($name => $value));
     }
 
-    final public static function removeAsyncOption($name) {
-        self::setAsyncOption(
-            $name, self::getDefaultAsyncOptionValue($name)
+    final public function removeAsyncOption($name) {
+        $this->setAsyncOption(
+            $name, $this->getDefaultAsyncOptionValue($name)
         );
-        unset(self::$asyncOptions[$name]);
+        unset($this->asyncOptions[$name]);
     }
 
-    protected static function getDefaultAsyncOptions() {}
+    protected function getDefaultAsyncOptions() {}
 
-    private static function getAsyncOption($name, $default = null) {
-        if (self::$asyncTemporaryOptions !== null
-            && array_key_exists($name, self::$asyncTemporaryOptions)
+    private function getAsyncOption($name, $default = null) {
+        if ($this->asyncTemporaryOptions !== null
+            && array_key_exists($name, $this->asyncTemporaryOptions)
         ) {
-            return self::$asyncTemporaryOptions[$name];
-        } elseif (array_key_exists($name, self::$asyncOptions)) {
-            return self::$asyncOptions[$name];
+            return $this->asyncTemporaryOptions[$name];
+        } elseif (array_key_exists($name, $this->asyncOptions)) {
+            return $this->asyncOptions[$name];
         }
         return $default;
     }
 
-    final public static function closeAsyncHandle() {
-        if (self::$asyncHandle === null) {
+    final public function closeAsyncHandle() {
+        if ($this->asyncHandle === null) {
             return;
         }
-        curl_multi_close(self::$asyncHandle);
-        self::$asyncHandle = null;
-        self::$asyncTemporaryOptions = null;
+        curl_multi_close($this->asyncHandle);
+        $this->asyncHandle = null;
+        $this->asyncTemporaryOptions = null;
     }
 
-    final public static function resetAsyncHandle() {
-        if (self::$asyncHandle === null) {
-            self::$asyncOptions = null;
-            self::$asyncTemporaryOptions = null;
+    final public function resetAsyncHandle() {
+        if ($this->asyncHandle === null) {
+            $this->asyncOptions = null;
+            $this->asyncTemporaryOptions = null;
             return;
         }
-        if (self::$asyncTemporaryOptions !== null) {
-            foreach (self::$asyncTemporaryOptions as $name => $value) {
-                if (self::$asyncOptions !== null
-                    && array_key_exists($name, self::$asyncOptions)
+        if ($this->asyncTemporaryOptions !== null) {
+            foreach ($this->asyncTemporaryOptions as $name => $value) {
+                if ($this->asyncOptions !== null
+                    && array_key_exists($name, $this->asyncOptions)
                 ) {
                     continue;
                 }
                 if (is_int($name)) {
                     curl_multi_setopt(
-                        self::$asyncHandle,
+                        $this->asyncHandle,
                         $name,
-                        self::getDefaultAsyncOptionValue($name)
+                        $this->getDefaultAsyncOptionValue($name)
                     );
                 }
             }
-            self::$asyncTemporaryOptions = null;
+            $this->asyncTemporaryOptions = null;
         }
-        if (self::$asyncOptions !== null) {
-            foreach (self::$asyncOptions as $name => $value) {
+        if ($this->asyncOptions !== null) {
+            foreach ($this->asyncOptions as $name => $value) {
                 if (is_int($name)) {
                     curl_multi_setopt(
-                        self::$asyncHandle,
+                        $this->asyncHandle,
                         $name,
-                        self::getDefaultAsyncOptionValue($name)
+                        $this->getDefaultAsyncOptionValue($name)
                     );
                 }
             }
-            self::$asyncOptions = null;
+            $this->asyncOptions = null;
         }
     }
 
-    private static function getFileSize($path) {
+    private function getFileSize($path) {
         if (PHP_INT_SIZE === 8) {
             $result = filesize($path);
             if ($result === false) {
@@ -352,7 +352,7 @@ class Curl {
         }
     }
 
-    final protected function isOldCurl() {
+    final protected static function isOldCurl() {
         if (self::$isOldCurl === null) {
             self::$isOldCurl = version_compare(phpversion(), '5.5.0', '<');
         }
@@ -872,7 +872,7 @@ class Curl {
                 if ($file === false) {
                     throw new Exception;
                 }
-                $size = self::getFileSize($data['file']);
+                $size = $this->getFileSize($data['file']);
                 if ($this->isLargerThanIntMax($size)) {
                     $this->addRequestHeaders(
                         array('Content-Length' => $size)
@@ -887,7 +887,7 @@ class Curl {
                 unset($options[CURLOPT_READFUNCTION]);
                 $options[CURLOPT_UPLOAD] = true;
                 $options[CURLOPT_INFILE] = $file;
-                $options[CURLOPT_INFILESIZE] = self::getFileSize($data['file']);
+                $options[CURLOPT_INFILESIZE] = $this->getFileSize($data['file']);
             }
         }
     }
@@ -908,7 +908,7 @@ class Curl {
                 );
             } elseif (isset($item['file'])) {
                 $result = $this->addContentLength(
-                    self::getFileSize($item['file']), $result
+                    $this->getFileSize($item['file']), $result
                 );
             }
         }

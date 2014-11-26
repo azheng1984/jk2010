@@ -24,9 +24,7 @@ class IndexController extends Controller {
 
     protected function hi() {
         $curl = new Curl;
-        Curl::asyncSend([
-        ]);
-        echo Curl::asyncSend([
+        echo $curl->asyncSend([
             'requests' => ['www.baidu.com/', 'www.baidu.com/'],
             'on_complete' => function($ctx) {
                 $ctx['request'];
