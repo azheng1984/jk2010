@@ -9,6 +9,7 @@ class Curl {
     private static $asyncTemporaryOptions;
     private static $asyncRequestOptions;
     private static $asyncPendingRequests;
+    private static $asyncMaxRequests;
     private static $asyncProcessingRequests;
     private static $asyncRequestFetchingCallback;
     private static $isOldCurl;
@@ -68,96 +69,157 @@ class Curl {
         self::$asyncRequestFetchingCallback = self::getAsyncOption(
             'request_fetching_callback'
         );
-        $hasPendingRequest = true;
-        $maxHandles = self::getAsyncOption('max_handles', 100);
-        if ($maxHandles < 1) {
+        self::$asyncMaxHandles = self::getAsyncOption('max_handles', 1024);
+        if (self::$asyncMaxHandles < 1) {
             throw new Exception;
         }
-        for ($index = 0; $index < $maxHandles; ++$index) {
-            $hasPendingRequest = self::addAsyncRequests() !== false;
-            if ($hasPendingRequest === false) {
-                break;
-            }
+        $status = self::fetchAsyncRequests() !== false;
+        if ($status === false) {
+            return;
         }
-        $selectTimeout = PHP_INT_MAX / 1000 - 2;//test, may be (int)$timeout === 0
-        $isRunning = null;
-        do {
-            do {
-                $status = curl_multi_exec(self::$asyncHandle, $isRunning);
-            } while ($status === CURLM_CALL_MULTI_PERFORM);
-            if ($status !== CURLM_OK) {
-                $message = '';
-                if (self::isOldCurl() === false) {
-                    $message = curl_multi_strerror($status);
-                }
-                throw new CurlException($message, $status, 'multi');
-            }
-            while ($info = curl_multi_info_read(self::$asyncHandle)) {
-                $handleId = (int)$info['handle'];
-                list($client, $request) =
-                    self::$asyncProcessingRequests[$handleId];
-                unset(self::$asyncProcessingRequests[$handleId]);
-                if ($onCompleteCallback !== null) {
-                    $response = array('curl_code' => $info['result']);
-                    if ($info['result'] !== CURLE_OK) {
-                        $response['error'] = curl_error($info['handle']);
-                    } else {
-                        $response['content'] = $client->initializeResponse(
-                            curl_multi_getcontent($info['handle'])
-                        );
-                        $client->finalize();
+        $sleepTime = self::getAsyncOption('sleep_time');
+        if ($sleepTime === null) {
+            $sleepTime = 1;
+        } else {
+            $sleepTime = $sleepTime / 1000;
+        }
+        $hasPendingRequest = true;
+        $isRunning = $status === true;
+        for (;;) {
+            if ($isRunning) {
+                do {
+                    $status = curl_multi_exec(self::$asyncHandle, $isRunning);
+                } while ($status === CURLM_CALL_MULTI_PERFORM);
+                //after curl version 7.20.0,
+                //CURLM_CALL_MULTI_PERFORM is deprecated
+                if ($status !== CURLM_OK) {
+                    $message = '';
+                    if (self::isOldCurl() === false) {
+                        $message = curl_multi_strerror($status);
                     }
-                    call_user_func(
-                        $onCompleteCallback, $client, $request, $response
+                    throw new CurlException($message, $status, 'multi');
+                }
+                while ($info = curl_multi_info_read(self::$asyncHandle)) {
+                    $handleId = (int)$info['handle'];
+                    list($client, $request) =
+                        self::$asyncProcessingRequests[$handleId];
+                    unset(self::$asyncProcessingRequests[$handleId]);
+                    if ($onCompleteCallback !== null) {
+                        $response = array('curl_code' => $info['result']);
+                        if ($info['result'] !== CURLE_OK) {
+                            $response['error'] = curl_error($info['handle']);
+                        } else {
+                            $response['content'] = $client->initializeResponse(
+                                curl_multi_getcontent($info['handle'])
+                            );
+                            $client->finalize();
+                        }
+                        call_user_func(
+                            $onCompleteCallback, $client, $request, $response
+                        );
+                    }
+                    curl_multi_remove_handle(
+                        self::$asyncHandle, $info['handle']
                     );
                 }
                 if ($hasPendingRequest) {
-                    $hasPendingRequest = self::addAsyncRequests() !== false;
+                    $status = self::fetchAsyncRequests();
+                    if ($status === true) {
+                        $isRunning = true;
+                        continue;
+                    }
+                    if ($status === false) {
+                        $hasPendingRequest = false;
+                    }
                 }
-                curl_multi_remove_handle(self::$asyncHandle, $info['handle']);
+                if ($isRunning) {
+                    $timeout = null;
+                    if ($hasPendingRequest === false
+                        || self::$maxHandles ===
+                            count(self::$asyncProcessingRequests)
+                    ) {
+                        $timeout = PHP_INT_MAX >> 10;
+                    } else {
+                        $timeout = $sleepTime;
+                    }
+                    $status = curl_multi_select(self::$asyncHandle, $timeout);
+                    //https://bugs.php.net/bug.php?id=61141
+                    if ($status === -1) {
+                        usleep(100);
+                    };
+                }
+            } else {
+                if ($hasPendingRequest === false) {
+                    return;
+                }
+                $time = $sleepTime * 1000;
+                for (;;) {
+                    $status = self::fetchAsyncRequests();
+                    if ($status === false) {
+                        return;
+                    }
+                    if ($status === true) {
+                        break;
+                    }
+                    usleep($time);
+                }
             }
-            if ($isRunning) {
-                $tmp = curl_multi_select(self::$asyncHandle, $selectTimeout);
-                //https://bugs.php.net/bug.php?id=61141
-                if ($tmp === -1) {
-                    usleep(100);
-                };
-            }
-        } while ($hasPendingRequest || $isRunning);
+        }
     }
 
-    private static function addAsyncRequests() {
-        $request = null;
-        if (self::$asyncPendingRequests !== null) {
-            $key = key(self::$asyncPendingRequests);
-            if ($key !== null) {
-                $request = self::$asyncPendingRequests[$key];
-                unset(self::$asyncPendingRequests[$key]);
-            } else {
-                self::$asyncPendingRequests = null;
+    private static function fetchAsyncRequests() {
+        $hasNewRequest = false;
+        $requestCount = count(self::$asyncProcessingRequests);
+        for (; $requestCount <= self::$asyncMaxHandles; ++$requestCount) {
+            $request = null;
+            if (self::$asyncPendingRequests !== null) {
+                $key = key(self::$asyncPendingRequests);
+                if ($key !== null) {
+                    $request = self::$asyncPendingRequests[$key];
+                    unset(self::$asyncPendingRequests[$key]);
+                } else {
+                    self::$asyncPendingRequests = null;
+                }
             }
-        } elseif (self::$asyncRequestFetchingCallback !== null) {
-            $request = call_user_func(self::$asyncRequestFetchingCallback);
-        }
-        if ($request === null) {
-            return false;
-        }
-        if (is_array($request) === false) {
-            $request = array(CURLOPT_URL => $request);
-        }
-        $class = get_called_class();
-        $client = new $class;
-        if (self::$asyncRequestOptions !== null) {
-            $tmp = $request;
-            $request = self::$asyncRequestOptions;
-            foreach ($tmp as $name => $value) {
-                $request[$name] = $value;
+            if ($request === null) {
+                if (self::$asyncRequestFetchingCallback !== null) {
+                    $request = call_user_func(
+                        self::$asyncRequestFetchingCallback
+                    );
+                    if ($request === false) {
+                        self::$asyncRequestFetchingCallback = null;
+                        return $hasNewRequest;
+                    }
+                    if ($request === null) {
+                        if ($hasNewRequest === false) {
+                            return null;
+                        }
+                        return true;
+                    }
+                } else {
+                    return $hasNewRequest;
+                }
+            }
+            $hasNewRequest = true;
+            if (is_array($request) === false) {
+                $request = array(CURLOPT_URL => $request);
+            }
+            $class = get_called_class();
+            $client = new $class;
+            if (self::$asyncRequestOptions !== null) {
+                $tmp = $request;
+                $request = self::$asyncRequestOptions;
+                foreach ($tmp as $name => $value) {
+                    $request[$name] = $value;
+                }
+            }
+            $client->prepare($request);
+            self::$asyncProcessingRequests[(int)$client->handle] =
+                array($client, $request);
+            if (curl_multi_add_handle(self::$asyncHandle, $client->handle) !== 0) {
+                throw new Exception;//curl exception
             }
         }
-        $client->prepare($request);
-        self::$asyncProcessingRequests[(int)$client->handle] =
-            array($client, $request);
-        curl_multi_add_handle(self::$asyncHandle, $client->handle);
     }
 
     private static function getDefaultAsyncOptionValue($name) {
@@ -420,13 +482,14 @@ class Curl {
             curl_multi_add_handle($this->oldCurlMultiHandle, $this->handle);
             $result = null;
             $isRunning = null;
-            $selectTimeout = PHP_INT_MAX / 1000 - 2;//test, may be (int)$timeout === 0
             do {
                 do {
                     $status = curl_multi_exec(
                         $this->oldCurlMultiHandle, $isRunning
                     );
                 } while ($status === CURLM_CALL_MULTI_PERFORM);
+                //after curl version 7.20.0,
+                //CURLM_CALL_MULTI_PERFORM is deprecated
                 if ($status !== CURLM_OK) {
                     curl_multi_close($this->oldCurlMultiHandle);
                     $this->oldCurlMultiHandle = null;
@@ -442,7 +505,7 @@ class Curl {
                 }
                 if ($isRunning) {
                     $tmp = curl_multi_select(
-                        $this->oldCurlMultiHandle, $selectTimeout
+                        $this->oldCurlMultiHandle, PHP_INT_MAX >> 10
                     );
                     if ($tmp === -1) {
                         //https://bugs.php.net/bug.php?id=61141
