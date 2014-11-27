@@ -7,10 +7,11 @@ class AsyncCurl {
     const OPT_MAX_HANDLES = 'max_handles';
     const OPT_REQUEST_FETCHING_CALLBACK = 'request_fetching_callback';
     const OPT_ON_COMPLETE = 'on_complete';
+    const OPT_REQUEST_OPTIONS = 'request_options';
 
     protected function getDefaultOptions() {
         return [
-            'request_options' => [
+            self::OPT_REQUEST_OPTIONS => [
 //                CURLOPT_TIMEOUT => 30,
 //                CURLOPT_CONNECTTIMEOUT => 30,
                 //firefox is 90(about:config network.http.connection-timeout)
