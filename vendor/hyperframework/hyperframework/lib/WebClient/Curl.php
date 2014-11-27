@@ -6,30 +6,13 @@ use Exception;
 class Curl {
     protected function getDefaultOptions() {
         return [
-            'request_options' => array(
-                CURLOPT_TIMEOUT => 30,
-                CURLOPT_CONNECTTIMEOUT => 30,
-                CURLOPT_FOLLOWLOCATION => 1,
-                CURLOPT_AUTOREFERER => 1,
-                CURLOPT_MAXREDIRS => 1024,
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_ENCODING => '',
-            ),
-            'max_handles' => '1000',
-        ];
-    }
-
-    public function setRequestOption($name, $value) {
-        return null;
-    }
-
-//    protected function getDefaultRequestOptions() {
-//        return [
-//        ];
-//    }
-
-    protected function getDefaultOptions() {
-        return [
+//            CURLOPT_TIMEOUT => 30,
+//            CURLOPT_CONNECTTIMEOUT => 30,
+            CURLOPT_FOLLOWLOCATION => 1,
+            CURLOPT_AUTOREFERER => 1,
+            CURLOPT_MAXREDIRS => 1024,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_ENCODING => '',
         ];
     }
 
@@ -62,11 +45,9 @@ class Curl {
         }
         $options[CURLOPT_URL] = $url;
         $options[CURLOPT_CUSTOMREQUEST] = $method;
-        return $this->kernel->send($options);
     }
 
     public function send(array $options = null) {
-        return $this->kernel->send($options);
     }
 
     public function getResponseHeader($name, $isMultiple = false) {

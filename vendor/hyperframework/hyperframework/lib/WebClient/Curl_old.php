@@ -3,7 +3,7 @@ namespace Hyperframework\WebClient;
 
 use Exception;
 
-class Curl {
+class Curl_old {
     private static $isOldCurl;
     private $asyncHandle;
     private $asyncOptions;
@@ -20,6 +20,10 @@ class Curl {
     private $rawResponseHeaders;
     private $responseHeaders;
     private $responseCount;
+
+    public function __construct() {
+        $this->options = $this->getDefaultOptions(); //some thing wrong... so set here again
+    }
 
     public function asyncSend(array $asyncOptions = null) {
         if ($this->asyncHandle === null) {
@@ -408,6 +412,7 @@ class Curl {
         }
     }
 
+    //cancel, use original handle
     private function addCurlCallbackWrapper(array &$options) {
         foreach ($options as $name => &$value) {
             if ($name === CURLOPT_HEADERFUNCTION 

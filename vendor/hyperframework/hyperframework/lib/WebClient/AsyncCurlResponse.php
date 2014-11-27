@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\WebClient;
 
+//add request Id for tracking?
 class AsyncCurlResponse {
     private $handle;
     private $code;
