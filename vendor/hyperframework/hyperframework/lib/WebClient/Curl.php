@@ -50,9 +50,6 @@ class Curl {
         $options[CURLOPT_CUSTOMREQUEST] = $method;
     }
 
-    public function send(array $options = null) {
-    }
-
     public function getResponseHeader($name, $isMultiple = false) {
     }
 
@@ -72,6 +69,9 @@ class Curl {
 //    }
 
     public function close() {
+    }
+    
+    public function send(array $options = null) {
     }
 
     public function head($url, array $options = null) {

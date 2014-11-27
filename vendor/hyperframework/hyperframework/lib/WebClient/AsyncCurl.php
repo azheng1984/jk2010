@@ -20,10 +20,10 @@ class AsyncCurl {
         ];
     }
 
-    public function setOptions(array $options) {
+    public function setOption($name, $value) {
     }
 
-    public function setOption($name, $value) {
+    public function setOptions(array $options) {
     }
 
     public function removeOption($name) {
