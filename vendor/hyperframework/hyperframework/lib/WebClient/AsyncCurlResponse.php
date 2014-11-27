@@ -26,6 +26,9 @@ class AsyncCurlResponse {
     }
 
     public function getContent() {
+        if ($this->hasError()) {
+            throw new Exception;
+        }
         if ($this->content === null) {
             $this->content = curl_multi_getcontent($this->getHandle()); //return null?
         }
@@ -33,6 +36,9 @@ class AsyncCurlResponse {
     }
 
     public function getInfo($name = null) {
+        if ($this->hasError()) {
+            throw new Exception;
+        }
         return curl_getinfo($this->getHandle(), $name);
     }
 
@@ -47,9 +53,15 @@ class AsyncCurlResponse {
 //    }
 
     public function getHeader($name, $isMultiple = false) {
+        if ($this->hasError()) {
+            throw new Exception;
+        }
     }
 
     public function getHeaders() {
+        if ($this->hasError()) {
+            throw new Exception;
+        }
     }
 
 //    public function getRawHeaders() {
