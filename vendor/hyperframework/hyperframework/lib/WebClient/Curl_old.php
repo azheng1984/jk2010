@@ -22,7 +22,7 @@ class Curl_old {
     private $responseCount;
 
     public function __construct() {
-        $this->options = $this->getDefaultOptions(); //some thing wrong... so set here again
+        $this->initializeOptions();
     }
 
     public function asyncSend(array $asyncOptions = null) {
@@ -393,16 +393,10 @@ class Curl_old {
     }
 
     private function initializeOptions() {
-        $this->options = array();
-        if ($this->options !== null) {
-            $this->setAsyncOptions($this->getDefaultOptions());
-        }
+        $this->options = $this->getDefaultOptions();
     }
 
     public function setOptions(array $options) {
-        if ($this->options === null) {
-            $this->initializeOptions();
-        }
         foreach ($options as $name => $value) {
             if ($name === 'headers') {
                 $name = CURLOPT_HTTPHEADER;
@@ -460,9 +454,6 @@ class Curl_old {
     }
 
     final public function getOption($name) {
-        if ($this->options === null) {
-            $this->initializeOptions();
-        }
         if (isset($this->options[$name])) {
             return $this->options[$name];
         }

@@ -2,7 +2,7 @@
 namespace Hyperframework\Blog\Controllers;
 
 use Hyperframework\Web\Controller;
-use Hyperframework\WebClient\Curl2;
+use Hyperframework\WebClient\Curl_old;
 
 class IndexController extends Controller {
     public function __construct($app) {
@@ -23,9 +23,10 @@ class IndexController extends Controller {
     }
 
     protected function hi() {
-        $curl = new Curl2;
+        $curl = new Curl_old;
         $curl->get('www.baidu.com');
-        var_dump($curl->getResponseHeaders());
+        exit;
+        //var_dump($curl->getResponseHeaders());
         exit;
         echo $curl->asyncSend([
             'requests' => ['www.baidu.com/', 'www.baidu.com/'],
