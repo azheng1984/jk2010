@@ -34,12 +34,13 @@ class AsyncCurl {
 
     public function send(array $options = null) {
         $asyncCurl->send([
-            'max_handles' => 1000,
+            'max_handles' => 1024,
             'request_options' => [],
             'sleep_time' => 1000,//ms
             'requests' => [],
             'request_fetching_callback' => function() {
-            }
+                //return false | null | request
+            },
             'on_complete' => function($asyncCurlResponse) {
             },
         ]);

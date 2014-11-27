@@ -209,6 +209,7 @@ class Curl_old {
             }
             $hasNewRequest = true;
             if (is_array($request) === false) {
+                //check to string is ''
                 $request = array(CURLOPT_URL => $request);
             }
             $class = get_called_class();
