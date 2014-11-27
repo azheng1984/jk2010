@@ -16,18 +16,21 @@ class Curl {
         ];
     }
 
-    public function setOptions(array $options) {
-//        $this->kernel->setOptions($options);
-    }
-//
-    public function removeOption($name) {
-        $this->kernel->removeOptions($options);
-    }
-//
     public function setOption($name, $value) {
         $this->setOptions(array($name => $value));
     }
-//
+
+    public function setOptions(array $options) {
+//        $this->kernel->setOptions($options);
+    }
+
+    public function removeOption($name) {
+        $this->kernel->removeOptions($options);
+    }
+
+    public function resetOptions() {
+    }
+
 //    public function getOption($name) {
 //        return $this->kernel->getOption($name);
 //    }
@@ -63,9 +66,6 @@ class Curl {
 //    }
 
     public function getResponseInfo($name = null) {
-    }
-
-    public function resetOptions() {
     }
 
 //    public function pause($bitmask) {
