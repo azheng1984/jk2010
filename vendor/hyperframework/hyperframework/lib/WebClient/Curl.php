@@ -4,6 +4,8 @@ namespace Hyperframework\WebClient;
 use Exception;
 
 class Curl {
+    const OPT_DATA = 'data';
+
     protected function getDefaultOptions() {
         return [
 //            CURLOPT_TIMEOUT => 30,

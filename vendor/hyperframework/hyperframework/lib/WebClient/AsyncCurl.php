@@ -4,6 +4,10 @@ namespace Hyperframework\WebClient;
 use Exception;
 
 class AsyncCurl {
+    const OPT_MAX_HANDLES = 'max_handles';
+    const OPT_REQUEST_FETCHING_CALLBACK = 'request_fetching_callback';
+    const OPT_ON_COMPLETE = 'on_complete';
+
     protected function getDefaultOptions() {
         return [
             'request_options' => [

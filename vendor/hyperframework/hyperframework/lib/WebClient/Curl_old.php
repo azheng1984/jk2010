@@ -585,9 +585,9 @@ class Curl_old {
         $tmp = $options;
         $options = $this->options;
         foreach ($tmp as $key => $value) {
-            if ($key === 'headers') {
+            if ($key === 'headers') {//cancel
                 $key = CURLOPT_HTTPHEADER;
-            } elseif ($key === 'url') {
+            } elseif ($key === 'url') {//cancel
                 $name = CURLOPT_URL;
             }
             $options[$key] = $value;
