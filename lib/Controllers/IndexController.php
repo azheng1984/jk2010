@@ -23,8 +23,13 @@ class IndexController extends Controller {
     }
 
     protected function hi() {
-        $curl = new Curl;
-        echo Curl::asyncSend([
+        for ($i = 0; $i < 10000; ++$i) {
+            $curlHelper = new CurlHelper;
+            $curlHelper->get('http://localhost/?b=1');
+        }
+        exit;
+
+        echo $curl->asyncSend([
             'requests' => ['www.baidu.com/', 'www.baidu.com/'],
             'on_complete' => function($ctx) {
                 $ctx['request'];

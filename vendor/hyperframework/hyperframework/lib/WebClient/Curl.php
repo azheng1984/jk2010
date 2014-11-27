@@ -16,7 +16,7 @@ class Curl {
     private $handle;
     private $oldCurlMultiHandle;
     private $options;
-    private $requestOptions;
+private $requestOptions;
     private $rawResponseHeaders;
     private $responseHeaders;
     private $responseCount;
@@ -271,6 +271,19 @@ class Curl {
 
     protected function getDefaultAsyncOptions() {}
 
+    public function setAsyncRequestOptions($options) {
+    }
+
+    public function resetAsyncRequestOptions() {
+    }
+
+    protected function setDefaultOptions() {
+    }
+
+    protected function getAsyncRequestDefaultOpitons() {
+        return $this->getDefaultOptions();
+    }
+
     private function getAsyncOption($name, $default = null) {
         if ($this->asyncOptions === null) {
             $this->initializeAsyncOptions();
@@ -285,7 +298,7 @@ class Curl {
         return $default;
     }
 
-    final public function closeAsyncHandle() {
+    final public function closeAsync() {
         if ($this->asyncHandle === null) {
             return;
         }
@@ -294,7 +307,7 @@ class Curl {
         $this->asyncTemporaryOptions = null;
     }
 
-    final public function asyncReset() {
+    final public function resetAsyncOptions() {
         if ($this->asyncHandle === null) {
             $this->asyncOptions = null;
             $this->asyncTemporaryOptions = null;
@@ -523,7 +536,7 @@ class Curl {
         return $result;
     }
 
-    protected function initializeOptions(array &$options) {
+    protected function initializeRequestOptions(array &$options) {
         $data = $this->getRequestOption('data');
         if ($data !== null) {
             $this->setData($data, $options);
@@ -583,7 +596,7 @@ class Curl {
             $options[$key] = $value;
         }
         $this->requestOptions =& $options;
-        $this->initializeOptions($options);
+        $this->initializeRequestOptions($options);
         $curlOptions = array();
         foreach ($options as $key => $value) {
             if (is_int($key)) {
@@ -1154,6 +1167,7 @@ class Curl {
         return $this->responseCount;
     }
 
+    //rename to getResponseInfo();
     public function getInfo($name = null) {
         if ($this->handle === null) {
             throw new Exception;
@@ -1174,10 +1188,10 @@ class Curl {
         }
     }
 
-    public function reset() {
-        $this->rawResponseHeaders = null;
-        $this->responseHeaders = null;
-        $this->responseCount = null;
+    public function resetOptions() {
+    //    $this->rawResponseHeaders = null;
+    //    $this->responseHeaders = null;
+    //    $this->responseCount = null;
         $this->requestOptions = null;
         $this->options = array();
         $defaultOptions = $this->getDefaultOptions();
