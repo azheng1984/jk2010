@@ -9,6 +9,7 @@ class AsyncCurl {
             'request_options' => [
 //                CURLOPT_TIMEOUT => 30,
 //                CURLOPT_CONNECTTIMEOUT => 30,
+                //firefox is 90(about:config network.http.connection-timeout)
                 CURLOPT_FOLLOWLOCATION => 1,
                 CURLOPT_AUTOREFERER => 1,
                 CURLOPT_MAXREDIRS => 1024,
