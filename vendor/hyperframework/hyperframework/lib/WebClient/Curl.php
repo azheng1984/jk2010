@@ -46,7 +46,7 @@ class Curl {
             $options = array();
         }
         if ($data !== null) {
-            $options['data'] = $data;
+            $options[self::OPT_DATA] = $data;
         }
         $options[CURLOPT_URL] = $url;
         $options[CURLOPT_CUSTOMREQUEST] = $method;

@@ -4,10 +4,12 @@ namespace Hyperframework\WebClient;
 use Exception;
 
 class AsyncCurl {
-    const OPT_MAX_HANDLES = 'max_handles';
-    const OPT_REQUEST_FETCHING_CALLBACK = 'request_fetching_callback';
-    const OPT_ON_COMPLETE = 'on_complete';
+    const OPT_REQUESTS => 'request',
     const OPT_REQUEST_OPTIONS = 'request_options';
+    const OPT_ON_COMPLETE = 'on_complete';
+    const OPT_REQUEST_FETCHING_FUNCTION = 'request_fetching_function';
+    const OPT_SLEEP_TIME => 'sleep_time',//ms
+    const OPT_MAX_HANDLES = 'max_handles';
 
     protected function getDefaultOptions() {
         return [
@@ -21,7 +23,7 @@ class AsyncCurl {
                 CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_ENCODING => '',
             ],
-            //'max_handles' => '1000'
+            //self::OPT_MAX_HANDLES => '1024'
         ];
     }
 
@@ -31,22 +33,22 @@ class AsyncCurl {
     public function setOptions(array $options) {
     }
 
-    public function removeOption($name) {
-    }
-
-    public function resetOptions() {
-    }
+//    public function removeOption($name) {
+//    }
+//
+//    public function resetOptions() {
+//    }
 
     public function send(array $options = null) {
         $asyncCurl->send([
-            'max_handles' => 1024,
-            'request_options' => [],
-            'sleep_time' => 1000,//ms
-            'requests' => [],
-            'request_fetching_callback' => function() {
+            self::OPT_MAX_HANDLES => 1024,
+            self::OPT_REQUEST_OPTIONS => [],
+            self::OPT_SLEEP_TIME => 1000,//ms
+            self::OPT_REQUESTS => [],
+            self::OPT_REQUEST_FETCHING_FUNCTION => function() {
                 //return false | null | request
             },
-            'on_complete' => function($asyncCurlResponse) {
+            self::OPT_ON_COMPLETE => function($asyncCurlResponse) {
             },
         ]);
     }

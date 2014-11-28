@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework\WebClient;
 
+use Exception;
+
 //add request Id for tracking?
 class AsyncCurlResponse {
     private $handle;
@@ -30,7 +32,10 @@ class AsyncCurlResponse {
             throw new Exception;
         }
         if ($this->content === null) {
-            $this->content = curl_multi_getcontent($this->getHandle()); //return null?
+            $this->content = curl_multi_getcontent($this->getHandle());
+            if ($this->content === null) {
+                throw new Exception; //may be never happen
+            }
         }
         return $this->content;
     }
