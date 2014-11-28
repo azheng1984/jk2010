@@ -69,9 +69,13 @@ class App {
         if ($this->hasOption('help')) {
             $command->renderHelp();
         } else {
-            call_user_func_array(
-                [$command, 'execute'], $this->getArguments()
-            );
+            if ($this->isArgumentMatched()) {
+                call_user_func_array(
+                    [$command, 'execute'], $this->getArguments()
+                );
+            } else {
+                //render help
+            }
         }
     }
 
@@ -90,8 +94,12 @@ class App {
     }
 
     protected function fetchCommandElements($elements) {
-        $this->options = $elements['options'];
-        $this->arguments = $elements['arguments'];
+        if (isset($elements['options'])) {
+            $this->options = $elements['options'];
+        }
+        if (isset($elements['arguments'])) {
+            $this->arguments = $elements['arguments'];
+        }
     }
 
     protected function finalize() {}

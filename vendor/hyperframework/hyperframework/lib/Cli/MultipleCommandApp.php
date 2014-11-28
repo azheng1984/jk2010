@@ -56,26 +56,29 @@ class MultipleCommandApp extends App {
     }
 
     protected function executeCommand() {
-        if ($this->hasGlobalOption('version')) {
-            $this->renderVersion();
-            return;
-        }
-        if ($this->hasGlobalOption('help')) {
-            $this->renderGlobalHelp();
-            return;
-        }
-        if ($this->isSubcommand() === false) {
-            $this->executeGlobalCommand();
-        }
-        $config = $this->getCommandConfig();
-        $class = $config->get('class', $this->getSubcommand());
-        $command = new $class($this);
-        if ($this->hasOption('help')) {
-            $command->renderHelp();
-        } else {
-            call_user_method_array(
-                'execute', $command, $this->commandParser->getArguments()
-            );
+        try {
+            if ($this->hasGlobalOption('version')) {
+                $this->renderVersion();
+                return;
+            }
+            if ($this->hasGlobalOption('help')) {
+                $this->renderGlobalHelp();
+                return;
+            }
+            if ($this->isSubcommand() === false) {
+                $this->executeGlobalCommand();
+            }
+            $config = $this->getCommandConfig();
+            $class = $config->get('class', $this->getSubcommand());
+            $command = new $class($this);
+            if ($this->hasOption('help')) {
+                $command->renderHelp();
+            } else {
+                if ($this->)
+                call_user_method_array(
+                    'execute', $command, $this->commandParser->getArguments()
+                );
+            }
         }
     }
 
