@@ -5,6 +5,11 @@ use Hyperframework\Common\Config;
 use Hyperframework\Common\Runner as Base;
 
 class Runner extends Base {
+    public static function run() {
+        static::initialize();
+        static::runApp();
+    }
+
     protected static function initializeErrorHandler() {
         ErrorHandler::run();
     }

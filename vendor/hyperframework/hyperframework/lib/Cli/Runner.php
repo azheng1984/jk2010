@@ -9,7 +9,8 @@ class Runner extends Base {
 
     public static function run($appRootPath) {
         self::$appRootPath = $appRootPath;
-        parent::run();
+        static::initialize();
+        static::runApp();
     }
 
     protected static function runApp() {

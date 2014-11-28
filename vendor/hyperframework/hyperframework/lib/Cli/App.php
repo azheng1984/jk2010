@@ -17,18 +17,42 @@ class App {
         $this->finalize();
     }
 
-    public function hasOption($name) {
-        return isset($this->options[$name]);
-    }
-
-    public function getOption($name) {
-        if (isset($this->options[$name])) {
-            return $this->options[$name];
-        }
+    public function hasMultipleCommands() {
+        return false;
     }
 
     public function getArguments() {
         return $this->arguments;
+    }
+
+    public function hasOption($name) {
+        $options = $this->getOptions();
+        isset($options[$name]);
+    }
+
+    public function getOption($name) {
+        $options = $this->getOptions();
+        if (isset($options[$name])) {
+            return $this->options[$name];
+        }
+    }
+
+    public function getOptions() {
+        return $this->options;
+    }
+
+    public function getCommandConfig() {
+        if ($this->commandConfig === null) {
+            $this->commandConfig = new CommandConfig(
+                $this->hasMultipleCommands()
+            );
+        }
+        return $this->commandConfig;
+    }
+
+    public function quit() {
+        $this->finalize();
+        exit;
     }
 
     protected function executeCommand() {
@@ -60,11 +84,6 @@ class App {
         echo 'version ', $version;
     }
 
-    public function quit() {
-        $this->finalize();
-        exit;
-    }
-
     protected function initialize() {
         $result = CommandParser::parse($this->getCommandConfig());
         $this->fetchCommandElements($result);
@@ -73,19 +92,6 @@ class App {
     protected function fetchCommandElements($elements) {
         $this->options = $elements['options'];
         $this->arguments = $elements['arguments'];
-    }
-
-    public function getCommandConfig() {
-        if ($this->commandConfig === null) {
-            $this->commandConfig = new CommandConfig(
-                $this->hasMultipleCommands()
-            );
-        }
-        return $this->commandConfig;
-    }
-
-    protected function hasMultipleCommands() {
-        return false;
     }
 
     protected function finalize() {}

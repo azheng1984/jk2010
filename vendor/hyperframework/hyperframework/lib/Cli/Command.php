@@ -12,6 +12,10 @@ abstract class Command {
         return $this->app;
     }
 
+    protected function getArguments() {
+        return $this->getApp()->getArguments();
+    }
+
     protected function hasOption($name) {
         $options = $this->getOptions();
         return isset($options[$name]);
@@ -20,6 +24,10 @@ abstract class Command {
     protected function getOption($name) {
         $options = $this->getOptions();
         return $options[$name];
+    }
+
+    protected function getOptions() {
+        return $this->getApp()->getOptions();
     }
 
     protected function hasGlobalOption($name) {
@@ -32,27 +40,20 @@ abstract class Command {
         return $options[$name];
     }
 
+    protected function getGlobalOptions() {
+        if ($this->getApp()->hasMultipleCommands()) {
+            return $this->getApp()->getGlobalOptions();
+        } else {
+            throw new Exception;
+        }
+    }
+
     protected function quit() {
         $this->getApp()->quit();
     }
 
-    protected function getArguments() {
-        return $this->getApp()->getArguments();
-    }
-
-    protected function getOptions() {
-        return $this->getApp()->getOptions();
-    }
-
-    protected function getGlobalOptions() {
-        return $this->getApp()->getParentOptions();
-    }
-
-    protected function getCommandParser() {
-    }
-
     public function renderHelp() {
-        $view = new HelpView;
+        $view = new HelpView($this->getApp());
         $view->render();
     }
 }

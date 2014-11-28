@@ -45,6 +45,7 @@ return array(
     //'class' => 'CommandCollection', //default CommandCollection
     //\Xx\CommandCollection //same as php
     //CommandCollection if have options
+    //'root_namespace' => '\Hyperframework\Blog\RootPath'
 
     'commands' => array( //or subcommands = 'folder' default to config/commands
         'hello' => array( //inline. lazy load is supported

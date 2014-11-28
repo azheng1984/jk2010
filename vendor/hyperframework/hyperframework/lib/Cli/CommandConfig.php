@@ -68,7 +68,7 @@ class CommandConfig {
         }
         if (isset($this->subcommandConfigFiles[$subcommand]) === false) {
             $config = ConfigFileLoader::loadPhp(
-                $this->getDefaultSubcommandConfigPath($subcommand)
+                $this->getSubcommandConfigPath($subcommand)
             );
             if ($config === null) {
                 $config = [];
@@ -84,7 +84,7 @@ class CommandConfig {
     }
 
     public function hasSubcommand($name) {
-        return file_exists($this->getDefaultSubcommandConfigPath($name));
+        return file_exists($this->getSubcommandConfigPath($name));
     }
 
     protected function parseArgumentConfig($config) {
@@ -119,7 +119,7 @@ class CommandConfig {
         return OptionConfigParser::parse($config);
     }
 
-    private function getDefaultSubcommandConfigPath($subcommand) {
+    private function getSubcommandConfigPath($subcommand) {
         $folder = Config::get('hyperframework.cli.subcommand_config_root_path');
         if ($folder === null) {
             $folder = 'subcommand';
