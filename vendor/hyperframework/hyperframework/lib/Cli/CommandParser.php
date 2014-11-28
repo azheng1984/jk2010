@@ -6,8 +6,8 @@ use Exception;
 class CommandParser {
     //add special option --version and --help(must no other thing!, otherwise checking!)
     //if throw parsing error, also add parsed options
-    //can reparse use new command config (help as subcommand)
-    //command_name help (other options)
+    //can reparse use new command config (help as subcommand)(before parse, new argv!)
+    //command_name --help (other options) => command_name help (other options)
     public static function parse($commandConfig, array $argv = null) {
         $arguments = null;
         $options = $commandConfig->get('options');
