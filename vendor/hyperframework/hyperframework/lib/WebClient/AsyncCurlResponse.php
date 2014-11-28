@@ -3,14 +3,14 @@ namespace Hyperframework\WebClient;
 
 use Exception;
 
-//add request Id for tracking?
 class AsyncCurlResponse {
     private $handle;
     private $code;
+    private $id;
     private $headers;
     private $content;
 
-    public function __construct($handle, $code) {
+    public function __construct($handle, $code, $id) {
     }
 
     public function getCode() {
@@ -25,6 +25,10 @@ class AsyncCurlResponse {
         if ($this->hasError()) {
             return curl_error($this->getHandle());
         }
+    }
+
+    public function getId() {
+        return $this->id;
     }
 
     public function getContent() {

@@ -5,6 +5,7 @@ use Exception;
 
 class Curl {
     const OPT_DATA = 'data';
+    const OPT_ID = 'id';
 
     protected function getDefaultOptions() {
         return [

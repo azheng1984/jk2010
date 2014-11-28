@@ -4,7 +4,7 @@ namespace Hyperframework\WebClient;
 use Exception;
 
 class AsyncCurl {
-    const OPT_REQUESTS => 'request',
+    const OPT_REQUESTS => 'request';
     const OPT_REQUEST_OPTIONS = 'request_options';
     const OPT_ON_COMPLETE = 'on_complete';
     const OPT_REQUEST_FETCHING_FUNCTION = 'request_fetching_function';
@@ -42,7 +42,9 @@ class AsyncCurl {
     public function send(array $options = null) {
         $asyncCurl->send([
             self::OPT_MAX_HANDLES => 1024,
-            self::OPT_REQUEST_OPTIONS => [],
+            self::OPT_REQUEST_OPTIONS => [
+                Curl::OPT_ID => 'xxxxxxx'
+            ],
             self::OPT_SLEEP_TIME => 1000,//ms
             self::OPT_REQUESTS => [],
             self::OPT_REQUEST_FETCHING_FUNCTION => function() {
