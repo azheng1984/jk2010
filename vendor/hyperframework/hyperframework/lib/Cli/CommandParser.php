@@ -4,7 +4,11 @@ namespace Hyperframework\Cli;
 use Exception;
 
 class CommandParser {
-    public static function parse($commandConfig) {
+    //add special option --version and --help(must no other thing!, otherwise checking!)
+    //if throw parsing error, also add parsed options
+    //can reparse use new command config (help as subcommand)
+    //command_name help (other options)
+    public static function parse($commandConfig, array $argv = null) {
         $arguments = null;
         $options = $commandConfig->get('options');
         $result = array('arguments' => [], 'options' => []);
@@ -17,11 +21,14 @@ class CommandParser {
             $optionType = 'options';
         }
         $isGlobal = $commandConfig->hasMultipleCommands();
-        $count = count($_SERVER['argv']);
+        if ($argv === null) {
+            $argv = $_SERVER['argv'];
+        }
+        $count = count($argv);
         $isArgument = false;
         $argumentIndex = 0;
         for ($index = 1; $index < $count; ++$index) {
-            $element = $_SERVER['argv'][$index];
+            $element = $argv[$index];
             $length = strlen($element);
             if ($length === 0
                 || $element[0] !== '-'
@@ -29,6 +36,7 @@ class CommandParser {
                 || $isArgument
             ) {
                 if ($isGlobal) {
+                    //todo ????!!!!
                     if (static::hasSubcommand($element) === false) {
                         throw new Exception;
                     }
@@ -91,7 +99,7 @@ class CommandParser {
                             if ($index >= $count) {
                                 throw new Exception;
                             }
-                            $optionArgument = $_SERVER['argv'][$index];
+                            $optionArgument = $argv[$index];
                         }
                     }
                     if (isset($option['mutex_options'])) {
@@ -135,7 +143,7 @@ class CommandParser {
                         if ($index >= $count) {
                             throw new Exception;
                         }
-                        $optionArgument = $_SERVER['argv'][$index];
+                        $optionArgument = $argv[$index];
                     }
                 } else {
                     if ($optionArgument !== true) {

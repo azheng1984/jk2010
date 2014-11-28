@@ -10,11 +10,17 @@ class MultipleCommandApp extends App {
     }
 
     protected function fetchCommandElements($elements) {
-        $this->globalOptions = $result['global_options'];
-        if (isset($elements['subcommand'])) {
-            $this->subcommand = $result['subcommand'];
-            parent::fetchCommandElements($elements);
+        if (isset($elements['global_options'])) {
+            $this->setGlobalOptions($elements['global_options']);
+        } else {
+            $this->setGlobalOptions([]);
         }
+        if (isset($elements['subcommand'])) {
+            $this->setSubcommand($elements['subcommand']);
+        } else {
+            $this->setSubcommand(null);
+        }
+        parent::fetchCommandElements($elements);
     }
 
     public function getSubcommand() {
@@ -41,53 +47,35 @@ class MultipleCommandApp extends App {
         return isset($globalOptions[$name]);
     }
 
-    public function getArguments() {
-        if ($this->isSubcommand()) {
-            return parent::getArguments();
-        }
-        throw new Exception;
-    }
-
-    public function getOptions() {
-        if ($this->isSubcommand()) {
-            return parent::getOptions();
-        }
-        throw new Exception;
-    }
-
     protected function executeCommand() {
-        try {
-            if ($this->hasGlobalOption('version')) {
-                $this->renderVersion();
-                return;
-            }
-            if ($this->hasGlobalOption('help')) {
-                $this->renderGlobalHelp();
-                return;
-            }
-            if ($this->isSubcommand() === false) {
-                $this->executeGlobalCommand();
-            }
-            $config = $this->getCommandConfig();
-            $class = $config->get('class', $this->getSubcommand());
-            $command = new $class($this);
-            if ($this->hasOption('help')) {
-                $command->renderHelp();
-            } else {
-                if ($this->)
-                call_user_method_array(
-                    'execute', $command, $this->commandParser->getArguments()
-                );
-            }
+        if ($this->hasGlobalOption('version')) {
+            $this->renderVersion();
+            return;
         }
+        if ($this->hasGlobalOption('help') || $this->hasOption('help')) {
+            $this->renderHelp();
+            return;
+        }
+        if ($this->isSubcommand() === false) {
+            $this->executeGlobalCommand();
+            return;
+        }
+        $config = $this->getCommandConfig();
+        $class = $config->get('class', $this->getSubcommand());
+        $subcommand = new $class($this);
+        $arguments = $this->getArguments();
+        call_user_method_array('execute', $subcommand, $arguments);
     }
 
-    protected function renderGlobalHelp() {
-        $view = new HelpView($this->getApp());
-        $view->render();
+    protected function setSubcommand($value) {
+        $this->subcommand = $value;
+    }
+
+    protected function setGlobalOptions(array $globalOptions) {
+        $this->globalOptions = $globalOptions;
     }
 
     protected function executeGlobalCommand() {
-        $this->renderGlobalHelp();
+        $this->renderHelp();
     }
 }

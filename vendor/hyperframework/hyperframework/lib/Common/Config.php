@@ -58,4 +58,8 @@ final class Config {
             self::$data[$key] = $value;
         }
     }
+
+    public static function getAll() {
+        return self::$data;
+    }
 }

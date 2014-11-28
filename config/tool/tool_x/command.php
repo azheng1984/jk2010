@@ -1,4 +1,4 @@
 <?php
 return [
-    'root_namespace' => '',
+    'version' => '1.1.1'
 ];

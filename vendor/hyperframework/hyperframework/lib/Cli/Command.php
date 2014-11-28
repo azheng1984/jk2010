@@ -51,9 +51,4 @@ abstract class Command {
     protected function quit() {
         $this->getApp()->quit();
     }
-
-    public function renderHelp() {
-        $view = new HelpView($this->getApp());
-        $view->render();
-    }
 }

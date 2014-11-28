@@ -51,8 +51,11 @@ class CommandConfig {
                             . DIRECTORY_SEPARATOR . $configPath;
                     }
                 }
+                $configPath = ConfigFileLoader::getFullPath($configPath);
                 if (file_exists($configPath)) {
+                var_dump($configPath);
                     $config = require $configPath;
+                var_dump($config);
                 } else {
                     if ($isDefaultConfigPath === false) {
                         throw new Exception;
@@ -62,6 +65,7 @@ class CommandConfig {
             } else {
                 $config = [];
             }
+            var_dump($config);
             $this->initializeConfig($config, false);
             $this->configFile = $config;
             return $config;
@@ -102,7 +106,7 @@ class CommandConfig {
                 'is_optional' => $param->isOptional(),
                 'is_collection' => $param->isArray()
             );
-            //todo check valid for collection argument
+            //todo check argument pattern is matched
         }
         return $results;
     }
@@ -174,13 +178,23 @@ class CommandConfig {
         }
     }
 
-    //add --help and --version option
+    protected function getDefaultOptions() {
+        return array('-h, --help', '--version');
+    }
+
     private function initializeOptions(&$config) {
         if (isset($config['options'])) {
-            $config['options'] = $this->parseOptionConfig($config['options']);
+            $options = $this->parseOptionConfig($config['options']);
         } else {
-            $config['options'] = [];
+            $options = [];
         }
+        $defaultOptions = $this->parseOptionConfig($this->getDefaultOptions());
+        foreach ($defaultOptions as $key => $value) {
+            if (isset($options[$key]) === false) {
+                $options[$key] = $value;
+            }
+        }
+        $config['options'] = $options;
     }
 
     private function initializeArguments(&$config, $isSubcommand) {

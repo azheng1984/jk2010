@@ -1,4 +1,5 @@
 <?php
+namespace Hyperframework\Cli;
 
 class HelpView {
     public function render() {
