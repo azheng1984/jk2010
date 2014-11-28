@@ -7,10 +7,11 @@ class AsyncCurlResponse {
     private $handle;
     private $code;
     private $id;
+    private $rawHeaders;
     private $headers;
     private $content;
 
-    public function __construct($handle, $code, $id) {
+    public function __construct($handle, $code, $id, $rawHeaders) {
     }
 
     public function getCode() {
@@ -38,7 +39,7 @@ class AsyncCurlResponse {
         if ($this->content === null) {
             $this->content = curl_multi_getcontent($this->getHandle());
             if ($this->content === null) {
-                throw new Exception; //may be never happen
+                throw new Exception; //never happen?
             }
         }
         return $this->content;

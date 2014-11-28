@@ -3,10 +3,10 @@ namespace Hyperframework\WebClient;
 
 use Exception;
 
-//lazy parse 
+//lazy parse
 class CurlResponseHeaderParser {
     public static function parse($handle, $rawHeaders) {
-        //check request has been sent
+        //check request has been sent via raw headers (false?)
         $url = curl_getinfo($handle, CURLINFO_EFFECTIVE_URL);
         $tmp = explode('://', $url, 2);
         $protocol = strtolower($tmp[0]);
