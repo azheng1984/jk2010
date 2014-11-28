@@ -772,6 +772,10 @@ class Curl_old {
                     }
                 }
             }
+            //always use php read file version?
+            //boundary checking missing in old version of curl
+            //and boundary is too simple
+            //but when set setopt postfileds directly, it's use curl's?
             if ($shouldUseCurlPostFieldsOption) {
                 foreach ($data as $key => $value) {
                     if (isset($value['name'])) {
