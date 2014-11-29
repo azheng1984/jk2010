@@ -23,14 +23,6 @@ class MultipleCommandApp extends App {
         parent::fetchCommandElements($elements);
     }
 
-    public function getSubcommand() {
-        return $this->subcommand;
-    }
-
-    public function hasSubcommand() {
-        return $this->subcommand !== null;
-    }
-
     public function getGlobalOptions() {
         return $this->globalOptions;
     }
@@ -47,12 +39,20 @@ class MultipleCommandApp extends App {
         return isset($globalOptions[$name]);
     }
 
+    protected function setGlobalOptions(array $globalOptions) {
+        $this->globalOptions = $globalOptions;
+    }
+
+    public function getSubcommand() {
+        return $this->subcommand;
+    }
+
     protected function setSubcommand($value) {
         $this->subcommand = $value;
     }
 
-    protected function setGlobalOptions(array $globalOptions) {
-        $this->globalOptions = $globalOptions;
+    protected function hasSubcommand() {
+        return $this->subcommand !== null;
     }
 
     protected function executeCommand() {

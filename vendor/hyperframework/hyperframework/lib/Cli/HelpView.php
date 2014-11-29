@@ -2,10 +2,13 @@
 namespace Hyperframework\Cli;
 
 class HelpView {
-    public function render() {
-        echo 'Usage: command_name [options] command' . PHP_EOL;
+    private $app;
+
+    public function __construct($app) {
+        $this->app = $app;
     }
 
-    protected function renderUsage() {
+    public function render() {
+        echo 'Usage: command_name [options] command' . PHP_EOL;
     }
 }

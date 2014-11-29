@@ -10,7 +10,6 @@ class App {
     private $commandConfig;
     private $options;
     private $arguments;
-    private $commandParsingException;
 
     public function run() {
         $this->initialize();
@@ -20,10 +19,6 @@ class App {
 
     public function hasMultipleCommands() {
         return false;
-    }
-
-    public function getCommandParsingException() {
-        return $this->commandParsingException;
     }
 
     public function getArguments() {
@@ -79,8 +74,8 @@ class App {
         call_user_func_array([$command, 'execute'], $arguments);
     }
 
-    protected function renderHelp() {
-        $view = new HelpView($this);
+    protected function renderHelp($commandParsingException = null) {
+        $view = new HelpView($this, $commandParsingException);
         $view->render();
     }
 
@@ -100,8 +95,7 @@ class App {
             $elements = $this->parseCommand();
             $this->fetchCommandElements($elements);
         } catch (CommandParsingException $e) {
-            $this->setCommandParsingException($e);
-            $this->renderHelper();
+            $this->renderHelper($e);
             $this->quit();
         }
     }
@@ -125,10 +119,6 @@ class App {
 
     protected function setOptions(array $options) {
         $this->options = $options;
-    }
-
-    protected function setCommandParsingException($value) {
-        $this->commandParsingException = $value;
     }
 
     protected function finalize() {}
