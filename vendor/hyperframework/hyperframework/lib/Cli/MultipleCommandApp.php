@@ -40,15 +40,13 @@ class MultipleCommandApp extends App {
     }
 
     public function getGlobalOption($name) {
-        $globalOptions = $this->getGlobalOptions();
-        if (isset($globalOptions[$name])) {
-            return $globalOptions[$name];
+        if (isset($this->globalOptions[$name])) {
+            return $this->globalOptions[$name];
         }
     }
 
     public function hasGlobalOption($name) {
-        $globalOptions = $this->getGlobalOptions();
-        return isset($globalOptions[$name]);
+        return isset($this->globalOptions[$name]);
     }
 
     protected function setGlobalOptions(array $globalOptions) {

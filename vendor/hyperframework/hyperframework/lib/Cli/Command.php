@@ -9,46 +9,41 @@ abstract class Command {
     }
 
     protected function getApp() {
+        if ($this->app === null) {
+            throw new Exception;
+        }
         return $this->app;
     }
 
     protected function getArguments() {
-        $app = $this->getApp();
-        return $app->getArguments();
+        return $this->getApp()->getArguments();
     }
 
     protected function hasOption($name) {
-        $options = $this->getOptions();
-        return isset($options[$name]);
+        return $this->getApp()->hasOption($name);
     }
 
     protected function getOption($name) {
-        $options = $this->getOptions();
-        return $options[$name];
+        return $this->getApp()->getOption($name);
     }
 
     protected function getOptions() {
-        $app = $this->getApp();
-        return $app->getOptions();
+        return $this->getApp()->getOptions();
     }
 
     protected function hasGlobalOption($name) {
-        $globalOptions = $this->getGlobalOptions();
-        return isset($globalOptions[$name]);
+        return $this->getApp()->hasGlobalOption($name);
     }
 
     protected function getGlobalOption($name) {
-        $globalOptions = $this->getGlobalOptions();
-        return $globalOptions[$name];
+        return $this->getApp()->getGlobalOption($name);
     }
 
     protected function getGlobalOptions() {
-        $app = $this->getApp();
-        return $app->getGlobalOptions();
+        return $this->getApp()->getGlobalOptions();
     }
 
     protected function quit() {
-        $app = $this->getApp();
-        $app->quit();
+        $this->getApp()->quit();
     }
 }

@@ -22,14 +22,8 @@ class App {
         $this->arguments = $arguments;
     }
 
-    public function hasOption($name) {
-        $options = $this->getOptions();
-        return isset($options[$name]);
-    }
-
     public function getOption($name) {
-        $options = $this->getOptions();
-        if (isset($options[$name])) {
+        if (isset($this->options[$name])) {
             return $this->options[$name];
         }
     }

@@ -11,7 +11,7 @@ class OptionConfigParser {
             }
             $config = array($config);
         }
-        return self::parseGroup($config);
+        return static::parseGroup($config);
     }
 
     protected static function parseGroup(
