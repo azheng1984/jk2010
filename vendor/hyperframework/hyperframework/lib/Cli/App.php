@@ -61,18 +61,18 @@ class App {
     }
 
     protected function executeCommand() {
-        $config = $this->getCommandConfig();
-        $class = $config->get('class');
-        if ($class === null) {
-            throw new Exception;
+        if ($this->hasOption('help')) {
+            $this->renderHelp();
+            return;
         }
         if ($this->hasOption('version')) {
             $this->renderVersion();
             return;
         }
-        if ($this->hasOption('help')) {
-            $this->renderHelp();
-            return;
+        $config = $this->getCommandConfig();
+        $class = $config->get('class');
+        if ($class === null) {
+            throw new Exception;
         }
         $command = new $class($this);
         $arguments = $this->getArguments();
@@ -104,10 +104,6 @@ class App {
             $this->renderHelper();
             $this->quit();
         }
-    }
-
-    protected function parseCommand() {
-        return CommandParser::parse($this->getCommandConfig());
     }
 
     protected function fetchCommandElements($elements) {

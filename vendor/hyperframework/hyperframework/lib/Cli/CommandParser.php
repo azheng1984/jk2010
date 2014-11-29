@@ -4,9 +4,8 @@ namespace Hyperframework\Cli;
 use Exception;
 
 class CommandParser {
-    //add special option --version and --help(must no other thing!, otherwise checking!)
     //if throw parsing error, also add parsed options
-    //can reparse use new command config (help as subcommand)(before parse, new argv!)
+    //do not reparse use new command config (help as subcommand)(before parse, new argv!)
     //command_name --help (other options) => command_name help (other options)
     public static function parse($commandConfig, array $argv = null) {
         $arguments = null;
@@ -171,6 +170,9 @@ class CommandParser {
                 }
             }
         }
+        if (static::shouldCheckOptionsAndArguments($result) === false) {
+            return $result;
+        }
         self::checkOptions($options, $result['options']);
         $count = 0;
         foreach ($arguments as $argument) {
@@ -183,6 +185,15 @@ class CommandParser {
             }
         }
         return $result;
+    }
+
+    protected static function shouldCheckOptionsAndArguments($result) {
+        foreach ($result['options'] as $key => $value) {
+            if (in_array($key, array('h', 'help', 'version'))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static function checkOptions($configs, $result) {

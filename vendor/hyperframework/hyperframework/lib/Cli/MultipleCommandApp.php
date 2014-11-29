@@ -5,7 +5,7 @@ class MultipleCommandApp extends App {
     private $subcommand;
     private $globalOptions;
 
-    public function hasMultipleCommand() {
+    public function hasMultipleCommands() {
         return true;
     }
 
@@ -27,7 +27,7 @@ class MultipleCommandApp extends App {
         return $this->subcommand;
     }
 
-    public function isSubcommand() {
+    public function hasSubcommand() {
         return $this->subcommand !== null;
     }
 
@@ -47,6 +47,14 @@ class MultipleCommandApp extends App {
         return isset($globalOptions[$name]);
     }
 
+    protected function setSubcommand($value) {
+        $this->subcommand = $value;
+    }
+
+    protected function setGlobalOptions(array $globalOptions) {
+        $this->globalOptions = $globalOptions;
+    }
+
     protected function executeCommand() {
         if ($this->hasGlobalOption('version')) {
             $this->renderVersion();
@@ -56,23 +64,22 @@ class MultipleCommandApp extends App {
             $this->renderHelp();
             return;
         }
-        if ($this->isSubcommand() === false) {
-            $this->executeGlobalCommand();
+        if ($this->hasSubcommand()) {
+            $this->executeSuncommand();
             return;
         }
+        $this->executeGlobalCommand();
+    }
+
+    protected function executeSubcommand() {
         $config = $this->getCommandConfig();
-        $class = $config->get('class', $this->getSubcommand());
-        $subcommand = new $class($this);
+        $subcommandClass = $config->get('class', $this->getSubcommand());
+        if ($subcommandClass === null) {
+            throw new Exception;
+        }
+        $subcommand = new $subcommandClass($this);
         $arguments = $this->getArguments();
         call_user_method_array('execute', $subcommand, $arguments);
-    }
-
-    protected function setSubcommand($value) {
-        $this->subcommand = $value;
-    }
-
-    protected function setGlobalOptions(array $globalOptions) {
-        $this->globalOptions = $globalOptions;
     }
 
     protected function executeGlobalCommand() {
