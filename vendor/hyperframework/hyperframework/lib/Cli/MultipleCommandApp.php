@@ -2,25 +2,37 @@
 namespace Hyperframework\Cli;
 
 class MultipleCommandApp extends App {
+    private $commandConfig;
     private $subcommand;
-    private $globalOptions;
+    private $globalOptions = [];
 
-    public function hasMultipleCommands() {
-        return true;
-    }
-
-    protected function fetchCommandElements($elements) {
-        if (isset($elements['global_options'])) {
-            $this->setGlobalOptions($elements['global_options']);
-        } else {
-            $this->setGlobalOptions([]);
+    protected function initialize() {
+        try {
+            $elements = $this->parseCommand();
+            if (isset($elements['global_options'])) {
+                $this->setGlobalOptions($elements['global_options']);
+            }
+            if (isset($elements['subcommand'])) {
+                $this->setSubcommand($elements['subcommand']);
+                if (isset($elements['options'])) {
+                    $this->setOptions($elements['options']);
+                }
+                if (isset($elements['arguments'])) {
+                    $this->setArguments($elements['arguments']);
+                }
+            }
+            if ($this->hasGlobalOption('version')) {
+                $this->renderVersion();
+                $this->quit();
+            }
+            if ($this->hasGlobalOption('help') || $this->hasOption('help')) {
+                $this->renderHelp();
+                $this->quit();
+            }
+        } catch (CommandParsingException $e) {
+            $this->renderHelper($e);
+            $this->quit();
         }
-        if (isset($elements['subcommand'])) {
-            $this->setSubcommand($elements['subcommand']);
-        } else {
-            $this->setSubcommand(null);
-        }
-        parent::fetchCommandElements($elements);
     }
 
     public function getGlobalOptions() {
@@ -43,7 +55,7 @@ class MultipleCommandApp extends App {
         $this->globalOptions = $globalOptions;
     }
 
-    public function getSubcommand() {
+    protected function getSubcommand() {
         return $this->subcommand;
     }
 
@@ -55,15 +67,14 @@ class MultipleCommandApp extends App {
         return $this->subcommand !== null;
     }
 
+    public function getCommandConfig() {
+        if ($this->commandConfig === null) {
+            $this->commandConfig = new CommandConfig(true);
+        }
+        return $this->commandConfig;
+    }
+
     protected function executeCommand() {
-        if ($this->hasGlobalOption('version')) {
-            $this->renderVersion();
-            return;
-        }
-        if ($this->hasGlobalOption('help') || $this->hasOption('help')) {
-            $this->renderHelp();
-            return;
-        }
         if ($this->hasSubcommand()) {
             $this->executeSuncommand();
             return;

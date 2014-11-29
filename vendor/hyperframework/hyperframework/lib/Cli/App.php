@@ -8,8 +8,8 @@ use Hyperframework\Common\ConfigFileLoader;
 
 class App {
     private $commandConfig;
-    private $options;
-    private $arguments;
+    private $options = [];
+    private $arguments = [];
 
     public function run() {
         $this->initialize();
@@ -17,12 +17,12 @@ class App {
         $this->finalize();
     }
 
-    public function hasMultipleCommands() {
-        return false;
-    }
-
     public function getArguments() {
         return $this->arguments;
+    }
+
+    protected function setArguments(array $arguments) {
+        $this->arguments = $arguments;
     }
 
     public function hasOption($name) {
@@ -41,11 +41,13 @@ class App {
         return $this->options;
     }
 
+    protected function setOptions(array $options) {
+        $this->options = $options;
+    }
+
     public function getCommandConfig() {
         if ($this->commandConfig === null) {
-            $this->commandConfig = new CommandConfig(
-                $this->hasMultipleCommands()
-            );
+            $this->commandConfig = new CommandConfig;
         }
         return $this->commandConfig;
     }
@@ -56,14 +58,6 @@ class App {
     }
 
     protected function executeCommand() {
-        if ($this->hasOption('help')) {
-            $this->renderHelp();
-            return;
-        }
-        if ($this->hasOption('version')) {
-            $this->renderVersion();
-            return;
-        }
         $config = $this->getCommandConfig();
         $class = $config->get('class');
         if ($class === null) {
@@ -93,32 +87,24 @@ class App {
     protected function initialize() {
         try {
             $elements = $this->parseCommand();
-            $this->fetchCommandElements($elements);
+            if (isset($elements['options'])) {
+                $this->setOptions($elements['options']);
+            }
+            if (isset($elements['arguments'])) {
+                $this->setArguments($elements['arguments']);
+            }
+            if ($this->hasOption('help')) {
+                $this->renderHelp();
+                $this->quit();
+            }
+            if ($this->hasOption('version')) {
+                $this->renderVersion();
+                $this->quit();
+            }
         } catch (CommandParsingException $e) {
             $this->renderHelper($e);
             $this->quit();
         }
-    }
-
-    protected function fetchCommandElements($elements) {
-        if (isset($elements['options'])) {
-            $this->setOptions($elements['options']);
-        } else {
-            $this->setOptions([]);
-        }
-        if (isset($elements['arguments'])) {
-            $this->setArguments($elements['arguments']);
-        } else {
-            $this->setArguments([]);
-        }
-    }
-
-    protected function setArguments(array $arguments) {
-        $this->arguments = $arguments;
-    }
-
-    protected function setOptions(array $options) {
-        $this->options = $options;
     }
 
     protected function finalize() {}
