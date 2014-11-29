@@ -16,34 +16,42 @@ abstract class Command {
     }
 
     protected function getArguments() {
-        return $this->getApp()->getArguments();
+        $app = $this->getApp();
+        $app->getArguments();
     }
 
     protected function hasOption($name) {
-        return $this->getApp()->hasOption($name);
+        $app = $this->getApp();
+        return $app->hasOption($name);
     }
 
     protected function getOption($name) {
+        $app = $this->getApp();
         return $this->getApp()->getOption($name);
     }
 
     protected function getOptions() {
+        $app = $this->getApp();
         return $this->getApp()->getOptions();
     }
 
     protected function hasGlobalOption($name) {
-        return $this->getApp()->hasGlobalOption($name);
+        $app = $this->getApp();
+        return $app->hasGlobalOption($name);
     }
 
     protected function getGlobalOption($name) {
-        return $this->getApp()->getGlobalOption($name);
+        $app = $this->getApp();
+        return $app->getGlobalOption($name);
     }
 
     protected function getGlobalOptions() {
-        return $this->getApp()->getGlobalOptions();
+        $app = $this->getApp();
+        return $app->getGlobalOptions();
     }
 
     protected function quit() {
-        $this->getApp()->quit();
+        $app = $this->getApp();
+        $app->quit();
     }
 }

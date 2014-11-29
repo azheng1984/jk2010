@@ -67,7 +67,7 @@ class App {
     protected function renderVersion() {
         $config = $this->getCommandConfig();
         $version = $config->get('version');
-        if ($version == '' && '' === (string)$version) {
+        if ($version == '' && (string)$version === '') {
             echo 'undefined', PHP_EOL;
             return;
         }
