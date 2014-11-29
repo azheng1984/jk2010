@@ -107,5 +107,9 @@ class App {
         }
     }
 
+    protected function parseCommand() {
+        return CommandParser::parse($this->getCommandConfig());
+    }
+
     protected function finalize() {}
 }
