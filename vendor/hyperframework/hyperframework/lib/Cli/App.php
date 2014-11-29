@@ -2,9 +2,6 @@
 namespace Hyperframework\Cli;
 
 use Exception;
-use Hyperframework;
-use Hyperframework\Common\Config;
-use Hyperframework\Common\ConfigFileLoader;
 
 class App {
     private $commandConfig;
@@ -75,7 +72,6 @@ class App {
 
     protected function renderVersion() {
         $config = $this->getCommandConfig();
-        print_r($config->getAll());
         $version = $config->get('version');
         if ($version == '' && '' === (string)$version) {
             echo 'undefined', PHP_EOL;

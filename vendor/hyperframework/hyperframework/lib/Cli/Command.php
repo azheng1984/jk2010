@@ -13,7 +13,8 @@ abstract class Command {
     }
 
     protected function getArguments() {
-        return $this->getApp()->getArguments();
+        $app = $this->getApp();
+        return $app->getArguments();
     }
 
     protected function hasOption($name) {
@@ -27,28 +28,27 @@ abstract class Command {
     }
 
     protected function getOptions() {
-        return $this->getApp()->getOptions();
+        $app = $this->getApp();
+        return $app->getOptions();
     }
 
     protected function hasGlobalOption($name) {
-        $options = $this->getGlobalOptions();
-        return isset($options[$name]);
+        $globalOptions = $this->getGlobalOptions();
+        return isset($globalOptions[$name]);
     }
 
     protected function getGlobalOption($name) {
-        $options = $this->getGlobalOptions();
-        return $options[$name];
+        $globalOptions = $this->getGlobalOptions();
+        return $globalOptions[$name];
     }
 
     protected function getGlobalOptions() {
-        if ($this->getApp()->hasMultipleCommands()) {
-            return $this->getApp()->getGlobalOptions();
-        } else {
-            throw new Exception;
-        }
+        $app = $this->getApp();
+        return $app->getGlobalOptions();
     }
 
     protected function quit() {
-        $this->getApp()->quit();
+        $app = $this->getApp();
+        $app->quit();
     }
 }
