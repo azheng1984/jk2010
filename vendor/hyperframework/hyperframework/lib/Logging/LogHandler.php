@@ -10,8 +10,8 @@ class LogHandler {
     private static $protocol;
     private static $path;
 
-    public static function handle($level, array $args) {
-        $content = static::format($level, $args);
+    public static function handle($level, array $arguments) {
+        $content = static::format($level, $arguments);
         static::write($content);
     }
 
@@ -25,16 +25,16 @@ class LogHandler {
         }
     }
 
-    protected static function format($level, array $args) {
-        $count = count($args);
-        if ($count !== 0 && $args[0] instanceof Closure) {
+    protected static function format($level, array $arguments) {
+        $count = count($arguments);
+        if ($count !== 0 && $arguments[0] instanceof Closure) {
             if ($count > 1) {
                 throw new Exception;
             }
-            $callback = $args[0];
-            $args = $callback();
-            if (is_array($args)) {
-                $count = count($args);
+            $callback = $arguments[0];
+            $arguments = $callback();
+            if (is_array($arguments)) {
+                $count = count($arguments);
             } else {
                 throw new Exception;
             }
@@ -47,8 +47,8 @@ class LogHandler {
         }
         $result = self::getTimestamp() . ' | ' . $level;
         $name = null;
-        if ((string)$args[0] !== '') {
-            $name = $args[0];
+        if ((string)$arguments[0] !== '') {
+            $name = $arguments[0];
             if (preg_match('/^[a-zA-Z0-9_.]+$/', $name) === 0
                 || $name[0] === '.'
                 || substr($name, -1) === '.'
@@ -57,30 +57,30 @@ class LogHandler {
             }
             $result .= ' | ' . $name;
         }
-        if ($count === 3 && is_array($args[2])
-            || $count === 2 && is_array($args[1])
+        if ($count === 3 && is_array($arguments[2])
+            || $count === 2 && is_array($arguments[1])
         ) {
-            if ($count === 3 && is_array($args[1])) {
-                $args[1] = call_user_func_array('sprintf', $args[1]);
+            if ($count === 3 && is_array($arguments[1])) {
+                $arguments[1] = call_user_func_array('sprintf', $arguments[1]);
             } elseif ($count === 2) {
-                $args[2] = $args[1];
-                $args[1] = null;
+                $arguments[2] = $arguments[1];
+                $arguments[1] = null;
             }
-            if ((string)$args[1] !== '') {
+            if ((string)$arguments[1] !== '') {
                 if ($name === null) {
                     $result .= ' ||';
                 } else {
                     $result .= ' |';
                 }
-                self::appendValue($result, $args[1]);
+                self::appendValue($result, $arguments[1]);
             }
-            $result .= self::convert($args[2]);
+            $result .= self::convert($arguments[2]);
         } else {
             $message = null;
-            if ($count > 2 || is_array($args[1])) {
-                $message = call_user_func_array('sprintf', $args);
+            if ($count > 2 || is_array($arguments[1])) {
+                $message = call_user_func_array('sprintf', $arguments);
             } else {
-                $message = $args[1];
+                $message = $arguments[1];
             }
             if ((string)$message !== '') {
                 if ($name === null) {
