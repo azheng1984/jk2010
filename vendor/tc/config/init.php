@@ -8,6 +8,8 @@ return [
     'hyperframework.asset.concatenate_manifest' => false,
     'hyperframework.asset.enable_versioning' => true,
     'hyperframework.asset.enable_proxy' => true,
+//    'hyperframework.log_handler.log_path' => APP_ROOT_PATH . '/../log/app.log',
+    'hyperframework.log.enable_proxy' => true,
 //    'hyperframework.autoload_files.enable' => true,
 //    'hyperframework.path_info.enable_cache' => false,
 //    'hyperframework.class_loader.root_path' => 'phar://' . ROOT_PATH . '/tmp/cache/lib.phar',

@@ -79,12 +79,7 @@ class App {
     }
 
     protected function initialize() {
-        try {
-            $elements = $this->parseCommand();
-        } catch (CommandParsingException $e) {
-            $this->renderHelper($e);
-            $this->quit();
-        }
+        $elements = $this->parseCommand();
         if (isset($elements['options'])) {
             $this->setOptions($elements['options']);
         }
@@ -102,8 +97,13 @@ class App {
     }
 
     protected function parseCommand() {
-        $commandConfig = $this->getCommandConfig();
-        return CommandParser::parse($commandConfig);
+        try {
+            $commandConfig = $this->getCommandConfig();
+            return CommandParser::parse($commandConfig);
+        } catch (CommandParsingException $e) {
+            $this->renderHelper($e);
+            $this->quit();
+        }
     }
 
     protected function finalize() {}

@@ -6,12 +6,7 @@ class MultipleCommandApp extends App {
     private $globalOptions = [];
 
     protected function initialize() {
-        try {
-            $elements = $this->parseCommand();
-        } catch (CommandParsingException $e) {
-            $this->renderHelper($e);
-            $this->quit();
-        }
+        $elements = $this->parseCommand();
         if (isset($elements['global_options'])) {
             $this->setGlobalOptions($elements['global_options']);
         }

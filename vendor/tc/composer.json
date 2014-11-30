@@ -6,7 +6,7 @@
             "": "fallback0"
         }
         ,"psr-4": {
-          "Hyperframework\\": "../../hyperframework/hyperframework/lib/",
+          "Hyperframework\\": "../hyperframework/hyperframework/lib/",
           "Tc\\": "lib/",
           "": "fallback4"
         }
