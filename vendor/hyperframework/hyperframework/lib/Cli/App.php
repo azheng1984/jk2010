@@ -22,6 +22,10 @@ class App {
         $this->arguments = $arguments;
     }
 
+    public function hasOption($name) {
+        return isset($this->options[$name]);
+    }
+
     public function getOption($name) {
         if (isset($this->options[$name])) {
             return $this->options[$name];
@@ -80,9 +84,6 @@ class App {
             if (isset($elements['options'])) {
                 $this->setOptions($elements['options']);
             }
-            if (isset($elements['arguments'])) {
-                $this->setArguments($elements['arguments']);
-            }
             if ($this->hasOption('help')) {
                 $this->renderHelp();
                 $this->quit();
@@ -90,6 +91,9 @@ class App {
             if ($this->hasOption('version')) {
                 $this->renderVersion();
                 $this->quit();
+            }
+            if (isset($elements['arguments'])) {
+                $this->setArguments($elements['arguments']);
             }
         } catch (CommandParsingException $e) {
             $this->renderHelper($e);

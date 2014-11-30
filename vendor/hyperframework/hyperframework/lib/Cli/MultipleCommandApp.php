@@ -21,12 +21,12 @@ class MultipleCommandApp extends App {
                     $this->setArguments($elements['arguments']);
                 }
             }
-            if ($this->hasGlobalOption('version')) {
-                $this->renderVersion();
-                $this->quit();
-            }
             if ($this->hasGlobalOption('help') || $this->hasOption('help')) {
                 $this->renderHelp();
+                $this->quit();
+            }
+            if ($this->hasGlobalOption('version')) {
+                $this->renderVersion();
                 $this->quit();
             }
         } catch (CommandParsingException $e) {
@@ -88,7 +88,7 @@ class MultipleCommandApp extends App {
         }
         $subcommand = new $subcommandClass($this);
         $arguments = $this->getArguments();
-        call_user_method_array('execute', $subcommand, $arguments);
+        call_user_func_array([$subcommand, 'execute'], $arguments);
     }
 
     protected function executeGlobalCommand() {

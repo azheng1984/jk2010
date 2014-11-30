@@ -4,28 +4,25 @@ namespace Hyperframework\Cli;
 use Exception;
 
 class CommandParser {
-    //if throw parsing error, also add parsed options
-    //do not reparse use new command config (help as subcommand)(before parse, new argv!)
-    //command_name --help (other options) => command_name help (other options)
     public static function parse($commandConfig, array $argv = null) {
-        $arguments = null;
-        $options = $commandConfig->get('options');
-        $result = array('arguments' => [], 'options' => []);
+        if ($argv === null) {
+            $argv = $_SERVER['argv'];
+        }
+        $optionConfigs = $commandConfig->get('options');
+        $result = [];
         $optionType = null;
         if ($commandConfig->hasMultipleCommands()) {
             $result['global_options'] = [];
             $optionType = 'global_options';
         } else {
-            $arguments = $commandConfig->get('arguments');
+            $result['options'] = [];
+            $result['arguments'] = [];
             $optionType = 'options';
         }
         $isGlobal = $commandConfig->hasMultipleCommands();
-        if ($argv === null) {
-            $argv = $_SERVER['argv'];
-        }
         $count = count($argv);
         $isArgument = false;
-        $argumentIndex = 0;
+        $arguments = [];
         for ($index = 1; $index < $count; ++$index) {
             $element = $argv[$index];
             $length = strlen($element);
@@ -35,36 +32,18 @@ class CommandParser {
                 || $isArgument
             ) {
                 if ($isGlobal) {
-                    //todo ????!!!!
-                    if (static::hasSubcommand($element) === false) {
+                    if ($config->hasSubcommand($element) === false) {
                         throw new Exception;
                     }
-                    static::checkOption($options, $result[$optionType]);
-                    $result['subcommand'] = $element;
-                    $options = $commandConfig->get('options', $element);
-                    $arguments = $commandConfig->get('arguments', $element);
                     $isGlobal= false;
+                    $result['subcommand'] = $element;
+                    $result['option'] = [];
+                    $result['arguments'] = [];
+                    $optionConfigs = $commandConfig->get('options', $element);
                     $optionType = 'options';
-                    continue;
-                }
-                $argumentCount = count($arguments);
-                if ($argumentCount > $argumentIndex) {
-                    if ($arguments[$argumentIndex]['is_collection']) {
-                        $result['arguments'][] = array($element);
-                    }
-                    $result['arguments'][] = $element;
                 } else {
-                    if (isset($arguments[$argumentCount - 1]) === false) {
-                        throw new Exception;
-                    }
-                    $lastArgument = $arguments[$argumentCount - 1];
-                    if ($lastArgument['is_collection']) {
-                        $result['arguments'][$argumentCount - 1][] = $element;
-                    } else {
-                        throw new Exception;
-                    }
+                    $arguments[] = $element;
                 }
-                ++$argumentIndex;
                 continue;
             }
             if ($element === '--') {
@@ -78,14 +57,14 @@ class CommandParser {
                 $charIndex = 1;
                 while ($length > 1) {
                     $optionName = $element[$charIndex];
-                    if (isset($options[$optionName]) === false) {
+                    if (isset($optionConfigs[$optionName]) === false) {
                         throw new Exception;
                     }
-                    if (isset($options[$optionName]['full_name'])) {
-                        $optionName = $options[$optionName]['full_name'];
+                    if (isset($optionConfigs[$optionName]['full_name'])) {
+                        $optionName = $optionConfigs[$optionName]['full_name'];
                     }
                     $optionArgument = true;
-                    $option = $options[$optionName];
+                    $option = $optionConfigs[$optionName];
                     if ($option['has_argument'] === 0) {
                         if ($length > 2) {
                             $optionArgument = substr($element, 1 + $charIndex);
@@ -132,10 +111,10 @@ class CommandParser {
                     list($optionName, $optionArgument) =
                         explode('=', $element, 2);
                 }
-                if (isset($options[$optionName]) === false) {
+                if (isset($optionConfigs[$optionName]) === false) {
                     throw new Exception;
                 }
-                $option = $options[$optionName];
+                $option = $optionConfigs[$optionName];
                 if ($option['has_argument'] === 1) {
                     if ($optionArgument === null) {
                         ++$index;
@@ -170,33 +149,96 @@ class CommandParser {
                 }
             }
         }
-        if (static::shouldCheckOptionsAndArguments($result) === false) {
+        $hasSuperOption = static::hasSuperOption(
+            isset($result['global_options']) ? $result['global_options'] : [],
+            isset($result['options']) ? $result['options'] : [],
+            $commandConfig->hasMultipleCommands()
+        );
+        if (isset($result['global_options'])) {
+            $globalOptionConfigs = $commandConfig->get('options');
+            self::checkOptions(
+                $globalOptionConfigs, $result['global_options'], $hasSuperOption
+            );
+        }
+        if (isset($result['options'])) {
+            self::checkOptions(
+                $optionConfigs, $result['options'], $hasSuperOption
+            );
+        }
+        if ($hasSuperOption || $isGlobal) {
             return $result;
         }
-        self::checkOptions($options, $result['options']);
+        $argumentConfigs = null;
+        if ($commandConfig->hasMultipleCommands()) {
+            $argumentConfigs = $commandConfig->get(
+                'arguments', $result['subcommand']
+            );
+        } else {
+            $argumentConfigs = $commandConfig->get('arguments');
+        }
+        $argumentConfigCount = count($argumentConfigs);
+        $argumentCount = count($arguments);
+        for ($argumentIndex = 0;
+            $argumentIndex < $argumentCount;
+            ++$argumentIndex
+        ) {
+            if ($argumentConfigCount > $argumentIndex) {
+                if ($argumentConfigs[$argumentIndex]['is_collection']) {
+                    $result['arguments'][] = array($element);
+                }
+                $result['arguments'][] = $element;
+            } else {
+                if (isset($argumentConfigs[$argumentCount - 1]) === false) {
+                    throw new Exception;
+                }
+                $lastArgument = $argumentConfigs[$argumentCount - 1];
+                if ($lastArgument['is_collection']) {
+                    $result['arguments'][$argumentCount - 1][] = $element;
+                } else {
+                    throw new Exception;
+                }
+            }
+        }
         $count = 0;
-        foreach ($arguments as $argument) {
-            if ($argument['is_optional']) {
+        foreach ($argumentConfigs as $argumentConfig) {
+            if (isset($argumentConfig['is_optional'])
+                && $argumentConfig['is_optional']
+            ) {
                 break;
             }
             ++$count;
-            if ($count > $argumentIndex) {
+            if ($count > $argumentCount) {
                 throw new Exception;
             }
         }
         return $result;
     }
 
-    protected static function shouldCheckOptionsAndArguments($result) {
-        foreach ($result['options'] as $key => $value) {
-            if (in_array($key, array('h', 'help', 'version'))) {
-                return false;
+    private static function hasSuperOption(
+        array $globalOptions, array $options, $hasMultipleCommands
+    ) {
+        if ($hasMultipleCommands) {
+            foreach ($globalOptions as $key => $value) {
+                if (in_array($key, array('h', 'help', 'version'))) {
+                    return true;
+                }
+            }
+            foreach ($options as $key => $value) {
+                if (in_array($key, array('h', 'help'))) {
+                    return true;
+                }
+            }
+        } else {
+            foreach ($options as $key => $value) {
+                if (in_array($key, array('h', 'help', 'version'))) {
+                    return true;
+                }
             }
         }
-        return true;
+        return false;
     }
 
-    private static function checkOptions($configs, $result) {
+    private static function checkOptions($configs, $options, $hasSuperOption) {
         foreach ($configs as $name => $option) {
             if (isset($option['values'])) {
                 if (in_array($result[$name], $option['values']) === false) {
@@ -214,7 +256,9 @@ class CommandParser {
                         }
                     }
                 }
-                throw new Exception;
+                if ($hasSuperOption === false) {
+                    throw new Exception;
+                }
             }
         }
     }

@@ -4,6 +4,7 @@ namespace Hyperframework\Cli;
 class HelpView {
     private $app;
 
+    //do not pass exception, use array instead
     public function __construct($app, $commandParsingException = null) {
         $this->app = $app;
     }

@@ -91,11 +91,11 @@ class CommandConfig {
         return file_exists($this->getSubcommandConfigPath($name));
     }
 
-    protected function parseArgumentConfig($config) {
+    protected function parseArgumentConfigs($config) {
         return ArgumentConfigParser::parse($config);
     }
 
-    protected function getDefaultArgumentConfig($class) {
+    protected function getDefaultArgumentConfigs($class) {
         $method = new ReflectionMethod($class, 'execute');
         $params = $method->getParameters();
         $results = [];
@@ -119,7 +119,7 @@ class CommandConfig {
         return str_replace(' ', '', $tmp) . 'Command';
     }
 
-    protected function parseOptionConfig($config) {
+    protected function parseOptionConfigs($config) {
         return OptionConfigParser::parse($config);
     }
 
@@ -144,7 +144,7 @@ class CommandConfig {
 
     private function initializeConfig(&$config, $isSubcommand) {
         $this->initializeClass($config, $isSubcommand);
-        $this->initializeOptions($config);
+        $this->initializeOptions($config, $isSubcommand);
         $this->initializeArguments($config, $isSubcommand);
     }
 
@@ -178,18 +178,21 @@ class CommandConfig {
         }
     }
 
-    protected function getDefaultOptions() {
-        return array('-h, --help', '--version');
-    }
-
-    private function initializeOptions(&$config) {
+    private function initializeOptions(&$config, $isSubcommand) {
+        $options = null;
         if (isset($config['options'])) {
-            $options = $this->parseOptionConfig($config['options']);
+            $options = $this->parseOptionConfigs($config['options']);
         } else {
             $options = [];
         }
-        $defaultOptions = $this->parseOptionConfig($this->getDefaultOptions());
-        foreach ($defaultOptions as $key => $value) {
+        $superOptions = null;
+        if ($isSubcommand) {
+            $superOptions = ['-h, --help'];
+        } else {
+            $superOptions = ['-h, --help', '--version'];
+        }
+        $superOptions = $this->parseOptionConfigs($superOptions);
+        foreach ($superOptions as $key => $value) {
             if (isset($options[$key]) === false) {
                 $options[$key] = $value;
             }
@@ -205,11 +208,11 @@ class CommandConfig {
             return;
         }
         if (isset($config['arguments'])) {
-            $config['arguments'] = $this->parseArgumentConfig(
+            $config['arguments'] = $this->parseArgumentConfigs(
                 $config['arguments']
             );
         } else {
-            $config['arguments'] = $this->getDefaultArgumentConfig(
+            $config['arguments'] = $this->getDefaultArgumentConfigs(
                 $config['class']
             );
         }
