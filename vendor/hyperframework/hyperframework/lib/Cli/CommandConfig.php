@@ -175,14 +175,6 @@ class CommandConfig {
         }
     }
 
-    protected function getDefaultOptions($isSubcommand) {
-        if ($isSubcommand) {
-            return ['-h, --help'];
-        } else {
-            return['-h, --help', '--version'];
-        }
-    }
-
     private function initializeOptions(&$config, $isSubcommand) {
         $options = null;
         if (isset($config['options'])) {
@@ -198,6 +190,14 @@ class CommandConfig {
             }
         }
         $config['options'] = $options;
+    }
+
+    protected function getDefaultOptions($isSubcommand) {
+        if ($isSubcommand) {
+            return ['-h, --help'];
+        } else {
+            return['-h, --help', '--version'];
+        }
     }
 
     private function initializeArguments(&$config, $isSubcommand) {

@@ -151,6 +151,7 @@ class CommandParser {
         }
         $hasSuperOption = static::hasSuperOption(
             isset($result['global_options']) ? $result['global_options'] : [],
+            isset($result['subcommand']) ? $result['subcommand'] : null,
             isset($result['options']) ? $result['options'] : [],
             $commandConfig
         );
@@ -215,7 +216,7 @@ class CommandParser {
     }
 
     protected static function hasSuperOption(
-        array $globalOptions, array $options, $commandConfig
+        array $globalOptions, $subcommand, array $options, $commandConfig
     ) {
         if ($commandConfig->hasMultipleCommands()) {
             foreach ($globalOptions as $key => $value) {
