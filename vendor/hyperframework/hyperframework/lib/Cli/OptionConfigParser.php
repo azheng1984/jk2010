@@ -99,7 +99,6 @@ class OptionConfigParser {
         $isEnumArgument = false;
         $hasArgument = false;
         for ($index = 2; $index < $length; ++$index) {
-            var_dump($optionKey);
             $char = $optionKey[$index];
             if ($argumentName === null
                 && $char !== '['
