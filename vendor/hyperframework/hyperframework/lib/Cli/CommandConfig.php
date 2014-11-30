@@ -175,6 +175,14 @@ class CommandConfig {
         }
     }
 
+    protected function getDefaultOptions($isSubcommand) {
+        if ($isSubcommand) {
+            return ['-h, --help'];
+        } else {
+            return['-h, --help', '--version'];
+        }
+    }
+
     private function initializeOptions(&$config, $isSubcommand) {
         $options = null;
         if (isset($config['options'])) {
@@ -182,14 +190,9 @@ class CommandConfig {
         } else {
             $options = [];
         }
-        $superOptions = null;
-        if ($isSubcommand) {
-            $superOptions = ['-h, --help'];
-        } else {
-            $superOptions = ['-h, --help', '--version'];
-        }
-        $superOptions = $this->parseOptionConfigs($superOptions);
-        foreach ($superOptions as $key => $value) {
+        $defaultOptions = $this->getDefaultOptions($isSubcommand);
+        $defaultOptions = $this->parseOptionConfigs($defaultOptions);
+        foreach ($defaultOptions as $key => $value) {
             if (isset($options[$key]) === false) {
                 $options[$key] = $value;
             }

@@ -81,23 +81,23 @@ class App {
     protected function initialize() {
         try {
             $elements = $this->parseCommand();
-            if (isset($elements['options'])) {
-                $this->setOptions($elements['options']);
-            }
-            if ($this->hasOption('help')) {
-                $this->renderHelp();
-                $this->quit();
-            }
-            if ($this->hasOption('version')) {
-                $this->renderVersion();
-                $this->quit();
-            }
-            if (isset($elements['arguments'])) {
-                $this->setArguments($elements['arguments']);
-            }
         } catch (CommandParsingException $e) {
             $this->renderHelper($e);
             $this->quit();
+        }
+        if (isset($elements['options'])) {
+            $this->setOptions($elements['options']);
+        }
+        if ($this->hasOption('help')) {
+            $this->renderHelp();
+            $this->quit();
+        }
+        if ($this->hasOption('version')) {
+            $this->renderVersion();
+            $this->quit();
+        }
+        if (isset($elements['arguments'])) {
+            $this->setArguments($elements['arguments']);
         }
     }
 

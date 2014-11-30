@@ -1,5 +1,4 @@
 <?php
-namespace Hyperframework\Cli;
 
 class MultipleCommandApp extends App {
     private $commandConfig;
@@ -9,28 +8,28 @@ class MultipleCommandApp extends App {
     protected function initialize() {
         try {
             $elements = $this->parseCommand();
-            if (isset($elements['global_options'])) {
-                $this->setGlobalOptions($elements['global_options']);
-            }
-            if (isset($elements['subcommand'])) {
-                $this->setSubcommand($elements['subcommand']);
-                if (isset($elements['options'])) {
-                    $this->setOptions($elements['options']);
-                }
-                if (isset($elements['arguments'])) {
-                    $this->setArguments($elements['arguments']);
-                }
-            }
-            if ($this->hasGlobalOption('help') || $this->hasOption('help')) {
-                $this->renderHelp();
-                $this->quit();
-            }
-            if ($this->hasGlobalOption('version')) {
-                $this->renderVersion();
-                $this->quit();
-            }
         } catch (CommandParsingException $e) {
             $this->renderHelper($e);
+            $this->quit();
+        }
+        if (isset($elements['global_options'])) {
+            $this->setGlobalOptions($elements['global_options']);
+        }
+        if (isset($elements['subcommand'])) {
+            $this->setSubcommand($elements['subcommand']);
+            if (isset($elements['options'])) {
+                $this->setOptions($elements['options']);
+            }
+            if (isset($elements['arguments'])) {
+                $this->setArguments($elements['arguments']);
+            }
+        }
+        if ($this->hasGlobalOption('help') || $this->hasOption('help')) {
+            $this->renderHelp();
+            $this->quit();
+        }
+        if ($this->hasGlobalOption('version')) {
+            $this->renderVersion();
             $this->quit();
         }
     }
