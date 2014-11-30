@@ -75,10 +75,9 @@ class OptionConfigParser {
                 throw new Exception;
             }
             $optionKey = ltrim($tmps[1]);
+            $length = strlen($optionKey);
         } elseif ($optionKey[1] !== '-') {
             $isShort = true;
-            if ($isShort === false) {
-            }
             $optionKey = '-' . $optionKey;
             ++$length;
             if ($length > 2) {
@@ -100,6 +99,7 @@ class OptionConfigParser {
         $isEnumArgument = false;
         $hasArgument = false;
         for ($index = 2; $index < $length; ++$index) {
+            var_dump($optionKey);
             $char = $optionKey[$index];
             if ($argumentName === null
                 && $char !== '['

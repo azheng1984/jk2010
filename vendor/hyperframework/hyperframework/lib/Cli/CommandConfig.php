@@ -53,9 +53,7 @@ class CommandConfig {
                 }
                 $configPath = ConfigFileLoader::getFullPath($configPath);
                 if (file_exists($configPath)) {
-                var_dump($configPath);
                     $config = require $configPath;
-                var_dump($config);
                 } else {
                     if ($isDefaultConfigPath === false) {
                         throw new Exception;
@@ -65,7 +63,6 @@ class CommandConfig {
             } else {
                 $config = [];
             }
-            var_dump($config);
             $this->initializeConfig($config, false);
             $this->configFile = $config;
             return $config;
