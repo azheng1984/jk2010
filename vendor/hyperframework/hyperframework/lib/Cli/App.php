@@ -75,7 +75,7 @@ class App {
             echo 'undefined', PHP_EOL;
             return;
         }
-        echo 'version ', $version, PHP_EOL;
+        echo $version, PHP_EOL;
     }
 
     protected function initialize() {
