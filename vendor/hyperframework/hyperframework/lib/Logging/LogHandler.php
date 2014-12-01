@@ -20,7 +20,7 @@ class LogHandler {
         if (self::getProtocol() === 'file') {
             $flag = FILE_APPEND | LOCK_EX;
         }
-        if (@file_put_contents(static::getPath(), $content, $flag) === false) {
+        if (file_put_contents(static::getPath(), $content, $flag) === false) {
             throw new Exception;
         }
     }

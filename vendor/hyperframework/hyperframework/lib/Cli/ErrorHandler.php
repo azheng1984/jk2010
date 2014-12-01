@@ -19,9 +19,6 @@ class ErrorHandler {
     private static $ignoredErrors;
 
     final public static function run() {
-        //ini_set('display_errors', 1);
-//        var_dump(ini_get('display_errors'));
-//        var_dump(ini_get('error_log'));
         self::$isDebugEnabled = ini_get('display_errors') === '1';
         self::$errorReporting = error_reporting();
         $class = get_called_class();
@@ -37,10 +34,7 @@ class ErrorHandler {
 
     final public static function handleException($exception, $isError = false) {
         if (self::$exception !== null) {
-            if ($isError) {
-                //http://stackoverflow.com/questions/10771959/error-reporting-behavior-in-cli-binary
-                //todo check error_log ini setting, but when error_log is not exists, equals to '', god...
-                //fwrite(STDERR, self::getDefaultErrorLog() . PHP_EOL);
+            if ($isError) {//fatal error only
                 return false;
             }
             throw $exception;
@@ -55,6 +49,13 @@ class ErrorHandler {
         } else {
             self::$shouldExit = true;
         }
+        if (self::$isDebugEnabled) {
+            if ($isError) {
+                echo PHP_EOL, self::getDefaultErrorLog(), PHP_EOL;
+            } else {
+                echo PHP_EOL, self::getDefaultExceptionLog(), PHP_EOL;
+            }
+        }
         self::writeLog();
         if ($isError) {
             if (self::$shouldExit === false) {
@@ -62,13 +63,6 @@ class ErrorHandler {
                 self::$isError = null;
                 self::disableErrorReporting();
                 return;
-            }
-        }
-        if (self::$isDebugEnabled) {
-            if ($isError) {
-                echo PHP_EOL, self::getDefaultErrorLog(), PHP_EOL;
-            } else {
-                echo PHP_EOL, self::getDefaultExceptionLog(), PHP_EOL;
             }
         }
 //        $headers = null;

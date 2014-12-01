@@ -33,7 +33,7 @@ class ErrorHandler {
 
     final public static function handleException($exception, $isError = false) {
         if (self::$exception !== null) {
-            if ($isError) {
+            if ($isError) {//fatal error only
                 return false;
             }
             throw $exception;
@@ -41,27 +41,26 @@ class ErrorHandler {
         error_reporting(self::$errorReporting);
         self::$exception = $exception;
         self::$isError = $isError;
+        self::writeLog();
         if ($isError && $exception->getCode() === 0) {
-            $recoverableErrors = Config::get(
-                'hyperframework.error_handler.recoverable_errors'
+            $extraFatalErrorBitmask = Config::get(
+                'hyperframework.error_handler.extra_fatal_error_bitmask'
             );
-            if ($recoverableErrors === null) {
-                $recoverableErrors =
-                    E_STRICT & E_DEPRECATED & E_USER_DEPRECATED;
+            if ($extraFatalErrorBitmask === null) {
+                $extraFatalErrorBitmask =
+                    E_ALL & ~(E_STRICT & E_DEPRECATED & E_USER_DEPRECATED);
             }
-            $fatalErrors = E_ALL & ~$recoverableErrors;
-            self::$shouldExit = (self::$exception->getSeverity() & $fatalErrors)
-                !== 0;
+            self::$shouldExit = 0 !==
+                (self::$exception->getSeverity() & $extraFatalErrorBitmask);
         } else {
             self::$shouldExit = true;
         }
-        self::writeLog();
         if ($isError) {
             if (self::$shouldExit === false) {
                 self::$exception = null;
                 self::$isError = null;
                 self::disableErrorReporting();
-                self::previousErrors[] = $exception;
+                self::$previousErrors[] = $exception;
                 return;
             }
         }
@@ -122,11 +121,11 @@ class ErrorHandler {
     }
 
     private static function disableErrorReporting() {
-        $tmp = 0;
         if (self::$errorReporting & E_COMPILE_WARNING) {
-            $tmp = E_COMPILE_WARNING;
+            error_reporting(E_COMPILE_WARNING);
+            return;
         }
-        error_reporting($tmp);
+        error_reporting(0);
     }
 
     protected static function cleanOutputBuffer() {
@@ -236,7 +235,7 @@ class ErrorHandler {
             $data['line'] = $exception->getLine();
             if (self::$isError === false) {
                 $name = 'php_exception';
-                $data['exception'] = get_class($exception);
+                $data['class'] = get_class($exception);
                 $code = $exception->getCode();
                 if ($code !== null) {
                     $data['code'] = $code;
@@ -260,9 +259,9 @@ class ErrorHandler {
                 }
             } else {
                 $name = 'php_error';
-                $data['severity'] = ErrorCodeHelper::toString(
+                $data['severity'] = strtolower(ErrorCodeHelper::toString(
                     $exception->getSeverity()
-                );
+                ));
             }
             $method = self::getLogMethod();
             Logger::$method($name, $exception->getMessage(), $data);
@@ -288,7 +287,9 @@ class ErrorHandler {
             E_NOTICE            => 'notice',
             E_USER_NOTICE       => 'notice',
             E_WARNING           => 'warn',
-            E_USER_WARNING      => 'warn'
+            E_USER_WARNING      => 'warn',
+            E_CORE_WARNING      => 'warn',
+            E_RECOVERABLE_ERROR => 'error'
         );
         return $maps[self::$exception->getSeverity()];
     }
