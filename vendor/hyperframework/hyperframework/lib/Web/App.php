@@ -8,7 +8,8 @@ abstract class App {
     private $controller;
 
     public function run() {
-        1/0;
+        df();
+        //throw new NotFoundException;
         $this->initialize();
         $controller = $this->getController();
         $controller->run();

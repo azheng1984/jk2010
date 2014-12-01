@@ -75,7 +75,6 @@ class ErrorHandler {
         //        echo self::getDefaultExceptionLog();
         //    }
         //}
-        self::writeLog();
         if ($isError && $exception->getCode() === 0) {
             $extraFatalErrorBitmask = Config::get(
                 'hyperframework.error_handler.extra_fatal_error_bitmask'
@@ -89,6 +88,7 @@ class ErrorHandler {
         } else {
             self::$shouldExit = true;
         }
+        self::writeLog();
         if ($isError) {
             if (self::$shouldExit === false) {
                 self::$exception = null;
@@ -104,9 +104,25 @@ class ErrorHandler {
             if (self::$isDebuggerEnabled) {
                 $headers = headers_list();
             } else {
-                exit(1);
+                if (self::$isError && $exception->getCode() === 1) {
+                    return false;
+                }
+                throw $exception;
             }
         } else {
+            if (ini_get('display_errors') === '1'
+                && self::$isDebuggerEnabled === false
+            ) {
+                if ($exception instanceof HttpException) {
+                    $exception->setHeader();
+                } else {
+                    header('HTTP/1.1 500 Internal Server Error');
+                }
+                if (self::$isError && $exception->getCode() === 1) {
+                    return false;
+                }
+                throw $exception;
+            }
             if (self::$isDebuggerEnabled) {
                 $outputBuffer = static::getOutputBuffer();
                 $headers = headers_list();
@@ -115,6 +131,7 @@ class ErrorHandler {
             }
             header_remove();
             if ($exception instanceof HttpException) {
+                // => getHttpHeaders()
                 $exception->setHeader();
             } else {
                 header('HTTP/1.1 500 Internal Server Error');
