@@ -4,8 +4,8 @@ namespace Hyperframework\Web\Html;
 use ErrorException;
 use Hyperframework\Common\ErrorCodeHelper;
 
-class DebugPage {
-    public static function render(
+class Debugger {
+    public static function execute(
         $exception,
         $ignoredErrors = null,
         $headers = null,

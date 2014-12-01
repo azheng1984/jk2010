@@ -6,29 +6,46 @@ use ErrorException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ErrorCodeHelper;
 use Hyperframework\Logging\Logger;
-use Hyperframework\Web\Html\DebugPage;
+use Hyperframework\Web\Html\Debugger;
 
 class ErrorHandler {
     private static $exception;
     private static $isError;
     private static $shouldExit;
-    private static $isDebugEnabled;
+    private static $isDebuggerEnabled;
+//    private static $isGlobalLoggerEnabled;
+//    private static $shouldDisplayErrors = false;
     private static $outputBufferLevel;
-    private static $errorReporting;
+//    private static $errorReporting;
     private static $previousErrors = [];
 
     final public static function run() {
-        self::$isDebugEnabled = ini_get('display_errors') === '1';
-        self::$errorReporting = error_reporting();
+        if (Config::get('hyperframework.error_handler.write_global_log')
+            === false
+        ) {
+            ini_set('log_errors', '0');
+        } else {
+            if (Config::get('hyperframework.error_handler.enable_logger')
+                    === true
+                && Config::get('hyperframework.error_handler.write_global_log')
+                    !== true
+            ) {
+                ini_set('log_errors' , '0');
+            }
+        }
+        self::$isDebuggerEnabled =
+            Config::get('hyperframework.web.debug') === true;
+        //self::$errorReporting = error_reporting();
         $class = get_called_class();
-        set_error_handler(array($class, 'handleError'), self::$errorReporting);
+        //set_error_handler(array($class, 'handleError'), self::$errorReporting);
+        set_error_handler(array($class, 'handleError'));
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
-        if (self::$isDebugEnabled) {
+        if (self::$isDebuggerEnabled) {
             ob_start();
             self::$outputBufferLevel = ob_get_level();
         }
-        self::disableErrorReporting();
+//        self::disableErrorReporting();
     }
 
     final public static function handleException($exception, $isError = false) {
@@ -38,9 +55,26 @@ class ErrorHandler {
             }
             throw $exception;
         }
-        error_reporting(self::$errorReporting);
+        //if (self::$isGlobalLoggerEnabled) {
+        //    ini_set('log_errors', '1');
+        //}
+//      error_reporting(self::$errorReporting);
         self::$exception = $exception;
         self::$isError = $isError;
+        //if (ini_get('display_errors') === '1') {
+        //    if ($isError) {
+        //        echo self::getDefaultErrorLog();
+        //    } else {
+        //        echo self::getDefaultExceptionLog();
+        //    }
+        //}
+        //if ($shouldDisplayErrors) {
+        //    if ($isError) {
+        //        echo self::getDefaultErrorLog();
+        //    } else {
+        //        echo self::getDefaultExceptionLog();
+        //    }
+        //}
         self::writeLog();
         if ($isError && $exception->getCode() === 0) {
             $extraFatalErrorBitmask = Config::get(
@@ -59,7 +93,7 @@ class ErrorHandler {
             if (self::$shouldExit === false) {
                 self::$exception = null;
                 self::$isError = null;
-                self::disableErrorReporting();
+                self::disableGlobalLogger();
                 self::$previousErrors[] = $exception;
                 return;
             }
@@ -67,13 +101,13 @@ class ErrorHandler {
         $headers = null;
         $outputBuffer = null;
         if (headers_sent()) {
-            if (self::$isDebugEnabled) {
+            if (self::$isDebuggerEnabled) {
                 $headers = headers_list();
             } else {
                 exit(1);
             }
         } else {
-            if (self::$isDebugEnabled) {
+            if (self::$isDebuggerEnabled) {
                 $outputBuffer = static::getOutputBuffer();
                 $headers = headers_list();
             } else {
@@ -86,8 +120,8 @@ class ErrorHandler {
                 header('HTTP/1.1 500 Internal Server Error');
             }
         }
-        if (self::$isDebugEnabled) {
-            static::renderDebugPage($headers, $outputBuffer);
+        if (self::$isDebuggerEnabled) {
+            static::executeDebugger($headers, $outputBuffer);
         } else {
             static::renderCustomErrorPage();
         }
@@ -120,13 +154,25 @@ class ErrorHandler {
         }
     }
 
-    private static function disableErrorReporting() {
-        if (self::$errorReporting & E_COMPILE_WARNING) {
-            error_reporting(E_COMPILE_WARNING);
-            return;
-        }
-        error_reporting(0);
-    }
+//    private static function disableErrorReporting() {
+//        if (self::$isGlobalLoggerEnabled
+//            && Config::get('hyperframework.error_handler.write_global_log')
+//                !== true
+//            && Config::get('hyperframework.error_handler.enable_logger')
+//                === true
+//        ) {
+//            ini_set('log_errors', '0');
+//        }
+        //display true log false  //disable log directly, except compile warning
+        //display false log true  //never disable
+        //display true log true   //never disable
+        //display false log false //never open
+        //if (self::$errorReporting & E_COMPILE_WARNING) {
+        //    error_reporting(E_COMPILE_WARNING);
+        //    return;
+        //}
+        //error_reporting(0);
+//    }
 
     protected static function cleanOutputBuffer() {
         $obLevel = ob_get_level();
@@ -202,8 +248,8 @@ class ErrorHandler {
         return $content;
     }
 
-    protected static function renderDebugPage($headers, $outputBuffer) {
-        DebugPage::render(
+    protected static function executeDebugger($headers, $outputBuffer) {
+        Debugger::execute(
             self::$exception, self::$previousErrors, $headers, $outputBuffer
         );
     }
@@ -265,16 +311,19 @@ class ErrorHandler {
             }
             $method = self::getLogMethod();
             Logger::$method($name, $exception->getMessage(), $data);
-        } else {
-           $message = null;
-           if(self::$isError) {
-               $message = self::getDefaultErrorLog();
-           } else {
-               $message = self::getDefaultExceptionLog();
-           }
-           error_log('PHP ' . $message);
         }
     }
+
+//    private static function writeGlobalLog() {
+//        if (ini_get('log_errors') === '1') {
+//            if(self::$isError) {
+//                $message = self::getDefaultErrorLog();
+//            } else {
+//                $message = self::getDefaultExceptionLog();
+//            }
+//            error_log('PHP ' . $message);
+//        }
+//    }
 
     private static function getLogMethod() {
         if (self::$shouldExit) {
