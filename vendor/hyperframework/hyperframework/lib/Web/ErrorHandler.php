@@ -263,7 +263,7 @@ class ErrorHandler {
             if (file_exists($prefix . $format . '.php')) {
                 $template->load('_error/show.' . $format . '.php');
                 return;
-            } 
+            }
         }
         if (file_exists($prefix . 'php')) {
             $template->load('_error/show.php');
