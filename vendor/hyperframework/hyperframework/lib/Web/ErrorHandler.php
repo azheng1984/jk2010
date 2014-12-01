@@ -235,7 +235,7 @@ class ErrorHandler {
                     $exception->getSeverity()
                 );
             } else {
-                $name = 'php_error.fatal';
+                $name = 'php_error.exception';
                 $data['exception'] = get_class($exception);
                 $code = $exception->getCode();
                 if ($code !== null) {
