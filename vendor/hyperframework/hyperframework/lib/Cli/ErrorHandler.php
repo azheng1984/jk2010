@@ -19,18 +19,20 @@ class ErrorHandler {
     private static $ignoredErrors;
 
     final public static function run() {
+        //ini_set('display_errors', 1);
+//        var_dump(ini_get('display_errors'));
+//        var_dump(ini_get('error_log'));
         self::$isDebugEnabled = ini_get('display_errors') === '1';
-        var_dump(ini_get('error_log'));
         self::$errorReporting = error_reporting();
         $class = get_called_class();
-        set_error_handler(array($class, 'handleError'), self::$errorReporting);
-        set_exception_handler(array($class, 'handleException'));
-        register_shutdown_function(array($class, 'handleFatalError'));
+//        set_error_handler(array($class, 'handleError'), self::$errorReporting);
+//        set_exception_handler(array($class, 'handleException'));
+//        register_shutdown_function(array($class, 'handleFatalError'));
 //        if (self::$isDebugEnabled) {
 //            ob_start();
 //            self::$outputBufferLevel = ob_get_level();
 //        }
-        self::disableErrorReporting();
+//        self::disableErrorReporting();
     }
 
     final public static function handleException($exception, $isError = false) {
@@ -38,7 +40,7 @@ class ErrorHandler {
             if ($isError) {
                 //http://stackoverflow.com/questions/10771959/error-reporting-behavior-in-cli-binary
                 //todo check error_log ini setting, but when error_log is not exists, equals to '', god...
-                fwrite(STDERR, self::getDefaultErrorLog() . PHP_EOL);
+                //fwrite(STDERR, self::getDefaultErrorLog() . PHP_EOL);
                 return false;
             }
             throw $exception;
@@ -62,10 +64,12 @@ class ErrorHandler {
                 return;
             }
         }
-        if ($isError) {
-//            fwrite(STDERR, self::getDefaultErrorLog() . PHP_EOL);
-        } else {
-//            fwrite(STDERR, self::getDefaultExceptionLog() . PHP_EOL);
+        if (self::$isDebugEnabled) {
+            if ($isError) {
+                echo PHP_EOL, self::getDefaultErrorLog(), PHP_EOL;
+            } else {
+                echo PHP_EOL, self::getDefaultExceptionLog(), PHP_EOL;
+            }
         }
 //        $headers = null;
 //        $outputBuffer = null;
@@ -221,14 +225,13 @@ class ErrorHandler {
 
     protected static function getDefaultErrorLog() {
         $exception = self::$exception;
-        return 'PHP ' . ErrorCodeHelper::toString($exception->getSeverity())
+        return ErrorCodeHelper::toString($exception->getSeverity())
             . ': ' . $exception->getMessage() . ' in ' . $exception->getFile()
-            . ':' . $exception->getLine() . PHP_EOL . 'Stack trace:'
-            . $exception->getTraceAsString();
+            . ' on line ' . $exception->getLine();
     }
 
     protected static function getDefaultExceptionLog() {
-        return 'PHP Fatal error: Uncaught ' . self::$exception;
+        return 'Fatal error: Uncaught ' . self::$exception;
     }
 
     protected static function writeLog() {
@@ -255,7 +258,11 @@ class ErrorHandler {
             $data['line'] = $exception->getLine();
             if ($isError === false || $exception->getCode() === 0) {
                 $data['traces'] = array();
-                foreach ($exception->getTrace() as $item) {
+                $traces = $exception->getTrace();
+                if ($isError) {
+                    array_shift($traces);
+                }
+                foreach ($traces as $item) {
                     $trace = array();
                     if (isset($item['class'])) {
                         $trace['class'] = $item['class'];
@@ -275,13 +282,13 @@ class ErrorHandler {
             $method = self::getLogMethod();
             Logger::$method($name, $exception->getMessage(), $data);
         } else {
-           $message = null;
-           if($isError) {
-               $message = self::getDefaultErrorLog();
-           } else {
-               $message = self::getDefaultExceptionLog();
-           }
-           error_log($message);
+            $message = null;
+            if($isError) {
+                $message = 'PHP ' . self::getDefaultErrorLog();
+            } else {
+                $message = 'PHP ' . self::getDefaultExceptionLog();
+            }
+            error_log($message);
         }
     }
 

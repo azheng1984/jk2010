@@ -80,12 +80,10 @@ class ErrorHandler {
                 header('HTTP/1.1 500 Internal Server Error');
             }
         }
-        if ($_SERVER['REQUEST_METHOD'] !== 'HEAD') {
-            if (self::$isDebugEnabled) {
-                static::renderDebugPage($headers, $outputBuffer);
-            } else {
-                static::renderCustomErrorPage();
-            }
+        if (self::$isDebugEnabled) {
+            static::renderDebugPage($headers, $outputBuffer);
+        } else {
+            static::renderCustomErrorPage();
         }
         exit(1);
     }
@@ -205,6 +203,7 @@ class ErrorHandler {
     }
 
     protected static function renderCustomErrorPage() {
+        //todo
         ViewDispatcher::run(
             PathInfo::get('/', 'ErrorApp'), self::$exception
         );
@@ -212,14 +211,13 @@ class ErrorHandler {
 
     protected static function getDefaultErrorLog() {
         $exception = self::$exception;
-        return 'PHP ' . ErrorCodeHelper::toString($exception->getSeverity())
+        return ErrorCodeHelper::toString($exception->getSeverity())
             . ': ' . $exception->getMessage() . ' in ' . $exception->getFile()
-            . ':' . $exception->getLine() . PHP_EOL . 'Stack trace:'
-            . $exception->getTraceAsString();
+            . ' on line ' . $exception->getLine();
     }
 
     protected static function getDefaultExceptionLog() {
-        return 'PHP Fatal error: Uncaught ' . self::$exception;
+        return 'Fatal error: Uncaught ' . self::$exception;
     }
 
     protected static function writeLog() {
@@ -230,13 +228,15 @@ class ErrorHandler {
             $data = array();
             $method = null;
             if ($isError) {
-                $name = 'hyperframework.error_handler.error';
+                $name = 'php_error.' . strtolower(
+                    ErrorCodeHelper::toString($exception->getSeverity())
+                );
                 $data['severity'] = ErrorCodeHelper::toString(
                     $exception->getSeverity()
                 );
             } else {
-                $name = 'hyperframework.error_handler.exception';
-                $data['class'] = get_class($exception);
+                $name = 'php_error.fatal';
+                $data['exception'] = get_class($exception);
                 $code = $exception->getCode();
                 if ($code !== null) {
                     $data['code'] = $code;
@@ -244,8 +244,8 @@ class ErrorHandler {
             }
             $data['file'] = $exception->getFile();
             $data['line'] = $exception->getLine();
-            if ($isError === false || $exception->getCode() === 0) {
-                $data['traces'] = array();
+            if ($isError === false) {
+                $data['stack_trace'] = [];
                 foreach ($exception->getTrace() as $item) {
                     $trace = array();
                     if (isset($item['class'])) {
@@ -260,7 +260,7 @@ class ErrorHandler {
                     if (isset($item['line'])) {
                         $trace['line'] = $item['line'];
                     }
-                    $data['traces'][] = $trace;
+                    $data['stack_trace'][] = $trace;
                 }
             }
             $method = self::getLogMethod();
@@ -272,7 +272,7 @@ class ErrorHandler {
            } else {
                $message = self::getDefaultExceptionLog();
            }
-           error_log($message);
+           error_log('PHP ' . $message);
         }
     }
 
@@ -287,7 +287,7 @@ class ErrorHandler {
             E_NOTICE            => 'notice',
             E_USER_NOTICE       => 'notice',
             E_WARNING           => 'warn',
-            E_USER_WARNING      => 'warn',
+            E_USER_WARNING      => 'warn'
         );
         return $maps[self::$exception->getSeverity()];
     }

@@ -80,7 +80,29 @@ class DebugPage {
         }
         echo '<h2>stack trace</h2>';
         if ($isError === false || $exception->getCode() === 0) {
-            echo implode('<br>', explode("\n", $exception->getTraceAsString()));
+            $stackTrace = $exception->getTrace();
+            if ($isError) {
+                array_shift($stackTrace);
+            }
+            $index = 0;
+            foreach ($stackTrace as $item) {
+                $trace = [];
+                //if (isset($item['class'])) {
+                //    $trace['class'] = $item['class'];
+                //}
+                if (isset($item['function'])) {
+                    $trace['function'] = $item['function'];
+                }
+                if (isset($item['file'])) {
+                    $trace['file'] = $item['file'];
+                }
+                if (isset($item['line'])) {
+                    $trace['line'] = $item['line'];
+                }
+                echo '<br>#', $index, ' ' , $trace['file'], '(',$trace['line'],'): ', $trace['function'];
+                ++$index;
+            }
+            //echo implode('<br>', explode("\n", $exception->getTraceAsString()));
         } else {
             echo '<span style="color:#999;background-color:#eee">UNAVAILABLE</span>';
         }
