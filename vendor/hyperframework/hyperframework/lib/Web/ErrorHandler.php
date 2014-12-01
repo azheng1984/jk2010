@@ -255,26 +255,49 @@ class ErrorHandler {
     }
 
     protected static function renderCustomErrorPage() {
-        //todo
-        ViewDispatcher::run(
-            PathInfo::get('/', 'ErrorApp'), self::$exception
-        );
+        $template = new ViewTemplate(['exception' => self::$exception]);
+        $format = static::getCustomErrorPageFormat();
+        $prefix = $template->getRootPath() . DIRECTORY_SEPARATOR
+            . '_error' . DIRECTORY_SEPARATOR . 'show.';
+        if ($format !== null && $format !== 'php') {
+            if (file_exists($prefix . $format . '.php')) {
+                $template->load('_error/show.' . $format . '.php');
+                return;
+            } 
+        }
+        if (file_exists($prefix . 'php')) {
+            $template->load('_error/show.php');
+            return;
+        }
+        if (self::$exception instanceof HttpException) {
+            echo self::$exception->getCode();
+        } else {
+            echo '500 Internal Server Error';
+        }
     }
 
-    protected static function getDefaultErrorLog() {
-        $exception = self::$exception;
-        return ErrorCodeHelper::toString($exception->getSeverity())
-            . ': ' . $exception->getMessage() . ' in ' . $exception->getFile()
-            . ' on line ' . $exception->getLine();
+    protected static function getCustomErrorPageFormat() {
+        $pattern = '#\.([0-9a-zA-Z]+)$#';
+        $requestPath = RequestPath::get();
+        if (preg_match($pattern, $requestPath, $matches) === 1) {
+            return $matches[1];
+        }
     }
 
-    protected static function getDefaultExceptionLog() {
-        return 'Fatal error: Uncaught ' . self::$exception;
-    }
+//    protected static function getDefaultErrorLog() {
+//        $exception = self::$exception;
+//        return ErrorCodeHelper::toString($exception->getSeverity())
+//            . ': ' . $exception->getMessage() . ' in ' . $exception->getFile()
+//            . ' on line ' . $exception->getLine();
+//    }
+//
+//    protected static function getDefaultExceptionLog() {
+//        return 'Fatal error: Uncaught ' . self::$exception;
+//    }
 
     protected static function writeLog() {
-        $exception = self::$exception;
         if (Config::get('hyperframework.error_handler.enable_logger')) {
+            $exception = self::$exception;
             $name = null;
             $data = [];
             $data['file'] = $exception->getFile();

@@ -4,7 +4,7 @@ namespace Hyperframework\Blog;
 return array(
     '[hyperframework]',
     'app_root_namespace' => __NAMESPACE__,
-    'web.debug' => true,
+//    'web.debug' => true,
     'asset.concatenate_manifest' => false,
     'asset.enable_versioning' => true,
     'asset.enable_proxy' => true,
