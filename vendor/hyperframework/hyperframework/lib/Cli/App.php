@@ -9,7 +9,8 @@ class App {
     private $arguments = [];
 
     public function run() {
-        throw new CommandParsingException;
+        //throw new CommandParsingException;
+        1/0;
         $this->initialize();
         $this->executeCommand();
         $this->finalize();

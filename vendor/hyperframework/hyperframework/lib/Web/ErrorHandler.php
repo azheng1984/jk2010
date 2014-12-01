@@ -12,11 +12,10 @@ class ErrorHandler {
     private static $exception;
     private static $isError;
     private static $shouldExit;
-    private static $exitLevel;
     private static $isDebugEnabled;
     private static $outputBufferLevel;
     private static $errorReporting;
-    private static $ignoredErrors;
+    private static $previousErrors = [];
 
     final public static function run() {
         self::$isDebugEnabled = ini_get('display_errors') === '1';
@@ -42,9 +41,16 @@ class ErrorHandler {
         error_reporting(self::$errorReporting);
         self::$exception = $exception;
         self::$isError = $isError;
-        if ($isError) {
-            $exitLevel = E_ALL & ~E_STRICT & ~E_DEPRECATED & ~E_USER_DEPRECATED;
-            self::$shouldExit = (self::$exception->getSeverity() & $exitLevel)
+        if ($isError && $exception->getCode() === 0) {
+            $recoverableErrors = Config::get(
+                'hyperframework.error_handler.recoverable_errors'
+            );
+            if ($recoverableErrors === null) {
+                $recoverableErrors =
+                    E_STRICT & E_DEPRECATED & E_USER_DEPRECATED;
+            }
+            $fatalErrors = E_ALL & ~$recoverableErrors;
+            self::$shouldExit = (self::$exception->getSeverity() & $fatalErrors)
                 !== 0;
         } else {
             self::$shouldExit = true;
@@ -55,6 +61,7 @@ class ErrorHandler {
                 self::$exception = null;
                 self::$isError = null;
                 self::disableErrorReporting();
+                self::previousErrors[] = $exception;
                 return;
             }
         }
@@ -198,7 +205,7 @@ class ErrorHandler {
 
     protected static function renderDebugPage($headers, $outputBuffer) {
         DebugPage::render(
-            self::$exception, self::$ignoredErrors, $headers, $outputBuffer
+            self::$exception, self::$previousErrors, $headers, $outputBuffer
         );
     }
 
@@ -221,30 +228,19 @@ class ErrorHandler {
     }
 
     protected static function writeLog() {
-        $isError = self::$isError;
         $exception = self::$exception;
         if (Config::get('hyperframework.error_handler.enable_logger')) {
             $name = null;
-            $data = array();
-            $method = null;
-            if ($isError) {
-                $name = 'php_error.' . strtolower(
-                    ErrorCodeHelper::toString($exception->getSeverity())
-                );
-                $data['severity'] = ErrorCodeHelper::toString(
-                    $exception->getSeverity()
-                );
-            } else {
-                $name = 'php_error.exception';
+            $data = [];
+            $data['file'] = $exception->getFile();
+            $data['line'] = $exception->getLine();
+            if (self::$isError === false) {
+                $name = 'php_exception';
                 $data['exception'] = get_class($exception);
                 $code = $exception->getCode();
                 if ($code !== null) {
                     $data['code'] = $code;
                 }
-            }
-            $data['file'] = $exception->getFile();
-            $data['line'] = $exception->getLine();
-            if ($isError === false) {
                 $data['stack_trace'] = [];
                 foreach ($exception->getTrace() as $item) {
                     $trace = array();
@@ -262,12 +258,17 @@ class ErrorHandler {
                     }
                     $data['stack_trace'][] = $trace;
                 }
+            } else {
+                $name = 'php_error';
+                $data['severity'] = ErrorCodeHelper::toString(
+                    $exception->getSeverity()
+                );
             }
             $method = self::getLogMethod();
             Logger::$method($name, $exception->getMessage(), $data);
         } else {
            $message = null;
-           if($isError) {
+           if(self::$isError) {
                $message = self::getDefaultErrorLog();
            } else {
                $message = self::getDefaultExceptionLog();
@@ -304,7 +305,7 @@ class ErrorHandler {
         return self::$shouldExit;
     }
 
-    protected static function getIgnoredErrors() {
-        return self::$ignoredErrors;
+    protected static function getPreviousErrors() {
+        return self::$previousErrors;
     }
 }
