@@ -32,9 +32,9 @@ class Debugger {
         }
         echo $exception->getMessage();
         echo '</h2>';
-        if ($exception->getFile() === 'Unknown') {
+        if ($exception->getFile() === 'undefined') { //???
             echo '<h3>FILE:</h3>';
-            echo '<span style="color:#999;background-color:#eee">UNKNOWN</span>';
+            echo '<span style="color:#999;background-color:#eee">undefined</span>';
         } else {
             echo '<h3>FILE: ',$exception->getFile(), '</h3>';
             $sourceCode = highlight_string(
@@ -104,7 +104,7 @@ class Debugger {
             }
             //echo implode('<br>', explode("\n", $exception->getTraceAsString()));
         } else {
-            echo '<span style="color:#999;background-color:#eee">UNAVAILABLE</span>';
+            echo '<span style="color:#999;background-color:#eee">undefined</span>';
         }
         if ($ignoredErrors !== null) {
             echo '<h2>ignored errors</h2>';
@@ -116,7 +116,7 @@ class Debugger {
             echo '<h4>Already Sent</h4>';
         }
         if (count($headers) === 0) {
-            echo '<span style="color:#999;background-color:#eee">EMPTY</span>';
+            echo '<span style="color:#999;background-color:#eee">empty</span>';
         } else {
             foreach ($headers as $header) {
                 echo $header . '<br>';
@@ -129,7 +129,7 @@ class Debugger {
             echo htmlspecialchars($outputBuffer, ENT_QUOTES | ENT_SUBSTITUTE);
             echo '</pre>';
         } else {
-            echo '<span style="color:#999;background-color:#eee">EMPTY</span>';
+            echo '<span style="color:#999;background-color:#eee">empty</span>';
         }
         echo '<hr /> Powered by Hyperframework';
     }

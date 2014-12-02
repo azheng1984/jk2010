@@ -34,7 +34,7 @@ class ErrorException extends Base {
             . $this->getLine()
             . PHP_EOL . 'Stack trace:';
         if ($this->isFatal()) {
-            $message .= 'unavaiable';
+            $message .= 'undefined';
         } else {
             $stackTrace = $this->getTrace();
             array_shift($stackTrace);
