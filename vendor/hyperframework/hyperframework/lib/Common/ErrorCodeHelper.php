@@ -2,14 +2,13 @@
 namespace Hyperframework\Common;
 
 class ErrorCodeHelper {
-    public static function isFatalError($code) {
+    public static function isFatal($code) {
         return in_array($code, array(
             E_ERROR,
+            E_USER_ERROR,
             E_PARSE,
             E_CORE_ERROR,
-            E_CORE_WARNING,
-            E_COMPILE_ERROR,
-            E_COMPILE_WARNING
+            E_COMPILE_ERROR
         ));
     }
 
@@ -19,7 +18,7 @@ class ErrorCodeHelper {
             case E_USER_DEPRECATED:   return 'User Deprecated';
             case E_NOTICE:            return 'Notice';
             case E_USER_NOTICE:       return 'User Notice';
-            case E_STRICT:            return 'Runtime Notice';
+            case E_STRICT:            return 'Strict Standards';
             case E_WARNING:           return 'Warning';
             case E_USER_WARNING:      return 'User Warning';
             case E_COMPILE_WARNING:   return 'Compile Warning';

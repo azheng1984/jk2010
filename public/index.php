@@ -1,5 +1,6 @@
 <?php
 namespace hi;
+require 'hi.php';
 //function hi($controller) {
 //    echo 'start out';
 //    if (false) {

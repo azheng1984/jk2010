@@ -1,5 +1,4 @@
 <?php
-namespace HHHHH;
+function hi($hi) {
 
-$this->hi = 'xx';
-echo __namespace__;
+}

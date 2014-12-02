@@ -8,8 +8,10 @@ abstract class App {
     private $controller;
 
     public function run() {
-        df();
-        //throw new NotFoundException;
+        //throw new InternalServerErrorException;
+    //    include('');
+        $tag = 'xx x';
+array_shift(explode(' ',$tag));
         $this->initialize();
         $controller = $this->getController();
         $controller->run();
