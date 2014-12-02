@@ -26,70 +26,24 @@ class LogHandler {
     }
 
     protected static function format($level, array $arguments) {
+        $name = isset($arguments['name']) ? $arguments['name'] : null;
+        $message = isset($arguments['message']) ? $arguments['message'] : null;
+        $data = isset($arguments['data']) ? $arguments['data'] : null;
         $count = count($arguments);
-        if ($count !== 0 && $arguments[0] instanceof Closure) {
-            if ($count > 1) {
-                throw new Exception;
-            }
-            $callback = $arguments[0];
-            $arguments = $callback();
-            if (is_array($arguments)) {
-                $count = count($arguments);
-            } else {
-                throw new Exception;
-            }
-        }
-        if ($count < 2) {
-            throw new Exception;
-        }
-        if (preg_match('/^[A-Z0-9_]+$/', $level) !== 1) {
-            throw new Exception;
-        }
         $result = self::getTimestamp() . ' | ' . $level;
-        $name = null;
-        if ((string)$arguments[0] !== '') {
-            $name = $arguments[0];
-            if (preg_match('/^[a-zA-Z0-9_.]+$/', $name) === 0
-                || $name[0] === '.'
-                || substr($name, -1) === '.'
-            ) {
-                throw new Exception;
-            }
+        if ((string)$name !== '') {
             $result .= ' | ' . $name;
         }
-        if ($count === 3 && is_array($arguments[2])
-            || $count === 2 && is_array($arguments[1])
-        ) {
-            if ($count === 3 && is_array($arguments[1])) {
-                $arguments[1] = call_user_func_array('sprintf', $arguments[1]);
-            } elseif ($count === 2) {
-                $arguments[2] = $arguments[1];
-                $arguments[1] = null;
-            }
-            if ((string)$arguments[1] !== '') {
-                if ($name === null) {
-                    $result .= ' ||';
-                } else {
-                    $result .= ' |';
-                }
-                self::appendValue($result, $arguments[1]);
-            }
-            $result .= self::convert($arguments[2]);
-        } else {
-            $message = null;
-            if ($count > 2 || is_array($arguments[1])) {
-                $message = call_user_func_array('sprintf', $arguments);
+        if ((string)$message !== '') {
+            if ((string)$name === '') {
+                $result .= ' ||';
             } else {
-                $message = $arguments[1];
+                $result .= ' |';
             }
-            if ((string)$message !== '') {
-                if ($name === null) {
-                    $result .= ' ||';
-                } else {
-                    $result .= ' |';
-                }
-                self::appendValue($result, $message);
-            }
+            self::appendValue($result, $message);
+        }
+        if ($data !== null) {
+            $result .= self::convert($data);
         }
         return $result . PHP_EOL;
     }

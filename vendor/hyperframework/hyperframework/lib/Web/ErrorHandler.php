@@ -36,7 +36,7 @@ class ErrorHandler {
             self::$outputBufferLevel = ob_get_level();
             ini_set('display_errors', '0');
         }
-        self::$isLoggerEnabled =false;
+        self::$isLoggerEnabled =
             Config::get('hyperframework.error_handler.enable_logger') === true;
         if (self::$isLoggerEnabled) {
             ini_set('log_errors', '0');
@@ -282,15 +282,11 @@ class ErrorHandler {
         $exception = self::$exception;
         $message = PHP_EOL
             . ErrorCodeHelper::toString($exception->getSeverity());
-        if (self::$shouldExit && $exception->getCode() !== 1) {
-            $message = '(fatal)';
-        }
         return  $message . ': ' . $exception->getMessage() . ' in '
             . $exception->getFile() . ' on line ' . $exception->getLine();
     }
 
     protected static function displayNonFatalErrorForDebugging() {
-        echo 'xxx';
         $isHtml = ini_get('html_errors') === '1';
         $prependString = ini_get('error_prepend_string');
         $appendString = ini_get('error_append_string');
@@ -344,14 +340,18 @@ class ErrorHandler {
             ));
         }
         $method = self::getLogMethod();
-        Logger::$method($name, $exception->getMessage(), $data);
+        Logger::$method([
+            'name' => $name,
+            'message' => $exception->getMessage(),
+            'data' => $data
+        ]);
     }
 
     private static function getLogMethod() {
         if (self::$shouldExit) {
             return 'fatal';
         }
-        $maps = array(
+        $maps = [
             E_STRICT            => 'info',
             E_DEPRECATED        => 'info',
             E_USER_DEPRECATED   => 'info',
@@ -361,7 +361,7 @@ class ErrorHandler {
             E_USER_WARNING      => 'warn',
             E_CORE_WARNING      => 'warn',
             E_RECOVERABLE_ERROR => 'error'
-        );
+        ];
         return $maps[self::$exception->getSeverity()];
     }
 
