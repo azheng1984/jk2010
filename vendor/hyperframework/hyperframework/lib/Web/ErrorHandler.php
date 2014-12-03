@@ -149,7 +149,7 @@ class ErrorHandler extends Base {
         $template = new ViewTemplate(
             ['source' => self::getSource(), 'type' => $type]
         );
-        $format = static::getCustomErrorViewFormat();
+        $format = static::getErrorViewFormat();
         $prefix = $template->getRootPath() . DIRECTORY_SEPARATOR
             . '_error' . DIRECTORY_SEPARATOR . 'show.';
         if ($format !== null && $format !== 'php') {
@@ -170,7 +170,7 @@ class ErrorHandler extends Base {
         }
     }
 
-    protected static function getCustomErrorViewFormat() {
+    protected static function getErrorViewFormat() {
         $pattern = '#\.([0-9a-zA-Z]+)$#';
         $requestPath = RequestPath::get();
         if (preg_match($pattern, $requestPath, $matches) === 1) {
