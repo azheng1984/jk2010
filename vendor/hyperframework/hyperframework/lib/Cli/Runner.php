@@ -2,6 +2,7 @@
 namespace Hyperframework\Cli;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Common\ErrorHandler;
 use Hyperframework\Common\Runner as Base;
 
 class Runner extends Base {

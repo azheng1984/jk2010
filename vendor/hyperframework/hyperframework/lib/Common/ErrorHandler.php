@@ -137,10 +137,6 @@ class ErrorHandler {
         static::displayError();
     }
 
-    protected static function displayNonFatalError() {
-        static::displayError();
-    }
-
     protected static function writeLog() {
         if (self::$isLoggerEnabled) {
             $source = self::$source;
