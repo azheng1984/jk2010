@@ -8,6 +8,7 @@ abstract class App {
     private $controller;
 
     public function run() {
+        declare(adsf='adf');
         //echo $x;
 //        echo  new InternalServerErrorException;
 //        try{

@@ -11,8 +11,8 @@ class Error {
     private $trace;
 
     public function __construct(
-        $message = '',
         $type = E_ERROR,
+        $message = '',
         $file = __FILE__,
         $line = __LINE__,
         array $context = null,
@@ -26,6 +26,8 @@ class Error {
         $this->context = $context;
         $this->trace = $trace;
         $this->isFatal = $isFatal;
+        echo 'xx';
+        var_dump($this->isRealFatal());
     }
 
     public function getMessage() {
@@ -90,6 +92,8 @@ class Error {
     }
 
     public function isFatal() {
+        echo '!!!';
+        var_dump($this->isFatal);
         if ($this->isFatal === null) {
             $this->isFatal = $this->isRealFatal();
         }
@@ -109,9 +113,9 @@ class Error {
     public function __toString() {
         $result = $this->getTypeAsString();
         if ($this->isFatal() === true && $this->isRealFatal()) {
-            $result .= '(Fatal)'
+            $result .= '(Fatal)';
         }
-        $result .= ': ' . $this->getMessage() . ' in '
+        return $result . ': ' . $this->getMessage() . ' in '
             . $this->getFile() . ' on line ' . $this->getLine();
     }
 }

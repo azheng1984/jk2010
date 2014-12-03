@@ -3,16 +3,16 @@ namespace Hyperframework\Web;
 
 use Exception;
 //use ErrorException;
-use Hyperframework\Common\ErrorException;
+use Hyperframework\Common\Error;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ErrorCodeHelper;
 use Hyperframework\Logging\Logger;
 use Hyperframework\Web\Html\Debugger;
 
 class ErrorHandler {
-    private static $exception;
-    private static $errorReporting;
+    private static $source;
     private static $isError;
+    private static $errorReporting;
     private static $shouldExit;
     private static $shouldDisplayErrors;
     private static $isDebuggerEnabled;
@@ -50,48 +50,75 @@ class ErrorHandler {
         self::disableErrorReporting();
     }
 
-    final public static function handleException($exception, $isError = false) {
-        if (self::$exception !== null) {
-            if ($isError) {//fatal error only
+    final public static function handleException($exception) {
+        error_reporting(self::$errorReporting);
+        self::handle($exception);
+    }
+
+    final public static function handleError(
+        $type, $message, $file, $line, array $context
+    ) {
+        error_reporting(self::$errorReporting);
+        $isFatal = false;
+        $extraFatalErrorBitmask = Config::get(
+            'hyperframework.error_handler.extra_fatal_error_bitmask'
+        );
+        if ($extraFatalErrorBitmask === null) {
+            $extraFatalErrorBitmask =
+                E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
+        }
+        if (($type & $extraFatalErrorBitmask) !== 0) {
+            $isFatal = true;
+        }
+        $trace = array_slice(debug_backtrace(), 2);
+        return self::handle(
+            new Error(
+                $type, $message, $file, $line, $context, $trace, $isFatal
+            ),
+            true
+        );
+    }
+
+    final public static function handleFatalError() {
+        error_reporting(self::$errorReporting);
+        $error = error_get_last();
+        if ($error === null) {
+            return;
+        }
+        $error = new Error(
+            $error['type'], $error['message'], $error['file'],
+            $error['line'], null, null, true
+        );
+        if ($error->isRealFatal()) {
+            self::handle($error, true);
+        }
+    }
+
+    private static function handle($source, $isError = false) {
+        if (self::$source !== null) {
+            if ($isError) {//fatal error
                 return;
             }
-            throw $exception;
+            throw $source;
         }
-        //if (self::$isDebuggerEnabled && self::$shouldDisplayErrors) {
-        //    ini_set('display_errors', '1');
-        //}
-        error_reporting(self::$errorReporting);
-        self::$exception = $exception;
+        self::$source = $source;
         self::$isError = $isError;
-        if ($isError && $exception->isFatal() === false) {
-            $extraFatalErrorBitmask = Config::get(
-                'hyperframework.error_handler.extra_fatal_error_bitmask'
-            );
-            if ($extraFatalErrorBitmask === null) {
-                $extraFatalErrorBitmask =
-                    E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
-            }
-            if (($exception->getSeverity() & $extraFatalErrorBitmask) !== 0) {
-                self::$shouldExit = true;
-            } else {
-                self::$shouldExit = false;
-            }
+        if ($isError && $source->isFatal() === false) {
+            self::$shouldExit = false;
         } else {
             self::$shouldExit = true;
         }
-        if (self::$isLoggerEnabled) {
-            self::writeLog();
-        }
+        self::writeLog();
         if ($isError) {
             if (self::$shouldExit === false) {
-                if (self::$isDebuggerEnabled && self::$shouldDisplayErrors) {
-                    self::displayError();
-                    ini_set('display_errors', '0');
+                if (self::$shouldDisplayErrors) {
+                    static::displayError();
                 }
-                self::$exception = null;
+                self::$source = null;
                 self::$isError = null;
-                self::$previousErrors[] = $exception;
-                return false;//trigger default logger
+                self::$previousErrors[] = $source;
+                self::disableErrorReporting();
+                return;
             }
         }
         if (headers_sent() === false) {
@@ -103,16 +130,6 @@ class ErrorHandler {
                 header('HTTP/1.1 500 Internal Server Error');
             }
         }
-        if (self::$isDebuggerEnabled || self::$shouldDisplayErrors === false) {
-            if (ini_get('log_errors') === '1') {
-                error_log(
-                    'PHP Fatal error:  Uncaught '
-                    . self::$exception . PHP_EOL . '  thrown in '
-                    . self::$exception->getFile() . ' on line '
-                    . self::$exception->getLine()
-                );
-            }
-        }
         if (self::$isDebuggerEnabled) {
             $headers = headers_list();
             if (headers_sent() === false) {
@@ -120,58 +137,17 @@ class ErrorHandler {
             }
             $outputBuffer = static::getOutputBuffer();
             static::executeDebugger($headers, $outputBuffer);
-            if ($isError && $exception->isFatal()) {
-                return;
-            }
-            exit(1);
+        } elseif (self::$shouldDisplayErrors) {
+            static::displayError();
+        } elseif (headers_sent() === false) {
+            header_remove();
+            self::cleanOutputBuffer();
+            static::renderCustomErrorView();
         }
-        if (self::$shouldDisplayErrors) {
-            if ($isError && $exception->isFatal()) {
-                return;
-            }
-            //if ($isError) {
-            //    //display error
-            //    //write error log
-            //    //exit(1);
-            //    return false;
-            //}
-            throw $exception;
-        }
-        if (headers_sent()) {
-            exit(1);
-        }
-        header_remove();
-        self::cleanOutputBuffer();
-        static::renderCustomErrorView();
-        exit(1);
-    }
-
-    final public static function handleError(
-        $severity, $message, $file, $line, array $context = null
-    ) {
-        return self::handleException(
-            new ErrorException(
-                $message, 0, $severity, $file, $line, $context
-            ),
-            true
-        );
-    }
-
-    final public static function handleFatalError() {
-        $error = error_get_last();
-        if ($error === null) {
+        if ($isError && $source->isRealFatal()) {
             return;
         }
-        if (ErrorCodeHelper::isFatal($error['type'])) {
-            self::handleError(
-                $error['type'],
-                $error['message'],
-                $error['file'],
-                $error['line'],
-                null,
-                null
-            );
-        }
+        exit(1);
     }
 
     protected static function cleanOutputBuffer() {
@@ -262,7 +238,7 @@ class ErrorHandler {
             $type = 'exception';
         }
         $template = new ViewTemplate(
-            ['source' => self::$exception, 'type' => self::$isError]
+            ['source' => self::$exception, 'type' => $type]
         );
         $format = static::getCustomErrorViewFormat();
         $prefix = $template->getRootPath() . DIRECTORY_SEPARATOR
@@ -301,70 +277,65 @@ class ErrorHandler {
             . $exception->getFile() . ' on line ' . $exception->getLine();
     }
 
-    protected static function displayError() {
-        //display xmlrpc  format error
-        $isHtml = ini_get('html_errors') === '1';
-        $prependString = ini_get('error_prepend_string');
-        $appendString = ini_get('error_append_string');
-        if ($isHtml === false) {
-            echo $prependString . self::getDefaultErrorLog() . $appendString;
-            return;
+    protected static function writeLog() {
+        if (self::$isLoggerEnabled) {
+            $source = self::$source;
+            $name = null;
+            $data = [];
+            $data['file'] = $source->getFile();
+            $data['line'] = $source->getLine();
+            if (self::$isError === false) {
+                $name = 'php_exception';
+                $data['class'] = get_class($source);
+                $code = $source->getCode();
+                if ($code !== null) {
+                    $data['code'] = $code;
+                }
+                $data['trace'] = [];
+                //config, error too
+                foreach ($source->getTrace() as $item) {
+                    $trace = array();
+                    if (isset($item['class'])) {
+                        $trace['class'] = $item['class'];
+                    }
+                    if (isset($item['function'])) {
+                        $trace['function'] = $item['function'];
+                    }
+                    if (isset($item['file'])) {
+                        $trace['file'] = $item['file'];
+                    }
+                    if (isset($item['line'])) {
+                        $trace['line'] = $item['line'];
+                    }
+                    $data['trace'][] = $trace;
+                }
+            } else {
+                $name = 'php_error';
+                $data['type'] = strtolower($source->getTypeAsString());
+            }
+            $method = self::getLogMethod();
+            Logger::$method([
+                'name' => $name,
+                'message' => $source->getMessage(),
+                'data' => $data
+            ]);
+        } else {
+            if (ini_get('log_errors') === '1') {
+                static::writeDefaultErrorLog();
+            }
         }
-        $exception = self::$exception;
-        $message = $prependString . '<br/><b>'
-            . ErrorCodeHelper::toString($exception->getSeverity()) . '</b>';
-        echo $message . ': ' . $exception->getMessage()
-            . ' in <b>' . $exception->getFile()
-            . '</b> on line <b>' . $exception->getLine() . '</b><br/>'
-            . $appendString;
     }
 
-//    protected static function displayNonFatalErrorForDebugging() {
-//        static::displayError();
-//    }
-
-    protected static function writeLog() {
-        $exception = self::$exception;
-        $name = null;
-        $data = [];
-        $data['file'] = $exception->getFile();
-        $data['line'] = $exception->getLine();
-        if (self::$isError === false) {
-            $name = 'php_exception';
-            $data['class'] = get_class($exception);
-            $code = $exception->getCode();
-            if ($code !== null) {
-                $data['code'] = $code;
-            }
-            $data['stack_trace'] = [];
-            foreach ($exception->getTrace() as $item) {
-                $trace = array();
-                if (isset($item['class'])) {
-                    $trace['class'] = $item['class'];
-                }
-                if (isset($item['function'])) {
-                    $trace['function'] = $item['function'];
-                }
-                if (isset($item['file'])) {
-                    $trace['file'] = $item['file'];
-                }
-                if (isset($item['line'])) {
-                    $trace['line'] = $item['line'];
-                }
-                $data['stack_trace'][] = $trace;
-            }
+    protected static function writeDefaultErrorLog() {
+        if (self::$isError) {
+            error_log('PHP ' . self::$source);
         } else {
-            $name = 'php_error';
-            $data['type'] = strtolower(ErrorCodeHelper::toString(
-                $exception->getSeverity()
-            ));
+            error_log('PHP Fatal error:  Uncaught '
+                . self::$source. PHP_EOL . '  thrown in '
+                . self::$source->getFile() . ' on line '
+                . self::$source->getLine()
+            );
         }
-        $method = self::getLogMethod();
-        Logger::$method([
-            'name' => $name,
-            'message' => $exception->getMessage(),
-            'data' => $data
-        ]);
     }
 
     private static function getLogMethod() {
@@ -382,14 +353,11 @@ class ErrorHandler {
             E_CORE_WARNING      => 'warn',
             E_RECOVERABLE_ERROR => 'error'
         ];
-        return $maps[self::$exception->getSeverity()];
-    }
-
-    final protected static function getException() {
-        return self::$exception;
+        return $maps[self::$source->getType()];
     }
 
     final protected static function getSource() {
+        return self::$source;
     }
 
     final protected static function isError() {
@@ -404,6 +372,10 @@ class ErrorHandler {
         return self::$shouldExit;
     }
 
+    final protected static function isLoggerEnabled() {
+        return self::$isLoggerEnabled;
+    }
+
     protected static function getPreviousErrors() {
         return self::$previousErrors;
     }
@@ -411,7 +383,49 @@ class ErrorHandler {
     private static function disableErrorReporting() {
         if (self::$errorReporting & E_COMPILE_WARNING) {
             error_reporting(E_COMPILE_WARNING);
+            return;
         }
         error_reporting(0);
+    }
+
+    protected static function displayError() {
+        if (ini_get('xmlrpc_errors') === '1') {
+            $code = ini_get('xmlrpc_error_number');
+            echo '<?xml version="1.0"?><code></code>';
+            return;
+        }
+        $isHtml = ini_get('html_errors') === '1';
+        $prependString = ini_get('error_prepend_string');
+        $appendString = ini_get('error_append_string');
+        if ($isHtml === false) {
+            echo $prependString . PHP_EOL  . 'PHP ';
+            if ($isError === false) {
+                echo 'Fatal error: Uncaught ';
+            }
+            echo self::$source;
+            if ($isError === false) {
+                echo '  thrown in ',
+                    self::$source->getFile(), ' on line ',
+                    self::$source->getLine();
+            }
+            echo $appendString;
+            return;
+        }
+        $source = self::$source;
+        if (self::$isError) {
+            echo  $prependString . '<br/><b>'
+                . $source->getTypeAsString() . '</b>'
+                . ': ' . $source->getMessage()
+                . ' in <b>' . $source->getFile()
+                . '</b> on line <b>' . $source->getLine() . '</b><br/>'
+                . $appendString;
+        } else {
+            echo '<b>Fatal error</b>: Uncaught ';
+            echo self::$source;
+            echo '  thrown in <b>',
+                self::$source->getFile(), '</b> on line <b>',
+                self::$source->getLine() . '</b><br/>';
+            echo $appendString;
+        }
     }
 }
