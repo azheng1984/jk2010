@@ -90,7 +90,7 @@ class ErrorHandler {
         }
     }
 
-    protected static function handle($source, $isError = false) {
+    private static function handle($source, $isError = false) {
         if (self::$source !== null) {
             if ($isError) {//fatal error
                 return;
@@ -277,7 +277,9 @@ class ErrorHandler {
         if (self::$isError) {
             echo  $prependString . '<br/><b>'
                 . $source->getTypeAsString();
-            if ($source->isFatal() === true && $source->isRealFatal() === false) {
+            if ($source->isFatal() === true
+                && $source->isRealFatal() === false
+            ) {
                 echo '(Fatal)';
             }
             echo '</b>'
