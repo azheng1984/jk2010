@@ -21,13 +21,15 @@ abstract class App {
 //        exit;
 //        
 //        var_dump($e->getTraceAsString());
-        include('');
+//        include('');
         $tag = 'xx x';
         array_shift(explode(' ',$tag));
         $this->initialize();
         $controller = $this->getController();
         $controller->run();
         $this->finalize();
+        $tag = 'xx x';
+        array_shift(explode(' ',$tag));
     }
 
     public function redirect($url, $statusCode = 302) {

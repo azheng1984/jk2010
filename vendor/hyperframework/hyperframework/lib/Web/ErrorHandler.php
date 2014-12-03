@@ -11,6 +11,7 @@ use Hyperframework\Web\Html\Debugger;
 
 class ErrorHandler {
     private static $exception;
+    private static $errorReporting;
     private static $isError;
     private static $shouldExit;
     private static $shouldDisplayErrors;
@@ -41,13 +42,12 @@ class ErrorHandler {
         if (self::$isLoggerEnabled) {
             ini_set('log_errors', '0');
         }
+        self::$errorReporting = error_reporting();
         $class = get_called_class();
-        set_error_handler(array($class, 'handleError'));
+        set_error_handler(array($class, 'handleError'), self::$errorReporting);
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
-        if (self::$shouldDisplayErrors) {
-            ini_set('display_errors', '0');
-        }
+        self::disableErrorReporting();
     }
 
     final public static function handleException($exception, $isError = false) {
@@ -57,9 +57,10 @@ class ErrorHandler {
             }
             throw $exception;
         }
-        if (self::$isDebuggerEnabled && self::$shouldDisplayErrors) {
-            ini_set('display_errors', '1');
-        }
+        //if (self::$isDebuggerEnabled && self::$shouldDisplayErrors) {
+        //    ini_set('display_errors', '1');
+        //}
+        error_reporting(self::$errorReporting);
         self::$exception = $exception;
         self::$isError = $isError;
         if ($isError && $exception->isFatal() === false) {
@@ -84,7 +85,7 @@ class ErrorHandler {
         if ($isError) {
             if (self::$shouldExit === false) {
                 if (self::$isDebuggerEnabled && self::$shouldDisplayErrors) {
-                    self::displayNonFatalErrorForDebugging();
+                    self::displayError();
                     ini_set('display_errors', '0');
                 }
                 self::$exception = null;
@@ -128,11 +129,12 @@ class ErrorHandler {
             if ($isError && $exception->isFatal()) {
                 return;
             }
-            if ($isError) {
-                //display error
-                //write error log
-                exit(1);
-            }
+            //if ($isError) {
+            //    //display error
+            //    //write error log
+            //    //exit(1);
+            //    return false;
+            //}
             throw $exception;
         }
         if (headers_sent()) {
@@ -253,7 +255,15 @@ class ErrorHandler {
     }
 
     protected static function renderCustomErrorView() {
-        $template = new ViewTemplate(['exception' => self::$exception]);
+        $type = null;
+        if (self::$isError === true) {
+            $type = 'error';
+        } else {
+            $type = 'exception';
+        }
+        $template = new ViewTemplate(
+            ['source' => self::$exception, 'type' => self::$isError]
+        );
         $format = static::getCustomErrorViewFormat();
         $prefix = $template->getRootPath() . DIRECTORY_SEPARATOR
             . '_error' . DIRECTORY_SEPARATOR . 'show.';
@@ -291,7 +301,8 @@ class ErrorHandler {
             . $exception->getFile() . ' on line ' . $exception->getLine();
     }
 
-    protected static function displayNonFatalErrorForDebugging() {
+    protected static function displayError() {
+        //display xmlrpc  format error
         $isHtml = ini_get('html_errors') === '1';
         $prependString = ini_get('error_prepend_string');
         $appendString = ini_get('error_append_string');
@@ -307,6 +318,10 @@ class ErrorHandler {
             . '</b> on line <b>' . $exception->getLine() . '</b><br/>'
             . $appendString;
     }
+
+//    protected static function displayNonFatalErrorForDebugging() {
+//        static::displayError();
+//    }
 
     protected static function writeLog() {
         $exception = self::$exception;
@@ -340,7 +355,7 @@ class ErrorHandler {
             }
         } else {
             $name = 'php_error';
-            $data['severity'] = strtolower(ErrorCodeHelper::toString(
+            $data['type'] = strtolower(ErrorCodeHelper::toString(
                 $exception->getSeverity()
             ));
         }
@@ -374,11 +389,15 @@ class ErrorHandler {
         return self::$exception;
     }
 
-    final protected static function getError() {
+    final protected static function getSource() {
     }
 
     final protected static function isError() {
         return self::$isError;
+    }
+
+    final protected static function isException() {
+        return !self::$isError;
     }
 
     final protected static function shouldExit() {
@@ -387,5 +406,12 @@ class ErrorHandler {
 
     protected static function getPreviousErrors() {
         return self::$previousErrors;
+    }
+
+    private static function disableErrorReporting() {
+        if (self::$errorReporting & E_COMPILE_WARNING) {
+            error_reporting(E_COMPILE_WARNING);
+        }
+        error_reporting(0);
     }
 }
