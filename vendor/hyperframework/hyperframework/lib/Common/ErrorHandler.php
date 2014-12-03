@@ -186,7 +186,7 @@ class ErrorHandler {
         }
     }
 
-    private static function writeDefaultErrorLog() {
+    protected static function writeDefaultErrorLog() {
         if (self::$isError) {
             error_log('PHP ' . self::$source);
         } else {
