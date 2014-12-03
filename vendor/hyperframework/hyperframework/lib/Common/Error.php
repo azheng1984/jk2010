@@ -6,7 +6,6 @@ use ErrorException as Base;
 class ErrorException extends Base {
     private $isFatal;
     private $context;
-    private $sourceTrace;
 
     public function __construct(
         $message = '',
@@ -15,7 +14,6 @@ class ErrorException extends Base {
         $file = __FILE__,
         $line = __LINE__,
         array $context = null,
-        $sourceTrace = null,
         $previous = null
     ) {
         parent::__construct(
@@ -35,31 +33,25 @@ class ErrorException extends Base {
         return $this->isFatal;
     }
 
-    public function getSourceTrace() {
-        return $this->sourceTrace;
-    }
-
-    public function getSourceTraceAsString() {
-        if ($this->sourceTrace === null) {
-            return 'undefined';
-        } else {
-            $result = null;
-            $index = 0;
-            foreach ($this->sourceTrace as $item) {
-                $result .= PHP_EOL . '#' . $index . ' '
-                    . $item['file'] . '(' . $item['line'] . '): '
-                    . $item['function'];
-                ++$index;
-            }
-        }
-    }
-
     public function __toString() {
         $message = 'exception \'' . get_called_class(). '\' with message \''
             . $this->getMessage() . '\' in ' . $this->getFile() . ':'
             . $this->getLine()
-            . PHP_EOL . 'Stack trace:'
-            . $this->getSourceTraceAsString();
+            . PHP_EOL . 'Stack trace:';
+        if ($this->isFatal()) {
+            $message .= 'undefined';
+        } else {
+            $stackTrace = $this->getTrace();
+            array_shift($stackTrace);
+            array_shift($stackTrace);
+            $index = 0;
+            foreach ($stackTrace as $trace) {
+                $message .= PHP_EOL . '#' . $index . ' '
+                    . $trace['file'] . '(' . $trace['line'] . '): '
+                    . $trace['function'];
+                ++$index;
+            }
+        }
         return $message;
     }
 }

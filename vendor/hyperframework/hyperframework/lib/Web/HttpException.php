@@ -7,7 +7,7 @@ abstract class HttpException extends \Exception {
         $this->code = $statusCode;
     }
 
-    public function setHeader() {
-        header('HTTP/1.1 ' . $this->code);
+    public function getHttpHeaders() {
+        return ['HTTP/1.1 ' . $this->code];
     }
 }

@@ -8,10 +8,22 @@ abstract class App {
     private $controller;
 
     public function run() {
-        //throw new InternalServerErrorException;
-    //    include('');
+        //echo $x;
+//        echo  new InternalServerErrorException;
+//        try{
+//           throw  new InternalServerErrorException;
+//        } catch (Exception $e) {
+//           echo $e;
+//           //throw $e;
+//        }
+//        $x = new \ErrorException('xx!!');
+//        echo $x;
+//        exit;
+//        
+//        var_dump($e->getTraceAsString());
+        include('');
         $tag = 'xx x';
-array_shift(explode(' ',$tag));
+        array_shift(explode(' ',$tag));
         $this->initialize();
         $controller = $this->getController();
         $controller->run();

@@ -2,6 +2,7 @@
 namespace Hyperframework\Web;
 
 use Exception;
+//use ErrorException;
 use Hyperframework\Common\ErrorException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ErrorCodeHelper;
@@ -20,7 +21,7 @@ class ErrorHandler {
 
     final public static function run() {
         self::$shouldDisplayErrors = ini_get('display_errors') === '1';
-        self::$isDebuggerEnabled =
+        self::$isDebuggerEnabled = false;
             Config::get('hyperframework.error_handler.debug');
         if (self::$shouldDisplayErrors) {
             if (self::$isDebuggerEnabled !== false) {
@@ -34,9 +35,8 @@ class ErrorHandler {
         if (self::$isDebuggerEnabled) {
             ob_start();
             self::$outputBufferLevel = ob_get_level();
-            ini_set('display_errors', '0');
         }
-        self::$isLoggerEnabled =
+        self::$isLoggerEnabled = false;
             Config::get('hyperframework.error_handler.enable_logger') === true;
         if (self::$isLoggerEnabled) {
             ini_set('log_errors', '0');
@@ -45,12 +45,15 @@ class ErrorHandler {
         set_error_handler(array($class, 'handleError'));
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
+        if (self::$shouldDisplayErrors) {
+            ini_set('display_errors', '0');
+        }
     }
 
     final public static function handleException($exception, $isError = false) {
         if (self::$exception !== null) {
             if ($isError) {//fatal error only
-                return false;
+                return;
             }
             throw $exception;
         }
@@ -59,10 +62,21 @@ class ErrorHandler {
         }
         self::$exception = $exception;
         self::$isError = $isError;
-        if ($isError === false || $exception->isFatal()) {
-            self::$shouldExit = true;
+        if ($isError && $exception->isFatal() === false) {
+            $extraFatalErrorBitmask = Config::get(
+                'hyperframework.error_handler.extra_fatal_error_bitmask'
+            );
+            if ($extraFatalErrorBitmask === null) {
+                $extraFatalErrorBitmask =
+                    E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
+            }
+            if (($exception->getSeverity() & $extraFatalErrorBitmask) !== 0) {
+                self::$shouldExit = true;
+            } else {
+                self::$shouldExit = false;
+            }
         } else {
-            self::$shouldExit = false;
+            self::$shouldExit = true;
         }
         if (self::$isLoggerEnabled) {
             self::writeLog();
@@ -76,17 +90,19 @@ class ErrorHandler {
                 self::$exception = null;
                 self::$isError = null;
                 self::$previousErrors[] = $exception;
-                return false; //trigger default logger
+                return false;//trigger default logger
             }
         }
         if (headers_sent() === false) {
             if ($exception instanceof HttpException) {
-                $exception->setHeader();
+                foreach ($exception->getHttpHeaders() as $header) {
+                    header($header);
+                }
             } else {
                 header('HTTP/1.1 500 Internal Server Error');
             }
         }
-        if (self::$shouldDisplayErrors === false || self::$isDebuggerEnabled) {
+        if (self::$isDebuggerEnabled || self::$shouldDisplayErrors === false) {
             if (ini_get('log_errors') === '1') {
                 error_log(
                     'PHP Fatal error:  Uncaught '
@@ -103,14 +119,19 @@ class ErrorHandler {
             }
             $outputBuffer = static::getOutputBuffer();
             static::executeDebugger($headers, $outputBuffer);
-            if (self::$isError && $exception->isFatal()) {
+            if ($isError && $exception->isFatal()) {
                 return;
             }
             exit(1);
         }
         if (self::$shouldDisplayErrors) {
-            if (self::$isError && $exception->isFatal()) {
-                return false;
+            if ($isError && $exception->isFatal()) {
+                return;
+            }
+            if ($isError) {
+                //display error
+                //write error log
+                exit(1);
             }
             throw $exception;
         }
@@ -124,20 +145,12 @@ class ErrorHandler {
     }
 
     final public static function handleError(
-        $severity, $message, $file, $line, $context, $isFatal = false
+        $severity, $message, $file, $line, array $context = null
     ) {
-        if ($isFatal === false) {
-            $extraFatalErrorBitmask = Config::get(
-                'hyperframework.error_handler.extra_fatal_error_bitmask'
-            );
-            if ($extraFatalErrorBitmask === null) {
-                $extraFatalErrorBitmask =
-                    E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
-            }
-            $isFatal = 0 !== ($severity & $extraFatalErrorBitmask);
-        }
         return self::handleException(
-            new ErrorException($message, 0, $severity, $file, $line, $isFatal),
+            new ErrorException(
+                $message, 0, $severity, $file, $line, $context
+            ),
             true
         );
     }
@@ -154,7 +167,7 @@ class ErrorHandler {
                 $error['file'],
                 $error['line'],
                 null,
-                true
+                null
             );
         }
     }
@@ -359,6 +372,9 @@ class ErrorHandler {
 
     final protected static function getException() {
         return self::$exception;
+    }
+
+    final protected static function getError() {
     }
 
     final protected static function isError() {

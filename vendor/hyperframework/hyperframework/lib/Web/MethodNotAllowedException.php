@@ -11,10 +11,11 @@ class MethodNotAllowedException extends HttpException {
         $this->methods = $methods;
     }
 
-    public function setHeader() {
-        parent::setHeader();
+    public function getHttpHeaders() {
+        $headers = parent::getHttpHeaders();
         if (count($this->methods) !== 0) {
-            header('Allow: ' . implode(', ', $this->methods));
+            $headers[] = 'Allow: ' . implode(', ', $this->methods);
         }
+        return $headers;
     }
 }

@@ -80,10 +80,12 @@ class Debugger {
         }
         echo '<h2>stack trace</h2>';
         if ($isError === false || $exception->isFatal() === false) {
+            var_dump((string)$exception);
             $stackTrace = $exception->getTrace();
-            if ($isError) {
-                array_shift($stackTrace);
-            }
+            //if ($isError) {
+            //    array_shift($stackTrace);
+            //    array_shift($stackTrace);
+            //}
             $index = 0;
             foreach ($stackTrace as $item) {
                 $trace = [];
