@@ -34,7 +34,7 @@ class ErrorHandler extends Base {
         $source = static::getSource();
         if (headers_sent() === false) {
             if ($source instanceof HttpException) {
-                foreach ($source ->getHttpHeaders() as $header) {
+                foreach ($source->getHttpHeaders() as $header) {
                     header($header);
                 }
             } else {
