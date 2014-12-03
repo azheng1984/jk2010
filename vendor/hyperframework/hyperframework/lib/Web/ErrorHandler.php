@@ -7,7 +7,6 @@ use Hyperframework\Web\Html\Debugger;
 use Hyperframework\Common\ErrorHandler as Base;
 
 class ErrorHandler extends Base {
-    private static $isError;
     private static $isDebuggerEnabled;
     private static $outputBufferLevel;
 
@@ -176,5 +175,13 @@ class ErrorHandler extends Base {
         if (preg_match($pattern, $requestPath, $matches) === 1) {
             return $matches[1];
         }
+    }
+
+    final protected static function isDebuggerEnabled() {
+        return self::$isDebuggerEnabled;
+    }
+
+    final protected static function getOutputBufferLevel() {
+        return self::$outputBufferLevel;
     }
 }
