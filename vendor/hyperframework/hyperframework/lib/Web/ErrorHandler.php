@@ -112,7 +112,7 @@ class ErrorHandler {
         if ($isError) {
             if (self::$shouldExit === false) {
                 if (self::$shouldDisplayErrors) {
-                    static::displayError();
+                    static::displayNonFatalError();
                 }
                 self::$source = null;
                 self::$previousErrors[] = $source;
@@ -137,7 +137,7 @@ class ErrorHandler {
             $outputBuffer = static::getOutputBuffer();
             static::executeDebugger($headers, $outputBuffer);
         } elseif (self::$shouldDisplayErrors) {
-            static::displayError();
+            static::displayFatalError();
         } elseif (headers_sent() === false) {
             header_remove();
             self::deleteOutputBuffer();
