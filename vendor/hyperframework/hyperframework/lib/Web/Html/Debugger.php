@@ -19,7 +19,7 @@ class Debugger {
         echo '<h1>* Debug *</h1>';
         echo '<h2>';
         if ($isError) {
-            if ($exception->getCode() === 0) {
+            if ($exception->isFatal() === false) {
                 echo '[', ErrorCodeHelper::toString($exception->getSeverity()), '] ';
             } else {
                 echo '[Fatal Error] ';
@@ -79,7 +79,7 @@ class Debugger {
             echo implode("<br />", $lines);
         }
         echo '<h2>stack trace</h2>';
-        if ($isError === false || $exception->getCode() === 0) {
+        if ($isError === false || $exception->isFatal() === false) {
             $stackTrace = $exception->getTrace();
             if ($isError) {
                 array_shift($stackTrace);

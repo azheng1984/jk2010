@@ -20,7 +20,7 @@ class ErrorHandler {
 
     final public static function run() {
         self::$shouldDisplayErrors = ini_get('display_errors') === '1';
-        self::$isDebuggerEnabled = 
+        self::$isDebuggerEnabled =
             Config::get('hyperframework.error_handler.debug');
         if (self::$shouldDisplayErrors) {
             if (self::$isDebuggerEnabled !== false) {
@@ -59,18 +59,10 @@ class ErrorHandler {
         }
         self::$exception = $exception;
         self::$isError = $isError;
-        if ($isError && $exception->getCode() === 0) {
-            $extraFatalErrorBitmask = Config::get(
-                'hyperframework.error_handler.extra_fatal_error_bitmask'
-            );
-            if ($extraFatalErrorBitmask === null) {
-                $extraFatalErrorBitmask =
-                    E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
-            }
-            self::$shouldExit = 0 !==
-                (self::$exception->getSeverity() & $extraFatalErrorBitmask);
-        } else {
+        if ($isError === false || $exception->isFatal()) {
             self::$shouldExit = true;
+        } else {
+            self::$shouldExit = false;
         }
         if (self::$isLoggerEnabled) {
             self::writeLog();
@@ -84,7 +76,7 @@ class ErrorHandler {
                 self::$exception = null;
                 self::$isError = null;
                 self::$previousErrors[] = $exception;
-                return false; //trigger default log
+                return false; //trigger default logger
             }
         }
         if (headers_sent() === false) {
@@ -111,13 +103,13 @@ class ErrorHandler {
             }
             $outputBuffer = static::getOutputBuffer();
             static::executeDebugger($headers, $outputBuffer);
-            if (self::$isError && $exception->getCode() === 1) {
+            if (self::$isError && $exception->isFatal()) {
                 return;
             }
             exit(1);
         }
         if (self::$shouldDisplayErrors) {
-            if (self::$isError && $exception->getCode() === 1) {
+            if (self::$isError && $exception->isFatal()) {
                 return false;
             }
             throw $exception;
@@ -132,21 +124,21 @@ class ErrorHandler {
     }
 
     final public static function handleError(
-        $type, $message, $file, $line, $context, $isFatal = false
+        $severity, $message, $file, $line, $context, $isFatal = false
     ) {
-        $code = $isFatal ? 1 : 0;
-//        if ($isFatal === false) {
-//            $extraFatalErrorBitmask = Config::get(
-//                'hyperframework.error_handler.extra_fatal_error_bitmask'
-//            );
-//            if ($extraFatalErrorBitmask === null) {
-//                $extraFatalErrorBitmask =
-//                    E_ALL & ~(E_STRICT & E_DEPRECATED & E_USER_DEPRECATED);
-//            }
-//            $isFatal = 0 !== (self::$type & $extraFatalErrorBitmask);
-//        }
+        if ($isFatal === false) {
+            $extraFatalErrorBitmask = Config::get(
+                'hyperframework.error_handler.extra_fatal_error_bitmask'
+            );
+            if ($extraFatalErrorBitmask === null) {
+                $extraFatalErrorBitmask =
+                    E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
+            }
+            $isFatal = 0 !== ($severity & $extraFatalErrorBitmask);
+        }
         return self::handleException(
-            new ErrorException($message, $code, $type, $file, $line), true
+            new ErrorException($message, 0, $severity, $file, $line, $isFatal),
+            true
         );
     }
 
@@ -262,7 +254,7 @@ class ErrorHandler {
             $template->load('_error/show.php');
             return;
         }
-        //set content type header
+        header('Content-Type:text/plain; charset=utf-8');
         if (self::$exception instanceof HttpException) {
             echo self::$exception->getCode();
         } else {
