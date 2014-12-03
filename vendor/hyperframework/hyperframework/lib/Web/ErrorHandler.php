@@ -79,6 +79,7 @@ class ErrorHandler extends Base {
         if ($content === '') {
             return;
         }
+        //config
         $charset = null;
         $encoding = null;
         foreach (headers_list() as $header) {
@@ -125,6 +126,7 @@ class ErrorHandler extends Base {
     }
 
     private static function convertOutputBufferCharset($content, $charset) {
+        //config, allow gbk
         if ($charset !== 'utf-8') {
             $result = iconv($charset, 'utf-8', $content);
             if ($result !== false) {
