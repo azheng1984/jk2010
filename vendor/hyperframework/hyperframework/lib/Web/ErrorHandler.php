@@ -392,11 +392,11 @@ class ErrorHandler {
         $appendString = ini_get('error_append_string');
         if ($isHtml === false) {
             echo $prependString . PHP_EOL  . 'PHP ';
-            if ($isError === false) {
+            if (self::$isError === false) {
                 echo 'Fatal error: Uncaught ';
             }
             echo self::$source;
-            if ($isError === false) {
+            if (self::$isError === false) {
                 echo '  thrown in ',
                     self::$source->getFile(), ' on line ',
                     self::$source->getLine();

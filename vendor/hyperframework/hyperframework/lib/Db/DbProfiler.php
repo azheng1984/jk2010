@@ -8,7 +8,7 @@ class DbProfiler {
     private static $current;
     private static $profileHandlers = array();
 
-    public static function onTransactionOperationExecuting(
+    public static function handleTransactionOperationStart(
         $connection, $operation
     ) {
         self::$current = array(
@@ -21,12 +21,12 @@ class DbProfiler {
         }
     }
 
-    public static function onTransactionOperationExecuted() {
+    public static function handleTransactionOperationEnd() {
         self::$current['running_time'] = self::getRunningTime();
         self::handleProfile(self::$current);
     }
 
-    public static function onConnectionExecuting($connection, $sql, $isQuery) {
+    public static function onConnectionExecutionStart($connection, $sql, $isQuery) {
         self::$current = array(
             'sql' => $sql, 'start_time' => microtime(true)
         );
@@ -36,16 +36,16 @@ class DbProfiler {
         }
     }
 
-    public static function onConnectionExecuted($connection, $result) {
+    public static function handleConnectionExecutionEnd($connection, $result) {
         self::$current['running_time'] = self::getRunningTime();
         self::handleProfile(self::$current);
     }
 
-    public static function onStatementExecuting($statement) {
+    public static function handleStatementExecutionStart($statement) {
         self::$current = array('start_time' => microtime(true));
     }
 
-    public static function onStatementExecuted($statement) {
+    public static function handleStatementExecutionEnd($statement) {
         $profile = array(
             'sql' => $statement->getSql(),
             'start_time' => self::$current['start_time'],
