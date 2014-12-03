@@ -66,6 +66,9 @@ class ErrorHandler extends Base {
     }
 
     protected static function getOutputBuffer() {
+        if (self::$outputBufferLevel === null) {
+            throw new Exception;
+        }
         $outputBufferLevel = ob_get_level();
         while ($outputBufferLevel > self::$outputBufferLevel) {
             ob_end_flush();
