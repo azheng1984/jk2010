@@ -26,8 +26,6 @@ class Error {
         $this->context = $context;
         $this->trace = $trace;
         $this->isFatal = $isFatal;
-        echo 'xx';
-        var_dump($this->isRealFatal());
     }
 
     public function getMessage() {
@@ -92,8 +90,6 @@ class Error {
     }
 
     public function isFatal() {
-        echo '!!!';
-        var_dump($this->isFatal);
         if ($this->isFatal === null) {
             $this->isFatal = $this->isRealFatal();
         }
@@ -115,7 +111,7 @@ class Error {
         if ($this->isFatal() === true && $this->isRealFatal()) {
             $result .= '(Fatal)';
         }
-        return $result . ': ' . $this->getMessage() . ' in '
+        return $result . ':  ' . $this->getMessage() . ' in '
             . $this->getFile() . ' on line ' . $this->getLine();
     }
 }

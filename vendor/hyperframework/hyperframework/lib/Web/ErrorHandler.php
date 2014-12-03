@@ -22,7 +22,7 @@ class ErrorHandler {
 
     final public static function run() {
         self::$shouldDisplayErrors = ini_get('display_errors') === '1';
-        self::$isDebuggerEnabled = false;
+        self::$isDebuggerEnabled =
             Config::get('hyperframework.error_handler.debug');
         if (self::$shouldDisplayErrors) {
             if (self::$isDebuggerEnabled !== false) {
@@ -122,8 +122,8 @@ class ErrorHandler {
             }
         }
         if (headers_sent() === false) {
-            if ($exception instanceof HttpException) {
-                foreach ($exception->getHttpHeaders() as $header) {
+            if ($source instanceof HttpException) {
+                foreach ($source ->getHttpHeaders() as $header) {
                     header($header);
                 }
             } else {
@@ -141,7 +141,7 @@ class ErrorHandler {
             static::displayError();
         } elseif (headers_sent() === false) {
             header_remove();
-            self::cleanOutputBuffer();
+            self::deleteOutputBuffer();
             static::renderCustomErrorView();
         }
         if ($isError && $source->isRealFatal()) {
@@ -150,7 +150,7 @@ class ErrorHandler {
         exit(1);
     }
 
-    protected static function cleanOutputBuffer() {
+    private static function deleteOutputBuffer() {
         $obLevel = ob_get_level();
         while ($obLevel > 0) {
             ob_end_clean();
@@ -197,7 +197,7 @@ class ErrorHandler {
         return $content;
     }
 
-    protected static function decodeOutputBuffer($content, $encoding) {
+    private static function decodeOutputBuffer($content, $encoding) {
         if ($encoding === 'gzip') {
             $result = file_get_contents(
                 'compress.zlib://data:;base64,' . base64_encode($content)
@@ -214,7 +214,7 @@ class ErrorHandler {
         return $content;
     }
 
-    protected static function convertOutputBufferCharset($content, $charset) {
+    private static function convertOutputBufferCharset($content, $charset) {
         if ($charset !== 'utf-8') {
             $result = iconv($charset, 'utf-8', $content);
             if ($result !== false) {
@@ -226,7 +226,7 @@ class ErrorHandler {
 
     protected static function executeDebugger($headers, $outputBuffer) {
         Debugger::execute(
-            self::$exception, self::$previousErrors, $headers, $outputBuffer
+            self::$source, self::$previousErrors, $headers, $outputBuffer
         );
     }
 
@@ -267,14 +267,6 @@ class ErrorHandler {
         if (preg_match($pattern, $requestPath, $matches) === 1) {
             return $matches[1];
         }
-    }
-
-    private static function getDefaultErrorLog() {
-        $exception = self::$exception;
-        $message = PHP_EOL
-            . ErrorCodeHelper::toString($exception->getSeverity());
-        return  $message . ': ' . $exception->getMessage() . ' in '
-            . $exception->getFile() . ' on line ' . $exception->getLine();
     }
 
     protected static function writeLog() {
@@ -361,22 +353,24 @@ class ErrorHandler {
     }
 
     final protected static function isError() {
+        if (self::$source === null) {
+            throw new Exception;
+        }
         return self::$isError;
     }
 
     final protected static function isException() {
+        if (self::$source === null) {
+            throw new Exception;
+        }
         return !self::$isError;
-    }
-
-    final protected static function shouldExit() {
-        return self::$shouldExit;
     }
 
     final protected static function isLoggerEnabled() {
         return self::$isLoggerEnabled;
     }
 
-    protected static function getPreviousErrors() {
+    final protected static function getPreviousErrors() {
         return self::$previousErrors;
     }
 
@@ -414,7 +408,11 @@ class ErrorHandler {
         $source = self::$source;
         if (self::$isError) {
             echo  $prependString . '<br/><b>'
-                . $source->getTypeAsString() . '</b>'
+                . $source->getTypeAsString();
+            if ($source->isFatal() === true && $source->isRealFatal() === false) {
+                echo '(Fatal)';
+            }
+            echo '</b>'
                 . ': ' . $source->getMessage()
                 . ' in <b>' . $source->getFile()
                 . '</b> on line <b>' . $source->getLine() . '</b><br/>'

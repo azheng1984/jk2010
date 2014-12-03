@@ -11,7 +11,7 @@ class Debugger {
         $headers = null,
         $outputBuffer = null
     ) {
-        $isError = $exception instanceof ErrorException;
+        $isError = !($exception instanceof Exception);
         $isHeadersSent = headers_sent();
         if (headers_sent() === false) {
             header('Content-Type: text/html; charset=UTF-8');
@@ -19,11 +19,11 @@ class Debugger {
         echo '<h1>* Debug *</h1>';
         echo '<h2>';
         if ($isError) {
-            if ($exception->isFatal() === false) {
-                echo '[', ErrorCodeHelper::toString($exception->getSeverity()), '] ';
-            } else {
-                echo '[Fatal Error] ';
-            }
+        //    if ($exception->isFatal() === false) {
+                echo '[', $exception->getTypeAsString(), '] ';
+        //    } else {
+        //        echo '[Fatal Error] ';
+        //    }
         } else {
             echo get_class($exception);
             if ($exception->getMessage() !== '') {
@@ -79,8 +79,7 @@ class Debugger {
             echo implode("<br />", $lines);
         }
         echo '<h2>stack trace</h2>';
-        if ($isError === false || $exception->isFatal() === false) {
-            var_dump((string)$exception);
+        if ($isError === false || $exception->isRealFatal() === false) {
             $stackTrace = $exception->getTrace();
             //if ($isError) {
             //    array_shift($stackTrace);

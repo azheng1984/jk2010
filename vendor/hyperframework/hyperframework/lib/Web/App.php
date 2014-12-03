@@ -22,7 +22,7 @@ abstract class App {
 //        exit;
 //        
 //        var_dump($e->getTraceAsString());
-//        include('');
+        include('');
         $tag = 'xx x';
         array_shift(explode(' ',$tag));
         $this->initialize();
