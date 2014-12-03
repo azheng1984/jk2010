@@ -115,7 +115,6 @@ class ErrorHandler {
                     static::displayError();
                 }
                 self::$source = null;
-                self::$isError = null;
                 self::$previousErrors[] = $source;
                 self::disableErrorReporting();
                 return;
