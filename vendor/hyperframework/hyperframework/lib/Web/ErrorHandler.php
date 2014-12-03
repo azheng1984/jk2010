@@ -181,7 +181,19 @@ class ErrorHandler extends Base {
         return self::$isDebuggerEnabled;
     }
 
+    final protected static function enableDebugger() {
+        self::$isDebuggerEnabled = true;
+    }
+
+    final protected static function disableDebugger() {
+        self::$isDebuggerEnabled = false;
+    }
+
     final protected static function getOutputBufferLevel() {
         return self::$outputBufferLevel;
+    }
+
+    final protected static function setOutputBufferLevel($value) {
+        return self::$outputBufferLevel = $value;
     }
 }
