@@ -8,6 +8,16 @@ abstract class App {
     private $controller;
 
     public function run() {
+        ob_start();
+        echo '最佳答案: 点击运行--输入msconfig 会打开系统配置实用程序 --点击启动--里面不需要的启动项可以不打勾,确定即可。';
+        ob_end_flush();
+        //var_dump(ob_get_level());
+        //ob_end_flush(); //eh
+        //var_dump(ob_get_level());
+        //ob_end_flush(); //system
+        var_dump(headers_list());
+        //var_dump(ob_get_level());
+        ob_end_flush(); //?
         declare(adsf='adf');
 //        throw new Exception('\'<>');
         //echo $x;

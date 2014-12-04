@@ -11,7 +11,7 @@ class ErrorHandler extends Base {
     private static $startupOutputBufferLevel;
 
     public static function run() {
-        self::$isDebuggerEnabled = false;
+        self::$isDebuggerEnabled =
             Config::get('hyperframework.error_handler.debug');
         if (ini_get('display_errors') === '1') {
             if (self::$isDebuggerEnabled !== false) {
@@ -26,8 +26,6 @@ class ErrorHandler extends Base {
             ob_start();
         }
         self::$startupOutputBufferLevel = ob_get_level();
-        var_dump(ob_get_level());
-        //exit;
         parent::run();
     }
 
@@ -78,6 +76,9 @@ class ErrorHandler extends Base {
             throw new Exception;
         }
         $outputBufferLevel = ob_get_level();
+        if ($outputBufferLevel < self::$startupOutputBufferLevel) {
+            return;
+        }
         while ($outputBufferLevel > self::$startupOutputBufferLevel) {
             ob_end_flush();
             --$outputBufferLevel;
