@@ -28,7 +28,8 @@ class ErrorHandler {
         register_shutdown_function(array($class, 'handleFatalError'));
         register_shutdown_function(function() {
             echo 'hi';
-            include('');
+            //include('');
+            echo 'continue';
             df();
         });
         self::disableErrorReporting();
@@ -73,9 +74,10 @@ class ErrorHandler {
 
     final public static function handleFatalError() {
         echo 'fe';
-        error_reporting(self::$errorReporting);//test error in shutdown
         $error = error_get_last();
         if ($error === null) {
+            echo 'no';
+            //report fatal error directly
             return;
         }
         $error = new Error(
@@ -83,6 +85,8 @@ class ErrorHandler {
             $error['line'], null, null, true
         );
         if ($error->isRealFatal()) {
+            echo 'ok';
+            error_reporting(self::$errorReporting);//test error in shutdown
             self::handle($error, true);
         }
     }
@@ -178,7 +182,7 @@ class ErrorHandler {
 
     protected static function writeDefaultErrorLog() {
         if (self::$isError) {
-            error_log('PHP ' . self::$source);
+            error_log('PHP ' . self::getErrorLog());
         } else {
             error_log('PHP ' . self::getExceptionErrorLog());
         }
@@ -278,7 +282,6 @@ class ErrorHandler {
 
     protected static function displayError() {
         $source = self::$source;
-        echo $source;
         if (ini_get('xmlrpc_errors') === '1') {
             $code = ini_get('xmlrpc_error_number');
             echo '<?xml version="1.0"?><methodResponse>',
