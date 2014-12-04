@@ -26,6 +26,11 @@ class ErrorHandler {
         set_error_handler(array($class, 'handleError'), self::$errorReporting);
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
+        register_shutdown_function(function() {
+            echo 'hi';
+            include('');
+            df();
+        });
         self::disableErrorReporting();
     }
 
@@ -46,7 +51,6 @@ class ErrorHandler {
         $type, $message, $file, $line, array $context
     ) {
         error_reporting(self::$errorReporting);
-        echo '!!!handle error!!!';
         $isFatal = false;
         $extraFatalErrorBitmask = Config::get(
             'hyperframework.error_handler.extra_fatal_error_bitmask'
@@ -68,12 +72,12 @@ class ErrorHandler {
     }
 
     final public static function handleFatalError() {
-        error_reporting(self::$errorReporting);
+        echo 'fe';
+        error_reporting(self::$errorReporting);//test error in shutdown
         $error = error_get_last();
         if ($error === null) {
             return;
         }
-        echo '!!!handle fatal error!!!';
         $error = new Error(
             $error['type'], $error['message'], $error['file'],
             $error['line'], null, null, true
@@ -274,7 +278,6 @@ class ErrorHandler {
 
     protected static function displayError() {
         $source = self::$source;
-        var_dump($source->getTypeAsString());
         echo $source;
         if (ini_get('xmlrpc_errors') === '1') {
             $code = ini_get('xmlrpc_error_number');
