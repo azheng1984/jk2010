@@ -157,7 +157,7 @@ class ErrorHandler {
                 $name = 'php_error';
                 $data['type'] = strtolower($source->getTypeAsString());
             }
-            $method = self::getLogMethod();
+            $method = self::getLoggerMethod();
             Logger::$method([
                 'name' => $name,
                 'message' => $source->getMessage(),
@@ -185,7 +185,7 @@ class ErrorHandler {
             . self::$source->getLine();
     }
 
-    private static function getLogMethod() {
+    private static function getLoggerMethod() {
         if (self::$shouldExit) {
             return 'fatal';
         }
