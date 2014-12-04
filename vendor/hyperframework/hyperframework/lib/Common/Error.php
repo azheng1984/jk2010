@@ -107,9 +107,10 @@ class Error {
     }
 
     public function __toString() {
-        $result = ucfirst($this->getTypeAsString());
         if ($this->isFatal() === true && $this->isRealFatal() === false) {
-            $result .= ' (FATAL)';
+            $result = 'Fatal error';
+        } else {
+            $result = ucfirst($this->getTypeAsString());
         }
         return $result . ':  ' . $this->getMessage() . ' in '
             . $this->getFile() . ' on line ' . $this->getLine();

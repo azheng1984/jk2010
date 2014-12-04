@@ -155,7 +155,7 @@ class ErrorHandler {
                 }
             } else {
                 $name = 'php_error';
-                $data['type'] = strtolower($source->getTypeAsString());
+                $data['type'] = $source->getTypeAsString();
             }
             $method = static::getLoggerMethod();
             Logger::$method([
@@ -272,13 +272,14 @@ class ErrorHandler {
         }
         echo $prependString, '<br />', PHP_EOL, '<b>';
         if (self::$isError) {
-            echo  ucfirst($source->getTypeAsString()), '</b>';
             if ($source->isFatal() === true
                 && $source->isRealFatal() === false
             ) {
-                echo ' (<b>FATAL</b>)';
+                echo 'Fatal error';
+            } else {
+                echo ucfirst($source->getTypeAsString());
             }
-            echo ':  ';
+            echo '</b>:  ';
             if (ini_get('docref_root') !== '') {
                 echo $source->getMessage();
             } else {
