@@ -8,9 +8,10 @@ use Hyperframework\Common\ErrorHandler as Base;
 
 class ErrorHandler extends Base {
     private static $isDebuggerEnabled;
+    private static $startupOutputBufferLevel;
 
     public static function run() {
-        self::$isDebuggerEnabled =
+        self::$isDebuggerEnabled = false;
             Config::get('hyperframework.error_handler.debug');
         if (ini_get('display_errors') === '1') {
             if (self::$isDebuggerEnabled !== false) {
@@ -22,43 +23,34 @@ class ErrorHandler extends Base {
             }
         }
         if (self::$isDebuggerEnabled) {
-            if (ob_get_level() > 0) {
-                throw new Exception;
-            }
             ob_start();
         }
+        self::$startupOutputBufferLevel = ob_get_level();
+        var_dump(ob_get_level());
+        //exit;
         parent::run();
     }
 
     protected static function displayFatalError() {
         $isError = static::isError();
         $source = static::getSource();
-        if (headers_sent() === false) {
-            if ($source instanceof HttpException) {
-                foreach ($source->getHttpHeaders() as $header) {
-                    header($header);
-                }
-            } else {
-                header('HTTP/1.1 500 Internal Server Error');
-            }
-        }
         if (self::$isDebuggerEnabled) {
             $headers = headers_list();
             if (headers_sent() === false) {
-                self::resetHeaders();
+                self::resetHttpHeaders();
             }
             $outputBuffer = static::getOutputBuffer();
             static::executeDebugger($headers, $outputBuffer);
         } elseif (ini_get('display_errors') === '1') {
             static::displayError();
         } elseif (headers_sent() === false) {
-            self::resetHeaders();
+            self::resetHttpHeaders();
             self::deleteOutputBuffer();
             static::renderErrorView();
         }
     }
 
-    private static function resetHeaders() {
+    private static function resetHttpHeaders() {
         header_remove();
         $source = self::getSource();
         if ($source instanceof HttpException) {
@@ -71,19 +63,22 @@ class ErrorHandler extends Base {
     }
 
     private static function deleteOutputBuffer() {
+        if (self::$startupOutputBufferLevel === null) {
+            throw new Exception;
+        }
         $obLevel = ob_get_level();
-        while ($obLevel > 0) {
+        while ($obLevel > self::$startupOutputBufferLevel) {
             ob_end_clean();
             --$obLevel;
         }
     }
 
     protected static function getOutputBuffer() {
-        if (self::$outputBufferLevel === null) {
+        if (self::$startupOutputBufferLevel === null) {
             throw new Exception;
         }
         $outputBufferLevel = ob_get_level();
-        while ($outputBufferLevel > 1) {
+        while ($outputBufferLevel > self::$startupOutputBufferLevel) {
             ob_end_flush();
             --$outputBufferLevel;
         }
@@ -207,7 +202,7 @@ class ErrorHandler extends Base {
         self::$isDebuggerEnabled = false;
     }
 
-    final protected static function getOutputBufferLevel() {
-        return self::$outputBufferLevel;
+    final protected static function getStartupOutputBufferLevel() {
+        return self::$startupOutputBufferLevel;
     }
 }
