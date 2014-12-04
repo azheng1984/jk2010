@@ -38,20 +38,20 @@ class Error {
 
     public function getTypeAsString() {
         switch ($this->type) {
+            case E_STRICT:            return 'strict';
             case E_DEPRECATED:        return 'deprecated';
             case E_USER_DEPRECATED:   return 'user deprecated';
             case E_NOTICE:            return 'notice';
+            case E_ERROR:             return 'error';
             case E_USER_NOTICE:       return 'user notice';
-            case E_STRICT:            return 'strict standards';
+            case E_USER_ERROR:        return 'user error';
             case E_WARNING:           return 'warning';
             case E_USER_WARNING:      return 'user warning';
             case E_COMPILE_WARNING:   return 'compile warning';
             case E_CORE_WARNING:      return 'core warning';
-            case E_USER_ERROR:        return 'user error';
-            case E_RECOVERABLE_ERROR: return 'catchable fatal error';
-            case E_COMPILE_ERROR:     return 'compile error';
+            case E_RECOVERABLE_ERROR: return 'recoverable error';
             case E_PARSE:             return 'parse error';
-            case E_ERROR:             return 'error';
+            case E_COMPILE_ERROR:     return 'compile error';
             case E_CORE_ERROR:        return 'core error';
         }
     }
@@ -99,20 +99,9 @@ class Error {
     public function isRealFatal() {
         return in_array($this->getType(), array(
             E_ERROR,
-            E_USER_ERROR,
             E_PARSE,
             E_CORE_ERROR,
             E_COMPILE_ERROR
         ));
-    }
-
-    public function __toString() {
-        if ($this->isFatal() === true && $this->isRealFatal() === false) {
-            $result = 'Fatal error';
-        } else {
-            $result = ucfirst($this->getTypeAsString());
-        }
-        return $result . ':  ' . $this->getMessage() . ' in '
-            . $this->getFile() . ' on line ' . $this->getLine();
     }
 }

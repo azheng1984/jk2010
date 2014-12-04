@@ -46,6 +46,7 @@ class ErrorHandler {
         $type, $message, $file, $line, array $context
     ) {
         error_reporting(self::$errorReporting);
+        echo '!!!handle error!!!';
         $isFatal = false;
         $extraFatalErrorBitmask = Config::get(
             'hyperframework.error_handler.extra_fatal_error_bitmask'
@@ -72,6 +73,7 @@ class ErrorHandler {
         if ($error === null) {
             return;
         }
+        echo '!!!handle fatal error!!!';
         $error = new Error(
             $error['type'], $error['message'], $error['file'],
             $error['line'], null, null, true
@@ -184,6 +186,37 @@ class ErrorHandler {
             . self::$source->getLine();
     }
 
+    private static function getErrorLog() {
+        $error = self::$source;
+        if ($error->isFatal() === true && $error->isRealFatal() === false) {
+            $result = 'Fatal error';
+        } else {
+            $result = self::convertErrorTypeForOutput($error->getType());
+        }
+        return $result . ':  ' . $error->getMessage() . ' in '
+            . $error->getFile() . ' on line ' . $error->getLine();
+    }
+
+    private static function convertErrorTypeForOutput($type) {
+        switch ($type) {
+            case E_STRICT:            return 'Strict standards';
+            case E_DEPRECATED:
+            case E_USER_DEPRECATED:   return 'Deprecated';
+            case E_NOTICE:
+            case E_USER_NOTICE:       return 'Notice';
+            case E_WARNING:
+            case E_USER_WARNING:      return 'Warning';
+            case E_COMPILE_WARNING:   return 'Compile warning';
+            case E_CORE_WARNING:      return 'Core warning';
+            case E_USER_ERROR:        return 'Error';
+            case E_RECOVERABLE_ERROR: return 'Recoverable error';
+            case E_COMPILE_ERROR:     return 'Compile error';
+            case E_PARSE:             return 'Parse error';
+            case E_ERROR:             return 'Fatal error';
+            case E_CORE_ERROR:        return 'Core error';
+        }
+    }
+
     protected static function getLoggerMethod() {
         if (self::$shouldExit) {
             return 'fatal';
@@ -241,6 +274,8 @@ class ErrorHandler {
 
     protected static function displayError() {
         $source = self::$source;
+        var_dump($source->getTypeAsString());
+        echo $source;
         if (ini_get('xmlrpc_errors') === '1') {
             $code = ini_get('xmlrpc_error_number');
             echo '<?xml version="1.0"?><methodResponse>',
@@ -248,7 +283,7 @@ class ErrorHandler {
                 '<value><int>', $code, '</int></value></member><member>',
                 '<name>faultString</name><value><string>';
             if (self::$isError) {
-                $message = $source;
+                $message = self::getErrorLog();
             } else {
                 $message = self::getExceptionErrorLog();
             }
@@ -265,7 +300,7 @@ class ErrorHandler {
             if (self::$isError === false) {
                 echo self::getExceptionErrorLog();
             } else {
-               echo $source;
+                echo self::getErrorLog();
             }
             echo PHP_EOL, $appendString;
             return;
@@ -277,7 +312,7 @@ class ErrorHandler {
             ) {
                 echo 'Fatal error';
             } else {
-                echo ucfirst($source->getTypeAsString());
+                echo self::convertErrorTypeForOutput($source->getType());
             }
             echo '</b>:  ';
             if (ini_get('docref_root') !== '') {
