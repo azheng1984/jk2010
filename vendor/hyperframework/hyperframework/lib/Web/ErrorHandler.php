@@ -8,7 +8,6 @@ use Hyperframework\Common\ErrorHandler as Base;
 
 class ErrorHandler extends Base {
     private static $isDebuggerEnabled;
-    private static $outputBufferLevel;
 
     public static function run() {
         self::$isDebuggerEnabled =
@@ -23,8 +22,10 @@ class ErrorHandler extends Base {
             }
         }
         if (self::$isDebuggerEnabled) {
+            if (ob_get_level() > 0) {
+                throw new Exception;
+            }
             ob_start();
-            self::$outputBufferLevel = ob_get_level();
         }
         parent::run();
     }
@@ -44,16 +45,28 @@ class ErrorHandler extends Base {
         if (self::$isDebuggerEnabled) {
             $headers = headers_list();
             if (headers_sent() === false) {
-                header_remove();
+                self::resetHeaders();
             }
             $outputBuffer = static::getOutputBuffer();
             static::executeDebugger($headers, $outputBuffer);
-        } elseif (self::$shouldDisplayErrors) {
+        } elseif (ini_get('display_errors') === '1') {
             static::displayError();
         } elseif (headers_sent() === false) {
-            header_remove();
+            self::resetHeaders();
             self::deleteOutputBuffer();
             static::renderErrorView();
+        }
+    }
+
+    private static function resetHeaders() {
+        header_remove();
+        $source = self::getSource();
+        if ($source instanceof HttpException) {
+            foreach ($source->getHttpHeaders() as $header) {
+                header($header);
+            }
+        } else {
+            header('HTTP/1.1 500 Internal Server Error');
         }
     }
 
@@ -70,7 +83,7 @@ class ErrorHandler extends Base {
             throw new Exception;
         }
         $outputBufferLevel = ob_get_level();
-        while ($outputBufferLevel > self::$outputBufferLevel) {
+        while ($outputBufferLevel > 1) {
             ob_end_flush();
             --$outputBufferLevel;
         }
@@ -196,9 +209,5 @@ class ErrorHandler extends Base {
 
     final protected static function getOutputBufferLevel() {
         return self::$outputBufferLevel;
-    }
-
-    final protected static function setOutputBufferLevel($value) {
-        return self::$outputBufferLevel = $value;
     }
 }

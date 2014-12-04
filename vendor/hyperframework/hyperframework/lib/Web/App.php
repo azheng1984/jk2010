@@ -9,6 +9,7 @@ abstract class App {
 
     public function run() {
         declare(adsf='adf');
+//        throw new Exception('\'<>');
         //echo $x;
 //        echo  new InternalServerErrorException;
 //        try{

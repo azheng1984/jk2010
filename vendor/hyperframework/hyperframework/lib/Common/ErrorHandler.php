@@ -16,7 +16,7 @@ class ErrorHandler {
     private static $maxPreviousErrors;
 
     public static function run() {
-        self::$isLoggerEnabled =
+        self::$isLoggerEnabled =false;
             Config::get('hyperframework.error_handler.enable_logger') === true;
         if (self::$isLoggerEnabled) {
             ini_set('log_errors', '0');
@@ -190,12 +190,15 @@ class ErrorHandler {
         if (self::$isError) {
             error_log('PHP ' . self::$source);
         } else {
-            error_log('PHP Fatal error:  Uncaught '
-                . self::$source. PHP_EOL . '  thrown in '
-                . self::$source->getFile() . ' on line '
-                . self::$source->getLine()
-            );
+            error_log('PHP ' . self::getExceptionErrorLog());
         }
+    }
+
+    private static function getExceptionErrorLog() {
+        return 'Fatal error:  Uncaught '
+            . self::$source. PHP_EOL . '  thrown in '
+            . self::$source->getFile() . ' on line '
+            . self::$source->getLine();
     }
 
     private static function getLogMethod() {
@@ -253,7 +256,18 @@ class ErrorHandler {
     protected static function displayError() {
         if (ini_get('xmlrpc_errors') === '1') {
             $code = ini_get('xmlrpc_error_number');
-            echo '<?xml version="1.0"?><code></code>';
+            echo '<?xml version="1.0"?><methodResponse>',
+                '<fault><value><struct><member><name>faultCode</name>',
+                '<value><int>', $code, '</int></value></member><member>',
+                '<name>faultString</name><value><string>';
+            if (self::$isError) {
+                $message = self::$source;
+            } else {
+                $message = self::getExceptionErrorLog();
+            }
+            echo htmlspecialchars($message, ENT_XML1);
+            echo '</string></value></member></struct></value></fault>',
+                '</methodResponse>';
             return;
         }
         $isHtml = ini_get('html_errors') === '1';
