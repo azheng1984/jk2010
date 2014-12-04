@@ -292,17 +292,13 @@ class ErrorHandler {
             ) {
                 echo '(Fatal)';
             }
-            echo '</b>', ':  ', htmlspecialchars(
-                $source->getMessage(), ENT_SUBSTITUTE
-            );
+            echo '</b>', ':  ', htmlspecialchars($source->getMessage());
         } else {
-            echo 'Fatal error</b>:  Uncaught ', htmlspecialchars(
-                self::$source, ENT_SUBSTITUTE
-            ), PHP_EOL, '  thrown';
+            echo 'Fatal error</b>:  Uncaught ', htmlspecialchars(self::$source),
+                PHP_EOL, '  thrown';
         }
-        echo ' in <b>', htmlspecialchars(
-                self::$source->getFile(), ENT_SUBSTITUTE
-            ), '</b> on line <b>',
-            self::$source->getLine(), '</b><br />', PHP_EOL, $appendString;
+        echo ' in <b>', htmlspecialchars(self::$source->getFile()),
+            '</b> on line <b>', self::$source->getLine(),
+            '</b><br />', PHP_EOL, $appendString;
     }
 }
