@@ -254,6 +254,7 @@ class ErrorHandler {
     }
 
     protected static function displayError() {
+        $source = self::$source;
         if (ini_get('xmlrpc_errors') === '1') {
             $code = ini_get('xmlrpc_error_number');
             echo '<?xml version="1.0"?><methodResponse>',
@@ -261,12 +262,12 @@ class ErrorHandler {
                 '<value><int>', $code, '</int></value></member><member>',
                 '<name>faultString</name><value><string>';
             if (self::$isError) {
-                $message = self::$source;
+                $message = $source;
             } else {
                 $message = self::getExceptionErrorLog();
             }
-            echo htmlspecialchars($message, ENT_XML1);
-            echo '</string></value></member></struct></value></fault>',
+            echo htmlspecialchars($message, ENT_XML1),
+                '</string></value></member></struct></value></fault>',
                 '</methodResponse>';
             return;
         }
@@ -274,40 +275,34 @@ class ErrorHandler {
         $prependString = ini_get('error_prepend_string');
         $appendString = ini_get('error_append_string');
         if ($isHtml === false) {
-            echo $prependString . PHP_EOL  . 'PHP ';
+            echo $prependString, PHP_EOL, 'PHP ';
             if (self::$isError === false) {
-                echo 'Fatal error: Uncaught ';
+                echo self::getExceptionErrorLog();
+            } else {
+               echo $source;
             }
-            echo self::$source;
-            if (self::$isError === false) {
-                echo '  thrown in ',
-                    self::$source->getFile(), ' on line ',
-                    self::$source->getLine();
-            }
-            echo $appendString . PHP_EOL;
+            echo $appendString, PHP_EOL;
             return;
         }
-        $source = self::$source;
+        echo $prependString, PHP_EOL, '<br /><b>';
         if (self::$isError) {
-            echo  $prependString . '<br/><b>'
-                . $source->getTypeAsString();
+            echo  $source->getTypeAsString();
             if ($source->isFatal() === true
                 && $source->isRealFatal() === false
             ) {
                 echo '(Fatal)';
             }
-            echo '</b>'
-                . ': ' . $source->getMessage()
-                . ' in <b>' . $source->getFile()
-                . '</b> on line <b>' . $source->getLine() . '</b><br/>'
-                . $appendString;
+            echo '</b>', ': ', htmlspecialchars(
+                $source->getMessage(), ENT_QUOTES | ENT_SUBSTITUTE
+            );
         } else {
-            echo '<b>Fatal error</b>: Uncaught ';
-            echo self::$source;
-            echo '  thrown in <b>',
-                self::$source->getFile(), '</b> on line <b>',
-                self::$source->getLine() . '</b><br/>';
-            echo $appendString;
+            echo 'Fatal error</b>:  Uncaught ', htmlspecialchars(
+                self::$source, ENT_QUOTES | ENT_SUBSTITUTE
+            ), PHP_EOL, '  thrown';
         }
+        echo ' in <b>', htmlspecialchars(
+                self::$source->getFile(), ENT_QUOTES | ENT_SUBSTITUTE
+            ), '</b> on line <b>',
+            self::$source->getLine(), '</b><br />', PHP_EOL, $appendString;
     }
 }
