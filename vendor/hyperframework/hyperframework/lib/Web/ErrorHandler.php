@@ -84,9 +84,12 @@ class ErrorHandler extends Base {
             --$outputBufferLevel;
         }
         $content = ob_get_contents();
+        if ($content === false) {
+            return $content;
+        }
         ob_end_clean();
         if ($content === '') {
-            return;
+            return $content;
         }
         //config
         $charset = null;
