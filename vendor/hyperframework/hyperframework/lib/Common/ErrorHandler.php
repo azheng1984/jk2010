@@ -275,13 +275,13 @@ class ErrorHandler {
         $prependString = ini_get('error_prepend_string');
         $appendString = ini_get('error_append_string');
         if ($isHtml === false) {
-            echo $prependString, PHP_EOL, 'PHP ';
+            echo $prependString, PHP_EOL;
             if (self::$isError === false) {
                 echo self::getExceptionErrorLog();
             } else {
                echo $source;
             }
-            echo $appendString, PHP_EOL;
+            echo PHP_EOL, $appendString;
             return;
         }
         echo $prependString, '<br />', PHP_EOL, '<b>';

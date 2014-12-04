@@ -8,6 +8,7 @@ abstract class App {
     private $controller;
 
     public function run() {
+        asdfsdffsd
         include();
         $this->initialize();
         $controller = $this->getController();

@@ -38,21 +38,21 @@ class Error {
 
     public function getTypeAsString() {
         switch ($this->type) {
-            case E_DEPRECATED:        return 'Deprecated';
-            case E_USER_DEPRECATED:   return 'User Deprecated';
-            case E_NOTICE:            return 'Notice';
-            case E_USER_NOTICE:       return 'User Notice';
-            case E_STRICT:            return 'Strict Standards';
-            case E_WARNING:           return 'Warning';
-            case E_USER_WARNING:      return 'User Warning';
-            case E_COMPILE_WARNING:   return 'Compile Warning';
-            case E_CORE_WARNING:      return 'Core Warning';
-            case E_USER_ERROR:        return 'User Error';
-            case E_RECOVERABLE_ERROR: return 'Catchable Fatal Error';
-            case E_COMPILE_ERROR:     return 'Compile Error';
-            case E_PARSE:             return 'Parse Error';
-            case E_ERROR:             return 'Error';
-            case E_CORE_ERROR:        return 'Core Error';
+            case E_DEPRECATED:        return 'deprecated';
+            case E_USER_DEPRECATED:   return 'user deprecated';
+            case E_NOTICE:            return 'notice';
+            case E_USER_NOTICE:       return 'user notice';
+            case E_STRICT:            return 'strict standards';
+            case E_WARNING:           return 'warning';
+            case E_USER_WARNING:      return 'user warning';
+            case E_COMPILE_WARNING:   return 'compile warning';
+            case E_CORE_WARNING:      return 'core warning';
+            case E_USER_ERROR:        return 'user error';
+            case E_RECOVERABLE_ERROR: return 'catchable fatal error';
+            case E_COMPILE_ERROR:     return 'compile error';
+            case E_PARSE:             return 'parse error';
+            case E_ERROR:             return 'error';
+            case E_CORE_ERROR:        return 'core error';
         }
     }
 
@@ -107,9 +107,9 @@ class Error {
     }
 
     public function __toString() {
-        $result = $this->getTypeAsString();
-        if ($this->isFatal() === true && $this->isRealFatal()) {
-            $result .= '(Fatal)';
+        $result = ucfirst($this->getTypeAsString());
+        if ($this->isFatal() === true && $this->isRealFatal() === false) {
+            $result .= ' (FATAL)';
         }
         return $result . ':  ' . $this->getMessage() . ' in '
             . $this->getFile() . ' on line ' . $this->getLine();
