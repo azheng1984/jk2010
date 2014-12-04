@@ -9,11 +9,11 @@ use Hyperframework\Logging\Logger;
 class ErrorHandler {
     private static $source;
     private static $isError;
+    private static $isLoggerEnabled;
+    private static $shouldRecordPreviousErrors = false;
+    private static $previousErrors = [];
     private static $errorReporting;
     private static $shouldExit;
-    private static $isLoggerEnabled;
-    private static $previousErrors = [];
-    private static $maxPreviousErrors;
 
     public static function run() {
         self::$isLoggerEnabled =false;
@@ -29,21 +29,12 @@ class ErrorHandler {
         self::disableErrorReporting();
     }
 
-    private static function getMaxPreviousErrors($value) {
-        if (self::$maxPreviousErrors === null) {
-            self::$maxPreviousErrors = Config::get(
-                'hyperframework.error_handler.max_previous_errors'
-            );
-            if (self::$maxPreviousErrors === null) {
-                self::$maxPreviousErrors = false;
-            } else {
-                self::$maxPreviousErrors = (int)self::$maxPreviousErrors;
-                if (self::$maxPreviousErrors < 0)  {
-                    self::$maxPreviousErrors = false;
-                }
-            }
-        }
-        return self::$maxPreviousErrors;
+    final protected static function enablePreviousErrorRecording() {
+        self::$shouldRecordPreviousErrors = true;
+    }
+
+    final protected static function disablePreviousErrorRecording() {
+        self::$shouldRecordPreviousErrors = false;
     }
 
     final public static function handleException($exception) {
@@ -111,17 +102,10 @@ class ErrorHandler {
                 if ($shouldDisplayErrors) {
                     static::displayError();
                 }
-                self::$source = null;
-                $maxPreviousErrors = self::getMaxPreviousErrors();
-                if ($maxPreviousErrors !== 0) {
-                    if ($maxPreviousErrors !== false) {
-                        $count = count(self::$previousErrors);
-                        if ($count === $maxPreviousErrors) {
-                            array_shift(self::$previousErrors);
-                        }
-                    }
+                if (self::$shouldRecordPreviousErrors) {
                     self::$previousErrors[] = $source;
                 }
+                self::$source = null;
                 self::disableErrorReporting();
                 return;
             }
@@ -242,7 +226,10 @@ class ErrorHandler {
     }
 
     final protected static function getPreviousErrors() {
-        return self::$previousErrors;
+        if (self::$shouldRecordPreviousErrors) {
+            return self::$previousErrors;
+        }
+        return false;
     }
 
     private static function disableErrorReporting() {

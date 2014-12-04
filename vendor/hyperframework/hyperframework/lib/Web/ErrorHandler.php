@@ -23,6 +23,7 @@ class ErrorHandler extends Base {
             }
         }
         if (self::$isDebuggerEnabled) {
+            static::enablePreviousErrorRecording();
             ob_start();
         }
         self::$startupOutputBufferLevel = ob_get_level();
@@ -150,8 +151,10 @@ class ErrorHandler extends Base {
 
     protected static function executeDebugger($headers, $outputBuffer) {
         Debugger::execute(
-            static::getSource(), static::getPreviousErrors(),
-            $headers, $outputBuffer
+            static::getSource(),
+            static::getPreviousErrors(),
+            $headers,
+            $outputBuffer
         );
     }
 
