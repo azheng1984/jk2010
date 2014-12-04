@@ -77,6 +77,7 @@ class ErrorHandler {
         $error = error_get_last();
         if ($error === null) {
             echo 'no';
+            error_reporting(E_ERROR);
             //report fatal error directly
             return;
         }
@@ -86,9 +87,11 @@ class ErrorHandler {
         );
         if ($error->isRealFatal()) {
             echo 'ok';
-            error_reporting(self::$errorReporting);//test error in shutdown
+            error_reporting(self::$errorReporting);
             self::handle($error, true);
+            return;
         }
+        error_reporting(E_ERROR);
     }
 
     private static function handle($source, $isError = false) {
