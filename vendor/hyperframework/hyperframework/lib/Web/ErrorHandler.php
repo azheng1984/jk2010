@@ -77,7 +77,7 @@ class ErrorHandler extends Base {
         }
         $outputBufferLevel = ob_get_level();
         if ($outputBufferLevel < self::$startupOutputBufferLevel) {
-            return;
+            return false;
         }
         while ($outputBufferLevel > self::$startupOutputBufferLevel) {
             ob_end_flush();

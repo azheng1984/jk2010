@@ -8,40 +8,10 @@ abstract class App {
     private $controller;
 
     public function run() {
-        ob_start();
-        echo '最佳答案: 点击运行--输入msconfig 会打开系统配置实用程序 --点击启动--里面不需要的启动项可以不打勾,确定即可。';
-        ob_end_flush();
-        //var_dump(ob_get_level());
-        //ob_end_flush(); //eh
-        //var_dump(ob_get_level());
-        //ob_end_flush(); //system
-        var_dump(headers_list());
-        //var_dump(ob_get_level());
-        ob_end_flush(); //?
-        declare(adsf='adf');
-//        throw new Exception('\'<>');
-        //echo $x;
-//        echo  new InternalServerErrorException;
-//        try{
-//           throw  new InternalServerErrorException;
-//        } catch (Exception $e) {
-//           echo $e;
-//           //throw $e;
-//        }
-//        $x = new \ErrorException('xx!!');
-//        echo $x;
-//        exit;
-//        
-//        var_dump($e->getTraceAsString());
-        include('');
-        $tag = 'xx x';
-        array_shift(explode(' ',$tag));
         $this->initialize();
         $controller = $this->getController();
         $controller->run();
         $this->finalize();
-        $tag = 'xx x';
-        array_shift(explode(' ',$tag));
     }
 
     public function redirect($url, $statusCode = 302) {

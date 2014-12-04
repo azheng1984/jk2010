@@ -1,8 +1,7 @@
 <?php
 namespace Hyperframework\Web\Html;
 
-use ErrorException;
-use Hyperframework\Common\ErrorCodeHelper;
+use Exception;
 
 class Debugger {
     public static function execute(
@@ -124,13 +123,17 @@ class Debugger {
             }
         }
         echo '<h3>body</h3>';
-        if (strlen($outputBuffer) > 1) {
-            echo '<pre>';
-            //var_dump(mb_detect_encoding($outputBuffer));
-            echo htmlspecialchars($outputBuffer, ENT_QUOTES | ENT_SUBSTITUTE);
-            echo '</pre>';
+        if ($outputBuffer === false) {
+            echo '<span style="color:red;background-color:#eee">Output Buffer Error</span>';
         } else {
-            echo '<span style="color:#999;background-color:#eee">empty</span>';
+            if (strlen($outputBuffer) > 1) {
+                echo '<pre>';
+                //var_dump(mb_detect_encoding($outputBuffer));
+                echo htmlspecialchars($outputBuffer, ENT_QUOTES | ENT_SUBSTITUTE);
+                echo '</pre>';
+            } else {
+                echo '<span style="color:#999;background-color:#eee">empty</span>';
+            }
         }
         echo '<hr /> Powered by Hyperframework';
     }
