@@ -83,7 +83,7 @@ class ErrorHandler {
 
     private static function handle($source, $isError = false) {
         if (self::$source !== null) {
-            if ($isError) {//fatal error
+            if ($isError) {//real fatal error
                 return;
             }
             throw $source;
@@ -136,7 +136,7 @@ class ErrorHandler {
                     $data['code'] = $code;
                 }
                 $data['trace'] = [];
-                //config max trace, error too
+                //config max trace, non real fatal error too
                 foreach ($source->getTrace() as $item) {
                     $trace = array();
                     if (isset($item['class'])) {
