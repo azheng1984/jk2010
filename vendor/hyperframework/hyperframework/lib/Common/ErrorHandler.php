@@ -157,7 +157,7 @@ class ErrorHandler {
                 $name = 'php_error';
                 $data['type'] = strtolower($source->getTypeAsString());
             }
-            $method = self::getLoggerMethod();
+            $method = static::getLoggerMethod();
             Logger::$method([
                 'name' => $name,
                 'message' => $source->getMessage(),
@@ -184,7 +184,7 @@ class ErrorHandler {
             . self::$source->getLine();
     }
 
-    private static function getLoggerMethod() {
+    protected static function getLoggerMethod() {
         if (self::$shouldExit) {
             return 'fatal';
         }
@@ -272,13 +272,13 @@ class ErrorHandler {
         }
         echo $prependString, '<br />', PHP_EOL, '<b>';
         if (self::$isError) {
-            echo  $source->getTypeAsString();
+            echo  $source->getTypeAsString(), '</b>';
             if ($source->isFatal() === true
                 && $source->isRealFatal() === false
             ) {
-                echo '(Fatal)';
+                echo ' (<b>FATAL</b>)';
             }
-            echo '</b>', ':  ', htmlspecialchars($source->getMessage());
+            echo ':  ', htmlspecialchars($source->getMessage());
         } else {
             echo 'Fatal error</b>:  Uncaught ', htmlspecialchars(self::$source),
                 PHP_EOL, '  thrown';
