@@ -181,7 +181,7 @@ class ErrorHandler extends Base {
             $template->load('_error/show.php');
             return;
         }
-        header('Content-Type:text/plain; charset=utf-8');
+        header('Content-Type: text/plain;charset=utf-8');
         if (self::getSource() instanceof HttpException) {
             echo self::getSource()->getCode();
         } else {
