@@ -179,9 +179,8 @@ class ErrorHandler {
     }
 
     private static function getExceptionErrorLog() {
-        return 'Fatal error:  Uncaught '
-            . self::$source. PHP_EOL . '  thrown in '
-            . self::$source->getFile() . ' on line '
+        return 'Fatal error:  Uncaught ' . self::$source. PHP_EOL
+            . '  thrown in ' . self::$source->getFile() . ' on line '
             . self::$source->getLine();
     }
 
