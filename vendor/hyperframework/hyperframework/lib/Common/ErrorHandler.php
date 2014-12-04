@@ -67,7 +67,7 @@ class ErrorHandler {
             $isFatal = true;
         }
         $trace = array_slice(debug_backtrace(), 2);
-        return self::handle(
+        self::handle(
             new Error(
                 $type, $message, $file, $line, $context, $trace, $isFatal
             ),
