@@ -272,13 +272,18 @@ class ErrorHandler {
         }
         echo $prependString, '<br />', PHP_EOL, '<b>';
         if (self::$isError) {
-            echo  $source->getTypeAsString(), '</b>';
+            echo  ucfirst($source->getTypeAsString()), '</b>';
             if ($source->isFatal() === true
                 && $source->isRealFatal() === false
             ) {
                 echo ' (<b>FATAL</b>)';
             }
-            echo ':  ', htmlspecialchars($source->getMessage());
+            echo ':  ';
+            if (ini_get('docref_root') !== '') {
+                echo $source->getMessage();
+            } else {
+                echo htmlspecialchars($source->getMessage());
+            }
         } else {
             echo 'Fatal error</b>:  Uncaught ', htmlspecialchars(self::$source),
                 PHP_EOL, '  thrown';
