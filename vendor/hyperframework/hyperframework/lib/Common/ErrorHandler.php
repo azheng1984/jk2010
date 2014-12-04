@@ -284,7 +284,7 @@ class ErrorHandler {
             echo $appendString, PHP_EOL;
             return;
         }
-        echo $prependString, PHP_EOL, '<br /><b>';
+        echo $prependString, '<br />', PHP_EOL, '<b>';
         if (self::$isError) {
             echo  $source->getTypeAsString();
             if ($source->isFatal() === true
@@ -292,16 +292,16 @@ class ErrorHandler {
             ) {
                 echo '(Fatal)';
             }
-            echo '</b>', ': ', htmlspecialchars(
-                $source->getMessage(), ENT_QUOTES | ENT_SUBSTITUTE
+            echo '</b>', ':  ', htmlspecialchars(
+                $source->getMessage(), ENT_SUBSTITUTE
             );
         } else {
             echo 'Fatal error</b>:  Uncaught ', htmlspecialchars(
-                self::$source, ENT_QUOTES | ENT_SUBSTITUTE
+                self::$source, ENT_SUBSTITUTE
             ), PHP_EOL, '  thrown';
         }
         echo ' in <b>', htmlspecialchars(
-                self::$source->getFile(), ENT_QUOTES | ENT_SUBSTITUTE
+                self::$source->getFile(), ENT_SUBSTITUTE
             ), '</b> on line <b>',
             self::$source->getLine(), '</b><br />', PHP_EOL, $appendString;
     }
