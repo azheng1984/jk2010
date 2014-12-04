@@ -6,7 +6,7 @@ use Exception;
 class Debugger {
     public static function execute(
         $exception,
-        $previousErrors = null,
+        array $previousErrors = null,
         $headers = null,
         $outputBuffer = null
     ) {

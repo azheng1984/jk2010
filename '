@@ -11,7 +11,7 @@ class ErrorHandler extends Base {
     private static $startupOutputBufferLevel;
 
     public static function run() {
-        self::$isDebuggerEnabled =
+        self::$isDebuggerEnabled =false;
             Config::get('hyperframework.error_handler.debug');
         if (ini_get('display_errors') === '1') {
             if (self::$isDebuggerEnabled !== false) {

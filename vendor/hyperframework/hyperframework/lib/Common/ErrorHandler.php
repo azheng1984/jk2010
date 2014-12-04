@@ -10,7 +10,7 @@ class ErrorHandler {
     private static $source;
     private static $isError;
     private static $isLoggerEnabled;
-    private static $shouldCachePreviousErrors = false;
+    private static $shouldCacheErrors = false;
     private static $previousErrors = [];
     private static $errorReporting;
     private static $shouldExit;
@@ -29,12 +29,12 @@ class ErrorHandler {
         self::disableErrorReporting();
     }
 
-    final protected static function enablePreviousErrorCache() {
-        self::$shouldCachePreviousErrors = true;
+    final protected static function enableErrorCache() {
+        self::$shouldCacheErrors = true;
     }
 
-    final protected static function disablePreviousErrorCache() {
-        self::$shouldCachePreviousErrors = false;
+    final protected static function disableErrorCache() {
+        self::$shouldCacheErrors = false;
     }
 
     final public static function handleException($exception) {
@@ -102,7 +102,7 @@ class ErrorHandler {
                 if ($shouldDisplayErrors) {
                     static::displayError();
                 }
-                if (self::$shouldCachePreviousErrors) {
+                if (self::$shouldCacheErrors) {
                     self::$previousErrors[] = $source;
                 }
                 self::$source = null;
@@ -226,10 +226,10 @@ class ErrorHandler {
     }
 
     final protected static function getPreviousErrors() {
-        if (self::$shouldCachePreviousErrors) {
+        if (self::$shouldCacheErrors) {
             return self::$previousErrors;
         }
-        return false;
+        return;
     }
 
     private static function disableErrorReporting() {

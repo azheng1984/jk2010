@@ -12,6 +12,7 @@ abstract class App {
         $controller = $this->getController();
         $controller->run();
         $this->finalize();
+        throw new Exception;
     }
 
     public function redirect($url, $statusCode = 302) {
