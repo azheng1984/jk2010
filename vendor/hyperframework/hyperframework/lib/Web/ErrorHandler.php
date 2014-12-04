@@ -23,7 +23,7 @@ class ErrorHandler extends Base {
             }
         }
         if (self::$isDebuggerEnabled) {
-            static::enablePreviousErrorRecording();
+            static::enablePreviousErrorCache();
             ob_start();
         }
         self::$startupOutputBufferLevel = ob_get_level();
