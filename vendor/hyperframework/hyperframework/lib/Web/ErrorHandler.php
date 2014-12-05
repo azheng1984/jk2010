@@ -9,7 +9,7 @@ use Hyperframework\Common\ErrorHandler as Base;
 class ErrorHandler extends Base {
     private static $isDebuggerEnabled;
     private static $startupOutputBufferLevel;
-    private static $isRunning = true;
+    private static $isRunning = false;
 
     public static function run() {
         self::$isDebuggerEnabled =

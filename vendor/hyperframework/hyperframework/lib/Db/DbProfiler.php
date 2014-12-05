@@ -5,83 +5,74 @@ use Hyperframework\Common\Config;
 use Hyperframework\Logging\Logger;
 
 class DbProfiler {
-    private static $current;
+    private static $profile;
     private static $profileHandlers = array();
 
     public static function onTransactionOperationExecuting(
         $connection, $operation
     ) {
-        self::$current = array(
-            'transaction' => $operation, 'start_time' => microtime(true)
-        );
-        //todo move connection name field to to top
-        $connectionName = $connection->getName();
-        if ($connectionName !== 'default') {
-            self::$current['connection_name'] = $connectionName;
-        }
+        self::initializeProfile($connection, ['transaction' => $operation]);
     }
 
-    public static function onTransactionOperationExecuted() {
-        self::$current['running_time'] = self::getRunningTime();
-        self::handleProfile(self::$current);
-    }
-
-    public static function onConnectionExecuting(
-        $connection, $sql, $isQuery
+    public static function onTransactionOperationExecuted(
+        $connection, $operation
     ) {
-        self::$current = array(
-            'sql' => $sql, 'start_time' => microtime(true)
-        );
-        $connectionName = $connection->getName();
-        if ($connectionName !== 'default') {
-            self::$current['connection_name'] = $connectionName;
-        }
+        self::handleProfile();
+    }
+
+    public static function onConnectionExecuting($connection, $sql, $isQuery) {
+        self::initializeProfile($connection, ['sql' => $sql]);
     }
 
     public static function onConnectionExecuted(
         $connection, $result
     ) {
-        self::$current['running_time'] = self::getRunningTime();
-        self::handleProfile(self::$current);
+        self::handleProfile();
     }
 
     public static function onStatementExecuting($statement) {
-        self::$current = array('start_time' => microtime(true));
+        self::initializeProfile(
+            $statement->getConnection(),
+            ['sql' => $statement->getsql()]
+        );
     }
 
     public static function onStatementExecuted($statement) {
-        $profile = array(
-            'sql' => $statement->getSql(),
-            'start_time' => self::$current['start_time'],
-            'running_time' => self::getRunningTime()
-        );
-        $connectionName = $statement->getConnection()->getName();
-        if ($connectionName !== 'default') {
-            $profile['connection_name'] = $connectionName;
+        self::handleProfile();
+    }
+
+    private static function initializeProfile($connection, $data) {
+        self::$profile = [];
+        $name = $connection->getName();
+        if ($name !== 'default') {
+            self::$profile['connection_name'] => $name;
         }
-        self::handleProfile($profile);
+        self::$profile = array_merge(self::$profile, $data);
+        self::$profile['start_time'] => microtime(true);
     }
 
     public static function addProfileHandler($callback) {
         self::$profileHandler[] = $callback;
     }
 
-    private static function handleProfile($profile) {
+    private static function handleProfile() {
+        self::$profile['running_time'] = sprintf(
+            '%F', microtime(true) - self::$profile['start_time']
+        );
         $isLoggerEnabled = Config::get(
             'hyperframework.db.profiler.enable_logger'
         );
         if ($isLoggerEnabled === null) {
             $isLoggerEnabled = true;
         }
-        if ($isLoggerEnabled != false) {
-            Logger::debug('hyperframework.db.profiler.profile', $profile);
+        if ($isLoggerEnabled) {
+            Logger::debug(
+                'name' => 'hyperframework.db.profiler.profile',
+                'data' => self::$profile
+            );
         }
         foreach (self::$profileHandlers as $handler) {
-            call_user_func($handler, $profile);
+            call_user_func($handler, self::$profile);
         }
-    }
-
-    private static function getRunningTime() {
-        return sprintf('%F', microtime(true) - self::$current['start_time']);
     }
 }
