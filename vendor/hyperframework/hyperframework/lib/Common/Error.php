@@ -68,23 +68,6 @@ class Error {
         return $this->trace;
     }
 
-    public function getTraceAsString() {
-        $trace = $this->getTrace();
-        if ($trace === null) {
-            return 'undefined';
-        } else {
-            $result = '';
-            $index = 0;
-            foreach ($trace as $item) {
-                $result .= PHP_EOL . '#' . $index . ' '
-                    . $item['file'] . '(' . $item['line'] . '): '
-                    . $item['function'];
-                ++$index;
-            }
-            return $result;
-        }
-    }
-
     public function getContext() {
         return $this->context;
     }

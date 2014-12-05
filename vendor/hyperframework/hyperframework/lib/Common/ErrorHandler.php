@@ -67,8 +67,11 @@ class ErrorHandler {
 
     final public static function handleFatalError() {
         error_reporting(
-            error_reporting()
-                | E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR
+            error_reporting() & (
+                self::$errorReporting & (
+                    E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR
+                )
+            )
         );
         $error = error_get_last();
         if ($error === null) {
