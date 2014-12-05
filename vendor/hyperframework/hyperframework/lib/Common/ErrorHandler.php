@@ -9,11 +9,12 @@ use Hyperframework\Logging\Logger;
 class ErrorHandler {
     private static $source;
     private static $isError;
-    private static $isLoggerEnabled = false;
+    private static $isLoggerEnabled;
     private static $shouldCacheErrors = false;
     private static $previousErrors = [];
     private static $errorReportingBitmask;
     private static $shouldExit;
+    private static $isRunning = false;
 
     public static function run() {
         self::$isLoggerEnabled =false;
@@ -21,30 +22,21 @@ class ErrorHandler {
         if (self::$isLoggerEnabled) {
             ini_set('log_errors', '0');
         }
+        self::$errorReportingBitmask = error_reporting();
         $class = get_called_class();
         set_error_handler(
-            array($class, 'handleError'), self::$errorReporting
+            array($class, 'handleError'), self::$errorReportingBitmask
         );
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
-        self::$errorReportingBitmask = error_reporting();
+        self::$isRunning = true;
         self::disableDefaultErrorReporting();
     }
 
-    final protected static function setErrorReportingBitmask($value) {
-        self::$errorReportingBitmask = $value;
-    }
-
-    final protected static function enableLogger() {
-        self::$isLoggerEnabled = true;
-    }
-
-    final protected static function disableLogger() {
-        self::$isLoggerEnabled = false;
-    }
-
-    final protected static function disableDefaultErrorReporting() {
-        error_reporting(self::getErrorReportingBitmaskBitmask() & E_COMPILE_WARNING);
+    private static function disableDefaultErrorReporting() {
+        error_reporting(
+            self::getErrorReportingBitmask() & E_COMPILE_WARNING
+        );
     }
 
     final protected static function enableErrorCache() {
@@ -130,7 +122,7 @@ class ErrorHandler {
                     self::$previousErrors[] = $source;
                 }
                 self::$source = null;
-                self::disableErrorReporting();
+                self::disableDefaultErrorReporting();
                 return;
             }
         }
@@ -276,6 +268,9 @@ class ErrorHandler {
     }
 
     final protected static function isLoggerEnabled() {
+        if (self::$isRunning === false) {
+            throw new Exception;
+        }
         return self::$isLoggerEnabled;
     }
 
@@ -287,7 +282,7 @@ class ErrorHandler {
     }
 
     private static function getErrorReportingBitmask() {
-        if (self::$errorReportingBitmask === null) {
+        if (self::$isRunning === false) {
             throw new Exception;
         }
         return self::$errorReportingBitmask;
