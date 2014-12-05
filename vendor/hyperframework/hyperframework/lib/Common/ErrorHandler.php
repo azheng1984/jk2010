@@ -77,7 +77,7 @@ class ErrorHandler {
 
     final public static function handleFatalError() {
         error_reporting(
-            error_reporting() & (
+            error_reporting() | (
                 self::getErrorReportingBitmask() & (
                     E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR
                 )

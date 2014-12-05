@@ -1,5 +1,5 @@
 <?php
-$this->extend('_layout.php');
+$this->setLayout('_layout');
 $this(function() {
 });
 return function() {?>

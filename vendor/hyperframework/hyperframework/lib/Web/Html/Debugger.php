@@ -136,7 +136,7 @@ class Debugger {
             }
         }
         if ($isError) {
-           echo '<h2>context</h2>';
+            echo '<h2>context</h2>';
             var_dump($exception->getContext());
         }
         echo '<hr /> Powered by Hyperframework';

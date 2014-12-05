@@ -55,12 +55,12 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         $this->popContext();
     }
 
-    protected function getFullPath() {
-        return $this->fullPath;
+    public function setLayout($value) {
+        $this->layout = $value;
     }
 
-    protected function setLayout($value) {
-        $this->layout = $value;
+    protected function getFullPath() {
+        return $this->fullPath;
     }
 
     protected function renderBlock($name, Closure $default = null) {

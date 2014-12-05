@@ -13,12 +13,12 @@ class Runner extends Base {
         static::runApp();
     }
 
+    protected static function initializeAppRootPath() {
+        Config::set('hyperframework.app_root_path', self::$appRootPath);
+    }
+
     protected static function runApp() {
         $app = new App;
         $app->run();
-    }
-
-    protected static function initializeAppRootPath() {
-        Config::set('hyperframework.app_root_path', self::$appRootPath);
     }
 }
