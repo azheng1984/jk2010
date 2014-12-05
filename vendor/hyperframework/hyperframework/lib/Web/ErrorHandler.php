@@ -9,6 +9,7 @@ use Hyperframework\Common\ErrorHandler as Base;
 class ErrorHandler extends Base {
     private static $isDebuggerEnabled;
     private static $startupOutputBufferLevel;
+    private static $isRunning = true;
 
     public static function run() {
         self::$isDebuggerEnabled =
@@ -28,12 +29,13 @@ class ErrorHandler extends Base {
         }
         self::$startupOutputBufferLevel = ob_get_level();
         parent::run();
+        self::$isRunning = true;
     }
 
     protected static function displayFatalError() {
         $isError = static::isError();
         $source = static::getSource();
-        if (self::$isDebuggerEnabled) {
+        if (self::isDebuggerEnabled()) {
             $headers = headers_list();
             if (headers_sent() === false) {
                 self::resetHttpHeaders();
@@ -73,14 +75,12 @@ class ErrorHandler extends Base {
     }
 
     protected static function getOutputBuffer() {
-        if (self::$startupOutputBufferLevel === null) {
-            throw new Exception;
-        }
+        $startupOutputBufferLevel = self::getStartupOutputBufferLevel();
         $outputBufferLevel = ob_get_level();
-        if ($outputBufferLevel < self::$startupOutputBufferLevel) {
+        if ($outputBufferLevel < $startupOutputBufferLevel) {
             return false;
         }
-        while ($outputBufferLevel > self::$startupOutputBufferLevel) {
+        while ($outputBufferLevel > $startupOutputBufferLevel) {
             ob_end_flush();
             --$outputBufferLevel;
         }
@@ -197,19 +197,17 @@ class ErrorHandler extends Base {
         }
     }
 
-    final protected static function isDebuggerEnabled() {
+    protected static function isDebuggerEnabled() {
+        if (self::$isRunning === false) {
+            throw new Exception;
+        }
         return self::$isDebuggerEnabled;
     }
 
-    final protected static function enableDebugger() {
-        self::$isDebuggerEnabled = true;
-    }
-
-    final protected static function disableDebugger() {
-        self::$isDebuggerEnabled = false;
-    }
-
-    final protected static function getStartupOutputBufferLevel() {
+    protected static function getStartupOutputBufferLevel() {
+        if (self::$isRunning === false) {
+            throw new Exception;
+        }
         return self::$startupOutputBufferLevel;
     }
 }
