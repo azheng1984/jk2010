@@ -9,7 +9,7 @@ use Hyperframework\Logging\Logger;
 class ErrorHandler {
     private static $source;
     private static $isError;
-    private static $isLoggerEnabled = false;
+    private static $isLoggerEnabled;
     private static $shouldCacheErrors = false;
     private static $previousErrors = [];
     private static $errorReportingBitmask;
@@ -267,15 +267,18 @@ class ErrorHandler {
         return !self::$isError;
     }
 
-    protected static function isLoggerEnabled() {
-        return self::$isLoggerEnabled;
-    }
-
     final protected static function getPreviousErrors() {
         if (self::$shouldCacheErrors) {
             return self::$previousErrors;
         }
         return;
+    }
+
+    protected static function isLoggerEnabled() {
+        if (self::$isRunning === false) {
+            throw new Exception;
+        }
+        return self::$isLoggerEnabled;
     }
 
     protected static function getErrorReportingBitmask() {
