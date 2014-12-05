@@ -10,11 +10,11 @@ class Runner extends Base {
         static::runApp();
     }
 
-    protected static function initializeErrorHandler() {
-        ErrorHandler::run();
-    }
-
     protected static function initializeAppRootPath() {
         Config::set('hyperframework.app_root_path', dirname(getcwd()));
+    }
+
+    protected static function initializeErrorHandler() {
+        ErrorHandler::run();
     }
 }

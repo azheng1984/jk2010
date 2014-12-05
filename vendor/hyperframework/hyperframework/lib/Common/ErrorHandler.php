@@ -304,19 +304,19 @@ class ErrorHandler {
             return;
         }
         $isHtml = ini_get('html_errors') === '1';
-        $prependString = ini_get('error_prepend_string');
-        $appendString = ini_get('error_append_string');
+        $prefix = ini_get('error_prepend_string');
+        $suffix = ini_get('error_append_string');
         if ($isHtml === false) {
-            echo $prependString, PHP_EOL;
+            echo $prefix, PHP_EOL;
             if (self::$isError === false) {
                 echo self::getExceptionErrorLog();
             } else {
                 echo self::getErrorLog();
             }
-            echo PHP_EOL, $appendString;
+            echo PHP_EOL, $suffix;
             return;
         }
-        echo $prependString, '<br />', PHP_EOL, '<b>';
+        echo $prefix, '<br />', PHP_EOL, '<b>';
         if (self::$isError) {
             if ($source->isFatal() === true
                 && $source->isRealFatal() === false
@@ -337,6 +337,6 @@ class ErrorHandler {
         }
         echo ' in <b>', htmlspecialchars(self::$source->getFile()),
             '</b> on line <b>', self::$source->getLine(),
-            '</b><br />', PHP_EOL, $appendString;
+            '</b><br />', PHP_EOL, $suffix;
     }
 }

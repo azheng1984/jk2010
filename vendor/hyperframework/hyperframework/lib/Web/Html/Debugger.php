@@ -135,6 +135,10 @@ class Debugger {
                 echo '<span style="color:#999;background-color:#eee">empty</span>';
             }
         }
+        if ($isError) {
+           echo '<h2>context</h2>';
+            var_dump($exception->getContext());
+        }
         echo '<hr /> Powered by Hyperframework';
     }
 }

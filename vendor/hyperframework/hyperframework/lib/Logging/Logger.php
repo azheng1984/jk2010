@@ -7,14 +7,14 @@ use Hyperframework\Common\Config;
 final class Logger {
     private static $thresholdCode;
     private static $path;
-    private static $levels = array(
+    private static $levels = [
         'FATAL' => 0,
         'ERROR' => 1,
         'WARNING' => 2,
         'NOTICE' => 3,
         'INFO' => 4,
         'DEBUG' => 5
-    );
+    ];
 
     public static function debug($params) {
         if (self::getThresholdCode() === 5) {

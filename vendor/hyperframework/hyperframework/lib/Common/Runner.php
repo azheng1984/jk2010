@@ -17,6 +17,6 @@ class Runner {
     }
 
     protected static function initializeErrorHandler() {
-        throw new Exception;
+        ErrorHandler::run();
     }
 }

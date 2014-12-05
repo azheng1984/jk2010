@@ -2,7 +2,6 @@
 namespace Hyperframework\Cli;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Common\ErrorHandler;
 use Hyperframework\Common\Runner as Base;
 
 class Runner extends Base {
@@ -21,9 +20,5 @@ class Runner extends Base {
 
     protected static function initializeAppRootPath() {
         Config::set('hyperframework.app_root_path', self::$appRootPath);
-    }
-
-    protected static function initializeErrorHandler() {
-        ErrorHandler::run();
     }
 }
