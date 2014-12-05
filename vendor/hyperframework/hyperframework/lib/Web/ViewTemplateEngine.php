@@ -16,13 +16,14 @@ abstract class ViewTemplateEngine implements ArrayAccess {
     private $rootPath;
     private $fullPath;
     private $layout;
+    private $layoutRootPath;
 
     public function __construct($includeFileFunction, array $model = null) {
         $this->includeFileFunction = $includeFileFunction;
         $this->model = $model === null ? [] : $model;
     }
 
-    public function load($path, array $options = []) {
+    public function load($path) {
         if ($path == '') {
             throw new Exception;
         }
@@ -35,11 +36,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
             $path .= $matches[0];
         }
         $this->pushContext();
-        if (isset($options['layout'])) {
-            $this->setLayout($options['layout']);
-        } else {
-            $this->setLayout(null);
-        }
+        $this->setLayout(null);
         if (isset($options['root_path'])) {
             $this->setRootPath($options['root_path']);
         }
@@ -50,6 +47,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         $includeFileFunction = $this->includeFileFunction;
         $includeFileFunction($this->fullPath);
         if ($this->layout !== null) {
+            $this->setRootPath($this->layoutRootPath);
             $this->load($this->layout);
         }
         $this->popContext();
@@ -57,6 +55,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
 
     public function setLayout($value) {
         $this->layout = $value;
+        $this->layoutRootPath = $this->getRootPath();
     }
 
     protected function getFullPath() {
@@ -103,16 +102,16 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         return $this->rootPath;
     }
 
+    public function setRootPath($value) {
+        $this->rootPath = $value;
+    }
+
     private function getAppRootPath() {
         $appRootPath = (string)Config::get('hyperframework.app_root_path');
         if ($appRootPath === '') {
             throw new Exception;
         }
         return $appRootPath;
-    }
-
-    public function setRootPath($value) {
-        $this->rootPath = $value;
     }
 
     public function __invoke($function) {
@@ -143,7 +142,8 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         $context = [
             'root_path' => $this->rootPath,
             'full_path' => $this->fullPath,
-            'layout' => $this->layout
+            'layout' => $this->layout,
+            'layout_root_path' => $this->layoutRootPath
         ];
         array_push($this->contextStack, $context);
     }
@@ -153,5 +153,6 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         $this->rootPath = $context['root_path'];
         $this->fullPath = $context['full_path'];
         $this->layout = $context['layout'];
+        $this->layoutRootPath = $context['layout_root_path'];
     }
 }
