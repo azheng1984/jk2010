@@ -267,7 +267,7 @@ class ErrorHandler {
         return !self::$isError;
     }
 
-    final protected static function isLoggerEnabled() {
+    protected static function isLoggerEnabled() {
         return self::$isLoggerEnabled;
     }
 
@@ -278,7 +278,7 @@ class ErrorHandler {
         return;
     }
 
-    private static function getErrorReportingBitmask() {
+    protected static function getErrorReportingBitmask() {
         if (self::$isRunning === false) {
             throw new Exception;
         }
