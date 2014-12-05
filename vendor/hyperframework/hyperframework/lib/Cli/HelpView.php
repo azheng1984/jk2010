@@ -14,6 +14,6 @@ class HelpView {
     }
 
     public function renderUsage() {
-        //short version for exception
+        //short version for command parsing exception
     }
 }

@@ -9,10 +9,10 @@ use Hyperframework\Logging\Logger;
 class ErrorHandler {
     private static $source;
     private static $isError;
-    private static $isLoggerEnabled;
+    private static $isLoggerEnabled = false;
     private static $shouldCacheErrors = false;
     private static $previousErrors = [];
-    private static $errorReporting;
+    private static $startupErrorReporting;
     private static $shouldExit;
 
     public static function run() {
@@ -21,12 +21,26 @@ class ErrorHandler {
         if (self::$isLoggerEnabled) {
             ini_set('log_errors', '0');
         }
-        self::$errorReporting = error_reporting();
+        self::$startupErrorReporting = error_reporting();
         $class = get_called_class();
-        set_error_handler(array($class, 'handleError'), self::$errorReporting);
+        set_error_handler(
+            array($class, 'handleError'), self::$startupErrorReporting
+        );
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
         self::disableErrorReporting();
+    }
+
+    final protected static function setStartupErrorReporting($value) {
+        self::$startupErrorReporting = $value;
+    }
+
+    final protected static function enableLogger() {
+        self::$isLoggerEnabled = true;
+    }
+
+    final protected static function disableLogger() {
+        self::$isLoggerEnabled = false;
     }
 
     final protected static function enableErrorCache() {
@@ -44,7 +58,7 @@ class ErrorHandler {
     final public static function handleError(
         $type, $message, $file, $line, array $context
     ) {
-        error_reporting(self::$errorReporting);
+        error_reporting(self::getStartupErrorReporting());
         $isFatal = false;
         $extraFatalErrorBitmask = Config::get(
             'hyperframework.error_handler.extra_fatal_error_bitmask'
@@ -68,7 +82,7 @@ class ErrorHandler {
     final public static function handleFatalError() {
         error_reporting(
             error_reporting() & (
-                self::$errorReporting & (
+                self::getStartupErrorReporting() & (
                     E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR
                 )
             )
@@ -82,7 +96,7 @@ class ErrorHandler {
             $error['line'], null, null, true
         );
         if ($error->isRealFatal()) {
-            error_reporting(self::$errorReporting);
+            error_reporting(self::getStartupErrorReporting());
             self::handle($error, true);
         }
     }
@@ -128,7 +142,7 @@ class ErrorHandler {
     }
 
     protected static function writeLog() {
-        if (self::$isLoggerEnabled) {
+        if (self::isLoggerEnabled()) {
             $source = self::$source;
             $name = null;
             $data = [];
@@ -268,8 +282,15 @@ class ErrorHandler {
         return;
     }
 
+    private static function getStartupErrorReporting() {
+        if (self::$startupErrorReporting === null) {
+            throw new Exception;
+        }
+        return self::$startupErrorReporting;
+    }
+
     private static function disableErrorReporting() {
-        error_reporting(self::$errorReporting & E_COMPILE_WARNING);
+        error_reporting(self::getStartupErrorReporting() & E_COMPILE_WARNING);
     }
 
     protected static function displayError() {
