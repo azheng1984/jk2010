@@ -24,7 +24,7 @@ final class Logger {
 
     public static function info($params) {
         if (self::getThresholdCode() >= 4) {
-            static::log('DEBUG', $params);
+            static::log('INFO', $params);
         }
     }
 

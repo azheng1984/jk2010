@@ -56,7 +56,7 @@ class DbConnection extends PDO {
         }
         parent::beginTransaction();
         if ($this->isProfilerEnabled) {
-            DbProfiler::onTransactionOperationExecuted();
+            DbProfiler::onTransactionOperationExecuted($this, 'begin');
         }
     }
 
@@ -66,7 +66,7 @@ class DbConnection extends PDO {
         }
         parent::commit();
         if ($this->isProfilerEnabled) {
-            DbProfiler::onTransactionOperationExecuted();
+            DbProfiler::onTransactionOperationExecuted($this, 'commit');
         }
     }
 
@@ -76,7 +76,7 @@ class DbConnection extends PDO {
         }
         parent::rollBack();
         if ($this->isProfilerEnabled) {
-            DbProfiler::onTransactionOperationExecuted();
+            DbProfiler::onTransactionOperationExecuted($this, 'rollback');
         }
     }
 

@@ -15,7 +15,7 @@ return array(
 //    'web.error_handler.exit_level' => 'NOTICE',
 //    'class_loader.enable_zero_folder' => true,
     'db.profiler.enable' => true,
-    'logger.level' => 'DEBUG',
+    'logger.log_level' => 'DEBUG',
     'error_handler.enable_logger' => true,
 //    'log_handler.path' => 'php://output',
     /////////////////////////

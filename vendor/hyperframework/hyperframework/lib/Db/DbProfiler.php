@@ -45,10 +45,10 @@ class DbProfiler {
         self::$profile = [];
         $name = $connection->getName();
         if ($name !== 'default') {
-            self::$profile['connection_name'] => $name;
+            self::$profile['connection_name'] = $name;
         }
         self::$profile = array_merge(self::$profile, $data);
-        self::$profile['start_time'] => microtime(true);
+        self::$profile['start_time'] = microtime(true);
     }
 
     public static function addProfileHandler($callback) {
@@ -66,10 +66,10 @@ class DbProfiler {
             $isLoggerEnabled = true;
         }
         if ($isLoggerEnabled) {
-            Logger::debug(
+            Logger::debug([
                 'name' => 'hyperframework.db.profiler.profile',
                 'data' => self::$profile
-            );
+            ]);
         }
         foreach (self::$profileHandlers as $handler) {
             call_user_func($handler, self::$profile);
