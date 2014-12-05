@@ -26,12 +26,6 @@ class ErrorHandler {
         set_error_handler(array($class, 'handleError'), self::$errorReporting);
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
-        register_shutdown_function(function() {
-            echo 'hi';
-            //include('');
-            echo 'continue';
-            df();
-        });
         self::disableErrorReporting();
     }
 
@@ -44,7 +38,6 @@ class ErrorHandler {
     }
 
     final public static function handleException($exception) {
-        error_reporting(self::$errorReporting);
         self::handle($exception);
     }
 
@@ -73,12 +66,12 @@ class ErrorHandler {
     }
 
     final public static function handleFatalError() {
-        echo 'fe';
+        error_reporting(
+            error_reporting()
+                | E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR
+        );
         $error = error_get_last();
         if ($error === null) {
-            echo 'no';
-            error_reporting(E_ERROR);
-            //report fatal error directly
             return;
         }
         $error = new Error(
@@ -86,12 +79,9 @@ class ErrorHandler {
             $error['line'], null, null, true
         );
         if ($error->isRealFatal()) {
-            echo 'ok';
             error_reporting(self::$errorReporting);
             self::handle($error, true);
-            return;
         }
-        error_reporting(E_ERROR);
     }
 
     private static function handle($source, $isError = false) {
@@ -149,7 +139,7 @@ class ErrorHandler {
                     $data['code'] = $code;
                 }
                 $data['trace'] = [];
-                //config max trace, non real fatal error too
+                //config max trace(include non real fatal error)
                 foreach ($source->getTrace() as $item) {
                     $trace = array();
                     if (isset($item['class'])) {
@@ -276,11 +266,7 @@ class ErrorHandler {
     }
 
     private static function disableErrorReporting() {
-        if (self::$errorReporting & E_COMPILE_WARNING) {
-            error_reporting(E_COMPILE_WARNING);
-            return;
-        }
-        error_reporting(0);
+        error_reporting(self::$errorReporting & E_COMPILE_WARNING);
     }
 
     protected static function displayError() {
