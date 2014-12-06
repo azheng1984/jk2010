@@ -57,6 +57,7 @@ class CommandParser {
                 $charIndex = 1;
                 while ($length > 1) {
                     $optionName = $element[$charIndex];
+                    var_dump($optionConfigs);
                     if (isset($optionConfigs[$optionName]) === false) {
                         throw new Exception;
                     }
@@ -87,7 +88,9 @@ class CommandParser {
                             }
                         }
                     }
-                    if ($option['is_repeatable']) {
+                    if (isset($option['is_repeatable'])
+                        && $option['is_repeatable']
+                    ) {
                         if (isset($result['options'][$optionName])) {
                             $result[$optionType][$optionName][] =
                                 $optionArgument;

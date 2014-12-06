@@ -2,14 +2,32 @@
 namespace Hyperframework\Cli;
 
 use Exception;
+use Hyperframework\Common\Config;
 
 class App {
     private $commandConfig;
     private $options = [];
     private $arguments = [];
 
+    public function __construct() {
+        $elements = $this->parseCommand();
+        if (isset($elements['options'])) {
+            $this->setOptions($elements['options']);
+        }
+        if ($this->hasOption('help')) {
+            $this->renderHelp();
+            $this->quit();
+        }
+        if ($this->hasOption('version')) {
+            $this->renderVersion();
+            $this->quit();
+        }
+        if (isset($elements['arguments'])) {
+            $this->setArguments($elements['arguments']);
+        }
+    }
+
     public function run() {
-        $this->initialize();
         $this->executeCommand();
         $this->finalize();
     }
@@ -65,8 +83,8 @@ class App {
         call_user_func_array([$command, 'execute'], $arguments);
     }
 
-    protected function renderHelp() {
-        $class = $this->getCommandConfig('help_class');
+    protected function renderHelp($errorMessage = null) {
+        $class = (string)$this->getCommandConfig('help_class');
         if ($class === '') {
             $class = (string)Config::get(
                 'hyperframework.cli.default_help_class'
@@ -75,6 +93,7 @@ class App {
                 $class = 'Hyperframework\Cli\Help';
             }
         }
+        var_dump($class);
         $help = new $class($this, $errorMessage);
         $help->render();
     }
@@ -86,24 +105,6 @@ class App {
             return;
         }
         echo $version, PHP_EOL;
-    }
-
-    protected function initialize() {
-        $elements = $this->parseCommand();
-        if (isset($elements['options'])) {
-            $this->setOptions($elements['options']);
-        }
-        if ($this->hasOption('help')) {
-            $this->renderHelp();
-            $this->quit();
-        }
-        if ($this->hasOption('version')) {
-            $this->renderVersion();
-            $this->quit();
-        }
-        if (isset($elements['arguments'])) {
-            $this->setArguments($elements['arguments']);
-        }
     }
 
     protected function parseCommand() {

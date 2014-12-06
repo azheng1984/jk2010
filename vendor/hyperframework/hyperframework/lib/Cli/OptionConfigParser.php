@@ -46,10 +46,10 @@ class OptionConfigParser {
             $option = static::parseKey($key);
             $name = $option['name'];
             unset($option['name']);
-            if (isset($option['short_name'])) {
-                $option[$option['short_name']] = array('full_name' => $name);
-            }
             $result[$name] = $option + $value + $attributes;
+            if (isset($option['short_name'])) {
+                $result[$option['short_name']] = array('full_name' => $name);
+            }
         }
         return $result;
     }

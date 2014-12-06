@@ -8,7 +8,7 @@ class MultipleCommandApp extends App {
     private $subcommand;
     private $globalOptions = [];
 
-    protected function initialize() {
+    public function __construct() {
         $elements = $this->parseCommand();
         if (isset($elements['global_options'])) {
             $this->setGlobalOptions($elements['global_options']);

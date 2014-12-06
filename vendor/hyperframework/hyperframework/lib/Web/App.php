@@ -7,8 +7,11 @@ abstract class App {
     private $router;
     private $controller;
 
+    public function __construct() {
+        $this->initializeRouter();
+    }
+
     public function run() {
-        $this->initialize();
         $controller = $this->getController();
         $controller->run();
         $this->finalize();
@@ -22,10 +25,6 @@ abstract class App {
     public function quit() {
         $this->finalize();
         exit;
-    }
-
-    protected function initialize() {
-        $this->initializeRouter();
     }
 
     abstract protected function initializeRouter();
