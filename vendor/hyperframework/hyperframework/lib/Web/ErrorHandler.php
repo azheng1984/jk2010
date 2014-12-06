@@ -2,8 +2,9 @@
 namespace Hyperframework\Web;
 
 use Exception;
-use Hyperframework\Common\Config;
 use Hyperframework\Web\Html\Debugger;
+use Hyperframework\Common\Config;
+use Hyperframework\Common\ViewTempalte;
 use Hyperframework\Common\ErrorHandler as Base;
 
 class ErrorHandler extends Base {

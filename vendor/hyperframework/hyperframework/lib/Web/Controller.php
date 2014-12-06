@@ -4,6 +4,7 @@ namespace Hyperframework\Web;
 use Exception;
 use Generator;
 use Closure;
+use Hyperframework\Common\ViewTemplate;
 
 class Controller {
     private $app;
