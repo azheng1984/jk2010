@@ -91,4 +91,8 @@ class MultipleCommandApp extends App {
     protected function executeGlobalCommand() {
         $this->renderHelp();
     }
+
+    protected function renderHelp() {
+        //get help from app_namespace \ Help namespace, config
+    }
 }

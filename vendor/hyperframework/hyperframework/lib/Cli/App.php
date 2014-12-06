@@ -65,8 +65,9 @@ class App {
     }
 
     protected function renderHelp($commandParsingException = null) {
-        $view = new HelpView($this, $commandParsingException);
-        $view->render();
+        //get help class from config include subcommands
+        $help = new Help($this, $commandParsingException);
+        $help->render();
     }
 
     protected function renderVersion() {
