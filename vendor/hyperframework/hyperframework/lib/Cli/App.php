@@ -93,7 +93,6 @@ class App {
                 $class = 'Hyperframework\Cli\Help';
             }
         }
-        var_dump($class);
         $help = new $class($this, $errorMessage);
         $help->render();
     }
