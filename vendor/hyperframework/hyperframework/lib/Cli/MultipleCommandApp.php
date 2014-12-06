@@ -21,6 +21,7 @@ class MultipleCommandApp extends App {
             if (isset($elements['arguments'])) {
                 $this->setArguments($elements['arguments']);
             }
+        } else {
         }
         if ($this->hasGlobalOption('help') || $this->hasOption('help')) {
             $this->renderHelp();
@@ -62,11 +63,14 @@ class MultipleCommandApp extends App {
         return $this->subcommand !== null;
     }
 
-    public function getCommandConfig() {
+    public function getCommandConfig($name = null) {
         if ($this->commandConfig === null) {
             $this->commandConfig = new CommandConfig(true);
         }
-        return $this->commandConfig;
+        if ($name === null) {
+            return $this->commandConfig;
+        }
+        return $this->commandConfig->get($name, $this->getSubcommand());
     }
 
     protected function executeCommand() {
@@ -90,9 +94,5 @@ class MultipleCommandApp extends App {
 
     protected function executeGlobalCommand() {
         $this->renderHelp();
-    }
-
-    protected function renderHelp() {
-        //get help from app_namespace \ Help namespace, config
     }
 }

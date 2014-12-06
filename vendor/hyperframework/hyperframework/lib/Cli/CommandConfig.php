@@ -157,9 +157,6 @@ class CommandConfig {
             $config['class'] = substr($class, 1);
             return;
         }
-        // help_class
-        // hyperframework.cli.mca.help_root_namespace = 'Tc\Help'
-        // hyperframework.cli.mca.help_root_namespace = false //disable automatch
         $namespace = Config::get('hyperframework.cli.command_root_namespace');
         if ($namespace === null) {
             $namespace = (string)Config::get(

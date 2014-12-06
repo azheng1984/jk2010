@@ -9,7 +9,6 @@ class App {
     private $arguments = [];
 
     public function run() {
-        throw new CommandParsingException;
         $this->initialize();
         $this->executeCommand();
         $this->finalize();
@@ -41,11 +40,14 @@ class App {
         $this->options = $options;
     }
 
-    public function getCommandConfig() {
+    public function getCommandConfig($name = null) {
         if ($this->commandConfig === null) {
             $this->commandConfig = new CommandConfig;
         }
-        return $this->commandConfig;
+        if ($name === null) {
+            return $this->commandConfig;
+        }
+        return $this->commandConfig->get($name);
     }
 
     public function quit() {
@@ -54,8 +56,7 @@ class App {
     }
 
     protected function executeCommand() {
-        $config = $this->getCommandConfig();
-        $class = $config->get('class');
+        $class = $this->getCommandConfig('class');
         if ($class === null) {
             throw new Exception;
         }
@@ -64,15 +65,22 @@ class App {
         call_user_func_array([$command, 'execute'], $arguments);
     }
 
-    protected function renderHelp($commandParsingException = null) {
-        //get help class from config include subcommands
-        $help = new Help($this, $commandParsingException);
+    protected function renderHelp() {
+        $class = $this->getCommandConfig('help_class');
+        if ($class === '') {
+            $class = (string)Config::get(
+                'hyperframework.cli.default_help_class'
+            );
+            if ($class === '') {
+                $class = 'Hyperframework\Cli\Help';
+            }
+        }
+        $help = new $class($this, $errorMessage);
         $help->render();
     }
 
     protected function renderVersion() {
-        $config = $this->getCommandConfig();
-        $version = $config->get('version');
+        $version = $this->getCommandConfig('version');
         if ($version == '' && (string)$version === '') {
             echo 'undefined', PHP_EOL;
             return;
@@ -103,7 +111,7 @@ class App {
             $commandConfig = $this->getCommandConfig();
             return CommandParser::parse($commandConfig);
         } catch (CommandParsingException $e) {
-            $this->renderHelper($e);
+            $this->renderHelp($e);
             $this->quit();
         }
     }
