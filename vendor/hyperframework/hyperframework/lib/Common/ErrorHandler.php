@@ -48,6 +48,7 @@ class ErrorHandler {
     }
 
     final public static function handleException($exception) {
+        error_reporting(self::getErrorReportingBitmask());
         self::handle($exception);
     }
 
@@ -67,7 +68,7 @@ class ErrorHandler {
             $isFatal = true;
         }
         $trace = array_slice(debug_backtrace(), 2);
-        self::handle(
+        return self::handle(
             new Error(
                 $type, $message, $file, $line, $context, $trace, $isFatal
             ),
@@ -99,8 +100,8 @@ class ErrorHandler {
 
     private static function handle($source, $isError = false) {
         if (self::$source !== null) {
-            if ($isError) {//real fatal error
-                return;
+            if ($isError) {//real fatal error or from excaption handler
+                return false;
             }
             throw $source;
         }
