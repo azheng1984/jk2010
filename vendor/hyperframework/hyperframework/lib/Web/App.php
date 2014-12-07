@@ -35,15 +35,13 @@ abstract class App {
     protected function createController() {
         $router = $this->getRouter();
         if ($router === null) {
-           throw new Exception;
-        }
-        $controllerClass = (string)$router->getControllerClass();
-        if ($controllerClass === ''
-            || class_exists($controllerClass) === false
-        ) {
             throw new Exception;
         }
-        return new $controllerClass($this);
+        $class = (string)$router->getControllerClass();
+        if ($class === '' || class_exists($class) === false) {
+            throw new Exception;
+        }
+        return new $class($this);
     }
 
     protected function finalize() {}
