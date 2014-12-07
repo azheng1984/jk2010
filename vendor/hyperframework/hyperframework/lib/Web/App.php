@@ -34,7 +34,14 @@ class App {
     protected function createRouter() {
         $class = (string)Config::get('hyperframework.web.router');
         if ($class === '') {
-            throw new Exception;
+            $namespace = (string)Config::get('hyperframework.app_root_path');
+            if ($namespace !== '') {
+                $namespace .= '\\';
+            }
+            $class = $namespace . 'Router';
+            if (class_exists($class) === false) {
+                throw new Exception;
+            }
         }
         return new $class($this);
     }
