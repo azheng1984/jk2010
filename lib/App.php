@@ -6,12 +6,10 @@ use Hyperframework\Db\DbClient;
 use Hyperframework\Db\DbTransaction;
 
 class App extends Base {
-    protected function initializeRouter() {
-//        trigger_error('hi', E_USER_ERROR);
-//        dsfsaf();
+    protected function createRouter() {
         DbTransaction::run(function() {
             DbClient::findAll('select * from Article');
         });
-        $this->setRouter(new Router($this));
+        return new Router($this);
     }
 }

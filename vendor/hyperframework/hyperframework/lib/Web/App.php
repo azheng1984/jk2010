@@ -5,14 +5,13 @@ use Exception;
 
 abstract class App {
     private $router;
-    private $controller;
 
     public function __construct() {
-        $this->initializeRouter();
+        $this->router = $this->createRouter();
     }
 
     public function run() {
-        $controller = $this->getController();
+        $controller = $this->createController();
         $controller->run();
         $this->finalize();
     }
@@ -27,32 +26,24 @@ abstract class App {
         exit;
     }
 
-    abstract protected function initializeRouter();
-
-    protected function setRouter($router) {
-        $this->router = $router;
-    }
+    abstract protected function createRouter();
 
     public function getRouter() {
         return $this->router;
     }
 
-    protected function setController($controller) {
-        $this->controller = $controller;
-    }
-
-    protected function getController() {
-        if ($this->controller === null) {
-            $router = $this->getRouter();
-            $controllerClass = (string)$router->getControllerClass();
-            if ($controllerClass === ''
-                || class_exists($controllerClass) === false
-            ) {
-                throw new Exception;
-            }
-            $this->setController(new $controllerClass($this));
+    protected function createController() {
+        $router = $this->getRouter();
+        if ($router === null) {
+           throw new Exception;
         }
-        return $this->controller;
+        $controllerClass = (string)$router->getControllerClass();
+        if ($controllerClass === ''
+            || class_exists($controllerClass) === false
+        ) {
+            throw new Exception;
+        }
+        return new $controllerClass($this);
     }
 
     protected function finalize() {}

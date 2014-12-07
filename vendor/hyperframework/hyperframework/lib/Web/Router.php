@@ -24,13 +24,14 @@ abstract class Router {
 
     public function __construct($app) {
         $this->app = $app;
-        $this->parseReturnValue($this->parse());
+        $result = $this->execute();
+        $this->checkResult($result);
         if ($this->isMatched() === false) {
             throw new NotFoundException;
         }
     }
 
-    abstract protected function parse();
+    abstract protected function execute();
 
     protected function getPath() {
         if ($this->path === null) {
@@ -402,7 +403,7 @@ abstract class Router {
         if (isset($defination['formats'])) {
             $this->scopeFormats = null;
         }
-        $this->parseReturnValue($result);
+        $this->checkResult($result);
         return $this->isMatched();
     }
 
@@ -807,7 +808,7 @@ abstract class Router {
         return $this->match($pattern, $options);
     }
 
-    private function parseReturnValue($value) {
+    private function checkResult($value) {
         if ($value === null) {
             return;
         }

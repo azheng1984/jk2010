@@ -1,9 +1,0 @@
-PHP Notice: Use of undefined constant sss - assumed 'sss' in /home/az/quickquick/vendor/tc/lib/Command.php:6
-Stack trace:#0 /home/az/quickquick/vendor/tc/lib/Command.php(6): Hyperframework\Cli\ErrorHandler::handleError(8, 'Use of undefine...', '/home/az/quickq...', 6, Array)
-#1 [internal function]: Tc\Command->execute('adsfadsf')
-#2 /home/az/quickquick/vendor/hyperframework/hyperframework/lib/Cli/App.php(63): call_user_func_array(Array, Array)
-#3 /home/az/quickquick/vendor/hyperframework/hyperframework/lib/Cli/App.php(13): Hyperframework\Cli\App->executeCommand()
-#4 /home/az/quickquick/vendor/hyperframework/hyperframework/lib/Cli/Runner.php(18): Hyperframework\Cli\App->run()
-#5 /home/az/quickquick/vendor/hyperframework/hyperframework/lib/Cli/Runner.php(13): Hyperframework\Cli\Runner::runApp()
-#6 /home/az/quickquick/vendor/tc/run(9): Hyperframework\Cli\Runner::run('/home/az/quickq...')
-#7 {main}
