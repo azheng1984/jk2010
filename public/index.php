@@ -1,5 +1,6 @@
 <?php
 namespace hi;
+
 require 'hi.php';
 //function hi($controller) {
 //    echo 'start out';
@@ -44,6 +45,8 @@ class index extends _{
 
 //(new index)->name();
 namespace Hyperframework\Blog; //$x = array();
+
+use Hyperframework\Web\Runner;
 //echo $p;
 //exit;
 

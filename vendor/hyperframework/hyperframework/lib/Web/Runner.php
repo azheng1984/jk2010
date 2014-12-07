@@ -14,6 +14,11 @@ class Runner extends Base {
         Config::set('hyperframework.app_root_path', dirname(getcwd()));
     }
 
+    protected static function runApp() {
+        $app = new App;
+        $app->run();
+    }
+
     protected static function initializeErrorHandler() {
         ErrorHandler::run();
     }

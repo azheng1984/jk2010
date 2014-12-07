@@ -2,8 +2,9 @@
 namespace Hyperframework\Web;
 
 use Exception;
+use Hyperframework\Common\Config;
 
-abstract class App {
+class App {
     private $router;
 
     public function __construct() {
@@ -30,7 +31,13 @@ abstract class App {
         exit;
     }
 
-    abstract protected function createRouter();
+    protected function createRouter() {
+        $class = (string)Config::get('hyperframework.web.router');
+        if ($class === '') {
+            throw new Exception;
+        }
+        return new $class($this);
+    }
 
     protected function createController() {
         $router = $this->getRouter();
