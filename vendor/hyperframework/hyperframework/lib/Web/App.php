@@ -16,6 +16,10 @@ abstract class App {
         $this->finalize();
     }
 
+    public function getRouter() {
+        return $this->router;
+    }
+
     public function redirect($url, $statusCode = 302) {
         header('Location: ' . $url, true, $statusCode);
         $this->quit();
@@ -27,10 +31,6 @@ abstract class App {
     }
 
     abstract protected function createRouter();
-
-    public function getRouter() {
-        return $this->router;
-    }
 
     protected function createController() {
         $router = $this->getRouter();
