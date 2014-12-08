@@ -12,20 +12,11 @@ return array(
     //collection must not have arguments
     //cancel! get options via $this
 
-    'options' => array(
-        'required',
-        array(
-            'mutex',
-            'required',
-            'repeatable',
-            '--good' => '',
-            '--bad' => '',
-        ),
-        array(
-            'mutex',
-            '--slow' => '',
-            '--fast' => '',
-        ),
+    'options' => [
+        '--right' => ['repeatable'],
+        '--left'  => ['repeatable'],
+        '--top'   => ['repeatable'],
+        '--down'  => ['repeatable'],
         '-x <arg>',
         '-x (a|b|c)',
         '-x[(a|b|c)]',
@@ -41,7 +32,10 @@ return array(
             'description' => 'x',
         ),
         '--name-of-option[=<arg-key>]' => 'message',
-    ),
+    ],
+    'mutually_exclusive_options' => [
+        '--right | --left | --top | --down' => 'required'
+    ],
     //'class' => 'CommandCollection', //default CommandCollection
     //\Xx\CommandCollection //same as php
     //CommandCollection if have options
