@@ -14,6 +14,9 @@ class App {
         if (isset($elements['options'])) {
             $this->setOptions($elements['options']);
         }
+        if (isset($elements['arguments'])) {
+            $this->setArguments($elements['arguments']);
+        }
         if ($this->hasOption('help')) {
             $this->renderHelp();
             $this->quit();
@@ -21,9 +24,6 @@ class App {
         if ($this->hasOption('version')) {
             $this->renderVersion();
             $this->quit();
-        }
-        if (isset($elements['arguments'])) {
-            $this->setArguments($elements['arguments']);
         }
     }
 
@@ -131,12 +131,8 @@ class App {
         }
         $helpOption = null;
         if (isset($options['help'])) {
+            echo 'See \'', $name, ' --help\'.', PHP_EOL;
             $helpOption = '--help';
-        } elseif (isset($options['h'])) {
-            $helpOption = '-h';
-        }
-        if ($helpOption !== null) {
-            echo 'See \'', $name, ' ', $helpOption, '\'.', PHP_EOL;
         }
     }
 

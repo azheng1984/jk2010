@@ -9,37 +9,70 @@ class Help {
     }
 
     public function render() {
-    }
-
-    protected function renderFullHelp() {
         $this->renderUsage();
-        $this->renderOptions();
-    }
-
-    protected function renderCompactedHelp() {
-    }
-
-    protected function renderUsage() {
-        $commandConfig = $this->app->getCommandConfig();
-        $name = $commandConfig->get('name');
-        if ($commandConfig->hasMultipleCommands()) {
+        if ($this->hasOptionDescription()) {
+            $this->renderOptions();
+        }
+        $config = $this->app->getCommandConfig();
+        if ($config->isMultipleCommandApp()) {
             if ($app->hasSubcommand() === false) {
-                echo 'Usage: ', $name, ' [options] <command>' . PHP_EOL;
+                $this->renderSubcommands();
+            }
+        }
+    }
+
+    private function hasOptionDescription() {
+    }
+
+    private function hasArgumentDescription() {
+    }
+
+    private function renderUsage() {
+        $config = $this->app->getCommandConfig();
+        $name = (string)$config->get('name');
+        if ($name === '') {
+            throw new Exception;
+        }
+        if ($config->hasMultipleCommands()) {
+            echo 'Usage: ';
+            if ($this->app->hasSubcommand() === false) {
+                echo $name;
                 $this->renderSubcommands();
             } else {
                 $subcommand = $app->getSubcommand();
-                echo 'Usage: ', $name, ' ', $subcommand, '[options] <arg>';
+                echo $name, ' ', $subcommand;
+            }
+            //check option count
+            if ($this->hasOptionDescription() === false) {
+                $this->renderCompactOptions();
+            } else {
+                echo ' [opitons]';
+            }
+            if ($this->app->hasSubcommand() === false) {
+                echo ' <command>', PHP_EOL;
+            } else {
+                echo ' ';
+                $this->renderCompactArguments()
+                echo PHP_EOL;
             }
         } else {
-            echo 'Usage: ', $name, ' [options] <arg>' . PHP_EOL;
+            echo 'Usage: ', $name;
+            if ($this->hasOptionDescription() === false) {
+                $this->renderCompactedOptions();
+            } else {
+                echo '[opitons]';
+            }
+            $this->renderCompactArguments();
+            echo PHP_EOL;
         }
+    }
+
+    protected function renderCompactOptions() {
+//        '[[--cc | -c] | [--dd]]'
     }
 
     protected function renderSubcommands() {
         echo 'Commands:';
-    }
-
-    protected function renderCompactedOptions() {
     }
 
     protected function renderOptions() {
