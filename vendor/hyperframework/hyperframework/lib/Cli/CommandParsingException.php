@@ -7,10 +7,10 @@ class CommandParsingException extends Exception {
     private $isArgumentError;
 
     public function __construct(
-        $message, $isArgumentError = false, $previous = null
+        $message = '', $isArgumentError = false, $previous = null
     ) {
-        $this->isArgumentError = false;
-        parent::($message, 0, $previous);
+        $this->isArgumentError = $isArgumentError;
+        parent::__construct($message, 0, $previous);
     }
 
     public function isArgumentError() {

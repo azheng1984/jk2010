@@ -116,11 +116,19 @@ class App {
 
     protected function renderCommandParsingError($exception) {
         echo $exception->getMessage(), PHP_EOL;
-        $name = (string)$this->getCommandConfig('name');
+        $config = $this->getCommandConfig();
+        $name = (string)$config->get('name');
         if ($name === '') {
             throw new Exception;
         }
-        $options = $this->getCommandConfig('options');
+        $options = null;
+        if ($exception instanceof SubcomandParsingException) {
+            $subcommand = $exception->getSubcommand();
+            $name .= ' ' . $subcommand;
+            $options = $config->get('options', $subcommand);
+        } else {
+            $options = $config->get('options');
+        }
         $helpOption = null;
         if (isset($options['help'])) {
             $helpOption = '--help';

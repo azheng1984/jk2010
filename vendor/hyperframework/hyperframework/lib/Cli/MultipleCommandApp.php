@@ -94,32 +94,4 @@ class MultipleCommandApp extends App {
     protected function executeGlobalCommand() {
         $this->renderHelp();
     }
-
-    protected function renderCommandParsingError($exception) {
-        echo $exception, PHP_EOL;
-        $config = $this->getCommandConfig();
-        $name = null;
-        $options = null;
-        if ($exception instanceof SubcomandParsingException) {
-            $name = (string)$config->get('name');
-            if ($name === '') {
-                throw new Exception;
-            }
-            $subcommand = $exception->getSubcommand();
-            $name .= ' ' . $subcommand;
-            $options = $config->get('options', $subcommand);
-        } else {
-            $name = $config->get('name')
-            $options = $config->get('options');
-        }
-        $helpOption = null;
-        if (isset($options['help'])) {
-            $helpOption = '--help';
-        } elseif (isset($options['h'])) {
-            $helpOption = '-h';
-        }
-        if ($helpOption !== null) {
-            echo 'See \'', $name, ' ', $helpOption, '\'.', PHP_EOL;
-        }
-    }
 }
