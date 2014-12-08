@@ -27,13 +27,35 @@ class Help {
     }
 
     protected function renderFullHelp() {
-        echo 'Usage: ';
+        $this->renderUsage();
+        $this->renderOptions();
+    }
+
+    protected function renderUsage() {
+        $commandConfig = $this->app->getCommandConfig();
+        $name = $commandConfig->get('name');
+        if ($commandConfig->hasMultipleCommands()) {
+            if ($app->hasSubcommand() === false) {
+                echo 'Usage: ', $name, ' [options] <command>' . PHP_EOL;
+                $this->renderSubcommands();
+            } else {
+                $subcommand = $app->getSubcommand();
+                echo 'Usage: ', $name, ' ', $subcommand, '[options] <arg>';
+            }
+        } else {
+            echo 'Usage: ', $name, ' [options] <arg>' . PHP_EOL;
+        }
+    }
+
+    protected function renderSubcommands() {
+        echo 'Commands:';
     }
 
     protected function renderCompressedOptions() {
     }
 
     protected function renderOptions() {
+        echo 'Options:' . PHP_EOL;
     }
 
     protected function renderErrorHelp() {
