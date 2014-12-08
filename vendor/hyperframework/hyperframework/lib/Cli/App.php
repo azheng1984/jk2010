@@ -129,7 +129,6 @@ class App {
         } else {
             $options = $config->get('options');
         }
-        $helpOption = null;
         if (isset($options['help'])) {
             echo 'See \'', $name, ' --help\'.', PHP_EOL;
             $helpOption = '--help';

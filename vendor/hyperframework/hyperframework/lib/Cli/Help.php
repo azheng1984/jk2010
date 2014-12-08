@@ -68,6 +68,7 @@ class Help {
     }
 
     protected function renderCompactOptions() {
+        '([--dis])'
 //        '[[--cc | -c] | [--dd]]'
     }
 
