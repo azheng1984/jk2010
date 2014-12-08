@@ -115,13 +115,12 @@ class App {
     }
 
     protected function renderCommandParsingError($exception) {
-        $commandConfig = $this->getCommandConfig();
-        $name = (string)$commandConfig->get('name');
+        echo $exception->getMessage(), PHP_EOL;
+        $name = (string)$this->getCommandConfig('name');
         if ($name === '') {
             throw new Exception;
         }
-        echo $exception, PHP_EOL;
-        $options = $commandConfig->get('options');
+        $options = $this->getCommandConfig('options');
         $helpOption = null;
         if (isset($options['help'])) {
             $helpOption = '--help';

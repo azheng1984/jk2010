@@ -9,19 +9,6 @@ class Help {
     }
 
     public function render() {
-        if ($this->hasErrorMessage()) {
-            $this->renderErrorHelp();
-            return;
-        }
-        $this->renderFullHelp();
-    }
-
-    protected function hasErrorMessage() {
-        return $this->errorMessage !== null;
-    }
-
-    protected function getErrorMessage() {
-        return $this->errorMessage;
     }
 
     protected function renderFullHelp() {
@@ -57,21 +44,5 @@ class Help {
 
     protected function renderOptions() {
         echo 'Options:' . PHP_EOL;
-    }
-
-    protected function renderErrorHelp() {
-        $commandConfig = $this->app->getCommandConfig();
-        $name = $commandConfig->get('name');
-        echo (string)$this->errorMessage, PHP_EOL;
-        $options = $commandConfig->get('options');
-        $helpOption = null;
-        if (isset($options['help'])) {
-            $helpOption = '--help';
-        } elseif (isset($options['-h'])) {
-            $helpOption = 'h';
-        }
-        if ($helpOption !== null) {
-            echo 'See \'', $name, ' ', $helpOption, '\'.', PHP_EOL;
-        }
     }
 }

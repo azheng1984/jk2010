@@ -4,10 +4,20 @@ namespace Hyperframework\Cli;
 use Exception;
 
 class CommandParsingException extends Exception {
-    public function getSubcommand() {
+    private $isArgumentError;
+
+    public function __construct(
+        $message, $isArgumentError = false, $previous = null
+    ) {
+        $this->isArgumentError = false;
+        parent::($message, 0, $previous);
     }
 
-    public function __toString() {
-        return $this->getMessage();
+    public function isArgumentError() {
+        return $this->isArgumentError;
+    }
+
+    public function isOptionError() {
+        return !$this->isArgumentError;
     }
 }
