@@ -7,7 +7,7 @@ use Hyperframework\Common\Config;
 
 class DbContext {
     private static $current;
-    private static $factory;
+    private static $factoryClass;
     private static $stack = array();
     private static $pool = array();
 
@@ -28,8 +28,8 @@ class DbContext {
                 throw new Exception;
             }
             if ($isShared === false || isset(self::$pool[$name]) === false) {
-                $factory = self::getFactory();
-                $connection = $factory::build($name);
+                $factoryClass = self::getFactoryClass();
+                $connection = $factoryClass::build($name);
                 if ($isShared) {
                     self::$pool[$name] = $connection;
                 }
@@ -73,15 +73,15 @@ class DbContext {
         self::$stack = array();
     }
 
-    private static function getFactory() {
-        if (self::$factory === null) {
-            self::$factory = Config::get(
-                'hyperframework.db.connection.factory'
+    private static function getFactoryClass() {
+        if (self::$factoryClass === null) {
+            self::$factoryClass = Config::get(
+                'hyperframework.db.connection.factory_class'
             );
-            if (self::$factory === null) {
-                self::$factory = '\Hyperframework\Db\DbConnectionFactory';
+            if (self::$factoryClass === null) {
+                self::$factoryClass = 'Hyperframework\Db\DbConnectionFactory';
             }
         }
-        return self::$factory;
+        return self::$factoryClass;
     }
 }

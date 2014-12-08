@@ -148,7 +148,7 @@ class DbClient {
 
     final protected static function getEngine() {
         if (self::$engine === null) {
-            $class = Config::get('hyperframework.db.client.engine');
+            $class = Config::get('hyperframework.db.client.engine_class');
             if ($class === null) {
                 self::$engine = new DbClientEngine;
             } else {
