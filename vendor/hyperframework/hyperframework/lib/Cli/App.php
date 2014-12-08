@@ -86,9 +86,7 @@ class App {
     protected function renderHelp($errorMessage = null) {
         $class = (string)$this->getCommandConfig('help_class');
         if ($class === '') {
-            $class = (string)Config::get(
-                'hyperframework.cli.default_help_class'
-            );
+            $class = (string)Config::get('hyperframework.cli.help_class');
             if ($class === '') {
                 $class = 'Hyperframework\Cli\Help';
             }

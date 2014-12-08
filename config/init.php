@@ -17,6 +17,7 @@ return array(
 //    'class_loader.enable_zero_folder' => true,
     'db.profiler.enable' => true,
     'logger.log_level' => 'DEBUG',
+    'logger.handler_class' => 'xx',
     'error_handler.enable_logger' => true,
 //    'log_handler.path' => 'php://output',
     /////////////////////////

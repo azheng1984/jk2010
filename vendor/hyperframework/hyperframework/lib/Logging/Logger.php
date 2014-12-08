@@ -79,11 +79,11 @@ final class Logger {
                 throw new Exception;
             }
         }
-        $handler = Config::get('hyperframework.logger.log_handler');
-        if ($handler == null) {
+        $handlerClass = Config::get('hyperframework.logger.log_handler_class');
+        if ($handlerClass == null) {
             LogHandler::handle($level, $params);
         } else {
-            $handler::handle($level, $params);
+            $handlerClass::handle($level, $params);
         }
     }
 
