@@ -76,7 +76,7 @@ class CommandParser {
                         } else {
                             ++$index;
                             if ($index >= $count) {
-                                throw new Exception;
+                                throw new CommandParsingException;
                             }
                             $optionArgument = $argv[$index];
                         }
@@ -84,7 +84,7 @@ class CommandParser {
                     if (isset($option['mutex_options'])) {
                         foreach ($option['mutex_options'] as $item) {
                             if (isset($result['options'][$item])) {
-                                throw new Exception;
+                                throw new CommandParsingException;
                             }
                         }
                     }
@@ -193,7 +193,7 @@ class CommandParser {
                 $result['arguments'][] = $element;
             } else {
                 if (isset($argumentConfigs[$argumentCount - 1]) === false) {
-                    throw new Exception;
+                    throw new CommandParsingException('Argument error.');
                 }
                 $lastArgument = $argumentConfigs[$argumentCount - 1];
                 if ($lastArgument['is_collection']) {

@@ -3,11 +3,9 @@ namespace Hyperframework\Cli;
 
 class Help {
     private $app;
-    private $errorMessage;
 
-    public function __construct($app, $errorMessage = null) {
+    public function __construct($app) {
         $this->app = $app;
-        $this->errorMessage = $errorMessage;
     }
 
     public function render() {
@@ -31,6 +29,9 @@ class Help {
         $this->renderOptions();
     }
 
+    protected function renderCompactedHelp() {
+    }
+
     protected function renderUsage() {
         $commandConfig = $this->app->getCommandConfig();
         $name = $commandConfig->get('name');
@@ -51,7 +52,7 @@ class Help {
         echo 'Commands:';
     }
 
-    protected function renderCompressedOptions() {
+    protected function renderCompactedOptions() {
     }
 
     protected function renderOptions() {
@@ -59,8 +60,18 @@ class Help {
     }
 
     protected function renderErrorHelp() {
-        echo $this->errorMessage . PHP_EOL;
-        $this->renderUsage();
-        //short version for command parsing exception
+        $commandConfig = $this->app->getCommandConfig();
+        $name = $commandConfig->get('name');
+        echo (string)$this->errorMessage, PHP_EOL;
+        $options = $commandConfig->get('options');
+        $helpOption = null;
+        if (isset($options['help'])) {
+            $helpOption = '--help';
+        } elseif (isset($options['-h'])) {
+            $helpOption = 'h';
+        }
+        if ($helpOption !== null) {
+            echo 'See \'', $name, ' ', $helpOption, '\'.', PHP_EOL;
+        }
     }
 }

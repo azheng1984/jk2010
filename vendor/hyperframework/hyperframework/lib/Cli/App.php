@@ -83,7 +83,7 @@ class App {
         call_user_func_array([$command, 'execute'], $arguments);
     }
 
-    protected function renderHelp($errorMessage = null) {
+    protected function renderHelp() {
         $class = (string)$this->getCommandConfig('help_class');
         if ($class === '') {
             $class = (string)Config::get('hyperframework.cli.help_class');
@@ -91,7 +91,7 @@ class App {
                 $class = 'Hyperframework\Cli\Help';
             }
         }
-        $help = new $class($this, $errorMessage);
+        $help = new $class($this);
         $help->render();
     }
 
@@ -109,8 +109,27 @@ class App {
             $commandConfig = $this->getCommandConfig();
             return CommandParser::parse($commandConfig);
         } catch (CommandParsingException $e) {
-            $this->renderHelp($e);
+            $this->renderCommandParsingError($e);
             $this->quit();
+        }
+    }
+
+    protected function renderCommandParsingError($exception) {
+        $commandConfig = $this->getCommandConfig();
+        $name = (string)$commandConfig->get('name');
+        if ($name === '') {
+            throw new Exception;
+        }
+        echo $exception, PHP_EOL;
+        $options = $commandConfig->get('options');
+        $helpOption = null;
+        if (isset($options['help'])) {
+            $helpOption = '--help';
+        } elseif (isset($options['h'])) {
+            $helpOption = '-h';
+        }
+        if ($helpOption !== null) {
+            echo 'See \'', $name, ' ', $helpOption, '\'.', PHP_EOL;
         }
     }
 

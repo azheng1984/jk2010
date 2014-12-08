@@ -146,9 +146,14 @@ class CommandConfig {
     }
 
     private function initializeClass(array &$config, $isSubcommand) {
-        if (isset($config['class']) === false) {
-            $config['class'] = $this->getDefaultCommandClass();
+        $class = null;
+        if (isset($config['class'])) {
+            $class = (string)$config['class'];
+            if ($class !== '') {
+                return $class;
+            }
         }
+        $config['class'] = $this->getDefaultCommandClass();
         $class = (string)$config['class'];
         if ($class === '') {
             throw new Exception;
@@ -157,8 +162,10 @@ class CommandConfig {
             $config['class'] = substr($class, 1);
             return;
         }
-        $namespace = Config::get('hyperframework.cli.command_root_namespace');
-        if ($namespace === null) {
+        $namespace = (string)Config::get(
+            'hyperframework.cli.command_root_namespace'
+        );
+        if ($namespace === '') {
             $namespace = (string)Config::get(
                 'hyperframework.app_root_namespace'
             );
