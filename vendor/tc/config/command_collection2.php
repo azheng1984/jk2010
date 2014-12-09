@@ -1,7 +1,7 @@
 <?php
-return array(
+return [
     'name' => 'hf',
-    'namespace' => 'Tc', //default: app_root_namespace
+//  'namespace' => 'Tc', //default: app_root_namespace
     'version' => '1.1.1',
     'description' => 'Hyperframework CLI Tool', //optional
     'arguments' => [
@@ -41,15 +41,15 @@ return array(
     //\Xx\CommandCollection //same as php
     //CommandCollection if have options
     //'root_namespace' => '\Hyperframework\Blog\RootPath'
-    'commands' => array( //or subcommands = 'folder' default to config/commands
-        'hello' => array( //inline. lazy load is supported
-            'description' => 'Build application',
-//          'class' => 'HelloCommand', //default
-            'options' => array(
-                '-h,--hi=<arg>' => array('repeatable'),
-                '--hi2' => array('description' => 'hello hi2'),
-                '--flatoption',
-            ),
-        ),
-    )
-);
+//    'commands' => array( //or subcommands = 'folder' default to config/commands
+//        'hello' => array( //inline. lazy load is supported
+//            'description' => 'Build application',
+////          'class' => 'HelloCommand', //default
+//            'options' => array(
+//                '-h,--hi=<arg>' => array('repeatable'),
+//                '--hi2' => array('description' => 'hello hi2'),
+//                '--flatoption',
+//            ),
+//        ),
+//    )
+];
