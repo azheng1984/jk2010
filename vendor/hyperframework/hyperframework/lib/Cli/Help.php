@@ -88,5 +88,13 @@ class Help {
     protected function renderOptions() {
         //only one option?
         echo 'Options:' . PHP_EOL;
+        $arguments = $this->config->get('arguments');
+        if ($arguments === null) {
+            return;
+        }
+        if (is_array($arguments)) {
+            throw new Exception;
+        }
+        echo implode(', ', $arguments);
     }
 }
