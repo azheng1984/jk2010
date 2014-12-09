@@ -15,10 +15,20 @@ class App {
 
     public function getRouter() {
         if ($this->router === null) {
-            $this->router = $this->createRouter();
-            if ($this->router === null) {
-                throw new Exception;
+            $class = (string)Config::get('hyperframework.web.router_class');
+            if ($class === '') {
+                $namespace = (string)Config::get(
+                    'hyperframework.app_root_namespace'
+                );
+                if ($namespace !== '') {
+                    $namespace .= '\\';
+                }
+                $class = $namespace . 'Router';
+                if (class_exists($class) === false) {
+                    throw new Exception($class . ' not found');
+                }
             }
+            $this->router = new $class($this);
         }
         return $this->router;
     }
@@ -43,21 +53,4 @@ class App {
     }
 
     protected function finalize() {}
-
-    private function createRouter() {
-        $class = (string)Config::get('hyperframework.web.router_class');
-        if ($class === '') {
-            $namespace = (string)Config::get(
-                'hyperframework.app_root_namespace'
-            );
-            if ($namespace !== '') {
-                $namespace .= '\\';
-            }
-            $class = $namespace . 'Router';
-            if (class_exists($class) === false) {
-                throw new Exception($class . ' not found');
-            }
-        }
-        return new $class($this);
-    }
 }
