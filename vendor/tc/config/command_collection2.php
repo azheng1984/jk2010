@@ -35,6 +35,7 @@ return [
         '--name-of-option[=<arg-key>]' => 'message',
     ],
     'mutually_exclusive_options' => [
+//        ['all', 'required'],
         ['--right', '--left', '--top', '--down', 'required']
     ],
     //'class' => 'CommandCollection', //default CommandCollection

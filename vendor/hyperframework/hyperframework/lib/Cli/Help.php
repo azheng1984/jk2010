@@ -68,12 +68,11 @@ class Help {
     }
 
     protected function renderCompactOptions() {
-        '([--dis])'
-//        '[[--cc | -c] | [--dd]]'
     }
 
     protected function renderSubcommands() {
         echo 'Commands:';
+        //read config folder
     }
 
     protected function renderOptions() {
