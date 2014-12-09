@@ -187,7 +187,7 @@ class CommandParser {
             ++$argumentIndex
         ) {
             if ($argumentConfigCount > $argumentIndex) {
-                if ($argumentConfigs[$argumentIndex]['is_collection']) {
+                if ($argumentConfigs[$argumentIndex]['is_repeatable']) {
                     $result['arguments'][] = array($element);
                 }
                 $result['arguments'][] = $element;
@@ -196,7 +196,7 @@ class CommandParser {
                     throw new CommandParsingException('Argument error.');
                 }
                 $lastArgument = $argumentConfigs[$argumentCount - 1];
-                if ($lastArgument['is_collection']) {
+                if ($lastArgument['is_array']) {
                     $result['arguments'][$argumentCount - 1][] = $element;
                 } else {
                     throw new Exception;

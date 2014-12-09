@@ -16,9 +16,9 @@ final class Config {
         self::$data[$key] = $value;
     }
 
-    public static function has($name) {
-        return self::get($name) !== null;
-    }
+//    public static function has($name) {
+//        return self::get($name) !== null;
+//    }
 
     public static function remove($key) {
         self::set($key, null);

@@ -7,10 +7,6 @@ use Hyperframework\Common\Config;
 class App {
     private $router;
 
-    public function __construct() {
-        $this->router = $this->createRouter();
-    }
-
     public function run() {
         $controller = $this->createController();
         $controller->run();
@@ -18,6 +14,12 @@ class App {
     }
 
     public function getRouter() {
+        if ($this->router === null) {
+            $this->router = $this->createRouter();
+            if ($this->router === null) {
+                throw new Exception;
+            }
+        }
         return $this->router;
     }
 
@@ -31,7 +33,18 @@ class App {
         exit;
     }
 
-    protected function createRouter() {
+    protected function createController() {
+        $router = $this->getRouter();
+        $class = (string)$router->getControllerClass();
+        if ($class === '' || class_exists($class) === false) {
+            throw new Exception;
+        }
+        return new $class($this);
+    }
+
+    protected function finalize() {}
+
+    private function createRouter() {
         $class = (string)Config::get('hyperframework.web.router_class');
         if ($class === '') {
             $namespace = (string)Config::get(
@@ -47,18 +60,4 @@ class App {
         }
         return new $class($this);
     }
-
-    protected function createController() {
-        $router = $this->getRouter();
-        if ($router === null) {
-            throw new Exception;
-        }
-        $class = (string)$router->getControllerClass();
-        if ($class === '' || class_exists($class) === false) {
-            throw new Exception;
-        }
-        return new $class($this);
-    }
-
-    protected function finalize() {}
 }

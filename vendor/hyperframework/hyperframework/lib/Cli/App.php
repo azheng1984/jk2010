@@ -60,12 +60,20 @@ class App {
 
     public function getCommandConfig($name = null) {
         if ($this->commandConfig === null) {
-            $this->commandConfig = new CommandConfig;
+            $this->commandConfig = $this->createCommandConfig();
         }
         if ($name === null) {
             return $this->commandConfig;
         }
         return $this->commandConfig->get($name);
+    }
+
+    private function createCommandConfig() {
+        $class = (string)Config::get('hyperframework.cli.command_config_class');
+        if ($class === '') {
+            return new CommandConfig;
+        }
+        return new $class;
     }
 
     public function quit() {

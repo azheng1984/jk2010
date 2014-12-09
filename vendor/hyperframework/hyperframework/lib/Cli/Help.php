@@ -3,9 +3,12 @@ namespace Hyperframework\Cli;
 
 class Help {
     private $app;
+    private $config;
+    private $hasOptionDescription;
 
     public function __construct($app) {
         $this->app = $app;
+        $this->config = $this->app->getCommandConfig();
     }
 
     public function render() {
@@ -13,23 +16,18 @@ class Help {
         if ($this->hasOptionDescription()) {
             $this->renderOptions();
         }
-        $config = $this->app->getCommandConfig();
-        if ($config->isMultipleCommandApp()) {
-            if ($app->hasSubcommand() === false) {
-                $this->renderSubcommands();
-            }
+        if ($this->config->isMultipleCommandApp()
+            && $app->hasSubcommand() === false
+        ) {
+            $this->renderSubcommands();
         }
     }
 
     private function hasOptionDescription() {
     }
 
-    private function hasArgumentDescription() {
-    }
-
     private function renderUsage() {
-        $config = $this->app->getCommandConfig();
-        $name = (string)$config->get('name');
+        $name = (string)$this->config->get('name');
         if ($name === '') {
             throw new Exception;
         }
@@ -67,15 +65,28 @@ class Help {
         }
     }
 
+    private function renderArguments() {
+        $arguments = $this->config->get('arguments');
+        if ($arguments === null) {
+            return;
+        }
+        if (is_array($arguments)) {
+            throw new Exception;
+        }
+        echo implode(', ', $arguments);
+    }
+
     protected function renderCompactOptions() {
     }
 
     protected function renderSubcommands() {
+        //only one command?
         echo 'Commands:';
         //read config folder
     }
 
     protected function renderOptions() {
+        //only one option?
         echo 'Options:' . PHP_EOL;
     }
 }

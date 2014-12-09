@@ -52,7 +52,7 @@ class ArgumentConfigParser {
                 return array(
                     'name' => $name,
                     'is_optional' => $isOptional,
-                    'is_collection' => $isCollection
+                    'is_repeatable' => $isCollection
                 );
             }
         } else {
