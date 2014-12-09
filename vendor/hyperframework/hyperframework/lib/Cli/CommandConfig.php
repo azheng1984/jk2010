@@ -14,7 +14,7 @@ class CommandConfig {
     private $class;
     private $options;
     private $arguments;
-    private $subcommandConfigs= [];
+    private $subcommandConfigs = [];
     private $subcommandClasses = [];
     private $subcommandOptions = [];
     private $subcommandArguments = [];
@@ -118,17 +118,17 @@ class CommandConfig {
     }
 
     public function getHelpClass($subcommand = null) {
-        return $this->get('class');
+        return $this->get('help_class');
     }
 
-    public function get($name, $subcommand = null) {
+    protected function get($name, $subcommand = null) {
         $configs = $this->getAll($subcommand);
         if (isset($configs[$name])) {
             return $configs[$name];
         }
     }
 
-    public function getAll($subcommand = null) {
+    protected function getAll($subcommand = null) {
         if ($subcommand === null) {
             if ($this->configs !== null) {
                 return $this->configs;
@@ -239,19 +239,4 @@ class CommandConfig {
             return['-h, --help', '--version'];
         }
     }
-
-//    protected function initializeConfig(&$config, $isSubcommand) {
-//        $this->initializeClass($config, $isSubcommand);
-//        $this->initializeOptions($config, $isSubcommand);
-//        $this->initializeArguments($config, $isSubcommand);
-//    }
-
-//    private function initializeClass(array &$config, $isSubcommand) {
-//    }
-//
-//    private function initializeOptions($config, $isSubcommand) {
-//    }
-//
-//    private function initializeArguments(&$config, $isSubcommand) {
-//    }
 }
