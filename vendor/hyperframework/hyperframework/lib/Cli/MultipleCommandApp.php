@@ -73,8 +73,11 @@ class MultipleCommandApp extends App {
 
     protected function executeSubcommand() {
         $config = $this->getCommandConfig();
-        $subcommandClass = $config->get('class', $this->getSubcommand());
-        if ($subcommandClass === null) {
+        $subcommandClass = (string)$config->get('class', $this->getSubcommand());
+        if ($subcommandClass === '') {
+            throw new Exception;
+        }
+        if (class_exists($subcommandClass) === false) {
             throw new Exception;
         }
         $subcommand = new $subcommandClass($this);
@@ -83,6 +86,13 @@ class MultipleCommandApp extends App {
     }
 
     protected function executeGlobalCommand() {
-        $this->renderHelp();
+        $config = $this->getCommandConfig();
+        $class = $config->getClass();
+        if ($class !== null) {
+            $globalCommand = new $class($this);
+            $globalCommand->execute();
+        } else {
+            $this->renderHelp();
+        }
     }
 }

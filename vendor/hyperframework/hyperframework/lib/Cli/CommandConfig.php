@@ -20,78 +20,118 @@ class CommandConfig {
     private $subcommandArguments = [];
 
     public function getArguments($subcommand = null) {
-        if ($this->isSubcommandEnabled() && $isSubcommand = false) {
-            if (isset($config['arguments'])) {
-                throw new Exception;
-            }
-            return;
+        if ($subcommand === null && $this->isSubcommandEnabled()) {
+            return [];
         }
-        if (isset($config['arguments'])) {
-            $config['arguments'] = $this->parseArgumentConfigs(
-                $config['arguments']
-            );
+        if ($subcommand !== null
+            && isset($this->subcommandArguments[$subcommand])
+        ) {
+            return $this->subcommandArguments[$subcommand];
+        } elseif ($this->arguments !== null) {
+            return $this->arguments;
+        }
+        $config = $this->get('arguments', $subcommand);
+        if ($config === null) {
+            $arguments = $this->getDefaultArgumentConfigs();
         } else {
-            $config['arguments'] = $this->getDefaultArgumentConfigs(
-                $config['class']
-            );
+            $arguments = $this->parseArgumentConfigs($config);
         }
+        if ($arguments === null) {
+            $arguments = [];
+        }
+        if ($subcommand !== null) {
+            $this->subcommandArguments[$subcommand] = $arguments;
+        } else {
+            $this->arguments = $arguments;
+        }
+        return $arguments;
     }
 
     public function getClass($subcommand = null) {
         $class = null;
-        if (isset($config['class'])) {
-            $class = (string)$config['class'];
-            if ($class !== '') {
-                return $class;
-            }
+        if ($subcommand !== null
+            && isset($this->subcommandClasses[$subcommand])
+        ) {
+            $class = $this->subcommandClasses[$subcommand];
+        } elseif ($this->class !== null) {
+            $class = $this->class;
         }
-        $config['class'] = $this->getDefaultCommandClass();
-        $class = (string)$config['class'];
         if ($class === '') {
-            throw new Exception;
-        }
-        if ($class[0] === '\\') {
-            $config['class'] = substr($class, 1);
             return;
+        } elseif ($class !== null) {
+            return $class;
         }
-        $namespace = (string)Config::get(
-            'hyperframework.cli.command_root_namespace'
-        );
-        if ($namespace === '') {
-            $namespace = (string)Config::get(
-                'hyperframework.app_root_namespace'
-            );
+        $class = (string)$this->get('class', $subcommand);
+        if ($class === '') {
+            $class = (string)$this->getDefaultClass($subcommand);
         }
-        if ($isSubcommand) {
-            if ($namespace === '') {
-                $namespace = 'Subcommands';
+        if ($class !== '') {
+            if ($class[0] === '\\') {
+                $class = substr($class, 1);
             } else {
-                $namespace .= '\Subcommands';
+                $namespace = (string)Config::get(
+                    'hyperframework.cli.command_root_namespace'
+                );
+                if ($namespace === '') {
+                    $namespace = (string)Config::get(
+                        'hyperframework.app_root_namespace'
+                    );
+                }
+                if ($subcommand !== null) {
+                    if ($namespace === '') {
+                        $namespace = 'Subcommands';
+                    } else {
+                        $namespace .= '\Subcommands';
+                    }
+                }
+                if ($namespace !== '') {
+                    $class = $namespace . '\\' . $class;
+                }
             }
         }
-        if ($namespace !== '') {
-            $config['class'] = $namespace . '\\' . $class;
+        if ($subcommand !== null) {
+            $this->subcommandClasses[$subcommand] = $class;
+        } else {
+            $this->class = $class;
+        }
+        if ($class !== '') {
+            return $class;
         }
     }
 
     public function getOptions($subcommand = null) {
+        if ($subcommand !== null
+            && isset($this->subcommandOptions[$subcommand])
+        ) {
+            return $this->subcommandOptions[$subcommand];
+        } elseif ($this->options !== null) {
+            return $this->options;
+        }
         if ($this->options !== null) {
             return $this->options;
         }
         $optionConfigs = $this->get('options', $subcommand);
-        if ($optionConfigs === null) {
-            $this->options = $this->parseOptionConfigs($config);
+        if ($optionConfigs !== null) {
+            $options = $this->parseOptionConfigs($config);
+            if ($options === null) {
+                $options = [];
+            }
         } else {
-            $this->options = [];
+            $options = [];
         }
         $defaultConfigs = $this->getDefaultOptionConfigs($subcommand);
         $defaultOptions = $this->parseOptionConfigs($defaultConfigs);
         foreach ($defaultOptions as $key => $value) {
-            if (isset($this->options[$key]) === false) {
-                $this->options[$key] = $value;
+            if (isset($options[$key]) === false) {
+                $options[$key] = $value;
             }
         }
-        return $this->options;
+        if ($subcommand !== null) {
+            $this->subcommandOptions[$subcommand] = $options;
+        } else {
+            $this->options = $options;
+        }
+        return $options;
     }
 
     public function getMutuallyExclusiveOptions($option, $subcommand = null) {
@@ -158,7 +198,6 @@ class CommandConfig {
             } else {
                 $config = [];
             }
-            //$this->initializeConfig($config, false);
             $this->configs = $config;
             return $config;
         }
@@ -169,7 +208,6 @@ class CommandConfig {
             if ($config === null) {
                 $config = [];
             }
-            //$this->initializeConfig($config, true);
             $this->subcommandConfigs[$subcommand] = $config;
         }
         return $this->subcommandConfigs[$subcommand];
@@ -201,7 +239,7 @@ class CommandConfig {
         return $results;
     }
 
-    protected function getDefaultCommandClass($subcommand = null) {
+    protected function getDefaultClass($subcommand = null) {
         if ($subcommand === null) {
             return 'Command';
         }
