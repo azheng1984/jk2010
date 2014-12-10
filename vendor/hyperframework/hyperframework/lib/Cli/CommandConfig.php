@@ -22,17 +22,6 @@ class CommandConfig {
     private $subcommandArguments = [];
 
     public function getArguments($subcommand = null) {
-        $commandConfig->getArguments();
-        foreach ($arguments as $argument) {
-        }
-        $optionGroup = $commandConfig->getMutuallyExclusiveOptionGroups();
-        $optionGroup->isRequired();
-        foreach ($configs as $config) {
-        }
-        $optionConfig = $commandConfig->getMutuallyExclusiveOptions();
-        $optionConfig->isRequired();
-        $options = $optionConfig->getOptions();
-        $commandConfig->getMutuallyExclusiveOptionsByOption();
         if ($subcommand !== null
             && isset($this->subcommandArguments[$subcommand])
         ) {
@@ -147,105 +136,106 @@ class CommandConfig {
     }
 
     public function getMutuallyExclusiveOptionGroups($subcommand = null) {
-        $optionConfigs = $commandConfig->getOptionConfigs();
-        if ($subcommand !== null
-            && isset($this->subcommandMutuallyExclusiveOptions[$subcommand])
+        if ($subcommand !== null &&
+            isset($this->subcommandMutuallyExclusiveOptionGroups[$subcommand])
         ) {
-            return $this->subcommandMutuallyExclusiveOptions[$subcommand];
-        } elseif ($this->mutuallyExclusiveOptions !== null) {
-            return $this->mutuallyExclusiveOptions;
+            return $this->subcommandMutuallyExclusiveOptionGroups[$subcommand];
+        } elseif ($this->mutuallyExclusiveOptionGroups !== null) {
+            return $this->mutuallyExclusiveOptionGroups;
         }
-        $mutuallyExclusiveOptionConfigs = $this->get('options', $subcommand);
-        if ($mutuallyExclusiveOptionConfigs !== null) {
-            $mutuallyExclusiveOptions = $this->parseOptionConfigs($mutuallyExclusiveOptionConfigs);
-            if ($mutuallyExclusiveOptions === null) {
-                $mutuallyExclusiveOptions = [];
+        $configs = $this->get('mutually_exclusive_options', $subcommand);
+        if ($configs !== null) {
+            $optionGroups =
+                $this->parseMutuallyExclusiveOptionConfigs($configs);
+            if ($optionGroups === null) {
+                $optionGroups = [];
             }
         } else {
-            $options = [];
+            $optionGroups = [];
         }
         if ($subcommand !== null) {
-            $this->subcommandArguments[$subcommand] = $arguments;
+            $this->subcommandMutuallyExclusiveOptionGroups[$subcommand] =
+                $optionGroups;
         } else {
-            $this->arguments = $arguments;
+            $this->mutuallyExclusiveOptionGroups = $optionGroups;
         }
-        return $arguments;
+        return $optionGroups;
     }
 
     public function getMutuallyExclusiveOptionGroupByOption(
         $option, $subcommand = null
     ) {
-        $configs = $this->getMutuallyExclusiveOptionGroups($subcommand);
-        foreach ($configs as $config) {
-            if (in_array($option, $config->getOptions(), true)) {
-                return $config;
+        $optionGroups = $this->getMutuallyExclusiveOptionGroups($subcommand);
+        foreach ($optionGroups as $optionGroup) {
+            if (in_array($option, $optionGroup->getOptions(), true)) {
+                return $optionGroup;
             }
         }
     }
 
     protected function parseMutuallyExclusiveOptionConfigs($config) {
-        $configs = $this->get('mutually_exclusive_options', $subcommand);
         if ($configs === null) {
             return;
+        }
+        if (is_array($config) === false) {
+            throw new Exception;
         }
         if (is_array(current($configs) ===  false) {
             $configs = [$configs];
         }
         $results = [];
         $includedOptions = [];
-        foreach ($configs as $childConfigs) {
-            foreach ($childConfigs as $config) {
-                $isRequired = false;
-                $shouldIncludeAll = false;
-                $options = [];
-                foreach ($config as $item) {
-                    $item = (string)$item;
-                    if ($item === 'all') {
-                        $shouldIncludeAll = true;
-                        if (count($includedOptions) !== 0) {
-                            throw new Exception;
-                        }
-                        foreach ($options as $option) {
-                            $name = $option->getName();
-                            if ($name === null) {
-                                $name = $option->getShortName();
-                            }
-                            if (in_array($name, $includedOptions)) {
-                                continue;
-                            }
-                            $includedOptions[] = $name;
-                            $options[] = $option;
-                        }
-                        continue;
-                    }
-                    if ($item === 'required') {
-                        $isRequired = true;
-                        continue;
-                    }
-                    if (isset($options[$item]) === false) {
-                        //check full format
-                        if ($item === '' || $item[0] !== '-') {
-                            throw new Exception;
-                        }
+        foreach ($configs as $config) {
+            $isRequired = false;
+            $shouldIncludeAll = false;
+            $options = [];
+            foreach ($config as $item) {
+                $item = (string)$item;
+                if ($item === 'all') {
+                    $shouldIncludeAll = true;
+                    if (count($includedOptions) !== 0) {
                         throw new Exception;
                     }
-                    if ($shouldIncludeAll) {
-                        throw new Exception;
+                    foreach ($options as $option) {
+                        $name = $option->getName();
+                        if ($name === null) {
+                            $name = $option->getShortName();
+                        }
+                        if (in_array($name, $includedOptions)) {
+                            continue;
+                        }
+                        $includedOptions[] = $name;
+                        $options[] = $option;
                     }
-                    $name = $option->getName();
-                    if ($name === null) {
-                        $name = $option->getShortName();
-                    }
-                    if (in_array($name, $includedOptions)) {
-                        throw new Exception;
-                    }
-                    $includedOptions[] = $name;
-                    $option = $options[$item];
+                    continue;
                 }
-                $result[] = new MultualExclusiveOptionConfig(
-                    $options, $isRequired
-                );
+                if ($item === 'required') {
+                    $isRequired = true;
+                    continue;
+                }
+                if (isset($options[$item]) === false) {
+                    //regex checking
+                    if ($item === '' || $item[0] !== '-') {
+                        throw new Exception;
+                    }
+                    throw new Exception;
+                }
+                if ($shouldIncludeAll) {
+                    throw new Exception;
+                }
+                $name = $option->getName();
+                if ($name === null) {
+                    $name = $option->getShortName();
+                }
+                if (in_array($name, $includedOptions)) {
+                    throw new Exception;
+                }
+                $includedOptions[] = $name;
+                $option = $options[$item];
             }
+            $result[] = new MutuallyExclusiveOptionGroupConfig(
+                $options, $isRequired
+            );
         }
         return $result;
     }
@@ -367,7 +357,7 @@ class CommandConfig {
         return str_replace(' ', '', $tmp) . 'Command';
     }
 
-    protected function parseOptionConfigs(array $config) {
+    protected function parseOptionConfigs($config) {
         return OptionConfigParser::parse($config);
     }
 

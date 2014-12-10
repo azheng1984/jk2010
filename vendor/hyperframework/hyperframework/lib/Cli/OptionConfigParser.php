@@ -15,6 +15,7 @@ class OptionConfigBuilder {
     }
 
     //delete option group
+    //create option config object
     protected static function parseGroup(
         array $config, array $attributes = array()
     ) {
@@ -158,29 +159,24 @@ class OptionConfigBuilder {
         } elseif (preg_match('/^[a-zA-Z0-9-]{2,}$/', $name) !== 1) {
             throw new Exception;
         }
-        $result = array(
-            'name' => $name,
-            'has_argument' => -1
-        );
-        if ($shortName !== null) {
-            $result['short_name'] = $shortName;
-        }
+        $hasArgument = -1;
+        $values = null;
         if ($hasArgument) {
             if ($isEnumArgument) {
-                $result['values'] = array();
+                $values = array();
                 if (preg_match('/^[a-zA-Z0-9-|]+$/', $argumentName) !== 1) {
                     throw new Exception;
                 }
-                $result['values'] = explode('|', $argumentName);
+                $values = explode('|', $argumentName);
             } elseif (preg_match('/^[a-zA-Z0-9-]+$/', $argumentName) !== 1) {
                 throw new Exception;
             }
             if ($isOptoinalArgument) {
-                $result['has_argument'] = 0;
+                $hasArgument = 0;
             } else {
-                $result['has_argument'] = 1;
+                $hasArgument = 1;
             }
         }
-        return $result;
+        return new OptionConfig($name, $shortName, $hasArgument, $values);
     }
 }

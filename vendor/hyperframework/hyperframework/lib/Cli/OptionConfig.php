@@ -8,7 +8,8 @@ class OptionConfig {
     private $isRepeatable;
     private $isRequired;
     private $hasArgument;
-    private $values;
+    private $getArgumentName;
+    private $enumerationValues;
 
     public function __construct(
         $name,
