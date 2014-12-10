@@ -4,20 +4,16 @@ namespace Hyperframework\Cli;
 use Exception;
 
 class CommandParsingException extends Exception {
-    private $isArgumentError;
+    private $errorType;
 
     public function __construct(
-        $message = '', $isArgumentError = false, $previous = null
+        $message = '', $errorType = '', $previous = null
     ) {
-        $this->isArgumentError = $isArgumentError;
+        $this->errorType = $errorType;
         parent::__construct($message, 0, $previous);
     }
 
-    public function isArgumentError() {
-        return $this->isArgumentError;
-    }
-
-    public function isOptionError() {
-        return !$this->isArgumentError;
+    public function getErrorType() {
+        return $this->errorType;
     }
 }

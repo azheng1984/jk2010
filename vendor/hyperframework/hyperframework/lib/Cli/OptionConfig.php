@@ -18,9 +18,10 @@ class OptionConfig {
         $isRepeatable,
         $isRequired,
         $hasArgument,
+        $argumentName = null,
         array $enumerationValues = null
     ) {
-        $this->name = $name,
+        $this->name = $name;
         $this->shortName = $shortName;
         $this->description = $description; 
         $this->isRepeatable = $isRepeatable;
@@ -58,6 +59,6 @@ class OptionConfig {
     }
 
     public function getEnumerationValues() {
-        return $this->values;
+        return $this->enumerationValues;
     }
 }
