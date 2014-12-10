@@ -85,8 +85,4 @@ class MultipleCommandApp extends App {
     protected function executeGlobalCommand() {
         $this->renderHelp();
     }
-
-    protected function hasMultipleCommands() {
-        return true;
-    }
 }
