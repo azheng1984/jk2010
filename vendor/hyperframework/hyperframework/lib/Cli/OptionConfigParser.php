@@ -3,8 +3,8 @@ namespace Hyperframework\Cli;
 
 use Exception;
 
-class OptionConfigParser {
-    public static function parse($configs) {
+class OptionConfigBuilder {
+    public static function build($configs) {
         if (is_array($config) === false) {
             if (is_string($config) === false) {
                 throw new Exception;

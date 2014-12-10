@@ -13,26 +13,37 @@ class CommandConfig {
     private $configs;
     private $class;
     private $options;
+    private $mutuallyExclusiveOptionGroup;
     private $arguments;
     private $subcommandConfigs = [];
     private $subcommandClasses = [];
-    private $subcommandOptions = [];
+    private $subcommandOptionConfigs = [];
+    private $subcommandMutuallyExclusiveOptionGroups = [];
     private $subcommandArguments = [];
 
     public function getArguments($subcommand = null) {
-        if ($subcommand === null && $this->isSubcommandEnabled()) {
-            return [];
+        $commandConfig->getArguments();
+        foreach ($arguments as $argument) {
         }
+        $commandConfig->getMutuallyExclusiveOptionConfigs();
+        foreach ($configs as $config) {
+        }
+        $optionConfig = $commandConfig->getMutuallyExclusiveOptions();
+        $optionConfig->isRequired();
+        $options = $optionConfig->getOptions();
+        $commandConfig->getMutuallyExclusiveOptionsByOption();
         if ($subcommand !== null
             && isset($this->subcommandArguments[$subcommand])
         ) {
             return $this->subcommandArguments[$subcommand];
         } elseif ($this->arguments !== null) {
             return $this->arguments;
+        } elseif ($subcommand === null && $this->isSubcommandEnabled()) {
+            return [];
         }
         $config = $this->get('arguments', $subcommand);
         if ($config === null) {
-            $arguments = $this->getDefaultArgumentConfigs();
+            $arguments = $this->getDefaultArgumentConfigs($subcommand);
         } else {
             $arguments = $this->parseArgumentConfigs($config);
         }
@@ -134,7 +145,109 @@ class CommandConfig {
         return $options;
     }
 
-    public function getMutuallyExclusiveOptions($option, $subcommand = null) {
+    public function getMutuallyExclusiveOptionGroups($subcommand = null) {
+        $optionConfigs = $commandConfig->getOptionConfigs();
+        if ($subcommand !== null
+            && isset($this->subcommandMutuallyExclusiveOptions[$subcommand])
+        ) {
+            return $this->subcommandMutuallyExclusiveOptions[$subcommand];
+        } elseif ($this->mutuallyExclusiveOptions !== null) {
+            return $this->mutuallyExclusiveOptions;
+        }
+        $mutuallyExclusiveOptionConfigs = $this->get('options', $subcommand);
+        if ($mutuallyExclusiveOptionConfigs !== null) {
+            $mutuallyExclusiveOptions = $this->parseOptionConfigs($mutuallyExclusiveOptionConfigs);
+            if ($mutuallyExclusiveOptions === null) {
+                $mutuallyExclusiveOptions = [];
+            }
+        } else {
+            $options = [];
+        }
+        if ($subcommand !== null) {
+            $this->subcommandArguments[$subcommand] = $arguments;
+        } else {
+            $this->arguments = $arguments;
+        }
+        return $arguments;
+
+    }
+
+    public function getMutuallyExclusiveOptionGroupByOption(
+        $option, $subcommand = null
+    ) {
+        $configs = $this->getMutuallyExclusiveOptionGroups($subcommand);
+        foreach ($configs as $config) {
+            if (in_array($option, $config->getOptions(), true)) {
+                return $config;
+            }
+        }
+    }
+
+    protected function parseMutuallyExclusiveOptionConfigs($config) {
+        $configs = $this->get('mutually_exclusive_options', $subcommand);
+        if ($configs === null) {
+            return;
+        }
+        if (is_array(current($configs) ===  false) {
+            $configs = [$configs];
+        }
+        $results = [];
+        $includedOptions = [];
+        foreach ($configs as $childConfigs) {
+            foreach ($childConfigs as $config) {
+                $isRequired = false;
+                $shouldIncludeAll = false;
+                $options = [];
+                foreach ($config as $item) {
+                    $item = (string)$item;
+                    if ($item === 'all') {
+                        $shouldIncludeAll = true;
+                        if (count($includedOptions) !== 0) {
+                            throw new Exception;
+                        }
+                        foreach ($options as $option) {
+                            $name = $option->getName();
+                            if ($name === null) {
+                                $name = $option->getShortName();
+                            }
+                            if (in_array($name, $includedOptions)) {
+                                continue;
+                            }
+                            $includedOptions[] = $name;
+                            $options[] = $option;
+                        }
+                        continue;
+                    }
+                    if ($item === 'required') {
+                        $isRequired = true;
+                        continue;
+                    }
+                    if (isset($options[$item]) === false) {
+                        //check full format
+                        if ($item === '' || $item[0] !== '-') {
+                            throw new Exception;
+                        }
+                        throw new Exception;
+                    }
+                    if ($shouldIncludeAll) {
+                        throw new Exception;
+                    }
+                    $name = $option->getName();
+                    if ($name === null) {
+                        $name = $option->getShortName();
+                    }
+                    if (in_array($name, $includedOptions)) {
+                        throw new Exception;
+                    }
+                    $includedOptions[] = $name;
+                    $option = $options[$item];
+                }
+                $result[] = new MultualExclusiveOptionConfig(
+                    $options, $isRequired
+                );
+            }
+        }
+        return $result;
     }
 
     public function getDescription($subcommand = null) {
@@ -229,7 +342,14 @@ class CommandConfig {
         return ArgumentConfigParser::parse($config);
     }
 
-    protected function getDefaultArgumentConfigs($class) {
+    protected function getDefaultArgumentConfigs($subcommand = null) {
+        $class = $this->getClass($subcommand);
+        if ($class === null) {
+            throw new Exception;
+        }
+        if (class_exists($class) === false) {
+            throw new Exception;
+        }
         $method = new ReflectionMethod($class, 'execute');
         $params = $method->getParameters();
         $result = [];
@@ -247,7 +367,7 @@ class CommandConfig {
         return str_replace(' ', '', $tmp) . 'Command';
     }
 
-    protected function parseOptionConfigs($config) {
+    protected function parseOptionConfigs(array $config) {
         return OptionConfigParser::parse($config);
     }
 
