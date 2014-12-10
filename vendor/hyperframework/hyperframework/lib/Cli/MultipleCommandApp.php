@@ -9,6 +9,7 @@ class MultipleCommandApp extends App {
     private $globalOptions = [];
 
     public function __construct() {
+        Config::set('hyperframework.cli.enable_subcommand', true);
         $elements = $this->parseCommand();
         if (isset($elements['global_options'])) {
             $this->setGlobalOptions($elements['global_options']);

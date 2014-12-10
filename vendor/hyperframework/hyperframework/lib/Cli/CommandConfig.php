@@ -9,7 +9,7 @@ use Hyperframework\Common\ConfigFileLoader;
 use Hyperframework\Common\FullPathRecognizer;
 
 class CommandConfig {
-    private $hasMultipleCommands;
+    private $isSubcommandEnabled;
     private $configs;
     private $class;
     private $options;
@@ -19,12 +19,8 @@ class CommandConfig {
     private $subcommandOptions = [];
     private $subcommandArguments = [];
 
-    public function __construct($hasMultipleCommands = false) {
-        $this->hasMultipleCommands = $hasMultipleCommands;
-    }
-
     public function getArguments($subcommand = null) {
-        if ($this->hasMultipleCommands() && $isSubcommand = false) {
+        if ($this->isSubcommandEnabled() && $isSubcommand = false) {
             if (isset($config['arguments'])) {
                 throw new Exception;
             }
@@ -179,8 +175,12 @@ class CommandConfig {
         return $this->subcommandConfigs[$subcommand];
     }
 
-    public function hasMultipleCommands() {
-        return $this->hasMultipleCommands;
+    public function isSubcommandEnabled() {
+        if ($this->isSubcommandEnabled === null) {
+            $this->isSubcommandEnabled =
+                Config::get('hyperframework.cli.enable_subcommand') === true;
+        }
+        return $this->isSubcommandEnabled;
     }
 
     public function hasSubcommand($name) {

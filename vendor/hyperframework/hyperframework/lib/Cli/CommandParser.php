@@ -11,7 +11,7 @@ class CommandParser {
         $optionConfigs = $commandConfig->get('options');
         $result = [];
         $optionType = null;
-        if ($commandConfig->hasMultipleCommands()) {
+        if ($commandConfig->isSubcommandEnabled()) {
             $result['global_options'] = [];
             $optionType = 'global_options';
         } else {
@@ -19,7 +19,7 @@ class CommandParser {
             $result['arguments'] = [];
             $optionType = 'options';
         }
-        $isGlobal = $commandConfig->hasMultipleCommands();
+        $isGlobal = $commandConfig->isSubcommandEnabled();
         $count = count($argv);
         $isArgument = false;
         $arguments = [];
@@ -173,7 +173,7 @@ class CommandParser {
             return $result;
         }
         $argumentConfigs = null;
-        if ($commandConfig->hasMultipleCommands()) {
+        if ($commandConfig->isSubcommandEnabled()) {
             $argumentConfigs = $commandConfig->get(
                 'arguments', $result['subcommand']
             );
@@ -221,7 +221,7 @@ class CommandParser {
     protected static function hasSuperOption(
         array $globalOptions, $subcommand, array $options, $commandConfig
     ) {
-        if ($commandConfig->hasMultipleCommands()) {
+        if ($commandConfig->isSubcommandEnabled()) {
             foreach ($globalOptions as $key => $value) {
                 if (in_array($key, array('h', 'help', 'version'))) {
                     return true;

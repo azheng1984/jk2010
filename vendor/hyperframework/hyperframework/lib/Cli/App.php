@@ -60,14 +60,13 @@ class App {
 
     public function getCommandConfig() {
         if ($this->commandConfig === null) {
-            $hasMultipleCommand = $this->hasMultipleCommands()
             $class = (string)Config::get(
                 'hyperframework.cli.command_config_class'
             );
             if ($class === '') {
-                $this->commandConfig = new CommandConfig($hasMultipleCommand);
+                $this->commandConfig = new CommandConfig;
             } else {
-                $this->commandConfig = new $class($hasMultipleCommand);
+                $this->commandConfig = new $class;
             }
         }
         return $this->commandConfig;
@@ -135,11 +134,6 @@ class App {
             echo 'See \'', $name, ' --help\'.', PHP_EOL;
             $helpOption = '--help';
         }
-    }
-
-    protected function hasMultipleCommands() {
-        //'multiple_commands';
-        return false;
     }
 
     protected function finalize() {}
