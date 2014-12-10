@@ -5,11 +5,13 @@ class DefaultArgumentConfig extends ArgumentConfig {
     private $originalName;
     private $name;
 
-    public function __construct($reflection) {
+    public function __construct($argumentReflector) {
         parent::__construct(
-            null, $reflection->isOptional(), $reflection->isArray()
+            null,
+            $argumentReflector->isOptional(),
+            $argumentReflector->isArray()
         );
-        $this->originalName = $reflection->getName();
+        $this->originalName = $argumentReflector->getName();
     }
 
     public function getName() {

@@ -25,7 +25,8 @@ class CommandConfig {
         $commandConfig->getArguments();
         foreach ($arguments as $argument) {
         }
-        $commandConfig->getMutuallyExclusiveOptionConfigs();
+        $optionGroup = $commandConfig->getMutuallyExclusiveOptionGroups();
+        $optionGroup->isRequired();
         foreach ($configs as $config) {
         }
         $optionConfig = $commandConfig->getMutuallyExclusiveOptions();
