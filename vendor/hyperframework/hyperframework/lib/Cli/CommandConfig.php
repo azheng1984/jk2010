@@ -169,7 +169,6 @@ class CommandConfig {
             $this->arguments = $arguments;
         }
         return $arguments;
-
     }
 
     public function getMutuallyExclusiveOptionGroupByOption(
