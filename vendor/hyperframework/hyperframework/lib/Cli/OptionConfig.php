@@ -18,7 +18,7 @@ class OptionConfig {
         $isRepeatable,
         $isRequired,
         $hasArgument,
-        $argumentName = null,
+        $argumentName,
         array $enumerationValues = null
     ) {
         $this->name = $name;
