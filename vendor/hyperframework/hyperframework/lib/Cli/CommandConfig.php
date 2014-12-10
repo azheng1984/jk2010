@@ -88,7 +88,7 @@ class CommandConfig {
         } else {
             $this->options = [];
         }
-        $defaultConfigs = $this->getDefaultOptionConfigs($subcommand !== null);
+        $defaultConfigs = $this->getDefaultOptionConfigs($subcommand);
         $defaultOptions = $this->parseOptionConfigs($defaultConfigs);
         foreach ($defaultOptions as $key => $value) {
             if (isset($this->options[$key]) === false) {
@@ -232,8 +232,8 @@ class CommandConfig {
         return ConfigFileLoader::getFullPath($path);
     }
 
-    protected function getDefaultOptionConfigs($isSubcommand) {
-        if ($isSubcommand) {
+    protected function getDefaultOptionConfigs($subcommand = null) {
+        if ($subcommand !== null) {
             return ['-h, --help'];
         } else {
             return['-h, --help', '--version'];

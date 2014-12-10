@@ -58,21 +58,19 @@ class App {
         $this->options = $options;
     }
 
-    public function getCommandConfig($name = null) {
+    public function getCommandConfig() {
         if ($this->commandConfig === null) {
+            $hasMultipleCommand = $this->hasMultipleCommands()
             $class = (string)Config::get(
                 'hyperframework.cli.command_config_class'
             );
             if ($class === '') {
-                $this->commandConfig = new CommandConfig;
+                $this->commandConfig = new CommandConfig($hasMultipleCommand);
             } else {
-                $this->commandConfig = new $class;
+                $this->commandConfig = new $class($hasMultipleCommand);
             }
         }
-        if ($name === null) {
-            return $this->commandConfig;
-        }
-        return $this->commandConfig->get($name);
+        return $this->commandConfig;
     }
 
     public function quit() {
@@ -124,22 +122,24 @@ class App {
     protected function renderCommandParsingError($exception) {
         echo $exception->getMessage(), PHP_EOL;
         $config = $this->getCommandConfig();
-        $name = (string)$config->get('name');
-        if ($name === '') {
-            throw new Exception;
-        }
+        $name = $config->getName();
         $options = null;
         if ($exception instanceof SubcomandParsingException) {
             $subcommand = $exception->getSubcommand();
             $name .= ' ' . $subcommand;
-            $options = $config->get('options', $subcommand);
+            $options = $config->getOptions($subcommand);
         } else {
-            $options = $config->get('options');
+            $options = $config->getOptions();
         }
         if (isset($options['help'])) {
             echo 'See \'', $name, ' --help\'.', PHP_EOL;
             $helpOption = '--help';
         }
+    }
+
+    protected function hasMultipleCommands() {
+        //'multiple_commands';
+        return false;
     }
 
     protected function finalize() {}

@@ -62,16 +62,6 @@ class MultipleCommandApp extends App {
         return $this->subcommand !== null;
     }
 
-    public function getCommandConfig($name = null) {
-        if ($this->commandConfig === null) {
-            $this->commandConfig = new CommandConfig(true);
-        }
-        if ($name === null) {
-            return $this->commandConfig;
-        }
-        return $this->commandConfig->get($name, $this->getSubcommand());
-    }
-
     protected function executeCommand() {
         if ($this->hasSubcommand()) {
             $this->executeSuncommand();
@@ -93,5 +83,9 @@ class MultipleCommandApp extends App {
 
     protected function executeGlobalCommand() {
         $this->renderHelp();
+    }
+
+    protected function hasMultipleCommands() {
+        return true;
     }
 }
