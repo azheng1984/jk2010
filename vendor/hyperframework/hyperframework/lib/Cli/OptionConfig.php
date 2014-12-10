@@ -53,7 +53,7 @@ class OptionConfig {
         return $this->hasArgument;
     }
 
-    public function getValues() {
-        return $this->value;
+    public function getEnumerationValues() {
+        return $this->values;
     }
 }
