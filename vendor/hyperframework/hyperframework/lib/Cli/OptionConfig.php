@@ -18,7 +18,7 @@ class OptionConfig {
         $isRepeatable,
         $isRequired,
         $hasArgument,
-        array $values = null
+        array $enumerationValues = null
     ) {
         $this->name = $name,
         $this->shortName = $shortName;
@@ -26,7 +26,7 @@ class OptionConfig {
         $this->isRepeatable = $isRepeatable;
         $this->isRequired = $isRequired;
         $this->hasArgument = $hasArgument;
-        $this->values = $values;
+        $this->enumerationValues = $enumerationValues;
     }
 
     public function getName() {
@@ -51,6 +51,10 @@ class OptionConfig {
 
     public function hasArgument() {
         return $this->hasArgument;
+    }
+
+    public function getArgumentName() {
+        throw new Exception;
     }
 
     public function getEnumerationValues() {
