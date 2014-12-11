@@ -215,10 +215,14 @@ class CommandConfig {
                     continue;
                 }
                 if (isset($options[$item]) === false) {
-                    if (preg_match('/-{1,2}[0-9a-zA-Z]+/') === 0) {
-                        throw new Exception('format error');
+                    if ($item === '') {
+                        continue;
+                    } elseif ($item[0] !== '-') {
+                        $message = "Unknown attribute '$item'";
+                    } else {
+                        $message = "Undefined option '$item'";
                     }
-                    throw new Exception;
+                    throw new Exception($message);
                 }
                 if ($shouldIncludeAll) {
                     throw new Exception;
@@ -282,7 +286,7 @@ class CommandConfig {
                 }
                 if (FullPathRecognizer::isFull($configPath) === false) {
                     $configRootPath = Config::get(
-                        'hyperframework.cli.command_config_root_path'
+                        'hyperframework.cli.command_config_root_path',
                     );
                     if ($configRootPath !== null) {
                         $configPath = $configRootPath
