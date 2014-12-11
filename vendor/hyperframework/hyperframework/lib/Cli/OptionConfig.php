@@ -9,7 +9,7 @@ class OptionConfig {
     private $isRequired;
     private $hasArgument;
     private $getArgumentName;
-    private $enumerationValues;
+    private $values;
 
     public function __construct(
         $name,
@@ -19,7 +19,7 @@ class OptionConfig {
         $isRequired,
         $hasArgument,
         $argumentName,
-        array $enumerationValues = null
+        array $values = null
     ) {
         $this->name = $name;
         $this->shortName = $shortName;
@@ -27,7 +27,7 @@ class OptionConfig {
         $this->isRepeatable = $isRepeatable;
         $this->isRequired = $isRequired;
         $this->hasArgument = $hasArgument;
-        $this->enumerationValues = $enumerationValues;
+        $this->values = $values;
     }
 
     public function getName() {
@@ -58,7 +58,7 @@ class OptionConfig {
         throw new Exception;
     }
 
-    public function getEnumerationValues() {
-        return $this->enumerationValues;
+    public function getValues() {
+        return $this->values;
     }
 }
