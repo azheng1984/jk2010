@@ -173,17 +173,17 @@ class CommandConfig {
         }
     }
 
-    protected function parseMutuallyExclusiveOptionConfigs($config) {
+    protected function parseMutuallyExclusiveOptionConfigs($configs) {
         if ($configs === null) {
             return;
         }
-        if (is_array($config) === false) {
+        if (is_array($configs) === false) {
             throw new Exception;
         }
         if (is_array(current($configs) ===  false) {
             $configs = [$configs];
         }
-        $results = [];
+        $result = [];
         $includedOptions = [];
         $options = $this->getOptions();
         foreach ($configs as $config) {
@@ -354,7 +354,7 @@ class CommandConfig {
         foreach ($params as $param) {
             $result[] = new DefaultArgumentConfig($param);
         }
-        return $results;
+        return $result;
     }
 
     protected function getDefaultClass($subcommand = null) {
