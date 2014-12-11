@@ -4,12 +4,12 @@ namespace Hyperframework\Cli;
 use Exception;
 
 class ArgumentConfigParser {
-    public static function parse($config) {
-        if (is_array($config) === false) {
-            $config = array($config);
+    public static function parse($configs) {
+        if (is_array($configs) === false) {
+            throw new Exception;
         }
         $result = [];
-        foreach ($config as $item) {
+        foreach ($configs as $item) {
             $result[] = static::parseItem($item);
         }
         return $result;
@@ -17,7 +17,7 @@ class ArgumentConfigParser {
 
     private static function parseItem($config) {
         $isOptional = false;
-        $isCollection = false;
+        $isRepeatable = false;
         $length = strlen($config);
         if ($length < 3) {
             throw new Exception;
@@ -37,7 +37,7 @@ class ArgumentConfigParser {
             if (substr($config, -3) === '...') {
                 $config = substr($config, 0, $length - 3);
                 $length -= 3;
-                $isCollection = true;
+                $isRepeatable = true;
                 if ($length < 3) {
                     throw new Exception;
                 }
@@ -49,11 +49,7 @@ class ArgumentConfigParser {
             if (preg_match('/^[a-zA-Z0-9-]+$/', $name) !== 1) {
                 throw new Exception;
             } else {
-                return array(
-                    'name' => $name,
-                    'is_optional' => $isOptional,
-                    'is_repeatable' => $isCollection
-                );
+                return new ArgumentConfig($name, $isOptional, $isRepeatable);
             }
         } else {
             throw new Exception;

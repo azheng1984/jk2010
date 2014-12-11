@@ -27,6 +27,7 @@ class OptionConfig {
         $this->isRepeatable = $isRepeatable;
         $this->isRequired = $isRequired;
         $this->hasArgument = $hasArgument;
+        $this->argumentName = $argumentName;
         $this->values = $values;
     }
 
@@ -55,7 +56,7 @@ class OptionConfig {
     }
 
     public function getArgumentName() {
-        throw new Exception;
+        return $this->argumentName;
     }
 
     public function getValues() {

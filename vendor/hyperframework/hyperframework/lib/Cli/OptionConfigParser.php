@@ -5,69 +5,65 @@ use Exception;
 
 class OptionConfigParser {
     public static function parse($configs) {
-        if (is_array($config) === false) {
-            if (is_string($config) === false) {
-                throw new Exception;
-            }
-            $config = array($config);
+        if (is_array($configs) === false) {
+            throw new Exception;
         }
-        return static::parseGroup($config);
-    }
-
-    //delete option group
-    //create option config object
-    protected static function parseGroup(
-        array $config, array $attributes = array()
-    ) {
-        $result = array();
-        $shouldCheckAttribute = true;
-        foreach ($config as $key => $value) {
+        $result = [];
+        foreach ($configs as $key => $value) {
             if (is_int($key)) {
-                if (is_array($value)) {
-                    $result = self::parseGroup($value, $attributes) + $result;
-                    $shouldCheckAttribute = false;
-                    continue;
-                } else {
-                    if ($shouldCheckAttribute) {
-                        if (isset($value[0]) && $value[0] !== '-') {
-                            $attributes[$value] = true;
-                            continue;
-                        }
-                    }
-                    $key = $value;
-                    $value = array();
-                }
-            } elseif ($shouldCheckAttribute
-                && isset($key[0])
-                && $key[0] !== '-'
-            ) {
-                $attributes[$key] = $value;
-                continue;
+                $key = $value;
+                $value = null;
             }
-            $shouldCheckAttribute = false;
-            $option = static::parseKey($key);
-            $name = $option['name'];
-            unset($option['name']);
-            $result[$name] = $option + $value + $attributes;
-            if (isset($option['short_name'])) {
-                $result[$option['short_name']] = array('full_name' => $name);
+            list($name, $shortName, $hasArgument, $argumentName, $values) =
+                static::parseKey($key);
+            $description = null;
+            $isRequired = false;
+            $isRepeatable = false;
+            if (is_string($value)) {
+                $description = $value;
+            } elseif (is_array($value)) {
+                if (isset($value['description'])) {
+                    $description = $description;
+                }
+                if (isset($value['is_repeatable'])) {
+                    $isRepeatable = $isRepeatable;
+                }
+                if (isset($value['is_required'])) {
+                    $isRequired = $isRequired;
+                }
+            }
+            $option = new OptionConfig(
+                $name,
+                $shortName,
+                $description,
+                $isRepeatable,
+                $isRequired,
+                $hasArgument,
+                $argumentName,
+                $values
+            );
+            if ($name !== null) {
+                $result[$name] = $option;
+            }
+            if ($shortName !== null) {
+                $result[$shortName] = $option;
             }
         }
         return $result;
     }
 
-    protected static function parseKey($optionKey) {
-        $length = strlen($optionKey);
+    private static function parseKey($key) {
+        $length = strlen($key);
         if ($length < 2) {
             throw new Exception;
         }
-        if ($optionKey[0] !== '-') {
+        if ($key[0] !== '-') {
             throw new Exception;
         }
         $shortName = null;
         $isShort = false;
-        if (strpos($optionKey, ',') !== false) {
-            $tmps = explode(',', $optionKey, 2);
+        if (strpos($key, ',') !== false) {
+            $tmps = explode(',', $key, 2);
             $shortOption = $tmps[0];
             if (strlen($shortOption) !== 2) {
                 throw new Exception;
@@ -76,21 +72,21 @@ class OptionConfigParser {
             if (ctype_alnum($shortName) === false) {
                 throw new Exception;
             }
-            $optionKey = ltrim($tmps[1]);
-            $length = strlen($optionKey);
-        } elseif ($optionKey[1] !== '-') {
+            $key = ltrim($tmps[1]);
+            $length = strlen($key);
+        } elseif ($key[1] !== '-') {
             $isShort = true;
-            $optionKey = '-' . $optionKey;
+            $key = '-' . $key;
             ++$length;
             if ($length > 2) {
-                if ($optionKey[2] === '[') {
-                    $optionKey = str_replace('[', '[=', 1);
+                if ($key[2] === '[') {
+                    $key = str_replace('[', '[=', 1);
                     ++$length;
-                } elseif ($optionKey[2] === '<') {
-                    $optionKey = str_replace('<', ' <', 1);
+                } elseif ($key[2] === '<') {
+                    $key = str_replace('<', ' <', 1);
                     ++$length;
-                } elseif ($optionKey[2] === '(') {
-                    $optionKey = str_replace('(', ' (', 1);
+                } elseif ($key[2] === '(') {
+                    $key = str_replace('(', ' (', 1);
                     ++$length;
                 }
             }
@@ -98,10 +94,10 @@ class OptionConfigParser {
         $name = null;
         $argumentName = null;
         $isOptionalArgument = false;
-        $isEnumArgument = false;
         $hasArgument = false;
+        $hasValues = false;
         for ($index = 2; $index < $length; ++$index) {
-            $char = $optionKey[$index];
+            $char = $key[$index];
             if ($argumentName === null
                 && $char !== '['
                 && $char !== '='
@@ -113,7 +109,7 @@ class OptionConfigParser {
             if ($argumentName === null) {
                 if ($hasArgument === false) {
                     if ($char === '[') {
-                        if ($optionKey[$length - 1] !== ']') {
+                        if ($key[$length - 1] !== ']') {
                             throw new Exception;
                         }
                         --$length;
@@ -132,15 +128,15 @@ class OptionConfigParser {
                     }
                 } else {
                     if ($char === '(') {
-                        if ($optionKey[$length - 1] !== ')') {
+                        if ($key[$length - 1] !== ')') {
                             throw new Exception;
                         }
                         --$length;
-                        $isEnumArgument = true;
+                        $hasValues = true;
                         $argumentName = '';
                     }
                     if ($char === '<') {
-                        if ($optionKey[$length - 1] !== '>') {
+                        if ($key[$length - 1] !== '>') {
                             throw new Exception;
                         }
                         --$length;
@@ -162,12 +158,13 @@ class OptionConfigParser {
         $hasArgument = -1;
         $values = null;
         if ($hasArgument) {
-            if ($isEnumArgument) {
+            if ($hasValues) {
                 $values = array();
                 if (preg_match('/^[a-zA-Z0-9-|]+$/', $argumentName) !== 1) {
                     throw new Exception;
                 }
                 $values = explode('|', $argumentName);
+                $argumentName = null;
             } elseif (preg_match('/^[a-zA-Z0-9-]+$/', $argumentName) !== 1) {
                 throw new Exception;
             }
@@ -177,6 +174,6 @@ class OptionConfigParser {
                 $hasArgument = 1;
             }
         }
-        return new OptionConfig($name, $shortName, $hasArgument, $values);
+        return [$name, $shortName, $hasArgument, $argumentName, $values];
     }
 }
