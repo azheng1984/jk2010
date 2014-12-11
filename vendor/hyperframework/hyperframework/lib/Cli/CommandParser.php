@@ -8,7 +8,7 @@ class CommandParser {
         if ($argv === null) {
             $argv = $_SERVER['argv'];
         }
-        $optionConfigs = $commandConfig->get('options');
+        $optionConfigs = $commandConfig->getOptions();
         $result = [];
         $optionType = null;
         if ($commandConfig->isSubcommandEnabled()) {
@@ -39,7 +39,7 @@ class CommandParser {
                     $result['subcommand'] = $element;
                     $result['option'] = [];
                     $result['arguments'] = [];
-                    $optionConfigs = $commandConfig->get('options', $element);
+                    $optionConfigs = $commandConfig->getOptions($element);
                     $optionType = 'options';
                 } else {
                     $arguments[] = $element;
@@ -159,7 +159,7 @@ class CommandParser {
             $commandConfig
         );
         if (isset($result['global_options'])) {
-            $globalOptionConfigs = $commandConfig->get('options');
+            $globalOptionConfigs = $commandConfig->getOptions();
             self::checkOptions(
                 $globalOptionConfigs, $result['global_options'], $hasSuperOption
             );
@@ -174,11 +174,11 @@ class CommandParser {
         }
         $argumentConfigs = null;
         if ($commandConfig->isSubcommandEnabled()) {
-            $argumentConfigs = $commandConfig->get(
-                'arguments', $result['subcommand']
+            $argumentConfigs = $commandConfig->getArguments(
+                $result['subcommand']
             );
         } else {
-            $argumentConfigs = $commandConfig->get('arguments');
+            $argumentConfigs = $commandConfig->getArguments();
         }
         $argumentConfigCount = count($argumentConfigs);
         $argumentCount = count($arguments);
