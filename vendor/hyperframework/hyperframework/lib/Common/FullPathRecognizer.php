@@ -3,7 +3,8 @@ namespace Hyperframework\Common;
 
 class FullPathRecognizer {
     public static function isFull($path) {
-        if (isset($path[0]) === false) {
+        $path = (string)$path;
+        if ($path === '') {
             return false;
         }
         if (DIRECTORY_SEPARATOR === '/') {

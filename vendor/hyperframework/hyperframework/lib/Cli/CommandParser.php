@@ -57,12 +57,8 @@ class CommandParser {
                 $charIndex = 1;
                 while ($length > 1) {
                     $optionName = $element[$charIndex];
-                    var_dump($optionConfigs);
                     if (isset($optionConfigs[$optionName]) === false) {
                         throw new Exception;
-                    }
-                    if (isset($optionConfigs[$optionName]['full_name'])) {
-                        $optionName = $optionConfigs[$optionName]['full_name'];
                     }
                     $optionArgument = true;
                     $option = $optionConfigs[$optionName];
@@ -81,25 +77,26 @@ class CommandParser {
                             $optionArgument = $argv[$index];
                         }
                     }
-                    if (isset($option['mutex_options'])) {
-                        foreach ($option['mutex_options'] as $item) {
-                            if (isset($result['options'][$item])) {
-                                throw new CommandParsingException;
-                            }
-                        }
-                    }
-                    if (isset($option['is_repeatable'])
-                        && $option['is_repeatable']
-                    ) {
+                    if ($option->isRepeatable()) {
                         if (isset($result['options'][$optionName])) {
                             $result[$optionType][$optionName][] =
                                 $optionArgument;
                         } else {
-                            $result[$optionType][$optionName] =
-                                array($optionArgument);
+                            $result[$optionType][$optionName] = [
+                                $optionArgument
+                            ];
                         }
                     } else {
                         $result[$optionType][$optionName] = $optionArgument;
+                    }
+                    $optionFullName = $option->getName();
+                    if ($optionFullName !== null &&
+                        isset($result[$optionType][$optionFullName]) === false
+                    ) {
+                        $result[$optionType][$optionFullName] =
+                            $result[$optionType][$optionName];
+                        $result[$optionType][$optionName] =&
+                            $result[$optionType][$optionFullName];
                     }
                     if ($optionArgument !== true) {
                         break;
@@ -131,22 +128,21 @@ class CommandParser {
                         throw new Exception;
                     }
                 }
-                if (isset($option['mutex_options'])) {
-                    foreach ($option['mutex_options'] as $item) {
-                        if (isset($result['options'][$item])) {
-                            throw new Exception;
-                        }
-                    }
-                }
                 if ($option->isRepeatable()) {
                     if (isset($result['options'][$optionName])) {
                         $result[$optionType][$optionName][] = $optionArgument;
                     } else {
-                        $result[$optionType][$optionName] =
-                            array($optionArgument);
+                        $result[$optionType][$optionName] = [$optionArgument];
                     }
                 } else {
                     $result[$optionType][$optionName] = $optionArgument;
+                }
+                $optionShortName = $option->getShortName();
+                if ($optionShortName !== null
+                    && isset($result[$optionType][$optionShortName]) === false
+                ) {
+                    $result[$optionType][$optionShortName] =&
+                        $result[$optionType][$optionName];
                 }
             }
         }
@@ -158,13 +154,24 @@ class CommandParser {
         );
         if (isset($result['global_options'])) {
             $globalOptionConfigs = $commandConfig->getOptions();
+            $globalMutuallyExclusiveOptionGroupConfigs =
+                $commandConfig->getMutuallyExclusiveOptionGroups();
             self::checkOptions(
-                $globalOptionConfigs, $result['global_options'], $hasSuperOption
+                $result['global_options'],
+                $globalOptionConfigs,
+                $globalMutuallyExclusiveOptionGroupConfigs,
+                $hasSuperOption
             );
         }
         if (isset($result['options'])) {
+            $subcommand = isset($result['subcommand']) ? $result['subcommand'];
+            $mutuallyExclusiveOptionGroupConfigs =
+                $commandConfig->getMutuallyExclusiveOptionGroups($subcommand);
             self::checkOptions(
-                $optionConfigs, $result['options'], $hasSuperOption
+                $result['options'],
+                $optionConfigs,
+                $mutuallyExclusiveOptionGroupConfigs,
+                $hasSuperOption
             );
         }
         if ($hasSuperOption || $isGlobal) {
@@ -185,7 +192,7 @@ class CommandParser {
             ++$argumentIndex
         ) {
             if ($argumentConfigCount > $argumentIndex) {
-                if ($argumentConfigs[$argumentIndex]['is_repeatable']) {
+                if ($argumentConfigs[$argumentIndex]->isRepeatable()) {
                     $result['arguments'][] = array($element);
                 }
                 $result['arguments'][] = $element;
@@ -194,7 +201,7 @@ class CommandParser {
                     throw new CommandParsingException('Argument error.');
                 }
                 $lastArgument = $argumentConfigs[$argumentCount - 1];
-                if ($lastArgument['is_array']) {
+                if ($lastArgument->isRepeatable()) {
                     $result['arguments'][$argumentCount - 1][] = $element;
                 } else {
                     throw new Exception;
@@ -203,9 +210,7 @@ class CommandParser {
         }
         $count = 0;
         foreach ($argumentConfigs as $argumentConfig) {
-            if (isset($argumentConfig['is_optional'])
-                && $argumentConfig['is_optional']
-            ) {
+            if ($argumentConfig->isOptional()) {
                 break;
             }
             ++$count;
@@ -240,8 +245,13 @@ class CommandParser {
         return false;
     }
 
-    private static function checkOptions($configs, $options, $hasSuperOption) {
-        foreach ($configs as $name => $option) {
+    private static function checkOptions(
+        array $options,
+        array $optionConfigs,
+        array $mutuallyExclusiveOptionGroupConfigs = null,
+        $hasSuperOption
+    ) {
+        foreach ($optionConfigs as $name => $option) {
             if ($option->getValues() !== null) {
                 if (in_array($result[$name], $option->getValues()) === false) {
                     throw new Exception;
@@ -251,15 +261,26 @@ class CommandParser {
                 if (isset($result[$name])) {
                     continue;
                 }
-                if (isset($option['mutex_options'])) {
-                    foreach ($option['mutex_options'] as $mutexOption) {
-                        if (isset($result[$mutexOption])) {
-                            continue 2;
-                        }
-                    }
-                }
                 if ($hasSuperOption === false) {
                     throw new Exception;
+                }
+            }
+        }
+        if ($mutuallyExclusiveOptionGroupConfigs !== null) {
+            foreach($mutuallyExclusiveOptionGroupConfigs as $groupConfig) {
+                $hasOption = false;
+                foreach ($groupConfig->getOptions() as $option) {
+                    if (isset($options[$option->getName()])) {
+                        if ($hasOption) {
+                            throw new Exception;
+                        }
+                    }
+                    $hasOption = true;
+                }
+                if ($groupConfig->isRequired() && $hasOption === false) {
+                    if ($hasSuperOption === false) {
+                        throw new Exception;
+                    }
                 }
             }
         }

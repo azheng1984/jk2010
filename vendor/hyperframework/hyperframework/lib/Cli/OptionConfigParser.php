@@ -43,9 +43,15 @@ class OptionConfigParser {
                 $values
             );
             if ($name !== null) {
+                if (isset($result[$name])) {
+                    throw new Exception;
+                }
                 $result[$name] = $option;
             }
             if ($shortName !== null) {
+                if (isset($result[$shortName])) {
+                    throw new Exception;
+                }
                 $result[$shortName] = $option;
             }
         }
