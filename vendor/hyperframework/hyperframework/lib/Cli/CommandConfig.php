@@ -185,15 +185,19 @@ class CommandConfig {
         }
         $results = [];
         $includedOptions = [];
+        $options = $this->getOptions();
         foreach ($configs as $config) {
             $isRequired = false;
             $shouldIncludeAll = false;
-            $options = [];
+            $mutuallyExclusiveOptions = [];
             foreach ($config as $item) {
                 $item = (string)$item;
                 if ($item === 'all') {
                     $shouldIncludeAll = true;
                     if (count($includedOptions) !== 0) {
+                        throw new Exception;
+                    }
+                    if (count($options) === 0) {
                         throw new Exception;
                     }
                     foreach ($options as $option) {
@@ -205,7 +209,7 @@ class CommandConfig {
                             continue;
                         }
                         $includedOptions[] = $name;
-                        $options[] = $option;
+                        $mutuallyExclusiveOptions[] = $option;
                     }
                     continue;
                 }
@@ -223,6 +227,7 @@ class CommandConfig {
                 if ($shouldIncludeAll) {
                     throw new Exception;
                 }
+                $option = $options[$item];
                 $name = $option->getName();
                 if ($name === null) {
                     $name = $option->getShortName();
@@ -231,10 +236,13 @@ class CommandConfig {
                     throw new Exception;
                 }
                 $includedOptions[] = $name;
-                $option = $options[$item];
+                $mutuallyExclusiveOptions[] = $option;
+            }
+            if (count($mutuallyExclusiveOptions) === 0) {
+                throw new Exception;
             }
             $result[] = new MutuallyExclusiveOptionGroupConfig(
-                $options, $isRequired
+                $mutuallyExclusiveOptions, $isRequired
             );
         }
         return $result;
