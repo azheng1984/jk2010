@@ -24,7 +24,8 @@ class Help {
     }
 
     private function hasOptionDescription() {
-        $this->config
+        $subcommand = $this->app->getSubcommand();
+        $this->config->getOptions($subcommand);
     }
 
     private function renderUsage() {
