@@ -8,7 +8,7 @@ class Help {
 
     public function __construct($app) {
         $this->app = $app;
-        $this->config = $this->app->getCommandConfig();
+        $this->config = $app->getCommandConfig();
     }
 
     public function render() {
@@ -24,43 +24,41 @@ class Help {
     }
 
     private function hasOptionDescription() {
+        $this->config
     }
 
     private function renderUsage() {
-        $name = (string)$this->config->get('name');
-        if ($name === '') {
-            throw new Exception;
-        }
-        if ($config->hasMultipleCommands()) {
+        $name = $this->config->getName();
+        if ($config->isSubcommandEnabled()) {
+            $subcommand = $this->app->getSubcommand();
             echo 'Usage: ';
-            if ($this->app->hasSubcommand() === false) {
+            if ($subcommand === null) {
                 echo $name;
-                $this->renderSubcommands();
             } else {
-                $subcommand = $app->getSubcommand();
                 echo $name, ' ', $subcommand;
             }
-            //check option count
             if ($this->hasOptionDescription() === false) {
                 $this->renderCompactOptions();
             } else {
-                echo ' [opitons]';
+                if (count($this->config->getOptions($subcommand)) > 0) {
+                    echo ' [opitons]';
+                }
             }
-            if ($this->app->hasSubcommand() === false) {
+            if ($subcommand === null) {
                 echo ' <command>', PHP_EOL;
             } else {
                 echo ' ';
-                $this->renderCompactArguments()
+                $this->renderArguments();
                 echo PHP_EOL;
             }
         } else {
             echo 'Usage: ', $name;
             if ($this->hasOptionDescription() === false) {
-                $this->renderCompactedOptions();
+                $this->renderCompactOptions();
             } else {
                 echo '[opitons]';
             }
-            $this->renderCompactArguments();
+            $this->renderArguments();
             echo PHP_EOL;
         }
     }
