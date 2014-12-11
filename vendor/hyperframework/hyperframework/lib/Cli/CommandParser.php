@@ -66,11 +66,11 @@ class CommandParser {
                     }
                     $optionArgument = true;
                     $option = $optionConfigs[$optionName];
-                    if ($option['has_argument'] === 0) {
+                    if ($option->hasArgument() === 0) {
                         if ($length > 2) {
                             $optionArgument = substr($element, 1 + $charIndex);
                         }
-                    } elseif ($option['has_argument'] === 1) {
+                    } elseif ($option->hasArgument() === 1) {
                         if ($length > 2) {
                             $optionArgument = substr($element, 1 + $charIndex);
                         } else {
@@ -118,7 +118,7 @@ class CommandParser {
                     throw new Exception;
                 }
                 $option = $optionConfigs[$optionName];
-                if ($option['has_argument'] === 1) {
+                if ($option->hasArgument() === 1) {
                     if ($optionArgument === null) {
                         ++$index;
                         if ($index >= $count) {
@@ -138,9 +138,7 @@ class CommandParser {
                         }
                     }
                 }
-                if (isset($option['is_repeatable'])
-                    && $option['is_repeatable']
-                ) {
+                if ($option->isRepeatable()) {
                     if (isset($result['options'][$optionName])) {
                         $result[$optionType][$optionName][] = $optionArgument;
                     } else {
@@ -244,12 +242,12 @@ class CommandParser {
 
     private static function checkOptions($configs, $options, $hasSuperOption) {
         foreach ($configs as $name => $option) {
-            if (isset($option['values'])) {
-                if (in_array($result[$name], $option['values']) === false) {
+            if ($option->getValues() !== null) {
+                if (in_array($result[$name], $option->getValues()) === false) {
                     throw new Exception;
                 }
             }
-            if (isset($option['is_required']) && $option['is_required']) {
+            if ($option->isRequired()) {
                 if (isset($result[$name])) {
                     continue;
                 }

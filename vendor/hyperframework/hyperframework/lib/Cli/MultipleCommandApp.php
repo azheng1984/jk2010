@@ -86,13 +86,6 @@ class MultipleCommandApp extends App {
     }
 
     protected function executeGlobalCommand() {
-        $config = $this->getCommandConfig();
-        $class = $config->getClass();
-        if ($class !== null) {
-            $globalCommand = new $class($this);
-            $globalCommand->execute();
-        } else {
-            $this->renderHelp();
-        }
+        $this->renderHelp();
     }
 }

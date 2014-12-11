@@ -160,7 +160,6 @@ class ErrorHandler extends Base {
     }
 
     protected static function renderErrorView() {
-        $type = null;
         if (self::isError() === true) {
             $type = 'error';
         } else {

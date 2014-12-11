@@ -4,7 +4,7 @@ namespace Hyperframework\Cli;
 use Exception;
 
 class ArgumentConfigParser {
-    public static function build($config) {
+    public static function parse($config) {
         if (is_array($config) === false) {
             $config = array($config);
         }

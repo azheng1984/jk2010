@@ -42,7 +42,6 @@ class DefaultArgumentConfig extends ArgumentConfig {
                 'is_optional' => $param->isOptional(),
                 'is_repeatable' => $isRepeatable
             ];
-
         //convert
         if ($this->isRepeatable()) {
         }
