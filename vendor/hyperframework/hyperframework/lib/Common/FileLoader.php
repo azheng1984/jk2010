@@ -23,12 +23,12 @@ class FileLoader {
             return false;
         }
         if (FullPathRecognizer::isFull($path) === false) {
-            $path = static::getDefaultBasePath() . DIRECTORY_SEPARATOR . $path;
+            $path = static::getDefaultRootPath() . DIRECTORY_SEPARATOR . $path;
         }
         return $path;
     }
 
-    protected static function getDefaultBasePath() {
+    protected static function getDefaultRootPath() {
         $appRootPath = (string)Config::get('hyperframework.app_root_path');
         if ($appRootPath === '') {
             throw new Exception;

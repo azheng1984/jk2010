@@ -66,24 +66,24 @@ class CommandConfig {
         if ($class === '') {
             $class = (string)$this->getDefaultClass($subcommand);
         }
-        if ($class !== '') {
+        if ($class !== '' && $subcommand !== null) {
             if ($class[0] === '\\') {
                 $class = substr($class, 1);
             } else {
-                $namespace = (string)Config::get(
-                    'hyperframework.cli.command_root_namespace'
+                $namespace = Config::get(
+                    'hyperframework.cli.subcommand_root_namespace'
                 );
-                if ($namespace === '') {
+                if ($namespace === null) {
                     $namespace = (string)Config::get(
                         'hyperframework.app_root_namespace'
                     );
-                }
-                if ($subcommand !== null) {
                     if ($namespace === '') {
                         $namespace = 'Subcommands';
                     } else {
                         $namespace .= '\Subcommands';
                     }
+                } else {
+                    $namespace = (string)$namespace;
                 }
                 if ($namespace !== '') {
                     $class = $namespace . '\\' . $class;
@@ -174,13 +174,10 @@ class CommandConfig {
     }
 
     protected function parseMutuallyExclusiveOptionConfigs($configs) {
-        if ($configs === null) {
-            return;
-        }
         if (is_array($configs) === false) {
             throw new Exception;
         }
-        if (is_array(current($configs) ===  false) {
+        if (is_array(current($configs) === false)) {
             $configs = [$configs];
         }
         $result = [];
@@ -218,9 +215,8 @@ class CommandConfig {
                     continue;
                 }
                 if (isset($options[$item]) === false) {
-                    //regex checking
-                    if ($item === '' || $item[0] !== '-') {
-                        throw new Exception;
+                    if (preg_match('/-{1,2}[0-9a-zA-Z]+/') === 0) {
+                        throw new Exception('format error');
                     }
                     throw new Exception;
                 }
@@ -262,10 +258,6 @@ class CommandConfig {
 
     public function getVersion() {
         return $this->get('version');
-    }
-
-    public function getHelpClass($subcommand = null) {
-        return $this->get('help_class');
     }
 
     protected function get($name, $subcommand = null) {

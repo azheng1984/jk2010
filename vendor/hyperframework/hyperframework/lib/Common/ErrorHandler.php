@@ -29,8 +29,8 @@ class ErrorHandler {
         );
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
-        self::$isRunning = true;
         self::disableDefaultErrorReporting();
+        self::$isRunning = true;
     }
 
     private static function disableDefaultErrorReporting() {

@@ -2,7 +2,7 @@
 namespace Hyperframework\Common;
 
 class ConfigFileLoader extends FileLoader {
-    protected static function getDefaultBasePath() {
-        return parent::getDefaultBasePath() . DIRECTORY_SEPARATOR . 'config';
+    protected static function getDefaultRootPath() {
+        return parent::getDefaultRootPath() . DIRECTORY_SEPARATOR . 'config';
     }
 }
