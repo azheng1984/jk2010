@@ -351,7 +351,14 @@ class CommandConfig {
 
     protected function getDefaultClass($subcommand = null) {
         if ($subcommand === null) {
-            return 'Command';
+            $namespace = (string)Config::get(
+                'hyperframework.app_root_namespace'
+            );
+            if ($namespace === '') {
+                return 'Command';
+            } else {
+                return $namespace . '\Command';
+            }
         }
         $tmp = ucwords(str_replace('-', ' ', $subcommand));
         return str_replace(' ', '', $tmp) . 'Command';
