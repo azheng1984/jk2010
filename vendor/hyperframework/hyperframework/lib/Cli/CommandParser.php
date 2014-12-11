@@ -145,10 +145,10 @@ class CommandParser {
                 }
             }
         }
-        $hasMagicOption = static::hasMagic(
-            isset($result['global_options']) ? $result['global_options'] : [],
+        $hasMagicOption = static::hasMagicOption(
+            isset($result['global_options']) ? $result['global_options'] : null,
             isset($result['subcommand']) ? $result['subcommand'] : null,
-            isset($result['options']) ? $result['options'] : [],
+            isset($result['options']) ? $result['options'] : null,
             $commandConfig
         );
         if (isset($result['global_options'])) {
@@ -173,7 +173,10 @@ class CommandParser {
                 $hasMagicOption
             );
         }
-        if ($shouldQuit || $isGlobal) {
+        if ($isGlobal || $hasMagicOption) {
+            if ($hasMagicOption && count($arguments) > 0) {
+                $result['arguments'] = $arguments;
+            }
             return $result;
         }
         $result['arguments'] = [];
@@ -223,23 +226,32 @@ class CommandParser {
     }
 
     protected static function hasMagicOption(
-        array $globalOptions, $subcommand, array $options, $commandConfig
+        array $globalOptions = null,
+        $subcommand,
+        array $options = null,
+        $commandConfig
     ) {
         if ($commandConfig->isSubcommandEnabled()) {
-            foreach ($globalOptions as $key => $value) {
-                if (in_array($key, array('help', 'version'))) {
-                    return true;
+            if ($globalOptions !== null) {
+                foreach ($globalOptions as $key => $value) {
+                    if (in_array($key, array('help', 'version'))) {
+                        return true;
+                    }
                 }
             }
-            foreach ($options as $key => $value) {
-                if (in_array($key, array('help'))) {
-                    return true;
+            if ($options !== null) {
+                foreach ($options as $key => $value) {
+                    if (in_array($key, array('help'))) {
+                        return true;
+                    }
                 }
             }
         } else {
-            foreach ($options as $key => $value) {
-                if (in_array($key, array('help', 'version'))) {
-                    return true;
+            if ($options !== null) {
+                foreach ($options as $key => $value) {
+                    if (in_array($key, array('help', 'version'))) {
+                        return true;
+                    }
                 }
             }
         }

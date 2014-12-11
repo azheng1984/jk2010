@@ -51,16 +51,16 @@ class MultipleCommandApp extends App {
         $this->globalOptions = $globalOptions;
     }
 
+    public function hasSubcommand() {
+        return $this->subcommand !== null;
+    }
+
     public function getSubcommand() {
         return $this->subcommand;
     }
 
     protected function setSubcommand($value) {
         $this->subcommand = $value;
-    }
-
-    public function hasSubcommand() {
-        return $this->subcommand !== null;
     }
 
     protected function executeCommand() {
