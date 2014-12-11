@@ -193,16 +193,17 @@ class CommandParser {
         ) {
             if ($argumentConfigCount > $argumentIndex) {
                 if ($argumentConfigs[$argumentIndex]->isRepeatable()) {
-                    $result['arguments'][] = array($element);
+                    $result['arguments'][] = [$arguments[$argumentIndex]];
                 }
-                $result['arguments'][] = $element;
+                $result['arguments'][] = $arguments[$argumentIndex];
             } else {
                 if (isset($argumentConfigs[$argumentCount - 1]) === false) {
                     throw new CommandParsingException('Argument error.');
                 }
-                $lastArgument = $argumentConfigs[$argumentCount - 1];
-                if ($lastArgument->isRepeatable()) {
-                    $result['arguments'][$argumentCount - 1][] = $element;
+                $argumentConfig = $argumentConfigs[$argumentCount - 1];
+                if ($argumentConfig->isRepeatable()) {
+                    $result['arguments'][$argumentCount - 1][] =
+                        $arguments[$argumentIndex];
                 } else {
                     throw new Exception;
                 }
@@ -226,18 +227,18 @@ class CommandParser {
     ) {
         if ($commandConfig->isSubcommandEnabled()) {
             foreach ($globalOptions as $key => $value) {
-                if (in_array($key, array('h', 'help', 'version'))) {
+                if (in_array($key, array('help', 'version'))) {
                     return true;
                 }
             }
             foreach ($options as $key => $value) {
-                if (in_array($key, array('h', 'help'))) {
+                if (in_array($key, array('help'))) {
                     return true;
                 }
             }
         } else {
             foreach ($options as $key => $value) {
-                if (in_array($key, array('h', 'help', 'version'))) {
+                if (in_array($key, array('help', 'version'))) {
                     return true;
                 }
             }
