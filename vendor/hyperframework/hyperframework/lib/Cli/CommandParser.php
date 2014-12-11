@@ -174,7 +174,7 @@ class CommandParser {
             );
         }
         if ($isGlobal || $hasMagicOption) {
-            if ($hasMagicOption && count($arguments) > 0) {
+            if ($hasMagicOption) {
                 $result['arguments'] = $arguments;
             }
             return $result;
