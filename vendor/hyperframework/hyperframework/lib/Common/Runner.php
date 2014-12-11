@@ -17,6 +17,11 @@ class Runner {
     }
 
     protected static function initializeErrorHandler() {
-        ErrorHandler::run();
+        $class = (string)Config::get('hyperframework.error_handler.class');
+        if ($class === '') {
+            ErrorHandler::run();
+        } else {
+            $class::run();
+        }
     }
 }
