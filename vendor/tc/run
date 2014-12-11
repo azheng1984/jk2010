@@ -1,9 +1,6 @@
 #!/usr/bin/env php
 <?php
-namespace Tc;
+use Hyperframework\Cli\Runner;
 
-use Hyperframework\Cli\Runner; 
-
-define('Tc\APP_ROOT_PATH', __DIR__);
-require APP_ROOT_PATH . '/vendor/autoload.php';
-Runner::run(APP_ROOT_PATH);
+require __DIR__ . '/vendor/autoload.php';
+Runner::run(__DIR__);
