@@ -9,50 +9,48 @@ class ArgumentConfigParser {
             throw new Exception;
         }
         $result = [];
-        foreach ($configs as $item) {
-            $result[] = static::parseItem($item);
-        }
-        return $result;
-    }
-
-    private static function parseItem($config) {
-        $isOptional = false;
-        $isRepeatable = false;
-        $length = strlen($config);
-        if ($length < 3) {
-            throw new Exception;
-        }
-        if ($config[0] === '[') {
-            $isOptional = true;
-            if ($config[$length - 1] !== ']') {
-                throw new Exception;
-            }
-            $config = substr($config, 1, $length - 2);
-            $length -= 2;
+        foreach ($configs as $config) {
+            $isOptional = false;
+            $isRepeatable = false;
+            $length = strlen($config);
             if ($length < 3) {
                 throw new Exception;
             }
-        }
-        if ($config[0] === '<') {
-            if (substr($config, -3) === '...') {
-                $config = substr($config, 0, $length - 3);
-                $length -= 3;
-                $isRepeatable = true;
+            if ($config[0] === '[') {
+                $isOptional = true;
+                if ($config[$length - 1] !== ']') {
+                    throw new Exception;
+                }
+                $config = substr($config, 1, $length - 2);
+                $length -= 2;
                 if ($length < 3) {
                     throw new Exception;
                 }
             }
-            if ($config[$length - 1] !== '>') {
-                throw new Exception;
-            }
-            $name = substr($config, 1, $length - 2);
-            if (preg_match('/^[a-zA-Z0-9-]+$/', $name) !== 1) {
-                throw new Exception;
+            if ($config[0] === '<') {
+                if (substr($config, -3) === '...') {
+                    $config = substr($config, 0, $length - 3);
+                    $length -= 3;
+                    $isRepeatable = true;
+                    if ($length < 3) {
+                        throw new Exception;
+                    }
+                }
+                if ($config[$length - 1] !== '>') {
+                    throw new Exception;
+                }
+                $name = substr($config, 1, $length - 2);
+                if (preg_match('/^[a-zA-Z0-9-]+$/', $name) !== 1) {
+                    throw new Exception;
+                } else {
+                    $result[] = new ArgumentConfig(
+                        $name, $isOptional, $isRepeatable
+                    );
+                }
             } else {
-                return new ArgumentConfig($name, $isOptional, $isRepeatable);
+                throw new Exception;
             }
-        } else {
-            throw new Exception;
         }
+        return $result;
     }
 }
