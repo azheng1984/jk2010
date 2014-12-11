@@ -51,7 +51,7 @@ class MultipleCommandApp extends App {
         $this->globalOptions = $globalOptions;
     }
 
-    protected function getSubcommand() {
+    public function getSubcommand() {
         return $this->subcommand;
     }
 
@@ -59,7 +59,7 @@ class MultipleCommandApp extends App {
         $this->subcommand = $value;
     }
 
-    protected function hasSubcommand() {
+    public function hasSubcommand() {
         return $this->subcommand !== null;
     }
 

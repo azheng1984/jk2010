@@ -100,8 +100,9 @@ class App {
     }
 
     protected function renderVersion() {
-        $version = $this->getCommandConfig('version');
-        if ($version == '' && (string)$version === '') {
+        $commandConfig = $this->getCommandConfig();
+        $version = (string)$commandConfig->getVersion();
+        if ($version === '') {
             echo 'undefined', PHP_EOL;
             return;
         }
@@ -111,7 +112,7 @@ class App {
     protected function parseCommand() {
         try {
             $commandConfig = $this->getCommandConfig();
-            return CommandParser::parse($commandConfig);
+            return CommandParser::parse($app);
         } catch (CommandParsingException $e) {
             $this->renderCommandParsingError($e);
             $this->quit();

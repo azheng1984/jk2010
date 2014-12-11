@@ -38,7 +38,6 @@ class CommandParser {
                     $isGlobal= false;
                     $result['subcommand'] = $element;
                     $result['option'] = [];
-                    $result['arguments'] = [];
                     $optionConfigs = $commandConfig->getOptions($element);
                     $optionType = 'options';
                 } else {
@@ -146,7 +145,7 @@ class CommandParser {
                 }
             }
         }
-        $hasSuperOption = static::hasSuperOption(
+        $hasMagicOption = static::hasMagic(
             isset($result['global_options']) ? $result['global_options'] : [],
             isset($result['subcommand']) ? $result['subcommand'] : null,
             isset($result['options']) ? $result['options'] : [],
@@ -160,7 +159,7 @@ class CommandParser {
                 $result['global_options'],
                 $globalOptionConfigs,
                 $globalMutuallyExclusiveOptionGroupConfigs,
-                $hasSuperOption
+                $hasMagicOption
             );
         }
         if (isset($result['options'])) {
@@ -171,12 +170,13 @@ class CommandParser {
                 $result['options'],
                 $optionConfigs,
                 $mutuallyExclusiveOptionGroupConfigs,
-                $hasSuperOption
+                $hasMagicOption
             );
         }
-        if ($hasSuperOption || $isGlobal) {
+        if ($shouldQuit || $isGlobal) {
             return $result;
         }
+        $result['arguments'] = [];
         $argumentConfigs = null;
         if ($commandConfig->isSubcommandEnabled()) {
             $argumentConfigs = $commandConfig->getArguments(
@@ -222,7 +222,7 @@ class CommandParser {
         return $result;
     }
 
-    protected static function hasSuperOption(
+    protected static function hasMagicOption(
         array $globalOptions, $subcommand, array $options, $commandConfig
     ) {
         if ($commandConfig->isSubcommandEnabled()) {
@@ -250,7 +250,7 @@ class CommandParser {
         array $options,
         array $optionConfigs,
         array $mutuallyExclusiveOptionGroupConfigs = null,
-        $hasSuperOption
+        $hasMagicOption
     ) {
         foreach ($optionConfigs as $name => $option) {
             if ($option->getValues() !== null) {
@@ -262,7 +262,7 @@ class CommandParser {
                 if (isset($result[$name])) {
                     continue;
                 }
-                if ($hasSuperOption === false) {
+                if ($hasMagicOption === false) {
                     throw new Exception;
                 }
             }
@@ -279,7 +279,7 @@ class CommandParser {
                     $hasOption = true;
                 }
                 if ($groupConfig->isRequired() && $hasOption === false) {
-                    if ($hasSuperOption === false) {
+                    if ($hasMagicOption === false) {
                         throw new Exception;
                     }
                 }
