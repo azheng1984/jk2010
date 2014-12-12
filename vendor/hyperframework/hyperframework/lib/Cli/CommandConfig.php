@@ -355,6 +355,9 @@ class CommandConfig {
 
     protected function getDefaultClass($subcommand = null) {
         if ($subcommand === null) {
+            if ($this->isSubcommandEnabled()) {
+                return;
+            }
             $namespace = (string)Config::get(
                 'hyperframework.app_root_namespace'
             );

@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
-class MultuallyExclusiveOptionGroupConfig {
+class MutuallyExclusiveOptionGroupConfig {
     private $options;
     private $isRequired;
 
