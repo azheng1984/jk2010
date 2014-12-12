@@ -2,8 +2,8 @@
 namespace Hyperframework\Cli;
 
 class DefaultArgumentConfig extends ArgumentConfig {
+    private $originalName;
     private $name;
-    private $pattern;
 
     public function __construct($argumentReflector) {
         parent::__construct(
@@ -11,10 +11,10 @@ class DefaultArgumentConfig extends ArgumentConfig {
             $argumentReflector->isOptional(),
             $argumentReflector->isArray()
         );
-        $this->name = $argumentReflector->getName();
+        $this->originalName = $argumentReflector->getName();
     }
 
-    public function getPattern() {
+    public function getName() {
         $isRepeatable = $param->isArray();
         $name = $param->getName();
         $length = strlen($name);

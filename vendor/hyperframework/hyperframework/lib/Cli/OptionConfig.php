@@ -27,7 +27,7 @@ class OptionConfig {
         $this->isRepeatable = $isRepeatable;
         $this->isRequired = $isRequired;
         $this->hasArgument = $hasArgument;
-        $this->argumentName = $argumentName;
+        $this->argumentPattern = $argumentPattern;
         $this->values = $values;
     }
 
@@ -56,16 +56,19 @@ class OptionConfig {
     }
 
     public function getArgumentPattern() {
-        //<disable>
-        //<key>=<value>##
-        //[(<arg>=<value>)...]
-        //<arg>
-        //<arg>=<value>
-        //adf <key>=<value>
-        return $this->argumentName;
+        return $this->argumentPattern;
     }
 
     public function getValues() {
+        // -x(ai|bi|ci)
+        // --article[=(a|b|c)]
+        // --article[=<article>]
+        // --article[=(<key>=<value>)]
+        // --article[=up|down]
+        // --article[=(up|down)] //better
+        // --article=(up|down) //better
+        // --article=up|down
+        // --article[=<a>[<b>][<c>]]
         return $this->values;
     }
 }
