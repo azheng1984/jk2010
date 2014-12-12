@@ -12,14 +12,14 @@ class FormHelper {
         $this->errors = $errors;
     }
 
-    public function begin(array $attrs = null) {
+    public function begin(array $attributes = null) {
         echo '<form';
-        if ($attrs !== null) {
-            $this->renderAttrs($attrs);
+        if ($attributes !== null) {
+            $this->renderAttributes($attributes);
         }
         echo '>';
-        if (isset($attrs['method'])
-            && $attrs['method'] === 'POST'
+        if (isset($attributes['method'])
+            && $attributes['method'] === 'POST'
             && CsrfProtection::isEnabled()
         ) {
             $this->renderCsrfProtectionField();
@@ -30,66 +30,69 @@ class FormHelper {
         echo '</form>';
     }
 
-    public function renderTextField(array $attrs) {
-        $this->renderInput('text', $attrs);
+    public function renderTextField(array $attributes = null) {
+        $this->renderInput('text', $attributes);
     }
 
-    public function renderCheckBox(array $attrs) {
-        $this->renderInput('checkbox', $attrs, 'checked');
+    public function renderCheckBox(array $attributes = null) {
+        $this->renderInput('checkbox', $attributes, 'checked');
     }
 
-    public function renderRadioButton(array $attrs) {
-        $this->renderInput('radio', $attrs, 'checked');
+    public function renderRadioButton(array $attributes = null) {
+        $this->renderInput('radio', $attributes, 'checked');
     }
 
-    public function renderPasswordField(array $attrs) {
-        $this->renderInput('password', $attrs);
+    public function renderPasswordField(array $attributes = null) {
+        $this->renderInput('password', $attributes);
     }
 
-    public function renderHiddenField(array $attrs) {
-        $this->renderInput('hidden', $attrs);
+    public function renderHiddenField(array $attributes = null) {
+        $this->renderInput('hidden', $attributes);
     }
 
-    public function renderButton(array $attrs) {
-        $this->renderInput('button', $attrs);
+    public function renderButton(array $attributes = null) {
+        $this->renderInput('button', $attributes);
     }
 
-    public function renderSubmitButton(array $attrs) {
-        $this->renderInput('submit', $attrs);
+    public function renderSubmitButton(array $attributes = null) {
+        $this->renderInput('submit', $attributes);
     }
 
-    public function renderResetButton(array $attrs) {
-        $this->renderInput('reset', $attrs);
+    public function renderResetButton(array $attributes = null) {
+        $this->renderInput('reset', $attributes);
     }
 
-    public function renderFileField(array $attrs) {
-        $this->renderInput('file', $attrs, null);
+    public function renderFileField(array $attributes = null) {
+        $this->renderInput('file', $attributes, null);
     }
 
-    public function renderTextArea(array $attrs) {
-        $attrs = $this->getFullFieldAttrs($attrs);
+    public function renderTextArea(array $attributes = null) {
         echo '<textarea';
-        $this->renderAttrs($attrs);
+        $this->renderAttributes($attributes);
         echo '>';
-        if (isset($data[$attrs['name']])) {
-            echo self::encodeSpecialChars($data[$attrs['name']]);
-        } elseif (isset($attrs[':content'])) {
-            echo self::encodeSpecialChars($attrs[':content']);
+        if (isset($attributes['name'])
+            && isset($this->data[$attributes['name']])
+        ) {
+            $content = $this->data[$attributes['name']];
+            echo self::encodeSpecialChars($content);
+        } elseif (isset($attributes[':content'])) {
+            echo self::encodeSpecialChars($attributes[':content']);
         }
         echo '</textarea>';
     }
 
-    public function renderSelect(array $attrs) {
-        $attrs = $this->getFullFieldAttrs($attrs);
+    public function renderSelect(array $attributes = null) {
         echo '<select';
-        $this->renderAttrs($attrs);
+        $this->renderAttributes($attributes);
         echo '>';
         $selectedValue = null;
-        if (isset($attrs['name']) && isset($this->data[$attrs['name']])) {
-            $selectedValue = $this->data[$attrs['name']];
+        if (isset($attributes['name'])
+            && isset($this->data[$attributes['name']])
+        ) {
+            $selectedValue = $this->data[$attributes['name']];
         }
-        if (isset($attrs[':options'])) {
-            $this->renderOptions($attrs[':options'], $selectedValue);
+        if (isset($attributes[':options'])) {
+            $this->renderOptions($attributes[':options'], $selectedValue);
         }
         echo '</select>';
     }
@@ -115,31 +118,34 @@ class FormHelper {
             '" value="', CsrfProtection::getToken(), '"/>';
     }
 
-    private function encodeSpecialChars($content) {
+    protected function encodeSpecialChars($content) {
         return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE);
     }
 
-    private function renderInput($type, array $attrs, $bindingAttr = 'value') {
-        $attrs = self::getFullFieldAttrs($attrs);
-        if ($bindingAttr === 'value' && isset($attrs['name'])) {
-            if (isset($this->data[$attrs['name']])) {
-                $attrs['value'] = self::encodeSpecialChars(
-                    $this->data[$attrs['name']]
+    private function renderInput(
+        $type, array $attributes = null, $bindingAttributes = 'value'
+    ) {
+        if ($bindingAttributes === 'value' && isset($attributes['name'])) {
+            if (isset($this->data[$attributes['name']])) {
+                $attributes['value'] = self::encodeSpecialChars(
+                    $this->data[$attributes['name']]
                 );
             }
         }
-        if ($bindingAttr === 'checked' && isset($attrs['name'])) {
-            if (isset($this->data[$attrs['name']]) && isset($attrs['value'])) {
-                $value = (string)$attrs['value'];
-                $data = $this->data[$attrs['name']];
+        if ($bindingAttrbutes === 'checked' && isset($attributes['name'])) {
+            if (isset($this->data[$attributes['name']])
+                && isset($attributes['value'])
+            ) {
+                $value = (string)$attributes['value'];
+                $data = $this->data[$attributes['name']];
                 if ($value == $data && $value === (string)$data) {
-                    $attrs['checked'] = 'checked';
+                    $attributes['checked'] = 'checked';
                 }
             }
         }
         echo '<input type="', $type, '"';
-        if ($attrs !== null) {
-            $this->renderAttrs($attrs);
+        if ($attributes !== null) {
+            $this->renderAttributes($attributes);
         }
         echo '/>';
     }
@@ -152,7 +158,7 @@ class FormHelper {
                 $option = array('value' => $option, ':content' => $option);
             } elseif ($isOptGroupAllowed && isset($option[':options'])) {
                 echo '<optgroup';
-                $this->renderAttrs($option);
+                $this->renderAttributes($option);
                 echo '>';
                 $this->renderOptions(
                     $option[':options'], $selectedValue, false
@@ -166,7 +172,7 @@ class FormHelper {
                 $option[':content'] = $option['value'];
             }
             echo '<option';
-            $this->renderAttrs($option);
+            $this->renderAttributes($option);
             $value = (string)$option['value'];
             if ($value == $selectedValue && $value === (string)$selectedValue) {
                 echo ' selected="selected"';
@@ -176,27 +182,8 @@ class FormHelper {
         }
     }
 
-    private function getFullFieldAttrs(array $attrs) {
-        if ($attrs === null) {
-            return;
-        }
-        $name = null;
-        if (is_string($attrs)) {
-            $name = $attrs;
-            $attrs = array('name' => $name);
-        } else {
-            if (isset($attrs['name'])) {
-                $name = $attrs['name'];
-            } elseif ($name === null && isset($attrs['id'])) {
-                $name = $attrs['id'];
-                $attrs['name'] = $name;
-            }
-        }
-        return $attrs;
-    }
-
-    private function renderAttrs(array $attrs) {
-        foreach ($attrs as $key => $value) {
+    private function renderAttributes(array $attributes) {
+        foreach ($attributes as $key => $value) {
             if (is_int($key)) {
                 echo ' ', $value;
             } elseif ($key[0] !== ':') {
