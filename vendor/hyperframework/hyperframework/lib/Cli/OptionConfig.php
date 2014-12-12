@@ -69,6 +69,7 @@ class OptionConfig {
         // --article[=up|down]
         // --article[=(up|down)] //better
         // --article=(up|down) //better
+        // -a, --article enable|disable
         // --article=up|down
         // --article[=<a>[<b>][<c>]]
         return $this->values;
