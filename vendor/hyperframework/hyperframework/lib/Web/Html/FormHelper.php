@@ -123,16 +123,16 @@ class FormHelper {
     }
 
     private function renderInput(
-        $type, array $attributes = null, $bindingAttributes = 'value'
+        $type, array $attributes = null, $bindingAttribute = 'value'
     ) {
-        if ($bindingAttributes === 'value' && isset($attributes['name'])) {
+        if ($bindingAttribute === 'value' && isset($attributes['name'])) {
             if (isset($this->data[$attributes['name']])) {
                 $attributes['value'] = self::encodeSpecialChars(
                     $this->data[$attributes['name']]
                 );
             }
         }
-        if ($bindingAttrbutes === 'checked' && isset($attributes['name'])) {
+        if ($bindingAttrbute === 'checked' && isset($attributes['name'])) {
             if (isset($this->data[$attributes['name']])
                 && isset($attributes['value'])
             ) {
