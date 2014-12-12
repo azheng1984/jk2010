@@ -19,7 +19,7 @@ class OptionConfig {
         $isRequired,
         $hasArgument,
         $argumentPattern,
-        array $values = null
+//        array $values = null
     ) {
         $this->name = $name;
         $this->shortName = $shortName;
@@ -28,7 +28,7 @@ class OptionConfig {
         $this->isRequired = $isRequired;
         $this->hasArgument = $hasArgument;
         $this->argumentPattern = $argumentPattern;
-        $this->values = $values;
+//        $this->values = $values;
     }
 
     public function getName() {
@@ -61,6 +61,8 @@ class OptionConfig {
 
     public function getValues() {
         // -x(ai|bi|ci)
+        // -x <key>=<value> //better
+        // -x (<key>=<value>)
         // --article[=(a|b|c)]
         // --article[=<article>]
         // --article[=(<key>=<value>)]
