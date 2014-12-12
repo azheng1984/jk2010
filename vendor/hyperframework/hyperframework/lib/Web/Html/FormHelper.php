@@ -132,7 +132,7 @@ class FormHelper {
                 );
             }
         }
-        if ($bindingAttrbute === 'checked' && isset($attributes['name'])) {
+        if ($bindingAttribute === 'checked' && isset($attributes['name'])) {
             if (isset($this->data[$attributes['name']])
                 && isset($attributes['value'])
             ) {
