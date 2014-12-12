@@ -113,12 +113,12 @@ class FormHelper {
     }
 
     public function renderCsrfProtectionField() {
-        echo '<input type="hidden" name="',
-            CsrfProtection::getTokenName(),
+        echo '<input type="hidden" name="', CsrfProtection::getTokenName(),
             '" value="', CsrfProtection::getToken(), '"/>';
     }
 
     protected function encodeSpecialChars($content) {
+        //config
         return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE);
     }
 
