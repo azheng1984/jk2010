@@ -61,8 +61,9 @@ class OptionConfig {
 
     public function getValues() {
         // -x(ai|bi|ci)
-        // -x <key>=<value> //better
-        // -x (<key>=<value>)
+        // -x <name>=<value> //better
+        // -x name=value //better
+        // -c (<name>=<value>)
         // --article[=(a|b|c)]
         // --article[=<article>]
         // --article[=(<key>=<value>)]
