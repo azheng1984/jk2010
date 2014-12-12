@@ -2,18 +2,19 @@
 namespace Hyperframework\Cli;
 
 class ArgumentConfig {
-    private $name;
+    private $pattern;
     private $isOptional;
     private $isRepeatable;
 
-    public function __construct($name, $isOptional, $isRepeatable) {
-        $this->name = $name;
+    public function __construct($pattern, $isOptional, $isRepeatable) {
+        // [(<key>=<value>)...]
+        $this->pattern = $pattern;
         $this->isOptional = $isOptional;
         $this->isRepeatable = $isRepeatable;
     }
 
-    public function getName() {
-        return $this->name;
+    public function getPattern() {
+        return $this->pattern;
     }
 
     public function isOptional() {

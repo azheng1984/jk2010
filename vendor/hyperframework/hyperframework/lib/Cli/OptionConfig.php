@@ -8,7 +8,7 @@ class OptionConfig {
     private $isRepeatable;
     private $isRequired;
     private $hasArgument;
-    private $getArgumentName;
+    private $argumentPattern;
     private $values;
 
     public function __construct(
@@ -18,7 +18,7 @@ class OptionConfig {
         $isRepeatable,
         $isRequired,
         $hasArgument,
-        $argumentName,
+        $argumentPattern,
         array $values = null
     ) {
         $this->name = $name;
@@ -55,7 +55,13 @@ class OptionConfig {
         return $this->hasArgument;
     }
 
-    public function getArgumentName() {
+    public function getArgumentPattern() {
+        //<disable>
+        //<key>=<value>##
+        //[(<arg>=<value>)...]
+        //<arg>
+        //<arg>=<value>
+        //adf <key>=<value>
         return $this->argumentName;
     }
 

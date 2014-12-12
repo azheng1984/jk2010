@@ -9,13 +9,13 @@ class OptionConfigParser {
             throw new Exception;
         }
         $result = [];
-        foreach ($configs as $key => $value) {
-            if (is_int($key)) {
-                $key = $value;
+        foreach ($configs as $pattern => $value) {
+            if (is_int($pattern)) {
+                $pattern = $value;
                 $value = null;
             }
             list($name, $shortName, $hasArgument, $argumentName, $values) =
-                static::parseKey($key);
+                static::parsePattern($pattern);
             $description = null;
             $isRequired = false;
             $isRepeatable = false;
@@ -58,18 +58,18 @@ class OptionConfigParser {
         return $result;
     }
 
-    private static function parseKey($key) {
-        $length = strlen($key);
+    private static function parsePattern($pattern) {
+        $length = strlen($pattern);
         if ($length < 2) {
             throw new Exception;
         }
-        if ($key[0] !== '-') {
+        if ($pattern[0] !== '-') {
             throw new Exception;
         }
         $shortName = null;
         $isShort = false;
-        if (strpos($key, ',') !== false) {
-            $tmps = explode(',', $key, 2);
+        if (strpos($pattern, ',') !== false) {
+            $tmps = explode(',', $pattern, 2);
             $shortOption = $tmps[0];
             if (strlen($shortOption) !== 2) {
                 throw new Exception;
@@ -78,21 +78,21 @@ class OptionConfigParser {
             if (ctype_alnum($shortName) === false) {
                 throw new Exception;
             }
-            $key = ltrim($tmps[1]);
-            $length = strlen($key);
-        } elseif ($key[1] !== '-') {
+            $pattern = ltrim($tmps[1]);
+            $length = strlen($pattern);
+        } elseif ($pattern[1] !== '-') {
             $isShort = true;
-            $key = '-' . $key;
+            $pattern = '-' . $pattern;
             ++$length;
             if ($length > 2) {
-                if ($key[2] === '[') {
-                    $key = str_replace('[', '[=', 1);
+                if ($pattern[2] === '[') {
+                    $pattern = str_replace('[', '[=', 1);
                     ++$length;
-                } elseif ($key[2] === '<') {
-                    $key = str_replace('<', ' <', 1);
+                } elseif ($pattern[2] === '<') {
+                    $pattern = str_replace('<', ' <', 1);
                     ++$length;
-                } elseif ($key[2] === '(') {
-                    $key = str_replace('(', ' (', 1);
+                } elseif ($pattern[2] === '(') {
+                    $pattern = str_replace('(', ' (', 1);
                     ++$length;
                 }
             }
@@ -103,7 +103,7 @@ class OptionConfigParser {
         $hasArgument = false;
         $hasValues = false;
         for ($index = 2; $index < $length; ++$index) {
-            $char = $key[$index];
+            $char = $pattern[$index];
             if ($argumentName === null
                 && $char !== '['
                 && $char !== '='
@@ -115,7 +115,7 @@ class OptionConfigParser {
             if ($argumentName === null) {
                 if ($hasArgument === false) {
                     if ($char === '[') {
-                        if ($key[$length - 1] !== ']') {
+                        if ($pattern[$length - 1] !== ']') {
                             throw new Exception;
                         }
                         --$length;
@@ -134,7 +134,7 @@ class OptionConfigParser {
                     }
                 } else {
                     if ($char === '(') {
-                        if ($key[$length - 1] !== ')') {
+                        if ($pattern[$length - 1] !== ')') {
                             throw new Exception;
                         }
                         --$length;
@@ -142,7 +142,7 @@ class OptionConfigParser {
                         $argumentName = '';
                     }
                     if ($char === '<') {
-                        if ($key[$length - 1] !== '>') {
+                        if ($pattern[$length - 1] !== '>') {
                             throw new Exception;
                         }
                         --$length;

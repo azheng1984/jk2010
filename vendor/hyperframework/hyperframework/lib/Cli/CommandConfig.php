@@ -13,6 +13,7 @@ class CommandConfig {
     private $configs;
     private $class;
     private $options;
+    private $subcommands;
     private $mutuallyExclusiveOptionGroup;
     private $arguments;
     private $subcommandConfigs = [];
@@ -329,7 +330,28 @@ class CommandConfig {
     }
 
     public function hasSubcommand($name) {
+        if ($this->isSubcommandEnabled() === false) {
+            return false;
+        }
         return file_exists($this->getSubcommandConfigPath($name));
+    }
+
+    public function getSubcommands() {
+        if ($this->isSubcommandEnabled() === false) {
+            return [];
+        }
+        if ($this->subcommands === null) {
+            $this->subcommands = [];
+            foreach (scandir($this->getSubcommandConfigRootPath()) as $file) {
+                if (substr($file, -4) === '.php') {
+                    $this->subcommands[] =
+                        substr(substr($file, 0, strlen($file) - 4));
+                } else {
+                    throw new Exception;
+                }
+            }
+        }
+        return $this->subcommands;
     }
 
     protected function parseArgumentConfigs($config) {
@@ -373,22 +395,27 @@ class CommandConfig {
     }
 
     private function getSubcommandConfigPath($subcommand) {
+        return $this->getSubcommandConfigRootPath()
+            . DIRECTORY_SEPARATOR . $subcommand . '.php';
+    }
+
+    private function getSubcommandConfigRootPath() {
         $folder = Config::get('hyperframework.cli.subcommand_config_root_path');
         if ($folder === null) {
             $folder = 'subcommand';
         }
-        $path = $folder . DIRECTORY_SEPARATOR . $subcommand . '.php';
-        $rootPath = Config::get(
+        $commandConfigRootPath = Config::get(
             'hyperframework.cli.command_config_root_path'
         );
-        if ($rootPath !== null) {
-            if (FullPathRecognizer::isFull($path) === false) {
-                $path = $rootPath . DIRECTORY_SEPARATOR . $path;
+        if ($commandConfigRootPath !== null) {
+            if (FullPathRecognizer::isFull($folder) === false) {
+                $folder = $commandConfigRootPath
+                    . DIRECTORY_SEPARATOR . $folder;
             } else {
-                return $path;
+                return $folder;
             }
         }
-        return ConfigFileLoader::getFullPath($path);
+        return ConfigFileLoader::getFullPath($folder);
     }
 
     protected function getDefaultOptionConfigs($subcommand = null) {
