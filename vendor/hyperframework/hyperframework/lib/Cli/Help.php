@@ -249,7 +249,7 @@ class Help {
     }
 
     private function renderList($names, $descriptions) {
-        $maxLength = null;
+        $maxLength = 3;
         $count = 0;
         foreach ($names as $name) {
             $length = strlen($name);
