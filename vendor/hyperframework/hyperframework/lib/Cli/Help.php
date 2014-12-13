@@ -261,7 +261,7 @@ class Help {
             }
         }
         $shouldUseNewLine = false;
-        if (count($names) / $count > 0.666666) {
+        if (count($names) / $count < 0.6) {
             $shouldUseNewLine = true;
         }
         $count = count($names);
@@ -280,7 +280,7 @@ class Help {
                         $length = $maxLength;
                     } else {
                         echo PHP_EOL;
-                        $length = 0;
+                        $length = 1;
                     }
                 }
                 echo str_repeat(' ', $maxLength - $length + 2),
