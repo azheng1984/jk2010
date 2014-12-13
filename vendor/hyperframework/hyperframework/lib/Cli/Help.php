@@ -254,23 +254,26 @@ class Help {
         foreach ($names as $name) {
             $length = strlen($name);
             if ($length > $maxLength) {
-                if ($length < 27) {
+                if ($length < 28) {
                     $maxLength = $length;
-                } else {
                     ++$count;
                 }
             }
         }
-        if ($count > count($names) / 2) {
+        $shouldUseNewLine = false;
+        if (count($names) / $count > 0.666666) {
+            $shouldUseNewLine = true;
         }
         $count = count($names);
-        if ($count === 2) {
-        }
         for ($index = 0; $index < $count; ++$index) {
             $name = $names[$index];
             echo ' ', $name;
             $description = $descriptions[$index];
             if ($description !== '') {
+                if ($shouldUseNewLine) {
+                    echo PHP_EOL, '     ', $description, PHP_EOL;
+                    continue;
+                }
                 $length = strlen($name);
                 if ($length > 27) {
                     if ($length + strlen($description) + 3 <= 80) {
