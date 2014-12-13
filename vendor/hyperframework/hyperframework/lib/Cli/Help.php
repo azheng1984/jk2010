@@ -11,7 +11,8 @@ class Help {
     private $optionCount;
     private $arguments;
     private $argumentCount;
-    private $currentOutputLineLength = 0;
+    private $usageLineLength = 0;
+    private $usageIndent = 10;
 
     public function __construct($app) {
         $this->app = $app;
@@ -31,51 +32,62 @@ class Help {
         ) {
             $this->renderSubcommands();
         }
-        //getArgumentPattern;
-        //getOptionPattern
-        // echo [article] [(<key>=<value>)...]
-        // echo ASDR <arg1>=<arg2>
-        // [-d,--dd] ((-a,--aa[=dis])|(-c,--cc))
     }
 
-    private function outputUsage($segment) {
+    private function renderUsageElement($element) {
+        $length = strlen($element);
+        if ($length === 0) {
+            return;
+        }
+        if ($this->usageLineLength > 6
+            && $length + $this->usageLineLength > 80
+        ) {
+            echo PHP_EOL, '      ';
+            $this->usageLineLength = 6;
+        }
+        if ($this->usageLineLength !== 6 && $element[0] !== '|') {
+            echo ' ';
+        }
+        echo $element;
+        $this->usageLineLength += $length;
     }
 
     protected function renderUsage() {
-        echo 'Usage: ', $this->config->getName();
-        if ($sthis->subcommand !== null) {
-            echo $this->subcommand;
+        $name = $this->config->getName();
+        if (strlen($name . $this->subcommand) < 4) {
+            $this->usageIndent = strlen($name . $this->subcommand) + 6;
+        } else {
+            $this->usageIndent = 10;
+        }
+        $this->renderUsageElement('Usage: ' . $name);
+        if ($this->subcommand !== null) {
+            $this->renderUsageElement($this->subcommand);
         }
         $options = $this->config->getOptions($this->subcommand);
         $optionCount = count($options);
         if ($optionCount > 0) {
-            echo ' ';
             if ($this->hasOptionDescription() === false) {
                 $this->renderCompactOptions();
             } else {
                 if ($optionCount === 1) {
-                    echo '[option]';
+                    $this->renderUsageElement('[option]');
                 } else {
-                    echo '[opitons]';
+                    $this->renderUsageElement('[options]');
                 }
             }
         }
         if ($this->config->isSubcommandEnabled()
             && $this->subcommand === null
         ) {
-            echo ' <command>', PHP_EOL;
-            return;
-        }
-        if (count($this->config->getArguments($this->subcommand)) > 0) {
-            echo ' ';
+            $this->renderUsageElement('<command>');
+        } elseif (count($this->config->getArguments($this->subcommand)) > 0) {
             $this->renderArguments();
-            echo PHP_EOL;
         }
+        echo PHP_EOL;
     }
 
-    protected function renderArguments() {
+    private function renderArguments() {
         $arguments = $this->config->getArguments($this->subcommand);
-        $names = [];
         foreach ($arguments as $argument) {
             $name = '<' . $argument->getName() . '>';
             if ($argument->isRepeatable()) {
@@ -84,9 +96,8 @@ class Help {
             if ($argument->isOptional()) {
                 $name = '[' . $name . ']';
             }
-            $names[] = $name;
+            $this->renderUsageElement($name);
         }
-        echo implode(' ', $name);
     }
 
     private function getOptionPattern(
@@ -110,32 +121,29 @@ class Help {
         }
         $hasArgument = $option->hasArgument();
         if ($hasArgument !== -1) {
-            $argumentName = (string)$option->getArgumentName();
-            if ($argumentName === '') {
-                $values = $option->getValues();
-                if ($values !== null && count($values) > 0) {
-                    $argumentName = '(' . implode('|', $values) . ')';
+            $values = $option->getValues();
+            if ($values !== null) {
+                $argumentPattern = implode('|', $values);
+                if ($name !== '') {
+                    $argumentPattern = '(' . $argumentPattern . ')';
                 }
             } else {
-                $argumentName = '<' . $argumentName . '>';
-            }
-            if ($argumentName === '') {
-                $argumentName = '<arg>';
+                $argumentPattern = $option->getArgumentPattern();
             }
             if ($hasArgument === 0) {
                 if ($name === '') {
-                    $result .= '[', $argumentName, ']';
+                    $result .= '[', $argumentPattern, ']';
                 } else {
-                    $result .= '[=', $argumentName, ']'
+                    $result .= '[=', $argumentPattern, ']'
                 }
             } else {
                 if ($name === '') {
                     if ($isCompact === false) {
                         $result .= ' ';
                     }
-                    $result .= $argumentName;
+                    $result .= $argumentPattern;
                 } else {
-                    $result .= '=', $argumentName;
+                    $result .= '=', $argumentPattern;
                 }
             }
         }
@@ -152,7 +160,7 @@ class Help {
         return $result;
     }
 
-    protected function renderCompactOptions() {
+    private function renderCompactOptions() {
         $options = $this->config->getOptions($this->subcommand);
         $includedOptions = [];
         foreach ($options as $option) {
@@ -173,25 +181,49 @@ class Help {
             if ($optionGroup !== null) {
                 $isReqired = $optionGroup->isRequired();
                 $mutuallyExclusiveOptions = $optionGroup->getOptions();
+                $count = count($mutuallyExclusiveOptions);
+                $index = 0;
+                $length = 0;
+                $buffer = '';
                 if (count($mutuallyExclusiveOptions) > 1) {
+                    if ($index === 0) {
+                        if ($isRequired === false) {
+                            $buffer = '[';
+                        } else {
+                            $buffer = '(';
+                        }
+                    } else {
+                        $buffer = '';
+                    }
                     foreach ($mutuallyExclusiveOptions
                         as $mutuallyExclusiveOption
                     ) {
-                        $output .= '|' . $this->getOptionPattern(
+                        $element = $this->getOptionPattern(
                             $mutuallyExclusiveOption, true, true
                         );
+                        if (strlen($element + $buffer) > 70) {
+                            if ($index !== 0) {
+                                $this->renderUsageElement($buffer);
+                                $buffer = '';
+                            }
+                        }
+                        if ($index !== 0) {
+                            $buffer .= '|';
+                        }
+                        $buffer .= $element;
                     }
                     if ($isRequired === false) {
-                        echo ' [' . $output . ']';
+                        $buffer .= ']';
                     } else {
-                        echo ' (' . $output . ')';
+                        $buffer .= ')';
                     }
+                    $this->renderUsageElement($buffer);
                     continue;
                 }
             }
-            echo ' ' . $this->getOptionPattern(
+            $this->renderUsageElement($this->getOptionPattern(
                 $mutuallyExclusiveOption, true, $isRequired
-            );
+            ));
         }
     }
 
@@ -204,15 +236,52 @@ class Help {
         if ($count === 1) {
             echo 'Option:';
         } else {
-            echo 'Options:'
+            echo 'Options:';
         }
         echo PHP_EOL;
+        $patterns = [];
+        $descriptions = [];
         foreach ($options as $option) {
-            echo $this->getOptionPattern($option, false);
-            //check max length & 80 edge
-            $description = $this->getDescription();
+            $patterns[] = $this->getOptionPattern($option, false);
+            $descriptions[] = (string)$option->getDescription();
+        }
+        $this->renderList($patterns, $descriptions);
+    }
+
+    private function renderList($names, $descriptions) {
+        $maxLength = null;
+        $count = 0;
+        foreach ($names as $name) {
+            $length = strlen($name);
+            if ($length > $maxLength) {
+                if ($length < 27) {
+                    $maxLength = $length;
+                } else {
+                    ++$count;
+                }
+            }
+        }
+        if ($count > count($names) / 2) {
+        }
+        $count = count($names);
+        if ($count === 2) {
+        }
+        for ($index = 0; $index < $count; ++$index) {
+            $name = $names[$index];
+            echo ' ', $name;
+            $description = $descriptions[$index];
             if ($description !== '') {
-                echo '  ', $description;
+                $length = strlen($name);
+                if ($length > 27) {
+                    if ($length + strlen($description) + 3 <= 80) {
+                        $length = $maxLength;
+                    } else {
+                        echo PHP_EOL;
+                        $length = 0;
+                    }
+                }
+                echo str_repeat(' ', $maxLength - $length + 2),
+                    $description, PHP_EOL;
             }
         }
     }
@@ -228,9 +297,12 @@ class Help {
         } else {
             echo 'Commands:';
         }
+        echo PHP_EOL;
+        $descriptions = [];
         foreach ($subcommands as $subcommand) {
-            echo $subcommand, PHP_EOL;
+            $descriptions[] = (string)$this->getDescription($subcommand);
         }
+        $this->renderList($subcommands, $descriptions);
     }
 
     private function hasOptionDescription() {

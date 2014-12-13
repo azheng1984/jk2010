@@ -18,17 +18,15 @@ class OptionConfig {
         $isRepeatable,
         $isRequired,
         $hasArgument,
-        $argumentPattern,
-//        array $values = null
+        $argumentPattern = null
     ) {
         $this->name = $name;
         $this->shortName = $shortName;
-        $this->description = $description; 
+        $this->description = $description;
         $this->isRepeatable = $isRepeatable;
         $this->isRequired = $isRequired;
         $this->hasArgument = $hasArgument;
         $this->argumentPattern = $argumentPattern;
-//        $this->values = $values;
     }
 
     public function getName() {
@@ -60,19 +58,18 @@ class OptionConfig {
     }
 
     public function getValues() {
-        // -x(ai|bi|ci)
-        // -x <name>=<value> //better
-        // -x name=value //better
-        // -c (<name>=<value>)
-        // --article[=(a|b|c)]
-        // --article[=<article>]
-        // --article[=(<key>=<value>)]
-        // --article[=up|down]
-        // --article[=(up|down)] //better
-        // --article=(up|down) //better
-        // -a, --article enable|disable
-        // --article=up|down
-        // --article[=<a>[<b>][<c>]]
+        if ($this->values === null) {
+            if ((string)$this->argumentPattern === '' ||
+                preg_match('/^[a-zA-Z0-9-|]+$/', $this->argumentPattern) !== 1
+            ) {
+                $this->values = false;
+            } else {
+                $this->values = explode('|', $this->argumentPattern);
+            }
+        }
+        if ($this->values === false) {
+            return;
+        }
         return $this->values;
     }
 }

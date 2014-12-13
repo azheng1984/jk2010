@@ -9,26 +9,26 @@ class OptionConfigParser {
             throw new Exception;
         }
         $result = [];
-        foreach ($configs as $pattern => $value) {
+        foreach ($configs as $pattern => $attributes) {
             if (is_int($pattern)) {
-                $pattern = $value;
-                $value = null;
+                $pattern = $attributes;
+                $attributes = null;
             }
             list($name, $shortName, $hasArgument, $argumentName, $values) =
                 static::parsePattern($pattern);
             $description = null;
             $isRequired = false;
             $isRepeatable = false;
-            if (is_string($value)) {
-                $description = $value;
-            } elseif (is_array($value)) {
-                if (isset($value['description'])) {
+            if (is_string($attributes)) {
+                $description = $attributes;
+            } elseif (is_array($attributes)) {
+                if (isset($attributes['description'])) {
                     $description = $description;
                 }
-                if (isset($value['is_repeatable'])) {
+                if (isset($attributes['is_repeatable'])) {
                     $isRepeatable = $isRepeatable;
                 }
-                if (isset($value['is_required'])) {
+                if (isset($attributes['is_required'])) {
                     $isRequired = $isRequired;
                 }
             }
