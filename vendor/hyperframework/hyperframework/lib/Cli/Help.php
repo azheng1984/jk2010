@@ -249,7 +249,7 @@ class Help {
     }
 
     private function renderList($names, $descriptions) {
-        $maxLength = 3;
+        $maxLength = 0;
         $count = 0;
         foreach ($names as $name) {
             $length = strlen($name);
@@ -261,7 +261,7 @@ class Help {
             }
         }
         $shouldUseNewLine = false;
-        if (count($names) / $count < 0.6) {
+        if (count($names) / $count <= 0.5) {
             $shouldUseNewLine = true;
         }
         $count = count($names);
@@ -276,12 +276,8 @@ class Help {
                 }
                 $length = strlen($name);
                 if ($length > 27) {
-                    if ($length + strlen($description) + 3 <= 80) {
-                        $length = $maxLength;
-                    } else {
-                        echo PHP_EOL;
-                        $length = 1;
-                    }
+                    echo PHP_EOL;
+                    $length = 1;
                 }
                 echo str_repeat(' ', $maxLength - $length + 2),
                     $description, PHP_EOL;

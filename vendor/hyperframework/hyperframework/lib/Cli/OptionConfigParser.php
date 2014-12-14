@@ -14,7 +14,7 @@ class OptionConfigParser {
                 $pattern = $attributes;
                 $attributes = null;
             }
-            list($name, $shortName, $hasArgument, $argumentName, $values) =
+            list($name, $shortName, $hasArgument, $argumentPattern) =
                 static::parsePattern($pattern);
             $description = null;
             $isRequired = false;
@@ -39,8 +39,7 @@ class OptionConfigParser {
                 $isRepeatable,
                 $isRequired,
                 $hasArgument,
-                $argumentName,
-                $values
+                $argumentPattern
             );
             if ($name !== null) {
                 if (isset($result[$name])) {
@@ -68,118 +67,64 @@ class OptionConfigParser {
         }
         $shortName = null;
         $isShort = false;
-        if (strpos($pattern, ',') !== false) {
-            $tmps = explode(',', $pattern, 2);
-            $shortOption = $tmps[0];
-            if (strlen($shortOption) !== 2) {
-                throw new Exception;
-            }
-            $shortName = $shortOption[1];
-            if (ctype_alnum($shortName) === false) {
-                throw new Exception;
-            }
-            $pattern = ltrim($tmps[1]);
-            $length = strlen($pattern);
-        } elseif ($pattern[1] !== '-') {
-            $isShort = true;
-            $pattern = '-' . $pattern;
-            ++$length;
-            if ($length > 2) {
-                if ($pattern[2] === '[') {
-                    $pattern = str_replace('[', '[=', 1);
-                    ++$length;
-                } elseif ($pattern[2] === '<') {
-                    $pattern = str_replace('<', ' <', 1);
-                    ++$length;
-                } elseif ($pattern[2] === '(') {
-                    $pattern = str_replace('(', ' (', 1);
-                    ++$length;
-                }
+        $pattern = str_replace(' ', '', $pattern);
+        $index = 0;
+        if ($length === 2) {
+            $shortName = $pattern[1];
+            $index = 2;
+        } else {
+            if ($length > 3 && $pattern[2] === ',') {
+                $shortName = $pattern[2];
+                $index = 3;
             }
         }
-        $name = null;
-        $argumentName = null;
-        $isOptionalArgument = false;
-        $hasArgument = false;
-        $hasValues = false;
-        for ($index = 2; $index < $length; ++$index) {
-            $char = $pattern[$index];
-            if ($argumentName === null
-                && $char !== '['
-                && $char !== '='
-                && $char !== ' '
-            ) {
-                $name .= $char;
-                continue;
-            }
-            if ($argumentName === null) {
-                if ($hasArgument === false) {
-                    if ($char === '[') {
-                        if ($pattern[$length - 1] !== ']') {
-                            throw new Exception;
-                        }
-                        --$length;
-                        ++$index;
-                        if ($opiton[$index] === '=') {
-                            $isOptionalArgument = true;
-                        } else {
-                            throw new Exception;
-                        }
-                        $hasArgument = true;
-                        continue;
-                    }
-                    if ($char === '=' || $char === ' ') {
-                        $hasArgument = true;
-                        continue;
-                    }
-                } else {
-                    if ($char === '(') {
-                        if ($pattern[$length - 1] !== ')') {
-                            throw new Exception;
-                        }
-                        --$length;
-                        $hasValues = true;
-                        $argumentName = '';
-                    }
-                    if ($char === '<') {
-                        if ($pattern[$length - 1] !== '>') {
-                            throw new Exception;
-                        }
-                        --$length;
-                        $argumentName = '';
-                        continue;
-                    }
-                }
-                throw new Exception;
-            }
-            $argumentName .= $char;
-        }
-        if ($isShort) {
-            if (strlen($name) !== 1 || ctype_alnum($name) === false) {
-                throw new Exception;
-            }
-        } elseif (preg_match('/^[a-zA-Z0-9-]{2,}$/', $name) !== 1) {
+        if (ctype_alnum($shortName) === false) {
             throw new Exception;
         }
-        $hasArgument = -1;
-        $values = null;
-        if ($hasArgument) {
-            if ($hasValues) {
-                $values = array();
-                if (preg_match('/^[a-zA-Z0-9-|]+$/', $argumentName) !== 1) {
-                    throw new Exception;
-                }
-                $values = explode('|', $argumentName);
-                $argumentName = null;
-            } elseif (preg_match('/^[a-zA-Z0-9-]+$/', $argumentName) !== 1) {
+        $name = null;
+        if ($length > $index && $pattern[$index] === '-') {
+            if (isset($pattern[$index + 1]) || $pattern[$index + 1] !== '-') {
                 throw new Exception;
             }
-            if ($isOptoinalArgument) {
+            $index += 2;
+            while ($index < $length) {
+                $char = $pattern[$index];
+                if ($char ==='[') {
+                    if (isset($pattern[$index + 1])
+                        && $pattern[$index + 1] === '='
+                    ) {
+                        $pattern[$index + 1] = '[';
+                        ++$index;
+                        break;
+                    }
+                } elseif ($char === '=') {
+                    ++$index;
+                    break;
+                }
+                $name .= $char;
+                ++$index;
+            }
+        }
+        if ($name !== null) {
+            if (preg_match('/^[a-zA-Z0-9-]{2,}$/', $name) !== 1) {
+                throw new Exception;
+            }
+        }
+        $argumentPattern = null;
+        $hasArgument = -1;
+        if (isset($pattern[$index])) {
+            if ($pattern[$index] === '[') {
+                if ($pattern[$length - 1] !== ']')  {
+                    throw new Exception;
+                }
+                ++$index;
+                --$length;
                 $hasArgument = 0;
             } else {
                 $hasArgument = 1;
             }
+            $argumentPattern = substr($pattern, $index, $length - $index);
         }
-        return [$name, $shortName, $hasArgument, $argumentName, $values];
+        return [$name, $shortName, $hasArgument, $argumentPattern];
     }
 }

@@ -59,12 +59,19 @@ class OptionConfig {
 
     public function getValues() {
         if ($this->values === null) {
-            if ((string)$this->argumentPattern === '' ||
-                preg_match('/^[a-zA-Z0-9-|]+$/', $this->argumentPattern) !== 1
-            ) {
-                $this->values = false;
+            $pattern = (string)$this->argumentPattern;
+            if ($pattern !== '') {
+                $pattern = ltrim($this->argumentPattern, '(');
+                $pattern = rtrim($pattern, ')');
+                if ($pattern === ''
+                    || preg_match('/^[a-zA-Z0-9-_|]+$/', $pattern) !== 1
+                ) {
+                    $this->values = false;
+                } else {
+                    $this->values = explode('|', $pattern);
+                }
             } else {
-                $this->values = explode('|', $this->argumentPattern);
+                $this->values = false;
             }
         }
         if ($this->values === false) {
