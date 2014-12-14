@@ -79,7 +79,7 @@ class Help {
         if ($this->config->isSubcommandEnabled()
             && $this->subcommand === null
         ) {
-            $this->renderUsageElement('<command>');
+            $this->renderUsageElement('<commanD>');
         } elseif (count($this->config->getArguments($this->subcommand)) > 0) {
             $this->renderArguments();
         }
@@ -121,15 +121,7 @@ class Help {
         }
         $hasArgument = $option->hasArgument();
         if ($hasArgument !== -1) {
-            $values = $option->getValues();
-            if ($values !== null) {
-                $argumentPattern = implode('|', $values);
-                if ($name !== '') {
-                    $argumentPattern = '(' . $argumentPattern . ')';
-                }
-            } else {
-                $argumentPattern = $option->getArgumentPattern();
-            }
+            $argumentPattern = $option->getArgumentPattern();
             if ($hasArgument === 0) {
                 if ($name === '') {
                     $result .= '[', $argumentPattern, ']';
@@ -138,21 +130,19 @@ class Help {
                 }
             } else {
                 if ($name === '') {
-                    if ($isCompact === false) {
-                        $result .= ' ';
-                    }
-                    $result .= $argumentPattern;
+                    $result .= ' ' . $argumentPattern;
                 } else {
                     $result .= '=', $argumentPattern;
                 }
             }
         }
         if ($isCompact) {
-            if ($name !== ''
-                && $shortName !== ''
-                && ($isRequired === true || $option->isRequired())
-            ) {
-                $result = '(' . $result . ')';
+            if ($isRequired === true || $option->isRequired()) {
+                if (($name !== '' && $shortName !== '')
+                    || ($shortName === '' && $hasArgument === 1)
+                ) {
+                    $result = '(' . $result . ')';
+                }
             } else {
                 $result = '[' . $result . ']';
             }
