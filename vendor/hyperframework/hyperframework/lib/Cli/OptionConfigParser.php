@@ -58,6 +58,7 @@ class OptionConfigParser {
     }
 
     private static function parsePattern($pattern) {
+        $pattern = trim($pattern);
         $length = strlen($pattern);
         if ($length < 2) {
             throw new Exception;
@@ -67,22 +68,36 @@ class OptionConfigParser {
         }
         $shortName = null;
         $isShort = false;
-        $pattern = str_replace(' ', '', $pattern);
         $index = 0;
+        $hasComma = false;
         if ($length === 2) {
             $shortName = $pattern[1];
             $index = 2;
         } else {
-            if ($length > 3 && $pattern[2] === ',') {
-                $shortName = $pattern[2];
-                $index = 3;
+            if ($length > 3 && $pattern[1] !== '-') {
+                $shortName = $pattern[1];
+                $index = 2;
+                while (isset($pattern[$index]) && $pattern[$index] === ' ') {
+                    ++$index;
+                }
+                if ($pattern[$index] === ',') {
+                    ++$index;
+                    $hasComma = true;
+                }
             }
         }
         if (ctype_alnum($shortName) === false) {
             throw new Exception;
         }
+        if ($shortName !== '') {
+            while (isset($pattern[$index]) && $pattern[$index] === ' ') {
+                ++$index;
+            }
+        }
         $name = null;
-        if ($length > $index && $pattern[$index] === '-') {
+        if (($length > $index && $pattern[$index] === '-')
+            && ($shortName === null || $hasComma = true)
+        ) {
             if (isset($pattern[$index + 1]) || $pattern[$index + 1] !== '-') {
                 throw new Exception;
             }
@@ -124,6 +139,11 @@ class OptionConfigParser {
                 $hasArgument = 1;
             }
             $argumentPattern = substr($pattern, $index, $length - $index);
+        }
+        if ($name === '' && $argumentPattern !== null) {
+            if ($pattern[2] !== '[' && $pattern[2] !== ' ') {
+                throw new Exception;
+            }
         }
         return [$name, $shortName, $hasArgument, $argumentPattern];
     }
