@@ -143,18 +143,16 @@ class OptionConfigParser {
                         if (isset($pattern[$index + 1])) {
                             $char = $pattern[$index + 1];
                             if ($char === ' ') {
-                                throw new Exception(
-                                    self::getPatternExceptionMessage(
-                                        "Invalid space after '[', '=' is expected."
-                                    )
-                                );
+                                $char = 'space';
                             } else {
-                                 throw new Exception(
-                                    self::getPatternExceptionMessage(
-                                        "Invalid char '$char' after '[', '=' is expected."
-                                    )
-                                );
+                                $char = "char '$char'";
                             }
+                            throw new Exception(
+                               self::getPatternExceptionMessage(
+                                   "Invalid $char after '[', '=' is expected."
+                               )
+                            ;
+
                         }
                         throw new Exception(self::getPatternExceptionMessage());
                     }
@@ -207,7 +205,7 @@ class OptionConfigParser {
                         $char = "'$char'";
                     }
                     $name = $matches[0];
-                    if (strlen($name) < 2) {
+                    if (strlen($name) === 1) {
                         throw new Exception(self::getPatternExceptionMessage(
                             "Invalid long option name '$name'."
                         ));
