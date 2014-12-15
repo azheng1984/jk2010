@@ -158,6 +158,22 @@ class OptionConfigParser {
                 if ($char ==='[') {
                     $hasArgumentPattern = true;
                     if ($length <= $index + 1 || $pattern[$index + 1] !== '=') {
+                        if (isset($pattern[$index + 1])) {
+                            $char = $pattern[$index + 1];
+                            if ($char === ' ') {
+                                throw new Exception(
+                                    self::getPatternExceptionMessage(
+                                        "Invalid space after '['."
+                                    );
+                                );
+                            } else {
+                                 throw new Exception(
+                                    self::getPatternExceptionMessage(
+                                        "Invalid char '$char' after '['."
+                                    );
+                                );
+                            }
+                        }
                         throw new Exception(self::getPatternExceptionMessage());
                     }
                     break;
