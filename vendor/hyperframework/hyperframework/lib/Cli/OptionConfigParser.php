@@ -126,15 +126,6 @@ class OptionConfigParser {
                         );
                     }
                 }
-                // -x  --yes
-                // - x name=value
-                // -x
-                // -x[xx]
-                // -x        <xdfk> valid
-                // -x [<xd>] invalid
-                // -x     ,  --xx    //valid
-                // --xdfdf [ = adf ]    invalid
-                // '--dsfadf=adf|dsfdsf|dasfsdf '
             }
         }
         if ($shortName !== null && ctype_alnum($shortName) === false) {
@@ -238,7 +229,7 @@ class OptionConfigParser {
             } elseif ($argumentPattern[0] === '-') {
                 if ($name === null) {
                     throw new Exception(self::getPatternExceptionMessage(
-                        "Short name and name must separate with ','."
+                        "Short option and long option must separate with ','."
                     ));
                 }
                 throw new Exception(self::getPatternExceptionMessage(
