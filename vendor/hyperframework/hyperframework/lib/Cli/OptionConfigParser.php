@@ -16,7 +16,7 @@ class OptionConfigParser {
                 $pattern = $attributes;
                 $attributes = null;
             }
-            list($name, $shortName, $hasArgument, $argumentPattern) =
+            list($shortName, $name, $hasArgument, $argumentPattern) =
                 static::parsePattern($pattern);
             $description = null;
             $isRequired = false;
@@ -60,8 +60,14 @@ class OptionConfigParser {
     }
 
     private static function parsePattern($pattern) {
+        $pattern = (string)$pattern;
         self::$pattern = $pattern;
         $length = strlen($pattern);
+        if ($pattern[$length - 1] === ' ') {
+            throw new Exception(self::getPatternExceptionMessage(
+                'Cannot end with space.'
+            ));
+        }
         if ($length < 2) {
             throw new Exception(self::getPatternExceptionMessage());
         }
@@ -101,8 +107,8 @@ class OptionConfigParser {
                 // -x        <xdfk> valid
                 // -x [<xd>] invalid
                 // -x     ,  --xx    //valid
-                // --xdfdf [ = adf ] invalid
-                // ' --dsfadf= adf|dsfdsf|dasfsdf '
+                // --xdfdf [ = adf ]    invalid
+                // '--dsfadf=adf|dsfdsf|dasfsdf '
             }
         }
         if ($shortName !== null && ctype_alnum($shortName) === false) {
@@ -118,7 +124,7 @@ class OptionConfigParser {
                 $char = $pattern[$index];
                 if ($char ==='[') {
                     $hasArgumentPattern = true;
-                    if ($index + 2 > $length || $pattern[$index + 1] !== '=') {
+                    if ($length <= $index + 1 || $pattern[$index + 1] !== '=') {
                         throw new Exception(self::getPatternExceptionMessage());
                     }
                     break;
@@ -165,14 +171,14 @@ class OptionConfigParser {
         if ($hasArgumentPattern && $argumentPattern === null) {
             throw new Exception(self::getPatternExceptionMessage());
         }
-        return [$name, $shortName, $hasArgument, $argumentPattern];
+        return [$shortName, $name, $hasArgument, $argumentPattern];
     }
 
     private static function getPatternExceptionMessage($extraMessage = '') {
         $pattern = self::$pattren;
         $result = "Syntax of option pattern '$pattern' is invalid.";
-        if ($message !== '') {
-            $result .= ' ' . $message;
+        if ($extraMessage !== '') {
+            $result .= ' ' . $extraMessage;
         }
         return $result;
     }
