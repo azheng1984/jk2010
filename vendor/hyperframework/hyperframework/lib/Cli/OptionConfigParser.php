@@ -112,7 +112,14 @@ class OptionConfigParser {
             }
         }
         if ($shortName !== null && ctype_alnum($shortName) === false) {
-            throw new Exception(self::getPatternExceptionMessage());
+            if ($shortName === ' ') {
+                throw new Exception(self::getPatternExceptionMessage(
+                    'invalid space at the front of short name.'
+                ));
+            }
+            throw new Exception(self::getPatternExceptionMessage(
+                "invalid short name '$shortName'."
+            ));
         }
         $name = null;
         if ($hasName === true) {
@@ -142,7 +149,23 @@ class OptionConfigParser {
         }
         if ($name !== null) {
             if (preg_match('/^[a-zA-Z0-9-]{2,}$/', $name) !== 1) {
-                throw new Exception(self::getPatternExceptionMessage());
+                if (strpos($name, ' ') !== false) {
+                    if (substr($name, -1) === ' ') {
+                        $name = trim($name, ' ');
+                        throw new Exception(self::getPatternExceptionMessage(
+                            "Invalid space at the end of name '$name'."
+                        ));
+                    }
+                    if ($name[0] === ' ') {
+                        $name = trim($name, ' ');
+                        throw new Exception(self::getPatternExceptionMessage(
+                            "Invalid space at the front of name '$name'."
+                        ));
+                    }
+                }
+                throw new Exception(self::getPatternExceptionMessage(
+                    "Invalid space in name '$name'."
+                ));
             }
         }
         $argumentPattern = null;
@@ -162,10 +185,14 @@ class OptionConfigParser {
                 $hasArgument = 1;
             }
             $argumentPattern = substr($pattern, $index, $length - $index);
-            if ($argumentPattern === ''
-                || strpos($argumentPattern, ' ') !== false
-            ) {
-                throw new Exception(self::getPatternExceptionMessage());
+            if ($argumentPattern === '') {
+                throw new Exception(self::getPatternExceptionMessage(
+                    'Argument pattern is empty.'
+                ));
+            } elseif (strpos($argumentPattern, ' ') !== false) {
+                throw new Exception(self::getPatternExceptionMessage(
+                    'Argument pattern cannot include space.'
+                ));
             }
         }
         if ($hasArgumentPattern && $argumentPattern === null) {
