@@ -151,7 +151,7 @@ class OptionConfigParser {
                                self::getPatternExceptionMessage(
                                    "Invalid $char after '[', '=' is expected."
                                )
-                            ;
+                            );
 
                         }
                         throw new Exception(self::getPatternExceptionMessage());
