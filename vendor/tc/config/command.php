@@ -3,9 +3,9 @@ return [
     'name' => 'tc',
     'version' => '2.2.2',
     'options' => [
-        '--xx' => 'dsdasjfoa fsdiofjsaojfdsfaoidf sd fosdjofasdf ',
+        '--hello<(adf)' => 'dsdas jfoa fsdiofjsa ojfdsfaoidf sd fosdjofasdf ',
         '-x, --xx-dsafasdf' => [
-            'is_required' => true,
+//            'is_required' => true,
             'description' => 'description xx'
         ],
         '--xxx[=arg]',

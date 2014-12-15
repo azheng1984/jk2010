@@ -184,7 +184,8 @@ class OptionConfigParser {
         }
         if ($name !== null) {
             if (preg_match('/^[a-zA-Z0-9-]{2,}$/', $name) !== 1) {
-                if (strpos($name, ' ') !== false) {
+                $spacePosition = strpos($name, ' ');
+                if ($spacePosition !== false) {
                     if (substr($name, -1) === ' ') {
                         $name = trim($name, ' ');
                         throw new Exception(self::getPatternExceptionMessage(
@@ -197,13 +198,25 @@ class OptionConfigParser {
                             "Invalid space at the front of name '$name'."
                         ));
                     }
+                }
+                if (preg_match('/^[a-zA-Z0-9-]+/', $name, $matches) === 1) {
+                    $char = $name[strlen($matches[0]) + 1];
+                    if ($char === ' ') {
+                        $char = 'space';
+                    } else {
+                        $char = "'$char'";
+                    }
+                    $name = $matches[0];
+                    if (strlen($name) < 2) {
+                        throw new Exception(self::getPatternExceptionMessage(
+                            "Invalid long option name '$name'."
+                        ));
+                    }
                     throw new Exception(self::getPatternExceptionMessage(
-                        "Invalid space in name '$name'."
+                        "Invalid $char after name '$name', '=' is expected."
                     ));
                 }
-                throw new Exception(self::getPatternExceptionMessage(
-                    "Invalid long option name '$name'."
-                ));
+                throw new Exception(self::getPatternExceptionMessage());
             }
         }
         return [$shortName, $name, $hasArgument, $argumentPattern];
