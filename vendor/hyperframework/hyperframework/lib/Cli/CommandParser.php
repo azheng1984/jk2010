@@ -167,12 +167,12 @@ class CommandParser {
                 $result['subcommand'] : null;
             $mutuallyExclusiveOptionGroupConfigs =
                 $commandConfig->getMutuallyExclusiveOptionGroups($subcommand);
-//            self::checkOptions(
-//                $result['options'],
-//                $optionConfigs,
-//                $mutuallyExclusiveOptionGroupConfigs,
-//                $hasMagicOption
-//            );
+            self::checkOptions(
+                $result['options'],
+                $optionConfigs,
+                $mutuallyExclusiveOptionGroupConfigs,
+                $hasMagicOption
+            );
         }
         if ($isGlobal || $hasMagicOption) {
             if ($hasMagicOption) {
@@ -266,16 +266,20 @@ class CommandParser {
         $hasMagicOption
     ) {
         foreach ($optionConfigs as $name => $option) {
-            if ($option->getValues() !== null) {
-                if (in_array($result[$name], $option->getValues()) === false) {
-                    throw new Exception;
-                }
-            }
             if ($option->isRequired()) {
-                if (isset($result[$name])) {
+                if (isset($options[$name])) {
                     continue;
                 }
                 if ($hasMagicOption === false) {
+                    throw new Exception;
+                }
+            }
+        }
+        foreach ($options as $name => $value) {
+            $option = $optionConfigs[$name];
+            $values = $option->getValues();
+            if ($option->getValues() !== null) {
+                if (in_array($name, $values, true) === false) {
                     throw new Exception;
                 }
             }

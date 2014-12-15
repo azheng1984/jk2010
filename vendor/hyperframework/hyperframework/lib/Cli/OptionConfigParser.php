@@ -164,7 +164,6 @@ class OptionConfigParser {
                     $argumentPattern = self::getArgumentPattern(
                         false, $index + 2, $length - 1
                     );
-                    var_dump($argumentPattern);
                     $hasArgument = 0;
                     break;
                 } elseif ($char === '=') {
@@ -213,16 +212,8 @@ class OptionConfigParser {
     private static function getArgumentPattern(
         $isShortOption, $index, $length, &$isOptional = null
     ) {
-        // --xx=[optional][opitonal2] invalid
-        // -x [opitonal] invalid
-        // -x[opitonal][opiton2] valid
-        // -x[optional]<arg> invalid
-        // -x[[<opitonal>[:]i]optional2] valid
-        // --disable[=[max][max2]]
-        // --disable[=[max]<max2>]
         $pattern = self::$pattern;
         $argumentPattern = substr($pattern, $index, $length - $index);
-        var_dump($argumentPattern);
         if ($argumentPattern === '') {
             if ($isShortOption) {
                 if ($isOptional) {
@@ -252,24 +243,38 @@ class OptionConfigParser {
             ));
         }
         if ($isOptional !== null) {
-            $depth = 0;
+            $roundBracketDepth = 0;
+            $squareBracketDepth = 0;
             while ($length > $index) {
                 $char = $pattern[$index];
                 if ($char === '[') {
-                    ++$depth;
+                    ++$squareBracketDepth;
                 } elseif ($char === ']') {
-                    --$depth;
+                    --$squareBracketDepth;
                 } else {
-                    if ($depth <= 0) {
-                        break;
+                    if ($squareBracketDepth <= 0) {
+                        if ($char === '(') {
+                            ++$roundBracketDepth;
+                        } elseif ($char === ')') {
+                            --$roundBracketDepth;
+                        } else {
+                            break;
+                        }
                     }
                 }
                 ++$index;
             }
-            if ($depth !== 0) {
-                throw new Exception("'[' or ']' is not closed"); // -x[[x]
-            }
             if ($length === $index) {
+                if ($squareBracketDepth !== 0) {
+                    throw new Exception(self::getPatternExceptionMessage(
+                        "'[' or ']' is not closed"
+                    )); // -x[[x]
+                }
+                if ($roundBracketDepth !== 0) {
+                    throw new Exception(self::getPatternExceptionMessage(
+                        "'(' or ')' is not closed"
+                    )); // -x([x]
+                }
                 if ($isOptional === false) {
                     if ($isShortOption) {// -x [<arg>]
                         throw new Exception(
@@ -278,7 +283,9 @@ class OptionConfigParser {
                             )
                         );
                     } else {//--xx=[<arg>]
-                        throw new Exception;
+                        throw new Exception(self::getPatternExceptionMessage(
+                            'option argument is optional.'
+                        ));
                     }
                 }
             } else {

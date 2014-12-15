@@ -137,7 +137,6 @@ class CommandConfig {
         } else {
             $this->options = $options;
         }
-        var_dump($this->options);
         return $options;
     }
 

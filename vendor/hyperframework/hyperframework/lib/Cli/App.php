@@ -78,7 +78,7 @@ class App {
     }
 
     protected function executeCommand() {
-        $class = (string)$this->getCommandConfig('class');
+        $class = (string)$this->getCommandConfig()->getClass();
         if ($class === '') {
             throw new Exception;
         }

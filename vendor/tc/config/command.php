@@ -9,7 +9,7 @@ return [
             'description' => 'description xx'
         ],
         '--xxx[=arg]',
-        '-t    [arg]<arg>',
+        '-t[arg][xx]',
         '-g[arg]',
         '-b ,    --axx-dsafasdf=<arg>' => 'xx',
         '-c ,    --cxx-dsafasdf[=<arg>]',
