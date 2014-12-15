@@ -236,6 +236,11 @@ class OptionConfigParser {
                     'Argument pattern cannot include space.'
                 ));
             } elseif ($argumentPattern[0] === '-') {
+                if ($name === null) {
+                    throw new Exception(self::getPatternExceptionMessage(
+                        "Short name and name must separate with ','."
+                    ));
+                }
                 throw new Exception(self::getPatternExceptionMessage(
                     "Argument pattern cannot begin with '-'."
                 ));
