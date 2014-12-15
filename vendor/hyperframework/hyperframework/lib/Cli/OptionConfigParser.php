@@ -28,10 +28,10 @@ class OptionConfigParser {
                     $description = $description;
                 }
                 if (isset($attributes['is_repeatable'])) {
-                    $isRepeatable = $isRepeatable;
+                    $isRepeatable = (bool)$attributes['is_repeatable'];
                 }
                 if (isset($attributes['is_required'])) {
-                    $isRequired = $isRequired;
+                    $isRequired = (bool)$attributes['is_required'];
                 }
             }
             $option = new OptionConfig(
