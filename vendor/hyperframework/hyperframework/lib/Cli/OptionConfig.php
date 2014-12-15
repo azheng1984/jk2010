@@ -13,11 +13,11 @@ class OptionConfig {
 
     public function __construct(
         $name,
-        $shortName,
-        $description,
-        $isRepeatable,
-        $isRequired,
-        $hasArgument,
+        $shortName = null,
+        $description = '',
+        $isRepeatable = false,
+        $isRequired = false,
+        $hasArgument = -1,
         $argumentPattern = null
     ) {
         $this->name = $name;

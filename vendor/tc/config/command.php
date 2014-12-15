@@ -3,12 +3,17 @@ return [
     'name' => 'tc',
     'version' => '2.2.2',
     'options' => [
-        '--xx',
+        '--xx' => 'dsdasjfoa fsdiofjsaojfdsfaoidf sd fosdjofasdf ',
         '-x, --xx-dsafasdf' => [
-            'is_required' => true
+            'is_required' => true,
+            'description' => 'description xx'
         ],
-        '-b, --axx-dsafasdf',
-        '-c, --cxx-dsafasdf',
-        '-d, --ddxx-dsafasdf',
+        '-z<arg>',
+        '-t[arg]<arg>',
+        '-g[arg]',
+        '-b,    --axx-dsafasdf=<arg>' => 'xx',
+        '-c,    --cxx-dsafasdf[=<arg>]',
+        '-d,     --ddxx-dsafasdf=[<key>:]<value>' => 'dfsdf f fsdaf sdf ',
+        '-h,   --help' => 'show help message'
     ],
 ];

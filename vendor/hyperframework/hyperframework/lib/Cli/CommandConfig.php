@@ -121,11 +121,15 @@ class CommandConfig {
         } else {
             $options = [];
         }
-        $defaultConfigs = $this->getDefaultOptionConfigs($subcommand);
-        $defaultOptions = $this->parseOptionConfigs($defaultConfigs);
-        foreach ($defaultOptions as $key => $value) {
-            if (isset($options[$key]) === false) {
-                $options[$key] = $value;
+        $defaultOptions = $this->getDefaultOptions($options, $subcommand);
+        foreach ($defaultOptions as $option) {
+            $name = $option->getName();
+            $shortName = $option->getShortName();
+            if ($name !== null && isset($options[$name]) === false) {
+                $options[$name] = $option;
+            }
+            if ($shortName !== null && isset($options[$shortName]) === false) {
+                $options[$shortName] = $option;
             }
         }
         if ($subcommand !== null) {
@@ -133,6 +137,7 @@ class CommandConfig {
         } else {
             $this->options = $options;
         }
+        var_dump($this->options);
         return $options;
     }
 
@@ -418,11 +423,18 @@ class CommandConfig {
         return ConfigFileLoader::getFullPath($folder);
     }
 
-    protected function getDefaultOptionConfigs($subcommand = null) {
-        if ($subcommand !== null) {
-            return ['-h, --help'];
-        } else {
-            return['-h, --help', '--version'];
+    protected function getDefaultOptions(array $options, $subcommand = null) {
+        $result = [];
+        if (isset($options['help']) === false) {
+            $shortName = 'h';
+            if (isset($options['-h'])) {
+                $shortName = null;
+            }
+            $result[] = new OptionConfig('help', $shortName);
         }
+        if ($subcommand === null && isset($options['version']) === false) {
+            $result[] = new OptionConfig('version');
+        }
+        return $result;
     }
 }

@@ -129,7 +129,7 @@ class Help {
             $argumentPattern = $option->getArgumentPattern();
             if ($hasArgument === 0) {
                 if ($name === '') {
-                    $result .= '['. $argumentPattern. ']';
+                    $result .= $argumentPattern;
                 } else {
                     $result .= '[='. $argumentPattern. ']';
                 }
@@ -144,7 +144,7 @@ class Help {
         if ($isCompact) {
             if ($isRequired === true || $option->isRequired()) {
                 if (($name !== '' && $shortName !== '')
-                    || ($shortName === '' && $hasArgument === 1)
+                    || ($shortName !== '' && $hasArgument === 1)
                 ) {
                     $result = '(' . $result . ')';
                 }
@@ -228,6 +228,7 @@ class Help {
         if ($count === 0) {
             return;
         }
+        echo PHP_EOL;
         if ($count === 1) {
             echo 'Option:';
         } else {
@@ -236,7 +237,12 @@ class Help {
         echo PHP_EOL;
         $patterns = [];
         $descriptions = [];
+        $includedOptions = [];
         foreach ($options as $option) {
+            if (in_array($option, $includedOptions, true)) {
+                continue;
+            }
+            $includedOptions[] = $option;
             $patterns[] = $this->getOptionPattern($option, false);
             $descriptions[] = (string)$option->getDescription();
         }
@@ -246,7 +252,14 @@ class Help {
     private function renderList($names, $descriptions) {
         $maxLength = 0;
         $count = 0;
+        $index = 0;
+        $descriptionCount = 0;
         foreach ($names as $name) {
+            if ((string)$descriptions[$index] === '') {
+                $index++;
+                continue;
+            }
+            ++$descriptionCount;
             $length = strlen($name);
             if ($length > $maxLength) {
                 if ($length < 28) {
@@ -254,9 +267,10 @@ class Help {
                     ++$count;
                 }
             }
+            ++$index;
         }
         $isNewLine = false;
-        if (count($names) / $count <= 0.5) {
+        if ($count === 0 || $count / $descriptionCount <= 0.5) {
             $isNewLine = true;
         }
         $count = count($names);
@@ -272,10 +286,12 @@ class Help {
                 $length = strlen($name);
                 if ($length > 27) {
                     echo PHP_EOL;
-                    $length = 1;
+                    $length = -1;
                 }
                 echo str_repeat(' ', $maxLength - $length + 2),
                     $description, PHP_EOL;
+            } else {
+                echo PHP_EOL;
             }
         }
     }
@@ -286,6 +302,7 @@ class Help {
         if ($count === 0) {
             return;
         }
+        echo PHP_EOL;
         if ($count === 1) {
             echo 'Command:';
         } else {
