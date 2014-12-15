@@ -65,7 +65,7 @@ class OptionConfigParser {
         $length = strlen($pattern);
         if ($pattern[$length - 1] === ' ') {
             throw new Exception(self::getPatternExceptionMessage(
-                'Cannot end with space.'
+                'Invalid space at the end of pattern.'
             ));
         }
         if ($length < 2) {
@@ -92,16 +92,42 @@ class OptionConfigParser {
                     $hasArgumentPattern = true;
                     ++$index;
                 }
-                if ($length > $index && $pattern[$index] === ',') {
-                    $hasName = true;
-                    $hasArgumentPattern = false;
-                    ++$index;
-                    while ($length > $index && $pattern[$index] === ' ') {
+                if ($length > $index) {
+                    $char = $pattern[$index];
+                    if ($char === ',') {
+                        $hasName = true;
+                        $hasArgumentPattern = false;
                         ++$index;
+                        while ($length > $index && $pattern[$index] === ' ') {
+                            ++$index;
+                        }
+                    } elseif ($char === '[') {
+                        if ($hasArgumentPattern === true) {
+                            throw new Exception(
+                                self::getPatternExceptionMessage(
+                                    'Invalid space at the end of short name.'
+                                )
+                            );
+                        }
+                        $hasArgumentPattern = true;
+                    } else {
+                        throw new Exception(
+                            self::getPatternExceptionMessage(
+                                "Invalid char '$char' at the end of short name."
+                            )
+                        );
+                    }
+                } else {
+                    if ($hasArgumentPattern) {
+                        throw new Exception(
+                            self::getPatternExceptionMessage(
+                                'Invalid space at the end of short name.'
+                            )
+                        );
                     }
                 }
-                // -x --yes
-                // -x name=value
+                // -x  --yes
+                // - x name=value
                 // -x
                 // -x[xx]
                 // -x        <xdfk> valid
@@ -114,11 +140,11 @@ class OptionConfigParser {
         if ($shortName !== null && ctype_alnum($shortName) === false) {
             if ($shortName === ' ') {
                 throw new Exception(self::getPatternExceptionMessage(
-                    'invalid space at the front of short name.'
+                    'Invalid space at the front of short name.'
                 ));
             }
             throw new Exception(self::getPatternExceptionMessage(
-                "invalid short name '$shortName'."
+                "Invalid short name '$shortName'."
             ));
         }
         $name = null;
@@ -192,6 +218,10 @@ class OptionConfigParser {
             } elseif (strpos($argumentPattern, ' ') !== false) {
                 throw new Exception(self::getPatternExceptionMessage(
                     'Argument pattern cannot include space.'
+                ));
+            } elseif ($argumentPattern[0] === '-') {
+                throw new Exception(self::getPatternExceptionMessage(
+                    "Argument pattern cannot begin with '-'."
                 ));
             }
         }
