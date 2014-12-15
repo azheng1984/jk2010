@@ -10,6 +10,9 @@ class ArgumentConfigParser {
         }
         $result = [];
         foreach ($configs as $config) {
+            if (strpos($config, ' ') !== false) {
+                throw new Exception;
+            }
             $isOptional = false;
             $isRepeatable = false;
             $length = strlen($config);

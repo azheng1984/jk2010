@@ -12,7 +12,7 @@ class Help {
     private $arguments;
     private $argumentCount;
     private $usageLineLength = 0;
-    private $usageIndent = 10;
+    private $usageIndent;
 
     public function __construct($app) {
         $this->app = $app;
@@ -42,7 +42,7 @@ class Help {
         if ($this->usageLineLength > 6
             && $length + $this->usageLineLength > 80
         ) {
-            echo PHP_EOL, '      ';
+            echo PHP_EOL, $this->usageIndent;
             $this->usageLineLength = 6;
         }
         if ($this->usageLineLength !== 6 && $element[0] !== '|') {
@@ -79,7 +79,7 @@ class Help {
         if ($this->config->isSubcommandEnabled()
             && $this->subcommand === null
         ) {
-            $this->renderUsageElement('<commanD>');
+            $this->renderUsageElement('<command>');
         } elseif (count($this->config->getArguments($this->subcommand)) > 0) {
             $this->renderArguments();
         }
@@ -250,9 +250,9 @@ class Help {
                 }
             }
         }
-        $shouldUseNewLine = false;
+        $isNewLine = false;
         if (count($names) / $count <= 0.5) {
-            $shouldUseNewLine = true;
+            $isNewLine = true;
         }
         $count = count($names);
         for ($index = 0; $index < $count; ++$index) {
@@ -260,7 +260,7 @@ class Help {
             echo ' ', $name;
             $description = $descriptions[$index];
             if ($description !== '') {
-                if ($shouldUseNewLine) {
+                if ($isNewLine) {
                     echo PHP_EOL, '     ', $description, PHP_EOL;
                     continue;
                 }

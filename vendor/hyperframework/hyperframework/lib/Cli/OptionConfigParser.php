@@ -4,6 +4,8 @@ namespace Hyperframework\Cli;
 use Exception;
 
 class OptionConfigParser {
+    private static $pattern;
+
     public static function parse($configs) {
         if (is_array($configs) === false) {
             throw new Exception;
@@ -58,61 +60,70 @@ class OptionConfigParser {
     }
 
     private static function parsePattern($pattern) {
-        $pattern = trim($pattern);
+        self::$pattern = $pattern;
         $length = strlen($pattern);
         if ($length < 2) {
-            throw new Exception;
+            throw new Exception(self::getPatternExceptionMessage());
         }
         if ($pattern[0] !== '-') {
-            throw new Exception;
+            throw new Exception(self::getPatternExceptionMessage());
         }
         $shortName = null;
         $isShort = false;
         $index = 0;
-        $hasComma = false;
+        $hasName = true;
+        $hasArgumentPattern = false;
         if ($length === 2) {
+            $hasName = false;
             $shortName = $pattern[1];
             $index = 2;
         } else {
-            if ($length > 3 && $pattern[1] !== '-') {
+            if ($pattern[1] !== '-') {
+                $hasName = false;
                 $shortName = $pattern[1];
                 $index = 2;
-                while (isset($pattern[$index]) && $pattern[$index] === ' ') {
+                while ($length > $index && $pattern[$index] === ' ') {
+                    $hasArgumentPattern = true;
                     ++$index;
                 }
-                if ($pattern[$index] === ',') {
+                if ($length > $index && $pattern[$index] === ',') {
+                    $hasName = true;
+                    $hasArgumentPattern = false;
                     ++$index;
-                    $hasComma = true;
+                    while ($length > $index && $pattern[$index] === ' ') {
+                        ++$index;
+                    }
                 }
+                // -x --yes
+                // -x name=value
+                // -x
+                // -x[xx]
+                // -x        <xdfk> valid
+                // -x [<xd>] invalid
+                // -x     ,  --xx    //valid
+                // --xdfdf [ = adf ] invalid
+                // ' --dsfadf= adf|dsfdsf|dasfsdf '
             }
         }
-        if (ctype_alnum($shortName) === false) {
-            throw new Exception;
-        }
-        if ($shortName !== '') {
-            while (isset($pattern[$index]) && $pattern[$index] === ' ') {
-                ++$index;
-            }
+        if ($shortName !== null && ctype_alnum($shortName) === false) {
+            throw new Exception(self::getPatternExceptionMessage());
         }
         $name = null;
-        if (($length > $index && $pattern[$index] === '-')
-            && ($shortName === null || $hasComma = true)
-        ) {
-            if (isset($pattern[$index + 1]) || $pattern[$index + 1] !== '-') {
-                throw new Exception;
+        if ($hasName === true) {
+            if ($length <= $index + 1 || substr($pattern, $index, 2) !== '--') {
+                throw new Exception(self::getPatternExceptionMessage());
             }
             $index += 2;
             while ($index < $length) {
                 $char = $pattern[$index];
                 if ($char ==='[') {
-                    if (isset($pattern[$index + 1])
-                        && $pattern[$index + 1] === '='
-                    ) {
-                        $pattern[$index + 1] = '[';
-                        ++$index;
-                        break;
+                    $hasArgumentPattern = true;
+                    if ($index + 2 > $length || $pattern[$index + 1] !== '=') {
+                        throw new Exception(self::getPatternExceptionMessage());
                     }
+                    break;
                 } elseif ($char === '=') {
+                    $hasArgumentPattern = true;
                     ++$index;
                     break;
                 }
@@ -120,31 +131,49 @@ class OptionConfigParser {
                 ++$index;
             }
         }
+        if ($hasName === true && $name === null) {
+            throw new Exception(self::getPatternExceptionMessage());
+        }
         if ($name !== null) {
             if (preg_match('/^[a-zA-Z0-9-]{2,}$/', $name) !== 1) {
-                throw new Exception;
+                throw new Exception(self::getPatternExceptionMessage());
             }
         }
         $argumentPattern = null;
         $hasArgument = -1;
-        if (isset($pattern[$index])) {
+        if ($length > $index && $hasArgumentPattern) {
             if ($pattern[$index] === '[') {
-                if ($pattern[$length - 1] !== ']')  {
-                    throw new Exception;
+                if ($pattern[$length - 1] !== ']') {
+                    throw new Exception(self::getPatternExceptionMessage());
                 }
                 ++$index;
                 --$length;
+                if ($name !== null) {
+                    ++$index;
+                }
                 $hasArgument = 0;
             } else {
                 $hasArgument = 1;
             }
             $argumentPattern = substr($pattern, $index, $length - $index);
-        }
-        if ($name === '' && $argumentPattern !== null) {
-            if ($pattern[2] !== '[' && $pattern[2] !== ' ') {
-                throw new Exception;
+            if ($argumentPattern === ''
+                || strpos($argumentPattern, ' ') !== false
+            ) {
+                throw new Exception(self::getPatternExceptionMessage());
             }
         }
+        if ($hasArgumentPattern && $argumentPattern === null) {
+            throw new Exception(self::getPatternExceptionMessage());
+        }
         return [$name, $shortName, $hasArgument, $argumentPattern];
+    }
+
+    private static function getPatternExceptionMessage($extraMessage = '') {
+        $pattern = self::$pattren;
+        $result = "Syntax of option pattern '$pattern' is invalid.";
+        if ($message !== '') {
+            $result .= ' ' . $message;
+        }
+        return $result;
     }
 }

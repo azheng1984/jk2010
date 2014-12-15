@@ -21,7 +21,8 @@ abstract class ViewTemplateEngine implements ArrayAccess {
     }
 
     public function load($path) {
-        if ($path == '') {
+        $path = (string)$path;
+        if ($path === '') {
             throw new Exception;
         }
         $extensionPattern = '#\.[.0-9a-zA-Z]+$#';
@@ -39,6 +40,9 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         }
         if (DIRECTORY_SEPARATOR !== '/') {
             $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        }
+        if ($path[0] === DIRECTORY_SEPARATOR) {
+            throw new Exception;
         }
         $this->fullPath = $this->getRootPath() . DIRECTORY_SEPARATOR . $path;
         $includeFileFunction = $this->includeFileFunction;
@@ -94,7 +98,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
                         . DIRECTORY_SEPARATOR . $path;
                 }
             }
-            $this->setRootPath($path);
+            $this->rootPath = $path;
         }
         return $this->rootPath;
     }
