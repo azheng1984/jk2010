@@ -163,7 +163,8 @@ class CommandParser {
             );
         }
         if (isset($result['options'])) {
-            $subcommand = isset($result['subcommand']) ? $result['subcommand'];
+            $subcommand = isset($result['subcommand']) ?
+                $result['subcommand'] : null;
             $mutuallyExclusiveOptionGroupConfigs =
                 $commandConfig->getMutuallyExclusiveOptionGroups($subcommand);
             self::checkOptions(

@@ -287,7 +287,7 @@ class CommandConfig {
                 }
                 if (FullPathRecognizer::isFull($configPath) === false) {
                     $configRootPath = Config::get(
-                        'hyperframework.cli.command_config_root_path',
+                        'hyperframework.cli.command_config_root_path'
                     );
                     if ($configRootPath !== null) {
                         $configPath = $configRootPath

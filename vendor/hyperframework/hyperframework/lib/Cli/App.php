@@ -112,7 +112,7 @@ class App {
     protected function parseCommand() {
         try {
             $commandConfig = $this->getCommandConfig();
-            return CommandParser::parse($app);
+            return CommandParser::parse($commandConfig);
         } catch (CommandParsingException $e) {
             $this->renderCommandParsingError($e);
             $this->quit();
