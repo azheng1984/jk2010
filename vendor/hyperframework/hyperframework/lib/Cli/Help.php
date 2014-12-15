@@ -17,7 +17,7 @@ class Help {
     public function __construct($app) {
         $this->app = $app;
         $this->config = $app->getCommandConfig();
-        if ($config->isSubcommandEnabled()) {
+        if ($this->config->isSubcommandEnabled()) {
             $this->subcommand = $app->getSubcommand();
         }
     }
@@ -39,13 +39,14 @@ class Help {
         if ($length === 0) {
             return;
         }
-        if ($this->usageLineLength > 6
+        if ($this->usageLineLength > $this->usageIndent
             && $length + $this->usageLineLength > 80
         ) {
-            echo PHP_EOL, $this->usageIndent;
-            $this->usageLineLength = 6;
-        }
-        if ($this->usageLineLength !== 6 && $element[0] !== '|') {
+            echo PHP_EOL, str_repeat(' ', $this->usageIndent);
+            $this->usageLineLength = $this->usageIndent;
+        } elseif ($this->usageLineLength !== 0
+            && $element[0] !== '|'
+        ) {
             echo ' ';
         }
         echo $element;
@@ -54,10 +55,14 @@ class Help {
 
     protected function renderUsage() {
         $name = $this->config->getName();
-        if (strlen($name . $this->subcommand) < 4) {
-            $this->usageIndent = strlen($name . $this->subcommand) + 6;
+        $prefix = $name;
+        if ($this->subcommand !== null) {
+            $prefix .= ' ' . $this->subcommand;
+        }
+        if (strlen($prefix) < 4) {
+            $this->usageIndent = strlen($prefix) + 8;
         } else {
-            $this->usageIndent = 10;
+            $this->usageIndent = 11;
         }
         $this->renderUsageElement('Usage: ' . $name);
         if ($this->subcommand !== null) {
@@ -124,15 +129,15 @@ class Help {
             $argumentPattern = $option->getArgumentPattern();
             if ($hasArgument === 0) {
                 if ($name === '') {
-                    $result .= '[', $argumentPattern, ']';
+                    $result .= '['. $argumentPattern. ']';
                 } else {
-                    $result .= '[=', $argumentPattern, ']'
+                    $result .= '[='. $argumentPattern. ']';
                 }
             } else {
                 if ($name === '') {
                     $result .= ' ' . $argumentPattern;
                 } else {
-                    $result .= '=', $argumentPattern;
+                    $result .= '='. $argumentPattern;
                 }
             }
         }
@@ -175,7 +180,7 @@ class Help {
                 $index = 0;
                 $length = 0;
                 $buffer = '';
-                if (count($mutuallyExclusiveOptions) > 1) {
+                if ($count > 1) {
                     if ($index === 0) {
                         if ($isRequired === false) {
                             $buffer = '[';
@@ -212,7 +217,7 @@ class Help {
                 }
             }
             $this->renderUsageElement($this->getOptionPattern(
-                $mutuallyExclusiveOption, true, $isRequired
+                $option, true, $isRequired
             ));
         }
     }
@@ -296,8 +301,7 @@ class Help {
 
     private function hasOptionDescription() {
         if ($this->hasOptionDescription === null) {
-            $subcommand = $this->app->getSubcommand();
-            $options = $this->config->getOptions($subcommand);
+            $options = $this->config->getOptions($this->subcommand);
             foreach ($options as $option) {
                 if ((string)$option->getDescription() !== '') {
                     $this->hasOptionDescription = true;

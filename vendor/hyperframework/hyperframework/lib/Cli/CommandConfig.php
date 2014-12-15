@@ -14,7 +14,7 @@ class CommandConfig {
     private $class;
     private $options;
     private $subcommands;
-    private $mutuallyExclusiveOptionGroup;
+    private $mutuallyExclusiveOptionGroups;
     private $arguments;
     private $subcommandConfigs = [];
     private $subcommandClasses = [];
@@ -114,7 +114,7 @@ class CommandConfig {
         }
         $optionConfigs = $this->get('options', $subcommand);
         if ($optionConfigs !== null) {
-            $options = $this->parseOptionConfigs($config);
+            $options = $this->parseOptionConfigs($optionConfigs);
             if ($options === null) {
                 $options = [];
             }

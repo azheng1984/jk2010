@@ -15,9 +15,7 @@ class DefaultArgumentConfig extends ArgumentConfig {
     }
 
     public function getName() {
-        $isRepeatable = $param->isArray();
-        $name = $param->getName();
-        $length = strlen($name);
+        return $this->originalName;
         $words = [];
         $word = '';
         for ($index = 0; $index < $length; ++$index) {
@@ -32,18 +30,6 @@ class DefaultArgumentConfig extends ArgumentConfig {
             } else {
                 $words[] = $word;
             }
-        }
-        if ($isRepeatable) {
-        }
-        $results[] = [
-            'name' => new RepeatableArgument()function() {
-                //lazy load
-            };
-            'is_optional' => $param->isOptional(),
-            'is_repeatable' => $isRepeatable
-        ];
-        //convert
-        if ($this->isRepeatable()) {
         }
     }
 }

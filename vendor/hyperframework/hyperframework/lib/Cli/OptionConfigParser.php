@@ -155,13 +155,13 @@ class OptionConfigParser {
                                 throw new Exception(
                                     self::getPatternExceptionMessage(
                                         "Invalid space after '['."
-                                    );
+                                    )
                                 );
                             } else {
                                  throw new Exception(
                                     self::getPatternExceptionMessage(
                                         "Invalid char '$char' after '['."
-                                    );
+                                    )
                                 );
                             }
                         }
