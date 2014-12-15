@@ -133,6 +133,7 @@ class OptionConfigParser {
             if ($length <= $index + 1 || substr($pattern, $index, 2) !== '--') {
                 throw new Exception(self::getPatternExceptionMessage());
             }
+            $name = '';
             $index += 2;
             while ($index < $length) {
                 $char = $pattern[$index];
@@ -144,13 +145,13 @@ class OptionConfigParser {
                             if ($char === ' ') {
                                 throw new Exception(
                                     self::getPatternExceptionMessage(
-                                        "Invalid space after '['."
+                                        "Invalid space after '[', '=' is expected."
                                     )
                                 );
                             } else {
                                  throw new Exception(
                                     self::getPatternExceptionMessage(
-                                        "Invalid char '$char' after '['."
+                                        "Invalid char '$char' after '[', '=' is expected."
                                     )
                                 );
                             }
@@ -163,6 +164,7 @@ class OptionConfigParser {
                     $argumentPattern = self::getArgumentPattern(
                         false, $index + 2, $length - 1
                     );
+                    var_dump($argumentPattern);
                     $hasArgument = 0;
                     break;
                 } elseif ($char === '=') {
@@ -196,9 +198,12 @@ class OptionConfigParser {
                             "Invalid space at the front of name '$name'."
                         ));
                     }
+                    throw new Exception(self::getPatternExceptionMessage(
+                        "Invalid space in name '$name'."
+                    ));
                 }
                 throw new Exception(self::getPatternExceptionMessage(
-                    "Invalid space in name '$name'."
+                    "Invalid long option name '$name'."
                 ));
             }
         }
@@ -216,7 +221,8 @@ class OptionConfigParser {
         // --disable[=[max][max2]]
         // --disable[=[max]<max2>]
         $pattern = self::$pattern;
-        $argumentPattern = substr($pattern, $index);
+        $argumentPattern = substr($pattern, $index, $length - $index);
+        var_dump($argumentPattern);
         if ($argumentPattern === '') {
             if ($isShortOption) {
                 if ($isOptional) {
@@ -261,7 +267,7 @@ class OptionConfigParser {
                 ++$index;
             }
             if ($depth !== 0) {
-                throw new Exception; // -x[[x]
+                throw new Exception("'[' or ']' is not closed"); // -x[[x]
             }
             if ($length === $index) {
                 if ($isOptional === false) {

@@ -167,12 +167,12 @@ class CommandParser {
                 $result['subcommand'] : null;
             $mutuallyExclusiveOptionGroupConfigs =
                 $commandConfig->getMutuallyExclusiveOptionGroups($subcommand);
-            self::checkOptions(
-                $result['options'],
-                $optionConfigs,
-                $mutuallyExclusiveOptionGroupConfigs,
-                $hasMagicOption
-            );
+//            self::checkOptions(
+//                $result['options'],
+//                $optionConfigs,
+//                $mutuallyExclusiveOptionGroupConfigs,
+//                $hasMagicOption
+//            );
         }
         if ($isGlobal || $hasMagicOption) {
             if ($hasMagicOption) {

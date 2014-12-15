@@ -8,11 +8,11 @@ return [
             'is_required' => true,
             'description' => 'description xx'
         ],
-        '-z<arg>',
-        '-t[arg]<arg>',
+        '--xxx[=arg]',
+        '-t    [arg]<arg>',
         '-g[arg]',
-        '-b,    --axx-dsafasdf=<arg>' => 'xx',
-        '-c,    --cxx-dsafasdf[=<arg>]',
+        '-b ,    --axx-dsafasdf=<arg>' => 'xx',
+        '-c ,    --cxx-dsafasdf[=<arg>]',
         '-d,     --ddxx-dsafasdf=[<key>:]<value>' => 'dfsdf f fsdaf sdf ',
         '-h,   --help' => 'show help message'
     ],
