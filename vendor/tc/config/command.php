@@ -16,7 +16,7 @@ return [
 //        '-d,     --ddxx-dsafasdf=[<key>:]<value>' => 'dfsdf f fsdaf sdf ',
 //        '-h,   --help' => 'show help message'
     ],
-    'mutually_exclusive_options' =>[
+    'mutually_exclusive_options' => [
         '-t', '-g', '--xx-dsafasdf'
     ]
 ];

@@ -105,13 +105,14 @@ class CommandParser {
                 }
             } else {
                 $optionArgument = true;
-                $optionName = substr($element, 2);
+                $optionName = $element;
                 if (strpos($element, '=') !== false) {
                     list($optionName, $optionArgument) =
                         explode('=', $element, 2);
                 }
+                $optionName = substr($optionName, 2);
                 if (isset($optionConfigs[$optionName]) === false) {
-                    throw new Exception;
+                    throw new Exception("unknown option '$optionName'");
                 }
                 $option = $optionConfigs[$optionName];
                 if ($option->hasArgument() === 1) {
@@ -122,7 +123,7 @@ class CommandParser {
                         }
                         $optionArgument = $argv[$index];
                     }
-                } else {
+                } elseif ($option->hasArgument() === -1) {
                     if ($optionArgument !== true) {
                         throw new Exception;
                     }
@@ -279,7 +280,7 @@ class CommandParser {
             $option = $optionConfigs[$name];
             $values = $option->getValues();
             if ($option->getValues() !== null) {
-                if (in_array($name, $values, true) === false) {
+                if (in_array($value, $values, true) === false) {
                     throw new Exception;
                 }
             }
