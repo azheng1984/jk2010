@@ -15,21 +15,37 @@ class DefaultArgumentConfig extends ArgumentConfig {
     }
 
     public function getName() {
-        return $this->originalName;
         $words = [];
+        $name = $this->originalName;
         $word = '';
+        $length = strlen($name);
         for ($index = 0; $index < $length; ++$index) {
             $char = $name[$index];
-            if ($char === '_') {
+            $ascii = ord($char);
+            if ($char !== '_' && ($ascii < 65 || $ascii > 90)) {
+                $word .= $name[$index];
+            } else {
                 if ($word !== '') {
+                    $words[] = $word;
+                    $word = '';
+                }
+                if ($char !== '_') {
+                    $word = strtolower($char);
                 }
             }
-            $ascii = ord();
-            if (($ascii > 64 && $ascii < 91) || ($ascii > 47 && $ascii < 58)) {
-                $word .= $name[$index];
+        }
+        if ($word !== '') {
+            if ($this->isRepeatable() && ctype_alpha($word)) {
+                if ($word !== 'list'
+                    && $word !== 'array'
+                    && $word !== 'collection'
+                ) {
+                    $words[] = $word;
+                }
             } else {
                 $words[] = $word;
             }
         }
+        return implode('-', $words);
     }
 }
