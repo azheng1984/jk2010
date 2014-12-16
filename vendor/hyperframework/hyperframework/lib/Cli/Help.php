@@ -59,7 +59,7 @@ class Help {
         if ($this->subcommand !== null) {
             $prefix .= ' ' . $this->subcommand;
         }
-        if (strlen($prefix) < 4) {
+        if (strlen($prefix) < 7) {
             $this->usageIndent = strlen($prefix) + 8;
         } else {
             $this->usageIndent = 11;
@@ -161,7 +161,7 @@ class Help {
         foreach ($options as $option) {
             $name = (string)$option->getName();
             $shortName = (string)$option->getShortName();
-            $key = $name === '' ? $shortName : $name;
+            $key = ($name === '' ? $shortName : $name);
             if (isset($includedOptions[$key])) {
                 continue;
             }
@@ -196,6 +196,10 @@ class Help {
                         $element = $this->getOptionPattern(
                             $mutuallyExclusiveOption, true, true
                         );
+                        $name = $mutuallyExclusiveOption->getName();
+                        $key = $name === null ?
+                            $mutuallyExclusiveOption->getShortName() : $name;
+                        $includedOptions[$key] = true;
                         if (strlen($element + $buffer) > 70) {
                             if ($index !== 0) {
                                 $this->renderUsageElement($buffer);
@@ -206,6 +210,7 @@ class Help {
                             $buffer .= '|';
                         }
                         $buffer .= $element;
+                        ++$index;
                     }
                     if ($isRequired === false) {
                         $buffer .= ']';

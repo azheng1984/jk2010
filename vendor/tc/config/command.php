@@ -1,6 +1,6 @@
 <?php
 return [
-    'name' => 'gitx',
+    'name' => 'gitxcx',
     'version' => '2.2.2',
     'options' => [
 //        '--hello=(adf)' => 'dsdas jfoa fsdiofjsa ojfdsfaoidf sd fosdjofasdf ',
@@ -17,6 +17,6 @@ return [
 //        '-h,   --help' => 'show help message'
     ],
     'mutually_exclusive_options' =>[
-        '-t', '-g'
+        '-t', '-g', '--xx-dsafasdf'
     ]
 ];
