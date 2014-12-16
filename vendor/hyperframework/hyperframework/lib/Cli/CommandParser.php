@@ -71,7 +71,9 @@ class CommandParser {
                         } else {
                             ++$index;
                             if ($index >= $count) {
-                                throw new CommandParsingException;
+                                throw new CommandParsingException(
+                                    'Option require argument'
+                                );
                             }
                             $optionArgument = $argv[$index];
                         }
@@ -112,7 +114,7 @@ class CommandParser {
                 }
                 $optionName = substr($optionName, 2);
                 if (isset($optionConfigs[$optionName]) === false) {
-                    throw new Exception("unknown option '$optionName'");
+                    throw new CommandParsingException("unknown option '$optionName'");
                 }
                 $option = $optionConfigs[$optionName];
                 if ($option->hasArgument() === 1) {
