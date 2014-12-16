@@ -49,14 +49,6 @@ class CommandConfig {
         return $arguments;
     }
 
-    public function getHelpHeader($subcommand = null) {
-        return $this->get('help_header', $subcommand);
-    }
-
-    public function getHelpFooter($subcommand = null) {
-        return $this->get('help_footer', $subcommand);
-    }
-
     public function getClass($subcommand = null) {
         $class = null;
         if ($subcommand !== null
@@ -246,7 +238,15 @@ class CommandConfig {
         return $result;
     }
 
-    public function getDescription($subcommand = null) {
+    public function getHelpHeader($subcommand = null) {
+        return $this->get('help_header', $subcommand);
+    }
+
+    public function getHelpFooter($subcommand = null) {
+        return $this->get('help_footer', $subcommand);
+    }
+
+    public function getDescription($subcommand) {
         return $this->get('description', $subcommand);
     }
 

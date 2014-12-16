@@ -39,7 +39,6 @@ class Help {
     protected function renderHeader() {
         $header = (string)$this->config->getHelpHeader();
         if ($header !== '') {
-            echo PHP_EOL;
             echo $header;
             echo PHP_EOL;
         }
