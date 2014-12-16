@@ -114,7 +114,7 @@ class CommandParser {
                 }
                 $optionName = substr($optionName, 2);
                 if (isset($optionConfigs[$optionName]) === false) {
-                    throw new CommandParsingException("unknown option '$optionName'");
+                    throw new CommandParsingException("Unknown option '$optionName'");
                 }
                 $option = $optionConfigs[$optionName];
                 if ($option->hasArgument() === 1) {

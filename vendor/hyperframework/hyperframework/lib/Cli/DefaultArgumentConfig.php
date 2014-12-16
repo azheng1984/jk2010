@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
-use Hyperframework\Common\Inflection\Singularizer;
+use Hyperframework\Common\Inflector;
 
 class DefaultArgumentConfig extends ArgumentConfig {
     private $originalName;
@@ -44,7 +44,7 @@ class DefaultArgumentConfig extends ArgumentConfig {
                     && $word !== 'queue'
                     && $word !== 'stack'
                 ) {
-                    $words[] = Singularizer::convert($word);
+                    $words[] = inflector::singularize($word);
                 } elseif (count($words) === 0) {
                     $words[] = 'element';
                 }
