@@ -295,7 +295,7 @@ class CommandParser {
                     }
                     if (isset($options[$key])) {
                         if ($optionKey !== null && $optionKey !== $key) {
-                            throw new Exception;
+                            throw new Exception('mutually exclusive option conflict');
                         }
                         $optionKey = $key;
                     }
