@@ -358,7 +358,14 @@ class CommandConfig {
         $method = new ReflectionMethod($class, 'execute');
         $params = $method->getParameters();
         $result = [];
+        $isArray = false;
         foreach ($params as $param) {
+            if ($param->isArray()) {
+                if ($isArray) {
+                    throw new Exception('Only last param can be array');
+                }
+                $isArray = true;
+            }
             $result[] = new DefaultArgumentConfig($param);
         }
         return $result;
