@@ -208,7 +208,7 @@ class CommandParser {
                     $result['arguments'][count($result['arguments']) - 1][] =
                         $arguments[$argumentIndex];
                 } else {
-                    throw new CommandParsingException('Argument error.');
+                    throw new CommandParsingException('Argument number error.');
                 }
             }
         }

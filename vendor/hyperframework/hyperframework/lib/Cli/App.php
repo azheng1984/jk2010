@@ -74,7 +74,7 @@ class App {
 
     public function quit() {
         $this->finalize();
-        exit;
+        exit();
     }
 
     protected function executeCommand() {
