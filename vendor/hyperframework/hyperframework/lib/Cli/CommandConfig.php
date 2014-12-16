@@ -353,7 +353,7 @@ class CommandConfig {
             throw new Exception;
         }
         if (class_exists($class) === false) {
-            throw new Exception;
+            throw new Exception("Command class '$class' not found");
         }
         $method = new ReflectionMethod($class, 'execute');
         $params = $method->getParameters();
