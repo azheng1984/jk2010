@@ -161,11 +161,10 @@ class Help {
         foreach ($options as $option) {
             $name = (string)$option->getName();
             $shortName = (string)$option->getShortName();
-            $key = ($name === '' ? $shortName : $name);
-            if (isset($includedOptions[$key])) {
+            if (in_array($option, $includedOptions, true)) {
                 continue;
             }
-            $includedOptions[$key] = true;
+            $includedOptions[] = $option;
             $optionGroup =
                 $this->config->getMutuallyExclusiveOptionGroupByOption($option);
             $hasBrackets = false;
@@ -196,10 +195,7 @@ class Help {
                         $element = $this->getOptionPattern(
                             $mutuallyExclusiveOption, true, true
                         );
-                        $name = $mutuallyExclusiveOption->getName();
-                        $key = $name === null ?
-                            $mutuallyExclusiveOption->getShortName() : $name;
-                        $includedOptions[$key] = true;
+                        $includedOptions[] = $mutuallyExclusiveOption;
                         if (strlen($element + $buffer) > 70) {
                             if ($index !== 0) {
                                 $this->renderUsageElement($buffer);

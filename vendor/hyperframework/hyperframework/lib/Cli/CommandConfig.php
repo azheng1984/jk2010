@@ -222,14 +222,10 @@ class CommandConfig {
                     throw new Exception($message);
                 }
                 $option = $options[$item];
-                $name = $option->getName();
-                if ($name === null) {
-                    $name = $option->getShortName();
-                }
-                if (in_array($name, $includedOptions)) {
+                if (in_array($option, $includedOptions, true)) {
                     throw new Exception;
                 }
-                $includedOptions[] = $name;
+                $includedOptions[] = $option;
                 $mutuallyExclusiveOptions[] = $option;
             }
             if (count($mutuallyExclusiveOptions) === 0) {
