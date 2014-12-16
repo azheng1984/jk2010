@@ -199,18 +199,16 @@ class CommandParser {
             if ($argumentConfigCount > $argumentIndex) {
                 if ($argumentConfigs[$argumentIndex]->isRepeatable()) {
                     $result['arguments'][] = [$arguments[$argumentIndex]];
+                } else {
+                    $result['arguments'][] = $arguments[$argumentIndex];
                 }
-                $result['arguments'][] = $arguments[$argumentIndex];
             } else {
-                if (isset($argumentConfigs[$argumentCount - 1]) === false) {
-                    throw new CommandParsingException('Argument error.');
-                }
-                $argumentConfig = $argumentConfigs[$argumentCount - 1];
+                $argumentConfig = end($argumentConfigs);
                 if ($argumentConfig->isRepeatable()) {
-                    $result['arguments'][$argumentCount - 1][] =
+                    $result['arguments'][count($result['arguments']) - 1][] =
                         $arguments[$argumentIndex];
                 } else {
-                    throw new Exception;
+                    throw new CommandParsingException('Argument error.');
                 }
             }
         }
