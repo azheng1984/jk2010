@@ -182,7 +182,7 @@ class CommandConfig {
         if (is_array($configs) === false) {
             throw new Exception;
         }
-        if (is_array(current($configs) === false)) {
+        if (is_array(current($configs)) === false) {
             $configs = [$configs];
         }
         $result = [];
@@ -190,34 +190,26 @@ class CommandConfig {
         $options = $this->getOptions();
         foreach ($configs as $config) {
             $isRequired = false;
-            $shouldIncludeAll = false;
             $mutuallyExclusiveOptions = [];
             foreach ($config as $item) {
                 $item = (string)$item;
-                if ($item === 'all') {
-                    $shouldIncludeAll = true;
-                    if (count($includedOptions) !== 0) {
-                        throw new Exception;
-                    }
-                    if (count($options) === 0) {
-                        throw new Exception;
-                    }
-                    foreach ($options as $option) {
-                        $name = $option->getName();
-                        if ($name === null) {
-                            $name = $option->getShortName();
-                        }
-                        if (in_array($name, $includedOptions)) {
-                            continue;
-                        }
-                        $includedOptions[] = $name;
-                        $mutuallyExclusiveOptions[] = $option;
-                    }
-                    continue;
-                }
                 if ($item === 'required') {
                     $isRequired = true;
                     continue;
+                }
+                if ($item[0] !== '-') {
+                    throw new Exception;
+                }
+                $length = strlen($item);
+                if ($length === 1) {
+                    throw new Exception;
+                } elseif ($length === 2) {
+                    $item = $item[1];
+                } else {
+                    if ($item[1] !== '-') {
+                        throw new Exception;
+                    }
+                    $item = substr($item, 2);
                 }
                 if (isset($options[$item]) === false) {
                     if ($item === '') {
@@ -228,9 +220,6 @@ class CommandConfig {
                         $message = "Undefined option '$item'";
                     }
                     throw new Exception($message);
-                }
-                if ($shouldIncludeAll) {
-                    throw new Exception;
                 }
                 $option = $options[$item];
                 $name = $option->getName();

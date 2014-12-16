@@ -286,14 +286,18 @@ class CommandParser {
         }
         if ($mutuallyExclusiveOptionGroupConfigs !== null) {
             foreach($mutuallyExclusiveOptionGroupConfigs as $groupConfig) {
-                $hasOption = false;
+                $optionKey = null;
                 foreach ($groupConfig->getOptions() as $option) {
-                    if (isset($options[$option->getName()])) {
-                        if ($hasOption) {
+                    $key = $option->getName();
+                    if ($key === null) {
+                        $key = $option->getShortName();
+                    }
+                    if (isset($options[$key])) {
+                        if ($optionKey !== null && $optionKey !== $key) {
                             throw new Exception;
                         }
+                        $optionKey = $key;
                     }
-                    $hasOption = true;
                 }
                 if ($groupConfig->isRequired() && $hasOption === false) {
                     if ($hasMagicOption === false) {
