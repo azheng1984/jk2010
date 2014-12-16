@@ -238,15 +238,7 @@ class CommandConfig {
         return $result;
     }
 
-    public function getHelpHeader($subcommand = null) {
-        return $this->get('help_header', $subcommand);
-    }
-
-    public function getHelpFooter($subcommand = null) {
-        return $this->get('help_footer', $subcommand);
-    }
-
-    public function getDescription($subcommand) {
+    public function getDescription($subcommand = null) {
         return $this->get('description', $subcommand);
     }
 

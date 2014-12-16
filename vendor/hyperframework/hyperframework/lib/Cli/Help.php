@@ -24,7 +24,6 @@ class Help {
 
     public function render() {
         $this->renderUsage();
-        $this->renderHeader();
         if ($this->hasOptionDescription()) {
             $this->renderOptions();
         }
@@ -32,24 +31,6 @@ class Help {
             && $app->hasSubcommand() === false
         ) {
             $this->renderSubcommands();
-        }
-        $this->renderFooter();
-    }
-
-    protected function renderHeader() {
-        $header = (string)$this->config->getHelpHeader();
-        if ($header !== '') {
-            echo $header;
-            echo PHP_EOL;
-        }
-    }
-
-    protected function renderFooter() {
-        $footer = (string)$this->config->getHelpFooter();
-        if ($footer !== '') {
-            echo PHP_EOL;
-            echo $footer;
-            echo PHP_EOL;
         }
     }
 
