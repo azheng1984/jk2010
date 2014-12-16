@@ -33,9 +33,13 @@ class Inflector {
             'information' => 'information',
             'jeans' => 'jeans',
             'loaf' => 'loaves',
+            'louse' => 'lice',
             'man' => 'men',
             'money' => 'money',
             'move' => 'moves',
+            'mouse' => 'mice',
+            'louse' => '',
+            'news' => 'news',
             'nexus' => 'nexus',
             'niche' => 'niches',
             'opus' => 'opuses',
@@ -69,8 +73,6 @@ class Inflector {
             if ($isSingular) {
                 static $pluralRules = [
                     '/(quiz)$/' => '\1zes',
-                    '/^(m|l)ice$/' => '\1ice',
-                    '/^(m|l)ouse$/' => '\1ice',
                     '/(matr|vert|ind)(?:ix|ex)$/' => '\1ices',
                     '/(x|ch|ss|sh)$/' => '\1es',
                     '/([^aeiouy]|qu)y$/' => '\1ies',
@@ -115,7 +117,6 @@ class Inflector {
                     '/((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)(sis|ses)$/'
                         => '\1sis',
                     '/([ti])a$/' => '\1um',
-                    '/(n)ews$/' => '\1ews',
                     '/(ss)$/' => '\1',
                     '/s$/' => ''
                 ];
