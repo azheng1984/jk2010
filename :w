@@ -14,10 +14,7 @@ class ErrorHandler {
     private static $previousErrors = [];
     private static $errorReportingBitmask;
     private static $shouldExit;
-
-    private static $shouldDisplayErrors;
-    private static $shouldReportCompileWarning = false;
-
+    private static $isErrorReportingDisabled = false;
     private static $isRunning = false;
 
     public static function run() {
@@ -34,42 +31,14 @@ class ErrorHandler {
         );
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
-        self::$shouldReportCompileWarning =
-            self::$errorReportingBitmask & E_COMPILE_WARNING !== 0;
         self::$isRunning = true;
         self::disableDefaultErrorReporting();
     }
 
     private static function disableDefaultErrorReporting() {
-            error_reporting(
-                self::getErrorReportingBitmask() & E_COMPILE_WARNING
-            );
-            return;
-
-        if (self::$shouldReportCompileWarning) {
-            error_reporting(
-                self::getErrorReportingBitmask() & E_COMPILE_WARNING
-            );
-        } else {
-            self::$shouldDisplayErrors = ini_get('display_errors');
-            if (self::$shouldDisplayErrors === '1') {
-                ini_set('display_errors', '0');
-            }
-        }
-    }
-
-    private static function enableDefaultErrorReporting() {
-        if (self::$shouldReportCompileWarning) {
-            error_reporting(
-                self::getErrorReportingBitmask() & E_COMPILE_WARNING
-            );
-        } else {
-            self::$shouldDisplayErrors = ini_get('display_errors');
-            if (self::$shouldDisplayErrors === '1') {
-                ini_set('display_errors', '0');
-            }
-        }
-        error_reporting(self::getErrorReportingBitmask());
+        error_reporting(
+            self::getErrorReportingBitmask() & E_COMPILE_WARNING
+        );
     }
 
     final protected static function enableErrorCache() {

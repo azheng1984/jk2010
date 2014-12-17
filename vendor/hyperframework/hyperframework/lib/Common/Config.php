@@ -3,7 +3,7 @@ namespace Hyperframework\Common;
 
 use Exception;
 
-final class Config {
+class Config {
     private static $data = array();
 
     public static function get($name, $default = null) {
@@ -30,7 +30,7 @@ final class Config {
             }
             throw new Exception(
                 "Config '$name' requires a string. Object of class "
-                    . get_class($result) . " could not be converted to string";
+                    . get_class($result) . " could not be converted to string"
             );
         }
         throw new Exception(
@@ -47,7 +47,7 @@ final class Config {
         if (is_array($result) === false) {
             throw new Exception(
                 "Config '$name' requires a array. "
-                    . ucfirst(gettype($result)) . " given";
+                    . ucfirst(gettype($result)) . " given"
             );
         }
         return $result;
@@ -61,7 +61,7 @@ final class Config {
         if (is_object($result)) {
             throw new Exception(
                 "Config '$name' requires a integer. Object of class "
-                    . get_class($result) . " could not be converted to integer";
+                    . get_class($result) . " could not be converted to integer"
             );
         }
         return (int)$result;
@@ -75,7 +75,7 @@ final class Config {
         if (is_object($result)) {
             throw new Exception(
                 "Config '$name' requires a float. Object of class "
-                    . get_class($result) . " could not be converted to float";
+                    . get_class($result) . " could not be converted to float"
             );
         }
         return (float)$result;

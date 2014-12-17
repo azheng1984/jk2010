@@ -8,9 +8,14 @@ class App {
     private $router;
 
     public function run() {
+        @self::x();
         $controller = $this->createController();
         $controller->run();
         $this->finalize();
+    }
+
+    public static function x() {
+        throw new \ErrorException;
     }
 
     public function getRouter() {

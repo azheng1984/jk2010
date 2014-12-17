@@ -1,16 +1,6 @@
 <?php
 namespace hi;
 
-class indexr {
-    public function __tostring() {
-        return 23;
-    }
-}
-
-$x = new indexr;
-var_dump(is_numeric($x));
-exit;
-
 //$s = microtime(true);
 //for ($i = 0; $i < 1000000; ++$i) {
 ////    is_callable([$x, '__toString']);
@@ -19,7 +9,10 @@ exit;
 //echo (microtime(true) - $s) * 1000;
 //exit;
 //$x = (string)false;
-
+//function x()  {
+//    throw new Exception;
+//};
+//@x();
 require 'hi.php';
 //function hi($controller) {
 //    echo 'start out';
