@@ -35,7 +35,7 @@ class Config {
         }
         throw new Exception(
             "Config '$name' requires a string. "
-                . ucfirst(gettype($result)) . ' given.'
+                . ucfirst(gettype($result)) . ' given'
         );
     }
 
@@ -46,7 +46,7 @@ class Config {
         }
         if (is_array($result) === false) {
             throw new Exception(
-                "Config '$name' requires a array. "
+                "Config '$name' requires an array. "
                     . ucfirst(gettype($result)) . " given"
             );
         }
@@ -60,7 +60,7 @@ class Config {
         }
         if (is_object($result)) {
             throw new Exception(
-                "Config '$name' requires a integer. Object of class "
+                "Config '$name' requires an integer. Object of class "
                     . get_class($result) . " could not be converted to integer"
             );
         }
@@ -89,7 +89,7 @@ class Config {
         if (is_resource($result) === false) {
             throw new Exception(
                 "Config '$name' requires a resource. "
-                    . ucfirst(gettype($result)) . ' given.'
+                    . ucfirst(gettype($result)) . ' given'
             );
         }
         return $result;

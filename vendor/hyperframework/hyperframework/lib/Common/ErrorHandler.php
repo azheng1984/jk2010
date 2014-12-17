@@ -16,7 +16,7 @@ class ErrorHandler {
     private static $shouldExit;
 
     private static $shouldDisplayErrors;
-    private static $shouldReportCompileWarning = false;
+    private static $shouldReportCompileWarning;
 
     private static $isRunning = false;
 
