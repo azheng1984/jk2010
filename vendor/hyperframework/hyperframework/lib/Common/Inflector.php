@@ -11,6 +11,10 @@ class Inflector {
     }
 
     private static function convert($word, $isSingular) {
+        $word = (string)$word;
+        if ($word === '') {
+            return;
+        }
         $originalWord = $word;
         $word = strtolower($word);
         static $specialWords = [
@@ -55,6 +59,7 @@ class Inflector {
             'species' => 'species',
             'turf' => 'turfs',
             'wave' => 'waves',
+            'woman' => 'women',
             'zombie' => 'zombies',
         ];
         $result = false;
@@ -64,9 +69,6 @@ class Inflector {
             }
         } else {
             $result = array_search($word, $specialWords, true);
-            if ($result !== false) {
-                $result = $result;
-            }
         }
         if ($result === false) {
             if ($isSingular) {
@@ -122,9 +124,6 @@ class Inflector {
             }
             foreach ($rules as $rule => $replacement) {
                 if (preg_match($rule, $word)) {
-                    if ($word === 'sex' ||$word === 'sexes') {
-                        echo $rule;
-                    } 
                     $result = preg_replace($rule, $replacement, $word);
                     break;
                 }
@@ -133,18 +132,11 @@ class Inflector {
         if ($result === false || $result === $originalWord) {
             return $originalWord;
         } else {
-            $originalWordLength = strlen($originalWord);
-            $resultLength = strlen($result);
-            $length = $originalWordLength < $resultLength ?
-                $originalWordLength : $resultLength;
-            for ($index = 0; $index < $length; ++$index) {
-                if ($result[$index] !== $originalWord[$index]) {
-                    if ($result[$index] === strtolower($originalWord[$index])) {
-                        $result[$index] = $originalWord[$index];
-                    } else {
-                        return $result;
-                    }
-                }
+            if (ctype_upper($originalWord)) {
+                return strtoupper($result);
+            }
+            if (ctype_upper($originalWord[0])) {
+                return ucfirst($result);
             }
             return $result;
         }

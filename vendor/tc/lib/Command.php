@@ -2,8 +2,9 @@
 namespace Tc;
 
 class Command {
-    public function execute($list = null, array $appleMice = []) {
-var_dump(\Hyperframework\Common\Inflector::pluralize('mouse'));
+    public function execute($list = null, array $appleWomen = []) {
+        var_dump(\Hyperframework\Common\Inflector::pluralize('xml'));
+        var_dump(\Hyperframework\Common\Inflector::singularize('TEARS'));
 //        $input = file_get_contents('/home/az/Desktop/input');
 //        $items = explode("\n", $input);
 //        $output = [];
