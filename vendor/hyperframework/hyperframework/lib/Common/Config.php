@@ -21,11 +21,11 @@ final class Config {
     }
 
     public static function import($configs) {
-        if (is_string($configs)) {
-            $configs = ConfigFileLoader::loadPhp($configs);
-        }
         if ($configs === null) {
             return;
+        }
+        if (is_string($configs)) {
+            $configs = ConfigFileLoader::loadPhp($configs);
         }
         if (is_array($configs) === false) {
             throw new Exception;

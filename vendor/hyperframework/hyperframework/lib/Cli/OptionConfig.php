@@ -21,6 +21,12 @@ class OptionConfig {
         $argumentPattern = null
     ) {
         $this->name = $name;
+        if ($shortName === 'W') {
+            throw new Exception(
+                'The -W (capital-W)'
+                    . ' option shall be reserved for implementation extensions.'
+            );
+        }
         $this->shortName = $shortName;
         $this->description = $description;
         $this->isRepeatable = $isRepeatable;

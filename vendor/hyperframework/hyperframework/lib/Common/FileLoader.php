@@ -4,22 +4,23 @@ namespace Hyperframework\Common;
 use Exception;
 
 class FileLoader {
-    final public static function loadPhp($path, $pathConfigName = null) {
+    public static function loadPhp($path, $pathConfigName = null) {
         return self::load($path, $pathConfigName, true);
     }
 
-    final public static function loadData($path, $pathConfigName = null) {
+    public static function loadData($path, $pathConfigName = null) {
         return self::load($path, $pathConfigName, false);
     }
 
-    final public static function getFullPath($path, $pathConfigName = null) {
+    public static function getFullPath($path, $pathConfigName = null) {
         if ($pathConfigName !== null) {
             $tmp = Config::get($pathConfigName);
             if ($tmp !== null) {
                 $path = $tmp;
             }
         }
-        if ($path == '' && (string)$path === '') {
+        $path = (string)$path;
+        if ($path === '') {
             return false;
         }
         if (FullPathRecognizer::isFull($path) === false) {
@@ -28,7 +29,7 @@ class FileLoader {
         return $path;
     }
 
-    protected static function getDefaultRootPath() {
+    public static function getDefaultRootPath() {
         $appRootPath = (string)Config::get('hyperframework.app_root_path');
         if ($appRootPath === '') {
             throw new Exception;

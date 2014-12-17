@@ -15,7 +15,7 @@ class DbConnection extends PDO {
     ) {
         $this->name = $name;
         $this->isProfilerEnabled =
-            Config::get('hyperframework.db.profiler.enable') === true;
+            (bool)Config::get('hyperframework.db.profiler.enable') === true;
         parent::__construct($dsn, $userName, $password, $driverOptions);
     }
 

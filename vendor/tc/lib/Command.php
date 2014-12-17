@@ -2,7 +2,7 @@
 namespace Tc;
 
 class Command {
-    public function execute($list = null, array $appleWomen = []) {
+    public function execute($list, array $articleList = []) {
         var_dump(\Hyperframework\Common\Inflector::pluralize('xml'));
         var_dump(\Hyperframework\Common\Inflector::singularize('TEARS'));
 //        $input = file_get_contents('/home/az/Desktop/input');

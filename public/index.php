@@ -1,5 +1,7 @@
 <?php
 namespace hi;
+$x = (string)false;
+var_dump(false . ' ');
 
 require 'hi.php';
 //function hi($controller) {

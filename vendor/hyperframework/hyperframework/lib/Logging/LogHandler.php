@@ -4,6 +4,7 @@ namespace Hyperframework\Logging;
 use Exception;
 use Closure;
 use Hyperframework\Common\Config;
+use Hyperframework\Common\FileLoader;
 use Hyperframework\Common\FullPathRecognizer;
 
 class LogHandler {
@@ -69,8 +70,8 @@ class LogHandler {
     private static function initializePath() {
         $path = Config::get('hyperframework.log_handler.log_path');
         if ($path === null) {
-            self::$path =  self::getAppRootPath() . DIRECTORY_SEPARATOR
-                . 'log' . DIRECTORY_SEPARATOR . 'app.log';
+            self::$path =  FileLoader::getDefaultRootPath()
+                . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'app.log';
             self::$protocol = 'file';
         } else {
             $protocol = 'file';
@@ -81,18 +82,11 @@ class LogHandler {
             if ($protocol === 'file'
                 && FullPathRecognizer::isFull($path) === false
             ) {
-                $path = self::getAppRootPath() . DIRECTORY_SEPARATOR . $path;
+                $path = FileLoader::getDefaultRootPath()
+                    . DIRECTORY_SEPARATOR . $path;
             }
             self::$path = $path;
         }
-    }
-
-    private static function getAppRootPath() {
-        $appRootPath = (string)Config::get('hyperframework.app_root_path');
-        if ($appRootPath === '') {
-            throw new Exception;
-        }
-        return $appRootPath;
     }
 
     private static function appendValue(&$data, $value, $prefix = "\t>") {

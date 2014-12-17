@@ -89,12 +89,13 @@ abstract class ViewTemplateEngine implements ArrayAccess {
 
     public function getRootPath() {
         if ($this->rootPath === null) {
-            $path = Config::get('hyperframework.web.view.root_path');
-            if ($path === null) {
-                $path = $this->getAppRootPath() . DIRECTORY_SEPARATOR . 'views';
+            $path = (string)Config::get('hyperframework.web.view.root_path');
+            if ($path === '') {
+                $path = FileLoader::getDefaultRootPath()
+                    . DIRECTORY_SEPARATOR . 'views';
             } else {
                 if (FullPathRecognizer::isFull($path) === false) {
-                    $path = $this->getAppRootPath()
+                    $path = FileLoader::getDefaultRootPath()
                         . DIRECTORY_SEPARATOR . $path;
                 }
             }
@@ -105,14 +106,6 @@ abstract class ViewTemplateEngine implements ArrayAccess {
 
     public function setRootPath($value) {
         $this->rootPath = $value;
-    }
-
-    private function getAppRootPath() {
-        $appRootPath = (string)Config::get('hyperframework.app_root_path');
-        if ($appRootPath === '') {
-            throw new Exception;
-        }
-        return $appRootPath;
     }
 
     public function __invoke($function) {

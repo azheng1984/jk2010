@@ -1,5 +1,5 @@
 <?php
 return [
     '[hyperframework.cli]',
-    'command_config_root_path' => 'tool/tool_x'
+    'command_config_path' => 'tool/tool_x/command.php'
 ];

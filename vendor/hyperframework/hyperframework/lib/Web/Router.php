@@ -31,16 +31,6 @@ abstract class Router {
         }
     }
 
-    abstract protected function execute();
-
-    protected function getPath() {
-        if ($this->path === null) {
-            $this->path = RequestPath::get();
-            $this->path = '/' . trim($this->path, '/');
-        }
-        return $this->path;
-    }
-
     public function getParam($name) {
         return $this->params[$name];
     }
@@ -66,20 +56,6 @@ abstract class Router {
             return Config::get('hyperframework.web.default_module');
         }
         return $this->module;
-    }
-
-    protected function getModuleNamespace() {
-        if ($this->moduleNamespace !== null) {
-            return $this->moduleNamespace;
-        }
-        $module = (string)$this->getModule();
-        if ($module === '') {
-            return;
-        }
-        $tmp = str_replace(
-            ' ', '\\', ucwords(str_replace('/', ' ', $module))
-        );
-        return str_replace(' ', '', ucwords(str_replace('_', ' ', $tmp)));
     }
 
     public function getController() {
@@ -119,23 +95,6 @@ abstract class Router {
         return $rootNamespace . $moduleNamespace . $class;
     }
 
-    protected function getControllerRootNamespace() {
-        if ($this->controllerRootNamespace === null) {
-            $appRootNamespace = (string)Config::get(
-                'hyperframework.app_root_namespace'
-            );
-            if ($appRootNamespace === '') {
-                return 'Controllers';
-            }
-            return $appRootNamespace . '\Controllers';
-        }
-        return $this->controllerRootNamespace;
-    }
-
-    protected function setControllerRootNamespace($value) {
-        $this->controllerRootNamespace = $value;
-    }
-
     public function getAction() {
         if ($this->action === null) {
             return 'show';
@@ -155,8 +114,41 @@ abstract class Router {
         return 'do' . $tmp . 'Action';
     }
 
-    public function isMatched() {
+    abstract protected function execute();
+
+    protected function isMatched() {
         return $this->isMatched;
+    }
+
+    protected function getControllerRootNamespace() {
+        if ($this->controllerRootNamespace === null) {
+            $appRootNamespace = (string)Config::get(
+                'hyperframework.app_root_namespace'
+            );
+            if ($appRootNamespace === '') {
+                return 'Controllers';
+            }
+            return $appRootNamespace . '\Controllers';
+        }
+        return $this->controllerRootNamespace;
+    }
+
+    protected function setControllerRootNamespace($value) {
+        $this->controllerRootNamespace = $value;
+    }
+
+    protected function getModuleNamespace() {
+        if ($this->moduleNamespace !== null) {
+            return $this->moduleNamespace;
+        }
+        $module = (string)$this->getModule();
+        if ($module === '') {
+            return;
+        }
+        $tmp = str_replace(
+            ' ', '\\', ucwords(str_replace('/', ' ', $module))
+        );
+        return str_replace(' ', '', ucwords(str_replace('_', ' ', $tmp)));
     }
 
     protected function setMatchStatus($isMatched) {
@@ -866,6 +858,14 @@ abstract class Router {
 
     protected function setActionMethod($value) {
         $this->actionMethod = $value;
+    }
+
+    protected function getPath() {
+        if ($this->path === null) {
+            $this->path = RequestPath::get();
+            $this->path = '/' . trim($this->path, '/');
+        }
+        return $this->path;
     }
 
     //todo cache result & use this to get request method

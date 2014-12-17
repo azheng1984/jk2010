@@ -5,7 +5,9 @@ use Hyperframework\Web\Router as Base;
 
 class Router extends Base {
     protected function execute() {
-        if ($this->matchResources('articles')) return;
+        $this->matchResources('articles');
+        if ($this->matchResources('articles')) {
+        }
         if ($this->matchScope(['xxx/:xxx_id', 'formats' => ['jpg']], function() {
             if ($this->match('/')) {
                 return;
@@ -20,11 +22,14 @@ class Router extends Base {
         })) return;
         if ($this->matchScope(['xxx/:id'], function() {
         })) return;
-        if ($this->match('/')) return;
+        if ($this->match('/')) {
+            $this->setControllerClass('HomeController');
+            return;
+        } 
         if ($this->matchResources('articles/:article_id/comments')) return;
         return;
 
-        $this->setMatchStatus(false);
+        //$this->setMatchStatus(false);
         $this->matchScope('article', function() {
             echo $this->getPath();
             $this->match('*path');

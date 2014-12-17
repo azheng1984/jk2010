@@ -44,7 +44,7 @@ class DefaultArgumentConfig extends ArgumentConfig {
                     && $word !== 'queue'
                     && $word !== 'stack'
                 ) {
-                    $words[] = inflector::singularize($word);
+                    $words[] = Inflector::singularize($word);
                 } elseif (count($words) === 0) {
                     $words[] = 'element';
                 }

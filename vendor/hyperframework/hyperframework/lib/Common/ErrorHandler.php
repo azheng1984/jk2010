@@ -17,8 +17,12 @@ class ErrorHandler {
     private static $isRunning = false;
 
     public static function run() {
-        self::$isLoggerEnabled =false;
-            Config::get('hyperframework.error_handler.enable_logger') === true;
+        self::$isLoggerEnabled = Config::get(
+            'hyperframework.error_handler.enable_logger'
+        );
+        if (is_bool(self::$isLoggerEnabled) === false) {
+            throw new Exception;
+        }
         if (self::$isLoggerEnabled) {
             ini_set('log_errors', '0');
         }
@@ -63,6 +67,9 @@ class ErrorHandler {
         if ($extraFatalErrorBitmask === null) {
             $extraFatalErrorBitmask =
                 E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
+        }
+        if (is_int($extraFatalErrorBitmask) === false) {
+            throw new Exception;
         }
         if (($type & $extraFatalErrorBitmask) !== 0) {
             $isFatal = true;
