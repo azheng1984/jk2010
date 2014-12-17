@@ -41,6 +41,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         if (DIRECTORY_SEPARATOR !== '/') {
             $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
         }
+        var_dump($path);
         if ($path[0] === DIRECTORY_SEPARATOR) {
             throw new Exception;
         }

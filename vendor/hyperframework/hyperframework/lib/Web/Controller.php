@@ -232,7 +232,7 @@ class Controller {
         if ($this->view === null) {
             $view = null;
             $router = $this->getRouter();
-            $view = '/';
+            $view = '';
             if ($router->getModule() != '') {
                 $view .= $this->getModule();
             }
