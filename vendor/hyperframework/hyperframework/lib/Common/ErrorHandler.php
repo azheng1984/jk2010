@@ -13,6 +13,7 @@ class ErrorHandler {
     private static $shouldCacheErrors = false;
     private static $previousErrors = [];
     private static $errorReportingBitmask;
+    private static $isClosing = false;
     private static $shouldExit;
     private static $shouldDisplayErrors;
     private static $isDefaultErrorLogEnabled;
@@ -72,7 +73,7 @@ class ErrorHandler {
     }
 
     private static function shouldReportCompileWarning() {
-        return self::getErrorReportingBitmask() & E_COMPILE_WARNING !== 0;
+        return (self::getErrorReportingBitmask() & E_COMPILE_WARNING) !== 0;
     }
 
     protected static function shouldDisplayErrors() {
@@ -129,10 +130,13 @@ class ErrorHandler {
         if (error_reporting() === 0) {
             return;
         }
-        self::enableDefaultErrorReporting(static::getErrorReportingBitmask() & (
-            E_ERROR | E_PARSE | E_CORE_ERROR
-                | E_COMPILE_ERROR | E_COMPILE_WARNING
-        ));
+        self::$isClosing = true;
+        self::enableDefaultErrorReporting(
+            error_reporting() | (static::getErrorReportingBitmask() & (
+                E_ERROR | E_PARSE | E_CORE_ERROR
+                    | E_COMPILE_ERROR | E_COMPILE_WARNING
+            ))
+        );
         $error = error_get_last();
         if ($error === null) {
             return;
@@ -176,7 +180,7 @@ class ErrorHandler {
             }
         }
         static::displayFatalError();
-        if ($isError && $source->isRealFatal()) {
+        if (($isError && $source->isRealFatal()) || self::$isClosing) {
             return;
         }
         exit(1);
