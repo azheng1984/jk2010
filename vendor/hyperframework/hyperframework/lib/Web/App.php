@@ -8,14 +8,15 @@ class App {
     private $router;
 
     public function run() {
-        adf();
+        self::x();
         $controller = $this->createController();
         $controller->run();
         $this->finalize();
     }
 
     public static function x() {
-        throw new \ErrorException;
+        dsf;
+        //throw new \ErrorException;
     }
 
     public function getRouter() {

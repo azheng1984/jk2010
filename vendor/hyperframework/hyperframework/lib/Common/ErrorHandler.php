@@ -14,10 +14,8 @@ class ErrorHandler {
     private static $previousErrors = [];
     private static $errorReportingBitmask;
     private static $shouldExit;
-
     private static $shouldDisplayErrors;
-    private static $shouldReportCompileWarning;
-
+    private static $isDefaultErrorLogEnabled;
     private static $isRunning = false;
 
     public static function run() {
@@ -26,50 +24,62 @@ class ErrorHandler {
         );
         if (self::$isLoggerEnabled) {
             ini_set('log_errors', '0');
+            self::$isDefaultErrorLogEnabled = false;
+        } else {
+            self::$isDefaultErrorLogEnabled = ini_get('log_errors') === '1';
         }
         self::$errorReportingBitmask = error_reporting();
+        self::$shouldDisplayErrors = ini_get('display_errors') === '1';
         $class = get_called_class();
         set_error_handler(
             array($class, 'handleError'), self::$errorReportingBitmask
         );
         set_exception_handler(array($class, 'handleException'));
         register_shutdown_function(array($class, 'handleFatalError'));
-        self::$shouldReportCompileWarning =
-            self::$errorReportingBitmask & E_COMPILE_WARNING !== 0;
-        self::$shouldDisplayErrors = ini_get('display_errors') === '1';
         self::$isRunning = true;
         self::disableDefaultErrorReporting();
     }
 
-    private static function disableDefaultErrorReporting() {
-        if (self::$isRunning === false) {
-            throw new Exception;
+    private static function enableDefaultErrorReporting(
+        $errorReportingBitmask = null
+    ) {
+        if ($errorReportingBitmask !== null) {
+            error_reporting($errorReportingBitmask);
+        } elseif (self::shouldReportCompileWarning()) {
+            error_reporting(static::getErrorReportingBitmask());
         }
-        if (self::$shouldReportCompileWarning) {
-            error_reporting(
-                self::getErrorReportingBitmask() & E_COMPILE_WARNING
-            );
-        } else {
-            if (self::$shouldDisplayErrors) {
-                ini_set('display_errors', '0');
+        if (self::shouldReportCompileWarning() === false) {
+            if (static::shouldDisplayErrors()) {
+                ini_set('display_errors', '1');
+            }
+            if (static::isDefaultErrorLogEnabled()) {
+                ini_set('log_errors', '1');
             }
         }
     }
 
-    private static function enableDefaultErrorReporting($bitmask = null) {
+    private static function disableDefaultErrorReporting() {
+        if (self::shouldReportCompileWarning()) {
+            error_reporting(E_COMPILE_WARNING);
+        } else {
+            if (static::shouldDisplayErrors()) {
+                ini_set('display_errors', '0');
+            }
+            if (static::isDefaultErrorLogEnabled()) {
+                ini_set('log_errors', '0');
+            }
+        }
+    }
+
+    private static function shouldReportCompileWarning() {
+        return self::getErrorReportingBitmask() & E_COMPILE_WARNING !== 0;
+    }
+
+    protected static function shouldDisplayErrors() {
         if (self::$isRunning === false) {
             throw new Exception;
         }
-        if ($bitmask !== null) {
-            error_reporting($bitmask);
-        } elseif (self::$shouldReportCompileWarning) {
-            error_reporting(self::getErrorReportingBitmask());
-        } 
-        if (self::$shouldReportCompileWarning === false
-            && self::$shouldDisplayErrors
-        ) {
-            ini_set('display_errors', '1');
-        }
+        return self::$shouldDisplayErrors;
     }
 
     final protected static function enableErrorCache() {
@@ -96,15 +106,12 @@ class ErrorHandler {
         }
         self::enableDefaultErrorReporting();
         $isFatal = false;
-        $extraFatalErrorBitmask = Config::get(
+        $extraFatalErrorBitmask = Config::getInt(
             'hyperframework.error_handler.extra_fatal_error_bitmask'
         );
         if ($extraFatalErrorBitmask === null) {
             $extraFatalErrorBitmask =
                 E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
-        }
-        if (is_int($extraFatalErrorBitmask) === false) {
-            throw new Exception;
         }
         if (($type & $extraFatalErrorBitmask) !== 0) {
             $isFatal = true;
@@ -122,7 +129,7 @@ class ErrorHandler {
         if (error_reporting() === 0) {
             return;
         }
-        self::enableDefaultErrorReporting(self::getErrorReportingBitmask() & (
+        self::enableDefaultErrorReporting(static::getErrorReportingBitmask() & (
             E_ERROR | E_PARSE | E_CORE_ERROR
                 | E_COMPILE_ERROR | E_COMPILE_WARNING
         ));
@@ -149,17 +156,15 @@ class ErrorHandler {
         }
         self::$source = $source;
         self::$isError = $isError;
-        df;
         if ($isError && $source->isFatal() === false) {
             self::$shouldExit = false;
         } else {
             self::$shouldExit = true;
         }
-        self::writeLog();
-        $shouldDisplayErrors = ini_get('display_errors') === '1';
+        static::writeLog();
         if ($isError) {
             if (self::$shouldExit === false) {
-                if ($shouldDisplayErrors) {
+                if (static::shouldDisplayErrors()) {
                     static::displayError();
                 }
                 if (self::$shouldCacheErrors) {
@@ -182,7 +187,7 @@ class ErrorHandler {
     }
 
     protected static function writeLog() {
-        if (self::isLoggerEnabled()) {
+        if (static::isLoggerEnabled()) {
             $source = self::$source;
             $name = null;
             $data = [];
@@ -223,10 +228,8 @@ class ErrorHandler {
                 'message' => $source->getMessage(),
                 'data' => $data
             ]);
-        } else {
-            if (ini_get('log_errors') === '1') {
-                static::writeDefaultErrorLog();
-            }
+        } elseif (static::isDefaultErrorLogEnabled()) {
+            static::writeDefaultErrorLog();
         }
     }
 
@@ -323,6 +326,13 @@ class ErrorHandler {
             throw new Exception;
         }
         return self::$isLoggerEnabled;
+    }
+
+    protected static function isDefaultErrorLogEnabled() {
+        if (self::$isRunning === false) {
+            throw new Exception;
+        }
+        return self::$isDefaultErrorLogEnabled;
     }
 
     protected static function getErrorReportingBitmask() {
