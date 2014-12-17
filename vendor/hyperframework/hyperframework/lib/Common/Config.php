@@ -6,10 +6,101 @@ use Exception;
 final class Config {
     private static $data = array();
 
-    public static function get($name) {
+    public static function get($name, $default = null) {
         if (isset(self::$data[$name])) {
             return self::$data[$name];
         }
+        return $default;
+    }
+
+    public static function getString($name, $default = null) {
+        $result = null;
+        if (isset(self::$data[$name])) {
+            $result = self::$data[$name];
+        }
+        if ($result === null) {
+            return $default;
+        }
+        if (is_scalar($result)) {
+            return (string)$result;
+        }
+        if (is_object($result)) {
+            if (method_exists($result, '__toString')) {
+                return (string)$result;
+            }
+            throw new Exception(
+                "Config '$name' requires a string. Object of class "
+                    . get_class($result) . " could not be converted to string";
+            );
+        }
+        throw new Exception(
+            "Config '$name' requires a string. "
+                . ucfirst(gettype($result)) . ' given.'
+        );
+    }
+
+    public static function getArray($name, $default = null) {
+        $result = static::get($name);
+        if ($result === null) {
+            return $default;
+        }
+        if (is_array($result) === false) {
+            throw new Exception(
+                "Config '$name' requires a array. "
+                    . ucfirst(gettype($result)) . " given";
+            );
+        }
+        return $result;
+    }
+
+    public static function getInt($name, $default = null) {
+        $result = static::get($name);
+        if ($result === null) {
+            return $default;
+        }
+        if (is_object($result)) {
+            throw new Exception(
+                "Config '$name' requires a integer. Object of class "
+                    . get_class($result) . " could not be converted to integer";
+            );
+        }
+        return (int)$result;
+    }
+
+    public static function getFloat($name, $default = null) {
+        $result = static::get($name);
+        if ($result === null) {
+            return $default;
+        }
+        if (is_object($result)) {
+            throw new Exception(
+                "Config '$name' requires a float. Object of class "
+                    . get_class($result) . " could not be converted to float";
+            );
+        }
+        return (float)$result;
+    }
+
+    public static function getResource($name, $default = null) {
+        $result = static::get($name);
+        if ($result === null) {
+            return $default;
+        }
+        if (is_resource($result) === false) {
+            throw new Exception(
+                "Config '$name' requires a resource. "
+                    . ucfirst(gettype($result)) . ' given.'
+            );
+        }
+        return $result;
+    }
+
+    public static function getBoolean($name, $default = null) {
+        $result = static::get($name);
+        if ($result === null) {
+            return $default;
+        }
+        return (bool)$result;
     }
 
     public static function set($key, $value) {

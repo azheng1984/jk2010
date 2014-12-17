@@ -17,12 +17,9 @@ class ErrorHandler {
     private static $isRunning = false;
 
     public static function run() {
-        self::$isLoggerEnabled = Config::get(
-            'hyperframework.error_handler.enable_logger'
+        self::$isLoggerEnabled = Config::getBoolean(
+            'hyperframework.error_handler.enable_logger', false
         );
-        if (is_bool(self::$isLoggerEnabled) === false) {
-            throw new Exception;
-        }
         if (self::$isLoggerEnabled) {
             ini_set('log_errors', '0');
         }
@@ -160,7 +157,7 @@ class ErrorHandler {
                     $data['code'] = $code;
                 }
                 $data['trace'] = [];
-                //config max trace(include non real fatal error)
+                //todo config max trace(including non real fatal error)
                 foreach ($source->getTrace() as $item) {
                     $trace = array();
                     if (isset($item['class'])) {

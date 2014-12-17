@@ -4,6 +4,8 @@ namespace Hyperframework\Common;
 use Exception;
 
 class FileLoader {
+    private static $defaultRootPath;
+
     public static function loadPhp($path, $pathConfigName = null) {
         return self::load($path, $pathConfigName, true);
     }
@@ -30,11 +32,17 @@ class FileLoader {
     }
 
     public static function getDefaultRootPath() {
-        $appRootPath = (string)Config::get('hyperframework.app_root_path');
-        if ($appRootPath === '') {
-            throw new Exception;
+        if (self::$defaultRootPath === null) {
+            self::$defaultRootPath = (string)Config::getString(
+                'hyperframework.app_root_path'
+            );
+            if (self::$defaultRootPath === '') {
+                throw new Exception(
+                    "Config 'hyperframework.app_root_path' is empty"
+                );
+            }
         }
-        return $appRootPath;
+        return self::$defaultRootPath;
     }
 
     private static function load($path, $pathConfigName, $isPhp) {

@@ -1,7 +1,24 @@
 <?php
 namespace hi;
-$x = (string)false;
-var_dump(false . ' ');
+
+class indexr {
+    public function __tostring() {
+        return 23;
+    }
+}
+
+$x = new indexr;
+var_dump(is_numeric($x));
+exit;
+
+//$s = microtime(true);
+//for ($i = 0; $i < 1000000; ++$i) {
+////    is_callable([$x, '__toString']);
+//    var_dump(method_exists($x, '__toString'));
+//}
+//echo (microtime(true) - $s) * 1000;
+//exit;
+//$x = (string)false;
 
 require 'hi.php';
 //function hi($controller) {
