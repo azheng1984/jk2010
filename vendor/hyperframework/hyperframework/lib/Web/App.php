@@ -8,7 +8,7 @@ class App {
     private $router;
 
     public function run() {
-        @self::x();
+        adf();
         $controller = $this->createController();
         $controller->run();
         $this->finalize();

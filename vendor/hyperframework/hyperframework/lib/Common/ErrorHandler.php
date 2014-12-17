@@ -36,40 +36,40 @@ class ErrorHandler {
         register_shutdown_function(array($class, 'handleFatalError'));
         self::$shouldReportCompileWarning =
             self::$errorReportingBitmask & E_COMPILE_WARNING !== 0;
+        self::$shouldDisplayErrors = ini_get('display_errors') === '1';
         self::$isRunning = true;
         self::disableDefaultErrorReporting();
     }
 
     private static function disableDefaultErrorReporting() {
-            error_reporting(
-                self::getErrorReportingBitmask() & E_COMPILE_WARNING
-            );
-            return;
-
+        if (self::$isRunning === false) {
+            throw new Exception;
+        }
         if (self::$shouldReportCompileWarning) {
             error_reporting(
                 self::getErrorReportingBitmask() & E_COMPILE_WARNING
             );
         } else {
-            self::$shouldDisplayErrors = ini_get('display_errors');
-            if (self::$shouldDisplayErrors === '1') {
+            if (self::$shouldDisplayErrors) {
                 ini_set('display_errors', '0');
             }
         }
     }
 
-    private static function enableDefaultErrorReporting() {
-        if (self::$shouldReportCompileWarning) {
-            error_reporting(
-                self::getErrorReportingBitmask() & E_COMPILE_WARNING
-            );
-        } else {
-            self::$shouldDisplayErrors = ini_get('display_errors');
-            if (self::$shouldDisplayErrors === '1') {
-                ini_set('display_errors', '0');
-            }
+    private static function enableDefaultErrorReporting($bitmask = null) {
+        if (self::$isRunning === false) {
+            throw new Exception;
         }
-        error_reporting(self::getErrorReportingBitmask());
+        if ($bitmask !== null) {
+            error_reporting($bitmask);
+        } elseif (self::$shouldReportCompileWarning) {
+            error_reporting(self::getErrorReportingBitmask());
+        } 
+        if (self::$shouldReportCompileWarning === false
+            && self::$shouldDisplayErrors
+        ) {
+            ini_set('display_errors', '1');
+        }
     }
 
     final protected static function enableErrorCache() {
@@ -81,14 +81,20 @@ class ErrorHandler {
     }
 
     final public static function handleException($exception) {
-        error_reporting(self::getErrorReportingBitmask());
+        if (error_reporting() === 0) {
+            return;
+        }
+        self::enableDefaultErrorReporting();
         self::handle($exception);
     }
 
     final public static function handleError(
         $type, $message, $file, $line, array $context
     ) {
-        error_reporting(self::getErrorReportingBitmask());
+        if (error_reporting() === 0) {
+            return;
+        }
+        self::enableDefaultErrorReporting();
         $isFatal = false;
         $extraFatalErrorBitmask = Config::get(
             'hyperframework.error_handler.extra_fatal_error_bitmask'
@@ -113,13 +119,13 @@ class ErrorHandler {
     }
 
     final public static function handleFatalError() {
-        error_reporting(
-            error_reporting() | (
-                self::getErrorReportingBitmask() & (
-                    E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR
-                )
-            )
-        );
+        if (error_reporting() === 0) {
+            return;
+        }
+        self::enableDefaultErrorReporting(self::getErrorReportingBitmask() & (
+            E_ERROR | E_PARSE | E_CORE_ERROR
+                | E_COMPILE_ERROR | E_COMPILE_WARNING
+        ));
         $error = error_get_last();
         if ($error === null) {
             return;
@@ -129,7 +135,7 @@ class ErrorHandler {
             $error['line'], null, null, true
         );
         if ($error->isRealFatal()) {
-            error_reporting(self::getErrorReportingBitmask());
+            self::enableDefaultErrorReporting();
             self::handle($error, true);
         }
     }
@@ -143,6 +149,7 @@ class ErrorHandler {
         }
         self::$source = $source;
         self::$isError = $isError;
+        df;
         if ($isError && $source->isFatal() === false) {
             self::$shouldExit = false;
         } else {
