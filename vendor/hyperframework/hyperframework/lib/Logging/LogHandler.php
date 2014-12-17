@@ -2,7 +2,6 @@
 namespace Hyperframework\Logging;
 
 use Exception;
-use Closure;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
 use Hyperframework\Common\FullPathRecognizer;
