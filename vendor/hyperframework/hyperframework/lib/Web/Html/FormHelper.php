@@ -136,11 +136,12 @@ class FormHelper {
 
     protected function encodeSpecialChars($content, $isAttributeValue = false) {
         if ($isAttributeValue) {
-            return htmlspecialchars($content);
+            return htmlspecialchars(
+                $content, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE
+            );
         }
         return htmlspecialchars(
-            $content,
-            ENT_NOQUOTES | ENT_HTML401//0
+            $content, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
         );
     }
 

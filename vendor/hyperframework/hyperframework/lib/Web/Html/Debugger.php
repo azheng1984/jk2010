@@ -129,7 +129,7 @@ class Debugger {
             if (strlen($outputBuffer) > 1) {
                 echo '<pre>';
                 //var_dump(mb_detect_encoding($outputBuffer));
-                echo htmlspecialchars($outputBuffer, ENT_QUOTES | ENT_SUBSTITUTE);
+                echo htmlspecialchars($outputBuffer, ENT_SUBSTITUTE);
                 echo '</pre>';
             } else {
                 echo '<span style="color:#999;background-color:#eee">empty</span>';

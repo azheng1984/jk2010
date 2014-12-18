@@ -5,8 +5,8 @@ use Exception;
 use ReflectionMethod;
 use Hyperframework;
 use Hyperframework\Common\Config;
-use Hyperframework\Common\NamespaceBuilder;
-use Hyperframework\Common\PathBuilder;
+use Hyperframework\Common\NamespaceCombiner;
+use Hyperframework\Common\PathCombiner;
 use Hyperframework\Common\ConfigFileLoader;
 use Hyperframework\Common\FullPathRecognizer;
 
@@ -82,11 +82,11 @@ class CommandConfig {
                         'hyperframework.app_root_namespace', ''
                     );
                     if ($rootNamespace !== '' && $rootNamespace !== '\\') {
-                        NamespaceBuilder::prepend($rootNamespace, $namespace);
+                        NamespaceCombiner::prepend($rootNamespace, $namespace);
                     }
                 }
                 if ($namespace !== '' && $namespace !== '\\') {
-                    NamespaceBuilder::prepend($class, $namespace);
+                    NamespaceCombiner::prepend($class, $namespace);
                 }
             }
         }
@@ -384,7 +384,7 @@ class CommandConfig {
             );
             $class = 'Command';
             if ($namespace !== '' && $namespace !== '\\') {
-                NamespaceBuilder::prepend($class, $namespace);
+                NamespaceCombiner::prepend($class, $namespace);
             }
             return $class;
         }

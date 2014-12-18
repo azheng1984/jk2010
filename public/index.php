@@ -1,10 +1,11 @@
 <?php
 namespace hi;
-var_dump(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_XML1));
-var_dump(count(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_HTML401)));
-var_dump(count(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_HTML5)));
-var_dump(htmlspecialchars("'", ENT_QUOTES | ENT_HTML401)); // string(6) "&#039;"
-var_dump(htmlspecialchars("'", ENT_QUOTES | ENT_HTML5));   // string(6) "&apos;"
+//var_dump(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_XHMLT));
+//var_dump(count(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_HTML401)));
+//var_dump(count(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_HTML5)));
+//var_dump(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_HTML5));
+//var_dump(htmlspecialchars("'", ENT_QUOTES | ENT_HTML401)); // string(6) "&#039;"
+//var_dump(htmlspecialchars("'", ENT_QUOTES | ENT_HTML5));   // string(6) "&apos;"
 //$s = microtime(true);
 //for ($i = 0; $i < 1000000; ++$i) {
 ////    is_callable([$x, '__toString']);
