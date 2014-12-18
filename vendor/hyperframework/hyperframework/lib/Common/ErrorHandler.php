@@ -21,7 +21,7 @@ class ErrorHandler {
 
     public static function run() {
         self::$isLoggerEnabled = Config::getBoolean(
-            'hyperframework.error_handler.enable_logger', false
+            'hyperframework.error_handler.logger.enable', false
         );
         if (self::$isLoggerEnabled) {
             ini_set('log_errors', '0');
@@ -210,7 +210,7 @@ class ErrorHandler {
             }
             if (self::isError() === false || $source->isRealFatal() === false) {
                 $shouldLogTrace = Config::getBoolean(
-                    'hyperframework.error_handler.log_stack_trace', false
+                    'hyperframework.error_handler.logger.log_stack_trace', false
                 );
                 if ($shouldLogTrace) {
                    $data['trace'] = [];
@@ -396,14 +396,18 @@ class ErrorHandler {
             if (ini_get('docref_root') !== '') {
                 echo $source->getMessage();
             } else {
-                echo htmlspecialchars($source->getMessage());
+                echo htmlspecialchars(
+                    $source->getMessage(), ENT_NOQUOTES | ENT_HTML401
+                );
             }
         } else {
-            echo 'Fatal error</b>:  Uncaught ', htmlspecialchars(self::$source),
-                PHP_EOL, '  thrown';
+            echo 'Fatal error</b>:  Uncaught ', htmlspecialchars(
+                self::$source, ENT_NOQUOTES | ENT_HTML401
+            ), PHP_EOL, '  thrown';
         }
-        echo ' in <b>', htmlspecialchars(self::$source->getFile()),
-            '</b> on line <b>', self::$source->getLine(),
+        echo ' in <b>', htmlspecialchars(
+                self::$source->getFile(), ENT_NOQUOTES | ENT_HTML401
+            ), '</b> on line <b>', self::$source->getLine(),
             '</b><br />', PHP_EOL, $suffix;
     }
 }

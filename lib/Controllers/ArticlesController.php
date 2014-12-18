@@ -1,12 +1,9 @@
 <?php
 namespace Hyperframework\Blog\Controllers;
 
-class ArticlesController {
-    public function __construct($app) {
-        //$this->addBeforeFilter();
-        //$this->addAfterFilter();
-    }
+use Hyperframework\Web\Controller;
 
+class ArticlesController extends Controller {
 //    public function onActionExecuting() {
 //    }
 
@@ -14,6 +11,7 @@ class ArticlesController {
 //    }
 
     public function doShowAction() {
+        echo 'hi';
 //        $this->render(['json' => function() {
 //            return encode_json($data);
 //        }, 'html', 'xml' => function() {
@@ -47,6 +45,7 @@ class ArticlesController {
     public function doDeleteAction() {
     }
 
-    public function doListAction() {
+    public function doIndexAction() {
+        echo 'hi from list';
     }
 }

@@ -134,9 +134,14 @@ class FormHelper {
         }
     }
 
-    protected function encodeSpecialChars($content) {
-        //todo config utf-8?
-        return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE);
+    protected function encodeSpecialChars($content, $isAttributeValue = false) {
+        if ($isAttributeValue) {
+            return htmlspecialchars($content);
+        }
+        return htmlspecialchars(
+            $content,
+            ENT_NOQUOTES | ENT_HTML401//0
+        );
     }
 
     private function renderInput(
@@ -145,7 +150,7 @@ class FormHelper {
         if ($bindingAttribute === 'value' && isset($attributes['name'])) {
             if (isset($this->data[$attributes['name']])) {
                 $attributes['value'] = self::encodeSpecialChars(
-                    $this->data[$attributes['name']]
+                    $this->data[$attributes['name']], true
                 );
             }
         }

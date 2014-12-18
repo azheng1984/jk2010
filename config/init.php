@@ -18,7 +18,12 @@ return array(
     'db.profiler.enable' => true,
     'logger.log_level' => 'DEBUG',
     'logger.handler_class' => 'xx',
-    'error_handler.enable_logger' => true,
+    'app_root_namespace' => __NAMESPACE__,
+
+    '[hyperframework.error_handler]',
+    'logger.enable' => true,
+    'logger.log_stack_trace' => true,
+
 //    'log_handler.path' => 'php://output',
     /////////////////////////
     '[hyperframework.blog]',
