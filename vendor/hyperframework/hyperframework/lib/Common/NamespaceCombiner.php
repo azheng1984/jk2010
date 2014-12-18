@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Common;
 
-class NamespaceBuilder {
+class NamespaceCombiner {
     public static function append(&$namespace, $extra) {
         $namespace = (string)$namespace;
         $extra = (string)$extra;

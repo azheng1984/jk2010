@@ -3,7 +3,7 @@ namespace Hyperframework\Web;
 
 use Exception;
 use Hyperframework\Common\Config;
-use Hyperframework\Common\NamespaceBuilder;
+use Hyperframework\Common\NamespaceCombiner;
 
 class App {
     private $router;
@@ -25,7 +25,7 @@ class App {
                 );
                 $class = 'Router';
                 if ($namespace !== '' && $namespace !== '\\') {
-                    NamespaceBuilder::prepend($class, $namespace);
+                    NamespaceCombiner::prepend($class, $namespace);
                 }
                 if (class_exists($class) === false) {
                     throw new Exception($class . ' not found');

@@ -4,7 +4,7 @@ namespace Hyperframework\Logging;
 use Exception;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
-use Hyperframework\Common\PathBuilder;
+use Hyperframework\Common\PathCombiner;
 use Hyperframework\Common\FullPathRecognizer;
 
 class LogHandler {
@@ -82,7 +82,7 @@ class LogHandler {
                 }
             }
         }
-        PathBuilder::append(self::$path, FileLoader::getDefaultRootPath());
+        PathCombiner::append(self::$path, FileLoader::getDefaultRootPath());
     }
 
     private static function appendValue(&$data, $value, $prefix = "\t>") {

@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 use Exception;
 use Hyperframework;
 use Hyperframework\Common\Config;
-use Hyperframework\Common\NamespaceBuilder;
+use Hyperframework\Common\NamespaceCombiner;
 use Hyperframework\Web\NotFoundException;
 
 abstract class Router {
@@ -129,7 +129,7 @@ abstract class Router {
                 'hyperframework.app_root_namespace', ''
             );
             if ($rootNamespace !== '' && $rootNamespace !== '\\') {
-                NamespaceBuilder::prepend($namespace, $rootNamespace);
+                NamespaceCombiner::prepend($namespace, $rootNamespace);
             }
             $this->controllerRootNamespace = $namespace;
         }

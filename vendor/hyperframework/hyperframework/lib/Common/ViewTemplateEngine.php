@@ -94,10 +94,10 @@ abstract class ViewTemplateEngine implements ArrayAccess {
             );
             if ($path === '') {
                 $path = 'views';
-                PathBuilder::prepend($path, FileLoader::getDefaultRootPath())
+                PathCombiner::prepend($path, FileLoader::getDefaultRootPath())
             } else {
                 if (FullPathRecognizer::isFull($path) === false) {
-                    PathBuilder::prepend(
+                    PathCombiner::prepend(
                         $path, FileLoader::getDefaultRootPath()
                     );
                 }
