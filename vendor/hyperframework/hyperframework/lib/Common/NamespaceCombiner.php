@@ -6,13 +6,13 @@ class NamespaceCombiner {
         $namespace = (string)$namespace;
         $extra = (string)$extra;
         if ($namespace !== '') {
-            $namespace = rtrim($namespace);
+            $namespace = rtrim($namespace, '\\');
             if ($namespace === '') {
                 $namespace = '\\';
             }
         }
         if ($extra !== '') {
-            $extra = trim('\\');
+            $extra = trim($extra, '\\');
         }
         if ($extra === '') {
             return;
@@ -24,7 +24,7 @@ class NamespaceCombiner {
     }
 
     public static function prepend(&$namespace, $extra) {
-        static::prepend($extra, $namespace);
+        static::append($extra, $namespace);
         $namespace = $extra;
     }
 }

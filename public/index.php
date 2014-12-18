@@ -1,12 +1,6 @@
 <?php
 namespace hi;
 
-class indexi{
-}
-$c = 'hi\indexi';
-$c = new $c;
-var_dump($c);
-
 //$s = microtime(true);
 //for ($i = 0; $i < 1000000; ++$i) {
 ////    is_callable([$x, '__toString']);
@@ -15,11 +9,9 @@ var_dump($c);
 //echo (microtime(true) - $s) * 1000;
 //exit;
 //$x = (string)false;
-function x()  {
-    throw new Exception;
-};
-@x();
-echo 'xx';
+//function x()  {
+//    throw new Exception;
+//};
 require 'hi.php';
 //function hi($controller) {
 //    echo 'start out';
