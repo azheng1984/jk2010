@@ -204,27 +204,33 @@ class ErrorHandler {
                 if ($code !== null) {
                     $data['code'] = $code;
                 }
-                $data['trace'] = [];
-                //todo config max trace(including non real fatal error)
-                foreach ($source->getTrace() as $item) {
-                    $trace = array();
-                    if (isset($item['class'])) {
-                        $trace['class'] = $item['class'];
-                    }
-                    if (isset($item['function'])) {
-                        $trace['function'] = $item['function'];
-                    }
-                    if (isset($item['file'])) {
-                        $trace['file'] = $item['file'];
-                    }
-                    if (isset($item['line'])) {
-                        $trace['line'] = $item['line'];
-                    }
-                    $data['trace'][] = $trace;
-                }
             } else {
                 $name = 'php_error';
                 $data['type'] = $source->getTypeAsString();
+            }
+            if (self::isError() === false || $source->isRealFatal() === false) {
+                $shouldLogTrace = Config::getBoolean(
+                    'hyperframework.error_handler.log_stack_trace', false
+                );
+                if ($shouldLogTrace) {
+                   $data['trace'] = [];
+                    foreach ($source->getTrace() as $item) {
+                        $trace = array();
+                        if (isset($item['class'])) {
+                            $trace['class'] = $item['class'];
+                        }
+                        if (isset($item['function'])) {
+                            $trace['function'] = $item['function'];
+                        }
+                        if (isset($item['file'])) {
+                            $trace['file'] = $item['file'];
+                        }
+                        if (isset($item['line'])) {
+                            $trace['line'] = $item['line'];
+                        }
+                        $data['trace'][] = $trace;
+                    }
+                }
             }
             $method = static::getLoggerMethod();
             Logger::$method([

@@ -66,7 +66,7 @@ class ErrorHandler extends Base {
 
     protected static function writeLog() {
         if (static::getSource() instanceof HttpException) {
-            $shouldLogHttpException = Config::getBoolen(
+            $shouldLogHttpException = Config::getBoolean(
                 'hyperframework.error_handler.log_http_exception', false
             );
             if ($shouldLogHttpException === false) {
