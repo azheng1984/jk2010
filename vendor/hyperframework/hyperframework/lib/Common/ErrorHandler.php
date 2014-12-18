@@ -397,16 +397,16 @@ class ErrorHandler {
                 echo $source->getMessage();
             } else {
                 echo htmlspecialchars(
-                    $source->getMessage(), ENT_NOQUOTES | ENT_HTML401
+                    $source->getMessage(), ENT_NOQUOTES | ENT_HTML401//0
                 );
             }
         } else {
             echo 'Fatal error</b>:  Uncaught ', htmlspecialchars(
-                self::$source, ENT_NOQUOTES | ENT_HTML401
+                self::$source, ENT_NOQUOTES | ENT_HTML401//0
             ), PHP_EOL, '  thrown';
         }
         echo ' in <b>', htmlspecialchars(
-                self::$source->getFile(), ENT_NOQUOTES | ENT_HTML401
+                self::$source->getFile(), ENT_NOQUOTES | ENT_HTML401//0
             ), '</b> on line <b>', self::$source->getLine(),
             '</b><br />', PHP_EOL, $suffix;
     }
