@@ -13,7 +13,7 @@ class ErrorHandler {
     private static $shouldCacheErrors = false;
     private static $previousErrors = [];
     private static $errorReportingBitmask;
-    private static $isClosing = false;
+    private static $isShutdownStarted = false;
     private static $shouldExit;
     private static $shouldDisplayErrors;
     private static $isDefaultErrorLogEnabled;
@@ -130,7 +130,7 @@ class ErrorHandler {
         if (error_reporting() === 0) {
             return;
         }
-        self::$isClosing = true;
+        self::$isShutdownStarted = true;
         self::enableDefaultErrorReporting(
             error_reporting() | (static::getErrorReportingBitmask() & (
                 E_ERROR | E_PARSE | E_CORE_ERROR
@@ -180,7 +180,7 @@ class ErrorHandler {
             }
         }
         static::displayFatalError();
-        if (($isError && $source->isRealFatal()) || self::$isClosing) {
+        if (($isError && $source->isRealFatal()) || self::$isShutdownStarted) {
             return;
         }
         exit(1);

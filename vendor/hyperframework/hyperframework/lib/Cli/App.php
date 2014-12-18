@@ -60,8 +60,8 @@ class App {
 
     public function getCommandConfig() {
         if ($this->commandConfig === null) {
-            $class = (string)Config::get(
-                'hyperframework.cli.command_config_class'
+            $class = Config::getString(
+                'hyperframework.cli.command_config_class', ''
             );
             if ($class === '') {
                 $this->commandConfig = new CommandConfig;
@@ -91,7 +91,7 @@ class App {
     }
 
     protected function renderHelp() {
-        $class = (string)Config::get('hyperframework.cli.help_class');
+        $class = Config::getString('hyperframework.cli.help_class', '');
         if ($class === '') {
             $class = 'Hyperframework\Cli\Help';
         }

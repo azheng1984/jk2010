@@ -5,8 +5,6 @@ use Exception;
 use ReflectionMethod;
 use Hyperframework;
 use Hyperframework\Common\Config;
-use Hyperframework\Common\NamespaceBuilder;
-use Hyperframework\Common\PathBuilder;
 use Hyperframework\Common\ConfigFileLoader;
 use Hyperframework\Common\FullPathRecognizer;
 
@@ -71,22 +69,23 @@ class CommandConfig {
         }
         if ($class !== '' && $subcommand !== null) {
             if ($class[0] === '\\') {
-                $class = ltrim($class, '\\');
+                $class = substr($class, 1);
             } else {
                 $namespace = Config::getString(
                     'hyperframework.cli.subcommand_root_namespace'
                 );
                 if ($namespace === null) {
-                    $namespace = 'Subcommands';
-                    $rootNamespace = Config::getString(
+                    $namespace = Config::getString(
                         'hyperframework.app_root_namespace', ''
                     );
-                    if ($rootNamespace !== '' && $rootNamespace !== '\\') {
-                        NamespaceBuilder::prepend($rootNamespace, $namespace);
+                    if ($namespace === '' || $namespace === '\\') {
+                        $namespace = 'Subcommands';
+                    } else {
+                        $namespace .= '\Subcommands';
                     }
                 }
                 if ($namespace !== '' && $namespace !== '\\') {
-                    NamespaceBuilder::prepend($class, $namespace);
+                    $class = $namespace . '\\' . $class;
                 }
             }
         }
@@ -278,14 +277,15 @@ class CommandConfig {
                     $isDefaultConfigPath = true;
                     $configPath = 'command.php';
                 }
-                if ($isDefaultConfigPath
-                    || FullPathRecognizer::isFull($configPath) === false
-                ) {
+                if (FullPathRecognizer::isFull($configPath) === false) {
                     $configRootPath = Config::getString(
                         'hyperframework.cli.command_config_root_path', ''
                     );
+                    PathAppender::append();
+                    NamespaceAppender::append();
                     if ($configRootPath !== '') {
-                        PathBuilder::prepend($configPath, $configRootPath);
+                        $configPath = $configRootPath
+                            . DIRECTORY_SEPARATOR . $configPath;
                     }
                     $configPath = ConfigFileLoader::getFullPath($configPath);
                 }
@@ -382,11 +382,11 @@ class CommandConfig {
             $namespace = Config::getString(
                 'hyperframework.app_root_namespace', ''
             );
-            $class = 'Command';
-            if ($namespace !== '') {
-                NamespaceBuilder::prepend($class, $namespace);
+            if ($namespace === '') {
+                return 'Command';
+            } else {
+                return $namespace . '\Command';
             }
-            return $class;
         }
         $tmp = ucwords(str_replace('-', ' ', $subcommand));
         return str_replace(' ', '', $tmp) . 'Command';
@@ -413,7 +413,11 @@ class CommandConfig {
         );
         if ($commandConfigRootPath !== '') {
             if (FullPathRecognizer::isFull($folder) === false) {
-                PathBuilder::prepend($folder, $commandConfigRootPath);
+                $folder = $commandConfigRootPath;
+                if ($commandConfigRootPath !== DIRECTORY_SEPARATOR) {
+                    $commandConfigRootPath .= DIRECTORY_SEPARATOR;
+                }
+                $folder = $commandConfigRootPath . $folder;
             } else {
                 return $folder;
             }
