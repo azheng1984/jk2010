@@ -6,24 +6,32 @@ use Hyperframework\Common\Config;
 
 class CsrfProtection {
     private static $isEnabled = false;
-    private static $token;
     private static $tokenName;
+    private static $token;
 
     public static function run() {
-        self::$isEnabled = true;
-        if (static::getToken() === null) {
-            static::initializeToken();
-        }
-        if (in_array($_SERVER['REQUEST_METHOD'], static::getSafeMethods())) {
-            return;
-        }
-        if (static::isValid() === false) {
-            static::initializeToken();
-            throw new Exception;
+        if (static::isEnabled()) {
+            if (static::getToken() === null) {
+                static::initializeToken();
+            }
+            if (in_array(
+                $_SERVER['REQUEST_METHOD'], static::getSafeMethods()
+            )) {
+                return;
+            }
+            if (static::isValid() === false) {
+                static::initializeToken();
+                throw new ForbiddenException;
+            }
         }
     }
 
     public static function isEnabled() {
+        if (self::$isEnabled === null) {
+            self::$isEnabled = Config::getBoolean(
+                'hyperframework.web.enable_csrf_protection', true
+            );
+        };
         return self::$isEnabled;
     }
 
@@ -71,8 +79,4 @@ class CsrfProtection {
     protected static function generateToken() {
         return sha1(uniqid(mt_rand(), true));
     }
-
-    protected static function setToken($value) {
-        self::$token = $value;
-    } 
 }
