@@ -836,31 +836,31 @@ abstract class Router {
     }
 
     protected function setPath($value) {
-        $this->path = $value;
+        $this->path = (string)$value;
     }
 
     protected function setModule($value) {
-        $this->module = $value;
+        $this->module = (string)$value;
     }
 
     protected function setModuleNamespace($value) {
-        $this->moduleNamespace = $value;
+        $this->moduleNamespace = (string)$value;
     }
 
     protected function setController($value) {
-        $this->controller = $value;
+        $this->controller = (string)$value;
     }
 
     protected function setAction($value) {
-        $this->action = $value;
+        $this->action = (string)$value;
     }
 
     protected function setControllerClass($value) {
-        $this->controllerClass = $value;
+        $this->controllerClass = (string)$value;
     }
 
     protected function setActionMethod($value) {
-        $this->actionMethod = $value;
+        $this->actionMethod = (string)$value;
     }
 
     protected function getPath() {
