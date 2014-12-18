@@ -64,6 +64,13 @@ class ErrorHandler extends Base {
         }
     }
 
+    protected static function writeLog() {
+        if (static::getSource() instanceof HttpException) {
+            return;
+        }
+        parent::writeLog();
+    }
+
     private static function deleteOutputBuffer() {
         if (self::$startupOutputBufferLevel === null) {
             throw new Exception;

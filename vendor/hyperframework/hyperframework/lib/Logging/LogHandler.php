@@ -82,7 +82,7 @@ class LogHandler {
                 }
             }
         }
-        PathCombiner::append(self::$path, FileLoader::getDefaultRootPath());
+        PathCombiner::prepend(self::$path, FileLoader::getDefaultRootPath());
     }
 
     private static function appendValue(&$data, $value, $prefix = "\t>") {

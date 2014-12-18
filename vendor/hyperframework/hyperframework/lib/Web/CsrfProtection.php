@@ -7,15 +7,18 @@ use Hyperframework\Common\Config;
 class CsrfProtection {
     private static $isEnabled = false;
     private static $token;
+    private static $tokenName;
 
     public static function run() {
         self::$isEnabled = true;
-        static::initializeToken();
+        if (static::getToken() === null) {
+            static::initializeToken();
+        }
         if (in_array($_SERVER['REQUEST_METHOD'], static::getSafeMethods())) {
             return;
         }
         if (static::isValid() === false) {
-            //todo reset token
+            static::initializeToken();
             throw new Exception;
         }
     }
@@ -25,26 +28,34 @@ class CsrfProtection {
     }
 
     public static function getToken() {
+        if (self::$token === null) {
+            if (isset($_COOKIE[$name])) {
+                self::$token = $_COOKIE[$name];
+            } else {
+                self::$token = false;
+            }
+        }
+        if (self::$token === false) {
+            return;
+        }
         return self::$token;
     }
 
     public static function getTokenName() {
-        $name = Config::getString(
-            'hyperframework.web.csrf_protection.token_name', ''
-        );
-        if ($name === '') {
-            return '_csrf_token';
+        if (self::$tokenName === null) {
+            self::$tokenName = Config::getString(
+                'hyperframework.web.csrf_protection.token_name', ''
+            );
+            if (self::$tokenName === '') {
+                self::$tokenName = '_csrf_token';
+            }
         }
-        return $name;
+        return self::$tokenName;
     }
 
     protected static function initializeToken() {
-        $name = self::getTokenName();
-        if (isset($_COOKIE[$name])) {
-            self::$token = $_COOKIE[$name];
-            return;
-        }
         self::$token = static::generateToken();
+        $name = self::getTokenName();
         setcookie($name, self::$token, null, null, null, false, true);
     }
 
