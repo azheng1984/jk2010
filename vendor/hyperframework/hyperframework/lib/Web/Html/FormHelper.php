@@ -13,16 +13,31 @@ class FormHelper {
     }
 
     public function begin(array $attributes = null) {
+        $method = null;
+        $formMethod = null;
+        if (isset($attributes['method'])) {
+            $method = strtoupper($attributes['method']);
+            $formMethod = $method;
+            if ($formMethod !== null
+                && $formMethod !== 'GET'
+                && $formMethod !== 'POST'
+            ) {
+                $attributes['method'] = 'POST';
+                $formMethod = 'POST';
+            }
+        }
         echo '<form';
         if ($attributes !== null) {
             $this->renderAttributes($attributes);
         }
         echo '>';
-        if (isset($attributes['method'])) {
-            $attributes['method'] = strtoupper($attributes['method']);
-            if ($attributes['method'] === 'POST') {
-                $this->renderCsrfProtectionField();
-            }
+        if ($method !== $formMethod) {
+            $this->renderHiddenField(
+                ['name' => '_method', 'value' => $method]
+            );
+        }
+        if ($formMethod === 'POST') {
+            $this->renderCsrfProtectionField();
         }
     }
 

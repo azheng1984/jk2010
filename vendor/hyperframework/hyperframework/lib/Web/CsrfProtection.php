@@ -14,9 +14,7 @@ class CsrfProtection {
             if (static::getToken() === null) {
                 static::initializeToken();
             }
-            if (in_array(
-                $_SERVER['REQUEST_METHOD'], static::getSafeMethods()
-            )) {
+            if (static::isSafeMethod($_SERVER['REQUEST_METHOD'])) {//todo
                 return;
             }
             if (static::isValid() === false) {
@@ -73,11 +71,11 @@ class CsrfProtection {
         return isset($_POST[$tokenName]) && $_POST[$tokenName] === self::$token;
     }
 
-    protected static function getSafeMethods() {
-        return array('GET', 'HEAD', 'OPTIONS');
+    protected static function isSafeMethod($method) {
+        return in_array($method, ['GET', 'HEAD', 'OPTIONS']);
     }
 
     protected static function generateToken() {
-        return md5(uniqid(mt_rand(), true));
+        return sha1(uniqid(mt_rand(), true));
     }
 }

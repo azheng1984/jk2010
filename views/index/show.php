@@ -7,7 +7,7 @@ $this(function() {
 });
 $this->setBlock('content', function() {
     $f = new FormHelper(['hi' => '3']);
-    $f->begin(['method' => 'POST']);
+    $f->begin(['method' => 'delete']);
     $f->renderTextField(['name' => 'hi']);
     $f->renderTextArea(['name' => 'hi']);
     $f->renderSelect(['name' => 'hi', ':options' => ['1', 'hi', '2', '3']]);
