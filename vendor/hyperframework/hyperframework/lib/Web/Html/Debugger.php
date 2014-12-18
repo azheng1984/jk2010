@@ -127,9 +127,25 @@ class Debugger {
             echo '<span style="color:red;background-color:#eee">Output Buffer Error</span>';
         } else {
             if (strlen($outputBuffer) > 1) {
-                echo '<pre>';
-                //var_dump(mb_detect_encoding($outputBuffer));
-                echo htmlspecialchars($outputBuffer, ENT_SUBSTITUTE);
+                $outputBuffer = addslashes($outputBuffer);
+                $outputBuffer = str_replace("\n", '\n', $outputBuffer);
+                $outputBuffer = str_replace("</script>", '<" + "/script>', $outputBuffer);
+?>
+                <h4>[PREVIEW]</h4>
+                <iframe name="buffer" id="buffer" src="javascript:false" width="100%"></iframe>
+<script>
+window.frames["buffer"].document.open();
+window.frames["buffer"].document.write("<?= $outputBuffer ?>");
+window.frames["buffer"].document.close();
+document.getElementById("buffer").height = window.frames["buffer"].document.body.scrollHeight+ 'px';
+alert('no matter');
+</script>
+ 
+<?php
+
+                echo '<h4>[SROUCE]</h4>';
+                echo '<pre style="word-break:break-all;word-wrap: break-word;">';
+                echo htmlspecialchars($outputBuffer, ENT_QUOTES | ENT_SUBSTITUTE);
                 echo '</pre>';
             } else {
                 echo '<span style="color:#999;background-color:#eee">empty</span>';

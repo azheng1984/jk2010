@@ -9,6 +9,9 @@ class App {
     private $router;
 
     public function run() {
+        var_dump('hi');
+        echo "'hello'<div>hello</div><script>document.write('wow');alert('hi')sadfsd0)</script>";
+        dsf();
         $controller = $this->createController();
         $controller->run();
         $this->finalize();
