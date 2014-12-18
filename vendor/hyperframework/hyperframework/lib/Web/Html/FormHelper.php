@@ -135,7 +135,7 @@ class FormHelper {
     }
 
     protected function encodeSpecialChars($content) {
-        //config
+        //todo config utf-8?
         return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE);
     }
 
