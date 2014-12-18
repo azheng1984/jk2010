@@ -16,6 +16,7 @@ class Controller {
 
     public function __construct($app) {
         $this->app = $app;
+        CsrfProtection::run();
     }
 
     public function run() {

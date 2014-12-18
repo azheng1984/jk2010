@@ -5,8 +5,8 @@ use Exception;
 use ReflectionMethod;
 use Hyperframework;
 use Hyperframework\Common\Config;
-use Hyperframework\Common\NamespaceCombiner;
-use Hyperframework\Common\PathCombiner;
+use Hyperframework\Common\NamespaceBuilder;
+use Hyperframework\Common\PathBuilder;
 use Hyperframework\Common\ConfigFileLoader;
 use Hyperframework\Common\FullPathRecognizer;
 
@@ -82,11 +82,11 @@ class CommandConfig {
                         'hyperframework.app_root_namespace', ''
                     );
                     if ($rootNamespace !== '' && $rootNamespace !== '\\') {
-                        NamespaceCombiner::prepend($rootNamespace, $namespace);
+                        NamespaceBuilder::prepend($rootNamespace, $namespace);
                     }
                 }
                 if ($namespace !== '' && $namespace !== '\\') {
-                    NamespaceCombiner::prepend($class, $namespace);
+                    NamespaceBuilder::prepend($class, $namespace);
                 }
             }
         }
@@ -285,7 +285,7 @@ class CommandConfig {
                         'hyperframework.cli.command_config_root_path', ''
                     );
                     if ($configRootPath !== '') {
-                        PathCombiner::prepend($configPath, $configRootPath);
+                        PathBuilder::prepend($configPath, $configRootPath);
                     }
                     $configPath = ConfigFileLoader::getFullPath($configPath);
                 }
@@ -384,7 +384,7 @@ class CommandConfig {
             );
             $class = 'Command';
             if ($namespace !== '' && $namespace !== '\\') {
-                NamespaceCombiner::prepend($class, $namespace);
+                NamespaceBuilder::prepend($class, $namespace);
             }
             return $class;
         }
@@ -413,7 +413,7 @@ class CommandConfig {
         );
         if ($commandConfigRootPath !== '') {
             if (FullPathRecognizer::isFull($folder) === false) {
-                PathCombiner::prepend($folder, $commandConfigRootPath);
+                PathBuilder::prepend($folder, $commandConfigRootPath);
             } else {
                 return $folder;
             }

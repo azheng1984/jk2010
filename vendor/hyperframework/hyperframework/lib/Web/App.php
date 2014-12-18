@@ -9,7 +9,6 @@ class App {
     private $router;
 
     public function run() {
-        CsrfProtection::run();
         $controller = $this->createController();
         $controller->run();
         $this->finalize();
