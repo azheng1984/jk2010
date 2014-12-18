@@ -24,7 +24,7 @@ class Runner extends Base {
     }
 
     protected static function runApp() {
-        $class = Config::get('hyperframework.web.app_class', '');
+        $class = Config::getString('hyperframework.web.app_class', '');
         if ($class === '') {
             $app = new App;
         } else {
