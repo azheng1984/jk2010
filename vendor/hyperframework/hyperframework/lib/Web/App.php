@@ -50,7 +50,6 @@ class App {
     protected function createController() {
         $router = $this->getRouter();
         $class = (string)$router->getControllerClass();
-        var_dump($class);
         if ($class === '' || class_exists($class) === false) {
             throw new Exception;
         }

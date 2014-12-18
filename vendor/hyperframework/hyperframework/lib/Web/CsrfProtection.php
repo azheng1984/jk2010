@@ -5,7 +5,7 @@ use Exception;
 use Hyperframework\Common\Config;
 
 class CsrfProtection {
-    private static $isEnabled = false;
+    private static $isEnabled;
     private static $tokenName;
     private static $token;
 
@@ -37,6 +37,7 @@ class CsrfProtection {
 
     public static function getToken() {
         if (self::$token === null) {
+            $name = static::getTokenName();
             if (isset($_COOKIE[$name])) {
                 self::$token = $_COOKIE[$name];
             } else {
@@ -77,6 +78,6 @@ class CsrfProtection {
     }
 
     protected static function generateToken() {
-        return sha1(uniqid(mt_rand(), true));
+        return md5(uniqid(mt_rand(), true));
     }
 }

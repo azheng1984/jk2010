@@ -18,11 +18,11 @@ class FormHelper {
             $this->renderAttributes($attributes);
         }
         echo '>';
-        if (isset($attributes['method'])
-            && $attributes['method'] === 'POST'
-            && CsrfProtection::isEnabled()
-        ) {
-            $this->renderCsrfProtectionField();
+        if (isset($attributes['method'])) {
+            $attributes['method'] = strtoupper($attributes['method']);
+            if ($attributes['method'] === 'POST') {
+                $this->renderCsrfProtectionField();
+            }
         }
     }
 
@@ -113,8 +113,10 @@ class FormHelper {
     }
 
     public function renderCsrfProtectionField() {
-        echo '<input type="hidden" name="', CsrfProtection::getTokenName(),
-            '" value="', CsrfProtection::getToken(), '"/>';
+        if (CsrfProtection::isEnabled()) {
+            echo '<input type="hidden" name="', CsrfProtection::getTokenName(),
+                '" value="', CsrfProtection::getToken(), '"/>';
+        }
     }
 
     protected function encodeSpecialChars($content) {
