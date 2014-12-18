@@ -383,7 +383,7 @@ class CommandConfig {
                 'hyperframework.app_root_namespace', ''
             );
             $class = 'Command';
-            if ($namespace !== '') {
+            if ($namespace !== '' && $namespace !== '\\') {
                 NamespaceBuilder::prepend($class, $namespace);
             }
             return $class;

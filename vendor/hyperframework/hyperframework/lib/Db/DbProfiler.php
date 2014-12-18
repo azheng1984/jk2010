@@ -59,12 +59,9 @@ class DbProfiler {
         self::$profile['running_time'] = sprintf(
             '%F', microtime(true) - self::$profile['start_time']
         );
-        $isLoggerEnabled = Config::get(
-            'hyperframework.db.profiler.enable_logger'
+        $isLoggerEnabled = Config::getBoolean(
+            'hyperframework.db.profiler.enable_logger', true
         );
-        if ($isLoggerEnabled === null) {
-            $isLoggerEnabled = true;
-        }
         if ($isLoggerEnabled) {
             Logger::debug([
                 'name' => 'hyperframework.db.profiler.profile',

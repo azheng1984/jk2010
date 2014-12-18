@@ -15,7 +15,7 @@ class Runner extends Base {
     }
 
     protected static function initializeErrorHandler() {
-        $class = (string)Config::get('hyperframework.error_handler.class');
+        $class = Config::getString('hyperframework.error_handler.class', '');
         if ($class === '') {
             ErrorHandler::run();
         } else {
@@ -24,7 +24,7 @@ class Runner extends Base {
     }
 
     protected static function runApp() {
-        $class = (string)Config::get('hyperframework.web.app_class');
+        $class = Config::get('hyperframework.web.app_class', '');
         if ($class === '') {
             $app = new App;
         } else {

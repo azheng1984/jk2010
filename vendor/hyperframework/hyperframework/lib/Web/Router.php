@@ -4,6 +4,7 @@ namespace Hyperframework\Web;
 use Exception;
 use Hyperframework;
 use Hyperframework\Common\Config;
+use Hyperframework\Common\NamespaceBuilder;
 use Hyperframework\Web\NotFoundException;
 
 abstract class Router {
@@ -53,7 +54,7 @@ abstract class Router {
 
     public function getModule() {
         if ($this->module === null) {
-            return Config::get('hyperframework.web.default_module');
+            return Config::getString('hyperframework.web.default_module');
         }
         return $this->module;
     }
@@ -122,13 +123,14 @@ abstract class Router {
 
     protected function getControllerRootNamespace() {
         if ($this->controllerRootNamespace === null) {
-            $appRootNamespace = (string)Config::get(
-                'hyperframework.app_root_namespace'
+            $namespace = 'Controllers';
+            $rootNamespace = Config::getString(
+                'hyperframework.app_root_namespace', ''
             );
-            if ($appRootNamespace === '') {
-                return 'Controllers';
+            if ($rootNamespace !== '' && $rootNamespace !== '\\') {
+                NamespaceBuilder::prepend($namespace, $rootNamespace);
             }
-            return $appRootNamespace . '\Controllers';
+            $this->controllerRootNamespace = $namespace;
         }
         return $this->controllerRootNamespace;
     }

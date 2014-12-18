@@ -29,8 +29,10 @@ class CsrfProtection {
     }
 
     public static function getTokenName() {
-        $name = Config::get('hyperframework.web.csrf_protection.token_name');
-        if ($name === null) {
+        $name = Config::getString(
+            'hyperframework.web.csrf_protection.token_name', ''
+        );
+        if ($name === '') {
             return '_csrf_token';
         }
         return $name;

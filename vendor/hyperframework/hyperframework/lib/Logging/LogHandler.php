@@ -4,6 +4,7 @@ namespace Hyperframework\Logging;
 use Exception;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
+use Hyperframework\Common\PathBuilder;
 use Hyperframework\Common\FullPathRecognizer;
 
 class LogHandler {
@@ -65,25 +66,23 @@ class LogHandler {
     }
 
     private static function initializePath() {
-        $path = Config::get('hyperframework.log_handler.log_path');
-        if ($path === null) {
-            self::$path =  FileLoader::getDefaultRootPath()
-                . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'app.log';
-            self::$protocol = 'file';
+        self::$path = Config::getString(
+            'hyperframework.log_handler.log_path', ''
+        );
+        self::$protocol = 'file';
+        if (self::$path === '') {
+            self::$path = 'log' . DIRECTORY_SEPARATOR . 'app.log';
         } else {
-            $protocol = 'file';
             if (preg_match('#^([a-zA-Z0-9.+]+)://#', $path, $matches)) {
-                $protocol = strtolower($matches[1]);
+                self::$protocol = strtolower($matches[1]);
+                return;
+            } else {
+                if (FullPathRecognizer::isFull($path)) {
+                    return;
+                }
             }
-            self::$protocol = $protocol;
-            if ($protocol === 'file'
-                && FullPathRecognizer::isFull($path) === false
-            ) {
-                $path = FileLoader::getDefaultRootPath()
-                    . DIRECTORY_SEPARATOR . $path;
-            }
-            self::$path = $path;
         }
+        PathBuilder::append(self::$path, FileLoader::getDefaultRootPath());
     }
 
     private static function appendValue(&$data, $value, $prefix = "\t>") {

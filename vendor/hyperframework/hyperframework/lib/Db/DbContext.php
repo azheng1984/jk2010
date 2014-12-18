@@ -75,10 +75,10 @@ class DbContext {
 
     private static function getFactoryClass() {
         if (self::$factoryClass === null) {
-            self::$factoryClass = Config::get(
-                'hyperframework.db.connection.factory_class'
+            self::$factoryClass = Config::getString(
+                'hyperframework.db.connection.factory_class', ''
             );
-            if (self::$factoryClass === null) {
+            if (self::$factoryClass === '') {
                 self::$factoryClass = 'Hyperframework\Db\DbConnectionFactory';
             }
         }
