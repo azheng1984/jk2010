@@ -67,7 +67,6 @@ abstract class Router {
     }
 
     public function getControllerClass() {
-        //use namespace builder
         $class = null;
         if ($this->controllerClass !== null) {
             $class = (string)$this->controllerClass;
@@ -86,15 +85,16 @@ abstract class Router {
                 $class = str_replace(' ', '', $tmp) . 'Controller';
             }
         }
-        $rootNamespace = (string)$this->getControllerRootNamespace();
-        if ($rootNamespace !== '') {
-            $rootNamespace .= '\\';
-        }
         $moduleNamespace = (string)$this->getModuleNamespace();
-        if ($moduleNamespace !== '') {
-            $moduleNamespace .= '\\';
+        if ($moduleNamespace !== '' && $moduleNamespace !== '\\') {
+            NamespaceCombiner::prepend($class, $moduleNamespace);
         }
-        return $rootNamespace . $moduleNamespace . $class;
+        $rootNamespace = (string)$this->getControllerRootNamespace();
+        if ($rootNamespace !== '' && $rootNamespace !== '\\') {
+            NamespaceCombiner::prepend($class, $rootNamespace);
+        }
+        $this->controllerClass = '\\' . $class;
+        return $class;
     }
 
     public function getAction() {
