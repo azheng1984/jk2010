@@ -67,6 +67,7 @@ abstract class Router {
     }
 
     public function getControllerClass() {
+        //use namespace builder
         $class = null;
         if ($this->controllerClass !== null) {
             $class = (string)$this->controllerClass;
