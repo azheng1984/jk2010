@@ -134,9 +134,6 @@ class ErrorHandler {
     final public static function handleFatalError() {
         self::$isShutdownStarted = true;
         if (error_reporting() === 0) {
-            if (self::shouldReportCompileWarning() === false) {
-                self::enableDefaultErrorReporting();
-            }
             return;
         }
         self::enableDefaultErrorReporting(

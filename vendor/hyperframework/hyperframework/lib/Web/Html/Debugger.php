@@ -134,11 +134,11 @@ class Debugger {
                 <h4>[PREVIEW]</h4>
                 <iframe name="buffer" id="buffer" src="javascript:false" width="100%"></iframe>
 <script>
-window.frames["buffer"].document.open();
-window.frames["buffer"].document.write("<?= $outputBuffer ?>");
-window.frames["buffer"].document.close();
-document.getElementById("buffer").height = window.frames["buffer"].document.body.scrollHeight+ 'px';
-alert('no matter');
+var preview = window.frames["buffer"].document;
+preview.open();
+preview.write("<?= $outputBuffer ?>");
+preview.close();
+document.getElementById("buffer").height = preview.body.scrollHeight + 'px';
 </script>
  
 <?php
