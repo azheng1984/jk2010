@@ -14,7 +14,7 @@ class CsrfProtection {
             if (static::getToken() === null) {
                 static::initializeToken();
             }
-            if (static::isSafeMethod($_SERVER['REQUEST_METHOD'])) {//todo
+            if (static::isSafeMethod($_SERVER['REQUEST_METHOD'])) {
                 return;
             }
             if (static::isValid() === false) {

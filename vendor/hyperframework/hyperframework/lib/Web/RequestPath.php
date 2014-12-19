@@ -1,11 +1,12 @@
 <?php
 namespace Hyperframework\Web;
 
-final class RequestPath {
+class RequestPath {
     private static $path;
+    private static $lastSlashRemovedPath;
     private static $segments;
 
-    public static function get() {
+    public static function get($shouldKeepLastSlash = true) {
         if (self::$path === null) {
             $tmp = explode('?', $_SERVER['REQUEST_URI'], 2);
             self::$path = $tmp[0];
@@ -15,14 +16,20 @@ final class RequestPath {
                 self::$path = preg_replace('#/{2,}#', '/', self::$path);
             }
         }
-        return self::$path;
+        if ($shouldKeepLastSlash) {
+            return self::$path;
+        }
+        if (self::$lastSlashRemovedPath === null) {
+            self::$lastSlashRemovedPath = '/' . trim(self::$path, '/');
+        }
+        return self::$lastSlashRemovedPath;
     }
 
     public static function getSegments() {
         if (self::$segments === null) {
-            $path = static::get();
+            $path = static::get(false);
             if ($path === '/') {
-                self::$segments = array();
+                self::$segments = [];
             }
             self::$segments = explode('/', trim($path, '/'));
         }

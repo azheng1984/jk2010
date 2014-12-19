@@ -17,7 +17,7 @@ abstract class Router {
     private $controllerRootNamespace;
     private $action;
     private $actionMethod;
-    private $path;
+    private $requestPath;
     private $scopeFormats;
     private $scopeMatchStack;
     private $shouldMatchScope = false;
@@ -54,7 +54,9 @@ abstract class Router {
 
     public function getModule() {
         if ($this->module === null) {
-            return Config::getString('hyperframework.web.default_module');
+            return Config::getString(
+                'hyperframework.web.router.default_module'
+            );
         }
         return $this->module;
     }
@@ -175,10 +177,9 @@ abstract class Router {
                 if (is_string($options['methods'])) {
                     $options['methods'] = [$options['methods']];
                 }
-                $requestMethod = $_SERVER['REQUEST_METHOD'];
                 $isMethodAllowed = false;
                 foreach ($options['methods'] as $method) {
-                    if (strtoupper($method) === $requestMethod) {
+                    if (strtoupper($method) === $_SERVER['REQUEST_METHOD']) {
                         $isMethodAllowed = true;
                         break;
                     }
@@ -205,7 +206,7 @@ abstract class Router {
         if ($hasFormat && is_array($options['formats']) === false) {
             $options['formats'] = [$options['formats']];
         }
-        $path = $this->getPath();
+        $path = $this->getRequestPath();
         if ($hasFormat === false
             && $hasOptionalSegment === false
             && $hasWildcardSegment === false
@@ -365,7 +366,7 @@ abstract class Router {
         if ($this->isMatched()) {
             throw new Exception;
         }
-        $path = $this->getPath();
+        $path = $this->getRequestPath();
         $pattern = null;
         $options = null;
         if (is_array($defination)) {
@@ -384,7 +385,7 @@ abstract class Router {
         if ($path === false) {
             return false;
         }
-        $previousPath = $this->getPath();
+        $previousPath = $this->getRequestPath();
         if (isset($defination['formats'])) {
             if ($this->scopeFormats !== null) {
                 throw new Exception;
@@ -751,7 +752,7 @@ abstract class Router {
                     && $this->scopeFormats === null
                     && preg_match('#^[^*:(#]+$#', $suffix, $matches) === 1
                 ) {
-                    if (substr($this->getPath(), -strlen($matches[0]))
+                    if (substr($this->getRequestPath(), -strlen($matches[0]))
                         !== $matches[0]
                     ) {
                         continue;
@@ -863,29 +864,10 @@ abstract class Router {
         $this->actionMethod = (string)$value;
     }
 
-    protected function getPath() {
-        if ($this->path === null) {
-            $this->path = RequestPath::get();
-            $this->path = '/' . trim($this->path, '/');
+    protected function getRequestPath() {
+        if ($this->requestPath === null) {
+            $this->requestPath = RequestPath::get(false);
         }
-        return $this->path;
-    }
-
-    //todo cache result & use this to get request method
-    protected function getRequestMethod() {
-        if (Config::get('hyperframework.web.rewrite_request_method') !== false)
-        {
-            if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
-                return strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
-            }
-            $param = Config::get('hyperframework.web.request_method_param');
-            if ($param == '') {
-                $param = '_method';
-            }
-            if (isset($_POST[$param])) {
-                return strtoupper($_POST[$param]);
-            }
-        }
-        return $_SERVER['REQUEST_METHOD'];
+        return $this->requestPath;
     }
 }

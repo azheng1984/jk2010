@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Web\Html;
+namespace Hyperframework\Web;
 
 use Exception;
 
