@@ -124,13 +124,12 @@ class App {
         $config = $this->getCommandConfig();
         $name = $config->getName();
         $options = null;
-        if ($exception instanceof SubcomandParsingException) {
+        $subcommand = null;
+        if ($exception instanceof SubcommandParsingException) {
             $subcommand = $exception->getSubcommand();
             $name .= ' ' . $subcommand;
-            $options = $config->getOptions($subcommand);
-        } else {
-            $options = $config->getOptions();
         }
+        $options = $config->getOptions($subcommand);
         if (isset($options['help'])) {
             echo 'See \'', $name, ' --help\'.', PHP_EOL;
             $helpOption = '--help';

@@ -9,8 +9,6 @@ class App {
     private $router;
 
     public function run() {
-        echo "'hello'<div>hello</div><script>document.write('wow');</script>";
-        dsf();
         $controller = $this->createController();
         $controller->run();
         $this->finalize();

@@ -5,9 +5,9 @@ class SubcommandParsingException extends CommandParsingException {
     private $subcommand;
 
     public function __construct(
-        $subcommand, $message = '', $errorType = '', $previous = null
+        $subcommand, $message = '', $code = 0, $previous = null
     ) {
-        parent::__construct($message, $errorType, $previous);
+        parent::__construct($message, $code, $previous);
         $this->subcommand = $subcommand;
     }
 

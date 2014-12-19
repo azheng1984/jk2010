@@ -10,6 +10,7 @@ class CommandParser {
         }
         $optionConfigs = $commandConfig->getOptions();
         $result = [];
+        $subcommand = null;
         $optionType = null;
         if ($commandConfig->isSubcommandEnabled()) {
             $result['global_options'] = [];
@@ -33,9 +34,12 @@ class CommandParser {
             ) {
                 if ($isGlobal) {
                     if ($config->hasSubcommand($element) === false) {
-                        throw new Exception;
+                        throw new CommandParsingException(
+                            "Command $element not found"
+                        );
                     }
-                    $isGlobal= false;
+                    $isGlobal = false;
+                    $subcommand = $element;
                     $result['subcommand'] = $element;
                     $result['option'] = [];
                     $optionConfigs = $commandConfig->getOptions($element);
@@ -47,7 +51,9 @@ class CommandParser {
             }
             if ($element === '--') {
                 if ($isGlobal) {
-                    throw new Exception;
+                    throw new CommandParsingException(
+                        "Option -- is not allowed"
+                    );
                 }
                 $isArgument = true;
                 continue;
@@ -57,7 +63,13 @@ class CommandParser {
                 while ($length > 1) {
                     $optionName = $element[$charIndex];
                     if (isset($optionConfigs[$optionName]) === false) {
-                        throw new Exception;
+                        $message = "Option $optionName is not allowed";
+                        if ($subcommand === null) {
+                            throw new CommandParsingException($message);
+                        }
+                        throw new SubcommandParsingException(
+                            $subcommand, $message
+                        );
                     }
                     $optionArgument = true;
                     $option = $optionConfigs[$optionName];
@@ -71,8 +83,12 @@ class CommandParser {
                         } else {
                             ++$index;
                             if ($index >= $count) {
-                                throw new CommandParsingException(
-                                    'Option require argument'
+                                $message = 'Option require argument';
+                                if ($subcommand === null) {
+                                    throw new CommandParsingException($message);
+                                }
+                                throw new SubcommandParsingException(
+                                    $subcommand, $message
                                 );
                             }
                             $optionArgument = $argv[$index];
@@ -114,20 +130,40 @@ class CommandParser {
                 }
                 $optionName = substr($optionName, 2);
                 if (isset($optionConfigs[$optionName]) === false) {
-                    throw new CommandParsingException("Unknown option '$optionName'");
+                    $message = "Unknown option $optionName";
+                    if ($subcommand === null) {
+                        throw new CommandParsingException($message);
+                    }
+                    throw new SubcommandParsingException(
+                        $subcommand, $message
+                    );
                 }
                 $option = $optionConfigs[$optionName];
                 if ($option->hasArgument() === 1) {
                     if ($optionArgument === null) {
                         ++$index;
                         if ($index >= $count) {
-                            throw new Exception;
+                            $message =
+                                "Option $optionName requires an argument";
+                            if ($subcommand === null) {
+                                throw new CommandParsingException($message);
+                            }
+                            throw new SubcommandParsingException(
+                                $subcommand, $message
+                            );
                         }
                         $optionArgument = $argv[$index];
                     }
                 } elseif ($option->hasArgument() === -1) {
                     if ($optionArgument !== true) {
-                        throw new Exception;
+                        $message =
+                            "Option $optionName do not accept an argument";
+                        if ($subcommand === null) {
+                            throw new CommandParsingException($message);
+                        }
+                        throw new SubcommandParsingException(
+                            $subcommand, $message
+                        );
                     }
                 }
                 if ($option->isRepeatable()) {
@@ -150,7 +186,7 @@ class CommandParser {
         }
         $hasMagicOption = static::hasMagicOption(
             isset($result['global_options']) ? $result['global_options'] : null,
-            isset($result['subcommand']) ? $result['subcommand'] : null,
+            $subcommand,
             isset($result['options']) ? $result['options'] : null,
             $commandConfig
         );
@@ -159,6 +195,7 @@ class CommandParser {
             $globalMutuallyExclusiveOptionGroupConfigs =
                 $commandConfig->getMutuallyExclusiveOptionGroups();
             self::checkOptions(
+                null,
                 $result['global_options'],
                 $globalOptionConfigs,
                 $globalMutuallyExclusiveOptionGroupConfigs,
@@ -166,16 +203,18 @@ class CommandParser {
             );
         }
         if (isset($result['options'])) {
-            $subcommand = isset($result['subcommand']) ?
-                $result['subcommand'] : null;
             $mutuallyExclusiveOptionGroupConfigs =
                 $commandConfig->getMutuallyExclusiveOptionGroups($subcommand);
             self::checkOptions(
+                $subcommand,
                 $result['options'],
                 $optionConfigs,
                 $mutuallyExclusiveOptionGroupConfigs,
                 $hasMagicOption
             );
+        }
+        if ($subcommand !== null) {
+            $result['subcommand'] = $subcommand;
         }
         if ($isGlobal || $hasMagicOption) {
             if ($hasMagicOption) {
@@ -186,9 +225,7 @@ class CommandParser {
         $result['arguments'] = [];
         $argumentConfigs = null;
         if ($commandConfig->isSubcommandEnabled()) {
-            $argumentConfigs = $commandConfig->getArguments(
-                $result['subcommand']
-            );
+            $argumentConfigs = $commandConfig->getArguments($subcommand);
         } else {
             $argumentConfigs = $commandConfig->getArguments();
         }
@@ -210,7 +247,13 @@ class CommandParser {
                     $result['arguments'][count($result['arguments']) - 1][] =
                         $arguments[$argumentIndex];
                 } else {
-                    throw new CommandParsingException('Argument number error.');
+                    $message = 'Argument number error.';
+                    if ($subcommand === null) {
+                        throw new CommandParsingException($message);
+                    }
+                    throw new SubcommandParsingException(
+                        $subcommand, $message
+                    );
                 }
             }
         }
@@ -221,7 +264,13 @@ class CommandParser {
             }
             ++$count;
             if ($count > $argumentCount) {
-                throw new Exception;
+                $message = 'Argument number error.';
+                if ($subcommand === null) {
+                    throw new CommandParsingException($message);
+                }
+                throw new SubcommandParsingException(
+                    $subcommand, $message
+                );
             }
         }
         return $result;
@@ -261,6 +310,7 @@ class CommandParser {
     }
 
     private static function checkOptions(
+        $subcommand,
         array $options,
         array $optionConfigs,
         array $mutuallyExclusiveOptionGroupConfigs = null,
@@ -272,7 +322,13 @@ class CommandParser {
                     continue;
                 }
                 if ($hasMagicOption === false) {
-                    throw new Exception;
+                    $message = "Option $name is required";
+                    if ($subcommand === null) {
+                        throw new CommandParsingException($message);
+                    }
+                    throw new SubcommandParsingException(
+                        $subcommand, $message
+                    );
                 }
             }
         }
@@ -281,7 +337,13 @@ class CommandParser {
             $values = $option->getValues();
             if ($option->getValues() !== null) {
                 if (in_array($value, $values, true) === false) {
-                    throw new Exception;
+                    $message = "The value of Option '$name' is not valid";
+                    if ($subcommand === null) {
+                        throw new CommandParsingException($message);
+                    }
+                    throw new SubcommandParsingException(
+                        $subcommand, $message
+                    );
                 }
             }
         }
@@ -295,14 +357,27 @@ class CommandParser {
                     }
                     if (isset($options[$key])) {
                         if ($optionKey !== null && $optionKey !== $key) {
-                            throw new Exception('mutually exclusive option conflict');
+                            $message = "Mutually exclusive option conflict"
+                                . "($optionKey & $key)";
+                            if ($subcommand === null) {
+                                throw new CommandParsingException($message);
+                            }
+                            throw new SubcommandParsingException(
+                                $subcommand, $message
+                            );
                         }
                         $optionKey = $key;
                     }
                 }
                 if ($groupConfig->isRequired() && $hasOption === false) {
                     if ($hasMagicOption === false) {
-                        throw new Exception;
+                        $message = 'Option group is required';
+                        if ($subcommand === null) {
+                            throw new CommandParsingException($message);
+                        }
+                        throw new SubcommandParsingException(
+                            $subcommand, $message
+                        );
                     }
                 }
             }
