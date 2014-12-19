@@ -392,9 +392,9 @@ abstract class Router {
             }
             $this->scopeFormats = $defination['formats'];
         }
-        $this->setPath('/' . $path);
+        $this->setRequestPath('/' . $path);
         $result = $function();
-        $this->setPath($previousPath);
+        $this->setRequestPath($previousPath);
         array_pop($this->scopeMatchStack);
         if (isset($defination['formats'])) {
             $this->scopeFormats = null;
@@ -836,8 +836,8 @@ abstract class Router {
         $this->setMatchStatus(true);
     }
 
-    protected function setPath($value) {
-        $this->path = (string)$value;
+    protected function setRequestPath($value) {
+        $this->requestPath = (string)$value;
     }
 
     protected function setModule($value) {
