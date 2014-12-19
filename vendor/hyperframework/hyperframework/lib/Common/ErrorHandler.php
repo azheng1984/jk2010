@@ -73,7 +73,9 @@ class ErrorHandler {
     }
 
     private static function shouldReportCompileWarning() {
-        return (self::getErrorReportingBitmask() & E_COMPILE_WARNING) !== 0;
+        static $result =
+            (self::getErrorReportingBitmask() & E_COMPILE_WARNING) !== 0;
+        return $result;
     }
 
     protected static function shouldDisplayErrors() {
@@ -127,10 +129,13 @@ class ErrorHandler {
     }
 
     final public static function handleFatalError() {
+        self::$isShutdownStarted = true;
         if (error_reporting() === 0) {
+            if (self::shouldReportCompileWarning() === false) {
+                self::enableDefaultErrorReporting();
+            }
             return;
         }
-        self::$isShutdownStarted = true;
         self::enableDefaultErrorReporting(
             error_reporting() | (static::getErrorReportingBitmask() & (
                 E_ERROR | E_PARSE | E_CORE_ERROR
