@@ -23,9 +23,9 @@ class App {
         if ($this->router === null) {
             $class = Config::getString('hyperframework.web.router_class', '');
             if ($class === '') {
+                $class = 'Router';
                 $namespace =
                     Config::getString('hyperframework.app_root_namespace', '');
-                $class = 'Router';
                 if ($namespace !== '' && $namespace !== '\\') {
                     NamespaceCombiner::prepend($class, $namespace);
                 }

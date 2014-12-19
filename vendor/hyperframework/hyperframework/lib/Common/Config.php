@@ -21,7 +21,7 @@ class Config {
         if ($result === null) {
             return $default;
         }
-        if (is_scalar($result)) {
+        if (is_scalar($result) || is_resource($result)) {
             return (string)$result;
         }
         if (is_object($result)) {
