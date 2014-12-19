@@ -31,7 +31,7 @@ class RequestPath {
             if ($path === '/') {
                 self::$segments = [];
             }
-            self::$segments = explode('/', trim($path, '/'));
+            self::$segments = explode('/', $path);
         }
         return self::$segments;
     }

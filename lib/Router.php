@@ -7,9 +7,7 @@ class Router extends Base {
     protected function execute() {
         if ($this->matchResources('articles')) return;
         if ($this->matchScope(['xxx/:xxx_id', 'formats' => ['jpg']], function() {
-            if ($this->match('/')) {
-                return;
-            }
+            if ($this->match('/')) return;
             if ($this->matchResources('articles')) {
                 print_r($this->getParams());
                 echo 'matched!';

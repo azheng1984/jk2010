@@ -31,14 +31,17 @@ class Debugger {
         }
         echo $exception->getMessage();
         echo '</h2>';
+        $firstLinePrefix = null;
         if ($exception->getFile() === 'undefined') { //???
             echo '<h3>FILE:</h3>';
             echo '<span style="color:#999;background-color:#eee">undefined</span>';
         } else {
             echo '<h3>FILE: ',$exception->getFile(), '</h3>';
+        //    var_dump(token_get_all(file_get_contents($exception->getFile())));
             $sourceCode = highlight_string(
                 file_get_contents($exception->getFile()), true
             );//highlight_file 会附带 compile warning
+            //echo $sourceCode;
             $lines = explode("<br />", $sourceCode);
             $index = 1;
             $count = count($lines);
@@ -51,16 +54,21 @@ class Debugger {
                     } elseif ($key === $count - 1) {
                         $lines[$key] = '</span></code>';
                     } else {
-                        //if ($index === 193) {
-                        //    echo 193;
-                        //}
-                    //    echo $key. ' ';
+                        if ($index + 10 === $errorLine) {
+                            if (preg_match('/(<span[^>]*>)[^<]*$/', $lines[$key], $matches)) {
+                                $firstLinePrefix = $matches[1];
+                            }
+                        }
                         unset($lines[$key]);
                     }
                     ++$index;
                     continue;
                 }
                 $content = $line;
+                if ($firstLinePrefix !== null) {
+                    $content = $firstLinePrefix . $content;
+                    $firstLinePrefix = null;
+                }
                 $line = '<span style="color:#ccc;width:';
                 $line .= (strlen($count)) * 10;
                 $line .= 'px;display:inline-block">' . $index .'</span> ' . $content;
@@ -140,9 +148,7 @@ preview.write("<?= $outputBuffer ?>");
 preview.close();
 document.getElementById("buffer").height = preview.body.scrollHeight + 'px';
 </script>
- 
 <?php
-
                 echo '<h4>[SROUCE]</h4>';
                 echo '<pre style="word-break:break-all;word-wrap: break-word;">';
                 echo htmlspecialchars($outputBuffer, ENT_QUOTES | ENT_SUBSTITUTE);

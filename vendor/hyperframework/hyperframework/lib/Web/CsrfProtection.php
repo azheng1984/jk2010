@@ -27,7 +27,7 @@ class CsrfProtection {
     public static function isEnabled() {
         if (self::$isEnabled === null) {
             self::$isEnabled = Config::getBoolean(
-                'hyperframework.web.enable_csrf_protection', true
+                'hyperframework.web.csrf_protection.enable', true
             );
         };
         return self::$isEnabled;

@@ -21,13 +21,10 @@ class App {
 
     public function getRouter() {
         if ($this->router === null) {
-            $class = Config::getString(
-                'hyperframework.web.router_class', ''
-            );
+            $class = Config::getString('hyperframework.web.router_class', '');
             if ($class === '') {
-                $namespace = Config::get(
-                    'hyperframework.app_root_namespace', ''
-                );
+                $namespace =
+                    Config::getString('hyperframework.app_root_namespace', '');
                 $class = 'Router';
                 if ($namespace !== '' && $namespace !== '\\') {
                     NamespaceCombiner::prepend($class, $namespace);
@@ -52,9 +49,10 @@ class App {
     }
 
     protected function rewriteRequestMethod() {
-        if (Config::getBoolean(
-            'hyperframework.web.router.rewrite_request_method', true
-        )) {
+        $shouldRewriteRequestMethod = Config::getBoolean(
+            'hyperframework.web.rewrite_request_method', true
+        );
+        if ($shouldRewriteRequestMethod) {
             $method = null;
             if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
                 $method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
