@@ -105,8 +105,9 @@ class ErrorHandler extends Base {
         if ($content === '') {
             return $content;
         }
-        //config
-        $charset = null;
+        $charset = Config::getString(
+            'Hyperframework.error_handler.output_buffer_charset', ''
+        );
         $encoding = null;
         foreach (headers_list() as $header) {
             $header = str_replace(' ', '', strtolower($header));
@@ -119,6 +120,7 @@ class ErrorHandler extends Base {
                 $segments = explode(';', $header);
                 foreach ($segments as $segment) {
                     if (strncmp('charset=', $segment, 8) === 0) {
+                        if ($charset !== '')
                         $charset = substr($segment, 8);
                         break;
                     }
@@ -127,8 +129,8 @@ class ErrorHandler extends Base {
         }
         if ($encoding !== null) {
             $content = static::decodeOutputBuffer($content, $encoding);
-        } 
-        if ($charset !== null) {
+        }
+        if ($charset !== '') {
             $content = static::convertOutputBufferCharset($content, $charset);
         }
         return $content;
@@ -152,7 +154,6 @@ class ErrorHandler extends Base {
     }
 
     private static function convertOutputBufferCharset($content, $charset) {
-        //config, allow gbk
         if ($charset !== 'utf-8') {
             $result = iconv($charset, 'utf-8', $content);
             if ($result !== false) {
