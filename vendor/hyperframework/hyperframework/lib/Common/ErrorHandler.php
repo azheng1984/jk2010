@@ -16,6 +16,7 @@ class ErrorHandler {
     private static $isShutdownStarted = false;
     private static $shouldExit;
     private static $shouldDisplayErrors;
+    private static $shouldReportCompileWarning;
     private static $isDefaultErrorLogEnabled;
     private static $isRunning = false;
 
@@ -73,9 +74,11 @@ class ErrorHandler {
     }
 
     private static function shouldReportCompileWarning() {
-        static $result =
+        if (self::$shouldReportCompileWarning === null) {
+            self::$shouldReportCompileWarning =
             (self::getErrorReportingBitmask() & E_COMPILE_WARNING) !== 0;
-        return $result;
+        }
+        return self::$shouldReportCompileWarning;
     }
 
     protected static function shouldDisplayErrors() {
