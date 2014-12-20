@@ -10,8 +10,6 @@ class ErrorHandler {
     private static $source;
     private static $isError;
     private static $isLoggerEnabled;
-    private static $shouldCacheErrors = false;
-    private static $previousErrors = [];
     private static $errorReportingBitmask;
     private static $isShutdownStarted = false;
     private static $shouldExit;
@@ -89,14 +87,6 @@ class ErrorHandler {
         return self::$shouldDisplayErrors;
     }
 
-    final protected static function enableErrorCache() {
-        self::$shouldCacheErrors = true;
-    }
-
-    final protected static function disableErrorCache() {
-        self::$shouldCacheErrors = false;
-    }
-
     final public static function handleException($exception) {
         if (error_reporting() === 0) {
             return;
@@ -114,14 +104,14 @@ class ErrorHandler {
         self::enableDefaultErrorReporting();
         $shouldThrow = false;
         if (self::$source === null) {
-            $throwableErrorBitmask = Config::getInt(
-                'hyperframework.error_handler.throwable_error_bitmask', null
+            $errorThrowingBitmask = Config::getInt(
+                'hyperframework.error_handler.error_throwing_bitmask', null
             );
-            if ($throwableErrorBitmask === null) {
-                $throwableErrorBitmask =
+            if ($errorThrowingBitmask === null) {
+                $errorThrowingBitmask =
                     E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
             }
-            if (($type & $throwableErrorBitmask) !== 0) {
+            if (($type & $errorThrowingBitmask) !== 0) {
                 $shouldThrow = true;
             }
         }
@@ -183,9 +173,6 @@ class ErrorHandler {
         if (self::$shouldExit === false) {
             if (static::shouldDisplayErrors()) {
                 static::displayError();
-            }
-            if (self::$shouldCacheErrors) {
-                self::$previousErrors[] = $source;
             }
             self::$source = null;
             self::disableDefaultErrorReporting();
@@ -328,13 +315,6 @@ class ErrorHandler {
             throw new Exception;
         }
         return self::$isError;
-    }
-
-    final protected static function getPreviousErrors() {
-        if (self::$shouldCacheErrors) {
-            return self::$previousErrors;
-        }
-        return;
     }
 
     protected static function isLoggerEnabled() {

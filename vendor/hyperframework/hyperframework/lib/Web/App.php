@@ -15,14 +15,12 @@ class App {
     }
 
     public function run() {
-        try {
-            adf();
-        } catch (\ErrorException $e) {
-            throw $e;
-        }
         $controller = $this->createController();
         $controller->run();
         $this->finalize();
+    }
+
+    public function name($param) {
     }
 
     public function getRouter() {

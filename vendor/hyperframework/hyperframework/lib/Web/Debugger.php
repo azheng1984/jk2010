@@ -6,7 +6,6 @@ use Exception;
 class Debugger {
     public static function execute(
         $exception,
-        array $previousErrors = null,
         $headers = null,
         $outputBuffer = null
     ) {
@@ -118,10 +117,10 @@ class Debugger {
         } else {
             echo '<span style="color:#999;background-color:#eee">undefined</span>';
         }
-        if ($previousErrors !== null) {
-            echo '<h2>Previous Errors</h2>';
-            var_dump($previousErrors);
-        }
+        //if ($previousErrors !== null) {
+        //    echo '<h2>Previous Errors</h2>';
+        //    var_dump($previousErrors);
+        //}
         echo '<h2>output</h2>';
         echo '<h3>headers</h3>';
         if ($isHeadersSent) {
