@@ -154,6 +154,9 @@ class DbClient {
             if ($class === '') {
                 self::$engine = new DbClientEngine;
             } else {
+                if (class_exists($class) === false) {
+                    throw new Exception;
+                }
                 self::$engine = new $class;
             }
         }

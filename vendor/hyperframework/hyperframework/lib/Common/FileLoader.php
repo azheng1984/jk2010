@@ -22,11 +22,8 @@ class FileLoader {
             }
         }
         $path = (string)$path;
-        if ($path === '') {
-            return false;
-        }
-        if (FullPathRecognizer::isFull($path) === false) {
-            $path = static::getDefaultRootPath() . DIRECTORY_SEPARATOR . $path;
+        if ($path === '' || FullPathRecognizer::isFull($path) === false) {
+            PathCombiner::prepend($path, static::getDefaultRootPath());
         }
         return $path;
     }
@@ -38,8 +35,8 @@ class FileLoader {
             );
             if (FullPathRecognizer::isFull(self::$defaultRootPath) === false) {
                 throw new Exception(
-                    "Config 'hyperframework.app_root_path'"
-                        . " is not a correct full path."
+                    "Config 'hyperframework.app_root_pathr'"
+                        . ' is not a correct full path.'
                 );
             }
         }

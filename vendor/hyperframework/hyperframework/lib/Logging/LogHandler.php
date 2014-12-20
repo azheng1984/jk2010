@@ -76,13 +76,9 @@ class LogHandler {
             if (preg_match('#^([a-zA-Z0-9.+]+)://#', $path, $matches)) {
                 self::$protocol = strtolower($matches[1]);
                 return;
-            } else {
-                if (FullPathRecognizer::isFull($path)) {
-                    return;
-                }
             }
         }
-        PathCombiner::prepend(self::$path, FileLoader::getDefaultRootPath());
+        self::$path = FileLoader::getFullPath(self::$path);
     }
 
     private static function appendValue(&$data, $value, $prefix = "\t>") {

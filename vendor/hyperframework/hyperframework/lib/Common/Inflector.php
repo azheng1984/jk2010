@@ -60,7 +60,7 @@ class Inflector {
             'turf' => 'turfs',
             'wave' => 'waves',
             'woman' => 'women',
-            'zombie' => 'zombies',
+            'zombie' => 'zombies'
         ];
         $result = false;
         if ($isSingular) {
@@ -89,7 +89,7 @@ class Inflector {
                     '/(octop|vir)us$/' => '\1i',
                     '/^(ax|test)is$/' => '\1es',
                     '/s$/' => 's',
-                    '/$/' => 's',
+                    '/$/' => 's'
                 ];
                 $rules =& $pluralRules;
             } else {

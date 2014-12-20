@@ -66,6 +66,9 @@ class App {
             if ($class === '') {
                 $this->commandConfig = new CommandConfig;
             } else {
+                if (class_exists($class) === false) {
+                    throw new Exception;
+                }
                 $this->commandConfig = new $class;
             }
         }
@@ -94,6 +97,10 @@ class App {
         $class = Config::getString('hyperframework.cli.help_class', '');
         if ($class === '') {
             $class = 'Hyperframework\Cli\Help';
+        } else {
+            if (class_exists($class) === false) {
+                throw new Exception;
+            }
         }
         $help = new $class($this);
         $help->render();

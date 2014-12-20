@@ -19,6 +19,9 @@ class Runner extends Base {
         if ($class === '') {
             ErrorHandler::run();
         } else {
+            if (class_exists($class) === false) {
+                throw new Exception;
+            }
             $class::run();
         }
     }
@@ -28,6 +31,9 @@ class Runner extends Base {
         if ($class === '') {
             $app = new App;
         } else {
+            if (class_exists($class) === false) {
+                throw new Exception;
+            }
             $app = new $class;
         }
         $app->run();

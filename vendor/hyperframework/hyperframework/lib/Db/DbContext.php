@@ -80,6 +80,10 @@ class DbContext {
             );
             if (self::$factoryClass === '') {
                 self::$factoryClass = 'Hyperframework\Db\DbConnectionFactory';
+            } else {
+                if (class_exists(self::$factoryClass) === false) {
+                    throw new Exception;
+                }
             }
         }
         return self::$factoryClass;

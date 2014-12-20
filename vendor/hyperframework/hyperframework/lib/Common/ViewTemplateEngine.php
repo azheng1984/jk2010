@@ -89,20 +89,11 @@ abstract class ViewTemplateEngine implements ArrayAccess {
 
     public function getRootPath() {
         if ($this->rootPath === null) {
-            $path = Config::getString(
-                'hyperframework.web.view.root_path', ''
-            );
+            $path = Config::getString('hyperframework.web.view.root_path', '');
             if ($path === '') {
                 $path = 'views';
-                PathCombiner::prepend($path, FileLoader::getDefaultRootPath());
-            } else {
-                if (FullPathRecognizer::isFull($path) === false) {
-                    PathCombiner::prepend(
-                        $path, FileLoader::getDefaultRootPath()
-                    );
-                }
             }
-            $this->rootPath = $path;
+            $this->rootPath = FileLoader::getFullPath($path);
         }
         return $this->rootPath;
     }

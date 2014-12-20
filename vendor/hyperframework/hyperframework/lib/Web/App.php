@@ -3,6 +3,7 @@ namespace Hyperframework\Web;
 
 use Exception;
 use Hyperframework\Common\Config;
+use Hyperframework\Common\FileLoader;
 use Hyperframework\Common\NamespaceCombiner;
 
 class App {
@@ -29,9 +30,9 @@ class App {
                 if ($namespace !== '' && $namespace !== '\\') {
                     NamespaceCombiner::prepend($class, $namespace);
                 }
-                if (class_exists($class) === false) {
-                    throw new Exception($class . ' not found');
-                }
+            }
+            if (class_exists($class) === false) {
+                throw new Exception($class . ' not found');
             }
             $this->router = new $class($this);
         }

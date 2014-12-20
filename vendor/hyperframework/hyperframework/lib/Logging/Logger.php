@@ -85,6 +85,9 @@ final class Logger {
         if ($logHandlerClass === '') {
             LogHandler::handle($level, $params);
         } else {
+            if (class_exists($logHandlerClass) === false) {
+                throw new Exception;
+            }
             $logHandlerClass::handle($level, $params);
         }
     }
