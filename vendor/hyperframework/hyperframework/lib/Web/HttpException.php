@@ -7,8 +7,9 @@ abstract class HttpException extends Exception {
     private $statusCode;
 
     public function __construct($message, $statusCode, $previous) {
-        $tmp = explode(' ', $statusCode, 2);
-        parent::__construct($message, (int)$tmp[0], $previous);
+        parent::__construct(
+            $message, (int)explode(' ', $statusCode, 2)[0], $previous
+        );
         $this->statusCode = $statusCode;
     }
 

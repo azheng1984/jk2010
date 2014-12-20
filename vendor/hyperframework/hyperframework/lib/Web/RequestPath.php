@@ -8,8 +8,7 @@ class RequestPath {
 
     public static function get($shouldKeepLastSlash = true) {
         if (self::$path === null) {
-            $tmp = explode('?', $_SERVER['REQUEST_URI'], 2);
-            self::$path = $tmp[0];
+            self::$path = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
             if (self::$path === '') {
                 self::$path = '/';
             } elseif (strpos(self::$path, '//') !== false) {
