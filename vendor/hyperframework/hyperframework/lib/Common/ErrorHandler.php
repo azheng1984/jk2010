@@ -259,7 +259,7 @@ class ErrorHandler {
 
     private static function getErrorLog() {
         $error = self::$source;
-        if ($error->shouldThrow() === true && $error->isFatal() === false) {
+        if ($error->shouldThrow() === true) {
             $result = 'Fatal error';
         } else {
             $result = self::convertErrorTypeForOutput($error->getSeverity());
@@ -371,9 +371,7 @@ class ErrorHandler {
         }
         echo $prefix, '<br />', PHP_EOL, '<b>';
         if (self::$isError) {
-            if ($source->shouldThrow() === true
-                && $source->isFatal() === false
-            ) {
+            if ($source->shouldThrow() === true) {
                 echo 'Fatal error';
             } else {
                 echo self::convertErrorTypeForOutput($source->getSeverity());

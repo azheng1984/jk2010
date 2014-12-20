@@ -75,7 +75,7 @@ class ErrorException extends Base {
         if ($this->sourceTrace === null) {
             return 'undefined';
         } else {
-            $result = null;
+            $result = '';
             $index = 0;
             foreach ($this->sourceTrace as $item) {
                 $result .= PHP_EOL . '#' . $index . ' '
@@ -83,6 +83,7 @@ class ErrorException extends Base {
                     . $item['function'];
                 ++$index;
             }
+            return $result;
         }
     }
 
