@@ -22,7 +22,7 @@ class ErrorHandler {
 
     public static function run() {
         self::$isLoggerEnabled = Config::getBoolean(
-            'hyperframework.error_handler.logger.enable', false
+            'hyperframework.error_handler.logger.enable'
         );
         if (self::$isLoggerEnabled) {
             ini_set('log_errors', '0');
@@ -50,6 +50,7 @@ class ErrorHandler {
         } elseif (self::shouldReportCompileWarning()) {
             error_reporting(static::getErrorReportingBitmask());
         }
+        //Error Control Operator - @
         if (self::shouldReportCompileWarning() === false) {
             if (static::shouldDisplayErrors()) {
                 ini_set('display_errors', '1');
@@ -100,6 +101,7 @@ class ErrorHandler {
         if (error_reporting() === 0) {
             return;
         }
+        throw new Exception;
         self::enableDefaultErrorReporting();
         self::handle($exception);
     }
@@ -112,6 +114,14 @@ class ErrorHandler {
         }
         self::enableDefaultErrorReporting();
         $isFatal = false;
+        //do not throw exception in fatal error or exception handler
+        $errorExceptionBitmask = Config::getInt(
+            'hyperframework.error_handler.error_exception_bitmask', null
+        );
+        if ($errorExceptionBitmask === null) {
+            $errorExceptionBitmask =
+                E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
+        }
         $extraFatalErrorBitmask = Config::getInt(
             'hyperframework.error_handler.extra_fatal_error_bitmask'
         );
@@ -215,7 +225,7 @@ class ErrorHandler {
             }
             if (self::isError() === false || $source->isRealFatal() === false) {
                 $shouldLogTrace = Config::getBoolean(
-                    'hyperframework.error_handler.logger.log_stack_trace', false
+                    'hyperframework.error_handler.logger.log_stack_trace'
                 );
                 if ($shouldLogTrace) {
                    $data['trace'] = [];
@@ -257,7 +267,7 @@ class ErrorHandler {
     }
 
     private static function getExceptionErrorLog() {
-        return 'Fatal error:  Uncaught ' . self::$source. PHP_EOL
+        return 'Fatal error:  Uncaught ' . self::$source . PHP_EOL
             . '  thrown in ' . self::$source->getFile() . ' on line '
             . self::$source->getLine();
     }

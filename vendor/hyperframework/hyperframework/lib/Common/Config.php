@@ -13,7 +13,7 @@ class Config {
         return $default;
     }
 
-    public static function getString($name, $default = null) {
+    public static function getString($name, $default = '') {
         $result = null;
         if (isset(self::$data[$name])) {
             $result = self::$data[$name];
@@ -39,21 +39,15 @@ class Config {
         );
     }
 
-    public static function getArray($name, $default = null) {
+    public static function getBoolean($name, $default = false) {
         $result = static::get($name);
         if ($result === null) {
             return $default;
         }
-        if (is_array($result) === false) {
-            throw new Exception(
-                "Config '$name' requires an array. "
-                    . ucfirst(gettype($result)) . " given"
-            );
-        }
-        return $result;
+        return (bool)$result;
     }
 
-    public static function getInt($name, $default = null) {
+    public static function getInt($name, $default = 0) {
         $result = static::get($name);
         if ($result === null) {
             return $default;
@@ -67,7 +61,7 @@ class Config {
         return (int)$result;
     }
 
-    public static function getFloat($name, $default = null) {
+    public static function getFloat($name, $default = 0.0) {
         $result = static::get($name);
         if ($result === null) {
             return $default;
@@ -79,6 +73,41 @@ class Config {
             );
         }
         return (float)$result;
+    }
+
+    public static function getArray($name, $default = []) {
+        $result = static::get($name);
+        if ($result === null) {
+            return $default;
+        }
+        if (is_array($result) === false) {
+            throw new Exception(
+                "Config '$name' requires an array. "
+                    . ucfirst(gettype($result)) . " given"
+            );
+        }
+        return $result;
+    }
+
+    public static function getObject($name, $class = null, $default = null) {
+        $result = static::get($name);
+        if ($result === null) {
+            return $default;
+        }
+        if ($class === null) {
+            if (is_object($result) === false) {
+                throw new Exception(
+                    "Config '$name' requires an object of class. "
+                        . ucfirst(gettype($result)) . " given"
+                );
+            }
+        } elseif ($result instanceof $class === false) {
+            throw new Exception(
+                "Config '$name' requires an object of class '$class'. "
+                    . "Object of class '". get_class($result) . "' given"
+            );
+        }
+        return $result;
     }
 
     public static function getResource($name, $default = null) {
@@ -95,20 +124,12 @@ class Config {
         return $result;
     }
 
-    public static function getBoolean($name, $default = null) {
-        $result = static::get($name);
-        if ($result === null) {
-            return $default;
-        }
-        return (bool)$result;
-    }
-
     public static function set($key, $value) {
         self::$data[$key] = $value;
     }
 
     public static function remove($key) {
-        self::set($key, null);
+        unset(self::$data[$key]);
     }
 
     public static function import($configs) {

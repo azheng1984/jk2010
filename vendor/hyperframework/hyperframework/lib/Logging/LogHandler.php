@@ -66,9 +66,7 @@ class LogHandler {
     }
 
     private static function initializePath() {
-        self::$path = Config::getString(
-            'hyperframework.log_handler.log_path', ''
-        );
+        self::$path = Config::getString('hyperframework.log_handler.log_path');
         self::$protocol = 'file';
         if (self::$path === '') {
             self::$path = 'log' . DIRECTORY_SEPARATOR . 'app.log';

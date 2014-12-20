@@ -54,9 +54,12 @@ abstract class Router {
 
     public function getModule() {
         if ($this->module === null) {
-            return Config::getString(
-                'hyperframework.web.router.default_module'
+            $this->module = Config::getString(
+                'hyperframework.web.router.default_module', false
             );
+        }
+        if ($this->module === false) {
+            return;
         }
         return $this->module;
     }
@@ -128,7 +131,7 @@ abstract class Router {
         if ($this->controllerRootNamespace === null) {
             $namespace = 'Controllers';
             $rootNamespace = Config::getString(
-                'hyperframework.app_root_namespace', ''
+                'hyperframework.app_root_namespace'
             );
             if ($rootNamespace !== '' && $rootNamespace !== '\\') {
                 NamespaceCombiner::prepend($namespace, $rootNamespace);

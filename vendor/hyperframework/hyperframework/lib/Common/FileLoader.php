@@ -16,7 +16,7 @@ class FileLoader {
 
     public static function getFullPath($path, $pathConfigName = null) {
         if ($pathConfigName !== null) {
-            $tmp = Config::getString($pathConfigName);
+            $tmp = Config::getString($pathConfigName, null);
             if ($tmp !== null) {
                 $path = $tmp;
             }
@@ -31,11 +31,16 @@ class FileLoader {
     public static function getDefaultRootPath() {
         if (self::$defaultRootPath === null) {
             self::$defaultRootPath = Config::getString(
-                'hyperframework.app_root_path', ''
+                'hyperframework.app_root_path', null
             );
+            if (self::$defaultRootPath === null) {
+                throw new Exception(
+                    "Config 'hyperframework.app_root_path' is not set."
+                );
+            }
             if (FullPathRecognizer::isFull(self::$defaultRootPath) === false) {
                 throw new Exception(
-                    "Config 'hyperframework.app_root_pathr'"
+                    "Config 'hyperframework.app_root_path'"
                         . ' is not a correct full path.'
                 );
             }
