@@ -21,7 +21,7 @@ return array(
     'app_root_namespace' => __NAMESPACE__,
 
     '[hyperframework.error_handler]',
-    'logger.enable' => true,
+    'logger.enable' => false,
     'logger.log_stack_trace' => true,
 
 //    'log_handler.path' => 'php://output',

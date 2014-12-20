@@ -2,7 +2,7 @@
 namespace Hyperframework\Common;
 
 use Exception;
-use Hyperframework\Common\Error;
+use Hyperframework\Common\ErrorException;
 use Hyperframework\Common\Config;
 use Hyperframework\Logging\Logger;
 
@@ -34,10 +34,10 @@ class ErrorHandler {
         self::$shouldDisplayErrors = ini_get('display_errors') === '1';
         $class = get_called_class();
         set_error_handler(
-            array($class, 'handleError'), self::$errorReportingBitmask
+            [$class, 'handleError'], self::$errorReportingBitmask
         );
-        set_exception_handler(array($class, 'handleException'));
-        register_shutdown_function(array($class, 'handleFatalError'));
+        set_exception_handler([$class, 'handleException']);
+        register_shutdown_function([$class, 'handleFatalError']);
         self::$isRunning = true;
         self::disableDefaultErrorReporting();
     }
@@ -45,12 +45,12 @@ class ErrorHandler {
     private static function enableDefaultErrorReporting(
         $errorReportingBitmask = null
     ) {
+        //Error Control Operator - @
         if ($errorReportingBitmask !== null) {
             error_reporting($errorReportingBitmask);
         } elseif (self::shouldReportCompileWarning()) {
             error_reporting(static::getErrorReportingBitmask());
         }
-        //Error Control Operator - @
         if (self::shouldReportCompileWarning() === false) {
             if (static::shouldDisplayErrors()) {
                 ini_set('display_errors', '1');
@@ -101,7 +101,6 @@ class ErrorHandler {
         if (error_reporting() === 0) {
             return;
         }
-        throw new Exception;
         self::enableDefaultErrorReporting();
         self::handle($exception);
     }
@@ -113,32 +112,24 @@ class ErrorHandler {
             return;
         }
         self::enableDefaultErrorReporting();
-        $isFatal = false;
-        //do not throw exception in fatal error or exception handler
-        $errorExceptionBitmask = Config::getInt(
-            'hyperframework.error_handler.error_exception_bitmask', null
-        );
-        if ($errorExceptionBitmask === null) {
-            $errorExceptionBitmask =
-                E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
-        }
-        $extraFatalErrorBitmask = Config::getInt(
-            'hyperframework.error_handler.extra_fatal_error_bitmask'
-        );
-        if ($extraFatalErrorBitmask === null) {
-            $extraFatalErrorBitmask =
-                E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
-        }
-        if (($type & $extraFatalErrorBitmask) !== 0) {
-            $isFatal = true;
+        $shouldThrow = false;
+        if (self::$source === null) {
+            $throwableErrorBitmask = Config::getInt(
+                'hyperframework.error_handler.throwable_error_bitmask', null
+            );
+            if ($throwableErrorBitmask === null) {
+                $throwableErrorBitmask =
+                    E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
+            }
+            if (($type & $throwableErrorBitmask) !== 0) {
+                $shouldThrow = true;
+            }
         }
         $trace = array_slice(debug_backtrace(), 2);
-        return self::handle(
-            new Error(
-                $type, $message, $file, $line, $context, $trace, $isFatal
-            ),
-            true
+        $error = new ErrorException(
+            $message, $type, $file, $line, $trace, $context, $shouldThrow
         );
+        return self::handle($error, true);
     }
 
     final public static function handleFatalError() {
@@ -156,11 +147,11 @@ class ErrorHandler {
         if ($error === null) {
             return;
         }
-        $error = new Error(
-            $error['type'], $error['message'], $error['file'],
-            $error['line'], null, null, true
+        $error = new ErrorException(
+            $error['message'], $error['type'], $error['file'],
+            $error['line'], null, null
         );
-        if ($error->isRealFatal()) {
+        if ($error->isFatal()) {
             self::enableDefaultErrorReporting();
             self::handle($error, true);
         }
@@ -168,34 +159,40 @@ class ErrorHandler {
 
     private static function handle($source, $isError = false) {
         if (self::$source !== null) {
-            if ($isError) {//real fatal error or from excaption handler
-                return false;
+            if ($isError && $source->isFatal()) {
+                //fatal error from non-fatal error handler
+                return;
             }
+            if ($isError === false) {
+                //exception from non-fatal error handler
+                throw new $source;
+            }
+            return false;
+        }
+        if ($isError && $source->shouldThrow()) {
             throw $source;
         }
-        self::$source = $source;
-        self::$isError = $isError;
         if ($isError && $source->isFatal() === false) {
             self::$shouldExit = false;
         } else {
             self::$shouldExit = true;
         }
+        self::$source = $source;
+        self::$isError = $source instanceof ErrorException;
         static::writeLog();
-        if ($isError) {
-            if (self::$shouldExit === false) {
-                if (static::shouldDisplayErrors()) {
-                    static::displayError();
-                }
-                if (self::$shouldCacheErrors) {
-                    self::$previousErrors[] = $source;
-                }
-                self::$source = null;
-                self::disableDefaultErrorReporting();
-                return;
+        if (self::$shouldExit === false) {
+            if (static::shouldDisplayErrors()) {
+                static::displayError();
             }
+            if (self::$shouldCacheErrors) {
+                self::$previousErrors[] = $source;
+            }
+            self::$source = null;
+            self::disableDefaultErrorReporting();
+            return;
         }
         static::displayFatalError();
-        if (($isError && $source->isRealFatal()) || self::$isShutdownStarted) {
+        if (self::$isShutdownStarted) {
             return;
         }
         exit(1);
@@ -221,16 +218,16 @@ class ErrorHandler {
                 }
             } else {
                 $name = 'php_error';
-                $data['type'] = $source->getTypeAsString();
+                $data['type'] = $source->getSeverityAsString();
             }
-            if (self::isError() === false || $source->isRealFatal() === false) {
+            if (self::isError() === false || $source->isFatal() === false) {
                 $shouldLogTrace = Config::getBoolean(
                     'hyperframework.error_handler.logger.log_stack_trace'
                 );
                 if ($shouldLogTrace) {
                    $data['trace'] = [];
                     foreach ($source->getTrace() as $item) {
-                        $trace = array();
+                        $trace = [];
                         if (isset($item['class'])) {
                             $trace['class'] = $item['class'];
                         }
@@ -253,12 +250,13 @@ class ErrorHandler {
                 'message' => $source->getMessage(),
                 'data' => $data
             ]);
-        } elseif (static::isDefaultErrorLogEnabled()) {
+        }
+        if (static::isDefaultErrorLogEnabled()) {
             static::writeDefaultErrorLog();
         }
     }
 
-    protected static function writeDefaultErrorLog() {
+    protected  static function writeDefaultErrorLog() {
         if (self::$isError) {
             error_log('PHP ' . self::getErrorLog());
         } else {
@@ -274,10 +272,10 @@ class ErrorHandler {
 
     private static function getErrorLog() {
         $error = self::$source;
-        if ($error->isFatal() === true && $error->isRealFatal() === false) {
+        if ($error->shouldThrow() === true && $error->isFatal() === false) {
             $result = 'Fatal error';
         } else {
-            $result = self::convertErrorTypeForOutput($error->getType());
+            $result = self::convertErrorTypeForOutput($error->getSeverity());
         }
         return $result . ':  ' . $error->getMessage() . ' in '
             . $error->getFile() . ' on line ' . $error->getLine();
@@ -318,7 +316,7 @@ class ErrorHandler {
             E_CORE_WARNING      => 'warn',
             E_RECOVERABLE_ERROR => 'error'
         ];
-        return $maps[self::$source->getType()];
+        return $maps[self::$source->getSeverity()];
     }
 
     final protected static function getSource() {
@@ -330,13 +328,6 @@ class ErrorHandler {
             throw new Exception;
         }
         return self::$isError;
-    }
-
-    final protected static function isException() {
-        if (self::$source === null) {
-            throw new Exception;
-        }
-        return !self::$isError;
     }
 
     final protected static function getPreviousErrors() {
@@ -400,12 +391,12 @@ class ErrorHandler {
         }
         echo $prefix, '<br />', PHP_EOL, '<b>';
         if (self::$isError) {
-            if ($source->isFatal() === true
-                && $source->isRealFatal() === false
+            if ($source->shouldThrow() === true
+                && $source->isFatal() === false
             ) {
                 echo 'Fatal error';
             } else {
-                echo self::convertErrorTypeForOutput($source->getType());
+                echo self::convertErrorTypeForOutput($source->getSeverity());
             }
             echo '</b>:  ';
             if (ini_get('docref_root') !== '') {

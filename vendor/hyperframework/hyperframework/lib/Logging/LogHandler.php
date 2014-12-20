@@ -2,6 +2,7 @@
 namespace Hyperframework\Logging;
 
 use Exception;
+use ErrorException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
 use Hyperframework\Common\PathCombiner;
@@ -21,7 +22,11 @@ class LogHandler {
         if (self::getProtocol() === 'file') {
             $flag = FILE_APPEND | LOCK_EX;
         }
-        file_put_contents(static::getPath(), $content, $flag);
+        try {
+            file_put_contents(static::getPath(), $content, $flag);
+        } catch (ErrorException $e) {
+            throw new Exception;
+        }
     }
 
     protected static function format($level, array $arguments) {

@@ -10,7 +10,7 @@ class Debugger {
         $headers = null,
         $outputBuffer = null
     ) {
-        $isError = !($exception instanceof Exception);
+        $isError = $exception instanceof \ErrorException;
         $isHeadersSent = headers_sent();
         if (headers_sent() === false) {
             header('Content-Type: text/html; charset=UTF-8');
@@ -19,7 +19,7 @@ class Debugger {
         echo '<h2>';
         if ($isError) {
         //    if ($exception->isFatal() === false) {
-                echo '[', $exception->getTypeAsString(), '] ';
+                echo '[', $exception->getSeverityAsString(), '] ';
         //    } else {
         //        echo '[Fatal Error] ';
         //    }
@@ -86,8 +86,12 @@ class Debugger {
             echo implode("<br />", $lines);
         }
         echo '<h2>stack trace</h2>';
-        if ($isError === false || $exception->isRealFatal() === false) {
-            $stackTrace = $exception->getTrace();
+        if ($isError === false || $exception->isFatal() === false) {
+            if ($isError) {
+                $stackTrace = $exception->getSourceTrace();
+            } else {
+                $stackTrace = $exception->getTrace();
+            }
             //if ($isError) {
             //    array_shift($stackTrace);
             //    array_shift($stackTrace);

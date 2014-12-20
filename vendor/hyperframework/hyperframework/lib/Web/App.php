@@ -15,7 +15,11 @@ class App {
     }
 
     public function run() {
-        throw new Exception;
+        try {
+            adf();
+        } catch (\ErrorException $e) {
+            throw $e;
+        }
         $controller = $this->createController();
         $controller->run();
         $this->finalize();

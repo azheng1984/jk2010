@@ -4,7 +4,7 @@ namespace Hyperframework\Common;
 use Exception;
 
 class Config {
-    private static $data = array();
+    private static $data = [];
 
     public static function get($name, $default = null) {
         if (isset(self::$data[$name])) {
