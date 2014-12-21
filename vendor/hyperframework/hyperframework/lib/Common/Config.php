@@ -128,6 +128,10 @@ class Config {
         self::$data[$key] = $value;
     }
 
+    public static function has($key) {
+        return isset(self::$data[$key]);
+    }
+
     public static function remove($key) {
         unset(self::$data[$key]);
     }
