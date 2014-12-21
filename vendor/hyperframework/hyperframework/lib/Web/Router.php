@@ -274,7 +274,6 @@ abstract class Router {
         } else {
             $pattern = '#^/' . $pattern . $formatPattern . '$#';
         }
-        var_dump($pattern);
         $result = preg_match($pattern, $path, $matches);
         if ($result === false) {
             throw new Exception;
@@ -756,8 +755,6 @@ abstract class Router {
                 $actionPattern .= $suffix;
             }
             if ($this->match($actionPattern, $actionOptions)) {
-                var_dump($actionOptions);
-                var_dump($actionPattern);
                 $action = $key;
                 break;
             }
