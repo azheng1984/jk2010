@@ -149,12 +149,7 @@ class ErrorHandler {
 
     private static function handle($source, $isError = false) {
         if (self::$source !== null) {
-            if ($isError && $source->isFatal()) {
-                //fatal error from non-fatal error handler
-                return;
-            }
             if ($isError === false) {
-                //exception from non-fatal error handler
                 throw new $source;
             }
             return false;

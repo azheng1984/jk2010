@@ -20,9 +20,6 @@ class App {
         $this->finalize();
     }
 
-    public function name($param) {
-    }
-
     public function getRouter() {
         if ($this->router === null) {
             $class = Config::getString('hyperframework.web.router_class');
