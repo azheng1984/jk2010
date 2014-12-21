@@ -18,6 +18,7 @@ class App {
         $controller = $this->createController();
         $controller->run();
         $this->finalize();
+
     }
 
     public function getRouter() {

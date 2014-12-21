@@ -4,7 +4,7 @@ namespace Hyperframework\Blog;
 return array(
     '[hyperframework]',
     'app_root_namespace' => __NAMESPACE__,
-//    'web.debug' => true,
+    'error_handler.debug' => true,
 //    'web.router' => __NAMESPACE__ . '\Router',
     'asset.concatenate_manifest' => false,
     'asset.enable_versioning' => true,
@@ -19,7 +19,6 @@ return array(
     'logger.log_level' => 'DEBUG',
     'logger.handler_class' => 'xx',
     'app_root_namespace' => __NAMESPACE__,
-
     '[hyperframework.error_handler]',
     'logger.enable' => false,
     'logger.log_stack_trace' => true,

@@ -115,7 +115,7 @@ class ErrorHandler {
                 $shouldThrow = true;
             }
         }
-        $trace = array_slice(debug_backtrace(), 2);
+        $trace = array_slice(debug_backtrace(), 1);
         $error = new ErrorException(
             $message, $type, $file, $line, $trace, $context, $shouldThrow
         );
