@@ -74,12 +74,12 @@ class CommandConfig {
                 $class = ltrim($class, '\\');
             } else {
                 $namespace = Config::getString(
-                    'hyperframework.cli.subcommand_root_namespace', null
+                    'hyperframework.cli.subcommand_root_namespace'
                 );
                 if ($namespace === null) {
                     $namespace = 'Subcommands';
                     $rootNamespace = Config::getString(
-                        'hyperframework.app_root_namespace'
+                        'hyperframework.app_root_namespace', ''
                     );
                     if ($rootNamespace !== '' && $rootNamespace !== '\\') {
                         NamespaceCombiner::prepend($rootNamespace, $namespace);
@@ -272,7 +272,7 @@ class CommandConfig {
             if ($isConfigEnabled !== false) {
                 $isDefaultConfigPath = false;
                 $configPath = Config::getString(
-                    'hyperframework.cli.command_config_path'
+                    'hyperframework.cli.command_config_path', ''
                 );
                 if ($configPath === '') {
                     $isDefaultConfigPath = true;
@@ -282,7 +282,7 @@ class CommandConfig {
                     || FullPathRecognizer::isFull($configPath) === false
                 ) {
                     $configRootPath = Config::getString(
-                        'hyperframework.cli.command_config_root_path'
+                        'hyperframework.cli.command_config_root_path', ''
                     );
                     if ($configRootPath !== '') {
                         PathBuilder::prepend($configPath, $configRootPath);
@@ -318,7 +318,7 @@ class CommandConfig {
     public function isSubcommandEnabled() {
         if ($this->isSubcommandEnabled === null) {
             $this->isSubcommandEnabled = Config::getBoolean(
-                'hyperframework.cli.enable_subcommand'
+                'hyperframework.cli.enable_subcommand', false
             );
         }
         return $this->isSubcommandEnabled;
@@ -379,7 +379,9 @@ class CommandConfig {
 
     private function getDefaultClass($subcommand = null) {
         if ($subcommand === null) {
-            $namespace = Config::getString('hyperframework.app_root_namespace');
+            $namespace = Config::getString(
+                'hyperframework.app_root_namespace', ''
+            );
             $class = 'Command';
             if ($namespace !== '' && $namespace !== '\\') {
                 NamespaceCombiner::prepend($class, $namespace);
@@ -401,13 +403,13 @@ class CommandConfig {
 
     private function getSubcommandConfigRootPath() {
         $folder = Config::getString(
-            'hyperframework.cli.subcommand_config_root_path', null
+            'hyperframework.cli.subcommand_config_root_path'
         );
         if ($folder === null) {
             $folder = 'subcommand';
         }
         $commandConfigRootPath = Config::getString(
-            'hyperframework.cli.command_config_root_path'
+            'hyperframework.cli.command_config_root_path', ''
         );
         if ($commandConfigRootPath !== '') {
             if (FullPathRecognizer::isFull($folder) === false) {
