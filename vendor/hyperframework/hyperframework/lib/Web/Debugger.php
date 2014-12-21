@@ -50,8 +50,11 @@ class Debugger {
                 }
                 if ($index === $errorLine + 1) {
                     echo '<div style="background-color:#ff6">';
+                    echo '<span style="color:#333;';
+                } else {
+                    echo '<span style="color:#ccc;';
                 }
-                echo '<span style="color:#ccc;width:', (strlen($count)) * 10,
+                echo 'width:', (strlen($count)) * 10,
                  'px;display:inline-block">' , $index ,'</span> ',
                 ' ';
                 echo  $line;
