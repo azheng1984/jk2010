@@ -13,7 +13,7 @@ class Config {
         return $default;
     }
 
-    public static function getString($name, $default = '') {
+    public static function getString($name, $default = null) {
         $result = null;
         if (isset(self::$data[$name])) {
             $result = self::$data[$name];
@@ -39,7 +39,7 @@ class Config {
         );
     }
 
-    public static function getBoolean($name, $default = false) {
+    public static function getBoolean($name, $default = null) {
         $result = static::get($name);
         if ($result === null) {
             return $default;
@@ -47,7 +47,7 @@ class Config {
         return (bool)$result;
     }
 
-    public static function getInt($name, $default = 0) {
+    public static function getInt($name, $default = null) {
         $result = static::get($name);
         if ($result === null) {
             return $default;
@@ -61,7 +61,7 @@ class Config {
         return (int)$result;
     }
 
-    public static function getFloat($name, $default = 0.0) {
+    public static function getFloat($name, $default = null) {
         $result = static::get($name);
         if ($result === null) {
             return $default;
@@ -75,7 +75,7 @@ class Config {
         return (float)$result;
     }
 
-    public static function getArray($name, $default = []) {
+    public static function getArray($name, $default = null) {
         $result = static::get($name);
         if ($result === null) {
             return $default;

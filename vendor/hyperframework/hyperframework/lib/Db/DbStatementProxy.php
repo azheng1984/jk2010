@@ -13,7 +13,7 @@ class DbStatementProxy {
         $this->statement = $statement;
         $this->connection = $connection;
         $this->isProfilerEnabled =
-            Config::getBoolean('hyperframework.db.profiler.enable');
+            Config::getBoolean('hyperframework.db.profiler.enable', false);
     }
 
     public function execute($params = null) {

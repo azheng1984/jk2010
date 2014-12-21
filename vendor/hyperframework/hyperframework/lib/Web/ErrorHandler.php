@@ -14,7 +14,7 @@ class ErrorHandler extends Base {
 
     public static function run() {
         self::$isDebuggerEnabled =
-            Config::getBoolean('hyperframework.error_handler.debug', null);
+            Config::getBoolean('hyperframework.error_handler.debug', false);
         if (ini_get('display_errors') === '1') {
             if (self::$isDebuggerEnabled !== false) {
                 self::$isDebuggerEnabled = true;
@@ -66,7 +66,7 @@ class ErrorHandler extends Base {
     protected static function writeLog() {
         if (static::getSource() instanceof HttpException) {
             $shouldLogHttpException = Config::getBoolean(
-                'hyperframework.error_handler.log_http_exception'
+                'hyperframework.error_handler.log_http_exception', false
             );
             if ($shouldLogHttpException === false) {
                 return;
@@ -105,7 +105,7 @@ class ErrorHandler extends Base {
             return $content;
         }
         $charset = Config::getString(
-            'Hyperframework.error_handler.output_buffer_charset'
+            'Hyperframework.error_handler.output_buffer_charset', ''
         );
         $encoding = null;
         foreach (headers_list() as $header) {

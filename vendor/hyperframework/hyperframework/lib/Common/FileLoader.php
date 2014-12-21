@@ -16,7 +16,7 @@ class FileLoader {
 
     public static function getFullPath($path, $pathConfigName = null) {
         if ($pathConfigName !== null) {
-            $tmp = Config::getString($pathConfigName, null);
+            $tmp = Config::getString($pathConfigName);
             if ($tmp !== null) {
                 $path = $tmp;
             }
@@ -31,7 +31,7 @@ class FileLoader {
     public static function getDefaultRootPath() {
         if (self::$defaultRootPath === null) {
             self::$defaultRootPath = Config::getString(
-                'hyperframework.app_root_path', null
+                'hyperframework.app_root_path'
             );
             if (self::$defaultRootPath === null) {
                 throw new Exception(

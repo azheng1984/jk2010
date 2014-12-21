@@ -20,7 +20,7 @@ class ErrorHandler {
 
     public static function run() {
         self::$isLoggerEnabled = Config::getBoolean(
-            'hyperframework.error_handler.logger.enable'
+            'hyperframework.error_handler.logger.enable', false
         );
         if (self::$isLoggerEnabled) {
             ini_set('log_errors', '0');
@@ -105,7 +105,7 @@ class ErrorHandler {
         $shouldThrow = false;
         if (self::$source === null) {
             $errorThrowingBitmask = Config::getInt(
-                'hyperframework.error_handler.error_throwing_bitmask', null
+                'hyperframework.error_handler.error_throwing_bitmask'
             );
             if ($errorThrowingBitmask === null) {
                 $errorThrowingBitmask =
@@ -204,7 +204,7 @@ class ErrorHandler {
             }
             if (self::isError() === false || $source->isFatal() === false) {
                 $shouldLogTrace = Config::getBoolean(
-                    'hyperframework.error_handler.logger.log_stack_trace'
+                    'hyperframework.error_handler.logger.log_stack_trace', false
                 );
                 if ($shouldLogTrace) {
                    $data['trace'] = [];

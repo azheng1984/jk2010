@@ -80,7 +80,7 @@ final class Logger {
             }
         }
         $logHandlerClass = Config::getString(
-            'hyperframework.logger.log_handler_class'
+            'hyperframework.logger.log_handler_class', ''
         );
         if ($logHandlerClass === '') {
             LogHandler::handle($level, $params);
@@ -94,7 +94,7 @@ final class Logger {
 
     private static function getThresholdCode() {
         if (self::$thresholdCode === null) {
-            $level = Config::getString('hyperframework.logger.log_level');
+            $level = Config::getString('hyperframework.logger.log_level', '');
             if ($level !== '') {
                 if (isset(self::$levels[$level]) === false) {
                     $level = strtoupper($level);
