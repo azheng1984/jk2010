@@ -12,8 +12,8 @@ class LogHandler {
     private static $protocol;
     private static $path;
 
-    public static function handle($level, array $arguments) {
-        $content = static::format($level, $arguments);
+    public static function handle($level, array $params) {
+        $content = static::format($level, $params);
         static::write($content);
     }
 
@@ -22,18 +22,14 @@ class LogHandler {
         if (self::getProtocol() === 'file') {
             $flag = FILE_APPEND | LOCK_EX;
         }
-        try {
-            file_put_contents(static::getPath(), $content, $flag);
-        } catch (ErrorException $e) {
-            throw new Exception;
-        }
+        file_put_contents(static::getPath(), $content, $flag);
     }
 
-    protected static function format($level, array $arguments) {
-        $name = isset($arguments['name']) ? $arguments['name'] : null;
-        $message = isset($arguments['message']) ? $arguments['message'] : null;
-        $data = isset($arguments['data']) ? $arguments['data'] : null;
-        $count = count($arguments);
+    protected static function format($level, array $params) {
+        $name = isset($params['name']) ? $params['name'] : null;
+        $message = isset($params['message']) ? $params['message'] : null;
+        $data = isset($params['data']) ? $params['data'] : null;
+        $count = count($params);
         $result = self::getTimestamp() . ' | ' . $level;
         if ((string)$name !== '') {
             $result .= ' | ' . $name;

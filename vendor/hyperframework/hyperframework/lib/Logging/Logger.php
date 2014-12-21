@@ -16,43 +16,46 @@ final class Logger {
         'DEBUG' => 5
     ];
 
-    public static function debug($params) {
+    public static function debug($mixed) {
         if (self::getThresholdCode() === 5) {
-            static::log('DEBUG', $params);
+            static::log('DEBUG', $mixed);
         }
     }
 
-    public static function info($params) {
+    public static function info($mixed) {
         if (self::getThresholdCode() >= 4) {
-            static::log('INFO', $params);
+            static::log('INFO', $mixed);
         }
     }
 
-    public static function notice($params) {
+    public static function notice($mixed) {
         if (self::getThresholdCode() >= 3) {
-            static::log('NOTICE', $params);
+            static::log('NOTICE', $mixed);
         }
     }
 
-    public static function warn($params) {
+    public static function warn($mixed) {
         if (self::getThresholdCode() >= 2) {
-            static::log('WARNING', $params);
+            static::log('WARNING', $mixed);
         }
     }
 
-    public static function error($params) {
+    public static function error($mixed) {
         if (self::getThresholdCode() >= 1) {
-           static::log('ERROR', $params);
+           static::log('ERROR', $mixed);
         }
     }
 
-    public static function fatal($params) {
+    public static function fatal($mixed) {
         if (self::getThresholdCode() >= 0) {
-            static::log('FATAL', $params);
+            static::log('FATAL', $mixed);
         }
     }
 
     private static function log($level, $params) {
+        if (is_string($params)) {
+            $params = ['message' => $params];
+        }
         if (isset($params['name'])) {
             if (preg_match('/^[a-zA-Z0-9_.]+$/', $params['name']) === 0
                 || $params['name'][0] === '.'

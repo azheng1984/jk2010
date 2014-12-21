@@ -26,7 +26,7 @@ abstract class Router {
     public function __construct($app) {
         $this->app = $app;
         $result = $this->execute();
-        $this->checkResult($result);
+        $this->parseResult($result);
         if ($this->isMatched() === false) {
             throw new NotFoundException;
         }
@@ -329,7 +329,6 @@ abstract class Router {
                 if ($this->scopeMatchStack === null) {
                     $this->scopeMatchStack = [];
                 }
-                print_r($matches);
                 $this->scopeMatchStack[] = $matches;
                 if ($hasFormat) {
                     if ($isOptionalFormat) {
@@ -796,7 +795,7 @@ abstract class Router {
         return $this->match($pattern, $options);
     }
 
-    private function checkResult($value) {
+    private function parseResult($value) {
         if ($value === null) {
             return;
         }
@@ -808,19 +807,19 @@ abstract class Router {
             if ($value === '') {
                 throw new Exception;
             }
-            $tmps = explode('/', $value);
-            switch (count($tmps)) {
+            $segments = explode('/', $value);
+            switch (count($segments)) {
                 case 1:
-                    $this->setAction($tmps[1]);
+                    $this->setAction($segments[1]);
                     break;
                 case 2:
-                    $this->setController($tmps[0]);
-                    $this->setAction($tmps[1]);
+                    $this->setController($segments[0]);
+                    $this->setAction($segments[1]);
                     break;
                 default:
-                    $this->setAction(array_pop($tmps));
-                    $this->setController(array_pop($tmps));
-                    $this->setModule(implode('/', $tmps));
+                    $this->setAction(array_pop($segments));
+                    $this->setController(array_pop($segments));
+                    $this->setModule(implode('/', $segments));
             }
         } elseif ($value !== true) {
             throw new Exception;
