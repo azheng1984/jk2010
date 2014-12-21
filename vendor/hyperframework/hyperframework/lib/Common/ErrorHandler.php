@@ -43,7 +43,7 @@ class ErrorHandler {
     private static function enableDefaultErrorReporting(
         $errorReportingBitmask = null
     ) {
-        //Error Control Operator - @
+        //support error control operator - @
         if ($errorReportingBitmask !== null) {
             error_reporting($errorReportingBitmask);
         } elseif (self::shouldReportCompileWarning()) {
