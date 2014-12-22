@@ -6,7 +6,7 @@ use ErrorException as Base;
 class ErrorException extends Base {
     private $context;
     private $sourceStackTrace;
-    private $firstSourceStackFramePosition;
+    private $sourceStackFrameStartingPosition;
     private $shouldThrow;
     private $isFatal;
 
@@ -15,7 +15,7 @@ class ErrorException extends Base {
         $severity = E_ERROR,
         $file = __FILE__,
         $line = __LINE__,
-        $firstSourceStackFramePosition = 0,
+        $sourceStackFrameStartingPosition = 0,
         array $context = null,
         $shouldThrow = false,
         $previous = null
@@ -23,7 +23,8 @@ class ErrorException extends Base {
         parent::__construct(
             $message, 0, $severity, $file, $line, $previous
         );
-        $this->firstSourceStackFramePosition = $firstSourceStackFramePosition;
+        $this->sourceStackFrameStartingPosition =
+            $sourceStackFrameStartingPosition;
         $this->context = $context;
         $this->shouldThrow = $shouldThrow;
     }
@@ -70,12 +71,13 @@ class ErrorException extends Base {
 
     public function getSourceTrace() {
         if ($this->sourceStackTrace === null) {
-            if ($this->firstSourceStackFramePosition !== null) {
-                if ($this->firstSourceStackFramePosition === 0) {
+            if ($this->sourceStackFrameStartingPosition !== null) {
+                if ($this->sourceStackFrameStartingPosition === 0) {
                     $this->sourceStackTrace = $this->getTrace();
                 } else {
                     $this->sourceStackTrace = array_slice(
-                        $this->getTrace(), $this->firstSourceStackFramePosition
+                        $this->getTrace(),
+                        $this->sourceStackFrameStartingPosition
                     );
                 }
             }
@@ -117,8 +119,8 @@ class ErrorException extends Base {
                         $argument = mb_substr($argument, 0, 15) . '...';
                     }
                     $argument = str_replace(
-                        ['\\', "'", "\n", "\r", "\t", "\v", "\e", "\f"],
-                        ['\\\\', "\\'", '\n', '\r', '\t', '\v', '\e', '\f'],
+                        ["\\", "'", "\n", "\r", "\t", "\v", "\e", "\f"],
+                        ['\\\\', '\\\'', '\n', '\r', '\t', '\v', '\e', '\f'],
                         $argument
                     );
                     $arguments[] = "'$argument'";

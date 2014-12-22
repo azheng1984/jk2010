@@ -70,51 +70,20 @@ class Debugger {
         echo '<h2>stack trace</h2>';
         if ($isError === false || $exception->isFatal() === false) {
             if ($isError) {
-                $stackTrace = $exception->getSourceTrace();
-            } else {
-                $stackTrace = $exception->getTrace();
-            }
-            $index = 0;
-            foreach ($stackTrace as $item) {
-                $trace = [];
-                //parsing error
-                if (isset($item['function'])) {
-                    $trace['function'] = $item['function'];
-                } else {
-                    $trace['function'] = 'undefined_function';
-                }
-                if (isset($item['file'])) {
-                    $trace['file'] = $item['file'];
-                } else {
-                    $trace['file'] = 'undefined_file';
-                }
-                if (isset($item['line'])) {
-                    $trace['line'] = $item['line'];
-                } else {
-                    $trace['line'] = 'undefined_line';
-                }
-                //echo '<br>#', $index, ' ' , $trace['file'], '(',$trace['line'],'): ', $trace['function'];
-                ++$index;
-            }
-            if ($isError) {
                 echo implode('<br>', explode("\n", $exception->getSourceTraceAsString()));
             } else {
                 echo implode('<br>', explode("\n", $exception->getTraceAsString()));
             }
         } else {
-            echo '<span style="color:#999;background-color:#eee">undefined</span>';
+            echo '<span style="color:#999;background-color:#eee">NULL</span>';
         }
-        //if ($previousErrors !== null) {
-        //    echo '<h2>Previous Errors</h2>';
-        //    var_dump($previousErrors);
-        //}
         echo '<h2>output</h2>';
         echo '<h3>headers</h3>';
         if ($isHeadersSent) {
             echo '<h4>Already Sent</h4>';
         }
         if (count($headers) === 0) {
-            echo '<span style="color:#999;background-color:#eee">empty</span>';
+            echo '<span style="color:#999;background-color:#eee">NULL</span>';
         } else {
             foreach ($headers as $header) {
                 echo $header . '<br>';
@@ -125,16 +94,16 @@ class Debugger {
             echo '<span style="color:red;background-color:#eee">Output Buffer Error</span>';
         } else {
             if (strlen($outputBuffer) > 1) {
-                $outputBuffer2 = addslashes($outputBuffer);
-                $outputBuffer2 = str_replace("\n", '\n', $outputBuffer2);
-                $outputBuffer2 = str_replace("</script>", '<" + "/script>', $outputBuffer2);
+                $preview = addslashes($outputBuffer);
+                $preview = str_replace("\n", '\n', $preview);
+                $preview = str_replace("</script>", '<" + "/script>', $preview);
 ?>
                 <h4>[PREVIEW]</h4>
                 <iframe name="buffer" id="buffer" src="javascript:false" width="100%"></iframe>
 <script>
 var preview = window.frames["buffer"].document;
 preview.open();
-preview.write("<?= $outputBuffer2 ?>");
+preview.write("<?= $preview ?>");
 preview.close();
 document.getElementById("buffer").height = preview.body.scrollHeight + 'px';
 </script>
@@ -144,28 +113,30 @@ document.getElementById("buffer").height = preview.body.scrollHeight + 'px';
                 echo htmlspecialchars($outputBuffer, ENT_QUOTES | ENT_SUBSTITUTE);
                 echo '</pre>';
             } else {
-                echo '<span style="color:#999;background-color:#eee">empty</span>';
+                echo '<span style="color:#999;background-color:#eee">NULL</span>';
             }
         }
         if ($isError) {
             echo '<h2>context</h2>';
-            var_dump($exception->getContext());
+            $context = $exception->getContext();
+            if ($context === null) {
+                echo '<span style="color:#999;background-color:#eee">NULL</span>';
+            } else {
+                var_dump($exception->getContext());
+            }
         }
         echo '<hr /> Powered by Hyperframework';
     }
 
     private static function toArray($tokens) {
-        $funcref = false;
-        $blocks = false;
-        // Init
-        $highlight = array(
-                'string'    => ini_get('highlight.string'),
-                'comment'   => ini_get('highlight.comment'),
-                'keyword'   => ini_get('highlight.keyword'),
-                'bg'        => ini_get('highlight.bg'),
-                'default'   => ini_get('highlight.default'),
-                'html'      => ini_get('highlight.html')
-        );
+        $highlight = [
+            'string'    => ini_get('highlight.string'),
+            'comment'   => ini_get('highlight.comment'),
+            'keyword'   => ini_get('highlight.keyword'),
+            'bg'        => ini_get('highlight.bg'),
+            'default'   => ini_get('highlight.default'),
+            'html'      => ini_get('highlight.html')
+        ];
         $replace = array(
             "\t"    => '&nbsp;&nbsp;&nbsp;&nbsp;',
             ' '     => '&nbsp;'
@@ -193,7 +164,6 @@ document.getElementById("buffer").height = preview.body.scrollHeight + 'px';
                         $out[++$i] = '';
                     }
                 }
- 
                 continue;
             }
             // Proper token
@@ -201,9 +171,10 @@ document.getElementById("buffer").height = preview.body.scrollHeight + 'px';
             // Make the value safe
             $value = htmlspecialchars($value);
             $value = str_replace(
-                        array_keys($replace),
-                        array_values($replace),
-                        $value);
+                array_keys($replace),
+                array_values($replace),
+                $value
+            );
             // Process
             if ($value === "\n") {
                 // End this line and start the next
@@ -217,9 +188,9 @@ document.getElementById("buffer").height = preview.body.scrollHeight + 'px';
                         // Uncomment for debugging
                         //$out[$i] .= token_name($token);
                         // Highlight encased strings
-                        $colour = ($stringflag === true) ?
-                            $highlight['string'] : self::_token2color($token, $highlight);
-                        $out[$i] .= sprintf($span, $colour, $line);
+                        $color = ($stringflag === true) ?
+                            $highlight['string'] : self::getColor($token, $highlight);
+                        $out[$i] .= sprintf($span, $color, $line);
                     }
                     // Start a new line
                     if (isset($lines[$jj + 1])) {
@@ -231,8 +202,7 @@ document.getElementById("buffer").height = preview.body.scrollHeight + 'px';
         return $out;
     }
 
-    private static function _token2color($token, $highlight)
-    {
+    private static function getColor($token, $highlight) {
         switch ($token):
             case T_CONSTANT_ENCAPSED_STRING:
                 return $highlight['string'];

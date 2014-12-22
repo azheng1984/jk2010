@@ -20,7 +20,7 @@ class Runner extends Base {
             ErrorHandler::run();
         } else {
             if (class_exists($class) === false) {
-                throw new Exception;
+                throw new Exception("Class '$class' not found");
             }
             $class::run();
         }
