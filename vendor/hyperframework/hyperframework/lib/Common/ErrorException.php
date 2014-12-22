@@ -146,7 +146,7 @@ class ErrorException extends Base {
         $message = 'exception \'' . get_called_class(). '\' with message \''
             . $this->getMessage() . '\' in ' . $this->getFile() . ':'
             . $this->getLine() . PHP_EOL
-            . 'Stack trace:'
+            . 'Stack trace:' . PHP_EOL
             . $this->getSourceTraceAsString();
         return $message;
     }
