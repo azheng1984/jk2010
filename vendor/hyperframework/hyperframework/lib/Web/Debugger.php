@@ -18,7 +18,7 @@ class Debugger {
         if ($isError) {
             echo '<span style="color:white;font-family:Arial;border-radius:5px;font-size:13px;red;background:red;padding:5px 7px;">';
             if ($exception->shouldThrow() === true) {
-                echo 'Catchable Error';
+                echo 'Error Exception';
             } elseif ($exception->getSeverityAsString() === 'error') {
                 echo 'Fatal Error';
             } else {
