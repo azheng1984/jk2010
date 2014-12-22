@@ -1,6 +1,6 @@
 <?php
 namespace Hyperframework\Web;
-sdf;
+
 use Exception;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
@@ -10,20 +10,14 @@ class App {
     private $router;
 
     public function __construct() {
-        $this->name("dsf\\n\tsdaf");
         $this->rewriteRequestMethod();
         $this->checkCsrf();
     }
 
-    public function name($param) {
-    }
-
     public function run() {
-        adsf;
         $controller = $this->createController();
         $controller->run();
         $this->finalize();
-
     }
 
     public function getRouter() {
