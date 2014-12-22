@@ -5,16 +5,17 @@ use ErrorException as Base;
 
 class ErrorException extends Base {
     private $context;
-    private $sourceTrace;
+    private $sourceStackTrace;
+    private $firstSourceStackFramePosition;
     private $shouldThrow;
     private $isFatal;
 
     public function __construct(
-        $message,
-        $severity,
-        $file,
-        $line,
-        array $sourceTrace = null,
+        $message = '',
+        $severity = E_ERROR,
+        $file = __FILE__,
+        $line = __LINE__,
+        $firstSourceStackFramePosition = 0,
         array $context = null,
         $shouldThrow = false,
         $previous = null
@@ -22,7 +23,7 @@ class ErrorException extends Base {
         parent::__construct(
             $message, 0, $severity, $file, $line, $previous
         );
-        $this->sourceTrace = $sourceTrace;
+        $this->firstSourceStackFramePosition = $firstSourceStackFramePosition;
         $this->context = $context;
         $this->shouldThrow = $shouldThrow;
     }
@@ -68,23 +69,78 @@ class ErrorException extends Base {
     }
 
     public function getSourceTrace() {
-        return $this->sourceTrace;
+        if ($this->sourceStackTrace === null) {
+            if ($this->firstSourceStackFramePosition !== null) {
+                if ($this->firstSourceStackFramePosition === 0) {
+                    $this->sourceStackTrace = $this->getTrace();
+                } else {
+                    $this->sourceStackTrace = array_slice(
+                        $this->getTrace(), $this->firstSourceStackFramePosition
+                    );
+                }
+            }
+            if ($this->sourceStackTrace === null) {
+                $this->sourceStackTrace = false;
+            }
+        }
+        if ($this->sourceStackTrace === false) {
+            return;
+        }
+        return $this->sourceStackTrace;
     }
 
     public function getSourceTraceAsString() {
-        if ($this->sourceTrace === null) {
-            return 'undefined';
-        } else {
-            $result = '';
-            $index = 0;
-            foreach ($this->sourceTrace as $item) {
-                $result .= PHP_EOL . '#' . $index . ' '
-                    . $item['file'] . '(' . $item['line'] . '): '
-                    . $item['function'];
-                ++$index;
-            }
-            return $result;
+        $sourceTrace = $this->getSourceTrace();
+        if ($sourceTrace === null) {
+            return 'NULL';
         }
+        $result = '';
+        $index = 0;
+        foreach ($sourceTrace as $item) {
+            if ($index !== 0) {
+                $result .= PHP_EOL;
+            }
+            $result .= '#' . $index . ' ';
+            if (isset($item['file']) === false) {
+                $result .= '[internal function]: ';
+            } else {
+                $result .= $item['file'] . '(' . $item['line'] . '): ';
+            }
+            if (isset($item['class'])) {
+                $result .= $item['class'] . $item['type'];
+            }
+            $result .= $item['function'] . '(';
+            $arguments = [];
+            foreach ($item['args'] as $argument) {
+                if (is_string($argument)) {
+                    if (mb_strlen($argument) > 15) {
+                        $argument = mb_substr($argument, 0, 15) . '...';
+                    }
+                    $argument = str_replace(
+                        ['\\', "'", "\n", "\r", "\t", "\v", "\e", "\f"],
+                        ['\\\\', "\\'", '\n', '\r', '\t', '\v', '\e', '\f'],
+                        $argument
+                    );
+                    $arguments[] = "'$argument'";
+                } elseif (is_array($argument)) {
+                    $arguments[] = 'Array';
+                } elseif (is_null($argument)) {
+                    $arguments[] = 'NULL';
+                } elseif (is_object($argument)) {
+                    $arguments[] = 'Object(' . get_class($argument) . ')';
+                } else {
+                    $arguments[] = $argument;
+                }
+            }
+            $result .= implode(', ', $arguments);
+            $result .= ')';
+            ++$index;
+        }
+        if ($index !== 0) {
+            $result .= PHP_EOL;   
+        }
+        $result .= '#' . $index . ' {main}';
+        return $result;
     }
 
     public function __toString() {

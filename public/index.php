@@ -1,6 +1,10 @@
 <?php
 namespace hi;
-
+try {
+    throw new \Exception;
+} catch (\Exception $e) {
+var_dump($e->getTrace());
+}
 //var_dump(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_XHMLT));
 //var_dump(count(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_HTML401)));
 //var_dump(count(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_HTML5)));

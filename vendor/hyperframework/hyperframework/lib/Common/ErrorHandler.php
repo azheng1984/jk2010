@@ -115,9 +115,8 @@ class ErrorHandler {
                 $shouldThrow = true;
             }
         }
-        $trace = array_slice(debug_backtrace(), 1);
         $error = new ErrorException(
-            $message, $type, $file, $line, $trace, $context, $shouldThrow
+            $message, $type, $file, $line, 1, $context, $shouldThrow
         );
         return self::handle($error, true);
     }
@@ -139,7 +138,7 @@ class ErrorHandler {
         }
         $error = new ErrorException(
             $error['message'], $error['type'], $error['file'],
-            $error['line'], null, null
+            $error['line'], null
         );
         if ($error->isFatal()) {
             self::enableDefaultErrorReporting();
