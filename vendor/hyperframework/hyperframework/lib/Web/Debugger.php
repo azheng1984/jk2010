@@ -2,14 +2,13 @@
 namespace Hyperframework\Web;
 
 use Exception;
+use ErrorException;
 
 class Debugger {
     public static function execute(
-        $exception,
-        $headers = null,
-        $outputBuffer = null
+        $exception, $headers = null, $outputBuffer = null
     ) {
-        $isError = $exception instanceof \ErrorException;
+        $isError = $exception instanceof ErrorException;
         $isHeadersSent = headers_sent();
         if (headers_sent() === false) {
             header('Content-Type: text/html; charset=UTF-8');
@@ -19,9 +18,9 @@ class Debugger {
         if ($isError) {
             echo '[';
             if ($exception->shouldThrow() === true) {
-                echo 'Fatal error';
+                echo 'FATAL ERROR';
             } else {
-                echo ucfirst($exception->getSeverityAsString());
+                echo strtoupper($exception->getSeverityAsString());
             }
             echo '] ';
         } else {
@@ -32,41 +31,37 @@ class Debugger {
         }
         echo $exception->getMessage();
         echo '</h2>';
+        echo '<span><b>Code</b></span> | <span>Output</span> | <span>Context</span>';
         $firstLinePrefix = null;
-        if ($exception->getFile() === 'undefined') { //???
-            echo '<h3>FILE:</h3>';
-            echo '<span style="color:#999;background-color:#eee">undefined</span>';
-        } else {
-            echo '<h3>FILE: ',$exception->getFile(), '</h3>';
-            $lines = self::toArray((token_get_all(file_get_contents($exception->getFile()))));
-            $index = 1;
-            $count = count($lines);
-            $errorLine = $exception->getLine() - 1;
-            echo '<code>';
-            foreach ($lines as $key => $line) {
-                if ($index + 9 < $errorLine || $index - 11 > $errorLine) {
-                    ++$index;
-                    continue;
-                }
-                if ($index === $errorLine + 1) {
-                    echo '<div style="background-color:#ff6">';
-                    echo '<span style="color:#666;';
-                } else {
-                    echo '<span style="color:#bbb;';
-                }
-                echo 'width:', (strlen($count)) * 10,
-                 'px;display:inline-block">' , $index ,'</span> ',
-                ' ';
-                echo  $line;
-                if ($index === $errorLine + 1) {
-                   echo  '</div>';
-                } else {
-                    echo '<br>';
-                }
+        echo '<h3>FILE: ',$exception->getFile(), '</h3>';
+        $lines = self::toArray((token_get_all(file_get_contents($exception->getFile()))));
+        $index = 1;
+        $count = count($lines);
+        $errorLine = $exception->getLine() - 1;
+        echo '<code>';
+        foreach ($lines as $key => $line) {
+            if ($index + 9 < $errorLine || $index - 11 > $errorLine) {
                 ++$index;
+                continue;
             }
-            echo '</code>';
+            if ($index === $errorLine + 1) {
+                echo '<div style="background-color:#ff6">';
+                echo '<span style="color:#666;';
+            } else {
+                echo '<span style="color:#bbb;';
+            }
+            echo 'width:', (strlen($count)) * 10,
+             'px;display:inline-block">' , $index ,'</span> ',
+            ' ';
+            echo  $line;
+            if ($index === $errorLine + 1) {
+               echo  '</div>';
+            } else {
+                echo '<br>';
+            }
+            ++$index;
         }
+        echo '</code>';
         echo '<h2>stack trace</h2>';
         if ($isError === false || $exception->isFatal() === false) {
             if ($isError) {
@@ -100,13 +95,13 @@ class Debugger {
 ?>
                 <h4>[PREVIEW]</h4>
                 <iframe name="buffer" id="buffer" src="javascript:false" width="100%"></iframe>
-<script>
-var preview = window.frames["buffer"].document;
-preview.open();
-preview.write("<?= $preview ?>");
-preview.close();
-document.getElementById("buffer").height = preview.body.scrollHeight + 'px';
-</script>
+                <script>
+                    var preview = window.frames["buffer"].document;
+                    preview.open();
+                    preview.write("<?= $preview ?>");
+                    preview.close();
+                    document.getElementById("buffer").height = preview.body.scrollHeight + 'px';
+                </script>
 <?php
                 echo '<h4>[SROUCE]</h4>';
                 echo '<pre style="word-break:break-all;word-wrap: break-word;">';

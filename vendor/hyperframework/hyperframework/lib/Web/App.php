@@ -33,7 +33,7 @@ class App {
                 }
             }
             if (class_exists($class) === false) {
-                throw new Exception($class . ' not found');
+                throw new Exception("Class '$class' not found");
             }
             $this->router = new $class($this);
         }
@@ -77,7 +77,7 @@ class App {
         $router = $this->getRouter();
         $class = (string)$router->getControllerClass();
         if ($class === '' || class_exists($class) === false) {
-            throw new Exception;
+            throw new Exception("Class '$class' not found");
         }
         return new $class($this);
     }
