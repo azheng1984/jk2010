@@ -31,7 +31,7 @@ class Debugger {
         }
         echo $exception->getMessage();
         echo '</h2>';
-        echo '<span><b>Code</b></span> | <span>Output</span> | <span>Context</span>';
+        echo '<span><b>Code</b></span> | <span>Output</span>';
         $firstLinePrefix = null;
         echo '<h3>FILE: ',$exception->getFile(), '</h3>';
         $lines = self::toArray((token_get_all(file_get_contents($exception->getFile()))));

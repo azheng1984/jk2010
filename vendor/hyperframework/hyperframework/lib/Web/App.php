@@ -10,7 +10,6 @@ class App {
     private $router;
 
     public function __construct() {
-        adf;
         $this->rewriteRequestMethod();
         $this->checkCsrf();
     }
