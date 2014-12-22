@@ -109,7 +109,7 @@ class ErrorException extends Base {
             if (isset($item['class'])) {
                 $result .= $item['class'] . $item['type'];
             }
-            $result .= $item['function'] . '(';
+            $result .= $item['function'];
             $arguments = [];
             foreach ($item['args'] as $argument) {
                 if (is_string($argument)) {
@@ -132,8 +132,7 @@ class ErrorException extends Base {
                     $arguments[] = $argument;
                 }
             }
-            $result .= implode(', ', $arguments);
-            $result .= ')';
+            $result .= '(' . implode(', ', $arguments) . ')';
             ++$index;
         }
         if ($index !== 0) {
