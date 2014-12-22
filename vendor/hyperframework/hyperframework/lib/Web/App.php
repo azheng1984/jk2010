@@ -15,6 +15,7 @@ class App {
     }
 
     public function run() {
+        adf;
         $controller = $this->createController();
         $controller->run();
         $this->finalize();

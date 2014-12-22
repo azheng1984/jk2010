@@ -13,16 +13,18 @@ class Debugger {
         if (headers_sent() === false) {
             header('Content-Type: text/html; charset=UTF-8');
         }
-        echo '<h1>* Debug *</h1>';
-        echo '<h2>';
+        echo '<div style="background:#f6f6f6">';
+        echo '<h2 style="font-size:20px;color:black;padding:15px 10px;font-weight:normal;margin:0 5px 0">';
         if ($isError) {
-            echo '[';
+            echo '<span style="color:white;font-family:Arial;border-radius:5px;font-size:13px;red;background:red;padding:5px 7px;">';
             if ($exception->shouldThrow() === true) {
-                echo 'FATAL ERROR';
+                echo 'Catchable Error';
+            } elseif ($exception->getSeverityAsString() === 'error') {
+                echo 'Fatal Error';
             } else {
-                echo strtoupper($exception->getSeverityAsString());
+                echo ucwords($exception->getSeverityAsString());
             }
-            echo '] ';
+            echo '</span> ';
         } else {
             echo get_class($exception);
             if ($exception->getMessage() !== '') {
@@ -31,9 +33,16 @@ class Debugger {
         }
         echo $exception->getMessage();
         echo '</h2>';
-        echo '<span><b>Code</b></span> | <span>Output</span>';
+        echo '<div style="line-height:20px;color:#ccc;padding:5px 0 5px 15px;font-size:13px;border-bottom:1px solid  #888">';
+        echo '<style>body{margin:0;padding:0;}.tab {background:#e1e1e1;border-bottom:1px solid;border-color:#f6f6f6;font-family:Arial;color:#666;padding:5px 25px;margin:5px 1px;}</style>';
+        echo '<span class="tab" style="background:#888;border:1px 0;border:solid #888;color:white;text-decoration:none"><b>Code</b></span>';
+        echo '<span class="tab">Preview</span>';
+        echo '<span class="tab">Raw</span>';
+        echo '<span class="tab">Headers</span>';
+        echo '</div>';
+        echo '</div>';
         $firstLinePrefix = null;
-        echo '<h3>FILE: ',$exception->getFile(), '</h3>';
+        echo '<h3>File: ',$exception->getFile(), '</h3>';
         $lines = self::toArray((token_get_all(file_get_contents($exception->getFile()))));
         $index = 1;
         $count = count($lines);
@@ -62,7 +71,7 @@ class Debugger {
             ++$index;
         }
         echo '</code>';
-        echo '<h2>stack trace</h2>';
+        echo '<h2>Stack Trace</h2>';
         if ($isError === false || $exception->isFatal() === false) {
             if ($isError) {
                 echo implode('<br>', explode("\n", $exception->getSourceTraceAsString()));
@@ -72,55 +81,55 @@ class Debugger {
         } else {
             echo '<span style="color:#999;background-color:#eee">NULL</span>';
         }
-        echo '<h2>output</h2>';
-        echo '<h3>headers</h3>';
-        if ($isHeadersSent) {
-            echo '<h4>Already Sent</h4>';
-        }
-        if (count($headers) === 0) {
-            echo '<span style="color:#999;background-color:#eee">NULL</span>';
-        } else {
-            foreach ($headers as $header) {
-                echo $header . '<br>';
-            }
-        }
-        echo '<h3>body</h3>';
-        if ($outputBuffer === false) {
-            echo '<span style="color:red;background-color:#eee">Output Buffer Error</span>';
-        } else {
-            if (strlen($outputBuffer) > 1) {
-                $preview = addslashes($outputBuffer);
-                $preview = str_replace("\n", '\n', $preview);
-                $preview = str_replace("</script>", '<" + "/script>', $preview);
-?>
-                <h4>[PREVIEW]</h4>
-                <iframe name="buffer" id="buffer" src="javascript:false" width="100%"></iframe>
-                <script>
-                    var preview = window.frames["buffer"].document;
-                    preview.open();
-                    preview.write("<?= $preview ?>");
-                    preview.close();
-                    document.getElementById("buffer").height = preview.body.scrollHeight + 'px';
-                </script>
-<?php
-                echo '<h4>[SROUCE]</h4>';
-                echo '<pre style="word-break:break-all;word-wrap: break-word;">';
-                echo htmlspecialchars($outputBuffer, ENT_QUOTES | ENT_SUBSTITUTE);
-                echo '</pre>';
-            } else {
-                echo '<span style="color:#999;background-color:#eee">NULL</span>';
-            }
-        }
-        if ($isError) {
-            echo '<h2>context</h2>';
-            $context = $exception->getContext();
-            if ($context === null) {
-                echo '<span style="color:#999;background-color:#eee">NULL</span>';
-            } else {
-                var_dump($exception->getContext());
-            }
-        }
-        echo '<hr /> Powered by Hyperframework';
+//        echo '<h2>output</h2>';
+//        echo '<h3>headers</h3>';
+//        if ($isHeadersSent) {
+//            echo '<h4>Already Sent</h4>';
+//        }
+//        if (count($headers) === 0) {
+//            echo '<span style="color:#999;background-color:#eee">NULL</span>';
+//        } else {
+//            foreach ($headers as $header) {
+//                echo $header . '<br>';
+//            }
+//        }
+//        echo '<h3>body</h3>';
+//        if ($outputBuffer === false) {
+//            echo '<span style="color:red;background-color:#eee">Output Buffer Error</span>';
+//        } else {
+//            if (strlen($outputBuffer) > 1) {
+//                $preview = addslashes($outputBuffer);
+//                $preview = str_replace("\n", '\n', $preview);
+//                $preview = str_replace("</script>", '<" + "/script>', $preview);
+//
+//                <h4>[PREVIEW]</h4>
+//                <iframe name="buffer" id="buffer" src="javascript:false" width="100%"></iframe>
+//                <script>
+//                    var preview = window.frames["buffer"].document;
+//                    preview.open();
+//                    preview.write("<?= $preview ");
+//                    preview.close();
+//                    document.getElementById("buffer").height = preview.body.scrollHeight + 'px';
+//                </script>
+//
+//                echo '<h4>[SROUCE]</h4>';
+//                echo '<pre style="word-break:break-all;word-wrap: break-word;">';
+//                echo htmlspecialchars($outputBuffer, ENT_QUOTES | ENT_SUBSTITUTE);
+//                echo '</pre>';
+//            } else {
+//                echo '<span style="color:#999;background-color:#eee">NULL</span>';
+//            }
+//        }
+//        if ($isError) {
+//            echo '<h2>context</h2>';
+//            $context = $exception->getContext();
+//            if ($context === null) {
+//                echo '<span style="color:#999;background-color:#eee">NULL</span>';
+//            } else {
+//                var_dump($exception->getContext());
+//            }
+//        }
+//        echo '<hr /> Powered by Hyperframework';
     }
 
     private static function toArray($tokens) {
