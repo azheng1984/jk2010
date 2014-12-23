@@ -15,8 +15,9 @@ class Debugger {
         }
         echo '<div style="background:#f6f6f6">';
         echo '<h2 style="font-size:20px;color:black;padding:15px 10px;font-weight:normal;margin:0 5px 0">';
-        if ($isError) {
             echo '<span style="color:white;font-family:Arial;border-radius:5px;font-size:13px;red;background:red;padding:5px 7px;">';
+        if ($isError) {
+
             if ($exception->shouldThrow() === true) {
                 echo 'Error Exception';
             } elseif ($exception->getSeverityAsString() === 'error') {
@@ -24,8 +25,11 @@ class Debugger {
             } else {
                 echo ucwords($exception->getSeverityAsString());
             }
-            echo '</span> ';
         } else {
+            echo 'Exception';
+        }
+        echo '</span> ';
+        if ($isError === false){
             echo get_class($exception);
             if ($exception->getMessage() !== '') {
                 echo ': ';
@@ -34,11 +38,11 @@ class Debugger {
         echo $exception->getMessage();
         echo '</h2>';
         echo '<div style="line-height:20px;color:#ccc;padding:5px 0 5px 15px;font-size:13px;border-bottom:1px solid  #888">';
-        echo '<style>body{margin:0;padding:0;}.tab {background:#e1e1e1;border-bottom:1px solid;border-color:#f6f6f6;font-family:Arial;color:#666;padding:5px 25px;margin:5px 1px;}</style>';
-        echo '<span class="tab" style="background:#888;border:1px 0;border:solid #888;color:white;text-decoration:none"><b>Code</b></span>';
+        echo '<style>body{margin:0;padding:0;}.tab {background:#e5e5e5;border-bottom:1px solid;border-color:#f6f6f6;font-family:Arial;color:#666;padding:5px 25px;margin:5px 1px;}.tab:hover{color:#333;background:#ccc}</style>';
+        echo '<span class="tab" style="background:#888;border:1px 0;border:solid #888;color:white;text-decoration:none;">Code</span>';
         echo '<span class="tab">Preview</span>';
         echo '<span class="tab">Raw</span>';
-        echo '<span class="tab">Headers</span>';
+        echo '<span class="tab" >Headers</span>';
         echo '</div>';
         echo '</div>';
         $firstLinePrefix = null;
