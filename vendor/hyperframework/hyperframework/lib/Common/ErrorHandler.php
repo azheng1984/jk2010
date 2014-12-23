@@ -193,10 +193,6 @@ class ErrorHandler {
             if (self::$isError === false) {
                 $name = 'php_exception';
                 $data['class'] = get_class($source);
-                $code = $source->getCode();
-                if ($code !== null) {
-                    $data['code'] = $code;
-                }
             } else {
                 if (self::$source->shouldThrow()) {
                     $name = 'php_error_exception';
@@ -210,7 +206,7 @@ class ErrorHandler {
                     'hyperframework.error_handler.logger.log_stack_trace', false
                 );
                 if ($shouldLogTrace) {
-                   $data['trace'] = [];
+                    $data['trace'] = [];
                     foreach ($source->getTrace() as $item) {
                         $trace = [];
                         if (isset($item['class'])) {

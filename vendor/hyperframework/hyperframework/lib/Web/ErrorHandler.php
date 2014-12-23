@@ -163,10 +163,14 @@ class ErrorHandler extends Base {
     }
 
     protected static function executeDebugger($headers, $outputBuffer) {
-        Debugger::execute(
-            static::getSource(),
-            $headers,
-            $outputBuffer
+        $class = Config::getString(
+            'Hyperframework.error_handler.debugger_class', ''
+        );
+        if ($class === '') {
+            $class = 'Hyperframework\Web\Debugger';
+        }
+        $class::execute(
+            static::getSource(), $headers, $outputBuffer
         );
     }
 

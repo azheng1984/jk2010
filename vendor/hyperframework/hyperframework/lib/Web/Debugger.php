@@ -13,9 +13,9 @@ class Debugger {
         if (headers_sent() === false) {
             header('Content-Type: text/html; charset=UTF-8');
         }
-        echo '<div style="background:#f6f6f6">';
-        echo '<h2 style="font-size:20px;color:black;padding:15px 10px;font-weight:normal;margin:0 5px 0">';
-            echo '<span style="color:white;font-family:Arial;border-radius:5px;font-size:13px;red;background:red;padding:5px 7px;">';
+        echo '<div style="background:#eee">';
+        echo '<h2 style="line-height:25px;font-size:22px;color:black;padding:0;font-weight:normal;margin:0">';
+            echo '<span style="color:white;margin-bottom:8px;font-family:Arial;width:100%;display:block;font-size:18px;red;background:#c22;padding:10px 10px;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)">';
         if ($isError) {
 
             if ($exception->shouldThrow() === true) {
@@ -26,23 +26,29 @@ class Debugger {
                 echo ucwords($exception->getSeverityAsString());
             }
         } else {
-            echo 'Exception';
+            echo get_class($exception);
+            //echo 'Exception';
+        }
+
+        if ((string)$exception->getMessage() !== '') {
+            echo '<div style="margin:0px 0 0 0px;font-size:16px">', $exception->getMessage(), '</div>';
         }
         echo '</span> ';
         if ($isError === false){
-            echo get_class($exception);
-            if ($exception->getMessage() !== '') {
-                echo ': ';
-            }
+           // echo ' <span style="font-size:13px;color:#999;background:">#code: <span style="color:#999">', $exception->getCode() . '</span></span>';
         }
-        echo $exception->getMessage();
         echo '</h2>';
         echo '<div style="line-height:20px;color:#ccc;padding:5px 0 5px 15px;font-size:13px;border-bottom:1px solid  #888">';
-        echo '<style>body{margin:0;padding:0;}.tab {background:#e5e5e5;border-bottom:1px solid;border-color:#f6f6f6;font-family:Arial;color:#666;padding:5px 25px;margin:5px 1px;}.tab:hover{color:#333;background:#ccc}</style>';
+        echo '<style>body{margin:0;padding:0;}.tab {background:#ddd;border-bottom:1px solid;border-color:#eee;font-family:Arial;color:#555;padding:5px 25px;margin:5px 1px;}.tab:hover{color:#333;background:#ccc}</style>';
         echo '<span class="tab" style="background:#888;border:1px 0;border:solid #888;color:white;text-decoration:none;">Code</span>';
-        echo '<span class="tab">Preview</span>';
-        echo '<span class="tab">Raw</span>';
-        echo '<span class="tab" >Headers</span>';
+        $_COOKIES['xx'] = 'x';
+        setcookie('xx', 'xxxx');
+        setcookie('yy', 'xxxx');
+        //ob_end_flush();
+//        print_r(headers_list());
+//        echo 'Response:';
+        echo '<span class="tab">Headers</span>';
+        echo '<span class="tab">Content</span>';
         echo '</div>';
         echo '</div>';
         $firstLinePrefix = null;

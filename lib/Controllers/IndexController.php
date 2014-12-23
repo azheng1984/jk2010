@@ -2,10 +2,12 @@
 namespace Hyperframework\Blog\Controllers;
 
 use Hyperframework\Web\Controller;
+use Hyperframework\Db\DbClient;
 
 class IndexController extends Controller {
     public function __construct($app) {
         parent::__construct($app);
+        echo $this->getRouter()->getAction();
         $this->addAroundFilter(':hi');
         $this->addAfterFilter(':hi2');
         $this->addAroundFilter(function() {
@@ -19,6 +21,10 @@ class IndexController extends Controller {
         });
         $this->addAfterFilter(':hi3', ['prepend' => true, 'actions' => 'delete']);
 //        $this->removeFilter(':hi');
+    }
+
+    protected function doShowAction() {
+        DbClient::findById('article', 23);
     }
 
     protected function hi() {
