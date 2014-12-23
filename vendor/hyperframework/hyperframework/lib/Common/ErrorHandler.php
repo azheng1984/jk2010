@@ -198,8 +198,12 @@ class ErrorHandler {
                     $data['code'] = $code;
                 }
             } else {
-                $name = 'php_error';
-                $data['type'] = $source->getSeverityAsString();
+                if (self::$source->shouldThrow()) {
+                    $name = 'php_error_exception';
+                } else {
+                    $name = 'php_error';
+                    $data['type'] = $source->getSeverityAsString();
+                }
             }
             if (self::isError() === false || $source->isFatal() === false) {
                 $shouldLogTrace = Config::getBoolean(

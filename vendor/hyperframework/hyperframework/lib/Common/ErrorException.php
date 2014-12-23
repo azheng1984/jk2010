@@ -63,7 +63,7 @@ class ErrorException extends Base {
             case E_COMPILE_WARNING:   return 'compile warning';
             case E_CORE_WARNING:      return 'core warning';
             case E_RECOVERABLE_ERROR: return 'recoverable error';
-            case E_PARSE:             return 'parse';
+            case E_PARSE:             return 'parse error';
             case E_COMPILE_ERROR:     return 'compile error';
             case E_CORE_ERROR:        return 'core error';
         }
