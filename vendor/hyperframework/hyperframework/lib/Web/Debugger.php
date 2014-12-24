@@ -41,7 +41,7 @@ class Debugger {
         echo '</h2>';
         echo '<div style="line-height:20px;color:#ccc;padding:5px 0 5px 15px;padding-left:10px;font-size:13px;border-bottom:1px solid  #ccc">';
         echo '<style>body{margin:0;padding:0;background:#eee;}.tab {background:#ddd;border-bottom:1px solid;border-color:#eee;font-family:Arial;color:#555;padding:5px 25px;margin:5px 1px;}.tab:hover{color:#333;background:#ccc}</style>';
-        echo '<span class="tab" style="border-radius:2px 2px 0;font-weight:bold;background:#eee;border:1px;border:1px solid #ccc;border-bottom:0px;margin-top:-5px;float:left;float:left;color:#000;text-decoration:none;">Code</span>';
+        echo '<span class="tab" style="border-radius:2px 2px 0;font-weight:bold;background:#eee;border:1px;border:1px solid #ccc;border-bottom:0px;margin-top:-5px;float:left;float:left;color:#333;text-decoration:none;">Code</span>';
         $_COOKIES['xx'] = 'x';
         setcookie('xx', 'xxxx');
         setcookie('yy', 'xxxx');
@@ -73,12 +73,17 @@ class Debugger {
           margin-right:0;
         }
     #stat {
-    line-height:20px;font-family:arial;font-size:12px;margin:5px 0 0 10px;color:#999;padding-bottom:3px;
+    line-height:20px;font-family:arial;font-size:12px;margin:5px 0 0 10px;color:#999;padding-bottom:5px;
     }
-        @media all and (max-width: 680px) {
+    @media all and (max-width: 600px) {
         #stat {
             text-align:center;
         }
+    }
+    h2 {
+        font-size:18px;
+        margin-left:2px;
+        color:#333;
     }
 table {
     border-collapse: collapse;
@@ -90,16 +95,33 @@ td {
     code {
         white-space:nowrap;
     }
+    #stat b {
+    color: #333;
+box-shadow:1px 1px 1px rgba(0,0,0,.2);
+border-radius:8px;
+background:#ddd;
+padding:1px 5px;
+    }
+    #trace .box {
+color:#999;
+border-right:2px solid #ddd;
+    }
+    #trace .box:hover,#trace .frame {
+       cursor:pointer;
+        color:#000;
+    border-right:2px solid #999;
+    }
     </style>';
-        echo '<div id="stat" style=""><span class="x"><span>Response Headers: <b>',$headers,'</b></span> <span>Content Length: <b>',$contentLength,'</b></span></span> <span class="x"><span>Execution Time: <b>',$executionTime,'</b></span> <span>Memory Peak: <b>', $memory, '</b></span></span></div>';
+    echo '<div id="stat" style=""><span class="x"><span>Response Headers: <b>',$headers,'</b></span> <span>Content Length: <b>',$contentLength,'</b></span></span></div>';
+    //echo ' <span class="x"><span>Execution Time: <b>',$executionTime,'</b></span> <span>Memory Peak: <b>', $memory, '</b></span></span></div>';
         $firstLinePrefix = null;
-        echo '<div id="content" style="width:90%float:left;margin-bottom:20px;width:100%;margin-right:10px;margin-left:10px;background:#fff;padding:10px;border-radius:2px;border:1px solid #ccc">';
-        echo '<h2>File: ',$exception->getFile(), '</h2>';
+        echo '<div id="content" style="margin-bottom:20px;margin-right:10px;margin-left:10px;background:#fff;padding:10px;border-radius:2px;border:1px solid #ccc">';
+        echo '<h2 style="padding:5px 0">File <span style="line-height:20px;font-family:arial;font-size:13px;font-weight:normal;color:#333;">',$exception->getFile(), '</span></h2>';
         $lines = self::toArray((token_get_all(file_get_contents($exception->getFile()))));
         $index = 1;
         $count = count($lines);
         $errorLine = $exception->getLine() - 1;
-        echo '<table style="line-height:17px;"><tr><td><code style="float:left;text-align:right;border-right:1px solid #e1e1e1;">';
+        echo '<table style="line-height:17px;width:100%"><tr><td width="1px;"><code style="float:left;text-align:right;border-right:1px solid #e1e1e1;">';
         foreach ($lines as $key => $line) {
             if ($index + 9 < $errorLine || $index - 11 > $errorLine) {
                 ++$index;
@@ -115,7 +137,7 @@ td {
              'px;">' , $index ,'</span></div>';
             ++$index;
         }
-        echo '</code></td><td><code style="float:left">';
+        echo '</code></td><td ><code style="width:100%;float:left">';
         $index = 1;
         foreach ($lines as $key => $line) {
             if ($index + 9 < $errorLine || $index - 11 > $errorLine) {
@@ -135,7 +157,7 @@ td {
         }
         echo '</code></td></tr></table>';
         if ($isError === false || $exception->isFatal() === false) {
-            echo '<h2 style="width:100%;clear:both;">Stack Trace</h2>';
+            echo '<h2 style="padding-top:15px;margin-top:15px;border-top:1px solid #ddd;width:100%;clear:both;">Stack Trace</h2>';
             if ($isError) {
                 $trace =  $exception->getSourceTrace();
             } else {
@@ -143,16 +165,15 @@ td {
             }
             $trace = StackTraceFormatter::format($trace, false);
             $index = 0;
-            echo '<code><table style="border:1px solid #ddd;border-collapse: separate;border-radius: 2px;">';
+            echo '<code style="width:100%"><table id="trace" style="width:100%;border:1px solid #ddd;border-collapse: separate;border-radius: 2px;">';
             foreach ($trace as $item) {
                 echo '<tr style="border:1px solid #ddd;';
-                echo '"><td style="font-family:arial;font-size:12px;border-right:2px solid #ddd;background:#f5f5f5;padding:6px 4px;vertical-align:top;text-align:center;"><span style="color:#999;">#', $index, '</span> <td>';
-                echo '<td style="border-bottom:1px dotted #ddd;padding:6px;';
+                echo '"><td class="box" onclick="this.setAttribute(\'class\', \'frame\');document.getElementById(\'tf-',$index,'\').style.backgroundColor=\'#ff6\'" style="font-family:arial;font-size:12px;background:#f5f5f5;padding:6px 4px;vertical-align:top;text-align:center;"><span style="">#', $index, '</span> <td>';
+                echo '<td id="tf-',$index,'" style="border-bottom:1px dotted #ddd;padding:6px;';
                     if ($index === count($trace) -1) {
                         echo 'border:0';
                     }
-
-                 echo '">', $item, '</td></tr>';
+                 echo ';font-family:arial;font-size:13px;">', $item, '</td></tr>';
                 ++$index;
             }
             echo '</table></code>';
