@@ -146,7 +146,7 @@ td {
             echo '<code><table style="border:1px solid #ddd;border-collapse: separate;border-radius: 2px;">';
             foreach ($trace as $item) {
                 echo '<tr style="border:1px solid #ddd;';
-                echo '"><td style="font-family:arial;font-size:12px;border-right:2px solid #ddd;background:#f5f5f5;padding:6px 4px;vertical-align:top"><span style="color:#999;">#', $index, '</span> <td>';
+                echo '"><td style="font-family:arial;font-size:12px;border-right:2px solid #ddd;background:#f5f5f5;padding:6px 4px;vertical-align:top;text-align:center;"><span style="color:#999;">#', $index, '</span> <td>';
                 echo '<td style="border-bottom:1px dotted #ddd;padding:6px;';
                     if ($index === count($trace) -1) {
                         echo 'border:0';
