@@ -3,6 +3,7 @@ namespace Hyperframework\Web;
 
 use Exception;
 use ErrorException;
+use Hyperframework\Common\StackTraceFormatter;
 
 class Debugger {
     public static function execute(
@@ -13,9 +14,9 @@ class Debugger {
         if (headers_sent() === false) {
             header('Content-Type: text/html; charset=UTF-8');
         }
-        echo '<div style="background:#eee">';
+        echo '<div style="background:#fff">';
         echo '<h2 style="line-height:25px;font-size:22px;color:black;padding:0;font-weight:normal;margin:0">';
-            echo '<span style="color:white;margin-bottom:8px;font-family:Arial;width:100%;display:block;font-size:18px;red;background:#c22;padding:10px 10px;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)">';
+            echo '<span style="color:white;margin-bottom:8px;font-family:Arial;width:100%;display:block;font-size:18px;red;background:#c22;padding:10px 10px;padding-left:10px;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)">';
         if ($isError) {
 
             if ($exception->shouldThrow() === true) {
@@ -35,29 +36,87 @@ class Debugger {
         }
         echo '</span> ';
         if ($isError === false){
-           // echo ' <span style="font-size:13px;color:#999;background:">#code: <span style="color:#999">', $exception->getCode() . '</span></span>';
+           // echo ' <span style="font-family:arial;font-size:12px;color:#999;background:">#code: <span style="color:#999">', $exception->getCode() . '</span></span>';
         }
         echo '</h2>';
-        echo '<div style="line-height:20px;color:#ccc;padding:5px 0 5px 15px;font-size:13px;border-bottom:1px solid  #888">';
-        echo '<style>body{margin:0;padding:0;}.tab {background:#ddd;border-bottom:1px solid;border-color:#eee;font-family:Arial;color:#555;padding:5px 25px;margin:5px 1px;}.tab:hover{color:#333;background:#ccc}</style>';
-        echo '<span class="tab" style="background:#888;border:1px 0;border:solid #888;color:white;text-decoration:none;">Code</span>';
+        echo '<div style="line-height:20px;color:#ccc;padding:5px 0 5px 15px;padding-left:10px;font-size:13px;border-bottom:1px solid  #ccc">';
+        echo '<style>body{margin:0;padding:0;background:#eee;}.tab {background:#ddd;border-bottom:1px solid;border-color:#eee;font-family:Arial;color:#555;padding:5px 25px;margin:5px 1px;}.tab:hover{color:#333;background:#ccc}</style>';
+        echo '<span class="tab" style="border-radius:2px 2px 0;font-weight:bold;background:#eee;border:1px;border:1px solid #ccc;border-bottom:0px;margin-top:-5px;float:left;float:left;color:#000;text-decoration:none;">Code</span>';
         $_COOKIES['xx'] = 'x';
         setcookie('xx', 'xxxx');
         setcookie('yy', 'xxxx');
         //ob_end_flush();
 //        print_r(headers_list());
 //        echo 'Response:';
-        echo '<span class="tab">Headers</span>';
-        echo '<span class="tab">Content</span>';
+        echo '<span style="font-family:arial;font-weight:bold;margin-left:20px;font-size:13px;color:#333">Output</span>';
         echo '</div>';
         echo '</div>';
+        $headers = count(headers_list());
+        $contentLength = strlen($outputBuffer);
+        $executionTime = microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
+        $suffix = 's';
+        if ($executionTime < 1) {
+            $executionTime = $executionTime * 1000;
+            $suffix = 'ms';
+        }
+        $executionTime = sprintf("%.3f", $executionTime) . $suffix;
+        $suffix = 'K';
+        $memory = memory_get_peak_usage(true) / 1024;
+        if ($memory >= 1024) {
+            $suffix = 'M';
+            $memory = $memory / 1024;
+        }
+        $memory = (float)sprintf("%.3f", $memory) . $suffix;
+        echo '<style>h2 {margin-top:0}#stat span {margin-right:10px;white-space:nowrap;}#stat b {color:#777}</style>';
+    echo '<style>
+        #stat span.x{
+          margin-right:0;
+        }
+    #stat {
+    line-height:20px;font-family:arial;font-size:12px;margin:5px 0 0 10px;color:#999;padding-bottom:3px;
+    }
+        @media all and (max-width: 680px) {
+        #stat {
+            text-align:center;
+        }
+    }
+table {
+    border-collapse: collapse;
+    border:0;
+}
+td {
+    padding:0;
+    }
+    code {
+        white-space:nowrap;
+    }
+    </style>';
+        echo '<div id="stat" style=""><span class="x"><span>Response Headers: <b>',$headers,'</b></span> <span>Content Length: <b>',$contentLength,'</b></span></span> <span class="x"><span>Execution Time: <b>',$executionTime,'</b></span> <span>Memory Peak: <b>', $memory, '</b></span></span></div>';
         $firstLinePrefix = null;
-        echo '<h3>File: ',$exception->getFile(), '</h3>';
+        echo '<div id="content" style="width:90%float:left;margin-bottom:20px;width:100%;margin-right:10px;margin-left:10px;background:#fff;padding:10px;border-radius:2px;border:1px solid #ccc">';
+        echo '<h2>File: ',$exception->getFile(), '</h2>';
         $lines = self::toArray((token_get_all(file_get_contents($exception->getFile()))));
         $index = 1;
         $count = count($lines);
         $errorLine = $exception->getLine() - 1;
-        echo '<code>';
+        echo '<table style="line-height:17px;"><tr><td><code style="float:left;text-align:right;border-right:1px solid #e1e1e1;">';
+        foreach ($lines as $key => $line) {
+            if ($index + 9 < $errorLine || $index - 11 > $errorLine) {
+                ++$index;
+                continue;
+            }
+            echo '<div style="font-size:12px;font-family:arial;padding-right:5px;';
+            if ($index === $errorLine + 1) {
+                echo 'background-color:ff6;color:#000;';
+            } else {
+                echo 'color:#999;';
+            }
+            echo 'width:', (strlen($count)) * 10,
+             'px;">' , $index ,'</span></div>';
+            ++$index;
+        }
+        echo '</code></td><td><code style="float:left">';
+        $index = 1;
         foreach ($lines as $key => $line) {
             if ($index + 9 < $errorLine || $index - 11 > $errorLine) {
                 ++$index;
@@ -65,32 +124,40 @@ class Debugger {
             }
             if ($index === $errorLine + 1) {
                 echo '<div style="background-color:#ff6">';
-                echo '<span style="color:#666;';
             } else {
-                echo '<span style="color:#bbb;';
+                echo '<div>';
             }
-            echo 'width:', (strlen($count)) * 10,
-             'px;display:inline-block">' , $index ,'</span> ',
-            ' ';
-            echo  $line;
-            if ($index === $errorLine + 1) {
-               echo  '</div>';
-            } else {
-                echo '<br>';
+            if ($line === '') {
+                $line = '<br>';
             }
+            echo  $line, '</div>';
             ++$index;
         }
-        echo '</code>';
-        echo '<h2>Stack Trace</h2>';
+        echo '</code></td></tr></table>';
         if ($isError === false || $exception->isFatal() === false) {
+            echo '<h2 style="width:100%;clear:both;">Stack Trace</h2>';
             if ($isError) {
-                echo implode('<br>', explode("\n", $exception->getSourceTraceAsString()));
+                $trace =  $exception->getSourceTrace();
             } else {
-                echo implode('<br>', explode("\n", $exception->getTraceAsString()));
+                $trace =  $exception->getTrace();
             }
-        } else {
-            echo '<span style="color:#999;background-color:#eee">NULL</span>';
+            $trace = StackTraceFormatter::format($trace, false);
+            $index = 0;
+            echo '<code><table style="border:1px solid #ddd;border-collapse: separate;border-radius: 2px;">';
+            foreach ($trace as $item) {
+                echo '<tr style="border:1px solid #ddd;';
+                echo '"><td style="font-family:arial;font-size:12px;border-right:2px solid #ddd;background:#f5f5f5;padding:6px 4px;vertical-align:top"><span style="color:#999;">#', $index, '</span> <td>';
+                echo '<td style="border-bottom:1px dotted #ddd;padding:6px;';
+                    if ($index === count($trace) -1) {
+                        echo 'border:0';
+                    }
+
+                 echo '">', $item, '</td></tr>';
+                ++$index;
+            }
+            echo '</table></code>';
         }
+        echo '</div>';
 //        echo '<h2>output</h2>';
 //        echo '<h3>headers</h3>';
 //        if ($isHeadersSent) {

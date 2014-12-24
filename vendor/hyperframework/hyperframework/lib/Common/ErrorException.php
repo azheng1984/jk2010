@@ -92,56 +92,11 @@ class ErrorException extends Base {
     }
 
     public function getSourceTraceAsString() {
-        $sourceTrace = $this->getSourceTrace();
-        if ($sourceTrace === null) {
+        $trace = $this->getSourceTrace();
+        if ($trace === null) {
             return 'NULL';
         }
-        $result = '';
-        $index = 0;
-        foreach ($sourceTrace as $item) {
-            if ($index !== 0) {
-                $result .= PHP_EOL;
-            }
-            $result .= '#' . $index . ' ';
-            if (isset($item['file']) === false) {
-                $result .= '[internal function]: ';
-            } else {
-                $result .= $item['file'] . '(' . $item['line'] . '): ';
-            }
-            if (isset($item['class'])) {
-                $result .= $item['class'] . $item['type'];
-            }
-            $result .= $item['function'];
-            $arguments = [];
-            foreach ($item['args'] as $argument) {
-                if (is_string($argument)) {
-                    if (mb_strlen($argument) > 15) {
-                        $argument = mb_substr($argument, 0, 15) . '...';
-                    }
-                    $argument = str_replace(
-                        ["\\", "'", "\n", "\r", "\t", "\v", "\e", "\f"],
-                        ['\\\\', '\\\'', '\n', '\r', '\t', '\v', '\e', '\f'],
-                        $argument
-                    );
-                    $arguments[] = "'$argument'";
-                } elseif (is_array($argument)) {
-                    $arguments[] = 'Array';
-                } elseif (is_null($argument)) {
-                    $arguments[] = 'NULL';
-                } elseif (is_object($argument)) {
-                    $arguments[] = 'Object(' . get_class($argument) . ')';
-                } else {
-                    $arguments[] = $argument;
-                }
-            }
-            $result .= '(' . implode(', ', $arguments) . ')';
-            ++$index;
-        }
-        if ($index !== 0) {
-            $result .= PHP_EOL;   
-        }
-        $result .= '#' . $index . ' {main}';
-        return $result;
+        return StackTraceFormatter::format($trace);
     }
 
     public function __toString() {
