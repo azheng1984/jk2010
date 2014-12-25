@@ -299,55 +299,6 @@ border-right:2px solid #ddd;
             echo '</table></code>';
         }
         echo '</div>';
-//        echo '<h2>output</h2>';
-//        echo '<h3>headers</h3>';
-//        if ($isHeadersSent) {
-//            echo '<h4>Already Sent</h4>';
-//        }
-//        if (count($headers) === 0) {
-//            echo '<span style="color:#999;background-color:#eee">NULL</span>';
-//        } else {
-//            foreach ($headers as $header) {
-//                echo $header . '<br>';
-//            }
-//        }
-//        echo '<h3>body</h3>';
-//        if ($outputBuffer === false) {
-//            echo '<span style="color:red;background-color:#eee">Output Buffer Error</span>';
-//        } else {
-//            if (strlen($outputBuffer) > 1) {
-//                $preview = addslashes($outputBuffer);
-//                $preview = str_replace("\n", '\n', $preview);
-//                $preview = str_replace("</script>", '<" + "/script>', $preview);
-//
-//                <h4>[PREVIEW]</h4>
-//                <iframe name="buffer" id="buffer" src="javascript:false" width="100%"></iframe>
-//                <script>
-//                    var preview = window.frames["buffer"].document;
-//                    preview.open();
-//                    preview.write("<?= $preview ");
-//                    preview.close();
-//                    document.getElementById("buffer").height = preview.body.scrollHeight + 'px';
-//                </script>
-//
-//                echo '<h4>[SROUCE]</h4>';
-//                echo '<pre style="word-break:break-all;word-wrap: break-word;">';
-//                echo htmlspecialchars($outputBuffer, ENT_QUOTES | ENT_SUBSTITUTE);
-//                echo '</pre>';
-//            } else {
-//                echo '<span style="color:#999;background-color:#eee">NULL</span>';
-//            }
-//        }
-//        if ($isError) {
-//            echo '<h2>context</h2>';
-//            $context = $exception->getContext();
-//            if ($context === null) {
-//                echo '<span style="color:#999;background-color:#eee">NULL</span>';
-//            } else {
-//                var_dump($exception->getContext());
-//            }
-//        }
-//        echo '<hr /> Powered by Hyperframework';
     }
 
     private static function toArray($tokens) {
