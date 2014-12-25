@@ -30,6 +30,7 @@ class Debugger {
             echo get_class($exception);
             //echo 'Exception';
         }
+
         if ((string)$exception->getMessage() !== '') {
             echo '<div style="margin:0px 0 0 0px;font-size:16px">', $exception->getMessage(), '</div>';
         }
@@ -45,74 +46,12 @@ class Debugger {
         setcookie('xx', 'xxxx');
         setcookie('yy', 'xxxx');
         //ob_end_flush();
-//      print_r(headers_list());
-//      echo 'Response:';
-        echo '<script>
-            var contentHtml;
-            function show() {
-                var content = document.getElementById("content");
-                contentHtml = content.innerHTML;
-                content.innerHTML = ';
-                //$preview = addslashes(var_export($headers, true));
-                //$preview = str_replace("\n", '\n', $preview);
-                $buffer = file_get_contents('/home/az/dsl.pdf');
-                $len = strlen($buffer);
-                if ($len > 1024 * 1024 * 10) {
-                    $buffer = mb_strcut($buffer, 0, 1024 * 1024 * 10);
-                }
-                $len = strlen($buffer);
-                $buffer2 = null;
-                if ($len > 1024 * 100) {
-                    $buffer2 = mb_strcut($buffer, 0, 1024 * 100);
-                    $buffer = mb_strcut($buffer, strlen($buffer2));
-                }
-                $o = '<div><a href="javascript:void(0)">► Headers</a></div>';
-                foreach ($headers as $i) {
-                    $tmp = explode(':', $i, 2);
-                    $o.= '<div><span>' . $tmp[0] . ':<span> <span>'. $tmp[1]. '</span>';
-                }
-                $o .= '<hr/>';
-                $buffer = htmlspecialchars($buffer2, ENT_SUBSTITUTE);
-                //$buffer = htmlspecialchars($buffer2, ENT_SUBSTITUTE);
-                $buffer = str_replace("\r\n", '>', $buffer);
-                $buffer = str_replace("\n", '>', $buffer);
-                $buffer = str_replace("\r", '>', $buffer);
-                //$tmp = explode('<br>', $buffer);
-                //$index = 1;
-                //foreach ($tmp as $item) {
-                //    $o .= '<div><span style="color:red">'. $index. '</span>' . $item .'</div>';
-                //    ++$index;
-                //}
-                //var_dump(json_encode($o.$buffer));
-                //var_dump(json_last_error_msg());
-//                $buffer = str_replace("\\", '\\\\', $buffer);
-//                $buffer = str_replace("\n", '\n', $buffer);
-//                $buffer = str_replace('"', '\"', $buffer);
-//                $buffer = str_replace('%', '', $buffer);
-//                $buffer = 'hello';
-//                $buffer = 'hello';
-                echo json_encode($o), ';
-                var buffer = ', json_encode($buffer), ';
-                buffer = buffer.split(">");
-                var b = "";
-                var count = 0;
-                for (var index in buffer) {
-                    ++count;
-                    var p = ++index;
-                    --index;
-                    b += "<div id=\"srouce-" + index + "\" class=\"source\" style=\"padding-left:10px;\">" + buffer[index] + "</div>";
-                }
-                content.innerHTML += "<table><td id=\"numbers\"></td><td>" +  b + "</td></table>";
-                var numbers = "";
-                for (;count >=0; --count) {
-numbers = "<div class=\"line-number\" style=\'vertical-align:top;padding-right:5px;border-right:1px solid #ccc;text-align:right;font-size:12px;font-family:arial\'>" + count + "</div>" + numbers;
-    }
-    document.getElementById("numbers").innerHTML = numbers;
-            }
-            </script> ';
-        echo '<a href="javascript:void(0)" onclick="show()" style="font-family:arial;font-weight:bold;margin-left:20px;font-size:13px;">Output</a>';
+//        print_r(headers_list());
+//        echo 'Response:';
+        echo '<span style="font-family:arial;font-weight:bold;margin-left:20px;font-size:13px;color:#333">Output</span>';
         echo '</div>';
         echo '</div>';
+        $headers = count(headers_list());
         $contentLength = strlen($outputBuffer);
         $executionTime = microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
         $suffix = 's';
@@ -130,17 +69,6 @@ numbers = "<div class=\"line-number\" style=\'vertical-align:top;padding-right:5
         $memory = (float)sprintf("%.3f", $memory) . $suffix;
         echo '<style>h2 {margin-top:0}#stat span {margin-right:10px;white-space:nowrap;}#stat b {color:#777}</style>';
     echo '<style>
-        a {
-            color:#333;
-            text-decoration:none;
-    }
-    .source {
-        word-break:break-all; /*支持IE，chrome，FF不支持*/
-　　    word-wrap:break-word;/*支持IE，chrome，FF*/
-    }
-    a:hover {
-            text-decoration:underline;
-    }
         #stat span.x{
           margin-right:0;
         }
@@ -156,7 +84,6 @@ numbers = "<div class=\"line-number\" style=\'vertical-align:top;padding-right:5
         font-size:20px;
         margin-left:2px;
         color:#333;
-        margin-bottom:10px;
     }
 table {
     border-collapse: collapse;
@@ -170,10 +97,11 @@ td {
     }
     #stat b {
     color: #333;
+box-shadow:1px 1px 1px rgba(0,0,0,.2);
 border-radius:8px;
 font-weight:normal;
-background:#eee;
-padding:1px 6px;
+background:#e5e5e5;
+padding:1px 5px;
     }
     #trace .box {
 color:#999;
@@ -188,17 +116,17 @@ border-right:2px solid #ddd;
     //echo ' <span class="x"><span>Execution Time: <b>',$executionTime,'</b></span> <span>Memory Peak: <b>', $memory, '</b></span></span></div>';
         $firstLinePrefix = null;
     $appRootPath = FileLoader::getDefaultRootPath();
-    $rootPath = str_replace(DIRECTORY_SEPARATOR, '<i style="font-style:normal;color:#999;padding:0 3px">' . DIRECTORY_SEPARATOR . '</i>', $appRootPath);
+    $rootPath = str_replace(DIRECTORY_SEPARATOR, '<i style="color:#aaa;padding:0 2px">' . DIRECTORY_SEPARATOR . '</i>', $appRootPath);
         echo '<div id="content" style="margin-top:10px;margin-bottom:20px;margin-right:10px;margin-left:10px;background:#fff;padding:2px 10px 10px;border-radius:2px;border:1px solid #ccc">';
-    echo '<div id="stat" style=""><span class="x"><span>Response Headers: <b>',count($headers),'</b></span> <span>Content Length: <b>',$contentLength,'</b></span></span> App Root Path: <span style="color:#333">', $rootPath, '</span></div>';
+    echo '<div id="stat" style=""><span class="x"><span>Response Headers: <b>',$headers,'</b></span> <span>Content Length: <b>',$contentLength,'</b></span></span>App Root Path: <span style="color:#333">', $rootPath, '</span></div>';
     $file = $exception->getFile();
     $filePrefix = $appRootPath . DIRECTORY_SEPARATOR;
     $filePrefixLength = strlen($filePrefix);
     if (strncmp($filePrefix, $file, $filePrefixLength) === 0) {
         $file = substr($file, $filePrefixLength);
     }
-    $file = str_replace(DIRECTORY_SEPARATOR, '<span style="color:#999;padding:0 3px">' . DIRECTORY_SEPARATOR . '</span>', $file);
-        echo '<h2 style="border-top:1px solid #ddd;padding:10px 0  0">File <span style="line-height:20px;font-family:arial;font-size:13px;font-weight:normal;color:#333;">',$file, '</span></h2>';
+    $file = str_replace(DIRECTORY_SEPARATOR, '<span style="color:#aaa;padding:0 2px">' . DIRECTORY_SEPARATOR . '</span>', $file);
+        echo '<h2 style="border-top:1px solid #ddd;padding:10px 0 5px  0">File <span style="line-height:20px;font-family:arial;font-size:13px;font-weight:normal;color:#333;">',$file, '</span></h2>';
         $lines = self::toArray((token_get_all(file_get_contents($exception->getFile()))));
         $index = 1;
         $count = count($lines);
@@ -227,9 +155,9 @@ border-right:2px solid #ddd;
                 continue;
             }
             if ($index === $errorLine + 1) {
-                echo '<div style="padding-left:10px;background-color:#ff6">';
+                echo '<div style="background-color:#ff6">';
             } else {
-                echo '<div style="padding-left:10px;">';
+                echo '<div>';
             }
             if ($line === '') {
                 $line = '<br>';
@@ -239,43 +167,23 @@ border-right:2px solid #ddd;
         }
         echo '</code></td></tr></table>';
         if ($isError === false || $exception->isFatal() === false) {
-            echo '<h2 style="padding-top:10px;margin-top:15px;border-top:1px solid #ddd;width:100%;clear:both;">Stack Trace</h2>';
+            echo '<h2 style="padding-top:15px;margin-top:15px;border-top:1px solid #ddd;width:100%;clear:both;">Stack Trace</h2>';
             if ($isError) {
                 $trace =  $exception->getSourceTrace();
             } else {
                 $trace =  $exception->getTrace();
             }
-    //        $trace = StackTraceFormatter::format($trace, false);
+            $trace = StackTraceFormatter::format($trace, false);
             $index = 0;
             echo '<code style="width:100%"><table id="trace" style="width:100%;border:1px solid #ddd;border-collapse: separate;border-radius: 2px;">';
-            //$trace[] = '{main}';
             foreach ($trace as $item) {
-                if ($item !== '{main}') {
-                    $invocation = StackTraceFormatter::formatInvocation($item);
-                } else {
-                    $invocation = '{main}';
-                }
                 echo '<tr style="border:1px solid #ddd;';
-                echo '"><td class="box" onclick="this.setAttribute(\'class\', \'frame\');document.getElementById(\'tf-',$index,'\').style.backgroundColor=\'#ff6\'" style="padding:6px;width:1px;font-family:arial;font-size:12px;background:#f5f5f5;vertical-align:middle;text-align:center;"><span style="">#', $index, '</span> <td>';
-                echo '<td id="tf-',$index,'" style="border-bottom:1px dotted #ddd;padding:5px;';
+                echo '"><td class="box" onclick="this.setAttribute(\'class\', \'frame\');document.getElementById(\'tf-',$index,'\').style.backgroundColor=\'#ff6\'" style="font-family:arial;font-size:12px;background:#f5f5f5;padding:6px 4px;vertical-align:top;text-align:center;"><span style="">#', $index, '</span> <td>';
+                echo '<td id="tf-',$index,'" style="border-bottom:1px dotted #ddd;padding:6px;';
                     if ($index === count($trace) -1) {
                         echo 'border:0';
                     }
-                echo ';font-family:arial;font-size:14px;">', $invocation;
-                if (isset($item['file'])) {
-                    $file = $item['file'];
-                    if (strncmp($filePrefix, $file, $filePrefixLength) === 0) {
-                        $file = substr($file, $filePrefixLength);
-                    }
-                    $file = str_replace(DIRECTORY_SEPARATOR, '<span style="color:#999;padding:0 3px">' . DIRECTORY_SEPARATOR . '</span>', $file);
-                    if ($item === '{main}') {
-                        break;
-                    }
-                    echo '<div style="margin-top:4px;color:#007700;font-size:13px;">', $file , ' <span style="color:#888;background:#f5f5f5;padding:2px 3px 0 3px;line-height:18px;box-shadow: 1px 1px 1px rgba(0,0,0,.15);border-radius:3px;font-size:12px;">',$item['line'], '</span></div>';
-                } else {
-                    echo '<div style="margin-top:4px;color:#999">internal function</div>';
-                }
-               echo '</td></tr>';
+                 echo ';font-family:arial;font-size:13px;">', $item, '</td></tr>';
                 ++$index;
             }
             echo '</table></code>';
