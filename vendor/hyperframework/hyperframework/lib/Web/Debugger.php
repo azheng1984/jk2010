@@ -52,19 +52,22 @@ class Debugger {
             function show() {
                 var content = document.getElementById("content");
                 contentHtml = content.innerHTML;
-                content.innerHTML = ';
+                ';
                 //$preview = addslashes(var_export($headers, true));
                 //$preview = str_replace("\n", '\n', $preview);
-                $buffer = file_get_contents('/home/az/dsl.pdf');
+                $buffer = file_get_contents('/home/az/20101220224643434.jpg');
                 $len = strlen($buffer);
-                if ($len > 1024 * 1024 * 10) {
+                if ($len > 1024 * 10) {
                     $buffer = mb_strcut($buffer, 0, 1024 * 1024 * 10);
+                    echo 'notice= "<div style=\"padding:5px;background:#ff6;color:333\">Notice: Content is partial. Content-length is larger than output limitation(10m) ', $len, '</div>";';
                 }
                 $len = strlen($buffer);
                 $buffer2 = null;
-                if ($len > 1024 * 100) {
-                    $buffer2 = mb_strcut($buffer, 0, 1024 * 100);
-                    $buffer = mb_strcut($buffer, strlen($buffer2));
+                $max = 1024 * 4;
+                if ($len > $max) {
+                    $tmp = $buffer;
+                    $buffer= mb_strcut($tmp, 0, $max);
+                    $buffer2 = substr($tmp, strlen($buffer));
                 }
                 $o = '<div><a href="javascript:void(0)">► Headers</a></div>';
                 foreach ($headers as $i) {
@@ -72,43 +75,47 @@ class Debugger {
                     $o.= '<div><span>' . $tmp[0] . ':<span> <span>'. $tmp[1]. '</span>';
                 }
                 $o .= '<hr/>';
-                $buffer = htmlspecialchars($buffer2, ENT_SUBSTITUTE);
-                //$buffer = htmlspecialchars($buffer2, ENT_SUBSTITUTE);
+                echo 'headers =',  json_encode($o), ';';
+                $buffer = htmlspecialchars($buffer, ENT_SUBSTITUTE);
                 $buffer = str_replace("\r\n", '>', $buffer);
                 $buffer = str_replace("\n", '>', $buffer);
                 $buffer = str_replace("\r", '>', $buffer);
-                //$tmp = explode('<br>', $buffer);
-                //$index = 1;
-                //foreach ($tmp as $item) {
-                //    $o .= '<div><span style="color:red">'. $index. '</span>' . $item .'</div>';
-                //    ++$index;
-                //}
-                //var_dump(json_encode($o.$buffer));
-                //var_dump(json_last_error_msg());
-//                $buffer = str_replace("\\", '\\\\', $buffer);
-//                $buffer = str_replace("\n", '\n', $buffer);
-//                $buffer = str_replace('"', '\"', $buffer);
-//                $buffer = str_replace('%', '', $buffer);
-//                $buffer = 'hello';
-//                $buffer = 'hello';
-                echo json_encode($o), ';
-                var buffer = ', json_encode($buffer), ';
-                buffer = buffer.split(">");
-                var b = "";
+                echo 'buffer = ', json_encode($buffer), ';';
+                if ($buffer2 !== null) {
+                    $buffer2 = htmlspecialchars($buffer2, ENT_SUBSTITUTE);
+                    $buffer2 = str_replace("\r\n", '>', $buffer2);
+                    $buffer2 = str_replace("\n", '>', $buffer2);
+                    $buffer2 = str_replace("\r", '>', $buffer2);
+                    echo 'buffer2 = ', json_encode($buffer2), ';';
+                }
+                echo '
+    contentx = buildOutput(buffer);
+    if (buffer2 != null) {
+        contentx = "<div class=\"more\" onclick=\"showmore()\">Show hidden content</div>" + contentx
+        +"<div onclick=\"showmore()\" class=\"more\">Show hidden content</div>";
+    }
+    content.innerHTML = headers + notice + contentx;
+            }
+var headers;
+var buffer;
+var buffer2;
+var notice;
+function buildOutput(rows) {
+                 bufferx = rows.split(">");
+                var b = "<table>";
                 var count = 0;
-                for (var index in buffer) {
+                for (var index in bufferx) {
                     ++count;
                     var p = ++index;
                     --index;
-                    b += "<div id=\"srouce-" + index + "\" class=\"source\" style=\"padding-left:10px;\">" + buffer[index] + "</div>";
+                    b += "<tr><td class=\"line-number\" style=\'vertical-align:top;padding-right:5px;border-right:1px solid #ccc;text-align:right;font-size:12px;font-family:arial\' line-number=\"" + count + "\"></td><td id=\"srouce-" + index + "\" class=\"source\" style=\"padding-left:10px;\">" + bufferx[index] + "</td></tr>";
                 }
-                content.innerHTML += "<table><td id=\"numbers\"></td><td>" +  b + "</td></table>";
-                var numbers = "";
-                for (;count >=0; --count) {
-numbers = "<div class=\"line-number\" style=\'vertical-align:top;padding-right:5px;border-right:1px solid #ccc;text-align:right;font-size:12px;font-family:arial\'>" + count + "</div>" + numbers;
+                    return b + "</table>";
+   
     }
-    document.getElementById("numbers").innerHTML = numbers;
-            }
+    function showmore() {
+        content.innerHTML = headers + notice + buildOutput(buffer + buffer2);
+    }
             </script> ';
         echo '<a href="javascript:void(0)" onclick="show()" style="font-family:arial;font-weight:bold;margin-left:20px;font-size:13px;">Output</a>';
         echo '</div>';
@@ -138,6 +145,13 @@ numbers = "<div class=\"line-number\" style=\'vertical-align:top;padding-right:5
         word-break:break-all; /*支持IE，chrome，FF不支持*/
 　　    word-wrap:break-word;/*支持IE，chrome，FF*/
     }
+    .more {
+        width:200px;
+        text-align:center;
+        background:#eee;
+        padding:5px 10px;
+        border:1px solid #ddd;
+    }
     a:hover {
             text-decoration:underline;
     }
@@ -157,6 +171,10 @@ numbers = "<div class=\"line-number\" style=\'vertical-align:top;padding-right:5
         margin-left:2px;
         color:#333;
         margin-bottom:10px;
+    }
+    .line-number:before {
+        content:attr(line-number);
+        color:#999;
     }
 table {
     border-collapse: collapse;
@@ -271,7 +289,7 @@ border-right:2px solid #ddd;
                     if ($item === '{main}') {
                         break;
                     }
-                    echo '<div style="margin-top:4px;color:#007700;font-size:13px;">', $file , ' <span style="color:#888;background:#f5f5f5;padding:2px 3px 0 3px;line-height:18px;box-shadow: 1px 1px 1px rgba(0,0,0,.15);border-radius:3px;font-size:12px;">',$item['line'], '</span></div>';
+                    echo '<div style="margin-top:4px;color:#007700;font-size:13px;">', $file , ' <span style="color:#666;background:#f5f5f5;padding:2px 3px 0 3px;line-height:18px;box-shadow: 1px 1px 1px rgba(0,0,0,.15);border-radius:3px;font-size:12px;">',$item['line'], '</span></div>';
                 } else {
                     echo '<div style="margin-top:4px;color:#999">internal function</div>';
                 }
