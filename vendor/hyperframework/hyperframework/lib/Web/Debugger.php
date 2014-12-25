@@ -38,9 +38,9 @@ class Debugger {
            // echo ' <span style="font-family:arial;font-size:12px;color:#999;background:">#code: <span style="color:#999">', $exception->getCode() . '</span></span>';
         }
         echo '</h2>';
-        echo '<div style="line-height:20px;color:#ccc;padding:5px 0 5px 15px;padding-left:10px;font-size:13px;border-bottom:1px solid  #ccc">';
-        echo '<style>body{margin:0;padding:0;background:#eee;}.tab {background:#ddd;border-bottom:1px solid;border-color:#eee;font-family:Arial;color:#555;padding:5px 25px;margin:5px 1px;}.tab:hover{color:#333;background:#ccc}</style>';
-        echo '<span class="tab" style="border-radius:2px 2px 0;font-weight:bold;background:#eee;border:1px;border:1px solid #ccc;border-bottom:0px;margin-top:-5px;float:left;float:left;color:#333;text-decoration:none;">Code</span>';
+        echo '<div style="line-height:20px;padding:5px 0 5px 15px;padding-left:10px;font-size:13px;border-bottom:1px solid  #ccc">';
+        echo '<style></style>';
+        echo '<span id="t-code" class="tab ts" style="">Code</span>';
         $_COOKIES['xx'] = 'x';
         setcookie('xx', 'xxxx');
         setcookie('yy', 'xxxx');
@@ -50,6 +50,8 @@ class Debugger {
         echo '<script>
             var contentHtml;
             function show() {
+                document.getElementById("t-code").className = "tns tab";
+                document.getElementById("t-output").className = "ts tab";
                 var content = document.getElementById("content");
                 contentHtml = content.innerHTML;
                 ';
@@ -117,7 +119,7 @@ function buildOutput(rows) {
         content.innerHTML = headers + notice + buildOutput(buffer + buffer2);
     }
             </script> ';
-        echo '<a href="javascript:void(0)" onclick="show()" style="font-family:arial;font-weight:bold;margin-left:20px;font-size:13px;">Output</a>';
+        echo '<span id="t-output" class="tns" onclick="show()" style="">Output</span>';
         echo '</div>';
         echo '</div>';
         $contentLength = strlen($outputBuffer);
@@ -137,6 +139,9 @@ function buildOutput(rows) {
         $memory = (float)sprintf("%.3f", $memory) . $suffix;
         echo '<style>h2 {margin-top:0}#stat span {margin-right:10px;white-space:nowrap;}#stat b {color:#777}</style>';
     echo '<style>
+        body{margin:0;padding:0;background:#eee;}
+    .tab {
+       font-family:Arial;padding:5px 25px;margin:5px 1px;}
         a {
             color:#333;
             text-decoration:none;
@@ -144,6 +149,13 @@ function buildOutput(rows) {
     .source {
         word-break:break-all; /*支持IE，chrome，FF不支持*/
 　　    word-wrap:break-word;/*支持IE，chrome，FF*/
+    }
+    .tns {
+        font-size:#333;
+        font-family:arial;font-weight:bold;margin-left:20px;font-size:13px;
+    }
+    .ts {
+border-radius:2px 2px 0;font-weight:bold;background:#eee;border:1px;border:1px solid #ccc;border-bottom:0px;margin-top:-5px;float:left;color:#333;text-decoration:none;
     }
     .more {
         width:200px;
