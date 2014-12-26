@@ -274,9 +274,10 @@ class Debugger {
                 $headers[] = [$key, $value];
             }
         }
-        if (self::$contentLength >= 10 * 1024 * 1024) {
+        $maxFullContentLength = 10 * 1024 * 1024;
+        if (self::$contentLength >= $maxFullContentLength) {
             $isOverflow = true;
-            $content = mb_strcut($buffer, 0, 10 * 1024 * 1024);
+            $content = mb_strcut(self::$content, 0, $maxFullContentLength);
         } else {
             $content = self::$content;
         }
