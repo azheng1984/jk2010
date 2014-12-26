@@ -154,8 +154,7 @@ class Debugger {
             $lineNumber = $value[2];
             $type = $value[0];
             $content = $value[1];
-            $content = str_replace("\r\n", "\n", $content);
-            $content = str_replace("\r", "\n", $content);
+            $content = str_replace(["\r\n", "\r"], "\n", $content);
             $lines = explode("\n", $content);
             $lastLine = array_pop($lines);
             foreach ($lines as $line) {
