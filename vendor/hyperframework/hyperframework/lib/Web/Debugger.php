@@ -99,6 +99,113 @@ class Debugger {
     }
 
     private static function getLines() {
+        $file = file_get_contents(self::$source->getFile());
+        $errorLineNumber = self::$source->getLine();
+        $startingLineNumber = 0;
+        if ($errorLineNumber > 21) {
+            $startingLineNumber = $errorLineNumber - 21;
+        }
+        $tokens = token_get_all($file);
+        $lineNumber = 0;
+        $result = [];
+        $buffer = '';
+        $isString = false;
+        foreach ($tokens as $index => $value) {
+            if (is_string($value)) {
+                if ($lineNumber < $startingLineNumber) {
+                    continue;
+                }
+                if ($value === '"' || $value === "'") {
+                    $buffer .= '<span class="string">' . $value . '</span>';
+                } else {
+                    $buffer .= '<span class="keyword">' . $value . '</span>';
+                }
+                continue;
+            }
+            if ($value[2] < $startingLineNumber) {
+                continue;
+            }
+            $lineNumber = $value[2];
+            $type = $value[0];
+            $content = $value[1];
+            $content = str_replace("\r\n", "\n", $content);
+            $content = str_replace("\r", "\n", $content);
+            $lines = explode("\n", $content);
+            $lastLine = array_pop($lines);
+            foreach ($lines as $line) {
+                if ($lineNumber >= $startingLineNumber) {
+                    $result[$lineNumber] =
+                        $buffer . self::formatToken($type, $line);
+                    $buffer = '';
+                    ++$lineNumber;
+                }
+            }
+            $buffer .= self::formatToken($type, $lastLine);
+            if ($lineNumber > $errorLineNumber + 10) {
+                var_dump($lineNumber);
+                $buffer = false;
+                break;
+            }
+        }
+        if ($buffer !== false) {
+            $result[$lineNumber] = $buffer;
+        }
+        $count = count($result);
+        if ($count > 21) {
+            $max = key($result) + $count - 21;
+            for ($index = key($result); $index < $max; ++$index) {
+                unset($result[$index]);
+            }
+        }
+        return $result;
+    }
+
+    private static function formatToken($type, $content) {
+        if ($content === '' || $type === T_WHITESPACE) {
+            return $content;
+        }
+        switch ($type) {
+            case T_ENCAPSED_AND_WHITESPACE:
+            case T_CONSTANT_ENCAPSED_STRING:
+                $class = 'string';
+                break;
+            case T_INLINE_HTML:
+                $class = 'html';
+                break;
+            case T_COMMENT:
+            case T_DOC_COMMENT:
+                $class = 'comment';
+                break;
+            case T_STRING:
+            case T_NUM_STRING:
+            case T_VARIABLE:
+            case T_DNUMBER:
+            case T_LNUMBER:
+            case T_HALT_COMPILER:
+            case T_EVAL:
+            case T_CURLY_OPEN:
+            case T_UNSET:
+            case T_STRING_VARNAME:
+            case T_PRINT:
+            case T_REQUIRE:
+            case T_REQUIRE_ONCE:
+            case T_INCLUDE:
+            case T_INCLUDE_ONCE:
+            case T_ISSET:
+            case T_LIST:
+            case T_CLOSE_TAG:
+            case T_OPEN_TAG:
+            case T_OPEN_TAG_WITH_ECHO:
+                $class = 'default';
+                break;
+            default:
+                $class = 'keyword';
+                //$class = token_name($type);
+        }
+        if ($class === 'default') {
+            return $content; 
+        }
+        return '<span class="' . $class . '">' . $content . '</span>';
     }
 
     private static function renderPath($path, $shouldRemoveRootPath = true) {
