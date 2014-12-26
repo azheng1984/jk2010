@@ -10,6 +10,7 @@ class Debugger {
     private static $headers;
     private static $headerCount;
     private static $content;
+    private static $contentLength;
     private static $isError;
     private static $rootPath;
     private static $rootPathLength;
@@ -21,6 +22,7 @@ class Debugger {
         self::$headers = $headers;
         self::$content = $content;
         self::$headerCount = count($headers);
+        self::$contentLength = strlen($content);
         self::$isError = $source instanceof ErrorException;
         if (headers_sent() === false) {
             header('Content-Type: text/html;charset=utf-8');
@@ -63,6 +65,7 @@ class Debugger {
         echo '<div id="file"><h2>File <span class="path">';
         self::renderPath(self::$source->getFile());
         echo '</span></h2>';
+        echo '<table><tbody><tr><td>';
         $lines = self::getLines();
         $errorLineNumber = self::$source->getLine();
         foreach ($lines as $number => $line) {
@@ -72,7 +75,7 @@ class Debugger {
             }
             echo '>', $number, '</div>';
         }
-        echo '<table><tr><td>';
+        echo '</td><td>';
         foreach ($lines as $number => $line) {
             echo '<div';
             if ($number === $errorLineNumber) {
@@ -80,10 +83,10 @@ class Debugger {
             }
             echo '>', $line, '</div>';
         }
-        echo '</td><td>';
-        echo '</td></tr></table></div>';
+        echo '</td></tr></tbody></table></div>';
         if (self::$isError === false || self::$source->isFatal() === false) {
-            echo '<div id="stack-trace"><h2>Stack Trace</h2><div><table>';
+            echo '<div id="stack-trace"><h2>Stack Trace</h2>',
+                '<div><table><tbody>';
             if (self::$isError) {
                 $trace =  self::$source->getSourceTrace();
             } else {
@@ -108,7 +111,7 @@ class Debugger {
                 }
                 ++$index;
             }
-            echo '</table></div></div>';
+            echo '</tbody></table></div></div>';
         }
         echo '</div>';
     }
@@ -116,7 +119,7 @@ class Debugger {
     private static function renderStatusBar() {
         echo '<div id="status-bar"><div>Response Headers: <span>',
             self::$headerCount, '</span> ',
-            'Content Length: <span>', strlen(self::$content),
+            'Content Length: <span>', self::$contentLength,
             '</span></div><div>App Root Path: <span>';
             self::renderPath(FileLoader::getDefaultRootPath(), false);
         echo '</span><div></div>';
@@ -251,14 +254,139 @@ class Debugger {
     }
 
     private static function renderNav() {
-        echo '<div id="nav"><div class="selected">Code</div>',
-           '<div>Output</div></div>';
+        echo '<div id="nav"><div onclick="showCode()" class="selected">Code</div>',
+           '<div onclick="showOutput()">Output</div></div>';
     }
 
     private static function renderJavascript() {
+        $isOverflow = false;
+        $hiddenContent = null;
+        $headers = [];
+        if (self::$headers !== null) {
+            foreach (self::$headers as $header) {
+                list($key, $value) = explode(':', $header, 2);
+                $key = htmlspecialchars(
+                    $key, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+                );
+                $value = ltrim(htmlspecialchars(
+                    $value , ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+                ), ' ');
+                $headers[] = [$key, $value];
+            }
+        }
+        if (self::$contentLength >= 10 * 1024 * 1024) {
+            $isOverflow = true;
+            $content = mb_strcut($buffer, 0, 10 * 1024 * 1024);
+        } else {
+            $content = self::$content;
+        }
+        $content = str_replace(["\r\n", "\r"], "\n", $content);
+        $maxContentLength = 256 * 1024;
+        if (self::$contentLength > $maxContentLength) {
+            $tmp = $content;
+            $content = mb_strcut($tmp, 0, $maxContentLength);
+            $hiddenContent = substr($tmp, strlen($content));
+        }
+        $content = json_encode(htmlspecialchars(
+            $content, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+        ));
+        if ($hiddenContent !== null) {
+            $hiddenContent = json_encode(htmlspecialchars(
+                $hiddenContent, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+            ));
+        } else {
+            $hiddenContent = 'null';
+        }
 ?>
 <script type="text/javascript">
-    var x = 'hello';
+var codeContent = null;
+var outputContent = null;
+var fullContent = null;
+function showOutput() {
+    if (codeContent != null) {
+        return;
+    }
+    var contentDiv = document.getElementById("content");
+    if (outputContent != null) {
+        codeContent = contentDiv.innerHTML;
+        contentDiv.innerHTML = outputContent;
+        outputContent = null;
+        return;
+    }
+    var headers = <?= json_encode($headers) ?>;
+    var isOverflow = <?= json_encode($isOverflow) ?>;
+    var contentLength = <?= json_encode(self::$contentLength) ?>;
+    var content = <?= $content ?>;
+    var hiddenContent = <?= $hiddenContent ?>;
+    if (headers.length > 0) {
+        outputContent = '<div id="response-headers">'
+            + '<div id="show-headers-botton" onclick="toggleResponseHeaders()">'
+            + '<span id="arrow">►</span> Headers <span>' + headers.length
+            + '</span></div><table id="response-headers-content"><tbody>';
+        for (var index = 0; index < headers.length; ++index) {
+            var header = headers[index];
+            outputContent += '<tr><td>' + header[0]
+                + '</td><td>' + header[1] + '</td></tr>';
+            outputContent += '</tbody></table>';
+        }
+        outputContent += '</div>';
+    }
+    if (isOverflow) {
+        outputContent += '<div>overflow</div>';
+    }
+    var responseBodyHtml = '<table id="response-body"><tbody>'
+        + buildOutputContent(content) + '</tbody></table>';
+    if (hiddenContent != null) {
+        fullContent = content + hiddenContent;
+        responseBodyHtml = '<div id="top-show-hidden-content-button-top"'
+            + ' onclick="showHiddenContent()">Show hidden content</div>'
+            + responseBodyHtml
+            + '<div id="top-show-hidden-content-button-bottom"'
+            + ' onclick="showHiddenContent()">Show hidden content</div>';
+    }
+    codeContent = contentDiv.innerHTML;
+    contentDiv.innerHTML = outputContent + responseBodyHtml;
+}
+
+function showHiddenContent() {
+    document.getElementById("show-hidden-content-button-top") .style.display
+        = 'none';
+    document.getElementById("show-hidden-content-button-bottom") .style.display
+        = 'none';
+    document.getElementById("response-body").childNode.innerHTML
+        = buildOutputContent(fullContent);
+    fullContent = null;
+}
+
+function buildOutputContent(content) {
+    var result = '';
+    var lines = content.split("\n");
+    var count = lines.length;
+    for (var index = 0; index < count; ++index) {
+        result += '<tr><td line-number="'
+            + (index + 1) + '"></td><td>' + lines[index] + '</td></tr>';
+    }
+    return result;
+}
+
+function showCode() {
+    if (codeContent == null) {
+        return;
+    }
+    var contentDiv = document.getElementById("content");
+    outputContent = contentDiv.innerHTML;
+    contentDiv.innerHTML = codeContent;
+    codeContent = null;
+}
+
+function toggleResponseHeaders() {
+    var div = document.getElementById("response-headers-content");
+    if (div.style.display == 'none') {
+        div.style.display = 'block';
+    } else {
+        div.style.display = 'none';
+    }
+}
 </script>
 <?php
     }
