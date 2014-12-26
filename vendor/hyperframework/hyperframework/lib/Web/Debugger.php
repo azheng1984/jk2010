@@ -152,8 +152,8 @@ class Debugger {
         }
         $count = count($result);
         if ($count > 21) {
-            $max = key($result) + $count - 21;
-            for ($index = key($result); $index < $max; ++$index) {
+            $startingPoint = key($result) + $count - 21;
+            for ($index = key($result); $index < $startingPoint; ++$index) {
                 unset($result[$index]);
             }
         }
