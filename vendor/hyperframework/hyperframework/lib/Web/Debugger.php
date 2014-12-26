@@ -161,21 +161,12 @@ class Debugger {
     }
 
     private static function formatToken($type, $content) {
-        if ($content === '' || $type === T_WHITESPACE) {
-            return $content;
-        }
         switch ($type) {
             case T_ENCAPSED_AND_WHITESPACE:
             case T_CONSTANT_ENCAPSED_STRING:
                 $class = 'string';
                 break;
-            case T_INLINE_HTML:
-                $class = 'html';
-                break;
-            case T_COMMENT:
-            case T_DOC_COMMENT:
-                $class = 'comment';
-                break;
+            case T_WHITESPACE:
             case T_STRING:
             case T_NUM_STRING:
             case T_VARIABLE:
@@ -197,6 +188,13 @@ class Debugger {
             case T_OPEN_TAG:
             case T_OPEN_TAG_WITH_ECHO:
                 $class = 'default';
+                break;
+            case T_COMMENT:
+            case T_DOC_COMMENT:
+                $class = 'comment';
+                break;
+            case T_INLINE_HTML:
+                $class = 'html';
                 break;
             default:
                 $class = 'keyword';
