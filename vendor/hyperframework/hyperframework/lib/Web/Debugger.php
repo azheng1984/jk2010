@@ -101,9 +101,9 @@ class Debugger {
     private static function getLines() {
         $file = file_get_contents(self::$source->getFile());
         $errorLineNumber = self::$source->getLine();
-        $startingLineNumber = 0;
+        $firstLineNumber = 0;
         if ($errorLineNumber > 21) {
-            $startingLineNumber = $errorLineNumber - 21;
+            $firstLineNumber = $errorLineNumber - 21;
         }
         $tokens = token_get_all($file);
         $lineNumber = 0;
@@ -112,7 +112,7 @@ class Debugger {
         $isString = false;
         foreach ($tokens as $index => $value) {
             if (is_string($value)) {
-                if ($lineNumber < $startingLineNumber) {
+                if ($lineNumber < $firstLineNumber) {
                     continue;
                 }
                 if ($value === '"' || $value === "'") {
@@ -122,7 +122,7 @@ class Debugger {
                 }
                 continue;
             }
-            if ($value[2] < $startingLineNumber) {
+            if ($value[2] < $firstLineNumber) {
                 continue;
             }
             $lineNumber = $value[2];
@@ -133,7 +133,7 @@ class Debugger {
             $lines = explode("\n", $content);
             $lastLine = array_pop($lines);
             foreach ($lines as $line) {
-                if ($lineNumber >= $startingLineNumber) {
+                if ($lineNumber >= $firstLineNumber) {
                     $result[$lineNumber] =
                         $buffer . self::formatToken($type, $line);
                     $buffer = '';
@@ -152,8 +152,8 @@ class Debugger {
         }
         $count = count($result);
         if ($count > 21) {
-            $startingPoint = key($result) + $count - 21;
-            for ($index = key($result); $index < $startingPoint; ++$index) {
+            $first = key($result) + $count - 21;
+            for ($index = key($result); $index < $first; ++$index) {
                 unset($result[$index]);
             }
         }

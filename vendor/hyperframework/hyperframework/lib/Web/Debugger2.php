@@ -15,7 +15,7 @@ class Debugger {
         if (headers_sent() === false) {
             header('Content-Type: text/html; charset=UTF-8');
         }
-        echo '<div style="background:#fff">';
+        echo '<div style="background:#fff;">';
         echo '<h2 style="line-height:25px;font-size:22px;color:#333;padding:0;font-weight:normal;margin:0">';
             echo '<span style="color:white;margin-bottom:8px;font-family:Arial;width:100%;display:block;font-size:18px;red;background:#c22;padding:10px 10px;padding-left:10px;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)">';
         if ($isError) {
@@ -205,6 +205,7 @@ table-layout:fixed;
         color:#09d;
     }
     .ts {
+box-shadow: inset 1px 1px 1px #ddd;
 border-radius:2px 2px 0;font-weight:bold;background:#eee;border:1px;border:1px solid #ccc;border-bottom:0px;margin-top:-5px;float:left;color:#333;text-decoration:none;
     }
     .more {
@@ -428,7 +429,7 @@ border-right:2px solid #ddd;
                 foreach ($lines as $jj => $line) {
                     if ($line !== '') {
                         // Uncomment for debugging
-                        $out[$i] .= token_name($token);
+                        //$out[$i] .= token_name($token);
                         // Highlight encased strings
                         $color = ($stringflag === true) ?
                             $highlight['string'] : self::getColor($token, $highlight);
