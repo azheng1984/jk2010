@@ -243,7 +243,8 @@ class Debugger {
         }
         echo str_replace(
             DIRECTORY_SEPARATOR,
-            '<span class="separator">' . DIRECTORY_SEPARATOR . '</span>', $path 
+            '<span class="separator">' . DIRECTORY_SEPARATOR . '</span>',
+            $path 
         );
     }
 
@@ -253,8 +254,8 @@ class Debugger {
     }
 
     private static function renderNav() {
-        echo '<div id="nav"><div onclick="showCode()" class="selected">Code</div>',
-           '<div onclick="showOutput()">Output</div></div>';
+        echo '<div id="nav"><div onclick="showCode()" class="selected">Code',
+            '</div><div onclick="showOutput()">Output</div></div>';
     }
 
     private static function renderJavascript() {
@@ -263,7 +264,13 @@ class Debugger {
         $headers = [];
         if (self::$headers !== null) {
             foreach (self::$headers as $header) {
-                list($key, $value) = explode(':', $header, 2);
+                $segments = explode(':', $header, 2);
+                $key = $segments[0];
+                if (isset($segments[1])) {
+                    $value = $segments[1];
+                } else {
+                    $value = '';
+                }
                 $key = htmlspecialchars(
                     $key, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
                 );
@@ -328,9 +335,8 @@ function showOutput() {
             var header = headers[index];
             outputContent += '<tr><td>' + header[0]
                 + '</td><td>' + header[1] + '</td></tr>';
-            outputContent += '</tbody></table>';
         }
-        outputContent += '</div>';
+        outputContent += '</tbody></table></div>';
     }
     if (isOverflow) {
         outputContent += '<div>overflow</div>';
