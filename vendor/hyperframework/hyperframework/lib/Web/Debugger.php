@@ -238,6 +238,7 @@ class Debugger {
     private static function renderJavascript() {
 ?>
 <script type="text/javascript">
+    var x = 'hello';
 </script>
 <?php
     }
@@ -245,6 +246,9 @@ class Debugger {
     private static function renderCss() {
 ?>
 <style>
+body {
+    background: #ccc;
+}
 </style>
 <?php
     }
