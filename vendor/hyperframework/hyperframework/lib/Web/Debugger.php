@@ -236,17 +236,16 @@ class Debugger {
     }
 
     private static function renderJavascript() {
-        echo '
-            function() {
-                var content = \'\';
-            }
-        ';
+?>
+<script type="text/javascript">
+</script>
+<?php
     }
 
     private static function renderCss() {
-        echo <<<CSS
-body {
-}
-CSS;
+?>
+<style>
+</style>
+<?php
     }
 }
