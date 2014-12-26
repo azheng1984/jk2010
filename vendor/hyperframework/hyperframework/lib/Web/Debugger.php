@@ -16,7 +16,7 @@ class Debugger {
             header('Content-Type: text/html; charset=UTF-8');
         }
         echo '<div style="background:#fff">';
-        echo '<h2 style="line-height:25px;font-size:22px;color:black;padding:0;font-weight:normal;margin:0">';
+        echo '<h2 style="line-height:25px;font-size:22px;color:#333;padding:0;font-weight:normal;margin:0">';
             echo '<span style="color:white;margin-bottom:8px;font-family:Arial;width:100%;display:block;font-size:18px;red;background:#c22;padding:10px 10px;padding-left:10px;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)">';
         if ($isError) {
             if ($exception->shouldThrow() === true) {
@@ -38,7 +38,7 @@ class Debugger {
            // echo ' <span style="font-family:arial;font-size:12px;color:#999;background:">#code: <span style="color:#999">', $exception->getCode() . '</span></span>';
         }
         echo '</h2>';
-        echo '<div style="line-height:20px;padding:5px 0 5px 15px;padding-left:10px;font-size:13px;border-bottom:1px solid  #ccc">';
+        echo '<div style="color:#333;line-height:20px;padding:5px 0 5px 15px;padding-left:10px;font-size:13px;border-bottom:1px solid  #ccc">';
         echo '<style></style>';
         echo '<span id="t-code" class="tab ts" style="">Code</span>';
         $_COOKIES['xx'] = 'x';
@@ -48,11 +48,11 @@ class Debugger {
 //      print_r(headers_list());
 //      echo 'Response:';
         echo '<script>
-            var contentHtml;
+            var content;
             function show() {
                 document.getElementById("t-code").className = "tns tab";
                 document.getElementById("t-output").className = "ts tab";
-                var content = document.getElementById("content");
+                content = document.getElementById("content");
                 contentHtml = content.innerHTML;
                 ';
                 //$preview = addslashes(var_export($headers, true));
@@ -71,23 +71,22 @@ class Debugger {
                     $buffer= mb_strcut($tmp, 0, $max);
                     $buffer2 = substr($tmp, strlen($buffer));
                 }
-                $o = '<div><a href="javascript:void(0)">► Headers</a></div>';
+                $o = '<div style="border-bottom:1px solid #ccc;padding:10px;margin-bottom:10px;"><div><span onmouseover="x()" onmouseout="xx()" id="headersxw" onclick="showheaders()"><span id="headersx"><span id="hax">►</span> <span id="htx">Headers</span><span id="headerscount">'. count($headers). '</span></span></div>';
+                $o .= '<div id="headers" style="display:none">';
                 foreach ($headers as $i) {
                     $tmp = explode(':', $i, 2);
-                    $o.= '<div><span>' . $tmp[0] . ':<span> <span>'. $tmp[1]. '</span>';
+                    $o.= '<div><span>' . $tmp[0] . ':</span> <span>'. $tmp[1]. '</span></div>';
                 }
-                $o .= '<hr/>';
+                $o .= '</div></div>';
                 echo 'headers =',  json_encode($o), ';';
                 $buffer = htmlspecialchars($buffer, ENT_SUBSTITUTE);
-                $buffer = str_replace("\r\n", '>', $buffer);
-                $buffer = str_replace("\n", '>', $buffer);
-                $buffer = str_replace("\r", '>', $buffer);
+                $buffer = str_replace("\r\n", "\n", $buffer);
+                $buffer = str_replace("\r", "\n", $buffer);
                 echo 'buffer = ', json_encode($buffer), ';';
                 if ($buffer2 !== null) {
                     $buffer2 = htmlspecialchars($buffer2, ENT_SUBSTITUTE);
-                    $buffer2 = str_replace("\r\n", '>', $buffer2);
-                    $buffer2 = str_replace("\n", '>', $buffer2);
-                    $buffer2 = str_replace("\r", '>', $buffer2);
+                    $buffer2 = str_replace("\r\n", "\n", $buffer2);
+                    $buffer2 = str_replace("\r", "\n", $buffer2);
                     echo 'buffer2 = ', json_encode($buffer2), ';';
                 }
                 echo '
@@ -102,20 +101,32 @@ var headers;
 var buffer;
 var buffer2;
 var notice;
+function x() {
+ //   document.getElementById("hax").style.color = "#09d";
+//    document.getElementById("hax").style.boxShadow= "1px 1px 1px rgba(0,0,0,.2);";
+    }
+    function xx() {
+//    document.getElementById("hax").style.color = "#333";
+    }
+function showheaders() {
+    document.getElementById("headers").style.display = "block";
+    document.getElementById("headersx").innerHTML = "<span id=\"hax\">▼</span> <span id=\"htx\">Headers</span><span id=\"headerscount\">'. count($headers). '</span>";
+}
 function buildOutput(rows) {
-                 bufferx = rows.split(">");
+                 bufferx = rows.split("\n");
                 var b = "<table>";
                 var count = 0;
                 for (var index in bufferx) {
                     ++count;
                     var p = ++index;
                     --index;
-                    b += "<tr><td class=\"line-number\" style=\'vertical-align:top;padding-right:5px;border-right:1px solid #ccc;text-align:right;font-size:12px;font-family:arial\' line-number=\"" + count + "\"></td><td id=\"srouce-" + index + "\" class=\"source\" style=\"padding-left:10px;\">" + bufferx[index] + "</td></tr>";
+                    b += "<tr><td class=\"line-number\" style=\'vertical-align:top;padding-right:5px;border-right:1px solid #ccc;text-align:right;font-size:12px;font-family:arial\' line-number=\"" + count + "\"></td><td id=\"srouce-" + index + "\" class=\"source\" style=\"padding-left:10px;\"><pre>" + bufferx[index] + "</pre></td></tr>";
                 }
                     return b + "</table>";
    
     }
     function showmore() {
+        //alert("hi");
         content.innerHTML = headers + notice + buildOutput(buffer + buffer2);
     }
             </script> ';
@@ -146,13 +157,48 @@ function buildOutput(rows) {
             color:#333;
             text-decoration:none;
     }
+    code div span {
+        white-space:pre;
+    }
+    #headers {
+        border:1px solid #ccc;
+        padding:10px;
+        margin:10px;
+        margin-bottom:0;
+    }
+    #headersx {
+       font-size: 13px;
+       font-weight:bold;
+       font-family: arial;
+    }
+
+    #headersxw {
+       color:#333;
+    }
+    #headersxw:hover {
+       color:#09d;
+     cursor:pointer;
+    }
+    pre {
+        white-space: pre-wrap;       /* css-3 */
+        white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+        white-space: -pre-wrap;      /* Opera 4-6 */
+        white-space: -o-pre-wrap;    /* Opera 7 */
+        word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    }
     .source {
+table-layout:fixed;
         word-break:break-all; /*支持IE，chrome，FF不支持*/
 　　    word-wrap:break-word;/*支持IE，chrome，FF*/
     }
     .tns {
+        cursor:pointer;
         font-size:#333;
         font-family:arial;font-weight:bold;margin-left:20px;font-size:13px;
+    }
+
+    .tns:hover {
+        color:#09d;
     }
     .ts {
 border-radius:2px 2px 0;font-weight:bold;background:#eee;border:1px;border:1px solid #ccc;border-bottom:0px;margin-top:-5px;float:left;color:#333;text-decoration:none;
@@ -198,7 +244,12 @@ td {
     code {
         white-space:nowrap;
     }
-    #stat b {
+    #headerscount {
+        margin-left:5px;
+        font-size:12px;
+        font-family:arial;
+    }
+    #stat b, #headerscount {
     color: #333;
 border-radius:8px;
 font-weight:normal;
@@ -329,7 +380,7 @@ border-right:2px solid #ddd;
         $span = '<span style="color: %s;">%s</span>';
         $stringflag = false;
         $i          = 0;
-        $out        = array();
+        $out        = [];
         $out[$i]    = '';
         // Loop through each token
         foreach ($tokens as $j => $token) {
@@ -355,11 +406,11 @@ border-right:2px solid #ddd;
             list ($token, $value) = $token;
             // Make the value safe
             $value = htmlspecialchars($value);
-            $value = str_replace(
-                array_keys($replace),
-                array_values($replace),
-                $value
-            );
+            //$value = str_replace(
+            //    array_keys($replace),
+            //    array_values($replace),
+            //    $value
+            //);
             // Process
             if ($value === "\n") {
                 // End this line and start the next
@@ -368,7 +419,6 @@ border-right:2px solid #ddd;
                 // Explode token block
                 $lines = explode("\n", $value);
                 foreach ($lines as $jj => $line) {
-                    $line = trim($line);
                     if ($line !== '') {
                         // Uncomment for debugging
                         //$out[$i] .= token_name($token);
