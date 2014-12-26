@@ -53,7 +53,7 @@ class Debugger {
         self::renderHeader($type, $message);
         self::renderNav();
         self::renderContent();
-        self::renderJs();
+        self::renderJavascript();
         echo '</body></html>';
     }
 
@@ -235,13 +235,18 @@ class Debugger {
            '<div>Output</div></div>';
     }
 
-    private static function renderJs() {
-        echo <<<JAVASCRIPT
-JAVASCRIPT;
+    private static function renderJavascript() {
+        echo '
+            function() {
+                var content = \'\';
+            }
+        ';
     }
 
     private static function renderCss() {
         echo <<<CSS
+body {
+}
 CSS;
     }
 }
