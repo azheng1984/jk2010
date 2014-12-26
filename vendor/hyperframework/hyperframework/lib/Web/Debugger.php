@@ -281,7 +281,7 @@ class Debugger {
             $content = self::$content;
         }
         $content = str_replace(["\r\n", "\r"], "\n", $content);
-        $maxContentLength = 256 * 1024;
+        $maxContentLength = 1;//256 * 1024;
         if (self::$contentLength > $maxContentLength) {
             $tmp = $content;
             $content = mb_strcut($tmp, 0, $maxContentLength);
@@ -320,7 +320,8 @@ function showOutput() {
     var hiddenContent = <?= $hiddenContent ?>;
     if (headers.length > 0) {
         outputContent = '<div id="response-headers">'
-            + '<div id="show-headers-botton" onclick="toggleResponseHeaders()">'
+            + '<div id="show-response-headers-botton"'
+            + ' onclick="toggleResponseHeaders()">'
             + '<span id="arrow">►</span> Headers <span>' + headers.length
             + '</span></div><table id="response-headers-content"><tbody>';
         for (var index = 0; index < headers.length; ++index) {
@@ -334,14 +335,15 @@ function showOutput() {
     if (isOverflow) {
         outputContent += '<div>overflow</div>';
     }
-    var responseBodyHtml = '<table id="response-body"><tbody>'
+    var responseBodyHtml = '<table id="response-body">'
+        + '<tbody id="response-body-content">'
         + buildOutputContent(content) + '</tbody></table>';
     if (hiddenContent != null) {
         fullContent = content + hiddenContent;
-        responseBodyHtml = '<div id="top-show-hidden-content-button-top"'
+        responseBodyHtml = '<div id="show-hidden-content-button-top"'
             + ' onclick="showHiddenContent()">Show hidden content</div>'
             + responseBodyHtml
-            + '<div id="top-show-hidden-content-button-bottom"'
+            + '<div id="show-hidden-content-button-bottom"'
             + ' onclick="showHiddenContent()">Show hidden content</div>';
     }
     codeContent = contentDiv.innerHTML;
@@ -349,11 +351,11 @@ function showOutput() {
 }
 
 function showHiddenContent() {
-    document.getElementById("show-hidden-content-button-top") .style.display
+    document.getElementById("show-hidden-content-button-top").style.display
         = 'none';
-    document.getElementById("show-hidden-content-button-bottom") .style.display
+    document.getElementById("show-hidden-content-button-bottom").style.display
         = 'none';
-    document.getElementById("response-body").childNode.innerHTML
+    document.getElementById("response-body-content").innerHTML
         = buildOutputContent(fullContent);
     fullContent = null;
 }
@@ -381,10 +383,12 @@ function showCode() {
 
 function toggleResponseHeaders() {
     var div = document.getElementById("response-headers-content");
-    if (div.style.display == 'none') {
-        div.style.display = 'block';
+    if (div.style.display == "none") {
+        document.getElementById("arrow").innerHTML = '▼';
+        div.style.display = "block";
     } else {
-        div.style.display = 'none';
+        document.getElementById("arrow").innerHTML = '►';
+        div.style.display = "none";
     }
 }
 </script>
