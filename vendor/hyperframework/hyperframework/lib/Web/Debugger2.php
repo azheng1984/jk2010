@@ -428,7 +428,7 @@ border-right:2px solid #ddd;
                 foreach ($lines as $jj => $line) {
                     if ($line !== '') {
                         // Uncomment for debugging
-                        //$out[$i] .= token_name($token);
+                        $out[$i] .= token_name($token);
                         // Highlight encased strings
                         $color = ($stringflag === true) ?
                             $highlight['string'] : self::getColor($token, $highlight);
