@@ -57,7 +57,7 @@ class Debugger {
                 ';
                 //$preview = addslashes(var_export($headers, true));
                 //$preview = str_replace("\n", '\n', $preview);
-                $buffer = file_get_contents('/home/az/20101220224643434.jpg');
+                $buffer = file_get_contents('/home/az/logo.jpg');
                 $len = strlen($buffer);
                 if ($len > 1024 * 10) {
                     $buffer = mb_strcut($buffer, 0, 1024 * 1024 * 10);
