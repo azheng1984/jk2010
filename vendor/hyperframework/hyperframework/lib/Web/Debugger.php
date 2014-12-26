@@ -83,8 +83,32 @@ class Debugger {
         echo '</td><td>';
         echo '</td></tr></table></div>';
         if (self::$isError === false || self::$source->isFatal() === false) {
-            echo '<div id="stack-trace"><h2>Stack Trace</h2><div>';
-            echo '</div></div>';
+            echo '<div id="stack-trace"><h2>Stack Trace</h2><div><table>';
+            if (self::$isError) {
+                $trace =  self::$source->getSourceTrace();
+            } else {
+                $trace =  self::$source->getTrace();
+            }
+            $index = 0;
+            foreach ($trace as $frame) {
+                if ($frame !== '{main}') {
+                    $invocation = StackTraceFormatter::formatInvocation($frame);
+                    echo '<tr><td>', $index,
+                        '</td><td><div class="invocation">', $invocation,
+                        '</div>';
+                    echo '<div class="position">';
+                    if (isset($frame['file'])) {
+                        self::renderPath($frame['file']);
+                        echo ' <span class="line">', $frame['line'], '</span>';
+                    } else {
+                        echo  'internal function';
+                    }
+                    echo '</div>';
+                    echo  '</td></tr>';
+                }
+                ++$index;
+            }
+            echo '</table></div></div>';
         }
         echo '</div>';
     }
@@ -100,16 +124,15 @@ class Debugger {
 
     private static function getLines() {
         $file = file_get_contents(self::$source->getFile());
+        $tokens = token_get_all($file);
         $errorLineNumber = self::$source->getLine();
         $firstLineNumber = 0;
         if ($errorLineNumber > 21) {
             $firstLineNumber = $errorLineNumber - 21;
         }
-        $tokens = token_get_all($file);
         $lineNumber = 0;
         $result = [];
         $buffer = '';
-        $isString = false;
         foreach ($tokens as $index => $value) {
             if (is_string($value)) {
                 if ($lineNumber < $firstLineNumber) {
@@ -142,7 +165,6 @@ class Debugger {
             }
             $buffer .= self::formatToken($type, $lastLine);
             if ($lineNumber > $errorLineNumber + 10) {
-                var_dump($lineNumber);
                 $buffer = false;
                 break;
             }
