@@ -53,7 +53,6 @@ class Debugger {
         self::renderCss();
         echo '</head><body>';
         self::renderHeader($type, $message);
-        self::renderNav();
         self::renderContent();
         self::renderJavascript();
         echo '</body></html>';
@@ -122,7 +121,7 @@ class Debugger {
             'Content Length: <span>', self::$contentLength,
             '</span></div><div>App Root Path: <span>';
             self::renderPath(FileLoader::getDefaultRootPath(), false);
-        echo '</span><div></div>';
+        echo '</span></div></div>';
     }
 
     private static function getLines() {
@@ -250,12 +249,9 @@ class Debugger {
 
     private static function renderHeader($type, $message) {
         echo '<div id="header"><h1>', $type, '</h1><div class="message">',
-            $message, '</div></div>';
-    }
-
-    private static function renderNav() {
-        echo '<div id="nav"><div onclick="showCode()" class="selected">Code',
-            '</div><div onclick="showOutput()">Output</div></div>';
+            $message, '</div>',
+            '<div id="nav"><div class="selected" id="nav-code"><span>',
+            'Code</span></div><div id="nav-output"><a>Output</a></div></div></div>';
     }
 
     private static function renderJavascript() {
@@ -267,31 +263,31 @@ class Debugger {
                 $segments = explode(':', $header, 2);
                 $key = $segments[0];
                 if (isset($segments[1])) {
-                    $value = $segments[1];
+                    $value = ltrim(htmlspecialchars(
+                        $segments[1],
+                        ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+                    ), ' ');
                 } else {
                     $value = '';
                 }
                 $key = htmlspecialchars(
                     $key, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
                 );
-                $value = ltrim(htmlspecialchars(
-                    $value , ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
-                ), ' ');
                 $headers[] = [$key, $value];
             }
         }
-        $maxFullContentLength = 10 * 1024 * 1024;
-        if (self::$contentLength >= $maxFullContentLength) {
+        $outputLimitation = 10 * 1024 * 1024;
+        if (self::$contentLength >= $outputLimitation) {
             $isOverflow = true;
-            $content = mb_strcut(self::$content, 0, $maxFullContentLength);
+            $content = mb_strcut(self::$content, 0, $outputLimitation);
         } else {
             $content = self::$content;
         }
         $content = str_replace(["\r\n", "\r"], "\n", $content);
-        $maxContentLength = 1;//256 * 1024;
-        if (self::$contentLength > $maxContentLength) {
+        $maxInitContentLength = 1;//256 * 1024;
+        if (self::$contentLength > $maxInitContentLength) {
             $tmp = $content;
-            $content = mb_strcut($tmp, 0, $maxContentLength);
+            $content = mb_strcut($tmp, 0, $maxInitContentLength);
             $hiddenContent = substr($tmp, strlen($content));
         }
         $content = json_encode(htmlspecialchars(
@@ -313,6 +309,8 @@ function showOutput() {
     if (codeContent != null) {
         return;
     }
+    document.getElementById("nav-code").innerHTML = '<a href="javascript:showCode()">Code</a>';
+    document.getElementById("nav-output").innerHTML = '<span>Output</span>';
     var contentDiv = document.getElementById("content");
     if (outputContent != null) {
         codeContent = contentDiv.innerHTML;
@@ -327,19 +325,20 @@ function showOutput() {
     var hiddenContent = <?= $hiddenContent ?>;
     if (headers.length > 0) {
         outputContent = '<div id="response-headers">'
-            + '<div id="show-response-headers-botton"'
-            + ' onclick="toggleResponseHeaders()">'
+            + '<a id="show-response-headers-botton"'
+            + ' href="javascript:toggleResponseHeaders()">'
             + '<span id="arrow">►</span> Headers <span>' + headers.length
-            + '</span></div><table id="response-headers-content"><tbody>';
+            + '</span></a><table id="response-headers-content"><tbody>';
         for (var index = 0; index < headers.length; ++index) {
             var header = headers[index];
             outputContent += '<tr><td>' + header[0]
-                + '</td><td>' + header[1] + '</td></tr>';
+                + ':</td><td>' + header[1] + '</td></tr>';
         }
         outputContent += '</tbody></table></div>';
     }
     if (isOverflow) {
-        outputContent += '<div>overflow</div>';
+        outputContent += '<div class="notice">Notice: Content is partial,'
+            + ' length is larger then output limitation(10MB).</div>';
     }
     var responseBodyHtml = '<table id="response-body">'
         + '<tbody id="response-body-content">'
@@ -347,17 +346,27 @@ function showOutput() {
     if (hiddenContent != null) {
         fullContent = content + hiddenContent;
         var buttonName = "Show all content";
+        var href = "javascript:showAllContent()";
         if (isOverflow) {
             buttonName = "Show more content";
+            href = "javascript:showMoreContent()";
         }
-        responseBodyHtml = '<div id="show-hidden-content-button-top"'
-            + ' onclick="showHiddenContent()">' + buttonName + '</div>'
+        responseBodyHtml = '<a id="show-hidden-content-button-top"'
+            + ' href="' + href + '">' + buttonName + '</a>'
             + responseBodyHtml
-            + '<div id="show-hidden-content-button-bottom"'
-            + ' onclick="showHiddenContent()">' + buttonName + '</div>';
+            + '<a id="show-hidden-content-button-bottom"'
+            + ' href="' + href + '">' + buttonName + '</a>';
     }
     codeContent = contentDiv.innerHTML;
     contentDiv.innerHTML = outputContent + responseBodyHtml;
+}
+
+function showAllContent() {
+    showHiddenContent();
+}
+
+function showMoreContent() {
+    showHiddenContent();
 }
 
 function showHiddenContent() {
@@ -385,6 +394,9 @@ function showCode() {
     if (codeContent == null) {
         return;
     }
+    document.getElementById("nav-code").innerHTML = '<span>Code</span>';
+    document.getElementById("nav-output").innerHTML =
+        '<a href="javascript:showOutput()">Output</a>';
     var contentDiv = document.getElementById("content");
     outputContent = contentDiv.innerHTML;
     contentDiv.innerHTML = codeContent;
@@ -401,6 +413,9 @@ function toggleResponseHeaders() {
         div.style.display = "none";
     }
 }
+
+document.getElementById("nav-output").innerHTML =
+    '<a href="javascript:showOutput()">Output</a>';
 </script>
 <?php
     }
@@ -408,8 +423,15 @@ function toggleResponseHeaders() {
     private static function renderCss() {
 ?>
 <style>
-body {
-    background: #ccc;
+div, h1, h2, table {
+    float:left;
+}
+a {
+    text-decoration:none;
+    color:#333;
+}
+h1, h2, body {
+    margin:0;
 }
 </style>
 <?php
