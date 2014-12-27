@@ -248,7 +248,7 @@ class Debugger {
     }
 
     private static function renderHeader($type, $message) {
-        echo '<div id="header"><h1>', $type, '</h1><div class="message">',
+        echo '<div id="header"><h1>', $type, '</h1><div id="message">',
             $message, '</div>',
             '<div id="nav"><div class="selected" id="nav-code"><span>',
             'Code</span></div><div id="nav-output"><a>Output</a></div></div></div>';
@@ -310,7 +310,9 @@ function showOutput() {
         return;
     }
     document.getElementById("nav-code").innerHTML = '<a href="javascript:showCode()">Code</a>';
+    document.getElementById("nav-code").className = '';
     document.getElementById("nav-output").innerHTML = '<span>Output</span>';
+    document.getElementById("nav-output").className = 'selected';
     var contentDiv = document.getElementById("content");
     if (outputContent != null) {
         codeContent = contentDiv.innerHTML;
@@ -395,8 +397,10 @@ function showCode() {
         return;
     }
     document.getElementById("nav-code").innerHTML = '<span>Code</span>';
+    document.getElementById("nav-code").className = 'selected';
     document.getElementById("nav-output").innerHTML =
         '<a href="javascript:showOutput()">Output</a>';
+    document.getElementById("nav-output").className = '';
     var contentDiv = document.getElementById("content");
     outputContent = contentDiv.innerHTML;
     contentDiv.innerHTML = codeContent;
@@ -423,15 +427,67 @@ document.getElementById("nav-output").innerHTML =
     private static function renderCss() {
 ?>
 <style>
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    background: #eee;
+}
+h1, h2, table {
+    width: 100%;
+}
 div, h1, h2, table {
-    float:left;
+    float: left;
 }
 a {
-    text-decoration:none;
-    color:#333;
+    text-decoration: none;
+    color: #333;
+}
+a:hover {
+    color: #09d;
 }
 h1, h2, body {
-    margin:0;
+    margin: 0;
+}
+h1, #message {
+    color: #fff;
+    font-weight: normal;
+    font-size: 22px;
+    background: #c22;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, .4);
+    padding: 10px;
+}
+#header {
+    width: 100%;
+}
+#message {
+    width: 100%;
+    font-size:16px;
+    padding-top: 0;
+    line-height: 20px;
+}
+#nav {
+    width: 100%;
+    padding: 0 10px;
+    border-bottom: 1px solid #ccc;
+    font-size: 14px;
+    background: #f8f8f8;
+    padding-top: 10px;
+    font-weight: bold;
+    position: relative;
+    height: 28px;
+}
+#nav div {
+    line-height: 16px;
+    width: auto;
+    padding: 5px 25px;
+    border: 1px solid #f8f8f8;
+}
+#nav div.selected {
+    border-color: #ccc;
+    border-bottom: 1px solid #eee;
+    background: #eee;
+    padding: 5px 25px 6px;
+    border-radius: 2px 2px 0 0;
 }
 </style>
 <?php
