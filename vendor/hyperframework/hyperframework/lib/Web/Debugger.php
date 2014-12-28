@@ -59,12 +59,12 @@ class Debugger {
     }
 
     private static function renderContent() {
-        echo '<tr><td id="content"><table><tbody><tr><td id="status-bar-wrapper">';
+        echo '<tr><td id="content"><table id="code"><tbody><tr><td id="status-bar-wrapper">';
         self::renderStatusBar();
         echo '</td></tr><tr><td id="file-wrapper"><div id="file"><h2><div>File</div>';
         self::renderPath(self::$source->getFile());
         echo '</h2>';
-        echo '<table><tbody><tr><td>';
+        echo '<table><tbody><tr><td class="index"><div class="index-content">';
         $lines = self::getLines();
         $errorLineNumber = self::$source->getLine();
         foreach ($lines as $number => $line) {
@@ -74,14 +74,14 @@ class Debugger {
             }
             echo '>', $number, '</div>';
         }
-        echo '</td><td><div id="code">';
+        echo '</div></td><td><div class="content">';
         foreach ($lines as $number => $line) {
-            echo '<div';
+            echo '<pre';
             if ($number === $errorLineNumber) {
                 echo ' class="error-line"';
             }
-//            echo '><pre>', $line , '</pre></div>';
-            echo '><pre>', $line . 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxe', '</pre></div>';
+            echo '>', $line , '</pre>';
+//            echo '>', $line . 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxe', '</pre>';
         }
         echo '</div></td></tr></tbody></table></div>';
         if (self::$isError === false || self::$source->isFatal() === false) {
@@ -453,6 +453,10 @@ a:hover {
 pre, h1, h2, body {
     margin: 0;
 }
+h2 {
+    font-size: 18px;
+    font-family: "Times New Roman", Helvetica, Arial, sans-serif;
+}
 #page-container {
     height: 100%;
     width: 100%;
@@ -478,6 +482,9 @@ h1, #message {
     font-size:16px;
     padding-top: 0;
     line-height: 20px;
+}
+#code {
+    width: 100%;
 }
 #nav {
     clear: left;
@@ -553,6 +560,7 @@ h1, #message {
 .path {
     word-break: break-all; /* ie */
 　　word-wrap: break-word;
+    font-family: Helvetica, Arial, sans-serif;
 }
 .separator {
     padding: 0 2px;
@@ -575,14 +583,46 @@ h1, #message {
 #file h2 .path {
     font-size: 13px;
     font-weight: normal;
+    padding:5px 0 10px 0;
 }
 #file h2 {
     padding: 0 10px;
 }
 #file table {
-    margin: 10px;
+    width: 100%;
+    line-height: 18px;
 }
-#code {
+#file .content {
+    margin: 0 10px 10px 0;
+}
+#file .index .index-content {
+    padding: 0;
+    margin: 0 0 10px 10px;
+}
+#file .index {
+    width:1px;
+    text-align:right;border-right:1px solid #e1e1e1;
+}
+#file .index div {
+color:#999;padding:0 5px;
+font-size:12px;
+}
+#file div.error-line-number {
+background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
+}
+#file pre {
+    height: 18px;
+    padding-left: 10px;
+    color: #0000BB;
+}
+#file pre .keyword {
+    color: #007700;
+}
+#file pre .string {
+    color: #DD0000;
+}
+#file .error-line {
+    background: #ff9;
 }
 #stack-trace-wrapper {
     float: left;
