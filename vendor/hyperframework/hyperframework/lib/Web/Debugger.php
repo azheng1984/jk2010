@@ -59,9 +59,9 @@ class Debugger {
     }
 
     private static function renderContent() {
-        echo '<tr><td id="content">';
+        echo '<tr><td id="content"><table><tbody><tr><td id="status-bar-wrapper">';
         self::renderStatusBar();
-        echo '<div id="file"><h2><div>File</div>';
+        echo '</td></tr><tr><td id="file-wrapper"><div id="file"><h2><div>File</div>';
         self::renderPath(self::$source->getFile());
         echo '</h2>';
         echo '<table><tbody><tr><td>';
@@ -80,11 +80,12 @@ class Debugger {
             if ($number === $errorLineNumber) {
                 echo ' class="error-line"';
             }
-            echo '><pre>', $line, '</pre></div>';
+//            echo '><pre>', $line , '</pre></div>';
+            echo '><pre>', $line . 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxe', '</pre></div>';
         }
         echo '</div></td></tr></tbody></table></div>';
         if (self::$isError === false || self::$source->isFatal() === false) {
-            echo '<div id="stack-trace"><h2>Stack Trace</h2>',
+            echo '</td></tr><tr><td id="stack-trace-wrapper"><div id="stack-trace"><h2>Stack Trace</h2>',
                 '<div><table><tbody>';
             if (self::$isError) {
                 $trace =  self::$source->getSourceTrace();
@@ -112,18 +113,19 @@ class Debugger {
             }
             echo '</tbody></table></div></div>';
         }
-        echo '</td></tr>';
+        echo '</td></tr><tbody></table></td></tr>';
     }
 
     private static function renderStatusBar() {
-        echo '<div id="status-bar-wrapper"><div id="status-bar"><div class="first"><div>Response Headers:',
+        echo '<div id="status-bar"><div class="first"><div>Response Headers:',
             ' <span class="number first-value">',
             self::$headerCount, '</span></div><div>',
             'Content Length: <span class="number">',
             self::$contentLength,
             '</span></div></div><div class="second"><div>App Root Path:</div>';
+//            self::renderPath(FileLoader::getDefaultRootPath() . 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxe', false);
             self::renderPath(FileLoader::getDefaultRootPath(), false);
-        echo '</div></div></div>';
+        echo '</div></div>';
     }
 
     private static function getLines() {
@@ -429,35 +431,17 @@ document.getElementById("nav-output").innerHTML =
     private static function renderCss() {
 ?>
 <style>
+
 body {
     font-family: Helvetica, Arial, sans-serif;
     font-size: 13px;
-/*    _background-color: #fff; */
     color: #333;
-}
-h1, h2, table {
 }
 table {
     border-collapse: collapse;
 }
-td, {
+td {
     padding: 0;
-}
-pre {
-    margin: 0;
-}
-div, h1, h2, table {
-    float: left;
-}
-#file table {
-    clear: both;
-}
-#code {
-    _width: 580px;
-    _overflow-x: auto;
-}
-#file table div {
-    clear:both;
 }
 a {
     text-decoration: none;
@@ -466,39 +450,29 @@ a {
 a:hover {
     color: #09d;
 }
-h1, h2, body {
+pre, h1, h2, body {
     margin: 0;
 }
-
 #page-container {
+    height: 100%;
     width: 100%;
-    min-width: 200px;
-    _width:expression(
-        (document.documentElement.clientWidth||document.body.clientWidth) < 980?
-        "980px" : ""
-    );
-}
-#page-container {
 /*
-    _width: 980px;
-    _margin: 0 auto;
-    _float: none;
+    min-width: 200px;
+    _width: expression(
+        (document.documentElement.clientWidth || document.body.clientWidth)
+            < 200 ? "200px" : ""
+    );
 */
+}
+#header {
+    background-color: #c22;
 }
 h1, #message {
     color: #fff;
-    clear: left;
     padding: 10px;
     font-weight: normal;
     font-size: 22px;
     text-shadow: 1px 1px 0 rgba(0, 0, 0, .4);
-}
-h2 {
-    font-size: 16px;
-}
-#header {
-    width: 100%;
-    background-color: #c22;
 }
 #message {
     font-size:16px;
@@ -517,11 +491,9 @@ h2 {
     padding: 8px 0 0 10px;
     font-weight: bold;
     position: absolute;
-    word-break: keep-all;
-    white-space: nowrap;
-
 }
 #nav .wrapper div {
+    float: left;
     line-height: 16px;
     padding: 6px 25px;
     border: 1px solid #f8f8f8;
@@ -540,20 +512,23 @@ h2 {
     padding: 6px 25px 7px;
 }
 #content {
-    margin: 10px;
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 2px;
+    padding: 10px;
+    background: #eee;
 }
 #status-bar-wrapper {/* ie6 */
     width: 100%;
     color: #999;
     padding: 10px 0;
-    border-bottom: 1px solid #ccc;
+    border: 1px solid #ccc;
+    border-radius: 2px 2px 0 0;
+    background: #fff;
 }
 #status-bar {
     padding-right: 10px;
     line-height: 18px;
+}
+#status-bar-wrapper, #status-bar-wrapper div {
+    float: left;
 }
 #status-bar .first-value {
     margin-right: 10px;
@@ -571,11 +546,13 @@ h2 {
 }
 #status-bar .second {
     padding-left: 10px;
-    word-break: break-all; /* ie */
-　　word-wrap: break-word;
 }
 #status-bar .separator {
     color: #999;
+}
+.path {
+    word-break: break-all; /* ie */
+　　word-wrap: break-word;
 }
 .separator {
     padding: 0 2px;
@@ -586,9 +563,34 @@ h2 {
     background: #eee;
     padding: 1px 6px;
 }
-h2 .path {
+#file-wrapper {
+    float: left;
+    width: 100%;
+    padding: 10px 0;
+    border: 1px solid #ccc;
+    border-top: 0;
+    border-bottom: 0;
+    background: #fff;
+}
+#file h2 .path {
     font-size: 13px;
     font-weight: normal;
+}
+#file h2 {
+    padding: 0 10px;
+}
+#file table {
+    margin: 10px;
+}
+#code {
+}
+#stack-trace-wrapper {
+    float: left;
+    width: 100%;
+    padding: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 0 0 2px 2px;
+    background: #fff;
 }
 </style>
 <?php
