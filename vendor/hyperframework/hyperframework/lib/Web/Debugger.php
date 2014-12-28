@@ -51,19 +51,19 @@ class Debugger {
         }
         echo '<!DOCTYPE html><html><head><title>', $title, '</title>';
         self::renderCss();
-        echo '</head><body>';
+        echo '</head><body><table id="page-container"><tbody>';
         self::renderHeader($type, $message);
         self::renderContent();
         self::renderJavascript();
-        echo '</body></html>';
+        echo '</tbody></table></body></html>';
     }
 
     private static function renderContent() {
-        echo '<div id="content">';
+        echo '<tr><td id="content">';
         self::renderStatusBar();
-        echo '<div id="file"><h2>File <span class="path">';
+        echo '<div id="file"><h2><div>File</div>';
         self::renderPath(self::$source->getFile());
-        echo '</span></h2>';
+        echo '</h2>';
         echo '<table><tbody><tr><td>';
         $lines = self::getLines();
         $errorLineNumber = self::$source->getLine();
@@ -74,15 +74,15 @@ class Debugger {
             }
             echo '>', $number, '</div>';
         }
-        echo '</td><td>';
+        echo '</td><td><div id="code">';
         foreach ($lines as $number => $line) {
             echo '<div';
             if ($number === $errorLineNumber) {
                 echo ' class="error-line"';
             }
-            echo '>', $line, '</div>';
+            echo '><pre>', $line, '</pre></div>';
         }
-        echo '</td></tr></tbody></table></div>';
+        echo '</div></td></tr></tbody></table></div>';
         if (self::$isError === false || self::$source->isFatal() === false) {
             echo '<div id="stack-trace"><h2>Stack Trace</h2>',
                 '<div><table><tbody>';
@@ -101,7 +101,7 @@ class Debugger {
                     echo '<div class="position">';
                     if (isset($frame['file'])) {
                         self::renderPath($frame['file']);
-                        echo ' <span class="line">', $frame['line'], '</span>';
+                        echo ' <div class="line">', $frame['line'], '</div>';
                     } else {
                         echo  'internal function';
                     }
@@ -112,16 +112,18 @@ class Debugger {
             }
             echo '</tbody></table></div></div>';
         }
-        echo '</div>';
+        echo '</td></tr>';
     }
 
     private static function renderStatusBar() {
-        echo '<div id="status-bar"><div>Response Headers: <span>',
-            self::$headerCount, '</span> ',
-            'Content Length: <span>', self::$contentLength,
-            '</span></div><div>App Root Path: <span>';
+        echo '<div id="status-bar-wrapper"><div id="status-bar"><div class="first"><div>Response Headers:',
+            ' <span class="number first-value">',
+            self::$headerCount, '</span></div><div>',
+            'Content Length: <span class="number">',
+            self::$contentLength,
+            '</span></div></div><div class="second"><div>App Root Path:</div>';
             self::renderPath(FileLoader::getDefaultRootPath(), false);
-        echo '</span></div></div>';
+        echo '</div></div></div>';
     }
 
     private static function getLines() {
@@ -240,18 +242,18 @@ class Debugger {
                 $path = substr($path, self::$rootPathLength);
             }
         }
-        echo str_replace(
+        echo '<div class="path">', str_replace(
             DIRECTORY_SEPARATOR,
             '<span class="separator">' . DIRECTORY_SEPARATOR . '</span>',
             $path 
-        );
+        ), '</div>';
     }
 
     private static function renderHeader($type, $message) {
-        echo '<div id="header"><h1>', $type, '</h1><div id="message">',
+        echo '<tr><td id="header"><h1>', $type, '</h1><div id="message">',
             $message, '</div>',
-            '<div id="nav"><div class="selected" id="nav-code"><span>',
-            'Code</span></div><div id="nav-output"><a>Output</a></div></div></div>';
+            '<div id="nav"><div class="wrapper"><div class="selected" id="nav-code"><div>',
+            'Code</div></div><div id="nav-output"><a>Output</a></div></div></div></td></tr>';
     }
 
     private static function renderJavascript() {
@@ -311,7 +313,7 @@ function showOutput() {
     }
     document.getElementById("nav-code").innerHTML = '<a href="javascript:showCode()">Code</a>';
     document.getElementById("nav-code").className = '';
-    document.getElementById("nav-output").innerHTML = '<span>Output</span>';
+    document.getElementById("nav-output").innerHTML = '<div>Output</div>';
     document.getElementById("nav-output").className = 'selected';
     var contentDiv = document.getElementById("content");
     if (outputContent != null) {
@@ -396,7 +398,7 @@ function showCode() {
     if (codeContent == null) {
         return;
     }
-    document.getElementById("nav-code").innerHTML = '<span>Code</span>';
+    document.getElementById("nav-code").innerHTML = '<div>Code</div>';
     document.getElementById("nav-code").className = 'selected';
     document.getElementById("nav-output").innerHTML =
         '<a href="javascript:showOutput()">Output</a>';
@@ -430,13 +432,32 @@ document.getElementById("nav-output").innerHTML =
 body {
     font-family: Helvetica, Arial, sans-serif;
     font-size: 13px;
-    background: #eee;
+/*    _background-color: #fff; */
+    color: #333;
 }
 h1, h2, table {
-    width: 100%;
+}
+table {
+    border-collapse: collapse;
+}
+td, {
+    padding: 0;
+}
+pre {
+    margin: 0;
 }
 div, h1, h2, table {
     float: left;
+}
+#file table {
+    clear: both;
+}
+#code {
+    _width: 580px;
+    _overflow-x: auto;
+}
+#file table div {
+    clear:both;
 }
 a {
     text-decoration: none;
@@ -448,46 +469,126 @@ a:hover {
 h1, h2, body {
     margin: 0;
 }
+
+#page-container {
+    width: 100%;
+    min-width: 200px;
+    _width:expression(
+        (document.documentElement.clientWidth||document.body.clientWidth) < 980?
+        "980px" : ""
+    );
+}
+#page-container {
+/*
+    _width: 980px;
+    _margin: 0 auto;
+    _float: none;
+*/
+}
 h1, #message {
     color: #fff;
+    clear: left;
+    padding: 10px;
     font-weight: normal;
     font-size: 22px;
-    background: #c22;
     text-shadow: 1px 1px 0 rgba(0, 0, 0, .4);
-    padding: 10px;
+}
+h2 {
+    font-size: 16px;
 }
 #header {
     width: 100%;
+    background-color: #c22;
 }
 #message {
-    width: 100%;
     font-size:16px;
     padding-top: 0;
     line-height: 20px;
 }
 #nav {
+    clear: left;
     width: 100%;
-    padding: 0 10px;
-    border-bottom: 1px solid #ccc;
-    font-size: 14px;
-    background: #f8f8f8;
-    padding-top: 10px;
-    font-weight: bold;
     position: relative;
-    height: 28px;
+    height: 37px;
+    border-bottom: 1px solid #ccc;
+    background: #f8f8f8;
 }
-#nav div {
+#nav .wrapper {
+    padding: 8px 0 0 10px;
+    font-weight: bold;
+    position: absolute;
+    word-break: keep-all;
+    white-space: nowrap;
+
+}
+#nav .wrapper div {
     line-height: 16px;
-    width: auto;
-    padding: 5px 25px;
+    padding: 6px 25px;
     border: 1px solid #f8f8f8;
+    border-bottom: 0;
 }
 #nav div.selected {
-    border-color: #ccc;
-    border-bottom: 1px solid #eee;
+    border: 0;
     background: #eee;
-    padding: 5px 25px 6px;
+    padding: 0;
+    height: 32px;
     border-radius: 2px 2px 0 0;
+}
+#nav .selected div {
+    border: 1px solid #ccc;
+    border-bottom: 0;
+    padding: 6px 25px 7px;
+}
+#content {
+    margin: 10px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+}
+#status-bar-wrapper {/* ie6 */
+    width: 100%;
+    color: #999;
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+}
+#status-bar {
+    padding-right: 10px;
+    line-height: 18px;
+}
+#status-bar .first-value {
+    margin-right: 10px;
+}
+#status-bar .first {
+    padding-left: 10px;
+    word-break: keep-all;
+    white-space: nowrap;
+}
+#status-bar span, #status-bar .path {
+    color: #333;
+}
+#status-bar .path {
+    padding-left: 3px;
+}
+#status-bar .second {
+    padding-left: 10px;
+    word-break: break-all; /* ie */
+　　word-wrap: break-word;
+}
+#status-bar .separator {
+    color: #999;
+}
+.separator {
+    padding: 0 2px;
+    color: #999;
+}
+#status-bar .number {
+    border-radius: 8px;
+    background: #eee;
+    padding: 1px 6px;
+}
+h2 .path {
+    font-size: 13px;
+    font-weight: normal;
 }
 </style>
 <?php
