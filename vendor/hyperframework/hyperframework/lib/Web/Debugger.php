@@ -172,8 +172,9 @@ class Debugger {
     }
 
     private static function renderStackTrace() {
-        echo '<div id="stack-trace"><h2>Stack Trace</h2><div><table><tbody>';
+        echo '<table id="stack-trace"><tr><td class="content"><h2>Stack Trace</h2><table cellspacing="6px"><tbody>';
         $index = 0;
+        $last = count(self::$trace) - 1;
         foreach (self::$trace as $frame) {
             if ($frame !== '{main}') {
                 $invocation = StackTraceFormatter::formatInvocation($frame);
@@ -182,18 +183,24 @@ class Debugger {
                     && self::$shouldHideTrace === false
                 ) {
                     if ($index <= self::$firstInternalStackFrameIndex) {
-                        echo 'class="hidden"';
+                        echo ' class="hidden"';
                     }
-                    echo '><td>', $index - self::$firstInternalStackFrameIndex - 1;
+                    echo '><td class="index">', $index - self::$firstInternalStackFrameIndex - 1;
                 } else {
-                    echo '><td>', $index;
+                    echo '><td class="index">', $index;
                 }
-                echo '</td><td><div class="invocation">', $invocation,
+                echo '</td><td class="value';
+                if ($index === $last) {
+                    echo ' last';
+                }
+                echo '"><div class="invocation">', $invocation, '</div>';
+//                echo '</td><td class="value"><div class="invocation">', $invocation , 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxe',
                     '</div>';
                 echo '<div class="position">';
                 if (isset($frame['file'])) {
-                    self::renderPath($frame['file']);
-                    echo ' <div class="line">', $frame['line'], '</div>';
+                    self::renderPath($frame['file'], true, ' <span class="line">' . $frame['line'] . '</span>');
+
+//                    self::renderPath($frame['file'] . 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', true, ' <span class="line">' . $frame['line'] . '</span>');
                 } else {
                     echo  'internal function';
                 }
@@ -202,13 +209,13 @@ class Debugger {
             }
             ++$index;
         }
-        echo '</tbody></table></div></div>';
+        echo '</tbody></table></td></tr></table>';
     }
 
     private static function renderStatusBar() {
         echo '<div id="status-bar">';
         if (self::$shouldHideExternal) {
-            echo '<div><a id="toggle-external-code">Show external file</a></div>';
+            echo '<div id="toggle-external-code"><a>Show external file</a></div>';
         }
         echo '<div class="first"><div>Response Headers:',
             ' <span class="number first-value">',
@@ -330,15 +337,17 @@ class Debugger {
         return '<span class="' . $class . '">' . $content . '</span>';
     }
 
-    private static function renderPath($path, $shouldRemoveRootPath = true) {
+    private static function renderPath(
+        $path, $shouldRemoveRootPath = true, $suffix = ''
+    ) {
         if ($shouldRemoveRootPath === true) {
             $path = self::getRelativePath($path);
         }
         echo '<div class="path">', str_replace(
             DIRECTORY_SEPARATOR,
             '<span class="separator">' . DIRECTORY_SEPARATOR . '</span>',
-            $path 
-        ), '</div>';
+            $path
+        ), $suffix, '</div>';
     }
 
     private static function getRelativePath($path) {
@@ -447,25 +456,23 @@ function showOutput() {
     var content = <?= $content ?>;
     var hiddenContent = <?= $hiddenContent ?>;
     if (headers.length > 0) {
-        outputContent = '<div id="response-headers">'
+        outputContent = '<table id="output"><tbody><tr><td id="response-headers">'
             + '<a id="show-response-headers-botton"'
             + ' href="javascript:toggleResponseHeaders()">'
-            + '<span id="arrow">►</span> Headers <span>' + headers.length
-            + '</span></a><table id="response-headers-content"><tbody>';
+            + '<span id="arrow">►</span> Headers <span id="header-count" class="header-count">' + headers.length
+            + '</span></a><table id="response-headers-content" class="hidden"><tbody>';
         for (var index = 0; index < headers.length; ++index) {
             var header = headers[index];
-            outputContent += '<tr><td>' + header[0]
-                + ':</td><td>' + header[1] + '</td></tr>';
+            outputContent += '<tr><td><span class="key">' + header[0]
+                + ':</span> ' + header[1] + '</td></tr>';
         }
-        outputContent += '</tbody></table></div>';
+        outputContent += '</tbody></table></td></tr>';
     }
     if (isOverflow) {
-        outputContent += '<div class="notice">Notice: Content is partial,'
-            + ' length is larger then output limitation(10MB).</div>';
+        outputContent += '<tr><td class="notice"><div>Notice: Content is partial,'
+            + ' length is larger then output limitation(10MB).</td></tr></div>';
     }
-    var responseBodyHtml = '<table id="response-body">'
-        + '<tbody id="response-body-content">'
-        + buildOutputContent(content) + '</tbody></table>';
+    var responseBodyHtml = buildOutputContent(content);
     if (hiddenContent != null) {
         fullContent = content + hiddenContent;
         var buttonName = "Show all content";
@@ -481,7 +488,8 @@ function showOutput() {
             + ' href="' + href + '">' + buttonName + '</a>';
     }
     codeContent = contentDiv.innerHTML;
-    contentDiv.innerHTML = outputContent + responseBodyHtml;
+    contentDiv.innerHTML = outputContent + '<tr><td id="response-body">'
+        + responseBodyHtml + '</td></tr>';
 }
 
 function showAllContent() {
@@ -497,7 +505,7 @@ function showHiddenContent() {
         = 'none';
     document.getElementById("show-hidden-content-button-bottom").style.display
         = 'none';
-    document.getElementById("response-body-content").innerHTML
+    document.getElementById("response-body").innerHTML
         = buildOutputContent(fullContent);
     fullContent = null;
 }
@@ -507,10 +515,10 @@ function buildOutputContent(content) {
     var lines = content.split("\n");
     var count = lines.length;
     for (var index = 0; index < count; ++index) {
-        result += '<tr><td line-number="'
+        result += '<tr><td class="line-number" line-number="'
             + (index + 1) + '"></td><td>' + lines[index] + '</td></tr>';
     }
-    return result;
+    return '<table><tbody>' + result + '</tbody></table>';
 }
 
 function showCode() {
@@ -530,12 +538,12 @@ function showCode() {
 
 function toggleResponseHeaders() {
     var div = document.getElementById("response-headers-content");
-    if (div.style.display == "none") {
+    if (div.className == "hidden") {
         document.getElementById("arrow").innerHTML = '▼';
-        div.style.display = "block";
+        div.className = "";
     } else {
         document.getElementById("arrow").innerHTML = '►';
-        div.style.display = "none";
+        div.className = "hidden";
     }
 }
 
@@ -555,8 +563,7 @@ function showExternalFile() {
                 + firstInternalStackFrameIndex + 1;
         }
     }
-    button.innerHTML = 'Show internal file';
-    button.href = "javascript:showInternalFile()";
+    button.innerHTML = '<a href="javascript:showInternalFile()">Show internal file</a>';
 }
 
 function showInternalFile() {
@@ -577,15 +584,14 @@ function showInternalFile() {
                 - firstInternalStackFrameIndex - 1;
         }
     }
-    button.innerHTML = 'Show external file';
-    button.href = "javascript:showExternalFile()";
+    button.innerHTML = '<a href="javascript:showExternalFile()">Show external file</a>';
 }
 
 document.getElementById("nav-output").innerHTML =
     '<a href="javascript:showOutput()">Output</a>';
 
 if (document.getElementById("toggle-external-code") !== null) {
-    document.getElementById("toggle-external-code").href =
+    document.getElementById("toggle-external-code").firstChild.href =
         'javascript:showExternalFile()';
 }
 </script>
@@ -620,6 +626,7 @@ pre, h1, h2, body {
 h2 {
     font-size: 18px;
     font-family: "Times New Roman", Helvetica, Arial, sans-serif;
+    padding: 0 10px;
 }
 #page-container {
     height: 100%;
@@ -647,12 +654,12 @@ h1, #message {
     padding-top: 0;
     line-height: 20px;
 }
-#code {
+#code, #output {
+    border: 1px solid #ccc;
     width: 100%;
+    background: #fff;
 }
 #nav {
-    clear: left;
-    width: 100%;
     position: relative;
     height: 37px;
     border-bottom: 1px solid #ccc;
@@ -675,30 +682,35 @@ h1, #message {
     background: #eee;
     padding: 0;
     height: 32px;
-    border-radius: 2px 2px 0 0;
 }
 #nav .selected div {
     border: 1px solid #ccc;
     border-bottom: 0;
     padding: 6px 25px 7px;
+    border-radius: 2px 2px 0 0;
 }
 #content {
     padding: 10px;
 }
 #status-bar-wrapper {/* ie6 */
-    width: 100%;
     color: #999;
     padding: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 2px 2px 0 0;
-    background: #fff;
+    border-bottom: 1px solid #ccc;
 }
 #status-bar {
     padding-right: 10px;
-    line-height: 18px;
+<?php if (self::$shouldHideExternal): ?>
+    line-height: 25px;
+<?php endif ?>
     font-size:12px;
 }
-#status-bar-wrapper, #status-bar-wrapper div {
+<?php if (self::$shouldHideExternal): ?>
+#status-bar .first div, #status-bar .second {
+    line-height: 18px;
+    padding-top: 3px;
+}
+<?php endif ?>
+#status-bar-wrapper div {
     float: left;
 }
 #status-bar .first-value {
@@ -730,44 +742,38 @@ h1, #message {
     padding: 0 2px;
     color: #999;
 }
-#status-bar .number {
+#status-bar .number, .header-count {
     border-radius: 8px;
     background: #eee;
     padding: 1px 6px;
 }
 #file-wrapper {
-    float: left;
-    width: 100%;
     padding: 10px 0;
-    border: 1px solid #ccc;
-    border-top: 0;
-    border-bottom: 0;
-    background: #fff;
+    border-bottom: 1px solid #ccc;
 }
 #file-wrapper.last {
-    border-bottom: 1px solid #ccc;
-    border-radius: 0 0 2px 2px;
+    border-bottom: 0;
 }
-#file h2 .path {
+#file .path {
     font-size: 13px;
     font-weight: normal;
-    padding:5px 0 10px 0;
+    padding: 5px 0 10px 10px;
 }
-#file h2 {
-    padding: 0 10px;
-}
-#toggle-external-code:hover {
+#toggle-external-code a:hover {
     background-image: none;
     color: #333;
 }
-#toggle-external-code {
+#toggle-external-code a {
     background-image: linear-gradient(#fcfcfc, #eee);
     background-color: #eee;
     border: 1px solid #d5d5d5;
     border-radius: 3px;
     text-shadow: 0 1px 0 rgba(255,255,255,0.9);
     padding: 4px 10px;
+}
+#toggle-external-code {
     margin-left: 10px;
+    display: inline; /* ie6 */
 }
 .hidden {
     display: none;
@@ -808,13 +814,108 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
 #file .error-line {
     background: #ff9;
 }
-#stack-trace-wrapper {
-    float: left;
+#stack-trace {
     width: 100%;
-    padding: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 0 0 2px 2px;
-    background: #fff;
+}
+#stack-trace .content {
+    padding: 10px;
+}
+#stack-trace h2 {
+    padding: 0 0 10px 0;
+}
+#stack-trace table {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    border-collapse: separate;
+    background: #f8f8f8;
+/*  border-spacing: 6px; inline for ie6 */
+ }
+#stack-trace .path {
+    color: #070;
+}
+#stack-trace .line{
+    color: #888;
+    background: #eee;
+    border: 1px solid #ddd;
+    border-top: 1px solid #eee;
+    border-left: 1px solid #eee;
+    padding: 2px 3px;
+    line-height: 18px;
+    border-radius: 3px;
+    font-size: 12px;
+    word-break: keep-all;
+    white-space: nowrap;
+}
+#stack-trace table .value {
+    padding: 6px;
+    border-bottom:1px dotted #ddd;
+    _border-bottom:1px solid #e1e1e1; /* ie6 */
+}
+#stack-trace table .last {
+    border: 0;
+}
+#stack-trace .index {
+    padding: 0 10px;
+    width: 1px;
+    color: #777;
+    border-right: 2px solid #ccc;
+    background: #e8e8e8;
+    text-align: center;
+}
+#stack-trace .position {
+    line-height: 18px;
+}
+#stack-trace .invocation {
+    word-break: keep-all;
+    white-space: nowrap;
+    padding-bottom: 4px;
+    font-size:14px;
+}
+#response-headers {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+#show-hidden-content-button-top, #show-hidden-content-button-bottom {
+background-image: linear-gradient(#fcfcfc, #eee);
+background-color: #eee;
+border: 1px solid #d5d5d5;
+border-radius: 3px;
+text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+padding: 4px 10px;
+line-height: 25px;
+}
+#response-headers-content {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    border-collapse: separate;
+    background: #f8f8f8;
+    margin-top: 10px;
+}
+#response-headers-content td {
+    padding: 5px;
+    width: 100%;
+}
+#response-headers-content .key {
+    word-break: keep-all;
+    white-space: nowrap;
+    font-weight: bold;
+}
+#response-body {
+    padding: 10px;
+}
+#output .line-number:before {
+    border-right: 1px solid #ccc;
+    padding: 0 5px;
+    content: attr(line-number);
+    color: #999;
+}
+#arrow {
+    font-size: 10px;
+}
+#header-count {
+    color: #333;/* ie6 */
 }
 </style>
 <?php
