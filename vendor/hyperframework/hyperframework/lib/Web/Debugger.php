@@ -208,7 +208,7 @@ class Debugger {
     private static function renderStatusBar() {
         echo '<div id="status-bar">';
         if (self::$shouldHideExternal) {
-            echo '<div><a id="toggle-external-code">Show external code</a></div>';
+            echo '<div><a id="toggle-external-code">Show external file</a></div>';
         }
         echo '<div class="first"><div>Response Headers:',
             ' <span class="number first-value">',
@@ -539,7 +539,7 @@ function toggleResponseHeaders() {
     }
 }
 
-function showExternalCode() {
+function showExternalFile() {
     document.getElementById("internal-file").className = "hidden";
     document.getElementById("external-file").className = "";
     var button = document.getElementById("toggle-external-code");
@@ -555,11 +555,11 @@ function showExternalCode() {
                 + firstInternalStackFrameIndex + 1;
         }
     }
-    button.innerHTML = 'Hide external code';
-    button.href = "javascript:hideExternalCode()";
+    button.innerHTML = 'Show internal file';
+    button.href = "javascript:showInternalFile()";
 }
 
-function hideExternalCode() {
+function showInternalFile() {
     document.getElementById("internal-file").className = "";
     document.getElementById("external-file").className = "hidden";
     var button = document.getElementById("toggle-external-code");
@@ -577,8 +577,8 @@ function hideExternalCode() {
                 - firstInternalStackFrameIndex - 1;
         }
     }
-    button.innerHTML = 'Show external code';
-    button.href = "javascript:showExternalCode()";
+    button.innerHTML = 'Show external file';
+    button.href = "javascript:showExternalFile()";
 }
 
 document.getElementById("nav-output").innerHTML =
@@ -586,7 +586,7 @@ document.getElementById("nav-output").innerHTML =
 
 if (document.getElementById("toggle-external-code") !== null) {
     document.getElementById("toggle-external-code").href =
-        'javascript:showExternalCode()';
+        'javascript:showExternalFile()';
 }
 </script>
 <?php
