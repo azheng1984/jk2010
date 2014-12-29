@@ -595,7 +595,6 @@ if (document.getElementById("toggle-external-code") !== null) {
     private static function renderCss() {
 ?>
 <style>
-
 body {
     background: #eee;
     font-family: Helvetica, Arial, sans-serif;
