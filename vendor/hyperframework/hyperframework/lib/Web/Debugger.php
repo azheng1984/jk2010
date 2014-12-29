@@ -7,6 +7,7 @@ use Hyperframework\Common\FileLoader;
 
 class Debugger {
     private static $source;
+    private static $trace;
     private static $headers;
     private static $headerCount;
     private static $content;
@@ -14,6 +15,9 @@ class Debugger {
     private static $isError;
     private static $rootPath;
     private static $rootPathLength;
+    private static $shouldHideExternal;
+    private static $shouldHideTrace;
+    private static $firstInternalStackFrameIndex;
 
     public static function execute(
         $source, array $headers = null, $content = null
@@ -24,6 +28,37 @@ class Debugger {
         self::$headerCount = count($headers);
         self::$contentLength = strlen($content);
         self::$isError = $source instanceof ErrorException;
+        self::$rootPath = FileLoader::getDefaultRootPath()
+            . DIRECTORY_SEPARATOR;
+        self::$rootPathLength = strlen(self::$rootPath);
+        self::$shouldHideTrace = false;
+        self::$shouldHideExternal = false;
+        self::$trace = null;
+        if (self::$isError === false || self::$source->isFatal() === false) {
+            if (self::$isError) {
+                self::$trace = $source->getSourceTrace();
+            } else {
+                self::$trace = $source->getTrace();
+            }
+            if (self::isExternalPath($source->getFile())) {
+                self::$firstInternalStackFrameIndex = null;
+                foreach (self::$trace as $index => $frame) {
+                    if (isset($frame['file'])
+                        && self::isExternalPath($frame['file']) === false
+                    ) {
+                        self::$firstInternalStackFrameIndex = $index;
+                        break;
+                    }
+                }
+                if (self::$firstInternalStackFrameIndex !== null) {
+                    self::$shouldHideExternal = true;
+                    $maxIndex = count(self::$trace) - 1;
+                    if ($maxIndex === self::$firstInternalStackFrameIndex) {
+                        self::$shouldHideTrace = true;
+                    }
+                }
+            }
+        }
         if (headers_sent() === false) {
             header('Content-Type: text/html;charset=utf-8');
         }
@@ -58,15 +93,65 @@ class Debugger {
         echo '</tbody></table></body></html>';
     }
 
+    private static function isExternalPath($path) {
+        $relativePath = self::getRelativePath($path);
+        if ($relativePath === $path) {
+            return true;
+        }
+        if (strncmp($relativePath, 'vendor' . DIRECTORY_SEPARATOR, 7) === 0) {
+            return true;
+        }
+        return false;
+    }
+
     private static function renderContent() {
+        $hasTrace =
+            self::$isError === false || self::$source->isFatal() === false;
         echo '<tr><td id="content"><table id="code"><tbody><tr><td id="status-bar-wrapper">';
         self::renderStatusBar();
-        echo '</td></tr><tr><td id="file-wrapper"><div id="file"><h2><div>File</div>';
-        self::renderPath(self::$source->getFile());
-        echo '</h2>';
-        echo '<table><tbody><tr><td class="index"><div class="index-content">';
-        $lines = self::getLines();
+        echo '</td></tr><tr><td id="file-wrapper"';
+        if (self::$shouldHideTrace || $hasTrace === false) {
+            echo ' class="last"';
+        }
+        echo '">';
+        self::renderFile();
+        echo '</td></tr>';
+        if ($hasTrace) {
+            echo '<tr><td id="stack-trace-wrapper"';
+            if (self::$shouldHideTrace) {
+                echo ' class="hidden"';
+            }
+            echo '>';
+            self::renderStackTrace();
+            echo '</td></tr>';
+        }
+        echo '</tbody></table></td></tr>';
+    }
+
+    private static function renderFile() {
+        echo '<div id="file"><h2><div>File</div></h2>';
+        if (self::$shouldHideExternal) {
+            $frame = self::$trace[self::$firstInternalStackFrameIndex];
+            $path = $frame['file'];
+            $errorLineNumber = $frame['line'];
+            echo '<div id="internal-file">';
+            self::renderFileContent($path, $errorLineNumber);
+            echo '</div>';
+            echo '<div id="external-file" class="hidden">';
+        }
+        $path = self::$source->getFile();
         $errorLineNumber = self::$source->getLine();
+        self::renderFileContent($path, $errorLineNumber);
+        if (self::$shouldHideExternal) {
+            echo '</div>';
+        }
+        echo '</div>';
+    }
+
+    private static function renderFileContent($path, $errorLineNumber) {
+        self::renderPath($path);
+        echo '<table><tbody><tr><td class="index"><div class="index-content">';
+        $lines = self::getLines($path, $errorLineNumber);
         foreach ($lines as $number => $line) {
             echo '<div';
             if ($number === $errorLineNumber) {
@@ -83,41 +168,49 @@ class Debugger {
             echo '>', $line , '</pre>';
 //            echo '>', $line . 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxe', '</pre>';
         }
-        echo '</div></td></tr></tbody></table></div>';
-        if (self::$isError === false || self::$source->isFatal() === false) {
-            echo '</td></tr><tr><td id="stack-trace-wrapper"><div id="stack-trace"><h2>Stack Trace</h2>',
-                '<div><table><tbody>';
-            if (self::$isError) {
-                $trace =  self::$source->getSourceTrace();
-            } else {
-                $trace =  self::$source->getTrace();
-            }
-            $index = 0;
-            foreach ($trace as $frame) {
-                if ($frame !== '{main}') {
-                    $invocation = StackTraceFormatter::formatInvocation($frame);
-                    echo '<tr><td>', $index,
-                        '</td><td><div class="invocation">', $invocation,
-                        '</div>';
-                    echo '<div class="position">';
-                    if (isset($frame['file'])) {
-                        self::renderPath($frame['file']);
-                        echo ' <div class="line">', $frame['line'], '</div>';
-                    } else {
-                        echo  'internal function';
+        echo '</tbody></table>';
+    }
+
+    private static function renderStackTrace() {
+        echo '<div id="stack-trace"><h2>Stack Trace</h2><div><table><tbody>';
+        $index = 0;
+        foreach (self::$trace as $frame) {
+            if ($frame !== '{main}') {
+                $invocation = StackTraceFormatter::formatInvocation($frame);
+                echo '<tr id="frame-', $index, '"';
+                if (self::$shouldHideExternal
+                    && self::$shouldHideTrace === false
+                ) {
+                    if ($index <= self::$firstInternalStackFrameIndex) {
+                        echo 'class="hidden"';
                     }
-                    echo '</div>';
-                    echo  '</td></tr>';
+                    echo '><td>', $index - self::$firstInternalStackFrameIndex - 1;
+                } else {
+                    echo '><td>', $index;
                 }
-                ++$index;
+                echo '</td><td><div class="invocation">', $invocation,
+                    '</div>';
+                echo '<div class="position">';
+                if (isset($frame['file'])) {
+                    self::renderPath($frame['file']);
+                    echo ' <div class="line">', $frame['line'], '</div>';
+                } else {
+                    echo  'internal function';
+                }
+                echo '</div>';
+                echo  '</td></tr>';
             }
-            echo '</tbody></table></div></div>';
+            ++$index;
         }
-        echo '</td></tr><tbody></table></td></tr>';
+        echo '</tbody></table></div></div>';
     }
 
     private static function renderStatusBar() {
-        echo '<div id="status-bar"><div class="first"><div>Response Headers:',
+        echo '<div id="status-bar">';
+        if (self::$shouldHideExternal) {
+            echo '<div><a id="toggle-external-code">Show external code</a></div>';
+        }
+        echo '<div class="first"><div>Response Headers:',
             ' <span class="number first-value">',
             self::$headerCount, '</span></div><div>',
             'Content Length: <span class="number">',
@@ -128,15 +221,14 @@ class Debugger {
         echo '</div></div>';
     }
 
-    private static function getLines() {
-        $file = file_get_contents(self::$source->getFile());
+    private static function getLines($path, $errorLineNumber) {
+        $file = file_get_contents($path);
         $tokens = token_get_all($file);
-        $errorLineNumber = self::$source->getLine();
-        $firstLineNumber = 0;
-        if ($errorLineNumber > 21) {
-            $firstLineNumber = $errorLineNumber - 21;
+        $firstLineNumber = 1;
+        if ($errorLineNumber > 11) {
+            $firstLineNumber = $errorLineNumber - 10;
         }
-        $lineNumber = 0;
+        $lineNumber = null;
         $result = [];
         $buffer = '';
         foreach ($tokens as $index => $value) {
@@ -147,7 +239,9 @@ class Debugger {
                 if ($value === '"') {
                     $buffer .= '<span class="string">' . $value . '</span>';
                 } else {
-                    $buffer .= '<span class="keyword">' . $value . '</span>';
+                    $buffer .= '<span class="keyword">' . htmlspecialchars(
+                        $value, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+                    ) . '</span>';
                 }
                 continue;
             }
@@ -188,6 +282,7 @@ class Debugger {
     }
 
     private static function formatToken($type, $content) {
+        $class = null;
         switch ($type) {
             case T_ENCAPSED_AND_WHITESPACE:
             case T_CONSTANT_ENCAPSED_STRING:
@@ -214,7 +309,6 @@ class Debugger {
             case T_CLOSE_TAG:
             case T_OPEN_TAG:
             case T_OPEN_TAG_WITH_ECHO:
-                $class = 'default';
                 break;
             case T_COMMENT:
             case T_DOC_COMMENT:
@@ -227,28 +321,31 @@ class Debugger {
                 $class = 'keyword';
                 //$class = token_name($type);
         }
-        if ($class === 'default') {
+        $content = htmlspecialchars(
+            $content, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+        );
+        if ($class === null) {
             return $content; 
         }
         return '<span class="' . $class . '">' . $content . '</span>';
     }
 
     private static function renderPath($path, $shouldRemoveRootPath = true) {
-        if ($shouldRemoveRootPath) {
-            if (self::$rootPath === null) {
-                self::$rootPath = FileLoader::getDefaultRootPath()
-                    . DIRECTORY_SEPARATOR;
-                self::$rootPathLength = strlen(self::$rootPath);
-            }
-            if (strncmp(self::$rootPath, $path, self::$rootPathLength) === 0) {
-                $path = substr($path, self::$rootPathLength);
-            }
+        if ($shouldRemoveRootPath === true) {
+            $path = self::getRelativePath($path);
         }
         echo '<div class="path">', str_replace(
             DIRECTORY_SEPARATOR,
             '<span class="separator">' . DIRECTORY_SEPARATOR . '</span>',
             $path 
         ), '</div>';
+    }
+
+    private static function getRelativePath($path) {
+        if (strncmp(self::$rootPath, $path, self::$rootPathLength) === 0) {
+            $path = substr($path, self::$rootPathLength);
+        }
+        return $path;
     }
 
     private static function renderHeader($type, $message) {
@@ -304,11 +401,31 @@ class Debugger {
         } else {
             $hiddenContent = 'null';
         }
+        $shouldHideTrace = 'null';
+        $firstInternalStackFrameIndex = 'null';
+        if (self::$shouldHideExternal) {
+            if (self::$shouldHideTrace === true) {
+                $shouldHideTrace = 'true';
+                $firstInternalStackFrameIndex = 'null';
+            } else {
+                $shouldHideTrace = 'false';
+                $firstInternalStackFrameIndex =
+                    self::$firstInternalStackFrameIndex;
+            }
+        }
+        if (self::$trace !== null) {
+            $stackFrameCount = count(self::$trace);
+        } else {
+            $stackFrameCount = 0;
+        }
 ?>
 <script type="text/javascript">
 var codeContent = null;
 var outputContent = null;
 var fullContent = null;
+var shouldHideTrace = <?= $shouldHideTrace ?>;
+var stackFrameCount = <?= $stackFrameCount ?>;
+var firstInternalStackFrameIndex = <?= $firstInternalStackFrameIndex ?>;
 function showOutput() {
     if (codeContent != null) {
         return;
@@ -422,8 +539,55 @@ function toggleResponseHeaders() {
     }
 }
 
+function showExternalCode() {
+    document.getElementById("internal-file").className = "hidden";
+    document.getElementById("external-file").className = "";
+    var button = document.getElementById("toggle-external-code");
+    if (shouldHideTrace) {
+        document.getElementById('stack-trace-wrapper').className = '';
+        document.getElementById('file-wrapper').className = '';
+    } else {
+        for (var index = 0; index < stackFrameCount; ++index) {
+            var node = document.getElementById('frame-' + index);
+            node.className = '';
+            var child = node.firstChild;
+            child.innerHTML = parseInt(child.innerHTML)
+                + firstInternalStackFrameIndex + 1;
+        }
+    }
+    button.innerHTML = 'Hide external code';
+    button.href = "javascript:hideExternalCode()";
+}
+
+function hideExternalCode() {
+    document.getElementById("internal-file").className = "";
+    document.getElementById("external-file").className = "hidden";
+    var button = document.getElementById("toggle-external-code");
+    if (shouldHideTrace) {
+        document.getElementById('stack-trace-wrapper').className = 'hidden';
+        document.getElementById('file-wrapper').className = 'last';
+    } else {
+        for (var index = 0; index < stackFrameCount; ++index) {
+            var node = document.getElementById('frame-' + index);
+            if (index <= firstInternalStackFrameIndex) {
+                node.className = 'hidden';
+            }
+            var child = node.firstChild;
+            child.innerHTML = parseInt(child.innerHTML)
+                - firstInternalStackFrameIndex - 1;
+        }
+    }
+    button.innerHTML = 'Show external code';
+    button.href = "javascript:showExternalCode()";
+}
+
 document.getElementById("nav-output").innerHTML =
     '<a href="javascript:showOutput()">Output</a>';
+
+if (document.getElementById("toggle-external-code") !== null) {
+    document.getElementById("toggle-external-code").href =
+        'javascript:showExternalCode()';
+}
 </script>
 <?php
     }
@@ -433,6 +597,7 @@ document.getElementById("nav-output").innerHTML =
 <style>
 
 body {
+    background: #eee;
     font-family: Helvetica, Arial, sans-serif;
     font-size: 13px;
     color: #333;
@@ -520,7 +685,6 @@ h1, #message {
 }
 #content {
     padding: 10px;
-    background: #eee;
 }
 #status-bar-wrapper {/* ie6 */
     width: 100%;
@@ -533,6 +697,7 @@ h1, #message {
 #status-bar {
     padding-right: 10px;
     line-height: 18px;
+    font-size:12px;
 }
 #status-bar-wrapper, #status-bar-wrapper div {
     float: left;
@@ -580,6 +745,10 @@ h1, #message {
     border-bottom: 0;
     background: #fff;
 }
+#file-wrapper.last {
+    border-bottom: 1px solid #ccc;
+    border-radius: 0 0 2px 2px;
+}
 #file h2 .path {
     font-size: 13px;
     font-weight: normal;
@@ -588,16 +757,32 @@ h1, #message {
 #file h2 {
     padding: 0 10px;
 }
+#toggle-external-code:hover {
+    background-image: none;
+    color: #333;
+}
+#toggle-external-code {
+    background-image: linear-gradient(#fcfcfc, #eee);
+    background-color: #eee;
+    border: 1px solid #d5d5d5;
+    border-radius: 3px;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+    padding: 4px 10px;
+    margin-left: 10px;
+}
+.hidden {
+    display: none;
+}
 #file table {
     width: 100%;
     line-height: 18px;
 }
 #file .content {
-    margin: 0 10px 10px 0;
+    margin-right:10px;
 }
 #file .index .index-content {
     padding: 0;
-    margin: 0 0 10px 10px;
+    margin-left:10px;
 }
 #file .index {
     width:1px;
