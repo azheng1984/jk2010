@@ -24,7 +24,14 @@ class Debugger {
     ) {
         self::$source = $source;
         self::$headers = $headers;
-        self::$content = $content;
+        $content = '';
+        for ($i = 0; $i < 100; ++$i) {
+            for ($j = 0; $j < 100; ++$j) {
+                $content .= $j;
+            }
+            $content .= "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaisdfffffffffvwfffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif fffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe" . "\n";
+        }
+        self::$content = $content;//file_get_contents('/home/az/logo.jpg');//$content;
         self::$headerCount = count($headers);
         self::$contentLength = strlen($content);
         self::$isError = $source instanceof ErrorException;
@@ -84,7 +91,7 @@ class Debugger {
             );
             $title .= ' - ' . $message;
         }
-        echo '<!DOCTYPE html><html><head><title>', $title, '</title>';
+        echo '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html;charset=utf-8"/><title>', $title, '</title>';
         self::renderCss();
         echo '</head><body><table id="page-container"><tbody>';
         self::renderHeader($type, $message);
@@ -193,7 +200,7 @@ class Debugger {
                 if ($index === $last) {
                     echo ' last';
                 }
-                echo '"><div class="invocation">', $invocation, '</div>';
+                echo '"><code class="invocation">', $invocation, '</code>';
 //                echo '</td><td class="value"><div class="invocation">', $invocation , 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxe',
                     '</div>';
                 echo '<div class="position">';
@@ -429,6 +436,21 @@ class Debugger {
         }
 ?>
 <script type="text/javascript">
+var isIe = false;
+</script>
+<!--[if IE]>
+<script type="text/javascript">
+isIe = true;
+</script>
+<![endif]-->
+<script type="text/javascript">
+if (isIe == false && typeof window.getComputedStyle != 'undefined') {
+    if (typeof window.getComputedStyle(document.body).msUserSelect
+        != 'undefined'
+    ) {
+        isIe = true;
+    }
+}
 var codeContent = null;
 var outputContent = null;
 var fullContent = null;
@@ -460,19 +482,28 @@ function showOutput() {
             + '<a id="show-response-headers-botton"'
             + ' href="javascript:toggleResponseHeaders()">'
             + '<span id="arrow">►</span> Headers <span id="header-count" class="header-count">' + headers.length
-            + '</span></a><table id="response-headers-content" class="hidden"><tbody>';
-        for (var index = 0; index < headers.length; ++index) {
+            + '</span></a><div id="response-headers-content" class="hidden">';
+        var count = headers.length;
+        for (var index = 0; index < count; ++index) {
             var header = headers[index];
-            outputContent += '<tr><td><span class="key">' + header[0]
-                + ':</span> ' + header[1] + '</td></tr>';
+            outputContent += '<code';
+            if (count === index + 1) {
+                outputContent += ' class="last"';
+            }
+            outputContent += '><span class="key">' + header[0]
+                + ':</span> ' + header[1] + '</code>';
         }
-        outputContent += '</tbody></table></td></tr>';
+        outputContent += '</div></td></tr>';
     }
     if (isOverflow) {
         outputContent += '<tr><td class="notice"><div>Notice: Content is partial,'
             + ' length is larger then output limitation(10MB).</td></tr></div>';
     }
-    var responseBodyHtml = buildOutputContent(content);
+    var responseBodyHtml = buildOutputContentForIe(content);
+    var ieHtml = null;
+    if (isIe) {
+        ieHtml = '<a>Hide line number</a>';
+    }
     if (hiddenContent != null) {
         fullContent = content + hiddenContent;
         var buttonName = "Show all content";
@@ -481,15 +512,22 @@ function showOutput() {
             buttonName = "Show more content";
             href = "javascript:showMoreContent()";
         }
-        responseBodyHtml = '<a id="show-hidden-content-button-top"'
-            + ' href="' + href + '">' + buttonName + '</a>'
+        responseBodyHtml = '<div id="output-button-top-wrapper"><a'
+            + ' href="' + href + '">' + buttonName + '</a></div>'
             + responseBodyHtml
-            + '<a id="show-hidden-content-button-bottom"'
-            + ' href="' + href + '">' + buttonName + '</a>';
+            + '<div id="output-button-bottom-wrapper"><a'
+            + ' href="' + href + '">' + buttonName + '</a></div>';
     }
     codeContent = contentDiv.innerHTML;
-    contentDiv.innerHTML = outputContent + '<tr><td id="response-body">'
+    contentDiv.innerHTML = outputContent + '<tr><td id="response-body" class="response-body">'
         + responseBodyHtml + '</td></tr>';
+    //var firstLineDiv = document.getElementById("first-output-line-number");
+    //if (firstLineDiv != null && typeof window.getComputedStyle != 'undefined') {
+    //    var style  = window.getComputedStyle(firstLineDiv, ':before');
+    //    if (typeof style.content == 'undefined') {
+    //        document.getElementById("response-body").className = '';
+    //    }
+    //}
 }
 
 function showAllContent() {
@@ -501,13 +539,42 @@ function showMoreContent() {
 }
 
 function showHiddenContent() {
-    document.getElementById("show-hidden-content-button-top").style.display
+    document.getElementById("output-button-top-wrapper").style.display
         = 'none';
-    document.getElementById("show-hidden-content-button-bottom").style.display
+    document.getElementById("output-button-bottom-wrapper").style.display
         = 'none';
     document.getElementById("response-body").innerHTML
-        = buildOutputContent(fullContent);
+        = buildOutputContentForIe(fullContent);
     fullContent = null;
+}
+
+function buildOutputContentForIe(content) {
+    var result = '';
+    var lines = content.split("\n");
+    var count = lines.length;
+    var last = count - 1;
+    for (var index = 0; index < count; ++index) {
+        result += '<li';
+        if (count == 1) {
+            result += ' class="first last"';
+        } else if (index == 0) {
+            result += ' value="100000"';
+            result += ' class="first"';
+        } else if (index == last) {
+            result += ' class="last"';
+        }
+        result += '><code>' + lines[index] + '</code></li>';
+    }
+    return '<ol>' + result + '</ol>';
+}
+String.prototype.endWith=function(str){
+if(str==null||str==""||this.length==0||str.length>this.length)
+  return false;
+if(this.substring(this.length-str.length)==str)
+  return true;
+else
+  return false;
+return true;
 }
 
 function buildOutputContent(content) {
@@ -515,7 +582,11 @@ function buildOutputContent(content) {
     var lines = content.split("\n");
     var count = lines.length;
     for (var index = 0; index < count; ++index) {
-        result += '<tr><td class="line-number" line-number="'
+        result += '<tr><td';
+        if (index == 0) {
+            result += ' id="first-output-line-number"';
+        }
+        result += ' class="line-number" line-number="'
             + (index + 1) + '"></td><td>' + lines[index] + '</td></tr>';
     }
     return '<table><tbody>' + result + '</tbody></table>';
@@ -586,7 +657,6 @@ function showInternalFile() {
     }
     button.innerHTML = '<a href="javascript:showExternalFile()">Show external file</a>';
 }
-
 document.getElementById("nav-output").innerHTML =
     '<a href="javascript:showOutput()">Output</a>';
 
@@ -835,7 +905,7 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     color: #070;
 }
 #stack-trace .line{
-    color: #888;
+    color: #777;
     background: #eee;
     border: 1px solid #ddd;
     border-top: 1px solid #eee;
@@ -871,51 +941,118 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     white-space: nowrap;
     padding-bottom: 4px;
     font-size:14px;
+    display: block;
 }
 #response-headers {
     padding: 10px;
     border-bottom: 1px solid #ccc;
 }
-#show-hidden-content-button-top, #show-hidden-content-button-bottom {
-background-image: linear-gradient(#fcfcfc, #eee);
-background-color: #eee;
-border: 1px solid #d5d5d5;
-border-radius: 3px;
-text-shadow: 0 1px 0 rgba(255,255,255,0.9);
-padding: 4px 10px;
-line-height: 25px;
-}
+
 #response-headers-content {
-    width: 100%;
     border: 1px solid #ddd;
     border-radius: 2px;
     border-collapse: separate;
     background: #f8f8f8;
     margin-top: 10px;
-}
-#response-headers-content td {
     padding: 5px;
-    width: 100%;
+}
+#response-headers-content code {
+    padding: 5px;
+    display: block;
+    border-bottom: 1px dotted #ddd;
+    _border-bottom: 1px solid #e1e1e1; /* ie6 */
 }
 #response-headers-content .key {
     word-break: keep-all;
     white-space: nowrap;
     font-weight: bold;
 }
+#response-headers-content .last {
+    border-bottom: 0;
+}
 #response-body {
     padding: 10px;
+    background:#f8f8f8;
+}
+#response-body table {
+    line-height: 18px;
+}
+#response-body a {
+    background-image: linear-gradient(#fcfcfc, #eee);
+    background-color: #eee;
+    border: 1px solid #d5d5d5;
+    border-radius: 3px;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+    padding: 4px 10px;
+    font-size: 12px;
+    line-height: 24px;
+}
+#output-button-top-wrapper {
+    margin-bottom: 10px;
+}
+#output-button-bottom-wrapper {
+    margin-top: 10px;
+}
+#response-body a:hover {
+    background-image: none;
+    color: #000;
+}
+#response-body td {
+    padding-left: 5px;
+}
+#response-body .line-number {
+    padding: 0;
+    vertical-align: top;
+}
+.response-body .line-number {
+    border-right: 1px solid #e1e1e1;
+    *border-right: 0; /* ie6/ie7*/
 }
 #output .line-number:before {
-    border-right: 1px solid #ccc;
-    padding: 0 5px;
+    padding-right:5px;
     content: attr(line-number);
     color: #999;
+    text-align:right;
+    font-size:12px;
 }
 #arrow {
     font-size: 10px;
 }
 #header-count {
     color: #333;/* ie6 */
+}
+ol {
+    list-style: decimal;
+    background-color: #fff;
+    margin:0;
+    line-height:18px;
+    background: #f8f8f8;
+}
+li {
+    word-break: break-all; /* ie */
+　　word-wrap: break-word;
+    font-size: 11px;
+    color: #999;
+    padding: 0 5px;
+    border-radius: 2px;
+    background: #fff;
+    border-left:1px solid #e1e1e1;
+    border-right:1px solid #e1e1e1;
+}
+li.first {
+    border-top:1px solid #e1e1e1;
+    border-radius: 2px 2px 0 0;
+    padding-top: 5px;
+}
+li.last {
+    border-bottom:1px solid #e1e1e1;
+    border-radius: 0 0 2px 2px;
+    padding-bottom: 5px;
+}
+li code {
+    font-size:13px;
+    color: #333;
+    display: block;/* ie6 double render first line chars at the end */
 }
 </style>
 <?php
