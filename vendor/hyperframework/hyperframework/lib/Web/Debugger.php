@@ -24,12 +24,13 @@ class Debugger {
     ) {
         self::$source = $source;
         self::$headers = $headers;
-        $content = '';
-        for ($i = 0; $i < 100; ++$i) {
-            for ($j = 0; $j < 100; ++$j) {
-                $content .= $j;
-            }
-            $content .= "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaisdfffffffffvwfffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif fffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe" . "\n";
+        $content = "a            a\n \nb\n \n";
+        for ($i = 0; $i < 1000; ++$i) {
+//            for ($j = 0; $j < 100; ++$j) {
+//                $content .= $j;
+//            }
+//            $content .= "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaisdfffffffffvwfffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif fffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe" . "\n";
+            $content .= "x\n";
         }
         self::$content = $content;//file_get_contents('/home/az/logo.jpg');//$content;
         self::$headerCount = count($headers);
@@ -97,7 +98,12 @@ class Debugger {
         self::renderHeader($type, $message);
         self::renderContent();
         self::renderJavascript();
-        echo '</tbody></table></body></html>';
+        echo '</tbody></table><pre>a
+b
+    
+c
+d
+</pre></body></html>';
     }
 
     private static function isExternalPath($path) {
@@ -436,21 +442,14 @@ class Debugger {
         }
 ?>
 <script type="text/javascript">
-var isIe = false;
+var isIeSix = false;
 </script>
-<!--[if IE]>
+<!--[if IE 6]>
 <script type="text/javascript">
-isIe = true;
+isIeSix = true;
 </script>
 <![endif]-->
 <script type="text/javascript">
-if (isIe == false && typeof window.getComputedStyle != 'undefined') {
-    if (typeof window.getComputedStyle(document.body).msUserSelect
-        != 'undefined'
-    ) {
-        isIe = true;
-    }
-}
 var codeContent = null;
 var outputContent = null;
 var fullContent = null;
@@ -499,11 +498,7 @@ function showOutput() {
         outputContent += '<tr><td class="notice"><div>Notice: Content is partial,'
             + ' length is larger then output limitation(10MB).</td></tr></div>';
     }
-    var responseBodyHtml = buildOutputContentForIe(content);
-    var ieHtml = null;
-    if (isIe) {
-        ieHtml = '<a>Hide line number</a>';
-    }
+    var responseBodyHtml = buildOutputContent(content);
     if (hiddenContent != null) {
         fullContent = content + hiddenContent;
         var buttonName = "Show all content";
@@ -544,7 +539,7 @@ function showHiddenContent() {
     document.getElementById("output-button-bottom-wrapper").style.display
         = 'none';
     document.getElementById("response-body").innerHTML
-        = buildOutputContentForIe(fullContent);
+        = buildOutputContent(fullContent);
     fullContent = null;
 }
 
@@ -558,14 +553,23 @@ function buildOutputContentForIe(content) {
         if (count == 1) {
             result += ' class="first last"';
         } else if (index == 0) {
-            result += ' value="100000"';
             result += ' class="first"';
         } else if (index == last) {
             result += ' class="last"';
         }
+        if (lines[index] == '' && isIeSix == false) {
+            result += ' style="height:18px"'; //firefox, ie6 has bug
+        }
         result += '><code>' + lines[index] + '</code></li>';
     }
-    return '<ol>' + result + '</ol>';
+    var prefix = 'padding-left';
+    extra = 12;
+    if (isIeSix) {
+        extra = 20;
+        prefix = 'margin-left';
+    }
+    return '<ol style="' + prefix + ':' + (count.toString().length * 7 + extra) + 'px">'
+        + result + '</ol>';
 }
 String.prototype.endWith=function(str){
 if(str==null||str==""||this.length==0||str.length>this.length)
@@ -1024,7 +1028,6 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
 ol {
     list-style: decimal;
     background-color: #fff;
-    margin:0;
     line-height:18px;
     background: #f8f8f8;
 }
@@ -1049,7 +1052,7 @@ li.last {
     border-radius: 0 0 2px 2px;
     padding-bottom: 5px;
 }
-li code {
+li pre {
     font-size:13px;
     color: #333;
     display: block;/* ie6 double render first line chars at the end */
