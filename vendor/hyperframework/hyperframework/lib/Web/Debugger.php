@@ -182,7 +182,7 @@ class Debugger {
     }
 
     private static function renderStackTrace() {
-        echo '<table id="stack-trace"><tr><td class="content"><h2>Stack Trace</h2><table cellspacing="6px"><tbody>';
+        echo '<table id="stack-trace"><tr><td class="content"><h2>Stack Trace</h2><table><tbody>';
         $index = 0;
         $last = count(self::$trace) - 1;
         foreach (self::$trace as $frame) {
@@ -944,18 +944,15 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
 }
 #stack-trace table {
     width: 100%;
-    border: 1px solid #ddd;
     border-radius: 2px;
-    border-collapse: separate;
-    background: #f8f8f8;
-/*  border-spacing: 6px; inline for ie6 */
+  border-spacing: 0; /* inline for ie6 */
  }
 #stack-trace .path {
     color: #070;
 }
 #stack-trace .line{
     color: #777;
-    background: #eee;
+    background: #f1f1f1;
     border: 1px solid #ddd;
     border-top: 1px solid #eee;
     border-left: 1px solid #eee;
@@ -967,20 +964,19 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     white-space: nowrap;
 }
 #stack-trace table .value {
-    padding: 6px;
-    border-bottom:1px dotted #ddd;
-    _border-bottom:1px solid #e1e1e1; /* ie6 */
+    padding: 8px 0 8px 10px;
 }
 #stack-trace table .last {
     border: 0;
 }
 #stack-trace .index {
-    padding: 0 10px;
+    padding: 9px 5px 0 5px;
     width: 1px;
-    color: #999;
-    border-right: 2px solid #ccc;
-    background: #eee;
-    text-align: center;
+    color: #aaa;
+    font-size:12px;
+    border-right: 1px solid #e1e1e1;
+    text-align: right;
+    vertical-align: top;
 }
 #stack-trace .position {
     line-height: 18px;
@@ -988,7 +984,7 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
 #stack-trace .invocation {
     word-break: keep-all;
     white-space: nowrap;
-    padding-bottom: 4px;
+    padding-bottom: 5px;
     font-size:14px;
     display: block;
 }
