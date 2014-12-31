@@ -26,10 +26,10 @@ class Debugger {
         self::$headers = $headers;
         $content = "a            a\n \nb\n \n";
         for ($i = 0; $i < 1000; ++$i) {
-//            for ($j = 0; $j < 100; ++$j) {
-//                $content .= $j;
-//            }
-//            $content .= "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaisdfffffffffvwfffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif fffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe" . "\n";
+            for ($j = 0; $j < 100; ++$j) {
+                $content .= $j;
+            }
+            $content .= "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaisdfffffffffvwfffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif fffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe" . "\n";
             $content .= "x\n";
         }
         self::$content = $content;//file_get_contents('/home/az/logo.jpg');//$content;
@@ -98,12 +98,7 @@ class Debugger {
         self::renderHeader($type, $message);
         self::renderContent();
         self::renderJavascript();
-        echo '</tbody></table><pre>a
-b
-    
-c
-d
-</pre></body></html>';
+        echo '</tbody></table></body></html>';
     }
 
     private static function isExternalPath($path) {
@@ -163,25 +158,27 @@ d
 
     private static function renderFileContent($path, $errorLineNumber) {
         self::renderPath($path);
-        echo '<table><tbody><tr><td class="index"><div class="index-content">';
+        echo '<table><tbody><tr><td class="index" style="border:0"><div class="index-content">';
         $lines = self::getLines($path, $errorLineNumber);
         foreach ($lines as $number => $line) {
-            echo '<div';
             if ($number === $errorLineNumber) {
-                echo ' class="error-line-number"';
+                echo '<div style="padding: 0 5px 0 0;background:#ff9"><div style="border-right:1px solid #e1e1e1" class="error-line-number">', $number, '</div></div>';;
+            } else {
+                echo '<div style="padding: 0 5px 0 0"><div style="border-right:1px solid #e1e1e1">', $number, '</div></div>';;
             }
-            echo '>', $number, '</div>';
         }
-        echo '</div></td><td><div class="content">';
+        echo '</div></td><td><pre class="content" style="height:auto;padding-left:0;">';
         foreach ($lines as $number => $line) {
-            echo '<pre';
+            echo '';
             if ($number === $errorLineNumber) {
-                echo ' class="error-line"';
+                echo '<span class="error-line" style="display:block;"';
+                echo '>', $line , "\n</span>";
+            } else {
+                echo '', $line , "\n";
             }
-            echo '>', $line , '</pre>';
 //            echo '>', $line . 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxe', '</pre>';
         }
-        echo '</tbody></table>';
+        echo '</pre></td></tr></tbody></table>';
     }
 
     private static function renderStackTrace() {
@@ -228,14 +225,39 @@ d
     private static function renderStatusBar() {
         echo '<div id="status-bar">';
         if (self::$shouldHideExternal) {
-            echo '<div id="toggle-external-code"><a>Show external file</a></div>';
+            echo '<div id="toggle-external-code"><a>Show External File</a></div>';
         }
         echo '<div class="first"><div>Response Headers:',
             ' <span class="number first-value">',
             self::$headerCount, '</span></div><div>',
-            'Content Length: <span class="number">',
-            self::$contentLength,
-            '</span></div></div><div class="second"><div>App Root Path:</div>';
+            'Content Size: <span>';
+        if (self::$contentLength === 0) {
+            echo '0 byte';
+        } elseif (self::$contentLength === 1) {
+            echo '1 byte';
+        } else {
+            $size = self::$contentLength / 1024;
+            $prefix = '';
+            $suffix = '';
+            if ($size > 1) {
+                $prefix = ' (';
+                $suffix = ')';
+                $tmp = $size / 1024; 
+                if ($tmp > 1) {
+                    $size = $tmp;
+                    $tmp /= 1024;
+                    if ($tmp > 1) {
+                        echo sprintf("%.1f", $tmp), ' GB';
+                    } else {
+                        echo sprintf("%.1f", $size), ' MB';
+                    }
+                } else {
+                    echo sprintf("%.1f", $size), ' KB';
+                }
+            }
+            echo  $prefix, self::$contentLength, ' bytes', $suffix;
+        }
+        echo '</span></div></div><div class="second"><div>App Root Path:</div>';
 //            self::renderPath(FileLoader::getDefaultRootPath() . 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxe', false);
             self::renderPath(FileLoader::getDefaultRootPath(), false);
         echo '</div></div>';
@@ -251,6 +273,7 @@ d
         $lineNumber = null;
         $result = [];
         $buffer = '';
+        $previousValue = null;
         foreach ($tokens as $index => $value) {
             if (is_string($value)) {
                 if ($lineNumber < $firstLineNumber) {
@@ -266,11 +289,20 @@ d
                 continue;
             }
             if ($value[2] < $firstLineNumber) {
+                $previousValue = $value;
                 continue;
             }
             $lineNumber = $value[2];
             $type = $value[0];
             $content = $value[1];
+            if ($previousValue !== null) {
+                if ($previousValue[0] === T_WHITESPACE) {
+                    $tmp = str_replace(["\r\n", "\r"], "\n", $previousValue[1]);
+                    $lines = explode("\n", $tmp);
+                    $content = end($lines) . $content;
+                }
+                $previousValue = null;
+            }
             $content = str_replace(["\r\n", "\r"], "\n", $content);
             $lines = explode("\n", $content);
             $lastLine = array_pop($lines);
@@ -379,7 +411,7 @@ d
 
     private static function renderJavascript() {
         $isOverflow = false;
-        $hiddenContent = null;
+//        $hiddenContent = null;
         $headers = [];
         if (self::$headers !== null) {
             foreach (self::$headers as $header) {
@@ -407,22 +439,22 @@ d
             $content = self::$content;
         }
         $content = str_replace(["\r\n", "\r"], "\n", $content);
-        $maxInitContentLength = 1;//256 * 1024;
-        if (self::$contentLength > $maxInitContentLength) {
-            $tmp = $content;
-            $content = mb_strcut($tmp, 0, $maxInitContentLength);
-            $hiddenContent = substr($tmp, strlen($content));
-        }
+ //       $maxInitContentLength = 1;//256 * 1024;
+ //       if (self::$contentLength > $maxInitContentLength) {
+ //           $tmp = $content;
+ //           $content = mb_strcut($tmp, 0, $maxInitContentLength);
+ //           $hiddenContent = substr($tmp, strlen($content));
+ //       }
         $content = json_encode(htmlspecialchars(
             $content, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
         ));
-        if ($hiddenContent !== null) {
-            $hiddenContent = json_encode(htmlspecialchars(
-                $hiddenContent, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
-            ));
-        } else {
-            $hiddenContent = 'null';
-        }
+ //       if ($hiddenContent !== null) {
+ //           $hiddenContent = json_encode(htmlspecialchars(
+ //               $hiddenContent, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+ //           ));
+ //       } else {
+ //           $hiddenContent = 'null';
+ //       }
         $shouldHideTrace = 'null';
         $firstInternalStackFrameIndex = 'null';
         if (self::$shouldHideExternal) {
@@ -456,6 +488,7 @@ var fullContent = null;
 var shouldHideTrace = <?= $shouldHideTrace ?>;
 var stackFrameCount = <?= $stackFrameCount ?>;
 var firstInternalStackFrameIndex = <?= $firstInternalStackFrameIndex ?>;
+var content = <?= $content ?>;
 function showOutput() {
     if (codeContent != null) {
         return;
@@ -474,14 +507,12 @@ function showOutput() {
     var headers = <?= json_encode($headers) ?>;
     var isOverflow = <?= json_encode($isOverflow) ?>;
     var contentLength = <?= json_encode(self::$contentLength) ?>;
-    var content = <?= $content ?>;
-    var hiddenContent = <?= $hiddenContent ?>;
     if (headers.length > 0) {
         outputContent = '<table id="output"><tbody><tr><td id="response-headers">'
             + '<a id="show-response-headers-botton"'
             + ' href="javascript:toggleResponseHeaders()">'
             + '<span id="arrow">►</span> Headers <span id="header-count" class="header-count">' + headers.length
-            + '</span></a><div id="response-headers-content" class="hidden">';
+            + '</span></a><pre id="response-headers-content" class="hidden">';
         var count = headers.length;
         for (var index = 0; index < count; ++index) {
             var header = headers[index];
@@ -490,58 +521,59 @@ function showOutput() {
                 outputContent += ' class="last"';
             }
             outputContent += '><span class="key">' + header[0]
-                + ':</span> ' + header[1] + '</code>';
+
+                + ':</span> ' + header[1] + "\n</code>";
+//                + ':</span> ' + header[1] + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n</code>";
         }
-        outputContent += '</div></td></tr>';
+        outputContent += '</pre></td></tr>';
     }
     if (isOverflow) {
-        outputContent += '<tr><td class="notice"><div>Notice: Content is partial,'
-            + ' length is larger then output limitation(10MB).</td></tr></div>';
+        outputContent += '<tr><td class="notice"><span>Notice: </span>Content is partial.'
+            + ' Length is larger than output limitation (10MB).</td></tr></div>';
     }
-    var responseBodyHtml = buildOutputContent(content);
-    if (hiddenContent != null) {
-        fullContent = content + hiddenContent;
-        var buttonName = "Show all content";
-        var href = "javascript:showAllContent()";
-        if (isOverflow) {
-            buttonName = "Show more content";
-            href = "javascript:showMoreContent()";
-        }
-        responseBodyHtml = '<div id="output-button-top-wrapper"><a'
-            + ' href="' + href + '">' + buttonName + '</a></div>'
-            + responseBodyHtml
-            + '<div id="output-button-bottom-wrapper"><a'
-            + ' href="' + href + '">' + buttonName + '</a></div>';
-    }
+    var responseBodyHtml = '<div id="toolbar"><a href="javascript:showRawContent()">Show Raw Content</a> </div>' + buildOutputContent(content);
     codeContent = contentDiv.innerHTML;
     contentDiv.innerHTML = outputContent + '<tr><td id="response-body" class="response-body">'
         + responseBodyHtml + '</td></tr>';
-    //var firstLineDiv = document.getElementById("first-output-line-number");
-    //if (firstLineDiv != null && typeof window.getComputedStyle != 'undefined') {
-    //    var style  = window.getComputedStyle(firstLineDiv, ':before');
-    //    if (typeof style.content == 'undefined') {
-    //        document.getElementById("response-body").className = '';
-    //    }
-    //}
 }
 
-function showAllContent() {
-    showHiddenContent();
+function showLineNumbers() {
+    document.getElementById("response-body").innerHTML =
+'<div id="toolbar"><a href="javascript:showRawContent()">Show Raw Content</a> </div>' + buildOutputContent(content);
 }
 
-function showMoreContent() {
-    showHiddenContent();
-}
-
-function showHiddenContent() {
-    document.getElementById("output-button-top-wrapper").style.display
-        = 'none';
-    document.getElementById("output-button-bottom-wrapper").style.display
-        = 'none';
+function showRawContent() {
     document.getElementById("response-body").innerHTML
-        = buildOutputContent(fullContent);
-    fullContent = null;
+        = '<div id="toolbar"><a href="javascript:showLineNumbers()">Show Line Numbers</a> &nbsp;<a href="javascript:selectAll()">Select All</a></div>' 
+       + '<div id="raw"><pre>' + content + '</pre></div>';//buildOutputContent(fullContent);
+   
 }
+
+function selectAll() {
+    var doc = document;
+    var text = doc.getElementById('raw');    
+    if (window.getSelection) { // moz, opera, webkit
+        var selection = window.getSelection();
+        var range = doc.createRange();
+        range.selectNodeContents(text);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    } else if (doc.body.createTextRange) { // ms
+        var range = doc.body.createTextRange();
+        range.moveToElementText(text);
+        range.select();
+    }
+}
+
+//function showHiddenContent() {
+//    document.getElementById("output-button-top-wrapper").style.display
+//        = 'none';
+//    document.getElementById("output-button-bottom-wrapper").style.display
+//        = 'none';
+//    document.getElementById("response-body").innerHTML
+//        = buildOutputContent(fullContent);
+//    fullContent = null;
+//}
 
 function buildOutputContentForIe(content) {
     var result = '';
@@ -585,13 +617,26 @@ function buildOutputContent(content) {
     var result = '';
     var lines = content.split("\n");
     var count = lines.length;
+    var last = count - 1;
     for (var index = 0; index < count; ++index) {
-        result += '<tr><td';
-        if (index == 0) {
-            result += ' id="first-output-line-number"';
+        result += '<tr><td class="';
+        if (count == 1) {
+            result += 'first last ';
+        } else if (index == 0) {
+            result += 'first ';
+        } else if (index == last) {
+            result += 'last ';
         }
-        result += ' class="line-number" line-number="'
-            + (index + 1) + '"></td><td>' + lines[index] + '</td></tr>';
+        result += 'line-number">' + (index + 1)
+            + '</td><td';
+        if (count == 1) {
+            result += ' class="first last"';
+        } else if (index == 0) {
+            result += ' class="first"';
+        } else if (index == last) {
+            result += ' class="last"';
+        }
+        result += '><pre>' + lines[index] + '</pre></td></tr>';
     }
     return '<table><tbody>' + result + '</tbody></table>';
 }
@@ -638,7 +683,7 @@ function showExternalFile() {
                 + firstInternalStackFrameIndex + 1;
         }
     }
-    button.innerHTML = '<a href="javascript:showInternalFile()">Show internal file</a>';
+    button.innerHTML = '<a href="javascript:showInternalFile()">Show Internal File</a>';
 }
 
 function showInternalFile() {
@@ -659,7 +704,7 @@ function showInternalFile() {
                 - firstInternalStackFrameIndex - 1;
         }
     }
-    button.innerHTML = '<a href="javascript:showExternalFile()">Show external file</a>';
+    button.innerHTML = '<a href="javascript:showExternalFile()">Show External File</a>';
 }
 document.getElementById("nav-output").innerHTML =
     '<a href="javascript:showOutput()">Output</a>';
@@ -868,7 +913,7 @@ h1, #message {
     text-align:right;border-right:1px solid #e1e1e1;
 }
 #file .index div {
-color:#999;padding:0 5px;
+color:#aaa;padding:0 5px;
 font-size:12px;
 }
 #file div.error-line-number {
@@ -932,9 +977,9 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
 #stack-trace .index {
     padding: 0 10px;
     width: 1px;
-    color: #777;
+    color: #999;
     border-right: 2px solid #ccc;
-    background: #e8e8e8;
+    background: #eee;
     text-align: center;
 }
 #stack-trace .position {
@@ -951,7 +996,15 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     padding: 10px;
     border-bottom: 1px solid #ccc;
 }
-
+#output pre {
+    white-space: pre-wrap;       /* CSS 3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    word-break: break-all;
+    _white-space: pre;
+}
 #response-headers-content {
     border: 1px solid #ddd;
     border-radius: 2px;
@@ -961,6 +1014,8 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     padding: 5px;
 }
 #response-headers-content code {
+    word-break: break-all; /* ie */
+　　word-wrap: break-word;
     padding: 5px;
     display: block;
     border-bottom: 1px dotted #ddd;
@@ -1001,61 +1056,55 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     background-image: none;
     color: #000;
 }
-#response-body td {
-    padding-left: 5px;
-}
-#response-body .line-number {
-    padding: 0;
-    vertical-align: top;
-}
-.response-body .line-number {
-    border-right: 1px solid #e1e1e1;
-    *border-right: 0; /* ie6/ie7*/
-}
-#output .line-number:before {
-    padding-right:5px;
-    content: attr(line-number);
-    color: #999;
-    text-align:right;
-    font-size:12px;
-}
 #arrow {
     font-size: 10px;
 }
 #header-count {
     color: #333;/* ie6 */
 }
-ol {
-    list-style: decimal;
+#response-body table {
     background-color: #fff;
     line-height:18px;
-    background: #f8f8f8;
-}
-li {
-    word-break: break-all; /* ie */
-　　word-wrap: break-word;
-    font-size: 11px;
-    color: #999;
-    padding: 0 5px;
+    width: 100%;
+    border:1px solid #e1e1e1;
     border-radius: 2px;
-    background: #fff;
-    border-left:1px solid #e1e1e1;
-    border-right:1px solid #e1e1e1;
 }
-li.first {
-    border-top:1px solid #e1e1e1;
-    border-radius: 2px 2px 0 0;
+#response-body td {
+    padding: 0 5px;
+}
+#response-body td.first {
     padding-top: 5px;
 }
-li.last {
-    border-bottom:1px solid #e1e1e1;
-    border-radius: 0 0 2px 2px;
+#response-body td.last {
     padding-bottom: 5px;
 }
-li pre {
-    font-size:13px;
-    color: #333;
-    display: block;/* ie6 double render first line chars at the end */
+#response-body .line-number {
+    background-color: #f8f8f8;
+    border-right:1px solid #e1e1e1;
+    font-size: 11px;
+    color: #999;
+    text-align:right;
+    vertical-align: top;
+    padding: 0 5px;
+    width: 1px;
+}
+.notice {
+    background: #ff9;
+    padding: 10px;
+}
+.notice span {
+    font-weight: bold;
+}
+#raw {
+    width: 100%; 
+    border: 1px solid #e1e1e1;
+    background: #fff;
+}
+#raw pre {
+    padding: 5px;
+}
+#toolbar {
+    padding-bottom:10px;
 }
 </style>
 <?php
