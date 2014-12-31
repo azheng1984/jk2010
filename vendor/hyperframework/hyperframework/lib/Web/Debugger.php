@@ -225,7 +225,7 @@ class Debugger {
     private static function renderStatusBar() {
         echo '<div id="status-bar">';
         if (self::$shouldHideExternal) {
-            echo '<div id="toggle-external-code"><a>Show External File</a></div>';
+            echo '<div id="toggle-external-code"><a>Start from External File</a></div>';
         }
         echo '<div class="first"><div>Response Headers:',
             ' <span class="number first-value">',
@@ -683,7 +683,7 @@ function showExternalFile() {
                 + firstInternalStackFrameIndex + 1;
         }
     }
-    button.innerHTML = '<a href="javascript:showInternalFile()">Show Internal File</a>';
+    button.innerHTML = '<a href="javascript:showInternalFile()">Start from Internal File</a>';
 }
 
 function showInternalFile() {
@@ -704,7 +704,7 @@ function showInternalFile() {
                 - firstInternalStackFrameIndex - 1;
         }
     }
-    button.innerHTML = '<a href="javascript:showExternalFile()">Show External File</a>';
+    button.innerHTML = '<a href="javascript:showExternalFile()">Start from External File</a>';
 }
 document.getElementById("nav-output").innerHTML =
     '<a href="javascript:showOutput()">Output</a>';
