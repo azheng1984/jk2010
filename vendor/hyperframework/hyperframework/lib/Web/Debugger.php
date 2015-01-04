@@ -24,8 +24,8 @@ class Debugger {
     ) {
         self::$source = $source;
         self::$headers = $headers;
-        $content = "a            a\n \nb\n \n";
-        for ($i = 0; $i < 1000; ++$i) {
+        $content = "▼/▶a            a\n \nb\n \n";
+        for ($i = 0; $i < 10; ++$i) {
             for ($j = 0; $j < 100; ++$j) {
                 $content .= $j;
             }
@@ -94,7 +94,7 @@ class Debugger {
         }
         echo '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html;charset=utf-8"/><title>', $title, '</title>';
         self::renderCss();
-        echo '</head><body><table id="page-container"><tbody>';
+        echo '</head><body class="no-touch"><table id="page-container"><tbody>';
         self::renderHeader($type, $message);
         self::renderContent();
         self::renderJavascript();
@@ -167,7 +167,9 @@ class Debugger {
                 echo '<div style="padding: 0 5px 0 0"><div style="border-right:1px solid #e1e1e1">', $number, '</div></div>';;
             }
         }
-        echo '</div></td><td><pre class="content" style="height:auto;padding-left:0;">';
+//
+        //height:',count($lines) * 18,'px;
+        echo '</div></td><td><pre class="content" style="padding-left:0;">';
         foreach ($lines as $number => $line) {
             echo '';
             if ($number === $errorLineNumber) {
@@ -474,14 +476,32 @@ class Debugger {
         }
 ?>
 <script type="text/javascript">
-var isIeSix = false;
+var isNewIe = false;
 </script>
-<!--[if IE 6]>
+<!--[if IE]>
 <script type="text/javascript">
-isIeSix = true;
+isNewIe = false;
+</script>
+<![endif]-->
+<!--[if gte IE 8]>
+<script type="text/javascript">
+isNewIe = true;
 </script>
 <![endif]-->
 <script type="text/javascript">
+if (isNewIe == false && typeof window.getComputedStyle != 'undefined') {
+    if (typeof window.getComputedStyle(document.body).msUserSelect
+        != 'undefined'
+    ) {
+        isNewIe = true;
+    }
+}
+ieNewIe = false;
+document.body.ontouchstart = function() {
+    document.body.className = '';
+    isHandheld = true;
+};
+var isHandheld = false;
 var codeContent = null;
 var outputContent = null;
 var fullContent = null;
@@ -509,10 +529,16 @@ function showOutput() {
     var contentLength = <?= json_encode(self::$contentLength) ?>;
     if (headers.length > 0) {
         outputContent = '<table id="output"><tbody><tr><td id="response-headers">'
-            + '<a id="show-response-headers-botton"'
-            + ' href="javascript:toggleResponseHeaders()">'
-            + '<span id="arrow">►</span> Headers <span id="header-count" class="header-count">' + headers.length
-            + '</span></a><pre id="response-headers-content" class="hidden">';
+            + '<a id="toggle-response-headers-botton"'//button
+            + ' href="javascript:toggleResponseHeaders()">';
+        outputContent += '<code id="arrow"';
+        var arrow = '&#9656;';
+        if (isNewIe == false) {
+            arrow = '▶';
+        } else {
+            outputContent += ' class="small"';
+        }
+        outputContent += '>' + arrow + '</code> Headers <span id="header-count" class="header-count">' + headers.length + '</span></a><pre id="response-headers-content" class="hidden">';
         var count = headers.length;
         for (var index = 0; index < count; ++index) {
             var header = headers[index];
@@ -543,10 +569,14 @@ function showLineNumbers() {
 }
 
 function showRawContent() {
-    document.getElementById("response-body").innerHTML
-        = '<div id="toolbar"><a href="javascript:showLineNumbers()">Show Line Numbers</a> &nbsp;<a href="javascript:selectAll()">Select All</a></div>' 
-       + '<div id="raw"><pre>' + content + '</pre></div>';//buildOutputContent(fullContent);
-   
+   var html 
+        = '<div id="toolbar"><a href="javascript:showLineNumbers()">Show Line Numbers</a>'
+        if (isHandheld == false) {
+      html  += ' &nbsp;<a href="javascript:selectAll()">Select All</a>'
+        }
+     html   += '</div>' 
+        + '<div id="raw"><pre>' + content + '</pre></div>';//buildOutputContent(fullContent);
+    document.getElementById("response-body").innerHTML = html;
 }
 
 function selectAll() {
@@ -589,7 +619,7 @@ function buildOutputContentForIe(content) {
         } else if (index == last) {
             result += ' class="last"';
         }
-        if (lines[index] == '' && isIeSix == false) {
+        if (lines[index] == '' && isIe == false) {
             result += ' style="height:18px"'; //firefox, ie6 has bug
         }
         result += '><code>' + lines[index] + '</code></li>';
@@ -659,10 +689,22 @@ function showCode() {
 function toggleResponseHeaders() {
     var div = document.getElementById("response-headers-content");
     if (div.className == "hidden") {
-        document.getElementById("arrow").innerHTML = '▼';
+        //BLACK DOWN/RIGHT-POINTING TRIANGLE ▼/▶
+        //font support for the smaller versions is not as good
+        //(old android device is not support &#9656 and &#9662(html5 entities))
+        isNewIe = false;
+        var arrow = '&#9662;';
+        if (isNewIe == false) {
+            arrow = '▼';
+        }
+        document.getElementById("arrow").innerHTML = arrow;
         div.className = "";
     } else {
-        document.getElementById("arrow").innerHTML = '►';
+        var arrow = '&#9656;';
+        if (isNewIe == false) {
+            arrow = '▶';
+        }
+        document.getElementById("arrow").innerHTML = arrow;
         div.className = "hidden";
     }
 }
@@ -725,6 +767,10 @@ body {
     font-family: Helvetica, Arial, sans-serif;
     font-size: 13px;
     color: #333;
+    /* Prevent font scaling in landscape while allowing user zoom */
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
 }
 table {
     border-collapse: collapse;
@@ -736,7 +782,7 @@ a {
     text-decoration: none;
     color: #333;
 }
-a:hover {
+.no-touch a:hover {
     color: #09d;
 }
 pre, h1, h2, body {
@@ -873,16 +919,18 @@ h1, #message {
 #file-wrapper.last {
     border-bottom: 0;
 }
+body {
+ }
 #file .path {
-    font-size: 13px;
-    font-weight: normal;
+    font-size: 15px;
     padding: 5px 0 10px 10px;
 }
-#toggle-external-code a:hover {
+.no-touch #toggle-external-code a:hover {
     background-image: none;
     color: #333;
 }
 #toggle-external-code a {
+    color: #333;
     background-image: linear-gradient(#fcfcfc, #eee);
     background-color: #eee;
     border: 1px solid #d5d5d5;
@@ -901,7 +949,8 @@ h1, #message {
     width: 100%;
     line-height: 18px;
 }
-#file .content {
+#file pre {
+    font-size: 13px;
     margin-right:10px;
 }
 #file .index .index-content {
@@ -920,7 +969,6 @@ font-size:12px;
 background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
 }
 #file pre {
-    height: 18px;
     padding-left: 10px;
     color: #0000BB;
 }
@@ -989,8 +1037,13 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     display: block;
 }
 #response-headers {
-    padding: 10px;
+    padding: 0 10px;
     border-bottom: 1px solid #ccc;
+}
+#response-headers pre {
+}
+#toggle-response-headers-botton {
+    line-height: 38px;
 }
 #output pre {
     white-space: pre-wrap;       /* CSS 3 */
@@ -1006,7 +1059,7 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     border-radius: 2px;
     border-collapse: separate;
     background: #f8f8f8;
-    margin-top: 10px;
+    margin-bottom: 10px;
     padding: 5px;
 }
 #response-headers-content code {
@@ -1048,12 +1101,21 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
 #output-button-bottom-wrapper {
     margin-top: 10px;
 }
-#response-body a:hover {
+.no-touch #response-body a:hover {
     background-image: none;
     color: #000;
 }
 #arrow {
-    font-size: 10px;
+/*
+    display: inline-block;
+    width: 10px;
+*/
+/*
+    font-size: 22px;
+    padding-top: 4px;
+    height: 14px;
+    line-height: 14px;
+*/
 }
 #header-count {
     color: #333;/* ie6 */
