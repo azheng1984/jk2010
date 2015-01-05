@@ -157,7 +157,8 @@ class Debugger {
         $lines = self::getLines($path, $errorLineNumber);
         foreach ($lines as $number => $line) {
             if ($number === $errorLineNumber) {
-                echo '<div class="error-line-number"><div>', $number, '</div></div>';
+                echo '<div class="error-line-number"><div>',
+                    $number, '</div></div>';
             } else {
                 echo '<div class="line-number"><div>', $number, '</div></div>';
             }
@@ -176,7 +177,8 @@ class Debugger {
     }
 
     private static function renderStackTrace() {
-        echo '<table id="stack-trace"><tr><td class="content"><h2>Stack Trace</h2><table><tbody>';
+        echo '<table id="stack-trace">',
+            '<tr><td class="content"><h2>Stack Trace</h2><table><tbody>';
         $index = 0;
         $last = count(self::$trace) - 1;
         foreach (self::$trace as $frame) {
@@ -189,7 +191,8 @@ class Debugger {
                     if ($index <= self::$firstInternalStackFrameIndex) {
                         echo ' class="hidden"';
                     }
-                    echo '><td class="index">', $index - self::$firstInternalStackFrameIndex - 1;
+                    echo '><td class="index">',
+                        $index - self::$firstInternalStackFrameIndex - 1;
                 } else {
                     echo '><td class="index">', $index;
                 }
@@ -197,14 +200,14 @@ class Debugger {
                 if ($index === $last) {
                     echo ' last';
                 }
-                echo '"><code class="invocation">', $invocation, '</code>';
-//                echo '</td><td class="value"><div class="invocation">', $invocation , 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxe',
-                    '</div>';
-                echo '<div class="position">';
+                echo '"><code class="invocation">', $invocation, '</code>',
+                    '<div class="position">';
                 if (isset($frame['file'])) {
-                    self::renderPath($frame['file'], true, ' <span class="line">' . $frame['line'] . '</span>');
-
-//                    self::renderPath($frame['file'] . 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', true, ' <span class="line">' . $frame['line'] . '</span>');
+                    self::renderPath(
+                        $frame['file'],
+                        true,
+                        ' <span class="line">' . $frame['line'] . '</span>'
+                    );
                 } else {
                     echo  'internal function';
                 }
@@ -219,7 +222,8 @@ class Debugger {
     private static function renderStatusBar() {
         echo '<div id="status-bar">';
         if (self::$shouldHideExternal) {
-            echo '<div id="toggle-external-code"><a>Start from External File</a></div>';
+            echo '<div id="toggle-external-code">',
+                '<a>Start from External File</a></div>';
         }
         echo '<div class="first"><div>Response Headers:',
             ' <span class="number first-value">',
@@ -251,10 +255,9 @@ class Debugger {
             }
             echo  $prefix, self::$contentLength, ' bytes', $suffix;
         }
-        echo '</span></div></div><div class="second"><div>App Root Path:</div>';
-//            self::renderPath(FileLoader::getDefaultRootPath() . 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxe', false);
-            self::renderPath(FileLoader::getDefaultRootPath(), false);
-        echo '</div></div>';
+        echo '</span></div></div><div class="second"><div>App Root Path:</div>',
+            self::renderPath(FileLoader::getDefaultRootPath(), false),
+            '</div></div>';
     }
 
     private static function getLines($path, $errorLineNumber) {
@@ -365,7 +368,6 @@ class Debugger {
                 break;
             default:
                 $class = 'keyword';
-                //$class = token_name($type);
         }
         $content = htmlspecialchars(
             $content, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
@@ -398,14 +400,13 @@ class Debugger {
 
     private static function renderHeader($type, $message) {
         echo '<tr><td id="header"><h1>', $type, '</h1><div id="message">',
-            $message, '</div>',
-            '<div id="nav"><div class="wrapper"><div class="selected" id="nav-code"><div>',
-            'Code</div></div><div id="nav-output"><a>Output</a></div></div></div></td></tr>';
+            $message, '</div><div id="nav"><div class="wrapper">',
+            '<div class="selected" id="nav-code"><div>Code</div></div>',
+            '<div id="nav-output"><a>Output</a></div></div></div></td></tr>';
     }
 
     private static function renderJavascript() {
         $isOverflow = false;
-//        $hiddenContent = null;
         $headers = [];
         if (self::$headers !== null) {
             foreach (self::$headers as $header) {
@@ -433,22 +434,9 @@ class Debugger {
             $content = self::$content;
         }
         $content = str_replace(["\r\n", "\r"], "\n", $content);
- //       $maxInitContentLength = 1;//256 * 1024;
- //       if (self::$contentLength > $maxInitContentLength) {
- //           $tmp = $content;
- //           $content = mb_strcut($tmp, 0, $maxInitContentLength);
- //           $hiddenContent = substr($tmp, strlen($content));
- //       }
         $content = json_encode(htmlspecialchars(
             $content, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
         ));
- //       if ($hiddenContent !== null) {
- //           $hiddenContent = json_encode(htmlspecialchars(
- //               $hiddenContent, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
- //           ));
- //       } else {
- //           $hiddenContent = 'null';
- //       }
         $shouldHideTrace = 'null';
         $firstInternalStackFrameIndex = 'null';
         if (self::$shouldHideExternal) {
@@ -484,10 +472,12 @@ function showOutput() {
     if (codeContent != null) {
         return;
     }
-    document.getElementById("nav-code").innerHTML = '<a href="javascript:showCode()">Code</a>';
-    document.getElementById("nav-code").className = '';
-    document.getElementById("nav-output").innerHTML = '<div>Output</div>';
-    document.getElementById("nav-output").className = 'selected';
+    var codeTab = document.getElementById("nav-code");
+    codeTab.innerHTML = '<a href="javascript:showCode()">Code</a>';
+    codeTab.className = '';
+    var outputTab = document.getElementById("nav-output");
+    outputTab.innerHTML = '<div>Output</div>';
+    outputTab.className = 'selected';
     var contentDiv = document.getElementById("content");
     if (outputContent != null) {
         codeContent = contentDiv.innerHTML;
@@ -524,9 +514,12 @@ function showOutput() {
             + 'Notice: </span>Content is partial. Length is larger than'
             + ' output limitation (10MB).</td></tr></div>';
     }
-    var responseBodyHtml = '<div id="toolbar"><a href="javascript:showRawContent()">Show Raw Content</a> </div>' + buildOutputContent(content);
+    var responseBodyHtml = '<div id="toolbar">'
+        + '<a href="javascript:showRawContent()">Show Raw Content</a></div>'
+        + buildOutputContent(content);
     codeContent = contentDiv.innerHTML;
-    contentDiv.innerHTML = outputContent + '<tr><td id="response-body" class="response-body">'
+    contentDiv.innerHTML = outputContent
+        + '<tr><td id="response-body" class="response-body">'
         + responseBodyHtml + '</td></tr>';
 }
 
@@ -705,15 +698,12 @@ h2 {
     padding: 0 10px;
 }
 #page-container {
-    height: 100%;
     width: 100%;
-/*
     min-width: 200px;
     _width: expression(
         (document.documentElement.clientWidth || document.body.clientWidth)
             < 200 ? "200px" : ""
     );
-*/
 }
 #header {
     background-color: #c22;
@@ -913,7 +903,7 @@ h1, #message {
 #stack-trace table {
     width: 100%;
     border-radius: 2px;
-    border-spacing: 0; /* inline for ie6 */
+    border-spacing: 0; /* ie6 */
 }
 #stack-trace .path {
     color: #070;
@@ -961,11 +951,11 @@ h1, #message {
     border-bottom: 1px solid #ccc;
 }
 #output pre {
-    white-space: pre-wrap;       /* CSS 3 */
-    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
     word-break: break-all;
     _white-space: pre;
 }
