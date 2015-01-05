@@ -206,7 +206,7 @@ class Debugger {
                         ' <span class="line">' . $frame['line'] . '</span>'
                     );
                 } else {
-                    echo  'internal function';
+                    echo  '<span class="line">internal function</span>';
                 }
                 echo '</div>';
                 echo  '</td></tr>';
@@ -954,7 +954,7 @@ h1, #message {
     color: #070;
 }
 #stack-trace .line{
-    color: #777;
+    color: #666;
     background: #f1f1f1;
     border: 1px solid #ddd;
     border-top: 1px solid #eee;
@@ -982,7 +982,7 @@ h1, #message {
     vertical-align: top;
 }
 #stack-trace .position {
-    line-height: 18px;
+    color: #888;
 }
 #stack-trace .invocation {
     word-break: keep-all;
