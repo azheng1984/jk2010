@@ -206,7 +206,7 @@ class Debugger {
                         ' <span class="line">' . $frame['line'] . '</span>'
                     );
                 } else {
-                    echo  '<span class="line">internal function</span>';
+                    echo  '<span class="internal">internal function</span>';
                 }
                 echo '</div>';
                 echo  '</td></tr>';
@@ -952,6 +952,9 @@ h1, #message {
 }
 #stack-trace .path {
     color: #070;
+}
+#stack-trace .internal {
+    color: #777;
 }
 #stack-trace .line{
     color: #666;
