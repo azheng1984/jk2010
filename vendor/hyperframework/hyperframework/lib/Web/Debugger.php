@@ -991,6 +991,32 @@ h1, #message {
     padding: 10px;
     border-bottom: 1px solid #ccc;
 }
+#arrow {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    width: 0;
+    height: 0;
+    line-height: 0;
+    _filter: chroma(color=white);
+    _font-size: 0;
+    -moz-transform: scale(1.001);
+}
+.arrow-right {
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 4px solid #000;
+    _border-top-color: white;
+    _border-bottom-color: white;
+}
+.arrow-bottom {
+    margin-bottom: 2px;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid #000;
+    _border-right-color: white;
+    _border-left-color: white;
+}
 #output pre {
     white-space: pre-wrap;
     white-space: -moz-pre-wrap;
@@ -1036,7 +1062,7 @@ h1, #message {
     background-color: #eee;
     border: 1px solid #d5d5d5;
     border-radius: 3px;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
     padding: 4px 10px;
     font-size: 12px;
     line-height: 24px;
@@ -1097,32 +1123,6 @@ h1, #message {
 }
 #toolbar {
     padding-bottom: 10px;
-}
-#arrow {
-    display: inline-block;
-    width: 0;
-    height: 0;
-    width: 0;
-    height: 0;
-    line-height: 0;
-    _filter: chroma(color=white);
-    _font-size: 0;
-    -moz-transform: scale(1.001);
-}
-.arrow-right {
-    border-top: 4px solid transparent;
-    border-bottom: 4px solid transparent;
-    border-left: 4px solid #000;
-    _border-top-color: white;
-    _border-bottom-color: white;
-}
-.arrow-bottom {
-    margin-bottom: 2px;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 4px solid #000;
-    _border-right-color: white;
-    _border-left-color: white;
 }
 </style>
 <?php
