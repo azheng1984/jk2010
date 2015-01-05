@@ -963,13 +963,13 @@ h1, #message {
     white-space: nowrap;
 }
 #stack-trace table .value {
-    padding: 8px 0 8px 10px;
+    padding: 0 0 15px 5px;
 }
 #stack-trace table .last {
-    border: 0;
+    padding-bottom: 0;
 }
 #stack-trace .index {
-    padding: 9px 5px 0 5px;
+    padding: 1px 5px 0 5px;
     width: 1px;
     color: #aaa;
     font-size:12px;
