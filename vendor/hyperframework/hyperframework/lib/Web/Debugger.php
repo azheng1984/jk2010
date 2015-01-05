@@ -24,15 +24,7 @@ class Debugger {
     ) {
         self::$source = $source;
         self::$headers = $headers;
-        $content = "▼/▶a            a\n \nb\n \n";
-        for ($i = 0; $i < 10; ++$i) {
-            for ($j = 0; $j < 100; ++$j) {
-                $content .= $j;
-            }
-            $content .= "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaisdfffffffffvwfffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif fffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffffffffffffifif ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe" . "\n";
-            $content .= "x\n";
-        }
-        self::$content = $content;//file_get_contents('/home/az/logo.jpg');//$content;
+        self::$content = $content;
         self::$headerCount = count($headers);
         self::$contentLength = strlen($content);
         self::$isError = $source instanceof ErrorException;
@@ -92,7 +84,9 @@ class Debugger {
             );
             $title .= ' - ' . $message;
         }
-        echo '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html;charset=utf-8"/><title>', $title, '</title>';
+        echo '<!DOCTYPE html><html><head>',
+            '<meta http-equiv="Content-Type"',
+            ' content="text/html;charset=utf-8"/><title>', $title, '</title>';
         self::renderCss();
         echo '</head><body class="no-touch"><table id="page-container"><tbody>';
         self::renderHeader($type, $message);
@@ -115,13 +109,14 @@ class Debugger {
     private static function renderContent() {
         $hasTrace =
             self::$isError === false || self::$source->isFatal() === false;
-        echo '<tr><td id="content"><table id="code"><tbody><tr><td id="status-bar-wrapper">';
+        echo '<tr><td id="content"><table id="code"><tbody>',
+            '<tr><td id="status-bar-wrapper">';
         self::renderStatusBar();
         echo '</td></tr><tr><td id="file-wrapper"';
         if (self::$shouldHideTrace || $hasTrace === false) {
             echo ' class="last"';
         }
-        echo '">';
+        echo '>';
         self::renderFile();
         echo '</td></tr>';
         if ($hasTrace) {
@@ -137,7 +132,7 @@ class Debugger {
     }
 
     private static function renderFile() {
-        echo '<div id="file"><h2><div>File</div></h2>';
+        echo '<div id="file"><h2>File</h2>';
         if (self::$shouldHideExternal) {
             $frame = self::$trace[self::$firstInternalStackFrameIndex];
             $path = $frame['file'];
@@ -167,8 +162,6 @@ class Debugger {
                 echo '<div style="padding: 0 5px 0 0"><div style="border-right:1px solid #e1e1e1">', $number, '</div></div>';;
             }
         }
-//
-        //height:',count($lines) * 18,'px;
         echo '</div></td><td><pre class="content" style="padding-left:0;">';
         foreach ($lines as $number => $line) {
             echo '';
@@ -178,7 +171,6 @@ class Debugger {
             } else {
                 echo '', $line , "\n";
             }
-//            echo '>', $line . 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxe', '</pre>';
         }
         echo '</pre></td></tr></tbody></table>';
     }
@@ -496,7 +488,6 @@ if (isNewIe == false && typeof window.getComputedStyle != 'undefined') {
         isNewIe = true;
     }
 }
-ieNewIe = false;
 document.body.ontouchstart = function() {
     document.body.className = '';
     isHandheld = true;
@@ -531,14 +522,15 @@ function showOutput() {
         outputContent = '<table id="output"><tbody><tr><td id="response-headers">'
             + '<a id="toggle-response-headers-botton"'//button
             + ' href="javascript:toggleResponseHeaders()">';
-        outputContent += '<code id="arrow"';
+        outputContent += '<span id="arrow" class="arrow-right"';
         var arrow = '&#9656;';
         if (isNewIe == false) {
             arrow = '▶';
         } else {
+            arrow = null;
             outputContent += ' class="small"';
         }
-        outputContent += '>' + arrow + '</code> Headers <span id="header-count" class="header-count">' + headers.length + '</span></a><pre id="response-headers-content" class="hidden">';
+        outputContent += '></span>&nbsp;Headers <span id="header-count" class="header-count">' + headers.length + '</span></a><pre id="response-headers-content" class="hidden">';
         var count = headers.length;
         for (var index = 0; index < count; ++index) {
             var header = headers[index];
@@ -569,12 +561,12 @@ function showLineNumbers() {
 }
 
 function showRawContent() {
-   var html 
+   var html
         = '<div id="toolbar"><a href="javascript:showLineNumbers()">Show Line Numbers</a>'
         if (isHandheld == false) {
       html  += ' &nbsp;<a href="javascript:selectAll()">Select All</a>'
         }
-     html   += '</div>' 
+     html   += '</div>'
         + '<div id="raw"><pre>' + content + '</pre></div>';//buildOutputContent(fullContent);
     document.getElementById("response-body").innerHTML = html;
 }
@@ -697,14 +689,14 @@ function toggleResponseHeaders() {
         if (isNewIe == false) {
             arrow = '▼';
         }
-        document.getElementById("arrow").innerHTML = arrow;
+        document.getElementById("arrow").className = 'arrow-bottom';
         div.className = "";
     } else {
         var arrow = '&#9656;';
         if (isNewIe == false) {
             arrow = '▶';
         }
-        document.getElementById("arrow").innerHTML = arrow;
+        document.getElementById("arrow").className = 'arrow-right';
         div.className = "hidden";
     }
 }
@@ -1105,18 +1097,7 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     background-image: none;
     color: #000;
 }
-#arrow {
-/*
-    display: inline-block;
-    width: 10px;
-*/
-/*
-    font-size: 22px;
-    padding-top: 4px;
-    height: 14px;
-    line-height: 14px;
-*/
-}
+
 #header-count {
     color: #333;/* ie6 */
 }
@@ -1162,7 +1143,43 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     padding: 5px;
 }
 #toolbar {
-    padding-bottom:10px;
+    padding-bottom: 10px;
+}
+#arrow {
+    -moz-transform: scale(1.001);
+    display: inline-block;
+    width: 0;
+    height: 0;
+    width: 0;
+    height: 0;
+    line-height: 0;
+    _filter: chroma(color=white);
+    _font-size: 0;
+/*
+    font-size: 22px;
+    padding-top: 4px;
+    height: 14px;
+    line-height: 14px;
+*/
+}
+.arrow-right, .arrow-bottom {
+}
+/* ▸ */
+.arrow-right {
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 4px solid #000;
+    _border-top-color: white;
+    _border-bottom-color: white;
+}
+/* ▾ */
+.arrow-bottom {
+    margin-bottom: 2px;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid #000;
+    _border-right-color: white;
+    _border-left-color: white;
 }
 </style>
 <?php
