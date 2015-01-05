@@ -770,12 +770,6 @@ h1, #message {
 <?php endif ?>
     font-size:12px;
 }
-<?php if (self::$shouldHideExternal): ?>
-#status-bar .first div, #status-bar .second {
-    line-height: 18px;
-    padding-top: 3px;
-}
-<?php endif ?>
 #status-bar-wrapper div {
     float: left;
 }
