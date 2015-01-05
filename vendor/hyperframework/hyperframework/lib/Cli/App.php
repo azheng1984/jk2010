@@ -67,7 +67,7 @@ class App {
                 $this->commandConfig = new CommandConfig;
             } else {
                 if (class_exists($class) === false) {
-                    throw new Exception;
+                    throw new Exception("Command config class '$class' 不存在.");
                 }
                 $this->commandConfig = new $class;
             }
@@ -83,10 +83,10 @@ class App {
     protected function executeCommand() {
         $class = (string)$this->getCommandConfig()->getClass();
         if ($class === '') {
-            throw new Exception;
+            throw new Exception('Command class 不能为空.');
         }
         if (class_exists($class) === false) {
-            throw new Exception;
+            throw new Exception("Command class '$class' 不存在.");
         }
         $command = new $class($this);
         $arguments = $this->getArguments();
@@ -99,7 +99,7 @@ class App {
             $class = 'Hyperframework\Cli\Help';
         } else {
             if (class_exists($class) === false) {
-                throw new Exception;
+                throw new Exception("Help class '$class' 不存在.");
             }
         }
         $help = new $class($this);
