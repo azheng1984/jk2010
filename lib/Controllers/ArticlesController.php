@@ -40,6 +40,7 @@ class ArticlesController extends Controller {
     }
 
     public function doNewAction() {
+        DeleteCommand;
     }
 
     public function doDeleteAction() {

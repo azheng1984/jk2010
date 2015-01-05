@@ -303,13 +303,7 @@ class Help {
         if ($count === 0) {
             return;
         }
-        echo PHP_EOL;
-        if ($count === 1) {
-            echo 'Command:';
-        } else {
-            echo 'Commands:';
-        }
-        echo PHP_EOL;
+        echo PHP_EOL, 'Commands:', PHP_EOL;
         $descriptions = [];
         foreach ($subcommands as $subcommand) {
             $descriptions[] = (string)$this->getDescription($subcommand);
