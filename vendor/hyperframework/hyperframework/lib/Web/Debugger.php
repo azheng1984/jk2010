@@ -153,20 +153,20 @@ class Debugger {
 
     private static function renderFileContent($path, $errorLineNumber) {
         self::renderPath($path);
-        echo '<table><tbody><tr><td class="index" style="border:0"><div class="index-content">';
+        echo '<table><tbody><tr><td class="index"><div class="index-content">';
         $lines = self::getLines($path, $errorLineNumber);
         foreach ($lines as $number => $line) {
             if ($number === $errorLineNumber) {
-                echo '<div style="padding: 0 5px 0 0;background:#ff9"><div style="border-right:1px solid #e1e1e1" class="error-line-number">', $number, '</div></div>';;
+                echo '<div class="error-line-number"><div>', $number, '</div></div>';
             } else {
-                echo '<div style="padding: 0 5px 0 0"><div style="border-right:1px solid #e1e1e1">', $number, '</div></div>';;
+                echo '<div class="line-number"><div>', $number, '</div></div>';
             }
         }
-        echo '</div></td><td><pre class="content" style="padding-left:0;">';
+        echo '</div></td><td><pre class="content">';
         foreach ($lines as $number => $line) {
             echo '';
             if ($number === $errorLineNumber) {
-                echo '<span class="error-line" style="display:block;"';
+                echo '<span class="error-line"';
                 echo '>', $line , "\n</span>";
             } else {
                 echo '', $line , "\n";
@@ -468,26 +468,6 @@ class Debugger {
         }
 ?>
 <script type="text/javascript">
-var isNewIe = false;
-</script>
-<!--[if IE]>
-<script type="text/javascript">
-isNewIe = false;
-</script>
-<![endif]-->
-<!--[if gte IE 8]>
-<script type="text/javascript">
-isNewIe = true;
-</script>
-<![endif]-->
-<script type="text/javascript">
-if (isNewIe == false && typeof window.getComputedStyle != 'undefined') {
-    if (typeof window.getComputedStyle(document.body).msUserSelect
-        != 'undefined'
-    ) {
-        isNewIe = true;
-    }
-}
 document.body.ontouchstart = function() {
     document.body.className = '';
     isHandheld = true;
@@ -519,18 +499,13 @@ function showOutput() {
     var isOverflow = <?= json_encode($isOverflow) ?>;
     var contentLength = <?= json_encode(self::$contentLength) ?>;
     if (headers.length > 0) {
-        outputContent = '<table id="output"><tbody><tr><td id="response-headers">'
-            + '<a id="toggle-response-headers-botton"'//button
-            + ' href="javascript:toggleResponseHeaders()">';
-        outputContent += '<span id="arrow" class="arrow-right"';
-        var arrow = '&#9656;';
-        if (isNewIe == false) {
-            arrow = '▶';
-        } else {
-            arrow = null;
-            outputContent += ' class="small"';
-        }
-        outputContent += '></span>&nbsp;Headers <span id="header-count" class="header-count">' + headers.length + '</span></a><pre id="response-headers-content" class="hidden">';
+        outputContent = '<table id="output"><tbody><tr>'
+            + '<td id="response-headers"><a'
+            + ' href="javascript:toggleResponseHeaders()">'
+            + '<span id="arrow" class="arrow-right"></span>'
+            + '&nbsp;Headers <span id="header-count" class="header-count">'
+            + headers.length
+            + '</span></a><pre id="response-headers-content" class="hidden">';
         var count = headers.length;
         for (var index = 0; index < count; ++index) {
             var header = headers[index];
@@ -541,13 +516,13 @@ function showOutput() {
             outputContent += '><span class="key">' + header[0]
 
                 + ':</span> ' + header[1] + "\n</code>";
-//                + ':</span> ' + header[1] + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n</code>";
         }
         outputContent += '</pre></td></tr>';
     }
     if (isOverflow) {
-        outputContent += '<tr><td class="notice"><span>Notice: </span>Content is partial.'
-            + ' Length is larger than output limitation (10MB).</td></tr></div>';
+        outputContent += '<tr><td class="notice"><span>'
+            + 'Notice: </span>Content is partial. Length is larger than'
+            + ' output limitation (10MB).</td></tr></div>';
     }
     var responseBodyHtml = '<div id="toolbar"><a href="javascript:showRawContent()">Show Raw Content</a> </div>' + buildOutputContent(content);
     codeContent = contentDiv.innerHTML;
@@ -556,83 +531,34 @@ function showOutput() {
 }
 
 function showLineNumbers() {
-    document.getElementById("response-body").innerHTML =
-'<div id="toolbar"><a href="javascript:showRawContent()">Show Raw Content</a> </div>' + buildOutputContent(content);
+    document.getElementById("response-body").innerHTML = '<div id="toolbar">'
+        + '<a href="javascript:showRawContent()">Show Raw Content</a> </div>'
+        + buildOutputContent(content);
 }
 
 function showRawContent() {
-   var html
-        = '<div id="toolbar"><a href="javascript:showLineNumbers()">Show Line Numbers</a>'
-        if (isHandheld == false) {
-      html  += ' &nbsp;<a href="javascript:selectAll()">Select All</a>'
-        }
-     html   += '</div>'
-        + '<div id="raw"><pre>' + content + '</pre></div>';//buildOutputContent(fullContent);
+    var html = '<div id="toolbar">'
+        + '<a href="javascript:showLineNumbers()">Show Line Numbers</a>'
+    if (isHandheld == false) {
+        html  += ' &nbsp;<a href="javascript:selectAll()">Select All</a>'
+    }
+    html += '</div><div id="raw"><pre>' + content + '</pre></div>';
     document.getElementById("response-body").innerHTML = html;
 }
 
 function selectAll() {
-    var doc = document;
-    var text = doc.getElementById('raw');    
-    if (window.getSelection) { // moz, opera, webkit
+    var text = document.getElementById('raw');    
+    if (window.getSelection) {
         var selection = window.getSelection();
-        var range = doc.createRange();
+        var range = document.createRange();
         range.selectNodeContents(text);
         selection.removeAllRanges();
         selection.addRange(range);
-    } else if (doc.body.createTextRange) { // ms
-        var range = doc.body.createTextRange();
+    } else if (document.body.createTextRange) {
+        var range = document.body.createTextRange();
         range.moveToElementText(text);
         range.select();
     }
-}
-
-//function showHiddenContent() {
-//    document.getElementById("output-button-top-wrapper").style.display
-//        = 'none';
-//    document.getElementById("output-button-bottom-wrapper").style.display
-//        = 'none';
-//    document.getElementById("response-body").innerHTML
-//        = buildOutputContent(fullContent);
-//    fullContent = null;
-//}
-
-function buildOutputContentForIe(content) {
-    var result = '';
-    var lines = content.split("\n");
-    var count = lines.length;
-    var last = count - 1;
-    for (var index = 0; index < count; ++index) {
-        result += '<li';
-        if (count == 1) {
-            result += ' class="first last"';
-        } else if (index == 0) {
-            result += ' class="first"';
-        } else if (index == last) {
-            result += ' class="last"';
-        }
-        if (lines[index] == '' && isIe == false) {
-            result += ' style="height:18px"'; //firefox, ie6 has bug
-        }
-        result += '><code>' + lines[index] + '</code></li>';
-    }
-    var prefix = 'padding-left';
-    extra = 12;
-    if (isIeSix) {
-        extra = 20;
-        prefix = 'margin-left';
-    }
-    return '<ol style="' + prefix + ':' + (count.toString().length * 7 + extra) + 'px">'
-        + result + '</ol>';
-}
-String.prototype.endWith=function(str){
-if(str==null||str==""||this.length==0||str.length>this.length)
-  return false;
-if(this.substring(this.length-str.length)==str)
-  return true;
-else
-  return false;
-return true;
 }
 
 function buildOutputContent(content) {
@@ -667,11 +593,12 @@ function showCode() {
     if (codeContent == null) {
         return;
     }
-    document.getElementById("nav-code").innerHTML = '<div>Code</div>';
-    document.getElementById("nav-code").className = 'selected';
-    document.getElementById("nav-output").innerHTML =
-        '<a href="javascript:showOutput()">Output</a>';
-    document.getElementById("nav-output").className = '';
+    var codeTab = document.getElementById("nav-code");
+    codeTab.innerHTML = '<div>Code</div>';
+    codeTab.className = 'selected';
+    var outputTab = document.getElementById("nav-output");
+    outputTab.innerHTML = '<a href="javascript:showOutput()">Output</a>';
+    outputTab.className = '';
     var contentDiv = document.getElementById("content");
     outputContent = contentDiv.innerHTML;
     contentDiv.innerHTML = codeContent;
@@ -681,21 +608,10 @@ function showCode() {
 function toggleResponseHeaders() {
     var div = document.getElementById("response-headers-content");
     if (div.className == "hidden") {
-        //BLACK DOWN/RIGHT-POINTING TRIANGLE ▼/▶
-        //font support for the smaller versions is not as good
-        //(old android device is not support &#9656 and &#9662(html5 entities))
-        isNewIe = false;
-        var arrow = '&#9662;';
-        if (isNewIe == false) {
-            arrow = '▼';
-        }
+        //triangle char display is not good in ie and old android device
         document.getElementById("arrow").className = 'arrow-bottom';
         div.className = "";
     } else {
-        var arrow = '&#9656;';
-        if (isNewIe == false) {
-            arrow = '▶';
-        }
         document.getElementById("arrow").className = 'arrow-right';
         div.className = "hidden";
     }
@@ -717,7 +633,8 @@ function showExternalFile() {
                 + firstInternalStackFrameIndex + 1;
         }
     }
-    button.innerHTML = '<a href="javascript:showInternalFile()">Start from Internal File</a>';
+    button.innerHTML =
+        '<a href="javascript:showInternalFile()">Start from Internal File</a>';
 }
 
 function showInternalFile() {
@@ -738,8 +655,10 @@ function showInternalFile() {
                 - firstInternalStackFrameIndex - 1;
         }
     }
-    button.innerHTML = '<a href="javascript:showExternalFile()">Start from External File</a>';
+    button.innerHTML =
+        '<a href="javascript:showExternalFile()">Start from External File</a>';
 }
+
 document.getElementById("nav-output").innerHTML =
     '<a href="javascript:showOutput()">Output</a>';
 
@@ -911,8 +830,6 @@ h1, #message {
 #file-wrapper.last {
     border-bottom: 0;
 }
-body {
- }
 #file .path {
     font-size: 15px;
     padding: 5px 0 10px 10px;
@@ -944,6 +861,7 @@ body {
 #file pre {
     font-size: 13px;
     margin-right:10px;
+    color: #0000BB;
 }
 #file .index .index-content {
     padding: 0;
@@ -951,18 +869,27 @@ body {
 }
 #file .index {
     width:1px;
-    text-align:right;border-right:1px solid #e1e1e1;
+    text-align:right;
 }
 #file .index div {
-color:#aaa;padding:0 5px;
-font-size:12px;
+    color:#aaa;padding:0 5px;
+    font-size:12px;
 }
-#file div.error-line-number {
-background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
+#file .index .line-number {
+    padding: 0 5px 0 0;
 }
-#file pre {
-    padding-left: 10px;
-    color: #0000BB;
+#file .line-number div {
+    border-right:1px solid #e1e1e1;
+}
+#file .index .error-line-number {
+    padding: 0 5px 0 0;
+    background: #ff9;
+}
+#file .index .error-line-number div {
+    background-color:#c22;
+    color:#fff;
+    text-shadow:1px 1px 0 rgba(0, 0, 0, .4);
+    border-right:1px solid #e1e1e1;
 }
 #file pre .keyword {
     color: #007700;
@@ -971,6 +898,7 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     color: #DD0000;
 }
 #file .error-line {
+    display: block;
     background: #ff9;
 }
 #stack-trace {
@@ -985,8 +913,8 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
 #stack-trace table {
     width: 100%;
     border-radius: 2px;
-  border-spacing: 0; /* inline for ie6 */
- }
+    border-spacing: 0; /* inline for ie6 */
+}
 #stack-trace .path {
     color: #070;
 }
@@ -1029,13 +957,8 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     display: block;
 }
 #response-headers {
-    padding: 0 10px;
+    padding: 10px;
     border-bottom: 1px solid #ccc;
-}
-#response-headers pre {
-}
-#toggle-response-headers-botton {
-    line-height: 38px;
 }
 #output pre {
     white-space: pre-wrap;       /* CSS 3 */
@@ -1051,7 +974,7 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     border-radius: 2px;
     border-collapse: separate;
     background: #f8f8f8;
-    margin-bottom: 10px;
+    margin-top: 10px;
     padding: 5px;
 }
 #response-headers-content code {
@@ -1097,7 +1020,6 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     background-image: none;
     color: #000;
 }
-
 #header-count {
     color: #333;/* ie6 */
 }
@@ -1146,7 +1068,6 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     padding-bottom: 10px;
 }
 #arrow {
-    -moz-transform: scale(1.001);
     display: inline-block;
     width: 0;
     height: 0;
@@ -1155,16 +1076,10 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     line-height: 0;
     _filter: chroma(color=white);
     _font-size: 0;
-/*
-    font-size: 22px;
-    padding-top: 4px;
-    height: 14px;
-    line-height: 14px;
-*/
+    -moz-transform: scale(1.001);
 }
 .arrow-right, .arrow-bottom {
 }
-/* ▸ */
 .arrow-right {
     border-top: 4px solid transparent;
     border-bottom: 4px solid transparent;
@@ -1172,7 +1087,6 @@ background-color:#c22;color:#fff;text-shadow:1px 1px 0 rgba(0, 0, 0, .4)
     _border-top-color: white;
     _border-bottom-color: white;
 }
-/* ▾ */
 .arrow-bottom {
     margin-bottom: 2px;
     border-left: 4px solid transparent;
