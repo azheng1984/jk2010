@@ -1109,8 +1109,6 @@ h1, #message {
     _font-size: 0;
     -moz-transform: scale(1.001);
 }
-.arrow-right, .arrow-bottom {
-}
 .arrow-right {
     border-top: 4px solid transparent;
     border-bottom: 4px solid transparent;
