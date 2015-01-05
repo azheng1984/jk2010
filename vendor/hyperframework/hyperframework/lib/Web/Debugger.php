@@ -4,6 +4,7 @@ namespace Hyperframework\Web;
 use ErrorException;
 use Hyperframework\Common\StackTraceFormatter;
 use Hyperframework\Common\FileLoader;
+use Hyperframework\Common\Config;
 
 class Debugger {
     private static $source;
@@ -401,6 +402,47 @@ class Debugger {
             '<div id="nav-output"><a>Output</a></div></div></div></td></tr>';
     }
 
+    private static function getMaxOutputContentSize($isText = false) {
+        $size = strtolower(trim(Config::get(
+            'hyperframework.web.debugger.max_output_content_size'
+        )));
+        if ($size === 'unlimited') {
+            return -1;
+        }
+        if ($size === '') {
+            if ($isText) {
+                return '10MB';
+            }
+            return 10 * 1024 * 1024;
+        }
+        if ((int)$size <= 0) {
+            return 0;
+        }
+        if (strlen($size) < 2) {
+            return (int)$size;
+        }
+        $type = substr($size, -1);
+        $size = (int)$size;
+        switch ($type) {
+            case 'g':
+                if ($isText) {
+                    return $size . 'GB';
+                }
+                $size *= 1024;
+            case 'm':
+                if ($isText) {
+                    return $size . 'MB';
+                }
+                $size *= 1024;
+            case 'k':
+                if ($isText) {
+                    return $size . 'KB';
+                }
+                $size *= 1024;
+        }
+        return $size;
+    }
+
     private static function renderJavascript() {
         $isOverflow = false;
         $headers = [];
@@ -422,10 +464,10 @@ class Debugger {
                 $headers[] = [$key, $value];
             }
         }
-        $outputLimitation = 10 * 1024 * 1024;
-        if (self::$contentLength >= $outputLimitation) {
+        $maxSize = self::getMaxOutputContentSize();
+        if ($maxSize >=0 && self::$contentLength >= $maxSize) {
             $isOverflow = true;
-            $content = mb_strcut(self::$content, 0, $outputLimitation);
+            $content = mb_strcut(self::$content, 0, $maxSize);
         } else {
             $content = self::$content;
         }
@@ -506,9 +548,16 @@ function showOutput() {
         outputContent += '</pre></td></tr>';
     }
     if (isOverflow) {
-        outputContent += '<tr><td class="notice"><span>'
-            + 'Notice: </span>Content is partial. Length is larger than'
-            + ' output limitation (10MB).</td></tr></div>';
+        outputContent += '<tr><td class="notice"><span>Notice: </span>';
+        var maxSize = <?= self::getMaxOutputContentSize() ?>;
+        if (maxSize !== 0) {
+            outputContent += 'Content is partial. Length is larger than'
+                + ' output limitation ('
+                + '<?= self::getMaxOutputContentSize(true) ?>' + ').';
+        } else {
+            outputContent += 'Content display is turn off.';
+        }
+        outputContent += '</td></tr></div>';
     }
     var responseBodyHtml = '';
     if (content != '') {
@@ -691,7 +740,7 @@ pre, h1, h2, body {
 }
 h2 {
     font-size: 18px;
-    font-family: "Times New Roman", Helvetica, Arial, sans-serif;
+    font-family: "Times New Roman", Times, serif;
     padding: 0 10px;
 }
 #page-container {
@@ -793,7 +842,6 @@ h1, #message {
 .path {
     word-break: break-all; /* ie */
 　　word-wrap: break-word;
-    font-family: Helvetica, Arial, sans-serif;
 }
 .separator {
     padding: 0 2px;
