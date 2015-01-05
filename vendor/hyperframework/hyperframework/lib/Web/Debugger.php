@@ -112,11 +112,7 @@ class Debugger {
         echo '<tr><td id="content"><table id="code"><tbody>',
             '<tr><td id="status-bar-wrapper">';
         self::renderStatusBar();
-        echo '</td></tr><tr><td id="file-wrapper"';
-        if (self::$shouldHideTrace || $hasTrace === false) {
-            echo ' class="last"';
-        }
-        echo '>';
+        echo '</td></tr><tr><td id="file-wrapper">';
         self::renderFile();
         echo '</td></tr>';
         if ($hasTrace) {
@@ -514,9 +510,12 @@ function showOutput() {
             + 'Notice: </span>Content is partial. Length is larger than'
             + ' output limitation (10MB).</td></tr></div>';
     }
-    var responseBodyHtml = '<div id="toolbar">'
-        + '<a href="javascript:showRawContent()">Show Raw Content</a></div>'
-        + buildOutputContent(content);
+    var responseBodyHtml = '';
+    if (content != '') {
+        responseBodyHtml += '<div id="toolbar"><a href="'
+            + 'javascript:showRawContent()">Show Raw Content</a></div>';
+    }
+    responseBodyHtml += buildOutputContent(content);
     codeContent = contentDiv.innerHTML;
     contentDiv.innerHTML = outputContent
         + '<tr><td id="response-body" class="response-body">'
@@ -616,7 +615,6 @@ function showExternalFile() {
     var button = document.getElementById("toggle-external-code");
     if (shouldHideTrace) {
         document.getElementById('stack-trace-wrapper').className = '';
-        document.getElementById('file-wrapper').className = '';
     } else {
         for (var index = 0; index < stackFrameCount; ++index) {
             var node = document.getElementById('frame-' + index);
@@ -636,7 +634,6 @@ function showInternalFile() {
     var button = document.getElementById("toggle-external-code");
     if (shouldHideTrace) {
         document.getElementById('stack-trace-wrapper').className = 'hidden';
-        document.getElementById('file-wrapper').className = 'last';
     } else {
         for (var index = 0; index < stackFrameCount; ++index) {
             var node = document.getElementById('frame-' + index);
@@ -811,9 +808,6 @@ h1, #message {
     padding: 10px 0;
     border-bottom: 1px solid #ccc;
 }
-#file-wrapper.last {
-    border-bottom: 0;
-}
 #file .path {
     font-size: 15px;
     padding: 5px 0 10px 10px;
@@ -845,7 +839,7 @@ h1, #message {
 #file pre {
     font-size: 13px;
     margin-right:10px;
-    color: #0000BB;
+    color: #00b;
 }
 #file .index .index-content {
     padding: 0;
@@ -876,10 +870,16 @@ h1, #message {
     border-right:1px solid #e1e1e1;
 }
 #file pre .keyword {
-    color: #007700;
+    color: #070;
 }
 #file pre .string {
-    color: #DD0000;
+    color: #d00;
+}
+#file pre .comment {
+    color: #f80;
+}
+#file pre .html {
+    color: #000;
 }
 #file .error-line {
     display: block;

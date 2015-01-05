@@ -10,15 +10,6 @@ class App {
     private $router;
 
     public function __construct() {
-        $value = 'string';
-        $value = 34;
-        "\"ads$value";
-        echo <<<doc
-dsf
-$value
-dsf
-doc;
-       // adf;
         $this->rewriteRequestMethod();
         $this->checkCsrf();
     }
