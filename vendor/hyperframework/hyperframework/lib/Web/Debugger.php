@@ -396,8 +396,12 @@ class Debugger {
     }
 
     private static function renderHeader($type, $message) {
-        echo '<tr><td id="header"><h1>', $type, '</h1><div id="message">',
-            $message, '</div><div id="nav"><div class="wrapper">',
+        echo '<tr><td id="header"><h1>', $type, '</h1>';
+        $message = trim($message);
+        if ($message !== '') {
+            echo '<div id="message">', $message, '</div>';
+        }
+        echo '<div id="nav"><div class="wrapper">',
             '<div class="selected" id="nav-code"><div>Code</div></div>',
             '<div id="nav-output"><a>Output</a></div></div></div></td></tr>';
     }
