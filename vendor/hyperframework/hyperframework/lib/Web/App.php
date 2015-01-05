@@ -10,6 +10,7 @@ class App {
     private $router;
 
     public function __construct() {
+        var_dump($this);
         $this->rewriteRequestMethod();
         $this->checkCsrf();
     }

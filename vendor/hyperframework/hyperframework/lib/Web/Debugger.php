@@ -649,7 +649,6 @@ function showCode() {
 function toggleResponseHeaders() {
     var div = document.getElementById("response-headers-content");
     if (div.className == "hidden") {
-        //triangle char display is not good in ie and old android device
         document.getElementById("arrow").className = 'arrow-bottom';
         div.className = "";
     } else {
