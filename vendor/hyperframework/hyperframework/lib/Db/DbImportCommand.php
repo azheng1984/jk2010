@@ -11,14 +11,18 @@ class DbImportCommand {
             return;
         }
         $columnNames = null;
-        if ($options['column_names']) {
+        if (isset($options['column_names'])) {
             $columnNames = $options['column_names'];
+            if (is_array($columnNames) === false) {
+                throw new Exception('Options 中的 column_names 值必须是 array. '
+                    . gettype($columnNames) . ' given.');
+            }
         } else {
             $columnNames = array_keys($rows[0]);
         }
         $columnCount = count($columnNames);
         if ($columnCount === 0) {
-            throw new Exception;
+            return;
         }
         $batchSize = 1000;
         if ($options['batch_size']) {
@@ -52,7 +56,7 @@ class DbImportCommand {
             }
             while ($size > 0) {
                 if (count($rows[$index]) !== $columnCount) {
-                    throw new Exception;
+                    throw new Exception('导入的数据行，数据列数不一致.');
                 }
                 $values = array_merge($values, array_values($rows[$index]));
                 ++$index;

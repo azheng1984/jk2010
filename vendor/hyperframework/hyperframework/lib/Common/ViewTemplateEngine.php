@@ -23,12 +23,12 @@ abstract class ViewTemplateEngine implements ArrayAccess {
     public function load($path) {
         $path = (string)$path;
         if ($path === '') {
-            throw new Exception;
+            throw new Exception('View path cannot be empty.');
         }
         $extensionPattern = '#\.[.0-9a-zA-Z]+$#';
         if (preg_match($extensionPattern, $path, $matches) === 0) {
             if ($this->fullPath === null) {
-                throw new Exception;
+                throw new Exception('View extension unknown.');
             }
             preg_match($extensionPattern, $this->fullPath, $matches);
             $path .= $matches[0];
@@ -41,10 +41,12 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         if (DIRECTORY_SEPARATOR !== '/') {
             $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
         }
-        if ($path[0] === DIRECTORY_SEPARATOR) {
-            throw new Exception;
+        if (FullPathRecognizer::isFull($path)) {
+            $this->fullPath = $path;
+        } else {
+            PathCombiner::prepend($path, $this->getRootPath());
+            $this->fullPath = $path;
         }
-        $this->fullPath = $this->getRootPath() . DIRECTORY_SEPARATOR . $path;
         $includeFileFunction = $this->includeFileFunction;
         $includeFileFunction($this->fullPath);
         if ($this->layoutPath !== null) {
@@ -108,7 +110,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
 
     public function offsetSet($offset, $value) {
         if ($offset === null) {
-            throw new Exception;
+            throw new Exception('Offset 不能为空.');
         } else {
             $this->model[$offset] = $value;
         }

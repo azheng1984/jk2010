@@ -11,7 +11,7 @@ class DbConnectionFactory {
     public static function build($name = 'default') {
         $config = self::getConfig($name);
         if (isset($config['dsn']) === false) {
-            throw new Exception;
+            throw new Exception("Dsn of database config '$name' is not set");
         }
         $username = isset($config['username']) ? $config['username'] : null;
         $password = isset($config['password']) ? $config['password'] : null;
@@ -48,8 +48,5 @@ class DbConnectionFactory {
         self::$config = ConfigFileLoader::loadPhp(
             'db.php', 'hyperframework.db.config_path'
         );
-        if (self::$config === null) {
-            throw new Exception;
-        }
     }
 }

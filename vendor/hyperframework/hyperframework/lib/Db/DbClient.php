@@ -6,8 +6,12 @@ use Hyperframework\Common\Config;
 class DbClient {
     private static $engine;
 
-    public static function findById($table, $id, $columnNameOrNames = null) {
-        return self::getEngine()->findById($table, $id, $columnNameOrNames);
+    public static function findById(
+        $table, $id, $selectedColumnNameOrNames = null
+    ) {
+        return self::getEngine()->findById(
+            $table, $id, $selectedColumnNameOrNames
+        );
     }
 
     public static function findColumn($sql/*, ...*/) {
@@ -17,10 +21,10 @@ class DbClient {
     }
 
     public static function findColumnByColumns(
-        $table, array $columns, $columnName
+        $table, array $columns, $selectedColumnName
     ) {
         return self::getEngine()->findColumnByColumns(
-            $table, $columns, $columnName
+            $table, $columns, $selectedColumnName
         );
     }
 
@@ -31,10 +35,10 @@ class DbClient {
     }
 
     public static function findRowByColumns(
-        $table, array $columns, array $columnNames = null
+        $table, array $columns, array $selectedColumnNames = null
     ) {
         return self::getEngine()->findRowByColumns(
-            $table, $columns, $columnNames
+            $table, $columns, $selectedColumnNames
         );
     }
 
@@ -45,10 +49,10 @@ class DbClient {
     }
 
     public static function findAllByColumns(
-        $table, array $columns, $columnNameOrNames = null
+        $table, array $columns, $selectedColumnNameOrNames = null
     ) {
         return self::getEngine()->findAllByColumns(
-            $table, $columns, $columnNameOrNames
+            $table, $columns, $selectedColumnNameOrNames
         );
     }
 
@@ -155,7 +159,9 @@ class DbClient {
                 self::$engine = new DbClientEngine;
             } else {
                 if (class_exists($class) === false) {
-                    throw new Exception;
+                    throw new Exception(
+                        "Class of database client engine '$class' 不存在."
+                    );
                 }
                 self::$engine = new $class;
             }

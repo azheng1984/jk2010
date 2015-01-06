@@ -57,7 +57,7 @@ class Controller {
         $router = $this->getRouter();
         $method = $router->getActionMethod();
         if ($method == '') {
-            throw new Exception;
+            throw new Exception('Action method 不能为空');
         }
         if (method_exists($this, $method)) {
             $actionResult = $this->$method();
@@ -75,7 +75,7 @@ class Controller {
 
     public function addAroundFilter($filter, array $options = null) {
         if (version_compare(phpversion(), '5.5.0', '<')) {
-            throw new Exception;
+            throw new Exception('Around filter 需要 PHP 版本大于等于 5.5');
         }
         $this->addFilter('around', $filter, $options);
     }

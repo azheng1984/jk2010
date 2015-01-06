@@ -50,9 +50,6 @@ class FileLoader {
 
     private static function load($path, $pathConfigName, $isPhp) {
         $path = self::getFullPath($path, $pathConfigName);
-        if ($path === false) {
-            throw new Exception;
-        }
         if ($isPhp) {
             return include $path;
         }

@@ -19,13 +19,15 @@ class DbContext {
         $isShared = $name !== null;
         if (isset($options['is_shared'])) {
             if ($options['is_shared'] === true && $name === null) {
-                throw new Exception;
+                throw new Exception('Shared connection 必须有 name');
             }
             $isShared = $options['is_shared'];
         }
         if ($connection === null) {
             if ($name === null) {
-                throw new Exception;
+                throw new Exception(
+                    'Name 不能为 null, 除非在 options 里指定 connection.'
+                );
             }
             if ($isShared === false || isset(self::$pool[$name]) === false) {
                 $factoryClass = self::getFactoryClass();
@@ -41,7 +43,7 @@ class DbContext {
                 if (isset(self::$pool[$name])
                     && $connection !== self::$pool[$name]
                 ) {
-                    throw new Exception('conflict');
+                    throw new Exception("Shared connection '$name' conflict.");
                 }
                 self::$pool[$name] = $connection;
             }
@@ -82,7 +84,10 @@ class DbContext {
                 self::$factoryClass = 'Hyperframework\Db\DbConnectionFactory';
             } else {
                 if (class_exists(self::$factoryClass) === false) {
-                    throw new Exception;
+                    $class = self::$factoryClass;
+                    throw new Exception(
+                        "Class of database connection factory '$class' 不存在."
+                    );
                 }
             }
         }

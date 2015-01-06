@@ -5,18 +5,26 @@ use PDO;
 use Exception;
 
 class DbClientEngine {
-    public function findById($table, $id, $columnNameOrNames = null) {
-        $sql = 'SELECT * FROM '
-            . $this->quoteIdentifier($table) . ' WHERE id = ?';
-        return $this->findRow($sql, array($id));
+    public function findById($table, $id, $selectedColumnNameOrNames = null) {
+        if (is_array($selectedColumnNameOrNames) === false) {
+            $selectedColumnNameOrNames = [$selectedColumnNameOrNames];
+        }
+        $result = $this->queryByColumns(
+            $table, ['id' => $id], $selectedColumnNameOrNames
+        );
+        return $result->fetchRow();
     }
 
     public function findColumn($sql, array $params = null) {
         return $this->query($sql, $params)->fetchColumn();
     }
 
-    public function findColumnByColumns($table, array $columns, $columnName) {
-        $result = $this->queryByColumns($table, $columns, array($columnName));
+    public function findColumnByColumns(
+        $table, array $columns, $selectedColumnName
+    ) {
+        $result = $this->queryByColumns(
+            $table, $columns, array($selectedColumnName)
+        );
         return $result->fetchColumn();
     }
 
@@ -25,9 +33,11 @@ class DbClientEngine {
     }
 
     public function findRowByColumns(
-        $table, array $columns, array $columnNames = null
+        $table, array $columns, array $selectedColumnNames = null
     ) {
-        $result = $this->queryByColumns($table, $columns, $columnNames);
+        $result = $this->queryByColumns(
+            $table, $columns, $selectedColumnNames
+        );
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -36,9 +46,14 @@ class DbClientEngine {
     }
 
     public function findAllByColumns(
-        $table, array $columns, array $columnNames = null
+        $table, array $columns, $selectedColumnNameOrNames = null
     ) {
-        $result = $this->queryByColumns($table, $columns, $columnNames);
+        if (is_array($selectedColumnNameOrNames) === false) {
+            $selectedColumnNameOrNames = [$selectedColumnNameOrNames];
+        }
+        $result = $this->queryByColumns(
+            $table, $columns, $selectedColumnNameOrNames
+        );
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -77,7 +92,7 @@ class DbClientEngine {
         }
         $columnCount = count($row);
         if ($columnCount === 0) {
-            throw new Exception;
+            return;
         }
         $placeHolders = str_repeat('?, ', $columnCount - 1) . '?';
         $sql = 'INSERT INTO ' . $this->quoteIdentifier($table)
@@ -194,11 +209,11 @@ class DbClientEngine {
         if (is_array($where)) {
             list($where, $params) = $this->buildWhereByColumns($where);
         }
-        return $this->findColumn(
-            'SELECT ' . $function . '(' . $columnName . ') FROM ' . $table,
-            $where,
-            $params
-        );
+        $sql = 'SELECT ' . $function . '(' . $columnName . ') FROM ' . $table;
+        if ($where !== null) {
+            $sql .= ' WHERE ' . $where;
+        }
+        return $this->findColumn($sql, $params);
     }
 
     private function query($sql, array $params = null) {
@@ -206,19 +221,19 @@ class DbClientEngine {
     }
 
     private function queryByColumns(
-        $table, array $columns, array $columnNames = null
+        $table, array $columns, array $selectedColumnNames = null
     ) {
         $selector = null;
-        if ($columnNames === null) {
+        if ($selectedColumnNames === null) {
             $selector = '*';
         } else {
-            if (count($columnNames) === 0) {
-                throw new Exception;
+            if (count($selectedColumnNames) === 0) {
+                throw new Exception('result set 的列数不能为 0');
             }
-            foreach ($columnNames as &$name) {
+            foreach ($selectedColumnNames as &$name) {
                 $name = $this->quoteIdentifier($name);
             }
-            $selector = implode(', ', $columnNames);
+            $selector = implode(', ', $selectedColumnNames);
         }
         list($where, $params) = $this->buildWhereByColumns($columns);
         $sql = 'SELECT ' . $selector . ' FROM '
@@ -238,9 +253,6 @@ class DbClientEngine {
                 $where = ' AND ';
             }
             $where .= $this->quoteIdentifier($key) . ' = ?';
-        }
-        if ($where === null) {
-            throw new Exception;
         }
         return array($where, $params);
     }

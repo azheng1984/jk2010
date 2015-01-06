@@ -2,7 +2,6 @@
 namespace Hyperframework\Db;
 
 use PDO;
-use Exception;
 use Hyperframework\Common\Config;
 
 class DbConnection extends PDO {
@@ -89,7 +88,9 @@ class DbConnection extends PDO {
             . $this->identifierQuotationMarks[1];
     }
 
-    protected function sendSql($sql, $isQuery = false, $fetchOptions = null) {
+    private function sendSql(
+        $sql, $isQuery = false, array $fetchOptions = null
+    ) {
         if ($this->isProfilerEnabled) {
             DbProfiler::onConnectionExecuting($this, $sql, $isQuery);
         }
@@ -99,6 +100,8 @@ class DbConnection extends PDO {
                 $result = parent::query($sql);
             } else {
                 switch (count($fetchOptions)) {
+                    case 0:
+                        break;
                     case 1:
                         $result = parent::query($sql, $fetchOptions[0]);
                         break;
@@ -107,16 +110,13 @@ class DbConnection extends PDO {
                             $sql, $fetchOptions[0], $fetchOptions[1]
                         );
                         break;
-                    case 3:
+                    default:
                         $result = parent::query(
                             $sql,
                             $fetchOptions[0],
                             $fetchOptions[1],
                             $fetchOptions[2]
                         );
-                       break;
-                    default:
-                       throw new Exception;
                 }
             }
         } else {
