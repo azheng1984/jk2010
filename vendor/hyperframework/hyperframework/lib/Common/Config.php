@@ -141,10 +141,19 @@ class Config {
             return;
         }
         if (is_string($configs)) {
-            $configs = ConfigFileLoader::loadPhp($configs);
-        }
-        if (is_array($configs) === false) {
-            throw new Exception;
+            $path = $configs;
+            $configs = ConfigFileLoader::loadPhp($path);
+            if (is_array($configs) === false) {
+                throw new Exception(
+                    "Load config file $path failed. Config must be array, "
+                        . gettype($configs) . ' returned.'
+                );
+            }
+        } elseif (is_array($configs) === false) {
+            throw new Exception(
+                'argument must be array or string, '
+                    . gettype($configs) . ' given.'
+            );
         }
         $namespace = null;
         foreach ($configs as $key => $value) {
@@ -154,7 +163,9 @@ class Config {
                     || $value[0] !== '['
                     || $value[$length - 1] !== ']'
                 ) {
-                    throw new Exception;
+                    throw new Exception(
+                        "Config section name '$value' is invalid."
+                    );
                 }
                 $namespace = substr($value, 1, $length - 2);
                 if ($namespace === '') {
