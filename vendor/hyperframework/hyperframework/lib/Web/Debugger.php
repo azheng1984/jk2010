@@ -1115,6 +1115,9 @@ h1, #message {
     padding-bottom: 10px;
     line-height: 24px;
 }
+code, pre {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
 </style>
 <?php
     }
