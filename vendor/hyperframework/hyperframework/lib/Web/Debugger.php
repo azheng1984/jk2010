@@ -581,20 +581,14 @@ function showRawContent() {
     var html = '<div id="toolbar">'
         + '<a href="javascript:showLineNumbers()">Show Line Numbers</a>'
     if (isHandheld == false) {
-        html += ' &nbsp;<a href="javascript:selectAll()">Select All</a>'
+        html  += ' &nbsp;<a href="javascript:selectAll()">Select All</a>'
     }
-    html += '</div><div id="raw"><pre>';
-    if (content != '' && content.substr(0, 1) == "\n") {
-        html += '<br />' + content.substr(1);
-    } else {
-        html += content;
-    }
-    html += '</pre></div>';
+    html += "</div><div id=\"raw\"><pre>\n" + content + "\n</pre></div>";
     document.getElementById("response-body").innerHTML = html;
 }
 
 function selectAll() {
-    var text = document.getElementById('raw');    
+    var text = document.getElementById('raw');
     if (window.getSelection) {
         var selection = window.getSelection();
         var range = document.createRange();
