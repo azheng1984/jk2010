@@ -41,11 +41,11 @@ class Debugger {
             } else {
                 self::$trace = $source->getTrace();
             }
-            if (self::isExternalPath($source->getFile())) {
+            if (self::isExternalFile($source->getFile())) {
                 self::$firstInternalStackFrameIndex = null;
                 foreach (self::$trace as $index => $frame) {
                     if (isset($frame['file'])
-                        && self::isExternalPath($frame['file']) === false
+                        && self::isExternalFile($frame['file']) === false
                     ) {
                         self::$firstInternalStackFrameIndex = $index;
                         break;
@@ -96,7 +96,7 @@ class Debugger {
         echo '</tbody></table></body></html>';
     }
 
-    private static function isExternalPath($path) {
+    private static function isExternalFile($path) {
         $relativePath = self::getRelativePath($path);
         if ($relativePath === $path) {
             return true;
@@ -206,7 +206,7 @@ class Debugger {
                         ' <span class="line">' . $frame['line'] . '</span>'
                     );
                 } else {
-                    echo  '<span class="internal">internal function</span>';
+                    echo '<span class="internal">internal function</span>';
                 }
                 echo '</div>';
                 echo  '</td></tr>';
@@ -381,11 +381,7 @@ class Debugger {
         if ($shouldRemoveRootPath === true) {
             $path = self::getRelativePath($path);
         }
-        echo '<div class="path">', str_replace(
-            DIRECTORY_SEPARATOR,
-            '<span class="separator">' . DIRECTORY_SEPARATOR . '</span>',
-            $path
-        ), $suffix, '</div>';
+        echo '<div class="path">', $path, $suffix, '</div>';
     }
 
     private static function getRelativePath($path) {
@@ -839,16 +835,9 @@ h1, #message {
 #status-bar .second {
     padding-left: 10px;
 }
-#status-bar .separator {
-    color: #999;
-}
 .path {
     word-break: break-all; /* ie */
-　　word-wrap: break-word;
-}
-.separator {
-    padding: 0 2px;
-    color: #999;
+    word-wrap: break-word;
 }
 #status-bar .number, .header-count {
     border-radius: 8px;
