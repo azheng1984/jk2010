@@ -73,12 +73,11 @@ class MultipleCommandApp extends App {
 
     protected function executeSubcommand() {
         $config = $this->getCommandConfig();
-        $subcommandClass = (string)$config->get('class', $this->getSubcommand());
-        if ($subcommandClass === '') {
-            throw new Exception;
-        }
+        $subcommandClass = $config->getClass($this->getSubcommand());
         if (class_exists($subcommandClass) === false) {
-            throw new Exception;
+            throw new Exception(
+                "Subcommand config error. Class '$subcommandClass' 不存在"
+            );
         }
         $subcommand = new $subcommandClass($this);
         $arguments = $this->getArguments();

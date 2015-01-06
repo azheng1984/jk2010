@@ -5,12 +5,17 @@ abstract class Command {
     private $app;
 
     public function __construct($app) {
+        if ($app === null) {
+            throw new Exception("参数 'app' 不允许为 null");
+        }
         $this->app = $app;
     }
 
     protected function getApp() {
         if ($this->app === null) {
-            throw new Exception;
+            throw new Exception(
+                "Class '" . __CLASS__ . "' 构造函数没有被调用."
+            );
         }
         return $this->app;
     }

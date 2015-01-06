@@ -852,18 +852,19 @@ h1, #message {
     font-size: 15px;
     padding: 5px 0 10px 10px;
 }
-.no-touch #toggle-external-code a:hover {
-    background-image: none;
-    color: #333;
-}
-#toggle-external-code a {
-    color: #333;
+#response-body a, #toggle-external-code a {
     background-image: linear-gradient(#fcfcfc, #eee);
     background-color: #eee;
     border: 1px solid #d5d5d5;
     border-radius: 3px;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
     padding: 4px 10px;
+    font-size: 12px;
+    line-height: 24px;
+}
+.no-touch #response-body a:hover, .no-touch #toggle-external-code a:hover {
+    background-image: none;
+    color: #333;
 }
 #toggle-external-code {
     margin-left: 10px;
@@ -1053,25 +1054,12 @@ h1, #message {
 #response-body table {
     line-height: 18px;
 }
-#response-body a {
-    background-image: linear-gradient(#fcfcfc, #eee);
-    background-color: #eee;
-    border: 1px solid #d5d5d5;
-    border-radius: 3px;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
-    padding: 4px 10px;
-    font-size: 12px;
-    line-height: 24px;
-}
+
 #output-button-top-wrapper {
     margin-bottom: 10px;
 }
 #output-button-bottom-wrapper {
     margin-top: 10px;
-}
-.no-touch #response-body a:hover {
-    background-image: none;
-    color: #000;
 }
 #header-count {
     color: #333;/* ie6 */

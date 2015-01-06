@@ -24,7 +24,7 @@ class Runner extends Base {
             $app = new App;
         } else {
             if (class_exists($class) === false) {
-                throw new Exception;
+                throw new Exception("App class '$class' 不存在.");
             }
             $app = new $class;
         }

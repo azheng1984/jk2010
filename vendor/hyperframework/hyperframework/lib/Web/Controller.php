@@ -181,8 +181,7 @@ class Controller {
     public function getApp() {
         if ($this->app === null) {
             throw new Exception(
-                'app equals to null'
-                    . '(may be consturctor of \'Controller\' is not called)'
+                "Class '" . __CLASS__ . "' 构造函数没有被调用."
             );
         }
         return $this->app;
@@ -236,13 +235,13 @@ class Controller {
             if ($router->getModule() != '') {
                 $view .= $this->getModule();
             }
-            $controller = $router->getController();
-            if ($controller == '') {
-                throw new Exception;
+            $controller = (string)$router->getController();
+            if ($controller === '') {
+                throw new Exception('Controller 不能为空.');
             }
-            $action = $router->getAction();
-            if ($action == '') {
-                throw new Exception;
+            $action = (string)$router->getAction();
+            if ($action === '') {
+                throw new Exception('Action 不能为空.');
             }
             $view .=  $controller . '/' . $action;
             $format = $router->hasParam('format');
@@ -256,23 +255,10 @@ class Controller {
     }
 
     public function renderView() {
-        $view = $this->getView();
-        if (is_object($view)) {
-            if (method_exsits($view, 'render')) {
-                $view->render();
-                $this->disableView();
-                return;
-            } else {
-                throw new Exception;
-            }
-        }
-        if (is_string($view)) {
-            $template = new ViewTemplate($this->getActionResult());
-            $template->load($view);
-            $this->disableView();
-            return;
-        }
-        throw new Exception;
+        $template = new ViewTemplate($this->getActionResult());
+        $template->load($view);
+        $this->disableView();
+        return;
     }
 
     public function getActionResult($name = null) {

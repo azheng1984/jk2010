@@ -50,9 +50,7 @@ class OptionConfigParser {
             }
             if ($shortName !== null) {
                 if (isset($result[$shortName])) {
-                    throw new Exception(
-                        "Option config error. Option '-$name' 不允许重复."
-                    );
+                    "Option config error. Option '-$name' 不允许重复."
                 }
                 $result[$shortName] = $option;
             }
@@ -224,7 +222,7 @@ class OptionConfigParser {
     }
 
     private static function getArgumentPattern(
-        $isShortOption, $index, $length, &$isOptional = null
+        $name, $isShortOption, $index, $length, &$isOptional = null
     ) {
         $pattern = self::$pattern;
         $argumentPattern = substr($pattern, $index, $length - $index);
@@ -232,8 +230,8 @@ class OptionConfigParser {
             if ($isShortOption) {
                 if ($isOptional) {
                     throw new Exception(self::getPatternExceptionMessage(
-                        'Argument pattern cannot be empty.'
-                    ));//-x[]
+                        ''
+                    ));//-x[
                 } else {
                     throw new Exception(
                         self::getPatternExceptionMessage(
@@ -242,9 +240,7 @@ class OptionConfigParser {
                     );
                 }
             } else {
-                throw new Exception(self::getPatternExceptionMessage(
-                    'Argument pattern cannot be empty.'
-                ));//--xx[=] or --x=
+                throw new Exception; //--xx[=] or --x=
             }
         } elseif (strpos($argumentPattern, ' ') !== false) {
             throw new Exception(self::getPatternExceptionMessage(

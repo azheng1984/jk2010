@@ -1,6 +1,6 @@
 <?php
 namespace Hyperframework\Web;
-dsf;
+
 use Exception;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
@@ -32,7 +32,7 @@ class App {
                 }
             }
             if (class_exists($class) === false) {
-                throw new Exception("Class '$class' not found");
+                throw new Exception("Router class '$class' 不存在.");
             }
             $this->router = new $class($this);
         }
@@ -76,7 +76,7 @@ class App {
         $router = $this->getRouter();
         $class = (string)$router->getControllerClass();
         if ($class === '' || class_exists($class) === false) {
-            throw new Exception("Class '$class' not found");
+            throw new Exception("Controller class '$class' 不存在.");
         }
         return new $class($this);
     }

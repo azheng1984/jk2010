@@ -38,6 +38,13 @@ class CommandConfig {
         if ($config === null) {
             $arguments = $this->getDefaultArgumentConfigs($subcommand);
         } else {
+            if (is_array($config) === false) {
+                throw new Exception(
+                    $this->getErrorMessagePrefix($subcommand)
+                        . ' Argument config 必须是 array，'
+                        . gettype($config) . ' given.'
+                );
+            }
             $arguments = $this->parseArgumentConfigs($config);
         }
         if ($arguments === null) {
@@ -60,9 +67,7 @@ class CommandConfig {
         } elseif ($this->class !== null) {
             $class = $this->class;
         }
-        if ($class === '') {
-            return;
-        } elseif ($class !== null) {
+        if ($class !== null) {
             return $class;
         }
         $class = (string)$this->get('class', $subcommand);
@@ -95,9 +100,13 @@ class CommandConfig {
         } else {
             $this->class = $class;
         }
-        if ($class !== '') {
-            return $class;
+        if ($class === '') {
+            throw new Exception(
+                $this->getErrorMessagePrefix($subcommand)
+                    . ' Class 没有设置.'
+            );
         }
+        return $class;
     }
 
     public function getOptions($subcommand = null) {
@@ -111,9 +120,16 @@ class CommandConfig {
         if ($this->options !== null) {
             return $this->options;
         }
-        $optionConfigs = $this->get('options', $subcommand);
-        if ($optionConfigs !== null) {
-            $options = $this->parseOptionConfigs($optionConfigs);
+        $config = $this->get('options', $subcommand);
+        if ($config !== null) {
+            if (is_array($config) === false) {
+                throw new Exception(
+                    $this->getErrorMessagePrefix($subcommand)
+                        . ' option config 必须是 array，'
+                        . gettype($config) . ' given.'
+                );
+            }
+            $options = $this->parseOptionConfigs($config);
             if ($options === null) {
                 $options = [];
             }
@@ -147,10 +163,18 @@ class CommandConfig {
         } elseif ($this->mutuallyExclusiveOptionGroups !== null) {
             return $this->mutuallyExclusiveOptionGroups;
         }
-        $configs = $this->get('mutually_exclusive_options', $subcommand);
-        if ($configs !== null) {
+        $config = $this->get('mutually_exclusive_options', $subcommand);
+        if ($config !== null) {
+            if (is_array($config) === false) {
+                throw new Exception($this->getErrorMessagePrefix($subcommand)
+                    . ' Mutually exclusive options 必须是 array，'
+                    . gettype($config) . ' given.'
+                );
+            }
             $optionGroups =
-                $this->parseMutuallyExclusiveOptionConfigs($configs);
+                $this->parseMutuallyExclusiveOptionConfigs(
+                    $config, $subcommand
+                );
             if ($optionGroups === null) {
                 $optionGroups = [];
             }
@@ -177,16 +201,17 @@ class CommandConfig {
         }
     }
 
-    protected function parseMutuallyExclusiveOptionConfigs($configs) {
-        if (is_array($configs) === false) {
-            throw new Exception;
-        }
+    private function parseMutuallyExclusiveOptionConfigs(
+        array $configs, $subcommand
+    ) {
         if (is_array(current($configs)) === false) {
             $configs = [$configs];
         }
         $result = [];
         $includedOptions = [];
         $options = $this->getOptions();
+        $errorMessagePrefix = $this->getErrorMessagePrefix($subcommand)
+            . ' Mutually exclusive option';
         foreach ($configs as $config) {
             $isRequired = false;
             $mutuallyExclusiveOptions = [];
@@ -196,43 +221,46 @@ class CommandConfig {
                     $isRequired = true;
                     continue;
                 }
-                if ($item[0] !== '-') {
-                    throw new Exception;
+                if ($item === '' || $item[0] !== '-') {
+                    throw new Exception(
+                        $errorMessagePrefix . " '$item' 必须有 '-' 前缀"
+                    );
                 }
                 $length = strlen($item);
                 if ($length === 1) {
-                    throw new Exception;
+                    throw new Exception(
+                        $errorMessagePrefix . " '$item' 必须有选项名称"
+                    );
                 } elseif ($length === 2) {
                     $item = $item[1];
                 } else {
                     if ($item[1] !== '-') {
-                        throw new Exception;
+                        throw new Exception(
+                            $errorMessagePrefix . " '$item' 必须有 '--' 前缀"
+                        );
                     }
                     $item = substr($item, 2);
                 }
                 if (isset($options[$item]) === false) {
                     if ($item === '') {
                         continue;
-                    } elseif ($item[0] !== '-') {
-                        $message = "Unknown attribute '$item'";
-                    } else {
-                        $message = "Undefined option '$item'";
                     }
-                    throw new Exception($message);
+                    throw new Exception($errorMessagePrefix . " '$item' 未定义");
                 }
                 $option = $options[$item];
                 if (in_array($option, $includedOptions, true)) {
-                    throw new Exception;
+                    throw new Exception(
+                        $errorMessagePrefix . " '$item' 不允许重复."
+                    );
                 }
                 $includedOptions[] = $option;
                 $mutuallyExclusiveOptions[] = $option;
             }
-            if (count($mutuallyExclusiveOptions) === 0) {
-                throw new Exception;
+            if (count($mutuallyExclusiveOptions) !== 0) {
+                $result[] = new MutuallyExclusiveOptionGroupConfig(
+                    $mutuallyExclusiveOptions, $isRequired
+                );
             }
-            $result[] = new MutuallyExclusiveOptionGroupConfig(
-                $mutuallyExclusiveOptions, $isRequired
-            );
         }
         return $result;
     }
@@ -244,7 +272,7 @@ class CommandConfig {
     public function getName() {
         $name = (string)$this->get('name');
         if ($name === '') {
-            throw new Exception;
+            throw new Exception('Command config error, 没有设置应用名称.');
         }
         return $name;
     }
@@ -293,7 +321,10 @@ class CommandConfig {
                     $config = require $configPath;
                 } else {
                     if ($isDefaultConfigPath === false) {
-                        throw new Exception;
+                        throw new Exception(
+                            $this->getErrorMessagePrefix($subcommand)
+                                . " Config file $configPath 不存在."
+                        );
                     }
                     $config = [];
                 }
@@ -338,28 +369,27 @@ class CommandConfig {
         if ($this->subcommands === null) {
             $this->subcommands = [];
             foreach (scandir($this->getSubcommandConfigRootPath()) as $file) {
-                if (substr($file, -4) === '.php') {
-                    $this->subcommands[] =
-                        substr(substr($file, 0, strlen($file) - 4));
-                } else {
-                    throw new Exception;
+                $name = substr($file, 0, strlen($file) - 4);
+                if (preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]*\.php$/', $name) === 1
+                ) {
+                    $this->subcommands[] = $name;
                 }
             }
         }
         return $this->subcommands;
     }
 
-    protected function parseArgumentConfigs($config) {
+    protected function parseArgumentConfigs(array $config) {
         return ArgumentConfigParser::parse($config);
     }
 
     protected function getDefaultArgumentConfigs($subcommand = null) {
         $class = $this->getClass($subcommand);
-        if ($class === null) {
-            throw new Exception;
-        }
         if (class_exists($class) === false) {
-            throw new Exception("Command class '$class' not found");
+            throw new Exception(
+                $this->getErrorMessagePrefix($subcommand)
+                    . " Class '$class' 不存在."
+            );
         }
         $method = new ReflectionMethod($class, 'execute');
         $params = $method->getParameters();
@@ -368,7 +398,9 @@ class CommandConfig {
         foreach ($params as $param) {
             if ($param->isArray()) {
                 if ($isArray) {
-                    throw new Exception('Only last param can be array');
+                    throw new Exception(
+                        $this->getErrorMessagePrefix($subcommand)
+                            . ' 只允许最后一个 argument 是 array');
                 }
                 $isArray = true;
             }
@@ -392,7 +424,7 @@ class CommandConfig {
         return str_replace(' ', '', $tmp) . 'Command';
     }
 
-    protected function parseOptionConfigs($config) {
+    protected function parseOptionConfigs(array $config) {
         return OptionConfigParser::parse($config);
     }
 
@@ -434,5 +466,14 @@ class CommandConfig {
             $result[] = new OptionConfig('version');
         }
         return $result;
+    }
+
+    private function getErrorMessagePrefix($subcommand) {
+        if ($subcommand === null) {
+            $prefix = 'Command';
+        } else {
+            $prefix = "Subcommand '$subcommand'";
+        }
+        return $prefix . ' config error.';
     }
 }

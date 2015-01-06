@@ -67,7 +67,9 @@ class App {
                 $this->commandConfig = new CommandConfig;
             } else {
                 if (class_exists($class) === false) {
-                    throw new Exception("Command config class '$class' 不存在.");
+                    throw new Exception(
+                        "Command config class '$class' 不存在."
+                    );
                 }
                 $this->commandConfig = new $class;
             }
@@ -81,10 +83,7 @@ class App {
     }
 
     protected function executeCommand() {
-        $class = (string)$this->getCommandConfig()->getClass();
-        if ($class === '') {
-            throw new Exception('Command class 不能为空.');
-        }
+        $class = $this->getCommandConfig()->getClass();
         if (class_exists($class) === false) {
             throw new Exception("Command class '$class' 不存在.");
         }
