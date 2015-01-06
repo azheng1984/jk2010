@@ -95,16 +95,16 @@ class CommandConfig {
                 }
             }
         }
-        if ($subcommand !== null) {
-            $this->subcommandClasses[$subcommand] = $class;
-        } else {
-            $this->class = $class;
-        }
         if ($class === '') {
             throw new Exception(
                 $this->getErrorMessagePrefix($subcommand)
                     . ' Class 没有设置.'
             );
+        }
+        if ($subcommand !== null) {
+            $this->subcommandClasses[$subcommand] = $class;
+        } else {
+            $this->class = $class;
         }
         return $class;
     }
