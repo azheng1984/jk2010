@@ -306,14 +306,8 @@ class OptionConfigParser {
                         ));
                     }
                 }
-            } else {
-                if ($isOptional) {
-                    if ($isShortOption) {// -x[arg]<arg> or -x<arg>
-                        $isOptional = false;
-                    } else {//never
-                        throw new Exception;
-                    }
-                }
+            } elseif ($isOptional) {// -x[arg]<arg> or -x<arg>
+                $isOptional = false;
             }
         }
         return $argumentPattern;
