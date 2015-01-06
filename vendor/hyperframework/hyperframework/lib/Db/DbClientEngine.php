@@ -228,7 +228,7 @@ class DbClientEngine {
             $selector = '*';
         } else {
             if (count($selectedColumnNames) === 0) {
-                throw new Exception('Column selection is empty.');
+                throw new Exception('没有 column 被 selected.');
             }
             foreach ($selectedColumnNames as &$name) {
                 $name = $this->quoteIdentifier($name);

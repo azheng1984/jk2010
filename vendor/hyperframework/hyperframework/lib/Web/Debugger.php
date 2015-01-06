@@ -2,6 +2,7 @@
 namespace Hyperframework\Web;
 
 use ErrorException;
+use Exception;
 use Hyperframework\Common\StackTraceFormatter;
 use Hyperframework\Common\FileLoader;
 use Hyperframework\Common\Config;
@@ -29,8 +30,14 @@ class Debugger {
         self::$headerCount = count($headers);
         self::$contentLength = strlen($content);
         self::$isError = $source instanceof ErrorException;
-        self::$rootPath = FileLoader::getDefaultRootPath()
-            . DIRECTORY_SEPARATOR;
+        $rootPath = FileLoader::getDefaultRootPath();
+        $realRootPath = realpath($rootPath);
+        if ($realRootPath !== false) {
+            $rootPath = $realRootPath;
+        } else {
+            throw new Exception("App root path '$rootPath' does not exist.'");
+        }
+        self::$rootPath = $rootPath . DIRECTORY_SEPARATOR;
         self::$rootPathLength = strlen(self::$rootPath);
         self::$shouldHideTrace = false;
         self::$shouldHideExternal = false;
@@ -253,7 +260,7 @@ class Debugger {
             echo  $prefix, self::$contentLength, ' bytes', $suffix;
         }
         echo '</span></div></div><div class="second"><div>App Root Path:</div>',
-            self::renderPath(FileLoader::getDefaultRootPath(), false),
+            self::renderPath(self::$rootPath, false),
             '</div></div>';
     }
 
@@ -381,7 +388,7 @@ class Debugger {
         if ($shouldRemoveRootPath === true) {
             $path = self::getRelativePath($path);
         }
-        echo '<div class="path">', $path, $suffix, '</div>';
+        echo '<div class="path"><code>', $path, $suffix, '</code></div>';
     }
 
     private static function getRelativePath($path) {
@@ -860,7 +867,6 @@ h1, #message {
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
     padding: 4px 10px;
     font-size: 12px;
-    line-height: 24px;
 }
 .no-touch #response-body a:hover, .no-touch #toggle-external-code a:hover {
     background-image: none;
@@ -1107,6 +1113,7 @@ h1, #message {
 }
 #toolbar {
     padding-bottom: 10px;
+    line-height: 24px;
 }
 </style>
 <?php
