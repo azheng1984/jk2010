@@ -888,7 +888,7 @@ h1, #message {
     border-bottom: 1px dotted #ddd;
     _border-bottom: 1px solid #e1e1e1;
     padding-bottom: 5px;
-    margin: 0 10px 5px 10px;
+    margin: 0 10px 10px 10px;
 }
 #response-body a, #toggle-external-code a {
     background-image: linear-gradient(#fcfcfc, #eee);
