@@ -61,7 +61,9 @@ final class Logger {
                 || $params['name'][0] === '.'
                 || substr($params['name'], -1) === '.'
             ) {
-                throw new Exception;
+                throw new Exception(
+                    "Log entry name '{$params['name']}' is invalid."
+                );
             }
         }
         if ($params instanceof Closure) {
@@ -69,17 +71,21 @@ final class Logger {
         }
         if (isset($params['message'])) {
             if (is_array($params['message'])) {
-                if (count($params['message']) < 2) {
-                    throw new Exception;
+                $count = count($params['message']);
+                if ($count === 0) {
+                    unset($params['message']);
+                } elseif ($count === 1) {
+                    $params['message'] = $params['message'][0];
                 } else {
-                    $opitons['message'] =
+                    $params['message'] =
                         call_user_func_array('sprintf', $opitons['message']);
                 }
             }
         }
         if (isset($params['data'])) {
             if (is_array($params['data']) === false) {
-                throw new Exception;
+                throw new Exception('Data of log entry must be array, '
+                    . gettype($params['data']) . ' given.');
             }
         }
         $logHandlerClass = Config::getString(
@@ -89,7 +95,7 @@ final class Logger {
             LogHandler::handle($level, $params);
         } else {
             if (class_exists($logHandlerClass) === false) {
-                throw new Exception;
+                throw new Exception("Log handler class '$class' do not exist.");
             }
             $logHandlerClass::handle($level, $params);
         }
@@ -102,7 +108,9 @@ final class Logger {
                 if (isset(self::$levels[$level]) === false) {
                     $level = strtoupper($level);
                     if (isset(self::$levels[$level]) === false) {
-                        throw new Exception;
+                        throw new Exception(
+                            "Log entry level '$level' is invalid."
+                        );
                     }
                 }
                 self::$thresholdCode = self::$levels[$level];

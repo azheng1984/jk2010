@@ -28,6 +28,7 @@ class Controller {
             $this->runAfterFilters();
         } catch (Exception $e) {
             $this->quitFilterChain($e);
+            throw $e;
         }
     }
 
@@ -97,14 +98,19 @@ class Controller {
     private function runFilter(array &$config, $return = false) {
         $result = null;
         if (is_string($config['filter'])) {
-            if ($config['filter'] === '') {
-                throw new Exception;
+            if ($filter === '') {
+                throw new Exception('Filter class is a empty string.');
             }
             if ($config['filter'][0] === ':') {
                 $method = substr($config['filter'], 1);
                 $result = $this->$method();
             } else {
                 $class = $config['filter'];
+                if (class_exists($class) === false) {
+                    throw new Exception(
+                        "Filter class '$class' does not exist."
+                    );
+                }
                 $filter = new $class;
                 $result = $filter->run($this);
             }
@@ -117,12 +123,20 @@ class Controller {
             } else {
                 $result = $config['filter']->run($this);
             }
-        } elseif ($config['type'] !== 'yielded') {
-            throw new Exception;
         }
         if ($config['type'] === 'around') {
-            if ($result instanceof Generator === false) {
-                throw new Exception;
+            if (is_object($result) === false
+                || $result instanceof Generator === false
+            ) {
+                if (is_object($result)) {
+                    $type = get_class($result);
+                } else {
+                    $type = gettype($result);
+                }
+                throw new Exception(
+                    'Around filter of controller must return a generator, '
+                        . $type . ' returned.'
+                );
             }
             if ($result->current() === false || $result->valid() === false) {
                 $result = false;
@@ -145,9 +159,9 @@ class Controller {
         $config = [
             'type' => $type, 'filter' => $filter, 'options' => $options
         ];
-        $action = $this->getRouter()->getAction();
-        if ($action == '') {
-            throw new Exception;
+        $action = (string)$this->getRouter()->getAction();
+        if ($action === '') {
+            throw new Exception('Action 不能为空.');
         }
         if ($options === null) {
             $this->filterChain[] = $config;
@@ -309,9 +323,6 @@ class Controller {
                     $shouldRunAfterFilter = false;
                 }
             }
-        }
-        if ($exception !== null) {
-            throw $exception;
         }
     }
 }

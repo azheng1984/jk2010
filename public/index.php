@@ -1,6 +1,6 @@
 <?php
 namespace hi;
-header(':');
+var_dump(2 instanceof \stdclass);
 
 //var_dump(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_XHMLT));
 //var_dump(count(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_HTML401)));

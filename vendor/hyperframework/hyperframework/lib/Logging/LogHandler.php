@@ -110,7 +110,7 @@ class LogHandler {
         $prefix = str_repeat("\t", $depth);
         foreach ($data as $key => $value) {
             if (preg_match('/^[0-9a-zA-Z_]+$/', $key) === 0) {
-                throw new Exception;
+                throw new Exception("Data key '$key' of log entry is invalid.");
             }
             $result .= PHP_EOL . $prefix . $key . ':';
             if (is_array($value)) {

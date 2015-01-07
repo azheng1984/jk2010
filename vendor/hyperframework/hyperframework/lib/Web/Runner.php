@@ -21,7 +21,7 @@ class Runner extends Base {
         } else {
             if (class_exists($class) === false) {
                 throw new Exception(
-                    "Error handler class '$class' 不存在."
+                    "Error handler class '$class' does not exist."
                 );
             }
             $class::run();
@@ -34,7 +34,7 @@ class Runner extends Base {
             $app = new App;
         } else {
             if (class_exists($class) === false) {
-                throw new Exception("App class '$class' 不存在.");
+                throw new Exception("App class '$class' does not exist.");
             }
             $app = new $class;
         }

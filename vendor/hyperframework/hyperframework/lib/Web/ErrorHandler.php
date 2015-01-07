@@ -77,7 +77,7 @@ class ErrorHandler extends Base {
 
     private static function deleteOutputBuffer() {
         if (self::$startupOutputBufferLevel === null) {
-            throw new Exception;
+            throw new Exception('Error handler does not running.');
         }
         $obLevel = ob_get_level();
         while ($obLevel > self::$startupOutputBufferLevel) {
@@ -214,14 +214,14 @@ class ErrorHandler extends Base {
 
     protected static function isDebuggerEnabled() {
         if (self::$isRunning === false) {
-            throw new Exception;
+            throw new Exception('Error handler does not running.');
         }
         return self::$isDebuggerEnabled;
     }
 
     protected static function getStartupOutputBufferLevel() {
         if (self::$isRunning === false) {
-            throw new Exception;
+            throw new Exception('Error handler does not running.');
         }
         return self::$startupOutputBufferLevel;
     }
