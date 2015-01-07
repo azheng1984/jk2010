@@ -614,6 +614,22 @@ function buildOutputContent(content) {
     var lines = content.split("\n");
     var count = lines.length;
     var last = count - 1;
+    var isCssLineNumber = false;
+    var contentTag = 'pre';
+    //for copy content
+    if (typeof CSS != 'undefined' && typeof CSS.supports != 'undefined') {
+        if (CSS.supports('white-space', 'pre-wrap')) {
+            //for firefox
+            contentTag = 'code';
+        }
+    }
+    if (typeof window.getComputedStyle != 'undefined') {
+        if (typeof window.getComputedStyle(document.body, null).content
+            != 'undefined'
+        ) {
+            isCssLineNumber = true;
+        }
+    }
     for (var index = 0; index < count; ++index) {
         result += '<tr><td class="';
         if (count == 1) {
@@ -623,8 +639,15 @@ function buildOutputContent(content) {
         } else if (index == last) {
             result += 'last ';
         }
-        result += 'line-number">' + (index + 1)
-            + '</td><td';
+        result += 'line-number"';
+        if (isCssLineNumber) {
+            result += ' data-line="' + (index + 1) + '"';
+        }
+        result += '>';
+        if (isCssLineNumber == false) {
+            result += (index + 1);
+        }
+        result += '</td><td';
         if (count == 1) {
             result += ' class="first last"';
         } else if (index == 0) {
@@ -632,7 +655,8 @@ function buildOutputContent(content) {
         } else if (index == last) {
             result += ' class="last"';
         }
-        result += '><pre>' + lines[index] + '</pre></td></tr>';
+        result += '><' + contentTag + '>' + lines[index] + '</'
+            + contentTag + '></td></tr>';
     }
     return '<table><tbody>' + result + '</tbody></table>';
 }
@@ -1027,10 +1051,9 @@ h1, #message {
     _border-right-color: white;
     _border-left-color: white;
 }
-#output pre {
+#output pre, #response-body code {
     white-space: pre-wrap;
     white-space: -moz-pre-wrap;
-    white-space: -pre-wrap;
     white-space: -o-pre-wrap;
     word-wrap: break-word;
     word-break: break-all;
@@ -1102,6 +1125,9 @@ h1, #message {
     vertical-align: top;
     padding: 0 5px;
     width: 1px;
+}
+#response-body .line-number:before {
+    content: attr(data-line);
 }
 .notice {
     background: #ff9;

@@ -1,6 +1,9 @@
 <?php
 namespace Hyperframework\Web;
-
+var_dump($_SERVER);
+echo "\n";
+var_dump($_SERVER);
+var_dump($_SERVER);
 use Exception;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
