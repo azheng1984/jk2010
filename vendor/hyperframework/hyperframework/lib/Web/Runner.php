@@ -20,7 +20,9 @@ class Runner extends Base {
             ErrorHandler::run();
         } else {
             if (class_exists($class) === false) {
-                throw new Exception("Class '$class' not found");
+                throw new Exception(
+                    "Error handler class '$class' 不存在."
+                );
             }
             $class::run();
         }
@@ -32,7 +34,7 @@ class Runner extends Base {
             $app = new App;
         } else {
             if (class_exists($class) === false) {
-                throw new Exception;
+                throw new Exception("App class '$class' 不存在.");
             }
             $app = new $class;
         }

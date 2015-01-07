@@ -9,12 +9,7 @@ class DbStatementProxy {
     private $connection;
     private $isProfilerEnabled;
 
-    public function __construct($statement, $connection) { $x='
-
-
-
-
-        ';
+    public function __construct($statement, $connection) {
         $this->statement = $statement;
         $this->connection = $connection;
         $this->isProfilerEnabled =
