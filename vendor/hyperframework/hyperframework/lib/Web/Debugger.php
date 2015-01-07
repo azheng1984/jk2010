@@ -224,10 +224,14 @@ class Debugger {
     }
 
     private static function renderStatusBar() {
-        echo '<div id="status-bar">';
+        echo '<table id="status-bar"><tbody><tr>';
         if (self::$shouldHideExternal) {
-            echo '<div id="toggle-external-code">',
-                '<a>Start from External File</a></div>';
+            echo '<td id="toggle-external-code">',
+                '<a>Start from External File</a></td>';
+        }
+        echo '<td>';
+        if (self::$shouldHideExternal) {
+            echo '<div class="text">';
         }
         echo '<div class="first"><div>Response Headers:',
             ' <span class="first-value">',
@@ -261,7 +265,11 @@ class Debugger {
         }
         echo '</span></div></div><div class="second"><div>App Root Path:</div>',
             self::renderPath(self::$rootPath, false),
-            '</div></div>';
+            '</div>';
+        if (self::$shouldHideExternal) {
+            echo '</div>';
+        }
+        echo '</td></tr></tbody></table>';
     }
 
     private static function getLines($path, $errorLineNumber) {
@@ -850,25 +858,28 @@ h1, #message {
 <?php endif ?>
     font-size:12px;
 }
+#status-bar div.text {
+    border-left: 1px dotted #ccc;
+    _border-left: 1px solid #ddd;
+    margin-left: 10px;
+}
 #status-bar-wrapper div {
     float: left;
+}
+#status-bar-wrapper td{
+    vertical-align: top;
 }
 #status-bar .first-value {
     margin-right: 10px;
 }
-#status-bar .first {
+#status-bar .second, #status-bar .first {
     padding-left: 10px;
-    word-break: keep-all;
-    white-space: nowrap;
 }
 #status-bar span, #status-bar .path {
     color: #333;
 }
 #status-bar .path {
     padding-left: 3px;
-}
-#status-bar .second {
-    padding-left: 10px;
 }
 .path {
     word-break: break-all; /* ie */
@@ -885,8 +896,8 @@ h1, #message {
 }
 #file .path {
     font-size: 14px;
-    border-bottom: 1px dotted #ddd;
-    _border-bottom: 1px solid #e1e1e1;
+    border-bottom: 1px dotted #e1e1e1;
+    _border-bottom: 1px solid #eee;
     padding-bottom: 5px;
     margin: 0 10px 10px 10px;
 }
@@ -898,6 +909,8 @@ h1, #message {
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
     padding: 4px 10px;
     font-size: 12px;
+    word-break: keep-all;
+    white-space: nowrap;
 }
 .no-touch #response-body a:hover, .no-touch #toggle-external-code a:hover {
     background-image: none;
