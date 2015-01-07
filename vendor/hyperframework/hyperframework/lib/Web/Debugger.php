@@ -192,11 +192,11 @@ class Debugger {
                 if (self::$shouldHideExternal
                     && self::$shouldHideTrace === false
                 ) {
-                    if ($index <= self::$firstInternalStackFrameIndex) {
+                    if ($index < self::$firstInternalStackFrameIndex) {
                         echo ' class="hidden"';
                     }
                     echo '><td class="index">',
-                        $index - self::$firstInternalStackFrameIndex - 1;
+                        $index - self::$firstInternalStackFrameIndex;
                 } else {
                     echo '><td class="index">', $index;
                 }
@@ -707,8 +707,8 @@ function showExternalFile() {
             var node = document.getElementById('frame-' + index);
             node.className = '';
             var child = node.firstChild;
-            child.innerHTML = parseInt(child.innerHTML)
-                + firstInternalStackFrameIndex + 1;
+            child.innerHTML =
+                parseInt(child.innerHTML) + firstInternalStackFrameIndex;
         }
     }
     button.innerHTML =
@@ -852,7 +852,7 @@ h1, #message {
     background: #f8f8f8;
 }
 #status-bar {
-    padding-right: 10px;
+    margin-right: 10px;
 <?php if (self::$shouldHideExternal): ?>
     line-height: 25px;
 <?php endif ?>
