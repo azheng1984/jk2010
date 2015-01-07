@@ -98,8 +98,8 @@ class Controller {
     private function runFilter(array &$config, $return = false) {
         $result = null;
         if (is_string($config['filter'])) {
-            if ($filter === '') {
-                throw new Exception('Filter class is a empty string.');
+            if ($config['filter'] === '') {
+                throw new Exception('Filter is a empty string.');
             }
             if ($config['filter'][0] === ':') {
                 $method = substr($config['filter'], 1);
