@@ -32,7 +32,7 @@ class App {
                 }
             }
             if (class_exists($class) === false) {
-                throw new Exception("Router class '$class' 不存在.");
+                throw new WebException("Router class '$class' does not exist.");
             }
             $this->router = new $class($this);
         }
@@ -76,7 +76,7 @@ class App {
         $router = $this->getRouter();
         $class = (string)$router->getControllerClass();
         if ($class === '' || class_exists($class) === false) {
-            throw new Exception("Controller class '$class' 不存在.");
+            throw new WebException("Controller class '$class' 不存在.");
         }
         return new $class($this);
     }

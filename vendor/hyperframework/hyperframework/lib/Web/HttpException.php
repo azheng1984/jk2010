@@ -1,9 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-use Exception;
-
-abstract class HttpException extends Exception {
+abstract class HttpException extends WebException {
     private $statusCode;
 
     public function __construct($message, $statusCode, $previous) {

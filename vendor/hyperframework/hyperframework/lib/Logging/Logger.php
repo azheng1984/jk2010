@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Logging;
 
-use Exception;
 use Hyperframework\Common\Config;
 
 final class Logger {
@@ -61,7 +60,7 @@ final class Logger {
                 || $params['name'][0] === '.'
                 || substr($params['name'], -1) === '.'
             ) {
-                throw new Exception(
+                throw new LoggingException(
                     "Log entry name '{$params['name']}' is invalid."
                 );
             }
@@ -84,7 +83,7 @@ final class Logger {
         }
         if (isset($params['data'])) {
             if (is_array($params['data']) === false) {
-                throw new Exception('Data of log entry must be array, '
+                throw new LoggingException('Data of log entry must be array, '
                     . gettype($params['data']) . ' given.');
             }
         }
@@ -95,7 +94,9 @@ final class Logger {
             LogHandler::handle($level, $params);
         } else {
             if (class_exists($logHandlerClass) === false) {
-                throw new Exception("Log handler class '$class' do not exist.");
+                throw new Loggingxception(
+                    "Log handler class '$class' do not exist."
+                );
             }
             $logHandlerClass::handle($level, $params);
         }
@@ -108,7 +109,7 @@ final class Logger {
                 if (isset(self::$levels[$level]) === false) {
                     $level = strtoupper($level);
                     if (isset(self::$levels[$level]) === false) {
-                        throw new Exception(
+                        throw new LoggingException(
                             "Log entry level '$level' is invalid."
                         );
                     }

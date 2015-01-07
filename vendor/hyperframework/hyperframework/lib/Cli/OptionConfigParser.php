@@ -42,7 +42,7 @@ class OptionConfigParser {
             );
             if ($name !== null) {
                 if (isset($result[$name])) {
-                    throw new Exception(
+                    throw new CliException(
                         "Option config error. Option '--$name' 不允许重复."
                     );
                 }

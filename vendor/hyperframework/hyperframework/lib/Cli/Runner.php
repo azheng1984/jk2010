@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Cli;
 
-use Exception;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\Runner as Base;
 
@@ -24,7 +23,7 @@ class Runner extends Base {
             $app = new App;
         } else {
             if (class_exists($class) === false) {
-                throw new Exception("App class '$class' 不存在.");
+                throw new CliException("App class '$class' 不存在.");
             }
             $app = new $class;
         }

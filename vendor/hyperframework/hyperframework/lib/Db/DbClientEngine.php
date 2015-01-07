@@ -2,7 +2,6 @@
 namespace Hyperframework\Db;
 
 use PDO;
-use Exception;
 
 class DbClientEngine {
     public function findById($table, $id, $selectedColumnNameOrNames = null) {
@@ -228,7 +227,7 @@ class DbClientEngine {
             $selector = '*';
         } else {
             if (count($selectedColumnNames) === 0) {
-                throw new Exception('没有 column 被 selected.');
+                throw new DbException('没有 column 被 selected.');
             }
             foreach ($selectedColumnNames as &$name) {
                 $name = $this->quoteIdentifier($name);

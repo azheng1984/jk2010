@@ -898,7 +898,7 @@ h1, #message {
     font-size: 14px;
     border-bottom: 1px dotted #e1e1e1;
     _border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
+    padding: 5px 0;
     margin: 0 10px 10px 10px;
 }
 #response-body a, #toggle-external-code a {

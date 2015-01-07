@@ -159,7 +159,7 @@ class DbClient {
                 self::$engine = new DbClientEngine;
             } else {
                 if (class_exists($class) === false) {
-                    throw new Exception(
+                    throw new DbException(
                         "Class of database client engine '$class' 不存在."
                     );
                 }

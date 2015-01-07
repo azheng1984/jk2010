@@ -2,7 +2,6 @@
 namespace Hyperframework\Db;
 
 use ArrayAccess;
-use Exception;
 
 abstract class DbActiveRecord implements ArrayAccess {
     private static $tableNames = array();
@@ -22,7 +21,7 @@ abstract class DbActiveRecord implements ArrayAccess {
 
     public function offsetSet($offset, $value) {
         if ($offset === null) {
-            throw new Exception('Offset 不能为空.');
+            throw new DbException('Offset 不能为空.');
         } else {
             $this->row[$offset] = $value;
         }

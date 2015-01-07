@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Cli;
 
-use Exception;
 use Hyperframework\Common\Config;
 
 class App {
@@ -67,7 +66,7 @@ class App {
                 $this->commandConfig = new CommandConfig;
             } else {
                 if (class_exists($class) === false) {
-                    throw new Exception(
+                    throw new CliException(
                         "Command config class '$class' 不存在."
                     );
                 }
@@ -85,7 +84,7 @@ class App {
     protected function executeCommand() {
         $class = $this->getCommandConfig()->getClass();
         if (class_exists($class) === false) {
-            throw new Exception("Command class '$class' 不存在.");
+            throw new CliException("Command class '$class' 不存在.");
         }
         $command = new $class($this);
         $arguments = $this->getArguments();
@@ -98,7 +97,7 @@ class App {
             $class = 'Hyperframework\Cli\Help';
         } else {
             if (class_exists($class) === false) {
-                throw new Exception("Help class '$class' 不存在.");
+                throw new CliException("Help class '$class' 不存在.");
             }
         }
         $help = new $class($this);
