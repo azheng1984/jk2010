@@ -230,7 +230,7 @@ class Debugger {
                 '<a>Start from External File</a></div>';
         }
         echo '<div class="first"><div>Response Headers:',
-            ' <span class="number first-value">',
+            ' <span class="first-value">',
             self::$headerCount, '</span></div><div>',
             'Content Size: <span>';
         if (self::$contentLength === 0) {
@@ -749,6 +749,9 @@ h2 {
     font-family: "Times New Roman", Times, serif;
     padding: 0 10px;
 }
+code, pre {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
 #page-container {
     width: 100%;
     min-width: 200px;
@@ -814,6 +817,7 @@ h1, #message {
     color: #999;
     padding: 10px 0;
     border-bottom: 1px solid #ccc;
+    background: #f8f8f8;
 }
 #status-bar {
     padding-right: 10px;
@@ -846,7 +850,7 @@ h1, #message {
     word-break: break-all; /* ie */
     word-wrap: break-word;
 }
-#status-bar .number, .header-count {
+.header-count {
     border-radius: 8px;
     background: #eee;
     padding: 1px 6px;
@@ -856,8 +860,11 @@ h1, #message {
     border-bottom: 1px solid #ccc;
 }
 #file .path {
-    font-size: 15px;
-    padding: 5px 0 10px 10px;
+    font-size: 14px;
+    border-bottom: 1px dotted #ddd;
+    _border-bottom: 1px solid #e1e1e1;
+    padding-bottom: 5px;
+    margin: 0 10px 5px 10px;
 }
 #response-body a, #toggle-external-code a {
     background-image: linear-gradient(#fcfcfc, #eee);
@@ -1114,9 +1121,6 @@ h1, #message {
 #toolbar {
     padding-bottom: 10px;
     line-height: 24px;
-}
-code, pre {
-    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 </style>
 <?php
