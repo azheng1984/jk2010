@@ -724,12 +724,12 @@ function showInternalFile() {
     } else {
         for (var index = 0; index < stackFrameCount; ++index) {
             var node = document.getElementById('frame-' + index);
-            if (index <= firstInternalStackFrameIndex) {
+            if (index < firstInternalStackFrameIndex) {
                 node.className = 'hidden';
             }
             var child = node.firstChild;
-            child.innerHTML = parseInt(child.innerHTML)
-                - firstInternalStackFrameIndex - 1;
+            child.innerHTML =
+                parseInt(child.innerHTML) - firstInternalStackFrameIndex;
         }
     }
     button.innerHTML =
