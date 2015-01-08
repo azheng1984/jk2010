@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Logging;
 
+use Closure;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ConfigException;
 use InvalidArgumentException;
@@ -79,7 +80,7 @@ final class Logger {
                     $params['message'] = $params['message'][0];
                 } else {
                     $params['message'] =
-                        call_user_func_array('sprintf', $opitons['message']);
+                        call_user_func_array('sprintf', $params['message']);
                 }
             }
         }
@@ -98,8 +99,8 @@ final class Logger {
             LogHandler::handle($level, $params);
         } else {
             if (class_exists($logHandlerClass) === false) {
-                throw new Loggingxception(
-                    "Log handler class '$class' do not exist."
+                throw new LoggingException(
+                    "Log handler class '$logHandlerClass' do not exist."
                 );
             }
             $logHandlerClass::handle($level, $params);

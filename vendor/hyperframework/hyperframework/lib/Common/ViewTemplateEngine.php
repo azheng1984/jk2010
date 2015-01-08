@@ -37,9 +37,6 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         }
         $this->pushContext();
         $this->setLayout(null);
-        if (isset($options['root_path'])) {
-            $this->setRootPath($options['root_path']);
-        }
         if (DIRECTORY_SEPARATOR !== '/') {
             $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
         }

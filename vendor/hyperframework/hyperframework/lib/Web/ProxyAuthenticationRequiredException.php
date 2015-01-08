@@ -1,7 +1,7 @@
 <?php
-namespace Hyperframework\Web\Exceptions;
+namespace Hyperframework\Web;
 
-class ProxyAuthenticationRequiredException extends ApplicationException {
+class ProxyAuthenticationRequiredException extends HttpException {
     private $authenticationInfo;
 
     public function __construct(

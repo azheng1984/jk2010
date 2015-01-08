@@ -45,8 +45,8 @@ class StackTraceFormatter {
                     $argument = mb_substr($argument, 0, 15) . '...';
                 }
                 $argument = str_replace(
-                    ["\\", "'", "\n", "\r", "\t", "\v", "\e", "\f"],
-                    ['\\\\', '\\\'', '\n', '\r', '\t', '\v', '\e', '\f'],
+                    ["\\", "'", "\n", "\r", "\t", "\v", "\f"],
+                    ['\\\\', '\\\'', '\n', '\r', '\t', '\v', '\f'],
                     $argument
                 );
                 $arguments[] = "'$argument'";

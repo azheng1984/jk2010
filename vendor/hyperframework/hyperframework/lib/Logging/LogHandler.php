@@ -3,8 +3,6 @@ namespace Hyperframework\Logging;
 
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
-use Hyperframework\Common\PathCombiner;
-use Hyperframework\Common\FullPathRecognizer;
 
 class LogHandler {
     private static $protocol;
@@ -72,7 +70,7 @@ class LogHandler {
         if (self::$path === '') {
             self::$path = 'log' . DIRECTORY_SEPARATOR . 'app.log';
         } else {
-            if (preg_match('#^([a-zA-Z0-9.+]+)://#', $path, $matches)) {
+            if (preg_match('#^([a-zA-Z0-9.+]+)://#', self::$path, $matches)) {
                 self::$protocol = strtolower($matches[1]);
                 return;
             }

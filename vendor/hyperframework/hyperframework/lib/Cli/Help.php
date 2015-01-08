@@ -27,9 +27,7 @@ class Help {
         if ($this->hasOptionDescription()) {
             $this->renderOptions();
         }
-        if ($this->config->isSubcommandEnabled()
-            && $app->hasSubcommand() === false
-        ) {
+        if ($this->config->isSubcommandEnabled()) {
             $this->renderSubcommands();
         }
     }

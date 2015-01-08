@@ -79,6 +79,7 @@ abstract class DbActiveRecord implements ArrayAccess {
     }
 
     public static function findBySql($sql/*, ...*/) {
+        $args = func_get_args();
         if (isset($args[1]) && is_array($args[1])) {
             $args = $args[1];
         } else {

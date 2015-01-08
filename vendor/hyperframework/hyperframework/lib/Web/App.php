@@ -3,7 +3,6 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ConfigException;
-use Hyperframework\Common\FileLoader;
 use Hyperframework\Common\NamespaceCombiner;
 
 class App {

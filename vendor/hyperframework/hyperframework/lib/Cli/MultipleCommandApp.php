@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
+use Hyperframework\Common\Config;
 use Hyperframework\Common\ConfigException;
 
 class MultipleCommandApp extends App {

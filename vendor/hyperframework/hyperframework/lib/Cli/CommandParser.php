@@ -31,7 +31,7 @@ class CommandParser {
                 || $isArgument
             ) {
                 if ($isGlobal) {
-                    if ($config->hasSubcommand($element) === false) {
+                    if ($commandConfig->hasSubcommand($element) === false) {
                         throw new CommandParsingException(
                             "Command $element not found"
                         );

@@ -311,7 +311,7 @@ class CommandConfig {
                         'hyperframework.cli.command_config_root_path', ''
                     );
                     if ($configRootPath !== '') {
-                        PathBuilder::prepend($configPath, $configRootPath);
+                        PathCombiner::prepend($configPath, $configRootPath);
                     }
                     $configPath = ConfigFileLoader::getFullPath($configPath);
                 }
@@ -441,7 +441,7 @@ class CommandConfig {
         );
         if ($commandConfigRootPath !== '') {
             if (FullPathRecognizer::isFull($folder) === false) {
-                PathBuilder::prepend($folder, $commandConfigRootPath);
+                PathCombiner::prepend($folder, $commandConfigRootPath);
             } else {
                 return $folder;
             }

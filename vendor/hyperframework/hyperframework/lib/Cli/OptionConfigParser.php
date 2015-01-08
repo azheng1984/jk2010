@@ -148,18 +148,16 @@ class OptionConfigParser {
                             } else {
                                 $char = "char '$char'";
                             }
-                            throw new Exception(
-                               self::getPatternExceptionMessage(
-                                   "Invalid $char after '[', '=' is expected."
-                               )
+                            throw self::createPatternException(
+                               "Invalid $char after '[', '=' is expected."
                             );
 
                         }
                         throw self::createPatternException();
                     }
                     if ($pattern[$length - 1] !== ']') {
-                        throw new Exception(
-                            self::getPatternExceptionMessage('方括号没有闭合.')
+                        throw self::createPatternException(
+                            '方括号没有闭合.'
                         );
                     }
                     $argumentPattern = self::getArgumentPattern(
@@ -235,10 +233,8 @@ class OptionConfigParser {
                         'Argument pattern cannot be empty.'
                     );//-x[]
                 } else {
-                    throw new Exception(
-                        self::getPatternExceptionMessage(
-                            'Invalid space at the end of short name.'
-                        )
+                    throw self::createPatternException(
+                        'Invalid space at the end of short name.'
                     );
                 }
             } else {
@@ -295,10 +291,8 @@ class OptionConfigParser {
                 }
                 if ($isOptional === false) {
                     if ($isShortOption) {// -x [<arg>]
-                        throw new Exception(
-                            self::getPatternExceptionMessage(
-                                'Invalid space at the end of short name.'
-                            )
+                        throw self::createPatternException(
+                            'Invalid space at the end of short name.'
                         );
                     } else {//--xx=[<arg>]
                         throw self::createPatternException(
