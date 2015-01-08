@@ -147,7 +147,7 @@ class Config {
 
     public static function getAppRootNamespace() {
         return Config::getString(
-            'hyperframework.app_root_namespace'
+            'hyperframework.app_root_namespace', ''
         );
     }
 

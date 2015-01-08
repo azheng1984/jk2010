@@ -121,9 +121,7 @@ abstract class Router {
     protected function getControllerRootNamespace() {
         if ($this->controllerRootNamespace === null) {
             $namespace = 'Controllers';
-            $rootNamespace = Config::getString(
-                'hyperframework.app_root_namespace', ''
-            );
+            $rootNamespace = Config::getAppRootNamespace();
             if ($rootNamespace !== '' && $rootNamespace !== '\\') {
                 NamespaceCombiner::prepend($namespace, $rootNamespace);
             }

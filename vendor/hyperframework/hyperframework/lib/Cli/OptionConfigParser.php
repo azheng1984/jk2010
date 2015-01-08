@@ -215,7 +215,7 @@ class OptionConfigParser {
                     }
                     throw self::createPatternException(
                         "Invalid $char after name '$name', '=' is expected."
-                    ));
+                    );
                 }
                 throw self::createPatternException();
             }

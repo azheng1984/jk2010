@@ -24,7 +24,7 @@ class FileLoader {
         return $path;
     }
 
-    public static function getDefaultRootPath() {
+    protected static function getDefaultRootPath() {
         return Config::getAppRootPath();
     }
 

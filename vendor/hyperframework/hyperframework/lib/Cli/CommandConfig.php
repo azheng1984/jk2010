@@ -83,9 +83,7 @@ class CommandConfig {
                 );
                 if ($namespace === null) {
                     $namespace = 'Subcommands';
-                    $rootNamespace = Config::getString(
-                        'hyperframework.app_root_namespace', ''
-                    );
+                    $rootNamespace = Config::getAppRootNamespace();
                     if ($rootNamespace !== '' && $rootNamespace !== '\\') {
                         NamespaceCombiner::prepend($rootNamespace, $namespace);
                     }
@@ -411,9 +409,7 @@ class CommandConfig {
 
     private function getDefaultClass($subcommand = null) {
         if ($subcommand === null) {
-            $namespace = Config::getString(
-                'hyperframework.app_root_namespace', ''
-            );
+            $namespace = Config::getAppRootNamespace();
             $class = 'Command';
             if ($namespace !== '' && $namespace !== '\\') {
                 NamespaceCombiner::prepend($class, $namespace);
