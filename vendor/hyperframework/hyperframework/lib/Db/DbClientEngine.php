@@ -22,7 +22,7 @@ class DbClientEngine {
         $table, array $columns, $selectedColumnName
     ) {
         $result = $this->queryByColumns(
-            $table, $columns, array($selectedColumnName)
+            $table, $columns, [$selectedColumnName]
         );
         return $result->fetchColumn();
     }
@@ -227,12 +227,13 @@ class DbClientEngine {
             $selector = '*';
         } else {
             if (count($selectedColumnNames) === 0) {
-                throw new DbException('没有 column 被 selected.');
+                $selector = '*';
+            } else {
+                foreach ($selectedColumnNames as &$name) {
+                    $name = $this->quoteIdentifier($name);
+                }
+                $selector = implode(', ', $selectedColumnNames);
             }
-            foreach ($selectedColumnNames as &$name) {
-                $name = $this->quoteIdentifier($name);
-            }
-            $selector = implode(', ', $selectedColumnNames);
         }
         list($where, $params) = $this->buildWhereByColumns($columns);
         $sql = 'SELECT ' . $selector . ' FROM '

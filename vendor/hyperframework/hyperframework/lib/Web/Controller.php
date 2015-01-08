@@ -7,6 +7,7 @@ use Hyperframework\Common\ViewTemplate;
 use Exception;
 use InvalidArgumentException;
 use Hyperframework\Common\InvalidOperationException;
+use Hyperframework\Common\NotSupportedException;
 
 class Controller {
     private $app;
@@ -83,7 +84,9 @@ class Controller {
 
     public function addAroundFilter($filter, array $options = null) {
         if (version_compare(phpversion(), '5.5.0', '<')) {
-            throw new WebException('Around filter 需要 PHP 版本大于等于 5.5');
+            throw new NotSupportedException(
+                'Around filter 需要 PHP 版本大于等于 5.5'
+            );
         }
         $this->addFilter('around', $filter, $options);
     }

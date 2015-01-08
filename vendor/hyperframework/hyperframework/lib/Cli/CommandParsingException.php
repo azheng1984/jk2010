@@ -1,5 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
-class CommandParsingException extends CliException {
+use Exception;
+
+class CommandParsingException extends Exception {
 }
