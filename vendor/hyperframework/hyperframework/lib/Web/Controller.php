@@ -35,8 +35,8 @@ class Controller {
             }
             $this->runAfterFilters();
         } catch (Exception $e) {
-            $this->quitFilterChain($e);
-            throw $e;
+            //todo 看似异常被吃掉了
+            $this->quiteFilterChain($e);
         }
     }
 
@@ -330,10 +330,16 @@ class Controller {
                             $shouldRunYieldedFiltersOnly = true;
                         }
                     }
-                } catch (Exception $excepition) {
+                } catch (Exception $e) {
+                    if ($e !== $exception) {
+                        throw $e;
+                    }
                     $shouldRunAfterFilter = false;
                 }
             }
+        }
+        if ($exception !== null) {
+            throw $exception;
         }
     }
 }
