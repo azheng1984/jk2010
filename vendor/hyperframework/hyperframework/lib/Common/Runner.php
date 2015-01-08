@@ -9,7 +9,7 @@ class Runner {
     }
 
     protected static function initializeAppRootPath() {
-        throw new NotImplementedException(__METHOD__ ' is not implemented.');
+        throw new NotImplementedException(__METHOD__ . ' is not implemented.');
     }
 
     protected static function initializeConfig() {
@@ -23,7 +23,7 @@ class Runner {
         } else {
             if (class_exists($class) === false) {
                 throw new ConfigException(
-                    "Error handler class '$class' does not exist"
+                    "Error handler class '$class' does not exist."
                 );
             }
             $class::run();

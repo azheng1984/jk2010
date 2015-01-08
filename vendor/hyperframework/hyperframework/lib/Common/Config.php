@@ -5,6 +5,7 @@ use InvalidArgumentException;
 
 class Config {
     private static $data = [];
+    private static $appRootPath;
 
     public static function get($name, $default = null) {
         if (isset(self::$data[$name])) {
@@ -30,12 +31,12 @@ class Config {
             }
             throw new ConfigException(
                 "Config '$name' requires a string. Object of class "
-                    . get_class($result) . " could not be converted to string"
+                    . get_class($result) . " could not be converted to string."
             );
         }
         throw new ConfigException(
             "Config '$name' requires a string. "
-                . ucfirst(gettype($result)) . ' given'
+                . ucfirst(gettype($result)) . ' given.'
         );
     }
 
@@ -122,6 +123,32 @@ class Config {
             );
         }
         return $result;
+    }
+
+    public static function getAppRootPath() {
+        if (self::$appRootPath === null) {
+            self::$appRootPath = Config::getString(
+                'hyperframework.app_root_path'
+            );
+            if (self::$appRootPath === null) {
+                throw new ConfigException(
+                    "Config 'hyperframework.app_root_path' is not set."
+                );
+            }
+            if (FullPathRecognizer::isFull(self::$appRootPath) === false) {
+                throw new ConfigException(
+                    "Config 'hyperframework.app_root_path'"
+                        . ' is not a correct full path.'
+                );
+            }
+        }
+        return self::$appRootPath;
+    }
+
+    public static function getAppRootNamespace() {
+        return Config::getString(
+            'hyperframework.app_root_namespace'
+        );
     }
 
     public static function set($key, $value) {

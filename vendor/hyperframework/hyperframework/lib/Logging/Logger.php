@@ -2,6 +2,8 @@
 namespace Hyperframework\Logging;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Common\ConfigException;
+use InvalidArgumentException;
 
 final class Logger {
     private static $thresholdCode;
@@ -60,7 +62,7 @@ final class Logger {
                 || $params['name'][0] === '.'
                 || substr($params['name'], -1) === '.'
             ) {
-                throw new LoggingException(
+                throw new InvalidArgumentException(
                     "Log entry name '{$params['name']}' is invalid."
                 );
             }
@@ -83,8 +85,10 @@ final class Logger {
         }
         if (isset($params['data'])) {
             if (is_array($params['data']) === false) {
-                throw new LoggingException('Data of log entry must be array, '
-                    . gettype($params['data']) . ' given.');
+                throw new InvalidArgumentException(
+                    'Data of log entry must be array, '
+                        . gettype($params['data']) . ' given.'
+                );
             }
         }
         $logHandlerClass = Config::getString(
@@ -109,7 +113,7 @@ final class Logger {
                 if (isset(self::$levels[$level]) === false) {
                     $level = strtoupper($level);
                     if (isset(self::$levels[$level]) === false) {
-                        throw new LoggingException(
+                        throw new ConfigException(
                             "Log entry level '$level' is invalid."
                         );
                     }

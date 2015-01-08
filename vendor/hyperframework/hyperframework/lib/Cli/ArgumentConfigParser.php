@@ -1,14 +1,14 @@
 <?php
 namespace Hyperframework\Cli;
 
-use Exception;
+use Hyperframework\Common\ConfigException;
 
 class ArgumentConfigParser {
     public static function parse(array $configs) {
         $result = [];
         foreach ($configs as $config) {
             if (strpos($config, ' ') !== false) {
-                throw new Exception(
+                throw new ConfigException(
                     self::getErrorMessage($config) . '(不允许存在空格)'
                 );
             }
@@ -16,19 +16,19 @@ class ArgumentConfigParser {
             $isRepeatable = false;
             $length = strlen($config);
             if ($length < 3) {
-                throw new Exception(self::getErrorMessage($config)); 
+                throw new ConfigException(self::getErrorMessage($config)); 
             }
             if ($config[0] === '[') {
                 $isOptional = true;
                 if ($config[$length - 1] !== ']') {
-                    throw new Exception(
+                    throw new ConfigException(
                         self::getErrorMessage($config) . '(方括号没有关闭)'
                     );
                 }
                 $config = substr($config, 1, $length - 2);
                 $length -= 2;
                 if ($length < 3) {
-                    throw new Exception(self::getErrorMessage($config));
+                    throw new ConfigException(self::getErrorMessage($config));
                 }
             }
             if ($config[0] === '<') {
@@ -37,17 +37,17 @@ class ArgumentConfigParser {
                     $length -= 3;
                     $isRepeatable = true;
                     if ($length < 3) {
-                        throw new Exception(self::getErrorMessage($config));
+                        throw new ConfigException(self::getErrorMessage($config));
                     }
                 }
                 if ($config[$length - 1] !== '>') {
-                    throw new Exception(
+                    throw new ConfigException(
                         self::getErrorMessage($config) . '(尖括号没有关闭)'
                     );
                 }
                 $name = substr($config, 1, $length - 2);
                 if (preg_match('/^[a-zA-Z0-9-]+$/', $name) !== 1) {
-                    throw new Exception(self::getErrorMessage($config)
+                    throw new ConfigException(self::getErrorMessage($config)
                         . '(参数名称包含非法字符)'
                     );
                 } else {
@@ -56,7 +56,7 @@ class ArgumentConfigParser {
                     );
                 }
             } else {
-                throw new Exception(self::getErrorMessage($config)
+                throw new ConfigException(self::getErrorMessage($config)
                     . '(参数名称需要使用尖括号包围)'
                 );
             }

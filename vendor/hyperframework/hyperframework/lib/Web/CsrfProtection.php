@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Web;
 
-use Exception;
 use Hyperframework\Common\Config;
 
 class CsrfProtection {

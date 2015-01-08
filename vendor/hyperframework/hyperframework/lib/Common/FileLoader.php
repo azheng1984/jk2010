@@ -2,8 +2,6 @@
 namespace Hyperframework\Common;
 
 class FileLoader {
-    private static $defaultRootPath;
-
     public static function loadPhp($path, $pathConfigName = null) {
         return self::load($path, $pathConfigName, true);
     }
@@ -27,23 +25,7 @@ class FileLoader {
     }
 
     public static function getDefaultRootPath() {
-        if (self::$defaultRootPath === null) {
-            self::$defaultRootPath = Config::getString(
-                'hyperframework.app_root_path'
-            );
-            if (self::$defaultRootPath === null) {
-                throw new ConfigException(
-                    "Config 'hyperframework.app_root_path' is not set."
-                );
-            }
-            if (FullPathRecognizer::isFull(self::$defaultRootPath) === false) {
-                throw new ConfigException(
-                    "Config 'hyperframework.app_root_path'"
-                        . ' is not a correct full path.'
-                );
-            }
-        }
-        return self::$defaultRootPath;
+        return Config::getAppRootPath();
     }
 
     private static function load($path, $pathConfigName, $isPhp) {

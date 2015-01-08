@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
-use Exception;
+use Hyperframework\Common\ConfigException;
 
 class OptionConfigParser {
     private static $pattern;
@@ -42,7 +42,7 @@ class OptionConfigParser {
             );
             if ($name !== null) {
                 if (isset($result[$name])) {
-                    throw new CliException(
+                    throw new ConfigException(
                         "Option config error. Option '--$name' 不允许重复."
                     );
                 }
@@ -50,7 +50,7 @@ class OptionConfigParser {
             }
             if ($shortName !== null) {
                 if (isset($result[$shortName])) {
-                    throw new Exception(
+                    throw new ConfigException(
                         "Option config error. Option '-$name' 不允许重复."
                     );
                 }
@@ -65,15 +65,15 @@ class OptionConfigParser {
         self::$pattern = $pattern;
         $length = strlen($pattern);
         if ($pattern[$length - 1] === ' ') {
-            throw new Exception(self::getPatternExceptionMessage(
+            throw self::createPatternException(
                 'Invalid space at the end of pattern.'
-            ));
+            );
         }
         if ($length < 2) {
-            throw new Exception(self::getPatternExceptionMessage());
+            throw self::createPatternException();
         }
         if ($pattern[0] !== '-') {
-            throw new Exception(self::getPatternExceptionMessage());
+            throw self::createPatternException();
         }
         $shortName = null;
         $isShort = false;
@@ -114,13 +114,13 @@ class OptionConfigParser {
         }
         if ($shortName !== null && ctype_alnum($shortName) === false) {
             if ($shortName === ' ') {
-                throw new Exception(self::getPatternExceptionMessage(
+                throw self::createPatternException(
                     'Invalid space at the front of short name.'
-                ));
+                );
             }
-            throw new Exception(self::getPatternExceptionMessage(
+            throw self::createPatternException(
                 "Invalid short name '$shortName'."
-            ));
+            );
         }
         if ($hasArgument !== -1) {
             $isOptional = $hasArgument !== 1;
@@ -132,7 +132,7 @@ class OptionConfigParser {
         $name = null;
         if ($hasName === true) {
             if ($length <= $index + 1 || substr($pattern, $index, 2) !== '--') {
-                throw new Exception(self::getPatternExceptionMessage());
+                throw self::createPatternException();
             }
             $name = '';
             $index += 2;
@@ -155,7 +155,7 @@ class OptionConfigParser {
                             );
 
                         }
-                        throw new Exception(self::getPatternExceptionMessage());
+                        throw self::createPatternException();
                     }
                     if ($pattern[$length - 1] !== ']') {
                         throw new Exception(
@@ -181,7 +181,7 @@ class OptionConfigParser {
             }
         }
         if ($hasName === true && $name === null) {
-            throw new Exception(self::getPatternExceptionMessage());
+            throw self::createPatternException();
         }
         if ($name !== null) {
             if (preg_match('/^[a-zA-Z0-9-]{2,}$/', $name) !== 1) {
@@ -189,15 +189,15 @@ class OptionConfigParser {
                 if ($spacePosition !== false) {
                     if (substr($name, -1) === ' ') {
                         $name = trim($name, ' ');
-                        throw new Exception(self::getPatternExceptionMessage(
+                        throw self::createPatternException(
                             "Invalid space at the end of name '$name'."
-                        ));
+                        );
                     }
                     if ($name[0] === ' ') {
                         $name = trim($name, ' ');
-                        throw new Exception(self::getPatternExceptionMessage(
+                        throw self::createPatternException(
                             "Invalid space at the front of name '$name'."
-                        ));
+                        );
                     }
                 }
                 if (preg_match('/^[a-zA-Z0-9-]+/', $name, $matches) === 1) {
@@ -209,15 +209,15 @@ class OptionConfigParser {
                     }
                     $name = $matches[0];
                     if (strlen($name) === 1) {
-                        throw new Exception(self::getPatternExceptionMessage(
+                        throw self::createPatternException(
                             "Invalid long option name '$name'."
-                        ));
+                        );
                     }
-                    throw new Exception(self::getPatternExceptionMessage(
+                    throw self::createPatternException(
                         "Invalid $char after name '$name', '=' is expected."
                     ));
                 }
-                throw new Exception(self::getPatternExceptionMessage());
+                throw self::createPatternException();
             }
         }
         return [$shortName, $name, $hasArgument, $argumentPattern];
@@ -231,9 +231,9 @@ class OptionConfigParser {
         if ($argumentPattern === '') {
             if ($isShortOption) {
                 if ($isOptional) {
-                    throw new Exception(self::getPatternExceptionMessage(
+                    throw self::createPatternException(
                         'Argument pattern cannot be empty.'
-                    ));//-x[]
+                    );//-x[]
                 } else {
                     throw new Exception(
                         self::getPatternExceptionMessage(
@@ -242,23 +242,23 @@ class OptionConfigParser {
                     );
                 }
             } else {
-                throw new Exception(self::getPatternExceptionMessage(
+                throw self::createPatternException(
                     'Argument pattern cannot be empty.'
-                ));//--xx[=] or --x=
+                );//--xx[=] or --x=
             }
         } elseif (strpos($argumentPattern, ' ') !== false) {
-            throw new Exception(self::getPatternExceptionMessage(
+            throw self::createPatternException(
                 'Argument pattern cannot include space.'
-            ));
+            );
         } elseif ($argumentPattern[0] === '-') {
             if ($name === null) {
-                throw new Exception(self::getPatternExceptionMessage(
+                throw self::createPatternException(
                     "Short option and long option must separate with ','."
-                ));
+                );
             }
-            throw new Exception(self::getPatternExceptionMessage(
+            throw self::createPatternException(
                 "Argument pattern cannot begin with '-'."
-            ));
+            );
         }
         if ($isOptional !== null) {
             $roundBracketDepth = 0;
@@ -284,14 +284,14 @@ class OptionConfigParser {
             }
             if ($length === $index) {
                 if ($squareBracketDepth !== 0) {
-                    throw new Exception(self::getPatternExceptionMessage(
+                    throw self::createPatternException(
                         "'[' or ']' is not closed"
-                    )); // -x[[x]
+                    ); // -x[[x]
                 }
                 if ($roundBracketDepth !== 0) {
-                    throw new Exception(self::getPatternExceptionMessage(
+                    throw self::createPatternException(
                         "'(' or ')' is not closed"
-                    )); // -x([x]
+                    ); // -x([x]
                 }
                 if ($isOptional === false) {
                     if ($isShortOption) {// -x [<arg>]
@@ -301,9 +301,9 @@ class OptionConfigParser {
                             )
                         );
                     } else {//--xx=[<arg>]
-                        throw new Exception(self::getPatternExceptionMessage(
+                        throw self::createPatternException(
                             'option argument is optional.'
-                        ));
+                        );
                     }
                 }
             } elseif ($isOptional) {// -x[arg]<arg> or -x<arg>
@@ -313,12 +313,12 @@ class OptionConfigParser {
         return $argumentPattern;
     }
 
-    private static function getPatternExceptionMessage($extraMessage = '') {
+    private static function createPatternException($extraMessage = '') {
         $pattern = self::$pattern;
         $result = "Option config error. Pattern '$pattern' is invalid.";
         if ($extraMessage !== '') {
             $result .= ' ' . $extraMessage;
         }
-        return $result;
+        return new ConfigException($result);
     }
 }

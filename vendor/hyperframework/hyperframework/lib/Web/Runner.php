@@ -2,6 +2,7 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Common\ConfigException;
 use Hyperframework\Common\Runner as Base;
 
 class Runner extends Base {
@@ -20,7 +21,7 @@ class Runner extends Base {
             ErrorHandler::run();
         } else {
             if (class_exists($class) === false) {
-                throw new Exception(
+                throw new ConfigException(
                     "Error handler class '$class' does not exist."
                 );
             }
@@ -34,7 +35,7 @@ class Runner extends Base {
             $app = new App;
         } else {
             if (class_exists($class) === false) {
-                throw new Exception("App class '$class' does not exist.");
+                throw new ConfigException("App class '$class' does not exist.");
             }
             $app = new $class;
         }

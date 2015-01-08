@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Web;
 
-use Exception;
 use Hyperframework;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NamespaceCombiner;

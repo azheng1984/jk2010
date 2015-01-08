@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
-use Exception;
+use Hyperframework\Common\ConfigException;
 
 class MultipleCommandApp extends App {
     private $commandConfig;
@@ -75,7 +75,7 @@ class MultipleCommandApp extends App {
         $config = $this->getCommandConfig();
         $subcommandClass = $config->getClass($this->getSubcommand());
         if (class_exists($subcommandClass) === false) {
-            throw new Exception(
+            throw new ConfigException(
                 "Subcommand config error. Class '$subcommandClass' 不存在"
             );
         }

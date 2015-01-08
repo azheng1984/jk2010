@@ -2,6 +2,7 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Common\ConfigException;
 use Hyperframework\Common\FileLoader;
 use Hyperframework\Common\NamespaceCombiner;
 
@@ -31,7 +32,9 @@ class App {
                 }
             }
             if (class_exists($class) === false) {
-                throw new WebException("Router class '$class' does not exist.");
+                throw new ConfigException(
+                    "Router class '$class' does not exist."
+                );
             }
             $this->router = new $class($this);
         }
@@ -75,7 +78,7 @@ class App {
         $router = $this->getRouter();
         $class = (string)$router->getControllerClass();
         if ($class === '' || class_exists($class) === false) {
-            throw new WebException("Controller class '$class' 不存在.");
+            throw new ConfigException("Controller class '$class' 不存在.");
         }
         return new $class($this);
     }

@@ -1,20 +1,23 @@
 <?php
 namespace Hyperframework\Cli;
 
+use InvalidArgumentException;
+use Hyperframework\Common\InvalidOperationException;
+
 abstract class Command {
     private $app;
 
     public function __construct($app) {
         if ($app === null) {
-            throw new Exception("参数 'app' 不允许为 null");
+            throw new InvalidArgumentException("参数 'app' 不允许为 null");
         }
         $this->app = $app;
     }
 
     protected function getApp() {
         if ($this->app === null) {
-            throw new Exception(
-                "Class '" . __CLASS__ . "' 构造函数没有被调用."
+            throw new InvalidOperationException(
+                "App is null. Object 没有被正确 construct."
             );
         }
         return $this->app;

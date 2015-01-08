@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework\Cli;
 
+use Hyperframework\Common\ConfigException;
+
 class OptionConfig {
     private $name;
     private $shortName;
@@ -22,7 +24,7 @@ class OptionConfig {
     ) {
         $this->name = $name;
         if ($shortName === 'W') {
-            throw new Exception(
+            throw new ConfigException(
                 'The -W (capital-W)'
                     . ' option shall be reserved for implementation extensions.'
             );

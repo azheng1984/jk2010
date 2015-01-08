@@ -1,7 +1,7 @@
 <?php
-namespace Hyperframework\Web\Exceptions;
+namespace Hyperframework\Web;
 
-class NotImplementedException extends ApplicationException {
+class NotImplementedException extends HttpException {
     public function __construct($message = null, $previous = null) {
         parent::__construct($message, '501 Not Implemented', $previous);
     }

@@ -4,6 +4,7 @@ namespace Hyperframework\Web;
 use Generator;
 use Closure;
 use Hyperframework\Common\ViewTemplate;
+use Exception;
 use InvalidArgumentException;
 use Hyperframework\Common\InvalidOperationException;
 
@@ -17,7 +18,9 @@ class Controller {
 
     public function __construct($app) {
         if ($app === null) {
-            throw new InvalidArgumentException('App cannot be null.');
+            throw new InvalidArgumentException(
+                "Argument 'app' cannot be null."
+            );
         }
         $this->app = $app;
     }
@@ -62,7 +65,7 @@ class Controller {
         $router = $this->getRouter();
         $method = $router->getActionMethod();
         if ($method == '') {
-            throw new Exception('Action method 不能为空');
+            throw new WebException('Action method 不能为空');
         }
         if (method_exists($this, $method)) {
             $actionResult = $this->$method();
@@ -80,7 +83,7 @@ class Controller {
 
     public function addAroundFilter($filter, array $options = null) {
         if (version_compare(phpversion(), '5.5.0', '<')) {
-            throw new Exception('Around filter 需要 PHP 版本大于等于 5.5');
+            throw new WebException('Around filter 需要 PHP 版本大于等于 5.5');
         }
         $this->addFilter('around', $filter, $options);
     }
@@ -108,7 +111,7 @@ class Controller {
             } else {
                 $class = $config['filter'];
                 if (class_exists($class) === false) {
-                    throw new Exception(
+                    throw new WebException(
                         "Filter class '$class' does not exist."
                     );
                 }
@@ -134,7 +137,7 @@ class Controller {
                 } else {
                     $type = gettype($result);
                 }
-                throw new Exception(
+                throw new WebException(
                     'Around filter of controller must return a generator, '
                         . $type . ' returned.'
                 );
@@ -165,7 +168,7 @@ class Controller {
         ];
         $action = (string)$this->getRouter()->getAction();
         if ($action === '') {
-            throw new Exception('Action 不能为空.');
+            throw new WebException('Action 不能为空.');
         }
         if ($options === null) {
             $this->filterChain[] = $config;
@@ -255,11 +258,11 @@ class Controller {
             }
             $controller = (string)$router->getController();
             if ($controller === '') {
-                throw new Exception('Controller 不能为空.');
+                throw new WebException('Controller 不能为空.');
             }
             $action = (string)$router->getAction();
             if ($action === '') {
-                throw new Exception('Action 不能为空.');
+                throw new WebException('Action 不能为空.');
             }
             $view .=  $controller . '/' . $action;
             $format = $router->hasParam('format');
