@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Web;
 
-use Exception;
 use Hyperframework\Web\Debugger;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ViewTemplate;
@@ -77,7 +76,9 @@ class ErrorHandler extends Base {
 
     private static function deleteOutputBuffer() {
         if (self::$startupOutputBufferLevel === null) {
-            throw new Exception('Error handler does not running.');
+            throw new InvalidOperationException(
+                'Error handler is not running.'
+            );
         }
         $obLevel = ob_get_level();
         while ($obLevel > self::$startupOutputBufferLevel) {
@@ -214,14 +215,18 @@ class ErrorHandler extends Base {
 
     protected static function isDebuggerEnabled() {
         if (self::$isRunning === false) {
-            throw new Exception('Error handler does not running.');
+            throw new InvalidOperationException(
+                'Error handler is not running.'
+            );
         }
         return self::$isDebuggerEnabled;
     }
 
     protected static function getStartupOutputBufferLevel() {
         if (self::$isRunning === false) {
-            throw new Exception('Error handler does not running.');
+            throw new InvalidOperationException(
+                'Error handler is not running.'
+            );
         }
         return self::$startupOutputBufferLevel;
     }

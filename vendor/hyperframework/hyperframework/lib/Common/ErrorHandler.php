@@ -1,9 +1,6 @@
 <?php
 namespace Hyperframework\Common;
 
-use Exception;
-use Hyperframework\Common\ErrorException;
-use Hyperframework\Common\Config;
 use Hyperframework\Logging\Logger;
 
 class ErrorHandler {
@@ -82,7 +79,7 @@ class ErrorHandler {
 
     protected static function shouldDisplayErrors() {
         if (self::$isRunning === false) {
-            throw new Exception('Error handler is not running');
+            throw new InvalidOperationException('Error handler is not running');
         }
         return self::$shouldDisplayErrors;
     }
@@ -306,28 +303,30 @@ class ErrorHandler {
 
     final protected static function isError() {
         if (self::$source === null) {
-            throw new Exception('Error is empty');
+            throw new InvalidOperationException('No error or exception');
         }
         return self::$isError;
     }
 
     protected static function isLoggerEnabled() {
         if (self::$isRunning === false) {
-            throw new Exception('Error handler is not running');
+            throw new InvalidOperationException('Error handler is not running');
         }
         return self::$isLoggerEnabled;
     }
 
     protected static function isDefaultErrorLogEnabled() {
         if (self::$isRunning === false) {
-            throw new Exception('Error handler is not running');
+            throw new InvalidOperationException(
+                'Error handler is not running'
+            );
         }
         return self::$isDefaultErrorLogEnabled;
     }
 
     protected static function getErrorReportingBitmask() {
         if (self::$isRunning === false) {
-            throw new Exception('Error handler is not running');
+            throw new InvalidOperationException('Error handler is not running');
         }
         return self::$errorReportingBitmask;
     }

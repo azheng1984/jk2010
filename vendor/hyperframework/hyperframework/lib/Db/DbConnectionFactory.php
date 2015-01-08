@@ -2,8 +2,8 @@
 namespace Hyperframework\Db;
 
 use PDO;
-use Exception;
 use Hyperframework\Common\ConfigFileLoader;
+use Hyperframework\Common\ConfigException;
 
 class DbConnectionFactory {
     private static $config;
@@ -11,7 +11,9 @@ class DbConnectionFactory {
     public static function build($name = 'default') {
         $config = self::getConfig($name);
         if (isset($config['dsn']) === false) {
-            throw new Exception("Dsn of database config '$name' is not set");
+            throw new ConfigException(
+                "Dsn of database config '$name' is not set"
+            );
         }
         $username = isset($config['username']) ? $config['username'] : null;
         $password = isset($config['password']) ? $config['password'] : null;
@@ -41,7 +43,7 @@ class DbConnectionFactory {
         if (isset(self::$config[$name])) {
             return self::$config[$name];
         }
-        throw new Exception("Database config '$name' not found");
+        throw new ConfigException("Database config '$name' not found");
     }
 
     private static function initializeConfig() {

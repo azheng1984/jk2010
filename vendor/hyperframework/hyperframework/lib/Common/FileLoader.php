@@ -1,8 +1,6 @@
 <?php
 namespace Hyperframework\Common;
 
-use Exception;
-
 class FileLoader {
     private static $defaultRootPath;
 
@@ -34,12 +32,12 @@ class FileLoader {
                 'hyperframework.app_root_path'
             );
             if (self::$defaultRootPath === null) {
-                throw new Exception(
+                throw new ConfigException(
                     "Config 'hyperframework.app_root_path' is not set."
                 );
             }
             if (FullPathRecognizer::isFull(self::$defaultRootPath) === false) {
-                throw new Exception(
+                throw new ConfigException(
                     "Config 'hyperframework.app_root_path'"
                         . ' is not a correct full path.'
                 );

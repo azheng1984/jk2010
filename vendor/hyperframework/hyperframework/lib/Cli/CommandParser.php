@@ -1,8 +1,6 @@
 <?php
 namespace Hyperframework\Cli;
 
-use Exception;
-
 class CommandParser {
     public static function parse($commandConfig, array $argv = null) {
         if ($argv === null) {

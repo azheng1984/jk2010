@@ -2,7 +2,6 @@
 namespace Hyperframework\Web;
 
 use ErrorException;
-use Exception;
 use Hyperframework\Common\StackTraceFormatter;
 use Hyperframework\Common\FileLoader;
 use Hyperframework\Common\Config;
@@ -35,7 +34,7 @@ class Debugger {
         if ($realRootPath !== false) {
             $rootPath = $realRootPath;
         } else {
-            throw new Exception("App root path '$rootPath' does not exist.'");
+            throw new WebException("App root path '$rootPath' does not exist.'");
         }
         self::$rootPath = $rootPath . DIRECTORY_SEPARATOR;
         self::$rootPathLength = strlen(self::$rootPath);

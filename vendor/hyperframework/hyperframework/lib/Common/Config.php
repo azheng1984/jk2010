@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Common;
 
-use Exception;
+use InvalidArgumentException;
 
 class Config {
     private static $data = [];
@@ -28,12 +28,12 @@ class Config {
             if (method_exists($result, '__toString')) {
                 return (string)$result;
             }
-            throw new Exception(
+            throw new ConfigException(
                 "Config '$name' requires a string. Object of class "
                     . get_class($result) . " could not be converted to string"
             );
         }
-        throw new Exception(
+        throw new ConfigException(
             "Config '$name' requires a string. "
                 . ucfirst(gettype($result)) . ' given'
         );
@@ -53,7 +53,7 @@ class Config {
             return $default;
         }
         if (is_object($result)) {
-            throw new Exception(
+            throw new ConfigException(
                 "Config '$name' requires an integer. Object of class "
                     . get_class($result) . " could not be converted to integer"
             );
@@ -67,7 +67,7 @@ class Config {
             return $default;
         }
         if (is_object($result)) {
-            throw new Exception(
+            throw new ConfigException(
                 "Config '$name' requires a float. Object of class "
                     . get_class($result) . " could not be converted to float"
             );
@@ -81,7 +81,7 @@ class Config {
             return $default;
         }
         if (is_array($result) === false) {
-            throw new Exception(
+            throw new ConfigException(
                 "Config '$name' requires an array. "
                     . ucfirst(gettype($result)) . " given"
             );
@@ -96,13 +96,13 @@ class Config {
         }
         if ($class === null) {
             if (is_object($result) === false) {
-                throw new Exception(
+                throw new ConfigException(
                     "Config '$name' requires an object of class. "
                         . ucfirst(gettype($result)) . " given"
                 );
             }
         } elseif ($result instanceof $class === false) {
-            throw new Exception(
+            throw new ConfigException(
                 "Config '$name' requires an object of class '$class'. "
                     . "Object of class '". get_class($result) . "' given"
             );
@@ -116,7 +116,7 @@ class Config {
             return $default;
         }
         if (is_resource($result) === false) {
-            throw new Exception(
+            throw new ConfigException(
                 "Config '$name' requires a resource. "
                     . ucfirst(gettype($result)) . ' given'
             );
@@ -144,14 +144,14 @@ class Config {
             $path = $configs;
             $configs = ConfigFileLoader::loadPhp($path);
             if (is_array($configs) === false) {
-                throw new Exception(
+                throw new ConfigException(
                     "Load config file $path failed. Config must be array, "
                         . gettype($configs) . ' returned.'
                 );
             }
         } elseif (is_array($configs) === false) {
-            throw new Exception(
-                'argument must be array or string, '
+            throw new InvalidArgumentException(
+                'Argument must be array or string, '
                     . gettype($configs) . ' given.'
             );
         }
@@ -163,7 +163,7 @@ class Config {
                     || $value[0] !== '['
                     || $value[$length - 1] !== ']'
                 ) {
-                    throw new Exception(
+                    throw new ConfigException(
                         "Config section name '$value' is invalid."
                     );
                 }

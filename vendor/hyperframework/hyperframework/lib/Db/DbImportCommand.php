@@ -2,7 +2,7 @@
 namespace Hyperframework\Db;
 
 use PDO;
-use Exception;
+use InvalidArgumentException;
 
 class DbImportCommand {
     public static function execute($table, $rows, $options = null) {
@@ -14,7 +14,8 @@ class DbImportCommand {
         if (isset($options['column_names'])) {
             $columnNames = $options['column_names'];
             if (is_array($columnNames) === false) {
-                throw new Exception('Options 中的 column_names 值必须是 array. '
+                throw new InvalidArgumentException(
+                    'Options 中的 column_names 值必须是 array. '
                     . gettype($columnNames) . ' given.');
             }
         } else {
@@ -56,7 +57,7 @@ class DbImportCommand {
             }
             while ($size > 0) {
                 if (count($rows[$index]) !== $columnCount) {
-                    throw new Exception('导入的数据行，数据列数不一致.');
+                    throw new DbException("导入数据的列数不一致.");
                 }
                 $values = array_merge($values, array_values($rows[$index]));
                 ++$index;

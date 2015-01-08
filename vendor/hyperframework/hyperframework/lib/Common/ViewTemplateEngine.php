@@ -2,7 +2,7 @@
 namespace Hyperframework\Common;
 
 use ArrayAccess;
-use Exception;
+use InvalidArgumentException;
 use Closure;
 
 abstract class ViewTemplateEngine implements ArrayAccess {
@@ -23,12 +23,14 @@ abstract class ViewTemplateEngine implements ArrayAccess {
     public function load($path) {
         $path = (string)$path;
         if ($path === '') {
-            throw new Exception('View path cannot be empty.');
+            throw new InvalidArgumentException('View path cannot be empty.');
         }
         $extensionPattern = '#\.[.0-9a-zA-Z]+$#';
         if (preg_match($extensionPattern, $path, $matches) === 0) {
             if ($this->fullPath === null) {
-                throw new Exception('View extension unknown.');
+                throw new InvalidArgumentException(
+                    'File extension is required.'
+                );
             }
             preg_match($extensionPattern, $this->fullPath, $matches);
             $path .= $matches[0];
@@ -74,7 +76,9 @@ abstract class ViewTemplateEngine implements ArrayAccess {
             $function();
         } else {
             if ($default === null) {
-                throw new Exception("View block '$name' not found");
+                throw new ViewTemplateEngineException(
+                    "Block '$name' does not exist."
+                );
             }
             $default();
         }
@@ -110,7 +114,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
 
     public function offsetSet($offset, $value) {
         if ($offset === null) {
-            throw new Exception('Offset 不能为空.');
+            throw new InvalidArgumentException('Offset 不能为空.');
         } else {
             $this->model[$offset] = $value;
         }

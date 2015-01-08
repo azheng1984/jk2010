@@ -1,10 +1,11 @@
 <?php
 namespace Hyperframework\Web;
 
-use Exception;
 use Generator;
 use Closure;
 use Hyperframework\Common\ViewTemplate;
+use InvalidArgumentException;
+use Hyperframework\Common\InvalidOperationException;
 
 class Controller {
     private $app;
@@ -15,6 +16,9 @@ class Controller {
     private $isViewEnabled = true;
 
     public function __construct($app) {
+        if ($app === null) {
+            throw new InvalidArgumentException('App cannot be null.');
+        }
         $this->app = $app;
     }
 
@@ -98,9 +102,6 @@ class Controller {
     private function runFilter(array &$config, $return = false) {
         $result = null;
         if (is_string($config['filter'])) {
-            if ($config['filter'] === '') {
-                throw new Exception('Filter is a empty string.');
-            }
             if ($config['filter'][0] === ':') {
                 $method = substr($config['filter'], 1);
                 $result = $this->$method();
@@ -156,6 +157,9 @@ class Controller {
     }
 
     private function addFilter($type, $filter, array $options = null) {
+        if ($filter === '') {
+            throw new InvalidArgumentException('Filter is an empty string.');
+        }
         $config = [
             'type' => $type, 'filter' => $filter, 'options' => $options
         ];
@@ -194,8 +198,8 @@ class Controller {
 
     public function getApp() {
         if ($this->app === null) {
-            throw new Exception(
-                "Class '" . __CLASS__ . "' 构造函数没有被调用."
+            throw new InvalidOperationException(
+                "App is null. Object 没有被正确 construct."
             );
         }
         return $this->app;

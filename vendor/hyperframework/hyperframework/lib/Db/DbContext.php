@@ -1,9 +1,9 @@
 <?php
 namespace Hyperframework\Db;
 
-use PDO;
-use Exception;
+use InvalidArgumentException;
 use Hyperframework\Common\Config;
+use Hyperframework\Common\ConfigException;
 
 class DbContext {
     private static $current;
@@ -19,13 +19,15 @@ class DbContext {
         $isShared = $name !== null;
         if (isset($options['is_shared'])) {
             if ($options['is_shared'] === true && $name === null) {
-                throw new Exception('Shared connection 必须有 name');
+                throw new InvalidArgumentException(
+                    'Shared connection 必须有 name'
+                );
             }
             $isShared = $options['is_shared'];
         }
         if ($connection === null) {
             if ($name === null) {
-                throw new Exception(
+                throw new InvalidArgumentException(
                     'Name 不能为 null, 除非在 options 里指定 connection.'
                 );
             }
@@ -43,7 +45,9 @@ class DbContext {
                 if (isset(self::$pool[$name])
                     && $connection !== self::$pool[$name]
                 ) {
-                    throw new Exception("Shared connection '$name' conflict.");
+                    throw new DbException(
+                        "Shared connection '$name' conflict."
+                    );
                 }
                 self::$pool[$name] = $connection;
             }
@@ -85,7 +89,7 @@ class DbContext {
             } else {
                 if (class_exists(self::$factoryClass) === false) {
                     $class = self::$factoryClass;
-                    throw new Exception(
+                    throw new ConfigException(
                         "Class of database connection factory '$class' 不存在."
                     );
                 }

@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-class UnauthorizedException extends ApplicationException {
+class UnauthorizedException extends HttpException {
     private $authenticationInfo;
 
     public function __construct(

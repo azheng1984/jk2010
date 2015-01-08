@@ -2,6 +2,7 @@
 namespace Hyperframework\Db;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Common\ConfigException;
 
 class DbClient {
     private static $engine;
@@ -159,7 +160,7 @@ class DbClient {
                 self::$engine = new DbClientEngine;
             } else {
                 if (class_exists($class) === false) {
-                    throw new DbException(
+                    throw new ConfigException(
                         "Class of database client engine '$class' 不存在."
                     );
                 }
