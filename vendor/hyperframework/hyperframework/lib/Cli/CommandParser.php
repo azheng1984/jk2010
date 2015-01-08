@@ -367,7 +367,7 @@ class CommandParser {
                         $optionKey = $key;
                     }
                 }
-                if ($groupConfig->isRequired() && $hasOption === false) {
+                if ($groupConfig->isRequired() && $optionKey === null) {
                     if ($hasMagicOption === false) {
                         $message = 'Option group is required';
                         if ($subcommand === null) {

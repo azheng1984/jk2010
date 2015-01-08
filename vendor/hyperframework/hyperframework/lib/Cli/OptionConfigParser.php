@@ -247,13 +247,8 @@ class OptionConfigParser {
                 'Argument pattern cannot include space.'
             );
         } elseif ($argumentPattern[0] === '-') {
-            if ($name === null) {
-                throw self::createPatternException(
-                    "Short option and long option must separate with ','."
-                );
-            }
             throw self::createPatternException(
-                "Argument pattern cannot begin with '-'."
+                "Short option and long option must separate with ','."
             );
         }
         if ($isOptional !== null) {

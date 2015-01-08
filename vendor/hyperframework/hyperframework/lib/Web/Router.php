@@ -5,6 +5,7 @@ use Hyperframework;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NamespaceCombiner;
 use Hyperframework\Web\NotFoundException;
+use InvalidArgumentException;
 
 abstract class Router {
     private $app;
@@ -162,7 +163,7 @@ abstract class Router {
 
     protected function match($pattern, array $options = null) {
         if ($this->isMatched()) {
-            throw new Exception;
+            throw new RouterException('Previous pattern is matched.');
         }
         if ($options !== null) {
             if (isset($options['methods'])) {
@@ -182,18 +183,17 @@ abstract class Router {
             }
         }
         if (strpos($pattern, '#') !== false) {
-            throw new Exception;
+            throw new RouterException("Pattern '$pattern' is invalid, '#' is not allowed.");
         }
         $hasOptionalSegment = strpos($pattern, '(') !== false;
         $hasDynamicSegment = strpos($pattern, ':') !== false;
         $hasWildcardSegment = strpos($pattern, '*') !== false;
         $hasFormat = isset($options['formats']);
-        if ($this->scopeFormats !== null) {
-            if ($hasFormat) {
-                throw new Exception;
+        if ($hasFormat === false) {
+            if ($this->scopeFormats !== null) {
+                $options['formats'] = $this->scopeFormats;
+                $hasFormat = true;
             }
-            $options['formats'] = $this->scopeFormats;
-            $hasFormat = true;
         }
         if ($hasFormat && is_array($options['formats']) === false) {
             $options['formats'] = [$options['formats']];
@@ -273,7 +273,7 @@ abstract class Router {
         }
         $result = preg_match($pattern, $path, $matches);
         if ($result === false) {
-            throw new Exception;
+            throw new RouterException("Pattern '$pattern' is invalid.");
         }
         if ($result === 1) {
             if ($hasFormat) {
@@ -354,14 +354,14 @@ abstract class Router {
 
     protected function matchScope($defination, $function) {
         if ($this->isMatched()) {
-            throw new Exception;
+            throw new RouterException('Previous pattern is matched.');
         }
         $path = $this->getRequestPath();
         $pattern = null;
         $options = null;
         if (is_array($defination)) {
             if (isset($defination[0]) === false) {
-                throw new Exception;
+                throw new InvalidArgumentException("Pattern is undefeind.");
             }
             $pattern = $defination[0];
             unset($defination[0]);
@@ -443,7 +443,7 @@ abstract class Router {
             $hasCollectionActions === false || $hasElementActions === false
         );
         if (preg_match('#[:*]id($|[/{])#', $pattern) !== 0) {
-            throw new Exception;
+            throw new RouterException("Pattern '$pattern' is invalid. ':id' is not allowed.");
         }
         if ($hasOptions) {
             if (isset($options['id'])) {

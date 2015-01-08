@@ -132,7 +132,7 @@ class Config {
             );
             if (self::$appRootPath === null) {
                 throw new ConfigException(
-                    "Config 'hyperframework.app_root_path' is not set."
+                    "Config 'hyperframework.app_root_path' is undefined."
                 );
             }
             if (FullPathRecognizer::isFull(self::$appRootPath) === false) {
