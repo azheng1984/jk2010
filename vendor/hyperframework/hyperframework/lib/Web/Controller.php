@@ -36,7 +36,7 @@ class Controller {
             $this->runAfterFilters();
         } catch (Exception $e) {
             //todo 看似异常被吃掉了
-            $this->quiteFilterChain($e);
+            $this->quitFilterChain($e);
         }
     }
 
