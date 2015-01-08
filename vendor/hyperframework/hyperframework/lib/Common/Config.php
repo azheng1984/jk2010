@@ -69,7 +69,7 @@ class Config {
         if (is_object($result)) {
             throw new ConfigException(
                 "Config '$name' requires a float. Object of class "
-                    . get_class($result) . " could not be converted to float"
+                    . get_class($result) . " could not be converted to float."
             );
         }
         return (float)$result;
@@ -136,27 +136,27 @@ class Config {
         unset(self::$data[$key]);
     }
 
-    public static function import($configs) {
-        if ($configs === null) {
-            return;
-        }
-        if (is_string($configs)) {
-            $path = $configs;
-            $configs = ConfigFileLoader::loadPhp($path);
-            if (is_array($configs) === false) {
+    public static function import($data) {
+        if (is_string($data)) {
+            $path = $data;
+            $data = ConfigFileLoader::loadPhp($path);
+            if ($data === null) {
+                return;
+            }
+            if (is_array($data) === false) {
                 throw new ConfigException(
-                    "Load config file $path failed. Config must be array, "
-                        . gettype($configs) . ' returned.'
+                    "PHP config file $path must return "
+                        . " an array, " . gettype($data) . ' returned.'
                 );
             }
-        } elseif (is_array($configs) === false) {
+        } elseif (is_array($data) === false) {
             throw new InvalidArgumentException(
-                'Argument must be array or string, '
-                    . gettype($configs) . ' given.'
+                "Argument 'data' must be an array or a string of file path, "
+                    . gettype($data) . ' given.'
             );
         }
         $namespace = null;
-        foreach ($configs as $key => $value) {
+        foreach ($data as $key => $value) {
             if (is_int($key)) {
                 $length = strlen($value);
                 if ($length === 0
