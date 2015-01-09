@@ -76,7 +76,9 @@ class App {
         $router = $this->getRouter();
         $class = (string)$router->getControllerClass();
         if ($class === '' || class_exists($class) === false) {
-            throw new ConfigException("Controller class '$class' 不存在.");
+            throw new ConfigException(
+                "Controller class '$class' does not exist."
+            );
         }
         return new $class($this);
     }
