@@ -8,14 +8,7 @@ use Hyperframework\Common\NamespaceCombiner;
 class App {
     private $router;
 
-    private function hi(array $param) {
-        
-    }
-    
-
     public function __construct() {
-        sdf;
-        file_get_contents('dsf');
         $this->rewriteRequestMethod();
         $this->checkCsrf();
     }

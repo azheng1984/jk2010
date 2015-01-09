@@ -4,6 +4,7 @@ namespace Hyperframework\Web;
 use ErrorException;
 use Hyperframework\Common\StackTraceFormatter;
 use Hyperframework\Common\Config;
+use Hyperframework\Common\ArgumentErrorException;
 use Hyperframework\Common\ConfigException;
 
 class Debugger {
@@ -29,19 +30,6 @@ class Debugger {
         self::$headerCount = count($headers);
         self::$contentLength = strlen($content);
         self::$isError = $source instanceof ErrorException;
-        //if ($type === E_WARNING || $type === E_RECOVERABLE_ERROR) {
-        //    $trace = debug_backtrace();
-        //    if (isset($trace[1]) && isset($trace[1]['file'])) {
-        //        $suffix = ', called in ' . $trace[1]['file']
-        //            . ' on line ' . $trace[1]['line'] . ' and defined';
-        //        if (substr($message, -strlen($suffix)) === $suffix) {
-        //            $file = $trace[1]['file'];
-        //            $line = $trace[1]['line'];
-        //            $message =
-        //                substr($message, 0, strlen($message) - strlen($suffix));
-        //        }
-        //    }
-        //}
         $rootPath = Config::getAppRootPath();
         $realRootPath = realpath($rootPath);
         if ($realRootPath !== false) {
@@ -99,6 +87,11 @@ class Debugger {
             $type, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
         );
         $message = (string)$source->getMessage();
+        if ($source instanceof ArgumentErrorException) {
+            $message .= ', defined in '
+                . $source->getFunctionDefinitionFile() . ' on line '
+                . $source->getFunctionDefinitionLine();
+        }
         $title = $type;
         if ($message !== '') {
             $message = htmlspecialchars(
@@ -183,15 +176,18 @@ class Debugger {
         }
         echo '</div></td><td><pre class="content">';
         foreach ($lines as $number => $line) {
-            echo '';
             if ($number === $errorLineNumber) {
                 echo '<span class="error-line"';
                 echo '>', $line , "\n</span>";
             } else {
-                echo '', $line , "\n";
+                if ($line === '') {
+                    echo '<br />';
+                } else {
+                    echo $line , "\n";
+                }
             }
         }
-        echo '</pre></td></tr></tbody></table>';
+        echo "</pre></td></tr></tbody></table>";
     }
 
     private static function renderStackTrace() {

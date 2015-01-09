@@ -111,10 +111,27 @@ class ErrorHandler {
                 $shouldThrow = true;
             }
         }
-        $error = new ErrorException(
-            $message, $type, $file, $line, 1, $context, $shouldThrow
-        );
-        echo $error->getSeverityAsString();
+        $error = null;
+        if ($type === E_WARNING || $type === E_RECOVERABLE_ERROR) {
+            $trace = debug_backtrace();
+            if (isset($trace[1]) && isset($trace[1]['file'])) {
+                $suffix = ', called in ' . $trace[1]['file']
+                    . ' on line ' . $trace[1]['line'] . ' and defined';
+                if (substr($message, -strlen($suffix)) === $suffix) {
+                    $message =
+                        substr($message, 0, strlen($message) - strlen($suffix));
+                    $error = new ArgumentErrorException(
+                        $message, $type, $trace[1]['file'], $trace[1]['line'],
+                        $file, $line, 1, $context, $shouldThrow
+                    );
+                }
+            }
+        }
+        if ($error === null) {
+            $error = new ErrorException(
+                $message, $type, $file, $line, 1, $context, $shouldThrow
+            );
+        }
         return self::handle($error, true);
     }
 
@@ -254,6 +271,12 @@ class ErrorHandler {
             $result = 'Fatal error';
         } else {
             $result = self::convertErrorTypeForOutput($error->getSeverity());
+        }
+        if ($error instanceof ArgumentErrorException) {
+            return $result . ':  ' . $error->getMessage() . ' called in '
+                . $error->getFile() . ' on line ' . $error->getLine()
+                . ' and defined in ' . $error->getFunctionDefinitionFile()
+                . ' on line ' . $error->getFunctionDefinitionLine();
         }
         return $result . ':  ' . $error->getMessage() . ' in '
             . $error->getFile() . ' on line ' . $error->getLine();

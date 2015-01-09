@@ -191,7 +191,6 @@ abstract class Router {
         $hasWildcardSegment = strpos($pattern, '*') !== false;
         $hasFormat = isset($options['formats']);
         if ($hasFormat === false) {
-            print_r($this->scopeFormatStack);
             $formats = end($this->scopeFormatStack);
             if ($formats !== false) {
                 $options['formats'] = $formats;
