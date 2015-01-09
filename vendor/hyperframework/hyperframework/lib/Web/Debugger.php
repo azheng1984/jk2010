@@ -174,14 +174,14 @@ class Debugger {
                 echo '<div class="line-number"><div>', $number, '</div></div>';
             }
         }
-        echo '</div></td><td><pre class="content">', "\n";
+        echo '</div></td><td><pre class="content">';
         foreach ($lines as $number => $line) {
             if ($number === $errorLineNumber) {
                 echo '<span class="error-line"';
                 echo '>', $line , "\n</span>";
             } else {
                 if ($line === '') {
-                    echo '<br />';
+                    echo '<br/>';
                 } else {
                     echo $line , "\n";
                 }
