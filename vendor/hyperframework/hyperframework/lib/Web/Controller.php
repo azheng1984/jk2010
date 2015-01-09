@@ -135,7 +135,7 @@ class Controller {
                 $result = $config['filter']->run($this);
             }
         } else {
-            throw new InvalidActionException(
+            throw new InvalidActionFilterException(
                 "Filter type '"
                     . gettype($config['filter']) . "' is not allowed."
             );
