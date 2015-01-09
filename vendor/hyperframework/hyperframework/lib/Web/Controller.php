@@ -66,7 +66,7 @@ class Controller {
         $router = $this->getRouter();
         $method = $router->getActionMethod();
         if ($method == '') {
-            throw new WebException('Action method 不能为空');
+            throw new UnexpectedValueException('Action method 不能为空');
         }
         if (method_exists($this, $method)) {
             $actionResult = $this->$method();
@@ -109,8 +109,8 @@ class Controller {
         $result = null;
         if (is_string($config['filter'])) {
             if ($config['filter'] === '') {
-                throw new WebException(
-                    'Invalid filter, empty string is not allowed.'
+                throw new InvalidActionFilterException(
+                    'Filter is set to an Empty string.'
                 );
             }
             if ($config['filter'][0] === ':') {
@@ -119,7 +119,7 @@ class Controller {
             } else {
                 $class = $config['filter'];
                 if (class_exists($class) === false) {
-                    throw new WebException(
+                    throw new InvalidActionFilterException(
                         "Filter class '$class' does not exist."
                     );
                 }
@@ -134,8 +134,8 @@ class Controller {
                 $result = $config['filter']->run($this);
             }
         } else {
-            throw new WebException(
-                "Invaild filter, type '"
+            throw new InvalidActionException(
+                "Filter type '"
                     . gettype($config['filter']) . "' is not allowed."
             );
         }
@@ -148,8 +148,8 @@ class Controller {
                 } else {
                     $type = gettype($result);
                 }
-                throw new WebException(
-                    'Around filter of controller must return a generator, '
+                throw new InvalidActionFilterException(
+                    'Around filter must return a generator, '
                         . $type . ' returned.'
                 );
             }
@@ -176,7 +176,7 @@ class Controller {
         ];
         $action = (string)$this->getRouter()->getAction();
         if ($action === '') {
-            throw new WebException('Action 不能为空.');
+            throw new UnexpectedValueException('Action 不能为空.');
         }
         if ($options === null) {
             $this->filterChain[] = $config;
@@ -266,11 +266,11 @@ class Controller {
             }
             $controller = (string)$router->getController();
             if ($controller === '') {
-                throw new WebException('Controller 不能为空.');
+                throw new UnexpectedValueException('Controller 不能为空.');
             }
             $action = (string)$router->getAction();
             if ($action === '') {
-                throw new WebException('Action 不能为空.');
+                throw new UnexpectedValueException('Action 不能为空.');
             }
             $view .=  $controller . '/' . $action;
             $format = $router->hasParam('format');

@@ -3,5 +3,5 @@ namespace Hyperframework\Web;
 
 use Exception;
 
-class WebException extends Exception {
+class InvalidActionFilterException extends Exception {
 }
