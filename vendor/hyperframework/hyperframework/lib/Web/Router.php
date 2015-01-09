@@ -17,8 +17,8 @@ abstract class Router {
     private $action;
     private $actionMethod;
     private $requestPath;
-    private $scopeFormats;
-    private $scopeMatchStack;
+    private $scopeFormatStack = [];
+    private $scopeMatchStack = [];
     private $shouldMatchScope = false;
     private $isMatched = false;
 
@@ -191,8 +191,10 @@ abstract class Router {
         $hasWildcardSegment = strpos($pattern, '*') !== false;
         $hasFormat = isset($options['formats']);
         if ($hasFormat === false) {
-            if ($this->scopeFormats !== null) {
-                $options['formats'] = $this->scopeFormats;
+            print_r($this->scopeFormatStack);
+            $formats = end($this->scopeFormatStack);
+            if ($formats !== false) {
+                $options['formats'] = $formats;
                 $hasFormat = true;
             }
         }
@@ -324,9 +326,6 @@ abstract class Router {
                 }
             }
             if ($this->shouldMatchScope) {
-                if ($this->scopeMatchStack === null) {
-                    $this->scopeMatchStack = [];
-                }
                 $this->scopeMatchStack[] = $matches;
                 if ($hasFormat) {
                     if ($isOptionalFormat) {
@@ -341,10 +340,8 @@ abstract class Router {
                 }
                 return end($matches);
             }
-            if ($this->scopeMatchStack !== null) {
-                foreach ($this->scopeMatchStack as $tmp) {
-                    $this->setMatches($tmp);
-                }
+            foreach ($this->scopeMatchStack as $tmp) {
+                $this->setMatches($tmp);
             }
             $this->setMatches($matches);
             $this->setMatchStatus(true);
@@ -378,18 +375,15 @@ abstract class Router {
         }
         $previousPath = $this->getRequestPath();
         if (isset($defination['formats'])) {
-            if ($this->scopeFormats !== null) {
-                throw new Exception;
-            }
-            $this->scopeFormats = $defination['formats'];
+            $this->scopeFormatStack[] = $defination['formats'];
+        } else {
+            $this->scopeFormatStack[] = false;
         }
         $this->setRequestPath('/' . $path);
         $result = $function();
         $this->setRequestPath($previousPath);
         array_pop($this->scopeMatchStack);
-        if (isset($defination['formats'])) {
-            $this->scopeFormats = null;
-        }
+        array_pop($this->scopeFormatStack);
         $this->checkResult($result);
         return $this->isMatched();
     }
@@ -742,7 +736,7 @@ abstract class Router {
             $actionPattern = $pattern;
             if ($suffix !== '/') {
                 if (isset($actionOptions['formats']) === null
-                    && $this->scopeFormats === null
+                    && end($this->scopeFormatStack) === false
                     && preg_match('#^[^*:(#]+$#', $suffix, $matches) === 1
                 ) {
                     if (substr($this->getRequestPath(), -strlen($matches[0]))

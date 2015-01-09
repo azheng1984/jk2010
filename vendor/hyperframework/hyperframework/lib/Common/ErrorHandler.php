@@ -112,12 +112,12 @@ class ErrorHandler {
             }
         }
         $trace = debug_backtrace();
-        if ($trace[1]['file'] !== $file || $trace[1]['line'] !== $line) {
-            $file = $trace[1]['file'];
-            $line = $trace[1]['line'];
-            $suffix = ', called in ' . $file
-                . ' on line ' . $line . ' and defined';
+        if (isset($trace[1]) && isset($trace[1]['file'])) {
+            $suffix = ', called in ' . $trace[1]['file']
+                . ' on line ' . $trace[1]['line'] . ' and defined';
             if (substr($message, -strlen($suffix)) === $suffix) {
+                $file = $trace[1]['file'];
+                $line = $trace[1]['line'];
                 $message =
                     substr($message, 0, strlen($message) - strlen($suffix));
             }
