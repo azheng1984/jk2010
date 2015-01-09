@@ -31,7 +31,7 @@ class Controller {
     public function run() {
         try {
             $this->runBeforeFilters();
-            $this->executeAction();
+            $this->handleAction();
             $this->runAfterFilters();
         } catch (Exception $e) {
             $this->quitFilterChain($e);
@@ -60,7 +60,7 @@ class Controller {
         }
     }
 
-    protected function executeAction() {
+    protected function handleAction() {
         $router = $this->getRouter();
         $method = $router->getActionMethod();
         if ($method == '') {
