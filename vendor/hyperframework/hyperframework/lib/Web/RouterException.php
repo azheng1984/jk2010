@@ -1,7 +1,5 @@
 <?php
 namespace Hyperframework\Web;
 
-use Exception;
-
-class RouterException extends Exception {
+class RouterException extends WebException {
 }

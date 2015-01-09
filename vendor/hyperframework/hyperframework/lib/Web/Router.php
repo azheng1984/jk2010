@@ -4,7 +4,6 @@ namespace Hyperframework\Web;
 use Hyperframework;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NamespaceCombiner;
-use Hyperframework\Web\NotFoundException;
 use InvalidArgumentException;
 
 abstract class Router {
