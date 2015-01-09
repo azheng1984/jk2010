@@ -445,7 +445,9 @@ abstract class Router {
             if (isset($options['id'])) {
                 $options[':id'] = $options['id'];
             } elseif (isset($options[':id'])) {
-                throw new Exception;
+                throw new RoutingException(
+                    "Option ':id' is invalid, use 'id' instead."
+                );
             } else {
                 $options[':id'] = '\d+';
             }
@@ -480,7 +482,10 @@ abstract class Router {
                 ) {
                     if (is_int($key)) {
                         if (is_string($value) === false) {
-                            throw new Exception;
+                            throw new RoutingException(
+                                "Value of default action must be a string, "
+                                    . gettype($value) . ' given.'
+                            );
                         }
                         unset($options['default_actions'][$key]);
                     } else {
@@ -671,7 +676,7 @@ abstract class Router {
         }
         unset($options['default_actions']);
         if ($actions === null || count($actions) === 0) {
-            throw new Exception;
+            return false;
         }
         $requestMethod = $_SERVER['REQUEST_METHOD'];
         $action = null;
@@ -798,7 +803,9 @@ abstract class Router {
         }
         if (is_string($value)) {
             if ($value === '') {
-                throw new Exception;
+                throw new RoutingException(
+                    "Empty string is a invalid return value."
+                );
             }
             $segments = explode('/', $value);
             switch (count($segments)) {
@@ -815,7 +822,9 @@ abstract class Router {
                     $this->setModule(implode('/', $segments));
             }
         } elseif ($value !== true) {
-            throw new Exception;
+            throw new RoutingException(
+                "Type '" . gettype($value) . "' of returned value is invalid."
+            );
         }
         $this->setMatchStatus(true);
     }
