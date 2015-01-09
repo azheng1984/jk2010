@@ -14,6 +14,7 @@ class Controller {
     private $app;
     private $filterChain = [];
     private $isFilterChainReversed = false;
+    private $isFilterChainQuitted = false;
     private $actionResult;
     private $view;
     private $isViewEnabled = true;
@@ -36,7 +37,6 @@ class Controller {
             }
             $this->runAfterFilters();
         } catch (Exception $e) {
-            //todo 看似异常被吃掉了
             $this->quitFilterChain($e);
         }
     }
@@ -106,7 +106,7 @@ class Controller {
         }
     }
 
-    private function runFilter(array &$config, $return = false) {
+    private function runFilter(array &$config, $shouldReturnResult = false) {
         $result = null;
         if (is_string($config['filter'])) {
             if ($config['filter'] === '') {
@@ -165,7 +165,7 @@ class Controller {
             $result = $config['filter']->next();
             $config['type'] = 'closed';
         }
-        if ($return === false && $result === false) {
+        if ($shouldReturnResult === false && $result === false) {
             $this->quit();
         }
         return $result;
@@ -314,33 +314,38 @@ class Controller {
     }
 
     final protected function quitFilterChain($exception = null) {
-        $shouldRunYieldedFiltersOnly = $exception === null
-            || $this->isFilterChainReversed === false;
-        $shouldRunAfterFilter = false;
-        if ($this->isFilterChainReversed === false) {
-            $this->filterChain = array_reverse($this->filterChain);
-            $this->isFilterChainReversed = true;
-        }
-        foreach ($this->filterChain as &$filterConfig) {
-            if ($filterConfig['type'] === 'yielded'
-                || ($shouldRunAfterFilter && $filterConfig['type'] === 'after')
-            ) {
-                try {
-                    if ($exception !== null) {
-                        $result = $filterConfig['filter']->throw($exception);
-                        $shouldRunAfterFilter = $result !== false
-                            && $shouldRunYieldedFiltersOnly === false;
-                        $exception = null;
-                    } else {
-                        if ($this->runFilter($filterConfig, true) === false) {
-                            $shouldRunYieldedFiltersOnly = true;
+        if ($this->isFilterChainQuitted === false) {
+            $shouldRunYieldedFiltersOnly = $exception === null
+                || $this->isFilterChainReversed === false;
+            $shouldRunAfterFilter = false;
+            if ($this->isFilterChainReversed === false) {
+                $this->filterChain = array_reverse($this->filterChain);
+                $this->isFilterChainReversed = true;
+            }
+            foreach ($this->filterChain as &$filterConfig) {
+                if ($filterConfig['type'] === 'yielded' ||
+                    ($shouldRunAfterFilter && $filterConfig['type'] === 'after')
+                ) {
+                    try {
+                        if ($exception !== null) {
+                            $result =
+                                $filterConfig['filter']->throw($exception);
+                            $shouldRunAfterFilter = $result !== false
+                                && $shouldRunYieldedFiltersOnly === false;
+                            $exception = null;
+                        } else {
+                            $result =$this->runFilter($filterConfig, true); 
+                            if ($result === false) {
+                                $shouldRunYieldedFiltersOnly = true;
+                                $shouldRunAfterFilter = false;
+                            }
                         }
+                    } catch (Exception $exception) {
+                        $shouldRunAfterFilter = false;
                     }
-                } catch (Exception $exception) {
-                    //todo 看似异常被吃了
-                    $shouldRunAfterFilter = false;
                 }
             }
+            $this->isFilterChainQuitted = true;
         }
         if ($exception !== null) {
             throw $exception;
