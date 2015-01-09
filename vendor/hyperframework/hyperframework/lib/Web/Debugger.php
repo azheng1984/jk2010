@@ -29,6 +29,19 @@ class Debugger {
         self::$headerCount = count($headers);
         self::$contentLength = strlen($content);
         self::$isError = $source instanceof ErrorException;
+        //if ($type === E_WARNING || $type === E_RECOVERABLE_ERROR) {
+        //    $trace = debug_backtrace();
+        //    if (isset($trace[1]) && isset($trace[1]['file'])) {
+        //        $suffix = ', called in ' . $trace[1]['file']
+        //            . ' on line ' . $trace[1]['line'] . ' and defined';
+        //        if (substr($message, -strlen($suffix)) === $suffix) {
+        //            $file = $trace[1]['file'];
+        //            $line = $trace[1]['line'];
+        //            $message =
+        //                substr($message, 0, strlen($message) - strlen($suffix));
+        //        }
+        //    }
+        //}
         $rootPath = Config::getAppRootPath();
         $realRootPath = realpath($rootPath);
         if ($realRootPath !== false) {

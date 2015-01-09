@@ -111,20 +111,10 @@ class ErrorHandler {
                 $shouldThrow = true;
             }
         }
-        $trace = debug_backtrace();
-        if (isset($trace[1]) && isset($trace[1]['file'])) {
-            $suffix = ', called in ' . $trace[1]['file']
-                . ' on line ' . $trace[1]['line'] . ' and defined';
-            if (substr($message, -strlen($suffix)) === $suffix) {
-                $file = $trace[1]['file'];
-                $line = $trace[1]['line'];
-                $message =
-                    substr($message, 0, strlen($message) - strlen($suffix));
-            }
-        }
         $error = new ErrorException(
             $message, $type, $file, $line, 1, $context, $shouldThrow
         );
+        echo $error->getSeverityAsString();
         return self::handle($error, true);
     }
 
