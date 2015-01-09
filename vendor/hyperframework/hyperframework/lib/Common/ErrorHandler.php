@@ -40,7 +40,6 @@ class ErrorHandler {
     private static function enableDefaultErrorReporting(
         $errorReportingBitmask = null
     ) {
-        //error control operator is supported
         if ($errorReportingBitmask !== null) {
             error_reporting($errorReportingBitmask);
         } elseif (self::shouldReportCompileWarning()) {
@@ -110,6 +109,17 @@ class ErrorHandler {
             }
             if (($type & $errorThrowingBitmask) !== 0) {
                 $shouldThrow = true;
+            }
+        }
+        $trace = debug_backtrace();
+        if ($trace[1]['file'] !== $file || $trace[1]['line'] !== $line) {
+            $file = $trace[1]['file'];
+            $line = $trace[1]['line'];
+            $suffix = ', called in ' . $file
+                . ' on line ' . $line . ' and defined';
+            if (substr($message, -strlen($suffix)) === $suffix) {
+                $message =
+                    substr($message, 0, strlen($message) - strlen($suffix));
             }
         }
         $error = new ErrorException(
@@ -303,14 +313,16 @@ class ErrorHandler {
 
     final protected static function isError() {
         if (self::$source === null) {
-            throw new InvalidOperationException('No error or exception');
+            throw new InvalidOperationException('No error or exception.');
         }
         return self::$isError;
     }
 
     protected static function isLoggerEnabled() {
         if (self::$isRunning === false) {
-            throw new InvalidOperationException('Error handler is not running');
+            throw new InvalidOperationException(
+                'Error handler is not running.'
+            );
         }
         return self::$isLoggerEnabled;
     }
@@ -318,7 +330,7 @@ class ErrorHandler {
     protected static function isDefaultErrorLogEnabled() {
         if (self::$isRunning === false) {
             throw new InvalidOperationException(
-                'Error handler is not running'
+                'Error handler is not running.'
             );
         }
         return self::$isDefaultErrorLogEnabled;

@@ -108,6 +108,11 @@ class Controller {
     private function runFilter(array &$config, $return = false) {
         $result = null;
         if (is_string($config['filter'])) {
+            if ($config['filter'] === '') {
+                throw new WebException(
+                    'Invalid filter, empty string is not allowed.'
+                );
+            }
             if ($config['filter'][0] === ':') {
                 $method = substr($config['filter'], 1);
                 $result = $this->$method();
@@ -121,15 +126,18 @@ class Controller {
                 $filter = new $class;
                 $result = $filter->run($this);
             }
-        } elseif ($config['type'] !== 'yielded'
-            && is_object($config['filter'])
-        ) {
+        } elseif (is_object($config['filter'])) {
             if ($config['filter'] instanceof Closure) {
                 $function = $config['filter'];
                 $result = $function($this);
             } else {
                 $result = $config['filter']->run($this);
             }
+        } else {
+            throw new WebException(
+                "Invaild filter, type '"
+                    . gettype($config['filter']) . "' is not allowed."
+            );
         }
         if ($config['type'] === 'around') {
             if (is_object($result) === false
@@ -163,9 +171,6 @@ class Controller {
     }
 
     private function addFilter($type, $filter, array $options = null) {
-        if ($filter === '') {
-            throw new InvalidArgumentException('Filter is an empty string.');
-        }
         $config = [
             'type' => $type, 'filter' => $filter, 'options' => $options
         ];
@@ -330,10 +335,8 @@ class Controller {
                             $shouldRunYieldedFiltersOnly = true;
                         }
                     }
-                } catch (Exception $e) {
-                    if ($e !== $exception) {
-                        throw $e;
-                    }
+                } catch (Exception $exception) {
+                    //todo 看似异常被吃了
                     $shouldRunAfterFilter = false;
                 }
             }

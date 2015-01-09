@@ -183,7 +183,9 @@ abstract class Router {
             }
         }
         if (strpos($pattern, '#') !== false) {
-            throw new RouterException("Pattern '$pattern' is invalid, '#' is not allowed.");
+            throw new RouterException(
+                "Pattern '$pattern' is invalid, '#' is not allowed."
+            );
         }
         $hasOptionalSegment = strpos($pattern, '(') !== false;
         $hasDynamicSegment = strpos($pattern, ':') !== false;
@@ -443,7 +445,9 @@ abstract class Router {
             $hasCollectionActions === false || $hasElementActions === false
         );
         if (preg_match('#[:*]id($|[/{])#', $pattern) !== 0) {
-            throw new RouterException("Pattern '$pattern' is invalid. ':id' is not allowed.");
+            throw new RouterException(
+                "Pattern '$pattern' is invalid. ':id' is not allowed."
+            );
         }
         if ($hasOptions) {
             if (isset($options['id'])) {
