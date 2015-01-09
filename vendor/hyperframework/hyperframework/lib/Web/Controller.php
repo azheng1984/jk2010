@@ -32,16 +32,13 @@ class Controller {
         try {
             $this->runBeforeFilters();
             $this->executeAction();
-            if ($this->isViewEnabled()) {
-                $this->renderView();
-            }
             $this->runAfterFilters();
         } catch (Exception $e) {
             $this->quitFilterChain($e);
         }
     }
 
-    final protected function runBeforeFilters() {
+    private function runBeforeFilters() {
         foreach ($this->filterChain as &$config) {
             $type = $config['type'];
             if ($type === 'before' || $type === 'around') {
@@ -50,7 +47,7 @@ class Controller {
         }
     }
 
-    final protected function runAfterFilters() {
+    private function runAfterFilters() {
         if ($this->isFilterChainReversed === false) {
             $this->filterChain = array_reverse($this->filterChain);
             $this->isFilterChainReversed = true;
@@ -72,6 +69,9 @@ class Controller {
         if (method_exists($this, $method)) {
             $actionResult = $this->$method();
             $this->setActionResult($actionResult);
+        }
+        if ($this->isViewEnabled()) {
+            $this->renderView();
         }
     }
 
@@ -313,7 +313,7 @@ class Controller {
         $this->getApp()->redirect($url, $statusCode);
     }
 
-    final protected function quitFilterChain($exception = null) {
+    private function quitFilterChain($exception = null) {
         if ($this->isFilterChainQuitted === false) {
             $shouldRunYieldedFiltersOnly = $exception === null
                 || $this->isFilterChainReversed === false;
