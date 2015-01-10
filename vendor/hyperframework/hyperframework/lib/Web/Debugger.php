@@ -406,7 +406,7 @@ class Debugger {
         if ($shouldRemoveRootPath === true) {
             $path = self::getRelativePath($path);
         }
-        echo '<div class="path"><code>', $path, $suffix, '</code></div>';
+        echo '<div class="path"><code>', $path, '</code>', $suffix, '</div>';
     }
 
     private static function getRelativePath($path) {
@@ -791,7 +791,7 @@ h2 {
     font-family: "Times New Roman", Times, serif;
     padding: 0 10px;
 }
-code, pre {
+#message, code, pre {
     font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 #page-container {
@@ -803,18 +803,18 @@ code, pre {
     );
 }
 #header {
-    background-color: #c22;
+    background: #fff;
+}
+h1 {
+    font-size: 21px;
+    color: #e44;
+    padding: 10px 10px 5px 10px;
 }
 h1, #message {
-    color: #fff;
-    padding: 10px;
     font-weight: normal;
-    font-size: 22px;
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, .4);
 }
 #message {
-    font-size:16px;
-    padding-top: 0;
+    padding: 0 10px;
     line-height: 20px;
 }
 #code, #output {
@@ -826,7 +826,6 @@ h1, #message {
     position: relative;
     height: 37px;
     border-bottom: 1px solid #ccc;
-    background: #f8f8f8;
 }
 #nav .wrapper {
     padding: 8px 0 0 10px;
@@ -837,8 +836,9 @@ h1, #message {
     float: left;
     line-height: 16px;
     padding: 6px 25px;
-    border: 1px solid #f8f8f8;
+    border: 1px solid #fff;
     border-bottom: 0;
+    border-radius: 3px 3px 0 0;
 }
 #nav div.selected {
     border: 0;
@@ -850,7 +850,6 @@ h1, #message {
     border: 1px solid #ccc;
     border-bottom: 0;
     padding: 6px 25px 7px;
-    border-radius: 2px 2px 0 0;
 }
 #content {
     padding: 10px;
@@ -905,7 +904,7 @@ h1, #message {
     border-bottom: 1px solid #ccc;
 }
 #file .path {
-    font-size: 14px;
+    font-size: 13px;
     border-bottom: 1px dotted #e1e1e1;
     _border-bottom: 1px solid #eee;
     padding: 5px 0;
@@ -1026,7 +1025,7 @@ h1, #message {
     padding-bottom: 0;
 }
 #stack-trace .index {
-    padding: 1px 5px 0 5px;
+    padding: 0 5px;
     width: 1px;
     color: #aaa;
     font-size:12px;
@@ -1041,7 +1040,6 @@ h1, #message {
     word-break: keep-all;
     white-space: nowrap;
     padding-bottom: 5px;
-    font-size:14px;
     display: block;
 }
 #response-headers {
