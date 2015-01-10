@@ -39,25 +39,27 @@ class StackTraceFormatter {
         }
         $result .= $stackFrame['function'];
         $arguments = [];
-        foreach ($stackFrame['args'] as $argument) {
-            if (is_string($argument)) {
-                if (mb_strlen($argument) > 15) {
-                    $argument = mb_substr($argument, 0, 15) . '...';
+        if (isset($stackFrame['args'])) {
+            foreach ($stackFrame['args'] as $argument) {
+                if (is_string($argument)) {
+                    if (mb_strlen($argument) > 15) {
+                        $argument = mb_substr($argument, 0, 15) . '...';
+                    }
+                    $argument = str_replace(
+                        ["\\", "'", "\n", "\r", "\t", "\v", "\f"],
+                        ['\\\\', '\\\'', '\n', '\r', '\t', '\v', '\f'],
+                        $argument
+                    );
+                    $arguments[] = "'$argument'";
+                } elseif (is_array($argument)) {
+                    $arguments[] = 'Array';
+                } elseif (is_null($argument)) {
+                    $arguments[] = 'NULL';
+                } elseif (is_object($argument)) {
+                    $arguments[] = 'Object(' . get_class($argument) . ')';
+                } else {
+                    $arguments[] = $argument;
                 }
-                $argument = str_replace(
-                    ["\\", "'", "\n", "\r", "\t", "\v", "\f"],
-                    ['\\\\', '\\\'', '\n', '\r', '\t', '\v', '\f'],
-                    $argument
-                );
-                $arguments[] = "'$argument'";
-            } elseif (is_array($argument)) {
-                $arguments[] = 'Array';
-            } elseif (is_null($argument)) {
-                $arguments[] = 'NULL';
-            } elseif (is_object($argument)) {
-                $arguments[] = 'Object(' . get_class($argument) . ')';
-            } else {
-                $arguments[] = $argument;
             }
         }
         return $result . '(' . implode(', ', $arguments) . ')';

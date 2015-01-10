@@ -483,7 +483,7 @@ abstract class Router {
                     if (is_int($key)) {
                         if (is_string($value) === false) {
                             throw new RoutingException(
-                                "Value of default action must be a string, "
+                                "Action must be a string, "
                                     . gettype($value) . ' given.'
                             );
                         }
@@ -511,9 +511,6 @@ abstract class Router {
                     if (is_int($key)) {
                         $options['extra_actions'][] = $value;
                     } else {
-                        if (isset($options['extra_actions'][$key])) {
-                            throw new Exception;
-                        }
                         $options['extra_actions'][$key] = $value;
                     }
                 }
@@ -538,7 +535,8 @@ abstract class Router {
             foreach ($elementActions as $key => $value) {
                 if (is_int($key)) {
                     if (is_string($value) === false) {
-                        throw new Exception;
+                        throw new RoutingException('Action must be a string, '
+                            . gettype($value) . ' given.');
                     }
                     if (isset($options['default_actions'][$value])) {
                         $default = $options['default_actions'][$value];
@@ -561,9 +559,6 @@ abstract class Router {
                             $value[1] = ':id/' . $key;
                         }
                     }
-                }
-                if (isset($extraActions[$key])) {
-                    throw new Exception;
                 }
                 $extraActions[$key] = $value;
             }
@@ -599,11 +594,9 @@ abstract class Router {
             $actions = $options['actions'];
             foreach ($actions as $key => $value) {
                 if (is_int($key)) {
-                    if (isset($actions[$value])) {
-                        throw new Exception;
-                    }
                     if (is_string($value) === false) {
-                        throw new Exception;
+                        throw new RoutingException('Action must be a string, '
+                            . gettype($value) . ' given.');
                     }
                     if (isset($defaultActions[$value])) {
                         $actions[$value] = $defaultActions[$value];
@@ -619,11 +612,11 @@ abstract class Router {
                 foreach ($actions as $key => $value) {
                     if (is_int($key)) {
                         unset($actions[$key]);
-                        if (isset($actions[$value])) {
-                            throw new Exception;
-                        }
                         if (is_string($value) === false) {
-                            throw new Exception;
+                            throw new RoutingException(
+                                'Action must be a string, '
+                                    . gettype($value) . ' given.'
+                            );
                         }
                         if (isset($defaultActions[$value])) {
                             $actions[$value] = $defaultActions[$value];
@@ -650,22 +643,20 @@ abstract class Router {
             }
             foreach ($options['extra_actions'] as $key => $value) {
                 if (is_int($key)) {
-                    if (isset($actions[$value])) {
-                        throw new Exception;
-                    }
                     if (is_string($value) === false) {
-                        throw new Exception;
+                        throw new RoutingException(
+                            'Action must be a string, '
+                                . gettype($value) . ' given.'
+                        );
                     }
                     if (isset($defaultActions[$value])) {
                         $actions[$value] = $defaultActions[$value];
                     } else {
                         $actions[$value] = [];
                     }
+                } else {
+                    $action[$key] = $value;
                 }
-                if (isset($actions[$key])) {
-                    throw new Exception;
-                }
-                $action[$key] = $value;
             }
             if ($actions === null) {
                 $actions = $options['extra_actions'];
@@ -804,13 +795,13 @@ abstract class Router {
         if (is_string($value)) {
             if ($value === '') {
                 throw new RoutingException(
-                    "Empty string is a invalid return value."
+                    "Invalid router execution result, empty string is not allowed."
                 );
             }
             $segments = explode('/', $value);
             switch (count($segments)) {
                 case 1:
-                    $this->setAction($segments[1]);
+                    $this->setAction($segments[0]);
                     break;
                 case 2:
                     $this->setController($segments[0]);
@@ -823,7 +814,7 @@ abstract class Router {
             }
         } elseif ($value !== true) {
             throw new RoutingException(
-                "Type '" . gettype($value) . "' of returned value is invalid."
+                "Invalid router execution result, type '" . gettype($value) . "' is not allowed."
             );
         }
         $this->setMatchStatus(true);

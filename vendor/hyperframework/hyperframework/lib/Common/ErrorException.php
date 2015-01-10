@@ -16,8 +16,8 @@ class ErrorException extends Base {
         $file,
         $line,
         $sourceStackFrameStartingPosition,
-        array $context,
-        $shouldThrow,
+        array $context = null,
+        $shouldThrow = false,
         $previous = null
     ) {
         parent::__construct(

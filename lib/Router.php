@@ -2,10 +2,10 @@
 namespace Hyperframework\Blog;
 
 use Hyperframework\Web\Router as Base;
-use Hyperframework\Logging\Logger;
 
 class Router extends Base {
     protected function execute() {
+        return 'hi';
         if ($this->matchResources('#articles')) return;
         if ($this->matchScope(['xxx/:xxx_id', 'formats' => ['jpg']], function() {
             if ($this->match('/')) return;
