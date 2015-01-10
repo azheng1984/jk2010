@@ -22,10 +22,25 @@ class IndexController extends Controller {
         });
         $this->addAfterFilter(':hi3', ['prepend' => true, 'actions' => 'delete']);
 //        $this->removeFilter(':hi');
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
     }
 
     protected function doShowAction() {
-//        DbClient::findById('article', 23);
+        DbClient::findById('article', 23);
     }
 
     protected function hi() {

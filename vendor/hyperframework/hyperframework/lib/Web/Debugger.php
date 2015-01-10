@@ -181,7 +181,8 @@ class Debugger {
                 echo '>', $line , "\n</span>";
             } else {
                 if ($line === '') {
-                    echo '<br/>';
+                    //echo "\n";//ie6
+                    echo "\n";
                 } else {
                     echo $line , "\n";
                 }
@@ -283,6 +284,7 @@ class Debugger {
     }
 
     private static function getLines($path, $errorLineNumber) {
+        //todo ignore empty top lines
         $file = file_get_contents($path);
         $tokens = token_get_all($file);
         $firstLineNumber = 1;
@@ -748,7 +750,6 @@ function showInternalFile() {
 
 document.getElementById("nav-output").innerHTML =
     '<a href="javascript:showOutput()">Output</a>';
-
 if (document.getElementById("toggle-external-code") !== null) {
     document.getElementById("toggle-external-code").firstChild.href =
         'javascript:showExternalFile()';
@@ -825,7 +826,15 @@ h1, #message {
 #nav {
     position: relative;
     height: 37px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #bbb;
+}
+#nav a {
+    color: #333;
+    line-height: 28px;
+    padding: 7px 25px 6px;
+}
+#nav a:hover {
+    background: #eee;
 }
 #nav .wrapper {
     padding: 8px 0 0 10px;
@@ -833,12 +842,15 @@ h1, #message {
     position: absolute;
 }
 #nav .wrapper div {
+    overflow: hidden;
     float: left;
     line-height: 16px;
-    padding: 6px 25px;
     border: 1px solid #fff;
+    background-image: linear-gradient(#fcfcfc, #eee);
+    background-color: #eee;
+    border: 1px solid #bbb;
     border-bottom: 0;
-    border-radius: 3px 3px 0 0;
+    border-radius: 2px 2px 0 0;
 }
 #nav div.selected {
     border: 0;
@@ -847,9 +859,11 @@ h1, #message {
     height: 32px;
 }
 #nav .selected div {
-    border: 1px solid #ccc;
     border-bottom: 0;
     padding: 6px 25px 7px;
+}
+#nav-output {
+    margin-left: 5px;
 }
 #content {
     padding: 10px;
@@ -861,6 +875,7 @@ h1, #message {
     background: #f8f8f8;
 }
 #status-bar {
+    width: 100%;
     margin-right: 10px;
 <?php if (self::$shouldHideExternal): ?>
     line-height: 25px;
@@ -870,7 +885,6 @@ h1, #message {
 #status-bar div.text {
     border-left: 1px dotted #ccc;
     _border-left: 1px solid #ddd;
-    margin-left: 10px;
 }
 #status-bar-wrapper div {
     float: left;
@@ -878,10 +892,10 @@ h1, #message {
 #status-bar-wrapper td{
     vertical-align: top;
 }
-#status-bar .first-value {
+#status-bar .7irst-value {
     margin-right: 10px;
 }
-#status-bar .second, #status-bar .first {
+#status-bar .second, #status-bar .first div {
     padding-left: 10px;
 }
 #status-bar span, #status-bar .path {
@@ -907,7 +921,7 @@ h1, #message {
     font-size: 13px;
     border-bottom: 1px dotted #e1e1e1;
     _border-bottom: 1px solid #eee;
-    padding: 5px 0;
+    padding: 5px 0 10px 0;
     margin: 0 10px 10px 10px;
 }
 #response-body a, #toggle-external-code a {
@@ -915,7 +929,6 @@ h1, #message {
     background-color: #eee;
     border: 1px solid #d5d5d5;
     border-radius: 3px;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
     padding: 4px 10px;
     font-size: 12px;
     word-break: keep-all;
@@ -926,8 +939,13 @@ h1, #message {
     color: #333;
 }
 #toggle-external-code {
-    margin-left: 10px;
-    display: inline; /* ie6 */
+    width: 1px;
+    padding-left: 10px;
+}
+#toggle-external-code a {
+    margin-right: 10px;
+    _display: inline-block;
+    _line-height: 16px;
 }
 .hidden {
     display: none;
