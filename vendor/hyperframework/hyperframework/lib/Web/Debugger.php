@@ -815,7 +815,7 @@ h1, #message {
     font-weight: normal;
 }
 #message {
-    padding: 0 10px;
+    padding: 0 10px 5px 10px;
     line-height: 20px;
 }
 #code, #output {
@@ -825,7 +825,7 @@ h1, #message {
 }
 #nav {
     position: relative;
-    height: 37px;
+    height: 34px;
     border-bottom: 1px solid #bbb;
 }
 #nav a {
@@ -837,7 +837,7 @@ h1, #message {
     background: #eee;
 }
 #nav .wrapper {
-    padding: 8px 0 0 10px;
+    padding: 5px 0 0 10px;
     font-weight: bold;
     position: absolute;
 }
