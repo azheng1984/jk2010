@@ -183,7 +183,7 @@ abstract class Router {
         }
         if (strpos($pattern, '#') !== false) {
             throw new RoutingException(
-                "Pattern '$pattern' is invalid, '#' is not allowed."
+                "Pattern '$pattern' is invalid, character '#' is not allowed."
             );
         }
         $hasOptionalSegment = strpos($pattern, '(') !== false;

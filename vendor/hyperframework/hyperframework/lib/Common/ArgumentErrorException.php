@@ -6,15 +6,15 @@ class ArgumentErrorException extends ErrorException {
     private $functionDefinitionLine;
 
     public function __construct(
-        $message = '',
-        $severity = E_ERROR,
-        $file = __FILE__,
-        $line = __LINE__,
-        $functionDefinitionFile = null,
-        $functionDefinitionLine = null,
-        $sourceStackFrameStartingPosition = 0,
-        array $context = null,
-        $shouldThrow = false,
+        $message,
+        $severity,
+        $file,
+        $line,
+        $functionDefinitionFile,
+        $functionDefinitionLine,
+        $sourceStackFrameStartingPosition,
+        array $context,
+        $shouldThrow,
         $previous = null
     ) {
         parent::__construct(

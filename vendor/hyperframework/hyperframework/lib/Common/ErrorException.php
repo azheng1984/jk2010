@@ -11,13 +11,13 @@ class ErrorException extends Base {
     private $isFatal;
 
     public function __construct(
-        $message = '',
-        $severity = E_ERROR,
-        $file = __FILE__,
-        $line = __LINE__,
-        $sourceStackFrameStartingPosition = 0,
-        array $context = null,
-        $shouldThrow = false,
+        $message,
+        $severity,
+        $file,
+        $line,
+        $sourceStackFrameStartingPosition,
+        array $context,
+        $shouldThrow,
         $previous = null
     ) {
         parent::__construct(
