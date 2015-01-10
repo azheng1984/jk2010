@@ -127,6 +127,9 @@ class Controller {
                 $filter = new $class;
                 $result = $filter->run($this);
             }
+        } elseif ($config['type'] === 'yielded') {
+            $result = $config['filter']->next();
+            $config['type'] = 'closed';
         } elseif (is_object($config['filter'])) {
             if ($config['filter'] instanceof Closure) {
                 $function = $config['filter'];
@@ -161,9 +164,6 @@ class Controller {
                 $config['filter'] = $result;
                 $result = null;
             }
-        } elseif ($config['type'] === 'yielded') {
-            $result = $config['filter']->next();
-            $config['type'] = 'closed';
         }
         if ($shouldReturnResult === false && $result === false) {
             $this->quit();

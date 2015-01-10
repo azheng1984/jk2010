@@ -7,7 +7,7 @@ use Hyperframework\Db\DbClient;
 class IndexController extends Controller {
     public function __construct($app) {
         parent::__construct($app);
-        $this->addBeforeFilter('Hyperframework\Web\Controller');
+//        $this->addBeforeFilter('Hyperframework\Web\Controller');
         echo $this->getRouter()->getAction();
         $this->addAroundFilter(':hi');
         $this->addAfterFilter(':hi2');
@@ -25,7 +25,7 @@ class IndexController extends Controller {
     }
 
     protected function doShowAction() {
-        DbClient::findById('article', 23);
+ //       DbClient::findById('article', 23);
     }
 
     protected function hi() {
