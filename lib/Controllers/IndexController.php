@@ -5,7 +5,7 @@ use Hyperframework\Web\Controller;
 use Hyperframework\Db\DbClient;
 
 class IndexController extends Controller {
-    public function __construct($app, $x) {
+    public function __construct($app) {
         parent::__construct($app);
 //        $this->addBeforeFilter('Hyperframework\Web\Controller');
         echo $this->getRouter()->getAction();
@@ -20,24 +20,19 @@ class IndexController extends Controller {
                throw $e;
             }
         });
-        $this->addAfterFilter(':hi3', ['prepend' => true, 'actions' => 'delete']);
-//        $this->removeFilter(':hi');
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
- 
+        $this->addAfterFilter(':hi3', ['prepend' => true, 'actions' => 'delete']);    
+    //        $this->removeFilter(':hi');
     }
+
+
+
+
+
+
+
+
+
+
 
     protected function doShowAction() {
         DbClient::findById('article', 23);
@@ -45,6 +40,7 @@ class IndexController extends Controller {
 
     protected function hi() {
         echo 'in!!!';
+
         yield;
         echo 'out!!!';
     }

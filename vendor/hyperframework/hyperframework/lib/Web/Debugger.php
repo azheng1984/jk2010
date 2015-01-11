@@ -174,21 +174,16 @@ class Debugger {
                 echo '<div class="line-number"><div>', $number, '</div></div>';
             }
         }
-        echo '</div></td><td><pre class="content">';
+        echo '</div></td><td><pre class="content"><div>';
         foreach ($lines as $number => $line) {
             if ($number === $errorLineNumber) {
                 echo '<span class="error-line"';
                 echo '>', $line , "\n</span>";
             } else {
-                if ($line === '') {
-                    //echo "\n";//ie6
-                    echo "\n";
-                } else {
-                    echo $line , "\n";
-                }
+                echo $line , "\n";
             }
         }
-        echo "</pre></td></tr></tbody></table>";
+        echo "</div></pre></td></tr></tbody></table>";
     }
 
     private static function renderStackTrace() {
@@ -284,22 +279,32 @@ class Debugger {
     }
 
     private static function getLines($path, $errorLineNumber) {
-        //todo ignore empty top lines
         $file = file_get_contents($path);
         $tokens = token_get_all($file);
         $firstLineNumber = 1;
-        if ($errorLineNumber > 11) {
-            $firstLineNumber = $errorLineNumber - 10;
+        if ($errorLineNumber > 6) {
+            $firstLineNumber = $errorLineNumber - 5;
         }
-        $lineNumber = null;
+        $previousLineIndex = null;
+        if ($firstLineNumber > 0) {
+            foreach ($tokens as $index => $value) {
+                if (is_string($value) === false) {
+                    if ($value[2] < $firstLineNumber) {
+                        $previousLineIndex = $index;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        $lineNumber = 0;
         $result = [];
         $buffer = '';
-        $previousValue = null;
         foreach ($tokens as $index => $value) {
+            if ($previousLineIndex !== null && $index < $previousLineIndex) {
+                continue;
+            }
             if (is_string($value)) {
-                if ($lineNumber < $firstLineNumber) {
-                    continue;
-                }
                 if ($value === '"') {
                     $buffer .= '<span class="string">' . $value . '</span>';
                 } else {
@@ -309,22 +314,9 @@ class Debugger {
                 }
                 continue;
             }
-            if ($value[2] < $firstLineNumber) {
-                $previousValue = $value;
-                continue;
-            }
             $lineNumber = $value[2];
             $type = $value[0];
-            $content = $value[1];
-            if ($previousValue !== null) {
-                if ($previousValue[0] === T_WHITESPACE) {
-                    $tmp = str_replace(["\r\n", "\r"], "\n", $previousValue[1]);
-                    $lines = explode("\n", $tmp);
-                    $content = end($lines) . $content;
-                }
-                $previousValue = null;
-            }
-            $content = str_replace(["\r\n", "\r"], "\n", $content);
+            $content = str_replace(["\r\n", "\r"], "\n", $value[1]);
             $lines = explode("\n", $content);
             $lastLine = array_pop($lines);
             foreach ($lines as $line) {
@@ -332,11 +324,11 @@ class Debugger {
                     $result[$lineNumber] =
                         $buffer . self::formatToken($type, $line);
                     $buffer = '';
-                    ++$lineNumber;
                 }
+                ++$lineNumber;
             }
             $buffer .= self::formatToken($type, $lastLine);
-            if ($lineNumber > $errorLineNumber + 10) {
+            if ($lineNumber > $errorLineNumber + 5) {
                 $buffer = false;
                 break;
             }
@@ -344,12 +336,8 @@ class Debugger {
         if ($buffer !== false) {
             $result[$lineNumber] = $buffer;
         }
-        $count = count($result);
-        if ($count > 21) {
-            $first = key($result) + $count - 21;
-            for ($index = key($result); $index < $first; ++$index) {
-                unset($result[$index]);
-            }
+        if (count($result) > 11) {
+            return array_slice($result, 0, 11, true);
         }
         return $result;
     }
@@ -559,8 +547,8 @@ function showOutput() {
             + ' href="javascript:toggleResponseHeaders()">'
             + '<span id="arrow" class="arrow-right"></span>'
             + '&nbsp;Headers <span id="header-count" class="header-count">'
-            + headers.length
-            + '</span></a><pre id="response-headers-content" class="hidden">';
+            + headers.length + '</span></a>'
+            + '<pre id="response-headers-content" class="hidden"><div>';
         var count = headers.length;
         for (var index = 0; index < count; ++index) {
             var header = headers[index];
@@ -572,7 +560,7 @@ function showOutput() {
 
                 + ':</span> ' + header[1] + "\n</code>";
         }
-        outputContent += '</pre></td></tr>';
+        outputContent += '</div></pre></td></tr>';
     }
     if (isOverflow) {
         outputContent += '<tr><td class="notice"><span>Notice: </span>';
@@ -610,7 +598,7 @@ function showRawContent() {
     if (isHandheld == false) {
         html  += ' &nbsp;<a href="javascript:selectAll()">Select All</a>'
     }
-    html += "</div><div id=\"raw\"><pre>\n" + content + "\n</pre></div>";
+    html += "</div><div id=\"raw\"><pre><div>" + content + "</div></pre></div>";
     document.getElementById("response-body").innerHTML = html;
 }
 
@@ -815,6 +803,7 @@ h1, #message {
     font-weight: normal;
 }
 #message {
+    font-size: 14px;
     padding: 0 10px 5px 10px;
     line-height: 20px;
 }
@@ -919,7 +908,7 @@ h1, #message {
 }
 #file .path {
     font-size: 13px;
-    border-bottom: 1px dotted #e1e1e1;
+    border-bottom: 1px dotted #ddd;
     _border-bottom: 1px solid #eee;
     padding: 5px 0 10px 0;
     margin: 0 10px 10px 10px;
@@ -982,7 +971,7 @@ h1, #message {
     background: #ff9;
 }
 #file .index .error-line-number div {
-    background-color:#c22;
+    background-color:#d11;
     color:#fff;
     text-shadow:1px 1px 0 rgba(0, 0, 0, .4);
     border-right:1px solid #e1e1e1;
