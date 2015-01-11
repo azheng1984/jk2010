@@ -6,6 +6,7 @@ use Hyperframework\Db\DbClient;
 
 class IndexController extends Controller {
     public function __construct($app) {
+        //throw new \Exception;
         parent::__construct($app);
 //        $this->addBeforeFilter('Hyperframework\Web\Controller');
         echo $this->getRouter()->getAction();

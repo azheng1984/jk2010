@@ -336,8 +336,10 @@ class Debugger {
         if ($buffer !== false) {
             $result[$lineNumber] = $buffer;
         }
-        if (count($result) > 11) {
-            return array_slice($result, 0, 11, true);
+        if (isset($result[$errorLineNumber + 6])) {
+            return array_slice(
+                $result, 0, $errorLineNumber - $firstLineNumber + 6, true
+            );
         }
         return $result;
     }
@@ -796,8 +798,9 @@ h2 {
 }
 h1 {
     font-size: 21px;
+    line-height: 25px;
     color: #e44;
-    padding: 10px 10px 5px 10px;
+    padding: 15px 10px 5px 10px;
 }
 h1, #message {
     font-weight: normal;
@@ -814,7 +817,7 @@ h1, #message {
 }
 #nav {
     position: relative;
-    height: 34px;
+    height: 39px;
     border-bottom: 1px solid #bbb;
 }
 #nav a {
@@ -826,7 +829,7 @@ h1, #message {
     background: #eee;
 }
 #nav .wrapper {
-    padding: 5px 0 0 10px;
+    padding: 10px 0 0 10px;
     font-weight: bold;
     position: absolute;
 }
@@ -1013,12 +1016,12 @@ h1, #message {
     color: #777;
 }
 #stack-trace .line{
-    color: #666;
+    color: #555;
     background: #f1f1f1;
     border: 1px solid #ddd;
     border-top: 1px solid #eee;
     border-left: 1px solid #eee;
-    padding: 2px 3px;
+    padding: 1px 3px;
     line-height: 18px;
     border-radius: 3px;
     font-size: 12px;
