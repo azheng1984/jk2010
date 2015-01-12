@@ -9,7 +9,7 @@ class ArgumentConfigParser {
         foreach ($configs as $config) {
             if (strpos($config, ' ') !== false) {
                 throw new ConfigException(
-                    self::getErrorMessage($config) . '(space is not allowed)'
+                    self::getErrorMessage($config, 'space is not allowed')
                 );
             }
             $isOptional = false;
@@ -21,9 +21,8 @@ class ArgumentConfigParser {
             if ($config[0] === '[') {
                 $isOptional = true;
                 if ($config[$length - 1] !== ']') {
-                    throw new ConfigException(
-                        self::getErrorMessage($config)
-                            . "('[' or ']' is not closed)"
+                    throw new ConfigException(self::getErrorMessage(
+                        $config , "('[' or ']' is not closed)")
                     );
                 }
                 $config = substr($config, 1, $length - 2);
@@ -61,14 +60,14 @@ class ArgumentConfigParser {
                 }
             } else {
                 throw new ConfigException(self::getErrorMessage($config)
-                    . "(argument name must be ​around with '<' and '>')"
+                    . "(argument name must be around with '<' and '>')"
                 );
             }
         }
         return $result;
     }
 
-    private static function getErrorMessage($config) {
-        return "Argument config '$config' format error.​";
+    private static function createConfigException($config, $suffix) {
+        return "Argument config '$config' format error.";
     }
 }
