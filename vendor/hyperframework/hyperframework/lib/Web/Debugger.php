@@ -1020,7 +1020,7 @@ h1, #message {
     color: #777;
 }
 #file .path .line, #stack-trace .line{
-    color: #6c819b;
+    color: #6580A1;
     border-left: 2px solid #bacbe0;
     padding: 2px 5px;
     font-size: 12px;
@@ -1054,7 +1054,7 @@ h1, #message {
 #stack-trace .invocation {
     word-break: keep-all;
     white-space: nowrap;
-    padding-bottom: 5px;
+    padding-bottom: 7px;
     display: block;
 }
 #response-headers {
