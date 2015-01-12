@@ -917,7 +917,7 @@ h1, #message {
     border-bottom: 1px dotted #ccc;
     _border-bottom: 1px solid #e1e1e1;
     font-size: 13px;
-    padding: 5px 5px 10px 0;
+    padding: 5px 5px 8px 0;
     margin: 0 10px 10px 10px;
 }
 #response-body a, #toggle-external-code a {
@@ -1019,15 +1019,11 @@ h1, #message {
 #stack-trace .internal {
     color: #777;
 }
-#file .path .line, #stack-trace .line{
-    padding: 2px 5px;
+#file .path .line, #stack-trace .line {
     font-size: 12px;
-    word-break: keep-all;
-    white-space: nowrap;
-    border-radius: 5px;
-    color: #52869e;
-    border: 1px solid #c5d4db;
-    background: #e6f4fa;
+    color: #777;
+    border-left: 1px solid #ddd;
+    padding-left: 8px;
 }
 #file .path code, #stack-trace .path code {
     padding-right: 3px;
