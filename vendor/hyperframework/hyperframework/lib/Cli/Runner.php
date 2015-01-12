@@ -24,7 +24,7 @@ class Runner extends Base {
             $app = new App;
         } else {
             if (class_exists($class) === false) {
-                throw new ConfigException("App class '$class' 不存在.");
+                throw new ConfigException("App class '$class' does not exist.");
             }
             $app = new $class;
         }

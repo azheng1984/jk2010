@@ -30,12 +30,12 @@ class Config {
                 return (string)$result;
             }
             throw new ConfigException(
-                "Config '$name' requires a string. Object of class "
+                "Config '$name' requires a string, Object of class "
                     . get_class($result) . " could not be converted to string."
             );
         }
         throw new ConfigException(
-            "Config '$name' requires a string. "
+            "Config '$name' requires a string, "
                 . ucfirst(gettype($result)) . ' given.'
         );
     }
@@ -55,8 +55,8 @@ class Config {
         }
         if (is_object($result)) {
             throw new ConfigException(
-                "Config '$name' requires an integer. Object of class "
-                    . get_class($result) . " could not be converted to integer"
+                "Config '$name' requires an integer, Object of class "
+                    . get_class($result) . " could not be converted to integer."
             );
         }
         return (int)$result;
@@ -69,7 +69,7 @@ class Config {
         }
         if (is_object($result)) {
             throw new ConfigException(
-                "Config '$name' requires a float. Object of class "
+                "Config '$name' requires a float, Object of class "
                     . get_class($result) . " could not be converted to float."
             );
         }
@@ -83,8 +83,8 @@ class Config {
         }
         if (is_array($result) === false) {
             throw new ConfigException(
-                "Config '$name' requires an array. "
-                    . ucfirst(gettype($result)) . " given"
+                "Config '$name' requires an array, "
+                    . ucfirst(gettype($result)) . " given."
             );
         }
         return $result;
@@ -98,14 +98,14 @@ class Config {
         if ($class === null) {
             if (is_object($result) === false) {
                 throw new ConfigException(
-                    "Config '$name' requires an object of class. "
-                        . ucfirst(gettype($result)) . " given"
+                    "Config '$name' requires an object of class, "
+                        . ucfirst(gettype($result)) . " given."
                 );
             }
         } elseif ($result instanceof $class === false) {
             throw new ConfigException(
-                "Config '$name' requires an object of class '$class'. "
-                    . "Object of class '". get_class($result) . "' given"
+                "Config '$name' requires an object of class '$class', "
+                    . "Object of class '". get_class($result) . "' given."
             );
         }
         return $result;
@@ -118,8 +118,8 @@ class Config {
         }
         if (is_resource($result) === false) {
             throw new ConfigException(
-                "Config '$name' requires a resource. "
-                    . ucfirst(gettype($result)) . ' given'
+                "Config '$name' requires a resource, "
+                    . ucfirst(gettype($result)) . ' given.'
             );
         }
         return $result;
@@ -132,7 +132,7 @@ class Config {
             );
             if (self::$appRootPath === null) {
                 throw new ConfigException(
-                    "Config 'hyperframework.app_root_path' is undefined."
+                    "Config 'hyperframework.app_root_path' is not defined."
                 );
             }
             if (FullPathRecognizer::isFull(self::$appRootPath) === false) {

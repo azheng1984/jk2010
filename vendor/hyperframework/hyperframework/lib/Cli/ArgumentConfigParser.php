@@ -38,7 +38,9 @@ class ArgumentConfigParser {
                     $length -= 3;
                     $isRepeatable = true;
                     if ($length < 3) {
-                        throw new ConfigException(self::getErrorMessage($config));
+                        throw new ConfigException(
+                            self::getErrorMessage($config)
+                        );
                     }
                 }
                 if ($config[$length - 1] !== '>') {
