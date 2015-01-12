@@ -9,7 +9,7 @@ class ArgumentConfigParser {
         foreach ($configs as $config) {
             if (strpos($config, ' ') !== false) {
                 throw new ConfigException(
-                    self::getErrorMessage($config) . '(不允许存在空格)'
+                    self::getErrorMessage($config) . '(space is not allowed)'
                 );
             }
             $isOptional = false;
@@ -22,7 +22,8 @@ class ArgumentConfigParser {
                 $isOptional = true;
                 if ($config[$length - 1] !== ']') {
                     throw new ConfigException(
-                        self::getErrorMessage($config) . '(方括号没有关闭)'
+                        self::getErrorMessage($config)
+                            . "('[' or ']' is not closed)"
                     );
                 }
                 $config = substr($config, 1, $length - 2);
@@ -42,13 +43,14 @@ class ArgumentConfigParser {
                 }
                 if ($config[$length - 1] !== '>') {
                     throw new ConfigException(
-                        self::getErrorMessage($config) . '(尖括号没有关闭)'
+                        self::getErrorMessage($config)
+                            . "('<' or '>' is not closed)"
                     );
                 }
                 $name = substr($config, 1, $length - 2);
                 if (preg_match('/^[a-zA-Z0-9-]+$/', $name) !== 1) {
                     throw new ConfigException(self::getErrorMessage($config)
-                        . '(参数名称包含非法字符)'
+                        . '(argument name includes invalid character)'
                     );
                 } else {
                     $result[] = new ArgumentConfig(
@@ -57,7 +59,7 @@ class ArgumentConfigParser {
                 }
             } else {
                 throw new ConfigException(self::getErrorMessage($config)
-                    . '(参数名称需要使用尖括号包围)'
+                    . "(argument name must be ​around with '<' and '>')"
                 );
             }
         }
@@ -65,6 +67,6 @@ class ArgumentConfigParser {
     }
 
     private static function getErrorMessage($config) {
-        return "Argument config '$config' 格式错误";
+        return "Argument config '$config' format error.​";
     }
 }

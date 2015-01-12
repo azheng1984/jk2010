@@ -68,7 +68,7 @@ class App {
             } else {
                 if (class_exists($class) === false) {
                     throw new ConfigException(
-                        "Command config class '$class' 不存在."
+                        "Command config class '$class' does not exist."
                     );
                 }
                 $this->commandConfig = new $class;
@@ -85,7 +85,7 @@ class App {
     protected function executeCommand() {
         $class = $this->getCommandConfig()->getClass();
         if (class_exists($class) === false) {
-            throw new ConfigException("Command class '$class' 不存在.");
+            throw new ConfigException("Command class '$class' does not exist.");
         }
         $command = new $class($this);
         $arguments = $this->getArguments();
@@ -98,7 +98,9 @@ class App {
             $class = 'Hyperframework\Cli\Help';
         } else {
             if (class_exists($class) === false) {
-                throw new ConfigException("Help class '$class' 不存在.");
+                throw new ConfigException(
+                    "Help class '$class' does not exist."
+                );
             }
         }
         $help = new $class($this);
