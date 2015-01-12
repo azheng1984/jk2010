@@ -25,16 +25,6 @@ class IndexController extends Controller {
     //        $this->removeFilter(':hi');
     }
 
-
-
-
-
-
-
-
-
-
-
     protected function doShowAction() {
         DbClient::findById('article', 23);
     }

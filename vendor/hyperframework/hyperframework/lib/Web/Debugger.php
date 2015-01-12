@@ -1020,14 +1020,14 @@ h1, #message {
     color: #777;
 }
 #file .path .line, #stack-trace .line{
-    color: #6580A1;
+    color: #5379a5;
     border-left: 2px solid #bacbe0;
+    background: #e5f0fc;
     padding: 2px 5px;
     font-size: 12px;
     word-break: keep-all;
     white-space: nowrap;
     border-radius: 2px;
-    background: #e4edf7;
 }
 #file .path code, #stack-trace .path code {
     padding-right: 5px;
