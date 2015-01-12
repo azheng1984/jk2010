@@ -249,7 +249,7 @@ class CommandConfig {
                 if (in_array($option, $includedOptions, true)) {
                     throw new ConfigException(
                         $errorMessagePrefix
-                            . " '$item' is decleared more than once."
+                            . " '$item' is repeated."
                     );
                 }
                 $includedOptions[] = $option;
@@ -386,16 +386,16 @@ class CommandConfig {
 
     protected function getDefaultArgumentConfigs($subcommand = null) {
         $class = $this->getClass($subcommand);
-        $errorMessagePrefix = '在获取 ';
+        $errorMessagePrefix = 'Error in getting default argument list of ';
         if ($subcommand === null) {
             $errorMessagePrefix .= 'command';
         } else {
             $errorMessagePrefix .= "subcommand '$subcommand'";
         }
-        $errorMessagePrefix .= ' 的默认参数列表时出错, ';
+        $errorMessagePrefix .= ', ';
         if (class_exists($class) === false) {
             throw new ConfigException(
-                $errorMessagePrefix . "Class '$class' does not exist."
+                $errorMessagePrefix . "class '$class' does not exist."
             );
         }
         $method = new ReflectionMethod($class, 'execute');
@@ -407,8 +407,9 @@ class CommandConfig {
                 if ($isArray) {
                     throw new UnexpectedValueException(
                         $errorMessagePrefix
-                            . "只允许 method 'execute' of class '$class'"
-                            . "的最后一个 argument 是 array."
+                            . "invalid argument list of method 'execute' of"
+                            . " class '$class', array type argument must be "
+                            . "the last argument."
                     );
                 }
                 $isArray = true;

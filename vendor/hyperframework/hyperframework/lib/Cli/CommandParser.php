@@ -33,7 +33,7 @@ class CommandParser {
                 if ($isGlobal) {
                     if ($commandConfig->hasSubcommand($element) === false) {
                         throw new CommandParsingException(
-                            "Command $element not found"
+                            "Command $element does not exist."
                         );
                     }
                     $isGlobal = false;
@@ -50,7 +50,7 @@ class CommandParser {
             if ($element === '--') {
                 if ($isGlobal) {
                     throw new CommandParsingException(
-                        "Option -- is not allowed"
+                        "Option '--' is not allowed."
                     );
                 }
                 $isArgument = true;
