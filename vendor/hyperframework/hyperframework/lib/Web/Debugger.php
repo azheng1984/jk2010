@@ -1047,6 +1047,7 @@ h1, #message {
 }
 #stack-trace .position {
     color: #888;
+    padding-top: 5px;
 }
 #stack-trace .invocation e1e1e1{
     word-break: keep-all;

@@ -59,15 +59,15 @@ class ArgumentConfigParser {
                     );
                 }
             } else {
-                throw new ConfigException(self::getErrorMessage($config)
-                    . "(argument name must be around with '<' and '>')"
+                throw new ConfigException(self::getErrorMessage(
+                    $config, "argument name must be around with '<' and '>'"
                 );
             }
         }
         return $result;
     }
 
-    private static function createConfigException($config, $suffix) {
+    private static function getErrorMessage($config, $suffix) {
         return "Argument config '$config' format error.";
     }
 }
