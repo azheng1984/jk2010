@@ -1,17 +1,5 @@
 <?php
 namespace hi;
-$x = new \Exception;
-
-echo $x->getTraceAsString();
-function x($x) {
-        throw $x;
-}
-try {
-        x($x);
-    } catch (\Exception $e) {
-        echo $e->getLine();
-    }
-exit;
 
 //var_dump(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_XHMLT));
 //var_dump(count(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_HTML401)));

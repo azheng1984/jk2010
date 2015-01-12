@@ -975,7 +975,7 @@ h1, #message {
 }
 #file .index .error-line-number {
     padding: 0 5px 0 0;
-    background: #ffb;
+    background: #ffa;
 }
 #file .index .error-line-number div {
     background-color:#d11;
@@ -997,7 +997,7 @@ h1, #message {
 }
 #file .error-line {
     display: block;
-    background: #ffb;
+    background: #ffa;
 }
 #stack-trace {
     width: 100%;
