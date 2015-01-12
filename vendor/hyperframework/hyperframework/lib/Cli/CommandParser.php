@@ -61,7 +61,7 @@ class CommandParser {
                 while ($length > 1) {
                     $optionName = $element[$charIndex];
                     if (isset($optionConfigs[$optionName]) === false) {
-                        $message = "Option $optionName is not allowed";
+                        $message = "Option '$optionName' is not allowed.";
                         if ($subcommand === null) {
                             throw new CommandParsingException($message);
                         }
@@ -81,7 +81,8 @@ class CommandParser {
                         } else {
                             ++$index;
                             if ($index >= $count) {
-                                $message = 'Option require argument';
+                                $message = 'Option \''
+                                    . $optionName . '\' requires an argument.';
                                 if ($subcommand === null) {
                                     throw new CommandParsingException($message);
                                 }
@@ -128,7 +129,7 @@ class CommandParser {
                 }
                 $optionName = substr($optionName, 2);
                 if (isset($optionConfigs[$optionName]) === false) {
-                    $message = "Unknown option $optionName";
+                    $message = "Unknown option '$optionName'.";
                     if ($subcommand === null) {
                         throw new CommandParsingException($message);
                     }
@@ -142,7 +143,7 @@ class CommandParser {
                         ++$index;
                         if ($index >= $count) {
                             $message =
-                                "Option $optionName requires an argument";
+                                "Option '$optionName' requires an argument.";
                             if ($subcommand === null) {
                                 throw new CommandParsingException($message);
                             }
@@ -155,7 +156,7 @@ class CommandParser {
                 } elseif ($option->hasArgument() === -1) {
                     if ($optionArgument !== true) {
                         $message =
-                            "Option $optionName do not accept an argument";
+                            "Option '$optionName' does not accept argument.";
                         if ($subcommand === null) {
                             throw new CommandParsingException($message);
                         }
@@ -320,7 +321,7 @@ class CommandParser {
                     continue;
                 }
                 if ($hasMagicOption === false) {
-                    $message = "Option $name is required";
+                    $message = "Option '$name' is required.";
                     if ($subcommand === null) {
                         throw new CommandParsingException($message);
                     }
@@ -335,7 +336,7 @@ class CommandParser {
             $values = $option->getValues();
             if ($option->getValues() !== null) {
                 if (in_array($value, $values, true) === false) {
-                    $message = "The value of Option '$name' is not valid";
+                    $message = "The value of option '$name' is not valid.";
                     if ($subcommand === null) {
                         throw new CommandParsingException($message);
                     }
@@ -348,6 +349,7 @@ class CommandParser {
         if ($mutuallyExclusiveOptionGroupConfigs !== null) {
             foreach($mutuallyExclusiveOptionGroupConfigs as $groupConfig) {
                 $optionKey = null;
+                $optionKeys = [];
                 foreach ($groupConfig->getOptions() as $option) {
                     $key = $option->getName();
                     if ($key === null) {
@@ -355,8 +357,8 @@ class CommandParser {
                     }
                     if (isset($options[$key])) {
                         if ($optionKey !== null && $optionKey !== $key) {
-                            $message = "Mutually exclusive option conflict"
-                                . "($optionKey & $key)";
+                            $message = "Option '$optionKey' and '$key'"
+                                . " are mutually exclusive.";
                             if ($subcommand === null) {
                                 throw new CommandParsingException($message);
                             }
@@ -365,11 +367,13 @@ class CommandParser {
                             );
                         }
                         $optionKey = $key;
+                        $optionKeys[] = "'" . $key . "'";
                     }
                 }
                 if ($groupConfig->isRequired() && $optionKey === null) {
-                    if ($hasMagicOption === false) {
-                        $message = 'Option group is required';
+                    if ($hasMagicOption === false && count($optionKeys) !== 0) {
+                        $message = 'Option group(' . implode(', ', $opitonKeys)
+                            . ') is required.';
                         if ($subcommand === null) {
                             throw new CommandParsingException($message);
                         }
