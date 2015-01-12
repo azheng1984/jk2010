@@ -372,8 +372,8 @@ class CommandParser {
                 }
                 if ($groupConfig->isRequired() && $optionKey === null) {
                     if ($hasMagicOption === false && count($optionKeys) !== 0) {
-                        $message = 'Option group(' . implode(', ', $opitonKeys)
-                            . ') is required.';
+                        $message = 'One of option ' . implode(', ', $opitonKeys)
+                            . ' is required.';
                         if ($subcommand === null) {
                             throw new CommandParsingException($message);
                         }
