@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Cli;
 
-use Exception;
 use ReflectionMethod;
 use Hyperframework;
 use Hyperframework\Common\Config;
@@ -9,6 +8,8 @@ use Hyperframework\Common\NamespaceCombiner;
 use Hyperframework\Common\PathCombiner;
 use Hyperframework\Common\ConfigFileLoader;
 use Hyperframework\Common\FullPathRecognizer;
+use Hyperframework\Common\ConfigException;
+use UnexpectedValueException;
 
 class CommandConfig {
     private $isSubcommandEnabled;
@@ -39,7 +40,7 @@ class CommandConfig {
             $arguments = $this->getDefaultArgumentConfigs($subcommand);
         } else {
             if (is_array($config) === false) {
-                throw new Exception(
+                throw new ConfigException(
                     $this->getErrorMessagePrefix($subcommand)
                         . ' Argument config must be an array, '
                         . gettype($config) . ' given.'
@@ -74,7 +75,7 @@ class CommandConfig {
         if ($class === '') {
             $class = (string)$this->getDefaultClass($subcommand);
         }
-        if ($class !== '' && $subcommand !== null) {
+        if ($subcommand !== null) {
             if ($class[0] === '\\') {
                 $class = ltrim($class, '\\');
             } else {
@@ -92,14 +93,6 @@ class CommandConfig {
                     NamespaceCombiner::prepend($class, $namespace);
                 }
             }
-        }
-        if ($class === '') {
-            throw new Exception(
-                $this->getErrorMessagePrefix($subcommand)
-                    . ' Class 没有设置.'
-            );
-        }
-        if ($subcommand !== null) {
             $this->subcommandClasses[$subcommand] = $class;
         } else {
             $this->class = $class;
@@ -121,9 +114,9 @@ class CommandConfig {
         $config = $this->get('options', $subcommand);
         if ($config !== null) {
             if (is_array($config) === false) {
-                throw new Exception(
+                throw new ConfigException(
                     $this->getErrorMessagePrefix($subcommand)
-                        . ' option config 必须是 array，'
+                        . ' Option config 必须是 array, '
                         . gettype($config) . ' given.'
                 );
             }
@@ -164,9 +157,10 @@ class CommandConfig {
         $config = $this->get('mutually_exclusive_options', $subcommand);
         if ($config !== null) {
             if (is_array($config) === false) {
-                throw new Exception($this->getErrorMessagePrefix($subcommand)
-                    . ' Mutually exclusive options 必须是 array，'
-                    . gettype($config) . ' given.'
+                throw new ConfigException(
+                    $this->getErrorMessagePrefix($subcommand)
+                        . ' Mutually exclusive options 必须是 array, '
+                        . gettype($config) . ' given.'
                 );
             }
             $optionGroups =
@@ -220,20 +214,20 @@ class CommandConfig {
                     continue;
                 }
                 if ($item === '' || $item[0] !== '-') {
-                    throw new Exception(
+                    throw new ConfigException(
                         $errorMessagePrefix . " '$item' 必须有 '-' 前缀"
                     );
                 }
                 $length = strlen($item);
                 if ($length === 1) {
-                    throw new Exception(
+                    throw new ConfigException(
                         $errorMessagePrefix . " '$item' 必须有选项名称"
                     );
                 } elseif ($length === 2) {
                     $item = $item[1];
                 } else {
                     if ($item[1] !== '-') {
-                        throw new Exception(
+                        throw new ConfigException(
                             $errorMessagePrefix . " '$item' 必须有 '--' 前缀"
                         );
                     }
@@ -243,11 +237,13 @@ class CommandConfig {
                     if ($item === '') {
                         continue;
                     }
-                    throw new Exception($errorMessagePrefix . " '$item' 未定义");
+                    throw new ConfigException(
+                        $errorMessagePrefix . " '$item' 未定义"
+                    );
                 }
                 $option = $options[$item];
                 if (in_array($option, $includedOptions, true)) {
-                    throw new Exception(
+                    throw new ConfigException(
                         $errorMessagePrefix . " '$item' 不允许重复."
                     );
                 }
@@ -270,7 +266,9 @@ class CommandConfig {
     public function getName() {
         $name = (string)$this->get('name');
         if ($name === '') {
-            throw new Exception('Command config error, 没有设置应用名称.');
+            throw new ConfigException(
+                'Command config error, app name is not set.'
+            );
         }
         return $name;
     }
@@ -319,9 +317,9 @@ class CommandConfig {
                     $config = require $configPath;
                 } else {
                     if ($isDefaultConfigPath === false) {
-                        throw new Exception(
+                        throw new ConfigException(
                             $this->getErrorMessagePrefix($subcommand)
-                                . " Config file $configPath 不存在."
+                                . " Config file $configPath does not exist."
                         );
                     }
                     $config = [];
@@ -383,10 +381,16 @@ class CommandConfig {
 
     protected function getDefaultArgumentConfigs($subcommand = null) {
         $class = $this->getClass($subcommand);
+        $errorMessagePrefix = '在获取 ';
+        if ($subcommand === null) {
+            $errorMessagePrefix .= 'command';
+        } else {
+            $errorMessagePrefix .= "subcommand '$subcommand'";
+        }
+        $errorMessagePrefix .= ' 的默认参数列表时出错, ';
         if (class_exists($class) === false) {
-            throw new Exception(
-                $this->getErrorMessagePrefix($subcommand)
-                    . " Class '$class' does not exist."
+            throw new ConfigException(
+                $errorMessagePrefix . "Class '$class' does not exist."
             );
         }
         $method = new ReflectionMethod($class, 'execute');
@@ -396,9 +400,11 @@ class CommandConfig {
         foreach ($params as $param) {
             if ($param->isArray()) {
                 if ($isArray) {
-                    throw new Exception(
-                        $this->getErrorMessagePrefix($subcommand)
-                            . ' 只允许最后一个 argument 是 array');
+                    throw new UnexpectedValueException(
+                        $errorMessagePrefix
+                            . "只允许 method 'execute' of class '$class'"
+                            . "的最后一个 argument 是 array."
+                    );
                 }
                 $isArray = true;
             }
