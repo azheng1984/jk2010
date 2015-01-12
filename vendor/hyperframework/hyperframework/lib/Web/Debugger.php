@@ -1022,7 +1022,7 @@ h1, #message {
 #file .path .line, #stack-trace .line {
     font-size: 12px;
     color: #777;
-    border-left: 1px solid #ddd;
+    border-left: 1px solid #d5d5d5;
     padding-left: 8px;
 }
 #file .path code, #stack-trace .path code {
@@ -1031,6 +1031,7 @@ h1, #message {
 #stack-trace table .value {
     padding: 10px 0 10px 5px;
     border-bottom: 1px dotted #ccc;
+    _border-bottom: 1px solid #e1e1e1;
 }
 #stack-trace table .last {
     border-bottom: 0;
@@ -1047,7 +1048,7 @@ h1, #message {
 #stack-trace .position {
     color: #888;
 }
-#stack-trace .invocation {
+#stack-trace .invocation e1e1e1{
     word-break: keep-all;
     white-space: nowrap;
     padding-bottom: 7px;
