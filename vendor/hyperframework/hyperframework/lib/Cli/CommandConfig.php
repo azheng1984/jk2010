@@ -118,7 +118,7 @@ class CommandConfig {
             if (is_array($config) === false) {
                 throw new ConfigException($this->getErrorMessage(
                     $subcommand,
-                    'option config 必须是 array, '
+                    'option config must be an array, '
                         . gettype($config) . ' given.'
                 ));
             }
@@ -161,7 +161,7 @@ class CommandConfig {
             if (is_array($config) === false) {
                 throw new ConfigException($this->getErrorMessage(
                     $subcommand,
-                    'mutually exclusive options 必须是 array, '
+                    'mutually exclusive options must be an array, '
                         . gettype($config) . ' given.'
                 ));
             }
@@ -218,20 +218,21 @@ class CommandConfig {
                 }
                 if ($item === '' || $item[0] !== '-') {
                     throw new ConfigException(
-                        $errorMessagePrefix . " '$item' 必须有 '-' 前缀"
+                        $errorMessagePrefix . " '$item' must be start with '-'."
                     );
                 }
                 $length = strlen($item);
                 if ($length === 1) {
                     throw new ConfigException(
-                        $errorMessagePrefix . " '$item' 必须有选项名称"
+                        $errorMessagePrefix . " '$item' is not allowed."
                     );
                 } elseif ($length === 2) {
                     $item = $item[1];
                 } else {
                     if ($item[1] !== '-') {
                         throw new ConfigException(
-                            $errorMessagePrefix . " '$item' 必须有 '--' 前缀"
+                            $errorMessagePrefix
+                                . " '$item' must be start with '--'."
                         );
                     }
                     $item = substr($item, 2);
@@ -241,13 +242,14 @@ class CommandConfig {
                         continue;
                     }
                     throw new ConfigException(
-                        $errorMessagePrefix . " '$item' 未定义"
+                        $errorMessagePrefix . " '$item' is not defined."
                     );
                 }
                 $option = $options[$item];
                 if (in_array($option, $includedOptions, true)) {
                     throw new ConfigException(
-                        $errorMessagePrefix . " '$item' 不允许重复."
+                        $errorMessagePrefix
+                            . " '$item' is decleared more than once."
                     );
                 }
                 $includedOptions[] = $option;

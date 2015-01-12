@@ -143,15 +143,15 @@ class Debugger {
     }
 
     private static function renderFile() {
-        echo '<div id="file"><h2>File</h2>';
+        echo '<div id="file">';
         if (self::$shouldHideExternal) {
             $frame = self::$trace[self::$firstInternalStackFrameIndex];
             $path = $frame['file'];
             $errorLineNumber = $frame['line'];
-            echo '<div id="internal-file">';
+            echo '<div id="internal-file"><h2>Internal File</h2>';
             self::renderFileContent($path, $errorLineNumber);
-            echo '</div>';
-            echo '<div id="external-file" class="hidden">';
+            echo '</div><div id="external-file" class="hidden">',
+                '<h2>External File</h2>';
         }
         $path = self::$source->getFile();
         $errorLineNumber = self::$source->getLine();
@@ -975,7 +975,7 @@ h1, #message {
 }
 #file .index .error-line-number {
     padding: 0 5px 0 0;
-    background: #ff9;
+    background: #ffa;
 }
 #file .index .error-line-number div {
     background-color:#d11;
@@ -997,7 +997,7 @@ h1, #message {
 }
 #file .error-line {
     display: block;
-    background: #ff9;
+    background: #ffa;
 }
 #stack-trace {
     width: 100%;
