@@ -822,7 +822,7 @@ h1, #message {
 #nav {
     position: relative;
     height: 39px;
-    border-bottom: 1px solid #bbb;
+    border-bottom: 1px solid #ccc;
 }
 #nav a {
     color: #333;
@@ -844,7 +844,7 @@ h1, #message {
     border: 1px solid #fff;
     background-image: linear-gradient(#fcfcfc, #eee);
     background-color: #eee;
-    border: 1px solid #bbb;
+    border: 1px solid #ccc;
     border-bottom: 0;
     border-radius: 2px 2px 0 0;
 }
@@ -1020,17 +1020,17 @@ h1, #message {
     color: #777;
 }
 #file .path .line, #stack-trace .line{
-    color: #5379a5;
-    border-left: 2px solid #bacbe0;
-    background: #e5f0fc;
     padding: 2px 5px;
     font-size: 12px;
     word-break: keep-all;
     white-space: nowrap;
-    border-radius: 2px;
+    border-radius: 5px;
+    color: #52869e;
+    border: 1px solid #c5d4db;
+    background: #e6f4fa;
 }
 #file .path code, #stack-trace .path code {
-    padding-right: 5px;
+    padding-right: 3px;
 }
 #stack-trace table .value {
     padding: 10px 0 10px 5px;
