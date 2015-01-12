@@ -41,9 +41,11 @@ class CommandConfig {
         } else {
             if (is_array($config) === false) {
                 throw new ConfigException(
-                    $this->getErrorMessagePrefix($subcommand)
-                        . ' Argument config must be an array, '
-                        . gettype($config) . ' given.'
+                    $this->getErrorMessage(
+                        $subcommand,
+                        'argument config must be an array, '
+                            . gettype($config) . ' given.'
+                    )
                 );
             }
             $arguments = $this->parseArgumentConfigs($config);
@@ -114,11 +116,11 @@ class CommandConfig {
         $config = $this->get('options', $subcommand);
         if ($config !== null) {
             if (is_array($config) === false) {
-                throw new ConfigException(
-                    $this->getErrorMessagePrefix($subcommand)
-                        . ' Option config 必须是 array, '
+                throw new ConfigException($this->getErrorMessage(
+                    $subcommand,
+                    'option config 必须是 array, '
                         . gettype($config) . ' given.'
-                );
+                ));
             }
             $options = $this->parseOptionConfigs($config);
             if ($options === null) {
@@ -157,11 +159,11 @@ class CommandConfig {
         $config = $this->get('mutually_exclusive_options', $subcommand);
         if ($config !== null) {
             if (is_array($config) === false) {
-                throw new ConfigException(
-                    $this->getErrorMessagePrefix($subcommand)
-                        . ' Mutually exclusive options 必须是 array, '
+                throw new ConfigException($this->getErrorMessage(
+                    $subcommand,
+                    'mutually exclusive options 必须是 array, '
                         . gettype($config) . ' given.'
-                );
+                ));
             }
             $optionGroups =
                 $this->parseMutuallyExclusiveOptionConfigs(
@@ -202,8 +204,9 @@ class CommandConfig {
         $result = [];
         $includedOptions = [];
         $options = $this->getOptions();
-        $errorMessagePrefix = $this->getErrorMessagePrefix($subcommand)
-            . ' Mutually exclusive option';
+        $errorMessagePrefix = $this->getErrorMessage(
+            $subcommand, 'mutually exclusive option'
+        );
         foreach ($configs as $config) {
             $isRequired = false;
             $mutuallyExclusiveOptions = [];
@@ -317,10 +320,10 @@ class CommandConfig {
                     $config = require $configPath;
                 } else {
                     if ($isDefaultConfigPath === false) {
-                        throw new ConfigException(
-                            $this->getErrorMessagePrefix($subcommand)
-                                . " Config file $configPath does not exist."
-                        );
+                        throw new ConfigException($this->getErrorMessage(
+                            $subcommand,
+                            "config file $configPath does not exist."
+                        ));
                     }
                     $config = [];
                 }
@@ -470,12 +473,16 @@ class CommandConfig {
         return $result;
     }
 
-    private function getErrorMessagePrefix($subcommand) {
+    private function getErrorMessage($subcommand, $suffix = null) {
         if ($subcommand === null) {
-            $prefix = 'Command';
+            $result = 'Command';
         } else {
-            $prefix = "Subcommand '$subcommand'";
+            $result = "Subcommand '$subcommand'";
         }
-        return $prefix . ' config error.';
+        $result .= ' config error';
+        if ($suffix === null) {
+            return $result . '.';
+        }
+        return $result . ', ' . $suffix;
     }
 }
