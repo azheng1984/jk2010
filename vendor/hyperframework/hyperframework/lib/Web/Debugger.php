@@ -917,7 +917,7 @@ h1, #message {
     border-bottom: 1px dotted #ccc;
     _border-bottom: 1px solid #e1e1e1;
     font-size: 13px;
-    padding: 5px 5px 5px 0;
+    padding: 5px 5px 10px 0;
     margin: 0 10px 10px 10px;
 }
 #response-body a, #toggle-external-code a {
@@ -1033,14 +1033,14 @@ h1, #message {
     padding-right: 5px;
 }
 #stack-trace table .value {
-    padding: 7px 0 7px 5px;
+    padding: 10px 0 10px 5px;
     border-bottom: 1px dotted #ccc;
 }
 #stack-trace table .last {
     border-bottom: 0;
 }
 #stack-trace .index {
-    padding: 7px 5px 0 5px;
+    padding: 10px 5px 0 5px;
     width: 1px;
     color: #aaa;
     font-size:12px;
