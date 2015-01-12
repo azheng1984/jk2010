@@ -163,7 +163,11 @@ class Debugger {
     }
 
     private static function renderFileContent($path, $errorLineNumber) {
-        self::renderPath($path);
+        self::renderPath(
+            $path,
+            true,
+            ' <span class="line">Line ' . $errorLineNumber . '</span>'
+        );
         echo '<table><tbody><tr><td class="index"><div class="index-content">';
         $lines = self::getLines($path, $errorLineNumber);
         foreach ($lines as $number => $line) {
@@ -216,7 +220,7 @@ class Debugger {
                     self::renderPath(
                         $frame['file'],
                         true,
-                        ' <span class="line">' . $frame['line'] . '</span>'
+                        ' <span class="line">Line ' . $frame['line'] . '</span>'
                     );
                 } else {
                     echo '<span class="internal">internal function</span>';
@@ -910,10 +914,10 @@ h1, #message {
     border-bottom: 1px solid #ccc;
 }
 #file .path {
+    border-bottom: 1px dotted #ccc;
+    _border-bottom: 1px solid #e1e1e1;
     font-size: 13px;
-    border-bottom: 1px dotted #ddd;
-    _border-bottom: 1px solid #eee;
-    padding: 5px 0 10px 0;
+    padding: 5px 5px 5px 0;
     margin: 0 10px 10px 10px;
 }
 #response-body a, #toggle-external-code a {
@@ -1015,27 +1019,28 @@ h1, #message {
 #stack-trace .internal {
     color: #777;
 }
-#stack-trace .line{
-    color: #555;
-    background: #f1f1f1;
-    border: 1px solid #ddd;
-    border-top: 1px solid #eee;
-    border-left: 1px solid #eee;
-    padding: 1px 3px;
-    line-height: 18px;
-    border-radius: 3px;
+#file .path .line, #stack-trace .line{
+    color: #6c819b;
+    border-left: 2px solid #bacbe0;
+    padding: 2px 5px;
     font-size: 12px;
     word-break: keep-all;
     white-space: nowrap;
+    border-radius: 2px;
+    background: #e4edf7;
+}
+#file .path code, #stack-trace .path code {
+    padding-right: 5px;
 }
 #stack-trace table .value {
-    padding: 0 0 15px 5px;
+    padding: 7px 0 7px 5px;
+    border-bottom: 1px dotted #ccc;
 }
 #stack-trace table .last {
-    padding-bottom: 0;
+    border-bottom: 0;
 }
 #stack-trace .index {
-    padding: 0 5px;
+    padding: 7px 5px 0 5px;
     width: 1px;
     color: #aaa;
     font-size:12px;
