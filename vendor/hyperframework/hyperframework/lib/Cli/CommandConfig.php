@@ -41,7 +41,7 @@ class CommandConfig {
             if (is_array($config) === false) {
                 throw new Exception(
                     $this->getErrorMessagePrefix($subcommand)
-                        . ' Argument config 必须是 array，'
+                        . ' Argument config must be an array, '
                         . gettype($config) . ' given.'
                 );
             }
@@ -386,7 +386,7 @@ class CommandConfig {
         if (class_exists($class) === false) {
             throw new Exception(
                 $this->getErrorMessagePrefix($subcommand)
-                    . " Class '$class' 不存在."
+                    . " Class '$class' does not exist."
             );
         }
         $method = new ReflectionMethod($class, 'execute');

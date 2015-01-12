@@ -9,7 +9,9 @@ abstract class Command {
 
     public function __construct($app) {
         if ($app === null) {
-            throw new InvalidArgumentException("参数 'app' 不允许为 null");
+            throw new InvalidArgumentException(
+                "Invalid argument 'app', null is not allowed."
+            );
         }
         $this->app = $app;
     }
@@ -17,7 +19,7 @@ abstract class Command {
     protected function getApp() {
         if ($this->app === null) {
             throw new InvalidOperationException(
-                "App is null. Object 没有被正确 construct."
+                "App is null, object is not constructed correctly."
             );
         }
         return $this->app;
