@@ -1037,7 +1037,7 @@ h1, #message {
     border-bottom: 0;
 }
 #stack-trace .index {
-    padding: 10px 5px 0 5px;
+    padding: 11px 5px 0 5px;
     width: 1px;
     color: #aaa;
     font-size:12px;
