@@ -64,7 +64,9 @@ class Controller {
         $router = $this->getRouter();
         $method = $router->getActionMethod();
         if ($method == '') {
-            throw new UnexpectedValueException('Action method 不能为空');
+            throw new UnexpectedValueException(
+                'Action method cannot be empty.'
+            );
         }
         if (method_exists($this, $method)) {
             $actionResult = $this->$method();
@@ -86,7 +88,7 @@ class Controller {
     public function addAroundFilter($filter, array $options = null) {
         if (version_compare(phpversion(), '5.5.0', '<')) {
             throw new NotSupportedException(
-                'Around filter 需要 PHP 版本大于等于 5.5'
+                'Around filter requires PHP version 5.5 or above.'
             );
         }
         $this->addFilter('around', $filter, $options);
@@ -177,7 +179,7 @@ class Controller {
         ];
         $action = (string)$this->getRouter()->getAction();
         if ($action === '') {
-            throw new UnexpectedValueException('Action 不能为空.');
+            throw new UnexpectedValueException('Action cannot be empty.');
         }
         if ($options === null) {
             $this->filterChain[] = $config;
@@ -211,7 +213,7 @@ class Controller {
     public function getApp() {
         if ($this->app === null) {
             throw new InvalidOperationException(
-                "App is null. Object 没有被正确 construct."
+                "App is null, object is not constructed correctly."
             );
         }
         return $this->app;
@@ -267,11 +269,13 @@ class Controller {
             }
             $controller = (string)$router->getController();
             if ($controller === '') {
-                throw new UnexpectedValueException('Controller 不能为空.');
+                throw new UnexpectedValueException(
+                    'Controller cannot be empty.'
+                );
             }
             $action = (string)$router->getAction();
             if ($action === '') {
-                throw new UnexpectedValueException('Action 不能为空.');
+                throw new UnexpectedValueException('Action cannot be empty.');
             }
             $view .=  $controller . '/' . $action;
             $format = $router->hasParam('format');

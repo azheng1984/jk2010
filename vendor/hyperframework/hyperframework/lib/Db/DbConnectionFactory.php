@@ -12,7 +12,7 @@ class DbConnectionFactory {
         $config = self::getConfig($name);
         if (isset($config['dsn']) === false) {
             throw new ConfigException(
-                "Dsn of database config '$name' is not set"
+                "Dsn of database connection config '$name' is not set."
             );
         }
         $username = isset($config['username']) ? $config['username'] : null;
@@ -43,7 +43,9 @@ class DbConnectionFactory {
         if (isset(self::$config[$name])) {
             return self::$config[$name];
         }
-        throw new ConfigException("Database config '$name' not found");
+        throw new ConfigException(
+            "Database connection config '$name' does not exist."
+        );
     }
 
     private static function initializeConfig() {

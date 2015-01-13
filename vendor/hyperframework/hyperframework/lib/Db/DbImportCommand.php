@@ -15,7 +15,7 @@ class DbImportCommand {
             $columnNames = $options['column_names'];
             if (is_array($columnNames) === false) {
                 throw new InvalidArgumentException(
-                    'Options 中的 column_names 值必须是 array. '
+                    'The value of column_names of options must be an array. '
                     . gettype($columnNames) . ' given.');
             }
         } else {
@@ -57,7 +57,9 @@ class DbImportCommand {
             }
             while ($size > 0) {
                 if (count($rows[$index]) !== $columnCount) {
-                    throw new DbException("导入数据的列数不一致.");
+                    throw new DbException(
+                        "Column number of imported data is not consistent."
+                    );
                 }
                 $values = array_merge($values, array_values($rows[$index]));
                 ++$index;

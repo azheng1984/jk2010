@@ -22,7 +22,7 @@ class ArgumentConfigParser {
                 $isOptional = true;
                 if ($config[$length - 1] !== ']') {
                     throw new ConfigException(self::getErrorMessage(
-                        $config , "'[' or ']' is not closed.")
+                        $config , "'[' is not closed.")
                     );
                 }
                 $config = substr($config, 1, $length - 2);
@@ -45,7 +45,7 @@ class ArgumentConfigParser {
                 if ($config[$length - 1] !== '>') {
                     throw new ConfigException(
                         self::getErrorMessage($config)
-                            . "'<' or '>' is not closed."
+                            . "'<' is not closed."
                     );
                 }
                 $name = substr($config, 1, $length - 2);
@@ -60,18 +60,19 @@ class ArgumentConfigParser {
                 }
             } else {
                 throw new ConfigException(self::getErrorMessage(
-                    $config, "argument name must be around with '<' and '>'."
+                    $config,
+                    "argument name must be surrounded with '<' and '>'."
                 ));
             }
         }
         return $result;
     }
 
-    private static function getErrorMessage($config, $suffix = null) {
+    private static function getErrorMessage($config, $extra = null) {
         $result = "Argument config '$config' error";
-        if ($suffix === null) {
+        if ($extra === null) {
             return $result . '.';
         }
-        return ', ' . $suffix;
+        return ', ' . $extra;
     }
 }

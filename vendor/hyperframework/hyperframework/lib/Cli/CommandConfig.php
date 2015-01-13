@@ -249,7 +249,7 @@ class CommandConfig {
                 if (in_array($option, $includedOptions, true)) {
                     throw new ConfigException(
                         $errorMessagePrefix
-                            . " '$item' is repeated."
+                            . " '$item' should not be repeated."
                     );
                 }
                 $includedOptions[] = $option;
@@ -476,16 +476,16 @@ class CommandConfig {
         return $result;
     }
 
-    private function getErrorMessage($subcommand, $suffix = null) {
+    private function getErrorMessage($subcommand, $extra = null) {
         if ($subcommand === null) {
             $result = 'Command';
         } else {
             $result = "Subcommand '$subcommand'";
         }
         $result .= ' config error';
-        if ($suffix === null) {
+        if ($extra === null) {
             return $result . '.';
         }
-        return $result . ', ' . $suffix;
+        return $result . ', ' . $extra;
     }
 }

@@ -111,7 +111,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
 
     public function offsetSet($offset, $value) {
         if ($offset === null) {
-            throw new InvalidArgumentException('Offset 不能为空.');
+            throw new InvalidArgumentException('Null offset is invalid.');
         } else {
             $this->model[$offset] = $value;
         }

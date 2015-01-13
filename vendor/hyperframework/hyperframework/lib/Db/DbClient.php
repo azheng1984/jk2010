@@ -161,7 +161,8 @@ class DbClient {
             } else {
                 if (class_exists($class) === false) {
                     throw new ConfigException(
-                        "Class of database client engine '$class' 不存在."
+                        "Class of database client engine"
+                            . " '$class' does not exist."
                     );
                 }
                 self::$engine = new $class;

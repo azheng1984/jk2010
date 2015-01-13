@@ -786,8 +786,8 @@ h2 {
     font-family: "Times New Roman", Times, serif;
     padding: 0 10px;
 }
-#message, code, pre {
-    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+#message, code, pre, h1 {
+    font-family: Consolas, "Liberation Mono", Monospace, Menlo, Courier;
 }
 #page-container {
     width: 100%;

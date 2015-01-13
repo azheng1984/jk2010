@@ -20,7 +20,7 @@ class DbContext {
         if (isset($options['is_shared'])) {
             if ($options['is_shared'] === true && $name === null) {
                 throw new InvalidArgumentException(
-                    'Shared connection 必须有 name'
+                    'Shared connection should have a name.'
                 );
             }
             $isShared = $options['is_shared'];
@@ -28,7 +28,8 @@ class DbContext {
         if ($connection === null) {
             if ($name === null) {
                 throw new InvalidArgumentException(
-                    'Name 不能为 null, 除非在 options 里指定 connection.'
+                    "Argument 'name' should not be null,"
+                        . " unless set connection at options."
                 );
             }
             if ($isShared === false || isset(self::$pool[$name]) === false) {
@@ -46,7 +47,7 @@ class DbContext {
                     && $connection !== self::$pool[$name]
                 ) {
                     throw new DbException(
-                        "Shared connection '$name' conflict."
+                        "Shared connection '$name' is already exist."
                     );
                 }
                 self::$pool[$name] = $connection;
@@ -90,7 +91,8 @@ class DbContext {
                 if (class_exists(self::$factoryClass) === false) {
                     $class = self::$factoryClass;
                     throw new ConfigException(
-                        "Class of database connection factory '$class' 不存在."
+                        "Class of database connection factory"
+                            . " '$class' does not exist."
                     );
                 }
             }

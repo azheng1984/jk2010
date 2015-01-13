@@ -43,7 +43,8 @@ class OptionConfigParser {
             if ($name !== null) {
                 if (isset($result[$name])) {
                     throw new ConfigException(
-                        "Option config error. Option '--$name' 不允许重复."
+                        "Option config error, "
+                            . "option '--$name' is not repeatable."
                     );
                 }
                 $result[$name] = $option;
@@ -51,7 +52,8 @@ class OptionConfigParser {
             if ($shortName !== null) {
                 if (isset($result[$shortName])) {
                     throw new ConfigException(
-                        "Option config error. Option '-$name' 不允许重复."
+                        "Option config error, "
+                            . "option '-$name' is not repeatable."
                     );
                 }
                 $result[$shortName] = $option;
@@ -119,7 +121,7 @@ class OptionConfigParser {
                 ));
             }
             throw new ConfigException(self::getPatternErrorMessage(
-                "Invalid short name '$shortName'."
+                "invalid short name '$shortName'."
             ));
         }
         if ($hasArgument !== -1) {
@@ -150,7 +152,7 @@ class OptionConfigParser {
                             }
                             throw new ConfigException(
                                 self::getPatternErrorMessage(
-                                    "Invalid $char after '[', '=' is expected."
+                                    "invalid $char after '[', '=' is expected."
                                 )
                             );
                         }
@@ -291,16 +293,12 @@ class OptionConfigParser {
             if ($length === $index) {
                 if ($squareBracketDepth !== 0) {
                     throw new ConfigException(
-                        self::getPatternErrorMessage(
-                            "'[' or ']' is not closed."
-                        )
+                        self::getPatternErrorMessage("'[' is not closed.")
                     );// -x[[x]
                 }
                 if ($roundBracketDepth !== 0) {
                     throw new ConfigException(
-                        self::getPatternErrorMessage(
-                            "'(' or ')' is not closed"
-                        )
+                        self::getPatternErrorMessage("'(' is not closed")
                     );// -x([x]
                 }
                 if ($isOptional === false) {
@@ -312,9 +310,7 @@ class OptionConfigParser {
                         );
                     } else {//--xx=[<arg>]
                         throw new ConfigException(
-                            self::getPatternErrorMessage(
-                                'option argument is optional.'
-                            )
+                            self::getPatternErrorMessage("'=' is optional.")
                         );
                     }
                 }
@@ -325,11 +321,11 @@ class OptionConfigParser {
         return $argumentPattern;
     }
 
-    private static function getPatternErrorMessage($extraMessage = '') {
+    private static function getPatternErrorMessage($extra = '') {
         $pattern = self::$pattern;
-        $result = "Option config error. Pattern '$pattern' is invalid";
-        if ($extraMessage !== '') {
-            $result .= ', ' . $extraMessage;
+        $result = "Option config error, invalid pattern '$pattern'";
+        if ($extra !== '') {
+            $result .= ', ' . $extra;
         } else {
             $result .= '.';
         }
