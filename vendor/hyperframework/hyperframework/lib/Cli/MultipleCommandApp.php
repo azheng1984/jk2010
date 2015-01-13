@@ -74,10 +74,11 @@ class MultipleCommandApp extends App {
 
     protected function executeSubcommand() {
         $config = $this->getCommandConfig();
-        $subcommandClass = $config->getClass($this->getSubcommand());
+        $subcommand = $this->getSubcommand();
+        $subcommandClass = $config->getClass($subcommand);
         if (class_exists($subcommandClass) === false) {
             throw new ConfigException(
-                "Subcommand config error, "
+                "Subcommand '$subcommand' config error, "
                     . "class '$subcommandClass' does not exist."
             );
         }

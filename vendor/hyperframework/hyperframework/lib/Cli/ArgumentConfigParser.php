@@ -9,7 +9,7 @@ class ArgumentConfigParser {
         foreach ($configs as $config) {
             if (strpos($config, ' ') !== false) {
                 throw new ConfigException(
-                    self::getErrorMessage($config, 'space is not allowed')
+                    self::getErrorMessage($config, 'space is not allowed.')
                 );
             }
             $isOptional = false;
@@ -22,7 +22,7 @@ class ArgumentConfigParser {
                 $isOptional = true;
                 if ($config[$length - 1] !== ']') {
                     throw new ConfigException(self::getErrorMessage(
-                        $config , "('[' or ']' is not closed)")
+                        $config , "'[' or ']' is not closed.")
                     );
                 }
                 $config = substr($config, 1, $length - 2);
@@ -45,13 +45,13 @@ class ArgumentConfigParser {
                 if ($config[$length - 1] !== '>') {
                     throw new ConfigException(
                         self::getErrorMessage($config)
-                            . "('<' or '>' is not closed)"
+                            . "'<' or '>' is not closed."
                     );
                 }
                 $name = substr($config, 1, $length - 2);
                 if (preg_match('/^[a-zA-Z0-9-]+$/', $name) !== 1) {
                     throw new ConfigException(self::getErrorMessage($config)
-                        . '(argument name includes invalid character)'
+                        . 'argument name includes invalid character.'
                     );
                 } else {
                     $result[] = new ArgumentConfig(
@@ -60,14 +60,18 @@ class ArgumentConfigParser {
                 }
             } else {
                 throw new ConfigException(self::getErrorMessage(
-                    $config, "argument name must be around with '<' and '>'"
+                    $config, "argument name must be around with '<' and '>'."
                 );
             }
         }
         return $result;
     }
 
-    private static function getErrorMessage($config, $suffix) {
-        return "Argument config '$config' format error.";
+    private static function getErrorMessage($config, $suffix = null) {
+        $result = "Argument config '$config' error";
+        if ($suffix === null) {
+            return $result . '.';
+        }
+        return ', ' . $suffix;
     }
 }
