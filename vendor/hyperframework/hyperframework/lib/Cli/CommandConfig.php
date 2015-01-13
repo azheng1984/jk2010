@@ -205,7 +205,7 @@ class CommandConfig {
         $includedOptions = [];
         $options = $this->getOptions();
         $errorMessagePrefix = $this->getErrorMessage(
-            $subcommand, 'mutually exclusive option'
+            $subcommand, 'mutually exclusive option '
         );
         foreach ($configs as $config) {
             $isRequired = false;
@@ -217,8 +217,13 @@ class CommandConfig {
                     continue;
                 }
                 if ($item === '' || $item[0] !== '-') {
+                    $prefix = '-';
+                    if (strlen($item) > 1) {
+                        $prefix = '--';
+                    }
                     throw new ConfigException(
-                        $errorMessagePrefix . " '$item' must be start with '-'."
+                        $errorMessagePrefix
+                            . "'$item' must start with '$prefix'."
                     );
                 }
                 $length = strlen($item);
@@ -232,8 +237,8 @@ class CommandConfig {
                     if ($item[1] !== '-') {
                         throw new ConfigException(
                             $errorMessagePrefix
-                                . " '$item' must be start with '--'."
-                        );
+                                . "'$item' must start with '--'."
+                        );count
                     }
                     $item = substr($item, 2);
                 }
@@ -242,14 +247,14 @@ class CommandConfig {
                         continue;
                     }
                     throw new ConfigException(
-                        $errorMessagePrefix . " '$item' is not defined."
+                        $errorMessagePrefix . "'$item' is not defined."
                     );
                 }
                 $option = $options[$item];
                 if (in_array($option, $includedOptions, true)) {
                     throw new ConfigException(
                         $errorMessagePrefix
-                            . " '$item' should not be repeated."
+                            . "'$item' should not be repeated."
                     );
                 }
                 $includedOptions[] = $option;

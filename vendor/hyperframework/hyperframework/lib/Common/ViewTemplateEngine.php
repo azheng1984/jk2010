@@ -29,7 +29,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         if (preg_match($extensionPattern, $path, $matches) === 0) {
             if ($this->fullPath === null) {
                 throw new InvalidArgumentException(
-                    'File extension is required.'
+                    "Path '$path' is not valid, file extension does not exist."
                 );
             }
             preg_match($extensionPattern, $this->fullPath, $matches);
