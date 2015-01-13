@@ -61,7 +61,7 @@ class ArgumentConfigParser {
             } else {
                 throw new ConfigException(self::getErrorMessage(
                     $config, "argument name must be around with '<' and '>'."
-                );
+                ));
             }
         }
         return $result;
