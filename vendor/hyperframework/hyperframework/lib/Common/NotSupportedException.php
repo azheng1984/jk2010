@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Common;
 
-use LogicException;
+use Exception;
 
-class NotSupportedException extends LogicException {
+class NotSupportedException extends Exception {
 }

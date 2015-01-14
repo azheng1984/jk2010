@@ -115,7 +115,7 @@ class OptionConfigParser {
             }
         }
         if ($shortName !== null && ctype_alnum($shortName) === false) {
-            if ($shortName === ' ') {
+            if ($shortName === ' ' || $shortName === "\t") {
                 throw new ConfigException(self::getPatternErrorMessage(
                     'invalid space at the front of short name.'
                 ));

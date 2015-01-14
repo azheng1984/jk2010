@@ -31,7 +31,6 @@ class IndexController extends Controller {
 
     protected function hi() {
         echo 'in!!!';
-
         yield;
         echo 'out!!!';
     }

@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Common;
 
-use LogicException;
+use Exception;
 
-class ClassNotFoundException LogicException {
+class ClassNotFoundException Exception {
 }

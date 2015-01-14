@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Common;
 
-use LogicException;
+use Exception;
 
-class ConfigException extends LogicException {
+class ConfigException extends Exception {
 }

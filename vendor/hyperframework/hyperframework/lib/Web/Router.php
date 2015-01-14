@@ -162,7 +162,7 @@ abstract class Router {
 
     protected function match($pattern, array $options = null) {
         if ($this->isMatched()) {
-            throw new RoutingException('Previous pattern is matched.');
+            throw new RoutingException('Already matched.');
         }
         if ($options !== null) {
             if (isset($options['methods'])) {
@@ -351,14 +351,14 @@ abstract class Router {
 
     protected function matchScope($defination, $function) {
         if ($this->isMatched()) {
-            throw new RoutingException('Previous pattern is matched.');
+            throw new RoutingException('Alrealy matched.');
         }
         $path = $this->getRequestPath();
         $pattern = null;
         $options = null;
         if (is_array($defination)) {
             if (isset($defination[0]) === false) {
-                throw new InvalidArgumentException("Pattern is undefeind.");
+                throw new InvalidArgumentException("Pattern is not defeind.");
             }
             $pattern = $defination[0];
             unset($defination[0]);

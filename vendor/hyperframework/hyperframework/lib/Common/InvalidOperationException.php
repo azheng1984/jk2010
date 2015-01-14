@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Common;
 
-use LogicException;
+use Exception;
 
-class InvalidOperationException extends LogicException {
+class InvalidOperationException extends Exception {
 }
