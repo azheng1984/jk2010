@@ -2,7 +2,7 @@
 namespace Hyperframework\Cli;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Common\ConfigException;
+use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\Runner as Base;
 
 class Runner extends Base {
@@ -24,7 +24,7 @@ class Runner extends Base {
             $app = new App;
         } else {
             if (class_exists($class) === false) {
-                throw new ConfigException(
+                throw new ClassNotFoundException(
                     "App class '$class' does not exist, "
                         . " defined in 'hyperframework.cli.app_class'."
                 );

@@ -4,6 +4,7 @@ namespace Hyperframework\Logging;
 use Closure;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ConfigException;
+use Hyperframework\Common\ClassNotFoundException;
 use InvalidArgumentException;
 
 final class Logger {
@@ -99,8 +100,9 @@ final class Logger {
             LogHandler::handle($level, $params);
         } else {
             if (class_exists($logHandlerClass) === false) {
-                throw new LoggingException(
-                    "Log handler class '$logHandlerClass' do not exist."
+                throw new ClassNotFoundException(
+                    "Log handler class '$logHandlerClass' do not exist, defined"
+                        . " in 'hyperframework.logger.log_handler_class'."
                 );
             }
             $logHandlerClass::handle($level, $params);
@@ -115,7 +117,8 @@ final class Logger {
                     $level = strtoupper($level);
                     if (isset(self::$levels[$level]) === false) {
                         throw new ConfigException(
-                            "Log entry level '$level' is invalid."
+                            "Log entry level '$level' is invalid, defined in "
+                                . "'hyperframework.logger.log_level'."
                         );
                     }
                 }

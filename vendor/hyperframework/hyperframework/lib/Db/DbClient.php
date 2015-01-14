@@ -2,7 +2,7 @@
 namespace Hyperframework\Db;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Common\ConfigException;
+use Hyperframework\Common\ClassNotFoundException;
 
 class DbClient {
     private static $engine;
@@ -160,9 +160,10 @@ class DbClient {
                 self::$engine = new DbClientEngine;
             } else {
                 if (class_exists($class) === false) {
-                    throw new ConfigException(
+                    throw new ClassNotFoundException(
                         "Class of database client engine"
-                            . " '$class' does not exist."
+                            . " '$class' does not exist,, defined in "
+                            . "'hyperframework.db.client.engine_class'."
                     );
                 }
                 self::$engine = new $class;

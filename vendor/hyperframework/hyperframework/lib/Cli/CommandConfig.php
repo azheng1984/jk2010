@@ -10,6 +10,7 @@ use Hyperframework\Common\PathCombiner;
 use Hyperframework\Common\ConfigFileLoader;
 use Hyperframework\Common\FullPathRecognizer;
 use Hyperframework\Common\ConfigException;
+use Hyperframework\Common\MethodNotFoundException;
 
 class CommandConfig {
     private $isSubcommandEnabled;
@@ -399,7 +400,7 @@ class CommandConfig {
         $class = $this->getClass($subcommand);
         $errorMessagePrefix = 'Failed to get default argument list config, ';
         if (method_exists($class, 'execute') === false) {
-            throw new LogicException(
+            throw new MethodNotFoundException(
                 $errorMessagePrefix . "method '$class::execute' does not exist."
             );
         }

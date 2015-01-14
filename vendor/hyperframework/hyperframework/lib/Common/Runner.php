@@ -22,7 +22,7 @@ class Runner {
             ErrorHandler::run();
         } else {
             if (class_exists($class) === false) {
-                throw new ConfigException(
+                throw new ClassNotFoundException(
                     "Error handler class '$class' does not exist."
                 );
             }
