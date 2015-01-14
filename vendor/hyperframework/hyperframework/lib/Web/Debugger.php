@@ -79,13 +79,13 @@ class Debugger {
                 $type = 'Fatal Error';
             } else {
                 $type = ucwords($source->getSeverityAsString());
+                $type = htmlspecialchars(
+                    $type, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+                );
             }
         } else {
             $type = get_class($source);
         }
-        $type = htmlspecialchars(
-            $type, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
-        );
         $message = (string)$source->getMessage();
         if ($source instanceof ArgumentErrorException) {
             $message .= ', defined in '
@@ -413,6 +413,9 @@ class Debugger {
     }
 
     private static function renderHeader($type, $message) {
+        if (self::$isError === false) {
+            $type = str_replace('\\', '<span>\</span>', $type);
+        }
         echo '<tr><td id="header"><h1>', $type, '</h1>';
         $message = trim($message);
         if ($message !== '') {
@@ -775,6 +778,10 @@ a {
     text-decoration: none;
     color: #333;
 }
+h1 span {
+    color: #999;
+    padding: 0 5px;
+}
 .no-touch a:hover {
     color: #09d;
 }
@@ -786,7 +793,7 @@ h2 {
     font-family: "Times New Roman", Times, serif;
     padding: 0 10px;
 }
-#message, code, pre, h1 {
+#message, code, pre {
     font-family: Consolas, "Liberation Mono", Monospace, Menlo, Courier;
 }
 #page-container {
