@@ -38,6 +38,8 @@ class CommandConfig {
         $config = $this->get('arguments', $subcommand);
         if ($config === null) {
             $arguments = $this->getDefaultArgumentConfigs($subcommand);
+            if ($arguments === null) {
+            }
         } else {
             if (is_array($config) === false) {
                 throw new ConfigException(
@@ -238,7 +240,7 @@ class CommandConfig {
                         throw new ConfigException(
                             $errorMessagePrefix
                                 . "'$item' must start with '--'."
-                        );count
+                        );
                     }
                     $item = substr($item, 2);
                 }
@@ -254,16 +256,20 @@ class CommandConfig {
                 if (in_array($option, $includedOptions, true)) {
                     throw new ConfigException(
                         $errorMessagePrefix
-                            . "'$item' should not be repeated."
+                            . "'$item' cannot use in multiple groups."
                     );
                 }
-                $includedOptions[] = $option;
+                if (in_array($option, $mutuallyExclusiveOptions, true)) {
+                    continue;
+                }
                 $mutuallyExclusiveOptions[] = $option;
             }
             if (count($mutuallyExclusiveOptions) !== 0) {
                 $result[] = new MutuallyExclusiveOptionGroupConfig(
                     $mutuallyExclusiveOptions, $isRequired
                 );
+                $includedOptions =
+                    array_merge($includedOptions, $mutuallyExclusiveOptions);
             }
         }
         return $result;
@@ -391,16 +397,10 @@ class CommandConfig {
 
     protected function getDefaultArgumentConfigs($subcommand = null) {
         $class = $this->getClass($subcommand);
-        $errorMessagePrefix = 'Error in getting default argument list of ';
-        if ($subcommand === null) {
-            $errorMessagePrefix .= 'command';
-        } else {
-            $errorMessagePrefix .= "subcommand '$subcommand'";
-        }
-        $errorMessagePrefix .= ', ';
-        if (class_exists($class) === false) {
+        $errorMessagePrefix = 'Failed to get default argument list config, ';
+        if (method_exists($class, 'execute') === false) {
             throw new ConfigException(
-                $errorMessagePrefix . "class '$class' does not exist."
+                $errorMessagePrefix . "method '$class::execute' does not exist."
             );
         }
         $method = new ReflectionMethod($class, 'execute');
@@ -412,9 +412,8 @@ class CommandConfig {
                 if ($isArray) {
                     throw new UnexpectedValueException(
                         $errorMessagePrefix
-                            . "invalid argument list of method 'execute' of"
-                            . " class '$class', array type argument must be "
-                            . "the last argument."
+                            . "argument list of method '$class::execute' is "
+                            . "invalid, array argument must be the last one."
                     );
                 }
                 $isArray = true;

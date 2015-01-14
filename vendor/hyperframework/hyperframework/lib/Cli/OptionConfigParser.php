@@ -44,7 +44,7 @@ class OptionConfigParser {
                 if (isset($result[$name])) {
                     throw new ConfigException(
                         "Option config error, "
-                            . "option '--$name' is not repeatable."
+                            . "option '--$name' already defined."
                     );
                 }
                 $result[$name] = $option;
@@ -53,7 +53,7 @@ class OptionConfigParser {
                 if (isset($result[$shortName])) {
                     throw new ConfigException(
                         "Option config error, "
-                            . "option '-$name' is not repeatable."
+                            . "option '-$name' already defined."
                     );
                 }
                 $result[$shortName] = $option;
