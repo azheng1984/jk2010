@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
+use LogicException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ConfigException;
 use Hyperframework\Common\NamespaceCombiner;
@@ -28,10 +29,15 @@ class App {
                 if ($namespace !== '' && $namespace !== '\\') {
                     NamespaceCombiner::prepend($class, $namespace);
                 }
-            }
-            if (class_exists($class) === false) {
+                if (class_exists($class) === false) {
+                    throw new LogicException(
+                        "Router class '$class' does not exist.";
+                    );
+                }
+            } elseif (class_exists($class) === false) {
                 throw new ConfigException(
-                    "Router class '$class' does not exist."
+                    "Router class '$class' does not exist, defined in "
+                        "'hyperframework.web.router_class'.";
                 );
             }
             $this->router = new $class($this);
@@ -76,7 +82,7 @@ class App {
         $router = $this->getRouter();
         $class = (string)$router->getControllerClass();
         if ($class === '' || class_exists($class) === false) {
-            throw new ConfigException(
+            throw new LogicException(
                 "Controller class '$class' does not exist."
             );
         }
