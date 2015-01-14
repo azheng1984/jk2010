@@ -31,13 +31,13 @@ class App {
                 }
                 if (class_exists($class) === false) {
                     throw new LogicException(
-                        "Router class '$class' does not exist.";
+                        "Router class '$class' does not exist."
                     );
                 }
             } elseif (class_exists($class) === false) {
                 throw new ConfigException(
                     "Router class '$class' does not exist, defined in "
-                        "'hyperframework.web.router_class'.";
+                        . "'hyperframework.web.router_class'."
                 );
             }
             $this->router = new $class($this);

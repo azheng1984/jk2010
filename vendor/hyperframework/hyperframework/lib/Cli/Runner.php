@@ -24,7 +24,10 @@ class Runner extends Base {
             $app = new App;
         } else {
             if (class_exists($class) === false) {
-                throw new ConfigException("App class '$class' does not exist.");
+                throw new ConfigException(
+                    "App class '$class' does not exist, "
+                        . " defined in 'hyperframework.cli.app_class'."
+                );
             }
             $app = new $class;
         }

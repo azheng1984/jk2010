@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
+use LogicException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ConfigException;
 
@@ -68,8 +69,8 @@ class App {
             } else {
                 if (class_exists($class) === false) {
                     throw new ConfigException(
-                        "Command class '$class' does not exist, defined in "
-                            . "'hyperframework.cli.command_config_class'"
+                        "Command config class '$class' does not exist, defined"
+                            . " in 'hyperframework.cli.command_config_class'."
                     );
                 }
                 $this->commandConfig = new $class;
@@ -86,7 +87,9 @@ class App {
     protected function executeCommand() {
         $class = $this->getCommandConfig()->getClass();
         if (class_exists($class) === false) {
-            throw new ConfigException("Command class '$class' does not exist.");
+            throw new ClassNotFoundException(
+                "Command class '$class' does not exist."
+            );
         }
         $command = new $class($this);
         $arguments = $this->getArguments();
@@ -99,7 +102,7 @@ class App {
             $class = 'Hyperframework\Cli\Help';
         } else {
             if (class_exists($class) === false) {
-                throw new ConfigException(
+                throw new ClassNotFoundException(
                     "Help class '$class' does not exist, defined in "
                         . "'hyperframework.cli.help_class'."
                 );
