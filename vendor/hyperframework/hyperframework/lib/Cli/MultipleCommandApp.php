@@ -78,8 +78,7 @@ class MultipleCommandApp extends App {
         $subcommandClass = $config->getClass($subcommand);
         if (class_exists($subcommandClass) === false) {
             throw new ConfigException(
-                "Subcommand '$subcommand' config error, "
-                    . "class '$subcommandClass' does not exist."
+                "Command class '$subcommandClass' does not exist."
             );
         }
         $subcommand = new $subcommandClass($this);

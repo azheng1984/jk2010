@@ -3,10 +3,10 @@ namespace Hyperframework\Web;
 
 use Generator;
 use Closure;
-use Hyperframework\Common\ViewTemplate;
 use Exception;
 use InvalidArgumentException;
-use UnexpectedValueException;
+use LogicException;
+use Hyperframework\Common\ViewTemplate;
 use Hyperframework\Common\InvalidOperationException;
 use Hyperframework\Common\NotSupportedException;
 
@@ -64,9 +64,7 @@ class Controller {
         $router = $this->getRouter();
         $method = $router->getActionMethod();
         if ($method == '') {
-            throw new UnexpectedValueException(
-                'Action method cannot be empty.'
-            );
+            throw new LogicException('Action method cannot be empty.');
         }
         if (method_exists($this, $method)) {
             $actionResult = $this->$method();
@@ -179,7 +177,7 @@ class Controller {
         ];
         $action = (string)$this->getRouter()->getAction();
         if ($action === '') {
-            throw new UnexpectedValueException('Action cannot be empty.');
+            throw new LogicException('Action cannot be empty.');
         }
         if ($options === null) {
             $this->filterChain[] = $config;
@@ -269,13 +267,11 @@ class Controller {
             }
             $controller = (string)$router->getController();
             if ($controller === '') {
-                throw new UnexpectedValueException(
-                    'Controller cannot be empty.'
-                );
+                throw new LogicException('Controller cannot be empty.');
             }
             $action = (string)$router->getAction();
             if ($action === '') {
-                throw new UnexpectedValueException('Action cannot be empty.');
+                throw new LogicException('Action cannot be empty.');
             }
             $view .=  $controller . '/' . $action;
             $format = $router->hasParam('format');

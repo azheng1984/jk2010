@@ -2,6 +2,7 @@
 namespace Hyperframework\Cli;
 
 use ReflectionMethod;
+use LogicException;
 use Hyperframework;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NamespaceCombiner;
@@ -9,7 +10,6 @@ use Hyperframework\Common\PathCombiner;
 use Hyperframework\Common\ConfigFileLoader;
 use Hyperframework\Common\FullPathRecognizer;
 use Hyperframework\Common\ConfigException;
-use UnexpectedValueException;
 
 class CommandConfig {
     private $isSubcommandEnabled;
@@ -399,7 +399,7 @@ class CommandConfig {
         $class = $this->getClass($subcommand);
         $errorMessagePrefix = 'Failed to get default argument list config, ';
         if (method_exists($class, 'execute') === false) {
-            throw new ConfigException(
+            throw new LogicException(
                 $errorMessagePrefix . "method '$class::execute' does not exist."
             );
         }
@@ -410,7 +410,7 @@ class CommandConfig {
         foreach ($params as $param) {
             if ($param->isArray()) {
                 if ($isArray) {
-                    throw new UnexpectedValueException(
+                    throw new LogicException(
                         $errorMessagePrefix
                             . "argument list of method '$class::execute' is "
                             . "invalid, array argument must be the last one."

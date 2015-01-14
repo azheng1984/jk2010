@@ -22,7 +22,8 @@ class Runner extends Base {
         } else {
             if (class_exists($class) === false) {
                 throw new ConfigException(
-                    "Error handler class '$class' does not exist."
+                    "Error handler class '$class' does not exist,"
+                        . " defined in 'hyperframework.error_handler.class'."
                 );
             }
             $class::run();
@@ -35,7 +36,10 @@ class Runner extends Base {
             $app = new App;
         } else {
             if (class_exists($class) === false) {
-                throw new ConfigException("App class '$class' does not exist.");
+                throw new ConfigException(
+                    "App class '$class' does not exist,"
+                        . " defined in 'hyperframework.web.app_class'."
+                );
             }
             $app = new $class;
         }

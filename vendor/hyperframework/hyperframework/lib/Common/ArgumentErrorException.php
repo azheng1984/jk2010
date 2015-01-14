@@ -25,11 +25,11 @@ class ArgumentErrorException extends ErrorException {
         $this->functionDefinitionFile = $functionDefinitionFile;
     }
 
-    public function getFunctionDefinitionLine() {
-        return $this->functionDefinitionLine;
-    }
-
     public function getFunctionDefinitionFile() {
         return $this->functionDefinitionFile;
+    }
+
+    public function getFunctionDefinitionLine() {
+        return $this->functionDefinitionLine;
     }
 }

@@ -68,7 +68,8 @@ class App {
             } else {
                 if (class_exists($class) === false) {
                     throw new ConfigException(
-                        "Command config class '$class' does not exist."
+                        "Command class '$class' does not exist, defined in "
+                            . "'hyperframework.cli.command_config_class'"
                     );
                 }
                 $this->commandConfig = new $class;
@@ -99,7 +100,8 @@ class App {
         } else {
             if (class_exists($class) === false) {
                 throw new ConfigException(
-                    "Help class '$class' does not exist."
+                    "Help class '$class' does not exist, defined in "
+                        . "'hyperframework.cli.help_class'."
                 );
             }
         }
