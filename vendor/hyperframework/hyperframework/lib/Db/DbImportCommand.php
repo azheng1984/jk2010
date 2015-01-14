@@ -57,8 +57,8 @@ class DbImportCommand {
             }
             while ($size > 0) {
                 if (count($rows[$index]) !== $columnCount) {
-                    throw new DbException(
-                        "Column number of imported data is not consistent."
+                    throw new InvalidArgumentException(
+                        "Rows must have the same number of columns."
                     );
                 }
                 $values = array_merge($values, array_values($rows[$index]));
