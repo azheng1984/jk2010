@@ -1,9 +1,8 @@
 <?php
 namespace Hyperframework\Cli;
 
-use LogicException;
 use Hyperframework\Common\Config;
-use Hyperframework\Common\ConfigException;
+use Hyperframework\Common\ClassNotFoundException;
 
 class App {
     private $commandConfig;
@@ -68,7 +67,7 @@ class App {
                 $this->commandConfig = new CommandConfig;
             } else {
                 if (class_exists($class) === false) {
-                    throw new ConfigException(
+                    throw new ClassNotFoundException(
                         "Command config class '$class' does not exist, defined"
                             . " in 'hyperframework.cli.command_config_class'."
                     );

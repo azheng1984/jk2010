@@ -30,7 +30,7 @@ class App {
                     NamespaceCombiner::prepend($class, $namespace);
                 }
                 if (class_exists($class) === false) {
-                    throw new LogicException(
+                    throw new ClassNotFoundException(
                         "Router class '$class' does not exist."
                     );
                 }
