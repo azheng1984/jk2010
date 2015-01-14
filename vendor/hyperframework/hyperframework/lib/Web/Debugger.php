@@ -1031,6 +1031,8 @@ h1, #message {
     color: #777;
     border-left: 1px solid #d5d5d5;
     padding-left: 8px;
+    word-break: keep-all;
+    white-space: nowrap;
 }
 #file .path code, #stack-trace .path code {
     padding-right: 3px;
@@ -1056,11 +1058,9 @@ h1, #message {
     color: #888;
     padding-top: 5px;
 }
-#stack-trace .invocation e1e1e1{
+#stack-trace .invocation {
     word-break: keep-all;
     white-space: nowrap;
-    padding-bottom: 7px;
-    display: block;
 }
 #response-headers {
     padding: 10px;
