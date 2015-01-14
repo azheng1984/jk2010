@@ -232,7 +232,7 @@ class CommandConfig {
                 $length = strlen($item);
                 if ($length === 1) {
                     throw new ConfigException(
-                        $errorMessagePrefix . " '$item' is not allowed."
+                        $errorMessagePrefix . "'$item' is not allowed."
                     );
                 } elseif ($length === 2) {
                     $item = $item[1];
@@ -257,7 +257,7 @@ class CommandConfig {
                 if (in_array($option, $includedOptions, true)) {
                     throw new ConfigException(
                         $errorMessagePrefix
-                            . "'$item' cannot use in multiple groups."
+                            . "'$item' cannot belong to multiple groups."
                     );
                 }
                 if (in_array($option, $mutuallyExclusiveOptions, true)) {
@@ -284,7 +284,7 @@ class CommandConfig {
         $name = (string)$this->get('name');
         if ($name === '') {
             throw new ConfigException(
-                'Command config error, app name is not set.'
+                "Command config error, field 'name' is required."
             );
         }
         return $name;
@@ -336,7 +336,7 @@ class CommandConfig {
                     if ($isDefaultConfigPath === false) {
                         throw new ConfigException($this->getErrorMessage(
                             $subcommand,
-                            "config file $configPath does not exist."
+                            "config file '$configPath' does not exist."
                         ));
                     }
                     $config = [];
