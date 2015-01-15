@@ -194,7 +194,7 @@ class Config {
                     || $value[$length - 1] !== ']'
                 ) {
                     throw new ConfigException(
-                        "Config section '$value' is invalid."
+                        "Invalid config section '$value'."
                     );
                 }
                 $namespace = substr($value, 1, $length - 2);
@@ -206,7 +206,7 @@ class Config {
                         || substr($namespace, -1) === '.'
                     ) {
                         throw new ConfigException(
-                            "Config section '$value' is invalid."
+                            "Invalid config section '$value'."
                         );
                     }
                     $namespace .= '.';
