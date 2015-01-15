@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
+use LogicException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\NamespaceCombiner;
@@ -80,7 +81,10 @@ class App {
     protected function createController() {
         $router = $this->getRouter();
         $class = (string)$router->getControllerClass();
-        if ($class === '' || class_exists($class) === false) {
+        if ($class === '') {
+            throw new LogicException('Controller class cannot be empty.');
+        }
+        if (class_exists($class) === false) {
             throw new ClassNotFoundException(
                 "Controller class '$class' does not exist."
             );
