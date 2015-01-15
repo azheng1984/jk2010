@@ -1,3 +1,4 @@
 <?php
 return [
-'name' => 'xx'];
+    'name' => 'xx'
+];
