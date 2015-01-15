@@ -58,7 +58,9 @@ class DbImportCommand {
             while ($size > 0) {
                 if (count($rows[$index]) !== $columnCount) {
                     throw new InvalidArgumentException(
-                        "Rows must have the same number of columns."
+                        "Number of columns is invalid at row $index,"
+                            . " expected $columnCount, actual "
+                            . count($rows[$index]) . "."
                     );
                 }
                 $values = array_merge($values, array_values($rows[$index]));

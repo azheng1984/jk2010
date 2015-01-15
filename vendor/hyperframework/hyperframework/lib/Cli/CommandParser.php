@@ -82,7 +82,7 @@ class CommandParser {
                             ++$index;
                             if ($index >= $count) {
                                 $message = 'Option \''
-                                    . $optionName . '\' requires an argument.';
+                                    . $optionName . '\' must have an argument.';
                                 if ($subcommand === null) {
                                     throw new CommandParsingException($message);
                                 }
@@ -143,7 +143,7 @@ class CommandParser {
                         ++$index;
                         if ($index >= $count) {
                             $message =
-                                "Option '$optionName' requires an argument.";
+                                "Option '$optionName' must have an argument.";
                             if ($subcommand === null) {
                                 throw new CommandParsingException($message);
                             }
@@ -156,7 +156,7 @@ class CommandParser {
                 } elseif ($option->hasArgument() === -1) {
                     if ($optionArgument !== true) {
                         $message =
-                            "Option '$optionName' does not accept argument.";
+                            "Option '$optionName' must not have an argument.";
                         if ($subcommand === null) {
                             throw new CommandParsingException($message);
                         }
@@ -246,7 +246,7 @@ class CommandParser {
                     $result['arguments'][count($result['arguments']) - 1][] =
                         $arguments[$argumentIndex];
                 } else {
-                    $message = 'Argument number error.';
+                    $message = 'Number of arguments error.';
                     if ($subcommand === null) {
                         throw new CommandParsingException($message);
                     }
@@ -263,7 +263,7 @@ class CommandParser {
             }
             ++$count;
             if ($count > $argumentCount) {
-                $message = 'Argument number error.';
+                $message = 'Number of arguments error.';
                 if ($subcommand === null) {
                     throw new CommandParsingException($message);
                 }
@@ -336,7 +336,7 @@ class CommandParser {
             $values = $option->getValues();
             if ($option->getValues() !== null) {
                 if (in_array($value, $values, true) === false) {
-                    $message = "The value of option '$name' is not valid.";
+                    $message = "Value of option '$name' is invalid.";
                     if ($subcommand === null) {
                         throw new CommandParsingException($message);
                     }
@@ -357,8 +357,8 @@ class CommandParser {
                     }
                     if (isset($options[$key])) {
                         if ($optionKey !== null && $optionKey !== $key) {
-                            $message = "Option '$optionKey' and '$key'"
-                                . " are mutually exclusive.";
+                            $message = "The '$optionKey' and '$key'"
+                                . " options are mutually exclusive.";
                             if ($subcommand === null) {
                                 throw new CommandParsingException($message);
                             }

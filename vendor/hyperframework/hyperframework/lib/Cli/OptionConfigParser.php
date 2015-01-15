@@ -66,9 +66,9 @@ class OptionConfigParser {
         $pattern = (string)$pattern;
         self::$pattern = $pattern;
         $length = strlen($pattern);
-        if ($pattern[$length - 1] === ' ') {
+        if ($pattern[$length - 1] === ' ' || $pattern[$length - 1] === "\t") {
             throw new ConfigException(self::getPatternErrorMessage(
-                'invalid space at the end of pattern.'
+                'invalid white-space character at the end of pattern.'
             ));
         }
         if ($length < 2) {
@@ -117,11 +117,12 @@ class OptionConfigParser {
         if ($shortName !== null && ctype_alnum($shortName) === false) {
             if ($shortName === ' ' || $shortName === "\t") {
                 throw new ConfigException(self::getPatternErrorMessage(
-                    'invalid space at the front of short name.'
+                    'invalid white-space character'
+                        . ' at the beginning of short name.'
                 ));
             }
             throw new ConfigException(self::getPatternErrorMessage(
-                "invalid short name '$shortName'."
+                "short name '$shortName' is invalid."
             ));
         }
         if ($hasArgument !== -1) {
@@ -148,11 +149,12 @@ class OptionConfigParser {
                             if ($char === ' ') {
                                 $char = 'space';
                             } else {
-                                $char = "char '$char'";
+                                $char = "'$char'";
                             }
                             throw new ConfigException(
                                 self::getPatternErrorMessage(
-                                    "invalid $char after '[', '=' is expected."
+                                    "invalid '$char' character "
+                                        . "after '[', expected '='."
                                 )
                             );
                         }
@@ -163,7 +165,7 @@ class OptionConfigParser {
                     if ($pattern[$length - 1] !== ']') {
                         throw new ConfigException(
                             self::getPatternErrorMessage(
-                                "'[' is not closed."
+                                "'[' must be closed by ']'."
                             )
                         );
                     }
@@ -192,11 +194,14 @@ class OptionConfigParser {
             if (preg_match('/^[a-zA-Z0-9-]{2,}$/', $name) !== 1) {
                 $spacePosition = strpos($name, ' ');
                 if ($spacePosition !== false) {
-                    if (substr($name, -1) === ' ') {
+                    if (substr($name, -1) === ' '
+                        || substr($name, -1) === "\t"
+                    ) {
                         $name = trim($name, ' ');
                         throw new ConfigException(
                             self::getPatternErrorMessage(
-                                "invalid space at the end of name '$name'."
+                                "invalid white-space character"
+                                    . " at the end of name '$name'."
                             )
                         );
                     }
@@ -204,7 +209,8 @@ class OptionConfigParser {
                         $name = trim($name, ' ');
                         throw new ConfigException(
                             self::getPatternErrorMessage(
-                                "invalid space at the front of name '$name'."
+                                "invalid space character at the"
+                                    . " beginning of name '$name'."
                             )
                         );
                     }
@@ -220,12 +226,13 @@ class OptionConfigParser {
                     if (strlen($name) === 1) {
                         throw new ConfigException(
                             self::getPatternErrorMessage(
-                                "invalid long option name '$name'."
+                                "long option name '$name' is invalid."
                             )
                         );
                     }
                     throw new ConfigException(self::getPatternErrorMessage(
-                        "invalid $char after name '$name', '=' is expected."
+                        "invalid '$char' after long option name '"
+                            . "$name', expected '='."
                     ));
                 }
                 throw new ConfigException(self::getPatternErrorMessage());
@@ -250,7 +257,7 @@ class OptionConfigParser {
                 } else {
                     throw new ConfigException(
                         self::getPatternErrorMessage(
-                            'invalid space at the end of short name.'
+                            'invalid space character at the end of short name.'
                         )
                     );
                 }
@@ -261,11 +268,11 @@ class OptionConfigParser {
             }
         } elseif (strpos($argumentPattern, ' ') !== false) {
             throw new ConfigException(self::getPatternErrorMessage(
-                'argument pattern cannot include space.'
+                'argument pattern cannot contain space character.'
             ));
         } elseif ($argumentPattern[0] === '-') {
             throw new ConfigException(self::getPatternErrorMessage(
-                "short option and long option must separate with ','."
+                "short option and long option must be separated by ','."
             ));
         }
         if ($isOptional !== null) {
@@ -292,22 +299,20 @@ class OptionConfigParser {
             }
             if ($length === $index) {
                 if ($squareBracketDepth !== 0) {
-                    throw new ConfigException(
-                        self::getPatternErrorMessage("'[' is not closed.")
-                    );// -x[[x]
+                    throw new ConfigException(self::getPatternErrorMessage(
+                        "'[' must be closed by ']'."
+                    ));// -x[[x]
                 }
                 if ($roundBracketDepth !== 0) {
-                    throw new ConfigException(
-                        self::getPatternErrorMessage("'(' is not closed")
-                    );// -x([x]
+                    throw new ConfigException(self::getPatternErrorMessage(
+                        "'(' must be closed by ')'."
+                    ));// -x([x]
                 }
                 if ($isOptional === false) {
                     if ($isShortOption) {// -x [<arg>]
-                        throw new ConfigException(
-                            self::getPatternErrorMessage(
-                                'invalid space at the end of short name.'
-                            )
-                        );
+                        throw new ConfigException(self::getPatternErrorMessage(
+                            'invalid space character at the end of short name.'
+                        ));
                     } else {//--xx=[<arg>]
                         throw new ConfigException(
                             self::getPatternErrorMessage("'=' is optional.")

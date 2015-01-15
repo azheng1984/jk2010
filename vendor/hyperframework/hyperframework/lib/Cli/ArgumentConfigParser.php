@@ -7,7 +7,9 @@ class ArgumentConfigParser {
     public static function parse(array $configs) {
         $result = [];
         foreach ($configs as $config) {
-            if (strpos($config, ' ') !== false) {
+            if (strpos($config, ' ') !== false
+                || strpos($config, "\t") !== false
+            ) {
                 throw new ConfigException(
                     self::getErrorMessage(
                         $config, 'white-space character is not allowed.'

@@ -26,7 +26,7 @@ class OptionConfig {
         if ($shortName === 'W') {
             throw new ConfigException(
                 'The -W (capital-W)'
-                    . ' option shall be reserved for implementation extensions.'
+                    . ' option must be reserved for implementation extensions.'
             );
         }
         $this->shortName = $shortName;
