@@ -333,12 +333,10 @@ class CommandConfig {
                 if (file_exists($configPath)) {
                     $config = require $configPath;
                 } else {
-                    if ($isDefaultConfigPath === false) {
-                        throw new ConfigException($this->getErrorMessage(
-                            $subcommand,
-                            "config file '$configPath' does not exist."
-                        ));
-                    }
+                    throw new ConfigException($this->getErrorMessage(
+                        $subcommand,
+                        "config file '$configPath' does not exist."
+                    ));
                     $config = [];
                 }
             } else {

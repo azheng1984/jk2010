@@ -6,7 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Hyperframework\\Test\\Fixture\\' => array($vendorDir . '/hyperframework/hyperframework/test/fixtures/lib'),
     'Hyperframework\\Blog\\' => array($baseDir . '/lib'),
     'Hyperframework\\' => array($vendorDir . '/hyperframework/hyperframework/lib'),
-    '' => array($baseDir . '/fallback4'),
 );

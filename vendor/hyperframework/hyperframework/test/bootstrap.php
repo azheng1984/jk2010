@@ -1,2 +1,3 @@
 <?php
-require var_dump('../../../../../autoload.php');
+echo realpath('../../../');
+require '../../../autoload.php';

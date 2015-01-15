@@ -1,133 +1,34 @@
 <?php
-require_once 'PHPUnit/Framework/TestCase.php';
+namespace Hyperframework\Cli;
 
-/**
- * App test case.
- */
-class AppTest extends PHPUnit_Framework_TestCase
-{
+use Hyperframework\Common\Config;
 
-    /**
-     *
-     * @var App
-     */
+class AppTest extends \PHPUnit_Framework_TestCase {
     private $App;
 
-    /**
-     * Prepares the environment before running a test.
-     */
-    protected function setUp()
-    {
+    protected function setUp() {
+        Config::set(
+            'hyperframework.app_root_path',
+            '/home/az/quickquick/vendor/hyperframework/hyperframework/test/fixtures'
+        );
+        Config::set(
+            'hyperframework.app_root_namespace', 'Hyperframework\Test\Fixture'
+        );
         parent::setUp();
-        // TODO Auto-generated AppTest::setUp()
-        $this->App = new App(/* parameters */);
+        $_SERVER['argv'] = [];
+        $_SERVER['argc'] = 0;
+        $this->App = new App;
     }
 
-    /**
-     * Cleans up the environment after running a test.
-     */
-    protected function tearDown()
-    {
-        // TODO Auto-generated AppTest::tearDown()
-        $this->App = null;
-        
+    protected function tearDown() {
         parent::tearDown();
     }
 
-    /**
-     * Constructs the test case.
-     */
-    public function __construct()
-    {
-        // TODO Auto-generated constructor
+    public function __construct() {
     }
 
-    /**
-     * Tests App->__construct()
-     */
-    public function test__construct()
-    {
-        // TODO Auto-generated AppTest->test__construct()
-        $this->markTestIncomplete("__construct test not implemented");
-        
-        $this->App->__construct(/* parameters */);
-    }
-
-    /**
-     * Tests App->run()
-     */
-    public function testRun()
-    {
-        // TODO Auto-generated AppTest->testRun()
-        $this->markTestIncomplete("run test not implemented");
-        
-        $this->App->run(/* parameters */);
-    }
-
-    /**
-     * Tests App->getArguments()
-     */
-    public function testGetArguments()
-    {
-        // TODO Auto-generated AppTest->testGetArguments()
-        $this->markTestIncomplete("getArguments test not implemented");
-        
-        $this->App->getArguments(/* parameters */);
-    }
-
-    /**
-     * Tests App->hasOption()
-     */
-    public function testHasOption()
-    {
-        // TODO Auto-generated AppTest->testHasOption()
-        $this->markTestIncomplete("hasOption test not implemented");
-        
-        $this->App->hasOption(/* parameters */);
-    }
-
-    /**
-     * Tests App->getOption()
-     */
-    public function testGetOption()
-    {
-        // TODO Auto-generated AppTest->testGetOption()
-        $this->markTestIncomplete("getOption test not implemented");
-        
-        $this->App->getOption(/* parameters */);
-    }
-
-    /**
-     * Tests App->getOptions()
-     */
-    public function testGetOptions()
-    {
-        // TODO Auto-generated AppTest->testGetOptions()
-        $this->markTestIncomplete("getOptions test not implemented");
-        
-        $this->App->getOptions(/* parameters */);
-    }
-
-    /**
-     * Tests App->getCommandConfig()
-     */
-    public function testGetCommandConfig()
-    {
-        // TODO Auto-generated AppTest->testGetCommandConfig()
-        $this->markTestIncomplete("getCommandConfig test not implemented");
-        
-        $this->App->getCommandConfig(/* parameters */);
-    }
-
-    /**
-     * Tests App->quit()
-     */
-    public function testQuit()
-    {
-        // TODO Auto-generated AppTest->testQuit()
-        $this->markTestIncomplete("quit test not implemented");
-        
-        $this->App->quit(/* parameters */);
+    public function testRun() {
+        $this->expectOutputString('hi');
+        $this->App->run();
     }
 }
-
