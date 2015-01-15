@@ -44,13 +44,6 @@ class DbContext {
             }
         } else {
             if ($isShared) {
-                if (isset(self::$pool[$name])
-                    && $connection !== self::$pool[$name]
-                ) {
-                    throw new LogicException(
-                        "Shared connection '$name' already exist."
-                    );
-                }
                 self::$pool[$name] = $connection;
             }
         }
