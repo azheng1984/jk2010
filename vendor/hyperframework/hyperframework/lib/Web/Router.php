@@ -183,7 +183,7 @@ abstract class Router {
         }
         if (strpos($pattern, '#') !== false) {
             throw new RoutingException(
-                "Pattern '$pattern' is invalid, character '#' is not allowed."
+                "Invalid pattern '$pattern', character '#' is not allowed."
             );
         }
         $hasOptionalSegment = strpos($pattern, '(') !== false;
@@ -275,7 +275,7 @@ abstract class Router {
         }
         $result = preg_match($pattern, $path, $matches);
         if ($result === false) {
-            throw new RoutingException("Pattern '$pattern' is invalid.");
+            throw new RoutingException("Invalid pattern '$pattern'.");
         }
         if ($result === 1) {
             if ($hasFormat) {
@@ -438,7 +438,8 @@ abstract class Router {
         );
         if (preg_match('#[:*]id($|[/{])#', $pattern) !== 0) {
             throw new RoutingException(
-                "Pattern '$pattern' is invalid. ':id' is not allowed."
+                "Invalid pattern '$pattern', "
+                    . "dynamic segment ':id' is not allowed."
             );
         }
         if ($hasOptions) {
@@ -446,7 +447,7 @@ abstract class Router {
                 $options[':id'] = $options['id'];
             } elseif (isset($options[':id'])) {
                 throw new RoutingException(
-                    "Option ':id' is invalid, use 'id' instead."
+                    "Option ':id' is not allowed, use 'id' instead."
                 );
             } else {
                 $options[':id'] = '\d+';
@@ -819,8 +820,8 @@ abstract class Router {
             }
         } elseif ($value !== true) {
             throw new RoutingException(
-                "Invalid router execution result, type '"
-                    . gettype($value) . "' is not allowed."
+                "Invalid router execution result, "
+                    . gettype($value) . " is not allowed."
             );
         }
         $this->setMatchStatus(true);

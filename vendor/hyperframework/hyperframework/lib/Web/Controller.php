@@ -86,7 +86,7 @@ class Controller {
     public function addAroundFilter($filter, array $options = null) {
         if (version_compare(phpversion(), '5.5.0', '<')) {
             throw new NotSupportedException(
-                'Around filter requires PHP version 5.5 or above.'
+                'Around filter requires PHP version 5.5 or later.'
             );
         }
         $this->addFilter('around', $filter, $options);
