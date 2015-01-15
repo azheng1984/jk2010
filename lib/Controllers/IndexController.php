@@ -2,6 +2,7 @@
 namespace Hyperframework\Blog\Controllers;
 
 use Hyperframework\Web\Controller;
+use Hyperframework\Db\DbClient;
 
 class IndexController extends Controller {
     public function __construct($app) {
@@ -25,7 +26,7 @@ class IndexController extends Controller {
     }
 
     protected function doShowAction() {
-//        DbClient::findById('article', 23);
+        DbClient::findById('article', 23);
     }
 
     protected function hi() {

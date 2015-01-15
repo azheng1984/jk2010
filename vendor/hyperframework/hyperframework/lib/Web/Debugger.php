@@ -759,7 +759,7 @@ if (document.getElementById("toggle-external-code") !== null) {
 ?>
 <style>
 body {
-    background: #eee;
+    background: #fff;
     font-family: Helvetica, Arial, sans-serif;
     font-size: 13px;
     color: #333;
@@ -805,7 +805,7 @@ h2 {
     );
 }
 #header {
-    background: #fff;
+    background: #f8f8f8;
 }
 h1 {
     font-size: 21px;
@@ -850,16 +850,19 @@ h1, #message {
     line-height: 16px;
     border: 1px solid #fff;
     background-image: linear-gradient(#fcfcfc, #eee);
-    background-color: #eee;
     border: 1px solid #ccc;
     border-bottom: 0;
     border-radius: 2px 2px 0 0;
 }
-#nav div.selected {
+#nav .wrapper div.selected {
+    background-image: none;
     border: 0;
-    background: #eee;
     padding: 0;
     height: 32px;
+}
+#nav .wrapper .selected div {
+    background-image: none;
+    background-color: #fff;
 }
 #nav .selected div {
     border-bottom: 0;
