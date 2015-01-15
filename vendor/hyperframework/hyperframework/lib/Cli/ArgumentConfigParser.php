@@ -10,11 +10,9 @@ class ArgumentConfigParser {
             if (strpos($config, ' ') !== false
                 || strpos($config, "\t") !== false
             ) {
-                throw new ConfigException(
-                    self::getErrorMessage(
-                        $config, 'white-space character is not allowed.'
-                    )
-                );
+                throw new ConfigException(self::getErrorMessage(
+                    $config, 'white-space character is not allowed.'
+                ));
             }
             $isOptional = false;
             $isRepeatable = false;
