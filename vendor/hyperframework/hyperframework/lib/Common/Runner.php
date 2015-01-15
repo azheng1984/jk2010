@@ -9,7 +9,9 @@ class Runner {
     }
 
     protected static function initializeAppRootPath() {
-        throw new NotImplementedException(__METHOD__ . ' is not implemented.');
+        throw new NotImplementedException(
+            __METHOD__ . ' is not implemented.'
+        );
     }
 
     protected static function initializeConfig() {

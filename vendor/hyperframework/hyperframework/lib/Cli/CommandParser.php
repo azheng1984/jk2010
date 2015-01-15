@@ -336,7 +336,7 @@ class CommandParser {
             $values = $option->getValues();
             if ($option->getValues() !== null) {
                 if (in_array($value, $values, true) === false) {
-                    $message = "Value of option '$name' is invalid.";
+                    $message = "The value of option '$name' is invalid.";
                     if ($subcommand === null) {
                         throw new CommandParsingException($message);
                     }

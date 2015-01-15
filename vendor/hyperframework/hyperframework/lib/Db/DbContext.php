@@ -2,8 +2,9 @@
 namespace Hyperframework\Db;
 
 use InvalidArgumentException;
+use LogicException;
 use Hyperframework\Common\Config;
-use Hyperframework\Common\ConfigException;
+use Hyperframework\Common\ClassNotFoundException;
 
 class DbContext {
     private static $current;
@@ -20,7 +21,7 @@ class DbContext {
         if (isset($options['is_shared'])) {
             if ($options['is_shared'] === true && $name === null) {
                 throw new InvalidArgumentException(
-                    'Shared connection should have a name.'
+                    "Argument 'name' is null, shared connection must be named."
                 );
             }
             $isShared = $options['is_shared'];
@@ -28,8 +29,8 @@ class DbContext {
         if ($connection === null) {
             if ($name === null) {
                 throw new InvalidArgumentException(
-                    "Argument 'name' should not be null,"
-                        . " unless set connection at options."
+                    "Argument 'name' cannot be null,"
+                        . " unless connection is set in argument 'options'."
                 );
             }
             if ($isShared === false || isset(self::$pool[$name]) === false) {
@@ -46,8 +47,8 @@ class DbContext {
                 if (isset(self::$pool[$name])
                     && $connection !== self::$pool[$name]
                 ) {
-                    throw new DbException(
-                        "Shared connection '$name' is already exist."
+                    throw new LogicException(
+                        "Shared connection '$name' already exist."
                     );
                 }
                 self::$pool[$name] = $connection;
@@ -90,7 +91,7 @@ class DbContext {
             } else {
                 if (class_exists(self::$factoryClass) === false) {
                     $class = self::$factoryClass;
-                    throw new ConfigException(
+                    throw new ClassNotFoundException(
                         "Class of database connection factory"
                             . " '$class' does not exist."
                     );

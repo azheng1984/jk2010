@@ -15,8 +15,8 @@ class DbImportCommand {
             $columnNames = $options['column_names'];
             if (is_array($columnNames) === false) {
                 throw new InvalidArgumentException(
-                    'The value of column_names of options must be an array. '
-                    . gettype($columnNames) . ' given.');
+                    "The value of option 'column_names' must be an array, "
+                        . gettype($columnNames) . ' given.');
             }
         } else {
             $columnNames = array_keys($rows[0]);

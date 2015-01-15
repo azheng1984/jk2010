@@ -29,7 +29,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         if (preg_match($extensionPattern, $path, $matches) === 0) {
             if ($this->fullPath === null) {
                 throw new InvalidArgumentException(
-                    "Path '$path' is not valid, file extension does not exist."
+                    "Path '$path' is invalid, file extension does not exist."
                 );
             }
             preg_match($extensionPattern, $this->fullPath, $matches);
@@ -111,7 +111,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
 
     public function offsetSet($offset, $value) {
         if ($offset === null) {
-            throw new InvalidArgumentException('Null offset is invalid.');
+            throw new InvalidArgumentException('Offset cannot be null.');
         } else {
             $this->model[$offset] = $value;
         }

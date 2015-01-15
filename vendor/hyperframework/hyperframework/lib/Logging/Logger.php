@@ -88,7 +88,7 @@ final class Logger {
         if (isset($params['data'])) {
             if (is_array($params['data']) === false) {
                 throw new InvalidArgumentException(
-                    'Data of log entry must be array, '
+                    "Log entry field 'data' must be an array, "
                         . gettype($params['data']) . ' given.'
                 );
             }

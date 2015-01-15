@@ -107,7 +107,7 @@ class LogHandler {
         foreach ($data as $key => $value) {
             if (preg_match('/^[0-9a-zA-Z_]+$/', $key) === 0) {
                 throw new LoggingException(
-                    "Data key '$key' of log entry is invalid."
+                    "Log entry field '$key' is invalid."
                 );
             }
             $result .= PHP_EOL . $prefix . $key . ':';
