@@ -3,5 +3,5 @@ namespace Hyperframework\Common;
 
 use Exception;
 
-class MethodNotFoundException Exception {
+class MethodNotFoundException extends Exception {
 }

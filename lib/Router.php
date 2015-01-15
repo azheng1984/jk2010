@@ -5,6 +5,7 @@ use Hyperframework\Web\Router as Base;
 
 class Router extends Base {
     protected function execute() {
+        return 'x/dsf';
         if ($this->matchResources('articles')) return;
         if ($this->matchScope(['xxx/:xxx_id', 'formats' => ['jpg']], function() {
             if ($this->match('/')) return;

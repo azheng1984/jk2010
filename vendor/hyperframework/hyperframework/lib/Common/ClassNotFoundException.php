@@ -3,5 +3,5 @@ namespace Hyperframework\Common;
 
 use Exception;
 
-class ClassNotFoundException Exception {
+class ClassNotFoundException extends Exception {
 }
