@@ -153,6 +153,8 @@ class Config {
     }
 
     public static function set($key, $value) {
+        $key = (string)$key;
+        self::checkKey($key);
         self::$data[$key] = $value;
     }
 
@@ -192,13 +194,21 @@ class Config {
                     || $value[$length - 1] !== ']'
                 ) {
                     throw new ConfigException(
-                        "Config section name '$value' is invalid."
+                        "Config section '$value' is invalid."
                     );
                 }
                 $namespace = substr($value, 1, $length - 2);
                 if ($namespace === '') {
                     $namespace = null;
                 } else {
+                    $pattern = '/^([a-zA-Z0-9_]+\.?)+$/';
+                    if (preg_match($pattern, $namespace) === 0
+                        || substr($namespace, -1) === '.'
+                    ) {
+                        throw new ConfigException(
+                            "Config section '$value' is invalid."
+                        );
+                    }
                     $namespace .= '.';
                 }
                 continue;
@@ -206,7 +216,19 @@ class Config {
             if ($namespace !== null) {
                 $key = $namespace . $key;
             }
+            self::checkKey($key);
             self::$data[$key] = $value;
+        }
+    }
+
+    private static function checkKey($key) {
+        if ($key === '') {
+            throw new ConfigException("Config key cannot be empty.");
+        }
+        if (preg_match('/^([a-zA-Z0-9_]+\.?)+$/', $key) === 0
+            || substr($key, -1) === '.'
+        ) {
+            throw new ConfigException("Invalid config key '$key'.");
         }
     }
 
