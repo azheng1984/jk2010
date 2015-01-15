@@ -211,7 +211,7 @@ class Controller {
     public function getApp() {
         if ($this->app === null) {
             throw new InvalidOperationException(
-                "App is null, object is not constructed correctly."
+                "Constructor method of " . __CLASS__ . " is not called."
             );
         }
         return $this->app;
