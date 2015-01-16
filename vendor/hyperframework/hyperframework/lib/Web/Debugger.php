@@ -818,7 +818,7 @@ h1, #message {
 }
 #message {
     font-size: 14px;
-    padding: 0 10px 5px 10px;
+    padding: 2px 10px 5px 10px;
     line-height: 20px;
 }
 #code, #output {
