@@ -19,7 +19,6 @@ class CommandParser {
             $optionType = 'options';
         }
         $isGlobal = $commandConfig->isSubcommandEnabled();
-        var_dump($isGlobal);
         $count = count($argv);
         $isArgument = false;
         $arguments = [];
