@@ -15,9 +15,12 @@ class AppTest extends \PHPUnit_Framework_TestCase {
     }
 
     protected function tearDown() {
-        Config::set('hyperframework.cli.command_config_path', null);
-        Config::set('hyperframework.cli.help_class', null );
-        Config::set('hyperframework.cli.command_config_class', null);
+        $reflection = new \ReflectionProperty('Hyperframework\Common\Config', 'data');
+        $reflection->setAccessible(true);
+        $reflection->setValue(null, []);
+//        Config::set('hyperframework.cli.command_config_path', null);
+//        Config::set('hyperframework.cli.help_class', null );
+//        Config::set('hyperframework.cli.command_config_class', null);
     }
 
     public function testInitializeOption() {

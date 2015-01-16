@@ -27,6 +27,16 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($app->getGlobalOptions(), ['t' => true]);
     }
 
+    protected function tearDown() {
+        $reflection = new \ReflectionProperty('Hyperframework\Common\Config', 'data');
+        $reflection->setAccessible(true);
+        $reflection->setValue(null, []);
+//        Config::set('hyperframework.cli.command_config_path', null);
+//        Config::set('hyperframework.cli.help_class', null );
+//        Config::set('hyperframework.cli.command_config_class', null);
+    }
+
+
     public function testInitialize() {
         $_SERVER['argv'] = ['run', '-t', 'child', '-c', 'arg'];
         $app = new MultipleCommandApp;
