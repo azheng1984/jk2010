@@ -24,8 +24,21 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testRunSubcommand() {
-        $_SERVER['argv'] = ['run', 'subcommand'];
+        $_SERVER['argv'] = ['run', 'child'];
         $app = new MultipleCommandApp;
         $app->run();
+    }
+
+    public function testInitializeGlobalOption() {
+        $_SERVER['argv'] = ['run', '-t'];
+        $app = new MultipleCommandApp;
+        $app->run();
+        $this->assertEquals($app->getGlobalOptions(), ['t' => true]);
+    }
+
+    public function testInitializeSubcommandOption() {
+    }
+
+    public function testInitializeSubcommandArgument() {
     }
 }

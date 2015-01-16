@@ -91,7 +91,7 @@ class CommandConfig {
                     $namespace = 'Subcommands';
                     $rootNamespace = Config::getAppRootNamespace();
                     if ($rootNamespace !== '' && $rootNamespace !== '\\') {
-                        NamespaceCombiner::prepend($rootNamespace, $namespace);
+                        NamespaceCombiner::prepend($namespace, $rootNamespace);
                     }
                 }
                 if ($namespace !== '' && $namespace !== '\\') {

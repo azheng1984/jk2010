@@ -66,7 +66,7 @@ class MultipleCommandApp extends App {
 
     protected function executeCommand() {
         if ($this->hasSubcommand()) {
-            $this->executeSuncommand();
+            $this->executeSubcommand();
             return;
         }
         $this->executeGlobalCommand();
