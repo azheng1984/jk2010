@@ -5,7 +5,6 @@ use InvalidArgumentException;
 
 class Config {
     private static $data = [];
-    private static $appRootPath;
 
     public static function get($name, $default = null) {
         if (isset(self::$data[$name])) {
@@ -126,24 +125,26 @@ class Config {
     }
 
     public static function getAppRootPath() {
-        if (self::$appRootPath === null) {
-            self::$appRootPath = Config::getString(
+        if (isset(self::$data[':app_root_path']) === false) {
+            self::$data[':app_root_path'] = Config::getString(
                 'hyperframework.app_root_path'
             );
-            if (self::$appRootPath === null) {
+            if (self::$data[':app_root_path'] === null) {
                 throw new ConfigException(
                     "Config 'hyperframework.app_root_path' is not defined."
                 );
             }
-            if (FullPathRecognizer::isFull(self::$appRootPath) === false) {
+            $isFullPath =
+                FullPathRecognizer::isFull(self::$data[':app_root_path']);
+            if ($isFullPath === false) {
                 throw new ConfigException(
                     "The value of config 'hyperframework.app_root_path'"
                         . ' must be a full path, '
-                        . self::$appRootPath . ' given.'
+                        . self::$data[':app_root_path'] . ' given.'
                 );
             }
         }
-        return self::$appRootPath;
+        return self::$data[':app_root_path'];
     }
 
     public static function getAppRootNamespace() {

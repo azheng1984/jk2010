@@ -170,7 +170,8 @@ class ErrorHandler extends Base {
         if ($class === '') {
             $class = 'Hyperframework\Web\Debugger';
         }
-        $class::execute(
+        $debugger = new $class;
+        $debugger->execute(
             static::getSource(), $headers, $outputBuffer
         );
     }

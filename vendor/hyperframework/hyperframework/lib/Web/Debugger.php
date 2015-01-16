@@ -8,28 +8,28 @@ use Hyperframework\Common\ArgumentErrorException;
 use Hyperframework\Common\ConfigException;
 
 class Debugger {
-    private static $source;
-    private static $trace;
-    private static $headers;
-    private static $headerCount;
-    private static $content;
-    private static $contentLength;
-    private static $isError;
-    private static $rootPath;
-    private static $rootPathLength;
-    private static $shouldHideExternal;
-    private static $shouldHideTrace;
-    private static $firstInternalStackFrameIndex;
+    private $source;
+    private $trace;
+    private $headers;
+    private $headerCount;
+    private $content;
+    private $contentLength;
+    private $isError;
+    private $rootPath;
+    private $rootPathLength;
+    private $shouldHideExternal;
+    private $shouldHideTrace;
+    private $firstInternalStackFrameIndex;
 
-    public static function execute(
+    public function execute(
         $source, array $headers = null, $content = null
     ) {
-        self::$source = $source;
-        self::$headers = $headers;
-        self::$content = $content;
-        self::$headerCount = count($headers);
-        self::$contentLength = strlen($content);
-        self::$isError = $source instanceof ErrorException;
+        $this->source = $source;
+        $this->headers = $headers;
+        $this->content = $content;
+        $this->headerCount = count($headers);
+        $this->contentLength = strlen($content);
+        $this->isError = $source instanceof ErrorException;
         $rootPath = Config::getAppRootPath();
         $realRootPath = realpath($rootPath);
         if ($realRootPath !== false) {
@@ -39,32 +39,32 @@ class Debugger {
                 "App root path '$rootPath' does not exist.'"
             );
         }
-        self::$rootPath = $rootPath . DIRECTORY_SEPARATOR;
-        self::$rootPathLength = strlen(self::$rootPath);
-        self::$shouldHideTrace = false;
-        self::$shouldHideExternal = false;
-        self::$trace = null;
-        if (self::$isError === false || self::$source->isFatal() === false) {
-            if (self::$isError) {
-                self::$trace = $source->getSourceTrace();
+        $this->rootPath = $rootPath . DIRECTORY_SEPARATOR;
+        $this->rootPathLength = strlen($this->rootPath);
+        $this->shouldHideTrace = false;
+        $this->shouldHideExternal = false;
+        $this->trace = null;
+        if ($this->isError === false || $this->source->isFatal() === false) {
+            if ($this->isError) {
+                $this->trace = $source->getSourceTrace();
             } else {
-                self::$trace = $source->getTrace();
+                $this->trace = $source->getTrace();
             }
-            if (self::isExternalFile($source->getFile())) {
-                self::$firstInternalStackFrameIndex = null;
-                foreach (self::$trace as $index => $frame) {
+            if ($this->isExternalFile($source->getFile())) {
+                $this->firstInternalStackFrameIndex = null;
+                foreach ($this->trace as $index => $frame) {
                     if (isset($frame['file'])
-                        && self::isExternalFile($frame['file']) === false
+                        && $this->isExternalFile($frame['file']) === false
                     ) {
-                        self::$firstInternalStackFrameIndex = $index;
+                        $this->firstInternalStackFrameIndex = $index;
                         break;
                     }
                 }
-                if (self::$firstInternalStackFrameIndex !== null) {
-                    self::$shouldHideExternal = true;
-                    $maxIndex = count(self::$trace) - 1;
-                    if ($maxIndex === self::$firstInternalStackFrameIndex) {
-                        self::$shouldHideTrace = true;
+                if ($this->firstInternalStackFrameIndex !== null) {
+                    $this->shouldHideExternal = true;
+                    $maxIndex = count($this->trace) - 1;
+                    if ($maxIndex === $this->firstInternalStackFrameIndex) {
+                        $this->shouldHideTrace = true;
                     }
                 }
             }
@@ -72,7 +72,7 @@ class Debugger {
         if (headers_sent() === false) {
             header('Content-Type: text/html;charset=utf-8');
         }
-        if (self::$isError) {
+        if ($this->isError) {
             if ($source->shouldThrow() === true) {
                 $type = 'Error Exception';
             } elseif ($source->getSeverityAsString() === 'error') {
@@ -102,16 +102,16 @@ class Debugger {
         echo '<!DOCTYPE html><html><head>',
             '<meta http-equiv="Content-Type"',
             ' content="text/html;charset=utf-8"/><title>', $title, '</title>';
-        self::renderCss();
+        $this->renderCss();
         echo '</head><body class="no-touch"><table id="page-container"><tbody>';
-        self::renderHeader($type, $message);
-        self::renderContent();
-        self::renderJavascript();
+        $this->renderHeader($type, $message);
+        $this->renderContent();
+        $this->renderJavascript();
         echo '</tbody></table></body></html>';
     }
 
-    private static function isExternalFile($path) {
-        $relativePath = self::getRelativePath($path);
+    private function isExternalFile($path) {
+        $relativePath = $this->getRelativePath($path);
         if ($relativePath === $path) {
             return true;
         }
@@ -121,55 +121,55 @@ class Debugger {
         return false;
     }
 
-    private static function renderContent() {
+    private function renderContent() {
         $hasTrace =
-            self::$isError === false || self::$source->isFatal() === false;
+            $this->isError === false || $this->source->isFatal() === false;
         echo '<tr><td id="content"><table id="code"><tbody>',
             '<tr><td id="status-bar-wrapper">';
-        self::renderStatusBar();
+        $this->renderStatusBar();
         echo '</td></tr><tr><td id="file-wrapper">';
-        self::renderFile();
+        $this->renderFile();
         echo '</td></tr>';
         if ($hasTrace) {
             echo '<tr><td id="stack-trace-wrapper"';
-            if (self::$shouldHideTrace) {
+            if ($this->shouldHideTrace) {
                 echo ' class="hidden"';
             }
             echo '>';
-            self::renderStackTrace();
+            $this->renderStackTrace();
             echo '</td></tr>';
         }
         echo '</tbody></table></td></tr>';
     }
 
-    private static function renderFile() {
+    private function renderFile() {
         echo '<div id="file">';
-        if (self::$shouldHideExternal) {
-            $frame = self::$trace[self::$firstInternalStackFrameIndex];
+        if ($this->shouldHideExternal) {
+            $frame = $this->trace[$this->firstInternalStackFrameIndex];
             $path = $frame['file'];
             $errorLineNumber = $frame['line'];
             echo '<div id="internal-file"><h2>Internal File</h2>';
-            self::renderFileContent($path, $errorLineNumber);
+            $this->renderFileContent($path, $errorLineNumber);
             echo '</div><div id="external-file" class="hidden">',
                 '<h2>External File</h2>';
         }
-        $path = self::$source->getFile();
-        $errorLineNumber = self::$source->getLine();
-        self::renderFileContent($path, $errorLineNumber);
-        if (self::$shouldHideExternal) {
+        $path = $this->source->getFile();
+        $errorLineNumber = $this->source->getLine();
+        $this->renderFileContent($path, $errorLineNumber);
+        if ($this->shouldHideExternal) {
             echo '</div>';
         }
         echo '</div>';
     }
 
-    private static function renderFileContent($path, $errorLineNumber) {
-        self::renderPath(
+    private function renderFileContent($path, $errorLineNumber) {
+        $this->renderPath(
             $path,
             true,
             ' <span class="line">Line ' . $errorLineNumber . '</span>'
         );
         echo '<table><tbody><tr><td class="index"><div class="index-content">';
-        $lines = self::getLines($path, $errorLineNumber);
+        $lines = $this->getLines($path, $errorLineNumber);
         foreach ($lines as $number => $line) {
             if ($number === $errorLineNumber) {
                 echo '<div class="error-line-number"><div>',
@@ -190,23 +190,23 @@ class Debugger {
         echo "</div></pre></td></tr></tbody></table>";
     }
 
-    private static function renderStackTrace() {
+    private function renderStackTrace() {
         echo '<table id="stack-trace">',
             '<tr><td class="content"><h2>Stack Trace</h2><table><tbody>';
         $index = 0;
-        $last = count(self::$trace) - 1;
-        foreach (self::$trace as $frame) {
+        $last = count($this->trace) - 1;
+        foreach ($this->trace as $frame) {
             if ($frame !== '{main}') {
                 $invocation = StackTraceFormatter::formatInvocation($frame);
                 echo '<tr id="frame-', $index, '"';
-                if (self::$shouldHideExternal
-                    && self::$shouldHideTrace === false
+                if ($this->shouldHideExternal
+                    && $this->shouldHideTrace === false
                 ) {
-                    if ($index < self::$firstInternalStackFrameIndex) {
+                    if ($index < $this->firstInternalStackFrameIndex) {
                         echo ' class="hidden"';
                     }
                     echo '><td class="index">',
-                        $index - self::$firstInternalStackFrameIndex;
+                        $index - $this->firstInternalStackFrameIndex;
                 } else {
                     echo '><td class="index">', $index;
                 }
@@ -217,7 +217,7 @@ class Debugger {
                 echo '"><code class="invocation">', $invocation, '</code>',
                     '<div class="position">';
                 if (isset($frame['file'])) {
-                    self::renderPath(
+                    $this->renderPath(
                         $frame['file'],
                         true,
                         ' <span class="line">Line ' . $frame['line'] . '</span>'
@@ -233,26 +233,26 @@ class Debugger {
         echo '</tbody></table></td></tr></table>';
     }
 
-    private static function renderStatusBar() {
+    private function renderStatusBar() {
         echo '<table id="status-bar"><tbody><tr>';
-        if (self::$shouldHideExternal) {
+        if ($this->shouldHideExternal) {
             echo '<td id="toggle-external-code">',
                 '<a>Start from External File</a></td>';
         }
         echo '<td>';
-        if (self::$shouldHideExternal) {
+        if ($this->shouldHideExternal) {
             echo '<div class="text">';
         }
         echo '<div class="first"><div>Response Headers:',
             ' <span class="first-value">',
-            self::$headerCount, '</span></div><div>',
+            $this->headerCount, '</span></div><div>',
             'Content Size: <span>';
-        if (self::$contentLength === 0) {
+        if ($this->contentLength === 0) {
             echo '0 byte';
-        } elseif (self::$contentLength === 1) {
+        } elseif ($this->contentLength === 1) {
             echo '1 byte';
         } else {
-            $size = self::$contentLength / 1024;
+            $size = $this->contentLength / 1024;
             $prefix = '';
             $suffix = '';
             if ($size > 1) {
@@ -271,18 +271,18 @@ class Debugger {
                     echo sprintf("%.1f", $size), ' KB';
                 }
             }
-            echo  $prefix, self::$contentLength, ' bytes', $suffix;
+            echo  $prefix, $this->contentLength, ' bytes', $suffix;
         }
         echo '</span></div></div><div class="second"><div>App Root Path:</div>',
-            self::renderPath(self::$rootPath, false),
+            $this->renderPath($this->rootPath, false),
             '</div>';
-        if (self::$shouldHideExternal) {
+        if ($this->shouldHideExternal) {
             echo '</div>';
         }
         echo '</td></tr></tbody></table>';
     }
 
-    private static function getLines($path, $errorLineNumber) {
+    private function getLines($path, $errorLineNumber) {
         $file = file_get_contents($path);
         $tokens = token_get_all($file);
         $firstLineNumber = 1;
@@ -326,12 +326,12 @@ class Debugger {
             foreach ($lines as $line) {
                 if ($lineNumber >= $firstLineNumber) {
                     $result[$lineNumber] =
-                        $buffer . self::formatToken($type, $line);
+                        $buffer . $this->formatToken($type, $line);
                     $buffer = '';
                 }
                 ++$lineNumber;
             }
-            $buffer .= self::formatToken($type, $lastLine);
+            $buffer .= $this->formatToken($type, $lastLine);
             if ($lineNumber > $errorLineNumber + 5) {
                 $buffer = false;
                 break;
@@ -348,7 +348,7 @@ class Debugger {
         return $result;
     }
 
-    private static function formatToken($type, $content) {
+    private function formatToken($type, $content) {
         $class = null;
         switch ($type) {
             case T_ENCAPSED_AND_WHITESPACE:
@@ -396,24 +396,24 @@ class Debugger {
         return '<span class="' . $class . '">' . $content . '</span>';
     }
 
-    private static function renderPath(
+    private function renderPath(
         $path, $shouldRemoveRootPath = true, $suffix = ''
     ) {
         if ($shouldRemoveRootPath === true) {
-            $path = self::getRelativePath($path);
+            $path = $this->getRelativePath($path);
         }
         echo '<div class="path"><code>', $path, '</code>', $suffix, '</div>';
     }
 
-    private static function getRelativePath($path) {
-        if (strncmp(self::$rootPath, $path, self::$rootPathLength) === 0) {
-            $path = substr($path, self::$rootPathLength);
+    private function getRelativePath($path) {
+        if (strncmp($this->rootPath, $path, $this->rootPathLength) === 0) {
+            $path = substr($path, $this->rootPathLength);
         }
         return $path;
     }
 
-    private static function renderHeader($type, $message) {
-        if (self::$isError === false) {
+    private function renderHeader($type, $message) {
+        if ($this->isError === false) {
             $type = str_replace('\\', '<span>\</span>', $type);
         }
         echo '<tr><td id="header"><h1>', $type, '</h1>';
@@ -426,7 +426,7 @@ class Debugger {
             '<div id="nav-output"><a>Output</a></div></div></div></td></tr>';
     }
 
-    private static function getMaxOutputContentSize($isText = false) {
+    private function getMaxOutputContentSize($isText = false) {
         $size = strtolower(trim(Config::get(
             'hyperframework.web.debugger.max_output_content_size'
         )));
@@ -467,11 +467,11 @@ class Debugger {
         return $size;
     }
 
-    private static function renderJavascript() {
+    private function renderJavascript() {
         $isOverflow = false;
         $headers = [];
-        if (self::$headers !== null) {
-            foreach (self::$headers as $header) {
+        if ($this->headers !== null) {
+            foreach ($this->headers as $header) {
                 $segments = explode(':', $header, 2);
                 $key = $segments[0];
                 if (isset($segments[1])) {
@@ -488,12 +488,12 @@ class Debugger {
                 $headers[] = [$key, $value];
             }
         }
-        $maxSize = self::getMaxOutputContentSize();
-        if ($maxSize >=0 && self::$contentLength >= $maxSize) {
+        $maxSize = $this->getMaxOutputContentSize();
+        if ($maxSize >=0 && $this->contentLength >= $maxSize) {
             $isOverflow = true;
-            $content = mb_strcut(self::$content, 0, $maxSize);
+            $content = mb_strcut($this->content, 0, $maxSize);
         } else {
-            $content = self::$content;
+            $content = $this->content;
         }
         $content = str_replace(["\r\n", "\r"], "\n", $content);
         $content = json_encode(htmlspecialchars(
@@ -501,18 +501,18 @@ class Debugger {
         ));
         $shouldHideTrace = 'null';
         $firstInternalStackFrameIndex = 'null';
-        if (self::$shouldHideExternal) {
-            if (self::$shouldHideTrace === true) {
+        if ($this->shouldHideExternal) {
+            if ($this->shouldHideTrace === true) {
                 $shouldHideTrace = 'true';
                 $firstInternalStackFrameIndex = 'null';
             } else {
                 $shouldHideTrace = 'false';
                 $firstInternalStackFrameIndex =
-                    self::$firstInternalStackFrameIndex;
+                    $this->firstInternalStackFrameIndex;
             }
         }
-        if (self::$trace !== null) {
-            $stackFrameCount = count(self::$trace);
+        if ($this->trace !== null) {
+            $stackFrameCount = count($this->trace);
         } else {
             $stackFrameCount = 0;
         }
@@ -549,7 +549,7 @@ function showOutput() {
     }
     var headers = <?= json_encode($headers) ?>;
     var isOverflow = <?= json_encode($isOverflow) ?>;
-    var contentLength = <?= json_encode(self::$contentLength) ?>;
+    var contentLength = <?= json_encode($this->contentLength) ?>;
     if (headers.length > 0) {
         outputContent = '<table id="output"><tbody><tr>'
             + '<td id="response-headers"><a'
@@ -573,11 +573,11 @@ function showOutput() {
     }
     if (isOverflow) {
         outputContent += '<tr><td class="notice"><span>Notice: </span>';
-        var maxSize = <?= self::getMaxOutputContentSize() ?>;
+        var maxSize = <?= $this->getMaxOutputContentSize() ?>;
         if (maxSize !== 0) {
             outputContent += 'Content is partial. Length is larger than'
                 + ' output limitation ('
-                + '<?= self::getMaxOutputContentSize(true) ?>' + ').';
+                + '<?= $this->getMaxOutputContentSize(true) ?>' + ').';
         } else {
             outputContent += 'Content display is turn off.';
         }
@@ -755,7 +755,7 @@ if (document.getElementById("toggle-external-code") !== null) {
 <?php
     }
 
-    private static function renderCss() {
+    private function renderCss() {
 ?>
 <style>
 body {
@@ -883,7 +883,7 @@ h1, #message {
 #status-bar {
     width: 100%;
     margin-right: 10px;
-<?php if (self::$shouldHideExternal): ?>
+<?php if ($this->shouldHideExternal): ?>
     line-height: 25px;
 <?php endif ?>
     font-size:12px;
