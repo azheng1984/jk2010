@@ -15,6 +15,7 @@ class AppTest extends \PHPUnit_Framework_TestCase {
     }
 
     protected function tearDown() {
+        Config::reset();
         $reflection = new \ReflectionProperty('Hyperframework\Common\Config', 'data');
         $reflection->setAccessible(true);
         $reflection->setValue(null, []);

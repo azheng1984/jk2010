@@ -236,4 +236,8 @@ class Config {
     public static function getAll() {
         return self::$data;
     }
+
+    public static function clear() {
+        self::$data = [];
+    }
 }
