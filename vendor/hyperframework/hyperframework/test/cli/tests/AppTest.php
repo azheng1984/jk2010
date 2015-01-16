@@ -23,9 +23,6 @@ class AppTest extends \PHPUnit_Framework_TestCase {
         parent::tearDown();
     }
 
-    public function __construct() {
-    }
-
     public function testInitializeOption() {
         $this->assertEquals($this->app->getOptions(), ['t' => true]);
     }
@@ -61,8 +58,5 @@ class AppTest extends \PHPUnit_Framework_TestCase {
     public function testRun() {
         $this->expectOutputString('success');
         $this->app->run();
-    }
-
-    public function testRunx() {
     }
 }
