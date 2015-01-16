@@ -48,11 +48,14 @@ class AppTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testShowVersion() {
-        $_SERVER['argv'] = ['run', '--version'];
-        $app = $this->getMockBuilder('Hyperframework\Cli\App')
-            ->setMethods(['quit'])
-            ->getMock();
         $this->expectOutputString("1.0.0\n");
+        $_SERVER['argv'] = ['run', '--version'];
+        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
+            ->setMethods(['quit'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mock->expects($this->once())->method('quit');
+        $mock->__construct();
     }
 
     public function testRun() {
