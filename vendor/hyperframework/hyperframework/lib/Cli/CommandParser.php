@@ -33,7 +33,7 @@ class CommandParser {
                 if ($isGlobal) {
                     if ($commandConfig->hasSubcommand($element) === false) {
                         throw new CommandParsingException(
-                            "Command $element does not exist."
+                            "Command '$element' does not exist."
                         );
                     }
                     $isGlobal = false;
@@ -372,8 +372,8 @@ class CommandParser {
                 }
                 if ($groupConfig->isRequired() && $optionKey === null) {
                     if ($hasMagicOption === false && count($optionKeys) !== 0) {
-                        $message = 'One of option ' . implode(', ', $optionKeys)
-                            . ' is required.';
+                        $message = "One of option '"
+                            . implode(', ', $optionKeys) . "' is required.";
                         if ($subcommand === null) {
                             throw new CommandParsingException($message);
                         }

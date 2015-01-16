@@ -4,10 +4,7 @@ namespace Hyperframework\Cli;
 use Hyperframework\Common\Config;
 
 class AppTest extends \PHPUnit_Framework_TestCase {
-    private $app;
-
     protected function setUp() {
-        parent::setUp();
         Config::set(
             'hyperframework.app_root_path',
             '/home/az/quickquick/vendor/hyperframework/hyperframework/test/cli'
@@ -19,6 +16,8 @@ class AppTest extends \PHPUnit_Framework_TestCase {
 
     protected function tearDown() {
         Config::set('hyperframework.cli.command_config_path', null);
+        Config::set('hyperframework.cli.help_class', null );
+        Config::set('hyperframework.cli.command_config_class', null);
     }
 
     public function testInitializeOption() {
@@ -33,6 +32,19 @@ class AppTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($app->getArguments(), ['arg']);
     }
 
+    public function testGetOption() {
+        $_SERVER['argv'] = ['run', '-t', 'arg'];
+        $app = new App;
+        $this->assertEquals($app->getOption('t'), true);
+    }
+
+    public function testHasOption() {
+        $_SERVER['argv'] = ['run', '-t', 'arg'];
+        $app = new App;
+        $this->assertEquals($app->hasOption('t'), true);
+        $this->assertEquals($app->hasOption('x'), false);
+    }
+
     public function testShowHelp() {
         $this->expectOutputString(
             "Usage: test [-t] [-h|--help] [--version] <arg>\n"
@@ -43,6 +55,34 @@ class AppTest extends \PHPUnit_Framework_TestCase {
             ->disableOriginalConstructor()
             ->getMock();
         $mock->expects($this->once())->method('quit');
+        $mock->__construct();
+    }
+
+    public function testCustomHelp() {
+        $this->expectOutputString("success");
+        Config::set(
+            'hyperframework.cli.help_class', 'Hyperframework\Cli\Test\Help'
+        );
+        $_SERVER['argv'] = ['run', '-h'];
+        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
+            ->setMethods(['quit'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mock->__construct();
+    }
+
+    /**
+     * @expectedException Hyperframework\Common\ClassNotFoundException
+     */
+    public function testCustomHelpClassNotFound() {
+        Config::set(
+            'hyperframework.cli.help_class', 'Unknown'
+        );
+        $_SERVER['argv'] = ['run', '-h'];
+        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
+            ->setMethods(['quit'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $mock->__construct();
     }
 
@@ -60,6 +100,44 @@ class AppTest extends \PHPUnit_Framework_TestCase {
 
     public function testShowVersion() {
         $this->expectOutputString("1.0.0\n");
+        $_SERVER['argv'] = ['run', '--version'];
+        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
+            ->setMethods(['quit'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mock->expects($this->once())->method('quit');
+        $mock->__construct();
+    }
+
+    public function testCustomCommandConfig() {
+        Config::set(
+            'hyperframework.cli.command_config_class',
+            'Hyperframework\Cli\Test\CommandConfig'
+        );
+        $_SERVER['argv'] = ['run', 'arg'];
+        $app = new App;
+        $this->assertInstanceOf(
+            'Hyperframework\Cli\Test\CommandConfig', $app->getCommandConfig()
+        );
+    }
+
+    /**
+     * @expectedException Hyperframework\Common\ClassNotFoundException
+     */
+    public function testCustomCommandConfigClassNotFound() {
+        Config::set(
+            'hyperframework.cli.command_config_class', 'Unknown'
+        );
+        $_SERVER['argv'] = ['run', 'arg'];
+        $app = new App;
+    }
+
+    public function testVersionNotFound() {
+        Config::set(
+            'hyperframework.cli.command_config_path',
+            'command_version_not_found.php'
+        );
+        $this->expectOutputString("undefined\n");
         $_SERVER['argv'] = ['run', '--version'];
         $mock = $this->getMockBuilder('Hyperframework\Cli\App')
             ->setMethods(['quit'])
