@@ -1,6 +1,6 @@
 <?php
 return [
-    'name' => 'test',
+    'options' => ['-c'],
     'arguments' => [],
     'class' => 'Unknown'
 ];

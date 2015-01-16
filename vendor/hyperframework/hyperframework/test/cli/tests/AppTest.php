@@ -45,19 +45,6 @@ class AppTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($app->hasOption('x'), false);
     }
 
-    public function testShowHelp() {
-        $this->expectOutputString(
-            "Usage: test [-t] [-h|--help] [--version] <arg>\n"
-        );
-        $_SERVER['argv'] = ['run', '-h'];
-        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
-            ->setMethods(['quit'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $mock->expects($this->once())->method('quit');
-        $mock->__construct();
-    }
-
     public function testCustomHelp() {
         $this->expectOutputString("success");
         Config::set(
@@ -98,7 +85,20 @@ class AppTest extends \PHPUnit_Framework_TestCase {
         $app->run();
     }
 
-    public function testShowVersion() {
+    public function testRenderHelp() {
+        $this->expectOutputString(
+            "Usage: test [-t] [-h|--help] [--version] <arg>\n"
+        );
+        $_SERVER['argv'] = ['run', '-h'];
+        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
+            ->setMethods(['quit'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mock->expects($this->once())->method('quit');
+        $mock->__construct();
+    }
+
+    public function testRenderVersion() {
         $this->expectOutputString("1.0.0\n");
         $_SERVER['argv'] = ['run', '--version'];
         $mock = $this->getMockBuilder('Hyperframework\Cli\App')
@@ -157,9 +157,9 @@ class AppTest extends \PHPUnit_Framework_TestCase {
 
     public function testCommandParsingError() {
         $this->expectOutputString(
-            "Unknown option 'unkonwn'.\nSee 'test --help'.\n"
+            "Unknown option 'unknown'.\nSee 'test --help'.\n"
         );
-        $_SERVER['argv'] = ['run', '--unkonwn'];
+        $_SERVER['argv'] = ['run', '--unknown'];
         $mock = $this->getMockBuilder('Hyperframework\Cli\App')
             ->setMethods(['quit'])
             ->disableOriginalConstructor()

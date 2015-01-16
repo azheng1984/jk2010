@@ -2,6 +2,6 @@
 namespace Hyperframework\Cli\Test\Subcommands;
 
 class ChildCommand {
-    public function execute() {
+    public function execute($arg) {
     }
 }
