@@ -242,7 +242,9 @@ class CommandParser {
                 }
             } else {
                 $argumentConfig = end($argumentConfigs);
-                if ($argumentConfig->isRepeatable()) {
+                if ($argumentConfig !== false 
+                    && $argumentConfig->isRepeatable()
+                ) {
                     $result['arguments'][count($result['arguments']) - 1][] =
                         $arguments[$argumentIndex];
                 } else {

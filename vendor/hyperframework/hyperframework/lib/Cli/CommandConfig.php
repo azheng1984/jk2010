@@ -110,10 +110,7 @@ class CommandConfig {
             && isset($this->subcommandOptions[$subcommand])
         ) {
             return $this->subcommandOptions[$subcommand];
-        } elseif ($this->options !== null) {
-            return $this->options;
-        }
-        if ($this->options !== null) {
+        } elseif ($subcommand === null && $this->options !== null) {
             return $this->options;
         }
         $config = $this->get('options', $subcommand);
