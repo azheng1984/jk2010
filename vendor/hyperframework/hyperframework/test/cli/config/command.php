@@ -1,4 +1,8 @@
 <?php
 return [
-    'name' => 'xx'
+    'name' => 'test',
+    'version' => '1.0.0',
+    'options' => [
+        '-t'
+    ],
 ];

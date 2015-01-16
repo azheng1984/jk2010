@@ -398,6 +398,11 @@ class CommandConfig {
         $class = $this->getClass($subcommand);
         $errorMessagePrefix = 'Failed to get default argument list config, ';
         if (method_exists($class, 'execute') === false) {
+            if (class_exists($class) === false) {
+                throw new MethodNotFoundException(
+                    $errorMessagePrefix . "class '$class' does not exist."
+                );
+            }
             throw new MethodNotFoundException(
                 $errorMessagePrefix . "method '$class::execute' does not exist."
             );
