@@ -1,5 +1,5 @@
 <?php
-namespace Hyperframework\Test\Fixture;
+namespace Hyperframework\Cli\Test;
 
 class Command {
     public function execute() {

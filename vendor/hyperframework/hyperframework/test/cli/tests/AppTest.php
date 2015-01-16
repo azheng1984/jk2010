@@ -9,10 +9,10 @@ class AppTest extends \PHPUnit_Framework_TestCase {
     protected function setUp() {
         Config::set(
             'hyperframework.app_root_path',
-            '/home/az/quickquick/vendor/hyperframework/hyperframework/test/fixtures'
+            '/home/az/quickquick/vendor/hyperframework/hyperframework/test/cli'
         );
         Config::set(
-            'hyperframework.app_root_namespace', 'Hyperframework\Test\Fixture'
+            'hyperframework.app_root_namespace', 'Hyperframework\Cli\Test'
         );
         parent::setUp();
         $_SERVER['argv'] = [];
