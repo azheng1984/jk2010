@@ -15,20 +15,22 @@ class AppTest extends \PHPUnit_Framework_TestCase {
         Config::set(
             'hyperframework.app_root_namespace', 'Hyperframework\Cli\Test'
         );
-        $_SERVER['argv'] = ['run', '-t', 'arg'];
-        $this->app = new App;
     }
 
     protected function tearDown() {
-        parent::tearDown();
+        Config::set('hyperframework.cli.command_config_path', null);
     }
 
     public function testInitializeOption() {
-        $this->assertEquals($this->app->getOptions(), ['t' => true]);
+        $_SERVER['argv'] = ['run', '-t', 'arg'];
+        $app = new App;
+        $this->assertEquals($app->getOptions(), ['t' => true]);
     }
 
     public function testInitializeArgument() {
-        $this->assertEquals($this->app->getArguments(), ['arg']);
+        $_SERVER['argv'] = ['run', 'arg'];
+        $app = new App;
+        $this->assertEquals($app->getArguments(), ['arg']);
     }
 
     public function testShowHelp() {
@@ -44,6 +46,18 @@ class AppTest extends \PHPUnit_Framework_TestCase {
         $mock->__construct();
     }
 
+    /**
+     * @expectedException Hyperframework\Common\ClassNotFoundException
+     */
+    public function testCommandClassNotFound() {
+        Config::set(
+            'hyperframework.cli.command_config_path', 'command_class_error.php'
+        );
+        $_SERVER['argv'] = ['run'];
+        $app = new App;
+        $app->run();
+    }
+
     public function testShowVersion() {
         $this->expectOutputString("1.0.0\n");
         $_SERVER['argv'] = ['run', '--version'];
@@ -57,6 +71,22 @@ class AppTest extends \PHPUnit_Framework_TestCase {
 
     public function testRun() {
         $this->expectOutputString('success');
-        $this->app->run();
+        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
+            ->setMethods(['finalize'])->getMock();
+        $mock->expects($this->once())->method('finalize');
+        $mock->run();
+    }
+
+    public function testCommandParsingError() {
+        $this->expectOutputString(
+            "Unknown option 'unkonwn'.\nSee 'test --help'.\n"
+        );
+        $_SERVER['argv'] = ['run', '--unkonwn'];
+        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
+            ->setMethods(['quit'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mock->expects($this->once())->method('quit');
+        $mock->__construct();
     }
 }
