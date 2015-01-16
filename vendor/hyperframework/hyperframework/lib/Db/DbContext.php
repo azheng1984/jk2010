@@ -35,7 +35,7 @@ class DbContext {
             }
             if ($isShared === false || isset(self::$pool[$name]) === false) {
                 $factory = self::getFactory();
-                $connection = $factory->build($name);
+                $connection = $factory->create($name);
                 if ($isShared) {
                     self::$pool[$name] = $connection;
                 }

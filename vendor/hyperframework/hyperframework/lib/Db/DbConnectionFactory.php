@@ -8,7 +8,7 @@ use Hyperframework\Common\ConfigException;
 class DbConnectionFactory {
     private $config;
 
-    public function build($name = 'default') {
+    public function create($name = 'default') {
         $config = $this->getConfig($name);
         if (isset($config['dsn']) === false) {
             throw new ConfigException(
@@ -19,17 +19,12 @@ class DbConnectionFactory {
         $username = isset($config['username']) ? $config['username'] : null;
         $password = isset($config['password']) ? $config['password'] : null;
         $options = isset($config['options']) ? $config['options'] : null;
-        $connection = $this->getConnection(
+
+        $connection = new DbConnection(
             $name, $config['dsn'], $username, $password, $options
         );
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $connection;
-    }
-
-    protected function getConnection(
-        $name, $dsn, $username, $password, $options
-    ) {
-        return new DbConnection($name, $dsn, $username, $password, $options);
     }
 
     private function getConfig($name) {
