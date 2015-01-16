@@ -8,7 +8,7 @@ use Hyperframework\Common\ClassNotFoundException;
 
 class DbContext {
     private static $current;
-    private static $factoryClass;
+    private static $factory;
     private static $stack = array();
     private static $pool = array();
 
@@ -34,8 +34,8 @@ class DbContext {
                 );
             }
             if ($isShared === false || isset(self::$pool[$name]) === false) {
-                $factoryClass = self::getFactoryClass();
-                $connection = $factoryClass::build($name);
+                $factory = self::getFactory();
+                $connection = $factory->build($name);
                 if ($isShared) {
                     self::$pool[$name] = $connection;
                 }
@@ -74,23 +74,23 @@ class DbContext {
         self::$stack = array();
     }
 
-    private static function getFactoryClass() {
-        if (self::$factoryClass === null) {
-            self::$factoryClass = Config::getString(
+    private static function getFactory() {
+        if (self::$factory === null) {
+            $class = Config::getString(
                 'hyperframework.db.connection.factory_class', ''
             );
-            if (self::$factoryClass === '') {
-                self::$factoryClass = 'Hyperframework\Db\DbConnectionFactory';
+            if ($class === '') {
+                $class = 'Hyperframework\Db\DbConnectionFactory';
             } else {
-                if (class_exists(self::$factoryClass) === false) {
-                    $class = self::$factoryClass;
+                if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
                         "Class of database connection factory"
                             . " '$class' does not exist."
                     );
                 }
             }
+            self::$factory = new $class;
         }
-        return self::$factoryClass;
+        return self::$factory;
     }
 }

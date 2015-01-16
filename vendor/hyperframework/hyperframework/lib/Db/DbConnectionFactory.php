@@ -6,10 +6,10 @@ use Hyperframework\Common\ConfigFileLoader;
 use Hyperframework\Common\ConfigException;
 
 class DbConnectionFactory {
-    private static $config;
+    private $config;
 
-    public static function build($name = 'default') {
-        $config = self::getConfig($name);
+    public function build($name = 'default') {
+        $config = $this->getConfig($name);
         if (isset($config['dsn']) === false) {
             throw new ConfigException(
                 "Field 'dsn' does not exist"
@@ -19,38 +19,38 @@ class DbConnectionFactory {
         $username = isset($config['username']) ? $config['username'] : null;
         $password = isset($config['password']) ? $config['password'] : null;
         $options = isset($config['options']) ? $config['options'] : null;
-        $connection = self::getConnection(
+        $connection = $this->getConnection(
             $name, $config['dsn'], $username, $password, $options
         );
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $connection;
     }
 
-    protected static function getConnection(
+    protected function getConnection(
         $name, $dsn, $username, $password, $options
     ) {
         return new DbConnection($name, $dsn, $username, $password, $options);
     }
 
-    private static function getConfig($name) {
-        if (self::$config === null) {
-            self::initializeConfig();
+    private function getConfig($name) {
+        if ($this->config === null) {
+            $this->initializeConfig();
         }
-        if ($name === 'default' && isset(self::$config['dsn'])
-            && is_string(self::$config['dsn'])
+        if ($name === 'default' && isset($this->config['dsn'])
+            && is_string($this->config['dsn'])
         ) {
-            return self::$config;
+            return $this->config;
         }
-        if (isset(self::$config[$name])) {
-            return self::$config[$name];
+        if (isset($this->config[$name])) {
+            return $this->config[$name];
         }
         throw new ConfigException(
             "Database connection config '$name' does not exist."
         );
     }
 
-    private static function initializeConfig() {
-        self::$config = ConfigFileLoader::loadPhp(
+    private function initializeConfig() {
+        $this->config = ConfigFileLoader::loadPhp(
             'db.php', 'hyperframework.db.config_path'
         );
     }
