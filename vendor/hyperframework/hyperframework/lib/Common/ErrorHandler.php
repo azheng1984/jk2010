@@ -55,7 +55,7 @@ class ErrorHandler {
         }
     }
 
-    private function disableDefaultErrorReporting() {
+    final protected function disableDefaultErrorReporting() {
         if ($this->shouldReportCompileWarning()) {
             error_reporting(E_COMPILE_WARNING);
         } else {
