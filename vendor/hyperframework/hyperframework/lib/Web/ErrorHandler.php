@@ -7,52 +7,50 @@ use Hyperframework\Common\InvalidOperationException;
 use Hyperframework\Common\ErrorHandler as Base;
 
 class ErrorHandler extends Base {
-    private static $isDebuggerEnabled;
-    private static $startupOutputBufferLevel;
-    private static $isRunning = false;
+    private $isDebuggerEnabled;
+    private $startupOutputBufferLevel;
 
-    public static function run() {
-        self::$isDebuggerEnabled =
+    public function __construct() {
+        parent::__construct();
+        $this->isDebuggerEnabled =
             Config::getBoolean('hyperframework.error_handler.debug', false);
         if (ini_get('display_errors') === '1') {
-            if (self::$isDebuggerEnabled !== false) {
-                self::$isDebuggerEnabled = true;
+            if ($this->isDebuggerEnabled !== false) {
+                $this->isDebuggerEnabled = true;
             }
         } else {
-            if (self::$isDebuggerEnabled !== true) {
-                self::$isDebuggerEnabled = false;
+            if ($this->isDebuggerEnabled !== true) {
+                $this->isDebuggerEnabled = false;
             }
         }
-        if (self::$isDebuggerEnabled) {
+        if ($this->isDebuggerEnabled) {
             ob_start();
         }
-        self::$startupOutputBufferLevel = ob_get_level();
-        parent::run();
-        self::$isRunning = true;
+        $this->startupOutputBufferLevel = ob_get_level();
     }
 
-    protected static function displayFatalError() {
-        $isError = static::isError();
-        $source = static::getSource();
-        if (self::isDebuggerEnabled()) {
+    protected function displayFatalError() {
+        $isError = $this->isError();
+        $source = $this->getSource();
+        if ($this->isDebuggerEnabled()) {
             $headers = headers_list();
             if (headers_sent() === false) {
-                self::resetHttpHeaders();
+                $this->resetHttpHeaders();
             }
-            $outputBuffer = static::getOutputBuffer();
-            static::executeDebugger($headers, $outputBuffer);
+            $outputBuffer = $this->getOutputBuffer();
+            $this->executeDebugger($headers, $outputBuffer);
         } elseif (ini_get('display_errors') === '1') {
-            static::displayError();
+            $this->displayError();
         } elseif (headers_sent() === false) {
-            self::resetHttpHeaders();
-            self::deleteOutputBuffer();
-            static::renderErrorView();
+            $this->resetHttpHeaders();
+            $this->deleteOutputBuffer();
+            $this->renderErrorView();
         }
     }
 
-    private static function resetHttpHeaders() {
+    private function resetHttpHeaders() {
         header_remove();
-        $source = self::getSource();
+        $source = $this->getSource();
         if ($source instanceof HttpException) {
             foreach ($source->getHttpHeaders() as $header) {
                 header($header);
@@ -62,8 +60,8 @@ class ErrorHandler extends Base {
         }
     }
 
-    protected static function writeLog() {
-        if (static::getSource() instanceof HttpException) {
+    protected function writeLog() {
+        if ($this->getSource() instanceof HttpException) {
             $shouldLogHttpException = Config::getBoolean(
                 'hyperframework.error_handler.log_http_exception', false
             );
@@ -74,21 +72,16 @@ class ErrorHandler extends Base {
         parent::writeLog();
     }
 
-    private static function deleteOutputBuffer() {
-        if (self::$startupOutputBufferLevel === null) {
-            throw new InvalidOperationException(
-                'Error handler is not running.'
-            );
-        }
+    private function deleteOutputBuffer() {
         $obLevel = ob_get_level();
-        while ($obLevel > self::$startupOutputBufferLevel) {
+        while ($obLevel > $this->startupOutputBufferLevel) {
             ob_end_clean();
             --$obLevel;
         }
     }
 
-    protected static function getOutputBuffer() {
-        $startupOutputBufferLevel = self::getStartupOutputBufferLevel();
+    protected function getOutputBuffer() {
+        $startupOutputBufferLevel = $this->getStartupOutputBufferLevel();
         $outputBufferLevel = ob_get_level();
         if ($outputBufferLevel < $startupOutputBufferLevel) {
             return false;
@@ -128,15 +121,15 @@ class ErrorHandler extends Base {
             }
         }
         if ($encoding !== null) {
-            $content = static::decodeOutputBuffer($content, $encoding);
+            $content = $this->decodeOutputBuffer($content, $encoding);
         }
         if ($charset !== '') {
-            $content = static::convertOutputBufferCharset($content, $charset);
+            $content = $this->convertOutputBufferCharset($content, $charset);
         }
         return $content;
     }
 
-    private static function decodeOutputBuffer($content, $encoding) {
+    private function decodeOutputBuffer($content, $encoding) {
         if ($encoding === 'gzip') {
             $result = file_get_contents(
                 'compress.zlib://data:;base64,' . base64_encode($content)
@@ -153,7 +146,7 @@ class ErrorHandler extends Base {
         return $content;
     }
 
-    private static function convertOutputBufferCharset($content, $charset) {
+    private function convertOutputBufferCharset($content, $charset) {
         if ($charset !== 'utf-8') {
             $result = iconv($charset, 'utf-8', $content);
             if ($result !== false) {
@@ -163,7 +156,7 @@ class ErrorHandler extends Base {
         return $content;
     }
 
-    protected static function executeDebugger($headers, $outputBuffer) {
+    protected function executeDebugger($headers, $outputBuffer) {
         $class = Config::getString(
             'Hyperframework.error_handler.debugger_class', ''
         );
@@ -172,20 +165,20 @@ class ErrorHandler extends Base {
         }
         $debugger = new $class;
         $debugger->execute(
-            static::getSource(), $headers, $outputBuffer
+            $this->getSource(), $headers, $outputBuffer
         );
     }
 
-    protected static function renderErrorView() {
-        if (self::isError() === true) {
+    protected function renderErrorView() {
+        if ($this->isError() === true) {
             $type = 'error';
         } else {
             $type = 'exception';
         }
         $template = new ViewTemplate(
-            ['source' => self::getSource(), 'type' => $type]
+            ['source' => $this->getSource(), 'type' => $type]
         );
-        $format = static::getErrorViewFormat();
+        $format = $this->getErrorViewFormat();
         $prefix = $template->getRootPath() . DIRECTORY_SEPARATOR
             . '_error' . DIRECTORY_SEPARATOR . 'show.';
         if ($format !== null && $format !== 'php') {
@@ -199,14 +192,14 @@ class ErrorHandler extends Base {
             return;
         }
         header('Content-Type: text/plain;charset=utf-8');
-        if (self::getSource() instanceof HttpException) {
-            echo self::getSource()->getCode();
+        if ($this->getSource() instanceof HttpException) {
+            echo $this->getSource()->getCode();
         } else {
             echo '500 Internal Server Error';
         }
     }
 
-    protected static function getErrorViewFormat() {
+    protected function getErrorViewFormat() {
         $pattern = '#\.([0-9a-zA-Z]+)$#';
         $requestPath = RequestPath::get();
         if (preg_match($pattern, $requestPath, $matches) === 1) {
@@ -214,21 +207,11 @@ class ErrorHandler extends Base {
         }
     }
 
-    protected static function isDebuggerEnabled() {
-        if (self::$isRunning === false) {
-            throw new InvalidOperationException(
-                'Error handler is not running.'
-            );
-        }
-        return self::$isDebuggerEnabled;
+    protected function isDebuggerEnabled() {
+        return $this->isDebuggerEnabled;
     }
 
-    protected static function getStartupOutputBufferLevel() {
-        if (self::$isRunning === false) {
-            throw new InvalidOperationException(
-                'Error handler is not running.'
-            );
-        }
-        return self::$startupOutputBufferLevel;
+    protected function getStartupOutputBufferLevel() {
+        return $this->startupOutputBufferLevel;
     }
 }

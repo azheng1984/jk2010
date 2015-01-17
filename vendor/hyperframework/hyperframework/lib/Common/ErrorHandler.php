@@ -4,102 +4,99 @@ namespace Hyperframework\Common;
 use Hyperframework\Logging\Logger;
 
 class ErrorHandler {
-    private static $source;
-    private static $isError;
-    private static $isLoggerEnabled;
-    private static $errorReportingBitmask;
-    private static $isShutdownStarted = false;
-    private static $shouldExit;
-    private static $shouldDisplayErrors;
-    private static $shouldReportCompileWarning;
-    private static $isDefaultErrorLogEnabled;
-    private static $isRunning = false;
+    private $source;
+    private $isError;
+    private $isLoggerEnabled;
+    private $errorReportingBitmask;
+    private $isShutdownStarted = false;
+    private $shouldExit;
+    private $shouldDisplayErrors;
+    private $shouldReportCompileWarning;
+    private $isDefaultErrorLogEnabled;
 
-    public static function run() {
-        self::$isLoggerEnabled = Config::getBoolean(
+    public function __construct() {
+        $this->isLoggerEnabled = Config::getBoolean(
             'hyperframework.error_handler.logger.enable', false
         );
-        if (self::$isLoggerEnabled) {
+        if ($this->isLoggerEnabled) {
             ini_set('log_errors', '0');
-            self::$isDefaultErrorLogEnabled = false;
+            $this->isDefaultErrorLogEnabled = false;
         } else {
-            self::$isDefaultErrorLogEnabled = ini_get('log_errors') === '1';
+            $this->isDefaultErrorLogEnabled = ini_get('log_errors') === '1';
         }
-        self::$errorReportingBitmask = error_reporting();
-        self::$shouldDisplayErrors = ini_get('display_errors') === '1';
-        $class = get_called_class();
-        set_error_handler(
-            [$class, 'handleError'], self::$errorReportingBitmask
-        );
-        set_exception_handler([$class, 'handleException']);
-        register_shutdown_function([$class, 'handleFatalError']);
-        self::$isRunning = true;
-        self::disableDefaultErrorReporting();
+        $this->errorReportingBitmask = error_reporting();
+        $this->shouldDisplayErrors = ini_get('display_errors') === '1';
     }
 
-    private static function enableDefaultErrorReporting(
+    public function run() {
+        set_error_handler(
+            [$this, 'handleError'], $this->errorReportingBitmask
+        );
+        set_exception_handler([$this, 'handleException']);
+        register_shutdown_function([$this, 'handleFatalError']);
+        $this->disableDefaultErrorReporting();
+    }
+
+    private function enableDefaultErrorReporting(
         $errorReportingBitmask = null
     ) {
         if ($errorReportingBitmask !== null) {
             error_reporting($errorReportingBitmask);
-        } elseif (self::shouldReportCompileWarning()) {
-            error_reporting(static::getErrorReportingBitmask());
+        } elseif ($this->shouldReportCompileWarning()) {
+            error_reporting($this->getErrorReportingBitmask());
         }
-        if (self::shouldReportCompileWarning() === false) {
-            if (static::shouldDisplayErrors()) {
+        if ($this->shouldReportCompileWarning() === false) {
+            if ($this->shouldDisplayErrors()) {
                 ini_set('display_errors', '1');
             }
-            if (static::isDefaultErrorLogEnabled()) {
+            if ($this->isDefaultErrorLogEnabled()) {
                 ini_set('log_errors', '1');
             }
         }
     }
 
-    private static function disableDefaultErrorReporting() {
-        if (self::shouldReportCompileWarning()) {
+    private function disableDefaultErrorReporting() {
+        if ($this->shouldReportCompileWarning()) {
             error_reporting(E_COMPILE_WARNING);
         } else {
-            if (static::shouldDisplayErrors()) {
+            if ($this->shouldDisplayErrors()) {
                 ini_set('display_errors', '0');
             }
-            if (static::isDefaultErrorLogEnabled()) {
+            if ($this->isDefaultErrorLogEnabled()) {
                 ini_set('log_errors', '0');
             }
         }
     }
 
-    private static function shouldReportCompileWarning() {
-        if (self::$shouldReportCompileWarning === null) {
-            self::$shouldReportCompileWarning =
-            (self::getErrorReportingBitmask() & E_COMPILE_WARNING) !== 0;
+    private function shouldReportCompileWarning() {
+        if ($this->shouldReportCompileWarning === null) {
+            $this->shouldReportCompileWarning =
+            ($this->getErrorReportingBitmask() & E_COMPILE_WARNING) !== 0;
         }
-        return self::$shouldReportCompileWarning;
+        return $this->shouldReportCompileWarning;
     }
 
-    protected static function shouldDisplayErrors() {
-        if (self::$isRunning === false) {
-            throw new InvalidOperationException('Error handler is not running');
-        }
-        return self::$shouldDisplayErrors;
+    protected function shouldDisplayErrors() {
+        return $this->shouldDisplayErrors;
     }
 
-    final public static function handleException($exception) {
+    final public function handleException($exception) {
         if (error_reporting() === 0) {
             return;
         }
-        self::enableDefaultErrorReporting();
-        self::handle($exception);
+        $this->enableDefaultErrorReporting();
+        $this->handle($exception);
     }
 
-    final public static function handleError(
+    final public function handleError(
         $type, $message, $file, $line, array $context
     ) {
         if (error_reporting() === 0) {
             return;
         }
-        self::enableDefaultErrorReporting();
+        $this->enableDefaultErrorReporting();
         $shouldThrow = false;
-        if (self::$source === null) {
+        if ($this->source === null) {
             $errorThrowingBitmask = Config::getInt(
                 'hyperframework.error_handler.error_throwing_bitmask'
             );
@@ -132,16 +129,16 @@ class ErrorHandler {
                 $message, $type, $file, $line, 1, $context, $shouldThrow
             );
         }
-        return self::handle($error, true);
+        return $this->handle($error, true);
     }
 
-    final public static function handleFatalError() {
-        self::$isShutdownStarted = true;
+    final public function handleFatalError() {
+        $this->isShutdownStarted = true;
         if (error_reporting() === 0) {
             return;
         }
-        self::enableDefaultErrorReporting(
-            error_reporting() | (static::getErrorReportingBitmask() & (
+        $this->enableDefaultErrorReporting(
+            error_reporting() | ($this->getErrorReportingBitmask() & (
                 E_ERROR | E_PARSE | E_CORE_ERROR
                     | E_COMPILE_ERROR | E_COMPILE_WARNING
             ))
@@ -155,13 +152,13 @@ class ErrorHandler {
             $error['line'], null
         );
         if ($error->isFatal()) {
-            self::enableDefaultErrorReporting();
-            self::handle($error, true);
+            $this->enableDefaultErrorReporting();
+            $this->handle($error, true);
         }
     }
 
-    private static function handle($source, $isError = false) {
-        if (self::$source !== null) {
+    private function handle($source, $isError = false) {
+        if ($this->source !== null) {
             if ($isError === false) {
                 throw new $source;
             }
@@ -171,51 +168,51 @@ class ErrorHandler {
             throw $source;
         }
         if ($isError && $source->isFatal() === false) {
-            self::$shouldExit = false;
+            $this->shouldExit = false;
         } else {
-            self::$shouldExit = true;
+            $this->shouldExit = true;
         }
-        self::$source = $source;
-        self::$isError = $source instanceof ErrorException;
-        static::writeLog();
-        if (self::$shouldExit === false) {
-            if (static::shouldDisplayErrors()) {
-                static::displayError();
+        $this->source = $source;
+        $this->isError = $source instanceof ErrorException;
+        $this->writeLog();
+        if ($this->shouldExit === false) {
+            if ($this->shouldDisplayErrors()) {
+                $this->displayError();
             }
-            self::$source = null;
-            self::disableDefaultErrorReporting();
+            $this->source = null;
+            $this->disableDefaultErrorReporting();
             return;
         }
-        static::displayFatalError();
-        if (self::$isShutdownStarted) {
+        $this->displayFatalError();
+        if ($this->isShutdownStarted) {
             return;
         }
         exit(1);
     }
 
-    protected static function displayFatalError() {
-        static::displayError();
+    protected function displayFatalError() {
+        $this->displayError();
     }
 
-    protected static function writeLog() {
-        if (static::isLoggerEnabled()) {
-            $source = self::$source;
+    protected function writeLog() {
+        if ($this->isLoggerEnabled()) {
+            $source = $this->source;
             $name = null;
             $data = [];
             $data['file'] = $source->getFile();
             $data['line'] = $source->getLine();
-            if (self::$isError === false) {
+            if ($this->isError === false) {
                 $name = 'php_exception';
                 $data['class'] = get_class($source);
             } else {
-                if (self::$source->shouldThrow()) {
+                if ($this->source->shouldThrow()) {
                     $name = 'php_error_exception';
                 } else {
                     $name = 'php_error';
                     $data['type'] = $source->getSeverityAsString();
                 }
             }
-            if (self::isError() === false || $source->isFatal() === false) {
+            if ($this->isError() === false || $source->isFatal() === false) {
                 $shouldLogTrace = Config::getBoolean(
                     'hyperframework.error_handler.logger.log_stack_trace', false
                 );
@@ -239,38 +236,38 @@ class ErrorHandler {
                     }
                 }
             }
-            $method = static::getLoggerMethod();
+            $method = $this->getLoggerMethod();
             Logger::$method([
                 'name' => $name,
                 'message' => $source->getMessage(),
                 'data' => $data
             ]);
         }
-        if (static::isDefaultErrorLogEnabled()) {
-            static::writeDefaultErrorLog();
+        if ($this->isDefaultErrorLogEnabled()) {
+            $this->writeDefaultErrorLog();
         }
     }
 
-    protected  static function writeDefaultErrorLog() {
-        if (self::$isError) {
-            error_log('PHP ' . self::getErrorLog());
+    protected function writeDefaultErrorLog() {
+        if ($this->isError) {
+            error_log('PHP ' . $this->getErrorLog());
         } else {
-            error_log('PHP ' . self::getExceptionErrorLog());
+            error_log('PHP ' . $this->getExceptionErrorLog());
         }
     }
 
-    private static function getExceptionErrorLog() {
-        return 'Fatal error:  Uncaught ' . self::$source . PHP_EOL
-            . '  thrown in ' . self::$source->getFile() . ' on line '
-            . self::$source->getLine();
+    private function getExceptionErrorLog() {
+        return 'Fatal error:  Uncaught ' . $this->source . PHP_EOL
+            . '  thrown in ' . $this->source->getFile() . ' on line '
+            . $this->source->getLine();
     }
 
-    private static function getErrorLog() {
-        $error = self::$source;
+    private function getErrorLog() {
+        $error = $this->source;
         if ($error->shouldThrow() === true) {
             $result = 'Fatal error';
         } else {
-            $result = self::convertErrorTypeForOutput($error->getSeverity());
+            $result = $this->convertErrorTypeForOutput($error->getSeverity());
         }
         if ($error instanceof ArgumentErrorException) {
             return $result . ':  ' . $error->getMessage() . ' called in '
@@ -282,7 +279,7 @@ class ErrorHandler {
             . $error->getFile() . ' on line ' . $error->getLine();
     }
 
-    private static function convertErrorTypeForOutput($type) {
+    private function convertErrorTypeForOutput($type) {
         switch ($type) {
             case E_STRICT:            return 'Strict standards';
             case E_DEPRECATED:
@@ -302,8 +299,8 @@ class ErrorHandler {
         }
     }
 
-    protected static function getLoggerMethod() {
-        if (self::$shouldExit) {
+    protected function getLoggerMethod() {
+        if ($this->shouldExit) {
             return 'fatal';
         }
         $maps = [
@@ -317,57 +314,44 @@ class ErrorHandler {
             E_CORE_WARNING      => 'warn',
             E_RECOVERABLE_ERROR => 'error'
         ];
-        return $maps[self::$source->getSeverity()];
+        return $maps[$this->source->getSeverity()];
     }
 
-    final protected static function getSource() {
-        return self::$source;
+    final protected function getSource() {
+        return $this->source;
     }
 
-    final protected static function isError() {
-        if (self::$source === null) {
+    final protected function isError() {
+        if ($this->source === null) {
             throw new InvalidOperationException('No error or exception.');
         }
-        return self::$isError;
+        return $this->isError;
     }
 
-    protected static function isLoggerEnabled() {
-        if (self::$isRunning === false) {
-            throw new InvalidOperationException(
-                'Error handler is not running.'
-            );
-        }
-        return self::$isLoggerEnabled;
+    protected function isLoggerEnabled() {
+        return $this->isLoggerEnabled;
     }
 
-    protected static function isDefaultErrorLogEnabled() {
-        if (self::$isRunning === false) {
-            throw new InvalidOperationException(
-                'Error handler is not running.'
-            );
-        }
-        return self::$isDefaultErrorLogEnabled;
+    protected function isDefaultErrorLogEnabled() {
+        return $this->isDefaultErrorLogEnabled;
     }
 
-    protected static function getErrorReportingBitmask() {
-        if (self::$isRunning === false) {
-            throw new InvalidOperationException('Error handler is not running');
-        }
-        return self::$errorReportingBitmask;
+    protected function getErrorReportingBitmask() {
+        return $this->errorReportingBitmask;
     }
 
-    protected static function displayError() {
-        $source = self::$source;
+    protected function displayError() {
+        $source = $this->source;
         if (ini_get('xmlrpc_errors') === '1') {
             $code = ini_get('xmlrpc_error_number');
             echo '<?xml version="1.0"?><methodResponse>',
                 '<fault><value><struct><member><name>faultCode</name>',
                 '<value><int>', $code, '</int></value></member><member>',
                 '<name>faultString</name><value><string>';
-            if (self::$isError) {
-                $message = self::getErrorLog();
+            if ($this->isError) {
+                $message = $this->getErrorLog();
             } else {
-                $message = self::getExceptionErrorLog();
+                $message = $this->getExceptionErrorLog();
             }
             echo htmlspecialchars($message, ENT_XML1),
                 '</string></value></member></struct></value></fault>',
@@ -379,20 +363,20 @@ class ErrorHandler {
         $suffix = ini_get('error_append_string');
         if ($isHtml === false) {
             echo $prefix, PHP_EOL;
-            if (self::$isError === false) {
-                echo self::getExceptionErrorLog();
+            if ($this->isError === false) {
+                echo $this->getExceptionErrorLog();
             } else {
-                echo self::getErrorLog();
+                echo $this->getErrorLog();
             }
             echo PHP_EOL, $suffix;
             return;
         }
         echo $prefix, '<br />', PHP_EOL, '<b>';
-        if (self::$isError) {
+        if ($this->isError) {
             if ($source->shouldThrow() === true) {
                 echo 'Fatal error';
             } else {
-                echo self::convertErrorTypeForOutput($source->getSeverity());
+                echo $this->convertErrorTypeForOutput($source->getSeverity());
             }
             echo '</b>:  ';
             if (ini_get('docref_root') !== '') {
@@ -405,14 +389,14 @@ class ErrorHandler {
             }
         } else {
             echo 'Fatal error</b>:  Uncaught ', htmlspecialchars(
-                self::$source,
+                $this->source,
                 ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
             ), PHP_EOL, '  thrown';
         }
         echo ' in <b>', htmlspecialchars(
-                self::$source->getFile(),
+                $this->source->getFile(),
                 ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
-            ), '</b> on line <b>', self::$source->getLine(),
+            ), '</b> on line <b>', $this->source->getLine(),
             '</b><br />', PHP_EOL, $suffix;
     }
 }

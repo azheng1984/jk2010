@@ -15,19 +15,8 @@ class Runner extends Base {
         Config::set('hyperframework.app_root_path', dirname(getcwd()));
     }
 
-    protected static function initializeErrorHandler() {
-        $class = Config::getString('hyperframework.error_handler.class', '');
-        if ($class === '') {
-            ErrorHandler::run();
-        } else {
-            if (class_exists($class) === false) {
-                throw new ClassNotFoundException(
-                    "Error handler class '$class' does not exist,"
-                        . " defined in 'hyperframework.error_handler.class'."
-                );
-            }
-            $class::run();
-        }
+    protected static function getDefaultErrorHandlerClass() {
+        return 'Hyperframework\Web\ErrorHandler';
     }
 
     protected static function runApp() {
