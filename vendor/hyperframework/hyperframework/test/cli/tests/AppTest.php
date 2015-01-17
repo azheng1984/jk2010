@@ -147,6 +147,7 @@ class AppTest extends \PHPUnit_Framework_TestCase {
 
     public function testRun() {
         $this->expectOutputString('success');
+        $_SERVER['argv'] = ['run', 'arg'];
         $mock = $this->getMockBuilder('Hyperframework\Cli\App')
             ->setMethods(['finalize'])->getMock();
         $mock->expects($this->once())->method('finalize');

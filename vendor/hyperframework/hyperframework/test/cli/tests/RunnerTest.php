@@ -16,6 +16,7 @@ class RunnerTest extends \PHPUnit_Framework_TestCase {
 
     public function testRun() {
         $this->expectOutputString("success");
+        $_SERVER['argv'] = ['run', 'arg'];
         Runner::run('/home/az/quickquick/vendor/hyperframework/hyperframework/test/cli');
     }
 
