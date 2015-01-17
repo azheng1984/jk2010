@@ -42,7 +42,7 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
             unlink(dirname(__DIR__) . '/data/tmp/log');
         }
         if (file_exists(dirname(__DIR__) . '/data/tmp/logger_log')) {
-        //    unlink(dirname(__DIR__) . '/data/tmp/logger_log');
+            unlink(dirname(__DIR__) . '/data/tmp/logger_log');
         }
         error_reporting($this->errorReportingBitmask);
         Config::clear();
