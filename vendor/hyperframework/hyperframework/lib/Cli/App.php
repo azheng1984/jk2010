@@ -28,7 +28,7 @@ class App {
     }
 
     public function run() {
-        $this->executeCommand('hi');
+        $this->executeCommand();
         $this->finalize();
     }
 

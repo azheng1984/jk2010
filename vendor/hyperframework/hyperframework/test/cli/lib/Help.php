@@ -3,6 +3,6 @@ namespace Hyperframework\Cli\Test;
 
 class Help {
     public function render() {
-        echo 'success';
+        echo __METHOD__;
     }
 }

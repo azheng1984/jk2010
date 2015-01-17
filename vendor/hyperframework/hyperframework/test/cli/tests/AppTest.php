@@ -44,7 +44,7 @@ class AppTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testCustomHelp() {
-        $this->expectOutputString("success");
+        $this->expectOutputString("Hyperframework\Cli\Test\Help::render");
         Config::set(
             'hyperframework.cli.help_class', 'Hyperframework\Cli\Test\Help'
         );
@@ -146,7 +146,7 @@ class AppTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testRun() {
-        $this->expectOutputString('success');
+        $this->expectOutputString('Hyperframework\Cli\Test\Command::execute');
         $_SERVER['argv'] = ['run', 'arg'];
         $mock = $this->getMockBuilder('Hyperframework\Cli\App')
             ->setMethods(['finalize'])->getMock();

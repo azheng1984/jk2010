@@ -10,7 +10,7 @@ class Runner {
 
     protected static function initializeAppRootPath() {
         throw new NotImplementedException(
-            __METHOD__ . ' is not implemented.'
+            "Method '" . __METHOD__ . "' is not implemented."
         );
     }
 
@@ -25,7 +25,8 @@ class Runner {
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    "Error handler class '$class' does not exist."
+                    "Error handler class '$class' does not exist, "
+                        . "defined in 'hyperframework.error_handler.class'."
                 );
             }
         }
