@@ -837,7 +837,8 @@ h1, #message {
     padding: 7px 25px 6px;
 }
 #nav a:hover {
-    background: #eee;
+    background: #f1f1f1;
+    color: #000;
 }
 #nav .wrapper {
     padding: 10px 0 0 10px;
@@ -932,7 +933,7 @@ h1, #message {
 }
 #response-body a, #toggle-external-code a {
     background-image: linear-gradient(#fcfcfc, #eee);
-    background-color: #eee;
+    background-color: #f1f1f1;
     border: 1px solid #d5d5d5;
     border-radius: 3px;
     padding: 4px 10px;
@@ -942,7 +943,7 @@ h1, #message {
 }
 .no-touch #response-body a:hover, .no-touch #toggle-external-code a:hover {
     background-image: none;
-    color: #333;
+    color: #000;
 }
 #toggle-external-code {
     width: 1px;
