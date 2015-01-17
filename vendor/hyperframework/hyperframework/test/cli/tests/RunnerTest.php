@@ -19,7 +19,7 @@ class RunnerTest extends \PHPUnit_Framework_TestCase {
         $_SERVER['argv'] = ['run', 'arg'];
         Runner::run('/home/az/quickquick/vendor/hyperframework/hyperframework/test/cli');
     }
-
+/*
     public function testInitializeAppRootPath() {
     }
 
@@ -28,4 +28,5 @@ class RunnerTest extends \PHPUnit_Framework_TestCase {
 
     public function testCustomAppClassNotFound() {
     }
+*/
 }
