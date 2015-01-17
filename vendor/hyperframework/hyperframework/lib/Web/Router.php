@@ -857,7 +857,13 @@ abstract class Router {
 
     protected function getRequestPath() {
         if ($this->requestPath === null) {
-            $this->requestPath = RequestPath::get(false);
+            $path = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
+            if ($path === '') {
+                $path = '/';
+            } elseif (strpos($path, '//') !== false) {
+                $path = preg_replace('#/{2,}#', '/', $path);
+            }
+            $this->requestPath = '/' . trim($path, '/');
         }
         return $this->requestPath;
     }

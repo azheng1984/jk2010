@@ -3,7 +3,6 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ViewTemplate;
-use Hyperframework\Common\InvalidOperationException;
 use Hyperframework\Common\ErrorHandler as Base;
 
 class ErrorHandler extends Base {
