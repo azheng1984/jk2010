@@ -5,28 +5,28 @@ use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
 
 class LogHandler {
-    private static $protocol;
-    private static $path;
+    private $protocol;
+    private $path;
 
-    public static function handle($level, array $params) {
-        $content = static::format($level, $params);
-        static::write($content);
+    public function handle($level, array $params) {
+        $content = $this->format($level, $params);
+        $this->write($content);
     }
 
-    protected static function write($content) {
+    protected function write($content) {
         $flag = null;
-        if (self::getProtocol() === 'file') {
+        if ($this->getProtocol() === 'file') {
             $flag = FILE_APPEND | LOCK_EX;
         }
-        file_put_contents(static::getPath(), $content, $flag);
+        file_put_contents($this->getPath(), $content, $flag);
     }
 
-    protected static function format($level, array $params) {
+    protected function format($level, array $params) {
         $name = isset($params['name']) ? $params['name'] : null;
         $message = isset($params['message']) ? $params['message'] : null;
         $data = isset($params['data']) ? $params['data'] : null;
         $count = count($params);
-        $result = self::getTimestamp() . ' | ' . $level;
+        $result = $this->getTimestamp() . ' | ' . $level;
         if ((string)$name !== '') {
             $result .= ' | ' . $name;
         }
@@ -36,49 +36,49 @@ class LogHandler {
             } else {
                 $result .= ' |';
             }
-            self::appendValue($result, $message);
+            $this->appendValue($result, $message);
         }
         if ($data !== null) {
-            $result .= self::convert($data);
+            $result .= $this->convert($data);
         }
         return $result . PHP_EOL;
     }
 
-    protected static function getPath() {
-        if (self::$path === null) {
-            self::initializePath();
+    protected function getPath() {
+        if ($this->path === null) {
+            $this->initializePath();
         }
-        return self::$path;
+        return $this->path;
     }
 
-    protected static function getProtocol() {
-        if (self::$protocol === null) {
-            self::initializePath();
+    protected function getProtocol() {
+        if ($this->protocol === null) {
+            $this->initializePath();
         }
-        return self::$protocol;
+        return $this->protocol;
     }
 
-    private static function getTimestamp() {
+    private function getTimestamp() {
         return date('Y-m-d h:i:s');
     }
 
-    private static function initializePath() {
-        self::$path = Config::getString(
+    private function initializePath() {
+        $this->path = Config::getString(
             'hyperframework.log_handler.log_path', ''
         );
-        self::$protocol = 'file';
-        if (self::$path === '') {
-            self::$path = 'log' . DIRECTORY_SEPARATOR . 'app.log';
+        $this->protocol = 'file';
+        if ($this->path === '') {
+            $this->path = 'log' . DIRECTORY_SEPARATOR . 'app.log';
         } else {
-            if (preg_match('#^([a-zA-Z0-9.+]+)://#', self::$path, $matches)) {
-                self::$protocol = strtolower($matches[1]);
+            if (preg_match('#^([a-zA-Z0-9.+]+)://#', $this->path, $matches)) {
+                $this->protocol = strtolower($matches[1]);
                 return;
             }
         }
-        self::$path = FileLoader::getFullPath(self::$path);
+        $this->path = FileLoader::getFullPath($this->$path);
     }
 
-    private static function appendValue(&$data, $value, $prefix = "\t>") {
+    private function appendValue(&$data, $value, $prefix = "\t>") {
         if (strpos($value, PHP_EOL) === false) {
             $data .= ' ' . $value;
             return;
@@ -101,7 +101,7 @@ class LogHandler {
         $data .= $value;
     }
 
-    private static function convert(array $data, $depth = 1) {
+    private function convert(array $data, $depth = 1) {
         $result = null;
         $prefix = str_repeat("\t", $depth);
         foreach ($data as $key => $value) {
@@ -112,9 +112,9 @@ class LogHandler {
             }
             $result .= PHP_EOL . $prefix . $key . ':';
             if (is_array($value)) {
-                $result .= self::convert($value, $depth + 1);
+                $result .= $this->convert($value, $depth + 1);
             } elseif ((string)$value !== '') {
-                self::appendValue($result, $value, $prefix . "\t>");
+                $this->appendValue($result, $value, $prefix . "\t>");
             }
         }
         return $result;

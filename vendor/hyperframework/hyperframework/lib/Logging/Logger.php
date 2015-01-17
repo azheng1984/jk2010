@@ -8,6 +8,7 @@ use Hyperframework\Common\ClassNotFoundException;
 use InvalidArgumentException;
 
 final class Logger {
+    private static $logHandler;
     private static $thresholdCode;
     private static $path;
     private static $levels = [
@@ -93,20 +94,28 @@ final class Logger {
                 );
             }
         }
-        $logHandlerClass = Config::getString(
-            'hyperframework.logger.log_handler_class', ''
-        );
-        if ($logHandlerClass === '') {
-            LogHandler::handle($level, $params);
-        } else {
-            if (class_exists($logHandlerClass) === false) {
-                throw new ClassNotFoundException(
-                    "Log handler class '$logHandlerClass' do not exist, defined"
+        $logHandler = self::getLogHandler();
+        $logHandler::handle($level, $params);
+    }
+
+    private static function getLogHandler() {
+        if (self::$logHandler === null) {
+            $class = Config::getString(
+                'hyperframework.logger.log_handler_class', ''
+            );
+            if ($class === '') {
+                $class = 'Hyperframework\Logging\LogHandler';
+            } else {
+                if (class_exists($class) === false) {
+                    throw new ClassNotFoundException(
+                        "Log handler class '$logHandlerClass' do not exist, defined"
                         . " in 'hyperframework.logger.log_handler_class'."
-                );
+                    );
+                }
             }
-            $logHandlerClass::handle($level, $params);
+            self::$logHandler = new $class;
         }
+        return self::$logHandler;
     }
 
     private static function getThresholdCode() {
