@@ -85,7 +85,7 @@ class AppTest extends \PHPUnit_Framework_TestCase {
 
     public function testRenderHelp() {
         $this->expectOutputString(
-            "Usage: test [-t] [-h|--help] [--version] <arg>\n"
+            "Usage: test [-t] [-h|--help] [--version] <arg>" . PHP_EOL
         );
         $_SERVER['argv'] = ['run', '-h'];
         $mock = $this->getMockBuilder('Hyperframework\Cli\App')
@@ -97,7 +97,7 @@ class AppTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testRenderVersion() {
-        $this->expectOutputString("1.0.0\n");
+        $this->expectOutputString("1.0.0" . PHP_EOL);
         $_SERVER['argv'] = ['run', '--version'];
         $mock = $this->getMockBuilder('Hyperframework\Cli\App')
             ->setMethods(['quit'])
@@ -135,7 +135,7 @@ class AppTest extends \PHPUnit_Framework_TestCase {
             'hyperframework.cli.command_config_path',
             'command_version_not_found.php'
         );
-        $this->expectOutputString("undefined\n");
+        $this->expectOutputString("undefined" . PHP_EOL);
         $_SERVER['argv'] = ['run', '--version'];
         $mock = $this->getMockBuilder('Hyperframework\Cli\App')
             ->setMethods(['quit'])
@@ -155,7 +155,8 @@ class AppTest extends \PHPUnit_Framework_TestCase {
 
     public function testCommandParsingError() {
         $this->expectOutputString(
-            "Unknown option 'unknown'.\nSee 'test --help'.\n"
+            "Unknown option 'unknown'."
+                . PHP_EOL . "See 'test --help'." . PHP_EOL
         );
         $_SERVER['argv'] = ['run', '--unknown'];
         $mock = $this->getMockBuilder('Hyperframework\Cli\App')

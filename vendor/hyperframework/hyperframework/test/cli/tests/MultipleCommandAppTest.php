@@ -19,7 +19,7 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
 
     public function testRunGlobalCommand() {
         $this->expectOutputString(
-            "Usage: test [-t] [-h|--help] [--version] <command>\n"
+            "Usage: test [-t] [-h|--help] [--version] <command>" . PHP_EOL
         );
         $_SERVER['argv'] = ['run', '-t'];
         $app = new MultipleCommandApp;
@@ -72,7 +72,7 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
 
     public function testRenderHelp() {
         $this->expectOutputString(
-            "Usage: test [-t] [-h|--help] [--version] <command>\n"
+            "Usage: test [-t] [-h|--help] [--version] <command>" . PHP_EOL
         );
         $_SERVER['argv'] = ['run', '-h'];
         $mock = $this->getMockBuilder('Hyperframework\Cli\MultipleCommandApp')
@@ -85,7 +85,7 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
 
     public function testRenderSubcommandHelp() {
         $this->expectOutputString(
-            "Usage: test child [-c] [-h|--help] <arg>\n"
+            "Usage: test child [-c] [-h|--help] <arg>" . PHP_EOL
         );
         $_SERVER['argv'] = ['run', 'child', '-h'];
         $mock = $this->getMockBuilder('Hyperframework\Cli\MultipleCommandApp')
@@ -97,7 +97,7 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testRenderVersion() {
-        $this->expectOutputString("1.0.0\n");
+        $this->expectOutputString("1.0.0" . PHP_EOL);
         $_SERVER['argv'] = ['run', '--version'];
         $mock = $this->getMockBuilder('Hyperframework\Cli\MultipleCommandApp')
             ->setMethods(['quit'])
