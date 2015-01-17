@@ -22,10 +22,6 @@ class RunnerTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(Config::get('hyperframework.app_root_path'), dirname(getcwd()));
     }
 
-    public function testInitializeAppRootPath() {
-        $this->expectOutputString("Hyperframework\Cli\Test\Command::execute");
-        $_SERVER['argv'] = ['run', 'arg'];
-        Runner::run('/home/az/quickquick/vendor/hyperframework/hyperframework/test/cli');
-        $this->assertEquals(Config::get('hyperframework.app_root_path'), '/home/az/quickquick/vendor/hyperframework/hyperframework/test/cli');
-    }
+//    public function testInitializeAppRootPath() {
+//    }
 }

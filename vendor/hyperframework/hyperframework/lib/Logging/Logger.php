@@ -95,7 +95,7 @@ final class Logger {
             }
         }
         $logHandler = self::getLogHandler();
-        $logHandler::handle($level, $params);
+        $logHandler->handle($level, $params);
     }
 
     private static function getLogHandler() {

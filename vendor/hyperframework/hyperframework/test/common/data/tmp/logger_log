@@ -1,0 +1,28 @@
+2015-01-17 10:20:38 | NOTICE | php_error | error
+	file: /home/az/quickquick/vendor/hyperframework/hyperframework/test/common/tests/ErrorHandlerTest.php
+	line: 64
+	type: user notice
+2015-01-17 10:20:38 | NOTICE | php_error | error
+	file: /home/az/quickquick/vendor/hyperframework/hyperframework/test/common/tests/ErrorHandlerTest.php
+	line: 88
+	type: user notice
+2015-01-17 10:23:15 | NOTICE | php_error | error
+	file: /home/az/quickquick/vendor/hyperframework/hyperframework/test/common/tests/ErrorHandlerTest.php
+	line: 64
+	type: user notice
+2015-01-17 10:23:15 | NOTICE | php_error | error
+	file: /home/az/quickquick/vendor/hyperframework/hyperframework/test/common/tests/ErrorHandlerTest.php
+	line: 88
+	type: user notice
+2015-01-17 10:23:39 | NOTICE | php_error | error
+	file: /home/az/quickquick/vendor/hyperframework/hyperframework/test/common/tests/ErrorHandlerTest.php
+	line: 64
+	type: user notice
+2015-01-17 10:23:39 | NOTICE | php_error | error
+	file: /home/az/quickquick/vendor/hyperframework/hyperframework/test/common/tests/ErrorHandlerTest.php
+	line: 88
+	type: user notice
+2015-01-17 10:27:20 | NOTICE | php_error | error
+	file: /home/az/quickquick/vendor/hyperframework/hyperframework/test/common/tests/ErrorHandlerTest.php
+	line: 95
+	type: user notice

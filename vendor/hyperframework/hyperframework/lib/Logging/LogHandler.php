@@ -75,7 +75,7 @@ class LogHandler {
                 return;
             }
         }
-        $this->path = FileLoader::getFullPath($this->$path);
+        $this->path = FileLoader::getFullPath($this->path);
     }
 
     private function appendValue(&$data, $value, $prefix = "\t>") {
