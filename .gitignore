@@ -14,7 +14,7 @@ Thumbs.db
 pinyin.dat
 *.sync
 #cache/
-.setting
+.settings
 .project
 .buildpath
 config/env/init.php
