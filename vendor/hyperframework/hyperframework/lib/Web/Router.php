@@ -1,10 +1,11 @@
 <?php
 namespace Hyperframework\Web;
 
+use InvalidArgumentException;
 use Hyperframework;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NamespaceCombiner;
-use InvalidArgumentException;
+use Hyperframework\Common\InvalidOperationException;
 
 abstract class Router {
     private $app;
@@ -810,8 +811,8 @@ abstract class Router {
         if (is_string($value)) {
             if ($value === '') {
                 throw new RoutingException(
-                    "Invalid router execution result,"
-                        . " empty string is not allowed."
+                    "Invalid router execution result, "
+                         . "empty string is not allowed."
                 );
             }
             $segments = explode('/', $value);
