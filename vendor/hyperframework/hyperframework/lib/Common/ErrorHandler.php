@@ -76,7 +76,7 @@ class ErrorHandler {
         return $this->shouldReportCompileWarning;
     }
 
-    protected function shouldDisplayErrors() {
+    final protected function shouldDisplayErrors() {
         return $this->shouldDisplayErrors;
     }
 
@@ -190,7 +190,7 @@ class ErrorHandler {
         exit(1);
     }
 
-    protected function displayFatalError() {
+    final protected function displayFatalError() {
         $this->displayError();
     }
 
@@ -328,15 +328,15 @@ class ErrorHandler {
         return $this->isError;
     }
 
-    protected function isLoggerEnabled() {
+    final protected function isLoggerEnabled() {
         return $this->isLoggerEnabled;
     }
 
-    protected function isDefaultErrorLogEnabled() {
+    final protected function isDefaultErrorLogEnabled() {
         return $this->isDefaultErrorLogEnabled;
     }
 
-    protected function getErrorReportingBitmask() {
+    final protected function getErrorReportingBitmask() {
         return $this->errorReportingBitmask;
     }
 

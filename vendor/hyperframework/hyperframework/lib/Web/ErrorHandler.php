@@ -161,11 +161,17 @@ class ErrorHandler extends Base {
         );
         if ($class === '') {
             $class = 'Hyperframework\Web\Debugger';
+        } else {
+            if (class_exists($class) === false) {
+                throw new ClassNotFoundException(
+                    "Debugger class '$logHandlerClass' does not exist,"
+                        . " defined in "
+                        . "'hyperframework.error_handler.debugger_class'."
+                );
+            }
         }
         $debugger = new $class;
-        $debugger->execute(
-            $this->getSource(), $headers, $outputBuffer
-        );
+        $debugger->execute($this->getSource(), $headers, $outputBuffer);
     }
 
     protected function renderErrorView() {
@@ -206,11 +212,11 @@ class ErrorHandler extends Base {
         }
     }
 
-    protected function isDebuggerEnabled() {
+    final protected function isDebuggerEnabled() {
         return $this->isDebuggerEnabled;
     }
 
-    protected function getStartupOutputBufferLevel() {
+    final protected function getStartupOutputBufferLevel() {
         return $this->startupOutputBufferLevel;
     }
 }

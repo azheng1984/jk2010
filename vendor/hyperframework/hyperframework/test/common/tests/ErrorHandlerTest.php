@@ -53,7 +53,7 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
      */
     public function testErrorToException() {
         $this->bind();
-        trigger_error('error');
+        trigger_error('notice');
     }
 
     public function testDisplayDefaultErrorMessage() {
@@ -61,9 +61,9 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
-        $this->expectOutputString(PHP_EOL . "Notice:  error in "
+        $this->expectOutputString(PHP_EOL . "Notice:  notice in "
             . __FILE__ . " on line " . (__LINE__ + 1) . PHP_EOL);
-        trigger_error('error');
+        trigger_error('notice');
     }
 
     public function testLogDefaultErrorMessage() {
@@ -71,11 +71,11 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
-        $this->expectOutputString(PHP_EOL . "Notice:  error in "
+        $this->expectOutputString(PHP_EOL . "Notice:  notice in "
             . __FILE__ . " on line " . (__LINE__ + 3) . PHP_EOL);
-        $message = "PHP Notice:  error in "
+        $message = "PHP Notice:  notice in "
             . __FILE__ . " on line " . (__LINE__ + 1) . PHP_EOL;
-        trigger_error('error');
+        trigger_error('notice');
         $log = file_get_contents(dirname(__DIR__) . '/data/tmp/log');
         $this->assertStringEndsWith($message, (string)$log);
     }
@@ -88,12 +88,33 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
         $this->bind();
-        $this->expectOutputString(PHP_EOL . "Notice:  error in "
+        $this->expectOutputString(PHP_EOL . "Notice:  notice in "
             . __FILE__ . " on line " . (__LINE__ + 3) . PHP_EOL);
-        $message = "PHP Notice:  error in "
+        $message = "PHP Notice:  notice in "
             . __FILE__ . " on line " . (__LINE__ + 1) . PHP_EOL;
-        trigger_error('error');
+        trigger_error('notice');
         $log = file_get_contents(dirname(__DIR__) . '/data/tmp/logger_log');
         $this->assertTrue(strlen($log) > 0);
+        $this->assertFalse(
+            file_exists(dirname(__DIR__) . '/data/tmp/log')
+        );
+    }
+
+    public function testDisableLoggerByDefault() {
+        Config::set(
+            'hyperframework.error_handler.error_throwing_bitmask', 0
+        );
+        $this->bind();
+        $this->expectOutputString(PHP_EOL . "Notice:  notice in "
+            . __FILE__ . " on line " . (__LINE__ + 3) . PHP_EOL);
+        $message = "PHP Notice: notice in "
+            . __FILE__ . " on line " . (__LINE__ + 1) . PHP_EOL;
+        trigger_error('notice');
+        $this->assertFalse(
+            file_exists(dirname(__DIR__) . '/data/tmp/logger_log')
+        );
+        $this->assertTrue(
+            file_exists(dirname(__DIR__) . '/data/tmp/log')
+        );
     }
 }

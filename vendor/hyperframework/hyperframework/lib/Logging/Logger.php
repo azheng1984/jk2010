@@ -108,8 +108,9 @@ final class Logger {
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Log handler class '$logHandlerClass' do not exist, defined"
-                        . " in 'hyperframework.logger.log_handler_class'."
+                        "Log handler class '$logHandlerClass' does not exist,"
+                            . " defined in "
+                            . "'hyperframework.logger.log_handler_class'."
                     );
                 }
             }

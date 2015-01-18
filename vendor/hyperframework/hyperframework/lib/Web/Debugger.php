@@ -837,7 +837,7 @@ h1, #message {
     padding: 7px 25px 7px;
 }
 #nav a:hover {
-    background-image: linear-gradient(#f8f8f8, #e8e8e8);
+    background-image: linear-gradient(#f5f5f5, #e1e1e1);
     color: #000;
 }
 #nav .wrapper {
@@ -942,7 +942,7 @@ h1, #message {
     white-space: nowrap;
 }
 .no-touch #response-body a:hover, .no-touch #toggle-external-code a:hover {
-    background-image: linear-gradient(#f8f8f8, #e8e8e8);
+    background-image: linear-gradient(#f5f5f5, #e1e1e1);
     color: #000;
 }
 #toggle-external-code {
