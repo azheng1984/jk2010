@@ -23,6 +23,11 @@ abstract class Router {
     private $isMatched = false;
 
     public function __construct($app) {
+        if ($app === null) {
+            throw new InvalidArgumentException(
+                "Argument 'app' cannot be null."
+            );
+        }
         $this->app = $app;
         $result = $this->execute();
         $this->parseResult($result);
@@ -30,6 +35,8 @@ abstract class Router {
             throw new NotFoundException;
         }
     }
+
+    abstract protected function execute();
 
     public function getParam($name) {
         return $this->params[$name];
@@ -39,11 +46,11 @@ abstract class Router {
         return $this->params;
     }
 
-    public function setParam($name, $value) {
+    protected function setParam($name, $value) {
         $this->params[$name] = $value;
     }
 
-    public function removeParam($name) {
+    protected function removeParam($name) {
         unset($this->params[$name]);
     }
 
@@ -112,8 +119,6 @@ abstract class Router {
         return 'do' . $tmp . 'Action';
     }
 
-    abstract protected function execute();
-
     protected function isMatched() {
         return $this->isMatched;
     }
@@ -157,6 +162,11 @@ abstract class Router {
     }
 
     protected function getApp() {
+        if ($this->app === null) {
+            throw new InvalidOperationException(
+                "Constructor method of class '" . __CLASS__ . "' is not called."
+            );
+        }
         return $this->app;
     }
 
