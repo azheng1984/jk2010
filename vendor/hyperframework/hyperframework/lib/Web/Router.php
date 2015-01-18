@@ -369,7 +369,7 @@ abstract class Router {
         $options = null;
         if (is_array($defination)) {
             if (isset($defination[0]) === false) {
-                throw new InvalidArgumentException("Pattern is not defeind.");
+                throw new InvalidArgumentException("Pattern is not defined.");
             }
             $pattern = $defination[0];
             unset($defination[0]);
@@ -812,7 +812,7 @@ abstract class Router {
             if ($value === '') {
                 throw new RoutingException(
                     "Invalid router execution result, "
-                         . "empty string is not allowed."
+                        . "empty string is not allowed."
                 );
             }
             $segments = explode('/', $value);
