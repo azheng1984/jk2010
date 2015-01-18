@@ -31,7 +31,7 @@ class ErrorHandler extends Base {
     protected function displayFatalError() {
         $isError = $this->isError();
         $source = $this->getSource();
-        if ($this->isDebuggerEnabled()) {
+        if ($this->isDebuggerEnabled) {
             $headers = headers_list();
             if (headers_sent() === false) {
                 $this->resetHttpHeaders();
@@ -80,12 +80,11 @@ class ErrorHandler extends Base {
     }
 
     protected function getOutputBuffer() {
-        $startupOutputBufferLevel = $this->getStartupOutputBufferLevel();
         $outputBufferLevel = ob_get_level();
-        if ($outputBufferLevel < $startupOutputBufferLevel) {
+        if ($outputBufferLevel < $this->startupOutputBufferLevel) {
             return false;
         }
-        while ($outputBufferLevel > $startupOutputBufferLevel) {
+        while ($outputBufferLevel > $this->startupOutputBufferLevel) {
             ob_end_flush();
             --$outputBufferLevel;
         }
