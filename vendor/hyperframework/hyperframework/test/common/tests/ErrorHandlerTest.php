@@ -3,6 +3,7 @@ namespace Hyperframework\Common;
 
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ArgumentErrorException;
+use Hyperframework\Common\Test\ErrorTriggeredErrorHandler;
 
 class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
     private $errorReportingBitmask;
@@ -35,6 +36,8 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
     }
 
     protected function tearDown() {
+        ini_set('xmlrpc_errors', 0);
+        ini_set('html_errors', 0);
         ini_set('error_log', $this->errorLog);
         ini_set('log_errors', $this->shouldLogErrors);
         ini_set('display_errors', $this->shouldDisplayErrors);
@@ -142,9 +145,47 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testDefaultLogForArgumentError() {
+        ini_set('display_errors', 0);
+        $this->bind();
+        Config::set(
+            'hyperframework.error_handler.error_throwing_bitmask', 0
+        );
+        $suffix = 'PHP Warning:  Missing argument 1 for '
+            . __CLASS__ . '::' . 'methodForArgumentErrorTest() called in '
+            . __FILE__ . ' on line ' . (__LINE__ + 3) . ' and defined in '
+            . __FILE__ . " on line "
+            . $this->getMethodForArgumentErrorTestDefinitionLine() . PHP_EOL;
+        $this->methodForArgumentErrorTest();
+        $log = file_get_contents(dirname(__DIR__) . '/data/tmp/log');
+        $this->assertStringEndsWith($suffix, (string)$log);
     }
 
-    public function testDisplayXmlRpcErrorMessage() {
+    public function testDisplayHtmlErrorMessage() {
+        ini_set('html_errors', 1);
+        $this->bind();
+        Config::set(
+            'hyperframework.error_handler.error_throwing_bitmask', 0
+        );
+        $this->expectOutputString("<br />"
+            . PHP_EOL . "<b>Notice</b>:  notice in <b>"
+            . __FILE__ . "</b> on line <b>" . (__LINE__ + 2)
+            . '</b><br />' . PHP_EOL);
+        trigger_error('notice');
+    }
+
+    public function testTriggerErrorOnErrorHandler() {
+        Config::set(
+            'hyperframework.error_handler.error_throwing_bitmask', 0
+        );
+        $this->handler = new ErrorTriggeredErrorHandler;
+        $this->expectOutputString(PHP_EOL . "Notice: notice in " 
+            . $this->handler->getFile(). " on line "
+            . $this->handler->getErrorLine(). PHP_EOL);
+        set_error_handler(
+            [$this->handler, 'handleError'], error_reporting() 
+        );
+        set_exception_handler([$this->handler, 'handleException']);
+        trigger_error('notice');
     }
 
     public function

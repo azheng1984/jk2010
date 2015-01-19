@@ -24,8 +24,8 @@ class ErrorHandler {
         } else {
             $this->isDefaultErrorLogEnabled = ini_get('log_errors') === '1';
         }
-        $this->errorReportingBitmask = error_reporting();
         $this->shouldDisplayErrors = ini_get('display_errors') === '1';
+        $this->errorReportingBitmask = error_reporting();
     }
 
     public function run() {
@@ -290,26 +290,6 @@ class ErrorHandler {
         return $this->errorReportingBitmask;
     }
 
-    private function convertErrorTypeForOutput($type) {
-        switch ($type) {
-            case E_STRICT:            return 'Strict standards';
-            case E_DEPRECATED:
-            case E_USER_DEPRECATED:   return 'Deprecated';
-            case E_NOTICE:
-            case E_USER_NOTICE:       return 'Notice';
-            case E_WARNING:
-            case E_USER_WARNING:      return 'Warning';
-            case E_COMPILE_WARNING:   return 'Compile warning';
-            case E_CORE_WARNING:      return 'Core warning';
-            case E_USER_ERROR:        return 'Error';
-            case E_RECOVERABLE_ERROR: return 'Recoverable error';
-            case E_COMPILE_ERROR:     return 'Compile error';
-            case E_PARSE:             return 'Parse error';
-            case E_ERROR:             return 'Fatal error';
-            case E_CORE_ERROR:        return 'Core error';
-        }
-    }
-
     private function handle($source, $isError = false) {
         if ($this->source !== null) {
             if ($isError === false) {
@@ -318,6 +298,7 @@ class ErrorHandler {
             return false;
         }
         if ($isError && $source->shouldThrow()) {
+            $this->disableDefaultErrorReporting();
             throw $source;
         }
         if ($isError && $source->isFatal() === false) {
@@ -341,6 +322,26 @@ class ErrorHandler {
             return;
         }
         exit(1);
+    }
+
+    private function convertErrorTypeForOutput($type) {
+        switch ($type) {
+            case E_STRICT:            return 'Strict standards';
+            case E_DEPRECATED:
+            case E_USER_DEPRECATED:   return 'Deprecated';
+            case E_NOTICE:
+            case E_USER_NOTICE:       return 'Notice';
+            case E_WARNING:
+            case E_USER_WARNING:      return 'Warning';
+            case E_COMPILE_WARNING:   return 'Compile warning';
+            case E_CORE_WARNING:      return 'Core warning';
+            case E_USER_ERROR:        return 'Error';
+            case E_RECOVERABLE_ERROR: return 'Recoverable error';
+            case E_COMPILE_ERROR:     return 'Compile error';
+            case E_PARSE:             return 'Parse error';
+            case E_ERROR:             return 'Fatal error';
+            case E_CORE_ERROR:        return 'Core error';
+        }
     }
 
     private function enableDefaultErrorReporting(
