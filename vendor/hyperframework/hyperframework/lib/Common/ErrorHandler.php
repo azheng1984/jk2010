@@ -122,7 +122,7 @@ class ErrorHandler {
                     $name = 'php_error_exception';
                 } else {
                     $name = 'php_error';
-                    $data['type'] = $source->getSeverityAsString();
+                    $data['type'] = $source->getSeverityAsConstantName();
                 }
             }
             if ($this->isError() === false || $source->isFatal() === false) {
@@ -222,7 +222,7 @@ class ErrorHandler {
             if ($source->shouldThrow() === true) {
                 echo 'Fatal error';
             } else {
-                echo $this->convertErrorTypeForOutput($source->getSeverity());
+                echo $source->getSeverityAsString();
             }
             echo '</b>:  ';
             if (ini_get('docref_root') !== '') {
@@ -324,26 +324,6 @@ class ErrorHandler {
         exit(1);
     }
 
-    private function convertErrorTypeForOutput($type) {
-        switch ($type) {
-            case E_STRICT:            return 'Strict standards';
-            case E_DEPRECATED:
-            case E_USER_DEPRECATED:   return 'Deprecated';
-            case E_NOTICE:
-            case E_USER_NOTICE:       return 'Notice';
-            case E_WARNING:
-            case E_USER_WARNING:      return 'Warning';
-            case E_COMPILE_WARNING:   return 'Compile warning';
-            case E_CORE_WARNING:      return 'Core warning';
-            case E_USER_ERROR:        return 'Error';
-            case E_RECOVERABLE_ERROR: return 'Recoverable error';
-            case E_COMPILE_ERROR:     return 'Compile error';
-            case E_PARSE:             return 'Parse error';
-            case E_ERROR:             return 'Fatal error';
-            case E_CORE_ERROR:        return 'Core error';
-        }
-    }
-
     private function enableDefaultErrorReporting(
         $errorReportingBitmask = null
     ) {
@@ -381,7 +361,7 @@ class ErrorHandler {
         if ($error->shouldThrow() === true) {
             $result = 'Fatal error';
         } else {
-            $result = $this->convertErrorTypeForOutput($error->getSeverity());
+            $result = $error->getSeverityAsString();
         }
         if ($error instanceof ArgumentErrorException) {
             return $result . ':  ' . $error->getMessage() . ' called in '

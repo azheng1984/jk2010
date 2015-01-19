@@ -75,8 +75,6 @@ class Debugger {
         if ($this->isError) {
             if ($source->shouldThrow() === true) {
                 $type = 'Error Exception';
-            } elseif ($source->getSeverityAsString() === 'error') {
-                $type = 'Fatal Error';
             } else {
                 $type = ucwords($source->getSeverityAsString());
                 $type = htmlspecialchars(

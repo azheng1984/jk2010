@@ -51,6 +51,26 @@ class ErrorException extends Base {
 
     public function getSeverityAsString() {
         switch ($this->getSeverity()) {
+            case E_STRICT:            return 'Strict standards';
+            case E_DEPRECATED:
+            case E_USER_DEPRECATED:   return 'Deprecated';
+            case E_NOTICE:
+            case E_USER_NOTICE:       return 'Notice';
+            case E_WARNING:
+            case E_USER_WARNING:      return 'Warning';
+            case E_COMPILE_WARNING:   return 'Compile warning';
+            case E_CORE_WARNING:      return 'Core warning';
+            case E_USER_ERROR:        return 'Error';
+            case E_RECOVERABLE_ERROR: return 'Recoverable error';
+            case E_COMPILE_ERROR:     return 'Compile error';
+            case E_PARSE:             return 'Parse error';
+            case E_ERROR:             return 'Fatal error';
+            case E_CORE_ERROR:        return 'Core error';
+        }
+    }
+
+    public function getSeverityAsConstantName() {
+        switch ($this->getSeverity()) {
             case E_STRICT:            return 'E_STRICT';
             case E_DEPRECATED:        return 'E_DEPRECATED';
             case E_USER_DEPRECATED:   return 'E_USER_DEPRECATED';

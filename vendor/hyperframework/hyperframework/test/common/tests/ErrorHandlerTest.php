@@ -4,6 +4,7 @@ namespace Hyperframework\Common;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ArgumentErrorException;
 use Hyperframework\Common\Test\ErrorTriggeredErrorHandler;
+use Hyperframework\Common\Test\ErrorHandler;
 
 class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
     private $errorReportingBitmask;
@@ -33,6 +34,7 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
             [$this->handler, 'handleError'], error_reporting() 
         );
         set_exception_handler([$this->handler, 'handleException']);
+//        $this->handler->disableDefaultErrorReportingForTest();
     }
 
     protected function tearDown() {
