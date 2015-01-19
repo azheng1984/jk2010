@@ -173,7 +173,7 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
         trigger_error('notice');
     }
 
-    public function testTriggerErrorOnErrorHandler() {
+    public function testTriggerErrorInErrorHandler() {
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
