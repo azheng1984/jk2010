@@ -2,12 +2,14 @@
 namespace Hyperframework\Common;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Common\ArgumentErrorException;
 
 class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
     private $errorReportingBitmask;
     private $shouldLogErrors;
     private $shouldDisplayErrors;
     private $errorLog;
+    private $handler;
 
     protected function setUp() {
         $this->errorReportingBitmask = error_reporting();
@@ -25,11 +27,11 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
     }
 
     private function bind() {
-        $handler = new ErrorHandler;
+        $this->handler = new ErrorHandler;
         set_error_handler(
-            [$handler, 'handleError'], $this->errorReportingBitmask
+            [$this->handler, 'handleError'], error_reporting() 
         );
-        set_exception_handler([$handler, 'handleException']);
+        set_exception_handler([$this->handler, 'handleException']);
     }
 
     protected function tearDown() {
@@ -94,7 +96,11 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
             . __FILE__ . " on line " . (__LINE__ + 1) . PHP_EOL;
         trigger_error('notice');
         $log = file_get_contents(dirname(__DIR__) . '/data/tmp/logger_log');
-        $this->assertTrue(strlen($log) > 0);
+        $structuredMessage = "| NOTICE | php_error | notice"
+            . PHP_EOL . "\tfile: " . __FILE__
+            . PHP_EOL . "\tline: " . (__LINE__ - 4)
+            . PHP_EOL . "\ttype: E_USER_NOTICE" . PHP_EOL;
+        $this->assertStringEndsWith($structuredMessage, $log);
         $this->assertFalse(
             file_exists(dirname(__DIR__) . '/data/tmp/log')
         );
@@ -113,8 +119,67 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
         $this->assertFalse(
             file_exists(dirname(__DIR__) . '/data/tmp/logger_log')
         );
-        $this->assertTrue(
-            file_exists(dirname(__DIR__) . '/data/tmp/log')
+        $this->assertFileExists(dirname(__DIR__) . '/data/tmp/log');
+    }
+
+    public function testThrowArgumentErrorException() {
+        $this->bind();
+        try {
+            $this->methodForArgumentErrorTest();
+        } catch (ArgumentErrorException $e) {
+            $line = __LINE__ - 2;
+            $file = __FILE__;
+            $this->assertEquals($e->getLine(), $line);
+            $this->assertEquals($e->getFile(), $file);
+            $this->assertEquals(
+                $e->getFunctionDefinitionLine(),
+                $this->getMethodForArgumentErrorTestDefinitionLine()
+            );
+            $this->assertEquals($e->getFunctionDefinitionFile(), $file);
+            return;
+        }
+        $this->fail();
+    }
+
+    public function testDefaultLogForArgumentError() {
+    }
+
+    public function testDisplayXmlRpcErrorMessage() {
+    }
+
+    public function
+        testEnableFatalErrorAndCompileWarningReportingByFatalErrorHandler()
+    {
+        $this->bind();
+        error_reporting(0);
+        $this->handler->handleFatalError();
+        $this->assertEquals(error_reporting(), E_ERROR | E_PARSE | E_CORE_ERROR
+            | E_COMPILE_ERROR | E_COMPILE_WARNING
         );
+    }
+
+    public function testLogErrorTraceByLogger() {
+        Config::set(
+            'hyperframework.error_handler.logger.log_stack_trace', true
+        );
+        Config::set(
+            'hyperframework.error_handler.logger.enable', true
+        );
+        Config::set(
+            'hyperframework.error_handler.error_throwing_bitmask', 0
+        );
+        $this->bind();
+        $this->expectOutputString(PHP_EOL . "Notice:  notice in "
+            . __FILE__ . " on line " . (__LINE__ + 1) . PHP_EOL);
+        trigger_error('notice');
+        $log = file_get_contents(dirname(__DIR__) . '/data/tmp/logger_log');
+        $this->assertTrue(strpos($log, PHP_EOL . "\tstack_trace:") !== false);
+    }
+
+    private function methodForArgumentErrorTest($param) {
+    }
+
+    private function getMethodForArgumentErrorTestDefinitionLine() {
+        return __LINE__ - 4;
     }
 }

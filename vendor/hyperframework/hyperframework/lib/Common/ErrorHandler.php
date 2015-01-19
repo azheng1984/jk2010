@@ -38,9 +38,6 @@ class ErrorHandler {
     }
 
     final public function handleException($exception) {
-        if (error_reporting() === 0) {
-            return;
-        }
         $this->enableDefaultErrorReporting();
         $this->handle($exception);
     }
@@ -48,9 +45,6 @@ class ErrorHandler {
     final public function handleError(
         $type, $message, $file, $line, array $context
     ) {
-        if (error_reporting() === 0) {
-            return;
-        }
         $this->enableDefaultErrorReporting();
         $shouldThrow = false;
         if ($this->source === null) {
@@ -91,9 +85,6 @@ class ErrorHandler {
 
     final public function handleFatalError() {
         $this->isShutdownStarted = true;
-        if (error_reporting() === 0) {
-            return;
-        }
         $this->enableDefaultErrorReporting(
             error_reporting() | ($this->getErrorReportingBitmask() & (
                 E_ERROR | E_PARSE | E_CORE_ERROR
@@ -101,7 +92,9 @@ class ErrorHandler {
             ))
         );
         $error = error_get_last();
-        if ($error === null) {
+        if ($error === null
+            || $error['type'] & $this->getErrorReportingBitmask() === 0
+        ) {
             return;
         }
         $error = new ErrorException(
@@ -137,7 +130,7 @@ class ErrorHandler {
                     'hyperframework.error_handler.logger.log_stack_trace', false
                 );
                 if ($shouldLogTrace) {
-                    $data['trace'] = [];
+                    $data['stack_trace'] = [];
                     foreach ($source->getTrace() as $item) {
                         $trace = [];
                         if (isset($item['class'])) {
@@ -152,7 +145,7 @@ class ErrorHandler {
                         if (isset($item['line'])) {
                             $trace['line'] = $item['line'];
                         }
-                        $data['trace'][] = $trace;
+                        $data['stack_trace'][] = $trace;
                     }
                 }
             }
@@ -162,8 +155,7 @@ class ErrorHandler {
                 'message' => $source->getMessage(),
                 'data' => $data
             ]);
-        }
-        if ($this->isDefaultErrorLogEnabled()) {
+        } elseif ($this->isDefaultErrorLogEnabled()) {
             $this->writeDefaultErrorLog();
         }
     }

@@ -51,21 +51,21 @@ class ErrorException extends Base {
 
     public function getSeverityAsString() {
         switch ($this->getSeverity()) {
-            case E_STRICT:            return 'strict';
-            case E_DEPRECATED:        return 'deprecated';
-            case E_USER_DEPRECATED:   return 'user deprecated';
-            case E_NOTICE:            return 'notice';
-            case E_ERROR:             return 'error';
-            case E_USER_NOTICE:       return 'user notice';
-            case E_USER_ERROR:        return 'user error';
-            case E_WARNING:           return 'warning';
-            case E_USER_WARNING:      return 'user warning';
-            case E_COMPILE_WARNING:   return 'compile warning';
-            case E_CORE_WARNING:      return 'core warning';
-            case E_RECOVERABLE_ERROR: return 'recoverable error';
-            case E_PARSE:             return 'parse error';
-            case E_COMPILE_ERROR:     return 'compile error';
-            case E_CORE_ERROR:        return 'core error';
+            case E_STRICT:            return 'E_STRICT';
+            case E_DEPRECATED:        return 'E_DEPRECATED';
+            case E_USER_DEPRECATED:   return 'E_USER_DEPRECATED';
+            case E_NOTICE:            return 'E_NOTICE';
+            case E_ERROR:             return 'E_ERROR';
+            case E_USER_NOTICE:       return 'E_USER_NOTICE';
+            case E_USER_ERROR:        return 'E_USER_ERROR';
+            case E_WARNING:           return 'E_WARNING';
+            case E_USER_WARNING:      return 'E_USER_WARNING';
+            case E_COMPILE_WARNING:   return 'E_COMPILE_WARNING';
+            case E_CORE_WARNING:      return 'E_CORE_WARNING';
+            case E_RECOVERABLE_ERROR: return 'E_RECOVERABLE_ERROR';
+            case E_PARSE:             return 'E_PARSE';
+            case E_COMPILE_ERROR:     return 'E_COMPILE_ERROR';
+            case E_CORE_ERROR:        return 'E_CORE_ERROR';
         }
     }
 
