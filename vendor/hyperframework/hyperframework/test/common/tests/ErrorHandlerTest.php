@@ -109,7 +109,7 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
         );
     }
 
-    public function testDisableLoggerByDefault() {
+    public function testLoggerIsDisabledByDefault() {
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
