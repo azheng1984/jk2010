@@ -5,14 +5,14 @@ use Hyperframework\Logging\Logger;
 
 class ErrorHandler {
     private $errorReportingBitmask;
-    private $isDefaultErrorLogEnabled;
-    private $isError;
-    private $isLoggerEnabled;
-    private $isShutdownStarted = false;
-    private $shouldDisplayErrors;
-    private $shouldExit;
     private $shouldReportCompileWarning;
+    private $isDefaultErrorLogEnabled;
+    private $isLoggerEnabled;
+    private $shouldDisplayErrors;
+    private $isShutdownStarted = false;
+    private $shouldExit;
     private $source;
+    private $isError;
 
     public function __construct() {
         $this->isLoggerEnabled = Config::getBoolean(
