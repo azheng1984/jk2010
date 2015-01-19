@@ -56,7 +56,7 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
     /**
      * @expectedException Hyperframework\Common\ErrorException
      */
-    public function testErrorToException() {
+    public function testConvertErrorToException() {
         $this->bind();
         trigger_error('notice');
     }
