@@ -67,7 +67,7 @@ final class Logger {
                 'Invalid log entry, ' . gettype($params) . ' given.'
             );
         }
-        if ($params['time'] !== null
+        if (isset($params['time']) !== false
             && is_int($params['time']) === false
             && $params['time'] instanceof DateTime === false
         ) {
