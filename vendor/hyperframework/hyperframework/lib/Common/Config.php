@@ -222,6 +222,14 @@ class Config {
         }
     }
 
+    public static function getAll() {
+        return self::$data;
+    }
+
+    public static function clear() {
+        self::$data = [];
+    }
+
     private static function checkKey($key) {
         if ($key === '') {
             throw new ConfigException("Config key cannot be empty.");
@@ -231,13 +239,5 @@ class Config {
         ) {
             throw new ConfigException("Invalid config key '$key'.");
         }
-    }
-
-    public static function getAll() {
-        return self::$data;
-    }
-
-    public static function clear() {
-        self::$data = [];
     }
 }

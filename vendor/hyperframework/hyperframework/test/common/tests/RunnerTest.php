@@ -1,10 +1,9 @@
-<?php
+<?phAp
 namespace Hyperframework\Common;
 
-use Hyperframework\Common\Config;
-use Hyperframework\Common\Test\InitializeAppRootPathMethodNotImplementedRunner;
+use Hyperframework\Test\TestCase;
 
-class RunnerTest extends \PHPUnit_Framework_TestCase {
+class RunnerTest extends TestCase {
     protected function setUp() {
         Config::set(
             'hyperframework.error_handler.class',
@@ -16,12 +15,8 @@ class RunnerTest extends \PHPUnit_Framework_TestCase {
      * @expectedException Hyperframework\Common\NotImplementedException
      */
     public function testInitializeAppRootMethodNotImplemented() {
-        InitializeAppRootPathMethodNotImplementedRunner::run(
-            '/home/az/quickquick/vendor/hyperframework/hyperframework/test/cli'
+        $this->callProtectedMethod(
+            'Hyperframework\Common\Runner', 'initializeAppRootPath'
         );
-        $this->assertEquals(Config::get('hyperframework.app_root_path'), dirname(getcwd()));
     }
-
-//    public function testInitializeAppRootPath() {
-//    }
 }
