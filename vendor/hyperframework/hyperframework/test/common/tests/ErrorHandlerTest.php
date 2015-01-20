@@ -1,12 +1,11 @@
 <?php
 namespace Hyperframework\Common;
 
-use Hyperframework\Common\Config;
-use Hyperframework\Common\ArgumentErrorException;
 use Hyperframework\Common\Test\ErrorTriggeredErrorHandler;
-use Hyperframework\Common\Test\ErrorHandler;
+use Hyperframework\Common\Test\ErrorHandlerSrouceSpy;
+use Hyperframework\Test\TestCase as Base;
 
-class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
+class ErrorHandlerTest extends Base {
     private $errorReportingBitmask;
     private $shouldLogErrors;
     private $shouldDisplayErrors;
@@ -78,6 +77,14 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
+        $this->assertFalse(
+            $this->callProtectedMethod($this->handler, 'isLoggerEnabled')
+        );
+        $this->assertTrue(
+            $this->callProtectedMethod(
+                $this->handler, 'isDefaultErrorLogEnabled'
+            )
+        );
         $this->expectOutputString(PHP_EOL . "Notice:  notice in "
             . __FILE__ . " on line " . (__LINE__ + 3) . PHP_EOL);
         $message = "PHP Notice:  notice in "
@@ -95,6 +102,14 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
         $this->bind();
+        $this->assertTrue(
+            $this->callProtectedMethod($this->handler, 'isLoggerEnabled')
+        );
+        $this->assertFalse(
+            $this->callProtectedMethod(
+                $this->handler, 'isDefaultErrorLogEnabled'
+            )
+        );
         $this->expectOutputString(PHP_EOL . "Notice:  notice in "
             . __FILE__ . " on line " . (__LINE__ + 3) . PHP_EOL);
         $message = "PHP Notice:  notice in "
@@ -217,6 +232,103 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase {
         trigger_error('notice');
         $log = file_get_contents(dirname(__DIR__) . '/data/tmp/logger_log');
         $this->assertTrue(strpos($log, PHP_EOL . "\tstack_trace:") !== false);
+    }
+
+    public function testWriteCustomLog() {
+        Config::set(
+            'hyperframework.error_handler.error_throwing_bitmask', 0
+        );
+        ini_set('display_errors', 0);
+        $this->handler= $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
+            ->setMethods(['writeLog'])
+            ->getMock();
+        $this->handler->expects($this->once())
+             ->method('writeLog');
+        set_error_handler(
+            [$this->handler, 'handleError'], error_reporting() 
+        );
+        trigger_error('notice');
+    }
+
+    public function testWriteCustomErrorLog() {
+        Config::set(
+            'hyperframework.error_handler.error_throwing_bitmask', 0
+        );
+        ini_set('display_errors', 0);
+        $this->handler= $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
+            ->setMethods(['writeDefaultErrorLog'])
+            ->getMock();
+        $this->handler->expects($this->once())
+             ->method('writeDefaultErrorLog');
+        set_error_handler(
+            [$this->handler, 'handleError'], error_reporting() 
+        );
+        trigger_error('notice');
+    }
+
+    public function testDisplayCustomErrorMessage() {
+        Config::set(
+            'hyperframework.error_handler.error_throwing_bitmask', 0
+        );
+        $this->handler= $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
+            ->setMethods(['displayError'])
+            ->getMock();
+        $this->handler->expects($this->once())
+             ->method('displayError');
+        set_error_handler(
+            [$this->handler, 'handleError'], error_reporting() 
+        );
+        trigger_error('notice');
+    }
+
+    public function testShouldDisplayErrors() {
+        $this->bind();
+        $this->assertTrue(
+            $this->callProtectedMethod($this->handler, 'shouldDisplayErrors')
+        );
+    }
+
+    public function testDisableDefaultErrorReporting() {
+        $this->bind();
+        $this->callProtectedMethod(
+            $this->handler, 'disableDefaultErrorReporting'
+        );
+        $this->assertEquals(error_reporting(), E_COMPILE_WARNING);
+        error_reporting(E_ALL & ~E_COMPILE_WARNING);
+        $this->bind();
+        $this->callProtectedMethod(
+            $this->handler, 'disableDefaultErrorReporting'
+        );
+        $this->assertEquals(ini_get('display_errors'), '0');
+        $this->assertEquals(ini_get('log_errors'), '0');
+        $this->assertEquals(error_reporting(), E_ALL & ~E_COMPILE_WARNING);
+    }
+
+    public function testGetErrorReportingBitmask() {
+        $this->bind();
+        $this->assertEquals(
+            $this->callProtectedMethod(
+                $this->handler, 'getErrorReportingBitmask'
+            ), 
+            E_ALL
+        );
+    }
+
+    public function testGetSrouceAndIsError() {
+        Config::set(
+            'hyperframework.error_handler.error_throwing_bitmask', 0
+        );
+        $this->handler= $this->getMockBuilder(
+            'Hyperframework\Common\Test\ErrorHandlerSourceSpy')
+            ->setMethods(['send'])
+            ->getMock();
+        $this->handler->expects($this->once())->method('send')->with(
+            $this->isInstanceOf(__NAMESPACE__ . '\ErrorException'), true
+        );
+        set_error_handler(
+            [$this->handler, 'handleError'], error_reporting()
+        );
+        trigger_error('notice');
     }
 
     private function methodForArgumentErrorTest($param) {

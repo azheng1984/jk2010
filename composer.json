@@ -4,6 +4,7 @@
             "Hyperframework\\": "vendor/hyperframework/hyperframework/lib",
             "Hyperframework\\Blog\\": "lib",
             "Hyperframework\\Cli\\Test\\": "vendor/hyperframework/hyperframework/test/cli/lib",
+            "Hyperframework\\Test\\": "vendor/hyperframework/hyperframework/test/lib",
             "Hyperframework\\Common\\Test\\": "vendor/hyperframework/hyperframework/test/common/lib"
         },
         "psr-0": {
