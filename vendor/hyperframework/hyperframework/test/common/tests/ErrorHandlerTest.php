@@ -32,7 +32,7 @@ class ErrorHandlerTest extends Base {
         set_error_handler(
             [$this->handler, 'handleError'], error_reporting() 
         );
-        set_exception_handler([$this->handler, 'handleException']);
+//        set_exception_handler([$this->handler, 'handleException']);
 //        $this->handler->disableDefaultErrorReportingForTest();
     }
 
