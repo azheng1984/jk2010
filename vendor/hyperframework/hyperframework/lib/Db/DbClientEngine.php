@@ -98,7 +98,7 @@ class DbClientEngine {
         $placeHolders = str_repeat('?, ', $columnCount - 1) . '?';
         $sql = 'INSERT INTO ' . $this->quoteIdentifier($table)
             . '(' . implode($keys, ', ') . ') VALUES(' . $placeHolders . ')';
-        return $this->sendSql($sql, array_values($row));
+        $this->sendSql($sql, array_values($row));
     }
 
     public function update(

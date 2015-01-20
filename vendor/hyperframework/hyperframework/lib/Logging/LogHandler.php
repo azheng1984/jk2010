@@ -3,6 +3,7 @@ namespace Hyperframework\Logging;
 
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
+use DateTime;
 
 class LogHandler {
     private $protocol;
@@ -22,11 +23,12 @@ class LogHandler {
     }
 
     protected function format($level, array $params) {
+        $time = isset($params['time']) ? $params['time'] : null;
         $name = isset($params['name']) ? $params['name'] : null;
         $message = isset($params['message']) ? $params['message'] : null;
         $data = isset($params['data']) ? $params['data'] : null;
         $count = count($params);
-        $result = $this->getTimestamp() . ' | ' . $level;
+        $result = $this->getTimestamp($time) . ' | ' . $level;
         if ((string)$name !== '') {
             $result .= ' | ' . $name;
         }
@@ -58,8 +60,18 @@ class LogHandler {
         return $this->protocol;
     }
 
-    private function getTimestamp() {
-        return date('Y-m-d h:i:s');
+    private function getTimestamp($time) {
+        //todo config format
+        if ($time === null) {
+             $time = new DateTime;
+        }
+        if (is_int($time)) {
+            return date('Y-m-d h:i:s', $time);
+        } elseif ($time instanceof DateTime) {
+            return $time->format('Y-m-d h:i:s');
+        } else {
+            return $time;
+        }
     }
 
     private function initializePath() {

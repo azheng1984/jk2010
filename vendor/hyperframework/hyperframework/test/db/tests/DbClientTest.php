@@ -87,8 +87,37 @@ class DbClientTest extends Base {
 
     public function testCount() {
         $this->assertSame(
-            DbClient::count('Document', 'id > 1'),
+            DbClient::count('Document', 'id > ?', 1),
             1
         );
+    }
+
+    public function testMin() {
+        $this->assertSame(
+            DbClient::min('Document', 'id', 'id > ?', 0),
+            1
+        );
+    }
+
+    public function testMax() {
+        $this->assertSame(
+            DbClient::max('Document', 'id', 'id > ?', 1),
+            2
+        );
+    }
+
+    public function testAverage() {
+        $this->assertEquals(
+            DbClient::average('Document', 'id', 'id > ?', 0),
+            1.5
+        );
+    }
+
+    public function testInsert() {
+        DbClient::insert(
+            'Document',
+            ['id' => 3]
+        );
+        $this->assertSame(DbClient::count('Document'), 3);
     }
 }

@@ -90,7 +90,7 @@ class DbClient {
     }
 
     public static function insert($table, array $row) {
-        return self::getEngine()->insert($table, $row);
+        self::getEngine()->insert($table, $row);
     }
 
     public static function update($table, array $columns, $where/*, ...*/) {
