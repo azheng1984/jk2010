@@ -10,6 +10,37 @@ class LogHandler {
     private $path;
 
     public function handle($level, array $params) {
+        if (isset($params['name'])) {
+            if (preg_match('/^[a-zA-Z0-9_.]+$/', $params['name']) === 0
+                || $params['name'][0] === '.'
+                || substr($params['name'], -1) === '.'
+            ) {
+                throw new LoggingException(
+                    "Log entry name '{$params['name']}' is invalid."
+                );
+            }
+        }
+        if (isset($params['message'])) {
+            if (is_array($params['message'])) {
+                $count = count($params['message']);
+                if ($count === 0) {
+                    unset($params['message']);
+                } elseif ($count === 1) {
+                    $params['message'] = $params['message'][0];
+                } else {
+                    $params['message'] =
+                        call_user_func_array('sprintf', $params['message']);
+                }
+            }
+        }
+        if (isset($params['data'])) {
+            if (is_array($params['data']) === false) {
+                throw new LoggingException(
+                    "Log entry field 'data' must be an array, "
+                    . gettype($params['data']) . ' given.'
+                );
+            }
+        }
         $content = $this->format($level, $params);
         $this->write($content);
     }
