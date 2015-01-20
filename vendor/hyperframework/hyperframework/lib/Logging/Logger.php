@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Logging;
 
-use Closure;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ConfigException;
 use Hyperframework\Common\ClassNotFoundException;
@@ -55,15 +54,67 @@ final class Logger {
         }
     }
 
-    private static function log($level, $params) {
-        if (is_string($params)) {
-            $params = ['message' => $params];
-        }
+    private static function log($level, array $mixed) {
         if ($params instanceof Closure) {
             $params = $params();
         }
+        if (is_string($params)) {
+            $params = ['message' => $params];
+        } elseif (is_array($params) === false) {
+            throw new LoggingException(
+                'Invalid log entry, ' . gettype($params) . ' given.'
+            );
+        }
+        if ($params['time'] !== null
+            && is_int($params['time']) === false
+            && $params['time'] instanceof DateTime === false
+        ) {
+            throw new LoggingException(
+                "Log entry field 'time' must be an integer or DateTime, "
+                    . gettype($params['time']) . " given."
+            );
+        }
+        if (isset($params['name'])) {
+            if (preg_match('/^[a-zA-Z0-9_.]+$/', $params['name']) === 0
+                || $params['name'][0] === '.'
+                || substr($params['name'], -1) === '.'
+            ) {
+                throw new LoggingException(
+                    "Log entry name '{$params['name']}' is invalid."
+                );
+            }
+        }
+        if (isset($params['message'])) {
+            if (is_array($params['message'])) {
+                $count = count($params['message']);
+                if ($count === 0) {
+                    $params['message'] = '';
+                } elseif ($count === 1) {
+                    $params['message'] = $params['message'][0];
+                } else {
+                    $params['message'] =
+                    call_user_func_array('sprintf', $params['message']);
+                }
+            }
+        }
+        if (isset($params['data'])) {
+            if (is_array($params['data']) === false) {
+                throw new LoggingException(
+                    "Log entry field 'data' must be an array, "
+                        . gettype($params['data']) . ' given.'
+                );
+            }
+            foreach ($params['data'] as $key => $value) {
+                if (preg_match('/^[0-9a-zA-Z_]+$/', $key) === 0) {
+                    throw new LoggingException(
+                        "Log entry feild 'data' is invalid,"
+                            . " key '$key' is not allowed."
+                    );
+                }
+            }
+        }
         $logHandler = self::getLogHandler();
-        $logHandler->handle($level, $params);
+        $logHandler->handle($level, $mixed);
     }
 
     private static function getLogHandler() {

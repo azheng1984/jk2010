@@ -1,46 +1,16 @@
 <?php
 namespace Hyperframework\Logging;
 
+use DateTime;
+use Closure;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
-use DateTime;
 
 class LogHandler {
     private $protocol;
     private $path;
 
-    public function handle($level, array $params) {
-        if (isset($params['name'])) {
-            if (preg_match('/^[a-zA-Z0-9_.]+$/', $params['name']) === 0
-                || $params['name'][0] === '.'
-                || substr($params['name'], -1) === '.'
-            ) {
-                throw new LoggingException(
-                    "Log entry name '{$params['name']}' is invalid."
-                );
-            }
-        }
-        if (isset($params['message'])) {
-            if (is_array($params['message'])) {
-                $count = count($params['message']);
-                if ($count === 0) {
-                    unset($params['message']);
-                } elseif ($count === 1) {
-                    $params['message'] = $params['message'][0];
-                } else {
-                    $params['message'] =
-                        call_user_func_array('sprintf', $params['message']);
-                }
-            }
-        }
-        if (isset($params['data'])) {
-            if (is_array($params['data']) === false) {
-                throw new LoggingException(
-                    "Log entry field 'data' must be an array, "
-                    . gettype($params['data']) . ' given.'
-                );
-            }
-        }
+    public function handle($level, $params) {
         $content = $this->format($level, $params);
         $this->write($content);
     }
@@ -53,7 +23,7 @@ class LogHandler {
         file_put_contents($this->getPath(), $content, $flag);
     }
 
-    protected function format($level, array $params) {
+    protected function format($level, $params) {
         $time = isset($params['time']) ? $params['time'] : null;
         $name = isset($params['name']) ? $params['name'] : null;
         $message = isset($params['message']) ? $params['message'] : null;
@@ -77,14 +47,14 @@ class LogHandler {
         return $result . PHP_EOL;
     }
 
-    protected function getPath() {
+    private function getPath() {
         if ($this->path === null) {
             $this->initializePath();
         }
         return $this->path;
     }
 
-    protected function getProtocol() {
+    private function getProtocol() {
         if ($this->protocol === null) {
             $this->initializePath();
         }
@@ -99,10 +69,6 @@ class LogHandler {
             return date($time, $format);
         } elseif ($time === null) {
             $time = new Datetime;
-        }
-        if ($time instanceof DateTime === false) {
-            throw new LoggingException("Log entry field 'time' must be an"
-                . " integer or DateTime, " . gettype($time) . " given.");
         }
         return $time->format($format);
     }
@@ -150,11 +116,6 @@ class LogHandler {
         $result = null;
         $prefix = str_repeat("\t", $depth);
         foreach ($data as $key => $value) {
-            if (preg_match('/^[0-9a-zA-Z_]+$/', $key) === 0) {
-                throw new LoggingException(
-                    "Log entry field '$key' is invalid."
-                );
-            }
             $result .= PHP_EOL . $prefix . $key . ':';
             if (is_array($value)) {
                 $result .= $this->convert($value, $depth + 1);
