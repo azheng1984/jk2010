@@ -18,12 +18,12 @@ class DbConnectionFactory {
         }
         $username = isset($config['username']) ? $config['username'] : null;
         $password = isset($config['password']) ? $config['password'] : null;
-        $options = isset($config['options']) ? $config['options'] : null;
-
+        $options = isset($config['options']) ? $config['options'] : [];
+        $options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
         $connection = new DbConnection(
             $name, $config['dsn'], $username, $password, $options
         );
-        $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        //$connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         return $connection;
     }
 

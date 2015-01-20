@@ -26,7 +26,7 @@ class IndexController extends Controller {
     }
 
     protected function doShowAction() {
-        DbClient::findById('article', 23);
+        DbClient::findById('xDocument', 1);
         //
         //        
     }
