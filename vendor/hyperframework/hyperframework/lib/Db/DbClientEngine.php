@@ -5,13 +5,15 @@ use PDO;
 
 class DbClientEngine {
     public function findById($table, $id, $selectedColumnNameOrNames = null) {
-        if (is_array($selectedColumnNameOrNames) === false) {
+        if ($selectedColumnNameOrNames !== null
+            && is_array($selectedColumnNameOrNames) === false
+        ) {
             $selectedColumnNameOrNames = [$selectedColumnNameOrNames];
         }
         $result = $this->queryByColumns(
             $table, ['id' => $id], $selectedColumnNameOrNames
         );
-        return $result->fetchRow();
+        return $result->fetch(PDO::FETCH_ASSOC);
     }
 
     public function findColumn($sql, array $params = null) {

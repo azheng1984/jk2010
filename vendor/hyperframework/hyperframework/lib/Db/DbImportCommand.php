@@ -5,10 +5,16 @@ use PDO;
 use InvalidArgumentException;
 
 class DbImportCommand {
-    public static function execute($table, $rows, $options = null) {
+    public static function execute($table, array $rows, $options = null) {
         $count = count($rows);
         if ($count === 0) {
             return;
+        }
+        if (is_array($rows[0]) === false) {
+            throw new InvalidArgumentException(
+                "Row must be an array, "
+                    . gettype($rows[0]) . " given at row 0."
+            );
         }
         $columnNames = null;
         if (isset($options['column_names'])) {
@@ -26,7 +32,7 @@ class DbImportCommand {
             return;
         }
         $batchSize = 1000;
-        if ($options['batch_size']) {
+        if (isset($options['batch_size'])) {
             if ($options['batch_size'] === false) {
                 $batchSize = $count;
             } else {
@@ -56,6 +62,12 @@ class DbImportCommand {
                 );
             }
             while ($size > 0) {
+                if (is_array($rows[$index]) === false) {
+                    throw new InvalidArgumentException(
+                        "Row must be an array, "
+                            . gettype($rows[0]) . " given at row $index."
+                    );
+                }
                 if (count($rows[$index]) !== $columnCount) {
                     throw new InvalidArgumentException(
                         "Number of columns is invalid at row $index,"

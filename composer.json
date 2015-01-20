@@ -4,8 +4,11 @@
             "Hyperframework\\": "vendor/hyperframework/hyperframework/lib",
             "Hyperframework\\Blog\\": "lib",
             "Hyperframework\\Cli\\Test\\": "vendor/hyperframework/hyperframework/test/cli/lib",
-            "Hyperframework\\Test\\": "vendor/hyperframework/hyperframework/test/lib",
-            "Hyperframework\\Common\\Test\\": "vendor/hyperframework/hyperframework/test/common/lib"
+            "Hyperframework\\Db\\Test\\": "vendor/hyperframework/hyperframework/test/db/lib",
+            "Hyperframework\\Logging\\Test\\": "vendor/hyperframework/hyperframework/test/logging/lib",
+            "Hyperframework\\Web\\Test\\": "vendor/hyperframework/hyperframework/test/web/lib",
+            "Hyperframework\\Common\\Test\\": "vendor/hyperframework/hyperframework/test/common/lib",
+            "Hyperframework\\Test\\": "vendor/hyperframework/hyperframework/test/lib"
         },
         "psr-0": {
           "PHPUnit\\": "vendor/phpunit/src"

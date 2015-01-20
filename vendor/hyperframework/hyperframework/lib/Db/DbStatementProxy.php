@@ -21,7 +21,7 @@ class DbStatementProxy {
             DbProfiler::onStatementExecuting($this);
         }
         $result = $this->statement->execute($params);
-        if ($this->isProfilerEnabled !== null) {
+        if ($this->isProfilerEnabled) {
             DbProfiler::onStatementExecuted($this);
         }
         return $result;

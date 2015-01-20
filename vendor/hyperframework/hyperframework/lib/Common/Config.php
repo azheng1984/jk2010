@@ -131,7 +131,7 @@ class Config {
             );
             if (self::$data[':app_root_path'] === null) {
                 throw new ConfigException(
-                    "Config 'hyperframework.app_root_path' is not defined."
+                    "Config 'hyperframework.app_root_path' does not exist."
                 );
             }
             $isFullPath =

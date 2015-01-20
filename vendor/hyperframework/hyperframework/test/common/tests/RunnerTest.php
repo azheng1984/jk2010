@@ -1,4 +1,4 @@
-<?phAp
+<?php
 namespace Hyperframework\Common;
 
 use Hyperframework\Test\TestCase;
