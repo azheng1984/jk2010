@@ -61,17 +61,19 @@ class LogHandler {
     }
 
     private function getTimestamp($time) {
-        //todo config format
-        if ($time === null) {
-             $time = new DateTime;
-        }
+        $format = Config::getString(
+            'hyperframework.log_handler.timestamp_format', 'Y-m-d h:i:s'
+        );
         if (is_int($time)) {
-            return date('Y-m-d h:i:s', $time);
-        } elseif ($time instanceof DateTime) {
-            return $time->format('Y-m-d h:i:s');
-        } else {
-            return $time;
+            return date($time, $format);
+        } elseif ($time === null) {
+            $time = new Datetime;
         }
+        if ($time instanceof DateTime === false) {
+            throw new LoggingException("Log entry field 'time' must be an"
+                . " integer or DateTime, " . gettype($time) . " given.");
+        }
+        return $time->format($format);
     }
 
     private function initializePath() {

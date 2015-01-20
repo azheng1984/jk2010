@@ -5,7 +5,6 @@ use Closure;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ConfigException;
 use Hyperframework\Common\ClassNotFoundException;
-use InvalidArgumentException;
 
 final class Logger {
     private static $logHandler;
@@ -60,18 +59,18 @@ final class Logger {
         if (is_string($params)) {
             $params = ['message' => $params];
         }
+        if ($params instanceof Closure) {
+            $params = $params();
+        }
         if (isset($params['name'])) {
             if (preg_match('/^[a-zA-Z0-9_.]+$/', $params['name']) === 0
                 || $params['name'][0] === '.'
                 || substr($params['name'], -1) === '.'
             ) {
-                throw new InvalidArgumentException(
+                throw new LoggingException(
                     "Log entry name '{$params['name']}' is invalid."
                 );
             }
-        }
-        if ($params instanceof Closure) {
-            $params = $params();
         }
         if (isset($params['message'])) {
             if (is_array($params['message'])) {
@@ -82,15 +81,15 @@ final class Logger {
                     $params['message'] = $params['message'][0];
                 } else {
                     $params['message'] =
-                        call_user_func_array('sprintf', $params['message']);
+                    call_user_func_array('sprintf', $params['message']);
                 }
             }
         }
         if (isset($params['data'])) {
             if (is_array($params['data']) === false) {
-                throw new InvalidArgumentException(
+                throw new LoggingException(
                     "Log entry field 'data' must be an array, "
-                        . gettype($params['data']) . ' given.'
+                    . gettype($params['data']) . ' given.'
                 );
             }
         }
@@ -108,8 +107,7 @@ final class Logger {
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Log handler class '$logHandlerClass' does not exist,"
-                            . " defined in "
+                        "Log handler class '$class' does not exist, defined in "
                             . "'hyperframework.logger.log_handler_class'."
                     );
                 }
