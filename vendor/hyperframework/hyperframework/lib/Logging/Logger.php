@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework\Logging;
 
+use Closure;
+use DateTime;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ConfigException;
 use Hyperframework\Common\ClassNotFoundException;
@@ -54,7 +56,7 @@ final class Logger {
         }
     }
 
-    private static function log($level, array $mixed) {
+    private static function log($level, $params) {
         if ($params instanceof Closure) {
             $params = $params();
         }
@@ -93,7 +95,7 @@ final class Logger {
                     $params['message'] = $params['message'][0];
                 } else {
                     $params['message'] =
-                    call_user_func_array('sprintf', $params['message']);
+                        call_user_func_array('sprintf', $params['message']);
                 }
             }
         }
@@ -114,7 +116,7 @@ final class Logger {
             }
         }
         $logHandler = self::getLogHandler();
-        $logHandler->handle($level, $mixed);
+        $logHandler->handle($level, $params);
     }
 
     private static function getLogHandler() {

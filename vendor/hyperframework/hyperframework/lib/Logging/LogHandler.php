@@ -2,7 +2,6 @@
 namespace Hyperframework\Logging;
 
 use DateTime;
-use Closure;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
 
