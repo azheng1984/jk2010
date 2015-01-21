@@ -202,7 +202,20 @@ abstract class Router {
         $hasDynamicSegment = strpos($pattern, ':') !== false;
         $hasWildcardSegment = strpos($pattern, '*') !== false;
         $hasFormat = isset($options['formats']);
+        $path = trim($this->getRequestPath(), '/');
+        $pattern = trim($pattern, '/');
         if ($hasFormat === false) {
+            //var_dump($this->scopeFormatStack);
+            if ($this->shouldMatchScope) {
+                //var_dump($path);
+                //var_dump($pattern);
+            }
+            /*
+            if ($this->shouldMatchScope && $pattern === $path && $path === '') {
+                $this->setMatchStatus(true);
+                return true;
+            }
+            */
             $formats = end($this->scopeFormatStack);
             if ($formats !== false) {
                 $options['formats'] = $formats;
@@ -212,7 +225,7 @@ abstract class Router {
         if ($hasFormat && is_array($options['formats']) === false) {
             $options['formats'] = [$options['formats']];
         }
-        $path = $this->getRequestPath();
+        $originalPattern = $pattern;
         if ($hasFormat === false
             && $hasOptionalSegment === false
             && $hasWildcardSegment === false
@@ -274,14 +287,17 @@ abstract class Router {
         }
         if ($this->shouldMatchScope) {
             if ($hasFormat) {
-                $pattern = '#^' . $pattern;
+                //$pattern = '#^' . $pattern . $formatPattern;
+                $pattern = '#^' . $pattern . '(/.+)?' . $formatPattern . '$#';
+                /*
                 if ($isOptionalFormat === false) {
-                    $pattern .=  '/(.*?' . $formatPattern . ')$#';
+                    $pattern .=  $formatPattern . '/(.*)?' . $formatPattern . ')$#';
                 } else {
-                    $pattern .= '($|/(.+?' . $formatPattern . '))$#';
+                    $pattern .= '(' . $formatPattern . '$|/(.+' . $formatPattern . '))$#';
                 }
+                */
             } else {
-                $pattern = '#^' . $pattern . '($|/(.*)$)#';
+                $pattern = '#^' . $pattern . '($|/(.*?)$)#';
             }
         } else {
             $pattern = '#^' . $pattern . $formatPattern . '$#';
@@ -290,7 +306,7 @@ abstract class Router {
         //echo $pattern;
         $result = preg_match($pattern, $path, $matches);
         if ($result === false) {
-            throw new RoutingException("Invalid pattern '$pattern'.");
+            throw new RoutingException("Invalid pattern '$originalPattern'.");
         }
         if ($result === 1) {
             if ($hasFormat) {
@@ -341,14 +357,17 @@ abstract class Router {
             }
             if ($this->shouldMatchScope) {
                 $this->scopeMatchStack[] = $matches;
+                //print_r($matches);
                 if ($hasFormat) {
                     if ($isOptionalFormat) {
                         if (isset($matches['format'])) {
-                            return $matches[key($matches) - 2];
+                            end($matches);
+                            return $matches[key($matches) - 1];
                         } else {
                             return end($matches);
                         }
                     } else {
+                        end($matches);
                         return $matches[key($matches) - 1];
                     }
                 }
@@ -364,20 +383,28 @@ abstract class Router {
         return false;
     }
 
-    protected function matchScope($defination, $function) {
+    protected function matchScope($definition, Closure $function) {
         $path = $this->getRequestPath();
         $pattern = null;
         $options = null;
-        if (is_array($defination)) {
-            if (isset($defination[0]) === false) {
+        if (is_array($definition)) {
+            if (isset($definition[0]) === false) {
                 throw new InvalidArgumentException("Pattern is not defined.");
             }
-            $pattern = $defination[0];
-            unset($defination[0]);
-            $options = $defination;
+            $pattern = $definition[0];
+            if (isset($definition[1])) {
+                if (is_array($definition[1]) === false) {
+                    throw new InvalidArgumentException(
+                        "Index 1 of argument 'definition' must be an array, "
+                            . gettype($definition[1]). " given."
+                    );
+                }
+                $options = $definition[1];
+            }
         } else {
-            $pattern = $defination;
+            $pattern = $definition;
         }
+        //var_dump($options);
         $this->shouldMatchScope = true;
         $path = $this->match($pattern, $options);
         $this->shouldMatchScope = false;
@@ -385,17 +412,25 @@ abstract class Router {
             return false;
         }
         $previousPath = $this->getRequestPath();
-        if (isset($defination['formats'])) {
-            $this->scopeFormatStack[] = $defination['formats'];
+        if (isset($options['formats'])) {
+            $this->scopeFormatStack[] = $options['formats'];
         } else {
             $this->scopeFormatStack[] = false;
         }
-        $this->setRequestPath('/' . $path);
+        //var_dump($this->scopeFormatStack);
+        //echo '%%%' . $path . '%%%';
+        $path = trim($path, '/');
+        if ($path === '' && isset($options['formats'])) {
+            array_pop($this->scopeFormatStack);
+            $this->scopeFormatStack[] = false;
+        }
+        $this->setRequestPath($path);
+        //var_dump(trim($path, '/'));
         $result = $function();
         $this->setRequestPath($previousPath);
         array_pop($this->scopeMatchStack);
         array_pop($this->scopeFormatStack);
-        $this->checkResult($result);
+        $this->parseResult($result);
         return $this->isMatched();
     }
 
@@ -616,7 +651,7 @@ abstract class Router {
             $defaultActions = $options['default_actions'];
         } else {
             $defaultActions = [
-                'show' => ['GET', '/'],
+                'show' => ['GET', '/'], //todo remove '/'
                 'new' => ['GET', 'new'],
                 'update' => ['PATCH | PUT', '/'],
                 'create' => ['POST', '/'],
