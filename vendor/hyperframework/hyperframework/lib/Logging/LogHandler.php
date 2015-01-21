@@ -14,6 +14,17 @@ class LogHandler {
         $this->write($content);
     }
 
+    public function getPath() {
+        if ($this->path === null) {
+            $this->initializePath();
+        }
+        return $this->path;
+    }
+
+    public function setPath($value) {
+        $this->path = $value;
+    }
+
     protected function write($content) {
         $flag = null;
         if ($this->getProtocol() === 'file') {
@@ -46,13 +57,6 @@ class LogHandler {
         return $result . PHP_EOL;
     }
 
-    private function getPath() {
-        if ($this->path === null) {
-            $this->initializePath();
-        }
-        return $this->path;
-    }
-
     private function getProtocol() {
         if ($this->protocol === null) {
             $this->initializePath();
@@ -71,9 +75,11 @@ class LogHandler {
     }
 
     private function initializePath() {
-        $this->path = Config::getString(
-            'hyperframework.log_handler.log_path', ''
-        );
+        if ($this->path === null) {
+            $this->path = Config::getString(
+                'hyperframework.log_handler.log_path', ''
+            );
+        }
         $this->protocol = 'file';
         if ($this->path === '') {
             $this->path = 'log' . DIRECTORY_SEPARATOR . 'app.log';
