@@ -65,7 +65,7 @@ class LogHandler {
     }
 
     private function getTimestamp($time) {
-        $format = 'Y-m-d h:i:s';
+        $format = 'Y-m-d H:i:s';
         if (is_int($time)) {
             return date($format, $time);
         } elseif ($time === null) {
@@ -77,7 +77,7 @@ class LogHandler {
     private function initializePath() {
         if ($this->path === null) {
             $this->path = Config::getString(
-                'hyperframework.log_handler.log_path', ''
+                'hyperframework.logging.log_path', ''
             );
         }
         $this->protocol = 'file';

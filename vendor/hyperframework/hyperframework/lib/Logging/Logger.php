@@ -85,7 +85,7 @@ final class Logger {
     public static function getLogHandler() {
         if (self::$logHandler === null) {
             $class = Config::getString(
-                'hyperframework.logger.log_handler_class', ''
+                'hyperframework.logging.log_handler_class', ''
             );
             if ($class === '') {
                 $class = 'Hyperframework\Logging\LogHandler';
@@ -93,7 +93,7 @@ final class Logger {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
                         "Log handler class '$class' does not exist, defined in "
-                        . "'hyperframework.logger.log_handler_class'."
+                            . "'hyperframework.logging.log_handler_class'."
                     );
                 }
             }
@@ -174,14 +174,14 @@ final class Logger {
 
     private static function getThresholdCode() {
         if (self::$thresholdCode === null) {
-            $level = Config::getString('hyperframework.logger.level', '');
+            $level = Config::getString('hyperframework.logging.log_level', '');
             if ($level !== '') {
                 if (isset(self::$levels[$level]) === false) {
                     $tmp = strtoupper($level);
                     if (isset(self::$levels[$tmp]) === false) {
                         throw new ConfigException(
                             "Log level '$level' is invalid, defined in "
-                                . "'hyperframework.logger.level'."
+                                . "'hyperframework.logging.log_level'."
                         );
                     }
                     $level = $tmp;
