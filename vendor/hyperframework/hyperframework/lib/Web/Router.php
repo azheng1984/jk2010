@@ -2,6 +2,7 @@
 namespace Hyperframework\Web;
 
 use InvalidArgumentException;
+use Closure;
 use Hyperframework;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NamespaceCombiner;
@@ -218,12 +219,13 @@ abstract class Router {
             && $hasDynamicSegment === false
             && $this->shouldMatchScope ===  false
         ) {
-            if ($pattern !== '/') {
-                $pattern = '/' . $pattern;
-            }
             if ($path === $pattern) {
                 if (isset($options['extra'])) {
-                    return $this->verifyExtraMatchConstrains($options['extra']);
+                    $isMatched =
+                        $this->verifyExtraRules($options['extra']);
+                    if ($isMatched === false) {
+                        return false;
+                    }
                 }
                 $this->setMatchStatus(true);
                 return true;
@@ -262,7 +264,7 @@ abstract class Router {
             );
         }
         $formatPattern = null;
-        $isOptionalFormat = isset($options['formats']['default']);
+        $isOptionalFormat = isset($options['formats']['default']); //todo
         if ($hasFormat) {
             if ($isOptionalFormat) {
                 $formatPattern = '(\.(?<format>[0-9a-zA-Z]+?))?';
@@ -272,18 +274,20 @@ abstract class Router {
         }
         if ($this->shouldMatchScope) {
             if ($hasFormat) {
-                $pattern = '#^/' . $pattern;
+                $pattern = '#^' . $pattern;
                 if ($isOptionalFormat === false) {
                     $pattern .=  '/(.*?' . $formatPattern . ')$#';
                 } else {
                     $pattern .= '($|/(.+?' . $formatPattern . '))$#';
                 }
             } else {
-                $pattern = '#^/' . $pattern . '($|/(.*)$)#';
+                $pattern = '#^' . $pattern . '($|/(.*)$)#';
             }
         } else {
-            $pattern = '#^/' . $pattern . $formatPattern . '$#';
+            $pattern = '#^' . $pattern . $formatPattern . '$#';
         }
+        //echo $path;
+        //echo $pattern;
         $result = preg_match($pattern, $path, $matches);
         if ($result === false) {
             throw new RoutingException("Invalid pattern '$pattern'.");
@@ -328,7 +332,7 @@ abstract class Router {
                 }
             }
             if (isset($options['extra'])) {
-                $tmp = $this->verifyExtraMatchConstrains(
+                $tmp = $this->verifyExtraRules(
                     $options['extra'], $matches
                 );
                 if ($tmp === false) {
@@ -361,9 +365,6 @@ abstract class Router {
     }
 
     protected function matchScope($defination, $function) {
-        if ($this->isMatched()) {
-            throw new RoutingException('Alrealy matched.');
-        }
         $path = $this->getRequestPath();
         $pattern = null;
         $options = null;
@@ -427,16 +428,36 @@ abstract class Router {
         }
     }
 
-    private function verifyExtraMatchConstrains($extra, array $matches = null) {
+    private function verifyExtraRules(
+        $extra, array $matches = null
+    ) {
         if (is_array($extra)) {
             foreach ($extra as $function) {
+                if ($function instanceof Closure === false) {
+                    $type = gettype($function);
+                    if ($type === 'Object') {
+                        $type = get_class($function);
+                    }
+                    throw new RoutingException(
+                        'Extra rule must be a Closure, ' . $type . ' given.'
+                    );
+                }
                 if ($function($matches) === false) {
                     return false;
                 }
             }
             return true;
         } else {
-            return $function($matches) !== false;
+            if ($extra instanceof Closure === false) {
+                $type = gettype($function);
+                if ($type === 'Object') {
+                    $type = get_class($function);
+                }
+                throw new RoutingException(
+                    'Extra rule must be a Closure, ' . $type . ' given.'
+                );
+            }
+            return $extra($matches) !== false;
         }
     }
 
