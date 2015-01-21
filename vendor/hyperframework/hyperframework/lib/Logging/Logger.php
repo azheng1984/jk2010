@@ -66,7 +66,7 @@ final class Logger {
             $tmp = strtoupper($value);
             if (isset(self::$levels[$tmp]) === false) {
                 throw new InvalidArgumentException(
-                    "Log level '$level' is invalid."
+                    "Log level '$value' is invalid."
                 );
             }
             $value = $tmp;

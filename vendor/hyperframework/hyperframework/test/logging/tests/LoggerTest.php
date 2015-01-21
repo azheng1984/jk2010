@@ -112,10 +112,22 @@ class LoggerTest extends PHPUnit_Framework_TestCase {
         $this->assertSame('DEBUG', Logger::getLevel());
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testSetInvalidLevel() {
+        Logger::setLevel('unknown');
+    }
+
+
     public function testSetCustomLogHandler() {
         $logHandler = new LogHandler;
         Logger::setLogHandler($logHandler);
         $this->assertSame($logHandler, Logger::getLogHandler());
+    }
+
+    public function testDefaultLogHandler() {
+        $this->assertTrue(Logger::getLogHandler() instanceof LogHandler); 
     }
 
     /**
