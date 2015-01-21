@@ -61,11 +61,9 @@ class LogHandler {
     }
 
     private function getTimestamp($time) {
-        $format = Config::getString(
-            'hyperframework.log_handler.timestamp_format', 'Y-m-d h:i:s'
-        );
+        $format = 'Y-m-d h:i:s';
         if (is_int($time)) {
-            return date($time, $format);
+            return date($format, $time);
         } elseif ($time === null) {
             $time = new Datetime;
         }
