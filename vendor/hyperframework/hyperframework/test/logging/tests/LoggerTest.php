@@ -34,11 +34,11 @@ class LoggerTest extends PHPUnit_Framework_TestCase {
         }
         $time = time();
         Logger::$method(
-            ['name' => 'Test', 'message' => 'hello',
+            ['name' => 'Test', 'message' => 'message',
                 'time' => $time, 'data' => ['key' => 'value']]
         );
         $this->assertSame(
-            date('Y-m-d H:i:s', $time) . ' | ' . $level . ' | Test | hello'
+            date('Y-m-d H:i:s', $time) . ' | ' . $level . ' | Test | message'
                 . PHP_EOL . "\tkey: value" . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
@@ -51,18 +51,18 @@ class LoggerTest extends PHPUnit_Framework_TestCase {
 
     public function testIntegerTime() {
         $time = time();
-        Logger::warn(['message' => 'hello', 'time' => $time]);
+        Logger::warn(['message' => 'message', 'time' => $time]);
         $this->assertSame(
-            date('Y-m-d H:i:s', $time) . ' | WARNING || hello' . PHP_EOL,
+            date('Y-m-d H:i:s', $time) . ' | WARNING || message' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
     }
 
     public function testDateTime() {
         $time = new DateTime;
-        Logger::warn(['message' => 'hello', 'time' => $time]);
+        Logger::warn(['message' => 'message', 'time' => $time]);
         $this->assertSame(
-            $time->format('Y-m-d H:i:s') . ' | WARNING || hello' . PHP_EOL,
+            $time->format('Y-m-d H:i:s') . ' | WARNING || message' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
     }
@@ -79,10 +79,10 @@ class LoggerTest extends PHPUnit_Framework_TestCase {
     public function testClosure() {
         $time = new DateTime;
         Logger::warn(function() {
-            return 'hello';
+            return 'message';
         });
         $this->assertSame(
-            $time->format('Y-m-d H:i:s') . ' | WARNING || hello' . PHP_EOL,
+            $time->format('Y-m-d H:i:s') . ' | WARNING || message' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
     }
@@ -90,13 +90,13 @@ class LoggerTest extends PHPUnit_Framework_TestCase {
     public function testLevel() {
         Logger::setLevel('ERROR');
         Logger::warn(function() {
-            return 'hello';
+            return 'message';
         });
         $this->assertFalse(
             file_exists(Config::getAppRootPath() . '/log/app.log')
         );
         Logger::error(function() {
-            return 'hello';
+            return 'message';
         });
         $this->assertTrue(
             file_exists(Config::getAppRootPath() . '/log/app.log')
@@ -238,7 +238,7 @@ class LoggerTest extends PHPUnit_Framework_TestCase {
      */
     public function testInvalidLevelDefinedInConfig() {
         Config::set('hyperframework.logging.log_level', 'unknown');
-        Logger::warn('warning');
+        Logger::warn('message');
     }
 
     /**
@@ -246,6 +246,6 @@ class LoggerTest extends PHPUnit_Framework_TestCase {
      */
     public function testInvalidLogHandlerClassDefinedInConfig() {
         Config::set('hyperframework.logging.log_handler_class', 'Unknown');
-        Logger::warn('warning');
+        Logger::warn('message');
     }
 }
