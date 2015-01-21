@@ -63,12 +63,13 @@ final class Logger {
             return;
         }
         if (isset(self::$levels[$value]) === false) {
-            $level = strtoupper($value);
-            if (isset(self::$levels[$value]) === false) {
+            $tmp = strtoupper($value);
+            if (isset(self::$levels[$tmp]) === false) {
                 throw new InvalidArgumentException(
                     "Log level '$level' is invalid."
                 );
             }
+            $value = $tmp;
         }
         self::$thresholdCode = self::$levels[$value];
     }
@@ -176,13 +177,14 @@ final class Logger {
             $level = Config::getString('hyperframework.logger.level', '');
             if ($level !== '') {
                 if (isset(self::$levels[$level]) === false) {
-                    $level = strtoupper($level);
-                    if (isset(self::$levels[$level]) === false) {
+                    $tmp = strtoupper($level);
+                    if (isset(self::$levels[$tmp]) === false) {
                         throw new ConfigException(
                             "Log level '$level' is invalid, defined in "
                                 . "'hyperframework.logger.level'."
                         );
                     }
+                    $level = $tmp;
                 }
                 self::$thresholdCode = self::$levels[$level];
             } else {

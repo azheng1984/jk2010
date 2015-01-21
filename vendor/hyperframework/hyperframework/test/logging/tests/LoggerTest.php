@@ -55,9 +55,9 @@ class LoggerTest extends PHPUnit_Framework_TestCase {
 
     public function testMessageParams() {
         $time = new DateTime;
-        Logger::warn(['message' => ['xyz %d', 123]]);
+        Logger::warn(['message' => ['%s', 'string']]);
         $this->assertSame(
-            $time->format('Y-m-d H:i:s') . ' | WARNING || xyz 123' . PHP_EOL,
+            $time->format('Y-m-d H:i:s') . ' | WARNING || string' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
     }
