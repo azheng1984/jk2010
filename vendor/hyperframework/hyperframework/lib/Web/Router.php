@@ -19,7 +19,6 @@ abstract class Router {
     private $action;
     private $actionMethod;
     private $requestPath;
-    private $scopeFormatStack = [];
     private $scopeMatchStack = [];
     private $shouldMatchScope = false;
     private $isMatched = false;
@@ -155,7 +154,7 @@ abstract class Router {
         return str_replace(' ', '', ucwords(str_replace('_', ' ', $tmp)));
     }
 
-    protected function setMatchStatus($isMatched) {
+    private function setMatchStatus($isMatched) {
         $this->isMatched = $isMatched;
     }
 
@@ -204,24 +203,6 @@ abstract class Router {
         $hasFormat = isset($options['formats']);
         $path = trim($this->getRequestPath(), '/');
         $pattern = trim($pattern, '/');
-        if ($hasFormat === false) {
-            //var_dump($this->scopeFormatStack);
-            if ($this->shouldMatchScope) {
-                //var_dump($path);
-                //var_dump($pattern);
-            }
-            /*
-            if ($this->shouldMatchScope && $pattern === $path && $path === '') {
-                $this->setMatchStatus(true);
-                return true;
-            }
-            */
-            $formats = end($this->scopeFormatStack);
-            if ($formats !== false) {
-                $options['formats'] = $formats;
-                $hasFormat = true;
-            }
-        }
         if ($hasFormat && is_array($options['formats']) === false) {
             $options['formats'] = [$options['formats']];
         }
@@ -286,24 +267,10 @@ abstract class Router {
             }
         }
         if ($this->shouldMatchScope) {
-            if ($hasFormat) {
-                //$pattern = '#^' . $pattern . $formatPattern;
-                $pattern = '#^' . $pattern . '(/.+)?' . $formatPattern . '$#';
-                /*
-                if ($isOptionalFormat === false) {
-                    $pattern .=  $formatPattern . '/(.*)?' . $formatPattern . ')$#';
-                } else {
-                    $pattern .= '(' . $formatPattern . '$|/(.+' . $formatPattern . '))$#';
-                }
-                */
-            } else {
-                $pattern = '#^' . $pattern . '($|/(.*?)$)#';
-            }
+            $pattern = '#^' . $pattern . '($|/(.*?)$)#';
         } else {
             $pattern = '#^' . $pattern . $formatPattern . '$#';
         }
-        //echo $path;
-        //echo $pattern;
         $result = preg_match($pattern, $path, $matches);
         if ($result === false) {
             throw new RoutingException("Invalid pattern '$originalPattern'.");
@@ -357,25 +324,12 @@ abstract class Router {
             }
             if ($this->shouldMatchScope) {
                 $this->scopeMatchStack[] = $matches;
-                //print_r($matches);
-                if ($hasFormat) {
-                    if ($isOptionalFormat) {
-                        if (isset($matches['format'])) {
-                            end($matches);
-                            return $matches[key($matches) - 1];
-                        } else {
-                            return end($matches);
-                        }
-                    } else {
-                        end($matches);
-                        return $matches[key($matches) - 1];
-                    }
-                }
                 return end($matches);
             }
             foreach ($this->scopeMatchStack as $tmp) {
                 $this->setMatches($tmp);
             }
+            $this->scopeMatchStack = [];
             $this->setMatches($matches);
             $this->setMatchStatus(true);
             return true;
@@ -383,53 +337,30 @@ abstract class Router {
         return false;
     }
 
-    protected function matchScope($definition, Closure $function) {
+    protected function matchScope($pattern, Closure $function) {
         $path = $this->getRequestPath();
-        $pattern = null;
-        $options = null;
-        if (is_array($definition)) {
-            if (isset($definition[0]) === false) {
-                throw new InvalidArgumentException("Pattern is not defined.");
-            }
-            $pattern = $definition[0];
-            if (isset($definition[1])) {
-                if (is_array($definition[1]) === false) {
-                    throw new InvalidArgumentException(
-                        "Index 1 of argument 'definition' must be an array, "
-                            . gettype($definition[1]). " given."
-                    );
-                }
-                $options = $definition[1];
-            }
-        } else {
-            $pattern = $definition;
-        }
         //var_dump($options);
+        $params = $this->params;
+        $action = $this->action;
+        $actionMethod = $this->actionMethod;
+        $controller = $this->controller;
+        $controllerClass = $this->controllerClass;
         $this->shouldMatchScope = true;
-        $path = $this->match($pattern, $options);
+        $path = $this->match($pattern);
         $this->shouldMatchScope = false;
         if ($path === false) {
             return false;
         }
         $previousPath = $this->getRequestPath();
-        if (isset($options['formats'])) {
-            $this->scopeFormatStack[] = $options['formats'];
-        } else {
-            $this->scopeFormatStack[] = false;
-        }
         //var_dump($this->scopeFormatStack);
         //echo '%%%' . $path . '%%%';
-        $path = trim($path, '/');
-        if ($path === '' && isset($options['formats'])) {
-            array_pop($this->scopeFormatStack);
-            $this->scopeFormatStack[] = false;
-        }
-        $this->setRequestPath($path);
+        $this->setRequestPath(trim($path, '/'));
         //var_dump(trim($path, '/'));
         $result = $function();
+        if ($result !== false && $this->isMatched() === true) {
+            $matches = array_pop($this->scopeMatchStack);
+        }
         $this->setRequestPath($previousPath);
-        array_pop($this->scopeMatchStack);
-        array_pop($this->scopeFormatStack);
         $this->parseResult($result);
         return $this->isMatched();
     }

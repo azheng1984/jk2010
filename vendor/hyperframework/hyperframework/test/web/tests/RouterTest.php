@@ -154,32 +154,32 @@ class RouterTest extends Base {
         $this->assertSame('name', $this->router->getParam('name'));
     }
 
-    public function testMatchInScopeSelfWithFormat() {
-        $this->assertTrue($this->matchScope(
-            '/document.jpg',
-            [
-                [':section', ['formats' => 'jpg']],
-                function() {
-                    $this->assertTrue($this->match(null, ['/']));
-                    return true;
-                }
-            ]
-        ));
-        //$this->assertSame('document', $this->router->getParam('section'));
-        //$this->assertSame('name', $this->router->getParam('name'));
-    }
-
-    public function testMatchInScopeWithFormat() {
-        $this->assertTrue($this->matchScope('/document/name.jpg', [
-            [':section', ['formats' => 'jpg']],
-            function() {
-            //    $this->assertTrue($this->match(null, [':name']));
-                return true;
-            }
-        ]));
-        //$this->assertSame('document', $this->router->getParam('section'));
-        //$this->assertSame('name', $this->router->getParam('name'));
-    }
+//    public function testMatchInScopeSelfWithFormat() {
+//        $this->assertTrue($this->matchScope(
+//            '/document.jpg',
+//            [
+//                [':section', ['formats' => 'jpg']],
+//                function() {
+//                    $this->assertTrue($this->match(null, ['/']));
+//                    return true;
+//                }
+//            ]
+//        ));
+//        //$this->assertSame('document', $this->router->getParam('section'));
+//        //$this->assertSame('name', $this->router->getParam('name'));
+//    }
+//
+//    public function testMatchInScopeWithFormat() {
+//        $this->assertTrue($this->matchScope('/document/name.jpg', [
+//            [':section', ['formats' => 'jpg']],
+//            function() {
+//            //    $this->assertTrue($this->match(null, [':name']));
+//                return true;
+//            }
+//        ]));
+//        //$this->assertSame('document', $this->router->getParam('section'));
+//        //$this->assertSame('name', $this->router->getParam('name'));
+//    }
 
     public function testScopeMatchContextForReturnTrue() {
     }
