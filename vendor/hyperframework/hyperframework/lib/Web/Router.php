@@ -125,6 +125,12 @@ abstract class Router {
     abstract protected function execute();
 
     protected function match($pattern, array $options = null) {
+        if (is_string($pattern) === false) {
+            throw new InvalidArgumentException(
+                "Argument 'pattern' must be a string, "
+                    . gettype($pattern) . ' given.'
+            );
+        }
         if ($this->isMatched()) {
             throw new RoutingException('Already matched.');
         }
@@ -287,6 +293,12 @@ abstract class Router {
     }
 
     protected function matchScope($path, Closure $callback) {
+        if (is_string($path) === false) {
+            throw new InvalidArgumentException(
+                "Argument 'path' must be a string, "
+                    . gettype($path) . ' given.'
+            );
+        }
         $this->shouldMatchScope = true;
         $childPath = $this->match($path);
         $this->shouldMatchScope = false;
@@ -302,6 +314,7 @@ abstract class Router {
     }
 
     protected function matchResource($pattern, array $options = null) {
+        //todo check type
         // actions
         // default_actions
         // ignored_actions
@@ -399,6 +412,7 @@ abstract class Router {
             return false;
         }
         $requestMethod = $_SERVER['REQUEST_METHOD'];
+        $pattern = rtrim($pattern, '/');
         $action = null;
         foreach ($actions as $key => $value) {
             $action = $key;
@@ -456,18 +470,9 @@ abstract class Router {
             } else {
                 $actionOptions = $options;
             }
-            $actionPattern = rtrim($pattern, '/');
-            $suffix = ltrim($suffix, '/');
+            $actionPattern = $pattern;
+            $suffix = trim($suffix, '/');
             if ($suffix !== '') {
-                if (isset($actionOptions['formats']) === null
-                    && preg_match('#^[^*:(#]+$#', $suffix, $matches) === 1
-                ) {
-                    if (substr($this->getRequestPath(), -strlen($matches[0]))
-                        !== $matches[0]
-                    ) {
-                        continue;
-                    }
-                }
                 $actionPattern .= '/' . $suffix;
             }
             if ($this->match($actionPattern, $actionOptions)) {
