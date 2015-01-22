@@ -1072,7 +1072,10 @@ h1, #message {
 }
 #stack-trace .invocation {
     color: #666;
-    padding-top: 5px;
+    background: #eee;
+    padding: 5px 10px;
+    margin-top: 5px;
+    border-radius: 5px;
 }
 #stack-trace .invocation code {
     word-break: keep-all;
