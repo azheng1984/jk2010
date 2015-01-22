@@ -111,7 +111,7 @@ class Controller {
         if (is_string($config['filter'])) {
             if ($config['filter'] === '') {
                 throw new InvalidActionFilterException(
-                    'Filter is set to an Empty string.'
+                    'Filter is set to an empty string.'
                 );
             }
             if ($config['filter'][0] === ':') {
@@ -140,7 +140,7 @@ class Controller {
         } else {
             throw new InvalidActionFilterException(
                 "Filter type '"
-                    . gettype($config['filter']) . "' is not allowed."
+                    . gettype($config['filter']) . "' is invalid."
             );
         }
         if ($config['type'] === 'around') {

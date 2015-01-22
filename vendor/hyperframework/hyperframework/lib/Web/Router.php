@@ -452,11 +452,6 @@ abstract class Router {
                     $value[0] = [strtoupper($value[0])];
                 }
             } else {
-                if (isset($value[1])) {
-                    throw new RoutingException(
-                        "Request method of action '$action' does not exist."
-                    );
-                }
                 $value[0] = ['GET'];
             }
             if (in_array($requestMethod, $value[0]) === false) {
@@ -464,7 +459,7 @@ abstract class Router {
             }
             unset($value[0]);
             if (isset($value[1])) {
-                if (is_string($value[1]) === false) { //path
+                if (is_string($value[1]) === false) {
                     throw new RoutingException(
                         "Path of action '$action' must be a string, "
                             . gettype($value[1]) . ' given.'
@@ -564,7 +559,10 @@ abstract class Router {
                 if (isset($options[$actionOption])
                     && is_array($options['collection_actions']) === false
                 ) {
-                    //throw e
+                    throw new RoutingException(
+                        "Option '$actionOption' must be an array, "
+                            . gettype($options[$actionOption]) . ' given.'
+                    );
                 }
             }
         }
@@ -650,7 +648,9 @@ abstract class Router {
         unset($options['collection_actions']);
         unset($options['element_actions']);
         if (isset($options['extra_actions'])) {
-            //exception
+            throw new RoutingException(
+                "Option 'extra_actions' is not allowed."
+            );
         }
         if (isset($options['extra_collection_actions'])) {
             $options['extra_actions'] = $options['extra_collection_actions'];
@@ -721,10 +721,16 @@ abstract class Router {
             if (is_array($value)) {
                 if (isset($value[1])) {
                     if (is_string($value[1]) === false) {
-                        //throw e
+                        throw new RoutingException(
+                            "Path of action '$key' must be a string, "
+                                . gettype($value[1]) . ' given.'
+                        );
                     }
                     $path = $value[1];
                 } else {
+                    if (isset($value[0]) === false) {
+                        $value[0] = 'GET';
+                    }
                     $path = $key;
                 }
                 $path = ltrim($path, '/');
@@ -734,17 +740,7 @@ abstract class Router {
                     $value[1] = ':id';
                 }
             } else {
-                if (is_string($value)) {
-                    $path = ltrim($value, '/');
-                    if ($path !== '') {
-                        $path = ':id/' . $path;
-                    } else {
-                        $path = ':id';
-                    }
-                    $value = ['GET', $path];
-                } else {
-                    //throw e
-                }
+                $value = [$value, ':id'];
             }
             $result[$key] = $value;
         }
