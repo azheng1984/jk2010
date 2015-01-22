@@ -164,7 +164,8 @@ class Debugger {
         $this->renderPath(
             $path,
             true,
-            ' <span class="line">Line ' . $errorLineNumber . '</span>'
+            ' <span class="line">Line ' . $errorLineNumber . '</span>',
+            true
         );
         echo '<table><tbody><tr><td class="index"><div class="index-content">';
         $lines = $this->getLines($path, $errorLineNumber);
@@ -212,18 +213,20 @@ class Debugger {
                 if ($index === $last) {
                     echo ' last';
                 }
-                echo '"><code class="invocation">', $invocation, '</code>',
-                    '<div class="position">';
+                echo '"><div class="position">';
                 if (isset($frame['file'])) {
                     $this->renderPath(
                         $frame['file'],
                         true,
-                        ' <span class="line">Line ' . $frame['line'] . '</span>'
+                        ' <span class="line">Line '
+                            . $frame['line'] . '</span>',
+                        true
                     );
                 } else {
                     echo '<span class="internal">internal function</span>';
                 }
                 echo '</div>';
+                echo '<div class="invocation"><code>', $invocation, '</code></div>';
                 echo  '</td></tr>';
             }
             ++$index;
@@ -395,10 +398,21 @@ class Debugger {
     }
 
     private function renderPath(
-        $path, $shouldRemoveRootPath = true, $suffix = ''
+        $path, $shouldRemoveRootPath = true,
+        $suffix = '', $shouldHighlightFile = false
     ) {
         if ($shouldRemoveRootPath === true) {
             $path = $this->getRelativePath($path);
+        }
+        if ($shouldHighlightFile) {
+            $fileNamePosition = strrpos($path, '/');
+            if ($fileNamePosition === false) {
+                $fileNamePosition = 0;
+            } else {
+                ++$fileNamePosition;   
+            }
+            $path = substr_replace($path, '<strong>', $fileNamePosition, 0)
+                . '</strong>';
         }
         echo '<div class="path"><code>', $path, '</code>', $suffix, '</div>';
     }
@@ -1023,14 +1037,14 @@ h1, #message {
     border-spacing: 0; /* ie6 */
 }
 #stack-trace .path {
-    color: #070;
+    color: #333;
 }
 #stack-trace .internal {
     color: #777;
 }
 #file .path .line, #stack-trace .line {
     font-size: 12px;
-    color: #777;
+    color: #333;
     border-left: 1px solid #d5d5d5;
     padding-left: 8px;
     word-break: keep-all;
@@ -1040,7 +1054,7 @@ h1, #message {
     padding-right: 3px;
 }
 #stack-trace table .value {
-    padding: 10px 0 10px 5px;
+    padding: 8px 0 8px 5px;
     border-bottom: 1px dotted #ccc;
     _border-bottom: 1px solid #e1e1e1;
 }
@@ -1048,7 +1062,7 @@ h1, #message {
     border-bottom: 0;
 }
 #stack-trace .index {
-    padding: 11px 5px 0 5px;
+    padding: 9px 5px 0 5px;
     width: 1px;
     color: #aaa;
     font-size:12px;
@@ -1056,11 +1070,11 @@ h1, #message {
     text-align: right;
     vertical-align: top;
 }
-#stack-trace .position {
-    color: #888;
+#stack-trace .invocation {
+    color: #666;
     padding-top: 5px;
 }
-#stack-trace .invocation {
+#stack-trace .invocation code {
     word-break: keep-all;
     white-space: nowrap;
 }
