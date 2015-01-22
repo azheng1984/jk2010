@@ -416,22 +416,20 @@ abstract class Router {
                     $value[0] = [strtoupper($value[0])];
                 }
             } else {
+                if (isset($value[1])) {
+                    //throw e: method missing
+                }
                 $value[0] = ['GET'];
             }
             if (in_array($requestMethod, $value[0]) === false) {
                 continue;
             }
             unset($value[0]);
-            $suffix = null;
             if (isset($value[1])) {
-                if ($value[1] !== '/' && $value[1] !== '') {
-                    $suffix = '/' . $value[1];
-                } else {
-                    $suffix = '/';
-                }
+                $suffix = $value[1];
                 unset($value[1]);
             } else {
-                $suffix = '/' . $key;
+                $suffix = $key;
             }
             $actionOptions = null;
             if (count($value) !== 0) {
@@ -453,12 +451,14 @@ abstract class Router {
                     } else {
                         $extra[] = $actionExtra;
                     }
+                    $actionOptions['extra'] = $extra;
                 }
             } else {
                 $actionOptions = $options;
             }
-            $actionPattern = $pattern;
-            if ($suffix !== '/') {
+            $actionPattern = rtrim($pattern, '/');
+            $suffix = ltrim($suffix, '/');
+            if ($suffix !== '') {
                 if (isset($actionOptions['formats']) === null
                     && preg_match('#^[^*:(#]+$#', $suffix, $matches) === 1
                 ) {
@@ -468,7 +468,7 @@ abstract class Router {
                         continue;
                     }
                 }
-                $actionPattern .= $suffix;
+                $actionPattern .= '/' . $suffix;
             }
             if ($this->match($actionPattern, $actionOptions)) {
                 $action = $key;
@@ -488,6 +488,7 @@ abstract class Router {
     }
 
     protected function matchResources($pattern, array $options = null) {
+        //todo type test
         if (preg_match('#[:*]id($|[/{])#', $pattern) !== 0) {
             throw new RoutingException(
                 "Invalid pattern '$pattern', "
@@ -620,6 +621,7 @@ abstract class Router {
     private function convertElementActionsToCollectionActions(
         array $actions, array $defaultActions = null, $isMixed = false
     ) {
+        //todo type test
         $result = [];
         foreach ($actions as $key => $value) {
             if (is_int($key)) {
@@ -644,7 +646,7 @@ abstract class Router {
                         );
                     }
                     $key = $value;
-                    $value = [1 => ':id/' . ltrim($value, '/')];
+                    $value = ['GET', ':id/' . ltrim($value, '/')];
                     $result[$key] = $value;
                     continue;
                 }
@@ -660,7 +662,7 @@ abstract class Router {
                 }
             }
             if (is_string($value)) {
-                $value = [1 => ':id/' . ltrim($value, '/')];
+                $value = ['GET', ':id/' . ltrim($value, '/')];
             } else {
                 //todo check value is array
                 if (isset($value[1])) {
