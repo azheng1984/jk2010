@@ -164,9 +164,60 @@ class RouterTest extends Base {
         $this->assertSame('name', $this->router->getParam('name'));
     }
 
-    public function testMatchResource() {
+    public function testMatchResourceShowAction() {
+        $_SERVER['REQUEST_URI'] = '/document';
+        $this->assertTrue($this->matchResource('document'));
+        $this->assertSame('document', $this->router->getController());
+        $this->assertSame('show', $this->router->getAction());
+    }
+
+    public function testMatchResourceNewAction() {
+        $_SERVER['REQUEST_URI'] = '/document/new';
+        $this->assertTrue($this->matchResource('document'));
+        $this->assertSame('document', $this->router->getController());
+        $this->assertSame('new', $this->router->getAction());
+    }
+
+    public function testMatchResourceEditAction() {
         $_SERVER['REQUEST_URI'] = '/document/edit';
-        $this->assertTrue($this->matchResources('document'));
+        $this->assertTrue($this->matchResource('document'));
+        $this->assertSame('document', $this->router->getController());
+        $this->assertSame('edit', $this->router->getAction());
+    }
+
+    public function testMatchResourceUpdateAction() {
+        $_SERVER['REQUEST_URI'] = '/document';
+        $_SERVER['REQUEST_METHOD'] = 'PATCH';
+        $this->assertTrue($this->matchResource('document'));
+        $this->assertSame('document', $this->router->getController());
+        $this->assertSame('update', $this->router->getAction());
+    }
+
+    public function testMatchResourceDeleteAction() {
+        $_SERVER['REQUEST_URI'] = '/document';
+        $_SERVER['REQUEST_METHOD'] = 'DELETE';
+        $this->assertTrue($this->matchResource('document'));
+        $this->assertSame('document', $this->router->getController());
+        $this->assertSame('delete', $this->router->getAction());
+    }
+
+    public function testMatchResourceInScope() {
+        $_SERVER['REQUEST_URI'] = '/admin/document';
+        $this->assertTrue(
+            $this->matchScope('admin', function() {
+                return $this->matchResource('document');
+            })
+        );
+        $this->assertSame('document', $this->router->getController());
+        $this->assertSame('show', $this->router->getAction());
+    }
+
+    public function testMatchResourceCreateAction() {
+        $_SERVER['REQUEST_URI'] = '/document';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->assertTrue($this->matchResource('document'));
+        $this->assertSame('document', $this->router->getController());
+        $this->assertSame('create', $this->router->getAction());
     }
 
     public function testMatchResources() {

@@ -1,9 +1,8 @@
 <?php
 namespace Hyperframework\Web;
 
-use InvalidArgumentException;
 use Closure;
-use Hyperframework;
+use InvalidArgumentException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NamespaceCombiner;
 use Hyperframework\Common\InvalidOperationException;
@@ -278,7 +277,6 @@ abstract class Router {
                 }
             }
             if ($this->shouldMatchScope) {
-                //var_dump($matches);
                 return end($matches);
             }
             $this->setMatches($matches);
@@ -289,11 +287,6 @@ abstract class Router {
     }
 
     protected function matchScope($path, Closure $callback) {
-        $params = $this->params;
-        $action = $this->action;
-        $actionMethod = $this->actionMethod;
-        $controller = $this->controller;
-        $controllerClass = $this->controllerClass;
         $this->shouldMatchScope = true;
         $childPath = $this->match($path);
         $this->shouldMatchScope = false;
@@ -309,12 +302,17 @@ abstract class Router {
     }
 
     protected function matchResource($pattern, array $options = null) {
+        // actions
+        // default_actions
+        // ignored_actions
+        // extra_actions
         $defaultActions = null;
         if (isset($options['default_actions'])) {
             $defaultActions = $options['default_actions'];
+            //process default int key item
         } else {
             $defaultActions = [
-                'show' => ['GET', '/'], //todo remove '/' ?
+                'show' => ['GET', '/'],
                 'new' => ['GET', 'new'],
                 'update' => ['PATCH | PUT', '/'],
                 'create' => ['POST', '/'],
@@ -330,7 +328,7 @@ abstract class Router {
                     if (is_string($value) === false) {
                         throw new RoutingException(
                             'Action name must be a string, '
-                            . gettype($value) . ' given.'
+                                . gettype($value) . ' given.'
                         );
                     }
                     if (isset($defaultActions[$value])) {
@@ -350,7 +348,7 @@ abstract class Router {
                         if (is_string($value) === false) {
                             throw new RoutingException(
                                 'Action name must be a string, '
-                                . gettype($value) . ' given.'
+                                    . gettype($value) . ' given.'
                             );
                         }
                         if (isset($defaultActions[$value])) {
@@ -358,10 +356,6 @@ abstract class Router {
                         } else {
                             $actions[$value] = [];
                         }
-                    } elseif (isset($value['ignore'])
-                        && $value['ignore'] === true
-                    ) {
-                        unset($actions[$key]);
                     }
                 }
                 if (isset($options['ignored_actions'])) {
@@ -381,7 +375,7 @@ abstract class Router {
                     if (is_string($value) === false) {
                         throw new RoutingException(
                             'Action name must be a string, '
-                            . gettype($value) . ' given.'
+                                . gettype($value) . ' given.'
                         );
                     }
                     if (isset($defaultActions[$value])) {
@@ -430,7 +424,7 @@ abstract class Router {
             unset($value[0]);
             $suffix = null;
             if (isset($value[1])) {
-                if ($value[1] !== '/' && $value[1] != '') {
+                if ($value[1] !== '/' && $value[1] !== '') {
                     $suffix = '/' . $value[1];
                 } else {
                     $suffix = '/';
@@ -494,24 +488,20 @@ abstract class Router {
     }
 
     protected function matchResources($pattern, array $options = null) {
-        $hasOptions = $options !== null;
-        $hasCollectionActions = isset($options['collection_actions']);
-        $hasElementActions = isset($options['element_actions']);
-        $hasDefaultActions = isset($options['actions']) === false && (
-            $hasCollectionActions === false || $hasElementActions === false
-        );
         if (preg_match('#[:*]id($|[/{])#', $pattern) !== 0) {
             throw new RoutingException(
                 "Invalid pattern '$pattern', "
-                    . "dynamic segment ':id' is not allowed."
+                    . "dynamic segment ':id' is reserved."
             );
         }
+        $hasOptions = $options !== null;
         if ($hasOptions) {
             if (isset($options['id'])) {
                 $options[':id'] = $options['id'];
             } elseif (isset($options[':id'])) {
                 throw new RoutingException(
-                    "Option ':id' is not allowed, use 'id' instead."
+                    "Dynamic segment ':id' is reserved, "
+                        . "use option 'id' to change pattern for it."
                 );
             } else {
                 $options[':id'] = '\d+';
@@ -519,127 +509,169 @@ abstract class Router {
         } else {
             $options = [':id' => '\d+'];
         }
-        if ($hasOptions === false || ($hasDefaultActions
-            && isset($options['default_actions']) === false
-        )) {
-            $options['default_actions'] = [
+        if ($hasOptions === false
+            || isset($options['default_actions']) === false
+        ) {
+            $defaultOptions = [
                 'index' => ['GET', '/'],
-                'show' => ['GET', ':id', 'belongs_to_element' => true],
+                'show' => ['GET', '/', 'belongs_to_element' => true],
                 'new' => ['GET', 'new'],
-                'edit' => ['GET', ':id/edit', 'belongs_to_element' => true],
+                'edit' => ['GET', 'edit', 'belongs_to_element' => true],
                 'create' => ['POST', '/'],
                 'update' => [
-                    'PATCH | PUT', ':id', 'belongs_to_element' => true
+                    'PATCH | PUT', '/', 'belongs_to_element' => true
                 ],
-                'delete' => ['DELETE', ':id', 'belongs_to_element' => true],
+                'delete' => ['DELETE', '/', 'belongs_to_element' => true],
             ];
-            if ($hasOptions === false) {
-                foreach ($options['default_actions'] as &$value) {
-                    unset($value['belongs_to_element']);
-                }
-                return $this->matchResource($pattern, $options);
-            }
+        } else {
+            //check is array
+            //process default int key item
+            $defaultAction = $options['default_actions'];
         }
-        if ($hasDefaultActions && $hasCollectionActions) {
-            foreach ($options['default_actions'] as $key => $value) {
-                if (isset($value['belongs_to_element']) === false
-                    || $value['belongs_to_element'] !== true
-                ) {
-                    if (is_int($key)) {
-                        if (is_string($value) === false) {
-                            throw new RoutingException(
-                                "Action name must be a string, "
-                                    . gettype($value) . ' given.'
-                            );
+        // actions //same
+        // default_actions //same
+        // ignored_actions //same
+        // collection_actions => actions
+        // extra_collection_actions => extra_actions
+        // element_actions => actions
+        // extra_element_actions //extra_actions
+        if (isset($options['collection_actions'])) {
+            if ($options['collection_actions'] === false) {
+                if (isset($options['actions']) === false) {
+                    if (isset($options['element_acitons']) === false) {
+                        foreach ($defaultActions as $key => $value) {
+                            if (isset($value['belongs_to_element'])
+                                && $value['belongs_to_element'] === true
+                            ) {
+                                $options['actions'][$key] = $value;
+                            }
                         }
-                        unset($options['default_actions'][$key]);
-                    } else {
-                        $options['default_actions'][$key]['ignore'] = true;
                     }
                 }
-            }
-        }
-        if ($hasDefaultActions && $hasElementActions) {
-            foreach ($options['default_actions'] as $key => $value) {
-                if (isset($value['belongs_to_element'])
-                    && $value['belongs_to_element'] === true
-                ) {
-                    $options['default_actions'][$key]['ignore'] = true;
-                }
-            }
-        }
-        if ($hasCollectionActions && $options['collection_actions'] !== false) {
-            if (isset($options['extra_actions']) === false) {
-                $options['extra_actions'] = $options['collection_actions'];
             } else {
-                foreach ($options['collection_actions'] as $key => $value) {
-                    if (is_int($key)) {
-                        $options['extra_actions'][] = $value;
-                    } else {
-                        $options['extra_actions'][$key] = $value;
-                    }
+                if (isset($options['actions']) === false) {
+                    $options['actions'] = $options['collection_actions'];
+                } else {
+                    $options['actions'] = array_merge(
+                        $options['actions'], $options['collection_actions']
+                    );
                 }
             }
         }
-        $extraActions = isset($options['extra_actions']) ?
-            $options['extra_actions'] : [];
-        $extraElementActions = isset($options['extra_element_actions']) ?
-            $options['extra_element_actions'] : null;
-        $elementActions = $hasElementActions
-            && $options['element_actions'] !== false ?
-            $options['element_actions'] : null;
-        for (;;) {
-            if ($elementActions === null) {
-                if ($extraElementActions !== null) {
-                    $elementActions = $extraElementActions;
-                    $extraElementActions = null;
+        if (isset($options['element_actions'])) {
+            if ($options['element_actions'] === false) {
+                if (isset($options['actions']) === false) {
+                    if (isset($options['collection_acitons']) === false) {
+                        foreach ($defaultActions as $key => $value) {
+                            if (isset($value['belongs_to_element']) === false
+                                || $value['belongs_to_element'] !== true
+                            ) {
+                                $options['actions'][$key] = $value;
+                            }
+                        }
+                    }
+                }
+            } else {
+                $actions = $this->convertElementActionsToCollectionActions(
+                    $options['element_actions'], $defaultActions
+                );
+                if (isset($options['actions']) === false) {
+                    $options['actions'] = $actions;
                 } else {
-                    break;
+                    $options['actions'] = array_merge(
+                        $options['actions'], $actions
+                    );
                 }
             }
-            foreach ($elementActions as $key => $value) {
-                if (is_int($key)) {
+        }
+        if (isset($options['actions'])) {
+            $options['actions'] =
+                $this->convertElementActionsToCollectionActions(
+                    $options['actions'], $defaultActions, true
+                );
+        }
+        unset($options['collection_actions']);
+        unset($options['element_actions']);
+        if (isset($options['extra_actions'])) {
+            //exception
+        }
+        if (isset($options['extra_collection_actions'])) {
+            $options['extra_actions'] = $options['extra_collection_actions'];
+        }
+        if (isset($options['extra_element_actions'])) {
+            $actions = $this->convertElementActionsToCollectionActions(
+                $options['extra_element_actions'], $defaultActions
+            );
+            if (isset($options['extra_actions'])) {
+                $options['extra_actions'] = array_merge(
+                    $options['extra_actions'], $actions
+                );
+            }
+        }
+        unset($options['extra_collection_actions']);
+        unset($options['extra_element_actions']);
+        $options['default_actions'] = 
+            $this->convertElementActionsToCollectionActions(
+                $defaultOptions, null, true
+            );
+        return $this->matchResource($pattern, $options);
+    }
+
+    private function convertElementActionsToCollectionActions(
+        array $actions, array $defaultActions = null, $isMixed = false
+    ) {
+        $result = [];
+        foreach ($actions as $key => $value) {
+            if (is_int($key)) {
+                if (isset($defaultActions[$value])
+                    && isset($defaultActions[$value]['belongs_to_element'])
+                    && $defaultActions[$value]['belongs_to_element'] === true
+                ) {
+                    $key = $value;
+                    $value = $defaultActions[$value];
+                    if ($isMixed === false) {
+                        unset($value['belongs_to_element']);
+                    }
+                } else {
+                    if ($isMixed) {
+                        $result[$key] = $value;
+                        continue;
+                    }
                     if (is_string($value) === false) {
                         throw new RoutingException(
                             'Action name must be a string, '
                                 . gettype($value) . ' given.'
-                            );
-                    }
-                    if (isset($options['default_actions'][$value])) {
-                        $default = $options['default_actions'][$value];
-                        if (isset($default['belongs_to_element'])
-                            && $default['belongs_to_element'] === true
-                        ) {
-                            $extraActions[] = $value;
-                            continue;
-                        }
+                        );
                     }
                     $key = $value;
-                    $value = [1 => ':id/' . $value];
-                } else {
-                    if (is_string($value)) {
-                        $value = [1 => ':id/' . $value];
-                    } else {
-                        if (isset($value[1])) {
-                            $value[1] = ':id/' . $value[1];
-                        } else {
-                            $value[1] = ':id/' . $key;
-                        }
-                    }
+                    $value = [1 => ':id/' . ltrim($value, '/')];
+                    $result[$key] = $value;
+                    continue;
                 }
-                $extraActions[$key] = $value;
             }
+            if ($isMixed) {
+                if (isset($value['belongs_to_element']) === false
+                    || $value['belongs_to_element'] !== true
+                ) {
+                    $result[$key] = $value;
+                    continue;
+                } else {
+                    unset($value['belongs_to_element']);
+                }
+            }
+            if (is_string($value)) {
+                $value = [1 => ':id/' . ltrim($value, '/')];
+            } else {
+                //todo check value is array
+                if (isset($value[1])) {
+                    $value[1] = ':id/' . ltrim($value[1], '/');
+                } else {
+                    $value[1] = ':id/' . ltrim($key, '/');
+                }
+            }
+            $result[$key] = $value;
         }
-        if (count($extraActions) !== 0) {
-            $options['extra_actions'] = $extraActions;
-        }
-        foreach ($options['default_actions'] as &$value) {
-            unset($value['belongs_to_element']);
-        }
-        unset($options['collection_actions']);
-        unset($options['element_actions']);
-        unset($options['extra_element_actions']);
-        return $this->matchResource($pattern, $options);
+        return $result;
     }
 
     protected function matchGet($pattern, array $options = null) {
@@ -749,9 +781,7 @@ abstract class Router {
         return $this->app;
     }
 
-    private function verifyExtraRules(
-        $extra, array $matches = null
-    ) {
+    private function verifyExtraRules($extra, array $matches = null) {
         if (is_array($extra)) {
             foreach ($extra as $function) {
                 if ($function instanceof Closure === false) {
