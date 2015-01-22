@@ -21,7 +21,6 @@ class Router extends Base {
         if ($this->match('/')) return;
         if ($this->matchResources('articles/:article_id/comments')) return;
         return;
-
         $this->setMatchStatus(false);
         $this->matchScope('article', function() {
             echo $this->getPath();

@@ -19,7 +19,6 @@ abstract class Router {
     private $action;
     private $actionMethod;
     private $requestPath;
-    private $scopeMatchStack = [];
     private $shouldMatchScope = false;
     private $isMatched = false;
 
@@ -37,8 +36,6 @@ abstract class Router {
         }
     }
 
-    abstract protected function execute();
-
     public function getParam($name) {
         return $this->params[$name];
     }
@@ -47,20 +44,26 @@ abstract class Router {
         return $this->params;
     }
 
-    protected function setParam($name, $value) {
-        $this->params[$name] = $value;
-    }
-
-    protected function removeParam($name) {
-        unset($this->params[$name]);
-    }
-
     public function hasParam($name) {
         return isset($this->params[$name]);
     }
 
     public function getModule() {
         return $this->module;
+    }
+
+    public function getModuleNamespace() {
+        if ($this->moduleNamespace !== null) {
+            return $this->moduleNamespace;
+        }
+        $module = (string)$this->getModule();
+        if ($module === '') {
+            return;
+        }
+        $tmp = str_replace(
+            ' ', '\\', ucwords(str_replace('/', ' ', $module))
+        );
+        return str_replace(' ', '', ucwords(str_replace('_', ' ', $tmp)));
     }
 
     public function getController() {
@@ -120,56 +123,7 @@ abstract class Router {
         return 'do' . $tmp . 'Action';
     }
 
-    protected function isMatched() {
-        return $this->isMatched;
-    }
-
-    protected function getControllerRootNamespace() {
-        if ($this->controllerRootNamespace === null) {
-            $namespace = 'Controllers';
-            $rootNamespace = Config::getAppRootNamespace();
-            if ($rootNamespace !== '' && $rootNamespace !== '\\') {
-                NamespaceCombiner::prepend($namespace, $rootNamespace);
-            }
-            $this->controllerRootNamespace = $namespace;
-        }
-        return $this->controllerRootNamespace;
-    }
-
-    protected function setControllerRootNamespace($value) {
-        $this->controllerRootNamespace = $value;
-    }
-
-    protected function getModuleNamespace() {
-        if ($this->moduleNamespace !== null) {
-            return $this->moduleNamespace;
-        }
-        $module = (string)$this->getModule();
-        if ($module === '') {
-            return;
-        }
-        $tmp = str_replace(
-            ' ', '\\', ucwords(str_replace('/', ' ', $module))
-        );
-        return str_replace(' ', '', ucwords(str_replace('_', ' ', $tmp)));
-    }
-
-    private function setMatchStatus($isMatched) {
-        $this->isMatched = $isMatched;
-    }
-
-    protected function redirect($url, $statusCode = 302) {
-        $this->app->redirect($url, $statusCode);
-    }
-
-    protected function getApp() {
-        if ($this->app === null) {
-            throw new InvalidOperationException(
-                "Constructor method of class '" . __CLASS__ . "' is not called."
-            );
-        }
-        return $this->app;
-    }
+    abstract protected function execute();
 
     protected function match($pattern, array $options = null) {
         if ($this->isMatched()) {
@@ -258,7 +212,7 @@ abstract class Router {
             );
         }
         $formatPattern = null;
-        $isOptionalFormat = isset($options['formats']['default']); //todo
+        $isOptionalFormat = isset($options['default_format']);
         if ($hasFormat) {
             if ($isOptionalFormat) {
                 $formatPattern = '(\.(?<format>[0-9a-zA-Z]+?))?';
@@ -268,6 +222,7 @@ abstract class Router {
         }
         if ($this->shouldMatchScope) {
             $pattern = '#^' . $pattern . '($|/(.*?)$)#';
+            //echo $pattern;
         } else {
             $pattern = '#^' . $pattern . $formatPattern . '$#';
         }
@@ -278,9 +233,9 @@ abstract class Router {
         if ($result === 1) {
             if ($hasFormat) {
                 if (isset($matches['format']) === false) {
-                    if (isset($options['formats']['default'])) {
+                    if (isset($options['default_format'])) {
                         $this->setParam(
-                            'format', $options['formats']['default']
+                            'format', $options['default_format']
                         );
                     } else {
                         return false;
@@ -323,13 +278,9 @@ abstract class Router {
                 }
             }
             if ($this->shouldMatchScope) {
-                $this->scopeMatchStack[] = $matches;
+                //var_dump($matches);
                 return end($matches);
             }
-            foreach ($this->scopeMatchStack as $tmp) {
-                $this->setMatches($tmp);
-            }
-            $this->scopeMatchStack = [];
             $this->setMatches($matches);
             $this->setMatchStatus(true);
             return true;
@@ -337,94 +288,209 @@ abstract class Router {
         return false;
     }
 
-    protected function matchScope($pattern, Closure $function) {
-        $path = $this->getRequestPath();
-        //var_dump($options);
+    protected function matchScope($path, Closure $callback) {
         $params = $this->params;
         $action = $this->action;
         $actionMethod = $this->actionMethod;
         $controller = $this->controller;
         $controllerClass = $this->controllerClass;
         $this->shouldMatchScope = true;
-        $path = $this->match($pattern);
+        $childPath = $this->match($path);
         $this->shouldMatchScope = false;
-        if ($path === false) {
+        if ($childPath === false) {
             return false;
         }
         $previousPath = $this->getRequestPath();
-        //var_dump($this->scopeFormatStack);
-        //echo '%%%' . $path . '%%%';
-        $this->setRequestPath(trim($path, '/'));
-        //var_dump(trim($path, '/'));
-        $result = $function();
-        if ($result !== false && $this->isMatched() === true) {
-            $matches = array_pop($this->scopeMatchStack);
-        }
-        $this->setRequestPath($previousPath);
+        $this->setRequestPath(trim($childPath, '/'));
+        $result = $callback();
         $this->parseResult($result);
+        $this->setRequestPath($previousPath);
         return $this->isMatched();
     }
 
-    protected function getScopeMatches() {
-        $result = [];
-        if ($this->scopeMatchStack === null) {
-            return $result;
-        }
-        foreach ($this->scopeMatchStack as $matches) {
-            foreach ($matches as $key => $value) {
-                $result[$key] = $value;
-            }
-        }
-        return $result;
-    }
-
-    private function setMatches($matches) {
-        foreach ($matches as $key => $value) {
-            if (is_string($key)) {
-                if ($key === 'module') {
-                    $this->setModule($value);
-                } elseif ($key === 'controller') {
-                    $this->setController($value);
-                } elseif ($key === 'action') {
-                    $this->setAction($value);
-                } else {
-                    $this->setParam($key, $value);
-                }
-            }
-        }
-    }
-
-    private function verifyExtraRules(
-        $extra, array $matches = null
-    ) {
-        if (is_array($extra)) {
-            foreach ($extra as $function) {
-                if ($function instanceof Closure === false) {
-                    $type = gettype($function);
-                    if ($type === 'Object') {
-                        $type = get_class($function);
-                    }
-                    throw new RoutingException(
-                        'Extra rule must be a Closure, ' . $type . ' given.'
-                    );
-                }
-                if ($function($matches) === false) {
-                    return false;
-                }
-            }
-            return true;
+    protected function matchResource($pattern, array $options = null) {
+        $defaultActions = null;
+        if (isset($options['default_actions'])) {
+            $defaultActions = $options['default_actions'];
         } else {
-            if ($extra instanceof Closure === false) {
-                $type = gettype($function);
-                if ($type === 'Object') {
-                    $type = get_class($function);
-                }
-                throw new RoutingException(
-                    'Extra rule must be a Closure, ' . $type . ' given.'
-                );
-            }
-            return $extra($matches) !== false;
+            $defaultActions = [
+                'show' => ['GET', '/'], //todo remove '/' ?
+                'new' => ['GET', 'new'],
+                'update' => ['PATCH | PUT', '/'],
+                'create' => ['POST', '/'],
+                'delete' => ['DELETE', '/'],
+                'edit' => ['GET', 'edit'],
+            ];
         }
+        $actions = null;
+        if (isset($options['actions'])) {
+            $actions = $options['actions'];
+            foreach ($actions as $key => $value) {
+                if (is_int($key)) {
+                    if (is_string($value) === false) {
+                        throw new RoutingException(
+                            'Action name must be a string, '
+                            . gettype($value) . ' given.'
+                        );
+                    }
+                    if (isset($defaultActions[$value])) {
+                        $actions[$value] = $defaultActions[$value];
+                    } else {
+                        $actions[$value] = [];
+                    }
+                }
+            }
+            unset($options['actions']);
+        } else {
+            $actions = $defaultActions;
+            if ($actions !== null) {
+                foreach ($actions as $key => $value) {
+                    if (is_int($key)) {
+                        unset($actions[$key]);
+                        if (is_string($value) === false) {
+                            throw new RoutingException(
+                                'Action name must be a string, '
+                                . gettype($value) . ' given.'
+                            );
+                        }
+                        if (isset($defaultActions[$value])) {
+                            $actions[$value] = $defaultActions[$value];
+                        } else {
+                            $actions[$value] = [];
+                        }
+                    } elseif (isset($value['ignore'])
+                        && $value['ignore'] === true
+                    ) {
+                        unset($actions[$key]);
+                    }
+                }
+                if (isset($options['ignored_actions'])) {
+                    foreach ($options['ignored_actions'] as $item) {
+                        unset($actions[$item]);
+                    }
+                    unset($options['ignored_actions']);
+                }
+            }
+        }
+        if (isset($options['extra_actions'])) {
+            if ($actions === null) {
+                $actions = [];
+            }
+            foreach ($options['extra_actions'] as $key => $value) {
+                if (is_int($key)) {
+                    if (is_string($value) === false) {
+                        throw new RoutingException(
+                            'Action name must be a string, '
+                            . gettype($value) . ' given.'
+                        );
+                    }
+                    if (isset($defaultActions[$value])) {
+                        $actions[$value] = $defaultActions[$value];
+                    } else {
+                        $actions[$value] = [];
+                    }
+                } else {
+                    $action[$key] = $value;
+                }
+            }
+            if ($actions === null) {
+                $actions = $options['extra_actions'];
+            } else {
+                $actions = array_merge($actions, $options['extra_actions']);
+            }
+            unset($options['extra_actions']);
+        }
+        unset($options['default_actions']);
+        if ($actions === null || count($actions) === 0) {
+            return false;
+        }
+        $requestMethod = $_SERVER['REQUEST_METHOD'];
+        $action = null;
+        foreach ($actions as $key => $value) {
+            $action = $key;
+            if (is_array($value) === false) {
+                $value = [$value];
+            }
+            if (isset($value[0])) {
+                if (strpos($value[0], '|') !== false) {
+                    $tmps = explode('|', $value[0]);
+                    $value[0] = [];
+                    foreach ($tmps as $tmp) {
+                        $value[0][] = strtoupper(trim($tmp));
+                    }
+                } else {
+                    $value[0] = [strtoupper($value[0])];
+                }
+            } else {
+                $value[0] = ['GET'];
+            }
+            if (in_array($requestMethod, $value[0]) === false) {
+                continue;
+            }
+            unset($value[0]);
+            $suffix = null;
+            if (isset($value[1])) {
+                if ($value[1] !== '/' && $value[1] != '') {
+                    $suffix = '/' . $value[1];
+                } else {
+                    $suffix = '/';
+                }
+                unset($value[1]);
+            } else {
+                $suffix = '/' . $key;
+            }
+            $actionOptions = null;
+            if (count($value) !== 0) {
+                $actionOptions = $value;
+                $actionExtra = null;
+                if (isset($actionOptions['extra'])) {
+                    $actionExtra = $actionOptions['extra'];
+                }
+                if ($options !== null) {
+                    $actionOptions = $options + $actionOptions;
+                }
+                if (isset($options['extra']) && $actionExtra !== null) {
+                    $extra = $options['extra'];
+                    if (is_array($extra) === false) {
+                        $extra = [$extra];
+                    }
+                    if (is_array($actionExtra)) {
+                        $extra = array_merge($extra, $actionExtra);
+                    } else {
+                        $extra[] = $actionExtra;
+                    }
+                }
+            } else {
+                $actionOptions = $options;
+            }
+            $actionPattern = $pattern;
+            if ($suffix !== '/') {
+                if (isset($actionOptions['formats']) === null
+                    && preg_match('#^[^*:(#]+$#', $suffix, $matches) === 1
+                ) {
+                    if (substr($this->getRequestPath(), -strlen($matches[0]))
+                        !== $matches[0]
+                    ) {
+                        continue;
+                    }
+                }
+                $actionPattern .= $suffix;
+            }
+            if ($this->match($actionPattern, $actionOptions)) {
+                $action = $key;
+                break;
+            }
+        }
+        if ($this->isMatched()) {
+            $controller = $pattern;
+            if (($slashPosition = strrpos($pattern, '/')) !== false) {
+                $controller = substr($pattern, $slashPosition + 1);
+            }
+            $this->setController($controller);
+            $this->setAction($action);
+            return true;
+        }
+        return false;
     }
 
     protected function matchResources($pattern, array $options = null) {
@@ -576,192 +642,6 @@ abstract class Router {
         return $this->matchResource($pattern, $options);
     }
 
-    protected function matchResource($pattern, array $options = null) {
-        $defaultActions = null;
-        if (isset($options['default_actions'])) {
-            $defaultActions = $options['default_actions'];
-        } else {
-            $defaultActions = [
-                'show' => ['GET', '/'], //todo remove '/'
-                'new' => ['GET', 'new'],
-                'update' => ['PATCH | PUT', '/'],
-                'create' => ['POST', '/'],
-                'delete' => ['DELETE', '/'],
-                'edit' => ['GET', 'edit'],
-            ];
-        }
-        $actions = null;
-        if (isset($options['actions'])) {
-            $actions = $options['actions'];
-            foreach ($actions as $key => $value) {
-                if (is_int($key)) {
-                    if (is_string($value) === false) {
-                        throw new RoutingException(
-                            'Action name must be a string, '
-                                . gettype($value) . ' given.'
-                            );
-                    }
-                    if (isset($defaultActions[$value])) {
-                        $actions[$value] = $defaultActions[$value];
-                    } else {
-                        $actions[$value] = [];
-                    }
-                }
-            }
-            unset($options['actions']);
-        } else {
-            $actions = $defaultActions;
-            if ($actions !== null) {
-                foreach ($actions as $key => $value) {
-                    if (is_int($key)) {
-                        unset($actions[$key]);
-                        if (is_string($value) === false) {
-                            throw new RoutingException(
-                                'Action name must be a string, '
-                                    . gettype($value) . ' given.'
-                            );
-                        }
-                        if (isset($defaultActions[$value])) {
-                            $actions[$value] = $defaultActions[$value];
-                        } else {
-                            $actions[$value] = [];
-                        }
-                    } elseif (isset($value['ignore'])
-                        && $value['ignore'] === true
-                    ) {
-                        unset($actions[$key]);
-                    }
-                }
-                if (isset($options['ignored_actions'])) {
-                    foreach ($options['ignored_actions'] as $item) {
-                        unset($actions[$item]);
-                    }
-                    unset($options['ignored_actions']);
-                }
-            }
-        }
-        if (isset($options['extra_actions'])) {
-            if ($actions === null) {
-                $actions = [];
-            }
-            foreach ($options['extra_actions'] as $key => $value) {
-                if (is_int($key)) {
-                    if (is_string($value) === false) {
-                        throw new RoutingException(
-                            'Action name must be a string, '
-                                . gettype($value) . ' given.'
-                        );
-                    }
-                    if (isset($defaultActions[$value])) {
-                        $actions[$value] = $defaultActions[$value];
-                    } else {
-                        $actions[$value] = [];
-                    }
-                } else {
-                    $action[$key] = $value;
-                }
-            }
-            if ($actions === null) {
-                $actions = $options['extra_actions'];
-            } else {
-                $actions = array_merge($actions, $options['extra_actions']);
-            }
-            unset($options['extra_actions']);
-        }
-        unset($options['default_actions']);
-        if ($actions === null || count($actions) === 0) {
-            return false;
-        }
-        $requestMethod = $_SERVER['REQUEST_METHOD'];
-        $action = null;
-        foreach ($actions as $key => $value) {
-            $action = $key;
-            if (is_array($value) === false) {
-                $value = [$value];
-            }
-            if (isset($value[0])) {
-                if (strpos($value[0], '|') !== false) {
-                    $tmps = explode('|', $value[0]);
-                    $value[0] = [];
-                    foreach ($tmps as $tmp) {
-                        $value[0][] = strtoupper(trim($tmp));
-                    }
-                } else {
-                    $value[0] = [strtoupper($value[0])];
-                }
-            } else {
-                $value[0] = ['GET'];
-            }
-            if (in_array($requestMethod, $value[0]) === false) {
-                continue;
-            }
-            unset($value[0]);
-            $suffix = null;
-            if (isset($value[1])) {
-                if ($value[1] !== '/' && $value[1] != '') {
-                    $suffix = '/' . $value[1];
-                } else {
-                    $suffix = '/';
-                }
-                unset($value[1]);
-            } else {
-                $suffix = '/' . $key;
-            }
-            $actionOptions = null;
-            if (count($value) !== 0) {
-                $actionOptions = $value;
-                $actionExtra = null;
-                if (isset($actionOptions['extra'])) {
-                    $actionExtra = $actionOptions['extra'];
-                }
-                if ($options !== null) {
-                    $actionOptions = $options + $actionOptions;
-                }
-                if (isset($options['extra']) && $actionExtra !== null) {
-                    $extra = $options['extra'];
-                    if (is_array($extra) === false) {
-                        $extra = [$extra];
-                    }
-                    if (is_array($actionExtra)) {
-                        $extra = array_merge($extra, $actionExtra);
-                    } else {
-                        $extra[] = $actionExtra;
-                    }
-                }
-            } else {
-                $actionOptions = $options;
-            }
-            $actionPattern = $pattern;
-            if ($suffix !== '/') {
-                if (isset($actionOptions['formats']) === null
-                    && end($this->scopeFormatStack) === false
-                    && preg_match('#^[^*:(#]+$#', $suffix, $matches) === 1
-                ) {
-                    if (substr($this->getRequestPath(), -strlen($matches[0]))
-                        !== $matches[0]
-                    ) {
-                        continue;
-                    }
-                }
-                $actionPattern .= $suffix;
-            }
-            if ($this->match($actionPattern, $actionOptions)) {
-                $action = $key;
-                break;
-            }
-        }
-        if ($this->isMatched()) {
-            $controller = $pattern;
-            if (($slashPosition = strrpos($pattern, '/')) !== false) {
-                $controller = substr($pattern, $slashPosition + 1);
-            }
-            $this->setController($controller);
-            $this->setAction($action);
-            return true;
-        }
-        return false;
-    }
-
     protected function matchGet($pattern, array $options = null) {
         $options['methods'] = 'GET';
         return $this->match($pattern, $options);
@@ -785,6 +665,137 @@ abstract class Router {
     protected function matchDelete($pattern, array $options = null) {
         $options['methods'] = 'DELETE';
         return $this->match($pattern, $options);
+    }
+
+    protected function redirect($url, $statusCode = 302) {
+        $this->app->redirect($url, $statusCode);
+    }
+
+    protected function isMatched() {
+        return $this->isMatched;
+    }
+    
+    protected function setMatchStatus($isMatched) {
+        $this->isMatched = $isMatched;
+    }
+
+    protected function setParam($name, $value) {
+        $this->params[$name] = $value;
+    }
+
+    protected function removeParam($name) {
+        unset($this->params[$name]);
+    }
+
+    protected function setModule($value) {
+        $this->module = (string)$value;
+    }
+
+    protected function setModuleNamespace($value) {
+        $this->moduleNamespace = (string)$value;
+    }
+
+    protected function setController($value) {
+        $this->controller = (string)$value;
+    }
+
+    protected function setControllerClass($value) {
+        $this->controllerClass = (string)$value;
+    }
+
+    protected function getControllerRootNamespace() {
+        if ($this->controllerRootNamespace === null) {
+            $namespace = 'Controllers';
+            $rootNamespace = Config::getAppRootNamespace();
+            if ($rootNamespace !== '' && $rootNamespace !== '\\') {
+                NamespaceCombiner::prepend($namespace, $rootNamespace);
+            }
+            $this->controllerRootNamespace = $namespace;
+        }
+        return $this->controllerRootNamespace;
+    }
+
+    protected function setControllerRootNamespace($value) {
+        $this->controllerRootNamespace = $value;
+    }
+
+    protected function setAction($value) {
+        $this->action = (string)$value;
+    }
+
+    protected function setActionMethod($value) {
+        $this->actionMethod = (string)$value;
+    }
+
+    protected function getRequestPath() {
+        if ($this->requestPath === null) {
+            $path = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
+            if ($path === '') {
+                $path = '/';
+            } elseif (strpos($path, '//') !== false) {
+                $path = preg_replace('#/{2,}#', '/', $path);
+            }
+            $this->requestPath = '/' . trim($path, '/');
+        }
+        return $this->requestPath;
+    }
+
+    protected function getApp() {
+        if ($this->app === null) {
+            throw new InvalidOperationException(
+                "Constructor method of class '" . __CLASS__ . "' is not called."
+            );
+        }
+        return $this->app;
+    }
+
+    private function verifyExtraRules(
+        $extra, array $matches = null
+    ) {
+        if (is_array($extra)) {
+            foreach ($extra as $function) {
+                if ($function instanceof Closure === false) {
+                    $type = gettype($function);
+                    if ($type === 'Object') {
+                        $type = get_class($function);
+                    }
+                    throw new RoutingException(
+                        'Extra rule must be a Closure, ' . $type . ' given.'
+                    );
+                }
+                if ($function($matches) === false) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            if ($extra instanceof Closure === false) {
+                $type = gettype($function);
+                if ($type === 'Object') {
+                    $type = get_class($function);
+                }
+                throw new RoutingException(
+                    'Extra rule must be a Closure, ' . $type . ' given.'
+                );
+            }
+            return $extra($matches) !== false;
+        }
+    }
+
+    private function setMatches($matches) {
+        foreach ($matches as $key => $value) {
+            if (is_string($key)) {
+                if ($key === 'module') {
+                    $this->setModule($value);
+                } elseif ($key === 'controller') {
+                    $this->setController($value);
+                } elseif ($key === 'action') {
+                    $this->setAction($value);
+                } else {
+                    $this->setParam($key, $value);
+                }
+            }
+        }
     }
 
     private function parseResult($value) {
@@ -825,44 +836,7 @@ abstract class Router {
         $this->setMatchStatus(true);
     }
 
-    protected function setRequestPath($value) {
+    private function setRequestPath($value) {
         $this->requestPath = (string)$value;
-    }
-
-    protected function setModule($value) {
-        $this->module = (string)$value;
-    }
-
-    protected function setModuleNamespace($value) {
-        $this->moduleNamespace = (string)$value;
-    }
-
-    protected function setController($value) {
-        $this->controller = (string)$value;
-    }
-
-    protected function setAction($value) {
-        $this->action = (string)$value;
-    }
-
-    protected function setControllerClass($value) {
-        $this->controllerClass = (string)$value;
-    }
-
-    protected function setActionMethod($value) {
-        $this->actionMethod = (string)$value;
-    }
-
-    protected function getRequestPath() {
-        if ($this->requestPath === null) {
-            $path = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
-            if ($path === '') {
-                $path = '/';
-            } elseif (strpos($path, '//') !== false) {
-                $path = preg_replace('#/{2,}#', '/', $path);
-            }
-            $this->requestPath = '/' . trim($path, '/');
-        }
-        return $this->requestPath;
     }
 }
