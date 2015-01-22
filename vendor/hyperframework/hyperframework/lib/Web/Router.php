@@ -314,50 +314,49 @@ abstract class Router {
     }
 
     protected function matchResource($pattern, array $options = null) {
-        //todo check type
-        // actions
-        // default_actions
-        // ignored_actions
-        // extra_actions
+        if (is_string($pattern) === false) {
+            throw new InvalidArgumentException(
+                "Argument 'pattern' must be a string, "
+                    . gettype($pattern) . ' given.'
+            );
+        }
+        if ($options !== null) {
+            $actionOptions = [
+                'actions',
+                'default_actions',
+                'ignored_actions',
+                'extra_actions',
+            ];
+            foreach ($actionOptions as $actionOption) {
+                if (isset($options[$actionOption])
+                    && is_array($options[$actionOption]) === false
+                ) {
+                    throw new RoutingException(
+                        "Option '$actionOption' must be an array, "
+                            . gettype($options[$actionOption]) . ' given.'
+                    );
+                }
+            }
+        }
         $defaultActions = null;
         if (isset($options['default_actions'])) {
             $defaultActions = $options['default_actions'];
-            //process default int key item
+            unset($options['default_actions']);
         } else {
             $defaultActions = [
                 'show' => ['GET', '/'],
-                'new' => ['GET', 'new'],
+                'new',
                 'update' => ['PATCH | PUT', '/'],
                 'create' => ['POST', '/'],
                 'delete' => ['DELETE', '/'],
-                'edit' => ['GET', 'edit'],
+                'edit'
             ];
         }
-        $actions = null;
         if (isset($options['actions'])) {
             $actions = $options['actions'];
-            foreach ($actions as $key => $value) {
-                if (is_int($key)) {
-                    if (is_string($value) === false) {
-                        throw new RoutingException(
-                            'Action name must be a string, '
-                                . gettype($value) . ' given.'
-                        );
-                    }
-                    if (isset($defaultActions[$value])) {
-                        $actions[$value] = $defaultActions[$value];
-                    } else {
-                        $actions[$value] = [];
-                    }
-                }
-            }
-            unset($options['actions']);
-        } else {
-            $actions = $defaultActions;
-            if ($actions !== null) {
+            if ($options['actions'] !== false) {
                 foreach ($actions as $key => $value) {
                     if (is_int($key)) {
-                        unset($actions[$key]);
                         if (is_string($value) === false) {
                             throw new RoutingException(
                                 'Action name must be a string, '
@@ -371,18 +370,30 @@ abstract class Router {
                         }
                     }
                 }
-                if (isset($options['ignored_actions'])) {
-                    foreach ($options['ignored_actions'] as $item) {
-                        unset($actions[$item]);
+            } else {
+                $actions = [];
+            }
+            unset($options['actions']);
+        } else {
+            $actions = $defaultActions;
+            foreach ($actions as $key => $value) {
+                if (is_int($key)) {
+                    unset($actions[$key]);
+                    if (is_string($value) === false) {
+                        throw new RoutingException(
+                            'Action name must be a string, '
+                                . gettype($value) . ' given.'
+                        );
                     }
-                    unset($options['ignored_actions']);
+                    if (isset($defaultActions[$value])) {
+                        $actions[$value] = $defaultActions[$value];
+                    } else {
+                        $actions[$value] = [];
+                    }
                 }
             }
         }
         if (isset($options['extra_actions'])) {
-            if ($actions === null) {
-                $actions = [];
-            }
             foreach ($options['extra_actions'] as $key => $value) {
                 if (is_int($key)) {
                     if (is_string($value) === false) {
@@ -397,29 +408,40 @@ abstract class Router {
                         $actions[$value] = [];
                     }
                 } else {
-                    $action[$key] = $value;
+                    $actions[$key] = $value;
                 }
-            }
-            if ($actions === null) {
-                $actions = $options['extra_actions'];
-            } else {
-                $actions = array_merge($actions, $options['extra_actions']);
             }
             unset($options['extra_actions']);
         }
-        unset($options['default_actions']);
-        if ($actions === null || count($actions) === 0) {
+        if (isset($options['ignored_actions'])) {
+            foreach ($options['ignored_actions'] as $action) {
+                if (is_string($action) === false) {
+                    throw new RoutingException(
+                        'Action name must be a string, '
+                            . gettype($action) . ' given.'
+                    );
+                }
+                unset($actions[$action]);
+            }
+            unset($options['ignored_actions']);
+        }
+        if (count($actions) === 0) {
             return false;
         }
         $requestMethod = $_SERVER['REQUEST_METHOD'];
         $pattern = rtrim($pattern, '/');
         $action = null;
-        foreach ($actions as $key => $value) {
-            $action = $key;
+        foreach ($actions as $action => $value) {
             if (is_array($value) === false) {
                 $value = [$value];
             }
             if (isset($value[0])) {
+                if (is_string($value[0]) === false) {
+                    throw new RoutingException(
+                        "Request method of action '$action' must be a string, "
+                            . gettype($value[0]) . ' given.'
+                    );
+                }
                 if (strpos($value[0], '|') !== false) {
                     $tmps = explode('|', $value[0]);
                     $value[0] = [];
@@ -431,7 +453,9 @@ abstract class Router {
                 }
             } else {
                 if (isset($value[1])) {
-                    //throw e: method missing
+                    throw new RoutingException(
+                        "Request method of action '$action' does not exist."
+                    );
                 }
                 $value[0] = ['GET'];
             }
@@ -440,10 +464,16 @@ abstract class Router {
             }
             unset($value[0]);
             if (isset($value[1])) {
+                if (is_string($value[1]) === false) { //path
+                    throw new RoutingException(
+                        "Path of action '$action' must be a string, "
+                            . gettype($value[1]) . ' given.'
+                    );
+                }
                 $suffix = $value[1];
                 unset($value[1]);
             } else {
-                $suffix = $key;
+                $suffix = $action;
             }
             $actionOptions = null;
             if (count($value) !== 0) {
@@ -476,7 +506,6 @@ abstract class Router {
                 $actionPattern .= '/' . $suffix;
             }
             if ($this->match($actionPattern, $actionOptions)) {
-                $action = $key;
                 break;
             }
         }
@@ -493,7 +522,12 @@ abstract class Router {
     }
 
     protected function matchResources($pattern, array $options = null) {
-        //todo type test
+        if (is_string($pattern) === false) {
+            throw new InvalidArgumentException(
+                "Argument 'pattern' must be a string, "
+                    . gettype($pattern) . ' given.'
+            );
+        }
         if (preg_match('#[:*]id($|[/{])#', $pattern) !== 0) {
             throw new RoutingException(
                 "Invalid pattern '$pattern', "
@@ -502,18 +536,37 @@ abstract class Router {
         }
         $hasOptions = $options !== null;
         if ($hasOptions) {
-            if (isset($options['id'])) {
-                $options[':id'] = $options['id'];
-            } elseif (isset($options[':id'])) {
+            if (isset($options[':id'])) {
                 throw new RoutingException(
                     "Dynamic segment ':id' is reserved, "
                         . "use option 'id' to change pattern for it."
                 );
+            }
+            if (isset($options['id'])) {
+                $options[':id'] = $options['id'];
             } else {
                 $options[':id'] = '\d+';
             }
         } else {
             $options = [':id' => '\d+'];
+        }
+        if ($hasOptions) {
+            $actionOptions = [
+                 'actions',
+                 'default_actions',
+                 'ignored_actions',
+                 'collection_actions',
+                 'element_actions',
+                 'extra_collection_actions',
+                 'extra_element_actions'
+            ];
+            foreach ($actionOptions as $actionOption) {
+                if (isset($options[$actionOption])
+                    && is_array($options['collection_actions']) === false
+                ) {
+                    //throw e
+                }
+            }
         }
         if ($hasOptions === false
             || isset($options['default_actions']) === false
@@ -521,8 +574,8 @@ abstract class Router {
             $defaultOptions = [
                 'index' => ['GET', '/'],
                 'show' => ['GET', '/', 'belongs_to_element' => true],
-                'new' => ['GET', 'new'],
-                'edit' => ['GET', 'edit', 'belongs_to_element' => true],
+                'new' => [],
+                'edit' => ['belongs_to_element' => true],
                 'create' => ['POST', '/'],
                 'update' => [
                     'PATCH | PUT', '/', 'belongs_to_element' => true
@@ -530,17 +583,15 @@ abstract class Router {
                 'delete' => ['DELETE', '/', 'belongs_to_element' => true],
             ];
         } else {
-            //check is array
-            //process default int key item
-            $defaultAction = $options['default_actions'];
+            $defaultActions = [];
+            foreach ($options['default_actions'] as $key => $value) {
+                if (is_int($key)) {
+                    $defaultActions[$value] = [];
+                } else {
+                    $defaultActions[$key] = $value;
+                }
+            }
         }
-        // actions //same
-        // default_actions //same
-        // ignored_actions //same
-        // collection_actions => actions
-        // extra_collection_actions => extra_actions
-        // element_actions => actions
-        // extra_element_actions //extra_actions
         if (isset($options['collection_actions'])) {
             if ($options['collection_actions'] === false) {
                 if (isset($options['actions']) === false) {
@@ -612,11 +663,13 @@ abstract class Router {
                 $options['extra_actions'] = array_merge(
                     $options['extra_actions'], $actions
                 );
+            } else {
+                $options['extra_actions'] = $actions;
             }
         }
         unset($options['extra_collection_actions']);
         unset($options['extra_element_actions']);
-        $options['default_actions'] = 
+        $options['default_actions'] =
             $this->convertElementActionsToCollectionActions(
                 $defaultOptions, null, true
             );
@@ -626,7 +679,6 @@ abstract class Router {
     private function convertElementActionsToCollectionActions(
         array $actions, array $defaultActions = null, $isMixed = false
     ) {
-        //todo type test
         $result = [];
         foreach ($actions as $key => $value) {
             if (is_int($key)) {
@@ -666,14 +718,32 @@ abstract class Router {
                     unset($value['belongs_to_element']);
                 }
             }
-            if (is_string($value)) {
-                $value = ['GET', ':id/' . ltrim($value, '/')];
-            } else {
-                //todo check value is array
+            if (is_array($value)) {
                 if (isset($value[1])) {
-                    $value[1] = ':id/' . ltrim($value[1], '/');
+                    if (is_string($value[1]) === false) {
+                        //throw e
+                    }
+                    $path = $value[1];
                 } else {
-                    $value[1] = ':id/' . ltrim($key, '/');
+                    $path = $key;
+                }
+                $path = ltrim($path, '/');
+                if ($path !== '') {
+                    $value[1] = ':id/' . $path;
+                } else {
+                    $value[1] = ':id';
+                }
+            } else {
+                if (is_string($value)) {
+                    $path = ltrim($value, '/');
+                    if ($path !== '') {
+                        $path = ':id/' . $path;
+                    } else {
+                        $path = ':id';
+                    }
+                    $value = ['GET', $path];
+                } else {
+                    //throw e
                 }
             }
             $result[$key] = $value;
