@@ -164,7 +164,7 @@ class Debugger {
         $this->renderPath(
             $path,
             true,
-            ' <span class="line">Line ' . $errorLineNumber . '</span>',
+            ' <span class="line">' . $errorLineNumber . '</span>',
             true
         );
         echo '<table><tbody><tr><td class="index"><div class="index-content">';
@@ -218,7 +218,7 @@ class Debugger {
                     $this->renderPath(
                         $frame['file'],
                         true,
-                        ' <span class="line">Line '
+                        ' <span class="line">'
                             . $frame['line'] . '</span>',
                         true
                     );
@@ -1069,13 +1069,14 @@ h1, #message {
     vertical-align: top;
 }
 #stack-trace .invocation {
-    background: #f1f1f1;
+    background: #f5f5f5;
     border-left: 3px solid #e44;
     padding: 5px 10px;
     margin-top: 5px;
     border-radius: 0px;
     font-size: 12px;
     color: #666;
+    margin-left: 5px;
 }
 #stack-trace .invocation code {
     word-break: keep-all;
