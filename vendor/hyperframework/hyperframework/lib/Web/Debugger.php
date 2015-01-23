@@ -1055,8 +1055,6 @@ h1, #message {
 }
 #stack-trace table .value {
     padding: 8px 0 8px 5px;
-    border-bottom: 1px dotted #ccc;
-    _border-bottom: 1px solid #e1e1e1;
 }
 #stack-trace table .last {
     border-bottom: 0;
@@ -1071,11 +1069,13 @@ h1, #message {
     vertical-align: top;
 }
 #stack-trace .invocation {
-    color: #666;
-    background: #eee;
+    background: #f1f1f1;
+    border-left: 3px solid #e44;
     padding: 5px 10px;
     margin-top: 5px;
-    border-radius: 5px;
+    border-radius: 0px;
+    font-size: 12px;
+    color: #666;
 }
 #stack-trace .invocation code {
     word-break: keep-all;
