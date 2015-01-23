@@ -175,7 +175,7 @@ abstract class Router {
             ['\.', '\^', '\$', '\+', '\[', '\|', '\{'],
             $pattern
         );
-        $hasOptionalSegment = strpos($pattern, '(') !== false;
+        $hasOptionalSegment = strpos($pattern, '(') !== false;//check closed?
         $hasDynamicSegment = strpos($pattern, ':') !== false;
         $hasWildcardSegment = strpos($pattern, '*') !== false;
         $hasFormat = isset($options['format']);
@@ -226,7 +226,7 @@ abstract class Router {
             $duplicatedSegment = null;
             $pattern = preg_replace_callback(
                 '#\\\{:([a-zA-Z_][a-zA-Z0-9_]*)}#',
-                function($matches)
+                function($matches) //reuse
                     use (&$dynamicSegments, &$duplicatedSegment) {
                     $segment = $matches[1];
                     if (isset($dynamicSegments[$segment])
