@@ -600,8 +600,8 @@ abstract class Router {
                     }
                     if ($options[$actionOption] === true) {
                         throw new RoutingException(
-                            "Option '$actionOption' must be an array or false, "
-                                . ' true given.'
+                            "Option '$actionOption' must be an array"
+                                . " or false, boolean 'true' given."
                         );
                     }
                     throw new RoutingException(
