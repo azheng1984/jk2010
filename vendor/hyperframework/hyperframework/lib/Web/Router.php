@@ -267,9 +267,9 @@ abstract class Router {
         }
         $result = preg_match($pattern, $path, $matches);
         if ($count > 0) {
-            var_dump($result);
-            var_dump($matches);
-            echo $pattern;
+            //var_dump($result);
+            //var_dump($matches);
+            //echo $pattern;
         }
         if ($result === false) {
             throw new RoutingException("Invalid pattern or option.");
