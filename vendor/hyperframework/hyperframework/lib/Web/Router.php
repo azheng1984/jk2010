@@ -574,17 +574,38 @@ abstract class Router {
                  'actions',
                  'default_actions',
                  'ignored_actions',
-                 'collection_actions',
-                 'element_actions',
                  'extra_collection_actions',
                  'extra_element_actions'
             ];
             foreach ($actionOptions as $actionOption) {
                 if (isset($options[$actionOption])
-                    && is_array($options['collection_actions']) === false
+                    && is_array($options[$actionOption]) === false
                 ) {
                     throw new RoutingException(
                         "Option '$actionOption' must be an array, "
+                            . gettype($options[$actionOption]) . ' given.'
+                    );
+                }
+            }
+            $actionOptions = [
+                'element_acitons',
+                'collection_actions'
+            ];
+            foreach ($actionOptions as $actionOption) {
+                if (isset($options[$actionOption])
+                    && is_array($options[$actionOption]) === false
+                ) {
+                    if ($options[$actionOption] === false) {
+                        continue;
+                    }
+                    if ($options[$actionOption] === true) {
+                        throw new RoutingException(
+                            "Option '$actionOption' must be an array or false, "
+                                . ' true given.'
+                        );
+                    }
+                    throw new RoutingException(
+                        "Option '$actionOption' must be an array or false, "
                             . gettype($options[$actionOption]) . ' given.'
                     );
                 }
@@ -593,7 +614,7 @@ abstract class Router {
         if ($hasOptions === false
             || isset($options['default_actions']) === false
         ) {
-            $defaultOptions = [
+            $defaultActions = [
                 'index' => ['GET', '/'],
                 'show' => ['GET', '/', 'belongs_to_element' => true],
                 'new' => [],
@@ -695,7 +716,7 @@ abstract class Router {
         unset($options['extra_element_actions']);
         $options['default_actions'] =
             $this->convertElementActionsToCollectionActions(
-                $defaultOptions, null, true
+                $defaultActions, null, true
             );
         return $this->matchResource($pattern, $options);
     }

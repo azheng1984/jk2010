@@ -272,8 +272,24 @@ class RouterTest extends Base {
     }
 
     public function testMatchResources() {
-        $_SERVER['REQUEST_URI'] = '/documents/123';
+        $_SERVER['REQUEST_URI'] = '/documents/1';
         $this->assertTrue($this->matchResources('documents'));
+    }
+
+    public function testMatchResourcesFailedWithDisableElementAction() {
+        $_SERVER['REQUEST_URI'] = '/documents/1';
+        $this->assertFalse($this->matchResources(
+            'documents', ['element_actions' => false]
+        ));
+    }
+
+    public function testMatchResourcesFailedWithDisableCollectionAction() {
+        $_SERVER['REQUEST_URI'] = '/documents';
+        $this->assertFalse(
+            $this->matchResources(
+                'documents', ['collection_actions' => false]
+            )
+        );
     }
 
     /**
