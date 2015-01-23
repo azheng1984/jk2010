@@ -198,7 +198,6 @@ abstract class Router {
                 }
             }
         }
-        $originalPattern = $pattern;
         if ($hasFormat === false
             && $hasOptionalSegment === false
             && $hasWildcardSegment === false
@@ -221,15 +220,18 @@ abstract class Router {
         if ($hasOptionalSegment) {
             $pattern = str_replace(')', ')?', $pattern);
         }
+        $count = 0;
         if ($hasDynamicSegment) {
             $pattern = str_replace(':', '#:', $pattern);
             if ($options !== null) {
                 foreach ($options as $key => $value) {
-                    if ($key[0] === ':') {
+                    if (is_string($key) && $key !== '' && $key[0] === ':') {
                         $pattern = preg_replace(
                             '#\{?\#' . $key . '(?=([^a-zA-Z0-9_]|$))\}?#',
                             '(?<' . substr($key, 1) . '>' . $value . '?)',
-                            $pattern
+                            $pattern,
+                            -1,
+                            $count
                         );
                     }
                 }
@@ -264,8 +266,13 @@ abstract class Router {
             $pattern = '#^' . $pattern . $formatPattern . '$#';
         }
         $result = preg_match($pattern, $path, $matches);
+        if ($count > 0) {
+            var_dump($result);
+            var_dump($matches);
+            echo $pattern;
+        }
         if ($result === false) {
-            throw new RoutingException("Invalid pattern '$originalPattern'.");
+            throw new RoutingException("Invalid pattern or option.");
         }
         if ($result === 1) {
             if ($hasFormat) {

@@ -92,6 +92,16 @@ class RouterTest extends Base {
         $this->assertSame('s3.x', $this->router->getParam('s3'));
     }
 
+    public function testMatchCustomDynamicSegmentRule() {
+        $options = [':name' => '[a-z]+'];
+//        $options = [];
+        $_SERVER['REQUEST_URI'] = '/document/123';
+        $this->assertFalse($this->match(':controller/:name', $options));
+        $options = [':name' => '[a-z]+'];
+        $_SERVER['REQUEST_URI'] = '/document/name';
+        $this->assertTrue($this->match(':controller/:name', $options));
+    }
+
     public function testFailToMatchMethod() {
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->assertFalse($this->match('/', ['methods' => ['get']]));
