@@ -169,9 +169,10 @@ abstract class Router {
                 "Invalid pattern '$pattern', character '\\' is not allowed."
             );
         }
+        $originalPattern = $pattern;
         $pattern = str_replace(
-            [ '.', '^', '$', '+', '[', '{', '|'],
-            ['\.', '\^', '\$', '\+', '\[', '\{', '\|'],
+            [ '.', '^', '$', '+', '[', '|', '{'],
+            ['\.', '\^', '\$', '\+', '\[', '\|', '\{'],
             $pattern
         );
         $hasOptionalSegment = strpos($pattern, '(') !== false;
@@ -220,35 +221,51 @@ abstract class Router {
         if ($hasOptionalSegment) {
             $pattern = str_replace(')', ')?', $pattern);
         }
-        $count = 0;
         if ($hasDynamicSegment) {
-            $pattern = str_replace(':', '#:', $pattern);
-            if ($options !== null) {
-                foreach ($options as $key => $value) {
-                    if (is_string($key) && $key !== '' && $key[0] === ':') {
-                        $pattern = preg_replace(
-                            '#\{?\#' . $key . '(?=([^a-zA-Z0-9_]|$))\}?#',
-                            '(?<' . substr($key, 1) . '>' . $value . '?)',
-                            $pattern,
-                            -1,
-                            $count
-                        );
+            $dynamicSegments = [];
+            $duplicatedSegment = null;
+            $pattern = preg_replace_callback(
+                '#\\\{:([a-zA-Z_][a-zA-Z0-9_]*)}#',
+                function($matches)
+                    use (&$dynamicSegments, &$duplicatedSegment) {
+                    $segment = $matches[1];
+                    if (isset($dynamicSegments[$segment])
+                        && $duplicatedSegment === null
+                    ) {
+                        $duplicatedSegment = $segment;
+                    } else {
+                        $dynamicSegments[$segment] = true;
                     }
-                }
-            }
-            if (strpos($pattern, '#:') !== false) {
-                $pattern = preg_replace(
-                    '#\{?\#:([a-zA-Z0-9_]+)\}?#',
-                    '(?<\1>[^/]+?)',
-                    $pattern
-                );
+                    return "(?<$segment>[^/]+?)";
+                },
+                $pattern
+            );
+            $pattern = preg_replace_callback(
+                '#:([a-zA-Z_][a-zA-Z0-9_]*)#',
+                function($matches)
+                    use (&$dynamicSegments, &$duplicatedSegment) {
+                    $segment = $matches[1];
+                    if (isset($dynamicSegments[$segment])
+                        && $duplicatedSegment === null
+                    ) {
+                        $duplicatedSegment = $segment;
+                    } else {
+                        $dynamicSegments[$segment] = true;
+                    }
+                    return "(?<$segment>[^/]+?)";
+                },
+                $pattern
+            );
+            if ($duplicatedSegment !== null) {
+                throw new RoutingException('Duplicated');
             }
         }
         if ($hasWildcardSegment) {
             $pattern = preg_replace(
-                '#\{?\*([a-zA-Z0-9_]+)\}?#',
-                '(?<\1>.+?)',
-                $pattern
+                '#\\\{\*([a-zA-Z_][a-zA-Z0-9_]*)}#', '(?<$1>.+?)', $pattern
+            );
+            $pattern = preg_replace(
+                '#\*([a-zA-Z_][a-zA-Z0-9_]*)#', '(?<$1>.+?)', $pattern
             );
         }
         $formatPattern = null;
@@ -266,15 +283,46 @@ abstract class Router {
             $pattern = '#^' . $pattern . $formatPattern . '$#';
         }
         $result = preg_match($pattern, $path, $matches);
-        if ($count > 0) {
-            //var_dump($result);
-            //var_dump($matches);
-            //echo $pattern;
-        }
         if ($result === false) {
-            throw new RoutingException("Invalid pattern or option.");
+            throw new RoutingException("Invalid pattern '$originalPattern'.");
         }
         if ($result === 1) {
+            if ($options !== null) {
+                foreach ($options as $key => $value) {
+                    if (is_string($key) && $key !== '' && $key[0] === ':') {
+                        if ($key === ':format') {
+                            throw new RoutingException(
+                                "Option ':format' is invalid, pattern for"
+                                    . " format cannot be changed."
+                            );
+                        }
+                        $name = substr($key, 1);
+                        if (isset($matches[$name]) === false) {
+                            throw new RoutingException(
+                                "Option '$key' is invalid, dynamic segment"
+                                    . " '$key' does not exist."
+                            );
+                        }
+                        $segment = $matches[$name];
+                        if (strpos($value, '#') !== false) {
+                            throw new RoutingException(
+                                "Invalid pattern '$value', character '#' is not"
+                                    . " allowed, defined in option '$key'."
+                            );
+                        }
+                        $result = preg_match('#^' . $value . '$#', $segment);
+                        if ($result === false) {
+                            throw new RoutingException(
+                                "Invalid pattern '$value', defined in option '"
+                                    . "$key'."
+                            );
+                        }
+                        if ($result !== 1) {
+                            return false;
+                        }
+                    }
+                }
+            }
             if ($hasFormat) {
                 if (isset($matches['format']) === false) {
                     if (isset($options['default_format'])) {

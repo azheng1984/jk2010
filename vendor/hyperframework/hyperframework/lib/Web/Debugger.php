@@ -1070,7 +1070,7 @@ h1, #message {
     vertical-align: top;
 }
 #stack-trace .invocation {
-    background: #f5f5f5;
+    background: #f3f3f3;
     border-left: 2px solid #e44;
     padding: 5px 10px;
     margin-top: 5px;

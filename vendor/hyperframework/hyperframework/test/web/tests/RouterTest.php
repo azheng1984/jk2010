@@ -97,8 +97,9 @@ class RouterTest extends Base {
         $_SERVER['REQUEST_URI'] = '/document/123';
         $this->assertFalse($this->match(':controller/:name', $options));
         $this->resetRouter();
+        $options = [':x' => '[a-z]+'];
         $_SERVER['REQUEST_URI'] = '/document/name';
-        $this->assertTrue($this->match(':controller/:name', $options));
+        $this->assertTrue($this->match(':x:x', $options));
     }
 
     public function testFailToMatchMethod() {
