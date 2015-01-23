@@ -22,17 +22,68 @@ class RouterTest extends Base {
     protected function tearDown() {
     }
 
+    public function testMatchFormatInPattern() {
+        $_SERVER['REQUEST_URI'] = '/document/id.format';
+        $this->assertTrue($this->match(':controller/:id(.:format)'));
+        $this->assertSame('document', $this->router->getController());
+        $this->assertSame('id', $this->router->getParam('id'));
+        $this->assertSame('format', $this->router->getParam('format'));
+    }
+
+    public function testMatchFormat() {
+        $_SERVER['REQUEST_URI'] = '/document/id.format';
+        $this->assertTrue($this->match(':controller/:id', ['format' => true]));
+        $this->assertSame('document', $this->router->getController());
+        $this->assertSame('id', $this->router->getParam('id'));
+        $this->assertSame('format', $this->router->getParam('format'));
+    }
+
+    public function testMatchOptionalFormat() {
+        $_SERVER['REQUEST_URI'] = '/document/id.html';
+        $this->assertTrue($this->match(':controller/:id', [
+            'format' => true,
+            'default_format' => 'unknown'
+        ]));
+        $this->assertSame('document', $this->router->getController());
+        $this->assertSame('id', $this->router->getParam('id'));
+        $this->assertSame('html', $this->router->getParam('format'));
+    }
+
+    public function testMatchFormatNotAllowed() {
+        $_SERVER['REQUEST_URI'] = '/document/id.unknown';
+        $this->assertFalse($this->match(':controller/:id', [
+            'format' => 'html'
+        ]));
+    }
+
+    /**
+     * @expectedException Hyperframework\Web\RoutingException
+     */
+    public function testInvalidPatternForMatchWithNumberSign() {
+        $this->match('#');
+    }
+
+    /**
+     * @expectedException Hyperframework\Web\RoutingException
+     * @expectedExceptionMessage Already matched.
+     */
+    public function testAlreadyMatched() {
+        $this->match('/');
+        $this->match('/');
+    }
+
+
     public function testMatchRootPath() {
         $this->assertTrue($this->match('/'));
     }
 
     public function testMatchMethod() {
-        $this->assertTrue($this->match('/', ['methods' => 'get']));
+        $this->assertTrue($this->match('/', ['methods' => ['get']]));
     }
 
     public function testFailToMatchMethod() {
         $_SERVER['REQUEST_METHOD'] = 'POST';
-        $this->assertFalse($this->match('/', ['methods' => 'get']));
+        $this->assertFalse($this->match('/', ['methods' => ['get']]));
     }
 
     public function testFailToMatchMethods() {
@@ -80,7 +131,7 @@ class RouterTest extends Base {
     public function testOptionalSegmentWithFormat() {
         $_SERVER['REQUEST_URI'] = '/document/name.format';
         $this->assertTrue(
-            $this->match('document(/name)', ['formats' => 'format'])
+            $this->match('document(/name)', ['format' => 'format'])
         );
     }
 
@@ -226,19 +277,101 @@ class RouterTest extends Base {
     }
 
     /**
-     * @expectedException Hyperframework\Web\RoutingException
+     * @expectedException InvalidArgumentException
      */
-    public function testInvalidPatternForMatchWithNumberSign() {
-        $this->match('#');
+    public function testMatchResourceInvalidPattern() {
+        $this->matchResource(true);
     }
 
     /**
      * @expectedException Hyperframework\Web\RoutingException
-     * @expectedExceptionMessage Already matched.
      */
-    public function testAlreadyMatched() {
-        $this->match('/');
-        $this->match('/');
+    public function testMatchResourceInvalidOption() {
+        $this->matchResource('', ['actions' => true]);
+    }
+
+    public function testMatchResourceWithCustomActions() {
+        $_SERVER['REQUEST_URI'] = '/document/preview';
+        $this->assertTrue(
+            $this->matchResource('document', ['actions' => ['preview']])
+        );
+    }
+
+    public function testMatchResourceWithExtraActions() {
+        $_SERVER['REQUEST_URI'] = '/document/preview';
+        $this->assertTrue(
+            $this->matchResource('document', ['extra_actions' => ['preview']])
+        );
+    }
+
+    public function testMatchResourceWithIgnoredActions() {
+        $_SERVER['REQUEST_URI'] = '/document';
+        $this->assertFalse(
+            $this->matchResource('document', ['ignored_actions' => ['show']])
+        );
+    }
+
+    /**
+     * @expectedException Hyperframework\Web\RoutingException
+     */
+    public function testMatchResourceWithInvalidActionMethodName() {
+        $_SERVER['REQUEST_URI'] = '/document/preview';
+        $this->matchResource('document', ['actions' => ['preview' => true]]);
+    }
+
+    /**
+     * @expectedException Hyperframework\Web\RoutingException
+     */
+    public function testMatchResourceWithInvalidActionPath() {
+        $_SERVER['REQUEST_URI'] = '/document/preview';
+        $this->matchResource(
+            'document',
+            ['actions' => ['preview' => ['GET', true]]]
+        );
+    }
+
+    public function testMatchResourceFailedByMethodNotMatched() {
+        $_SERVER['REQUEST_URI'] = '/document/edit';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->assertFalse($this->matchResource('document'));
+    }
+
+    public function testMatchResourceWithActionExtraOption() {
+        $_SERVER['REQUEST_URI'] = '/document/edit';
+        $this->assertFalse($this->matchResource(
+            'document',
+            [
+                'actions' => [
+                    'edit' => ['extra' => function() {
+                        return false;
+                    }]
+                ],
+                'extra' => function() {
+                    return true;
+                }
+            ]
+        ));
+    }
+
+    public function testMatchResourceWithActionFormatOption() {
+        $_SERVER['REQUEST_URI'] = '/document/edit.format';
+        $this->assertTrue($this->matchResource(
+            'document',
+            [
+                'actions' => [
+                    'edit' => ['format' => 'format']
+                ],
+                'format' => 'unknown'
+            ]
+        ));
+    }
+
+    public function testMatchResourceWithPrefix() {
+        $_SERVER['REQUEST_URI'] = '/module/document/edit';
+        $this->assertTrue($this->matchResource(':module/document'));
+        $this->assertSame('module', $this->router->getModule());
+        $this->assertSame('document', $this->router->getController());
+        $this->assertSame('edit', $this->router->getAction());
     }
 
     private function match($pattern, $options = null) {

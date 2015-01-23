@@ -136,8 +136,11 @@ abstract class Router {
         }
         if ($options !== null) {
             if (isset($options['methods'])) {
-                if (is_string($options['methods'])) {
-                    $options['methods'] = [$options['methods']];
+                if (is_array($options['methods']) === false) {
+                    throw new RoutingException(
+                        "Option 'methods' must be an array, "
+                            . gettype($options['methods']) . " given."
+                    );
                 }
                 $isMethodAllowed = false;
                 foreach ($options['methods'] as $method) {
@@ -156,14 +159,44 @@ abstract class Router {
                 "Invalid pattern '$pattern', character '#' is not allowed."
             );
         }
+        if (strpos($pattern, '?') !== false) {
+            throw new RoutingException(
+                "Invalid pattern '$pattern', character '?' is not allowed."
+            );
+        }
+        if (strpos($pattern, '\\') !== false) {
+            throw new RoutingException(
+                "Invalid pattern '$pattern', character '\\' is not allowed."
+            );
+        }
+        $pattern = str_replace(
+            [ '.', '^', '$', '+', '[', '{', '|'],
+            ['\.', '\^', '\$', '\+', '\[', '\{', '\|'],
+            $pattern
+        );
         $hasOptionalSegment = strpos($pattern, '(') !== false;
         $hasDynamicSegment = strpos($pattern, ':') !== false;
         $hasWildcardSegment = strpos($pattern, '*') !== false;
-        $hasFormat = isset($options['formats']);
+        $hasFormat = isset($options['format']);
+        $formats = null;
         $path = trim($this->getRequestPath(), '/');
         $pattern = trim($pattern, '/');
-        if ($hasFormat && is_array($options['formats']) === false) {
-            $options['formats'] = [$options['formats']];
+        if ($hasFormat) {
+            $format = $options['format'];
+            if ($format === false) {
+                $hasFormat = false;
+            } elseif ($format !== true) {
+                if (is_string($format)) {
+                    $formats = [$format];
+                } elseif (is_array($options['format']) === false) {
+                    throw new RoutingException(
+                        "Option 'format' type '"
+                            . gettype($options['format']) . "' is invalid."
+                    );
+                } else {
+                    $formats = $format;
+                }
+            }
         }
         $originalPattern = $pattern;
         if ($hasFormat === false
@@ -227,7 +260,6 @@ abstract class Router {
         }
         if ($this->shouldMatchScope) {
             $pattern = '#^' . $pattern . '($|/(.*?)$)#';
-            //echo $pattern;
         } else {
             $pattern = '#^' . $pattern . $formatPattern . '$#';
         }
@@ -245,8 +277,8 @@ abstract class Router {
                     } else {
                         return false;
                     }
-                } elseif (
-                    in_array($matches['format'], $options['formats']) === false
+                } elseif ($formats !== null
+                    && in_array($matches['format'], $formats) === false
                 ) {
                     return false;
                 }
@@ -346,7 +378,7 @@ abstract class Router {
             $defaultActions = [
                 'show' => ['GET', '/'],
                 'new',
-                'update' => ['PATCH | PUT', '/'],
+                'update' => [['PATCH', 'PUT'], '/'],
                 'create' => ['POST', '/'],
                 'delete' => ['DELETE', '/'],
                 'edit'
@@ -436,26 +468,19 @@ abstract class Router {
                 $value = [$value];
             }
             if (isset($value[0])) {
-                if (is_string($value[0]) === false) {
+                if (is_string($value[0])) {
+                    $value['methods'] = [$value[0]];
+                } elseif (is_array($value[0]) === false) {
                     throw new RoutingException(
-                        "Request method of action '$action' must be a string, "
+                        "Allowed request methods of action '$action'"
+                            . " must be a string or an array, "
                             . gettype($value[0]) . ' given.'
                     );
-                }
-                if (strpos($value[0], '|') !== false) {
-                    $tmps = explode('|', $value[0]);
-                    $value[0] = [];
-                    foreach ($tmps as $tmp) {
-                        $value[0][] = strtoupper(trim($tmp));
-                    }
                 } else {
-                    $value[0] = [strtoupper($value[0])];
+                    $value['methods'] = $value[0];
                 }
             } else {
-                $value[0] = ['GET'];
-            }
-            if (in_array($requestMethod, $value[0]) === false) {
-                continue;
+                $value['methods'] = ['GET'];
             }
             unset($value[0]);
             if (isset($value[1])) {
@@ -470,7 +495,6 @@ abstract class Router {
             } else {
                 $suffix = $action;
             }
-            $actionOptions = null;
             if (count($value) !== 0) {
                 $actionOptions = $value;
                 $actionExtra = null;
@@ -478,7 +502,7 @@ abstract class Router {
                     $actionExtra = $actionOptions['extra'];
                 }
                 if ($options !== null) {
-                    $actionOptions = $options + $actionOptions;
+                    $actionOptions = $actionOptions + $options;
                 }
                 if (isset($options['extra']) && $actionExtra !== null) {
                     $extra = $options['extra'];
@@ -576,7 +600,7 @@ abstract class Router {
                 'edit' => ['belongs_to_element' => true],
                 'create' => ['POST', '/'],
                 'update' => [
-                    'PATCH | PUT', '/', 'belongs_to_element' => true
+                    ['PATCH', 'PUT'], '/', 'belongs_to_element' => true
                 ],
                 'delete' => ['DELETE', '/', 'belongs_to_element' => true],
             ];
@@ -748,27 +772,27 @@ abstract class Router {
     }
 
     protected function matchGet($pattern, array $options = null) {
-        $options['methods'] = 'GET';
+        $options['methods'] = ['GET'];
         return $this->match($pattern, $options);
     }
 
     protected function matchPost($pattern, array $options = null) {
-        $options['methods'] = 'POST';
+        $options['methods'] = ['POST'];
         return $this->match($pattern, $options);
     }
 
     protected function matchPut($pattern, array $options = null) {
-        $options['methods'] = 'PUT';
+        $options['methods'] = ['PUT'];
         return $this->match($pattern, $options);
     }
 
     protected function matchPatch($pattern, array $options = null) {
-        $options['methods'] = 'PATCH';
+        $options['methods'] = ['PATCH'];
         return $this->match($pattern, $options);
     }
 
     protected function matchDelete($pattern, array $options = null) {
-        $options['methods'] = 'DELETE';
+        $options['method'] = ['DELETE'];
         return $this->match($pattern, $options);
     }
 
