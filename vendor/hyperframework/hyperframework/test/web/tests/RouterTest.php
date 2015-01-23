@@ -10,13 +10,17 @@ class RouterTest extends Base {
     protected function setUp() {
         $_SERVER['REQUEST_METHOD'] = 'GET';
         Config::set('hyperframework.web.csrf_protection.enable', false);
+        $this->resetRouter();
+        $_SERVER['REQUEST_URI'] = '/';
+    }
+
+    private function resetRouter() {
         $this->router = $this->getMockForAbstractClass(
             'Hyperframework\Web\Router',
             [new App],
             '',
             false
         );
-        $_SERVER['REQUEST_URI'] = '/';
     }
 
     protected function tearDown() {
@@ -72,13 +76,20 @@ class RouterTest extends Base {
         $this->match('/');
     }
 
-
     public function testMatchRootPath() {
         $this->assertTrue($this->match('/'));
     }
 
     public function testMatchMethod() {
         $this->assertTrue($this->match('/', ['methods' => ['get']]));
+    }
+
+    public function testMatchSectionsInSegment() {
+        $_SERVER['REQUEST_URI'] = '/s1-s2/s3.x';
+        $this->assertTrue($this->match('/:s1-:s2/:s3'));
+        $this->assertSame('s1', $this->router->getParam('s1'));
+        $this->assertSame('s2', $this->router->getParam('s2'));
+        $this->assertSame('s3.x', $this->router->getParam('s3'));
     }
 
     public function testFailToMatchMethod() {
@@ -276,6 +287,20 @@ class RouterTest extends Base {
         $this->assertTrue($this->matchResources('documents'));
     }
 
+    /**
+     * @expectedException Hyperframework\Web\RoutingException
+     */
+    public function testMatchResourceFailedByIdSegment() {
+        $this->matchResources(':id/document');
+    }
+
+    /**
+     * @expectedException Hyperframework\Web\RoutingException
+     */
+    public function testMatchResourceFailedByIdOption() {
+        $this->matchResources('document', [':id' => '\d+']);
+    }
+
     public function testMatchResourcesFailedWithDisableElementAction() {
         $_SERVER['REQUEST_URI'] = '/documents/1';
         $this->assertFalse($this->matchResources(
@@ -288,6 +313,67 @@ class RouterTest extends Base {
         $this->assertFalse(
             $this->matchResources(
                 'documents', ['collection_actions' => false]
+            )
+        );
+    }
+
+    public function testMatchResourcesWithCustomCollectionAction() {
+        $_SERVER['REQUEST_URI'] = '/documents/preview';
+        $this->assertTrue(
+            $this->matchResources(
+                'documents', ['collection_actions' => ['preview']]
+            )
+        );
+    }
+
+    public function testMatchResourcesWithCustomDefaultAction() {
+        $_SERVER['REQUEST_URI'] = '/documents/preview';
+        $this->assertTrue(
+            $this->matchResources(
+                'documents', ['default_actions' => ['preview']]
+            )
+        );
+        $this->resetRouter();
+        $_SERVER['REQUEST_URI'] = '/documents';
+        $this->assertFalse(
+            $this->matchResources(
+                'documents', ['default_actions' => ['preview']]
+            )
+        );
+    }
+
+    public function testMatchResourcesWithCustomElementAction() {
+        $_SERVER['REQUEST_URI'] = '/documents/1/preview';
+        $this->assertTrue(
+            $this->matchResources(
+                'documents', ['element_actions' => ['preview']]
+            )
+        );
+    }
+
+    public function testMatchResourcesWithRewriteCollectionAction() {
+        $_SERVER['REQUEST_URI'] = '/documents';
+        $this->assertFalse(
+            $this->matchResources(
+                'documents', ['collection_actions' => ['preview']]
+            )
+        );
+    }
+
+    public function testMatchResourcesWithRewriteElementAction() {
+        $_SERVER['REQUEST_URI'] = '/documents/1';
+        $this->assertFalse(
+            $this->matchResources(
+                'documents', ['element_actions' => ['preview']]
+            )
+        );
+    }
+
+    public function testMatchResourcesWithAddExtraCollectionAction() {
+        $_SERVER['REQUEST_URI'] = '/documents';
+        $this->assertTrue(
+            $this->matchResources(
+                'documents', ['extra_collection_actions' => ['preview']]
             )
         );
     }

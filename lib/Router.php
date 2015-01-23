@@ -35,7 +35,7 @@ exit;
 //            return;
 //        }
 //        if ($this->matchGet('(:module(/:controller(/:action)))', [':id' => '[0-9]+'])) return;
-//        if ($this->matchPost('article/:id(/*comments)', [':id' => '[0-9]+', 'formats' => 'jpg'])) return;
+//        if ($this->matchPost('article/:id(/*comments)', [':id' => '[0-9]+', 'format' => 'jpg'])) return;
 //        if ($this->matchDelete('article/:id(/*comments)', [':id' => '[0-9]+'])) return;
     }
 }
