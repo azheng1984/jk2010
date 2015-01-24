@@ -1056,13 +1056,13 @@ h1, #message {
     padding-right: 3px;
 }
 #stack-trace table .value {
-    padding: 8px 0 8px 5px;
+    padding: 0 0 5px 5px;
 }
 #stack-trace table .last {
     border-bottom: 0;
 }
 #stack-trace .index {
-    padding: 9px 5px 0 5px;
+    padding: 1px 5px 0 5px;
     width: 1px;
     color: #aaa;
     font-size:12px;
@@ -1075,12 +1075,12 @@ h1, #message {
     border-left: 2px solid #e44;
     padding: 5px 10px;
     margin-top: 5px;
-    color: #666;
+    color: #6d6d72;
     margin-left: 5px;
 }
 #stack-trace .invocation code {
-    word-break: keep-all;
-    white-space: nowrap;
+    word-wrap: break-word;
+    word-break: break-all;
 }
 #response-headers {
     padding: 10px;
