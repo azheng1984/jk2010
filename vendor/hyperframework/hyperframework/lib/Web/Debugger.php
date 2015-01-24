@@ -1074,7 +1074,7 @@ h1, #message {
     background: #efeff4;
     border-left: 2px solid #e44;
     padding: 5px 10px;
-    margin-top: 5px;
+    margin-top: 7px;
     color: #6d6d72;
     margin-left: 5px;
 }
