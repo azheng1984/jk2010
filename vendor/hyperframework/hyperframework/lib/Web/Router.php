@@ -178,7 +178,7 @@ abstract class Router {
                 $pattern = $originalPattern;
                 if ($backslashPosition === strlen($pattern) - 1) {
                     $message = "Invalid pattern '$pattern', '\\'"
-                        . " at the end of pattern is not allowed.";
+                        . " at the end of the pattern is not allowed.";
                 } else {
                     $message = "Invalid pattern '$pattern', '\\'"
                         . " is not allowed before '"
