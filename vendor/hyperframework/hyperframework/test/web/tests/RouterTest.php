@@ -98,6 +98,11 @@ class RouterTest extends Base {
         $this->assertSame('name', $this->router->getParam('name'));
     }
 
+    public function testMatchWithBackslash() {
+        $_SERVER['REQUEST_URI'] = '/document*:(name)';
+        $this->assertTrue($this->match(':controller\*\:\(:name\)'));
+        $this->assertSame('name', $this->router->getParam('name'));
+    }
 
     public function testMatchCustomDynamicSegmentRule() {
         $options = [':name' => '[a-z]+'];

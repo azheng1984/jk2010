@@ -170,7 +170,7 @@ abstract class Router {
             $hasBackslash = true;
             $pattern = str_replace(
                 ['\:', '\*', '\(', '\)'],
-                ['####', '###', '##', '#'],
+                ['?####', '?###', '?##', '?#'],
                 $pattern
             );
             $backslashPosition = strpos($pattern, '\\');
@@ -324,7 +324,7 @@ abstract class Router {
         }
         if ($hasBackslash) {
             $pattern = str_replace(
-                ['####', '###', '##', '#'], ['\:', '\*', '\(', '\)'], $pattern
+                ['?####', '?###', '?##', '?#'], ['\:', '\*', '\(', '\)'], $pattern
             );
         }
         if ($this->shouldMatchScope) {
@@ -332,9 +332,9 @@ abstract class Router {
         } else {
             $pattern = '#^' . $pattern . $formatPattern . '$#';
         }
-//        if (isset($GLOBALS['show'])) {
-//            echo $pattern;
-//        }
+        if (isset($GLOBALS['show'])) {
+            echo $pattern;
+        }
         $result = preg_match($pattern, $path, $matches);
         if ($result === 1) {
             if ($options !== null) {
@@ -344,7 +344,7 @@ abstract class Router {
                             throw new RoutingException(
                                 "Dynamic segment ':format' is reserved, use "
                                     . "option 'format' to change"
-                                    . " the format rule."
+                                    . " the rule of format."
                             );
                         }
                         $name = substr($key, 1);
