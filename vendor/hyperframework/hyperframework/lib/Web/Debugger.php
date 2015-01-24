@@ -1071,11 +1071,11 @@ h1, #message {
     vertical-align: top;
 }
 #stack-trace .invocation {
-    background: #efeff4;
+    background: #f8f8f8;
     border-left: 2px solid #e44;
     padding: 5px 10px;
     margin-top: 7px;
-    color: #6d6d72;
+    color: #777;
     margin-left: 5px;
 }
 #stack-trace .invocation code {

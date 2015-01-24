@@ -343,7 +343,8 @@ abstract class Router {
                         if ($hasFormat && $key === ':format') {
                             throw new RoutingException(
                                 "Dynamic segment ':format' is reserved, use "
-                                    . "option 'format' to change format rule."
+                                    . "option 'format' to change"
+                                    . " the format rule."
                             );
                         }
                         $name = substr($key, 1);
