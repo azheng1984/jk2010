@@ -164,12 +164,29 @@ abstract class Router {
                 "Invalid pattern '$pattern', character '?' is not allowed."
             );
         }
-        //if (strpos($pattern, '\\') !== false) {
-        //    throw new RoutingException(
-        //        "Invalid pattern '$pattern', character '\\' is not allowed."
-        //    );
-        //}
         $originalPattern = $pattern;
+        $hasBackslash = false;
+        if (strpos($pattern, '\\') !== false) {
+            $hasBackslash = true;
+            $pattern = str_replace(
+                ['\:', '\*', '\(', '\)'],
+                ['####', '###', '##', '#'],
+                $pattern
+            );
+            $backslashPosition = strpos($pattern, '\\');
+            if ($backslashPosition !== false) {
+                $pattern = $originalPattern;
+                if ($backslashPosition === strlen($pattern) - 1) {
+                    $message = "Invalid pattern '$pattern', '\\'"
+                        . " at the end of pattern is not allowed.";
+                } else {
+                    $message = "Invalid pattern '$pattern', '\\'"
+                        . " is not allowed before '"
+                        . $pattern[$backslashPosition + 1] . "'.";
+                }
+                throw new RoutingException($message);
+            }
+        }
         $pattern = str_replace(
             ['.', '^', '$', '+', '[', '|', '{', '*'],
             ['\.', '\^', '\$', '\+', '\[', '\|', '\{', '\*'],
@@ -289,6 +306,11 @@ abstract class Router {
             } else {
                 $formatPattern = '\.(?<format>[0-9a-zA-Z]+?)';
             }
+        }
+        if ($hasBackslash) {
+            $pattern = str_replace(
+                ['####', '###', '##', '#'], ['\:', '\*', '\(', '\)'], $pattern
+            );
         }
         if ($this->shouldMatchScope) {
             $pattern = '#^' . $pattern . '($|/(.*?)$)#';
