@@ -104,6 +104,30 @@ class RouterTest extends Base {
         $this->assertSame('name', $this->router->getParam('name'));
     }
 
+    public function testMatchWithFormat() {
+        $_SERVER['REQUEST_URI'] = '/document/name.html';
+        $this->assertTrue(
+            $this->match(':controller/:name', ['format' => 'html|jpg'])
+        );
+        $this->assertSame('name', $this->router->getParam('name'));
+        $this->assertSame('html', $this->router->getParam('format'));
+    }
+
+    public function testMatchFailedByFormat() {
+        $_SERVER['REQUEST_URI'] = '/document/name.unknown';
+        $this->assertFalse(
+            $this->match(':controller/:name', ['format' => 'html'])
+        );
+    }
+
+    public function testMatchWithFormatEqualsTrue() {
+        $_SERVER['REQUEST_URI'] = '/document/name.html';
+        $this->assertTrue(
+            $this->match(':controller/:name', ['format' => true])
+        );
+        $this->assertSame('html', $this->router->getParam('format'));
+    }
+
     public function testMatchCustomDynamicSegmentRule() {
         $options = [':name' => '[a-z]+'];
         $_SERVER['REQUEST_URI'] = '/document/123';

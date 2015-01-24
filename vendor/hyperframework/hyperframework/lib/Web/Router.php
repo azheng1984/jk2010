@@ -324,7 +324,9 @@ abstract class Router {
         }
         if ($hasBackslash) {
             $pattern = str_replace(
-                ['?####', '?###', '?##', '?#'], ['\:', '\*', '\(', '\)'], $pattern
+                ['?####', '?###', '?##', '?#'],
+                ['\:', '\*', '\(', '\)'],
+                $pattern
             );
         }
         if ($this->shouldMatchScope) {
