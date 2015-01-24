@@ -657,7 +657,7 @@ abstract class Router {
             if (isset($options[':id'])) {
                 throw new RoutingException(
                     "Invalid option ':id', "
-                        . "use option 'id' to change pattern of element id."
+                        . "use option 'id' to change the pattern of element id."
                 );
             }
             if (isset($options['id'])) {
