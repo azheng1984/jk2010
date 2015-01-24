@@ -203,16 +203,26 @@ abstract class Router {
             $format = $options['format'];
             if ($format === false) {
                 $hasFormat = false;
+                throw new RoutingException(
+                    "The value of option 'format' is invalid,"
+                        . " 'false' is not allowed."
+                );
             } elseif ($format !== true) {
                 if (is_string($format)) {
-                    $formats = [$format];
-                } elseif (is_array($options['format']) === false) {
+                    if (preg_match('#^[0-9a-zA-Z|]+$#', $format) !== 1) {
+                        $message = "The pattern '$format' of"
+                            . " option 'format' is invalid";
+                        if (strpos($format, ' ') !== false) {
+                            $message .= ', space character is not allowed';
+                        }
+                        throw new RoutingException($message . '.');
+                    }
+                    $formats = explode('|', $format);
+                } else {
                     throw new RoutingException(
                         "Option 'format' type '"
                             . gettype($options['format']) . "' is invalid."
                     );
-                } else {
-                    $formats = $format;
                 }
             }
         }
@@ -260,10 +270,15 @@ abstract class Router {
             $pattern = str_replace(')', ')?', $pattern);
         }
         $namedSegments = [];
+        if ($hasFormat) {
+            $namedSegments[] = 'format';
+        }
         $namedSegmentPattern = '[^/]+';
         $duplicatedNamedSegment = null;
         $callback = function($matches) use (
-            &$namedSegments, &$duplicatedNamedSegment, &$namedSegmentPattern
+            &$namedSegments,
+            &$duplicatedNamedSegment,
+            &$namedSegmentPattern
         ) {
             $segment = $matches[1];
             if (isset($namedSegments[$segment])
@@ -322,18 +337,15 @@ abstract class Router {
             if ($options !== null) {
                 foreach ($options as $key => $value) {
                     if (is_string($key) && $key !== '' && $key[0] === ':') {
-                        if ($key === ':format' && $hasFormat) {
+                        if ($hasFormat && $key === ':format') {
                             throw new RoutingException(
-                                "Option ':format' is invalid, pattern for"
-                                    . " format cannot be changed."
+                                "Dynamic segment ':format' is reserved, use "
+                                    . "option 'format' to change format rule."
                             );
                         }
                         $name = substr($key, 1);
                         if (isset($matches[$name]) === false) {
-                            throw new RoutingException(
-                                "Option '$key' is invalid, dynamic segment"
-                                    . " '$key' does not exist."
-                            );
+                            continue;
                         }
                         $segment = $matches[$name];
                         if (strpos($value, '#') !== false) {
@@ -644,8 +656,8 @@ abstract class Router {
         if ($hasOptions) {
             if (isset($options[':id'])) {
                 throw new RoutingException(
-                    "Dynamic segment ':id' is reserved, "
-                        . "use option 'id' to change pattern for it."
+                    "Invalid option ':id', "
+                        . "use option 'id' to change pattern of element id."
                 );
             }
             if (isset($options['id'])) {
