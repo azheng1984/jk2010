@@ -128,6 +128,17 @@ class RouterTest extends Base {
         $this->assertSame('html', $this->router->getParam('format'));
     }
 
+    public function testMatchWithDefaultFormat() {
+        $_SERVER['REQUEST_URI'] = '/document/name';
+        $this->assertTrue(
+            $this->match(
+                ':controller/:name',
+                ['format' => true, 'default_format' => 'html']
+            )
+        );
+        $this->assertSame('html', $this->router->getParam('format'));
+    }
+
     public function testMatchCustomDynamicSegmentRule() {
         $options = [':name' => '[a-z]+'];
         $_SERVER['REQUEST_URI'] = '/document/123';
@@ -526,6 +537,22 @@ class RouterTest extends Base {
         $this->assertSame('module', $this->router->getModule());
         $this->assertSame('document', $this->router->getController());
         $this->assertSame('edit', $this->router->getAction());
+    }
+
+    public function testGetActionMethod() {
+        $_SERVER['REQUEST_URI'] = '/document/edit';
+        $this->matchResource('document');
+        $this->assertSame('doEditAction', $this->router->getActionMethod());
+    }
+
+    public function testGetControllerClass() {
+        $_SERVER['REQUEST_URI'] = '/document/edit';
+        $this->matchResource('document');
+        $this->callProtectedMethod($this->router, 'setModule', ['admin']);
+        $this->assertSame(
+            'Controllers\Admin\DocumentController',
+            $this->router->getControllerClass()
+        );
     }
 
     private function match($pattern, $options = null) {
