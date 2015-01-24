@@ -332,6 +332,9 @@ abstract class Router {
         } else {
             $pattern = '#^' . $pattern . $formatPattern . '$#';
         }
+//        if (isset($GLOBALS['show'])) {
+//            echo $pattern;
+//        }
         $result = preg_match($pattern, $path, $matches);
         if ($result === 1) {
             if ($options !== null) {
