@@ -171,8 +171,8 @@ abstract class Router {
         }
         $originalPattern = $pattern;
         $pattern = str_replace(
-            [ '.', '^', '$', '+', '[', '|', '{'],
-            ['\.', '\^', '\$', '\+', '\[', '\|', '\{'],
+            ['.', '^', '$', '+', '[', '|', '{', '*'],
+            ['\.', '\^', '\$', '\+', '\[', '\|', '\{', '\*'],
             $pattern
         );
         $hasOptionalSegment = strpos($pattern, '(') !== false;
@@ -260,7 +260,7 @@ abstract class Router {
         };
         if ($hasDynamicSegment) {
             $pattern = preg_replace_callback(
-                '#\\\{:([a-zA-Z_][a-zA-Z0-9_]*)}#', $callback, $pattern
+                '#\\\\\{:([a-zA-Z_][a-zA-Z0-9_]*)}#', $callback, $pattern
             );
             $pattern = preg_replace_callback(
                 '#:([a-zA-Z_][a-zA-Z0-9_]*)#', $callback, $pattern
@@ -269,10 +269,10 @@ abstract class Router {
         if ($hasWildcardSegment) {
             $namedSegmentPattern = '.+';
             $pattern = preg_replace_callback(
-                '#\\\{\*([a-zA-Z_][a-zA-Z0-9_]*)}#', $callback, $pattern
+                '#\\\\\{\\\\\*([a-zA-Z_][a-zA-Z0-9_]*)}#', $callback, $pattern
             );
             $pattern = preg_replace_callback(
-                '#\*([a-zA-Z_][a-zA-Z0-9_]*)#', $callback, $pattern
+                '#\\\\\*([a-zA-Z_][a-zA-Z0-9_]*)#', $callback, $pattern
             );
         }
         if ($duplicatedNamedSegment !== null) {
@@ -296,14 +296,11 @@ abstract class Router {
             $pattern = '#^' . $pattern . $formatPattern . '$#';
         }
         $result = preg_match($pattern, $path, $matches);
-        if ($result === false) {
-            throw new RoutingException("Invalid pattern '$originalPattern'.");
-        }
         if ($result === 1) {
             if ($options !== null) {
                 foreach ($options as $key => $value) {
                     if (is_string($key) && $key !== '' && $key[0] === ':') {
-                        if ($key === ':format') {
+                        if ($key === ':format' && $hasFormat) {
                             throw new RoutingException(
                                 "Option ':format' is invalid, pattern for"
                                     . " format cannot be changed."
