@@ -175,7 +175,7 @@ abstract class Router {
             ['\.', '\^', '\$', '\+', '\[', '\|', '\{'],
             $pattern
         );
-        $hasOptionalSegment = strpos($pattern, '(') !== false;//check closed?
+        $hasOptionalSegment = strpos($pattern, '(') !== false;
         $hasDynamicSegment = strpos($pattern, ':') !== false;
         $hasWildcardSegment = strpos($pattern, '*') !== false;
         $hasFormat = isset($options['format']);
@@ -219,53 +219,66 @@ abstract class Router {
             return false;
         }
         if ($hasOptionalSegment) {
+            $length = strlen($pattern);
+            $count = 0;
+            for ($index = 0; $index < $length; ++$index) {
+                if ($pattern[$index] === '(') {
+                    ++$count;
+                }
+                if ($pattern[$index] === ')') {
+                    --$count;
+                    if ($count < 0) {
+                        break;
+                    }
+                }
+            }
+            if ($count !== 0) {
+                $source = '(';
+                if ($count < 0) {
+                    $srouce = ')';
+                }
+                throw new RoutingException("Invalid pattern '$originalPattern',"
+                    . " '$source' is not closed.");
+            }
             $pattern = str_replace(')', ')?', $pattern);
         }
-        if ($hasDynamicSegment) {
-            $dynamicSegments = [];
-            $duplicatedSegment = null;
-            $pattern = preg_replace_callback(
-                '#\\\{:([a-zA-Z_][a-zA-Z0-9_]*)}#',
-                function($matches) //reuse
-                    use (&$dynamicSegments, &$duplicatedSegment) {
-                    $segment = $matches[1];
-                    if (isset($dynamicSegments[$segment])
-                        && $duplicatedSegment === null
-                    ) {
-                        $duplicatedSegment = $segment;
-                    } else {
-                        $dynamicSegments[$segment] = true;
-                    }
-                    return "(?<$segment>[^/]+?)";
-                },
-                $pattern
-            );
-            $pattern = preg_replace_callback(
-                '#:([a-zA-Z_][a-zA-Z0-9_]*)#',
-                function($matches)
-                    use (&$dynamicSegments, &$duplicatedSegment) {
-                    $segment = $matches[1];
-                    if (isset($dynamicSegments[$segment])
-                        && $duplicatedSegment === null
-                    ) {
-                        $duplicatedSegment = $segment;
-                    } else {
-                        $dynamicSegments[$segment] = true;
-                    }
-                    return "(?<$segment>[^/]+?)";
-                },
-                $pattern
-            );
-            if ($duplicatedSegment !== null) {
-                throw new RoutingException('Duplicated');
+        $namedSegments = [];
+        $namedSegmentPattern = '[^/]+';
+        $duplicatedNamedSegment = null;
+        $callback = function($matches) use (
+            &$namedSegments, &$duplicatedNamedSegment, &$namedSegmentPattern
+        ) {
+            $segment = $matches[1];
+            if (isset($namedSegments[$segment])
+                && $duplicatedNamedSegment === null
+            ) {
+                $duplicatedNamedSegment = $segment;
+            } else {
+                $namedSegments[$segment] = true;
             }
+            return "(?<$segment>$namedSegmentPattern?)";
+        };
+        if ($hasDynamicSegment) {
+            $pattern = preg_replace_callback(
+                '#\\\{:([a-zA-Z_][a-zA-Z0-9_]*)}#', $callback, $pattern
+            );
+            $pattern = preg_replace_callback(
+                '#:([a-zA-Z_][a-zA-Z0-9_]*)#', $callback, $pattern
+            );
         }
         if ($hasWildcardSegment) {
-            $pattern = preg_replace(
-                '#\\\{\*([a-zA-Z_][a-zA-Z0-9_]*)}#', '(?<$1>.+?)', $pattern
+            $namedSegmentPattern = '.+';
+            $pattern = preg_replace_callback(
+                '#\\\{\*([a-zA-Z_][a-zA-Z0-9_]*)}#', $callback, $pattern
             );
-            $pattern = preg_replace(
-                '#\*([a-zA-Z_][a-zA-Z0-9_]*)#', '(?<$1>.+?)', $pattern
+            $pattern = preg_replace_callback(
+                '#\*([a-zA-Z_][a-zA-Z0-9_]*)#', $callback, $pattern
+            );
+        }
+        if ($duplicatedNamedSegment !== null) {
+            throw new RoutingException(
+                "Invalid pattern '$originalPattern', "
+                    . "named segment '$duplicatedNamedSegment' is duplicated."
             );
         }
         $formatPattern = null;

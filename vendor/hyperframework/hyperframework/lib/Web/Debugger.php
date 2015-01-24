@@ -817,7 +817,7 @@ h2 {
     );
 }
 #header {
-    background: #f7f7f7;
+    background: #f8f8f8;
 }
 h1 {
     font-size: 21px;
@@ -849,7 +849,7 @@ h1, #message {
     padding: 7px 25px 7px;
 }
 #nav a:hover {
-    background-image: linear-gradient(#f7f7f7, #e5e5e5);
+    background-image: linear-gradient(#f8f8f8, #e5e5e5);
     color: #000;
 }
 #nav .wrapper {
@@ -891,7 +891,7 @@ h1, #message {
     color: #999;
     padding: 10px 0;
     border-bottom: 1px solid #ccc;
-    background: #f7f7f7;
+    background: #f8f8f8;
 }
 #status-bar {
     width: 100%;
@@ -954,7 +954,7 @@ h1, #message {
     white-space: nowrap;
 }
 .no-touch #response-body a:hover, .no-touch #toggle-external-code a:hover {
-    background-image: linear-gradient(#f7f7f7, #e5e5e5);
+    background-image: linear-gradient(#f8f8f8, #e5e5e5);
     color: #000;
 }
 #toggle-external-code {
@@ -1124,7 +1124,7 @@ h1, #message {
     border: 1px solid #ddd;
     border-radius: 2px;
     border-collapse: separate;
-    background: #f7f7f7;
+    background: #f8f8f8;
     margin-top: 10px;
     padding: 5px;
 }
@@ -1146,7 +1146,7 @@ h1, #message {
 }
 #response-body {
     padding: 10px;
-    background:#f7f7f7;
+    background:#f8f8f8;
 }
 #response-body table {
     line-height: 18px;
@@ -1178,7 +1178,7 @@ h1, #message {
     padding-bottom: 5px;
 }
 #response-body .line-number {
-    background-color: #f7f7f7;
+    background-color: #f8f8f8;
     border-right:1px solid #e1e1e1;
     font-size: 11px;
     color: #999;
