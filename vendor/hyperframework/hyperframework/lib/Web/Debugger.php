@@ -939,7 +939,7 @@ h1, #message {
 #file .path {
     border-bottom: 1px dotted #ccc;
     _border-bottom: 1px solid #e1e1e1;
-    font-size: 13px;
+    font-size: 14px;
     padding: 5px 5px 8px 0;
     margin: 0 10px 10px 10px;
 }
@@ -1038,6 +1038,7 @@ h1, #message {
 }
 #stack-trace .path {
     color: #333;
+    font-size:14px;
 }
 #stack-trace .internal {
     color: #333;
@@ -1074,7 +1075,6 @@ h1, #message {
     border-left: 2px solid #e44;
     padding: 5px 10px;
     margin-top: 5px;
-    font-size: 12px;
     color: #666;
     margin-left: 5px;
 }

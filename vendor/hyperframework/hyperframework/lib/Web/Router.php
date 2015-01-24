@@ -164,11 +164,11 @@ abstract class Router {
                 "Invalid pattern '$pattern', character '?' is not allowed."
             );
         }
-        if (strpos($pattern, '\\') !== false) {
-            throw new RoutingException(
-                "Invalid pattern '$pattern', character '\\' is not allowed."
-            );
-        }
+        //if (strpos($pattern, '\\') !== false) {
+        //    throw new RoutingException(
+        //        "Invalid pattern '$pattern', character '\\' is not allowed."
+        //    );
+        //}
         $originalPattern = $pattern;
         $pattern = str_replace(
             ['.', '^', '$', '+', '[', '|', '{', '*'],
