@@ -1056,7 +1056,7 @@ h1, #message {
     padding-right: 3px;
 }
 #stack-trace table .value {
-    padding: 0 0 5px 5px;
+    padding: 0 0 12px 5px;
 }
 #stack-trace table .last {
     border-bottom: 0;
