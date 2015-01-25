@@ -5,21 +5,12 @@ use Hyperframework\Common\Config;
 
 class CsrfProtection {
     private static $isEnabled;
-    private static $tokenName;
-    private static $token;
+    private static $provider;
 
     public static function run() {
         if (static::isEnabled()) {
-            if (static::getToken() === null) {
-                static::initializeToken();
-            }
-            if (static::isSafeMethod($_SERVER['REQUEST_METHOD'])) {
-                return;
-            }
-            if (static::isValid() === false) {
-                static::initializeToken();
-                throw new ForbiddenException;
-            }
+            $provider = self::getProvider();
+            $provider->run();
         }
     }
 
@@ -33,48 +24,31 @@ class CsrfProtection {
     }
 
     public static function getToken() {
-        if (self::$token === null) {
-            $name = static::getTokenName();
-            if (isset($_COOKIE[$name])) {
-                self::$token = $_COOKIE[$name];
-            } else {
-                self::$token = false;
-            }
-        }
-        if (self::$token === false) {
-            return;
-        }
-        return self::$token;
+        $provider = self::getProvider();
+        return $provider->getToken();
     }
 
     public static function getTokenName() {
-        if (self::$tokenName === null) {
-            self::$tokenName = Config::getString(
-                'hyperframework.web.csrf_protection.token_name', ''
-            );
-            if (self::$tokenName === '') {
-                self::$tokenName = '_csrf_token';
+        $provider = self::getProvider();
+        return $provider->getTokenName();
+    }
+
+    private static function getProvider() {
+        if (self::$provider === null) {
+            $configName = 'hyperframework.web.csrf_protection.provider_class';
+            $class = Config::getString($configName , '');
+            if ($class === '') {
+                self::$provider = new CsrfProtectionProvider;
+            } else {
+                if (class_exists($class) === false) {
+                    throw new ClassNotFoundException(
+                        "Csrf protection provider class '$class' does not exist"
+                            . ", defined in '$configName'."
+                    );
+                    self::$provider = new CsrfProtectionProvider;
+                }
             }
         }
-        return self::$tokenName;
-    }
-
-    protected static function initializeToken() {
-        self::$token = static::generateToken();
-        $name = self::getTokenName();
-        setcookie($name, self::$token, null, null, null, false, true);
-    }
-
-    protected static function isValid() {
-        $tokenName = self::getTokenName();
-        return isset($_POST[$tokenName]) && $_POST[$tokenName] === self::$token;
-    }
-
-    protected static function isSafeMethod($method) {
-        return in_array($method, ['GET', 'HEAD', 'OPTIONS']);
-    }
-
-    protected static function generateToken() {
-        return sha1(uniqid(mt_rand(), true));
+        return self::$provider;
     }
 }
