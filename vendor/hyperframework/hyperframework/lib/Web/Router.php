@@ -456,9 +456,9 @@ abstract class Router {
         if ($options !== null) {
             $actionOptions = [
                 'actions',
-                'default_actions',
-                'ignored_actions',
                 'extra_actions',
+                'ignored_actions',
+                'default_actions'
             ];
             foreach ($actionOptions as $actionOption) {
                 if (isset($options[$actionOption])
@@ -672,11 +672,11 @@ abstract class Router {
         }
         if ($hasOptions) {
             $actionOptions = [
-                 'actions',
-                 'default_actions',
-                 'ignored_actions',
-                 'extra_collection_actions',
-                 'extra_element_actions'
+                'actions',
+                'extra_collection_actions',
+                'extra_element_actions',
+                'ignored_actions',
+                'default_actions'
             ];
             foreach ($actionOptions as $actionOption) {
                 if (isset($options[$actionOption])
