@@ -28,7 +28,7 @@ class CsrfProtectionProvider {
                 $this->token = $_COOKIE[$name];
             } else {
                 throw new InvalidOperationException(
-                    "Csrf protection is not initialized correctly."
+                    'Csrf protection is not initialized correctly.'
                 );
             }
         }
