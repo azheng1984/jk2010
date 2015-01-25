@@ -9,7 +9,8 @@ class CsrfProtectionProvider {
     private $token;
 
     public function run() {
-        if ($this->getToken() === null) {
+        $name = $this->getTokenName();
+        if (isset($_COOKIE[$name]) === false) {
             $this->initializeToken();
         }
         if ($this->isSafeMethod($_SERVER['REQUEST_METHOD'])) {

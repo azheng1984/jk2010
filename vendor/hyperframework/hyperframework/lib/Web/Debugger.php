@@ -1070,7 +1070,7 @@ h1, #message {
     border-left: 2px solid #e44;
     padding: 5px 10px;
     margin-top: 7px;
-    color: #777;
+    color: #666;
     margin-left: 5px;
 }
 #stack-trace .invocation code {
