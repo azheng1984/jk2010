@@ -22,7 +22,6 @@ class Router extends Base {
         $this->setMatchStatus(false);
         $this->match('article/:id(/*comments)', [':id' => '[0-9]+']);
         if ($this->match('/')) return;
-exit;
 //        if ($this->match('/')) return 'main/index/show';
 //        if ($this->match('article/:id(/*comments)', [':id' => '[0-9]+']))
 //            return 'comments/show';

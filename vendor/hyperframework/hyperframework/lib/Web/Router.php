@@ -169,9 +169,7 @@ abstract class Router {
         if (strpos($pattern, '\\') !== false) {
             $hasBackslash = true;
             $pattern = str_replace(
-                ['\:', '\*', '\(', '\)'],
-                ['?####', '?###', '?##', '?#'],
-                $pattern
+                ['\:', '\*', '\(', '\)'], ['#0', '#1', '#2', '#3'], $pattern
             );
             $backslashPosition = strpos($pattern, '\\');
             if ($backslashPosition !== false) {
@@ -324,9 +322,7 @@ abstract class Router {
         }
         if ($hasBackslash) {
             $pattern = str_replace(
-                ['?####', '?###', '?##', '?#'],
-                ['\:', '\*', '\(', '\)'],
-                $pattern
+                ['#0', '#1', '#2', '#3'], ['\:', '\*', '\(', '\)'], $pattern
             );
         }
         if ($this->shouldMatchScope) {
@@ -734,6 +730,12 @@ abstract class Router {
             $defaultActions = [];
             foreach ($options['default_actions'] as $key => $value) {
                 if (is_int($key)) {
+                    if (is_string($value) === false) {
+                        throw new RoutingException(
+                            'Action name must be a string, '
+                                . gettype($value) . ' given.'
+                        );
+                    }
                     $defaultActions[$value] = [];
                 } else {
                     $defaultActions[$key] = $value;
@@ -1013,7 +1015,7 @@ abstract class Router {
                         $type = get_class($function);
                     }
                     throw new RoutingException(
-                        'Extra rule must be a Closure, ' . $type . ' given.'
+                        'Extra rule must be a closure, ' . $type . ' given.'
                     );
                 }
                 if ($function($matches) === false) {
@@ -1028,7 +1030,7 @@ abstract class Router {
                     $type = get_class($function);
                 }
                 throw new RoutingException(
-                    'Extra rule must be a Closure, ' . $type . ' given.'
+                    'Extra rule must be a closure, ' . $type . ' given.'
                 );
             }
             return $extra($matches) !== false;
