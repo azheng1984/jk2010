@@ -97,8 +97,7 @@ class Debugger {
             );
             $title .= ' - ' . $message;
         }
-        echo '<!DOCTYPE html><html><head>',
-            '<meta http-equiv="Content-Type"',
+        echo '<!DOCTYPE html><html><head><meta http-equiv="Content-Type"',
             ' content="text/html;charset=utf-8"/><title>', $title, '</title>';
         $this->renderCss();
         echo '</head><body class="no-touch"><table id="page-container"><tbody>';
@@ -180,8 +179,7 @@ class Debugger {
         echo '</div></td><td><pre class="content"><div>';
         foreach ($lines as $number => $line) {
             if ($number === $errorLineNumber) {
-                echo '<span class="error-line"';
-                echo '>', $line , "\n</span>";
+                echo '<span class="error-line">', $line , "\n</span>";
             } else {
                 echo $line , "\n";
             }
@@ -225,9 +223,8 @@ class Debugger {
                 } else {
                     echo '<span class="internal">internal function</span>';
                 }
-                echo '</div>';
-                echo '<div class="invocation"><code>', $invocation, '</code></div>';
-                echo  '</td></tr>';
+                echo '</div><div class="invocation"><code>', $invocation,
+                    '</code></div></td></tr>';
             }
             ++$index;
         }
@@ -939,7 +936,6 @@ h1, #message {
 #file .path {
     border-bottom: 1px dotted #ccc;
     _border-bottom: 1px solid #e1e1e1;
-    font-size: 14px;
     padding: 5px 5px 8px 0;
     margin: 0 10px 10px 10px;
 }
@@ -1038,7 +1034,6 @@ h1, #message {
 }
 #stack-trace .path {
     color: #333;
-    font-size:14px;
 }
 #stack-trace .internal {
     color: #333;
