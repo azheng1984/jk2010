@@ -2,6 +2,7 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Common\ClassNotFoundException;
 
 class CsrfProtection {
     private static $isEnabled;

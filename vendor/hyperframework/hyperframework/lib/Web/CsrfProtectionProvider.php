@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Common\ClassNotFoundException;
+use Hyperframework\Common\InvalidOperationException;
 
 class CsrfProtectionProvider {
     private $tokenName;
@@ -27,11 +27,10 @@ class CsrfProtectionProvider {
             if (isset($_COOKIE[$name])) {
                 $this->token = $_COOKIE[$name];
             } else {
-                $this->token = false;
+                throw new InvalidOperationException(
+                    "Csrf protection is not initialized correctly."
+                );
             }
-        }
-        if ($this->token === false) {
-            return;
         }
         return $this->token;
     }
@@ -56,7 +55,8 @@ class CsrfProtectionProvider {
 
     protected function isValid() {
         $tokenName = $this->getTokenName();
-        return isset($_POST[$tokenName]) && $_POST[$tokenName] === $this->token;
+        $token = $this->getToken();
+        return isset($_POST[$tokenName]) && $_POST[$tokenName] === $token;
     }
 
     protected function isSafeMethod($method) {
