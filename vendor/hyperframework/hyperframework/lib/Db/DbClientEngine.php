@@ -179,7 +179,7 @@ class DbClientEngine {
     }
 
     public function getConnection() {
-        return DbContext::getConnection();
+        return DbConnectionManager::getConnection();
     }
 
     public function prepare($sql, array $driverOptions = array()) {

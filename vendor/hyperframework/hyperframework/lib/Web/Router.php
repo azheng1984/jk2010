@@ -920,7 +920,7 @@ abstract class Router {
     }
 
     protected function matchDelete($pattern, array $options = null) {
-        $options['method'] = ['DELETE'];
+        $options['methods'] = ['DELETE'];
         return $this->match($pattern, $options);
     }
 
