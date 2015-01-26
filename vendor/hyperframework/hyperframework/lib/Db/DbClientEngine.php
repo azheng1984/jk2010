@@ -190,14 +190,7 @@ class DbClientEngine {
 
     public function connect($name = 'default') {
         $factory = $this->getConnectionFactory();
-        $connection = $factory->create($name);
-        $type = gettype($connection);
-        if ($type !== 'object') {
-            throw new LogicException(
-                "Database connection must be an object, $type given."
-            );
-        }
-        $this->connection = $connection;
+        $this->connection = $factory->create($name);
     }
 
     public function setConnection($value) {

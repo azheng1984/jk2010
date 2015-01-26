@@ -12,8 +12,7 @@ class DbConnectionFactory {
         $config = $this->getConfig($name);
         if (isset($config['dsn']) === false) {
             throw new ConfigException(
-                "Field 'dsn' does not exist"
-                    . " in connection config '$name'."
+                "Field 'dsn' does not exist in connection config '$name'."
             );
         }
         $username = isset($config['username']) ? $config['username'] : null;
@@ -23,7 +22,6 @@ class DbConnectionFactory {
         $connection = new DbConnection(
             $name, $config['dsn'], $username, $password, $options
         );
-        //$connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         return $connection;
     }
 
