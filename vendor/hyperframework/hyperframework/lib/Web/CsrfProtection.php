@@ -30,7 +30,7 @@ class CsrfProtection {
         return $provider->getTokenName();
     }
 
-    private static function getProvider() {
+    public static function getProvider() {
         if (self::$provider === null) {
             $configName = 'hyperframework.web.csrf_protection.provider_class';
             $class = Config::getString($configName , '');
@@ -47,5 +47,9 @@ class CsrfProtection {
             }
         }
         return self::$provider;
+    }
+
+    public static function setProvider($value) {
+        self::$provider = $value;
     }
 }

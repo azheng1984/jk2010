@@ -151,7 +151,7 @@ class DbClient {
         return self::getEngine()->getConnection();
     }
 
-    protected static function getEngine() {
+    public static function getEngine() {
         if (self::$engine === null) {
             $class = Config::getString(
                 'hyperframework.db.client.engine_class', ''
@@ -170,6 +170,10 @@ class DbClient {
             }
         }
         return self::$engine;
+    }
+
+    public static function setEngine($value) {
+        self::$engine = $value;
     }
 
     private static function getParams(array $args, $offset = 1) {
