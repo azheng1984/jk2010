@@ -178,7 +178,8 @@ class RouterTest extends Base {
     public function testMatchWithExtraRule() {
         $_SERVER['REQUEST_URI'] = '/document';
         $this->assertFalse(
-            $this->match(':section', ['extra' => function() {
+            $this->match(':section', ['extra' => function(array $matches) {
+                $this->assertSame($matches, ['section' => 'document']);
                 return false;
             }])
         );
@@ -189,7 +190,8 @@ class RouterTest extends Base {
         $this->assertFalse(
             $this->match(':section', ['extra' => [function() {
                 return true;
-            }, function() {
+            }, function(array $matches) {
+                $this->assertSame($matches, ['section' => 'document']);
                 return false;
             }]])
         );

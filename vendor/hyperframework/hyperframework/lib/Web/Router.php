@@ -1006,7 +1006,12 @@ abstract class Router {
         return $this->app;
     }
 
-    private function verifyExtraRules($extra, array $matches = null) {
+    private function verifyExtraRules($extra, array $matches = []) {
+        foreach ($matches as $key => $value) {
+            if (is_int($key)) {
+                unset($matches[$key]);
+            }
+        }
         if (is_array($extra)) {
             foreach ($extra as $function) {
                 if ($function instanceof Closure === false) {

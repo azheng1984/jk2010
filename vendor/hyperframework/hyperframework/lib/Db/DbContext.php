@@ -74,7 +74,7 @@ class DbContext {
         self::$stack = [];
     }
 
-    protected static function getConnectionFactory() {
+    public static function getConnectionFactory() {
         if (self::$connectionFactory === null) {
             $class = Config::getString(
                 'hyperframework.db.connection.factory_class', ''
@@ -94,8 +94,11 @@ class DbContext {
         return self::$connectionFactory;
     }
 
-    protected static function reset() {
-        self::$closeAll();
+    public static function setConnectionFactory($value) {
+        self::$connectionFactory = $value;
+    }
+
+    protected static function clearConnectionPool() {
         self::$pool = [];
     }
 }

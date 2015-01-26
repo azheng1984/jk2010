@@ -42,7 +42,7 @@ class CsrfProtection {
                         "Csrf protection provider class '$class' does not exist"
                             . ", defined in '$configName'."
                     );
-                    self::$provider = new CsrfProtectionProvider;
+                    self::$provider = new $class;
                 }
             }
         }
