@@ -26,7 +26,7 @@ class ErrorHandlerTest extends Base {
         ini_set('error_log', dirname(__DIR__) . '/data/tmp/log');
         ini_set('display_errors', 1);
         Config::set(
-            'hyperframework.log_handler.log_path',
+            'hyperframework.logging.log_path',
             dirname(__DIR__) . '/data/tmp/logger_log'
         );
     }
@@ -124,7 +124,7 @@ class ErrorHandlerTest extends Base {
             . PHP_EOL . "\tfile: " . __FILE__
             . PHP_EOL . "\tline: " . (__LINE__ - 4)
             . PHP_EOL . "\ttype: E_USER_NOTICE" . PHP_EOL;
-        $this->assertStringEndsWith($log, $structuredMessage);
+        $this->assertStringEndsWith($structuredMessage, $log);
         $this->assertFalse(
             file_exists(dirname(__DIR__) . '/data/tmp/log')
         );
