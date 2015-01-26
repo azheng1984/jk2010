@@ -151,6 +151,14 @@ class DbClient {
         return self::getEngine()->getConnection();
     }
 
+    public static function setConnection($value) {
+        return self::getEngine()->setConnection($value);
+    }
+
+    public static function connect($name = 'default') {
+        return self::getEngine()->connect($name);
+    }
+
     public static function getEngine() {
         if (self::$engine === null) {
             $class = Config::getString(

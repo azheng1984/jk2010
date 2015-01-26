@@ -2,8 +2,14 @@
 namespace Hyperframework\Db;
 
 use PDO;
+use LogicException;
+use Hyperframework\Common\Config;
+use Hyperframework\Common\ClassNotFoundException;
 
 class DbClientEngine {
+    private $connection;
+    private $connectionFactory;
+
     public function findById($table, $id, $selectedColumnNameOrNames = null) {
         if ($selectedColumnNameOrNames !== null
             && is_array($selectedColumnNameOrNames) === false
@@ -178,12 +184,31 @@ class DbClientEngine {
         return $this->getConnection()->quoteIdentifier($identifier);
     }
 
-    public function getConnection() {
-        return DbConnectionManager::getConnection();
-    }
-
     public function prepare($sql, array $driverOptions = array()) {
         return $this->getConnection()->prepare($sql, $driverOptions);
+    }
+
+    public function connect($name = 'default') {
+        $factory = $this->getConnectionFactory();
+        $connection = $factory->create($name);
+        $type = gettype($connection);
+        if ($type !== 'object') {
+            throw new LogicException(
+                "Database connection must be an object, $type given."
+            );
+        }
+        $this->connection = $connection;
+    }
+
+    public function setConnection($value) {
+        $this->connection = $value;
+    }
+
+    public function getConnection() {
+        if ($this->connection === null) {
+            $this->connect();
+        }
+        return $this->connection;
     }
 
     protected function sendSql($sql, array $params = null, $isQuery = false) {
@@ -257,5 +282,24 @@ class DbClientEngine {
             $where .= $this->quoteIdentifier($key) . ' = ?';
         }
         return array($where, $params);
+    }
+
+    private function getConnectionFactory() {
+        if ($this->connectionFactory === null) {
+            $configName = 'hyperframework.db.connection.factory_class';
+            $class = Config::getString($configName, '');
+            if ($class === '') {
+                $this->connectionFactory = new DbConnectionFactory;
+            } else {
+                if (class_exists($class) === false) {
+                    throw new ClassNotFoundException(
+                        "Database connection factory Class '$class' does not"
+                            . " exist, defined in '$configName'."
+                    );
+                }
+                $this->connectionFactory = new $class;
+            }
+        }
+        return $this->connectionFactory;
     }
 }
