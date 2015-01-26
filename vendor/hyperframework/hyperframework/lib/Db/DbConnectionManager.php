@@ -9,11 +9,11 @@ use Hyperframework\Common\ClassNotFoundException;
 
 final class DbConnectionManager {
     private static $connection;
-    private static $connectionStack = [];
-    private static $connectionPool = [];
+//    private static $connectionStack = [];
+//   private static $connectionPool = [];
     private static $connectionFactory;
 
-    public static function connect($name = 'default', $options = null) {
+    public static function connect($name = 'default') {
         $connection = null;
         if (isset($options['connection'])) {
             $connection = $options['connection'];
@@ -68,6 +68,9 @@ final class DbConnectionManager {
         }
         self::$connection = $connection;
         return $connection;
+    }
+    
+    public static function setConnection($value) {
     }
 
     public static function getConnection() {
