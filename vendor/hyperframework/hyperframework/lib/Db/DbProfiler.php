@@ -6,7 +6,6 @@ use Hyperframework\Logging\Logger;
 
 class DbProfiler {
     private static $profile;
-    private static $profileHandlers = array();
 
     public static function onTransactionOperationExecuting(
         $connection, $operation
@@ -51,10 +50,6 @@ class DbProfiler {
         self::$profile['start_time'] = microtime(true);
     }
 
-    public static function addProfileHandler($callback) {
-        self::$profileHandler[] = $callback;
-    }
-
     private static function handleProfile() {
         self::$profile['running_time'] = sprintf(
             '%F', microtime(true) - self::$profile['start_time']
@@ -68,7 +63,16 @@ class DbProfiler {
                 'data' => self::$profile
             ]);
         }
-        foreach (self::$profileHandlers as $handler) {
+        $profileHandlers = Config::getArray(
+            'hyperframework.db.profiler.profile_handlers', []
+        );
+        foreach ($profileHandlers as $handler) {
+            if (is_callable($handler) === false) {
+                throw new ConfigException(
+                    'Profile handler is not callable, defined in '
+                        . 'hyperframework.db.profiler.profile_handlers'
+                );
+            }
             call_user_func($handler, self::$profile);
         }
     }

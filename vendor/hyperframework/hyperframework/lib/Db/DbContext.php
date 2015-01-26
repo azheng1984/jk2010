@@ -9,8 +9,8 @@ use Hyperframework\Common\ClassNotFoundException;
 class DbContext {
     private static $current;
     private static $connectionFactory;
-    private static $stack = array();
-    private static $pool = array();
+    private static $stack = [];
+    private static $pool = [];
 
     public static function connect($name = 'default', $options = null) {
         $connection = null;
@@ -71,10 +71,10 @@ class DbContext {
 
     public static function closeAll() {
         self::$current = null;
-        self::$stack = array();
+        self::$stack = [];
     }
 
-    private static function getConnectionFactory() {
+    protected static function getConnectionFactory() {
         if (self::$connectionFactory === null) {
             $class = Config::getString(
                 'hyperframework.db.connection.factory_class', ''
@@ -92,5 +92,10 @@ class DbContext {
             self::$connectionFactory = new $class;
         }
         return self::$connectionFactory;
+    }
+
+    protected static function reset() {
+        self::$closeAll();
+        self::$pool = [];
     }
 }

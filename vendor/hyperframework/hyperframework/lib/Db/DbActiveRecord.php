@@ -5,10 +5,10 @@ use ArrayAccess;
 use InvalidArgumentException;
 
 abstract class DbActiveRecord implements ArrayAccess {
-    private static $tableNames = array();
+    private static $tableNames = [];
     private $row;
 
-    public function __construct(array $row = array()) {
+    public function __construct(array $row = []) {
         $this->setRow($row);
     }
 
@@ -54,7 +54,7 @@ abstract class DbActiveRecord implements ArrayAccess {
 
     public static function find($where/*, ...*/) {
         if ($where === null) {
-            $where = array();
+            $where = [];
         }
         $class = get_called_class();
         if (is_array($where)) {
@@ -96,12 +96,12 @@ abstract class DbActiveRecord implements ArrayAccess {
 
     public static function findAll($where = null/*, ...*/) {
         if ($where === null) {
-            $where = array();
+            $where = [];
         }
         $class = get_called_class();
         if (is_array($where)) {
             $rows = DbClient::findAllByColumns(static::getTableName(), $where);
-            $result = array();
+            $result = [];
             foreach ($rows as $row) {
                 $result[] = new $class($row);
             }
@@ -120,7 +120,7 @@ abstract class DbActiveRecord implements ArrayAccess {
             array_shift($args);
         }
         $rows = DbClient::findAll(self::completeSelectSql($sql), $args);
-        $result = array();
+        $result = [];
         $class = get_called_class();
         foreach ($rows as $row) {
             $result[] = new $class($row);
@@ -174,7 +174,9 @@ abstract class DbActiveRecord implements ArrayAccess {
     }
 
     protected static function getTableName() {
-        $class = get_called_class();
+        if ($class === null) {
+            $class = get_called_class();
+        }
         if (isset(self::$tableNames[$class]) === false) {
             $position = strrpos($class, '\\');
             if ($position !== false) {

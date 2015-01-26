@@ -5,7 +5,6 @@ use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
 class CsrfProtection {
-    private static $isEnabled;
     private static $provider;
 
     public static function run() {
@@ -16,12 +15,9 @@ class CsrfProtection {
     }
 
     public static function isEnabled() {
-        if (self::$isEnabled === null) {
-            self::$isEnabled = Config::getBoolean(
-                'hyperframework.web.csrf_protection.enable', true
-            );
-        };
-        return self::$isEnabled;
+        return Config::getBoolean(
+            'hyperframework.web.csrf_protection.enable', true
+        );
     }
 
     public static function getToken() {
