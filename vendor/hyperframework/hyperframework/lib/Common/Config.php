@@ -13,10 +13,7 @@ class Config {
     }
 
     public static function getString($name, $default = null) {
-        $result = null;
-        if (isset(self::$data[$name])) {
-            $result = self::$data[$name];
-        }
+        $result = static::get($name);
         if ($result === null) {
             return $default;
         }
@@ -125,7 +122,7 @@ class Config {
 
     public static function getAppRootPath() {
         if (isset(self::$appRootPath) === false) {
-            self::$appRootPath = Config::getString(
+            self::$appRootPath = static::getString(
                 'hyperframework.app_root_path'
             );
             if (self::$appRootPath === null) {
@@ -148,7 +145,7 @@ class Config {
     }
 
     public static function getAppRootNamespace() {
-        return Config::getString('hyperframework.app_root_namespace', '');
+        return static::getString('hyperframework.app_root_namespace', '');
     }
 
     public static function set($key, $value) {
@@ -197,8 +194,7 @@ class Config {
             if ($namespace !== null) {
                 $key = $namespace . $key;
             }
-            self::checkKey($key);
-            self::$data[$key] = $value;
+            static::set($key, $value);
         }
     }
 
