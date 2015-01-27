@@ -27,9 +27,7 @@ class DbProfiler {
         self::initializeProfile($connection, ['sql' => $sql]);
     }
 
-    public static function onConnectionExecuted(
-        $connection, $result
-    ) {
+    public static function onConnectionExecuted($connection, $result) {
         self::handleProfile();
     }
 

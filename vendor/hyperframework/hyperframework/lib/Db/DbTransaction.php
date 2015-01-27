@@ -5,34 +5,34 @@ use Exception;
 
 class DbTransaction {
     private static $connections = [];
-    private static $depth = [];
+    private static $counts = [];
 
     public static function run($callback) {
         $connection = DbClient::getConnection();
         $index = array_search($connection, self::$connections, true);
         if ($index === false) {
             self::$connections[] = $connection;
-            self::$depth[] = 0;
+            self::$counts[] = 0;
             end(self::$connections);
             $index = key(self::$connections);
         }
-        if (self::$depth[$index] === 0) {
+        if (self::$counts[$index] === 0) {
             $connection->beginTransaction();
         }
         try {
-            ++self::$depth[$index];
+            ++self::$counts[$index];
             $callback();
-            --self::$depth[$index];
-            if (self::$depth[$index] === 0) {
+            --self::$counts[$index];
+            if (self::$counts[$index] === 0) {
                 $connection->commit();
-                unset(self::$depth[$index]);
+                unset(self::$counts[$index]);
                 unset(self::$connections[$index]);
             }
         } catch (Exception $e) {
-            --self::$depth[$index];
-            if (self::$depth[$index] === 0) {
+            --self::$counts[$index];
+            if (self::$counts[$index] === 0) {
                 $connection->rollback();
-                unset(self::$depth[$index]);
+                unset(self::$counts[$index]);
                 unset(self::$connections[$index]);
             }
             throw $e;
