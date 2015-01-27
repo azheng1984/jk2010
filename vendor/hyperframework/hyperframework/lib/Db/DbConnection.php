@@ -6,15 +6,12 @@ use Hyperframework\Common\Config;
 
 class DbConnection extends PDO {
     private $name;
-    private $isProfilerEnabled;
     private $identifierQuotationMarks;
 
     public function __construct(
         $name, $dsn, $userName = null, $password = null, $driverOptions = null
     ) {
         $this->name = $name;
-        $this->isProfilerEnabled =
-            Config::getBoolean('hyperframework.db.profiler.enable', false);
         parent::__construct($dsn, $userName, $password, $driverOptions);
     }
 
@@ -50,31 +47,31 @@ class DbConnection extends PDO {
     }
 
     public function beginTransaction() {
-        if ($this->isProfilerEnabled) {
+        if (DbProfiler::isEnabled()) {
             DbProfiler::onTransactionOperationExecuting($this, 'begin');
         }
         parent::beginTransaction();
-        if ($this->isProfilerEnabled) {
+        if (DbProfiler::isEnabled()) {
             DbProfiler::onTransactionOperationExecuted($this, 'begin');
         }
     }
 
     public function commit() {
-        if ($this->isProfilerEnabled) {
+        if (DbProfiler::isEnabled()) {
             DbProfiler::onTransactionOperationExecuting($this, 'commit');
         }
         parent::commit();
-        if ($this->isProfilerEnabled) {
+        if (DbProfiler::isEnabled()) {
             DbProfiler::onTransactionOperationExecuted($this, 'commit');
         }
     }
 
     public function rollBack() {
-        if ($this->isProfilerEnabled) {
+        if (DbProfiler::isEnabled()) {
             DbProfiler::onTransactionOperationExecuting($this, 'rollback');
         }
         parent::rollBack();
-        if ($this->isProfilerEnabled) {
+        if (DbProfiler::isEnabled()) {
             DbProfiler::onTransactionOperationExecuted($this, 'rollback');
         }
     }
@@ -91,7 +88,7 @@ class DbConnection extends PDO {
     private function sendSql(
         $sql, $isQuery = false, array $fetchOptions = null
     ) {
-        if ($this->isProfilerEnabled) {
+        if (DbProfiler::isEnabled()) {
             DbProfiler::onConnectionExecuting($this, $sql, $isQuery);
         }
         $result = null;
@@ -122,7 +119,7 @@ class DbConnection extends PDO {
         } else {
             $result = parent::exec($sql);
         }
-        if ($this->isProfilerEnabled) {
+        if (DbProfiler::isEnabled()) {
             DbProfiler::onConnectionExecuted($this, $result);
         }
         return $result;

@@ -7,21 +7,18 @@ use Hyperframework\Common\Config;
 class DbStatementProxy {
     private $statement;
     private $connection;
-    private $isProfilerEnabled;
 
     public function __construct($statement, $connection) {
         $this->statement = $statement;
         $this->connection = $connection;
-        $this->isProfilerEnabled =
-            Config::getBoolean('hyperframework.db.profiler.enable', false);
     }
 
     public function execute($params = null) {
-        if ($this->isProfilerEnabled) {
+        if (DbProfiler::isEnabled()) {
             DbProfiler::onStatementExecuting($this);
         }
         $result = $this->statement->execute($params);
-        if ($this->isProfilerEnabled) {
+        if (DbProfiler::isEnabled()) {
             DbProfiler::onStatementExecuted($this);
         }
         return $result;

@@ -7,6 +7,10 @@ use Hyperframework\Logging\Logger;
 class DbProfiler {
     private static $profile;
 
+    public static function isEnabled() {
+        return Config::getBoolean('hyperframework.db.profiler.enable', false);
+    }
+
     public static function onTransactionOperationExecuting(
         $connection, $operation
     ) {
@@ -70,7 +74,7 @@ class DbProfiler {
             if (is_callable($handler) === false) {
                 throw new ConfigException(
                     'Profile handler is not callable, defined in '
-                        . 'hyperframework.db.profiler.profile_handlers'
+                        . "'hyperframework.db.profiler.profile_handlers'."
                 );
             }
             call_user_func($handler, self::$profile);
