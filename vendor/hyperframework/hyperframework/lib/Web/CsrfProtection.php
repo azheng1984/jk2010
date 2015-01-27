@@ -5,12 +5,12 @@ use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
 class CsrfProtection {
-    private static $provider;
+    private static $engine;
 
     public static function run() {
         if (static::isEnabled()) {
-            $provider = self::getProvider();
-            $provider->run();
+            $engine = self::getEngine();
+            $engine->run();
         }
     }
 
@@ -21,35 +21,35 @@ class CsrfProtection {
     }
 
     public static function getToken() {
-        $provider = self::getProvider();
-        return $provider->getToken();
+        $engine = self::getEngine();
+        return $engine->getToken();
     }
 
     public static function getTokenName() {
-        $provider = self::getProvider();
-        return $provider->getTokenName();
+        $engine = self::getEngine();
+        return $engine->getTokenName();
     }
 
-    public static function getProvider() {
-        if (self::$provider === null) {
-            $configName = 'hyperframework.web.csrf_protection.provider_class';
+    public static function getEngine() {
+        if (self::$engine === null) {
+            $configName = 'hyperframework.web.csrf_protection.engine_class';
             $class = Config::getString($configName , '');
             if ($class === '') {
-                self::$provider = new CsrfProtectionProvider;
+                self::$engine = new CsrfProtectionEngine;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Csrf protection provider class '$class' does not exist"
+                        "Csrf protection engine class '$class' does not exist"
                             . ", defined in '$configName'."
                     );
-                    self::$provider = new $class;
+                    self::$engine = new $class;
                 }
             }
         }
-        return self::$provider;
+        return self::$engine;
     }
 
-    public static function setProvider($value) {
-        self::$provider = $value;
+    public static function setEngine($value) {
+        self::$engine = $value;
     }
 }

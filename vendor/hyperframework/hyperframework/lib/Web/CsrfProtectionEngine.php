@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\InvalidOperationException;
 
-class CsrfProtectionProvider {
+class CsrfProtectionEngine {
     private $tokenName;
     private $token;
 
