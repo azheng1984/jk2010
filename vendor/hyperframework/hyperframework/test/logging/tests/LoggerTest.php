@@ -49,7 +49,7 @@ class LoggerTest extends base {
             ['notice'], ['error'], ['fatal']];
     }
 
-    public function testIntegerTime() {
+    public function testIntegerTimeForTimeOption() {
         $time = time();
         Logger::warn(['message' => 'message', 'time' => $time]);
         $this->assertSame(
@@ -58,7 +58,7 @@ class LoggerTest extends base {
         );
     }
 
-    public function testDateTime() {
+    public function testDateTimeForTimeOption() {
         $time = new DateTime;
         Logger::warn(['message' => 'message', 'time' => $time]);
         $this->assertSame(
