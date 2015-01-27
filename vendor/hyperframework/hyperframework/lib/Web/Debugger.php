@@ -211,7 +211,7 @@ class Debugger {
                 if ($index === $last) {
                     echo ' last';
                 }
-                echo '"><div class="position">';
+                echo '"><div class="frame"><div class="position">';
                 if (isset($frame['file'])) {
                     $this->renderPath(
                         $frame['file'],
@@ -224,7 +224,7 @@ class Debugger {
                     echo '<span class="internal">internal function</span>';
                 }
                 echo '</div><div class="invocation"><code>', $invocation,
-                    '</code></div></td></tr>';
+                    '</code></div></div></td></tr>';
             }
             ++$index;
         }
@@ -408,8 +408,8 @@ class Debugger {
             } else {
                 ++$fileNamePosition;   
             }
-            $path = substr_replace($path, '<strong>', $fileNamePosition, 0)
-                . '</strong>';
+            $path = substr_replace($path, '', $fileNamePosition, 0)
+                . '';
         }
         echo '<div class="path"><code>', $path, '</code>', $suffix, '</div>';
     }
@@ -1051,13 +1051,12 @@ h1, #message {
     padding-right: 3px;
 }
 #stack-trace table .value {
-    padding: 0 0 12px 5px;
 }
 #stack-trace table .last {
     border-bottom: 0;
 }
 #stack-trace .index {
-    padding: 1px 5px 0 5px;
+    padding: 8px 5px 0 5px;
     width: 1px;
     color: #aaa;
     font-size:12px;
@@ -1065,13 +1064,22 @@ h1, #message {
     text-align: right;
     vertical-align: top;
 }
-#stack-trace .invocation {
+#stack-trace .frame {
     background: #f8f8f8;
+    padding: 7px 10px 10px;
+    border-top: 1px solid #e1e1e1;
+    border-right: 1px solid #e1e1e1;
+}
+#stack-trace .last .frame {
+    border-bottom: 1px solid #e1e1e1;
+}
+#stack-trace .invocation {
+    background: #fff;
     border-left: 2px solid #e44;
     padding: 5px 10px;
+    color: #777;
     margin-top: 7px;
-    color: #666;
-    margin-left: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
 }
 #stack-trace .invocation code {
     word-wrap: break-word;
