@@ -88,7 +88,7 @@ final class Logger {
                 'hyperframework.logging.log_handler_class', ''
             );
             if ($class === '') {
-                $class = 'Hyperframework\Logging\LogHandler';
+                self::$logHandler = new LogHandler;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
@@ -96,8 +96,8 @@ final class Logger {
                             . "'hyperframework.logging.log_handler_class'."
                     );
                 }
+                self::$logHandler = new $class;
             }
-            self::$logHandler = new $class;
         }
         return self::$logHandler;
     }
