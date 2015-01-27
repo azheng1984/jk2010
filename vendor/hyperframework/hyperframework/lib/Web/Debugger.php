@@ -1081,7 +1081,7 @@ h1, #message {
     padding: 5px 10px;
     color: #777;
     margin-top: 7px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    box-shadow: 0 1px 2px rgba(0,0,0,.1);
 }
 #stack-trace .invocation code {
     word-wrap: break-word;
