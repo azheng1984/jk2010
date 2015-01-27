@@ -9,7 +9,7 @@ class LogHandler {
     private $protocol;
     private $path;
 
-    public function handle($level, $params) {
+    public function handle($level, array $params) {
         $content = $this->format($level, $params);
         $this->write($content);
     }
@@ -33,7 +33,7 @@ class LogHandler {
         file_put_contents($this->getPath(), $content, $flag);
     }
 
-    protected function format($level, $params) {
+    protected function format($level, array $params) {
         $time = isset($params['time']) ? $params['time'] : null;
         $name = isset($params['name']) ? $params['name'] : null;
         $message = isset($params['message']) ? $params['message'] : null;

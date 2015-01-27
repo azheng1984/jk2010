@@ -5,9 +5,8 @@ use DateTime;
 use Exception;
 use Hyperframework\Common\Config;
 use Hyperframework\Test\TestCase as Base;
-use PHPUnit_Framework_TestCase;
 
-class LoggerTest extends PHPUnit_Framework_TestCase {
+class LoggerTest extends base {
     protected function setUp() {
         Logger::setLevel(null);
         Logger::setLogHandler(null);
