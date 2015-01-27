@@ -4,6 +4,7 @@ namespace Hyperframework\Logging;
 use DateTime;
 use Exception;
 use Hyperframework\Common\Config;
+use Hyperframework\Logging\Test\CustomLogHandler;
 use Hyperframework\Test\TestCase as Base;
 
 class LoggerTest extends base {
@@ -22,9 +23,9 @@ class LoggerTest extends base {
     }
 
     /**
-     * @dataProvider getLogMethods
+     * @dataProvider getShortcutMethods
      */
-    public function testLog($method) {
+    public function testShortcutMethods($method) {
         Logger::setLevel('DEBUG');
         if ($method === 'warn') {
             $level = 'WARNING';
@@ -43,7 +44,7 @@ class LoggerTest extends base {
         );
     }
 
-    public function getLogMethods() {
+    public function getShortcutMethods() {
         return [['debug'], ['info'], ['warn'],
             ['notice'], ['error'], ['fatal']];
     }
@@ -86,7 +87,7 @@ class LoggerTest extends base {
         );
     }
 
-    public function testLevel() {
+    public function testSetLevel() {
         Logger::setLevel('ERROR');
         Logger::warn(function() {
             return 'message';
@@ -118,11 +119,12 @@ class LoggerTest extends base {
         Logger::setLevel('unknown');
     }
 
-
     public function testSetCustomLogHandler() {
-        $logHandler = new LogHandler;
+        $logHandler = new CustomLogHandler;
         Logger::setLogHandler($logHandler);
         $this->assertSame($logHandler, Logger::getLogHandler());
+        $this->expectOutputString(get_class($logHandler) . '::handle');
+        Logger::info('message');
     }
 
     public function testDefaultLogHandler() {

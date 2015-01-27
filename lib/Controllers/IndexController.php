@@ -3,7 +3,6 @@ namespace Hyperframework\Blog\Controllers;
 
 use Hyperframework\Web\Controller;
 use Hyperframework\Db\DbClient;
-use Hyperframework\Db\DbConnectionManager;
 
 class IndexController extends Controller {
     public function __construct($app) {
@@ -27,7 +26,7 @@ class IndexController extends Controller {
     }
 
     protected function doShowAction() {
-        DbClient::findById('Document', 1);
+        DbClient::findById('xDocument', 1);
     }
 
     protected function hi() {
