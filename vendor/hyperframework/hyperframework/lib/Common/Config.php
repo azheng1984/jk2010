@@ -3,7 +3,7 @@ namespace Hyperframework\Common;
 
 class Config {
     private static $data = [];
-    private static $internalData = [];
+    private static $appRootPath;
 
     public static function get($name, $default = null) {
         if (isset(self::$data[$name])) {
@@ -124,35 +124,31 @@ class Config {
     }
 
     public static function getAppRootPath() {
-        if (isset(self::$internalData['app_root_path']) === false) {
-            self::$internalData['app_root_path'] = Config::getString(
+        if (isset(self::$appRootPath) === false) {
+            self::$appRootPath = Config::getString(
                 'hyperframework.app_root_path'
             );
-            if (self::$internalData['app_root_path'] === null) {
+            if (self::$appRootPath === null) {
                 throw new ConfigException(
                     "Config 'hyperframework.app_root_path' does not exist."
                 );
             }
             $isFullPath = FullPathRecognizer::isFull(
-                self::$internalData['app_root_path']
+                self::$appRootPath
             );
             if ($isFullPath === false) {
                 throw new ConfigException(
                     "The value of config 'hyperframework.app_root_path'"
                         . " must be a full path, '"
-                        . self::$internalData['app_root_path'] . "' given."
+                        . self::$appRootPath . "' given."
                 );
             }
         }
-        return self::$internalData['app_root_path'];
+        return self::$appRootPath;
     }
 
     public static function getAppRootNamespace() {
-        if (isset(self::$internalData['app_root_namespace']) === false) {
-            self::$internalData['app_root_namespace'] =
-                Config::getString('hyperframework.app_root_namespace', '');
-        }
-        return self::$internalData['app_root_namespace'];
+        return Config::getString('hyperframework.app_root_namespace', '');
     }
 
     public static function set($key, $value) {
@@ -167,20 +163,6 @@ class Config {
 
     public static function remove($key) {
         unset(self::$data[$key]);
-    }
-
-    public static function importFile($path) {
-        $data = ConfigFileLoader::loadPhp($path);
-        if ($data === null) {
-            return;
-        }
-        if (is_array($data) === false) {
-            throw new ConfigException(
-                "Config file $path must return "
-                    . " an array, " . gettype($data) . ' returned.'
-            );
-        }
-        static::import($data);
     }
 
     public static function import(array $data) {
@@ -220,20 +202,35 @@ class Config {
         }
     }
 
+    public static function importFile($path) {
+        $data = ConfigFileLoader::loadPhp($path);
+        if ($data === null) {
+            return;
+        }
+        if (is_array($data) === false) {
+            throw new ConfigException(
+                "Config file $path must return "
+                    . " an array, " . gettype($data) . ' returned.'
+            );
+        }
+        static::import($data);
+    }
+
     public static function getAll() {
         return self::$data;
     }
 
     public static function clear() {
         self::$data = [];
-        self::$internalData = [];
+        self::$appRootPath = null;
     }
 
     private static function checkKey($key) {
         if ($key === '') {
             throw new ConfigException("Config key cannot be empty.");
-        }
-        if (preg_match('/^([a-zA-Z0-9_]+\.?)+$/', $key) === 0
+        } elseif ($key === 'hyperframework.app_root_path') {
+            self::$appRootPath = null;
+        } elseif (preg_match('/^([a-zA-Z0-9_]+\.?)+$/', $key) === 0
             || substr($key, -1) === '.'
         ) {
             throw new ConfigException("Invalid config key '$key'.");
