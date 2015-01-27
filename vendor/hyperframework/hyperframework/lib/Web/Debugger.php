@@ -149,6 +149,8 @@ class Debugger {
             $this->renderFileContent($path, $errorLineNumber);
             echo '</div><div id="external-file" class="hidden">',
                 '<h2>External File</h2>';
+        } else {
+            echo '<h2>File</h2>';
         }
         $path = $this->source->getFile();
         $errorLineNumber = $this->source->getLine();

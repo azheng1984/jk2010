@@ -15,7 +15,7 @@ class Runner {
     }
 
     protected static function initializeConfig() {
-        Config::import('init.php');
+        Config::importFile('init.php');
     }
 
     protected static function initializeErrorHandler() {

@@ -1,10 +1,9 @@
 <?php
 namespace Hyperframework\Common;
 
-use InvalidArgumentException;
-
 class Config {
     private static $data = [];
+    private static $internalData = [];
 
     public static function get($name, $default = null) {
         if (isset(self::$data[$name])) {
@@ -125,32 +124,35 @@ class Config {
     }
 
     public static function getAppRootPath() {
-        if (isset(self::$data[':app_root_path']) === false) {
-            self::$data[':app_root_path'] = Config::getString(
+        if (isset(self::$internalData['app_root_path']) === false) {
+            self::$internalData['app_root_path'] = Config::getString(
                 'hyperframework.app_root_path'
             );
-            if (self::$data[':app_root_path'] === null) {
+            if (self::$internalData['app_root_path'] === null) {
                 throw new ConfigException(
                     "Config 'hyperframework.app_root_path' does not exist."
                 );
             }
-            $isFullPath =
-                FullPathRecognizer::isFull(self::$data[':app_root_path']);
+            $isFullPath = FullPathRecognizer::isFull(
+                self::$internalData['app_root_path']
+            );
             if ($isFullPath === false) {
                 throw new ConfigException(
                     "The value of config 'hyperframework.app_root_path'"
-                        . ' must be a full path, '
-                        . self::$data[':app_root_path'] . ' given.'
+                        . " must be a full path, '"
+                        . self::$internalData['app_root_path'] . "' given."
                 );
             }
         }
-        return self::$data[':app_root_path'];
+        return self::$internalData['app_root_path'];
     }
 
     public static function getAppRootNamespace() {
-        return Config::getString(
-            'hyperframework.app_root_namespace', ''
-        );
+        if (isset(self::$internalData['app_root_namespace']) === false) {
+            self::$internalData['app_root_namespace'] =
+                Config::getString('hyperframework.app_root_namespace', '');
+        }
+        return self::$internalData['app_root_namespace'];
     }
 
     public static function set($key, $value) {
@@ -167,25 +169,21 @@ class Config {
         unset(self::$data[$key]);
     }
 
-    public static function import($data) {
-        if (is_string($data)) {
-            $path = $data;
-            $data = ConfigFileLoader::loadPhp($path);
-            if ($data === null) {
-                return;
-            }
-            if (is_array($data) === false) {
-                throw new ConfigException(
-                    "Config file $path must return "
-                        . " an array, " . gettype($data) . ' returned.'
-                );
-            }
-        } elseif (is_array($data) === false) {
-            throw new InvalidArgumentException(
-                "Argument 'data' must be an array or a string of file path, "
-                    . gettype($data) . ' given.'
+    public static function importFile($path) {
+        $data = ConfigFileLoader::loadPhp($path);
+        if ($data === null) {
+            return;
+        }
+        if (is_array($data) === false) {
+            throw new ConfigException(
+                "Config file $path must return "
+                    . " an array, " . gettype($data) . ' returned.'
             );
         }
+        static::import($data);
+    }
+
+    public static function import(array $data) {
         $namespace = null;
         foreach ($data as $key => $value) {
             if (is_int($key)) {
@@ -228,6 +226,7 @@ class Config {
 
     public static function clear() {
         self::$data = [];
+        self::$internalData = [];
     }
 
     private static function checkKey($key) {
