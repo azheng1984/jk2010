@@ -117,9 +117,13 @@ final class Logger {
             && is_int($params['time']) === false
             && $params['time'] instanceof DateTime === false
         ) {
+            $type = gettype($params['time']);
+            if ($type === 'object') {
+                $type = get_class($params['time']);
+            }
             throw new LoggingException(
                 "Log entry field 'time' must be an integer or a DateTime, "
-                    . gettype($params['time']) . " given."
+                    . $type . " given."
             );
         }
         if (isset($params['name'])) {
