@@ -159,9 +159,6 @@ abstract class DbActiveRecord implements ArrayAccess {
             $where,
             array_slice(func_get_args(), 2)
         );
-        $this->setTitle();
-        if ($this->getResult('article')) {
-        }
     }
 
     public static function average($columnName, $where = null/*, ...*/) {

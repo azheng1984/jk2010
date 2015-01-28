@@ -28,7 +28,7 @@ return [
         '-n, --name-of-option3 <arg-name>',
         '-n, --name-of-option3=<arg-name>',
         '-n, --name-of-option3[=<arg-name>]' => [
-            'description' => 'x'
+            'description' => 'x',
             'repeatable',
             'required',
         ],

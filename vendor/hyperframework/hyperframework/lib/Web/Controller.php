@@ -285,9 +285,9 @@ class Controller {
     }
 
     public function renderView() {
-        $template = new ViewTemplate($this->getActionResult());
-        $view = $this->getView();
-        $template->load($view);
+        $view = new View($this->getActionResult());
+        $path = $this->getView();
+        $view->load($path);
         $this->disableView();
         return;
     }

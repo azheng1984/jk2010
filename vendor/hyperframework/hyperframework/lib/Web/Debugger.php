@@ -76,9 +76,9 @@ class Debugger {
             if ($source->shouldThrow() === true) {
                 $type = 'Error Exception';
             } else {
-                $type = ucwords($source->getSeverityAsString());
                 $type = htmlspecialchars(
-                    $type, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+                    ucwords($source->getSeverityAsString()),
+                    ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
                 );
             }
         } else {
@@ -243,8 +243,7 @@ class Debugger {
         if ($this->shouldHideExternal) {
             echo '<div class="text">';
         }
-        echo '<div class="first"><div>Response Headers:',
-            ' <span class="first-value">',
+        echo '<div class="first"><div>Response Headers: <span>',
             $this->headerCount, '</span></div><div>',
             'Content Size: <span>';
         if ($this->contentLength === 0) {
@@ -860,7 +859,6 @@ h1, #message {
     overflow: hidden;
     float: left;
     line-height: 16px;
-    border: 1px solid #fff;
     background-image: linear-gradient(#fcfcfc, #eee);
     border: 1px solid #ccc;
     border-bottom: 0;
@@ -909,9 +907,6 @@ h1, #message {
 }
 #status-bar-wrapper td{
     vertical-align: top;
-}
-#status-bar .7irst-value {
-    margin-right: 10px;
 }
 #status-bar .second, #status-bar .first div {
     padding-left: 10px;
@@ -1093,8 +1088,6 @@ h1, #message {
 }
 #arrow {
     display: inline-block;
-    width: 0;
-    height: 0;
     width: 0;
     height: 0;
     line-height: 0;

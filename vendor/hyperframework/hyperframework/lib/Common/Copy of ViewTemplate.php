@@ -5,7 +5,7 @@ use ArrayAccess;
 use InvalidArgumentException;
 use Closure;
 
-abstract class ViewTemplateEngine implements ArrayAccess {
+abstract class ViewTemplate implements ArrayAccess {
     private $model;
     private $includeFileFunction;
     private $blocks = [];
@@ -60,11 +60,11 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         $this->layoutRootPath = $this->getRootPath();
     }
 
-    protected function getFullPath() {
+    public function getFullPath() {
         return $this->fullPath;
     }
 
-    protected function renderBlock($name, Closure $default = null) {
+    public function renderBlock($name, Closure $default = null) {
         $this->pushContext();
         if (isset($this->blocks[$name])) {
             $function = $this->blocks[$name]['function'];
@@ -82,7 +82,7 @@ abstract class ViewTemplateEngine implements ArrayAccess {
         $this->popContext();
     }
 
-    protected function setBlock($name, Closure $function) {
+    public function setBlock($name, Closure $function) {
         $this->blocks[$name] = [
             'function' => $function,
             'root_path' => $this->rootPath,
