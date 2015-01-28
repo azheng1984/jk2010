@@ -24,7 +24,7 @@ abstract class ViewTemplate implements ArrayAccess {
         $this->model = $model === null ? [] : $model;
     }
 
-    public function load($path) {
+    public function render($path) {
         $path = (string)$path;
         if ($path === '') {
             throw new InvalidArgumentException('View path cannot be empty.');
@@ -54,7 +54,7 @@ abstract class ViewTemplate implements ArrayAccess {
         $includeFileFunction($this->fullPath);
         if ($this->layoutPath !== null) {
             $this->setRootPath($this->layoutRootPath);
-            $this->load($this->layoutPath);
+            $this->render($this->layoutPath);
         }
         $this->popContext();
     }

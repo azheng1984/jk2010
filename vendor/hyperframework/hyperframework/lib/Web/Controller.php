@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use InvalidArgumentException;
 use LogicException;
+use Hyperframework\Common\Config;
 use Hyperframework\Common\InvalidOperationException;
 use Hyperframework\Common\NotSupportedException;
 
@@ -278,21 +279,30 @@ class Controller {
     public function renderView() {
         $view = $this->getView();
         if (is_object($view)) {
-            if (method_exists($view, 'render')) {
-                $view->render($this->getActionResult());
-                return;
-            } else {
-                //throw e
-            }
+            $view->render($this->getActionResult());
         } elseif (is_string($view) === false) {
-            //throw e
+            throw new LogicException(
+                "View must be a string or an object, "
+                    . gettype($view) . " given."
+            );
         }
         $path = $view;
         if ($path === '') {
             throw new LogicException('View path cannot be empty.');
         }
-        $view = new View($this->getActionResult());
-        $view->load($path);
+        $class = Config::get('hyperframework.web.view_class', '');
+        if ($class === '') {
+            $view = new View();
+        } else {
+            if (class_exists($class) === false) {
+                throw new ClassNotFoundException(
+                    "View class '$class' does not exist, defined in "
+                        . "'hyperframework.web.view_class'."
+                );
+            }
+            $view = new $class($this->getActionResult());
+        }
+        $view->render($path);
     }
 
     public function getActionResult($name = null) {

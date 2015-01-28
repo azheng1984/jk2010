@@ -4,8 +4,4 @@
 $this->setBlock('hi', function() {
     echo 'hi';
 });
-$this->renderBlock('');
 $this->renderBlock('hi');
-return function() {
-    $this->redirect('xxx');
-};
