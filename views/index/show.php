@@ -7,4 +7,5 @@ $this->setBlock('hi', function() {
 $this->renderBlock('');
 $this->renderBlock('hi');
 return function() {
+    $this->redirect('xxx');
 };

@@ -6,7 +6,6 @@ use Closure;
 use Exception;
 use InvalidArgumentException;
 use LogicException;
-use Hyperframework\Common\ViewTemplate;
 use Hyperframework\Common\InvalidOperationException;
 use Hyperframework\Common\NotSupportedException;
 
