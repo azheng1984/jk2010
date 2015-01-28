@@ -158,7 +158,7 @@ class ErrorHandler extends Base {
             'Hyperframework.error_handler.debugger_class', ''
         );
         if ($class === '') {
-            $class = 'Hyperframework\Web\Debugger';
+            $debugger = new Debugger;
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
@@ -167,31 +167,25 @@ class ErrorHandler extends Base {
                         . "'hyperframework.error_handler.debugger_class'."
                 );
             }
+            $debugger = new $class;
         }
-        $debugger = new $class;
         $debugger->execute($this->getSource(), $headers, $outputBuffer);
     }
 
     protected function renderErrorView() {
-        $rootPath = Config::getString(
-            'hyperframework.view_path.error_root', '_error'
-        );
-        $pattern = '#\.([0-9a-zA-Z]+)$#';
-        $requestPath = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
-        if (preg_match($pattern, $requestPath, $matches) === 1) {
-            $format = $matches[1];
-        }
-        //search ...
-        $view = new View(
-            ['exception' => $this->getSource(), 'status_code' => '500']
-        );
-        $view->render($path);
-        header('Content-Type: text/plain;charset=utf-8');
-        if ($this->getSource() instanceof HttpException) {
-            echo $this->getSource()->getCode();
+        $class = Config::getString('Hyperframework.error_view_class', '');
+        if ($class === '') {
+            $view = new ErrorView;
         } else {
-            echo '500 Internal Server Error';
+            if (class_exists($class) === false) {
+                throw new ClassNotFoundException(
+                    "Error view class '$class' does not exist,"
+                        . " defined in 'hyperframework.error_view_class'."
+                );
+            }
+            $view = new $class;
         }
+        $view->render($this->getSource());
     }
 
     final protected function isDebuggerEnabled() {

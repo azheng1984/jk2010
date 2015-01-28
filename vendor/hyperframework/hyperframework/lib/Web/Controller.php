@@ -267,13 +267,14 @@ class Controller {
             }
             $view .=  $controller . '/' . $action;
             $shouldIncludeFormat = Config::getBoolean(
-                'hyperframework.web.view_path.include_format', false
+                'hyperframework.web.view.filename.enable_content_format', false
             );
             if ($shouldIncludeFormat) {
-                $format = $router->getParam('format');
+                $format = $this->getFormat();
                 if ($format !== null) {
                     $format = Config::getString(
-                        'hyperframework.web.view_path.default_format', 'html'
+                        'hyperframework.web.view.default_content_format',
+                        'html'
                     );
                 }
                 if ($format !== '') {
@@ -281,7 +282,7 @@ class Controller {
                 }
             }
             $extension = Config::getString(
-                'hyperframework.web.view_path.filename_extension', 'php'
+                'hyperframework.web.view.filename.extension', 'php'
             );
             if ($extension !== '') {
                 $view .= '.' . $extension;
@@ -289,6 +290,10 @@ class Controller {
             $this->view = $view;
         }
         return $this->view;
+    }
+
+    public function getFormat() {
+        return $router->getParam('format');
     }
 
     public function renderView() {
