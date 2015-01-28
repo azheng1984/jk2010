@@ -4,6 +4,10 @@ namespace Hyperframework\Web;
 use ArrayAccess;
 use InvalidArgumentException;
 use Closure;
+use Hyperframework\Common\Config;
+use Hyperframework\Common\FileLoader;
+use Hyperframework\Common\FullPathRecognizer;
+use Hyperframework\Common\PathCombiner;
 
 abstract class ViewTemplate implements ArrayAccess {
     private $model;
