@@ -31,7 +31,7 @@ class Config {
         }
         throw new ConfigException(
             "Config '$name' requires a string, "
-                . gettype($result) . ' given.'
+                . gettype($result) . ' could not be converted to string.'
         );
     }
 

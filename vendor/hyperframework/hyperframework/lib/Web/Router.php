@@ -925,7 +925,8 @@ abstract class Router {
     }
 
     protected function redirect($url, $statusCode = 302) {
-        $this->app->redirect($url, $statusCode);
+        header('Location: ' . $url, true, $statusCode);
+        $this->getApp()->quit();
     }
 
     protected function isMatched() {

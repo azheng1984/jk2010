@@ -229,14 +229,6 @@ class Controller {
         $this->getRouter()->getParams();
     }
 
-    public function setRouteParam($name, $value) {
-        $this->getRouter()->setParam($name, $value);
-    }
-
-    public function removeRouteParam($name) {
-        $this->getRouter()->removeParam($name);
-    }
-
     public function hasRouteParam($name) {
         $this->getRouter()->hasParam($name);
     }
@@ -285,11 +277,23 @@ class Controller {
     }
 
     public function renderView() {
+        $view = $this->getView();
+        if (is_object($view)) {
+            if (method_exists($view, 'render')) {
+                $view->render($this->getActionResult());
+                return;
+            } else {
+                //throw e
+            }
+        } elseif (is_string($view) === false) {
+            //throw e
+        }
+        $path = $view;
+        if ($path === '') {
+            throw new LogicException('View path cannot be empty.');
+        }
         $view = new View($this->getActionResult());
-        $path = $this->getView();
         $view->load($path);
-        $this->disableView();
-        return;
     }
 
     public function getActionResult($name = null) {
@@ -309,8 +313,8 @@ class Controller {
     }
 
     public function redirect($url, $statusCode = 302) {
-        $this->quitFilterChain();
-        $this->getApp()->redirect($url, $statusCode);
+        header('Location: ' . $url, true, $statusCode);
+        $this->disableView();
     }
 
     private function quitFilterChain($exception = null) {

@@ -45,11 +45,6 @@ class App {
         return $this->router;
     }
 
-    public function redirect($url, $statusCode = 302) {
-        header('Location: ' . $url, true, $statusCode);
-        $this->quit();
-    }
-
     public function quit() {
         $this->finalize();
         exit;
