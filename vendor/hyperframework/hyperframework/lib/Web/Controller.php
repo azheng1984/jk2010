@@ -251,11 +251,11 @@ class Controller {
 
     public function getView() {
         if ($this->view === null) {
-            $view = null;
             $router = $this->getRouter();
             $view = '';
-            if ($router->getModule() != '') {
-                $view .= $this->getModule();
+            $module = $router->getModule();
+            if ($module != '') {
+                $view .= $module;
             }
             $controller = (string)$router->getController();
             if ($controller === '') {
@@ -266,11 +266,26 @@ class Controller {
                 throw new LogicException('Action cannot be empty.');
             }
             $view .=  $controller . '/' . $action;
-            $format = $router->hasParam('format');
-            if ($format != '') {
-                $view .= '.' . $format;
+            $shouldIncludeFormat = Config::getBoolean(
+                'hyperframework.web.view_path.include_format', false
+            );
+            if ($shouldIncludeFormat) {
+                $format = $router->getParam('format');
+                if ($format !== null) {
+                    $format = Config::getString(
+                        'hyperframework.web.view_path.default_format', 'html'
+                    );
+                }
+                if ($format !== '') {
+                    $view .= '.' . $format;
+                }
             }
-            $view .= '.php';
+            $extension = Config::getString(
+                'hyperframework.web.view_path.filename_extension', 'php'
+            );
+            if ($extension !== '') {
+                $view .= '.' . $extension;
+            }
             $this->view = $view;
         }
         return $this->view;
@@ -292,7 +307,7 @@ class Controller {
         }
         $class = Config::get('hyperframework.web.view_class', '');
         if ($class === '') {
-            $view = new View();
+            $view = new View($this->getActionResult());
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(

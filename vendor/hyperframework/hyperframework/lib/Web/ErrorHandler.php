@@ -2,7 +2,6 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Common\ViewTemplate;
 use Hyperframework\Common\ErrorHandler as Base;
 
 class ErrorHandler extends Base {
@@ -174,40 +173,24 @@ class ErrorHandler extends Base {
     }
 
     protected function renderErrorView() {
-        if ($this->isError() === true) {
-            $type = 'error';
-        } else {
-            $type = 'exception';
-        }
-        $template = new ViewTemplate(
-            ['source' => $this->getSource(), 'type' => $type]
+        $rootPath = Config::getString(
+            'hyperframework.view_path.error_root', '_error'
         );
-        $format = $this->getErrorViewFormat();
-        $prefix = $template->getRootPath() . DIRECTORY_SEPARATOR
-            . '_error' . DIRECTORY_SEPARATOR . 'show.';
-        if ($format !== null && $format !== 'php') {
-            if (file_exists($prefix . $format . '.php')) {
-                $template->load('_error/show.' . $format . '.php');
-                return;
-            }
+        $pattern = '#\.([0-9a-zA-Z]+)$#';
+        $requestPath = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
+        if (preg_match($pattern, $requestPath, $matches) === 1) {
+            $format = $matches[1];
         }
-        if (file_exists($prefix . 'php')) {
-            $template->load('_error/show.php');
-            return;
-        }
+        //search ...
+        $view = new View(
+            ['exception' => $this->getSource(), 'status_code' => '500']
+        );
+        $view->render($path);
         header('Content-Type: text/plain;charset=utf-8');
         if ($this->getSource() instanceof HttpException) {
             echo $this->getSource()->getCode();
         } else {
             echo '500 Internal Server Error';
-        }
-    }
-
-    protected function getErrorViewFormat() {
-        $pattern = '#\.([0-9a-zA-Z]+)$#';
-        $requestPath = RequestPath::get();
-        if (preg_match($pattern, $requestPath, $matches) === 1) {
-            return $matches[1];
         }
     }
 

@@ -267,7 +267,7 @@ class ErrorHandler {
         return $this->shouldDisplayErrors;
     }
 
-    final protected function getSource() {
+    final protected function getSource() {//todo getException
         return $this->source;
     }
 
