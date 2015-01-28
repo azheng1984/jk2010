@@ -1,5 +1,5 @@
 <?php
-/* @var $this Hyperframework\Common\View */
+/* @var $this Hyperframework\Web\View */
 
 $this->setBlock('hi', function() {
     echo 'hi';

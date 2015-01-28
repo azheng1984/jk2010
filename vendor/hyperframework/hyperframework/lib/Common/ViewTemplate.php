@@ -73,9 +73,7 @@ abstract class ViewTemplate implements ArrayAccess {
             $function();
         } else {
             if ($default === null) {
-                throw new ViewTemplateException(
-                    "Block '$name' does not exist."
-                );
+                throw new ViewException("Block '$name' does not exist.");
             }
             $default();
         }
