@@ -55,10 +55,9 @@ class App extends Base {
     }
 
     protected function rewriteRequestMethod() {
-        $shouldRewriteRequestMethod = Config::getBoolean(
+        if (Config::getBoolean(
             'hyperframework.web.rewrite_request_method', true
-        );
-        if ($shouldRewriteRequestMethod) {
+        )) {
             $method = null;
             if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
                 $method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
