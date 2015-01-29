@@ -1,27 +1,21 @@
 <?php
 namespace Hyperframework\Common;
 
-class Runner {
-    protected static function initialize() {
-        static::initializeAppRootPath();
-        static::initializeConfig();
-        static::initializeErrorHandler();
+abstract class Runner {
+    public function __construct($appRootPath) {
+        Config::set('hyperframework.app_root_path', $appRootPath);
+        $this->initializeConfig();
+        $this->initializeErrorHandler();
     }
 
-    protected static function initializeAppRootPath() {
-        throw new NotImplementedException(
-            "Method '" . __METHOD__ . "' is not implemented."
-        );
-    }
-
-    protected static function initializeConfig() {
+    protected function initializeConfig() {
         Config::importFile('init.php');
     }
 
-    protected static function initializeErrorHandler() {
+    protected function initializeErrorHandler() {
         $class = Config::getString('hyperframework.error_handler.class', '');
         if ($class === '') {
-            $class = static::getDefaultErrorHandlerClass();
+            $handler = static::getDefaultErrorHandler();
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
@@ -29,12 +23,12 @@ class Runner {
                         . "defined in 'hyperframework.error_handler.class'."
                 );
             }
+            $handler = new $class;
         }
-        $handler = new $class;
         $handler->run();
     }
 
-    protected static function getDefaultErrorHandlerClass() {
-        return 'Hyperframework\Common\ErrorHandler';
+    protected function getDefaultErrorHandler() {
+        return ErrorHandler;
     }
 }

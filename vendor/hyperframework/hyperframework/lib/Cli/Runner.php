@@ -6,19 +6,12 @@ use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\Runner as Base;
 
 class Runner extends Base {
-    private static $appRootPath;
-
     public static function run($appRootPath) {
-        self::$appRootPath = $appRootPath;
-        static::initialize();
-        static::runApp();
+        $runner = new Runner($appRootPath)
+        $runner->runApp();
     }
 
-    protected static function initializeAppRootPath() {
-        Config::set('hyperframework.app_root_path', self::$appRootPath);
-    }
-
-    protected static function runApp() {
+    protected function runApp() {
         $class = Config::getString('hyperframework.cli.app_class', '');
         if ($class === '') {
             $app = new App;

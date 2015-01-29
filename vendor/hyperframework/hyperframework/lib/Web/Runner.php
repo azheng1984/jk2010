@@ -7,19 +7,12 @@ use Hyperframework\Common\Runner as Base;
 
 class Runner extends Base {
     public static function run() {
-        static::initialize();
-        static::runApp();
+        $appRootPath = dirname(getcwd());
+        $runner = new Runner($appRootPath);
+        $runner->runApp();
     }
 
-    protected static function initializeAppRootPath() {
-        Config::set('hyperframework.app_root_path', dirname(getcwd()));
-    }
-
-    protected static function getDefaultErrorHandlerClass() {
-        return 'Hyperframework\Web\ErrorHandler';
-    }
-
-    protected static function runApp() {
+    protected function runApp() {
         $class = Config::getString('hyperframework.web.app_class', '');
         if ($class === '') {
             $app = new App;
@@ -33,5 +26,9 @@ class Runner extends Base {
             $app = new $class;
         }
         $app->run();
+    }
+
+    protected function getDefaultErrorHandler() {
+        return new ErrorHandler;
     }
 }

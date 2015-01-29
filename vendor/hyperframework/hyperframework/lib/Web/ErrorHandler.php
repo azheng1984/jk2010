@@ -173,14 +173,14 @@ class ErrorHandler extends Base {
     }
 
     protected function renderErrorView() {
-        $class = Config::getString('Hyperframework.error_view_class', '');
+        $class = Config::getString('Hyperframework.error_view.class', '');
         if ($class === '') {
             $view = new ErrorView;
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
                     "Error view class '$class' does not exist,"
-                        . " defined in 'hyperframework.error_view_class'."
+                        . " defined in 'hyperframework.error_view.class'."
                 );
             }
             $view = new $class;
