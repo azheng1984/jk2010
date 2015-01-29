@@ -9,7 +9,7 @@ class CsrfProtection {
 
     public static function run() {
         if (static::isEnabled()) {
-            $engine = self::getEngine();
+            $engine = static::getEngine();
             $engine->run();
         }
     }
@@ -21,12 +21,12 @@ class CsrfProtection {
     }
 
     public static function getToken() {
-        $engine = self::getEngine();
+        $engine = static::getEngine();
         return $engine->getToken();
     }
 
     public static function getTokenName() {
-        $engine = self::getEngine();
+        $engine = static::getEngine();
         return $engine->getTokenName();
     }
 

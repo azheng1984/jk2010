@@ -32,8 +32,9 @@ abstract class ViewTemplate implements ArrayAccess {
         $extensionPattern = '#\.[.0-9a-zA-Z]+$#';
         if (preg_match($extensionPattern, $path, $matches) === 0) {
             if ($this->fullPath === null) {
-                throw new InvalidArgumentException(
-                    "Path '$path' is invalid, file extension does not exist."
+                throw new ViewException(
+                    "View path '$path' is invalid, "
+                        . "filename extension does not exist."
                 );
             }
             preg_match($extensionPattern, $this->fullPath, $matches);
