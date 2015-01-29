@@ -17,13 +17,22 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
         );
     }
 
+    public function createApp() {
+        $mock = $this->getMockBuilder('Hyperframework\Cli\MultipleCommandApp')
+            ->setMethods(['quit', 'initializeConfig', 'initializeErrorHandler', 'initializeAppRootPath'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mock->__construct(null);
+        return $mock;
+    }
+
     public function testRunGlobalCommand() {
         $this->expectOutputString(
             "Usage: test [-t] [-h|--help] [--version] <command>" . PHP_EOL
         );
         $_SERVER['argv'] = ['run', '-t'];
-        $app = new MultipleCommandApp;
-        $app->run();
+        $app = $this->createApp();
+        $app->run(null);
         $this->assertEquals($app->getGlobalOptions(), ['t' => true]);
     }
 
@@ -33,8 +42,8 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
 
     public function testInitialize() {
         $_SERVER['argv'] = ['run', '-t', 'child', '-c', 'arg'];
-        $app = new MultipleCommandApp;
-        $app->run();
+        $app = $this->createApp();
+        $app->run(null);
         $this->assertEquals($app->getGlobalOptions(), ['t' => true]);
         $this->assertEquals($app->getOptions(), ['c' => true]);
         $this->assertEquals($app->getArguments(), ['arg']);
@@ -42,24 +51,24 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
 
     public function testHasGlobalOption() {
         $_SERVER['argv'] = ['run', '-t', 'child', '-c', 'arg'];
-        $app = new MultipleCommandApp;
-        $app->run();
+        $app = $this->createApp();
+        $app->run(null);
         $this->assertEquals($app->hasGlobalOption('t'),  true);
         $this->assertEquals($app->hasGlobalOption('c'),  false);
     }
 
     public function testGetGlobalOption() {
         $_SERVER['argv'] = ['run', '-t', 'child', '-c', 'arg'];
-        $app = new MultipleCommandApp;
-        $app->run();
+        $app = $this->createApp();
+        $app->run(null);
         $this->assertEquals($app->getGlobalOption('t'),  true);
         $this->assertEquals($app->hasGlobalOption('c'),  null);
     }
 
     public function testRunSubcommand() {
         $_SERVER['argv'] = ['run', 'child', '-c', 'arg'];
-        $app = new MultipleCommandApp;
-        $app->run();
+        $app = $this->createApp();
+        $app->run(null);
         $this->assertEquals($app->getOptions(), ['c' => true]);
         $this->assertEquals($app->getArguments(), ['arg']);
     }
@@ -69,12 +78,7 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
             "Usage: test [-t] [-h|--help] [--version] <command>" . PHP_EOL
         );
         $_SERVER['argv'] = ['run', '-h'];
-        $mock = $this->getMockBuilder('Hyperframework\Cli\MultipleCommandApp')
-            ->setMethods(['quit'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $mock->expects($this->once())->method('quit');
-        $mock->__construct();
+        $app = $this->createApp();
     }
 
     public function testRenderSubcommandHelp() {
@@ -82,23 +86,13 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
             "Usage: test child [-c] [-h|--help] <arg>" . PHP_EOL
         );
         $_SERVER['argv'] = ['run', 'child', '-h'];
-        $mock = $this->getMockBuilder('Hyperframework\Cli\MultipleCommandApp')
-            ->setMethods(['quit'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $mock->expects($this->once())->method('quit');
-        $mock->__construct();
+        $app = $this->createApp();
     }
 
     public function testRenderVersion() {
         $this->expectOutputString("1.0.0" . PHP_EOL);
         $_SERVER['argv'] = ['run', '--version'];
-        $mock = $this->getMockBuilder('Hyperframework\Cli\MultipleCommandApp')
-            ->setMethods(['quit'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $mock->expects($this->once())->method('quit');
-        $mock->__construct();
+        $app = $this->createApp();
     }
 
     /**
@@ -106,25 +100,25 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
      */
     public function testSubcommandClassNotFound() {
         $_SERVER['argv'] = ['run', 'child_class_error'];
-        $app = new MultipleCommandApp;
-        $app->run();
+        $app = $this->createApp();
+        $app->run(null);
     }
 
     public function testGetSubcommand() {
         $_SERVER['argv'] = ['run', 'child', 'arg'];
-        $app = new MultipleCommandApp;
+        $app = $this->createApp();
         $this->assertEquals($app->hasSubcommand(), true);
         $_SERVER['argv'] = ['run'];
-        $app = new MultipleCommandApp;
+        $app = $this->createApp();
         $this->assertEquals($app->hasSubcommand(), false);
     }
 
     public function testHasSubcommand() {
         $_SERVER['argv'] = ['run', 'child', 'arg'];
-        $app = new MultipleCommandApp;
+        $app = $this->createApp();
         $this->assertEquals($app->getSubcommand(), 'child');
         $_SERVER['argv'] = ['run'];
-        $app = new MultipleCommandApp;
+        $app = $this->createApp();
         $this->assertEquals($app->getSubcommand(), null);
     }
 }

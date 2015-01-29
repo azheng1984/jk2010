@@ -1,21 +1,37 @@
 <?php
 namespace Hyperframework\Common;
 
+use LogicException;
+
 abstract class App {
-    public function __construct($appRootPath) {
-        Config::set('hyperframework.app_root_path', $appRootPath);
+    private $appRootPath;
+
+    public function __construct($appRootPath = null) {
+        $this->appRootPath = $appRootPath;
         $this->initializeConfig();
         $this->initializeErrorHandler();
     }
 
     protected function initializeConfig() {
+        $this->initializeAppRootPath();
         Config::importFile('init.php');
     }
 
-    protected function initializeErrorHandler() {
+    protected function initializeAppRootPath() {
+        if ($this->appRootPath === null) {
+            throw new LogicException("App root path cannot be empty.");
+        }
+        Config::set('hyperframework.app_root_path', $appRootPath);
+    }
+
+    protected function initializeErrorHandler($defaultClass = null) {
         $class = Config::getString('hyperframework.error_handler.class', '');
         if ($class === '') {
-            $handler = static::getDefaultErrorHandler();
+            if ($defaultClass === null) {
+                $handler = new ErrorHandler;
+            } else {
+                $handler = new $defaultClass;
+            }
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
@@ -26,9 +42,5 @@ abstract class App {
             $handler = new $class;
         }
         $handler->run();
-    }
-
-    protected function getDefaultErrorHandler() {
-        return new ErrorHandler;
     }
 }

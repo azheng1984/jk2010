@@ -17,7 +17,7 @@ class RouterTest extends Base {
     private function resetRouter() {
         $this->router = $this->getMockForAbstractClass(
             'Hyperframework\Web\Router',
-            [new App],
+            [new \stdclass],
             '',
             false
         );

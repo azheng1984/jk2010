@@ -1,12 +1,13 @@
 <?php
 namespace Hyperframework\Cli;
 
-use Hyperframework\Common\App as Base;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
+use Hyperframework\Common\App as Base;
 
 class App extends Base {
     private $commandConfig;
+    private $appRootPath;
     private $options = [];
     private $arguments = [];
 

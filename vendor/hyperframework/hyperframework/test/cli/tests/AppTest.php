@@ -18,27 +18,36 @@ class AppTest extends Base {
         Config::clear();
     }
 
+    public function createApp() {
+        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
+            ->setMethods(['quit', 'initializeConfig', 'initializeErrorHandler', 'initializeAppRootPath'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mock->__construct(null);
+        return $mock;
+    }
+
     public function testInitializeOption() {
         $_SERVER['argv'] = ['run', '-t', 'arg'];
-        $app = new App;
+        $app = $this->createApp();
         $this->assertEquals($app->getOptions(), ['t' => true]);
     }
 
     public function testInitializeArgument() {
         $_SERVER['argv'] = ['run', 'arg'];
-        $app = new App;
+        $app = $this->createApp();
         $this->assertEquals($app->getArguments(), ['arg']);
     }
 
     public function testGetOption() {
         $_SERVER['argv'] = ['run', '-t', 'arg'];
-        $app = new App;
+        $app = $this->createApp();
         $this->assertEquals($app->getOption('t'), true);
     }
 
     public function testHasOption() {
         $_SERVER['argv'] = ['run', '-t', 'arg'];
-        $app = new App;
+        $app = $this->createApp();
         $this->assertEquals($app->hasOption('t'), true);
         $this->assertEquals($app->hasOption('x'), false);
     }
@@ -49,11 +58,7 @@ class AppTest extends Base {
             'hyperframework.cli.help_class', 'Hyperframework\Cli\Test\Help'
         );
         $_SERVER['argv'] = ['run', '-h'];
-        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
-            ->setMethods(['quit'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $mock->__construct();
+        $app = $this->createApp();
     }
 
     /**
@@ -64,11 +69,7 @@ class AppTest extends Base {
             'hyperframework.cli.help_class', 'Unknown'
         );
         $_SERVER['argv'] = ['run', '-h'];
-        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
-            ->setMethods(['quit'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $mock->__construct();
+        $app = $this->createApp();
     }
 
     /**
@@ -79,8 +80,8 @@ class AppTest extends Base {
             'hyperframework.cli.command_config_path', 'command_class_error.php'
         );
         $_SERVER['argv'] = ['run'];
-        $app = new App;
-        $app->run();
+        $app = $this->createApp();
+        $app->run(null);
     }
 
     public function testRenderHelp() {
@@ -88,23 +89,13 @@ class AppTest extends Base {
             "Usage: test [-t] [-h|--help] [--version] <arg>" . PHP_EOL
         );
         $_SERVER['argv'] = ['run', '-h'];
-        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
-            ->setMethods(['quit'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $mock->expects($this->once())->method('quit');
-        $mock->__construct();
+        $this->createApp();
     }
 
     public function testRenderVersion() {
         $this->expectOutputString("1.0.0" . PHP_EOL);
         $_SERVER['argv'] = ['run', '--version'];
-        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
-            ->setMethods(['quit'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $mock->expects($this->once())->method('quit');
-        $mock->__construct();
+        $this->createApp();
     }
 
     public function testCustomCommandConfig() {
@@ -113,7 +104,7 @@ class AppTest extends Base {
             'Hyperframework\Cli\Test\CommandConfig'
         );
         $_SERVER['argv'] = ['run', 'arg'];
-        $app = new App;
+        $app = $this->createApp();
         $this->assertInstanceOf(
             'Hyperframework\Cli\Test\CommandConfig', $app->getCommandConfig()
         );
@@ -127,7 +118,7 @@ class AppTest extends Base {
             'hyperframework.cli.command_config_class', 'Unknown'
         );
         $_SERVER['argv'] = ['run', 'arg'];
-        $app = new App;
+        $app = $this->createApp();
     }
 
     public function testVersionNotFound() {
@@ -137,21 +128,14 @@ class AppTest extends Base {
         );
         $this->expectOutputString("undefined" . PHP_EOL);
         $_SERVER['argv'] = ['run', '--version'];
-        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
-            ->setMethods(['quit'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $mock->expects($this->once())->method('quit');
-        $mock->__construct();
+        $app = $this->createApp();
     }
 
     public function testRun() {
         $this->expectOutputString('Hyperframework\Cli\Test\Command::execute');
         $_SERVER['argv'] = ['run', 'arg'];
-        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
-            ->setMethods(['finalize'])->getMock();
-        $mock->expects($this->once())->method('finalize');
-        $mock->run();
+        $app = $this->createApp();
+        $app->run(null);
     }
 
     public function testCommandParsingError() {
@@ -160,11 +144,6 @@ class AppTest extends Base {
                 . PHP_EOL . "See 'test --help'." . PHP_EOL
         );
         $_SERVER['argv'] = ['run', '--unknown'];
-        $mock = $this->getMockBuilder('Hyperframework\Cli\App')
-            ->setMethods(['quit'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $mock->expects($this->once())->method('quit');
-        $mock->__construct();
+        $app = $this->createApp();
     }
 }

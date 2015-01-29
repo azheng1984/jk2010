@@ -13,12 +13,21 @@ class ControllerTest extends Base {
             'hyperframework.web.router_class',
             'Hyperframework\Web\Test\Router'
         );
-        $app = new App;
+        $app = $this->createApp();
         $router = $app->getRouter();
         $router->setAction('index');
         $router->setActionMethod('doIndexAction');
         $router->setController('index');
         $controller = new Controller($app);
         $controller->run();
+    }
+
+    public function createApp() {
+        $mock = $this->getMockBuilder('Hyperframework\Web\App')
+            ->setMethods(['quit', 'initializeConfig', 'initializeErrorHandler', 'initializeAppRootPath'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mock->__construct(null);
+        return $mock;
     }
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-use Hyperframework\Cli\MultipleCommandApp;
+use Hyperframework\Cli\App;
 
 require __DIR__ . '/vendor/autoload.php';
-MultipleCommandApp::run(__DIR__);
+App::run(__DIR__);
