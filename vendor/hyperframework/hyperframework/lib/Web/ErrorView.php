@@ -18,15 +18,32 @@ class ErrorView {
         } else {
             $format = 'html';//config
         }
-        //search ...
+        //search:
+        // error.{format}.php
+        // error.{format}
+        // error.php
+        $this->setHttpContentTypeHeader();
         if ($noView) {
-            header('Content-Type: text/plain;charset=utf-8');
             echo $statusCode;
        } else {
             $view = new View([
                 'exception' => $this->getSource(), 'status_code' => $statusCode
             ]);
             $view->render($path);
+        }
+    }
+
+    protected function setHttpContentTypeHeader($format) {
+        $mime =  null;
+        switch ($format) {
+            case 'text':
+                header('Content-Type: text/plain;charset=utf-8');
+            case 'html':
+                header('Content-Type: text/html;charset=utf-8');
+            case 'xml':
+                header('Content-Type: application/xml;charset=utf-8');
+            case 'json':
+                header('Content-Type: application/json;charset=utf-8');
         }
     }
 }
