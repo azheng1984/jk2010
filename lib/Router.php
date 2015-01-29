@@ -5,16 +5,17 @@ use Hyperframework\Web\Router as Base;
 
 class Router extends Base {
     protected function execute() {
-        var_dump($this->match(':controller/:id(.:format)', [
-            ':format' => 'html',
-            'extra' => function($matches) {
-                print_r($matches);
-                //$matches['id']
-            }
-        ]));
+//        var_dump($this->match(':controller/:id(.:format)', [
+//            ':format' => 'html',
+//            'extra' => function($matches) {
+//                print_r($matches);
+//                //$matches['id']
+//            }
+//        ]));
+
  //       echo $this->getParam('id');
         //echo $this->getControllerClass();
-        var_dump($this->match('articles/:id.html'));
+//        var_dump($this->match('articles/:id.html'));
         $this->match('/');
  //       echo $this->getParam('id');
  //       exit;
