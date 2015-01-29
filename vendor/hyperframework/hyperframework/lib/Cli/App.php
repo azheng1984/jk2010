@@ -1,15 +1,24 @@
 <?php
 namespace Hyperframework\Cli;
 
+use Hyperframework\Common\App as Base;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
-class App {
+class App extends Base {
     private $commandConfig;
     private $options = [];
     private $arguments = [];
 
-    public function __construct() {
+    public static function run($appRootPath) {
+        $class = get_called_class();
+        $app = new $class($appRootPath);
+        $app->executeCommand();
+        $app->finalize();
+    }
+
+    public function __construct($appRootPath) {
+        parent::__construct($appRootPath);
         $elements = $this->parseCommand();
         if (isset($elements['options'])) {
             $this->setOptions($elements['options']);
@@ -25,11 +34,6 @@ class App {
             $this->renderVersion();
             $this->quit();
         }
-    }
-
-    public function run() {
-        $this->executeCommand();
-        $this->finalize();
     }
 
     public function getArguments() {

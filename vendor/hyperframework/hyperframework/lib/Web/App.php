@@ -2,22 +2,27 @@
 namespace Hyperframework\Web;
 
 use LogicException;
+use Hyperframework\Common\App as Base;
 use Hyperframework\Common\Config;
-use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\NamespaceCombiner;
+use Hyperframework\Common\ClassNotFoundException;
 
-class App {
+class App extends Base {
     private $router;
 
     public function __construct() {
+        $appRootPath = dirname(getcwd());
+        parent::__construct($appRootPath);
         $this->rewriteRequestMethod();
         $this->checkCsrf();
     }
 
-    public function run() {
-        $controller = $this->createController();
+    public static function run() {
+        $class = get_called_class();
+        $app = new $class;
+        $controller = $app->createController();
         $controller->run();
-        $this->finalize();
+        $app->finalize();
     }
 
     public function getRouter() {

@@ -3,13 +3,16 @@ namespace Hyperframework\Cli;
 
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
+use Hyperframework\Common\App as CommonApp;
 
 class MultipleCommandApp extends App {
     private $commandConfig;
     private $subcommand;
     private $globalOptions = [];
 
-    public function __construct() {
+    public function __construct($appRootPath) {
+        echo 'hi';
+        CommonApp::__construct($appRootPath);
         Config::set('hyperframework.cli.enable_subcommand', true);
         $elements = $this->parseCommand();
         if (isset($elements['global_options'])) {

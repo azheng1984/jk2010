@@ -1,7 +1,5 @@
 <?php
-namespace Hyperframework\Blog;
-
-use Hyperframework\Web\Runner;
+use Hyperframework\Web\App;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
-Runner::run();
+App::run();
