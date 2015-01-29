@@ -8,8 +8,14 @@ abstract class App {
 
     public function __construct($appRootPath = null) {
         $this->appRootPath = $appRootPath;
-        $this->initializeConfig();
-        $this->initializeErrorHandler();
+        if (Config::getBoolean('hyperframework.initialize_config', true)) {
+            $this->initializeConfig();
+        }
+        if (Config::getBoolean(
+            'hyperframework.initialize_error_handler', true
+        )) {
+            $this->initializeErrorHandler();
+        }
     }
 
     protected function initializeConfig() {
@@ -25,7 +31,9 @@ abstract class App {
     }
 
     protected function initializeErrorHandler($defaultClass = null) {
-        $class = Config::getString('hyperframework.error_handler.class', '');
+        $class = Config::getString(
+            'hyperframework.error_handler.class', ''
+        );
         if ($class === '') {
             if ($defaultClass === null) {
                 $handler = new ErrorHandler;
