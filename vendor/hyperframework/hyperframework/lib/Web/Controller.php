@@ -266,10 +266,9 @@ class Controller {
                 throw new LogicException('Action cannot be empty.');
             }
             $view .=  $controller . '/' . $action;
-            $shouldIncludeOutputFormat = Config::getBoolean(
-                'hyperframework.web.view.filename.include_output_format', false 
-            );
-            if ($shouldIncludeOutputFormat) {
+            if (Config::getBoolean(
+                'hyperframework.web.view.filename.include_output_format', true
+            )) {
                 $format = $this->getFormat();
                 if ($format !== null) {
                     $format = Config::getString(
@@ -310,14 +309,14 @@ class Controller {
         if ($path === '') {
             throw new LogicException('View path cannot be empty.');
         }
-        $class = Config::get('hyperframework.web.view_class', '');
+        $class = Config::get('hyperframework.web.view.class', '');
         if ($class === '') {
             $view = new View($this->getActionResult());
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
                     "View class '$class' does not exist, defined in "
-                        . "'hyperframework.web.view_class'."
+                        . "'hyperframework.web.view.class'."
                 );
             }
             $view = new $class($this->getActionResult());

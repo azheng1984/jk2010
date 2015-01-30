@@ -56,8 +56,12 @@ class ErrorView {
     }
 
     protected function getFormat() {
-        return Config::getString(
-            'hyperframework.web.view.default_output_format', 'html'
+        $result = Config::getString(
+            'hyperframework.web.view.default_output_format', ''
         );
+        if ($result === '') {
+            $result = 'html';
+        }
+        return $result;
     }
 }
