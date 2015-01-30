@@ -252,10 +252,11 @@ class Controller {
     public function getView() {
         if ($this->view === null) {
             $router = $this->getRouter();
-            $view = '';
-            $module = $router->getModule();
-            if ($module != '') {
-                $view .= $module;
+            $module = (string)$router->getModule();
+            if ($module !== '') {
+                $name = $module;
+            } else {
+                $name = '';
             }
             $controller = (string)$router->getController();
             if ($controller === '') {
@@ -265,27 +266,8 @@ class Controller {
             if ($action === '') {
                 throw new LogicException('Action cannot be empty.');
             }
-            $view .=  $controller . '/' . $action;
-            if (Config::getBoolean(
-                'hyperframework.web.view.filename.include_output_format', true
-            )) {
-                $format = $this->getFormat();
-                if ($format === null) {
-                    $format = Config::getString(
-                        'hyperframework.web.view.default_output_format', 'html'
-                    );
-                }
-                if ($format !== '') {
-                    $view .= '.' . $format;
-                }
-            }
-            $extension = Config::getString(
-                'hyperframework.web.view.format', 'php'
-            );
-            if ($extension !== '') {
-                $view .= '.' . $extension;
-            }
-            $this->view = $view;
+            $name .= $controller . '/' . $action;
+            $this->view = ViewPathBuilder::build($name, $this->getFormat());
         }
         return $this->view;
     }
@@ -309,18 +291,7 @@ class Controller {
         if ($path === '') {
             throw new LogicException('View path cannot be empty.');
         }
-        $class = Config::get('hyperframework.web.view.class', '');
-        if ($class === '') {
-            $view = new View($this->getActionResult());
-        } else {
-            if (class_exists($class) === false) {
-                throw new ClassNotFoundException(
-                    "View class '$class' does not exist, defined in "
-                        . "'hyperframework.web.view.class'."
-                );
-            }
-            $view = new $class($this->getActionResult());
-        }
+        $view = ViewFactory::create($this->getActionResult());
         $view->render($path);
     }
 
@@ -328,10 +299,20 @@ class Controller {
         if ($name === null) {
             $result = $this->actionResult;
         }
-        return $this->actionResult[$name];
+        if (isset($this->actionResult[$name])) {
+            return $this->actionResult[$name];
+        }
     }
 
     public function setActionResult($value) {
+        if ($value !== null) {
+            if (is_array($value) === false) {
+                throw new LogicException(
+                    'Action result must be an array, '
+                        . gettype($value) . ' given.'
+                );
+            }
+        }
         return $this->actionResult = $value;
     }
 

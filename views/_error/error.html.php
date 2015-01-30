@@ -1,1 +1,1 @@
-default error page
+error

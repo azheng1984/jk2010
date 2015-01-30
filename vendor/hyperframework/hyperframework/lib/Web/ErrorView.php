@@ -6,12 +6,7 @@ use Hyperframework\Common\PathCombiner;
 use Hyperframework\Common\FileLoader;
 
 class ErrorView {
-    public function render($exception) {
-        if ($exception instanceof HttpException) {
-            $statusCode = $exception->getStatusCode();
-        } else {
-            $statusCode = '500 Internal Server Error';
-        }
+    public function render($exception, $statusCode, $outputFormat = null) {
         $code = explode(' ', $statusCode, 2)[0];
         $rootPath = Config::getString(
             'hyperframework.error_view.root_path', ''
@@ -25,19 +20,10 @@ class ErrorView {
             }
             PathCombiner::append($rootPath, '_error');
         }
-        if (Config::getBoolean(
-            'hyperframework.web.error_view.filename.include_output_format', true
-        )) {
-            $format = (string)$this->getFormat();
-            if ($format === '') {
-                $format = self::getFormat();
-            }
-            $files = [
-                $code . '.' . $format . '.php', 'error.' . $format . '.php'
-            ];
-        } else {
-            $files = [$code . '.php', 'error.php'];
-        }
+        $files = [
+            ViewPathBuilder::build($code, $outputFormat),
+            ViewPathBuilder::build('error', $outputFormat)
+        ];
         $rootPath = FileLoader::getFullPath($rootPath);
         $path = null;
         foreach ($files as $file) {
@@ -51,20 +37,10 @@ class ErrorView {
             header("content-type: text/plain;charset=utf-8");
             echo $statusCode;
         } else {
-            $view = new View([
+            $view = ViewFactory::create([
                 'exception' => $exception, 'status_code' => $statusCode
             ]);
             $view->render($path);
         }
-    }
-
-    protected function getFormat() {
-        $result = Config::getString(
-            'hyperframework.web.view.default_output_format', ''
-        );
-        if ($result === '') {
-            $result = 'html';
-        }
-        return $result;
     }
 }

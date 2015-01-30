@@ -173,7 +173,7 @@ class ErrorHandler extends Base {
     }
 
     protected function renderErrorView() {
-        $class = Config::getString('Hyperframework.error_view.class', '');
+        $class = Config::getString('hyperframework.error_view.class', '');
         if ($class === '') {
             $view = new ErrorView;
         } else {
@@ -185,7 +185,13 @@ class ErrorHandler extends Base {
             }
             $view = new $class;
         }
-        $view->render($this->getSource());
+        $exception = $this->getSource();
+        if ($exception instanceof HttpException) {
+            $statusCode = $exception->getStatusCode();
+        } else {
+            $statusCode = '500 Internal Server Error';
+        }
+        $view->render($exception, $statusCode);
     }
 
     final protected function isDebuggerEnabled() {
