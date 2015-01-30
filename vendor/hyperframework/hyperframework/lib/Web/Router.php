@@ -36,7 +36,9 @@ abstract class Router {
     }
 
     public function getParam($name) {
-        return $this->params[$name];
+        if (isset($this->params[$name])) {
+            return $this->params[$name];
+        }
     }
 
     public function getParams() {
