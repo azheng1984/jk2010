@@ -269,11 +269,12 @@ class Controller {
             if (Config::getBoolean(
                 'hyperframework.web.view.filename.include_output_format', true
             )) {
-                $format = $this->getFormat();
-                if ($format !== null) {
+                if ($this->hasFormat() === false) {
                     $format = Config::getString(
                         'hyperframework.web.view.default_output_format', 'html'
                     );
+                } else {
+                    $format = $this->getFormat();
                 }
                 if ($format !== '') {
                     $view .= '.' . $format;
@@ -293,6 +294,11 @@ class Controller {
     public function getFormat() {
         $router = $this->getRouter();
         return $router->getParam('format');
+    }
+
+    public function hasFormat() {
+        $router = $this->getRouter();
+        return $router->hasParam('format');
     }
 
     public function renderView() {
