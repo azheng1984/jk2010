@@ -188,10 +188,18 @@ class ErrorHandler extends Base {
         $exception = $this->getSource();
         if ($exception instanceof HttpException) {
             $statusCode = $exception->getStatusCode();
+            $segments = explode(' ', $statusCode, 2);
+            $code = (int)$segments[0];
+            if (count($segments) === 2) {
+                $text = $segments[1];
+            } else {
+                $text = null;
+            }
         } else {
-            $statusCode = '500 Internal Server Error';
+            $code = 500;
+            $text = 'Internal Server Error';
         }
-        $view->render($exception, $statusCode);
+        $view->render(['code' => $code, 'text' => $text], $exception);
     }
 
     final protected function isDebuggerEnabled() {
