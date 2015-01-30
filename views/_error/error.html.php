@@ -1,1 +1,1 @@
-error mobile
+default error page

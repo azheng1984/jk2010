@@ -72,7 +72,7 @@ class ErrorHandler extends Base {
 
     private function deleteOutputBuffer() {
         $obLevel = ob_get_level();
-        while ($obLevel > $this->startupOutputBufferLevel) {
+        while ($obLevel >= $this->startupOutputBufferLevel) {
             ob_end_clean();
             --$obLevel;
         }
