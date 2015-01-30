@@ -386,7 +386,7 @@ abstract class Router {
                     return false;
                 }
             }
-            $pattern = '#^[a-zA-Z_][a-zA-Z0-9_]*$#';
+            $pattern = '#^[a-zA-Z][a-zA-Z0-9_]*$#';
             if (isset($matches['module'])
                 && isset($options[':module']) === false
             ) {
