@@ -96,7 +96,7 @@ abstract class ViewTemplate implements ArrayAccess {
     public function getRootPath() {
         if ($this->rootPath === null) {
             $path = Config::getString(
-                'hyperframework.web.view.root_path', 'view'
+                'hyperframework.web.view.root_path', 'views'
             );
             $this->rootPath = FileLoader::getFullPath($path);
         }

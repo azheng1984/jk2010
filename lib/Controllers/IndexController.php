@@ -21,7 +21,7 @@ class IndexController extends Controller {
                throw $e;
             }
         });
-        $this->addAfterFilter(':hi3', ['prepend' => true, 'actions' => 'delete']);    
+        $this->addAfterFilter(':hi3', ['prepend' => true, 'actions' => 'delete']);
     //        $this->removeFilter(':hi');
     }
 

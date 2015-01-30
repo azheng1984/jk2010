@@ -266,15 +266,14 @@ class Controller {
                 throw new LogicException('Action cannot be empty.');
             }
             $view .=  $controller . '/' . $action;
-            $shouldIncludeFormat = Config::getBoolean(
-                'hyperframework.web.view.path.enable_output_format', false
+            $shouldIncludeOutputFormat = Config::getBoolean(
+                'hyperframework.web.view.filename.include_output_format', true
             );
-            if ($shouldIncludeFormat) {
+            if ($shouldIncludeOutputFormat) {
                 $format = $this->getFormat();
                 if ($format !== null) {
                     $format = Config::getString(
-                        'hyperframework.web.view_path.default_output_format',
-                        'html'
+                        'hyperframework.web.view.default_output_format', 'html'
                     );
                 }
                 if ($format !== '') {
@@ -282,7 +281,7 @@ class Controller {
                 }
             }
             $extension = Config::getString(
-                'hyperframework.web.view_path.filename_extension', 'php'
+                'hyperframework.web.view.format', 'php'
             );
             if ($extension !== '') {
                 $view .= '.' . $extension;
@@ -292,10 +291,10 @@ class Controller {
         return $this->view;
     }
 
-//    public function getFormat() {
-//        $router = $this->getRouter();
-//        return $router->getParam('format');
-//    }
+    public function getFormat() {
+        $router = $this->getRouter();
+        return $router->getParam('format');
+    }
 
     public function renderView() {
         $view = $this->getView();

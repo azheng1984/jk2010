@@ -15,17 +15,21 @@ class ErrorView {
         $code = explode(' ', $statusCode, 2)[0];
         $rootPath = Config::getString(
             'hyperframework.error_view.root_path',
-            'view' . DIRECTORY_SEPARATOR . '_error'
+            'views' . DIRECTORY_SEPARATOR . '_error'
         );
-        $rootPath = FileLoader::getFullPath($rootPath);
-        $files = [$code . '.php', 'error.php'];
+        $shouldIncludeOutputFormat = Config::getBoolean(
+            'hyperframework.web.view.filename.include_output_format', true
+        );
         $format = $this->getFormat();
-        if ($format !== null) {
-            $files = array_merge([
+        if ($shouldIncludeOutputFormat) {
+            $files = [
                 $code . '.' . $format . '.php',
                 'error.' . $format . '.php'
-            ], $files);
+            ];
+        } else {
+            $files = [$code . '.php', 'error.php'];
         }
+        $rootPath = FileLoader::getFullPath($rootPath);
         $path = null;
         foreach ($files as $file) {
             PathCombiner::prepend($file, $rootPath);
@@ -46,13 +50,6 @@ class ErrorView {
     }
 
     protected function getFormat() {
-        $pattern = '#\.([0-9a-zA-Z]+)$#';
-        $requestPath = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
-        if (preg_match($pattern, $requestPath, $matches) === 1) {
-            $format = $matches[1];
-        } else {
-            $format = 'html';
-        }
-        return $format;
+        return 'html';
     }
 }
