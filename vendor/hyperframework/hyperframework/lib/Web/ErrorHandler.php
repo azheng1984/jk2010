@@ -28,7 +28,6 @@ class ErrorHandler extends Base {
     }
 
     protected function displayFatalError() {
-        $isError = $this->isError();
         $exception = $this->getException();
         if ($this->isDebuggerEnabled) {
             $headers = headers_list();

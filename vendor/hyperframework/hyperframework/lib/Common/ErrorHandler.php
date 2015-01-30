@@ -125,7 +125,7 @@ class ErrorHandler {
                     $data['type'] = $exception->getSeverityAsConstantName();
                 }
             }
-            if ($this->isError() === false || $exception->isFatal() === false) {
+            if ($this->isError === false || $exception->isFatal() === false) {
                 $shouldLogTrace = Config::getBoolean(
                     'hyperframework.error_handler.logger.log_stack_trace', false
                 );
