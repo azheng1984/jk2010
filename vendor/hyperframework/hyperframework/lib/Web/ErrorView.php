@@ -1,15 +1,16 @@
 <?php
 namespace Hyperframework\Web;
 
+use InvalidArgumentException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\PathCombiner;
 use Hyperframework\Common\FileLoader;
 
 class ErrorView {
-    public function render(array $status, $exception, $outputFormat = null) {
-        if (isset($status['code']) === false) {
+    public function render($error, $outputFormat = null) {
+        if (isset($error['code']) === false) {
             throw new InvalidArgumentException(
-                "Field 'code' of argument 'status' is missing."
+                "Field 'code' of argument 'error' is missing."
             );
         }
         $rootPath = Config::getString(
@@ -23,7 +24,7 @@ class ErrorView {
             PathCombiner::append($rootPath, '_error');
         }
         $files = [
-            ViewPathBuilder::build($status['code'], $outputFormat),
+            ViewPathBuilder::build($error['code'], $outputFormat),
             ViewPathBuilder::build('error', $outputFormat)
         ];
         $rootPath = FileLoader::getFullPath($rootPath);
@@ -37,11 +38,12 @@ class ErrorView {
         }
         if ($path === null) {
             header("content-type: text/plain;charset=utf-8");
-            echo $status['code'] . ' ' . $status['text'];
+            echo $error['code'];
+            if (isset($error['text'])) {
+                echo ' ' . $error['text'];
+            }
         } else {
-            $view = ViewFactory::create([
-                'exception' => $exception, 'status' => $status
-            ]);
+            $view = ViewFactory::create($error);
             $view->render($path);
         }
     }

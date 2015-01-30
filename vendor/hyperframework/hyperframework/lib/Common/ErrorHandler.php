@@ -11,7 +11,7 @@ class ErrorHandler {
     private $shouldDisplayErrors;
     private $isShutdownStarted = false;
     private $shouldExit;
-    private $source;
+    private $exception;
     private $isError;
 
     public function __construct() {
@@ -47,7 +47,7 @@ class ErrorHandler {
     ) {
         $this->enableDefaultErrorReporting();
         $shouldThrow = false;
-        if ($this->source === null) {
+        if ($this->exception === null) {
             $errorThrowingBitmask = Config::getInt(
                 'hyperframework.error_handler.error_throwing_bitmask'
             );
@@ -109,29 +109,29 @@ class ErrorHandler {
 
     protected function writeLog() {
         if ($this->isLoggerEnabled()) {
-            $source = $this->source;
+            $exception = $this->exception;
             $name = null;
             $data = [];
-            $data['file'] = $source->getFile();
-            $data['line'] = $source->getLine();
+            $data['file'] = $exception->getFile();
+            $data['line'] = $exception->getLine();
             if ($this->isError === false) {
                 $name = 'php_exception';
-                $data['class'] = get_class($source);
+                $data['class'] = get_class($exception);
             } else {
-                if ($this->source->shouldThrow()) {
+                if ($this->exception->shouldThrow()) {
                     $name = 'php_error_exception';
                 } else {
                     $name = 'php_error';
-                    $data['type'] = $source->getSeverityAsConstantName();
+                    $data['type'] = $exception->getSeverityAsConstantName();
                 }
             }
-            if ($this->isError() === false || $source->isFatal() === false) {
+            if ($this->isError() === false || $exception->isFatal() === false) {
                 $shouldLogTrace = Config::getBoolean(
                     'hyperframework.error_handler.logger.log_stack_trace', false
                 );
                 if ($shouldLogTrace) {
                     $data['stack_trace'] = [];
-                    foreach ($source->getTrace() as $item) {
+                    foreach ($exception->getTrace() as $item) {
                         $trace = [];
                         if (isset($item['class'])) {
                             $trace['class'] = $item['class'];
@@ -152,7 +152,7 @@ class ErrorHandler {
             $method = $this->getLoggerMethod();
             Logger::$method([
                 'name' => $name,
-                'message' => $source->getMessage(),
+                'message' => $exception->getMessage(),
                 'data' => $data
             ]);
         } elseif ($this->isDefaultErrorLogEnabled()) {
@@ -183,11 +183,11 @@ class ErrorHandler {
             E_CORE_WARNING      => 'warn',
             E_RECOVERABLE_ERROR => 'error'
         ];
-        return $maps[$this->source->getSeverity()];
+        return $maps[$this->exception->getSeverity()];
     }
 
     protected function displayError() {
-        $source = $this->source;
+        $exception = $this->exception;
         if (ini_get('xmlrpc_errors') === '1') {
             $code = ini_get('xmlrpc_error_number');
             echo '<?xml version="1.0"?><methodResponse>',
@@ -219,30 +219,30 @@ class ErrorHandler {
         }
         echo $prefix, '<br />', PHP_EOL, '<b>';
         if ($this->isError) {
-            if ($source->shouldThrow() === true) {
+            if ($exception->shouldThrow() === true) {
                 echo 'Fatal error';
             } else {
-                echo $source->getSeverityAsString();
+                echo $exception->getSeverityAsString();
             }
             echo '</b>:  ';
             if (ini_get('docref_root') !== '') {
-                echo $source->getMessage();
+                echo $exception->getMessage();
             } else {
                 echo htmlspecialchars(
-                    $source->getMessage(),
+                    $exception->getMessage(),
                     ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
                 );
             }
         } else {
             echo 'Fatal error</b>:  Uncaught ', htmlspecialchars(
-                $this->source,
+                $this->exception,
                 ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
             ), PHP_EOL, '  thrown';
         }
         echo ' in <b>', htmlspecialchars(
-            $this->source->getFile(),
+            $this->exception->getFile(),
             ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
-        ), '</b> on line <b>', $this->source->getLine(),
+        ), '</b> on line <b>', $this->exception->getLine(),
         '</b><br />', PHP_EOL, $suffix;
     }
 
@@ -267,12 +267,12 @@ class ErrorHandler {
         return $this->shouldDisplayErrors;
     }
 
-    final protected function getSource() {//todo getException
-        return $this->source;
+    final protected function getException() {
+        return $this->exception;
     }
 
     final protected function isError() {
-        if ($this->source === null) {
+        if ($this->exception === null) {
             throw new InvalidOperationException('No error or exception.');
         }
         return $this->isError;
@@ -290,30 +290,30 @@ class ErrorHandler {
         return $this->errorReportingBitmask;
     }
 
-    private function handle($source, $isError = false) {
-        if ($this->source !== null) {
+    private function handle($exception, $isError = false) {
+        if ($this->exception !== null) {
             if ($isError === false) {
-                throw new $source;
+                throw $exception;
             }
             return false;
         }
-        if ($isError && $source->shouldThrow()) {
+        if ($isError && $exception->shouldThrow()) {
             $this->disableDefaultErrorReporting();
-            throw $source;
+            throw $exception;
         }
-        if ($isError && $source->isFatal() === false) {
+        if ($isError && $exception->isFatal() === false) {
             $this->shouldExit = false;
         } else {
             $this->shouldExit = true;
         }
-        $this->source = $source;
-        $this->isError = $source instanceof ErrorException;
+        $this->exception = $exception;
+        $this->isError = $exception instanceof ErrorException;
         $this->writeLog();
         if ($this->shouldExit === false) {
             if ($this->shouldDisplayErrors()) {
                 $this->displayError();
             }
-            $this->source = null;
+            $this->exception = null;
             $this->disableDefaultErrorReporting();
             return;
         }
@@ -351,13 +351,13 @@ class ErrorHandler {
     }
 
     private function getExceptionErrorLog() {
-        return 'Fatal error:  Uncaught ' . $this->source . PHP_EOL
-        . '  thrown in ' . $this->source->getFile() . ' on line '
-            . $this->source->getLine();
+        return 'Fatal error:  Uncaught ' . $this->exception . PHP_EOL
+        . '  thrown in ' . $this->exception->getFile() . ' on line '
+            . $this->exception->getLine();
     }
 
     private function getErrorLog() {
-        $error = $this->source;
+        $error = $this->exception;
         if ($error->shouldThrow() === true) {
             $result = 'Fatal error';
         } else {

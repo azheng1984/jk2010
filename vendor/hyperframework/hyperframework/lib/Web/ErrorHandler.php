@@ -29,7 +29,7 @@ class ErrorHandler extends Base {
 
     protected function displayFatalError() {
         $isError = $this->isError();
-        $source = $this->getSource();
+        $exception = $this->getException();
         if ($this->isDebuggerEnabled) {
             $headers = headers_list();
             if (headers_sent() === false) {
@@ -48,9 +48,9 @@ class ErrorHandler extends Base {
 
     private function resetHttpHeaders() {
         header_remove();
-        $source = $this->getSource();
-        if ($source instanceof HttpException) {
-            foreach ($source->getHttpHeaders() as $header) {
+        $exception = $this->getException();
+        if ($exception instanceof HttpException) {
+            foreach ($exception->getHttpHeaders() as $header) {
                 header($header);
             }
         } else {
@@ -59,7 +59,7 @@ class ErrorHandler extends Base {
     }
 
     protected function writeLog() {
-        if ($this->getSource() instanceof HttpException) {
+        if ($this->getException() instanceof HttpException) {
             $shouldLogHttpException = Config::getBoolean(
                 'hyperframework.error_handler.log_http_exception', false
             );
@@ -169,7 +169,7 @@ class ErrorHandler extends Base {
             }
             $debugger = new $class;
         }
-        $debugger->execute($this->getSource(), $headers, $outputBuffer);
+        $debugger->execute($this->getException(), $headers, $outputBuffer);
     }
 
     protected function renderErrorView() {
@@ -185,7 +185,7 @@ class ErrorHandler extends Base {
             }
             $view = new $class;
         }
-        $exception = $this->getSource();
+        $exception = $this->getException();
         if ($exception instanceof HttpException) {
             $statusCode = $exception->getStatusCode();
             $segments = explode(' ', $statusCode, 2);
@@ -199,7 +199,9 @@ class ErrorHandler extends Base {
             $code = 500;
             $text = 'Internal Server Error';
         }
-        $view->render(['code' => $code, 'text' => $text], $exception);
+        $view->render(
+            ['code' => $code, 'text' => $text, 'exception' => $exception]
+        );
     }
 
     final protected function isDebuggerEnabled() {
