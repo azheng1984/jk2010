@@ -18,8 +18,11 @@ class ErrorView {
         );
         if ($rootPath === '') {
             $rootPath = Config::getString(
-                'hyperframework.view.root_path', 'views'
+                'hyperframework.view.root_path', ''
             );
+            if ($rootPath === '') {
+                $rootPath = 'views';
+            }
             PathCombiner::append($rootPath, '_error');
         }
         if (Config::getBoolean(
