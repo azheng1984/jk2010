@@ -14,17 +14,23 @@ class ErrorView {
         }
         $code = explode(' ', $statusCode, 2)[0];
         $rootPath = Config::getString(
-            'hyperframework.error_view.root_path',
-            'views' . DIRECTORY_SEPARATOR . '_error'
+            'hyperframework.error_view.root_path', ''
         );
-        $shouldIncludeOutputFormat = Config::getBoolean(
-            'hyperframework.web.view.filename.include_output_format', true
-        );
-        $format = $this->getFormat();
-        if ($shouldIncludeOutputFormat) {
+        if ($rootPath === '') {
+            $rootPath = Config::getString(
+                'hyperframework.view.root_path', 'views'
+            );
+            PathCombiner::append($rootPath, '_error');
+        }
+        if (Config::getBoolean(
+            'hyperframework.web.error_view.filename.include_output_format', true
+        )) {
+            $format = (string)$this->getFormat();
+            if ($format === '') {
+                $format = self::getFormat();
+            }
             $files = [
-                $code . '.' . $format . '.php',
-                'error.' . $format . '.php'
+                $code . '.' . $format . '.php', 'error.' . $format . '.php'
             ];
         } else {
             $files = [$code . '.php', 'error.php'];
@@ -50,6 +56,8 @@ class ErrorView {
     }
 
     protected function getFormat() {
-        return 'html';
+        return Config::getString(
+            'hyperframework.web.view.default_output_format', 'html'
+        );
     }
 }
