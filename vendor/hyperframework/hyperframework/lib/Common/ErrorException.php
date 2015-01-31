@@ -113,13 +113,16 @@ class ErrorException extends Base {
     }
 
     public function __toString() {
-        $message = 'exception \'' . get_called_class(). '\' with message \''
-            . $this->getMessage() . '\' in ' . $this->getFile() . ':'
-            . $this->getLine();
+        $result = "exception '" . get_called_class() . "'";
+        $message = (string)$this->getMessage();
+        if ($message !== '') {
+            $result .= " with message '" . $message . "'";
+        }
+        $result .= ' in ' . $this->getFile() . ':' . $this->getLine();
         if ($this->isFatal() === false) {
-            $message .= PHP_EOL . 'Stack trace:' . PHP_EOL
+            $result .= PHP_EOL . 'Stack trace:' . PHP_EOL
                 . $this->getSourceTraceAsString();
         }
-        return $message;
+        return $result;
     }
 }
