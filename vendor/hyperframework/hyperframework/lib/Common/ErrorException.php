@@ -107,7 +107,7 @@ class ErrorException extends Base {
     public function getSourceTraceAsString() {
         $trace = $this->getSourceTrace();
         if ($trace === null) {
-            return 'NULL';
+            return '';
         }
         return StackTraceFormatter::format($trace);
     }
