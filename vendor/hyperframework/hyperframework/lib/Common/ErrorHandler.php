@@ -262,14 +262,11 @@ class ErrorHandler {
         return $this->exception;
     }
 
-    final protected function getCallbackType() {
+    final protected function isError() {
         if ($this->exception === null) {
             throw new InvalidOperationException('No error or exception.');
         }
-        if ($this->isError && $this->exception->isFatal()) {
-            return 'shutdown_handler';
-        }
-        return $this->isError ? 'error_handler' : 'exception_handler';
+        return $this->isError;
     }
 
     final protected function isLoggerEnabled() {
@@ -303,7 +300,7 @@ class ErrorHandler {
             $this->shouldExit = true;
         }
         $this->exception = $exception;
-        $this->isError = $exception instanceof ErrorException;
+        $this->isError = $isError;
         $this->writeLog();
         if ($this->shouldExit === false) {
             if ($this->shouldDisplayErrors()) {
