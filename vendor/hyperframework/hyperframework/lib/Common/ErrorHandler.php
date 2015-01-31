@@ -33,7 +33,7 @@ class ErrorHandler {
             [$this, 'handleError'], $this->errorReportingBitmask
         );
         set_exception_handler([$this, 'handleException']);
-        register_shutdown_function([$this, 'handleFatalError']);
+        register_shutdown_function([$this, 'handleShutdown']);
         $this->disableDefaultErrorReporting();
     }
 
@@ -70,20 +70,20 @@ class ErrorHandler {
                         substr($message, 0, strlen($message) - strlen($suffix));
                     $error = new ArgumentErrorException(
                         $message, $type, $trace[1]['file'], $trace[1]['line'],
-                        $file, $line, 1, $context, $shouldThrow
+                        $file, $line, 1, $context
                     );
                 }
             }
         }
         if ($error === null) {
             $error = new ErrorException(
-                $message, $type, $file, $line, 1, $context, $shouldThrow
+                $message, $type, $file, $line, 1, $context
             );
         }
-        return $this->handle($error, true);
+        return $this->handle($error, true, $shouldThrow);
     }
 
-    final public function handleFatalError() {
+    final public function handleShutdown() {
         $this->isShutdownStarted = true;
         $this->enableDefaultErrorReporting(
             error_reporting() | ($this->getErrorReportingBitmask() & (
@@ -118,12 +118,8 @@ class ErrorHandler {
                 $name = 'php_exception';
                 $data['class'] = get_class($exception);
             } else {
-                if ($this->exception->shouldThrow()) {
-                    $name = 'php_error_exception';
-                } else {
-                    $name = 'php_error';
-                    $data['type'] = $exception->getSeverityAsConstantName();
-                }
+                $name = 'php_error';
+                $data['type'] = $exception->getSeverityAsConstantName();
             }
             if ($this->isError === false || $exception->isFatal() === false) {
                 $shouldLogTrace = Config::getBoolean(
@@ -190,10 +186,10 @@ class ErrorHandler {
         $exception = $this->exception;
         if (ini_get('xmlrpc_errors') === '1') {
             $code = ini_get('xmlrpc_error_number');
-            echo '<?xml version="1.0"?><methodResponse>',
-            '<fault><value><struct><member><name>faultCode</name>',
-            '<value><int>', $code, '</int></value></member><member>',
-            '<name>faultString</name><value><string>';
+            echo '<?xml version="1.0"?', '><methodResponse>',
+                '<fault><value><struct><member><name>faultCode</name>',
+                '<value><int>', $code, '</int></value></member><member>',
+                '<name>faultString</name><value><string>';
             if ($this->isError) {
                 $message = $this->getErrorLog();
             } else {
@@ -219,12 +215,7 @@ class ErrorHandler {
         }
         echo $prefix, '<br />', PHP_EOL, '<b>';
         if ($this->isError) {
-            if ($exception->shouldThrow() === true) {
-                echo 'Fatal error';
-            } else {
-                echo $exception->getSeverityAsString();
-            }
-            echo '</b>:  ';
+            echo $exception->getSeverityAsString(), '</b>:  ';
             if (ini_get('docref_root') !== '') {
                 echo $exception->getMessage();
             } else {
@@ -271,11 +262,14 @@ class ErrorHandler {
         return $this->exception;
     }
 
-    final protected function isError() {
+    final protected function getCallbackType() {
         if ($this->exception === null) {
             throw new InvalidOperationException('No error or exception.');
         }
-        return $this->isError;
+        if ($this->isError && $this->exception->isFatal()) {
+            return 'shutdown_handler';
+        }
+        return $this->isError ? 'error_handler' : 'exception_handler';
     }
 
     final protected function isLoggerEnabled() {
@@ -290,14 +284,16 @@ class ErrorHandler {
         return $this->errorReportingBitmask;
     }
 
-    private function handle($exception, $isError = false) {
+    private function handle(
+        $exception, $isError = false, $shouldThrow = false
+    ) {
         if ($this->exception !== null) {
             if ($isError === false) {
                 throw $exception;
             }
             return false;
         }
-        if ($isError && $exception->shouldThrow()) {
+        if ($isError && $shouldThrow) {
             $this->disableDefaultErrorReporting();
             throw $exception;
         }
@@ -358,11 +354,7 @@ class ErrorHandler {
 
     private function getErrorLog() {
         $error = $this->exception;
-        if ($error->shouldThrow() === true) {
-            $result = 'Fatal error';
-        } else {
-            $result = $error->getSeverityAsString();
-        }
+        $result = $error->getSeverityAsString();
         if ($error instanceof ArgumentErrorException) {
             return $result . ':  ' . $error->getMessage() . ' called in '
                 . $error->getFile() . ' on line ' . $error->getLine()

@@ -14,12 +14,11 @@ class ArgumentErrorException extends ErrorException {
         $functionDefinitionLine,
         $sourceStackFrameStartingPosition,
         array $context,
-        $shouldThrow,
         $previous = null
     ) {
         parent::__construct(
             $message, $severity, $file, $line,
-            $sourceStackFrameStartingPosition, $context, $shouldThrow, $previous
+            $sourceStackFrameStartingPosition, $context, $previous
         );
         $this->functionDefinitionLine = $functionDefinitionLine;
         $this->functionDefinitionFile = $functionDefinitionFile;

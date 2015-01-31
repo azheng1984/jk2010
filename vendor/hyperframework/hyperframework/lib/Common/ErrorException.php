@@ -7,7 +7,6 @@ class ErrorException extends Base {
     private $context;
     private $sourceStackTrace;
     private $sourceStackFrameStartingPosition;
-    private $shouldThrow;
     private $isFatal;
 
     public function __construct(
@@ -17,7 +16,6 @@ class ErrorException extends Base {
         $line,
         $sourceStackFrameStartingPosition,
         array $context = null,
-        $shouldThrow = false,
         $previous = null
     ) {
         parent::__construct(
@@ -26,15 +24,10 @@ class ErrorException extends Base {
         $this->sourceStackFrameStartingPosition =
             $sourceStackFrameStartingPosition;
         $this->context = $context;
-        $this->shouldThrow = $shouldThrow;
     }
 
     public function getContext() {
         return $this->context;
-    }
-
-    public function shouldThrow() {
-        return $this->shouldThrow;
     }
 
     public function isFatal() {

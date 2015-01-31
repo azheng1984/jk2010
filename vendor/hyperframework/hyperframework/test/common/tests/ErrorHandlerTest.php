@@ -210,11 +210,11 @@ class ErrorHandlerTest extends Base {
     }
 
     public function
-        testEnableFatalErrorAndCompileWarningReportingByFatalErrorHandler()
+        testEnableFatalErrorAndCompileWarningReportingByShutdownHandler()
     {
         $this->bind();
         error_reporting(0);
-        $this->handler->handleFatalError();
+        $this->handler->handleShutdown();
         $this->assertEquals(error_reporting(), E_ERROR | E_PARSE | E_CORE_ERROR
             | E_COMPILE_ERROR | E_COMPILE_WARNING
         );
@@ -327,7 +327,7 @@ class ErrorHandlerTest extends Base {
             ->setMethods(['send'])
             ->getMock();
         $this->handler->expects($this->once())->method('send')->with(
-            $this->isInstanceOf(__NAMESPACE__ . '\ErrorException'), true
+            $this->isInstanceOf(__NAMESPACE__ . '\ErrorException'), 'error_handler'
         );
         set_error_handler(
             [$this->handler, 'handleError'], error_reporting()
