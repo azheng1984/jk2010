@@ -115,9 +115,11 @@ class ErrorException extends Base {
     public function __toString() {
         $message = 'exception \'' . get_called_class(). '\' with message \''
             . $this->getMessage() . '\' in ' . $this->getFile() . ':'
-            . $this->getLine() . PHP_EOL
-            . 'Stack trace:' . PHP_EOL
-            . $this->getSourceTraceAsString();
+            . $this->getLine();
+        if ($this->isFatal() === false) {
+            $message .= PHP_EOL . 'Stack trace:' . PHP_EOL
+                . $this->getSourceTraceAsString();
+        }
         return $message;
     }
 }
