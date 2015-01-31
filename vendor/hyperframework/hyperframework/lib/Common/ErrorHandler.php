@@ -12,7 +12,7 @@ class ErrorHandler {
     private $isShutdownStarted = false;
     private $shouldExit;
     private $exception;
-    private $isError;
+    private $sourceType;
 
     public function __construct() {
         $this->isLoggerEnabled = Config::getBoolean(
@@ -114,14 +114,14 @@ class ErrorHandler {
             $data = [];
             $data['file'] = $exception->getFile();
             $data['line'] = $exception->getLine();
-            if ($this->isError === false) {
+            if ($this->sourceType === 'exception') {
                 $name = 'php_exception';
                 $data['class'] = get_class($exception);
             } else {
                 $name = 'php_error';
                 $data['type'] = $exception->getSeverityAsConstantName();
             }
-            if ($this->isError === false || $exception->isFatal() === false) {
+            if ($this->sourceType !== 'fatal_error') {
                 $shouldLogTrace = Config::getBoolean(
                     'hyperframework.error_handler.logger.log_stack_trace', false
                 );
@@ -157,10 +157,10 @@ class ErrorHandler {
     }
 
     protected function writeDefaultErrorLog() {
-        if ($this->isError) {
-            error_log('PHP ' . $this->getErrorLog());
-        } else {
+        if ($this->sourceType === 'exception') {
             error_log('PHP ' . $this->getExceptionErrorLog());
+        } else {
+            error_log('PHP ' . $this->getErrorLog());
         }
     }
 
@@ -190,10 +190,10 @@ class ErrorHandler {
                 '<fault><value><struct><member><name>faultCode</name>',
                 '<value><int>', $code, '</int></value></member><member>',
                 '<name>faultString</name><value><string>';
-            if ($this->isError) {
-                $message = $this->getErrorLog();
-            } else {
+            if ($this->sourceType === 'exception') {
                 $message = $this->getExceptionErrorLog();
+            } else {
+                $message = $this->getErrorLog();
             }
             echo htmlspecialchars($message, ENT_XML1),
             '</string></value></member></struct></value></fault>',
@@ -205,7 +205,7 @@ class ErrorHandler {
         $suffix = ini_get('error_append_string');
         if ($isHtml === false) {
             echo $prefix, PHP_EOL;
-            if ($this->isError === false) {
+            if ($this->sourceType === 'exception') {
                 echo $this->getExceptionErrorLog();
             } else {
                 echo $this->getErrorLog();
@@ -214,7 +214,7 @@ class ErrorHandler {
             return;
         }
         echo $prefix, '<br />', PHP_EOL, '<b>';
-        if ($this->isError) {
+        if ($this->sourceType !== 'exception') {
             echo $exception->getSeverityAsString(), '</b>:  ';
             if (ini_get('docref_root') !== '') {
                 echo $exception->getMessage();
@@ -262,11 +262,11 @@ class ErrorHandler {
         return $this->exception;
     }
 
-    final protected function isError() {
+    final protected function getSourceType() {
         if ($this->exception === null) {
             throw new InvalidOperationException('No error or exception.');
         }
-        return $this->isError;
+        return $this->sourceType;
     }
 
     final protected function isLoggerEnabled() {
@@ -300,7 +300,15 @@ class ErrorHandler {
             $this->shouldExit = true;
         }
         $this->exception = $exception;
-        $this->isError = $isError;
+        if ($isError) {
+            if ($exception->isFatal()) {
+                $this->sourceType = 'fatal_error';
+            } else {
+                $this->sourceType = 'error';
+            }
+        } else {
+            $this->sourceType = 'exception';
+        }
         $this->writeLog();
         if ($this->shouldExit === false) {
             if ($this->shouldDisplayErrors()) {

@@ -327,7 +327,7 @@ class ErrorHandlerTest extends Base {
             ->setMethods(['send'])
             ->getMock();
         $this->handler->expects($this->once())->method('send')->with(
-            $this->isInstanceOf(__NAMESPACE__ . '\ErrorException'), 'error_handler'
+            $this->isInstanceOf(__NAMESPACE__ . '\ErrorException'), 'error'
         );
         set_error_handler(
             [$this->handler, 'handleError'], error_reporting()
