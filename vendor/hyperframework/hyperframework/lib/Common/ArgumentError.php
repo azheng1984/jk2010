@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Common;
 
-class ArgumentErrorException extends ErrorException {
+class ArgumentError extends Error {
     private $functionDefinitionFile;
     private $functionDefinitionLine;
 
@@ -10,15 +10,15 @@ class ArgumentErrorException extends ErrorException {
         $severity,
         $file,
         $line,
+        array $trace,
         $functionDefinitionFile,
         $functionDefinitionLine,
-        $sourceStackFrameStartingPosition,
         array $context,
         $previous = null
     ) {
         parent::__construct(
             $message, $severity, $file, $line,
-            $sourceStackFrameStartingPosition, $context, $previous
+            $trace, $context, $previous
         );
         $this->functionDefinitionLine = $functionDefinitionLine;
         $this->functionDefinitionFile = $functionDefinitionFile;

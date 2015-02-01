@@ -97,11 +97,13 @@ class ErrorHandler {
         ) {
             return;
         }
-        $error = new ErrorException(
-            $error['message'], $error['type'], $error['file'],
-            $error['line'], null
-        );
-        if ($error->isFatal()) {
+        if (in_array($error['type'], [
+            E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR
+        ])) {
+            $error = new FatalError(
+                $error['message'], $error['type'], $error['file'],
+                $error['line'], null
+            );
             $this->enableDefaultErrorReporting();
             $this->handle($error, true);
         }
@@ -258,16 +260,16 @@ class ErrorHandler {
         return $this->shouldDisplayErrors;
     }
 
-    final protected function getException() {
+    final protected function getError() {
         return $this->exception;
     }
 
-    final protected function getSourceType() {
-        if ($this->exception === null) {
-            throw new InvalidOperationException('No error or exception.');
-        }
-        return $this->sourceType;
-    }
+//    final protected function getSourceType() {
+//        if ($this->exception === null) {
+//            throw new InvalidOperationException('No error or exception.');
+//        }
+//        return $this->sourceType;
+//    }
 
     final protected function isLoggerEnabled() {
         return $this->isLoggerEnabled;

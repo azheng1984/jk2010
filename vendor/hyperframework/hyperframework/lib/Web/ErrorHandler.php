@@ -28,7 +28,7 @@ class ErrorHandler extends Base {
     }
 
     protected function displayFatalError() {
-        $exception = $this->getException();
+        $error = $this->getError();
         if ($this->isDebuggerEnabled) {
             $headers = headers_list();
             if (headers_sent() === false) {
@@ -47,9 +47,9 @@ class ErrorHandler extends Base {
 
     private function resetHttpHeaders() {
         header_remove();
-        $exception = $this->getException();
-        if ($exception instanceof HttpException) {
-            foreach ($exception->getHttpHeaders() as $header) {
+        $error = $this->getError();
+        if ($error instanceof HttpException) {
+            foreach ($error->getHttpHeaders() as $header) {
                 header($header);
             }
         } else {
@@ -58,7 +58,7 @@ class ErrorHandler extends Base {
     }
 
     protected function writeLog() {
-        if ($this->getException() instanceof HttpException) {
+        if ($this->getError() instanceof HttpException) {
             $shouldLogHttpException = Config::getBoolean(
                 'hyperframework.error_handler.log_http_exception', false
             );
@@ -168,7 +168,7 @@ class ErrorHandler extends Base {
             }
             $debugger = new $class;
         }
-        $debugger->execute($this->getException(), $headers, $outputBuffer);
+        $debugger->execute($this->getError(), $headers, $outputBuffer);
     }
 
     protected function renderErrorView() {
@@ -184,23 +184,15 @@ class ErrorHandler extends Base {
             }
             $view = new $class;
         }
-        $exception = $this->getException();
-        if ($exception instanceof HttpException) {
-            $statusCode = $exception->getStatusCode();
-            $segments = explode(' ', $statusCode, 2);
-            $code = (int)$segments[0];
-            if (count($segments) === 2) {
-                $text = $segments[1];
-            } else {
-                $text = null;
-            }
+        $error = $this->getError();
+        if ($error instanceof HttpException) {
+            $statusCode = $error->getStatusCode();
+            $statusText = $error->getStatusText();
         } else {
-            $code = 500;
-            $text = 'Internal Server Error';
+            $statusCode = 500;
+            $statusText = 'Internal Server Error';
         }
-        $view->render(
-            ['code' => $code, 'text' => $text, 'exception' => $exception]
-        );
+        $view->render($statusCode, $statusText, $error]);
     }
 
     final protected function isDebuggerEnabled() {
