@@ -192,7 +192,7 @@ class ErrorHandler extends Base {
             $statusCode = 500;
             $statusText = 'Internal Server Error';
         }
-        $view->render($statusCode, $statusText, $error]);
+        $view->render($statusCode, $statusText, $error);
     }
 
     final protected function isDebuggerEnabled() {
