@@ -6,17 +6,17 @@ class ArgumentErrorException extends ErrorException {
     private $functionDefinitionLine;
 
     public function __construct(
-        $message,
         $severity,
+        $message,
         $file,
         $line,
         $functionDefinitionFile,
         $functionDefinitionLine,
         $sourceStackFrameStartingPosition,
-        array $context,
+        array $context
     ) {
         parent::__construct(
-            $message, $severity, $file, $line,
+            $severity, $message, $file, $line,
             $sourceStackFrameStartingPosition, $context
         );
         $this->functionDefinitionLine = $functionDefinitionLine;

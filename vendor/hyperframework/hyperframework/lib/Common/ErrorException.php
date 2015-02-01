@@ -9,8 +9,8 @@ class ErrorException extends Base {
     private $sourceStackFrameStartingPosition;
 
     public function __construct(
-        $message,
         $severity,
+        $message,
         $file,
         $line,
         $sourceStackFrameStartingPosition,

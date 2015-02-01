@@ -61,7 +61,9 @@ class Debugger {
                         break;
                     }
                 }
-                if ($this->firstInternalStackFrameIndex !== null) {
+                if ($this->firstInternalStackFrameIndex !== null && 
+                    $this->firstInternalStackFrameIndex !== 0
+                ) {
                     $this->shouldHideExternal = true;
                     $maxIndex = count($this->trace) - 1;
                     if ($maxIndex === $this->firstInternalStackFrameIndex) {
@@ -87,7 +89,7 @@ class Debugger {
         ) {
             $message .= ', defined in '
                 . $error->getFunctionDefinitionFile() . ' on line '
-                . $error->getFunctionDefinitionLine();
+                . $error->getFunctionDefinitionLine() . '.';
         }
         $title = $type;
         if ($message !== '') {

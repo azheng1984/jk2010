@@ -10,8 +10,8 @@ class Error {
     private $trace;
 
     public function __construct(
-        $message,
         $severity,
+        $message,
         $file,
         $line,
         array $trace = null,

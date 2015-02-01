@@ -67,27 +67,31 @@ class ErrorHandler {
                     $message =
                         substr($message, 0, strlen($message) - strlen($suffix));
                     if ($shouldThrow) {
-                        $class = 'Hyperframework\Commom\ArgumentErrorException';
+                        $error = new ArgumentErrorException(
+                            $type, $message, $trace[1]['file'],
+                            $trace[1]['line'], $file, $line, 1, $context
+                        );
                     } else {
-                        $class = 'Hyperframework\Commom\ArgumentError';
+                        $trace = debug_backtrace();
+                        array_shift($trace);
+                        $error = new ArgumentError(
+                            $type, $message, $trace[0]['file'],
+                            $trace[0]['line'], $file, $line, $trace, $context
+                        );
                     }
-                    $error = new $class(
-                        $message, $type, $trace[1]['file'], $trace[1]['line'],
-                        $file, $line, 1, $context
-                    );
                 }
             }
         }
         if ($error === null) {
             if ($shouldThrow) {
                 $error = new ErrorException(
-                    $message, $type, $file, $line, 1, $context
+                    $type, $message, $file, $line, 1, $context
                 );
             } else {
                 $trace = debug_backtrace();
                 array_shift($trace);
                 $error = new Error(
-                    $message, $type, $file, $line, $trace, $context
+                    $type, $message, $file, $line, $trace, $context
                 );
             }
         }
@@ -112,7 +116,7 @@ class ErrorHandler {
             E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR
         ])) {
             $error = new FatalError(
-                $error['message'], $error['type'],
+                $error['type'], $error['message'],
                 $error['file'], $error['line']
             );
             $this->enableDefaultErrorReporting();
