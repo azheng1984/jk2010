@@ -67,5 +67,7 @@ class Error {
     }
 
     public function __toString() {
+        return $this->getSeverityAsString() . ':  ' . $this->getMessage()
+            . ' in ' . $this->getFile() . ' on line ' . $this->getLine();
     }
 }

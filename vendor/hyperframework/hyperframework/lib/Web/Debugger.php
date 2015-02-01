@@ -1,20 +1,20 @@
 <?php
 namespace Hyperframework\Web;
 
-use ErrorException;
+use Exception;
+use Hyperframework\Common\ErrorException;
 use Hyperframework\Common\StackTraceFormatter;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ArgumentErrorException;
 use Hyperframework\Common\ConfigException;
 
 class Debugger {
-    private $source;
+    private $error;
     private $trace;
     private $headers;
     private $headerCount;
     private $content;
     private $contentLength;
-    private $isError;
     private $rootPath;
     private $rootPathLength;
     private $shouldHideExternal;
@@ -22,14 +22,13 @@ class Debugger {
     private $firstInternalStackFrameIndex;
 
     public function execute(
-        $source, array $headers = null, $content = null
+        $error, array $headers = null, $content = null
     ) {
-        $this->source = $source;
+        $this->error = $error;
         $this->headers = $headers;
         $this->content = $content;
         $this->headerCount = count($headers);
         $this->contentLength = strlen($content);
-        $this->isError = $source instanceof ErrorException;
         $rootPath = Config::getAppRootPath();
         $realRootPath = realpath($rootPath);
         if ($realRootPath !== false) {
@@ -44,13 +43,13 @@ class Debugger {
         $this->shouldHideTrace = false;
         $this->shouldHideExternal = false;
         $this->trace = null;
-        if ($this->isError === false || $this->source->isFatal() === false) {
-            if ($this->isError) {
-                $this->trace = $source->getSourceTrace();
+        if ($this->error instanceof FatalError === false) {
+            if ($this->error instanceof ErrorException) {
+                $this->trace = $error->getSourceTrace();
             } else {
-                $this->trace = $source->getTrace();
+                $this->trace = $error->getTrace();
             }
-            if ($this->isExternalFile($source->getFile())) {
+            if ($this->isExternalFile($error->getFile())) {
                 $this->firstInternalStackFrameIndex = null;
                 foreach ($this->trace as $index => $frame) {
                     if (isset($frame['file'])
@@ -72,23 +71,19 @@ class Debugger {
         if (headers_sent() === false) {
             header('Content-Type: text/html;charset=utf-8');
         }
-        if ($this->isError) {
-            if ($source->shouldThrow() === true) {
-                $type = 'Error Exception';
-            } else {
-                $type = htmlspecialchars(
-                    ucwords($source->getSeverityAsString()),
-                    ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
-                );
-            }
+        if ($this->error instanceof Exception) {
+            $type = get_class($error);
         } else {
-            $type = get_class($source);
+            $type = htmlspecialchars(
+                ucwords($error->getSeverityAsString()),
+                ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+            );
         }
-        $message = (string)$source->getMessage();
-        if ($source instanceof ArgumentErrorException) {
+        $message = (string)$error->getMessage();
+        if ($error instanceof ArgumentErrorException) {
             $message .= ', defined in '
-                . $source->getFunctionDefinitionFile() . ' on line '
-                . $source->getFunctionDefinitionLine();
+                . $error->getFunctionDefinitionFile() . ' on line '
+                . $error->getFunctionDefinitionLine();
         }
         $title = $type;
         if ($message !== '') {
@@ -119,15 +114,13 @@ class Debugger {
     }
 
     private function renderContent() {
-        $hasTrace =
-            $this->isError === false || $this->source->isFatal() === false;
         echo '<tr><td id="content"><table id="code"><tbody>',
             '<tr><td id="status-bar-wrapper">';
         $this->renderStatusBar();
         echo '</td></tr><tr><td id="file-wrapper">';
         $this->renderFile();
         echo '</td></tr>';
-        if ($hasTrace) {
+        if ($this->error instanceof FatalError === false) {
             echo '<tr><td id="stack-trace-wrapper"';
             if ($this->shouldHideTrace) {
                 echo ' class="hidden"';
@@ -152,8 +145,8 @@ class Debugger {
         } else {
             echo '<h2>File</h2>';
         }
-        $path = $this->source->getFile();
-        $errorLineNumber = $this->source->getLine();
+        $path = $this->error->getFile();
+        $errorLineNumber = $this->error->getLine();
         $this->renderFileContent($path, $errorLineNumber);
         if ($this->shouldHideExternal) {
             echo '</div>';

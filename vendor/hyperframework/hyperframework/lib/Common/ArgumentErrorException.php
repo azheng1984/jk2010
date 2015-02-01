@@ -31,7 +31,4 @@ class ArgumentErrorException extends ErrorException {
     public function getFunctionDefinitionLine() {
         return $this->functionDefinitionLine;
     }
-
-    public function __toString() {
-    }
 }
