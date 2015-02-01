@@ -302,7 +302,7 @@ class ErrorHandler {
             $this->disableDefaultErrorReporting();
             throw $error;
         }
-        if ($error instanceof FatalError === false && $error instanceof Error) {
+        if ($error instanceof Error && $error instanceof FatalError === false) {
             $this->shouldExit = false;
         } else {
             $this->shouldExit = true;
