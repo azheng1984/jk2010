@@ -131,6 +131,11 @@ abstract class ViewTemplate implements ArrayAccess {
     }
 
     public function offsetGet($offset) {
+        if (isset($this->model[$offset]) === false) {
+            throw new ViewException(
+                "View model field '$offset' is not defined."
+            );
+        }
         return $this->model[$offset];
     }
 

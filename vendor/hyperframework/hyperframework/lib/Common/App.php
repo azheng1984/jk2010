@@ -14,7 +14,7 @@ abstract class App {
         if (Config::getBoolean(
             'hyperframework.initialize_error_handler', true
         )) {
-            $this->initializeErrorHandler();
+//            $this->initializeErrorHandler();
         }
     }
 

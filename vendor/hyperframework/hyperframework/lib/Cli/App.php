@@ -12,8 +12,7 @@ class App extends Base {
     private $arguments = [];
 
     public static function run($appRootPath) {
-        $class = get_called_class();
-        $app = new $class($appRootPath);
+        $app = new static($appRootPath);
         $app->executeCommand();
         $app->finalize();
     }

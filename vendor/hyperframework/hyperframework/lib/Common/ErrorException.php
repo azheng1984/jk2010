@@ -14,11 +14,10 @@ class ErrorException extends Base {
         $file,
         $line,
         $sourceStackFrameStartingPosition,
-        array $context = null,
-        $previous = null
+        array $context
     ) {
         parent::__construct(
-            $message, 0, $severity, $file, $line, $previous
+            $message, 0, $severity, $file, $line, null
         );
         $this->sourceStackFrameStartingPosition =
             $sourceStackFrameStartingPosition;
@@ -73,7 +72,7 @@ class ErrorException extends Base {
         if ($message !== '') {
             $result .= " with message '" . $message . "'";
         }
-        $result .= ' in ' . $this->getFile() . ':' . $this->getLine();
+        $result .= ' in ' . $this->getFile() . ':' . $this->getLine()
             . PHP_EOL . 'Stack trace:' . PHP_EOL
             . $this->getSourceTraceAsString();
         return $result;

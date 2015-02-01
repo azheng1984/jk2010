@@ -17,8 +17,7 @@ class App extends Base {
     }
 
     public static function run() {
-        $class = get_called_class();
-        $app = new $class;
+        $app = new static;
         $controller = $app->createController();
         $controller->run();
         $app->finalize();

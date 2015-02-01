@@ -56,14 +56,14 @@ abstract class DbActiveRecord implements ArrayAccess {
         if ($where === null) {
             $where = [];
         }
-        $class = get_called_class();
         if (is_array($where)) {
             $row = DbClient::findRowByColumns(static::getTableName(), $where);
             if ($row === false) {
                 return;
             }
-            return new $class($row);
+            return new static($row);
         }
+        $class = get_called_class();
         $args = func_get_args();
         $args[0] = 'WHERE ' . $args[0];
         return call_user_func_array($class . '::findBySql', $args);
@@ -74,8 +74,7 @@ abstract class DbActiveRecord implements ArrayAccess {
         if ($row === false) {
             return;
         }
-        $class = get_called_class();
-        return new $class($row);
+        return new static($row);
     }
 
     public static function findBySql($sql/*, ...*/) {
@@ -86,27 +85,26 @@ abstract class DbActiveRecord implements ArrayAccess {
             $args = func_get_args();
             array_shift($args);
         }
-        $class = get_called_class();
         $row = DbClient::findRow(self::completeSelectSql($sql), $args);
         if ($row === false) {
             return;
         }
-        return new $class($row);
+        return new static($row);
     }
 
     public static function findAll($where = null/*, ...*/) {
         if ($where === null) {
             $where = [];
         }
-        $class = get_called_class();
         if (is_array($where)) {
             $rows = DbClient::findAllByColumns(static::getTableName(), $where);
             $result = [];
             foreach ($rows as $row) {
-                $result[] = new $class($row);
+                $result[] = new static($row);
             }
             return $result;
         }
+        $class = get_called_class();
         $args = func_get_args();
         $args[0] = 'WHERE ' . $args[0];
         return call_user_func_array($class . '::findAllBySql', $args);
@@ -121,9 +119,8 @@ abstract class DbActiveRecord implements ArrayAccess {
         }
         $rows = DbClient::findAll(self::completeSelectSql($sql), $args);
         $result = [];
-        $class = get_called_class();
         foreach ($rows as $row) {
-            $result[] = new $class($row);
+            $result[] = new static($row);
         }
         return $result;
     }
