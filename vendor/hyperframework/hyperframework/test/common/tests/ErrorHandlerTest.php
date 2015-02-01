@@ -34,10 +34,10 @@ class ErrorHandlerTest extends Base {
     private function bind() {
         $this->handler = new ErrorHandler;
         set_error_handler(
-            [$this->handler, 'handleError'], error_reporting() 
+            [$this->handler, 'handleError'], error_reporting()
         );
-//        set_exception_handler([$this->handler, 'handleException']);
-//        $this->handler->disableDefaultErrorReportingForTest();
+        set_exception_handler([$this->handler, 'handleException']);
+//      $this->handler->disableDefaultErrorReportingForTest();
     }
 
     protected function tearDown() {

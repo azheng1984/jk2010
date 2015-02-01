@@ -80,7 +80,6 @@ class ErrorHandler {
                 }
             }
         }
-        $shouldThrow = false;
         if ($error === null) {
             if ($shouldThrow) {
                 $error = new ErrorException(
@@ -321,7 +320,7 @@ class ErrorHandler {
             return;
         }
         $this->displayFatalError();
-        if ($this->isShutdownStarted) {
+        if ($this->isShutdownStarted === false) {
             return;
         }
         exit(1);
