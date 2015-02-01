@@ -29,11 +29,11 @@ class ErrorException extends Base {
     }
 
     public function getSeverityAsString() {
-        ErrorTypeHelper::convertToString($this->getSeverity());
+        return ErrorTypeHelper::convertToString($this->getSeverity());
     }
 
     public function getSeverityAsConstantName() {
-        ErrorTypeHelper::convertToConstantName($this->getSeverity());
+        return ErrorTypeHelper::convertToConstantName($this->getSeverity());
     }
 
     public function getSourceTrace() {

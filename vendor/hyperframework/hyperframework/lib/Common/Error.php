@@ -10,12 +10,12 @@ class Error {
     private $trace;
 
     public function __construct(
-        $severity,
         $message,
+        $severity,
         $file,
         $line,
         array $trace = null,
-        array $context = null,
+        array $context = null
     ) {
         $this->severity =  $severity;
         $this->message = $message;
@@ -34,11 +34,11 @@ class Error {
     }
 
     public function getSeverityAsString() {
-        ErrorTypeHelper::convertToString($this->getSeverity());
+        return ErrorTypeHelper::convertToString($this->getSeverity());
     }
 
     public function getSeverityAsConstantName() {
-        ErrorTypeHelper::convertToConstantName($this->getSeverity());
+        return ErrorTypeHelper::convertToConstantName($this->getSeverity());
     }
 
 

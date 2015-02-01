@@ -4,7 +4,7 @@ namespace Hyperframework\Blog;
 return array(
     '[hyperframework]',
     'app_root_namespace' => __NAMESPACE__,
-  'error_handler.debug' => true,
+    'error_handler.debug' => true,
 //  'web.router' => __NAMESPACE__ . '\Router',
     'web.debugger.max_output_content_size' => 'unlimited',
     'asset.concatenate_manifest' => false,

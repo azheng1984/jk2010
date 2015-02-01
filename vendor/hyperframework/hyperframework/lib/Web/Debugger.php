@@ -3,6 +3,7 @@ namespace Hyperframework\Web;
 
 use Exception;
 use Hyperframework\Common\ErrorException;
+use Hyperframework\Common\FatalError;
 use Hyperframework\Common\StackTraceFormatter;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ArgumentErrorException;
@@ -419,7 +420,7 @@ class Debugger {
     }
 
     private function renderHeader($type, $message) {
-        if ($this->isError === false) {
+        if ($this->error instanceof Exception) {
             $type = str_replace('\\', '<span>\</span>', $type);
         }
         echo '<tr><td id="header"><h1>', $type, '</h1>';

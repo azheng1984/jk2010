@@ -47,17 +47,15 @@ class ErrorHandler {
     ) {
         $this->enableDefaultErrorReporting();
         $shouldThrow = false;
-        if ($this->error === null) {
-            $errorThrowingBitmask = Config::getInt(
-                'hyperframework.error_handler.error_throwing_bitmask'
-            );
-            if ($errorThrowingBitmask === null) {
-                $errorThrowingBitmask =
-                    E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
-            }
-            if (($type & $errorThrowingBitmask) !== 0) {
-                $shouldThrow = true;
-            }
+        $errorThrowingBitmask = Config::getInt(
+            'hyperframework.error_handler.error_throwing_bitmask'
+        );
+        if ($errorThrowingBitmask === null) {
+            $errorThrowingBitmask =
+                E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
+        }
+        if (($type & $errorThrowingBitmask) !== 0) {
+            $shouldThrow = true;
         }
         $error = null;
         if ($type === E_WARNING || $type === E_RECOVERABLE_ERROR) {
@@ -302,14 +300,16 @@ class ErrorHandler {
             $this->disableDefaultErrorReporting();
             throw $error;
         }
-        if ($error instanceof FatalError === false) {
+        if ($error instanceof FatalError) {
             $this->shouldExit = false;
         } else {
             $this->shouldExit = true;
         }
         $this->error = $error;
         $this->writeLog();
-        if ($this->shouldExit === false) {
+        if ($this->error instanceof FatalError === false
+            && $this->shouldExit === false
+        ) {
             if ($this->shouldDisplayErrors()) {
                 $this->displayError();
             }

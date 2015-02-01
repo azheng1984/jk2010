@@ -1,7 +1,8 @@
 <?php
+namespace Hyperframework\Common;
 
 class ErrorTypeHelper {
-    public function convertToString($type) {
+    public static function convertToString($type) {
         switch ($type) {
             case E_STRICT:            return 'Strict standards';
             case E_DEPRECATED:
@@ -21,7 +22,7 @@ class ErrorTypeHelper {
         }
     }
 
-    public function convertToConstantName($type) {
+    public static function convertToConstantName($type) {
         switch ($type) {
             case E_STRICT:            return 'E_STRICT';
             case E_DEPRECATED:        return 'E_DEPRECATED';
