@@ -1,0 +1,1 @@
+[01-Feb-2015 10:36:26 Asia/Chongqing] PHP Fatal error:  Call to undefined method Hyperframework\Common\ErrorException::isFatal() in /home/az/quickquick/vendor/hyperframework/hyperframework/lib/Common/ErrorHandler.php on line 299
