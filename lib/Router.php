@@ -4,12 +4,7 @@ namespace Hyperframework\Blog;
 use Hyperframework\Web\Router as Base;
 
 class Router extends Base {
-    public function dsf($param) {
-        return null;
-    }
-    
     protected function execute() {
-        $this->dsf();
 //        var_dump($this->match(':controller/:id(.:format)', [
 //            ':format' => 'html',
 //            'extra' => function($matches) {
