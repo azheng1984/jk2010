@@ -78,6 +78,7 @@ class ErrorHandler {
                 }
             }
         }
+        $shouldThrow = false;
         if ($error === null) {
             if ($shouldThrow) {
                 $error = new ErrorException(

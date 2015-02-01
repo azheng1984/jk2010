@@ -16,7 +16,7 @@ abstract class App {
         )) {
             $this->initializeErrorHandler();
         }
-        dsf();
+        dsf;
     }
 
     protected function initializeConfig() {
