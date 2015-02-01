@@ -6,6 +6,7 @@ use Hyperframework\Common\ErrorException;
 use Hyperframework\Common\StackTraceFormatter;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ArgumentErrorException;
+use Hyperframework\Common\ArgumentError;
 use Hyperframework\Common\ConfigException;
 
 class Debugger {
@@ -80,7 +81,9 @@ class Debugger {
             );
         }
         $message = (string)$error->getMessage();
-        if ($error instanceof ArgumentErrorException) {
+        if ($error instanceof ArgumentErrorException
+            || $error instanceof ArgumentError
+        ) {
             $message .= ', defined in '
                 . $error->getFunctionDefinitionFile() . ' on line '
                 . $error->getFunctionDefinitionLine();
