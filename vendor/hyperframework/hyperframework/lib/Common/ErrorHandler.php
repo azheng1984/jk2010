@@ -42,9 +42,7 @@ class ErrorHandler {
         $this->handle($exception);
     }
 
-    final public function handleError(
-        $type, $message, $file, $line, array $context
-    ) {
+    final public function handleError($type, $message, $file, $line) {
         $this->enableDefaultErrorReporting();
         $shouldThrow = false;
         $errorThrowingBitmask = Config::getInt(
@@ -69,29 +67,30 @@ class ErrorHandler {
                     if ($shouldThrow) {
                         $error = new ArgumentErrorException(
                             $type, $message, $trace[1]['file'],
-                            $trace[1]['line'], $file, $line, 1, $context
+                            $trace[1]['line'], $file, $line, 1
                         );
                     } else {
                         $trace = debug_backtrace();
                         array_shift($trace);
                         $error = new ArgumentError(
                             $type, $message, $trace[0]['file'],
-                            $trace[0]['line'], $file, $line, $trace, $context
+                            $trace[0]['line'], $file, $line, $trace
                         );
                     }
                 }
             }
         }
+        $shouldThrow = false;
         if ($error === null) {
             if ($shouldThrow) {
                 $error = new ErrorException(
-                    $type, $message, $file, $line, 1, $context
+                    $type, $message, $file, $line, 1
                 );
             } else {
                 $trace = debug_backtrace();
                 array_shift($trace);
                 $error = new Error(
-                    $type, $message, $file, $line, $trace, $context
+                    $type, $message, $file, $line, $trace
                 );
             }
         }

@@ -14,14 +14,12 @@ class Error {
         $message,
         $file,
         $line,
-        array $trace = null,
-        array $context = null
+        array $trace = null
     ) {
         $this->severity =  $severity;
         $this->message = $message;
         $this->file =  $file;
         $this->line = $line;
-        $this->context = $context;
         $this->trace = $trace;
     }
 
@@ -60,10 +58,6 @@ class Error {
             return '';
         }
         return StackTraceFormatter::format($trace);
-    }
-
-    public function getContext() {
-        return $this->context;
     }
 
     public function __toString() {

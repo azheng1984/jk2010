@@ -4,7 +4,6 @@ namespace Hyperframework\Common;
 use ErrorException as Base;
 
 class ErrorException extends Base {
-    private $context;
     private $sourceStackTrace;
     private $sourceStackFrameStartingPosition;
 
@@ -13,19 +12,11 @@ class ErrorException extends Base {
         $message,
         $file,
         $line,
-        $sourceStackFrameStartingPosition,
-        array $context
+        $sourceStackFrameStartingPosition
     ) {
-        parent::__construct(
-            $message, 0, $severity, $file, $line, null
-        );
+        parent::__construct($message, 0, $severity, $file, $line);
         $this->sourceStackFrameStartingPosition =
             $sourceStackFrameStartingPosition;
-        $this->context = $context;
-    }
-
-    public function getContext() {
-        return $this->context;
     }
 
     public function getSeverityAsString() {

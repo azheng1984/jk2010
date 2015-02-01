@@ -12,11 +12,10 @@ class ArgumentError extends Error {
         $line,
         $functionDefinitionFile,
         $functionDefinitionLine,
-        array $trace,
-        array $context
+        array $trace
     ) {
         parent::__construct(
-            $severity, $message, $file, $line, $trace, $context
+            $severity, $message, $file, $line, $trace
         );
         $this->functionDefinitionLine = $functionDefinitionLine;
         $this->functionDefinitionFile = $functionDefinitionFile;
