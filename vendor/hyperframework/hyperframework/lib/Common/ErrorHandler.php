@@ -298,20 +298,18 @@ class ErrorHandler {
             }
             return false;
         }
-        if ($isError && $shouldThrow) {
+        if ($shouldThrow) {
             $this->disableDefaultErrorReporting();
             throw $error;
         }
-        if ($error instanceof FatalError) {
+        if ($error instanceof FatalError === false && $error instanceof Error) {
             $this->shouldExit = false;
         } else {
             $this->shouldExit = true;
         }
         $this->error = $error;
         $this->writeLog();
-        if ($this->error instanceof FatalError === false
-            && $this->shouldExit === false
-        ) {
+        if ($this->shouldExit === false) {
             if ($this->shouldDisplayErrors()) {
                 $this->displayError();
             }
@@ -320,7 +318,7 @@ class ErrorHandler {
             return;
         }
         $this->displayFatalError();
-        if ($this->isShutdownStarted === false) {
+        if ($this->isShutdownStarted) {
             return;
         }
         exit(1);

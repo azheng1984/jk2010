@@ -259,13 +259,13 @@ class ErrorHandlerTest extends Base {
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
         ini_set('display_errors', 0);
-        $this->handler= $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
+        $this->handler = $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
             ->setMethods(['writeDefaultErrorLog'])
             ->getMock();
         $this->handler->expects($this->once())
-             ->method('writeDefaultErrorLog');
+            ->method('writeDefaultErrorLog');
         set_error_handler(
-            [$this->handler, 'handleError'], error_reporting() 
+            [$this->handler, 'handleError'], error_reporting()
         );
         trigger_error('notice');
     }
@@ -327,7 +327,7 @@ class ErrorHandlerTest extends Base {
             ->setMethods(['send'])
             ->getMock();
         $this->handler->expects($this->once())->method('send')->with(
-            $this->isInstanceOf(__NAMESPACE__ . '\ErrorException'), 'error'
+            $this->isInstanceOf(__NAMESPACE__ . '\Error')
         );
         set_error_handler(
             [$this->handler, 'handleError'], error_reporting()

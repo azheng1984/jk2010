@@ -6,7 +6,6 @@ class Error {
     private $severity;
     private $file;
     private $line;
-    private $context;
     private $trace;
 
     public function __construct(

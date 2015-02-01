@@ -8,6 +8,6 @@ class ErrorHandlerSourceSpy extends Base {
         $this->send($this->getError());
     }
 
-    public function send($source, $isError) {
+    public function send($source) {
     }
 }
