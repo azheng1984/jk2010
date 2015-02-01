@@ -289,9 +289,7 @@ class ErrorHandler {
         return $this->errorReportingBitmask;
     }
 
-    private function handle(
-        $error, $isError = false, $shouldThrow = false
-    ) {
+    private function handle($error, $isError = false, $shouldThrow = false) {
         if ($this->error !== null) {
             if ($isError === false) {
                 throw $error;
