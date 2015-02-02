@@ -246,7 +246,7 @@ class ErrorHandler {
             $shouldThrow = true;
         }
         $trace = null;
-        $sourceStackFrameStartingPosition = 2;
+        $sourceTraceStartIndex = 2;
         if ($type === E_WARNING || $type === E_RECOVERABLE_ERROR) {
             $trace = debug_backtrace();
             if (isset($trace[2]) && isset($trace[2]['file'])) {
@@ -261,14 +261,13 @@ class ErrorHandler {
                 if ($shouldThrow === false) {
                     array_shift($trace);
                 } else {
-                    $sourceStackFrameStartingPosition = 3;
+                    $sourceTraceStartIndex = 3;
                 }
             }
         }
         if ($shouldThrow) {
             $error = new ErrorException(
-                $type, $message, $file, $line,
-                $sourceStackFrameStartingPosition
+                $type, $message, $file, $line, $sourceTraceStartIndex
             );
         } else {
             if ($trace === null) {

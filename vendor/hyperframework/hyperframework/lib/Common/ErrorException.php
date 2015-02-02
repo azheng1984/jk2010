@@ -5,18 +5,13 @@ use ErrorException as Base;
 
 class ErrorException extends Base {
     private $sourceStackTrace;
-    private $sourceStackFrameStartingPosition;
+    private $sourceTraceStartIndex;
 
     public function __construct(
-        $severity,
-        $message,
-        $file,
-        $line,
-        $sourceStackFrameStartingPosition
+        $severity, $message, $file, $line, $sourceTraceStartIndex
     ) {
         parent::__construct($message, 0, $severity, $file, $line);
-        $this->sourceStackFrameStartingPosition =
-            $sourceStackFrameStartingPosition;
+        $this->sourceTraceStartIndex = $sourceTraceStartIndex;
     }
 
     public function getSeverityAsString() {
@@ -29,13 +24,13 @@ class ErrorException extends Base {
 
     public function getSourceTrace() {
         if ($this->sourceStackTrace === null) {
-            if ($this->sourceStackFrameStartingPosition !== null) {
-                if ($this->sourceStackFrameStartingPosition === 0) {
+            if ($this->sourceTraceStartIndex !== null) {
+                if ($this->sourceTraceStartIndex === 0) {
                     $this->sourceStackTrace = $this->getTrace();
                 } else {
                     $this->sourceStackTrace = array_slice(
                         $this->getTrace(),
-                        $this->sourceStackFrameStartingPosition
+                        $this->sourceTraceStartIndex
                     );
                 }
             }

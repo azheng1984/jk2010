@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Web;
 
-use InvalidArgumentException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\PathCombiner;
 use Hyperframework\Common\FileLoader;
