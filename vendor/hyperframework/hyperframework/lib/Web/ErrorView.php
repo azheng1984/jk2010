@@ -33,7 +33,7 @@ class ErrorView {
             }
         }
         if ($path === null) {
-            header("content-type: text/plain;charset=utf-8");
+            header("content-type: text/plain; charset=utf-8");
             echo $statusCode;
             if ((string)$statusText !== '') {
                 echo ' ' . $statusText;
