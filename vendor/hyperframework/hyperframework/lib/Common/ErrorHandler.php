@@ -29,101 +29,10 @@ class ErrorHandler {
     }
 
     public function run() {
-        set_error_handler(
-            function($type, $message, $file, $line) {
-                return $this->handleError($type, $message, $file, $line);
-            },
-            $this->errorReportingBitmask
-        );
-        set_exception_handler(
-            function($exception) {
-                $this->handleException($exception);
-            }
-        );
-        register_shutdown_function(
-            function() {
-                $this->handleShutdown();
-            }
-        );
+        $this->registerErrorHandler();
+        $this->registerExceptionHandler();
+        $this->registerShutdownHandler();
         $this->disableDefaultErrorReporting();
-    }
-
-    private function handleException($exception) {
-        $this->enableDefaultErrorReporting();
-        $this->handle($exception);
-    }
-
-    private function handleError($type, $message, $file, $line) {
-        $this->enableDefaultErrorReporting();
-        $shouldThrow = false;
-        $errorThrowingBitmask = Config::getInt(
-            'hyperframework.error_handler.error_throwing_bitmask'
-        );
-        if ($errorThrowingBitmask === null) {
-            $errorThrowingBitmask =
-                E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
-        }
-        if (($type & $errorThrowingBitmask) !== 0) {
-            $shouldThrow = true;
-        }
-        $error = null;
-        $trace = null;
-        if ($type === E_WARNING || $type === E_RECOVERABLE_ERROR) {
-            $trace = debug_backtrace();
-            if (isset($trace[2]) && isset($trace[2]['file'])) {
-                $suffix = ', called in ' . $trace[2]['file']
-                    . ' on line ' . $trace[2]['line'] . ' and defined';
-                if (substr($message, -strlen($suffix)) === $suffix) {
-                    $message =
-                        substr($message, 0, strlen($message) - strlen($suffix));
-                    $file = $trace[2]['file'];
-                    $line = $trace[2]['line'];
-                }
-            }
-        }
-        if ($error === null) {
-            if ($shouldThrow) {
-                $error = new ErrorException(
-                    $type, $message, $file, $line, 2
-                );
-            } else {
-                if ($trace === null) {
-                    $trace = debug_backtrace();
-                }
-                array_shift($trace);
-                array_shift($trace);
-                $error = new Error(
-                    $type, $message, $file, $line, $trace
-                );
-            }
-        }
-        return $this->handle($error, true, $shouldThrow);
-    }
-
-    private function handleShutdown() {
-        $this->isShutdownStarted = true;
-        $this->enableDefaultErrorReporting(
-            error_reporting() | ($this->getErrorReportingBitmask() & (
-                E_ERROR | E_PARSE | E_CORE_ERROR
-                    | E_COMPILE_ERROR | E_COMPILE_WARNING
-            ))
-        );
-        $error = error_get_last();
-        if ($error === null
-            || $error['type'] & $this->getErrorReportingBitmask() === 0
-        ) {
-            return;
-        }
-        if (in_array($error['type'], [
-            E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR
-        ])) {
-            $error = new FatalError(
-                $error['type'], $error['message'],
-                $error['file'], $error['line']
-            );
-            $this->enableDefaultErrorReporting();
-            $this->handle($error, true);
-        }
     }
 
     protected function writeLog() {
@@ -293,6 +202,113 @@ class ErrorHandler {
         return $this->errorReportingBitmask;
     }
 
+    private function registerErrorHandler() {
+        set_error_handler(
+            function($type, $message, $file, $line) {
+                return $this->handleError($type, $message, $file, $line);
+            },
+            $this->errorReportingBitmask
+        );
+    }
+
+    private function registerExceptionHandler() {
+        set_exception_handler(
+            function($exception) {
+                $this->handleException($exception);
+            }
+        );
+    }
+
+    private function registerShutdownHandler() {
+        register_shutdown_function(
+            function() {
+                $this->handleShutdown();
+            }
+        );
+    }
+
+    private function handleException($exception) {
+        $this->enableDefaultErrorReporting();
+        $this->handle($exception);
+    }
+
+    private function handleError($type, $message, $file, $line) {
+        $this->enableDefaultErrorReporting();
+        $shouldThrow = false;
+        $errorThrowingBitmask = Config::getInt(
+            'hyperframework.error_handler.error_throwing_bitmask'
+        );
+        if ($errorThrowingBitmask === null) {
+            $errorThrowingBitmask =
+                E_ALL & ~(E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
+        }
+        if (($type & $errorThrowingBitmask) !== 0) {
+            $shouldThrow = true;
+        }
+        $trace = null;
+        $sourceStackFrameStartingPosition = 2;
+        if ($type === E_WARNING || $type === E_RECOVERABLE_ERROR) {
+            $trace = debug_backtrace();
+            if (isset($trace[2]) && isset($trace[2]['file'])) {
+                $suffix = ', called in ' . $trace[2]['file']
+                    . ' on line ' . $trace[2]['line'] . ' and defined';
+                if (substr($message, -strlen($suffix)) === $suffix) {
+                    $message =
+                        substr($message, 0, strlen($message) - strlen($suffix));
+                    $file = $trace[2]['file'];
+                    $line = $trace[2]['line'];
+                }
+                if ($shouldThrow === false) {
+                    array_shift($trace);
+                } else {
+                    $sourceStackFrameStartingPosition = 3;
+                }
+            }
+        }
+        if ($shouldThrow) {
+            $error = new ErrorException(
+                $type, $message, $file, $line,
+                $sourceStackFrameStartingPosition
+            );
+        } else {
+            if ($trace === null) {
+                $trace = debug_backtrace();
+            }
+            array_shift($trace);
+            array_shift($trace);
+            $error = new Error(
+                $type, $message, $file, $line, $trace
+            );
+        }
+        return $this->handle($error, true, $shouldThrow);
+    }
+
+    private function handleShutdown() {
+        $this->isShutdownStarted = true;
+        $this->enableDefaultErrorReporting(
+            error_reporting() | ($this->getErrorReportingBitmask() & (
+                E_ERROR | E_PARSE | E_CORE_ERROR
+                    | E_COMPILE_ERROR | E_COMPILE_WARNING
+            ))
+        );
+        $error = error_get_last();
+        if ($error === null
+            || $error['type'] & $this->getErrorReportingBitmask() === 0
+        ) {
+            return;
+        }
+        if (in_array($error['type'], [
+            E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR
+        ])) {
+            $error = new FatalError(
+                $error['type'], $error['message'],
+                $error['file'], $error['line']
+            );
+            $this->enableDefaultErrorReporting();
+            $this->handle($error, true);
+        }
+    }
+
     private function handle($error, $isError = false, $shouldThrow = false) {
         if ($this->error !== null) {
             if ($isError === false) {
@@ -323,6 +339,10 @@ class ErrorHandler {
         if ($this->isShutdownStarted) {
             return;
         }
+        $this->exitScript();
+    }
+
+    private function exitScript() {
         exit(1);
     }
 

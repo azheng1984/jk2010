@@ -4,6 +4,9 @@ namespace Hyperframework\Blog;
 use Hyperframework\Web\Router as Base;
 
 class Router extends Base {
+    private function hi($name) {
+    }
+
     protected function execute() {
 //        var_dump($this->match(':controller/:id(.:format)', [
 //            ':format' => 'html',
@@ -16,6 +19,7 @@ class Router extends Base {
  //       echo $this->getParam('id');
         //echo $this->getControllerClass();
 //        var_dump($this->match('articles/:id.html'));
+        $this->hi(); 
         $this->match('/');
  //       echo $this->getParam('id');
  //       exit;

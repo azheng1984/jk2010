@@ -33,10 +33,13 @@ class ErrorHandlerTest extends Base {
 
     private function bind() {
         $this->handler = new ErrorHandler;
-        set_error_handler(
-            [$this->handler, 'handleError'], error_reporting()
-        );
-        set_exception_handler([$this->handler, 'handleException']);
+        $this->callProtectedMethod($this->handler, 'registerErrorHandler');
+        $this->callProtectedMethod($this->handler, 'registerExceptionHandler');
+        //$this->handler->registerExceptionHandler();
+//        set_error_handler(
+//            [$this->handler, 'handleError'], error_reporting()
+//        );
+//        set_exception_handler([$this->handler, 'handleException']);
 //      $this->handler->disableDefaultErrorReportingForTest();
     }
 
@@ -150,16 +153,11 @@ class ErrorHandlerTest extends Base {
         $this->bind();
         try {
             $this->methodForArgumentErrorTest();
-        } catch (ArgumentErrorException $e) {
+        } catch (ErrorException $e) {
             $line = __LINE__ - 2;
             $file = __FILE__;
             $this->assertEquals($e->getLine(), $line);
             $this->assertEquals($e->getFile(), $file);
-            $this->assertEquals(
-                $e->getFunctionDefinitionLine(),
-                $this->getMethodForArgumentErrorTestDefinitionLine()
-            );
-            $this->assertEquals($e->getFunctionDefinitionFile(), $file);
             return;
         }
         $this->fail();
@@ -172,10 +170,8 @@ class ErrorHandlerTest extends Base {
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
         $suffix = 'PHP Warning:  Missing argument 1 for '
-            . __CLASS__ . '::' . 'methodForArgumentErrorTest() called in '
-            . __FILE__ . ' on line ' . (__LINE__ + 3) . ' and defined in '
-            . __FILE__ . " on line "
-            . $this->getMethodForArgumentErrorTestDefinitionLine() . PHP_EOL;
+            . __CLASS__ . '::' . 'methodForArgumentErrorTest() in '
+            . __FILE__ . ' on line ' . (__LINE__ + 1) . PHP_EOL;
         $this->methodForArgumentErrorTest();
         $log = file_get_contents(dirname(__DIR__) . '/data/tmp/log');
         $this->assertStringEndsWith($suffix, (string)$log);
@@ -202,10 +198,8 @@ class ErrorHandlerTest extends Base {
         $this->expectOutputString(PHP_EOL . "Notice: notice in " 
             . $this->handler->getFile(). " on line "
             . $this->handler->getErrorLine(). PHP_EOL);
-        set_error_handler(
-            [$this->handler, 'handleError'], error_reporting() 
-        );
-        set_exception_handler([$this->handler, 'handleException']);
+        $this->callProtectedMethod($this->handler, 'registerErrorHandler');
+        $this->callProtectedMethod($this->handler, 'registerExceptionHandler');
         trigger_error('notice');
     }
 
@@ -214,7 +208,7 @@ class ErrorHandlerTest extends Base {
     {
         $this->bind();
         error_reporting(0);
-        $this->handler->handleShutdown();
+        $this->callProtectedMethod($this->handler, 'handleShutdown');
         $this->assertEquals(error_reporting(), E_ERROR | E_PARSE | E_CORE_ERROR
             | E_COMPILE_ERROR | E_COMPILE_WARNING
         );
@@ -248,9 +242,8 @@ class ErrorHandlerTest extends Base {
             ->getMock();
         $this->handler->expects($this->once())
              ->method('writeLog');
-        set_error_handler(
-            [$this->handler, 'handleError'], error_reporting() 
-        );
+
+        $this->callProtectedMethod($this->handler, 'registerErrorHandler');
         trigger_error('notice');
     }
 
@@ -264,9 +257,7 @@ class ErrorHandlerTest extends Base {
             ->getMock();
         $this->handler->expects($this->once())
             ->method('writeDefaultErrorLog');
-        set_error_handler(
-            [$this->handler, 'handleError'], error_reporting()
-        );
+        $this->callProtectedMethod($this->handler, 'registerErrorHandler');
         trigger_error('notice');
     }
 
@@ -279,9 +270,7 @@ class ErrorHandlerTest extends Base {
             ->getMock();
         $this->handler->expects($this->once())
              ->method('displayError');
-        set_error_handler(
-            [$this->handler, 'handleError'], error_reporting() 
-        );
+        $this->callProtectedMethod($this->handler, 'registerErrorHandler');
         trigger_error('notice');
     }
 
@@ -329,16 +318,10 @@ class ErrorHandlerTest extends Base {
         $this->handler->expects($this->once())->method('send')->with(
             $this->isInstanceOf(__NAMESPACE__ . '\Error')
         );
-        set_error_handler(
-            [$this->handler, 'handleError'], error_reporting()
-        );
+        $this->callProtectedMethod($this->handler, 'registerErrorHandler');
         trigger_error('notice');
     }
 
     private function methodForArgumentErrorTest($param) {
-    }
-
-    private function getMethodForArgumentErrorTestDefinitionLine() {
-        return __LINE__ - 4;
     }
 }
