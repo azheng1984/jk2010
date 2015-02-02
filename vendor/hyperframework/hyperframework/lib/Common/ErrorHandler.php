@@ -245,6 +245,7 @@ class ErrorHandler {
         if (($type & $errorThrowingBitmask) !== 0) {
             $shouldThrow = true;
         }
+        $shouldThrow = false;
         $trace = null;
         $sourceTraceStartIndex = 2;
         if ($type === E_WARNING || $type === E_RECOVERABLE_ERROR) {
