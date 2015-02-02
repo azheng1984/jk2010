@@ -30,19 +30,30 @@ class ErrorHandler {
 
     public function run() {
         set_error_handler(
-            [$this, 'handleError'], $this->errorReportingBitmask
+            function($type, $message, $file, $line) {
+                return $this->handleError($type, $message, $file, $line);
+            },
+            $this->errorReportingBitmask
         );
-        set_exception_handler([$this, 'handleException']);
-        register_shutdown_function([$this, 'handleShutdown']);
+        set_exception_handler(
+            function($exception) {
+                $this->handleException($exception);
+            }
+        );
+        register_shutdown_function(
+            function() {
+                $this->handleShutdown();
+            }
+        );
         $this->disableDefaultErrorReporting();
     }
 
-    final public function handleException($exception) {
+    private function handleException($exception) {
         $this->enableDefaultErrorReporting();
         $this->handle($exception);
     }
 
-    final public function handleError($type, $message, $file, $line) {
+    private function handleError($type, $message, $file, $line) {
         $this->enableDefaultErrorReporting();
         $shouldThrow = false;
         $errorThrowingBitmask = Config::getInt(
@@ -56,37 +67,30 @@ class ErrorHandler {
             $shouldThrow = true;
         }
         $error = null;
+        $trace = null;
         if ($type === E_WARNING || $type === E_RECOVERABLE_ERROR) {
             $trace = debug_backtrace();
-            if (isset($trace[1]) && isset($trace[1]['file'])) {
-                $suffix = ', called in ' . $trace[1]['file']
-                    . ' on line ' . $trace[1]['line'] . ' and defined';
+            if (isset($trace[2]) && isset($trace[2]['file'])) {
+                $suffix = ', called in ' . $trace[2]['file']
+                    . ' on line ' . $trace[2]['line'] . ' and defined';
                 if (substr($message, -strlen($suffix)) === $suffix) {
                     $message =
                         substr($message, 0, strlen($message) - strlen($suffix));
-                    if ($shouldThrow) {
-                        $error = new ArgumentErrorException(
-                            $type, $message, $trace[1]['file'],
-                            $trace[1]['line'], $file, $line, 1
-                        );
-                    } else {
-                        $trace = debug_backtrace();
-                        array_shift($trace);
-                        $error = new ArgumentError(
-                            $type, $message, $trace[0]['file'],
-                            $trace[0]['line'], $file, $line, $trace
-                        );
-                    }
+                    $file = $trace[2]['file'];
+                    $line = $trace[2]['line'];
                 }
             }
         }
         if ($error === null) {
             if ($shouldThrow) {
                 $error = new ErrorException(
-                    $type, $message, $file, $line, 1
+                    $type, $message, $file, $line, 2
                 );
             } else {
-                $trace = debug_backtrace();
+                if ($trace === null) {
+                    $trace = debug_backtrace();
+                }
+                array_shift($trace);
                 array_shift($trace);
                 $error = new Error(
                     $type, $message, $file, $line, $trace
@@ -96,7 +100,7 @@ class ErrorHandler {
         return $this->handle($error, true, $shouldThrow);
     }
 
-    final public function handleShutdown() {
+    private function handleShutdown() {
         $this->isShutdownStarted = true;
         $this->enableDefaultErrorReporting(
             error_reporting() | ($this->getErrorReportingBitmask() & (

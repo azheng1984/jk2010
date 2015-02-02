@@ -16,6 +16,7 @@ class Router extends Base {
  //       echo $this->getParam('id');
         //echo $this->getControllerClass();
 //        var_dump($this->match('articles/:id.html'));
+        sdf;
         $this->match('/');
  //       echo $this->getParam('id');
  //       exit;
