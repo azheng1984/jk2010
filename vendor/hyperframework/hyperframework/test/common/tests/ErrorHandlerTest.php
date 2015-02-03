@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Common;
 
+use ReflectionFunction;
 use Hyperframework\Common\Test\ErrorTriggeredErrorHandler;
 use Hyperframework\Test\TestCase as Base;
 
@@ -33,13 +34,6 @@ class ErrorHandlerTest extends Base {
     private function bind() {
         $this->handler = new ErrorHandler;
         $this->callProtectedMethod($this->handler, 'registerErrorHandler');
-        $this->callProtectedMethod($this->handler, 'registerExceptionHandler');
-        //$this->handler->registerExceptionHandler();
-//        set_error_handler(
-//            [$this->handler, 'handleError'], error_reporting()
-//        );
-//        set_exception_handler([$this->handler, 'handleException']);
-//      $this->handler->disableDefaultErrorReportingForTest();
     }
 
     protected function tearDown() {
@@ -49,7 +43,6 @@ class ErrorHandlerTest extends Base {
         ini_set('log_errors', $this->shouldLogErrors);
         ini_set('display_errors', $this->shouldDisplayErrors);
         restore_error_handler();
-        restore_exception_handler();
         if (file_exists(dirname(__DIR__) . '/data/tmp/log')) {
             unlink(dirname(__DIR__) . '/data/tmp/log');
         }
@@ -66,6 +59,26 @@ class ErrorHandlerTest extends Base {
     public function testConvertErrorToException() {
         $this->bind();
         trigger_error('notice');
+    }
+
+    public function testRegisterExceptionHandler() {
+        $this->bind();
+        $this->callProtectedMethod($this->handler, 'registerExceptionHandler');
+        $handler = set_exception_handler(function() {});
+        restore_exception_handler();
+        restore_exception_handler();
+        $reflection = new ReflectionFunction($handler);
+        $this->assertSame($reflection->getClosureThis(), $this->handler);
+    }
+
+    public function testRegisterErrorHandler() {
+        $this->bind();
+        $this->callProtectedMethod($this->handler, 'registerErrorHandler');
+        $handler = set_error_handler(function() {});
+        restore_error_handler();
+        restore_error_handler();
+        $reflection = new ReflectionFunction($handler);
+        $this->assertSame($reflection->getClosureThis(), $this->handler);
     }
 
     public function testDisplayDefaultErrorMessage() {
