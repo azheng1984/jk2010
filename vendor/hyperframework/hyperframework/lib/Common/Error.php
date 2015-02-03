@@ -9,15 +9,11 @@ class Error {
     private $trace;
 
     public function __construct(
-        $severity,
-        $message,
-        $file,
-        $line,
-        array $trace = null
+        $severity, $message, $file, $line, array $trace
     ) {
         $this->severity =  $severity;
         $this->message = $message;
-        $this->file =  $file;
+        $this->file = $file;
         $this->line = $line;
         $this->trace = $trace;
     }
@@ -38,13 +34,16 @@ class Error {
         return ErrorTypeHelper::convertToConstantName($this->getSeverity());
     }
 
-
     public function getFile() {
         return $this->file;
     }
 
     public function getLine() {
         return $this->line;
+    }
+
+    public function getExtra() {
+        return $this->extra;
     }
 
     public function getTrace() {

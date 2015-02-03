@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Blog;
 //ini_set('display_errors', false);
+ini_set('html_errors', false);
 return array(
     '[hyperframework]',
     'app_root_namespace' => __NAMESPACE__,

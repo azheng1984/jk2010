@@ -169,8 +169,10 @@ class ErrorHandlerTest extends Base {
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
+        $line = $this->getMethodForArgumentErrorTestDefinitionLine();
         $suffix = 'PHP Warning:  Missing argument 1 for '
-            . __CLASS__ . '::' . 'methodForArgumentErrorTest() in '
+            . __CLASS__ . '::' . 'methodForArgumentErrorTest():'
+            . __FILE__ . ':' . $line . ' in '
             . __FILE__ . ' on line ' . (__LINE__ + 1) . PHP_EOL;
         $this->methodForArgumentErrorTest();
         $log = file_get_contents(dirname(__DIR__) . '/data/tmp/log');
@@ -323,5 +325,9 @@ class ErrorHandlerTest extends Base {
     }
 
     private function methodForArgumentErrorTest($param) {
+    }
+
+    private function getMethodForArgumentErrorTestDefinitionLine() {
+        return __LINE__ - 4;
     }
 }

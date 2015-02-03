@@ -35,6 +35,65 @@ class ErrorHandler {
         $this->disableDefaultErrorReporting();
     }
 
+    protected function displayError() {
+        $error = $this->error;
+        if (ini_get('xmlrpc_errors') === '1') {
+            $code = ini_get('xmlrpc_error_number');
+            echo '<?xml version="1.0"?', '><methodResponse>',
+                '<fault><value><struct><member><name>faultCode</name>',
+                '<value><int>', $code, '</int></value></member><member>',
+                '<name>faultString</name><value><string>';
+            if ($error instanceof Exception) {
+                $message = $this->getExceptionErrorLog();
+            } else {
+                $message = $this->getError();
+            }
+            echo htmlspecialchars($message, ENT_XML1),
+            '</string></value></member></struct></value></fault>',
+            '</methodResponse>';
+            return;
+        }
+        $isHtml = ini_get('html_errors') === '1';
+        $prefix = ini_get('error_prepend_string');
+        $suffix = ini_get('error_append_string');
+        if ($isHtml === false) {
+            echo $prefix, PHP_EOL;
+            if ($error instanceof Exception) {
+                echo $this->getExceptionErrorLog();
+            } else {
+                echo $this->getError();
+            }
+            echo PHP_EOL, $suffix;
+            return;
+        }
+        echo $prefix, '<br />', PHP_EOL, '<b>';
+        if ($error instanceof Exception === false) {
+            echo $error->getSeverityAsString(), '</b>:  ';
+            if (ini_get('docref_root') !== '') {
+                echo $error->getMessage();
+            } else {
+                echo htmlspecialchars(
+                    $error->getMessage(),
+                    ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+                );
+            }
+        } else {
+            echo 'Fatal error</b>:  Uncaught ', htmlspecialchars(
+                $error,
+                ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+            ), PHP_EOL, '  thrown';
+        }
+        echo ' in <b>', htmlspecialchars(
+            $error->getFile(),
+            ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+        ), '</b> on line <b>', $error->getLine(),
+        '</b><br />', PHP_EOL, $suffix;
+    }
+
+    protected function displayFatalError() {
+        $this->displayError();
+    }
+
     protected function writeLog() {
         if ($this->isLoggerEnabled()) {
             $error = $this->error;
@@ -108,65 +167,6 @@ class ErrorHandler {
             E_RECOVERABLE_ERROR => 'error'
         ];
         return $maps[$this->error->getSeverity()];
-    }
-
-    protected function displayError() {
-        $error = $this->error;
-        if (ini_get('xmlrpc_errors') === '1') {
-            $code = ini_get('xmlrpc_error_number');
-            echo '<?xml version="1.0"?', '><methodResponse>',
-                '<fault><value><struct><member><name>faultCode</name>',
-                '<value><int>', $code, '</int></value></member><member>',
-                '<name>faultString</name><value><string>';
-            if ($error instanceof Exception) {
-                $message = $this->getExceptionErrorLog();
-            } else {
-                $message = $this->getError();
-            }
-            echo htmlspecialchars($message, ENT_XML1),
-            '</string></value></member></struct></value></fault>',
-            '</methodResponse>';
-            return;
-        }
-        $isHtml = ini_get('html_errors') === '1';
-        $prefix = ini_get('error_prepend_string');
-        $suffix = ini_get('error_append_string');
-        if ($isHtml === false) {
-            echo $prefix, PHP_EOL;
-            if ($error instanceof Exception) {
-                echo $this->getExceptionErrorLog();
-            } else {
-                echo $this->getError();
-            }
-            echo PHP_EOL, $suffix;
-            return;
-        }
-        echo $prefix, '<br />', PHP_EOL, '<b>';
-        if ($error instanceof Exception === false) {
-            echo $error->getSeverityAsString(), '</b>:  ';
-            if (ini_get('docref_root') !== '') {
-                echo $error->getMessage();
-            } else {
-                echo htmlspecialchars(
-                    $error->getMessage(),
-                    ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
-                );
-            }
-        } else {
-            echo 'Fatal error</b>:  Uncaught ', htmlspecialchars(
-                $error,
-                ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
-            ), PHP_EOL, '  thrown';
-        }
-        echo ' in <b>', htmlspecialchars(
-            $error->getFile(),
-            ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
-        ), '</b> on line <b>', $error->getLine(),
-        '</b><br />', PHP_EOL, $suffix;
-    }
-
-    protected function displayFatalError() {
-        $this->displayError();
     }
 
     final protected function disableDefaultErrorReporting() {
@@ -247,6 +247,8 @@ class ErrorHandler {
         }
         $trace = null;
         $sourceTraceStartIndex = 2;
+        $calledFunctionFile = null;
+        $calledFunctionLine = null;
         if ($type === E_WARNING || $type === E_RECOVERABLE_ERROR) {
             $trace = debug_backtrace();
             if (isset($trace[2]) && isset($trace[2]['file'])) {
@@ -255,29 +257,32 @@ class ErrorHandler {
                 if (substr($message, -strlen($suffix)) === $suffix) {
                     $message =
                         substr($message, 0, strlen($message) - strlen($suffix));
+                    $sourceTraceStartIndex = 3;
+                    $calledFunctionFile = $file;
+                    $calledFunctionLine = $line;
                     $file = $trace[2]['file'];
                     $line = $trace[2]['line'];
-                }
-                if ($shouldThrow === false) {
-                    array_shift($trace);
-                } else {
-                    $sourceTraceStartIndex = 3;
                 }
             }
         }
         if ($shouldThrow) {
+            if ($calledFunctionFile !== null) {
+                $message .= ', defined in ' . $calledFunctionFile
+                    . ' on line ' . $calledFunctionLine . '.';
+            }
             $error = new ErrorException(
                 $type, $message, $file, $line, $sourceTraceStartIndex
             );
         } else {
+            if ($calledFunctionFile !== null) {
+                $message .= ":" . $calledFunctionFile
+                    . ':' . $calledFunctionLine;
+            }
             if ($trace === null) {
                 $trace = debug_backtrace();
             }
-            array_shift($trace);
-            array_shift($trace);
-            $error = new Error(
-                $type, $message, $file, $line, $trace
-            );
+            $trace = array_slice($trace, $sourceTraceStartIndex);
+            $error = new Error($type, $message, $file, $line, $trace);
         }
         return $this->handle($error, true, $shouldThrow);
     }
