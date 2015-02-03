@@ -32,20 +32,20 @@ class ErrorHandler extends Base {
         if ($this->isDebuggerEnabled) {
             $headers = headers_list();
             if (headers_sent() === false) {
-                $this->resetHttpHeaders();
+                $this->rewriteHttpHeaders();
             }
             $outputBuffer = $this->getOutputBuffer();
             $this->executeDebugger($headers, $outputBuffer);
         } elseif (ini_get('display_errors') === '1') {
             $this->displayError();
         } elseif (headers_sent() === false) {
-            $this->resetHttpHeaders();
+            $this->rewriteHttpHeaders();
             $this->deleteOutputBuffer();
             $this->renderErrorView();
         }
     }
 
-    private function resetHttpHeaders() {
+    private function rewriteHttpHeaders() {
         header_remove();
         $error = $this->getError();
         if ($error instanceof HttpException) {
