@@ -2,7 +2,6 @@
 namespace Hyperframework\Common;
 
 use Hyperframework\Common\Test\ErrorTriggeredErrorHandler;
-use Hyperframework\Common\Test\ErrorHandlerSrouceSpy;
 use Hyperframework\Test\TestCase as Base;
 
 class ErrorHandlerTest extends Base {
@@ -309,12 +308,12 @@ class ErrorHandlerTest extends Base {
         );
     }
 
-    public function testGetSrouceAndIsError() {
+    public function testGetErrorAndIsError() {
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
         $this->handler= $this->getMockBuilder(
-            'Hyperframework\Common\Test\ErrorHandlerSourceSpy')
+            'Hyperframework\Common\Test\ErrorHandlerErrorSpy')
             ->setMethods(['send'])
             ->getMock();
         $this->handler->expects($this->once())->method('send')->with(

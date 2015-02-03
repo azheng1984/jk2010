@@ -779,7 +779,7 @@ a {
     color: #333;
 }
 h1 span {
-    color: #aaa;
+    color: #bbb;
     padding: 0 5px;
 }
 .no-touch a:hover {
