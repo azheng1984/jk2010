@@ -27,7 +27,7 @@ abstract class App {
         if ($this->appRootPath === null) {
             throw new LogicException("App root path cannot be empty.");
         }
-        Config::set('hyperframework.app_root_path', $appRootPath);
+        Config::set('hyperframework.app_root_path', $this->appRootPath);
     }
 
     protected function initializeErrorHandler($defaultClass = null) {

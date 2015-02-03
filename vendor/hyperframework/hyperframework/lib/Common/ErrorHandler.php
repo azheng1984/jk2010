@@ -267,8 +267,8 @@ class ErrorHandler {
         }
         if ($shouldThrow) {
             if ($calledFunctionFile !== null) {
-                $message .= ', defined in ' . $calledFunctionFile
-                    . ' on line ' . $calledFunctionLine . '.';
+                $message .= ' defined in ' . $calledFunctionFile
+                    . ' on line ' . $calledFunctionLine;
             }
             $error = new ErrorException(
                 $type, $message, $file, $line, $sourceTraceStartIndex
