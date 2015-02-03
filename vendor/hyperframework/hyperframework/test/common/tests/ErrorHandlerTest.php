@@ -326,7 +326,7 @@ class ErrorHandlerTest extends Base {
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
         $this->handler= $this->getMockBuilder(
-            'Hyperframework\Common\Test\ErrorHandlerErrorSpy')
+            'Hyperframework\Common\Test\ErrorSpy')
             ->setMethods(['send'])
             ->getMock();
         $this->handler->expects($this->once())->method('send')->with(
