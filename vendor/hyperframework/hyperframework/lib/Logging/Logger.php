@@ -113,6 +113,7 @@ final class Logger {
                 'Invalid log entry, ' . gettype($options) . ' given.'
             );
         }
+        $options['level'] = $level;
         if (isset($options['time']) !== false
             && is_int($options['time']) === false
             && $options['time'] instanceof DateTime === false
@@ -122,7 +123,7 @@ final class Logger {
                 $type = get_class($options['time']);
             }
             throw new LoggingException(
-                "Log entry field 'time' must be an integer or a DateTime, "
+                "Log entry time must be a DateTime or an integer, "
                     . $type . " given."
             );
         }
@@ -152,7 +153,7 @@ final class Logger {
         if (isset($options['data'])) {
             if (is_array($options['data']) === false) {
                 throw new LoggingException(
-                    "Log entry field 'data' must be an array, "
+                    "Log entry option 'data' must be an array, "
                         . gettype($options['data']) . ' given.'
                 );
             }
@@ -166,7 +167,7 @@ final class Logger {
         foreach ($data as $key => $value) {
             if (preg_match('/^[0-9a-zA-Z_]+$/', $key) === 0) {
                 throw new LoggingException(
-                    "Log entry feild 'data' is invalid,"
+                    "Log entry option 'data' is invalid,"
                         . " key '$key' is not allowed."
                 );
             }

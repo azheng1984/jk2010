@@ -7,11 +7,13 @@ class LogHandler {
     private $writer;
     private $formatter;
 
-    public function handle($level, array $options) {
+    public function handle($log) {
         $formatter = $this->getFormatter();
-        $log = $formatter->format($level, $options);
+        $formattedLog = $formatter->format(
+            $time, $level, $name, $message, array $extra
+        );
         $writer = $this->getWriter();
-        $writer->write($log);
+        $writer->write($formattedLog);
     }
 
     private function getFormatter() {
