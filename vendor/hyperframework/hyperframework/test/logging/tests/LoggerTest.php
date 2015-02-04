@@ -7,7 +7,7 @@ use Hyperframework\Common\Config;
 use Hyperframework\Logging\Test\CustomLogHandler;
 use Hyperframework\Test\TestCase as Base;
 
-class LoggerTest extends base {
+class LoggerTest extends Base {
     protected function setUp() {
         Logger::setLevel(null);
         Logger::setLogHandler(null);
