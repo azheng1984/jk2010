@@ -93,7 +93,7 @@ class DbStatementProxy {
     public function fetchAll(
         $fetchStyle = null,
         $fetchArgument = null,
-        $constructorArguments = array()
+        $constructorArguments = []
     ) {
         switch (func_num_args()) {
             case 0: return $this->statement->fetchAll();
@@ -112,7 +112,7 @@ class DbStatementProxy {
     }
 
     public function fetchObject(
-        $className = "stdClass", $constructorArguments = array()
+        $className = "stdClass", $constructorArguments = []
     ) {
         return $this->statement->fetchObject($className, $constructorArguments); 
     }
@@ -139,7 +139,7 @@ class DbStatementProxy {
 
     public function setFetchMode($mode) {
         return call_user_func_array(
-            array($this->statement, 'setFetchMode'), func_get_args()
+            [$this->statement, 'setFetchMode'], func_get_args()
         );
     }
 }

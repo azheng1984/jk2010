@@ -96,7 +96,7 @@ class DbClientEngine {
     }
 
     public function insert($table, array $row) {
-        $keys = array();
+        $keys = [];
         foreach (array_keys($row) as $key) {
             $keys[] = $this->quoteIdentifier($key);
         }
@@ -187,7 +187,7 @@ class DbClientEngine {
         return $this->getConnection()->quoteIdentifier($identifier);
     }
 
-    public function prepare($sql, array $driverOptions = array()) {
+    public function prepare($sql, array $driverOptions = []) {
         return $this->getConnection()->prepare($sql, $driverOptions);
     }
 
@@ -268,7 +268,7 @@ class DbClientEngine {
     }
 
     private function buildWhereByColumns(array $columns) {
-        $params = array();
+        $params = [];
         $where = null;
         foreach ($columns as $key => $value) {
             $params[] = $value;
@@ -277,7 +277,7 @@ class DbClientEngine {
             }
             $where .= $this->quoteIdentifier($key) . ' = ?';
         }
-        return array($where, $params);
+        return [$where, $params];
     }
 
     private function getConnectionFactory() {

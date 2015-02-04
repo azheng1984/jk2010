@@ -19,7 +19,7 @@ class DbConnection extends PDO {
         return $this->name;
     }
 
-    public function prepare($sql, $driverOptions = array()) {
+    public function prepare($sql, $driverOptions = []) {
         $statement = parent::prepare($sql, $driverOptions);
         return new DbStatementProxy($statement, $this);
     }
@@ -36,13 +36,13 @@ class DbConnection extends PDO {
             return $this->sendSql($sql, true);
         }
         if ($argumentCount === 2) {
-            return $this->sendSql($sql, true, array($fetchStyle));
+            return $this->sendSql($sql, true, [$fetchStyle]);
         }
         if ($argumentCount === 3) {
-            return $this->sendSql($sql, true, array($fetchStyle, $extraParam1));
+            return $this->sendSql($sql, true, [$fetchStyle, $extraParam1]);
         }
         return $this->sendSql(
-            $sql, true, array($fetchStyle, $extraParam1, $extraParam2)
+            $sql, true, [$fetchStyle, $extraParam1, $extraParam2]
         );
     }
 
@@ -128,11 +128,11 @@ class DbConnection extends PDO {
     protected function getIdentifierQuotationMarks() {
         switch ($this->getAttribute(PDO::ATTR_DRIVER_NAME)) {
             case 'mysql':
-                return array('`', '`');
+                return ['`', '`'];
             case 'sqlsrv':
-                return array('[', ']');
+                return ['[', ']'];
             default:
-                return array('"', '"');
+                return ['"', '"'];
         }
     }
 }

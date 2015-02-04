@@ -286,14 +286,14 @@ class CommandParser {
         if ($commandConfig->isSubcommandEnabled()) {
             if ($globalOptions !== null) {
                 foreach ($globalOptions as $key => $value) {
-                    if (in_array($key, array('help', 'version'))) {
+                    if (in_array($key, ['help', 'version'])) {
                         return true;
                     }
                 }
             }
             if ($options !== null) {
                 foreach ($options as $key => $value) {
-                    if (in_array($key, array('help'))) {
+                    if ($key === 'help') {
                         return true;
                     }
                 }
@@ -301,7 +301,7 @@ class CommandParser {
         } else {
             if ($options !== null) {
                 foreach ($options as $key => $value) {
-                    if (in_array($key, array('help', 'version'))) {
+                    if (in_array($key, ['help', 'version'])) {
                         return true;
                     }
                 }

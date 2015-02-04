@@ -178,7 +178,7 @@ class FormHelper {
     ) {
         foreach ($options as $option) {
             if (is_array($option) === false) {
-                $option = array('value' => $option, ':content' => $option);
+                $option = ['value' => $option, ':content' => $option];
             } elseif ($isOptionGroupAllowed && isset($option[':options'])) {
                 echo '<optgroup';
                 $this->renderAttributes($option);

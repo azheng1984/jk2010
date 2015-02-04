@@ -49,7 +49,7 @@ class DbImportCommand {
         $statement = null;
         $index = 0;
         while ($index < $count) {
-            $values = array();
+            $values = [];
             $size = $batchSize;
             if ($index + $batchSize >= $count) {
                 $size = $count - $index;
@@ -58,7 +58,7 @@ class DbImportCommand {
                 $sql = $prefix . str_repeat($placeHolders . ',', $size - 1)
                     . $placeHolders;
                 $statement = DbClient::prepare(
-                    $sql, array(PDO::ATTR_EMULATE_PREPARES => false)
+                    $sql, [PDO::ATTR_EMULATE_PREPARES => false]
                 );
             }
             while ($size > 0) {

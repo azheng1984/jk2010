@@ -143,7 +143,7 @@ class DbClient {
         return self::getEngine()->quoteIdentifier($identifier);
     }
 
-    public static function prepare($sql, array $driverOptions = array()) {
+    public static function prepare($sql, array $driverOptions = []) {
         return self::getEngine()->prepare($sql, $driverOptions);
     }
 
