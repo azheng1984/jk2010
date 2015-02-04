@@ -3,11 +3,11 @@ namespace Hyperframework\Common\Test;
 
 use Hyperframework\Common\ErrorHandler as Base;
 
-class ErrorHandlerErrorSpy extends Base {
+class ErrorSpy extends Base {
     public function displayError() {
         $this->send($this->getError());
     }
 
-    public function send($source) {
+    public function send($error) {
     }
 }
