@@ -85,7 +85,7 @@ class Config {
         return $result;
     }
 
-    public static function getObject($name, $class = null, $default = null) {
+    public static function getObject($name, $type = null, $default = null) {
         $result = static::get($name);
         if ($result === null) {
             return $default;
@@ -97,9 +97,9 @@ class Config {
                         . gettype($result) . " given."
                 );
             }
-        } elseif ($result instanceof $class === false) {
+        } elseif ($result instanceof $type === false) {
             throw new ConfigException(
-                "Config '$name' requires an object of class '$class', "
+                "Config '$name' requires an object of '$class', "
                     . "object of class '". get_class($result) . "' given."
             );
         }

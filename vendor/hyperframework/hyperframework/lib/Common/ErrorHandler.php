@@ -49,8 +49,8 @@ class ErrorHandler {
                 $message = $this->getError();
             }
             echo htmlspecialchars($message, ENT_XML1),
-            '</string></value></member></struct></value></fault>',
-            '</methodResponse>';
+                '</string></value></member></struct></value></fault>',
+                '</methodResponse>';
             return;
         }
         $isHtml = ini_get('html_errors') === '1';
@@ -84,10 +84,9 @@ class ErrorHandler {
             ), PHP_EOL, '  thrown';
         }
         echo ' in <b>', htmlspecialchars(
-            $error->getFile(),
-            ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
-        ), '</b> on line <b>', $error->getLine(),
-        '</b><br />', PHP_EOL, $suffix;
+                $error->getFile(), ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+            ), '</b> on line <b>', $error->getLine(),
+            '</b><br />', PHP_EOL, $suffix;
     }
 
     protected function displayFatalError() {
