@@ -88,7 +88,8 @@ class App extends Base {
     }
 
     protected function executeCommand() {
-        $class = $this->getCommandConfig()->getClass();
+        $commandConfig = $this->getCommandConfig();
+        $class = $commandConfig->getClass();
         if (class_exists($class) === false) {
             throw new ClassNotFoundException(
                 "Command class '$class' does not exist."

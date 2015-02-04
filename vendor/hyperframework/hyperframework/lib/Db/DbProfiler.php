@@ -33,8 +33,7 @@ class DbProfiler {
 
     public static function onStatementExecuting($statement) {
         self::initializeProfile(
-            $statement->getConnection(),
-            ['sql' => $statement->getsql()]
+            $statement->getConnection(), ['sql' => $statement->getsql()]
         );
     }
 

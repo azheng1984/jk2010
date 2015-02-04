@@ -23,7 +23,8 @@ class DbClientEngine {
     }
 
     public function findColumn($sql, array $params = null) {
-        return $this->query($sql, $params)->fetchColumn();
+        $result = $this->query($sql, $params);
+        return $result->fetchColumn();
     }
 
     public function findColumnByColumns(
@@ -36,7 +37,8 @@ class DbClientEngine {
     }
 
     public function findRow($sql, array $params = null) {
-        return $this->query($sql, $params)->fetch(PDO::FETCH_ASSOC);
+        $result = $this->query($sql, $params);
+        return $result->fetch(PDO::FETCH_ASSOC);
     }
 
     public function findRowByColumns(
@@ -49,7 +51,8 @@ class DbClientEngine {
     }
 
     public function findAll($sql, array $params = null) {
-        return $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
+        $result = $this->query($sql, $params);
+        return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function findAllByColumns(
