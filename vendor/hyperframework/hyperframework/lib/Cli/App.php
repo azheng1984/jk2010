@@ -84,7 +84,7 @@ class App extends Base {
 
     public function quit() {
         $this->finalize();
-        exit();
+        $this->exitScript();
     }
 
     protected function executeCommand() {
@@ -154,4 +154,8 @@ class App extends Base {
     }
 
     protected function finalize() {}
+
+    private function exitScript() {
+        exit();
+    }
 }
