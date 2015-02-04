@@ -102,64 +102,64 @@ final class Logger {
         return self::$logHandler;
     }
 
-    private static function log($level, $params) {
-        if ($params instanceof Closure) {
-            $params = $params();
+    private static function log($level, $options) {
+        if ($options instanceof Closure) {
+            $options = $options();
         }
-        if (is_string($params)) {
-            $params = ['message' => $params];
-        } elseif (is_array($params) === false) {
+        if (is_string($options)) {
+            $options = ['message' => $options];
+        } elseif (is_array($options) === false) {
             throw new LoggingException(
-                'Invalid log entry, ' . gettype($params) . ' given.'
+                'Invalid log entry, ' . gettype($options) . ' given.'
             );
         }
-        if (isset($params['time']) !== false
-            && is_int($params['time']) === false
-            && $params['time'] instanceof DateTime === false
+        if (isset($options['time']) !== false
+            && is_int($options['time']) === false
+            && $options['time'] instanceof DateTime === false
         ) {
-            $type = gettype($params['time']);
+            $type = gettype($options['time']);
             if ($type === 'object') {
-                $type = get_class($params['time']);
+                $type = get_class($options['time']);
             }
             throw new LoggingException(
                 "Log entry field 'time' must be an integer or a DateTime, "
                     . $type . " given."
             );
         }
-        if (isset($params['name'])) {
-            if (preg_match('/^[a-zA-Z0-9_.]+$/', $params['name']) === 0
-                || $params['name'][0] === '.'
-                || substr($params['name'], -1) === '.'
+        if (isset($options['name'])) {
+            if (preg_match('/^[a-zA-Z0-9_.]+$/', $options['name']) === 0
+                || $options['name'][0] === '.'
+                || substr($options['name'], -1) === '.'
             ) {
                 throw new LoggingException(
-                    "Log entry name '{$params['name']}' is invalid."
+                    "Log entry name '{$options['name']}' is invalid."
                 );
             }
         }
-        if (isset($params['message'])) {
-            if (is_array($params['message'])) {
-                $count = count($params['message']);
+        if (isset($options['message'])) {
+            if (is_array($options['message'])) {
+                $count = count($options['message']);
                 if ($count === 0) {
-                    $params['message'] = '';
+                    $options['message'] = '';
                 } elseif ($count === 1) {
-                    $params['message'] = $params['message'][0];
+                    $options['message'] = $options['message'][0];
                 } else {
-                    $params['message'] =
-                        call_user_func_array('sprintf', $params['message']);
+                    $options['message'] =
+                        call_user_func_array('sprintf', $options['message']);
                 }
             }
         }
-        if (isset($params['data'])) {
-            if (is_array($params['data']) === false) {
+        if (isset($options['data'])) {
+            if (is_array($options['data']) === false) {
                 throw new LoggingException(
                     "Log entry field 'data' must be an array, "
-                        . gettype($params['data']) . ' given.'
+                        . gettype($options['data']) . ' given.'
                 );
             }
-            self::checkDataKey($params['data']);
+            self::checkDataKey($options['data']);
         }
         $logHandler = self::getLogHandler();
-        $logHandler->handle($level, $params);
+        $logHandler->handle($level, $options);
     }
 
     private static function checkDataKey(array $data) {

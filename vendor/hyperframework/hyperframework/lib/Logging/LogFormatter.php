@@ -4,12 +4,12 @@ namespace Hyperframework\Logging;
 use DateTime;
 
 class LogFormatter {
-    public function format($level, array $params) {
-        $time = isset($params['time']) ? $params['time'] : null;
-        $name = isset($params['name']) ? $params['name'] : null;
-        $message = isset($params['message']) ? $params['message'] : null;
-        $data = isset($params['data']) ? $params['data'] : null;
-        $count = count($params);
+    public function format($level, array $options) {
+        $time = isset($options['time']) ? $options['time'] : null;
+        $name = isset($options['name']) ? $options['name'] : null;
+        $message = isset($options['message']) ? $options['message'] : null;
+        $data = isset($options['data']) ? $options['data'] : null;
+        $count = count($options);
         $result = $this->getTime($time) . ' | ' . $level;
         if ((string)$name !== '') {
             $result .= ' | ' . $name;

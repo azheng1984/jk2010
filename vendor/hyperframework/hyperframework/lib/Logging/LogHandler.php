@@ -7,9 +7,9 @@ class LogHandler {
     private $writer;
     private $formatter;
 
-    public function handle($level, array $params) {
+    public function handle($level, array $options) {
         $formatter = $this->getFormatter();
-        $log = $formatter->format($level, $params);
+        $log = $formatter->format($level, $options);
         $writer = $this->getWriter();
         $writer->write($log);
     }
