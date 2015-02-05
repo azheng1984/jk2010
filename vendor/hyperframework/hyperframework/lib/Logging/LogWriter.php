@@ -8,12 +8,12 @@ class LogWriter {
     private $path;
     private $isDefaultPath;
 
-    public function write($log) {
+    public function write($text) {
         $path = $this->getPath();
         $handle = fopen($path, 'a');
         if ($handle !== false) {
             if (flock($handle, LOCK_EX)) {
-                fwrite($handle, $log);
+                fwrite($handle, $text);
                 fflush($handle);
                 flock($handle, LOCK_UN);
             } else {

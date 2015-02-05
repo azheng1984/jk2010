@@ -60,7 +60,7 @@ class DbProfiler {
         );
         if ($isLoggerEnabled) {
             Logger::debug([
-                'name' => 'hyperframework.db.profiler.profile',
+                'name' => 'hyperframework.db.profile',
                 'data' => self::$profile
             ]);
         }

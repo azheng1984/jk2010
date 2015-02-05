@@ -35,7 +35,7 @@ class LoggerTest extends Base {
         $time = time();
         Logger::$method(
             ['name' => 'Test', 'message' => 'message',
-                'time' => $time, 'data' => ['key' => 'value']]
+                'time' => $time, 'key' => 'value']
         );
         $this->assertSame(
             date('Y-m-d H:i:s', $time) . ' | ' . $level . ' | Test | message'
@@ -51,27 +51,29 @@ class LoggerTest extends Base {
 
     public function testIntegerTimeForTimeOption() {
         $time = time();
-        Logger::warn(['message' => 'message', 'time' => $time]);
+        Logger::warn(
+            ['name' => 'test', 'message' => 'message', 'time' => $time]
+        );
         $this->assertSame(
-            date('Y-m-d H:i:s', $time) . ' | WARNING || message' . PHP_EOL,
+            date('Y-m-d H:i:s', $time) . ' | WARNING | test | message' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
     }
 
     public function testDateTimeForTimeOption() {
         $time = new DateTime;
-        Logger::warn(['message' => 'message', 'time' => $time]);
+        Logger::warn(['name' => 'test', 'message' => 'message', 'time' => $time]);
         $this->assertSame(
-            $time->format('Y-m-d H:i:s') . ' | WARNING || message' . PHP_EOL,
+            $time->format('Y-m-d H:i:s') . ' | WARNING | test | message' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
     }
 
     public function testMessageParams() {
         $time = new DateTime;
-        Logger::warn(['message' => ['%s', 'string']]);
+        Logger::warn(['name' => 'test', 'message' => ['%s', 'string']]);
         $this->assertSame(
-            $time->format('Y-m-d H:i:s') . ' | WARNING || string' . PHP_EOL,
+            $time->format('Y-m-d H:i:s') . ' | WARNING | test | string' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
     }
@@ -79,10 +81,10 @@ class LoggerTest extends Base {
     public function testClosure() {
         $time = new DateTime;
         Logger::warn(function() {
-            return 'message';
+            return ['name' => 'test', 'message' => 'message'];
         });
         $this->assertSame(
-            $time->format('Y-m-d H:i:s') . ' | WARNING || message' . PHP_EOL,
+            $time->format('Y-m-d H:i:s') . ' | WARNING | test | message' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
     }
@@ -90,13 +92,13 @@ class LoggerTest extends Base {
     public function testSetLevel() {
         Logger::setLevel('ERROR');
         Logger::warn(function() {
-            return 'message';
+            return ['name' => 'test', 'message' => 'message'];
         });
         $this->assertFalse(
             file_exists(Config::getAppRootPath() . '/log/app.log')
         );
         Logger::error(function() {
-            return 'message';
+            return ['name' => 'test', 'message' => 'message'];
         });
         $this->assertTrue(
             file_exists(Config::getAppRootPath() . '/log/app.log')
@@ -124,7 +126,9 @@ class LoggerTest extends Base {
         Logger::setLogHandler($logHandler);
         $this->assertSame($logHandler, Logger::getLogHandler());
         $this->expectOutputString(get_class($logHandler) . '::handle');
-        Logger::info('message');
+        Logger::info(
+            ['name' => 'test', 'message' => 'message']
+        );
     }
 
     public function testDefaultLogHandler() {
@@ -211,7 +215,7 @@ class LoggerTest extends Base {
      */
     public function testInvaidDataKey() {
         try {
-            Logger::warn(['data' => ['.' => 'value']]);
+            Logger::warn(['.' => 'value']);
         } catch (LoggingException $e) {
             $this->assertFalse(
                 file_exists(Config::getAppRootPath() . '/log/app.log')
@@ -225,7 +229,7 @@ class LoggerTest extends Base {
      */
     public function testInvaidSecondLevelDataKey() {
         try {
-            Logger::warn(['data' => ['key' => ['.' => 'value']]]);
+            Logger::warn(['key' => ['.' => 'value']]);
         } catch (LoggingException $e) {
             $this->assertFalse(
                 file_exists(Config::getAppRootPath() . '/log/app.log')
@@ -239,7 +243,7 @@ class LoggerTest extends Base {
      */
     public function testInvalidLevelDefinedInConfig() {
         Config::set('hyperframework.logging.log_level', 'unknown');
-        Logger::warn('message');
+        Logger::warn(['name' => 'test']);
     }
 
     /**
@@ -247,6 +251,6 @@ class LoggerTest extends Base {
      */
     public function testInvalidLogHandlerClassDefinedInConfig() {
         Config::set('hyperframework.logging.log_handler_class', 'Unknown');
-        Logger::warn('message');
+        Logger::warn(['name' => 'test']);
     }
 }

@@ -2,7 +2,6 @@
 namespace Hyperframework\Logging;
 
 use Closure;
-use DateTime;
 use InvalidArgumentException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ConfigException;
@@ -11,15 +10,6 @@ use Hyperframework\Common\ClassNotFoundException;
 final class Logger {
     private static $logHandler;
     private static $thresholdCode;
-    private static $levels = [
-        'OFF' => -1,
-        'FATAL' => 0,
-        'ERROR' => 1,
-        'WARNING' => 2,
-        'NOTICE' => 3,
-        'INFO' => 4,
-        'DEBUG' => 5
-    ];
 
     public static function debug($mixed) {
         if (self::getThresholdCode() === 5) {
@@ -62,20 +52,17 @@ final class Logger {
             self::$thresholdCode = null;
             return;
         }
-        if (isset(self::$levels[$value]) === false) {
-            $tmp = strtoupper($value);
-            if (isset(self::$levels[$tmp]) === false) {
-                throw new InvalidArgumentException(
-                    "Log level '$value' is invalid."
-                );
-            }
-            $value = $tmp;
+        $thresholdCode = LogLevelHelper::getCode($value);
+        if ($thresholdCode === null) {
+            throw new InvalidArgumentException(
+                "Log level '$value' is invalid."
+            );
         }
-        self::$thresholdCode = self::$levels[$value];
+        self::$thresholdCode = $thresholdCode;
     }
 
     public static function getLevel() {
-        return array_search(self::getThresholdCode(), self::$levels);
+        return LogLevelHelper::getName(self::$thresholdCode);
     }
 
     public static function setLogHandler($value) {
@@ -102,96 +89,33 @@ final class Logger {
         return self::$logHandler;
     }
 
-    private static function log($level, $options) {
-        if ($options instanceof Closure) {
-            $options = $options();
+    private static function log($level, $log) {
+        if ($log instanceof Closure) {
+            $log = $log();
         }
-        if (is_string($options)) {
-            $options = ['message' => $options];
-        } elseif (is_array($options) === false) {
+        if (is_array($log) === false) {
             throw new LoggingException(
-                'Invalid log entry, ' . gettype($options) . ' given.'
+                'Log must be an array, ' . gettype($log) . ' given.'
             );
         }
-        $options['level'] = $level;
-        if (isset($options['time']) !== false
-            && is_int($options['time']) === false
-            && $options['time'] instanceof DateTime === false
-        ) {
-            $type = gettype($options['time']);
-            if ($type === 'object') {
-                $type = get_class($options['time']);
-            }
-            throw new LoggingException(
-                "Log entry time must be a DateTime or an integer, "
-                    . $type . " given."
-            );
-        }
-        if (isset($options['name'])) {
-            if (preg_match('/^[a-zA-Z0-9_.]+$/', $options['name']) === 0
-                || $options['name'][0] === '.'
-                || substr($options['name'], -1) === '.'
-            ) {
-                throw new LoggingException(
-                    "Log entry name '{$options['name']}' is invalid."
-                );
-            }
-        }
-        if (isset($options['message'])) {
-            if (is_array($options['message'])) {
-                $count = count($options['message']);
-                if ($count === 0) {
-                    $options['message'] = '';
-                } elseif ($count === 1) {
-                    $options['message'] = $options['message'][0];
-                } else {
-                    $options['message'] =
-                        call_user_func_array('sprintf', $options['message']);
-                }
-            }
-        }
-        if (isset($options['data'])) {
-            if (is_array($options['data']) === false) {
-                throw new LoggingException(
-                    "Log entry option 'data' must be an array, "
-                        . gettype($options['data']) . ' given.'
-                );
-            }
-            self::checkDataKey($options['data']);
-        }
-        $logHandler = self::getLogHandler();
-        $logHandler->handle($level, $options);
-    }
-
-    private static function checkDataKey(array $data) {
-        foreach ($data as $key => $value) {
-            if (preg_match('/^[0-9a-zA-Z_]+$/', $key) === 0) {
-                throw new LoggingException(
-                    "Log entry option 'data' is invalid,"
-                        . " key '$key' is not allowed."
-                );
-            }
-            if (is_array($value)) {
-                self::checkDataKey($value);
-            }
-        }
+        $log['level'] = $level;
+        $logRecord = new LogRecord($log);
+        $logHandler = static::getLogHandler();
+        $logHandler->handle($logRecord);
     }
 
     private static function getThresholdCode() {
         if (self::$thresholdCode === null) {
             $level = Config::getString('hyperframework.logging.log_level', '');
             if ($level !== '') {
-                if (isset(self::$levels[$level]) === false) {
-                    $tmp = strtoupper($level);
-                    if (isset(self::$levels[$tmp]) === false) {
-                        throw new ConfigException(
-                            "Log level '$level' is invalid, defined in "
-                                . "'hyperframework.logging.log_level'."
-                        );
-                    }
-                    $level = $tmp;
+                $thresholdCode = LogLevelHelper::getCode($level);
+                if ($thresholdCode === null) {
+                    throw new ConfigException(
+                        "Log level '$level' is invalid, defined in "
+                            . "'hyperframework.logging.log_level'."
+                    );
                 }
-                self::$thresholdCode = self::$levels[$level];
+                self::$thresholdCodel = $thresholdCode;
             } else {
                 self::$thresholdCode = 4;
             }

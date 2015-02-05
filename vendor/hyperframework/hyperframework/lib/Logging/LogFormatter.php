@@ -4,39 +4,21 @@ namespace Hyperframework\Logging;
 use DateTime;
 
 class LogFormatter {
-    public function format($time, $level, $name, $message, array $extra) {
-//        $time = isset($options['time']) ? $options['time'] : null;
-//        unset($options['time']);
-//        $name = isset($options['name']) ? $options['name'] : null;
-//        unset($options['name']);
-//        $message = isset($options['message']) ? $options['message'] : null;
-//        unset($options['message']);
-        $result = $this->getTime($time) . ' | ' . $level;
-        if ((string)$name !== '') {
-            $result .= ' | ' . $name;
-        }
-        if ((string)$message !== '') {
-            if ((string)$name === '') {
-                $result .= ' ||';
-            } else {
-                $result .= ' |';
-            }
+    public function format($logRecord) {
+        $time = $logRecord->getTime();
+        $result = $time->format('Y-m-d H:i:s')
+            . ' | ' . $logRecord->getLevel()
+            . ' | ' . $logRecord->getName();
+        $message = (string)$logRecord->getMessage();
+        if ($message !== '') {
+            $result .= ' |';
             $this->appendValue($result, $message);
         }
-        if (count($data) !== 0) {
-            $result .= $this->convert($data);
+        $extraData = $logRecord->getExtraData();
+        if ($extraData !== null) {
+            $result .= $this->convert($extraData);
         }
         return $result . PHP_EOL;
-    }
-
-    private function getTime($time) {
-        $format = 'Y-m-d H:i:s';
-        if (is_int($time)) {
-            return date($format, $time);
-        } elseif ($time === null) {
-            $time = new Datetime;
-        }
-        return $time->format($format);
     }
 
     private function appendValue(&$data, $value, $prefix = "\t>") {
