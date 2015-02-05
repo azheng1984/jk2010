@@ -136,9 +136,9 @@ class ErrorHandlerTest extends Base {
         trigger_error('notice');
         $log = file_get_contents(dirname(__DIR__) . '/data/tmp/logger_log');
         $structuredMessage = "| NOTICE | php_error | notice"
+            . PHP_EOL . "\ttype: E_USER_NOTICE"
             . PHP_EOL . "\tfile: " . __FILE__
-            . PHP_EOL . "\tline: " . (__LINE__ - 4)
-            . PHP_EOL . "\ttype: E_USER_NOTICE" . PHP_EOL;
+            . PHP_EOL . "\tline: " . (__LINE__ - 5) . PHP_EOL;
         $this->assertStringEndsWith($structuredMessage, $log);
         $this->assertFalse(
             file_exists(dirname(__DIR__) . '/data/tmp/log')

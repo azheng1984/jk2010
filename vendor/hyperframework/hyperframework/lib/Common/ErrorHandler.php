@@ -95,48 +95,47 @@ class ErrorHandler {
 
     protected function writeLog() {
         if ($this->isLoggerEnabled()) {
-            $error = $this->error;
-            $name = null;
-            $data = [];
-            $data['file'] = $error->getFile();
-            $data['line'] = $error->getLine();
-            if ($this->error instanceof Exception) {
-                $name = 'php_exception';
-                $data['class'] = get_class($exception);
-            } else {
-                $name = 'php_error';
-                $data['type'] = $error->getSeverityAsConstantName();
-            }
-            if ($this->error instanceof FatalError === false) {
-                $shouldLogTrace = Config::getBoolean(
-                    'hyperframework.error_handler.logger.log_stack_trace', false
-                );
-                if ($shouldLogTrace) {
-                    $data['stack_trace'] = [];
-                    foreach ($error->getTrace() as $item) {
-                        $trace = [];
-                        if (isset($item['class'])) {
-                            $trace['class'] = $item['class'];
+            $method = $this->getLoggerMethod();
+            Logger::$method(function() {
+                $error = $this->error;
+                $log = [];
+                if ($this->error instanceof Exception) {
+                    $log['name'] = 'php_exception';
+                    $log['class'] = get_class($exception);
+                } else {
+                    $log['name'] = 'php_error';
+                    $log['type'] = $error->getSeverityAsConstantName();
+                }
+                $log['file'] = $error->getFile();
+                $log['line'] = $error->getLine();
+                $log['message'] = $error->getMessage();
+                if ($this->error instanceof FatalError === false) {
+                    $shouldLogTrace = Config::getBoolean(
+                        'hyperframework.error_handler.logger.log_stack_trace',
+                        false
+                    );
+                    if ($shouldLogTrace) {
+                        $log['stack_trace'] = [];
+                        foreach ($error->getTrace() as $item) {
+                            $trace = [];
+                            if (isset($item['class'])) {
+                                $trace['class'] = $item['class'];
+                            }
+                            if (isset($item['function'])) {
+                                $trace['function'] = $item['function'];
+                            }
+                            if (isset($item['file'])) {
+                                $trace['file'] = $item['file'];
+                            }
+                            if (isset($item['line'])) {
+                                $trace['line'] = $item['line'];
+                            }
+                            $log['stack_trace'][] = $trace;
                         }
-                        if (isset($item['function'])) {
-                            $trace['function'] = $item['function'];
-                        }
-                        if (isset($item['file'])) {
-                            $trace['file'] = $item['file'];
-                        }
-                        if (isset($item['line'])) {
-                            $trace['line'] = $item['line'];
-                        }
-                        $data['stack_trace'][] = $trace;
                     }
                 }
-            }
-            $method = $this->getLoggerMethod();
-            Logger::$method([
-                'name' => $name,
-                'message' => $error->getMessage(),
-                'data' => $data
-            ]);
+                return $log;
+            });
         } elseif ($this->isDefaultErrorLogEnabled()) {
             $this->writeDefaultErrorLog();
         }

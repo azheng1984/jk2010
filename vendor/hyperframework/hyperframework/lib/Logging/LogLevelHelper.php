@@ -32,53 +32,53 @@ class LogLevelHelper {
         return $name;
     }
 
-    public static function compare($level1, $level2, $operator = null) {
-        if (is_int($level1) === false) {
-            $level1 = static::getCode($level1);
-            if ($level1 === null) {
+    public static function compare($levelA, $levelB, $operator = null) {
+        if (is_int($levelA) === false) {
+            $levelA = static::getCode($levelA);
+            if ($levelA === null) {
                 throw new InvalidArgumentException(
-                    "Argument 'level1' is invalid."
+                    "Argument 'levelA' is invalid."
                 );
             }
-        } elseif ($level1 < -1 || $level1 > 5) {
+        } elseif ($levelA < -1 || $levelA > 5) {
             throw new InvalidArgumentException(
-                "Argument 'level1' is invalid."
+                "Argument 'levelA' is invalid."
             );
         }
-        if (is_int($level2) === false) {
-            $level2 = static::getCode($level2);
-            if ($level2 === null) {
+        if (is_int($levelB) === false) {
+            $levelB = static::getCode($levelB);
+            if ($levelB === null) {
                 throw new InvalidArgumentException(
-                    "Argument 'level2' is invalid."
+                    "Argument 'levelB' is invalid."
                 );
             }
-        } elseif ($level2 < -1 || $level2 > 5) {
+        } elseif ($levelB < -1 || $levelB > 5) {
             throw new InvalidArgumentException(
-                "Argument 'level2' is invalid."
+                "Argument 'levelB' is invalid."
             );
         }
         if ($operator === null) {
-            if ($level1 === $level2) {
+            if ($levelA === $levelB) {
                 return 0;
             }
-            if ($level1 > $level2) {
+            if ($levelA > $levelB) {
                 return 1;
             }
             return -1;
         }
         switch ($operator) {
             case '>':
-                return $level1 > $level2;
+                return $levelA > $levelB;
             case '>=':
-                return $level1 >= $level2;
+                return $levelA >= $levelB;
             case '<':
-                return $level1 < $level2;
+                return $levelA < $levelB;
             case '<=':
-                return $level1 <= $level2;
+                return $levelA <= $levelB;
             case '==':
-                return $level1 === $level2;
+                return $levelA === $levelB;
             case '!=':
-                return $level1 !== $level2;
+                return $levelA !== $levelB;
             default:
                 throw new InvalidArgumentException(
                     "Argument 'operator' is invalid."
