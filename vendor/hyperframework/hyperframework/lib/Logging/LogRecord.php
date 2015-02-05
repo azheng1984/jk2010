@@ -6,7 +6,7 @@ use DateTime;
 class LogRecord {
     private $time;
     private $level;
-    private $type;
+    private $name;
     private $message;
     private $extraData;
 
@@ -64,7 +64,7 @@ class LogRecord {
         }
         unset($data['time']);
         unset($data['level']);
-        unset($data['category']);
+        unset($data['name']);
         unset($data['message']);
         if (count($data) > 0) {
             self::checkExtraData($data);
@@ -78,10 +78,6 @@ class LogRecord {
 
     public function getLevel() {
         return $this->level;
-    }
-
-    public function getType() {
-        return $this->type;
     }
 
     public function getMessage() {

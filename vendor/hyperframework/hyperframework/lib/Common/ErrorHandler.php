@@ -96,19 +96,20 @@ class ErrorHandler {
     protected function writeLog() {
         if ($this->isLoggerEnabled()) {
             $method = $this->getLoggerMethod();
-            Logger::$method(function() {
+            $callback = function() {
                 $error = $this->error;
                 $log = [];
                 if ($this->error instanceof Exception) {
-                    $log['name'] = 'php_exception';
-                    $log['class'] = get_class($exception);
+                    $exceptionClass = get_class($exception);
+                    $log['message'] = "PHP uncaught exception '$exceptionClass' with messsge : '"
+                        . $error->getMessage() . "'";
+                    $log['class'] = $exceptionClass;
                 } else {
-                    $log['name'] = 'php_error';
-                    $log['type'] = $error->getSeverityAsConstantName();
+                    $log['message'] = 'php error' . $error->getSeverityAsString()
+                        . ': ' . $error->getMessage();
                 }
                 $log['file'] = $error->getFile();
                 $log['line'] = $error->getLine();
-                $log['message'] = $error->getMessage();
                 if ($this->error instanceof FatalError === false) {
                     $shouldLogTrace = Config::getBoolean(
                         'hyperframework.error_handler.logger.log_stack_trace',
@@ -135,9 +136,30 @@ class ErrorHandler {
                     }
                 }
                 return $log;
-            });
+            };
+            $loggerClass = $this->getCustomLoggerClass();
+            if ($loggerClass === null) {
+                Logger::$method($callback);
+            } else {
+                $loggerClass::$method($callback);
+            }
         } elseif ($this->isDefaultErrorLogEnabled()) {
             $this->writeDefaultErrorLog();
+        }
+    }
+
+    private function getCustomLoggerClass() {
+        $loggerClass = Config::getString(
+            'hyperframework.error_handler.logger.class', ''
+        );
+        if ($loggerClass !== '') {
+            if (class_exists($loggerClass) === false) {
+                throw new ClassNotFoundException(
+                    "Logger class '$class' does not exist, defined in "
+                        . "'hyperframework.error_handler.logger.class'."
+                );
+            }
+            return $loggerClass;
         }
     }
 

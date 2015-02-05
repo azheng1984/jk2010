@@ -60,8 +60,13 @@ class DbProfiler {
         );
         if ($isLoggerEnabled) {
             $log = self::$profile;
-            $log['name'] = 'hyperframework.db.profile';
-            Logger::debug($log);
+            $log['message'] = 'hyperframework.db.profile';
+            $loggerClass = self::getCustomLoggerClass();
+            if ($loggerClass !== null) {
+                $loggerClass::debug($log);
+            } else {
+                Logger::debug($log);
+            }
         }
         $profileHandlers = Config::getArray(
             'hyperframework.db.profiler.profile_handlers', []
@@ -74,6 +79,21 @@ class DbProfiler {
                 );
             }
             call_user_func($handler, self::$profile);
+        }
+    }
+
+    private static function getCustomLoggerClass() {
+        $loggerClass = Config::getString(
+            'hyperframework.db.profiler.logger_class', ''
+        );
+        if ($loggerClass !== '') {
+            if (class_exists($loggerClass) === false) {
+                throw new ClassNotFoundException(
+                    "Logger class '$class' does not exist, defined in "
+                        . "'hyperframework.db.profiler.logger_class'."
+                );
+            }
+            return $loggerClass;
         }
     }
 }
