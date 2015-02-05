@@ -59,10 +59,9 @@ class DbProfiler {
             'hyperframework.db.profiler.enable_logger', true
         );
         if ($isLoggerEnabled) {
-            Logger::debug([
-                'name' => 'hyperframework.db.profile',
-                'data' => self::$profile
-            ]);
+            $log = self::$profile;
+            $log['name'] = 'hyperframework.db.profile';
+            Logger::debug($log);
         }
         $profileHandlers = Config::getArray(
             'hyperframework.db.profiler.profile_handlers', []

@@ -14,7 +14,7 @@ class LogHandler {
         $writer->write($formattedLog);
     }
 
-    private function getFormatter() {
+    protected function getFormatter() {
         if ($this->formatter === null) {
             $class = Config::getString(
                 'hyperframework.logging.log_formatter_class', ''
@@ -34,7 +34,7 @@ class LogHandler {
         return $this->formatter;
     }
 
-    private function getWriter() {
+    protected function getWriter() {
         if ($this->writer === null) {
             $class = Config::getString(
                 'hyperframework.logging.log_writer_class', ''

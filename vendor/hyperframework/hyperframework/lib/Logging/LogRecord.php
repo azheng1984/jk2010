@@ -88,7 +88,7 @@ class LogRecord {
         return $this->message;
     }
 
-    public function getExtraData($key = null) {
+    public function getExtraData() {
         return $this->extraData;
     }
 
