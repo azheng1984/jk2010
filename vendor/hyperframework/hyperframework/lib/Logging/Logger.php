@@ -90,10 +90,14 @@ final class Logger {
     }
 
     private static function log($level, $log) {
-        Logger::debug(
-            ['message' => ['dasfsdf %d'], 'time' => 'x', 'extra' => 'xx']
-        );
-        Logger::debug('dasfsdf %d', $xx);
+        //'php_error';
+        //'php_exception';
+        //Logger::debug([
+        //    'message' => ['dasfsdf %d', 'sdf'],
+        //    'time' => 'x',
+        //    'main' => ['xx']
+        //]);
+        //Logger::debug('dasfsdf %d', $xx);
         if ($log instanceof Closure) {
             $log = $log();
         }

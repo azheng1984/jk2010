@@ -93,49 +93,38 @@ class ErrorHandler {
         $this->displayError();
     }
 
+    private function getMaxLogLength() {
+        $config = ini_get('log_errors_max_len');
+        if (strlen($config) < 2) {
+            return (int)$config;
+        }
+        $type = strtolower(substr($config, -1));
+        $config = (int)$config;
+        switch ($type) {
+            case 'g':
+                $config *= 1024;
+            case 'm':
+                $config *= 1024;
+            case 'k':
+                $config *= 1024;
+        }
+        return $config;
+    }
+
     protected function writeLog() {
         if ($this->isLoggerEnabled()) {
             $method = $this->getLoggerMethod();
             $callback = function() {
-                $error = $this->error;
-                $log = [];
                 if ($this->error instanceof Exception) {
-                    $exceptionClass = get_class($exception);
-                    $log['message'] = "PHP uncaught exception '$exceptionClass' with messsge : '"
-                        . $error->getMessage() . "'";
-                    $log['class'] = $exceptionClass;
+                    $message = 'PHP ' . $this->getExceptionErrorLog();
                 } else {
-                    $log['message'] = 'php error' . $error->getSeverityAsString()
-                        . ': ' . $error->getMessage();
+                    $message = 'PHP ' . $this->getError();
                 }
-                $log['file'] = $error->getFile();
-                $log['line'] = $error->getLine();
-                if ($this->error instanceof FatalError === false) {
-                    $shouldLogTrace = Config::getBoolean(
-                        'hyperframework.error_handler.logger.log_stack_trace',
-                        false
-                    );
-                    if ($shouldLogTrace) {
-                        $log['stack_trace'] = [];
-                        foreach ($error->getTrace() as $item) {
-                            $trace = [];
-                            if (isset($item['class'])) {
-                                $trace['class'] = $item['class'];
-                            }
-                            if (isset($item['function'])) {
-                                $trace['function'] = $item['function'];
-                            }
-                            if (isset($item['file'])) {
-                                $trace['file'] = $item['file'];
-                            }
-                            if (isset($item['line'])) {
-                                $trace['line'] = $item['line'];
-                            }
-                            $log['stack_trace'][] = $trace;
-                        }
-                    }
+                $maxLength = $this->getMaxLogLength();
+                if ($maxLength > 0) {
+                    return substr($message, 0, $maxLength);
                 }
-                return $log;
+                return $message;
             };
             $loggerClass = $this->getCustomLoggerClass();
             if ($loggerClass === null) {
