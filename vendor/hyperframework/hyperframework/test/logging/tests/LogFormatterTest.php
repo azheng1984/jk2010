@@ -8,10 +8,10 @@ class LogFormatterTest extends Base {
         $formatter = new LogFormatter;
         $time = time();
         $this->assertSame(
-            date("Y-m-d H:i:s", $time) . ' | ERROR | category | message' . PHP_EOL,
-            $formatter->format(
-                'ERROR', ['message' => 'message', 'time' => $time]
-            )
+            date("Y-m-d H:i:s", $time) . ' [ERROR] message' . PHP_EOL,
+            $formatter->format(new LogRecord(
+                ['level' => 'ERROR', 'message' => 'message', 'time' => $time]
+            ))
         );
     }
 
@@ -19,17 +19,10 @@ class LogFormatterTest extends Base {
         $formatter = new LogFormatter;
         $time = time();
         $this->assertSame(
-            date("Y-m-d H:i:s", $time) . ' | ERROR' . PHP_EOL,
-            $formatter->format('ERROR', ['time' => $time])
-        );
-    }
-
-    public function testName() {
-        $formatter = new LogFormatter;
-        $time = time();
-        $this->assertSame(
-            date("Y-m-d H:i:s", $time) . ' | ERROR | name' . PHP_EOL,
-            $formatter->format('ERROR', ['time' => $time, 'name' => 'name'])
+            date("Y-m-d H:i:s", $time) . ' [ERROR]' . PHP_EOL,
+            $formatter->format(new LogRecord(
+                ['level' => 'ERROR', 'message' => 'message', 'time' => $time]
+            ))
         );
     }
 }

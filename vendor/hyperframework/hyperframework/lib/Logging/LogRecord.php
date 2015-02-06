@@ -2,6 +2,7 @@
 namespace Hyperframework\Logging;
 
 use DateTime;
+use DateTimeZone;
 
 class LogRecord {
     private $time;
@@ -32,9 +33,13 @@ class LogRecord {
                 $this->time = $data['time'];
             }
         } else {
-            $this->time = DateTime::createFromFormat(
-                'U.u', sprintf('%.6F', microtime(true))
-            );
+            $this->time = new Datetime; //DateTime::createFromFormat( 'U', time() //sprintf('%.6F', microtime()));
+date_default_timezone_get();
+            $this->time = DateTime::createFromFormat( 'U.u', sprintf('%.6F', microtime(true)))->setTimeZone(new DateTimeZone(null));
+            //echo  sprintf('%.6F', microtime(true)).PHP_EOL;
+            //echo microtime();
+            echo $this->time->format('Y:m:d H:i:s');
+            exit;
         }
         if (isset($data['level']) === false) {
             throw new LoggingException("Log level is missing.");
@@ -44,6 +49,15 @@ class LogRecord {
             $this->message = $data['message'];
         }
     }
+
+//    private createDateTime($time) {
+//        static $timezone = new DateTimeZone(
+//            date_default_timezone_get() ?: 'UTC'
+//        );
+//        return DateTime::createFromFormat(
+//            'U.u', sprintf('%.6F', microtime(true))
+//        );
+//    }
 
     public function getTime() {
         return $this->time;

@@ -38,7 +38,7 @@ class LoggerTest extends Base {
                 'time' => $time, 'key' => 'value']
         );
         $this->assertSame(
-            date('Y-m-d H:i:s', $time) . ' | ' . $level . ' | Test | message'
+            date('Y-m-d H:i:s', $time) . ' [' . $level . '] message'
                 . PHP_EOL . "\tkey: value" . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
@@ -55,7 +55,7 @@ class LoggerTest extends Base {
             ['name' => 'test', 'message' => 'message', 'time' => $time]
         );
         $this->assertSame(
-            date('Y-m-d H:i:s', $time) . ' | WARNING | test | message' . PHP_EOL,
+            date('Y-m-d H:i:s', $time) . ' [WARNING] message' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
     }
@@ -64,7 +64,7 @@ class LoggerTest extends Base {
         $time = new DateTime;
         Logger::warn(['name' => 'test', 'message' => 'message', 'time' => $time]);
         $this->assertSame(
-            $time->format('Y-m-d H:i:s') . ' | WARNING | test | message' . PHP_EOL,
+            $time->format('Y-m-d H:i:s') . ' [WARNING] message' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
     }
@@ -73,7 +73,7 @@ class LoggerTest extends Base {
         $time = new DateTime;
         Logger::warn(['name' => 'test', 'message' => ['%s', 'string']]);
         $this->assertSame(
-            $time->format('Y-m-d H:i:s') . ' | WARNING | test | string' . PHP_EOL,
+            $time->format('Y-m-d H:i:s') . ' [WARNING] string' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
     }
@@ -84,7 +84,7 @@ class LoggerTest extends Base {
             return ['name' => 'test', 'message' => 'message'];
         });
         $this->assertSame(
-            $time->format('Y-m-d H:i:s') . ' | WARNING | test | message' . PHP_EOL,
+            $time->format('Y-m-d H:i:s') . ' [WARNING] message' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
     }

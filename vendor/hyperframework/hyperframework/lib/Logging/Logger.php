@@ -62,7 +62,7 @@ final class Logger {
     }
 
     public static function getLevel() {
-        return LogLevelHelper::getName(self::$thresholdCode);
+        return LogLevelHelper::getName(self::getThresholdCode());
     }
 
     public static function setLogHandler($value) {
