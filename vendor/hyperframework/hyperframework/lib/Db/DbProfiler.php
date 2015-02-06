@@ -2,6 +2,7 @@
 namespace Hyperframework\Db;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Logging\Logger;
 
 class DbProfiler {
@@ -41,26 +42,34 @@ class DbProfiler {
         self::handleProfile();
     }
 
-    private static function initializeProfile($connection, $data) {
+    private static function initializeProfile($connection, array $profile) {
         self::$profile = [];
         $name = $connection->getName();
         if ($name !== 'default') {
             self::$profile['connection_name'] = $name;
         }
-        self::$profile = array_merge(self::$profile, $data);
+        self::$profile = self::$profile + $profile;
         self::$profile['start_time'] = microtime(true);
     }
 
     private static function handleProfile() {
-        self::$profile['running_time'] = sprintf(
-            '%F', microtime(true) - self::$profile['start_time']
-        );
+        self::$profile['running_time'] =
+            microtime(true) - self::$profile['start_time'];
         $isLoggerEnabled = Config::getBoolean(
-            'hyperframework.db.profiler.enable_logger', true
+            'hyperframework.db.profiler.logger.enable', true
         );
         if ($isLoggerEnabled) {
-            $log = self::$profile;
-            $log['message'] = 'hyperframework.db.profile';
+            $log = 'Database ';
+            if (isset(self::$profile['connection_name'])) {
+                $log .= "'" . self::$profile['connection_name'] . "'";
+            }
+            $runningTime = self::$profile['running_time'];
+            $log .= " operation ({$runningTime}): ";
+            if (isset(self::$profile['sql'])) {
+                $log .= self::$profile['sql'];
+            } else {
+                $log .= self::$profile['transaction'] . ' transaction';
+            }
             $loggerClass = self::getCustomLoggerClass();
             if ($loggerClass !== null) {
                 $loggerClass::debug($log);
@@ -68,29 +77,31 @@ class DbProfiler {
                 Logger::debug($log);
             }
         }
-        $profileHandlers = Config::getArray(
-            'hyperframework.db.profiler.profile_handlers', []
+        $profileHandlerClass = Config::getString(
+            'hyperframework.db.profiler.profile_handler_class', ''
         );
-        foreach ($profileHandlers as $handler) {
-            if (is_callable($handler) === false) {
-                throw new ConfigException(
-                    'Profile handler is not callable, defined in '
-                        . "'hyperframework.db.profiler.profile_handlers'."
+        if ($profileHandlerClass !== '') {
+            if (class_exists($profileHandlerClass) === false) {
+                throw new ClassNotFoundException(
+                    "Database operation profile handler class"
+                        . " '$profileHandlerClass' does not exist, defined in "
+                        . "'hyperframework.db.profiler.profile_handler_class'."
                 );
             }
-            call_user_func($handler, self::$profile);
+            $profileHandler = new $profileHandlerClass;
+            $profileHandler->handle($profile);
         }
     }
 
     private static function getCustomLoggerClass() {
         $loggerClass = Config::getString(
-            'hyperframework.db.profiler.logger_class', ''
+            'hyperframework.db.profiler.logger.class', ''
         );
         if ($loggerClass !== '') {
             if (class_exists($loggerClass) === false) {
                 throw new ClassNotFoundException(
                     "Logger class '$class' does not exist, defined in "
-                        . "'hyperframework.db.profiler.logger_class'."
+                        . "'hyperframework.db.profiler.logger.class'."
                 );
             }
             return $loggerClass;

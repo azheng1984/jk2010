@@ -89,15 +89,7 @@ final class Logger {
         return self::$logHandler;
     }
 
-    private static function log($level, $log) {
-        //'php_error';
-        //'php_exception';
-        //Logger::debug([
-        //    'message' => ['dasfsdf %d', 'sdf'],
-        //    'time' => 'x',
-        //    'main' => ['xx']
-        //]);
-        //Logger::debug('dasfsdf %d', $xx);
+    protected static function log($level, $params) {
         if ($log instanceof Closure) {
             $log = $log();
         }
