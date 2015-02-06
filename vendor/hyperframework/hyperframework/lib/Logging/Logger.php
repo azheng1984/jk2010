@@ -90,14 +90,19 @@ final class Logger {
     }
 
     private static function log($level, $log) {
+        Logger::debug(
+            ['message' => ['dasfsdf %d'], 'time' => 'x', 'extra' => 'xx']
+        );
+        Logger::debug('dasfsdf %d', $xx);
         if ($log instanceof Closure) {
             $log = $log();
+        }
+        if (is_string($log)) {
         }
         if (is_array($log) === false) {
             throw new LoggingException(
                 'Log must be an array, ' . gettype($log) . ' given.'
             );
-        }
         $log['level'] = $level;
         $logRecord = new LogRecord($log);
         $logHandler = static::getLogHandler();

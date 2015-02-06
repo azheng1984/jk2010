@@ -21,6 +21,17 @@ abstract class App {
     protected function initializeConfig() {
         $this->initializeAppRootPath();
         Config::importFile('init.php');
+        if (isset($_ENV['HYPERFRAMEWORK_ENV'])) {
+            $env = (string)$_ENV['HYPERFRAMEWORK_ENV'];
+            if ($env !== '') {
+                $path = ConfigFileLoader::getFullPath(
+                    'env' . DIRECTORY_SEPARATOR . $env . '.php'
+                );
+                if (file_exists($path)) {
+                    Config::importFile($path);
+                }
+            }
+        }
     }
 
     protected function initializeAppRootPath() {
