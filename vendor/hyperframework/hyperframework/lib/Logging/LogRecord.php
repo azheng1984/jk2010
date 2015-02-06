@@ -16,9 +16,7 @@ class LogRecord {
                 $time->setTimestamp($data['time']);
                 $this->time = $time;
             } elseif (is_float($data['time'])) {
-                $this->time = DateTime::createFromFormat(
-                    'U.u', sprintf('%.6F', $data['time'])
-                );
+                $this->time = $this->convertFloatToDateTime($data['time']);
             } elseif ($data['time'] instanceof DateTime === false) {
                 $type = gettype($data['time']);
                 if ($type === 'object') {
@@ -33,13 +31,7 @@ class LogRecord {
                 $this->time = $data['time'];
             }
         } else {
-            $this->time = new Datetime; //DateTime::createFromFormat( 'U', time() //sprintf('%.6F', microtime()));
-date_default_timezone_get();
-            $this->time = DateTime::createFromFormat( 'U.u', sprintf('%.6F', microtime(true)))->setTimeZone(new DateTimeZone(null));
-            //echo  sprintf('%.6F', microtime(true)).PHP_EOL;
-            //echo microtime();
-            echo $this->time->format('Y:m:d H:i:s');
-            exit;
+            $this->time = $this->convertFloatToDateTime(microtime(true));
         }
         if (isset($data['level']) === false) {
             throw new LoggingException("Log level is missing.");
@@ -50,14 +42,11 @@ date_default_timezone_get();
         }
     }
 
-//    private createDateTime($time) {
-//        static $timezone = new DateTimeZone(
-//            date_default_timezone_get() ?: 'UTC'
-//        );
-//        return DateTime::createFromFormat(
-//            'U.u', sprintf('%.6F', microtime(true))
-//        );
-//    }
+    private function convertFloatToDateTime($float) {
+       $time = DateTime::createFromFormat('U.u', sprintf('%.6F', $float));
+       $time->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+       return $time;
+    }
 
     public function getTime() {
         return $this->time;
