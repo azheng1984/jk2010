@@ -117,7 +117,7 @@ final class Logger {
                             . "'hyperframework.logging.log_level'."
                     );
                 }
-                self::$thresholdCodel = $thresholdCode;
+                self::$thresholdCode = $thresholdCode;
             } else {
                 self::$thresholdCode = 4;
             }

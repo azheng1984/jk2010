@@ -1,12 +1,12 @@
 <?php
 namespace Hyperframework\Blog;
-ini_set('display_errors', false);
+ini_set('display_errors', true);
 ini_set('html_errors', false);
 
 return array(
     '[hyperframework]',
     'app_root_namespace' => __NAMESPACE__,
-//  'error_handler.debug' => true,
+    'error_handler.debug' => true,
 //  'web.router' => __NAMESPACE__ . '\Router',
     'web.debugger.max_output_content_size' => 'unlimited',
     'asset.concatenate_manifest' => false,
@@ -19,11 +19,11 @@ return array(
 //  'web.error_handler.exit_level' => 'NOTICE',
 //  'class_loader.enable_zero_folder' => true,
     'db.profiler.enable' => true,
-    'logger.log_level' => 'DEBUG',
-    'logger.handler_class' => 'xx',
+    'logging.log_level' => 'DEBUG',
+    'logging.handler_class' => 'xx',
     'app_root_namespace' => __NAMESPACE__,
     '[hyperframework.error_handler]',
-    'logger.enable' => false,
+    'logger.enable' => true,
 //  'logger.log_stack_trace' => true,
 //  'log_handler.path' => 'php://output',
     /////////////////////////

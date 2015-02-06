@@ -6,9 +6,7 @@ use DateTime;
 class LogRecord {
     private $time;
     private $level;
-    private $name;
     private $message;
-    private $extraData;
 
     public function __construct(array $data) {
         if (isset($data['time']) !== false) {
@@ -42,30 +40,8 @@ class LogRecord {
             throw new LoggingException("Log level is missing.");
         }
         $this->level = $data['level'];
-        if (isset($data['channel'])) {
-            if (preg_match('/^[a-zA-Z0-9_.]+$/', $data['channel']) === 0
-                || $data['channel'][0] === '.'
-                || substr($data['name'], -1) === '.'
-            ) {
-                throw new LoggingException(
-                    "Log channel '{$data['name']}' is invalid."
-                );
-            }
-        } else {
-            throw new LoggingException("Log name is missing.");
-        }
-        $this->name = $data['name'];
         if (isset($data['message'])) {
             $this->message = $data['message'];
-        }
-        unset($data['time']);
-        unset($data['level']);
-        unset($data['message']);
-        //23:23:23 | ERROR | sdf.dsff.sdf | [sdfsdf] | dsf is message. | sad=dsf, asdf=dsf]
-        //['post_id' => 'xx'];
-        if (count($data) > 0) {
-            self::checkExtraData($data);
-            $this->extraData = $data;
         }
     }
 
@@ -79,20 +55,5 @@ class LogRecord {
 
     public function getMessage() {
         return $this->message;
-    }
-
-    public function getExtraData() {
-        return $this->extraData;
-    }
-
-    private static function checkExtraData(array $data) {
-        foreach ($data as $key => $value) {
-            if (preg_match('/^[0-9a-zA-Z_]+$/', $key) === 0) {
-                throw new LoggingException("Log key '$key' is invalid.");
-            }
-            if (is_array($value)) {
-                self::checkExtraData($value);
-            }
-        }
     }
 }

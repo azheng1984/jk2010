@@ -5,9 +5,6 @@ use Hyperframework\Web\Router as Base;
 
 class Router extends Base {
     protected function execute() {
-        $x = function($x) {
-        };
-        $x();
 //        var_dump($this->match(':controller/:id(.:format)', [
 //            ':format' => 'html',
 //            'extra' => function($matches) {

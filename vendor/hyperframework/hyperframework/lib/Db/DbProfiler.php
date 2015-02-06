@@ -54,17 +54,17 @@ class DbProfiler {
 
     private static function handleProfile() {
         self::$profile['running_time'] =
-            $microtime(true) - self::$profile['start_time'];
+            microtime(true) - self::$profile['start_time'];
         $isLoggerEnabled = Config::getBoolean(
             'hyperframework.db.profiler.logger.enable', true
         );
         if ($isLoggerEnabled) {
             $callback = function() {
-                $log = 'Database ';
+                $log = 'Database';
                 if (isset(self::$profile['connection_name'])) {
-                    $log .= "'" . self::$profile['connection_name'] . "'";
+                    $log .= " '" . self::$profile['connection_name'] . "'";
                 }
-                $runningTime = self::$profile['running_time'];
+                $runningTime = sprintf('%.6F', self::$profile['running_time']);
                 $log .= " operation ({$runningTime}): ";
                 if (isset(self::$profile['sql'])) {
                     $log .= self::$profile['sql'];
