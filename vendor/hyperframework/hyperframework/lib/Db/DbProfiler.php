@@ -53,14 +53,13 @@ class DbProfiler {
     }
 
     private static function handleProfile() {
-        $endTime = $microtime(true);
         self::$profile['running_time'] =
-            $endTime - self::$profile['start_time'];
+            $microtime(true) - self::$profile['start_time'];
         $isLoggerEnabled = Config::getBoolean(
             'hyperframework.db.profiler.logger.enable', true
         );
         if ($isLoggerEnabled) {
-            $callback = function() use ($endTime) {
+            $callback = function() {
                 $log = 'Database ';
                 if (isset(self::$profile['connection_name'])) {
                     $log .= "'" . self::$profile['connection_name'] . "'";
@@ -72,7 +71,7 @@ class DbProfiler {
                 } else {
                     $log .= self::$profile['transaction'] . ' transaction';
                 }
-                return ['time' => $endTime, 'message' => $log];
+                return $log;
             };
             $loggerClass = self::getCustomLoggerClass();
             if ($loggerClass !== null) {

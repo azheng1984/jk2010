@@ -48,7 +48,7 @@ class LogRecord {
                 || substr($data['name'], -1) === '.'
             ) {
                 throw new LoggingException(
-                    "Log name '{$data['name']}' is invalid."
+                    "Log channel '{$data['name']}' is invalid."
                 );
             }
         } else {
@@ -56,23 +56,13 @@ class LogRecord {
         }
         $this->name = $data['name'];
         if (isset($data['message'])) {
-            if (is_array($data['message'])) {
-                $count = count($data['message']);
-                if ($count === 0) {
-                    $data['message'] = '';
-                } elseif ($count === 1) {
-                    $data['message'] = $data['message'][0];
-                } else {
-                    $data['message'] =
-                        call_user_func_array('sprintf', $data['message']);
-                }
-            }
-            $this->message = (string)$data['message'];
+            $this->message = $data['message'];
         }
         unset($data['time']);
         unset($data['level']);
-        unset($data['name']);
         unset($data['message']);
+        //23:23:23 | ERROR | sdf.dsff.sdf | [sdfsdf] | dsf is message. | sad=dsf, asdf=dsf]
+        //['post_id' => 'xx'];
         if (count($data) > 0) {
             self::checkExtraData($data);
             $this->extraData = $data;

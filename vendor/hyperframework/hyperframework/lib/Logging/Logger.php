@@ -97,8 +97,7 @@ final class Logger {
             $log = ['message' => $log];
         } elseif (is_array($log) === false) {
             throw new LoggingException(
-                'Log must be a string or an array, '
-                    . gettype($log) . ' given.'
+                'Log must be a string or an array, ' . gettype($log) . ' given.'
             );
         }
         $log['level'] = $level;
