@@ -16,28 +16,35 @@ class LogRecord {
                 $time = new DateTime;
                 $time->setTimestamp($data['time']);
                 $this->time = $time;
+            } elseif (is_float($data['time'])) {
+                $this->time = DateTime::createFromFormat(
+                    'U.u', sprintf('%.6F', $data['time'])
+                );
             } elseif ($data['time'] instanceof DateTime === false) {
                 $type = gettype($data['time']);
                 if ($type === 'object') {
                     $type = get_class($data['time']);
                 }
                 throw new LoggingException(
-                    "Log time must be a DateTime or an integer timestamp, "
+                    "Log time must be a DateTime or an integer timestamp or"
+                        . " a float timestamp, "
                         . $type . " given."
                 );
             } else {
                 $this->time = $data['time'];
             }
         } else {
-            $this->time = new DateTime;
+            $this->time = DateTime::createFromFormat(
+                'U.u', sprintf('%.6F', microtime(true))
+            );
         }
         if (isset($data['level']) === false) {
             throw new LoggingException("Log level is missing.");
         }
         $this->level = $data['level'];
-        if (isset($data['name'])) {
-            if (preg_match('/^[a-zA-Z0-9_.]+$/', $data['name']) === 0
-                || $data['name'][0] === '.'
+        if (isset($data['channel'])) {
+            if (preg_match('/^[a-zA-Z0-9_.]+$/', $data['channel']) === 0
+                || $data['channel'][0] === '.'
                 || substr($data['name'], -1) === '.'
             ) {
                 throw new LoggingException(

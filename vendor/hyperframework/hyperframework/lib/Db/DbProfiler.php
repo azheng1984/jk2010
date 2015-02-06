@@ -53,28 +53,32 @@ class DbProfiler {
     }
 
     private static function handleProfile() {
+        $endTime = $microtime(true);
         self::$profile['running_time'] =
-            microtime(true) - self::$profile['start_time'];
+            $endTime - self::$profile['start_time'];
         $isLoggerEnabled = Config::getBoolean(
             'hyperframework.db.profiler.logger.enable', true
         );
         if ($isLoggerEnabled) {
-            $log = 'Database ';
-            if (isset(self::$profile['connection_name'])) {
-                $log .= "'" . self::$profile['connection_name'] . "'";
-            }
-            $runningTime = self::$profile['running_time'];
-            $log .= " operation ({$runningTime}): ";
-            if (isset(self::$profile['sql'])) {
-                $log .= self::$profile['sql'];
-            } else {
-                $log .= self::$profile['transaction'] . ' transaction';
-            }
+            $callback = function() use ($endTime) {
+                $log = 'Database ';
+                if (isset(self::$profile['connection_name'])) {
+                    $log .= "'" . self::$profile['connection_name'] . "'";
+                }
+                $runningTime = self::$profile['running_time'];
+                $log .= " operation ({$runningTime}): ";
+                if (isset(self::$profile['sql'])) {
+                    $log .= self::$profile['sql'];
+                } else {
+                    $log .= self::$profile['transaction'] . ' transaction';
+                }
+                return ['time' => $endTime, 'message' => $log];
+            };
             $loggerClass = self::getCustomLoggerClass();
             if ($loggerClass !== null) {
-                $loggerClass::debug($log);
+                $loggerClass::debug($callback);
             } else {
-                Logger::debug($log);
+                Logger::debug($callback);
             }
         }
         $profileHandlerClass = Config::getString(

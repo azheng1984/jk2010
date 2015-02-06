@@ -89,16 +89,18 @@ final class Logger {
         return self::$logHandler;
     }
 
-    protected static function log($level, $params) {
+    protected static function log($level, $log) {
         if ($log instanceof Closure) {
             $log = $log();
         }
         if (is_string($log)) {
-        }
-        if (is_array($log) === false) {
+            $log = ['message' => $log];
+        } elseif (is_array($log) === false) {
             throw new LoggingException(
-                'Log must be an array, ' . gettype($log) . ' given.'
+                'Log must be a string or an array, '
+                    . gettype($log) . ' given.'
             );
+        }
         $log['level'] = $level;
         $logRecord = new LogRecord($log);
         $logHandler = static::getLogHandler();
