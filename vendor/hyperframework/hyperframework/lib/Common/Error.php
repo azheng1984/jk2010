@@ -9,7 +9,7 @@ class Error {
     private $trace;
 
     public function __construct(
-        $severity, $message, $file, $line, array $trace
+        $severity, $message, $file, $line, array $trace = null
     ) {
         $this->severity =  $severity;
         $this->message = $message;

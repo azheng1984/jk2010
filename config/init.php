@@ -6,7 +6,7 @@ ini_set('html_errors', false);
 return array(
     '[hyperframework]',
     'app_root_namespace' => __NAMESPACE__,
-    'error_handler.debug' => true,
+//    'error_handler.debug' => true,
 //  'web.router' => __NAMESPACE__ . '\Router',
     'web.debugger.max_output_content_size' => 'unlimited',
     'asset.concatenate_manifest' => false,
@@ -23,7 +23,7 @@ return array(
     'logging.handler_class' => 'xx',
     'app_root_namespace' => __NAMESPACE__,
     '[hyperframework.error_handler]',
-    'logger.enable' => true,
+//    'logger.enable' => true,
 //  'logger.log_stack_trace' => true,
 //  'log_handler.path' => 'php://output',
     /////////////////////////

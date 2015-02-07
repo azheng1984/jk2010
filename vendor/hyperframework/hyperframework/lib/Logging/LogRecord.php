@@ -16,7 +16,9 @@ class LogRecord {
                 $time->setTimestamp($data['time']);
                 $this->time = $time;
             } elseif (is_float($data['time'])) {
-                $this->time = $this->convertFloatToDateTime($data['time']);
+                $this->time = $this->convertStringToDateTime(
+                    sprintf('%.6F', $data['time'])
+                );
             } elseif ($data['time'] instanceof DateTime === false) {
                 $type = gettype($data['time']);
                 if ($type === 'object') {
@@ -31,7 +33,10 @@ class LogRecord {
                 $this->time = $data['time'];
             }
         } else {
-            $this->time = $this->convertFloatToDateTime(microtime(true));
+            $segments = explode(' ', microtime());
+            $this->time = $this->convertStringToDateTime(
+                $segments[1] . '.' . (int)($segments[0] * 1000000)
+            );
         }
         if (isset($data['level']) === false) {
             throw new LoggingException("Log level is missing.");
@@ -42,10 +47,10 @@ class LogRecord {
         }
     }
 
-    private function convertFloatToDateTime($float) {
-       $time = DateTime::createFromFormat('U.u', sprintf('%.6F', $float));
-       $time->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-       return $time;
+    private function convertStringToDateTime($string) {
+        $result = DateTime::createFromFormat('U.u', $string);
+        $result->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+        return $result;
     }
 
     public function getTime() {

@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework\Db;
 
+use DateTime;
+use DateTimeZone;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Logging\Logger;
@@ -49,12 +51,25 @@ class DbProfiler {
             self::$profile['connection_name'] = $name;
         }
         self::$profile = self::$profile + $profile;
-        self::$profile['start_time'] = microtime(true);
+        self::$profile['start_time'] = self::getTime();
+    }
+
+    private static function getTime() {
+        $segments = explode(' ', microtime());
+        $segments[0] = (float)$segments[0];
+        $segments[1] = (float)$segments[1];
+        return $segments;
     }
 
     private static function handleProfile() {
-        self::$profile['running_time'] =
-            microtime(true) - self::$profile['start_time'];
+        $endTime = self::getTime();
+        self::$profile['running_time'] = (float)sprintf('%.6F',
+            self::$profile['start_time'][1] + $endTime[0]
+                - self::$profile['start_time'][0]);
+        self::$profile['start_time'] = DateTime::createFromFormat(
+            'U.u', self::$profile['start_time'][1] . '.'
+                . (int)(self::$profile['start_time'][0] * 1000000)
+        )->setTimeZone(new DateTimeZone(date_default_timezone_get()));
         $isLoggerEnabled = Config::getBoolean(
             'hyperframework.db.profiler.logger.enable', true
         );
@@ -64,8 +79,8 @@ class DbProfiler {
                 if (isset(self::$profile['connection_name'])) {
                     $log .= " '" . self::$profile['connection_name'] . "'";
                 }
-                $runningTime = sprintf('%.6F', self::$profile['running_time']);
-                $log .= " operation ({$runningTime}): ";
+                $log .= " operation (" .
+                    sprintf('%.6F', self::$profile['running_time']) . "): ";
                 if (isset(self::$profile['sql'])) {
                     $log .= self::$profile['sql'];
                 } else {
