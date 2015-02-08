@@ -12,6 +12,6 @@ class ExitHelper {
                     . "hyperframework.exit_function'."
             );
         }
-        $exitFunction($status);
+        call_user_func($exitFunction, $status);
     }
 }
