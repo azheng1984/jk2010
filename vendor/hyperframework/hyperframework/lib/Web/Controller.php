@@ -36,7 +36,10 @@ class Controller {
         } catch (Exception $e) {
             $this->quitFilterChain($e);
         }
+        $this->finalize();
     }
+
+    protected function finalize() {}
 
     private function runBeforeFilters() {
         foreach ($this->filterChain as &$config) {
@@ -318,7 +321,9 @@ class Controller {
 
     public function quit() {
         $this->quitFilterChain();
-        $this->getApp()->quit();
+        $this->finalize();
+        $app = $this->getApp();
+        $app->quit();
     }
 
     public function redirect($url, $statusCode = 302) {
