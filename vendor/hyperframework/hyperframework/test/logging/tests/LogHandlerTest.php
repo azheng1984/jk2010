@@ -34,7 +34,7 @@ class LogHandlerTest extends Base {
             'time' => $time, 'name' => 'name'
         ]));
         $this->assertSame(
-            date("Y-m-d H:i:s", $time) . ' | ERROR | name | message' . PHP_EOL,
+            date("Y-m-d H:i:s", $time) . ' [ERROR] message' . PHP_EOL,
             $this->getLogContent()
         );
     }
@@ -50,7 +50,7 @@ class LogHandlerTest extends Base {
             'level' => 'ERROR', 'time' => $time, 'name' => 'name'
         ]));
         $this->assertSame(
-            date("Y-m-d H:i:s", $time) . ' | ERROR | name' . PHP_EOL,
+            date("Y-m-d H:i:s", $time) . ' [ERROR]' . PHP_EOL,
             $this->getLogContent()
         );
     }
@@ -62,7 +62,7 @@ class LogHandlerTest extends Base {
             'level' => 'ERROR', 'name' => 'name', 'time' => $time
         ]));
         $this->assertSame(
-            date("Y-m-d H:i:s", $time) . ' | ERROR | name' . PHP_EOL,
+            date("Y-m-d H:i:s", $time) . ' [ERROR]' . PHP_EOL,
             $this->getLogContent()
         );
     }
@@ -98,7 +98,7 @@ class LogHandlerTest extends Base {
             'level' => 'ERROR', 'time' => $time, 'name' => 'name'
         ]));
         $this->assertSame(
-            date("Y-m-d H:i:s", $time) . ' | ERROR | name' . PHP_EOL,
+            date("Y-m-d H:i:s", $time) . ' [ERROR]' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/test/app.log')
         );
     }
