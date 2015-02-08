@@ -48,11 +48,6 @@ class App extends Base {
         return $this->router;
     }
 
-    public function quit() {
-        $this->finalize();
-        $this->exitScript();
-    }
-
     protected function rewriteRequestMethod() {
         if (Config::getBoolean(
             'hyperframework.web.rewrite_request_method', true
@@ -98,11 +93,5 @@ class App extends Base {
             $defaultClass = 'Hyperframework\Web\ErrorHandler';
         }
         parent::initializeErrorHandler($defaultClass);
-    }
-
-    protected function finalize() {}
-
-    private function exitScript() {
-        exit();
     }
 }

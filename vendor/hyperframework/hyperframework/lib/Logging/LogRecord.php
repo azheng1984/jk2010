@@ -47,12 +47,6 @@ class LogRecord {
         }
     }
 
-    private function convertStringToDateTime($string) {
-        $result = DateTime::createFromFormat('U.u', $string);
-        $result->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-        return $result;
-    }
-
     public function getTime() {
         return $this->time;
     }
@@ -63,5 +57,11 @@ class LogRecord {
 
     public function getMessage() {
         return $this->message;
+    }
+
+    private function convertStringToDateTime($string) {
+        $result = DateTime::createFromFormat('U.u', $string);
+        $result->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+        return $result;
     }
 }

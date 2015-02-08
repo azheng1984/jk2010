@@ -323,7 +323,7 @@ class Controller {
 
     public function redirect($url, $statusCode = 302) {
         header('Location: ' . $url, true, $statusCode);
-        $this->disableView();
+        $this->quit();
     }
 
     private function quitFilterChain($exception = null) {

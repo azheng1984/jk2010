@@ -352,11 +352,7 @@ class ErrorHandler {
         if ($this->isShutdownStarted) {
             return;
         }
-        $this->exitScript();
-    }
-
-    private function exitScript() {
-        exit(1);
+        ExitHelper::exitScript(1);
     }
 
     private function enableDefaultErrorReporting(

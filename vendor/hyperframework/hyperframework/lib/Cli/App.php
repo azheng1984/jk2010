@@ -82,11 +82,6 @@ class App extends Base {
         return $this->commandConfig;
     }
 
-    public function quit() {
-        $this->finalize();
-        $this->exitScript();
-    }
-
     protected function executeCommand() {
         $commandConfig = $this->getCommandConfig();
         $class = $commandConfig->getClass();
@@ -151,11 +146,5 @@ class App extends Base {
             echo 'See \'', $name, ' --help\'.', PHP_EOL;
             $helpOption = '--help';
         }
-    }
-
-    protected function finalize() {}
-
-    private function exitScript() {
-        exit();
     }
 }

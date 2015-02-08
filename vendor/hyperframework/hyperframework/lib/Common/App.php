@@ -18,6 +18,11 @@ abstract class App {
         }
     }
 
+    public function quit() {
+        $this->finalize();
+        ExitHelper::exitScript();
+    }
+
     protected function initializeConfig() {
         $this->initializeAppRootPath();
         Config::importFile('init.php');
@@ -62,4 +67,6 @@ abstract class App {
         }
         $handler->run();
     }
+
+    protected function finalize() {}
 }
