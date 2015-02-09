@@ -2,6 +2,7 @@
 namespace Hyperframework\Logging;
 
 use Exception;
+use ErrorException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
 
@@ -24,32 +25,60 @@ class LogWriter {
             if (file_exists($this->path) === false) {
                 $directory = dirname($this->path);
                 if (file_exists($directory) === false) {
-                    if (mkdir($directory, 0777, true) === false) {
+                    try {
+                        if (mkdir($directory, 0777, true) === false) {
+                            throw new LoggingException($this->getErrorMessage(
+                                "Failed to create log file '{$this->path}'"
+                            ));
+                        }
+                    } catch (ErrorException $e) {
                         throw new LoggingException($this->getErrorMessage(
                             "Failed to create log file '{$this->path}'"
-                        ));
+                        ), 0, $e);
                     }
                 }
             }
         }
-        $handle = fopen($this->path, 'a');
+        try {
+            $handle = fopen($this->path, 'a');
+        } catch (ErrorException $e) {
+            throw new LoggingException($this->getErrorMessage(
+                "Failed to open or create log file '{$this->path}'"
+            ), 0, $e);
+        }
         if ($handle === false) {
             throw new LoggingException($this->getErrorMessage(
                 "Failed to open or create log file '{$this->path}'"
             ));
         }
         try {
-            if (flock($handle, LOCK_EX) === false) {
+            try {
+                if (flock($handle, LOCK_EX) === false) {
+                    throw new LoggingException($this->getErrorMessage(
+                        "Failed to lock log file '{$this->path}'"
+                    ));
+                }
+            } catch (ErrorException $e) {
                 throw new LoggingException($this->getErrorMessage(
                     "Failed to lock log file '{$this->path}'"
-                ));
+                ), 0, $e);
             }
             try {
-                fwrite($handle, $text);
-                fflush($handle);
-            } catch (Exception $e) {
+                $status = fwrite($handle, $text);
+                if ($status !== false) {
+                    $status = fflush($handle);
+                }
+                if ($status === false) {
+                    flock($handle, LOCK_UN);
+                    throw new LoggingException($this->getErrorMessage(
+                        "Failed to write log file '{$this->path}'"
+                    ));
+                }
+            } catch (ErrorException $e) {
                 flock($handle, LOCK_UN);
-                throw $e;
+                throw new LoggingException($this->getErrorMessage(
+                    "Failed to write log file '{$this->path}'"
+                ), 0, $e);
             }
             flock($handle, LOCK_UN);
         } catch (Exception $e) {
