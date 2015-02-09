@@ -39,43 +39,124 @@ class Controller {
         $this->finalize();
     }
 
-    protected function finalize() {}
-
-    private function runBeforeFilters() {
-        foreach ($this->filterChain as &$config) {
-            $type = $config['type'];
-            if ($type === 'before' || $type === 'around') {
-                $this->runFilter($config);
-            }
+    public function getApp() {
+        if ($this->app === null) {
+            throw new InvalidOperationException(
+                "Constructor method of class '" . __CLASS__ . "' is not called."
+            );
         }
+        return $this->app;
     }
 
-    private function runAfterFilters() {
-        if ($this->isFilterChainReversed === false) {
-            $this->filterChain = array_reverse($this->filterChain);
-            $this->isFilterChainReversed = true;
-        }
-        foreach ($this->filterChain as &$config) {
-            $type = $config['type'];
-            if ($type === 'after' || $type === 'yielded') {
-                $this->runFilter($config);
-            }
-        }
+    public function getRouter() {
+        return $this->getApp()->getRouter();
     }
 
-    protected function handleAction() {
+    public function getRouteParam($name) {
+        $this->getRouter()->getParam($name);
+    }
+
+    public function getRouteParams() {
+        $this->getRouter()->getParams();
+    }
+
+    public function hasRouteParam($name) {
+        $this->getRouter()->hasParam($name);
+    }
+
+    public function disableView() {
+        $this->isViewEnabled = false;
+    }
+
+    public function enableView() {
+        $this->isViewEnabled = true;
+    }
+
+    public function isViewEnabled() {
+        return $this->isViewEnabled;
+    }
+
+    public function setView($value) {
+        $this->view = $value;
+    }
+
+    public function getView() {
+        if ($this->view === null) {
+            $router = $this->getRouter();
+            $module = (string)$router->getModule();
+            if ($module !== '') {
+                $name = $module;
+            } else {
+                $name = '';
+            }
+            $controller = (string)$router->getController();
+            if ($controller === '') {
+                throw new LogicException('Controller cannot be empty.');
+            }
+            $action = (string)$router->getAction();
+            if ($action === '') {
+                throw new LogicException('Action cannot be empty.');
+            }
+            $name .= $controller . '/' . $action;
+            return ViewPathBuilder::build($name, $this->getFormat());
+        }
+        return $this->view;
+    }
+
+    public function getFormat() {
         $router = $this->getRouter();
-        $method = $router->getActionMethod();
-        if ($method == '') {
-            throw new LogicException('Action method cannot be empty.');
+        return $router->getParam('format');
+    }
+
+    public function renderView() {
+        $view = $this->getView();
+        if (is_object($view)) {
+            $view->render($this->getActionResult());
+        } elseif (is_string($view) === false) {
+            throw new LogicException(
+                "View must be a string or an object, "
+                    . gettype($view) . " given."
+            );
         }
-        if (method_exists($this, $method)) {
-            $actionResult = $this->$method();
-            $this->setActionResult($actionResult);
+        $path = $view;
+        if ($path === '') {
+            throw new LogicException('View path cannot be empty.');
         }
-        if ($this->isViewEnabled()) {
-            $this->renderView();
+        $view = ViewFactory::create($this->getActionResult());
+        $view->render($path);
+    }
+
+    public function getActionResult($name = null) {
+        if ($name === null) {
+            $result = $this->actionResult;
         }
+        if (isset($this->actionResult[$name])) {
+            return $this->actionResult[$name];
+        }
+    }
+
+    public function setActionResult($value) {
+        if ($value !== null) {
+            if (is_array($value) === false) {
+                throw new LogicException(
+                    'Action result must be an array, '
+                        . gettype($value) . ' given.'
+                );
+            }
+        }
+        return $this->actionResult = $value;
+    }
+
+    public function quit() {
+        $this->quitFilterChain();
+        $this->finalize();
+        $app = $this->getApp();
+        $app->quit();
+    }
+
+    public function redirect($url, $statusCode = 302) {
+        header('Location: ' . $url, true, $statusCode);
+        $this->quit();
     }
 
     public function addBeforeFilter($filter, array $options = null) {
@@ -105,6 +186,45 @@ class Controller {
                 if ($value['filter'] === $name) {
                     unset($this->filterChain[$key]);
                 }
+            }
+        }
+    }
+
+    protected function handleAction() {
+        $router = $this->getRouter();
+        $method = $router->getActionMethod();
+        if ($method == '') {
+            throw new LogicException('Action method cannot be empty.');
+        }
+        if (method_exists($this, $method)) {
+            $actionResult = $this->$method();
+            $this->setActionResult($actionResult);
+        }
+        if ($this->isViewEnabled()) {
+            $this->renderView();
+        }
+    }
+
+    protected function finalize() {}
+
+    private function runBeforeFilters() {
+        foreach ($this->filterChain as &$config) {
+            $type = $config['type'];
+            if ($type === 'before' || $type === 'around') {
+                $this->runFilter($config);
+            }
+        }
+    }
+
+    private function runAfterFilters() {
+        if ($this->isFilterChainReversed === false) {
+            $this->filterChain = array_reverse($this->filterChain);
+            $this->isFilterChainReversed = true;
+        }
+        foreach ($this->filterChain as &$config) {
+            $type = $config['type'];
+            if ($type === 'after' || $type === 'yielded') {
+                $this->runFilter($config);
             }
         }
     }
@@ -209,126 +329,6 @@ class Controller {
         } else {
             $this->filterChain[] = $config;
         }
-    }
-
-    public function getApp() {
-        if ($this->app === null) {
-            throw new InvalidOperationException(
-                "Constructor method of class '" . __CLASS__ . "' is not called."
-            );
-        }
-        return $this->app;
-    }
-
-    public function getRouter() {
-        return $this->getApp()->getRouter();
-    }
-
-    public function getRouteParam($name) {
-        $this->getRouter()->getParam($name);
-    }
-
-    public function getRouteParams() {
-        $this->getRouter()->getParams();
-    }
-
-    public function hasRouteParam($name) {
-        $this->getRouter()->hasParam($name);
-    }
-
-    public function disableView() {
-        $this->isViewEnabled = false;
-    }
-
-    public function enableView() {
-        $this->isViewEnabled = true;
-    }
-
-    public function isViewEnabled() {
-        return $this->isViewEnabled;
-    }
-
-    public function setView($value) {
-        $this->view = $value;
-    }
-
-    public function getView() {
-        if ($this->view === null) {
-            $router = $this->getRouter();
-            $module = (string)$router->getModule();
-            if ($module !== '') {
-                $name = $module;
-            } else {
-                $name = '';
-            }
-            $controller = (string)$router->getController();
-            if ($controller === '') {
-                throw new LogicException('Controller cannot be empty.');
-            }
-            $action = (string)$router->getAction();
-            if ($action === '') {
-                throw new LogicException('Action cannot be empty.');
-            }
-            $name .= $controller . '/' . $action;
-            $this->view = ViewPathBuilder::build($name, $this->getFormat());
-        }
-        return $this->view;
-    }
-
-    public function getFormat() {
-        $router = $this->getRouter();
-        return $router->getParam('format');
-    }
-
-    public function renderView() {
-        $view = $this->getView();
-        if (is_object($view)) {
-            $view->render($this->getActionResult());
-        } elseif (is_string($view) === false) {
-            throw new LogicException(
-                "View must be a string or an object, "
-                    . gettype($view) . " given."
-            );
-        }
-        $path = $view;
-        if ($path === '') {
-            throw new LogicException('View path cannot be empty.');
-        }
-        $view = ViewFactory::create($this->getActionResult());
-        $view->render($path);
-    }
-
-    public function getActionResult($name = null) {
-        if ($name === null) {
-            $result = $this->actionResult;
-        }
-        if (isset($this->actionResult[$name])) {
-            return $this->actionResult[$name];
-        }
-    }
-
-    public function setActionResult($value) {
-        if ($value !== null) {
-            if (is_array($value) === false) {
-                throw new LogicException(
-                    'Action result must be an array, '
-                        . gettype($value) . ' given.'
-                );
-            }
-        }
-        return $this->actionResult = $value;
-    }
-
-    public function quit() {
-        $this->quitFilterChain();
-        $this->finalize();
-        $app = $this->getApp();
-        $app->quit();
-    }
-
-    public function redirect($url, $statusCode = 302) {
-        header('Location: ' . $url, true, $statusCode);
-        $this->quit();
     }
 
     private function quitFilterChain($exception = null) {

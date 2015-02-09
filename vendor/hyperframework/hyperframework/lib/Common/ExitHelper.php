@@ -2,7 +2,7 @@
 namespace Hyperframework\Common;
 
 class ExitHelper {
-    public function exitScript($status = 0) {
+    public static function exitScript($status = 0) {
         $exitFunction = Config::getString('hyperframework.exit_function');
         if ($exitFunction === null) {
             exit($status);
