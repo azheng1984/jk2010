@@ -25,9 +25,8 @@ class LogRecord {
                     $type = get_class($data['time']);
                 }
                 throw new LoggingException(
-                    "Log time must be a DateTime or an integer timestamp or"
-                        . " a float timestamp, "
-                        . $type . " given."
+                    'Log time must be a DateTime or an integer timestamp or'
+                        . " a float timestamp, $type given."
                 );
             } else {
                 $this->time = $data['time'];

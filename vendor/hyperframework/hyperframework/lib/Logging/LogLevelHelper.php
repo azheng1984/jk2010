@@ -5,7 +5,6 @@ use InvalidArgumentException;
 
 class LogLevelHelper {
     private static $levels = [
-        'OFF' => -1,
         'FATAL' => 0,
         'ERROR' => 1,
         'WARNING' => 2,
@@ -40,7 +39,7 @@ class LogLevelHelper {
                     "Argument 'levelA' is invalid."
                 );
             }
-        } elseif ($levelA < -1 || $levelA > 5) {
+        } elseif ($levelA < 0 || $levelA > 5) {
             throw new InvalidArgumentException(
                 "Argument 'levelA' is invalid."
             );
@@ -52,7 +51,7 @@ class LogLevelHelper {
                     "Argument 'levelB' is invalid."
                 );
             }
-        } elseif ($levelB < -1 || $levelB > 5) {
+        } elseif ($levelB < 0 || $levelB > 5) {
             throw new InvalidArgumentException(
                 "Argument 'levelB' is invalid."
             );

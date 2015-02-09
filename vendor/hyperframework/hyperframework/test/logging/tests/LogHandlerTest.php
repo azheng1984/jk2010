@@ -9,6 +9,9 @@ class LogHandlerTest extends Base {
         Logger::setLevel(null);
         Logger::setLogHandler(null);
         Config::set('hyperframework.app_root_path', dirname(__DIR__));
+    }
+
+    protected function tearDown() {
         $path = Config::getAppRootPath() . '/log/app.log';
         if (file_exists($path)) {
             unlink($path);
@@ -19,9 +22,6 @@ class LogHandlerTest extends Base {
         if (file_exists(Config::getAppRootPath() . '/log/test')) {
             rmdir(Config::getAppRootPath() . '/log/test');
         }
-    }
-
-    protected function tearDown() {
         Config::clear();
     }
 

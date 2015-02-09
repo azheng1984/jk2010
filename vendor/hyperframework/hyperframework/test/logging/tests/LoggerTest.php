@@ -9,8 +9,6 @@ use Hyperframework\Test\TestCase as Base;
 
 class LoggerTest extends Base {
     protected function setUp() {
-        Logger::setLevel(null);
-        Logger::setLogHandler(null);
         Config::set( 'hyperframework.app_root_path', dirname(__DIR__));
     }
 
@@ -20,6 +18,8 @@ class LoggerTest extends Base {
             unlink($path);
         }
         Config::clear();
+        Logger::setLevel(null);
+        Logger::setLogHandler(null);
     }
 
     /**

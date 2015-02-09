@@ -9,28 +9,6 @@ class LogWriter {
     private $isDefaultPath;
 
     public function write($text) {
-        $path = $this->getPath();
-        $handle = fopen($path, 'a');
-        if ($handle !== false) {
-            if (flock($handle, LOCK_EX)) {
-                fwrite($handle, $text);
-                fflush($handle);
-                flock($handle, LOCK_UN);
-            } else {
-                fclose($handle);
-                throw new LoggingException($this->getErrorMessage(
-                    "Failed to lock log file '$path'"
-                ));
-            }
-            fclose($handle);
-        } else {
-            throw new LoggingException($this->getErrorMessage(
-                "Failed to open or create log file '$path'"
-            ));
-        }
-    }
-
-    private function getPath() {
         if ($this->path === null) {
             $this->path = Config::getString(
                 'hyperframework.logging.log_path', ''
@@ -47,13 +25,30 @@ class LogWriter {
                 if (file_exists($directory) === false) {
                     if (mkdir($directory, 0777, true) === false) {
                         throw new LoggingException($this->getErrorMessage(
-                            "Failed to create log file '$path'"
+                            "Failed to create log file '{$this->path}'"
                         ));
                     }
                 }
             }
         }
-        return $this->path;
+        $handle = fopen($this->path, 'a');
+        if ($handle !== false) {
+            if (flock($handle, LOCK_EX)) {
+                fwrite($handle, $text);
+                fflush($handle);
+                flock($handle, LOCK_UN);
+            } else {
+                fclose($handle);
+                throw new LoggingException($this->getErrorMessage(
+                    "Failed to lock log file '{$this->path}'"
+                ));
+            }
+            fclose($handle);
+        } else {
+            throw new LoggingException($this->getErrorMessage(
+                "Failed to open or create log file '{$this->path}'"
+            ));
+        }
     }
 
     private function getErrorMessage($prefix) {

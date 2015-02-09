@@ -63,9 +63,11 @@ class DbProfiler {
 
     private static function handleProfile() {
         $endTime = self::getTime();
-        self::$profile['running_time'] = (float)sprintf('%.6F',
+        self::$profile['running_time'] = (float)sprintf(
+            '%.6F',
             $endTime[1] - self::$profile['start_time'][1] + $endTime[0]
-                - self::$profile['start_time'][0]);
+                - self::$profile['start_time'][0]
+        );
         self::$profile['start_time'] = DateTime::createFromFormat(
             'U.u', self::$profile['start_time'][1] . '.'
                 . (int)(self::$profile['start_time'][0] * 1000000)
