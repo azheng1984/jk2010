@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Logging;
 
+use Exception;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
 
@@ -32,23 +33,30 @@ class LogWriter {
             }
         }
         $handle = fopen($this->path, 'a');
-        if ($handle !== false) {
-            if (flock($handle, LOCK_EX)) {
-                fwrite($handle, $text);
-                fflush($handle);
-                flock($handle, LOCK_UN);
-            } else {
-                fclose($handle);
-                throw new LoggingException($this->getErrorMessage(
-                    "Failed to lock log file '{$this->path}'"
-                ));
-            }
-            fclose($handle);
-        } else {
+        if ($handle === false) {
             throw new LoggingException($this->getErrorMessage(
                 "Failed to open or create log file '{$this->path}'"
             ));
         }
+        try {
+            if (flock($handle, LOCK_EX) === false) {
+                throw new LoggingException($this->getErrorMessage(
+                    "Failed to lock log file '{$this->path}'"
+                ));
+            }
+            try {
+                fwrite($handle, $text);
+                fflush($handle);
+            } catch (Exception $e) {
+                flock($handle, LOCK_UN);
+                throw $e;
+            }
+            flock($handle, LOCK_UN);
+        } catch (Exception $e) {
+            fclose($handle);
+            throw $e;
+        }
+        fclose($handle);
     }
 
     private function getErrorMessage($prefix) {
