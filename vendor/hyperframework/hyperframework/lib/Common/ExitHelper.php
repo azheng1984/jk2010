@@ -3,8 +3,8 @@ namespace Hyperframework\Common;
 
 class ExitHelper {
     public function exitScript($status = 0) {
-        $exitFunction = Config::getString('hyperframework.exit_function', '');
-        if ($exitFunction === '') {
+        $exitFunction = Config::getString('hyperframework.exit_function');
+        if ($exitFunction === null) {
             exit($status);
         } elseif (is_callable($exitFunction) === false) {
             throw new ConfigException(
