@@ -9,9 +9,9 @@ class Error {
     private $trace;
 
     public function __construct(
-        $code, $message, $file, $line, array $trace = null
+        $severity, $message, $file, $line, array $trace = null
     ) {
-        $this->code =  $code;
+        $this->severity = $severity;
         $this->message = $message;
         $this->file = $file;
         $this->line = $line;
@@ -22,16 +22,16 @@ class Error {
         return $this->message;
     }
 
-    public function getCode() {
-        return $this->code;
+    public function getSeverity() {
+        return $this->severity;
     }
 
-    public function getCodeAsString() {
-        return ErrorTypeHelper::convertToString($this->getCode());
+    public function getSeverityAsString() {
+        return ErrorTypeHelper::convertToString($this->getSeverity());
     }
 
-    public function getCodeAsConstantName() {
-        return ErrorTypeHelper::convertToConstantName($this->getCode());
+    public function getSeverityAsConstantName() {
+        return ErrorTypeHelper::convertToConstantName($this->getSeverity());
     }
 
     public function getFile() {
@@ -55,7 +55,7 @@ class Error {
     }
 
     public function __toString() {
-        return $this->getCodeAsString() . ':  ' . $this->getMessage()
+        return $this->getSeverityAsString() . ':  ' . $this->getMessage()
             . ' in ' . $this->getFile() . ' on line ' . $this->getLine();
     }
 }

@@ -2,6 +2,7 @@
 namespace Hyperframework\Logging;
 
 use Exception;
+use ErrorException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
 
@@ -24,41 +25,93 @@ class LogWriter {
             if (file_exists($this->path) === false) {
                 $directory = dirname($this->path);
                 if (file_exists($directory) === false) {
-                    if (mkdir($directory, 0777, true) === false) {
-                        throw new LoggingException($this->getErrorMessage(
-                            "Failed to create log file '{$this->path}'"
-                        ));
+                    try {
+                        if (mkdir($directory, 0777, true) === false) {
+                            throw new LoggingException(
+                                $this->getMakeDirectoryErrorMessage()
+                            );
+                        }
+                    } catch (ErrorException $e) {
+                        throw new LoggingException(
+                            $this->getMakeDirectoryErrorMessage() , 0, $e
+                        );
                     }
                 }
             }
         }
-        $handle = fopen($this->path, 'a');
+        try {
+            $handle = fopen($this->path, 'a');
+        } catch (ErrorException $e) {
+            throw new LoggingException(
+                $this->getOpenFileErrorMessage(), 0, $e
+            );
+        }
         if ($handle === false) {
-            throw new LoggingException($this->getErrorMessage(
-                "Failed to open or create log file '{$this->path}'"
-            ));
+            throw new LoggingException(
+                $this->getOpenFileErrorMessage()
+            );
         }
         try {
-            if (flock($handle, LOCK_EX) === false) {
-                throw new LoggingException($this->getErrorMessage(
-                    "Failed to lock log file '{$this->path}'"
-                ));
+            try {
+                if (flock($handle, LOCK_EX) === false) {
+                    throw new LoggingException(
+                        $this->getLockFileErrorMessage(), 0, $e
+                    );
+                }
+            } catch (ErrorException $e) {
+                throw new LoggingException(
+                    $this->getLockFileErrorMessage(), 0, $e
+                );
             }
-            $status = fwrite($handle, $text);
-            if ($status !== false) {
-                $status = fflush($handle);
+            try {
+                $status = fwrite($handle, $text);
+                if ($status !== false) {
+                    $status = fflush($handle);
+                }
+            } catch (ErrorException $e) {
+                flock($handle, LOCK_UN);
+                throw new LoggingException(
+                    $this->getWriteFileErrorMessage(), 0, $e
+                );
+            } catch (Exception $e) {
+                flock($handle, LOCK_UN);
+                throw $e;
             }
             flock($handle, LOCK_UN);
-            if ($status === false) {
-                throw new LoggingException($this->getErrorMessage(
-                    "Failed to write log file '{$this->path}'"
-                ));
+            if ($status !== true) {
+                throw new LoggingException(
+                    $this->getWriteFileErrorMessage()
+                );
             }
         } catch (Exception $e) {
             fclose($handle);
             throw $e;
         }
         fclose($handle);
+    }
+
+    private function getMakeDirectoryErrorMessage() {
+        return $this->getErrorMessage(
+            "Failed to create log file '{$this->path}'"
+        );
+    }
+
+    private function getOpenFileErrorMessage() {
+        return $this->getErrorMessage(
+            "Failed to open or create log file '{$this->path}'"
+        );
+    }
+
+    private function getLockFileErrorMessage() {
+        return $this->getErrorMessage(
+            "Failed to lock log file '{$this->path}'"
+        );
+    }
+
+    private function getWriteFileErrorMessage() {
+        return $this->getErrorMessage(
+            "Failed to write log file '{$this->path}'"
+        );
     }
 
     private function getErrorMessage($prefix) {

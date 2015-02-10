@@ -2,6 +2,7 @@
 namespace Hyperframework\Web;
 
 use Exception;
+use Hyperframework\Common\ErrorException;
 use Hyperframework\Common\FatalError;
 use Hyperframework\Common\StackTraceFormatter;
 use Hyperframework\Common\Config;
@@ -43,7 +44,11 @@ class Debugger {
         $this->shouldHideExternal = false;
         $this->trace = null;
         if ($this->error instanceof FatalError === false) {
-            $this->trace = $error->getTrace();
+            if ($this->error instanceof ErrorException) {
+                $this->trace = $error->getSourceTrace();
+            } else {
+                $this->trace = $error->getTrace();
+            }
             if ($this->isExternalFile($error->getFile())) {
                 $this->firstInternalStackFrameIndex = null;
                 foreach ($this->trace as $index => $frame) {
@@ -72,7 +77,7 @@ class Debugger {
             $type = get_class($error);
         } else {
             $type = htmlspecialchars(
-                ucwords($error->getCodeAsString()),
+                ucwords($error->getSeverityAsString()),
                 ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
             );
         }

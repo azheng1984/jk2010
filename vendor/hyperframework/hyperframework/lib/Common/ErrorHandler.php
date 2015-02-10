@@ -68,7 +68,7 @@ class ErrorHandler {
         }
         echo $prefix, '<br />', PHP_EOL, '<b>';
         if ($error instanceof Exception === false) {
-            echo $error->getCodeAsString(), '</b>:  ';
+            echo $error->getSeverityAsString(), '</b>:  ';
             if (ini_get('docref_root') !== '') {
                 echo $error->getMessage();
             } else {
@@ -175,7 +175,7 @@ class ErrorHandler {
             E_CORE_WARNING      => 'warn',
             E_RECOVERABLE_ERROR => 'error'
         ];
-        return $maps[$this->error->getCode()];
+        return $maps[$this->error->getSeverity()];
     }
 
     final protected function disableDefaultErrorReporting() {
@@ -243,6 +243,17 @@ class ErrorHandler {
 
     private function handleError($type, $message, $file, $line) {
         $this->enableDefaultErrorReporting();
+        $shouldThrow = false;
+        $errorThrowingBitmask = Config::getInt(
+            'hyperframework.error_handler.error_throwing_bitmask'
+        );
+        if ($errorThrowingBitmask === null) {
+            $errorThrowingBitmask =
+                E_ALL & ~(E_DEPRECATED | E_USER_DEPRECATED);
+        }
+        if (($type & $errorThrowingBitmask) !== 0) {
+            $shouldThrow = true;
+        }
         $trace = null;
         $sourceTraceStartIndex = 2;
         $calledFunctionFile = null;
@@ -260,19 +271,23 @@ class ErrorHandler {
                     $calledFunctionLine = $line;
                     $file = $trace[2]['file'];
                     $line = $trace[2]['line'];
+                    $message .= " (defined in $calledFunctionFile"
+                        . ":$calledFunctionLine)";
                 }
             }
         }
-        if ($calledFunctionFile !== null) {
-            $message .= " (defined in " . $calledFunctionFile
-                . ':' . $calledFunctionLine . ")";
+        if ($shouldThrow) {
+            $error = new ErrorException(
+                $type, $message, $file, $line, $sourceTraceStartIndex
+            );
+        } else {
+            if ($trace === null) {
+                $trace = debug_backtrace();
+            }
+            $trace = array_slice($trace, $sourceTraceStartIndex);
+            $error = new Error($type, $message, $file, $line, $trace);
         }
-        if ($trace === null) {
-            $trace = debug_backtrace();
-        }
-        $trace = array_slice($trace, $sourceTraceStartIndex);
-        $error = new Error($type, $message, $file, $line, $trace);
-        return $this->handle($error, true);
+        return $this->handle($error, true, $shouldThrow);
     }
 
     private function handleShutdown() {
@@ -301,22 +316,25 @@ class ErrorHandler {
         }
     }
 
-    private function handle($error, $isError = false) {
+    private function handle($error, $isError = false, $shouldThrow = false) {
         if ($this->error !== null) {
             if ($isError === false) {
                 throw $error;
             }
             return false;
         }
-        if ($error instanceof Error
-            && $error instanceof FatalError === false
-            && ($error->getCode() & (E_USER_ERROR | E_RECOVERABLE_ERROR)) === 0
-        ) {
-            $this->shouldExit = false;
-        } else {
-            $this->shouldExit = true;
+        if ($shouldThrow) {
+            $this->disableDefaultErrorReporting();
+            throw $error;
         }
         $this->error = $error;
+        $this->shouldExit = true;
+        if ($error instanceof Error && $error instanceof FatalError === false) {
+            $severity = $error->getSeverity();
+            if (($severity & (E_USER_ERROR | E_RECOVERABLE_ERROR)) === 0) {
+                $this->shouldExit = false;
+            }
+        }
         $this->writeLog();
         if ($this->shouldExit === false) {
             if ($this->shouldDisplayErrors()) {
