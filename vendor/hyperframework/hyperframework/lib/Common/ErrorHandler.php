@@ -263,13 +263,10 @@ class ErrorHandler {
                 if (substr($message, -strlen($suffix)) === $suffix) {
                     $message =
                         substr($message, 0, strlen($message) - strlen($suffix));
-                    $sourceTraceStartIndex = 3;
-                    $calledFunctionFile = $file;
-                    $calledFunctionLine = $line;
+                    $message .= " (defined in $file:$line)";
                     $file = $trace[2]['file'];
                     $line = $trace[2]['line'];
-                    $message .= " (defined in $calledFunctionFile"
-                        . ":$calledFunctionLine)";
+                    $sourceTraceStartIndex = 3;
                 }
             }
         }
