@@ -262,8 +262,8 @@ class ErrorHandler {
                     . ' on line ' . $trace[2]['line'] . ' and defined';
                 if (substr($message, -strlen($suffix)) === $suffix) {
                     $message =
-                        substr($message, 0, strlen($message) - strlen($suffix));
-                    $message .= " (defined in $file:$line)";
+                        substr($message, 0, strlen($message) - strlen($suffix))
+                            . " (defined in $file:$line)";
                     $file = $trace[2]['file'];
                     $line = $trace[2]['line'];
                     $sourceTraceStartIndex = 3;
