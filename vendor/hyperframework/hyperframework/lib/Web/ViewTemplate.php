@@ -11,7 +11,7 @@ use Hyperframework\Common\PathCombiner;
 
 abstract class ViewTemplate implements ArrayAccess {
     private $model;
-    private $includeFileFunction;
+    private $loadFileFunction;
     private $blocks = [];
     private $contextStack = [];
     private $rootPath;
@@ -19,8 +19,8 @@ abstract class ViewTemplate implements ArrayAccess {
     private $layoutPath;
     private $layoutRootPath;
 
-    public function __construct($includeFileFunction, array $model = null) {
-        $this->includeFileFunction = $includeFileFunction;
+    public function __construct($loadFileFunction, array $model = null) {
+        $this->loadFileFunction = $loadFileFunction;
         $this->model = $model === null ? [] : $model;
     }
 
@@ -51,8 +51,8 @@ abstract class ViewTemplate implements ArrayAccess {
             PathCombiner::prepend($path, $this->getRootPath());
             $this->fullPath = $path;
         }
-        $includeFileFunction = $this->includeFileFunction;
-        $includeFileFunction($this->fullPath);
+        $loadFileFunction = $this->loadFileFunction;
+        $loadFileFunction($this->fullPath);
         if ($this->layoutPath !== null) {
             $this->setRootPath($this->layoutRootPath);
             $this->render($this->layoutPath);

@@ -5,7 +5,18 @@ use Hyperframework\Web\Controller;
 use Hyperframework\Db\DbClient;
 
 class IndexController extends Controller {
+    private function name(array $param) {
+        return null;
+    }
+
+    private function name2($param) {
+        return null;
+    }
+
     public function __construct($app) {
+        dsf;
+        $this->name2();
+        //$this->name(0);
         //throw new \Exception;
         parent::__construct($app);
 //        $this->addBeforeFilter('Hyperframework\Web\Controller');
