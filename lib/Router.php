@@ -6,7 +6,7 @@ use Hyperframework\Logging\Logger;
 
 class Router extends Base {
     protected function execute() {
-        //Logger::error('hi');
+        Logger::error('hi');
 //        var_dump($this->match(':controller/:id(.:format)', [
 //            ':format' => 'html',
 //            'extra' => function($matches) {

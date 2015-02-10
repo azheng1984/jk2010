@@ -256,8 +256,6 @@ class ErrorHandler {
         }
         $trace = null;
         $sourceTraceStartIndex = 2;
-        $calledFunctionFile = null;
-        $calledFunctionLine = null;
         if ($type === E_WARNING || $type === E_RECOVERABLE_ERROR) {
             $trace = debug_backtrace();
             if (isset($trace[2]) && isset($trace[2]['file'])) {
