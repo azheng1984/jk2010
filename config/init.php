@@ -5,7 +5,7 @@ ini_set('html_errors', true);
 
 return array(
     '[hyperframework]',
-    'logging.log_path' => '/x/x/x.log',
+//    'logging.log_path' => '/x/x/x.log',
     'app_root_namespace' => __NAMESPACE__,
     'error_handler.debug' => true,
 //  'web.router' => __NAMESPACE__ . '\Router',

@@ -165,14 +165,13 @@ class ErrorHandler {
             return 'fatal';
         }
         $maps = [
-            E_STRICT            => 'info',
             E_DEPRECATED        => 'info',
             E_USER_DEPRECATED   => 'info',
+            E_STRICT            => 'info',
             E_NOTICE            => 'notice',
             E_USER_NOTICE       => 'notice',
             E_WARNING           => 'warn',
             E_USER_WARNING      => 'warn',
-            E_CORE_WARNING      => 'warn',
             E_RECOVERABLE_ERROR => 'error'
         ];
         return $maps[$this->error->getSeverity()];
