@@ -67,29 +67,6 @@ class LogHandlerTest extends Base {
         );
     }
 
-//    public function testIntTime() {
-//    }
-//
-//    public function testDateTime() {
-//    }
-//
-//    public function testDefaultTime() {
-//        $handler = new LogHandler;
-//        $handler->handle('ERROR', ['message' => 'message']);
-//        $this->assertTrue(
-//            file_exists(Config::getAppRootPath() . '/log/app.log')
-//        );
-//    }
-//
-//
-//    public function testData() {
-//        $handler = new LogHandler;
-//        $handler->handle('ERROR', ['message' => 'message']);
-//        $this->assertTrue(
-//            file_exists(Config::getAppRootPath() . '/log/app.log')
-//        );
-//    }
-//
     public function testChangeLogPath() {
         $handler = new LogHandler;
         Config::set('hyperframework.logging.log_path', 'log/test/app.log');
@@ -102,13 +79,4 @@ class LogHandlerTest extends Base {
             file_get_contents(Config::getAppRootPath() . '/log/test/app.log')
         );
     }
-
-//    public function testLockFile() {
-//        $path = Config::getAppRootPath() . '/log/app.log';
-//        $fileHandler = fopen($path, "a+");
-//        //flock($fileHandler, LOCK_EX, true);
-//        $time = time();
-//        $handler = new LogHandler;
-//        $handler->handle('ERROR', ['time' => $time]);
-//    }
 }
