@@ -24,8 +24,9 @@ class LogHandler {
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Log formatter class '$class' does not exist, defined "
-                            . "in 'hyperframework.logging.log_formatter_class'."
+                        "Log formatter class '$class' does not exist,"
+                            . " configured using "
+                            . "'hyperframework.logging.log_formatter_class'."
                     );
                 }
                 $this->formatter = new $class;
@@ -44,8 +45,9 @@ class LogHandler {
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Log writer class '$class' does not exist, defined "
-                            . "in 'hyperframework.logging.log_writer_class'."
+                        "Log writer class '$class' does not exist,"
+                            . " configured using "
+                            . "'hyperframework.logging.log_writer_class'."
                     );
                 }
                 $this->writer = new $class;

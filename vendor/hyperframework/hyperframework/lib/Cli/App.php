@@ -72,8 +72,9 @@ class App extends Base {
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Command config class '$class' does not exist, defined"
-                            . " in 'hyperframework.cli.command_config_class'."
+                        "Command config class '$class' does not exist,"
+                            . " configured using "
+                            . "'hyperframework.cli.command_config_class'."
                     );
                 }
                 $this->commandConfig = new $class;
@@ -102,8 +103,8 @@ class App extends Base {
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    "Help class '$class' does not exist, defined in "
-                        . "config 'hyperframework.cli.help_class'."
+                    "Help class '$class' does not exist, configured using"
+                        . " 'hyperframework.cli.help_class'."
                 );
             }
         }

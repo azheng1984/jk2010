@@ -12,7 +12,7 @@ class ViewFactory {
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    "View class '$class' does not exist, defined in config "
+                    "View class '$class' does not exist, configured using "
                         . "'hyperframework.web.view.class'."
                 );
             }

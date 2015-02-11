@@ -40,7 +40,7 @@ class CsrfProtection {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
                         "Csrf protection engine class '$class' does not exist"
-                            . ", defined in config '$configName'."
+                            . ", configured using '$configName'."
                     );
                     self::$engine = new $class;
                 }

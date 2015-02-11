@@ -162,7 +162,7 @@ class ErrorHandler extends Base {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
                     "Debugger class '$logHandlerClass' does not exist,"
-                        . " defined in config "
+                        . " configured using "
                         . "'hyperframework.error_handler.debugger_class'."
                 );
             }
@@ -178,8 +178,8 @@ class ErrorHandler extends Base {
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    "Error view class '$class' does not exist, defined in"
-                        . " config 'hyperframework.error_view.class'."
+                    "Error view class '$class' does not exist, configured "
+                        . "using 'hyperframework.error_view.class'."
                 );
             }
             $view = new $class;

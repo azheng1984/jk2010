@@ -59,8 +59,8 @@ abstract class App {
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    "Error handler class '$class' does not exist, defined in"
-                        . " config 'hyperframework.error_handler.class'."
+                    "Error handler class '$class' does not exist, configured "
+                        . "using 'hyperframework.error_handler.class'."
                 );
             }
             $handler = new $class;
