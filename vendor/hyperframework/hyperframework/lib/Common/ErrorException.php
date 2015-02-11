@@ -4,7 +4,7 @@ namespace Hyperframework\Common;
 use ErrorException as Base;
 
 class ErrorException extends Base {
-    private $sourceStackTrace;
+    private $sourceTrace;
     private $sourceTraceStartIndex;
 
     public function __construct(
@@ -23,32 +23,20 @@ class ErrorException extends Base {
     }
 
     public function getSourceTrace() {
-        if ($this->sourceStackTrace === null) {
-            if ($this->sourceTraceStartIndex !== null) {
-                if ($this->sourceTraceStartIndex === 0) {
-                    $this->sourceStackTrace = $this->getTrace();
-                } else {
-                    $this->sourceStackTrace = array_slice(
-                        $this->getTrace(),
-                        $this->sourceTraceStartIndex
-                    );
-                }
-            }
-            if ($this->sourceStackTrace === null) {
-                $this->sourceStackTrace = false;
+        if ($this->sourceTrace === null) {
+            if ($this->sourceTraceStartIndex === 0) {
+                $this->sourceTrace = $this->getTrace();
+            } else {
+                $this->sourceTrace = array_slice(
+                    $this->getTrace(), $this->sourceTraceStartIndex
+                );
             }
         }
-        if ($this->sourceStackTrace === false) {
-            return;
-        }
-        return $this->sourceStackTrace;
+        return $this->sourceTrace;
     }
 
     public function getSourceTraceAsString() {
         $trace = $this->getSourceTrace();
-        if ($trace === null) {
-            return '';
-        }
         return StackTraceFormatter::format($trace);
     }
 
