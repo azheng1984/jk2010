@@ -34,7 +34,9 @@ class App extends Base {
                 }
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Router class '$class' does not exist."
+                        "Router class '$class' does not exist,"
+                            . " can be configured using "
+                            . "'hyperframework.web.router_class'."
                     );
                 }
             } elseif (class_exists($class) === false) {
