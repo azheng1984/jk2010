@@ -114,7 +114,7 @@ class LogWriter {
 
     private function getErrorMessage($prefix) {
         if ($this->isDefaultPath === false) {
-            $prefix .= ", defined in 'hyperframework.logging.log_path'";
+            $prefix .= ", defined in config 'hyperframework.logging.log_path'";
         }
         return $prefix . '.';
     }

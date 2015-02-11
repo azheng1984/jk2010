@@ -374,7 +374,7 @@ class ErrorHandler {
         if ($loggerClass !== '') {
             if (class_exists($loggerClass) === false) {
                 throw new ClassNotFoundException(
-                    "Logger class '$class' does not exist, defined in "
+                    "Logger class '$class' does not exist, defined in config "
                         . "'hyperframework.error_handler.logger_class'."
                 );
             }

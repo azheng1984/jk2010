@@ -103,7 +103,7 @@ class App extends Base {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
                     "Help class '$class' does not exist, defined in "
-                        . "'hyperframework.cli.help_class'."
+                        . "config 'hyperframework.cli.help_class'."
                 );
             }
         }

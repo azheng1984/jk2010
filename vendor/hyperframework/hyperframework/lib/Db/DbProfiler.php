@@ -104,8 +104,9 @@ class DbProfiler {
         if ($profileHandlerClass !== '') {
             if (class_exists($profileHandlerClass) === false) {
                 throw new ClassNotFoundException(
-                    "Database operation profile handler class"
-                        . " '$profileHandlerClass' does not exist, defined in "
+                    "Database operation profile handler class "
+                        . "'$profileHandlerClass' does not exist"
+                        . ", defined in config "
                         . "'hyperframework.db.profiler.profile_handler_class'."
                 );
             }
@@ -121,7 +122,7 @@ class DbProfiler {
         if ($loggerClass !== '') {
             if (class_exists($loggerClass) === false) {
                 throw new ClassNotFoundException(
-                    "Logger class '$class' does not exist, defined in "
+                    "Logger class '$class' does not exist, defined in config"
                         . "'hyperframework.db.profiler.logger_class'."
                 );
             }

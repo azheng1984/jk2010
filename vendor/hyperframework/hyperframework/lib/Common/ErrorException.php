@@ -11,7 +11,7 @@ class ErrorException extends Base {
         $severity, $message, $file, $line, $sourceTraceStartIndex
     ) {
         parent::__construct($message, 0, $severity, $file, $line);
-        $this->sourceTraceStartIndex = $sourceTraceStartIndex;
+        $this->sourceTraceStartIndex = (int)$sourceTraceStartIndex;
     }
 
     public function getSeverityAsString() {

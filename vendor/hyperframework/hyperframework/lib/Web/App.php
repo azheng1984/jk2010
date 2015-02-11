@@ -39,7 +39,7 @@ class App extends Base {
                 }
             } elseif (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    "Router class '$class' does not exist, defined in "
+                    "Router class '$class' does not exist, defined in config "
                         . "'hyperframework.web.router_class'."
                 );
             }

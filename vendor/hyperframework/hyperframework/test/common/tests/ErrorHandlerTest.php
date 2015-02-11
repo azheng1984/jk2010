@@ -115,7 +115,7 @@ class ErrorHandlerTest extends Base {
 
     public function testWriteLogByLogger() {
         Config::set(
-            'hyperframework.error_handler.logger.enable', true
+            'hyperframework.error_handler.enable_logger', true
         );
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
@@ -231,7 +231,7 @@ class ErrorHandlerTest extends Base {
         //    'hyperframework.error_handler.logger.log_stack_trace', true
         //);
         Config::set(
-            'hyperframework.error_handler.logger.enable', true
+            'hyperframework.error_handler.enable_logger', true
         );
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
