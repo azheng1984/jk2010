@@ -92,24 +92,6 @@ class ErrorHandler {
         $this->displayError();
     }
 
-    private function getMaxLogLength() {
-        $config = ini_get('log_errors_max_len');
-        if (strlen($config) < 2) {
-            return (int)$config;
-        }
-        $type = strtolower(substr($config, -1));
-        $config = (int)$config;
-        switch ($type) {
-            case 'g':
-                $config *= 1024;
-            case 'm':
-                $config *= 1024;
-            case 'k':
-                $config *= 1024;
-        }
-        return $config;
-    }
-
     protected function writeLog() {
         if ($this->isLoggerEnabled()) {
             $method = $this->getLoggerMethod();
@@ -133,21 +115,6 @@ class ErrorHandler {
             }
         } elseif ($this->isDefaultErrorLogEnabled()) {
             $this->writeDefaultErrorLog();
-        }
-    }
-
-    private function getCustomLoggerClass() {
-        $loggerClass = Config::getString(
-            'hyperframework.error_handler.logger.class', ''
-        );
-        if ($loggerClass !== '') {
-            if (class_exists($loggerClass) === false) {
-                throw new ClassNotFoundException(
-                    "Logger class '$class' does not exist, defined in "
-                        . "'hyperframework.error_handler.logger.class'."
-                );
-            }
-            return $loggerClass;
         }
     }
 
@@ -380,5 +347,38 @@ class ErrorHandler {
         return 'Fatal error:  Uncaught ' . $this->error . PHP_EOL
             . '  thrown in ' . $this->error->getFile() . ' on line '
             . $this->error->getLine();
+    }
+
+    private function getMaxLogLength() {
+        $config = ini_get('log_errors_max_len');
+        if (strlen($config) < 2) {
+            return (int)$config;
+        }
+        $type = strtolower(substr($config, -1));
+        $config = (int)$config;
+        switch ($type) {
+            case 'g':
+                $config *= 1024;
+            case 'm':
+                $config *= 1024;
+            case 'k':
+                $config *= 1024;
+        }
+        return $config;
+    }
+
+    private function getCustomLoggerClass() {
+        $loggerClass = Config::getString(
+            'hyperframework.error_handler.logger.class', ''
+        );
+        if ($loggerClass !== '') {
+            if (class_exists($loggerClass) === false) {
+                throw new ClassNotFoundException(
+                    "Logger class '$class' does not exist, defined in "
+                    . "'hyperframework.error_handler.logger.class'."
+                );
+            }
+            return $loggerClass;
+        }
     }
 }
