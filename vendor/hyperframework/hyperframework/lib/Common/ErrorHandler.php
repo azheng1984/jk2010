@@ -165,9 +165,9 @@ class ErrorHandler {
             return 'fatal';
         }
         $maps = [
-            E_DEPRECATED        => 'info',
-            E_USER_DEPRECATED   => 'info',
-            E_STRICT            => 'info',
+            E_DEPRECATED        => 'notice',
+            E_USER_DEPRECATED   => 'notice',
+            E_STRICT            => 'notice',
             E_NOTICE            => 'notice',
             E_USER_NOTICE       => 'notice',
             E_WARNING           => 'warn',
