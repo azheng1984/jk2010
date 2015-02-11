@@ -11,7 +11,6 @@ class ErrorHandler {
     private $isLoggerEnabled;
     private $shouldDisplayErrors;
     private $isShutdownStarted = false;
-    private $shouldExit;
     private $error;
 
     public function __construct() {
@@ -161,20 +160,26 @@ class ErrorHandler {
     }
 
     protected function getLoggerMethod() {
-        if ($this->shouldExit) {
-            return 'fatal';
+        if ($this->error instanceof Error) {
+            $map = [
+                E_DEPRECATED        => 'notice',
+                E_USER_DEPRECATED   => 'notice',
+                E_STRICT            => 'notice',
+                E_NOTICE            => 'notice',
+                E_USER_NOTICE       => 'notice',
+                E_WARNING           => 'warn',
+                E_USER_WARNING      => 'warn',
+                E_COMPILE_WARNING   => 'warn',
+                E_CORE_WARNING      => 'warn',
+                E_RECOVERABLE_ERROR => 'fatal',
+                E_USER_ERROR        => 'fatal',
+                E_ERROR             => 'fatal',
+                E_COMPILE_ERROR     => 'fatal',
+                E_CORE_ERROR        => 'fatal'
+            ];
+            return $map[$this->error->getSeverity()];
         }
-        $maps = [
-            E_DEPRECATED        => 'notice',
-            E_USER_DEPRECATED   => 'notice',
-            E_STRICT            => 'notice',
-            E_NOTICE            => 'notice',
-            E_USER_NOTICE       => 'notice',
-            E_WARNING           => 'warn',
-            E_USER_WARNING      => 'warn',
-            E_RECOVERABLE_ERROR => 'error'
-        ];
-        return $maps[$this->error->getSeverity()];
+        return 'fatal';
     }
 
     final protected function disableDefaultErrorReporting() {
@@ -322,15 +327,15 @@ class ErrorHandler {
             throw $error;
         }
         $this->error = $error;
-        $this->shouldExit = true;
+        $shouldExit = true;
         if ($error instanceof Error && $error instanceof FatalError === false) {
             $severity = $error->getSeverity();
             if (($severity & (E_USER_ERROR | E_RECOVERABLE_ERROR)) === 0) {
-                $this->shouldExit = false;
+                $shouldExit = false;
             }
         }
         $this->writeLog();
-        if ($this->shouldExit === false) {
+        if ($shouldExit === false) {
             if ($this->shouldDisplayErrors()) {
                 $this->displayError();
             }
