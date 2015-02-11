@@ -86,7 +86,8 @@ class DbProfiler {
                 if (isset(self::$profile['sql'])) {
                     $log .= self::$profile['sql'];
                 } else {
-                    $log .= self::$profile['transaction'] . ' transaction';
+                    $log .= '[' . self::$profile['transaction']
+                        . ' transaction]';
                 }
                 return $log;
             };

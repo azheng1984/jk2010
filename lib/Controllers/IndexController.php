@@ -14,8 +14,9 @@ class IndexController extends Controller {
     }
 
     public function __construct($app) {
-        dsf;
-        $this->name2();
+        DbClient::beginTransaction();
+        DbClient::commit();
+        //$this->name2();
         //$this->name(0);
         //throw new \Exception;
         parent::__construct($app);
