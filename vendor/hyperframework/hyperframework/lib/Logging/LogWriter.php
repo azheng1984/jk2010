@@ -55,7 +55,7 @@ class LogWriter {
             try {
                 if (flock($handle, LOCK_EX) === false) {
                     throw new LoggingException(
-                        $this->getLockFileErrorMessage(), 0, $e
+                        $this->getLockFileErrorMessage()
                     );
                 }
             } catch (ErrorException $e) {
@@ -79,9 +79,7 @@ class LogWriter {
             }
             flock($handle, LOCK_UN);
             if ($status !== true) {
-                throw new LoggingException(
-                    $this->getWriteFileErrorMessage()
-                );
+                throw new LoggingException($this->getWriteFileErrorMessage());
             }
         } catch (Exception $e) {
             fclose($handle);

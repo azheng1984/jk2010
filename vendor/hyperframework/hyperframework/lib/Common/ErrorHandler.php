@@ -15,7 +15,7 @@ class ErrorHandler {
 
     public function __construct() {
         $this->isLoggerEnabled = Config::getBoolean(
-            'hyperframework.error_handler.logger.enable', false
+            'hyperframework.error_handler.enable_logger', false
         );
         if ($this->isLoggerEnabled) {
             ini_set('log_errors', '0');
@@ -369,13 +369,13 @@ class ErrorHandler {
 
     private function getCustomLoggerClass() {
         $loggerClass = Config::getString(
-            'hyperframework.error_handler.logger.class', ''
+            'hyperframework.error_handler.logger_class', ''
         );
         if ($loggerClass !== '') {
             if (class_exists($loggerClass) === false) {
                 throw new ClassNotFoundException(
                     "Logger class '$class' does not exist, defined in "
-                    . "'hyperframework.error_handler.logger.class'."
+                        . "'hyperframework.error_handler.logger_class'."
                 );
             }
             return $loggerClass;

@@ -73,7 +73,7 @@ class DbProfiler {
                 . (int)(self::$profile['start_time'][0] * 1000000)
         )->setTimeZone(new DateTimeZone(date_default_timezone_get()));
         $isLoggerEnabled = Config::getBoolean(
-            'hyperframework.db.profiler.logger.enable', true
+            'hyperframework.db.profiler.enable_logger', true
         );
         if ($isLoggerEnabled) {
             $callback = function() {
@@ -115,13 +115,13 @@ class DbProfiler {
 
     private static function getCustomLoggerClass() {
         $loggerClass = Config::getString(
-            'hyperframework.db.profiler.logger.class', ''
+            'hyperframework.db.profiler.logger_class', ''
         );
         if ($loggerClass !== '') {
             if (class_exists($loggerClass) === false) {
                 throw new ClassNotFoundException(
                     "Logger class '$class' does not exist, defined in "
-                        . "'hyperframework.db.profiler.logger.class'."
+                        . "'hyperframework.db.profiler.logger_class'."
                 );
             }
             return $loggerClass;
