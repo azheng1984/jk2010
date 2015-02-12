@@ -12,37 +12,37 @@ final class Logger {
     private static $thresholdCode;
 
     public static function debug($mixed) {
-        if (self::getThresholdCode() === 5) {
+        if (self::getThresholdCode() >= LogLevel::DEBUG) {
             static::log('DEBUG', $mixed);
         }
     }
 
     public static function info($mixed) {
-        if (self::getThresholdCode() >= 4) {
+        if (self::getThresholdCode() >= LogLevel::INFO) {
             static::log('INFO', $mixed);
         }
     }
 
     public static function notice($mixed) {
-        if (self::getThresholdCode() >= 3) {
+        if (self::getThresholdCode() >= LogLevel::NOTICE) {
             static::log('NOTICE', $mixed);
         }
     }
 
     public static function warn($mixed) {
-        if (self::getThresholdCode() >= 2) {
+        if (self::getThresholdCode() >= LogLevel::WARNING) {
             static::log('WARNING', $mixed);
         }
     }
 
     public static function error($mixed) {
-        if (self::getThresholdCode() >= 1) {
+        if (self::getThresholdCode() >= LogLevel::ERROR) {
            static::log('ERROR', $mixed);
         }
     }
 
     public static function fatal($mixed) {
-        if (self::getThresholdCode() >= 0) {
+        if (self::getThresholdCode() >= LogLevel::FATAL) {
             static::log('FATAL', $mixed);
         }
     }
@@ -52,7 +52,7 @@ final class Logger {
             self::$thresholdCode = null;
             return;
         }
-        $thresholdCode = LogLevelHelper::getCode($value);
+        $thresholdCode = LogLevel::getCode($value);
         if ($thresholdCode === null) {
             throw new InvalidArgumentException(
                 "Log level '$value' is invalid."
@@ -62,7 +62,7 @@ final class Logger {
     }
 
     public static function getLevel() {
-        return LogLevelHelper::getName(self::getThresholdCode());
+        return LogLevel::getName(self::getThresholdCode());
     }
 
     public static function setLogHandler($value) {
@@ -111,7 +111,7 @@ final class Logger {
         if (self::$thresholdCode === null) {
             $level = Config::getString('hyperframework.logging.log_level', '');
             if ($level !== '') {
-                $thresholdCode = LogLevelHelper::getCode($level);
+                $thresholdCode = LogLevel::getCode($level);
                 if ($thresholdCode === null) {
                     throw new ConfigException(
                         "Log level '$level' is invalid, set using config "
@@ -120,7 +120,7 @@ final class Logger {
                 }
                 self::$thresholdCode = $thresholdCode;
             } else {
-                self::$thresholdCode = 4;
+                self::$thresholdCode = LogLevel::INFO;
             }
         }
         return self::$thresholdCode;
