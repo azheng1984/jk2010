@@ -1,8 +1,6 @@
 <?php
 namespace Hyperframework\Logging;
 
-use InvalidArgumentException;
-
 class LogLevelHelper {
     private static $levels = [
         'FATAL' => 0,
