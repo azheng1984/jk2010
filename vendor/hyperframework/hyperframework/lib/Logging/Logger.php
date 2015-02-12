@@ -80,7 +80,7 @@ final class Logger {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
                         "Log handler class '$class' does not exist,"
-                            . " configured using "
+                            . " set using config "
                             . "'hyperframework.logging.log_handler_class'."
                     );
                 }
@@ -114,7 +114,7 @@ final class Logger {
                 $thresholdCode = LogLevelHelper::getCode($level);
                 if ($thresholdCode === null) {
                     throw new ConfigException(
-                        "Log level '$level' is invalid, configured using "
+                        "Log level '$level' is invalid, set using config "
                             . "'hyperframework.logging.log_level'."
                     );
                 }

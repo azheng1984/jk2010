@@ -8,7 +8,7 @@ class ExitHelper {
             exit($status);
         } elseif (is_callable($exitFunction) === false) {
             throw new ConfigException(
-                "Exit function is not callable, configured using "
+                "Exit function is not callable, set using config "
                     . "'hyperframework.exit_function'."
             );
         }

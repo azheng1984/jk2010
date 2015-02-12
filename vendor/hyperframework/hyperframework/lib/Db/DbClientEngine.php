@@ -290,7 +290,7 @@ class DbClientEngine {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
                         "Database connection factory Class '$class' does not"
-                            . " exist, configured using '$configName'."
+                            . " exist, set using config '$configName'."
                     );
                 }
                 $this->connectionFactory = new $class;

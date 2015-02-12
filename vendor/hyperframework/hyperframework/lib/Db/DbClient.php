@@ -170,7 +170,7 @@ class DbClient {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
                         "Database client engine class"
-                            . " '$class' does not exist, configured using "
+                            . " '$class' does not exist, set using config"
                             . "'hyperframework.db.client.engine_class'."
                     );
                 }

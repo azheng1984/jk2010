@@ -35,14 +35,14 @@ class App extends Base {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
                         "Router class '$class' does not exist,"
-                            . " can be configured using "
+                            . " can be changed using config "
                             . "'hyperframework.web.router_class'."
                     );
                 }
             } elseif (class_exists($class) === false) {
                 throw new ClassNotFoundException(
                     "Router class '$class' does not exist,"
-                        . " configured using "
+                        . " by using config "
                         . "'hyperframework.web.router_class'."
                 );
             }

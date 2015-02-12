@@ -73,7 +73,7 @@ class App extends Base {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
                         "Command config class '$class' does not exist,"
-                            . " configured using "
+                            . " set using config "
                             . "'hyperframework.cli.command_config_class'."
                     );
                 }
@@ -103,7 +103,7 @@ class App extends Base {
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    "Help class '$class' does not exist, configured using"
+                    "Help class '$class' does not exist, set using config"
                         . " 'hyperframework.cli.help_class'."
                 );
             }
