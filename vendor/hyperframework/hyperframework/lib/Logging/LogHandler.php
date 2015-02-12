@@ -2,6 +2,7 @@
 namespace Hyperframework\Logging;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Common\ClassNotFoundException;
 
 class LogHandler {
     private $writer;

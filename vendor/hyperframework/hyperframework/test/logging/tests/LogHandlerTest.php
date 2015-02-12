@@ -1,8 +1,10 @@
 <?php
 namespace Hyperframework\Logging;
 
-use Hyperframework\Test\TestCase as Base;
 use Hyperframework\Common\Config;
+use Hyperframework\Logging\Test\CustomLogFormatter;
+use Hyperframework\Logging\Test\CustomLogWriter;
+use Hyperframework\Test\TestCase as Base;
 
 class LogHandlerTest extends Base {
     protected function setUp() {
@@ -25,58 +27,73 @@ class LogHandlerTest extends Base {
         Config::clear();
     }
 
-    public function testMessage() {
-        $handler = new LogHandler;
+    public function testHandleLog() {
         $time = time();
-        $handler->handle(new LogRecord([
-            'level' => 'ERROR',
-            'message' => 'message',
-            'time' => $time, 'name' => 'name'
-        ]));
+        $handler = new LogHandler;
+        $handler->handle(new LogRecord(
+            ['time' => $time, 'level' => 'ERROR']
+        ));
         $this->assertSame(
-            date("Y-m-d H:i:s", $time) . ' [ERROR] message' . PHP_EOL,
-            $this->getLogContent()
+            date("Y-m-d H:i:s", $time) . ' [ERROR]' . PHP_EOL,
+            file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
     }
 
-    private function getLogContent() {
-        return file_get_contents(Config::getAppRootPath() . '/log/app.log');
-    }
-
-    public function testLogWithoutMessage() {
+    public function testDefaultLogWriter() {
         $handler = new LogHandler;
-        $time = time();
-        $handler->handle(new LogRecord([
-            'level' => 'ERROR', 'time' => $time, 'name' => 'name'
-        ]));
-        $this->assertSame(
-            date("Y-m-d H:i:s", $time) . ' [ERROR]' . PHP_EOL,
-            $this->getLogContent()
+        $this->assertTrue(
+            $this->callProtectedMethod($handler, 'getWriter')
+                instanceof LogWriter
         );
     }
 
-    public function testName() {
+    /**
+     * @expectedException Hyperframework\Common\ClassNotFoundException
+     */
+    public function testInvalidLogWriter() {
+        Config::set('hyperframework.logging.log_writer_class', 'Unknown');
         $handler = new LogHandler;
-        $time = time();
-        $handler->handle(new LogRecord([
-            'level' => 'ERROR', 'name' => 'name', 'time' => $time
-        ]));
-        $this->assertSame(
-            date("Y-m-d H:i:s", $time) . ' [ERROR]' . PHP_EOL,
-            $this->getLogContent()
+        $this->callProtectedMethod($handler, 'getWriter');
+    }
+
+    public function testCustomLogWriter() {
+        Config::set(
+            'hyperframework.logging.log_writer_class',
+            'Hyperframework\Logging\Test\CustomLogWriter'
+        );
+        $handler = new LogHandler;
+        $this->assertTrue(
+            $this->callProtectedMethod($handler, 'getWriter')
+                instanceof CustomLogWriter
         );
     }
 
-    public function testChangeLogPath() {
+    public function testDefaultLogFormatter() {
         $handler = new LogHandler;
-        Config::set('hyperframework.logging.log_path', 'log/test/app.log');
-        $time = time();
-        $handler->handle(new LogRecord([
-            'level' => 'ERROR', 'time' => $time, 'name' => 'name'
-        ]));
-        $this->assertSame(
-            date("Y-m-d H:i:s", $time) . ' [ERROR]' . PHP_EOL,
-            file_get_contents(Config::getAppRootPath() . '/log/test/app.log')
+        $this->assertTrue(
+            $this->callProtectedMethod($handler, 'getFormatter')
+                instanceof LogFormatter
+        );
+    }
+
+    /**
+     * @expectedException Hyperframework\Common\ClassNotFoundException
+     */
+    public function testInvalidLogFormatter() {
+        Config::set('hyperframework.logging.log_formatter_class', 'Unknown');
+        $handler = new LogHandler;
+        $this->callProtectedMethod($handler, 'getFormatter');
+    }
+
+    public function testCustomLogFormatter() {
+        Config::set(
+            'hyperframework.logging.log_formatter_class',
+            'Hyperframework\Logging\Test\CustomLogFormatter'
+        );
+        $handler = new LogHandler;
+        $this->assertTrue(
+            $this->callProtectedMethod($handler, 'getFormatter')
+                instanceof CustomLogFormatter
         );
     }
 }

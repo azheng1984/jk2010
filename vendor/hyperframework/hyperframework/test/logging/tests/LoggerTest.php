@@ -44,38 +44,57 @@ class LoggerTest extends Base {
     }
 
     public function getShortcutMethods() {
-        return [['debug'], ['info'], ['warn'],
-            ['notice'], ['error'], ['fatal']];
+        return [
+            ['debug'], ['info'], ['warn'], ['notice'], ['error'], ['fatal']
+        ];
     }
 
-    public function testIntegerTimeForTimeOption() {
-        $time = time();
-        Logger::warn(
-            ['name' => 'test', 'message' => 'message', 'time' => $time]
-        );
-        $this->assertSame(
-            date('Y-m-d H:i:s', $time) . ' [WARNING] message' . PHP_EOL,
-            file_get_contents(Config::getAppRootPath() . '/log/app.log')
-        );
-    }
-
-    public function testDateTimeForTimeOption() {
+    public function testLogByClosure() {
         $time = new DateTime;
-        Logger::warn(['name' => 'test', 'message' => 'message', 'time' => $time]);
-        $this->assertSame(
-            $time->format('Y-m-d H:i:s') . ' [WARNING] message' . PHP_EOL,
-            file_get_contents(Config::getAppRootPath() . '/log/app.log')
-        );
-    }
-
-    public function testClosure() {
-        $time = new DateTime;
-        Logger::warn(function() {
+        Logger::error(function() {
             return ['name' => 'test', 'message' => 'message'];
         });
         $this->assertSame(
-            $time->format('Y-m-d H:i:s') . ' [WARNING] message' . PHP_EOL,
+            $time->format('Y-m-d H:i:s') . ' [ERROR] message' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
+        );
+    }
+
+    public function testLogMethod() {
+        $time = new DateTime;
+        $this->callProtectedMethod(
+            'Hyperframework\Logging\Logger',
+            'log',
+            ['ERROR', function() use ($time) {
+                return ['time' => $time];
+            }]
+        );
+        $this->assertSame(
+            $time->format('Y-m-d H:i:s') . ' [ERROR]' . PHP_EOL,
+            file_get_contents(Config::getAppRootPath() . '/log/app.log')
+        );
+    }
+
+    public function testLogByString() {
+        Logger::error('message');
+        $this->assertStringEndsWith(
+            ' [ERROR] message' . PHP_EOL,
+            file_get_contents(Config::getAppRootPath() . '/log/app.log')
+        );
+    }
+
+    public function testDefaultLevel() {
+        Logger::debug(function() {
+            return ['name' => 'test', 'message' => 'message'];
+        });
+        $this->assertFalse(
+            file_exists(Config::getAppRootPath() . '/log/app.log')
+        );
+        Logger::info(function() {
+            return ['name' => 'test', 'message' => 'message'];
+        });
+        $this->assertTrue(
+            file_exists(Config::getAppRootPath() . '/log/app.log')
         );
     }
 
