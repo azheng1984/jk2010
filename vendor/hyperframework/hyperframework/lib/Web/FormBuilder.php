@@ -1,9 +1,9 @@
 <?php
-namespace Hyperframework\Web\Html;
+namespace Hyperframework\Web;
 
 use Hyperframework\Web\CsrfProtection;
 
-class FormHelper {
+class FormBuilder {
     private $data;
     private $errors;
 
@@ -89,9 +89,9 @@ class FormHelper {
             && isset($this->data[$attributes['name']])
         ) {
             $content = $this->data[$attributes['name']];
-            echo self::encodeSpecialChars($content);
+            echo $this->encodeSpecialChars($content);
         } elseif (isset($attributes[':content'])) {
-            echo self::encodeSpecialChars($attributes[':content']);
+            echo $this->encodeSpecialChars($attributes[':content']);
         }
         echo '</textarea>';
     }
@@ -121,7 +121,7 @@ class FormHelper {
                 $this->renderError($name);
             } 
         } elseif (isset($this->errors[$name])) {
-            echo '<span class="error">', self::encodeSpecialChars(
+            echo '<span class="error">', $this->encodeSpecialChars(
                 $this->errors['name']
             ), '</span>';
         }
@@ -150,7 +150,7 @@ class FormHelper {
     ) {
         if ($bindingAttribute === 'value' && isset($attributes['name'])) {
             if (isset($this->data[$attributes['name']])) {
-                $attributes['value'] = self::encodeSpecialChars(
+                $attributes['value'] = $this->encodeSpecialChars(
                     $this->data[$attributes['name']], true
                 );
             }
@@ -200,7 +200,7 @@ class FormHelper {
             if ($value == $selectedValue && $value === (string)$selectedValue) {
                 echo ' selected="selected"';
             }
-            echo '>', self::encodeSpecialChars($option[':content']),
+            echo '>', $this->encodeSpecialChars($option[':content']),
                 '</option>';
         }
     }
