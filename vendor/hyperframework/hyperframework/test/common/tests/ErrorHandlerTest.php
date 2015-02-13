@@ -33,7 +33,7 @@ class ErrorHandlerTest extends Base {
 
     private function bind() {
         $this->handler = new ErrorHandler;
-        $this->callProtectedMethod($this->handler, 'registerErrorHandler');
+        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
     }
 
     protected function tearDown() {
@@ -63,7 +63,7 @@ class ErrorHandlerTest extends Base {
 
     public function testRegisterExceptionHandler() {
         $this->bind();
-        $this->callProtectedMethod($this->handler, 'registerExceptionHandler');
+        $this->callPrivateMethod($this->handler, 'registerExceptionHandler');
         $handler = set_exception_handler(function() {});
         restore_exception_handler();
         restore_exception_handler();
@@ -73,7 +73,7 @@ class ErrorHandlerTest extends Base {
 
     public function testRegisterErrorHandler() {
         $this->bind();
-        $this->callProtectedMethod($this->handler, 'registerErrorHandler');
+        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
         $handler = set_error_handler(function() {});
         restore_error_handler();
         restore_error_handler();
@@ -210,8 +210,8 @@ class ErrorHandlerTest extends Base {
         $this->expectOutputString(PHP_EOL . "Notice: notice in " 
             . $this->handler->getFile(). " on line "
             . $this->handler->getErrorLine(). PHP_EOL);
-        $this->callProtectedMethod($this->handler, 'registerErrorHandler');
-        $this->callProtectedMethod($this->handler, 'registerExceptionHandler');
+        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
+        $this->callPrivateMethod($this->handler, 'registerExceptionHandler');
         trigger_error('notice');
     }
 
@@ -220,7 +220,7 @@ class ErrorHandlerTest extends Base {
     {
         $this->bind();
         error_reporting(0);
-        $this->callProtectedMethod($this->handler, 'handleShutdown');
+        $this->callPrivateMethod($this->handler, 'handleShutdown');
         $this->assertEquals(error_reporting(), E_ERROR | E_PARSE | E_CORE_ERROR
             | E_COMPILE_ERROR | E_COMPILE_WARNING
         );
@@ -255,7 +255,7 @@ class ErrorHandlerTest extends Base {
         $this->handler->expects($this->once())
              ->method('writeLog');
 
-        $this->callProtectedMethod($this->handler, 'registerErrorHandler');
+        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
         trigger_error('notice');
     }
 
@@ -269,7 +269,7 @@ class ErrorHandlerTest extends Base {
             ->getMock();
         $this->handler->expects($this->once())
             ->method('writeDefaultErrorLog');
-        $this->callProtectedMethod($this->handler, 'registerErrorHandler');
+        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
         trigger_error('notice');
     }
 
@@ -282,7 +282,7 @@ class ErrorHandlerTest extends Base {
             ->getMock();
         $this->handler->expects($this->once())
              ->method('displayError');
-        $this->callProtectedMethod($this->handler, 'registerErrorHandler');
+        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
         trigger_error('notice');
     }
 
@@ -330,7 +330,7 @@ class ErrorHandlerTest extends Base {
         $this->handler->expects($this->once())->method('send')->with(
             $this->isInstanceOf(__NAMESPACE__ . '\Error')
         );
-        $this->callProtectedMethod($this->handler, 'registerErrorHandler');
+        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
         trigger_error('notice');
     }
 
