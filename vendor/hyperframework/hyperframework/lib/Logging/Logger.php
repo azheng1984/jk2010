@@ -9,7 +9,7 @@ use Hyperframework\Common\ClassNotFoundException;
 
 final class Logger {
     private static $logHandler;
-    private static $thresholdCode;
+    private static $level;
 
     public static function debug($mixed) {
         static::log(LogLevel::DEBUG, $mixed);
@@ -28,7 +28,7 @@ final class Logger {
     }
 
     public static function error($mixed) {
-       static::log(LogLevel::ERROR, $mixed);
+        static::log(LogLevel::ERROR, $mixed);
     }
 
     public static function fatal($mixed) {
@@ -36,11 +36,26 @@ final class Logger {
     }
 
     public static function setLevel($value) {
-        self::$thresholdCode = $value;
+        self::$level = $value;
     }
 
     public static function getLevel() {
-        return self::getThresholdCode();
+        if (self::$level === null) {
+            $name = Config::getString('hyperframework.logging.log_level', '');
+            if ($name !== '') {
+                $level = LogLevel::getCode($name);
+                if ($level === null) {
+                    throw new ConfigException(
+                        "Log level '$name' is invalid, set using config "
+                            . "'hyperframework.logging.log_level'."
+                    );
+                }
+                self::$level = $level;
+            } else {
+                self::$level = LogLevel::INFO;
+            }
+        }
+        return self::$level;
     }
 
     public static function setLogHandler($value) {
@@ -69,7 +84,7 @@ final class Logger {
     }
 
     public static function log($level, $mixed) {
-        if ($level > self::getThresholdCode()) {
+        if ($level > static::getLevel()) {
             return;
         }
         if ($mixed instanceof Closure) {
@@ -89,24 +104,5 @@ final class Logger {
         $logRecord = new LogRecord($data);
         $logHandler = static::getLogHandler();
         $logHandler->handle($logRecord);
-    }
-
-    protected static function getThresholdCode() {
-        if (self::$thresholdCode === null) {
-            $level = Config::getString('hyperframework.logging.log_level', '');
-            if ($level !== '') {
-                $thresholdCode = LogLevel::getCode($level);
-                if ($thresholdCode === null) {
-                    throw new ConfigException(
-                        "Log level '$level' is invalid, set using config "
-                            . "'hyperframework.logging.log_level'."
-                    );
-                }
-                self::$thresholdCode = $thresholdCode;
-            } else {
-                self::$thresholdCode = LogLevel::INFO;
-            }
-        }
-        return self::$thresholdCode;
     }
 }

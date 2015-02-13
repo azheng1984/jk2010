@@ -93,7 +93,7 @@ class LoggerTest extends Base {
         );
     }
 
-    public function testSetLevel() {
+    public function testChangeLevel() {
         Logger::setLevel(LogLevel::ERROR);
         Logger::warn(function() {
             return 'message';
@@ -109,16 +109,12 @@ class LoggerTest extends Base {
         );
     }
 
-    public function testGetLevel() {
-        $this->assertSame(LogLevel::INFO, Logger::getLevel());
-    }
-
     public function testLowercaseLevel() {
         Logger::setLevel(LogLevel::DEBUG);
         $this->assertSame(LogLevel::DEBUG, Logger::getLevel());
     }
 
-    public function testSetCustomLogHandler() {
+    public function testCustomLogHandler() {
         $logHandler = new CustomLogHandler;
         Logger::setLogHandler($logHandler);
         $this->assertSame($logHandler, Logger::getLogHandler());
