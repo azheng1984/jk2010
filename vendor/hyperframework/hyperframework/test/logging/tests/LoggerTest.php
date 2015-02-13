@@ -34,8 +34,7 @@ class LoggerTest extends Base {
         }
         $time = time();
         Logger::$method(
-            ['name' => 'Test', 'message' => 'message',
-                'time' => $time, 'key' => 'value']
+            ['message' => 'message', 'time' => $time]
         );
         $this->assertSame(
             date('Y-m-d H:i:s', $time) . ' [' . $level . '] message' . PHP_EOL,
@@ -52,7 +51,7 @@ class LoggerTest extends Base {
     public function testLogByClosure() {
         $time = new DateTime;
         Logger::error(function() {
-            return ['name' => 'test', 'message' => 'message'];
+            return 'message';
         });
         $this->assertSame(
             $time->format('Y-m-d H:i:s') . ' [ERROR] message' . PHP_EOL,
@@ -85,13 +84,13 @@ class LoggerTest extends Base {
 
     public function testDefaultLevel() {
         Logger::debug(function() {
-            return ['name' => 'test', 'message' => 'message'];
+            return 'message';
         });
         $this->assertFalse(
             file_exists(Config::getAppRootPath() . '/log/app.log')
         );
         Logger::info(function() {
-            return ['name' => 'test', 'message' => 'message'];
+            return 'message';
         });
         $this->assertTrue(
             file_exists(Config::getAppRootPath() . '/log/app.log')
@@ -101,13 +100,13 @@ class LoggerTest extends Base {
     public function testSetLevel() {
         Logger::setLevel('ERROR');
         Logger::warn(function() {
-            return ['name' => 'test', 'message' => 'message'];
+            return 'message';
         });
         $this->assertFalse(
             file_exists(Config::getAppRootPath() . '/log/app.log')
         );
         Logger::error(function() {
-            return ['name' => 'test', 'message' => 'message'];
+            return 'message';
         });
         $this->assertTrue(
             file_exists(Config::getAppRootPath() . '/log/app.log')
@@ -135,9 +134,7 @@ class LoggerTest extends Base {
         Logger::setLogHandler($logHandler);
         $this->assertSame($logHandler, Logger::getLogHandler());
         $this->expectOutputString(get_class($logHandler) . '::handle');
-        Logger::info(
-            ['name' => 'test', 'message' => 'message']
-        );
+        Logger::error('');
     }
 
     public function testDefaultLogHandler() {
@@ -176,8 +173,8 @@ class LoggerTest extends Base {
      * @expectedException Hyperframework\Common\ConfigException
      */
     public function testInvalidLevelDefinedInConfig() {
-        Config::set('hyperframework.logging.log_level', 'unknown');
-        Logger::warn(['name' => 'test']);
+        Config::set('hyperframework.logging.log_level', 'UNKNOWN');
+        Logger::error('');
     }
 
     /**
@@ -185,6 +182,6 @@ class LoggerTest extends Base {
      */
     public function testInvalidLogHandlerClassDefinedInConfig() {
         Config::set('hyperframework.logging.log_handler_class', 'Unknown');
-        Logger::warn(['name' => 'test']);
+        Logger::error('');
     }
 }

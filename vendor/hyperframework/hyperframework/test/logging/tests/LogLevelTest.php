@@ -5,7 +5,7 @@ use Hyperframework\Test\TestCase as Base;
 use Hyperframework\Common\Config;
 
 class LogLevelTest extends Base {
-    public function testGetNameByCode() {
+    public function testGetName() {
         $this->assertSame('FATAL', LogLevel::getName(0));
     }
 
@@ -13,7 +13,7 @@ class LogLevelTest extends Base {
         $this->assertSame(null, LogLevel::getName(-1));
     }
 
-    public function testGetCodeByName() {
+    public function testGetCode() {
         $this->assertSame(0, LogLevel::getCode('fatal'));
     }
 
