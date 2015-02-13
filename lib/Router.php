@@ -3,9 +3,11 @@ namespace Hyperframework\Blog;
 
 use Hyperframework\Web\Router as Base;
 use Hyperframework\Logging\Logger;
+use Hyperframework\Db\DbClient;
 
 class Router extends Base {
     protected function execute() {
+        DbClient::connect('master');
         Logger::error('hi');
 //        var_dump($this->match(':controller/:id(.:format)', [
 //            ':format' => 'html',

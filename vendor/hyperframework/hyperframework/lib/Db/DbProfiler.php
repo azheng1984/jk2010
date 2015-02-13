@@ -77,17 +77,17 @@ class DbProfiler {
         );
         if ($isLoggerEnabled) {
             $callback = function() {
-                $log = 'Database';
+                $log = '[database operation] ';
                 if (isset(self::$profile['connection_name'])) {
-                    $log .= " '" . self::$profile['connection_name'] . "'";
+                    $log .= "connection: "
+                        . self::$profile['connection_name'] . " | ";
                 }
-                $log .= " operation (" .
-                    sprintf('%.6F', self::$profile['running_time']) . "): ";
+                $log .= "time: " .
+                    sprintf('%.6F', self::$profile['running_time']) . " | ";
                 if (isset(self::$profile['sql'])) {
-                    $log .= self::$profile['sql'];
+                    $log .= 'sql: ' . self::$profile['sql'];
                 } else {
-                    $log .= '[' . self::$profile['transaction']
-                        . ' transaction]';
+                    $log .= 'transaction: ' . self::$profile['transaction'];
                 }
                 return $log;
             };
