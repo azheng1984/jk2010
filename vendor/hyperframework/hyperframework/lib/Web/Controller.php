@@ -122,7 +122,7 @@ class Controller {
         if ($path === '') {
             throw new LogicException('View path cannot be empty.');
         }
-        $view = ViewFactory::create($this->getActionResult());
+        $view = ViewFactory::createView($this->getActionResult());
         $view->render($path);
     }
 

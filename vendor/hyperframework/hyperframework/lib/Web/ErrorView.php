@@ -39,7 +39,7 @@ class ErrorView {
                 echo ' ' . $statusText;
             }
         } else {
-            $view = ViewFactory::create([
+            $view = ViewFactory::createView([
                 'status_code' => $statusCode,
                 'status_text' => $statusText,
                 'error' => $error

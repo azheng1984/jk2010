@@ -8,7 +8,7 @@ use Hyperframework\Common\ConfigException;
 class DbConnectionFactory {
     private $config;
 
-    public function create($name = 'default') {
+    public function createConnection($name = 'default') {
         $config = $this->getConfig($name);
         if (isset($config['dsn']) === false) {
             throw new ConfigException(

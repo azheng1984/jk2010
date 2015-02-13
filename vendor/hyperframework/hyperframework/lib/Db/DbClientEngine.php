@@ -193,7 +193,7 @@ class DbClientEngine {
 
     public function connect($name = 'default') {
         $factory = $this->getConnectionFactory();
-        $this->connection = $factory->create($name);
+        $this->connection = $factory->createConnection($name);
     }
 
     public function setConnection($value) {

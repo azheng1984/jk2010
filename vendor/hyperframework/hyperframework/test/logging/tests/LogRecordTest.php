@@ -6,6 +6,13 @@ use Hyperframework\Test\TestCase as Base;
 use Hyperframework\Common\Config;
 
 class LogRecordTest extends Base {
+    public function testDefaultTime() {
+        $record = new LogRecord(
+            ['level' => 'ERROR', 'message' => 'message']
+        );
+        $this->assertTrue($record->getTime() instanceof DateTime);
+    }
+
     public function testIntegerTimeForTimeOption() {
         $time = time();
         $record = new LogRecord(
@@ -16,39 +23,45 @@ class LogRecordTest extends Base {
             $record->getTime()->format('Y-m-d H:i:s')
         );
     }
-//
-//    public function testDateTimeForTimeOption() {
-//        $time = new DateTime;
-//        Logger::warn(['name' => 'test', 'message' => 'message', 'time' => $time]);
-//        $this->assertSame(
-//            $time->format('Y-m-d H:i:s') . ' [WARNING] message' . PHP_EOL,
-//            file_get_contents(Config::getAppRootPath() . '/log/app.log')
-//        );
-//    }
 
-//    public function testMessage() {
-//        $handler = new LogHandler;
-//        $time = time();
-//        $handler->handle(new LogRecord([
-//            'level' => 'ERROR',
-//            'message' => 'message',
-//            'time' => $time, 'name' => 'name'
-//        ]));
-//        $this->assertSame(
-//            date("Y-m-d H:i:s", $time) . ' [ERROR] message' . PHP_EOL,
-//            $this->getLogContent()
-//        );
-//    }
+    public function testDateTimeForTimeOption() {
+        $time = new DateTime;
+        $record = new LogRecord(
+            ['level' => 'ERROR', 'time' => $time]
+        );
+        $this->assertSame($time, $record->getTime());
+    }
 
-//    public function testName() {
-//        $handler = new LogHandler;
-//        $time = time();
-//        $handler->handle(new LogRecord([
-//            'level' => 'ERROR', 'name' => 'name', 'time' => $time
-//        ]));
-//        $this->assertSame(
-//            date("Y-m-d H:i:s", $time) . ' [ERROR]' . PHP_EOL,
-//            $this->getLogContent()
-//        );
-//    }
+    public function testMicrosecond() {
+        $time = microtime(true);
+        $record = new LogRecord(
+            ['level' => 'ERROR', 'time' => $time]
+        );
+        $this->assertSame(
+            sprintf('%.6F', $time),
+            $record->getTime()->format('U.u')
+        );
+    }
+
+    /**
+     * @expectedException Hyperframework\Logging\LoggingException
+     */
+    public function testInvalidTime() {
+        new LogRecord(['level' => 'ERROR', 'time' => 'invalid string']);
+    }
+
+    /**
+     * @expectedException Hyperframework\Logging\LoggingException
+     */
+    public function testLevelNotFound() {
+        new LogRecord([]);
+    }
+
+    public function testMessage() {
+        $time = new DateTime;
+        $record = new LogRecord(
+            ['level' => 'ERROR', 'message' => 'message']
+        );
+        $this->assertSame('message', $record->getMessage());
+    }
 }
