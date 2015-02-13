@@ -31,7 +31,7 @@ class LogHandlerTest extends Base {
         $time = time();
         $handler = new LogHandler;
         $handler->handle(new LogRecord(
-            ['time' => $time, 'level' => 'ERROR']
+            ['time' => $time, 'level' => LogLevel::ERROR]
         ));
         $this->assertSame(
             date("Y-m-d H:i:s", $time) . ' [ERROR]' . PHP_EOL,

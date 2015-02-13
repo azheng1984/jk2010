@@ -26,7 +26,7 @@ class LoggerTest extends Base {
      * @dataProvider getShortcutMethods
      */
     public function testShortcutMethods($method) {
-        Logger::setLevel('DEBUG');
+        Logger::setLevel(LogLevel::DEBUG);
         if ($method === 'warn') {
             $level = 'WARNING';
         } else {
@@ -48,6 +48,17 @@ class LoggerTest extends Base {
         ];
     }
 
+    public function testLog() {
+        $time = new DateTime;
+        Logger::log(LogLevel::ERROR, function() use ($time) {
+            return ['time' => $time];
+        });
+        $this->assertSame(
+            $time->format('Y-m-d H:i:s') . ' [ERROR]' . PHP_EOL,
+            file_get_contents(Config::getAppRootPath() . '/log/app.log')
+        );
+    }
+
     public function testLogByClosure() {
         $time = new DateTime;
         Logger::error(function() {
@@ -55,21 +66,6 @@ class LoggerTest extends Base {
         });
         $this->assertSame(
             $time->format('Y-m-d H:i:s') . ' [ERROR] message' . PHP_EOL,
-            file_get_contents(Config::getAppRootPath() . '/log/app.log')
-        );
-    }
-
-    public function testLogMethod() {
-        $time = new DateTime;
-        $this->callProtectedMethod(
-            'Hyperframework\Logging\Logger',
-            'log',
-            ['ERROR', function() use ($time) {
-                return ['time' => $time];
-            }]
-        );
-        $this->assertSame(
-            $time->format('Y-m-d H:i:s') . ' [ERROR]' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
     }
@@ -98,7 +94,7 @@ class LoggerTest extends Base {
     }
 
     public function testSetLevel() {
-        Logger::setLevel('ERROR');
+        Logger::setLevel(LogLevel::ERROR);
         Logger::warn(function() {
             return 'message';
         });
@@ -114,19 +110,12 @@ class LoggerTest extends Base {
     }
 
     public function testGetLevel() {
-        $this->assertSame('INFO', Logger::getLevel());
+        $this->assertSame(LogLevel::INFO, Logger::getLevel());
     }
 
     public function testLowercaseLevel() {
-        Logger::setLevel('debug');
-        $this->assertSame('DEBUG', Logger::getLevel());
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testSetInvalidLevel() {
-        Logger::setLevel('unknown');
+        Logger::setLevel(LogLevel::DEBUG);
+        $this->assertSame(LogLevel::DEBUG, Logger::getLevel());
     }
 
     public function testSetCustomLogHandler() {
@@ -144,7 +133,7 @@ class LoggerTest extends Base {
     /**
      * @expectedException Hyperframework\Logging\LoggingException
      */
-    public function testInvaidTime() {
+    public function testInvalidTime() {
         try {
             Logger::warn(['time' => 'invalid']);
         } catch (LoggingException $e) {
@@ -158,9 +147,9 @@ class LoggerTest extends Base {
     /**
      * @expectedException Hyperframework\Logging\LoggingException
      */
-    public function testInvaidLog() {
+    public function testInvalidLog() {
         try {
-            Logger::warn(null);
+            Logger::error(null);
         } catch (LoggingException $e) {
             $this->assertFalse(
                 file_exists(Config::getAppRootPath() . '/log/app.log')

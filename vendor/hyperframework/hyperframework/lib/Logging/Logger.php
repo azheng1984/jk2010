@@ -12,57 +12,35 @@ final class Logger {
     private static $thresholdCode;
 
     public static function debug($mixed) {
-        if (self::getThresholdCode() >= LogLevel::DEBUG) {
-            static::log('DEBUG', $mixed);
-        }
+        static::log(LogLevel::DEBUG, $mixed);
     }
 
     public static function info($mixed) {
-        if (self::getThresholdCode() >= LogLevel::INFO) {
-            static::log('INFO', $mixed);
-        }
+        static::log(LogLevel::INFO, $mixed);
     }
 
     public static function notice($mixed) {
-        if (self::getThresholdCode() >= LogLevel::NOTICE) {
-            static::log('NOTICE', $mixed);
-        }
+        static::log(LogLevel::NOTICE, $mixed);
     }
 
     public static function warn($mixed) {
-        if (self::getThresholdCode() >= LogLevel::WARNING) {
-            static::log('WARNING', $mixed);
-        }
+        static::log(LogLevel::WARNING, $mixed);
     }
 
     public static function error($mixed) {
-        if (self::getThresholdCode() >= LogLevel::ERROR) {
-           static::log('ERROR', $mixed);
-        }
+       static::log(LogLevel::ERROR, $mixed);
     }
 
     public static function fatal($mixed) {
-        if (self::getThresholdCode() >= LogLevel::FATAL) {
-            static::log('FATAL', $mixed);
-        }
+        static::log(LogLevel::FATAL, $mixed);
     }
 
     public static function setLevel($value) {
-        if ($value === null) {
-            self::$thresholdCode = null;
-            return;
-        }
-        $thresholdCode = LogLevel::getCode($value);
-        if ($thresholdCode === null) {
-            throw new InvalidArgumentException(
-                "Log level '$value' is invalid."
-            );
-        }
-        self::$thresholdCode = $thresholdCode;
+        self::$thresholdCode = $value;
     }
 
     public static function getLevel() {
-        return LogLevel::getName(self::getThresholdCode());
+        return self::getThresholdCode();
     }
 
     public static function setLogHandler($value) {
@@ -90,24 +68,30 @@ final class Logger {
         return self::$logHandler;
     }
 
-    protected static function log($level, $log) {
-        if ($log instanceof Closure) {
-            $log = $log();
+    public static function log($level, $mixed) {
+        if ($level > self::getThresholdCode()) {
+            return;
         }
-        if (is_string($log)) {
-            $log = ['message' => $log];
-        } elseif (is_array($log) === false) {
+        if ($mixed instanceof Closure) {
+            $data = $mixed();
+        } else {
+            $data = $mixed;
+        }
+        if (is_string($data)) {
+            $data = ['message' => $data];
+        } elseif (is_array($data) === false) {
             throw new LoggingException(
-                'Log must be a string or an array, ' . gettype($log) . ' given.'
+                'Log must be a string or an array, '
+                    . gettype($data) . ' given.'
             );
         }
-        $log['level'] = $level;
-        $logRecord = new LogRecord($log);
+        $data['level'] = $level;
+        $logRecord = new LogRecord($data);
         $logHandler = static::getLogHandler();
         $logHandler->handle($logRecord);
     }
 
-    private static function getThresholdCode() {
+    protected static function getThresholdCode() {
         if (self::$thresholdCode === null) {
             $level = Config::getString('hyperframework.logging.log_level', '');
             if ($level !== '') {
