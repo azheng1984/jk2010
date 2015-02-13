@@ -390,9 +390,11 @@ abstract class Router {
             if (isset($matches['module'])
                 && isset($options[':module']) === false
             ) {
-                $module = str_replace('/', '0', $matches['module']);
-                if (preg_match($pattern, $module) === 0) {
-                    return false;
+                $segments = explode('/', $matches['module']);
+                foreach ($segments as $segment) {
+                    if (preg_match($pattern, $segment) === 0) {
+                        return false;
+                    }
                 }
             }
             if (isset($matches['controller'])
