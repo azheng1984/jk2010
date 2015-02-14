@@ -7,34 +7,25 @@ use Hyperframework\Logging\Test\CustomLogWriter;
 use Hyperframework\Test\TestCase as Base;
 
 class LogHandlerTest extends Base {
-    protected function setUp() {
-        Logger::setLevel(null);
-        Logger::setLogHandler(null);
-        Config::set('hyperframework.app_root_path', dirname(__DIR__));
-    }
-
     protected function tearDown() {
-        $path = Config::getAppRootPath() . '/log/app.log';
-        if (file_exists($path)) {
-            unlink($path);
-        }
-        if (file_exists(Config::getAppRootPath() . '/log/test/app.log')) {
-            unlink(Config::getAppRootPath() . '/log/test/app.log');
-        }
-        if (file_exists(Config::getAppRootPath() . '/log/test')) {
-            rmdir(Config::getAppRootPath() . '/log/test');
-        }
         Config::clear();
     }
 
     public function testHandleLog() {
-        $time = time();
-        $handler = new LogHandler;
-        $handler->handle(new LogRecord(LogLevel::ERROR, null, $time));
-        $this->assertSame(
-            date("Y-m-d H:i:s", $time) . ' [ERROR]' . PHP_EOL,
-            file_get_contents(Config::getAppRootPath() . '/log/app.log')
-        );
+        $logRecord = new LogRecord(LogLevel::ERROR, null);
+        $formatter = $this->getMock('Hyperframework\Logging\LogFormatter');
+        $formatter->expects($this->once())
+            ->method('format')->with($this->identicalTo($logRecord))
+            ->willReturn('text');
+        $writer = $this->getMock('Hyperframework\Logging\LogWriter');
+        $writer->expects($this->once())->method('write');
+        $writer->method('write')->with($this->equalTo('text'));
+        $handler = $this->getMockBuilder(
+            'Hyperframework\Logging\LogHandler'
+        )->setMethods(['getFormatter', 'getWriter'])->getMock();
+        $handler->method('getFormatter')->willReturn($formatter);
+        $handler->method('getWriter')->willReturn($writer);
+        $handler->handle($logRecord);
     }
 
     public function testDefaultLogWriter() {

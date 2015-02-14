@@ -1,10 +1,7 @@
 <?php
 namespace Hyperframework\Logging\Test;
 
-use Hyperframework\Logging\LogHandler as Base;
-
-class CustomLogWriter extends Base {
+class CustomLogWriter {
     public function write($text) {
-        echo __METHOD__;
     }
 }

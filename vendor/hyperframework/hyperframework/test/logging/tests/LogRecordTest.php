@@ -3,7 +3,6 @@ namespace Hyperframework\Logging;
 
 use DateTime;
 use Hyperframework\Test\TestCase as Base;
-use Hyperframework\Common\Config;
 
 class LogRecordTest extends Base {
     public function testDefaultTime() {
@@ -11,7 +10,7 @@ class LogRecordTest extends Base {
         $this->assertTrue($record->getTime() instanceof DateTime);
     }
 
-    public function testIntegerTimeForTimeOption() {
+    public function testIntegerTimestamp() {
         $time = time();
         $record = new LogRecord(LogLevel::ERROR, null, $time);
         $this->assertSame(
@@ -20,7 +19,7 @@ class LogRecordTest extends Base {
         );
     }
 
-    public function testDateTimeForTimeOption() {
+    public function testDateTime() {
         $time = new DateTime;
         $record = new LogRecord(LogLevel::ERROR, null, $time);
         $this->assertSame($time, $record->getTime());
@@ -30,8 +29,7 @@ class LogRecordTest extends Base {
         $time = microtime(true);
         $record = new LogRecord(LogLevel::ERROR, null, $time);
         $this->assertSame(
-            sprintf('%.6F', $time),
-            $record->getTime()->format('U.u')
+            sprintf('%.6F', $time), $record->getTime()->format('U.u')
         );
     }
 

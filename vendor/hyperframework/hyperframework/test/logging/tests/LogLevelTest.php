@@ -2,11 +2,10 @@
 namespace Hyperframework\Logging;
 
 use Hyperframework\Test\TestCase as Base;
-use Hyperframework\Common\Config;
 
 class LogLevelTest extends Base {
     public function testGetName() {
-        $this->assertSame('FATAL', LogLevel::getName(0));
+        $this->assertSame('ERROR', LogLevel::getName(1));
     }
 
     public function testGetNameByInvalidCode() {
@@ -14,7 +13,7 @@ class LogLevelTest extends Base {
     }
 
     public function testGetCode() {
-        $this->assertSame(0, LogLevel::getCode('fatal'));
+        $this->assertSame(1, LogLevel::getCode('error'));
     }
 
     public function testGetCodeByInvalidName() {

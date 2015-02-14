@@ -1,10 +1,7 @@
 <?php
 namespace Hyperframework\Logging\Test;
 
-use Hyperframework\Logging\LogHandler as Base;
-
-class CustomLogHandler extends Base {
+class CustomLogHandler {
     public function handle($logRecord) {
-        echo __METHOD__;
     }
 }

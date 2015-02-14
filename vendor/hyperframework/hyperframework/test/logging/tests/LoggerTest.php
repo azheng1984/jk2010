@@ -49,20 +49,20 @@ class LoggerTest extends Base {
     }
 
     public function testLog() {
-        $time = new DateTime;
+        $time = time();
         Logger::log(LogLevel::ERROR, function() use ($time) {
             return ['time' => $time];
         });
         $this->assertSame(
-            $time->format('Y-m-d H:i:s') . ' [ERROR]' . PHP_EOL,
+            date('Y-m-d H:i:s', $time) . ' [ERROR]' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')
         );
     }
 
     public function testLogByClosure() {
         $time = new DateTime;
-        Logger::error(function() {
-            return 'message';
+        Logger::error(function() use ($time) {
+            return ['message' => 'message', 'time' => $time];
         });
         $this->assertSame(
             $time->format('Y-m-d H:i:s') . ' [ERROR] message' . PHP_EOL,
@@ -115,11 +115,21 @@ class LoggerTest extends Base {
     }
 
     public function testCustomLogHandler() {
-        $logHandler = new CustomLogHandler;
+        $logHandler = $this->getMockBuilder(
+            'Hyperframework\Logging\LogHandler'
+        )->getMock();
+        $logHandler->expects($this->once())->method('handle')
+            ->with($this->isInstanceOf('Hyperframework\Logging\LogRecord'));
         Logger::setLogHandler($logHandler);
-        $this->assertSame($logHandler, Logger::getLogHandler());
-        $this->expectOutputString(get_class($logHandler) . '::handle');
         Logger::error('');
+    }
+
+    public function testSetCustomLogHandlerByConfig() {
+        Config::set(
+            'hyperframework.logging.log_handler_class',
+            'Hyperframework\Logging\Test\CustomLogHandler'
+        );
+        $this->assertTrue(Logger::getLogHandler() instanceof CustomLogHandler); 
     }
 
     public function testDefaultLogHandler() {
