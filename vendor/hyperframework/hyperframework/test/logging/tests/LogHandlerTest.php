@@ -10,12 +10,11 @@ class LogHandlerTest extends Base {
     public function testHandleLog() {
         $logRecord = new LogRecord(LogLevel::ERROR, null);
         $formatter = $this->getMock('Hyperframework\Logging\LogFormatter');
-        $formatter->expects($this->once())
-            ->method('format')->with($this->identicalTo($logRecord))
-            ->willReturn('text');
+        $formatter->expects($this->once())->method('format')
+            ->with($this->identicalTo($logRecord))->willReturn('text');
         $writer = $this->getMock('Hyperframework\Logging\LogWriter');
-        $writer->expects($this->once())->method('write');
-        $writer->method('write')->with($this->equalTo('text'));
+        $writer->expects($this->once())->method('write')
+            ->with($this->equalTo('text'));
         $handler = $this->getMockBuilder(
             'Hyperframework\Logging\LogHandler'
         )->setMethods(['getFormatter', 'getWriter'])->getMock();

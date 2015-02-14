@@ -74,9 +74,7 @@ class LoggerTest extends Base {
     }
 
     public function testCustomLogHandler() {
-        $logHandler = $this->getMockBuilder(
-            'Hyperframework\Logging\LogHandler'
-        )->getMock();
+        $logHandler = $this->getMock('Hyperframework\Logging\LogHandler');
         $logHandler->expects($this->once())->method('handle')
             ->with($this->isInstanceOf('Hyperframework\Logging\LogRecord'));
         Logger::setLogHandler($logHandler);
