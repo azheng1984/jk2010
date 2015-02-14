@@ -1,8 +1,6 @@
 <?php
 namespace Hyperframework\Logging;
 
-use DateTime;
-use Exception;
 use Hyperframework\Common\Config;
 use Hyperframework\Logging\Test\CustomLogHandler;
 use Hyperframework\Logging\Test\TestCase as Base;
@@ -25,14 +23,8 @@ class LoggerTest extends Base {
         } else {
             $level = strtoupper($method);
         }
-        $time = time();
-        Logger::$method(
-            ['message' => 'message', 'time' => $time]
-        );
-        $this->assertSame(
-            date('Y-m-d H:i:s', $time) . ' [' . $level . '] message' . PHP_EOL,
-            file_get_contents(Config::getAppRootPath() . '/log/app.log')
-        );
+        Logger::$method('message');
+        $this->assertTrue($this->hasAppLogFile());
     }
 
     public function getShortcutMethods() {
@@ -42,77 +34,43 @@ class LoggerTest extends Base {
     }
 
     public function testLogByClosure() {
-        $time = new DateTime;
-        Logger::log(LogLevel::ERROR, function() use ($time) {
-            return ['message' => 'message', 'time' => $time];
+        Logger::log(LogLevel::ERROR, function() {
+            return 'message';
         });
-        $this->assertSame(
-            $time->format('Y-m-d H:i:s') . ' [ERROR] message' . PHP_EOL,
-            file_get_contents(Config::getAppRootPath() . '/log/app.log')
-        );
+        $this->assertTrue($this->hasAppLogFile());
     }
 
     public function testLogByString() {
         Logger::log(LogLevel::ERROR, 'message');
-        $this->assertStringEndsWith(
-            ' [ERROR] message' . PHP_EOL,
-            file_get_contents(Config::getAppRootPath() . '/log/app.log')
-        );
+        $this->assertTrue($this->hasAppLogFile());
     }
 
     public function testLogUsingEmptyArray() {
         Logger::log(LogLevel::ERROR, []);
-        $this->assertStringEndsWith(
-            ' [ERROR]' . PHP_EOL,
-            file_get_contents(Config::getAppRootPath() . '/log/app.log')
-        );
+        $this->assertTrue($this->hasAppLogFile());
     }
 
     public function testDefaultLevel() {
-        Logger::debug(function() {
-            return 'message';
-        });
-        $this->assertFalse(
-            file_exists(Config::getAppRootPath() . '/log/app.log')
-        );
-        Logger::info(function() {
-            return 'message';
-        });
-        $this->assertTrue(
-            file_exists(Config::getAppRootPath() . '/log/app.log')
-        );
+        Logger::debug('message');
+        $this->assertFalse($this->hasAppLogFile());
+        Logger::info('message');
+        $this->assertTrue($this->hasAppLogFile());
     }
 
     public function testChangeLevel() {
         Logger::setLevel(LogLevel::ERROR);
-        Logger::warn(function() {
-            return 'message';
-        });
-        $this->assertFalse(
-            file_exists(Config::getAppRootPath() . '/log/app.log')
-        );
-        Logger::error(function() {
-            return 'message';
-        });
-        $this->assertTrue(
-            file_exists(Config::getAppRootPath() . '/log/app.log')
-        );
+        Logger::warn('message');
+        $this->assertFalse($this->hasAppLogFile());
+        Logger::error('message');
+        $this->assertTrue($this->hasAppLogFile());
     }
 
     public function testChangeLevelUsingConfig() {
         Config::set('hyperframework.logging.log_level', 'ERROR');
-        Logger::warn(function() {
-            return 'message';
-        });
-        $this->assertFalse(
-            file_exists(Config::getAppRootPath() . '/log/app.log')
-        );
-        Logger::error(function() {
-            return 'message';
-        });
-        $this->assertTrue(
-            file_exists(Config::getAppRootPath() . '/log/app.log')
-        );
+        Logger::warn('message');
+        $this->assertFalse($this->hasAppLogFile());
+        Logger::error('message');
+        $this->assertTrue($this->hasAppLogFile());
     }
 
     public function testCustomLogHandler() {
@@ -122,7 +80,7 @@ class LoggerTest extends Base {
         $logHandler->expects($this->once())->method('handle')
             ->with($this->isInstanceOf('Hyperframework\Logging\LogRecord'));
         Logger::setLogHandler($logHandler);
-        Logger::error('');
+        Logger::error('message');
     }
 
     public function testSetCustomLogHandlerUsingConfig() {
@@ -131,10 +89,6 @@ class LoggerTest extends Base {
             'Hyperframework\Logging\Test\CustomLogHandler'
         );
         $this->assertTrue(Logger::getLogHandler() instanceof CustomLogHandler); 
-    }
-
-    public function testDefaultLogHandler() {
-        $this->assertTrue(Logger::getLogHandler() instanceof LogHandler); 
     }
 
     /**
@@ -156,7 +110,7 @@ class LoggerTest extends Base {
      */
     public function testInvalidLevelConfig() {
         Config::set('hyperframework.logging.log_level', 'UNKNOWN');
-        Logger::error('');
+        Logger::error('message');
     }
 
     /**
@@ -164,6 +118,10 @@ class LoggerTest extends Base {
      */
     public function testInvalidLogHandlerClassConfig() {
         Config::set('hyperframework.logging.log_handler_class', 'Unknown');
-        Logger::error('');
+        Logger::error('message');
+    }
+
+    private function hasAppLogFile() {
+        return file_exists(Config::getAppRootPath() . '/log/app.log');
     }
 }

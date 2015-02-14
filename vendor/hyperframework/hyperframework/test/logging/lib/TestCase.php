@@ -16,6 +16,10 @@ class TestCase extends Base {
         }
     }
 
+    protected function getTimestamp() {
+        return $this->timestamp;
+    }
+
     protected function getAppLogFileContent() {
         return file_get_contents(Config::getAppRootPath() . '/log/app.log');
     }
