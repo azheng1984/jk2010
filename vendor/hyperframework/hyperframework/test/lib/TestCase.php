@@ -6,6 +6,10 @@ use Hyperframework\Common\Config;
 use PHPUnit_Framework_TestCase as Base;
 
 class TestCase extends Base {
+    protected function tearDown() {
+        Config::clear();
+    }
+
     protected function callProtectedMethod(
         $objectOrClass, $method, $args = []
     ) {
@@ -44,9 +48,5 @@ class TestCase extends Base {
         }
         $reflectionMethod->setAccessible(true);
         return $reflectionMethod->invokeArgs($object, $args);
-    }
-
-    protected function tearDown() {
-        Config::clear();
     }
 }

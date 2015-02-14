@@ -6,6 +6,11 @@ use Hyperframework\Logging\Test\CustomLogHandler;
 use Hyperframework\Logging\Test\TestCase as Base;
 
 class LoggerTest extends Base {
+    public static function setUpBeforeClass() {
+        Logger::setLevel(null);
+        Logger::setLogHandler(null);
+    }
+
     protected function tearDown() {
         $this->deleteAppLogFile();
         Logger::setLevel(null);
