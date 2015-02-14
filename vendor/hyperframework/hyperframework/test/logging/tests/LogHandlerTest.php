@@ -30,9 +30,7 @@ class LogHandlerTest extends Base {
     public function testHandleLog() {
         $time = time();
         $handler = new LogHandler;
-        $handler->handle(new LogRecord(
-            ['time' => $time, 'level' => LogLevel::ERROR]
-        ));
+        $handler->handle(new LogRecord(LogLevel::ERROR, null, $time));
         $this->assertSame(
             date("Y-m-d H:i:s", $time) . ' [ERROR]' . PHP_EOL,
             file_get_contents(Config::getAppRootPath() . '/log/app.log')

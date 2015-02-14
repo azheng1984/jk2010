@@ -30,11 +30,11 @@ class LogFormatterTest extends Base {
 
     private function getFormattedText($hasMessage) {
         $formatter = new LogFormatter;
-        $data = ['time' => $this->time, 'level' => LogLevel::ERROR];
+        $message = null;
         if ($hasMessage) {
-            $data['message'] = 'message';
+            $message = 'message';
         }
-        $record = new LogRecord($data);
+        $record = new LogRecord(LogLevel::ERROR, $message, $this->time);
         return $formatter->format($record);
     }
 }

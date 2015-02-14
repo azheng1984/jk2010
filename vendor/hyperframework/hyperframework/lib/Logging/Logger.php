@@ -2,7 +2,6 @@
 namespace Hyperframework\Logging;
 
 use Closure;
-use InvalidArgumentException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ConfigException;
 use Hyperframework\Common\ClassNotFoundException;
@@ -93,15 +92,17 @@ final class Logger {
             $data = $mixed;
         }
         if (is_string($data)) {
-            $data = ['message' => $data];
+            $logRecord = new LogRecord($level, $data);
         } elseif (is_array($data) === false) {
             throw new LoggingException(
                 'Log must be a string or an array, '
                     . gettype($data) . ' given.'
             );
+        } else {
+            $message = isset($data['message']) ? $data['message'] : null;
+            $time = isset($data['time']) ? $data['time'] : null;
+            $logRecord = new LogRecord($level, $message, $time);
         }
-        $data['level'] = $level;
-        $logRecord = new LogRecord($data);
         $logHandler = static::getLogHandler();
         $logHandler->handle($logRecord);
     }
