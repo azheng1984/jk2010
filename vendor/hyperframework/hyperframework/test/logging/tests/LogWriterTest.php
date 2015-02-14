@@ -3,75 +3,56 @@ namespace Hyperframework\Logging;
 
 use Exception;
 use Hyperframework\Common\Config;
-use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Logging\Test\TestCase as Base;
 
 class LogWriterTest extends Base {
-    protected function setUp() {
-        Config::set('hyperframework.app_root_path', dirname(__DIR__));
-    }
-
     protected function tearDown() {
-        $path = Config::getAppRootPath() . '/log/app.log';
-        if (file_exists($path)) {
-            unlink($path);
-        }
-        $path = Config::getAppRootPath() . '/log/test/app.log';
+        $this->deleteAppLogFile();
+        $path = Config::getAppRootPath() . '/log/tmp/app.log';
         if (file_exists($path)) {
             unlink($path);
             rmdir(dirname($path));
         }
-        Config::clear();
-        Logger::setLevel(null);
-        Logger::setLogHandler(null);
+        parent::tearDown();
     }
 
     public function testAppendLogFile() {
-        $path = Config::getAppRootPath() . '/log/app.log';
         $writer = new LogWriter;
         $writer->write('record-1' . PHP_EOL);
         $writer->write('record-2' . PHP_EOL);
         return $this->assertSame(
             'record-1' . PHP_EOL . 'record-2' . PHP_EOL,
-            file_get_contents($path)
+            $this->getAppLogFileContent()
         );
     }
 
     public function testCreateLogFolder() {
-        Config::set('hyperframework.logging.log_path', 'log/test/app.log');
-        $path = Config::getAppRootPath() . '/log/test/app.log';
+        Config::set('hyperframework.logging.log_path', 'log/tmp/app.log');
         $writer = new LogWriter;
         $writer->write('content');
-        return $this->assertSame('content', file_get_contents($path));
+        $this->assertSame('content', file_get_contents(
+            Config::getAppRootPath() . '/log/tmp/app.log'
+        ));
     }
 
     /**
      * @expectedException Hyperframework\Logging\LoggingException
      */
     public function testFailedToMakeLogFolder() {
-        set_error_handler(function() {});
-        chmod(Config::getAppRootPath() . '/log', 0555);
-        Config::set('hyperframework.logging.log_path', 'log/test/app.log');
-        $path = Config::getAppRootPath() . '/log/test/app.log';
-        $writer = new LogWriter;
-        try {
-            $writer->write('content');
-        } catch (Exception $e) {
-            restore_error_handler();
-            chmod(Config::getAppRootPath() . '/log', 0755);
-            throw $e;
-        }
-        restore_error_handler();
-        chmod(Config::getAppRootPath() . '/log', 0755);
+        Config::set('hyperframework.logging.log_path', 'log/tmp/app.log');
+        $this->writeToReadOnlyFolder();
     }
 
     /**
      * @expectedException Hyperframework\Logging\LoggingException
      */
     public function testFailedToOpenLogFile() {
+        $this->writeToReadOnlyFolder();
+    }
+
+    private function writeToReadOnlyFolder() {
         set_error_handler(function() {});
         chmod(Config::getAppRootPath() . '/log', 0555);
-        Config::set('hyperframework.logging.log_path', 'log/app.log');
-        $path = Config::getAppRootPath() . '/log/test/app.log';
         $writer = new LogWriter;
         try {
             $writer->write('content');
@@ -80,7 +61,5 @@ class LogWriterTest extends Base {
             chmod(Config::getAppRootPath() . '/log', 0755);
             throw $e;
         }
-        restore_error_handler();
-        chmod(Config::getAppRootPath() . '/log', 0755);
     }
 }

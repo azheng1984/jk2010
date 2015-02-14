@@ -2,6 +2,7 @@
 namespace Hyperframework\Test;
 
 use ReflectionClass;
+use Hyperframework\Common\Config;
 use PHPUnit_Framework_TestCase as Base;
 
 class TestCase extends Base {
@@ -43,5 +44,9 @@ class TestCase extends Base {
         }
         $reflectionMethod->setAccessible(true);
         return $reflectionMethod->invokeArgs($object, $args);
+    }
+
+    protected function tearDown() {
+        Config::clear();
     }
 }

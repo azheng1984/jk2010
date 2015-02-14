@@ -5,21 +5,14 @@ use DateTime;
 use Exception;
 use Hyperframework\Common\Config;
 use Hyperframework\Logging\Test\CustomLogHandler;
-use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Logging\Test\TestCase as Base;
 
 class LoggerTest extends Base {
-    protected function setUp() {
-        Config::set( 'hyperframework.app_root_path', dirname(__DIR__));
-    }
-
     protected function tearDown() {
-        $path = Config::getAppRootPath() . '/log/app.log';
-        if (file_exists($path)) {
-            unlink($path);
-        }
-        Config::clear();
+        $this->deleteAppLogFile();
         Logger::setLevel(null);
         Logger::setLogHandler(null);
+        parent::tearDown();
     }
 
     /**
@@ -148,28 +141,14 @@ class LoggerTest extends Base {
      * @expectedException Hyperframework\Logging\LoggingException
      */
     public function testInvalidTime() {
-        try {
-            Logger::warn(['time' => 'invalid']);
-        } catch (LoggingException $e) {
-            $this->assertFalse(
-                file_exists(Config::getAppRootPath() . '/log/app.log')
-            );
-            throw $e;
-        }
+        Logger::warn(['time' => 'invalid']);
     }
 
     /**
      * @expectedException Hyperframework\Logging\LoggingException
      */
     public function testInvalidLog() {
-        try {
-            Logger::error(null);
-        } catch (LoggingException $e) {
-            $this->assertFalse(
-                file_exists(Config::getAppRootPath() . '/log/app.log')
-            );
-            throw $e;
-        }
+        Logger::error(null);
     }
 
     /**

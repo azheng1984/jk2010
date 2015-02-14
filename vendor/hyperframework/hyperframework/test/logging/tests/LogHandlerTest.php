@@ -4,13 +4,9 @@ namespace Hyperframework\Logging;
 use Hyperframework\Common\Config;
 use Hyperframework\Logging\Test\CustomLogFormatter;
 use Hyperframework\Logging\Test\CustomLogWriter;
-use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Logging\Test\TestCase as Base;
 
 class LogHandlerTest extends Base {
-    protected function tearDown() {
-        Config::clear();
-    }
-
     public function testHandleLog() {
         $logRecord = new LogRecord(LogLevel::ERROR, null);
         $formatter = $this->getMock('Hyperframework\Logging\LogFormatter');

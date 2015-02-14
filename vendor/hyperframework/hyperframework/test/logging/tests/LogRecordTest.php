@@ -2,7 +2,7 @@
 namespace Hyperframework\Logging;
 
 use DateTime;
-use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Logging\Test\TestCase as Base;
 
 class LogRecordTest extends Base {
     public function testDefaultTime() {

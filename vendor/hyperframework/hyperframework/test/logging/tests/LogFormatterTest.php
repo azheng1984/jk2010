@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Logging;
 
-use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Logging\Test\TestCase as Base;
 
 class LogFormatterTest extends Base {
     private $time;
