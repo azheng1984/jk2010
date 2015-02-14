@@ -4,6 +4,7 @@ namespace Hyperframework\Db;
 use Hyperframework\Common\Config;
 use Hyperframework\Test\TestCase as Base;
 use PDO;
+use Hyperframework\Logging\Logger;
 
 class DbClientTest extends Base {
     protected function setUp() {
