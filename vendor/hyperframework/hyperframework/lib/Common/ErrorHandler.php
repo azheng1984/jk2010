@@ -78,8 +78,7 @@ class ErrorHandler {
             }
         } else {
             echo 'Fatal error</b>:  Uncaught ', htmlspecialchars(
-                $error,
-                ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+                $error, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
             ), PHP_EOL, '  thrown';
         }
         echo ' in <b>', htmlspecialchars(

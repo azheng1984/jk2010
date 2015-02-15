@@ -46,7 +46,9 @@ final class Logger {
                 if ($level === null) {
                     throw new ConfigException(
                         "Log level '$name' is invalid, set using config "
-                            . "'hyperframework.logging.log_level'."
+                            . "'hyperframework.logging.log_level'. "
+                            . "The available log levels are: "
+                            . "DEBUG, INFO, NOTICE, WARNING, ERROR, FATAL."
                     );
                 }
                 self::$level = $level;

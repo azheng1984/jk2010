@@ -22,6 +22,17 @@ class TestCase extends Base {
         );
     }
 
+    protected function getAppLogFileContent() {
+        return file_get_contents(Config::getAppRootPath() . '/log/app.log');
+    }
+
+    protected function deleteAppLogFile() {
+        $path = Config::getAppRootPath() . '/log/app.log';
+        if (file_exists($path)) {
+            unlink($path);
+        }
+    }
+
     private function callNonPublicMethod(
         $objectOrClass, $method, $args = [], $isProtected
     ) {

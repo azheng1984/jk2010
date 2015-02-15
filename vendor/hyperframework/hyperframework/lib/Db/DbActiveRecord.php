@@ -70,7 +70,7 @@ abstract class DbActiveRecord implements ArrayAccess {
     }
 
     public static function findById($id) {
-        $row = DbClient::findById(static::getTableName(), $id);
+        $row = DbClient::findRowById(static::getTableName(), $id);
         if ($row === false) {
             return;
         }

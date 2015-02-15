@@ -6,17 +6,8 @@ use Hyperframework\Common\ClassNotFoundException;
 
 class DbClient {
     private static $engine;
-
-    public static function findById(
-        $table, $id, $selectedColumnNameOrNames = null
-    ) {
-        return self::getEngine()->findById(
-            $table, $id, $selectedColumnNameOrNames
-        );
-    }
-
     public static function findColumn($sql/*, ...*/) {
-        return self::getEngine()->findColumn(
+        return static::getEngine()->findColumn(
             $sql, self::getParams(func_get_args())
         );
     }
@@ -24,13 +15,19 @@ class DbClient {
     public static function findColumnByColumns(
         $table, array $columns, $selectedColumnName
     ) {
-        return self::getEngine()->findColumnByColumns(
+        return static::getEngine()->findColumnByColumns(
             $table, $columns, $selectedColumnName
         );
     }
 
+    public static function findColumnById($table, $id, $selectedColumnName) {
+        return static::getEngine()->findColumnById(
+            $table, $id, $selectedColumnName
+        );
+    }
+
     public static function findRow($sql/*, ...*/) {
-        return self::getEngine()->findRow(
+        return static::getEngine()->findRow(
             $sql, self::getParams(func_get_args())
         );
     }
@@ -38,45 +35,53 @@ class DbClient {
     public static function findRowByColumns(
         $table, array $columns, array $selectedColumnNames = null
     ) {
-        return self::getEngine()->findRowByColumns(
+        return static::getEngine()->findRowByColumns(
             $table, $columns, $selectedColumnNames
         );
     }
 
+    public static function findRowById(
+        $table, $id, $selectedColumnNames = null
+    ) {
+        return static::getEngine()->findRowById(
+            $table, $id, $selectedColumnNames
+        );
+    }
+
     public static function findAll($sql/*, ...*/) {
-        return self::getEngine()->findAll(
+        return static::getEngine()->findAll(
             $sql, self::getParams(func_get_args())
         );
     }
 
     public static function findAllByColumns(
-        $table, array $columns, $selectedColumnNameOrNames = null
+        $table, array $columns, array $selectedColumnNames = null
     ) {
-        return self::getEngine()->findAllByColumns(
-            $table, $columns, $selectedColumnNameOrNames
+        return static::getEngine()->findAllByColumns(
+            $table, $columns, $selectedColumnNames
         );
     }
 
     public static function count($table, $where = null/*, ...*/) {
-        return self::getEngine()->count(
+        return static::getEngine()->count(
             $table, $where, self::getParams(func_get_args(), 2)
         );
     }
 
     public static function min($table, $columnName, $where = null/*, ...*/) {
-        return self::getEngine()->min(
+        return static::getEngine()->min(
             $table, $columnName, $where, self::getParams(func_get_args(), 3)
         );
     }
 
     public static function max($table, $columnName, $where = null/*, ...*/) {
-        return self::getEngine()->max(
+        return static::getEngine()->max(
             $table, $columnName, $where, self::getParams(func_get_args(), 3)
         );
     }
 
     public static function sum($table, $columnName, $where = null/*, ...*/) {
-        return self::getEngine()->sum(
+        return static::getEngine()->sum(
             $table, $columnName, $where, self::getParams(func_get_args(), 3)
         );
     }
@@ -84,79 +89,79 @@ class DbClient {
     public static function average(
         $table, $columnName, $where = null/*, ...*/
     ) {
-        return self::getEngine()->average(
+        return static::getEngine()->average(
             $table, $columnName, $where, self::getParams(func_get_args(), 3)
         );
     }
 
     public static function insert($table, array $row) {
-        self::getEngine()->insert($table, $row);
+        static::getEngine()->insert($table, $row);
     }
 
     public static function update($table, array $columns, $where/*, ...*/) {
-        return self::getEngine()->update(
+        return static::getEngine()->update(
             $table, $columns, $where, self::getParams(func_get_args(), 3)
         );
     }
 
     public static function delete($table, $where/*, ...*/) {
-        return self::getEngine()->delete(
+        return static::getEngine()->delete(
             $table, $where, self::getParams(func_get_args(), 2)
         );
     }
 
     public static function deleteById($table, $id) {
-        return self::getEngine()->deleteById($table, $id);
+        return static::getEngine()->deleteById($table, $id);
     }
 
     public static function save($table, array &$row) {
-        return self::getEngine()->save($table, $row);
+        return static::getEngine()->save($table, $row);
     }
 
     public static function execute($sql/*, ...*/) {
-        return self::getEngine()->execute(
+        return static::getEngine()->execute(
             $sql, self::getParams(func_get_args())
         );
     }
- 
+
     public static function getLastInsertId() {
-        return self::getEngine()->lastInsertId();
+        return static::getEngine()->getLastInsertId();
     }
 
     public static function beginTransaction() {
-        return self::getEngine()->beginTransaction();
+        return static::getEngine()->beginTransaction();
     }
 
     public static function commit() {
-        return self::getEngine()->commit();
+        return static::getEngine()->commit();
     }
 
     public static function rollback() {
-        return self::getEngine()->rollback();
+        return static::getEngine()->rollback();
     }
 
     public static function inTransaction() {
-        return self::getEngine()->inTransaction();
+        return static::getEngine()->inTransaction();
     }
 
     public static function quoteIdentifier($identifier) {
-        return self::getEngine()->quoteIdentifier($identifier);
+        return static::getEngine()->quoteIdentifier($identifier);
     }
 
     public static function prepare($sql, array $driverOptions = []) {
-        return self::getEngine()->prepare($sql, $driverOptions);
+        return static::getEngine()->prepare($sql, $driverOptions);
     }
 
     public static function getConnection() {
-        return self::getEngine()->getConnection();
+        return static::getEngine()->getConnection();
     }
 
     public static function setConnection($value) {
-        return self::getEngine()->setConnection($value);
+        static::getEngine()->setConnection($value);
     }
 
-    public static function connect($name = 'default') {
-        return self::getEngine()->connect($name);
+    public static function connect($name) {
+        static::getEngine()->connect($name);
     }
 
     public static function getEngine() {

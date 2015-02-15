@@ -5,9 +5,9 @@ use DateTime;
 use DateTimeZone;
 
 class LogRecord {
-    private $time;
     private $level;
     private $message;
+    private $time;
 
     public function __construct($level, $message, $time = null) {
         if ($time !== null) {
@@ -42,16 +42,16 @@ class LogRecord {
         $this->message = $message;
     }
 
-    public function getTime() {
-        return $this->time;
-    }
-
     public function getLevel() {
         return $this->level;
     }
 
     public function getMessage() {
         return $this->message;
+    }
+
+    public function getTime() {
+        return $this->time;
     }
 
     private function convertStringToDateTime($string) {

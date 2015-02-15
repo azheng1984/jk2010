@@ -3,24 +3,13 @@ namespace Hyperframework\Db;
 
 use PDO;
 use LogicException;
+use InvalidArgumentException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
 class DbClientEngine {
     private $connection;
     private $connectionFactory;
-
-    public function findById($table, $id, $selectedColumnNameOrNames = null) {
-        if ($selectedColumnNameOrNames !== null
-            && is_array($selectedColumnNameOrNames) === false
-        ) {
-            $selectedColumnNameOrNames = [$selectedColumnNameOrNames];
-        }
-        $result = $this->queryByColumns(
-            $table, ['id' => $id], $selectedColumnNameOrNames
-        );
-        return $result->fetch(PDO::FETCH_ASSOC);
-    }
 
     public function findColumn($sql, array $params = null) {
         $result = $this->query($sql, $params);
@@ -32,6 +21,13 @@ class DbClientEngine {
     ) {
         $result = $this->queryByColumns(
             $table, $columns, [$selectedColumnName]
+        );
+        return $result->fetchColumn();
+    }
+
+    public function findColumnById($table, $id, $selectedColumnName) {
+        $result = $this->queryByColumns(
+            $table, ['id' => $id], [$selectedColumnName]
         );
         return $result->fetchColumn();
     }
@@ -50,19 +46,25 @@ class DbClientEngine {
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function findRowById(
+        $table, $id, array $selectedColumnNames = null
+    ) {
+        $result = $this->queryByColumns(
+            $table, ['id' => $id], $selectedColumnNames
+        );
+        return $result->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function findAll($sql, array $params = null) {
         $result = $this->query($sql, $params);
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function findAllByColumns(
-        $table, array $columns, $selectedColumnNameOrNames = null
+        $table, array $columns, array $selectedColumnNames = null
     ) {
-        if (is_array($selectedColumnNameOrNames) === false) {
-            $selectedColumnNameOrNames = [$selectedColumnNameOrNames];
-        }
         $result = $this->queryByColumns(
-            $table, $columns, $selectedColumnNameOrNames
+            $table, $columns, $selectedColumnNames
         );
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -101,10 +103,11 @@ class DbClientEngine {
             $keys[] = $this->quoteIdentifier($key);
         }
         $columnCount = count($row);
-        if ($columnCount === 0) {
-            return;
-        }
-        $placeHolders = str_repeat('?, ', $columnCount - 1) . '?';
+        if ($columnCount > 0) {
+            $placeHolders = str_repeat('?, ', $columnCount - 1) . '?';
+        } else {
+            $placeHolders = '';
+        }        
         $sql = 'INSERT INTO ' . $this->quoteIdentifier($table)
             . '(' . implode($keys, ', ') . ') VALUES(' . $placeHolders . ')';
         $this->sendSql($sql, array_values($row));
@@ -191,7 +194,7 @@ class DbClientEngine {
         return $this->getConnection()->prepare($sql, $driverOptions);
     }
 
-    public function connect($name = 'default') {
+    public function connect($name) {
         $factory = $this->getConnectionFactory();
         $this->connection = $factory->createConnection($name);
     }
@@ -202,7 +205,7 @@ class DbClientEngine {
 
     public function getConnection() {
         if ($this->connection === null) {
-            $this->connect();
+            $this->connect('default');
         }
         return $this->connection;
     }
