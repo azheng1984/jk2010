@@ -116,6 +116,7 @@ class DbConnection extends PDO {
                         );
                 }
             }
+            $result = new DbStatementProxy($result, $this);
         } else {
             $result = parent::exec($sql);
         }

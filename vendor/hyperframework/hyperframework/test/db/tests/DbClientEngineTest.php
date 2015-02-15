@@ -25,6 +25,9 @@ class DbClientEngineTest extends Base {
         parent::tearDown();
     }
 
+    public function testFindColumn() {
+    }
+
     public function testFindRowById() {
         $this->assertSame(
             ['id' => 1, 'name' => 'doc 1', 'decimal' => '12.34'],

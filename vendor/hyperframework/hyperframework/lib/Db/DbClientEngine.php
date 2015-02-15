@@ -2,8 +2,6 @@
 namespace Hyperframework\Db;
 
 use PDO;
-use LogicException;
-use InvalidArgumentException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
@@ -12,35 +10,35 @@ class DbClientEngine {
     private $connectionFactory;
 
     public function findColumn($sql, array $params = null) {
-        $result = $this->query($sql, $params);
+        $result = $this->find($sql, $params);
         return $result->fetchColumn();
     }
 
     public function findColumnByColumns(
         $table, array $columns, $selectedColumnName
     ) {
-        $result = $this->queryByColumns(
+        $result = $this->findByColumns(
             $table, $columns, [$selectedColumnName]
         );
         return $result->fetchColumn();
     }
 
     public function findColumnById($table, $id, $selectedColumnName) {
-        $result = $this->queryByColumns(
+        $result = $this->findByColumns(
             $table, ['id' => $id], [$selectedColumnName]
         );
         return $result->fetchColumn();
     }
 
     public function findRow($sql, array $params = null) {
-        $result = $this->query($sql, $params);
+        $result = $this->find($sql, $params);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
     public function findRowByColumns(
         $table, array $columns, array $selectedColumnNames = null
     ) {
-        $result = $this->queryByColumns(
+        $result = $this->findByColumns(
             $table, $columns, $selectedColumnNames
         );
         return $result->fetch(PDO::FETCH_ASSOC);
@@ -49,24 +47,53 @@ class DbClientEngine {
     public function findRowById(
         $table, $id, array $selectedColumnNames = null
     ) {
-        $result = $this->queryByColumns(
+        $result = $this->findByColumns(
             $table, ['id' => $id], $selectedColumnNames
         );
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
     public function findAll($sql, array $params = null) {
-        $result = $this->query($sql, $params);
+        $result = $this->find($sql, $params);
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function findAllByColumns(
         $table, array $columns, array $selectedColumnNames = null
     ) {
-        $result = $this->queryByColumns(
+        $result = $this->findByColumns(
             $table, $columns, $selectedColumnNames
         );
         return $result->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function find($sql, array $params = null) {
+        return $this->sendSql($sql, $params, true);
+    }
+
+    public function findByColumns(
+        $table, array $columns, array $selectedColumnNames = null
+    ) {
+        $selector = null;
+        if ($selectedColumnNames === null) {
+            $selector = '*';
+        } else {
+            if (count($selectedColumnNames) === 0) {
+                $selector = '*';
+            } else {
+                foreach ($selectedColumnNames as &$name) {
+                    $name = $this->quoteIdentifier($name);
+                }
+                $selector = implode(', ', $selectedColumnNames);
+            }
+        }
+        list($where, $params) = $this->buildWhereByColumns($columns);
+        $sql = 'SELECT ' . $selector . ' FROM '
+            . $this->quoteIdentifier($table);
+        if ($where !== null) {
+            $sql .= ' WHERE ' . $where;
+        }
+        return $this->find($sql, $params);
     }
 
     public function count($table, $where = null, array $params = null) {
@@ -110,7 +137,7 @@ class DbClientEngine {
         }        
         $sql = 'INSERT INTO ' . $this->quoteIdentifier($table)
             . '(' . implode($keys, ', ') . ') VALUES(' . $placeHolders . ')';
-        $this->sendSql($sql, array_values($row));
+        $this->execute($sql, array_values($row));
     }
 
     public function update(
@@ -131,7 +158,7 @@ class DbClientEngine {
         }
         $sql = 'UPDATE ' . $this->quoteIdentifier($table)
             . ' SET ' . $tmp . $where;
-        return $this->sendSql($sql, $params);
+        return $this->execute($sql, $params);
     }
 
     public function save($table, array &$row) {
@@ -155,7 +182,7 @@ class DbClientEngine {
             $where = ' WHERE ' . $where;
         }
         $sql = 'DELETE FROM ' . $this->quoteIdentifier($table) . $where;
-        return $this->sendSql($sql, $params);
+        return $this->execute($sql, $params);
     }
 
     public function deleteById($table, $id) {
@@ -210,7 +237,7 @@ class DbClientEngine {
         return $this->connection;
     }
 
-    protected function sendSql($sql, array $params = null, $isQuery = false) {
+    private function sendSql($sql, array $params = null, $isQuery = false) {
         $connection = $this->getConnection();
         if ($params === null || count($params) === 0) {
             return $isQuery ?
@@ -239,35 +266,6 @@ class DbClientEngine {
             $sql .= ' WHERE ' . $where;
         }
         return $this->findColumn($sql, $params);
-    }
-
-    private function query($sql, array $params = null) {
-        return $this->sendSql($sql, $params, true);
-    }
-
-    private function queryByColumns(
-        $table, array $columns, array $selectedColumnNames = null
-    ) {
-        $selector = null;
-        if ($selectedColumnNames === null) {
-            $selector = '*';
-        } else {
-            if (count($selectedColumnNames) === 0) {
-                $selector = '*';
-            } else {
-                foreach ($selectedColumnNames as &$name) {
-                    $name = $this->quoteIdentifier($name);
-                }
-                $selector = implode(', ', $selectedColumnNames);
-            }
-        }
-        list($where, $params) = $this->buildWhereByColumns($columns);
-        $sql = 'SELECT ' . $selector . ' FROM '
-            . $this->quoteIdentifier($table);
-        if ($where !== null) {
-            $sql .= ' WHERE ' . $where;
-        }
-        return $this->sendSql($sql, $params, true);
     }
 
     private function buildWhereByColumns(array $columns) {

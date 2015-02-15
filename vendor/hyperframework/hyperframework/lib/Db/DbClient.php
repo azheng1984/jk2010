@@ -6,6 +6,7 @@ use Hyperframework\Common\ClassNotFoundException;
 
 class DbClient {
     private static $engine;
+
     public static function findColumn($sql/*, ...*/) {
         return static::getEngine()->findColumn(
             $sql, self::getParams(func_get_args())
@@ -58,6 +59,20 @@ class DbClient {
         $table, array $columns, array $selectedColumnNames = null
     ) {
         return static::getEngine()->findAllByColumns(
+            $table, $columns, $selectedColumnNames
+        );
+    }
+
+    public static function find($sql/*, ...*/) {
+        return static::getEngine()->find(
+            $sql, self::getParams(func_get_args())
+        );
+    }
+
+    public static function findByColumns(
+        $table, array $columns, array $selectedColumnNames = null
+    ) {
+        return static::getEngine()->findByColumns(
             $table, $columns, $selectedColumnNames
         );
     }

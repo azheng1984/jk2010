@@ -75,6 +75,20 @@ class DbClientTest extends Base {
         );
     }
 
+    public function testFind() {
+        $this->assertInstanceof(
+            'Hyperframework\Db\DbStatementProxy',
+            DbClient::find("select name from Document where id = 1")
+        );
+    }
+
+    public function testFindByColumns() {
+        $this->assertInstanceOf(
+            'Hyperframework\Db\DbStatementProxy',
+            DbClient::findByColumns('Document', ['name' => 'doc 1'])
+        );
+    }
+
     public function testCount() {
         $this->assertSame(
             1, DbClient::count('Document', 'id > ?', 1)
