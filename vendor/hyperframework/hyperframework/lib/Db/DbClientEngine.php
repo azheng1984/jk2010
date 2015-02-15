@@ -186,7 +186,7 @@ class DbClientEngine {
     }
 
     public function deleteById($table, $id) {
-        return $this->delete($table, 'id = ?', $id);
+        return $this->delete($table, 'id = ?', [$id]);
     }
 
     public function execute($sql, array $params = null) {

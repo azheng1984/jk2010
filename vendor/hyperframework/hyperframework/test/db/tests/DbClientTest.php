@@ -7,167 +7,251 @@ use Hyperframework\Db\Test\DbCustomConnection;
 use Hyperframework\Db\Test\TestCase as Base;
 
 class DbClientTest extends Base {
+    private $engine;
+
     protected function setUp() {
         parent::setUp();
-        DbImportCommand::execute(
-            'Document',
-            [
-                [1, 'doc 1', 12.34], [2, 'doc 2', null],
-            ],
-            ['column_names' => ['id', 'name', 'decimal']]
-        );
+        $this->engine = $this->getMockBuilder(
+            'Hyperframework\Db\Test\DbCustomClientEngine'
+        )->enableArgumentCloning()->getMock();
+        DbClient::setEngine($this->engine);
     }
 
     protected function tearDown() {
-        DbClient::delete('Document', null);
+        DbClient::setEngine(null);
         parent::tearDown();
     }
 
-    public function testFindRowById() {
-        $this->assertTrue(is_array(DbClient::findRowById('Document', '1')));
+    public function testFindColumn() {
+        $this->engine->expects($this->once())->method('findColumn')->with(
+            $this->equalTo('sql'), $this->equalTo(['param'])
+        )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::findColumn("sql", 'param'));
     }
 
-    public function testFindColumn() {
-        $this->assertSame(
-            'doc 1',
-            DbClient::findColumn("SELECT name FROM Document WHERE id = 1")
-        );
+    public function testFindColumnWithoutParam() {
+        $this->engine->expects($this->once())->method('findColumn')->with(
+            $this->equalTo('sql')
+        )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::findColumn("sql"));
     }
+
 
     public function testFindColumnByColumns() {
-        $this->assertSame(
-            1,
-            DbClient::findColumnByColumns('Document', ['name' => 'doc 1'], 'id')
-        );
+        $this->engine->expects($this->once())->method('findColumnByColumns')
+            ->with(
+                $this->equalTo('table'),
+                $this->equalTo([]),
+                $this->equalTo('id')
+            )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::findColumnByColumns('table', [], 'id'));
     }
 
     public function testFindColumnById() {
-        $this->assertTrue(is_string(
-            DbClient::findColumnById('Document', 1, 'name'))
-        );
+        $this->engine->expects($this->once())->method('findColumnById')
+            ->with(
+                $this->equalTo('table'),
+                $this->equalTo(1),
+                $this->equalTo('name')
+            )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::findColumnById('table', 1, 'name'));
     }
 
     public function testFindRow() {
-        $this->assertSame(
-            ['name' => 'doc 1'],
-            DbClient::findRow("select name from Document where id = 1")
-        );
+        $this->engine->expects($this->once())->method('findRow')->with(
+            $this->equalTo('sql'), $this->equalTo(['param'])
+        )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::findRow("sql", 'param'));
     }
 
     public function testFindRowByColumns() {
-        $this->assertSame(
-            ['id' => 1],
-            DbClient::findRowByColumns('Document', ['name' => 'doc 1'], ['id'])
-        );
+        $this->engine->expects($this->once())->method('findRowByColumns')
+            ->with(
+                $this->equalTo('table'),
+                $this->equalTo([]),
+                $this->equalTo(['name'])
+            )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::findRowByColumns('table', [], ['name']));
     }
 
     public function testFindAll() {
-        $this->assertEquals(
-            [['name' => 'doc 1']],
-            DbClient::findAll("select name from Document where id = 1")
-        );
+        $this->engine->expects($this->once())->method('findAll')->with(
+            $this->equalTo('sql'), $this->equalTo(['param'])
+        )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::findAll("sql", 'param'));
     }
 
     public function testFindAllByColumns() {
-        $this->assertSame(
-            [['id' => 1]],
-            DbClient::findAllByColumns('Document', ['name' => 'doc 1'], ['id'])
-        );
+        $this->engine->expects($this->once())->method('findAllByColumns')
+            ->with(
+                $this->equalTo('table'),
+                $this->equalTo([]),
+                $this->equalTo(['name'])
+            )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::findAllByColumns('table', [], ['name']));
     }
 
     public function testFind() {
-        $this->assertInstanceof(
-            'Hyperframework\Db\DbStatementProxy',
-            DbClient::find("select name from Document where id = 1")
-        );
+        $this->engine->expects($this->once())->method('find')->with(
+            $this->equalTo('sql'), $this->equalTo(['param'])
+        )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::find("sql", 'param'));
     }
 
     public function testFindByColumns() {
-        $this->assertInstanceOf(
-            'Hyperframework\Db\DbStatementProxy',
-            DbClient::findByColumns('Document', ['name' => 'doc 1'])
-        );
+        $this->engine->expects($this->once())->method('findByColumns')
+            ->with(
+                $this->equalTo('table'),
+                $this->equalTo([]),
+                $this->equalTo(['name'])
+        )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::findByColumns('table', [], ['name']));
     }
 
     public function testCount() {
-        $this->assertSame(
-            1, DbClient::count('Document', 'id > ?', 1)
-        );
+        $this->engine->expects($this->once())->method('count')->with(
+            $this->equalTo('table'),
+            $this->equalTo('where'),
+            $this->equalTo(['param'])
+        )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::count("table", 'where', 'param'));
     }
 
     public function testMin() {
-        $this->assertSame(
-            1, DbClient::min('Document', 'id', 'id > ?', 0)
-        );
+        $this->engine->expects($this->once())->method('min')->with(
+            $this->equalTo('table'),
+            $this->equalTo('column'),
+            $this->equalTo('where'),
+            $this->equalTo(['param'])
+        )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::min("table", 'column', 'where', 'param'));
     }
 
     public function testMax() {
+        $this->engine->expects($this->once())->method('max')->with(
+            $this->equalTo('table'),
+            $this->equalTo('column'),
+            $this->equalTo('where'),
+            $this->equalTo(['param'])
+        )->will($this->returnValue(1));
         $this->assertSame(
-            2, DbClient::max('Document', 'id', 'id > ?', 1)
+            1, DbClient::max("table", 'column', 'where', 'param')
         );
     }
 
     public function testAverage() {
-        $this->assertEquals(
-            1.5, DbClient::average('Document', 'id', 'id > ?', 0)
+        $this->engine->expects($this->once())->method('average')->with(
+            $this->equalTo('table'),
+            $this->equalTo('column'),
+            $this->equalTo('where'),
+            $this->equalTo(['param'])
+        )->will($this->returnValue(1));
+        $this->assertSame(
+            1, DbClient::average("table", 'column', 'where', 'param')
         );
     }
 
     public function testInsert() {
-        DbClient::insert('Document', ['id' => 3]);
-        $this->assertSame(3, DbClient::count('Document'));
+        $this->engine->expects($this->once())->method('insert')->with(
+            $this->equalTo('table'),
+            $this->equalTo(['key' => 'value'])
+        );
+        DbClient::insert('table', ['key' => 'value']);
     }
 
     public function testUpdate() {
-        DbClient::update('Document', ['name' => 'updated'], 'id = ?', 1);
-        $row = DbClient::findRowById('Document', 1);
-        $this->assertSame('updated', $row['name']);
+        $this->engine->expects($this->once())->method('update')->with(
+            $this->equalTo('table'),
+            $this->equalTo([]),
+            $this->equalTo('where'),
+            $this->equalTo(['param'])
+        )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::update('table', [], 'where', 'param'));
     }
 
     public function testDelete() {
-        DbClient::delete('Document', 'id = ?', 1);
-        $this->assertFalse(DbClient::findRowById('Document', 1));
+        $this->engine->expects($this->once())->method('delete')->with(
+            $this->equalTo('table'),
+            $this->equalTo('where'),
+            $this->equalTo(['param'])
+        )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::delete('table', 'where', 'param'));
     }
 
     public function testDeleteById() {
-        DbClient::delete('Document', 1);
-        $this->assertFalse(DbClient::findRowById('Document', 1));
+        $this->engine->expects($this->once())->method('deleteById')->with(
+            $this->equalTo('table'),
+            $this->equalTo('id')
+        )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::deleteById('table', 'id'));
     }
 
     public function testSave() {
+        $this->engine->expects($this->once())->method('save')->will(
+            $this->returnCallback(function($table, array &$row) {
+                $this->assertSame('table', $table);
+                $row['id'] = 1;
+                return 1;
+            })
+        );
         $row = [];
-        DbClient::save('Document', $row);
-        $this->assertTrue(isset($row['id']));
+        $this->assertSame(1, DbClient::save('table', $row));
+        $this->assertTrue($row['id'] === 1);
     }
 
     public function testExecute() {
-        $this->assertSame(
-            1, DbClient::execute('DELETE FROM Document WHERE id = ?', 1)
-        );
-        $this->assertFalse(DbClient::findRowById('Document', 1));
+        $this->engine->expects($this->once())->method('execute')->with(
+            $this->equalTo('sql'), $this->equalTo(['param'])
+        )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::execute("sql", 'param'));
     }
 
     public function testGetLastInsertId() {
-        $row = [];
-        DbClient::save('Document', $row);
-        $this->assertNotNull(DbClient::getLastInsertId());
+        $this->engine->expects($this->once())->method('getLastInsertId')->
+            will($this->returnValue(1));
+        $this->assertSame(1, DbClient::getLastInsertId());
     }
 
-    public function testTransaction() {
-        DbClient::beginTransaction();
-        $this->assertTrue(DbClient::inTransaction());
-        DbClient::delete('Document', 1);
-        DbClient::commit();
-        $this->assertFalse(DbClient::inTransaction());
-        $this->assertFalse(DbClient::findRowById('Document', 1));
-    }
+//    public function testTransaction() {
+//        DbClient::beginTransaction();
+//        $this->assertTrue(DbClient::inTransaction());
+//        DbClient::delete('Document', 1);
+//        DbClient::commit();
+//        $this->assertFalse(DbClient::inTransaction());
+//        $this->assertFalse(DbClient::findRowById('Document', 1));
+//    }
 
-    public function testRollback() {
-        DbClient::beginTransaction();
-        DbClient::delete('Document', 1);
-        DbClient::rollback();
-        $this->assertTrue(is_array(DbClient::findRowById('Document', 1)));
-    }
+//    public function testRollback() {
+//        DbClient::beginTransaction();
+//        DbClient::delete('Document', 1);
+//        DbClient::rollback();
+//        $this->assertTrue(is_array(DbClient::findRowById('Document', 1)));
+//    }
+//
+//    public function testQuoteIdentifier() {
+//       $this->assertSame(
+//           1, strpos(DbClient::quoteIdentifier('id'), 'id')
+//       );
+//    }
+//
+//    public function testPrepare() {
+//        $this->assertTrue(DbClient::prepare('SELECT * FROM Document', [])
+//            instanceof DbStatementProxy);
+//    }
+//
+//    public function testSetConnection() {
+//        $connection = new DbCustomConnection;
+//        DbClient::setConnection($connection);
+//        $this->assertTrue($connection === DbClient::getConnection());
+//        DbClient::setConnection(null);
+//    }
+//
+//    public function testConnect() {
+//        DbClient::connect('backup');
+//        $connection = DbClient::getConnection();
+//        $this->assertSame('backup', $connection->getName());
+//        DbClient::connect('default');
+//    }
 
     /**
      * @expectedException Hyperframework\Common\ClassNotFoundException
@@ -182,43 +266,5 @@ class DbClientTest extends Base {
             throw $e;
         }
         Config::remove('hyperframework.db.client.engine_class');
-    }
-
-    public function testSetCustomEngineUsingConfig() {
-        DbClient::setEngine(null);
-        Config::set(
-            'hyperframework.db.client.engine_class',
-            'Hyperframework\Db\Test\DbCustomClientEngine'
-        );
-        $this->assertInstanceOf(
-            'Hyperframework\Db\Test\DbCustomClientEngine', DbClient::getEngine()
-        );
-        Config::remove('hyperframework.db.client.engine_class');
-        DbClient::setEngine(null);
-    }
-
-    public function testQuoteIdentifier() {
-       $this->assertSame(
-           1, strpos(DbClient::quoteIdentifier('id'), 'id')
-       );
-    }
-
-    public function testPrepare() {
-        $this->assertTrue(DbClient::prepare('SELECT * FROM Document', [])
-            instanceof DbStatementProxy);
-    }
-
-    public function testSetConnection() {
-        $connection = new DbCustomConnection;
-        DbClient::setConnection($connection);
-        $this->assertTrue($connection === DbClient::getConnection());
-        DbClient::setConnection(null);
-    }
-
-    public function testConnect() {
-        DbClient::connect('backup');
-        $connection = Dbclient::getConnection();
-        $this->assertSame('backup', $connection->getName());
-        DbClient::connect('default');
     }
 }

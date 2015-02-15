@@ -38,14 +38,7 @@ class IndexController extends Controller {
     }
 
     protected function doShowAction() {
-        //DbClient::findRowById('Document', 1);
-        $c = DbClient::getConnection();
-        $sm = $c->query('select * from Article');
-        var_dump($sm->fetchAll());
-        //$sm = $c->query('select * from Article');
-        sleep(10);
-        $sm->execute();
-        var_dump($sm->fetchAll());
+        DbClient::findRowById('Document', 1);
     }
 
     protected function hi() {

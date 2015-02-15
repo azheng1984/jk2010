@@ -1,5 +1,7 @@
 <?php
 namespace Hyperframework\Db\Test;
 
-class DbCustomClientEngine {
+use Hyperframework\Db\DbClientEngine as Base;
+
+class DbCustomClientEngine extends Base {
 }
