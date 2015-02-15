@@ -144,15 +144,15 @@ class DbClient {
     }
 
     public static function beginTransaction() {
-        return static::getEngine()->beginTransaction();
+        static::getEngine()->beginTransaction();
     }
 
     public static function commit() {
-        return static::getEngine()->commit();
+        static::getEngine()->commit();
     }
 
     public static function rollback() {
-        return static::getEngine()->rollback();
+        static::getEngine()->rollback();
     }
 
     public static function inTransaction() {

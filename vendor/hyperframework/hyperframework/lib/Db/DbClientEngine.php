@@ -198,15 +198,15 @@ class DbClientEngine {
     }
 
     public function beginTransaction() {
-        return $this->getConnection()->beginTransaction();
+        $this->getConnection()->beginTransaction();
     }
 
     public function commit() {
-        return $this->getConnection()->commit();
+        $this->getConnection()->commit();
     }
 
     public function rollback() {
-        return $this->getConnection()->rollBack();
+        $this->getConnection()->rollBack();
     }
 
     public function inTransaction() {

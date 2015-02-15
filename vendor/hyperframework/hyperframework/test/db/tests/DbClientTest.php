@@ -124,7 +124,9 @@ class DbClientTest extends Base {
             $this->equalTo('where'),
             $this->equalTo(['param'])
         )->will($this->returnValue(1));
-        $this->assertSame(1, DbClient::min("table", 'column', 'where', 'param'));
+        $this->assertSame(
+            1, DbClient::min("table", 'column', 'where', 'param')
+        );
     }
 
     public function testMax() {
@@ -207,51 +209,53 @@ class DbClientTest extends Base {
     }
 
     public function testGetLastInsertId() {
-        $this->engine->expects($this->once())->method('getLastInsertId')->
-            will($this->returnValue(1));
+        $this->engine->expects($this->once())->method('getLastInsertId')
+            ->will($this->returnValue(1));
         $this->assertSame(1, DbClient::getLastInsertId());
     }
 
-//    public function testTransaction() {
-//        DbClient::beginTransaction();
-//        $this->assertTrue(DbClient::inTransaction());
-//        DbClient::delete('Document', 1);
-//        DbClient::commit();
-//        $this->assertFalse(DbClient::inTransaction());
-//        $this->assertFalse(DbClient::findRowById('Document', 1));
-//    }
+    public function testBeginTransaction() {
+        $this->engine->expects($this->once())->method('beginTransaction');
+        DbClient::beginTransaction();
+    }
 
-//    public function testRollback() {
-//        DbClient::beginTransaction();
-//        DbClient::delete('Document', 1);
-//        DbClient::rollback();
-//        $this->assertTrue(is_array(DbClient::findRowById('Document', 1)));
-//    }
-//
-//    public function testQuoteIdentifier() {
-//       $this->assertSame(
-//           1, strpos(DbClient::quoteIdentifier('id'), 'id')
-//       );
-//    }
-//
-//    public function testPrepare() {
-//        $this->assertTrue(DbClient::prepare('SELECT * FROM Document', [])
-//            instanceof DbStatementProxy);
-//    }
-//
-//    public function testSetConnection() {
-//        $connection = new DbCustomConnection;
-//        DbClient::setConnection($connection);
-//        $this->assertTrue($connection === DbClient::getConnection());
-//        DbClient::setConnection(null);
-//    }
-//
-//    public function testConnect() {
-//        DbClient::connect('backup');
-//        $connection = DbClient::getConnection();
-//        $this->assertSame('backup', $connection->getName());
-//        DbClient::connect('default');
-//    }
+    public function testInTransaction() {
+        $this->engine->expects($this->once())->method('inTransaction')
+            ->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::inTransaction());
+    }
+
+    public function testCommit() {
+        $this->engine->expects($this->once())->method('commit');
+        DbClient::commit();
+    }
+
+    public function testRollback() {
+        $this->engine->expects($this->once())->method('rollback');
+        DbClient::rollback();
+    }
+
+    public function testQuoteIdentifier() {
+    }
+
+    public function testPrepare() {
+    }
+
+    public function testSetConnection() {
+    }
+
+    public function testGetConnection() {
+    }
+
+    public function testConnect() {
+        $this->engine->expects($this->once())->method('connect')->with(
+            $this->equalTo('master')
+        );
+        DbClient::connect('master');
+    }
+
+    public function testSetEngineUsingConfig() {
+    }
 
     /**
      * @expectedException Hyperframework\Common\ClassNotFoundException
@@ -260,7 +264,7 @@ class DbClientTest extends Base {
         DbClient::setEngine(null);
         Config::set('hyperframework.db.client.engine_class', 'Unknown');
         try {
-            DbClient::delete('Document', 1);
+            DbClient::count('Document');
         } catch (Exception $e) {
             Config::remove('hyperframework.db.client.engine_class');
             throw $e;
