@@ -34,14 +34,12 @@ class LoggerTest extends Base {
         } else {
             $level = $method;
         }
-        $this->handler->expects($this->once())->method('handle')->will(
-            $this->returnCallback(function($logRecord) use ($level) {
-                $this->assertSame(
-                    LogLevel::getCode($level), $logRecord->getLevel()
-                );
-                $this->assertSame('message', $logRecord->getMessage());
-            })
-        )->with($this->isInstanceOf('Hyperframework\Logging\LogRecord'));
+        $this->setHandleMethod(function($logRecord) use ($level) {
+            $this->assertSame(
+                LogLevel::getCode($level), $logRecord->getLevel()
+            );
+            $this->assertSame('message', $logRecord->getMessage());
+        });
         Logger::$method('message');
     }
 
@@ -52,69 +50,58 @@ class LoggerTest extends Base {
     }
 
     public function testGenerateLogUsingClosure() {
-        $this->handler->expects($this->once())->method('handle')->will(
-            $this->returnCallback(function($logRecord) {
-                $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
-                $this->assertSame('message', $logRecord->getMessage());
-            })
-        );
+        $this->setHandleMethod(function($logRecord) {
+            $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
+            $this->assertSame('message', $logRecord->getMessage());
+        });
         Logger::log(LogLevel::ERROR, function() {
             return 'message';
         });
     }
 
     public function testLogString() {
-        $this->handler->expects($this->once())->method('handle')->will(
-            $this->returnCallback(function($logRecord) {
-                $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
-                $this->assertSame('message', $logRecord->getMessage());
-            })
-        );
+        $this->setHandleMethod(function($logRecord) {
+            $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
+            $this->assertSame('message', $logRecord->getMessage());
+        });
         Logger::log(LogLevel::ERROR, 'message');
     }
 
     public function testLogEmptyArray() {
-        $this->handler->expects($this->once())->method('handle');
+        $this->handler->expects($this->once())->method('handle')
+            ->with($this->isInstanceOf('Hyperframework\Logging\LogRecord'));
         Logger::log(LogLevel::ERROR, []);
     }
 
     public function testLogCustomTime() {
         $time = new DateTime;
-        $this->handler->expects($this->once())->method('handle')->will(
-            $this->returnCallback(function($logRecord) use ($time) {
-                $this->assertSame($time, $logRecord->getTime());
-            })
-        );
+        $this->setHandleMethod(function($logRecord) use ($time) {
+            $this->assertSame($time, $logRecord->getTime());
+        });
         Logger::log(LogLevel::ERROR, ['time' => $time]);
     }
 
     public function testDefaultLevel() {
-        $this->handler->expects($this->once())->method('handle')->will(
-            $this->returnCallback(function($logRecord) {
-                $this->assertSame(LogLevel::INFO, $logRecord->getLevel());
-            })
-        );
+        $this->setHandleMethod(function($logRecord) {
+            $this->assertSame(LogLevel::INFO, $logRecord->getLevel());
+        });
         Logger::debug('message');
         Logger::info('message');
     }
 
     public function testChangeLevel() {
-        $this->handler->expects($this->once())->method('handle')->will(
-            $this->returnCallback(function($logRecord) {
-                $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
-            })
-        );
+        $this->setHandleMethod(function($logRecord) {
+            $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
+        });
         Logger::setLevel(LogLevel::ERROR);
         Logger::warn('message');
         Logger::error('message');
     }
 
     public function testChangeLevelUsingConfig() {
-        $this->handler->expects($this->once())->method('handle')->will(
-            $this->returnCallback(function($logRecord) {
-                $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
-            })
-        );
+        $this->setHandleMethod(function($logRecord) {
+            $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
+        });
         Config::set('hyperframework.logging.log_level', 'ERROR');
         Logger::warn('message');
         Logger::error('message');
@@ -127,6 +114,12 @@ class LoggerTest extends Base {
             'Hyperframework\Logging\Test\CustomLogHandler'
         );
         $this->assertTrue(Logger::getLogHandler() instanceof CustomLogHandler); 
+    }
+
+    private function setHandleMethod($callback) {
+        $this->handler->expects($this->once())->method('handle')->will(
+            $this->returnCallback($callback)
+        );
     }
 
     /**
