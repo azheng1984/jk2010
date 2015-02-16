@@ -7,15 +7,9 @@ use Hyperframework\Logging\Test\CustomLogHandler;
 use Hyperframework\Logging\Test\TestCase as Base;
 
 class LoggerTest extends Base {
-    private $handler;
-
     public static function setUpBeforeClass() {
         Logger::setLevel(null);
-    }
-
-    public function setUp() {
-        $this->handler = $this->getMock('Hyperframework\Logging\LogHandler');
-        Logger::setLogHandler($this->handler);
+        Logger::setLogHandler(null);
     }
 
     protected function tearDown() {
@@ -68,7 +62,8 @@ class LoggerTest extends Base {
     }
 
     public function testLogEmptyArray() {
-        $this->handler->expects($this->once())->method('handle')
+        $this->mockHandler();
+        Logger::getLogHandler()->expects($this->once())->method('handle')
             ->with($this->isInstanceOf('Hyperframework\Logging\LogRecord'));
         Logger::log(LogLevel::ERROR, []);
     }
@@ -108,18 +103,11 @@ class LoggerTest extends Base {
     }
 
     public function testSetCustomLogHandlerUsingConfig() {
-        Logger::setLogHandler(null);
         Config::set(
             'hyperframework.logging.log_handler_class',
             'Hyperframework\Logging\Test\CustomLogHandler'
         );
         $this->assertTrue(Logger::getLogHandler() instanceof CustomLogHandler); 
-    }
-
-    private function setHandleMethod($callback) {
-        $this->handler->expects($this->once())->method('handle')->will(
-            $this->returnCallback($callback)
-        );
     }
 
     /**
@@ -148,8 +136,19 @@ class LoggerTest extends Base {
      * @expectedException Hyperframework\Common\ClassNotFoundException
      */
     public function testInvalidLogHandlerClassConfig() {
-        Logger::setLogHandler(null);
         Config::set('hyperframework.logging.log_handler_class', 'Unknown');
         Logger::error('message');
+    }
+
+    private function mockHandler() {
+        $mock = $this->getMock('Hyperframework\Logging\LogHandler');
+        Logger::setLogHandler($mock);
+    }
+
+    private function setHandleMethod($callback) {
+        $this->mockHandler();
+        Logger::getLogHandler()->expects($this->once())->method('handle')->will(
+            $this->returnCallback($callback)
+        );
     }
 }
