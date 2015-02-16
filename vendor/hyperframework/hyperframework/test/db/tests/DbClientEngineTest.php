@@ -14,9 +14,7 @@ class DbClientEngineTest extends Base {
         parent::setUp();
         DbImportCommand::execute(
             'Document',
-            [
-                [1, 'doc 1', 12.34], [2, 'doc 2', null],
-            ],
+            [[1, 'doc 1', 12.34], [2, 'doc 2', null]],
             ['column_names' => ['id', 'name', 'decimal']]
         );
         $this->engine = new DbClientEngine;
@@ -43,7 +41,7 @@ class DbClientEngineTest extends Base {
     public function testFindRow() {
         $this->assertSame(
             ['name' => 'doc 1'],
-            $this->engine->findRow("select name from Document where id = 1")
+            $this->engine->findRow("SELECT name FROM Document WHERE id = 1")
         );
     }
 
@@ -66,7 +64,7 @@ class DbClientEngineTest extends Base {
     public function testFindAll() {
         $this->assertEquals(
             [['name' => 'doc 1']],
-            $this->engine->findAll("select name from Document where id = 1")
+            $this->engine->findAll("SELECT name FROM Document WHERE id = 1")
         );
     }
 
