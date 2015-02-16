@@ -51,7 +51,7 @@ class LoggerTest extends Base {
         ];
     }
 
-    public function testLogByClosure() {
+    public function testGenerateLogUsingClosure() {
         $this->handler->expects($this->once())->method('handle')->will(
             $this->returnCallback(function($logRecord) {
                 $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
@@ -63,7 +63,7 @@ class LoggerTest extends Base {
         });
     }
 
-    public function testLogByString() {
+    public function testLogString() {
         $this->handler->expects($this->once())->method('handle')->will(
             $this->returnCallback(function($logRecord) {
                 $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
@@ -73,12 +73,12 @@ class LoggerTest extends Base {
         Logger::log(LogLevel::ERROR, 'message');
     }
 
-    public function testLogUsingEmptyArray() {
+    public function testLogEmptyArray() {
         $this->handler->expects($this->once())->method('handle');
         Logger::log(LogLevel::ERROR, []);
     }
 
-    public function testCustomTime() {
+    public function testLogCustomTime() {
         $time = new DateTime;
         $this->handler->expects($this->once())->method('handle')->will(
             $this->returnCallback(function($logRecord) use ($time) {
@@ -158,9 +158,5 @@ class LoggerTest extends Base {
         Logger::setLogHandler(null);
         Config::set('hyperframework.logging.log_handler_class', 'Unknown');
         Logger::error('message');
-    }
-
-    private function hasAppLogFile() {
-        return file_exists(Config::getAppRootPath() . '/log/app.log');
     }
 }
