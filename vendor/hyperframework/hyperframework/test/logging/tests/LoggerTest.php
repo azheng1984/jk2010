@@ -6,13 +6,18 @@ use Hyperframework\Logging\Test\CustomLogHandler;
 use Hyperframework\Logging\Test\TestCase as Base;
 
 class LoggerTest extends Base {
+    private $handler;
+
     public static function setUpBeforeClass() {
         Logger::setLevel(null);
-        Logger::setLogHandler(null);
+    }
+
+    public function setUp() {
+        $this->handler = $this->getMock('Hyperframework\Logging\LogHandler');
+        Logger::setLogHandler($this->handler);
     }
 
     protected function tearDown() {
-        $this->deleteAppLogFile();
         Logger::setLevel(null);
         Logger::setLogHandler(null);
         parent::tearDown();
@@ -26,10 +31,16 @@ class LoggerTest extends Base {
         if ($method === 'warn') {
             $level = 'WARNING';
         } else {
-            $level = strtoupper($method);
+            $level = $method;
         }
+        $this->handler->expects($this->once())->method('handle')->will(
+            $this->returnCallback(function($logRecord) use ($level) {
+                $this->assertSame(
+                    LogLevel::getCode($level), $logRecord->getLevel()
+                );
+            })
+        )->with($this->isInstanceOf('Hyperframework\Logging\LogRecord'));
         Logger::$method('message');
-        $this->assertTrue($this->hasAppLogFile());
     }
 
     public function getShortcutMethods() {
@@ -39,54 +50,66 @@ class LoggerTest extends Base {
     }
 
     public function testLogByClosure() {
+        $this->handler->expects($this->once())->method('handle')->will(
+            $this->returnCallback(function($logRecord) {
+                $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
+                $this->assertSame('message', $logRecord->getMessage());
+            })
+        );
         Logger::log(LogLevel::ERROR, function() {
             return 'message';
         });
-        $this->assertTrue($this->hasAppLogFile());
     }
 
     public function testLogByString() {
+        $this->handler->expects($this->once())->method('handle')->will(
+            $this->returnCallback(function($logRecord) {
+                $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
+                $this->assertSame('message', $logRecord->getMessage());
+            })
+        );
         Logger::log(LogLevel::ERROR, 'message');
-        $this->assertTrue($this->hasAppLogFile());
     }
 
     public function testLogUsingEmptyArray() {
+        $this->handler->expects($this->once())->method('handle');
         Logger::log(LogLevel::ERROR, []);
-        $this->assertTrue($this->hasAppLogFile());
     }
 
     public function testDefaultLevel() {
+        $this->handler->expects($this->once())->method('handle')->will(
+            $this->returnCallback(function($logRecord) {
+                $this->assertSame(LogLevel::INFO, $logRecord->getLevel());
+            })
+        );
         Logger::debug('message');
-        $this->assertFalse($this->hasAppLogFile());
         Logger::info('message');
-        $this->assertTrue($this->hasAppLogFile());
     }
 
     public function testChangeLevel() {
+        $this->handler->expects($this->once())->method('handle')->will(
+            $this->returnCallback(function($logRecord) {
+                $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
+            })
+        );
         Logger::setLevel(LogLevel::ERROR);
         Logger::warn('message');
-        $this->assertFalse($this->hasAppLogFile());
         Logger::error('message');
-        $this->assertTrue($this->hasAppLogFile());
     }
 
     public function testChangeLevelUsingConfig() {
+        $this->handler->expects($this->once())->method('handle')->will(
+            $this->returnCallback(function($logRecord) {
+                $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
+            })
+        );
         Config::set('hyperframework.logging.log_level', 'ERROR');
         Logger::warn('message');
-        $this->assertFalse($this->hasAppLogFile());
-        Logger::error('message');
-        $this->assertTrue($this->hasAppLogFile());
-    }
-
-    public function testCustomLogHandler() {
-        $logHandler = $this->getMock('Hyperframework\Logging\LogHandler');
-        $logHandler->expects($this->once())->method('handle')
-            ->with($this->isInstanceOf('Hyperframework\Logging\LogRecord'));
-        Logger::setLogHandler($logHandler);
         Logger::error('message');
     }
 
     public function testSetCustomLogHandlerUsingConfig() {
+        Logger::setLogHandler(null);
         Config::set(
             'hyperframework.logging.log_handler_class',
             'Hyperframework\Logging\Test\CustomLogHandler'
@@ -120,6 +143,7 @@ class LoggerTest extends Base {
      * @expectedException Hyperframework\Common\ClassNotFoundException
      */
     public function testInvalidLogHandlerClassConfig() {
+        Logger::setLogHandler(null);
         Config::set('hyperframework.logging.log_handler_class', 'Unknown');
         Logger::error('message');
     }
