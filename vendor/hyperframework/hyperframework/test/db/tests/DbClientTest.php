@@ -7,14 +7,9 @@ use Hyperframework\Db\Test\DbCustomClientEngine;
 use Hyperframework\Db\Test\TestCase as Base;
 
 class DbClientTest extends Base {
-    private $engine;
-
     protected function setUp() {
         parent::setUp();
-        $this->engine = $this->getMockBuilder(
-            'Hyperframework\Db\DbClientEngine'
-        )->getMock();
-        DbClient::setEngine($this->engine);
+        DbClient::setEngine(null);
     }
 
     protected function tearDown() {
@@ -258,14 +253,6 @@ class DbClientTest extends Base {
         DbClient::connect('master');
     }
 
-    private function mockEngineMethod($method) {
-        $engine = $this->getMockBuilder(
-            'Hyperframework\Db\DbClientEngine'
-        )->getMock();
-        DbClient::setEngine($engine);
-        return $engine->expects($this->once())->method($method);
-    }
-
     public function testSetEngineUsingConfig() {
         DbClient::setEngine(null);
         Config::set(
@@ -290,5 +277,13 @@ class DbClientTest extends Base {
             throw $e;
         }
         Config::remove('hyperframework.db.client.engine_class');
+    }
+
+    private function mockEngineMethod($method) {
+        $engine = $this->getMockBuilder(
+            'Hyperframework\Db\DbClientEngine'
+        )->getMock();
+        DbClient::setEngine($engine);
+        return $engine->expects($this->once())->method($method);
     }
 }
