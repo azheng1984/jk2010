@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Logging;
 
+use Datetime;
 use Hyperframework\Common\Config;
 use Hyperframework\Logging\Test\CustomLogHandler;
 use Hyperframework\Logging\Test\TestCase as Base;
@@ -38,6 +39,7 @@ class LoggerTest extends Base {
                 $this->assertSame(
                     LogLevel::getCode($level), $logRecord->getLevel()
                 );
+                $this->assertSame('message', $logRecord->getMessage());
             })
         )->with($this->isInstanceOf('Hyperframework\Logging\LogRecord'));
         Logger::$method('message');
@@ -74,6 +76,16 @@ class LoggerTest extends Base {
     public function testLogUsingEmptyArray() {
         $this->handler->expects($this->once())->method('handle');
         Logger::log(LogLevel::ERROR, []);
+    }
+
+    public function testCustomTime() {
+        $time = new DateTime;
+        $this->handler->expects($this->once())->method('handle')->will(
+            $this->returnCallback(function($logRecord) use ($time) {
+                $this->assertSame($time, $logRecord->getTime());
+            })
+        );
+        Logger::log(LogLevel::ERROR, ['time' => $time]);
     }
 
     public function testDefaultLevel() {
