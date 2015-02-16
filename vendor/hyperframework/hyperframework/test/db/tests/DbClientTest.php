@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Db;
 
-use stdClass;
 use Exception;
 use Hyperframework\Common\Config;
 use Hyperframework\Db\Test\DbCustomConnection;
