@@ -295,9 +295,7 @@ class DbClientTest extends Base {
     }
 
     private function mockEngineMethod($method) {
-        $engine = $this->getMockBuilder(
-            'Hyperframework\Db\DbClientEngine'
-        )->getMock();
+        $engine = $this->getMock('Hyperframework\Db\DbClientEngine');
         DbClient::setEngine($engine);
         return $engine->expects($this->once())->method($method);
     }
