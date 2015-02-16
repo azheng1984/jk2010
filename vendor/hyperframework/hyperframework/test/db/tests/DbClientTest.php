@@ -4,8 +4,8 @@ namespace Hyperframework\Db;
 use stdClass;
 use Exception;
 use Hyperframework\Common\Config;
-use Hyperframework\Db\Test\DbCustomClientEngine;
 use Hyperframework\Db\Test\DbCustomConnection;
+use Hyperframework\Db\Test\DbCustomClientEngine;
 use Hyperframework\Db\Test\TestCase as Base;
 
 class DbClientTest extends Base {
@@ -114,7 +114,9 @@ class DbClientTest extends Base {
             $this->equalTo([]),
             $this->equalTo(['name'])
         )->will($this->returnValue($result));
-        $this->assertSame($result, DbClient::findByColumns('table', [], ['name']));
+        $this->assertSame(
+            $result, DbClient::findByColumns('table', [], ['name'])
+        );
     }
 
     public function testCount() {
@@ -182,7 +184,9 @@ class DbClientTest extends Base {
             $this->equalTo('where'),
             $this->equalTo(['param'])
         )->will($this->returnValue($result));
-        $this->assertSame($result, DbClient::update('table', [], 'where', 'param'));
+        $this->assertSame(
+            $result, DbClient::update('table', [], 'where', 'param')
+        );
     }
 
     public function testDelete() {
