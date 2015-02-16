@@ -3,7 +3,7 @@ namespace Hyperframework\Db;
 
 use Exception;
 use Hyperframework\Common\Config;
-use Hyperframework\Db\Test\DbCustomConnection;
+use Hyperframework\Db\Test\DbCustomClientEngine;
 use Hyperframework\Db\Test\TestCase as Base;
 
 class DbClientTest extends Base {
@@ -12,8 +12,8 @@ class DbClientTest extends Base {
     protected function setUp() {
         parent::setUp();
         $this->engine = $this->getMockBuilder(
-            'Hyperframework\Db\Test\DbCustomClientEngine'
-        )->enableArgumentCloning()->getMock();
+            'Hyperframework\Db\DbClientEngine'
+        )->getMock();
         DbClient::setEngine($this->engine);
     }
 
@@ -23,93 +23,87 @@ class DbClientTest extends Base {
     }
 
     public function testFindColumn() {
-        $this->engine->expects($this->once())->method('findColumn')->with(
+        $this->mockEngineMethod('findColumn')->with(
             $this->equalTo('sql'), $this->equalTo(['param'])
         )->will($this->returnValue(1));
         $this->assertSame(1, DbClient::findColumn("sql", 'param'));
     }
 
     public function testFindColumnWithoutParam() {
-        $this->engine->expects($this->once())->method('findColumn')->with(
+        $this->mockEngineMethod('findColumn')->with(
             $this->equalTo('sql')
         )->will($this->returnValue(1));
         $this->assertSame(1, DbClient::findColumn("sql"));
     }
 
-
     public function testFindColumnByColumns() {
-        $this->engine->expects($this->once())->method('findColumnByColumns')
-            ->with(
-                $this->equalTo('table'),
-                $this->equalTo([]),
-                $this->equalTo('id')
-            )->will($this->returnValue(1));
+        $this->mockEngineMethod('findColumnByColumns')->with(
+            $this->equalTo('table'),
+            $this->equalTo([]),
+            $this->equalTo('id')
+        )->will($this->returnValue(1));
         $this->assertSame(1, DbClient::findColumnByColumns('table', [], 'id'));
     }
 
     public function testFindColumnById() {
-        $this->engine->expects($this->once())->method('findColumnById')
-            ->with(
-                $this->equalTo('table'),
-                $this->equalTo(1),
-                $this->equalTo('name')
-            )->will($this->returnValue(1));
+        $this->mockEngineMethod('findColumnById')->with(
+            $this->equalTo('table'),
+            $this->equalTo(1),
+            $this->equalTo('name')
+        )->will($this->returnValue(1));
         $this->assertSame(1, DbClient::findColumnById('table', 1, 'name'));
     }
 
     public function testFindRow() {
-        $this->engine->expects($this->once())->method('findRow')->with(
+        $this->mockEngineMethod('findRow')->with(
             $this->equalTo('sql'), $this->equalTo(['param'])
         )->will($this->returnValue(1));
         $this->assertSame(1, DbClient::findRow("sql", 'param'));
     }
 
     public function testFindRowByColumns() {
-        $this->engine->expects($this->once())->method('findRowByColumns')
-            ->with(
-                $this->equalTo('table'),
-                $this->equalTo([]),
-                $this->equalTo(['name'])
-            )->will($this->returnValue(1));
+        $this->mockEngineMethod('findRowByColumns')->with(
+            $this->equalTo('table'),
+            $this->equalTo([]),
+            $this->equalTo(['name'])
+        )->will($this->returnValue(1));
         $this->assertSame(1, DbClient::findRowByColumns('table', [], ['name']));
     }
 
     public function testFindAll() {
-        $this->engine->expects($this->once())->method('findAll')->with(
+        $this->mockEngineMethod('findAll')->with(
             $this->equalTo('sql'), $this->equalTo(['param'])
         )->will($this->returnValue(1));
         $this->assertSame(1, DbClient::findAll("sql", 'param'));
     }
 
     public function testFindAllByColumns() {
-        $this->engine->expects($this->once())->method('findAllByColumns')
-            ->with(
-                $this->equalTo('table'),
-                $this->equalTo([]),
-                $this->equalTo(['name'])
-            )->will($this->returnValue(1));
+        $this->mockEngineMethod('findAllByColumns')->with(
+            $this->equalTo('table'),
+            $this->equalTo([]),
+            $this->equalTo(['name'])
+        )->will($this->returnValue(1));
         $this->assertSame(1, DbClient::findAllByColumns('table', [], ['name']));
     }
 
     public function testFind() {
-        $this->engine->expects($this->once())->method('find')->with(
+        $this->mockEngineMethod('find')->with(
             $this->equalTo('sql'), $this->equalTo(['param'])
         )->will($this->returnValue(1));
         $this->assertSame(1, DbClient::find("sql", 'param'));
     }
 
     public function testFindByColumns() {
-        $this->engine->expects($this->once())->method('findByColumns')
-            ->with(
-                $this->equalTo('table'),
-                $this->equalTo([]),
-                $this->equalTo(['name'])
+        $this->mockEngineMethod('findByColumns')->with(
+            $this->equalTo('table'),
+            $this->equalTo([]),
+            $this->equalTo(['name'])
         )->will($this->returnValue(1));
         $this->assertSame(1, DbClient::findByColumns('table', [], ['name']));
     }
 
     public function testCount() {
-        $this->engine->expects($this->once())->method('count')->with(
+        $this->mockEngineMethod('count')->with(
             $this->equalTo('table'),
             $this->equalTo('where'),
             $this->equalTo(['param'])
@@ -118,7 +112,7 @@ class DbClientTest extends Base {
     }
 
     public function testMin() {
-        $this->engine->expects($this->once())->method('min')->with(
+        $this->mockEngineMethod('min')->with(
             $this->equalTo('table'),
             $this->equalTo('column'),
             $this->equalTo('where'),
@@ -130,7 +124,7 @@ class DbClientTest extends Base {
     }
 
     public function testMax() {
-        $this->engine->expects($this->once())->method('max')->with(
+        $this->mockEngineMethod('max')->with(
             $this->equalTo('table'),
             $this->equalTo('column'),
             $this->equalTo('where'),
@@ -142,7 +136,7 @@ class DbClientTest extends Base {
     }
 
     public function testAverage() {
-        $this->engine->expects($this->once())->method('average')->with(
+        $this->mockEngineMethod('average')->with(
             $this->equalTo('table'),
             $this->equalTo('column'),
             $this->equalTo('where'),
@@ -154,7 +148,7 @@ class DbClientTest extends Base {
     }
 
     public function testInsert() {
-        $this->engine->expects($this->once())->method('insert')->with(
+        $this->mockEngineMethod('insert')->with(
             $this->equalTo('table'),
             $this->equalTo(['key' => 'value'])
         );
@@ -162,7 +156,7 @@ class DbClientTest extends Base {
     }
 
     public function testUpdate() {
-        $this->engine->expects($this->once())->method('update')->with(
+        $this->mockEngineMethod('update')->with(
             $this->equalTo('table'),
             $this->equalTo([]),
             $this->equalTo('where'),
@@ -172,7 +166,7 @@ class DbClientTest extends Base {
     }
 
     public function testDelete() {
-        $this->engine->expects($this->once())->method('delete')->with(
+        $this->mockEngineMethod('delete')->with(
             $this->equalTo('table'),
             $this->equalTo('where'),
             $this->equalTo(['param'])
@@ -181,7 +175,7 @@ class DbClientTest extends Base {
     }
 
     public function testDeleteById() {
-        $this->engine->expects($this->once())->method('deleteById')->with(
+        $this->mockEngineMethod('deleteById')->with(
             $this->equalTo('table'),
             $this->equalTo('id')
         )->will($this->returnValue(1));
@@ -189,7 +183,7 @@ class DbClientTest extends Base {
     }
 
     public function testSave() {
-        $this->engine->expects($this->once())->method('save')->will(
+        $this->mockEngineMethod('save')->will(
             $this->returnCallback(function($table, array &$row) {
                 $this->assertSame('table', $table);
                 $row['id'] = 1;
@@ -202,59 +196,85 @@ class DbClientTest extends Base {
     }
 
     public function testExecute() {
-        $this->engine->expects($this->once())->method('execute')->with(
+        $this->mockEngineMethod('execute')->with(
             $this->equalTo('sql'), $this->equalTo(['param'])
         )->will($this->returnValue(1));
         $this->assertSame(1, DbClient::execute("sql", 'param'));
     }
 
     public function testGetLastInsertId() {
-        $this->engine->expects($this->once())->method('getLastInsertId')
-            ->will($this->returnValue(1));
+        $this->mockEngineMethod('getLastInsertId')->will($this->returnValue(1));
         $this->assertSame(1, DbClient::getLastInsertId());
     }
 
     public function testBeginTransaction() {
-        $this->engine->expects($this->once())->method('beginTransaction');
+        $this->mockEngineMethod('beginTransaction');
         DbClient::beginTransaction();
     }
 
     public function testInTransaction() {
-        $this->engine->expects($this->once())->method('inTransaction')
-            ->will($this->returnValue(1));
+        $this->mockEngineMethod('inTransaction')->will($this->returnValue(1));
         $this->assertSame(1, DbClient::inTransaction());
     }
 
     public function testCommit() {
-        $this->engine->expects($this->once())->method('commit');
+        $this->mockEngineMethod('commit');
         DbClient::commit();
     }
 
     public function testRollback() {
-        $this->engine->expects($this->once())->method('rollback');
+        $this->mockEngineMethod('rollback');
         DbClient::rollback();
     }
 
     public function testQuoteIdentifier() {
+        $this->mockEngineMethod('quoteIdentifier')->with(
+            $this->equalTo('string')
+        )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::quoteIdentifier('string'));
     }
 
     public function testPrepare() {
+        $this->mockEngineMethod('prepare')->with(
+            $this->equalTo('sql'), $this->equalTo([])
+        )->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::prepare('sql', []));
     }
 
     public function testSetConnection() {
+        $this->mockEngineMethod('setConnection')->with(
+            $this->equalTo($this)
+        );
+        DbClient::setConnection($this);
     }
 
     public function testGetConnection() {
+        $this->mockEngineMethod('getConnection')->will($this->returnValue(1));
+        $this->assertSame(1, DbClient::getConnection());
     }
 
     public function testConnect() {
-        $this->engine->expects($this->once())->method('connect')->with(
-            $this->equalTo('master')
-        );
+        $this->mockEngineMethod('connect')->with($this->equalTo('master'));
         DbClient::connect('master');
     }
 
+    private function mockEngineMethod($method) {
+        $engine = $this->getMockBuilder(
+            'Hyperframework\Db\DbClientEngine'
+        )->getMock();
+        DbClient::setEngine($engine);
+        return $engine->expects($this->once())->method($method);
+    }
+
     public function testSetEngineUsingConfig() {
+        DbClient::setEngine(null);
+        Config::set(
+            'hyperframework.db.client.engine_class',
+            'Hyperframework\Db\Test\DbCustomClientEngine'
+        );
+        $this->assertTrue(
+            DbClient::getEngine() instanceof DbCustomClientEngine
+        );
     }
 
     /**
@@ -264,7 +284,7 @@ class DbClientTest extends Base {
         DbClient::setEngine(null);
         Config::set('hyperframework.db.client.engine_class', 'Unknown');
         try {
-            DbClient::count('Document');
+            DbClient::getEngine();
         } catch (Exception $e) {
             Config::remove('hyperframework.db.client.engine_class');
             throw $e;
