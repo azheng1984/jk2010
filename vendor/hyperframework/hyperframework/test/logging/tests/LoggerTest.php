@@ -140,15 +140,15 @@ class LoggerTest extends Base {
         Logger::error('message');
     }
 
-    private function mockHandler() {
-        $mock = $this->getMock('Hyperframework\Logging\LogHandler');
-        Logger::setLogHandler($mock);
-    }
-
     private function setHandleMethod($callback) {
         $this->mockHandler();
         Logger::getLogHandler()->expects($this->once())->method('handle')->will(
             $this->returnCallback($callback)
         );
+    }
+
+    private function mockHandler() {
+        $mock = $this->getMock('Hyperframework\Logging\LogHandler');
+        Logger::setLogHandler($mock);
     }
 }
