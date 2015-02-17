@@ -168,7 +168,7 @@ class DbClientEngine {
     }
 
     public function updateById($table, array $columns, $id) {
-        return $this->update($table, $columns, 'id = ?', [$id]) === 1;
+        return $this->update($table, $columns, 'id = ?', [$id]) > 0;
     }
 
     public function delete($table, $where, array $params = null) {
@@ -183,7 +183,7 @@ class DbClientEngine {
     }
 
     public function deleteById($table, $id) {
-        return $this->delete($table, 'id = ?', [$id]) === 1;
+        return $this->delete($table, 'id = ?', [$id]) > 0;
     }
 
     public function execute($sql, array $params = null) {

@@ -119,6 +119,10 @@ class DbClient {
         );
     }
 
+    public static function updateById($table, array $columns, $id) {
+        return static::getEngine()->updateById($table, $columns, $id);
+    }
+
     public static function delete($table, $where/*, ...*/) {
         return static::getEngine()->delete(
             $table, $where, self::getParams(func_get_args(), 2)

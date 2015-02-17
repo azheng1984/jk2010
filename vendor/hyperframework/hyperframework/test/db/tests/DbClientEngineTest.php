@@ -174,19 +174,13 @@ class DbClientEngineTest extends Base {
         $this->assertFalse($this->engine->findRowById('Document', 1));
     }
 
-//    public function testSaveNewRow() {
-//        $row = [];
-//        $this->engine->save('Document', $row);
-//        $this->assertTrue(isset($row['id']));
-//    }
-//
-//    public function testSaveExistingRow() {
-//        $row = ['id' => 1, 'name' => 'updated'];
-//        $this->engine->save('Document', $row);
-//        $this->assertSame(
-//            'updated', $this->engine->findColumnById('Document', 1, 'name')
-//        );
-//    }
+    public function testUpdateById() {
+        $row = ['name' => 'updated'];
+        $this->assertTrue($this->engine->updateById('Document', $row, 1));
+        $this->assertSame(
+            'updated', $this->engine->findColumnById('Document', 1, 'name')
+        );
+    }
 
     public function testExecute() {
         $this->assertSame(

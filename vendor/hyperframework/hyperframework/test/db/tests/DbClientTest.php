@@ -174,6 +174,15 @@ class DbClientTest extends Base {
         $this->assertTrue(DbClient::update('table', [], 'where', 'param'));
     }
 
+    public function testUpdateById() {
+        $this->mockEngineMethod('updateById')->with(
+            $this->equalTo('table'),
+            $this->equalTo([]),
+            $this->equalTo('id')
+        )->will($this->returnValue(true));
+        $this->assertTrue(DbClient::updateById('table', [], 'id'));
+    }
+
     public function testDelete() {
         $this->mockEngineMethod('delete')->with(
             $this->equalTo('table'),
