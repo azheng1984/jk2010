@@ -57,7 +57,7 @@ abstract class DbActiveRecord implements ArrayAccess {
                 throw new DbActiveRecordException(
                     "Cannot update active record '"
                         . get_called_class(). "' where id equals to $id, "
-                        . "because it only have id data field."
+                        . "because it only has id data field."
                 );
             } else {
                 return DbClient::updateById($table, $this->row, $id);
