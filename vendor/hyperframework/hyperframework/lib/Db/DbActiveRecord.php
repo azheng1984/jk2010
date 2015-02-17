@@ -26,7 +26,7 @@ abstract class DbActiveRecord implements ArrayAccess {
                 $type = get_class($where);
             }
             throw InvalidArgumentException(
-                "Arguemnt 'where' must be a string or an array, $type given."
+                "Argument 'where' must be a string or an array, $type given."
             );
         }
         if ($row === false) {
@@ -65,7 +65,7 @@ abstract class DbActiveRecord implements ArrayAccess {
                 $type = get_class($where);
             }
             throw InvalidArgumentException(
-                "Arguemnt 'where' must be a string or an array, $type given."
+                "Argument 'where' must be a string or an array, $type given."
             );
         }
         $result = [];
@@ -219,7 +219,7 @@ abstract class DbActiveRecord implements ArrayAccess {
         if ($where !== '') {
             $result .= ' WHERE ' . $where;
         }
-        return $where;
+        return $result;
     }
 
     private static function getParams(array $args, $offset = 1) {
