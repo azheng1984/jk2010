@@ -3,7 +3,6 @@ namespace Hyperframework\Db;
 
 use ArrayAccess;
 use InvalidArgumentException;
-use Hyperframework\Common\InvalidOperationException;
 
 abstract class DbActiveRecord implements ArrayAccess {
     private static $tableNames = [];
@@ -13,39 +12,10 @@ abstract class DbActiveRecord implements ArrayAccess {
         $this->row = $row;
     }
 
-    public function save() {
-        $table = $this->getTableName();
-        if (isset($this->row['id'])) {
-            $id = $this->row['id'];
-            unset($this->row['id']);
-            if (count($this->row) === 0) {
-                throw new DbActiveRecordException(
-                    "Cannot update empty active record '"
-                        . get_called_class(). "' where id equals to $id."
-                );
-            } else {
-                if (DbClient::updateById($table, $this->row, $id) === false) {
-                    $class = get_called_class();
-                    throw new DbActiveRecordException(
-                        "Failed to update active record '" . get_called_class()
-                            . "' where id is equals to $id, "
-                            . "because data does not exist in database."
-                    );
-                }
-            }
-            $this->row['id'] = $id;
-            return;
-        }
-        $this->insert($table, $row);
-        if (isset($this->row['id']) === false) {
-            $this->row['id'] = $this->getLastInsertId();
-        }
-    }
-
     public function insert() {
-        $this->insert($this->getTableName(), $this->row);
+        DbClient::insert($this->getTableName(), $this->row);
         if (isset($this->row['id']) === false) {
-            $this->row['id'] = $this->getLastInsertId();
+            $this->row['id'] = DbClient::getLastInsertId();
         }
     }
 
@@ -57,17 +27,16 @@ abstract class DbActiveRecord implements ArrayAccess {
                 throw new DbActiveRecordException(
                     "Cannot update active record '"
                         . get_called_class(). "' where id equals to $id, "
-                        . "because it only has id data field."
+                        . "because it only has an id column."
                 );
             } else {
+                $this->row['id'] = $id;
                 return DbClient::updateById($table, $this->row, $id);
             }
-            $this->row['id'] = $id;
-            return;
         } else {
             $class = get_called_class();
             throw new DbActiveRecordException(
-                "Cannot update active record '$class' without an id data field."
+                "Cannot update active record '$class' without an id column."
             );
         }
     }
@@ -78,7 +47,7 @@ abstract class DbActiveRecord implements ArrayAccess {
         } else {
             $class = get_called_class();
             throw new DbActiveRecordException(
-                "Cannot delete active record '$class' without an id data field."
+                "Cannot delete active record '$class' without an id column."
             );
         }
     }
@@ -102,7 +71,7 @@ abstract class DbActiveRecord implements ArrayAccess {
     public function offsetGet($offset) {
         if (isset($this->row[$offset]) === false) {
             throw new DbActiveRecordException(
-                "Data field '$offset' does not exist."
+                "Column '$offset' does not exist."
             );
         }
         return $this->row[$offset];
@@ -116,26 +85,30 @@ abstract class DbActiveRecord implements ArrayAccess {
         $this->row = $row;
     }
 
-    public function mergeRow(array $row) {
-        $this->row = $row + $this->row;
-    }
-
     public static function find($where/*, ...*/) {
         if ($where === null) {
             $where = [];
         }
         if (is_array($where)) {
             $row = DbClient::findRowByColumns(static::getTableName(), $where);
-            if ($row === false) {
-                return;
+        } elseif (is_string($where)) {
+            $rows = DbClient::findRow(
+                self::completeSelectSql($where),
+                self::getParams(func_get_args(), 1)
+            );
+        } else {
+            $type = gettype($where);
+            if ($type === 'object') {
+                $type = get_class($where);
             }
-            return new static($row);
+            throw InvalidArgumentException(
+                "Arguemnt 'where' must be a string or an array, $type given."
+            );
         }
-        $class = get_called_class();
-        $args = func_get_args();
-        DbClient::find();
-        $args[0] = DbClient::findBySql();
-        return call_user_func_array($class . '::findBySql', $args);
+        if ($row === false) {
+            return;
+        }
+        return new static($row);
     }
 
     public static function findById($id) {
@@ -147,14 +120,7 @@ abstract class DbActiveRecord implements ArrayAccess {
     }
 
     public static function findBySql($sql/*, ...*/) {
-        $args = func_get_args();
-        if (isset($args[1]) && is_array($args[1])) {
-            $args = $args[1];
-        } else {
-            $args = func_get_args();
-            array_shift($args);
-        }
-        $row = DbClient::findRow(self::completeSelectSql($sql), $args);
+        $row = DbClient::findRow($sql, self::getParams(func_get_args(), 1));
         if ($row === false) {
             return;
         }
@@ -167,22 +133,29 @@ abstract class DbActiveRecord implements ArrayAccess {
         }
         if (is_array($where)) {
             $rows = DbClient::findAllByColumns(static::getTableName(), $where);
-            $result = [];
-            foreach ($rows as $row) {
-                $result[] = new static($row);
+        } elseif (is_string($where)) {
+            $rows = DbClient::findAll(
+                self::completeSelectSql($where),
+                self::getParams(func_get_args(), 1)
+            );
+        } else {
+            $type = gettype($where);
+            if ($type === 'object') {
+                $type = get_class($where);
             }
-            return $result;
+            throw InvalidArgumentException(
+                "Arguemnt 'where' must be a string or an array, $type given."
+            );
         }
-        $class = get_called_class();
-        $args = func_get_args();
-        $args[0] = 'WHERE ' . $args[0];
-        return call_user_func_array($class . '::findAllBySql', $args);
+        $result = [];
+        foreach ($rows as $row) {
+            $result[] = new static($row);
+        }
+        return $result;
     }
 
     public static function findAllBySql($sql/*, ...*/) {
-        $args = func_get_args();
-        array_shift($args);
-        $rows = DbClient::findAll($sql, $args);
+        $rows = DbClient::findAll($sql, self::getParams(func_get_args(), 1));
         $result = [];
         foreach ($rows as $row) {
             $result[] = new static($row);
@@ -192,7 +165,7 @@ abstract class DbActiveRecord implements ArrayAccess {
 
     public static function count($where = null/*, ...*/) {
         return DbClient::count(
-            static::getTableName(), $where, array_slice(func_get_args(), 1)
+            static::getTableName(), $where, self::getParams(func_get_args())
         );
     }
 
@@ -201,7 +174,7 @@ abstract class DbActiveRecord implements ArrayAccess {
             static::getTableName(),
             $columnName,
             $where,
-            array_slice(func_get_args(), 2)
+            self::getParams(func_get_args(), 2)
         );
     }
 
@@ -210,7 +183,7 @@ abstract class DbActiveRecord implements ArrayAccess {
             static::getTableName(),
             $columnName,
             $where,
-            array_slice(func_get_args(), 2)
+            self::getParams(func_get_args(), 2)
         );
     }
 
@@ -219,7 +192,7 @@ abstract class DbActiveRecord implements ArrayAccess {
             static::getTableName(),
             $columnName,
             $where,
-            array_slice(func_get_args(), 2)
+            self::getParams(func_get_args(), 2)
         );
     }
 
@@ -228,7 +201,7 @@ abstract class DbActiveRecord implements ArrayAccess {
             static::getTableName(),
             $columnName,
             $where,
-            array_slice(func_get_args(), 2)
+            self::getParams(func_get_args(), 2)
         );
     }
 
@@ -244,7 +217,22 @@ abstract class DbActiveRecord implements ArrayAccess {
     }
 
     private static function completeSelectSql($where) {
-        return 'SELECT * FROM '
-            . DbClient::quoteIdentifier(static::getTableName()) . ' ' . $where;
+        $result = 'SELECT * FROM '
+            . DbClient::quoteIdentifier(static::getTableName());
+        $where = (string)$where;
+        if ($where !== '') {
+            $result .= ' WHERE ' . $where;
+        }
+        return $where;
+    }
+
+    private static function getParams(array $args, $offset = 1) {
+        if (isset($args[$offset]) === false) {
+            return [];
+        }
+        if (is_array($args[$offset])) {
+            return $args[$offset];
+        }
+        return array_slice($args, $offset);
     }
 }

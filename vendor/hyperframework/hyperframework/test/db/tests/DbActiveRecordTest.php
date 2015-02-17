@@ -8,7 +8,7 @@ class DbActiveRecordTest extends Base {
     public function testSave() {
         $document = new Document;
         $document['name'] = 'doc 1';
-        $document->save();
+        $document->insert();
         $this->assertSame(1, DbClient::count('Document'));
         $this->assertTrue(isset($document['id']));
     }

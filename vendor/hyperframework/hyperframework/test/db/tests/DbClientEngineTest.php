@@ -197,7 +197,7 @@ class DbClientEngineTest extends Base {
 
     public function testGetLastInsertId() {
         $row = [];
-        $this->engine->save('Document', $row);
+        $this->engine->insert('Document', $row);
         $this->assertNotNull($this->engine->getLastInsertId());
     }
 
