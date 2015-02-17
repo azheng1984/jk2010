@@ -2,6 +2,7 @@
 namespace Hyperframework\Db;
 
 use PDO;
+use InvalidArgumentException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
@@ -134,7 +135,7 @@ class DbClientEngine {
             $placeHolders = str_repeat('?, ', $columnCount - 1) . '?';
         } else {
             $placeHolders = '';
-        }        
+        }
         $sql = 'INSERT INTO ' . $this->quoteIdentifier($table)
             . '(' . implode($keys, ', ') . ') VALUES(' . $placeHolders . ')';
         $this->execute($sql, array_values($row));
@@ -143,6 +144,11 @@ class DbClientEngine {
     public function update(
         $table, array $columns, $where, array $params = null
     ) {
+        if (count($columns) === 0) {
+            throw new InvalidArgumentException(
+                "Arguemnt 'columns' cannot be an empty array."
+            );
+        }
         if (is_array($where)) {
             list($where, $params) = $this->buildWhereByColumns($where);
         }
@@ -161,17 +167,8 @@ class DbClientEngine {
         return $this->execute($sql, $params);
     }
 
-    public function save($table, array &$row) {
-        if (isset($row['id'])) {
-            $id = $row['id'];
-            unset($row['id']);
-            $result = $this->update($table, $row, 'id = ?', $id);
-            $row['id'] = $id;
-            return $result;
-        }
-        $this->insert($table, $row);
-        $row['id'] = $this->getLastInsertId();
-        return 1;
+    public function updateById($table, array $columns, $id) {
+        return $this->update($table, $columns, 'id = ?', [$id]) === 1;
     }
 
     public function delete($table, $where, array $params = null) {
@@ -186,13 +183,13 @@ class DbClientEngine {
     }
 
     public function deleteById($table, $id) {
-        return $this->delete($table, 'id = ?', [$id]);
+        return $this->delete($table, 'id = ?', [$id]) === 1;
     }
 
     public function execute($sql, array $params = null) {
         return $this->sendSql($sql, $params);
     }
- 
+
     public function getLastInsertId() {
         return $this->getConnection()->lastInsertId();
     }

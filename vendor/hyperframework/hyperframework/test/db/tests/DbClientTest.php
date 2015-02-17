@@ -3,8 +3,8 @@ namespace Hyperframework\Db;
 
 use Exception;
 use Hyperframework\Common\Config;
-use Hyperframework\Db\Test\DbCustomConnection;
 use Hyperframework\Db\Test\DbCustomClientEngine;
+use Hyperframework\Db\Test\DbCustomConnection;
 use Hyperframework\Db\DbClientEngine;
 use Hyperframework\Db\Test\TestCase as Base;
 
@@ -39,6 +39,14 @@ class DbClientTest extends Base {
             $this->equalTo(['paramA', 'paramB'])
         );
         DbClient::findColumn('sql', 'paramA', 'paramB');
+    }
+
+    public function testFindColumnWithArray() {
+        $this->mockEngineMethod('findColumn')->with(
+            $this->equalTo('sql'),
+            $this->equalTo(['param'])
+        );
+        DbClient::findColumn('sql', ['param']);
     }
 
     public function testFindColumnByColumns() {
@@ -183,18 +191,18 @@ class DbClientTest extends Base {
         $this->assertTrue(DbClient::deleteById('table', 'id'));
     }
 
-    public function testSave() {
-        $this->mockEngineMethod('save')->will(
-            $this->returnCallback(function($table, array &$row) {
-                $this->assertSame('table', $table);
-                $row['id'] = 1;
-                return true;
-            })
-        );
-        $row = [];
-        $this->assertTrue(DbClient::save('table', $row));
-        $this->assertTrue($row['id'] === 1);
-    }
+//    public function testSave() {
+//        $this->mockEngineMethod('save')->will(
+//            $this->returnCallback(function($table, array &$row) {
+//                $this->assertSame('table', $table);
+//                $row['id'] = 1;
+//                return true;
+//            })
+//        );
+//        $row = [];
+//        $this->assertTrue(DbClient::save('table', $row));
+//        $this->assertTrue($row['id'] === 1);
+//    }
 
     public function testExecute() {
         $this->mockEngineMethod('execute')->with(

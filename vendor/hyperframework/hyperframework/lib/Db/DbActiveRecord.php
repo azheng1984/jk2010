@@ -3,21 +3,84 @@ namespace Hyperframework\Db;
 
 use ArrayAccess;
 use InvalidArgumentException;
+use Hyperframework\Common\InvalidOperationException;
 
 abstract class DbActiveRecord implements ArrayAccess {
     private static $tableNames = [];
     private $row;
 
     public function __construct(array $row = []) {
-        $this->setRow($row);
+        $this->row = $row;
     }
 
     public function save() {
-        return DbClient::save(static::getTableName(), $this->row);
+        $table = $this->getTableName();
+        if (isset($this->row['id'])) {
+            $id = $this->row['id'];
+            unset($this->row['id']);
+            if (count($this->row) === 0) {
+                throw new DbActiveRecordException(
+                    "Cannot update empty active record '"
+                        . get_called_class(). "' where id equals to $id."
+                );
+            } else {
+                if (DbClient::updateById($table, $this->row, $id) === false) {
+                    $class = get_called_class();
+                    throw new DbActiveRecordException(
+                        "Failed to update active record '" . get_called_class()
+                            . "' where id is equals to $id, "
+                            . "because data does not exist in database."
+                    );
+                }
+            }
+            $this->row['id'] = $id;
+            return;
+        }
+        $this->insert($table, $row);
+        if (isset($this->row['id']) === false) {
+            $this->row['id'] = $this->getLastInsertId();
+        }
+    }
+
+    public function insert() {
+        $this->insert($this->getTableName(), $this->row);
+        if (isset($this->row['id']) === false) {
+            $this->row['id'] = $this->getLastInsertId();
+        }
+    }
+
+    public function update() {
+        if (isset($this->row['id'])) {
+            $id = $this->row['id'];
+            unset($this->row['id']);
+            if (count($this->row) === 0) {
+                throw new DbActiveRecordException(
+                    "Cannot update active record '"
+                        . get_called_class(). "' where id equals to $id, "
+                        . "because it only have id data field."
+                );
+            } else {
+                return DbClient::updateById($table, $this->row, $id);
+            }
+            $this->row['id'] = $id;
+            return;
+        } else {
+            $class = get_called_class();
+            throw new DbActiveRecordException(
+                "Cannot update active record '$class' without an id data field."
+            );
+        }
     }
 
     public function delete() {
-        return DbClient::deleteById(static::getTableName(), $this->row['id']);
+        if (isset($this->row['id'])) {
+            DbClient::deleteById(static::getTableName(), $this->row['id']);
+        } else {
+            $class = get_called_class();
+            throw new DbActiveRecordException(
+                "Cannot delete active record '$class' without an id data field."
+            );
+        }
     }
 
     public function offsetSet($offset, $value) {
@@ -37,6 +100,11 @@ abstract class DbActiveRecord implements ArrayAccess {
     }
 
     public function offsetGet($offset) {
+        if (isset($this->row[$offset]) === false) {
+            throw new DbActiveRecordException(
+                "Data field '$offset' does not exist."
+            );
+        }
         return $this->row[$offset];
     }
 
@@ -65,7 +133,8 @@ abstract class DbActiveRecord implements ArrayAccess {
         }
         $class = get_called_class();
         $args = func_get_args();
-        $args[0] = 'WHERE ' . $args[0];
+        DbClient::find();
+        $args[0] = DbClient::findBySql();
         return call_user_func_array($class . '::findBySql', $args);
     }
 
@@ -112,12 +181,8 @@ abstract class DbActiveRecord implements ArrayAccess {
 
     public static function findAllBySql($sql/*, ...*/) {
         $args = func_get_args();
-        if (isset($args[1]) && is_array($args[1])) {
-            $args = $args[1];
-        } else {
-            array_shift($args);
-        }
-        $rows = DbClient::findAll(self::completeSelectSql($sql), $args);
+        array_shift($args);
+        $rows = DbClient::findAll($sql, $args);
         $result = [];
         foreach ($rows as $row) {
             $result[] = new static($row);
@@ -168,9 +233,7 @@ abstract class DbActiveRecord implements ArrayAccess {
     }
 
     protected static function getTableName() {
-        if ($class === null) {
-            $class = get_called_class();
-        }
+        $class = get_called_class();
         if (isset(self::$tableNames[$class]) === false) {
             $position = strrpos($class, '\\');
             if ($position !== false) {
@@ -180,15 +243,8 @@ abstract class DbActiveRecord implements ArrayAccess {
         return self::$tableNames[$class];
     }
 
-    private static function completeSelectSql($sql) {
-        if (strlen($sql) > 6) {
-            if (strtoupper(substr($sql, 0, 6)) === 'SELECT'
-                && ctype_alnum($sql[6]) === false
-            ) {
-                return $sql;
-            }
-        }
+    private static function completeSelectSql($where) {
         return 'SELECT * FROM '
-            . DbClient::quoteIdentifier(static::getTableName()) . ' ' . $sql;
+            . DbClient::quoteIdentifier(static::getTableName()) . ' ' . $where;
     }
 }

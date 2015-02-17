@@ -129,10 +129,6 @@ class DbClient {
         return static::getEngine()->deleteById($table, $id);
     }
 
-    public static function save($table, array &$row) {
-        return static::getEngine()->save($table, $row);
-    }
-
     public static function execute($sql/*, ...*/) {
         return static::getEngine()->execute(
             $sql, self::getParams(func_get_args())
