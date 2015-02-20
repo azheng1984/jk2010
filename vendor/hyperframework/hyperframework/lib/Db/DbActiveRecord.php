@@ -8,7 +8,7 @@ abstract class DbActiveRecord {
     private $row;
 
     public function __construct(array $row = []) {
-        $this->row = $row;
+        $this->setRow($row);
     }
 
     public static function find($where/*, ...*/) {
@@ -164,7 +164,7 @@ abstract class DbActiveRecord {
             $class = get_called_class();
             throw new DbActiveRecordException(
                 "Cannot delete active record '$class' which is not persistent, "
-                  . "because column 'id' is missing."
+                    . "because column 'id' is missing."
             );
         }
     }
