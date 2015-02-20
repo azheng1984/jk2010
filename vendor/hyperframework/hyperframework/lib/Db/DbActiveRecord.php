@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Db;
 
-use ArrayAccess;
 use InvalidArgumentException;
 
 abstract class DbActiveRecord {
@@ -83,13 +82,13 @@ abstract class DbActiveRecord {
         }
         return $result;
     }
-    
+
     public static function count($where = null/*, ...*/) {
         return DbClient::count(
             static::getTableName(), $where, self::getParams(func_get_args())
         );
     }
-    
+
     public static function min($columnName, $where = null/*, ...*/) {
         return DbClient::min(
             static::getTableName(),
@@ -152,7 +151,8 @@ abstract class DbActiveRecord {
         } else {
             $class = get_called_class();
             throw new DbActiveRecordException(
-                "Cannot update active record '$class' without an id column."
+                "Cannot update active record '$class' which is not persistent, "
+                    . "because column 'id' is missing."
             );
         }
     }
@@ -163,7 +163,8 @@ abstract class DbActiveRecord {
         } else {
             $class = get_called_class();
             throw new DbActiveRecordException(
-                "Cannot delete active record '$class' without an id column."
+                "Cannot delete active record '$class' which is not persistent, "
+                  . "because column 'id' is missing."
             );
         }
     }
