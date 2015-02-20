@@ -4,7 +4,7 @@ namespace Hyperframework\Db;
 use ArrayAccess;
 use InvalidArgumentException;
 
-abstract class DbActiveRecord implements ArrayAccess {
+abstract class DbActiveRecord {
     private static $tableNames = [];
     private $row;
 
@@ -34,7 +34,7 @@ abstract class DbActiveRecord implements ArrayAccess {
         }
         return new static($row);
     }
-    
+
     public static function findById($id) {
         $row = DbClient::findRowById(static::getTableName(), $id);
         if ($row === false) {
@@ -42,7 +42,7 @@ abstract class DbActiveRecord implements ArrayAccess {
         }
         return new static($row);
     }
-    
+
     public static function findBySql($sql/*, ...*/) {
         $row = DbClient::findRow($sql, self::getParams(func_get_args(), 1));
         if ($row === false) {
@@ -50,7 +50,7 @@ abstract class DbActiveRecord implements ArrayAccess {
         }
         return new static($row);
     }
-    
+
     public static function findAll($where = null/*, ...*/) {
         if (is_array($where)) {
             $rows = DbClient::findAllByColumns(static::getTableName(), $where);
@@ -107,7 +107,7 @@ abstract class DbActiveRecord implements ArrayAccess {
             self::getParams(func_get_args(), 2)
         );
     }
-    
+
     public static function sum($columnName, $where = null/*, ...*/) {
         return DbClient::sum(
             static::getTableName(),
@@ -116,7 +116,7 @@ abstract class DbActiveRecord implements ArrayAccess {
             self::getParams(func_get_args(), 2)
         );
     }
-    
+
     public static function average($columnName, $where = null/*, ...*/) {
         return DbClient::average(
             static::getTableName(),
@@ -168,37 +168,30 @@ abstract class DbActiveRecord implements ArrayAccess {
         }
     }
 
-    public function offsetSet($offset, $value) {
-        if ($offset === null) {
-            throw new InvalidArgumentException('Null offset is invalid.');
-        } else {
-            $this->row[$offset] = $value;
-        }
-    }
-
-    public function offsetExists($offset) {
-        return isset($this->row[$offset]);
-    }
-
-    public function offsetUnset($offset) {
-        unset($this->row[$offset]);
-    }
-
-    public function offsetGet($offset) {
-        if (isset($this->row[$offset]) === false) {
-            throw new DbActiveRecordException(
-                "Column '$offset' does not exist."
-            );
-        }
-        return $this->row[$offset];
-    }
-
-    public function getRow() {
+    protected function getRow() {
         return $this->row;
     }
 
-    public function setRow(array $row) {
+    protected function setRow(array $row) {
         $this->row = $row;
+    }
+
+    protected function getColumn($name) {
+        if (isset($this->row[$name])) {
+            return $this->row[$name];
+        }
+    }
+
+    protected function setColumn($name, $value) {
+        $this->row[$name] = $value;
+    }
+
+    protected function removeColumn($name) {
+        return unset($this->rows[$name]);
+    }
+
+    protected function hasColumn($name) {
+        return isset($this->rows[$name]);
     }
 
     protected static function getTableName() {
