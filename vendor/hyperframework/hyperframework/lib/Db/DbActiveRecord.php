@@ -1,13 +1,14 @@
 <?php
 namespace Hyperframework\Db;
 
+use ArrayAccess;
 use InvalidArgumentException;
 
-abstract class DbActiveRecord {
+abstract class DbActiveRecord implements ArrayAccess {
     private static $tableNames = [];
     private $row;
 
-    public function __construct(array $row = []) {
+    public function __construct(array $row) {
         $this->setRow($row);
     }
 
@@ -73,7 +74,7 @@ abstract class DbActiveRecord {
         }
         return $result;
     }
-    
+
     public static function findAllBySql($sql/*, ...*/) {
         $rows = DbClient::findAll($sql, self::getParams(func_get_args(), 1));
         $result = [];
@@ -97,7 +98,7 @@ abstract class DbActiveRecord {
             self::getParams(func_get_args(), 2)
         );
     }
-    
+
     public static function max($columnName, $where = null/*, ...*/) {
         return DbClient::max(
             static::getTableName(),
@@ -169,30 +170,37 @@ abstract class DbActiveRecord {
         }
     }
 
-    protected function getRow() {
+    public function getRow() {
         return $this->row;
     }
 
-    protected function setRow(array $row) {
+    public function setRow(array $row) {
         $this->row = $row;
     }
 
-    protected function getColumn($name) {
-        if (isset($this->row[$name])) {
-            return $this->row[$name];
+    public function offsetSet($offset, $value) {
+        if ($offset === null) {
+            throw new InvalidArgumentException('Null offset is invalid.');
+        } else {
+            $this->row[$offset] = $value;
         }
     }
 
-    protected function setColumn($name, $value) {
-        $this->row[$name] = $value;
+    public function offsetGet($offset) {
+        if (isset($this->row[$offset]) === false) {
+            throw new DbActiveRecordException(
+                "Active record column '$offset' does not exist."
+            );
+        }
+        return $this->row[$offset];
     }
 
-    protected function removeColumn($name) {
-        return unset($this->rows[$name]);
+    public function offsetExists($offset) {
+        return isset($this->row[$offset]);
     }
 
-    protected function hasColumn($name) {
-        return isset($this->rows[$name]);
+    public function offsetUnset($offset) {
+        unset($this->row[$offset]);
     }
 
     protected static function getTableName() {
