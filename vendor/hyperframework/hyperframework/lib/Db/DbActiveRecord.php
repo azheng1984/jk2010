@@ -1,14 +1,13 @@
 <?php
 namespace Hyperframework\Db;
 
-use ArrayAccess;
 use InvalidArgumentException;
 
-abstract class DbActiveRecord implements ArrayAccess {
+abstract class DbActiveRecord {
     private static $tableNames = [];
     private $row;
 
-    public function __construct(array $row) {
+    public function __construct(array $row = []) {
         $this->setRow($row);
     }
 
@@ -170,37 +169,30 @@ abstract class DbActiveRecord implements ArrayAccess {
         }
     }
 
-    public function getRow() {
+    protected function getRow() {
         return $this->row;
     }
 
-    public function setRow(array $row) {
+    protected function setRow(array $row) {
         $this->row = $row;
     }
 
-    public function offsetSet($offset, $value) {
-        if ($offset === null) {
-            throw new InvalidArgumentException('Null offset is invalid.');
-        } else {
-            $this->row[$offset] = $value;
+    protected function getColumn($name) {
+        if (isset($this->row[$name])) {
+            return $this->row[$name];
         }
     }
 
-    public function offsetGet($offset) {
-        if (isset($this->row[$offset]) === false) {
-            throw new DbActiveRecordException(
-                "Active record column '$offset' does not exist."
-            );
-        }
-        return $this->row[$offset];
+    protected function setColumn($name, $value) {
+        $this->row[$name] = $value;
     }
 
-    public function offsetExists($offset) {
-        return isset($this->row[$offset]);
+    protected function hasColumn($name) {
+        return isset($this->row[$name]);
     }
 
-    public function offsetUnset($offset) {
-        unset($this->row[$offset]);
+    protected function removeColumn($name) {
+        unset($this->row[$name]);
     }
 
     protected static function getTableName() {
