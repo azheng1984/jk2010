@@ -126,27 +126,25 @@ abstract class DbActiveRecord {
     }
 
     public function insert() {
-        DbClient::insert($this->getTableName(), $this->row);
-        if (isset($this->row['id']) === false) {
-            $this->row['id'] = DbClient::getLastInsertId();
+        DbClient::insert($this->getTableName(), $this->getRow());
+        if ($this->hasColumn('id') === false) {
+            $this->setColumn('id', DbClient::getLastInsertId());
         }
     }
 
     public function update() {
-        if (isset($this->row['id'])) {
-            if (count($this->row) === 1) {
+        $row = $this->getRow();
+        if (isset($row['id'])) {
+            if (count($row) === 1) {
                 throw new DbActiveRecordException(
                     "Cannot update active record '"
                         . get_called_class(). "' where id equals to $id, "
                         . "because it only has an id column."
                 );
             } else {
-                $id = $this->row['id'];
-                $columns = $this->row;
-                unset($columns['id']);
-                return DbClient::updateById(
-                    static::getTableName(), $columns, $id
-                );
+                $id = $row['id'];
+                unset($row['id']);
+                return DbClient::updateById(static::getTableName(), $row, $id);
             }
         } else {
             $class = get_called_class();
@@ -158,8 +156,10 @@ abstract class DbActiveRecord {
     }
 
     public function delete() {
-        if (isset($this->row['id'])) {
-            DbClient::deleteById(static::getTableName(), $this->row['id']);
+        if ($this->hasColumn('id')) {
+            DbClient::deleteById(
+                static::getTableName(), $this->getCloumn('id')
+            );
         } else {
             $class = get_called_class();
             throw new DbActiveRecordException(
