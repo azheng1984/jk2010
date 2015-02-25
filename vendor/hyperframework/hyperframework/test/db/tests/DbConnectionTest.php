@@ -25,7 +25,7 @@ class DbConnectionTest extends Base {
 
     public function testPrepare() {
         $this->assertTrue(
-            $this->connection->query('SELECT * FROM Document')
+            $this->connection->prepare('SELECT * FROM Document')
                 instanceof DbStatement
         );
     }

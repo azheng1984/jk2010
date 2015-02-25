@@ -20,7 +20,7 @@ class DbConnection extends PDO {
         return $this->name;
     }
 
-    public function prepare($sql, array $driverOptions = []) {
+    public function prepare($sql, $driverOptions = []) {
         $pdoStatement = parent::prepare($sql, $driverOptions);
         return new DbStatement($pdoStatement, $this);
     }
