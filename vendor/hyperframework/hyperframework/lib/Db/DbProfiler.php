@@ -61,6 +61,31 @@ class DbProfiler {
         self::$profileHandler = $handler;
     }
 
+    public static function getProfileHandler() {
+        if (self::$profileHandler === null) {
+            $profileHandlerClass = Config::getString(
+                'hyperframework.db.profiler.profile_handler_class', ''
+            );
+            if ($profileHandlerClass !== '') {
+                if (class_exists($profileHandlerClass) === false) {
+                    throw new ClassNotFoundException(
+                        "Database operation profile handler class "
+                            . "'$profileHandlerClass' does not exist,"
+                            . " set using config 'hyperframework.db"
+                            . ".profiler.profile_handler_class'."
+                    );
+                }
+                self::$profileHandler = new $profileHandlerClass;
+            } else {
+                self::$profileHandler = false;
+            }
+        }
+        if (self::$profileHandler === false) {
+            return;
+        }
+        return self::$profileHandler;
+    }
+
     private static function initializeProfile($connection, array $profile) {
         self::$profile = [];
         $name = $connection->getName();
@@ -115,26 +140,9 @@ class DbProfiler {
                 Logger::debug($callback);
             }
         }
-        $profileHandlerClass = Config::getString(
-            'hyperframework.db.profiler.profile_handler_class', ''
-        );
-        if (self::$profileHandler === null) {
-            if ($profileHandlerClass !== '') {
-                if (class_exists($profileHandlerClass) === false) {
-                    throw new ClassNotFoundException(
-                        "Database operation profile handler class "
-                            . "'$profileHandlerClass' does not exist,"
-                            . " set using config 'hyperframework.db"
-                            . ".profiler.profile_handler_class'."
-                    );
-                }
-                self::$profileHandler = new $profileHandlerClass;
-            } else {
-                self::$profileHandler = false;
-            }
-        }
-        if (self::$profileHandler !== false) {
-            self::$profileHandler->handle(self::$profile);
+        $profileHandler = static::getProfileHandler();
+        if ($profileHandler !== null) {
+            $profileHandler->handle(self::$profile);
         }
     }
 
