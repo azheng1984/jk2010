@@ -12,7 +12,7 @@ class DbConnectionFactory {
         $config = $this->getConfig($name);
         if (isset($config['dsn']) === false) {
             throw new ConfigException(
-                "Field 'dsn' does not exist in connection config '$name'."
+                "Field 'dsn' is missing in database connection config '$name'."
             );
         }
         $username = isset($config['username']) ? $config['username'] : null;
