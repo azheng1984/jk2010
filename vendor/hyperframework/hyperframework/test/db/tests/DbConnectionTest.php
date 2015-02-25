@@ -2,8 +2,8 @@
 namespace Hyperframework\Db;
 
 use PDO;
-use Hyperframework\Db\Test\TestCase as Base;
 use Hyperframework\Common\Config;
+use Hyperframework\Db\Test\TestCase as Base;
 
 class DbConnectionTest extends Base {
     private $connection;
@@ -21,7 +21,7 @@ class DbConnectionTest extends Base {
     public function testPrepare() {
         $this->assertTrue(
             $this->connection->query('SELECT * FROM Document')
-                instanceof DbStatementProxy
+                instanceof DbStatement
         );
     }
 
@@ -32,7 +32,7 @@ class DbConnectionTest extends Base {
     public function testQuery() {
         $this->assertTrue(
             $this->connection->query('SELECT * FROM Document')
-                instanceof DbStatementProxy
+                instanceof DbStatement
         );
     }
 

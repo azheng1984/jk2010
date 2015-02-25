@@ -79,7 +79,7 @@ class DbClientEngineTest extends Base {
 
     public function testFind() {
         $statement = $this->engine->find("SELECT * FROM Document");
-        $this->assertTrue($statement instanceof DbStatementProxy);
+        $this->assertTrue($statement instanceof DbStatement);
     }
 
     public function testFindByColumns() {
@@ -219,7 +219,7 @@ class DbClientEngineTest extends Base {
 
     public function testPrepare() {
         $this->assertTrue($this->engine->prepare('SELECT * FROM Document', [])
-            instanceof DbStatementProxy);
+            instanceof DbStatement);
     }
 
     public function testSetConnection() {

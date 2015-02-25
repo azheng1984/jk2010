@@ -21,8 +21,8 @@ class DbConnection extends PDO {
     }
 
     public function prepare($sql, array $driverOptions = []) {
-        $statement = parent::prepare($sql, $driverOptions);
-        return new DbStatementProxy($statement, $this);
+        $pdoStatement = parent::prepare($sql, $driverOptions);
+        return new DbStatement($pdoStatement, $this);
     }
 
     public function exec($sql) {
@@ -111,7 +111,7 @@ class DbConnection extends PDO {
                         );
                 }
             }
-            $result = new DbStatementProxy($result, $this);
+            $result = new DbStatement($result, $this);
         } else {
             $result = parent::exec($sql);
         }
