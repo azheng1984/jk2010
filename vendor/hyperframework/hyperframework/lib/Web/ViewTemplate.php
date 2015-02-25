@@ -19,9 +19,9 @@ abstract class ViewTemplate implements ArrayAccess {
     private $layoutPath;
     private $layoutRootPath;
 
-    public function __construct($loadFileFunction, array $model = null) {
+    public function __construct($loadFileFunction, array $viewModel = null) {
         $this->loadFileFunction = $loadFileFunction;
-        $this->model = $model === null ? [] : $model;
+        $this->viewModel = $viewModel === null ? [] : $viewModel;
     }
 
     public function render($path) {
@@ -111,32 +111,32 @@ abstract class ViewTemplate implements ArrayAccess {
     }
 
     public function __invoke($function) {
-        $function();
+        return $function();
     }
 
     public function offsetSet($offset, $value) {
         if ($offset === null) {
             throw new InvalidArgumentException('Offset cannot be null.');
         } else {
-            $this->model[$offset] = $value;
+            $this->viewModel[$offset] = $value;
         }
     }
 
     public function offsetExists($offset) {
-        return isset($this->model[$offset]);
+        return isset($this->viewModel[$offset]);
     }
 
     public function offsetUnset($offset) {
-        unset($this->model[$offset]);
+        unset($this->viewModel[$offset]);
     }
 
     public function offsetGet($offset) {
-        if (isset($this->model[$offset]) === false) {
+        if (isset($this->viewModel[$offset]) === false) {
             throw new ViewException(
                 "View model field '$offset' is not defined."
             );
         }
-        return $this->model[$offset];
+        return $this->viewModel[$offset];
     }
 
     private function pushContext() {

@@ -2,10 +2,10 @@
 namespace Hyperframework\Web;
 
 class View extends ViewTemplate {
-    public function __construct(array $model = null) {
+    public function __construct(array $viewModel = null) {
         $loadFileFunction = function() {
             require $this->getFullPath();
         };
-        parent::__construct($loadFileFunction , $model);
+        parent::__construct($loadFileFunction , $viewModel);
     }
 }

@@ -936,7 +936,7 @@ abstract class Router {
     protected function isMatched() {
         return $this->isMatched;
     }
-    
+
     protected function setMatchStatus($isMatched) {
         $this->isMatched = $isMatched;
     }

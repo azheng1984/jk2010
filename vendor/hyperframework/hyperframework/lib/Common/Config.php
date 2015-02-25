@@ -116,7 +116,7 @@ class Config {
     }
 
     public static function getAppRootPath() {
-        if (isset(self::$appRootPath) === false) {
+        if (self::$appRootPath === null) {
             self::$appRootPath = static::getString(
                 'hyperframework.app_root_path'
             );
