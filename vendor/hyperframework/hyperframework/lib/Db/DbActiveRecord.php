@@ -135,6 +135,7 @@ abstract class DbActiveRecord {
     public function update() {
         $row = $this->getRow();
         if (isset($row['id'])) {
+            $id = $row['id'];
             if (count($row) === 1) {
                 throw new DbActiveRecordException(
                     "Cannot update active record '"
@@ -142,7 +143,6 @@ abstract class DbActiveRecord {
                         . "because it only has an id column."
                 );
             } else {
-                $id = $row['id'];
                 unset($row['id']);
                 return DbClient::updateById(static::getTableName(), $row, $id);
             }
@@ -158,7 +158,7 @@ abstract class DbActiveRecord {
     public function delete() {
         if ($this->hasColumn('id')) {
             DbClient::deleteById(
-                static::getTableName(), $this->getCloumn('id')
+                static::getTableName(), $this->getColumn('id')
             );
         } else {
             $class = get_called_class();
