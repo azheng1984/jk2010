@@ -5,7 +5,7 @@ use Hyperframework\Logging\Test\TestCase as Base;
 
 class LogLevelTest extends Base {
     public function testGetName() {
-        $this->assertSame('ERROR', LogLevel::getName(1));
+        $this->assertSame('ERROR', LogLevel::getName(2));
     }
 
     public function testGetNameByInvalidCode() {
@@ -13,7 +13,7 @@ class LogLevelTest extends Base {
     }
 
     public function testGetCode() {
-        $this->assertSame(1, LogLevel::getCode('error'));
+        $this->assertSame(2, LogLevel::getCode('error'));
     }
 
     public function testGetCodeByInvalidName() {

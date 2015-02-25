@@ -15,7 +15,7 @@ abstract class DbActiveRecord {
         if (is_array($where)) {
             $row = DbClient::findRowByColumns(static::getTableName(), $where);
         } elseif (is_string($where) || $where === null) {
-            $rows = DbClient::findRow(
+            $row = DbClient::findRow(
                 self::completeSelectSql($where),
                 self::getParams(func_get_args(), 1)
             );
@@ -24,7 +24,7 @@ abstract class DbActiveRecord {
             if ($type === 'object') {
                 $type = get_class($where);
             }
-            throw InvalidArgumentException(
+            throw new InvalidArgumentException(
                 "Argument 'where' must be a string or an array, $type given."
             );
         }
@@ -63,7 +63,7 @@ abstract class DbActiveRecord {
             if ($type === 'object') {
                 $type = get_class($where);
             }
-            throw InvalidArgumentException(
+            throw new InvalidArgumentException(
                 "Argument 'where' must be a string or an array, $type given."
             );
         }

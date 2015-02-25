@@ -2,7 +2,7 @@
 
 class Category {
     public function getCategory() {
-        if (isset($this['category']) {
+        if (isset($this['category'])) {
             return $this['category'];
         }
     }

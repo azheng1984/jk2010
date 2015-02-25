@@ -9,7 +9,8 @@ class DbConnection extends PDO {
     private $identifierQuotationMarks;
 
     public function __construct(
-        $name, $dsn, $userName = null, $password = null, $driverOptions = null
+        $name, $dsn, $userName = null, $password = null,
+        array $driverOptions = null
     ) {
         $this->name = $name;
         parent::__construct($dsn, $userName, $password, $driverOptions);
@@ -19,7 +20,7 @@ class DbConnection extends PDO {
         return $this->name;
     }
 
-    public function prepare($sql, $driverOptions = []) {
+    public function prepare($sql, array $driverOptions = []) {
         $statement = parent::prepare($sql, $driverOptions);
         return new DbStatementProxy($statement, $this);
     }
@@ -31,49 +32,34 @@ class DbConnection extends PDO {
     public function query(
         $sql, $fetchStyle = null, $extraParam1 = null, $extraParam2 = null
     ) {
-        $argumentCount = func_num_args();
-        if ($argumentCount === 1) {
-            return $this->sendSql($sql, true);
+        switch (func_num_args()) {
+            case 1: return $this->sendSql($sql, true);
+            case 2: return $this->sendSql($sql, true, [$fetchStyle]);
+            case 3: return $this->sendSql(
+                $sql, true, [$fetchStyle, $extraParam1]
+            );
+            default: return $this->sendSql(
+                $sql, true, [$fetchStyle, $extraParam1, $extraParam2]
+            );
         }
-        if ($argumentCount === 2) {
-            return $this->sendSql($sql, true, [$fetchStyle]);
-        }
-        if ($argumentCount === 3) {
-            return $this->sendSql($sql, true, [$fetchStyle, $extraParam1]);
-        }
-        return $this->sendSql(
-            $sql, true, [$fetchStyle, $extraParam1, $extraParam2]
-        );
     }
 
     public function beginTransaction() {
-        if (DbProfiler::isEnabled()) {
-            DbProfiler::onTransactionOperationExecuting($this, 'begin');
-        }
+        DbProfiler::onTransactionOperationExecuting($this, 'begin');
         parent::beginTransaction();
-        if (DbProfiler::isEnabled()) {
-            DbProfiler::onTransactionOperationExecuted($this, 'begin');
-        }
+        DbProfiler::onTransactionOperationExecuted($this, 'begin');
     }
 
     public function commit() {
-        if (DbProfiler::isEnabled()) {
-            DbProfiler::onTransactionOperationExecuting($this, 'commit');
-        }
+        DbProfiler::onTransactionOperationExecuting($this, 'commit');
         parent::commit();
-        if (DbProfiler::isEnabled()) {
-            DbProfiler::onTransactionOperationExecuted($this, 'commit');
-        }
+        DbProfiler::onTransactionOperationExecuted($this, 'commit');
     }
 
     public function rollBack() {
-        if (DbProfiler::isEnabled()) {
-            DbProfiler::onTransactionOperationExecuting($this, 'rollback');
-        }
+        DbProfiler::onTransactionOperationExecuting($this, 'rollback');
         parent::rollBack();
-        if (DbProfiler::isEnabled()) {
-            DbProfiler::onTransactionOperationExecuted($this, 'rollback');
-        }
+        DbProfiler::onTransactionOperationExecuted($this, 'rollback');
     }
 
     public function quoteIdentifier($identifier) {
@@ -85,12 +71,21 @@ class DbConnection extends PDO {
             . $this->identifierQuotationMarks[1];
     }
 
+    protected function getIdentifierQuotationMarks() {
+        switch ($this->getAttribute(PDO::ATTR_DRIVER_NAME)) {
+            case 'mysql':
+                return ['`', '`'];
+            case 'sqlsrv':
+                return ['[', ']'];
+            default:
+                return ['"', '"'];
+        }
+    }
+
     private function sendSql(
         $sql, $isQuery = false, array $fetchOptions = null
     ) {
-        if (DbProfiler::isEnabled()) {
-            DbProfiler::onConnectionExecuting($this, $sql, $isQuery);
-        }
+        DbProfiler::onConnectionExecuting($this, $sql, $isQuery);
         $result = null;
         if ($isQuery) {
             if ($fetchOptions === null) {
@@ -120,20 +115,7 @@ class DbConnection extends PDO {
         } else {
             $result = parent::exec($sql);
         }
-        if (DbProfiler::isEnabled()) {
-            DbProfiler::onConnectionExecuted($this, $result);
-        }
+        DbProfiler::onConnectionExecuted($this, $result);
         return $result;
-    }
-
-    protected function getIdentifierQuotationMarks() {
-        switch ($this->getAttribute(PDO::ATTR_DRIVER_NAME)) {
-            case 'mysql':
-                return ['`', '`'];
-            case 'sqlsrv':
-                return ['[', ']'];
-            default:
-                return ['"', '"'];
-        }
     }
 }

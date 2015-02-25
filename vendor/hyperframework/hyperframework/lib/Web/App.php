@@ -70,7 +70,9 @@ class App extends Base {
     }
 
     protected function checkCsrf() {
-        CsrfProtection::run();
+        if (CsrfProtection::isEnabled()) {
+            CsrfProtection::run();
+        }
     }
 
     protected function createController() {

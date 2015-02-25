@@ -11,7 +11,9 @@ return [
         'username' => 'hftest',
         'password' => '123456',
         'options' => [
-            PDO::ATTR_EMULATE_PREPARES => false
+            PDO::ATTR_EMULATE_PREPARES => true
         ],
-    ]
+    ],
+    'invalid' => [
+     ]
 ];

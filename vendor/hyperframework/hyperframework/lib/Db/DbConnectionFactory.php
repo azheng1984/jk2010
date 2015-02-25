@@ -27,7 +27,9 @@ class DbConnectionFactory {
 
     private function getConfig($name) {
         if ($this->config === null) {
-            $this->initializeConfig();
+            $this->config = ConfigFileLoader::loadPhp(
+                'db.php', 'hyperframework.db.config_path'
+            );
         }
         if ($name === 'default' && isset($this->config['dsn'])
             && is_string($this->config['dsn'])
@@ -39,12 +41,6 @@ class DbConnectionFactory {
         }
         throw new ConfigException(
             "Database connection config '$name' does not exist."
-        );
-    }
-
-    private function initializeConfig() {
-        $this->config = ConfigFileLoader::loadPhp(
-            'db.php', 'hyperframework.db.config_path'
         );
     }
 }

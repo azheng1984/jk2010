@@ -7,17 +7,15 @@ use Hyperframework\Common\ClassNotFoundException;
 class CsrfProtection {
     private static $engine;
 
-    public static function run() {
-        if (static::isEnabled()) {
-            $engine = static::getEngine();
-            $engine->run();
-        }
-    }
-
     public static function isEnabled() {
         return Config::getBoolean(
             'hyperframework.web.csrf_protection.enable', true
         );
+    }
+
+    public static function run() {
+        $engine = static::getEngine();
+        $engine->run();
     }
 
     public static function getToken() {

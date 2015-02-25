@@ -14,13 +14,9 @@ class DbStatementProxy {
     }
 
     public function execute($params = null) {
-        if (DbProfiler::isEnabled()) {
-            DbProfiler::onStatementExecuting($this);
-        }
+        DbProfiler::onStatementExecuting($this);
         $result = $this->statement->execute($params);
-        if (DbProfiler::isEnabled()) {
-            DbProfiler::onStatementExecuted($this);
-        }
+        DbProfiler::onStatementExecuted($this);
         return $result;
     }
 

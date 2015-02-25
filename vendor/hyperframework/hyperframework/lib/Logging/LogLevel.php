@@ -2,20 +2,22 @@
 namespace Hyperframework\Logging;
 
 class LogLevel {
-    const FATAL   = 0;
-    const ERROR   = 1;
-    const WARNING = 2;
-    const NOTICE  = 3;
-    const INFO    = 4;
-    const DEBUG   = 5;
+    const OFF     = 0;
+    const FATAL   = 1;
+    const ERROR   = 2;
+    const WARNING = 3;
+    const NOTICE  = 4;
+    const INFO    = 5;
+    const DEBUG   = 6;
 
     private static $levels = [
-        'FATAL' => 0,
-        'ERROR' => 1,
-        'WARNING' => 2,
-        'NOTICE' => 3,
-        'INFO' => 4,
-        'DEBUG' => 5
+        'OFF' => 0,
+        'FATAL' => 1,
+        'ERROR' => 2,
+        'WARNING' => 3,
+        'NOTICE' => 4,
+        'INFO' => 5,
+        'DEBUG' => 6
     ];
 
     public static function getCode($name) {

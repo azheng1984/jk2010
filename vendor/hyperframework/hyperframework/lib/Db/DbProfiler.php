@@ -9,6 +9,7 @@ use Hyperframework\Logging\Logger;
 
 class DbProfiler {
     private static $profile;
+    private static $profileHandler;
 
     public static function isEnabled() {
         return Config::getBoolean('hyperframework.db.profiler.enable', false);
@@ -17,31 +18,47 @@ class DbProfiler {
     public static function onTransactionOperationExecuting(
         $connection, $operation
     ) {
-        self::initializeProfile($connection, ['transaction' => $operation]);
+        if (static::isEnabled()) {
+            self::initializeProfile($connection, ['transaction' => $operation]);
+        }
     }
 
     public static function onTransactionOperationExecuted(
         $connection, $operation
     ) {
-        self::handleProfile();
+        if (static::isEnabled()) {
+            self::handleProfile();
+        }
     }
 
     public static function onConnectionExecuting($connection, $sql, $isQuery) {
-        self::initializeProfile($connection, ['sql' => $sql]);
+        if (static::isEnabled()) {
+            self::initializeProfile($connection, ['sql' => $sql]);
+        }
     }
 
     public static function onConnectionExecuted($connection, $result) {
-        self::handleProfile();
+        if (static::isEnabled()) {
+            self::handleProfile();
+        }
     }
 
     public static function onStatementExecuting($statement) {
-        self::initializeProfile(
-            $statement->getConnection(), ['sql' => $statement->getsql()]
-        );
+        if (static::isEnabled()) {
+            self::initializeProfile(
+                $statement->getConnection(), ['sql' => $statement->getsql()]
+            );
+        }
     }
 
     public static function onStatementExecuted($statement) {
-        self::handleProfile();
+        if (static::isEnabled()) {
+            self::handleProfile();
+        }
+    }
+
+    public static function setProfileHandler($handler) {
+        self::$profileHandler = $handler;
     }
 
     private static function initializeProfile($connection, array $profile) {
@@ -101,17 +118,23 @@ class DbProfiler {
         $profileHandlerClass = Config::getString(
             'hyperframework.db.profiler.profile_handler_class', ''
         );
-        if ($profileHandlerClass !== '') {
-            if (class_exists($profileHandlerClass) === false) {
-                throw new ClassNotFoundException(
-                    "Database operation profile handler class "
-                        . "'$profileHandlerClass' does not exist,"
-                        . " set using config "
-                        . "'hyperframework.db.profiler.profile_handler_class'."
-                );
+        if (self::$profileHandler === null) {
+            if ($profileHandlerClass !== '') {
+                if (class_exists($profileHandlerClass) === false) {
+                    throw new ClassNotFoundException(
+                        "Database operation profile handler class "
+                            . "'$profileHandlerClass' does not exist,"
+                            . " set using config 'hyperframework.db"
+                            . ".profiler.profile_handler_class'."
+                    );
+                }
+                self::$profileHandler = new $profileHandlerClass;
+            } else {
+                self::$profileHandler = false;
             }
-            $profileHandler = new $profileHandlerClass;
-            $profileHandler->handle($profile);
+        }
+        if (self::$profileHandler !== false) {
+            self::$profileHandler->handle(self::$profile);
         }
     }
 
