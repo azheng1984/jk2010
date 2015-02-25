@@ -63,16 +63,14 @@ class DbProfiler {
 
     public static function getProfileHandler() {
         if (self::$profileHandler === null) {
-            $profileHandlerClass = Config::getString(
-                'hyperframework.db.profiler.profile_handler_class', ''
-            );
+            $configName = 'hyperframework.db.profiler.profile_handler_class';
+            $profileHandlerClass = Config::getString($configName, '');
             if ($profileHandlerClass !== '') {
                 if (class_exists($profileHandlerClass) === false) {
                     throw new ClassNotFoundException(
                         "Database operation profile handler class "
                             . "'$profileHandlerClass' does not exist,"
-                            . " set using config 'hyperframework.db"
-                            . ".profiler.profile_handler_class'."
+                            . " set using config '$configName'."
                     );
                 }
                 self::$profileHandler = new $profileHandlerClass;
