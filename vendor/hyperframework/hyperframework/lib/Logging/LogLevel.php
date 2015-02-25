@@ -11,13 +11,13 @@ class LogLevel {
     const DEBUG   = 6;
 
     private static $levels = [
-        'OFF' => 0,
-        'FATAL' => 1,
-        'ERROR' => 2,
+        'OFF'     => 0,
+        'FATAL'   => 1,
+        'ERROR'   => 2,
         'WARNING' => 3,
-        'NOTICE' => 4,
-        'INFO' => 5,
-        'DEBUG' => 6
+        'NOTICE'  => 4,
+        'INFO'    => 5,
+        'DEBUG'   => 6
     ];
 
     public static function getCode($name) {
