@@ -47,19 +47,19 @@ class DbConnection extends PDO {
     public function beginTransaction() {
         DbProfiler::onTransactionOperationExecuting($this, 'begin');
         parent::beginTransaction();
-        DbProfiler::onTransactionOperationExecuted($this, 'begin');
+        DbProfiler::onTransactionOperationExecuted();
     }
 
     public function commit() {
         DbProfiler::onTransactionOperationExecuting($this, 'commit');
         parent::commit();
-        DbProfiler::onTransactionOperationExecuted($this, 'commit');
+        DbProfiler::onTransactionOperationExecuted();
     }
 
     public function rollBack() {
         DbProfiler::onTransactionOperationExecuting($this, 'rollback');
         parent::rollBack();
-        DbProfiler::onTransactionOperationExecuted($this, 'rollback');
+        DbProfiler::onTransactionOperationExecuted();
     }
 
     public function quoteIdentifier($identifier) {
@@ -85,7 +85,7 @@ class DbConnection extends PDO {
     private function sendSql(
         $sql, $isQuery = false, array $fetchOptions = null
     ) {
-        DbProfiler::onConnectionExecuting($this, $sql, $isQuery);
+        DbProfiler::onConnectionExecuting($this, $sql);
         $result = null;
         if ($isQuery) {
             if ($fetchOptions === null) {
@@ -115,7 +115,7 @@ class DbConnection extends PDO {
         } else {
             $result = parent::exec($sql);
         }
-        DbProfiler::onConnectionExecuted($this, $result);
+        DbProfiler::onConnectionExecuted();
         return $result;
     }
 }

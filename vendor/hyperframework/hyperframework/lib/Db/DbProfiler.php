@@ -23,21 +23,19 @@ class DbProfiler {
         }
     }
 
-    public static function onTransactionOperationExecuted(
-        $connection, $operation
-    ) {
+    public static function onTransactionOperationExecuted() {
         if (static::isEnabled()) {
             self::handleProfile();
         }
     }
 
-    public static function onConnectionExecuting($connection, $sql, $isQuery) {
+    public static function onConnectionExecuting($connection, $sql) {
         if (static::isEnabled()) {
             self::initializeProfile($connection, ['sql' => $sql]);
         }
     }
 
-    public static function onConnectionExecuted($connection, $result) {
+    public static function onConnectionExecuted() {
         if (static::isEnabled()) {
             self::handleProfile();
         }
@@ -51,7 +49,7 @@ class DbProfiler {
         }
     }
 
-    public static function onStatementExecuted($statement) {
+    public static function onStatementExecuted() {
         if (static::isEnabled()) {
             self::handleProfile();
         }

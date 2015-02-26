@@ -16,6 +16,17 @@ class DbStatementTest extends Base {
         $statement->execute();
     }
 
+    public function testGetSql() {
+        $sql = 'SELECT * FROM Document';
+        $statement = DbClient::prepare($sql);
+        $this->assertSame($sql, $statement->getSql());
+    }
+
+    public function testGetConnection() {
+        $statement = DbClient::prepare('SELECT * FROM Document');
+        $this->assertTrue($statement->getConnection() instanceof DbConnection);
+    }
+
     private function mockProfileHandler() {
         Config::set('hyperframework.db.profiler.enable', true);
         Config::set('hyperframework.db.profiler.enable_logger', false);

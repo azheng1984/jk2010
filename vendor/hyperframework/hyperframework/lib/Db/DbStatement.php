@@ -16,7 +16,7 @@ class DbStatement {
     public function execute($params = null) {
         DbProfiler::onStatementExecuting($this);
         $result = $this->pdoStatement->execute($params);
-        DbProfiler::onStatementExecuted($this);
+        DbProfiler::onStatementExecuted();
         return $result;
     }
 
@@ -89,7 +89,7 @@ class DbStatement {
     public function fetchAll(
         $fetchStyle = null,
         $fetchArgument = null,
-        $constructorArguments = []
+        array $constructorArguments = []
     ) {
         switch (func_num_args()) {
             case 0: return $this->pdoStatement->fetchAll();
@@ -108,9 +108,11 @@ class DbStatement {
     }
 
     public function fetchObject(
-        $className = "stdClass", $constructorArguments = []
+        $className = "stdClass", array $constructorArguments = []
     ) {
-        return $this->pdoStatement->fetchObject($className, $constructorArguments); 
+        return $this->pdoStatement->fetchObject(
+            $className, $constructorArguments
+        );
     }
 
     public function getAttribute($attribute) {
