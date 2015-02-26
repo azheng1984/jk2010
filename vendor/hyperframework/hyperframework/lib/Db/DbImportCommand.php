@@ -10,12 +10,6 @@ class DbImportCommand {
         if ($count === 0) {
             return;
         }
-        if (is_array($rows[0]) === false) {
-            throw new InvalidArgumentException(
-                "Row must be an array, "
-                    . gettype($rows[0]) . " given at row 0."
-            );
-        }
         $columnNames = null;
         if (isset($options['column_names'])) {
             $columnNames = $options['column_names'];
@@ -25,6 +19,12 @@ class DbImportCommand {
                         . gettype($columnNames) . ' given.');
             }
         } else {
+            if (is_array($rows[0]) === false) {
+                throw new InvalidArgumentException(
+                    "Row must be an array, "
+                        . gettype($rows[0]) . " given at row 0."
+                );
+            }
             $columnNames = array_keys($rows[0]);
         }
         $columnCount = count($columnNames);
@@ -36,10 +36,9 @@ class DbImportCommand {
             if ($options['batch_size'] === false) {
                 $batchSize = $count;
             } else {
-                $options['batch_size'] = $options['batch_size'];
+                $batchSize = (int)$options['batch_size'];
             }
         }
-        $row = $rows[0];
         foreach ($columnNames as &$columnName) {
             $columnName = DbClient::quoteIdentifier($columnName);
         }
