@@ -50,6 +50,9 @@ class ErrorHandlerTest extends Base {
         if (file_exists(dirname(__DIR__) . '/data/tmp/logger_log')) {
             unlink(dirname(__DIR__) . '/data/tmp/logger_log');
         }
+        if (file_exists(dirname(__DIR__) . '/log/app.log')) {
+            unlink(dirname(__DIR__) . '/log/app.log');
+        }
         error_reporting($this->errorReportingBitmask);
         Logger::setLogHandler(null);
         Config::clear();
