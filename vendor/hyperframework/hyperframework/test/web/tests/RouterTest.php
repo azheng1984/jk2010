@@ -14,18 +14,6 @@ class RouterTest extends Base {
         $_SERVER['REQUEST_URI'] = '/';
     }
 
-    private function resetRouter() {
-        $this->router = $this->getMockForAbstractClass(
-            'Hyperframework\Web\Router',
-            [new \stdclass],
-            '',
-            false
-        );
-    }
-
-    protected function tearDown() {
-    }
-
     public function testMatchFormatInPattern() {
         $_SERVER['REQUEST_URI'] = '/document/id.format';
         $this->assertTrue($this->match(':controller/:id(.:format)'));
@@ -576,6 +564,15 @@ class RouterTest extends Base {
         $args = [$pattern, $options];
         return $this->callProtectedMethod(
             $this->router, 'matchResources', $args
+        );
+    }
+
+    private function resetRouter() {
+        $this->router = $this->getMockForAbstractClass(
+            'Hyperframework\Web\Router',
+            [new \stdclass],
+            '',
+            false
         );
     }
 }

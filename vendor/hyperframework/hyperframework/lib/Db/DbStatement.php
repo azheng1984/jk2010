@@ -14,9 +14,9 @@ class DbStatement {
     }
 
     public function execute($params = null) {
-        DbProfiler::onStatementExecuting($this);
+        DbProfiler::onPreparedStatementExecuting($this);
         $result = $this->pdoStatement->execute($params);
-        DbProfiler::onStatementExecuted();
+        DbProfiler::onPreparedStatementExecuted();
         return $result;
     }
 

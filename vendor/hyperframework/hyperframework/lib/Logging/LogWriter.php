@@ -9,17 +9,20 @@ use Hyperframework\Common\FileLoader;
 class LogWriter {
     private $path;
     private $isDefaultPath;
+    private $isDirectoryChecked = false;
 
     public function write($text) {
-        if ($this->path === null) {
-            $this->path = Config::getString(
-                'hyperframework.logging.log_path', ''
-            );
-            if ($this->path === '') {
-                $this->isDefaultPath = true;
-                $this->path = 'log' . DIRECTORY_SEPARATOR . 'app.log';
-            } else {
-                $this->isDefaultPath = false;
+        if ($this->isDirectoryChecked === false) {
+            if ($this->path === null) {
+                $this->path = Config::getString(
+                    'hyperframework.logging.log_path', ''
+                );
+                if ($this->path === '') {
+                    $this->isDefaultPath = true;
+                    $this->path = 'log' . DIRECTORY_SEPARATOR . 'app.log';
+                } else {
+                    $this->isDefaultPath = false;
+                }
             }
             $this->path = FileLoader::getFullPath($this->path);
             if (file_exists($this->path) === false) {
@@ -38,6 +41,7 @@ class LogWriter {
                     }
                 }
             }
+            $this->isDirectoryChecked = true;
         }
         try {
             $handle = fopen($this->path, 'a');

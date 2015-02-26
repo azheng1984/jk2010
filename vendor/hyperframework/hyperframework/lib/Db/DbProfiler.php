@@ -29,19 +29,19 @@ class DbProfiler {
         }
     }
 
-    public static function onConnectionExecuting($connection, $sql) {
+    public static function onSqlStatementExecuting($connection, $sql) {
         if (static::isEnabled()) {
             self::initializeProfile($connection, ['sql' => $sql]);
         }
     }
 
-    public static function onConnectionExecuted() {
+    public static function onSqlStatementExecuted() {
         if (static::isEnabled()) {
             self::handleProfile();
         }
     }
 
-    public static function onStatementExecuting($statement) {
+    public static function onPreparedStatementExecuting($statement) {
         if (static::isEnabled()) {
             self::initializeProfile(
                 $statement->getConnection(), ['sql' => $statement->getsql()]
@@ -49,7 +49,7 @@ class DbProfiler {
         }
     }
 
-    public static function onStatementExecuted() {
+    public static function onPreparedStatementExecuted() {
         if (static::isEnabled()) {
             self::handleProfile();
         }
@@ -143,17 +143,17 @@ class DbProfiler {
     }
 
     private static function getCustomLoggerClass() {
-        $loggerClass = Config::getString(
+        $class = Config::getString(
             'hyperframework.db.profiler.logger_class', ''
         );
-        if ($loggerClass !== '') {
-            if (class_exists($loggerClass) === false) {
+        if ($class !== '') {
+            if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
                     "Logger class '$class' does not exist, set using config "
                         . "'hyperframework.db.profiler.logger_class'."
                 );
             }
-            return $loggerClass;
+            return $class;
         }
     }
 }

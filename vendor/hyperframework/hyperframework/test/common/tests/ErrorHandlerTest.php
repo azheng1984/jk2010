@@ -4,6 +4,7 @@ namespace Hyperframework\Common;
 use ReflectionFunction;
 use Hyperframework\Common\Test\ErrorTriggeredErrorHandler;
 use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Logging\Logger;
 
 class ErrorHandlerTest extends Base {
     private $errorReportingBitmask;
@@ -50,6 +51,7 @@ class ErrorHandlerTest extends Base {
             unlink(dirname(__DIR__) . '/data/tmp/logger_log');
         }
         error_reporting($this->errorReportingBitmask);
+        Logger::setLogHandler(null);
         Config::clear();
     }
 

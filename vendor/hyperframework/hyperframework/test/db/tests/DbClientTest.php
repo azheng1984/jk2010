@@ -200,19 +200,6 @@ class DbClientTest extends Base {
         $this->assertTrue(DbClient::deleteById('table', 'id'));
     }
 
-//    public function testSave() {
-//        $this->mockEngineMethod('save')->will(
-//            $this->returnCallback(function($table, array &$row) {
-//                $this->assertSame('table', $table);
-//                $row['id'] = 1;
-//                return true;
-//            })
-//        );
-//        $row = [];
-//        $this->assertTrue(DbClient::save('table', $row));
-//        $this->assertTrue($row['id'] === 1);
-//    }
-
     public function testExecute() {
         $this->mockEngineMethod('execute')->with(
             $this->equalTo('sql'), $this->equalTo(['param'])

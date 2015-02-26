@@ -85,7 +85,7 @@ class DbConnection extends PDO {
     private function sendSql(
         $sql, $isQuery = false, array $fetchOptions = null
     ) {
-        DbProfiler::onConnectionExecuting($this, $sql);
+        DbProfiler::onSqlStatementExecuting($this, $sql);
         $result = null;
         if ($isQuery) {
             if ($fetchOptions === null) {
@@ -115,7 +115,7 @@ class DbConnection extends PDO {
         } else {
             $result = parent::exec($sql);
         }
-        DbProfiler::onConnectionExecuted();
+        DbProfiler::onSqlStatementExecuted();
         return $result;
     }
 }
