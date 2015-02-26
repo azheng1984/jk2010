@@ -35,19 +35,12 @@ class DbImportCommandTest extends Base {
         );
     }
 
-    public function testExecuteOnce() {
-        Config::set('hyperframework.db.profiler.enable', true);
-        Config::set('hyperframework.db.profiler.enable_logger', false);
-        $mock = $this->getMock('Hyperframework\Db\Test\ProfileHandler');
-        $mock->expects($this->once())->method('handle');
-        DbProfiler::setProfileHandler($mock);
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testInvalidBatchSizeOption() {
         DbImportCommand::execute(
-            'Document',
-            [[1, 'doc 1', 12.34], [2, 'doc 2', 0]],
-            [
-                'column_names' => ['id', 'name', 'decimal'],
-                'batch_size' => false
-            ]
+            'Document', [[1, 'doc 1', 12.34]], ['batch_size' => 0]
         );
     }
 
