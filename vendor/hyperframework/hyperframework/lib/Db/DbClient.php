@@ -9,7 +9,7 @@ class DbClient {
 
     public static function findColumn($sql/*, ...*/) {
         return static::getEngine()->findColumn(
-            $sql, self::getParams(func_get_args())
+            $sql, self::getParams(func_get_args(), 1)
         );
     }
 
@@ -29,7 +29,7 @@ class DbClient {
 
     public static function findRow($sql/*, ...*/) {
         return static::getEngine()->findRow(
-            $sql, self::getParams(func_get_args())
+            $sql, self::getParams(func_get_args(), 1)
         );
     }
 
@@ -51,7 +51,7 @@ class DbClient {
 
     public static function findAll($sql/*, ...*/) {
         return static::getEngine()->findAll(
-            $sql, self::getParams(func_get_args())
+            $sql, self::getParams(func_get_args(), 1)
         );
     }
 
@@ -65,7 +65,7 @@ class DbClient {
 
     public static function find($sql/*, ...*/) {
         return static::getEngine()->find(
-            $sql, self::getParams(func_get_args())
+            $sql, self::getParams(func_get_args(), 1)
         );
     }
 
@@ -135,7 +135,7 @@ class DbClient {
 
     public static function execute($sql/*, ...*/) {
         return static::getEngine()->execute(
-            $sql, self::getParams(func_get_args())
+            $sql, self::getParams(func_get_args(), 1)
         );
     }
 
@@ -204,7 +204,7 @@ class DbClient {
         self::$engine = $value;
     }
 
-    private static function getParams(array $args, $offset = 1) {
+    private static function getParams(array $args, $offset) {
         if (isset($args[$offset]) === false) {
             return;
         }

@@ -85,7 +85,7 @@ abstract class DbActiveRecord {
 
     public static function count($where = null/*, ...*/) {
         return DbClient::count(
-            static::getTableName(), $where, self::getParams(func_get_args())
+            static::getTableName(), $where, self::getParams(func_get_args(), 1)
         );
     }
 
@@ -216,7 +216,7 @@ abstract class DbActiveRecord {
         return $result;
     }
 
-    private static function getParams(array $args, $offset = 1) {
+    private static function getParams(array $args, $offset) {
         if (isset($args[$offset]) === false) {
             return [];
         }
