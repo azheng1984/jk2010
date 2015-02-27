@@ -237,35 +237,81 @@ class DbClientEngineTest extends Base {
         $this->assertTrue($connection === $this->engine->getConnection());
         $this->engine->setConnection($connection);
         $this->engine->connect('custom');
-        $this->assertTrue($connection !== $this->engine->getConnection());
+        $this->assertNotSame($connection, $this->engine->getConnection());
     }
 
     public function testCloseConnectionWhenConnectionPoolIsEnabled() {
-    }
-
-    public function testCloseConnectionByNameWhenConnectionPoolIsEnabled() {
-    }
-
-    public function testCloseConnectionByNameWhenConnectionPoolIsDisabled() {
+        $connection = new DbCustomConnection;
+        $this->engine->setConnection($connection);
+        $this->engine->closeConnection();
+        $this->assertNull($this->engine->getConnection(false));
+        $this->engine->connect('custom');
+        $this->assertNotSame($connection, $this->engine->getConnection());
     }
 
     public function testCloseConnectionWhenConnectionPoolIsDisabled() {
+        Config::set('hyperframework.db.enable_connection_pool', false);
+        $connection = new DbCustomConnection;
+        $this->engine->setConnection($connection);
+        $this->engine->closeConnection();
+        $this->assertNull($this->engine->getConnection(false));
     }
 
-    public function
-        testCloseNonExistentConnectionByNameWhenConnectionPoolIsDisabled()
-    {
+    public function testCloseConnectionByNameWhenConnectionPoolIsEnabled() {
+        $connection = new DbCustomConnection;
+        $this->engine->setConnection($connection);
+        $this->engine->closeConnection('custom');
+        $this->assertNull($this->engine->getConnection(false));
+        $this->engine->connect('custom');
+        $this->assertNotSame($connection, $this->engine->getConnection());
     }
 
+    public function testCloseConnectionByNameWhenConnectionPoolIsDisabled() {
+        Config::set('hyperframework.db.enable_connection_pool', false);
+        $connection = new DbCustomConnection;
+        $this->engine->setConnection($connection);
+        $this->engine->closeConnection('custom');
+        $this->assertNull($this->engine->getConnection(false));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function
         testCloseNonExistentConnectionByNameWhenConnectionPoolIsEnabled()
     {
+        $connection = new DbCustomConnection;
+        $this->engine->setConnection($connection);
+        $this->engine->closeConnection('unknown');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function
+        testCloseNonExistentConnectionByNameWhenConnectionPoolIsDisabled()
+    {
+        Config::set('hyperframework.db.enable_connection_pool', false);
+        $connection = new DbCustomConnection;
+        $this->engine->setConnection($connection);
+        $this->engine->closeConnection('unknown');
     }
 
     public function testClosePooledConnection() {
+        $connection = new DbCustomConnection;
+        $this->engine->setConnection($connection);
+        $this->engine->connect('default');
+        $this->engine->closeConnection('custom');
+        $this->assertNotNull($this->engine->getConnection(false));
+        $this->engine->connect('custom');
+        $this->assertNotSame($connection, $this->engine->getConnection());
     }
 
+    /**
+     * @expectedException Hyperframework\Common\InvalidOperationException
+     */
     public function testCloseNullConnection() {
+        $this->engine->closeConnection();
     }
 
     public function testGetNullConnection() {
@@ -275,9 +321,19 @@ class DbClientEngineTest extends Base {
     public function testConnectWhenConnectionPoolIsEnabled() {
         $this->engine->connect('backup');
         $connection = $this->engine->getConnection();
+        $this->engine->connect('backup');
         $this->assertSame('backup', $connection->getName());
+        $this->assertSame($this->engine->getConnection(), $connection);
     }
 
     public function testConnectWhenConnectionPoolIsDisabled() {
+        Config::set('hyperframework.db.enable_connection_pool', false);
+        $this->engine->connect('backup');
+        $connectionA = $this->engine->getConnection();
+        $this->engine->connect('backup');
+        $connectionB = $this->engine->getConnection();
+        $this->assertSame('backup', $connectionA->getName());
+        $this->assertSame('backup', $connectionB->getName());
+        $this->assertNotSame($connectionA, $connectionB);
     }
 }

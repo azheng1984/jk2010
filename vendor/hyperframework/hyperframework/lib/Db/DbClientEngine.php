@@ -243,11 +243,12 @@ class DbClientEngine {
                     'The current database connection equals null.'
                 );
             }
-            $this->connection = null;
             if ($this->isConnectionPoolEnabled() === false) {
+                $this->connection = null;
                 return;
             }
             $name = $this->connection->getName();
+            $this->connection = null;
         } elseif ($this->connection !== null) {
             if ($this->connection->getName() === $name) {
                 $this->connection = null;

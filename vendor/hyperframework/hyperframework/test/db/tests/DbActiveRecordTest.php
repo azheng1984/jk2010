@@ -93,7 +93,7 @@ class DbActiveRecordTest extends Base {
         $doc = new Document(['name' => 'doc 1']);
         $doc->insert();
         $this->assertSame(3, DbClient::count('Document'));
-        $this->assertTrue($doc->getId() !== null);
+        $this->assertNotSame(null, $doc->getId());
     }
 
     public function testUpdate() {
