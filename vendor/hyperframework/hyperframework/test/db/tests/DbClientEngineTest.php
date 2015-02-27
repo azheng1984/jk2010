@@ -222,15 +222,62 @@ class DbClientEngineTest extends Base {
             instanceof DbStatement);
     }
 
-    public function testSetConnection() {
+    public function testSetConnectionWhenConnectionPoolIsEnabled() {
         $connection = new DbCustomConnection;
         $this->engine->setConnection($connection);
         $this->assertTrue($connection === $this->engine->getConnection());
+        $this->engine->connect('custom');
+        $this->assertTrue($connection === $this->engine->getConnection());
     }
 
-    public function testConnect() {
+    public function testSetConnectionWhenConnectionPoolIsDisabled() {
+        Config::set('hyperframework.db.enable_connection_pool', false);
+        $connection = new DbCustomConnection;
+        $this->engine->setConnection($connection);
+        $this->assertTrue($connection === $this->engine->getConnection());
+        $this->engine->setConnection($connection);
+        $this->engine->connect('custom');
+        $this->assertTrue($connection !== $this->engine->getConnection());
+    }
+
+    public function testCloseConnectionWhenConnectionPoolIsEnabled() {
+    }
+
+    public function testCloseConnectionByNameWhenConnectionPoolIsEnabled() {
+    }
+
+    public function testCloseConnectionByNameWhenConnectionPoolIsDisabled() {
+    }
+
+    public function testCloseConnectionWhenConnectionPoolIsDisabled() {
+    }
+
+    public function
+        testCloseNonExistentConnectionByNameWhenConnectionPoolIsDisabled()
+    {
+    }
+
+    public function
+        testCloseNonExistentConnectionByNameWhenConnectionPoolIsEnabled()
+    {
+    }
+
+    public function testClosePooledConnection() {
+    }
+
+    public function testCloseNullConnection() {
+    }
+
+    public function testGetNullConnection() {
+        $this->assertNull($this->engine->getConnection(false));
+    }
+
+    public function testConnectWhenConnectionPoolIsEnabled() {
         $this->engine->connect('backup');
         $connection = $this->engine->getConnection();
         $this->assertSame('backup', $connection->getName());
+    }
+
+    public function testConnectWhenConnectionPoolIsDisabled() {
     }
 }

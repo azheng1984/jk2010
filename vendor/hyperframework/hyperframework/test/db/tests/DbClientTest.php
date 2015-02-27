@@ -259,10 +259,19 @@ class DbClientTest extends Base {
     }
 
     public function testGetConnection() {
-        $this->mockEngineMethod('getConnection')->will(
+        $this->mockEngineMethod('getConnection')->with(
+            $this->equalTo(true)
+        )->will(
             $this->returnValue(true)
         );
         $this->assertTrue(DbClient::getConnection());
+    }
+
+    public function testCloseConnection() {
+        $this->mockEngineMethod('closeConnection')->with(
+            $this->equalTo(null)
+        );
+        DbClient::closeConnection();
     }
 
     public function testConnect() {

@@ -167,8 +167,8 @@ class DbClient {
         return static::getEngine()->prepare($sql, $driverOptions);
     }
 
-    public static function getConnection() {
-        return static::getEngine()->getConnection();
+    public static function getConnection($shouldConnect = true) {
+        return static::getEngine()->getConnection($shouldConnect);
     }
 
     public static function setConnection($value) {
@@ -177,6 +177,10 @@ class DbClient {
 
     public static function connect($name) {
         static::getEngine()->connect($name);
+    }
+
+    public static function closeConnection($name = null) {
+        static::getEngine()->closeConnection($name);
     }
 
     public static function getEngine() {

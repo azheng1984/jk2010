@@ -5,6 +5,11 @@ use Exception;
 use Hyperframework\Db\Test\TestCase as Base;
 
 class DbTransactionTest extends Base {
+    protected function tearDown() {
+        DbClient::setEngine(null);
+        parent::tearDown();
+    }
+
     public function testRun() {
         $this->assertFalse(DbClient::inTransaction());
         DbTransaction::run(function() {
@@ -35,13 +40,12 @@ class DbTransactionTest extends Base {
 
     public function testNestedTransactionUsingDifferentConnections() {
         DbTransaction::run(function() {
-            $defaultConnection = DbClient::getConnection();
             DbClient::connect('backup');
             DbTransaction::run(function() {
                 $this->assertTrue(DbClient::inTransaction());
             });
             $this->assertFalse(DbClient::inTransaction());
-            DbClient::setConnection($defaultConnection);
+            DbClient::connect('default');
             $this->assertTrue(DbClient::inTransaction());
         });
         $this->assertFalse(DbClient::inTransaction());
