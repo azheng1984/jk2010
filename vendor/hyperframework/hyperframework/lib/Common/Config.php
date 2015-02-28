@@ -4,6 +4,7 @@ namespace Hyperframework\Common;
 class Config {
     private static $data = [];
     private static $appRootPath;
+    private static $appRootNamespace;
 
     public static function get($name, $default = null) {
         if (isset(self::$data[$name])) {
@@ -16,6 +17,9 @@ class Config {
         $result = static::get($name);
         if ($result === null) {
             return $default;
+        }
+        if (is_string($result)) {
+            return $result;
         }
         if (is_scalar($result) || is_resource($result)) {
             return (string)$result;
@@ -90,13 +94,11 @@ class Config {
         if ($result === null) {
             return $default;
         }
-        if ($class === null) {
-            if (is_object($result) === false) {
-                throw new ConfigException(
-                    "Config '$name' requires an object of class, "
-                        . gettype($result) . " given."
-                );
-            }
+        if (is_object($result) === false) {
+            throw new ConfigException(
+                "Config '$name' requires an object of class, "
+                    . gettype($result) . " given."
+            );
         }
         return $result;
     }
@@ -117,30 +119,30 @@ class Config {
 
     public static function getAppRootPath() {
         if (self::$appRootPath === null) {
-            self::$appRootPath = static::getString(
-                'hyperframework.app_root_path'
-            );
-            if (self::$appRootPath === null) {
+            $appRootPath = static::getString('hyperframework.app_root_path');
+            if ($appRootPath === null) {
                 throw new ConfigException(
                     "Config 'hyperframework.app_root_path' does not exist."
                 );
             }
-            $isFullPath = FullPathRecognizer::isFull(
-                self::$appRootPath
-            );
+            $isFullPath = FullPathRecognizer::isFull($appRootPath);
             if ($isFullPath === false) {
                 throw new ConfigException(
                     "The value of config 'hyperframework.app_root_path'"
-                        . " must be a full path, '"
-                        . self::$appRootPath . "' given."
+                        . " must be a full path, '$appRootPath' given."
                 );
             }
+            self::$appRootPath = $appRootPath;
         }
         return self::$appRootPath;
     }
 
     public static function getAppRootNamespace() {
-        return static::getString('hyperframework.app_root_namespace', '');
+        if (self::$appRootNamespace === null) {
+            self::$appRootNamespace =
+                static::getString('hyperframework.app_root_namespace', '');
+        }
+        return self::$appRootNamespace;
     }
 
     public static function set($key, $value) {
@@ -214,6 +216,7 @@ class Config {
     public static function clear() {
         self::$data = [];
         self::$appRootPath = null;
+        self::$appRootNamespace = null;
     }
 
     private static function checkKey($key) {
