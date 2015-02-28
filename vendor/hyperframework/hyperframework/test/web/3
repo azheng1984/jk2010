@@ -1,0 +1,56 @@
+<?php
+namespace Hyperframework\Web;
+
+use Hyperframework\Common\Config;
+use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Web\Test\App;
+
+class AppTest extends Base {
+    public function testRun() {
+//        Config::set('hyperframework.app_root_path', dirname(__DIR__));
+        Config::set('hyperframework.initialize_config', false);
+        Config::set('hyperframework.initialize_error_handler', false);
+        Config::set('hyperframework.web.csrf_protection.enable', false);
+        /*
+        Config::set(
+            'hyperframework.web.router_class', 'Hyperframework\Web\Test\Router'
+        );
+        */
+        App::setCreateAppCallback(function() {
+            $app = $this->createApp();
+            $controller = $this->getMockBuilder(
+                'Hyperframework\Web\Test\IndexController'
+            )->getMock();
+            $controller->expects($this->once())->method('run');
+            $app->expects($this->once())->method('createController')
+                ->willReturn($controller);
+            //$app->expects($this->once())->method('finalize');
+            return $app;
+        });
+        App::run();
+    }
+
+    public function testCsrfProtection() {
+    }
+
+    public function testRewriteRequestMethod() {
+    }
+
+    public function testCreateController() {
+    }
+
+    public function testInitializeAppRootPath() {
+    }
+
+    public function testInitializeErrorHandler() {
+    }
+
+    public function testConstruct() {
+    }
+
+    public function createApp() {
+        $mock = $this->getMockBuilder('Hyperframework\Web\App')
+            ->setConstructorArgs([dirname(__DIR__)])->getMock();//->setMethods(['createController'])->getMock();
+        return $mock;
+    }
+}
