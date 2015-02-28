@@ -275,7 +275,7 @@ class DbClientEngineTest extends Base {
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException Hyperframework\Common\InvalidOperationException
      */
     public function
         testCloseNonExistentConnectionByNameWhenConnectionPoolIsEnabled()
@@ -286,7 +286,7 @@ class DbClientEngineTest extends Base {
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException Hyperframework\Common\InvalidOperationException
      */
     public function
         testCloseNonExistentConnectionByNameWhenConnectionPoolIsDisabled()
