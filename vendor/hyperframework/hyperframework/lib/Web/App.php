@@ -10,17 +10,17 @@ use Hyperframework\Common\App as Base;
 class App extends Base {
     private $router;
 
-    public function __construct($appRootPath) {
-        parent::__construct($appRootPath);
-        $this->rewriteRequestMethod();
-        $this->checkCsrf();
-    }
-
     public static function run() {
         $app = static::createApp();
         $controller = $app->createController();
         $controller->run();
         $app->finalize();
+    }
+
+    public function __construct($appRootPath) {
+        parent::__construct($appRootPath);
+        $this->rewriteRequestMethod();
+        $this->checkCsrf();
     }
 
     public function getRouter() {
