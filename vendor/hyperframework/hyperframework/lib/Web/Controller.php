@@ -7,7 +7,6 @@ use Exception;
 use InvalidArgumentException;
 use LogicException;
 use Hyperframework\Common\Config;
-use Hyperframework\Common\InvalidOperationException;
 use Hyperframework\Common\NotSupportedException;
 
 class Controller {
@@ -41,8 +40,9 @@ class Controller {
 
     public function getApp() {
         if ($this->app === null) {
-            throw new InvalidOperationException(
-                "Constructor method of class '" . __CLASS__ . "' is not called."
+            throw new LogicException(
+                "App cannot be null, constructor method of class"
+                    . " '" . __CLASS__ . "' is not called."
             );
         }
         return $this->app;

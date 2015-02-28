@@ -2,7 +2,7 @@
 namespace Hyperframework\Cli;
 
 use InvalidArgumentException;
-use Hyperframework\Common\InvalidOperationException;
+use LogicException;
 
 abstract class Command {
     private $app;
@@ -18,8 +18,9 @@ abstract class Command {
 
     protected function getApp() {
         if ($this->app === null) {
-            throw new InvalidOperationException(
-                "Constructor method of class '" . __CLASS__ . "' is not called."
+            throw new LogicException(
+                "App cannot be null, constructor method of class"
+                    . " '" . __CLASS__ . "' is not called."
             );
         }
         return $this->app;

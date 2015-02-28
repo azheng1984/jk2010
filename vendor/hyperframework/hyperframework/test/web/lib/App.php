@@ -12,7 +12,6 @@ class App extends Base {
 
     protected static function createApp() {
         $callback = self::$callback;
-        $app = $callback();
-        return $app;
+        return $callback();
     }
 }

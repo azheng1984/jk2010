@@ -2,10 +2,10 @@
 namespace Hyperframework\Web;
 
 use Closure;
+use LogicException;
 use InvalidArgumentException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NamespaceCombiner;
-use Hyperframework\Common\InvalidOperationException;
 
 abstract class Router {
     private $app;
@@ -1004,8 +1004,9 @@ abstract class Router {
 
     protected function getApp() {
         if ($this->app === null) {
-            throw new InvalidOperationException(
-                "Constructor method of class '" . __CLASS__ . "' is not called."
+            throw new LogicException(
+                "App cannot be null, constructor method of class"
+                    . " '" . __CLASS__ . "' is not called."
             );
         }
         return $this->app;
