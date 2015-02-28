@@ -22,7 +22,7 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
             ->setMethods(['quit', 'initializeConfig', 'initializeErrorHandler', 'initializeAppRootPath'])
             ->disableOriginalConstructor()
             ->getMock();
-        $mock->__construct(null);
+        $mock->__construct(dirname(__dir__));
         return $mock;
     }
 
@@ -32,7 +32,7 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
         );
         $_SERVER['argv'] = ['run', '-t'];
         $app = $this->createApp();
-        $app->run(null);
+        $app->run(dirname(__dir__));
         $this->assertEquals($app->getGlobalOptions(), ['t' => true]);
     }
 
@@ -43,7 +43,7 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
     public function testInitialize() {
         $_SERVER['argv'] = ['run', '-t', 'child', '-c', 'arg'];
         $app = $this->createApp();
-        $app->run(null);
+        $app->run(dirname(__dir__));
         $this->assertEquals($app->getGlobalOptions(), ['t' => true]);
         $this->assertEquals($app->getOptions(), ['c' => true]);
         $this->assertEquals($app->getArguments(), ['arg']);
@@ -52,7 +52,7 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
     public function testHasGlobalOption() {
         $_SERVER['argv'] = ['run', '-t', 'child', '-c', 'arg'];
         $app = $this->createApp();
-        $app->run(null);
+        $app->run(dirname(__dir__));
         $this->assertEquals($app->hasGlobalOption('t'),  true);
         $this->assertEquals($app->hasGlobalOption('c'),  false);
     }
@@ -60,7 +60,7 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
     public function testGetGlobalOption() {
         $_SERVER['argv'] = ['run', '-t', 'child', '-c', 'arg'];
         $app = $this->createApp();
-        $app->run(null);
+        $app->run(dirname(__dir__));
         $this->assertEquals($app->getGlobalOption('t'),  true);
         $this->assertEquals($app->hasGlobalOption('c'),  null);
     }
@@ -68,7 +68,7 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
     public function testRunSubcommand() {
         $_SERVER['argv'] = ['run', 'child', '-c', 'arg'];
         $app = $this->createApp();
-        $app->run(null);
+        $app->run(dirname(__dir__));
         $this->assertEquals($app->getOptions(), ['c' => true]);
         $this->assertEquals($app->getArguments(), ['arg']);
     }
@@ -101,7 +101,7 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
     public function testSubcommandClassNotFound() {
         $_SERVER['argv'] = ['run', 'child_class_error'];
         $app = $this->createApp();
-        $app->run(null);
+        $app->run(dirname(__dir__));
     }
 
     public function testGetSubcommand() {

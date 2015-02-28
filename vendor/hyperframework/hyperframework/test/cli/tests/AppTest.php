@@ -20,10 +20,10 @@ class AppTest extends Base {
 
     public function createApp() {
         $mock = $this->getMockBuilder('Hyperframework\Cli\App')
-            ->setMethods(['quit', 'initializeConfig', 'initializeErrorHandler', 'initializeAppRootPath'])
+            ->setMethods(['quit', 'initializeConfig', 'initializeErrorHandler'])
             ->disableOriginalConstructor()
             ->getMock();
-        $mock->__construct(null);
+        $mock->__construct(dirname(__DIR__));
         return $mock;
     }
 
@@ -81,7 +81,8 @@ class AppTest extends Base {
         );
         $_SERVER['argv'] = ['run'];
         $app = $this->createApp();
-        $app->run(null);
+        //echo Config::get('hyperframework.app_root_path');
+        $app->run(dirname(__dir__));
     }
 
     public function testRenderHelp() {
@@ -135,7 +136,7 @@ class AppTest extends Base {
         $this->expectOutputString('Hyperframework\Cli\Test\Command::execute');
         $_SERVER['argv'] = ['run', 'arg'];
         $app = $this->createApp();
-        $app->run(null);
+        $app->run(dirname(__dir__));
     }
 
     public function testCommandParsingError() {
