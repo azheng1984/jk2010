@@ -35,7 +35,7 @@ class Router {
     }
 
     public function getControllerClass() {
-        return $this->controllerClass;
+        return  'Hyperframework\Web\Test\IndexController';
     }
 
     public function setControllerClass($value) {

@@ -4,10 +4,8 @@ namespace Hyperframework\Common;
 use LogicException;
 
 abstract class App {
-    private $appRootPath;
-
-    public function __construct($appRootPath = null) {
-        $this->appRootPath = $appRootPath;
+    public function __construct($appRootPath) {
+        Config::set('hyperframework.app_root_path', $appRootPath);
         if (Config::getBoolean('hyperframework.initialize_config', true)) {
             $this->initializeConfig();
         }
@@ -24,7 +22,6 @@ abstract class App {
     }
 
     protected function initializeConfig() {
-        $this->initializeAppRootPath();
         Config::importFile('init.php');
         if (isset($_ENV['HYPERFRAMEWORK_ENV'])) {
             $env = (string)$_ENV['HYPERFRAMEWORK_ENV'];
@@ -37,13 +34,6 @@ abstract class App {
                 }
             }
         }
-    }
-
-    protected function initializeAppRootPath() {
-        if ($this->appRootPath === null) {
-            throw new LogicException("App root path cannot be empty.");
-        }
-        Config::set('hyperframework.app_root_path', $this->appRootPath);
     }
 
     protected function initializeErrorHandler($defaultClass = null) {

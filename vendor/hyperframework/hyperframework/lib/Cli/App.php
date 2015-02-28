@@ -12,7 +12,7 @@ class App extends Base {
     private $arguments = [];
 
     public static function run($appRootPath) {
-        $app = new static($appRootPath);
+        $app = static::createApp($appRootPath);
         $app->executeCommand();
         $app->finalize();
     }
@@ -56,6 +56,10 @@ class App extends Base {
 
     public function getOptions() {
         return $this->options;
+    }
+
+    protected static function createApp($appRootPath) {
+        return new static($appRootPath);
     }
 
     protected function setOptions(array $options) {

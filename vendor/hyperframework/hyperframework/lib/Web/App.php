@@ -10,14 +10,14 @@ use Hyperframework\Common\App as Base;
 class App extends Base {
     private $router;
 
-    public function __construct() {
-        parent::__construct();
+    public function __construct($appRootPath) {
+        parent::__construct($appRootPath);
         $this->rewriteRequestMethod();
         $this->checkCsrf();
     }
 
     public static function run() {
-        $app = new static;
+        $app = static::createApp();
         $controller = $app->createController();
         $controller->run();
         $app->finalize();
@@ -49,6 +49,10 @@ class App extends Base {
             $this->router = new $class($this);
         }
         return $this->router;
+    }
+
+    protected static function createApp() {
+        return new static(dirname(getcwd()));
     }
 
     protected function rewriteRequestMethod() {
@@ -87,10 +91,6 @@ class App extends Base {
             );
         }
         return new $class($this);
-    }
-
-    protected function initializeAppRootPath() {
-        Config::set('hyperframework.app_root_path', dirname(getcwd()));
     }
 
     protected function initializeErrorHandler($defaultClass = null) {
