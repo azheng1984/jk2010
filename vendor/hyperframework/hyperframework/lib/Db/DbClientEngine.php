@@ -258,9 +258,8 @@ class DbClientEngine {
             }
         }
         if (isset($this->connectionPool[$name]) === false) {
-            throw new InvalidArgumentException(
-                "Argument 'name' is invalid, "
-                    . "database connection '$name' does not exist."
+            throw new InvalidOperationException(
+                "Database connection '$name' does not exist."
             );
         }
         unset($this->connectionPool[$name]);
