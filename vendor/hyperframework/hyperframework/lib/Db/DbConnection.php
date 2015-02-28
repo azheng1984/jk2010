@@ -2,7 +2,6 @@
 namespace Hyperframework\Db;
 
 use PDO;
-use Hyperframework\Common\Config;
 
 class DbConnection extends PDO {
     private $name;
