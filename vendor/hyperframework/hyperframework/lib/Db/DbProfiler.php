@@ -100,32 +100,34 @@ class DbProfiler {
     }
 
     private static function handleProfile() {
+        $profile = self::$profile;
+        self::$profile = null;
         $endTime = self::getTime();
-        self::$profile['running_time'] = (float)sprintf(
+        $profile['running_time'] = (float)sprintf(
             '%.6F',
-            $endTime[1] - self::$profile['start_time'][1] + $endTime[0]
-                - self::$profile['start_time'][0]
+            $endTime[1] - $profile['start_time'][1] + $endTime[0]
+                - $profile['start_time'][0]
         );
-        self::$profile['start_time'] = DateTime::createFromFormat(
-            'U.u', self::$profile['start_time'][1] . '.'
-                . (int)(self::$profile['start_time'][0] * 1000000)
+        $profile['start_time'] = DateTime::createFromFormat(
+            'U.u', $profile['start_time'][1] . '.'
+                . (int)($profile['start_time'][0] * 1000000)
         )->setTimeZone(new DateTimeZone(date_default_timezone_get()));
         $isLoggerEnabled = Config::getBoolean(
             'hyperframework.db.profiler.enable_logger', true
         );
         if ($isLoggerEnabled) {
-            $callback = function() {
+            $callback = function() use ($profile) {
                 $log = '[database operation] ';
-                if (isset(self::$profile['connection_name'])) {
+                if (isset($profile['connection_name'])) {
                     $log .= "connection: "
-                        . self::$profile['connection_name'] . " | ";
+                        . $profile['connection_name'] . " | ";
                 }
                 $log .= "time: " .
-                    sprintf('%.6F', self::$profile['running_time']) . " | ";
-                if (isset(self::$profile['sql'])) {
-                    $log .= 'sql: ' . self::$profile['sql'];
+                    sprintf('%.6F', $profile['running_time']) . " | ";
+                if (isset($profile['sql'])) {
+                    $log .= 'sql: ' . $profile['sql'];
                 } else {
-                    $log .= 'transaction: ' . self::$profile['transaction'];
+                    $log .= 'transaction: ' . $profile['transaction'];
                 }
                 return $log;
             };
@@ -138,7 +140,7 @@ class DbProfiler {
         }
         $profileHandler = static::getProfileHandler();
         if ($profileHandler !== null) {
-            $profileHandler->handle(self::$profile);
+            $profileHandler->handle($profile);
         }
     }
 
