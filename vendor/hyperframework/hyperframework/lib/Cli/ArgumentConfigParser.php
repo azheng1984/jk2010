@@ -18,7 +18,7 @@ class ArgumentConfigParser {
             $isRepeatable = false;
             $length = strlen($config);
             if ($length < 3) {
-                throw new ConfigException(self::getErrorMessage($config)); 
+                throw new ConfigException(self::getErrorMessage($config));
             }
             if ($config[0] === '[') {
                 $isOptional = true;
