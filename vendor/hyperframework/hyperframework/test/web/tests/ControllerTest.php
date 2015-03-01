@@ -95,7 +95,7 @@ class ControllerTest extends Base {
         $isCaught = false;
         $controller->addAroundFilter(function() use (&$isCaught) {
             try {
-                //yield;
+                yield;
             } catch (Exception $e) {
                 $isCaught = true;
             }
@@ -103,7 +103,7 @@ class ControllerTest extends Base {
         $controller->addBeforeFilter(function() {
             throw new Exception;
         });
-        $controller->run();
+        $controllea->run();
         $this->assertTrue($isCaught);
     }
 
@@ -130,7 +130,7 @@ class ControllerTest extends Base {
      */
     public function testAddAroundFilterWhenNotSupported() {
         if (version_compare(phpversion(), '5.5.0', '>=')) {
-            $this->markTestSkipped("PHP 5.4 is required.");
+            $this->markTestSkipped('PHP 5.4 is required.');
             return;
         }
         Config::set('hyperframework.initialize_config', false);

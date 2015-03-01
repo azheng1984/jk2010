@@ -116,7 +116,7 @@ class AppTest extends Base {
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException UnexpectedValueException
      */
     public function testCreateControllerWhenControllerClassIsEmpty() {
         Config::set('hyperframework.initialize_config', false);

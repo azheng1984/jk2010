@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-use LogicException;
+use UnexpectedValueException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NamespaceCombiner;
 use Hyperframework\Common\ClassNotFoundException;
@@ -83,7 +83,9 @@ class App extends Base {
         $router = $this->getRouter();
         $class = (string)$router->getControllerClass();
         if ($class === '') {
-            throw new LogicException('Controller class cannot be empty.');
+            throw new UnexpectedValueException(
+                'Controller class cannot be empty.'
+            );
         }
         if (class_exists($class) === false) {
             throw new ClassNotFoundException(

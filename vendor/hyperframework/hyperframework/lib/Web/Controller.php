@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use InvalidArgumentException;
 use LogicException;
+use UnexpectedValueException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NotSupportedException;
 use Hyperframework\Common\ClassNotFoundException;
@@ -97,11 +98,13 @@ abstract class Controller {
             }
             $controller = (string)$router->getController();
             if ($controller === '') {
-                throw new LogicException('Controller cannot be empty.');
+                throw new UnexpectedValueException(
+                    'Controller cannot be empty.'
+                );
             }
             $action = (string)$router->getAction();
             if ($action === '') {
-                throw new LogicException('Action cannot be empty.');
+                throw new UnexpectedValueException('Action cannot be empty.');
             }
             $name .= $controller . '/' . $action;
             return ViewPathBuilder::build($name, $this->getViewFormat());
@@ -114,18 +117,18 @@ abstract class Controller {
         if (is_object($view)) {
             $view->render($this->getActionResult());
         } elseif (is_string($view) === false) {
-            throw new LogicException(
+            throw new UnexpectedValueException(
                 "View must be a string or an object, "
                     . gettype($view) . " given."
             );
         }
         $path = $view;
         if ($path === '') {
-            throw new LogicException('View path cannot be empty.');
+            throw new UnexpectedValueException('View path cannot be empty.');
         }
         $viewModel = $this->getActionResult();
         if ($viewModel !== null && is_array($viewModel) === false) {
-            throw new LogicException(
+            throw new UnexpectedValueException(
                 'View model must be an array, '
                     . gettype($viewModel) . ' given.'
             );
@@ -196,7 +199,9 @@ abstract class Controller {
         $router = $this->getRouter();
         $method = $router->getActionMethod();
         if ($method == '') {
-            throw new LogicException('Action method cannot be empty.');
+            throw new UnexpectedValueException(
+                'Action method cannot be empty.'
+            );
         }
         if (method_exists($this, $method)) {
             $actionResult = $this->$method();
@@ -235,8 +240,8 @@ abstract class Controller {
         $result = null;
         if (is_string($config['filter'])) {
             if ($config['filter'] === '') {
-                throw new InvalidActionFilterException(
-                    'Filter is set to an empty string.'
+                throw new UnexpectedValueException(
+                    'Action filter is set to an empty string.'
                 );
             }
             if ($config['filter'][0] === ':') {
@@ -286,7 +291,7 @@ abstract class Controller {
         ];
         $action = (string)$this->getRouter()->getAction();
         if ($action === '') {
-            throw new LogicException('Action cannot be empty.');
+            throw new UnexpectedValueException('Action cannot be empty.');
         }
         if ($options === null) {
             $this->filterChain[] = $config;
