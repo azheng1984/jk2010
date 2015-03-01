@@ -125,16 +125,17 @@ abstract class Controller {
         $view->render($path);
     }
 
-    public function getActionResult($name = null) {
-        if ($name === null) {
-            $result = $this->actionResult;
-        }
-        if (isset($this->actionResult[$name])) {
-            return $this->actionResult[$name];
-        }
+    public function getActionResult() {
+        $result = $this->actionResult;
     }
 
-    public function setActionResult(array $actionResult = null) {
+    public function setActionResult($actionResult) {
+        if ($actionResult !== null && is_array($actionResult) === false) {
+            throw new LogicException(
+                'Action result must be an array, '
+                    . gettype($value) . ' given.'
+            );
+        }
         return $this->actionResult = $actionResult;
     }
 
@@ -189,12 +190,6 @@ abstract class Controller {
         }
         if (method_exists($this, $method)) {
             $actionResult = $this->$method();
-            if ($actionResult !== null && is_array($actionResult) === false) {
-                throw new LogicException(
-                    'Action result must be an array, '
-                        . gettype($value) . ' given.'
-                );
-            }
             $this->setActionResult($actionResult);
         }
         if ($this->isViewEnabled()) {
