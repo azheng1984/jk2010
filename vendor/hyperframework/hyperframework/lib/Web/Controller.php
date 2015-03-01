@@ -181,20 +181,6 @@ abstract class Controller {
         $this->addFilter('around', $filter, $options);
     }
 
-    public function removeFilter($name) {
-        foreach ($this->filterChain as $key => $value) {
-            if (isset($value['options']['name'])) {
-                if ($value['options']['name'] === $name) {
-                    unset($this->filterChain[$key]);
-                }
-            } elseif (is_string($value['filter'])) {
-                if ($value['filter'] === $name) {
-                    unset($this->filterChain[$key]);
-                }
-            }
-        }
-    }
-
     protected function handleAction() {
         $router = $this->getRouter();
         $method = $router->getActionMethod();
