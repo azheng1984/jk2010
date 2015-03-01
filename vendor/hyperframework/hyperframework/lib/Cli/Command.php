@@ -6,6 +6,7 @@ use LogicException;
 
 abstract class Command {
     private $app;
+    private $isQuitMethodCalled = false;
 
     public function __construct($app) {
         if ($app === null) {
@@ -62,6 +63,13 @@ abstract class Command {
     }
 
     protected function quit() {
+        if ($this->isQuitMethodCalled) {
+            $class = get_called_class();
+            throw new LogicException(
+                "The quit method of $class cannot be called more than once."
+            );
+        }
+        $this->isQuitMethodCalled = true;
         $app = $this->getApp();
         $app->quit();
     }

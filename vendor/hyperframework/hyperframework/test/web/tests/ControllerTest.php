@@ -95,7 +95,7 @@ class ControllerTest extends Base {
         $isCaught = false;
         $controller->addAroundFilter(function() use (&$isCaught) {
             try {
-                yield;
+                //yield;
             } catch (Exception $e) {
                 $isCaught = true;
             }
@@ -108,5 +108,40 @@ class ControllerTest extends Base {
     }
 
     public function testGetView() {
+    }
+
+    public function testRenderView() {
+    }
+
+    public function testQuit() {
+    }
+
+    public function testRedirect() {
+    }
+
+    public function testAddBeforeFilter() {
+    }
+
+    public function testAddAfterFilter() {
+    }
+
+    /**
+     * @expectedException Hyperframework\Common\NotSupportedException
+     */
+    public function testAddAroundFilterWhenNotSupported() {
+        if (version_compare(phpversion(), '5.5.0', '>=')) {
+            $this->markTestSkipped("PHP 5.4 is required.");
+            return;
+        }
+        Config::set('hyperframework.initialize_config', false);
+        Config::set('hyperframework.initialize_error_handler', false);
+        Config::set('hyperframework.web.csrf_protection.enable', false);
+        Config::set(
+            'hyperframework.web.router_class',
+            'Hyperframework\Web\Test\Router'
+        );
+        $app = new App(dirname(__DIR__));
+        $controller = new IndexController($app);
+        $controller->addAroundFilter(function() {});
     }
 }

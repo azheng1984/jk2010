@@ -4,6 +4,8 @@ namespace Hyperframework\Common;
 use LogicException;
 
 abstract class App {
+    private $isQuitMethodCalled = false;
+
     public function __construct($appRootPath) {
         Config::set('hyperframework.app_root_path', $appRootPath);
         if (Config::getBoolean('hyperframework.initialize_config', true)) {
@@ -17,6 +19,13 @@ abstract class App {
     }
 
     public function quit() {
+        if ($this->isQuitMethodCalled) {
+            $class = get_called_class();
+            throw new LogicException(
+                "The quit method of $class cannot be called more than once."
+            );
+        }
+        $this->isQuitMethodCalled = true;
         $this->finalize();
         ExitHelper::exitScript();
     }

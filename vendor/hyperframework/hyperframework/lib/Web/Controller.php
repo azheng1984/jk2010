@@ -8,12 +8,14 @@ use InvalidArgumentException;
 use LogicException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NotSupportedException;
+use Hyperframework\Common\ClassNotFoundException;
 
 abstract class Controller {
     private $app;
     private $filterChain = [];
     private $isFilterChainReversed = false;
-    private $isFilterChainQuitted = false;
+    private $isQuitFilterChainMethodCalled = false;
+    private $isQuitMethodCalled = false;
     private $actionResult;
     private $view;
     private $isViewEnabled = true;
@@ -141,6 +143,13 @@ abstract class Controller {
     }
 
     public function quit() {
+        if ($this->isQuitMethodCalled) {
+            $class = get_called_class();
+            throw new LogicException(
+                "The quit method of $class cannot be called more than once."
+            );
+        }
+        $this->isQuitMethodCalled = true;
         $this->quitFilterChain();
         $this->finalize();
         $app = $this->getApp();
@@ -236,8 +245,8 @@ abstract class Controller {
             } else {
                 $class = $config['filter'];
                 if (class_exists($class) === false) {
-                    throw new InvalidActionFilterException(
-                        "Filter class '$class' does not exist."
+                    throw new ClassNotFoundException(
+                        "Action filter class '$class' does not exist."
                     );
                 }
                 $filter = new $class;
@@ -253,27 +262,11 @@ abstract class Controller {
             } else {
                 $result = $config['filter']->run($this);
             }
-        } else {
-            throw new InvalidActionFilterException(
-                "Filter type '"
-                    . gettype($config['filter']) . "' is invalid."
-            );
         }
         if ($config['type'] === 'around') {
             if (is_object($result) === false
                 || $result instanceof Generator === false
             ) {
-                if (is_object($result)) {
-                    $type = get_class($result);
-                } else {
-                    $type = gettype($result);
-                }
-                throw new InvalidActionFilterException(
-                    'Around filter must return a generator, '
-                        . $type . ' returned.'
-                );
-            }
-            if ($result->current() === false || $result->valid() === false) {
                 $result = false;
             } else {
                 $config['type'] = 'yielded';
@@ -325,7 +318,8 @@ abstract class Controller {
     }
 
     private function quitFilterChain($exception = null) {
-        if ($this->isFilterChainQuitted === false) {
+        if ($this->isQuitFilterChainMethodCalled === false) {
+            $this->isQuitFilterChainMethodCalled = true;
             $shouldRunYieldedFiltersOnly = $exception === null
                 || $this->isFilterChainReversed === false;
             $shouldRunAfterFilter = false;
@@ -356,7 +350,6 @@ abstract class Controller {
                     }
                 }
             }
-            $this->isFilterChainQuitted = true;
         }
         if ($exception !== null) {
             throw $exception;
