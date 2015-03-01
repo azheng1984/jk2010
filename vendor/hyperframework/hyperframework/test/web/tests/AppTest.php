@@ -34,7 +34,7 @@ class AppTest extends Base {
             ->setMethods(['createController', 'finalize'])->getMock();
         $controller = $this->getMockBuilder(
             'Hyperframework\Web\Test\IndexController'
-        )->getMock();
+        )->setConstructorArgs([$app])->getMock();
         $controller->expects($this->once())->method('run');
         $app->expects($this->once())->method('createController')
             ->willReturn($controller);

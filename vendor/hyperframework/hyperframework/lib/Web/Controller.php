@@ -9,7 +9,7 @@ use LogicException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NotSupportedException;
 
-class Controller {
+abstract class Controller {
     private $app;
     private $filterChain = [];
     private $isFilterChainReversed = false;
@@ -52,16 +52,20 @@ class Controller {
         return $this->getApp()->getRouter();
     }
 
-    public function getRoutingParam($name) {
+    public function getRouteParam($name) {
         $this->getRouter()->getParam($name);
     }
 
-    public function getRoutingParams() {
+    public function getRouteParams() {
         $this->getRouter()->getParams();
     }
 
-    public function hasRoutingParam($name) {
+    public function hasRouteParam($name) {
         $this->getRouter()->hasParam($name);
+    }
+
+    public function getViewFormat() {
+        return $this->getRouteParam('format');
     }
 
     public function disableView() {
@@ -98,14 +102,9 @@ class Controller {
                 throw new LogicException('Action cannot be empty.');
             }
             $name .= $controller . '/' . $action;
-            return ViewPathBuilder::build($name, $this->getFormat());
+            return ViewPathBuilder::build($name, $this->getViewFormat());
         }
         return $this->view;
-    }
-
-    public function getFormat() {
-        $router = $this->getRouter();
-        return $router->getParam('format');
     }
 
     public function renderView() {
@@ -135,16 +134,8 @@ class Controller {
         }
     }
 
-    public function setActionResult($value) {
-        if ($value !== null) {
-            if (is_array($value) === false) {
-                throw new LogicException(
-                    'Action result must be an array, '
-                        . gettype($value) . ' given.'
-                );
-            }
-        }
-        return $this->actionResult = $value;
+    public function setActionResult(array $actionResult = null) {
+        return $this->actionResult = $actionResult;
     }
 
     public function quit() {
@@ -198,6 +189,12 @@ class Controller {
         }
         if (method_exists($this, $method)) {
             $actionResult = $this->$method();
+            if ($actionResult !== null && is_array($actionResult) === false) {
+                throw new LogicException(
+                    'Action result must be an array, '
+                        . gettype($value) . ' given.'
+                );
+            }
             $this->setActionResult($actionResult);
         }
         if ($this->isViewEnabled()) {

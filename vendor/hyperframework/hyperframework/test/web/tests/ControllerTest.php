@@ -1,12 +1,42 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework\Web\Test\Exception;
 use Hyperframework\Common\Config;
 use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Web\Test\IndexController;
+use Hyperframework\Web\Test\InvalidConstructorController;
 
 class ControllerTest extends Base {
+    public function testConstruct() {
+        Config::set('hyperframework.initialize_config', false);
+        Config::set('hyperframework.initialize_error_handler', false);
+        Config::set('hyperframework.web.csrf_protection.enable', false);
+        Config::set(
+            'hyperframework.web.router_class',
+            'Hyperframework\Web\Test\Router'
+        );
+        $app = new App(dirname(__DIR__));
+        $controller = new IndexController($app);
+        $this->assertSame($app, $controller->getApp());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testConstructWhenAppArgumentIsInvalid() {
+        new IndexController(null);
+    }
+
+    /**
+     * @expectedException LogicException
+     */
+    public function testGetAppWhenParentConstructorOfControllerIsNotCalled() {
+        $controller = new InvalidConstructorController;
+        $controller->getApp();
+    }
+
     public function testRun() {
-        $this->expectOutputString('view: index/index');
         Config::set('hyperframework.initialize_config', false);
         Config::set('hyperframework.initialize_error_handler', false);
         Config::set('hyperframework.web.csrf_protection.enable', false);
@@ -19,7 +49,64 @@ class ControllerTest extends Base {
         $router->setAction('index');
         $router->setActionMethod('doIndexAction');
         $router->setController('index');
-        $controller = new Controller($app);
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])
+            ->setMethods(['handleAction', 'finalize'])->getMock();
+        $recorder = [];
+        $controller->addBeforeFilter(function() use (&$recorder) {
+            $recorder[] = 'before';
+        });
+        $controller->addAfterFilter(function() use (&$recorder) {
+            $recorder[] = 'after';
+        });
+        $controller->expects($this->once())->method('handleAction')
+            ->will($this->returnCallback(function() use (&$recorder) {
+                $recorder[] = 'handle_action';
+            }));
+        $controller->expects($this->once())->method('finalize')
+            ->will($this->returnCallback(function() use (&$recorder) {
+                $recorder[] = 'finalize';
+            }));
         $controller->run();
+        $this->assertSame(['before', 'handle_action', 'after', 'finalize'], $recorder);
+    }
+
+    /**
+     * @requires PHP 5.5
+     */
+    public function testRunWhenExceptionIsThrown() {
+        Config::set('hyperframework.initialize_config', false);
+        Config::set('hyperframework.initialize_error_handler', false);
+        Config::set('hyperframework.web.csrf_protection.enable', false);
+        Config::set(
+            'hyperframework.web.router_class',
+            'Hyperframework\Web\Test\Router'
+        );
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $router->setActionMethod('doIndexAction');
+        $router->setController('index');
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])
+            ->setMethods(['handleAction', 'finalize'])->getMock();
+        $isCaught = false;
+        $controller->addAroundFilter(function() use (&$isCaught) {
+            try {
+                yield;
+            } catch (Exception $e) {
+                $isCaught = true;
+            }
+        });
+        $controller->addBeforeFilter(function() {
+            throw new Exception;
+        });
+        $controller->run();
+        $this->assertTrue($isCaught);
+    }
+
+    public function testGetView() {
     }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web\Test;
 
-class IndexController {
-    public function run() {
-    }
+use Hyperframework\Web\Controller as Base;
+
+class IndexController extends Base {
 }
