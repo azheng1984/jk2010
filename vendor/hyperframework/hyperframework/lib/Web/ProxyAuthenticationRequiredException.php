@@ -8,7 +8,7 @@ class ProxyAuthenticationRequiredException extends HttpException {
         $authenticationInfo, $message = null, $previous = null
     ) {
         parent::__construct(
-            $message, 407 'Proxy Authentication Required', $previous
+            $message, 407, 'Proxy Authentication Required', $previous
         );
         $this->authenticationInfo = $authenticationInfo;
     }

@@ -128,9 +128,6 @@ class ControllerTest extends Base {
     public function testAddAroundFilter() {
     }
 
-    public function testRemoveFilter() {
-    }
-
     /**
      * @expectedException Hyperframework\Common\NotSupportedException
      */
