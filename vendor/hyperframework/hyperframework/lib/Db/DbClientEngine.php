@@ -11,6 +11,7 @@ class DbClientEngine {
     private $connection;
     private $connectionFactory;
     private $connectionPool = [];
+    private $isConnectionPoolEnabled;
 
     public function findColumn($sql, array $params = null) {
         $result = $this->find($sql, $params);
@@ -328,9 +329,12 @@ class DbClientEngine {
     }
 
     private function isConnectionPoolEnabled() {
-        return Config::getBoolean(
-            'hyperframework.db.enable_connection_pool', true
-        );
+        if ($this->isConnectionPoolEnabled === null) {
+            $this->isConnectionPoolEnabled = Config::getBoolean(
+                'hyperframework.db.enable_connection_pool', true
+            );
+        }
+        return $this->isConnectionPoolEnabled;
     }
 
     private function getConnectionFactory() {
