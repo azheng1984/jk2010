@@ -121,22 +121,23 @@ abstract class Controller {
         if ($path === '') {
             throw new LogicException('View path cannot be empty.');
         }
-        $view = ViewFactory::createView($this->getActionResult());
+        $viewModel = $this->getActionResult();
+        if ($viewModel !== null && is_array($viewModel) === false) {
+            throw new LogicException(
+                'View model must be an array, '
+                    . gettype($viewModel) . ' given.'
+            );
+        }
+        $view = ViewFactory::createView($viewModel);
         $view->render($path);
     }
 
     public function getActionResult() {
-        $result = $this->actionResult;
+        return $this->actionResult;
     }
 
     public function setActionResult($actionResult) {
-        if ($actionResult !== null && is_array($actionResult) === false) {
-            throw new LogicException(
-                'Action result must be an array, '
-                    . gettype($value) . ' given.'
-            );
-        }
-        return $this->actionResult = $actionResult;
+        $this->actionResult = $actionResult;
     }
 
     public function quit() {

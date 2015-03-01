@@ -39,6 +39,7 @@ class IndexController extends Controller {
 
     protected function doShowAction() {
         DbClient::findRowById('Document', 1);
+        return 'xx';
     }
 
     protected function hi() {
