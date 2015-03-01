@@ -8,7 +8,6 @@ use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\InvalidOperationException;
 
 class DbClientEngine {
-    private $isConnectionPoolEnabled;
     private $connection;
     private $connectionFactory;
     private $connectionPool = [];
@@ -329,12 +328,9 @@ class DbClientEngine {
     }
 
     private function isConnectionPoolEnabled() {
-        if ($this->isConnectionPoolEnabled === null) {
-            $this->isConnectionPoolEnabled = Config::getBoolean(
-                'hyperframework.db.enable_connection_pool', true
-            );
-        }
-        return $this->isConnectionPoolEnabled;
+        return Config::getBoolean(
+            'hyperframework.db.enable_connection_pool', true
+        );
     }
 
     private function getConnectionFactory() {
