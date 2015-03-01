@@ -21,9 +21,6 @@ abstract class DbActiveRecord {
             );
         } else {
             $type = gettype($where);
-            if ($type === 'object') {
-                $type = get_class($where);
-            }
             throw new InvalidArgumentException(
                 "Argument 'where' must be a string or an array, $type given."
             );
@@ -60,9 +57,6 @@ abstract class DbActiveRecord {
             );
         } else {
             $type = gettype($where);
-            if ($type === 'object') {
-                $type = get_class($where);
-            }
             throw new InvalidArgumentException(
                 "Argument 'where' must be a string or an array, $type given."
             );

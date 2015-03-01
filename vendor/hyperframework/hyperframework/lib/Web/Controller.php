@@ -52,15 +52,15 @@ class Controller {
         return $this->getApp()->getRouter();
     }
 
-    public function getRouteParam($name) {
+    public function getRoutingParam($name) {
         $this->getRouter()->getParam($name);
     }
 
-    public function getRouteParams() {
+    public function getRoutingParams() {
         $this->getRouter()->getParams();
     }
 
-    public function hasRouteParam($name) {
+    public function hasRoutingParam($name) {
         $this->getRouter()->hasParam($name);
     }
 
