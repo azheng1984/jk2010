@@ -4,7 +4,6 @@ namespace Hyperframework\Common;
 class Config {
     private static $data = [];
     private static $appRootPath;
-    private static $appRootNamespace;
 
     public static function get($name, $default = null) {
         if (isset(self::$data[$name])) {
@@ -118,8 +117,10 @@ class Config {
     }
 
     public static function getAppRootPath() {
-        if (self::$appRootPath === null) {
-            $appRootPath = static::getString('hyperframework.app_root_path');
+        $appRootPath = static::getString('hyperframework.app_root_path');
+        if (self::$appRootPath === null
+            || $appRootPath !== self::$appRootPath
+        ) {
             if ($appRootPath === null) {
                 throw new ConfigException(
                     "Config 'hyperframework.app_root_path' does not exist."
@@ -134,15 +135,11 @@ class Config {
             }
             self::$appRootPath = $appRootPath;
         }
-        return self::$appRootPath;
+        return $appRootPath;
     }
 
     public static function getAppRootNamespace() {
-        if (self::$appRootNamespace === null) {
-            self::$appRootNamespace =
-                static::getString('hyperframework.app_root_namespace', '');
-        }
-        return self::$appRootNamespace;
+        return static::getString('hyperframework.app_root_namespace', '');
     }
 
     public static function set($key, $value) {
@@ -216,7 +213,6 @@ class Config {
     public static function clear() {
         self::$data = [];
         self::$appRootPath = null;
-        self::$appRootNamespace = null;
     }
 
     private static function checkKey($key) {

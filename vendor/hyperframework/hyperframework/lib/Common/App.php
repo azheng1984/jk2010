@@ -5,7 +5,7 @@ use LogicException;
 
 abstract class App {
     public function __construct($appRootPath) {
-        Config::setAppRootPath($appRootPath);
+        Config::set('hyperframework.app_root_path', $appRootPath);
         if (Config::getBoolean('hyperframework.initialize_config', true)) {
             $this->initializeConfig();
         }
