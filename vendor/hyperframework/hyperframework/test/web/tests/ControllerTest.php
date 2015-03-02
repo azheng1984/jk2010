@@ -103,7 +103,7 @@ class ControllerTest extends Base {
         $controller->addBeforeFilter(function() {
             throw new Exception;
         });
-        $controllea->run();
+        $controller->run();
         $this->assertTrue($isCaught);
     }
 
