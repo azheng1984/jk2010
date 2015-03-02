@@ -17,6 +17,7 @@ abstract class Controller {
     private $isFilterChainReversed = false;
     private $isQuitFilterChainMethodCalled = false;
     private $isQuitMethodCalled = false;
+    private $isRunMethodCalled = false;
     private $actionResult;
     private $view;
     private $isViewEnabled = true;
@@ -31,6 +32,13 @@ abstract class Controller {
     }
 
     public function run() {
+        if ($this->isRunMethodCalled) {
+            $class = get_called_class();
+            throw new LogicException(
+                "The run method of $class cannot be called more than once."
+            );
+        }
+        $this->isRunMethodCalled = true;
         try {
             $this->runBeforeFilters();
             $this->handleAction();
@@ -160,7 +168,7 @@ abstract class Controller {
     }
 
     public function redirect($url, $statusCode = 302) {
-        header('Location: ' . $url, true, $statusCode);
+        ResponseHeaderHelper::setHeader('Location: ' . $url, true, $statusCode);
         $this->quit();
     }
 

@@ -30,15 +30,15 @@ class ErrorHandler extends Base {
     protected function displayFatalError() {
         $error = $this->getError();
         if ($this->isDebuggerEnabled) {
-            $headers = headers_list();
-            if (headers_sent() === false) {
+            $headers = ResponseHeaderHelper::getHeaders();
+            if (ResponseHeaderHelper::isSent() === false) {
                 $this->rewriteHttpHeaders();
             }
             $outputBuffer = $this->getOutputBuffer();
             $this->executeDebugger($headers, $outputBuffer);
         } elseif (ini_get('display_errors') === '1') {
             $this->displayError();
-        } elseif (headers_sent() === false) {
+        } elseif (ResponseHeaderHelper::isSend() === false) {
             $this->rewriteHttpHeaders();
             $this->deleteOutputBuffer();
             $this->renderErrorView();
@@ -46,14 +46,14 @@ class ErrorHandler extends Base {
     }
 
     private function rewriteHttpHeaders() {
-        header_remove();
+        ResponseHeaderHelper::removeAllHeaders();
         $error = $this->getError();
         if ($error instanceof HttpException) {
             foreach ($error->getHttpHeaders() as $header) {
-                header($header);
+                ResponseHeaderHelper::setHeader($header);
             }
         } else {
-            header('HTTP/1.1 500 Internal Server Error');
+            ResponseHeaderHelper::setHeader('HTTP/1.1 500 Internal Server Error');
         }
     }
 
@@ -98,7 +98,7 @@ class ErrorHandler extends Base {
             'Hyperframework.error_handler.output_buffer_charset', ''
         );
         $encoding = null;
-        foreach (headers_list() as $header) {
+        foreach (ResponseHeaderHelper::getHeaders() as $header) {
             $header = str_replace(' ', '', strtolower($header));
             if ($header === 'content-encoding:gzip') {
                 $encoding = 'gzip';

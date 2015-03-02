@@ -550,8 +550,9 @@ function showOutput() {
     var headers = <?= json_encode($headers) ?>;
     var isOverflow = <?= json_encode($isOverflow) ?>;
     var contentLength = <?= json_encode($this->contentLength) ?>;
+    var html = '';
     if (headers.length > 0) {
-        outputContent = '<table id="output"><tbody><tr>'
+    	html += '<tr>'
             + '<td id="response-headers"><a'
             + ' href="javascript:toggleResponseHeaders()">'
             + '<span id="arrow" class="arrow-right"></span>'
@@ -561,27 +562,27 @@ function showOutput() {
         var count = headers.length;
         for (var index = 0; index < count; ++index) {
             var header = headers[index];
-            outputContent += '<code';
+            html += '<code';
             if (count === index + 1) {
-                outputContent += ' class="last"';
+            	html += ' class="last"';
             }
-            outputContent += '><span class="key">' + header[0]
+            html += '><span class="key">' + header[0]
 
                 + ':</span> ' + header[1] + "\n</code>";
         }
-        outputContent += '</div></pre></td></tr>';
+        html += '</div></pre></td></tr>';
     }
     if (isOverflow) {
-        outputContent += '<tr><td class="notice"><span>Notice: </span>';
+    	html += '<tr><td class="notice"><span>Notice: </span>';
         var maxSize = <?= $this->getMaxOutputContentSize() ?>;
         if (maxSize !== 0) {
-            outputContent += 'Content is partial. Length is larger than'
+        	html += 'Content is partial. Length is larger than'
                 + ' output limitation ('
                 + '<?= $this->getMaxOutputContentSize(true) ?>' + ').';
         } else {
-            outputContent += 'Content display is turn off.';
+        	html += 'Content display is turn off.';
         }
-        outputContent += '</td></tr></div>';
+        html += '</td></tr>';
     }
     var responseBodyHtml = '';
     if (content != '') {
@@ -590,9 +591,9 @@ function showOutput() {
     }
     responseBodyHtml += buildOutputContent(content);
     codeContent = contentDiv.innerHTML;
-    contentDiv.innerHTML = outputContent
+    contentDiv.innerHTML = '<table id="output"><tbody>' + html
         + '<tr><td id="response-body" class="response-body">'
-        + responseBodyHtml + '</td></tr>';
+        + responseBodyHtml + '</td></tr></tbody></table>';
 }
 
 function showLineNumbers() {

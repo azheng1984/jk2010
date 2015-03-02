@@ -124,12 +124,67 @@ class ControllerTest extends Base {
     }
 
     public function testRenderView() {
+        $this->expectOutputString('view: index/index');
+        Config::set('hyperframework.initialize_config', false);
+        Config::set('hyperframework.initialize_error_handler', false);
+        Config::set('hyperframework.web.csrf_protection.enable', false);
+        Config::set(
+            'hyperframework.web.router_class',
+            'Hyperframework\Web\Test\Router'
+        );
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $router->setController('index');
+        $controller = new IndexController($app);
+        $controller->renderView();
     }
 
     public function testQuit() {
+        $isExitCalled = false;
+        Config::set('hyperframework.exit_function', function() use (&$isExitCalled) {
+            $isExitCalled = true;
+        });
+        Config::set('hyperframework.initialize_config', false);
+        Config::set('hyperframework.initialize_error_handler', false);
+        Config::set('hyperframework.web.csrf_protection.enable', false);
+        Config::set(
+            'hyperframework.web.router_class',
+            'Hyperframework\Web\Test\Router'
+        );
+        $app = new App(dirname(__DIR__));
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])
+            ->setMethods(['handleAction', 'finalize'])->getMock();
+        $controller = new IndexController($app);
+        $controller->quit();
+        $this->assertTrue($isExitCalled);
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testRedirect() {
+        Config::set('hyperframework.initialize_config', false);
+        Config::set('hyperframework.initialize_error_handler', false);
+        Config::set('hyperframework.web.csrf_protection.enable', false);
+        Config::set(
+            'hyperframework.web.router_class',
+            'Hyperframework\Web\Test\Router'
+        );
+        $app = new App(dirname(__DIR__));
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])
+            ->setMethods(['handleAction', 'quit'])->getMock();
+        $controller->expects($this->once())->method('quit');
+        $engine = $this->getMock('Hyperframework\Web\ResponseHeaderHelperEngine');
+        $engine->expects($this->once())->method('setHeader')->with(
+            'Location: /', true, 302
+        );
+        ResponseHeaderHelper::setEngine($engine);
+        $controller->redirect('/');
     }
 
     public function testAddBeforeFilter() {
