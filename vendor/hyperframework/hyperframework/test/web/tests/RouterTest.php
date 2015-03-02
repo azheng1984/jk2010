@@ -562,13 +562,11 @@ class RouterTest extends Base {
             ->setConstructorArgs([dirname(__DIR__)])->getMock();
         $app->expects($this->once())->method('quit');
         ResponseHeaderHelper::setEngine($engine);
-        $this->router = $this->getMockForAbstractClass(
-            'Hyperframework\Web\Router',
-            [],
-            '',
-            false
-        );
-        $this->callProtectedMethod($this->router, 'setApp', [$app]);
+        $this->router = $this->getMockBuilder(
+            'Hyperframework\Web\Test\Router'
+        )->setMethods(['getApp'])
+        ->setConstructorArgs([$app])->disableOriginalConstructor()->getMock();
+        $this->router->expects($this->once())->method('getApp')->willReturn($app);
         $this->callProtectedMethod($this->router, 'redirect', ['/']);
     }
 

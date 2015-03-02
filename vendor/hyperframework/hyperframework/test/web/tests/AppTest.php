@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 use Hyperframework\Common\Config;
 use Hyperframework\Test\TestCase as Base;
 use Hyperframework\Web\Test\App;
-use Hyperframework\Web\Test\Router;
+use Hyperframework\Web\Test\FakeRouter;
 
 class AppTest extends Base {
     public function testConstruct() {
@@ -102,7 +102,7 @@ class AppTest extends Base {
         Config::set('hyperframework.initialize_error_handler', false);
         Config::set('hyperframework.web.csrf_protection.enable', false);
         $app = $this->getMock('Hyperframework\Web\App', [], [dirname(__DIR__)]);
-        $router = $this->getMock('Hyperframework\Web\Test\Router');
+        $router = $this->getMock('Hyperframework\Web\Test\FakeRouter');
         $router->expects($this->once())->method('getControllerClass')
             ->willReturn('Hyperframework\Web\Test\IndexController');
         $app->expects($this->once())->method('getRouter')->willReturn($router);
@@ -127,7 +127,7 @@ class AppTest extends Base {
             [], [dirname(__DIR__)]
         );
         $app->expects($this->once())->method('getRouter')
-            ->willReturn(new Router);
+            ->willReturn(new FakeRouter);
         var_dump($this->callProtectedMethod($app, 'createController'));
     }
 
@@ -143,7 +143,7 @@ class AppTest extends Base {
             [],
             [dirname(__DIR__)]
         );
-        $router = new Router;
+        $router = new FakeRouter;
         $router->setControllerClass('Unknown');
         $app->expects($this->once())->method('getRouter')->willReturn($router);
         var_dump($this->callProtectedMethod($app, 'createController'));
@@ -217,11 +217,11 @@ class AppTest extends Base {
         Config::set('hyperframework.initialize_error_handler', false);
         Config::set('hyperframework.web.csrf_protection.enable', false);
         Config::set(
-            'hyperframework.web.router_class', 'Hyperframework\Web\Test\Router'
+            'hyperframework.web.router_class', 'Hyperframework\Web\Test\FakeRouter'
         );
         $app = new App(dirname(__DIR__));
         $this->assertInstanceOf(
-            'Hyperframework\Web\Test\Router', $app->getRouter()
+            'Hyperframework\Web\Test\FakeRouter', $app->getRouter()
         );
     }
 }

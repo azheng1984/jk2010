@@ -47,7 +47,7 @@ class ControllerTest extends Base {
         Config::set('hyperframework.web.csrf_protection.enable', false);
         Config::set(
             'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\Router'
+            'Hyperframework\Web\Test\FakeRouter'
         );
         $app = new App(dirname(__DIR__));
         $router = $app->getRouter();
@@ -86,7 +86,7 @@ class ControllerTest extends Base {
         Config::set('hyperframework.web.csrf_protection.enable', false);
         Config::set(
             'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\Router'
+            'Hyperframework\Web\Test\FakeRouter'
         );
         $app = new App(dirname(__DIR__));
         $router = $app->getRouter();
@@ -118,7 +118,7 @@ class ControllerTest extends Base {
         Config::set('hyperframework.web.csrf_protection.enable', false);
         Config::set(
             'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\Router'
+            'Hyperframework\Web\Test\FakeRouter'
         );
         $app = new App(dirname(__DIR__));
         $router = $app->getRouter();
@@ -135,7 +135,7 @@ class ControllerTest extends Base {
         Config::set('hyperframework.web.csrf_protection.enable', false);
         Config::set(
             'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\Router'
+            'Hyperframework\Web\Test\FakeRouter'
         );
         $app = new App(dirname(__DIR__));
         $router = $app->getRouter();
@@ -155,7 +155,7 @@ class ControllerTest extends Base {
         Config::set('hyperframework.web.csrf_protection.enable', false);
         Config::set(
             'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\Router'
+            'Hyperframework\Web\Test\FakeRouter'
         );
         $app = new App(dirname(__DIR__));
         $controller = $this->getMockBuilder(
@@ -173,7 +173,7 @@ class ControllerTest extends Base {
         Config::set('hyperframework.web.csrf_protection.enable', false);
         Config::set(
             'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\Router'
+            'Hyperframework\Web\Test\FakeRouter'
         );
         $app = new App(dirname(__DIR__));
         $controller = $this->getMockBuilder(
@@ -195,7 +195,7 @@ class ControllerTest extends Base {
         Config::set('hyperframework.web.csrf_protection.enable', false);
         Config::set(
             'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\Router'
+            'Hyperframework\Web\Test\FakeRouter'
         );
         $app = new App(dirname(__DIR__));
         $router = $app->getRouter();
@@ -219,7 +219,7 @@ class ControllerTest extends Base {
         Config::set('hyperframework.web.csrf_protection.enable', false);
         Config::set(
             'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\Router'
+            'Hyperframework\Web\Test\FakeRouter'
         );
         $app = new App(dirname(__DIR__));
         $router = $app->getRouter();
@@ -243,7 +243,7 @@ class ControllerTest extends Base {
         Config::set('hyperframework.web.csrf_protection.enable', false);
         Config::set(
             'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\Router'
+            'Hyperframework\Web\Test\FakeRouter'
         );
         $app = new App(dirname(__DIR__));
         $router = $app->getRouter();
@@ -276,7 +276,7 @@ class ControllerTest extends Base {
         Config::set('hyperframework.web.csrf_protection.enable', false);
         Config::set(
             'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\Router'
+            'Hyperframework\Web\Test\FakeRouter'
         );
         $app = new App(dirname(__DIR__));
         $controller = new IndexController($app);

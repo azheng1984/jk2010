@@ -1009,10 +1009,6 @@ abstract class Router {
         return $this->app;
     }
 
-    protected function setApp($value) {
-        $this->app = $value;
-    }
-
     private function verifyExtraRules($extra, array $matches = []) {
         foreach ($matches as $key => $value) {
             if (is_int($key)) {
