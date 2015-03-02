@@ -22,8 +22,8 @@ class IndexController extends Controller {
         parent::__construct($app);
 //        $this->addBeforeFilter('Hyperframework\Web\Controller');
         echo $this->getRouter()->getAction();
-        $this->addAroundFilter(':hi');
-        $this->addAfterFilter(':hi2');
+        $this->addAroundFilter(function() {return $this->hi();});
+        $this->addAfterFilter(function() {return $this->hi2();});
         $this->addAroundFilter(function() {
             try {
                 echo 'love in';
@@ -33,16 +33,18 @@ class IndexController extends Controller {
                throw $e;
             }
         });
-        $this->addAfterFilter(':hi3', ['prepend' => true, 'actions' => 'delete']);
+        $this->addAfterFilter(function() {$this->hi3();}, ['prepend' => true, 'actions' => ['delete']]);
     //        $this->removeFilter(':hi');
     }
 
     protected function doShowAction() {
+        //echo 'hi';
         DbClient::findRowById('Document', 1);
-        return 'xx';
+
+        return ['xx'];
     }
 
-    protected function hi() {
+    private function hi() {
         echo 'in!!!';
         yield;
         echo 'out!!!';

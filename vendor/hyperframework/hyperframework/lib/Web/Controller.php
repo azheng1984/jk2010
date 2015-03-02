@@ -241,9 +241,7 @@ abstract class Controller {
             $result = $function();
         }
         if ($config['type'] === 'around') {
-            if (is_object($result) === false
-                || $result instanceof Generator === false
-            ) {
+            if ($result instanceof Generator === false) {
                 $result = false;
             } else {
                 $config['type'] = 'yielded';
