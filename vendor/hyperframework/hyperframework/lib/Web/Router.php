@@ -1004,12 +1004,13 @@ abstract class Router {
 
     protected function getApp() {
         if ($this->app === null) {
-            throw new LogicException(
-                "App cannot be null, constructor method of class"
-                    . " '" . __CLASS__ . "' is not called."
-            );
+            throw new LogicException("The app equals null.");
         }
         return $this->app;
+    }
+
+    protected function setApp($value) {
+        $this->app = $value;
     }
 
     private function verifyExtraRules($extra, array $matches = []) {

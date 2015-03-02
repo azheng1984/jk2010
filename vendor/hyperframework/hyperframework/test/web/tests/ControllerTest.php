@@ -8,6 +8,11 @@ use Hyperframework\Web\Test\IndexController;
 use Hyperframework\Web\Test\InvalidConstructorController;
 
 class ControllerTest extends Base {
+    public function tearDown() {
+        ResponseHeaderHelper::setEngine(null);
+        parent::tearDown();
+    }
+
     public function testConstruct() {
         Config::set('hyperframework.initialize_config', false);
         Config::set('hyperframework.initialize_error_handler', false);
@@ -185,12 +190,77 @@ class ControllerTest extends Base {
     }
 
     public function testAddBeforeFilter() {
+        Config::set('hyperframework.initialize_config', false);
+        Config::set('hyperframework.initialize_error_handler', false);
+        Config::set('hyperframework.web.csrf_protection.enable', false);
+        Config::set(
+            'hyperframework.web.router_class',
+            'Hyperframework\Web\Test\Router'
+        );
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $router->setActionMethod('doIndexAction');
+        $router->setController('index');
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])->setMethods(['handleAction'])->getMock();
+        $isCalled = false;
+        $controller->addBeforeFilter(function() use (&$isCalled) {
+            $isCalled = true;
+        });
+        $controller->run();
+        $this->assertTrue($isCalled);
     }
 
     public function testAddAfterFilter() {
+        Config::set('hyperframework.initialize_config', false);
+        Config::set('hyperframework.initialize_error_handler', false);
+        Config::set('hyperframework.web.csrf_protection.enable', false);
+        Config::set(
+            'hyperframework.web.router_class',
+            'Hyperframework\Web\Test\Router'
+        );
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $router->setActionMethod('doIndexAction');
+        $router->setController('index');
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])->setMethods(['handleAction'])->getMock();
+        $isCalled = false;
+        $controller->addAfterFilter(function() use (&$isCalled) {
+            $isCalled = true;
+        });
+        $controller->run();
+        $this->assertTrue($isCalled);
     }
 
     public function testAddAroundFilter() {
+        Config::set('hyperframework.initialize_config', false);
+        Config::set('hyperframework.initialize_error_handler', false);
+        Config::set('hyperframework.web.csrf_protection.enable', false);
+        Config::set(
+            'hyperframework.web.router_class',
+            'Hyperframework\Web\Test\Router'
+        );
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $router->setActionMethod('doIndexAction');
+        $router->setController('index');
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])->setMethods(['handleAction'])->getMock();
+        $recorder = [];
+        $controller->addAroundFilter(function() use (&$recorder) {
+            $recorder[] = 'before';
+            yield;
+            $recorder[] = 'after';
+        });
+        $controller->run();
+        $this->assertSame(['before', 'after'], $recorder);
     }
 
     /**

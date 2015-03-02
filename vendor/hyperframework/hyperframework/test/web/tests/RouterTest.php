@@ -14,6 +14,11 @@ class RouterTest extends Base {
         $_SERVER['REQUEST_URI'] = '/';
     }
 
+    public function tearDown() {
+        ResponseHeaderHelper::setEngine(null);
+        parent::tearDown();
+    }
+
     public function testMatchFormatInPattern() {
         $_SERVER['REQUEST_URI'] = '/document/id.format';
         $this->assertTrue($this->match(':controller/:id(.:format)'));
@@ -543,6 +548,28 @@ class RouterTest extends Base {
             'Controllers\Admin\DocumentController',
             $this->router->getControllerClass()
         );
+    }
+
+    public function testRedirect() {
+        $engine = $this->getMock('Hyperframework\Web\ResponseHeaderHelperEngine');
+        $engine->expects($this->once())->method('setHeader')->with(
+            'Location: /', true, 302
+        );
+        Config::set('hyperframework.initialize_config', false);
+        Config::set('hyperframework.initialize_error_handler', false);
+        Config::set('hyperframework.web.csrf_protection.enable', false);
+        $app = $this->getMockBuilder('Hyperframework\Web\App')
+            ->setConstructorArgs([dirname(__DIR__)])->getMock();
+        $app->expects($this->once())->method('quit');
+        ResponseHeaderHelper::setEngine($engine);
+        $this->router = $this->getMockForAbstractClass(
+            'Hyperframework\Web\Router',
+            [],
+            '',
+            false
+        );
+        $this->callProtectedMethod($this->router, 'setApp', [$app]);
+        $this->callProtectedMethod($this->router, 'redirect', ['/']);
     }
 
     private function match($pattern, $options = null) {
