@@ -225,34 +225,20 @@ abstract class Controller {
     private function runFilter(array &$config, $shouldReturnResult = false) {
         $result = null;
         if (is_string($config['filter'])) {
-            if ($config['filter'] === '') {
-                throw new UnexpectedValueException(
-                    'Action filter is set to an empty string.'
+            $class = $config['filter'];
+            if (class_exists($class) === false) {
+                throw new ClassNotFoundException(
+                    "Action filter class '$class' does not exist."
                 );
             }
-            if ($config['filter'][0] === ':') {
-                $method = substr($config['filter'], 1);
-                $result = $this->$method();
-            } else {
-                $class = $config['filter'];
-                if (class_exists($class) === false) {
-                    throw new ClassNotFoundException(
-                        "Action filter class '$class' does not exist."
-                    );
-                }
-                $filter = new $class;
-                $result = $filter->run($this);
-            }
+            $filter = new $class;
+            $result = $filter->run($this);
         } elseif ($config['type'] === 'yielded') {
             $result = $config['filter']->next();
             $config['type'] = 'closed';
-        } elseif (is_object($config['filter'])) {
-            if ($config['filter'] instanceof Closure) {
-                $function = $config['filter'];
-                $result = $function($this);
-            } else {
-                $result = $config['filter']->run($this);
-            }
+        } else {
+            $function = $config['filter'];
+            $result = $function();
         }
         if ($config['type'] === 'around') {
             if (is_object($result) === false
@@ -272,6 +258,24 @@ abstract class Controller {
     }
 
     private function addFilter($type, $filter, array $options = null) {
+        if (is_string($filter)) {
+            if ($filter === '') {
+                throw new ActionFilterException(
+                    'The value of action filter cannot be an empty string.'
+                );
+            }
+        } elseif (is_object($filter) === false
+            || $filter instanceof Closure === false
+        ) {
+            $type = gettype($filter);
+            if ($type === 'object') {
+                $type = get_class($filter);
+            }
+            throw new ActionFilterException(
+                "The value of action filter must be a closure or a class name,"
+                    . " $type given."
+            );
+        }
         $config = [
             'type' => $type, 'filter' => $filter, 'options' => $options
         ];
@@ -284,19 +288,21 @@ abstract class Controller {
             return;
         }
         if (isset($options['ignored_actions'])) {
-            if (is_string($options['ignored_actions'])) {
-                if ($options['ignored_actions'] === $action) {
-                    return;
-                }
+            if (is_array($options['ignored_actions']) === false) {
+                $type = gettype($options['ignored_actions']);
+                throw new ActionFilterException(
+                    "Option 'ignored_actions' must be an array, $type given."
+                );
             } elseif (in_array($action, $options['ignored_actions'])) {
                 return;
             }
         }
         if (isset($options['actions'])) {
-            if (is_string($options['actions'])) {
-                if ($options['actions'] !== $action) {
-                    return;
-                }
+            if (is_array($options['actions']) === false) {
+                $type = gettype($options['actions']);
+                throw new ActionFilterException(
+                    "Option 'actions' must be an array, $type given."
+                );
             } elseif (in_array($action, $options['actions']) === false) {
                 return;
             }
