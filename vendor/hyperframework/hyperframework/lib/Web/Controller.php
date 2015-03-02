@@ -67,7 +67,7 @@ abstract class Controller {
         $this->getRouter()->hasParam($name);
     }
 
-    public function getViewFormat() {
+    public function getOutputFormat() {
         return $this->getRouteParam('format');
     }
 
@@ -107,7 +107,7 @@ abstract class Controller {
                 throw new UnexpectedValueException('Action cannot be empty.');
             }
             $name .= $controller . '/' . $action;
-            return ViewPathBuilder::build($name, $this->getViewFormat());
+            return ViewPathBuilder::build($name, $this->getOutputFormat());
         }
         return $this->view;
     }

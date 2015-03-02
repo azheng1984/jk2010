@@ -108,6 +108,19 @@ class ControllerTest extends Base {
     }
 
     public function testGetView() {
+        Config::set('hyperframework.initialize_config', false);
+        Config::set('hyperframework.initialize_error_handler', false);
+        Config::set('hyperframework.web.csrf_protection.enable', false);
+        Config::set(
+            'hyperframework.web.router_class',
+            'Hyperframework\Web\Test\Router'
+        );
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $router->setController('index');
+        $controller = new IndexController($app);
+        $this->assertSame('index/index.html.php', $controller->getView());
     }
 
     public function testRenderView() {

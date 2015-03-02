@@ -41,7 +41,7 @@ class IndexController extends Controller {
         //echo 'hi';
         DbClient::findRowById('Document', 1);
 
-        return ['xx'];
+        return 'xx';
     }
 
     private function hi() {
