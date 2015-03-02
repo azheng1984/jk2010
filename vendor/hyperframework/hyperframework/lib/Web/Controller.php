@@ -287,16 +287,6 @@ abstract class Controller {
             $this->filterChain[] = $config;
             return;
         }
-        if (isset($options['ignored_actions'])) {
-            if (is_array($options['ignored_actions']) === false) {
-                $type = gettype($options['ignored_actions']);
-                throw new ActionFilterException(
-                    "Option 'ignored_actions' must be an array, $type given."
-                );
-            } elseif (in_array($action, $options['ignored_actions'])) {
-                return;
-            }
-        }
         if (isset($options['actions'])) {
             if (is_array($options['actions']) === false) {
                 $type = gettype($options['actions']);
@@ -304,6 +294,16 @@ abstract class Controller {
                     "Option 'actions' must be an array, $type given."
                 );
             } elseif (in_array($action, $options['actions']) === false) {
+                return;
+            }
+        }
+        if (isset($options['ignored_actions'])) {
+            if (is_array($options['ignored_actions']) === false) {
+                $type = gettype($options['ignored_actions']);
+                throw new ActionFilterException(
+                    "Option 'ignored_actions' must be an array, $type given."
+                );
+            } elseif (in_array($action, $options['ignored_actions'])) {
                 return;
             }
         }
