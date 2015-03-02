@@ -29,6 +29,24 @@ class ResponseHeaderHelper {
         self::getEngine()->setResponseCode($value);
     }
 
+    public static function setCookie(
+        $name, $value, $expire = 0, $path = null,
+        $domain = null, $secure = false, $httpOnly = false
+    ) {
+        self::getEngine()->setCookie(
+            $name, $value, $expire, $path, $domain, $secure, $httpOnly
+        );
+    }
+
+    public static function setRawCookie(
+        $name, $value, $expire = 0, $path = null,
+        $domain = null, $secure = false, $httpOnly = false
+    ) {
+        self::getEngine()->setRawCookie(
+            $name, $value, $expire, $path, $domain, $secure, $httpOnly
+        );
+    }
+
     public static function getResponseCode() {
         return self::getEngine()->getResponseCode();
     }

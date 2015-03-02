@@ -28,6 +28,24 @@ class ResponseHeaderHelperEngine {
         return http_response_code();
     }
 
+    public function setCookie(
+        $name, $value, $expire = 0, $path = null,
+        $domain = null, $secure = false, $httpOnly = false
+    ) {
+        setcookie(
+            $name, $value, $expire, $path, $domain, $secure, $httpOnly
+        );
+    }
+
+    public function setRawCookie(
+        $name, $value, $expire = 0, $path = null,
+        $domain = null, $secure = false, $httpOnly = false
+    ) {
+        setrawcookie(
+            $name, $value, $expire, $path, $domain, $secure, $httpOnly
+        );
+    }
+
     public function isSent(&$file = null, &$line = null) {
         return headers_sent($file, $line);
     }

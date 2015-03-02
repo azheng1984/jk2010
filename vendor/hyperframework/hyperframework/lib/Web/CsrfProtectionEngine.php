@@ -51,7 +51,7 @@ class CsrfProtectionEngine {
     protected function initializeToken() {
         $this->token = $this->generateToken();
         $name = $this->getTokenName();
-        setcookie($name, $this->token, 0, '/');
+        ResponseHeaderHelper::setCookie($name, $this->token, 0, '/');
     }
 
     protected function isValid() {
