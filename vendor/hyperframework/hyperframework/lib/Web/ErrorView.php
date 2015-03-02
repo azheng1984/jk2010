@@ -33,7 +33,9 @@ class ErrorView {
             }
         }
         if ($path === null) {
-            header("content-type: text/plain; charset=utf-8");
+            ResponseHeaderHelper::setHeader(
+                "content-type: text/plain; charset=utf-8"
+            );
             echo $statusCode;
             if ((string)$statusText !== '') {
                 echo ' ' . $statusText;

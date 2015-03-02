@@ -162,9 +162,6 @@ class ControllerTest extends Base {
         $this->assertTrue($isExitCalled);
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testRedirect() {
         Config::set('hyperframework.initialize_config', false);
         Config::set('hyperframework.initialize_error_handler', false);
