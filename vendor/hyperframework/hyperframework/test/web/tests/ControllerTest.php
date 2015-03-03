@@ -222,6 +222,7 @@ class ControllerTest extends Base {
             'Hyperframework\Web\Test\IndexController'
         )->setConstructorArgs([$app])->setMethods(['handleAction', 'finalize'])->getMock();
         $isQuitFilterChainCalled = false;
+        $isFinalizeCalled = false;
         $router = $app->getRouter();
         $router->setAction('index');
         $controller->addAroundFilter(
@@ -233,10 +234,17 @@ class ControllerTest extends Base {
         $controller->addBeforeFilter(function() use ($controller) {
             $controller->quit();
         });
-        $controller->expects($this->exactly(2))->method('finalize');
+        $controller->method('finalize')->will($this->returnCallback(
+            function() use (&$isFinalizeCalled, &$isExitCalled) {
+                if ($isExitCalled === false) {
+                    $isFinalizeCalled = true;
+                }
+            }
+        ));
         $controller->run();
-        $this->assertTrue($isExitCalled);
         $this->assertTrue($isQuitFilterChainCalled);
+        $this->assertTrue($isFinalizeCalled);
+        $this->assertTrue($isExitCalled);
     }
 
     /**
