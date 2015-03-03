@@ -3,6 +3,7 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ErrorHandler as Base;
+use Hyperframework\Logging\LoggingException;
 
 class ErrorHandler extends Base {
     private $isDebuggerEnabled;
@@ -30,15 +31,15 @@ class ErrorHandler extends Base {
     protected function displayFatalError() {
         $error = $this->getError();
         if ($this->isDebuggerEnabled) {
+            $outputBuffer = $this->getOutputBuffer();
             $headers = ResponseHeaderHelper::getHeaders();
             if (ResponseHeaderHelper::isSent() === false) {
                 $this->rewriteHttpHeaders();
             }
-            $outputBuffer = $this->getOutputBuffer();
             $this->executeDebugger($headers, $outputBuffer);
         } elseif (ini_get('display_errors') === '1') {
             $this->displayError();
-        } elseif (ResponseHeaderHelper::isSend() === false) {
+        } elseif (ResponseHeaderHelper::isSent() === false) {
             $this->rewriteHttpHeaders();
             $this->deleteOutputBuffer();
             $this->renderErrorView();
@@ -53,7 +54,9 @@ class ErrorHandler extends Base {
                 ResponseHeaderHelper::setHeader($header);
             }
         } else {
-            ResponseHeaderHelper::setHeader('HTTP/1.1 500 Internal Server Error');
+            ResponseHeaderHelper::setHeader(
+                'HTTP/1.1 500 Internal Server Error'
+            );
         }
     }
 
@@ -72,7 +75,11 @@ class ErrorHandler extends Base {
     private function deleteOutputBuffer() {
         $obLevel = ob_get_level();
         while ($obLevel >= $this->startupOutputBufferLevel) {
-            ob_end_clean();
+            if ($this->startupOutputBufferLevel === $obLevel) {
+                ob_clean();
+            } else {
+                ob_end_clean();
+            }
             --$obLevel;
         }
     }
@@ -80,7 +87,7 @@ class ErrorHandler extends Base {
     protected function getOutputBuffer() {
         $outputBufferLevel = ob_get_level();
         if ($outputBufferLevel < $this->startupOutputBufferLevel) {
-            return false;
+            return;
         }
         while ($outputBufferLevel > $this->startupOutputBufferLevel) {
             ob_end_flush();
@@ -90,7 +97,7 @@ class ErrorHandler extends Base {
         if ($content === false) {
             return $content;
         }
-        ob_end_clean();
+        ob_clean();
         if ($content === '') {
             return $content;
         }

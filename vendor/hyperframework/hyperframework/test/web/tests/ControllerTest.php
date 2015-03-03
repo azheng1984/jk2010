@@ -6,6 +6,7 @@ use Hyperframework\Common\Config;
 use Hyperframework\Test\TestCase as Base;
 use Hyperframework\Web\Test\IndexController;
 use Hyperframework\Web\Test\InvalidConstructorController;
+use Hyperframework\Common\NotSupportedException;
 
 class ControllerTest extends Base {
     public function tearDown() {
@@ -268,8 +269,7 @@ class ControllerTest extends Base {
      */
     public function testAddAroundFilterWhenNotSupported() {
         if (version_compare(phpversion(), '5.5.0', '>=')) {
-            $this->markTestSkipped('PHP 5.4 is required.');
-            return;
+            throw new NotSupportedException;
         }
         Config::set('hyperframework.initialize_config', false);
         Config::set('hyperframework.initialize_error_handler', false);

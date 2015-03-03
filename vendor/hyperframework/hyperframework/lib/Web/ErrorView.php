@@ -34,7 +34,7 @@ class ErrorView {
         }
         if ($path === null) {
             ResponseHeaderHelper::setHeader(
-                "content-type: text/plain; charset=utf-8"
+                'content-type: text/plain; charset=utf-8'
             );
             echo $statusCode;
             if ((string)$statusText !== '') {

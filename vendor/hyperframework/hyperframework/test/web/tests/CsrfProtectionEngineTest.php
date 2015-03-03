@@ -14,6 +14,7 @@ class CsrfProtectionEngineTest extends Base {
         $engine2 = $this->getMock(
             'Hyperframework\Web\ResponseHeaderHelperEngine'
         );
+        $engine2->expects($this->once())->method('setCookie');
         ResponseHeaderHelper::setEngine($engine2);
         $engine = new CsrfProtectionEngine;
         $_SERVER['REQUEST_METHOD'] = 'GET';

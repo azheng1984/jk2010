@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 use Hyperframework\Common\Config;
 
 class ViewPathBuilder {
-    public static function build($name, $outputFormat) {
+    public static function build($name, $outputFormat = null) {
         $result = $name;
         if (Config::getBoolean(
             'hyperframework.web.view.filename.include_output_format', true
@@ -14,6 +14,7 @@ class ViewPathBuilder {
                     'hyperframework.web.view.default_output_format', 'html'
                 );
             }
+            $outputFormat = (string)$outputFormat;
             if ($outputFormat !== '') {
                 $result .= '.' . $outputFormat;
             }
