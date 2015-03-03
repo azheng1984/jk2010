@@ -62,7 +62,9 @@ class ControllerTest extends Base {
                 $recorder[] = 'finalize';
             }));
         $controller->run();
-        $this->assertSame(['before', 'handle_action', 'after', 'finalize'], $recorder);
+        $this->assertSame(
+            ['before', 'handle_action', 'after', 'finalize'], $recorder
+        );
     }
 
     /**
@@ -216,9 +218,25 @@ class ControllerTest extends Base {
             }
         );
         $app = new App(dirname(__DIR__));
-        $controller = new IndexController($app);
-        $controller->quit();
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])->setMethods(['handleAction', 'finalize'])->getMock();
+        $isQuitFilterChainCalled = false;
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $controller->addAroundFilter(
+            function() use (&$isQuitFilterChainCalled) {
+                yield;
+                $isQuitFilterChainCalled = true;
+            }
+        );
+        $controller->addBeforeFilter(function() use ($controller) {
+            $controller->quit();
+        });
+        $controller->expects($this->exactly(2))->method('finalize');
+        $controller->run();
         $this->assertTrue($isExitCalled);
+        $this->assertTrue($isQuitFilterChainCalled);
     }
 
     /**
