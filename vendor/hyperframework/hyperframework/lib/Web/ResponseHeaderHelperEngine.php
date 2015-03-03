@@ -29,7 +29,7 @@ class ResponseHeaderHelperEngine {
     }
 
     public function setCookie(
-        $name, $value, $expire = 0, $path = null,
+        $name, $value, $expire = 0, $path = '/',
         $domain = null, $secure = false, $httpOnly = false
     ) {
         setcookie(
@@ -38,7 +38,7 @@ class ResponseHeaderHelperEngine {
     }
 
     public function setRawCookie(
-        $name, $value, $expire = 0, $path = null,
+        $name, $value, $expire = 0, $path = '/',
         $domain = null, $secure = false, $httpOnly = false
     ) {
         setrawcookie(

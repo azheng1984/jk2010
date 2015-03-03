@@ -30,7 +30,7 @@ class ResponseHeaderHelper {
     }
 
     public static function setCookie(
-        $name, $value, $expire = 0, $path = null,
+        $name, $value, $expire = 0, $path = '/',
         $domain = null, $secure = false, $httpOnly = false
     ) {
         self::getEngine()->setCookie(
@@ -39,7 +39,7 @@ class ResponseHeaderHelper {
     }
 
     public static function setRawCookie(
-        $name, $value, $expire = 0, $path = null,
+        $name, $value, $expire = 0, $path = '/',
         $domain = null, $secure = false, $httpOnly = false
     ) {
         self::getEngine()->setRawCookie(

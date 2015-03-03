@@ -9,16 +9,22 @@ class CsrfProtectionEngine {
     private $token;
 
     public function run() {
-        $name = $this->getTokenName();
-        if (isset($_COOKIE[$name]) === false) {
-            $this->initializeToken();
-        }
+        $tokenName = $this->getTokenName();
         if ($this->isSafeMethod($_SERVER['REQUEST_METHOD'])) {
-            return;
-        }
-        if ($this->isValid() === false) {
-            $this->initializeToken();
-            throw new ForbiddenException;
+            if (isset($_COOKIE[$tokenName]) === false) {
+                $this->initializeToken();
+            }
+        } else {
+            if (isset($_COOKIE[$tokenName]) === false) {
+                throw new ForbiddenException;
+            } else {
+                if (isset($_POST[$tokenName]) === false
+                    || $_POST[$tokenName] !== $_COOKIE[$tokenName]
+                ) {
+                    $this->initializeToken();
+                    throw new ForbiddenException;
+                }
+            }
         }
     }
 
@@ -26,7 +32,7 @@ class CsrfProtectionEngine {
         if ($this->token === null) {
             $name = $this->getTokenName();
             if (isset($_COOKIE[$name])) {
-                $this->token = $_COOKIE[$name];
+                $this->setToken($_COOKIE[$name]);
             } else {
                 throw new InvalidOperationException(
                     'Csrf protection is not initialized correctly.'
@@ -48,16 +54,15 @@ class CsrfProtectionEngine {
         return $this->tokenName;
     }
 
-    protected function initializeToken() {
-        $this->token = $this->generateToken();
-        $name = $this->getTokenName();
-        ResponseHeaderHelper::setCookie($name, $this->token, 0, '/');
+    protected function setToken($token) {
+        $this->token = $token;
     }
 
-    protected function isValid() {
-        $tokenName = $this->getTokenName();
-        $token = $this->getToken();
-        return isset($_POST[$tokenName]) && $_POST[$tokenName] === $token;
+    protected function initializeToken() {
+        $this->setToken($this->generateToken());
+        ResponseHeaderHelper::setCookie(
+            $this->getTokenName(), $this->getToken()
+        );
     }
 
     protected function isSafeMethod($method) {
