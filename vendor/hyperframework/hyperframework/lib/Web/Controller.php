@@ -100,7 +100,7 @@ abstract class Controller {
             $router = $this->getRouter();
             $module = (string)$router->getModule();
             if ($module !== '') {
-                $name = $module;
+                $name = $module . '/';
             } else {
                 $name = '';
             }
@@ -124,6 +124,7 @@ abstract class Controller {
         $view = $this->getView();
         if (is_object($view)) {
             $view->render($this->getActionResult());
+            return;
         } elseif (is_string($view) === false) {
             throw new UnexpectedValueException(
                 "View must be a string or an object, "

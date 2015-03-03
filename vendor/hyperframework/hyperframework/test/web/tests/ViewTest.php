@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Web\Test\TestCase as Base;
 
 class ViewTest extends Base {
     public function testConstruct() {

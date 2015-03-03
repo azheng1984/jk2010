@@ -3,10 +3,10 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Web\Test\Exception;
 use Hyperframework\Common\Config;
-use Hyperframework\Web\Test\TestCase as Base;
 use Hyperframework\Web\Test\IndexController;
 use Hyperframework\Web\Test\InvalidConstructorController;
 use Hyperframework\Common\NotSupportedException;
+use Hyperframework\Web\Test\TestCase as Base;
 
 class ControllerTest extends Base {
     protected function setUp() {
@@ -66,6 +66,18 @@ class ControllerTest extends Base {
     }
 
     /**
+     * @expectedException LogicException
+     */
+    public function testRunTwice() {
+        $app = new App(dirname(__DIR__));
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])->setMethods(['handleAction'])->getMock();
+        $controller->run();
+        $controller->run();
+    }
+
+    /**
      * @requires PHP 5.5
      */
     public function testRunWhenExceptionIsThrown() {
@@ -96,10 +108,42 @@ class ControllerTest extends Base {
     public function testGetView() {
         $app = new App(dirname(__DIR__));
         $router = $app->getRouter();
+        $router->setModule('admin');
+        $router->setAction('index');
+        $router->setController('index');
+        $controller = new IndexController($app);
+        $this->assertSame('admin/index/index.html.php', $controller->getView());
+    }
+
+    public function testGetViewWhenModuleDoesNotExist() {
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
         $router->setAction('index');
         $router->setController('index');
         $controller = new IndexController($app);
         $this->assertSame('index/index.html.php', $controller->getView());
+    }
+
+    /**
+     * @expectedException UnexpectedValueException
+     */
+    public function testGetViewWhenControllerIsEmpty() {
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $controller = new IndexController($app);
+        $controller->getView();
+    }
+
+    /**
+     * @expectedException UnexpectedValueException
+     */
+    public function testGetViewWhenActionIsEmpty() {
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setController('index');
+        $controller = new IndexController($app);
+        $controller->getView();
     }
 
     public function testRenderView() {
@@ -109,6 +153,19 @@ class ControllerTest extends Base {
         $router->setAction('index');
         $router->setController('index');
         $controller = new IndexController($app);
+        $controller->renderView();
+    }
+
+    public function testRenderViewObject() {
+        $app = new App(dirname(__DIR__));
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])->setMethods(['getView'])->getMock();
+        $view = $this->getMock('Hyperframework\Web\Test\View');
+        $view->expects($this->once())->method('render')->with([]);
+        $controller->setActionResult([]);
+        $controller->expects($this->once())
+            ->method('getView')->willReturn($view);
         $controller->renderView();
     }
 

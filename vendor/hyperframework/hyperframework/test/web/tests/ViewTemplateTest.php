@@ -2,8 +2,8 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Test\TestCase as Base;
 use Hyperframework\Web\Test\ViewTemplate;
+use Hyperframework\Web\Test\TestCase as Base;
 
 class ViewTemplateTest extends Base {
     public function testRender() {
