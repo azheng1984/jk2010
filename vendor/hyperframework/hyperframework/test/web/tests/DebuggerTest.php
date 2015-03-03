@@ -3,7 +3,7 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FatalError;
-use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Web\Test\TestCase as Base;
 
 class DebuggerTest extends Base {
     public function testRun() {

@@ -2,14 +2,11 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Web\Test\TestCase as Base;
 
 class ErrorHandlerTest extends Base {
     protected function setUp() {
-        Config::set(
-            'hyperframework.app_root_path',
-            dirname(__DIR__)
-        );
+        parent::setUp();
         $this->errorReportingBitmask = error_reporting();
         error_reporting(E_ALL);
         $this->shouldLogErrors = ini_get('log_errors');
@@ -47,7 +44,7 @@ class ErrorHandlerTest extends Base {
         }
         error_reporting($this->errorReportingBitmask);
 //        Logger::setLogHandler(null);
-        Config::clear();
+        parent::tearDown();
     }
 
     public function testRenderErrorView() {

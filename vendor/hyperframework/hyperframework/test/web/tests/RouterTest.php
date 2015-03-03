@@ -2,20 +2,19 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Web\Test\TestCase as Base;
 
 class RouterTest extends Base {
     private $router;
 
     protected function setUp() {
+        parent::setUp();
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        Config::set('hyperframework.web.csrf_protection.enable', false);
         $this->resetRouter();
         $_SERVER['REQUEST_URI'] = '/';
     }
 
     public function tearDown() {
-        ResponseHeaderHelper::setEngine(null);
         parent::tearDown();
     }
 
@@ -545,7 +544,7 @@ class RouterTest extends Base {
         $this->matchResource('document');
         $this->callProtectedMethod($this->router, 'setModule', ['admin']);
         $this->assertSame(
-            'Controllers\Admin\DocumentController',
+            'Hyperframework\Web\Test\Controllers\Admin\DocumentController',
             $this->router->getControllerClass()
         );
     }
@@ -555,9 +554,6 @@ class RouterTest extends Base {
         $engine->expects($this->once())->method('setHeader')->with(
             'Location: /', true, 302
         );
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
         $app = $this->getMockBuilder('Hyperframework\Web\App')
             ->setConstructorArgs([dirname(__DIR__)])->getMock();
         $app->expects($this->once())->method('quit');

@@ -3,28 +3,22 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Web\Test\Exception;
 use Hyperframework\Common\Config;
-use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Web\Test\TestCase as Base;
 use Hyperframework\Web\Test\IndexController;
 use Hyperframework\Web\Test\InvalidConstructorController;
 use Hyperframework\Common\NotSupportedException;
 
 class ControllerTest extends Base {
-    public function tearDown() {
-        ResponseHeaderHelper::setEngine(null);
-        parent::tearDown();
-    }
-
-    public function testConstruct() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
+    protected function setUp() {
+        parent::setUp();
         Config::set(
             'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\Router'
+            'Hyperframework\Web\Test\FakeRouter'
         );
-        $app = new App(dirname(__DIR__));
-        $controller = new IndexController($app);
-        $this->assertSame($app, $controller->getApp());
+    }
+
+    protected function tearDown() {
+        parent::tearDown();
     }
 
     /**
@@ -43,13 +37,6 @@ class ControllerTest extends Base {
     }
 
     public function testRun() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
-        Config::set(
-            'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\FakeRouter'
-        );
         $app = new App(dirname(__DIR__));
         $router = $app->getRouter();
         $router->setAction('index');
@@ -82,13 +69,6 @@ class ControllerTest extends Base {
      * @requires PHP 5.5
      */
     public function testRunWhenExceptionIsThrown() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
-        Config::set(
-            'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\FakeRouter'
-        );
         $app = new App(dirname(__DIR__));
         $router = $app->getRouter();
         $router->setAction('index');
@@ -114,13 +94,6 @@ class ControllerTest extends Base {
     }
 
     public function testGetView() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
-        Config::set(
-            'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\FakeRouter'
-        );
         $app = new App(dirname(__DIR__));
         $router = $app->getRouter();
         $router->setAction('index');
@@ -131,13 +104,6 @@ class ControllerTest extends Base {
 
     public function testRenderView() {
         $this->expectOutputString('view: index/index');
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
-        Config::set(
-            'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\FakeRouter'
-        );
         $app = new App(dirname(__DIR__));
         $router = $app->getRouter();
         $router->setAction('index');
@@ -151,13 +117,6 @@ class ControllerTest extends Base {
         Config::set('hyperframework.exit_function', function() use (&$isExitCalled) {
             $isExitCalled = true;
         });
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
-        Config::set(
-            'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\FakeRouter'
-        );
         $app = new App(dirname(__DIR__));
         $controller = $this->getMockBuilder(
             'Hyperframework\Web\Test\IndexController'
@@ -169,13 +128,6 @@ class ControllerTest extends Base {
     }
 
     public function testRedirect() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
-        Config::set(
-            'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\FakeRouter'
-        );
         $app = new App(dirname(__DIR__));
         $controller = $this->getMockBuilder(
             'Hyperframework\Web\Test\IndexController'
@@ -191,13 +143,6 @@ class ControllerTest extends Base {
     }
 
     public function testAddBeforeFilter() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
-        Config::set(
-            'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\FakeRouter'
-        );
         $app = new App(dirname(__DIR__));
         $router = $app->getRouter();
         $router->setAction('index');
@@ -215,13 +160,6 @@ class ControllerTest extends Base {
     }
 
     public function testAddAfterFilter() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
-        Config::set(
-            'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\FakeRouter'
-        );
         $app = new App(dirname(__DIR__));
         $router = $app->getRouter();
         $router->setAction('index');
@@ -239,13 +177,6 @@ class ControllerTest extends Base {
     }
 
     public function testAddAroundFilter() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
-        Config::set(
-            'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\FakeRouter'
-        );
         $app = new App(dirname(__DIR__));
         $router = $app->getRouter();
         $router->setAction('index');
@@ -271,13 +202,6 @@ class ControllerTest extends Base {
         if (version_compare(phpversion(), '5.5.0', '>=')) {
             throw new NotSupportedException;
         }
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
-        Config::set(
-            'hyperframework.web.router_class',
-            'Hyperframework\Web\Test\FakeRouter'
-        );
         $app = new App(dirname(__DIR__));
         $controller = new IndexController($app);
         $controller->addAroundFilter(function() {});

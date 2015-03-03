@@ -2,33 +2,24 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Test\TestCase as Base;
 use Hyperframework\Web\Test\App;
 use Hyperframework\Web\Test\FakeRouter;
+use Hyperframework\Web\Test\TestCase as Base;
 
 class AppTest extends Base {
     public function testConstruct() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
+        Config::set('hyperframework.web.csrf_protection.enable', true);
         $app = $this->getMockBuilder('Hyperframework\Web\App')
             ->disableOriginalConstructor()
             ->setMethods(['rewriteRequestMethod', 'checkCsrf'])->getMock();
         $app->expects($this->once())->method('rewriteRequestMethod');
         $app->expects($this->once())->method('checkCsrf');
+        Config::remove('hyperframework.app_root_path');
         $app->__construct(dirname(__DIR__));
         $this->assertNotNull(Config::get('hyperframework.app_root_path'));
     }
 
     public function testRun() {
-//        Config::set('hyperframework.app_root_path', dirname(__DIR__));
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
-        /*
-        Config::set(
-            'hyperframework.web.router_class', 'Hyperframework\Web\Test\Router'
-        );
-        */
         $app = $this->getMockBuilder('Hyperframework\Web\App')
             ->setConstructorArgs([dirname(__DIR__)])
             ->setMethods(['createController', 'finalize'])->getMock();
@@ -47,11 +38,10 @@ class AppTest extends Base {
     }
 
     public function testCheckCsrf() {
+        Config::set('hyperframework.web.csrf_protection.enable', true);
         $engine = $this->getMock('Hyperframework\Web\CsrfProtectionEngine');
         $engine->expects($this->once())->method('run');
         CsrfProtection::setEngine($engine);
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
         $app = $this->getMockBuilder('Hyperframework\Web\App')
             ->disableOriginalConstructor()
             ->setMethods(['rewriteRequestMethod'])->getMock();
@@ -59,12 +49,9 @@ class AppTest extends Base {
     }
 
     public function testCheckCsrfWhenProtectionIsDisabled() {
-        Config::set('hyperframework.web.csrf_protection.enable', false);
         $engine = $this->getMock('Hyperframework\Web\CsrfProtectionEngine');
         $engine->expects($this->never())->method('run');
         CsrfProtection::setEngine($engine);
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
         $app = $this->getMockBuilder('Hyperframework\Web\App')
             ->disableOriginalConstructor()
             ->setMethods(['rewriteRequestMethod'])->getMock();
@@ -74,8 +61,6 @@ class AppTest extends Base {
     public function testRewriteRequestMethodUsingHttpHeader() {
         $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'] = 'DELETE';
         $_SERVER['REQUEST_METHOD'] = 'POST';
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
         $app = $this->getMockBuilder('Hyperframework\Web\App')
             ->disableOriginalConstructor()
             ->setMethods(['checkCsrf'])->getMock();
@@ -87,8 +72,6 @@ class AppTest extends Base {
     public function testRewriteRequestMethodUsingPostField() {
         $_POST['_method'] = 'DELETE';
         $_SERVER['REQUEST_METHOD'] = 'POST';
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
         $app = $this->getMockBuilder('Hyperframework\Web\App')
             ->disableOriginalConstructor()
             ->setMethods(['checkCsrf'])->getMock();
@@ -98,9 +81,6 @@ class AppTest extends Base {
     }
 
     public function testCreateController() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
         $app = $this->getMock('Hyperframework\Web\App', [], [dirname(__DIR__)]);
         $router = $this->getMock('Hyperframework\Web\Test\FakeRouter');
         $router->expects($this->once())->method('getControllerClass')
@@ -119,40 +99,30 @@ class AppTest extends Base {
      * @expectedException UnexpectedValueException
      */
     public function testCreateControllerWhenControllerClassIsEmpty() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
-        $app = $this->getMock(
-            'Hyperframework\Web\App',
-            [], [dirname(__DIR__)]
+        Config::set(
+            'hyperframework.web.router_class',
+            'Hyperframework\Web\Test\FakeRouter'
         );
-        $app->expects($this->once())->method('getRouter')
-            ->willReturn(new FakeRouter);
-        var_dump($this->callProtectedMethod($app, 'createController'));
+        $app = new App(dirname(__DIR__));
+        $this->callProtectedMethod($app, 'createController');
     }
 
     /**
      * @expectedException Hyperframework\Common\ClassNotFoundException
      */
     public function testCreateControllerWhenControllerClassDoesNotExist() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
+        $router = new FakeRouter;
+        $router->setControllerClass('Unknown');
         $app = $this->getMock(
             'Hyperframework\Web\App',
             [],
             [dirname(__DIR__)]
         );
-        $router = new FakeRouter;
-        $router->setControllerClass('Unknown');
         $app->expects($this->once())->method('getRouter')->willReturn($router);
-        var_dump($this->callProtectedMethod($app, 'createController'));
+        $this->callProtectedMethod($app, 'createController');
     }
 
     public function testInitializeErrorHandler() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
         $app = new App(dirname(__DIR__));
         $this->expectOutputString('Hyperframework\Web\Test\ErrorHandler::run');
         $this->callProtectedMethod(
@@ -163,9 +133,6 @@ class AppTest extends Base {
     }
 
     public function testCreateApp() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
         $this->assertInstanceOf(
             'Hyperframework\Web\App',
             $this->callProtectedMethod('Hyperframework\Web\App', 'createApp')
@@ -173,13 +140,6 @@ class AppTest extends Base {
     }
 
     public function testGetDefaultRouter() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
-        Config::set(
-            'hyperframework.app_root_namespace', 'Hyperframework\Web\Test'
-        );
         $app = new App(dirname(__DIR__));
         $this->assertInstanceOf(
             'Hyperframework\Web\Test\Router', $app->getRouter()
@@ -190,9 +150,6 @@ class AppTest extends Base {
      * @expectedException Hyperframework\Common\ClassNotFoundException
      */
     public function testGetDefaultRouterClassDoesNotExist() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
         Config::set(
             'hyperframework.app_root_namespace', 'Unknown'
         );
@@ -204,20 +161,15 @@ class AppTest extends Base {
      * @expectedException Hyperframework\Common\ClassNotFoundException
      */
     public function testGetCustomRouterClassDoesNotExist() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
         Config::set('hyperframework.web.router_class', 'Unknown');
         $app = new App(dirname(__DIR__));
         $app->getRouter();
     }
 
     public function testGetCustomRouter() {
-        Config::set('hyperframework.initialize_config', false);
-        Config::set('hyperframework.initialize_error_handler', false);
-        Config::set('hyperframework.web.csrf_protection.enable', false);
         Config::set(
-            'hyperframework.web.router_class', 'Hyperframework\Web\Test\FakeRouter'
+            'hyperframework.web.router_class',
+            'Hyperframework\Web\Test\FakeRouter'
         );
         $app = new App(dirname(__DIR__));
         $this->assertInstanceOf(

@@ -32,7 +32,7 @@ class CsrfProtectionEngine {
         if ($this->token === null) {
             $name = $this->getTokenName();
             if (isset($_COOKIE[$name])) {
-                $this->setToken($_COOKIE[$name]);
+                $this->token = $_COOKIE[$name];
             } else {
                 throw new InvalidOperationException(
                     'Csrf protection is not initialized correctly.'

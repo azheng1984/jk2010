@@ -2,11 +2,10 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Web\Test\TestCase as Base;
 
 class ErrorViewTest extends Base {
     public function testRender() {
-        Config::set('hyperframework.app_root_path', dirname(__DIR__));
         $this->expectOutputString('404 not found');
         $engine = $this->getMock('Hyperframework\Web\ResponseHeaderHelperEngine');
         $engine->expects($this->once())->method('setHeader')->with(
