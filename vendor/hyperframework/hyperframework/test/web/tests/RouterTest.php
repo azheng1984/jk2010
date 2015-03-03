@@ -14,10 +14,6 @@ class RouterTest extends Base {
         $_SERVER['REQUEST_URI'] = '/';
     }
 
-    public function tearDown() {
-        parent::tearDown();
-    }
-
     public function testMatchFormatInPattern() {
         $_SERVER['REQUEST_URI'] = '/document/id.format';
         $this->assertTrue($this->match(':controller/:id(.:format)'));
