@@ -169,19 +169,67 @@ class ControllerTest extends Base {
         $controller->renderView();
     }
 
-    public function testQuit() {
-        $isExitCalled = false;
-        Config::set('hyperframework.exit_function', function() use (&$isExitCalled) {
-            $isExitCalled = true;
-        });
+    /**
+     * @expectedException UnexpectedValueException
+     */
+    public function testInvalidViewType() {
         $app = new App(dirname(__DIR__));
         $controller = $this->getMockBuilder(
             'Hyperframework\Web\Test\IndexController'
-        )->setConstructorArgs([$app])
-            ->setMethods(['handleAction', 'finalize'])->getMock();
+        )->setConstructorArgs([$app])->setMethods(['getView'])->getMock();
+        $controller->expects($this->once())
+            ->method('getView')->willReturn(false);
+        $controller->renderView();
+    }
+
+    /**
+     * @expectedException UnexpectedValueException
+     */
+    public function testInvalidViewPath() {
+        $app = new App(dirname(__DIR__));
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])->setMethods(['getView'])->getMock();
+        $controller->expects($this->once())
+            ->method('getView')->willReturn('');
+        $controller->renderView();
+    }
+
+    /**
+     * @expectedException UnexpectedValueException
+     */
+    public function testInvalidViewModel() {
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $router->setController('index');
+        $controller = new IndexController($app);
+        $controller->setActionResult(false);
+        $controller->renderView();
+    }
+
+    public function testQuit() {
+        $isExitCalled = false;
+        Config::set('hyperframework.exit_function',
+            function() use (&$isExitCalled) {
+                $isExitCalled = true;
+            }
+        );
+        $app = new App(dirname(__DIR__));
         $controller = new IndexController($app);
         $controller->quit();
         $this->assertTrue($isExitCalled);
+    }
+
+    /**
+     * @expectedException LogicException
+     */
+    public function testQuitTwice() {
+        Config::set('hyperframework.exit_function', function() {});
+        $app = new App(dirname(__DIR__));
+        $controller = new IndexController($app);
+        $controller->quit();
+        $controller->quit();
     }
 
     public function testRedirect() {
