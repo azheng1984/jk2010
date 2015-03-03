@@ -17,10 +17,6 @@ class ControllerTest extends Base {
         );
     }
 
-    protected function tearDown() {
-        parent::tearDown();
-    }
-
     /**
      * @expectedException InvalidArgumentException
      */
