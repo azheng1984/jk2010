@@ -343,7 +343,7 @@ abstract class Controller {
                                 && $shouldRunYieldedFiltersOnly === false;
                             $exception = null;
                         } else {
-                            $result = $this->runFilter($filterConfig, true); 
+                            $result = $this->runFilter($filterConfig, true);
                             if ($result === false) {
                                 $shouldRunYieldedFiltersOnly = true;
                                 $shouldRunAfterFilter = false;

@@ -90,21 +90,60 @@ class ControllerTest extends Base {
         $router->setController('index');
         $controller = $this->getMockBuilder(
             'Hyperframework\Web\Test\IndexController'
-        )->setConstructorArgs([$app])
-            ->setMethods(['handleAction', 'finalize'])->getMock();
+        )->setConstructorArgs([$app])->setMethods(['handleAction'])->getMock();
+        $controller->expects($this->never())->method('handleAction');
         $isCaught = false;
         $controller->addAroundFilter(function() use (&$isCaught) {
             try {
                 yield;
             } catch (Exception $e) {
                 $isCaught = true;
+                throw $e;
             }
         });
         $controller->addBeforeFilter(function() {
             throw new Exception;
         });
-        $controller->run();
+        try {
+            $controller->run();
+            $this->fail('Exception has been eaten.');
+        } catch (Exception $e) {}
         $this->assertTrue($isCaught);
+    }
+
+    /**
+     * @requires PHP 5.5
+     */
+    public function testEatExceptionInAroundFilter() {
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $router->setActionMethod('doIndexAction');
+        $router->setController('index');
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])
+            ->setMethods(['handleAction', 'finalize'])->getMock();
+        $isAfterFilterACalled = false;
+        $controller->addAfterFilter(function() use (&$isAfterFilterACalled) {
+            $isAfterFilterACalled = true;
+        });
+        $controller->addAroundFilter(function() {
+            try {
+                yield;
+            } catch (Exception $e) {
+            }
+        });
+        $isAfterFilterBCalled = false;
+        $controller->addAfterFilter(function() use (&$isAfterFilterBCalled) {
+            $isAfterFilterBCalled = true;
+        });
+        $controller->addAfterFilter(function() {
+            throw new Exception;
+        });
+        $controller->run();
+        $this->assertTrue($isAfterFilterACalled);
+        $this->assertFalse($isAfterFilterBCalled);
     }
 
     public function testGetView() {
@@ -336,5 +375,129 @@ class ControllerTest extends Base {
         $app = new App(dirname(__DIR__));
         $controller = new IndexController($app);
         $controller->addAroundFilter(function() {});
+    }
+
+    /**
+     * @expectedException Hyperframework\Common\ClassNotFoundException
+     */
+    public function testFilterClassNotFound() {
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])->setMethods(['handleAction'])->getMock();
+        $controller->addBeforeFilter('Unknown');
+        $controller->run();
+    }
+
+    public function testPrependFilter() {
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $router->setActionMethod('doIndexAction');
+        $router->setController('index');
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])->setMethods(['handleAction'])->getMock();
+        $recorder = [];
+        $controller->addBeforeFilter(function() use (&$recorder) {
+            $recorder[] = 'a';
+        });
+        $controller->addBeforeFilter(function() use (&$recorder) {
+            $recorder[] = 'b';
+        }, ['prepend' => true]);
+        $controller->run();
+        $this->assertSame(['b', 'a'], $recorder);
+    }
+
+    public function testIgnoreActionForFilter() {
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $router->setActionMethod('doIndexAction');
+        $router->setController('index');
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])->setMethods(['handleAction'])->getMock();
+        $isCalled = false;
+        $controller->addBeforeFilter(function() use (&$isCalled) {
+            $isCalled = true;
+        }, ['ignored_actions' => ['index']]);
+        $controller->run();
+        $this->assertFalse($isCalled);
+    }
+
+    /**
+     * @expectedException Hyperframework\Web\ActionFilterException
+     */
+    public function testInvalidIgnoreActionsOptionWhenAddFilter() {
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $controller = new IndexController($app);
+        $controller->addBeforeFilter(
+            function() {}, ['ignored_actions' => false]
+        );
+    }
+
+    public function testSpecifyActionForFilter() {
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $router->setActionMethod('doIndexAction');
+        $router->setController('index');
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])->setMethods(['handleAction'])->getMock();
+        $isCalled = false;
+        $controller->addBeforeFilter(function() use (&$isCalled) {
+            $isCalled = true;
+        }, ['actions' => ['unknown']]);
+        $controller->run();
+        $controller = $this->getMockBuilder(
+            'Hyperframework\Web\Test\IndexController'
+        )->setConstructorArgs([$app])->setMethods(['handleAction'])->getMock();
+        $this->assertFalse($isCalled);
+        $controller->addBeforeFilter(function() use (&$isCalled) {
+            $isCalled = true;
+        }, ['actions' => ['index']]);
+        $controller->run();
+        $this->assertTrue($isCalled);
+    }
+
+    /**
+     * @expectedException Hyperframework\Web\ActionFilterException
+     */
+    public function testInvalidActionsOptionWhenAddFilter() {
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $controller = new IndexController($app);
+        $controller->addBeforeFilter(
+            function() {}, ['actions' => false]
+        );
+    }
+
+    /**
+     * @expectedException Hyperframework\Web\ActionFilterException
+     */
+    public function testAddFilterWhichIsEmtpyString() {
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $controller = new IndexController($app);
+        $controller->addBeforeFilter('');
+    }
+
+    /**
+     * @expectedException Hyperframework\Web\ActionFilterException
+     */
+    public function testAddFilterWhichTypeIsInvalid() {
+        $app = new App(dirname(__DIR__));
+        $router = $app->getRouter();
+        $router->setAction('index');
+        $controller = new IndexController($app);
+        $controller->addBeforeFilter($controller);
     }
 }
