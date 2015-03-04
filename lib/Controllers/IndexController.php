@@ -15,7 +15,7 @@ class IndexController extends Controller {
     }
 
     public function __construct($app) {
-        ResponseHeaderHelper::deleteCookie('name', 'localhost', '/df');
+        ResponseHeaderHelper::setCookie('xxname', null, ['path' => '/df']);
         ResponseHeaderHelper::setCookie('xname', 'value');
         DbClient::beginTransaction();
         DbClient::commit();

@@ -35,22 +35,22 @@ class ResponseHeaderHelperEngine {
         $secure = false;
         $httpOnly = false;
         if ($options !== null) {
-            foreach ($options as $key => $value) {
-                switch($key) {
+            foreach ($options as $optionKey => $optionValue) {
+                switch($optionKey) {
                     case 'expire':
-                        $expire = $value;
+                        $expire = $optionValue;
                         break;
                     case 'path':
-                        $path = $value;
+                        $path = $optionValue;
                         break;
                     case 'domain':
-                        $domain = $value;
+                        $domain = $optionValue;
                         break;
                     case 'secure':
-                        $secure = $value;
+                        $secure = $optionValue;
                         break;
                     case 'httponly':
-                        $httpOnly = $value;
+                        $httpOnly = $optionValue;
                         break;
                     default:
                         throw new CookieException(
