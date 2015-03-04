@@ -28,22 +28,44 @@ class ResponseHeaderHelperEngine {
         return http_response_code();
     }
 
-    public function setCookie(
-        $name, $value, $expire = 0, $path = '/',
-        $domain = null, $secure = false, $httpOnly = false
-    ) {
+    public function setCookie($name, $value, array $options = null) {
+        $expire = 0;
+        $path = '/';
+        $domain = null;
+        $secure = false;
+        $httpOnly = false;
+        if ($options !== null) {
+            foreach ($options as $key => $value) {
+                switch($key) {
+                    case 'expire':
+                        $expire = $value;
+                        break;
+                    case 'path':
+                        $path = $value;
+                        break;
+                    case 'domain':
+                        $domain = $value;
+                        break;
+                    case 'secure':
+                        $secure = $value;
+                        break;
+                    case 'httponly':
+                        $httpOnly = $value;
+                        break;
+                    default:
+                        throw new CookieException(
+                            "Option '$key' is not allowed."
+                        );
+                }
+            }
+        }
         setcookie(
             $name, $value, $expire, $path, $domain, $secure, $httpOnly
         );
     }
 
-    public function setRawCookie(
-        $name, $value, $expire = 0, $path = '/',
-        $domain = null, $secure = false, $httpOnly = false
-    ) {
-        setrawcookie(
-            $name, $value, $expire, $path, $domain, $secure, $httpOnly
-        );
+    public function deleteCookie($name, $domain = null, $path = '/') {
+        setcookie($name, null, 1, $path, $domain);
     }
 
     public function isSent(&$file = null, &$line = null) {

@@ -14,7 +14,7 @@ abstract class HttpException extends Exception {
     }
 
     public function getStatus() {
-        return $statusCode . ' ' . $statusText;
+        return $this->statusCode . ' ' . $this->statusText;
     }
 
     public function getStatusCode() {

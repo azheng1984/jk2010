@@ -140,6 +140,7 @@ class ErrorHandler {
                 E_RECOVERABLE_ERROR => 'fatal',
                 E_USER_ERROR        => 'fatal',
                 E_ERROR             => 'fatal',
+                E_PARSE             => 'fatal',
                 E_COMPILE_ERROR     => 'fatal',
                 E_CORE_ERROR        => 'fatal'
             ];
