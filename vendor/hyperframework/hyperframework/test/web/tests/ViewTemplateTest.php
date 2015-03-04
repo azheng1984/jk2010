@@ -23,6 +23,15 @@ class ViewTemplateTest extends Base {
     public function testRenderLayout() {
     }
 
+    public function testRenderNestedLayout() {
+    }
+
+    public function testRenderNestedView() {
+    }
+
+    public function testNestedViewLayout() {
+    }
+
     /**
      * @expectedException Hyperframework\Web\ViewException
      */
@@ -48,6 +57,9 @@ class ViewTemplateTest extends Base {
             $isRendered = true;
         });
         $this->assertTrue($isRendered);
+    }
+
+    public function testRenderBlockLayout() {
     }
 
     /**

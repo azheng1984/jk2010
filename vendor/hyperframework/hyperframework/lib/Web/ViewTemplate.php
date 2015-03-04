@@ -67,19 +67,6 @@ abstract class ViewTemplate implements ArrayAccess {
         $this->blocks[$name] = $function;
     }
 
-    private function getRootPath() {
-        if ($this->rootPath === null) {
-            $path = Config::getString(
-                'hyperframework.web.view.root_path', ''
-            );
-            if ($path === '') {
-                $path = 'views';
-            }
-            $this->rootPath = FileLoader::getFullPath($path);
-        }
-        return $this->rootPath;
-    }
-
     public function __invoke($function) {
         return $function();
     }
@@ -107,6 +94,19 @@ abstract class ViewTemplate implements ArrayAccess {
             );
         }
         return $this->viewModel[$offset];
+    }
+
+    private function getRootPath() {
+        if ($this->rootPath === null) {
+            $path = Config::getString(
+                'hyperframework.web.view.root_path', ''
+            );
+            if ($path === '') {
+                $path = 'views';
+            }
+            $this->rootPath = FileLoader::getFullPath($path);
+        }
+        return $this->rootPath;
     }
 
     private function pushLayout() {
