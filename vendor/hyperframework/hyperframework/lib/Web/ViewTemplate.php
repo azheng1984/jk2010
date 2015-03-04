@@ -13,8 +13,10 @@ abstract class ViewTemplate implements ArrayAccess {
     private $viewModel;
     private $loadFileFunction;
     private $blocks = [];
-    private $layoutStack = [];
+    private $layoutPathStack = [];
     private $rootPath;
+    private $filePath;
+    private $layoutPath;
 
     public function __construct($loadFileFunction, array $viewModel = null) {
         $this->loadFileFunction = $loadFileFunction;
@@ -32,13 +34,14 @@ abstract class ViewTemplate implements ArrayAccess {
             $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
         }
         if (FullPathRecognizer::isFull($path)) {
-            $this->fullPath = $path;
+            $this->filePath = $path;
         } else {
             PathCombiner::prepend($path, $this->getRootPath());
-            $this->fullPath = $path;
+            $this->filePath = $path;
         }
         $loadFileFunction = $this->loadFileFunction;
-        $loadFileFunction($this->fullPath);
+        $loadFileFunction();
+        $this->filePath = null;
         if ($this->layoutPath !== null) {
             $this->render($this->layoutPath);
         }
@@ -47,6 +50,10 @@ abstract class ViewTemplate implements ArrayAccess {
 
     public function setLayout($path) {
         $this->layoutPath = $path;
+    }
+
+    public function getFilePath() {
+        return $this->filePath;
     }
 
     public function renderBlock($name, Closure $default = null) {
@@ -110,10 +117,10 @@ abstract class ViewTemplate implements ArrayAccess {
     }
 
     private function pushLayout() {
-        array_push($this->layoutStack, $this->layoutPath);
+        array_push($this->layoutPathStack, $this->layoutPath);
     }
 
     private function popLayout() {
-        $this->layoutPath = array_pop($this->layoutStack);
+        $this->layoutPath = array_pop($this->layoutPathStack);
     }
 }
