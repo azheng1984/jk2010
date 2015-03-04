@@ -16,4 +16,12 @@ class ViewTemplateTest extends Base {
             . 'index' . DIRECTORY_SEPARATOR . 'index.php',
         $path);
     }
+
+    /**
+     * @expectedException Hyperframework\Web\ViewException
+     */
+    public function testRenderByEmptyPath() {
+        $tpl = new ViewTemplate(function() {});
+        $tpl->render(null);
+    }
 }

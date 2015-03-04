@@ -10,7 +10,7 @@ use Hyperframework\Common\FullPathRecognizer;
 use Hyperframework\Common\PathCombiner;
 
 abstract class ViewTemplate implements ArrayAccess {
-    private $model;
+    private $viewModel;
     private $loadFileFunction;
     private $blocks = [];
     private $contextStack = [];
@@ -27,18 +27,7 @@ abstract class ViewTemplate implements ArrayAccess {
     public function render($path) {
         $path = (string)$path;
         if ($path === '') {
-            throw new InvalidArgumentException('View path cannot be empty.');
-        }
-        $extensionPattern = '#\.[.0-9a-zA-Z]+$#';
-        if (preg_match($extensionPattern, $path, $matches) === 0) {
-            if ($this->fullPath === null) {
-                throw new ViewException(
-                    "View path '$path' is invalid, "
-                        . "filename extension does not exist."
-                );
-            }
-            preg_match($extensionPattern, $this->fullPath, $matches);
-            $path .= $matches[0];
+            throw new ViewException('View path cannot be empty.');
         }
         $this->pushContext();
         $this->setLayout(null);

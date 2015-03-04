@@ -54,7 +54,7 @@ class ResponseHeaderHelperEngine {
                         break;
                     default:
                         throw new CookieException(
-                            "Option '$key' is not allowed."
+                            "Option '$optionKey' is not allowed."
                         );
                 }
             }
