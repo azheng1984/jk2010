@@ -64,10 +64,6 @@ class ResponseHeaderHelperEngine {
         );
     }
 
-    public function deleteCookie($name, $domain = null, $path = '/') {
-        setcookie($name, null, 1, $path, $domain);
-    }
-
     public function isSent(&$file = null, &$line = null) {
         return headers_sent($file, $line);
     }

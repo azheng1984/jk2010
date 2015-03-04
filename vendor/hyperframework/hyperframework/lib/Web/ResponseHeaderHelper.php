@@ -33,10 +33,6 @@ class ResponseHeaderHelper {
         self::getEngine()->setCookie($name, $value, $options);
     }
 
-    public static function deleteCookie($name, $domain = null, $path = '/') {
-        self::getEngine()->deleteCookie($name, $domain, $path);
-    }
-
     public static function getResponseCode() {
         return self::getEngine()->getResponseCode();
     }
