@@ -17,11 +17,44 @@ class ViewTemplateTest extends Base {
         $path);
     }
 
+    public function testRenderByFullPath() {
+    }
+
+    public function testRenderLayout() {
+    }
+
     /**
      * @expectedException Hyperframework\Web\ViewException
      */
     public function testRenderByEmptyPath() {
         $tpl = new ViewTemplate(function() {});
         $tpl->render(null);
+    }
+
+    public function testRenderBlock() {
+        $tpl = new ViewTemplate(function() {});
+        $isRendered = false;
+        $tpl->setBlock('name', function() use (&$isRendered) {
+            $isRendered = true;
+        });
+        $tpl->renderBlock('name');
+        $this->assertTrue($isRendered);
+    }
+
+    public function testRenderDefaultBlock() {
+        $tpl = new ViewTemplate(function() {});
+        $isRendered = false;
+        $tpl->renderBlock('undefined', function() use (&$isRendered) {
+            $isRendered = true;
+        });
+        $this->assertTrue($isRendered);
+    }
+
+    /**
+     * @expectedException Hyperframework\Web\ViewException
+     */
+    public function testRenderBlockWhichDoesNotExist() {
+        $tpl = new ViewTemplate(function() {});
+        $tpl->renderBlock('undefined');
     }
 }

@@ -13,11 +13,8 @@ abstract class ViewTemplate implements ArrayAccess {
     private $viewModel;
     private $loadFileFunction;
     private $blocks = [];
-    private $contextStack = [];
+    private $layoutStack = [];
     private $rootPath;
-    private $fullPath;
-    private $layoutPath;
-    private $layoutRootPath;
 
     public function __construct($loadFileFunction, array $viewModel = null) {
         $this->loadFileFunction = $loadFileFunction;
@@ -29,7 +26,7 @@ abstract class ViewTemplate implements ArrayAccess {
         if ($path === '') {
             throw new ViewException('View path cannot be empty.');
         }
-        $this->pushContext();
+        $this->pushLayout();
         $this->setLayout(null);
         if (DIRECTORY_SEPARATOR !== '/') {
             $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
@@ -43,27 +40,19 @@ abstract class ViewTemplate implements ArrayAccess {
         $loadFileFunction = $this->loadFileFunction;
         $loadFileFunction($this->fullPath);
         if ($this->layoutPath !== null) {
-            $this->setRootPath($this->layoutRootPath);
             $this->render($this->layoutPath);
         }
-        $this->popContext();
+        $this->popLayout();
     }
 
     public function setLayout($path) {
         $this->layoutPath = $path;
-        $this->layoutRootPath = $this->getRootPath();
-    }
-
-    public function getFullPath() {
-        return $this->fullPath;
     }
 
     public function renderBlock($name, Closure $default = null) {
-        $this->pushContext();
+        $this->pushLayout();
         if (isset($this->blocks[$name])) {
-            $function = $this->blocks[$name]['function'];
-            $this->setRootPath($this->blocks[$name]['root_path']);
-            $this->fullPath = $this->blocks[$name]['full_path'];
+            $function = $this->blocks[$name];
             $function();
         } else {
             if ($default === null) {
@@ -71,18 +60,14 @@ abstract class ViewTemplate implements ArrayAccess {
             }
             $default();
         }
-        $this->popContext();
+        $this->popLayout();
     }
 
     public function setBlock($name, Closure $function) {
-        $this->blocks[$name] = [
-            'function' => $function,
-            'root_path' => $this->rootPath,
-            'full_path' => $this->fullPath,
-        ];
+        $this->blocks[$name] = $function;
     }
 
-    public function getRootPath() {
+    private function getRootPath() {
         if ($this->rootPath === null) {
             $path = Config::getString(
                 'hyperframework.web.view.root_path', ''
@@ -93,10 +78,6 @@ abstract class ViewTemplate implements ArrayAccess {
             $this->rootPath = FileLoader::getFullPath($path);
         }
         return $this->rootPath;
-    }
-
-    public function setRootPath($value) {
-        $this->rootPath = $value;
     }
 
     public function __invoke($function) {
@@ -128,21 +109,11 @@ abstract class ViewTemplate implements ArrayAccess {
         return $this->viewModel[$offset];
     }
 
-    private function pushContext() {
-        $context = [
-            'root_path' => $this->rootPath,
-            'full_path' => $this->fullPath,
-            'layout_path' => $this->layoutPath,
-            'layout_root_path' => $this->layoutRootPath
-        ];
-        array_push($this->contextStack, $context);
+    private function pushLayout() {
+        array_push($this->layoutStack, $this->layoutPath);
     }
 
-    private function popContext() {
-        $context = array_pop($this->contextStack);
-        $this->rootPath = $context['root_path'];
-        $this->fullPath = $context['full_path'];
-        $this->layoutPath = $context['layout_path'];
-        $this->layoutRootPath = $context['layout_root_path'];
+    private function popLayout() {
+        $this->layoutPath = array_pop($this->layoutStack);
     }
 }
