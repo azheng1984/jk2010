@@ -74,10 +74,6 @@ abstract class ViewTemplate implements ArrayAccess {
         $this->blocks[$name] = $function;
     }
 
-    public function __invoke($function) {
-        return $function();
-    }
-
     public function offsetSet($offset, $value) {
         if ($offset === null) {
             throw new InvalidArgumentException('Offset cannot be null.');

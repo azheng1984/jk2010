@@ -2,12 +2,12 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Common\FileLoader;
 use Hyperframework\Web\Test\ViewTemplate;
 use Hyperframework\Web\Test\TestCase as Base;
 
 class ViewTemplateTest extends Base {
     public function testRender() {
-        Config::set('hyperframework.app_root_path', dirname(__DIR__));
         $path = null;
         $tpl = null;
         $tpl = new ViewTemplate(
@@ -21,6 +21,19 @@ class ViewTemplateTest extends Base {
     }
 
     public function testRenderByFullPath() {
+        $viewPath = FileLoader::getFullPath(
+            'views' . DIRECTORY_SEPARATOR . 'index'
+                . DIRECTORY_SEPARATOR . 'index.php'
+        );
+        $loadedPath = null;
+        $tpl = null;
+        $tpl = new ViewTemplate(
+            function() use (&$loadedPath, &$tpl) {
+                $loadedPath = $tpl->getFilePath();
+            }
+        );
+        $tpl->render($viewPath);
+        $this->assertSame($viewPath, $loadedPath);
     }
 
     public function testRenderLayout() {
@@ -63,6 +76,18 @@ class ViewTemplateTest extends Base {
     }
 
     public function testRenderBlockLayout() {
+    }
+
+    public function testIssetViewModelField() {
+    }
+
+    public function testGetViewModelField() {
+    }
+
+    public function testGetViewModelFieldWhichDoesNotExist() {
+    }
+
+    public function testUnsetViewModelField() {
     }
 
     /**
