@@ -101,7 +101,9 @@ class ErrorHandler {
                 } else {
                     $message = 'PHP ' . $this->getError();
                 }
-                $maxLength = $this->getMaxLogLength();
+                $maxLength = Config::getInt(
+                    'hyperframework.error_handler.max_log_length', 1024
+                );
                 if ($maxLength > 0) {
                     return substr($message, 0, $maxLength);
                 }
@@ -335,24 +337,6 @@ class ErrorHandler {
         return 'Fatal error:  Uncaught ' . $this->error . PHP_EOL
             . '  thrown in ' . $this->error->getFile() . ' on line '
             . $this->error->getLine();
-    }
-
-    private function getMaxLogLength() {
-        $config = ini_get('log_errors_max_len');
-        if (strlen($config) < 2) {
-            return (int)$config;
-        }
-        $type = strtolower(substr($config, -1));
-        $config = (int)$config;
-        switch ($type) {
-            case 'g':
-                $config *= 1024;
-            case 'm':
-                $config *= 1024;
-            case 'k':
-                $config *= 1024;
-        }
-        return $config;
     }
 
     private function getCustomLoggerClass() {
