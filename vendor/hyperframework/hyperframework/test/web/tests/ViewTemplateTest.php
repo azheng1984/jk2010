@@ -37,15 +37,21 @@ class ViewTemplateTest extends Base {
     }
 
     public function testRenderLayout() {
+        $this->expectOutputString("begin content end\n");
+        $view = new View;
+        $view->render('index/view_with_layout.php');
     }
 
     public function testRenderNestedLayout() {
+        $this->expectOutputString("begin begin-sub content end-sub end\n");
+        $view = new View;
+        $view->render('index/view_with_nested_layout.php');
     }
 
-    public function testRenderNestedView() {
-    }
-
-    public function testNestedViewLayout() {
+    public function testRenderNestedViewWithLayout() {
+        $this->expectOutputString("begin-out begin content end\n end-out\n");
+        $view = new View;
+        $view->render('index/nested_view.php');
     }
 
     /**
@@ -75,19 +81,39 @@ class ViewTemplateTest extends Base {
         $this->assertTrue($isRendered);
     }
 
-    public function testRenderBlockLayout() {
+    public function testRenderViewWithLayoutInBlock() {
+        $this->expectOutputString("begin content end\n");
+        $tpl = new View;
+        $tpl->setBlock('name', function() use ($tpl) {
+            $tpl->render('index/view_with_layout.php');
+        });
+        $tpl->renderBlock('name');
     }
 
     public function testIssetViewModelField() {
+        $tpl = new ViewTemplate(null, ['name' => 'value']);
+        $this->assertTrue(isset($tpl['name']));
+        $this->assertFalse(isset($tpl['unknown']));
     }
 
     public function testGetViewModelField() {
+        $tpl = new ViewTemplate(null, ['name' => 'value']);
+        $this->assertSame('value', $tpl['name']);
     }
 
+    /**
+     * @expectedException Hyperframework\Web\ViewException
+     */
     public function testGetViewModelFieldWhichDoesNotExist() {
+        $tpl = new ViewTemplate(null, []);
+        $tpl['unknown'];
     }
 
     public function testUnsetViewModelField() {
+        $tpl = new ViewTemplate(null, ['name' => 'value']);
+        $this->assertTrue(isset($tpl['name']));
+        unset($tpl['name']);
+        $this->assertFalse(isset($tpl['name']));
     }
 
     /**
