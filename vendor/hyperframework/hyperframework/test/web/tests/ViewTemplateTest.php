@@ -91,13 +91,13 @@ class ViewTemplateTest extends Base {
     }
 
     public function testIssetViewModelField() {
-        $tpl = new ViewTemplate(null, ['name' => 'value']);
+        $tpl = new ViewTemplate(function() {}, ['name' => 'value']);
         $this->assertTrue(isset($tpl['name']));
         $this->assertFalse(isset($tpl['unknown']));
     }
 
     public function testGetViewModelField() {
-        $tpl = new ViewTemplate(null, ['name' => 'value']);
+        $tpl = new ViewTemplate(function() {}, ['name' => 'value']);
         $this->assertSame('value', $tpl['name']);
     }
 
@@ -105,12 +105,12 @@ class ViewTemplateTest extends Base {
      * @expectedException Hyperframework\Web\ViewException
      */
     public function testGetViewModelFieldWhichDoesNotExist() {
-        $tpl = new ViewTemplate(null, []);
+        $tpl = new ViewTemplate(function() {}, []);
         $tpl['unknown'];
     }
 
     public function testUnsetViewModelField() {
-        $tpl = new ViewTemplate(null, ['name' => 'value']);
+        $tpl = new ViewTemplate(function() {}, ['name' => 'value']);
         $this->assertTrue(isset($tpl['name']));
         unset($tpl['name']);
         $this->assertFalse(isset($tpl['name']));

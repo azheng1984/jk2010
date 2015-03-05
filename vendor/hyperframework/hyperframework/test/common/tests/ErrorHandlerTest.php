@@ -32,8 +32,12 @@ class ErrorHandlerTest extends Base {
         );
     }
 
-    private function bind() {
-        $this->handler = new ErrorHandler;
+    private function registerErrorHandler($handler = null) {
+        if ($handler === null) {
+            $this->handler = new ErrorHandler;
+        } else {
+            $this->handler = $handler;
+        }
         $this->callPrivateMethod($this->handler, 'registerErrorHandler');
     }
 
@@ -43,7 +47,10 @@ class ErrorHandlerTest extends Base {
         ini_set('error_log', $this->errorLog);
         ini_set('log_errors', $this->shouldLogErrors);
         ini_set('display_errors', $this->shouldDisplayErrors);
-        restore_error_handler();
+        if ($this->handler !== null) {
+            restore_error_handler();
+            $this->handler = null;
+        }
         if (file_exists(dirname(__DIR__) . '/data/tmp/log')) {
             unlink(dirname(__DIR__) . '/data/tmp/log');
         }
@@ -62,58 +69,85 @@ class ErrorHandlerTest extends Base {
      * @expectedException Hyperframework\Common\ErrorException
      */
     public function testConvertErrorToException() {
-        $this->bind();
-        trigger_error('notice');
+        $this->handleError();
+    }
+
+    private function handleError(
+        $handler = null,
+        $type = E_NOTICE, $message = 'notice', $file = __FILE__, $line = 0
+    ) {
+        if ($handler === null) {
+            $handler = new ErrorHandler;
+        }
+        $this->callPrivateMethod(
+            $handler, 'handleError', [$type, $message, $file, $line] 
+        );
     }
 
     public function testRegisterExceptionHandler() {
-        $this->bind();
-        $this->callPrivateMethod($this->handler, 'registerExceptionHandler');
-        $handler = set_exception_handler(function() {});
+        $handler = new ErrorHandler;
+        $this->callPrivateMethod($handler, 'registerExceptionHandler');
+        $callback = set_exception_handler(function() {});
         restore_exception_handler();
         restore_exception_handler();
-        $reflection = new ReflectionFunction($handler);
-        $this->assertSame($reflection->getClosureThis(), $this->handler);
+        $reflection = new ReflectionFunction($callback);
+        $this->assertSame($reflection->getClosureThis(), $handler);
     }
 
     public function testRegisterErrorHandler() {
-        $this->bind();
-        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
-        $handler = set_error_handler(function() {});
+        $handler = new ErrorHandler;
+        $this->callPrivateMethod($handler, 'registerErrorHandler');
+        $callback = set_error_handler(function() {});
         restore_error_handler();
         restore_error_handler();
-        $reflection = new ReflectionFunction($handler);
-        $this->assertSame($reflection->getClosureThis(), $this->handler);
+        $reflection = new ReflectionFunction($callback);
+        $this->assertSame($reflection->getClosureThis(), $handler);
     }
 
     public function testDisplayDefaultErrorMessage() {
-        $this->bind();
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
         $this->expectOutputString(PHP_EOL . "Notice:  notice in "
-            . __FILE__ . " on line " . (__LINE__ + 1) . PHP_EOL);
+            . __FILE__ . " on line 0" . PHP_EOL);
+        $this->handleError();
+        $this->registerErrorHandler();
         trigger_error('notice');
     }
 
+    public function testDisableDefaultErrorReporting() {
+        $handler = new ErrorHandler;
+        $this->callPrivateMethod(
+            $handler, 'disableDefaultErrorReporting'
+        );
+        $this->assertEquals(error_reporting(), E_COMPILE_WARNING);
+        error_reporting(E_ALL & ~E_COMPILE_WARNING);
+        $handler = new ErrorHandler;
+        $this->callPrivateMethod(
+            $handler, 'disableDefaultErrorReporting'
+        );
+        $this->assertEquals(ini_get('display_errors'), '0');
+        $this->assertEquals(ini_get('log_errors'), '0');
+        $this->assertEquals(error_reporting(), E_ALL & ~E_COMPILE_WARNING);
+    }
+
     public function testLogDefaultErrorMessage() {
-        $this->bind();
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
-        $this->assertFalse(
-            $this->callProtectedMethod($this->handler, 'isLoggerEnabled')
-        );
-        $this->assertTrue(
-            $this->callProtectedMethod(
-                $this->handler, 'isDefaultErrorLogEnabled'
-            )
-        );
+//        $this->assertFalse(
+//            $this->callProtectedMethod($this->handler, 'isLoggerEnabled')
+//        );
+//        $this->assertTrue(
+//            $this->callProtectedMethod(
+//                $this->handler, 'isDefaultErrorLogEnabled'
+//            )
+//        );
         $this->expectOutputString(PHP_EOL . "Notice:  notice in "
-            . __FILE__ . " on line " . (__LINE__ + 3) . PHP_EOL);
+            . __FILE__ . " on line 0" . PHP_EOL);
         $message = "PHP Notice:  notice in "
-            . __FILE__ . " on line " . (__LINE__ + 1) . PHP_EOL;
-        trigger_error('notice');
+            . __FILE__ . " on line 0" . PHP_EOL;
+        $this->handleError();
         $log = file_get_contents(dirname(__DIR__) . '/data/tmp/log');
         $this->assertStringEndsWith($message, (string)$log);
     }
@@ -125,23 +159,22 @@ class ErrorHandlerTest extends Base {
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
-        $this->bind();
-        $this->assertTrue(
-            $this->callProtectedMethod($this->handler, 'isLoggerEnabled')
-        );
-        $this->assertFalse(
-            $this->callProtectedMethod(
-                $this->handler, 'isDefaultErrorLogEnabled'
-            )
-        );
+//        $this->assertTrue(
+//            $this->callProtectedMethod($this->handler, 'isLoggerEnabled')
+//        );
+//        $this->assertFalse(
+//            $this->callProtectedMethod(
+//                $this->handler, 'isDefaultErrorLogEnabled'
+//            )
+//        );
         $this->expectOutputString(PHP_EOL . "Notice:  notice in "
-            . __FILE__ . " on line " . (__LINE__ + 3) . PHP_EOL);
+            . __FILE__ . " on line 0" . PHP_EOL);
         $message = "PHP Notice:  notice in "
-            . __FILE__ . " on line " . (__LINE__ + 1) . PHP_EOL;
-        trigger_error('notice');
+            . __FILE__ . " on line 0" . PHP_EOL;
+        $this->handleError();
         $log = file_get_contents(dirname(__DIR__) . '/data/tmp/logger_log');
         $structuredMessage = "[NOTICE] PHP Notice: "
-            . " notice in " . __FILE__ . " on line " . (__LINE__ - 3) . PHP_EOL;
+            . " notice in " . __FILE__ . " on line 0" . PHP_EOL;
         $this->assertStringEndsWith($structuredMessage, $log);
         $this->assertFalse(
             file_exists(dirname(__DIR__) . '/data/tmp/log')
@@ -152,12 +185,11 @@ class ErrorHandlerTest extends Base {
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
-        $this->bind();
         $this->expectOutputString(PHP_EOL . "Notice:  notice in "
-            . __FILE__ . " on line " . (__LINE__ + 3) . PHP_EOL);
+            . __FILE__ . " on line 0" . PHP_EOL);
         $message = "PHP Notice: notice in "
-            . __FILE__ . " on line " . (__LINE__ + 1) . PHP_EOL;
-        trigger_error('notice');
+            . __FILE__ . " on line 0" . PHP_EOL;
+        $this->handleError();
         $this->assertFalse(
             file_exists(dirname(__DIR__) . '/data/tmp/logger_log')
         );
@@ -165,9 +197,10 @@ class ErrorHandlerTest extends Base {
     }
 
     public function testThrowArgumentErrorException() {
-        $this->bind();
+        $this->registerErrorHandler();
         try {
-            $this->methodForArgumentErrorTest();
+            $function = function($arg) {};
+            $function();
         } catch (ErrorException $e) {
             $line = __LINE__ - 2;
             $file = __FILE__;
@@ -180,88 +213,83 @@ class ErrorHandlerTest extends Base {
 
     public function testDefaultLogForArgumentError() {
         ini_set('display_errors', 0);
-        $this->bind();
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
-        $line = $this->getMethodForArgumentErrorTestDefinitionLine();
-        $suffix = 'PHP Warning:  Missing argument 1 for '
-            . __CLASS__ . '::methodForArgumentErrorTest() (defined in '
+        $function = function($arg) {};
+        $line = __LINE__ - 1;
+        $suffix = '(defined in '
             . __FILE__ . ':' . $line . ') in '
-            . __FILE__ . ' on line ' . (__LINE__ + 1) . PHP_EOL;
-        $this->methodForArgumentErrorTest();
+            . __FILE__ . ' on line ' . (__LINE__ + 2) . PHP_EOL;
+        $this->registerErrorHandler();
+        $function();
         $log = file_get_contents(dirname(__DIR__) . '/data/tmp/log');
         $this->assertStringEndsWith($suffix, (string)$log);
     }
 
     public function testDisplayHtmlErrorMessage() {
         ini_set('html_errors', 1);
-        $this->bind();
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
         $this->expectOutputString("<br />"
             . PHP_EOL . "<b>Notice</b>:  notice in <b>"
-            . __FILE__ . "</b> on line <b>" . (__LINE__ + 2)
+            . __FILE__ . "</b> on line <b>0"
             . '</b><br />' . PHP_EOL);
-        trigger_error('notice');
+        $this->handleError();
     }
 
     public function testTriggerErrorInErrorHandler() {
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
-        $this->handler = new ErrorTriggeredErrorHandler;
+        $this->registerErrorHandler(new ErrorTriggeredErrorHandler);
         $this->expectOutputString(PHP_EOL . "Notice: notice in " 
             . $this->handler->getFile(). " on line "
             . $this->handler->getErrorLine(). PHP_EOL);
-        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
-        $this->callPrivateMethod($this->handler, 'registerExceptionHandler');
         trigger_error('notice');
     }
 
     public function
         testEnableFatalErrorAndCompileWarningReportingByShutdownHandler()
     {
-        $this->bind();
+        $handler = new ErrorHandler;
         error_reporting(0);
-        $this->callPrivateMethod($this->handler, 'handleShutdown');
+        $this->callPrivateMethod($handler, 'handleShutdown');
         $this->assertEquals(error_reporting(), E_ERROR | E_PARSE | E_CORE_ERROR
             | E_COMPILE_ERROR | E_COMPILE_WARNING
         );
     }
 
-    public function testLogErrorTraceByLogger() {
-        //Config::set(
-        //    'hyperframework.error_handler.logger.log_stack_trace', true
-        //);
-        Config::set(
-            'hyperframework.error_handler.enable_logger', true
-        );
-        Config::set(
-            'hyperframework.error_handler.error_throwing_bitmask', 0
-        );
-        $this->bind();
-        $this->expectOutputString(PHP_EOL . "Notice:  notice in "
-            . __FILE__ . " on line " . (__LINE__ + 1) . PHP_EOL);
-        trigger_error('notice');
-        $log = file_get_contents(dirname(__DIR__) . '/data/tmp/logger_log');
-        //$this->assertTrue(strpos($log, PHP_EOL . "\tstack_trace:") !== false);
-    }
+//    public function testLogErrorTraceByLogger() {
+//        //Config::set(
+//        //    'hyperframework.error_handler.logger.log_stack_trace', true
+//        //);
+//        Config::set(
+//            'hyperframework.error_handler.enable_logger', true
+//        );
+//        Config::set(
+//            'hyperframework.error_handler.error_throwing_bitmask', 0
+//        );
+//        $this->bind();
+//        $this->expectOutputString(PHP_EOL . "Notice:  notice in "
+//            . __FILE__ . " on line " . (__LINE__ + 1) . PHP_EOL);
+//        trigger_error('notice');
+//        $log = file_get_contents(dirname(__DIR__) . '/data/tmp/logger_log');
+//        //$this->assertTrue(strpos($log, PHP_EOL . "\tstack_trace:") !== false);
+//    }
 
     public function testWriteCustomLog() {
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
         ini_set('display_errors', 0);
-        $this->handler= $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
+        $handler = $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
             ->setMethods(['writeLog'])
             ->getMock();
-        $this->handler->expects($this->once())
+        $handler->expects($this->once())
              ->method('writeLog');
-
-        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
-        trigger_error('notice');
+        $this->handleError($handler);
     }
 
     public function testWriteCustomErrorLog() {
@@ -269,80 +297,53 @@ class ErrorHandlerTest extends Base {
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
         ini_set('display_errors', 0);
-        $this->handler = $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
+        $handler = $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
             ->setMethods(['writeDefaultErrorLog'])
             ->getMock();
-        $this->handler->expects($this->once())
-            ->method('writeDefaultErrorLog');
-        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
-        trigger_error('notice');
+        $handler->expects($this->once())->method('writeDefaultErrorLog');
+        $this->handleError($handler);
     }
 
     public function testDisplayCustomErrorMessage() {
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
-        $this->handler= $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
+        $handler= $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
             ->setMethods(['displayError'])
             ->getMock();
-        $this->handler->expects($this->once())
+        $handler->expects($this->once())
              ->method('displayError');
-        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
-        trigger_error('notice');
+        $this->handleError($handler);
     }
 
-    public function testShouldDisplayErrors() {
-        $this->bind();
-        $this->assertTrue(
-            $this->callProtectedMethod($this->handler, 'shouldDisplayErrors')
-        );
-    }
+//    public function testShouldDisplayErrors() {
+//        $this->bind();
+//        $this->assertTrue(
+//            $this->callProtectedMethod($this->handler, 'shouldDisplayErrors')
+//        );
+//    }
 
-    public function testDisableDefaultErrorReporting() {
-        $this->bind();
-        $this->callProtectedMethod(
-            $this->handler, 'disableDefaultErrorReporting'
-        );
-        $this->assertEquals(error_reporting(), E_COMPILE_WARNING);
-        error_reporting(E_ALL & ~E_COMPILE_WARNING);
-        $this->bind();
-        $this->callProtectedMethod(
-            $this->handler, 'disableDefaultErrorReporting'
-        );
-        $this->assertEquals(ini_get('display_errors'), '0');
-        $this->assertEquals(ini_get('log_errors'), '0');
-        $this->assertEquals(error_reporting(), E_ALL & ~E_COMPILE_WARNING);
-    }
-
-    public function testGetErrorReportingBitmask() {
-        $this->bind();
-        $this->assertEquals(
-            $this->callProtectedMethod(
-                $this->handler, 'getErrorReportingBitmask'
-            ), 
-            E_ALL
-        );
-    }
-
-    public function testGetErrorAndIsError() {
+//    public function testGetErrorReportingBitmask() {
+//        $this->bind();
+//        $this->assertEquals(
+//            $this->callProtectedMethod(
+//                $this->handler, 'getErrorReportingBitmask'
+//            ), 
+//            E_ALL
+//        );
+//    }
+//
+    public function testGetError() {
         Config::set(
             'hyperframework.error_handler.error_throwing_bitmask', 0
         );
-        $this->handler= $this->getMockBuilder(
+        $handler = $this->getMockBuilder(
             'Hyperframework\Common\Test\ErrorSpy')
             ->setMethods(['send'])
             ->getMock();
-        $this->handler->expects($this->once())->method('send')->with(
+        $handler->expects($this->once())->method('send')->with(
             $this->isInstanceOf(__NAMESPACE__ . '\Error')
         );
-        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
-        trigger_error('notice');
-    }
-
-    private function methodForArgumentErrorTest($param) {
-    }
-
-    private function getMethodForArgumentErrorTestDefinitionLine() {
-        return __LINE__ - 4;
+        $this->handleError($handler);
     }
 }

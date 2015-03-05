@@ -3,6 +3,7 @@ namespace Hyperframework\Common;
 
 use Exception;
 use Hyperframework\Logging\Logger;
+use Hyperframework\Logging\LogLevel;
 
 class ErrorHandler {
     private $errorReportingBitmask;
@@ -93,7 +94,7 @@ class ErrorHandler {
 
     protected function writeLog() {
         if ($this->isLoggerEnabled()) {
-            $method = $this->getLoggerMethod();
+            $logLevel = $this->getLogLevel();
             $callback = function() {
                 if ($this->error instanceof Exception) {
                     $message = 'PHP ' . $this->getExceptionErrorLog();
@@ -108,9 +109,9 @@ class ErrorHandler {
             };
             $loggerClass = $this->getCustomLoggerClass();
             if ($loggerClass === null) {
-                Logger::$method($callback);
+                Logger::log($logLevel, $callback);
             } else {
-                $loggerClass::$method($callback);
+                $loggerClass::log($logLevel, $callback);
             }
         } elseif ($this->isDefaultErrorLogEnabled()) {
             $this->writeDefaultErrorLog();
@@ -125,45 +126,28 @@ class ErrorHandler {
         }
     }
 
-    protected function getLoggerMethod() {
+    protected function getLogLevel() {
         if ($this->error instanceof Error) {
             $map = [
-                E_DEPRECATED        => 'notice',
-                E_USER_DEPRECATED   => 'notice',
-                E_STRICT            => 'notice',
-                E_NOTICE            => 'notice',
-                E_USER_NOTICE       => 'notice',
-                E_WARNING           => 'warn',
-                E_USER_WARNING      => 'warn',
-                E_COMPILE_WARNING   => 'warn',
-                E_CORE_WARNING      => 'warn',
-                E_RECOVERABLE_ERROR => 'fatal',
-                E_USER_ERROR        => 'fatal',
-                E_ERROR             => 'fatal',
-                E_PARSE             => 'fatal',
-                E_COMPILE_ERROR     => 'fatal',
-                E_CORE_ERROR        => 'fatal'
+                E_DEPRECATED        => LogLevel::NOTICE,
+                E_USER_DEPRECATED   => LogLevel::NOTICE,
+                E_STRICT            => LogLevel::NOTICE,
+                E_NOTICE            => LogLevel::NOTICE,
+                E_USER_NOTICE       => LogLevel::NOTICE,
+                E_WARNING           => LogLevel::WARNING,
+                E_USER_WARNING      => LogLevel::WARNING,
+                E_COMPILE_WARNING   => LogLevel::WARNING,
+                E_CORE_WARNING      => LogLevel::WARNING,
+                E_RECOVERABLE_ERROR => LogLevel::FATAL,
+                E_USER_ERROR        => LogLevel::FATAL,
+                E_ERROR             => LogLevel::FATAL,
+                E_PARSE             => LogLevel::FATAL,
+                E_COMPILE_ERROR     => LogLevel::FATAL,
+                E_CORE_ERROR        => LogLevel::FATAL
             ];
             return $map[$this->error->getSeverity()];
         }
-        return 'fatal';
-    }
-
-    final protected function disableDefaultErrorReporting() {
-        if ($this->shouldReportCompileWarning()) {
-            error_reporting(E_COMPILE_WARNING);
-        } else {
-            if ($this->shouldDisplayErrors()) {
-                ini_set('display_errors', '0');
-            }
-            if ($this->isDefaultErrorLogEnabled()) {
-                ini_set('log_errors', '0');
-            }
-        }
-    }
-
-    final protected function shouldDisplayErrors() {
-        return $this->shouldDisplayErrors;
+        return LogLevel::FATAL;
     }
 
     final protected function getError() {
@@ -178,7 +162,11 @@ class ErrorHandler {
         return $this->isDefaultErrorLogEnabled;
     }
 
-    final protected function getErrorReportingBitmask() {
+    private function shouldDisplayErrors() {
+        return $this->shouldDisplayErrors;
+    }
+
+    private function getErrorReportingBitmask() {
         return $this->errorReportingBitmask;
     }
 
@@ -379,6 +367,19 @@ class ErrorHandler {
                 );
             }
             return $loggerClass;
+        }
+    }
+
+    private function disableDefaultErrorReporting() {
+        if ($this->shouldReportCompileWarning()) {
+            error_reporting(E_COMPILE_WARNING);
+        } else {
+            if ($this->shouldDisplayErrors()) {
+                ini_set('display_errors', '0');
+            }
+            if ($this->isDefaultErrorLogEnabled()) {
+                ini_set('log_errors', '0');
+            }
         }
     }
 }

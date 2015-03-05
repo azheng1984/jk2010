@@ -4,6 +4,7 @@ namespace Hyperframework\Web;
 use ArrayAccess;
 use InvalidArgumentException;
 use Closure;
+use Exception;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileLoader;
 use Hyperframework\Common\FullPathRecognizer;
@@ -18,7 +19,9 @@ abstract class ViewTemplate implements ArrayAccess {
     private $filePath;
     private $layoutPath;
 
-    public function __construct($loadFileFunction, array $viewModel = null) {
+    public function __construct(
+        Closure $loadFileFunction, array $viewModel = null
+    ) {
         $this->loadFileFunction = $loadFileFunction;
         $this->viewModel = $viewModel === null ? [] : $viewModel;
     }
@@ -28,8 +31,6 @@ abstract class ViewTemplate implements ArrayAccess {
         if ($path === '') {
             throw new ViewException('View path cannot be empty.');
         }
-        $this->pushLayout();
-        $this->setLayout(null);
         if (DIRECTORY_SEPARATOR !== '/') {
             $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
         }
@@ -39,11 +40,17 @@ abstract class ViewTemplate implements ArrayAccess {
             PathCombiner::prepend($path, $this->getRootPath());
             $this->filePath = $path;
         }
-        $loadFileFunction = $this->loadFileFunction;
-        $loadFileFunction();
-        $this->filePath = null;
-        if ($this->layoutPath !== null) {
-            $this->render($this->layoutPath);
+        $this->pushLayout();
+        try {
+            $loadFileFunction = $this->loadFileFunction;
+            $loadFileFunction();
+            $this->filePath = null;
+            if ($this->layoutPath !== null) {
+                $this->render($this->layoutPath);
+            }
+        } catch (Exception $e) {
+            $this->popLayout();
+            throw $e;
         }
         $this->popLayout();
     }
@@ -57,7 +64,6 @@ abstract class ViewTemplate implements ArrayAccess {
     }
 
     public function renderBlock($name, Closure $default = null) {
-        $this->pushLayout();
         if (isset($this->blocks[$name])) {
             $function = $this->blocks[$name];
             $function();
@@ -67,7 +73,6 @@ abstract class ViewTemplate implements ArrayAccess {
             }
             $default();
         }
-        $this->popLayout();
     }
 
     public function setBlock($name, Closure $function) {
@@ -114,6 +119,7 @@ abstract class ViewTemplate implements ArrayAccess {
 
     private function pushLayout() {
         array_push($this->layoutPathStack, $this->layoutPath);
+        $this->setLayout(null);
     }
 
     private function popLayout() {
