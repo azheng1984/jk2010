@@ -111,8 +111,6 @@ class ErrorHandlerTest extends Base {
         $this->expectOutputString(PHP_EOL . "Notice:  notice in "
             . __FILE__ . " on line 0" . PHP_EOL);
         $this->handleError();
-        $this->registerErrorHandler();
-        trigger_error('notice');
     }
 
     public function testDisableDefaultErrorReporting() {
