@@ -35,7 +35,10 @@ class ErrorHandler {
         $this->disableDefaultErrorReporting();
     }
 
-    protected function displayError() {
+    private function displayError() {
+        if ($this->shouldDisplayErrors() === false) {
+            return;
+        }
         $error = $this->error;
         if (ini_get('xmlrpc_errors') === '1') {
             $code = ini_get('xmlrpc_error_number');
@@ -149,7 +152,7 @@ class ErrorHandler {
         return $this->isDefaultErrorLogEnabled;
     }
 
-    private function shouldDisplayErrors() {
+    final protected function shouldDisplayErrors() {
         return $this->shouldDisplayErrors;
     }
 
@@ -278,9 +281,7 @@ class ErrorHandler {
         }
         $this->writeLog();
         if ($shouldExit === false) {
-            if ($this->shouldDisplayErrors()) {
-                $this->displayError();
-            }
+            $this->displayError();
             $this->error = null;
             $this->disableDefaultErrorReporting();
             return;

@@ -37,50 +37,12 @@ class ErrorHandler extends Base {
                 $this->rewriteHttpHeaders();
             }
             $this->executeDebugger($headers, $outputBuffer);
-        } elseif (ini_get('display_errors') === '1') {
+        } elseif ($this->shouldDisplayErrors()) {
             $this->displayError();
         } elseif (ResponseHeaderHelper::isSent() === false) {
             $this->rewriteHttpHeaders();
             $this->deleteOutputBuffer();
             $this->renderErrorView();
-        }
-    }
-
-    private function rewriteHttpHeaders() {
-        ResponseHeaderHelper::removeAllHeaders();
-        $error = $this->getError();
-        if ($error instanceof HttpException) {
-            foreach ($error->getHttpHeaders() as $header) {
-                ResponseHeaderHelper::setHeader($header);
-            }
-        } else {
-            ResponseHeaderHelper::setHeader(
-                'HTTP/1.1 500 Internal Server Error'
-            );
-        }
-    }
-
-    protected function writeLog() {
-        if ($this->getError() instanceof HttpException) {
-            $shouldLogHttpException = Config::getBoolean(
-                'hyperframework.error_handler.log_http_exception', false
-            );
-            if ($shouldLogHttpException === false) {
-                return;
-            }
-        }
-        parent::writeLog();
-    }
-
-    private function deleteOutputBuffer() {
-        $obLevel = ob_get_level();
-        while ($obLevel >= $this->startupOutputBufferLevel) {
-            if ($this->startupOutputBufferLevel === $obLevel) {
-                ob_clean();
-            } else {
-                ob_end_clean();
-            }
-            --$obLevel;
         }
     }
 
@@ -101,9 +63,7 @@ class ErrorHandler extends Base {
         if ($content === '') {
             return $content;
         }
-        $charset = Config::getString(
-            'Hyperframework.error_handler.output_buffer_charset', ''
-        );
+        $charset = '';
         $encoding = null;
         foreach (ResponseHeaderHelper::getHeaders() as $header) {
             $header = str_replace(' ', '', strtolower($header));
@@ -124,37 +84,10 @@ class ErrorHandler extends Base {
             }
         }
         if ($encoding !== null) {
-            $content = $this->decodeOutputBuffer($content, $encoding);
+            
         }
         if ($charset !== '') {
             $content = $this->convertOutputBufferCharset($content, $charset);
-        }
-        return $content;
-    }
-
-    private function decodeOutputBuffer($content, $encoding) {
-        if ($encoding === 'gzip') {
-            $result = file_get_contents(
-                'compress.zlib://data:;base64,' . base64_encode($content)
-            );
-            if ($result !== false) {
-                $content = $result;
-            }
-        } elseif ($encoding === 'deflate') {
-            $result = gzinflate($content);
-            if ($result !== false) {
-                $content = $result;
-            }
-        }
-        return $content;
-    }
-
-    private function convertOutputBufferCharset($content, $charset) {
-        if ($charset !== 'utf-8') {
-            $result = iconv($charset, 'utf-8', $content);
-            if ($result !== false) {
-                $content = $result;
-            }
         }
         return $content;
     }
@@ -202,11 +135,76 @@ class ErrorHandler extends Base {
         $view->render($statusCode, $statusText, $error);
     }
 
+    protected function writeLog() {
+        if ($this->getError() instanceof HttpException) {
+            $shouldLogHttpException = Config::getBoolean(
+                'hyperframework.error_handler.log_http_exception', false
+            );
+            if ($shouldLogHttpException === false) {
+                return;
+            }
+        }
+        parent::writeLog();
+    }
+
     final protected function isDebuggerEnabled() {
         return $this->isDebuggerEnabled;
     }
 
     final protected function getStartupOutputBufferLevel() {
         return $this->startupOutputBufferLevel;
+    }
+
+    private function deleteOutputBuffer() {
+        $obLevel = ob_get_level();
+        while ($obLevel >= $this->startupOutputBufferLevel) {
+            if ($this->startupOutputBufferLevel === $obLevel) {
+                ob_clean();
+            } else {
+                ob_end_clean();
+            }
+            --$obLevel;
+        }
+    }
+
+    private function rewriteHttpHeaders() {
+        ResponseHeaderHelper::removeAllHeaders();
+        $error = $this->getError();
+        if ($error instanceof HttpException) {
+            foreach ($error->getHttpHeaders() as $header) {
+                ResponseHeaderHelper::setHeader($header);
+            }
+        } else {
+            ResponseHeaderHelper::setHeader(
+            'HTTP/1.1 500 Internal Server Error'
+                );
+        }
+    }
+
+    private function decodeOutputBuffer($content, $encoding) {
+        if ($encoding === 'gzip') {
+            $result = file_get_contents(
+                'compress.zlib://data:;base64,' . base64_encode($content)
+            );
+            if ($result !== false) {
+                $content = $result;
+            }
+        } elseif ($encoding === 'deflate') {
+            $result = gzinflate($content);
+            if ($result !== false) {
+                $content = $result;
+            }
+        }
+        return $content;
+    }
+
+    private function convertOutputBufferCharset($content, $charset) {
+        if ($charset !== 'utf-8') {
+            $result = iconv($charset, 'utf-8', $content);
+            if ($result !== false) {
+                $content = $result;
+            }
+        }
+        return $content;
     }
 }

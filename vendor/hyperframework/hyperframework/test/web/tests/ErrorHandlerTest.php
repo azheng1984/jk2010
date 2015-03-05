@@ -2,6 +2,8 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Logging\Logger;
+use Hyperframework\Web\ResponseHeaderHelper;
 use Hyperframework\Web\Test\TestCase as Base;
 
 class ErrorHandlerTest extends Base {
@@ -43,7 +45,8 @@ class ErrorHandlerTest extends Base {
             unlink(dirname(__DIR__) . '/log/app.log');
         }
         error_reporting($this->errorReportingBitmask);
-//        Logger::setLogHandler(null);
+        Logger::setLogHandler(null);
+        ResponseHeaderHelper::setEngine(null);
         parent::tearDown();
     }
 
@@ -58,13 +61,25 @@ class ErrorHandlerTest extends Base {
         $this->callProtectedMethod($handler, 'displayFatalError');
     }
 
+    public function testRenderErrorViewForHttpException() {
+    }
+
+    public function testRenderCustomErrorView() {
+    }
+
     public function testIgnoreHttpExceptionLog() {
     }
 
-    public function testGetOutputBuffer() {
+    public function testGetOutputBufferForDebugging() {
     }
 
-    public function testDecodeOutputBuffer() {
+    public function testDeleteOutputBufferForErrorView() {
+    }
+
+    public function testDecodeGzipOutputBuffer() {
+    }
+
+    public function testDecodeDeflateOutputBuffer() {
     }
 
     public function testConvertOutputBufferCharset() {
@@ -77,6 +92,9 @@ class ErrorHandlerTest extends Base {
     }
 
     public function testRewriteHttpHeaders() {
+    }
+
+    public function testRewriteHttpHeadersForHttpException() {
     }
 
     public function testDisplayFatalErrorUsingDebugger() {
