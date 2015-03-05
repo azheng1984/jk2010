@@ -57,4 +57,34 @@ class ErrorHandlerTest extends Base {
         $handler = new ErrorHandler;
         $this->callProtectedMethod($handler, 'displayFatalError');
     }
+
+    public function testIgnoreHttpExceptionLog() {
+    }
+
+    public function testGetOutputBuffer() {
+    }
+
+    public function testDecodeOutputBuffer() {
+    }
+
+    public function testConvertOutputBufferCharset() {
+    }
+
+    public function testExecuteDebugger() {
+    }
+
+    public function testExecuteCustomDebugger() {
+    }
+
+    public function testRewriteHttpHeaders() {
+    }
+
+    public function testDisplayFatalErrorUsingDebugger() {
+    }
+
+    public function testDisplayFatalErrorUsingDefaultDisplayErrorMethod() {
+    }
+
+    public function testDisplayFatalErrorUsingErrorView() {
+    }
 }

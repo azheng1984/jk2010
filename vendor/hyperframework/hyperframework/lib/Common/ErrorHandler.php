@@ -44,7 +44,7 @@ class ErrorHandler {
                 '<value><int>', $code, '</int></value></member><member>',
                 '<name>faultString</name><value><string>';
             if ($error instanceof Exception) {
-                $message = $this->getExceptionErrorLog();
+                $message = $this->getExceptionLog();
             } else {
                 $message = $this->getError();
             }
@@ -59,7 +59,7 @@ class ErrorHandler {
         if ($isHtml === false) {
             echo $prefix, PHP_EOL;
             if ($error instanceof Exception) {
-                echo $this->getExceptionErrorLog();
+                echo $this->getExceptionLog();
             } else {
                 echo $this->getError();
             }
@@ -96,18 +96,7 @@ class ErrorHandler {
         if ($this->isLoggerEnabled()) {
             $logLevel = $this->getLogLevel();
             $callback = function() {
-                if ($this->error instanceof Exception) {
-                    $message = 'PHP ' . $this->getExceptionErrorLog();
-                } else {
-                    $message = 'PHP ' . $this->getError();
-                }
-                $maxLength = Config::getInt(
-                    'hyperframework.error_handler.max_log_length', 1024
-                );
-                if ($maxLength > 0) {
-                    return substr($message, 0, $maxLength);
-                }
-                return $message;
+                return $this->getLog();
             };
             $loggerClass = $this->getCustomLoggerClass();
             if ($loggerClass === null) {
@@ -121,11 +110,7 @@ class ErrorHandler {
     }
 
     protected function writeDefaultErrorLog() {
-        if ($this->error instanceof Exception) {
-            error_log('PHP ' . $this->getExceptionErrorLog());
-        } else {
-            error_log('PHP ' . $this->getError());
-        }
+        error_log($this->getLog());
     }
 
     protected function getLogLevel() {
@@ -333,7 +318,23 @@ class ErrorHandler {
         return $this->shouldReportCompileWarning;
     }
 
-    private function getExceptionErrorLog() {
+    private function getLog() {
+        if ($this->error instanceof Exception) {
+            $log = $this->getExceptionLog();
+        } else {
+            $log = $this->getError();
+        }
+        $log = 'PHP ' . $log;
+        $maxLength = Config::getInt(
+            'hyperframework.error_handler.max_log_length', 1024
+        );
+        if ($maxLength > 0) {
+            return substr($log, 0, $maxLength);
+        }
+        return $log;
+    }
+
+    private function getExceptionLog() {
         return 'Fatal error:  Uncaught ' . $this->error . PHP_EOL
             . '  thrown in ' . $this->error->getFile() . ' on line '
             . $this->error->getLine();
