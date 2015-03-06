@@ -124,7 +124,7 @@ class ErrorHandler {
         $error = new ErrorException(
             $type, $message, $file, $line, $sourceTraceStartIndex
         );
-        return $this->handle($error, true, true);
+        return $this->handle($error, true);
     }
 
     private function handleShutdown() {
@@ -141,13 +141,11 @@ class ErrorHandler {
                 $error['file'],
                 $error['line']
             );
-            $this->handle($error, true);
+            $this->handle($error);
         }
     }
 
-    private function handle(
-        $error, $isError = false, $shouldThrowError = false
-    ) {
+    private function handle($error, $shouldThrowError = false) {
         if ($this->error !== null) {
             return false;
         }
