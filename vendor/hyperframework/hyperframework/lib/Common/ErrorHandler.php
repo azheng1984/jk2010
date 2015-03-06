@@ -15,6 +15,12 @@ class ErrorHandler {
     }
 
     protected function writeLog() {
+        $isLoggerEnabled = Config::getBoolean(
+            'hyperframework.error_handler.enable_logger', false
+        );
+        if ($isLoggerEnabled === false) {
+            return;
+        }
         $logLevel = $this->getLogLevel();
         $callback = function() {
             return $this->getLog();
@@ -58,18 +64,18 @@ class ErrorHandler {
         return $this->error;
     }
 
-    private function registerErrorHandler() {
-        set_error_handler(
-            function($type, $message, $file, $line) {
-                return $this->handleError($type, $message, $file, $line);
-            }
-        );
-    }
-
     private function registerExceptionHandler() {
         set_exception_handler(
             function($exception) {
                 $this->handleException($exception);
+            }
+        );
+    }
+
+    private function registerErrorHandler() {
+        set_error_handler(
+            function($type, $message, $file, $line) {
+                return $this->handleError($type, $message, $file, $line);
             }
         );
     }
@@ -84,6 +90,7 @@ class ErrorHandler {
 
     private function handleException($exception) {
         $this->handle($exception);
+        throw $exception;
     }
 
     private function handleError($type, $message, $file, $line) {
@@ -138,27 +145,18 @@ class ErrorHandler {
         }
     }
 
-    private function handle($error, $isError = false, $shouldThrow = false) {
+    private function handle(
+        $error, $isError = false, $shouldThrowError = false
+    ) {
         if ($this->error !== null) {
-            if ($isError === false) {
-                throw $error;
-            }
             return false;
         }
-        if ($shouldThrow) {
+        if ($shouldThrowError) {
             throw $error;
         }
         $this->error = $error;
-        $isLoggerEnabled = Config::getBoolean(
-            'hyperframework.error_handler.enable_logger', false
-        );
-        if ($isLoggerEnabled) {
-            $this->writeLog();
-        }
+        $this->writeLog();
         $this->displayError();
-        if ($isError === false) {
-            throw $error;
-        }
     }
 
     private function getLog() {
