@@ -3,7 +3,7 @@ namespace Hyperframework\Web;
 
 use Exception;
 use Hyperframework\Common\ErrorException;
-use Hyperframework\Common\FatalError;
+use Hyperframework\Common\Error;
 use Hyperframework\Common\StackTraceFormatter;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ConfigException;
@@ -43,7 +43,7 @@ class Debugger {
         $this->shouldHideTrace = false;
         $this->shouldHideExternal = false;
         $this->trace = null;
-        if ($this->error instanceof FatalError === false) {
+        if ($this->error instanceof Error === false) {
             if ($this->error instanceof ErrorException) {
                 $this->trace = $error->getSourceTrace();
             } else {
@@ -117,7 +117,7 @@ class Debugger {
         echo '</td></tr><tr><td id="file-wrapper">';
         $this->renderFile();
         echo '</td></tr>';
-        if ($this->error instanceof FatalError === false) {
+        if ($this->error instanceof Error === false) {
             echo '<tr><td id="stack-trace-wrapper"';
             if ($this->shouldHideTrace) {
                 echo ' class="hidden"';

@@ -2,33 +2,23 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Common\ExitHelper;
 use Hyperframework\Common\ErrorHandler as Base;
 use Hyperframework\Logging\LoggingException;
 
 class ErrorHandler extends Base {
-    private $isDebuggerEnabled;
     private $startupOutputBufferLevel;
 
     public function __construct() {
-        parent::__construct();
         $this->isDebuggerEnabled =
             Config::getBoolean('hyperframework.error_handler.debug', false);
-        if (ini_get('display_errors') === '1') {
-            if ($this->isDebuggerEnabled !== false) {
-                $this->isDebuggerEnabled = true;
-            }
-        } else {
-            if ($this->isDebuggerEnabled !== true) {
-                $this->isDebuggerEnabled = false;
-            }
-        }
         if ($this->isDebuggerEnabled) {
             ob_start();
         }
         $this->startupOutputBufferLevel = ob_get_level();
     }
 
-    protected function displayFatalError() {
+    protected function displayError() {
         $error = $this->getError();
         if ($this->isDebuggerEnabled) {
             $outputBuffer = $this->getOutputBuffer();
@@ -37,8 +27,9 @@ class ErrorHandler extends Base {
                 $this->rewriteHttpHeaders();
             }
             $this->executeDebugger($headers, $outputBuffer);
-        } elseif ($this->shouldDisplayErrors()) {
-            $this->displayError();
+            if ($error instanceof Error === false) {
+                ini_set('display_errors', 0);
+            }
         } elseif (ResponseHeaderHelper::isSent() === false) {
             $this->rewriteHttpHeaders();
             $this->deleteOutputBuffer();
@@ -84,7 +75,7 @@ class ErrorHandler extends Base {
             }
         }
         if ($encoding !== null) {
-            
+            $content = $this->decodeOutputBuffer($content, $encoding);
         }
         if ($charset !== '') {
             $content = $this->convertOutputBufferCharset($content, $charset);
@@ -176,8 +167,8 @@ class ErrorHandler extends Base {
             }
         } else {
             ResponseHeaderHelper::setHeader(
-            'HTTP/1.1 500 Internal Server Error'
-                );
+                'HTTP/1.1 500 Internal Server Error'
+            );
         }
     }
 
