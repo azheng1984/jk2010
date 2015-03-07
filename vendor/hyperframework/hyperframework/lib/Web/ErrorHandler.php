@@ -2,11 +2,10 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Common\ExitHelper;
 use Hyperframework\Common\ErrorHandler as Base;
-use Hyperframework\Logging\LoggingException;
 
 class ErrorHandler extends Base {
+    private $isDebuggerEnabled;
     private $startupOutputBufferLevel;
 
     public function __construct() {
@@ -18,18 +17,21 @@ class ErrorHandler extends Base {
         $this->startupOutputBufferLevel = ob_get_level();
     }
 
+    protected function handle() {
+        $this->writeLog();
+        $this->displayError();
+    }
+
     protected function displayError() {
         $error = $this->getError();
-        if ($this->isDebuggerEnabled) {
+        if ($this->isDebuggerEnabled()) {
             $outputBuffer = $this->getOutputBuffer();
             $headers = ResponseHeaderHelper::getHeaders();
             if (ResponseHeaderHelper::isSent() === false) {
                 $this->rewriteHttpHeaders();
             }
             $this->executeDebugger($headers, $outputBuffer);
-            if ($error instanceof Error === false) {
-                ini_set('display_errors', 0);
-            }
+            ini_set('display_errors', '0');
         } elseif (ResponseHeaderHelper::isSent() === false) {
             $this->rewriteHttpHeaders();
             $this->deleteOutputBuffer();
@@ -39,10 +41,11 @@ class ErrorHandler extends Base {
 
     protected function getOutputBuffer() {
         $outputBufferLevel = ob_get_level();
-        if ($outputBufferLevel < $this->startupOutputBufferLevel) {
+        $startupOutputBufferLevel = $this->getStartupOutputBufferLevel();
+        if ($outputBufferLevel < $startupOutputBufferLevel) {
             return;
         }
-        while ($outputBufferLevel > $this->startupOutputBufferLevel) {
+        while ($outputBufferLevel > $startupOutputBufferLevel) {
             ob_end_flush();
             --$outputBufferLevel;
         }
@@ -138,18 +141,19 @@ class ErrorHandler extends Base {
         parent::writeLog();
     }
 
-    final protected function isDebuggerEnabled() {
+    protected function isDebuggerEnabled() {
         return $this->isDebuggerEnabled;
     }
 
-    final protected function getStartupOutputBufferLevel() {
+    protected function getStartupOutputBufferLevel() {
         return $this->startupOutputBufferLevel;
     }
 
     private function deleteOutputBuffer() {
         $obLevel = ob_get_level();
-        while ($obLevel >= $this->startupOutputBufferLevel) {
-            if ($this->startupOutputBufferLevel === $obLevel) {
+        $startupOutputBufferLevel = $this->getStartupOutputBufferLevel();
+        while ($obLevel >= $startupOutputBufferLevel) {
+            if ($startupOutputBufferLevel === $obLevel) {
                 ob_clean();
             } else {
                 ob_end_clean();

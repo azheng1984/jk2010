@@ -15,7 +15,6 @@ class IndexController extends Controller {
     }
 
     public function __construct($app) {
-        asdf();
         ResponseHeaderHelper::setCookie('xxname', null, ['path' => '/df']);
         ResponseHeaderHelper::setCookie('xname', 'value');
         DbClient::beginTransaction();

@@ -84,33 +84,35 @@ class ErrorHandlerTest extends Base {
     }
 
     private function handleError($handler = null, $error = null) {
-        if ($handler === null) {
-            $handler = new ErrorHandler;
-        }
         if ($error === null) {
             $error = new Error(E_NOTICE, 'notice', __FILE__, 0);
         }
-        $this->callPrivateMethod($handler, 'handle', [$error]);
+        if ($handler === null) {
+            $handler = $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
+                ->setMethods(['getError'])
+                ->getMock();
+            $handler->method('getError')->willReturn($error);
+        }
+        $this->callProtectedMethod($handler, 'handle');
     }
 
-    public function testHandleFatalError() {
+    public function testHandle() {
         $handler = $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
-            ->setMethods(['displayError', 'writeLog'])
+            ->setMethods(['writeLog', 'getError'])
             ->getMock();
         $handler->expects($this->once())
-             ->method('displayError');
-        $handler->expects($this->once())
              ->method('writeLog');
-        $error = new Error(E_ERROR, '', __FILE__, 0);
-        $this->callPrivateMethod($handler, 'handle', [$error]);
+        //$error = new Error(E_ERROR, '', __FILE__, 0);
+        //$handler->method('getError')->willReturn($error);
+        $this->callProtectedMethod($handler, 'handle');
     }
 
     public function testHandleException() {
         $handler = $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
-            ->setMethods(['displayError'])
+            ->setMethods(['writeLog'])
             ->getMock();
         $handler->expects($this->once())
-            ->method('displayError');
+            ->method('writeLog');
         try {
             $this->callPrivateMethod(
                 $handler, 'handleException', [new Exception]
@@ -156,9 +158,7 @@ class ErrorHandlerTest extends Base {
                     $this->assertSame(1, strlen($logRecord->getMessage()));
                 }
             ));
-        $this->callPrivateMethod(
-            new ErrorHandler, 'handle', [new Exception]
-        );
+        $this->handleError();
     }
 
     public function testWriteLogByLogger() {
@@ -222,16 +222,5 @@ class ErrorHandlerTest extends Base {
             return;
         }
         $this->fail();
-    }
-
-    public function testGetError() {
-        $handler = $this->getMockBuilder(
-            'Hyperframework\Common\Test\ErrorSpy')
-            ->setMethods(['send'])
-            ->getMock();
-        $handler->expects($this->once())->method('send')->with(
-            $this->isInstanceOf(__NAMESPACE__ . '\Error')
-        );
-        $this->handleError($handler);
     }
 }

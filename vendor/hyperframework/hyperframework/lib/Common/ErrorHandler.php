@@ -14,6 +14,10 @@ class ErrorHandler {
         $this->registerShutdownHandler();
     }
 
+    protected function handle() {
+        $this->writeLog();
+    }
+
     protected function writeLog() {
         $isLoggerEnabled = Config::getBoolean(
             'hyperframework.error_handler.enable_logger', false
@@ -34,7 +38,7 @@ class ErrorHandler {
     }
 
     protected function getLogLevel() {
-        if ($this->error instanceof Error) {
+        if ($this->getError() instanceof Error) {
             $map = [
                 E_DEPRECATED        => LogLevel::NOTICE,
                 E_USER_DEPRECATED   => LogLevel::NOTICE,
@@ -52,15 +56,31 @@ class ErrorHandler {
                 E_COMPILE_ERROR     => LogLevel::FATAL,
                 E_CORE_ERROR        => LogLevel::FATAL
             ];
-            return $map[$this->error->getSeverity()];
+            return $map[$this->getError()->getSeverity()];
         }
         return LogLevel::FATAL;
     }
 
-    protected function displayError() {
+    protected function getLog() {
+        $error = $this->getError();
+        if ($error instanceof Exception) {
+            $log = 'Fatal error:  Uncaught ' . $error . PHP_EOL
+                . '  thrown in ' . $error->getFile() . ' on line '
+                . $error->getLine();
+        } else {
+            $log = $error;
+        }
+        $log = 'PHP ' . $log;
+        $maxLength = Config::getInt(
+            'hyperframework.error_handler.max_log_length', 1024
+        );
+        if ($maxLength > 0) {
+            return substr($log, 0, $maxLength);
+        }
+        return $log;
     }
 
-    final protected function getError() {
+    protected function getError() {
         return $this->error;
     }
 
@@ -89,11 +109,17 @@ class ErrorHandler {
     }
 
     private function handleException($exception) {
-        $this->handle($exception);
+        if ($this->getError() === null) {
+           $this->error = $exception;
+           $this->handle();
+        }
         throw $exception;
     }
 
     private function handleError($type, $message, $file, $line) {
+        if ($this->getError() !== null) {
+            return false;
+        }
         $errorThrowingBitmask = Config::getInt(
             'hyperframework.error_handler.error_throwing_bitmask'
         );
@@ -121,13 +147,15 @@ class ErrorHandler {
                 }
             }
         }
-        $error = new ErrorException(
+        throw new ErrorException(
             $type, $message, $file, $line, $sourceTraceStartIndex
         );
-        return $this->handle($error, true);
     }
 
     private function handleShutdown() {
+        if ($this->getError() !== null) {
+            return;
+        }
         $error = error_get_last();
         if ($error === null || $error['type'] & error_reporting() === 0) {
             return;
@@ -135,44 +163,14 @@ class ErrorHandler {
         if (in_array($error['type'], [
             E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR
         ])) {
-            $error = new Error(
+            $this->error = new Error(
                 $error['type'],
                 $error['message'],
                 $error['file'],
                 $error['line']
             );
-            $this->handle($error);
+            $this->handle();
         }
-    }
-
-    private function handle($error, $shouldThrowError = false) {
-        if ($this->error !== null) {
-            return false;
-        }
-        if ($shouldThrowError) {
-            throw $error;
-        }
-        $this->error = $error;
-        $this->writeLog();
-        $this->displayError();
-    }
-
-    private function getLog() {
-        if ($this->error instanceof Exception) {
-            $log = 'Fatal error:  Uncaught ' . $this->error . PHP_EOL
-                . '  thrown in ' . $this->error->getFile() . ' on line '
-                . $this->error->getLine();
-        } else {
-            $log = $this->getError();
-        }
-        $log = 'PHP ' . $log;
-        $maxLength = Config::getInt(
-            'hyperframework.error_handler.max_log_length', 1024
-        );
-        if ($maxLength > 0) {
-            return substr($log, 0, $maxLength);
-        }
-        return $log;
     }
 
     private function getCustomLoggerClass() {
