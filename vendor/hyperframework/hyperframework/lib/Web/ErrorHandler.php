@@ -51,7 +51,7 @@ class ErrorHandler extends Base {
         }
         $content = ob_get_contents();
         if ($content === false) {
-            return $content;
+            return;
         }
         ob_clean();
         return $content;
