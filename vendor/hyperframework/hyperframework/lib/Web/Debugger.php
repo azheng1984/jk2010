@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Web;
 
-use Exception;
 use Hyperframework\Common\ErrorException;
 use Hyperframework\Common\Error;
 use Hyperframework\Common\StackTraceFormatter;
@@ -73,13 +72,13 @@ class Debugger {
         if (headers_sent() === false) {
             header('Content-Type: text/html;charset=utf-8');
         }
-        if ($this->error instanceof Exception) {
-            $type = get_class($error);
-        } else {
+        if ($this->error instanceof Error) {
             $type = htmlspecialchars(
                 ucwords($error->getSeverityAsString()),
                 ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
             );
+        } else {
+            $type = get_class($error);
         }
         $message = (string)$error->getMessage();
         $title = $type;
@@ -413,7 +412,7 @@ class Debugger {
     }
 
     private function renderHeader($type, $message) {
-        if ($this->error instanceof Exception) {
+        if ($this->error instanceof Error === false) {
             $type = str_replace('\\', '<span>\</span>', $type);
         }
         echo '<tr><td id="header"><h1>', $type, '</h1>';

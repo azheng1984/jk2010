@@ -54,35 +54,6 @@ class ErrorHandler extends Base {
             return $content;
         }
         ob_clean();
-        if ($content === '') {
-            return $content;
-        }
-        $charset = '';
-        $encoding = null;
-        foreach (ResponseHeaderHelper::getHeaders() as $header) {
-            $header = str_replace(' ', '', strtolower($header));
-            if ($header === 'content-encoding:gzip') {
-                $encoding = 'gzip';
-            } elseif ($header === 'content-encoding:deflate') {
-                $encoding = 'deflate';
-            } elseif (strncmp('content-type:', $header, 13) === 0) {
-                $header = substr($header, 13);
-                $segments = explode(';', $header);
-                foreach ($segments as $segment) {
-                    if (strncmp('charset=', $segment, 8) === 0) {
-                        if ($charset !== '')
-                        $charset = substr($segment, 8);
-                        break;
-                    }
-                }
-            }
-        }
-        if ($encoding !== null) {
-            $content = $this->decodeOutputBuffer($content, $encoding);
-        }
-        if ($charset !== '') {
-            $content = $this->convertOutputBufferCharset($content, $charset);
-        }
         return $content;
     }
 
@@ -174,32 +145,5 @@ class ErrorHandler extends Base {
                 'HTTP/1.1 500 Internal Server Error'
             );
         }
-    }
-
-    private function decodeOutputBuffer($content, $encoding) {
-        if ($encoding === 'gzip') {
-            $result = file_get_contents(
-                'compress.zlib://data:;base64,' . base64_encode($content)
-            );
-            if ($result !== false) {
-                $content = $result;
-            }
-        } elseif ($encoding === 'deflate') {
-            $result = gzinflate($content);
-            if ($result !== false) {
-                $content = $result;
-            }
-        }
-        return $content;
-    }
-
-    private function convertOutputBufferCharset($content, $charset) {
-        if ($charset !== 'utf-8') {
-            $result = iconv($charset, 'utf-8', $content);
-            if ($result !== false) {
-                $content = $result;
-            }
-        }
-        return $content;
     }
 }
