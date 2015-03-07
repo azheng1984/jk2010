@@ -117,7 +117,7 @@ class ErrorHandler {
     }
 
     private function handleError($type, $message, $file, $line) {
-        if ($this->getError() !== null) {
+        if ($this->getError() !== null || (error_reporting() & $type) === 0) {
             return false;
         }
         $errorThrowingBitmask = Config::getInt(

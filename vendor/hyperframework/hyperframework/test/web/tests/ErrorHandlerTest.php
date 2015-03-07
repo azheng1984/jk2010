@@ -58,7 +58,7 @@ class ErrorHandlerTest extends Base {
         );
         ResponseHeaderHelper::setEngine($engine);
         $handler = new ErrorHandler;
-        $this->callProtectedMethod($handler, 'displayFatalError');
+        $this->callProtectedMethod($handler, 'handle');
     }
 
     public function testRenderErrorViewForHttpException() {

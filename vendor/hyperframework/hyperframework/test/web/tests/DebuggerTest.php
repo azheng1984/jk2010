@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Common\FatalError;
+use Hyperframework\Common\Error;
 use Hyperframework\Web\Test\TestCase as Base;
 
 class DebuggerTest extends Base {
@@ -10,6 +10,6 @@ class DebuggerTest extends Base {
         $this->expectOutputRegex('/^<!DOCTYPE html>/');
         Config::set('hyperframework.app_root_path', dirname(__DIR__));
         $debugger = new Debugger;
-        $debugger->execute(new FatalError(E_ERROR, '', __FILE__, __LINE__));
+        $debugger->execute(new Error(E_ERROR, '', __FILE__, __LINE__));
     }
 }
