@@ -11,7 +11,6 @@ abstract class Router {
     private $app;
     private $params = [];
     private $module;
-    private $moduleNamespace;
     private $controller;
     private $controllerClass;
     private $action;
@@ -50,27 +49,6 @@ abstract class Router {
 
     public function getModule() {
         return $this->module;
-    }
-
-    public function getModuleNamespace() {
-        if ($this->moduleNamespace !== null) {
-            return $this->moduleNamespace;
-        }
-        $rootNamespace = 'Controllers';
-        $appRootNamespace = Config::getAppRootNamespace();
-        if ($appRootNamespace !== '' && $appRootNamespace !== '\\') {
-            NamespaceCombiner::prepend($rootNamespace, $appRootNamespace);
-        }
-        $module = (string)$this->getModule();
-        if ($module === '') {
-            return $rootNamespace;
-        }
-        $tmp = str_replace(
-            ' ', '\\', ucwords(str_replace('/', ' ', $module))
-        );
-        $namespace = str_replace(' ', '', ucwords(str_replace('_', ' ', $tmp)));
-        NamespaceCombiner::prepend($namespace, $rootNamespace);
-        return $namespace;
     }
 
     public function getController() {
@@ -824,77 +802,6 @@ abstract class Router {
         return $this->matchResource($pattern, $options);
     }
 
-    private function convertElementActionsToCollectionActions(
-        array $actions, array $defaultActions = null, $isMixed = false
-    ) {
-        $result = [];
-        foreach ($actions as $key => $value) {
-            if (is_int($key)) {
-                if (isset($defaultActions[$value])
-                    && isset($defaultActions[$value]['belongs_to_element'])
-                    && $defaultActions[$value]['belongs_to_element'] === true
-                ) {
-                    $key = $value;
-                    $value = $defaultActions[$value];
-                    if ($isMixed === false) {
-                        unset($value['belongs_to_element']);
-                    }
-                } else {
-                    if ($isMixed) {
-                        $result[$key] = $value;
-                        continue;
-                    }
-                    if (is_string($value) === false) {
-                        throw new RoutingException(
-                            'Action name must be a string, '
-                                . gettype($value) . ' given.'
-                        );
-                    }
-                    $key = $value;
-                    $value = ['GET', ':id/' . ltrim($value, '/')];
-                    $result[$key] = $value;
-                    continue;
-                }
-            }
-            if ($isMixed) {
-                if (isset($value['belongs_to_element']) === false
-                    || $value['belongs_to_element'] !== true
-                ) {
-                    $result[$key] = $value;
-                    continue;
-                } else {
-                    unset($value['belongs_to_element']);
-                }
-            }
-            if (is_array($value)) {
-                if (isset($value[1])) {
-                    if (is_string($value[1]) === false) {
-                        throw new RoutingException(
-                            "Path of action '$key' must be a string, "
-                                . gettype($value[1]) . ' given.'
-                        );
-                    }
-                    $path = $value[1];
-                } else {
-                    if (isset($value[0]) === false) {
-                        $value[0] = 'GET';
-                    }
-                    $path = $key;
-                }
-                $path = ltrim($path, '/');
-                if ($path !== '') {
-                    $value[1] = ':id/' . $path;
-                } else {
-                    $value[1] = ':id';
-                }
-            } else {
-                $value = [$value, ':id'];
-            }
-            $result[$key] = $value;
-        }
-        return $result;
-    }
-
     protected function matchGet($pattern, array $options = null) {
         $options['methods'] = ['GET'];
         return $this->match($pattern, $options);
@@ -945,10 +852,6 @@ abstract class Router {
         $this->module = (string)$value;
     }
 
-    protected function setModuleNamespace($value) {
-        $this->moduleNamespace = (string)$value;
-    }
-
     protected function setController($value) {
         $this->controller = (string)$value;
     }
@@ -986,6 +889,95 @@ abstract class Router {
             );
         }
         return $this->app;
+    }
+
+    private function getModuleNamespace() {
+        $rootNamespace = 'Controllers';
+        $appRootNamespace = Config::getAppRootNamespace();
+        if ($appRootNamespace !== '' && $appRootNamespace !== '\\') {
+            NamespaceCombiner::prepend($rootNamespace, $appRootNamespace);
+        }
+        $module = (string)$this->getModule();
+        if ($module === '') {
+            return $rootNamespace;
+        }
+        $tmp = str_replace(
+            ' ', '\\', ucwords(str_replace('/', ' ', $module))
+        );
+        $namespace = str_replace(' ', '', ucwords(str_replace('_', ' ', $tmp)));
+        NamespaceCombiner::prepend($namespace, $rootNamespace);
+        return $namespace;
+    }
+
+    private function convertElementActionsToCollectionActions(
+        array $actions, array $defaultActions = null, $isMixed = false
+    ) {
+        $result = [];
+        foreach ($actions as $key => $value) {
+            if (is_int($key)) {
+                if (isset($defaultActions[$value])
+                    && isset($defaultActions[$value]['belongs_to_element'])
+                    && $defaultActions[$value]['belongs_to_element'] === true
+                ) {
+                    $key = $value;
+                    $value = $defaultActions[$value];
+                    if ($isMixed === false) {
+                        unset($value['belongs_to_element']);
+                    }
+                } else {
+                    if ($isMixed) {
+                        $result[$key] = $value;
+                        continue;
+                    }
+                    if (is_string($value) === false) {
+                        throw new RoutingException(
+                            'Action name must be a string, '
+                            . gettype($value) . ' given.'
+                        );
+                    }
+                    $key = $value;
+                    $value = ['GET', ':id/' . ltrim($value, '/')];
+                    $result[$key] = $value;
+                    continue;
+                }
+            }
+            if ($isMixed) {
+                if (isset($value['belongs_to_element']) === false
+                    || $value['belongs_to_element'] !== true
+                ) {
+                    $result[$key] = $value;
+                    continue;
+                } else {
+                    unset($value['belongs_to_element']);
+                }
+            }
+            if (is_array($value)) {
+                if (isset($value[1])) {
+                    if (is_string($value[1]) === false) {
+                        throw new RoutingException(
+                            "Path of action '$key' must be a string, "
+                            . gettype($value[1]) . ' given.'
+                        );
+                    }
+                    $path = $value[1];
+                } else {
+                    if (isset($value[0]) === false) {
+                        $value[0] = 'GET';
+                    }
+                    $path = $key;
+                }
+                $path = ltrim($path, '/');
+                if ($path !== '') {
+                    $value[1] = ':id/' . $path;
+                } else {
+                    $value[1] = ':id';
+                }
+            } else {
+                $value = [$value, ':id'];
+            }
+            $result[$key] = $value;
+        }
+        return $result;
     }
 
     private function verifyExtraRules($extra, array $matches = []) {
