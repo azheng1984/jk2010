@@ -76,15 +76,6 @@ class ErrorHandlerTest extends Base {
     public function testDeleteOutputBufferForErrorView() {
     }
 
-    public function testDecodeGzipOutputBuffer() {
-    }
-
-    public function testDecodeDeflateOutputBuffer() {
-    }
-
-    public function testConvertOutputBufferCharset() {
-    }
-
     public function testExecuteDebugger() {
     }
 
@@ -97,12 +88,12 @@ class ErrorHandlerTest extends Base {
     public function testRewriteHttpHeadersForHttpException() {
     }
 
-    public function testDisplayFatalErrorUsingDebugger() {
+    public function testDisplayErrorUsingDebugger() {
     }
 
-    public function testDisplayFatalErrorUsingDefaultDisplayErrorMethod() {
+    public function testDisplayErrorUsingDefaultDisplayErrorMethod() {
     }
 
-    public function testDisplayFatalErrorUsingErrorView() {
+    public function testDisplayErrorUsingErrorView() {
     }
 }

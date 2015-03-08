@@ -17,8 +17,7 @@ class ErrorHandlerTest extends Base {
 
     protected function setUp() {
         Config::set(
-            'hyperframework.app_root_path',
-            dirname(__DIR__)
+            'hyperframework.app_root_path', dirname(__DIR__)
         );
         $this->errorReportingBitmask = error_reporting();
         error_reporting(E_ALL);
@@ -36,15 +35,6 @@ class ErrorHandlerTest extends Base {
             'hyperframework.logging.log_path',
             dirname(__DIR__) . '/data/tmp/logger_log'
         );
-    }
-
-    private function registerErrorHandler($handler = null) {
-        if ($handler === null) {
-            $this->handler = new ErrorHandler;
-        } else {
-            $this->handler = $handler;
-        }
-        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
     }
 
     protected function tearDown() {
@@ -83,36 +73,20 @@ class ErrorHandlerTest extends Base {
         trigger_error('notice');
     }
 
-    private function handleError($handler = null, $error = null) {
-        if ($error === null) {
-            $error = new Error(E_NOTICE, 'notice', __FILE__, 0);
-        }
-        if ($handler === null) {
-            $handler = $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
-                ->setMethods(['getError'])
-                ->getMock();
-            $handler->method('getError')->willReturn($error);
-        }
-        $this->callProtectedMethod($handler, 'handle');
-    }
-
     public function testHandle() {
         $handler = $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
-            ->setMethods(['writeLog', 'getError'])
+            ->setMethods(['writeLog'])
             ->getMock();
-        $handler->expects($this->once())
-             ->method('writeLog');
-        //$error = new Error(E_ERROR, '', __FILE__, 0);
-        //$handler->method('getError')->willReturn($error);
+        $handler->expects($this->once())->method('writeLog');
         $this->callProtectedMethod($handler, 'handle');
     }
 
     public function testHandleException() {
         $handler = $this->getMockBuilder('Hyperframework\Common\ErrorHandler')
-            ->setMethods(['writeLog'])
+            ->setMethods(['handle'])
             ->getMock();
         $handler->expects($this->once())
-            ->method('writeLog');
+            ->method('handle');
         try {
             $this->callPrivateMethod(
                 $handler, 'handleException', [new Exception]
@@ -165,8 +139,6 @@ class ErrorHandlerTest extends Base {
         Config::set(
             'hyperframework.error_handler.enable_logger', true
         );
-        //$this->expectOutputString(PHP_EOL . "Notice:  notice in "
-        //    . __FILE__ . " on line 0" . PHP_EOL);
         $message = "PHP Notice:  notice in "
             . __FILE__ . " on line 0" . PHP_EOL;
         $this->handleError();
@@ -189,21 +161,17 @@ class ErrorHandlerTest extends Base {
             'hyperframework.error_handler.logger_class',
             'Hyperframework\Common\Test\Logger'
         );
-        ini_set('display_errors', 0);
         $this->expectOutputString('Hyperframework\Common\Test\Logger::log');
         $this->handleError();
     }
 
     public function testLoggerIsDisabledByDefault() {
-        //$this->expectOutputString(PHP_EOL . "Notice:  notice in "
-        //    . __FILE__ . " on line 0" . PHP_EOL);
         $message = "PHP Notice: notice in "
             . __FILE__ . " on line 0" . PHP_EOL;
         $this->handleError();
         $this->assertFalse(
             file_exists(dirname(__DIR__) . '/data/tmp/logger_log')
         );
-        //$this->assertFileExists(dirname(__DIR__) . '/data/tmp/log');
     }
 
     public function testThrowArgumentErrorException() {
@@ -222,5 +190,27 @@ class ErrorHandlerTest extends Base {
             return;
         }
         $this->fail();
+    }
+
+    private function handleError($handler = null, $error = null) {
+        if ($error === null) {
+            $error = new Error(E_NOTICE, 'notice', __FILE__, 0);
+        }
+        if ($handler === null) {
+            $handler = $this
+                ->getMockBuilder('Hyperframework\Common\ErrorHandler')
+                ->setMethods(['getError'])->getMock();
+            $handler->method('getError')->willReturn($error);
+        }
+        $this->callProtectedMethod($handler, 'handle');
+    }
+
+    private function registerErrorHandler($handler = null) {
+        if ($handler === null) {
+            $this->handler = new ErrorHandler;
+        } else {
+            $this->handler = $handler;
+        }
+        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
     }
 }
