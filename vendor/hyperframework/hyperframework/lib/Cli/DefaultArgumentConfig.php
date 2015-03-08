@@ -4,21 +4,21 @@ namespace Hyperframework\Cli;
 use Hyperframework\Common\Inflector;
 
 class DefaultArgumentConfig extends ArgumentConfig {
-    private $originalName;
+    private $parameterName;
     private $name;
 
-    public function __construct($argumentReflector) {
+    public function __construct($reflectionParameter) {
         parent::__construct(
             null,
-            $argumentReflector->isOptional(),
-            $argumentReflector->isArray()
+            $reflectionParameter->isOptional(),
+            $reflectionParameter->isArray()
         );
-        $this->originalName = $argumentReflector->getName();
+        $this->parameterName = $reflectionParameter->getName();
     }
 
     public function getName() {
         $words = [];
-        $name = $this->originalName;
+        $name = $this->parameterName;
         $word = '';
         $length = strlen($name);
         for ($index = 0; $index < $length; ++$index) {
