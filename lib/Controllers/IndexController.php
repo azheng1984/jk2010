@@ -23,7 +23,7 @@ class IndexController extends Controller {
         //$this->name(0);
         //throw new \Exception;
         parent::__construct($app);
-        $this->addBeforeFilter('Hyperframework\Web\Controller');
+        //$this->addBeforeFilter('Hyperframework\Web\Controller');
         echo $this->getRouter()->getAction();
         $this->addAroundFilter(function() {return $this->hi();});
         $this->addAfterFilter(function() {return $this->hi2();});
