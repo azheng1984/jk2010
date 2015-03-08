@@ -83,7 +83,10 @@ class ErrorHandlerTest extends Base {
     }
 
     public function testRenderCustomErrorView() {
-        $this->expectOutputString('Hyperframework\Web\Test\ErrorView::render');
+        $this->expectOutputString(
+            '500, Internal Server Error, '
+                . 'Hyperframework\Web\Test\ErrorView::render'
+        );
         Config::set(
             'hyperframework.web.error_view.class',
             'Hyperframework\Web\Test\ErrorView'
@@ -91,6 +94,21 @@ class ErrorHandlerTest extends Base {
         $handler = new ErrorHandler;
         $this->callProtectedMethod($handler, 'renderErrorView');
     }
+
+    public function testRenderCustomErrorViewForHttpException() {
+        $this->expectOutputString(
+            '404, Not Found, Hyperframework\Web\Test\ErrorView::render'
+        );
+        Config::set(
+            'hyperframework.web.error_view.class',
+            'Hyperframework\Web\Test\ErrorView'
+        );
+        $handler = $this->getMockBuilder('Hyperframework\Web\ErrorHandler')
+            ->setMethods(['getError'])->getMock();
+        $handler->method('getError')->willReturn(new NotFoundException);
+        $this->callProtectedMethod($handler, 'renderErrorView');
+    }
+
 
     public function testIgnoreHttpExceptionLog() {
         Config::set(
