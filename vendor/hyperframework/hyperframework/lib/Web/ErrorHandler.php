@@ -50,7 +50,7 @@ class ErrorHandler extends Base {
 
     protected function executeDebugger($headers, $outputBuffer) {
         $class = Config::getString(
-            'Hyperframework.error_handler.debugger_class', ''
+            'hyperframework.error_handler.debugger_class', ''
         );
         if ($class === '') {
             $debugger = new Debugger;
@@ -68,14 +68,14 @@ class ErrorHandler extends Base {
     }
 
     protected function renderErrorView() {
-        $class = Config::getString('hyperframework.error_view.class', '');
+        $class = Config::getString('hyperframework.web.error_view.class', '');
         if ($class === '') {
             $view = new ErrorView;
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
                     "Error view class '$class' does not exist, set "
-                        . "using config 'hyperframework.error_view.class'."
+                        . "using config 'hyperframework.web.error_view.class'."
                 );
             }
             $view = new $class;

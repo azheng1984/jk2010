@@ -10,10 +10,12 @@ class ErrorView {
         $statusCode, $statusText, $error, $outputFormat = null
     ) {
         $rootPath = Config::getString(
-            'hyperframework.error_view.root_path', ''
+            'hyperframework.web.error_view.root_path', ''
         );
         if ($rootPath === '') {
-            $rootPath = Config::getString('hyperframework.view.root_path', '');
+            $rootPath = Config::getString(
+                'hyperframework.web.view.root_path', ''
+            );
             if ($rootPath === '') {
                 $rootPath = 'views';
             }
