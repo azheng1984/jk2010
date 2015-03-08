@@ -23,9 +23,10 @@ class ErrorHandler extends Base {
     }
 
     protected function displayError() {
-        $error = $this->getError();
-        if ($this->isDebuggerEnabled()) {
+        if ($this->isDebuggerEnabled) {
+            $this->flushInnerOutputBuffer();
             $outputBuffer = $this->getOutputBuffer();
+            $this->deleteOutputBuffer();
             $headers = ResponseHeaderHelper::getHeaders();
             if (ResponseHeaderHelper::isSent() === false) {
                 $this->rewriteHttpHeaders();
@@ -40,20 +41,10 @@ class ErrorHandler extends Base {
     }
 
     protected function getOutputBuffer() {
-        $outputBufferLevel = ob_get_level();
-        $startupOutputBufferLevel = $this->getStartupOutputBufferLevel();
-        if ($outputBufferLevel < $startupOutputBufferLevel) {
-            return;
-        }
-        while ($outputBufferLevel > $startupOutputBufferLevel) {
-            ob_end_flush();
-            --$outputBufferLevel;
-        }
         $content = ob_get_contents();
         if ($content === false) {
             return;
         }
-        ob_clean();
         return $content;
     }
 
@@ -112,24 +103,30 @@ class ErrorHandler extends Base {
         parent::writeLog();
     }
 
-    protected function isDebuggerEnabled() {
-        return $this->isDebuggerEnabled;
-    }
-
-    protected function getStartupOutputBufferLevel() {
-        return $this->startupOutputBufferLevel;
+    private function flushInnerOutputBuffer() {
+        $level = ob_get_level();
+        $startupLevel = $this->startupOutputBufferLevel;
+        if ($level < $startupLevel) {
+            return;
+        }
+        while ($level > $startupLevel) {
+            ob_end_flush();
+            --$level;
+        }
     }
 
     private function deleteOutputBuffer() {
-        $obLevel = ob_get_level();
-        $startupOutputBufferLevel = $this->getStartupOutputBufferLevel();
-        while ($obLevel >= $startupOutputBufferLevel) {
-            if ($startupOutputBufferLevel === $obLevel) {
-                ob_clean();
+        $level = ob_get_level();
+        $startupLevel = $this->startupOutputBufferLevel;
+        while ($level >= $startupLevel) {
+            if ($startupLevel === $level) {
+                if ($level !== 0) {
+                    ob_clean();
+                }
             } else {
                 ob_end_clean();
             }
-            --$obLevel;
+            --$level;
         }
     }
 

@@ -64,7 +64,7 @@ class ControllerTest extends Base {
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException Hyperframework\Common\InvalidOperationException
      */
     public function testRunTwice() {
         $app = new App(dirname(__DIR__));
@@ -283,7 +283,7 @@ class ControllerTest extends Base {
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException Hyperframework\Common\InvalidOperationException
      */
     public function testQuitTwice() {
         Config::set('hyperframework.exit_function', function() {});

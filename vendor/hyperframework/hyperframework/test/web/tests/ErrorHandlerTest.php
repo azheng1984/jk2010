@@ -23,11 +23,6 @@ class ErrorHandlerTest extends Base {
         );
     }
 
-    private function bind() {
-        $this->handler = new ErrorHandler;
-        $this->callPrivateMethod($this->handler, 'registerErrorHandler');
-    }
-
     protected function tearDown() {
         ini_set('xmlrpc_errors', 0);
         ini_set('html_errors', 0);
@@ -50,7 +45,7 @@ class ErrorHandlerTest extends Base {
         parent::tearDown();
     }
 
-    public function testRenderErrorView() {
+    public function testDisplayErrorUsingErrorView() {
         $this->expectOutputString('500 Internal Server Error');
         $engine = $this->getMock('Hyperframework\Web\ResponseHeaderHelperEngine');
         $engine->expects($this->once())->method('isSent')->willReturn(
@@ -61,7 +56,10 @@ class ErrorHandlerTest extends Base {
         $this->callProtectedMethod($handler, 'handle');
     }
 
-    public function testRenderErrorViewForHttpException() {
+    public function testDisplayErrorUsingDebugger() {
+    }
+
+    public function testRenderErrorView() {
     }
 
     public function testRenderCustomErrorView() {
@@ -70,10 +68,13 @@ class ErrorHandlerTest extends Base {
     public function testIgnoreHttpExceptionLog() {
     }
 
-    public function testGetOutputBufferForDebugging() {
+    public function testGetOutputBuffer() {
     }
 
-    public function testDeleteOutputBufferForErrorView() {
+    public function testFlushInnerOutputBuffer() {
+    }
+
+    public function testDeleteOutputBuffer() {
     }
 
     public function testExecuteDebugger() {
@@ -86,14 +87,5 @@ class ErrorHandlerTest extends Base {
     }
 
     public function testRewriteHttpHeadersForHttpException() {
-    }
-
-    public function testDisplayErrorUsingDebugger() {
-    }
-
-    public function testDisplayErrorUsingDefaultDisplayErrorMethod() {
-    }
-
-    public function testDisplayErrorUsingErrorView() {
     }
 }

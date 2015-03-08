@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use LogicException;
 use UnexpectedValueException;
 use Hyperframework\Common\Config;
+use Hyperframework\Common\InvalidOperationException;
 use Hyperframework\Common\NotSupportedException;
 use Hyperframework\Common\ClassNotFoundException;
 
@@ -33,9 +34,9 @@ abstract class Controller {
 
     public function run() {
         if ($this->isRunMethodCalled) {
-            $class = get_called_class();
-            throw new LogicException(
-                "The run method of $class cannot be called more than once."
+            throw new InvalidOperationException(
+                'The run method of ' . __CLASS__
+                    . ' cannot be called more than once.'
             );
         }
         $this->isRunMethodCalled = true;
@@ -156,9 +157,9 @@ abstract class Controller {
 
     public function quit() {
         if ($this->isQuitMethodCalled) {
-            $class = get_called_class();
-            throw new LogicException(
-                "The quit method of $class cannot be called more than once."
+            throw new InvalidOperationException(
+                'The quit method of ' . __CLASS__
+                    . ' cannot be called more than once.'
             );
         }
         $this->isQuitMethodCalled = true;

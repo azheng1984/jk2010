@@ -1,8 +1,6 @@
 <?php
 namespace Hyperframework\Common;
 
-use LogicException;
-
 abstract class App {
     private $isQuitMethodCalled = false;
 
@@ -20,9 +18,9 @@ abstract class App {
 
     public function quit() {
         if ($this->isQuitMethodCalled) {
-            $class = get_called_class();
-            throw new LogicException(
-                "The quit method of $class cannot be called more than once."
+            throw new InvalidOperationException(
+                'The quit method of ' . __CLASS__
+                    . ' cannot be called more than once.'
             );
         }
         $this->isQuitMethodCalled = true;
