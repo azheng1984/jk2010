@@ -14,7 +14,6 @@ abstract class Router {
     private $moduleNamespace;
     private $controller;
     private $controllerClass;
-    private $controllerRootNamespace;
     private $action;
     private $actionMethod;
     private $requestPath;
@@ -57,14 +56,21 @@ abstract class Router {
         if ($this->moduleNamespace !== null) {
             return $this->moduleNamespace;
         }
+        $rootNamespace = 'Controllers';
+        $appRootNamespace = Config::getAppRootNamespace();
+        if ($appRootNamespace !== '' && $appRootNamespace !== '\\') {
+            NamespaceCombiner::prepend($rootNamespace, $appRootNamespace);
+        }
         $module = (string)$this->getModule();
         if ($module === '') {
-            return;
+            return $rootNamespace;
         }
         $tmp = str_replace(
             ' ', '\\', ucwords(str_replace('/', ' ', $module))
         );
-        return str_replace(' ', '', ucwords(str_replace('_', ' ', $tmp)));
+        $namespace = str_replace(' ', '', ucwords(str_replace('_', ' ', $tmp)));
+        NamespaceCombiner::prepend($namespace, $rootNamespace);
+        return $namespace;
     }
 
     public function getController() {
@@ -75,33 +81,19 @@ abstract class Router {
     }
 
     public function getControllerClass() {
-        $class = null;
         if ($this->controllerClass !== null) {
-            $class = (string)$this->controllerClass;
-            if ($class === '') {
-                return $this->controllerClass;
-            }
-            if ($class[0] === '\\') {
-                return substr($class, 1);
-            }
-        } else {
-            $controller = (string)$this->getController();
-            if ($controller === '') {
-                return;
-            } else {
-                $tmp = ucwords(str_replace('_', ' ', $controller));
-                $class = str_replace(' ', '', $tmp) . 'Controller';
-            }
+            return $this->controllerClass;
         }
+        $controller = (string)$this->getController();
+        if ($controller === '') {
+            return;
+        }
+        $tmp = ucwords(str_replace('_', ' ', $controller));
+        $class = str_replace(' ', '', $tmp) . 'Controller';
         $moduleNamespace = (string)$this->getModuleNamespace();
         if ($moduleNamespace !== '' && $moduleNamespace !== '\\') {
             NamespaceCombiner::prepend($class, $moduleNamespace);
         }
-        $rootNamespace = (string)$this->getControllerRootNamespace();
-        if ($rootNamespace !== '' && $rootNamespace !== '\\') {
-            NamespaceCombiner::prepend($class, $rootNamespace);
-        }
-        $this->controllerClass = '\\' . $class;
         return $class;
     }
 
@@ -963,22 +955,6 @@ abstract class Router {
 
     protected function setControllerClass($value) {
         $this->controllerClass = (string)$value;
-    }
-
-    protected function getControllerRootNamespace() {
-        if ($this->controllerRootNamespace === null) {
-            $namespace = 'Controllers';
-            $rootNamespace = Config::getAppRootNamespace();
-            if ($rootNamespace !== '' && $rootNamespace !== '\\') {
-                NamespaceCombiner::prepend($namespace, $rootNamespace);
-            }
-            $this->controllerRootNamespace = $namespace;
-        }
-        return $this->controllerRootNamespace;
-    }
-
-    protected function setControllerRootNamespace($value) {
-        $this->controllerRootNamespace = $value;
     }
 
     protected function setAction($value) {
