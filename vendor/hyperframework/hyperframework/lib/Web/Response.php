@@ -44,7 +44,7 @@ class Response {
     public static function getEngine() {
         if (self::$engine === null) {
             $configName =
-                'hyperframework.web.response.engine_class';
+                'hyperframework.web.response_engine_class';
             $class = Config::getString($configName , '');
             if ($class === '') {
                 self::$engine = new ResponseHeaderEngine;
