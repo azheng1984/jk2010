@@ -11,9 +11,7 @@ class ResponseTest extends Base {
     }
 
     private function mockEngineMethod($method) {
-        $engine = $this->getMock(
-            'Hyperframework\Web\ResponseEngine'
-        );
+        $engine = $this->getMock('Hyperframework\Web\ResponseEngine');
         Response::setEngine($engine);
         return $engine->expects($this->once())->method($method);
     }

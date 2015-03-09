@@ -40,8 +40,8 @@ class CsrfProtection {
                         "Csrf protection engine class '$class' does not exist"
                             . ", set using config '$configName'."
                     );
-                    self::$engine = new $class;
                 }
+                self::$engine = new $class;
             }
         }
         return self::$engine;
