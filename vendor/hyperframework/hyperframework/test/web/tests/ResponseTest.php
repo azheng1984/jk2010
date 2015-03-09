@@ -10,6 +10,11 @@ class ResponseTest extends Base {
         Response::setHeader('');
     }
 
+    public function testRemoveAllHeaders() {
+        $this->mockEngineMethod('removeAllHeaders');
+        Response::removeAllHeaders();
+    }
+
     private function mockEngineMethod($method) {
         $engine = $this->getMock('Hyperframework\Web\ResponseEngine');
         Response::setEngine($engine);
