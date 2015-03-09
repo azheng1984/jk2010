@@ -3,7 +3,7 @@ namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
 use Hyperframework\Logging\Logger;
-use Hyperframework\Web\ResponseHeaderHelper;
+use Hyperframework\Web\ResponseHeader;
 use Hyperframework\Web\Test\TestCase as Base;
 
 class ErrorHandlerTest extends Base {
@@ -22,12 +22,12 @@ class ErrorHandlerTest extends Base {
             dirname(__DIR__) . '/data/tmp/logger_log'
         );
         $engine = $this->getMock(
-            'Hyperframework\Web\ResponseHeaderHelperEngine'
+            'Hyperframework\Web\ResponseHeaderEngine'
         );
         $engine->method('isSent')->willReturn(
             false
         );
-        ResponseHeaderHelper::setEngine($engine);
+        ResponseHeader::setEngine($engine);
     }
 
     protected function tearDown() {
@@ -48,7 +48,7 @@ class ErrorHandlerTest extends Base {
         }
         error_reporting($this->errorReportingBitmask);
         Logger::setLogHandler(null);
-        ResponseHeaderHelper::setEngine(null);
+        ResponseHeader::setEngine(null);
         parent::tearDown();
     }
 
@@ -171,13 +171,13 @@ class ErrorHandlerTest extends Base {
 
     public function testRewriteHttpHeaders() {
         $engine = $this->getMock(
-            'Hyperframework\Web\ResponseHeaderHelperEngine'
+            'Hyperframework\Web\ResponseHeaderEngine'
         );
         $engine->expects($this->once())->method('removeAllHeaders');
         $engine->expects($this->once())->method('setHeader')
             ->with('HTTP/1.1 500 Internal Server Error');
         $engine->method('isSent')->willReturn(false);
-        ResponseHeaderHelper::setEngine($engine);
+        ResponseHeader::setEngine($engine);
         $handler = $this->getMockBuilder('Hyperframework\Web\ErrorHandler')
             ->setMethods(['renderErrorView'])->getMock();
         $this->callProtectedMethod($handler, 'displayError');
@@ -185,13 +185,13 @@ class ErrorHandlerTest extends Base {
 
     public function testRewriteHttpHeadersForHttpException() {
         $engine = $this->getMock(
-            'Hyperframework\Web\ResponseHeaderHelperEngine'
+            'Hyperframework\Web\ResponseHeaderEngine'
         );
         $engine->expects($this->once())->method('removeAllHeaders');
         $engine->expects($this->once())->method('setHeader')
             ->with('HTTP/1.1 404 Not Found');
         $engine->method('isSent')->willReturn(false);
-        ResponseHeaderHelper::setEngine($engine);
+        ResponseHeader::setEngine($engine);
         $handler = $this->getMockBuilder('Hyperframework\Web\ErrorHandler')
             ->setMethods(['renderErrorView', 'getError'])->getMock();
         $handler->method('getError')->willReturn(new NotFoundException);

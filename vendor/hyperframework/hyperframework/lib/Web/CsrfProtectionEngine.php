@@ -60,7 +60,7 @@ class CsrfProtectionEngine {
 
     protected function initializeToken() {
         $this->setToken($this->generateToken());
-        ResponseHeaderHelper::setCookie(
+        ResponseHeader::setCookie(
             $this->getTokenName(), $this->getToken()
         );
     }

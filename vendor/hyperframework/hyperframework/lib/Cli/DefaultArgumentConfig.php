@@ -17,15 +17,17 @@ class DefaultArgumentConfig extends ArgumentConfig {
     }
 
     public function getName() {
+        if ($this->name !== null) {
+            return $this->name;
+        }
         $words = [];
-        $name = $this->parameterName;
         $word = '';
-        $length = strlen($name);
+        $length = strlen($this->parameterName);
         for ($index = 0; $index < $length; ++$index) {
-            $char = $name[$index];
+            $char = $this->parameterName[$index];
             $ascii = ord($char);
             if ($char !== '_' && ($ascii < 65 || $ascii > 90)) {
-                $word .= $name[$index];
+                $word .= $this->parameterName[$index];
             } else {
                 if ($word !== '') {
                     $words[] = $word;
@@ -52,6 +54,7 @@ class DefaultArgumentConfig extends ArgumentConfig {
                 $words[] = $word;
             }
         }
-        return implode('-', $words);
+        $this->name = implode('-', $words);
+        return $this->name;
     }
 }

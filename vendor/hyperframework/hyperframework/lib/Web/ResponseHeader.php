@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
-class ResponseHeaderHelper {
+class ResponseHeader {
     private static $engine;
 
     public static function setHeader(
@@ -44,10 +44,10 @@ class ResponseHeaderHelper {
     public static function getEngine() {
         if (self::$engine === null) {
             $configName =
-                'hyperframework.web.response_header_helper.engine_class';
+                'hyperframework.web.response_header.engine_class';
             $class = Config::getString($configName , '');
             if ($class === '') {
-                self::$engine = new ResponseHeaderHelperEngine;
+                self::$engine = new ResponseHeaderEngine;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(

@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-class ResponseHeaderHelperEngine {
+class ResponseHeaderEngine {
     public function setHeader(
         $string, $shouldReplace = true, $responseCode = null
     ) {

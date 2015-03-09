@@ -170,7 +170,7 @@ abstract class Controller {
     }
 
     public function redirect($url, $statusCode = 302) {
-        ResponseHeaderHelper::setHeader('Location: ' . $url, true, $statusCode);
+        ResponseHeader::setHeader('Location: ' . $url, true, $statusCode);
         $this->quit();
     }
 

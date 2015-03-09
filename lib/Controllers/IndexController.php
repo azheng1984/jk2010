@@ -2,7 +2,7 @@
 namespace Hyperframework\Blog\Controllers;
 
 use Hyperframework\Web\Controller;
-use Hyperframework\Web\ResponseHeaderHelper;
+use Hyperframework\Web\ResponseHeader;
 use Hyperframework\Db\DbClient;
 
 class IndexController extends Controller {
@@ -15,8 +15,8 @@ class IndexController extends Controller {
     }
 
     public function __construct($app) {
-        ResponseHeaderHelper::setCookie('xxname', null, ['path' => '/df']);
-        ResponseHeaderHelper::setCookie('xname', 'value');
+        ResponseHeader::setCookie('xxname', null, ['path' => '/df']);
+        ResponseHeader::setCookie('xname', 'value');
         DbClient::beginTransaction();
         DbClient::commit();
         //$this->name2();

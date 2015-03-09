@@ -277,7 +277,7 @@ class CommandParser {
         return $result;
     }
 
-    protected static function hasMagicOption(
+    private static function hasMagicOption(
         array $globalOptions = null,
         $subcommand,
         array $options = null,
