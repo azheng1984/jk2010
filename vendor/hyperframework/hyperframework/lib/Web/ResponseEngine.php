@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-class ResponseHeaderEngine {
+class ResponseEngine {
     public function setHeader(
         $string, $shouldReplace = true, $responseCode = null
     ) {
@@ -20,11 +20,11 @@ class ResponseHeaderEngine {
         header_remove();
     }
 
-    public function setResponseCode($code) {
+    public function setStatusCode($code) {
         http_response_code($code);
     }
 
-    public function getResponseCode() {
+    public function getStatusCode() {
         return http_response_code();
     }
 
@@ -64,7 +64,7 @@ class ResponseHeaderEngine {
         );
     }
 
-    public function isSent(&$file = null, &$line = null) {
+    public function headersSent(&$file = null, &$line = null) {
         return headers_sent($file, $line);
     }
 }

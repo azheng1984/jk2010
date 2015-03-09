@@ -6,16 +6,16 @@ use Hyperframework\Web\Test\TestCase as Base;
 
 class CsrfProtectionEngineTest extends Base {
     public function tearDown() {
-        ResponseHeader::setEngine(null);
+        Response::setEngine(null);
         parent::tearDown();
     }
 
     public function testRun() {
         $engine2 = $this->getMock(
-            'Hyperframework\Web\ResponseHeaderEngine'
+            'Hyperframework\Web\ResponseEngine'
         );
         $engine2->expects($this->once())->method('setCookie');
-        ResponseHeader::setEngine($engine2);
+        Response::setEngine($engine2);
         $engine = new CsrfProtectionEngine;
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $engine->run();

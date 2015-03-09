@@ -828,7 +828,7 @@ abstract class Router {
     }
 
     protected function redirect($url, $statusCode = 302) {
-        ResponseHeader::setHeader('Location: ' . $url, true, $statusCode);
+        Response::setHeader('Location: ' . $url, true, $statusCode);
         $this->getApp()->quit();
     }
 

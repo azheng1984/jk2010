@@ -546,14 +546,14 @@ class RouterTest extends Base {
     }
 
     public function testRedirect() {
-        $engine = $this->getMock('Hyperframework\Web\ResponseHeaderEngine');
+        $engine = $this->getMock('Hyperframework\Web\ResponseEngine');
         $engine->expects($this->once())->method('setHeader')->with(
             'Location: /', true, 302
         );
         $app = $this->getMockBuilder('Hyperframework\Web\App')
             ->setConstructorArgs([dirname(__DIR__)])->getMock();
         $app->expects($this->once())->method('quit');
-        ResponseHeader::setEngine($engine);
+        Response::setEngine($engine);
         $this->router = $this->getMockBuilder(
             'Hyperframework\Web\Test\Router'
         )->setMethods(['getApp'])

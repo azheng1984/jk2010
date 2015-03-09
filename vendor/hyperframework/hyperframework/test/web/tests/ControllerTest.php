@@ -300,11 +300,11 @@ class ControllerTest extends Base {
         )->setConstructorArgs([$app])
             ->setMethods(['handleAction', 'quit'])->getMock();
         $controller->expects($this->once())->method('quit');
-        $engine = $this->getMock('Hyperframework\Web\ResponseHeaderEngine');
+        $engine = $this->getMock('Hyperframework\Web\ResponseEngine');
         $engine->expects($this->once())->method('setHeader')->with(
             'Location: /', true, 302
         );
-        ResponseHeader::setEngine($engine);
+        Response::setEngine($engine);
         $controller->redirect('/');
     }
 

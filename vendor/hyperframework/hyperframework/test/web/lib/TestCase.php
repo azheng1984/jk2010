@@ -3,7 +3,7 @@ namespace Hyperframework\Web\Test;
 
 use Hyperframework\Common\Config;
 use Hyperframework\Web\CsrfProtection;
-use Hyperframework\Web\ResponseHeader;
+use Hyperframework\Web\Response;
 use Hyperframework\Test\TestCase as Base;
 
 class TestCase extends Base {
@@ -17,7 +17,7 @@ class TestCase extends Base {
     }
 
     protected function tearDown() {
-        ResponseHeader::setEngine(null);
+        Response::setEngine(null);
         CsrfProtection::setEngine(null);
         parent::tearDown();
     }

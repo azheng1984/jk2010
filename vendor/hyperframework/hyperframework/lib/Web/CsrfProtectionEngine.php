@@ -60,9 +60,7 @@ class CsrfProtectionEngine {
 
     protected function initializeToken() {
         $this->setToken($this->generateToken());
-        ResponseHeader::setCookie(
-            $this->getTokenName(), $this->getToken()
-        );
+        Response::setCookie($this->getTokenName(), $this->getToken());
     }
 
     protected function isSafeMethod($method) {

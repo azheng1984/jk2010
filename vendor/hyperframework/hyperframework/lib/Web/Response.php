@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
-class ResponseHeader {
+class Response {
     private static $engine;
 
     public static function setHeader(
@@ -25,33 +25,33 @@ class ResponseHeader {
         self::getEngine()->removeAllHeaders();
     }
 
-    public static function setResponseCode($value) {
-        self::getEngine()->setResponseCode($value);
+    public static function setStatusCode($value) {
+        self::getEngine()->setStatusCode($value);
+    }
+
+    public static function getStatusCode() {
+        return self::getEngine()->getResponseCode();
     }
 
     public static function setCookie($name, $value, array $options = null) {
         self::getEngine()->setCookie($name, $value, $options);
     }
 
-    public static function getResponseCode() {
-        return self::getEngine()->getResponseCode();
-    }
-
-    public static function isSent(&$file = null, &$line = null) {
-        return self::getEngine()->isSent();
+    public static function headersSent(&$file = null, &$line = null) {
+        return self::getEngine()->headersSent();
     }
 
     public static function getEngine() {
         if (self::$engine === null) {
             $configName =
-                'hyperframework.web.response_header.engine_class';
+                'hyperframework.web.response.engine_class';
             $class = Config::getString($configName , '');
             if ($class === '') {
                 self::$engine = new ResponseHeaderEngine;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Response header helper engine class '$class' "
+                        "Response engine class '$class' "
                             . "does not exist, set using config '$configName'."
                     );
                     self::$engine = new $class;

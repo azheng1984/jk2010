@@ -4,12 +4,12 @@ namespace Hyperframework\Web;
 use Hyperframework\Common\Config;
 use Hyperframework\Web\Test\TestCase as Base;
 
-class ResponseHeaderEngineTest extends Base {
+class ResponseEngineTest extends Base {
     /**
      * @expectedException Hyperframework\Web\CookieException
      */
     public function testInvalidCookieOptionWhenSetCookie() {
-        $engine = new ResponseHeaderEngine;
+        $engine = new ResponseEngine;
         $engine->setCookie('name', 'value', ['invalid' => 'value']);
     }
 }

@@ -27,13 +27,13 @@ class ErrorHandler extends Base {
             $this->flushInnerOutputBuffer();
             $outputBuffer = $this->getOutputBuffer();
             $this->deleteOutputBuffer();
-            $headers = ResponseHeader::getHeaders();
-            if (ResponseHeader::isSent() === false) {
+            $headers = Response::getHeaders();
+            if (Response::headersSent() === false) {
                 $this->rewriteHttpHeaders();
             }
             $this->executeDebugger($headers, $outputBuffer);
             ini_set('display_errors', '0');
-        } elseif (ResponseHeader::isSent() === false) {
+        } elseif (Response::headersSent() === false) {
             $this->rewriteHttpHeaders();
             $this->deleteOutputBuffer();
             $this->renderErrorView();
@@ -131,16 +131,14 @@ class ErrorHandler extends Base {
     }
 
     private function rewriteHttpHeaders() {
-        ResponseHeader::removeAllHeaders();
+        Response::removeAllHeaders();
         $error = $this->getError();
         if ($error instanceof HttpException) {
             foreach ($error->getHttpHeaders() as $header) {
-                ResponseHeader::setHeader($header);
+                Response::setHeader($header);
             }
         } else {
-            ResponseHeader::setHeader(
-                'HTTP/1.1 500 Internal Server Error'
-            );
+            Response::setHeader('HTTP/1.1 500 Internal Server Error');
         }
     }
 }
