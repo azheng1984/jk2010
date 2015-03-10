@@ -8,7 +8,7 @@ class ResponseEngine {
         header($string, $shouldReplace, $responseCode);
     }
 
-    public function getHeaders() {
+    public function getAllHeaders() {
         return headers_list();
     }
 

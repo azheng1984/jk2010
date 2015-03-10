@@ -13,8 +13,8 @@ class Response {
         self::getEngine()->setHeader($string, $shouldReplace, $responseCode);
     }
 
-    public static function getHeaders() {
-        return self::getEngine()->getHeaders();
+    public static function getAllHeaders() {
+        return self::getEngine()->getAllHeaders();
     }
 
     public static function removeHeader($name) {
