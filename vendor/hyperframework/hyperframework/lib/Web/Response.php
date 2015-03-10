@@ -13,16 +13,16 @@ class Response {
         self::getEngine()->setHeader($string, $shouldReplace, $responseCode);
     }
 
-    public static function getAllHeaders() {
-        return self::getEngine()->getAllHeaders();
+    public static function getHeaders() {
+        return self::getEngine()->getHeaders();
     }
 
     public static function removeHeader($name) {
         self::getEngine()->removeHeader($name);
     }
 
-    public static function removeAllHeaders() {
-        self::getEngine()->removeAllHeaders();
+    public static function removeHeaders() {
+        self::getEngine()->removeHeaders();
     }
 
     public static function setStatusCode($value) {

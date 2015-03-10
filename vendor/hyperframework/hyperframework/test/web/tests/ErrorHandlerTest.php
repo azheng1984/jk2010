@@ -173,7 +173,7 @@ class ErrorHandlerTest extends Base {
         $engine = $this->getMock(
             'Hyperframework\Web\ResponseEngine'
         );
-        $engine->expects($this->once())->method('removeAllHeaders');
+        $engine->expects($this->once())->method('removeHeaders');
         $engine->expects($this->once())->method('setHeader')
             ->with('HTTP/1.1 500 Internal Server Error');
         $engine->method('headersSent')->willReturn(false);
@@ -187,7 +187,7 @@ class ErrorHandlerTest extends Base {
         $engine = $this->getMock(
             'Hyperframework\Web\ResponseEngine'
         );
-        $engine->expects($this->once())->method('removeAllHeaders');
+        $engine->expects($this->once())->method('removeHeaders');
         $engine->expects($this->once())->method('setHeader')
             ->with('HTTP/1.1 404 Not Found');
         $engine->method('headersSent')->willReturn(false);

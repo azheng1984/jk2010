@@ -131,7 +131,7 @@ class ErrorHandler extends Base {
     }
 
     private function rewriteHttpHeaders() {
-        Response::removeAllHeaders();
+        Response::removeHeaders();
         $error = $this->getError();
         if ($error instanceof HttpException) {
             foreach ($error->getHttpHeaders() as $header) {

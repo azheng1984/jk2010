@@ -11,8 +11,8 @@ class ResponseTest extends Base {
     }
 
     public function testRemoveAllHeaders() {
-        $this->mockEngineMethod('removeAllHeaders');
-        Response::removeAllHeaders();
+        $this->mockEngineMethod('removeHeaders');
+        Response::removeHeaders();
     }
 
     private function mockEngineMethod($method) {

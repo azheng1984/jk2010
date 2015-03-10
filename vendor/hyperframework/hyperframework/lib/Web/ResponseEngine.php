@@ -8,7 +8,7 @@ class ResponseEngine {
         header($string, $shouldReplace, $responseCode);
     }
 
-    public function getAllHeaders() {
+    public function getHeaders() {
         return headers_list();
     }
 
@@ -16,7 +16,7 @@ class ResponseEngine {
         header_remove($name);
     }
 
-    public function removeAllHeaders() {
+    public function removeHeaders() {
         header_remove();
     }
 

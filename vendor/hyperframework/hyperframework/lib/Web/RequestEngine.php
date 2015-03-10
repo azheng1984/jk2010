@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 class RequestEngine {
-    public function getAllHeaders() {
+    public function getHeaders() {
         return getallheaders();
     }
 

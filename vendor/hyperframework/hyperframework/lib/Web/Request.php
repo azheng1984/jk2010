@@ -7,8 +7,8 @@ use Hyperframework\Common\ClassNotFoundException;
 class Request {
     private static $engine;
 
-    public static function getAllHeaders() {
-        return self::getEngine()->getAllHeaders();
+    public static function getHeaders() {
+        return self::getEngine()->getHeaders();
     }
 
     public static function openInputStream() {
