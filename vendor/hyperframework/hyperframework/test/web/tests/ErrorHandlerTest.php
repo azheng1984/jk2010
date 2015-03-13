@@ -53,7 +53,7 @@ class ErrorHandlerTest extends Base {
     }
 
     public function testDisplayErrorUsingErrorView() {
-        $this->expectOutputString('500 Internal Server Error');
+        $this->expectOutputString("500\n");
         $handler = new ErrorHandler;
         $this->callProtectedMethod($handler, 'handle');
     }

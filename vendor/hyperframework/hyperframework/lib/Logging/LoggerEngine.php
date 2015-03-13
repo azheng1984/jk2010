@@ -1,9 +1,7 @@
 <?php
 namespace Hyperframework\Logging;
 
-use Hyperframework\Common\Config;
-
-class Logger {
+class LoggerEngine {
     private static $logHandler;
     private static $level;
 

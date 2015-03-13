@@ -1,12 +1,11 @@
 <?php
 namespace Hyperframework\Db;
 
+use Hyperframework\Common\Registry;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
 class DbClient {
-    private static $engine;
-
     public static function findColumn($sql/*, ...*/) {
         return static::getEngine()->findColumn(
             $sql, self::getParams(func_get_args(), 1)
@@ -184,12 +183,13 @@ class DbClient {
     }
 
     public static function getEngine() {
-        if (self::$engine === null) {
+        $engine = Registry::get('hyperframework.db.client_engine');
+        if ($engine === null) {
             $class = Config::getString(
                 'hyperframework.db.client.engine_class', ''
             );
             if ($class === '') {
-                self::$engine = new DbClientEngine;
+                $engine = new DbClientEngine;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
@@ -198,14 +198,15 @@ class DbClient {
                             . "'hyperframework.db.client.engine_class'."
                     );
                 }
-                self::$engine = new $class;
+                $engine = new $class;
             }
+            static::setEngine($engine);
         }
-        return self::$engine;
+        return $engine;
     }
 
     public static function setEngine($value) {
-        self::$engine = $value;
+        Registry::set('hyperframework.db.client_engine', $value);
     }
 
     private static function getParams(array $args, $offset) {

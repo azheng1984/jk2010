@@ -17,9 +17,10 @@ class ErrorView {
                 'hyperframework.web.view.root_path', ''
             );
             if ($rootPath === '') {
-                $rootPath = 'views';
+                $rootPath = 'views' . DIRECTORY_SEPARATOR . '_error';
+            } else {
+                PathCombiner::append($rootPath, '_error');
             }
-            PathCombiner::append($rootPath, '_error');
         }
         $files = [
             ViewPathBuilder::build($statusCode, $outputFormat),
@@ -35,7 +36,7 @@ class ErrorView {
             }
         }
         if ($path === null) {
-            Response::setHeader('content-type: text/plain; charset=utf-8');
+            Response::setHeader('Content-type: text/plain; charset=utf-8');
             echo $statusCode;
             if ((string)$statusText !== '') {
                 echo ' ' . $statusText;

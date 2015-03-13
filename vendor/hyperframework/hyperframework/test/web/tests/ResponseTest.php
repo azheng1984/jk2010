@@ -10,7 +10,7 @@ class ResponseTest extends Base {
         Response::setHeader('');
     }
 
-    public function testRemoveAllHeaders() {
+    public function testRemoveHeaders() {
         $this->mockEngineMethod('removeHeaders');
         Response::removeHeaders();
     }
