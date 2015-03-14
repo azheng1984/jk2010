@@ -142,6 +142,10 @@ class ConfigEngine {
         return $this->getString('hyperframework.app_root_namespace', '');
     }
 
+    public function getAll() {
+        return $this->data;
+    }
+
     public function set($name, $value) {
         $name = (string)$name;
         $this->checkName($name);
@@ -204,10 +208,6 @@ class ConfigEngine {
             );
         }
         $this->import($data);
-    }
-
-    public function getAll() {
-        return $this->data;
     }
 
     private function checkName($name) {

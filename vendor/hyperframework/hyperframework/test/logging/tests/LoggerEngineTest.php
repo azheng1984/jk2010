@@ -7,137 +7,125 @@ use Hyperframework\Logging\Test\CustomLogHandler;
 use Hyperframework\Logging\Test\TestCase as Base;
 
 class LoggerEngineTest extends Base {
-    /**
-     * @dataProvider getShortcutMethods
-     */
-//    public function testShortcutMethods($method) {
-//        Logger::setLevel(LogLevel::DEBUG);
-//        if ($method === 'warn') {
-//            $level = 'WARNING';
-//        } else {
-//            $level = $method;
-//        }
-//        $this->setHandleMethod(function($logRecord) use ($level) {
-//            $this->assertSame(
-//                LogLevel::getCode($level), $logRecord->getLevel()
-//            );
-//            $this->assertSame('message', $logRecord->getMessage());
-//        });
-//        Logger::$method('message');
-//    }
-//
-//    public function getShortcutMethods() {
-//        return [
-//            ['debug'], ['info'], ['warn'], ['notice'], ['error'], ['fatal']
-//        ];
-//    }
-//
+    private $loggerEngine;
+
+    protected function setUp() {
+        parent::setUp();
+        $this->loggerEngine =
+            $this->getMockBuilder('Hyperframework\Logging\LoggerEngine')
+                ->setMethods(['getLogHandler'])->getMock();
+    }
+
     public function testGenerateLogUsingClosure() {
-        $this->setHandleMethod(function($logRecord) {
+        $this->mockLogHandler(function($logRecord) {
             $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
             $this->assertSame('message', $logRecord->getMessage());
         });
-        Logger::log(LogLevel::ERROR, function() {
+        $this->loggerEngine->log(LogLevel::ERROR, function() {
             return 'message';
         });
     }
-//
-//    public function testLogString() {
-//        $this->setHandleMethod(function($logRecord) {
-//            $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
-//            $this->assertSame('message', $logRecord->getMessage());
-//        });
-//        Logger::log(LogLevel::ERROR, 'message');
-//    }
-//
-//    public function testLogEmptyArray() {
-//        $this->mockHandler();
-//        Logger::getLogHandler()->expects($this->once())->method('handle')
-//            ->with($this->isInstanceOf('Hyperframework\Logging\LogRecord'));
-//        Logger::log(LogLevel::ERROR, []);
-//    }
-//
-//    public function testLogCustomTime() {
-//        $time = new DateTime;
-//        $this->setHandleMethod(function($logRecord) use ($time) {
-//            $this->assertSame($time, $logRecord->getTime());
-//        });
-//        Logger::log(LogLevel::ERROR, ['time' => $time]);
-//    }
-//
-//    public function testDefaultLevel() {
-//        $this->setHandleMethod(function($logRecord) {
-//            $this->assertSame(LogLevel::INFO, $logRecord->getLevel());
-//        });
-//        Logger::debug('message');
-//        Logger::info('message');
-//    }
-//
-//    public function testChangeLevel() {
-//        $this->setHandleMethod(function($logRecord) {
-//            $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
-//        });
-//        Logger::setLevel(LogLevel::ERROR);
-//        Logger::warn('message');
-//        Logger::error('message');
-//    }
-//
-//    public function testChangeLevelUsingConfig() {
-//        $this->setHandleMethod(function($logRecord) {
-//            $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
-//        });
-//        Config::set('hyperframework.logging.log_level', 'ERROR');
-//        Logger::warn('message');
-//        Logger::error('message');
-//    }
-//
-//    public function testSetCustomLogHandlerUsingConfig() {
-//        Config::set(
-//            'hyperframework.logging.log_handler_class',
-//            'Hyperframework\Logging\Test\CustomLogHandler'
-//        );
-//        $this->assertTrue(Logger::getLogHandler() instanceof CustomLogHandler); 
-//    }
-//
-//    /**
-//     * @expectedException Hyperframework\Logging\LoggingException
-//     */
-//    public function testInvalidTime() {
-//        Logger::warn(['time' => 'invalid']);
-//    }
-//
-//    /**
-//     * @expectedException Hyperframework\Logging\LoggingException
-//     */
-//    public function testInvalidLog() {
-//        Logger::error(null);
-//    }
-//
-//    /**
-//     * @expectedException Hyperframework\Common\ConfigException
-//     */
-//    public function testInvalidLevelConfig() {
-//        Config::set('hyperframework.logging.log_level', 'UNKNOWN');
-//        Logger::error('message');
-//    }
-//
-//    /**
-//     * @expectedException Hyperframework\Common\ClassNotFoundException
-//     */
-//    public function testInvalidLogHandlerClassConfig() {
-//        Config::set('hyperframework.logging.log_handler_class', 'Unknown');
-//        Logger::error('message');
-//    }
-//
-    private function setHandleMethod($callback) {
-        $this->mockHandler();
-        Logger::getLogHandler()->expects($this->once())->method('handle')->will(
-            $this->returnCallback($callback)
+
+    public function testLogString() {
+        $this->mockLogHandler(function($logRecord) {
+            $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
+            $this->assertSame('message', $logRecord->getMessage());
+        });
+        $this->loggerEngine->log(LogLevel::ERROR, 'message');
+    }
+
+    public function testLogEmptyArray() {
+        $this->mockLogHandler(function($logRecord) {
+            $this->assertInstanceOf(
+                'Hyperframework\Logging\LogRecord', $logRecord
+            );
+        });
+        $this->loggerEngine->log(LogLevel::ERROR, []);
+    }
+
+    public function testLogCustomTime() {
+        $time = new DateTime;
+        $this->mockLogHandler(function($logRecord) use ($time) {
+            $this->assertSame($time, $logRecord->getTime());
+        });
+        $this->loggerEngine->log(LogLevel::ERROR, ['time' => $time]);
+    }
+
+    public function testDefaultLevel() {
+        $this->mockLogHandler(function($logRecord) {
+            $this->assertSame(LogLevel::INFO, $logRecord->getLevel());
+        });
+        $this->loggerEngine->log(LogLevel::DEBUG, 'message');
+        $this->loggerEngine->log(LogLevel::INFO, 'message');
+    }
+
+    public function testChangeLevel() {
+        $this->mockLogHandler(function($logRecord) {
+            $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
+        });
+        $this->loggerEngine->setLevel(LogLevel::ERROR);
+        $this->loggerEngine->log(LogLevel::WARNING, 'message');
+        $this->loggerEngine->log(LogLevel::ERROR, 'message');
+    }
+
+    public function testChangeLevelUsingConfig() {
+        $this->mockLogHandler(function($logRecord) {
+            $this->assertSame(LogLevel::ERROR, $logRecord->getLevel());
+        });
+        Config::set('hyperframework.logging.log_level', 'ERROR');
+        $this->loggerEngine->log(LogLevel::WARNING, 'message');
+        $this->loggerEngine->log(LogLevel::ERROR, 'message');
+    }
+
+    public function testSetCustomLogHandlerUsingConfig() {
+        Config::set(
+            'hyperframework.logging.log_handler_class',
+            'Hyperframework\Logging\Test\CustomLogHandler'
+        );
+        $engine = new LoggerEngine;
+        $this->assertInstanceOf(
+            'Hyperframework\Logging\Test\CustomLogHandler',
+            $this->callProtectedMethod($engine, 'getLogHandler')
         );
     }
-//
-//    private function mockHandler() {
-//        $mock = $this->getMock('Hyperframework\Logging\LogHandler');
-//        Logger::setLogHandler($mock);
-//    }
+
+    /**
+     * @expectedException Hyperframework\Logging\LoggingException
+     */
+    public function testInvalidTime() {
+        $this->loggerEngine->log(LogLevel::ERROR, ['time' => 'invalid']);
+    }
+
+    /**
+     * @expectedException Hyperframework\Logging\LoggingException
+     */
+    public function testInvalidLog() {
+        $this->loggerEngine->log(LogLevel::ERROR, null);
+    }
+
+    /**
+     * @expectedException Hyperframework\Common\ConfigException
+     */
+    public function testInvalidLevelConfig() {
+        Config::set('hyperframework.logging.log_level', 'UNKNOWN');
+        $this->loggerEngine->log(LogLevel::ERROR, 'message');
+    }
+
+    /**
+     * @expectedException Hyperframework\Common\ClassNotFoundException
+     */
+    public function testInvalidLogHandlerClassConfig() {
+        Config::set('hyperframework.logging.log_handler_class', 'Unknown');
+        $engine = new LoggerEngine;
+        $engine->log(LogLevel::ERROR, 'message');
+    }
+
+    private function mockLogHandler($handleCallback) {
+        $logHandler = $this->getMock('Hyperframework\Logging\LogHandler');
+        $logHandler->method('handle')->will($this->returnCallback(
+            $handleCallback
+        ));
+        $this->loggerEngine->expects($this->once())
+            ->method('getLogHandler')->willReturn($logHandler);
+    }
 }

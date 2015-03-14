@@ -42,6 +42,10 @@ class Config {
         return static::getEngine()->getAppRootNamespace();
     }
 
+    public static function getAll() {
+        return static::getEngine()->getAll();
+    }
+
     public static function set($name, $value) {
         static::getEngine()->set($name, $value);
     }
@@ -60,10 +64,6 @@ class Config {
 
     public static function importFile($path) {
         static::getEngine()->importFile($path);
-    }
-
-    public static function getAll() {
-        return static::getEngine()->getAll();
     }
 
     public static function getEngine() {

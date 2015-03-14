@@ -4,6 +4,7 @@ namespace Hyperframework\Logging;
 use Closure;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ConfigException;
+use Hyperframework\Common\ClassNotFoundException;
 
 class LoggerEngine {
     private $level;
@@ -61,17 +62,15 @@ class LoggerEngine {
 
     protected function getLogHandler() {
         if ($this->logHandler === null) {
-            $class = Config::getString(
-                'hyperframework.logging.log_handler_class', ''
-            );
+            $configName = 'hyperframework.logging.log_handler_class';
+            $class = Config::getString($configName, '');
             if ($class === '') {
                 $this->logHandler = new LogHandler;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
                         "Log handler class '$class' does not exist,"
-                            . " set using config "
-                            . "'hyperframework.logging.log_handler_class'."
+                            . " set using config '$configName'."
                     );
                 }
                 $this->logHandler = new $class;

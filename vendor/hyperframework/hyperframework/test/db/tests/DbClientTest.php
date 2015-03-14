@@ -2,7 +2,9 @@
 namespace Hyperframework\Db;
 
 use Exception;
+use stdClass;
 use Hyperframework\Common\Config;
+use Hyperframework\Common\Registry;
 use Hyperframework\Db\Test\DbCustomClientEngine;
 use Hyperframework\Db\Test\DbCustomConnection;
 use Hyperframework\Db\DbClientEngine;
@@ -295,6 +297,15 @@ class DbClientTest extends Base {
             throw $e;
         }
         Config::remove('hyperframework.db.client.engine_class');
+    }
+
+    public function testSetEngine() {
+        $engine = new stdClass;
+        DbClient::setEngine($engine);
+        $this->assertSame($engine, DbClient::getEngine());
+        $this->assertSame(
+            $engine, Registry::get('hyperframework.db.client_engine')
+        );
     }
 
     private function mockEngineMethod($method) {
