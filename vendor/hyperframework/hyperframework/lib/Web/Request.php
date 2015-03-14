@@ -1,12 +1,11 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework\Common\Registry;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
 class Request {
-    private static $engine;
-
     public static function getHeaders() {
         return self::getEngine()->getHeaders();
     }
@@ -16,25 +15,27 @@ class Request {
     }
 
     public static function getEngine() {
-        if (self::$engine === null) {
+        $engine = Registry::get('hyperframework.web.request_engine');
+        if ($engine === null) {
             $configName = 'hyperframework.web.request_engine_class';
             $class = Config::getString($configName , '');
             if ($class === '') {
-                self::$engine = new RequestEngine;
+                $engine = new RequestEngine;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
                         "Request engine class '$class' "
                             . "does not exist, set using config '$configName'."
                     );
-                    self::$engine = new $class;
                 }
+                $engine = new $class;
             }
+            static::setEngine($engine);
         }
-        return self::$engine;
+        return $engine;
     }
 
-    public static function setEngine($value) {
-        self::$engine = $value;
+    public static function setEngine($engine) {
+        Registry::set('hyperframework.web.request_engine', $engine);
     }
 }

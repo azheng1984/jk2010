@@ -7,15 +7,8 @@ use Hyperframework\Test\TestCase as Base;
 class AppTest extends Base {
     protected function setUp() {
         Config::set(
-            'hyperframework.app_root_path', dirname(__DIR__)
-        );
-        Config::set(
             'hyperframework.app_root_namespace', 'Hyperframework\Cli\Test'
         );
-    }
-
-    protected function tearDown() {
-        Config::clear();
     }
 
     public function createApp() {

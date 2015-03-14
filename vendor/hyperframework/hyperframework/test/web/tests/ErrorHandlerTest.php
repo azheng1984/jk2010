@@ -47,8 +47,6 @@ class ErrorHandlerTest extends Base {
             unlink(dirname(__DIR__) . '/log/app.log');
         }
         error_reporting($this->errorReportingBitmask);
-        Logger::setLogHandler(null);
-        Response::setEngine(null);
         parent::tearDown();
     }
 

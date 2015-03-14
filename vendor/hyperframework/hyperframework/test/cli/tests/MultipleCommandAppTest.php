@@ -36,10 +36,6 @@ class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($app->getGlobalOptions(), ['t' => true]);
     }
 
-    protected function tearDown() {
-        Config::clear();
-    }
-
     public function testInitialize() {
         $_SERVER['argv'] = ['run', '-t', 'child', '-c', 'arg'];
         $app = $this->createApp();

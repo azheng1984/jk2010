@@ -8,7 +8,7 @@ use Hyperframework\Test\TestCase as Base;
 
 class TestCase extends Base {
     protected function setUp() {
-        parent::setUp();
+        Config::set('hyperframework.app_root_path', dirname(__DIR__));
         Config::set('hyperframework.app_root_namespace', __NAMESPACE__);
         Config::set('hyperframework.initialize_config', false);
         Config::set('hyperframework.initialize_error_handler', false);

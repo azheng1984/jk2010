@@ -15,7 +15,7 @@ class Config {
     }
 
     public static function getInt($name, $default = null) {
-        return static::getEngine()->getBoolean($name, $default);
+        return static::getEngine()->getInt($name, $default);
     }
 
     public static function getFloat($name, $default = null) {

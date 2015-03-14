@@ -1,12 +1,11 @@
 <?php
 namespace Hyperframework\Web;
 
+use Hyperframework\Common\Registry;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
 class Response {
-    private static $engine;
-
     public static function setHeader(
         $string, $shouldReplace = true, $responseCode = null
     ) {
@@ -42,25 +41,27 @@ class Response {
     }
 
     public static function getEngine() {
-        if (self::$engine === null) {
+        $engine = Registry::get('hyperframework.web.response_engine');
+        if ($engine === null) {
             $configName = 'hyperframework.web.response_engine_class';
             $class = Config::getString($configName , '');
             if ($class === '') {
-                self::$engine = new ResponseEngine;
+                $engine = new ResponseEngine;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
                         "Response engine class '$class' "
                             . "does not exist, set using config '$configName'."
                     );
-                    self::$engine = new $class;
                 }
+                $engine = new $class;
             }
+            static::setEngine($engine);
         }
-        return self::$engine;
+        return $engine;
     }
 
-    public static function setEngine($value) {
-        self::$engine = $value;
+    public static function setEngine($engine) {
+        Registry::set('hyperframework.web.response_engine', $engine);
     }
 }

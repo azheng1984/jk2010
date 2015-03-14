@@ -56,7 +56,6 @@ class ErrorHandlerTest extends Base {
             unlink(dirname(__DIR__) . '/log/app.log');
         }
         error_reporting($this->errorReportingBitmask);
-        Logger::setLogHandler(null);
         parent::tearDown();
     }
 
@@ -123,7 +122,11 @@ class ErrorHandlerTest extends Base {
         );
         ini_set('display_errors', 0);
         $logHandler = $this->getMock('Hyperframework\Logging\LogHandler');
-        Logger::setLogHandler($logHandler);
+        $engine = $this->getMockBuilder('Hyperframework\Logging\LoggerEngine')
+            ->setMethods(['getLogHandler'])->getMock();
+        Logger::setEngine($engine);
+        $engine->expects($this->once())
+            ->method('getLogHandler')->willReturn($logHandler);
         $logHandler->expects($this->once())
             ->method('handle')->will($this->returnCallback(
                 function ($logRecord) {
