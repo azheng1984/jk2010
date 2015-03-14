@@ -2,11 +2,10 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Common\Registry;
 use Hyperframework\Common\ClassNotFoundException;
 
 class CsrfProtection {
-    private static $engine;
-
     public static function isEnabled() {
         return Config::getBoolean(
             'hyperframework.web.csrf_protection.enable', true
@@ -29,11 +28,12 @@ class CsrfProtection {
     }
 
     public static function getEngine() {
-        if (self::$engine === null) {
+        $engine = Registry::get('hyperframework.web.csrf_protection_engine');
+        if ($engine === null) {
             $configName = 'hyperframework.web.csrf_protection.engine_class';
             $class = Config::getString($configName , '');
             if ($class === '') {
-                self::$engine = new CsrfProtectionEngine;
+                $engine = new CsrfProtectionEngine;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
@@ -41,13 +41,14 @@ class CsrfProtection {
                             . ", set using config '$configName'."
                     );
                 }
-                self::$engine = new $class;
+                $engine = new $class;
             }
+            static::setEngine($engine);
         }
-        return self::$engine;
+        return $engine;
     }
 
-    public static function setEngine($value) {
-        self::$engine = $value;
+    public static function setEngine($engine) {
+        Registry::set('hyperframework.web.csrf_protection_engine', $engine);
     }
 }

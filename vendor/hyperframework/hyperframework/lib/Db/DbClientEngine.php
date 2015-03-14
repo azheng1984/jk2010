@@ -19,17 +19,17 @@ class DbClientEngine {
     }
 
     public function findColumnByColumns(
-        $table, array $columns, $selectedColumnName
+        $table, $columnName, array $columns
     ) {
         $result = $this->findByColumns(
-            $table, $columns, [$selectedColumnName]
+            $table, $columns, [$columnName]
         );
         return $result->fetchColumn();
     }
 
-    public function findColumnById($table, $id, $selectedColumnName) {
+    public function findColumnById($table, $columnName, $id) {
         $result = $this->findByColumns(
-            $table, ['id' => $id], [$selectedColumnName]
+            $table, ['id' => $id], [$columnName]
         );
         return $result->fetchColumn();
     }
@@ -40,20 +40,16 @@ class DbClientEngine {
     }
 
     public function findRowByColumns(
-        $table, array $columns, array $selectedColumnNames = null
+        $table, array $columns, array $select = null
     ) {
         $result = $this->findByColumns(
-            $table, $columns, $selectedColumnNames
+            $table, $columns, $select
         );
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function findRowById(
-        $table, $id, array $selectedColumnNames = null
-    ) {
-        $result = $this->findByColumns(
-            $table, ['id' => $id], $selectedColumnNames
-        );
+    public function findRowById($table, $id, array $select = null) {
+        $result = $this->findByColumns($table, ['id' => $id], $select);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -63,11 +59,9 @@ class DbClientEngine {
     }
 
     public function findAllByColumns(
-        $table, array $columns, array $selectedColumnNames = null
+        $table, array $columns, array $select = null
     ) {
-        $result = $this->findByColumns(
-            $table, $columns, $selectedColumnNames
-        );
+        $result = $this->findByColumns($table, $columns, $select);
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -76,23 +70,22 @@ class DbClientEngine {
     }
 
     public function findByColumns(
-        $table, array $columns, array $selectedColumnNames = null
+        $table, array $columns, array $select = null
     ) {
-        $selector = null;
-        if ($selectedColumnNames === null) {
-            $selector = '*';
+        if ($select === null) {
+            $select = '*';
         } else {
-            if (count($selectedColumnNames) === 0) {
-                $selector = '*';
+            if (count($select) === 0) {
+                $select = '*';
             } else {
-                foreach ($selectedColumnNames as &$name) {
+                foreach ($select as &$name) {
                     $name = $this->quoteIdentifier($name);
                 }
-                $selector = implode(', ', $selectedColumnNames);
+                $select = implode(', ', $select);
             }
         }
         list($where, $params) = $this->buildWhereByColumns($columns);
-        $sql = 'SELECT ' . $selector . ' FROM '
+        $sql = 'SELECT ' . $select . ' FROM '
             . $this->quoteIdentifier($table);
         if ($where !== null) {
             $sql .= ' WHERE ' . $where;

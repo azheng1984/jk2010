@@ -1,12 +1,12 @@
 <?php
 namespace Hyperframework\Logging;
 
+use Hyperframework\Common\Registry;
 use Hyperframework\Common\Config;
+use Hyperframework\Common\ConfigException;
+use Hyperframework\Common\ClassNotFoundException;
 
 class Logger {
-    private static $logHandler;
-    private static $level;
-
     public static function debug($mixed) {
         static::log(LogLevel::DEBUG, $mixed);
     }
@@ -31,78 +31,42 @@ class Logger {
         static::log(LogLevel::FATAL, $mixed);
     }
 
+    public static function log($level, $mixed) {
+        static::getEngine()->log($level, $mixed);
+    }
+
     public static function setLevel($value) {
-        self::$level = $value;
+        static::getEngine()->setLevel($value);
     }
 
     public static function getLevel() {
-        if (self::$level === null) {
-            $name = Config::getString('hyperframework.logging.log_level', '');
-            if ($name !== '') {
-                $level = LogLevel::getCode($name);
-                if ($level === null) {
-                    throw new ConfigException(
-                        "Log level '$name' is invalid, set using config "
-                            . "'hyperframework.logging.log_level'. "
-                            . "The available log levels are: "
-                            . "DEBUG, INFO, NOTICE, WARNING, ERROR, FATAL, OFF."
-                    );
-                }
-                self::$level = $level;
-            } else {
-                self::$level = LogLevel::INFO;
-            }
-        }
-        return self::$level;
+        return static::getEngine()->getLevel();
     }
 
-    public static function setLogHandler($value) {
-        self::$logHandler = $value;
+    public static function setEngine($engine) {
+        Registry::set('hyperframework.logging.logger_engine', $engine);
     }
 
-    public static function getLogHandler() {
-        if (self::$logHandler === null) {
+    public static function getEngine() {
+        $engine = Registry::get('hyperframework.logging.logger_engine');
+        if ($engine === null) {
             $class = Config::getString(
-                'hyperframework.logging.log_handler_class', ''
+                'hyperframework.logging.logger_engine_class', ''
             );
             if ($class === '') {
-                self::$logHandler = new LogHandler;
+                $engine = new LoggerEngine;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
                         "Log handler class '$class' does not exist,"
                             . " set using config "
-                            . "'hyperframework.logging.log_handler_class'."
+                            . "'hyperframework.logging.logger_engine_class'."
                     );
                 }
-                self::$logHandler = new $class;
+                $engine = new $class;
             }
+            static::setEngine($engine);
         }
-        return self::$logHandler;
-    }
-
-    public static function log($level, $mixed) {
-        if ($level > static::getLevel()) {
-            return;
-        }
-        if ($mixed instanceof Closure) {
-            $data = $mixed();
-        } else {
-            $data = $mixed;
-        }
-        if (is_string($data)) {
-            $logRecord = new LogRecord($level, $data);
-        } elseif (is_array($data) === false) {
-            throw new LoggingException(
-                'Log must be a string or an array, '
-                    . gettype($data) . ' given.'
-            );
-        } else {
-            $message = isset($data['message']) ? $data['message'] : null;
-            $time = isset($data['time']) ? $data['time'] : null;
-            $logRecord = new LogRecord($level, $message, $time);
-        }
-        $logHandler = static::getLogHandler();
-        $logHandler->handle($logRecord);
+        return $engine;
     }
 }

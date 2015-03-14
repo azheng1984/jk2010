@@ -27,14 +27,14 @@ class DbClientEngineTest extends Base {
 
     public function testFindColumnByColumns() {
         $this->assertSame(1, $this->engine->findColumnByColumns(
-            'Document', ['name' => 'doc 1'], 'id'
+            'Document', 'id', ['name' => 'doc 1']
         ));
     }
 
     public function testFindColumnById() {
         $this->assertSame(
             'doc 1',
-            $this->engine->findColumnById('Document', 1, 'name')
+            $this->engine->findColumnById('Document', 'name', 1)
         );
     }
 
@@ -178,7 +178,7 @@ class DbClientEngineTest extends Base {
         $row = ['name' => 'updated'];
         $this->assertTrue($this->engine->updateById('Document', $row, 1));
         $this->assertSame(
-            'updated', $this->engine->findColumnById('Document', 1, 'name')
+            'updated', $this->engine->findColumnById('Document', 'name', 1)
         );
     }
 

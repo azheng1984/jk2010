@@ -3,11 +3,12 @@ namespace Hyperframework\Test;
 
 use ReflectionClass;
 use Hyperframework\Common\Config;
+use Hyperframework\Common\Registry;
 use PHPUnit_Framework_TestCase as Base;
 
 class TestCase extends Base {
     protected function tearDown() {
-        Config::clear();
+        Registry::clear();
     }
 
     protected function callProtectedMethod(

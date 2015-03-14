@@ -13,17 +13,15 @@ class DbClient {
     }
 
     public static function findColumnByColumns(
-        $table, array $columns, $selectedColumnName
+        $table, $columnName, array $columns
     ) {
         return static::getEngine()->findColumnByColumns(
-            $table, $columns, $selectedColumnName
+            $table, $columnName, $columns
         );
     }
 
-    public static function findColumnById($table, $id, $selectedColumnName) {
-        return static::getEngine()->findColumnById(
-            $table, $id, $selectedColumnName
-        );
+    public static function findColumnById($table, $columnName, $id) {
+        return static::getEngine()->findColumnById($table, $columnName, $id);
     }
 
     public static function findRow($sql/*, ...*/) {
@@ -33,19 +31,13 @@ class DbClient {
     }
 
     public static function findRowByColumns(
-        $table, array $columns, array $selectedColumnNames = null
+        $table, array $columns, array $select = null
     ) {
-        return static::getEngine()->findRowByColumns(
-            $table, $columns, $selectedColumnNames
-        );
+        return static::getEngine()->findRowByColumns($table, $columns, $select);
     }
 
-    public static function findRowById(
-        $table, $id, $selectedColumnNames = null
-    ) {
-        return static::getEngine()->findRowById(
-            $table, $id, $selectedColumnNames
-        );
+    public static function findRowById($table, $id, $select = null) {
+        return static::getEngine()->findRowById($table, $id, $select);
     }
 
     public static function findAll($sql/*, ...*/) {
@@ -55,11 +47,9 @@ class DbClient {
     }
 
     public static function findAllByColumns(
-        $table, array $columns, array $selectedColumnNames = null
+        $table, array $columns, array $select = null
     ) {
-        return static::getEngine()->findAllByColumns(
-            $table, $columns, $selectedColumnNames
-        );
+        return static::getEngine()->findAllByColumns($table, $columns, $select);
     }
 
     public static function find($sql/*, ...*/) {
@@ -69,11 +59,9 @@ class DbClient {
     }
 
     public static function findByColumns(
-        $table, array $columns, array $selectedColumnNames = null
+        $table, array $columns, array $select = null
     ) {
-        return static::getEngine()->findByColumns(
-            $table, $columns, $selectedColumnNames
-        );
+        return static::getEngine()->findByColumns($table, $columns, $select);
     }
 
     public static function count($table, $where = null/*, ...*/) {
@@ -205,8 +193,8 @@ class DbClient {
         return $engine;
     }
 
-    public static function setEngine($value) {
-        Registry::set('hyperframework.db.client_engine', $value);
+    public static function setEngine($engine) {
+        Registry::set('hyperframework.db.client_engine', $engine);
     }
 
     private static function getParams(array $args, $offset) {

@@ -9,16 +9,6 @@ use Hyperframework\Db\DbClientEngine;
 use Hyperframework\Db\Test\TestCase as Base;
 
 class DbClientTest extends Base {
-    protected function setUp() {
-        parent::setUp();
-        DbClient::setEngine(null);
-    }
-
-    protected function tearDown() {
-        DbClient::setEngine(null);
-        parent::tearDown();
-    }
-
     public function testFindColumn() {
         $this->mockEngineMethod('findColumn')->with(
             $this->equalTo('sql'), $this->equalTo(['param'])
@@ -52,19 +42,19 @@ class DbClientTest extends Base {
     public function testFindColumnByColumns() {
         $this->mockEngineMethod('findColumnByColumns')->with(
             $this->equalTo('table'),
-            $this->equalTo([]),
-            $this->equalTo('id')
+            $this->equalTo('id'),
+            $this->equalTo([])
         )->will($this->returnValue(true));
-        $this->assertTrue(DbClient::findColumnByColumns('table', [], 'id'));
+        $this->assertTrue(DbClient::findColumnByColumns('table', 'id', []));
     }
 
     public function testFindColumnById() {
         $this->mockEngineMethod('findColumnById')->with(
             $this->equalTo('table'),
-            $this->equalTo(1),
-            $this->equalTo('name')
+            $this->equalTo('name'),
+            $this->equalTo(1)
         )->will($this->returnValue(true));
-        $this->assertTrue(DbClient::findColumnById('table', 1, 'name'));
+        $this->assertTrue(DbClient::findColumnById('table', 'name', 1));
     }
 
     public function testFindRow() {

@@ -103,7 +103,7 @@ class DbActiveRecordTest extends Base {
         $doc->update();
         $this->assertSame(
             'updated',
-            DbClient::findColumnById('Document', $doc->getId(), 'name')
+            DbClient::findColumnById('Document', 'name', $doc->getId())
         );
     }
 

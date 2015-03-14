@@ -64,12 +64,12 @@ class DbProfiler {
             $configName = 'hyperframework.db.profiler.engine_class';
             $class = Config::getString($configName, '');
             if ($class === '') {
-                $engine = new DbProfilerEngine;
+                $engine = new DbClientEngine;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Database profiler engine class '$class' does not"
-                            . " exist, set using config '$configName'."
+                        "Database client engine class '$class' does not exist, "
+                            . "set using config '$configName'."
                     );
                 }
                 $engine = new $class;
