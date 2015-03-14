@@ -1,32 +1,15 @@
 <?php
 namespace Hyperframework\Db;
 
+use stdClass;
+use Hyperframework\Common\Registry;
 use Hyperframework\Common\Config;
-use Hyperframework\Db\Test\Profilehandler;
-use Hyperframework\Db\Test\CustomLogger;
-use Hyperframework\Logging\Logger;
 use Hyperframework\Db\Test\TestCase as Base;
 
 class DbProfilerTest extends Base {
-    private $statement;
-    private $connection;
-    private $sql = 'SELECT * FROM Document';
-
     protected function setUp() {
         parent::setUp();
-        DbClient::connect('backup');
-        $this->connection = DbClient::getConnection();
-        $this->statement = DbClient::prepare($this->sql);
         Config::set('hyperframework.db.profiler.enable', true);
-        Config::set('hyperframework.db.profiler.enable_logger', false);
-    }
-
-    protected function tearDown() {
-        DbProfiler::setProfileHandler(null);
-        DbClient::setConnection(null);
-        Logger::setLevel(null);
-        $this->deleteAppLogFile();
-        parent::tearDown();
     }
 
     public function testIsEnabled() {
@@ -35,109 +18,90 @@ class DbProfilerTest extends Base {
         $this->assertFalse(DbProfiler::isEnabled());
     }
 
-    public function testTransactionProfile() {
-        $this->mockProfileHandler()->with(
-            $this->callback(function(array $profile) {
-                return 'backup' === $profile['connection_name']
-                    && 'begin' === $profile['transaction']
-                    && isset($profile['start_time'])
-                    && isset($profile['running_time']);
-            })
-        );
-        DbProfiler::onTransactionOperationExecuting($this->connection, 'begin');
+    public function testOnTransactionOperationExecuting() {
+        $connection = new stdClass;
+        $operation = 'begin';
+        $this->mockEngineMethod('onTransactionOperationExecuting')
+            ->with($connection, $operation);
+        DbProfiler::onTransactionOperationExecuting($connection, $operation);
+    }
+
+    public function testOnTransactionOperationExecuted() {
+        $this->mockEngineMethod('onTransactionOperationExecuted');
         DbProfiler::onTransactionOperationExecuted();
     }
 
-    public function testSqlStatementExecutionProfile() {
-        $this->mockProfileHandler()->with(
-            $this->callback(function(array $profile) {
-                return 'backup' === $profile['connection_name']
-                    && $this->sql === $profile['sql']
-                    && isset($profile['start_time'])
-                    && isset($profile['running_time']);
-            })
-        );
-        DbProfiler::onSqlStatementExecuting($this->connection, $this->sql);
+    public function testOnSqlStatementExecuting() {
+        $connection = new stdClass;
+        $sql = 'sql';
+        $this->mockEngineMethod('onSqlStatementExecuting')
+            ->with($connection, $sql);
+        DbProfiler::onSqlStatementExecuting($connection, $sql);
+    }
+
+    public function testOnSqlStatementExecuted() {
+        $this->mockEngineMethod('onSqlStatementExecuted');
         DbProfiler::onSqlStatementExecuted();
     }
 
-    public function testPreparedStatementExecutionProfile() {
-        $this->mockProfileHandler()->with(
-            $this->callback(function(array $profile) {
-                return 'backup' === $profile['connection_name']
-                    && $this->sql === $profile['sql']
-                    && isset($profile['start_time'])
-                    && isset($profile['running_time']);
-            })
-        );
-        DbProfiler::onPreparedStatementExecuting($this->statement);
+    public function testonPreparedStatementExecuting() {
+        $statement = new stdClass;
+        $this->mockEngineMethod('onPreparedStatementExecuting')
+            ->with($statement);
+        DbProfiler::onPreparedStatementExecuting($statement);
+    }
+
+    public function testOnPreparedStatementExecuted() {
+        $this->mockEngineMethod('onPreparedStatementExecuted');
         DbProfiler::onPreparedStatementExecuted();
     }
 
-    public function testProfileHandlerClassConfig() {
+    public function testGetProfileHandler() {
+        $this->mockEngineMethod('getProfileHandler')->willReturn(true);
+        $this->assertTrue(DbProfiler::getProfileHandler());
+    }
+
+    public function testSetProfileHandler() {
+        $handler = new stdClass;
+        $this->mockEngineMethod('setProfileHandler')->with($handler);
+        DbProfiler::setProfileHandler($handler);
+    }
+
+    public function testGetDefaultEngine() {
+        $this->assertInstanceOf(
+            'Hyperframework\Db\DbProfilerEngine',
+            DbProfiler::getEngine()
+        );
+    }
+
+    public function testSetEngineUsingConfig() {
         Config::set(
-            'hyperframework.db.profiler.profile_handler_class',
-            'Hyperframework\Db\Test\Profilehandler'
+            'hyperframework.db.profiler.engine_class',
+            'stdClass'
         );
-        $this->assertTrue(
-            DbProfiler::getProfileHandler() instanceof ProfileHandler
-        );
+        $this->assertInstanceof('stdClass', DbProfiler::getEngine());
     }
 
     /**
      * @expectedException Hyperframework\Common\ClassNotFoundException
      */
-    public function testInvalidProfileHandlerClassConfig() {
-        Config::set(
-            'hyperframework.db.profiler.profile_handler_class', 'Unknown'
-        );
-        DbProfiler::getProfileHandler();
+    public function testInvalidEngineConfig() {
+        Config::set('hyperframework.db.profiler.engine_class', 'Unknown');
+        DbProfiler::getEngine();
     }
 
-    public function testLogProfile() {
-        Config::set(
-            'hyperframework.db.profiler.enable_logger', true
+    public function testSetEngine() {
+        $engine = new stdClass;
+        DbProfiler::setEngine($engine);
+        $this->assertSame($engine, DbProfiler::getEngine());
+        $this->assertSame(
+            $engine, Registry::get('hyperframework.db.profiler_engine')
         );
-        Config::set(
-            'hyperframework.logging.log_level', 'DEBUG'
-        );
-        DbProfiler::onSqlStatementExecuting($this->connection, $this->sql);
-        DbProfiler::onSqlStatementExecuted();
-        $this->assertTrue(file_exists(
-            Config::getAppRootPath() . '/log/app.log'
-        ));
     }
 
-    public function testCustomLogger() {
-        Config::set(
-            'hyperframework.db.profiler.enable_logger', true
-        );
-        Config::set(
-            'hyperframework.db.profiler.logger_class',
-            'Hyperframework\Db\Test\CustomLogger'
-        );
-        DbProfiler::onSqlStatementExecuting($this->connection, $this->sql);
-        DbProfiler::onSqlStatementExecuted();
-        $this->assertNotNull(CustomLogger::getLog());
-    }
-
-    /**
-     * @expectedException Hyperframework\Common\ClassNotFoundException
-     */
-    public function testInvalidCustomLoggerClassConfig() {
-        Config::set(
-            'hyperframework.db.profiler.enable_logger', true
-        );
-        Config::set(
-            'hyperframework.db.profiler.logger_class', 'Unknown'
-        );
-        DbProfiler::onSqlStatementExecuting($this->connection, $this->sql);
-        DbProfiler::onSqlStatementExecuted();
-    }
-
-    private function mockProfileHandler() {
-        $mock = $this->getMock('Hyperframework\Db\Test\ProfileHandler');
-        DbProfiler::setProfileHandler($mock);
-        return $mock->expects($this->once())->method('handle');
+    private function mockEngineMethod($method) {
+        $engine = $this->getMock('Hyperframework\Db\DbProfilerEngine');
+        DbProfiler::setEngine($engine);
+        return $engine->expects($this->once())->method($method);
     }
 }

@@ -271,7 +271,7 @@ class DbClientTest extends Base {
         DbClient::connect('master');
     }
 
-    public function testDefaultEngine() {
+    public function testGetDefaultEngine() {
         $this->assertTrue(DbClient::getEngine() instanceof DbClientEngine);
     }
 
@@ -290,13 +290,7 @@ class DbClientTest extends Base {
      */
     public function testInvalidEngineConfig() {
         Config::set('hyperframework.db.client.engine_class', 'Unknown');
-        try {
-            DbClient::getEngine();
-        } catch (Exception $e) {
-            Config::remove('hyperframework.db.client.engine_class');
-            throw $e;
-        }
-        Config::remove('hyperframework.db.client.engine_class');
+        DbClient::getEngine();
     }
 
     public function testSetEngine() {

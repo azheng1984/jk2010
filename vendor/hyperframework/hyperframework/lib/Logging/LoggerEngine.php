@@ -60,7 +60,11 @@ class LoggerEngine {
         return $this->level;
     }
 
-    protected function getLogHandler() {
+    public function setLogHandler($logHandler) {
+        $this->logHandler = $logHandler;
+    }
+
+    public function getLogHandler() {
         if ($this->logHandler === null) {
             $configName = 'hyperframework.logging.log_handler_class';
             $class = Config::getString($configName, '');

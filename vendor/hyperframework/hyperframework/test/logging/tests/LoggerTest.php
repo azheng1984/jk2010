@@ -48,6 +48,17 @@ class LoggerTest extends Base {
         Logger::setLevel(LogLevel::DEBUG);
     }
 
+    public function testGetLogHandler() {
+        $this->mockEngineMethod('getLogHandler')->willReturn(true);
+        $this->assertTrue(Logger::getLogHandler());
+    }
+
+    public function testSetLogHandler() {
+        $handler = new stdClass;
+        $this->mockEngineMethod('setLogHandler')->with($handler);
+        Logger::setLogHandler($handler);
+    }
+
     public function testGetLevel() {
         $this->mockEngineMethod('getLevel')->willReturn(true);
         $this->assertTrue(Logger::getLevel());

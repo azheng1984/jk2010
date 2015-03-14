@@ -1,6 +1,7 @@
 <?php
 namespace Hyperframework\Logging;
 
+use stdClass;
 use Datetime;
 use Hyperframework\Common\Config;
 use Hyperframework\Logging\Test\CustomLogHandler;
@@ -77,6 +78,13 @@ class LoggerEngineTest extends Base {
         $this->loggerEngine->log(LogLevel::ERROR, 'message');
     }
 
+    public function testSetLogHandler() {
+        $handler = new stdClass;
+        $engine = new LoggerEngine;
+        $engine->setLogHandler($handler);
+        $this->assertSame($handler, $engine->getLogHandler());
+    }
+
     public function testSetCustomLogHandlerUsingConfig() {
         Config::set(
             'hyperframework.logging.log_handler_class',
@@ -85,7 +93,7 @@ class LoggerEngineTest extends Base {
         $engine = new LoggerEngine;
         $this->assertInstanceOf(
             'Hyperframework\Logging\Test\CustomLogHandler',
-            $this->callProtectedMethod($engine, 'getLogHandler')
+            $engine->getLogHandler()
         );
     }
 
