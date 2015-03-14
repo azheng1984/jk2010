@@ -3,7 +3,6 @@ namespace Hyperframework\Logging;
 
 use Hyperframework\Common\Registry;
 use Hyperframework\Common\Config;
-use Hyperframework\Common\ConfigException;
 use Hyperframework\Common\ClassNotFoundException;
 
 class Logger {
@@ -50,17 +49,15 @@ class Logger {
     public static function getEngine() {
         $engine = Registry::get('hyperframework.logging.logger_engine');
         if ($engine === null) {
-            $class = Config::getString(
-                'hyperframework.logging.logger_engine_class', ''
-            );
+            $configName = 'hyperframework.logging.logger_engine_class';
+            $class = Config::getString($configName, '');
             if ($class === '') {
                 $engine = new LoggerEngine;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Log handler class '$class' does not exist,"
-                            . " set using config "
-                            . "'hyperframework.logging.logger_engine_class'."
+                        "Logger engine class '$class' does not exist,"
+                            . " set using config '$configName'."
                     );
                 }
                 $engine = new $class;

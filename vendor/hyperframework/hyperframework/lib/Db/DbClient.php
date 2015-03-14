@@ -173,17 +173,15 @@ class DbClient {
     public static function getEngine() {
         $engine = Registry::get('hyperframework.db.client_engine');
         if ($engine === null) {
-            $class = Config::getString(
-                'hyperframework.db.client.engine_class', ''
-            );
+            $configName = 'hyperframework.db.client.engine_class';
+            $class = Config::getString($configName, '');
             if ($class === '') {
                 $engine = new DbClientEngine;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Database client engine class"
-                            . " '$class' does not exist, set using config "
-                            . "'hyperframework.db.client.engine_class'."
+                        "Database client engine class '$class' does not exist, "
+                            . "set using config '$configName'."
                     );
                 }
                 $engine = new $class;
