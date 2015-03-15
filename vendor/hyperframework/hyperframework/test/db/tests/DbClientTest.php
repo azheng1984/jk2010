@@ -277,7 +277,7 @@ class DbClientTest extends Base {
 
     public function testSetEngineUsingConfig() {
         Config::set(
-            'hyperframework.db.client.engine_class',
+            'hyperframework.db.client_engine_class',
             'Hyperframework\Db\Test\DbCustomClientEngine'
         );
         $this->assertTrue(
@@ -289,7 +289,7 @@ class DbClientTest extends Base {
      * @expectedException Hyperframework\Common\ClassNotFoundException
      */
     public function testInvalidEngineConfig() {
-        Config::set('hyperframework.db.client.engine_class', 'Unknown');
+        Config::set('hyperframework.db.client_engine_class', 'Unknown');
         DbClient::getEngine();
     }
 
