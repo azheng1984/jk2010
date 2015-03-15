@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Common;
 
-use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Common\Test\TestCase as Base;
 use Hyperframework\Common\Test\App;
 
 class AppTest extends Base {
