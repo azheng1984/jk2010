@@ -115,7 +115,9 @@ class DbProfilerEngineTest extends Base {
             'hyperframework.db.profiler.logger_class',
             'Hyperframework\Db\Test\CustomLogger'
         );
-        $this->profilerEngine->onSqlStatementExecuting($this->connection, $this->sql);
+        $this->profilerEngine->onSqlStatementExecuting(
+            $this->connection, $this->sql
+        );
         $this->profilerEngine->onSqlStatementExecuted();
         $this->assertNotNull(CustomLogger::getLog());
     }

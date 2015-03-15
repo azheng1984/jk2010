@@ -173,7 +173,7 @@ class DbClient {
     public static function getEngine() {
         $engine = Registry::get('hyperframework.db.client_engine');
         if ($engine === null) {
-            $configName = 'hyperframework.db.client.engine_class';
+            $configName = 'hyperframework.db.client_engine_class';
             $class = Config::getString($configName, '');
             if ($class === '') {
                 $engine = new DbClientEngine;

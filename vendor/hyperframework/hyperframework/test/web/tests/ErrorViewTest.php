@@ -5,11 +5,6 @@ use Hyperframework\Common\Config;
 use Hyperframework\Web\Test\TestCase as Base;
 
 class ErrorViewTest extends Base {
-    public function tearDown() {
-        Response::setEngine(null);
-        parent::tearDown();
-    }
-
     public function testRenderView() {
         $this->expectOutputString("error\n");
         $view = new ErrorView;

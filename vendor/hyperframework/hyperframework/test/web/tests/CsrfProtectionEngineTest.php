@@ -5,11 +5,6 @@ use Hyperframework\Common\Config;
 use Hyperframework\Web\Test\TestCase as Base;
 
 class CsrfProtectionEngineTest extends Base {
-    public function tearDown() {
-        Response::setEngine(null);
-        parent::tearDown();
-    }
-
     public function testRunWithSafeMethod() {
         $engine2 = $this->getMock('Hyperframework\Web\ResponseEngine');
         $engine2->expects($this->once())->method('setCookie');

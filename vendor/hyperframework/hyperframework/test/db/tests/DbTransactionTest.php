@@ -5,11 +5,6 @@ use Exception;
 use Hyperframework\Db\Test\TestCase as Base;
 
 class DbTransactionTest extends Base {
-    protected function tearDown() {
-        DbClient::setEngine(null);
-        parent::tearDown();
-    }
-
     public function testRun() {
         $this->assertFalse(DbClient::inTransaction());
         DbTransaction::run(function() {

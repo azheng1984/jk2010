@@ -5,11 +5,6 @@ use Hyperframework\Common\Config;
 use Hyperframework\Web\Test\TestCase as Base;
 
 class CsrfProtectionTest extends Base {
-    public function tearDown() {
-        CsrfProtection::setEngine(null);
-        parent::tearDown();
-    }
-
     public function testRun() {
         $this->mockEngineMethod('run');
         CsrfProtection::run();
