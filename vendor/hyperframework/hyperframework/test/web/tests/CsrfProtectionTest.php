@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework\Web;
 
+use stdClass;
+use Hyperframework\Common\Registry;
 use Hyperframework\Common\Config;
 use Hyperframework\Web\Test\TestCase as Base;
 
@@ -20,14 +22,37 @@ class CsrfProtectionTest extends Base {
         $this->assertTrue(CsrfProtection::getTokenName());
     }
 
-    public function testCustomEngine() {
+    public function testGetEngine() {
+        $this->assertInstanceOf(
+            'Hyperframework\Web\CsrfProtectionEngine',
+            CsrfProtection::getEngine()
+        );
+    }
+
+    public function testSetEngineUsingConfig() {
         Config::set(
             'hyperframework.web.csrf_protection.engine_class',
-            'Hyperframework\Web\Test\CsrfProtectionEngine'
+            'stdClass'
         );
-        $this->assertInstanceOf(
-            'Hyperframework\Web\Test\CsrfProtectionEngine',
-            CsrfProtection::getEngine()
+        $this->assertInstanceOf('stdClass', CsrfProtection::getEngine());
+    }
+
+    /**
+     * @expectedException Hyperframework\Common\ClassNotFoundException
+     */
+    public function testInvalidEngineConfig() {
+        Config::set(
+            'hyperframework.web.csrf_protection.engine_class', 'Unknown'
+        );
+        CsrfProtection::getEngine();
+    }
+
+    public function testSetEngine() {
+        $engine = new stdClass;
+        CsrfProtection::setEngine($engine);
+        $this->assertSame($engine, CsrfProtection::getEngine());
+        $this->assertSame(
+            $engine, Registry::get('hyperframework.web.csrf_protection_engine')
         );
     }
 

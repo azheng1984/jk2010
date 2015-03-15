@@ -1,18 +1,69 @@
 <?php
 namespace Hyperframework\Web;
 
+use stdClass;
+use Hyperframework\Common\Registry;
 use Hyperframework\Common\Config;
 use Hyperframework\Web\Test\TestCase as Base;
 
 class ResponseTest extends Base {
     public function testSetHeader() {
-        $this->mockEngineMethod('setHeader');
-        Response::setHeader('');
+        $this->mockEngineMethod('setHeader')->with('Name: value');
+        Response::setHeader('Name: value');
+    }
+
+    public function testRemoveHeader() {
+        $this->mockEngineMethod('removeHeader')->with('name');
+        Response::removeHeader('name');
     }
 
     public function testRemoveHeaders() {
         $this->mockEngineMethod('removeHeaders');
         Response::removeHeaders();
+    }
+
+    public function testSetStatusCode() {
+    }
+
+    public function testGetStatusCode() {
+    }
+
+    public function testSetCookie() {
+    }
+
+    public function testHeadersSent() {
+    }
+
+    public function testGetEngine() {
+        $this->assertInstanceOf(
+            'Hyperframework\Web\ResponseEngine',
+            Response::getEngine()
+        );
+    }
+
+    public function testSetEngineUsingConfig() {
+        Config::set(
+            'hyperframework.web.response_engine_class',
+            'stdClass'
+        );
+        $this->assertInstanceOf('stdClass', Response::getEngine());
+    }
+
+    /**
+     * @expectedException Hyperframework\Common\ClassNotFoundException
+     */
+    public function testInvalidEngineConfig() {
+        Config::set('hyperframework.web.response_engine_class', 'Unknown');
+        Response::getEngine();
+    }
+
+    public function testSetEngine() {
+        $engine = new stdClass;
+        Response::setEngine($engine);
+        $this->assertSame($engine, Response::getEngine());
+        $this->assertSame(
+            $engine, Registry::get('hyperframework.web.response_engine')
+        );
     }
 
     private function mockEngineMethod($method) {
