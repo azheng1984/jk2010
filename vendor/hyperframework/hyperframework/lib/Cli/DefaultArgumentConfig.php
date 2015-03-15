@@ -43,8 +43,6 @@ class DefaultArgumentConfig extends ArgumentConfig {
                 if ($word !== 'list'
                     && $word !== 'array'
                     && $word !== 'collection'
-                    && $word !== 'queue'
-                    && $word !== 'stack'
                 ) {
                     $words[] = Inflector::singularize($word);
                 } elseif (count($words) === 0) {
