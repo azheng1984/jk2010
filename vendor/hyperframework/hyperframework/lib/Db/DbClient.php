@@ -158,8 +158,8 @@ class DbClient {
         return static::getEngine()->getConnection($shouldConnect);
     }
 
-    public static function setConnection($value) {
-        static::getEngine()->setConnection($value);
+    public static function setConnection($connection) {
+        static::getEngine()->setConnection($connection);
     }
 
     public static function connect($name) {

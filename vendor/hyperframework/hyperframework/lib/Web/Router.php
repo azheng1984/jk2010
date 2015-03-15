@@ -848,24 +848,24 @@ abstract class Router {
         unset($this->params[$name]);
     }
 
-    protected function setModule($value) {
-        $this->module = (string)$value;
+    protected function setModule($module) {
+        $this->module = (string)$module;
     }
 
-    protected function setController($value) {
-        $this->controller = (string)$value;
+    protected function setController($controller) {
+        $this->controller = (string)$controller;
     }
 
-    protected function setControllerClass($value) {
-        $this->controllerClass = (string)$value;
+    protected function setControllerClass($controllerClass) {
+        $this->controllerClass = (string)$controllerClass;
     }
 
-    protected function setAction($value) {
-        $this->action = (string)$value;
+    protected function setAction($action) {
+        $this->action = (string)$action;
     }
 
-    protected function setActionMethod($value) {
-        $this->actionMethod = (string)$value;
+    protected function setActionMethod($actionMethod) {
+        $this->actionMethod = (string)$actionMethod;
     }
 
     protected function getRequestPath() {
@@ -1070,7 +1070,7 @@ abstract class Router {
         $this->setMatchStatus(true);
     }
 
-    private function setRequestPath($value) {
-        $this->requestPath = (string)$value;
+    private function setRequestPath($requestPath) {
+        $this->requestPath = (string)$requestPath;
     }
 }

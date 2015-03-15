@@ -14,48 +14,40 @@ class FakeRouter {
         return $this->action;
     }
  
-    public function setAction($value) {
-        $this->action = $value;
+    public function setAction($action) {
+        $this->action = $action;
     }
 
     public function getActionMethod() {
         return $this->actionMethod;
     }
  
-    public function setActionMethod($value) {
-        $this->actionMethod = $value;
+    public function setActionMethod($actionMethod) {
+        $this->actionMethod = $actionMethod;
     }
 
     public function getController() {
         return $this->controller;
     }
 
-    public function setController($value) {
-        $this->controller = $value;
+    public function setController($controller) {
+        $this->controller = $controller;
     }
 
     public function getControllerClass() {
         return $this->controllerClass;
     }
 
-    public function setControllerClass($value) {
-        $this->controllerClass = $value;
+    public function setControllerClass($controllerClass) {
+        $this->controllerClass = $controllerClass;
     }
 
     public function getModule() {
         return $this->module;
     }
 
-    public function setModule($value) {
-        $this->module = $value;
-    }
-
-    public function getModuleNamespace() {
-        return $this->moduleNamespace;
-    }
-
-    public function setModuleNamespace($value) {
-        $this->moduleNamespace = $value;
+    public function setModule($module) {
+        $this->module = $module;
     }
 
     public function getParam($name) {

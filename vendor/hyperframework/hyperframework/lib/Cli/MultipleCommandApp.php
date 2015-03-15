@@ -62,8 +62,8 @@ class MultipleCommandApp extends App {
         return $this->subcommand;
     }
 
-    protected function setSubcommand($value) {
-        $this->subcommand = $value;
+    protected function setSubcommand($subcommand) {
+        $this->subcommand = $subcommand;
     }
 
     protected function executeCommand() {

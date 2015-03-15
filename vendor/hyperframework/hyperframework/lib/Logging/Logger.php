@@ -34,8 +34,8 @@ class Logger {
         static::getEngine()->log($level, $mixed);
     }
 
-    public static function setLevel($value) {
-        static::getEngine()->setLevel($value);
+    public static function setLevel($level) {
+        static::getEngine()->setLevel($level);
     }
 
     public static function getLevel() {

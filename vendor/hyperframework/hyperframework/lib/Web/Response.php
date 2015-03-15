@@ -24,8 +24,8 @@ class Response {
         self::getEngine()->removeHeaders();
     }
 
-    public static function setStatusCode($value) {
-        self::getEngine()->setStatusCode($value);
+    public static function setStatusCode($statusCode) {
+        self::getEngine()->setStatusCode($statusCode);
     }
 
     public static function getStatusCode() {

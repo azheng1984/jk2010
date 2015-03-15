@@ -35,8 +35,8 @@ class LoggerEngine {
         $handler->handle($logRecord);
     }
 
-    public function setLevel($value) {
-        $this->level = $value;
+    public function setLevel($level) {
+        $this->level = $level;
     }
 
     public function getLevel() {

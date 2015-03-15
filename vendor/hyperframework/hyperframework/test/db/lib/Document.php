@@ -8,8 +8,8 @@ class Document extends Base {
         return $this->getColumn('id');
     }
 
-    public function setName($value) {
-        $this->setColumn('name', $value);
+    public function setName($name) {
+        $this->setColumn('name', $name);
     }
 
     public function getName() {
