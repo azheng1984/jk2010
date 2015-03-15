@@ -1,1 +1,1 @@
-custom error view root: 404
+custom error view root: error

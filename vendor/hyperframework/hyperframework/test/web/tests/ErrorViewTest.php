@@ -32,6 +32,13 @@ class ErrorViewTest extends Base {
     }
 
     public function testCustomizeViewRoot() {
+        Config::set(
+            'hyperframework.web.view.root_path',
+            'views/_custom_view_root'
+        );
+        $this->expectOutputString("custom view root: error\n");
+        $view = new ErrorView;
+        $view->render(500, '', null);
     }
 
     public function testCustomizeErrorViewRoot() {
@@ -39,5 +46,8 @@ class ErrorViewTest extends Base {
             'hyperframework.web.error_view.root_path',
             'views/_custom_error_view_root'
         );
+        $this->expectOutputString("custom error view root: error\n");
+        $view = new ErrorView;
+        $view->render(500, '', null);
     }
 }

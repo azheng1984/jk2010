@@ -10,8 +10,8 @@ class RouterTest extends Base {
     protected function setUp() {
         parent::setUp();
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $this->resetRouter();
         $_SERVER['REQUEST_URI'] = '/';
+        $this->resetRouter();
     }
 
     public function testMatchFormatInPattern() {

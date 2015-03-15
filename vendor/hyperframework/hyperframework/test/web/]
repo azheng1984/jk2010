@@ -7,7 +7,7 @@ use Hyperframework\Web\Test\TestCase as Base;
 class ViewPathBuilderTest extends Base {
     public function testBuild() {
         $this->assertSame(
-            'index.json.php', ViewPathBuilder::build('index', 'json')
+            'index.json.php', ViewPathBuilder::build('json')
         );
     }
 
@@ -18,23 +18,21 @@ class ViewPathBuilderTest extends Base {
         $this->assertSame('index.php', ViewPathBuilder::build('index'));
     }
 
-    public function testBuildWithCustomDefaultOutputFormat() {
-        Config::set('hyperframework.web.view.default_output_format', 'json');
-        $this->assertSame('index.json.php', ViewPathBuilder::build('index'));
-    }
-
-    public function testBuildWithEmptyDefaultOutputFormat() {
-        Config::set('hyperframework.web.view.default_output_format', '');
-        $this->assertSame('index.php', ViewPathBuilder::build('index'));
-    }
-
     public function testBuildWithCustomFormat() {
         Config::set('hyperframework.web.view.format', 'tpl');
         $this->assertSame('index.html.tpl', ViewPathBuilder::build('index'));
     }
 
-    public function testBuildWithEmptyFormat() {
+    public function testBuildWithEmptyCustomFormat() {
         Config::set('hyperframework.web.view.format', '');
         $this->assertSame('index.html', ViewPathBuilder::build('index'));
+    }
+
+    public function testBuildWithCustomOutputFormat() {
+        Config::set('hyperframework.web.view.output_format', '');
+        $this->assertSame('index.html', ViewPathBuilder::build('index'));
+    }
+
+    public function testBuildWithEmptyCustomFormat() {
     }
 }

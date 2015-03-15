@@ -23,15 +23,23 @@ class ResponseTest extends Base {
     }
 
     public function testSetStatusCode() {
+        $this->mockEngineMethod('setStatusCode')->with(404);
+        Response::setStatusCode(404);
     }
 
     public function testGetStatusCode() {
+        $this->mockEngineMethod('getStatusCode')->willReturn(true);
+        $this->assertTrue(Response::getStatusCode());
     }
 
     public function testSetCookie() {
+        $this->mockEngineMethod('setCookie')->with('name', 'value', []);
+        Response::setCookie('name', 'value', []);
     }
 
     public function testHeadersSent() {
+        $this->mockEngineMethod('headersSent')->willReturn(true);
+        $this->assertTrue(Response::headersSent());
     }
 
     public function testGetEngine() {
