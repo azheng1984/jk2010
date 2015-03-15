@@ -44,15 +44,13 @@ class ResponseTest extends Base {
 
     public function testGetEngine() {
         $this->assertInstanceOf(
-            'Hyperframework\Web\ResponseEngine',
-            Response::getEngine()
+            'Hyperframework\Web\ResponseEngine', Response::getEngine()
         );
     }
 
     public function testSetEngineUsingConfig() {
         Config::set(
-            'hyperframework.web.response_engine_class',
-            'stdClass'
+            'hyperframework.web.response_engine_class', 'stdClass'
         );
         $this->assertInstanceOf('stdClass', Response::getEngine());
     }
