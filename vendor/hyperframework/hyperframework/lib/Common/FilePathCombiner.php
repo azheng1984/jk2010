@@ -2,14 +2,14 @@
 namespace Hyperframework\Common;
 
 class FilePathCombiner {
-    public static function append(&$path, $extra) {
-        $path = (string)$path;
+    public static function append(&$target, $extra) {
+        $target = (string)$target;
         $extra = (string)$extra;
         $separator = '/' === DIRECTORY_SEPARATOR ? '/' : '\/';
-        if ($path !== '') {
-            $path = rtrim($path, $separator);
-            if ($path === '') {
-                $path = DIRECTORY_SEPARATOR;
+        if ($target !== '') {
+            $target = rtrim($target, $separator);
+            if ($target === '') {
+                $target = DIRECTORY_SEPARATOR;
             }
         }
         if ($extra !== '') {
@@ -18,14 +18,14 @@ class FilePathCombiner {
         if ($extra === '') {
             return;
         }
-        if ($path !== DIRECTORY_SEPARATOR) {
-            $path .= DIRECTORY_SEPARATOR;
+        if ($target !== DIRECTORY_SEPARATOR) {
+            $target .= DIRECTORY_SEPARATOR;
         }
-        $path .= $extra;
+        $target .= $extra;
     }
 
-    public static function prepend(&$path, $extra) {
-        static::append($extra, $path);
-        $path = $extra;
+    public static function prepend(&$target, $extra) {
+        static::append($extra, $target);
+        $target = $extra;
     }
 }

@@ -2,13 +2,13 @@
 namespace Hyperframework\Common;
 
 class NamespaceCombiner {
-    public static function append(&$namespace, $extra) {
-        $namespace = (string)$namespace;
+    public static function append(&$target, $extra) {
+        $target = (string)$target;
         $extra = (string)$extra;
-        if ($namespace !== '') {
-            $namespace = rtrim($namespace, '\\');
-            if ($namespace === '') {
-                $namespace = '\\';
+        if ($target !== '') {
+            $target = rtrim($target, '\\');
+            if ($target === '') {
+                $target = '\\';
             }
         }
         if ($extra !== '') {
@@ -17,14 +17,14 @@ class NamespaceCombiner {
         if ($extra === '') {
             return;
         }
-        if ($namespace !== '\\') {
-            $namespace .= '\\';
+        if ($target !== '\\') {
+            $target .= '\\';
         }
-        $namespace .= $extra;
+        $target .= $extra;
     }
 
-    public static function prepend(&$namespace, $extra) {
-        static::append($extra, $namespace);
-        $namespace = $extra;
+    public static function prepend(&$target, $extra) {
+        static::append($extra, $target);
+        $target = $extra;
     }
 }
