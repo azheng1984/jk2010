@@ -339,7 +339,7 @@ class DbClientEngine {
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Database connection factory Class '$class' does not"
+                        "Class '$class' does not"
                             . " exist, set using config '$configName'."
                     );
                 }

@@ -180,7 +180,7 @@ class DbClient {
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Database client engine class '$class' does not exist, "
+                        "Class '$class' does not exist, "
                             . "set using config '$configName'."
                     );
                 }

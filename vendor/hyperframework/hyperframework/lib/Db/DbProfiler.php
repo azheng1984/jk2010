@@ -68,7 +68,7 @@ class DbProfiler {
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Database profiler engine class '$class' does not"
+                        "Class '$class' does not"
                             . " exist, set using config '$configName'."
                     );
                 }

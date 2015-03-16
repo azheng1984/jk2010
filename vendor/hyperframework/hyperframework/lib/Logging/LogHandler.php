@@ -17,17 +17,15 @@ class LogHandler {
 
     protected function getFormatter() {
         if ($this->formatter === null) {
-            $class = Config::getString(
-                'hyperframework.logging.log_formatter_class', ''
-            );
+            $configName = 'hyperframework.logging.log_formatter_class';
+            $class = Config::getString($configName, '');
             if ($class === '') {
                 $this->formatter = new LogFormatter;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Log formatter class '$class' does not exist,"
-                            . " set using config "
-                            . "'hyperframework.logging.log_formatter_class'."
+                        "Class '$class' does not exist, set using config "
+                            . "'$configName'."
                     );
                 }
                 $this->formatter = new $class;
@@ -38,17 +36,15 @@ class LogHandler {
 
     protected function getWriter() {
         if ($this->writer === null) {
-            $class = Config::getString(
-                'hyperframework.logging.log_writer_class', ''
-            );
+            $configName = 'hyperframework.logging.log_writer_class';
+            $class = Config::getString($configName, '');
             if ($class === '') {
                 $this->writer = new LogWriter;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Log writer class '$class' does not exist,"
-                            . " set using config "
-                            . "'hyperframework.logging.log_writer_class'."
+                        "Class '$class' does not exist,"
+                            . " set using config '$configName'."
                     );
                 }
                 $this->writer = new $class;

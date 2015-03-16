@@ -49,17 +49,15 @@ class ErrorHandler extends Base {
     }
 
     protected function executeDebugger($headers, $outputBuffer) {
-        $class = Config::getString(
-            'hyperframework.error_handler.debugger_class', ''
-        );
+        $configName = 'hyperframework.error_handler.debugger_class';
+        $class = Config::getString($configName, '');
         if ($class === '') {
             $debugger = new Debugger;
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    "Debugger class '$logHandlerClass' does not exist,"
-                        . " set using config "
-                        . "'hyperframework.error_handler.debugger_class'."
+                    "Class '$logHandlerClass' does not exist,"
+                        . " set using config '$configName'."
                 );
             }
             $debugger = new $class;
@@ -68,14 +66,15 @@ class ErrorHandler extends Base {
     }
 
     protected function renderErrorView() {
-        $class = Config::getString('hyperframework.web.error_view.class', '');
+        $configName = 'hyperframework.web.error_view.class';
+        $class = Config::getString($configName, '');
         if ($class === '') {
             $view = new ErrorView;
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    "Error view class '$class' does not exist, set "
-                        . "using config 'hyperframework.web.error_view.class'."
+                    "Class '$class' does not exist, set "
+                        . "using config '$configName'."
                 );
             }
             $view = new $class;

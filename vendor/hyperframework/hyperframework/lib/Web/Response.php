@@ -50,8 +50,8 @@ class Response {
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Response engine class '$class' "
-                            . "does not exist, set using config '$configName'."
+                        "Class '$class' does not exist, "
+                            . "set using config '$configName'."
                     );
                 }
                 $engine = new $class;

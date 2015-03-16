@@ -68,17 +68,15 @@ class App extends Base {
 
     public function getCommandConfig() {
         if ($this->commandConfig === null) {
-            $class = Config::getString(
-                'hyperframework.cli.command_config_class', ''
-            );
+            $configName = 'hyperframework.cli.command_config_class';
+            $class = Config::getString($configName, '');
             if ($class === '') {
                 $this->commandConfig = new CommandConfig;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Command config class '$class' does not exist,"
-                            . " set using config "
-                            . "'hyperframework.cli.command_config_class'."
+                        "Class '$class' does not exist, set using config "
+                            . "'$configName'."
                     );
                 }
                 $this->commandConfig = new $class;
@@ -101,14 +99,15 @@ class App extends Base {
     }
 
     protected function renderHelp() {
-        $class = Config::getString('hyperframework.cli.help_class', '');
+        $configName = 'hyperframework.cli.help_class';
+        $class = Config::getString($configName, '');
         if ($class === '') {
             $class = 'Hyperframework\Cli\Help';
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    "Help class '$class' does not exist, set using config"
-                        . " 'hyperframework.cli.help_class'."
+                    "Class '$class' does not exist, set using config"
+                        . " '$configName'."
                 );
             }
         }

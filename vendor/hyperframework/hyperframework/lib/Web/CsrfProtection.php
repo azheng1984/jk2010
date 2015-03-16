@@ -37,7 +37,7 @@ class CsrfProtection {
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Csrf protection engine class '$class' does not exist"
+                        "Class '$class' does not exist"
                             . ", set using config '$configName'."
                     );
                 }

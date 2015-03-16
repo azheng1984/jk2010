@@ -174,14 +174,13 @@ class ErrorHandler {
     }
 
     private function getCustomLoggerClass() {
-        $loggerClass = Config::getString(
-            'hyperframework.error_handler.logger_class', ''
-        );
+        $configName = 'hyperframework.error_handler.logger_class';
+        $loggerClass = Config::getString($configName, '');
         if ($loggerClass !== '') {
             if (class_exists($loggerClass) === false) {
                 throw new ClassNotFoundException(
-                    "Logger class '$class' does not exist, set using config "
-                        . "'hyperframework.error_handler.logger_class'."
+                    "Class '$class' does not exist, set using config "
+                        . "'$configName'."
                 );
             }
             return $loggerClass;

@@ -25,7 +25,8 @@ class App extends Base {
 
     public function getRouter() {
         if ($this->router === null) {
-            $class = Config::getString('hyperframework.web.router_class', '');
+            $configName = 'hyperframework.web.router_class';
+            $class = Config::getString($configName, '');
             if ($class === '') {
                 $class = 'Router';
                 $namespace = Config::getAppRootNamespace();
@@ -35,15 +36,13 @@ class App extends Base {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
                         "Router class '$class' does not exist,"
-                            . " can be changed using config "
-                            . "'hyperframework.web.router_class'."
+                            . " can be changed using config '$configName'."
                     );
                 }
             } elseif (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    "Router class '$class' does not exist,"
-                        . " set using config "
-                        . "'hyperframework.web.router_class'."
+                    "Class '$class' does not exist,"
+                        . " set using config '$configName'."
                 );
             }
             $this->router = new $class($this);

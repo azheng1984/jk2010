@@ -50,8 +50,7 @@ class DbProfilerEngine {
             if ($profileHandlerClass !== '') {
                 if (class_exists($profileHandlerClass) === false) {
                     throw new ClassNotFoundException(
-                        "Database operation profile handler class "
-                            . "'$profileHandlerClass' does not exist,"
+                        "Class '$profileHandlerClass' does not exist,"
                             . " set using config '$configName'."
                     );
                 }
@@ -129,14 +128,13 @@ class DbProfilerEngine {
     }
 
     private function getCustomLoggerClass() {
-        $class = Config::getString(
-            'hyperframework.db.profiler.logger_class', ''
-        );
+        $configName = 'hyperframework.db.profiler.logger_class';
+        $class = Config::getString($configName, '');
         if ($class !== '') {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    "Logger class '$class' does not exist, set using config "
-                        . "'hyperframework.db.profiler.logger_class'."
+                    "Class '$class' does not exist, set using config "
+                        . "'$configName'."
                 );
             }
             return $class;

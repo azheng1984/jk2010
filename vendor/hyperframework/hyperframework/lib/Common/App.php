@@ -44,9 +44,8 @@ abstract class App {
     }
 
     protected function initializeErrorHandler($defaultClass = null) {
-        $class = Config::getString(
-            'hyperframework.error_handler.class', ''
-        );
+        $configName = 'hyperframework.error_handler.class';
+        $class = Config::getString($configName, '');
         if ($class === '') {
             if ($defaultClass === null) {
                 $handler = new ErrorHandler;
@@ -56,8 +55,8 @@ abstract class App {
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    "Error handler class '$class' does not exist, set "
-                        . "using config 'hyperframework.error_handler.class'."
+                    "Class '$class' does not exist, set "
+                        . "using config '$configName'."
                 );
             }
             $handler = new $class;

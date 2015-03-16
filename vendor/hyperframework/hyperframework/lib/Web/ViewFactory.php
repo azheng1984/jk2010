@@ -6,14 +6,15 @@ use Hyperframework\Common\ClassNotFoundException;
 
 class ViewFactory {
     public static function createView(array $viewModel = null) {
-        $class = Config::get('hyperframework.web.view.class', '');
+        $configName = 'hyperframework.web.view.class';
+        $class = Config::get($configName, '');
         if ($class === '') {
             $view = new View($viewModel);
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    "View class '$class' does not exist, set using config "
-                        . "'hyperframework.web.view.class'."
+                    "Class '$class' does not exist, set using config "
+                        . "'$configName'."
                 );
             }
             $view = new $class($viewModel);

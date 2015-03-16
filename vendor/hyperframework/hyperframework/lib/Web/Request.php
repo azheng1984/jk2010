@@ -24,8 +24,8 @@ class Request {
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
-                        "Request engine class '$class' "
-                            . "does not exist, set using config '$configName'."
+                        "Class '$class' does not exist, "
+                            . "set using config '$configName'."
                     );
                 }
                 $engine = new $class;
