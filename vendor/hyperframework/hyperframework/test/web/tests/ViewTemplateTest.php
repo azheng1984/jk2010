@@ -2,7 +2,7 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Common\FileLoader;
+use Hyperframework\Common\FileFullPathBuilder;
 use Hyperframework\Web\Test\ViewTemplate;
 use Hyperframework\Web\Test\TestCase as Base;
 
@@ -21,7 +21,7 @@ class ViewTemplateTest extends Base {
     }
 
     public function testRenderByFullPath() {
-        $viewPath = FileLoader::getFullPath(
+        $viewPath = FileFullPathBuilder::build(
             'views' . DIRECTORY_SEPARATOR . 'index'
                 . DIRECTORY_SEPARATOR . 'index.php'
         );

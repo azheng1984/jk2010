@@ -6,9 +6,10 @@ use LogicException;
 use Hyperframework;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NamespaceCombiner;
-use Hyperframework\Common\PathCombiner;
+use Hyperframework\Common\FilePathCombiner;
 use Hyperframework\Common\ConfigFileLoader;
-use Hyperframework\Common\FullPathRecognizer;
+use Hyperframework\Common\ConfigFileFullPathBuilder;
+use Hyperframework\Common\FileFullPathRecognizer;
 use Hyperframework\Common\ConfigException;
 use Hyperframework\Common\MethodNotFoundException;
 
@@ -317,15 +318,16 @@ class CommandConfig {
                     $configPath = 'command.php';
                 }
                 if ($isDefaultConfigPath
-                    || FullPathRecognizer::isFull($configPath) === false
+                    || FileFullPathRecognizer::isFullPath($configPath)
+                        === false
                 ) {
                     $configRootPath = Config::getString(
                         'hyperframework.cli.command_config_root_path', ''
                     );
                     if ($configRootPath !== '') {
-                        PathCombiner::prepend($configPath, $configRootPath);
+                        FilePathCombiner::prepend($configPath, $configRootPath);
                     }
-                    $configPath = ConfigFileLoader::getFullPath($configPath);
+                    $configPath = ConfigFileFullPathBuilder::build($configPath);
                 }
                 if (file_exists($configPath)) {
                     $config = require $configPath;
@@ -457,13 +459,13 @@ class CommandConfig {
             'hyperframework.cli.command_config_root_path', ''
         );
         if ($commandConfigRootPath !== '') {
-            if (FullPathRecognizer::isFull($folder) === false) {
-                PathCombiner::prepend($folder, $commandConfigRootPath);
+            if (FileFullPathRecognizer::isFullPath($folder) === false) {
+                FilePathCombiner::prepend($folder, $commandConfigRootPath);
             } else {
                 return $folder;
             }
         }
-        return ConfigFileLoader::getFullPath($folder);
+        return ConfigFileFullPathBuilder::build($folder);
     }
 
     protected function getDefaultOptions(array $options, $subcommand = null) {

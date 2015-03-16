@@ -4,7 +4,7 @@ namespace Hyperframework\Logging;
 use Exception;
 use ErrorException;
 use Hyperframework\Common\Config;
-use Hyperframework\Common\FileLoader;
+use Hyperframework\Common\FileFullPathBuilder;
 
 class LogWriter {
     private $path;
@@ -24,7 +24,7 @@ class LogWriter {
                     $this->isDefaultPath = false;
                 }
             }
-            $this->path = FileLoader::getFullPath($this->path);
+            $this->path = FileFullPathBuilder::build($this->path);
             if (file_exists($this->path) === false) {
                 $directory = dirname($this->path);
                 if (file_exists($directory) === false) {

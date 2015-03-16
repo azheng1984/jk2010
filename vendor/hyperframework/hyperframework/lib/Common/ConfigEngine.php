@@ -99,7 +99,7 @@ class ConfigEngine {
                     "Config '$configName' does not exist."
                 );
             }
-            $isFullPath = FullPathRecognizer::isFull($appRootPath);
+            $isFullPath = FileFullPathRecognizer::isFullPath($appRootPath);
             if ($isFullPath === false) {
                 throw new ConfigException(
                     "The value of config '$configName'"

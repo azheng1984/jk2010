@@ -4,7 +4,7 @@ namespace Hyperframework\Common;
 use ReflectionFunction;
 use Exception;
 use Hyperframework\Logging\Logger;
-use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Common\Test\TestCase as Base;
 
 class ErrorHandlerTest extends Base {
     private $errorReportingBitmask;

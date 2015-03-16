@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Common;
 
-class PathCombiner {
+class FilePathCombiner {
     public static function append(&$path, $extra) {
         $path = (string)$path;
         $extra = (string)$extra;

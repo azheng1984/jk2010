@@ -13,7 +13,7 @@ class Inflector {
     private static function convert($word, $isSingular) {
         $word = (string)$word;
         if ($word === '') {
-            return;
+            return '';
         }
         $originalWord = $word;
         $word = strtolower($word);

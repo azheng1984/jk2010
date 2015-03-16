@@ -2,8 +2,8 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
-use Hyperframework\Common\PathCombiner;
-use Hyperframework\Common\FileLoader;
+use Hyperframework\Common\FilePathCombiner;
+use Hyperframework\Common\FileFullPathBuilder;
 
 class ErrorView {
     public function render(
@@ -19,17 +19,17 @@ class ErrorView {
             if ($rootPath === '') {
                 $rootPath = 'views' . DIRECTORY_SEPARATOR . '_error';
             } else {
-                PathCombiner::append($rootPath, '_error');
+                FilePathCombiner::append($rootPath, '_error');
             }
         }
         $files = [
             ViewPathBuilder::build($statusCode, $outputFormat),
             ViewPathBuilder::build('error', $outputFormat)
         ];
-        $rootPath = FileLoader::getFullPath($rootPath);
+        $rootPath = FileFullPathBuilder::build($rootPath);
         $path = null;
         foreach ($files as $file) {
-            PathCombiner::prepend($file, $rootPath);
+            FilePathCombiner::prepend($file, $rootPath);
             if (file_exists($file)) {
                 $path = $file;
                 break;

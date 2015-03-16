@@ -6,9 +6,9 @@ use InvalidArgumentException;
 use Closure;
 use Exception;
 use Hyperframework\Common\Config;
-use Hyperframework\Common\FileLoader;
-use Hyperframework\Common\FullPathRecognizer;
-use Hyperframework\Common\PathCombiner;
+use Hyperframework\Common\FileFullPathBuilder;
+use Hyperframework\Common\FileFullPathRecognizer;
+use Hyperframework\Common\FilePathCombiner;
 
 abstract class ViewTemplate implements ArrayAccess {
     private $viewModel;
@@ -34,10 +34,10 @@ abstract class ViewTemplate implements ArrayAccess {
         if (DIRECTORY_SEPARATOR !== '/') {
             $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
         }
-        if (FullPathRecognizer::isFull($path)) {
+        if (FileFullPathRecognizer::isFullPath($path)) {
             $this->filePath = $path;
         } else {
-            PathCombiner::prepend($path, $this->getRootPath());
+            FilePathCombiner::prepend($path, $this->getRootPath());
             $this->filePath = $path;
         }
         $this->pushLayout();
@@ -112,7 +112,7 @@ abstract class ViewTemplate implements ArrayAccess {
             if ($path === '') {
                 $path = 'views';
             }
-            $this->rootPath = FileLoader::getFullPath($path);
+            $this->rootPath = FileFullPathBuilder::build($path);
         }
         return $this->rootPath;
     }

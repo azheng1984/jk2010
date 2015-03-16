@@ -2,8 +2,6 @@
 namespace Hyperframework\Common;
 
 use stdClass;
-use Hyperframework\Common\Registry;
-use Hyperframework\Common\Config;
 use Hyperframework\Common\Test\TestCase as Base;
 
 class ConfigTest extends Base {

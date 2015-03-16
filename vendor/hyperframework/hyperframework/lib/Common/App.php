@@ -33,7 +33,7 @@ abstract class App {
         if (isset($_ENV['HYPERFRAMEWORK_ENV'])) {
             $env = (string)$_ENV['HYPERFRAMEWORK_ENV'];
             if ($env !== '') {
-                $path = ConfigFileLoader::getFullPath(
+                $path = ConfigFileFullPathBuilder::build(
                     'env' . DIRECTORY_SEPARATOR . $env . '.php'
                 );
                 if (file_exists($path)) {

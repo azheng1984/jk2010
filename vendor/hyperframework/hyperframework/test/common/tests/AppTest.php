@@ -59,6 +59,7 @@ class AppTest extends Base {
             }
         );
         $app->quit();
+        $this->assertTrue($isExitCalled);
     }
 
     /**
