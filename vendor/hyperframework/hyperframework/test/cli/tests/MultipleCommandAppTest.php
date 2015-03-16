@@ -12,17 +12,18 @@ class MultipleCommandAppTest extends Base {
         );
     }
 
-    public function createApp() {
+    public function createApp($shouldCallConstructor = true) {
         $mock = $this->getMockBuilder('Hyperframework\Cli\MultipleCommandApp')
             ->setMethods([
                 'quit',
                 'initializeConfig',
-                'initializeErrorHandler',
-                'initializeAppRootPath'
+                'initializeErrorHandler'
             ])
             ->disableOriginalConstructor()
             ->getMock();
-        $mock->__construct(dirname(__dir__));
+        if ($shouldCallConstructor) {
+            $mock->__construct(dirname(__DIR__));
+        }
         return $mock;
     }
 
@@ -74,7 +75,9 @@ class MultipleCommandAppTest extends Base {
             "Usage: test [-t] [-h|--help] [--version] <command>" . PHP_EOL
         );
         $_SERVER['argv'] = ['run', '-h'];
-        $app = $this->createApp();
+        $app = $this->createApp(false);
+        $app->expects($this->once())->method('quit');
+        $app->__construct(dirname(__DIR__));
     }
 
     public function testRenderSubcommandHelp() {
@@ -82,13 +85,17 @@ class MultipleCommandAppTest extends Base {
             "Usage: test child [-c] [-h|--help] <arg>" . PHP_EOL
         );
         $_SERVER['argv'] = ['run', 'child', '-h'];
-        $app = $this->createApp();
+        $app = $this->createApp(false);
+        $app->expects($this->once())->method('quit');
+        $app->__construct(dirname(__DIR__));
     }
 
     public function testRenderVersion() {
         $this->expectOutputString("1.0.0" . PHP_EOL);
         $_SERVER['argv'] = ['run', '--version'];
-        $app = $this->createApp();
+        $app = $this->createApp(false);
+        $app->expects($this->once())->method('quit');
+        $app->__construct(dirname(__DIR__));
     }
 
     /**
