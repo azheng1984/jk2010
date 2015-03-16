@@ -2,7 +2,6 @@
 namespace Hyperframework\Cli;
 
 use Hyperframework\Cli\Test\App;
-use Hyperframework\Cli\Test\GlobalApp;
 use Hyperframework\Common\Config;
 use Hyperframework\Cli\Test\TestCase as Base;
 
@@ -17,20 +16,21 @@ class AppTest extends Base {
     }
 
     public function testRun() {
-        $app = $this->getMockBuilder('Hyperframework\Cli\Test\App')
-            ->setConstructorArgs([dirname(__DIR__)])
+        $app = $this->getMockBuilder('Hyperframework\Cli\App')
+            ->disableOriginalConstructor()
             ->setMethods(['executeCommand', 'finalize'])->getMock();
         $app->expects($this->once())->method('executeCommand');
         $app->expects($this->once())->method('finalize');
         $GLOBALS['app'] = $app;
-        GlobalApp::run('');
+        App::run('');
     }
 
     public function testCreateApp() {
+        $_SERVER['argv'] = ['run', '-t', 'arg'];
         $this->assertInstanceOf(
-            'Hyperframework\Cli\Test\App',
+            'Hyperframework\Cli\App',
             $this->callProtectedMethod(
-                'Hyperframework\Cli\Test\App', 'createApp', ['']
+                'Hyperframework\Cli\App', 'createApp', [dirname(__DIR__)]
             )
         );
     }

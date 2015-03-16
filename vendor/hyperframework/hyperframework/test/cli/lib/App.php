@@ -4,6 +4,7 @@ namespace Hyperframework\Cli\Test;
 use Hyperframework\Cli\App as Base;
 
 class App extends Base {
-    public function __construct($appRootPath) {
+    protected static function createApp($appRootPath) {
+        return $GLOBALS['app'];
     }
 }

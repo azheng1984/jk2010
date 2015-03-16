@@ -14,7 +14,12 @@ class MultipleCommandAppTest extends Base {
 
     public function createApp() {
         $mock = $this->getMockBuilder('Hyperframework\Cli\MultipleCommandApp')
-            ->setMethods(['quit', 'initializeConfig', 'initializeErrorHandler', 'initializeAppRootPath'])
+            ->setMethods([
+                'quit',
+                'initializeConfig',
+                'initializeErrorHandler',
+                'initializeAppRootPath'
+            ])
             ->disableOriginalConstructor()
             ->getMock();
         $mock->__construct(dirname(__dir__));
