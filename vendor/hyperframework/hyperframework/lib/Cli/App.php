@@ -102,7 +102,7 @@ class App extends Base {
         $configName = 'hyperframework.cli.help_class';
         $class = Config::getString($configName, '');
         if ($class === '') {
-            $class = 'Hyperframework\Cli\Help';
+            $help = new Help($this);
         } else {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
@@ -110,8 +110,8 @@ class App extends Base {
                         . " '$configName'."
                 );
             }
+            $help = new $class($this);
         }
-        $help = new $class($this);
         $help->render();
     }
 
