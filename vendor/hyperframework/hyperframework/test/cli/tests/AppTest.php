@@ -3,6 +3,7 @@ namespace Hyperframework\Cli;
 
 use Hyperframework\Cli\Test\App;
 use Hyperframework\Common\Config;
+use Hyperframework\Common\Registry;
 use Hyperframework\Cli\Test\TestCase as Base;
 
 class AppTest extends Base {
@@ -21,7 +22,7 @@ class AppTest extends Base {
             ->setMethods(['executeCommand', 'finalize'])->getMock();
         $app->expects($this->once())->method('executeCommand');
         $app->expects($this->once())->method('finalize');
-        $GLOBALS['app'] = $app;
+        Registry::set('hyperframework.cli.test.app', $app);
         App::run('');
     }
 

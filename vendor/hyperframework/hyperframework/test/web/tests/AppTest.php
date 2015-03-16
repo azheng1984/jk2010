@@ -2,6 +2,7 @@
 namespace Hyperframework\Web;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Common\Registry;
 use Hyperframework\Web\Test\App;
 use Hyperframework\Web\Test\FakeRouter;
 use Hyperframework\Web\Test\TestCase as Base;
@@ -30,7 +31,7 @@ class AppTest extends Base {
         $app->expects($this->once())->method('createController')
             ->willReturn($controller);
         $app->expects($this->once())->method('finalize');
-        $GLOBALS['app'] = $app;
+        Registry::set('hyperframework.web.test.app', $app);
         App::run();
     }
 
