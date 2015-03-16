@@ -30,11 +30,8 @@ class AppTest extends Base {
         $app->expects($this->once())->method('createController')
             ->willReturn($controller);
         $app->expects($this->once())->method('finalize');
-        App::setCreateAppCallback(function() use ($app) {
-            return $app;
-        });
+        $GLOBALS['app'] = $app;
         App::run();
-        App::setCreateAppCallback(null);
     }
 
     public function testCheckCsrf() {

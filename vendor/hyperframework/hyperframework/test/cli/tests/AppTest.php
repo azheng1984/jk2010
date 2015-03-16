@@ -1,6 +1,8 @@
 <?php
 namespace Hyperframework\Cli;
 
+use Hyperframework\Cli\Test\App;
+use Hyperframework\Cli\Test\GlobalApp;
 use Hyperframework\Common\Config;
 use Hyperframework\Cli\Test\TestCase as Base;
 
@@ -12,6 +14,25 @@ class AppTest extends Base {
             ->getMock();
         $mock->__construct(dirname(__DIR__));
         return $mock;
+    }
+
+    public function testRun() {
+        $app = $this->getMockBuilder('Hyperframework\Cli\Test\App')
+            ->setConstructorArgs([dirname(__DIR__)])
+            ->setMethods(['executeCommand', 'finalize'])->getMock();
+        $app->expects($this->once())->method('executeCommand');
+        $app->expects($this->once())->method('finalize');
+        $GLOBALS['app'] = $app;
+        GlobalApp::run('');
+    }
+
+    public function testCreateApp() {
+        $this->assertInstanceOf(
+            'Hyperframework\Cli\Test\App',
+            $this->callProtectedMethod(
+                'Hyperframework\Cli\Test\App', 'createApp', ['']
+            )
+        );
     }
 
     public function testInitializeOption() {
@@ -117,13 +138,6 @@ class AppTest extends Base {
         $this->expectOutputString("undefined" . PHP_EOL);
         $_SERVER['argv'] = ['run', '--version'];
         $app = $this->createApp();
-    }
-
-    public function testRun() {
-        $this->expectOutputString('Hyperframework\Cli\Test\Command::execute');
-        $_SERVER['argv'] = ['run', 'arg'];
-        $app = $this->createApp();
-        $app->run(dirname(__dir__));
     }
 
     public function testCommandParsingError() {
