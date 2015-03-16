@@ -2,16 +2,11 @@
 namespace Hyperframework\Cli;
 
 use Hyperframework\Common\Config;
+use Hyperframework\Cli\Test\TestCase as Base;
 
-class MultipleCommandAppTest extends \PHPUnit_Framework_TestCase {
+class MultipleCommandAppTest extends Base {
     protected function setUp() {
-        Config::set(
-            'hyperframework.app_root_path',
-            '/home/az/quickquick/vendor/hyperframework/hyperframework/test/cli'
-        );
-        Config::set(
-            'hyperframework.app_root_namespace', 'Hyperframework\Cli\Test'
-        );
+        parent::setUp();
         Config::set(
             'hyperframework.cli.command_config_path', 'global_command.php'
         );
