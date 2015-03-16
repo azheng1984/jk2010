@@ -26,14 +26,6 @@ class Config {
         return static::getEngine()->getArray($name, $default);
     }
 
-    public static function getObject($name, $default = null) {
-        return static::getEngine()->getObject($name, $default);
-    }
-
-    public static function getResource($name, $default = null) {
-        return static::getEngine()->getResource($name, $default);
-    }
-
     public static function getAppRootPath() {
         return static::getEngine()->getAppRootPath();
     }

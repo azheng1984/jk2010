@@ -21,15 +21,15 @@ class LoggerEngine {
         }
         if (is_string($data)) {
             $logRecord = new LogRecord($level, $data);
-        } elseif (is_array($data) === false) {
+        } elseif (is_array($data)) {
+            $message = isset($data['message']) ? $data['message'] : null;
+            $time = isset($data['time']) ? $data['time'] : null;
+            $logRecord = new LogRecord($level, $message, $time);
+        } else {
             throw new LoggingException(
                 'Log must be a string or an array, '
                     . gettype($data) . ' given.'
             );
-        } else {
-            $message = isset($data['message']) ? $data['message'] : null;
-            $time = isset($data['time']) ? $data['time'] : null;
-            $logRecord = new LogRecord($level, $message, $time);
         }
         $handler = $this->getLogHandler();
         $handler->handle($logRecord);

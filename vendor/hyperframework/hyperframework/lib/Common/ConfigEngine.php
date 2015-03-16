@@ -2,7 +2,7 @@
 namespace Hyperframework\Common;
 
 class ConfigEngine {
-    private $data;
+    private $data = [];
     private $appRootPath;
 
     public function get($name, $default = null) {
@@ -50,7 +50,7 @@ class ConfigEngine {
         $result = $this->get($name);
         if ($result === null) {
             return $default;
-        }
+        }   
         if (is_object($result)) {
             throw new ConfigException(
                 "Config '$name' requires an integer, object of class "
@@ -88,48 +88,21 @@ class ConfigEngine {
         return $result;
     }
 
-    public function getObject($name, $default = null) {
-        $result = $this->get($name);
-        if ($result === null) {
-            return $default;
-        }
-        if (is_object($result) === false) {
-            throw new ConfigException(
-                "Config '$name' requires an object of class, "
-                    . gettype($result) . " given."
-            );
-        }
-        return $result;
-    }
-
-    public function getResource($name, $default = null) {
-        $result = $this->get($name);
-        if ($result === null) {
-            return $default;
-        }
-        if (is_resource($result) === false) {
-            throw new ConfigException(
-                "Config '$name' requires a resource, "
-                    . gettype($result) . ' given.'
-            );
-        }
-        return $result;
-    }
-
     public function getAppRootPath() {
-        $appRootPath = $this->getString('hyperframework.app_root_path');
+        $configName = 'hyperframework.app_root_path';
+        $appRootPath = $this->getString($configName);
         if ($this->appRootPath === null
             || $appRootPath !== $this->appRootPath
         ) {
             if ($appRootPath === null) {
                 throw new ConfigException(
-                    "Config 'hyperframework.app_root_path' does not exist."
+                    "Config '$configName' does not exist."
                 );
             }
             $isFullPath = FullPathRecognizer::isFull($appRootPath);
             if ($isFullPath === false) {
                 throw new ConfigException(
-                    "The value of config 'hyperframework.app_root_path'"
+                    "The value of config '$configName'"
                         . " must be a full path, '$appRootPath' given."
                 );
             }

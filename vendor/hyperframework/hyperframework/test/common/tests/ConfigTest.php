@@ -37,18 +37,6 @@ class ConfigTest extends Base {
         $this->assertTrue(Config::getArray('name', 'default'));
     }
 
-    public function testGetObject() {
-        $this->mockEngineMethod('getObject')->with('name', 'default')
-            ->willReturn(true);
-        $this->assertTrue(Config::getObject('name', 'default'));
-    }
-
-    public function testGetResource() {
-        $this->mockEngineMethod('getResource')->with('name', 'default')
-            ->willReturn(true);
-        $this->assertTrue(Config::getResource('name', 'default'));
-    }
-
     public function testGetAppRootPath() {
         $this->mockEngineMethod('getAppRootPath')
             ->willReturn(true);
@@ -109,5 +97,4 @@ class ConfigTest extends Base {
         Config::setEngine($engine);
         return $engine->expects($this->once())->method($method);
     }
-
 }
