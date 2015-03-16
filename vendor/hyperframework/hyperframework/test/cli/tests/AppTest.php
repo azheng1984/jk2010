@@ -9,7 +9,9 @@ use Hyperframework\Cli\Test\TestCase as Base;
 class AppTest extends Base {
     public function createApp() {
         $mock = $this->getMockBuilder('Hyperframework\Cli\App')
-            ->setMethods(['quit', 'initializeConfig', 'initializeErrorHandler'])
+            ->setMethods([
+                'quit', 'initializeConfig', 'initializeErrorHandler'
+            ])
             ->disableOriginalConstructor()
             ->getMock();
         $mock->__construct(dirname(__DIR__));
@@ -46,6 +48,13 @@ class AppTest extends Base {
         $_SERVER['argv'] = ['run', 'arg'];
         $app = $this->createApp();
         $this->assertEquals($app->getArguments(), ['arg']);
+    }
+
+    public function testExecuteCommand() {
+        $this->expectOutputString('Hyperframework\Cli\Test\Command::execute');
+        $_SERVER['argv'] = ['run', 'arg'];
+        $app = $this->createApp();
+        $this->callProtectedMethod($app, 'executeCommand', [dirname(__dir__)]);
     }
 
     public function testGetOption() {
@@ -86,12 +95,12 @@ class AppTest extends Base {
      */
     public function testCommandClassNotFound() {
         Config::set(
-            'hyperframework.cli.command_config_path', 'command_class_error.php'
+            'hyperframework.cli.command_config_path',
+            'invalid_command_class.php'
         );
         $_SERVER['argv'] = ['run'];
         $app = $this->createApp();
-        //echo Config::get('hyperframework.app_root_path');
-        $app->run(dirname(__dir__));
+        $this->callProtectedMethod($app, 'executeCommand', [dirname(__dir__)]);
     }
 
     public function testRenderHelp() {
@@ -99,7 +108,7 @@ class AppTest extends Base {
             "Usage: test [-t] [-h|--help] [--version] <arg>" . PHP_EOL
         );
         $_SERVER['argv'] = ['run', '-h'];
-        $this->createApp();
+        $app = $this->createApp();
     }
 
     public function testRenderVersion() {
@@ -131,7 +140,7 @@ class AppTest extends Base {
         $app = $this->createApp();
     }
 
-    public function testVersionNotFound() {
+    public function testVersionUndefined() {
         Config::set(
             'hyperframework.cli.command_config_path',
             'command_version_not_found.php'
