@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Common;
 
-use Hyperframework\Test\TestCase as Base;
+use Hyperframework\Common\Test\TestCase as Base;
 
 class ExitHelperTest extends Base {
     public function testExitScript() {

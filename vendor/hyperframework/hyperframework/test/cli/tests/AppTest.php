@@ -7,14 +7,16 @@ use Hyperframework\Common\Registry;
 use Hyperframework\Cli\Test\TestCase as Base;
 
 class AppTest extends Base {
-    public function createApp() {
+    public function createApp($shouldCallConstructor = true) {
         $mock = $this->getMockBuilder('Hyperframework\Cli\App')
             ->setMethods([
                 'quit', 'initializeConfig', 'initializeErrorHandler'
             ])
             ->disableOriginalConstructor()
             ->getMock();
-        $mock->__construct(dirname(__DIR__));
+        if ($shouldCallConstructor) {
+            $mock->__construct(dirname(__DIR__));
+        }
         return $mock;
     }
 
@@ -108,13 +110,17 @@ class AppTest extends Base {
             "Usage: test [-t] [-h|--help] [--version] <arg>" . PHP_EOL
         );
         $_SERVER['argv'] = ['run', '-h'];
-        $app = $this->createApp();
+        $app = $this->createApp(false);
+        $app->expects($this->once())->method('quit');
+        $app->__construct(dirname(__DIR__));
     }
 
     public function testRenderVersion() {
         $this->expectOutputString("1.0.0" . PHP_EOL);
         $_SERVER['argv'] = ['run', '--version'];
-        $this->createApp();
+        $app = $this->createApp(false);
+        $app->expects($this->once())->method('quit');
+        $app->__construct(dirname(__DIR__));
     }
 
     public function testCustomCommandConfig() {
@@ -156,6 +162,8 @@ class AppTest extends Base {
                 . PHP_EOL . "See 'test --help'." . PHP_EOL
         );
         $_SERVER['argv'] = ['run', '--unknown'];
-        $app = $this->createApp();
+        $app = $this->createApp(false);
+        $app->expects($this->once())->method('quit');
+        $app->__construct(dirname(__DIR__));
     }
 }

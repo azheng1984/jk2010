@@ -26,20 +26,30 @@ class MultipleCommandAppTest extends Base {
         return $mock;
     }
 
-    public function testRunGlobalCommand() {
+    public function testExecuteGlobalCommand() {
         $this->expectOutputString(
             "Usage: test [-t] [-h|--help] [--version] <command>" . PHP_EOL
         );
         $_SERVER['argv'] = ['run', '-t'];
         $app = $this->createApp();
-        $app->run(dirname(__dir__));
+        $this->callProtectedMethod($app, 'executeCommand');
         $this->assertEquals($app->getGlobalOptions(), ['t' => true]);
+    }
+
+    public function testExecuteSubcommand() {
+        $this->expectOutputString(
+            'Hyperframework\Cli\Test\Subcommands\ChildCommand::execute'
+        );
+        $_SERVER['argv'] = ['run', 'child', '-c', 'arg'];
+        $app = $this->createApp();
+        $this->callProtectedMethod($app, 'executeCommand');
+        $this->assertEquals($app->getOptions(), ['c' => true]);
+        $this->assertEquals($app->getArguments(), ['arg']);
     }
 
     public function testInitialize() {
         $_SERVER['argv'] = ['run', '-t', 'child', '-c', 'arg'];
         $app = $this->createApp();
-        $app->run(dirname(__dir__));
         $this->assertEquals($app->getGlobalOptions(), ['t' => true]);
         $this->assertEquals($app->getOptions(), ['c' => true]);
         $this->assertEquals($app->getArguments(), ['arg']);
@@ -48,7 +58,6 @@ class MultipleCommandAppTest extends Base {
     public function testHasGlobalOption() {
         $_SERVER['argv'] = ['run', '-t', 'child', '-c', 'arg'];
         $app = $this->createApp();
-        $app->run(dirname(__dir__));
         $this->assertEquals($app->hasGlobalOption('t'),  true);
         $this->assertEquals($app->hasGlobalOption('c'),  false);
     }
@@ -56,17 +65,8 @@ class MultipleCommandAppTest extends Base {
     public function testGetGlobalOption() {
         $_SERVER['argv'] = ['run', '-t', 'child', '-c', 'arg'];
         $app = $this->createApp();
-        $app->run(dirname(__dir__));
         $this->assertEquals($app->getGlobalOption('t'),  true);
         $this->assertEquals($app->hasGlobalOption('c'),  null);
-    }
-
-    public function testRunSubcommand() {
-        $_SERVER['argv'] = ['run', 'child', '-c', 'arg'];
-        $app = $this->createApp();
-        $app->run(dirname(__dir__));
-        $this->assertEquals($app->getOptions(), ['c' => true]);
-        $this->assertEquals($app->getArguments(), ['arg']);
     }
 
     public function testRenderHelp() {
@@ -97,7 +97,7 @@ class MultipleCommandAppTest extends Base {
     public function testSubcommandClassNotFound() {
         $_SERVER['argv'] = ['run', 'child_class_error'];
         $app = $this->createApp();
-        $app->run(dirname(__dir__));
+        $this->callProtectedMethod($app, 'executeCommand');
     }
 
     public function testGetSubcommand() {
