@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Cli;
 
-use Exception;
 use Hyperframework\Common\ConfigException;
 
 class OptionConfigParser {
