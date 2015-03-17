@@ -138,17 +138,13 @@ class App extends Base {
     protected function renderCommandParsingError($exception) {
         echo $exception->getMessage(), PHP_EOL;
         $config = $this->getCommandConfig();
-        $name = $config->getName();
-        $options = null;
-        $subcommand = null;
-        if ($exception instanceof SubcommandParsingException) {
-            $subcommand = $exception->getSubcommand();
-            $name .= ' ' . $subcommand;
-        }
         $options = $config->getOptions($subcommand);
         if (isset($options['help'])) {
+            $name = $config->getName();
+            if ($exception instanceof SubcommandParsingException) {
+                $name .= ' ' . $exception->getSubcommand();
+            }
             echo 'See \'', $name, ' --help\'.', PHP_EOL;
-            $helpOption = '--help';
         }
     }
 }
