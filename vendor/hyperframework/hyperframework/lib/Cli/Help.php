@@ -2,7 +2,6 @@
 namespace Hyperframework\Cli;
 
 class Help {
-    private $app;
     private $config;
     private $hasOptionDescription;
     private $subcommand;
@@ -15,7 +14,6 @@ class Help {
     private $usageIndent;
 
     public function __construct($app) {
-        $this->app = $app;
         $this->config = $app->getCommandConfig();
         if ($this->config->isSubcommandEnabled()) {
             $this->subcommand = $app->getSubcommand();

@@ -18,7 +18,7 @@ abstract class Command {
         $this->app = $app;
     }
 
-    protected function getApp() {
+    public function getApp() {
         if ($this->app === null) {
             throw new LogicException(
                 "App cannot be null, constructor method of class"
@@ -28,42 +28,42 @@ abstract class Command {
         return $this->app;
     }
 
-    protected function getArguments() {
+    public function getArguments() {
         $app = $this->getApp();
         $app->getArguments();
     }
 
-    protected function hasOption($name) {
+    public function hasOption($name) {
         $app = $this->getApp();
         return $app->hasOption($name);
     }
 
-    protected function getOption($name) {
+    public function getOption($name) {
         $app = $this->getApp();
         return $this->getApp()->getOption($name);
     }
 
-    protected function getOptions() {
+    public function getOptions() {
         $app = $this->getApp();
         return $this->getApp()->getOptions();
     }
 
-    protected function hasGlobalOption($name) {
+    public function hasGlobalOption($name) {
         $app = $this->getApp();
         return $app->hasGlobalOption($name);
     }
 
-    protected function getGlobalOption($name) {
+    public function getGlobalOption($name) {
         $app = $this->getApp();
         return $app->getGlobalOption($name);
     }
 
-    protected function getGlobalOptions() {
+    public function getGlobalOptions() {
         $app = $this->getApp();
         return $app->getGlobalOptions();
     }
 
-    protected function quit() {
+    public function quit() {
         if ($this->isQuitMethodCalled) {
             throw new InvalidOperationException(
                 'The quit method of ' . __CLASS__
