@@ -11,7 +11,7 @@ class ArgumentConfigParser {
                 || strpos($config, "\t") !== false
             ) {
                 throw new ConfigException(self::getErrorMessage(
-                    $config, 'white-space character is not allowed.'
+                    $config, 'white-space character is not allowed'
                 ));
             }
             $isOptional = false;
@@ -24,7 +24,7 @@ class ArgumentConfigParser {
                 $isOptional = true;
                 if ($config[$length - 1] !== ']') {
                     throw new ConfigException(self::getErrorMessage(
-                        $config , "'[' must be closed by ']'."
+                        $config , "'[' must be closed by ']'"
                     ));
                 }
                 $config = substr($config, 1, $length - 2);
@@ -47,7 +47,7 @@ class ArgumentConfigParser {
                 if ($config[$length - 1] !== '>') {
                     throw new ConfigException(
                         self::getErrorMessage($config)
-                            . "'<' must be closed by '>'."
+                            . "'<' must be closed by '>'"
                     );
                 }
                 $name = substr($config, 1, $length - 2);
@@ -55,7 +55,7 @@ class ArgumentConfigParser {
                     throw new ConfigException(
                         self::getErrorMessage($config)
                             . "argument name '$name' "
-                            . "contains invalid characters."
+                            . "contains invalid characters"
                     );
                 } else {
                     $result[] = new ArgumentConfig(
@@ -65,7 +65,7 @@ class ArgumentConfigParser {
             } else {
                 throw new ConfigException(self::getErrorMessage(
                     $config,
-                    "argument name must be surrounded by '<' and '>'."
+                    "argument name must be surrounded by '<' and '>'"
                 ));
             }
         }
@@ -74,9 +74,9 @@ class ArgumentConfigParser {
 
     private static function getErrorMessage($config, $extra = null) {
         $result = "Argument config '$config' is invalid";
-        if ($extra === null) {
-            return $result . '.';
+        if ($extra !== null) {
+            $result .= ', ' . $extra;
         }
-        return ', ' . $extra;
+        return $result . '.';
     }
 }

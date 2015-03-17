@@ -3,7 +3,6 @@ namespace Hyperframework\Cli;
 
 use ReflectionMethod;
 use LogicException;
-use Hyperframework;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NamespaceCombiner;
 use Hyperframework\Common\FilePathCombiner;
@@ -11,6 +10,7 @@ use Hyperframework\Common\ConfigFileLoader;
 use Hyperframework\Common\ConfigFileFullPathBuilder;
 use Hyperframework\Common\FileFullPathRecognizer;
 use Hyperframework\Common\ConfigException;
+use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\MethodNotFoundException;
 
 class CommandConfig {
@@ -304,56 +304,26 @@ class CommandConfig {
             if ($this->configs !== null) {
                 return $this->configs;
             }
-            $config = null;
-            $isConfigEnabled = Config::getBoolean(
-                'hyperframework.cli.enable_command_config', true
-            );
-            if ($isConfigEnabled !== false) {
-                $isDefaultConfigPath = false;
-                $configPath = Config::getString(
-                    'hyperframework.cli.command_config_path', ''
-                );
-                if ($configPath === '') {
-                    $isDefaultConfigPath = true;
-                    $configPath = 'command.php';
-                }
-                if ($isDefaultConfigPath
-                    || FileFullPathRecognizer::isFullPath($configPath)
-                        === false
-                ) {
-                    $configRootPath = Config::getString(
-                        'hyperframework.cli.command_config_root_path', ''
-                    );
-                    if ($configRootPath !== '') {
-                        FilePathCombiner::prepend($configPath, $configRootPath);
-                    }
-                    $configPath = ConfigFileFullPathBuilder::build($configPath);
-                }
-                if (file_exists($configPath)) {
-                    $config = require $configPath;
-                } else {
-                    throw new ConfigException($this->getErrorMessage(
-                        $subcommand,
-                        "config file '$configPath' does not exist."
-                    ));
-                    $config = [];
-                }
-            } else {
-                $config = [];
-            }
-            $this->configs = $config;
-            return $config;
+        } elseif (isset($this->subcommandConfigs[$subcommand])) {
+            return $this->subcommandConfigs[$subcommand];
         }
-        if (isset($this->subcommandConfigs[$subcommand]) === false) {
-            $config = ConfigFileLoader::loadPhp(
-                $this->getSubcommandConfigPath($subcommand)
-            );
-            if ($config === null) {
-                $config = [];
+        $configPath = $this->getConfigPath($subcommand);
+        if (file_exists($configPath)) {
+            $configs = require $configPath;
+            if ($configs === null) {
+                $configs = [];
             }
-            $this->subcommandConfigs[$subcommand] = $config;
+        } else {
+            throw new ConfigException($this->getErrorMessage(
+                $subcommand, "config file '$configPath' does not exist."
+            ));
         }
-        return $this->subcommandConfigs[$subcommand];
+        if ($subcommand === null) {
+            $this->configs = $configs;
+        } else {
+            $this->subcommandConfigs[$subcommand] = $configs;
+        }
+        return $configs;
     }
 
     public function isSubcommandEnabled() {
@@ -365,11 +335,11 @@ class CommandConfig {
         return $this->isSubcommandEnabled;
     }
 
-    public function hasSubcommand($name) {
+    public function hasSubcommand($subcommand) {
         if ($this->isSubcommandEnabled() === false) {
             return false;
         }
-        return file_exists($this->getSubcommandConfigPath($name));
+        return file_exists($this->getSubcommandConfigPath($subcommand));
     }
 
     public function getSubcommands() {
@@ -398,7 +368,7 @@ class CommandConfig {
         $errorMessagePrefix = 'Failed to get default argument list config, ';
         if (method_exists($class, 'execute') === false) {
             if (class_exists($class) === false) {
-                throw new MethodNotFoundException(
+                throw new ClassNotFoundException(
                     $errorMessagePrefix . "class '$class' does not exist."
                 );
             }
@@ -441,6 +411,33 @@ class CommandConfig {
 
     protected function parseOptionConfigs(array $config) {
         return OptionConfigParser::parse($config);
+    }
+
+    private function getConfigPath($subcommand = null) {
+        if ($subcommand === null) {
+            $configPath = Config::getString(
+                'hyperframework.cli.command_config_path', ''
+            );
+            $isDefault = false;
+            if ($configPath === '') {
+                $isDefault = true;
+                $configPath = 'command.php';
+            }
+            if ($isDefault
+                || FileFullPathRecognizer::isFullPath($configPath) === false
+            ) {
+                $configRootPath = Config::getString(
+                    'hyperframework.cli.command_config_root_path', ''
+                );
+                if ($configRootPath !== '') {
+                    FilePathCombiner::prepend($configPath, $configRootPath);
+                }
+                $configPath = ConfigFileFullPathBuilder::build($configPath);
+            }
+            return $configPath;
+        } else {
+            return $this->getSubcommandConfigPath($subcommand);
+        }
     }
 
     private function getSubcommandConfigPath($subcommand) {
