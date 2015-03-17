@@ -48,7 +48,7 @@ class MultipleCommandAppTest extends Base {
         $this->assertEquals($app->getArguments(), ['arg']);
     }
 
-    public function testInitialize() {
+    public function testConstruct() {
         $_SERVER['argv'] = ['run', '-t', 'child', '-c', 'arg'];
         $app = $this->createApp();
         $this->assertEquals($app->getGlobalOptions(), ['t' => true]);
