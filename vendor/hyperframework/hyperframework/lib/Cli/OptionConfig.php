@@ -14,10 +14,10 @@ class OptionConfig {
     public function __construct(
         $name,
         $shortName,
-        $description,
-        $isRepeatable,
         $isRequired,
-        $argumentConfig
+        $isRepeatable,
+        $argumentConfig,
+        $description
     ) {
         $this->name = $name;
         if ($shortName === 'W') {

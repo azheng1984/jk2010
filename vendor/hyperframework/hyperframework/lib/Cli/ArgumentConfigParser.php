@@ -14,14 +14,14 @@ class ArgumentConfigParser {
                     $config, 'white-space character is not allowed'
                 ));
             }
-            $isOptional = false;
+            $isRequired = true;
             $isRepeatable = false;
             $length = strlen($config);
             if ($length < 3) {
                 throw new ConfigException(self::getErrorMessage($config));
             }
             if ($config[0] === '[') {
-                $isOptional = true;
+                $isRequired = false;
                 if ($config[$length - 1] !== ']') {
                     throw new ConfigException(self::getErrorMessage(
                         $config , "'[' must be closed by ']'"
@@ -59,13 +59,12 @@ class ArgumentConfigParser {
                     );
                 } else {
                     $result[] = new ArgumentConfig(
-                        $name, $isOptional, $isRepeatable
+                        $name, $isRequired, $isRepeatable
                     );
                 }
             } else {
                 throw new ConfigException(self::getErrorMessage(
-                    $config,
-                    "argument name must be surrounded by '<' and '>'"
+                    $config, "argument name must be surrounded by '<' and '>'"
                 ));
             }
         }

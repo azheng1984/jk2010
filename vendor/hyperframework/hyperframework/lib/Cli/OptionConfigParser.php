@@ -52,10 +52,10 @@ class OptionConfigParser {
             $option = new OptionConfig(
                 $name,
                 $shortName,
-                $description,
-                $isRepeatable,
                 $isRequired,
-                $argumentConfig
+                $isRepeatable,
+                $argumentConfig,
+                $description
             );
             if ($name !== null) {
                 if (isset($result[$name])) {
