@@ -94,7 +94,7 @@ class Help {
             if ($argument->isRepeatable()) {
                 $name .= '...';
             }
-            if ($argument->isOptional()) {
+            if ($argument->isRequired() === false) {
                 $name = '[' . $name . ']';
             }
             $this->renderUsageElement($name);
@@ -120,20 +120,25 @@ class Help {
             }
             $result .= '--' . $name;
         }
-        $hasArgument = $option->hasArgument();
-        if ($hasArgument !== -1) {
-            $argumentPattern = $option->getArgumentPattern();
-            if ($hasArgument === 0) {
-                if ($name === '') {
-                    $result .= $argumentPattern;
-                } else {
-                    $result .= '[='. $argumentPattern. ']';
-                }
+        $argumentConfig = $option->getArgumentConfig();
+        if ($argumentConfig !== null) {
+            $values = $argumentConfig->getValues();
+            if ($values !== null) {
+                $argumentPattern = '(' . implode('|', $values) . ')';
             } else {
+                $argumentPattern = '<' . $argumentConfig->getName() . '>';
+            }
+            if ($argumentConfig->isRequired()) {
                 if ($name === '') {
                     $result .= ' ' . $argumentPattern;
                 } else {
                     $result .= '='. $argumentPattern;
+                }
+            } else {
+                if ($name === '') {
+                    $result .= '[' . $argumentPattern . ']';
+                } else {
+                    $result .= '[=' . $argumentPattern . ']';
                 }
             }
         }
@@ -177,10 +182,10 @@ class Help {
                 $buffer = '';
                 if ($count > 1) {
                     if ($index === 0) {
-                        if ($isRequired === false) {
-                            $buffer = '[';
-                        } else {
+                        if ($isRequired) {
                             $buffer = '(';
+                        } else {
+                            $buffer = '[';
                         }
                     } else {
                         $buffer = '';
@@ -204,10 +209,10 @@ class Help {
                         $buffer .= $element;
                         ++$index;
                     }
-                    if ($isRequired === false) {
-                        $buffer .= ']';
-                    } else {
+                    if ($isRequired) {
                         $buffer .= ')';
+                    } else {
+                        $buffer .= ']';
                     }
                     $this->renderUsageElement($buffer);
                     continue;

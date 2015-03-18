@@ -3,11 +3,11 @@ namespace Hyperframework\Cli;
 
 use Hyperframework\Cli\Test\TestCase as Base;
 
-class ArgumentConfigTest extends Base {
+class OptionArgumentConfigTest extends Base {
     public function test() {
-        $config = new ArgumentConfig('name', false, true);
+        $config = new OptionArgumentConfig('name', false, []);
         $this->assertSame('name', $config->getName());
         $this->assertFalse($config->isRequired());
-        $this->assertTrue($config->isRepeatable());
+        $this->assertSame([], $config->getValues());
     }
 }

@@ -9,18 +9,15 @@ class OptionConfig {
     private $description;
     private $isRepeatable;
     private $isRequired;
-    private $hasArgument;
-    private $argumentPattern;
-    private $values;
+    private $argumentConfig;
 
     public function __construct(
         $name,
-        $shortName = null,
-        $description = '',
-        $isRepeatable = false,
-        $isRequired = false,
-        $hasArgument = -1,
-        $argumentPattern = null
+        $shortName,
+        $description,
+        $isRepeatable,
+        $isRequired,
+        $argumentConfig
     ) {
         $this->name = $name;
         if ($shortName === 'W') {
@@ -33,8 +30,7 @@ class OptionConfig {
         $this->description = $description;
         $this->isRepeatable = $isRepeatable;
         $this->isRequired = $isRequired;
-        $this->hasArgument = $hasArgument;
-        $this->argumentPattern = $argumentPattern;
+        $this->argumentConfig = $argumentConfig;
     }
 
     public function getName() {
@@ -57,34 +53,7 @@ class OptionConfig {
         return $this->isRequired;
     }
 
-    public function hasArgument() {
-        return $this->hasArgument;
-    }
-
-    public function getArgumentPattern() {
-        return $this->argumentPattern;
-    }
-
-    public function getValues() {
-        if ($this->values === null) {
-            $pattern = (string)$this->argumentPattern;
-            if ($pattern !== '') {
-                $pattern = ltrim($this->argumentPattern, '(');
-                $pattern = rtrim($pattern, ')');
-                if ($pattern === ''
-                    || preg_match('/^[a-zA-Z0-9-_|]+$/', $pattern) !== 1
-                ) {
-                    $this->values = false;
-                } else {
-                    $this->values = explode('|', $pattern);
-                }
-            } else {
-                $this->values = false;
-            }
-        }
-        if ($this->values === false) {
-            return;
-        }
-        return $this->values;
+    public function getArgumentConfig() {
+        return $this->argumentConfig;
     }
 }

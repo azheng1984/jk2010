@@ -10,7 +10,7 @@ class DefaultArgumentConfig extends ArgumentConfig {
     public function __construct($reflectionParameter) {
         parent::__construct(
             null,
-            $reflectionParameter->isOptional(),
+            !$reflectionParameter->isOptional(),
             $reflectionParameter->isArray()
         );
         $this->parameterName = $reflectionParameter->getName();

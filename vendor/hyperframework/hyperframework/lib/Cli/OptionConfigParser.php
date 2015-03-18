@@ -22,12 +22,32 @@ class OptionConfigParser {
                 if (isset($attributes['description'])) {
                     $description = $attributes['description'];
                 }
-                if (isset($attributes['is_repeatable'])) {
-                    $isRepeatable = (bool)$attributes['is_repeatable'];
+                if (isset($attributes['repeatable'])) {
+                    $isRepeatable = (bool)$attributes['repeatable'];
                 }
-                if (isset($attributes['is_required'])) {
-                    $isRequired = (bool)$attributes['is_required'];
+                if (isset($attributes['required'])) {
+                    $isRequired = (bool)$attributes['required'];
                 }
+            }
+            if ($hasArgument !== -1) {
+                $argumentPattern = (string)$argumentPattern;
+                $argumentPattern = ltrim(argumentPattern, '(');
+                $argumentPattern = rtrim($argumentPattern, ')');
+                $values = null;
+                $argumentName = null;
+                if ($argumentPattern[0] === '<') {
+                    $argumentName = ltrim(argumentPattern, '<');
+                    $argumentName = rtrim($argumentName, '>');
+                } elseif (
+                    preg_match('/^[a-zA-Z0-9-_|]+$/', $argumentPattern) === 1
+                ) {
+                    $values = explode('|', $argumentPattern);
+                }
+                $argumentConfig = new OptionArgumentConfig(
+                    $argumentName, $hasArgument === 1, $values
+                );
+            } else {
+                $argumentConfig = null;
             }
             $option = new OptionConfig(
                 $name,
@@ -35,8 +55,7 @@ class OptionConfigParser {
                 $description,
                 $isRepeatable,
                 $isRequired,
-                $hasArgument,
-                $argumentPattern
+                $argumentConfig
             );
             if ($name !== null) {
                 if (isset($result[$name])) {

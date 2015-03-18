@@ -12,7 +12,7 @@ class DefaultArgumentConfigTest extends Base {
         $params = $method->getParameters();
         $config = new DefaultArgumentConfig($params[0]);
         $this->assertSame('arg', $config->getName());
-        $this->assertFalse($config->isOptional());
+        $this->assertTrue($config->isRequired());
         $this->assertTrue($config->isRepeatable());
     }
 }

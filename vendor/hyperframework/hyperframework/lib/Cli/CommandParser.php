@@ -71,11 +71,17 @@ class CommandParser {
                     }
                     $optionArgument = true;
                     $option = $optionConfigs[$optionName];
-                    if ($option->hasArgument() === 0) {
+                    $optionArgumentConfig = $option->getArgumentConfig();
+                    $hasArgument = -1;
+                    if ($optionArgumentConfig !== null) {
+                        $hasArgument = $optionArgumentConfig->isRequired() ?
+                            1 : 0;
+                    }
+                    if ($hasArgument === 0) {
                         if ($length > 2) {
                             $optionArgument = substr($element, 1 + $charIndex);
                         }
-                    } elseif ($option->hasArgument() === 1) {
+                    } elseif ($hasArgument === 1) {
                         if ($length > 2) {
                             $optionArgument = substr($element, 1 + $charIndex);
                         } else {
@@ -138,7 +144,13 @@ class CommandParser {
                     );
                 }
                 $option = $optionConfigs[$optionName];
-                if ($option->hasArgument() === 1) {
+                $optionArgumentConfig = $option->getArgumentConfig();
+                $hasArgument = -1;
+                if ($optionArgumentConfig !== null) {
+                    $hasArgument = $optionArgumentConfig->isRequired() ?
+                        1 : 0;
+                }
+                if ($hasArgument === 1) {
                     if ($optionArgument === null) {
                         ++$index;
                         if ($index >= $count) {
@@ -153,7 +165,7 @@ class CommandParser {
                         }
                         $optionArgument = $argv[$index];
                     }
-                } elseif ($option->hasArgument() === -1) {
+                } elseif ($hasArgument === -1) {
                     if ($optionArgument !== true) {
                         $message =
                             "Option '$optionName' must not have an argument.";
@@ -260,7 +272,7 @@ class CommandParser {
         }
         $count = 0;
         foreach ($argumentConfigs as $argumentConfig) {
-            if ($argumentConfig->isOptional()) {
+            if ($argumentConfig->isRequired() === false) {
                 break;
             }
             ++$count;
@@ -335,16 +347,19 @@ class CommandParser {
         }
         foreach ($options as $name => $value) {
             $option = $optionConfigs[$name];
-            $values = $option->getValues();
-            if ($option->getValues() !== null) {
-                if (in_array($value, $values, true) === false) {
-                    $message = "The value of option '$name' is invalid.";
-                    if ($subcommand === null) {
-                        throw new CommandParsingException($message);
+            $argumentConfig = $option->getArgumentConfig();
+            if ($argumentConfig !== null) {
+                $values = $argumentConfig->getValues();
+                if ($values !== null) {
+                    if (in_array($value, $values, true) === false) {
+                        $message = "The value of option '$name' is invalid.";
+                        if ($subcommand === null) {
+                            throw new CommandParsingException($message);
+                        }
+                        throw new SubcommandParsingException(
+                            $subcommand, $message
+                        );
                     }
-                    throw new SubcommandParsingException(
-                        $subcommand, $message
-                    );
                 }
             }
         }

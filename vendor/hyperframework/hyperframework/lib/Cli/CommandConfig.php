@@ -211,10 +211,12 @@ class CommandConfig {
         foreach ($configs as $config) {
             $isRequired = false;
             $mutuallyExclusiveOptions = [];
-            foreach ($config as $item) {
+            foreach ($config as $key => $item) {
                 $item = (string)$item;
-                if ($item === 'required') {
-                    $isRequired = true;
+                if ($key === 'required') {
+                    $isRequired = (bool)$item;
+                    continue;
+                } elseif (is_string($key)) {
                     continue;
                 }
                 if ($item === '' || $item[0] !== '-') {
@@ -472,10 +474,14 @@ class CommandConfig {
             if (isset($options['-h'])) {
                 $shortName = null;
             }
-            $result[] = new OptionConfig('help', $shortName);
+            $result[] = new OptionConfig(
+                'help', $shortName, null, false, false, null
+            );
         }
         if ($subcommand === null && isset($options['version']) === false) {
-            $result[] = new OptionConfig('version');
+            $result[] = new OptionConfig(
+                'version', null, null, false, false, null
+            );
         }
         return $result;
     }

@@ -1,15 +1,15 @@
 <?php
 namespace Hyperframework\Cli;
 
-class ArgumentConfig {
+class OptionArgumentConfig {
     private $name;
     private $isRequired;
-    private $isRepeatable;
+    private $values;
 
-    public function __construct($name, $isRequired, $isRepeatable) {
+    public function __construct($name, $isRequired, array $values = null) {
         $this->name = $name;
         $this->isRequired = $isRequired;
-        $this->isRepeatable = $isRepeatable;
+        $this->values = $values;
     }
 
     public function getName() {
@@ -20,7 +20,7 @@ class ArgumentConfig {
         return $this->isRequired;
     }
 
-    public function isRepeatable() {
-        return $this->isRepeatable;
+    public function getValues() {
+        return $this->values;
     }
 }
