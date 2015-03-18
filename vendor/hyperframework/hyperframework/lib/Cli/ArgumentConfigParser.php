@@ -6,6 +6,8 @@ use Hyperframework\Common\ConfigException;
 class ArgumentConfigParser {
     public static function parse(array $configs) {
         $result = [];
+        $hasRepeatableArgument = false;
+        $optionalArgumentName = null;
         foreach ($configs as $config) {
             if (is_array($config) === false) {
                 $type = gettype($config);
@@ -54,6 +56,17 @@ class ArgumentConfigParser {
                         . " 'required' must be a boolean, $type given."
                 );
             }
+            if ($optionalArgumentName !== null) {
+                if ($isRequired) {
+                    throw new ConfigException(
+                        "Command argument config error, argument '"
+                            . "$optionalArgumentName' cannot be optional."
+                    );
+                }
+            }
+            if ($isRequired === false) {
+                $optionalArgumentName = $name;
+            }
             if (is_bool($isRepeatable) === false) {
                 $type = gettype($isRepeatable);
                 throw new ConfigException(
@@ -61,6 +74,13 @@ class ArgumentConfigParser {
                         . " 'repeatable' must be a boolean, $type given."
                 );
             }
+            if ($hasRepeatableArgument) {
+                throw new ConfigException(
+                    "Command argument config error, "
+                        . "repeatable argument must be the last one."
+                );
+            }
+            $hasRepeatableArgument = $isRepeatable;
             $result[] = new ArgumentConfig($name, $isRequired, $isRepeatable);
         }
         return $result;
