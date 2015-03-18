@@ -218,37 +218,15 @@ class CommandConfig {
                     }
                     continue;
                 }
-                $item = (string)$item;
-                if ($item === '' || $item[0] !== '-') {
-                    $prefix = '-';
-                    if (strlen($item) > 1) {
-                        $prefix = '--';
-                    }
+                if (is_string($item) === false) {
+                    $type = gettype($item);
                     throw new ConfigException(
                         $errorMessagePrefix
-                            . "'$item' must start with '$prefix'."
+                            . " element must be a string, $type given."
                     );
                 }
                 $length = strlen($item);
-                if ($length === 1) {
-                    throw new ConfigException(
-                        $errorMessagePrefix . "'$item' is not allowed."
-                    );
-                } elseif ($length === 2) {
-                    $item = $item[1];
-                } else {
-                    if ($item[1] !== '-') {
-                        throw new ConfigException(
-                            $errorMessagePrefix
-                                . "'$item' must start with '--'."
-                        );
-                    }
-                    $item = substr($item, 2);
-                }
                 if (isset($options[$item]) === false) {
-                    if ($item === '') {
-                        continue;
-                    }
                     throw new ConfigException(
                         $errorMessagePrefix . "'$item' is not defined."
                     );

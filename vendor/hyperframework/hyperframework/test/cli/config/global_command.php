@@ -2,7 +2,5 @@
 return [
     'name' => 'test',
     'version' => '1.0.0',
-    'options' => [
-        '-t'
-    ],
+    'options' => [['short_name' => 't']],
 ];

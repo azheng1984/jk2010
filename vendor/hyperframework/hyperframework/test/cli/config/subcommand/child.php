@@ -1,4 +1,4 @@
 <?php
 return [
-    'options' => ['-c']
+    'options' => [['short_name' => 'c']]
 ];

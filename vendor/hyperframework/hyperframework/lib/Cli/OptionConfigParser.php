@@ -6,50 +6,103 @@ use Hyperframework\Common\ConfigException;
 class OptionConfigParser {
     public static function parse(array $configs) {
         $result = [];
-        foreach ($configs as $pattern => $attributes) {
-            if (is_int($pattern)) {
-                $pattern = $attributes;
-                $attributes = null;
+        foreach ($configs as $config) {
+            if (is_array($config) === false) {
+                $type = gettype($config);
+                throw new ConfigException(
+                    "Option config must be an array, $type given."
+                );
             }
-            list($shortName, $name, $hasArgument, $argumentPattern) =
-                static::parsePattern($pattern);
-            $description = null;
+            $name = null;
+            $shortName = null;
             $isRequired = false;
             $isRepeatable = false;
-            if (is_string($attributes)) {
-                $description = $attributes;
-            } elseif (is_array($attributes)) {
-                if (isset($attributes['description'])) {
-                    $description = $attributes['description'];
-                }
-                if (isset($attributes['repeatable'])) {
-                    $isRepeatable = (bool)$attributes['repeatable'];
-                }
-                if (isset($attributes['required'])) {
-                    $isRequired = (bool)$attributes['required'];
+            $argumentConfig = null;
+            $description = null;
+            foreach ($config as $key => $value) {
+                switch ($key) {
+                    case 'name':
+                        $name = $value;
+                        break;
+                    case 'short_name':
+                        $shortName = $value;
+                        break;
+                    case 'requried':
+                        $isRequired = $value;
+                        break;
+                    case 'repeatable':
+                        $isRepeatable = $value;
+                        break;
+                    case 'argument':
+                        $argumentConfig = self::parseArgument($value);
+                        break;
+                    case 'description':
+                        $description = $value;
                 }
             }
-            if ($hasArgument !== -1) {
-                $argumentPattern = (string)$argumentPattern;
-                $argumentPattern = ltrim(argumentPattern, '(');
-                $argumentPattern = rtrim($argumentPattern, ')');
-                $values = null;
-                $argumentName = null;
-                if ($argumentPattern[0] === '<') {
-                    $argumentName = ltrim(argumentPattern, '<');
-                    $argumentName = rtrim($argumentName, '>');
-                } elseif (
-                    preg_match('/^[a-zA-Z0-9-_|]+$/', $argumentPattern) === 1
-                ) {
-                    $values = explode('|', $argumentPattern);
-                }
-                $argumentConfig = new OptionArgumentConfig(
-                    $argumentName, $hasArgument === 1, $values
+            if ($name === null && $shortName === null) {
+                throw new ConfigException(
+                    "Command option config error,"
+                        . " field 'name' or 'short_name'"
+                        . " is required and cannot equal null."
                 );
-            } else {
-                $argumentConfig = null;
             }
-            $option = new OptionConfig(
+            if ($name !== null) {
+                if (is_string($name) === false) {
+                    $type = gettype($name);
+                    throw new ConfigException(
+                        "Command argument config error, the value of field"
+                            . " 'name' must be a string, $type given."
+                    );
+                }
+                if (preg_match('/^[a-zA-Z0-9-]{2,}$/', $name) !== 1) {
+                    throw new ConfigException(
+                        "Command option config error, value '$name' "
+                            . "field 'name' is invalid."
+                    );
+                }
+            }
+            if ($shortName !== null) {
+                if (is_string($shortName) === false) {
+                    $type = gettype($shortName);
+                    throw new ConfigException(
+                        "Command argument config error, the value of field"
+                            . " 'short_name' must be a string, $type given."
+                    );
+                }
+                if (strlen($shortName) !== 1
+                    || ctype_alnum($shortName) === false
+                ) {
+                    throw new ConfigException(
+                        "Command option config error, value '$shortName' of "
+                            . "field 'short_name' is invalid."
+                    );
+                }
+            }
+            if (is_bool($isRequired) === false) {
+                $type = gettype($isRequired);
+                throw new ConfigException(
+                    "Command argument config error, the value of field"
+                        . " 'required' must be a boolean, $type given."
+                );
+            }
+            if (is_bool($isRepeatable) === false) {
+                $type = gettype($isRepeatable);
+                throw new ConfigException(
+                    "Command argument config error, the value of field"
+                        . " 'repeatable' must be a boolean, $type given."
+                );
+            }
+            if ($description !== null) {
+                if (is_string($description) === false) {
+                    $type = gettype($description);
+                    throw new ConfigException(
+                        "Command argument config error, the value of field"
+                            . " 'description' must be a string, $type given."
+                    );
+                }
+            }
+            $optionConfig = new OptionConfig(
                 $name,
                 $shortName,
                 $isRequired,
@@ -60,307 +113,97 @@ class OptionConfigParser {
             if ($name !== null) {
                 if (isset($result[$name])) {
                     throw new ConfigException(
-                        "Option config error, "
-                            . "option '--$name' already defined"
+                        "Command option config error, "
+                            . "option '$name' already defined"
                     );
                 }
-                $result[$name] = $option;
+                $result[$name] = $optionConfig;
             }
             if ($shortName !== null) {
                 if (isset($result[$shortName])) {
                     throw new ConfigException(
-                        "Option config error, "
-                            . "option '-$name' already defined"
+                        "Command option config error, "
+                            . "option '$shortName' already defined"
                     );
                 }
-                $result[$shortName] = $option;
+                $result[$shortName] = $optionConfig;
             }
         }
         return $result;
     }
 
-    private static function parsePattern($pattern) {
-        $pattern = (string)$pattern;
-        $length = strlen($pattern);
-        if ($pattern[$length - 1] === ' ' || $pattern[$length - 1] === "\t") {
-            throw new ConfigException(self::getPatternErrorMessage(
-                $pattern,
-                'invalid white-space character at the end of pattern'
-            ));
-        }
-        if ($length < 2) {
-            throw new ConfigException(self::getPatternErrorMessage($pattern));
-        }
-        if ($pattern[0] !== '-') {
-            throw new ConfigException(self::getPatternErrorMessage($pattern));
-        }
-        $shortName = null;
-        $isShort = false;
-        $index = 0;
-        $hasName = true;
-        $argumentPattern = null;
-        $hasArgument = -1;
-        if ($length === 2) {
-            $hasName = false;
-            $shortName = $pattern[1];
-            $index = 2;
-        } else {
-            if ($pattern[1] !== '-') {
-                $hasName = false;
-                $shortName = $pattern[1];
-                $index = 2;
-                while ($length > $index && $pattern[$index] === ' ') {
-                    $hasArgument = 1;
-                    ++$index;
-                }
-                if ($length > $index) {
-                    $char = $pattern[$index];
-                    if ($char === ',') {
-                        $hasName = true;
-                        $hasArgument = -1;
-                        ++$index;
-                        while ($length > $index && $pattern[$index] === ' ') {
-                            ++$index;
-                        }
-                    } else {
-                        //-x<arg> -x(enum1|enum2) -xenum1|enum2
-                        if ($hasArgument === -1) {
-                            $hasArgument = 0;
-                        }
-                    }
-                }
-            }
-        }
-        if ($shortName !== null && ctype_alnum($shortName) === false) {
-            if ($shortName === ' ' || $shortName === "\t") {
-                throw new ConfigException(self::getPatternErrorMessage(
-                    $pattern,
-                    'invalid white-space character'
-                        . ' at the beginning of short name'
-                ));
-            }
-            throw new ConfigException(self::getPatternErrorMessage(
-                $pattern, "short name '$shortName' is invalid"
-            ));
-        }
-        if ($hasArgument !== -1) {
-            $isOptional = $hasArgument !== 1;
-            $argumentPattern = self::getArgumentPattern(
-                $pattern, true, $index, $length, $isOptional
+    private static function parseArgument($config) {
+        if (is_array($config) === false) {
+            $type = gettype($config);
+            throw new ConfigException(
+                "Option argument config must be an array, $type given."
             );
-            $hasArgument = $isOptional === true ? 0 : 1;
         }
         $name = null;
-        if ($hasName === true) {
-            if ($length <= $index + 1 || substr($pattern, $index, 2) !== '--') {
+        $isRequired = true;
+        $values = false;
+        foreach ($config as $key => $value) {
+            switch ($key) {
+                case 'name':
+                    $name = $value;
+                    break;
+                case 'requried':
+                    $isRequired = $value;
+                    break;
+                case 'values':
+                    $values = $value;
+            }
+        }
+        if ($name === null) {
+            throw new ConfigException(
+                "Command option argument config error, "
+                    . "field 'name' is missing or equals null."
+            );
+        }
+        if (is_string($name) === false) {
+            $type = gettype($name);
+            throw new ConfigException(
+                "Command option argument config error, the value of field"
+                    . " 'name' must be a string, $type given."
+            );
+        }
+        if (preg_match('/^[a-zA-Z0-9-]*$/', $name) !== 1) {
+            throw new ConfigException(
+                "Command option argument config error, value '$name' of "
+                    . "field 'name' is invalid."
+            );
+        }
+        if (is_bool($isRequired) === false) {
+            $type = gettype($isRequired);
+            throw new ConfigException(
+                "Command option argument config error, the value of field"
+                    . " 'required' must be a boolean, $type given."
+            );
+        }
+        if ($values !== null) {
+            if (is_array($values) === false) {
+                $type = gettype($values);
                 throw new ConfigException(
-                    self::getPatternErrorMessage($pattern)
+                    "Command option argument config error, the value of field"
+                        . " 'values' must be an array , $type given."
                 );
             }
-            $name = '';
-            $index += 2;
-            while ($index < $length) {
-                $char = $pattern[$index];
-                if ($char ==='[') {
-                    $hasArgumentPattern = true;
-                    if ($length <= $index + 1 || $pattern[$index + 1] !== '=') {
-                        if (isset($pattern[$index + 1])) {
-                            $char = $pattern[$index + 1];
-                            if ($char === ' ') {
-                                $char = 'space';
-                            } else {
-                                $char = "'$char'";
-                            }
-                            throw new ConfigException(
-                                self::getPatternErrorMessage(
-                                    $pattern,
-                                    "invalid '$char' character "
-                                        . "after '[', expected '='"
-                                )
-                            );
-                        }
-                        throw new ConfigException(
-                            self::getPatternErrorMessage($pattern)
-                        );
-                    }
-                    if ($pattern[$length - 1] !== ']') {
-                        throw new ConfigException(
-                            self::getPatternErrorMessage(
-                                $pattern, "'[' must be closed by ']'"
-                            )
-                        );
-                    }
-                    $argumentPattern = self::getArgumentPattern(
-                        $pattern, false, $index + 2, $length - 1
-                    );
-                    $hasArgument = 0;
-                    break;
-                } elseif ($char === '=') {
-                    $isOptional = false;
-                    $argumentPattern = self::getArgumentPattern(
-                        $pattern, false, $index + 1, $length, $isOptional 
-                    );
-                    $hasArgument = 1;
-                    ++$index;
-                    break;
-                }
-                $name .= $char;
-                ++$index;
-            }
-        }
-        if ($hasName === true && $name === null) {
-            throw new ConfigException(self::getPatternErrorMessage($pattern));
-        }
-        if ($name !== null) {
-            if (preg_match('/^[a-zA-Z0-9-]{2,}$/', $name) !== 1) {
-                $spacePosition = strpos($name, ' ');
-                if ($spacePosition !== false) {
-                    if (substr($name, -1) === ' '
-                        || substr($name, -1) === "\t"
-                    ) {
-                        $name = trim($name, ' ');
-                        throw new ConfigException(
-                            self::getPatternErrorMessage(
-                                $pattern,
-                                "invalid white-space character"
-                                    . " at the end of name '$name'"
-                            )
-                        );
-                    }
-                    if ($name[0] === ' ') {
-                        $name = trim($name, ' ');
-                        throw new ConfigException(
-                            self::getPatternErrorMessage(
-                                $pattern,
-                                "invalid space character at the"
-                                    . " beginning of name '$name'"
-                            )
-                        );
-                    }
-                }
-                if (preg_match('/^[a-zA-Z0-9-]+/', $name, $matches) === 1) {
-                    $char = $name[strlen($matches[0]) + 1];
-                    if ($char === ' ') {
-                        $char = 'space';
-                    } else {
-                        $char = "'$char'";
-                    }
-                    $name = $matches[0];
-                    if (strlen($name) === 1) {
-                        throw new ConfigException(
-                            self::getPatternErrorMessage(
-                                $pattern, "long option name '$name' is invalid"
-                            )
-                        );
-                    }
-                    throw new ConfigException(self::getPatternErrorMessage(
-                        $pattern,
-                        "invalid '$char' after long option name '"
-                            . "$name', expected '='"
-                    ));
-                }
-                throw new ConfigException(
-                    self::getPatternErrorMessage($pattern)
-                );
-            }
-        }
-        return [$shortName, $name, $hasArgument, $argumentPattern];
-    }
-
-    private static function getArgumentPattern(
-        $pattern, $isShortOption, $index, $length, &$isOptional = null
-    ) {
-        $argumentPattern = substr($pattern, $index, $length - $index);
-        if ($argumentPattern === '') {
-            if ($isShortOption) {
-                if ($isOptional) {
+            foreach ($values as &$value) {
+                if (is_string($value) === false) {
+                    $type = gettype($value);
                     throw new ConfigException(
-                        self::getPatternErrorMessage(
-                            $pattern, 'argument pattern cannot be empty'
-                        )
-                    );//-x[]
-                } else {
-                    throw new ConfigException(
-                        self::getPatternErrorMessage(
-                            $pattern,
-                            'invalid space character at the end of short name'
-                        )
+                        "Command option argument config error, the element of"
+                            . " field 'values' must be a string, $type given."
                     );
                 }
-            } else {
-                throw new ConfigException(self::getPatternErrorMessage(
-                    $pattern, 'argument pattern cannot be empty'
-                ));//--xx[=] or --x=
+                if (preg_match('/^[a-zA-Z0-9-_]+$/', $value) !== 1) {
+                    throw new ConfigException(
+                        "Command option argument config error, element '$value'"
+                            . " of field 'values' is invalid."
+                    );
+                }
             }
-        } elseif (strpos($argumentPattern, ' ') !== false) {
-            throw new ConfigException(self::getPatternErrorMessage(
-                $pattern, 'argument pattern cannot contain space character'
-            ));
-        } elseif ($argumentPattern[0] === '-') {
-            throw new ConfigException(self::getPatternErrorMessage(
-                $pattern,
-                "short option and long option must be separated by ','"
-            ));
+            return new OptionArgumentConfig($name, $isRequired, $values);
         }
-        if ($isOptional !== null) {
-            $roundBracketDepth = 0;
-            $squareBracketDepth = 0;
-            while ($length > $index) {
-                $char = $pattern[$index];
-                if ($char === '[') {
-                    ++$squareBracketDepth;
-                } elseif ($char === ']') {
-                    --$squareBracketDepth;
-                } else {
-                    if ($squareBracketDepth <= 0) {
-                        if ($char === '(') {
-                            ++$roundBracketDepth;
-                        } elseif ($char === ')') {
-                            --$roundBracketDepth;
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                ++$index;
-            }
-            if ($length === $index) {
-                if ($squareBracketDepth !== 0) {
-                    throw new ConfigException(self::getPatternErrorMessage(
-                        $pattern, "'[' must be closed by ']'"
-                    ));// -x[[x]
-                }
-                if ($roundBracketDepth !== 0) {
-                    throw new ConfigException(self::getPatternErrorMessage(
-                        $pattern, "'(' must be closed by ')'"
-                    ));// -x([x]
-                }
-                if ($isOptional === false) {
-                    if ($isShortOption) {// -x [<arg>]
-                        throw new ConfigException(self::getPatternErrorMessage(
-                            $pattern,
-                            'invalid space character at the end of short name'
-                        ));
-                    } else {//--xx=[<arg>]
-                        throw new ConfigException(
-                            self::getPatternErrorMessage(
-                                $pattern, "'=' is optional"
-                            )
-                        );
-                    }
-                }
-            } elseif ($isOptional) {// -x[arg]<arg> or -x<arg>
-                $isOptional = false;
-            }
-        }
-        return $argumentPattern;
-    }
-
-    private static function getPatternErrorMessage($pattern, $extra = '') {
-        $result = "Option config error, invalid pattern '$pattern'";
-        if ($extra !== '') {
-            $result .= ', ' . $extra;
-        }
-        return $result . '.';
     }
 }

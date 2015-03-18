@@ -53,8 +53,8 @@ class ConfigEngine {
         }   
         if (is_object($result)) {
             throw new ConfigException(
-                "Config '$name' requires an integer, object of class "
-                    . get_class($result) . " could not be converted to integer."
+                "Config '$name' requires an integer, object of class '"
+                    . get_class($result) . "' could not be converted to integer."
             );
         }
         return (int)$result;
@@ -67,8 +67,8 @@ class ConfigEngine {
         }
         if (is_object($result)) {
             throw new ConfigException(
-                "Config '$name' requires a float, object of class "
-                    . get_class($result) . " could not be converted to float."
+                "Config '$name' requires a float, object of class '"
+                    . get_class($result) . "' could not be converted to float."
             );
         }
         return (float)$result;
@@ -176,7 +176,7 @@ class ConfigEngine {
         }
         if (is_array($data) === false) {
             throw new ConfigException(
-                "Config file $path must return "
+                "Config file '$path' must return "
                     . " an array, " . gettype($data) . ' returned.'
             );
         }
