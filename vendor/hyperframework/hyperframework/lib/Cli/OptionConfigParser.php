@@ -27,7 +27,7 @@ class OptionConfigParser {
                     case 'short_name':
                         $shortName = $value;
                         break;
-                    case 'requried':
+                    case 'required':
                         $isRequired = $value;
                         break;
                     case 'repeatable':
@@ -58,7 +58,7 @@ class OptionConfigParser {
                 if (preg_match('/^[a-zA-Z0-9-]{2,}$/', $name) !== 1) {
                     throw new ConfigException(
                         "Command option config error, value '$name' "
-                            . "field 'name' is invalid."
+                            . "of field 'name' is invalid."
                     );
                 }
             }
@@ -147,7 +147,7 @@ class OptionConfigParser {
                 case 'name':
                     $name = $value;
                     break;
-                case 'requried':
+                case 'required':
                     $isRequired = $value;
                     break;
                 case 'values':

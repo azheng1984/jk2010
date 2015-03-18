@@ -6,7 +6,6 @@ use Hyperframework\Common\ConfigException;
 class ArgumentConfigParser {
     public static function parse(array $configs) {
         $result = [];
-        //var_dump($configs);
         foreach ($configs as $config) {
             if (is_array($config) === false) {
                 $type = gettype($config);
