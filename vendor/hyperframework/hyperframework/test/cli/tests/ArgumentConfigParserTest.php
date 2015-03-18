@@ -8,7 +8,7 @@ class ArgumentConfigParserTest extends Base {
         $result = ArgumentConfigParser::parse(['[<arg>...]']);
         $argumentConfig = $result[0];
         $this->assertSame('arg', $argumentConfig->getName());
-        $this->assertTrue($argumentConfig->isRequired());
+        $this->assertFalse($argumentConfig->isRequired());
         $this->assertTrue($argumentConfig->isRepeatable());
     }
 }

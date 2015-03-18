@@ -145,7 +145,7 @@ class Help {
         if ($isCompact) {
             if ($isRequired === true || $option->isRequired()) {
                 if (($name !== '' && $shortName !== '')
-                    || ($shortName !== '' && $hasArgument === 1)
+                    || ($shortName !== '' && $option->isRequired())
                 ) {
                     $result = '(' . $result . ')';
                 }
