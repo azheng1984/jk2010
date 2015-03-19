@@ -107,9 +107,9 @@ class CommandConfig {
 
     public function getOptionConfigs($subcommand = null) {
         if ($subcommand !== null
-            && isset($this->subcommandOptions[$subcommand])
+            && isset($this->subcommandOptionConfigs[$subcommand])
         ) {
-            return $this->subcommandOptions[$subcommand];
+            return $this->subcommandOptionConfigs[$subcommand];
         } elseif ($subcommand === null && $this->optionConfigs !== null) {
             return $this->optionConfigs;
         }
@@ -141,7 +141,7 @@ class CommandConfig {
             }
         }
         if ($subcommand !== null) {
-            $this->subcommandOptions[$subcommand] = $options;
+            $this->subcommandOptionConfigs[$subcommand] = $options;
         } else {
             $this->optionConfigs = $options;
         }
@@ -149,10 +149,11 @@ class CommandConfig {
     }
 
     public function getMutuallyExclusiveOptionGroupConfigs($subcommand = null) {
-        if ($subcommand !== null &&
-            isset($this->subcommandMutuallyExclusiveOptionGroupConfigs[$subcommand])
-        ) {
-            return $this->subcommandMutuallyExclusiveOptionGroupConfigs[$subcommand];
+        if ($subcommand !== null && isset(
+            $this->subcommandMutuallyExclusiveOptionGroupConfigs[$subcommand]
+        )) {
+            return $this
+                ->subcommandMutuallyExclusiveOptionGroupConfigs[$subcommand];
         } elseif ($this->mutuallyExclusiveOptionGroupConfigs !== null) {
             return $this->mutuallyExclusiveOptionGroupConfigs;
         }
