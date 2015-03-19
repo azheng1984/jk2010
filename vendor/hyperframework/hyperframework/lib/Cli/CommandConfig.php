@@ -14,24 +14,23 @@ use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\MethodNotFoundException;
 
 class CommandConfig {
-    private $isSubcommandEnabled;
     private $configs;
     private $class;
-    private $options;
+    private $optionConfigs;
     private $subcommands;
-    private $mutuallyExclusiveOptionGroups;
+    private $mutuallyExclusiveOptionGroupConfigs;
     private $arguments;
     private $subcommandConfigs = [];
     private $subcommandClasses = [];
     private $subcommandOptionConfigs = [];
-    private $subcommandMutuallyExclusiveOptionGroups = [];
-    private $subcommandArguments = [];
+    private $subcommandMutuallyExclusiveOptionGroupConfigs = [];
+    private $subcommandArgumentConfigs = [];
 
     public function getArgumentConfigs($subcommand = null) {
         if ($subcommand !== null
-            && isset($this->subcommandArguments[$subcommand])
+            && isset($this->subcommandArgumentConfigs[$subcommand])
         ) {
-            return $this->subcommandArguments[$subcommand];
+            return $this->subcommandArgumentConfigs[$subcommand];
         } elseif ($this->arguments !== null) {
             return $this->arguments;
         } elseif ($subcommand === null && $this->isSubcommandEnabled()) {
@@ -58,7 +57,7 @@ class CommandConfig {
             $arguments = [];
         }
         if ($subcommand !== null) {
-            $this->subcommandArguments[$subcommand] = $arguments;
+            $this->subcommandArgumentConfigs[$subcommand] = $arguments;
         } else {
             $this->arguments = $arguments;
         }
@@ -111,8 +110,8 @@ class CommandConfig {
             && isset($this->subcommandOptions[$subcommand])
         ) {
             return $this->subcommandOptions[$subcommand];
-        } elseif ($subcommand === null && $this->options !== null) {
-            return $this->options;
+        } elseif ($subcommand === null && $this->optionConfigs !== null) {
+            return $this->optionConfigs;
         }
         $config = $this->get('options', $subcommand);
         if ($config !== null) {
@@ -144,18 +143,18 @@ class CommandConfig {
         if ($subcommand !== null) {
             $this->subcommandOptions[$subcommand] = $options;
         } else {
-            $this->options = $options;
+            $this->optionConfigs = $options;
         }
         return $options;
     }
 
     public function getMutuallyExclusiveOptionGroupConfigs($subcommand = null) {
         if ($subcommand !== null &&
-            isset($this->subcommandMutuallyExclusiveOptionGroups[$subcommand])
+            isset($this->subcommandMutuallyExclusiveOptionGroupConfigs[$subcommand])
         ) {
-            return $this->subcommandMutuallyExclusiveOptionGroups[$subcommand];
-        } elseif ($this->mutuallyExclusiveOptionGroups !== null) {
-            return $this->mutuallyExclusiveOptionGroups;
+            return $this->subcommandMutuallyExclusiveOptionGroupConfigs[$subcommand];
+        } elseif ($this->mutuallyExclusiveOptionGroupConfigs !== null) {
+            return $this->mutuallyExclusiveOptionGroupConfigs;
         }
         $config = $this->get('mutually_exclusive_option_groups', $subcommand);
         if ($config !== null) {
@@ -176,10 +175,10 @@ class CommandConfig {
             $result = [];
         }
         if ($subcommand !== null) {
-            $this->subcommandMutuallyExclusiveOptionGroups[$subcommand] =
+            $this->subcommandMutuallyExclusiveOptionGroupConfigs[$subcommand] =
                 $result;
         } else {
-            $this->mutuallyExclusiveOptionGroups = $result;
+            $this->mutuallyExclusiveOptionGroupConfigs = $result;
         }
         return $result;
     }
@@ -257,12 +256,9 @@ class CommandConfig {
     }
 
     public function isSubcommandEnabled() {
-        if ($this->isSubcommandEnabled === null) {
-            $this->isSubcommandEnabled = Config::getBoolean(
-                'hyperframework.cli.enable_subcommand', false
-            );
-        }
-        return $this->isSubcommandEnabled;
+        return Config::getBoolean(
+            'hyperframework.cli.enable_subcommand', false
+        );
     }
 
     public function hasSubcommand($subcommand) {
