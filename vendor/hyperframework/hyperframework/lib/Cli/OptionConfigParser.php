@@ -20,7 +20,6 @@ class OptionConfigParser {
             $shortName = null;
             $isRequired = false;
             $isRepeatable = false;
-            $argumentConfig = null;
             $description = null;
             foreach ($config as $key => $value) {
                 switch ($key) {
@@ -35,9 +34,6 @@ class OptionConfigParser {
                         break;
                     case 'repeatable':
                         $isRepeatable = $value;
-                        break;
-                    case 'argument':
-                        $argumentConfig = $value;
                         break;
                     case 'description':
                         $description = $value;
@@ -115,9 +111,10 @@ class OptionConfigParser {
                         . " 'repeatable' must be a boolean, $type given"
                 ));
             }
-            if ($argumentConfig !== null) {
+            $argumentConfig = null;
+            if (isset($configs['argument'])) {
                 $argumentConfig = self::parseArgumentConfig(
-                    $argumentConfig, $subcommand, $name, $shortName
+                    $configs['argument'], $subcommand, $name, $shortName
                 );
             }
             if ($description !== null) {

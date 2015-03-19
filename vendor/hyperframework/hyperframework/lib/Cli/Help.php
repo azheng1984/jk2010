@@ -2,20 +2,15 @@
 namespace Hyperframework\Cli;
 
 class Help {
-    private $config;
+    private $commandConfig;
     private $hasOptionDescription;
     private $subcommand;
-    private $subcommandCount;
-    private $options;
-    private $optionCount;
-    private $arguments;
-    private $argumentCount;
     private $usageLineLength = 0;
     private $usageIndent;
 
     public function __construct($app) {
-        $this->config = $app->getCommandConfig();
-        if ($this->config->isSubcommandEnabled()) {
+        $this->commandConfig = $app->getCommandConfig();
+        if ($this->commandConfig->isSubcommandEnabled()) {
             $this->subcommand = $app->getSubcommand();
         }
     }
@@ -25,7 +20,7 @@ class Help {
         if ($this->hasOptionDescription()) {
             $this->renderOptions();
         }
-        if ($this->config->isSubcommandEnabled()) {
+        if ($this->commandConfig->isSubcommandEnabled()) {
             $this->renderSubcommands();
         }
     }
@@ -50,7 +45,7 @@ class Help {
     }
 
     protected function renderUsage() {
-        $name = $this->config->getName();
+        $name = $this->commandConfig->getName();
         $prefix = $name;
         if ($this->subcommand !== null) {
             $prefix .= ' ' . $this->subcommand;
@@ -64,8 +59,8 @@ class Help {
         if ($this->subcommand !== null) {
             $this->renderUsageElement($this->subcommand);
         }
-        $options = $this->config->getOptionConfigs($this->subcommand);
-        $optionCount = count($options);
+        $optionConfigs = $this->commandConfig->getOptionConfigs($this->subcommand);
+        $optionCount = count($optionConfigs);
         if ($optionCount > 0) {
             if ($this->hasOptionDescription() === false) {
                 $this->renderCompactOptions();
@@ -77,12 +72,12 @@ class Help {
                 }
             }
         }
-        if ($this->config->isSubcommandEnabled()
+        if ($this->commandConfig->isSubcommandEnabled()
             && $this->subcommand === null
         ) {
             $this->renderUsageElement('<command>');
         } elseif (
-            count($this->config->getArgumentConfigs($this->subcommand)) > 0
+            count($this->commandConfig->getArgumentConfigs($this->subcommand)) > 0
         ) {
             $this->renderArguments();
         }
@@ -90,13 +85,13 @@ class Help {
     }
 
     private function renderArguments() {
-        $arguments = $this->config->getArgumentConfigs($this->subcommand);
-        foreach ($arguments as $argument) {
-            $name = '<' . $argument->getName() . '>';
-            if ($argument->isRepeatable()) {
+        $argumentConfigs = $this->commandConfig->getArgumentConfigs($this->subcommand);
+        foreach ($argumentConfigs as $argumentConfig) {
+            $name = '<' . $argumentConfig->getName() . '>';
+            if ($argumentConfig->isRepeatable()) {
                 $name .= '...';
             }
-            if ($argument->isRequired() === false) {
+            if ($argumentConfig->isRequired() === false) {
                 $name = '[' . $name . ']';
             }
             $this->renderUsageElement($name);
@@ -104,14 +99,14 @@ class Help {
     }
 
     private function getOptionPattern(
-        $option, $isCompact, $isRequired = null
+        $optionConfig, $isCompact, $isRequired = null
     ) {
         $result = '';
-        $shortName = (string)$option->getShortName();
+        $shortName = (string)$optionConfig->getShortName();
         if ($shortName !== '') {
             $result .= '-' . $shortName;
         }
-        $name = (string)$option->getName();
+        $name = (string)$optionConfig->getName();
         if ($name !== '') {
             if ($shortName !== '') {
                 if ($isCompact) {
@@ -122,7 +117,7 @@ class Help {
             }
             $result .= '--' . $name;
         }
-        $argumentConfig = $option->getArgumentConfig();
+        $argumentConfig = $optionConfig->getArgumentConfig();
         if ($argumentConfig !== null) {
             $values = $argumentConfig->getValues();
             if ($values !== null) {
@@ -145,9 +140,9 @@ class Help {
             }
         }
         if ($isCompact) {
-            if ($isRequired === true || $option->isRequired()) {
+            if ($isRequired === true || $optionConfig->isRequired()) {
                 if (($name !== '' && $shortName !== '')
-                    || ($shortName !== '' && $option->isRequired())
+                    || ($shortName !== '' && $optionConfig->isRequired())
                 ) {
                     $result = '(' . $result . ')';
                 }
@@ -159,26 +154,27 @@ class Help {
     }
 
     private function renderCompactOptions() {
-        $options = $this->config->getOptionConfigs($this->subcommand);
+        $optionConfigs = $this->commandConfig->getOptionConfigs($this->subcommand);
         $includedOptions = [];
-        foreach ($options as $option) {
-            $name = (string)$option->getName();
-            $shortName = (string)$option->getShortName();
-            if (in_array($option, $includedOptions, true)) {
+        foreach ($optionConfigs as $optionConfig) {
+            $name = (string)$optionConfig->getName();
+            $shortName = (string)$optionConfig->getShortName();
+            if (in_array($optionConfig, $includedOptions, true)) {
                 continue;
             }
-            $includedOptions[] = $option;
-            $optionGroup = $this->config
-                ->getMutuallyExclusiveOptionGroupConfigByOption($option);
+            $includedOptions[] = $optionConfig;
+            $mutuallyExclusiveOptionGroupConfig = $this->commandConfig
+                ->getMutuallyExclusiveOptionGroupConfigByOption($optionConfig);
             $hasBrackets = false;
             if ($name !== '' && $shortName !== '') {
                 $hasBrackets = true;
             }
-            $isRequired = $option->isRequired();
-            if ($optionGroup !== null) {
-                $isReqired = $optionGroup->isRequired();
-                $mutuallyExclusiveOptions = $optionGroup->getOptions();
-                $count = count($mutuallyExclusiveOptions);
+            $isRequired = $optionConfig->isRequired();
+            if ($mutuallyExclusiveOptionGroupConfig !== null) {
+                $isReqired = $mutuallyExclusiveOptionGroupConfig->isRequired();
+                $mutuallyExclusiveOptionConfigs =
+                    $mutuallyExclusiveOptionGroupConfig->getOptionConfigs();
+                $count = count($mutuallyExclusiveOptionConfigs);
                 $index = 0;
                 $length = 0;
                 $buffer = '';
@@ -192,13 +188,13 @@ class Help {
                     } else {
                         $buffer = '';
                     }
-                    foreach ($mutuallyExclusiveOptions
-                        as $mutuallyExclusiveOption
+                    foreach ($mutuallyExclusiveOptionConfigs
+                        as $mutuallyExclusiveOptionConfig
                     ) {
                         $element = $this->getOptionPattern(
-                            $mutuallyExclusiveOption, true, true
+                            $mutuallyExclusiveOptionConfig, true, true
                         );
-                        $includedOptions[] = $mutuallyExclusiveOption;
+                        $includedOptions[] = $mutuallyExclusiveOptionConfig;
                         if (strlen($element + $buffer) > 70) {
                             if ($index !== 0) {
                                 $this->renderUsageElement($buffer);
@@ -221,14 +217,14 @@ class Help {
                 }
             }
             $this->renderUsageElement($this->getOptionPattern(
-                $option, true, $isRequired
+                $optionConfig, true, $isRequired
             ));
         }
     }
 
     protected function renderOptions() {
-        $options = $this->config->getOptionConfigs($this->subcommand);
-        $count = count($options);
+        $optionConfigs = $this->commandConfig->getOptionConfigs($this->subcommand);
+        $count = count($optionConfigs);
         if ($count === 0) {
             return;
         }
@@ -242,13 +238,13 @@ class Help {
         $patterns = [];
         $descriptions = [];
         $includedOptions = [];
-        foreach ($options as $option) {
-            if (in_array($option, $includedOptions, true)) {
+        foreach ($optionConfigs as $optionConfig) {
+            if (in_array($optionConfig, $includedOptions, true)) {
                 continue;
             }
-            $includedOptions[] = $option;
-            $patterns[] = $this->getOptionPattern($option, false);
-            $descriptions[] = (string)$option->getDescription();
+            $includedOptions[] = $optionConfig;
+            $patterns[] = $this->getOptionPattern($optionConfig, false);
+            $descriptions[] = (string)$optionConfig->getDescription();
         }
         $this->renderList($patterns, $descriptions);
     }
@@ -301,7 +297,7 @@ class Help {
     }
 
     protected function renderSubcommands() {
-        $subcommands = $this->config->getSubcommands();
+        $subcommands = $this->commandConfig->getSubcommands();
         $count = count($subcommands);
         if ($count === 0) {
             return;
@@ -316,9 +312,9 @@ class Help {
 
     protected function hasOptionDescription() {
         if ($this->hasOptionDescription === null) {
-            $options = $this->config->getOptionConfigs($this->subcommand);
-            foreach ($options as $option) {
-                if ((string)$option->getDescription() !== '') {
+            $optionConfigs = $this->commandConfig->getOptionConfigs($this->subcommand);
+            foreach ($optionConfigs as $optionConfig) {
+                if ((string)$optionConfig->getDescription() !== '') {
                     $this->hasOptionDescription = true;
                 }
             }

@@ -70,8 +70,8 @@ class CommandParser {
                         );
                     }
                     $optionArgument = true;
-                    $option = $optionConfigs[$optionName];
-                    $optionArgumentConfig = $option->getArgumentConfig();
+                    $optionConfig = $optionConfigs[$optionName];
+                    $optionArgumentConfig = $optionConfig->getArgumentConfig();
                     $hasArgument = -1;
                     if ($optionArgumentConfig !== null) {
                         $hasArgument = $optionArgumentConfig->isRequired() ?
@@ -99,7 +99,7 @@ class CommandParser {
                             $optionArgument = $argv[$index];
                         }
                     }
-                    if ($option->isRepeatable()) {
+                    if ($optionConfig->isRepeatable()) {
                         if (isset($result['options'][$optionName])) {
                             $result[$optionType][$optionName][] =
                                 $optionArgument;
@@ -111,7 +111,7 @@ class CommandParser {
                     } else {
                         $result[$optionType][$optionName] = $optionArgument;
                     }
-                    $optionFullName = $option->getName();
+                    $optionFullName = $optionConfig->getName();
                     if ($optionFullName !== null &&
                         isset($result[$optionType][$optionFullName]) === false
                     ) {
@@ -143,8 +143,8 @@ class CommandParser {
                         $subcommand, $message
                     );
                 }
-                $option = $optionConfigs[$optionName];
-                $optionArgumentConfig = $option->getArgumentConfig();
+                $optionConfig = $optionConfigs[$optionName];
+                $optionArgumentConfig = $optionConfig->getArgumentConfig();
                 $hasArgument = -1;
                 if ($optionArgumentConfig !== null) {
                     $hasArgument = $optionArgumentConfig->isRequired() ?
@@ -177,7 +177,7 @@ class CommandParser {
                         );
                     }
                 }
-                if ($option->isRepeatable()) {
+                if ($optionConfig->isRepeatable()) {
                     if (isset($result['options'][$optionName])) {
                         $result[$optionType][$optionName][] = $optionArgument;
                     } else {
@@ -186,7 +186,7 @@ class CommandParser {
                 } else {
                     $result[$optionType][$optionName] = $optionArgument;
                 }
-                $optionShortName = $option->getShortName();
+                $optionShortName = $optionConfig->getShortName();
                 if ($optionShortName !== null
                     && isset($result[$optionType][$optionShortName]) === false
                 ) {
@@ -329,8 +329,8 @@ class CommandParser {
         array $mutuallyExclusiveOptionGroupConfigs = null,
         $hasMagicOption
     ) {
-        foreach ($optionConfigs as $name => $option) {
-            if ($option->isRequired()) {
+        foreach ($optionConfigs as $name => $optionConfig) {
+            if ($optionConfig->isRequired()) {
                 if (isset($options[$name])) {
                     continue;
                 }
@@ -346,8 +346,8 @@ class CommandParser {
             }
         }
         foreach ($options as $name => $value) {
-            $option = $optionConfigs[$name];
-            $argumentConfig = $option->getArgumentConfig();
+            $optionConfig = $optionConfigs[$name];
+            $argumentConfig = $optionConfig->getArgumentConfig();
             if ($argumentConfig !== null) {
                 $values = $argumentConfig->getValues();
                 if ($values !== null) {
@@ -367,10 +367,10 @@ class CommandParser {
             foreach($mutuallyExclusiveOptionGroupConfigs as $groupConfig) {
                 $optionKey = null;
                 $optionKeys = [];
-                foreach ($groupConfig->getOptionConfigs() as $option) {
-                    $key = $option->getName();
+                foreach ($groupConfig->getOptionConfigs() as $optionConfig) {
+                    $key = $optionConfig->getName();
                     if ($key === null) {
-                        $key = $option->getShortName();
+                        $key = $optionConfig->getShortName();
                     }
                     if (isset($options[$key])) {
                         if ($optionKey !== null && $optionKey !== $key) {

@@ -122,30 +122,34 @@ class CommandConfig {
                         . gettype($config) . ' given.'
                 ));
             }
-            $options = $this->parseOptionConfigs($config, $subcommand);
-            if ($options === null) {
-                $options = [];
+            $optionConfigs = $this->parseOptionConfigs($config, $subcommand);
+            if ($optionConfigs === null) {
+                $optionConfigs = [];
             }
         } else {
-            $options = [];
+            $optionConfigs = [];
         }
-        $defaultOptions = $this->getDefaultOptionConfigs($options, $subcommand);
-        foreach ($defaultOptions as $option) {
-            $name = $option->getName();
-            $shortName = $option->getShortName();
-            if ($name !== null && isset($options[$name]) === false) {
-                $options[$name] = $option;
+        $defaultOptionConfigs = $this->getDefaultOptionConfigs(
+            $optionConfigs, $subcommand
+        );
+        foreach ($defaultOptionConfigs as $optionConfig) {
+            $name = $optionConfig->getName();
+            $shortName = $optionConfig->getShortName();
+            if ($name !== null && isset($optionConfigs[$name]) === false) {
+                $optionConfigs[$name] = $optionConfig;
             }
-            if ($shortName !== null && isset($options[$shortName]) === false) {
-                $options[$shortName] = $option;
+            if ($shortName !== null
+                && isset($optionConfigs[$shortName]) === false
+            ) {
+                $optionConfigs[$shortName] = $optionConfig;
             }
         }
         if ($subcommand !== null) {
-            $this->subcommandOptionConfigs[$subcommand] = $options;
+            $this->subcommandOptionConfigs[$subcommand] = $optionConfigs;
         } else {
-            $this->optionConfigs = $options;
+            $this->optionConfigs = $optionConfigs;
         }
-        return $options;
+        return $optionConfigs;
     }
 
     public function getMutuallyExclusiveOptionGroupConfigs($subcommand = null) {
