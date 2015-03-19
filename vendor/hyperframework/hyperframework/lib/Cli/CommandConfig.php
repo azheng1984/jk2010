@@ -19,7 +19,7 @@ class CommandConfig {
     private $optionConfigs;
     private $subcommands;
     private $mutuallyExclusiveOptionGroupConfigs;
-    private $arguments;
+    private $argumentConfigs;
     private $subcommandConfigs = [];
     private $subcommandClasses = [];
     private $subcommandOptionConfigs = [];
@@ -31,15 +31,15 @@ class CommandConfig {
             && isset($this->subcommandArgumentConfigs[$subcommand])
         ) {
             return $this->subcommandArgumentConfigs[$subcommand];
-        } elseif ($this->arguments !== null) {
-            return $this->arguments;
+        } elseif ($this->argumentConfigs !== null) {
+            return $this->argumentConfigs;
         } elseif ($subcommand === null && $this->isSubcommandEnabled()) {
             return [];
         }
         $configs = $this->get('arguments', $subcommand);
         if ($configs === null) {
-            $arguments = $this->getDefaultArgumentConfigs($subcommand);
-            if ($arguments === null) {
+            $argumentConfigs = $this->getDefaultArgumentConfigs($subcommand);
+            if ($argumentConfigs === null) {
             }
         } else {
             if (is_array($configs) === false) {
@@ -51,17 +51,18 @@ class CommandConfig {
                     )
                 );
             }
-            $arguments = $this->parseArgumentConfigs($configs, $subcommand);
+            $argumentConfigs =
+                $this->parseArgumentConfigs($configs, $subcommand);
         }
-        if ($arguments === null) {
-            $arguments = [];
+        if ($argumentConfigs === null) {
+            $argumentConfigs = [];
         }
         if ($subcommand !== null) {
-            $this->subcommandArgumentConfigs[$subcommand] = $arguments;
+            $this->subcommandArgumentConfigs[$subcommand] = $argumentConfigs;
         } else {
-            $this->arguments = $arguments;
+            $this->argumentConfigs = $argumentConfigs;
         }
-        return $arguments;
+        return $argumentConfigs;
     }
 
     public function getClass($subcommand = null) {
@@ -194,7 +195,7 @@ class CommandConfig {
         $configs =
             $this->getMutuallyExclusiveOptionGroupConfigs($subcommand);
         foreach ($configs as $config) {
-            if (in_array($option, $config->getOptions(), true)) {
+            if (in_array($option, $config->getOptionConfigs(), true)) {
                 return $config;
             }
         }
