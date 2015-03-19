@@ -154,14 +154,14 @@ class Help {
     private function renderCompactOptions() {
         $optionConfigs = $this->commandConfig
             ->getOptionConfigs($this->subcommand);
-        $includedOptions = [];
+        $includedOptionConfigs = [];
         foreach ($optionConfigs as $optionConfig) {
             $name = (string)$optionConfig->getName();
             $shortName = (string)$optionConfig->getShortName();
-            if (in_array($optionConfig, $includedOptions, true)) {
+            if (in_array($optionConfig, $includedOptionConfigs, true)) {
                 continue;
             }
-            $includedOptions[] = $optionConfig;
+            $includedOptionConfigs[] = $optionConfig;
             $mutuallyExclusiveOptionGroupConfig = $this->commandConfig
                 ->getMutuallyExclusiveOptionGroupConfigByOption($optionConfig);
             $hasBrackets = false;
@@ -193,7 +193,8 @@ class Help {
                         $element = $this->getOptionPattern(
                             $mutuallyExclusiveOptionConfig, true, true
                         );
-                        $includedOptions[] = $mutuallyExclusiveOptionConfig;
+                        $includedOptionConfigs[]
+                            = $mutuallyExclusiveOptionConfig;
                         if (strlen($element + $buffer) > 70) {
                             if ($index !== 0) {
                                 $this->renderUsageElement($buffer);
@@ -231,12 +232,12 @@ class Help {
         echo PHP_EOL, 'Options:', PHP_EOL;
         $patterns = [];
         $descriptions = [];
-        $includedOptions = [];
+        $includedOptionConfigs = [];
         foreach ($optionConfigs as $optionConfig) {
-            if (in_array($optionConfig, $includedOptions, true)) {
+            if (in_array($optionConfig, $includedOptionConfigs, true)) {
                 continue;
             }
-            $includedOptions[] = $optionConfig;
+            $includedOptionConfigs[] = $optionConfig;
             $patterns[] = $this->getOptionPattern($optionConfig, false);
             $descriptions[] = (string)$optionConfig->getDescription();
         }
