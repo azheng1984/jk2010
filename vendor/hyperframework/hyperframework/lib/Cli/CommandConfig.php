@@ -37,22 +37,22 @@ class CommandConfig {
         } elseif ($subcommand === null && $this->isSubcommandEnabled()) {
             return [];
         }
-        $config = $this->get('arguments', $subcommand);
-        if ($config === null) {
+        $configs = $this->get('arguments', $subcommand);
+        if ($configs === null) {
             $arguments = $this->getDefaultArgumentConfigs($subcommand);
             if ($arguments === null) {
             }
         } else {
-            if (is_array($config) === false) {
+            if (is_array($configs) === false) {
                 throw new ConfigException(
                     $this->getErrorMessage(
                         $subcommand,
-                        'argument config must be an array, '
-                            . gettype($config) . ' given.'
+                        " field 'arguments' must be an array, "
+                            . gettype($configs) . ' given.'
                     )
                 );
             }
-            $arguments = $this->parseArgumentConfigs($config);
+            $arguments = $this->parseArgumentConfigs($configs, $subcommand);
         }
         if ($arguments === null) {
             $arguments = [];
@@ -119,11 +119,11 @@ class CommandConfig {
             if (is_array($config) === false) {
                 throw new ConfigException($this->getErrorMessage(
                     $subcommand,
-                    'option config must be an array, '
+                    " field 'options' must be an array, "
                         . gettype($config) . ' given.'
                 ));
             }
-            $options = $this->parseOptionConfigs($config);
+            $options = $this->parseOptionConfigs($config, $subcommand);
             if ($options === null) {
                 $options = [];
             }
@@ -149,7 +149,7 @@ class CommandConfig {
         return $options;
     }
 
-    public function getMutuallyExclusiveOptionGroups($subcommand = null) {
+    public function getMutuallyExclusiveOptionGroupConfigs($subcommand = null) {
         if ($subcommand !== null &&
             isset($this->subcommandMutuallyExclusiveOptionGroups[$subcommand])
         ) {
@@ -157,101 +157,51 @@ class CommandConfig {
         } elseif ($this->mutuallyExclusiveOptionGroups !== null) {
             return $this->mutuallyExclusiveOptionGroups;
         }
-        $config = $this->get('mutually_exclusive_options', $subcommand);
+        $config = $this->get('mutually_exclusive_option_groups', $subcommand);
         if ($config !== null) {
             if (is_array($config) === false) {
                 throw new ConfigException($this->getErrorMessage(
                     $subcommand,
-                    'mutually exclusive options must be an array, '
-                        . gettype($config) . ' given.'
+                    " field 'mutually_exclusive_option_groups'"
+                         . ' must be an array,' . gettype($config) . ' given.'
                 ));
             }
-            $optionGroups =
-                $this->parseMutuallyExclusiveOptionConfigs(
-                    $config, $subcommand
-                );
-            if ($optionGroups === null) {
-                $optionGroups = [];
+            $result = $this->parseMutuallyExclusiveOptionGroupConfigs(
+                $config, $subcommand
+            );
+            if ($result === null) {
+                $result = [];
             }
         } else {
-            $optionGroups = [];
+            $result = [];
         }
         if ($subcommand !== null) {
             $this->subcommandMutuallyExclusiveOptionGroups[$subcommand] =
-                $optionGroups;
+                $result;
         } else {
-            $this->mutuallyExclusiveOptionGroups = $optionGroups;
-        }
-        return $optionGroups;
-    }
-
-    public function getMutuallyExclusiveOptionGroupByOption(
-        $option, $subcommand = null
-    ) {
-        $optionGroups = $this->getMutuallyExclusiveOptionGroups($subcommand);
-        foreach ($optionGroups as $optionGroup) {
-            if (in_array($option, $optionGroup->getOptions(), true)) {
-                return $optionGroup;
-            }
-        }
-    }
-
-    private function parseMutuallyExclusiveOptionConfigs(
-        array $configs, $subcommand
-    ) {
-        if (is_array(current($configs)) === false) {
-            $configs = [$configs];
-        }
-        $result = [];
-        $includedOptions = [];
-        $options = $this->getOptions();
-        $errorMessagePrefix = $this->getErrorMessage(
-            $subcommand, 'mutually exclusive option '
-        );
-        foreach ($configs as $config) {
-            $isRequired = false;
-            $mutuallyExclusiveOptions = [];
-            foreach ($config as $key => $item) {
-                if (is_string($key)) {
-                    if ($key === 'required') {
-                        $isRequired = (bool)$item;
-                    }
-                    continue;
-                }
-                if (is_string($item) === false) {
-                    $type = gettype($item);
-                    throw new ConfigException(
-                        $errorMessagePrefix
-                            . " element must be a string, $type given."
-                    );
-                }
-                $length = strlen($item);
-                if (isset($options[$item]) === false) {
-                    throw new ConfigException(
-                        $errorMessagePrefix . "'$item' is not defined."
-                    );
-                }
-                $option = $options[$item];
-                if (in_array($option, $includedOptions, true)) {
-                    throw new ConfigException(
-                        $errorMessagePrefix
-                            . "'$item' cannot belong to multiple groups."
-                    );
-                }
-                if (in_array($option, $mutuallyExclusiveOptions, true)) {
-                    continue;
-                }
-                $mutuallyExclusiveOptions[] = $option;
-            }
-            if (count($mutuallyExclusiveOptions) !== 0) {
-                $result[] = new MutuallyExclusiveOptionGroupConfig(
-                    $mutuallyExclusiveOptions, $isRequired
-                );
-                $includedOptions =
-                    array_merge($includedOptions, $mutuallyExclusiveOptions);
-            }
+            $this->mutuallyExclusiveOptionGroups = $result;
         }
         return $result;
+    }
+
+    public function getMutuallyExclusiveOptionGroupConfigByOption(
+        $option, $subcommand = null
+    ) {
+        $configs =
+            $this->getMutuallyExclusiveOptionGroupConfigs($subcommand);
+        foreach ($configs as $config) {
+            if (in_array($option, $config->getOptions(), true)) {
+                return $config;
+            }
+        }
+    }
+
+    protected function parseMutuallyExclusiveOptionGroupConfigs(
+        array $configs, $subcommand
+    ) {
+        return MutuallyExclusiveOptionGroupConfigParser::parse(
+            $configs, $this->getOptions($subcommand), $subcommand
+        );
     }
 
     public function getDescription($subcommand = null) {
@@ -339,11 +289,11 @@ class CommandConfig {
         return $this->subcommands;
     }
 
-    protected function parseArgumentConfigs(array $config) {
-        return ArgumentConfigParser::parse($config);
+    protected function parseArgumentConfigs(array $config, $subcommand) {
+        return ArgumentConfigParser::parse($config, $subcommand);
     }
 
-    protected function getDefaultArgumentConfigs($subcommand = null) {
+    private function getDefaultArgumentConfigs($subcommand) {
         $class = $this->getClass($subcommand);
         $errorMessagePrefix = 'Failed to get default argument list config, ';
         if (method_exists($class, 'execute') === false) {
@@ -389,8 +339,8 @@ class CommandConfig {
         return str_replace(' ', '', $tmp) . 'Command';
     }
 
-    protected function parseOptionConfigs(array $config) {
-        return OptionConfigParser::parse($config);
+    protected function parseOptionConfigs(array $config, $subcommand) {
+        return OptionConfigParser::parse($config, $subcommand);
     }
 
     private function getConfigPath($subcommand = null) {
@@ -445,7 +395,7 @@ class CommandConfig {
         return ConfigFileFullPathBuilder::build($folder);
     }
 
-    protected function getDefaultOptions(array $options, $subcommand = null) {
+    protected function getDefaultOptions(array $options, $subcommand) {
         $result = [];
         if (isset($options['help']) === false) {
             $shortName = 'h';
@@ -464,16 +414,12 @@ class CommandConfig {
         return $result;
     }
 
-    private function getErrorMessage($subcommand, $extra = null) {
+    private function getErrorMessage($subcommand, $extra) {
         if ($subcommand === null) {
             $result = 'Command';
         } else {
             $result = "Subcommand '$subcommand'";
         }
-        $result .= ' config error';
-        if ($extra === null) {
-            return $result . '.';
-        }
-        return $result . ', ' . $extra;
+        return $result . ' config error, ' . $extra;
     }
 }

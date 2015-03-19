@@ -166,8 +166,8 @@ class Help {
                 continue;
             }
             $includedOptions[] = $option;
-            $optionGroup =
-                $this->config->getMutuallyExclusiveOptionGroupByOption($option);
+            $optionGroup = $this->config
+                ->getMutuallyExclusiveOptionGroupConfigByOption($option);
             $hasBrackets = false;
             if ($name !== '' && $shortName !== '') {
                 $hasBrackets = true;

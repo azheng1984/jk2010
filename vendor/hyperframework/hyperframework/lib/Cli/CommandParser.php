@@ -204,7 +204,7 @@ class CommandParser {
         if (isset($result['global_options'])) {
             $globalOptionConfigs = $commandConfig->getOptions();
             $globalMutuallyExclusiveOptionGroupConfigs =
-                $commandConfig->getMutuallyExclusiveOptionGroups();
+                $commandConfig->getMutuallyExclusiveOptionGroupConfigs();
             self::checkOptions(
                 null,
                 $result['global_options'],
@@ -214,8 +214,8 @@ class CommandParser {
             );
         }
         if (isset($result['options'])) {
-            $mutuallyExclusiveOptionGroupConfigs =
-                $commandConfig->getMutuallyExclusiveOptionGroups($subcommand);
+            $mutuallyExclusiveOptionGroupConfigs = $commandConfig
+                ->getMutuallyExclusiveOptionGroupConfigs($subcommand);
             self::checkOptions(
                 $subcommand,
                 $result['options'],
