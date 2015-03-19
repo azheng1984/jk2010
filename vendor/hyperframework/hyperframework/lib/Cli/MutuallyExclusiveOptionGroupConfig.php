@@ -2,16 +2,16 @@
 namespace Hyperframework\Cli;
 
 class MutuallyExclusiveOptionGroupConfig {
-    private $options;
+    private $optionConfigs;
     private $isRequired;
 
-    public function __construct(array $options, $isRequired) {
-        $this->options = $options;
+    public function __construct(array $optionConfigs, $isRequired) {
+        $this->optionConfigs = $optionConfigs;
         $this->isRequired = $isRequired;
     }
 
-    public function getOptions() {
-        return $this->options;
+    public function getOptionConfigs() {
+        return $this->optionConfigs;
     }
 
     public function isRequired() {

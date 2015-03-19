@@ -27,7 +27,7 @@ class CommandConfig {
     private $subcommandMutuallyExclusiveOptionGroups = [];
     private $subcommandArguments = [];
 
-    public function getArguments($subcommand = null) {
+    public function getArgumentConfigs($subcommand = null) {
         if ($subcommand !== null
             && isset($this->subcommandArguments[$subcommand])
         ) {
@@ -106,7 +106,7 @@ class CommandConfig {
         return $class;
     }
 
-    public function getOptions($subcommand = null) {
+    public function getOptionConfigs($subcommand = null) {
         if ($subcommand !== null
             && isset($this->subcommandOptions[$subcommand])
         ) {
@@ -130,7 +130,7 @@ class CommandConfig {
         } else {
             $options = [];
         }
-        $defaultOptions = $this->getDefaultOptions($options, $subcommand);
+        $defaultOptions = $this->getDefaultOptionConfigs($options, $subcommand);
         foreach ($defaultOptions as $option) {
             $name = $option->getName();
             $shortName = $option->getShortName();
@@ -200,7 +200,7 @@ class CommandConfig {
         array $configs, $subcommand
     ) {
         return MutuallyExclusiveOptionGroupConfigParser::parse(
-            $configs, $this->getOptions($subcommand), $subcommand
+            $configs, $this->getOptionConfigs($subcommand), $subcommand
         );
     }
 
@@ -395,7 +395,7 @@ class CommandConfig {
         return ConfigFileFullPathBuilder::build($folder);
     }
 
-    protected function getDefaultOptions(array $options, $subcommand) {
+    protected function getDefaultOptionConfigs(array $options, $subcommand) {
         $result = [];
         if (isset($options['help']) === false) {
             $shortName = 'h';

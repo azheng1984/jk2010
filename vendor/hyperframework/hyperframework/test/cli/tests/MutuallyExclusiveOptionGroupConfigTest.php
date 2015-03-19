@@ -7,6 +7,6 @@ class MutuallyExclusiveOptionGroupConfigTest extends Base {
     public function test() {
         $config = new MutuallyExclusiveOptionGroupConfig([], false);
         $this->assertFalse($config->isRequired());
-        $this->assertSame([], $config->getOptions());
+        $this->assertSame([], $config->getOptionConfigs());
     }
 }

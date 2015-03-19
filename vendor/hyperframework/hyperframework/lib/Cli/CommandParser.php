@@ -6,7 +6,7 @@ class CommandParser {
         if ($argv === null) {
             $argv = $_SERVER['argv'];
         }
-        $optionConfigs = $commandConfig->getOptions();
+        $optionConfigs = $commandConfig->getOptionConfigs();
         $result = [];
         $subcommand = null;
         $optionType = null;
@@ -40,7 +40,7 @@ class CommandParser {
                     $subcommand = $element;
                     $result['subcommand'] = $element;
                     $result['option'] = [];
-                    $optionConfigs = $commandConfig->getOptions($element);
+                    $optionConfigs = $commandConfig->getOptionConfigs($element);
                     $optionType = 'options';
                 } else {
                     $arguments[] = $element;
@@ -202,7 +202,7 @@ class CommandParser {
             $commandConfig
         );
         if (isset($result['global_options'])) {
-            $globalOptionConfigs = $commandConfig->getOptions();
+            $globalOptionConfigs = $commandConfig->getOptionConfigs();
             $globalMutuallyExclusiveOptionGroupConfigs =
                 $commandConfig->getMutuallyExclusiveOptionGroupConfigs();
             self::checkOptions(
@@ -236,9 +236,9 @@ class CommandParser {
         $result['arguments'] = [];
         $argumentConfigs = null;
         if ($commandConfig->isSubcommandEnabled()) {
-            $argumentConfigs = $commandConfig->getArguments($subcommand);
+            $argumentConfigs = $commandConfig->getArgumentConfigs($subcommand);
         } else {
-            $argumentConfigs = $commandConfig->getArguments();
+            $argumentConfigs = $commandConfig->getArgumentConfigs();
         }
         $argumentConfigCount = count($argumentConfigs);
         $argumentCount = count($arguments);
@@ -367,7 +367,7 @@ class CommandParser {
             foreach($mutuallyExclusiveOptionGroupConfigs as $groupConfig) {
                 $optionKey = null;
                 $optionKeys = [];
-                foreach ($groupConfig->getOptions() as $option) {
+                foreach ($groupConfig->getOptionConfigs() as $option) {
                     $key = $option->getName();
                     if ($key === null) {
                         $key = $option->getShortName();

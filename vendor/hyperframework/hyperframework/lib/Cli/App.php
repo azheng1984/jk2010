@@ -144,8 +144,8 @@ class App extends Base {
             $subcommand = $exception->getSubcommand();
             $name .= ' ' . $subcommand;
         }
-        $options = $config->getOptions($subcommand);
-        if (isset($options['help'])) {
+        $optionConfigs = $config->getOptionConfigs($subcommand);
+        if (isset($optionConfigs['help'])) {
             echo 'See \'', $name, ' --help\'.', PHP_EOL;
         }
     }
