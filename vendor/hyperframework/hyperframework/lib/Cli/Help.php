@@ -59,7 +59,8 @@ class Help {
         if ($this->subcommand !== null) {
             $this->renderUsageElement($this->subcommand);
         }
-        $optionConfigs = $this->commandConfig->getOptionConfigs($this->subcommand);
+        $optionConfigs = $this->commandConfig
+            ->getOptionConfigs($this->subcommand);
         $optionCount = count($optionConfigs);
         if ($optionCount > 0) {
             if ($this->hasOptionDescription() === false) {
@@ -76,8 +77,8 @@ class Help {
             && $this->subcommand === null
         ) {
             $this->renderUsageElement('<command>');
-        } elseif (
-            count($this->commandConfig->getArgumentConfigs($this->subcommand)) > 0
+        } elseif (count($this->commandConfig
+            ->getArgumentConfigs($this->subcommand)) > 0
         ) {
             $this->renderArguments();
         }
@@ -85,7 +86,8 @@ class Help {
     }
 
     private function renderArguments() {
-        $argumentConfigs = $this->commandConfig->getArgumentConfigs($this->subcommand);
+        $argumentConfigs = $this->commandConfig
+            ->getArgumentConfigs($this->subcommand);
         foreach ($argumentConfigs as $argumentConfig) {
             $name = '<' . $argumentConfig->getName() . '>';
             if ($argumentConfig->isRepeatable()) {
@@ -154,7 +156,8 @@ class Help {
     }
 
     private function renderCompactOptions() {
-        $optionConfigs = $this->commandConfig->getOptionConfigs($this->subcommand);
+        $optionConfigs = $this->commandConfig
+            ->getOptionConfigs($this->subcommand);
         $includedOptions = [];
         foreach ($optionConfigs as $optionConfig) {
             $name = (string)$optionConfig->getName();
@@ -223,7 +226,8 @@ class Help {
     }
 
     protected function renderOptions() {
-        $optionConfigs = $this->commandConfig->getOptionConfigs($this->subcommand);
+        $optionConfigs = $this->commandConfig
+            ->getOptionConfigs($this->subcommand);
         $count = count($optionConfigs);
         if ($count === 0) {
             return;
@@ -312,7 +316,8 @@ class Help {
 
     protected function hasOptionDescription() {
         if ($this->hasOptionDescription === null) {
-            $optionConfigs = $this->commandConfig->getOptionConfigs($this->subcommand);
+            $optionConfigs = $this->commandConfig
+                ->getOptionConfigs($this->subcommand);
             foreach ($optionConfigs as $optionConfig) {
                 if ((string)$optionConfig->getDescription() !== '') {
                     $this->hasOptionDescription = true;
