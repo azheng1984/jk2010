@@ -4,9 +4,11 @@ namespace Hyperframework\Cli;
 use Hyperframework\Common\ConfigException;
 
 class MutuallyExclusiveOptionGroupConfigParser {
-    public static function parse(array $configs, array $options, $subcommand) {
+    public static function parse(
+        array $configs, array $optionConfigs, $subcommand
+    ) {
         $result = [];
-        $includedOptions = [];
+        $includedOptionConfigs = [];
         foreach ($configs as $config) {
             if (is_array($config) === false) {
                 $type = gettype($config);
@@ -15,7 +17,7 @@ class MutuallyExclusiveOptionGroupConfigParser {
                 ));
             }
             $isRequired = false;
-            $mutuallyExclusiveOptions = [];
+            $mutuallyExclusiveOptionConfigs = [];
             foreach ($config as $key => $value) {
                 if (is_string($key)) {
                     if ($key === 'required') {
@@ -30,30 +32,31 @@ class MutuallyExclusiveOptionGroupConfigParser {
                     ));
                 }
                 $length = strlen($value);
-                if (isset($options[$value]) === false) {
+                if (isset($optionConfigs[$value]) === false) {
                     throw new ConfigException(self::getErrorMessage(
                         $subcommand, "option '$value' is not defined"
                     ));
                 }
-                $option = $options[$value];
-                if (in_array($option, $includedOptions, true)) {
+                $optionConfig = $optionConfigs[$value];
+                if (in_array(
+                    $optionConfig, $mutuallyExclusiveOptionConfigs, true
+                )) {
+                    continue;
+                }
+                if (in_array($optionConfig, $includedOptionConfigs, true)) {
                     throw new ConfigException(self::getErrorMessage(
                         $subcommand,
                         "option '$value' cannot belong to multiple groups"
                     ));
                 }
-                if (in_array($option, $mutuallyExclusiveOptions, true)) {
-                    continue;
-                }
-                $mutuallyExclusiveOptions[] = $option;
+                $mutuallyExclusiveOptionConfigs[] = $optionConfig;
             }
-            if (count($mutuallyExclusiveOptions) !== 0) {
-                $result[] = new MutuallyExclusiveOptionGroupConfig(
-                    $mutuallyExclusiveOptions, $isRequired
-                );
-                $includedOptions =
-                    array_merge($includedOptions, $mutuallyExclusiveOptions);
-            }
+            $result[] = new MutuallyExclusiveOptionGroupConfig(
+                $mutuallyExclusiveOptionConfigs, $isRequired
+            );
+            $includedOptionConfigs = array_merge(
+                $includedOptionConfigs, $mutuallyExclusiveOptionConfigs
+            );
         }
         return $result;
     }
