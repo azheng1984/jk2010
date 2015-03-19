@@ -266,7 +266,9 @@ class OptionConfigParser {
         }
     }
 
-    private function getErrorMessage($subcommand, $name, $shortName, $extra) {
+    private static function getErrorMessage(
+        $subcommand, $name, $shortName, $extra
+    ) {
         if ($subcommand === null) {
             $result = 'Command';
         } else {

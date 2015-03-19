@@ -98,7 +98,7 @@ class ArgumentConfigParser {
         return $result;
     }
 
-    private function getErrorMessage($subcommand, $name, $extra) {
+    private static function getErrorMessage($subcommand, $name, $extra) {
         if ($subcommand === null) {
             $result = 'Command';
         } else {
