@@ -66,12 +66,11 @@ class ArgumentConfigParser {
             }
             if ($optionalArgumentName !== null) {
                 if ($isRequired) {
-                throw new ConfigException(self::getErrorMessage(
-                    $subcommand, $optionalArgumentName, "it cannot be optional"
-                ));
-
-                    throw new ConfigException(
-                    );
+                    throw new ConfigException(self::getErrorMessage(
+                        $subcommand,
+                        $optionalArgumentName,
+                        'it cannot be optional'
+                    ));
                 }
             }
             if ($isRequired === false) {
@@ -90,7 +89,7 @@ class ArgumentConfigParser {
                 throw new ConfigException(self::getErrorMessage(
                     $subcommand,
                     $name,
-                    "repeatable argument must be the last one"
+                    'repeatable argument must be the last one'
                 ));
             }
             $hasRepeatableArgument = $isRepeatable;
