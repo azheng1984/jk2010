@@ -66,11 +66,7 @@ class Help {
             if ($this->hasOptionDescription() === false) {
                 $this->renderCompactOptions();
             } else {
-                if ($optionCount === 1) {
-                    $this->renderUsageElement('[option]');
-                } else {
-                    $this->renderUsageElement('[options]');
-                }
+                $this->renderUsageElement('[options]');
             }
         }
         if ($this->commandConfig->isSubcommandEnabled()
@@ -232,13 +228,7 @@ class Help {
         if ($count === 0) {
             return;
         }
-        echo PHP_EOL;
-        if ($count === 1) {
-            echo 'Option:';
-        } else {
-            echo 'Options:';
-        }
-        echo PHP_EOL;
+        echo PHP_EOL, 'Options:', PHP_EOL;
         $patterns = [];
         $descriptions = [];
         $includedOptions = [];
