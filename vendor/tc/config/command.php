@@ -5,7 +5,9 @@ return [
     'options' => [
         '--hello=(adf)' => 'dsdas jfoa fsdiofjsa ojfdsfaoidf sd fosdjofasdf ',
         '-x, --xx-dsafasdf' => [
-        //    'is_required' => true,
+            'name' => 'xxx',
+            'short_name' => 'x',
+            'required' => true,
             'description' => 'description xx'
         ],
         '--xxx[=arg]',
@@ -16,7 +18,7 @@ return [
         '-d,     --ddxx-dsafasdf=[<key>:]<value>' => 'dfsdf f fsdaf sdf ',
         '-h,   --help' => 'show help message'
     ],
-    'mutually_exclusive_options' => [
+    'mutually_exclusive_option_groups' => [
         '-t', '-g', '--xx-dsafasdf'
     ]
 ];

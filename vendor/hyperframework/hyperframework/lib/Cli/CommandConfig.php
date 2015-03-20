@@ -201,13 +201,7 @@ class CommandConfig {
         }
     }
 
-    protected function parseMutuallyExclusiveOptionGroupConfigs(
-        array $configs, $subcommand
-    ) {
-        return MutuallyExclusiveOptionGroupConfigParser::parse(
-            $configs, $this->getOptionConfigs($subcommand), $subcommand
-        );
-    }
+
 
     public function getDescription($subcommand = null) {
         return $this->get('description', $subcommand);
@@ -225,6 +219,36 @@ class CommandConfig {
 
     public function getVersion() {
         return $this->get('version');
+    }
+
+    public function isSubcommandEnabled() {
+        return Config::getBoolean(
+            'hyperframework.cli.enable_subcommand', false
+        );
+    }
+
+    public function hasSubcommand($subcommand) {
+        if ($this->isSubcommandEnabled() === false) {
+            return false;
+        }
+        return file_exists($this->getSubcommandConfigPath($subcommand));
+    }
+
+    public function getSubcommands() {
+        if ($this->isSubcommandEnabled() === false) {
+            return [];
+        }
+        if ($this->subcommands === null) {
+            $this->subcommands = [];
+            foreach (scandir($this->getSubcommandConfigRootPath()) as $file) {
+                $name = substr($file, 0, strlen($file) - 4);
+                if (preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]*\.php$/', $name) === 1
+                ) {
+                    $this->subcommands[] = $name;
+                }
+            }
+        }
+        return $this->subcommands;
     }
 
     protected function get($name, $subcommand = null) {
@@ -261,41 +285,39 @@ class CommandConfig {
         return $configs;
     }
 
-    public function isSubcommandEnabled() {
-        return Config::getBoolean(
-            'hyperframework.cli.enable_subcommand', false
-        );
-    }
-
-    public function hasSubcommand($subcommand) {
-        if ($this->isSubcommandEnabled() === false) {
-            return false;
-        }
-        return file_exists($this->getSubcommandConfigPath($subcommand));
-    }
-
-    public function getSubcommands() {
-        if ($this->isSubcommandEnabled() === false) {
-            return [];
-        }
-        if ($this->subcommands === null) {
-            $this->subcommands = [];
-            foreach (scandir($this->getSubcommandConfigRootPath()) as $file) {
-                $name = substr($file, 0, strlen($file) - 4);
-                if (preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]*\.php$/', $name) === 1
-                ) {
-                    $this->subcommands[] = $name;
-                }
+    protected function getDefaultClass($subcommand = null) {
+        if ($subcommand === null) {
+            $namespace = Config::getAppRootNamespace();
+            $class = 'Command';
+            if ($namespace !== '' && $namespace !== '\\') {
+                NamespaceCombiner::prepend($class, $namespace);
             }
+            return $class;
         }
-        return $this->subcommands;
+        $tmp = ucwords(str_replace('-', ' ', $subcommand));
+        return str_replace(' ', '', $tmp) . 'Command';
     }
 
-    protected function parseArgumentConfigs(array $config, $subcommand) {
-        return ArgumentConfigParser::parse($config, $subcommand);
+    protected function getDefaultOptionConfigs(array $options, $subcommand) {
+        $result = [];
+        if (isset($options['help']) === false) {
+            $shortName = 'h';
+            if (isset($options['-h'])) {
+                $shortName = null;
+            }
+            $result[] = new OptionConfig(
+                'help', $shortName, false, false, null, null
+            );
+        }
+        if ($subcommand === null && isset($options['version']) === false) {
+            $result[] = new OptionConfig(
+                'version', null, false, false, null, null
+            );
+        }
+        return $result;
     }
 
-    private function getDefaultArgumentConfigs($subcommand) {
+    protected function getDefaultArgumentConfigs($subcommand) {
         $class = $this->getClass($subcommand);
         $errorMessagePrefix = 'Failed to get default argument list config, ';
         if (method_exists($class, 'execute') === false) {
@@ -317,32 +339,31 @@ class CommandConfig {
                 if ($isArray) {
                     throw new LogicException(
                         $errorMessagePrefix
-                            . "argument list of method '$class::execute' is "
-                            . "invalid, array argument must be the last one."
+                        . "argument list of method '$class::execute' is "
+                        . "invalid, array argument must be the last one."
                     );
                 }
-                $isArray = true;
+                    $isArray = true;
             }
             $result[] = new DefaultArgumentConfig($param);
         }
         return $result;
     }
 
-    private function getDefaultClass($subcommand = null) {
-        if ($subcommand === null) {
-            $namespace = Config::getAppRootNamespace();
-            $class = 'Command';
-            if ($namespace !== '' && $namespace !== '\\') {
-                NamespaceCombiner::prepend($class, $namespace);
-            }
-            return $class;
-        }
-        $tmp = ucwords(str_replace('-', ' ', $subcommand));
-        return str_replace(' ', '', $tmp) . 'Command';
+    protected function parseArgumentConfigs(array $config, $subcommand) {
+        return ArgumentConfigParser::parse($config, $subcommand);
     }
 
     protected function parseOptionConfigs(array $config, $subcommand) {
         return OptionConfigParser::parse($config, $subcommand);
+    }
+
+    protected function parseMutuallyExclusiveOptionGroupConfigs(
+        array $configs, $subcommand
+    ) {
+        return MutuallyExclusiveOptionGroupConfigParser::parse(
+            $configs, $this->getOptionConfigs($subcommand), $subcommand
+        );
     }
 
     private function getConfigPath($subcommand = null) {
@@ -395,25 +416,6 @@ class CommandConfig {
             }
         }
         return ConfigFileFullPathBuilder::build($folder);
-    }
-
-    protected function getDefaultOptionConfigs(array $options, $subcommand) {
-        $result = [];
-        if (isset($options['help']) === false) {
-            $shortName = 'h';
-            if (isset($options['-h'])) {
-                $shortName = null;
-            }
-            $result[] = new OptionConfig(
-                'help', $shortName, false, false, null, null
-            );
-        }
-        if ($subcommand === null && isset($options['version']) === false) {
-            $result[] = new OptionConfig(
-                'version', null, false, false, null, null
-            );
-        }
-        return $result;
     }
 
     private function getErrorMessage($subcommand, $extra) {
