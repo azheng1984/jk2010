@@ -39,7 +39,7 @@ class CommandParser {
                     $isGlobal = false;
                     $subcommand = $element;
                     $result['subcommand'] = $element;
-                    $result['option'] = [];
+                    $result['options'] = [];
                     $optionConfigs = $commandConfig->getOptionConfigs($element);
                     $optionType = 'options';
                 } else {

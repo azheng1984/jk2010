@@ -13,4 +13,7 @@ class ArgumentConfigParserTest extends Base {
         $this->assertFalse($argumentConfig->isRequired());
         $this->assertTrue($argumentConfig->isRepeatable());
     }
+
+    public function testInvalidConfigs() {
+    }
 }
