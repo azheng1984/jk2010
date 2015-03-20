@@ -25,25 +25,6 @@ class Help {
         }
     }
 
-    private function renderUsageElement($element) {
-        $length = strlen($element);
-        if ($length === 0) {
-            return;
-        }
-        if ($this->usageLineLength > $this->usageIndent
-            && $length + $this->usageLineLength > 80
-        ) {
-            echo PHP_EOL, str_repeat(' ', $this->usageIndent);
-            $this->usageLineLength = $this->usageIndent;
-        } elseif ($this->usageLineLength !== 0
-            && $element[0] !== '|'
-        ) {
-            echo ' ';
-        }
-        echo $element;
-        $this->usageLineLength += $length;
-    }
-
     protected function renderUsage() {
         $name = $this->commandConfig->getName();
         $prefix = $name;
@@ -60,7 +41,7 @@ class Help {
             $this->renderUsageElement($this->subcommand);
         }
         $optionConfigs = $this->commandConfig
-            ->getOptionConfigs($this->subcommand);
+        ->getOptionConfigs($this->subcommand);
         $optionCount = count($optionConfigs);
         if ($optionCount > 0) {
             if ($this->hasOptionDescription() === false) {
@@ -79,6 +60,77 @@ class Help {
             $this->renderArguments();
         }
         echo PHP_EOL;
+    }
+
+    protected function renderOptions() {
+        $optionConfigs = $this->commandConfig
+        ->getOptionConfigs($this->subcommand);
+        $count = count($optionConfigs);
+        if ($count === 0) {
+            return;
+        }
+        echo PHP_EOL, 'Options:', PHP_EOL;
+        $patterns = [];
+        $descriptions = [];
+        $includedOptionConfigs = [];
+        foreach ($optionConfigs as $optionConfig) {
+            if (in_array($optionConfig, $includedOptionConfigs, true)) {
+                continue;
+            }
+            $includedOptionConfigs[] = $optionConfig;
+            $patterns[] = $this->getOptionPattern($optionConfig, false);
+            $descriptions[] = (string)$optionConfig->getDescription();
+        }
+        $this->renderList($patterns, $descriptions);
+    }
+
+    protected function renderSubcommands() {
+        $subcommands = $this->commandConfig->getSubcommands();
+        $count = count($subcommands);
+        if ($count === 0) {
+            return;
+        }
+        echo PHP_EOL, 'Commands:', PHP_EOL;
+        $descriptions = [];
+        foreach ($subcommands as $subcommand) {
+            $descriptions[] = (string)$this->getDescription($subcommand);
+        }
+        $this->renderList($subcommands, $descriptions);
+    }
+
+    protected function hasOptionDescription() {
+        if ($this->hasOptionDescription === null) {
+            $optionConfigs = $this->commandConfig
+            ->getOptionConfigs($this->subcommand);
+            foreach ($optionConfigs as $optionConfig) {
+                if ((string)$optionConfig->getDescription() !== '') {
+                    $this->hasOptionDescription = true;
+                }
+            }
+            if ($this->hasOptionDescription !== true) {
+                $this->hasOptionDescription = false;
+            }
+        }
+        return $this->hasOptionDescription;
+    }
+
+    private function renderUsageElement($element) {
+        $length = strlen($element);
+        if ($length === 0) {
+            return;
+        }
+        if ($this->usageLineLength > $this->usageIndent
+            && $length + $this->usageLineLength > 80
+        ) {
+            echo PHP_EOL, str_repeat(' ', $this->usageIndent);
+            $this->usageLineLength = $this->usageIndent;
+        } elseif ($this->usageLineLength !== 0
+            && $element[0] !== '|'
+        ) {
+            echo ' ';
+        }
+        echo $element;
+        $this->usageLineLength += $length;
     }
 
     private function renderArguments() {
@@ -222,28 +274,6 @@ class Help {
         }
     }
 
-    protected function renderOptions() {
-        $optionConfigs = $this->commandConfig
-            ->getOptionConfigs($this->subcommand);
-        $count = count($optionConfigs);
-        if ($count === 0) {
-            return;
-        }
-        echo PHP_EOL, 'Options:', PHP_EOL;
-        $patterns = [];
-        $descriptions = [];
-        $includedOptionConfigs = [];
-        foreach ($optionConfigs as $optionConfig) {
-            if (in_array($optionConfig, $includedOptionConfigs, true)) {
-                continue;
-            }
-            $includedOptionConfigs[] = $optionConfig;
-            $patterns[] = $this->getOptionPattern($optionConfig, false);
-            $descriptions[] = (string)$optionConfig->getDescription();
-        }
-        $this->renderList($patterns, $descriptions);
-    }
-
     private function renderList($names, $descriptions) {
         $maxLength = 0;
         $count = 0;
@@ -289,35 +319,5 @@ class Help {
                 echo PHP_EOL;
             }
         }
-    }
-
-    protected function renderSubcommands() {
-        $subcommands = $this->commandConfig->getSubcommands();
-        $count = count($subcommands);
-        if ($count === 0) {
-            return;
-        }
-        echo PHP_EOL, 'Commands:', PHP_EOL;
-        $descriptions = [];
-        foreach ($subcommands as $subcommand) {
-            $descriptions[] = (string)$this->getDescription($subcommand);
-        }
-        $this->renderList($subcommands, $descriptions);
-    }
-
-    protected function hasOptionDescription() {
-        if ($this->hasOptionDescription === null) {
-            $optionConfigs = $this->commandConfig
-                ->getOptionConfigs($this->subcommand);
-            foreach ($optionConfigs as $optionConfig) {
-                if ((string)$optionConfig->getDescription() !== '') {
-                    $this->hasOptionDescription = true;
-                }
-            }
-            if ($this->hasOptionDescription !== true) {
-                $this->hasOptionDescription = false;
-            }
-        }
-        return $this->hasOptionDescription;
     }
 }

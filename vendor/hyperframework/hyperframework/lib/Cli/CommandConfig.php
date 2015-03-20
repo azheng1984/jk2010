@@ -355,14 +355,19 @@ class CommandConfig {
     }
 
     protected function parseOptionConfigs(array $config, $subcommand) {
-        return OptionConfigParser::parse($config, $subcommand);
+        return OptionConfigParser::parse(
+            $config, $this->isSubcommandEnabled(), $subcommand
+        );
     }
 
     protected function parseMutuallyExclusiveOptionGroupConfigs(
         array $configs, $subcommand
     ) {
         return MutuallyExclusiveOptionGroupConfigParser::parse(
-            $configs, $this->getOptionConfigs($subcommand), $subcommand
+            $configs,
+            $this->getOptionConfigs($subcommand),
+            $this->isSubcommandEnabled(),
+            $subcommand
         );
     }
 

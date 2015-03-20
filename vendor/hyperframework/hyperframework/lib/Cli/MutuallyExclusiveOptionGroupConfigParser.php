@@ -5,7 +5,7 @@ use Hyperframework\Common\ConfigException;
 
 class MutuallyExclusiveOptionGroupConfigParser {
     public static function parse(
-        array $configs, array $optionConfigs, $subcommand
+        array $configs, array $optionConfigs, $isSubcommandEnabled, $subcommand
     ) {
         $result = [];
         $includedOptionConfigs = [];
@@ -13,7 +13,9 @@ class MutuallyExclusiveOptionGroupConfigParser {
             if (is_array($config) === false) {
                 $type = gettype($config);
                 throw new ConfigException(self::getErrorMessage(
-                    $subcommand, "config must be an array, $type given"
+                    $isSubcommandEnabled,
+                    $subcommand,
+                    "config must be an array, $type given"
                 ));
             }
             $isRequired = false;
@@ -28,13 +30,17 @@ class MutuallyExclusiveOptionGroupConfigParser {
                 if (is_string($value) === false) {
                     $type = gettype($value);
                     throw new ConfigException(self::getErrorMessage(
-                        $subcommand, "option must be a string, $type given"
+                        $isSubcommandEnabled,
+                        $subcommand,
+                        "option must be a string, $type given"
                     ));
                 }
                 $length = strlen($value);
                 if (isset($optionConfigs[$value]) === false) {
                     throw new ConfigException(self::getErrorMessage(
-                        $subcommand, "option '$value' is not defined"
+                        $isSubcommandEnabled,
+                        $subcommand,
+                        "option '$value' is not defined"
                     ));
                 }
                 $optionConfig = $optionConfigs[$value];
@@ -45,6 +51,7 @@ class MutuallyExclusiveOptionGroupConfigParser {
                 }
                 if (in_array($optionConfig, $includedOptionConfigs, true)) {
                     throw new ConfigException(self::getErrorMessage(
+                        $isSubcommandEnabled,
                         $subcommand,
                         "option '$value' cannot belong to multiple groups"
                     ));
@@ -61,9 +68,15 @@ class MutuallyExclusiveOptionGroupConfigParser {
         return $result;
     }
 
-    private static function getErrorMessage($subcommand, $extra) {
+    private static function getErrorMessage(
+        $isSubcommandEnabled, $subcommand, $extra
+    ) {
         if ($subcommand === null) {
-            $result = 'Command';
+            if ($isSubcommandEnabled) {
+                $result = 'Command';
+            } else {
+                $result = 'Global command';
+            }
         } else {
             $result = "Subcommand '$subcommand'";
         }

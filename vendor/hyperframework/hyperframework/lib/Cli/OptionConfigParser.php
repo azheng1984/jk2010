@@ -4,12 +4,15 @@ namespace Hyperframework\Cli;
 use Hyperframework\Common\ConfigException;
 
 class OptionConfigParser {
-    public static function parse(array $configs, $subcommand) {
+    public static function parse(
+        array $configs, $isSubcommandEnabled, $subcommand
+    ) {
         $result = [];
         foreach ($configs as $config) {
             if (is_array($config) === false) {
                 $type = gettype($config);
                 throw new ConfigException(self::GetErrorMessage(
+                    $isSubcommandEnabled,
                     $subcommand,
                     null,
                     null,
@@ -41,6 +44,7 @@ class OptionConfigParser {
             }
             if ($name === null && $shortName === null) {
                 throw new ConfigException(self::getErrorMessage(
+                    $isSubcommandEnabled,
                     $subcommand,
                     null,
                     null,
@@ -52,6 +56,7 @@ class OptionConfigParser {
                 if (is_string($name) === false) {
                     $type = gettype($name);
                     throw new ConfigException(self::getErrorMessage(
+                        $isSubcommandEnabled,
                         $subcommand,
                         null,
                         null,
@@ -61,6 +66,7 @@ class OptionConfigParser {
                 }
                 if (preg_match('/^[a-zA-Z0-9-]{2,}$/', $name) !== 1) {
                     throw new ConfigException(self::getErrorMessage(
+                        $isSubcommandEnabled,
                         $subcommand,
                         null,
                         null,
@@ -72,6 +78,7 @@ class OptionConfigParser {
                 if (is_string($shortName) === false) {
                     $type = gettype($shortName);
                     throw new ConfigException(self::getErrorMessage(
+                        $isSubcommandEnabled,
                         $subcommand,
                         $name,
                         null,
@@ -83,6 +90,7 @@ class OptionConfigParser {
                     || ctype_alnum($shortName) === false
                 ) {
                     throw new ConfigException(self::getErrorMessage(
+                        $isSubcommandEnabled,
                         $subcommand,
                         $name,
                         null,
@@ -94,6 +102,7 @@ class OptionConfigParser {
             if (is_bool($isRequired) === false) {
                 $type = gettype($isRequired);
                 throw new ConfigException(self::getErrorMessage(
+                    $isSubcommandEnabled,
                     $subcommand,
                     $name,
                     $shortName,
@@ -104,6 +113,7 @@ class OptionConfigParser {
             if (is_bool($isRepeatable) === false) {
                 $type = gettype($isRepeatable);
                 throw new ConfigException(self::getErrorMessage(
+                    $isSubcommandEnabled,
                     $subcommand,
                     $name,
                     $shortName,
@@ -121,6 +131,7 @@ class OptionConfigParser {
                 if (is_string($description) === false) {
                     $type = gettype($description);
                     throw new ConfigException(self::getErrorMessage(
+                        $isSubcommandEnabled,
                         $subcommand,
                         $name,
                         $shortName,
@@ -140,6 +151,7 @@ class OptionConfigParser {
             if ($name !== null) {
                 if (isset($result[$name])) {
                     throw new ConfigException(self::getErrorMessage(
+                        $isSubcommandEnabled,
                         $subcommand,
                         $name,
                         null,
@@ -151,6 +163,7 @@ class OptionConfigParser {
             if ($shortName !== null) {
                 if (isset($result[$shortName])) {
                     throw new ConfigException(self::getErrorMessage(
+                        $isSubcommandEnabled,
                         $subcommand,
                         null,
                         $shortName,
@@ -164,11 +177,16 @@ class OptionConfigParser {
     }
 
     private static function parseArgumentConfig(
-        $config, $subcommand, $optionName, $optionShortName
+        $config,
+        $isSubcommandEnabled,
+        $subcommand,
+        $optionName,
+        $optionShortName
     ) {
         if (is_array($config) === false) {
             $type = gettype($config);
             throw new ConfigException(self::getErrorMessage(
+                $isSubcommandEnabled,
                 $subcommand,
                 $optionName,
                 $optionShortName,
@@ -192,6 +210,7 @@ class OptionConfigParser {
         }
         if ($name === null) {
             throw new ConfigException(self::getErrorMessage(
+                $isSubcommandEnabled,
                 $subcommand,
                 $optionName,
                 $optionShortName,
@@ -201,6 +220,7 @@ class OptionConfigParser {
         if (is_string($name) === false) {
             $type = gettype($name);
             throw new ConfigException(self::getErrorMessage(
+                $isSubcommandEnabled,
                 $subcommand,
                 $optionName,
                 $optionShortName,
@@ -210,6 +230,7 @@ class OptionConfigParser {
         }
         if (preg_match('/^[a-zA-Z0-9-]*$/', $name) !== 1) {
             throw new ConfigException(self::getErrorMessage(
+                $isSubcommandEnabled,
                 $subcommand,
                 $optionName,
                 $optionShortName,
@@ -220,6 +241,7 @@ class OptionConfigParser {
         if (is_bool($isRequired) === false) {
             $type = gettype($isRequired);
             throw new ConfigException(self::getErrorMessage(
+                $isSubcommandEnabled,
                 $subcommand,
                 $optionName,
                 $optionShortName,
@@ -231,6 +253,7 @@ class OptionConfigParser {
             if (is_array($values) === false) {
                 $type = gettype($values);
                 throw new ConfigException(self::getErrorMessage(
+                    $isSubcommandEnabled,
                     $subcommand,
                     $optionName,
                     $optionShortName,
@@ -242,6 +265,7 @@ class OptionConfigParser {
                 if (is_string($value) === false) {
                     $type = gettype($value);
                     throw new ConfigException(self::getErrorMessage(
+                        $isSubcommandEnabled,
                         $subcommand,
                         $optionName,
                         $optionShortName,
@@ -251,6 +275,7 @@ class OptionConfigParser {
                 }
                 if (preg_match('/^[a-zA-Z0-9-_]+$/', $value) !== 1) {
                     throw new ConfigException(self::getErrorMessage(
+                        $isSubcommandEnabled,
                         $subcommand,
                         $optionName,
                         $optionShortName,
@@ -264,10 +289,14 @@ class OptionConfigParser {
     }
 
     private static function getErrorMessage(
-        $subcommand, $name, $shortName, $extra
+        $isSubcommandEnabled, $subcommand, $name, $shortName, $extra
     ) {
         if ($subcommand === null) {
-            $result = 'Command';
+            if ($isSubcommandEnabled) {
+                $result = 'Command';
+            } else {
+                $result = 'Global command';
+            }
         } else {
             $result = "Subcommand '$subcommand'";
         }
