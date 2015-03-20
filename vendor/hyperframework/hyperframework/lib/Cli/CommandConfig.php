@@ -201,8 +201,6 @@ class CommandConfig {
         }
     }
 
-
-
     public function getDescription($subcommand = null) {
         return $this->get('description', $subcommand);
     }
@@ -338,20 +336,37 @@ class CommandConfig {
         $method = new ReflectionMethod($class, 'execute');
         $params = $method->getParameters();
         $result = [];
-        $isArray = false;
+        $hasArray = false;
+        $hasOptional = false;
         foreach ($params as $param) {
-            if ($param->isArray()) {
-                if ($isArray) {
+            if ($hasArray) {
+                throw new LogicException(
+                    $this->getFailedToGetDefaultArgumentConfigsErrorMessage(
+                        $subcommand,
+                        "argument list of method '$class::execute' is "
+                            . "invalid, array argument must be"
+                            . " the last one"
+                    )
+                );
+            }
+            if ($hasOptional) {
+                if ($param->isOptional() === false) {
+                    $name = $param->getName();
                     throw new LogicException(
                         $this->getFailedToGetDefaultArgumentConfigsErrorMessage(
                             $subcommand,
                             "argument list of method '$class::execute' is "
-                                . "invalid, array argument must be"
-                                . " the last one"
+                                . "invalid, argument '$name' should not be"
+                                . " optional"
                         )
                     );
                 }
-                $isArray = true;
+            }
+            if ($param->isArray()) {
+                $hasArray = true;
+            }
+            if ($param->isOptional()) {
+                $hasOptional = true;
             }
             $result[] = new DefaultArgumentConfig($param);
         }
