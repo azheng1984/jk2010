@@ -356,7 +356,7 @@ class CommandConfig {
                             $subcommand,
                             "argument list of method '$class::execute' is "
                                 . "invalid, argument '$optionalArguemntName'"
-                                . " should not be optional"
+                                . " cannot be optional"
                         )
                     );
                 }

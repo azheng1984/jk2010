@@ -69,7 +69,7 @@ class ArgumentConfigParser {
                     throw new ConfigException(self::getErrorMessage(
                         $subcommand,
                         $optionalArgumentName,
-                        'it should not be optional'
+                        'it cannot be optional'
                     ));
                 }
             }
