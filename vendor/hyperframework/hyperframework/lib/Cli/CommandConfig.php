@@ -337,7 +337,7 @@ class CommandConfig {
         $params = $method->getParameters();
         $result = [];
         $hasArray = false;
-        $hasOptional = false;
+        $optionalArguemntName = null;
         foreach ($params as $param) {
             if ($hasArray) {
                 throw new LogicException(
@@ -349,15 +349,14 @@ class CommandConfig {
                     )
                 );
             }
-            if ($hasOptional) {
+            if ($optionalArguemntName !== null) {
                 if ($param->isOptional() === false) {
-                    $name = $param->getName();
                     throw new LogicException(
                         $this->getFailedToGetDefaultArgumentConfigsErrorMessage(
                             $subcommand,
                             "argument list of method '$class::execute' is "
-                                . "invalid, argument '$name' should not be"
-                                . " optional"
+                                . "invalid, argument '$optionalArguemntName'"
+                                . " should not be optional"
                         )
                     );
                 }
@@ -366,7 +365,7 @@ class CommandConfig {
                 $hasArray = true;
             }
             if ($param->isOptional()) {
-                $hasOptional = true;
+                $optionalArguemntName = $param->getName();
             }
             $result[] = new DefaultArgumentConfig($param);
         }
