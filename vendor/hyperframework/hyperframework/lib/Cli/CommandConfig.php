@@ -319,15 +319,29 @@ class CommandConfig {
 
     protected function getDefaultArgumentConfigs($subcommand) {
         $class = $this->getClass($subcommand);
-        $errorMessagePrefix = 'Failed to get default argument list config, ';
+        $errorMessage = 'Failed to get ';
+        if ($subcommand !== null) {
+            $errorMessage .=
+            "default argument configs of subcommand '$subcommand', ";
+        } else {
+            $errorMessage .= 'command default argument configs, ';
+        }
         if (method_exists($class, 'execute') === false) {
             if (class_exists($class) === false) {
-                throw new ClassNotFoundException(
-                    $errorMessagePrefix . "class '$class' does not exist."
-                );
+                $errorMessage = '';
+                if ($subcommand !== null) {
+                    throw new ClassNotFoundException(
+                        "Class '$class' of $target"
+                            . " does not exist."
+                    );
+                } else {
+                    throw new ClassNotFoundException(
+                        "Command class '$class' does not exist."
+                    );
+                }
             }
             throw new MethodNotFoundException(
-                $errorMessagePrefix . "method '$class::execute' does not exist."
+                $errorMessage . "method '$class::execute' does not exist'."
             );
         }
         $method = new ReflectionMethod($class, 'execute');
@@ -337,13 +351,14 @@ class CommandConfig {
         foreach ($params as $param) {
             if ($param->isArray()) {
                 if ($isArray) {
+
                     throw new LogicException(
-                        $errorMessagePrefix
-                        . "argument list of method '$class::execute' is "
-                        . "invalid, array argument must be the last one."
+                        $errorMessage .
+                            "argument list of method '$class::execute' is "
+                            . "invalid, array argument must be the last one."
                     );
                 }
-                    $isArray = true;
+                $isArray = true;
             }
             $result[] = new DefaultArgumentConfig($param);
         }
@@ -425,7 +440,11 @@ class CommandConfig {
 
     private function getErrorMessage($subcommand, $extra) {
         if ($subcommand === null) {
-            $result = 'Command';
+            if ($this->isSubcommandEnabled()) {
+                $result = 'Global command';
+            } else {
+                $result = 'Command';
+            }
         } else {
             $result = "Subcommand '$subcommand'";
         }

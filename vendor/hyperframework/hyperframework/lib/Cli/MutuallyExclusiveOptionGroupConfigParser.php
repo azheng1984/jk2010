@@ -73,9 +73,9 @@ class MutuallyExclusiveOptionGroupConfigParser {
     ) {
         if ($subcommand === null) {
             if ($isSubcommandEnabled) {
-                $result = 'Command';
-            } else {
                 $result = 'Global command';
+            } else {
+                $result = 'Command';
             }
         } else {
             $result = "Subcommand '$subcommand'";
