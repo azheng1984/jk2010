@@ -33,14 +33,14 @@ class CommandConfig {
             return $this->subcommandArgumentConfigs[$subcommand];
         } elseif ($this->argumentConfigs !== null) {
             return $this->argumentConfigs;
-        } elseif ($subcommand === null && $this->isSubcommandEnabled()) {
-            return [];
+        }
+        if ($subcommand === null && $this->isSubcommandEnabled()) {
+            $this->argumentConfigs = [];
+            return $this->argumentConfigs;
         }
         $configs = $this->get('arguments', $subcommand);
         if ($configs === null) {
             $argumentConfigs = $this->getDefaultArgumentConfigs($subcommand);
-            if ($argumentConfigs === null) {
-            }
         } else {
             if (is_array($configs) === false) {
                 throw new ConfigException(
@@ -53,9 +53,6 @@ class CommandConfig {
             }
             $argumentConfigs =
                 $this->parseArgumentConfigs($configs, $subcommand);
-        }
-        if ($argumentConfigs === null) {
-            $argumentConfigs = [];
         }
         if ($subcommand !== null) {
             $this->subcommandArgumentConfigs[$subcommand] = $argumentConfigs;
@@ -82,23 +79,6 @@ class CommandConfig {
             $class = (string)$this->getDefaultClass($subcommand);
         }
         if ($subcommand !== null) {
-            if ($class[0] === '\\') {
-                $class = ltrim($class, '\\');
-            } else {
-                $namespace = Config::getString(
-                    'hyperframework.cli.subcommand_root_namespace'
-                );
-                if ($namespace === null) {
-                    $namespace = 'Subcommands';
-                    $rootNamespace = Config::getAppRootNamespace();
-                    if ($rootNamespace !== '' && $rootNamespace !== '\\') {
-                        NamespaceCombiner::prepend($namespace, $rootNamespace);
-                    }
-                }
-                if ($namespace !== '' && $namespace !== '\\') {
-                    NamespaceCombiner::prepend($class, $namespace);
-                }
-            }
             $this->subcommandClasses[$subcommand] = $class;
         } else {
             $this->class = $class;
@@ -124,9 +104,6 @@ class CommandConfig {
                 ));
             }
             $optionConfigs = $this->parseOptionConfigs($config, $subcommand);
-            if ($optionConfigs === null) {
-                $optionConfigs = [];
-            }
         } else {
             $optionConfigs = [];
         }
@@ -174,9 +151,6 @@ class CommandConfig {
             $result = $this->parseMutuallyExclusiveOptionGroupConfigs(
                 $config, $subcommand
             );
-            if ($result === null) {
-                $result = [];
-            }
         } else {
             $result = [];
         }
@@ -267,8 +241,13 @@ class CommandConfig {
         $configPath = $this->getConfigPath($subcommand);
         if (file_exists($configPath)) {
             $configs = require $configPath;
-            if ($configs === null) {
-                $configs = [];
+            if (is_array($configs) === false) {
+                $type = gettype($configs);
+                throw new ConfigException($this->getErrorMessage(
+                    $subcommand,
+                    "config file '$configPath' must return an array,"
+                        . " $type returned."
+                ));
             }
         } else {
             throw new ConfigException($this->getErrorMessage(
@@ -284,19 +263,28 @@ class CommandConfig {
     }
 
     protected function getDefaultClass($subcommand = null) {
+        $rootNamespace = Config::getAppRootNamespace();
         if ($subcommand === null) {
-            $namespace = Config::getAppRootNamespace();
             $class = 'Command';
-            if ($namespace !== '' && $namespace !== '\\') {
-                NamespaceCombiner::prepend($class, $namespace);
+            if ($rootNamespace !== '' && $rootNamespace !== '\\') {
+                NamespaceCombiner::prepend($class, $rootNamespace);
             }
-            return $class;
+        } else {
+            $tmp = ucwords(str_replace('-', ' ', $subcommand));
+            $class = str_replace(' ', '', $tmp) . 'Command';
+            $namespace = 'Subcommands';
+            $rootNamespace = Config::getAppRootNamespace();
+            if ($rootNamespace !== '' && $rootNamespace !== '\\') {
+                NamespaceCombiner::prepend($namespace, $rootNamespace);
+            }
+            NamespaceCombiner::prepend($class, $namespace);
         }
-        $tmp = ucwords(str_replace('-', ' ', $subcommand));
-        return str_replace(' ', '', $tmp) . 'Command';
+        return $class;
     }
 
-    protected function getDefaultOptionConfigs(array $options, $subcommand) {
+    protected function getDefaultOptionConfigs(
+        array $options, $subcommand = null
+    ) {
         $result = [];
         if (isset($options['help']) === false) {
             $shortName = 'h';
@@ -315,7 +303,7 @@ class CommandConfig {
         return $result;
     }
 
-    protected function getDefaultArgumentConfigs($subcommand) {
+    protected function getDefaultArgumentConfigs($subcommand = null) {
         $class = $this->getClass($subcommand);
         if (method_exists($class, 'execute') === false) {
             if (class_exists($class) === false) {
@@ -372,18 +360,18 @@ class CommandConfig {
         return $result;
     }
 
-    protected function parseArgumentConfigs(array $config, $subcommand) {
+    protected function parseArgumentConfigs(array $config, $subcommand = null) {
         return ArgumentConfigParser::parse($config, $subcommand);
     }
 
-    protected function parseOptionConfigs(array $config, $subcommand) {
+    protected function parseOptionConfigs(array $config, $subcommand = null) {
         return OptionConfigParser::parse(
             $config, $this->isSubcommandEnabled(), $subcommand
         );
     }
 
     protected function parseMutuallyExclusiveOptionGroupConfigs(
-        array $configs, $subcommand
+        array $configs, $subcommand = null
     ) {
         return MutuallyExclusiveOptionGroupConfigParser::parse(
             $configs,
@@ -393,7 +381,7 @@ class CommandConfig {
         );
     }
 
-    private function getConfigPath($subcommand = null) {
+    private function getConfigPath($subcommand) {
         if ($subcommand === null) {
             $configPath = Config::getString(
                 'hyperframework.cli.command_config_path', ''

@@ -102,7 +102,7 @@ class MultipleCommandAppTest extends Base {
      * @expectedException Hyperframework\Common\ClassNotFoundException
      */
     public function testSubcommandClassNotFound() {
-        $_SERVER['argv'] = ['run', 'child_class_error'];
+        $_SERVER['argv'] = ['run', 'child-class-error'];
         $app = $this->createApp();
         $this->callProtectedMethod($app, 'executeCommand');
     }

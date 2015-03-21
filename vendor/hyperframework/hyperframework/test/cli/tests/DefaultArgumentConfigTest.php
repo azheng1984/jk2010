@@ -2,7 +2,6 @@
 namespace Hyperframework\Cli;
 
 use ReflectionFunction;
-use ReflectionMethod;
 use Hyperframework\Cli\Test\TestCase as Base;
 
 class DefaultArgumentConfigTest extends Base {
