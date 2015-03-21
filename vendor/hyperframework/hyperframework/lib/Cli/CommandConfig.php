@@ -69,16 +69,20 @@ class CommandConfig {
         if ($subcommand !== null
             && isset($this->subcommandClasses[$subcommand])
         ) {
-            $class = $this->subcommandClasses[$subcommand];
+            return $this->subcommandClasses[$subcommand];
         } elseif ($this->class !== null) {
-            $class = $this->class;
+            return $this->class;
         }
-        if ($class !== null) {
-            return $class;
+        $class = $this->get('class', $subcommand);
+        if ($class === null) {
+            $class = $this->getDefaultClass($subcommand);
         }
-        $class = (string)$this->get('class', $subcommand);
-        if ($class === '') {
-            $class = (string)$this->getDefaultClass($subcommand);
+        if (is_string($class) === false) {
+            throw new ConfigException($this->getErrorMessage(
+                $subcommand,
+                " field 'class' must be a string, "
+                    . gettype($class) . ' given.'
+            ));
         }
         if ($subcommand !== null) {
             $this->subcommandClasses[$subcommand] = $class;
@@ -209,7 +213,7 @@ class CommandConfig {
             return false;
         }
         if (preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]*$/', $subcommand) !== 1
-            && substr($subcommand, -1) === '-'
+            || substr($subcommand, -1) === '-'
         ) {
             return false;
         }
@@ -252,8 +256,8 @@ class CommandConfig {
         } elseif (isset($this->subcommandConfigs[$subcommand])) {
             return $this->subcommandConfigs[$subcommand];
         }
-        if ($subcommand === null) {
-            if ($this->hasSubcommand($subcommand)) {
+        if ($subcommand !== null) {
+            if ($this->hasSubcommand($subcommand) === false) {
                 throw new LoggingException(
                     "Subcommand '$subcommand' does not exist."
                 );

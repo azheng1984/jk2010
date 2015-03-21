@@ -54,7 +54,8 @@ class ConfigEngine {
         if (is_object($result)) {
             throw new ConfigException(
                 "Config '$name' requires an integer, object of class '"
-                    . get_class($result) . "' could not be converted to integer."
+                    . get_class($result)
+                    . "' could not be converted to integer."
             );
         }
         return (int)$result;

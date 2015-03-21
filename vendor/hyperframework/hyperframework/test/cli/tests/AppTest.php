@@ -98,7 +98,7 @@ class AppTest extends Base {
     public function testCommandClassNotFound() {
         Config::set(
             'hyperframework.cli.command_config_path',
-            'invalid_command_class.php'
+            'invalid_class_command.php'
         );
         $_SERVER['argv'] = ['run'];
         $app = $this->createApp();
@@ -149,7 +149,7 @@ class AppTest extends Base {
     public function testVersionUndefined() {
         Config::set(
             'hyperframework.cli.command_config_path',
-            'command_version_not_found.php'
+            'version_not_found_command.php'
         );
         $this->expectOutputString("undefined" . PHP_EOL);
         $_SERVER['argv'] = ['run', '--version'];
