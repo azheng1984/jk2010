@@ -442,7 +442,7 @@ class CommandConfig {
             'hyperframework.cli.subcommand_config_root_path'
         );
         if ($folder === null) {
-            $folder = 'subcommand';
+            $folder = 'subcommands';
         }
         $commandConfigRootPath = Config::getString(
             'hyperframework.cli.command_config_root_path', ''
