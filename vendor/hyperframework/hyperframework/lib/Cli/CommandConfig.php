@@ -12,6 +12,7 @@ use Hyperframework\Common\FileFullPathRecognizer;
 use Hyperframework\Common\ConfigException;
 use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\MethodNotFoundException;
+use Hyperframework\Logging\LoggingException;
 
 class CommandConfig {
     private $configs;
@@ -203,6 +204,11 @@ class CommandConfig {
         if ($this->isSubcommandEnabled() === false) {
             return false;
         }
+        if (preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]*$/', $subcommand) !== 1
+            && substr($subcommand, -1) === '-'
+        ) {
+            return false;
+        }
         return file_exists($this->getSubcommandConfigPath($subcommand));
     }
 
@@ -213,8 +219,12 @@ class CommandConfig {
         if ($this->subcommands === null) {
             $this->subcommands = [];
             foreach (scandir($this->getSubcommandConfigRootPath()) as $file) {
+                if (substr($file, -4) !== '.php') {
+                    continue;
+                }
                 $name = substr($file, 0, strlen($file) - 4);
                 if (preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]*\.php$/', $name) === 1
+                    && substr($name, -1) !== '-'
                 ) {
                     $this->subcommands[] = $name;
                 }
@@ -238,20 +248,26 @@ class CommandConfig {
         } elseif (isset($this->subcommandConfigs[$subcommand])) {
             return $this->subcommandConfigs[$subcommand];
         }
-        $configPath = $this->getConfigPath($subcommand);
-        if (file_exists($configPath)) {
-            $configs = require $configPath;
-            if (is_array($configs) === false) {
-                $type = gettype($configs);
-                throw new ConfigException($this->getErrorMessage(
-                    $subcommand,
-                    "config file '$configPath' must return an array,"
-                        . " $type returned."
-                ));
+        if ($subcommand === null) {
+            if ($this->hasSubcommand($subcommand)) {
+                throw new LoggingException(
+                    "Subcommand '$subcommand' does not exist."
+                );
             }
-        } else {
+        }
+        $configPath = $this->getConfigPath($subcommand);
+        if (file_exists($configPath) === false) {
             throw new ConfigException($this->getErrorMessage(
                 $subcommand, "config file '$configPath' does not exist."
+            ));
+        }
+        $configs = require $configPath;
+        if (is_array($configs) === false) {
+            $type = gettype($configs);
+            throw new ConfigException($this->getErrorMessage(
+                $subcommand,
+                "config file '$configPath' must return an array,"
+                    . " $type returned."
             ));
         }
         if ($subcommand === null) {
