@@ -212,9 +212,7 @@ class CommandConfig {
         if ($this->isSubcommandEnabled() === false) {
             return false;
         }
-        if (preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]*$/', $subcommand) !== 1
-            || substr($subcommand, -1) === '-'
-        ) {
+        if (preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]*$/', $subcommand) !== 1) {
             return false;
         }
         return file_exists($this->getSubcommandConfigPath($subcommand));
@@ -231,9 +229,8 @@ class CommandConfig {
                     continue;
                 }
                 $name = substr($file, 0, strlen($file) - 4);
-                if (preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]*\.php$/', $name) === 1
-                    && substr($name, -1) !== '-'
-                ) {
+                $pattern = '/^[a-zA-Z0-9][a-zA-Z0-9-]*\.php$/';
+                if (preg_match($pattern, $name) === 1) {
                     $this->subcommands[] = $name;
                 }
             }
