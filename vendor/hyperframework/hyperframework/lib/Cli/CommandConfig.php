@@ -18,6 +18,7 @@ class CommandConfig {
     private $configs;
     private $class;
     private $optionConfigs;
+    private $isSubcommandEnabled;
     private $subcommands;
     private $mutuallyExclusiveOptionGroupConfigs;
     private $argumentConfigs;
@@ -195,9 +196,12 @@ class CommandConfig {
     }
 
     public function isSubcommandEnabled() {
-        return Config::getBoolean(
-            'hyperframework.cli.enable_subcommand', false
-        );
+        if ($this->isSubcommandEnabled === null) {
+            $this->isSubcommandEnabled = Config::getBoolean(
+                'hyperframework.cli.enable_subcommand', false
+            );
+        }
+        return $this->isSubcommandEnabled;
     }
 
     public function hasSubcommand($subcommand) {
