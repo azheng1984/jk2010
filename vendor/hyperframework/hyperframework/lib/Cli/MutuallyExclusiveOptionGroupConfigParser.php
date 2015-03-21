@@ -5,7 +5,10 @@ use Hyperframework\Common\ConfigException;
 
 class MutuallyExclusiveOptionGroupConfigParser {
     public static function parse(
-        array $configs, array $optionConfigs, $isSubcommandEnabled, $subcommand
+        array $configs,
+        array $optionConfigs,
+        $isSubcommandEnabled = false,
+        $subcommand = null
     ) {
         $result = [];
         $includedOptionConfigs = [];
@@ -23,6 +26,15 @@ class MutuallyExclusiveOptionGroupConfigParser {
             foreach ($config as $key => $value) {
                 if (is_string($key)) {
                     if ($key === 'required') {
+                        if (is_bool($value) === false) {
+                            $type = gettype($value);
+                            throw new ConfigException(self::getErrorMessage(
+                                $isSubcommandEnabled,
+                                $subcommand,
+                                "field 'required' must be a boolean, "
+                                    . "$type given"
+                            ));
+                        }
                         $isRequired = (bool)$value;
                     }
                     continue;

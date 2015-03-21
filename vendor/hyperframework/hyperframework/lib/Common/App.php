@@ -19,8 +19,8 @@ abstract class App {
     public function quit() {
         if ($this->isQuitMethodCalled) {
             throw new InvalidOperationException(
-                'The quit method of ' . __CLASS__
-                    . ' cannot be called more than once.'
+                "The quit method of class '" . __CLASS__
+                    . "' cannot be called more than once."
             );
         }
         $this->isQuitMethodCalled = true;

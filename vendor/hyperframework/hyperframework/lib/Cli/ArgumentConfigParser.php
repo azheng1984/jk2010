@@ -4,7 +4,7 @@ namespace Hyperframework\Cli;
 use Hyperframework\Common\ConfigException;
 
 class ArgumentConfigParser {
-    public static function parse(array $configs, $subcommand) {
+    public static function parse(array $configs, $subcommand = null) {
         $result = [];
         $hasRepeatableArgument = false;
         $optionalArgumentName = null;
@@ -48,7 +48,7 @@ class ArgumentConfigParser {
                         . " 'name' must be a string, $type given"
                 ));
             }
-            if (preg_match('/^[a-zA-Z0-9-]*$/', $name) !== 1) {
+            if (preg_match('/^[a-zA-Z0-9-]+$/', $name) !== 1) {
                 throw new ConfigException(self::getErrorMessage(
                     $subcommand,
                     null,

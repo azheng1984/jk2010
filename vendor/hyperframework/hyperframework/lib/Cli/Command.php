@@ -21,8 +21,8 @@ abstract class Command {
     public function getApp() {
         if ($this->app === null) {
             throw new LogicException(
-                "App cannot be null, constructor method of class"
-                    . " '" . __CLASS__ . "' is not called."
+                "The app equals null, the constructor method of class '"
+                    . __CLASS__ . "' is not called."
             );
         }
         return $this->app;
@@ -66,8 +66,8 @@ abstract class Command {
     public function quit() {
         if ($this->isQuitMethodCalled) {
             throw new InvalidOperationException(
-                'The quit method of ' . __CLASS__
-                    . ' cannot be called more than once.'
+                "The quit method of class '" . __CLASS__
+                    . "' cannot be called more than once."
             );
         }
         $this->isQuitMethodCalled = true;

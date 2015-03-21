@@ -4,7 +4,7 @@ namespace Hyperframework\Web;
 use Hyperframework\Web\Test\Exception;
 use Hyperframework\Common\Config;
 use Hyperframework\Web\Test\IndexController;
-use Hyperframework\Web\Test\InvalidConstructorController;
+use Hyperframework\Web\Test\ParentConstructorNotCalledController;
 use Hyperframework\Common\NotSupportedException;
 use Hyperframework\Web\Test\TestCase as Base;
 
@@ -28,7 +28,7 @@ class ControllerTest extends Base {
      * @expectedException LogicException
      */
     public function testGetAppWhenParentConstructorOfControllerIsNotCalled() {
-        $controller = new InvalidConstructorController;
+        $controller = new ParentConstructorNotCalledController;
         $controller->getApp();
     }
 

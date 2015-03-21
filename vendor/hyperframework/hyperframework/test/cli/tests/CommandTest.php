@@ -2,9 +2,17 @@
 namespace Hyperframework\Cli;
 
 use Hyperframework\Cli\Test\Command;
+use Hyperframework\Cli\Test\ParentConstructorNotCalledCommand;
 use Hyperframework\Cli\Test\TestCase as Base;
 
 class CommandTest extends Base {
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testConstructWhenAppArgumentIsInvalid() {
+        new Command(null);
+    }
+
     public function testQuit() {
         $app = $this->getMockBuilder('Hyperframework\Cli\App')
             ->setMethods(['quit'])
@@ -13,5 +21,26 @@ class CommandTest extends Base {
         $app->expects($this->once())->method('quit');
         $command = new Command($app);
         $command->quit();
+    }
+
+    /**
+     * @expectedException Hyperframework\Common\InvalidOperationException
+     */
+    public function testQuitTwice() {
+        $app = $this->getMockBuilder('Hyperframework\Cli\App')
+            ->setMethods(['quit'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $command = new Command($app);
+        $command->quit();
+        $command->quit();
+    }
+
+    /**
+     * @expectedException LogicException
+     */
+    public function testGetAppWhenConstructorIsNotCalled() {
+        $command = new ParentConstructorNotCalledCommand;
+        $command->getApp();
     }
 }

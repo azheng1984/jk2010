@@ -5,7 +5,7 @@ use Hyperframework\Common\ConfigException;
 
 class OptionConfigParser {
     public static function parse(
-        array $configs, $isSubcommandEnabled, $subcommand
+        array $configs, $isSubcommandEnabled = false, $subcommand = null
     ) {
         $result = [];
         foreach ($configs as $config) {
@@ -122,9 +122,13 @@ class OptionConfigParser {
                 ));
             }
             $argumentConfig = null;
-            if (isset($configs['argument'])) {
+            if (isset($config['argument'])) {
                 $argumentConfig = self::parseArgumentConfig(
-                    $configs['argument'], $subcommand, $name, $shortName
+                    $config['argument'],
+                    $isSubcommandEnabled,
+                    $subcommand,
+                    $name,
+                    $shortName
                 );
             }
             if ($description !== null) {
@@ -195,7 +199,7 @@ class OptionConfigParser {
         }
         $name = null;
         $isRequired = true;
-        $values = false;
+        $values = null;
         foreach ($config as $key => $value) {
             switch ($key) {
                 case 'name':
@@ -228,7 +232,7 @@ class OptionConfigParser {
                     . " 'name' must be a string, $type given"
             ));
         }
-        if (preg_match('/^[a-zA-Z0-9-]*$/', $name) !== 1) {
+        if (preg_match('/^[a-zA-Z0-9-]+$/', $name) !== 1) {
             throw new ConfigException(self::getErrorMessage(
                 $isSubcommandEnabled,
                 $subcommand,
@@ -284,8 +288,8 @@ class OptionConfigParser {
                     ));
                 }
             }
-            return new OptionArgumentConfig($name, $isRequired, $values);
         }
+        return new OptionArgumentConfig($name, $isRequired, $values);
     }
 
     private static function getErrorMessage(
