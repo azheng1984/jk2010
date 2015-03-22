@@ -4,7 +4,7 @@ namespace Hyperframework\Cli;
 use Hyperframework\Common\ConfigException;
 
 class ArgumentConfigParser {
-    public static function parse(array $configs, $subcommand = null) {
+    public static function parse(array $configs, $subcommandName = null) {
         $result = [];
         $hasRepeatableArgument = false;
         $optionalArgumentName = null;
@@ -12,7 +12,7 @@ class ArgumentConfigParser {
             if (is_array($config) === false) {
                 $type = gettype($config);
                 throw new ConfigException(self::getErrorMessage(
-                    $subcommand,
+                    $subcommandName,
                     null,
                     "config must be an array, $type given."
                 ));
@@ -34,7 +34,7 @@ class ArgumentConfigParser {
             }
             if ($name === null) {
                 throw new ConfigException(self::getErrorMessage(
-                    $subcommand,
+                    $subcommandName,
                     null,
                     "field 'name' is missing or equals null"
                 ));
@@ -42,7 +42,7 @@ class ArgumentConfigParser {
             if (is_string($name) === false) {
                 $type = gettype($name);
                 throw new ConfigException(self::getErrorMessage(
-                    $subcommand,
+                    $subcommandName,
                     null,
                     "the value of field"
                         . " 'name' must be a string, $type given"
@@ -50,7 +50,7 @@ class ArgumentConfigParser {
             }
             if (preg_match('/^[a-zA-Z0-9-]+$/', $name) !== 1) {
                 throw new ConfigException(self::getErrorMessage(
-                    $subcommand,
+                    $subcommandName,
                     null,
                     "value '$name' of field 'name' is invalid"
                 ));
@@ -58,7 +58,7 @@ class ArgumentConfigParser {
             if (is_bool($isRequired) === false) {
                 $type = gettype($isRequired);
                 throw new ConfigException(self::getErrorMessage(
-                    $subcommand,
+                    $subcommandName,
                     $name,
                     "the value of field"
                         . " 'required' must be a boolean, $type given"
@@ -67,7 +67,7 @@ class ArgumentConfigParser {
             if ($optionalArgumentName !== null) {
                 if ($isRequired) {
                     throw new ConfigException(self::getErrorMessage(
-                        $subcommand,
+                        $subcommandName,
                         $optionalArgumentName,
                         'it cannot be optional'
                     ));
@@ -79,7 +79,7 @@ class ArgumentConfigParser {
             if (is_bool($isRepeatable) === false) {
                 $type = gettype($isRepeatable);
                 throw new ConfigException(self::getErrorMessage(
-                    $subcommand,
+                    $subcommandName,
                     $name,
                     "the value of field"
                         . " 'repeatable' must be a boolean, $type given"
@@ -87,7 +87,7 @@ class ArgumentConfigParser {
             }
             if ($hasRepeatableArgument) {
                 throw new ConfigException(self::getErrorMessage(
-                    $subcommand,
+                    $subcommandName,
                     $name,
                     'repeatable argument must be the last one'
                 ));
@@ -98,11 +98,11 @@ class ArgumentConfigParser {
         return $result;
     }
 
-    private static function getErrorMessage($subcommand, $name, $extra) {
-        if ($subcommand === null) {
+    private static function getErrorMessage($subcommandName, $name, $extra) {
+        if ($subcommandName === null) {
             $result = 'Command';
         } else {
-            $result = "Subcommand '$subcommand'";
+            $result = "Subcommand '$subcommandName'";
         }
         $result .= ' argument';
         if ($name !== null) {

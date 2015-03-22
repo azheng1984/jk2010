@@ -5,7 +5,7 @@ use Hyperframework\Common\ConfigException;
 
 class OptionConfigParser {
     public static function parse(
-        array $configs, $isSubcommandEnabled = false, $subcommand = null
+        array $configs, $isSubcommandEnabled = false, $subcommandName = null
     ) {
         $result = [];
         foreach ($configs as $config) {
@@ -13,7 +13,7 @@ class OptionConfigParser {
                 $type = gettype($config);
                 throw new ConfigException(self::GetErrorMessage(
                     $isSubcommandEnabled,
-                    $subcommand,
+                    $subcommandName,
                     null,
                     null,
                     "config must be an array, $type given"
@@ -45,7 +45,7 @@ class OptionConfigParser {
             if ($name === null && $shortName === null) {
                 throw new ConfigException(self::getErrorMessage(
                     $isSubcommandEnabled,
-                    $subcommand,
+                    $subcommandName,
                     null,
                     null,
                     "field 'name' or 'short_name'"
@@ -57,7 +57,7 @@ class OptionConfigParser {
                     $type = gettype($name);
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
-                        $subcommand,
+                        $subcommandName,
                         null,
                         null,
                         "the value of field"
@@ -67,7 +67,7 @@ class OptionConfigParser {
                 if (preg_match('/^[a-zA-Z0-9-]{2,}$/', $name) !== 1) {
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
-                        $subcommand,
+                        $subcommandName,
                         null,
                         null,
                         "value '$name' of field 'name' is invalid"
@@ -79,7 +79,7 @@ class OptionConfigParser {
                     $type = gettype($shortName);
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
-                        $subcommand,
+                        $subcommandName,
                         $name,
                         null,
                         "the value of field"
@@ -91,7 +91,7 @@ class OptionConfigParser {
                 ) {
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
-                        $subcommand,
+                        $subcommandName,
                         $name,
                         null,
                         "value '$shortName' of "
@@ -103,7 +103,7 @@ class OptionConfigParser {
                 $type = gettype($isRequired);
                 throw new ConfigException(self::getErrorMessage(
                     $isSubcommandEnabled,
-                    $subcommand,
+                    $subcommandName,
                     $name,
                     $shortName,
                     "the value of field"
@@ -114,7 +114,7 @@ class OptionConfigParser {
                 $type = gettype($isRepeatable);
                 throw new ConfigException(self::getErrorMessage(
                     $isSubcommandEnabled,
-                    $subcommand,
+                    $subcommandName,
                     $name,
                     $shortName,
                     "the value of field"
@@ -126,7 +126,7 @@ class OptionConfigParser {
                 $argumentConfig = self::parseArgumentConfig(
                     $config['argument'],
                     $isSubcommandEnabled,
-                    $subcommand,
+                    $subcommandName,
                     $name,
                     $shortName
                 );
@@ -136,7 +136,7 @@ class OptionConfigParser {
                     $type = gettype($description);
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
-                        $subcommand,
+                        $subcommandName,
                         $name,
                         $shortName,
                         "the value of field"
@@ -156,7 +156,7 @@ class OptionConfigParser {
                 if (isset($result[$name])) {
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
-                        $subcommand,
+                        $subcommandName,
                         $name,
                         null,
                         "it has already been defined"
@@ -168,7 +168,7 @@ class OptionConfigParser {
                 if (isset($result[$shortName])) {
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
-                        $subcommand,
+                        $subcommandName,
                         null,
                         $shortName,
                         "it has already been defined"
@@ -183,7 +183,7 @@ class OptionConfigParser {
     private static function parseArgumentConfig(
         $config,
         $isSubcommandEnabled,
-        $subcommand,
+        $subcommandName,
         $optionName,
         $optionShortName
     ) {
@@ -191,7 +191,7 @@ class OptionConfigParser {
             $type = gettype($config);
             throw new ConfigException(self::getErrorMessage(
                 $isSubcommandEnabled,
-                $subcommand,
+                $subcommandName,
                 $optionName,
                 $optionShortName,
                 "the value of field 'argument' must be an array, $type given"
@@ -215,7 +215,7 @@ class OptionConfigParser {
         if ($name === null) {
             throw new ConfigException(self::getErrorMessage(
                 $isSubcommandEnabled,
-                $subcommand,
+                $subcommandName,
                 $optionName,
                 $optionShortName,
                 "option argument config field 'name' is missing or equals null"
@@ -225,7 +225,7 @@ class OptionConfigParser {
             $type = gettype($name);
             throw new ConfigException(self::getErrorMessage(
                 $isSubcommandEnabled,
-                $subcommand,
+                $subcommandName,
                 $optionName,
                 $optionShortName,
                 "the value of option argument config field"
@@ -235,7 +235,7 @@ class OptionConfigParser {
         if (preg_match('/^[a-zA-Z0-9-]+$/', $name) !== 1) {
             throw new ConfigException(self::getErrorMessage(
                 $isSubcommandEnabled,
-                $subcommand,
+                $subcommandName,
                 $optionName,
                 $optionShortName,
                 "value '$name' of option argument config"
@@ -246,7 +246,7 @@ class OptionConfigParser {
             $type = gettype($isRequired);
             throw new ConfigException(self::getErrorMessage(
                 $isSubcommandEnabled,
-                $subcommand,
+                $subcommandName,
                 $optionName,
                 $optionShortName,
                 "the value of option argument config field"
@@ -258,7 +258,7 @@ class OptionConfigParser {
                 $type = gettype($values);
                 throw new ConfigException(self::getErrorMessage(
                     $isSubcommandEnabled,
-                    $subcommand,
+                    $subcommandName,
                     $optionName,
                     $optionShortName,
                     "the value of option argument config field"
@@ -270,7 +270,7 @@ class OptionConfigParser {
                     $type = gettype($value);
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
-                        $subcommand,
+                        $subcommandName,
                         $optionName,
                         $optionShortName,
                         "the element of option argument config field"
@@ -280,7 +280,7 @@ class OptionConfigParser {
                 if (preg_match('/^[a-zA-Z0-9-_]+$/', $value) !== 1) {
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
-                        $subcommand,
+                        $subcommandName,
                         $optionName,
                         $optionShortName,
                         "element '$value' of option argument config field"
@@ -293,16 +293,16 @@ class OptionConfigParser {
     }
 
     private static function getErrorMessage(
-        $isSubcommandEnabled, $subcommand, $name, $shortName, $extra
+        $isSubcommandEnabled, $subcommandName, $name, $shortName, $extra
     ) {
-        if ($subcommand === null) {
+        if ($subcommandName === null) {
             if ($isSubcommandEnabled) {
                 $result = 'Global command';
             } else {
                 $result = 'Command';
             }
         } else {
-            $result = "Subcommand '$subcommand'";
+            $result = "Subcommand '$subcommandName'";
         }
         $result .= ' option';
         if ($name !== null) {

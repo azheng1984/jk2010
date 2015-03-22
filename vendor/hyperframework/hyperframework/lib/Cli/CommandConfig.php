@@ -14,11 +14,11 @@ use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\MethodNotFoundException;
 
 class CommandConfig {
+    private $isSubcommandEnabled;
+    private $subcommandNames;
     private $configs;
     private $class;
     private $optionConfigs;
-    private $isSubcommandEnabled;
-    private $subcommands;
     private $mutuallyExclusiveOptionGroupConfigs;
     private $argumentConfigs;
     private $subcommandConfigs = [];
@@ -203,8 +203,8 @@ class CommandConfig {
         if ($this->isSubcommandEnabled() === false) {
             return [];
         }
-        if ($this->subcommands === null) {
-            $this->subcommands = [];
+        if ($this->subcommandNames === null) {
+            $this->subcommandNames = [];
             foreach (scandir($this->getSubcommandConfigRootPath()) as $file) {
                 if (substr($file, -4) !== '.php') {
                     continue;
@@ -212,67 +212,67 @@ class CommandConfig {
                 $name = substr($file, 0, strlen($file) - 4);
                 $pattern = '/^[a-zA-Z0-9][a-zA-Z0-9-]*$/';
                 if (preg_match($pattern, $name) === 1) {
-                    $this->subcommands[] = $name;
+                    $this->subcommandNames[] = $name;
                 }
             }
         }
-        return $this->subcommands;
+        return $this->subcommandNames;
     }
 
-    protected function get($name, $subcommand = null) {
-        $configs = $this->getAll($subcommand);
+    protected function get($name, $subcommandName = null) {
+        $configs = $this->getAll($subcommandName);
         if (isset($configs[$name])) {
             return $configs[$name];
         }
     }
 
-    protected function getAll($subcommand = null) {
-        if ($subcommand === null) {
+    protected function getAll($subcommandName = null) {
+        if ($subcommandName === null) {
             if ($this->configs !== null) {
                 return $this->configs;
             }
-        } elseif (isset($this->subcommandConfigs[$subcommand])) {
-            return $this->subcommandConfigs[$subcommand];
+        } elseif (isset($this->subcommandConfigs[$subcommandName])) {
+            return $this->subcommandConfigs[$subcommandName];
         }
-        if ($subcommand !== null) {
-            if ($this->hasSubcommand($subcommand) === false) {
+        if ($subcommandName !== null) {
+            if ($this->hasSubcommand($subcommandName) === false) {
                 throw new LogicException(
-                    "Subcommand '$subcommand' does not exist."
+                    "Subcommand '$subcommandName' does not exist."
                 );
             }
         }
-        $configPath = $this->getConfigPath($subcommand);
+        $configPath = $this->getConfigPath($subcommandName);
         if (file_exists($configPath) === false) {
             throw new ConfigException($this->getErrorMessage(
-                $subcommand, "config file '$configPath' does not exist."
+                $subcommandName, "config file '$configPath' does not exist."
             ));
         }
         $configs = require $configPath;
         if (is_array($configs) === false) {
             $type = gettype($configs);
             throw new ConfigException($this->getErrorMessage(
-                $subcommand,
+                $subcommandName,
                 "config file '$configPath' must return an array,"
                     . " $type returned."
             ));
         }
-        if ($subcommand === null) {
+        if ($subcommandName === null) {
             $this->configs = $configs;
         } else {
-            $this->subcommandConfigs[$subcommand] = $configs;
+            $this->subcommandConfigs[$subcommandName] = $configs;
         }
         return $configs;
     }
 
-    protected function getDefaultClass($subcommand = null) {
+    protected function getDefaultClass($subcommandName = null) {
         $rootNamespace = Config::getAppRootNamespace();
-        if ($subcommand === null) {
+        if ($subcommandName === null) {
             $class = 'Command';
             if ($rootNamespace !== '' && $rootNamespace !== '\\') {
                 NamespaceCombiner::prepend($class, $rootNamespace);
             }
         } else {
-            $tmp = ucwords(str_replace('-', ' ', $subcommand));
+            $tmp = ucwords(str_replace('-', ' ', $subcommandName));
             $class = str_replace(' ', '', $tmp) . 'Command';
             $namespace = 'Subcommands';
             $rootNamespace = Config::getAppRootNamespace();
@@ -285,7 +285,7 @@ class CommandConfig {
     }
 
     protected function getDefaultOptionConfigs(
-        array $options, $subcommand = null
+        array $options, $subcommandName = null
     ) {
         $result = [];
         if (isset($options['help']) === false) {
@@ -297,7 +297,7 @@ class CommandConfig {
                 'help', $shortName, false, false, null, null
             );
         }
-        if ($subcommand === null && isset($options['version']) === false) {
+        if ($subcommandName === null && isset($options['version']) === false) {
             $result[] = new OptionConfig(
                 'version', null, false, false, null, null
             );
@@ -305,20 +305,20 @@ class CommandConfig {
         return $result;
     }
 
-    protected function getDefaultArgumentConfigs($subcommand = null) {
-        $class = $this->getClass($subcommand);
+    protected function getDefaultArgumentConfigs($subcommandName = null) {
+        $class = $this->getClass($subcommandName);
         if (method_exists($class, 'execute') === false) {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
                     $this->getFailedToGetDefaultArgumentConfigsErrorMessage(
-                        $subcommand,
+                        $subcommandName,
                         "class '$class' does not exist"
                     )
                 );
             }
             throw new MethodNotFoundException(
                 $this->getFailedToGetDefaultArgumentConfigsErrorMessage(
-                    $subcommand,
+                    $subcommandName,
                     "method '$class::execute' does not exist"
                 )
             );
@@ -332,7 +332,7 @@ class CommandConfig {
             if ($hasArray) {
                 throw new LogicException(
                     $this->getFailedToGetDefaultArgumentConfigsErrorMessage(
-                        $subcommand,
+                        $subcommandName,
                         "argument list of method '$class::execute' is "
                             . "invalid, array argument must be"
                             . " the last one"
@@ -343,7 +343,7 @@ class CommandConfig {
                 if ($param->isOptional() === false) {
                     throw new LogicException(
                         $this->getFailedToGetDefaultArgumentConfigsErrorMessage(
-                            $subcommand,
+                            $subcommandName,
                             "argument list of method '$class::execute' is "
                                 . "invalid, argument '$optionalArguemntName'"
                                 . " cannot be optional"
@@ -362,29 +362,29 @@ class CommandConfig {
         return $result;
     }
 
-    protected function parseArgumentConfigs(array $config, $subcommand = null) {
-        return ArgumentConfigParser::parse($config, $subcommand);
+    protected function parseArgumentConfigs(array $config, $subcommandName = null) {
+        return ArgumentConfigParser::parse($config, $subcommandName);
     }
 
-    protected function parseOptionConfigs(array $config, $subcommand = null) {
+    protected function parseOptionConfigs(array $config, $subcommandName = null) {
         return OptionConfigParser::parse(
-            $config, $this->isSubcommandEnabled(), $subcommand
+            $config, $this->isSubcommandEnabled(), $subcommandName
         );
     }
 
     protected function parseMutuallyExclusiveOptionGroupConfigs(
-        array $configs, $subcommand = null
+        array $configs, $subcommandName = null
     ) {
         return MutuallyExclusiveOptionGroupConfigParser::parse(
             $configs,
-            $this->getOptionConfigs($subcommand),
+            $this->getOptionConfigs($subcommandName),
             $this->isSubcommandEnabled(),
-            $subcommand
+            $subcommandName
         );
     }
 
-    private function getConfigPath($subcommand) {
-        if ($subcommand === null) {
+    private function getConfigPath($subcommandName) {
+        if ($subcommandName === null) {
             $configPath = Config::getString(
                 'hyperframework.cli.command_config_path', ''
             );
@@ -406,13 +406,13 @@ class CommandConfig {
             }
             return $configPath;
         } else {
-            return $this->getSubcommandConfigPath($subcommand);
+            return $this->getSubcommandConfigPath($subcommandName);
         }
     }
 
-    private function getSubcommandConfigPath($subcommand) {
+    private function getSubcommandConfigPath($subcommandName) {
         return $this->getSubcommandConfigRootPath()
-            . DIRECTORY_SEPARATOR . $subcommand . '.php';
+            . DIRECTORY_SEPARATOR . $subcommandName . '.php';
     }
 
     private function getSubcommandConfigRootPath() {
@@ -435,26 +435,26 @@ class CommandConfig {
         return ConfigFileFullPathBuilder::build($folder);
     }
 
-    private function getErrorMessage($subcommand, $extra) {
-        if ($subcommand === null) {
+    private function getErrorMessage($subcommandName, $extra) {
+        if ($subcommandName === null) {
             if ($this->isSubcommandEnabled()) {
                 $result = 'Global command';
             } else {
                 $result = 'Command';
             }
         } else {
-            $result = "Subcommand '$subcommand'";
+            $result = "Subcommand '$subcommandName'";
         }
         return $result . ' config error, ' . $extra;
     }
 
     private function getFailedToGetDefaultArgumentConfigsErrorMessage(
-        $subcommand, $extra
+        $subcommandName, $extra
     ) {
         $result = 'Failed to get ';
-        if ($subcommand !== null) {
+        if ($subcommandName !== null) {
             $result .=
-            "default argument configs of subcommand '$subcommand'";
+            "default argument configs of subcommand '$subcommandName'";
         } else {
             $result .= 'command default argument configs';
         }
