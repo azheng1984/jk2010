@@ -131,6 +131,9 @@ class CommandConfigTest extends Base {
         $commandConfig = $this->mockCommandConfig();
         $configs = $commandConfig->getOptionConfigs();
         $this->assertTrue(isset($configs['help']));
+        $this->assertFalse(isset($configs['version']));
+        $commandConfig = $this->mockCommandConfig(['version' => 1]);
+        $configs = $commandConfig->getOptionConfigs();
         $this->assertTrue(isset($configs['version']));
     }
 

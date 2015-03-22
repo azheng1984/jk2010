@@ -147,13 +147,26 @@ class AppTest extends Base {
     }
 
     public function testVersionUndefined() {
-        Config::set(
-            'hyperframework.cli.command_config_path',
-            'version_not_found_command.php'
-        );
         $this->expectOutputString("undefined" . PHP_EOL);
         $_SERVER['argv'] = ['run', '--version'];
-        $app = $this->createApp();
+        $commandConfig = $this->getMockBuilder('Hyperframework\Cli\CommandConfig')
+            ->setMethods(['getVersion', 'getOptionConfigs'])->getMock();
+        $commandConfig->method('getVersion')->willReturn(null);
+        $commandConfig->method('getOptionConfigs')->willReturn([
+            'version' =>
+                new OptionConfig('version', null, false, false, null, null)
+        ]);
+        $app = $this->getMockBuilder('Hyperframework\Cli\App')
+            ->setMethods([
+                'quit',
+                'initializeConfig',
+                'initializeErrorHandler',
+                'getCommandConfig'
+            ])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $app->method('getCommandConfig')->willReturn($commandConfig);
+        $app->__construct(dirname(__DIR__));
     }
 
     public function testCommandParsingError() {

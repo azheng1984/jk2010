@@ -364,6 +364,7 @@ class CommandConfig {
             }
         }
         if ($subcommandName === null
+            && $this->getVersion() !== null
             && isset($optionConfigs['version']) === false
         ) {
             $optionConfigs['version'] = new OptionConfig(
