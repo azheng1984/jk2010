@@ -173,13 +173,15 @@ class CommandConfigTest extends Base {
         $this->assertTrue($commandConfig->hasSubcommand('test'));
     }
 
-    public function mockCommandConfig(array $config = [], $subcommand = null) {
+    public function mockCommandConfig(
+        array $config = [], $subcommandName = null
+    ) {
         $result = $this->getMockBuilder('Hyperframework\Cli\CommandConfig')
-            ->setMethods(['getAll', 'getSubcommands'])->getMock();
+            ->setMethods(['getAll', 'getSubcommandNames'])->getMock();
         $result->method('getAll')->will(
             $this->returnCallback(function($arg = null)
-                use ($config, $subcommand) {
-                    if ($arg === $subcommand) {
+                use ($config, $subcommandName) {
+                    if ($arg === $subcommandName) {
                         return $config;
                     } else {
                         $this->fail('Config is missing.');
@@ -187,7 +189,7 @@ class CommandConfigTest extends Base {
                 }
             )
         );
-        $result->method('getSubcommands')->willReturn(['child']);
+        $result->method('getSubcommandNames')->willReturn(['child']);
         return $result;
     }
 }

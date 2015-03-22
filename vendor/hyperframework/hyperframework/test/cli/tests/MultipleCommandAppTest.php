@@ -13,7 +13,7 @@ class MultipleCommandAppTest extends Base {
     }
 
     public function createApp(
-        $shouldCallConstructor = true, $subcommands = ['child']
+        $shouldCallConstructor = true, $subcommandNames = ['child']
     ) {
         $mock = $this->getMockBuilder('Hyperframework\Cli\MultipleCommandApp')
             ->setMethods([
@@ -26,7 +26,7 @@ class MultipleCommandAppTest extends Base {
             ->getMock();
         $commandConfig = $this->getMockBuilder('Hyperframework\Cli\CommandConfig')
             ->setMethods(['getSubcommandNames'])->getMock();
-        $commandConfig->method('getSubcommandNames')->willReturn($subcommands);
+        $commandConfig->method('getSubcommandNames')->willReturn($subcommandNames);
         $mock->method('getCommandConfig')->willReturn($commandConfig);
         if ($shouldCallConstructor) {
             $mock->__construct(dirname(__DIR__));

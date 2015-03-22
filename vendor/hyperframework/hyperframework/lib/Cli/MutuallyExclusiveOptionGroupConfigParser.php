@@ -8,7 +8,7 @@ class MutuallyExclusiveOptionGroupConfigParser {
         array $configs,
         array $optionConfigs,
         $isSubcommandEnabled = false,
-        $subcommand = null
+        $subcommandName = null
     ) {
         $result = [];
         $includedOptionConfigs = [];
@@ -17,7 +17,7 @@ class MutuallyExclusiveOptionGroupConfigParser {
                 $type = gettype($config);
                 throw new ConfigException(self::getErrorMessage(
                     $isSubcommandEnabled,
-                    $subcommand,
+                    $subcommandName,
                     "config must be an array, $type given"
                 ));
             }
@@ -30,7 +30,7 @@ class MutuallyExclusiveOptionGroupConfigParser {
                             $type = gettype($value);
                             throw new ConfigException(self::getErrorMessage(
                                 $isSubcommandEnabled,
-                                $subcommand,
+                                $subcommandName,
                                 "field 'required' must be a boolean, "
                                     . "$type given"
                             ));
@@ -43,7 +43,7 @@ class MutuallyExclusiveOptionGroupConfigParser {
                     $type = gettype($value);
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
-                        $subcommand,
+                        $subcommandName,
                         "option must be a string, $type given"
                     ));
                 }
@@ -51,7 +51,7 @@ class MutuallyExclusiveOptionGroupConfigParser {
                 if (isset($optionConfigs[$value]) === false) {
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
-                        $subcommand,
+                        $subcommandName,
                         "option '$value' is not defined"
                     ));
                 }
@@ -64,7 +64,7 @@ class MutuallyExclusiveOptionGroupConfigParser {
                 if (in_array($optionConfig, $includedOptionConfigs, true)) {
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
-                        $subcommand,
+                        $subcommandName,
                         "option '$value' cannot belong to multiple groups"
                     ));
                 }
@@ -81,16 +81,16 @@ class MutuallyExclusiveOptionGroupConfigParser {
     }
 
     private static function getErrorMessage(
-        $isSubcommandEnabled, $subcommand, $extra
+        $isSubcommandEnabled, $subcommandName, $extra
     ) {
-        if ($subcommand === null) {
+        if ($subcommandName === null) {
             if ($isSubcommandEnabled) {
                 $result = 'Global command';
             } else {
                 $result = 'Command';
             }
         } else {
-            $result = "Subcommand '$subcommand'";
+            $result = "Subcommand '$subcommandName'";
         }
         return $result . ' mutually exclusive option group config error, '
             . $extra . '.';
