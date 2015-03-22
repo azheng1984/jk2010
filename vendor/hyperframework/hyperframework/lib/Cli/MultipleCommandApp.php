@@ -7,7 +7,7 @@ use Hyperframework\Common\ClassNotFoundException;
 
 class MultipleCommandApp extends App {
     private $commandConfig;
-    private $subcommand;
+    private $subcommandName;
     private $globalOptions = [];
 
     public function __construct($appRootPath) {
@@ -17,8 +17,8 @@ class MultipleCommandApp extends App {
         if (isset($elements['global_options'])) {
             $this->setGlobalOptions($elements['global_options']);
         }
-        if (isset($elements['subcommand'])) {
-            $this->setSubcommand($elements['subcommand']);
+        if (isset($elements['subcommand_name'])) {
+            $this->setSubcommandName($elements['subcommand_name']);
             if (isset($elements['options'])) {
                 $this->setOptions($elements['options']);
             }
@@ -55,15 +55,15 @@ class MultipleCommandApp extends App {
     }
 
     public function hasSubcommand() {
-        return $this->subcommand !== null;
+        return $this->subcommandName !== null;
     }
 
-    public function getSubcommand() {
-        return $this->subcommand;
+    public function getSubcommandName() {
+        return $this->subcommandName;
     }
 
-    protected function setSubcommand($subcommand) {
-        $this->subcommand = $subcommand;
+    protected function setSubcommandName($subcommandName) {
+        $this->subcommandName = $subcommandName;
     }
 
     protected function executeCommand() {
@@ -75,15 +75,15 @@ class MultipleCommandApp extends App {
     }
 
     protected function executeSubcommand() {
-        $config = $this->getCommandConfig();
-        $subcommand = $this->getSubcommand();
-        $subcommandClass = $config->getClass($subcommand);
-        if (class_exists($subcommandClass) === false) {
+        $commandConfig = $this->getCommandConfig();
+        $name = $this->getSubcommandName();
+        $class = $commandConfig->getClass($name);
+        if (class_exists($class) === false) {
             throw new ClassNotFoundException(
-                "Command class '$subcommandClass' does not exist."
+                "Subcommand class '$class' does not exist."
             );
         }
-        $subcommand = new $subcommandClass($this);
+        $subcommand = new $class($this);
         $arguments = $this->getArguments();
         call_user_func_array([$subcommand, 'execute'], $arguments);
     }

@@ -12,7 +12,6 @@ use Hyperframework\Common\FileFullPathRecognizer;
 use Hyperframework\Common\ConfigException;
 use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\MethodNotFoundException;
-use Hyperframework\Logging\LoggingException;
 
 class CommandConfig {
     private $configs;
@@ -28,93 +27,93 @@ class CommandConfig {
     private $subcommandMutuallyExclusiveOptionGroupConfigs = [];
     private $subcommandArgumentConfigs = [];
 
-    public function getArgumentConfigs($subcommand = null) {
-        if ($subcommand !== null
-            && isset($this->subcommandArgumentConfigs[$subcommand])
+    public function getArgumentConfigs($subcommandName = null) {
+        if ($subcommandName !== null
+            && isset($this->subcommandArgumentConfigs[$subcommandName])
         ) {
-            return $this->subcommandArgumentConfigs[$subcommand];
+            return $this->subcommandArgumentConfigs[$subcommandName];
         } elseif ($this->argumentConfigs !== null) {
             return $this->argumentConfigs;
         }
-        if ($subcommand === null && $this->isSubcommandEnabled()) {
+        if ($subcommandName === null && $this->isSubcommandEnabled()) {
             $this->argumentConfigs = [];
             return $this->argumentConfigs;
         }
-        $configs = $this->get('arguments', $subcommand);
+        $configs = $this->get('arguments', $subcommandName);
         if ($configs === null) {
-            $argumentConfigs = $this->getDefaultArgumentConfigs($subcommand);
+            $argumentConfigs = $this->getDefaultArgumentConfigs($subcommandName);
         } else {
             if (is_array($configs) === false) {
                 throw new ConfigException(
                     $this->getErrorMessage(
-                        $subcommand,
+                        $subcommandName,
                         " field 'arguments' must be an array, "
                             . gettype($configs) . ' given.'
                     )
                 );
             }
             $argumentConfigs =
-                $this->parseArgumentConfigs($configs, $subcommand);
+                $this->parseArgumentConfigs($configs, $subcommandName);
         }
-        if ($subcommand !== null) {
-            $this->subcommandArgumentConfigs[$subcommand] = $argumentConfigs;
+        if ($subcommandName !== null) {
+            $this->subcommandArgumentConfigs[$subcommandName] = $argumentConfigs;
         } else {
             $this->argumentConfigs = $argumentConfigs;
         }
         return $argumentConfigs;
     }
 
-    public function getClass($subcommand = null) {
+    public function getClass($subcommandName = null) {
         $class = null;
-        if ($subcommand !== null
-            && isset($this->subcommandClasses[$subcommand])
+        if ($subcommandName !== null
+            && isset($this->subcommandClasses[$subcommandName])
         ) {
-            return $this->subcommandClasses[$subcommand];
+            return $this->subcommandClasses[$subcommandName];
         } elseif ($this->class !== null) {
             return $this->class;
         }
-        $class = $this->get('class', $subcommand);
+        $class = $this->get('class', $subcommandName);
         if ($class === null) {
-            $class = $this->getDefaultClass($subcommand);
+            $class = $this->getDefaultClass($subcommandName);
         }
         if (is_string($class) === false) {
             throw new ConfigException($this->getErrorMessage(
-                $subcommand,
+                $subcommandName,
                 " field 'class' must be a string, "
                     . gettype($class) . ' given.'
             ));
         }
-        if ($subcommand !== null) {
-            $this->subcommandClasses[$subcommand] = $class;
+        if ($subcommandName !== null) {
+            $this->subcommandClasses[$subcommandName] = $class;
         } else {
             $this->class = $class;
         }
         return $class;
     }
 
-    public function getOptionConfigs($subcommand = null) {
-        if ($subcommand !== null
-            && isset($this->subcommandOptionConfigs[$subcommand])
+    public function getOptionConfigs($subcommandName = null) {
+        if ($subcommandName !== null
+            && isset($this->subcommandOptionConfigs[$subcommandName])
         ) {
-            return $this->subcommandOptionConfigs[$subcommand];
-        } elseif ($subcommand === null && $this->optionConfigs !== null) {
+            return $this->subcommandOptionConfigs[$subcommandName];
+        } elseif ($subcommandName === null && $this->optionConfigs !== null) {
             return $this->optionConfigs;
         }
-        $config = $this->get('options', $subcommand);
+        $config = $this->get('options', $subcommandName);
         if ($config !== null) {
             if (is_array($config) === false) {
                 throw new ConfigException($this->getErrorMessage(
-                    $subcommand,
+                    $subcommandName,
                     " field 'options' must be an array, "
                         . gettype($config) . ' given.'
                 ));
             }
-            $optionConfigs = $this->parseOptionConfigs($config, $subcommand);
+            $optionConfigs = $this->parseOptionConfigs($config, $subcommandName);
         } else {
             $optionConfigs = [];
         }
         $defaultOptionConfigs = $this->getDefaultOptionConfigs(
-            $optionConfigs, $subcommand
+            $optionConfigs, $subcommandName
         );
         foreach ($defaultOptionConfigs as $optionConfig) {
             $name = $optionConfig->getName();
@@ -128,40 +127,40 @@ class CommandConfig {
                 $optionConfigs[$shortName] = $optionConfig;
             }
         }
-        if ($subcommand !== null) {
-            $this->subcommandOptionConfigs[$subcommand] = $optionConfigs;
+        if ($subcommandName !== null) {
+            $this->subcommandOptionConfigs[$subcommandName] = $optionConfigs;
         } else {
             $this->optionConfigs = $optionConfigs;
         }
         return $optionConfigs;
     }
 
-    public function getMutuallyExclusiveOptionGroupConfigs($subcommand = null) {
-        if ($subcommand !== null && isset(
-            $this->subcommandMutuallyExclusiveOptionGroupConfigs[$subcommand]
+    public function getMutuallyExclusiveOptionGroupConfigs($subcommandName = null) {
+        if ($subcommandName !== null && isset(
+            $this->subcommandMutuallyExclusiveOptionGroupConfigs[$subcommandName]
         )) {
             return $this
-                ->subcommandMutuallyExclusiveOptionGroupConfigs[$subcommand];
+                ->subcommandMutuallyExclusiveOptionGroupConfigs[$subcommandName];
         } elseif ($this->mutuallyExclusiveOptionGroupConfigs !== null) {
             return $this->mutuallyExclusiveOptionGroupConfigs;
         }
-        $config = $this->get('mutually_exclusive_option_groups', $subcommand);
+        $config = $this->get('mutually_exclusive_option_groups', $subcommandName);
         if ($config !== null) {
             if (is_array($config) === false) {
                 throw new ConfigException($this->getErrorMessage(
-                    $subcommand,
+                    $subcommandName,
                     " field 'mutually_exclusive_option_groups'"
                          . ' must be an array,' . gettype($config) . ' given.'
                 ));
             }
             $result = $this->parseMutuallyExclusiveOptionGroupConfigs(
-                $config, $subcommand
+                $config, $subcommandName
             );
         } else {
             $result = [];
         }
-        if ($subcommand !== null) {
-            $this->subcommandMutuallyExclusiveOptionGroupConfigs[$subcommand] =
+        if ($subcommandName !== null) {
+            $this->subcommandMutuallyExclusiveOptionGroupConfigs[$subcommandName] =
                 $result;
         } else {
             $this->mutuallyExclusiveOptionGroupConfigs = $result;
@@ -169,20 +168,8 @@ class CommandConfig {
         return $result;
     }
 
-    public function getMutuallyExclusiveOptionGroupConfigByOption(
-        $option, $subcommand = null
-    ) {
-        $configs =
-            $this->getMutuallyExclusiveOptionGroupConfigs($subcommand);
-        foreach ($configs as $config) {
-            if (in_array($option, $config->getOptionConfigs(), true)) {
-                return $config;
-            }
-        }
-    }
-
-    public function getDescription($subcommand = null) {
-        return $this->get('description', $subcommand);
+    public function getDescription($subcommandName = null) {
+        return $this->get('description', $subcommandName);
     }
 
     public function getName() {
@@ -208,17 +195,11 @@ class CommandConfig {
         return $this->isSubcommandEnabled;
     }
 
-    public function hasSubcommand($subcommand) {
-        if ($this->isSubcommandEnabled() === false) {
-            return false;
-        }
-        if (preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]*$/', $subcommand) !== 1) {
-            return false;
-        }
-        return file_exists($this->getSubcommandConfigPath($subcommand));
+    public function hasSubcommand($subcommandName) {
+        return in_array($subcommandName, $this->getSubcommandNames(), true);
     }
 
-    public function getSubcommands() {
+    public function getSubcommandNames() {
         if ($this->isSubcommandEnabled() === false) {
             return [];
         }
@@ -229,7 +210,7 @@ class CommandConfig {
                     continue;
                 }
                 $name = substr($file, 0, strlen($file) - 4);
-                $pattern = '/^[a-zA-Z0-9][a-zA-Z0-9-]*\.php$/';
+                $pattern = '/^[a-zA-Z0-9][a-zA-Z0-9-]*$/';
                 if (preg_match($pattern, $name) === 1) {
                     $this->subcommands[] = $name;
                 }
@@ -255,7 +236,7 @@ class CommandConfig {
         }
         if ($subcommand !== null) {
             if ($this->hasSubcommand($subcommand) === false) {
-                throw new LoggingException(
+                throw new LogicException(
                     "Subcommand '$subcommand' does not exist."
                 );
             }

@@ -12,15 +12,22 @@ class MultipleCommandAppTest extends Base {
         );
     }
 
-    public function createApp($shouldCallConstructor = true) {
+    public function createApp(
+        $shouldCallConstructor = true, $subcommands = ['child']
+    ) {
         $mock = $this->getMockBuilder('Hyperframework\Cli\MultipleCommandApp')
             ->setMethods([
                 'quit',
                 'initializeConfig',
-                'initializeErrorHandler'
+                'initializeErrorHandler',
+                'getCommandConfig'
             ])
             ->disableOriginalConstructor()
             ->getMock();
+        $commandConfig = $this->getMockBuilder('Hyperframework\Cli\CommandConfig')
+            ->setMethods(['getSubcommandNames'])->getMock();
+        $commandConfig->method('getSubcommandNames')->willReturn($subcommands);
+        $mock->method('getCommandConfig')->willReturn($commandConfig);
         if ($shouldCallConstructor) {
             $mock->__construct(dirname(__DIR__));
         }
@@ -29,7 +36,8 @@ class MultipleCommandAppTest extends Base {
 
     public function testExecuteGlobalCommand() {
         $this->expectOutputString(
-            "Usage: test [-t] [-h|--help] [--version] <command>" . PHP_EOL
+            "Usage: test [-t] [-h|--help] [--version] <subcommand>" . PHP_EOL
+                . PHP_EOL . 'Subcommands:' . PHP_EOL . ' child' . PHP_EOL
         );
         $_SERVER['argv'] = ['run', '-t'];
         $app = $this->createApp();
@@ -44,8 +52,8 @@ class MultipleCommandAppTest extends Base {
         $_SERVER['argv'] = ['run', 'child', '-c', 'arg'];
         $app = $this->createApp();
         $this->callProtectedMethod($app, 'executeCommand');
-        $this->assertEquals($app->getOptions(), ['c' => true]);
-        $this->assertEquals($app->getArguments(), ['arg']);
+        $this->assertEquals(['c' => true], $app->getOptions());
+        $this->assertEquals(['arg'], $app->getArguments());
     }
 
     public function testConstruct() {
@@ -72,7 +80,8 @@ class MultipleCommandAppTest extends Base {
 
     public function testRenderHelp() {
         $this->expectOutputString(
-            "Usage: test [-t] [-h|--help] [--version] <command>" . PHP_EOL
+            "Usage: test [-t] [-h|--help] [--version] <subcommand>" . PHP_EOL
+                . PHP_EOL . 'Subcommands:' . PHP_EOL . ' child' . PHP_EOL
         );
         $_SERVER['argv'] = ['run', '-h'];
         $app = $this->createApp(false);
@@ -103,25 +112,25 @@ class MultipleCommandAppTest extends Base {
      */
     public function testSubcommandClassNotFound() {
         $_SERVER['argv'] = ['run', 'invalid-class-child'];
-        $app = $this->createApp();
+        $app = $this->createApp(true, ['invalid-class-child']);
         $this->callProtectedMethod($app, 'executeCommand');
     }
 
-    public function testGetSubcommand() {
+    public function testGetSubcommandName() {
         $_SERVER['argv'] = ['run', 'child', 'arg'];
         $app = $this->createApp();
-        $this->assertEquals($app->hasSubcommand(), true);
+        $this->assertEquals($app->getSubcommandName(), 'child');
         $_SERVER['argv'] = ['run'];
         $app = $this->createApp();
-        $this->assertEquals($app->hasSubcommand(), false);
+        $this->assertEquals($app->getSubcommandName(), null);
     }
 
     public function testHasSubcommand() {
         $_SERVER['argv'] = ['run', 'child', 'arg'];
         $app = $this->createApp();
-        $this->assertEquals($app->getSubcommand(), 'child');
+        $this->assertTrue($app->hasSubcommand());
         $_SERVER['argv'] = ['run'];
         $app = $this->createApp();
-        $this->assertEquals($app->getSubcommand(), null);
+        $this->assertFalse($app->hasSubcommand());
     }
 }

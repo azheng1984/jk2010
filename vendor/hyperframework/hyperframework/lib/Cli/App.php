@@ -139,12 +139,11 @@ class App extends Base {
         echo $exception->getMessage(), PHP_EOL;
         $config = $this->getCommandConfig();
         $name = $config->getName();
-        $subcommand = null;
-        if ($exception instanceof SubcommandParsingException) {
-            $subcommand = $exception->getSubcommand();
-            $name .= ' ' . $subcommand;
+        $subcommandName = $exception->getSubcommandName();
+        if ($subcommandName !== null) {
+            $name .= ' ' . $subcommandName;
         }
-        $optionConfigs = $config->getOptionConfigs($subcommand);
+        $optionConfigs = $config->getOptionConfigs($subcommandName);
         if (isset($optionConfigs['help'])) {
             echo 'See \'', $name, ' --help\'.', PHP_EOL;
         }

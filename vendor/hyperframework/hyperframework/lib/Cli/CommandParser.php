@@ -8,7 +8,7 @@ class CommandParser {
         }
         $optionConfigs = $commandConfig->getOptionConfigs();
         $result = [];
-        $subcommand = null;
+        $subcommandName = null;
         $optionType = null;
         if ($commandConfig->isSubcommandEnabled()) {
             $result['global_options'] = [];
@@ -33,12 +33,12 @@ class CommandParser {
                 if ($isGlobal) {
                     if ($commandConfig->hasSubcommand($element) === false) {
                         throw new CommandParsingException(
-                            "Command '$element' does not exist."
+                            "Subcommand '$element' does not exist."
                         );
                     }
                     $isGlobal = false;
-                    $subcommand = $element;
-                    $result['subcommand'] = $element;
+                    $subcommandName = $element;
+                    $result['subcommand_name'] = $element;
                     $result['options'] = [];
                     $optionConfigs = $commandConfig->getOptionConfigs($element);
                     $optionType = 'options';
@@ -62,11 +62,8 @@ class CommandParser {
                     $optionName = $element[$charIndex];
                     if (isset($optionConfigs[$optionName]) === false) {
                         $message = "Option '$optionName' is not allowed.";
-                        if ($subcommand === null) {
-                            throw new CommandParsingException($message);
-                        }
-                        throw new SubcommandParsingException(
-                            $subcommand, $message
+                        throw new CommandParsingException(
+                            $message, $subcommandName
                         );
                     }
                     $optionArgument = true;
@@ -89,11 +86,8 @@ class CommandParser {
                             if ($index >= $count) {
                                 $message = 'Option \''
                                     . $optionName . '\' must have an argument.';
-                                if ($subcommand === null) {
-                                    throw new CommandParsingException($message);
-                                }
-                                throw new SubcommandParsingException(
-                                    $subcommand, $message
+                                throw new CommandParsingException(
+                                    $message, $subcomman
                                 );
                             }
                             $optionArgument = $argv[$index];
@@ -136,12 +130,7 @@ class CommandParser {
                 $optionName = substr($optionName, 2);
                 if (isset($optionConfigs[$optionName]) === false) {
                     $message = "Unknown option '$optionName'.";
-                    if ($subcommand === null) {
-                        throw new CommandParsingException($message);
-                    }
-                    throw new SubcommandParsingException(
-                        $subcommand, $message
-                    );
+                    throw new CommandParsingException($message, $subcommandName);
                 }
                 $optionConfig = $optionConfigs[$optionName];
                 $optionArgumentConfig = $optionConfig->getArgumentConfig();
@@ -156,11 +145,8 @@ class CommandParser {
                         if ($index >= $count) {
                             $message =
                                 "Option '$optionName' must have an argument.";
-                            if ($subcommand === null) {
-                                throw new CommandParsingException($message);
-                            }
-                            throw new SubcommandParsingException(
-                                $subcommand, $message
+                            throw new CommandParsingException(
+                                $message, $subcommandName
                             );
                         }
                         $optionArgument = $argv[$index];
@@ -169,12 +155,7 @@ class CommandParser {
                     if ($optionArgument !== true) {
                         $message =
                             "Option '$optionName' must not have an argument.";
-                        if ($subcommand === null) {
-                            throw new CommandParsingException($message);
-                        }
-                        throw new SubcommandParsingException(
-                            $subcommand, $message
-                        );
+                        throw new CommandParsingException($message, $subcommandName);
                     }
                 }
                 if ($optionConfig->isRepeatable()) {
@@ -197,7 +178,7 @@ class CommandParser {
         }
         $hasMagicOption = static::hasMagicOption(
             isset($result['global_options']) ? $result['global_options'] : null,
-            $subcommand,
+            $subcommandName,
             isset($result['options']) ? $result['options'] : null,
             $commandConfig
         );
@@ -215,17 +196,17 @@ class CommandParser {
         }
         if (isset($result['options'])) {
             $mutuallyExclusiveOptionGroupConfigs = $commandConfig
-                ->getMutuallyExclusiveOptionGroupConfigs($subcommand);
+                ->getMutuallyExclusiveOptionGroupConfigs($subcommandName);
             self::checkOptions(
-                $subcommand,
+                $subcommandName,
                 $result['options'],
                 $optionConfigs,
                 $mutuallyExclusiveOptionGroupConfigs,
                 $hasMagicOption
             );
         }
-        if ($subcommand !== null) {
-            $result['subcommand'] = $subcommand;
+        if ($subcommandName !== null) {
+            $result['subcommand_name'] = $subcommandName;
         }
         if ($isGlobal || $hasMagicOption) {
             if ($hasMagicOption) {
@@ -236,7 +217,7 @@ class CommandParser {
         $result['arguments'] = [];
         $argumentConfigs = null;
         if ($commandConfig->isSubcommandEnabled()) {
-            $argumentConfigs = $commandConfig->getArgumentConfigs($subcommand);
+            $argumentConfigs = $commandConfig->getArgumentConfigs($subcommandName);
         } else {
             $argumentConfigs = $commandConfig->getArgumentConfigs();
         }
@@ -260,12 +241,8 @@ class CommandParser {
                     $result['arguments'][count($result['arguments']) - 1][] =
                         $arguments[$argumentIndex];
                 } else {
-                    $message = 'Number of arguments error.';
-                    if ($subcommand === null) {
-                        throw new CommandParsingException($message);
-                    }
-                    throw new SubcommandParsingException(
-                        $subcommand, $message
+                    throw new CommandParsingException(
+                        'Number of arguments error.', $subcommandName
                     );
                 }
             }
@@ -278,12 +255,7 @@ class CommandParser {
             ++$count;
             if ($count > $argumentCount) {
                 $message = 'Number of arguments error.';
-                if ($subcommand === null) {
-                    throw new CommandParsingException($message);
-                }
-                throw new SubcommandParsingException(
-                    $subcommand, $message
-                );
+                throw new CommandParsingException($message, $subcommandName);
             }
         }
         return $result;
@@ -291,7 +263,7 @@ class CommandParser {
 
     private static function hasMagicOption(
         array $globalOptions = null,
-        $subcommand,
+        $subcommandName,
         array $options = null,
         $commandConfig
     ) {
@@ -323,7 +295,7 @@ class CommandParser {
     }
 
     private static function checkOptions(
-        $subcommand,
+        $subcommandName,
         array $options,
         array $optionConfigs,
         array $mutuallyExclusiveOptionGroupConfigs = null,
@@ -336,12 +308,7 @@ class CommandParser {
                 }
                 if ($hasMagicOption === false) {
                     $message = "Option '$name' is required.";
-                    if ($subcommand === null) {
-                        throw new CommandParsingException($message);
-                    }
-                    throw new SubcommandParsingException(
-                        $subcommand, $message
-                    );
+                    throw new CommandParsingException($message, $subcommandName);
                 }
             }
         }
@@ -353,12 +320,7 @@ class CommandParser {
                 if ($values !== null) {
                     if (in_array($value, $values, true) === false) {
                         $message = "The value of option '$name' is invalid.";
-                        if ($subcommand === null) {
-                            throw new CommandParsingException($message);
-                        }
-                        throw new SubcommandParsingException(
-                            $subcommand, $message
-                        );
+                        throw new CommandParsingException($message, $subcommandName);
                     }
                 }
             }
@@ -376,12 +338,7 @@ class CommandParser {
                         if ($optionKey !== null && $optionKey !== $key) {
                             $message = "The '$optionKey' and '$key'"
                                 . " options are mutually exclusive.";
-                            if ($subcommand === null) {
-                                throw new CommandParsingException($message);
-                            }
-                            throw new SubcommandParsingException(
-                                $subcommand, $message
-                            );
+                            throw new CommandParsingException($message, $subcommandName);
                         }
                         $optionKey = $key;
                         $optionKeys[] = "'" . $key . "'";
@@ -391,12 +348,7 @@ class CommandParser {
                     if ($hasMagicOption === false && count($optionKeys) !== 0) {
                         $message = "One of option '"
                             . implode(', ', $optionKeys) . "' is required.";
-                        if ($subcommand === null) {
-                            throw new CommandParsingException($message);
-                        }
-                        throw new SubcommandParsingException(
-                            $subcommand, $message
-                        );
+                        throw new CommandParsingException($message, $subcommandName);
                     }
                 }
             }

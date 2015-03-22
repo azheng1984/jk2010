@@ -4,14 +4,14 @@ namespace Hyperframework\Cli;
 class Help {
     private $commandConfig;
     private $hasOptionDescription;
-    private $subcommand;
+    private $subcommandName;
     private $usageLineLength = 0;
     private $usageIndent;
 
     public function __construct($app) {
         $this->commandConfig = $app->getCommandConfig();
         if ($this->commandConfig->isSubcommandEnabled()) {
-            $this->subcommand = $app->getSubcommand();
+            $this->subcommandName = $app->getSubcommandName();
         }
     }
 
@@ -20,7 +20,9 @@ class Help {
         if ($this->hasOptionDescription()) {
             $this->renderOptions();
         }
-        if ($this->commandConfig->isSubcommandEnabled()) {
+        if ($this->commandConfig->isSubcommandEnabled()
+            && $this->subcommandName === null
+        ) {
             $this->renderSubcommands();
         }
     }
@@ -28,8 +30,8 @@ class Help {
     protected function renderUsage() {
         $name = $this->commandConfig->getName();
         $prefix = $name;
-        if ($this->subcommand !== null) {
-            $prefix .= ' ' . $this->subcommand;
+        if ($this->subcommandName !== null) {
+            $prefix .= ' ' . $this->subcommandName;
         }
         if (strlen($prefix) < 7) {
             $this->usageIndent = strlen($prefix) + 8;
@@ -37,11 +39,11 @@ class Help {
             $this->usageIndent = 11;
         }
         $this->renderUsageElement('Usage: ' . $name);
-        if ($this->subcommand !== null) {
-            $this->renderUsageElement($this->subcommand);
+        if ($this->subcommandName !== null) {
+            $this->renderUsageElement($this->subcommandName);
         }
         $optionConfigs = $this->commandConfig
-        ->getOptionConfigs($this->subcommand);
+            ->getOptionConfigs($this->subcommandName);
         $optionCount = count($optionConfigs);
         if ($optionCount > 0) {
             if ($this->hasOptionDescription() === false) {
@@ -51,11 +53,11 @@ class Help {
             }
         }
         if ($this->commandConfig->isSubcommandEnabled()
-            && $this->subcommand === null
+            && $this->subcommandName === null
         ) {
-            $this->renderUsageElement('<command>');
+            $this->renderUsageElement('<subcommand>');
         } elseif (count($this->commandConfig
-            ->getArgumentConfigs($this->subcommand)) > 0
+            ->getArgumentConfigs($this->subcommandName)) > 0
         ) {
             $this->renderArguments();
         }
@@ -64,7 +66,7 @@ class Help {
 
     protected function renderOptions() {
         $optionConfigs = $this->commandConfig
-        ->getOptionConfigs($this->subcommand);
+        ->getOptionConfigs($this->subcommandName);
         $count = count($optionConfigs);
         if ($count === 0) {
             return;
@@ -85,23 +87,25 @@ class Help {
     }
 
     protected function renderSubcommands() {
-        $subcommands = $this->commandConfig->getSubcommands();
-        $count = count($subcommands);
+        $names = $this->commandConfig->getSubcommandNames();
+        $count = count($names);
         if ($count === 0) {
             return;
         }
-        echo PHP_EOL, 'Commands:', PHP_EOL;
+        echo PHP_EOL, 'Subcommands:', PHP_EOL;
         $descriptions = [];
-        foreach ($subcommands as $subcommand) {
-            $descriptions[] = (string)$this->getDescription($subcommand);
+        foreach ($names as $name) {
+            $descriptions[] = (string)$this->commandConfig->getDescription(
+                $name
+            );
         }
-        $this->renderList($subcommands, $descriptions);
+        $this->renderList($names, $descriptions);
     }
 
     protected function hasOptionDescription() {
         if ($this->hasOptionDescription === null) {
             $optionConfigs = $this->commandConfig
-            ->getOptionConfigs($this->subcommand);
+            ->getOptionConfigs($this->subcommandName);
             foreach ($optionConfigs as $optionConfig) {
                 if ((string)$optionConfig->getDescription() !== '') {
                     $this->hasOptionDescription = true;
@@ -135,7 +139,7 @@ class Help {
 
     private function renderArguments() {
         $argumentConfigs = $this->commandConfig
-            ->getArgumentConfigs($this->subcommand);
+            ->getArgumentConfigs($this->subcommandName);
         foreach ($argumentConfigs as $argumentConfig) {
             $name = '<' . $argumentConfig->getName() . '>';
             if ($argumentConfig->isRepeatable()) {
@@ -205,7 +209,7 @@ class Help {
 
     private function renderCompactOptions() {
         $optionConfigs = $this->commandConfig
-            ->getOptionConfigs($this->subcommand);
+            ->getOptionConfigs($this->subcommandName);
         $includedOptionConfigs = [];
         foreach ($optionConfigs as $optionConfig) {
             $name = (string)$optionConfig->getName();
@@ -214,8 +218,10 @@ class Help {
                 continue;
             }
             $includedOptionConfigs[] = $optionConfig;
-            $mutuallyExclusiveOptionGroupConfig = $this->commandConfig
-                ->getMutuallyExclusiveOptionGroupConfigByOption($optionConfig);
+            $mutuallyExclusiveOptionGroupConfig =
+                $this->getMutuallyExclusiveOptionGroupConfigByOptionConfig(
+                    $optionConfig
+                );
             $hasBrackets = false;
             if ($name !== '' && $shortName !== '') {
                 $hasBrackets = true;
@@ -317,6 +323,19 @@ class Help {
                     $description, PHP_EOL;
             } else {
                 echo PHP_EOL;
+            }
+        }
+    }
+
+    private function getMutuallyExclusiveOptionGroupConfigByOptionConfig(
+        $optionConfig
+    ) {
+        $configs = $this->commandConfig->getMutuallyExclusiveOptionGroupConfigs(
+            $this->subcommandName
+        );
+        foreach ($configs as $config) {
+            if (in_array($optionConfig, $config->getOptionConfigs(), true)) {
+                return $config;
             }
         }
     }

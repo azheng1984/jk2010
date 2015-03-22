@@ -69,14 +69,113 @@ class CommandConfigTest extends Base {
         );
     }
 
+    /**
+     * @expectedException Hyperframework\Common\ConfigException
+     */
+    public function testGetInvalidClass() {
+        $commandConfig = $this->mockCommandConfig([
+            'class' => false
+        ]);
+        $commandConfig->getClass();
+    }
+
+    public function testGetOptionConfigs() {
+        $commandConfig = $this->mockCommandConfig([
+            'options' => [['name' => 'test']]
+        ]);
+        $configs = $commandConfig->getOptionConfigs();
+        $this->assertTrue(isset($configs['test']));
+    }
+
+    public function testGetOptionConfigsOfSubcommand() {
+        $commandConfig = $this->mockCommandConfig([
+            'options' => [['name' => 'test']]
+        ], 'child');
+        $configs = $commandConfig->getOptionConfigs('child');
+        $this->assertTrue(isset($configs['test']));
+    }
+
+    /**
+     * @expectedException Hyperframework\Common\ConfigException
+     */
+    public function testGetInvalidOptionConfigs() {
+        $commandConfig = $this->mockCommandConfig([
+            'options' => false
+        ]);
+        $commandConfig->getOptionConfigs();
+    }
+
+    public function testGetMutuallyExclusiveOptionGroupConfigs() {
+        $commandConfig = $this->mockCommandConfig([
+            'options' => [['name' => 'test'], ['name' => 'test2']],
+            'mutually_exclusive_option_groups' => [['test', 'test2']]
+        ]);
+        $configs = $commandConfig->getMutuallyExclusiveOptionGroupConfigs();
+        $config = $configs[0];
+        $this->assertSame(2, count($config->getOptionConfigs()));
+    }
+
+    public function testGetMutuallyExclusiveOptionGroupConfigsOfSubcommand() {
+        $commandConfig = $this->mockCommandConfig([
+            'options' => [['name' => 'test'], ['name' => 'test2']],
+            'mutually_exclusive_option_groups' => [['test', 'test2']]
+        ], 'child');
+        $configs = $commandConfig->getMutuallyExclusiveOptionGroupConfigs(
+            'child'
+        );
+        $config = $configs[0];
+        $this->assertSame(2, count($config->getOptionConfigs()));
+    }
+
+    /**
+     * @expectedException Hyperframework\Common\ConfigException
+     */
+    public function testGetInvalidMutuallyExclusiveOptionGroupConfigs() {
+        $commandConfig = $this->mockCommandConfig([
+            'mutually_exclusive_option_groups' => false
+        ]);
+        $commandConfig->getMutuallyExclusiveOptionGroupConfigs();
+    }
+
+    public function testGetDescription() {
+        $commandConfig = $this->mockCommandConfig([
+            'description' => 'test'
+        ]);
+        $this->assertSame('test', $commandConfig->getDescription());
+    }
+
     public function testGetName() {
-        $config = new CommandConfig;
-        $this->assertSame('test', $config->getName());
+        $commandConfig = $this->mockCommandConfig([
+            'name' => 'test'
+        ]);
+        $this->assertSame('test', $commandConfig->getName());
+    }
+
+    public function testGetVersion() {
+        $commandConfig = $this->mockCommandConfig([
+            'version' => '1.0.0'
+        ]);
+        $this->assertSame('1.0.0', $commandConfig->getVersion());
+    }
+
+    public function testIsSubcommandEnabled() {
+        $commandConfig = new CommandConfig;
+        Config::set('hyperframework.cli.enable_subcommand', true);
+        $this->assertTrue($commandConfig->isSubcommandEnabled());
+        Config::set('hyperframework.cli.enable_subcommand', false);
+        $this->assertTrue($commandConfig->isSubcommandEnabled());
+    }
+
+    public function testHasSubcommand() {
+        $commandConfig = $this->getMockBuilder('Hyperframework\Cli\CommandConfig')
+            ->setMethods(['getSubcommandNames'])->getMock();
+        $commandConfig->method('getSubcommandNames')->willReturn(['test']);
+        $this->assertTrue($commandConfig->hasSubcommand('test'));
     }
 
     public function mockCommandConfig(array $config = [], $subcommand = null) {
         $result = $this->getMockBuilder('Hyperframework\Cli\CommandConfig')
-            ->setMethods(['getAll'])->getMock();
+            ->setMethods(['getAll', 'getSubcommands'])->getMock();
         $result->method('getAll')->will(
             $this->returnCallback(function($arg = null)
                 use ($config, $subcommand) {
@@ -88,6 +187,7 @@ class CommandConfigTest extends Base {
                 }
             )
         );
+        $result->method('getSubcommands')->willReturn(['child']);
         return $result;
     }
 }
