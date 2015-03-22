@@ -12,45 +12,13 @@ class CommandConfigTest extends Base {
     }
 
     public function testGetDefaultArgumentConfigsOfSubcommand() {
+        //Config::set('hyperframework.cli.enable_subcommand', true);
         $commandConfig = $this->mockCommandConfig([
             'class' => 'Hyperframework\Cli\Test\Subcommands\ChildCommand'
         ], 'child');
         $argumentConfigs = $commandConfig->getArgumentConfigs('child');
         $config = $argumentConfigs[0];
         $this->assertSame('arg', $config->getName());
-    }
-
-    /**
-     * @expectedException Hyperframework\Common\ClassNotFoundException
-     */
-    public function testGetDefaultArgumentWhenCommandClassNotFound() {
-        $commandConfig = $this->mockCommandConfig([
-            'class' => 'Unknown'
-        ]);
-        $argumentConfigs = $commandConfig->getArgumentConfigs();
-    }
-
-    /**
-     * @expectedException Hyperframework\Common\MethodNotFoundException
-     */
-    public function testGetDefaultArgumentWhenExecuteMethodNotFound() {
-        $commandConfig = $this->mockCommandConfig([
-            'class' =>
-                'Hyperframework\Cli\Test\Subcommands\NoExecuteMethodCommand'
-        ]);
-        $argumentConfigs = $commandConfig->getArgumentConfigs();
-    }
-
-    /**
-     * @expectedException LogicException
-     */
-    public function testGetDefaultArgumentWhenArrayArgumentIsInvalid() {
-        $commandConfig = $this->mockCommandConfig([
-            'class' =>
-            'Hyperframework\Cli\Test\Subcommands\\'
-                . 'InvalidArrayArgumentCommand'
-        ]);
-        $argumentConfigs = $commandConfig->getArgumentConfigs();
     }
 
     /**
@@ -83,14 +51,6 @@ class CommandConfigTest extends Base {
         $commandConfig = $this->mockCommandConfig();
         $this->assertSame(
             'Hyperframework\Cli\Test\Command', $commandConfig->getClass()
-        );
-    }
-
-    public function testGetDefaultSubcommandClass() {
-        $commandConfig = $this->mockCommandConfig([], 'test-child');
-        $this->assertSame(
-            'Hyperframework\Cli\Test\Subcommands\TestChildCommand',
-            $commandConfig->getClass('test-child')
         );
     }
 
@@ -127,25 +87,12 @@ class CommandConfigTest extends Base {
         $this->assertTrue(isset($configs['test']));
     }
 
-    public function testDefaultHelpAndVersionOptionConfigs() {
-        $commandConfig = $this->mockCommandConfig();
-        $configs = $commandConfig->getOptionConfigs();
-        $this->assertTrue(isset($configs['help']));
-        $this->assertTrue(isset($configs['version']));
-    }
-
     public function testGetOptionConfigsOfSubcommand() {
         $commandConfig = $this->mockCommandConfig([
             'options' => [['name' => 'test']]
         ], 'child');
         $configs = $commandConfig->getOptionConfigs('child');
         $this->assertTrue(isset($configs['test']));
-    }
-
-    public function testDefaultHelpOptionConfigOfSubcommand() {
-        $commandConfig = $this->mockCommandConfig([], 'child');
-        $configs = $commandConfig->getOptionConfigs('child');
-        $this->assertTrue(isset($configs['help']));
     }
 
     /**
@@ -245,53 +192,10 @@ class CommandConfigTest extends Base {
         $this->callProtectedMethod($commandConfig, 'getAll', ['unknown']);
     }
 
-    /**
-     * @expectedException Hyperframework\Common\ConfigException
-     */
     public function testGetAllWhenConfigFileIsMissing() {
         Config::set('hyperframework.cli.command_config_path', 'unknown');
         $commandConfig = new CommandConfig;
         $this->callProtectedMethod($commandConfig, 'getAll');
-    }
-
-    /**
-     * @expectedException Hyperframework\Common\ConfigException
-     */
-    public function testGetAllWhenConfigFileIsInvalid() {
-        Config::set(
-            'hyperframework.cli.command_config_path',
-            'invalid_config_command.php'
-        );
-        $commandConfig = new CommandConfig;
-        $this->callProtectedMethod($commandConfig, 'getAll');
-    }
-
-    public function testCustomizeSubcommandConfigRootPath() {
-        Config::set('hyperframework.cli.enable_subcommand', true);
-        Config::set(
-            'hyperframework.cli.command_config_root_path',
-            'custom_command_config_root'
-        );
-        Config::set(
-            'hyperframework.cli.subcommand_config_root_path',
-            'custom_subcommands_config_root'
-        );
-        $commandConfig = new CommandConfig;
-        $this->assertSame(
-            ['root-path-test-child'], $commandConfig->getSubcommandNames()
-        );
-    }
-
-    public function testCustomizeCommandConfigRootPath() {
-        Config::set(
-            'hyperframework.cli.command_config_root_path',
-            'custom_command_config_root'
-        );
-        $commandConfig = new CommandConfig;
-        $this->assertSame(
-            ['name' => 'root-path-test'],
-            $this->callProtectedMethod($commandConfig, 'getAll')
-        );
     }
 
     private function mockCommandConfig(

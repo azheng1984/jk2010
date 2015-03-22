@@ -14,13 +14,13 @@ use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\MethodNotFoundException;
 
 class CommandConfig {
-    private $isSubcommandEnabled;
-    private $subcommandNames;
     private $configs;
     private $class;
     private $optionConfigs;
     private $mutuallyExclusiveOptionGroupConfigs;
     private $argumentConfigs;
+    private $isSubcommandEnabled;
+    private $subcommandNames;
     private $subcommandConfigs = [];
     private $subcommandClasses = [];
     private $subcommandOptionConfigs = [];
@@ -116,21 +116,7 @@ class CommandConfig {
         } else {
             $optionConfigs = [];
         }
-        $defaultOptionConfigs = $this->getDefaultOptionConfigs(
-            $optionConfigs, $subcommandName
-        );
-        foreach ($defaultOptionConfigs as $optionConfig) {
-            $name = $optionConfig->getName();
-            $shortName = $optionConfig->getShortName();
-            if ($name !== null && isset($optionConfigs[$name]) === false) {
-                $optionConfigs[$name] = $optionConfig;
-            }
-            if ($shortName !== null
-                && isset($optionConfigs[$shortName]) === false
-            ) {
-                $optionConfigs[$shortName] = $optionConfig;
-            }
-        }
+        $this->addDefaultOptionConfigs($optionConfigs, $subcommandName);
         if ($subcommandName !== null) {
             $this->subcommandOptionConfigs[$subcommandName] = $optionConfigs;
         } else {
@@ -143,13 +129,13 @@ class CommandConfig {
         $subcommandName = null
     ) {
         if ($subcommandName !== null && isset(
-            $this->
-                subcommandMutuallyExclusiveOptionGroupConfigs[$subcommandName]
+            $this->subcommandMutuallyExclusiveOptionGroupConfigs[
+                $subcommandName
+            ]
         )) {
-            return $this
-                ->subcommandMutuallyExclusiveOptionGroupConfigs[
-                    $subcommandName
-                ];
+            return $this->subcommandMutuallyExclusiveOptionGroupConfigs[
+                $subcommandName
+            ];
         } elseif ($this->mutuallyExclusiveOptionGroupConfigs !== null) {
             return $this->mutuallyExclusiveOptionGroupConfigs;
         }
@@ -296,27 +282,6 @@ class CommandConfig {
         return $class;
     }
 
-    protected function getDefaultOptionConfigs(
-        array $options, $subcommandName = null
-    ) {
-        $result = [];
-        if (isset($options['help']) === false) {
-            $shortName = 'h';
-            if (isset($options['-h'])) {
-                $shortName = null;
-            }
-            $result[] = new OptionConfig(
-                'help', $shortName, false, false, null, null
-            );
-        }
-        if ($subcommandName === null && isset($options['version']) === false) {
-            $result[] = new OptionConfig(
-                'version', null, false, false, null, null
-            );
-        }
-        return $result;
-    }
-
     protected function getDefaultArgumentConfigs($subcommandName = null) {
         $class = $this->getClass($subcommandName);
         if (method_exists($class, 'execute') === false) {
@@ -339,7 +304,6 @@ class CommandConfig {
         $params = $method->getParameters();
         $result = [];
         $hasArray = false;
-        $optionalArguemntName = null;
         foreach ($params as $param) {
             if ($hasArray) {
                 throw new LogicException(
@@ -351,23 +315,8 @@ class CommandConfig {
                     )
                 );
             }
-            if ($optionalArguemntName !== null) {
-                if ($param->isOptional() === false) {
-                    throw new LogicException(
-                        $this->getFailedToGetDefaultArgumentConfigsErrorMessage(
-                            $subcommandName,
-                            "argument list of method '$class::execute' is "
-                                . "invalid, argument '$optionalArguemntName'"
-                                . " cannot be optional"
-                        )
-                    );
-                }
-            }
             if ($param->isArray()) {
                 $hasArray = true;
-            }
-            if ($param->isOptional()) {
-                $optionalArguemntName = $param->getName();
             }
             $result[] = new DefaultArgumentConfig($param);
         }
@@ -397,6 +346,30 @@ class CommandConfig {
             $this->isSubcommandEnabled(),
             $subcommandName
         );
+    }
+
+    private function addDefaultOptionConfigs(
+        array &$optionConfigs, $subcommandName = null
+    ) {
+        if (isset($optionConfigs['help']) === false) {
+            $shortName = 'h';
+            if (isset($optionConfigs['h'])) {
+                $shortName = null;
+            }
+            $optionConfigs['help'] = new OptionConfig(
+                'help', $shortName, false, false, null, null
+            );
+            if ($shortName !== null) {
+                $optionConfigs['h'] = $optionConfigs['help'];
+            }
+        }
+        if ($subcommandName === null
+            && isset($optionConfigs['version']) === false
+        ) {
+            $optionConfigs['version'] = new OptionConfig(
+                'version', null, false, false, null, null
+            );
+        }
     }
 
     private function getConfigPath($subcommandName) {
@@ -470,9 +443,13 @@ class CommandConfig {
         $result = 'Failed to get ';
         if ($subcommandName !== null) {
             $result .=
-            "default argument configs of subcommand '$subcommandName'";
+                 "default argument configs of subcommand '$subcommandName'";
         } else {
-            $result .= 'command default argument configs';
+            if ($this->isSubcommandEnabled()) {
+                $result .= 'default argument configs of global command';
+            } else {
+                $result .= 'command default argument configs';
+            }
         }
         return $result . ', ' . $extra . '.';
     }

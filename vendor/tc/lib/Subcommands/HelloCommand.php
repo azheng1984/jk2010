@@ -1,5 +1,5 @@
 <?php
-namespace Tc\Commands;
+namespace Tc\Subcommands;
 
 use Hyperframework\Cli\Command;
 
