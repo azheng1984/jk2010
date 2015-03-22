@@ -130,7 +130,9 @@ class CommandParser {
                 $optionName = substr($optionName, 2);
                 if (isset($optionConfigs[$optionName]) === false) {
                     $message = "Unknown option '$optionName'.";
-                    throw new CommandParsingException($message, $subcommandName);
+                    throw new CommandParsingException(
+                        $message, $subcommandName
+                    );
                 }
                 $optionConfig = $optionConfigs[$optionName];
                 $optionArgumentConfig = $optionConfig->getArgumentConfig();
@@ -155,7 +157,9 @@ class CommandParser {
                     if ($optionArgument !== true) {
                         $message =
                             "Option '$optionName' must not have an argument.";
-                        throw new CommandParsingException($message, $subcommandName);
+                        throw new CommandParsingException(
+                            $message, $subcommandName
+                        );
                     }
                 }
                 if ($optionConfig->isRepeatable()) {
@@ -217,7 +221,9 @@ class CommandParser {
         $result['arguments'] = [];
         $argumentConfigs = null;
         if ($commandConfig->isSubcommandEnabled()) {
-            $argumentConfigs = $commandConfig->getArgumentConfigs($subcommandName);
+            $argumentConfigs = $commandConfig->getArgumentConfigs(
+                $subcommandName
+            );
         } else {
             $argumentConfigs = $commandConfig->getArgumentConfigs();
         }
@@ -308,7 +314,9 @@ class CommandParser {
                 }
                 if ($hasMagicOption === false) {
                     $message = "Option '$name' is required.";
-                    throw new CommandParsingException($message, $subcommandName);
+                    throw new CommandParsingException(
+                        $message, $subcommandName
+                    );
                 }
             }
         }
@@ -320,7 +328,9 @@ class CommandParser {
                 if ($values !== null) {
                     if (in_array($value, $values, true) === false) {
                         $message = "The value of option '$name' is invalid.";
-                        throw new CommandParsingException($message, $subcommandName);
+                        throw new CommandParsingException(
+                            $message, $subcommandName
+                        );
                     }
                 }
             }
@@ -338,7 +348,9 @@ class CommandParser {
                         if ($optionKey !== null && $optionKey !== $key) {
                             $message = "The '$optionKey' and '$key'"
                                 . " options are mutually exclusive.";
-                            throw new CommandParsingException($message, $subcommandName);
+                            throw new CommandParsingException(
+                                $message, $subcommandName
+                            );
                         }
                         $optionKey = $key;
                         $optionKeys[] = "'" . $key . "'";
@@ -348,7 +360,9 @@ class CommandParser {
                     if ($hasMagicOption === false && count($optionKeys) !== 0) {
                         $message = "One of option '"
                             . implode(', ', $optionKeys) . "' is required.";
-                        throw new CommandParsingException($message, $subcommandName);
+                        throw new CommandParsingException(
+                            $message, $subcommandName
+                        );
                     }
                 }
             }
