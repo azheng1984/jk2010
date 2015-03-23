@@ -326,9 +326,7 @@ class CommandConfig {
         if ($subcommandName === null && $this->getVersion() !== null) {
             $configs[] = ['name' => 'version'];
         }
-        return $this->parseOptionConfigs(
-            $configs, $subcommandName
-        );
+        return $this->parseOptionConfigs($configs, $subcommandName);
     }
 
     protected function parseArgumentConfigs(
