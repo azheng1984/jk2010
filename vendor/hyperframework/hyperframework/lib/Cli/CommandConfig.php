@@ -41,8 +41,7 @@ class CommandConfig {
         }
         $configs = $this->get('arguments', $subcommandName);
         if ($configs === null) {
-            $argumentConfigs =
-                $this->getDefaultArgumentConfigs($subcommandName);
+            $result = $this->getDefaultArgumentConfigs($subcommandName);
         } else {
             if (is_array($configs) === false) {
                 throw new ConfigException(
@@ -53,16 +52,14 @@ class CommandConfig {
                     )
                 );
             }
-            $argumentConfigs =
-                $this->parseArgumentConfigs($configs, $subcommandName);
+            $result = $this->parseArgumentConfigs($configs, $subcommandName);
         }
         if ($subcommandName !== null) {
-            $this->subcommandArgumentConfigs[$subcommandName] =
-                $argumentConfigs;
+            $this->subcommandArgumentConfigs[$subcommandName] = $result;
         } else {
-            $this->argumentConfigs = $argumentConfigs;
+            $this->argumentConfigs = $result;
         }
-        return $argumentConfigs;
+        return $result;
     }
 
     public function getClass($subcommandName = null) {
@@ -103,11 +100,9 @@ class CommandConfig {
         }
         $configs = $this->get('options', $subcommandName);
         if ($configs === null) {
-            $optionConfigs = $this->getDefaultOptionConfigs($subcommandName);
+            $result = $this->getDefaultOptionConfigs($subcommandName);
         } elseif (is_array($configs)) {
-            $optionConfigs = $this->parseOptionConfigs(
-                $configs, $subcommandName
-            );
+            $result = $this->parseOptionConfigs($configs, $subcommandName);
         } else {
             throw new ConfigException($this->getErrorMessage(
                 $subcommandName,
@@ -116,11 +111,11 @@ class CommandConfig {
             ));
         }
         if ($subcommandName !== null) {
-            $this->subcommandOptionConfigs[$subcommandName] = $optionConfigs;
+            $this->subcommandOptionConfigs[$subcommandName] = $result;
         } else {
-            $this->optionConfigs = $optionConfigs;
+            $this->optionConfigs = $result;
         }
-        return $optionConfigs;
+        return $result;
     }
 
     public function getMutuallyExclusiveOptionGroupConfigs(
