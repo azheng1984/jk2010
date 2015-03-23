@@ -103,20 +103,18 @@ class CommandConfig {
         }
         $configs = $this->get('options', $subcommandName);
         if ($configs === null) {
-            $configs = [['name' => 'help', 'short_name' => 'h']];
-            if ($subcommandName === null && $this->getVersion() !== null) {
-                $configs[] = ['name' => 'version'];
-            }
-        } elseif (is_array($configs) === false) {
+            $optionConfigs = $this->getDefaultOptionConfigs($subcommandName);
+        } elseif (is_array($configs)) {
+            $optionConfigs = $this->parseOptionConfigs(
+                $configs, $subcommandName
+            );
+        } else {
             throw new ConfigException($this->getErrorMessage(
                 $subcommandName,
                 "field 'options' must be an array, "
                     . gettype($configs) . ' given'
             ));
         }
-        $optionConfigs = $this->parseOptionConfigs(
-            $configs, $subcommandName
-        );
         if ($subcommandName !== null) {
             $this->subcommandOptionConfigs[$subcommandName] = $optionConfigs;
         } else {
@@ -321,6 +319,16 @@ class CommandConfig {
             $result[] = new DefaultArgumentConfig($param);
         }
         return $result;
+    }
+
+    protected function getDefaultOptionConfigs($subcommandName = null) {
+        $configs = [['name' => 'help', 'short_name' => 'h']];
+        if ($subcommandName === null && $this->getVersion() !== null) {
+            $configs[] = ['name' => 'version'];
+        }
+        return $this->parseOptionConfigs(
+            $configs, $subcommandName
+        );
     }
 
     protected function parseArgumentConfigs(
