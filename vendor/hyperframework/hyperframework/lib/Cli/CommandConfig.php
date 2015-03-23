@@ -48,8 +48,8 @@ class CommandConfig {
                 throw new ConfigException(
                     $this->getErrorMessage(
                         $subcommandName,
-                        " field 'arguments' must be an array, "
-                            . gettype($configs) . ' given.'
+                        "field 'arguments' must be an array, "
+                            . gettype($configs) . ' given'
                     )
                 );
             }
@@ -81,8 +81,8 @@ class CommandConfig {
         if (is_string($class) === false) {
             throw new ConfigException($this->getErrorMessage(
                 $subcommandName,
-                " field 'class' must be a string, "
-                    . gettype($class) . ' given.'
+                "field 'class' must be a string, "
+                    . gettype($class) . ' given'
             ));
         }
         if ($subcommandName !== null) {
@@ -110,8 +110,8 @@ class CommandConfig {
         } elseif (is_array($configs) === false) {
             throw new ConfigException($this->getErrorMessage(
                 $subcommandName,
-                " field 'options' must be an array, "
-                    . gettype($configs) . ' given.'
+                "field 'options' must be an array, "
+                    . gettype($configs) . ' given'
             ));
         }
         $optionConfigs = $this->parseOptionConfigs(
@@ -146,8 +146,8 @@ class CommandConfig {
             if (is_array($config) === false) {
                 throw new ConfigException($this->getErrorMessage(
                     $subcommandName,
-                    " field 'mutually_exclusive_option_groups'"
-                         . ' must be an array,' . gettype($config) . ' given.'
+                    "field 'mutually_exclusive_option_groups'"
+                         . ' must be an array,' . gettype($config) . ' given'
                 ));
             }
             $result = $this->parseMutuallyExclusiveOptionGroupConfigs(
@@ -251,7 +251,7 @@ class CommandConfig {
             throw new ConfigException($this->getErrorMessage(
                 $subcommandName,
                 "config file '$configPath' must return an array,"
-                    . " $type returned."
+                    . " $type returned"
             ));
         }
         if ($subcommandName === null) {
@@ -410,7 +410,7 @@ class CommandConfig {
         } else {
             $result = "Subcommand '$subcommandName'";
         }
-        return $result . ' config error, ' . $extra;
+        return $result . ' config error, ' . $extra . '.';
     }
 
     private function getFailedToGetDefaultArgumentConfigsErrorMessage(
