@@ -5,14 +5,14 @@ use Hyperframework\Common\ConfigException;
 
 class MutuallyExclusiveOptionGroupConfigParser {
     public static function parse(
-        array $configs,
+        array $rawMutuallyExclusiveOptionGroupConfigs,
         array $optionConfigs,
         $isSubcommandEnabled = false,
         $subcommandName = null
     ) {
         $result = [];
         $includedOptionConfigs = [];
-        foreach ($configs as $config) {
+        foreach ($rawMutuallyExclusiveOptionGroupConfigs as $config) {
             if (is_array($config) === false) {
                 $type = gettype($config);
                 throw new ConfigException(self::getErrorMessage(
