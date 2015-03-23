@@ -101,22 +101,22 @@ class CommandConfig {
         } elseif ($subcommandName === null && $this->optionConfigs !== null) {
             return $this->optionConfigs;
         }
-        $config = $this->get('options', $subcommandName);
-        if ($config !== null) {
-            if (is_array($config) === false) {
-                throw new ConfigException($this->getErrorMessage(
-                    $subcommandName,
-                    " field 'options' must be an array, "
-                        . gettype($config) . ' given.'
-                ));
+        $configs = $this->get('options', $subcommandName);
+        if ($configs === null) {
+            $configs = [['name' => 'help', 'short_name' => 'h']];
+            if ($subcommandName === null && $this->getVersion() !== null) {
+                $configs[] = ['name' => 'version'];
             }
-            $optionConfigs = $this->parseOptionConfigs(
-                $config, $subcommandName
-            );
-        } else {
-            $optionConfigs = [];
+        } elseif (is_array($configs) === false) {
+            throw new ConfigException($this->getErrorMessage(
+                $subcommandName,
+                " field 'options' must be an array, "
+                    . gettype($configs) . ' given.'
+            ));
         }
-        $this->addDefaultOptionConfigs($optionConfigs, $subcommandName);
+        $optionConfigs = $this->parseOptionConfigs(
+            $configs, $subcommandName
+        );
         if ($subcommandName !== null) {
             $this->subcommandOptionConfigs[$subcommandName] = $optionConfigs;
         } else {
@@ -346,31 +346,6 @@ class CommandConfig {
             $this->isSubcommandEnabled(),
             $subcommandName
         );
-    }
-
-    private function addDefaultOptionConfigs(
-        array &$optionConfigs, $subcommandName = null
-    ) {
-        if (isset($optionConfigs['help']) === false) {
-            $shortName = 'h';
-            if (isset($optionConfigs['h'])) {
-                $shortName = null;
-            }
-            $optionConfigs['help'] = new OptionConfig(
-                'help', $shortName, false, false, null, null
-            );
-            if ($shortName !== null) {
-                $optionConfigs['h'] = $optionConfigs['help'];
-            }
-        }
-        if ($subcommandName === null
-            && isset($optionConfigs['version']) === false
-            && $this->getVersion() !== null
-        ) {
-            $optionConfigs['version'] = new OptionConfig(
-                'version', null, false, false, null, null
-            );
-        }
     }
 
     private function getConfigPath($subcommandName) {

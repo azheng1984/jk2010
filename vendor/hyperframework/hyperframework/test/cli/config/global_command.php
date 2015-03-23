@@ -5,6 +5,11 @@ return [
     'options' => [
         [
             'short_name' => 't'
-        ]
+        ], [
+            'name' => 'help',
+            'short_name' => 'h'
+        ], [
+            'name' => 'version'
+        ],
     ],
 ];
