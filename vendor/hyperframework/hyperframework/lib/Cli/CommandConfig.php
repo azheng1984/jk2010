@@ -137,19 +137,19 @@ class CommandConfig {
         } elseif ($this->mutuallyExclusiveOptionGroupConfigs !== null) {
             return $this->mutuallyExclusiveOptionGroupConfigs;
         }
-        $config = $this->get(
+        $configs = $this->get(
             'mutually_exclusive_option_groups', $subcommandName
         );
-        if ($config !== null) {
-            if (is_array($config) === false) {
+        if ($configs !== null) {
+            if (is_array($configs) === false) {
                 throw new ConfigException($this->getErrorMessage(
                     $subcommandName,
                     "field 'mutually_exclusive_option_groups'"
-                         . ' must be an array,' . gettype($config) . ' given'
+                         . ' must be an array,' . gettype($configs) . ' given'
                 ));
             }
             $result = $this->parseMutuallyExclusiveOptionGroupConfigs(
-                $config, $subcommandName
+                $configs, $subcommandName
             );
         } else {
             $result = [];
@@ -330,16 +330,16 @@ class CommandConfig {
     }
 
     protected function parseArgumentConfigs(
-        array $config, $subcommandName = null
+        array $configs, $subcommandName = null
     ) {
-        return ArgumentConfigParser::parse($config, $subcommandName);
+        return ArgumentConfigParser::parse($configs, $subcommandName);
     }
 
     protected function parseOptionConfigs(
-        array $config, $subcommandName = null
+        array $configs, $subcommandName = null
     ) {
         return OptionConfigParser::parse(
-            $config, $this->isSubcommandEnabled(), $subcommandName
+            $configs, $this->isSubcommandEnabled(), $subcommandName
         );
     }
 
