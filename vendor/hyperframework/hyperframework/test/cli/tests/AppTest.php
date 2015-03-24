@@ -43,7 +43,7 @@ class AppTest extends Base {
     public function testInitializeOption() {
         $_SERVER['argv'] = ['run', '-t', 'arg'];
         $app = $this->createApp();
-        $this->assertEquals($app->getOptions(), ['t' => true]);
+        $this->assertEquals(['t' => true], $app->getOptions());
     }
 
     public function testInitializeArgument() {
@@ -62,14 +62,14 @@ class AppTest extends Base {
     public function testGetOption() {
         $_SERVER['argv'] = ['run', '-t', 'arg'];
         $app = $this->createApp();
-        $this->assertEquals($app->getOption('t'), true);
+        $this->assertTrue($app->getOption('t'));
     }
 
     public function testHasOption() {
         $_SERVER['argv'] = ['run', '-t', 'arg'];
         $app = $this->createApp();
-        $this->assertEquals($app->hasOption('t'), true);
-        $this->assertEquals($app->hasOption('x'), false);
+        $this->assertTrue($app->hasOption('t'));
+        $this->assertFalse($app->hasOption('x'));
     }
 
     public function testCustomHelp() {

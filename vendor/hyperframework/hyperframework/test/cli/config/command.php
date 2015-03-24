@@ -10,6 +10,6 @@ return [
             'short_name' => 'h'
         ], [
             'name' => 'version'
-        ],
+        ]
     ]
 ];

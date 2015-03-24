@@ -122,7 +122,7 @@ class MultipleCommandAppTest extends Base {
         $this->assertEquals($app->getSubcommandName(), 'child');
         $_SERVER['argv'] = ['run'];
         $app = $this->createApp();
-        $this->assertEquals($app->getSubcommandName(), null);
+        $this->assertNull($app->getSubcommandName());
     }
 
     public function testHasSubcommand() {

@@ -325,26 +325,24 @@ class CommandConfig {
     }
 
     protected function parseArgumentConfigs(
-        array $rawArgumentConfigs, $subcommandName = null
+        array $configs, $subcommandName = null
     ) {
-        return ArgumentConfigParser::parse(
-            $rawArgumentConfigs, $subcommandName
-        );
+        return ArgumentConfigParser::parse($configs, $subcommandName);
     }
 
     protected function parseOptionConfigs(
-        array $rawOptionConfigs, $subcommandName = null
+        array $configs, $subcommandName = null
     ) {
         return OptionConfigParser::parse(
-            $rawOptionConfigs, $this->isSubcommandEnabled(), $subcommandName
+            $configs, $this->isSubcommandEnabled(), $subcommandName
         );
     }
 
     protected function parseMutuallyExclusiveOptionGroupConfigs(
-        array $rawMutuallyExclusiveOptionGroupConfigs, $subcommandName = null
+        array $configs, $subcommandName = null
     ) {
         return MutuallyExclusiveOptionGroupConfigParser::parse(
-            $rawMutuallyExclusiveOptionGroupConfigs,
+            $configs,
             $this->getOptionConfigs($subcommandName),
             $this->isSubcommandEnabled(),
             $subcommandName

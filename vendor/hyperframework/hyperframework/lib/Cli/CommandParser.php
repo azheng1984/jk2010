@@ -59,15 +59,15 @@ class CommandParser {
             if ($element[1] !== '-') {
                 $charIndex = 1;
                 while ($length > 1) {
-                    $optionName = $element[$charIndex];
-                    if (isset($optionConfigs[$optionName]) === false) {
-                        $message = "Option '$optionName' is not allowed.";
+                    $optionShortName = $element[$charIndex];
+                    if (isset($optionConfigs[$optionShortName]) === false) {
+                        $message = "Option '$optionShortName' is not allowed.";
                         throw new CommandParsingException(
                             $message, $subcommandName
                         );
                     }
                     $optionArgument = true;
-                    $optionConfig = $optionConfigs[$optionName];
+                    $optionConfig = $optionConfigs[$optionShortName];
                     $optionArgumentConfig = $optionConfig->getArgumentConfig();
                     $hasArgument = -1;
                     if ($optionArgumentConfig !== null) {
@@ -84,36 +84,18 @@ class CommandParser {
                         } else {
                             ++$index;
                             if ($index >= $count) {
-                                $message = 'Option \''
-                                    . $optionName . '\' must have an argument.';
+                                $message = 'Option \'' . $optionShortName
+                                    . '\' must have an argument.';
                                 throw new CommandParsingException(
-                                    $message, $subcomman
+                                    $message, $subcommandName
                                 );
                             }
                             $optionArgument = $argv[$index];
                         }
                     }
-                    if ($optionConfig->isRepeatable()) {
-                        if (isset($result['options'][$optionName])) {
-                            $result[$optionType][$optionName][] =
-                                $optionArgument;
-                        } else {
-                            $result[$optionType][$optionName] = [
-                                $optionArgument
-                            ];
-                        }
-                    } else {
-                        $result[$optionType][$optionName] = $optionArgument;
-                    }
-                    $optionFullName = $optionConfig->getName();
-                    if ($optionFullName !== null &&
-                        isset($result[$optionType][$optionFullName]) === false
-                    ) {
-                        $result[$optionType][$optionFullName] =
-                            $result[$optionType][$optionName];
-                        $result[$optionType][$optionName] =&
-                            $result[$optionType][$optionFullName];
-                    }
+                    self::addOption(
+                        $result[$optionType], $optionArgument, $optionConfig
+                    );
                     if ($optionArgument !== true) {
                         break;
                     }
@@ -142,7 +124,7 @@ class CommandParser {
                         1 : 0;
                 }
                 if ($hasArgument === 1) {
-                    if ($optionArgument === null) {
+                    if ($optionArgument === true) {
                         ++$index;
                         if ($index >= $count) {
                             $message =
@@ -162,25 +144,12 @@ class CommandParser {
                         );
                     }
                 }
-                if ($optionConfig->isRepeatable()) {
-                    if (isset($result['options'][$optionName])) {
-                        $result[$optionType][$optionName][] = $optionArgument;
-                    } else {
-                        $result[$optionType][$optionName] = [$optionArgument];
-                    }
-                } else {
-                    $result[$optionType][$optionName] = $optionArgument;
-                }
-                $optionShortName = $optionConfig->getShortName();
-                if ($optionShortName !== null
-                    && isset($result[$optionType][$optionShortName]) === false
-                ) {
-                    $result[$optionType][$optionShortName] =&
-                        $result[$optionType][$optionName];
-                }
+                self::addOption(
+                    $result[$optionType], $optionArgument, $optionConfig
+                );
             }
         }
-        $hasMagicOption = static::hasMagicOption(
+        $hasMagicOption = self::hasMagicOption(
             isset($result['global_options']) ? $result['global_options'] : null,
             $subcommandName,
             isset($result['options']) ? $result['options'] : null,
@@ -265,6 +234,47 @@ class CommandParser {
             }
         }
         return $result;
+    }
+
+    private static function addOption(&$options, $value, $optionConfig) {
+        $name = $optionConfig->getName();
+        if ($name !== null) {
+            if (isset($options[$name]) === false) {
+                if ($optionConfig->isRepeatable()) {
+                    $options[$name] = [$value];
+                } else {
+                    $options[$name] = $value;
+                }
+            } else {
+                if ($optionConfig->isRepeatable()) {
+                    $options[$name][] = $value;
+                } else {
+                    $options[$name] = $value;
+                }
+            }
+        }
+        $shortName = $optionConfig->getShortName();
+        if ($shortName !== null) {
+            if ($name !== null) {
+                if (isset($options[$shortName]) === false) {
+                    $options[$shortName] =& $options[$name];
+                }
+            } else {
+                if (isset($options[$shortName]) === false) {
+                    if ($optionConfig->isRepeatable()) {
+                        $options[$shortName] = [$value];
+                    } else {
+                        $options[$shortName] = $value;
+                    }
+                } else {
+                    if ($optionConfig->isRepeatable()) {
+                        $options[$shortName][] = $value;
+                    } else {
+                        $options[$shortName] = $value;
+                    }
+                }
+            }
+        }
     }
 
     private static function hasMagicOption(

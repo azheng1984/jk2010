@@ -5,12 +5,10 @@ use Hyperframework\Common\ConfigException;
 
 class OptionConfigParser {
     public static function parse(
-        array $rawOptionConfigs,
-        $isSubcommandEnabled = false,
-        $subcommandName = null
+        array $configs, $isSubcommandEnabled = false, $subcommandName = null
     ) {
         $result = [];
-        foreach ($rawOptionConfigs as $config) {
+        foreach ($configs as $config) {
             if (is_array($config) === false) {
                 $type = gettype($config);
                 throw new ConfigException(self::GetErrorMessage(
@@ -183,14 +181,14 @@ class OptionConfigParser {
     }
 
     private static function parseArgumentConfig(
-        $rawArgumentConfig,
+        $config,
         $isSubcommandEnabled,
         $subcommandName,
         $optionName,
         $optionShortName
     ) {
-        if (is_array($rawArgumentConfig) === false) {
-            $type = gettype($rawArgumentConfig);
+        if (is_array($config) === false) {
+            $type = gettype($config);
             throw new ConfigException(self::getErrorMessage(
                 $isSubcommandEnabled,
                 $subcommandName,
@@ -202,7 +200,7 @@ class OptionConfigParser {
         $name = null;
         $isRequired = true;
         $values = null;
-        foreach ($rawArgumentConfig as $key => $value) {
+        foreach ($config as $key => $value) {
             switch ($key) {
                 case 'name':
                     $name = $value;

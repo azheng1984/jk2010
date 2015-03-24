@@ -128,7 +128,8 @@ class App extends Base {
     protected function parseCommand() {
         try {
             $commandConfig = $this->getCommandConfig();
-            return CommandParser::parse($commandConfig);
+            $parser = new CommandParser;
+            return $parser->parse($commandConfig);
         } catch (CommandParsingException $e) {
             $this->renderCommandParsingError($e);
             $this->quit();

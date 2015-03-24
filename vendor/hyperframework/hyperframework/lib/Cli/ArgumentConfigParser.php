@@ -4,13 +4,11 @@ namespace Hyperframework\Cli;
 use Hyperframework\Common\ConfigException;
 
 class ArgumentConfigParser {
-    public static function parse(
-        array $rawArgumentConfigs, $subcommandName = null
-    ) {
+    public static function parse(array $configs, $subcommandName = null) {
         $result = [];
         $hasRepeatableArgument = false;
         $optionalArgumentName = null;
-        foreach ($rawArgumentConfigs as $config) {
+        foreach ($configs as $config) {
             if (is_array($config) === false) {
                 $type = gettype($config);
                 throw new ConfigException(self::getErrorMessage(
