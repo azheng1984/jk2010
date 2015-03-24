@@ -239,18 +239,14 @@ class CommandParser {
     private static function addOption(&$options, $value, $optionConfig) {
         $name = $optionConfig->getName();
         if ($name !== null) {
-            if (isset($options[$name]) === false) {
-                if ($optionConfig->isRepeatable()) {
+            if ($optionConfig->isRepeatable()) {
+                if (isset($options[$name]) === false) {
                     $options[$name] = [$value];
                 } else {
-                    $options[$name] = $value;
+                    $options[$name][] = $value;
                 }
             } else {
-                if ($optionConfig->isRepeatable()) {
-                    $options[$name][] = $value;
-                } else {
-                    $options[$name] = $value;
-                }
+                $options[$name] = $value;
             }
         }
         $shortName = $optionConfig->getShortName();
@@ -260,18 +256,14 @@ class CommandParser {
                     $options[$shortName] =& $options[$name];
                 }
             } else {
-                if (isset($options[$shortName]) === false) {
-                    if ($optionConfig->isRepeatable()) {
+                if ($optionConfig->isRepeatable()) {
+                    if (isset($options[$shortName]) === false) {
                         $options[$shortName] = [$value];
                     } else {
-                        $options[$shortName] = $value;
+                        $options[$shortName][] = $value;
                     }
                 } else {
-                    if ($optionConfig->isRepeatable()) {
-                        $options[$shortName][] = $value;
-                    } else {
-                        $options[$shortName] = $value;
-                    }
+                    $options[$shortName] = $value;
                 }
             }
         }
