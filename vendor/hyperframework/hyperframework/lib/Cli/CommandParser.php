@@ -213,8 +213,9 @@ class CommandParser {
             }
             ++$count;
             if ($count > $argumentCount) {
-                $message = 'Number of arguments error.';
-                throw new CommandParsingException($message, $subcommandName);
+                throw new CommandParsingException(
+                    'Number of arguments error.', $subcommandName
+                );
             }
         }
         return $result;
@@ -288,9 +289,6 @@ class CommandParser {
             $optionConfig = $commandConfig->getOptionConfig(
                 $name, $subcommandName
             );
-            if (is_object($optionConfig) === false)  {
-                var_dump($optionConfig);
-            }
             $argumentConfig = $optionConfig->getArgumentConfig();
             if ($argumentConfig !== null) {
                 $values = $argumentConfig->getValues();
@@ -314,21 +312,21 @@ class CommandParser {
                     $name = $optionConfig->getName();
                     if (isset($options[$name])) {
                         if ($optionName !== null && $optionName !== $name) {
-                            $message = "The '$optionName' and '$key'"
-                                . " options are mutually exclusive.";
+                            $message = "The option '$optionName' and '$name'"
+                                . " are mutually exclusive.";
                             throw new CommandParsingException(
                                 $message, $subcommandName
                             );
                         }
                         $optionName = $name;
-                        $optionNames[] = "'" . $name . "'";
                     }
+                    $optionNames[] = "'" . $name . "'";
                 }
                 if ($groupConfig->isRequired() && $optionName === null) {
                     if ($hasMagicOption === false && count($optionNames) !== 0)
                     {
-                        $message = "One of option '"
-                            . implode(', ', $optionNames) . "' is required.";
+                        $message = "One of option "
+                            . implode(' or ', $optionNames) . " is required.";
                         throw new CommandParsingException(
                             $message, $subcommandName
                         );

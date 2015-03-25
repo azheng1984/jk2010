@@ -58,10 +58,39 @@ class CommandParserTest extends Base {
         CommandParser::parse(new CommandConfig, ['run', '-x']);
     }
 
+    public function testParseShortOptionWithArgument() {
+        Config::set(
+            'hyperframework.cli.command_config_path',
+            'option_argument_is_required_command.php'
+        );
+        $result = CommandParser::parse(new CommandConfig, ['run', '-t', 'x']);
+        $this->assertSame('x', $result['options']['test']);
+    }
+
+    public function testParseShortOptionWithStickedFormArgument() {
+        Config::set(
+            'hyperframework.cli.command_config_path',
+            'option_argument_is_required_command.php'
+        );
+        $result = CommandParser::parse(new CommandConfig, ['run', '-tx']);
+        $this->assertSame('x', $result['options']['test']);
+    }
+
     /**
      * @expectedException Hyperframework\Cli\CommandParsingException
      */
-    public function testParseShortOptionWhenOptionArgumentIsInvaild() {
+     public function testParseLongOptionWhenOptionArgumentIsInvalid() {
+        Config::set(
+            'hyperframework.cli.command_config_path',
+            'option_without_argument_command.php'
+        );
+        CommandParser::parse(new CommandConfig, ['run', '--test=xx']);
+    }
+
+    /**
+     * @expectedException Hyperframework\Cli\CommandParsingException
+     */
+    public function testParseShortOptionWhenOptionArgumentIsMissing() {
         Config::set(
             'hyperframework.cli.command_config_path',
             'option_argument_is_required_command.php'
@@ -69,10 +98,21 @@ class CommandParserTest extends Base {
         CommandParser::parse(new CommandConfig, ['run', '-t']);
     }
 
+    public function testParseLongOptionWithArgument() {
+        Config::set(
+            'hyperframework.cli.command_config_path',
+            'option_argument_is_required_command.php'
+        );
+        $result = CommandParser::parse(
+            new CommandConfig, ['run', '--test', 'x']
+        );
+        $this->assertSame('x', $result['options']['test']);
+    }
+
     /**
      * @expectedException Hyperframework\Cli\CommandParsingException
      */
-    public function testParseLongOptionWhenOptionArgumentIsInvaild() {
+    public function testParseLongOptionWhenOptionArgumentIsMissing() {
         Config::set(
             'hyperframework.cli.command_config_path',
             'option_argument_is_required_command.php'
@@ -122,17 +162,96 @@ class CommandParserTest extends Base {
         );
     }
 
-    private function parse() {
-        $parser = new CommandParser;
-        $parser->parse();
+    /**
+     * @expectedException Hyperframework\Cli\CommandParsingException
+     */
+    public function testOptionIsMissing() {
+        Config::set(
+            'hyperframework.cli.command_config_path',
+            'option_is_required_command.php'
+        );
+        CommandParser::parse(new CommandConfig, ['run']);
     }
 
-//    public function testParseSubcommand() {
-//        Config::set('hyperframework.cli.enable_subcommand', true);
-//        $this->assertSame(
-//            ['options' => [], 'arguments' => ['arg']],
-//            CommandParser::parse(new CommandConfig, ['run', 'arg']));
-//
-//        CommandParser::parse(new CommandConfig, ['run', 'child', 'arg']);
-//    }
+    public function testMagicOption() {
+        Config::set(
+            'hyperframework.cli.command_config_path',
+            'option_is_required_command.php'
+        );
+        $result = CommandParser::parse(new CommandConfig, ['run', '--version']);
+        $this->assertTrue($result['options']['version']);
+    }
+
+    public function testOptionWithEnumeratedValues() {
+        Config::set(
+            'hyperframework.cli.command_config_path',
+            'option_has_argument_values_command.php'
+        );
+        $result = CommandParser::parse(
+            new CommandConfig, ['run', '--test', 'a']
+        );
+        $this->assertSame('a', $result['options']['test']);
+    }
+
+    /**
+     * @expectedException Hyperframework\Cli\CommandParsingException
+     */
+    public function testOptionWithInvalidValue() {
+        Config::set(
+            'hyperframework.cli.command_config_path',
+            'option_has_argument_values_command.php'
+        );
+        $result = CommandParser::parse(
+            new CommandConfig, ['run', '--test', 'x']
+        );
+    }
+
+    /**
+     * @expectedException Hyperframework\Cli\CommandParsingException
+     */
+    public function testMutuallyExclusiveOptionIsMissing() {
+        Config::set(
+            'hyperframework.cli.command_config_path',
+            'mutually_exclusive_options_command.php'
+        );
+        $result = CommandParser::parse(new CommandConfig, ['run']);
+    }
+
+    /**
+     * @expectedException Hyperframework\Cli\CommandParsingException
+     */
+    public function testMutuallyExclusiveOption() {
+        Config::set(
+            'hyperframework.cli.command_config_path',
+            'mutually_exclusive_options_command.php'
+        );
+        $result = CommandParser::parse(new CommandConfig, ['run', '-a', '-b']);
+    }
+
+    /**
+     * @expectedException Hyperframework\Cli\CommandParsingException
+     */
+    public function testArgumentMissing() {
+        CommandParser::parse(new CommandConfig, ['run']);
+    }
+
+    /**
+     * @expectedException Hyperframework\Cli\CommandParsingException
+     */
+    public function testInvalidArgument() {
+        Config::set(
+            'hyperframework.cli.command_config_path',
+            'no_argument_command.php'
+        );
+        $result = CommandParser::parse(new CommandConfig, ['run', 'a']);
+    }
+
+    public function testRepeatableArgument() {
+        Config::set(
+            'hyperframework.cli.command_config_path',
+            'repeatable_argument_command.php'
+        );
+        $result = CommandParser::parse(new CommandConfig, ['run', 'a', 'b']);
+        $this->assertSame([['a', 'b']], $result['arguments']);
+    }
 }
