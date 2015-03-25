@@ -58,9 +58,7 @@ class Debugger {
                         break;
                     }
                 }
-                if ($this->firstInternalStackFrameIndex !== null && 
-                    $this->firstInternalStackFrameIndex !== 0
-                ) {
+                if ($this->firstInternalStackFrameIndex !== null) {
                     $this->shouldHideExternal = true;
                     $maxIndex = count($this->trace) - 1;
                     if ($maxIndex === $this->firstInternalStackFrameIndex) {
