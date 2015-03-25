@@ -14,7 +14,7 @@ class ArgumentConfigParser {
                 throw new ConfigException(self::getErrorMessage(
                     $subcommandName,
                     null,
-                    "config must be an array, $type given."
+                    "config must be an array, $type given"
                 ));
             }
             $isRequired = true;
@@ -108,6 +108,6 @@ class ArgumentConfigParser {
         if ($name !== null) {
             $result .= " '$name'";
         }
-        return $result . ' config error, ' . $extra;
+        return $result . ' config error, ' . $extra . '.';
     }
 }

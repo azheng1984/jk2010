@@ -87,7 +87,7 @@ class CommandParserTest extends Base {
         );
         $this->assertSame(
             [
-                'options' => ['test' => [true, true], 't' => [true, true]],
+                'options' => ['test' => [true, true]],
                 'arguments' => []
             ],
             CommandParser::parse(new CommandConfig, ['run', '-tt'])
@@ -101,7 +101,7 @@ class CommandParserTest extends Base {
         );
         $this->assertSame(
             [
-                'options' => ['test' => [true, true], 't' => [true, true]],
+                'options' => ['test' => [true, true]],
                 'arguments' => []
             ],
             CommandParser::parse(new CommandConfig, ['run', '--test', '--test'])
@@ -115,7 +115,7 @@ class CommandParserTest extends Base {
         );
         $this->assertSame(
             [
-                'options' => ['test' => [true, true], 't' => [true, true]],
+                'options' => ['test' => [true, true]],
                 'arguments' => []
             ],
             CommandParser::parse(new CommandConfig, ['run', '-tt'])

@@ -4,7 +4,7 @@ return [
     'version' => '1.0.0',
     'options' => [
         [
-            'short_name' => 't'
+            'name' => 't'
         ], [
             'name' => 'help',
             'short_name' => 'h'

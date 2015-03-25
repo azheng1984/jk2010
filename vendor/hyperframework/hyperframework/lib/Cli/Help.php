@@ -156,13 +156,18 @@ class Help {
         $optionConfig, $isCompact, $isRequired = null
     ) {
         $result = '';
-        $shortName = (string)$optionConfig->getShortName();
-        if ($shortName !== '') {
+        $name = $optionConfig->getName();
+        if (strlen($name) === 1) {
+            $shortName = $name;
+            $name = null;
+        } else {
+            $shortName = $optionConfig->getShortName();
+        }
+        if ($shortName !== null) {
             $result .= '-' . $shortName;
         }
-        $name = (string)$optionConfig->getName();
-        if ($name !== '') {
-            if ($shortName !== '') {
+        if ($name !== null) {
+            if ($shortName !== null) {
                 if ($isCompact) {
                     $result .= '|';
                 } else {
@@ -180,13 +185,13 @@ class Help {
                 $argumentPattern = '<' . $argumentConfig->getName() . '>';
             }
             if ($argumentConfig->isRequired()) {
-                if ($name === '') {
+                if ($name === null) {
                     $result .= ' ' . $argumentPattern;
                 } else {
                     $result .= '='. $argumentPattern;
                 }
             } else {
-                if ($name === '') {
+                if ($name === null) {
                     $result .= '[' . $argumentPattern . ']';
                 } else {
                     $result .= '[=' . $argumentPattern . ']';
@@ -195,8 +200,8 @@ class Help {
         }
         if ($isCompact) {
             if ($isRequired === true || $optionConfig->isRequired()) {
-                if (($name !== '' && $shortName !== '')
-                    || ($shortName !== '' && $optionConfig->isRequired())
+                if (($name !== null && $shortName !== null)
+                    || ($shortName !== null && $optionConfig->isRequired())
                 ) {
                     $result = '(' . $result . ')';
                 }
@@ -212,8 +217,8 @@ class Help {
             ->getOptionConfigs($this->subcommandName);
         $includedOptionConfigs = [];
         foreach ($optionConfigs as $optionConfig) {
-            $name = (string)$optionConfig->getName();
-            $shortName = (string)$optionConfig->getShortName();
+            $name = $optionConfig->getName();
+            $shortName = $optionConfig->getShortName();
             if (in_array($optionConfig, $includedOptionConfigs, true)) {
                 continue;
             }
@@ -223,7 +228,7 @@ class Help {
                     $optionConfig
                 );
             $hasBrackets = false;
-            if ($name !== '' && $shortName !== '') {
+            if ($name !== null && $shortName !== null) {
                 $hasBrackets = true;
             }
             $isRequired = $optionConfig->isRequired();

@@ -33,6 +33,8 @@ class Response {
     }
 
     public static function setCookie($name, $value, array $options = null) {
+        echo 'xxxxxxxxxxxxx';
+        sdf;
         self::getEngine()->setCookie($name, $value, $options);
     }
 

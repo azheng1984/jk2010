@@ -64,7 +64,7 @@ class OptionConfigParser {
                             . " 'name' must be a string, $type given"
                     ));
                 }
-                if (preg_match('/^[a-zA-Z0-9-]{2,}$/', $name) !== 1) {
+                if (preg_match('/^[a-zA-Z0-9][a-zA-Z0-9-]*$/', $name) !== 1) {
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
                         $subcommandName,
@@ -73,6 +73,14 @@ class OptionConfigParser {
                         "value '$name' of field 'name' is invalid"
                     ));
                 }
+            } else {
+                throw new ConfigException(self::getErrorMessage(
+                    $isSubcommandEnabled,
+                    $subcommandName,
+                    null,
+                    null,
+                    "field 'name' is requried"
+                ));
             }
             if ($shortName !== null) {
                 if (is_string($shortName) === false) {
@@ -98,6 +106,18 @@ class OptionConfigParser {
                             . "field 'short_name' is invalid"
                     ));
                 }
+            }
+            if (strlen($name) === 1
+                && $shortName !== null
+                && $name !== $shortName
+            ) {
+                throw new ConfigException(self::getErrorMessage(
+                    $isSubcommandEnabled,
+                    $subcommandName,
+                    $name,
+                    null,
+                    "values conflict between field 'name' and 'short_name'"
+                ));
             }
             if (is_bool($isRequired) === false) {
                 $type = gettype($isRequired);
@@ -310,6 +330,6 @@ class OptionConfigParser {
         } elseif ($shortName !== null) {
             $result .= " '$shortName'";
         }
-        return $result . ' config error, ' . $extra;
+        return $result . ' config error, ' . $extra . '.';
     }
 }

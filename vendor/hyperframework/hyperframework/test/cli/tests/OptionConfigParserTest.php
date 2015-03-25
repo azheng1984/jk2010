@@ -74,6 +74,13 @@ class OptionConfigParserTest extends Base {
     /**
      * @expectedException Hyperframework\Common\ConfigException
      */
+    public function testValuesConflictBetweenNameAndShortName() {
+        OptionConfigParser::parse([['name' => 'x', 'short_name' => 'y']]);
+    }
+
+    /**
+     * @expectedException Hyperframework\Common\ConfigException
+     */
     public function testInvalidDescriptionType() {
         OptionConfigParser::parse([['name' => 'test', 'description' => false]]);
     }

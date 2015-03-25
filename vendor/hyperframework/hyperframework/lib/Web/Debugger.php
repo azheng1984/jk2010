@@ -421,7 +421,7 @@ class Debugger {
             echo '<div id="message">', $message, '</div>';
         }
         echo '<div id="nav"><div class="wrapper">',
-            '<div class="selected" id="nav-code"><div>Code</div></div>',
+            '<div class="selected" id="nav-code"><div>Error</div></div>',
             '<div id="nav-output"><a>Output</a></div></div></div></td></tr>';
     }
 
@@ -534,7 +534,7 @@ function showOutput() {
         return;
     }
     var codeTab = document.getElementById("nav-code");
-    codeTab.innerHTML = '<a href="javascript:showCode()">Code</a>';
+    codeTab.innerHTML = '<a href="javascript:showCode()">Error</a>';
     codeTab.className = '';
     var outputTab = document.getElementById("nav-output");
     outputTab.innerHTML = '<div>Output</div>';
@@ -586,7 +586,7 @@ function showOutput() {
     var responseBodyHtml = '';
     if (content != '') {
         responseBodyHtml += '<div id="toolbar"><a href="'
-            + 'javascript:showRawContent()">Show Raw Content</a></div>';
+            + 'javascript:showRawContent()">Raw</a></div>';
     }
     responseBodyHtml += buildOutputContent(content);
     codeContent = contentDiv.innerHTML;
@@ -597,7 +597,7 @@ function showOutput() {
 
 function showLineNumbers() {
     document.getElementById("response-body").innerHTML = '<div id="toolbar">'
-        + '<a href="javascript:showRawContent()">Show Raw Content</a> </div>'
+        + '<a href="javascript:showRawContent()">Raw</a> </div>'
         + buildOutputContent(content);
 }
 
@@ -683,7 +683,7 @@ function showCode() {
         return;
     }
     var codeTab = document.getElementById("nav-code");
-    codeTab.innerHTML = '<div>Code</div>';
+    codeTab.innerHTML = '<div>Error</div>';
     codeTab.className = 'selected';
     var outputTab = document.getElementById("nav-output");
     outputTab.innerHTML = '<a href="javascript:showOutput()">Output</a>';
