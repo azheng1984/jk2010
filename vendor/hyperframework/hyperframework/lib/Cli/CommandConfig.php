@@ -311,9 +311,8 @@ class CommandConfig {
                 throw new LogicException(
                     $this->getFailedToGetDefaultArgumentConfigsErrorMessage(
                         $subcommandName,
-                        "argument list of method '$class::execute' is "
-                            . "invalid, array argument must be"
-                            . " the last one"
+                        "argument list of method '$class::execute' is invalid,"
+                            . " array argument must be the last one"
                     )
                 );
             }

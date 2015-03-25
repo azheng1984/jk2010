@@ -29,12 +29,8 @@ class Help {
 
     protected function renderUsage() {
         $name = $this->commandConfig->getName();
-        $prefix = $name;
-        if ($this->subcommandName !== null) {
-            $prefix .= ' ' . $this->subcommandName;
-        }
-        if (strlen($prefix) < 7) {
-            $this->usageIndent = strlen($prefix) + 8;
+        if ($name < 3 && $this->subcommandName === null) {
+            $this->usageIndent = strlen($name) + 8;
         } else {
             $this->usageIndent = 11;
         }
@@ -123,9 +119,7 @@ class Help {
         ) {
             echo PHP_EOL, str_repeat(' ', $this->usageIndent);
             $this->usageLineLength = $this->usageIndent;
-        } elseif ($this->usageLineLength !== 0
-            && $element[0] !== '|'
-        ) {
+        } elseif ($this->usageLineLength !== 0 && $element[0] !== '|') {
             echo ' ';
         }
         echo $element;
@@ -195,9 +189,7 @@ class Help {
         }
         if ($isCompact) {
             if ($isRequired === true || $optionConfig->isRequired()) {
-                if (($name !== null && $shortName !== null)
-                    || ($shortName !== null && $optionConfig->isRequired())
-                ) {
+                if (($name !== null && $shortName !== null)) {
                     $result = '(' . $result . ')';
                 }
             } else {
@@ -214,6 +206,9 @@ class Help {
         foreach ($optionConfigs as $optionConfig) {
             $name = $optionConfig->getName();
             $shortName = $optionConfig->getShortName();
+            if ($name === $shortName) {
+                $name = null;
+            }
             if (in_array($optionConfig, $includedOptionConfigs, true)) {
                 continue;
             }
@@ -228,7 +223,7 @@ class Help {
             }
             $isRequired = $optionConfig->isRequired();
             if ($mutuallyExclusiveOptionGroupConfig !== null) {
-                $isReqired = $mutuallyExclusiveOptionGroupConfig->isRequired();
+                $isRequired = $mutuallyExclusiveOptionGroupConfig->isRequired();
                 $mutuallyExclusiveOptionConfigs =
                     $mutuallyExclusiveOptionGroupConfig->getOptionConfigs();
                 $count = count($mutuallyExclusiveOptionConfigs);
@@ -281,46 +276,16 @@ class Help {
     }
 
     private function renderList($names, $descriptions) {
-        $maxLength = 0;
-        $count = 0;
-        $index = 0;
-        $descriptionCount = 0;
-        foreach ($names as $name) {
-            if ((string)$descriptions[$index] === '') {
-                $index++;
-                continue;
-            }
-            ++$descriptionCount;
-            $length = strlen($name);
-            if ($length > $maxLength) {
-                if ($length < 28) {
-                    $maxLength = $length;
-                    ++$count;
-                }
-            }
-            ++$index;
-        }
-        $isNewLine = false;
-        if ($count === 0 || $count / $descriptionCount <= 0.5) {
-            $isNewLine = true;
-        }
         $count = count($names);
         for ($index = 0; $index < $count; ++$index) {
             $name = $names[$index];
             echo ' ', $name;
-            $description = $descriptions[$index];
+            $description = (string)$descriptions[$index];
             if ($description !== '') {
-                if ($isNewLine) {
-                    echo PHP_EOL, '     ', $description, PHP_EOL;
-                    continue;
+                if (substr($description, 0, strlen(PHP_EOL)) !== PHP_EOL) {
+                    echo '  ';
                 }
-                $length = strlen($name);
-                if ($length > 27) {
-                    echo PHP_EOL;
-                    $length = -1;
-                }
-                echo str_repeat(' ', $maxLength - $length + 2),
-                    $description, PHP_EOL;
+                echo $description, PHP_EOL;
             } else {
                 echo PHP_EOL;
             }
