@@ -6,7 +6,7 @@ class CommandParser {
         if ($argv === null) {
             $argv = $_SERVER['argv'];
         }
-        $optionConfigs = $commandConfig->getOptionConfigs();
+        $optionConfigs = $commandConfig->getOptionConfigIndex();
         $result = [];
         $subcommandName = null;
         $optionType = null;
@@ -40,7 +40,8 @@ class CommandParser {
                     $subcommandName = $element;
                     $result['subcommand_name'] = $element;
                     $result['options'] = [];
-                    $optionConfigs = $commandConfig->getOptionConfigs($element);
+                    $optionConfigs =
+                        $commandConfig->getOptionConfigIndex($element);
                     $optionType = 'options';
                 } else {
                     $arguments[] = $element;
@@ -156,7 +157,7 @@ class CommandParser {
             $commandConfig
         );
         if (isset($result['global_options'])) {
-            $globalOptionConfigs = $commandConfig->getOptionConfigs();
+            $globalOptionConfigs = $commandConfig->getOptionConfigIndex();
             $globalMutuallyExclusiveOptionGroupConfigs =
                 $commandConfig->getMutuallyExclusiveOptionGroupConfigs();
             self::checkOptions(

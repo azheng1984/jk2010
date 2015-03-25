@@ -6,7 +6,7 @@ use Hyperframework\Common\ConfigException;
 class MutuallyExclusiveOptionGroupConfigParser {
     public static function parse(
         array $mutuallyExclusiveOptionGroupConfigs,
-        array $optionConfigs,
+        array $optionConfigIndex,
         $isSubcommandEnabled = false,
         $subcommandName = null
     ) {
@@ -48,14 +48,14 @@ class MutuallyExclusiveOptionGroupConfigParser {
                     ));
                 }
                 $length = strlen($value);
-                if (isset($optionConfigs[$value]) === false) {
+                if (isset($optionConfigIndex[$value]) === false) {
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
                         $subcommandName,
                         "option '$value' is not defined"
                     ));
                 }
-                $optionConfig = $optionConfigs[$value];
+                $optionConfig = $optionConfigIndex[$value];
                 if (in_array(
                     $optionConfig, $mutuallyExclusiveOptionConfigs, true
                 )) {

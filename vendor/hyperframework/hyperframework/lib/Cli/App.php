@@ -144,7 +144,7 @@ class App extends Base {
         if ($subcommandName !== null) {
             $name .= ' ' . $subcommandName;
         }
-        $optionConfigs = $config->getOptionConfigs($subcommandName);
+        $optionConfigs = $config->getOptionConfigIndex($subcommandName);
         if (isset($optionConfigs['help'])) {
             echo 'See \'', $name, ' --help\'.', PHP_EOL;
         }

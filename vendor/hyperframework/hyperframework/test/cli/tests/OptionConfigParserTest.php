@@ -17,7 +17,7 @@ class OptionConfigParserTest extends Base {
                 'values' => ['a', 'b'],
             ]
         ]]);
-        $optionConfig = $result['t'];
+        $optionConfig = $result[0];
         $this->assertSame('description', $optionConfig->getDescription());
         $this->assertSame('t', $optionConfig->getShortName());
         $this->assertSame('test', $optionConfig->getName());

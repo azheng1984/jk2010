@@ -17,6 +17,7 @@ class CommandConfig {
     private $configs;
     private $class;
     private $optionConfigs;
+    private $optionConfigIndex;
     private $mutuallyExclusiveOptionGroupConfigs;
     private $argumentConfigs;
     private $isSubcommandEnabled;
@@ -24,6 +25,7 @@ class CommandConfig {
     private $subcommandConfigs = [];
     private $subcommandClasses = [];
     private $subcommandOptionConfigs = [];
+    private $subcommandOptionConfigIndexes = [];
     private $subcommandMutuallyExclusiveOptionGroupConfigs = [];
     private $subcommandArgumentConfigs = [];
 
@@ -114,6 +116,34 @@ class CommandConfig {
             $this->subcommandOptionConfigs[$subcommandName] = $result;
         } else {
             $this->optionConfigs = $result;
+        }
+        return $result;
+    }
+
+    public function getOptionConfigIndex($subcommandName = null) {
+        if ($subcommandName !== null
+            && isset($this->subcommandOptionConfigIndexes[$subcommandName])
+        ) {
+            return $this->subcommandOptionConfigIndexes[$subcommandName];
+        } elseif ($subcommandName === null
+            && $this->optionConfigIndex !== null
+        ) {
+            return $this->optionConfigIndex;
+        }
+        $configs = $this->getOptionConfigs($subcommandName);
+        $result = [];
+        foreach ($configs as $config) {
+            if ($config->getName() !== null) {
+                $result[$config->getName()] = $config;
+            }
+            if ($config->getShortName() !== null) {
+                $result[$config->getShortName()] = $config;
+            }
+        }
+        if ($subcommandName !== null) {
+            $this->subcommandOptionConfigIndexes[$subcommandName] = $result;
+        } else {
+            $this->optionConfigIndex = $result;
         }
         return $result;
     }
@@ -343,7 +373,7 @@ class CommandConfig {
     ) {
         return MutuallyExclusiveOptionGroupConfigParser::parse(
             $configs,
-            $this->getOptionConfigs($subcommandName),
+            $this->getOptionConfigIndex($subcommandName),
             $this->isSubcommandEnabled(),
             $subcommandName
         );

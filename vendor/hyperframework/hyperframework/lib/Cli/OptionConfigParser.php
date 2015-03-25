@@ -8,6 +8,7 @@ class OptionConfigParser {
         array $configs, $isSubcommandEnabled = false, $subcommandName = null
     ) {
         $result = [];
+        $optionNames = [];
         foreach ($configs as $config) {
             if (is_array($config) === false) {
                 $type = gettype($config);
@@ -173,7 +174,7 @@ class OptionConfigParser {
                 $description
             );
             if ($name !== null) {
-                if (isset($result[$name])) {
+                if (isset($optionNames[$name])) {
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
                         $subcommandName,
@@ -182,10 +183,10 @@ class OptionConfigParser {
                         "it has already been defined"
                     ));
                 }
-                $result[$name] = $optionConfig;
+                $optionNames[$name] = true;
             }
             if ($shortName !== null) {
-                if (isset($result[$shortName])) {
+                if (isset($optionNames[$shortName])) {
                     throw new ConfigException(self::getErrorMessage(
                         $isSubcommandEnabled,
                         $subcommandName,
@@ -194,8 +195,9 @@ class OptionConfigParser {
                         "it has already been defined"
                     ));
                 }
-                $result[$shortName] = $optionConfig;
+                $optionNames[$shortName] = true;
             }
+            $result[] = $optionConfig;
         }
         return $result;
     }
