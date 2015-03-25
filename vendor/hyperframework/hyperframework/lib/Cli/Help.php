@@ -248,7 +248,8 @@ class Help {
                         );
                         $includedOptionConfigs[]
                             = $mutuallyExclusiveOptionConfig;
-                        if (strlen($element + $buffer) > 70) {
+                        $maxLength = 80 - $this->usageIndent;
+                        if (strlen($element + $buffer) > $maxLength) {
                             if ($index !== 0) {
                                 $this->renderUsageElement($buffer);
                                 $buffer = '';
