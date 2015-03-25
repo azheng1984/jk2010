@@ -119,42 +119,51 @@ class CommandConfigTest extends Base {
         $commandConfig->getClass();
     }
 
-    public function testGetOptionConfigIndex() {
+    public function testGetOptionConfig() {
         $commandConfig = $this->mockCommandConfig([
             'options' => [['name' => 'test']]
         ]);
-        $configs = $commandConfig->getOptionConfigIndex();
-        $this->assertTrue(isset($configs['test']));
+        $config = $commandConfig->getOptionConfig('test');
+        $this->assertInstanceOf('Hyperframework\Cli\OptionConfig', $config);
     }
 
     public function testDefaultHelpAndVersionOptionConfigs() {
         $commandConfig = $this->mockCommandConfig();
-        $configs = $commandConfig->getOptionConfigIndex();
-        $this->assertTrue(isset($configs['help']));
-        $this->assertFalse(isset($configs['version']));
+        $this->assertNotNull($commandConfig->getOptionConfig('help'));
+        $this->assertNull($commandConfig->getOptionConfig('version'));
         $commandConfig = $this->mockCommandConfig(['version' => 1]);
-        $configs = $commandConfig->getOptionConfigIndex();
-        $this->assertTrue(isset($configs['version']));
+        $this->assertNotNull($commandConfig->getOptionConfig('version'));
     }
 
-    public function testGetOptionConfigIndexOfSubcommand() {
+    public function testGetOptionConfigOfSubcommand() {
         $commandConfig = $this->mockCommandConfig([
             'options' => [['name' => 'test']]
         ], 'child');
-        $configs = $commandConfig->getOptionConfigIndex('child');
-        $this->assertTrue(isset($configs['test']));
+        $config = $commandConfig->getOptionConfig('test', 'child');
+        $this->assertNotNull($config);
     }
 
     public function testGetOptionConfigs() {
+        $commandConfig = $this->mockCommandConfig([
+            'options' => [['name' => 'test']]
+        ]);
+        $configs = $commandConfig->getOptionConfigs();
+        $this->assertSame(1, count($configs));
+        $this->assertSame('test', $configs[0]->getName());
     }
 
     public function testGetOptionConfigsOfSubcommand() {
+        $commandConfig = $this->mockCommandConfig([
+            'options' => [['name' => 'test']]
+        ], 'child');
+        $configs = $commandConfig->getOptionConfigs('child');
+        $this->assertSame(1, count($configs));
+        $this->assertSame('test', $configs[0]->getName());
     }
 
     public function testDefaultHelpOptionConfigOfSubcommand() {
         $commandConfig = $this->mockCommandConfig([], 'child');
-        $configs = $commandConfig->getOptionConfigIndex('child');
-        $this->assertTrue(isset($configs['help']));
+        $this->assertNotNull($commandConfig->getOptionConfig('help', 'child'));
     }
 
     /**

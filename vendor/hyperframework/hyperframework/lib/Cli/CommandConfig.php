@@ -120,32 +120,11 @@ class CommandConfig {
         return $result;
     }
 
-    public function getOptionConfigIndex($subcommandName = null) {
-        if ($subcommandName !== null
-            && isset($this->subcommandOptionConfigIndexes[$subcommandName])
-        ) {
-            return $this->subcommandOptionConfigIndexes[$subcommandName];
-        } elseif ($subcommandName === null
-            && $this->optionConfigIndex !== null
-        ) {
-            return $this->optionConfigIndex;
+    public function getOptionConfig($nameOrShortName, $subcommandName = null) {
+        $index = $this->getOptionConfigIndex($subcommandName);
+        if (isset($index[$nameOrShortName])) {
+            return $index[$nameOrShortName];
         }
-        $configs = $this->getOptionConfigs($subcommandName);
-        $result = [];
-        foreach ($configs as $config) {
-            if ($config->getName() !== null) {
-                $result[$config->getName()] = $config;
-            }
-            if ($config->getShortName() !== null) {
-                $result[$config->getShortName()] = $config;
-            }
-        }
-        if ($subcommandName !== null) {
-            $this->subcommandOptionConfigIndexes[$subcommandName] = $result;
-        } else {
-            $this->optionConfigIndex = $result;
-        }
-        return $result;
     }
 
     public function getMutuallyExclusiveOptionGroupConfigs(
@@ -429,6 +408,34 @@ class CommandConfig {
             }
         }
         return ConfigFileFullPathBuilder::build($folder);
+    }
+
+    private function getOptionConfigIndex($subcommandName = null) {
+        if ($subcommandName !== null
+            && isset($this->subcommandOptionConfigIndexes[$subcommandName])
+        ) {
+            return $this->subcommandOptionConfigIndexes[$subcommandName];
+        } elseif ($subcommandName === null
+            && $this->optionConfigIndex !== null
+        ) {
+            return $this->optionConfigIndex;
+        }
+        $configs = $this->getOptionConfigs($subcommandName);
+        $result = [];
+        foreach ($configs as $config) {
+            if ($config->getName() !== null) {
+                $result[$config->getName()] = $config;
+            }
+            if ($config->getShortName() !== null) {
+                $result[$config->getShortName()] = $config;
+            }
+        }
+        if ($subcommandName !== null) {
+            $this->subcommandOptionConfigIndexes[$subcommandName] = $result;
+        } else {
+            $this->optionConfigIndex = $result;
+        }
+        return $result;
     }
 
     private function getErrorMessage($subcommandName, $extra) {

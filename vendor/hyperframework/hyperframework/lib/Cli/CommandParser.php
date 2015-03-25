@@ -6,7 +6,6 @@ class CommandParser {
         if ($argv === null) {
             $argv = $_SERVER['argv'];
         }
-        $optionConfigs = $commandConfig->getOptionConfigIndex();
         $result = [];
         $subcommandName = null;
         $optionType = null;
@@ -40,8 +39,6 @@ class CommandParser {
                     $subcommandName = $element;
                     $result['subcommand_name'] = $element;
                     $result['options'] = [];
-                    $optionConfigs =
-                        $commandConfig->getOptionConfigIndex($element);
                     $optionType = 'options';
                 } else {
                     $arguments[] = $element;
@@ -61,14 +58,16 @@ class CommandParser {
                 $charIndex = 1;
                 while ($length > 1) {
                     $optionShortName = $element[$charIndex];
-                    if (isset($optionConfigs[$optionShortName]) === false) {
+                    $optionConfig = $commandConfig->getOptionConfig(
+                        $optionShortName, $subcommandName
+                    );
+                    if ($optionConfig === null) {
                         $message = "Option '$optionShortName' is not allowed.";
                         throw new CommandParsingException(
                             $message, $subcommandName
                         );
                     }
                     $optionArgument = true;
-                    $optionConfig = $optionConfigs[$optionShortName];
                     $optionArgumentConfig = $optionConfig->getArgumentConfig();
                     $hasArgument = -1;
                     if ($optionArgumentConfig !== null) {
@@ -111,13 +110,15 @@ class CommandParser {
                         explode('=', $element, 2);
                 }
                 $optionName = substr($optionName, 2);
-                if (isset($optionConfigs[$optionName]) === false) {
+                $optionConfig = $commandConfig->getOptionConfig(
+                    $optionName, $subcommandName
+                );
+                if ($optionConfig === null) {
                     $message = "Unknown option '$optionName'.";
                     throw new CommandParsingException(
                         $message, $subcommandName
                     );
                 }
-                $optionConfig = $optionConfigs[$optionName];
                 $optionArgumentConfig = $optionConfig->getArgumentConfig();
                 $hasArgument = -1;
                 if ($optionArgumentConfig !== null) {
@@ -152,30 +153,22 @@ class CommandParser {
         }
         $hasMagicOption = self::hasMagicOption(
             isset($result['global_options']) ? $result['global_options'] : null,
-            $subcommandName,
             isset($result['options']) ? $result['options'] : null,
             $commandConfig
         );
         if (isset($result['global_options'])) {
-            $globalOptionConfigs = $commandConfig->getOptionConfigIndex();
-            $globalMutuallyExclusiveOptionGroupConfigs =
-                $commandConfig->getMutuallyExclusiveOptionGroupConfigs();
             self::checkOptions(
                 null,
                 $result['global_options'],
-                $globalOptionConfigs,
-                $globalMutuallyExclusiveOptionGroupConfigs,
+                $commandConfig,
                 $hasMagicOption
             );
         }
         if (isset($result['options'])) {
-            $mutuallyExclusiveOptionGroupConfigs = $commandConfig
-                ->getMutuallyExclusiveOptionGroupConfigs($subcommandName);
             self::checkOptions(
                 $subcommandName,
                 $result['options'],
-                $optionConfigs,
-                $mutuallyExclusiveOptionGroupConfigs,
+                $commandConfig,
                 $hasMagicOption
             );
         }
@@ -183,20 +176,10 @@ class CommandParser {
             $result['subcommand_name'] = $subcommandName;
         }
         if ($isGlobal || $hasMagicOption) {
-            if ($hasMagicOption) {
-                $result['arguments'] = $arguments;
-            }
             return $result;
         }
         $result['arguments'] = [];
-        $argumentConfigs = null;
-        if ($commandConfig->isSubcommandEnabled()) {
-            $argumentConfigs = $commandConfig->getArgumentConfigs(
-                $subcommandName
-            );
-        } else {
-            $argumentConfigs = $commandConfig->getArgumentConfigs();
-        }
+        $argumentConfigs = $commandConfig->getArgumentConfigs($subcommandName);
         $argumentConfigCount = count($argumentConfigs);
         $argumentCount = count($arguments);
         for ($argumentIndex = 0;
@@ -252,29 +235,26 @@ class CommandParser {
 
     private static function hasMagicOption(
         array $globalOptions = null,
-        $subcommandName,
         array $options = null,
         $commandConfig
     ) {
         if ($commandConfig->isSubcommandEnabled()) {
             if ($globalOptions !== null) {
-                foreach ($globalOptions as $key => $value) {
-                    if (in_array($key, ['help', 'version'])) {
+                foreach (['help', 'version'] as $optionName) {
+                    if (isset($globalOptions[$optionName])) {
                         return true;
                     }
                 }
             }
             if ($options !== null) {
-                foreach ($options as $key => $value) {
-                    if ($key === 'help') {
-                        return true;
-                    }
+                if (isset($options['help'])) {
+                    return true;
                 }
             }
         } else {
             if ($options !== null) {
-                foreach ($options as $key => $value) {
-                    if (in_array($key, ['help', 'version'])) {
+                foreach (['help', 'version'] as $optionName) {
+                    if (isset($options[$optionName])) {
                         return true;
                     }
                 }
@@ -286,12 +266,13 @@ class CommandParser {
     private static function checkOptions(
         $subcommandName,
         array $options,
-        array $optionConfigs,
-        array $mutuallyExclusiveOptionGroupConfigs = null,
+        $commandConfig,
         $hasMagicOption
     ) {
-        foreach ($optionConfigs as $name => $optionConfig) {
+        $optionConfigs = $commandConfig->getOptionConfigs($subcommandName);
+        foreach ($optionConfigs as $optionConfig) {
             if ($optionConfig->isRequired()) {
+                $name = $optionConfig->getName();
                 if (isset($options[$name])) {
                     continue;
                 }
@@ -304,7 +285,12 @@ class CommandParser {
             }
         }
         foreach ($options as $name => $value) {
-            $optionConfig = $optionConfigs[$name];
+            $optionConfig = $commandConfig->getOptionConfig(
+                $name, $subcommandName
+            );
+            if (is_object($optionConfig) === false)  {
+                var_dump($optionConfig);
+            }
             $argumentConfig = $optionConfig->getArgumentConfig();
             if ($argumentConfig !== null) {
                 $values = $argumentConfig->getValues();
@@ -318,31 +304,31 @@ class CommandParser {
                 }
             }
         }
+        $mutuallyExclusiveOptionGroupConfigs = $commandConfig
+            ->getMutuallyExclusiveOptionGroupConfigs($subcommandName);
         if ($mutuallyExclusiveOptionGroupConfigs !== null) {
             foreach($mutuallyExclusiveOptionGroupConfigs as $groupConfig) {
-                $optionKey = null;
-                $optionKeys = [];
+                $optionName = null;
+                $optionNames = [];
                 foreach ($groupConfig->getOptionConfigs() as $optionConfig) {
-                    $key = $optionConfig->getName();
-                    if ($key === null) {
-                        $key = $optionConfig->getShortName();
-                    }
-                    if (isset($options[$key])) {
-                        if ($optionKey !== null && $optionKey !== $key) {
-                            $message = "The '$optionKey' and '$key'"
+                    $name = $optionConfig->getName();
+                    if (isset($options[$name])) {
+                        if ($optionName !== null && $optionName !== $name) {
+                            $message = "The '$optionName' and '$key'"
                                 . " options are mutually exclusive.";
                             throw new CommandParsingException(
                                 $message, $subcommandName
                             );
                         }
-                        $optionKey = $key;
-                        $optionKeys[] = "'" . $key . "'";
+                        $optionName = $name;
+                        $optionNames[] = "'" . $name . "'";
                     }
                 }
-                if ($groupConfig->isRequired() && $optionKey === null) {
-                    if ($hasMagicOption === false && count($optionKeys) !== 0) {
+                if ($groupConfig->isRequired() && $optionName === null) {
+                    if ($hasMagicOption === false && count($optionNames) !== 0)
+                    {
                         $message = "One of option '"
-                            . implode(', ', $optionKeys) . "' is required.";
+                            . implode(', ', $optionNames) . "' is required.";
                         throw new CommandParsingException(
                             $message, $subcommandName
                         );
