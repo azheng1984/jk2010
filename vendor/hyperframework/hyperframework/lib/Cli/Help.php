@@ -230,6 +230,7 @@ class Help {
                 $index = 0;
                 $length = 0;
                 $buffer = '';
+                $maxLength = 80 - $this->usageIndent;
                 if ($count > 1) {
                     if ($index === 0) {
                         if ($isRequired) {
@@ -248,7 +249,6 @@ class Help {
                         );
                         $includedOptionConfigs[]
                             = $mutuallyExclusiveOptionConfig;
-                        $maxLength = 80 - $this->usageIndent;
                         if (strlen($element + $buffer) > $maxLength) {
                             if ($index !== 0) {
                                 $this->renderUsageElement($buffer);
