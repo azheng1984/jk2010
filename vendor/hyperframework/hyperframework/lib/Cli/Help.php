@@ -66,7 +66,7 @@ class Help {
 
     protected function renderOptions() {
         $optionConfigs = $this->commandConfig
-        ->getOptionConfigs($this->subcommandName);
+            ->getOptionConfigs($this->subcommandName);
         $count = count($optionConfigs);
         if ($count === 0) {
             return;
@@ -74,12 +74,7 @@ class Help {
         echo PHP_EOL, 'Options:', PHP_EOL;
         $patterns = [];
         $descriptions = [];
-        $includedOptionConfigs = [];
         foreach ($optionConfigs as $optionConfig) {
-            if (in_array($optionConfig, $includedOptionConfigs, true)) {
-                continue;
-            }
-            $includedOptionConfigs[] = $optionConfig;
             $patterns[] = $this->getOptionPattern($optionConfig, false);
             $descriptions[] = (string)$optionConfig->getDescription();
         }
@@ -105,7 +100,7 @@ class Help {
     protected function hasOptionDescription() {
         if ($this->hasOptionDescription === null) {
             $optionConfigs = $this->commandConfig
-            ->getOptionConfigs($this->subcommandName);
+                ->getOptionConfigs($this->subcommandName);
             foreach ($optionConfigs as $optionConfig) {
                 if ((string)$optionConfig->getDescription() !== '') {
                     $this->hasOptionDescription = true;
