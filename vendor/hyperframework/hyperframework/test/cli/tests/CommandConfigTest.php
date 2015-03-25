@@ -145,6 +145,12 @@ class CommandConfigTest extends Base {
         $this->assertTrue(isset($configs['test']));
     }
 
+    public function testGetOptionConfigs() {
+    }
+
+    public function testGetOptionConfigsOfSubcommand() {
+    }
+
     public function testDefaultHelpOptionConfigOfSubcommand() {
         $commandConfig = $this->mockCommandConfig([], 'child');
         $configs = $commandConfig->getOptionConfigIndex('child');
