@@ -138,7 +138,7 @@ class ErrorHandlerTest extends Base {
         $engine = $this->getMockBuilder('Hyperframework\Web\ErrorHandler')
             ->setMethods(['executeDebugger'])->getMock();
         $engine->expects($this->once())
-            ->method('executeDebugger')->with(null, 'content');
+            ->method('executeDebugger')->with('content');
         echo 'content';
         ob_start();
         $this->callProtectedMethod($engine, 'displayError');

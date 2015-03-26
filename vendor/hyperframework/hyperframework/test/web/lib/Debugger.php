@@ -2,7 +2,7 @@
 namespace Hyperframework\Web\Test;
 
 class Debugger {
-    public function execute($error, $headers, $outputBuffer) {
+    public function execute($error, $outputBuffer) {
         echo __METHOD__;
     }
 }
