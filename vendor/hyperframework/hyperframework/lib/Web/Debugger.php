@@ -23,6 +23,7 @@ class Debugger {
     public function execute(
         $error, array $headers = null, $content = null
     ) {
+        $headers = null;
         $this->error = $error;
         $this->headers = $headers;
         $this->content = $content;
@@ -91,7 +92,7 @@ class Debugger {
         $this->renderCss();
         echo '</head><body class="no-touch"><table id="page-container"><tbody>';
         $this->renderHeader($type, $message);
-        $this->renderContent();
+        $this->renderContent($type, $message);
         $this->renderJavascript();
         echo '</tbody></table></body></html>';
     }
@@ -107,11 +108,12 @@ class Debugger {
         return false;
     }
 
-    private function renderContent() {
-        echo '<tr><td id="content"><table id="code"><tbody>',
-            '<tr><td id="status-bar-wrapper">';
+    private function renderContent($type, $message) {
+        echo '<tr><td id="content"><table id="code"><tbody>';
+        $this->renderAppRootPath();
+        $this->renderErrorHeader($type, $message);
         $this->renderStatusBar();
-        echo '</td></tr><tr><td id="file-wrapper">';
+        echo '<tr><td id="file-wrapper">';
         $this->renderFile();
         echo '</td></tr>';
         if ($this->error instanceof Error === false) {
@@ -124,6 +126,24 @@ class Debugger {
             echo '</td></tr>';
         }
         echo '</tbody></table></td></tr>';
+    }
+
+    private function renderAppRootPath() {
+        echo '<tr><td id="code-status"><div>App Root Path:</div>',
+            $this->renderPath($this->rootPath, false),
+            '</td></tr>';
+    }
+    
+    private function renderErrorHeader($type, $message) {
+        if ($this->error instanceof Error === false) {
+            $type = str_replace('\\', '<span>\</span>', $type);
+        }
+        echo '<tr><td id="code-header"><h1>', $type, '</h1>';
+        $message = trim($message);
+        if ($message !== '') {
+            echo '<div id="message">', $message, '</div>';
+        }
+        echo '</td></tr>';
     }
 
     private function renderFile() {
@@ -221,51 +241,52 @@ class Debugger {
     }
 
     private function renderStatusBar() {
-        echo '<table id="status-bar"><tbody><tr>';
         if ($this->shouldHideExternal) {
-            echo '<td id="toggle-external-code">',
-                '<a>Start from External File</a></td>';
+            echo '<tr><td id="status-bar-wrapper">';
+            echo '<div id="status-bar">';
+            echo '<div id="toggle-external-code">',
+                '<a>Start from External File</a></div>';
+            echo '<div></td></tr>';
         }
-        echo '<td>';
-        if ($this->shouldHideExternal) {
-            echo '<div class="text">';
-        }
-        echo '<div class="first"><div>Response Headers: <span>',
-            $this->headerCount, '</span></div><div>',
-            'Content Size: <span>';
-        if ($this->contentLength === 0) {
-            echo '0 byte';
-        } elseif ($this->contentLength === 1) {
-            echo '1 byte';
-        } else {
-            $size = $this->contentLength / 1024;
-            $prefix = '';
-            $suffix = '';
-            if ($size > 1) {
-                $prefix = ' (';
-                $suffix = ')';
-                $tmp = $size / 1024; 
-                if ($tmp > 1) {
-                    $size = $tmp;
-                    $tmp /= 1024;
-                    if ($tmp > 1) {
-                        echo sprintf("%.1f", $tmp), ' GB';
-                    } else {
-                        echo sprintf("%.1f", $size), ' MB';
-                    }
-                } else {
-                    echo sprintf("%.1f", $size), ' KB';
-                }
-            }
-            echo  $prefix, $this->contentLength, ' bytes', $suffix;
-        }
-        echo '</span></div></div><div class="second"><div>App Root Path:</div>',
-            $this->renderPath($this->rootPath, false),
-            '</div>';
-        if ($this->shouldHideExternal) {
-            echo '</div>';
-        }
-        echo '</td></tr></tbody></table>';
+//         if ($this->shouldHideExternal) {
+//             echo '<div class="text">';
+//         }
+//         echo '<div class="first"><div>Response Headers: <span>',
+//             $this->headerCount, '</span></div><div>',
+//             'Content Size: <span>';
+//         if ($this->contentLength === 0) {
+//             echo '0 byte';
+//         } elseif ($this->contentLength === 1) {
+//             echo '1 byte';
+//         } else {
+//             $size = $this->contentLength / 1024;
+//             $prefix = '';
+//             $suffix = '';
+//             if ($size > 1) {
+//                 $prefix = ' (';
+//                 $suffix = ')';
+//                 $tmp = $size / 1024; 
+//                 if ($tmp > 1) {
+//                     $size = $tmp;
+//                     $tmp /= 1024;
+//                     if ($tmp > 1) {
+//                         echo sprintf("%.1f", $tmp), ' GB';
+//                     } else {
+//                         echo sprintf("%.1f", $size), ' MB';
+//                     }
+//                 } else {
+//                     echo sprintf("%.1f", $size), ' KB';
+//                 }
+//             }
+//             echo  $prefix, $this->contentLength, ' bytes', $suffix;
+//         }
+//         echo '</span></div></div><div class="second"><div>App Root Path:</div>',
+//             $this->renderPath($this->rootPath, false),
+//             '</div>';
+//         if ($this->shouldHideExternal) {
+//             echo '</div>';
+//         }
+//         echo '</td></tr></tbody></table>';
     }
 
     private function getLines($path, $errorLineNumber) {
@@ -413,11 +434,7 @@ class Debugger {
         if ($this->error instanceof Error === false) {
             $type = str_replace('\\', '<span>\</span>', $type);
         }
-        echo '<tr><td id="header"><h1>', $type, '</h1>';
-        $message = trim($message);
-        if ($message !== '') {
-            echo '<div id="message">', $message, '</div>';
-        }
+        echo '<tr><td id="header">';
         echo '<div id="nav"><div class="wrapper">',
             '<div class="selected" id="nav-code"><div>Error</div></div>',
             '<div id="nav-output"><a>Output</a></div></div></div></td></tr>';
@@ -527,6 +544,32 @@ var shouldHideTrace = <?= $shouldHideTrace ?>;
 var stackFrameCount = <?= $stackFrameCount ?>;
 var firstInternalStackFrameIndex = <?= $firstInternalStackFrameIndex ?>;
 var content = <?= $content ?>;
+var outputSizeHtml = '<div id="size">Size: <span><?php
+    if ($this->contentLength === 1) {
+        echo '1 byte';
+    } else {
+        $size = $this->contentLength / 1024;
+        $prefix = '';
+        $suffix = '';
+        if ($size > 1) {
+             $prefix = ' (';
+             $suffix = ')';
+             $tmp = $size / 1024; 
+             if ($tmp > 1) {
+                 $size = $tmp;
+                 $tmp /= 1024;
+                 if ($tmp > 1) {
+                     echo sprintf("%.1f", $tmp), ' GB';
+                 } else {
+                     echo sprintf("%.1f", $size), ' MB';
+                 }
+             } else {
+                 echo sprintf("%.1f", $size), ' KB';
+             }
+         }
+     echo  $prefix, $this->contentLength, ' bytes', $suffix;
+    }
+    echo '</span></div>';?>';
 function showOutput() {
     if (codeContent != null) {
         return;
@@ -581,7 +624,7 @@ function showOutput() {
         }
         html += '</td></tr>';
     }
-    var responseBodyHtml = '';
+    var responseBodyHtml = outputSizeHtml;
     if (content != '') {
         responseBodyHtml += '<div id="toolbar"><a href="'
             + 'javascript:showRawContent()">Raw</a></div>';
@@ -594,13 +637,14 @@ function showOutput() {
 }
 
 function showLineNumbers() {
-    document.getElementById("response-body").innerHTML = '<div id="toolbar">'
+    document.getElementById("response-body").innerHTML = outputSizeHtml
+        + '<div id="toolbar">'
         + '<a href="javascript:showRawContent()">Raw</a> </div>'
         + buildOutputContent(content);
 }
 
 function showRawContent() {
-    var html = '<div id="toolbar">'
+    var html = outputSizeHtml + '<div id="toolbar">'
         + '<a href="javascript:showLineNumbers()">Show Line Numbers</a>'
     if (isHandheld == false) {
         html  += ' &nbsp;<a href="javascript:selectAll()">Select All</a>'
@@ -805,24 +849,30 @@ h2 {
 #header {
     background: #f8f8f8;
 }
+#code-header {
+    padding: 3px 0;
+}
 h1 {
     font-size: 21px;
     line-height: 25px;
     color: #e44;
-    padding: 15px 10px 5px 10px;
+    padding: 10px 10px 5px 10px;
 }
 h1, #message {
     font-weight: normal;
 }
 #message {
     font-size: 14px;
-    padding: 2px 10px 5px 10px;
+    padding: 2px 10px 10px 10px;
     line-height: 20px;
 }
 #code, #output {
     border: 1px solid #ccc;
     width: 100%;
     background: #fff;
+}
+#code {
+	border: 0;
 }
 #nav {
     position: relative;
@@ -875,8 +925,24 @@ h1, #message {
 #status-bar-wrapper {/* ie6 */
     color: #999;
     padding: 10px 0;
-    border-bottom: 1px solid #ccc;
-    background: #f8f8f8;
+    border: 1px solid #ccc;
+}
+#code-status {
+	padding:7px 10px;
+	background:#f8f8f8;
+    color: #999;
+	font-size:12px;
+    border: 1px solid #ccc;
+}
+#stack-trace-wrapper {
+	border: 1px solid #ccc;
+}
+#code-status div {
+	float: left;
+}
+#code-status .path {
+	color: #333;
+	margin-left: 5px;
 }
 #status-bar {
     width: 100%;
@@ -916,7 +982,7 @@ h1, #message {
 }
 #file-wrapper {
     padding: 10px 0;
-    border-bottom: 1px solid #ccc;
+        border: 1px solid #ccc;
 }
 #file .path {
     border-bottom: 1px dotted #ccc;
@@ -1187,13 +1253,23 @@ h1, #message {
     width: 100%; 
     border: 1px solid #e1e1e1;
     background: #fff;
+	clear: both;
 }
 #raw pre {
     padding: 5px;
 }
+#size {
+    padding-top: 5px;
+    float:left;
+    color: #999;
+}
+#size span {
+    color: #333;    
+}
 #toolbar {
     padding-bottom: 10px;
     line-height: 24px;
+    float:right;
 }
 </style>
 <?php
