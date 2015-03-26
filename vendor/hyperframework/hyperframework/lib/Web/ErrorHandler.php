@@ -27,11 +27,10 @@ class ErrorHandler extends Base {
             $this->flushInnerOutputBuffer();
             $outputBuffer = $this->getOutputBuffer();
             $this->deleteOutputBuffer();
-            $headers = Response::getHeaders();
             if (Response::headersSent() === false) {
                 $this->rewriteHttpHeaders();
             }
-            $this->executeDebugger($headers, $outputBuffer);
+            $this->executeDebugger($outputBuffer);
             ini_set('display_errors', '0');
         } elseif (Response::headersSent() === false) {
             $this->rewriteHttpHeaders();
@@ -48,7 +47,7 @@ class ErrorHandler extends Base {
         return $content;
     }
 
-    protected function executeDebugger($headers, $outputBuffer) {
+    protected function executeDebugger($outputBuffer) {
         $configName = 'hyperframework.error_handler.debugger_class';
         $class = Config::getString($configName, '');
         if ($class === '') {
@@ -62,7 +61,7 @@ class ErrorHandler extends Base {
             }
             $debugger = new $class;
         }
-        $debugger->execute($this->getError(), $headers, $outputBuffer);
+        $debugger->execute($this->getError(), $outputBuffer);
     }
 
     protected function renderErrorView() {

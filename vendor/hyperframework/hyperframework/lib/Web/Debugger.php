@@ -10,25 +10,18 @@ use Hyperframework\Common\ConfigException;
 class Debugger {
     private $error;
     private $trace;
-    private $headers;
-    private $headerCount;
-    private $content;
-    private $contentLength;
+    private $outputBuffer;
+    private $outputBufferLength;
     private $rootPath;
     private $rootPathLength;
     private $shouldHideExternal;
     private $shouldHideTrace;
     private $firstInternalStackFrameIndex;
 
-    public function execute(
-        $error, array $headers = null, $content = null
-    ) {
-        $headers = null;
+    public function execute($error, $outputBuffer = null) {
         $this->error = $error;
-        $this->headers = $headers;
-        $this->content = $content;
-        $this->headerCount = count($headers);
-        $this->contentLength = strlen($content);
+        $this->outputBuffer = $outputBuffer;
+        $this->outputBufferLength = strlen($outputBuffer);
         $rootPath = Config::getAppRootPath();
         $realRootPath = realpath($rootPath);
         if ($realRootPath !== false) {
@@ -91,7 +84,7 @@ class Debugger {
             ' content="text/html;charset=utf-8"/><title>', $title, '</title>';
         $this->renderCss();
         echo '</head><body class="no-touch"><table id="page-container"><tbody>';
-        $this->renderHeader($type, $message);
+        $this->renderNav($type, $message);
         $this->renderContent($type, $message);
         $this->renderJavascript();
         echo '</tbody></table></body></html>';
@@ -109,10 +102,10 @@ class Debugger {
     }
 
     private function renderContent($type, $message) {
-        echo '<tr><td id="content"><table id="code"><tbody>';
+        echo '<tr><td id="content"><table id="error"><tbody>';
         $this->renderAppRootPath();
         $this->renderErrorHeader($type, $message);
-        $this->renderStatusBar();
+        $this->renderToggleExternalCodeButton();
         echo '<tr><td id="file-wrapper">';
         $this->renderFile();
         echo '</td></tr>';
@@ -129,16 +122,16 @@ class Debugger {
     }
 
     private function renderAppRootPath() {
-        echo '<tr><td id="code-status"><div>App Root Path:</div>',
+        echo '<tr><td id="app-root-path"><div>App Root Path:</div>',
             $this->renderPath($this->rootPath, false),
             '</td></tr>';
     }
-    
+
     private function renderErrorHeader($type, $message) {
         if ($this->error instanceof Error === false) {
             $type = str_replace('\\', '<span>\</span>', $type);
         }
-        echo '<tr><td id="code-header"><h1>', $type, '</h1>';
+        echo '<tr><td id="error-header"><h1>', $type, '</h1>';
         $message = trim($message);
         if ($message !== '') {
             echo '<div id="message">', $message, '</div>';
@@ -240,53 +233,13 @@ class Debugger {
         echo '</tbody></table></td></tr></table>';
     }
 
-    private function renderStatusBar() {
+    private function renderToggleExternalCodeButton() {
         if ($this->shouldHideExternal) {
-            echo '<tr><td id="status-bar-wrapper">';
-            echo '<div id="status-bar">';
+            echo '<tr><td id="toggle-external-code-wrapper">';
             echo '<div id="toggle-external-code">',
                 '<a>Start from External File</a></div>';
-            echo '<div></td></tr>';
+            echo '</td></tr>';
         }
-//         if ($this->shouldHideExternal) {
-//             echo '<div class="text">';
-//         }
-//         echo '<div class="first"><div>Response Headers: <span>',
-//             $this->headerCount, '</span></div><div>',
-//             'Content Size: <span>';
-//         if ($this->contentLength === 0) {
-//             echo '0 byte';
-//         } elseif ($this->contentLength === 1) {
-//             echo '1 byte';
-//         } else {
-//             $size = $this->contentLength / 1024;
-//             $prefix = '';
-//             $suffix = '';
-//             if ($size > 1) {
-//                 $prefix = ' (';
-//                 $suffix = ')';
-//                 $tmp = $size / 1024; 
-//                 if ($tmp > 1) {
-//                     $size = $tmp;
-//                     $tmp /= 1024;
-//                     if ($tmp > 1) {
-//                         echo sprintf("%.1f", $tmp), ' GB';
-//                     } else {
-//                         echo sprintf("%.1f", $size), ' MB';
-//                     }
-//                 } else {
-//                     echo sprintf("%.1f", $size), ' KB';
-//                 }
-//             }
-//             echo  $prefix, $this->contentLength, ' bytes', $suffix;
-//         }
-//         echo '</span></div></div><div class="second"><div>App Root Path:</div>',
-//             $this->renderPath($this->rootPath, false),
-//             '</div>';
-//         if ($this->shouldHideExternal) {
-//             echo '</div>';
-//         }
-//         echo '</td></tr></tbody></table>';
     }
 
     private function getLines($path, $errorLineNumber) {
@@ -430,13 +383,13 @@ class Debugger {
         return $path;
     }
 
-    private function renderHeader($type, $message) {
+    private function renderNav($type, $message) {
         if ($this->error instanceof Error === false) {
             $type = str_replace('\\', '<span>\</span>', $type);
         }
-        echo '<tr><td id="header">';
+        echo '<tr><td id="nav-wrapper">';
         echo '<div id="nav"><div class="wrapper">',
-            '<div class="selected" id="nav-code"><div>Error</div></div>',
+            '<div class="selected" id="nav-error"><div>Error</div></div>',
             '<div id="nav-output"><a>Output</a></div></div></div></td></tr>';
     }
 
@@ -483,35 +436,16 @@ class Debugger {
 
     private function renderJavascript() {
         $isOverflow = false;
-        $headers = [];
-        if ($this->headers !== null) {
-            foreach ($this->headers as $header) {
-                $segments = explode(':', $header, 2);
-                $key = $segments[0];
-                if (isset($segments[1])) {
-                    $value = ltrim(htmlspecialchars(
-                        $segments[1],
-                        ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
-                    ), ' ');
-                } else {
-                    $value = '';
-                }
-                $key = htmlspecialchars(
-                    $key, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
-                );
-                $headers[] = [$key, $value];
-            }
-        }
         $maxSize = $this->getMaxOutputContentSize();
-        if ($maxSize >=0 && $this->contentLength >= $maxSize) {
+        if ($maxSize >=0 && $this->outputBufferLength >= $maxSize) {
             $isOverflow = true;
-            $content = mb_strcut($this->content, 0, $maxSize);
+            $outputBuffer = mb_strcut($this->outputBuffer, 0, $maxSize);
         } else {
-            $content = $this->content;
+            $outputBuffer = $this->outputBuffer;
         }
-        $content = str_replace(["\r\n", "\r"], "\n", $content);
-        $content = json_encode(htmlspecialchars(
-            $content, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
+        $outputBuffer = str_replace(["\r\n", "\r"], "\n", $outputBuffer);
+        $outputBuffer = json_encode(htmlspecialchars(
+            $outputBuffer, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
         ));
         $shouldHideTrace = 'null';
         $firstInternalStackFrameIndex = 'null';
@@ -537,81 +471,59 @@ document.body.ontouchstart = function() {
     isHandheld = true;
 };
 var isHandheld = false;
-var codeContent = null;
+var errorContent = null;
 var outputContent = null;
 var fullContent = null;
 var shouldHideTrace = <?= $shouldHideTrace ?>;
 var stackFrameCount = <?= $stackFrameCount ?>;
 var firstInternalStackFrameIndex = <?= $firstInternalStackFrameIndex ?>;
-var content = <?= $content ?>;
+var content = <?= $outputBuffer ?>;
 var outputSizeHtml = '<div id="size">Size: <span><?php
-    if ($this->contentLength === 1) {
+    if ($this->outputBufferLength === 1) {
         echo '1 byte';
     } else {
-        $size = $this->contentLength / 1024;
+        $size = $this->outputBufferLength / 1024;
         $prefix = '';
         $suffix = '';
         if ($size > 1) {
-             $prefix = ' (';
-             $suffix = ')';
-             $tmp = $size / 1024; 
+            $prefix = ' (';
+            $suffix = ')';
+            $tmp = $size / 1024; 
+            if ($tmp > 1) {
+             $size = $tmp;
+             $tmp /= 1024;
              if ($tmp > 1) {
-                 $size = $tmp;
-                 $tmp /= 1024;
-                 if ($tmp > 1) {
-                     echo sprintf("%.1f", $tmp), ' GB';
-                 } else {
-                     echo sprintf("%.1f", $size), ' MB';
-                 }
+                 echo sprintf("%.1f", $tmp), ' GB';
              } else {
-                 echo sprintf("%.1f", $size), ' KB';
+                 echo sprintf("%.1f", $size), ' MB';
              }
-         }
-     echo  $prefix, $this->contentLength, ' bytes', $suffix;
+            } else {
+             echo sprintf("%.1f", $size), ' KB';
+            }
+        }
+        echo  $prefix, $this->outputBufferLength, ' bytes', $suffix;
     }
     echo '</span></div>';?>';
 function showOutput() {
-    if (codeContent != null) {
+    if (errorContent != null) {
         return;
     }
-    var codeTab = document.getElementById("nav-code");
-    codeTab.innerHTML = '<a href="javascript:showCode()">Error</a>';
-    codeTab.className = '';
+    var errorTab = document.getElementById("nav-error");
+    errorTab.innerHTML = '<a href="javascript:showError()">Error</a>';
+    errorTab.className = '';
     var outputTab = document.getElementById("nav-output");
     outputTab.innerHTML = '<div>Output</div>';
     outputTab.className = 'selected';
     var contentDiv = document.getElementById("content");
     if (outputContent != null) {
-        codeContent = contentDiv.innerHTML;
+        errorContent = contentDiv.innerHTML;
         contentDiv.innerHTML = outputContent;
         outputContent = null;
         return;
     }
-    var headers = <?= json_encode($headers) ?>;
     var isOverflow = <?= json_encode($isOverflow) ?>;
-    var contentLength = <?= json_encode($this->contentLength) ?>;
+    //var contentLength = <?= json_encode($this->outputBufferLength) ?>;
     var html = '';
-    if (headers.length > 0) {
-    	html += '<tr>'
-            + '<td id="response-headers"><a'
-            + ' href="javascript:toggleResponseHeaders()">'
-            + '<span id="arrow" class="arrow-right"></span>'
-            + '&nbsp;Headers <span id="header-count" class="header-count">'
-            + headers.length + '</span></a>'
-            + '<pre id="response-headers-content" class="hidden"><div>';
-        var count = headers.length;
-        for (var index = 0; index < count; ++index) {
-            var header = headers[index];
-            html += '<code';
-            if (count === index + 1) {
-            	html += ' class="last"';
-            }
-            html += '><span class="key">' + header[0]
-
-                + ':</span> ' + header[1] + "\n</code>";
-        }
-        html += '</div></pre></td></tr>';
-    }
     if (isOverflow) {
     	html += '<tr><td class="notice"><span>Notice: </span>';
         var maxSize = <?= $this->getMaxOutputContentSize() ?>;
@@ -627,10 +539,10 @@ function showOutput() {
     var responseBodyHtml = outputSizeHtml;
     if (content != '') {
         responseBodyHtml += '<div id="toolbar"><a href="'
-            + 'javascript:showRawContent()">Raw</a></div>';
+            + 'javascript:showRawOutput()">Raw</a></div>';
     }
     responseBodyHtml += buildOutputContent(content);
-    codeContent = contentDiv.innerHTML;
+    errorContent = contentDiv.innerHTML;
     contentDiv.innerHTML = '<table id="output"><tbody>' + html
         + '<tr><td id="response-body" class="response-body">'
         + responseBodyHtml + '</td></tr></tbody></table>';
@@ -639,11 +551,11 @@ function showOutput() {
 function showLineNumbers() {
     document.getElementById("response-body").innerHTML = outputSizeHtml
         + '<div id="toolbar">'
-        + '<a href="javascript:showRawContent()">Raw</a> </div>'
+        + '<a href="javascript:showRawOutput()">Raw</a> </div>'
         + buildOutputContent(content);
 }
 
-function showRawContent() {
+function showRawOutput() {
     var html = outputSizeHtml + '<div id="toolbar">'
         + '<a href="javascript:showLineNumbers()">Show Line Numbers</a>'
     if (isHandheld == false) {
@@ -679,7 +591,7 @@ function buildOutputContent(content) {
     if (typeof CSS != 'undefined' && typeof CSS.supports != 'undefined') {
         if (CSS.supports('white-space', 'pre-wrap')) {
             //for firefox
-            contentTag = 'code';
+            contentTag = 'error';
         }
     }
     if (typeof window.getComputedStyle != 'undefined') {
@@ -720,34 +632,23 @@ function buildOutputContent(content) {
     return '<table><tbody>' + result + '</tbody></table>';
 }
 
-function showCode() {
-    if (codeContent == null) {
+function showError() {
+    if (errorContent == null) {
         return;
     }
-    var codeTab = document.getElementById("nav-code");
-    codeTab.innerHTML = '<div>Error</div>';
-    codeTab.className = 'selected';
+    var errorTab = document.getElementById("nav-error");
+    errorTab.innerHTML = '<div>Error</div>';
+    errorTab.className = 'selected';
     var outputTab = document.getElementById("nav-output");
     outputTab.innerHTML = '<a href="javascript:showOutput()">Output</a>';
     outputTab.className = '';
     var contentDiv = document.getElementById("content");
     outputContent = contentDiv.innerHTML;
-    contentDiv.innerHTML = codeContent;
-    codeContent = null;
+    contentDiv.innerHTML = errorContent;
+    errorContent = null;
 }
 
-function toggleResponseHeaders() {
-    var div = document.getElementById("response-headers-content");
-    if (div.className == "hidden") {
-        document.getElementById("arrow").className = 'arrow-bottom';
-        div.className = "";
-    } else {
-        document.getElementById("arrow").className = 'arrow-right';
-        div.className = "hidden";
-    }
-}
-
-function showExternalFile() {
+function startFromExternalFile() {
     document.getElementById("internal-file").className = "hidden";
     document.getElementById("external-file").className = "";
     var button = document.getElementById("toggle-external-code");
@@ -763,10 +664,10 @@ function showExternalFile() {
         }
     }
     button.innerHTML =
-        '<a href="javascript:showInternalFile()">Start from Internal File</a>';
+        '<a href="javascript:startFromInternalFile()">Start from Internal File</a>';
 }
 
-function showInternalFile() {
+function startFromInternalFile() {
     document.getElementById("internal-file").className = "";
     document.getElementById("external-file").className = "hidden";
     var button = document.getElementById("toggle-external-code");
@@ -784,14 +685,14 @@ function showInternalFile() {
         }
     }
     button.innerHTML =
-        '<a href="javascript:showExternalFile()">Start from External File</a>';
+        '<a href="javascript:startFromExternalFile()">Start from External File</a>';
 }
 
 document.getElementById("nav-output").innerHTML =
     '<a href="javascript:showOutput()">Output</a>';
 if (document.getElementById("toggle-external-code") !== null) {
     document.getElementById("toggle-external-code").firstChild.href =
-        'javascript:showExternalFile()';
+        'javascript:startFromExternalFile()';
 }
 </script>
 <?php
@@ -846,10 +747,10 @@ h2 {
             < 200 ? "200px" : ""
     );
 }
-#header {
+#nav-wrapper {
     background: #f8f8f8;
 }
-#code-header {
+#error-header {
     padding: 3px 0;
 }
 h1 {
@@ -866,12 +767,12 @@ h1, #message {
     padding: 2px 10px 10px 10px;
     line-height: 20px;
 }
-#code, #output {
+#error, #output {
     border: 1px solid #ccc;
     width: 100%;
     background: #fff;
 }
-#code {
+#error {
 	border: 0;
 }
 #nav {
@@ -922,12 +823,12 @@ h1, #message {
 #content {
     padding: 10px;
 }
-#status-bar-wrapper {/* ie6 */
+#toggle-external-code-wrapper {/* ie6 */
     color: #999;
     padding: 10px 0;
     border: 1px solid #ccc;
 }
-#code-status {
+#app-root-path {
 	padding:7px 10px;
 	background:#f8f8f8;
     color: #999;
@@ -937,48 +838,16 @@ h1, #message {
 #stack-trace-wrapper {
 	border: 1px solid #ccc;
 }
-#code-status div {
+#app-root-path div {
 	float: left;
 }
-#code-status .path {
+#app-root-path .path {
 	color: #333;
 	margin-left: 5px;
-}
-#status-bar {
-    width: 100%;
-    margin-right: 10px;
-<?php if ($this->shouldHideExternal): ?>
-    line-height: 25px;
-<?php endif ?>
-    font-size:12px;
-}
-#status-bar div.text {
-    border-left: 1px dotted #ccc;
-    _border-left: 1px solid #ddd;
-}
-#status-bar-wrapper div {
-    float: left;
-}
-#status-bar-wrapper td{
-    vertical-align: top;
-}
-#status-bar .second, #status-bar .first div {
-    padding-left: 10px;
-}
-#status-bar span, #status-bar .path {
-    color: #333;
-}
-#status-bar .path {
-    padding-left: 3px;
 }
 .path {
     word-break: break-all; /* ie */
     word-wrap: break-word;
-}
-.header-count {
-    border-radius: 8px;
-    background: #eee;
-    padding: 1px 6px;
 }
 #file-wrapper {
     padding: 10px 0;
@@ -1007,6 +876,7 @@ h1, #message {
 #toggle-external-code {
     width: 1px;
     padding-left: 10px;
+	line-height: 25px;
 }
 #toggle-external-code a {
     margin-right: 10px;
@@ -1136,66 +1006,6 @@ h1, #message {
     word-wrap: break-word;
     word-break: break-all;
 }
-#response-headers {
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-}
-#arrow {
-    display: inline-block;
-    width: 0;
-    height: 0;
-    line-height: 0;
-    _filter: chroma(color=white);
-    _font-size: 0;
-    -moz-transform: scale(1.001);
-}
-.arrow-right {
-    border-top: 4px solid transparent;
-    border-bottom: 4px solid transparent;
-    border-left: 4px solid #000;
-    _border-top-color: white;
-    _border-bottom-color: white;
-}
-.arrow-bottom {
-    margin-bottom: 2px;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 4px solid #000;
-    _border-right-color: white;
-    _border-left-color: white;
-}
-#output pre, #response-body code {
-    white-space: pre-wrap;
-    white-space: -moz-pre-wrap;
-    white-space: -o-pre-wrap;
-    word-wrap: break-word;
-    word-break: break-all;
-    _white-space: pre;
-}
-#response-headers-content {
-    border: 1px solid #ddd;
-    border-radius: 2px;
-    border-collapse: separate;
-    background: #f8f8f8;
-    margin-top: 10px;
-    padding: 5px;
-}
-#response-headers-content code {
-    word-break: break-all; /* ie */
-　　word-wrap: break-word;
-    padding: 5px;
-    display: block;
-    border-bottom: 1px dotted #ddd;
-    _border-bottom: 1px solid #e1e1e1; /* ie6 */
-}
-#response-headers-content .key {
-    word-break: keep-all;
-    white-space: nowrap;
-    font-weight: bold;
-}
-#response-headers-content .last {
-    border-bottom: 0;
-}
 #response-body {
     padding: 10px;
     background:#f8f8f8;
@@ -1209,9 +1019,6 @@ h1, #message {
 }
 #output-button-bottom-wrapper {
     margin-top: 10px;
-}
-#header-count {
-    color: #333;/* ie6 */
 }
 #response-body table {
     background-color: #fff;
@@ -1259,7 +1066,7 @@ h1, #message {
     padding: 5px;
 }
 #size {
-    padding-top: 5px;
+    padding: 5px 0 15px 0;
     float:left;
     color: #999;
 }
