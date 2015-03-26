@@ -473,11 +473,10 @@ document.body.ontouchstart = function() {
 var isHandheld = false;
 var errorContent = null;
 var outputContent = null;
-var fullContent = null;
 var shouldHideTrace = <?= $shouldHideTrace ?>;
 var stackFrameCount = <?= $stackFrameCount ?>;
 var firstInternalStackFrameIndex = <?= $firstInternalStackFrameIndex ?>;
-var content = <?= $outputBuffer ?>;
+var outputBuffer = <?= $outputBuffer ?>;
 var outputSizeHtml = '<div id="size">Size: <span><?php
     if ($this->outputBufferLength === 1) {
         echo '1 byte';
@@ -522,7 +521,6 @@ function showOutput() {
         return;
     }
     var isOverflow = <?= json_encode($isOverflow) ?>;
-    //var contentLength = <?= json_encode($this->outputBufferLength) ?>;
     var html = '';
     if (isOverflow) {
     	html += '<tr><td class="notice"><span>Notice: </span>';
@@ -537,11 +535,11 @@ function showOutput() {
         html += '</td></tr>';
     }
     var responseBodyHtml = outputSizeHtml;
-    if (content != '') {
+    if (outputBuffer != '') {
         responseBodyHtml += '<div id="toolbar"><a href="'
             + 'javascript:showRawOutput()">Raw</a></div>';
     }
-    responseBodyHtml += buildOutputContent(content);
+    responseBodyHtml += getOutputBufferHtml();
     errorContent = contentDiv.innerHTML;
     contentDiv.innerHTML = '<table id="output"><tbody>' + html
         + '<tr><td id="response-body" class="response-body">'
@@ -552,7 +550,7 @@ function showLineNumbers() {
     document.getElementById("response-body").innerHTML = outputSizeHtml
         + '<div id="toolbar">'
         + '<a href="javascript:showRawOutput()">Raw</a> </div>'
-        + buildOutputContent(content);
+        + getOutputBufferHtml();
 }
 
 function showRawOutput() {
@@ -561,7 +559,7 @@ function showRawOutput() {
     if (isHandheld == false) {
         html  += ' &nbsp;<a href="javascript:selectAll()">Select All</a>'
     }
-    html += "</div><div id=\"raw\"><pre><div>" + content + "</div></pre></div>";
+    html += "</div><div id=\"raw\"><pre><div>" + outputBuffer + "</div></pre></div>";
     document.getElementById("response-body").innerHTML = html;
 }
 
@@ -580,9 +578,9 @@ function selectAll() {
     }
 }
 
-function buildOutputContent(content) {
+function getOutputBufferHtml() {
     var result = '';
-    var lines = content.split("\n");
+    var lines = outputBuffer.split("\n");
     var count = lines.length;
     var last = count - 1;
     var isCssLineNumber = false;
