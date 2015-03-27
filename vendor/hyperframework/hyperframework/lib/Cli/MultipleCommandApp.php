@@ -50,16 +50,16 @@ class MultipleCommandApp extends App {
         return isset($this->globalOptions[$name]);
     }
 
-    protected function setGlobalOptions(array $globalOptions) {
-        $this->globalOptions = $globalOptions;
-    }
-
     public function hasSubcommand() {
         return $this->subcommandName !== null;
     }
 
     public function getSubcommandName() {
         return $this->subcommandName;
+    }
+
+    protected function setGlobalOptions(array $globalOptions) {
+        $this->globalOptions = $globalOptions;
     }
 
     protected function setSubcommandName($subcommandName) {

@@ -40,10 +40,6 @@ class App extends Base {
         return $this->arguments;
     }
 
-    protected function setArguments(array $arguments) {
-        $this->arguments = $arguments;
-    }
-
     public function hasOption($name) {
         return isset($this->options[$name]);
     }
@@ -58,14 +54,6 @@ class App extends Base {
         return $this->options;
     }
 
-    protected static function createApp($appRootPath) {
-        return new static($appRootPath);
-    }
-
-    protected function setOptions(array $options) {
-        $this->options = $options;
-    }
-
     public function getCommandConfig() {
         if ($this->commandConfig === null) {
             $configName = 'hyperframework.cli.command_config_class';
@@ -76,13 +64,25 @@ class App extends Base {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
                         "Class '$class' does not exist, set using config "
-                            . "'$configName'."
+                        . "'$configName'."
                     );
                 }
                 $this->commandConfig = new $class;
             }
-        }
-        return $this->commandConfig;
+            }
+            return $this->commandConfig;
+    }
+
+    protected static function createApp($appRootPath) {
+        return new static($appRootPath);
+    }
+
+    protected function setOptions(array $options) {
+        $this->options = $options;
+    }
+
+    protected function setArguments(array $arguments) {
+        $this->arguments = $arguments;
     }
 
     protected function executeCommand() {
