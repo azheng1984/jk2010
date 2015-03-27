@@ -78,7 +78,7 @@ class Debugger {
             $message = htmlspecialchars(
                 $message, ENT_NOQUOTES | ENT_HTML401 | ENT_SUBSTITUTE
             );
-            $title .= ' - ' . $message;
+            $title .= ': ' . $message;
         }
         echo '<!DOCTYPE html><html><head><meta http-equiv="Content-Type"',
             ' content="text/html;charset=utf-8"/><title>', $title, '</title>';
