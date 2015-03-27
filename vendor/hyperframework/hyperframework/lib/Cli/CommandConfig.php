@@ -289,14 +289,14 @@ class CommandConfig {
         if (method_exists($class, 'execute') === false) {
             if (class_exists($class) === false) {
                 throw new ClassNotFoundException(
-                    $this->getFailedToGetDefaultArgumentConfigsErrorMessage(
+                    $this->getErrorMessageOfFailedToGetDefaultArgumentConfigs(
                         $subcommandName,
                         "class '$class' does not exist"
                     )
                 );
             }
             throw new MethodNotFoundException(
-                $this->getFailedToGetDefaultArgumentConfigsErrorMessage(
+                $this->getErrorMessageOfFailedToGetDefaultArgumentConfigs(
                     $subcommandName,
                     "method '$class::execute' does not exist"
                 )
@@ -309,7 +309,7 @@ class CommandConfig {
         foreach ($params as $param) {
             if ($hasArray) {
                 throw new LogicException(
-                    $this->getFailedToGetDefaultArgumentConfigsErrorMessage(
+                    $this->getErrorMessageOfFailedToGetDefaultArgumentConfigs(
                         $subcommandName,
                         "argument list of method '$class::execute' is invalid,"
                             . " array argument must be the last one"
