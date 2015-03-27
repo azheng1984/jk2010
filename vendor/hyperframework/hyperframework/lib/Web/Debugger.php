@@ -750,20 +750,20 @@ h2 {
     background: #f8f8f8;
 }
 #error-header {
-    padding: 3px 0;
+    padding: 7px 0;
 }
 h1 {
     font-size: 21px;
     line-height: 25px;
     color: #e44;
-    padding: 10px 10px 5px 10px;
+    padding: 5px 10px;
 }
 h1, #message {
     font-weight: normal;
 }
 #message {
     font-size: 14px;
-    padding: 2px 10px 10px 10px;
+    padding: 2px 10px 5px 10px;
     line-height: 20px;
 }
 #error, #output {
