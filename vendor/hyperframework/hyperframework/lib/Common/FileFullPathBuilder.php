@@ -4,9 +4,7 @@ namespace Hyperframework\Common;
 class FileFullPathBuilder {
     public static function build($path) {
         $path = (string)$path;
-        if ($path === ''
-            || FileFullPathRecognizer::isFullPath($path) === false
-        ) {
+        if (FileFullPathRecognizer::isFullPath($path) === false) {
             FilePathCombiner::prepend($path, static::getRootPath());
         }
         return $path;

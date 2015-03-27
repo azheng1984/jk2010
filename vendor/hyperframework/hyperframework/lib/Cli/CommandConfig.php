@@ -450,7 +450,7 @@ class CommandConfig {
         return $result . ' config error, ' . $extra . '.';
     }
 
-    private function getFailedToGetDefaultArgumentConfigsErrorMessage(
+    private function getErrorMessageOfFailedToGetDefaultArgumentConfigs(
         $subcommandName, $extra
     ) {
         $result = 'Failed to get ';
