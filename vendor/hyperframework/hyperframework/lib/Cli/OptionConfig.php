@@ -20,12 +20,6 @@ class OptionConfig {
         $description
     ) {
         $this->name = $name;
-        if ($shortName === 'W') {
-            throw new ConfigException(
-                'The -W (capital-W)'
-                    . ' option must be reserved for implementation extensions.'
-            );
-        }
         $this->shortName = $shortName;
         $this->description = $description;
         $this->isRepeatable = $isRepeatable;

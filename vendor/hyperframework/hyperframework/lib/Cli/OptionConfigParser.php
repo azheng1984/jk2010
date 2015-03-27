@@ -107,6 +107,12 @@ class OptionConfigParser {
                             . "field 'short_name' is invalid"
                     ));
                 }
+                if ($shortName === 'W') {
+                    throw new ConfigException(
+                        'The -W (capital-W) option must be reserved for'
+                            . ' implementation extensions.'
+                    );
+                }
             }
             if (strlen($name) === 1
                 && $shortName !== null
