@@ -186,7 +186,7 @@ class Debugger {
                 echo $line , "\n";
             }
         }
-        echo "</div></pre></td></tr></tbody></table>";
+        echo '</div></pre></td></tr></tbody></table>';
     }
 
     private function renderStackTrace() {
@@ -235,10 +235,10 @@ class Debugger {
 
     private function renderToggleExternalCodeButton() {
         if ($this->shouldHideExternal) {
-            echo '<tr><td id="toggle-external-code-wrapper">';
-            echo '<div id="toggle-external-code">',
-                '<a>Start from External File</a></div>';
-            echo '</td></tr>';
+            echo '<tr><td id="toggle-external-code-wrapper">',
+                '<div id="toggle-external-code">',
+                '<a>Start from External File</a></div>',
+                '</td></tr>';
         }
     }
 
@@ -387,8 +387,8 @@ class Debugger {
         if ($this->error instanceof Error === false) {
             $type = str_replace('\\', '<span>\</span>', $type);
         }
-        echo '<tr><td id="nav-wrapper">';
-        echo '<div id="nav"><div class="wrapper">',
+        echo '<tr><td id="nav-wrapper">',
+            '<div id="nav"><div class="wrapper">',
             '<div class="selected" id="nav-error"><div>Error</div></div>',
             '<div id="nav-output"><a>Output</a></div></div></div></td></tr>';
     }
@@ -489,18 +489,18 @@ var outputSizeHtml = '<div id="size">Size: <span><?php
             $suffix = ')';
             $tmp = $size / 1024; 
             if ($tmp > 1) {
-             $size = $tmp;
-             $tmp /= 1024;
-             if ($tmp > 1) {
-                 echo sprintf("%.1f", $tmp), ' GB';
-             } else {
-                 echo sprintf("%.1f", $size), ' MB';
-             }
+                $size = $tmp;
+                $tmp /= 1024;
+                if ($tmp > 1) {
+                    echo sprintf("%.1f", $tmp), ' GB';
+                } else {
+                    echo sprintf("%.1f", $size), ' MB';
+                }
             } else {
-             echo sprintf("%.1f", $size), ' KB';
+                echo sprintf("%.1f", $size), ' KB';
             }
         }
-        echo  $prefix, $this->outputBufferLength, ' bytes', $suffix;
+        echo $prefix, $this->outputBufferLength, ' bytes', $suffix;
     }
     echo '</span></div>';?>';
 function showOutput() {
@@ -559,7 +559,8 @@ function showRawOutput() {
     if (isHandheld == false) {
         html  += ' &nbsp;<a href="javascript:selectAll()">Select All</a>'
     }
-    html += "</div><div id=\"raw\"><pre><div>" + outputBuffer + "</div></pre></div>";
+    html += "</div><div id=\"raw\"><pre><div>"
+        + outputBuffer + "</div></pre></div>";
     document.getElementById("response-body").innerHTML = html;
 }
 
@@ -661,8 +662,8 @@ function startFromExternalFile() {
                 parseInt(child.innerHTML) + firstInternalStackFrameIndex;
         }
     }
-    button.innerHTML =
-        '<a href="javascript:startFromInternalFile()">Start from Internal File</a>';
+    button.innerHTML = '<a href="javascript:startFromInternalFile()">'
+        + 'Start from Internal File</a>';
 }
 
 function startFromInternalFile() {
@@ -682,8 +683,8 @@ function startFromInternalFile() {
                 parseInt(child.innerHTML) - firstInternalStackFrameIndex;
         }
     }
-    button.innerHTML =
-        '<a href="javascript:startFromExternalFile()">Start from External File</a>';
+    button.innerHTML = '<a href="javascript:startFromExternalFile()">'
+        + 'Start from External File</a>';
 }
 
 document.getElementById("nav-output").innerHTML =
