@@ -103,7 +103,7 @@ class Debugger {
 
     private function renderContent($type, $message) {
         echo '<tr><td id="content"><table id="error"><tbody>';
-        $this->renderAppRootPath();
+        //$this->renderAppRootPath();
         $this->renderErrorHeader($type, $message);
         $this->renderToggleExternalCodeButton();
         echo '<tr><td id="file-wrapper">';
@@ -123,7 +123,7 @@ class Debugger {
 
     private function renderAppRootPath() {
         echo '<tr><td id="app-root-path"><div>App Root Path:</div>',
-            $this->renderPath($this->rootPath, false),
+            $this->renderPath($this->rootPath),
             '</td></tr>';
     }
 
@@ -163,10 +163,7 @@ class Debugger {
 
     private function renderFileContent($path, $errorLineNumber) {
         $this->renderPath(
-            $path,
-            true,
-            ' <span class="line">' . $errorLineNumber . '</span>',
-            true
+            $path, ' <span class="line">' . $errorLineNumber . '</span>'
         );
         echo '<table><tbody><tr><td class="index"><div class="index-content">';
         $lines = $this->getLines($path, $errorLineNumber);
@@ -217,10 +214,7 @@ class Debugger {
                 if (isset($frame['file'])) {
                     $this->renderPath(
                         $frame['file'],
-                        true,
-                        ' <span class="line">'
-                            . $frame['line'] . '</span>',
-                        true
+                        ' <span class="line">' . $frame['line'] . '</span>'
                     );
                 } else {
                     echo '<span class="internal">internal function</span>';
@@ -356,23 +350,7 @@ class Debugger {
         return '<span class="' . $class . '">' . $content . '</span>';
     }
 
-    private function renderPath(
-        $path, $shouldRemoveRootPath = true,
-        $suffix = '', $shouldHighlightFile = false
-    ) {
-        if ($shouldRemoveRootPath === true) {
-            $path = $this->getRelativePath($path);
-        }
-        if ($shouldHighlightFile) {
-            $fileNamePosition = strrpos($path, '/');
-            if ($fileNamePosition === false) {
-                $fileNamePosition = 0;
-            } else {
-                ++$fileNamePosition;   
-            }
-            $path = substr_replace($path, '', $fileNamePosition, 0)
-                . '';
-        }
+    private function renderPath($path, $suffix = '') {
         echo '<div class="path"><code>', $path, '</code>', $suffix, '</div>';
     }
 
@@ -750,13 +728,13 @@ h2 {
     background: #f8f8f8;
 }
 #error-header {
-    padding: 7px 0;
+    padding-bottom: 10px;
 }
 h1 {
     font-size: 21px;
     line-height: 25px;
     color: #e44;
-    padding: 5px 10px;
+    padding: 5px 10px 5px 10px;
 }
 h1, #message {
     font-weight: normal;
@@ -827,22 +805,8 @@ h1, #message {
     padding: 10px 0;
     border: 1px solid #ccc;
 }
-#app-root-path {
-	padding:7px 10px;
-	background:#f8f8f8;
-    color: #999;
-	font-size:12px;
-    border: 1px solid #ccc;
-}
 #stack-trace-wrapper {
 	border: 1px solid #ccc;
-}
-#app-root-path div {
-	float: left;
-}
-#app-root-path .path {
-	color: #333;
-	margin-left: 5px;
 }
 .path {
     word-break: break-all; /* ie */
