@@ -7,6 +7,7 @@ class Router extends Base {
     protected function execute() {
         if ($this->match('/')) return;
         if ($this->match('docs')) return 'docs/show';
+        if ($this->match('docs/*name')) return 'docs/show';
         if ($this->match('blog')) return 'blog/index';
     }
 }

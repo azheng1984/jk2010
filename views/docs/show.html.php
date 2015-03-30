@@ -2,12 +2,18 @@
 /* @var $this Hyperframework\Web\View */
 $this->setLayout('_layouts/main.html.php');
 $this->setBlock('content', function() {?>
+<?php 
+if (isset($this['doc'])) {
+    echo $this['doc'];
+    return;
+}
+?>
 <h2>文档</h2>
 <h3><a href="/docs/introduction">简介</a></h3>
 <h3>安装</h3>
 <h3>Web</h3>
 <div>Web 应用开发框架</div>
-<div>入门</div>
+<div><a href="/docs/web/getting_started">入门</a></div>
 <div>路由</div>
 <div>控制器</div>
 <div>视图</div>

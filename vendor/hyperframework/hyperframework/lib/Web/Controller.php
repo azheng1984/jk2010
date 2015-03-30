@@ -65,15 +65,15 @@ abstract class Controller {
     }
 
     public function getRouteParam($name) {
-        $this->getRouter()->getParam($name);
+        return $this->getRouter()->getParam($name);
     }
 
     public function getRouteParams() {
-        $this->getRouter()->getParams();
+        return $this->getRouter()->getParams();
     }
 
     public function hasRouteParam($name) {
-        $this->getRouter()->hasParam($name);
+        return $this->getRouter()->hasParam($name);
     }
 
     public function getOutputFormat() {
