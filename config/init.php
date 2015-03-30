@@ -28,6 +28,6 @@ return array(
 //  'logger.log_stack_trace' => true,
 //  'log_handler.path' => 'php://output',
     /////////////////////////
-    '[hyperframework.blog]',
-    'xx' => 'xxx'
+    '[hyperframework.site]',
+    'assert_version' => '1'
 );

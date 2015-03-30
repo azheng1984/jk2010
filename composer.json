@@ -11,7 +11,8 @@
             "Hyperframework\\Test\\": "vendor/hyperframework/hyperframework/test/lib"
         },
         "psr-0": {
-          "PHPUnit\\": "vendor/phpunit/src"
+          "PHPUnit\\": "vendor/phpunit/src",
+          "Michelf\\": "vendor"
         }
     },
     "repositories": [
