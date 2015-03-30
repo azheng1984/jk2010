@@ -103,9 +103,7 @@ class Debugger {
 
     private function renderContent($type, $message) {
         echo '<tr><td id="content"><table id="error"><tbody>';
-        //$this->renderAppRootPath();
         $this->renderErrorHeader($type, $message);
-        $this->renderToggleExternalCodeButton();
         echo '<tr><td id="file-wrapper">';
         $this->renderFile();
         echo '</td></tr>';
@@ -119,12 +117,6 @@ class Debugger {
             echo '</td></tr>';
         }
         echo '</tbody></table></td></tr>';
-    }
-
-    private function renderAppRootPath() {
-        echo '<tr><td id="app-root-path"><div>App Root Path:</div>',
-            $this->renderPath($this->rootPath),
-            '</td></tr>';
     }
 
     private function renderErrorHeader($type, $message) {
@@ -145,10 +137,13 @@ class Debugger {
             $frame = $this->trace[$this->firstInternalStackFrameIndex];
             $path = $frame['file'];
             $errorLineNumber = $frame['line'];
-            echo '<div id="internal-file"><h2>Internal File</h2>';
+            echo '<table id="file-switch"><tbody><tr><td>',
+                '<h2>File</h2></td><td id="internal"><span>Internal</span>',
+                '</td><td id="external"><a>',
+                'External</a></td></tr></tbody></table>',
+                '<div id="internal-file">';
             $this->renderFileContent($path, $errorLineNumber);
-            echo '</div><div id="external-file" class="hidden">',
-                '<h2>External File</h2>';
+            echo '</div><div id="external-file" class="hidden">';
         } else {
             echo '<h2>File</h2>';
         }
@@ -225,15 +220,6 @@ class Debugger {
             ++$index;
         }
         echo '</tbody></table></td></tr></table>';
-    }
-
-    private function renderToggleExternalCodeButton() {
-        if ($this->shouldHideExternal) {
-            echo '<tr><td id="toggle-external-code-wrapper">',
-                '<div id="toggle-external-code">',
-                '<a>Start from External File</a></div>',
-                '</td></tr>';
-        }
     }
 
     private function getLines($path, $errorLineNumber) {
@@ -625,10 +611,9 @@ function showError() {
     errorContent = null;
 }
 
-function startFromExternalFile() {
+function showExternal() {
     document.getElementById("internal-file").className = "hidden";
     document.getElementById("external-file").className = "";
-    var button = document.getElementById("toggle-external-code");
     if (shouldHideTrace) {
         document.getElementById('stack-trace-wrapper').className = '';
     } else {
@@ -640,14 +625,15 @@ function startFromExternalFile() {
                 parseInt(child.innerHTML) + firstInternalStackFrameIndex;
         }
     }
-    button.innerHTML = '<a href="javascript:startFromInternalFile()">'
-        + 'Start from Internal File</a>';
+    var button = document.getElementById("internal");
+    button.innerHTML = '<a href="javascript:showInternal()">Internal</a>';
+    button = document.getElementById("external");
+    button.innerHTML = '<span class="selected">External</span>';
 }
 
-function startFromInternalFile() {
+function showInternal() {
     document.getElementById("internal-file").className = "";
     document.getElementById("external-file").className = "hidden";
-    var button = document.getElementById("toggle-external-code");
     if (shouldHideTrace) {
         document.getElementById('stack-trace-wrapper').className = 'hidden';
     } else {
@@ -661,15 +647,17 @@ function startFromInternalFile() {
                 parseInt(child.innerHTML) - firstInternalStackFrameIndex;
         }
     }
-    button.innerHTML = '<a href="javascript:startFromExternalFile()">'
-        + 'Start from External File</a>';
+    var button = document.getElementById("internal");
+    button.innerHTML = '<span>Internal</span>';
+    button = document.getElementById("external");
+    button.innerHTML = '<a href="javascript:showExternal()">External</a>';
 }
 
 document.getElementById("nav-output").innerHTML =
     '<a href="javascript:showOutput()">Output</a>';
-if (document.getElementById("toggle-external-code") !== null) {
-    document.getElementById("toggle-external-code").firstChild.href =
-        'javascript:startFromExternalFile()';
+if (document.getElementById("external") !== null) {
+    document.getElementById("external").firstChild.href =
+        'javascript:showExternal()';
 }
 </script>
 <?php
@@ -800,11 +788,6 @@ h1, #message {
 #content {
     padding: 10px;
 }
-#toggle-external-code-wrapper {/* ie6 */
-    color: #999;
-    padding: 10px 0;
-    border: 1px solid #ccc;
-}
 #stack-trace-wrapper {
 	border: 1px solid #ccc;
 }
@@ -822,7 +805,7 @@ h1, #message {
     padding: 5px 5px 8px 0;
     margin: 0 10px 10px 10px;
 }
-#response-body a, #toggle-external-code a {
+#response-body a {
     background-image: linear-gradient(#fcfcfc, #eee);
     background-color: #f1f1f1;
     border: 1px solid #d5d5d5;
@@ -832,19 +815,9 @@ h1, #message {
     word-break: keep-all;
     white-space: nowrap;
 }
-.no-touch #response-body a:hover, .no-touch #toggle-external-code a:hover {
+.no-touch #response-body a:hover {
     background-image: linear-gradient(#f8f8f8, #e5e5e5);
     color: #000;
-}
-#toggle-external-code {
-    width: 1px;
-    padding-left: 10px;
-	line-height: 25px;
-}
-#toggle-external-code a {
-    margin-right: 10px;
-    _display: inline-block;
-    _line-height: 16px;
 }
 .hidden {
     display: none;
@@ -1040,6 +1013,40 @@ h1, #message {
     padding-bottom: 10px;
     line-height: 24px;
     float:right;
+}
+#file #file-switch {
+    width: 170px;
+}
+#file #file-switch a:hover {
+    background-image: linear-gradient(#f8f8f8, #e5e5e5);
+    color: #000;
+}
+#internal a, #internal span, #external a, #external span {
+	display: block;
+    width: 65px;
+	line-height: 22px;
+    text-align: center;
+    border:1px solid;
+    background-image: linear-gradient(#fcfcfc, #eee);
+    border-color: #ccc;
+	font-size: 12px;
+}
+#internal a, #internal span {
+	border-radius: 3px 0 0 3px;
+    border-right: 0;
+}
+#internal span {
+	border-right: 1px solid;
+}
+#external a, #external span  {
+    border-radius: 0 3px 3px 0;
+    border-left: 0;
+}
+#file-switch span {
+    background-image: none;
+    color: #fff;
+    background-color: #aaa;
+    border-color: #aaa;
 }
 </style>
 <?php
