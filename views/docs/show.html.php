@@ -1,7 +1,7 @@
 <?php
 /* @var $this Hyperframework\Web\View */
 $this->setLayout('_layouts/main.html.php');
-$this['css'] = ['/highlight-8.4/styles/default.css'];
+$this['css'] = ['/highlight-8.4/styles/github.css'];
 $this['js'] = ['/highlight-8.4/highlight.pack.js'];
 $this['js_code'] = '<script>hljs.initHighlightingOnLoad();</script>';
 $this->setBlock('content', function() {?>
@@ -13,24 +13,15 @@ if (isset($this['doc'])) {
 ?>
 <h2>文档</h2>
 <h3><a href="/cn/docs/copyright">版权声明</a></h3>
-<h3><a href="/cn/docs/installation">安装</a></h3>
+<h3><a href="/cn/docs/requirements">环境要求</a></h3>
 <h3>Web</h3>
 <div>Web 应用开发框架</div>
 <div><a href="/cn/docs/web/getting_started">入门</a></div>
-<div>路由</div>
-<div>控制器</div>
-<div>视图</div>
-<div>错误处理</div>
-<div>Csrf 攻击防护</div>
-<div>调试</div>
-<div>配置</div>
-<div>API</div>
+<div><a href="/cn/docs/web/configuration">配置</a></div>
+<div><a href="/cn/docs/web/api">API</a></div>
 <h3>Cli</h3>
 <div>命令行应用开发框架</div>
 <div>入门</div>
-<div>命令选项</div>
-<div>命令参数</div>
-<div>帮助</div>
 <div>配置</div>
 <div>API</div>
 <h3>Common</h3>
