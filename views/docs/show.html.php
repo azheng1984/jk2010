@@ -9,11 +9,11 @@ if (isset($this['doc'])) {
 }
 ?>
 <h2>文档</h2>
-<h3><a href="/docs/introduction">简介</a></h3>
+<h3><a href="/cn/docs/introduction">简介</a></h3>
 <h3>安装</h3>
 <h3>Web</h3>
 <div>Web 应用开发框架</div>
-<div><a href="/docs/web/getting_started">入门</a></div>
+<div><a href="/cn/docs/web/getting_started">入门</a></div>
 <div>路由</div>
 <div>控制器</div>
 <div>视图</div>

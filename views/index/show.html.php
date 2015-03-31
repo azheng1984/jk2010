@@ -15,6 +15,6 @@ $this->setBlock('content', function() {?>
 <div>数据库访问模块</div>
 <h3>5. Logging</h3>
 <div>日志模块</div>
-<div>详细信息请查看<a href="/docs">文档</a>。</div>
+<div>详细信息请查看<a href="/cn/docs">文档</a>。</div>
 <div>Github badge</div>
 <?php });?>
