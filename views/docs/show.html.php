@@ -13,9 +13,9 @@ if (isset($this['doc'])) {
 ?>
 <h2>文档</h2>
 <h3><a href="/cn/docs/copyright">版权声明</a></h3>
-<h3><a href="/cn/docs/requirements">环境要求</a></h3>
 <h3>Web</h3>
 <div>Web 应用开发框架</div>
+<div><a href="/cn/docs/web/requirements">环境要求</a></div>
 <div><a href="/cn/docs/web/getting_started">入门</a></div>
 <div><a href="/cn/docs/web/configuration">配置</a></div>
 <div><a href="/cn/docs/web/api">API</a></div>
