@@ -1,5 +1,7 @@
 [App](/cn/docs/web/api/App)
-Router
-Controller
-View
-ViewTemplate
+
+[Router](/cn/docs/web/api/Router)
+
+[Controller](/cn/docs/web/api/Controller)
+
+[View](/cn/docs/web/api/View)
