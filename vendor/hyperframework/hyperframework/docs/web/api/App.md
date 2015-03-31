@@ -5,7 +5,6 @@ Hyperframework\Web
 Hyperframework\Common\App
 
 ## Methods
-``` .unknown
 <span style="color: #936;">public</span> <span style="color: #936;">static</span> <span style="color: #693;">void</span> [run](/cn/docs/web/api/Web.run)()
 
 public [__construct](/cn/docs/web/api/Web.__construct)(string $appRootPath)
@@ -27,4 +26,3 @@ protected object createController()
 protected void initializeErrorHandler(string $defaultClass = null)
 
 protected void finalize() 继承
-```
