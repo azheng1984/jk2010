@@ -81,7 +81,9 @@ abstract class ViewTemplate implements ArrayAccess {
 
     public function offsetSet($offset, $value) {
         if ($offset === null) {
-            throw new InvalidArgumentException('Offset cannot be null.');
+            throw new InvalidArgumentException(
+                "Argument 'offset' cannot be null."
+            );
         } else {
             $this->viewModel[$offset] = $value;
         }

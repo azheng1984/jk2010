@@ -36,7 +36,7 @@ class DbClient {
         return static::getEngine()->findRowByColumns($table, $columns, $select);
     }
 
-    public static function findRowById($table, $id, $select = null) {
+    public static function findRowById($table, $id, array $select = null) {
         return static::getEngine()->findRowById($table, $id, $select);
     }
 

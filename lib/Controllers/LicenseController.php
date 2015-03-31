@@ -3,8 +3,8 @@ namespace Hyperframework\Blog\Controllers;
 
 use Hyperframework\Web\Controller;
 
-class IndexController extends Controller {
+class LicenseController extends Controller {
     public function doShowAction() {
-        return ['title' => 'Hyperframework - 简单、专业的 PHP 框架'];
+        return ['title' => 'The MIT License - Hyperframework'];
     }
 }

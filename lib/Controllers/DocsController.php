@@ -3,7 +3,7 @@ namespace Hyperframework\Blog\Controllers;
 
 use Hyperframework\Web\Controller;
 use Hyperframework\Common\FileFullPathBuilder;
-use Michelf\Markdown;
+use Michelf\MarkdownExtra;
 use Hyperframework\Web\NotFoundException;
 
 class DocsController extends Controller {
@@ -15,13 +15,15 @@ class DocsController extends Controller {
                 "vendor/hyperframework/hyperframework/docs/$name.md"
             );
             if (file_exists($path)) {
-                $html = Markdown::defaultTransform(file_get_contents($path));
+                $html = MarkdownExtra::defaultTransform(file_get_contents($path));
             } else {
                 throw new NotFoundException;
             }
         }
+        $result = ['title' => '文档 - hyperframework'];
         if ($name !== null) {
-            return ['doc' => $html];
+            $result['doc'] = $html;
         }
+        return $result;
     }
 }
