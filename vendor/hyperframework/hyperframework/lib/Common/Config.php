@@ -50,7 +50,7 @@ class Config {
         static::getEngine()->remove($name);
     }
 
-    public static function import(array $data) {
+    public static function import($data) {
         static::getEngine()->import($data);
     }
 

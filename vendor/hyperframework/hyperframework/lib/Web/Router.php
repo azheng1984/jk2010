@@ -96,7 +96,7 @@ abstract class Router {
 
     abstract protected function execute();
 
-    protected function match($pattern, array $options = null) {
+    protected function match($pattern, $options = null) {
         if (is_string($pattern) === false) {
             throw new InvalidArgumentException(
                 "Argument 'pattern' must be a string, "
@@ -399,7 +399,7 @@ abstract class Router {
         return false;
     }
 
-    protected function matchScope($path, Closure $callback) {
+    protected function matchScope($path, $callback) {
         if (is_string($path) === false) {
             throw new InvalidArgumentException(
                 "Argument 'path' must be a string, "
@@ -420,7 +420,7 @@ abstract class Router {
         return $this->isMatched();
     }
 
-    protected function matchResource($pattern, array $options = null) {
+    protected function matchResource($pattern, $options = null) {
         if (is_string($pattern) === false) {
             throw new InvalidArgumentException(
                 "Argument 'pattern' must be a string, "
@@ -615,7 +615,7 @@ abstract class Router {
         return false;
     }
 
-    protected function matchResources($pattern, array $options = null) {
+    protected function matchResources($pattern, $options = null) {
         if (is_string($pattern) === false) {
             throw new InvalidArgumentException(
                 "Argument 'pattern' must be a string, "
@@ -802,27 +802,27 @@ abstract class Router {
         return $this->matchResource($pattern, $options);
     }
 
-    protected function matchGet($pattern, array $options = null) {
+    protected function matchGet($pattern, $options = null) {
         $options['methods'] = ['GET'];
         return $this->match($pattern, $options);
     }
 
-    protected function matchPost($pattern, array $options = null) {
+    protected function matchPost($pattern, $options = null) {
         $options['methods'] = ['POST'];
         return $this->match($pattern, $options);
     }
 
-    protected function matchPut($pattern, array $options = null) {
+    protected function matchPut($pattern, $options = null) {
         $options['methods'] = ['PUT'];
         return $this->match($pattern, $options);
     }
 
-    protected function matchPatch($pattern, array $options = null) {
+    protected function matchPatch($pattern, $options = null) {
         $options['methods'] = ['PATCH'];
         return $this->match($pattern, $options);
     }
 
-    protected function matchDelete($pattern, array $options = null) {
+    protected function matchDelete($pattern, $options = null) {
         $options['methods'] = ['DELETE'];
         return $this->match($pattern, $options);
     }
@@ -910,7 +910,7 @@ abstract class Router {
     }
 
     private function convertElementActionsToCollectionActions(
-        array $actions, array $defaultActions = null, $isMixed = false
+        $actions, $defaultActions = null, $isMixed = false
     ) {
         $result = [];
         foreach ($actions as $key => $value) {
@@ -980,7 +980,7 @@ abstract class Router {
         return $result;
     }
 
-    private function verifyExtraRules($extra, array $matches = []) {
+    private function verifyExtraRules($extra, $matches = []) {
         foreach ($matches as $key => $value) {
             if (is_int($key)) {
                 unset($matches[$key]);

@@ -5,7 +5,7 @@ use Hyperframework\Common\ConfigException;
 
 class OptionConfigParser {
     public static function parse(
-        array $configs, $isSubcommandEnabled = false, $subcommandName = null
+        $configs, $isSubcommandEnabled = false, $subcommandName = null
     ) {
         $result = [];
         $optionNames = [];

@@ -28,7 +28,7 @@ class ResponseEngine {
         return http_response_code();
     }
 
-    public function setCookie($name, $value, array $options = null) {
+    public function setCookie($name, $value, $options = null) {
         $expire = 0;
         $path = '/';
         $domain = null;

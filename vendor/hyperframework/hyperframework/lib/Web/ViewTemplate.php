@@ -3,7 +3,6 @@ namespace Hyperframework\Web;
 
 use ArrayAccess;
 use InvalidArgumentException;
-use Closure;
 use Exception;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileFullPathBuilder;
@@ -19,9 +18,7 @@ abstract class ViewTemplate implements ArrayAccess {
     private $filePath;
     private $layoutPath;
 
-    public function __construct(
-        Closure $loadFileFunction, array $viewModel = null
-    ) {
+    public function __construct($loadFileFunction, $viewModel = null) {
         $this->loadFileFunction = $loadFileFunction;
         $this->viewModel = $viewModel === null ? [] : $viewModel;
     }
@@ -63,10 +60,10 @@ abstract class ViewTemplate implements ArrayAccess {
         return $this->filePath;
     }
 
-    public function renderBlock($name, Closure $default = null) {
+    public function renderBlock($name, $default = null) {
         if (isset($this->blocks[$name])) {
-            $function = $this->blocks[$name];
-            $function();
+            $block = $this->blocks[$name];
+            $block();
         } else {
             if ($default === null) {
                 throw new ViewException("Block '$name' does not exist.");
@@ -75,8 +72,8 @@ abstract class ViewTemplate implements ArrayAccess {
         }
     }
 
-    public function setBlock($name, Closure $function) {
-        $this->blocks[$name] = $function;
+    public function setBlock($name, $value) {
+        $this->blocks[$name] = $value;
     }
 
     public function offsetSet($offset, $value) {

@@ -7,7 +7,7 @@ abstract class DbActiveRecord {
     private static $tableNames = [];
     private $row;
 
-    public function __construct(array $row = []) {
+    public function __construct($row = []) {
         $this->setRow($row);
     }
 
@@ -167,7 +167,7 @@ abstract class DbActiveRecord {
         return $this->row;
     }
 
-    protected function setRow(array $row) {
+    protected function setRow($row) {
         $this->row = $row;
     }
 
@@ -210,7 +210,7 @@ abstract class DbActiveRecord {
         return $result;
     }
 
-    private static function getParams(array $args, $offset) {
+    private static function getParams($args, $offset) {
         if (isset($args[$offset]) === false) {
             return [];
         }

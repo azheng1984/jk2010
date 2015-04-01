@@ -4,7 +4,7 @@ namespace Hyperframework\Cli;
 use Hyperframework\Common\ConfigException;
 
 class ArgumentConfigParser {
-    public static function parse(array $configs, $subcommandName = null) {
+    public static function parse($configs, $subcommandName = null) {
         $result = [];
         $hasRepeatableArgument = false;
         $optionalArgumentName = null;

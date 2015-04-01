@@ -77,11 +77,11 @@ class App extends Base {
         return new static($appRootPath);
     }
 
-    protected function setOptions(array $options) {
+    protected function setOptions($options) {
         $this->options = $options;
     }
 
-    protected function setArguments(array $arguments) {
+    protected function setArguments($arguments) {
         $this->arguments = $arguments;
     }
 

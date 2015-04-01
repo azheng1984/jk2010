@@ -6,7 +6,7 @@ class OptionArgumentConfig {
     private $isRequired;
     private $values;
 
-    public function __construct($name, $isRequired, array $values = null) {
+    public function __construct($name, $isRequired, $values = null) {
         $this->name = $name;
         $this->isRequired = $isRequired;
         $this->values = $values;

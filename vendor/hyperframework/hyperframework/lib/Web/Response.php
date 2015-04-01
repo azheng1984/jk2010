@@ -32,7 +32,7 @@ class Response {
         return self::getEngine()->getStatusCode();
     }
 
-    public static function setCookie($name, $value, array $options = null) {
+    public static function setCookie($name, $value, $options = null) {
         self::getEngine()->setCookie($name, $value, $options);
     }
 

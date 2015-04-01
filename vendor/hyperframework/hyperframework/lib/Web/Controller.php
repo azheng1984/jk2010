@@ -174,15 +174,15 @@ abstract class Controller {
         $this->quit();
     }
 
-    public function addBeforeFilter($filter, array $options = null) {
+    public function addBeforeFilter($filter, $options = null) {
         $this->addFilter('before', $filter, $options);
     }
 
-    public function addAfterFilter($filter, array $options = null) {
+    public function addAfterFilter($filter, $options = null) {
         $this->addFilter('after', $filter, $options);
     }
 
-    public function addAroundFilter($filter, array $options = null) {
+    public function addAroundFilter($filter, $options = null) {
         if (version_compare(phpversion(), '5.5.0', '<')) {
             throw new NotSupportedException(
                 'Around filter requires PHP version 5.5 or later.'
@@ -232,7 +232,7 @@ abstract class Controller {
         }
     }
 
-    private function runFilter(array &$config, $shouldReturnResult = false) {
+    private function runFilter(&$config, $shouldReturnResult = false) {
         $result = null;
         if (is_string($config['filter'])) {
             $class = $config['filter'];
@@ -265,7 +265,7 @@ abstract class Controller {
         return $result;
     }
 
-    private function addFilter($type, $filter, array $options = null) {
+    private function addFilter($type, $filter, $options = null) {
         if (is_string($filter)) {
             if ($filter === '') {
                 throw new ActionFilterException(

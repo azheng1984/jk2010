@@ -88,7 +88,7 @@ class DbStatement {
     public function fetchAll(
         $fetchStyle = null,
         $fetchArgument = null,
-        array $constructorArguments = []
+        $constructorArguments = []
     ) {
         switch (func_num_args()) {
             case 0: return $this->pdoStatement->fetchAll();
@@ -107,7 +107,7 @@ class DbStatement {
     }
 
     public function fetchObject(
-        $className = "stdClass", array $constructorArguments = []
+        $className = "stdClass", $constructorArguments = []
     ) {
         return $this->pdoStatement->fetchObject(
             $className, $constructorArguments

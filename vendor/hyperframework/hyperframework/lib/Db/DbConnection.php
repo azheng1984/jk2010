@@ -8,8 +8,7 @@ class DbConnection extends PDO {
     private $identifierQuotationMarks;
 
     public function __construct(
-        $name, $dsn, $userName = null, $password = null,
-        array $driverOptions = null
+        $name, $dsn, $userName = null, $password = null, $driverOptions = null
     ) {
         $this->name = $name;
         parent::__construct($dsn, $userName, $password, $driverOptions);
@@ -81,9 +80,7 @@ class DbConnection extends PDO {
         }
     }
 
-    private function sendSql(
-        $sql, $isQuery = false, array $fetchOptions = null
-    ) {
+    private function sendSql($sql, $isQuery = false, $fetchOptions = null) {
         DbProfiler::onSqlStatementExecuting($this, $sql);
         $result = null;
         if ($isQuery) {

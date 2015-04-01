@@ -13,13 +13,13 @@ class DbClientEngine {
     private $connectionPool = [];
     private $isConnectionPoolEnabled;
 
-    public function findColumn($sql, array $params = null) {
+    public function findColumn($sql, $params = null) {
         $result = $this->find($sql, $params);
         return $result->fetchColumn();
     }
 
     public function findColumnByColumns(
-        $table, $columnName, array $columns
+        $table, $columnName, $columns
     ) {
         $result = $this->findByColumns(
             $table, $columns, [$columnName]
@@ -34,44 +34,38 @@ class DbClientEngine {
         return $result->fetchColumn();
     }
 
-    public function findRow($sql, array $params = null) {
+    public function findRow($sql, $params = null) {
         $result = $this->find($sql, $params);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function findRowByColumns(
-        $table, array $columns, array $select = null
-    ) {
+    public function findRowByColumns($table, $columns, $select = null) {
         $result = $this->findByColumns(
             $table, $columns, $select
         );
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function findRowById($table, $id, array $select = null) {
+    public function findRowById($table, $id, $select = null) {
         $result = $this->findByColumns($table, ['id' => $id], $select);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function findAll($sql, array $params = null) {
+    public function findAll($sql, $params = null) {
         $result = $this->find($sql, $params);
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function findAllByColumns(
-        $table, array $columns, array $select = null
-    ) {
+    public function findAllByColumns($table, $columns, $select = null) {
         $result = $this->findByColumns($table, $columns, $select);
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function find($sql, array $params = null) {
+    public function find($sql, $params = null) {
         return $this->sendSql($sql, $params, true);
     }
 
-    public function findByColumns(
-        $table, array $columns, array $select = null
-    ) {
+    public function findByColumns($table, $columns, $select = null) {
         if ($select === null) {
             $select = '*';
         } else {
@@ -93,35 +87,33 @@ class DbClientEngine {
         return $this->find($sql, $params);
     }
 
-    public function count($table, $where = null, array $params = null) {
+    public function count($table, $where = null, $params = null) {
         return $this->calculate($table, '*', 'COUNT', $where, $params);
     }
 
     public function min(
-        $table, $columnName, $where = null, array $params = null
+        $table, $columnName, $where = null, $params = null
     ) {
         return $this->calculate($table, $columnName, 'MIN', $where, $params);
     }
 
     public function max(
-        $table, $columnName, $where = null, array $params = null
+        $table, $columnName, $where = null, $params = null
     ) {
         return $this->calculate($table, $columnName, 'MAX', $where, $params);
     }
 
-    public function sum(
-        $table, $columnName, $where = null, array $params = null
-    ) {
+    public function sum($table, $columnName, $where = null, $params = null) {
         return $this->calculate($table, $columnName, 'SUM', $where, $params);
     }
 
     public function average(
-        $table, $columnName, $where = null, array $params = null
+        $table, $columnName, $where = null, $params = null
     ) {
         return $this->calculate($table, $columnName, 'AVG', $where, $params);
     }
 
-    public function insert($table, array $row) {
+    public function insert($table, $row) {
         $keys = [];
         foreach (array_keys($row) as $key) {
             $keys[] = $this->quoteIdentifier($key);
@@ -137,9 +129,7 @@ class DbClientEngine {
         $this->execute($sql, array_values($row));
     }
 
-    public function update(
-        $table, array $columns, $where, array $params = null
-    ) {
+    public function update($table, $columns, $where, $params = null) {
         if (count($columns) === 0) {
             throw new InvalidArgumentException(
                 "Arguemnt 'columns' cannot be an empty array."
@@ -163,11 +153,11 @@ class DbClientEngine {
         return $this->execute($sql, $params);
     }
 
-    public function updateById($table, array $columns, $id) {
+    public function updateById($table, $columns, $id) {
         return $this->update($table, $columns, 'id = ?', [$id]) > 0;
     }
 
-    public function delete($table, $where, array $params = null) {
+    public function delete($table, $where, $params = null) {
         if (is_array($where)) {
             list($where, $params) = $this->buildWhereByColumns($where);
         }
@@ -182,7 +172,7 @@ class DbClientEngine {
         return $this->delete($table, 'id = ?', [$id]) > 0;
     }
 
-    public function execute($sql, array $params = null) {
+    public function execute($sql, $params = null) {
         return $this->sendSql($sql, $params);
     }
 
@@ -210,7 +200,7 @@ class DbClientEngine {
         return $this->getConnection()->quoteIdentifier($identifier);
     }
 
-    public function prepare($sql, array $driverOptions = []) {
+    public function prepare($sql, $driverOptions = []) {
         return $this->getConnection()->prepare($sql, $driverOptions);
     }
 
@@ -277,7 +267,7 @@ class DbClientEngine {
         return $this->connection;
     }
 
-    private function sendSql($sql, array $params = null, $isQuery = false) {
+    private function sendSql($sql, $params = null, $isQuery = false) {
         $connection = $this->getConnection();
         if ($params === null || count($params) === 0) {
             return $isQuery ?
@@ -292,7 +282,7 @@ class DbClientEngine {
     }
 
     private function calculate(
-        $table, $columnName, $function, $where, array $params = null
+        $table, $columnName, $function, $where, $params = null
     ) {
         $table = $this->quoteIdentifier($table);
         if ($columnName !== '*') {
@@ -308,7 +298,7 @@ class DbClientEngine {
         return $this->findColumn($sql, $params);
     }
 
-    private function buildWhereByColumns(array $columns) {
+    private function buildWhereByColumns($columns) {
         $params = [];
         $where = null;
         foreach ($columns as $key => $value) {

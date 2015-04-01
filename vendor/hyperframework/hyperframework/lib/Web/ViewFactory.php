@@ -5,7 +5,7 @@ use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
 class ViewFactory {
-    public static function createView(array $viewModel = null) {
+    public static function createView($viewModel = null) {
         $configName = 'hyperframework.web.view.class';
         $class = Config::get($configName, '');
         if ($class === '') {

@@ -134,7 +134,7 @@ class ConfigEngine {
         unset($this->data[$name]);
     }
 
-    public function import(array $data) {
+    public function import($data) {
         $namespace = null;
         foreach ($data as $name => $value) {
             if (is_int($name)) {

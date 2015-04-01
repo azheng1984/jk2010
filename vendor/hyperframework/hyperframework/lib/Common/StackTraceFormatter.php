@@ -2,7 +2,7 @@
 namespace Hyperframework\Common;
 
 class StackTraceFormatter {
-    public static function format(array $trace) {
+    public static function format($trace) {
         $result = [];
         $index = 0;
         foreach ($trace as $stackFrame) {

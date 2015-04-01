@@ -5,7 +5,7 @@ class MutuallyExclusiveOptionGroupConfig {
     private $optionConfigs;
     private $isRequired;
 
-    public function __construct(array $optionConfigs, $isRequired) {
+    public function __construct($optionConfigs, $isRequired) {
         $this->optionConfigs = $optionConfigs;
         $this->isRequired = $isRequired;
     }

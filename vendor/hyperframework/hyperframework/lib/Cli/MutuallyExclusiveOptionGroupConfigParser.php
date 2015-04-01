@@ -5,8 +5,8 @@ use Hyperframework\Common\ConfigException;
 
 class MutuallyExclusiveOptionGroupConfigParser {
     public static function parse(
-        array $mutuallyExclusiveOptionGroupConfigs,
-        array $optionConfigIndex,
+        $mutuallyExclusiveOptionGroupConfigs,
+        $optionConfigIndex,
         $isSubcommandEnabled = false,
         $subcommandName = null
     ) {

@@ -5,7 +5,7 @@ use PDO;
 use InvalidArgumentException;
 
 class DbImportCommand {
-    public static function execute($table, array $rows, array $options = null) {
+    public static function execute($table, $rows, $options = null) {
         $count = count($rows);
         if ($count === 0) {
             return;

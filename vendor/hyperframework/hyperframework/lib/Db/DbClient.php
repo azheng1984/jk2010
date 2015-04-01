@@ -12,9 +12,7 @@ class DbClient {
         );
     }
 
-    public static function findColumnByColumns(
-        $table, $columnName, array $columns
-    ) {
+    public static function findColumnByColumns($table, $columnName, $columns) {
         return static::getEngine()->findColumnByColumns(
             $table, $columnName, $columns
         );
@@ -30,13 +28,11 @@ class DbClient {
         );
     }
 
-    public static function findRowByColumns(
-        $table, array $columns, array $select = null
-    ) {
+    public static function findRowByColumns($table, $columns, $select = null) {
         return static::getEngine()->findRowByColumns($table, $columns, $select);
     }
 
-    public static function findRowById($table, $id, array $select = null) {
+    public static function findRowById($table, $id, $select = null) {
         return static::getEngine()->findRowById($table, $id, $select);
     }
 
@@ -46,9 +42,7 @@ class DbClient {
         );
     }
 
-    public static function findAllByColumns(
-        $table, array $columns, array $select = null
-    ) {
+    public static function findAllByColumns($table, $columns, $select = null) {
         return static::getEngine()->findAllByColumns($table, $columns, $select);
     }
 
@@ -58,9 +52,7 @@ class DbClient {
         );
     }
 
-    public static function findByColumns(
-        $table, array $columns, array $select = null
-    ) {
+    public static function findByColumns($table, $columns, $select = null) {
         return static::getEngine()->findByColumns($table, $columns, $select);
     }
 
@@ -96,17 +88,17 @@ class DbClient {
         );
     }
 
-    public static function insert($table, array $row) {
+    public static function insert($table, $row) {
         static::getEngine()->insert($table, $row);
     }
 
-    public static function update($table, array $columns, $where/*, ...*/) {
+    public static function update($table, $columns, $where/*, ...*/) {
         return static::getEngine()->update(
             $table, $columns, $where, self::getParams(func_get_args(), 3)
         );
     }
 
-    public static function updateById($table, array $columns, $id) {
+    public static function updateById($table, $columns, $id) {
         return static::getEngine()->updateById($table, $columns, $id);
     }
 
@@ -150,7 +142,7 @@ class DbClient {
         return static::getEngine()->quoteIdentifier($identifier);
     }
 
-    public static function prepare($sql, array $driverOptions = []) {
+    public static function prepare($sql, $driverOptions = []) {
         return static::getEngine()->prepare($sql, $driverOptions);
     }
 
@@ -195,7 +187,7 @@ class DbClient {
         Registry::set('hyperframework.db.client_engine', $engine);
     }
 
-    private static function getParams(array $args, $offset) {
+    private static function getParams($args, $offset) {
         if (isset($args[$offset]) === false) {
             return;
         }
