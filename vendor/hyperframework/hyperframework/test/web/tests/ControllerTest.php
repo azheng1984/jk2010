@@ -18,13 +18,6 @@ class ControllerTest extends Base {
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testConstructWhenAppArgumentIsInvalid() {
-        new IndexController(null);
-    }
-
-    /**
      * @expectedException LogicException
      */
     public function testGetAppWhenParentConstructorOfControllerIsNotCalled() {

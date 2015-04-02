@@ -4,6 +4,9 @@ namespace Hyperframework\Common;
 abstract class App {
     private $isQuitMethodCalled = false;
 
+    /**
+     * @param string $appRootPath
+     */
     public function __construct($appRootPath) {
         Config::set('hyperframework.app_root_path', $appRootPath);
         if (Config::getBoolean('hyperframework.initialize_config', true)) {
@@ -43,6 +46,9 @@ abstract class App {
         }
     }
 
+    /**
+     * @param string $defaultClass
+     */
     protected function initializeErrorHandler($defaultClass = null) {
         $configName = 'hyperframework.error_handler.class';
         $class = Config::getString($configName, '');

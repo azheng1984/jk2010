@@ -7,7 +7,7 @@ use InvalidArgumentException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NamespaceCombiner;
 
-abstract class Router {
+abstract class Router implements IRouter {
     private $app;
     private $params = [];
     private $module;

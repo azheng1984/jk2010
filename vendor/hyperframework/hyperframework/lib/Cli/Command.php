@@ -9,15 +9,16 @@ abstract class Command {
     private $app;
     private $isQuitMethodCalled = false;
 
-    public function __construct($app) {
-        if ($app === null) {
-            throw new InvalidArgumentException(
-                "Argument 'app' cannot be null."
-            );
-        }
+    /**
+     * @param IApp $app
+     */
+    public function __construct(IApp $app) {
         $this->app = $app;
     }
 
+    /**
+     * @return IApp
+     */
     public function getApp() {
         if ($this->app === null) {
             throw new LogicException(
@@ -28,39 +29,38 @@ abstract class Command {
         return $this->app;
     }
 
+    /**
+     * @return string[]
+     */
     public function getArguments() {
         $app = $this->getApp();
-        $app->getArguments();
+        return $app->getArguments();
     }
 
+    /**
+     * @param string $name
+     * @return boolean
+     */
     public function hasOption($name) {
         $app = $this->getApp();
         return $app->hasOption($name);
     }
 
+    /**
+     * @param string $name
+     * @return string
+     */
     public function getOption($name) {
         $app = $this->getApp();
         return $this->getApp()->getOption($name);
     }
 
+    /**
+     * @return string[]
+     */
     public function getOptions() {
         $app = $this->getApp();
         return $this->getApp()->getOptions();
-    }
-
-    public function hasGlobalOption($name) {
-        $app = $this->getApp();
-        return $app->hasGlobalOption($name);
-    }
-
-    public function getGlobalOption($name) {
-        $app = $this->getApp();
-        return $app->getGlobalOption($name);
-    }
-
-    public function getGlobalOptions() {
-        $app = $this->getApp();
-        return $app->getGlobalOptions();
     }
 
     public function quit() {

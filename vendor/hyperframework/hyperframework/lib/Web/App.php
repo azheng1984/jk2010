@@ -7,7 +7,7 @@ use Hyperframework\Common\NamespaceCombiner;
 use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\App as Base;
 
-class App extends Base {
+class App extends Base implements IApp {
     private $router;
 
     public static function run() {
@@ -23,6 +23,9 @@ class App extends Base {
         $this->checkCsrf();
     }
 
+    /**
+     * @return IRouter
+     */
     public function getRouter() {
         if ($this->router === null) {
             $configName = 'hyperframework.web.router_class';
@@ -78,6 +81,9 @@ class App extends Base {
         }
     }
 
+    /**
+     * @return object
+     */
     protected function createController() {
         $router = $this->getRouter();
         $class = (string)$router->getControllerClass();

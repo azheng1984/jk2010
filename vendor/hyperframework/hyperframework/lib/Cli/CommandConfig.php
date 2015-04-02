@@ -64,6 +64,10 @@ class CommandConfig {
         return $result;
     }
 
+    /**
+     * @param string $subcommandName
+     * @return string
+     */
     public function getClass($subcommandName = null) {
         $class = null;
         if ($subcommandName !== null
@@ -92,6 +96,10 @@ class CommandConfig {
         return $class;
     }
 
+    /**
+     * @param string $subcommandName
+     * @return OptionConfig[]
+     */
     public function getOptionConfigs($subcommandName = null) {
         if ($subcommandName !== null
             && isset($this->subcommandOptionConfigs[$subcommandName])
@@ -120,6 +128,11 @@ class CommandConfig {
         return $result;
     }
 
+    /**
+     * @param string $nameOrShortName
+     * @param string $subcommandName
+     * @return OptionConfig
+     */
     public function getOptionConfig($nameOrShortName, $subcommandName = null) {
         $index = $this->getOptionConfigIndex($subcommandName);
         if (isset($index[$nameOrShortName])) {
@@ -127,6 +140,10 @@ class CommandConfig {
         }
     }
 
+    /**
+     * @param string $subcommandName
+     * @return MutuallyExclusiveOptionGroupConfig[]
+     */
     public function getMutuallyExclusiveOptionGroupConfigs(
         $subcommandName = null
     ) {
@@ -168,6 +185,10 @@ class CommandConfig {
         return $result;
     }
 
+    /**
+     * @param string $subcommandName
+     * @return string
+     */
     public function getDescription($subcommandName = null) {
         return $this->get('description', $subcommandName);
     }
@@ -220,6 +241,9 @@ class CommandConfig {
     }
 
     protected function get($name, $subcommandName = null) {
+        if ($subcommandName === '') {
+            var_dump(debug_backtrace());
+        }
         $configs = $this->getAll($subcommandName);
         if (isset($configs[$name])) {
             return $configs[$name];

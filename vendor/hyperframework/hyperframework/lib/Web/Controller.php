@@ -23,12 +23,10 @@ abstract class Controller {
     private $view;
     private $isViewEnabled = true;
 
-    public function __construct($app) {
-        if ($app === null) {
-            throw new InvalidArgumentException(
-                "Argument 'app' cannot be null."
-            );
-        }
+    /**
+     * @param IApp $app
+     */
+    public function __construct(IApp $app) {
         $this->app = $app;
     }
 
@@ -50,6 +48,9 @@ abstract class Controller {
         $this->finalize();
     }
 
+    /**
+     * @return IApp
+     */
     public function getApp() {
         if ($this->app === null) {
             throw new LogicException(
@@ -60,22 +61,38 @@ abstract class Controller {
         return $this->app;
     }
 
+    /**
+     * @return IRouter
+     */
     public function getRouter() {
         return $this->getApp()->getRouter();
     }
 
+    /**
+     * @param string $name
+     * @return mixed
+     */
     public function getRouteParam($name) {
         return $this->getRouter()->getParam($name);
     }
 
+    /**
+     * @return array
+     */
     public function getRouteParams() {
         return $this->getRouter()->getParams();
     }
 
+    /**
+     * @return boolean
+     */
     public function hasRouteParam($name) {
         return $this->getRouter()->hasParam($name);
     }
 
+    /**
+     * @return string
+     */
     public function getOutputFormat() {
         return $this->getRouteParam('format');
     }
@@ -88,14 +105,23 @@ abstract class Controller {
         $this->isViewEnabled = true;
     }
 
+    /**
+     * @return boolean
+     */
     public function isViewEnabled() {
         return $this->isViewEnabled;
     }
 
+    /**
+     * @param mixed $view
+     */
     public function setView($view) {
         $this->view = $view;
     }
 
+    /**
+     * @return mixed
+     */
     public function getView() {
         if ($this->view === null) {
             $router = $this->getRouter();
@@ -147,10 +173,16 @@ abstract class Controller {
         $view->render($path);
     }
 
+    /**
+     * @return mixed
+     */
     public function getActionResult() {
         return $this->actionResult;
     }
 
+    /**
+     * @param mixed
+     */
     public function setActionResult($actionResult) {
         $this->actionResult = $actionResult;
     }
@@ -169,20 +201,36 @@ abstract class Controller {
         $app->quit();
     }
 
+    /**
+     * @param string $url
+     * @param int $statusCode
+     */
     public function redirect($url, $statusCode = 302) {
         Response::setHeader('Location: ' . $url, true, $statusCode);
         $this->quit();
     }
 
+    /**
+     * @param string|Closure $filter
+     * @param array $options
+     */
     public function addBeforeFilter($filter, $options = null) {
         $this->addFilter('before', $filter, $options);
     }
 
+    /**
+     * @param string|Closure $filter
+     * @param array $options
+     */
     public function addAfterFilter($filter, $options = null) {
         $this->addFilter('after', $filter, $options);
     }
 
-    public function addAroundFilter($filter, $options = null) {
+    /**
+     * @param string|Closure $filter
+     * @param array $options
+     */
+    public function addAroundFilter($filter, array $options = null) {
         if (version_compare(phpversion(), '5.5.0', '<')) {
             throw new NotSupportedException(
                 'Around filter requires PHP version 5.5 or later.'
@@ -232,6 +280,11 @@ abstract class Controller {
         }
     }
 
+    /**
+     * @param array &$config
+     * @param boolean $shouldReturnResult
+     * @return mixed
+     */
     private function runFilter(&$config, $shouldReturnResult = false) {
         $result = null;
         if (is_string($config['filter'])) {
@@ -265,7 +318,12 @@ abstract class Controller {
         return $result;
     }
 
-    private function addFilter($type, $filter, $options = null) {
+    /**
+     * @param string $type
+     * @param string|Closure $filter
+     * @param array $options
+     */
+    private function addFilter($type, $filter, array $options = null) {
         if (is_string($filter)) {
             if ($filter === '') {
                 throw new ActionFilterException(
@@ -322,7 +380,10 @@ abstract class Controller {
         }
     }
 
-    private function quitFilterChain($exception = null) {
+    /**
+     * @param Exception $exception
+     */
+    private function quitFilterChain(Exception $exception = null) {
         if ($this->isQuitFilterChainMethodCalled === false) {
             $this->isQuitFilterChainMethodCalled = true;
             $shouldRunYieldedFiltersOnly = $exception === null

@@ -5,7 +5,7 @@ use Hyperframework\Common\App as CommonApp;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
-class MultipleCommandApp extends App {
+class MultipleCommandApp extends App implements IMultipleCommandApp {
     private $commandConfig;
     private $subcommandName;
     private $globalOptions = [];

@@ -5,18 +5,24 @@ use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\App as Base;
 
-class App extends Base {
+class App extends Base implements IApp {
     private $commandConfig;
     private $appRootPath;
     private $options = [];
     private $arguments = [];
 
+    /**
+     * @param string $appRootPath
+     */
     public static function run($appRootPath) {
         $app = static::createApp($appRootPath);
         $app->executeCommand();
         $app->finalize();
     }
 
+    /**
+     * @param string $appRootPath
+     */
     public function __construct($appRootPath) {
         parent::__construct($appRootPath);
         $elements = $this->parseCommand();
@@ -36,24 +42,41 @@ class App extends Base {
         }
     }
 
+    /**
+     * @return string[]
+     */
     public function getArguments() {
         return $this->arguments;
     }
 
+    /**
+     * @param string $name
+     * @return boolean
+     */
     public function hasOption($name) {
         return isset($this->options[$name]);
     }
 
+    /**
+     * @param string $name
+     * @return string
+     */
     public function getOption($name) {
         if (isset($this->options[$name])) {
             return $this->options[$name];
         }
     }
 
+    /**
+     * @return string[]
+     */
     public function getOptions() {
         return $this->options;
     }
 
+    /**
+     * @return ICommandConfig
+     */
     public function getCommandConfig() {
         if ($this->commandConfig === null) {
             $configName = 'hyperframework.cli.command_config_class';
@@ -64,24 +87,34 @@ class App extends Base {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
                         "Class '$class' does not exist, set using config "
-                        . "'$configName'."
+                            . "'$configName'."
                     );
                 }
                 $this->commandConfig = new $class;
             }
-            }
-            return $this->commandConfig;
+        }
+        return $this->commandConfig;
     }
 
+    /**
+     * @param string $appRootPath
+     * @return static
+     */
     protected static function createApp($appRootPath) {
         return new static($appRootPath);
     }
 
-    protected function setOptions($options) {
+    /**
+     * @param string[] $options
+     */
+    protected function setOptions(array $options) {
         $this->options = $options;
     }
 
-    protected function setArguments($arguments) {
+    /**
+     * @param string[] $arguments
+     */
+    protected function setArguments(array $arguments) {
         $this->arguments = $arguments;
     }
 
@@ -135,7 +168,12 @@ class App extends Base {
         }
     }
 
-    protected function renderCommandParsingError($exception) {
+    /**
+     * @param CommandParsingException $exception
+     */
+    protected function renderCommandParsingError(
+        CommandParsingException $exception
+    ) {
         echo $exception->getMessage(), PHP_EOL;
         $config = $this->getCommandConfig();
         $name = $config->getName();

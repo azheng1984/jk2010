@@ -856,7 +856,6 @@ h1, #message {
 #file .index .error-line-number div {
     background-color:#d11;
     color:#fff;
-    text-shadow:1px 1px 0 rgba(0, 0, 0, .4);
     border-right:1px solid #e1e1e1;
 }
 #file pre .keyword {
@@ -1045,8 +1044,8 @@ h1, #message {
 #file-switch span {
     background-image: none;
     color: #fff;
-    background-color: #aaa;
-    border-color: #aaa;
+    background-color: #adadad;
+    border-color: #adadad;
 }
 </style>
 <?php

@@ -4,6 +4,12 @@ namespace Hyperframework\Cli;
 use Hyperframework\Common\ConfigException;
 
 class OptionConfigParser {
+    /**
+     * @param array $configs
+     * @param boolean $isSubcommandEnabled
+     * @param string $subcommandName
+     * @return OptionConfig[]
+     */
     public static function parse(
         $configs, $isSubcommandEnabled = false, $subcommandName = null
     ) {

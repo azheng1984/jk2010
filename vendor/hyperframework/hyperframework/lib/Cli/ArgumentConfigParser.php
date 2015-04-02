@@ -4,6 +4,11 @@ namespace Hyperframework\Cli;
 use Hyperframework\Common\ConfigException;
 
 class ArgumentConfigParser {
+    /**
+     * @param array $configs
+     * @param string $subcommandName
+     * @return ArgumentConfig[]
+     */
     public static function parse($configs, $subcommandName = null) {
         $result = [];
         $hasRepeatableArgument = false;
@@ -98,6 +103,12 @@ class ArgumentConfigParser {
         return $result;
     }
 
+    /**
+     * @param string $subcommandName
+     * @param string $name
+     * @param string $extra
+     * @return string
+     */
     private static function getErrorMessage($subcommandName, $name, $extra) {
         if ($subcommandName === null) {
             $result = 'Command';

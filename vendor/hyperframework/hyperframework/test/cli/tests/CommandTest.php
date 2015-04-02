@@ -6,13 +6,6 @@ use Hyperframework\Cli\Test\ParentConstructorNotCalledCommand;
 use Hyperframework\Cli\Test\TestCase as Base;
 
 class CommandTest extends Base {
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testConstructWhenAppArgumentIsInvalid() {
-        new Command(null);
-    }
-
     public function testQuit() {
         $app = $this->getMockBuilder('Hyperframework\Cli\App')
             ->setMethods(['quit'])

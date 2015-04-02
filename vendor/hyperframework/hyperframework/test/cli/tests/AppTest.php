@@ -176,7 +176,6 @@ class AppTest extends Base {
         );
         $_SERVER['argv'] = ['run', '--unknown'];
         $app = $this->createApp(false);
-        $app->expects($this->once())->method('quit');
         $app->__construct(dirname(__DIR__));
     }
 }

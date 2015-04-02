@@ -1,40 +1,31 @@
 <?php
 #App Class
-return [
-    'namespace' => 'Hyperframework\Web',
-    'parent' => 'Hyperframework\Common\App',
-    'methods' => [
-        [
-            'name' => '__construct',
-            'visibility' => 'public',
-            'static' => true,
-        ], [
-            'name' => '__construct',
-            'visibility' => 'public',
-            'static' => true,
-        ],
-    ]
-];
-/*
-<span style="color: #936;">public</span> <span style="color: #936;">static</span> <span style="color: #693;">void</span> [run](/cn/docs/web/api/Web.run)()
 
-public [__construct](/cn/docs/web/api/Web.__construct)(string $appRootPath)
+## 命名空间
+Hyperframework\Web
 
-public Router [getRouter](/cn/docs/web/api/Web.getRouter)()
+## 父类
+Hyperframework\Common\App
 
-public void quit() 继承
+## 方法
+public static run()
 
-public void initializeConfig() 继承
+public __construct($appRootPath)
 
-protected static App createApp()
+public getRouter()
 
-protected void rewriteRequestMethod()
+public initializeConfig() 继承
 
-protected void checkCsrf()
+public quit() 继承
 
-protected Controller createController()
+protected static createApp()
 
-protected void initializeErrorHandler(string $defaultClass = null)
+protected rewriteRequestMethod()
+
+protected checkCsrf()
+
+protected createController()
+
+protected void initializeErrorHandler($defaultClass = null)
 
 protected void finalize() 继承
-*/

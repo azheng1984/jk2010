@@ -6,10 +6,16 @@ use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
 class Request {
+    /**
+     * @return string[]
+     */
     public static function getHeaders() {
         return self::getEngine()->getHeaders();
     }
 
+    /**
+     * @return resource
+     */
     public static function openInputStream() {
         return self::getEngine()->openInputStream();
     }
