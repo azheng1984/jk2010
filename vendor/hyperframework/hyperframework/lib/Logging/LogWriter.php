@@ -11,6 +11,9 @@ class LogWriter {
     private $isDefaultPath;
     private $isDirectoryChecked = false;
 
+    /**
+     * @param string $text
+     */
     public function write($text) {
         if ($this->isDirectoryChecked === false) {
             if ($this->path === null) {
@@ -92,30 +95,46 @@ class LogWriter {
         fclose($handle);
     }
 
+    /**
+     * @return string
+     */
     private function getMakeDirectoryErrorMessage() {
         return $this->getErrorMessage(
             "Failed to create log file '{$this->path}'"
         );
     }
 
+    /**
+     * @return string
+     */
     private function getOpenFileErrorMessage() {
         return $this->getErrorMessage(
             "Failed to open or create log file '{$this->path}'"
         );
     }
 
+    /**
+     * @return string
+     */
     private function getLockFileErrorMessage() {
         return $this->getErrorMessage(
             "Failed to lock log file '{$this->path}'"
         );
     }
 
+    /**
+     * @return string
+     */
     private function getWriteFileErrorMessage() {
         return $this->getErrorMessage(
             "Failed to write log file '{$this->path}'"
         );
     }
 
+    /**
+     * @param string $prefix
+     * @return string
+     */
     private function getErrorMessage($prefix) {
         if ($this->isDefaultPath === false) {
             $prefix .= ", set using config 'hyperframework.logging.log_path'";

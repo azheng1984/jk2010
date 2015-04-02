@@ -9,6 +9,11 @@ class LogRecord {
     private $message;
     private $time;
 
+    /**
+     * @param int $level
+     * @param string $message
+     * @param mixed $time
+     */
     public function __construct($level, $message, $time = null) {
         if ($time !== null) {
             if (is_int($time)) {
@@ -42,14 +47,23 @@ class LogRecord {
         $this->message = $message;
     }
 
+    /**
+     * @return int
+     */
     public function getLevel() {
         return $this->level;
     }
 
+    /**
+     * @return string
+     */
     public function getMessage() {
         return $this->message;
     }
 
+    /**
+     * @return \DateTime
+     */
     public function getTime() {
         return $this->time;
     }
