@@ -4,7 +4,6 @@ namespace Hyperframework\Web;
 use Generator;
 use Closure;
 use Exception;
-use InvalidArgumentException;
 use LogicException;
 use UnexpectedValueException;
 use Hyperframework\Common\Config;

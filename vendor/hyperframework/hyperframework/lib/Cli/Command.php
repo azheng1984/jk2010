@@ -1,7 +1,6 @@
 <?php
 namespace Hyperframework\Cli;
 
-use InvalidArgumentException;
 use LogicException;
 use Hyperframework\Common\InvalidOperationException;
 
