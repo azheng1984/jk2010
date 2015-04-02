@@ -7,26 +7,56 @@ class DbConnection extends PDO {
     private $name;
     private $identifierQuotationMarks;
 
+    /**
+     * @param string $name
+     * @param string $dsn
+     * @param string $userName
+     * @param string $password
+     * @param array $driverOptions
+     */
     public function __construct(
-        $name, $dsn, $userName = null, $password = null, $driverOptions = null
+        $name,
+        $dsn,
+        $userName = null,
+        $password = null,
+        array $driverOptions = null
     ) {
         $this->name = $name;
         parent::__construct($dsn, $userName, $password, $driverOptions);
     }
 
+    /**
+     * @return string
+     */
     public function getName() {
         return $this->name;
     }
 
+    /**
+     * @param string $sql
+     * @param array $driverOptions
+     * @return DbStatement
+     */
     public function prepare($sql, $driverOptions = []) {
         $pdoStatement = parent::prepare($sql, $driverOptions);
         return new DbStatement($pdoStatement, $this);
     }
 
+    /**
+     * @param string $sql
+     * @return int
+     */
     public function exec($sql) {
         return $this->sendSql($sql);
     }
 
+    /**
+     * @param string $sql
+     * @param int $fetchStyle
+     * @param int $extraParam1
+     * @param mixed $extraParam2
+     * @return DbStatement
+     */
     public function query(
         $sql, $fetchStyle = null, $extraParam1 = null, $extraParam2 = null
     ) {
@@ -60,6 +90,10 @@ class DbConnection extends PDO {
         DbProfiler::onTransactionOperationExecuted();
     }
 
+    /**
+     * @param string $identifier
+     * @return string
+     */
     public function quoteIdentifier($identifier) {
         if ($this->identifierQuotationMarks === null) {
             $this->identifierQuotationMarks =
@@ -69,6 +103,9 @@ class DbConnection extends PDO {
             . $this->identifierQuotationMarks[1];
     }
 
+    /**
+     * @return string[]
+     */
     protected function getIdentifierQuotationMarks() {
         switch ($this->getAttribute(PDO::ATTR_DRIVER_NAME)) {
             case 'mysql':
@@ -80,7 +117,15 @@ class DbConnection extends PDO {
         }
     }
 
-    private function sendSql($sql, $isQuery = false, $fetchOptions = null) {
+    /**
+     * @param string $sql
+     * @param bool $isQuery
+     * @param string $fetchOptions
+     * @return mixed
+     */
+    private function sendSql(
+        $sql, $isQuery = false, array $fetchOptions = null
+    ) {
         DbProfiler::onSqlStatementExecuting($this, $sql);
         $result = null;
         if ($isQuery) {

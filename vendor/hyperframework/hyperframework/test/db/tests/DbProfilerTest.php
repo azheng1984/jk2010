@@ -5,6 +5,7 @@ use stdClass;
 use Hyperframework\Common\Registry;
 use Hyperframework\Common\Config;
 use Hyperframework\Db\Test\TestCase as Base;
+use Hyperframework\Db\Test\ProfileHandler;
 
 class DbProfilerTest extends Base {
     protected function setUp() {
@@ -19,7 +20,7 @@ class DbProfilerTest extends Base {
     }
 
     public function testOnTransactionOperationExecuting() {
-        $connection = new stdClass;
+        $connection = DbClient::getConnection(true);
         $operation = 'begin';
         $this->mockEngineMethod('onTransactionOperationExecuting')
             ->with($connection, $operation);
@@ -32,7 +33,7 @@ class DbProfilerTest extends Base {
     }
 
     public function testOnSqlStatementExecuting() {
-        $connection = new stdClass;
+        $connection = DbClient::getConnection(true);
         $sql = 'sql';
         $this->mockEngineMethod('onSqlStatementExecuting')
             ->with($connection, $sql);
@@ -45,7 +46,7 @@ class DbProfilerTest extends Base {
     }
 
     public function testonPreparedStatementExecuting() {
-        $statement = new stdClass;
+        $statement = DbClient::prepare('SELECT * FROM Document');
         $this->mockEngineMethod('onPreparedStatementExecuting')
             ->with($statement);
         DbProfiler::onPreparedStatementExecuting($statement);
@@ -62,7 +63,7 @@ class DbProfilerTest extends Base {
     }
 
     public function testSetProfileHandler() {
-        $handler = new stdClass;
+        $handler = new ProfileHandler;
         $this->mockEngineMethod('setProfileHandler')->with($handler);
         DbProfiler::setProfileHandler($handler);
     }

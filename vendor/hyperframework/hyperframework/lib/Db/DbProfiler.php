@@ -6,12 +6,19 @@ use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
 class DbProfiler {
+    /**
+     * @return bool
+     */
     public static function isEnabled() {
         return Config::getBool('hyperframework.db.profiler.enable', false);
     }
 
+    /**
+     * @param DbConnection $connection
+     * @param string $operation
+     */
     public static function onTransactionOperationExecuting(
-        $connection, $operation
+        DbConnection $connection, $operation
     ) {
         if (static::isEnabled()) {
             static::getengine()->ontransactionoperationexecuting(
@@ -26,7 +33,13 @@ class DbProfiler {
         }
     }
 
-    public static function onSqlStatementExecuting($connection, $sql) {
+    /**
+     * @param DbConnection $connection
+     * @param string $sql
+     */
+    public static function onSqlStatementExecuting(
+        DbConnection $connection, $sql
+    ) {
         if (static::isEnabled()) {
             static::getEngine()->onSqlStatementExecuting($connection, $sql);
         }
@@ -38,7 +51,12 @@ class DbProfiler {
         }
     }
 
-    public static function onPreparedStatementExecuting($statement) {
+    /**
+     * @param DbStatement $statement
+     */
+    public static function onPreparedStatementExecuting(
+        DbStatement $statement
+    ) {
         if (static::isEnabled()) {
             static::getEngine()->onPreparedStatementExecuting($statement);
         }
@@ -50,14 +68,25 @@ class DbProfiler {
         }
     }
 
-    public static function setProfileHandler($handler) {
+    /**
+     * @param IDbProfileHandler $handler
+     */
+    public static function setProfileHandler(
+        IDbProfileHandler $handler = null
+    ) {
         static::getEngine()->setProfileHandler($handler);
     }
 
+    /**
+     * @return IDbProfileHandler
+     */
     public static function getProfileHandler() {
         return static::getEngine()->getProfileHandler();
     }
 
+    /**
+     * @return object
+     */
     public static function getEngine() {
         $engine = Registry::get('hyperframework.db.profiler_engine');
         if ($engine === null) {
@@ -79,6 +108,9 @@ class DbProfiler {
         return $engine;
     }
 
+    /**
+     * @param object $engine
+     */
     public static function setEngine($engine) {
         Registry::set('hyperframework.db.profiler_engine', $engine);
     }

@@ -5,7 +5,12 @@ use PDO;
 use InvalidArgumentException;
 
 class DbImportCommand {
-    public static function execute($table, $rows, $options = null) {
+    /**
+     * @param string $table
+     * @param array[] $rows
+     * @param array $options
+     */
+    public static function execute($table, array $rows, array $options = null) {
         $count = count($rows);
         if ($count === 0) {
             return;

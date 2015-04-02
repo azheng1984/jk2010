@@ -2,12 +2,16 @@
 namespace Hyperframework\Db;
 
 use Exception;
+use Closure;
 
 class DbTransaction {
     private static $connections = [];
     private static $counts = [];
 
-    public static function run($callback) {
+    /**
+     * @param Closure $callback
+     */
+    public static function run(Closure $callback) {
         $connection = DbClient::getConnection();
         $index = array_search($connection, self::$connections, true);
         if ($index === false) {

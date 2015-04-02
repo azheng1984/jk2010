@@ -11,8 +11,12 @@ class DbProfilerEngine {
     private $profile;
     private $profileHandler;
 
+    /**
+     * @param DbConnection $connection
+     * @param string $operation
+     */
     public function onTransactionOperationExecuting(
-        $connection, $operation
+        DbConnection $connection, $operation
     ) {
         $this->initializeProfile($connection, ['transaction' => $operation]);
     }
@@ -21,7 +25,11 @@ class DbProfilerEngine {
         $this->handleProfile();
     }
 
-    public function onSqlStatementExecuting($connection, $sql) {
+    /**
+     * @param DbConnection $connection
+     * @param string $sql
+     */
+    public function onSqlStatementExecuting(DbConnection $connection, $sql) {
         $this->initializeProfile($connection, ['sql' => $sql]);
     }
 
@@ -29,7 +37,10 @@ class DbProfilerEngine {
         $this->handleProfile();
     }
 
-    public function onPreparedStatementExecuting($statement) {
+    /**
+     * @param DbStatement $statement
+     */
+    public function onPreparedStatementExecuting(DbStatement $statement) {
         $this->initializeProfile(
             $statement->getConnection(), ['sql' => $statement->getsql()]
         );
@@ -39,10 +50,16 @@ class DbProfilerEngine {
         $this->handleProfile();
     }
 
-    public function setProfileHandler($handler) {
+    /**
+     * @param IDbProfileHandler $handler
+     */
+    public function setProfileHandler(IDbProfileHandler $handler = null) {
         $this->profileHandler = $handler;
     }
 
+    /**
+     * @return IDbProfileHandler
+     */
     public function getProfileHandler() {
         if ($this->profileHandler === null) {
             $configName = 'hyperframework.db.profiler.profile_handler_class';
@@ -65,7 +82,13 @@ class DbProfilerEngine {
         return $this->profileHandler;
     }
 
-    private function initializeProfile($connection, array $profile) {
+    /**
+     * @param DbConnection $connection
+     * @param array $profile
+     */
+    private function initializeProfile(
+        DbConnection $connection, array $profile
+    ) {
         $this->profile = [];
         $name = $connection->getName();
         if ($name !== 'default') {
@@ -75,6 +98,9 @@ class DbProfilerEngine {
         $this->profile['start_time'] = $this->getTime();
     }
 
+    /**
+     * @return float[]
+     */
     private function getTime() {
         $segments = explode(' ', microtime());
         $segments[0] = (float)$segments[0];
@@ -127,6 +153,9 @@ class DbProfilerEngine {
         }
     }
 
+    /**
+     * @return string
+     */
     private function getCustomLoggerClass() {
         $configName = 'hyperframework.db.profiler.logger_class';
         $class = Config::getString($configName, '');

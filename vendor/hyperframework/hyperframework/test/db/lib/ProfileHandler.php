@@ -1,7 +1,9 @@
 <?php
 namespace Hyperframework\Db\Test;
 
-class ProfileHandler {
-    public function handle($profile) {
+use Hyperframework\Db\IDbProfileHandler;
+
+class ProfileHandler implements IDbProfileHandler {
+    public function handle(array $profile) {
     }
 }

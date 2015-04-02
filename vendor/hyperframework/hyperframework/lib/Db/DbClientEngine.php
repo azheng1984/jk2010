@@ -370,9 +370,7 @@ class DbClientEngine {
     public function closeConnection($name = null) {
         if ($name === null) {
             if ($this->connection === null) {
-                throw new InvalidOperationException(
-                    'The current database connection equals null.'
-                );
+                return;
             }
             if ($this->isConnectionPoolEnabled() === false) {
                 $this->connection = null;
@@ -389,9 +387,7 @@ class DbClientEngine {
             }
         }
         if (isset($this->connectionPool[$name]) === false) {
-            throw new InvalidOperationException(
-                "Database connection '$name' does not exist."
-            );
+            return;
         }
         unset($this->connectionPool[$name]);
     }

@@ -8,6 +8,10 @@ use Hyperframework\Common\ConfigException;
 class DbConnectionFactory {
     private $config;
 
+    /**
+     * @param string $name
+     * @return DbConnection
+     */
     public function createConnection($name = 'default') {
         $config = $this->getConfig($name);
         if (isset($config['dsn']) === false) {
@@ -25,6 +29,10 @@ class DbConnectionFactory {
         return $connection;
     }
 
+    /**
+     * @param string $name
+     * @return array
+     */
     private function getConfig($name) {
         if ($this->config === null) {
             $this->config = ConfigFileLoader::loadPhp(

@@ -271,23 +271,18 @@ class DbClientEngineTest extends Base {
         $connection = new DbCustomConnection;
         $this->engine->setConnection($connection);
         $this->engine->closeConnection('custom');
-        $this->assertNull($this->engine->getConnection(false));
+        $this->assertNotSame($connection, $this->engine->getConnection());
     }
 
-    /**
-     * @expectedException Hyperframework\Common\InvalidOperationException
-     */
     public function
         testCloseNonExistentConnectionByNameWhenConnectionPoolIsEnabled()
     {
         $connection = new DbCustomConnection;
         $this->engine->setConnection($connection);
         $this->engine->closeConnection('unknown');
+        $this->assertSame($connection, $this->engine->getConnection());
     }
 
-    /**
-     * @expectedException Hyperframework\Common\InvalidOperationException
-     */
     public function
         testCloseNonExistentConnectionByNameWhenConnectionPoolIsDisabled()
     {
@@ -295,6 +290,7 @@ class DbClientEngineTest extends Base {
         $connection = new DbCustomConnection;
         $this->engine->setConnection($connection);
         $this->engine->closeConnection('unknown');
+        $this->assertSame($connection, $this->engine->getConnection());
     }
 
     public function testClosePooledConnection() {
@@ -307,11 +303,9 @@ class DbClientEngineTest extends Base {
         $this->assertNotSame($connection, $this->engine->getConnection());
     }
 
-    /**
-     * @expectedException Hyperframework\Common\InvalidOperationException
-     */
     public function testCloseNullConnection() {
         $this->engine->closeConnection();
+        $this->assertNull($this->engine->getConnection(false));
     }
 
     public function testGetNullConnection() {

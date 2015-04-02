@@ -42,18 +42,30 @@ class Logger {
         return static::getEngine()->getLevel();
     }
 
+    /**
+     * @param object $logHandler
+     */
     public static function setLogHandler($logHandler) {
         static::getEngine()->setLogHandler($logHandler);
     }
 
+    /**
+     * @return object
+     */
     public static function getLogHandler() {
         return static::getEngine()->getLogHandler();
     }
 
+    /**
+     * @param object $logHandler
+     */
     public static function setEngine($engine) {
         Registry::set('hyperframework.logging.logger_engine', $engine);
     }
 
+    /**
+     * @return object
+     */
     public static function getEngine() {
         $engine = Registry::get('hyperframework.logging.logger_engine');
         if ($engine === null) {

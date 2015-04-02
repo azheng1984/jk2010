@@ -10,6 +10,10 @@ class LoggerEngine {
     private $level;
     private $logHandler;
 
+    /**
+     * @param int $level
+     * @param mixed $mixed
+     */
     public function log($level, $mixed) {
         if ($level > $this->getLevel()) {
             return;
@@ -35,10 +39,16 @@ class LoggerEngine {
         $handler->handle($logRecord);
     }
 
+    /**
+     * @param int $level
+     */
     public function setLevel($level) {
         $this->level = $level;
     }
 
+    /**
+     * @return int
+     */
     public function getLevel() {
         if ($this->level === null) {
             $name = Config::getString('hyperframework.logging.log_level', '');
@@ -60,10 +70,16 @@ class LoggerEngine {
         return $this->level;
     }
 
+    /**
+     * @param object $logHandler
+     */
     public function setLogHandler($logHandler) {
         $this->logHandler = $logHandler;
     }
 
+    /**
+     * @return object
+     */
     public function getLogHandler() {
         if ($this->logHandler === null) {
             $configName = 'hyperframework.logging.log_handler_class';

@@ -8,6 +8,9 @@ class LogHandler {
     private $writer;
     private $formatter;
 
+    /**
+     * @param object $logRecord
+     */
     public function handle($logRecord) {
         $formatter = $this->getFormatter();
         $formattedLog = $formatter->format($logRecord);

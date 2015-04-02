@@ -2,6 +2,10 @@
 namespace Hyperframework\Logging;
 
 class LogFormatter {
+    /**
+     * @param object $logRecord
+     * @return string
+     */
     public function format($logRecord) {
         $time = $logRecord->getTime();
         $result = $time->format('Y-m-d H:i:s')

@@ -20,6 +20,10 @@ class LogLevel {
         'DEBUG'   => 6
     ];
 
+    /**
+     * @param string $name
+     * @return int
+     */
     public static function getCode($name) {
         if (isset(self::$levels[$name]) === false) {
             $name = strtoupper($name);
@@ -30,6 +34,10 @@ class LogLevel {
         return self::$levels[$name];
     }
 
+    /**
+     * @param int $code
+     * @return string
+     */
     public static function getName($code) {
         $name = array_search($code, self::$levels, true);
         if ($name === false) {
