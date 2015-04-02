@@ -13,7 +13,7 @@ use Hyperframework\Common\ConfigException;
 use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\MethodNotFoundException;
 
-class CommandConfig {
+class CommandConfig implements ICommandConfig {
     private $configs;
     private $class;
     private $optionConfigs;
@@ -29,6 +29,10 @@ class CommandConfig {
     private $subcommandMutuallyExclusiveOptionGroupConfigs = [];
     private $subcommandArgumentConfigs = [];
 
+    /**
+     * @param string $subcommandName
+     * @return ArgumentConfig[]
+     */
     public function getArgumentConfigs($subcommandName = null) {
         if ($subcommandName !== null
             && isset($this->subcommandArgumentConfigs[$subcommandName])
@@ -193,33 +197,68 @@ class CommandConfig {
         return $this->get('description', $subcommandName);
     }
 
+    /**
+     * @return string
+     */
     public function getName() {
-        $name = (string)$this->get('name');
-        if ($name === '') {
+        $result = $this->get('name');
+        if ($result === null) {
             throw new ConfigException(
                 "Command config error, field 'name' is required."
             );
         }
-        return $name;
+        if (is_string($result) === false) {
+            throw new ConfigException($this->getErrorMessage(
+                null,
+                "field 'name' must be a string, " . gettype($result) . ' given'
+            ));
+        }
+        return $result;
     }
 
+    /**
+     * @return int|float|string
+     */
     public function getVersion() {
-        return $this->get('version');
+        $result = $this->get('version');
+        if ($result === null) {
+            return;
+        }
+        if (is_string($result) === false && is_float($result) === false
+            && is_int($result) === false
+        ) {
+            throw new ConfigException($this->getErrorMessage(
+                null,
+                "field 'version' must be a string or a float or an int, "
+                    . gettype($result) . ' given'
+            ));
+        }
+        return $result;
     }
 
+    /**
+     * @return bool
+     */
     public function isSubcommandEnabled() {
         if ($this->isSubcommandEnabled === null) {
-            $this->isSubcommandEnabled = Config::getBoolean(
+            $this->isSubcommandEnabled = Config::getBool(
                 'hyperframework.cli.enable_subcommand', false
             );
         }
         return $this->isSubcommandEnabled;
     }
 
+    /**
+     * @param string $subcommandName
+     * @return bool
+     */
     public function hasSubcommand($subcommandName) {
         return in_array($subcommandName, $this->getSubcommandNames(), true);
     }
 
+    /**
+     * @return string[]
+     */
     public function getSubcommandNames() {
         if ($this->isSubcommandEnabled() === false) {
             return [];
@@ -240,16 +279,22 @@ class CommandConfig {
         return $this->subcommandNames;
     }
 
+    /**
+     * @param string $name
+     * @param string $subcommandName
+     * @return mixed
+     */
     protected function get($name, $subcommandName = null) {
-        if ($subcommandName === '') {
-            var_dump(debug_backtrace());
-        }
         $configs = $this->getAll($subcommandName);
         if (isset($configs[$name])) {
             return $configs[$name];
         }
     }
 
+    /**
+     * @param string $subcommandName
+     * @return array
+     */
     protected function getAll($subcommandName = null) {
         if ($subcommandName === null) {
             if ($this->configs !== null) {
@@ -288,6 +333,10 @@ class CommandConfig {
         return $configs;
     }
 
+    /**
+     * @param string $subcommandName
+     * @return string
+     */
     protected function getDefaultClass($subcommandName = null) {
         $rootNamespace = Config::getAppRootNamespace();
         if ($subcommandName === null) {
@@ -308,6 +357,10 @@ class CommandConfig {
         return $class;
     }
 
+    /**
+     * @param string $subcommandName
+     * @return ArgumentConfig[]
+     */
     protected function getDefaultArgumentConfigs($subcommandName = null) {
         $class = $this->getClass($subcommandName);
         if (method_exists($class, 'execute') === false) {
@@ -348,6 +401,10 @@ class CommandConfig {
         return $result;
     }
 
+    /**
+     * @param string $subcommandName
+     * @return OptionConfig[]
+     */
     protected function getDefaultOptionConfigs($subcommandName = null) {
         $configs = [['name' => 'help', 'short_name' => 'h']];
         if ($subcommandName === null && $this->getVersion() !== null) {
@@ -356,18 +413,33 @@ class CommandConfig {
         return $this->parseOptionConfigs($configs, $subcommandName);
     }
 
+    /**
+     * @param array $configs
+     * @param string $subcommandName
+     * @return ArgumentConfig[]
+     */
     protected function parseArgumentConfigs(
         array $configs, $subcommandName = null
     ) {
         return ArgumentConfigParser::parse($configs, $subcommandName);
     }
 
+    /**
+     * @param array $configs
+     * @param string $subcommandName
+     * @return OptionConfig[]
+     */
     protected function parseOptionConfigs($configs, $subcommandName = null) {
         return OptionConfigParser::parse(
             $configs, $this->isSubcommandEnabled(), $subcommandName
         );
     }
 
+    /**
+     * @param array $configs
+     * @param string $subcommandName
+     * @return MutuallyExclusiveOptionGroupConfig[]
+     */
     protected function parseMutuallyExclusiveOptionGroupConfigs(
         $configs, $subcommandName = null
     ) {
@@ -379,6 +451,10 @@ class CommandConfig {
         );
     }
 
+    /**
+     * @param string $subcommandName
+     * @return string
+     */
     private function getConfigPath($subcommandName) {
         if ($subcommandName === null) {
             $configPath = Config::getString(
@@ -406,11 +482,18 @@ class CommandConfig {
         }
     }
 
+    /**
+     * @param string $subcommandName
+     * @return string
+     */
     private function getSubcommandConfigPath($subcommandName) {
         return $this->getSubcommandConfigRootPath()
             . DIRECTORY_SEPARATOR . $subcommandName . '.php';
     }
 
+    /**
+     * @return string
+     */
     private function getSubcommandConfigRootPath() {
         $folder = Config::getString(
             'hyperframework.cli.subcommand_config_root_path'
@@ -431,6 +514,10 @@ class CommandConfig {
         return ConfigFileFullPathBuilder::build($folder);
     }
 
+    /**
+     * @param string $subcommandName
+     * @return OptionConfig[]
+     */
     private function getOptionConfigIndex($subcommandName = null) {
         if ($subcommandName !== null
             && isset($this->subcommandOptionConfigIndexes[$subcommandName])
@@ -459,6 +546,11 @@ class CommandConfig {
         return $result;
     }
 
+    /**
+     * @param string $subcommandName
+     * @param string $extra
+     * @return string
+     */
     private function getErrorMessage($subcommandName, $extra) {
         if ($subcommandName === null) {
             if ($this->isSubcommandEnabled()) {
@@ -472,6 +564,11 @@ class CommandConfig {
         return $result . ' config error, ' . $extra . '.';
     }
 
+    /**
+     * @param string $subcommandName
+     * @param string $extra
+     * @return string
+     */
     private function getErrorMessageOfFailedToGetDefaultArgumentConfigs(
         $subcommandName, $extra
     ) {

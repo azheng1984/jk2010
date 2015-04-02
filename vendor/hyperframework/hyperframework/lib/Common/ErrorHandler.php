@@ -19,7 +19,7 @@ class ErrorHandler {
     }
 
     protected function writeLog() {
-        $isLoggerEnabled = Config::getBoolean(
+        $isLoggerEnabled = Config::getBool(
             'hyperframework.error_handler.enable_logger', false
         );
         if ($isLoggerEnabled === false) {
@@ -37,6 +37,9 @@ class ErrorHandler {
         }
     }
 
+    /**
+     * @return int
+     */
     protected function getLogLevel() {
         if ($this->getError() instanceof Error) {
             $map = [
@@ -61,6 +64,9 @@ class ErrorHandler {
         return LogLevel::FATAL;
     }
 
+    /**
+     * @return string
+     */
     protected function getLog() {
         $error = $this->getError();
         if ($error instanceof Exception) {
@@ -80,6 +86,9 @@ class ErrorHandler {
         return $log;
     }
 
+    /**
+     * @return mixed
+     */
     protected function getError() {
         return $this->error;
     }
@@ -116,6 +125,13 @@ class ErrorHandler {
         throw $exception;
     }
 
+    /**
+     * @param int $type
+     * @param string $message
+     * @param string $file
+     * @param int $line
+     * @return bool
+     */
     private function handleError($type, $message, $file, $line) {
         if ($this->getError() !== null || (error_reporting() & $type) === 0) {
             return false;
@@ -173,6 +189,9 @@ class ErrorHandler {
         }
     }
 
+    /**
+     * @return string
+     */
     private function getCustomLoggerClass() {
         $configName = 'hyperframework.error_handler.logger_class';
         $loggerClass = Config::getString($configName, '');

@@ -8,8 +8,8 @@ class ArgumentConfig {
 
     /**
      * @param string $name
-     * @param boolean $isRequired
-     * @param boolean $isRepeatable
+     * @param bool $isRequired
+     * @param bool $isRepeatable
      */
     public function __construct($name, $isRequired, $isRepeatable) {
         $this->name = $name;
@@ -25,14 +25,14 @@ class ArgumentConfig {
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isRequired() {
         return $this->isRequired;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isRepeatable() {
         return $this->isRepeatable;

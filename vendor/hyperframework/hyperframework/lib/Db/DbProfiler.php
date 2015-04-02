@@ -7,7 +7,7 @@ use Hyperframework\Common\ClassNotFoundException;
 
 class DbProfiler {
     public static function isEnabled() {
-        return Config::getBoolean('hyperframework.db.profiler.enable', false);
+        return Config::getBool('hyperframework.db.profiler.enable', false);
     }
 
     public static function onTransactionOperationExecuting(

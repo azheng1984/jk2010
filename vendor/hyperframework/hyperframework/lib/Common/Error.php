@@ -7,6 +7,12 @@ class Error {
     private $file;
     private $line;
 
+    /**
+     * @param int $severity
+     * @param string $message
+     * @param string $file
+     * @param int $line
+     */
     public function __construct($severity, $message, $file, $line) {
         $this->severity = $severity;
         $this->message = $message;
@@ -14,30 +20,51 @@ class Error {
         $this->line = $line;
     }
 
+    /**
+     * @return string
+     */
     public function getMessage() {
         return $this->message;
     }
 
+    /**
+     * @return int
+     */
     public function getSeverity() {
         return $this->severity;
     }
 
+    /**
+     * @return string
+     */
     public function getSeverityAsString() {
         return ErrorTypeHelper::convertToString($this->getSeverity());
     }
 
+    /**
+     * @return string
+     */
     public function getSeverityAsConstantName() {
         return ErrorTypeHelper::convertToConstantName($this->getSeverity());
     }
 
+    /**
+     * @return string
+     */
     public function getFile() {
         return $this->file;
     }
 
+    /**
+     * @return int
+     */
     public function getLine() {
         return $this->line;
     }
 
+    /**
+     * @return string
+     */
     public function __toString() {
         return $this->getSeverityAsString() . ':  ' . $this->getMessage()
             . ' in ' . $this->getFile() . ' on line ' . $this->getLine();

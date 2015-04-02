@@ -2,7 +2,14 @@
 namespace Hyperframework\Cli;
 
 class CommandParser {
-    public static function parse($commandConfig, $argv = null) {
+    /**
+     * @param ICommandConfig $commandConfig
+     * @param string[] $argv
+     * @return array
+     */
+    public static function parse(
+        ICommandConfig $commandConfig, array $argv = null
+    ) {
         if ($argv === null) {
             $argv = $_SERVER['argv'];
         }
@@ -221,7 +228,14 @@ class CommandParser {
         return $result;
     }
 
-    private static function addOption(&$options, $value, $optionConfig) {
+    /**
+     * @param array &$options
+     * @param string $value
+     * @param OptionConfig $optionConfig
+     */
+    private static function addOption(
+        array &$options, $value, OptionConfig $optionConfig
+    ) {
         $name = $optionConfig->getName();
         if ($optionConfig->isRepeatable()) {
             if (isset($options[$name]) === false) {
@@ -234,8 +248,16 @@ class CommandParser {
         }
     }
 
+    /**
+     * @param string[] $globalOptions
+     * @param string[] $options
+     * @param ICommandConfig $commandConfig
+     * @return bool
+     */
     private static function hasMagicOption(
-        $globalOptions = null, $options = null, $commandConfig
+        array $globalOptions = null,
+        array $options = null,
+        ICommandConfig $commandConfig
     ) {
         if ($commandConfig->isSubcommandEnabled()) {
             if ($globalOptions !== null) {
@@ -262,10 +284,16 @@ class CommandParser {
         return false;
     }
 
+    /**
+     * @param string $subcommandName
+     * @param string[] $options
+     * @param ICommandConfig $commandConfig
+     * @param bool $hasMagicOption
+     */
     private static function checkOptions(
         $subcommandName,
-        $options,
-        $commandConfig,
+        array $options,
+        ICommandConfig $commandConfig,
         $hasMagicOption
     ) {
         $optionConfigs = $commandConfig->getOptionConfigs($subcommandName);

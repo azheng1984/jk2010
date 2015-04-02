@@ -58,7 +58,7 @@ class App extends Base implements IApp {
     }
 
     protected function rewriteRequestMethod() {
-        if (Config::getBoolean(
+        if (Config::getBool(
             'hyperframework.web.rewrite_request_method', true
         )) {
             $method = null;

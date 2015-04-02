@@ -9,10 +9,10 @@ abstract class App {
      */
     public function __construct($appRootPath) {
         Config::set('hyperframework.app_root_path', $appRootPath);
-        if (Config::getBoolean('hyperframework.initialize_config', true)) {
+        if (Config::getBool('hyperframework.initialize_config', true)) {
             $this->initializeConfig();
         }
-        if (Config::getBoolean(
+        if (Config::getBool(
             'hyperframework.initialize_error_handler', true
         )) {
             $this->initializeErrorHandler();

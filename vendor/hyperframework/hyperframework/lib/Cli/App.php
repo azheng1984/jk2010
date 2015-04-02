@@ -51,7 +51,7 @@ class App extends Base implements IApp {
 
     /**
      * @param string $name
-     * @return boolean
+     * @return bool
      */
     public function hasOption($name) {
         return isset($this->options[$name]);

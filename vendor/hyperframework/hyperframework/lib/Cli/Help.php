@@ -8,6 +8,9 @@ class Help {
     private $usageLineLength = 0;
     private $usageIndent;
 
+    /**
+     * @param IApp $app
+     */
     public function __construct($app) {
         $this->commandConfig = $app->getCommandConfig();
         if ($this->commandConfig->isSubcommandEnabled()) {
@@ -93,6 +96,9 @@ class Help {
         $this->renderList($names, $descriptions);
     }
 
+    /**
+     * @return bool
+     */
     protected function hasOptionDescription() {
         if ($this->hasOptionDescription === null) {
             $optionConfigs = $this->commandConfig
@@ -109,6 +115,9 @@ class Help {
         return $this->hasOptionDescription;
     }
 
+    /**
+     * @param string $element
+     */
     private function renderUsageElement($element) {
         $length = strlen($element);
         if ($length === 0) {
@@ -141,6 +150,12 @@ class Help {
         }
     }
 
+    /**
+     * @param OptionConfig $optionConfig
+     * @param bool $isCompact
+     * @param bool $isRequired
+     * @return string
+     */
     private function getOptionPattern(
         $optionConfig, $isCompact, $isRequired = null
     ) {
@@ -276,7 +291,11 @@ class Help {
         }
     }
 
-    private function renderList($names, $descriptions) {
+    /**
+     * @param string[] $names
+     * @param string[] $descriptions
+     */
+    private function renderList(array $names, array $descriptions) {
         $count = count($names);
         for ($index = 0; $index < $count; ++$index) {
             $name = $names[$index];
@@ -293,8 +312,12 @@ class Help {
         }
     }
 
+    /**
+     * @param optionConfig $optionConfig
+     * @return MutuallyExclusiveOptionGroupConfig
+     */
     private function getMutuallyExclusiveOptionGroupConfigByOptionConfig(
-        $optionConfig
+        OptionConfig $optionConfig
     ) {
         $configs = $this->commandConfig->getMutuallyExclusiveOptionGroupConfigs(
             $this->subcommandName

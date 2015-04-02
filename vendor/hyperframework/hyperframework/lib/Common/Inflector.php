@@ -2,14 +2,27 @@
 namespace Hyperframework\Common;
 
 class Inflector {
+    /**
+     * @param string $word
+     * @return string
+     */
     public static function pluralize($word) {
         return self::convert($word, true);
     }
 
+    /**
+     * @param string $word
+     * @return string
+     */
     public static function singularize($word) {
         return self::convert($word, false);
     }
 
+    /**
+     * @param string $word
+     * @param bool $isSingular
+     * @return string
+     */
     private static function convert($word, $isSingular) {
         $word = (string)$word;
         if ($word === '') {

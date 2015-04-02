@@ -2,6 +2,10 @@
 namespace Hyperframework\Common;
 
 class FileFullPathRecognizer {
+    /**
+     * @param string $path
+     * @return bool
+     */
     public static function isFullPath($path) {
         $path = (string)$path;
         if ($path === '') {

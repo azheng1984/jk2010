@@ -83,7 +83,7 @@ abstract class Controller {
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function hasRouteParam($name) {
         return $this->getRouter()->hasParam($name);
@@ -105,7 +105,7 @@ abstract class Controller {
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isViewEnabled() {
         return $this->isViewEnabled;
@@ -281,7 +281,7 @@ abstract class Controller {
 
     /**
      * @param array &$config
-     * @param boolean $shouldReturnResult
+     * @param bool $shouldReturnResult
      * @return mixed
      */
     private function runFilter(&$config, $shouldReturnResult = false) {

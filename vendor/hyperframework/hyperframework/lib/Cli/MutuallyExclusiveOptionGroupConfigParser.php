@@ -4,9 +4,17 @@ namespace Hyperframework\Cli;
 use Hyperframework\Common\ConfigException;
 
 class MutuallyExclusiveOptionGroupConfigParser {
+    /**
+     * @param MutuallyExclusiveOptionGroupConfig[]
+     *            $mutuallyExclusiveOptionGroupConfigs
+     * @param OptionConfig[] $optionConfigIndex
+     * @param bool $isSubcommandEnabled
+     * @param string $subcommandName
+     * @return MutuallyExclusiveOptionGroupConfig[]
+     */
     public static function parse(
-        $mutuallyExclusiveOptionGroupConfigs,
-        $optionConfigIndex,
+        array $mutuallyExclusiveOptionGroupConfigs,
+        array $optionConfigIndex,
         $isSubcommandEnabled = false,
         $subcommandName = null
     ) {
@@ -80,6 +88,12 @@ class MutuallyExclusiveOptionGroupConfigParser {
         return $result;
     }
 
+    /**
+     * @param bool $isSubcommandEnabled
+     * @param string $subcommandName
+     * @param string $extra
+     * @return string
+     */
     private static function getErrorMessage(
         $isSubcommandEnabled, $subcommandName, $extra
     ) {

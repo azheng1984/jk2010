@@ -2,6 +2,10 @@
 namespace Hyperframework\Common;
 
 class FilePathCombiner {
+    /**
+     * @param string &$target
+     * @param string $extra
+     */
     public static function append(&$target, $extra) {
         $target = (string)$target;
         $extra = (string)$extra;
@@ -24,6 +28,10 @@ class FilePathCombiner {
         $target .= $extra;
     }
 
+    /**
+     * @param string &$target
+     * @param string $extra
+     */
     public static function prepend(&$target, $extra) {
         static::append($extra, $target);
         $target = $extra;

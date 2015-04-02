@@ -20,10 +20,10 @@ class Config {
 
     /**
      * @param string $name
-     * @param boolean $default
+     * @param bool $default
      */
-    public static function getBoolean($name, $default = null) {
-        return static::getEngine()->getBoolean($name, $default);
+    public static function getBool($name, $default = null) {
+        return static::getEngine()->getBool($name, $default);
     }
 
     /**
@@ -71,22 +71,39 @@ class Config {
         return static::getEngine()->getAll();
     }
 
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
     public static function set($name, $value) {
         static::getEngine()->set($name, $value);
     }
 
+    /**
+     * @param string $name
+     * @return bool
+     */
     public static function has($name) {
         return static::getEngine()->has($name);
     }
 
+    /**
+     * @param string $name
+     */
     public static function remove($name) {
         static::getEngine()->remove($name);
     }
 
-    public static function import($data) {
+    /**
+     * @param string[] $data
+     */
+    public static function import(array $data) {
         static::getEngine()->import($data);
     }
 
+    /**
+     * @param string $path
+     */
     public static function importFile($path) {
         static::getEngine()->importFile($path);
     }

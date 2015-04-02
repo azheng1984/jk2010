@@ -10,7 +10,7 @@ class ErrorHandler extends Base {
 
     public function __construct() {
         $this->isDebuggerEnabled =
-            Config::getBoolean('hyperframework.error_handler.debug', false);
+            Config::getBool('hyperframework.error_handler.debug', false);
         if ($this->isDebuggerEnabled) {
             ob_start();
         }
@@ -91,7 +91,7 @@ class ErrorHandler extends Base {
 
     protected function writeLog() {
         if ($this->getError() instanceof HttpException) {
-            $shouldLogHttpException = Config::getBoolean(
+            $shouldLogHttpException = Config::getBool(
                 'hyperframework.error_handler.log_http_exception', false
             );
             if ($shouldLogHttpException === false) {

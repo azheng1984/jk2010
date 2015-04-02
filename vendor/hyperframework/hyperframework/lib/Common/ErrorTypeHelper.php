@@ -2,6 +2,10 @@
 namespace Hyperframework\Common;
 
 class ErrorTypeHelper {
+    /**
+     * @param int $type
+     * @return string
+     */
     public static function convertToString($type) {
         switch ($type) {
             case E_STRICT:            return 'Strict standards';
@@ -22,6 +26,10 @@ class ErrorTypeHelper {
         }
     }
 
+    /**
+     * @param int $type
+     * @return string
+     */
     public static function convertToConstantName($type) {
         switch ($type) {
             case E_STRICT:            return 'E_STRICT';

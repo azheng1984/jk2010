@@ -313,7 +313,7 @@ class DbClientEngine {
 
     private function isConnectionPoolEnabled() {
         if ($this->isConnectionPoolEnabled === null) {
-            $this->isConnectionPoolEnabled = Config::getBoolean(
+            $this->isConnectionPoolEnabled = Config::getBool(
                 'hyperframework.db.enable_connection_pool', true
             );
         }

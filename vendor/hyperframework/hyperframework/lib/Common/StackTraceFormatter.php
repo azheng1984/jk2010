@@ -2,7 +2,11 @@
 namespace Hyperframework\Common;
 
 class StackTraceFormatter {
-    public static function format($trace) {
+    /**
+     * @param array $trace
+     * @return string
+     */
+    public static function format(array $trace) {
         $result = [];
         $index = 0;
         foreach ($trace as $stackFrame) {
@@ -22,7 +26,11 @@ class StackTraceFormatter {
         return $message;
     }
 
-    public static function formatStackFrame($stackFrame) {
+    /**
+     * @param array $stackFrame
+     * @return string
+     */
+    public static function formatStackFrame(array $stackFrame) {
         $result = '';
         if (isset($stackFrame['file']) === false) {
             $result .= '[internal function]: ';
@@ -32,7 +40,11 @@ class StackTraceFormatter {
         return $result . static::formatInvocation($stackFrame);
     }
 
-    public static function formatInvocation($stackFrame) {
+    /**
+     * @param array $stackFrame
+     * @return string
+     */
+    public static function formatInvocation(array $stackFrame) {
         $result = '';
         if (isset($stackFrame['class'])) {
             $result .= $stackFrame['class'] . $stackFrame['type'];

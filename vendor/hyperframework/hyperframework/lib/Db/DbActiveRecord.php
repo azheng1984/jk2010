@@ -7,7 +7,10 @@ abstract class DbActiveRecord {
     private static $tableNames = [];
     private $row;
 
-    public function __construct($row = []) {
+    /**
+     * @param array $row
+     */
+    public function __construct(array $row = []) {
         $this->setRow($row);
     }
 

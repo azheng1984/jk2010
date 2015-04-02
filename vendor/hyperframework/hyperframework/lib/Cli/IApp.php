@@ -9,7 +9,7 @@ interface IApp {
 
     /**
      * @param string $name
-     * @return boolean
+     * @return bool
      */
     function hasOption($name);
 

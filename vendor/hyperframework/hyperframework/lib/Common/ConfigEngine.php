@@ -5,6 +5,10 @@ class ConfigEngine {
     private $data = [];
     private $appRootPath;
 
+    /**
+     * @param string $name
+     * @param mixed $default
+     */
     public function get($name, $default = null) {
         if (isset($this->data[$name])) {
             return $this->data[$name];
@@ -12,6 +16,10 @@ class ConfigEngine {
         return $default;
     }
 
+    /**
+     * @param string $name
+     * @param string $default
+     */
     public function getString($name, $default = null) {
         $result = $this->get($name);
         if ($result === null) {
@@ -38,7 +46,11 @@ class ConfigEngine {
         );
     }
 
-    public function getBoolean($name, $default = null) {
+    /**
+     * @param string $name
+     * @param bool $default
+     */
+    public function getBool($name, $default = null) {
         $result = $this->get($name);
         if ($result === null) {
             return $default;
@@ -46,6 +58,10 @@ class ConfigEngine {
         return (bool)$result;
     }
 
+    /**
+     * @param string $name
+     * @param int $default
+     */
     public function getInt($name, $default = null) {
         $result = $this->get($name);
         if ($result === null) {
@@ -61,6 +77,10 @@ class ConfigEngine {
         return (int)$result;
     }
 
+    /**
+     * @param string $name
+     * @param float $default
+     */
     public function getFloat($name, $default = null) {
         $result = $this->get($name);
         if ($result === null) {
@@ -75,6 +95,10 @@ class ConfigEngine {
         return (float)$result;
     }
 
+    /**
+     * @param string $name
+     * @param array $default
+     */
     public function getArray($name, $default = null) {
         $result = $this->get($name);
         if ($result === null) {
@@ -89,6 +113,9 @@ class ConfigEngine {
         return $result;
     }
 
+    /**
+     * @return string
+     */
     public function getAppRootPath() {
         $configName = 'hyperframework.app_root_path';
         $appRootPath = $this->getString($configName);
@@ -112,28 +139,48 @@ class ConfigEngine {
         return $appRootPath;
     }
 
+    /**
+     * @return string
+     */
     public function getAppRootNamespace() {
         return $this->getString('hyperframework.app_root_namespace', '');
     }
 
+    /**
+     * @return array
+     */
     public function getAll() {
         return $this->data;
     }
 
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
     public function set($name, $value) {
         $name = (string)$name;
         $this->checkName($name);
         $this->data[$name] = $value;
     }
 
+    /**
+     * @param string $name
+     * @return bool
+     */
     public function has($name) {
         return isset($this->data[$name]);
     }
 
+    /**
+     * @param string $name
+     */
     public function remove($name) {
         unset($this->data[$name]);
     }
 
+    /**
+     * @param string[] $data
+     */
     public function import($data) {
         $namespace = null;
         foreach ($data as $name => $value) {
@@ -170,6 +217,9 @@ class ConfigEngine {
         }
     }
 
+    /**
+     * @param string $path
+     */
     public function importFile($path) {
         $data = ConfigFileLoader::loadPhp($path);
         if ($data === null) {
@@ -184,6 +234,9 @@ class ConfigEngine {
         $this->import($data);
     }
 
+    /**
+     * @param string $name
+     */
     private function checkName($name) {
         if ($name === '') {
             throw new ConfigException("Config name cannot be empty.");

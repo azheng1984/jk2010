@@ -6,7 +6,7 @@ use Hyperframework\Common\Config;
 class ViewPathBuilder {
     public static function build($name, $outputFormat = null) {
         $result = $name;
-        if (Config::getBoolean(
+        if (Config::getBool(
             'hyperframework.web.view.path.include_output_format', true
         )) {
             if ($outputFormat === null) {

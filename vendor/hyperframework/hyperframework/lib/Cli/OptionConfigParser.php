@@ -6,12 +6,12 @@ use Hyperframework\Common\ConfigException;
 class OptionConfigParser {
     /**
      * @param array $configs
-     * @param boolean $isSubcommandEnabled
+     * @param bool $isSubcommandEnabled
      * @param string $subcommandName
      * @return OptionConfig[]
      */
     public static function parse(
-        $configs, $isSubcommandEnabled = false, $subcommandName = null
+        array $configs, $isSubcommandEnabled = false, $subcommandName = null
     ) {
         $result = [];
         $optionNames = [];
@@ -156,6 +156,17 @@ class OptionConfigParser {
             }
             $argumentConfig = null;
             if (isset($config['argument'])) {
+                if (is_array($config['argument']) === false) {
+                    $type = gettype($config['argument']);
+                    throw new ConfigException(self::getErrorMessage(
+                        $isSubcommandEnabled,
+                        $subcommandName,
+                        $name,
+                        $shortName,
+                        "the value of field 'argument' must be an array,"
+                            . " $type given"
+                    ));
+                }
                 $argumentConfig = self::parseArgumentConfig(
                     $config['argument'],
                     $isSubcommandEnabled,
@@ -214,8 +225,16 @@ class OptionConfigParser {
         return $result;
     }
 
+    /**
+     * @param array $config
+     * @param bool $isSubcommandEnabled
+     * @param string $subcommandName
+     * @param string $optionName
+     * @param string $optionShortName
+     * @return OptionArgumentConfig
+     */
     private static function parseArgumentConfig(
-        $config,
+        array $config,
         $isSubcommandEnabled,
         $subcommandName,
         $optionName,
@@ -326,6 +345,14 @@ class OptionConfigParser {
         return new OptionArgumentConfig($name, $isRequired, $values);
     }
 
+    /**
+     * @param bool $isSubcommandEnabled
+     * @param string $subcommandName
+     * @param string $name
+     * @param string $shortName
+     * @param string $extra
+     * @return string
+     */
     private static function getErrorMessage(
         $isSubcommandEnabled, $subcommandName, $name, $shortName, $extra
     ) {

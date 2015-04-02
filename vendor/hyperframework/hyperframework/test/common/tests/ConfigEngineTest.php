@@ -72,21 +72,21 @@ class ConfigEngineTest extends Base {
         $this->assertSame('default', $engine->getString('name', 'default'));
     }
 
-    public function testGetBoolean() {
+    public function testgetBool() {
         $engine = new ConfigEngine;
         $engine->set('name', true);
-        $this->assertTrue($engine->getBoolean('name'));
+        $this->assertTrue($engine->getBool('name'));
     }
 
-    public function testGetBooleanReturnDefaultValue() {
+    public function testgetBoolReturnDefaultValue() {
         $engine = new ConfigEngine;
-        $this->assertTrue($engine->getBoolean('name', true));
+        $this->assertTrue($engine->getBool('name', true));
     }
 
-    public function testGetBooleanWhenValueIsInt() {
+    public function testgetBoolWhenValueIsInt() {
         $engine = new ConfigEngine;
         $engine->set('name', 1);
-        $this->assertTrue($engine->getBoolean('name'));
+        $this->assertTrue($engine->getBool('name'));
     }
 
     public function testGetInt() {

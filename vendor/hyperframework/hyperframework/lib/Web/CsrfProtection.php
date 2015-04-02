@@ -7,7 +7,7 @@ use Hyperframework\Common\ClassNotFoundException;
 
 class CsrfProtection {
     public static function isEnabled() {
-        return Config::getBoolean(
+        return Config::getBool(
             'hyperframework.web.csrf_protection.enable', true
         );
     }

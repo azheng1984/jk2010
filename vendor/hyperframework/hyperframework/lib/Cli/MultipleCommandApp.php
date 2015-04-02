@@ -10,6 +10,9 @@ class MultipleCommandApp extends App implements IMultipleCommandApp {
     private $subcommandName;
     private $globalOptions = [];
 
+    /**
+     * @param string $appRootPath
+     */
     public function __construct($appRootPath) {
         CommonApp::__construct($appRootPath);
         Config::set('hyperframework.cli.enable_subcommand', true);
@@ -36,32 +39,55 @@ class MultipleCommandApp extends App implements IMultipleCommandApp {
         }
     }
 
+    /**
+     * @return string[]
+     */
     public function getGlobalOptions() {
         return $this->globalOptions;
     }
 
+    /**
+     * @param string $name
+     * @return string
+     */
     public function getGlobalOption($name) {
         if (isset($this->globalOptions[$name])) {
             return $this->globalOptions[$name];
         }
     }
 
+    /**
+     * @param string $name
+     * @return bool
+     */
     public function hasGlobalOption($name) {
         return isset($this->globalOptions[$name]);
     }
 
+    /**
+     * @return bool
+     */
     public function hasSubcommand() {
         return $this->subcommandName !== null;
     }
 
+    /**
+     * @return string
+     */
     public function getSubcommandName() {
         return $this->subcommandName;
     }
 
+    /**
+     * @param string[] $options
+     */
     protected function setGlobalOptions($globalOptions) {
         $this->globalOptions = $globalOptions;
     }
 
+    /**
+     * @param string $options
+     */
     protected function setSubcommandName($subcommandName) {
         $this->subcommandName = $subcommandName;
     }

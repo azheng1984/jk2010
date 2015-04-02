@@ -2,12 +2,16 @@
 namespace Hyperframework\Cli;
 
 use Hyperframework\Common\Inflector;
+use ReflectionParameter;
 
 class DefaultArgumentConfig extends ArgumentConfig {
     private $parameterName;
     private $name;
 
-    public function __construct($reflectionParameter) {
+    /**
+     * @param \ReflectionParameter $reflectionParameter
+     */
+    public function __construct(ReflectionParameter $reflectionParameter) {
         parent::__construct(
             null,
             !$reflectionParameter->isOptional(),
@@ -16,6 +20,9 @@ class DefaultArgumentConfig extends ArgumentConfig {
         $this->parameterName = $reflectionParameter->getName();
     }
 
+    /**
+     * @return string
+     */
     public function getName() {
         if ($this->name !== null) {
             return $this->name;

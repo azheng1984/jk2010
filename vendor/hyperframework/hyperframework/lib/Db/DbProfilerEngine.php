@@ -95,7 +95,7 @@ class DbProfilerEngine {
             'U.u', $profile['start_time'][1] . '.'
                 . (int)($profile['start_time'][0] * 1000000)
         )->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-        $isLoggerEnabled = Config::getBoolean(
+        $isLoggerEnabled = Config::getBool(
             'hyperframework.db.profiler.enable_logger', true
         );
         if ($isLoggerEnabled) {

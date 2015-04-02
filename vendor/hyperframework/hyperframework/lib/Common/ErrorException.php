@@ -7,6 +7,13 @@ class ErrorException extends Base {
     private $sourceTrace;
     private $sourceTraceStartIndex;
 
+    /**
+     * @param int $severity
+     * @param string $message
+     * @param string $file
+     * @param int $line
+     * @param int $sourceTraceStartIndex
+     */
     public function __construct(
         $severity, $message, $file, $line, $sourceTraceStartIndex
     ) {
@@ -14,14 +21,23 @@ class ErrorException extends Base {
         $this->sourceTraceStartIndex = (int)$sourceTraceStartIndex;
     }
 
+    /**
+     * @return string
+     */
     public function getSeverityAsString() {
         return ErrorTypeHelper::convertToString($this->getSeverity());
     }
 
+    /**
+     * @return string
+     */
     public function getSeverityAsConstantName() {
         return ErrorTypeHelper::convertToConstantName($this->getSeverity());
     }
 
+    /**
+     * @return array
+     */
     public function getSourceTrace() {
         if ($this->sourceTrace === null) {
             if ($this->sourceTraceStartIndex === 0) {
@@ -35,11 +51,17 @@ class ErrorException extends Base {
         return $this->sourceTrace;
     }
 
+    /**
+     * @return string
+     */
     public function getSourceTraceAsString() {
         $trace = $this->getSourceTrace();
         return StackTraceFormatter::format($trace);
     }
 
+    /**
+     * @return string
+     */
     public function __toString() {
         $result = "exception '" . get_called_class() . "'";
         $message = (string)$this->getMessage();

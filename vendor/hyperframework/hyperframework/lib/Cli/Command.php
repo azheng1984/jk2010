@@ -32,13 +32,13 @@ abstract class Command {
      * @return string[]
      */
     public function getArguments() {
-        $app = $this->getApp();
+        $this->getApp();
         return $app->getArguments();
     }
 
     /**
      * @param string $name
-     * @return boolean
+     * @return bool
      */
     public function hasOption($name) {
         $app = $this->getApp();
