@@ -20,6 +20,9 @@ class Request {
         return self::getEngine()->openInputStream();
     }
 
+    /**
+     * @return object
+     */
     public static function getEngine() {
         $engine = Registry::get('hyperframework.web.request_engine');
         if ($engine === null) {
