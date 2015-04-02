@@ -47,7 +47,7 @@ interface ICommandConfig {
     function getName();
 
     /**
-     * @return int|float|string
+     * @return string|float|int
      */
     function getVersion();
 

@@ -13,13 +13,24 @@ class DbClientEngine {
     private $connectionPool = [];
     private $isConnectionPoolEnabled;
 
-    public function findColumn($sql, $params = null) {
+    /**
+     * @param string $sql
+     * @param arrary $params
+     * @return mixed
+     */
+    public function findColumn($sql, array $params = null) {
         $result = $this->find($sql, $params);
         return $result->fetchColumn();
     }
 
+    /**
+     * @param string $table
+     * @param string $columnName
+     * @param array $columns
+     * @return mixed
+     */
     public function findColumnByColumns(
-        $table, $columnName, $columns
+        $table, $columnName, array $columns
     ) {
         $result = $this->findByColumns(
             $table, $columns, [$columnName]
@@ -27,6 +38,12 @@ class DbClientEngine {
         return $result->fetchColumn();
     }
 
+    /**
+     * @param string $table
+     * @param string $columnName
+     * @param mixed $id
+     * @return mixed
+     */
     public function findColumnById($table, $columnName, $id) {
         $result = $this->findByColumns(
             $table, ['id' => $id], [$columnName]
@@ -34,38 +51,83 @@ class DbClientEngine {
         return $result->fetchColumn();
     }
 
-    public function findRow($sql, $params = null) {
+    /**
+     * @param string $sql
+     * @param array $params
+     * @return array
+     */
+    public function findRow($sql, array $params = null) {
         $result = $this->find($sql, $params);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function findRowByColumns($table, $columns, $select = null) {
+    /**
+     * @param string $table
+     * @param array $columns
+     * @param array $select
+     * @return array
+     */
+    public function findRowByColumns(
+        $table, array $columns, array $select = null
+    ) {
         $result = $this->findByColumns(
             $table, $columns, $select
         );
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function findRowById($table, $id, $select = null) {
+    /**
+     * @param string $table
+     * @param mixed $id
+     * @param array $select
+     * @return array
+     */
+    public function findRowById($table, $id, array $select = null) {
         $result = $this->findByColumns($table, ['id' => $id], $select);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function findAll($sql, $params = null) {
+    /**
+     * @param string $sql
+     * @param array $params
+     * @return array[]
+     */
+    public function findAll($sql, array $params = null) {
         $result = $this->find($sql, $params);
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function findAllByColumns($table, $columns, $select = null) {
+    /**
+     * @param string $table
+     * @param array $columns
+     * @param array $select
+     * @return array[]
+     */
+    public function findAllByColumns(
+        $table, array $columns, array $select = null
+    ) {
         $result = $this->findByColumns($table, $columns, $select);
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * @param string $sql
+     * @param array $params
+     * @return DbStatement
+     */
     public function find($sql, $params = null) {
         return $this->sendSql($sql, $params, true);
     }
 
-    public function findByColumns($table, $columns, $select = null) {
+    /**
+     * @param string $table
+     * @param array $columns
+     * @param array $select
+     * @return DbStatement
+     */
+    public function findByColumns(
+        $table, array $columns, array $select = null
+    ) {
         if ($select === null) {
             $select = '*';
         } else {
@@ -87,33 +149,73 @@ class DbClientEngine {
         return $this->find($sql, $params);
     }
 
-    public function count($table, $where = null, $params = null) {
-        return $this->calculate($table, '*', 'COUNT', $where, $params);
+    /**
+     * @param string $table
+     * @param string|array $where
+     * @param array $params
+     * @return int
+     */
+    public function count($table, $where = null, array $params = null) {
+        return (int)$this->calculate($table, '*', 'COUNT', $where, $params);
     }
 
+    /**
+     * @param string $table
+     * @param string $columnName
+     * @param string|array $where
+     * @param array $params
+     * @return mixed
+     */
     public function min(
-        $table, $columnName, $where = null, $params = null
+        $table, $columnName, $where = null, array $params = null
     ) {
         return $this->calculate($table, $columnName, 'MIN', $where, $params);
     }
 
+    /**
+     * @param string $table
+     * @param string $columnName
+     * @param string|array $where
+     * @param array $params
+     * @return mixed
+     */
     public function max(
-        $table, $columnName, $where = null, $params = null
+        $table, $columnName, $where = null, array $params = null
     ) {
         return $this->calculate($table, $columnName, 'MAX', $where, $params);
     }
 
-    public function sum($table, $columnName, $where = null, $params = null) {
+    /**
+     * @param string $table
+     * @param string $columnName
+     * @param string|array $where
+     * @param array $params
+     * @return mixed
+     */
+    public function sum(
+        $table, $columnName, $where = null, array $params = null
+    ) {
         return $this->calculate($table, $columnName, 'SUM', $where, $params);
     }
 
+    /**
+     * @param string $table
+     * @param string $columnName
+     * @param string|array $where
+     * @param array $params
+     * @return mixed
+     */
     public function average(
-        $table, $columnName, $where = null, $params = null
+        $table, $columnName, $where = null, array $params = null
     ) {
         return $this->calculate($table, $columnName, 'AVG', $where, $params);
     }
 
-    public function insert($table, $row) {
+    /**
+     * @param string $table
+     * @param array $row
+     */
+    public function insert($table, array $row) {
         $keys = [];
         foreach (array_keys($row) as $key) {
             $keys[] = $this->quoteIdentifier($key);
@@ -129,7 +231,13 @@ class DbClientEngine {
         $this->execute($sql, array_values($row));
     }
 
-    public function update($table, $columns, $where, $params = null) {
+    /**
+     * @param string $table
+     * @param array $columns
+     * @param string|array $where
+     * @param array $params
+     */
+    public function update($table, $columns, $where, array $params = null) {
         if (count($columns) === 0) {
             throw new InvalidArgumentException(
                 "Arguemnt 'columns' cannot be an empty array."
@@ -153,11 +261,21 @@ class DbClientEngine {
         return $this->execute($sql, $params);
     }
 
-    public function updateById($table, $columns, $id) {
+    /**
+     * @param string $table
+     * @param array $columns
+     * @param mixed $id
+     */
+    public function updateById($table, array $columns, $id) {
         return $this->update($table, $columns, 'id = ?', [$id]) > 0;
     }
 
-    public function delete($table, $where, $params = null) {
+    /**
+     * @param string $table
+     * @param string|array $where
+     * @param array $params
+     */
+    public function delete($table, $where, array $params = null) {
         if (is_array($where)) {
             list($where, $params) = $this->buildWhereByColumns($where);
         }
@@ -168,14 +286,26 @@ class DbClientEngine {
         return $this->execute($sql, $params);
     }
 
+    /**
+     * @param string $table
+     * @param mixed $id
+     */
     public function deleteById($table, $id) {
         return $this->delete($table, 'id = ?', [$id]) > 0;
     }
 
-    public function execute($sql, $params = null) {
+    /**
+     * @param string $sql
+     * @param array $params
+     * @return int
+     */
+    public function execute($sql, array $params = null) {
         return $this->sendSql($sql, $params);
     }
 
+    /**
+     * @return mixed
+     */
     public function getLastInsertId() {
         return $this->getConnection()->lastInsertId();
     }
@@ -192,18 +322,33 @@ class DbClientEngine {
         $this->getConnection()->rollBack();
     }
 
+    /**
+     * @return bool
+     */
     public function inTransaction() {
         return $this->getConnection()->inTransaction();
     }
 
+    /**
+     * @param string $identifier
+     * @return string
+     */
     public function quoteIdentifier($identifier) {
         return $this->getConnection()->quoteIdentifier($identifier);
     }
 
+    /**
+     * @param string $sql
+     * @param array $driverOptions
+     * @return DbStatement
+     */
     public function prepare($sql, $driverOptions = []) {
         return $this->getConnection()->prepare($sql, $driverOptions);
     }
 
+    /**
+     * @param string $name
+     */
     public function connect($name) {
         if ($this->isConnectionPoolEnabled()) {
             if (isset($this->connectionPool[$name])) {
@@ -219,6 +364,9 @@ class DbClientEngine {
         }
     }
 
+    /**
+     * @param string $name
+     */
     public function closeConnection($name = null) {
         if ($name === null) {
             if ($this->connection === null) {
@@ -248,6 +396,9 @@ class DbClientEngine {
         unset($this->connectionPool[$name]);
     }
 
+    /**
+     * @param DbConnection $connection
+     */
     public function setConnection($connection) {
         if ($connection === null
             || $this->isConnectionPoolEnabled() === false
@@ -260,6 +411,10 @@ class DbClientEngine {
         }
     }
 
+    /**
+     * @param bool $shouldConnect
+     * @return DbConnection
+     */
     public function getConnection($shouldConnect = true) {
         if ($this->connection === null && $shouldConnect) {
             $this->connect('default');
@@ -267,7 +422,13 @@ class DbClientEngine {
         return $this->connection;
     }
 
-    private function sendSql($sql, $params = null, $isQuery = false) {
+    /**
+     * @param string $sql
+     * @param array $params
+     * @param bool $isQuery
+     * @return mixed
+     */
+    private function sendSql($sql, array $params = null, $isQuery = false) {
         $connection = $this->getConnection();
         if ($params === null || count($params) === 0) {
             return $isQuery ?
@@ -281,8 +442,16 @@ class DbClientEngine {
         return $statement->rowCount();
     }
 
+    /**
+     * @param string $table
+     * @param string $columnName
+     * @param string $function
+     * @param string|array $where
+     * @param array $params
+     * @return mixed
+     */
     private function calculate(
-        $table, $columnName, $function, $where, $params = null
+        $table, $columnName, $function, $where, array $params = null
     ) {
         $table = $this->quoteIdentifier($table);
         if ($columnName !== '*') {
@@ -298,7 +467,11 @@ class DbClientEngine {
         return $this->findColumn($sql, $params);
     }
 
-    private function buildWhereByColumns($columns) {
+    /**
+     * @param array $columns
+     * @return array
+     */
+    private function buildWhereByColumns(array $columns) {
         $params = [];
         $where = null;
         foreach ($columns as $key => $value) {
@@ -311,6 +484,9 @@ class DbClientEngine {
         return [$where, $params];
     }
 
+    /**
+     * @return bool
+     */
     private function isConnectionPoolEnabled() {
         if ($this->isConnectionPoolEnabled === null) {
             $this->isConnectionPoolEnabled = Config::getBool(
@@ -320,6 +496,9 @@ class DbClientEngine {
         return $this->isConnectionPoolEnabled;
     }
 
+    /**
+     * @return DbConnectionFactory
+     */
     private function getConnectionFactory() {
         if ($this->connectionFactory === null) {
             $configName = 'hyperframework.db.connection_factory_class';

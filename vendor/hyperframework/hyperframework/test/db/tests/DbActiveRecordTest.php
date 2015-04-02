@@ -25,7 +25,7 @@ class DbActiveRecordTest extends Base {
     }
 
     public function testFindByString() {
-        $doc = Document::find('name = ?', 'doc 1');
+        $doc = Document::find('name = ?', ['doc 1']);
         $this->assertSame(1, $doc->getId());
     }
 
@@ -50,13 +50,13 @@ class DbActiveRecordTest extends Base {
     }
 
     public function testFindBySql() {
-        $doc = Document::findBySql('SELECT * FROM Document WHERE id = ? ', 1);
+        $doc = Document::findBySql('SELECT * FROM Document WHERE id = ? ', [1]);
         $this->assertSame(1, $doc->getId());
     }
 
     public function testFindBySqlReturnNull() {
         $this->assertNull(
-            Document::findBySql('SELECT * FROM Document WHERE id = ? ', 3)
+            Document::findBySql('SELECT * FROM Document WHERE id = ? ', [3])
         );
     }
 
@@ -71,7 +71,7 @@ class DbActiveRecordTest extends Base {
     }
 
     public function testFindAllByString() {
-        $docs = Document::findAll('name = ?', 'doc 1');
+        $docs = Document::findAll('name = ?', ['doc 1']);
         $this->assertSame(1, $docs[0]->getId());
     }
 
@@ -84,7 +84,7 @@ class DbActiveRecordTest extends Base {
 
     public function testFindAllBySql() {
         $docs = Document::findAllBySql(
-            'SELECT * FROM Document WHERE id = ?', 1
+            'SELECT * FROM Document WHERE id = ?', [1]
         );
         $this->assertSame(1, $docs[0]->getId());
     }
@@ -140,34 +140,34 @@ class DbActiveRecordTest extends Base {
 
     public function testCount() {
         $this->assertSame(2, Document::count());
-        $this->assertSame(1, Document::count('name = ?', 'doc 1'));
+        $this->assertSame(1, Document::count('name = ?', ['doc 1']));
     }
 
     public function testMax() {
         $this->assertSame('12.34', Document::max('decimal'));
         $this->assertSame(
-            '0.00', Document::max('decimal', 'name = ?', 'doc 2')
+            '0.00', Document::max('decimal', 'name = ?', ['doc 2'])
         );
     }
 
     public function testMin() {
         $this->assertSame('0.00', Document::min('decimal'));
         $this->assertSame(
-            '0.00', Document::min('decimal', 'name = ?', 'doc 2')
+            '0.00', Document::min('decimal', 'name = ?', ['doc 2'])
         );
     }
 
     public function testSum() {
         $this->assertSame('12.34', Document::sum('decimal'));
         $this->assertSame(
-            '0.00', Document::sum('decimal', 'name = ?', 'doc 2')
+            '0.00', Document::sum('decimal', 'name = ?', ['doc 2'])
         );
     }
 
     public function testAverage() {
         $this->assertSame('6.170000', Document::average('decimal'));
         $this->assertSame(
-            '0.000000', Document::average('decimal', 'name = ?', 'doc 2')
+            '0.000000', Document::average('decimal', 'name = ?', ['doc 2'])
         );
     }
 

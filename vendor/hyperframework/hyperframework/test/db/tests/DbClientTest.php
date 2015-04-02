@@ -15,7 +15,7 @@ class DbClientTest extends Base {
         $this->mockEngineMethod('findColumn')->with(
             $this->equalTo('sql'), $this->equalTo(['param'])
         )->will($this->returnValue(true));
-        $this->assertTrue(DbClient::findColumn('sql', 'param'));
+        $this->assertTrue(DbClient::findColumn('sql', ['param']));
     }
 
     public function testFindColumnWithoutParam() {
@@ -30,7 +30,7 @@ class DbClientTest extends Base {
             $this->equalTo('sql'),
             $this->equalTo(['paramA', 'paramB'])
         );
-        DbClient::findColumn('sql', 'paramA', 'paramB');
+        DbClient::findColumn('sql', ['paramA', 'paramB']);
     }
 
     public function testFindColumnWithArray() {
@@ -63,7 +63,7 @@ class DbClientTest extends Base {
         $this->mockEngineMethod('findRow')->with(
             $this->equalTo('sql'), $this->equalTo(['param'])
         )->will($this->returnValue(true));
-        $this->assertTrue(DbClient::findRow('sql', 'param'));
+        $this->assertTrue(DbClient::findRow('sql', ['param']));
     }
 
     public function testFindRowByColumns() {
@@ -79,7 +79,7 @@ class DbClientTest extends Base {
         $this->mockEngineMethod('findAll')->with(
             $this->equalTo('sql'), $this->equalTo(['param'])
         )->will($this->returnValue(true));
-        $this->assertTrue(DbClient::findAll('sql', 'param'));
+        $this->assertTrue(DbClient::findAll('sql', ['param']));
     }
 
     public function testFindAllByColumns() {
@@ -95,7 +95,7 @@ class DbClientTest extends Base {
         $this->mockEngineMethod('find')->with(
             $this->equalTo('sql'), $this->equalTo(['param'])
         )->will($this->returnValue(true));
-        $this->assertTrue(DbClient::find('sql', 'param'));
+        $this->assertTrue(DbClient::find('sql', ['param']));
     }
 
     public function testFindByColumns() {
@@ -113,7 +113,7 @@ class DbClientTest extends Base {
             $this->equalTo('where'),
             $this->equalTo(['param'])
         )->will($this->returnValue(true));
-        $this->assertTrue(DbClient::count("table", 'where', 'param'));
+        $this->assertTrue(DbClient::count("table", 'where', ['param']));
     }
 
     public function testMin() {
@@ -123,7 +123,7 @@ class DbClientTest extends Base {
             $this->equalTo('where'),
             $this->equalTo(['param'])
         )->will($this->returnValue(true));
-        $this->assertTrue(DbClient::min("table", 'column', 'where', 'param'));
+        $this->assertTrue(DbClient::min("table", 'column', 'where', ['param']));
     }
 
     public function testMax() {
@@ -133,7 +133,7 @@ class DbClientTest extends Base {
             $this->equalTo('where'),
             $this->equalTo(['param'])
         )->will($this->returnValue(true));
-        $this->assertTrue(DbClient::max("table", 'column', 'where', 'param'));
+        $this->assertTrue(DbClient::max("table", 'column', 'where', ['param']));
     }
 
     public function testAverage() {
@@ -144,7 +144,7 @@ class DbClientTest extends Base {
             $this->equalTo(['param'])
         )->will($this->returnValue(true));
         $this->assertTrue(
-            DbClient::average("table", 'column', 'where', 'param')
+            DbClient::average("table", 'column', 'where', ['param'])
         );
     }
 
@@ -163,7 +163,7 @@ class DbClientTest extends Base {
             $this->equalTo('where'),
             $this->equalTo(['param'])
         )->will($this->returnValue(true));
-        $this->assertTrue(DbClient::update('table', [], 'where', 'param'));
+        $this->assertTrue(DbClient::update('table', [], 'where', ['param']));
     }
 
     public function testUpdateById() {
@@ -181,7 +181,7 @@ class DbClientTest extends Base {
             $this->equalTo('where'),
             $this->equalTo(['param'])
         )->will($this->returnValue(true));
-        $this->assertTrue(DbClient::delete('table', 'where', 'param'));
+        $this->assertTrue(DbClient::delete('table', 'where', ['param']));
     }
 
     public function testDeleteById() {
@@ -196,7 +196,7 @@ class DbClientTest extends Base {
         $this->mockEngineMethod('execute')->with(
             $this->equalTo('sql'), $this->equalTo(['param'])
         )->will($this->returnValue(true));
-        $this->assertTrue(DbClient::execute('sql', 'param'));
+        $this->assertTrue(DbClient::execute('sql', ['param']));
     }
 
     public function testGetLastInsertId() {
@@ -243,7 +243,7 @@ class DbClientTest extends Base {
     }
 
     public function testSetConnection() {
-        $connection = new DbCustomConnection;
+        $connection = DbClient::getConnection(true);
         $this->mockEngineMethod('setConnection')->with(
             $this->equalTo($connection)
         );

@@ -14,13 +14,18 @@ abstract class DbActiveRecord {
         $this->setRow($row);
     }
 
-    public static function find($where/*, ...*/) {
+    /**
+     * @param array|string $where
+     * @param array $params
+     * @return static
+     */
+    public static function find($where, array $params = null) {
         if (is_array($where)) {
             $row = DbClient::findRowByColumns(static::getTableName(), $where);
         } elseif (is_string($where) || $where === null) {
             $row = DbClient::findRow(
                 self::completeSelectSql($where),
-                self::getParams(func_get_args(), 1)
+                $params
             );
         } else {
             $type = gettype($where);
@@ -34,6 +39,10 @@ abstract class DbActiveRecord {
         return new static($row);
     }
 
+    /**
+     * @param int $id
+     * @return static
+     */
     public static function findById($id) {
         $row = DbClient::findRowById(static::getTableName(), $id);
         if ($row === false) {
@@ -42,21 +51,30 @@ abstract class DbActiveRecord {
         return new static($row);
     }
 
-    public static function findBySql($sql/*, ...*/) {
-        $row = DbClient::findRow($sql, self::getParams(func_get_args(), 1));
+    /**
+     * @param string $sql
+     * @param array $params
+     * @return static
+     */
+    public static function findBySql($sql, array $params = null) {
+        $row = DbClient::findRow($sql, $params);
         if ($row === false) {
             return;
         }
         return new static($row);
     }
 
-    public static function findAll($where = null/*, ...*/) {
+    /**
+     * @param array|string $where
+     * @param array $params
+     * @return static
+     */
+    public static function findAll($where = null, array $params = null) {
         if (is_array($where)) {
             $rows = DbClient::findAllByColumns(static::getTableName(), $where);
         } elseif (is_string($where) || $where === null) {
             $rows = DbClient::findAll(
-                self::completeSelectSql($where),
-                self::getParams(func_get_args(), 1)
+                self::completeSelectSql($where), $params
             );
         } else {
             $type = gettype($where);
@@ -71,8 +89,13 @@ abstract class DbActiveRecord {
         return $result;
     }
 
-    public static function findAllBySql($sql/*, ...*/) {
-        $rows = DbClient::findAll($sql, self::getParams(func_get_args(), 1));
+    /**
+     * @param string $sql
+     * @param array $params
+     * @return static[]
+     */
+    public static function findAllBySql($sql, array $params = null) {
+        $rows = DbClient::findAll($sql, $params);
         $result = [];
         foreach ($rows as $row) {
             $result[] = new static($row);
@@ -80,45 +103,80 @@ abstract class DbActiveRecord {
         return $result;
     }
 
-    public static function count($where = null/*, ...*/) {
-        return DbClient::count(
-            static::getTableName(), $where, self::getParams(func_get_args(), 1)
-        );
+    /**
+     * @param array|string $where
+     * @param array $params
+     * @return int
+     */
+    public static function count($where = null, array $params = null) {
+        return DbClient::count(static::getTableName(), $where, $params);
     }
 
-    public static function min($columnName, $where = null/*, ...*/) {
+    /**
+     * @param string $columnName
+     * @param array|string $where
+     * @param array $params
+     * @return mixed
+     */
+    public static function min(
+        $columnName, $where = null, array $params = null
+    ) {
         return DbClient::min(
             static::getTableName(),
             $columnName,
             $where,
-            self::getParams(func_get_args(), 2)
+            $params
         );
     }
 
-    public static function max($columnName, $where = null/*, ...*/) {
+    /**
+     * @param string $columnName
+     * @param array|string $where
+     * @param array $params
+     * @return mixed
+     */
+    public static function max(
+        $columnName, $where = null, array $params = null
+    ) {
         return DbClient::max(
             static::getTableName(),
             $columnName,
             $where,
-            self::getParams(func_get_args(), 2)
+            $params
         );
     }
 
-    public static function sum($columnName, $where = null/*, ...*/) {
+    /**
+     * @param string $columnName
+     * @param array|string $where
+     * @param array $params
+     * @return mixed
+     */
+    public static function sum(
+        $columnName, $where = null, array $params = null
+    ) {
         return DbClient::sum(
             static::getTableName(),
             $columnName,
             $where,
-            self::getParams(func_get_args(), 2)
+            $params
         );
     }
 
-    public static function average($columnName, $where = null/*, ...*/) {
+    /**
+     * @param string $columnName
+     * @param array|string $where
+     * @param array $params
+     * @return mixed
+     */
+    public static function average(
+        $columnName, $where = null, array $params = null
+    ) {
         return DbClient::average(
             static::getTableName(),
             $columnName,
             $where,
-            self::getParams(func_get_args(), 2)
+            $params
         );
     }
 
@@ -166,32 +224,56 @@ abstract class DbActiveRecord {
         }
     }
 
+    /**
+     * @return array
+     */
     protected function getRow() {
         return $this->row;
     }
 
-    protected function setRow($row) {
+    /**
+     * @param array $row
+     */
+    protected function setRow(array $row) {
         $this->row = $row;
     }
 
+    /**
+     * @param string $name
+     * @return mixed
+     */
     protected function getColumn($name) {
         if (isset($this->row[$name])) {
             return $this->row[$name];
         }
     }
 
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
     protected function setColumn($name, $value) {
         $this->row[$name] = $value;
     }
 
+    /**
+     * @param string $name
+     * @return bool
+     */
     protected function hasColumn($name) {
         return isset($this->row[$name]);
     }
 
+    /**
+     * @param string $name
+     */
     protected function removeColumn($name) {
         unset($this->row[$name]);
     }
 
+    /**
+     * @return string
+     */
     protected static function getTableName() {
         $class = get_called_class();
         if (isset(self::$tableNames[$class]) === false) {
@@ -203,6 +285,10 @@ abstract class DbActiveRecord {
         return self::$tableNames[$class];
     }
 
+    /**
+     * @param string $where
+     * @return string
+     */
     private static function completeSelectSql($where) {
         $result = 'SELECT * FROM '
             . DbClient::quoteIdentifier(static::getTableName());
@@ -211,15 +297,5 @@ abstract class DbActiveRecord {
             $result .= ' WHERE ' . $where;
         }
         return $result;
-    }
-
-    private static function getParams($args, $offset) {
-        if (isset($args[$offset]) === false) {
-            return [];
-        }
-        if (is_array($args[$offset])) {
-            return $args[$offset];
-        }
-        return array_slice($args, $offset);
     }
 }

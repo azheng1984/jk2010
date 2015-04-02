@@ -217,7 +217,7 @@ class CommandConfig implements ICommandConfig {
     }
 
     /**
-     * @return int|float|string
+     * @return string|float|int
      */
     public function getVersion() {
         $result = $this->get('version');

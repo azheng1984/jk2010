@@ -6,118 +6,238 @@ use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
 class DbClient {
-    public static function findColumn($sql/*, ...*/) {
-        return static::getEngine()->findColumn(
-            $sql, self::getParams(func_get_args(), 1)
-        );
+    /**
+     * @param string $sql
+     * @param array $params
+     * @return mixed
+     */
+    public static function findColumn($sql, array $params = null) {
+        return static::getEngine()->findColumn($sql, $params);
     }
 
-    public static function findColumnByColumns($table, $columnName, $columns) {
+    /**
+     * @param string $table
+     * @param string $columnName
+     * @param array $columns
+     * @return mixed
+     */
+    public static function findColumnByColumns(
+        $table, $columnName, array $columns
+    ) {
         return static::getEngine()->findColumnByColumns(
             $table, $columnName, $columns
         );
     }
 
+    /**
+     * @param string $table
+     * @param string $columnName
+     * @param mixed $id
+     * @return mixed
+     */
     public static function findColumnById($table, $columnName, $id) {
         return static::getEngine()->findColumnById($table, $columnName, $id);
     }
 
-    public static function findRow($sql/*, ...*/) {
-        return static::getEngine()->findRow(
-            $sql, self::getParams(func_get_args(), 1)
-        );
+    /**
+     * @param string $sql
+     * @param array $params
+     * @return array
+     */
+    public static function findRow($sql, array $params) {
+        return static::getEngine()->findRow($sql, $params);
     }
 
-    public static function findRowByColumns($table, $columns, $select = null) {
+    /**
+     * @param string $table
+     * @param array $columns
+     * @param array $select
+     * @return array
+     */
+    public static function findRowByColumns(
+        $table, array $columns, array $select = null
+    ) {
         return static::getEngine()->findRowByColumns($table, $columns, $select);
     }
 
-    public static function findRowById($table, $id, $select = null) {
+    /**
+     * @param string $table
+     * @param mixed $id
+     * @param array $select
+     * @return array
+     */
+    public static function findRowById($table, $id, array $select = null) {
         return static::getEngine()->findRowById($table, $id, $select);
     }
 
-    public static function findAll($sql/*, ...*/) {
-        return static::getEngine()->findAll(
-            $sql, self::getParams(func_get_args(), 1)
-        );
+    /**
+     * @param string $sql
+     * @param array $params
+     * @return array[]
+     */
+    public static function findAll($sql, array $params = null) {
+        return static::getEngine()->findAll($sql, $params);
     }
 
-    public static function findAllByColumns($table, $columns, $select = null) {
+    /**
+     * @param string $table
+     * @param array $columns
+     * @param array $select
+     * @return array[]
+     */
+    public static function findAllByColumns(
+        $table, array $columns, array $select = null
+    ) {
         return static::getEngine()->findAllByColumns($table, $columns, $select);
     }
 
-    public static function find($sql/*, ...*/) {
-        return static::getEngine()->find(
-            $sql, self::getParams(func_get_args(), 1)
-        );
+    /**
+     * @param string $sql
+     * @param array $params
+     * @return DbStatement
+     */
+    public static function find($sql, array $params) {
+        return static::getEngine()->find($sql, $params);
     }
 
-    public static function findByColumns($table, $columns, $select = null) {
+    /**
+     * @param string $table
+     * @param array $columns
+     * @param array $select
+     * @return DbStatement
+     */
+    public static function findByColumns(
+        $table, array $columns, array $select = null
+    ) {
         return static::getEngine()->findByColumns($table, $columns, $select);
     }
 
-    public static function count($table, $where = null/*, ...*/) {
+    /**
+     * @param string $table
+     * @param string|array $where
+     * @param array $params
+     * @return int
+     */
+    public static function count($table, $where = null, array $params = null) {
         return static::getEngine()->count(
-            $table, $where, self::getParams(func_get_args(), 2)
+            $table, $where, $params
         );
     }
 
-    public static function min($table, $columnName, $where = null/*, ...*/) {
-        return static::getEngine()->min(
-            $table, $columnName, $where, self::getParams(func_get_args(), 3)
-        );
+    /**
+     * @param string $table
+     * @param string $columnName
+     * @param string|array $where
+     * @param array $params
+     * @return mixed
+     */
+    public static function min(
+        $table, $columnName, $where = null, array $params = null
+    ) {
+        return static::getEngine()->min($table, $columnName, $where, $params);
     }
 
-    public static function max($table, $columnName, $where = null/*, ...*/) {
-        return static::getEngine()->max(
-            $table, $columnName, $where, self::getParams(func_get_args(), 3)
-        );
+    /**
+     * @param string $table
+     * @param string $columnName
+     * @param string|array $where
+     * @param array $params
+     * @return mixed
+     */
+    public static function max(
+        $table, $columnName, $where = null, array $params = null
+    ) {
+        return static::getEngine()->max($table, $columnName, $where, $params);
     }
 
-    public static function sum($table, $columnName, $where = null/*, ...*/) {
-        return static::getEngine()->sum(
-            $table, $columnName, $where, self::getParams(func_get_args(), 3)
-        );
+    /**
+     * @param string $table
+     * @param string $columnName
+     * @param string|array $where
+     * @param array $params
+     * @return mixed
+     */
+    public static function sum(
+        $table, $columnName, $where = null, array $params = null
+    ) {
+        return static::getEngine()->sum($table, $columnName, $where, $params);
     }
 
+    /**
+     * @param string $table
+     * @param string $columnName
+     * @param string|array $where
+     * @param array $params
+     * @return mixed
+     */
     public static function average(
-        $table, $columnName, $where = null/*, ...*/
+        $table, $columnName, $where = null, array $params = null
     ) {
         return static::getEngine()->average(
-            $table, $columnName, $where, self::getParams(func_get_args(), 3)
+            $table, $columnName, $where, $params
         );
     }
 
-    public static function insert($table, $row) {
+    /**
+     * @param string $table
+     * @param array $row
+     */
+    public static function insert($table, array $row) {
         static::getEngine()->insert($table, $row);
     }
 
-    public static function update($table, $columns, $where/*, ...*/) {
-        return static::getEngine()->update(
-            $table, $columns, $where, self::getParams(func_get_args(), 3)
-        );
+    /**
+     * @param string $table
+     * @param array $columns
+     * @param string|array $where
+     * @param array $params
+     */
+    public static function update(
+        $table, array $columns, $where, array $params = null
+    ) {
+        return static::getEngine()->update($table, $columns, $where, $params);
     }
 
-    public static function updateById($table, $columns, $id) {
+    /**
+     * @param string $table
+     * @param array $columns
+     * @param mixed $id
+     */
+    public static function updateById($table, array $columns, $id) {
         return static::getEngine()->updateById($table, $columns, $id);
     }
 
-    public static function delete($table, $where/*, ...*/) {
-        return static::getEngine()->delete(
-            $table, $where, self::getParams(func_get_args(), 2)
-        );
+    /**
+     * @param string $table
+     * @param string|array $where
+     * @param array $params
+     */
+    public static function delete($table, $where, array $params = null) {
+        return static::getEngine()->delete($table, $where, $params);
     }
 
+    /**
+     * @param string $table
+     * @param mixed $id
+     */
     public static function deleteById($table, $id) {
         return static::getEngine()->deleteById($table, $id);
     }
 
-    public static function execute($sql/*, ...*/) {
+    /**
+     * @param string $sql
+     * @param array $params
+     * @return int
+     */
+    public static function execute($sql, array $params = null) {
         return static::getEngine()->execute(
-            $sql, self::getParams(func_get_args(), 1)
+            $sql, $params
         );
     }
 
+    /**
+     * @return mixed
+     */
     public static function getLastInsertId() {
         return static::getEngine()->getLastInsertId();
     }
@@ -134,34 +254,62 @@ class DbClient {
         static::getEngine()->rollback();
     }
 
+    /**
+     * @return bool
+     */
     public static function inTransaction() {
         return static::getEngine()->inTransaction();
     }
 
+    /**
+     * @param string $identifier
+     * @return string
+     */
     public static function quoteIdentifier($identifier) {
         return static::getEngine()->quoteIdentifier($identifier);
     }
 
-    public static function prepare($sql, $driverOptions = []) {
+    /**
+     * @param string $sql
+     * @param array $driverOptions
+     * @return DbStatement
+     */
+    public static function prepare($sql, array $driverOptions = []) {
         return static::getEngine()->prepare($sql, $driverOptions);
     }
 
+    /**
+     * @param bool $shouldConnect
+     * @return DbConnection
+     */
     public static function getConnection($shouldConnect = true) {
         return static::getEngine()->getConnection($shouldConnect);
     }
 
-    public static function setConnection($connection) {
+    /**
+     * @param DbConnection $connection
+     */
+    public static function setConnection(DbConnection $connection) {
         static::getEngine()->setConnection($connection);
     }
 
+    /**
+     * @param string $name
+     */
     public static function connect($name) {
         static::getEngine()->connect($name);
     }
 
+    /**
+     * @param string $name
+     */
     public static function closeConnection($name = null) {
         static::getEngine()->closeConnection($name);
     }
 
+    /**
+     * @return object
+     */
     public static function getEngine() {
         $engine = Registry::get('hyperframework.db.client_engine');
         if ($engine === null) {
@@ -183,17 +331,10 @@ class DbClient {
         return $engine;
     }
 
+    /**
+     * @param object $engine
+     */
     public static function setEngine($engine) {
         Registry::set('hyperframework.db.client_engine', $engine);
-    }
-
-    private static function getParams($args, $offset) {
-        if (isset($args[$offset]) === false) {
-            return;
-        }
-        if (is_array($args[$offset])) {
-            return $args[$offset];
-        }
-        return array_slice($args, $offset);
     }
 }
