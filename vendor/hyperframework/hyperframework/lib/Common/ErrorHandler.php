@@ -87,7 +87,7 @@ class ErrorHandler {
     }
 
     /**
-     * @return mixed
+     * @return object
      */
     protected function getError() {
         return $this->error;
@@ -117,7 +117,10 @@ class ErrorHandler {
         );
     }
 
-    private function handleException($exception) {
+    /**
+     * @param Exception $exception
+     */
+    private function handleException(Exception $exception) {
         if ($this->getError() === null) {
            $this->error = $exception;
            $this->handle();

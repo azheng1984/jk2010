@@ -284,7 +284,7 @@ abstract class Controller {
      * @param bool $shouldReturnResult
      * @return mixed
      */
-    private function runFilter(&$config, $shouldReturnResult = false) {
+    private function runFilter(array &$config, $shouldReturnResult = false) {
         $result = null;
         if (is_string($config['filter'])) {
             $class = $config['filter'];
