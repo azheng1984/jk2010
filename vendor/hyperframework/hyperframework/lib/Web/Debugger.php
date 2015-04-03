@@ -164,7 +164,8 @@ class Debugger {
         $this->renderPath(
             $path, ' <span class="line">' . $errorLineNumber . '</span>'
         );
-        echo '<div class="file-content"><table><tbody><tr><td class="index"><div class="index-content">';
+        echo '<div class="file-content"><table><tbody><tr>',
+            '<td class="index"><div class="index-content">';
         $lines = $this->getLines($path, $errorLineNumber);
         foreach ($lines as $number => $line) {
             if ($number === $errorLineNumber) {
