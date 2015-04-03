@@ -39,6 +39,9 @@ class ErrorHandler extends Base {
         }
     }
 
+    /**
+     * @return string
+     */
     protected function getOutputBuffer() {
         $content = ob_get_contents();
         if ($content === false) {
@@ -47,6 +50,9 @@ class ErrorHandler extends Base {
         return $content;
     }
 
+    /**
+     * @param string $outputBuffer
+     */
     protected function executeDebugger($outputBuffer) {
         $configName = 'hyperframework.error_handler.debugger_class';
         $class = Config::getString($configName, '');

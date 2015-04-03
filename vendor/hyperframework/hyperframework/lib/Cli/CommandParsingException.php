@@ -10,10 +10,13 @@ class CommandParsingException extends Exception {
      * @param string $message
      * @param string $subcommandName
      * @param int $code
-     * @param \Exception $previous
+     * @param Exception $previous
      */
     public function __construct(
-        $message = '', $subcommandName = null, $code = 0, $previous = null
+        $message = '',
+        $subcommandName = null,
+        $code = 0,
+        Exception $previous = null
     ) {
         parent::__construct($message, $code, $previous);
         $this->subcommandName = $subcommandName;

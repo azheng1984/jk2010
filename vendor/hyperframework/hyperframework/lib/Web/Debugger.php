@@ -18,6 +18,10 @@ class Debugger {
     private $shouldHideTrace;
     private $firstInternalStackFrameIndex;
 
+    /**
+     * @param object $error
+     * @param string $outputBuffer
+     */
     public function execute($error, $outputBuffer = null) {
         $this->error = $error;
         $this->outputBuffer = $outputBuffer;

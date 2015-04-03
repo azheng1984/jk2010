@@ -6,16 +6,27 @@ use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
 class Response {
+    /**
+     * @param string $string
+     * @param bool $shouldReplace
+     * @param int $responseCode
+     */
     public static function setHeader(
         $string, $shouldReplace = true, $responseCode = null
     ) {
         self::getEngine()->setHeader($string, $shouldReplace, $responseCode);
     }
 
+    /**
+     * @return string[]
+     */
     public static function getHeaders() {
         return self::getEngine()->getHeaders();
     }
 
+    /**
+     * @param string $name
+     */
     public static function removeHeader($name) {
         self::getEngine()->removeHeader($name);
     }
@@ -24,22 +35,41 @@ class Response {
         self::getEngine()->removeHeaders();
     }
 
+    /**
+     * @param int $statusCode
+     */
     public static function setStatusCode($statusCode) {
         self::getEngine()->setStatusCode($statusCode);
     }
 
+    /**
+     * @return int
+     */
     public static function getStatusCode() {
         return self::getEngine()->getStatusCode();
     }
 
-    public static function setCookie($name, $value, $options = null) {
+    /**
+     * @param string $name
+     * @param string $value
+     * @param array $options
+     */
+    public static function setCookie($name, $value, array $options = null) {
         self::getEngine()->setCookie($name, $value, $options);
     }
 
+    /**
+     * @param string $file
+     * @param int $line
+     * @return bool
+     */
     public static function headersSent(&$file = null, &$line = null) {
         return self::getEngine()->headersSent();
     }
 
+    /**
+     * @return object
+     */
     public static function getEngine() {
         $engine = Registry::get('hyperframework.web.response_engine');
         if ($engine === null) {
@@ -61,6 +91,9 @@ class Response {
         return $engine;
     }
 
+    /**
+     * @param object $engine
+     */
     public static function setEngine($engine) {
         Registry::set('hyperframework.web.response_engine', $engine);
     }

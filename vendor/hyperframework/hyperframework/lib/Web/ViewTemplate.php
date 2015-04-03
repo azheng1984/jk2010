@@ -4,6 +4,7 @@ namespace Hyperframework\Web;
 use ArrayAccess;
 use InvalidArgumentException;
 use Exception;
+use Closure;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\FileFullPathBuilder;
 use Hyperframework\Common\FileFullPathRecognizer;
@@ -18,11 +19,20 @@ abstract class ViewTemplate implements ArrayAccess {
     private $filePath;
     private $layoutPath;
 
-    public function __construct($loadFileFunction, $viewModel = null) {
+    /**
+     * @param Closure $loadFileFunction
+     * @param array $viewModel
+     */
+    public function __construct(
+        Closure $loadFileFunction, array $viewModel = null
+    ) {
         $this->loadFileFunction = $loadFileFunction;
         $this->viewModel = $viewModel === null ? [] : $viewModel;
     }
 
+    /**
+     * @param string $path
+     */
     public function render($path) {
         $path = (string)$path;
         if ($path === '') {
@@ -52,15 +62,25 @@ abstract class ViewTemplate implements ArrayAccess {
         $this->popLayout();
     }
 
+    /**
+     * @param string $path
+     */
     public function setLayout($path) {
         $this->layoutPath = $path;
     }
 
+    /**
+     * @return string
+     */
     public function getFilePath() {
         return $this->filePath;
     }
 
-    public function renderBlock($name, $default = null) {
+    /**
+     * @param string $name
+     * @param Closure $default
+     */
+    public function renderBlock($name, Closure $default = null) {
         if (isset($this->blocks[$name])) {
             $block = $this->blocks[$name];
             $block();
@@ -72,10 +92,18 @@ abstract class ViewTemplate implements ArrayAccess {
         }
     }
 
-    public function setBlock($name, $value) {
+    /**
+     * @param string $name
+     * @param Closure $value
+     */
+    public function setBlock($name, Closure $value) {
         $this->blocks[$name] = $value;
     }
 
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
     public function offsetSet($offset, $value) {
         if ($offset === null) {
             throw new InvalidArgumentException(
@@ -86,14 +114,25 @@ abstract class ViewTemplate implements ArrayAccess {
         }
     }
 
+    /**
+     * @param mixed $offset
+     * @return bool
+     */
     public function offsetExists($offset) {
         return isset($this->viewModel[$offset]);
     }
 
+    /**
+     * @param mixed $offset
+     */
     public function offsetUnset($offset) {
         unset($this->viewModel[$offset]);
     }
 
+    /**
+     * @param mixed $offset
+     * @return mixed
+     */
     public function offsetGet($offset) {
         if (isset($this->viewModel[$offset]) === false) {
             throw new ViewException(
@@ -103,6 +142,9 @@ abstract class ViewTemplate implements ArrayAccess {
         return $this->viewModel[$offset];
     }
 
+    /**
+     * @return string
+     */
     private function getRootPath() {
         if ($this->rootPath === null) {
             $path = Config::getString(

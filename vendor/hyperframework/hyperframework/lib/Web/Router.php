@@ -19,12 +19,10 @@ abstract class Router implements IRouter {
     private $shouldMatchScope = false;
     private $isMatched = false;
 
-    public function __construct($app) {
-        if ($app === null) {
-            throw new InvalidArgumentException(
-                "Argument 'app' cannot be null."
-            );
-        }
+    /**
+     * @param IApp $app
+     */
+    public function __construct(IApp $app) {
         $this->app = $app;
         $result = $this->execute();
         $this->parseResult($result);
@@ -96,7 +94,7 @@ abstract class Router implements IRouter {
 
     abstract protected function execute();
 
-    protected function match($pattern, $options = null) {
+    protected function match($pattern, array $options = null) {
         if (is_string($pattern) === false) {
             throw new InvalidArgumentException(
                 "Argument 'pattern' must be a string, "
@@ -399,7 +397,7 @@ abstract class Router implements IRouter {
         return false;
     }
 
-    protected function matchScope($path, $callback) {
+    protected function matchScope($path, Closure $callback) {
         if (is_string($path) === false) {
             throw new InvalidArgumentException(
                 "Argument 'path' must be a string, "
@@ -420,7 +418,7 @@ abstract class Router implements IRouter {
         return $this->isMatched();
     }
 
-    protected function matchResource($pattern, $options = null) {
+    protected function matchResource($pattern, array $options = null) {
         if (is_string($pattern) === false) {
             throw new InvalidArgumentException(
                 "Argument 'pattern' must be a string, "
@@ -615,7 +613,7 @@ abstract class Router implements IRouter {
         return false;
     }
 
-    protected function matchResources($pattern, $options = null) {
+    protected function matchResources($pattern, array $options = null) {
         if (is_string($pattern) === false) {
             throw new InvalidArgumentException(
                 "Argument 'pattern' must be a string, "
@@ -802,27 +800,27 @@ abstract class Router implements IRouter {
         return $this->matchResource($pattern, $options);
     }
 
-    protected function matchGet($pattern, $options = null) {
+    protected function matchGet($pattern, array $options = null) {
         $options['methods'] = ['GET'];
         return $this->match($pattern, $options);
     }
 
-    protected function matchPost($pattern, $options = null) {
+    protected function matchPost($pattern, array $options = null) {
         $options['methods'] = ['POST'];
         return $this->match($pattern, $options);
     }
 
-    protected function matchPut($pattern, $options = null) {
+    protected function matchPut($pattern, array $options = null) {
         $options['methods'] = ['PUT'];
         return $this->match($pattern, $options);
     }
 
-    protected function matchPatch($pattern, $options = null) {
+    protected function matchPatch($pattern, array $options = null) {
         $options['methods'] = ['PATCH'];
         return $this->match($pattern, $options);
     }
 
-    protected function matchDelete($pattern, $options = null) {
+    protected function matchDelete($pattern, array $options = null) {
         $options['methods'] = ['DELETE'];
         return $this->match($pattern, $options);
     }
@@ -881,6 +879,9 @@ abstract class Router implements IRouter {
         return $this->requestPath;
     }
 
+    /**
+     * @return IApp
+     */
     protected function getApp() {
         if ($this->app === null) {
             throw new LogicException(
@@ -910,7 +911,7 @@ abstract class Router implements IRouter {
     }
 
     private function convertElementActionsToCollectionActions(
-        $actions, $defaultActions = null, $isMixed = false
+        $actions, array $defaultActions = null, $isMixed = false
     ) {
         $result = [];
         foreach ($actions as $key => $value) {
@@ -980,7 +981,7 @@ abstract class Router implements IRouter {
         return $result;
     }
 
-    private function verifyExtraRules($extra, $matches = []) {
+    private function verifyExtraRules($extra, array $matches = []) {
         foreach ($matches as $key => $value) {
             if (is_int($key)) {
                 unset($matches[$key]);
@@ -1016,7 +1017,7 @@ abstract class Router implements IRouter {
         }
     }
 
-    private function setMatches($matches) {
+    private function setMatches(array $matches) {
         foreach ($matches as $key => $value) {
             if (is_string($key)) {
                 if ($key === 'module') {

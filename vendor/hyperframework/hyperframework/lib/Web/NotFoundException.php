@@ -1,8 +1,14 @@
 <?php
 namespace Hyperframework\Web;
 
+use Exception;
+
 class NotFoundException extends HttpException {
-    public function __construct($message = '', $previous = null) {
+    /**
+     * @param string $message
+     * @param Exception $previous
+     */
+    public function __construct($message = '', Exception $previous = null) {
         parent::__construct($message, 404, 'Not Found', $previous);
     }
 }

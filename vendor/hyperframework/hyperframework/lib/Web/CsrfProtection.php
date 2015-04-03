@@ -6,6 +6,9 @@ use Hyperframework\Common\Registry;
 use Hyperframework\Common\ClassNotFoundException;
 
 class CsrfProtection {
+    /**
+     * @return bool
+     */
     public static function isEnabled() {
         return Config::getBool(
             'hyperframework.web.csrf_protection.enable', true
@@ -17,16 +20,25 @@ class CsrfProtection {
         $engine->run();
     }
 
+    /**
+     * @return string
+     */
     public static function getToken() {
         $engine = static::getEngine();
         return $engine->getToken();
     }
 
+    /**
+     * @return string
+     */
     public static function getTokenName() {
         $engine = static::getEngine();
         return $engine->getTokenName();
     }
 
+    /**
+     * @return object
+     */
     public static function getEngine() {
         $engine = Registry::get('hyperframework.web.csrf_protection_engine');
         if ($engine === null) {
@@ -48,6 +60,9 @@ class CsrfProtection {
         return $engine;
     }
 
+    /**
+     * @param object $engine
+     */
     public static function setEngine($engine) {
         Registry::set('hyperframework.web.csrf_protection_engine', $engine);
     }

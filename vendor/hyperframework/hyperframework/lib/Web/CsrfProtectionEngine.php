@@ -28,6 +28,9 @@ class CsrfProtectionEngine {
         }
     }
 
+    /**
+     * @return string
+     */
     public function getToken() {
         if ($this->token === null) {
             $name = $this->getTokenName();
@@ -42,6 +45,9 @@ class CsrfProtectionEngine {
         return $this->token;
     }
 
+    /**
+     * @return string
+     */
     public function getTokenName() {
         if ($this->tokenName === null) {
             $this->tokenName = Config::getString(
@@ -54,6 +60,9 @@ class CsrfProtectionEngine {
         return $this->tokenName;
     }
 
+    /**
+     * @param string $token
+     */
     protected function setToken($token) {
         $this->token = $token;
     }
@@ -63,10 +72,17 @@ class CsrfProtectionEngine {
         Response::setCookie($this->getTokenName(), $this->getToken());
     }
 
+    /**
+     * @param string $method
+     * @return boolean
+     */
     protected function isSafeMethod($method) {
         return in_array($method, ['GET', 'HEAD', 'OPTIONS']);
     }
 
+    /**
+     * @return string
+     */
     protected function generateToken() {
         return sha1(uniqid(mt_rand(), true));
     }

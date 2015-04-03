@@ -44,6 +44,9 @@ class Request {
         return $engine;
     }
 
+    /**
+     * @param object $engine
+     */
     public static function setEngine($engine) {
         Registry::set('hyperframework.web.request_engine', $engine);
     }

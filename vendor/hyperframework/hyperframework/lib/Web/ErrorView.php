@@ -6,6 +6,12 @@ use Hyperframework\Common\FilePathCombiner;
 use Hyperframework\Common\FileFullPathBuilder;
 
 class ErrorView {
+    /**
+     * @param int $statusCode
+     * @param string $statusText
+     * @param object $error
+     * @param string $outputFormat
+     */
     public function render(
         $statusCode, $statusText, $error, $outputFormat = null
     ) {

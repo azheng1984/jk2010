@@ -17,6 +17,9 @@ class App extends Base implements IApp {
         $app->finalize();
     }
 
+    /**
+     * @param string $appRootPath
+     */
     public function __construct($appRootPath) {
         parent::__construct($appRootPath);
         $this->rewriteRequestMethod();
@@ -53,6 +56,9 @@ class App extends Base implements IApp {
         return $this->router;
     }
 
+    /**
+     * @return static
+     */
     protected static function createApp() {
         return new static(dirname(getcwd()));
     }
@@ -100,6 +106,9 @@ class App extends Base implements IApp {
         return new $class($this);
     }
 
+    /**
+     * @param string $defaultClass
+     */
     protected function initializeErrorHandler($defaultClass = null) {
         if ($defaultClass === null) {
             $defaultClass = 'Hyperframework\Web\ErrorHandler';

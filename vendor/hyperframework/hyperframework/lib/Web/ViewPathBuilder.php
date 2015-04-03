@@ -4,6 +4,11 @@ namespace Hyperframework\Web;
 use Hyperframework\Common\Config;
 
 class ViewPathBuilder {
+    /**
+     * @param string $name
+     * @param string $outputFormat
+     * @return string
+     */
     public static function build($name, $outputFormat = null) {
         $result = $name;
         if (Config::getBool(

@@ -28,4 +28,6 @@ interface IApp {
      * @return ICommandConfig
      */
     function getCommandConfig();
+
+    function quit();
 }
