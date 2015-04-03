@@ -164,7 +164,7 @@ class Debugger {
         $this->renderPath(
             $path, ' <span class="line">' . $errorLineNumber . '</span>'
         );
-        echo '<table><tbody><tr><td class="index"><div class="index-content">';
+        echo '<div class="file-content"><table><tbody><tr><td class="index"><div class="index-content">';
         $lines = $this->getLines($path, $errorLineNumber);
         foreach ($lines as $number => $line) {
             if ($number === $errorLineNumber) {
@@ -182,7 +182,7 @@ class Debugger {
                 echo $line , "\n";
             }
         }
-        echo '</div></pre></td></tr></tbody></table>';
+        echo '</div></pre></td></tr></tbody></table></div>';
     }
 
     private function renderStackTrace() {
@@ -800,14 +800,15 @@ h1, #message {
     word-wrap: break-word;
 }
 #file-wrapper {
-    padding: 10px 0;
-        border: 1px solid #ccc;
+    padding: 10px;
+    border: 1px solid #ccc;
+	background-color: #f8f8f8;
+}
+#file h2 {
+	padding-left: 0;
 }
 #file .path {
-    border-bottom: 1px dotted #ccc;
-    _border-bottom: 1px solid #e1e1e1;
     padding: 5px 5px 8px 0;
-    margin: 0 10px 10px 10px;
 }
 #response-body a {
     background-image: linear-gradient(#fcfcfc, #eee);
@@ -1018,7 +1019,7 @@ h1, #message {
     float:right;
 }
 #file #file-switch {
-    width: 170px;
+    width: 150px;
 }
 #file #file-switch a:hover {
     background-image: linear-gradient(#f8f8f8, #e5e5e5);
@@ -1026,7 +1027,7 @@ h1, #message {
 }
 #internal a, #internal span, #external a, #external span {
 	display: block;
-    width: 65px;
+    width: 58px;
 	line-height: 22px;
     text-align: center;
     border:1px solid;
@@ -1048,8 +1049,13 @@ h1, #message {
 #file-switch span {
     background-image: none;
     color: #fff;
-    background-color: #adadad;
-    border-color: #adadad;
+    background-color: #999;
+    border-color: #999;
+}
+.file-content {
+    padding: 10px 0;
+    background: #fff;
+    border: 1px solid #e1e1e1;
 }
 </style>
 <?php
