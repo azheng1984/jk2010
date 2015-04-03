@@ -16,7 +16,7 @@ abstract class ViewTemplate implements ArrayAccess {
     private $blocks = [];
     private $layoutPathStack = [];
     private $rootPath;
-    private $filePath;
+    private $file;
     private $layoutPath;
 
     /**
@@ -42,16 +42,16 @@ abstract class ViewTemplate implements ArrayAccess {
             $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
         }
         if (FileFullPathRecognizer::isFullPath($path)) {
-            $this->filePath = $path;
+            $this->file = $path;
         } else {
             FilePathCombiner::prepend($path, $this->getRootPath());
-            $this->filePath = $path;
+            $this->file = $path;
         }
         $this->pushLayout();
         try {
             $loadFileFunction = $this->loadFileFunction;
             $loadFileFunction();
-            $this->filePath = null;
+            $this->file = null;
             if ($this->layoutPath !== null) {
                 $this->render($this->layoutPath);
             }
@@ -72,8 +72,8 @@ abstract class ViewTemplate implements ArrayAccess {
     /**
      * @return string
      */
-    public function getFilePath() {
-        return $this->filePath;
+    public function getFile() {
+        return $this->file;
     }
 
     /**

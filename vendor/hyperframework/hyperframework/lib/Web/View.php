@@ -7,7 +7,7 @@ class View extends ViewTemplate {
      */
     public function __construct(array $viewModel = null) {
         $loadFileFunction = function() {
-            require $this->getFilePath();
+            require $this->getFile();
         };
         parent::__construct($loadFileFunction, $viewModel);
     }

@@ -11,7 +11,7 @@ class ViewTemplateTest extends Base {
         $path = null;
         $tpl = null;
         $tpl = new ViewTemplate(
-            function() use (&$path, &$tpl) {$path = $tpl->getFilePath();}
+            function() use (&$path, &$tpl) {$path = $tpl->getFile();}
         );
         $tpl->render('index/index.php');
         $this->assertSame(dirname(__DIR__)
@@ -29,7 +29,7 @@ class ViewTemplateTest extends Base {
         $tpl = null;
         $tpl = new ViewTemplate(
             function() use (&$loadedPath, &$tpl) {
-                $loadedPath = $tpl->getFilePath();
+                $loadedPath = $tpl->getFile();
             }
         );
         $tpl->render($viewPath);
