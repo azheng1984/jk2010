@@ -142,10 +142,10 @@ class Debugger {
             $path = $frame['file'];
             $errorLineNumber = $frame['line'];
             echo '<table id="file-switch"><tbody><tr><td>',
-                '<h2>File</h2></td><td><table><tbody><tr><td id="internal"><span>Internal</span>',
-                '</td><td id="external"><a>',
-                'External</a></td></tr></tbody></table></td></tr></tbody></table>',
-                '<div id="internal-file">';
+                '<h2>File</h2></td><td><table><tbody><tr><td id="internal">',
+                '<span>Internal</span></td><td id="external"><a>',
+                'External</a></td></tr></tbody></table></td></tr></tbody>',
+                '</table><div id="internal-file">';
             $this->renderFileContent($path, $errorLineNumber);
             echo '</div><div id="external-file" class="hidden">';
         } else {
