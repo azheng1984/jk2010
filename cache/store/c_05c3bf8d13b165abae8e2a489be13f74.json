@@ -1,0 +1,1141 @@
+{
+    "name": "Hyperframework\\Cli\\CommandConfig",
+    "line": 16,
+    "short_desc": "",
+    "long_desc": "",
+    "hint": null,
+    "tags": [],
+    "namespace": "Hyperframework\\Cli",
+    "file": "\/home\/az\/quickquick\/vendor\/hyperframework\/hyperframework\/lib\/Cli\/CommandConfig.php",
+    "hash": "70d12dd718e0986fdeafedb0724ad50b30d9aaf6",
+    "parent": null,
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "ReflectionMethod": "ReflectionMethod",
+        "LogicException": "LogicException",
+        "Config": "Hyperframework\\Common\\Config",
+        "NamespaceCombiner": "Hyperframework\\Common\\NamespaceCombiner",
+        "FilePathCombiner": "Hyperframework\\Common\\FilePathCombiner",
+        "ConfigFileLoader": "Hyperframework\\Common\\ConfigFileLoader",
+        "ConfigFileFullPathBuilder": "Hyperframework\\Common\\ConfigFileFullPathBuilder",
+        "FileFullPathRecognizer": "Hyperframework\\Common\\FileFullPathRecognizer",
+        "ConfigException": "Hyperframework\\Common\\ConfigException",
+        "ClassNotFoundException": "Hyperframework\\Common\\ClassNotFoundException",
+        "MethodNotFoundException": "Hyperframework\\Common\\MethodNotFoundException"
+    },
+    "errors": [],
+    "interfaces": {
+        "Hyperframework\\Cli\\ICommandConfig": "Hyperframework\\Cli\\ICommandConfig"
+    },
+    "traits": [],
+    "properties": {
+        "configs": {
+            "name": "configs",
+            "line": 17,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": null,
+            "errors": []
+        },
+        "class": {
+            "name": "class",
+            "line": 18,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": null,
+            "errors": []
+        },
+        "optionConfigs": {
+            "name": "optionConfigs",
+            "line": 19,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": null,
+            "errors": []
+        },
+        "optionConfigIndex": {
+            "name": "optionConfigIndex",
+            "line": 20,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": null,
+            "errors": []
+        },
+        "mutuallyExclusiveOptionGroupConfigs": {
+            "name": "mutuallyExclusiveOptionGroupConfigs",
+            "line": 21,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": null,
+            "errors": []
+        },
+        "argumentConfigs": {
+            "name": "argumentConfigs",
+            "line": 22,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": null,
+            "errors": []
+        },
+        "isSubcommandEnabled": {
+            "name": "isSubcommandEnabled",
+            "line": 23,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": null,
+            "errors": []
+        },
+        "subcommandNames": {
+            "name": "subcommandNames",
+            "line": 24,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": null,
+            "errors": []
+        },
+        "subcommandConfigs": {
+            "name": "subcommandConfigs",
+            "line": 25,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": [],
+            "errors": []
+        },
+        "subcommandClasses": {
+            "name": "subcommandClasses",
+            "line": 26,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": [],
+            "errors": []
+        },
+        "subcommandOptionConfigs": {
+            "name": "subcommandOptionConfigs",
+            "line": 27,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": [],
+            "errors": []
+        },
+        "subcommandOptionConfigIndexes": {
+            "name": "subcommandOptionConfigIndexes",
+            "line": 28,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": [],
+            "errors": []
+        },
+        "subcommandMutuallyExclusiveOptionGroupConfigs": {
+            "name": "subcommandMutuallyExclusiveOptionGroupConfigs",
+            "line": 29,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": [],
+            "errors": []
+        },
+        "subcommandArgumentConfigs": {
+            "name": "subcommandArgumentConfigs",
+            "line": 30,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": [],
+            "errors": []
+        }
+    },
+    "methods": {
+        "getArgumentConfigs": {
+            "name": "getArgumentConfigs",
+            "line": 36,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "\\Hyperframework\\Cli\\ArgumentConfig",
+                    true
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 36,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getClass": {
+            "name": "getClass",
+            "line": 75,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "string",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 75,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getOptionConfigs": {
+            "name": "getOptionConfigs",
+            "line": 107,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "\\Hyperframework\\Cli\\OptionConfig",
+                    true
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 107,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getOptionConfig": {
+            "name": "getOptionConfig",
+            "line": 140,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "\\Hyperframework\\Cli\\OptionConfig",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "nameOrShortName": {
+                    "name": "nameOrShortName",
+                    "line": 140,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                },
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 140,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getMutuallyExclusiveOptionGroupConfigs": {
+            "name": "getMutuallyExclusiveOptionGroupConfigs",
+            "line": 151,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "\\Hyperframework\\Cli\\MutuallyExclusiveOptionGroupConfig",
+                    true
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 152,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getDescription": {
+            "name": "getDescription",
+            "line": 196,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "string",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 196,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getName": {
+            "name": "getName",
+            "line": 203,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "string",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": []
+        },
+        "getVersion": {
+            "name": "getVersion",
+            "line": 222,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "string",
+                    false
+                ],
+                [
+                    "float",
+                    false
+                ],
+                [
+                    "int",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": []
+        },
+        "isSubcommandEnabled": {
+            "name": "isSubcommandEnabled",
+            "line": 242,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "bool",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": []
+        },
+        "hasSubcommand": {
+            "name": "hasSubcommand",
+            "line": 255,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "bool",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 255,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getSubcommandNames": {
+            "name": "getSubcommandNames",
+            "line": 262,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "string",
+                    true
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": []
+        },
+        "get": {
+            "name": "get",
+            "line": 287,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "mixed",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "2",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "name": {
+                    "name": "name",
+                    "line": 287,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                },
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 287,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getAll": {
+            "name": "getAll",
+            "line": 298,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "array",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "2",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 298,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getDefaultClass": {
+            "name": "getDefaultClass",
+            "line": 340,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "string",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "2",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 340,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getDefaultArgumentConfigs": {
+            "name": "getDefaultArgumentConfigs",
+            "line": 364,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "\\Hyperframework\\Cli\\ArgumentConfig",
+                    true
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "2",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 364,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getDefaultOptionConfigs": {
+            "name": "getDefaultOptionConfigs",
+            "line": 408,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "\\Hyperframework\\Cli\\OptionConfig",
+                    true
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "2",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 408,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "parseArgumentConfigs": {
+            "name": "parseArgumentConfigs",
+            "line": 421,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "\\Hyperframework\\Cli\\ArgumentConfig",
+                    true
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "2",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "configs": {
+                    "name": "configs",
+                    "line": 422,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "array",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "array",
+                    "default": null,
+                    "is_by_ref": false
+                },
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 422,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "parseOptionConfigs": {
+            "name": "parseOptionConfigs",
+            "line": 432,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "\\Hyperframework\\Cli\\OptionConfig",
+                    true
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "2",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "configs": {
+                    "name": "configs",
+                    "line": 432,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "array",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                },
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 432,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "parseMutuallyExclusiveOptionGroupConfigs": {
+            "name": "parseMutuallyExclusiveOptionGroupConfigs",
+            "line": 443,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "\\Hyperframework\\Cli\\MutuallyExclusiveOptionGroupConfig",
+                    true
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "2",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "configs": {
+                    "name": "configs",
+                    "line": 444,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "array",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                },
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 444,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getConfigPath": {
+            "name": "getConfigPath",
+            "line": 458,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "string",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "4",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 458,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getSubcommandConfigPath": {
+            "name": "getSubcommandConfigPath",
+            "line": 489,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "string",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "4",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 489,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getSubcommandConfigRootPath": {
+            "name": "getSubcommandConfigRootPath",
+            "line": 497,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "string",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "4",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": []
+        },
+        "getOptionConfigIndex": {
+            "name": "getOptionConfigIndex",
+            "line": 521,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "\\Hyperframework\\Cli\\OptionConfig",
+                    true
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "4",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 521,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getErrorMessage": {
+            "name": "getErrorMessage",
+            "line": 554,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "string",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "4",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 554,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                },
+                "extra": {
+                    "name": "extra",
+                    "line": 554,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getErrorMessageOfFailedToGetDefaultArgumentConfigs": {
+            "name": "getErrorMessageOfFailedToGetDefaultArgumentConfigs",
+            "line": 572,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "string",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "4",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "subcommandName": {
+                    "name": "subcommandName",
+                    "line": 573,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                },
+                "extra": {
+                    "name": "extra",
+                    "line": 573,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        }
+    },
+    "constants": []
+}

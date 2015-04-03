@@ -1,0 +1,133 @@
+{
+    "name": "Hyperframework\\Cli\\MutuallyExclusiveOptionGroupConfig",
+    "line": 4,
+    "short_desc": "",
+    "long_desc": "",
+    "hint": null,
+    "tags": [],
+    "namespace": "Hyperframework\\Cli",
+    "file": "\/home\/az\/quickquick\/vendor\/hyperframework\/hyperframework\/lib\/Cli\/MutuallyExclusiveOptionGroupConfig.php",
+    "hash": "dee5a5cf22267a736b14f2f7482319aaa1debcb4",
+    "parent": null,
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": [],
+    "errors": [],
+    "interfaces": [],
+    "traits": [],
+    "properties": {
+        "optionConfigs": {
+            "name": "optionConfigs",
+            "line": 5,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": null,
+            "errors": []
+        },
+        "isRequired": {
+            "name": "isRequired",
+            "line": 6,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": null,
+            "errors": []
+        }
+    },
+    "methods": {
+        "__construct": {
+            "name": "__construct",
+            "line": 12,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "optionConfigs": {
+                    "name": "optionConfigs",
+                    "line": 12,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "\\Hyperframework\\Cli\\OptionConfig",
+                            true
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                },
+                "isRequired": {
+                    "name": "isRequired",
+                    "line": 12,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "bool",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getOptionConfigs": {
+            "name": "getOptionConfigs",
+            "line": 20,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "\\Hyperframework\\Cli\\OptionConfig",
+                    true
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": []
+        },
+        "isRequired": {
+            "name": "isRequired",
+            "line": 27,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "bool",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": []
+        }
+    },
+    "constants": []
+}

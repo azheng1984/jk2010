@@ -1,0 +1,24 @@
+{
+    "name": "Hyperframework\\Web\\RoutingException",
+    "line": 6,
+    "short_desc": "",
+    "long_desc": "",
+    "hint": null,
+    "tags": [],
+    "namespace": "Hyperframework\\Web",
+    "file": "\/home\/az\/quickquick\/vendor\/hyperframework\/hyperframework\/lib\/Web\/RoutingException.php",
+    "hash": "2101a6b175c2844b8c338ff5d3e0114cc91a9d35",
+    "parent": "Exception",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "Exception": "Exception"
+    },
+    "errors": [],
+    "interfaces": [],
+    "traits": [],
+    "properties": [],
+    "methods": [],
+    "constants": []
+}

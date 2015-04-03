@@ -1,0 +1,24 @@
+{
+    "name": "Hyperframework\\Logging\\LoggingException",
+    "line": 6,
+    "short_desc": "",
+    "long_desc": "",
+    "hint": null,
+    "tags": [],
+    "namespace": "Hyperframework\\Logging",
+    "file": "\/home\/az\/quickquick\/vendor\/hyperframework\/hyperframework\/lib\/Logging\/LoggingException.php",
+    "hash": "7d1dbc34eb7b24af130504b5d0b225a86d4aaf9a",
+    "parent": "Exception",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "Exception": "Exception"
+    },
+    "errors": [],
+    "interfaces": [],
+    "traits": [],
+    "properties": [],
+    "methods": [],
+    "constants": []
+}

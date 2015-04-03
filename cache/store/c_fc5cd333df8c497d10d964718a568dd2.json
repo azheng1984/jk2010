@@ -1,0 +1,370 @@
+{
+    "name": "Hyperframework\\Db\\DbProfilerEngine",
+    "line": 10,
+    "short_desc": "",
+    "long_desc": "",
+    "hint": null,
+    "tags": [],
+    "namespace": "Hyperframework\\Db",
+    "file": "\/home\/az\/quickquick\/vendor\/hyperframework\/hyperframework\/lib\/Db\/DbProfilerEngine.php",
+    "hash": "b1798a4f7e00cb15e71b561f6de794bcfd1cc565",
+    "parent": null,
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "DateTime": "DateTime",
+        "DateTimeZone": "DateTimeZone",
+        "Config": "Hyperframework\\Common\\Config",
+        "ClassNotFoundException": "Hyperframework\\Common\\ClassNotFoundException",
+        "Logger": "Hyperframework\\Logging\\Logger"
+    },
+    "errors": [],
+    "interfaces": [],
+    "traits": [],
+    "properties": {
+        "profile": {
+            "name": "profile",
+            "line": 11,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": null,
+            "errors": []
+        },
+        "profileHandler": {
+            "name": "profileHandler",
+            "line": 12,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": 4,
+            "default": null,
+            "errors": []
+        }
+    },
+    "methods": {
+        "onTransactionOperationExecuting": {
+            "name": "onTransactionOperationExecuting",
+            "line": 18,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "connection": {
+                    "name": "connection",
+                    "line": 19,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "Hyperframework\\Db\\DbConnection",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "DbConnection",
+                    "default": null,
+                    "is_by_ref": false
+                },
+                "operation": {
+                    "name": "operation",
+                    "line": 19,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        },
+        "onTransactionOperationExecuted": {
+            "name": "onTransactionOperationExecuted",
+            "line": 24,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": []
+        },
+        "onSqlStatementExecuting": {
+            "name": "onSqlStatementExecuting",
+            "line": 32,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "connection": {
+                    "name": "connection",
+                    "line": 32,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "Hyperframework\\Db\\DbConnection",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "DbConnection",
+                    "default": null,
+                    "is_by_ref": false
+                },
+                "sql": {
+                    "name": "sql",
+                    "line": 32,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "string",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        },
+        "onSqlStatementExecuted": {
+            "name": "onSqlStatementExecuted",
+            "line": 36,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": []
+        },
+        "onPreparedStatementExecuting": {
+            "name": "onPreparedStatementExecuting",
+            "line": 43,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "statement": {
+                    "name": "statement",
+                    "line": 43,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "Hyperframework\\Db\\DbStatement",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "DbStatement",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        },
+        "onPreparedStatementExecuted": {
+            "name": "onPreparedStatementExecuted",
+            "line": 49,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": []
+        },
+        "setProfileHandler": {
+            "name": "setProfileHandler",
+            "line": 56,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "handler": {
+                    "name": "handler",
+                    "line": 56,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "Hyperframework\\Db\\IDbProfileHandler",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "IDbProfileHandler",
+                    "default": "null",
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getProfileHandler": {
+            "name": "getProfileHandler",
+            "line": 63,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "\\Hyperframework\\Db\\IDbProfileHandler",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "1",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": []
+        },
+        "initializeProfile": {
+            "name": "initializeProfile",
+            "line": 89,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": "4",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "connection": {
+                    "name": "connection",
+                    "line": 90,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "Hyperframework\\Db\\DbConnection",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "DbConnection",
+                    "default": null,
+                    "is_by_ref": false
+                },
+                "profile": {
+                    "name": "profile",
+                    "line": 90,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "array",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": "array",
+                    "default": null,
+                    "is_by_ref": false
+                }
+            }
+        },
+        "getTime": {
+            "name": "getTime",
+            "line": 104,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "float",
+                    true
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "4",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": []
+        },
+        "handleProfile": {
+            "name": "handleProfile",
+            "line": 111,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": null,
+            "hint_desc": null,
+            "tags": [],
+            "modifiers": "4",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": []
+        },
+        "getCustomLoggerClass": {
+            "name": "getCustomLoggerClass",
+            "line": 159,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "string",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "4",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": []
+        }
+    },
+    "constants": []
+}

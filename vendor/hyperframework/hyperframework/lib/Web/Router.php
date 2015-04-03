@@ -31,24 +31,41 @@ abstract class Router implements IRouter {
         }
     }
 
+    /**
+     * @param string $name
+     * @return mixed
+     */
     public function getParam($name) {
         if (isset($this->params[$name])) {
             return $this->params[$name];
         }
     }
 
+    /**
+     * @return array
+     */
     public function getParams() {
         return $this->params;
     }
 
+    /**
+     * @param string $name
+     * @return bool
+     */
     public function hasParam($name) {
         return isset($this->params[$name]);
     }
 
+    /**
+     * @return string
+     */
     public function getModule() {
         return $this->module;
     }
 
+    /**
+     * @return string
+     */
     public function getController() {
         if ($this->controller === null) {
             return 'index';
@@ -56,6 +73,9 @@ abstract class Router implements IRouter {
         return $this->controller;
     }
 
+    /**
+     * @return string
+     */
     public function getControllerClass() {
         if ($this->controllerClass !== null) {
             return $this->controllerClass;
@@ -73,6 +93,9 @@ abstract class Router implements IRouter {
         return $class;
     }
 
+    /**
+     * @return string
+     */
     public function getAction() {
         if ($this->action === null) {
             return 'show';
@@ -80,6 +103,9 @@ abstract class Router implements IRouter {
         return $this->action;
     }
 
+    /**
+     * @return string
+     */
     public function getActionMethod() {
         if ($this->actionMethod !== null) {
             return $this->actionMethod;
@@ -94,6 +120,11 @@ abstract class Router implements IRouter {
 
     abstract protected function execute();
 
+    /**
+     * @param string $pattern
+     * @param array $options
+     * @return bool
+     */
     protected function match($pattern, array $options = null) {
         if (is_string($pattern) === false) {
             throw new InvalidArgumentException(
@@ -397,6 +428,11 @@ abstract class Router implements IRouter {
         return false;
     }
 
+    /**
+     * @param string $path
+     * @param Closure $callback
+     * @return bool
+     */
     protected function matchScope($path, Closure $callback) {
         if (is_string($path) === false) {
             throw new InvalidArgumentException(
@@ -418,6 +454,11 @@ abstract class Router implements IRouter {
         return $this->isMatched();
     }
 
+    /**
+     * @param string $pattern
+     * @param array $options
+     * @return bool
+     */
     protected function matchResource($pattern, array $options = null) {
         if (is_string($pattern) === false) {
             throw new InvalidArgumentException(
@@ -613,6 +654,11 @@ abstract class Router implements IRouter {
         return false;
     }
 
+    /**
+     * @param string $pattern
+     * @param array $options
+     * @return bool
+     */
     protected function matchResources($pattern, array $options = null) {
         if (is_string($pattern) === false) {
             throw new InvalidArgumentException(
@@ -800,72 +846,132 @@ abstract class Router implements IRouter {
         return $this->matchResource($pattern, $options);
     }
 
+    /**
+     * @param string $pattern
+     * @param array $options
+     * @return bool
+     */
     protected function matchGet($pattern, array $options = null) {
         $options['methods'] = ['GET'];
         return $this->match($pattern, $options);
     }
 
+    /**
+     * @param string $pattern
+     * @param array $options
+     * @return bool
+     */
     protected function matchPost($pattern, array $options = null) {
         $options['methods'] = ['POST'];
         return $this->match($pattern, $options);
     }
 
+    /**
+     * @param string $pattern
+     * @param array $options
+     * @return bool
+     */
     protected function matchPut($pattern, array $options = null) {
         $options['methods'] = ['PUT'];
         return $this->match($pattern, $options);
     }
 
+    /**
+     * @param string $pattern
+     * @param array $options
+     * @return bool
+     */
     protected function matchPatch($pattern, array $options = null) {
         $options['methods'] = ['PATCH'];
         return $this->match($pattern, $options);
     }
 
+    /**
+     * @param string $pattern
+     * @param array $options
+     * @return bool
+     */
     protected function matchDelete($pattern, array $options = null) {
         $options['methods'] = ['DELETE'];
         return $this->match($pattern, $options);
     }
 
+    /**
+     * @param string $url
+     * @param int $statusCode
+     */
     protected function redirect($url, $statusCode = 302) {
         Response::setHeader('Location: ' . $url, true, $statusCode);
         $this->getApp()->quit();
     }
 
+    /**
+     * @return bool
+     */
     protected function isMatched() {
         return $this->isMatched;
     }
 
+    /**
+     * @param bool $isMatched
+     */
     protected function setMatchStatus($isMatched) {
         $this->isMatched = $isMatched;
     }
 
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
     protected function setParam($name, $value) {
         $this->params[$name] = $value;
     }
 
+    /**
+     * @param string $name
+     */
     protected function removeParam($name) {
         unset($this->params[$name]);
     }
 
+    /**
+     * @param string $module
+     */
     protected function setModule($module) {
         $this->module = (string)$module;
     }
 
+    /**
+     * @param string $controller
+     */
     protected function setController($controller) {
         $this->controller = (string)$controller;
     }
 
+    /**
+     * @param string $controllerClass
+     */
     protected function setControllerClass($controllerClass) {
         $this->controllerClass = (string)$controllerClass;
     }
 
+    /**
+     * @param string $actionMethod
+     */
     protected function setAction($action) {
         $this->action = (string)$action;
     }
 
+    /**
+     * @param string $actionMethod
+     */
     protected function setActionMethod($actionMethod) {
         $this->actionMethod = (string)$actionMethod;
     }
 
+    /**
+     * @return string
+     */
     protected function getRequestPath() {
         if ($this->requestPath === null) {
             $path = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
@@ -892,6 +998,9 @@ abstract class Router implements IRouter {
         return $this->app;
     }
 
+    /**
+     * @return string
+     */
     private function getModuleNamespace() {
         $rootNamespace = 'Controllers';
         $appRootNamespace = Config::getAppRootNamespace();
@@ -910,8 +1019,14 @@ abstract class Router implements IRouter {
         return $namespace;
     }
 
+    /**
+     * @param array $actions
+     * @param array $defaultActions
+     * @param bool $isMixed
+     * @return array
+     */
     private function convertElementActionsToCollectionActions(
-        $actions, array $defaultActions = null, $isMixed = false
+        array $actions, array $defaultActions = null, $isMixed = false
     ) {
         $result = [];
         foreach ($actions as $key => $value) {
@@ -981,6 +1096,11 @@ abstract class Router implements IRouter {
         return $result;
     }
 
+    /**
+     * @param mixed $extra
+     * @param array $matches
+     * @return bool
+     */
     private function verifyExtraRules($extra, array $matches = []) {
         foreach ($matches as $key => $value) {
             if (is_int($key)) {
@@ -1017,6 +1137,9 @@ abstract class Router implements IRouter {
         }
     }
 
+    /**
+     * @param array $matches
+     */
     private function setMatches(array $matches) {
         foreach ($matches as $key => $value) {
             if (is_string($key)) {
@@ -1033,6 +1156,9 @@ abstract class Router implements IRouter {
         }
     }
 
+    /**
+     * @param mixed $value
+     */
     private function parseResult($value) {
         if ($value === null) {
             return;
@@ -1071,6 +1197,9 @@ abstract class Router implements IRouter {
         $this->setMatchStatus(true);
     }
 
+    /**
+     * @param string $requestPath
+     */
     private function setRequestPath($requestPath) {
         $this->requestPath = (string)$requestPath;
     }

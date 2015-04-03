@@ -1,0 +1,42 @@
+{
+    "name": "Hyperframework\\Common\\ConfigFileFullPathBuilder",
+    "line": 4,
+    "short_desc": "",
+    "long_desc": "",
+    "hint": null,
+    "tags": [],
+    "namespace": "Hyperframework\\Common",
+    "file": "\/home\/az\/quickquick\/vendor\/hyperframework\/hyperframework\/lib\/Common\/ConfigFileFullPathBuilder.php",
+    "hash": "a3e41b7181ae009fe70c0d5122797852a7aabdcc",
+    "parent": "Hyperframework\\Common\\FileFullPathBuilder",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": [],
+    "errors": [],
+    "interfaces": [],
+    "traits": [],
+    "properties": [],
+    "methods": {
+        "getRootPath": {
+            "name": "getRootPath",
+            "line": 8,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "string",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": [],
+            "modifiers": "10",
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": []
+        }
+    },
+    "constants": []
+}
