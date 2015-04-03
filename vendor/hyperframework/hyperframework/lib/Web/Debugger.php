@@ -1062,6 +1062,9 @@ h1, #message {
     background: #fff;
     border: 1px solid #e1e1e1;
 }
+#internal-file .path, #external-file .path {
+	padding-top: 8px;
+}
 </style>
 <?php
     }
