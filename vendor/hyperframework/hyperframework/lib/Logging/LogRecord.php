@@ -68,6 +68,10 @@ class LogRecord {
         return $this->time;
     }
 
+    /**
+     * @param string
+     * @return \DateTime
+     */
     private function convertStringToDateTime($string) {
         $result = DateTime::createFromFormat('U.u', $string);
         $result->setTimeZone(new DateTimeZone(date_default_timezone_get()));

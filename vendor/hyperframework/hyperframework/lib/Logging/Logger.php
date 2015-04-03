@@ -71,21 +71,21 @@ class Logger {
     }
 
     /**
-     * @param ILogHandler $logHandler
+     * @param object $logHandler
      */
     public static function setLogHandler($logHandler) {
         static::getEngine()->setLogHandler($logHandler);
     }
 
     /**
-     * @return ILogHandler
+     * @return object
      */
     public static function getLogHandler() {
         return static::getEngine()->getLogHandler();
     }
 
     /**
-     * @param object $logHandler
+     * @param object $engine
      */
     public static function setEngine($engine) {
         Registry::set('hyperframework.logging.logger_engine', $engine);
