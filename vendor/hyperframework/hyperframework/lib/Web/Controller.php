@@ -213,7 +213,7 @@ abstract class Controller {
      * @param string|Closure $filter
      * @param array $options
      */
-    public function addBeforeFilter($filter, $options = null) {
+    public function addBeforeFilter($filter, array $options = null) {
         $this->addFilter('before', $filter, $options);
     }
 
@@ -221,7 +221,7 @@ abstract class Controller {
      * @param string|Closure $filter
      * @param array $options
      */
-    public function addAfterFilter($filter, $options = null) {
+    public function addAfterFilter($filter, array $options = null) {
         $this->addFilter('after', $filter, $options);
     }
 

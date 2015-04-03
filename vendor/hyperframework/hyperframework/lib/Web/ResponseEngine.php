@@ -50,7 +50,7 @@ class ResponseEngine {
      * @param string $value
      * @param array $options
      */
-    public function setCookie($name, $value, $options = null) {
+    public function setCookie($name, $value, array $options = null) {
         $expire = 0;
         $path = '/';
         $domain = null;
