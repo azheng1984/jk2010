@@ -7,7 +7,6 @@ use Hyperframework\Db\Test\TestCase as Base;
 class DbImportCommandTest extends Base {
     protected function tearDown() {
         DbClient::delete('Document', null);
-        DbProfiler::setProfileHandler(null);
         parent::tearDown();
     }
 

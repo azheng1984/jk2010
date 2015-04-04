@@ -14,11 +14,6 @@ class DbConnectionTest extends Base {
         $this->connection = $factory->createConnection();
     }
 
-    protected function tearDown() {
-        DbProfiler::setProfileHandler(null);
-        parent::tearDown();
-    }
-
     public function testGetName() {
         $this->assertSame('default', $this->connection->getName());
     }

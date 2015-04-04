@@ -3,13 +3,13 @@ namespace Hyperframework\Common;
 
 class StackTraceFormatter {
     /**
-     * @param array $trace
+     * @param array $stackTrace
      * @return string
      */
-    public static function format(array $trace) {
+    public static function format(array $stackTrace) {
         $result = [];
         $index = 0;
-        foreach ($trace as $stackFrame) {
+        foreach ($stackTrace as $stackFrame) {
             $result[] = static::formatStackFrame($stackFrame);
             ++$index;
         }

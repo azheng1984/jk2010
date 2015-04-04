@@ -5,11 +5,6 @@ use Hyperframework\Common\Config;
 use Hyperframework\Db\Test\TestCase as Base;
 
 class DbStatementTest extends Base {
-    protected function tearDown() {
-        DbProfiler::setProfileHandler(null);
-        parent::tearDown();
-    }
-
     public function testExecute() {
         $statement = DbClient::prepare('SELECT * FROM Document');
         $this->mockProfileHandler();

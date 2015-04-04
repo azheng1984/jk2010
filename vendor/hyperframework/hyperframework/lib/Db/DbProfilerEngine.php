@@ -57,6 +57,10 @@ class DbProfilerEngine {
         $this->profileHandler = $handler;
     }
 
+    public function removeProfileHandler() {
+        $this->profileHandler = null;
+    }
+
     /**
      * @return IDbProfileHandler
      */
