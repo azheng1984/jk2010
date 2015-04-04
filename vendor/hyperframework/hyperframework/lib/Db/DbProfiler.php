@@ -71,12 +71,10 @@ class DbProfiler {
     /**
      * @param IDbProfileHandler $handler
      */
-    public static function setProfileHandler(IDbProfileHandler $handler) {
+    public static function setProfileHandler(
+        IDbProfileHandler $handler = null
+    ) {
         static::getEngine()->setProfileHandler($handler);
-    }
-
-    public static function removeProfileHandler() {
-        static::getEngine()->removeProfileHandler();
     }
 
     /**
