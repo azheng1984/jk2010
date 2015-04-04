@@ -119,9 +119,7 @@ class DbClient {
      * @return int
      */
     public static function count($table, $where = null, array $params = null) {
-        return static::getEngine()->count(
-            $table, $where, $params
-        );
+        return static::getEngine()->count($table, $where, $params);
     }
 
     /**

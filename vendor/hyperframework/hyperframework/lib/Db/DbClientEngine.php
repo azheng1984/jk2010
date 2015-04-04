@@ -29,12 +29,8 @@ class DbClientEngine {
      * @param array $columns
      * @return mixed
      */
-    public function findColumnByColumns(
-        $table, $columnName, array $columns
-    ) {
-        $result = $this->findByColumns(
-            $table, $columns, [$columnName]
-        );
+    public function findColumnByColumns($table, $columnName, array $columns) {
+        $result = $this->findByColumns($table, $columns, [$columnName]);
         return $result->fetchColumn();
     }
 
@@ -45,9 +41,7 @@ class DbClientEngine {
      * @return mixed
      */
     public function findColumnById($table, $columnName, $id) {
-        $result = $this->findByColumns(
-            $table, ['id' => $id], [$columnName]
-        );
+        $result = $this->findByColumns($table, ['id' => $id], [$columnName]);
         return $result->fetchColumn();
     }
 
@@ -70,9 +64,7 @@ class DbClientEngine {
     public function findRowByColumns(
         $table, array $columns, array $select = null
     ) {
-        $result = $this->findByColumns(
-            $table, $columns, $select
-        );
+        $result = $this->findByColumns($table, $columns, $select);
         return $result->fetch(PDO::FETCH_ASSOC);
     }
 

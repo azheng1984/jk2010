@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Common;
 
-class ConfigFileFullPathBuilder  extends FileFullPathBuilder {
+class ConfigFileFullPathBuilder extends FileFullPathBuilder {
     /**
      * @return string
      */

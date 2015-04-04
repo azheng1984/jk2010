@@ -9,7 +9,7 @@ class DbStatement {
     private $connection;
 
     /**
-     * @param PDO $pdoStatement
+     * @param PDOStatement $pdoStatement
      * @param DbConnection $connection
      */
     public function __construct(

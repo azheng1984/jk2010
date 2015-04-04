@@ -9,7 +9,7 @@ class DefaultArgumentConfig extends ArgumentConfig {
     private $name;
 
     /**
-     * @param \ReflectionParameter $reflectionParameter
+     * @param ReflectionParameter $reflectionParameter
      */
     public function __construct(ReflectionParameter $reflectionParameter) {
         parent::__construct(

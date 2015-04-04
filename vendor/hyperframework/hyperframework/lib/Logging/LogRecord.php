@@ -62,7 +62,7 @@ class LogRecord {
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getTime() {
         return $this->time;
@@ -70,7 +70,7 @@ class LogRecord {
 
     /**
      * @param string
-     * @return \DateTime
+     * @return DateTime
      */
     private function convertStringToDateTime($string) {
         $result = DateTime::createFromFormat('U.u', $string);
