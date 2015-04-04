@@ -9,7 +9,7 @@ class Help {
     private $usageIndent;
 
     /**
-     * @param IApp $app
+     * @param AppInterface $app
      */
     public function __construct($app) {
         $this->commandConfig = $app->getCommandConfig();

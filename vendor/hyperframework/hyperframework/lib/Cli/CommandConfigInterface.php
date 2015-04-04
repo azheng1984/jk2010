@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
-interface ICommandConfig {
+interface CommandConfigInterface {
     /**
      * @param string $subcommandName
      * @return ArgumentConfig[]

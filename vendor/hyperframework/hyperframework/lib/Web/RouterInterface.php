@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Web;
 
-interface IRouter {
+interface RouterInterface {
     /**
      * @param string $name
      * @return mixed

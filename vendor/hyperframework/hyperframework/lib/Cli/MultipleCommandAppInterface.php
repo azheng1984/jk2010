@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
-interface IMultipleCommandApp extends IApp {
+interface MultipleCommandAppInterface extends AppInterface {
     /**
      * @return string[]
      */

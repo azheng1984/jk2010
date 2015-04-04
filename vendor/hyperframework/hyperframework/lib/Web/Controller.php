@@ -23,9 +23,9 @@ abstract class Controller {
     private $isViewEnabled = true;
 
     /**
-     * @param IApp $app
+     * @param AppInterface $app
      */
-    public function __construct(IApp $app) {
+    public function __construct(AppInterface $app) {
         $this->app = $app;
     }
 
@@ -48,7 +48,7 @@ abstract class Controller {
     }
 
     /**
-     * @return IApp
+     * @return AppInterface
      */
     public function getApp() {
         if ($this->app === null) {
@@ -61,7 +61,7 @@ abstract class Controller {
     }
 
     /**
-     * @return IRouter
+     * @return RouterInterface
      */
     public function getRouter() {
         return $this->getApp()->getRouter();

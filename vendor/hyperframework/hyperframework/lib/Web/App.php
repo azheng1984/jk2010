@@ -7,7 +7,7 @@ use Hyperframework\Common\NamespaceCombiner;
 use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\App as Base;
 
-class App extends Base implements IApp {
+class App extends Base implements AppInterface {
     private $router;
 
     public static function run() {
@@ -27,7 +27,7 @@ class App extends Base implements IApp {
     }
 
     /**
-     * @return IRouter
+     * @return RouterInterface
      */
     public function getRouter() {
         if ($this->router === null) {

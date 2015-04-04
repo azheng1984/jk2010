@@ -9,14 +9,14 @@ abstract class Command {
     private $isQuitMethodCalled = false;
 
     /**
-     * @param IApp $app
+     * @param AppInterface $app
      */
-    public function __construct(IApp $app) {
+    public function __construct(AppInterface $app) {
         $this->app = $app;
     }
 
     /**
-     * @return IApp
+     * @return AppInterface
      */
     public function getApp() {
         if ($this->app === null) {

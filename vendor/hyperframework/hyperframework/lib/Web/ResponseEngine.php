@@ -34,7 +34,7 @@ class ResponseEngine {
     /**
      * @param int $statusCode
      */
-    public function setStatusCode($code) {
+    public function setStatusCode($statusCode) {
         http_response_code($code);
     }
 

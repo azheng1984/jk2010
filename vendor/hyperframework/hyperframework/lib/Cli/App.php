@@ -5,7 +5,7 @@ use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\App as Base;
 
-class App extends Base implements IApp {
+class App extends Base implements AppInterface {
     private $commandConfig;
     private $appRootPath;
     private $options = [];
@@ -75,7 +75,7 @@ class App extends Base implements IApp {
     }
 
     /**
-     * @return ICommandConfig
+     * @return CommandConfigInterface
      */
     public function getCommandConfig() {
         if ($this->commandConfig === null) {

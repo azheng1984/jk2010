@@ -1,9 +1,9 @@
 <?php
 namespace Hyperframework\Web;
 
-interface IApp {
+interface AppInterface {
     /**
-     * @return IRouter
+     * @return RouterInterface
      */
     function getRouter();
     function quit();

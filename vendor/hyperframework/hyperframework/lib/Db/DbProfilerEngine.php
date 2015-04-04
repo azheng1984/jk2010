@@ -51,14 +51,14 @@ class DbProfilerEngine {
     }
 
     /**
-     * @param IDbProfileHandler $handler
+     * @param DbProfileHandlerInterface $handler
      */
-    public function setProfileHandler(IDbProfileHandler $handler = null) {
+    public function setProfileHandler(DbProfileHandlerInterface $handler = null) {
         $this->profileHandler = $handler;
     }
 
     /**
-     * @return IDbProfileHandler
+     * @return DbProfileHandlerInterface
      */
     public function getProfileHandler() {
         if ($this->profileHandler === null) {

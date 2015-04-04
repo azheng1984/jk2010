@@ -7,7 +7,7 @@ use InvalidArgumentException;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\NamespaceCombiner;
 
-abstract class Router implements IRouter {
+abstract class Router implements RouterInterface {
     private $app;
     private $params = [];
     private $module;
@@ -20,9 +20,9 @@ abstract class Router implements IRouter {
     private $isMatched = false;
 
     /**
-     * @param IApp $app
+     * @param AppInterface $app
      */
-    public function __construct(IApp $app) {
+    public function __construct(AppInterface $app) {
         $this->app = $app;
         $result = $this->execute();
         $this->parseResult($result);
@@ -986,7 +986,7 @@ abstract class Router implements IRouter {
     }
 
     /**
-     * @return IApp
+     * @return AppInterface
      */
     protected function getApp() {
         if ($this->app === null) {

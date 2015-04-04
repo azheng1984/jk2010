@@ -13,7 +13,7 @@ use Hyperframework\Common\ConfigException;
 use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Common\MethodNotFoundException;
 
-class CommandConfig implements ICommandConfig {
+class CommandConfig implements CommandConfigInterface {
     private $configs;
     private $class;
     private $optionConfigs;

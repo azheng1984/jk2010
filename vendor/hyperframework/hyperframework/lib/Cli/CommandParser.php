@@ -3,12 +3,12 @@ namespace Hyperframework\Cli;
 
 class CommandParser {
     /**
-     * @param ICommandConfig $commandConfig
+     * @param CommandConfigInterface $commandConfig
      * @param string[] $argv
      * @return array
      */
     public static function parse(
-        ICommandConfig $commandConfig, array $argv = null
+        CommandConfigInterface $commandConfig, array $argv = null
     ) {
         if ($argv === null) {
             $argv = $_SERVER['argv'];
@@ -251,13 +251,13 @@ class CommandParser {
     /**
      * @param string[] $globalOptions
      * @param string[] $options
-     * @param ICommandConfig $commandConfig
+     * @param CommandConfigInterface $commandConfig
      * @return bool
      */
     private static function hasMagicOption(
         array $globalOptions = null,
         array $options = null,
-        ICommandConfig $commandConfig
+        CommandConfigInterface $commandConfig
     ) {
         if ($commandConfig->isSubcommandEnabled()) {
             if ($globalOptions !== null) {
@@ -287,13 +287,13 @@ class CommandParser {
     /**
      * @param string $subcommandName
      * @param string[] $options
-     * @param ICommandConfig $commandConfig
+     * @param CommandConfigInterface $commandConfig
      * @param bool $hasMagicOption
      */
     private static function checkOptions(
         $subcommandName,
         array $options,
-        ICommandConfig $commandConfig,
+        CommandConfigInterface $commandConfig,
         $hasMagicOption
     ) {
         $optionConfigs = $commandConfig->getOptionConfigs($subcommandName);

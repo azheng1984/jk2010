@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Cli;
 
-interface IApp {
+interface AppInterface {
     /**
      * @return string[]
      */
@@ -25,7 +25,7 @@ interface IApp {
     function getOptions();
 
     /**
-     * @return ICommandConfig
+     * @return CommandConfigInterface
      */
     function getCommandConfig();
 
