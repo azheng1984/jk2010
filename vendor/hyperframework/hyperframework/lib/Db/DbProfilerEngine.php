@@ -72,12 +72,7 @@ class DbProfilerEngine {
                     );
                 }
                 $this->profileHandler = new $profileHandlerClass;
-            } else {
-                $this->profileHandler = false;
             }
-        }
-        if ($this->profileHandler === false) {
-            return;
         }
         return $this->profileHandler;
     }
