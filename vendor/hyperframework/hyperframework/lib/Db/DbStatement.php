@@ -56,7 +56,7 @@ class DbStatement {
         $maxLength = null,
         array $driverOptions = null
     ) {
-        return $this->pdoStatement->bindColumn(
+        $this->pdoStatement->bindColumn(
             $column, $param, $type, $maxLength, $driverOptions
         );
     }
@@ -75,7 +75,7 @@ class DbStatement {
         $length = null,
         array $driverOptions = null
     ) {
-        return $this->pdoStatement->bindParam(
+        $this->pdoStatement->bindParam(
             $param, $variable, $dataType, $length, $driverOptions
         );
     }
@@ -86,7 +86,7 @@ class DbStatement {
      * @param int $dataType
      */
     public function bindValue($param, $value, $dataType = PDO::PARAM_STR) {
-        return $this->pdoStatement->bindValue($param, $value, $dataType);
+        $this->pdoStatement->bindValue($param, $value, $dataType);
     }
 
     public function closeCursor() {
@@ -122,6 +122,7 @@ class DbStatement {
      * @param int $fetchStyle
      * @param int $cursorOrientation
      * @param int $cursorOffset
+     * @return mixed
      */
     public function fetch(
         $fetchStyle = null,
@@ -137,6 +138,7 @@ class DbStatement {
      * @param int $fetchStyle
      * @param int $fetchArgument
      * @param array $constructorArguments
+     * @return array
      */
     public function fetchAll(
         $fetchStyle = null,
@@ -157,6 +159,7 @@ class DbStatement {
 
     /**
      * @param int $columnNumber
+     * @return mixed
      */
     public function fetchColumn($columnNumber = 0) {
         return $this->pdoStatement->fetchColumn($columnNumber);
@@ -165,6 +168,7 @@ class DbStatement {
     /**
      * @param string $className
      * @param array $constructorArguments
+     * @return object
      */
     public function fetchObject(
         $className = "stdClass", array $constructorArguments = []
@@ -190,15 +194,12 @@ class DbStatement {
         return $this->pdoStatement->getColumnMeta($column);
     }
 
-    /**
-     * @return bool
-     */
     public function nextRowset() {
         return $this->pdoStatement->nextRowset();
     }
 
     /**
-     * @return bool
+     * @return int
      */
     public function rowCount() {
         return $this->pdoStatement->rowCount();
@@ -209,19 +210,18 @@ class DbStatement {
      * @param mixed $value
      */
     public function setAttribute($attribute, $value) {
-        return $this->pdoStatement->setAttribute($attribute, $value);
+        $this->pdoStatement->setAttribute($attribute, $value);
     }
 
     /**
      * @param int $mode
      * @param mixed $extraParam1
      * @param array $extraParam2
-     * @return mixed
      */
     public function setFetchMode(
         $mode, $extraParam1 = null, array $extraParam2 = null
     ) {
-        return call_user_func_array(
+        call_user_func_array(
             [$this->pdoStatement, 'setFetchMode'], func_get_args()
         );
     }

@@ -23,9 +23,6 @@ class DbConnectionFactoryTest extends Base {
         $connection = $this->factory->createConnection('backup');
         $this->assertSame('backup', $connection->getName());
         $this->assertSame(
-            PDO::ERRMODE_EXCEPTION, $connection->getAttribute(PDO::ATTR_ERRMODE)
-        );
-        $this->assertSame(
             1, $connection->getAttribute(PDO::ATTR_EMULATE_PREPARES)
         );
     }

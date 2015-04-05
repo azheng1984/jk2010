@@ -19,9 +19,10 @@ class DbConnection extends PDO {
         $dsn,
         $userName = null,
         $password = null,
-        array $driverOptions = null
+        array $driverOptions = []
     ) {
         $this->name = $name;
+        $options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
         parent::__construct($dsn, $userName, $password, $driverOptions);
     }
 
