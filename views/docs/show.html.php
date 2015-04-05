@@ -18,24 +18,20 @@ if (isset($this['doc'])) {
 <div><a href="/cn/docs/web/requirements">环境要求</a></div>
 <div><a href="/cn/docs/web/getting_started">入门</a></div>
 <div><a href="/cn/docs/web/configuration">配置</a></div>
-<div><a href="/cn/docs/web/api">API</a></div>
 <h3>Cli</h3>
 <div>命令行应用开发框架</div>
-<div>入门</div>
+<div>安装</div>
 <div>配置</div>
-<div>API</div>
 <h3>Common</h3>
 <div>平台无关的支持模块</div>
-<div>入门</div>
+<div>安装</div>
 <div>配置</div>
-<div>API</div>
 <h3>Db</h3>
 <div>数据库访问模块</div>
-<div>入门</div>
-<div>API</div>
+<div>安装</div>
 <h3>Logging</h3>
 <div>日志模块</div>
-<div>入门</div>
-<div>API</div>
+<div>安装</div>
+<h2>API</h2>
 <?php });?>
 <div></div>

@@ -94,6 +94,10 @@ class Debugger {
         echo '</tbody></table></body></html>';
     }
 
+    /**
+     * @param string $path
+     * @return boolean
+     */
     private function isExternalFile($path) {
         $relativePath = $this->getRelativePath($path);
         if ($relativePath === $path) {
@@ -105,6 +109,10 @@ class Debugger {
         return false;
     }
 
+    /**
+     * @param string $type
+     * @param string $message
+     */
     private function renderContent($type, $message) {
         echo '<tr><td id="content"><table id="error"><tbody>';
         $this->renderErrorHeader($type, $message);
@@ -123,6 +131,10 @@ class Debugger {
         echo '</tbody></table></td></tr>';
     }
 
+    /**
+     * @param string $type
+     * @param string $message
+     */
     private function renderErrorHeader($type, $message) {
         if ($this->error instanceof Error === false) {
             $type = str_replace('\\', '<span>\</span>', $type);
@@ -160,6 +172,10 @@ class Debugger {
         echo '</div>';
     }
 
+    /**
+     * @param string $path
+     * @param int $errorLineNumber
+     */
     private function renderFileContent($path, $errorLineNumber) {
         $this->renderPath(
             $path, ' <span class="line">' . $errorLineNumber . '</span>'
@@ -227,6 +243,11 @@ class Debugger {
         echo '</tbody></table></td></tr></table>';
     }
 
+    /**
+     * @param string $path
+     * @param int $errorLineNumber
+     * @return array
+     */
     private function getLines($path, $errorLineNumber) {
         $file = file_get_contents($path);
         $tokens = token_get_all($file);
@@ -293,6 +314,11 @@ class Debugger {
         return $result;
     }
 
+    /**
+     * @param int $type
+     * @param string $content
+     * @return string
+     */
     private function formatToken($type, $content) {
         $class = null;
         switch ($type) {
@@ -341,10 +367,18 @@ class Debugger {
         return '<span class="' . $class . '">' . $content . '</span>';
     }
 
+    /**
+     * @param string $path
+     * @param string $suffix
+     */
     private function renderPath($path, $suffix = '') {
         echo '<div class="path"><code>', $path, '</code>', $suffix, '</div>';
     }
 
+    /**
+     * @param string $path
+     * @return string
+     */
     private function getRelativePath($path) {
         if (strncmp($this->rootPath, $path, $this->rootPathLength) === 0) {
             $path = substr($path, $this->rootPathLength);
@@ -352,6 +386,10 @@ class Debugger {
         return $path;
     }
 
+    /**
+     * @param string $type
+     * @param string $message
+     */
     private function renderNav($type, $message) {
         if ($this->error instanceof Error === false) {
             $type = str_replace('\\', '<span>\</span>', $type);
@@ -362,7 +400,11 @@ class Debugger {
             '<div id="nav-output"><a>Output</a></div></div></div></td></tr>';
     }
 
-    private function getMaxOutputContentSize($isText = false) {
+    /**
+     * @param bool $shouldReturnText
+     * @return int|string
+     */
+    private function getMaxOutputContentSize($shouldReturnText = false) {
         $size = strtolower(trim(Config::get(
             'hyperframework.web.debugger.max_output_content_size'
         )));
@@ -370,7 +412,7 @@ class Debugger {
             return -1;
         }
         if ($size === '') {
-            if ($isText) {
+            if ($shouldReturnText) {
                 return '10MB';
             }
             return 10 * 1024 * 1024;
@@ -385,17 +427,17 @@ class Debugger {
         $size = (int)$size;
         switch ($type) {
             case 'g':
-                if ($isText) {
+                if ($shouldReturnText) {
                     return $size . 'GB';
                 }
                 $size *= 1024;
             case 'm':
-                if ($isText) {
+                if ($shouldReturnText) {
                     return $size . 'MB';
                 }
                 $size *= 1024;
             case 'k':
-                if ($isText) {
+                if ($shouldReturnText) {
                     return $size . 'KB';
                 }
                 $size *= 1024;
@@ -406,7 +448,7 @@ class Debugger {
     private function renderJavascript() {
         $isOverflow = false;
         $maxSize = $this->getMaxOutputContentSize();
-        if ($maxSize >=0 && $this->outputBufferLength >= $maxSize) {
+        if ($maxSize >= 0 && $this->outputBufferLength >= $maxSize) {
             $isOverflow = true;
             $outputBuffer = mb_strcut($this->outputBuffer, 0, $maxSize);
         } else {
