@@ -18,7 +18,7 @@ return array(
 //    'path_info.enable_cache' => false,
 //  'web.error_handler.exit_level' => 'NOTICE',
 //  'class_loader.enable_zero_folder' => true,
-    'db.profiler.enable' => true,
+    'db.operation_profiler.enable' => true,
     'logging.log_level' => 'DEBUG',
     'logging.handler_class' => 'xx',
     'app_root_namespace' => __NAMESPACE__,

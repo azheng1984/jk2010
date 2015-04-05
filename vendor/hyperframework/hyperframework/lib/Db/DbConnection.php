@@ -73,21 +73,21 @@ class DbConnection extends PDO {
     }
 
     public function beginTransaction() {
-        DbProfiler::onTransactionOperationExecuting($this, 'begin');
+        DbOperationProfiler::onTransactionOperationExecuting($this, 'begin');
         parent::beginTransaction();
-        DbProfiler::onTransactionOperationExecuted();
+        DbOperationProfiler::onTransactionOperationExecuted();
     }
 
     public function commit() {
-        DbProfiler::onTransactionOperationExecuting($this, 'commit');
+        DbOperationProfiler::onTransactionOperationExecuting($this, 'commit');
         parent::commit();
-        DbProfiler::onTransactionOperationExecuted();
+        DbOperationProfiler::onTransactionOperationExecuted();
     }
 
     public function rollBack() {
-        DbProfiler::onTransactionOperationExecuting($this, 'rollback');
+        DbOperationProfiler::onTransactionOperationExecuting($this, 'rollback');
         parent::rollBack();
-        DbProfiler::onTransactionOperationExecuted();
+        DbOperationProfiler::onTransactionOperationExecuted();
     }
 
     /**
@@ -126,7 +126,7 @@ class DbConnection extends PDO {
     private function sendSql(
         $sql, $isQuery = false, array $fetchOptions = null
     ) {
-        DbProfiler::onSqlStatementExecuting($this, $sql);
+        DbOperationProfiler::onSqlStatementExecuting($this, $sql);
         $result = null;
         if ($isQuery) {
             if ($fetchOptions === null) {
@@ -156,7 +156,7 @@ class DbConnection extends PDO {
         } else {
             $result = parent::exec($sql);
         }
-        DbProfiler::onSqlStatementExecuted();
+        DbOperationProfiler::onSqlStatementExecuted();
         return $result;
     }
 }

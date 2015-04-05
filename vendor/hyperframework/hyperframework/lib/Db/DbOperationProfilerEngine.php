@@ -7,7 +7,7 @@ use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 use Hyperframework\Logging\Logger;
 
-class DbProfilerEngine {
+class DbOperationProfilerEngine {
     private $profile;
     private $profileHandler;
 
@@ -51,18 +51,21 @@ class DbProfilerEngine {
     }
 
     /**
-     * @param DbProfileHandlerInterface $handler
+     * @param DbOperationProfileHandlerInterface $handler
      */
-    public function setProfileHandler(DbProfileHandlerInterface $handler = null) {
+    public function setProfileHandler(
+        DbOperationProfileHandlerInterface $handler = null
+    ) {
         $this->profileHandler = $handler;
     }
 
     /**
-     * @return DbProfileHandlerInterface
+     * @return DbOperationProfileHandlerInterface
      */
     public function getProfileHandler() {
         if ($this->profileHandler === null) {
-            $configName = 'hyperframework.db.profiler.profile_handler_class';
+            $configName =
+                'hyperframework.db.operation_profiler.profile_handler_class';
             $profileHandlerClass = Config::getString($configName, '');
             if ($profileHandlerClass !== '') {
                 if (class_exists($profileHandlerClass) === false) {
@@ -117,7 +120,7 @@ class DbProfilerEngine {
                 . (int)($profile['start_time'][0] * 1000000)
         )->setTimeZone(new DateTimeZone(date_default_timezone_get()));
         $isLoggerEnabled = Config::getBool(
-            'hyperframework.db.profiler.enable_logger', true
+            'hyperframework.db.operation_profiler.enable_logger', true
         );
         if ($isLoggerEnabled) {
             $callback = function() use ($profile) {
@@ -152,7 +155,7 @@ class DbProfilerEngine {
      * @return string
      */
     private function getCustomLoggerClass() {
-        $configName = 'hyperframework.db.profiler.logger_class';
+        $configName = 'hyperframework.db.operation_profiler.logger_class';
         $class = Config::getString($configName, '');
         if ($class !== '') {
             if (class_exists($class) === false) {

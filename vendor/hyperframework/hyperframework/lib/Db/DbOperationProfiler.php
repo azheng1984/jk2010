@@ -5,12 +5,14 @@ use Hyperframework\Common\Registry;
 use Hyperframework\Common\Config;
 use Hyperframework\Common\ClassNotFoundException;
 
-class DbProfiler {
+class DbOperationProfiler {
     /**
      * @return bool
      */
     public static function isEnabled() {
-        return Config::getBool('hyperframework.db.profiler.enable', false);
+        return Config::getBool(
+            'hyperframework.db.operation_profiler.enable', false
+        );
     }
 
     /**
@@ -69,16 +71,16 @@ class DbProfiler {
     }
 
     /**
-     * @param DbProfileHandlerInterface $handler
+     * @param DbOperationProfileHandlerInterface $handler
      */
     public static function setProfileHandler(
-        DbProfileHandlerInterface $handler = null
+        DbOperationProfileHandlerInterface $handler = null
     ) {
         static::getEngine()->setProfileHandler($handler);
     }
 
     /**
-     * @return DbProfileHandlerInterface
+     * @return DbOperationProfileHandlerInterface
      */
     public static function getProfileHandler() {
         return static::getEngine()->getProfileHandler();
@@ -88,12 +90,12 @@ class DbProfiler {
      * @return object
      */
     public static function getEngine() {
-        $engine = Registry::get('hyperframework.db.profiler_engine');
+        $engine = Registry::get('hyperframework.db.operation_profiler_engine');
         if ($engine === null) {
-            $configName = 'hyperframework.db.profiler.engine_class';
+            $configName = 'hyperframework.db.operation_profiler.engine_class';
             $class = Config::getString($configName, '');
             if ($class === '') {
-                $engine = new DbProfilerEngine;
+                $engine = new DbOperationProfilerEngine;
             } else {
                 if (class_exists($class) === false) {
                     throw new ClassNotFoundException(
@@ -112,6 +114,6 @@ class DbProfiler {
      * @param object $engine
      */
     public static function setEngine($engine) {
-        Registry::set('hyperframework.db.profiler_engine', $engine);
+        Registry::set('hyperframework.db.operation_profiler_engine', $engine);
     }
 }

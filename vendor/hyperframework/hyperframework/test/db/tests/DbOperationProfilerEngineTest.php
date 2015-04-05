@@ -3,12 +3,12 @@ namespace Hyperframework\Db;
 
 use stdClass;
 use Hyperframework\Common\Config;
-use Hyperframework\Db\Test\ProfileHandler;
+use Hyperframework\Db\Test\DbOperationProfileHandler;
 use Hyperframework\Db\Test\CustomLogger;
 use Hyperframework\Logging\Logger;
 use Hyperframework\Db\Test\TestCase as Base;
 
-class DbProfilerEngineTest extends Base {
+class DbOperationProfilerEngineTest extends Base {
     private $statement;
     private $connection;
     private $sql = 'SELECT * FROM Document';
@@ -19,9 +19,9 @@ class DbProfilerEngineTest extends Base {
         DbClient::connect('backup');
         $this->connection = DbClient::getConnection();
         $this->statement = DbClient::prepare($this->sql);
-        Config::set('hyperframework.db.profiler.enable', true);
-        Config::set('hyperframework.db.profiler.enable_logger', false);
-        $this->profilerEngine = new DbProfilerEngine;
+        Config::set('hyperframework.db.operation_profiler.enable', true);
+        Config::set('hyperframework.db.operation_profiler.enable_logger', false);
+        $this->profilerEngine = new DbOperationProfilerEngine;
     }
 
     protected function tearDown() {
@@ -72,12 +72,12 @@ class DbProfilerEngineTest extends Base {
 
     public function testProfileHandlerClassConfig() {
         Config::set(
-            'hyperframework.db.profiler.profile_handler_class',
-            'Hyperframework\Db\Test\Profilehandler'
+            'hyperframework.db.operation_profiler.profile_handler_class',
+            'Hyperframework\Db\Test\DbOperationProfileHandler'
         );
         $this->assertTrue(
             $this->profilerEngine->getProfileHandler()
-                instanceof ProfileHandler
+                instanceof DbOperationProfileHandler
         );
     }
 
@@ -86,14 +86,14 @@ class DbProfilerEngineTest extends Base {
      */
     public function testInvalidProfileHandlerClassConfig() {
         Config::set(
-            'hyperframework.db.profiler.profile_handler_class', 'Unknown'
+            'hyperframework.db.operation_profiler.profile_handler_class', 'Unknown'
         );
         $this->profilerEngine->getProfileHandler();
     }
 
     public function testLogProfile() {
         Config::set(
-            'hyperframework.db.profiler.enable_logger', true
+            'hyperframework.db.operation_profiler.enable_logger', true
         );
         Config::set(
             'hyperframework.logging.log_level', 'DEBUG'
@@ -109,10 +109,10 @@ class DbProfilerEngineTest extends Base {
 
     public function testCustomLogger() {
         Config::set(
-            'hyperframework.db.profiler.enable_logger', true
+            'hyperframework.db.operation_profiler.enable_logger', true
         );
         Config::set(
-            'hyperframework.db.profiler.logger_class',
+            'hyperframework.db.operation_profiler.logger_class',
             'Hyperframework\Db\Test\CustomLogger'
         );
         $this->profilerEngine->onSqlStatementExecuting(
@@ -127,10 +127,10 @@ class DbProfilerEngineTest extends Base {
      */
     public function testInvalidCustomLoggerClassConfig() {
         Config::set(
-            'hyperframework.db.profiler.enable_logger', true
+            'hyperframework.db.operation_profiler.enable_logger', true
         );
         Config::set(
-            'hyperframework.db.profiler.logger_class', 'Unknown'
+            'hyperframework.db.operation_profiler.logger_class', 'Unknown'
         );
         $this->profilerEngine->onSqlStatementExecuting(
             $this->connection, $this->sql
@@ -139,7 +139,7 @@ class DbProfilerEngineTest extends Base {
     }
 
     private function mockProfileHandler($handleCallback) {
-        $mock = $this->getMock('Hyperframework\Db\Test\ProfileHandler');
+        $mock = $this->getMock('Hyperframework\Db\Test\DbOperationProfileHandler');
         $this->profilerEngine->setProfileHandler($mock);
         return $mock->expects($this->once())->method('handle')
             ->will($this->returnCallback($handleCallback));

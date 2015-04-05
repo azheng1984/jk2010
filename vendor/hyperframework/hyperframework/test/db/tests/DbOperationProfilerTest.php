@@ -5,18 +5,18 @@ use stdClass;
 use Hyperframework\Common\Registry;
 use Hyperframework\Common\Config;
 use Hyperframework\Db\Test\TestCase as Base;
-use Hyperframework\Db\Test\ProfileHandler;
+use Hyperframework\Db\Test\DbOperationProfileHandler;
 
-class DbProfilerTest extends Base {
+class DbOperationProfilerTest extends Base {
     protected function setUp() {
         parent::setUp();
-        Config::set('hyperframework.db.profiler.enable', true);
+        Config::set('hyperframework.db.operation_profiler.enable', true);
     }
 
     public function testIsEnabled() {
-        $this->assertTrue(DbProfiler::isEnabled());
-        Config::set('hyperframework.db.profiler.enable', false);
-        $this->assertFalse(DbProfiler::isEnabled());
+        $this->assertTrue(DbOperationProfiler::isEnabled());
+        Config::set('hyperframework.db.operation_profiler.enable', false);
+        $this->assertFalse(DbOperationProfiler::isEnabled());
     }
 
     public function testOnTransactionOperationExecuting() {
@@ -24,12 +24,12 @@ class DbProfilerTest extends Base {
         $operation = 'begin';
         $this->mockEngineMethod('onTransactionOperationExecuting')
             ->with($connection, $operation);
-        DbProfiler::onTransactionOperationExecuting($connection, $operation);
+        DbOperationProfiler::onTransactionOperationExecuting($connection, $operation);
     }
 
     public function testOnTransactionOperationExecuted() {
         $this->mockEngineMethod('onTransactionOperationExecuted');
-        DbProfiler::onTransactionOperationExecuted();
+        DbOperationProfiler::onTransactionOperationExecuted();
     }
 
     public function testOnSqlStatementExecuting() {
@@ -37,72 +37,72 @@ class DbProfilerTest extends Base {
         $sql = 'sql';
         $this->mockEngineMethod('onSqlStatementExecuting')
             ->with($connection, $sql);
-        DbProfiler::onSqlStatementExecuting($connection, $sql);
+        DbOperationProfiler::onSqlStatementExecuting($connection, $sql);
     }
 
     public function testOnSqlStatementExecuted() {
         $this->mockEngineMethod('onSqlStatementExecuted');
-        DbProfiler::onSqlStatementExecuted();
+        DbOperationProfiler::onSqlStatementExecuted();
     }
 
     public function testonPreparedStatementExecuting() {
         $statement = DbClient::prepare('SELECT * FROM Document');
         $this->mockEngineMethod('onPreparedStatementExecuting')
             ->with($statement);
-        DbProfiler::onPreparedStatementExecuting($statement);
+        DbOperationProfiler::onPreparedStatementExecuting($statement);
     }
 
     public function testOnPreparedStatementExecuted() {
         $this->mockEngineMethod('onPreparedStatementExecuted');
-        DbProfiler::onPreparedStatementExecuted();
+        DbOperationProfiler::onPreparedStatementExecuted();
     }
 
     public function testGetProfileHandler() {
         $this->mockEngineMethod('getProfileHandler')->willReturn(true);
-        $this->assertTrue(DbProfiler::getProfileHandler());
+        $this->assertTrue(DbOperationProfiler::getProfileHandler());
     }
 
     public function testSetProfileHandler() {
-        $handler = new ProfileHandler;
+        $handler = new DbOperationProfileHandler;
         $this->mockEngineMethod('setProfileHandler')->with($handler);
-        DbProfiler::setProfileHandler($handler);
+        DbOperationProfiler::setProfileHandler($handler);
     }
 
     public function testGetDefaultEngine() {
         $this->assertInstanceOf(
-            'Hyperframework\Db\DbProfilerEngine',
-            DbProfiler::getEngine()
+            'Hyperframework\Db\DbOperationProfilerEngine',
+            DbOperationProfiler::getEngine()
         );
     }
 
     public function testSetEngineUsingConfig() {
         Config::set(
-            'hyperframework.db.profiler.engine_class',
+            'hyperframework.db.operation_profiler.engine_class',
             'stdClass'
         );
-        $this->assertInstanceof('stdClass', DbProfiler::getEngine());
+        $this->assertInstanceof('stdClass', DbOperationProfiler::getEngine());
     }
 
     /**
      * @expectedException Hyperframework\Common\ClassNotFoundException
      */
     public function testInvalidEngineConfig() {
-        Config::set('hyperframework.db.profiler.engine_class', 'Unknown');
-        DbProfiler::getEngine();
+        Config::set('hyperframework.db.operation_profiler.engine_class', 'Unknown');
+        DbOperationProfiler::getEngine();
     }
 
     public function testSetEngine() {
         $engine = new stdClass;
-        DbProfiler::setEngine($engine);
-        $this->assertSame($engine, DbProfiler::getEngine());
+        DbOperationProfiler::setEngine($engine);
+        $this->assertSame($engine, DbOperationProfiler::getEngine());
         $this->assertSame(
-            $engine, Registry::get('hyperframework.db.profiler_engine')
+            $engine, Registry::get('hyperframework.db.operation_profiler_engine')
         );
     }
 
     private function mockEngineMethod($method) {
-        $engine = $this->getMock('Hyperframework\Db\DbProfilerEngine');
-        DbProfiler::setEngine($engine);
+        $engine = $this->getMock('Hyperframework\Db\DbOperationProfilerEngine');
+        DbOperationProfiler::setEngine($engine);
         return $engine->expects($this->once())->method($method);
     }
 }

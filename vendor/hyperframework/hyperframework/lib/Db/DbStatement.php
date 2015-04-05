@@ -23,9 +23,9 @@ class DbStatement {
      * @param array $params
      */
     public function execute(array $params = null) {
-        DbProfiler::onPreparedStatementExecuting($this);
+        DbOperationProfiler::onPreparedStatementExecuting($this);
         $this->pdoStatement->execute($params);
-        DbProfiler::onPreparedStatementExecuted();
+        DbOperationProfiler::onPreparedStatementExecuted();
     }
 
     /**

@@ -57,11 +57,11 @@ class DbConnectionTest extends Base {
     }
 
     private function mockProfileHandler() {
-        Config::set('hyperframework.db.profiler.enable', true);
-        Config::set('hyperframework.db.profiler.enable_logger', false);
-        $mock = $this->getMock('Hyperframework\Db\Test\ProfileHandler');
+        Config::set('hyperframework.db.operation_profiler.enable', true);
+        Config::set('hyperframework.db.operation_profiler.enable_logger', false);
+        $mock = $this->getMock('Hyperframework\Db\Test\DbOperationProfileHandler');
         $mock->expects($this->once())->method('handle');
-        DbProfiler::setProfileHandler($mock);
+        DbOperationProfiler::setProfileHandler($mock);
     }
 
     public function testQuoteIdentifier() {

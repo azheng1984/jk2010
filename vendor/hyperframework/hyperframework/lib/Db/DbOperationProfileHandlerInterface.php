@@ -1,7 +1,7 @@
 <?php
 namespace Hyperframework\Db;
 
-interface DbProfileHandlerInterface {
+interface DbOperationProfileHandlerInterface {
     /**
      * @param array $profile
      */

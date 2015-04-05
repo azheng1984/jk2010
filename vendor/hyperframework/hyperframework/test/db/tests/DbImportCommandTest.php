@@ -19,11 +19,11 @@ class DbImportCommandTest extends Base {
     }
 
     public function testBatchSizeOption() {
-        Config::set('hyperframework.db.profiler.enable', true);
-        Config::set('hyperframework.db.profiler.enable_logger', false);
-        $mock = $this->getMock('Hyperframework\Db\Test\ProfileHandler');
+        Config::set('hyperframework.db.operation_profiler.enable', true);
+        Config::set('hyperframework.db.operation_profiler.enable_logger', false);
+        $mock = $this->getMock('Hyperframework\Db\Test\DbOperationProfileHandler');
         $mock->expects($this->exactly(2))->method('handle');
-        DbProfiler::setProfileHandler($mock);
+        DbOperationProfiler::setProfileHandler($mock);
         DbImportCommand::execute(
             'Document',
             [[1, 'doc 1', 12.34], [2, 'doc 2', 0]],
