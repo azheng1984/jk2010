@@ -6,7 +6,6 @@ use Closure;
 use Exception;
 use LogicException;
 use UnexpectedValueException;
-use Hyperframework\Common\Config;
 use Hyperframework\Common\InvalidOperationException;
 use Hyperframework\Common\NotSupportedException;
 use Hyperframework\Common\ClassNotFoundException;

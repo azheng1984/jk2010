@@ -15,6 +15,4 @@
 
 ## [安全](/cn/manual/v1/web/security)
 
-## [调试](/cn/manual/v1/web/debugging)
-
 ## [配置](/cn/manual/v1/web/configuration)

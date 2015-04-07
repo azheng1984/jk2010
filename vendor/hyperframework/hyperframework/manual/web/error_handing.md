@@ -1,10 +1,6 @@
-# 安装
-## 需求
-PHP >= 5.4
-## 通过 Composer 安装
-## 下载 Skeleton 项目
-### Website 应用 Skeleton
-### Restful Api 应用 Skeleton
-## 配置 Web 服务器 Url 重写规则
-### Nginx
-### Apache
+# 错误处理
+## 错误视图
+## Http 异常
+## Debugger
+### 分离输出
+### 分离项目内部/外部文件
