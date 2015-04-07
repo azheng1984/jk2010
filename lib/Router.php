@@ -11,7 +11,7 @@ class Router extends Base {
         if ($this->match('cn')) return;
         if ($this->match('cn/docs')) return 'docs/show';
         if ($this->match('cn/license')) return 'license/show';
-        if ($this->match('cn/docs/*name')) return 'docs/show';
+        if ($this->match('cn/manual(/*name)')) return 'manual/show';
         if ($this->match('cn/blog')) return 'blog/show';
     }
 }
