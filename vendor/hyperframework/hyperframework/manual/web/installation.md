@@ -5,6 +5,6 @@ PHP >= 5.4
 ## 下载 Skeleton 项目
 ### Website 应用 Skeleton
 ### Restful Api 应用 Skeleton
-## Web 服务器 Url 重写配置
+## 配置 Web 服务器 Url 重写规则
 ### Nginx
 ### Apache
