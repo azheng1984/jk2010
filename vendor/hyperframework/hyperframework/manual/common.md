@@ -1,1 +1,13 @@
-Creative Commons Attribution-ShareAlike 4.0 International License.
+# Common 模块
+## 安装
+## App 对象
+## 配置处理
+## 错误处理
+## 合并命名空间
+## 合并文件路径
+## 单复数转换
+## 文件加载器
+## 构建和识别完整的文件路径
+## 注册表
+## 配置
+### 应用环境

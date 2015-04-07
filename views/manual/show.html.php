@@ -11,22 +11,17 @@ if (isset($this['doc'])) {
     return;
 }
 ?>
-<h2>文档</h2>
+<h2>Hyperframework 手册</h2>
 <h3><a href="/cn/manual/copyright">版权声明</a></h3>
-<h3><a href="/cn/manual/web">Web 应用开发框架</a></h3>
-<div><a href="/cn/manual/web/requirements">环境要求</a></div>
-<div><a href="/cn/manual/web/getting_started">入门</a></div>
-<div><a href="/cn/manual/web/configuration">配置</a></div>
-<h3><a href="/cn/manual/cli">命令行应用开发框架</a></h3>
-<div></div>
-<div>安装</div>
-<div>配置</div>
-<h3><a href="/cn/manual/common">平台无关的支持模块</a></h3>
-<div>安装</div>
-<div>配置</div>
-<h3><a href="/cn/manual/db">数据库访问模块</a></h3>
-<div>安装</div>
-<h3><a href="/cn/manual/logging">日志模块</a></h3>
-<div>安装</div>
+<h3><a href="/cn/manual/v1/web">Web 应用开发框架</a></h3>
+<div>description</div>
+<h3><a href="/cn/manual/v1/cli">命令行应用开发框架</a></h3>
+<div>description</div>
+<h3><a href="/cn/manual/v1/common">Common 模块</a></h3>
+<div>description</div>
+<h3><a href="/cn/manual/v1/db">Db 模块</a></h3>
+<div>description</div>
+<h3><a href="/cn/manual/v1/logging">Logging 模块</a></h3>
+<div>description</div>
 <?php });?>
 <div></div>
