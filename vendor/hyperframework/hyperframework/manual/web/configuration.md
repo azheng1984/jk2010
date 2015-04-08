@@ -9,5 +9,5 @@ hyperframework.web.csrf_protection.enable
 hyperframework.web.csrf_protection.engine_class
 ## Csrf 防护 token 名称
 hyperframework.web.csrf_protection.token_name
-## Debugger 输出限制
-hyperframework.web.debugger.max_output_content_size
+## Debugger 最大输出缓存长度
+hyperframework.web.debugger.max_output_buffer_size

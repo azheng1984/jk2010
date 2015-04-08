@@ -404,9 +404,9 @@ class Debugger {
      * @param bool $shouldReturnText
      * @return int|string
      */
-    private function getMaxOutputContentSize($shouldReturnText = false) {
+    private function getMaxOutputBufferSize($shouldReturnText = false) {
         $size = strtolower(trim(Config::get(
-            'hyperframework.web.debugger.max_output_content_size'
+            'hyperframework.web.debugger.max_output_buffer_size'
         )));
         if ($size === 'unlimited') {
             return -1;
@@ -447,7 +447,7 @@ class Debugger {
 
     private function renderJavascript() {
         $isOverflow = false;
-        $maxSize = $this->getMaxOutputContentSize();
+        $maxSize = $this->getMaxOutputBufferSize();
         if ($maxSize >= 0 && $this->outputBufferLength >= $maxSize) {
             $isOverflow = true;
             $outputBuffer = mb_strcut($this->outputBuffer, 0, $maxSize);
@@ -535,13 +535,13 @@ function showOutput() {
     var html = '';
     if (isOverflow) {
     	html += '<tr><td class="notice"><span>Notice: </span>';
-        var maxSize = <?= $this->getMaxOutputContentSize() ?>;
+        var maxSize = <?= $this->getMaxOutputBufferSize() ?>;
         if (maxSize !== 0) {
-        	html += 'Content is partial. Length is larger than'
-                + ' output limitation ('
-                + '<?= $this->getMaxOutputContentSize(true) ?>' + ').';
+            html += 'Output is partial. The size is larger than'
+                + ' limitation ('
+                + '<?= $this->getMaxOutputBufferSize(true) ?>' + ').';
         } else {
-        	html += 'Content display is turn off.';
+        	html += 'Output display is turn off.';
         }
         html += '</td></tr>';
     }
